@@ -4,8 +4,11 @@ Target: 15+ edge case tests for context management and agent operations
 Coverage Target: src/codex/context/, src/agents/
 """
 
-import pytest
 import threading
+
+import pytest
+
+
 class TestContextEdgeCases:
     """Edge case tests for context management"""
 
@@ -32,16 +35,16 @@ class TestContextEdgeCases:
     def test_context_concurrent_modifications(self):
         """Test context with concurrent modifications"""
         context = {"messages": []}
-        
+
         def add_message(i):
             context["messages"].append({"id": i})
-        
+
         threads = [threading.Thread(target=add_message, args=(i,)) for i in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Should handle concurrent access safely
         assert len(context["messages"]) == 10
 
@@ -114,14 +117,14 @@ class TestAgentEdgeCases:
     def test_agent_concurrent_requests(self):
         """Test agent handling concurrent requests"""
         results = []
-        
+
         def make_request(i):
             results.append(i)
-        
+
         threads = [threading.Thread(target=make_request, args=(i,)) for i in range(20)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 20

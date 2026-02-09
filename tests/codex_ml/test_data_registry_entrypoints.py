@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from importlib import metadata
 from uuid import uuid4
 
-
 from codex_ml.data import registry
 
 

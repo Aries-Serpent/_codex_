@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 class ChangeType(Enum):
     """Type of content change detected."""
-    
+
     NO_CHANGE = "no_change"
     MINOR = "minor"  # Typos, formatting
     MODERATE = "moderate"  # Paragraph changes
@@ -35,13 +35,13 @@ class ChangeType(Enum):
 @dataclass
 class DiffSegment:
     """A segment of text that was changed."""
-    
+
     change_type: str  # "insert", "delete", "replace"
     old_content: str
     new_content: str
     line_start: int
     line_end: int
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
         return {
@@ -56,7 +56,7 @@ class DiffSegment:
 @dataclass
 class ContentDiffResult:
     """Result of content comparison."""
-    
+
     change_type: ChangeType
     change_ratio: float  # 0.0 = identical, 1.0 = completely different
     similarity_ratio: float  # 1.0 = identical, 0.0 = completely different
@@ -68,7 +68,7 @@ class ContentDiffResult:
     lines_added: int = 0
     lines_removed: int = 0
     lines_modified: int = 0
-    
+
     @property
     def has_changes(self) -> bool:
         """Check if there are any changes between old and new content.
@@ -77,7 +77,7 @@ class ContentDiffResult:
             True if changes were detected, False otherwise
         """
         return self.change_type != ChangeType.NO_CHANGE
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
         return {
@@ -94,7 +94,7 @@ class ContentDiffResult:
             "segment_count": len(self.segments),
             "segments": [s.to_dict() for s in self.segments[:10]],  # Limit to first 10
         }
-    
+
     def should_sync(self, min_change_ratio: float = 0.01) -> bool:
         """Determine if content should be synced based on change ratio.
         
@@ -116,12 +116,12 @@ class ContentDiffer:
     - HTML-aware diffing
     - Semantic similarity calculation
     """
-    
+
     # Thresholds for change classification
     MINOR_THRESHOLD = 0.05  # < 5% change
     MODERATE_THRESHOLD = 0.25  # < 25% change
     MAJOR_THRESHOLD = 0.75  # < 75% change
-    
+
     def __init__(
         self,
         min_change_ratio: float = 0.01,
@@ -138,12 +138,12 @@ class ContentDiffer:
         self.min_change_ratio = min_change_ratio
         self.strip_html = strip_html
         self.ignore_whitespace = ignore_whitespace
-    
+
     @staticmethod
     def _hash_content(content: str) -> str:
         """Generate SHA-256 hash of content."""
         return hashlib.sha256(content.encode('utf-8')).hexdigest()[:16]
-    
+
     def _normalize_content(self, content: str) -> str:
         """Normalize content for comparison.
         
@@ -158,14 +158,14 @@ class ContentDiffer:
             content = re.sub(r'<[^>]+>', ' ', content)
             # Decode HTML entities
             content = re.sub(r'&[a-z]+;', ' ', content)
-        
+
         if self.ignore_whitespace:
             # Normalize whitespace
             content = re.sub(r'\s+', ' ', content)
             content = '\n'.join(line.strip() for line in content.split('\n'))
-        
+
         return content.strip()
-    
+
     def _classify_change(self, change_ratio: float) -> ChangeType:
         """Classify the change based on ratio.
         
@@ -185,7 +185,7 @@ class ContentDiffer:
             return ChangeType.MAJOR
         else:
             return ChangeType.COMPLETE
-    
+
     def diff(
         self,
         old_content: str,
@@ -209,11 +209,11 @@ class ContentDiffer:
         else:
             old_normalized = old_content
             new_normalized = new_content
-        
+
         # Compute hashes
         old_hash = self._hash_content(old_content)
         new_hash = self._hash_content(new_content)
-        
+
         # Quick check for identical content
         if old_hash == new_hash:
             return ContentDiffResult(
@@ -223,30 +223,30 @@ class ContentDiffer:
                 old_hash=old_hash,
                 new_hash=new_hash,
             )
-        
+
         # Split into lines for comparison
         old_lines = old_normalized.splitlines()
         new_lines = new_normalized.splitlines()
-        
+
         # Use SequenceMatcher for similarity calculation
         matcher = difflib.SequenceMatcher(None, old_normalized, new_normalized)
         similarity_ratio = matcher.ratio()
         change_ratio = 1.0 - similarity_ratio
-        
+
         # Count line changes
         differ = difflib.Differ()
         diff_lines = list(differ.compare(old_lines, new_lines))
-        
+
         lines_added = sum(1 for line in diff_lines if line.startswith('+ '))
         lines_removed = sum(1 for line in diff_lines if line.startswith('- '))
         lines_modified = sum(1 for line in diff_lines if line.startswith('? '))
-        
+
         # Extract diff segments
         segments = self._extract_segments(old_lines, new_lines)
-        
+
         # Classify change type
         change_type = self._classify_change(change_ratio)
-        
+
         return ContentDiffResult(
             change_type=change_type,
             change_ratio=change_ratio,
@@ -260,7 +260,7 @@ class ContentDiffer:
             lines_removed=lines_removed,
             lines_modified=lines_modified,
         )
-    
+
     def _extract_segments(
         self,
         old_lines: List[str],
@@ -276,17 +276,17 @@ class ContentDiffer:
             List of DiffSegment objects
         """
         segments = []
-        
+
         # Use unified diff for segment extraction
         diff = list(difflib.unified_diff(
             old_lines,
             new_lines,
             lineterm='',
         ))
-        
+
         current_segment = None
         line_num = 0
-        
+
         for line in diff:
             if line.startswith('@@'):
                 # Parse line numbers from diff header
@@ -331,12 +331,12 @@ class ContentDiffer:
                     segments.append(current_segment)
                     current_segment = None
                 line_num += 1
-        
+
         if current_segment:
             segments.append(current_segment)
-        
+
         return segments
-    
+
     def should_resync(
         self,
         old_content: str,
@@ -367,7 +367,7 @@ class IncrementalSyncDecider:
     - Micro-update: Minor changes, update only changed sections
     - Full update: Major changes, re-sync entire article
     """
-    
+
     def __init__(
         self,
         differ: Optional[ContentDiffer] = None,
@@ -384,7 +384,7 @@ class IncrementalSyncDecider:
         self.differ = differ or ContentDiffer()
         self.micro_update_threshold = micro_update_threshold
         self.full_update_threshold = full_update_threshold
-    
+
     def decide(
         self,
         old_content: str,
@@ -400,7 +400,7 @@ class IncrementalSyncDecider:
             Decision dictionary with strategy and metadata
         """
         diff_result = self.differ.diff(old_content, new_content)
-        
+
         if diff_result.change_type == ChangeType.NO_CHANGE:
             return {
                 "action": "skip",
@@ -408,7 +408,7 @@ class IncrementalSyncDecider:
                 "change_ratio": 0.0,
                 "diff": diff_result.to_dict(),
             }
-        
+
         if diff_result.change_ratio < self.micro_update_threshold:
             return {
                 "action": "micro_update",
@@ -417,7 +417,7 @@ class IncrementalSyncDecider:
                 "segments_to_update": len(diff_result.segments),
                 "diff": diff_result.to_dict(),
             }
-        
+
         if diff_result.change_ratio >= self.full_update_threshold:
             return {
                 "action": "full_update",
@@ -425,7 +425,7 @@ class IncrementalSyncDecider:
                 "change_ratio": diff_result.change_ratio,
                 "diff": diff_result.to_dict(),
             }
-        
+
         # Moderate change - use full update for safety
         return {
             "action": "full_update",
@@ -447,7 +447,7 @@ class SemanticDiffer:
         >>> if result.is_semantically_similar:
         ...     print("No significant semantic change")
     """
-    
+
     def __init__(
         self,
         similarity_threshold: float = 0.98,
@@ -464,13 +464,13 @@ class SemanticDiffer:
         self.similarity_threshold = similarity_threshold
         self.use_embeddings = use_embeddings
         self.ngram_range = ngram_range
-        
+
         # Try to import embedding libraries
         self._embedding_available = False
         if use_embeddings:
             try:
-                from sklearn.metrics.pairwise import cosine_similarity
                 from sklearn.feature_extraction.text import TfidfVectorizer
+                from sklearn.metrics.pairwise import cosine_similarity
                 self._cosine_similarity = cosine_similarity
                 self._vectorizer = TfidfVectorizer(
                     max_features=1000,
@@ -484,7 +484,7 @@ class SemanticDiffer:
                     "scikit-learn not available - semantic diffing will use "
                     "basic text similarity. Install with: pip install scikit-learn"
                 )
-    
+
     def compute_semantic_similarity(
         self,
         text1: str,
@@ -502,22 +502,22 @@ class SemanticDiffer:
         if not self._embedding_available:
             # Fallback to basic text similarity
             return self._basic_similarity(text1, text2)
-        
+
         try:
             # Vectorize texts
             vectors = self._vectorizer.fit_transform([text1, text2])
-            
+
             # Compute cosine similarity
             similarity_matrix = self._cosine_similarity(vectors)
             similarity = similarity_matrix[0, 1]
-            
+
             return float(similarity)
-            
+
         except Exception as e:
             logger.error(f"Semantic similarity computation failed: {e}")
             # Fallback to basic similarity
             return self._basic_similarity(text1, text2)
-    
+
     def _basic_similarity(self, text1: str, text2: str) -> float:
         """Text similarity, preferring TF-IDF cosine similarity when available.
         
@@ -532,7 +532,7 @@ class SemanticDiffer:
         if len(text1) < 50 or len(text2) < 50:
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
-        
+
         # Prefer TF-IDF / cosine similarity if scikit-learn is available
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
@@ -555,7 +555,7 @@ class SemanticDiffer:
             logger.error(f"TF-IDF similarity computation failed: {e}")
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
-    
+
     def compute_semantic_diff(
         self,
         old_content: str,
@@ -573,16 +573,16 @@ class SemanticDiffer:
         # Normalize whitespace and formatting
         old_normalized = self._normalize_text(old_content)
         new_normalized = self._normalize_text(new_content)
-        
+
         # Compute semantic similarity
         similarity = self.compute_semantic_similarity(
             old_normalized,
             new_normalized
         )
-        
+
         # Determine if semantically similar
         is_similar = similarity >= self.similarity_threshold
-        
+
         # Classify change significance
         if similarity >= 0.98:
             significance = "insignificant"  # Essentially identical
@@ -594,7 +594,7 @@ class SemanticDiffer:
             significance = "major"  # Significant changes
         else:
             significance = "complete"  # Complete rewrite
-        
+
         return {
             "semantic_similarity": similarity,
             "is_semantically_similar": is_similar,
@@ -603,7 +603,7 @@ class SemanticDiffer:
             "threshold": self.similarity_threshold,
             "method": "embeddings" if self._embedding_available else "basic",
         }
-    
+
     def _normalize_text(self, text: str) -> str:
         """Normalize text for semantic comparison.
         
@@ -618,15 +618,15 @@ class SemanticDiffer:
         """
         # Convert to lowercase
         text = text.lower()
-        
+
         # Normalize whitespace
         text = re.sub(r'\s+', ' ', text)
-        
+
         # Remove leading/trailing whitespace
         text = text.strip()
-        
+
         return text
-    
+
     def should_resync(
         self,
         old_content: str,

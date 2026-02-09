@@ -60,7 +60,7 @@ class TestTokenCache:
         """Test flush creates shard file."""
         cache.add_batch(sample_batch)
         cache._flush()
-        
+
         shard_path = tmp_path / "shard_00000.npz"
         assert shard_path.exists()
 
@@ -68,7 +68,7 @@ class TestTokenCache:
         """Test flush updates manifest with shard info."""
         cache.add_batch(sample_batch)
         cache._flush()
-        
+
         manifest = json.loads((tmp_path / "manifest.json").read_text())
         assert len(manifest["shards"]) == 1
         assert manifest["shards"][0]["path"] == "shard_00000.npz"
@@ -78,7 +78,7 @@ class TestTokenCache:
         """Test flush clears buffer."""
         cache.add_batch(sample_batch)
         cache._flush()
-        
+
         assert len(cache._buffer) == 0
         assert cache._buffer_rows == 0
 
@@ -90,7 +90,7 @@ class TestTokenCache:
                 "input_ids": np.array([[i, i, i], [i+1, i+1, i+1]]),
             }
             cache.add_batch(batch)
-        
+
         # Should have created at least one shard
         shard_path = tmp_path / "shard_00000.npz"
         assert shard_path.exists()
@@ -99,7 +99,7 @@ class TestTokenCache:
         """Test finalize flushes any remaining buffered data."""
         cache.add_batch(sample_batch)
         cache.finalize()
-        
+
         shard_path = tmp_path / "shard_00000.npz"
         assert shard_path.exists()
 
@@ -115,9 +115,9 @@ class TestTokenCache:
             }
             cache.add_batch(batch)
             cache.add_batch(batch)  # 10 rows total
-        
+
         cache.finalize()
-        
+
         # Should have multiple shards
         shards = list(tmp_path.glob("shard_*.npz"))
         assert len(shards) >= 2
@@ -130,22 +130,22 @@ class TestTokenCacheIterBatches:
     def populated_cache(self, tmp_path):
         """Create a cache with some data."""
         from src.training.cache import TokenCache
-        
+
         cache = TokenCache(out_dir=tmp_path, rows_per_shard=5)
-        
+
         batch = {
             "input_ids": np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
             "attention_mask": np.array([[1, 1, 1], [1, 1, 0], [1, 0, 0]]),
         }
         cache.add_batch(batch)
         cache.finalize()
-        
+
         return tmp_path
 
     def test_iter_batches_yields_dicts(self, populated_cache):
         """Test iter_batches yields dictionaries."""
         from src.training.cache import TokenCache
-        
+
         batches = list(TokenCache.iter_batches(populated_cache))
         assert len(batches) >= 1
         assert isinstance(batches[0], dict)
@@ -153,7 +153,7 @@ class TestTokenCacheIterBatches:
     def test_iter_batches_preserves_keys(self, populated_cache):
         """Test iter_batches preserves batch keys."""
         from src.training.cache import TokenCache
-        
+
         batches = list(TokenCache.iter_batches(populated_cache))
         assert "input_ids" in batches[0]
         assert "attention_mask" in batches[0]
@@ -161,16 +161,16 @@ class TestTokenCacheIterBatches:
     def test_iter_batches_yields_numpy_arrays(self, populated_cache):
         """Test iter_batches yields numpy arrays."""
         from src.training.cache import TokenCache
-        
+
         batches = list(TokenCache.iter_batches(populated_cache))
         assert isinstance(batches[0]["input_ids"], np.ndarray)
 
     def test_iter_batches_empty_cache(self, tmp_path):
         """Test iter_batches with empty cache."""
         from src.training.cache import TokenCache
-        
+
         cache = TokenCache(out_dir=tmp_path, rows_per_shard=10)
         cache.finalize()
-        
+
         batches = list(TokenCache.iter_batches(tmp_path))
         assert len(batches) == 0

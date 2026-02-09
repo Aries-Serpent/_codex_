@@ -2,7 +2,9 @@
 """Reward model interfaces and a built-in heuristic implementation."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from abc import ABC, abstractmethod

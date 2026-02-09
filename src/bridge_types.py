@@ -8,10 +8,10 @@ Part of Phase 2: Fragile Bridge Elimination
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from typing import Any, Dict, Optional, Union
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, Optional, Union
 
 
 class MessageType(Enum):
@@ -39,7 +39,7 @@ class BaseMessage:
     source: str
     message_type: str
     message_id: Optional[str] = None  # For request-response correlation
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)

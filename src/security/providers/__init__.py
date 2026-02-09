@@ -11,17 +11,17 @@ Usage:
 """
 
 from security.providers.base import (
-    ProviderType,
-    SecretType,
-    SecretMetadata,
-    RotationResult,
-    SecretProviderError,
-    ProviderConfigError,
-    RotationError,
-    ValidationError,
-    SecretProvider,
-    TokenProvider,
     ProviderConfig,
+    ProviderConfigError,
+    ProviderType,
+    RotationError,
+    RotationResult,
+    SecretMetadata,
+    SecretProvider,
+    SecretProviderError,
+    SecretType,
+    TokenProvider,
+    ValidationError,
 )
 from security.providers.environment_provider import EnvironmentProvider
 from security.providers.github_provider import GitHubTokenProvider

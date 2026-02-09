@@ -156,7 +156,7 @@ class Ticket(_ZendeskBaseModel):
     # Additional fields for agent workflow
     is_public: bool = Field(True, description="Whether ticket is publicly visible")
     recipient: str | None = Field(None, description="Original recipient email address")
-    
+
     # SLA and metrics (read-only)
     sla_policy_id: int | None = Field(None, description="Applied SLA policy ID")
     metric_set_id: int | None = Field(None, description="Ticket metric set ID")
@@ -195,7 +195,7 @@ class Ticket(_ZendeskBaseModel):
         for field_name in mutable_fields:
             self_value = getattr(self, field_name)
             other_value = getattr(other, field_name)
-            
+
             if self_value != other_value:
                 patches.append({
                     "op": "replace",
@@ -222,7 +222,7 @@ class Ticket(_ZendeskBaseModel):
                 "description": self.description,
                 "requester_id": self.requester_id,
             }
-            
+
             # Optional fields for creation
             optional_fields = [
                 "type", "priority", "status", "tags",
@@ -230,7 +230,7 @@ class Ticket(_ZendeskBaseModel):
                 "collaborator_ids", "external_id", "problem_id",
                 "brand_id", "via", "due_at", "submitter_id",
             ]
-            
+
             for field in optional_fields:
                 value = getattr(self, field)
                 if value is not None and (not isinstance(value, list) or value):
@@ -243,7 +243,7 @@ class Ticket(_ZendeskBaseModel):
                         payload[field] = value.model_dump(exclude_none=True)
                     else:
                         payload[field] = value
-            
+
             # Add initial comment if provided
             if self.comment:
                 payload["comment"] = {
@@ -252,9 +252,9 @@ class Ticket(_ZendeskBaseModel):
                 }
                 if self.comment.html_body:
                     payload["comment"]["html_body"] = self.comment.html_body
-            
+
             return {"ticket": payload}
-        
+
         else:
             # For updates, only include changed fields
             # Caller should use diff() to determine what to update

@@ -260,7 +260,7 @@ class TestStrategyInterface:
         try:
             from codex_ml.training.strategies import resolve_strategy
             from codex_ml.training.unified_training import UnifiedTrainingConfig
-            
+
             strategy = resolve_strategy("functional")
             UnifiedTrainingConfig(model_name="test")
             # Strategy should be configurable
@@ -281,11 +281,11 @@ class TestCallbackRegistration:
         """Test registering a callback."""
         try:
             from codex_ml.training.strategies import NoOpCallback, TrainingCallback
-            
+
             class CustomCallback(NoOpCallback):
                 def on_epoch_end(self, epoch: int, metrics: dict, state: dict) -> None:
                     pass
-            
+
             callback = CustomCallback()
             assert isinstance(callback, NoOpCallback)
         except ImportError:
@@ -295,7 +295,7 @@ class TestCallbackRegistration:
         """Test using multiple callbacks."""
         try:
             from codex_ml.training.strategies import NoOpCallback
-            
+
             callbacks = [NoOpCallback() for _ in range(3)]
             assert len(callbacks) == 3
         except ImportError:

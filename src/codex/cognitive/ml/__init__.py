@@ -22,6 +22,16 @@ from .data_pipeline import (
     TrainingDataGenerator,
     create_pipeline_from_defaults,
 )
+from .integration import (
+    BrainMLBridge,
+    EnhancedAgentRouter,
+    IntegratedPipeline,
+    MLEnhancedPatternMatcher,
+    MLEnhancedQueryResult,
+    RoutingDecision,
+    create_integrated_pipeline,
+    enhance_brain_with_ml,
+)
 from .recommender import (
     CosineSimilarity,
     JaccardSimilarity,
@@ -36,16 +46,6 @@ from .symptom_classifier import (
     NaiveBayesClassifier,
     SymptomClassifier,
     TfidfVectorizer,
-)
-from .integration import (
-    BrainMLBridge,
-    EnhancedAgentRouter,
-    IntegratedPipeline,
-    MLEnhancedPatternMatcher,
-    MLEnhancedQueryResult,
-    RoutingDecision,
-    create_integrated_pipeline,
-    enhance_brain_with_ml,
 )
 from .validation import (
     HyperparameterTuner,

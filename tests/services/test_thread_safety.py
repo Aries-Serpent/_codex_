@@ -10,7 +10,7 @@ class TestThreadSafety:
         """Test thread-safe counter."""
         # Arrange
         counter = 0
-        
+
         # Assert
         assert counter >= 0
 
@@ -18,7 +18,7 @@ class TestThreadSafety:
         """Test thread-safe dictionary."""
         # Arrange
         data = {"key": "value"}
-        
+
         # Assert
         assert "key" in data
 
@@ -26,7 +26,7 @@ class TestThreadSafety:
         """Test thread-safe list."""
         # Arrange
         items = [1, 2, 3]
-        
+
         # Assert
         assert len(items) == 3
 
@@ -34,7 +34,7 @@ class TestThreadSafety:
         """Test thread-safe set."""
         # Arrange
         items = {1, 2, 3}
-        
+
         # Assert
         assert len(items) == 3
 
@@ -42,7 +42,7 @@ class TestThreadSafety:
         """Test thread-local storage."""
         # Arrange
         use_thread_local = True
-        
+
         # Assert
         assert use_thread_local is True
 
@@ -50,7 +50,7 @@ class TestThreadSafety:
         """Test synchronized access."""
         # Arrange
         synchronized = True
-        
+
         # Assert
         assert synchronized is True
 
@@ -59,7 +59,7 @@ class TestThreadSafety:
         # Arrange
         lock = MagicMock()
         lock.locked.return_value = False
-        
+
         # Assert
         assert lock.locked() is False
 
@@ -67,7 +67,7 @@ class TestThreadSafety:
         """Test reentrant lock."""
         # Arrange
         reentrant = True
-        
+
         # Assert
         assert reentrant is True
 
@@ -75,7 +75,7 @@ class TestThreadSafety:
         """Test condition variable."""
         # Arrange
         condition = MagicMock()
-        
+
         # Assert
         assert condition is not None
 
@@ -83,7 +83,7 @@ class TestThreadSafety:
         """Test barrier synchronization."""
         # Arrange
         num_threads = 4
-        
+
         # Assert
         assert num_threads > 0
 
@@ -92,7 +92,7 @@ class TestThreadSafety:
         # Arrange
         event = MagicMock()
         event.is_set.return_value = True
-        
+
         # Assert
         assert event.is_set() is True
 
@@ -100,7 +100,7 @@ class TestThreadSafety:
         """Test race condition prevention."""
         # Arrange
         prevent_race = True
-        
+
         # Assert
         assert prevent_race is True
 
@@ -109,7 +109,7 @@ class TestThreadSafety:
         # Arrange
         expected = 10
         new_value = 20
-        
+
         # Assert
         assert expected != new_value
 
@@ -117,7 +117,7 @@ class TestThreadSafety:
         """Test volatile read."""
         # Arrange
         volatile = True
-        
+
         # Assert
         assert volatile is True
 
@@ -125,7 +125,7 @@ class TestThreadSafety:
         """Test memory barrier."""
         # Arrange
         barrier = True
-        
+
         # Assert
         assert barrier is True
 
@@ -133,7 +133,7 @@ class TestThreadSafety:
         """Test thread-safe singleton."""
         # Arrange
         singleton = True
-        
+
         # Assert
         assert singleton is True
 
@@ -141,7 +141,7 @@ class TestThreadSafety:
         """Test double-checked locking pattern."""
         # Arrange
         use_dcl = True
-        
+
         # Assert
         assert use_dcl is True
 
@@ -149,6 +149,6 @@ class TestThreadSafety:
         """Test immutable object usage."""
         # Arrange
         immutable = True
-        
+
         # Assert
         assert immutable is True

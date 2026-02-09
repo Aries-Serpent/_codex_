@@ -55,7 +55,7 @@ class ProvenanceRecord:
     token_count: dict[str, int]
     latency_ms: float
     snapshot_ref: str
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
@@ -70,7 +70,7 @@ class ProvenanceRecord:
             "latency_ms": self.latency_ms,
             "snapshot_ref": self.snapshot_ref,
         }
-    
+
     def save(self, directory: Path) -> Path:
         """Save provenance record to file."""
         filename = f"{self.prompt_hash[:16]}.json"
@@ -92,7 +92,7 @@ def _truncate_context(text: str, max_chars: int = 24000) -> str:
     """
     if len(text) <= max_chars:
         return text
-    
+
     # Truncate with indicator
     return text[:max_chars - 100] + "\n\n[... truncated for token budget ...]"
 
@@ -111,7 +111,7 @@ class CodexLLMClient:
         >>> result = client.infer_intent(context)
         >>> print(f"Goal: {result['goal']}")
     """
-    
+
     def __init__(
         self,
         model: str = DEFAULT_MODEL,
@@ -133,7 +133,7 @@ class CodexLLMClient:
         self.allow_external_llm = allow_external_llm
         self._last_call_time = 0.0
         self._client = None
-        
+
         # Initialize OpenAI client if available
         if allow_external_llm:
             try:
@@ -148,7 +148,7 @@ class CodexLLMClient:
                 logger.debug(f"ImportError: {e}")
                 logger.warning(f"ImportError: {e}", exc_info=True)
                 logger.warning("openai package not installed, LLM features disabled")
-    
+
     def _rate_limit(self) -> None:
         """Enforce rate limiting between calls.
         
@@ -159,7 +159,7 @@ class CodexLLMClient:
         if elapsed < delay:
             time.sleep(delay - elapsed)
         self._last_call_time = time.time()
-    
+
     def _build_intent_prompt(self, context: dict[str, Any]) -> str:
         """Build intent inference prompt.
         
@@ -168,7 +168,7 @@ class CodexLLMClient:
         static_summary = json.dumps(context.get("static_summary", {}), indent=2)
         imports = ", ".join(context.get("imports", [])[:50])
         source_excerpt = _truncate_context(context.get("source_excerpt", ""))
-        
+
         prompt = f"""## System Prompt
 You are analyzing Python code to infer its purpose. Be conservative and factual.
 Do NOT invent functionality that is not evident in the code or execution traces.
@@ -200,9 +200,9 @@ Respond with valid JSON matching this schema:
 - assumptions: list of strings (if any)
 
 Return ONLY valid JSON, no explanation or markdown."""
-        
+
         return prompt
-    
+
     def infer_intent(self, context: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Infer intent using LLM.
         
@@ -215,22 +215,22 @@ Return ONLY valid JSON, no explanation or markdown."""
         if not self._client or not self.allow_external_llm:
             logger.warning("LLM client not available")
             return None
-        
+
         # Build prompt
         prompt = self._build_intent_prompt(context)
         prompt_hash = _hash_prompt(prompt)
-        
+
         # Check token budget using module-level constant
         if len(prompt) > MAX_TOKENS * CHARS_PER_TOKEN:
             logger.warning("Prompt exceeds token budget, truncating")
             prompt = _truncate_context(prompt, MAX_TOKENS * 3)
-        
+
         # Rate limit
         self._rate_limit()
-        
+
         try:
             start_time = time.time()
-            
+
             response = self._client.chat.completions.create(
                 model=self.model,
                 messages=[
@@ -240,12 +240,12 @@ Return ONLY valid JSON, no explanation or markdown."""
                 temperature=DEFAULT_TEMPERATURE,
                 max_tokens=1000,
             )
-            
+
             latency_ms = (time.time() - start_time) * 1000
-            
+
             # Extract response
             response_text = response.choices[0].message.content or ""
-            
+
             # Record provenance
             record = ProvenanceRecord(
                 prompt_hash=prompt_hash,
@@ -262,12 +262,12 @@ Return ONLY valid JSON, no explanation or markdown."""
                 latency_ms=latency_ms,
                 snapshot_ref=self.snapshot_ref,
             )
-            
+
             if self.provenance_dir:
                 self.provenance_dir.mkdir(parents=True, exist_ok=True)
                 provenance_path = record.save(self.provenance_dir)
                 logger.info("Saved provenance record: %s", provenance_path)
-            
+
             # Parse response
             try:
                 # Clean up response (remove markdown code blocks if present)
@@ -275,20 +275,20 @@ Return ONLY valid JSON, no explanation or markdown."""
                 if clean_response.startswith("```"):
                     lines = clean_response.split("\n")
                     clean_response = "\n".join(lines[1:-1])
-                
+
                 result = json.loads(clean_response)
                 result["provenance_ref"] = prompt_hash[:16]
                 return result
-                
+
             except json.JSONDecodeError as e:
                 logger.warning("Failed to parse LLM response as JSON: %s", e)
                 return None
-                
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.error("LLM call failed: %s", e)
             return None
-    
+
     def summarize_code(self, source: str) -> Optional[str]:
         """Generate a brief summary of code.
         
@@ -300,7 +300,7 @@ Return ONLY valid JSON, no explanation or markdown."""
         """
         if not self._client or not self.allow_external_llm:
             return None
-        
+
         prompt = f"""Summarize this Python code in one paragraph:
 
 ```python
@@ -308,9 +308,9 @@ Return ONLY valid JSON, no explanation or markdown."""
 ```
 
 Be concise and factual. Do not invent functionality not present in the code."""
-        
+
         self._rate_limit()
-        
+
         try:
             response = self._client.chat.completions.create(
                 model=self.model,

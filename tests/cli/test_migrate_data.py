@@ -44,7 +44,7 @@ class TestMigrateDataCLI:
     def test_migrate_nonexistent_file(self):
         """Test migrate with nonexistent input file."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.migrate_data", "migrate", 
+            [sys.executable, "-m", "codex_ml.cli.migrate_data", "migrate",
              "/nonexistent/path/file.json"],
             capture_output=True,
             text=True,

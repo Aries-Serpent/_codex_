@@ -46,11 +46,11 @@ def test_load_dataset_creates_manifest(tmp_path: Path) -> None:
 def test_prepare_data_from_config(tmp_path: Path) -> None:
     dataset = tmp_path / "dataset.txt"
     dataset.write_text("\n".join(["a", "b", "c", "d", "e"]) + "\n", encoding="utf-8")
-    
+
     # ADDED: Ensure cache directory exists
     cache_dir = tmp_path / "cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    
+
     cfg = DataConfig(
         source_path=str(dataset),
         cache_dir=str(cache_dir),
@@ -59,7 +59,7 @@ def test_prepare_data_from_config(tmp_path: Path) -> None:
         shuffle_seed=1,
         shard=ShardConfig(index=0, total=1),
     )
-    
+
     # ADDED: Convert OmegaConf to plain dict to avoid MagicMock serialization
     try:
         from omegaconf import OmegaConf
@@ -70,7 +70,7 @@ def test_prepare_data_from_config(tmp_path: Path) -> None:
             result = prepare_data_from_config(cfg)
     except (ImportError, AttributeError):
         result = prepare_data_from_config(cfg)
-    
+
     assert Path(result["manifest"]).exists()
     splits = result["splits"]
     assert {"train", "validation", "test"} <= splits.keys()

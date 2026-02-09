@@ -499,6 +499,7 @@ class TestReproducibility:
         """Test that set_seed produces deterministic results."""
         try:
             import random
+
             from codex_ml.utils.repro import set_seed
             set_seed(42)
             val1 = random.random()

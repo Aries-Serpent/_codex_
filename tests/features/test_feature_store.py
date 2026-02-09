@@ -15,8 +15,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
-from datetime import datetime, UTC, UTC, timedelta
-
+from datetime import UTC, datetime, timedelta
 
 from codex_ml.features.feature_store import (
     Feature,

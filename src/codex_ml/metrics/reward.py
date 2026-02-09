@@ -5,7 +5,9 @@ supporting both scalar rewards and dictionary payloads with reward fields.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from collections.abc import Mapping, Sequence

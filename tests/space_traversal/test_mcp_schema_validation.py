@@ -6,6 +6,7 @@ Tests Pydantic BaseModel detection and OpenAPI specification detection.
 
 import tempfile
 from pathlib import Path
+
 from scripts.space_traversal.detectors import mcp_schema_validation
 
 

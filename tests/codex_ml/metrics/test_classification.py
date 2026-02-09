@@ -197,11 +197,11 @@ class TestStreamingAccuracy:
 
     def test_basic_streaming(self) -> None:
         metric = StreamingAccuracy()
-        
+
         # First batch
         metric.update(np.array([1, 0, 1]), np.array([1, 0, 1]))
         assert metric.compute() == 1.0
-        
+
         # Second batch (different accuracy)
         metric.update(np.array([1, 1]), np.array([0, 0]))
         # Total: 3 correct out of 5
@@ -211,7 +211,7 @@ class TestStreamingAccuracy:
         metric = StreamingAccuracy()
         metric.update(np.array([1, 0]), np.array([1, 0]))
         assert metric.compute() == 1.0
-        
+
         metric.reset()
         assert metric.compute() == 0.0
 
@@ -236,16 +236,16 @@ class TestStreamingAccuracy:
 
     def test_multiple_batches_streaming(self) -> None:
         metric = StreamingAccuracy()
-        
+
         # Simulate training loop with multiple batches
         batches = [
             (np.array([1, 1, 1]), np.array([1, 1, 0])),  # 2/3 correct
             (np.array([0, 0, 0]), np.array([0, 0, 1])),  # 2/3 correct
             (np.array([1, 0]), np.array([1, 0])),        # 2/2 correct
         ]
-        
+
         for preds, labels in batches:
             metric.update(preds, labels)
-        
+
         # Total: 6 correct out of 8
         assert metric.compute() == 0.75

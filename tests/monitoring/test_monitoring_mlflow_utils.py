@@ -13,15 +13,15 @@ def test_maybe_start_run_none_without_uri(monkeypatch):
     """No URI means no run even when enabled."""
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     monkeypatch.setenv("CODEX_ENABLE_MLFLOW", "1")
-    
+
     # Mock bootstrap_offline_tracking to return None (simulating no tracking URI available)
     with mock.patch('codex_ml.monitoring.mlflow_utils.bootstrap_offline_tracking') as mock_bootstrap:
         mock_bootstrap.return_value = None
-        
+
         # Mock mlflow to ensure start_run is not called
         with mock.patch.object(mlflow_utils, 'mlflow') as mock_mlflow:
             result = mlflow_utils.maybe_start_run()
-            
+
             # Verify behavior
             assert result is None
             mock_mlflow.start_run.assert_not_called()

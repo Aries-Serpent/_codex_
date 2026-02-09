@@ -11,12 +11,13 @@ Test coverage:
 7. Integration tests
 """
 
-import pytest
 import numpy as np
+import pytest
+
 from codex.quantum_orchestrator.orchestrator import (
+    DiracSpinor,
     PhysicsConstants,
     TaskVector,
-    DiracSpinor,
     create_orchestrator,
 )
 

@@ -20,7 +20,6 @@ from typing import Any, Dict
 
 import pytest
 
-
 # ============================================================================
 # Fixtures
 # ============================================================================
@@ -115,10 +114,10 @@ class TestConfigVersioning:
         """Test version comparison logic."""
         v1 = "1.0.0"
         v2 = "2.0.0"
-        
+
         def parse_version(v):
             return tuple(int(x) for x in v.split("."))
-        
+
         assert parse_version(v2) > parse_version(v1)
 
     def test_config_history_tracking(self):
@@ -128,7 +127,7 @@ class TestConfigVersioning:
             {"version": "1.1.0", "changed_at": "2026-01-10T00:00:00Z", "changed_by": "admin"},
             {"version": "2.0.0", "changed_at": "2026-01-15T00:00:00Z", "changed_by": "admin"},
         ]
-        
+
         assert len(history) > 0
         assert history[-1]["version"] == "2.0.0"
 
@@ -136,7 +135,7 @@ class TestConfigVersioning:
         """Test configuration rollback capability."""
         available_versions = ["1.0.0", "1.1.0", "2.0.0"]
         rollback_to = "1.1.0"
-        
+
         can_rollback = rollback_to in available_versions
         assert can_rollback is True
 
@@ -175,7 +174,7 @@ class TestEnvironmentConfigs:
         hosts = set()
         for env_config in environment_configs.values():
             hosts.add(env_config["database"]["host"])
-        
+
         # Each environment should have unique host
         assert len(hosts) == len(environment_configs)
 
@@ -209,7 +208,7 @@ class TestSecretManagement:
         policy = secret_config["rotation_policy"]
         notify_days = policy["notify_before_days"]
         interval_days = policy["interval_days"]
-        
+
         assert notify_days < interval_days
         assert notify_days > 0
 
@@ -272,12 +271,12 @@ class TestChangeTracking:
         """Test change diff is generated."""
         old_config = {"database": {"pool_size": 10}}
         new_config = {"database": {"pool_size": 20}}
-        
+
         changes = []
         for key in old_config:
             if old_config[key] != new_config.get(key):
                 changes.append({"key": key, "old": old_config[key], "new": new_config[key]})
-        
+
         assert len(changes) == 1
         assert changes[0]["key"] == "database"
 
@@ -288,7 +287,7 @@ class TestChangeTracking:
             "requires_approval": True,
             "approved_by": None,
         }
-        
+
         is_approved = change["approved_by"] is not None
         assert is_approved is False
 
@@ -304,7 +303,7 @@ class TestConfigDriftDetection:
         """Test detecting drift from baseline."""
         baseline = {"pool_size": 20, "timeout": 30}
         current = {"pool_size": 25, "timeout": 30}
-        
+
         drift = {k: v for k, v in current.items() if baseline.get(k) != v}
         assert len(drift) == 1
         assert "pool_size" in drift
@@ -315,7 +314,7 @@ class TestConfigDriftDetection:
             {"key": "log_level", "severity": "low"},
             {"key": "database_host", "severity": "high"},
         ]
-        
+
         high_severity = [d for d in drift_items if d["severity"] == "high"]
         assert len(high_severity) == 1
 
@@ -326,5 +325,5 @@ class TestConfigDriftDetection:
             "severity_threshold": "low",
             "notify_on_remediation": True,
         }
-        
+
         assert drift_policy["auto_remediate"] is True

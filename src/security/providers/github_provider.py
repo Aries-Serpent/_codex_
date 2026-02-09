@@ -22,17 +22,17 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime, timedelta, UTC
-from typing import Optional, List, Dict, Any
+from datetime import UTC, datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 from security.providers.base import (
-    TokenProvider,
-    ProviderType,
-    SecretType,
-    SecretMetadata,
-    RotationResult,
-    ValidationError,
     ProviderConfig,
+    ProviderType,
+    RotationResult,
+    SecretMetadata,
+    SecretType,
+    TokenProvider,
+    ValidationError,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class GitHubTokenProvider(TokenProvider):
         >>> provider = GitHubTokenProvider(config)
         >>> result = provider.rotate_secret("my-token-id")
     """
-    
+
     def __init__(self, config: ProviderConfig):
         """Initialize GitHub provider.
         
@@ -66,15 +66,15 @@ class GitHubTokenProvider(TokenProvider):
         self.config = config
         self.api_url = config.get("api_url", "https://api.github.com")
         self.token = config.get("token", os.getenv("GITHUB_TOKEN"))
-        
+
         if not self.token:
             logger.warning("GitHub token not configured")
-    
+
     @property
     def provider_type(self) -> ProviderType:
         """Get provider type."""
         return ProviderType.GITHUB
-    
+
     def rotate_secret(
         self,
         secret_id: str,
@@ -101,33 +101,33 @@ class GitHubTokenProvider(TokenProvider):
         try:
             # Get current token metadata
             metadata = self.get_secret_metadata(secret_id)
-            
+
             # Extract rotation parameters
             scopes = kwargs.get("scopes", metadata.scopes or [])
             expires_in_days = kwargs.get("expires_in_days", 90)
             note = kwargs.get("note", f"Rotated token for {secret_id}")
-            
+
             # Create new token
             new_token_result = self.create_token(
                 name=note,
                 scopes=scopes,
                 expires_in_days=expires_in_days
             )
-            
+
             if not new_token_result.success:
                 return RotationResult(
                     success=False,
                     old_secret_id=secret_id,
                     error_message=new_token_result.error_message
                 )
-            
+
             # Revoke old token (optional, based on policy)
             if kwargs.get("revoke_old", False):
                 try:
                     self.revoke_secret(secret_id)
                 except Exception as e:
                     logger.warning(f"Failed to revoke old token: {e}")
-            
+
             return RotationResult(
                 success=True,
                 old_secret_id=secret_id,
@@ -138,7 +138,7 @@ class GitHubTokenProvider(TokenProvider):
                     "expires_in_days": expires_in_days,
                 }
             )
-            
+
         except Exception as e:
             logger.error(f"GitHub token rotation failed: {e}")
             return RotationResult(
@@ -146,7 +146,7 @@ class GitHubTokenProvider(TokenProvider):
                 old_secret_id=secret_id,
                 error_message=str(e)
             )
-    
+
     def validate_secret(
         self,
         secret_id: str,
@@ -167,20 +167,20 @@ class GitHubTokenProvider(TokenProvider):
         try:
             # Use provided token or configured token
             token = secret_value or self.token
-            
+
             if not token:
                 raise ValidationError("No token provided for validation")
-            
+
             # Make API request to validate token
             # This is a stub - actual implementation would use GitHub API
             # Example: GET /user with token authentication
-            
+
             # CodeQL [py/clear-text-logging-sensitive-data] False Positive
             # Justification: This is a static informational string with no dynamic data.
             # No secrets, tokens, or sensitive information are logged. The log message
             # is purely for debugging stub code execution flow.
             logger.info("Validating GitHub token")
-            
+
             # Check expiration
             try:
                 expiration = self.get_expiration(secret_id)
@@ -189,14 +189,14 @@ class GitHubTokenProvider(TokenProvider):
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
-            
+
             # TODO: Actual API validation
             # For now, return True if token exists
             return bool(token)
-            
+
         except Exception as e:
             raise ValidationError(f"Token validation failed: {e}") from e
-    
+
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get GitHub token metadata.
         
@@ -208,7 +208,7 @@ class GitHubTokenProvider(TokenProvider):
         """
         # This is a stub - actual implementation would query GitHub API
         # Example: GET /user/tokens/{token_id}
-        
+
         return SecretMetadata(
             secret_id=secret_id,
             secret_type=SecretType.TOKEN,
@@ -220,7 +220,7 @@ class GitHubTokenProvider(TokenProvider):
             tags={"provider": "github", "type": "pat"},
             scopes=["repo", "workflow"]  # Example scopes
         )
-    
+
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get GitHub token expiration.
         
@@ -236,7 +236,7 @@ class GitHubTokenProvider(TokenProvider):
         except Exception as e:
             logger.error(f"Failed to get token expiration: {e}")
             return None
-    
+
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get GitHub token scopes.
         
@@ -252,7 +252,7 @@ class GitHubTokenProvider(TokenProvider):
         except Exception as e:
             logger.error(f"Failed to get token scopes: {e}")
             return []
-    
+
     def create_token(
         self,
         name: str,
@@ -277,7 +277,7 @@ class GitHubTokenProvider(TokenProvider):
             "must be wired to the GitHub API (for example, POST /user/tokens for "
             "fine-grained PATs) before it can be used."
         )
-    
+
     def update_token_scopes(
         self,
         secret_id: str,
@@ -298,17 +298,17 @@ class GitHubTokenProvider(TokenProvider):
         try:
             # This is a stub - actual implementation would use GitHub API
             # PATCH /user/tokens/{token_id}
-            
+
             logger.info("Updating GitHub token scopes")
             logger.debug(f"New scopes: {scopes}")
-            
+
             # TODO: Actual API call
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to update token scopes: {e}")
             return False
-    
+
     def revoke_secret(self, secret_id: str) -> bool:
         """Revoke GitHub token.
         
@@ -321,20 +321,20 @@ class GitHubTokenProvider(TokenProvider):
         try:
             # This is a stub - actual implementation would use GitHub API
             # DELETE /user/tokens/{token_id}
-            
+
             # CodeQL [py/clear-text-logging-sensitive-data] False Positive
             # Justification: This is a static informational string with no dynamic data.
             # No secrets, tokens, or sensitive information are logged. The log message
             # is purely for debugging stub code execution flow.
             logger.info("Revoking GitHub token")
-            
+
             # TODO: Actual API call
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to revoke token: {e}")
             return False
-    
+
     def list_secrets(
         self,
         filter_tags: Optional[Dict[str, str]] = None
@@ -350,16 +350,16 @@ class GitHubTokenProvider(TokenProvider):
         try:
             # This is a stub - actual implementation would use GitHub API
             # GET /user/tokens
-            
+
             # CodeQL [py/clear-text-logging-sensitive-data] False Positive
             # Justification: This is a static informational string with no dynamic data.
             # No secrets, tokens, or sensitive information are logged. The log message
             # is purely for debugging stub code execution flow.
             logger.info("Listing GitHub tokens")
-            
+
             # TODO: Actual API call
             return []
-            
+
         except Exception as e:
             logger.error(f"Failed to list tokens: {e}")
             return []

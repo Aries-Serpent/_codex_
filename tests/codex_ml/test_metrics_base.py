@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import math
 
-
 from codex_ml.metrics_base import accuracy, f1_score, perplexity, precision, recall
 
 
@@ -189,7 +188,7 @@ class TestEdgeCases:
 
     def test_all_module_exports(self) -> None:
         from codex_ml import metrics_base
-        
+
         expected_exports = ["accuracy", "perplexity", "precision", "recall", "f1_score"]
         for name in expected_exports:
             assert name in metrics_base.__all__

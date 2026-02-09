@@ -26,7 +26,7 @@ class TestFlakyTestDetection:
         """Verify pytest-rerunfailures is configured for flaky tests."""
         pyproject = REPO_ROOT / "pyproject.toml"
         pytest_ini = REPO_ROOT / "pytest.ini"
-        
+
         reruns_configured = False
         for config in [pyproject, pytest_ini]:
             if config.exists():
@@ -34,7 +34,7 @@ class TestFlakyTestDetection:
                 if "reruns" in content or "rerun" in content:
                     reruns_configured = True
                     break
-        
+
         # Just log, don't require
         if not reruns_configured:
             pytest.skip("pytest-rerunfailures not configured (optional)")
@@ -42,7 +42,7 @@ class TestFlakyTestDetection:
     def test_no_sleep_in_tests(self):
         """Check for time.sleep usage in tests (potential flakiness)."""
         sleep_usage = []
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:50]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -53,7 +53,7 @@ class TestFlakyTestDetection:
                         sleep_usage.append(f"{test_file.name}: {count}")
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Log but don't fail (some sleeps are acceptable)
         if sleep_usage:
             pytest.skip(f"Found sleep usage (may be acceptable): {sleep_usage[:3]}")
@@ -62,7 +62,7 @@ class TestFlakyTestDetection:
         """Check that tests use fixtures instead of global state."""
         global_patterns = ["global ", "globals()"]
         global_usage = []
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -72,7 +72,7 @@ class TestFlakyTestDetection:
                         break
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Allow some global usage
         assert len(global_usage) < 10, f"Too many tests use globals: {global_usage}"
 
@@ -81,7 +81,7 @@ class TestFlakyTestDetection:
         # Check for class-level setup that might cause issues
         class_setup_pattern = r"@classmethod\s+def\s+setUpClass"
         problematic_files = []
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -89,7 +89,7 @@ class TestFlakyTestDetection:
                     problematic_files.append(test_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Just log, setUpClass is sometimes needed
         if problematic_files:
             pytest.skip(f"Found setUpClass (may be acceptable): {problematic_files[:3]}")
@@ -101,23 +101,23 @@ class TestTestDeterminism:
     def test_random_seeds_used(self):
         """Check that random seeds are used for reproducibility."""
         seed_patterns = ["random.seed", "np.random.seed", "torch.manual_seed", "PYTHONHASHSEED"]
-        
+
         files_with_seeds = 0
         files_with_random = 0
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
                 uses_random = "random" in content.lower()
                 uses_seed = any(p in content for p in seed_patterns)
-                
+
                 if uses_random:
                     files_with_random += 1
                     if uses_seed:
                         files_with_seeds += 1
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Just verify random usage is tracked
         if files_with_random > 0:
             pass  # Acceptable
@@ -126,7 +126,7 @@ class TestTestDeterminism:
         """Check for datetime.now(UTC) usage that could cause flakiness."""
         datetime_patterns = ["datetime.now(UTC)", "datetime.utcnow()"]
         datetime_usage = []
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -136,7 +136,7 @@ class TestTestDeterminism:
                         break
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Log but don't fail
         if datetime_usage:
             pytest.skip(f"Found datetime usage without freezegun: {datetime_usage[:3]}")
@@ -149,19 +149,19 @@ class TestTestPerformance:
         """Check that slow tests are marked appropriately."""
         slow_markers = ["@pytest.mark.slow", "@pytest.mark.integration"]
         slow_test_patterns = ["time.sleep(10", "time.sleep(30", "time.sleep(60"]
-        
+
         unmarked_slow = []
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
                 has_slow_pattern = any(p in content for p in slow_test_patterns)
                 has_slow_marker = any(m in content for m in slow_markers)
-                
+
                 if has_slow_pattern and not has_slow_marker:
                     unmarked_slow.append(test_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Log but don't fail
         if unmarked_slow:
             pytest.skip(f"Slow tests without markers: {unmarked_slow[:3]}")
@@ -171,7 +171,7 @@ class TestTestPerformance:
         file_patterns = ["open(", "Path(", "os.path"]
         tmp_path_usage = 0
         file_usage = 0
-        
+
         for test_file in list(TESTS_DIR.rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -181,7 +181,7 @@ class TestTestPerformance:
                         tmp_path_usage += 1
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Just track, don't require
         if file_usage > 0:
             ratio = tmp_path_usage / file_usage

@@ -16,6 +16,7 @@ import importlib.metadata
 import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional, Type
+
 from packaging import version as pkg_version
 
 logger = logging.getLogger(__name__)

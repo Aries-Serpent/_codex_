@@ -19,7 +19,9 @@ Version: Updated 2026-01-24 with enhanced pattern detection
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import re

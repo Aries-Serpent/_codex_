@@ -14,21 +14,21 @@ class TestLoggingConfig:
     def test_default_log_db_import(self):
         """Test DEFAULT_LOG_DB can be imported."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         assert DEFAULT_LOG_DB is not None
         assert isinstance(DEFAULT_LOG_DB, Path)
 
     def test_default_log_db_location(self):
         """Test default log database location."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         assert ".codex" in str(DEFAULT_LOG_DB)
         assert "session_logs.db" in str(DEFAULT_LOG_DB)
 
     def test_default_log_db_is_path(self):
         """Test DEFAULT_LOG_DB is a Path object."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         assert isinstance(DEFAULT_LOG_DB, Path)
 
     @patch.dict(os.environ, {"CODEX_LOG_DB_PATH": "/custom/path/logs.db"})
@@ -46,28 +46,28 @@ class TestLoggingConfig:
     def test_default_log_db_relative_path(self):
         """Test DEFAULT_LOG_DB uses relative path."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         # Should be relative, not absolute
         assert not DEFAULT_LOG_DB.is_absolute()
 
     def test_default_log_db_contains_codex_dir(self):
         """Test path includes .codex directory."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         parts = DEFAULT_LOG_DB.parts
         assert ".codex" in parts
 
     def test_module_docstring_exists(self):
         """Test module has proper documentation."""
         import codex.logging.config as config_module
-        
+
         assert config_module.__doc__ is not None
         assert len(config_module.__doc__) > 0
 
     def test_module_documents_env_vars(self):
         """Test module documents environment variables."""
         import codex.logging.config as config_module
-        
+
         docstring = config_module.__doc__
         assert "CODEX_LOG_DB_PATH" in docstring
         assert "CODEX_SQLITE_POOL" in docstring
@@ -75,7 +75,7 @@ class TestLoggingConfig:
     def test_default_log_db_str_conversion(self):
         """Test DEFAULT_LOG_DB can be converted to string."""
         from codex.logging.config import DEFAULT_LOG_DB
-        
+
         path_str = str(DEFAULT_LOG_DB)
         assert isinstance(path_str, str)
         assert len(path_str) > 0

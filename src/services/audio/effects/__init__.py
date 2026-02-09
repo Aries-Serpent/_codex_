@@ -1,8 +1,8 @@
 """Audio effects modules."""
 
 from .noise_reduction import (
-    NoiseReducer,
     HumRemover,
+    NoiseReducer,
     ReverbReducer,
 )
 

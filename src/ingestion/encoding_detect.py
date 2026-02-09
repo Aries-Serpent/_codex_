@@ -15,7 +15,9 @@ they do not raise.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from pathlib import Path

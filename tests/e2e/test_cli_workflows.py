@@ -28,7 +28,7 @@ class TestCLIWorkflowDiscovery:
         """Verify CLI entry point exists in pyproject.toml."""
         pyproject = REPO_ROOT / "pyproject.toml"
         assert pyproject.exists(), "pyproject.toml should exist"
-        
+
         content = pyproject.read_text(encoding="utf-8")
         # Check for console_scripts or scripts
         has_scripts = "[project.scripts]" in content or "console_scripts" in content
@@ -72,7 +72,7 @@ class TestCLIHelpCommands:
         # Allow failure if module not installed
         if code != 0 and "No module named" in stderr:
             pytest.skip("codex module not installed")
-        
+
         # If it runs, should show help
         if code == 0:
             assert "usage" in stdout.lower() or "--help" in stdout.lower() or len(stdout) > 10
@@ -84,7 +84,7 @@ class TestCLIHelpCommands:
         )
         if code != 0:
             pytest.skip("Version command not available")
-        
+
         # Should output a version
         assert len(stdout.strip()) > 0 or len(stderr.strip()) > 0
 
@@ -106,10 +106,10 @@ class TestCLIConfigWorkflow:
         config_dir = REPO_ROOT / "configs"
         if not config_dir.exists():
             config_dir = REPO_ROOT / "config"
-        
+
         if not config_dir.exists():
             pytest.skip("No config directory found")
-        
+
         config_files = list(config_dir.rglob("*.yaml")) + list(config_dir.rglob("*.yml"))
         assert len(config_files) > 0, "Should have config files"
 
@@ -171,7 +171,7 @@ class TestCLIOutputWorkflow:
     def test_output_directory_writable(self):
         """Verify output directories can be created."""
         import tempfile
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "test_output"
             output_path.mkdir()

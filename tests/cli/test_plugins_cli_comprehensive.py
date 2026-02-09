@@ -60,32 +60,32 @@ class TestGetRegistry:
     def test_get_registry_valid_group(self):
         """Test _get_registry returns registry for valid group."""
         from codex_ml.cli.plugins_cli import _get_registry
-        
+
         class MockException(Exception):
             pass
-        
+
         registry = _get_registry('tokenizers', bad_param_exc=MockException)
         assert registry is not None
 
     def test_get_registry_invalid_group(self):
         """Test _get_registry raises for invalid group."""
         from codex_ml.cli.plugins_cli import _get_registry
-        
+
         class MockException(Exception):
             pass
-        
+
         with pytest.raises(MockException) as exc_info:
             _get_registry('invalid_group', bad_param_exc=MockException)
-        
+
         assert 'unknown group' in str(exc_info.value)
 
     def test_get_registry_all_valid_groups(self):
         """Test _get_registry works for all defined groups."""
-        from codex_ml.cli.plugins_cli import _get_registry, _GROUPS
-        
+        from codex_ml.cli.plugins_cli import _GROUPS, _get_registry
+
         class MockException(Exception):
             pass
-        
+
         for group_name in _GROUPS.keys():
             registry = _get_registry(group_name, bad_param_exc=MockException)
             assert registry is not None
@@ -97,28 +97,28 @@ class TestListGroup:
     def test_list_group_calls_echo(self):
         """Test _list_group calls echo for each name."""
         from codex_ml.cli.plugins_cli import _list_group
-        
+
         echo_calls = []
         mock_echo = lambda x: echo_calls.append(x)
-        
+
         class MockException(Exception):
             pass
-        
+
         # This may or may not have items depending on registered plugins
         try:
             _list_group('tokenizers', echo=mock_echo, bad_param_exc=MockException)
         except Exception:
             pass  # Registry might be empty
-        
+
         # echo_calls may be empty if no plugins registered
 
     def test_list_group_invalid_raises(self):
         """Test _list_group raises for invalid group."""
         from codex_ml.cli.plugins_cli import _list_group
-        
+
         class MockException(Exception):
             pass
-        
+
         with pytest.raises(MockException):
             _list_group('invalid', echo=print, bad_param_exc=MockException)
 
@@ -129,13 +129,13 @@ class TestDiagnoseGroup:
     def test_diagnose_group_basic(self):
         """Test _diagnose_group basic functionality."""
         from codex_ml.cli.plugins_cli import _diagnose_group
-        
+
         echo_calls = []
         mock_echo = lambda x: echo_calls.append(x)
-        
+
         class MockException(Exception):
             pass
-        
+
         try:
             _diagnose_group(
                 'tokenizers',
@@ -145,19 +145,19 @@ class TestDiagnoseGroup:
             )
         except Exception:
             pass  # May fail if registry not fully initialized
-        
+
         # Should have called echo with registered count
 
     def test_diagnose_group_with_entry_points(self):
         """Test _diagnose_group with entry points loading."""
         from codex_ml.cli.plugins_cli import _diagnose_group
-        
+
         echo_calls = []
         mock_echo = lambda x: echo_calls.append(x)
-        
+
         class MockException(Exception):
             pass
-        
+
         try:
             _diagnose_group(
                 'models',
@@ -175,17 +175,17 @@ class TestExplainGroup:
     def test_explain_group_not_found(self):
         """Test _explain_group exits when item not found."""
         from codex_ml.cli.plugins_cli import _explain_group
-        
+
         echo_calls = []
         mock_echo = lambda x: echo_calls.append(x)
-        
+
         class MockExitException(Exception):
             def __init__(self, code=0):
                 self.code = code
-        
+
         class MockBadParamException(Exception):
             pass
-        
+
         # Non-existent item should cause exit
         with pytest.raises(MockExitException) as exc_info:
             _explain_group(
@@ -195,7 +195,7 @@ class TestExplainGroup:
                 exit_exc=MockExitException,
                 bad_param_exc=MockBadParamException
             )
-        
+
         assert exc_info.value.code == 1
 
 

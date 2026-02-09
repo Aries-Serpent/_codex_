@@ -13,8 +13,8 @@ class TestEmitZendeskConfig:
     @patch("codex_crm.zd_admin.generate.load_mapping")
     def test_emit_zendesk_config_creates_directory(self, mock_mapping, mock_cdm, tmp_path):
         """Test that output directory is created."""
-        from codex_crm.zd_admin.generate import emit_zendesk_config
         from codex_crm.cdm.loader import FieldDef
+        from codex_crm.zd_admin.generate import emit_zendesk_config
 
         mock_cdm.return_value = {
             "assignment": [
@@ -33,8 +33,8 @@ class TestEmitZendeskConfig:
     @patch("codex_crm.zd_admin.generate.load_mapping")
     def test_emit_zendesk_config_creates_forms(self, mock_mapping, mock_cdm, tmp_path):
         """Test that forms.json is created."""
-        from codex_crm.zd_admin.generate import emit_zendesk_config
         from codex_crm.cdm.loader import FieldDef
+        from codex_crm.zd_admin.generate import emit_zendesk_config
 
         mock_cdm.return_value = {
             "assignment": [
@@ -48,7 +48,7 @@ class TestEmitZendeskConfig:
 
         forms_file = out_dir / "forms.json"
         assert forms_file.exists()
-        
+
         forms = json.loads(forms_file.read_text())
         assert isinstance(forms, list)
         assert len(forms) == 1
@@ -69,7 +69,7 @@ class TestEmitZendeskConfig:
 
         triggers_file = out_dir / "triggers.json"
         assert triggers_file.exists()
-        
+
         triggers = json.loads(triggers_file.read_text())
         assert isinstance(triggers, list)
         assert len(triggers) == 1
@@ -89,7 +89,7 @@ class TestEmitZendeskConfig:
 
         sla_file = out_dir / "sla.json"
         assert sla_file.exists()
-        
+
         sla = json.loads(sla_file.read_text())
         assert isinstance(sla, list)
         assert sla[0]["title"] == "codex_assignment_standard"
@@ -109,7 +109,7 @@ class TestEmitZendeskConfig:
 
         mappings_file = out_dir / "mappings.json"
         assert mappings_file.exists()
-        
+
         mappings = json.loads(mappings_file.read_text())
         assert mappings == {"scope1": {"key1": "value1"}}
 
@@ -119,8 +119,8 @@ class TestAssignmentForm:
 
     def test_assignment_form_basic(self):
         """Test assignment form generation."""
-        from codex_crm.zd_admin.generate import _assignment_form
         from codex_crm.cdm.loader import FieldDef
+        from codex_crm.zd_admin.generate import _assignment_form
 
         fields = [
             FieldDef(name="Field1", key="f1", ftype="text", required=True, choices=[]),

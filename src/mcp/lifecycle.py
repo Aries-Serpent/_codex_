@@ -13,14 +13,14 @@ import signal
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, Optional, Any
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
 
 class ServerState(Enum):
     """Server state enumeration."""
-    
+
     UNINITIALIZED = "uninitialized"
     INITIALIZING = "initializing"
     READY = "ready"
@@ -46,7 +46,7 @@ VALID_TRANSITIONS: dict[ServerState, list[ServerState]] = {
 
 class InvalidStateTransition(Exception):
     """Raised when an invalid state transition is attempted."""
-    
+
     def __init__(self, current: ServerState, target: ServerState) -> None:
         """Initialize the exception.
         
@@ -64,7 +64,7 @@ class InvalidStateTransition(Exception):
 @dataclass
 class HealthStatus:
     """Health check result."""
-    
+
     healthy: bool
     message: str = ""
     details: dict[str, Any] = field(default_factory=dict)
@@ -74,7 +74,7 @@ class HealthStatus:
 @dataclass
 class LifecycleConfig:
     """Lifecycle configuration."""
-    
+
     shutdown_timeout_seconds: float = 30.0
     health_check_interval_seconds: float = 10.0
     drain_timeout_seconds: float = 60.0
@@ -83,7 +83,7 @@ class LifecycleConfig:
 
 class LifecycleManager:
     """Manages MCP server lifecycle."""
-    
+
     def __init__(self, config: Optional[LifecycleConfig] = None) -> None:
         """Initialize the lifecycle manager.
         
@@ -100,22 +100,22 @@ class LifecycleManager:
         self._startup_hooks: list[Callable[[], None]] = []
         self._shutdown_hooks: list[Callable[[], None]] = []
         self._logger = logging.getLogger(__name__)
-        
+
     @property
     def state(self) -> ServerState:
         """Get current server state."""
         return self._state
-    
+
     @property
     def is_healthy(self) -> bool:
         """Check if server is in a healthy state."""
         return self._state in (ServerState.READY, ServerState.RUNNING)
-    
+
     @property
     def is_accepting_requests(self) -> bool:
         """Check if server is accepting new requests."""
         return self._state == ServerState.RUNNING
-    
+
     async def transition_to(self, target: ServerState) -> None:
         """Transition to a new state with validation.
         
@@ -128,7 +128,7 @@ class LifecycleManager:
         async with self._state_lock:
             if target not in VALID_TRANSITIONS.get(self._state, []):
                 raise InvalidStateTransition(self._state, target)
-            
+
             old_state = self._state
             self._state = target
             self._logger.info(
@@ -136,7 +136,7 @@ class LifecycleManager:
                 old_state.value,
                 target.value
             )
-    
+
     def register_health_check(self, check: Callable[[], HealthStatus]) -> None:
         """Register a health check function.
         
@@ -144,7 +144,7 @@ class LifecycleManager:
             check: Health check function that returns HealthStatus.
         """
         self._health_checks.append(check)
-    
+
     def register_startup_hook(self, hook: Callable[[], None]) -> None:
         """Register a startup hook.
         
@@ -152,7 +152,7 @@ class LifecycleManager:
             hook: Function to call during startup.
         """
         self._startup_hooks.append(hook)
-    
+
     def register_shutdown_hook(self, hook: Callable[[], None]) -> None:
         """Register a shutdown hook.
         
@@ -160,33 +160,33 @@ class LifecycleManager:
             hook: Function to call during shutdown.
         """
         self._shutdown_hooks.append(hook)
-    
+
     async def initialize(self) -> None:
         """Initialize the server."""
         await self.transition_to(ServerState.INITIALIZING)
-        
+
         try:
             # Run startup hooks
             for hook in self._startup_hooks:
                 hook()
-            
+
             await self.transition_to(ServerState.READY)
             self._logger.info("Server initialized successfully")
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             self._logger.error("Initialization failed: %s", e)
             await self.transition_to(ServerState.ERROR)
             raise
-    
+
     async def start(self) -> None:
         """Start accepting requests."""
         if self._state != ServerState.READY:
             raise InvalidStateTransition(self._state, ServerState.RUNNING)
-        
+
         await self.transition_to(ServerState.RUNNING)
         self._logger.info("Server started and accepting requests")
-    
+
     async def shutdown(self, graceful: bool = True) -> None:
         """Shutdown the server.
         
@@ -195,7 +195,7 @@ class LifecycleManager:
         """
         if graceful and self._state == ServerState.RUNNING:
             await self.transition_to(ServerState.DRAINING)
-            
+
             # Wait for active requests with timeout
             drain_start = time.time()
             while self._active_requests > 0:
@@ -206,9 +206,9 @@ class LifecycleManager:
                     )
                     break
                 await asyncio.sleep(0.1)
-        
+
         await self.transition_to(ServerState.STOPPING)
-        
+
         # Run shutdown hooks
         for hook in self._shutdown_hooks:
             try:
@@ -216,11 +216,11 @@ class LifecycleManager:
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 self._logger.error("Shutdown hook failed: %s", e)
-        
+
         await self.transition_to(ServerState.STOPPED)
         self._shutdown_event.set()
         self._logger.info("Server shutdown complete")
-    
+
     async def track_request_start(self) -> bool:
         """Track the start of a request.
         
@@ -229,18 +229,18 @@ class LifecycleManager:
         """
         if not self.is_accepting_requests:
             return False
-        
+
         async with self._requests_lock:
             if self._active_requests >= self._config.max_concurrent_requests:
                 return False
             self._active_requests += 1
         return True
-    
+
     async def track_request_end(self) -> None:
         """Track the end of a request."""
         async with self._requests_lock:
             self._active_requests = max(0, self._active_requests - 1)
-    
+
     def get_health(self) -> HealthStatus:
         """Get aggregated health status.
         
@@ -253,11 +253,11 @@ class LifecycleManager:
                 message=f"Server in {self._state.value} state",
                 details={"state": self._state.value}
             )
-        
+
         all_healthy = True
         details: dict[str, Any] = {"state": self._state.value}
         messages: list[str] = []
-        
+
         for i, check in enumerate(self._health_checks):
             try:
                 result = check()
@@ -273,28 +273,28 @@ class LifecycleManager:
                 all_healthy = False
                 details[f"check_{i}"] = {"healthy": False, "error": str(e)}
                 messages.append(f"Check {i} failed: {e}")
-        
+
         return HealthStatus(
             healthy=all_healthy,
             message="; ".join(messages) if messages else "All checks passed",
             details=details
         )
-    
+
     async def wait_for_shutdown(self) -> None:
         """Wait for shutdown to complete."""
         await self._shutdown_event.wait()
-    
+
     def setup_signal_handlers(self) -> None:
         """set up signal handlers for graceful shutdown."""
         loop = asyncio.get_event_loop()
-        
+
         for sig in (signal.SIGTERM, signal.SIGINT):
             # Capture sig in lambda to avoid closure issue
             loop.add_signal_handler(
                 sig,
                 lambda s=sig: asyncio.create_task(self.shutdown(graceful=True))
             )
-        
+
         self._logger.info("Signal handlers configured")
 
 

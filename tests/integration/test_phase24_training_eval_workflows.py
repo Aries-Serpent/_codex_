@@ -14,7 +14,7 @@ def test_phase24_simple_trainer_init():
 def test_phase24_checkpoint_config_validation():
     """Test Phase 24 CheckpointConfig validation."""
     from src.training.trainer import CheckpointConfig
-    
+
     config = CheckpointConfig(directory="/tmp/ckpt", best_k=5, monitor="val_loss")
     assert config.directory == "/tmp/ckpt"
     assert config.best_k == 5

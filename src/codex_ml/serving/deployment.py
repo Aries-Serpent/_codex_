@@ -5,13 +5,14 @@ This module provides zero-downtime deployment strategies with gradual rollout,
 automatic failover, and rollback capabilities.
 """
 
-import time
 import logging
+import time
+
 logger = logging.getLogger(__name__)
+import random
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, Optional
-import random
 
 
 class DeploymentStrategy(Enum):

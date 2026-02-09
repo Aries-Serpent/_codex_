@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pytest
 
-
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch

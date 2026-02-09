@@ -44,7 +44,7 @@ def _patch_cuda(monkeypatch, deterministic: bool) -> None:
         return calls["count"] == 1
 
     monkeypatch.setattr(torch.cuda, "is_available", fake_is_available)
-    
+
     # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
     fake_cudnn = types.SimpleNamespace(
         deterministic=deterministic,
@@ -69,7 +69,7 @@ def test_raises_when_nondeterministic(monkeypatch, tmp_path):
 
 def _patch_cuda_simple(monkeypatch, deterministic: bool) -> None:
     monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
-    
+
     # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
     fake_cudnn = types.SimpleNamespace(
         deterministic=deterministic,

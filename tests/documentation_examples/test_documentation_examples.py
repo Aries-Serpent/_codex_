@@ -15,7 +15,6 @@ from pathlib import Path
 
 import pytest
 
-
 # ============================================================================
 # Documentation Example Extraction
 # ============================================================================
@@ -64,7 +63,7 @@ class TestREADMEExamples:
         """Test that all Python examples in README have valid syntax."""
         if not readme_content:
             pytest.skip("README.md not found")
-        
+
         blocks = extract_python_blocks(readme_content)
         for i, block in enumerate(blocks):
             # Skip blocks that are intentionally incomplete
@@ -83,7 +82,7 @@ class TestREADMEExamples:
         """Test that README has a quickstart section."""
         if not readme_content:
             pytest.skip("README.md not found")
-        
+
         has_quickstart = (
             "quickstart" in readme_content.lower()
             or "getting started" in readme_content.lower()
@@ -95,7 +94,7 @@ class TestREADMEExamples:
         """Test that README has usage examples."""
         if not readme_content:
             pytest.skip("README.md not found")
-        
+
         has_examples = (
             "example" in readme_content.lower()
             or "usage" in readme_content.lower()

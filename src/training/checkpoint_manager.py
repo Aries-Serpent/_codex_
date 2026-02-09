@@ -5,7 +5,9 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

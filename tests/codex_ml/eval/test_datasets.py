@@ -15,10 +15,10 @@ from pathlib import Path
 import pytest
 
 from codex_ml.eval.datasets import (
+    _PRESETS,
     DatasetBundle,
     Example,
     _hash_examples,
-    _PRESETS,
     load_dataset,
 )
 

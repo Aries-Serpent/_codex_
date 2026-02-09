@@ -18,14 +18,14 @@ from codex_ml.utils.repro import set_reproducible
 
 def test_set_reproducible_reseeds_all():
     # Ensure real torch is imported before calling set_reproducible
-    import torch as real_torch
-    
     # Patch the seeding module to use real torch
     import sys
+
+    import torch as real_torch
     # Temporarily replace torch in sys.modules to ensure seeding uses real torch
     original_torch = sys.modules.get('torch')
     sys.modules['torch'] = real_torch
-    
+
     try:
         set_reproducible(123)
         r_py = random.random()

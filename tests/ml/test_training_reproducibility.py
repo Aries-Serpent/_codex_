@@ -3,8 +3,9 @@
 Tests for ensuring ML training is reproducible with seed control and determinism.
 """
 
-import pytest
 import random
+
+import pytest
 
 
 class TestSeedControl:
@@ -92,130 +93,130 @@ class TestDeterministicOperations:
     def test_shuffle_is_deterministic_with_seed(self):
         """Test list shuffling is deterministic with seed."""
         data = [1, 2, 3, 4, 5]
-        
+
         random.seed(42)
         shuffled1 = data.copy()
         random.shuffle(shuffled1)
-        
+
         random.seed(42)
         shuffled2 = data.copy()
         random.shuffle(shuffled2)
-        
+
         assert shuffled1 == shuffled2
 
     def test_sample_is_deterministic(self):
         """Test random sample is deterministic with seed."""
         data = list(range(100))
-        
+
         random.seed(42)
         sample1 = random.sample(data, 10)
-        
+
         random.seed(42)
         sample2 = random.sample(data, 10)
-        
+
         assert sample1 == sample2
 
     def test_choice_is_deterministic(self):
         """Test random choice is deterministic with seed."""
         options = ["a", "b", "c", "d", "e"]
-        
+
         random.seed(42)
         choice1 = random.choice(options)
-        
+
         random.seed(42)
         choice2 = random.choice(options)
-        
+
         assert choice1 == choice2
 
     def test_data_loading_order_deterministic(self):
         """Test data loading order is deterministic."""
         data_indices = list(range(1000))
-        
+
         random.seed(42)
         random.shuffle(data_indices)
         order1 = data_indices[:10]
-        
+
         data_indices = list(range(1000))
         random.seed(42)
         random.shuffle(data_indices)
         order2 = data_indices[:10]
-        
+
         assert order1 == order2
 
     def test_batch_composition_deterministic(self):
         """Test batch composition is deterministic."""
         batch_size = 32
         data_size = 1000
-        
+
         random.seed(42)
         batch1 = random.sample(range(data_size), batch_size)
-        
+
         random.seed(42)
         batch2 = random.sample(range(data_size), batch_size)
-        
+
         assert batch1 == batch2
 
     def test_dropout_pattern_deterministic(self):
         """Test dropout pattern is deterministic with seed."""
         random.seed(42)
         dropout_mask1 = [random.random() > 0.5 for _ in range(100)]
-        
+
         random.seed(42)
         dropout_mask2 = [random.random() > 0.5 for _ in range(100)]
-        
+
         assert dropout_mask1 == dropout_mask2
 
     def test_weight_init_deterministic(self):
         """Test weight initialization is deterministic."""
         random.seed(42)
         weights1 = [random.gauss(0, 0.02) for _ in range(100)]
-        
+
         random.seed(42)
         weights2 = [random.gauss(0, 0.02) for _ in range(100)]
-        
+
         assert weights1 == weights2
 
     def test_augmentation_deterministic(self):
         """Test data augmentation is deterministic."""
         random.seed(42)
         augmentation1 = random.choice(["rotate", "flip", "scale"])
-        
+
         random.seed(42)
         augmentation2 = random.choice(["rotate", "flip", "scale"])
-        
+
         assert augmentation1 == augmentation2
 
     def test_train_test_split_deterministic(self):
         """Test train/test split is deterministic."""
         data = list(range(100))
         split_ratio = 0.8
-        
+
         random.seed(42)
         random.shuffle(data)
         split_idx = int(len(data) * split_ratio)
         train1 = data[:split_idx]
-        
+
         data = list(range(100))
         random.seed(42)
         random.shuffle(data)
         train2 = data[:split_idx]
-        
+
         assert train1 == train2
 
     def test_cross_validation_folds_deterministic(self):
         """Test cross-validation fold assignment is deterministic."""
         data = list(range(100))
         n_folds = 5
-        
+
         random.seed(42)
         random.shuffle(data)
         folds1 = [data[i::n_folds] for i in range(n_folds)]
-        
+
         data = list(range(100))
         random.seed(42)
         random.shuffle(data)
         folds2 = [data[i::n_folds] for i in range(n_folds)]
-        
+
         assert folds1 == folds2
 
 
@@ -241,14 +242,14 @@ class TestCheckpointReproducibility:
         random.seed(42)
         _ = [random.random() for _ in range(100)]
         saved_state = random.getstate()
-        
+
         # Resume
         random.setstate(saved_state)
         result1 = random.random()
-        
+
         random.setstate(saved_state)
         result2 = random.random()
-        
+
         assert result1 == result2
 
     def test_checkpoint_epoch_tracked(self):
@@ -339,11 +340,11 @@ class TestEnvironmentReproducibility:
         # Simulate run 1
         random.seed(42)
         loss1 = random.random()
-        
+
         # Simulate run 2
         random.seed(42)
         loss2 = random.random()
-        
+
         assert loss1 == loss2
 
 

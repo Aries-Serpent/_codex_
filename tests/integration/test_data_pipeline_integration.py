@@ -95,7 +95,7 @@ class TestDataLoading:
         with sample_jsonl_data.open("r") as f:
             for line in f:
                 data.append(json.loads(line))
-        
+
         assert len(data) == 3
         assert data[0]["id"] == 1
 
@@ -105,7 +105,7 @@ class TestDataLoading:
         with sample_csv_data.open("r") as f:
             reader = csv.DictReader(f)
             data = list(reader)
-        
+
         assert len(data) == 3
         assert data[0]["id"] == "1"
         assert data[0]["category"] == "A"
@@ -114,7 +114,7 @@ class TestDataLoading:
         """Verify handling of empty data files."""
         empty_file = temp_data_dir / "raw" / "empty.json"
         empty_file.write_text("[]")
-        
+
         data = json.loads(empty_file.read_text())
         assert len(data) == 0
 
@@ -122,7 +122,7 @@ class TestDataLoading:
         """Verify error handling for malformed JSON."""
         bad_file = temp_data_dir / "raw" / "malformed.json"
         bad_file.write_text("{bad json")
-        
+
         with pytest.raises(json.JSONDecodeError):
             json.loads(bad_file.read_text())
 
@@ -137,14 +137,14 @@ class TestDataLoading:
         with large_file.open("w") as f:
             for i in range(100):
                 f.write(json.dumps({"id": i, "data": f"entry_{i}"}) + "\n")
-        
+
         # Streaming read
         count = 0
         with large_file.open("r") as f:
             for line in f:
                 json.loads(line)
                 count += 1
-        
+
         assert count == 100
 
 
@@ -154,52 +154,52 @@ class TestDataPreprocessing:
     def test_text_normalization(self, sample_json_data):
         """Verify text normalization preprocessing."""
         data = json.loads(sample_json_data.read_text())
-        
+
         # Simple normalization
         for item in data:
             item["text"] = item["text"].lower().strip()
-        
+
         assert data[0]["text"] == "sample text one"
 
     def test_tokenization(self, sample_json_data):
         """Verify text tokenization preprocessing."""
         data = json.loads(sample_json_data.read_text())
-        
+
         for item in data:
             item["tokens"] = item["text"].split()
-        
+
         assert len(data[0]["tokens"]) == 3
 
     def test_label_encoding(self, sample_json_data):
         """Verify label encoding transformation."""
         data = json.loads(sample_json_data.read_text())
-        
+
         label_map = {"positive": 1, "negative": 0}
         for item in data:
             item["label_encoded"] = label_map.get(item["label"], -1)
-        
+
         assert data[0]["label_encoded"] == 1
         assert data[1]["label_encoded"] == 0
 
     def test_feature_extraction(self, sample_json_data):
         """Verify feature extraction from raw data."""
         data = json.loads(sample_json_data.read_text())
-        
+
         for item in data:
             item["features"] = {
                 "text_length": len(item["text"]),
                 "word_count": len(item["text"].split()),
             }
-        
+
         assert data[0]["features"]["word_count"] == 3
 
     def test_data_filtering(self, sample_json_data):
         """Verify data filtering preprocessing."""
         data = json.loads(sample_json_data.read_text())
-        
+
         # Filter by label
         filtered = [item for item in data if item["label"] == "positive"]
-        
+
         assert len(filtered) == 2
 
     def test_data_deduplication(self, temp_data_dir):
@@ -211,7 +211,7 @@ class TestDataPreprocessing:
             {"id": 3, "text": "Same text"},
         ]
         data_file.write_text(json.dumps(data))
-        
+
         # Deduplicate by text
         seen = set()
         unique = []
@@ -219,7 +219,7 @@ class TestDataPreprocessing:
             if item["text"] not in seen:
                 seen.add(item["text"])
                 unique.append(item)
-        
+
         assert len(unique) == 2
 
 
@@ -230,20 +230,20 @@ class TestBatchProcessing:
         """Verify batch processing of data."""
         batch_size = 2
         batches = []
-        
+
         current_batch = []
         with sample_jsonl_data.open("r") as f:
             for line in f:
                 item = json.loads(line)
                 current_batch.append(item)
-                
+
                 if len(current_batch) >= batch_size:
                     batches.append(current_batch)
                     current_batch = []
-        
+
         if current_batch:
             batches.append(current_batch)
-        
+
         assert len(batches) == 2
         assert len(batches[0]) == 2
         assert len(batches[1]) == 1
@@ -251,21 +251,21 @@ class TestBatchProcessing:
     def test_parallel_batch_processing(self, sample_jsonl_data):
         """Verify parallel processing of batches."""
         from concurrent.futures import ThreadPoolExecutor
-        
+
         def process_batch(batch):
             return [item["text"].upper() for item in batch]
-        
+
         data = []
         with sample_jsonl_data.open("r") as f:
             for line in f:
                 data.append(json.loads(line))
-        
+
         batch_size = 2
         batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
-        
+
         with ThreadPoolExecutor(max_workers=2) as executor:
             results = list(executor.map(process_batch, batches))
-        
+
         assert len(results) == 2
 
     def test_batch_size_optimization(self, temp_data_dir):
@@ -274,21 +274,21 @@ class TestBatchProcessing:
         with data_file.open("w") as f:
             for i in range(10):
                 f.write(json.dumps({"id": i}) + "\n")
-        
+
         for batch_size in [1, 2, 5]:
             batch_count = 0
             current_batch = []
-            
+
             with data_file.open("r") as f:
                 for line in f:
                     current_batch.append(json.loads(line))
                     if len(current_batch) >= batch_size:
                         batch_count += 1
                         current_batch = []
-            
+
             if current_batch:
                 batch_count += 1
-            
+
             expected = (10 + batch_size - 1) // batch_size
             assert batch_count == expected
 
@@ -300,7 +300,7 @@ class TestDataValidation:
         """Verify validation of required fields."""
         data = json.loads(sample_json_data.read_text())
         required_fields = ["id", "text", "label"]
-        
+
         for item in data:
             for field in required_fields:
                 assert field in item
@@ -308,7 +308,7 @@ class TestDataValidation:
     def test_validate_data_types(self, sample_json_data):
         """Verify validation of data types."""
         data = json.loads(sample_json_data.read_text())
-        
+
         for item in data:
             assert isinstance(item["id"], int)
             assert isinstance(item["text"], str)
@@ -320,14 +320,14 @@ class TestDataValidation:
         with sample_jsonl_data.open("r") as f:
             for line in f:
                 data.append(json.loads(line))
-        
+
         for item in data:
             assert 0.0 <= item["score"] <= 1.0
 
     def test_validate_string_patterns(self, sample_json_data):
         """Verify validation of string patterns."""
         data = json.loads(sample_json_data.read_text())
-        
+
         for item in data:
             # Text should not be empty
             assert len(item["text"]) > 0
@@ -341,10 +341,10 @@ class TestDataValidation:
             {"text": "Missing id"},  # Missing id field
         ]
         invalid_data.write_text(json.dumps(data))
-        
+
         errors = []
         loaded_data = json.loads(invalid_data.read_text())
-        
+
         for idx, item in enumerate(loaded_data):
             if "id" not in item:
                 errors.append(f"Row {idx}: Missing 'id' field")
@@ -352,7 +352,7 @@ class TestDataValidation:
                 errors.append(f"Row {idx}: Invalid 'id' type")
             if item.get("text", "") == "":
                 errors.append(f"Row {idx}: Empty 'text' field")
-        
+
         assert len(errors) > 0
 
 
@@ -362,31 +362,31 @@ class TestFormatConversion:
     def test_json_to_jsonl_conversion(self, sample_json_data, temp_data_dir):
         """Verify JSON to JSONL conversion."""
         output_file = temp_data_dir / "output" / "converted.jsonl"
-        
+
         data = json.loads(sample_json_data.read_text())
         with output_file.open("w") as f:
             for item in data:
                 f.write(json.dumps(item) + "\n")
-        
+
         # Verify conversion
         converted = []
         with output_file.open("r") as f:
             for line in f:
                 converted.append(json.loads(line))
-        
+
         assert len(converted) == len(data)
 
     def test_csv_to_json_conversion(self, sample_csv_data, temp_data_dir):
         """Verify CSV to JSON conversion."""
         output_file = temp_data_dir / "output" / "converted.json"
-        
+
         data = []
         with sample_csv_data.open("r") as f:
             reader = csv.DictReader(f)
             data = list(reader)
-        
+
         output_file.write_text(json.dumps(data))
-        
+
         # Verify conversion
         converted = json.loads(output_file.read_text())
         assert len(converted) == 3
@@ -394,24 +394,24 @@ class TestFormatConversion:
     def test_jsonl_to_csv_conversion(self, sample_jsonl_data, temp_data_dir):
         """Verify JSONL to CSV conversion."""
         output_file = temp_data_dir / "output" / "converted.csv"
-        
+
         data = []
         with sample_jsonl_data.open("r") as f:
             for line in f:
                 data.append(json.loads(line))
-        
+
         if data:
             fieldnames = list(data[0].keys())
             with output_file.open("w", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(data)
-        
+
         # Verify conversion
         with output_file.open("r") as f:
             reader = csv.DictReader(f)
             converted = list(reader)
-        
+
         assert len(converted) == 3
 
 
@@ -422,18 +422,18 @@ class TestPipelineChaining:
         """Verify load → preprocess → validate chain."""
         # Load
         data = json.loads(sample_json_data.read_text())
-        
+
         # Preprocess
         for item in data:
             item["text"] = item["text"].lower()
             item["text_length"] = len(item["text"])
-        
+
         # Validate
         validated = []
         for item in data:
             if item["text_length"] > 0:
                 validated.append(item)
-        
+
         assert len(validated) == 3
 
     def test_extract_transform_load_pipeline(self, sample_csv_data, temp_data_dir):
@@ -443,16 +443,16 @@ class TestPipelineChaining:
         with sample_csv_data.open("r") as f:
             reader = csv.DictReader(f)
             data = list(reader)
-        
+
         # Transform
         for item in data:
             item["processed"] = True
             item["text_upper"] = item["text"].upper()
-        
+
         # Load
         output_file = temp_data_dir / "output" / "etl_result.json"
         output_file.write_text(json.dumps(data))
-        
+
         assert output_file.exists()
 
     def test_filter_deduplicate_sort_chain(self, temp_data_dir):
@@ -466,12 +466,12 @@ class TestPipelineChaining:
             {"id": 4, "score": 0.1},
         ]
         data_file.write_text(json.dumps(data))
-        
+
         loaded = json.loads(data_file.read_text())
-        
+
         # Filter
         filtered = [item for item in loaded if item["score"] >= 0.3]
-        
+
         # Deduplicate
         seen = set()
         unique = []
@@ -480,10 +480,10 @@ class TestPipelineChaining:
             if key not in seen:
                 seen.add(key)
                 unique.append(item)
-        
+
         # Sort
         sorted_data = sorted(unique, key=lambda x: x["id"])
-        
+
         assert len(sorted_data) == 3
         assert sorted_data[0]["id"] == 1
 
@@ -498,10 +498,10 @@ class TestErrorHandling:
             f.write(json.dumps({"id": 1, "value": "valid"}) + "\n")
             f.write("{invalid json\n")
             f.write(json.dumps({"id": 2, "value": "valid"}) + "\n")
-        
+
         valid_records = []
         errors = []
-        
+
         with data_file.open("r") as f:
             for line_num, line in enumerate(f, 1):
                 try:
@@ -509,7 +509,7 @@ class TestErrorHandling:
                     valid_records.append(record)
                 except json.JSONDecodeError as e:
                     errors.append((line_num, str(e)))
-        
+
         assert len(valid_records) == 2
         assert len(errors) == 1
 
@@ -517,14 +517,14 @@ class TestErrorHandling:
         """Verify retry mechanism for transient failures."""
         max_retries = 3
         attempt = 0
-        
+
         def flaky_operation():
             nonlocal attempt
             attempt += 1
             if attempt < 3:
                 raise ConnectionError("Temporary failure")
             return "success"
-        
+
         for retry in range(max_retries):
             try:
                 result = flaky_operation()
@@ -532,24 +532,24 @@ class TestErrorHandling:
             except ConnectionError:
                 if retry == max_retries - 1:
                     raise
-        
+
         assert result == "success"
 
     def test_rollback_on_error(self, temp_data_dir):
         """Verify rollback mechanism on pipeline errors."""
         output_file = temp_data_dir / "output" / "transaction.json"
         temp_file = temp_data_dir / "output" / "transaction.tmp"
-        
+
         data = [{"id": 1}, {"id": 2}]
-        
+
         try:
             # Write to temp file
             temp_file.write_text(json.dumps(data))
-            
+
             # Validate
             loaded = json.loads(temp_file.read_text())
             assert len(loaded) == 2
-            
+
             # Commit
             temp_file.rename(output_file)
         except Exception:
@@ -557,7 +557,7 @@ class TestErrorHandling:
             if temp_file.exists():
                 temp_file.unlink()
             raise
-        
+
         assert output_file.exists()
 
 
@@ -570,49 +570,49 @@ class TestPerformanceOptimization:
         with large_file.open("w") as f:
             for i in range(1000):
                 f.write(json.dumps({"id": i}) + "\n")
-        
+
         # Generator for lazy loading
         def lazy_reader(filepath):
             with open(filepath) as f:
                 for line in f:
                     yield json.loads(line)
-        
+
         reader = lazy_reader(large_file)
         first_item = next(reader)
-        
+
         assert first_item["id"] == 0
 
     def test_memory_efficient_processing(self, temp_data_dir):
         """Verify memory-efficient streaming processing."""
         input_file = temp_data_dir / "raw" / "stream_input.jsonl"
         output_file = temp_data_dir / "output" / "stream_output.jsonl"
-        
+
         # Create input
         with input_file.open("w") as f:
             for i in range(100):
                 f.write(json.dumps({"id": i, "value": i * 2}) + "\n")
-        
+
         # Stream processing
         with input_file.open("r") as fin, output_file.open("w") as fout:
             for line in fin:
                 item = json.loads(line)
                 item["processed"] = True
                 fout.write(json.dumps(item) + "\n")
-        
+
         assert output_file.exists()
 
     def test_caching_intermediate_results(self, temp_data_dir):
         """Verify caching of intermediate pipeline results."""
         cache_file = temp_data_dir / "processed" / "cache.json"
-        
+
         # Expensive operation result
         expensive_result = [{"id": i, "computed": i**2} for i in range(10)]
-        
+
         # Cache
         cache_file.write_text(json.dumps(expensive_result))
-        
+
         # Retrieve from cache
         cached = json.loads(cache_file.read_text())
-        
+
         assert len(cached) == 10
         assert cached[5]["computed"] == 25

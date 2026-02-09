@@ -22,9 +22,9 @@ class TestStabilityMetrics:
             "flaky_tests": 15,
             "stable_tests": 1005,
         }
-        
+
         stability_percentage = (test_results["stable_tests"] / test_results["total_tests"]) * 100
-        
+
         assert stability_percentage > 98.0
         assert round(stability_percentage, 2) == 98.53
 
@@ -35,10 +35,10 @@ class TestStabilityMetrics:
             {"total": 1020, "passed": 1018, "failed": 2},
             {"total": 1020, "passed": 1010, "failed": 10},
         ]
-        
+
         pass_rates = [(r["passed"] / r["total"]) * 100 for r in runs]
         average_pass_rate = sum(pass_rates) / len(pass_rates)
-        
+
         assert average_pass_rate > 99.0
 
     def test_track_failure_distribution(self):
@@ -49,10 +49,10 @@ class TestStabilityMetrics:
             {"category": "environment", "count": 3},
             {"category": "timeout", "count": 7},
         ]
-        
+
         total_failures = sum(f["count"] for f in failures)
         distribution = {f["category"]: f["count"] / total_failures for f in failures}
-        
+
         assert distribution["flaky"] == 0.5
         assert sum(distribution.values()) == 1.0
 
@@ -60,27 +60,27 @@ class TestStabilityMetrics:
         """Test calculation of mean time to failure (MTTF)."""
         # Time between failures in hours
         time_between_failures = [24, 36, 12, 48, 72]
-        
+
         mttf = sum(time_between_failures) / len(time_between_failures)
-        
+
         assert mttf == 38.4
 
     def test_calculate_mean_time_to_recovery(self):
         """Test calculation of mean time to recovery (MTTR)."""
         # Time to fix failures in hours
         recovery_times = [2, 4, 1, 6, 3]
-        
+
         mttr = sum(recovery_times) / len(recovery_times)
-        
+
         assert mttr == 3.2
 
     def test_calculate_availability(self):
         """Test calculation of test suite availability."""
         mttf = 38.4  # Mean time to failure
         mttr = 3.2   # Mean time to recovery
-        
+
         availability = mttf / (mttf + mttr)
-        
+
         assert availability > 0.9  # 90%+ availability
 
 
@@ -95,10 +95,10 @@ class TestTrendAnalysis:
             {"week": 3, "stability": 97.2},
             {"week": 4, "stability": 98.5},
         ]
-        
+
         # Calculate trend (positive = improving)
         trend = weekly_data[-1]["stability"] - weekly_data[0]["stability"]
-        
+
         assert trend > 0
         assert trend == 3.5
 
@@ -106,7 +106,7 @@ class TestTrendAnalysis:
         """Test detection of stability regression."""
         daily_stability = [98.5, 98.2, 97.8, 95.0, 94.5]
         threshold = 2.0  # Regression threshold percentage points
-        
+
         # Check for significant drops
         regressions = []
         for i in range(1, len(daily_stability)):
@@ -118,7 +118,7 @@ class TestTrendAnalysis:
                     "from": daily_stability[i-1],
                     "to": daily_stability[i],
                 })
-        
+
         assert len(regressions) == 1
         assert regressions[0]["drop"] == pytest.approx(2.8)
 
@@ -126,34 +126,34 @@ class TestTrendAnalysis:
         """Test calculation of moving average stability."""
         daily_values = [98.0, 97.5, 99.0, 98.5, 97.0, 99.5, 98.0]
         window_size = 3
-        
+
         moving_averages = []
         for i in range(len(daily_values) - window_size + 1):
             window = daily_values[i:i + window_size]
             avg = sum(window) / window_size
             moving_averages.append(round(avg, 2))
-        
+
         assert len(moving_averages) == 5
         assert moving_averages[0] == round((98.0 + 97.5 + 99.0) / 3, 2)
 
     def test_predict_future_stability(self):
         """Test simple linear prediction of future stability."""
         historical = [95.0, 96.0, 97.0, 98.0]
-        
+
         # Simple linear regression prediction
         n = len(historical)
         x_mean = (n - 1) / 2
         y_mean = sum(historical) / n
-        
+
         # Calculate slope
         numerator = sum((i - x_mean) * (y - y_mean) for i, y in enumerate(historical))
         denominator = sum((i - x_mean) ** 2 for i in range(n))
         slope = numerator / denominator
         intercept = y_mean - slope * x_mean
-        
+
         # Predict next value
         next_value = slope * n + intercept
-        
+
         assert next_value > historical[-1]
         assert round(next_value, 1) == 99.0
 
@@ -165,10 +165,10 @@ class TestTrendAnalysis:
             {"category": "e2e", "stability": 92.0},
             {"category": "performance", "stability": 88.0},
         ]
-        
+
         threshold = 95.0
         needs_improvement = [c for c in test_categories if c["stability"] < threshold]
-        
+
         assert len(needs_improvement) == 2
         assert needs_improvement[0]["category"] == "e2e"
         assert needs_improvement[1]["category"] == "performance"
@@ -181,7 +181,7 @@ class TestDashboardVisualization:
         """Test generation of data for stability chart."""
         dates = ["2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16"]
         stability = [97.5, 98.0, 98.2, 97.8, 98.5]
-        
+
         chart_data = {
             "type": "line",
             "labels": dates,
@@ -190,7 +190,7 @@ class TestDashboardVisualization:
                 "data": stability,
             }],
         }
-        
+
         assert chart_data["type"] == "line"
         assert len(chart_data["labels"]) == 5
         assert len(chart_data["datasets"][0]["data"]) == 5
@@ -203,13 +203,13 @@ class TestDashboardVisualization:
             "e2e": 150,
             "performance": 70,
         }
-        
+
         chart_data = {
             "type": "pie",
             "labels": list(categories.keys()),
             "data": list(categories.values()),
         }
-        
+
         assert chart_data["type"] == "pie"
         assert sum(chart_data["data"]) == 1020
 
@@ -226,7 +226,7 @@ class TestDashboardVisualization:
                     "hour": hour,
                     "failures": failures,
                 })
-        
+
         assert len(heatmap) == 7 * 24
         work_hour_failures = sum(h["failures"] for h in heatmap if 9 <= h["hour"] <= 17)
         assert work_hour_failures > 0
@@ -239,7 +239,7 @@ class TestDashboardVisualization:
             "flaky_tests": {"value": 15, "change": "-3", "trend": "down"},
             "avg_duration": {"value": "2.5s", "change": "-0.5s", "trend": "down"},
         }
-        
+
         assert summary["total_tests"]["value"] == 1020
         assert summary["flaky_tests"]["trend"] == "down"  # Decreasing flaky tests is good
 
@@ -250,13 +250,13 @@ class TestDashboardVisualization:
             "flaky_rate": 1.5,
             "avg_duration": 3.0,
         }
-        
+
         thresholds = {
             "stability_min": 95.0,
             "flaky_rate_max": 2.0,
             "avg_duration_max": 5.0,
         }
-        
+
         alerts = []
         if metrics["stability"] < thresholds["stability_min"]:
             alerts.append({"type": "warning", "metric": "stability"})
@@ -264,7 +264,7 @@ class TestDashboardVisualization:
             alerts.append({"type": "warning", "metric": "flaky_rate"})
         if metrics["avg_duration"] > thresholds["avg_duration_max"]:
             alerts.append({"type": "warning", "metric": "avg_duration"})
-        
+
         assert len(alerts) == 0  # All metrics within thresholds
 
 
@@ -275,7 +275,7 @@ class TestDashboardExport:
         """Test JSON export of dashboard data."""
         with tempfile.TemporaryDirectory() as tmpdir:
             export_file = Path(tmpdir) / "dashboard.json"
-            
+
             dashboard_data = {
                 "generated_at": datetime.now().isoformat(),
                 "metrics": {
@@ -287,9 +287,9 @@ class TestDashboardExport:
                     "weekly_change": "+3.5%",
                 },
             }
-            
+
             export_file.write_text(json.dumps(dashboard_data, indent=2))
-            
+
             loaded = json.loads(export_file.read_text())
             assert loaded["metrics"]["total_tests"] == 1020
 
@@ -306,13 +306,13 @@ class TestDashboardExport:
         </body>
         </html>
         """
-        
+
         html = html_template.format(
             stability=98.5,
             total_tests=1020,
             pass_rate=99.5,
         )
-        
+
         assert "Test Stability: 98.5%" in html
         assert "Total Tests: 1020" in html
 
@@ -324,9 +324,9 @@ class TestDashboardExport:
             ["2026-01-17", "1020", "1018", "2", "99.8"],
             ["2026-01-18", "1020", "1012", "8", "99.2"],
         ]
-        
+
         csv_content = "\n".join([",".join(row) for row in metrics])
-        
+
         assert "date,total_tests" in csv_content
         assert "2026-01-16,1020" in csv_content
 
@@ -350,7 +350,7 @@ class TestDashboardExport:
                 },
             ],
         }
-        
+
         assert len(report_data["sections"]) == 3
         assert report_data["title"] == "Test Stability Report"
 
@@ -361,7 +361,7 @@ class TestDashboardExport:
             "weekly": {"day": "Monday", "time": "09:00", "format": "html"},
             "monthly": {"day": 1, "time": "09:00", "format": "pdf"},
         }
-        
+
         assert schedule_config["daily"]["time"] == "00:00"
         assert schedule_config["weekly"]["format"] == "html"
 
@@ -377,7 +377,7 @@ class TestDashboardIntegration:
             "message": "98.5%",
             "color": "green",
         }
-        
+
         # Color based on stability
         stability = 98.5
         if stability >= 95:
@@ -386,16 +386,16 @@ class TestDashboardIntegration:
             badge_data["color"] = "yellow"
         else:
             badge_data["color"] = "red"
-        
+
         assert badge_data["color"] == "green"
 
     def test_ci_status_check(self):
         """Test CI status check based on stability."""
         stability = 98.5
         threshold = 95.0
-        
+
         status = "success" if stability >= threshold else "failure"
-        
+
         assert status == "success"
 
     def test_slack_notification_payload(self):
@@ -411,7 +411,7 @@ class TestDashboardIntegration:
                 ],
             }],
         }
-        
+
         assert payload["channel"] == "#ci-alerts"
         assert len(payload["attachments"]) == 1
 
@@ -430,7 +430,7 @@ class TestDashboardIntegration:
 ### Trend
 📈 Stability improved by 3.5% this week
 """
-        
+
         assert "Test Stability Report" in comment
         assert "Total Tests | 1020" in comment
         assert "📈" in comment
@@ -452,6 +452,6 @@ class TestDashboardIntegration:
                 "generated_by": "test-stability-dashboard",
             },
         }
-        
+
         assert api_response["status"] == "ok"
         assert api_response["data"]["metrics"]["total_tests"] == 1020

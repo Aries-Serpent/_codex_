@@ -41,7 +41,7 @@ class TestTokenHelpers:
         """Test truncation of text exceeding token limit."""
         text = "This is a very long sentence that needs truncation"
         result = _truncate_to_tokens(text, max_tokens=5, tokenizer=None)
-        
+
         # Should truncate to 5 words
         words = result.replace("...", "").split()
         assert len(words) <= 5
@@ -62,7 +62,7 @@ class TestTokenHelpers:
         """Test truncation using custom tokenizer."""
         tokenizer = lambda text: list(range(len(text.split())))
         text = "One two three four five"
-        
+
         result = _truncate_to_tokens(text, max_tokens=3, tokenizer=tokenizer)
         # Should be truncated
         assert len(result) < len(text)
@@ -74,7 +74,7 @@ class TestPromptConfig:
     def test_config_defaults(self):
         """Test default configuration values."""
         config = PromptConfig()
-        
+
         assert config.max_context_tokens == 2048
         assert config.max_snippet_tokens == 512
         assert config.include_sources is True
@@ -88,7 +88,7 @@ class TestPromptConfig:
             include_sources=False,
             use_legacy_delimiters=False
         )
-        
+
         assert config.max_context_tokens == 4000
         assert config.max_snippet_tokens == 1000
         assert config.include_sources is False
@@ -101,7 +101,7 @@ class TestPromptTemplate:
     def test_template_initialization_defaults(self):
         """Test template initialization with defaults."""
         template = PromptTemplate()
-        
+
         assert template.config is not None
         assert template.tokenizer is None
 
@@ -109,9 +109,9 @@ class TestPromptTemplate:
         """Test template initialization with custom config."""
         config = PromptConfig(max_context_tokens=1000)
         tokenizer = lambda x: [1, 2, 3]
-        
+
         template = PromptTemplate(config=config, tokenizer=tokenizer)
-        
+
         assert template.config.max_context_tokens == 1000
         assert template.tokenizer is tokenizer
 
@@ -121,37 +121,37 @@ class TestPromptTemplate:
         retrieved_docs = [
             {"content": "Python is a programming language", "metadata": {"source_id": "intro.md"}}
         ]
-        
+
         prompt = template.assemble_rag_prompt(
             query="What is Python?",
             retrieved_docs=retrieved_docs
         )
-        
+
         assert "What is Python?" in prompt
         assert "Python is a programming language" in prompt
 
     def test_assemble_rag_prompt_with_system(self):
         """Test RAG prompt with system prompt."""
         template = PromptTemplate()
-        
+
         prompt = template.assemble_rag_prompt(
             query="Test",
             system_prompt="You are a helpful assistant.",
             retrieved_docs=[]
         )
-        
+
         assert "You are a helpful assistant" in prompt
         assert "Test" in prompt
 
     def test_assemble_rag_prompt_empty_docs(self):
         """Test RAG prompt with no documents."""
         template = PromptTemplate()
-        
+
         prompt = template.assemble_rag_prompt(
             query="Test query",
             retrieved_docs=[]
         )
-        
+
         assert "Test query" in prompt
 
     def test_assemble_simple_prompt(self):
@@ -160,7 +160,7 @@ class TestPromptTemplate:
             query="What is 2+2?",
             system_prompt="You are a math tutor."
         )
-        
+
         assert "What is 2+2?" in prompt
         assert "You are a math tutor" in prompt
 
@@ -174,12 +174,12 @@ class TestBuildPromptFunction:
             {"content": "Context 1", "metadata": {"source_id": "file1.py"}},
             {"content": "Context 2", "metadata": {"source_id": "file2.py"}},
         ]
-        
+
         prompt = build_prompt(
             query="What is RAG?",
             retrieved_docs=retrieved_docs
         )
-        
+
         assert "What is RAG?" in prompt
         assert "Context 1" in prompt or "Document 1" in prompt
 
@@ -190,7 +190,7 @@ class TestBuildPromptFunction:
             system_prompt="You are an AI assistant.",
             retrieved_docs=[]
         )
-        
+
         assert "You are an AI assistant" in prompt
         assert "Test" in prompt
 
@@ -200,19 +200,19 @@ class TestBuildPromptFunction:
             query="Simple question",
             use_rag=False
         )
-        
+
         assert "Simple question" in prompt
 
     def test_build_prompt_with_config(self):
         """Test prompt with custom configuration."""
         config = PromptConfig(max_context_tokens=100)
-        
+
         prompt = build_prompt(
             query="Query",
             retrieved_docs=[],
             config=config
         )
-        
+
         assert prompt is not None
 
     def test_build_prompt_no_docs(self):
@@ -221,7 +221,7 @@ class TestBuildPromptFunction:
             query="Test query",
             retrieved_docs=None
         )
-        
+
         assert "Test query" in prompt
 
 
@@ -236,7 +236,7 @@ class TestPromptBackwardCompatibility:
             QUERY_END,
             QUERY_START,
         )
-        
+
         assert CONTEXT_START is not None
         assert CONTEXT_END is not None
         assert QUERY_START is not None
@@ -246,7 +246,7 @@ class TestPromptBackwardCompatibility:
         """Test that prompts can use legacy format if needed."""
         # This tests that old delimiter constants still exist
         from codex.rag.prompt import CONTEXT_END, CONTEXT_START
-        
+
         # Basic check that they can be used in string formatting
         prompt = f"{CONTEXT_START}\nContent\n{CONTEXT_END}"
         assert "CONTEXT START" in prompt

@@ -1,15 +1,14 @@
 """Tests for batch triage learning engine"""
-import pytest
-from pathlib import Path
-import tempfile
 import shutil
 import sys
+import tempfile
+from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.cognitive.batch_triage_learnings import (
-    BatchTriageLearningEngine
-)
+from scripts.cognitive.batch_triage_learnings import BatchTriageLearningEngine
 
 
 @pytest.fixture
@@ -37,10 +36,10 @@ def test_generate_signature_normalization(learning_engine):
     """Test signature generation normalizes variable parts"""
     desc1 = "Error on 2026-01-19: Failed with ID 12345"
     desc2 = "Error on 2026-01-20: Failed with ID 67890"
-    
+
     sig1 = learning_engine._generate_signature(desc1)
     sig2 = learning_engine._generate_signature(desc2)
-    
+
     # Should generate same signature after normalization
     assert sig1 == sig2
 

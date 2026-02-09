@@ -26,10 +26,10 @@ class TestCreateScheduler:
         """Test creating constant scheduler."""
         try:
             from codex_ml.training.scheduler_factory import create_scheduler
-            
+
             class DummyOptimizer:
                 pass
-            
+
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(optimizer, scheduler_type="constant")
             assert scheduler is not None
@@ -40,10 +40,10 @@ class TestCreateScheduler:
         """Test creating scheduler with warmup steps."""
         try:
             from codex_ml.training.scheduler_factory import create_scheduler
-            
+
             class DummyOptimizer:
                 pass
-            
+
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(
                 optimizer,
@@ -58,10 +58,10 @@ class TestCreateScheduler:
         """Test creating linear scheduler."""
         try:
             from codex_ml.training.scheduler_factory import create_scheduler
-            
+
             class DummyOptimizer:
                 pass
-            
+
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(
                 optimizer,
@@ -76,10 +76,10 @@ class TestCreateScheduler:
         """Test creating cosine scheduler."""
         try:
             from codex_ml.training.scheduler_factory import create_scheduler
-            
+
             class DummyOptimizer:
                 pass
-            
+
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(
                 optimizer,

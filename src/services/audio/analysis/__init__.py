@@ -1,15 +1,15 @@
 """Audio analysis modules."""
 
 from .intelligent_analyzer import (
-    IntelligentAudioAnalyzer,
     AudioAnalysis,
-    ProfileMatch,
+    IntelligentAudioAnalyzer,
     ProcessingProfile,
+    ProfileMatch,
 )
 
 __all__ = [
     'IntelligentAudioAnalyzer',
-    'AudioAnalysis', 
+    'AudioAnalysis',
     'ProfileMatch',
     'ProcessingProfile',
 ]

@@ -8,10 +8,9 @@ Test coverage for:
 - Phase 3.4: Safety & Governance (SafetyGuard)
 """
 
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
 import tempfile
-
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 # ============================================================================
 # Phase 3.1: Metric Analysis Engine Tests
@@ -19,11 +18,11 @@ import tempfile
 
 class TestMetricTypes:
     """Test MetricType enum."""
-    
+
     def test_metric_type_values(self):
         """Test all metric types are defined."""
         from codex.cognitive.objective_analyzer import MetricType
-        
+
         assert MetricType.COVERAGE.value == "coverage"
         assert MetricType.SECURITY.value == "security"
         assert MetricType.CI_CD.value == "ci_cd"
@@ -34,11 +33,11 @@ class TestMetricTypes:
 
 class TestTrendDirection:
     """Test TrendDirection enum."""
-    
+
     def test_trend_directions(self):
         """Test all trend directions."""
         from codex.cognitive.objective_analyzer import TrendDirection
-        
+
         assert TrendDirection.IMPROVING.value == "improving"
         assert TrendDirection.STABLE.value == "stable"
         assert TrendDirection.DEGRADING.value == "degrading"
@@ -47,11 +46,11 @@ class TestTrendDirection:
 
 class TestMetricValue:
     """Test MetricValue dataclass."""
-    
+
     def test_create_metric_value(self):
         """Test creating a metric value."""
-        from codex.cognitive.objective_analyzer import MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import MetricType, MetricValue
+
         now = datetime.now(timezone.utc)
         metric = MetricValue(
             metric_type=MetricType.COVERAGE,
@@ -59,27 +58,27 @@ class TestMetricValue:
             timestamp=now,
             context={"source": "pytest"}
         )
-        
+
         assert metric.metric_type == MetricType.COVERAGE
         assert metric.value == 75.5
         assert metric.context["source"] == "pytest"
-    
+
     def test_metric_value_to_dict(self):
         """Test serialization to dict."""
-        from codex.cognitive.objective_analyzer import MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import MetricType, MetricValue
+
         now = datetime.now(timezone.utc)
         metric = MetricValue(MetricType.SECURITY, 0, now)
         data = metric.to_dict()
-        
+
         assert data["metric_type"] == "security"
         assert data["value"] == 0
         assert "timestamp" in data
-    
+
     def test_metric_value_from_dict(self):
         """Test deserialization from dict."""
-        from codex.cognitive.objective_analyzer import MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import MetricType, MetricValue
+
         data = {
             "metric_type": "coverage",
             "value": 80.0,
@@ -87,75 +86,87 @@ class TestMetricValue:
             "context": {}
         }
         metric = MetricValue.from_dict(data)
-        
+
         assert metric.metric_type == MetricType.COVERAGE
         assert metric.value == 80.0
 
 
 class TestMetricThreshold:
     """Test MetricThreshold."""
-    
+
     def test_threshold_gte_ok(self):
         """Test threshold check for >= comparison (value above target)."""
         from codex.cognitive.objective_analyzer import MetricThreshold, MetricType
-        
+
         threshold = MetricThreshold(
-            MetricType.COVERAGE, target=70.0, 
+            MetricType.COVERAGE, target=70.0,
             warning_threshold=60.0, critical_threshold=50.0,
             comparison="gte"
         )
-        
+
         is_ok, severity = threshold.check_value(75.0)
         assert is_ok is True
         assert severity is None
-    
+
     def test_threshold_gte_warning(self):
         """Test threshold check for >= comparison (warning level)."""
-        from codex.cognitive.objective_analyzer import MetricThreshold, MetricType, AlertSeverity
-        
+        from codex.cognitive.objective_analyzer import (
+            AlertSeverity,
+            MetricThreshold,
+            MetricType,
+        )
+
         threshold = MetricThreshold(
             MetricType.COVERAGE, target=70.0,
             warning_threshold=60.0, critical_threshold=50.0,
             comparison="gte"
         )
-        
+
         is_ok, severity = threshold.check_value(65.0)
         assert is_ok is False
         assert severity == AlertSeverity.WARNING
-    
+
     def test_threshold_gte_critical(self):
         """Test threshold check for >= comparison (critical level)."""
-        from codex.cognitive.objective_analyzer import MetricThreshold, MetricType, AlertSeverity
-        
+        from codex.cognitive.objective_analyzer import (
+            AlertSeverity,
+            MetricThreshold,
+            MetricType,
+        )
+
         threshold = MetricThreshold(
             MetricType.COVERAGE, target=70.0,
             warning_threshold=60.0, critical_threshold=50.0,
             comparison="gte"
         )
-        
+
         is_ok, severity = threshold.check_value(45.0)
         assert is_ok is False
         assert severity == AlertSeverity.CRITICAL
-    
+
     def test_threshold_lte(self):
         """Test threshold check for <= comparison."""
-        from codex.cognitive.objective_analyzer import MetricThreshold, MetricType, AlertSeverity
-        
+        from codex.cognitive.objective_analyzer import (
+            AlertSeverity,
+            MetricThreshold,
+            MetricType,
+        )
+
         threshold = MetricThreshold(
-            MetricType.SECURITY, target=0, 
+            MetricType.SECURITY, target=0,
             warning_threshold=3, critical_threshold=10,
             comparison="lte"
         )
-        
+
         # 0 vulnerabilities - OK (at or below target)
         is_ok, _ = threshold.check_value(0)
         assert is_ok is True
-        
+
         # 2 vulnerabilities - WARNING (above target but at or below warning)
         is_ok, severity = threshold.check_value(2)
         assert is_ok is False
         assert severity == AlertSeverity.WARNING
-        
+
         # 5 vulnerabilities - CRITICAL (above warning threshold)
         is_ok, severity = threshold.check_value(5)
         assert is_ok is False
@@ -164,33 +175,41 @@ class TestMetricThreshold:
 
 class TestMetricStore:
     """Test MetricStore."""
-    
+
     def test_add_and_get_metric(self):
         """Test adding and retrieving metrics."""
-        from codex.cognitive.objective_analyzer import MetricStore, MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            MetricValue,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "metrics.json"
             store = MetricStore(store_path)
-            
+
             metric = MetricValue(
-                MetricType.COVERAGE, 75.0, 
+                MetricType.COVERAGE, 75.0,
                 datetime.now(timezone.utc)
             )
             store.add_metric(metric)
-            
+
             metrics = store.get_metrics(MetricType.COVERAGE, days=1)
             assert len(metrics) == 1
             assert metrics[0].value == 75.0
-    
+
     def test_get_latest_metric(self):
         """Test getting latest metric."""
-        from codex.cognitive.objective_analyzer import MetricStore, MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            MetricValue,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "metrics.json"
             store = MetricStore(store_path)
-            
+
             # Add multiple metrics
             for value in [60.0, 70.0, 80.0]:
                 metric = MetricValue(
@@ -198,7 +217,7 @@ class TestMetricStore:
                     datetime.now(timezone.utc)
                 )
                 store.add_metric(metric)
-            
+
             latest = store.get_latest(MetricType.COVERAGE)
             assert latest is not None
             assert latest.value == 80.0
@@ -206,14 +225,19 @@ class TestMetricStore:
 
 class TestTrendAnalyzer:
     """Test TrendAnalyzer."""
-    
+
     def test_analyze_improving_trend(self):
         """Test detecting improving trend."""
-        from codex.cognitive.objective_analyzer import TrendAnalyzer, MetricValue, MetricType, TrendDirection
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricType,
+            MetricValue,
+            TrendAnalyzer,
+            TrendDirection,
+        )
+
         analyzer = TrendAnalyzer(min_data_points=3)
         now = datetime.now(timezone.utc)
-        
+
         # Create improving series
         metrics = [
             MetricValue(MetricType.COVERAGE, 60.0, now - timedelta(days=6)),
@@ -221,19 +245,24 @@ class TestTrendAnalyzer:
             MetricValue(MetricType.COVERAGE, 70.0, now - timedelta(days=2)),
             MetricValue(MetricType.COVERAGE, 75.0, now),
         ]
-        
+
         result = analyzer.analyze(metrics, period_days=7)
         assert result is not None
         assert result.direction == TrendDirection.IMPROVING
         assert result.slope > 0
-    
+
     def test_analyze_degrading_trend(self):
         """Test detecting degrading trend."""
-        from codex.cognitive.objective_analyzer import TrendAnalyzer, MetricValue, MetricType, TrendDirection
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricType,
+            MetricValue,
+            TrendAnalyzer,
+            TrendDirection,
+        )
+
         analyzer = TrendAnalyzer(min_data_points=3)
         now = datetime.now(timezone.utc)
-        
+
         # Create degrading series
         metrics = [
             MetricValue(MetricType.CI_CD, 100.0, now - timedelta(days=6)),
@@ -241,37 +270,45 @@ class TestTrendAnalyzer:
             MetricValue(MetricType.CI_CD, 90.0, now - timedelta(days=2)),
             MetricValue(MetricType.CI_CD, 85.0, now),
         ]
-        
+
         result = analyzer.analyze(metrics, period_days=7)
         assert result is not None
         assert result.direction == TrendDirection.DEGRADING
         assert result.slope < 0
-    
+
     def test_analyze_insufficient_data(self):
         """Test with insufficient data."""
-        from codex.cognitive.objective_analyzer import TrendAnalyzer, MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricType,
+            MetricValue,
+            TrendAnalyzer,
+        )
+
         analyzer = TrendAnalyzer(min_data_points=3)
         now = datetime.now(timezone.utc)
-        
+
         metrics = [
             MetricValue(MetricType.COVERAGE, 70.0, now),
         ]
-        
+
         result = analyzer.analyze(metrics, period_days=7)
         assert result is None
 
 
 class TestAnomalyDetector:
     """Test AnomalyDetector."""
-    
+
     def test_detect_anomalies(self):
         """Test anomaly detection."""
-        from codex.cognitive.objective_analyzer import AnomalyDetector, MetricValue, MetricType
-        
+        from codex.cognitive.objective_analyzer import (
+            AnomalyDetector,
+            MetricType,
+            MetricValue,
+        )
+
         detector = AnomalyDetector(z_threshold=2.0)
         now = datetime.now(timezone.utc)
-        
+
         # Normal values around 70, with one extreme outlier at 10
         metrics = [
             MetricValue(MetricType.COVERAGE, 70.0, now - timedelta(days=5)),
@@ -281,7 +318,7 @@ class TestAnomalyDetector:
             MetricValue(MetricType.COVERAGE, 70.5, now - timedelta(days=1)),
             MetricValue(MetricType.COVERAGE, 70.0, now),
         ]
-        
+
         anomalies = detector.detect(metrics)
         assert len(anomalies) >= 1
         # The outlier should be detected
@@ -291,54 +328,70 @@ class TestAnomalyDetector:
 
 class TestObjectiveAnalyzer:
     """Test ObjectiveAnalyzer."""
-    
+
     def test_record_metric(self):
         """Test recording a metric."""
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricType, MetricStore
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = MetricStore(Path(tmpdir) / "metrics.json")
             analyzer = ObjectiveAnalyzer(store=store)
-            
+
             metric = analyzer.record_metric(MetricType.COVERAGE, 75.0)
             assert metric.value == 75.0
-    
+
     def test_check_threshold_ok(self):
         """Test threshold check when OK."""
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricType, MetricStore
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = MetricStore(Path(tmpdir) / "metrics.json")
             analyzer = ObjectiveAnalyzer(store=store)
-            
+
             is_ok, alert = analyzer.check_threshold(MetricType.COVERAGE, 80.0)
             assert is_ok is True
             assert alert is None
-    
+
     def test_check_threshold_breach(self):
         """Test threshold breach detection."""
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricType, MetricStore
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = MetricStore(Path(tmpdir) / "metrics.json")
             analyzer = ObjectiveAnalyzer(store=store)
-            
+
             is_ok, alert = analyzer.check_threshold(MetricType.COVERAGE, 45.0)
             assert is_ok is False
             assert alert is not None
-    
+
     def test_generate_health_report(self):
         """Test health report generation."""
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricType, MetricStore
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = MetricStore(Path(tmpdir) / "metrics.json")
             analyzer = ObjectiveAnalyzer(store=store)
-            
+
             # Record some metrics
             analyzer.record_metric(MetricType.COVERAGE, 75.0)
             analyzer.record_metric(MetricType.SECURITY, 0)
-            
+
             report = analyzer.generate_health_report()
             assert report.overall_status in ["healthy", "warning", "critical"]
             assert "recommendations" in report.to_dict()
@@ -350,11 +403,11 @@ class TestObjectiveAnalyzer:
 
 class TestAdjustmentTypes:
     """Test AdjustmentType enum."""
-    
+
     def test_adjustment_types(self):
         """Test all adjustment types."""
         from codex.cognitive.objective_adjuster import AdjustmentType
-        
+
         assert AdjustmentType.PRIORITY_INCREASE.value == "priority_increase"
         assert AdjustmentType.ADD_OBJECTIVE.value == "add_objective"
         assert AdjustmentType.PAUSE_OBJECTIVE.value == "pause_objective"
@@ -362,23 +415,23 @@ class TestAdjustmentTypes:
 
 class TestObjectivePriority:
     """Test ObjectivePriority enum."""
-    
+
     def test_priority_ordering(self):
         """Test priority values are ordered correctly."""
         from codex.cognitive.objective_adjuster import ObjectivePriority
-        
+
         assert ObjectivePriority.P0_CRITICAL.value < ObjectivePriority.P1_HIGH.value
         assert ObjectivePriority.P1_HIGH.value < ObjectivePriority.P2_MEDIUM.value
 
 
 class TestObjective:
     """Test Objective dataclass."""
-    
+
     def test_create_objective(self):
         """Test creating an objective."""
         from codex.cognitive.objective_adjuster import Objective, ObjectivePriority
         from codex.cognitive.objective_analyzer import MetricType
-        
+
         now = datetime.now(timezone.utc)
         objective = Objective(
             id="OBJ-001",
@@ -393,14 +446,14 @@ class TestObjective:
             updated_at=now,
             tags=["test"]
         )
-        
+
         assert objective.id == "OBJ-001"
         assert objective.priority == ObjectivePriority.P2_MEDIUM
-    
+
     def test_objective_serialization(self):
         """Test objective serialization."""
         from codex.cognitive.objective_adjuster import Objective, ObjectivePriority
-        
+
         now = datetime.now(timezone.utc)
         objective = Objective(
             id="OBJ-001",
@@ -414,7 +467,7 @@ class TestObjective:
             created_at=now,
             updated_at=now
         )
-        
+
         data = objective.to_dict()
         restored = Objective.from_dict(data)
         assert restored.id == objective.id
@@ -423,11 +476,15 @@ class TestObjective:
 
 class TestAdjustmentRule:
     """Test AdjustmentRule."""
-    
+
     def test_rule_can_apply_with_cooldown(self):
         """Test rule cooldown logic."""
-        from codex.cognitive.objective_adjuster import AdjustmentRule, AdjustmentTrigger, AdjustmentType
-        
+        from codex.cognitive.objective_adjuster import (
+            AdjustmentRule,
+            AdjustmentTrigger,
+            AdjustmentType,
+        )
+
         rule = AdjustmentRule(
             id="test-rule",
             name="Test Rule",
@@ -437,14 +494,14 @@ class TestAdjustmentRule:
             parameters={},
             cooldown_hours=24
         )
-        
+
         # Should be able to apply (no last_applied)
         assert rule.can_apply() is True
-        
+
         # After applying
         rule.last_applied = datetime.now(timezone.utc)
         assert rule.can_apply() is False
-        
+
         # After cooldown
         rule.last_applied = datetime.now(timezone.utc) - timedelta(hours=25)
         assert rule.can_apply() is True
@@ -452,14 +509,18 @@ class TestAdjustmentRule:
 
 class TestObjectiveStore:
     """Test ObjectiveStore."""
-    
+
     def test_add_and_get_objective(self):
         """Test adding and getting objectives."""
-        from codex.cognitive.objective_adjuster import ObjectiveStore, Objective, ObjectivePriority
-        
+        from codex.cognitive.objective_adjuster import (
+            Objective,
+            ObjectivePriority,
+            ObjectiveStore,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = ObjectiveStore(Path(tmpdir) / "objectives.json")
-            
+
             now = datetime.now(timezone.utc)
             objective = Objective(
                 id="OBJ-001",
@@ -473,21 +534,25 @@ class TestObjectiveStore:
                 created_at=now,
                 updated_at=now
             )
-            
+
             store.add_objective(objective)
             retrieved = store.get_objective("OBJ-001")
-            
+
             assert retrieved is not None
             assert retrieved.id == "OBJ-001"
-    
+
     def test_get_all_objectives_by_status(self):
         """Test filtering objectives by status."""
-        from codex.cognitive.objective_adjuster import ObjectiveStore, Objective, ObjectivePriority
-        
+        from codex.cognitive.objective_adjuster import (
+            Objective,
+            ObjectivePriority,
+            ObjectiveStore,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             store = ObjectiveStore(Path(tmpdir) / "objectives.json")
             now = datetime.now(timezone.utc)
-            
+
             # Add active and completed objectives
             for i, status in enumerate(["active", "active", "completed"]):
                 obj = Objective(
@@ -503,25 +568,33 @@ class TestObjectiveStore:
                     updated_at=now
                 )
                 store.add_objective(obj)
-            
+
             active = store.get_all_objectives(status="active")
             assert len(active) == 2
 
 
 class TestObjectiveAdjuster:
     """Test ObjectiveAdjuster."""
-    
+
     def test_create_objective(self):
         """Test manual objective creation."""
-        from codex.cognitive.objective_adjuster import ObjectiveAdjuster, ObjectivePriority, ObjectiveStore
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricStore, MetricType
-        
+        from codex.cognitive.objective_adjuster import (
+            ObjectiveAdjuster,
+            ObjectivePriority,
+            ObjectiveStore,
+        )
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             metric_store = MetricStore(Path(tmpdir) / "metrics.json")
             obj_store = ObjectiveStore(Path(tmpdir) / "objectives.json")
             analyzer = ObjectiveAnalyzer(store=metric_store)
             adjuster = ObjectiveAdjuster(analyzer=analyzer, store=obj_store)
-            
+
             objective = adjuster.create_objective(
                 title="Coverage Sprint",
                 description="Improve coverage",
@@ -529,30 +602,34 @@ class TestObjectiveAdjuster:
                 metric_type=MetricType.COVERAGE,
                 target_value=80.0
             )
-            
+
             assert objective.title == "Coverage Sprint"
             assert objective.priority == ObjectivePriority.P1_HIGH
-    
+
     def test_complete_objective(self):
         """Test completing an objective."""
-        from codex.cognitive.objective_adjuster import ObjectiveAdjuster, ObjectivePriority, ObjectiveStore
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricStore
-        
+        from codex.cognitive.objective_adjuster import (
+            ObjectiveAdjuster,
+            ObjectivePriority,
+            ObjectiveStore,
+        )
+        from codex.cognitive.objective_analyzer import MetricStore, ObjectiveAnalyzer
+
         with tempfile.TemporaryDirectory() as tmpdir:
             metric_store = MetricStore(Path(tmpdir) / "metrics.json")
             obj_store = ObjectiveStore(Path(tmpdir) / "objectives.json")
             analyzer = ObjectiveAnalyzer(store=metric_store)
             adjuster = ObjectiveAdjuster(analyzer=analyzer, store=obj_store)
-            
+
             objective = adjuster.create_objective(
                 title="Test",
                 description="Test",
                 priority=ObjectivePriority.P2_MEDIUM
             )
-            
+
             result = adjuster.complete_objective(objective.id)
             assert result is True
-            
+
             updated = obj_store.get_objective(objective.id)
             assert updated.status == "completed"
 
@@ -563,11 +640,11 @@ class TestObjectiveAdjuster:
 
 class TestAutomationLevel:
     """Test AutomationLevel enum."""
-    
+
     def test_automation_levels(self):
         """Test automation level values."""
         from codex.cognitive.autonomous_executor import AutomationLevel
-        
+
         assert AutomationLevel.LEVEL_1_ADVISORY.value == 1
         assert AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS.value == 2
         assert AutomationLevel.LEVEL_3_FULLY_AUTONOMOUS.value == 3
@@ -575,14 +652,14 @@ class TestAutomationLevel:
 
 class TestExecutionPolicy:
     """Test ExecutionPolicy."""
-    
+
     def test_advisory_mode_blocks_all(self):
         """Test advisory mode requires approval for all."""
-        from codex.cognitive.autonomous_executor import ExecutionPolicy, AutomationLevel
+        from codex.cognitive.autonomous_executor import AutomationLevel, ExecutionPolicy
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+
         policy = ExecutionPolicy(AutomationLevel.LEVEL_1_ADVISORY)
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -593,18 +670,18 @@ class TestExecutionPolicy:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         can_execute, reason = policy.can_auto_execute(adjustment)
         assert can_execute is False
         assert "Advisory mode" in reason
-    
+
     def test_semi_autonomous_auto_approves_priority_change(self):
         """Test semi-autonomous auto-approves priority changes."""
-        from codex.cognitive.autonomous_executor import ExecutionPolicy, AutomationLevel
+        from codex.cognitive.autonomous_executor import AutomationLevel, ExecutionPolicy
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+
         policy = ExecutionPolicy(AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS)
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -615,17 +692,17 @@ class TestExecutionPolicy:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         can_execute, _ = policy.can_auto_execute(adjustment)
         assert can_execute is True
-    
+
     def test_semi_autonomous_requires_approval_for_add(self):
         """Test semi-autonomous requires approval for adding objectives."""
-        from codex.cognitive.autonomous_executor import ExecutionPolicy, AutomationLevel
+        from codex.cognitive.autonomous_executor import AutomationLevel, ExecutionPolicy
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+
         policy = ExecutionPolicy(AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS)
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -636,18 +713,18 @@ class TestExecutionPolicy:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         can_execute, reason = policy.can_auto_execute(adjustment)
         assert can_execute is False
         assert "requires approval" in reason
-    
+
     def test_fully_autonomous_approves_all(self):
         """Test fully autonomous approves everything."""
-        from codex.cognitive.autonomous_executor import ExecutionPolicy, AutomationLevel
+        from codex.cognitive.autonomous_executor import AutomationLevel, ExecutionPolicy
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+
         policy = ExecutionPolicy(AutomationLevel.LEVEL_3_FULLY_AUTONOMOUS)
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -658,21 +735,21 @@ class TestExecutionPolicy:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         can_execute, _ = policy.can_auto_execute(adjustment)
         assert can_execute is True
 
 
 class TestAutonomousExecutor:
     """Test AutonomousExecutor."""
-    
+
     def test_get_status(self):
         """Test getting executor status."""
         from codex.cognitive.autonomous_executor import AutonomousExecutor
-        
+
         executor = AutonomousExecutor()
         status = executor.get_status()
-        
+
         assert "automation_level" in status
         assert "pending_approvals" in status
 
@@ -683,51 +760,51 @@ class TestAutonomousExecutor:
 
 class TestAuditEventType:
     """Test AuditEventType enum."""
-    
+
     def test_audit_event_types(self):
         """Test audit event types."""
         from codex.cognitive.safety_guards import AuditEventType
-        
+
         assert AuditEventType.ADJUSTMENT_EXECUTED.value == "adjustment_executed"
         assert AuditEventType.RATE_LIMIT_HIT.value == "rate_limit_hit"
 
 
 class TestRateLimit:
     """Test RateLimit."""
-    
+
     def test_rate_limit_allows_within_limit(self):
         """Test rate limit allows actions within limit."""
         from codex.cognitive.safety_guards import RateLimit
-        
+
         limit = RateLimit("test", max_count=3, window_hours=24)
-        
+
         # First 3 should be allowed
         for _ in range(3):
             allowed, _ = limit.check_and_increment()
             assert allowed is True
-        
+
         # 4th should be blocked
         allowed, reason = limit.check_and_increment()
         assert allowed is False
         assert "exceeded" in reason
-    
+
     def test_rate_limit_resets_after_window(self):
         """Test rate limit resets after window expires."""
         from codex.cognitive.safety_guards import RateLimit
-        
+
         limit = RateLimit("test", max_count=2, window_hours=1)
-        
+
         # Use up limit
         limit.check_and_increment()
         limit.check_and_increment()
-        
+
         # Should be blocked
         allowed, _ = limit.check_and_increment()
         assert allowed is False
-        
+
         # Simulate window expiry
         limit.window_start = datetime.now(timezone.utc) - timedelta(hours=2)
-        
+
         # Should be allowed now
         allowed, _ = limit.check_and_increment()
         assert allowed is True
@@ -735,14 +812,14 @@ class TestRateLimit:
 
 class TestScopeRestriction:
     """Test ScopeRestriction."""
-    
+
     def test_scope_allows_unblocked(self):
         """Test scope allows unblocked adjustments."""
-        from codex.cognitive.safety_guards import ScopeRestriction
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+        from codex.cognitive.safety_guards import ScopeRestriction
+
         scope = ScopeRestriction(name="test", description="Test scope")
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -753,21 +830,21 @@ class TestScopeRestriction:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         allowed, _ = scope.check_adjustment(adjustment)
         assert allowed is True
-    
+
     def test_scope_blocks_adjustment_type(self):
         """Test scope blocks specific adjustment types."""
-        from codex.cognitive.safety_guards import ScopeRestriction
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+        from codex.cognitive.safety_guards import ScopeRestriction
+
         scope = ScopeRestriction(
             name="test",
             description="Test scope",
             blocked_adjustment_types=["remove_objective"]
         )
-        
+
         adjustment = Adjustment(
             id="ADJ-001",
             rule_id="test",
@@ -778,7 +855,7 @@ class TestScopeRestriction:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-        
+
         allowed, reason = scope.check_adjustment(adjustment)
         assert allowed is False
         assert "blocked" in reason
@@ -786,82 +863,82 @@ class TestScopeRestriction:
 
 class TestAuditLog:
     """Test AuditLog."""
-    
+
     def test_log_event(self):
         """Test logging an audit event."""
-        from codex.cognitive.safety_guards import AuditLog, AuditEventType
-        
+        from codex.cognitive.safety_guards import AuditEventType, AuditLog
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log = AuditLog(Path(tmpdir) / "audit.json")
-            
+
             event = log.log_event(
                 AuditEventType.ADJUSTMENT_EXECUTED,
                 "test_user",
                 {"adjustment_id": "ADJ-001"}
             )
-            
+
             assert event.id.startswith("AUD-")
             assert event.actor == "test_user"
-    
+
     def test_get_events_filtered(self):
         """Test getting filtered events."""
-        from codex.cognitive.safety_guards import AuditLog, AuditEventType
-        
+        from codex.cognitive.safety_guards import AuditEventType, AuditLog
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log = AuditLog(Path(tmpdir) / "audit.json")
-            
+
             log.log_event(AuditEventType.ADJUSTMENT_EXECUTED, "user1", {})
             log.log_event(AuditEventType.RATE_LIMIT_HIT, "system", {})
             log.log_event(AuditEventType.ADJUSTMENT_EXECUTED, "user2", {})
-            
+
             executed = log.get_events(event_type=AuditEventType.ADJUSTMENT_EXECUTED)
             assert len(executed) == 2
 
 
 class TestSafetyGuard:
     """Test SafetyGuard."""
-    
+
     def test_pause_and_resume_automation(self):
         """Test pausing and resuming automation."""
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog
-        
+        from codex.cognitive.safety_guards import AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
-            
+
             assert guard.is_paused is False
-            
+
             guard.pause_automation("admin", "Maintenance")
             assert guard.is_paused is True
-            
+
             guard.resume_automation("admin")
             assert guard.is_paused is False
-    
+
     def test_block_and_unblock_rule(self):
         """Test blocking and unblocking rules."""
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog
-        
+        from codex.cognitive.safety_guards import AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
-            
+
             guard.block_rule("test-rule", "admin", "Testing")
             assert "test-rule" in guard.scope.blocked_rules
-            
+
             guard.unblock_rule("test-rule", "admin")
             assert "test-rule" not in guard.scope.blocked_rules
-    
+
     def test_check_adjustment_when_paused(self):
         """Test adjustment blocked when paused."""
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog
         from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
-        
+        from codex.cognitive.safety_guards import AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
-            
+
             guard.pause_automation("admin", "Test")
-            
+
             adjustment = Adjustment(
                 id="ADJ-001",
                 rule_id="test",
@@ -872,39 +949,39 @@ class TestSafetyGuard:
                 status="proposed",
                 proposed_at=datetime.now(timezone.utc)
             )
-            
+
             allowed, reason = guard.check_adjustment(adjustment)
             assert allowed is False
             assert "paused" in reason
-    
+
     def test_generate_governance_report(self):
         """Test governance report generation."""
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog, AuditEventType
-        
+        from codex.cognitive.safety_guards import AuditEventType, AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
-            
+
             # Log some events
             audit_log.log_event(AuditEventType.ADJUSTMENT_EXECUTED, "system", {})
             audit_log.log_event(AuditEventType.RATE_LIMIT_HIT, "system", {})
-            
+
             report = guard.generate_governance_report(period_days=7)
-            
+
             assert "total_events" in report
             assert "events_by_type" in report
             assert report["total_events"] == 2
-    
+
     def test_get_safety_status(self):
         """Test getting safety status."""
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog
-        
+        from codex.cognitive.safety_guards import AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
-            
+
             status = guard.get_safety_status()
-            
+
             assert "is_paused" in status
             assert "blocked_rules" in status
             assert "rate_limits" in status
@@ -916,45 +993,53 @@ class TestSafetyGuard:
 
 class TestPlan3Integration:
     """Integration tests for Plan 3."""
-    
+
     def test_full_pipeline(self):
         """Test full objective adjustment pipeline."""
-        from codex.cognitive.objective_analyzer import ObjectiveAnalyzer, MetricStore, MetricType
+        from codex.cognitive.autonomous_executor import (
+            AutomationLevel,
+            AutonomousExecutor,
+            ExecutionPolicy,
+        )
         from codex.cognitive.objective_adjuster import ObjectiveAdjuster, ObjectiveStore
-        from codex.cognitive.autonomous_executor import AutonomousExecutor, AutomationLevel, ExecutionPolicy
-        from codex.cognitive.safety_guards import SafetyGuard, AuditLog
-        
+        from codex.cognitive.objective_analyzer import (
+            MetricStore,
+            MetricType,
+            ObjectiveAnalyzer,
+        )
+        from codex.cognitive.safety_guards import AuditLog, SafetyGuard
+
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
-            
+
             # Setup components
             metric_store = MetricStore(tmppath / "metrics.json")
             obj_store = ObjectiveStore(tmppath / "objectives.json")
             audit_log = AuditLog(tmppath / "audit.json")
-            
+
             analyzer = ObjectiveAnalyzer(store=metric_store)
             adjuster = ObjectiveAdjuster(analyzer=analyzer, store=obj_store)
             _ = SafetyGuard(audit_log=audit_log)  # Guard created but used implicitly via audit_log
             policy = ExecutionPolicy(AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS)
             executor = AutonomousExecutor(adjuster=adjuster, policy=policy)
-            
+
             # Record low coverage
             analyzer.record_metric(MetricType.COVERAGE, 45.0)
-            
+
             # Generate health report
             report = analyzer.generate_health_report()
             assert report.overall_status == "critical"
-            
+
             # Run evaluation cycle
             result = executor.run_evaluation_cycle()
             assert "adjustments_proposed" in result
-    
+
     def test_convenience_functions(self):
         """Test convenience functions work."""
-        from codex.cognitive.objective_analyzer import get_health_report
         from codex.cognitive.autonomous_executor import run_advisory_mode
+        from codex.cognitive.objective_analyzer import get_health_report
         from codex.cognitive.safety_guards import get_governance_report
-        
+
         # These should not raise
         # Note: They use default paths which may not exist in test
         # So we just check they're callable

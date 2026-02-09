@@ -21,27 +21,30 @@ from typing import Any, Callable, Optional, Union
 logger = logging.getLogger(__name__)
 
 try:
-    import torch
-    import torch.nn as nn
+    from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
+        CheckpointImpl,
+        apply_activation_checkpointing,
+        checkpoint_wrapper,
+    )
+    from torch.distributed.fsdp import (
+        BackwardPrefetch,
+        CPUOffload,
+        FullStateDictConfig,
+        MixedPrecision,
+        ShardedStateDictConfig,
+        ShardingStrategy,
+        StateDictType,
+    )
     from torch.distributed.fsdp import (
         FullyShardedDataParallel as FSDP,
-        ShardingStrategy,
-        MixedPrecision,
-        CPUOffload,
-        BackwardPrefetch,
-        StateDictType,
-        FullStateDictConfig,
-        ShardedStateDictConfig,
     )
     from torch.distributed.fsdp.wrap import (
         size_based_auto_wrap_policy,
         transformer_auto_wrap_policy,
     )
-    from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
-        checkpoint_wrapper,
-        CheckpointImpl,
-        apply_activation_checkpointing,
-    )
+
+    import torch
+    import torch.nn as nn
     # Verify torch is functional
     _ = torch.Tensor
     TORCH_AVAILABLE = True

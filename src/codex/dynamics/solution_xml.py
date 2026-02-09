@@ -16,7 +16,9 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 """Emit unmanaged Dynamics 365 Solution XML from config-as-data."""
 
@@ -25,10 +27,11 @@ import json
 from pathlib import Path
 
 try:
-    from defusedxml.ElementTree import tostring
     # Note: defusedxml.ElementTree doesn't re-export Element/SubElement
     # We use xml.etree for construction (safe) and defusedxml for serialization (extra safety)
     from xml.etree.ElementTree import Element, SubElement
+
+    from defusedxml.ElementTree import tostring
 except ImportError as exc:
     logger.debug(f"ImportError: {exc}")
     raise ImportError(

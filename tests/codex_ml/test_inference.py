@@ -9,7 +9,7 @@ class TestInference:
         """Test inference with single input."""
         # Arrange
         input_text = "Hello, world!"
-        
+
         # Assert
         assert len(input_text) > 0
 
@@ -17,7 +17,7 @@ class TestInference:
         """Test inference with batch input."""
         # Arrange
         inputs = ["Hello", "World", "Test"]
-        
+
         # Assert
         assert len(inputs) == 3
 
@@ -25,7 +25,7 @@ class TestInference:
         """Test inference with max length constraint."""
         # Arrange
         max_length = 512
-        
+
         # Assert
         assert max_length > 0
 
@@ -33,7 +33,7 @@ class TestInference:
         """Test inference temperature parameter."""
         # Arrange
         temperature = 0.7
-        
+
         # Assert
         assert 0 <= temperature <= 2
 
@@ -41,7 +41,7 @@ class TestInference:
         """Test inference top-k parameter."""
         # Arrange
         top_k = 50
-        
+
         # Assert
         assert top_k > 0
 
@@ -49,7 +49,7 @@ class TestInference:
         """Test inference top-p parameter."""
         # Arrange
         top_p = 0.9
-        
+
         # Assert
         assert 0 < top_p <= 1
 
@@ -57,7 +57,7 @@ class TestInference:
         """Test greedy decoding inference."""
         # Arrange
         do_sample = False
-        
+
         # Assert
         assert do_sample is False
 
@@ -65,7 +65,7 @@ class TestInference:
         """Test beam search inference."""
         # Arrange
         num_beams = 4
-        
+
         # Assert
         assert num_beams > 1
 
@@ -73,7 +73,7 @@ class TestInference:
         """Test streaming output inference."""
         # Arrange
         stream = True
-        
+
         # Assert
         assert stream is True
 
@@ -81,7 +81,7 @@ class TestInference:
         """Test inference with stop tokens."""
         # Arrange
         stop_tokens = [".", "!", "?"]
-        
+
         # Assert
         assert len(stop_tokens) == 3
 
@@ -89,7 +89,7 @@ class TestInference:
         """Test inference with attention mask."""
         # Arrange
         attention_mask = [1, 1, 1, 0, 0]
-        
+
         # Assert
         assert sum(attention_mask) == 3
 
@@ -97,7 +97,7 @@ class TestInference:
         """Test inference with padding."""
         # Arrange
         pad_token_id = 0
-        
+
         # Assert
         assert pad_token_id >= 0
 
@@ -105,7 +105,7 @@ class TestInference:
         """Test inference returning logits."""
         # Arrange
         return_logits = True
-        
+
         # Assert
         assert return_logits is True
 
@@ -113,7 +113,7 @@ class TestInference:
         """Test inference returning hidden states."""
         # Arrange
         output_hidden_states = True
-        
+
         # Assert
         assert output_hidden_states is True
 
@@ -121,7 +121,7 @@ class TestInference:
         """Test inference returning attention."""
         # Arrange
         output_attentions = True
-        
+
         # Assert
         assert output_attentions is True
 
@@ -129,7 +129,7 @@ class TestInference:
         """Test classification inference."""
         # Arrange
         num_labels = 3
-        
+
         # Assert
         assert num_labels > 0
 
@@ -137,7 +137,7 @@ class TestInference:
         """Test regression inference."""
         # Arrange
         num_labels = 1
-        
+
         # Assert
         assert num_labels == 1
 
@@ -145,7 +145,7 @@ class TestInference:
         """Test token classification inference."""
         # Arrange
         task = "token_classification"
-        
+
         # Assert
         assert task == "token_classification"
 
@@ -153,7 +153,7 @@ class TestInference:
         """Test question answering inference."""
         # Arrange
         task = "question_answering"
-        
+
         # Assert
         assert task == "question_answering"
 
@@ -161,7 +161,7 @@ class TestInference:
         """Test summarization inference."""
         # Arrange
         task = "summarization"
-        
+
         # Assert
         assert task == "summarization"
 
@@ -170,7 +170,7 @@ class TestInference:
         # Arrange
         source_lang = "en"
         target_lang = "fr"
-        
+
         # Assert
         assert source_lang != target_lang
 
@@ -178,7 +178,7 @@ class TestInference:
         """Test embedding extraction inference."""
         # Arrange
         extract_embeddings = True
-        
+
         # Assert
         assert extract_embeddings is True
 
@@ -186,7 +186,7 @@ class TestInference:
         """Test inference timeout."""
         # Arrange
         timeout_seconds = 60
-        
+
         # Assert
         assert timeout_seconds > 0
 
@@ -194,7 +194,7 @@ class TestInference:
         """Test inference batch size."""
         # Arrange
         batch_size = 32
-        
+
         # Assert
         assert batch_size > 0
 
@@ -202,7 +202,7 @@ class TestInference:
         """Test inference device mapping."""
         # Arrange
         device_map = "auto"
-        
+
         # Assert
         assert device_map in ["auto", "cpu", "cuda"]
 
@@ -210,7 +210,7 @@ class TestInference:
         """Test mixed precision inference."""
         # Arrange
         fp16 = True
-        
+
         # Assert
         assert fp16 is True
 
@@ -218,7 +218,7 @@ class TestInference:
         """Test inference cache key generation."""
         # Arrange
         cache_key = "model_v1_input_hash"
-        
+
         # Assert
         assert len(cache_key) > 0
 
@@ -226,6 +226,6 @@ class TestInference:
         """Test inference retry on failure."""
         # Arrange
         max_retries = 3
-        
+
         # Assert
         assert max_retries > 0

@@ -16,10 +16,12 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
+import os
+
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-import os
 
 # Simple in-memory mapping for dev usage. Production should consult a secret manager.
 DEV_KEYS: dict[str, dict] = {

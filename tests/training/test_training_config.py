@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 
-
 def test_training_config_defaults() -> None:
     from src.training.config import TrainingConfig
 

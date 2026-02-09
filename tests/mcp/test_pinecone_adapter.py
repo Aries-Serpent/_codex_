@@ -8,6 +8,7 @@ Test module for pinecone adapter.
 # Tests are import-safe and do not require provider credentials or network access.
 
 import pytest
+
 from src.mcp.backends.pinecone_adapter import PineconeAdapter
 
 

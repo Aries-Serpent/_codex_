@@ -30,7 +30,7 @@ class TestLRUCache:
     def test_initialization(self):
         """Test LRU cache initialization"""
         cache = LRUCache(maxsize=100)
-        
+
         assert cache.maxsize == 100
         assert len(cache.cache) == 0
         assert cache.hits == 0
@@ -39,9 +39,9 @@ class TestLRUCache:
     def test_get_miss(self):
         """Test cache miss on get"""
         cache = LRUCache()
-        
+
         result = cache.get("nonexistent")
-        
+
         assert result is None
         assert cache.misses == 1
         assert cache.hits == 0
@@ -49,10 +49,10 @@ class TestLRUCache:
     def test_put_and_get_hit(self):
         """Test putting value and getting cache hit"""
         cache = LRUCache()
-        
+
         cache.put("key1", "value1")
         result = cache.get("key1")
-        
+
         assert result == "value1"
         assert cache.hits == 1
         assert cache.misses == 0
@@ -60,27 +60,27 @@ class TestLRUCache:
     def test_put_updates_existing(self):
         """Test that putting existing key updates value"""
         cache = LRUCache()
-        
+
         cache.put("key1", "value1")
         cache.put("key1", "value2")
         result = cache.get("key1")
-        
+
         assert result == "value2"
         assert len(cache.cache) == 1
 
     def test_lru_eviction(self):
         """Test LRU eviction when maxsize exceeded"""
         cache = LRUCache(maxsize=3)
-        
+
         # Fill cache
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
         assert len(cache.cache) == 3
-        
+
         # Add one more - should evict key1 (oldest)
         cache.put("key4", "value4")
-        
+
         assert len(cache.cache) == 3
         assert cache.get("key1") is None  # Evicted
         assert cache.get("key2") == "value2"
@@ -90,17 +90,17 @@ class TestLRUCache:
     def test_lru_ordering_with_access(self):
         """Test that accessing items updates LRU order"""
         cache = LRUCache(maxsize=3)
-        
+
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
-        
+
         # Access key1 to make it recently used
         cache.get("key1")
-        
+
         # Add new item - should evict key2 (now oldest)
         cache.put("key4", "value4")
-        
+
         assert cache.get("key1") == "value1"  # Still present
         assert cache.get("key2") is None  # Evicted
         assert cache.get("key3") == "value3"
@@ -109,18 +109,18 @@ class TestLRUCache:
     def test_clear(self):
         """Test clearing cache"""
         cache = LRUCache()
-        
+
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.get("key1")
         cache.get("nonexistent")
-        
+
         assert len(cache.cache) > 0
         assert cache.hits > 0
         assert cache.misses > 0
-        
+
         cache.clear()
-        
+
         assert len(cache.cache) == 0
         assert cache.hits == 0
         assert cache.misses == 0
@@ -128,20 +128,20 @@ class TestLRUCache:
     def test_get_stats(self):
         """Test cache statistics"""
         cache = LRUCache(maxsize=100)
-        
+
         # Add some entries
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
-        
+
         # Make some hits and misses
         cache.get("key1")  # Hit
         cache.get("key2")  # Hit
         cache.get("key4")  # Miss
         cache.get("key5")  # Miss
-        
+
         stats = cache.get_stats()
-        
+
         assert stats["size"] == 3
         assert stats["maxsize"] == 100
         assert stats["hits"] == 2
@@ -151,9 +151,9 @@ class TestLRUCache:
     def test_get_stats_empty_cache(self):
         """Test statistics on empty cache"""
         cache = LRUCache()
-        
+
         stats = cache.get_stats()
-        
+
         assert stats["size"] == 0
         assert stats["hits"] == 0
         assert stats["misses"] == 0
@@ -168,24 +168,24 @@ class TestCachedRetriever:
         """Create a sample index for testing"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create sample files
             docs_dir = tmpdir / "docs"
             docs_dir.mkdir()
-            
+
             files = []
             contents = [
                 "Python is a high-level programming language. " * 20,
                 "Machine learning uses algorithms to learn from data. " * 20,
                 "Docker is a containerization platform. " * 20,
             ]
-            
+
             for i, content in enumerate(contents):
                 file_path = docs_dir / f"doc{i}.txt"
                 with open(file_path, "w") as f:
                     f.write(content)
                 files.append(file_path)
-            
+
             # Build index
             index_dir = tmpdir / "indices"
             build_index_from_files(
@@ -196,7 +196,7 @@ class TestCachedRetriever:
                 chunk_size=300,
                 overlap=50,
             )
-            
+
             yield {
                 "index_dir": str(index_dir),
                 "index_name": "test_docs",
@@ -213,7 +213,7 @@ class TestCachedRetriever:
             cache_maxsize=500,
             normalize_queries=True,
         )
-        
+
         assert retriever is not None
         assert retriever.cache_ttl == 3600
         assert retriever.normalize_queries is True
@@ -228,14 +228,14 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             normalize_queries=True,
         )
-        
+
         # Test normalization
         q1 = "  Python   Programming  "
         q2 = "python programming"
-        
+
         normalized1 = retriever._normalize_query(q1)
         normalized2 = retriever._normalize_query(q2)
-        
+
         assert normalized1 == normalized2
         assert normalized1 == "python programming"
 
@@ -247,10 +247,10 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             normalize_queries=False,
         )
-        
+
         q = "  Python   Programming  "
         normalized = retriever._normalize_query(q)
-        
+
         assert normalized == q  # Should be unchanged
 
     def test_cache_key_generation(self, sample_index):
@@ -260,16 +260,16 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         # Same query should produce same key
         key1 = retriever._make_cache_key("Python programming", top_k=5, min_score=0.7)
         key2 = retriever._make_cache_key("Python programming", top_k=5, min_score=0.7)
         assert key1 == key2
-        
+
         # Different queries should produce different keys
         key3 = retriever._make_cache_key("Machine learning", top_k=5, min_score=0.7)
         assert key1 != key3
-        
+
         # Different parameters should produce different keys
         key4 = retriever._make_cache_key("Python programming", top_k=10, min_score=0.7)
         assert key1 != key4
@@ -282,11 +282,11 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             normalize_queries=True,
         )
-        
+
         # These should produce the same key after normalization
         key1 = retriever._make_cache_key("  Python   Programming  ", top_k=5, min_score=None)
         key2 = retriever._make_cache_key("python programming", top_k=5, min_score=None)
-        
+
         assert key1 == key2
 
     def test_cache_hit(self, sample_index):
@@ -297,15 +297,15 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             cache_ttl=3600,
         )
-        
+
         query = "Python programming"
-        
+
         # First query - cache miss
         results1 = retriever.query_with_cache(query, top_k=3)
         assert len(results1) > 0
         assert retriever.query_cache.misses == 1
         assert retriever.query_cache.hits == 0
-        
+
         # Second query - cache hit
         results2 = retriever.query_with_cache(query, top_k=3)
         assert results1 == results2
@@ -319,17 +319,17 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         query = "Python programming"
-        
+
         # Query with top_k=3
         results1 = retriever.query_with_cache(query, top_k=3)
         assert len(results1) <= 3
-        
+
         # Query with top_k=5 - should be cache miss
         results2 = retriever.query_with_cache(query, top_k=5)
         assert len(results2) <= 5
-        
+
         # Should have 2 misses (different params)
         assert retriever.query_cache.misses == 2
 
@@ -341,21 +341,21 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             cache_ttl=1,  # 1 second TTL
         )
-        
+
         cache_key = retriever._make_cache_key("test", top_k=5, min_score=None)
-        
+
         # Initially invalid (not in cache)
         assert not retriever._is_cache_valid(cache_key)
-        
+
         # Add to cache
         retriever.cache_timestamps[cache_key] = time.time()
-        
+
         # Should be valid immediately
         assert retriever._is_cache_valid(cache_key)
-        
+
         # Wait for TTL to expire
         time.sleep(1.1)
-        
+
         # Should now be invalid
         assert not retriever._is_cache_valid(cache_key)
 
@@ -367,16 +367,16 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             cache_ttl=1,  # 1 second TTL
         )
-        
+
         query = "Python programming"
-        
+
         # First query
         retriever.query_with_cache(query, top_k=3)
         assert retriever.query_cache.misses == 1
-        
+
         # Wait for expiration
         time.sleep(1.1)
-        
+
         # Second query after expiration - should be cache miss
         retriever.query_with_cache(query, top_k=3)
         assert retriever.query_cache.misses == 2
@@ -388,17 +388,17 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         # Perform some queries
         retriever.query_with_cache("Python", top_k=3)
         retriever.query_with_cache("Machine learning", top_k=3)
-        
+
         assert len(retriever.query_cache.cache) > 0
         assert len(retriever.cache_timestamps) > 0
-        
+
         # Clear cache
         retriever.clear_cache()
-        
+
         assert len(retriever.query_cache.cache) == 0
         assert len(retriever.cache_timestamps) == 0
 
@@ -412,14 +412,14 @@ class TestCachedRetriever:
             cache_maxsize=1000,
             normalize_queries=True,
         )
-        
+
         # Perform some queries
         retriever.query_with_cache("Python", top_k=3)
         retriever.query_with_cache("Python", top_k=3)  # Hit
         retriever.query_with_cache("Machine learning", top_k=3)
-        
+
         stats = retriever.get_cache_stats()
-        
+
         assert stats["ttl"] == 3600
         assert stats["normalize_queries"] is True
         assert stats["size"] == 2  # Two unique queries
@@ -436,20 +436,20 @@ class TestCachedRetriever:
             tenant_id=sample_index["tenant_id"],
             cache_ttl=1,  # 1 second TTL
         )
-        
+
         # Add some queries
         retriever.query_with_cache("Python", top_k=3)
         retriever.query_with_cache("Machine learning", top_k=3)
-        
+
         assert len(retriever.query_cache.cache) == 2
         assert len(retriever.cache_timestamps) == 2
-        
+
         # Wait for expiration
         time.sleep(1.1)
-        
+
         # Manually invalidate expired
         retriever.invalidate_expired()
-        
+
         # Expired entries should be removed
         assert len(retriever.query_cache.cache) == 0
         assert len(retriever.cache_timestamps) == 0
@@ -461,17 +461,17 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         query = "Python programming"
-        
+
         # Query with min_score
         results1 = retriever.query_with_cache(query, top_k=5, min_score=0.5)
-        
+
         # Same query should hit cache
         results2 = retriever.query_with_cache(query, top_k=5, min_score=0.5)
         assert results1 == results2
         assert retriever.query_cache.hits == 1
-        
+
         # Different min_score should miss cache
         retriever.query_with_cache(query, top_k=5, min_score=0.7)
         assert retriever.query_cache.misses == 2
@@ -483,9 +483,9 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         stats = retriever.get_cache_stats()
-        
+
         assert stats["size"] == 0
         assert stats["hits"] == 0
         assert stats["misses"] == 0
@@ -499,12 +499,12 @@ class TestCachedRetriever:
             index_name=sample_index["index_name"],
             tenant_id=sample_index["tenant_id"],
         )
-        
+
         query = "Python: what's the @difference between [] and {}?"
-        
+
         # Should handle special characters without errors
         results1 = retriever.query_with_cache(query, top_k=3)
         results2 = retriever.query_with_cache(query, top_k=3)
-        
+
         assert results1 == results2
         assert retriever.query_cache.hits == 1

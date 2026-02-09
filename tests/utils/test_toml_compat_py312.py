@@ -14,7 +14,7 @@ import pytest
 
 class TestTomlCompatibility:
     """Test TOML loading compatibility."""
-    
+
     @pytest.mark.skipif(sys.version_info < (3, 11), reason="tomllib requires 3.11+")
     def test_uses_tomllib_on_py311_plus(self):
         """Verify tomllib is imported on Python 3.11+."""
@@ -23,7 +23,7 @@ class TestTomlCompatibility:
             assert tomllib.__name__ == 'tomllib'
         except ImportError:
             pytest.fail("tomllib should be available on Python 3.11+")
-    
+
     @pytest.mark.skipif(sys.version_info < (3, 11), reason="tomllib requires 3.11+")
     def test_toml_compat_uses_tomllib(self):
         """Verify codex uses tomllib on Python 3.11+."""
@@ -33,7 +33,7 @@ class TestTomlCompatibility:
             assert hasattr(toml_compat, '_toml')
         except ImportError:
             pytest.skip("toml_compat module not available")
-    
+
     def test_loads_valid_toml(self, tmp_path):
         """Test TOML loading with Python 3.12."""
         # Create sample TOML file
@@ -51,7 +51,7 @@ torch = ">=2.0"
 testpaths = ["tests"]
 """
         toml_file.write_text(toml_content)
-        
+
         # Load with tomllib (Python 3.11+) or tomli
         try:
             import tomllib
@@ -64,11 +64,11 @@ testpaths = ["tests"]
                     data = tomli.load(f)
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
-        
+
         assert data["project"]["name"] == "test-project"
         assert data["project"]["version"] == "1.0.0"
         assert "numpy" in data["project"]["dependencies"]
-    
+
     def test_handles_binary_mode(self, tmp_path):
         """
         Verify binary mode requirement for tomllib.
@@ -78,22 +78,22 @@ testpaths = ["tests"]
         """
         toml_file = tmp_path / "test.toml"
         toml_file.write_text('[section]\nkey = "value"')
-        
+
         try:
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-        
+
         # Binary mode should work
         with open(toml_file, "rb") as f:
             data = tomllib.load(f)
         assert data["section"]["key"] == "value"
-        
+
         # Text mode should raise TypeError
         with pytest.raises(TypeError):
             with open(toml_file, "r") as f:
                 tomllib.load(f)
-    
+
     def test_complex_toml_structure(self, tmp_path):
         """Test loading complex TOML structures."""
         toml_file = tmp_path / "complex.toml"
@@ -130,7 +130,7 @@ python_files = ["test_*.py"]
 addopts = "-v --strict-markers"
 """
         toml_file.write_text(toml_content)
-        
+
         try:
             import tomllib
             with open(toml_file, "rb") as f:
@@ -142,7 +142,7 @@ addopts = "-v --strict-markers"
                     data = tomli.load(f)
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
-        
+
         assert data["project"]["name"] == "codex-ml"
         assert len(data["project"]["dependencies"]) == 2
         assert "dev" in data["project"]["optional-dependencies"]
@@ -153,15 +153,15 @@ addopts = "-v --strict-markers"
 
 class TestPyprojectTomlParsing:
     """Test parsing actual pyproject.toml file."""
-    
+
     def test_parse_repository_pyproject(self):
         """Test parsing the repository's pyproject.toml."""
         repo_root = Path(__file__).parent.parent.parent
         pyproject_path = repo_root / "pyproject.toml"
-        
+
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -173,12 +173,12 @@ class TestPyprojectTomlParsing:
                     data = tomli.load(f)
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
-        
+
         # Verify expected structure
         assert "project" in data
         assert "name" in data["project"]
         assert "dependencies" in data["project"]
-        
+
         # Check Python version requirement
         if "requires-python" in data["project"]:
             # Repository supports Python >=3.10, validate the requirement
@@ -194,15 +194,15 @@ class TestPyprojectTomlParsing:
                 # Fallback to string matching if packaging is not available
                 assert any(v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"]), \
                     f"Expected Python 3.10+ support, got: {requires_python}"
-    
+
     def test_dependency_extraction(self):
         """Test extracting dependencies from pyproject.toml."""
         repo_root = Path(__file__).parent.parent.parent
         pyproject_path = repo_root / "pyproject.toml"
-        
+
         if not pyproject_path.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         try:
             import tomllib
             with open(pyproject_path, "rb") as f:
@@ -214,11 +214,11 @@ class TestPyprojectTomlParsing:
                     data = tomli.load(f)
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
-        
+
         deps = data.get("project", {}).get("dependencies", [])
         assert isinstance(deps, list)
         assert len(deps) > 0
-        
+
         # Check for known dependencies
         dep_names = [d.split("[")[0].split(">=")[0].split("==")[0].split("<")[0] for d in deps]
         assert any("torch" in name.lower() for name in dep_names)
@@ -227,7 +227,7 @@ class TestPyprojectTomlParsing:
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific tests")
 class TestPython312TomlFeatures:
     """Test Python 3.12-specific TOML features."""
-    
+
     def test_tomllib_load_performance(self, tmp_path):
         """
         Test tomllib performance in Python 3.12.
@@ -235,7 +235,7 @@ class TestPython312TomlFeatures:
         Python 3.12 has optimized tomllib implementation.
         """
         import time
-        
+
         # Create a moderately sized TOML file
         toml_file = tmp_path / "large.toml"
         sections = []
@@ -248,20 +248,20 @@ key3 = 123
 key4 = true
 """)
         toml_file.write_text("\n".join(sections))
-        
+
         try:
             import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
-        
+
         start = time.time()
         with open(toml_file, "rb") as f:
             data = tomllib.load(f)
         elapsed = time.time() - start
-        
+
         assert len(data) == 100
         assert elapsed < 1.0  # Should be fast
-    
+
     def test_unicode_handling(self, tmp_path):
         """Test Unicode handling in TOML files."""
         toml_file = tmp_path / "unicode.toml"
@@ -272,14 +272,14 @@ description = "Test with émojis 🚀 and ümlauts"
 author = "José García"
 """
         toml_file.write_text(toml_content, encoding="utf-8")
-        
+
         try:
             import tomllib
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             pytest.skip("tomllib not available")
-        
+
         assert data["project"]["name"] == "测试项目"
         assert "🚀" in data["project"]["description"]
         assert data["project"]["author"] == "José García"
@@ -287,12 +287,12 @@ author = "José García"
 
 class TestTomlErrorHandling:
     """Test TOML error handling."""
-    
+
     def test_invalid_toml_syntax(self, tmp_path):
         """Test handling of invalid TOML syntax."""
         toml_file = tmp_path / "invalid.toml"
         toml_file.write_text("this is not valid TOML syntax [[")
-        
+
         try:
             import tomllib
             with pytest.raises(tomllib.TOMLDecodeError):
@@ -306,7 +306,7 @@ class TestTomlErrorHandling:
                         tomli.load(f)
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
-    
+
     def test_missing_file(self):
         """Test handling of missing TOML file."""
         try:

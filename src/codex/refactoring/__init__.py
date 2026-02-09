@@ -6,9 +6,9 @@ Includes deterritorialization engine for breaking rigid patterns.
 
 from .deterritorialization_engine import (
     DeterritorializationEngine,
+    LineOfFlight,
     RigidityDetector,
     RigidityType,
-    LineOfFlight,
 )
 
 __all__ = [

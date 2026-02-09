@@ -11,19 +11,19 @@ Features:
 - Adjustment constraints
 """
 
+import json
 from dataclasses import dataclass, field
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Callable
-import json
 
 from .objective_analyzer import (
-    ObjectiveAnalyzer,
-    MetricType,
-    TrendDirection,
     AlertSeverity,
     HealthReport,
+    MetricType,
+    ObjectiveAnalyzer,
+    TrendDirection,
     create_analyzer,
 )
 
@@ -74,7 +74,7 @@ class Objective:
     updated_at: datetime
     deadline: datetime | None = None
     tags: list[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary."""
         return {
@@ -91,7 +91,7 @@ class Objective:
             "deadline": self.deadline.isoformat() if self.deadline else None,
             "tags": self.tags
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict) -> "Objective":
         """Create from dictionary."""
@@ -124,7 +124,7 @@ class AdjustmentRule:
     enabled: bool = True
     cooldown_hours: int = 24  # Minimum hours between applications
     last_applied: datetime | None = None
-    
+
     def can_apply(self) -> bool:
         """Check if rule can be applied (respects cooldown)."""
         if not self.enabled:
@@ -133,7 +133,7 @@ class AdjustmentRule:
             return True
         cooldown = timedelta(hours=self.cooldown_hours)
         return datetime.now(timezone.utc) - self.last_applied >= cooldown
-    
+
     def check_condition(self, report: HealthReport) -> bool:
         """Check if the rule's condition is met."""
         if not self.can_apply():
@@ -157,7 +157,7 @@ class Adjustment:
     proposed_at: datetime
     applied_at: datetime | None = None
     applied_by: str | None = None  # "autonomous" or user identifier
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary."""
         return {
@@ -176,7 +176,7 @@ class Adjustment:
 
 class ObjectiveStore:
     """Persistent storage for objectives."""
-    
+
     def __init__(self, store_path: Path | None = None):
         """Initialize the objective store."""
         if store_path is None:
@@ -185,7 +185,7 @@ class ObjectiveStore:
         self._objectives: dict[str, dict] = {}
         self._adjustments: list[dict] = []
         self._load()
-    
+
     def _load(self) -> None:
         """Load from file."""
         if self.store_path.exists():
@@ -197,7 +197,7 @@ class ObjectiveStore:
             except (json.JSONDecodeError, IOError):
                 self._objectives = {}
                 self._adjustments = []
-    
+
     def _save(self) -> None:
         """Save to file."""
         self.store_path.parent.mkdir(parents=True, exist_ok=True)
@@ -206,24 +206,24 @@ class ObjectiveStore:
                 "objectives": self._objectives,
                 "adjustments": self._adjustments
             }, f, indent=2)
-    
+
     def add_objective(self, objective: Objective) -> None:
         """Add or update an objective."""
         self._objectives[objective.id] = objective.to_dict()
         self._save()
-    
+
     def get_objective(self, objective_id: str) -> Objective | None:
         """Get an objective by ID."""
         data = self._objectives.get(objective_id)
         return Objective.from_dict(data) if data else None
-    
+
     def get_all_objectives(self, status: str | None = None) -> list[Objective]:
         """Get all objectives, optionally filtered by status."""
         objectives = [Objective.from_dict(d) for d in self._objectives.values()]
         if status:
             objectives = [o for o in objectives if o.status == status]
         return sorted(objectives, key=lambda o: (o.priority.value, o.created_at))
-    
+
     def remove_objective(self, objective_id: str) -> bool:
         """Remove an objective."""
         if objective_id in self._objectives:
@@ -231,7 +231,7 @@ class ObjectiveStore:
             self._save()
             return True
         return False
-    
+
     def add_adjustment(self, adjustment: Adjustment) -> None:
         """Add an adjustment record."""
         self._adjustments.append(adjustment.to_dict())
@@ -239,7 +239,7 @@ class ObjectiveStore:
         if len(self._adjustments) > 1000:
             self._adjustments = self._adjustments[-1000:]
         self._save()
-    
+
     def get_adjustments(self, limit: int = 100) -> list[Adjustment]:
         """Get recent adjustments."""
         return [
@@ -265,7 +265,7 @@ class ObjectiveAdjuster:
     
     This is the core component of Plan 3 Phase 3.2: Objective Adjustment Logic.
     """
-    
+
     def __init__(
         self,
         analyzer: ObjectiveAnalyzer | None = None,
@@ -277,7 +277,7 @@ class ObjectiveAdjuster:
         self.rules: list[AdjustmentRule] = []
         self._setup_default_rules()
         self._adjustment_counter = 0
-    
+
     def _setup_default_rules(self) -> None:
         """Set up the default adjustment rules."""
         # Rule: Coverage below target
@@ -286,7 +286,7 @@ class ObjectiveAdjuster:
             name="Coverage Below Target",
             trigger=AdjustmentTrigger.THRESHOLD_BREACH,
             condition=lambda r: any(
-                a.metric_type == MetricType.COVERAGE 
+                a.metric_type == MetricType.COVERAGE
                 for a in r.alerts
             ),
             action=AdjustmentType.ADD_OBJECTIVE,
@@ -301,14 +301,14 @@ class ObjectiveAdjuster:
             },
             priority=10
         ))
-        
+
         # Rule: Security regression
         self.rules.append(AdjustmentRule(
             id="security_regression",
             name="Security Regression",
             trigger=AdjustmentTrigger.THRESHOLD_BREACH,
             condition=lambda r: any(
-                a.metric_type == MetricType.SECURITY and 
+                a.metric_type == MetricType.SECURITY and
                 a.severity == AlertSeverity.CRITICAL
                 for a in r.alerts
             ),
@@ -324,14 +324,14 @@ class ObjectiveAdjuster:
             },
             priority=100  # Highest priority
         ))
-        
+
         # Rule: CI/CD degradation
         self.rules.append(AdjustmentRule(
             id="ci_degradation",
             name="CI/CD Degradation",
             trigger=AdjustmentTrigger.TREND_DEGRADATION,
             condition=lambda r: any(
-                t.metric_type == MetricType.CI_CD and 
+                t.metric_type == MetricType.CI_CD and
                 t.direction == TrendDirection.DEGRADING and
                 t.change_percent < -5
                 for t in r.trends
@@ -348,7 +348,7 @@ class ObjectiveAdjuster:
             },
             priority=20
         ))
-        
+
         # Rule: Sustained excellence
         self.rules.append(AdjustmentRule(
             id="sustained_excellence",
@@ -367,12 +367,12 @@ class ObjectiveAdjuster:
             priority=1,
             cooldown_hours=168  # Once per week
         ))
-    
+
     def add_rule(self, rule: AdjustmentRule) -> None:
         """Add a custom adjustment rule."""
         self.rules.append(rule)
         self.rules.sort(key=lambda r: -r.priority)
-    
+
     def remove_rule(self, rule_id: str) -> bool:
         """Remove a rule by ID."""
         for i, rule in enumerate(self.rules):
@@ -380,7 +380,7 @@ class ObjectiveAdjuster:
                 del self.rules[i]
                 return True
         return False
-    
+
     def evaluate_rules(self) -> list[Adjustment]:
         """
         Evaluate all rules against current health report.
@@ -389,19 +389,19 @@ class ObjectiveAdjuster:
         """
         report = self.analyzer.generate_health_report()
         proposed: list[Adjustment] = []
-        
+
         for rule in sorted(self.rules, key=lambda r: -r.priority):
             if rule.check_condition(report):
                 adjustment = self._create_adjustment(rule)
                 proposed.append(adjustment)
-        
+
         return proposed
-    
+
     def _create_adjustment(self, rule: AdjustmentRule) -> Adjustment:
         """Create an adjustment from a rule."""
         self._adjustment_counter += 1
         adjustment_id = f"ADJ-{self._adjustment_counter:05d}"
-        
+
         return Adjustment(
             id=adjustment_id,
             rule_id=rule.id,
@@ -412,7 +412,7 @@ class ObjectiveAdjuster:
             status="proposed",
             proposed_at=datetime.now(timezone.utc)
         )
-    
+
     def apply_adjustment(
         self,
         adjustment: Adjustment,
@@ -424,7 +424,7 @@ class ObjectiveAdjuster:
         Returns the affected objective if applicable.
         """
         now = datetime.now(timezone.utc)
-        
+
         if adjustment.type == AdjustmentType.ADD_OBJECTIVE:
             objective = self._create_objective_from_template(
                 adjustment.parameters.get("objective_template", {})
@@ -435,15 +435,15 @@ class ObjectiveAdjuster:
             adjustment.applied_at = now
             adjustment.applied_by = applied_by
             self.store.add_adjustment(adjustment)
-            
+
             # Update rule's last_applied
             for rule in self.rules:
                 if rule.id == adjustment.rule_id:
                     rule.last_applied = now
                     break
-            
+
             return objective
-        
+
         elif adjustment.type == AdjustmentType.PRIORITY_INCREASE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
@@ -458,7 +458,7 @@ class ObjectiveAdjuster:
                     adjustment.applied_by = applied_by
                     self.store.add_adjustment(adjustment)
                     return objective
-        
+
         elif adjustment.type == AdjustmentType.PAUSE_OBJECTIVE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
@@ -473,14 +473,14 @@ class ObjectiveAdjuster:
                     adjustment.applied_by = applied_by
                     self.store.add_adjustment(adjustment)
                     return objective
-        
+
         return None
-    
+
     def _create_objective_from_template(self, template: dict) -> Objective:
         """Create an objective from a template."""
         now = datetime.now(timezone.utc)
         objective_id = f"OBJ-{int(now.timestamp())}"
-        
+
         return Objective(
             id=objective_id,
             title=template.get("title", "Untitled Objective"),
@@ -495,11 +495,11 @@ class ObjectiveAdjuster:
             deadline=None,
             tags=template.get("tags", [])
         )
-    
+
     def get_active_objectives(self) -> list[Objective]:
         """Get all active objectives sorted by priority."""
         return self.store.get_all_objectives(status="active")
-    
+
     def complete_objective(self, objective_id: str) -> bool:
         """Mark an objective as completed."""
         objective = self.store.get_objective(objective_id)
@@ -509,7 +509,7 @@ class ObjectiveAdjuster:
             self.store.add_objective(objective)
             return True
         return False
-    
+
     def create_objective(
         self,
         title: str,
@@ -536,18 +536,18 @@ class ObjectiveAdjuster:
         )
         self.store.add_objective(objective)
         return objective
-    
+
     def get_adjustment_summary(self) -> dict:
         """Get a summary of recent adjustments."""
         adjustments = self.store.get_adjustments(limit=50)
-        
+
         by_status = {}
         by_type = {}
-        
+
         for adj in adjustments:
             by_status[adj.status] = by_status.get(adj.status, 0) + 1
             by_type[adj.type.value] = by_type.get(adj.type.value, 0) + 1
-        
+
         return {
             "total_adjustments": len(adjustments),
             "by_status": by_status,

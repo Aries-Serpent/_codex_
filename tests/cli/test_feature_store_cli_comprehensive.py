@@ -7,8 +7,9 @@ Tests cover:
 - CLI argument handling
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestFeatureStoreImports:
@@ -42,15 +43,15 @@ class TestFeatureRegistration:
     def test_register_creates_feature_group(self, mock_store_class):
         """Test register command creates feature group."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['register', 'test_features', '1.0.0'])
-            
+
             # Verify store was instantiated
             assert mock_store_class.called or result.exit_code in (0, 1)
         except ImportError:
@@ -60,18 +61,18 @@ class TestFeatureRegistration:
     def test_register_with_description(self, mock_store_class):
         """Test register command with description option."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, [
                 'register', 'test_features', '1.0.0',
                 '-d', 'Test feature description'
             ])
-            
+
             # Command should complete (success or handled error)
             assert result.exit_code in (0, 1)
         except ImportError:
@@ -81,18 +82,18 @@ class TestFeatureRegistration:
     def test_register_with_custom_store_path(self, mock_store_class):
         """Test register command with custom store path."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             runner.invoke(app, [
                 'register', 'test_features', '1.0.0',
                 '--store-path', '/custom/path'
             ])
-            
+
             # Verify custom path was used
             if mock_store_class.called:
                 call_args = mock_store_class.call_args
@@ -108,16 +109,16 @@ class TestFeatureListing:
     def test_list_command_basic(self, mock_store_class):
         """Test list command basic functionality."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['list'])
-            
+
             # Command should complete
             assert result.exit_code in (0, 1)
         except ImportError:
@@ -127,16 +128,16 @@ class TestFeatureListing:
     def test_list_with_health_flag(self, mock_store_class):
         """Test list command with --health flag."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['list', '--health'])
-            
+
             assert result.exit_code in (0, 1)
         except ImportError:
             pytest.skip("typer not available")
@@ -145,16 +146,16 @@ class TestFeatureListing:
     def test_list_without_versions(self, mock_store_class):
         """Test list command with --no-versions flag."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['list', '--no-versions'])
-            
+
             assert result.exit_code in (0, 1)
         except ImportError:
             pytest.skip("typer not available")
@@ -195,14 +196,14 @@ class TestFeatureStoreErrorHandling:
     def test_register_handles_store_error(self, mock_store_class):
         """Test register command handles store errors gracefully."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store_class.side_effect = Exception("Store initialization failed")
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['register', 'test', '1.0.0'])
-            
+
             # Should exit with error code 1
             assert result.exit_code == 1
         except ImportError:
@@ -212,16 +213,16 @@ class TestFeatureStoreErrorHandling:
     def test_list_handles_empty_store(self, mock_store_class):
         """Test list command handles empty store."""
         try:
-            from typer.testing import CliRunner
             from codex_ml.cli.feature_store import app
-            
+            from typer.testing import CliRunner
+
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
             mock_store_class.return_value = mock_store
-            
+
             runner = CliRunner()
             result = runner.invoke(app, ['list'])
-            
+
             # Should show "No features registered" message
             assert result.exit_code == 0 or 'No features' in result.output
         except ImportError:

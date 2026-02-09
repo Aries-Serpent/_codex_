@@ -8,7 +8,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC_PATH = ROOT / "src"
 if str(SRC_PATH) not in sys.path:

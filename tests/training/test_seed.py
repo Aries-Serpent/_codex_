@@ -66,7 +66,7 @@ class TestLegacySeedModule:
     def test_import_legacy_shim_emits_deprecation_warning(self):
         """Test that importing legacy shim emits deprecation warning."""
         import warnings
-        
+
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             try:
@@ -78,7 +78,7 @@ class TestLegacySeedModule:
                 importlib.import_module("training.seed")
             except ImportError:
                 pytest.skip("training.seed shim not available")
-            
+
             # Check for deprecation warning
             deprecation_warnings = [x for x in w if issubclass(x.category, DeprecationWarning)]
             assert len(deprecation_warnings) >= 1

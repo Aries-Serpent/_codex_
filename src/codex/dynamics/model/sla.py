@@ -44,14 +44,14 @@ class SLAPauseCondition(BaseModel):
             True if condition is met and SLA should be paused
         """
         ticket_value = ticket_state.get(self.field)
-        
+
         if self.operator == "equals":
             return ticket_value == self.value
         elif self.operator == "contains":
             return self.value in str(ticket_value)
         elif self.operator == "not_equals":
             return ticket_value != self.value
-        
+
         # Default: condition not met
         return False
 
@@ -128,7 +128,7 @@ class SLAPolicy(BaseModel):
         if not self.business_hours_only or business_hours_schedule is None:
             # Simple calculation: add target minutes to start time
             return start_time + timedelta(minutes=self.target_minutes)
-        
+
         # TODO: Implement business hours calculation
         # This would integrate with D365 business hours calendar
         return start_time + timedelta(minutes=self.target_minutes)
@@ -233,19 +233,19 @@ class SLAPolicyRegistry(BaseModel):
             SLAPolicy if found, None otherwise
         """
         matching = [p for p in self.policies if p.name == name]
-        
+
         if not matching:
             return None
-        
+
         if version is None:
             # Return latest by effective_date
             return max(matching, key=lambda p: p.effective_date)
-        
+
         # Return specific version
         for policy in matching:
             if policy.version == version:
                 return policy
-        
+
         return None
 
     def add_policy(self, policy: SLAPolicy) -> None:

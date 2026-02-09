@@ -31,7 +31,7 @@ class MemoryManager:
         >>> manager.store("User prefers concise responses", metadata={"importance": "high"})
         >>> memories = manager.recall("user preferences")
     """
-    
+
     def __init__(
         self,
         backend: Optional[MemoryProtocol] = None,
@@ -44,11 +44,11 @@ class MemoryManager:
             storage_dir = storage_dir or Path(".codex/agent_memory")
             storage_dir.mkdir(parents=True, exist_ok=True)
             backend = SQLiteMemoryBackend(storage_dir / "memories.db")
-        
+
         self.backend = backend
         self.agent_id = agent_id
         self.session_id = session_id
-    
+
     def store(
         self,
         content: str | dict[str, Any],
@@ -71,11 +71,11 @@ class MemoryManager:
             session_id=session_id or self.session_id,
             metadata=metadata or {},
         )
-        
+
         self.backend.store(entry)
         logger.debug(f"Stored memory: {entry.id}")
         return entry
-    
+
     def recall(
         self,
         query_text: Optional[str] = None,
@@ -100,11 +100,11 @@ class MemoryManager:
             session_id=session_id if session_id is not None else self.session_id,
             limit=limit,
         )
-        
+
         results = self.backend.retrieve(query)
         logger.debug(f"Recalled {len(results)} memories for query: {query_text}")
         return results
-    
+
     def recall_all(self, limit: int = 100) -> list[MemoryEntry]:
         """Retrieve all memories for current agent/session.
         
@@ -115,7 +115,7 @@ class MemoryManager:
             list of all memories
         """
         return self.recall(query_text=None, limit=limit)
-    
+
     def clear_session(self, session_id: Optional[str] = None) -> int:
         """Clear all memories for a session.
         
@@ -128,11 +128,11 @@ class MemoryManager:
         sid = session_id or self.session_id
         if not sid:
             raise ValueError("No session_id specified")
-        
+
         count = self.backend.clear_session(sid)
         logger.info(f"Cleared {count} memories from session {sid}")
         return count
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get memory storage statistics.
         
@@ -140,7 +140,7 @@ class MemoryManager:
             Dictionary with statistics
         """
         return self.backend.get_stats()
-    
+
     def set_session(self, session_id: str) -> None:
         """Change the current session ID.
         

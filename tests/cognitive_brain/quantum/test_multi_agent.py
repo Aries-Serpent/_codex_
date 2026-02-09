@@ -8,7 +8,7 @@ correlation measurement, and performance validation.
 <!-- AFTERMATH: Validation Framework -->
 """
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 import pytest
 

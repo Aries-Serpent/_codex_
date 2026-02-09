@@ -18,18 +18,18 @@ import pytest
 # Test GitHub client if available
 try:
     from src.services.github.client import GitHubClient, GitHubException
-    from src.services.github.types import Repository, Issue, PullRequest
+    from src.services.github.types import Issue, PullRequest, Repository
     HAS_GITHUB_CLIENT = True
 except ImportError:
     HAS_GITHUB_CLIENT = False
-    
+
     # Mock classes for tests
     class GitHubClient:
         pass
-    
+
     class GitHubException(Exception):
         pass
-    
+
     class Repository:
         pass
 
@@ -250,7 +250,7 @@ class TestGitHubAuthentication:
         if HAS_GITHUB_CLIENT:
             client = GitHubClient(token="secret_token")
             repr_str = repr(client)
-            
+
             # Token should not appear in repr
             assert "secret_token" not in repr_str
 

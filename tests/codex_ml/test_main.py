@@ -12,7 +12,6 @@ import sys
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
-
 from codex_ml.main import (
     _forward_to_cli,
     _resolve_version,

@@ -1,17 +1,17 @@
 """Tests for performance benchmarking suite."""
 
 import pytest
-import torch
-import torch.nn as nn
 from torch.optim import Adam
 
+import torch
+import torch.nn as nn
 from codex_ml.utils.performance_benchmark import (
     BenchmarkResult,
-    PerformanceBenchmark,
     BenchmarkSuite,
-    benchmark_training_step,
-    benchmark_inference,
+    PerformanceBenchmark,
     benchmark_data_loading,
+    benchmark_inference,
+    benchmark_training_step,
 )
 
 

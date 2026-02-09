@@ -11,7 +11,6 @@ from collections.abc import Sequence
 
 import pytest
 
-
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 from tests.helpers.optional_dependencies import import_optional_dependency

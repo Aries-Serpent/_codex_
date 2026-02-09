@@ -30,8 +30,8 @@ from urllib.parse import urlparse
 
 # Re-export existing utilities from src/utils for backward compatibility
 try:
-    from src.utils.sensitive_data import mask_token, mask_email, mask_password
-    from src.utils.log_sanitizer import sanitize_log_input, sanitize_dict_for_log
+    from src.utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
+    from src.utils.sensitive_data import mask_email, mask_password, mask_token
 except ImportError:
     # Fallback implementations if imports fail
     def mask_token(token: str, show_last: int = 4) -> str:
@@ -41,18 +41,18 @@ except ImportError:
         if len(token) <= show_last:
             return "*" * len(token)
         return "*" * (len(token) - show_last) + token[-show_last:]
-    
+
     def mask_email(email: str) -> str:
         """Mask email preserving first char and domain."""
         if "@" not in email:
             return "***@***.***"
         user, domain = email.split("@", 1)
         return f"{user[0]}***@{domain}"
-    
+
     def mask_password(password: str) -> str:
         """Always mask passwords completely."""
         return "***" if password else "(empty)"
-    
+
     def sanitize_log_input(value: Any, max_length: int = 500) -> str:
         """Sanitize user input for safe logging."""
         if value is None:
@@ -62,7 +62,7 @@ except ImportError:
         if len(sanitized) > max_length:
             return sanitized[:max_length] + "...[truncated]"
         return sanitized
-    
+
     def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
         """Sanitize dictionary values for safe logging."""
         return {k: sanitize_log_input(v, max_length) for k, v in data.items()}
@@ -181,25 +181,25 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
     """
     if not url:
         return False
-    
+
     try:
         parsed = urlparse(url)
         netloc = parsed.netloc.lower()
-        
+
         # Remove port if present
         if ':' in netloc:
             netloc = netloc.split(':', 1)[0]
-        
+
         # If no allowed domains specified, just check that we have a valid domain
         if allowed_domains is None:
             return bool(netloc)
-        
+
         # Check if domain matches exactly or is a subdomain
         for allowed_domain in allowed_domains:
             allowed_lower = allowed_domain.lower()
             if netloc == allowed_lower or netloc.endswith('.' + allowed_lower):
                 return True
-        
+
         return False
     except Exception:
         # If URL parsing fails, consider it invalid
@@ -210,7 +210,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
 __all__ = [
     # Masking functions
     'mask_token',
-    'mask_email', 
+    'mask_email',
     'mask_password',
     'mask_sensitive',
     # Sanitization functions

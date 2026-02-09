@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 
-
 def test_error_hierarchy_to_dict() -> None:
     from mcp import errors
 

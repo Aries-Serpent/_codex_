@@ -8,8 +8,9 @@ Normalizes text for consistent processing:
 - Unicode normalization
 """
 
-import re
 import logging
+import re
+
 logger = logging.getLogger(__name__)
 import unicodedata
 

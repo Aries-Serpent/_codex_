@@ -12,9 +12,9 @@ including:
 from codex.cognitive.brain_interface import (
     AgentBrainInterface,
     AgentContext,
-    PatternMatch,
-    LearningFeedback,
     BrainResponse,
+    LearningFeedback,
+    PatternMatch,
 )
 
 __all__ = [

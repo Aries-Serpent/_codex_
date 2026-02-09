@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class RerankingStrategy(Enum):
     """Available re-ranking strategies."""
-    
+
     NONE = "none"  # No re-ranking
     SCORE_FUSION = "score_fusion"  # Combine scores from multiple sources
     CROSS_ENCODER = "cross_encoder"  # Neural cross-encoder
@@ -32,22 +32,22 @@ class RerankingStrategy(Enum):
 @dataclass
 class RerankingConfig:
     """Configuration for re-ranking."""
-    
+
     strategy: RerankingStrategy = RerankingStrategy.SCORE_FUSION
-    
+
     # Score fusion parameters
     fusion_weights: dict[str, float] = field(
         default_factory=lambda: {"semantic": 0.7, "lexical": 0.3}
     )
     fusion_method: str = "weighted_sum"  # weighted_sum, reciprocal_rank, max
-    
+
     # MMR parameters (diversity)
     mmr_lambda: float = 0.5  # Balance relevance vs diversity (0-1)
-    
+
     # Cross-encoder parameters
     cross_encoder_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     cross_encoder_batch_size: int = 32
-    
+
     # General parameters
     top_k: int = 10  # Number of results to return after re-ranking
     score_threshold: float = 0.0  # Minimum score threshold
@@ -56,14 +56,14 @@ class RerankingConfig:
 @dataclass
 class RankedResult:
     """A single ranked result."""
-    
+
     document_id: str
     content: str
     original_score: float
     reranked_score: float
     rank: int
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -78,10 +78,10 @@ class RankedResult:
 
 class BaseReranker(ABC):
     """Base class for re-ranking strategies."""
-    
+
     def __init__(self, config: RerankingConfig):
         self.config = config
-    
+
     @abstractmethod
     def rerank(
         self,
@@ -99,7 +99,7 @@ class ScoreFusionReranker(BaseReranker):
     Combines scores from multiple retrieval sources using
     configurable fusion methods.
     """
-    
+
     def rerank(
         self,
         query: str,
@@ -108,9 +108,9 @@ class ScoreFusionReranker(BaseReranker):
         """Re-rank using score fusion."""
         if not results:
             return []
-        
+
         ranked_results = []
-        
+
         for idx, result in enumerate(results):
             # Extract scores from different sources
             scores = {}
@@ -121,7 +121,7 @@ class ScoreFusionReranker(BaseReranker):
                 elif "score" in result:
                     # Use single score if source-specific not available
                     scores[source] = result["score"] * weight
-            
+
             # Compute fused score
             if self.config.fusion_method == "weighted_sum":
                 fused_score = sum(scores.values())
@@ -134,7 +134,7 @@ class ScoreFusionReranker(BaseReranker):
                 fused_score = max(scores.values()) if scores else 0.0
             else:
                 fused_score = sum(scores.values())
-            
+
             ranked_result = RankedResult(
                 document_id=result.get("id", result.get("document_id", "")),
                 content=result.get("content", result.get("text", "")),
@@ -144,20 +144,20 @@ class ScoreFusionReranker(BaseReranker):
                 metadata=result.get("metadata", {}),
             )
             ranked_results.append(ranked_result)
-        
+
         # Sort by fused score (descending)
         ranked_results.sort(key=lambda x: x.reranked_score, reverse=True)
-        
+
         # Apply threshold and top_k
         ranked_results = [
             r for r in ranked_results
             if r.reranked_score >= self.config.score_threshold
         ][:self.config.top_k]
-        
+
         # Set final ranks
         for i, result in enumerate(ranked_results):
             result.rank = i + 1
-        
+
         logger.debug(f"Score fusion re-ranked {len(ranked_results)} results")
         return ranked_results
 
@@ -169,7 +169,7 @@ class MMRReranker(BaseReranker):
     Balances relevance with diversity to avoid redundant results.
     Uses the formula: MMR = λ * sim(q, d) - (1-λ) * max_s∈S sim(d, s)
     """
-    
+
     def rerank(
         self,
         query: str,
@@ -179,14 +179,14 @@ class MMRReranker(BaseReranker):
         """Re-rank using MMR for diversity."""
         if not results:
             return []
-        
+
         n_results = len(results)
-        
+
         # Extract relevance scores
         relevance_scores = np.array([
             r.get("score", 0.0) for r in results
         ])
-        
+
         # If embeddings provided, compute diversity matrix
         if embeddings is not None and len(embeddings) == n_results:
             # Cosine similarity matrix
@@ -197,13 +197,13 @@ class MMRReranker(BaseReranker):
         else:
             # No embeddings, use identity (no diversity penalty)
             similarity_matrix = np.eye(n_results)
-        
+
         # MMR selection
         selected_indices = []
         remaining_indices = list(range(n_results))
-        
+
         lambda_param = self.config.mmr_lambda
-        
+
         while remaining_indices and len(selected_indices) < self.config.top_k:
             if not selected_indices:
                 # First selection: highest relevance
@@ -213,26 +213,26 @@ class MMRReranker(BaseReranker):
                 # MMR selection
                 best_score = float("-inf")
                 best_idx = remaining_indices[0]
-                
+
                 for idx in remaining_indices:
                     relevance = relevance_scores[idx]
-                    
+
                     # Max similarity to already selected
                     max_sim = max(
                         similarity_matrix[idx, sel_idx]
                         for sel_idx in selected_indices
                     )
-                    
+
                     # MMR score
                     mmr_score = lambda_param * relevance - (1 - lambda_param) * max_sim
-                    
+
                     if mmr_score > best_score:
                         best_score = mmr_score
                         best_idx = idx
-            
+
             selected_indices.append(best_idx)
             remaining_indices.remove(best_idx)
-        
+
         # Build ranked results
         ranked_results = []
         for rank, idx in enumerate(selected_indices, 1):
@@ -246,7 +246,7 @@ class MMRReranker(BaseReranker):
                 metadata=result.get("metadata", {}),
             )
             ranked_results.append(ranked_result)
-        
+
         logger.debug(f"MMR re-ranked {len(ranked_results)} results (λ={lambda_param})")
         return ranked_results
 
@@ -258,17 +258,17 @@ class CrossEncoderReranker(BaseReranker):
     Uses a neural cross-encoder model to score query-document pairs.
     More accurate but slower than bi-encoder approaches.
     """
-    
+
     def __init__(self, config: RerankingConfig):
         super().__init__(config)
         self._model = None
         self._model_loaded = False
-    
+
     def _load_model(self) -> Any:
         """Lazy load cross-encoder model."""
         if self._model_loaded:
             return self._model
-        
+
         try:
             from sentence_transformers import CrossEncoder
             self._model = CrossEncoder(self.config.cross_encoder_model)
@@ -282,7 +282,7 @@ class CrossEncoderReranker(BaseReranker):
             )
             self._model_loaded = True
             return None
-    
+
     def rerank(
         self,
         query: str,
@@ -291,20 +291,20 @@ class CrossEncoderReranker(BaseReranker):
         """Re-rank using cross-encoder."""
         if not results:
             return []
-        
+
         model = self._load_model()
-        
+
         # Extract documents
         documents = [
             r.get("content", r.get("text", ""))
             for r in results
         ]
-        
+
         # Score with cross-encoder
         if model is not None:
             # Create query-document pairs
             pairs = [(query, doc) for doc in documents]
-            
+
             # Batch scoring
             scores = model.predict(
                 pairs,
@@ -313,7 +313,7 @@ class CrossEncoderReranker(BaseReranker):
         else:
             # Fallback to original scores if model unavailable
             scores = [r.get("score", 0.0) for r in results]
-        
+
         # Build ranked results
         ranked_results = []
         for i, (result, score) in enumerate(zip(results, scores)):
@@ -326,20 +326,20 @@ class CrossEncoderReranker(BaseReranker):
                 metadata=result.get("metadata", {}),
             )
             ranked_results.append(ranked_result)
-        
+
         # Sort by cross-encoder score (descending)
         ranked_results.sort(key=lambda x: x.reranked_score, reverse=True)
-        
+
         # Apply threshold and top_k
         ranked_results = [
             r for r in ranked_results
             if r.reranked_score >= self.config.score_threshold
         ][:self.config.top_k]
-        
+
         # Set final ranks
         for i, result in enumerate(ranked_results):
             result.rank = i + 1
-        
+
         logger.debug(f"Cross-encoder re-ranked {len(ranked_results)} results")
         return ranked_results
 
@@ -359,17 +359,17 @@ class Reranker:
         results = retriever.search(query)
         reranked = reranker.rerank(query, results)
     """
-    
+
     STRATEGY_MAP = {
         RerankingStrategy.SCORE_FUSION: ScoreFusionReranker,
         RerankingStrategy.MMR: MMRReranker,
         RerankingStrategy.CROSS_ENCODER: CrossEncoderReranker,
     }
-    
+
     def __init__(self, config: Optional[RerankingConfig] = None):
         """Initialize re-ranker with configuration."""
         self.config = config or RerankingConfig()
-        
+
         if self.config.strategy == RerankingStrategy.NONE:
             self._reranker = None
         elif self.config.strategy == RerankingStrategy.HYBRID:
@@ -385,7 +385,7 @@ class Reranker:
                 ScoreFusionReranker
             )
             self._reranker = reranker_class(self.config)
-    
+
     def rerank(
         self,
         query: str,
@@ -405,19 +405,19 @@ class Reranker:
         """
         if not results:
             return []
-        
+
         if self.config.strategy == RerankingStrategy.NONE:
             # No re-ranking, just wrap results
             return self._wrap_results(results)
-        
+
         if self.config.strategy == RerankingStrategy.HYBRID:
             return self._hybrid_rerank(query, results, embeddings)
-        
+
         if self.config.strategy == RerankingStrategy.MMR:
             return self._reranker.rerank(query, results, embeddings)
-        
+
         return self._reranker.rerank(query, results)
-    
+
     def _wrap_results(self, results: Sequence[dict[str, Any]]) -> list[RankedResult]:
         """Wrap raw results as RankedResult without re-ranking."""
         wrapped = []
@@ -431,7 +431,7 @@ class Reranker:
                 metadata=result.get("metadata", {}),
             ))
         return wrapped
-    
+
     def _hybrid_rerank(
         self,
         query: str,
@@ -441,7 +441,7 @@ class Reranker:
         """Apply hybrid re-ranking strategy."""
         # First apply score fusion
         fusion_results = self._rerankers["fusion"].rerank(query, results)
-        
+
         # Convert back to dict format for MMR
         intermediate_results = [
             {
@@ -452,10 +452,10 @@ class Reranker:
             }
             for r in fusion_results
         ]
-        
+
         # Then apply MMR for diversity
         final_results = self._rerankers["mmr"].rerank(query, intermediate_results, embeddings)
-        
+
         logger.debug(f"Hybrid re-ranked {len(final_results)} results")
         return final_results
 

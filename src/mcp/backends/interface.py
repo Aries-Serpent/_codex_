@@ -18,6 +18,7 @@ Author: Codex Team
 # Adapter interface for MCP vector backends
 # Minimal typed abstract base class used by adapters and tests.
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, Iterable, Optional
 

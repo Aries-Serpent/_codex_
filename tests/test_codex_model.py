@@ -8,8 +8,8 @@ import importlib.util
 from pathlib import Path
 
 import pytest
-import torch
 
+import torch
 from codex_ml.codex_model import ModelConfig, build_codex_model
 
 

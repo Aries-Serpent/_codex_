@@ -74,7 +74,7 @@ class WorkflowInventory:
         Returns:
             Number of workflows successfully parsed.
         """
-        if force_refresh: 
+        if force_refresh:
             self._workflows.clear()
             self.parser.clear_cache()
 
@@ -103,7 +103,7 @@ class WorkflowInventory:
                     logger.debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
-            except Exception as e: 
+            except Exception as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
 
@@ -134,7 +134,7 @@ class WorkflowInventory:
         """
         return [w for w in self._workflows.values() if w.is_triggerable]
 
-    def get_reusable(self) -> list[WorkflowMetadata]: 
+    def get_reusable(self) -> list[WorkflowMetadata]:
         """Get all reusable workflows (workflow_call).
 
         Returns:
@@ -214,7 +214,7 @@ class WorkflowInventory:
                     for dep_workflow in trigger.workflows:
                         # Try to find the actual workflow file
                         dep_filename = self._find_workflow_by_name(dep_workflow)
-                        if dep_filename: 
+                        if dep_filename:
                             self._dependencies.append(
                                 WorkflowDependency(
                                     source=filename,
@@ -280,7 +280,7 @@ class WorkflowInventory:
             logger.error(f"Workflow file not found: {workflow_path}")
             return False
 
-        try: 
+        try:
             metadata = self.parser.parse_file(workflow_path, use_cache=False)
             if metadata:
                 self._workflows[filename] = metadata

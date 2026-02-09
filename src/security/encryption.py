@@ -13,7 +13,9 @@ Notes:
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import base64
@@ -35,7 +37,7 @@ BYTE_TYPES = (bytes, bytearray)
 
 class EncryptionError(Exception):
     """Exception raised for encryption/decryption errors."""
-    
+
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)

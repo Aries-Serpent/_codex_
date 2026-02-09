@@ -27,7 +27,7 @@ class TestCoverageReportGeneration:
     def test_coverage_report_directory_creatable(self):
         """Verify coverage report directory can be created."""
         import tempfile
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             coverage_path = Path(tmpdir) / "coverage"
             coverage_path.mkdir()
@@ -36,10 +36,10 @@ class TestCoverageReportGeneration:
     def test_coverage_json_parseable(self):
         """Verify coverage JSON reports are parseable if they exist."""
         json_reports = list(COVERAGE_DIR.glob("*.json")) if COVERAGE_DIR.exists() else []
-        
+
         if not json_reports:
             pytest.skip("No coverage JSON reports found")
-        
+
         for report in json_reports[:5]:
             try:
                 content = json.loads(report.read_text(encoding="utf-8"))
@@ -56,7 +56,7 @@ class TestCoverageThresholds:
         """Verify pyproject.toml has coverage configuration."""
         pyproject = REPO_ROOT / "pyproject.toml"
         assert pyproject.exists(), "pyproject.toml should exist"
-        
+
         content = pyproject.read_text(encoding="utf-8")
         assert "[tool.coverage" in content or "[coverage" in content or "cov" in content
 
@@ -64,7 +64,7 @@ class TestCoverageThresholds:
         """Verify fail_under threshold is set appropriately."""
         pyproject = REPO_ROOT / "pyproject.toml"
         content = pyproject.read_text(encoding="utf-8")
-        
+
         # Check for threshold
         threshold_match = re.search(r"fail[_-]under\s*=\s*(\d+)", content)
         if threshold_match:
@@ -81,10 +81,10 @@ class TestCoverageQuality:
         """Check for excessive pragma: no cover usage."""
         if not (REPO_ROOT / "src").exists():
             pytest.skip("src/ directory not found")
-        
+
         pragma_count = 0
         file_count = 0
-        
+
         for py_file in list((REPO_ROOT / "src").rglob("*.py"))[:50]:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
@@ -92,7 +92,7 @@ class TestCoverageQuality:
                 pragma_count += content.count("# pragma: no cover")
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         if file_count > 0:
             avg_pragmas = pragma_count / file_count
             # Allow some pragmas (1 per file average)
@@ -101,10 +101,10 @@ class TestCoverageQuality:
     def test_tests_use_assertions(self):
         """Verify tests actually use assertions."""
         assertion_patterns = ["assert", "assertEqual", "assertTrue", "pytest.raises"]
-        
+
         tests_with_assertions = 0
         tests_checked = 0
-        
+
         for test_file in list((REPO_ROOT / "tests").rglob("test_*.py"))[:30]:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
@@ -113,7 +113,7 @@ class TestCoverageQuality:
                     tests_with_assertions += 1
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         if tests_checked > 0:
             assertion_rate = tests_with_assertions / tests_checked
             assert assertion_rate >= 0.8, f"Most tests should use assertions ({assertion_rate:.0%})"
@@ -127,7 +127,7 @@ class TestCoverageCI:
         workflow_dir = REPO_ROOT / ".github" / "workflows"
         if not workflow_dir.exists():
             pytest.skip("No workflows directory")
-        
+
         coverage_in_ci = False
         for workflow in workflow_dir.glob("*.yml"):
             try:
@@ -137,7 +137,7 @@ class TestCoverageCI:
                     break
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         assert coverage_in_ci, "Coverage should be in CI"
 
     def test_coverage_report_upload(self):
@@ -145,7 +145,7 @@ class TestCoverageCI:
         workflow_dir = REPO_ROOT / ".github" / "workflows"
         if not workflow_dir.exists():
             pytest.skip("No workflows directory")
-        
+
         uploads_coverage = False
         for workflow in workflow_dir.glob("*.yml"):
             try:
@@ -155,7 +155,7 @@ class TestCoverageCI:
                     break
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Just log, don't require
         if not uploads_coverage:
             pytest.skip("Coverage upload not configured (optional)")

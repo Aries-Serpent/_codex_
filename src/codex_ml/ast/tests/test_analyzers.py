@@ -2,14 +2,15 @@
 Tests for AST analyzers.
 """
 
-from codex_ml.ast.core.node import StandardizedASTNode, SourceLocation, Finding
+from pathlib import Path
+
 from codex_ml.ast.analysis.base_analyzer import (
     ComplexityAnalyzer,
     LongFunctionAnalyzer,
     ParameterCountAnalyzer,
 )
 from codex_ml.ast.analysis.registry import AnalyzerRegistry
-from pathlib import Path
+from codex_ml.ast.core.node import Finding, SourceLocation, StandardizedASTNode
 
 
 class TestComplexityAnalyzer:

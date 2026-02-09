@@ -5,8 +5,9 @@ Test module for worker.
 """
 
 import json
-from src.workers.embedding_worker import run_worker
+
 from src.mcp.observability.metrics import snapshot
+from src.workers.embedding_worker import run_worker
 
 
 def test_run_worker_upserts(tmp_path, monkeypatch):

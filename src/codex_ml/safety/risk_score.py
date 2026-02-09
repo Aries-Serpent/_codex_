@@ -7,7 +7,9 @@ the ``[0.0, 1.0]`` range.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from math import exp

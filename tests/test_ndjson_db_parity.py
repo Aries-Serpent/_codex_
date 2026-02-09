@@ -5,7 +5,7 @@ Test module for ndjson db parity.
 """
 
 import json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from src.codex.logging import import_ndjson, session_hooks
 from src.codex.logging.fetch_messages import fetch_messages

@@ -65,7 +65,7 @@ class RuntimeReport:
     sandbox_config: dict[str, Any]
     execution_results: list[dict[str, Any]] = field(default_factory=list)
     call_traces: list[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -74,7 +74,7 @@ class RuntimeReport:
             "sandbox_config": self.sandbox_config,
             "execution_results": self.execution_results,
         }
-    
+
     def save(self, path: Path) -> None:
         """Save report to JSON file."""
         with path.open("w", encoding="utf-8") as f:
@@ -100,7 +100,7 @@ class RuntimeTracer:
     - Deterministic environment
     - Bounded trace collection
     """
-    
+
     def __init__(
         self,
         snapshot_id: str,
@@ -115,7 +115,7 @@ class RuntimeTracer:
         self.snapshot_id = snapshot_id
         self.config = sandbox_config or SandboxConfig()
         self.sandbox = SandboxManager(self.config)
-    
+
     def _find_entry_point(self, source_dir: Path) -> Optional[str]:
         """Find the entry point script.
         
@@ -134,18 +134,18 @@ class RuntimeTracer:
             "run.py",
             "cli.py",
         ]
-        
+
         for candidate in candidates:
             if (source_dir / candidate).exists():
                 return candidate
-        
+
         # Fall back to first .py file
         py_files = list(source_dir.glob("*.py"))
         if py_files:
             return py_files[0].name
-        
+
         return None
-    
+
     def _detect_argparse_help(self, source_dir: Path, entry_point: str) -> Optional[str]:
         """Try to get help output from CLI scripts.
         
@@ -169,9 +169,9 @@ class RuntimeTracer:
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
             logger.debug("Help detection failed for %s: %s", entry_point, exc)
-        
+
         return None
-    
+
     def analyze(
         self,
         source_dir: Path,
@@ -192,7 +192,7 @@ class RuntimeTracer:
             RuntimeReport with execution results
         """
         now = datetime.now(timezone.utc)
-        
+
         # Find entry point
         entry_point = self._find_entry_point(source_dir)
         if not entry_point:
@@ -211,11 +211,11 @@ class RuntimeTracer:
                     "error": "No entry point found",
                 }],
             )
-        
+
         logger.info("Found entry point: %s", entry_point)
-        
+
         execution_results: list[dict[str, Any]] = []
-        
+
         # Try to get help output first
         help_output = self._detect_argparse_help(source_dir, entry_point)
         if help_output:
@@ -225,20 +225,20 @@ class RuntimeTracer:
                 "stdout_snapshot": help_output[:5000],
                 "duration_ms": 0,
             })
-        
+
         # Execute with sample inputs
         if sample_inputs:
             for input_file in sample_inputs:
                 input_ref = str(input_file)
                 stdin_input = None
-                
+
                 if input_file.exists():
                     try:
                         stdin_input = input_file.read_text(encoding="utf-8")
                     except Exception as e:
                         logger.debug(f"Exception: {e}")
                         logger.warning("Could not read input file %s: %s", input_file, e)
-                
+
                 if enable_tracing:
                     result = self.sandbox.execute_with_tracing(
                         source_dir / entry_point,
@@ -250,7 +250,7 @@ class RuntimeTracer:
                         entry_point,
                         stdin_input=stdin_input,
                     )
-                
+
                 execution_results.append({
                     "input_ref": input_ref,
                     **result.to_dict(),
@@ -261,12 +261,12 @@ class RuntimeTracer:
                 result = self.sandbox.execute_with_tracing(source_dir / entry_point)
             else:
                 result = self.sandbox.execute_in_tempdir(source_dir, entry_point)
-            
+
             execution_results.append({
                 "input_ref": "(no input)",
                 **result.to_dict(),
             })
-        
+
         return RuntimeReport(
             snapshot_id=self.snapshot_id,
             timestamp=now,
@@ -277,7 +277,7 @@ class RuntimeTracer:
             },
             execution_results=execution_results,
         )
-    
+
     def probe_script(self, source_dir: Path) -> dict[str, Any]:
         """Probe a script to understand its interface.
         
@@ -293,39 +293,39 @@ class RuntimeTracer:
             Dictionary with discovered information
         """
         entry_point = self._find_entry_point(source_dir)
-        
+
         probe_result = {
             "entry_point": entry_point,
             "has_help": False,
             "help_output": None,
             "detected_type": "unknown",
         }
-        
+
         if not entry_point:
             return probe_result
-        
+
         # Try --help
         help_output = self._detect_argparse_help(source_dir, entry_point)
         if help_output:
             probe_result["has_help"] = True
             probe_result["help_output"] = help_output[:2000]
             probe_result["detected_type"] = "cli"
-        
+
         # Check source for patterns
         try:
             source = (source_dir / entry_point).read_text(encoding="utf-8")
-            
+
             if "flask" in source.lower() or "fastapi" in source.lower():
                 probe_result["detected_type"] = "web_service"
             elif "tkinter" in source.lower() or "pyqt" in source.lower():
                 probe_result["detected_type"] = "gui"
             elif "argparse" in source or "click" in source:
                 probe_result["detected_type"] = "cli"
-                
+
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             # Ignore errors during source code inspection - this is best-effort detection.
             # Missing type information doesn't prevent the rest of the analysis.
             logger.debug("Entry point probe failed for %s: %s", entry_point, exc)
-        
+
         return probe_result

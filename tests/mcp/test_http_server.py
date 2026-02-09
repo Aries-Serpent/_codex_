@@ -5,13 +5,20 @@ Test module for http server.
 """
 
 import os
+
 import pytest
 
 pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient
 
-from mcp.server.http import ContextItem, ContextUpsertRequest, QueryRequest, app, create_app
+from mcp.server.http import (
+    ContextItem,
+    ContextUpsertRequest,
+    QueryRequest,
+    app,
+    create_app,
+)
 
 
 def test_health_returns_status_and_count() -> None:

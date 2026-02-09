@@ -19,7 +19,8 @@ Author: Codex Team
 import math
 import threading
 from typing import Any, Iterable, Optional
-from .interface import BackendAdapter, VectorItem, BackendResponse
+
+from .interface import BackendAdapter, BackendResponse, VectorItem
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:

@@ -22,9 +22,12 @@ except ImportError:
     from services.crawler.zendesk_sync import ZendeskKnowledgeSyncService
 
 try:
-    from src.services.crawler.multi_locale_sync import MultiLocaleSyncManager, LocaleConfig
+    from src.services.crawler.multi_locale_sync import (
+        LocaleConfig,
+        MultiLocaleSyncManager,
+    )
 except ImportError:
-    from services.crawler.multi_locale_sync import MultiLocaleSyncManager, LocaleConfig
+    from services.crawler.multi_locale_sync import LocaleConfig, MultiLocaleSyncManager
 
 try:
     from src.services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider

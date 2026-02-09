@@ -6,9 +6,9 @@ Applies Quantum Test Methodology:
 - Zero Coverage: Critical priority (amplitude = 1.0)
 """
 
-import pytest
 from pathlib import Path
 
+import pytest
 
 # ==================== Import Tests ====================
 
@@ -87,14 +87,15 @@ class TestListPlanDocuments:
     def test_custom_base_dir(self):
         """Test with custom base directory."""
         try:
-            from src.codex_plans import list_plan_documents
             import tempfile
-            
+
+            from src.codex_plans import list_plan_documents
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a test markdown file
                 test_file = Path(tmpdir) / "test_plan.md"
                 test_file.write_text("# Test Plan")
-                
+
                 result = list_plan_documents(base_dir=Path(tmpdir))
                 assert len(result) == 1
                 assert result[0].name == "test_plan.md"
@@ -104,9 +105,10 @@ class TestListPlanDocuments:
     def test_empty_directory(self):
         """Test with empty directory."""
         try:
-            from src.codex_plans import list_plan_documents
             import tempfile
-            
+
+            from src.codex_plans import list_plan_documents
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
                 assert result == []
@@ -117,7 +119,7 @@ class TestListPlanDocuments:
         """Test that None base_dir uses module directory."""
         try:
             from src.codex_plans import list_plan_documents
-            
+
             # Should not raise an error
             result = list_plan_documents(base_dir=None)
             assert isinstance(result, list)
@@ -134,7 +136,7 @@ class TestEdgeCases:
         """Test with non-existent directory path."""
         try:
             from src.codex_plans import list_plan_documents
-            
+
             # This should raise an error or return empty
             result = list_plan_documents(base_dir=Path("/nonexistent/path"))
             # If it doesn't raise, should return empty list
@@ -145,15 +147,16 @@ class TestEdgeCases:
     def test_mixed_file_types(self):
         """Test directory with mixed file types."""
         try:
-            from src.codex_plans import list_plan_documents
             import tempfile
-            
+
+            from src.codex_plans import list_plan_documents
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create various file types
                 (Path(tmpdir) / "plan.md").write_text("# Plan")
                 (Path(tmpdir) / "code.py").write_text("# Python")
                 (Path(tmpdir) / "data.json").write_text("{}")
-                
+
                 result = list_plan_documents(base_dir=Path(tmpdir))
                 # Should only include .md files
                 assert len(result) == 1

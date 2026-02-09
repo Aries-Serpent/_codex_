@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """
 Test Query Logs Build Query
 

@@ -123,7 +123,7 @@ class TestCacheManifest:
         manifest = loader.CacheManifest(source="data.jsonl", num_records=20)
         manifest_path = tmp_path / "manifest.json"
         manifest.write(manifest_path)
-        
+
         loaded = loader.CacheManifest.load(manifest_path)
         assert loaded is not None
         assert loaded.source == "data.jsonl"

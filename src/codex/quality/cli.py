@@ -16,6 +16,7 @@ Author: Codex Team
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 """Code smell detection CLI - Phase 2 implementation stub."""
 
@@ -38,12 +39,12 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
     """
     click.echo("👃 Detecting code smells...")
     click.echo(f"📋 Config: {config}")
-    
+
     # Load configuration
     try:
         with open(config) as f:
             conf = yaml.safe_load(f)
-        
+
         click.echo("\n📊 Thresholds:")
         smells = conf.get('code_smells', {})
         click.echo(f"  • Long function: {smells.get('long_function', {}).get('threshold', 50)} lines")
@@ -53,7 +54,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
     except Exception as e:
         logger.debug(f"Exception: {e}")
         click.echo(f"⚠️  Could not load config: {e}", err=True)
-    
+
     # TODO: Phase 2 - Implement smell detection
     click.echo("\n⚠️  Full smell detection coming in Phase 2")
     click.echo("This will analyze Python files and detect:")

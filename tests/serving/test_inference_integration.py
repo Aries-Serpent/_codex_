@@ -6,7 +6,6 @@ Test module for inference integration.
 
 import pytest
 
-
 fastapi = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402  # isort: skip
 

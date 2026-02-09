@@ -5,13 +5,13 @@ Computes perplexity for language models.
 Perplexity = exp(average negative log-likelihood)
 """
 
-from typing import Any
 import logging
+from typing import Any
+
 logger = logging.getLogger(__name__)
 import math
-
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 

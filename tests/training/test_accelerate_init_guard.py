@@ -21,7 +21,7 @@ class TestLegacyImport:
                 is_gpu_available,
                 safe_accelerate_init,
             )
-            
+
             # All should be importable
             assert AccelerateInitResult is not None
             assert callable(get_distributed_env_info)
@@ -34,7 +34,7 @@ class TestLegacyImport:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             from training.accelerate_init_guard import __all__
-            
+
             expected = [
                 "AccelerateInitResult",
                 "get_distributed_env_info",
@@ -42,7 +42,7 @@ class TestLegacyImport:
                 "is_gpu_available",
                 "safe_accelerate_init",
             ]
-            
+
             for item in expected:
                 assert item in __all__
 
@@ -51,7 +51,7 @@ class TestLegacyImport:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             from training.accelerate_init_guard import is_accelerate_available
-            
+
             result = is_accelerate_available()
             assert isinstance(result, bool)
 
@@ -60,7 +60,7 @@ class TestLegacyImport:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             from training.accelerate_init_guard import is_gpu_available
-            
+
             result = is_gpu_available()
             assert isinstance(result, bool)
 
@@ -69,6 +69,6 @@ class TestLegacyImport:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             from training.accelerate_init_guard import get_distributed_env_info
-            
+
             result = get_distributed_env_info()
             assert isinstance(result, dict)

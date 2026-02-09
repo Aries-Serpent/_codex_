@@ -1,8 +1,8 @@
 """CLI pipeline integration tests (Phase 23 Week 2)."""
 
 import pytest
-from omegaconf import OmegaConf
 
+from omegaconf import OmegaConf
 
 
 def _make_config(**overrides):
@@ -31,7 +31,7 @@ def test_cli_pipeline_loader_propagation(tmp_path):
     """Test CLI propagates dataloaders to trainer."""
     data_file = tmp_path / "data.tsv"
     data_file.write_text("text\t1\n")
-    
+
     _make_config(data={"path": str(data_file)})
     # Verify dataloaders are passed to trainer
 

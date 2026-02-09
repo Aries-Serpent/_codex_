@@ -38,28 +38,28 @@ def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> 
     """
     if not value:
         return '[EMPTY]'
-    
+
     # Production safety: Explicitly disable show_preview in production environments
     # Check for production environment indicators
     codex_env = os.getenv('CODEX_ENV', '').lower()
     is_production = codex_env in ('production', 'prod', 'prd')
-    
+
     # Additional safety checks for common production indicators
     if not is_production:
         # Check for other common production environment variables
         env_hints = os.getenv('ENVIRONMENT', '').lower()
         app_env = os.getenv('APP_ENV', '').lower()
         is_production = env_hints in ('production', 'prod', 'prd') or app_env in ('production', 'prod', 'prd')
-    
+
     # Override show_preview in production
     if is_production:
         show_preview = False
-    
+
     # Production safety: show_preview should never be True in production
     # This parameter exists only for local development debugging
     if show_preview and len(value) > 8:
         return f"{value[:4]}...[REDACTED]...{value[-4:]}"
-    
+
     return '[REDACTED]'
 
 
@@ -85,7 +85,7 @@ def redact_secret_name(secret_name: str) -> str:
     """
     if not secret_name:
         return '[UNNAMED_SECRET]'
-    
+
     # Consistently redact all secret names to prevent information disclosure
     return "[REDACTED_SECRET_NAME]"
 
@@ -139,7 +139,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         # Increased from 40 to 50 to be even more conservative
         (r'([A-Za-z0-9+/]{50,}={0,2})', '[REDACTED_TOKEN]'),
     ]
-    
+
     # Default whitelist patterns for common non-sensitive identifiers
     default_whitelist = [
         # UUID v4 (with or without hyphens)
@@ -155,12 +155,12 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         # SHA-256 hashes (64 hex chars)
         r'\b[a-f0-9]{64}\b',
     ]
-    
+
     # Build whitelist set
     whitelist = set(default_whitelist)
     if whitelist_patterns:
         whitelist.update(whitelist_patterns)
-    
+
     # Temporarily mark whitelisted content to preserve it
     whitelist_placeholders = {}
     temp_message = message
@@ -170,21 +170,21 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
             placeholder = f'__WHITELIST_{i}_{len(whitelist_placeholders)}__'
             whitelist_placeholders[placeholder] = match.group(0)
             temp_message = temp_message.replace(match.group(0), placeholder, 1)
-    
+
     # Apply redaction patterns
     sanitized = temp_message
     for pattern, replacement in default_patterns:
         sanitized = re.sub(pattern, replacement, sanitized)
-    
+
     # Apply custom patterns if provided
     if redact_patterns:
         for pattern in redact_patterns:
             sanitized = re.sub(pattern, '[REDACTED]', sanitized)
-    
+
     # Restore whitelisted content
     for placeholder, original in whitelist_placeholders.items():
         sanitized = sanitized.replace(placeholder, original)
-    
+
     return sanitized
 
 
@@ -228,7 +228,7 @@ def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
     """
     if not data:
         return {}
-    
+
     return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())}
 
 

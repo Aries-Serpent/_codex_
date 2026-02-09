@@ -7,12 +7,13 @@ optimizations to maximize throughput and minimize latency.
 
 import asyncio
 import logging
+
 logger = logging.getLogger(__name__)
+import threading
 import time
 from collections import deque
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
-import threading
 
 
 @dataclass

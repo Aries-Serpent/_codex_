@@ -11,7 +11,7 @@ import re
 import shutil
 import subprocess  # used with validated executable path
 import sys
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse

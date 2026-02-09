@@ -7,12 +7,13 @@ Phase 56: MEDIUM Priority Module Tests
 Coverage Target: src/services 28% → 40%+
 """
 
-import pytest
-from enum import Enum, auto
-from typing import Dict, Any, Optional
-from dataclasses import dataclass, field
-from collections import deque
 import time
+from collections import deque
+from dataclasses import dataclass, field
+from enum import Enum, auto
+from typing import Any, Dict, Optional
+
+import pytest
 
 
 class JobStatus(Enum):
@@ -41,12 +42,12 @@ class TestQueueOperations:
     def test_queue_enqueue_dequeue(self):
         """Queue supports enqueue and dequeue."""
         queue = deque()
-        
+
         queue.append(Job("job-1", {"task": "process"}))
         queue.append(Job("job-2", {"task": "index"}))
-        
+
         assert len(queue) == 2
-        
+
         job = queue.popleft()
         assert job.job_id == "job-1"
         assert len(queue) == 1
@@ -54,27 +55,27 @@ class TestQueueOperations:
     def test_priority_queue(self):
         """Priority queue orders by priority."""
         import heapq
-        
+
         class PriorityQueue:
             def __init__(self):
                 self.heap = []
                 self.counter = 0
-            
+
             def push(self, priority, item):
                 heapq.heappush(self.heap, (priority, self.counter, item))
                 self.counter += 1
-            
+
             def pop(self):
                 if self.heap:
                     priority, _, item = heapq.heappop(self.heap)
                     return item
                 return None
-        
+
         pq = PriorityQueue()
         pq.push(3, "low priority")
         pq.push(1, "high priority")
         pq.push(2, "medium priority")
-        
+
         assert pq.pop() == "high priority"
         assert pq.pop() == "medium priority"
         assert pq.pop() == "low priority"
@@ -85,21 +86,21 @@ class TestQueueOperations:
             def __init__(self, max_size):
                 self.max_size = max_size
                 self.items = deque()
-            
+
             def put(self, item):
                 if len(self.items) >= self.max_size:
                     raise OverflowError("Queue is full")
                 self.items.append(item)
-            
+
             def get(self):
                 if not self.items:
                     return None
                 return self.items.popleft()
-        
+
         queue = BoundedQueue(max_size=2)
         queue.put("item1")
         queue.put("item2")
-        
+
         with pytest.raises(OverflowError):
             queue.put("item3")
 
@@ -118,14 +119,14 @@ class TestJobProcessing:
                 job.error = str(e)
                 job.status = JobStatus.FAILED
             return job
-        
+
         job = Job("job-1", {"value": 10})
-        
+
         def double_value(payload):
             return payload["value"] * 2
-        
+
         result = execute_job(job, double_value)
-        
+
         assert result.status == JobStatus.COMPLETED
         assert result.result == 20
 
@@ -140,14 +141,14 @@ class TestJobProcessing:
                 job.error = str(e)
                 job.status = JobStatus.FAILED
             return job
-        
+
         job = Job("job-1", {"value": 10})
-        
+
         def failing_processor(payload):
             raise ValueError("Processing error")
-        
+
         result = execute_job(job, failing_processor)
-        
+
         assert result.status == JobStatus.FAILED
         assert "Processing error" in result.error
 
@@ -158,7 +159,7 @@ class TestJobProcessing:
                 self.job = job
                 self.max_retries = max_retries
                 self.attempts = 0
-            
+
             def execute(self, processor):
                 while self.attempts < self.max_retries:
                     self.attempts += 1
@@ -171,19 +172,19 @@ class TestJobProcessing:
                             self.job.status = JobStatus.FAILED
                             return False
                 return False
-        
+
         job = Job("job-1", {"value": 10})
         retryable = RetryableJob(job, max_retries=3)
-        
+
         call_count = [0]
         def flaky_processor(payload):
             call_count[0] += 1
             if call_count[0] < 3:
                 raise ValueError("Transient error")
             return payload["value"] * 2
-        
+
         success = retryable.execute(flaky_processor)
-        
+
         assert success
         assert retryable.attempts == 3
 
@@ -198,25 +199,25 @@ class TestWorkerPool:
                 self.num_workers = num_workers
                 self.workers = [f"worker-{i}" for i in range(num_workers)]
                 self.available = list(self.workers)
-            
+
             def acquire_worker(self):
                 if self.available:
                     return self.available.pop()
                 return None
-            
+
             def release_worker(self, worker):
                 if worker not in self.available:
                     self.available.append(worker)
-        
+
         pool = WorkerPool(num_workers=4)
-        
+
         assert len(pool.workers) == 4
-        
+
         w1 = pool.acquire_worker()
         _ = pool.acquire_worker()  # Acquire second worker
-        
+
         assert len(pool.available) == 2
-        
+
         pool.release_worker(w1)
         assert len(pool.available) == 3
 
@@ -226,23 +227,23 @@ class TestWorkerPool:
             def __init__(self, workers):
                 self.workers = workers
                 self.job_counts = {w: 0 for w in workers}
-            
+
             def assign_job(self, job):
                 # Assign to worker with least jobs
                 worker = min(self.workers, key=lambda w: self.job_counts[w])
                 self.job_counts[worker] += 1
                 return worker
-            
+
             def complete_job(self, worker):
                 if self.job_counts[worker] > 0:
                     self.job_counts[worker] -= 1
-        
+
         balancer = LoadBalancer(["w1", "w2", "w3"])
-        
+
         jobs = [Job(f"job-{i}", {}) for i in range(9)]
         for j in jobs:
             balancer.assign_job(j)
-        
+
         # Should be evenly distributed
         assert balancer.job_counts["w1"] == 3
         assert balancer.job_counts["w2"] == 3
@@ -257,21 +258,21 @@ class TestDeadLetterQueue:
         class DeadLetterQueue:
             def __init__(self):
                 self.items = []
-            
+
             def add(self, job, error):
                 self.items.append({
                     "job": job,
                     "error": error,
                     "timestamp": time.time()
                 })
-        
+
         dlq = DeadLetterQueue()
-        
+
         failed_job = Job("job-1", {"task": "process"})
         failed_job.status = JobStatus.FAILED
-        
+
         dlq.add(failed_job, "Max retries exceeded")
-        
+
         assert len(dlq.items) == 1
         assert dlq.items[0]["error"] == "Max retries exceeded"
 
@@ -280,25 +281,25 @@ class TestDeadLetterQueue:
         class DeadLetterQueue:
             def __init__(self):
                 self.items = []
-            
+
             def add(self, job):
                 self.items.append(job)
-            
+
             def replay_all(self):
                 jobs = self.items.copy()
                 self.items.clear()
                 for job in jobs:
                     job.status = JobStatus.PENDING
                 return jobs
-        
+
         dlq = DeadLetterQueue()
-        
+
         failed_job = Job("job-1", {"task": "process"})
         failed_job.status = JobStatus.FAILED
         dlq.add(failed_job)
-        
+
         replayed = dlq.replay_all()
-        
+
         assert len(replayed) == 1
         assert replayed[0].status == JobStatus.PENDING
         assert len(dlq.items) == 0
@@ -315,26 +316,26 @@ class TestRateLimiting:
                 self.bucket_size = bucket_size
                 self.tokens = bucket_size
                 self.last_update = time.time()
-            
+
             def _refill(self):
                 now = time.time()
                 elapsed = now - self.last_update
                 self.tokens = min(self.bucket_size, self.tokens + elapsed * self.rate)
                 self.last_update = now
-            
+
             def consume(self, tokens=1):
                 self._refill()
                 if self.tokens >= tokens:
                     self.tokens -= tokens
                     return True
                 return False
-        
+
         bucket = TokenBucket(tokens_per_second=10, bucket_size=10)
-        
+
         # Should allow initial burst
         for _ in range(10):
             assert bucket.consume()
-        
+
         # Should deny after bucket empty
         assert not bucket.consume()
 
@@ -345,20 +346,20 @@ class TestRateLimiting:
                 self.max_requests = max_requests
                 self.window = window_seconds
                 self.requests = []
-            
+
             def is_allowed(self):
                 now = time.time()
                 # Remove old requests
                 self.requests = [r for r in self.requests if r > now - self.window]
-                
+
                 if len(self.requests) < self.max_requests:
                     self.requests.append(now)
                     return True
                 return False
-        
+
         limiter = SlidingWindowRateLimiter(max_requests=5, window_seconds=1)
-        
+
         for _ in range(5):
             assert limiter.is_allowed()
-        
+
         assert not limiter.is_allowed()

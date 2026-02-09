@@ -16,7 +16,9 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import hashlib
@@ -30,7 +32,7 @@ import shutil
 import time
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from itertools import count
 from pathlib import Path
 from typing import Any
@@ -458,7 +460,7 @@ def _deserialize_payload(
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
     # Fallback: Use safe pickle loading to prevent code execution vulnerabilities
-    
+
     # safe_pickle_load expects a file path or file object, but we have bytes
     # We need to use the RestrictedUnpickler directly with the buffer
     buf.seek(0)

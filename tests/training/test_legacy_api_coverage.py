@@ -42,10 +42,10 @@ def temp_data_dir(tmp_path: Path) -> Path:
     """Create temporary data directory with sample JSONL."""
     data_dir = tmp_path / "data"
     data_dir.mkdir()
-    
+
     train_file = data_dir / "train.jsonl"
     train_file.write_text('{"text": "sample1"}\n{"text": "sample2"}\n')
-    
+
     return data_dir
 
 
@@ -181,7 +181,7 @@ def test_optimizer_coercion_dict():
     # Test if _coerce_optimizer exists and is accessible
     try:
         from codex_ml.training.legacy_api import _coerce_optimizer
-        
+
         result = _coerce_optimizer({"name": "adam", "weight_decay": 0.005})
         assert isinstance(result, OptimizerSettings)
         assert result.name == "adam"
@@ -194,7 +194,7 @@ def test_optimizer_coercion_object():
     """Test optimizer configuration coercion from object."""
     try:
         from codex_ml.training.legacy_api import _coerce_optimizer
-        
+
         settings = OptimizerSettings(name="sgd")
         result = _coerce_optimizer(settings)
         assert result is settings
@@ -206,7 +206,7 @@ def test_safety_coercion_dict():
     """Test safety configuration coercion from dict."""
     try:
         from codex_ml.training.legacy_api import _coerce_safety
-        
+
         result = _coerce_safety({"enabled": False, "bypass": True})
         assert isinstance(result, SafetySettings)
         assert result.enabled is False
@@ -219,7 +219,7 @@ def test_scheduler_coercion_dict():
     """Test scheduler configuration coercion from dict."""
     try:
         from codex_ml.training.legacy_api import _coerce_scheduler
-        
+
         result = _coerce_scheduler({"name": "cosine"})
         assert isinstance(result, SchedulerSettings)
     except (ImportError, AttributeError):
@@ -235,7 +235,7 @@ def test_listify_texts_string():
     """Test _listify_texts converts string to list."""
     try:
         from codex_ml.training.legacy_api import _listify_texts
-        
+
         result = _listify_texts("single text")
         assert result == ["single text"]
     except (ImportError, AttributeError):
@@ -246,7 +246,7 @@ def test_listify_texts_list():
     """Test _listify_texts preserves list."""
     try:
         from codex_ml.training.legacy_api import _listify_texts
-        
+
         result = _listify_texts(["text1", "text2"])
         assert result == ["text1", "text2"]
     except (ImportError, AttributeError):
@@ -257,7 +257,7 @@ def test_listify_texts_none():
     """Test _listify_texts handles None."""
     try:
         from codex_ml.training.legacy_api import _listify_texts
-        
+
         result = _listify_texts(None)
         assert result == [] or result is None
     except (ImportError, AttributeError):
@@ -268,7 +268,7 @@ def test_load_texts_from_file(temp_data_dir):
     """Test _load_texts loads from JSONL file."""
     try:
         from codex_ml.training.legacy_api import _load_texts
-        
+
         file_path = temp_data_dir / "train.jsonl"
         result = _load_texts(str(file_path))
         assert isinstance(result, list)
@@ -281,7 +281,7 @@ def test_normalize_config_dict():
     """Test _normalize_config processes dict configs."""
     try:
         from codex_ml.training.legacy_api import _normalize_config
-        
+
         config_dict = {"epochs": 5, "batch_size": 16}
         result = _normalize_config(config_dict)
         assert result is not None
@@ -293,7 +293,7 @@ def test_log_optional_dependencies():
     """Test _log_optional_dependencies logs without errors."""
     try:
         from codex_ml.training.legacy_api import _log_optional_dependencies
-        
+
         # Should not raise
         _log_optional_dependencies()
     except (ImportError, AttributeError):
@@ -310,12 +310,12 @@ def test_build_dataloader_basic(mock_load_jsonl):
     """Test build_dataloader creates DataLoader."""
     try:
         from codex_ml.training.legacy_api import build_dataloader
-        
+
         mock_load_jsonl.return_value = [
             {"text": "sample1"},
             {"text": "sample2"},
         ]
-        
+
         loader = build_dataloader(
             data_path="test.jsonl",
             batch_size=2,
@@ -329,7 +329,7 @@ def test_build_dataloader_basic(mock_load_jsonl):
 def test_training_run_config_serialization():
     """Test TrainingRunConfig can be serialized."""
     from dataclasses import asdict
-    
+
     config = TrainingRunConfig()
     config_dict = asdict(config)
     assert isinstance(config_dict, dict)
@@ -337,9 +337,9 @@ def test_training_run_config_serialization():
 
 def test_safety_settings_with_moderation_config():
     """Test SafetySettings integrates with ModerationSettings."""
-    from codex_ml.training.legacy_api import SafetySettings
     from codex_ml.safety import ModerationSettings
-    
+    from codex_ml.training.legacy_api import SafetySettings
+
     moderation = ModerationSettings()
     settings = SafetySettings(moderation=moderation)
     assert settings.moderation is moderation
@@ -350,10 +350,10 @@ def test_autocast_integration(mock_autocast):
     """Test autocast integration for mixed precision."""
     mock_autocast.return_value.__enter__ = Mock()
     mock_autocast.return_value.__exit__ = Mock()
-    
+
     # Test that autocast can be imported and called
     from codex_ml.training.legacy_api import maybe_autocast
-    
+
     with maybe_autocast("cuda", dtype="fp16"):
         pass
 
@@ -361,10 +361,10 @@ def test_autocast_integration(mock_autocast):
 def test_optimizer_settings_serialization():
     """Test OptimizerSettings can be serialized."""
     from dataclasses import asdict
-    
+
     settings = OptimizerSettings(name="adam", weight_decay=0.02)
     settings_dict = asdict(settings)
-    
+
     assert settings_dict["name"] == "adam"
     assert settings_dict["weight_decay"] == 0.02
 

@@ -16,8 +16,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -199,7 +199,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
     """Build a new RAG index."""
     try:
         from codex.rag import build_index_from_files
-        
+
         # Build index
         index_path = build_index_from_files(
             file_patterns=build_request.files,
@@ -209,7 +209,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
             overlap=build_request.overlap,
             provider_type=build_request.provider,
         )
-        
+
         # Get metadata
         metadata_file = index_path / "metadata.json"
         chunks_count = None
@@ -218,7 +218,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
             with open(metadata_file) as f:
                 metadata = json.load(f)
                 chunks_count = metadata.get("num_chunks")
-        
+
         return BuildIndexResponse(
             success=True,
             index_name=build_request.index_name,
@@ -227,7 +227,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
             index_path=str(index_path),
             message=f"Index '{build_request.index_name}' built successfully"
         )
-        
+
     except ImportError as e:
         raise HTTPException(status_code=500, detail=f"Missing dependencies: {e}")
     except Exception as e:
@@ -240,23 +240,23 @@ async def query_index(request: Request, query_request: QueryRequest):
     """Query a RAG index."""
     import time
     start_time = time.time()
-    
+
     try:
         from codex.rag import Retriever
-        
+
         # Create retriever
         retriever = Retriever(
             index_name=query_request.index_name,
             tenant_id=query_request.tenant_id,
         )
-        
+
         # Query
         results = retriever.query(
             query=query_request.query,
             top_k=query_request.top_k,
             min_score=query_request.min_score,
         )
-        
+
         # Format results
         query_results = [
             QueryResult(
@@ -267,16 +267,16 @@ async def query_index(request: Request, query_request: QueryRequest):
             )
             for r in results
         ]
-        
+
         elapsed_ms = (time.time() - start_time) * 1000
-        
+
         return QueryResponse(
             query=query_request.query,
             results=query_results,
             count=len(query_results),
             elapsed_ms=elapsed_ms,
         )
-        
+
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail=f"Index '{query_request.index_name}' not found")
     except Exception as e:
@@ -290,7 +290,7 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
     try:
         import json
         from pathlib import Path
-        
+
         # Basic tenant_id validation to avoid traversal or weird characters.
         # Allow simple identifiers composed of letters, digits, underscore and dash.
         if not tenant_id.replace("-", "").replace("_", "").isalnum():
@@ -311,25 +311,25 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
 
         safe_index_root = _ensure_subpath(base_index_root, requested_root)
         tenant_dir = _ensure_subpath(safe_index_root, safe_index_root / tenant_id)
-        
+
         if not tenant_dir.exists():
             return ListIndicesResponse(indices=[], count=0)
-        
+
         indices = []
         for index_path in tenant_dir.iterdir():
             if not index_path.is_dir():
                 continue
-                
+
             metadata_file = index_path / "metadata.json"
             if not metadata_file.exists():
                 continue
-            
+
             with open(metadata_file) as f:
                 metadata = json.load(f)
-            
+
             # Calculate size
             size_bytes = sum(f.stat().st_size for f in index_path.rglob('*') if f.is_file())
-            
+
             indices.append(IndexInfo(
                 name=index_path.name,
                 tenant_id=tenant_id,
@@ -338,9 +338,9 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
                 created_at=metadata.get("created_at", ""),
                 size_bytes=size_bytes,
             ))
-        
+
         return ListIndicesResponse(indices=indices, count=len(indices))
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to list indices: {e}")
 
@@ -352,25 +352,25 @@ async def delete_index(request: Request, index_name: str, tenant_id: str = "defa
     try:
         import shutil
         from pathlib import Path
-        
+
         index_dir = Path.home() / ".codex" / "rag_indices"
         index_path = index_dir / tenant_id / index_name
-        
+
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
-        
+
         if not force:
             raise HTTPException(status_code=400, detail="Set force=true to confirm deletion")
-        
+
         shutil.rmtree(index_path)
-        
+
         return DeleteIndexResponse(
             success=True,
             index_name=index_name,
             tenant_id=tenant_id,
             message=f"Index '{index_name}' deleted successfully"
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -382,19 +382,19 @@ async def delete_index(request: Request, index_name: str, tenant_id: str = "defa
 async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
     """Merge multiple indices."""
     try:
-        from codex.rag import manage_tenant_indices, IndexOperation
-        
+        from codex.rag import IndexOperation, manage_tenant_indices
+
         result = manage_tenant_indices(
             operation=IndexOperation.MERGE,
             tenant_id=merge_request.tenant_id,
             source_names=merge_request.source_indices,
             merge_name=merge_request.target_index,
         )
-        
+
         chunks_count = None
         if result.details:
             chunks_count = result.details.get("chunks_count")
-        
+
         return MergeIndicesResponse(
             success=result.success,
             target_index=merge_request.target_index,
@@ -402,7 +402,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
             chunks_count=chunks_count,
             message=result.message,
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Merge failed: {e}")
 
@@ -414,23 +414,23 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
     try:
         import json
         from pathlib import Path
-        
+
         index_dir = Path.home() / ".codex" / "rag_indices"
         index_path = index_dir / tenant_id / index_name
-        
+
         if not index_path.exists():
             raise HTTPException(status_code=404, detail=f"Index '{index_name}' not found")
-        
+
         metadata_file = index_path / "metadata.json"
         if not metadata_file.exists():
             raise HTTPException(status_code=404, detail="Index metadata not found")
-        
+
         with open(metadata_file) as f:
             metadata = json.load(f)
-        
+
         # Calculate size
         size_bytes = sum(f.stat().st_size for f in index_path.rglob('*') if f.is_file())
-        
+
         return StatsResponse(
             index_name=index_name,
             tenant_id=tenant_id,
@@ -440,7 +440,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             size_mb=size_bytes / (1024 * 1024),
             metadata=metadata,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -453,14 +453,14 @@ async def get_metrics(request: Request):
     """Get RAG system metrics."""
     try:
         from codex.rag import get_metrics
-        
+
         metrics = get_metrics()
-        
+
         return MetricsResponse(
             metrics=metrics,
             timestamp=datetime.utcnow().isoformat(),
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get metrics: {e}")
 

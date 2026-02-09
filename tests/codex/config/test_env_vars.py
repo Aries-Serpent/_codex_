@@ -22,7 +22,7 @@ class TestEnvVarConfig:
     def test_create_basic_config(self):
         """Test creating basic environment variable config."""
         from codex.config.env_vars import EnvVarConfig
-        
+
         config = EnvVarConfig(name="TEST_VAR")
         assert config.name == "TEST_VAR"
         assert config.default is None
@@ -33,7 +33,7 @@ class TestEnvVarConfig:
     def test_create_config_with_defaults(self):
         """Test creating config with default value."""
         from codex.config.env_vars import EnvVarConfig
-        
+
         config = EnvVarConfig(
             name="TEST_VAR",
             default="default_value",
@@ -45,7 +45,7 @@ class TestEnvVarConfig:
     def test_create_config_with_validator(self):
         """Test creating config with validator."""
         from codex.config.env_vars import EnvVarConfig
-        
+
         validator = lambda v: v in ("0", "1")
         config = EnvVarConfig(
             name="TEST_VAR",
@@ -58,7 +58,7 @@ class TestEnvVarConfig:
     def test_create_required_config(self):
         """Test creating required environment variable config."""
         from codex.config.env_vars import EnvVarConfig
-        
+
         config = EnvVarConfig(name="REQUIRED_VAR", required=True)
         assert config.required is True
 
@@ -85,7 +85,7 @@ class TestEnvironmentManager:
     def test_instantiation_with_lazy_validation(self, clean_env):
         """Test that manager can be created with lazy validation."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         manager = EnvironmentManager(lazy_validation=True)
         assert manager._lazy_validation is True
         assert manager._validated is False
@@ -93,7 +93,7 @@ class TestEnvironmentManager:
     def test_instantiation_with_eager_validation(self, clean_env):
         """Test that manager validates on init by default."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         # Should not raise with no required vars
         manager = EnvironmentManager(lazy_validation=False)
         assert manager is not None
@@ -136,28 +136,28 @@ class TestEnvironmentManager:
     def test_get_log_dir_creates_directory(self, clean_env, tmp_path):
         """Test that get_log_dir creates directory if not exists."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         log_dir = str(tmp_path / "test_logs")
         os.environ["CODEX_SESSION_LOG_DIR"] = log_dir
-        
+
         # Create fresh manager to pick up new env var
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get_log_dir()
-        
+
         assert result.exists()
         assert result.is_dir()
 
     def test_get_db_path(self, clean_env, tmp_path):
         """Test getting database path."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         db_path = str(tmp_path / "test.db")
         os.environ["CODEX_LOG_DB_PATH"] = db_path
-        
+
         # Create fresh manager to pick up new env var
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get_db_path()
-        
+
         assert str(result).endswith("test.db")
 
     def test_is_sqlite_pool_enabled_false(self, manager, clean_env):
@@ -204,20 +204,20 @@ class TestEnvironmentManagerValidation:
     def test_validation_fails_on_invalid_value(self, clean_env):
         """Test validation fails for invalid values."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         # Set invalid value for CODEX_SQLITE_POOL (expects "0" or "1")
         os.environ["CODEX_SQLITE_POOL"] = "invalid"
-        
+
         with pytest.raises(EnvironmentError):
             EnvironmentManager(lazy_validation=False)
 
     def test_validation_passes_with_valid_values(self, clean_env):
         """Test validation passes with valid values."""
         from codex.config.env_vars import EnvironmentManager
-        
+
         os.environ["CODEX_SQLITE_POOL"] = "1"
         os.environ["CODEX_FORCE_CPU"] = "1"
-        
+
         manager = EnvironmentManager(lazy_validation=False)
         assert manager is not None
 

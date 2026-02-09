@@ -4,12 +4,13 @@ Target: 20+ edge case tests for data loaders and configuration
 Coverage Target: src/codex_ml/data/loaders.py, src/codex_ml/config/
 """
 
-import pytest
 import json
-import yaml
-from unittest.mock import patch
-import tempfile
 import os
+import tempfile
+from unittest.mock import patch
+
+import pytest
+import yaml
 
 
 class TestDataLoaderEdgeCases:
@@ -20,7 +21,7 @@ class TestDataLoaderEdgeCases:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write("")
             empty_file = f.name
-        
+
         try:
             with open(empty_file, 'r') as f:
                 content = f.read()
@@ -38,7 +39,7 @@ class TestDataLoaderEdgeCases:
         with tempfile.NamedTemporaryFile(mode='wb', suffix='.bin', delete=False) as f:
             f.write(b'\x00\x01\x02\xFF\xFE')
             binary_file = f.name
-        
+
         try:
             # Should detect binary and handle appropriately
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
@@ -68,7 +69,7 @@ class TestDataLoaderEdgeCases:
         for i in range(1, 100):
             current["child"] = {"level": i}
             current = current["child"]
-        
+
         # Should handle deep nesting
         json_str = json.dumps(nested)
         assert len(json_str) > 0
@@ -91,16 +92,16 @@ class TestDataLoaderEdgeCases:
         """Test data loader with concurrent file reads"""
         import threading
         results = []
-        
+
         def read_file():
             results.append("read")
-        
+
         threads = [threading.Thread(target=read_file) for _ in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 10
 
     def test_loader_file_permissions_denied(self):

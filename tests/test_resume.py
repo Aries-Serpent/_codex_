@@ -11,8 +11,8 @@ import pytest
 from click.testing import CliRunner
 
 from src.codex.cli import cli
-from tests.test_engine_hf_trainer import _install_minimal_hf_stubs
 from src.training.engine_hf_trainer import run_hf_trainer
+from tests.test_engine_hf_trainer import _install_minimal_hf_stubs
 
 pytest.importorskip("torch")
 pytest.importorskip("transformers")

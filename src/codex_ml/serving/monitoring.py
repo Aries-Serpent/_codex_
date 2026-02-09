@@ -7,8 +7,8 @@ Provides Prometheus metrics, health checks, and distributed tracing.
 import logging
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional
 from threading import Lock
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 

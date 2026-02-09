@@ -6,7 +6,9 @@ which computes metrics over predictions vs targets.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
@@ -151,10 +153,10 @@ def lite_sequence_evaluation(
             "perplexity_proxy": float('inf'),
             "samples": 0.0,
         }
-    
+
     n_samples = min(len(predictions), len(references))
     exact_matches = sum(p == r for p, r in zip(predictions, references))
-    
+
     # Token-level accuracy (simple word-based)
     total_tokens = 0
     correct_tokens = 0
@@ -166,15 +168,15 @@ def lite_sequence_evaluation(
         for i in range(min(len(pred_tokens), len(ref_tokens))):
             if pred_tokens[i] == ref_tokens[i]:
                 correct_tokens += 1
-    
+
     token_acc = correct_tokens / total_tokens if total_tokens > 0 else 0.0
     exact_match = exact_matches / n_samples if n_samples > 0 else 0.0
-    
+
     # Perplexity proxy: lower is better, based on length mismatch
-    avg_length_diff = sum(abs(len(p.split()) - len(r.split())) 
+    avg_length_diff = sum(abs(len(p.split()) - len(r.split()))
                           for p, r in zip(predictions, references)) / n_samples
     perplexity_proxy = 1.0 + avg_length_diff  # Simple proxy
-    
+
     return {
         "token_accuracy": token_acc,
         "exact_match": exact_match,

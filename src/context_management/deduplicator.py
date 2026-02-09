@@ -5,10 +5,11 @@ Removes semantically redundant statements from context using
 fingerprint-based matching and configurable similarity thresholds.
 """
 
-from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
-from .fingerprint import StatementFingerprinter, Fingerprint
+from typing import Optional
+
+from .fingerprint import Fingerprint, StatementFingerprinter
 from .normalizer import ContextNormalizer
 
 

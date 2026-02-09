@@ -4,10 +4,11 @@ Target: 25+ edge case tests for CLI entry points
 Coverage Target: src/codex_ml/cli/codex_cli.py (846 lines, 0% → 60%+)
 """
 
-import pytest
 import os
-from unittest.mock import patch
 from io import StringIO
+from unittest.mock import patch
+
+import pytest
 
 # Import CLI modules
 try:
@@ -25,27 +26,27 @@ class TestCLIEdgeCases:
         with patch('sys.argv', ['codex']):
             # Should show help or handle gracefully
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
-    
+
     # ========== Phase 27.1 Sub-batch A1: Command Execution (8 tests) ==========
-    
+
     def test_cli_invalid_command_execution(self):
         """Test CLI execution of invalid/non-existent command"""
-        from unittest.mock import MagicMock
         import subprocess
-        
+        from unittest.mock import MagicMock
+
         mock_result = MagicMock()
         mock_result.returncode = 127  # Command not found
         mock_result.stderr = b"command not found"
         mock_result.stdout = b""
-        
+
         with patch('subprocess.run', return_value=mock_result) as mock_run:
             result = subprocess.run(['nonexistent_command_xyz'], capture_output=True)
-            
+
             assert result.returncode == 127
             assert b"command not found" in result.stderr
             assert result.stdout == b""
             mock_run.assert_called_once()
-    
+
     def test_cli_command_with_special_characters(self):
         """Test CLI command with special shell characters"""
         dangerous_inputs = [
@@ -55,39 +56,39 @@ class TestCLIEdgeCases:
             "test `whoami`",
             "test $(whoami)"
         ]
-        
+
         for dangerous_input in dangerous_inputs:
             # Should escape or reject special characters
             escaped = dangerous_input.replace(';', '').replace('&&', '').replace('|', '')
             escaped = escaped.replace('`', '').replace('$', '')
-            
+
             assert ';' not in escaped
             assert '&&' not in escaped
             assert '`' not in escaped
             assert '$(' not in escaped
-    
+
     def test_cli_command_timeout(self):
         """Test CLI command execution with timeout"""
+        import subprocess
         import time
         from unittest.mock import MagicMock
-        import subprocess
-        
+
         with patch('subprocess.Popen') as mock_popen:
             mock_process = MagicMock()
             mock_process.poll.return_value = None  # Still running
             mock_popen.return_value = mock_process
-            
+
             # Simulate timeout scenario
             start_time = time.time()
             timeout_duration = 0.1
-            
+
             process = subprocess.Popen(['sleep', '10'])
             time.sleep(timeout_duration)
-            
+
             elapsed = time.time() - start_time
             assert elapsed >= timeout_duration
             assert process.poll() is None  # Still running when checked
-    
+
     def test_cli_command_with_env_variables(self):
         """Test CLI command with environment variable expansion"""
         test_env = {
@@ -95,84 +96,84 @@ class TestCLIEdgeCases:
             'PATH': '/custom/path:/usr/bin',
             'HOME': '/test/home'
         }
-        
+
         with patch.dict(os.environ, test_env, clear=True):
             assert os.environ.get('TEST_VAR') == 'test_value'
             assert '/custom/path' in os.environ.get('PATH', '')
             assert os.environ.get('HOME') == '/test/home'
-            
+
             # Variable precedence: custom vars should override
             os.environ['TEST_VAR'] = 'overridden'
             assert os.environ['TEST_VAR'] == 'overridden'
-    
+
     def test_cli_command_with_stdin_redirect(self):
         """Test CLI command reading from stdin"""
         import sys
-        
+
         test_input = "test input data\nline 2\nline 3\n"
         mock_stdin = StringIO(test_input)
-        
+
         with patch('sys.stdin', mock_stdin):
             # Read from stdin
             line1 = sys.stdin.readline()
             line2 = sys.stdin.readline()
-            
+
             assert line1 == "test input data\n"
             assert line2 == "line 2\n"
-            
+
             # EOF handling
             remaining = sys.stdin.read()
             assert remaining == "line 3\n"
-    
+
     def test_cli_command_with_stdout_redirect(self):
         """Test CLI command writing to stdout"""
         import sys
-        
+
         captured_output = StringIO()
-        
+
         with patch('sys.stdout', captured_output):
             print("Test output line 1")
             print("Test output line 2")
             sys.stdout.flush()
-            
+
             output = captured_output.getvalue()
             assert "Test output line 1" in output
             assert "Test output line 2" in output
             assert output.count('\n') >= 2  # At least 2 newlines
-    
+
     def test_cli_command_with_stderr_redirect(self):
         """Test CLI command writing to stderr"""
         import sys
-        
+
         captured_errors = StringIO()
-        
+
         with patch('sys.stderr', captured_errors):
             print("Error message 1", file=sys.stderr)
             print("Error message 2", file=sys.stderr)
             sys.stderr.flush()
-            
+
             errors = captured_errors.getvalue()
             assert "Error message 1" in errors
             assert "Error message 2" in errors
             assert errors.count('\n') >= 2
-    
+
     def test_cli_command_chain_execution(self):
         """Test CLI command pipeline/chain execution"""
-        from unittest.mock import MagicMock
         import subprocess
-        
+        from unittest.mock import MagicMock
+
         with patch('subprocess.run') as mock_run:
             # Simulate pipeline: cmd1 | cmd2 | cmd3
             mock_run.return_value = MagicMock(returncode=0, stdout=b"output")
-            
+
             # Execute commands in sequence
             result1 = subprocess.run(['cmd1'], capture_output=True)
             result2 = subprocess.run(['cmd2'], input=result1.stdout, capture_output=True)
             result3 = subprocess.run(['cmd3'], input=result2.stdout, capture_output=True)
-            
+
             assert mock_run.call_count == 3
             assert result3.returncode == 0
-            
+
             # Verify error propagation scenario
             mock_run.return_value = MagicMock(returncode=1, stderr=b"error in pipeline")
             result_error = subprocess.run(['failing_cmd'], capture_output=True)
@@ -243,20 +244,20 @@ class TestCLIEdgeCases:
         """Test CLI concurrent execution safety"""
         import threading
         results = []
-        
+
         def run_cli():
             try:
                 with patch('sys.argv', ['codex', 'safe_command']):
                     results.append("success")
             except Exception as e:
                 results.append(f"error: {e}")
-        
+
         threads = [threading.Thread(target=run_cli) for _ in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Should handle concurrent calls safely
         assert len(results) == 5
 
@@ -273,18 +274,18 @@ class TestCLIEdgeCases:
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     # ========== Phase 27.1 Sub-batch A2: Signal Handling (6 tests) ==========
-    
+
     def test_cli_sigint_handling(self):
         """Test CLI SIGINT (Ctrl+C) handling"""
         import signal
-        
+
         cleanup_called = []
-        
+
         def signal_handler(signum, frame):
             cleanup_called.append(True)
             # Simulate cleanup
             pass
-        
+
         original_handler = signal.signal(signal.SIGINT, signal_handler)
         try:
             # Simulate SIGINT
@@ -293,81 +294,81 @@ class TestCLIEdgeCases:
             cleanup_called.append(True)
         finally:
             signal.signal(signal.SIGINT, original_handler)
-        
+
         # Verify cleanup was attempted
         assert len(cleanup_called) >= 1
-    
+
     def test_cli_sigterm_handling(self):
         """Test CLI SIGTERM handling for graceful shutdown"""
         import signal
-        
+
         termination_detected = []
-        
+
         def sigterm_handler(signum, frame):
             termination_detected.append(signum)
             # Resource cleanup would happen here
-        
+
         original_handler = signal.signal(signal.SIGTERM, sigterm_handler)
         try:
             os.kill(os.getpid(), signal.SIGTERM)
             assert signal.SIGTERM in termination_detected
         finally:
             signal.signal(signal.SIGTERM, original_handler)
-    
+
     def test_cli_sighup_handling(self):
         """Test CLI SIGHUP handling for reload"""
-        import signal
         import platform
-        
+        import signal
+
         if platform.system() == 'Windows':
             pytest.skip("SIGHUP not available on Windows")
-        
+
         reload_triggered = []
-        
+
         def sighup_handler(signum, frame):
             reload_triggered.append(True)
-        
+
         original_handler = signal.signal(signal.SIGHUP, sighup_handler)
         try:
             os.kill(os.getpid(), signal.SIGHUP)
             assert len(reload_triggered) == 1
         finally:
             signal.signal(signal.SIGHUP, original_handler)
-    
+
     def test_cli_signal_during_subprocess(self):
         """Test signal handling when subprocess is running"""
         import subprocess
         from unittest.mock import MagicMock, patch
-        
+
         with patch('subprocess.Popen') as mock_popen:
             mock_process = MagicMock()
             mock_process.poll.return_value = None
             mock_process.pid = 12345
             mock_popen.return_value = mock_process
-            
+
             process = subprocess.Popen(['long_running_cmd'])
-            
+
             # Simulate signal during subprocess
             def cleanup_subprocess(signum, frame):
                 if process.poll() is None:
                     process.terminate()
-            
+
             assert process.poll() is None
             process.terminate()
             mock_process.terminate.assert_called()
-    
+
     def test_cli_signal_race_condition(self):
         """Test signal handling for race conditions"""
         import signal
         import threading
-        
+
         signal_count = []
         lock = threading.Lock()
-        
+
         def thread_safe_handler(signum, frame):
             with lock:
                 signal_count.append(signum)
-        
+
         original_handler = signal.signal(signal.SIGINT, thread_safe_handler)
         try:
             # Simulate multiple signals
@@ -376,34 +377,34 @@ class TestCLIEdgeCases:
                     os.kill(os.getpid(), signal.SIGINT)
                 except KeyboardInterrupt:
                     pass
-            
+
             # Thread safety verified by no deadlock
             assert len(signal_count) >= 1
         finally:
             signal.signal(signal.SIGINT, original_handler)
-    
+
     def test_cli_multiple_signals_sequence(self):
         """Test CLI handling multiple signals in sequence"""
         import signal
-        
+
         signals_received = []
-        
+
         def multi_signal_handler(signum, frame):
             signals_received.append(signum)
-        
+
         # Install handlers
         orig_int = signal.signal(signal.SIGINT, multi_signal_handler)
         orig_term = signal.signal(signal.SIGTERM, multi_signal_handler)
-        
+
         try:
             # Send signals in sequence
             try:
                 os.kill(os.getpid(), signal.SIGINT)
             except KeyboardInterrupt:
                 signals_received.append(signal.SIGINT)
-            
+
             os.kill(os.getpid(), signal.SIGTERM)
-            
+
             # Verify signal ordering/queuing
             assert len(signals_received) >= 1
         finally:
@@ -411,110 +412,110 @@ class TestCLIEdgeCases:
             signal.signal(signal.SIGTERM, orig_term)
 
     # ========== Phase 27.1 Sub-batch A3: I/O Operations (6 tests) ==========
-    
+
     def test_cli_large_input_handling(self):
         """Test CLI handling of large input streams"""
         import sys
-        
+
         # Generate large input (10MB)
         large_input = "x" * (10 * 1024 * 1024)
         mock_stdin = StringIO(large_input)
-        
+
         with patch('sys.stdin', mock_stdin):
             # Stream reading in chunks
             chunk_size = 4096
             total_read = 0
-            
+
             while True:
                 chunk = sys.stdin.read(chunk_size)
                 if not chunk:
                     break
                 total_read += len(chunk)
-            
+
             assert total_read == len(large_input)
             # Memory usage should be reasonable (streaming)
             assert chunk_size < len(large_input)
-    
+
     def test_cli_binary_input_handling(self):
         """Test CLI handling of binary input"""
         import sys
         from io import BytesIO
-        
+
         binary_data = b'\x00\x01\x02\xff\xfe\xfd'
         mock_stdin = BytesIO(binary_data)
-        
+
         with patch('sys.stdin.buffer', mock_stdin):
             read_data = sys.stdin.buffer.read()
-            
+
             assert read_data == binary_data
             assert len(read_data) == 6
             assert read_data[0] == 0
             assert read_data[-1] == 0xfd
-    
+
     def test_cli_output_to_closed_pipe(self):
         """Test CLI writing to closed pipe (BrokenPipeError)"""
         import sys
         from unittest.mock import MagicMock
-        
+
         mock_stdout = MagicMock()
         mock_stdout.write.side_effect = BrokenPipeError()
-        
+
         with patch('sys.stdout', mock_stdout):
             try:
                 sys.stdout.write("test output")
             except BrokenPipeError:
                 # Should handle gracefully, not crash
                 pass
-            
+
             mock_stdout.write.assert_called_once_with("test output")
-    
+
     def test_cli_input_from_closed_pipe(self):
         """Test CLI reading from closed pipe (EOF)"""
         import sys
-        
+
         # Empty input simulates closed pipe
         mock_stdin = StringIO("")
-        
+
         with patch('sys.stdin', mock_stdin):
             data = sys.stdin.read()
-            
+
             assert data == ""  # EOF immediately
-            
+
             # Multiple reads should still return EOF
             data2 = sys.stdin.read()
             assert data2 == ""
-    
+
     def test_cli_concurrent_io_operations(self):
         """Test CLI thread-safe I/O operations"""
         import threading
-        
+
         output_buffer = StringIO()
         results = []
         lock = threading.Lock()
-        
+
         def write_output(thread_id):
             with lock:
                 output_buffer.write(f"Thread {thread_id}\n")
                 results.append(thread_id)
-        
+
         threads = [threading.Thread(target=write_output, args=(i,)) for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # All threads completed
         assert len(results) == 5
         # No data corruption
         output = output_buffer.getvalue()
         assert output.count("Thread") == 5
-    
+
     def test_cli_io_encoding_errors(self):
         """Test CLI handling of encoding errors"""
-        
+
         # Invalid UTF-8 sequence
         invalid_utf8 = b'\xff\xfe invalid utf8 \x80\x81'
-        
+
         try:
             decoded = invalid_utf8.decode('utf-8')
             assert False, "Should raise UnicodeDecodeError"
@@ -523,21 +524,21 @@ class TestCLIEdgeCases:
             decoded = invalid_utf8.decode('utf-8', errors='replace')
             assert '�' in decoded  # Replacement character
             assert 'invalid utf8' in decoded
-    
+
     # ========== Phase 27.1 Sub-batch A4: CLI Edge Cases (5 tests) ==========
-    
+
     def test_cli_extremely_long_arguments(self):
         """Test CLI with extremely long command arguments"""
         # Very long argument (1MB)
         long_arg = "x" * (1024 * 1024)
-        
+
         # Should handle or truncate appropriately
         max_allowed = 100000  # Example limit
         if len(long_arg) > max_allowed:
             truncated = long_arg[:max_allowed]
             assert len(truncated) == max_allowed
             assert truncated.endswith("x")
-    
+
     def test_cli_unicode_arguments(self):
         """Test CLI handling Unicode characters in arguments"""
         unicode_test_cases = [
@@ -547,7 +548,7 @@ class TestCLIEdgeCases:
             ('Москва', 'Cyrillic'),
             ('\u200b\u200c\u200d', 'Zero-width characters')
         ]
-        
+
         for unicode_str, description in unicode_test_cases:
             # Should handle Unicode properly
             encoded = unicode_str.encode('utf-8')
@@ -557,7 +558,7 @@ class TestCLIEdgeCases:
             import unicodedata
             normalized = unicodedata.normalize('NFC', unicode_str)
             assert isinstance(normalized, str)
-    
+
     def test_cli_path_traversal_prevention(self):
         """Test CLI prevents path traversal attacks"""
         dangerous_paths = [
@@ -567,11 +568,11 @@ class TestCLIEdgeCases:
             'C:\\Windows\\System32\\config\\SAM',
             '..\\..\\..\\sensitive'
         ]
-        
+
         for dangerous_path in dangerous_paths:
             # Security check: should detect traversal attempts
             assert '..' in dangerous_path or dangerous_path.startswith('/')
-            
+
             # Sanitize by resolving and checking
             import pathlib
             try:
@@ -580,54 +581,54 @@ class TestCLIEdgeCases:
                 # Should reject paths outside allowed directories
             except (ValueError, OSError):
                 pass  # Expected for malicious paths
-    
+
     def test_cli_resource_cleanup_on_error(self):
         """Test CLI properly cleans up resources on error"""
         import tempfile
-        
+
         resources_created = []
-        
+
         try:
             # Create temporary resource
             temp_file = tempfile.NamedTemporaryFile(delete=False)
             resources_created.append(temp_file.name)
             temp_file.write(b"test data")
             temp_file.close()
-            
+
             # Simulate error
             raise RuntimeError("Simulated error")
-            
+
         except RuntimeError:
             # Cleanup should happen
             for resource in resources_created:
                 if os.path.exists(resource):
                     os.unlink(resource)
-        
+
         # Verify cleanup
         for resource in resources_created:
             assert not os.path.exists(resource)
-    
+
     def test_cli_concurrent_command_execution(self):
         """Test CLI isolates concurrent command executions"""
         import threading
         import time
-        
+
         execution_results = []
         lock = threading.Lock()
-        
+
         def execute_command(cmd_id):
             # Simulate command execution
             time.sleep(0.01)  # Small delay
             with lock:
                 execution_results.append(cmd_id)
-        
+
         # Run multiple commands concurrently
         threads = [threading.Thread(target=execute_command, args=(i,)) for i in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # All commands completed
         assert len(execution_results) == 10
         # No duplicates (proper isolation)
@@ -744,7 +745,7 @@ class TestCLIConfigEdgeCases:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
             f.write("invalid: yaml: content: [")
             config_path = f.name
-        
+
         try:
             with patch('sys.argv', ['codex', f'--config={config_path}']):
                 with pytest.raises((SystemExit, ValueError)):

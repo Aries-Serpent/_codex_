@@ -5,9 +5,9 @@ Provides base interface for extending AST analysis to new languages
 and custom analysis tools.
 """
 from abc import ABC, abstractmethod
-from typing import Optional, Any
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Optional
 
 from codex.ast.node import StandardizedASTNode
 
@@ -30,13 +30,13 @@ class ASTPlugin(ABC):
     Implement this interface to add support for new languages
     or custom analysis capabilities.
     """
-    
+
     @property
     @abstractmethod
     def metadata(self) -> PluginMetadata:
         """Return plugin metadata."""
         pass
-    
+
     @property
     @abstractmethod
     def language(self) -> str:
@@ -46,7 +46,7 @@ class ASTPlugin(ABC):
         Examples: 'python', 'javascript', 'rust'
         """
         pass
-    
+
     @property
     @abstractmethod
     def file_extensions(self) -> list[str]:
@@ -56,7 +56,7 @@ class ASTPlugin(ABC):
         Examples: ['.py', '.pyw'], ['.js', '.jsx']
         """
         pass
-    
+
     @abstractmethod
     def can_parse(self, file_path: str) -> bool:
         """
@@ -69,7 +69,7 @@ class ASTPlugin(ABC):
             True if plugin can handle this file
         """
         pass
-    
+
     @abstractmethod
     def parse(self, code: str, file_path: str) -> StandardizedASTNode:
         """
@@ -86,7 +86,7 @@ class ASTPlugin(ABC):
             SyntaxError: If code cannot be parsed
         """
         pass
-    
+
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Perform custom analysis on AST node.
@@ -100,7 +100,7 @@ class ASTPlugin(ABC):
             Dictionary of analysis results
         """
         return {}
-    
+
     def validate(self) -> bool:
         """
         Validate plugin is properly configured.
@@ -118,13 +118,13 @@ class AnalysisPlugin(ABC):
     Use this for plugins that analyze existing AST nodes
     rather than parsing new languages.
     """
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
         """Return plugin name."""
         pass
-    
+
     @abstractmethod
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """

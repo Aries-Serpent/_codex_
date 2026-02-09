@@ -4,13 +4,12 @@ Pre-defined flow specifications for all core orchestration flows.
 These specifications drive the automated test generation.
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from tests.framework.test_generator import OrchestrationFlowSpec
-
 
 # ========== PHYSICS ORCHESTRATOR SPECS ==========
 

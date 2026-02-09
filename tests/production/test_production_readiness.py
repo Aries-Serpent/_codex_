@@ -15,8 +15,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Any
 
-
-
 # ============================================================================
 # Production Readiness Data Structures
 # ============================================================================
@@ -51,7 +49,7 @@ class TestProductionErrorHandling:
     def test_exception_logging_format(self) -> None:
         """Test that exceptions are logged with proper format."""
         log_entries: list[dict[str, Any]] = []
-        
+
         def log_exception(exc: Exception, context: dict[str, Any]) -> None:
             log_entries.append({
                 "timestamp": "2026-01-18T12:00:00Z",
@@ -60,12 +58,12 @@ class TestProductionErrorHandling:
                 "message": str(exc),
                 "context": context,
             })
-        
+
         try:
             raise ValueError("Test error")
         except ValueError as e:
             log_exception(e, {"operation": "test", "user_id": "123"})
-        
+
         assert len(log_entries) == 1
         assert log_entries[0]["exception_type"] == "ValueError"
         assert "context" in log_entries[0]
@@ -81,7 +79,7 @@ class TestProductionErrorHandling:
                 return "io_error"
             else:
                 return "internal_error"
-        
+
         assert categorize_error(ValueError("bad value")) == "validation_error"
         assert categorize_error(ConnectionError("no network")) == "network_error"
         assert categorize_error(FileNotFoundError("missing")) == "io_error"
@@ -95,37 +93,37 @@ class TestProductionErrorHandling:
                 raise ConnectionError("Config service unavailable")
             except ConnectionError:
                 return default
-        
+
         result = fetch_config_with_fallback("timeout_ms", 5000)
         assert result == 5000
 
     def test_error_aggregation(self) -> None:
         """Test aggregating multiple errors."""
         errors: list[Exception] = []
-        
+
         for i in range(5):
             try:
                 if i % 2 == 0:
                     raise ValueError(f"Error {i}")
             except ValueError as e:
                 errors.append(e)
-        
+
         assert len(errors) == 3
 
     def test_error_rate_tracking(self) -> None:
         """Test tracking error rates."""
         error_counts = {"total": 0, "errors": 0}
-        
+
         def process_with_tracking(should_fail: bool) -> bool:
             error_counts["total"] += 1
             if should_fail:
                 error_counts["errors"] += 1
                 return False
             return True
-        
+
         # 3 failures, 7 successes
         [process_with_tracking(i < 3) for i in range(10)]
-        
+
         error_rate = error_counts["errors"] / error_counts["total"]
         assert error_rate == 0.3
 
@@ -145,28 +143,28 @@ class TestGracefulDegradation:
                 self.failure_count = 0
                 self.threshold = threshold
                 self.is_open = False
-            
+
             def record_failure(self) -> None:
                 self.failure_count += 1
                 if self.failure_count >= self.threshold:
                     self.is_open = True
-            
+
             def record_success(self) -> None:
                 self.failure_count = 0
                 self.is_open = False
-            
+
             def can_proceed(self) -> bool:
                 return not self.is_open
-        
+
         cb = CircuitBreaker(threshold=3)
-        
+
         # Record failures
         for _ in range(3):
             cb.record_failure()
-        
+
         assert cb.is_open is True
         assert cb.can_proceed() is False
-        
+
         # Reset on success
         cb.record_success()
         assert cb.is_open is False
@@ -179,11 +177,11 @@ class TestGracefulDegradation:
             # Simulate operation
             time.sleep(0.001)  # 1ms
             elapsed = (time.perf_counter() - start) * 1000
-            
+
             if elapsed > timeout_ms:
                 raise TimeoutError("Operation timed out")
             return "success"
-        
+
         # Should succeed with generous timeout
         result = operation_with_timeout(1000)
         assert result == "success"
@@ -191,7 +189,7 @@ class TestGracefulDegradation:
     def test_retry_with_backoff(self) -> None:
         """Test retry logic with exponential backoff."""
         attempts: list[float] = []
-        
+
         def retry_with_backoff(
             operation: Any,
             max_retries: int = 3,
@@ -208,7 +206,7 @@ class TestGracefulDegradation:
                     if attempt == max_retries:
                         raise
             return None
-        
+
         result = retry_with_backoff(lambda: None, max_retries=3)
         assert result == "success"
         assert attempts == [10, 20, 40]  # Exponential backoff
@@ -217,13 +215,13 @@ class TestGracefulDegradation:
         """Test fallback chain execution."""
         def primary() -> str:
             raise ConnectionError("Primary failed")
-        
+
         def secondary() -> str:
             raise ConnectionError("Secondary failed")
-        
+
         def tertiary() -> str:
             return "tertiary_result"
-        
+
         def execute_with_fallbacks(handlers: list[Any]) -> str:
             for handler in handlers:
                 try:
@@ -231,7 +229,7 @@ class TestGracefulDegradation:
                 except Exception:
                     continue
             return "all_failed"
-        
+
         result = execute_with_fallbacks([primary, secondary, tertiary])
         assert result == "tertiary_result"
 
@@ -242,7 +240,7 @@ class TestGracefulDegradation:
             "basic_analytics": True,
             "caching": True,
         }
-        
+
         def get_analytics() -> str:
             if features["advanced_analytics"]:
                 return "advanced"
@@ -250,7 +248,7 @@ class TestGracefulDegradation:
                 return "basic"
             else:
                 return "none"
-        
+
         result = get_analytics()
         assert result == "basic"
 
@@ -272,10 +270,10 @@ class TestHealthChecks:
                 latency_ms=10.5,
                 message="OK" if is_healthy else "Component unavailable",
             )
-        
+
         result = check_component("database", True)
         assert result.status == "healthy"
-        
+
         result = check_component("cache", False)
         assert result.status == "unhealthy"
 
@@ -286,11 +284,11 @@ class TestHealthChecks:
             HealthCheckResult("cache", "degraded", 50, "Slow"),
             HealthCheckResult("api", "healthy", 5, "OK"),
         ]
-        
+
         # Aggregate status: worst case wins
         status_priority = {"healthy": 0, "degraded": 1, "unhealthy": 2}
         overall_status = max(checks, key=lambda c: status_priority[c.status]).status
-        
+
         assert overall_status == "degraded"
 
     def test_health_check_timeout(self) -> None:
@@ -300,7 +298,7 @@ class TestHealthChecks:
             # Simulate check
             time.sleep(0.001)
             latency = (time.perf_counter() - start) * 1000
-            
+
             if latency > timeout_ms:
                 return HealthCheckResult(
                     "service", "unhealthy", latency, "Timeout"
@@ -308,7 +306,7 @@ class TestHealthChecks:
             return HealthCheckResult(
                 "service", "healthy", latency, "OK"
             )
-        
+
         result = health_check_with_timeout(1000)
         assert result.status == "healthy"
 
@@ -319,11 +317,11 @@ class TestHealthChecks:
             "cache": True,
             "external_api": False,
         }
-        
+
         # Readiness requires all critical deps
         critical_deps = ["database"]
         is_ready = all(dependencies_ready.get(d, False) for d in critical_deps)
-        
+
         assert is_ready is True
 
     def test_liveness_probe(self) -> None:
@@ -331,7 +329,7 @@ class TestHealthChecks:
         def liveness_check() -> bool:
             # Check if main thread is responsive
             return threading.main_thread().is_alive()
-        
+
         assert liveness_check() is True
 
 
@@ -350,26 +348,26 @@ class TestResourceManagement:
                 self.max_size = max_size
                 self.available: list[int] = list(range(max_size))
                 self.in_use: list[int] = []
-            
+
             def acquire(self) -> int | None:
                 if self.available:
                     conn = self.available.pop()
                     self.in_use.append(conn)
                     return conn
                 return None
-            
+
             def release(self, conn: int) -> None:
                 if conn in self.in_use:
                     self.in_use.remove(conn)
                     self.available.append(conn)
-        
+
         pool = ConnectionPool(max_size=5)
-        
+
         # Acquire connections
         conns = [pool.acquire() for _ in range(3)]
         assert len(pool.in_use) == 3
         assert len(pool.available) == 2
-        
+
         # Release connections
         for conn in conns:
             if conn is not None:
@@ -381,7 +379,7 @@ class TestResourceManagement:
         """Test memory limit enforcement."""
         max_items = 1000
         items: list[int] = []
-        
+
         for i in range(1500):
             if len(items) < max_items:
                 items.append(i)
@@ -389,7 +387,7 @@ class TestResourceManagement:
                 # Evict oldest
                 items.pop(0)
                 items.append(i)
-        
+
         assert len(items) == max_items
 
     def test_concurrent_request_limiting(self) -> None:
@@ -398,25 +396,25 @@ class TestResourceManagement:
         active_count = 0
         max_observed = 0
         lock = threading.Lock()
-        
+
         def process_request(request_id: int) -> int:
             nonlocal active_count, max_observed
             with lock:
                 active_count += 1
                 max_observed = max(max_observed, active_count)
-            
+
             time.sleep(0.001)  # Simulate work
-            
+
             with lock:
                 active_count -= 1
-            
+
             return request_id
-        
+
         with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
             futures = [executor.submit(process_request, i) for i in range(50)]
             for f in as_completed(futures):
                 f.result()
-        
+
         assert max_observed <= max_concurrent
 
 
@@ -435,7 +433,7 @@ class TestMonitoringIntegration:
             "request_count": [],
             "error_count": [],
         }
-        
+
         # Simulate request processing
         for i in range(10):
             latency = 50 + i * 5
@@ -443,11 +441,11 @@ class TestMonitoringIntegration:
             metrics["request_count"].append(1)
             if i % 5 == 0:
                 metrics["error_count"].append(1)
-        
+
         avg_latency = sum(metrics["request_latency_ms"]) / len(metrics["request_latency_ms"])
         total_requests = sum(metrics["request_count"])
         total_errors = sum(metrics["error_count"])
-        
+
         assert avg_latency == 72.5
         assert total_requests == 10
         assert total_errors == 2
@@ -459,13 +457,13 @@ class TestMonitoringIntegration:
             "latency_p99_ms": 500,
             "memory_percent": 90,
         }
-        
+
         current_metrics = {
             "error_rate": 0.08,  # Above threshold
             "latency_p99_ms": 300,  # OK
             "memory_percent": 85,  # OK
         }
-        
+
         alerts = []
         for metric, threshold in thresholds.items():
             if current_metrics[metric] > threshold:
@@ -474,7 +472,7 @@ class TestMonitoringIntegration:
                     "value": current_metrics[metric],
                     "threshold": threshold,
                 })
-        
+
         assert len(alerts) == 1
         assert alerts[0]["metric"] == "error_rate"
 
@@ -492,7 +490,7 @@ class TestMonitoringIntegration:
                 "status_code": 200,
             },
         }
-        
+
         # Verify structure
         assert "timestamp" in log_entry
         assert "level" in log_entry
@@ -507,7 +505,7 @@ class TestMonitoringIntegration:
             "parent_span_id": None,
             "flags": 1,  # Sampled
         }
-        
+
         def create_child_span(parent: dict[str, Any]) -> dict[str, Any]:
             return {
                 "trace_id": parent["trace_id"],
@@ -515,7 +513,7 @@ class TestMonitoringIntegration:
                 "parent_span_id": parent["span_id"],
                 "flags": parent["flags"],
             }
-        
+
         child = create_child_span(trace_context)
         assert child["trace_id"] == trace_context["trace_id"]
         assert child["parent_span_id"] == trace_context["span_id"]

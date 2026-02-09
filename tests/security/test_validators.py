@@ -19,23 +19,23 @@ class TestInputValidation:
         """Email validation with standard format."""
         import re
         email_pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        
+
         valid_emails = [
             "user@example.com",
             "user.name@domain.org",
             "user123@sub.domain.net",
         ]
-        
+
         invalid_emails = [
             "invalid",
             "no@domain",
             "@nodomain.com",
             "spaces in@email.com",
         ]
-        
+
         for email in valid_emails:
             assert re.match(email_pattern, email), f"{email} should be valid"
-        
+
         for email in invalid_emails:
             assert not re.match(email_pattern, email), f"{email} should be invalid"
 
@@ -43,14 +43,14 @@ class TestInputValidation:
         """URL validation patterns."""
         import re
         url_pattern = r'^https?://[\w\.-]+(?:\:\d+)?(?:/[\w\.\-/]*)?$'
-        
+
         valid_urls = [
             "http://example.com",
             "https://secure.example.com",
             "https://example.com:8080/path",
             "http://sub.domain.example.org/path/to/resource",
         ]
-        
+
         for url in valid_urls:
             assert re.match(url_pattern, url), f"{url} should be valid"
 
@@ -69,7 +69,7 @@ class TestInputValidation:
             "/etc/passwd",
             "C:\\Windows\\System32",
         ]
-        
+
         for path in dangerous_paths:
             assert ".." in path or path.startswith("/") or path.startswith("C:")
 
@@ -85,9 +85,9 @@ class TestSQLInjectionPrevention:
             "admin'--",
             "UNION SELECT * FROM passwords",
         ]
-        
+
         sql_patterns = ["'", "--", ";", "UNION", "SELECT", "DROP"]
-        
+
         for inp in dangerous_inputs:
             has_pattern = any(p.lower() in inp.lower() for p in sql_patterns)
             assert has_pattern, f"Should detect SQL pattern in: {inp}"
@@ -96,7 +96,7 @@ class TestSQLInjectionPrevention:
         """Parameterized queries are safe from injection."""
         # Simulate parameterized query (value is not interpolated)
         query_template = "SELECT * FROM users WHERE id = ?"
-        
+
         # In parameterized queries, input is treated as data not code
         assert "?" in query_template
         assert "DROP" not in query_template
@@ -108,10 +108,10 @@ class TestXSSPrevention:
     def test_html_escape_basic(self):
         """Basic HTML entities are escaped."""
         import html
-        
+
         dangerous = '<script>alert("xss")</script>'
         escaped = html.escape(dangerous)
-        
+
         assert "<" not in escaped
         assert ">" not in escaped
         assert "&lt;script&gt;" in escaped
@@ -119,10 +119,10 @@ class TestXSSPrevention:
     def test_attribute_escape(self):
         """HTML attributes are properly escaped."""
         import html
-        
+
         dangerous_attr = '" onclick="alert(1)"'
         escaped = html.escape(dangerous_attr, quote=True)
-        
+
         assert '"' not in escaped or escaped.startswith("&quot;")
 
 
@@ -140,7 +140,7 @@ class TestAuthenticationValidation:
                 "special": any(c in "!@#$%^&*()_+-=" for c in password),
             }
             return sum(checks.values()) >= 4
-        
+
         assert check_password_strength("SecureP@ss1")
         assert not check_password_strength("weak")
         assert not check_password_strength("12345678")
@@ -148,13 +148,13 @@ class TestAuthenticationValidation:
     def test_token_format_validation(self):
         """Token format validation."""
         import re
-        
+
         # JWT-like format: xxx.xxx.xxx
         jwt_pattern = r'^[\w-]+\.[\w-]+\.[\w-]+$'
-        
+
         valid_token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIn0.signature"
         invalid_token = "not-a-valid-token"
-        
+
         assert re.match(jwt_pattern, valid_token)
         assert not re.match(jwt_pattern, invalid_token)
 
@@ -169,26 +169,26 @@ class TestRateLimiting:
                 self.max_requests = max_requests
                 self.window = window_seconds
                 self.requests = []
-            
+
             def is_allowed(self, timestamp):
                 # Remove old requests
                 cutoff = timestamp - self.window
                 self.requests = [r for r in self.requests if r > cutoff]
-                
+
                 if len(self.requests) < self.max_requests:
                     self.requests.append(timestamp)
                     return True
                 return False
-        
+
         limiter = RateLimiter(max_requests=5, window_seconds=60)
-        
+
         # First 5 requests should succeed
         for i in range(5):
             assert limiter.is_allowed(i)
-        
+
         # 6th request should fail
         assert not limiter.is_allowed(5)
-        
+
         # After window, should succeed again
         assert limiter.is_allowed(100)
 
@@ -216,7 +216,7 @@ class TestEnvironmentIsolation:
             "timeout": 30,
             "debug": False,
         }
-        
+
         # Validation checks
         assert isinstance(config.get("api_key"), str)
         assert config.get("timeout", 0) > 0

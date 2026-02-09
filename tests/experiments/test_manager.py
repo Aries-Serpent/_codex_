@@ -11,8 +11,9 @@ Phase 48: Coverage improvement for 0% coverage module.
 """
 
 import os
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestInitExperiment:
@@ -30,7 +31,7 @@ class TestInitExperiment:
     def test_init_experiment_file_backend_no_mlflow(self):
         """Test init_experiment with file backend when mlflow not available."""
         from experiments.manager import init_experiment
-        
+
         # Should raise ImportError wrapper when mlflow not available
         with pytest.raises(ImportError):
             init_experiment("test_experiment")
@@ -40,7 +41,7 @@ class TestInitExperiment:
     def test_init_experiment_file_backend_with_mlflow(self, mock_mlflow):
         """Test init_experiment with file backend and mocked mlflow."""
         from experiments.manager import init_experiment
-        
+
         # Mock the mlflow module at import time
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
@@ -55,7 +56,7 @@ class TestInitExperiment:
     def test_init_experiment_remote_no_uri_raises(self):
         """Test init_experiment raises when remote backend has no URI."""
         mock_mlflow = MagicMock()
-        
+
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
                 from experiments.manager import init_experiment
@@ -68,7 +69,7 @@ class TestInitExperiment:
     def test_init_experiment_remote_with_uri(self):
         """Test init_experiment with remote backend and valid URI."""
         mock_mlflow = MagicMock()
-        
+
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
                 from experiments.manager import init_experiment
@@ -119,7 +120,7 @@ class TestFileBackendTracking:
         """Test tracking directory is created at expected location."""
         # The init_experiment creates .mlruns in the current directory
         expected_name = ".mlruns"
-        
+
         # Verify the expected directory naming convention
         assert expected_name == ".mlruns"
 

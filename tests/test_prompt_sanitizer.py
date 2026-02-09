@@ -6,9 +6,10 @@ Test module for prompt sanitizer.
 
 #!/usr/bin/env python3
 """Tests for PromptSanitizer."""
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent

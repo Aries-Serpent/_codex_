@@ -338,26 +338,26 @@ class SuperpositionEngine:
             Decision(id=dec_id, evaluator=func, metadata=context or {})
             for dec_id, func in decisions
         ]
-        
+
         # Create superposition
         state = self.create_superposition(decision_objects)
-        
+
         # Evaluate in parallel
         scores = self.evaluate_parallel(state)
-        
+
         # Update state with scores
         state.scores = scores
         state.evaluated = True
-        
+
         # Calculate coherence
         amplitudes = state.amplitudes
         probabilities = [a**2 for a in amplitudes]
         coherence = self._calculate_coherence(probabilities)
         state.coherence = coherence
-        
+
         # Collapse to best decision
         best = self.collapse(state)
-        
+
         return {
             "decision": best.id,
             "value": best.metadata.get("value"),

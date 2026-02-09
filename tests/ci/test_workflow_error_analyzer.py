@@ -12,10 +12,10 @@ Tests cover:
 import pytest
 
 from scripts.ci.analyze_workflow_errors import (
+    ERROR_PATTERNS,
+    AnalysisResult,
     analyze_log_content,
     find_recurring_patterns,
-    AnalysisResult,
-    ERROR_PATTERNS,
 )
 
 

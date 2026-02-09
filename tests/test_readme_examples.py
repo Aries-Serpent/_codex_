@@ -16,14 +16,14 @@ def test_readme_session_logger_example(tmp_path, monkeypatch):
     snippet = next(
         b for b in blocks if "SessionLogger" in b and 'sl.log("assistant", "hello")' in b
     )
-    
+
     # Validate snippet before execution - must only contain expected imports and SessionLogger usage
     if not all(safe in snippet for safe in ["SessionLogger", "log"]):
         raise ValueError("README snippet validation failed")
     # Ensure no dangerous operations
     if any(dangerous in snippet for dangerous in ["__import__", "eval", "compile", "open("]):
         raise ValueError("README snippet contains dangerous operations")
-    
+
     db = tmp_path / "session_logs.db"
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db))
     exec(snippet, {})  # nosec B102 - Validated trusted README example code only

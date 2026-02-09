@@ -231,7 +231,7 @@ class TestBuildManifest:
             train_meta = split.SplitMetadata("train", [0, 1, 2], "train_cs")
             val_meta = split.SplitMetadata("val", [3, 4], "val_cs")
             test_meta = split.SplitMetadata("test", [5], "test_cs")
-            
+
             manifest = split._build_manifest(
                 dataset_name="test_dataset",
                 dataset_identifier="test_id",
@@ -242,7 +242,7 @@ class TestBuildManifest:
                 test=test_meta,
                 fractions={"train": 0.6, "val": 0.2, "test": 0.2},
             )
-            
+
             assert isinstance(manifest, dict)
             assert "dataset" in manifest
             assert "splits" in manifest
@@ -254,7 +254,7 @@ class TestBuildManifest:
             train_meta = split.SplitMetadata("train", [0], "cs1")
             val_meta = split.SplitMetadata("val", [1], "cs2")
             test_meta = split.SplitMetadata("test", [2], "cs3")
-            
+
             manifest = split._build_manifest(
                 dataset_name="test",
                 dataset_identifier="id",
@@ -265,5 +265,5 @@ class TestBuildManifest:
                 test=test_meta,
                 fractions={"train": 0.6, "val": 0.2, "test": 0.2},
             )
-            
+
             assert "$schema" in manifest or "schema_version" in manifest

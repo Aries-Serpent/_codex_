@@ -18,14 +18,13 @@ Author: Codex Team
 from __future__ import annotations
 
 import argparse
+import importlib
 import logging
 import os
 import socket
 import sys
-from typing import Optional
-
-import importlib
 import time
+from typing import Optional
 
 import uvicorn
 

@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+
 def is_cuda_available() -> bool:
     """Local CUDA detection to avoid conftest import path conflicts."""
     try:

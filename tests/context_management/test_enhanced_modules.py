@@ -9,8 +9,8 @@ Tests for:
 - ContextCache
 """
 
-import tempfile
 import os
+import tempfile
 
 
 class TestSemanticClusterer:
@@ -193,7 +193,10 @@ class TestSlidingWindowManager:
 
     def test_window_overflow(self):
         """Test window overflow handling."""
-        from src.context_management.sliding_window import SlidingWindowManager, WindowStrategy
+        from src.context_management.sliding_window import (
+            SlidingWindowManager,
+            WindowStrategy,
+        )
 
         window = SlidingWindowManager(max_tokens=100, strategy=WindowStrategy.DROP_OLDEST)
 
@@ -240,7 +243,10 @@ class TestHierarchicalMemory:
 
     def test_store_working(self):
         """Test storing in working memory."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
 
@@ -249,7 +255,10 @@ class TestHierarchicalMemory:
 
     def test_store_all_layers(self):
         """Test storing in all memory layers."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
 
@@ -275,7 +284,10 @@ class TestHierarchicalMemory:
 
     def test_retrieve_by_layer(self):
         """Test retrieval from specific layer."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
 
@@ -299,7 +311,10 @@ class TestHierarchicalMemory:
 
     def test_get_working_context(self):
         """Test getting working context."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
 
@@ -311,7 +326,10 @@ class TestHierarchicalMemory:
 
     def test_clear_layer(self):
         """Test clearing a layer."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
 
@@ -463,8 +481,11 @@ class TestEnhancedModulesIntegration:
 
     def test_hierarchical_memory_with_cache(self):
         """Test hierarchical memory with context cache."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory, MemoryLayer
         from src.context_management.context_cache import ContextCache
+        from src.context_management.hierarchical_memory import (
+            HierarchicalMemory,
+            MemoryLayer,
+        )
 
         memory = HierarchicalMemory()
         cache = ContextCache()

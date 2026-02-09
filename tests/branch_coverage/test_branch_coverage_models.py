@@ -13,8 +13,6 @@ import os
 from typing import Any, List
 from unittest.mock import MagicMock, patch
 
-
-
 # ============================================================================
 # Training Strategy Module Tests
 # ============================================================================
@@ -196,12 +194,12 @@ class TestDeviceStrategyBranches:
         """Test mixed precision availability check branch."""
         cuda_available = True
         cuda_version = (11, 0)
-        
+
         if cuda_available and cuda_version >= (11, 0):
             mixed_precision_available = True
         else:
             mixed_precision_available = False
-        
+
         assert mixed_precision_available is True
 
 
@@ -321,12 +319,12 @@ class TestEarlyStoppingBranches:
         current_metric = 0.95
         best_metric = 0.90
         minimize = False
-        
+
         if minimize:
             improved = current_metric < best_metric
         else:
             improved = current_metric > best_metric
-        
+
         assert improved is True
 
     def test_early_stopping_metric_not_improved_branch(self) -> None:
@@ -334,12 +332,12 @@ class TestEarlyStoppingBranches:
         current_metric = 0.85
         best_metric = 0.90
         minimize = False
-        
+
         if minimize:
             improved = current_metric < best_metric
         else:
             improved = current_metric > best_metric
-        
+
         assert improved is False
 
     def test_early_stopping_minimize_metric_branch(self) -> None:
@@ -347,12 +345,12 @@ class TestEarlyStoppingBranches:
         current_metric = 0.1
         best_metric = 0.2
         minimize = True
-        
+
         if minimize:
             improved = current_metric < best_metric
         else:
             improved = current_metric > best_metric
-        
+
         assert improved is True
 
     def test_early_stopping_maximize_metric_branch(self) -> None:
@@ -360,12 +358,12 @@ class TestEarlyStoppingBranches:
         current_metric = 0.95
         best_metric = 0.90
         minimize = False
-        
+
         if minimize:
             improved = current_metric < best_metric
         else:
             improved = current_metric > best_metric
-        
+
         assert improved is True
 
 
@@ -381,11 +379,11 @@ class TestCurriculumLearningBranches:
         """Test curriculum phase transition branch."""
         current_epoch = 10
         phase_epochs = [0, 5, 10, 15]
-        
+
         for i, epoch_threshold in enumerate(phase_epochs):
             if current_epoch >= epoch_threshold:
                 current_phase = i
-        
+
         assert current_phase == 2
 
     def test_curriculum_difficulty_increase_branch(self) -> None:

@@ -11,7 +11,6 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-
 from codex.cognitive.ml.integration import (
     BrainMLBridge,
     EnhancedAgentRouter,
@@ -74,7 +73,7 @@ class TestBrainMLBridge:
                 }
             }
             pattern_store.write_text(json.dumps(patterns))
-            
+
             bridge = BrainMLBridge(pattern_store_path=pattern_store)
             count = bridge.train_from_pattern_store()
             # Should train from synthetic data if loading fails
@@ -99,10 +98,10 @@ class TestBrainMLBridge:
     def test_get_agents_for_category(self) -> None:
         """Test agent retrieval by category."""
         bridge = BrainMLBridge()
-        
+
         testing_agents = bridge._get_agents_for_category("testing")
         assert "ci-testing-agent" in testing_agents
-        
+
         security_agents = bridge._get_agents_for_category("security")
         assert "security-alert-verification-agent" in security_agents
 
@@ -111,7 +110,7 @@ class TestBrainMLBridge:
         bridge = BrainMLBridge()
         mock_brain = MagicMock()
         mock_brain.query_patterns.return_value = []
-        
+
         result = bridge.enhance_query(mock_brain, "test error")
         assert isinstance(result, MLEnhancedQueryResult)
         assert result.ml_category is None
@@ -121,12 +120,12 @@ class TestBrainMLBridge:
         """Test query enhancement when trained."""
         bridge = BrainMLBridge()
         bridge.train_from_pattern_store()
-        
+
         mock_brain = MagicMock()
         mock_brain.query_patterns.return_value = [
             {"id": "P1", "symptoms": "pytest error", "category": "testing"}
         ]
-        
+
         result = bridge.enhance_query(mock_brain, "pytest collection error")
         assert isinstance(result, MLEnhancedQueryResult)
         assert result.query == "pytest collection error"
@@ -137,11 +136,11 @@ class TestBrainMLBridge:
             cache_path = Path(tmpdir) / "models"
             bridge = BrainMLBridge(model_cache_path=cache_path)
             bridge.train_from_pattern_store()
-            
+
             # Save
             assert bridge.save_models()
             assert (cache_path / "model_state.json").exists()
-            
+
             # Load
             bridge2 = BrainMLBridge(model_cache_path=cache_path)
             assert bridge2.load_models()
@@ -176,7 +175,7 @@ class TestEnhancedAgentRouter:
         """Test routing when not trained."""
         router = EnhancedAgentRouter()
         decision = router.route("test error")
-        
+
         assert isinstance(decision, RoutingDecision)
         assert decision.symptom == "test error"
         assert decision.primary_agent is not None
@@ -187,7 +186,7 @@ class TestEnhancedAgentRouter:
         bridge = BrainMLBridge()
         bridge.train_from_pattern_store()
         router = EnhancedAgentRouter(bridge=bridge)
-        
+
         decision = router.route("pytest collection error")
         assert isinstance(decision, RoutingDecision)
         assert decision.confidence > 0
@@ -197,7 +196,7 @@ class TestEnhancedAgentRouter:
         router = EnhancedAgentRouter()
         symptoms = ["pytest error", "security alert", "doc issue"]
         decisions = router.route_batch(symptoms)
-        
+
         assert len(decisions) == 3
         assert all(isinstance(d, RoutingDecision) for d in decisions)
 
@@ -205,7 +204,7 @@ class TestEnhancedAgentRouter:
         """Test routing decision has all fields."""
         router = EnhancedAgentRouter()
         decision = router.route("test error")
-        
+
         assert hasattr(decision, "symptom")
         assert hasattr(decision, "primary_agent")
         assert hasattr(decision, "fallback_agents")
@@ -235,7 +234,7 @@ class TestMLEnhancedPatternMatcher:
             {"id": "P1", "symptoms": "pytest error", "category": "testing"},
             {"id": "P2", "symptoms": "security issue", "category": "security"},
         ]
-        
+
         results = matcher.match("pytest collection error", patterns, threshold=0.0)
         assert len(results) == 2
         assert all("ml_score" in r for r in results)
@@ -247,7 +246,7 @@ class TestMLEnhancedPatternMatcher:
         patterns = [
             {"id": "P1", "symptoms": "unrelated issue", "category": "other"},
         ]
-        
+
         # High threshold should filter out
         results = matcher.match("test query", patterns, threshold=0.99)
         assert len(results) == 0
@@ -259,7 +258,7 @@ class TestMLEnhancedPatternMatcher:
             {"id": "P1", "symptoms": "pytest error fix", "category": "testing"},
             {"id": "P2", "symptoms": "pytest error", "category": "testing"},
         ]
-        
+
         results = matcher.match("pytest error", patterns, threshold=0.0)
         if len(results) >= 2:
             assert results[0]["ml_rank"] == 1
@@ -268,10 +267,10 @@ class TestMLEnhancedPatternMatcher:
     def test_compute_similarity(self) -> None:
         """Test similarity computation."""
         matcher = MLEnhancedPatternMatcher()
-        
+
         features1 = {"category": "testing", "has_error_keywords": True}
         features2 = {"category": "testing", "has_error_keywords": True}
-        
+
         similarity = matcher._compute_similarity(features1, features2)
         assert 0 <= similarity <= 1
 
@@ -293,7 +292,7 @@ class TestIntegratedPipeline:
         """Test processing a symptom."""
         pipeline = IntegratedPipeline()
         result = pipeline.process_symptom("pytest collection error")
-        
+
         assert "symptom" in result
         assert "routing" in result
         assert "recommendations" in result
@@ -304,7 +303,7 @@ class TestIntegratedPipeline:
         pipeline = IntegratedPipeline()
         mock_brain = MagicMock()
         mock_brain.query_patterns.return_value = []
-        
+
         result = pipeline.process_symptom("test error", brain_interface=mock_brain)
         assert "enhanced_query" in result
 
@@ -313,14 +312,14 @@ class TestIntegratedPipeline:
         pipeline = IntegratedPipeline()
         symptoms = ["error 1", "error 2", "error 3"]
         results = pipeline.process_batch(symptoms)
-        
+
         assert len(results) == 3
 
     def test_get_statistics(self) -> None:
         """Test statistics retrieval."""
         pipeline = IntegratedPipeline()
         stats = pipeline.get_statistics()
-        
+
         assert "is_ready" in stats
         assert "training_samples" in stats
         assert "components" in stats
@@ -345,7 +344,7 @@ class TestConvenienceFunctions:
         """Test brain enhancement function."""
         mock_brain = MagicMock()
         mock_brain.query_patterns.return_value = []
-        
+
         result = enhance_brain_with_ml(mock_brain)
         assert isinstance(result, MLEnhancedQueryResult)
 
@@ -353,10 +352,10 @@ class TestConvenienceFunctions:
         """Test brain enhancement with existing bridge."""
         bridge = BrainMLBridge()
         bridge.train_from_pattern_store()
-        
+
         mock_brain = MagicMock()
         mock_brain.query_patterns.return_value = []
-        
+
         result = enhance_brain_with_ml(mock_brain, bridge=bridge)
         assert isinstance(result, MLEnhancedQueryResult)
 
@@ -374,7 +373,7 @@ class TestMLEnhancedQueryResult:
             recommended_agents=["agent1"],
             success_predictions={"P1": 0.8},
         )
-        
+
         assert result.query == "test query"
         assert result.ml_category == "testing"
         assert result.confidence == 0.9
@@ -395,7 +394,7 @@ class TestRoutingDecision:
             confidence=0.85,
             reasoning="ML classification",
         )
-        
+
         assert decision.symptom == "test error"
         assert decision.primary_agent == "ci-testing-agent"
         assert decision.category == "testing"

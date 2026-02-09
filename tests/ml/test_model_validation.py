@@ -3,8 +3,9 @@
 Tests for validating ML model architecture, weights, and outputs.
 """
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 class TestModelArchitectureValidation:

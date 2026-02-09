@@ -5,6 +5,7 @@ Test module for config loader.
 """
 
 from pathlib import Path
+
 import yaml
 
 from codex_ml.config import load

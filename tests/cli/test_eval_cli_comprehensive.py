@@ -146,7 +146,12 @@ class TestEvaluateCLIIntegration:
 
     def test_metric_imports(self):
         """Test that metric functions are imported correctly."""
-        from codex_ml.cli.evaluate import accuracy, classification_f1, perplexity, token_accuracy
+        from codex_ml.cli.evaluate import (
+            accuracy,
+            classification_f1,
+            perplexity,
+            token_accuracy,
+        )
         assert callable(accuracy)
         assert callable(classification_f1)
         assert callable(perplexity)

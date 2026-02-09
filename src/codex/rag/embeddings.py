@@ -63,9 +63,10 @@ class LocalSentenceTransformerProvider:
         """Load the embedding model."""
         try:
             import os
-            import torch
 
             from sentence_transformers import SentenceTransformer
+
+            import torch
 
             logger.info(f"Loading local embedding model: {self.model_name}")
 
@@ -75,7 +76,7 @@ class LocalSentenceTransformerProvider:
             # CRITICAL FIX: Force CPU device and prevent meta tensors
             # Set default device to CPU before any model operations
             torch.set_default_device('cpu')
-            
+
             self.model = SentenceTransformer(
                 self.model_name,
                 device='cpu',
@@ -83,11 +84,11 @@ class LocalSentenceTransformerProvider:
                 trust_remote_code=False,
                 use_auth_token=use_auth_token if use_auth_token else None
             )
-            
+
             # Safely move to CPU, handling meta tensors if present
             self.model = safe_model_to_device(self.model, 'cpu')
             self.model.eval()
-            
+
             # Reset default device to avoid side effects
             torch.set_default_device(None)
 

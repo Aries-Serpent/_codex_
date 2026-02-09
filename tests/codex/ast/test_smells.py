@@ -13,25 +13,25 @@ class TestSmellSeverity:
     def test_info_value(self):
         """Test INFO severity value."""
         from codex.ast.smells import SmellSeverity
-        
+
         assert SmellSeverity.INFO.value == "info"
 
     def test_warning_value(self):
         """Test WARNING severity value."""
         from codex.ast.smells import SmellSeverity
-        
+
         assert SmellSeverity.WARNING.value == "warning"
 
     def test_error_value(self):
         """Test ERROR severity value."""
         from codex.ast.smells import SmellSeverity
-        
+
         assert SmellSeverity.ERROR.value == "error"
 
     def test_critical_value(self):
         """Test CRITICAL severity value."""
         from codex.ast.smells import SmellSeverity
-        
+
         assert SmellSeverity.CRITICAL.value == "critical"
 
 
@@ -41,25 +41,25 @@ class TestSmellCategory:
     def test_complexity_value(self):
         """Test COMPLEXITY category value."""
         from codex.ast.smells import SmellCategory
-        
+
         assert SmellCategory.COMPLEXITY.value == "complexity"
 
     def test_naming_value(self):
         """Test NAMING category value."""
         from codex.ast.smells import SmellCategory
-        
+
         assert SmellCategory.NAMING.value == "naming"
 
     def test_structure_value(self):
         """Test STRUCTURE category value."""
         from codex.ast.smells import SmellCategory
-        
+
         assert SmellCategory.STRUCTURE.value == "structure"
 
     def test_security_value(self):
         """Test SECURITY category value."""
         from codex.ast.smells import SmellCategory
-        
+
         assert SmellCategory.SECURITY.value == "security"
 
 
@@ -68,8 +68,8 @@ class TestCodeSmell:
 
     def test_basic_creation(self):
         """Test CodeSmell basic creation."""
-        from codex.ast.smells import CodeSmell, SmellSeverity, SmellCategory
-        
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
+
         smell = CodeSmell(
             rule_id="RULE001",
             message="Function too complex",
@@ -79,7 +79,7 @@ class TestCodeSmell:
             line_start=10,
             line_end=50
         )
-        
+
         assert smell.rule_id == "RULE001"
         assert smell.message == "Function too complex"
         assert smell.severity == SmellSeverity.WARNING
@@ -91,8 +91,8 @@ class TestCodeSmell:
 
     def test_with_suggestion(self):
         """Test CodeSmell with suggestion."""
-        from codex.ast.smells import CodeSmell, SmellSeverity, SmellCategory
-        
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
+
         smell = CodeSmell(
             rule_id="RULE002",
             message="Variable name too short",
@@ -103,13 +103,13 @@ class TestCodeSmell:
             line_end=5,
             suggestion="Use a more descriptive name"
         )
-        
+
         assert smell.suggestion == "Use a more descriptive name"
 
     def test_to_dict(self):
         """Test to_dict serialization."""
-        from codex.ast.smells import CodeSmell, SmellSeverity, SmellCategory
-        
+        from codex.ast.smells import CodeSmell, SmellCategory, SmellSeverity
+
         smell = CodeSmell(
             rule_id="RULE003",
             message="Duplicate code detected",
@@ -121,9 +121,9 @@ class TestCodeSmell:
             suggestion="Extract to common function",
             metadata={"similarity": 0.95}
         )
-        
+
         result = smell.to_dict()
-        
+
         assert result["rule_id"] == "RULE003"
         assert result["message"] == "Duplicate code detected"
         assert result["severity"] == "error"
@@ -140,11 +140,11 @@ class TestSmellRule:
 
     def test_basic_creation(self):
         """Test SmellRule basic creation."""
-        from codex.ast.smells import SmellRule, SmellSeverity, SmellCategory
-        
+        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
+
         def dummy_detector(tree, path):
             return []
-        
+
         rule = SmellRule(
             rule_id="COMPLEX001",
             name="High Complexity",
@@ -153,7 +153,7 @@ class TestSmellRule:
             category=SmellCategory.COMPLEXITY,
             detector=dummy_detector
         )
-        
+
         assert rule.rule_id == "COMPLEX001"
         assert rule.name == "High Complexity"
         assert rule.enabled is True
@@ -161,8 +161,8 @@ class TestSmellRule:
 
     def test_disabled_rule(self):
         """Test SmellRule when disabled."""
-        from codex.ast.smells import SmellRule, SmellSeverity, SmellCategory
-        
+        from codex.ast.smells import SmellCategory, SmellRule, SmellSeverity
+
         rule = SmellRule(
             rule_id="RULE999",
             name="Disabled Rule",
@@ -172,7 +172,7 @@ class TestSmellRule:
             detector=lambda t, p: [],
             enabled=False
         )
-        
+
         assert rule.enabled is False
 
 
@@ -182,6 +182,6 @@ class TestModuleLevel:
     def test_logger_exists(self):
         """Test logger is configured."""
         from codex.ast.smells import logger
-        
+
         assert logger is not None
         assert logger.name == "codex.ast.smells"

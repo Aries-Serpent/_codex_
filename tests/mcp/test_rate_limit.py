@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 from mcp.rate_limit import MCPRateLimiter
 
 

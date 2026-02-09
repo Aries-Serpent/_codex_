@@ -60,7 +60,7 @@ class Patch:
     rule_id: str
     tier: Tier
     description: str
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -92,7 +92,7 @@ class TransformResult:
     tier_c_suggestions: list[dict[str, Any]] = field(default_factory=list)
     applied: bool = False
     errors: list[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -104,16 +104,16 @@ class TransformResult:
             "applied": self.applied,
             "errors": self.errors,
         }
-    
+
     def save(self, directory: Path) -> None:
         """Save patches to directory."""
         directory.mkdir(parents=True, exist_ok=True)
-        
+
         # Save summary
         summary_path = directory / "transform-summary.json"
         with summary_path.open("w", encoding="utf-8") as f:
             json.dump(self.to_dict(), f, indent=2)
-        
+
         # Save individual patches
         if self.tier_a_patches:
             tier_a_path = directory / "tier-a.patch"
@@ -122,7 +122,7 @@ class TransformResult:
                     f.write(f"# {patch.rule_id}: {patch.description}\n")
                     f.write(patch.diff)
                     f.write("\n")
-        
+
         if self.tier_b_patches:
             tier_b_path = directory / "tier-b.patch"
             with tier_b_path.open("w", encoding="utf-8") as f:
@@ -130,7 +130,7 @@ class TransformResult:
                     f.write(f"# {patch.rule_id}: {patch.description}\n")
                     f.write(patch.diff)
                     f.write("\n")
-        
+
         if self.tier_c_suggestions:
             tier_c_dir = directory / "tier-c-suggestions"
             tier_c_dir.mkdir(exist_ok=True)
@@ -148,14 +148,14 @@ def _create_diff(original: str, modified: str, file_path: str) -> str:
     """Create unified diff between original and modified content."""
     original_lines = original.splitlines(keepends=True)
     modified_lines = modified.splitlines(keepends=True)
-    
+
     diff = difflib.unified_diff(
         original_lines,
         modified_lines,
         fromfile=f"a/{file_path}",
         tofile=f"b/{file_path}",
     )
-    
+
     return "".join(diff)
 
 
@@ -220,7 +220,7 @@ def _apply_pathlib_migration(content: str) -> str:
     Simple pattern-based replacement for common patterns.
     """
     import re
-    
+
     replacements = [
         (r'os\.path\.join\(([^,]+),\s*([^)]+)\)', r'Path(\1) / \2'),
         (r'os\.path\.exists\(([^)]+)\)', r'Path(\1).exists()'),
@@ -229,11 +229,11 @@ def _apply_pathlib_migration(content: str) -> str:
         (r'os\.path\.isfile\(([^)]+)\)', r'Path(\1).is_file()'),
         (r'os\.path\.isdir\(([^)]+)\)', r'Path(\1).is_dir()'),
     ]
-    
+
     modified = content
     for pattern, replacement in replacements:
         modified = re.sub(pattern, replacement, modified)
-    
+
     # Add pathlib import if we made changes and it's not already imported
     if modified != content and "from pathlib import" not in modified:
         if "import os" in modified:
@@ -242,7 +242,7 @@ def _apply_pathlib_migration(content: str) -> str:
                 "import os\nfrom pathlib import Path",
                 1
             )
-    
+
     return modified
 
 
@@ -271,16 +271,16 @@ def transform(
     """
     now = datetime.now(timezone.utc)
     result = TransformResult(snapshot_id=snapshot_id, timestamp=now)
-    
+
     # Find Python files
     python_files = sorted(source_dir.rglob("*.py"))
     logger.info("Transforming %d Python files", len(python_files))
-    
+
     for file_path in python_files:
         try:
             original = file_path.read_text(encoding="utf-8", errors="replace")
             rel_path = str(file_path.relative_to(source_dir))
-            
+
             # === Tier A: Safe Auto-Apply ===
             if tier is None or tier == Tier.A:
                 # Black formatting (check only in dry-run)
@@ -298,7 +298,7 @@ def transform(
                             description="Apply Black code formatting",
                         ))
                         original = black_result
-                
+
                 # isort
                 if not dry_run:
                     isort_result = _run_isort(file_path)
@@ -314,7 +314,7 @@ def transform(
                             description="Sort imports with isort",
                         ))
                         original = isort_result
-                
+
                 # Pathlib migration
                 pathlib_result = _apply_pathlib_migration(original)
                 if pathlib_result != original:
@@ -329,11 +329,11 @@ def transform(
                         description="Replace os.path with pathlib equivalents",
                     )
                     result.tier_a_patches.append(patch)
-                    
+
                     if auto_apply and not dry_run:
                         file_path.write_text(pathlib_result, encoding="utf-8")
                         original = pathlib_result
-            
+
             # === Tier B: Apply with Tests ===
             if tier is None or tier == Tier.B:
                 # Type hints suggestion - use AST for robust detection
@@ -356,7 +356,7 @@ def transform(
                 except SyntaxError as e:
                     logger.debug(f"SyntaxError: {e}")
                     logger.warning(f"SyntaxError: {e}", exc_info=True)  # Skip files with syntax errors
-            
+
             # === Tier C: Suggest Only ===
             if tier is None or tier == Tier.C:
                 # Async conversion suggestion
@@ -372,19 +372,19 @@ def transform(
                             "Error handling preserved",
                         ],
                     })
-                    
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             result.errors.append(f"Error processing {file_path}: {e}")
             logger.error("Transform error for %s: %s", file_path, e)
-    
+
     result.applied = auto_apply and not dry_run
-    
+
     logger.info(
         "Transform complete: %d Tier A, %d Tier B, %d Tier C suggestions",
         len(result.tier_a_patches),
         len(result.tier_b_patches),
         len(result.tier_c_suggestions),
     )
-    
+
     return result

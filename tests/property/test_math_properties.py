@@ -15,7 +15,8 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import given, strategies as st, assume, settings
+    from hypothesis import assume, given, settings
+    from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
@@ -23,7 +24,7 @@ except ImportError:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
         return decorator
-    
+
     class st:  # type: ignore
         @staticmethod
         def floats(*args: Any, **kwargs: Any) -> Any:
@@ -34,10 +35,10 @@ except ImportError:
         @staticmethod
         def lists(*args: Any, **kwargs: Any) -> Any:
             return None
-    
+
     def assume(condition: bool) -> None:
         pass
-    
+
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
@@ -166,19 +167,19 @@ class TestTrigonometricProperties:
 class TestVectorProperties:
     """Property-based tests for vector operations."""
 
-    @given(st.lists(st.floats(min_value=-1000, max_value=1000, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-1000, max_value=1000,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=100))
     def test_dot_product_self_non_negative(self, v: list[float]) -> None:
         """Dot product of vector with itself is non-negative."""
         dot = sum(x * x for x in v)
         assert dot >= 0
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=50),
-           st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+           st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=50))
     def test_dot_product_commutative(self, v1: list[float], v2: list[float]) -> None:
         """Dot product is commutative: v1·v2 == v2·v1."""
@@ -188,16 +189,16 @@ class TestVectorProperties:
         dot2 = sum(b * a for a, b in zip(v1, v2))
         assert abs(dot1 - dot2) < 1e-10
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=50))
     def test_vector_norm_non_negative(self, v: list[float]) -> None:
         """Vector norm is non-negative."""
         norm = math.sqrt(sum(x * x for x in v))
         assert norm >= 0
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=50),
            st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False))
     def test_scalar_multiplication_norm(self, v: list[float], scalar: float) -> None:
@@ -217,22 +218,22 @@ class TestVectorProperties:
 class TestMatrixProperties:
     """Property-based tests for matrix operations."""
 
-    @given(st.lists(st.lists(st.floats(min_value=-10, max_value=10, 
-                                       allow_nan=False, allow_infinity=False), 
-                             min_size=2, max_size=5), 
+    @given(st.lists(st.lists(st.floats(min_value=-10, max_value=10,
+                                       allow_nan=False, allow_infinity=False),
+                             min_size=2, max_size=5),
                     min_size=2, max_size=5))
     def test_transpose_transpose_identity(self, m: list[list[float]]) -> None:
         """Transposing twice is identity."""
         # Ensure rectangular
         min_cols = min(len(row) for row in m)
         m = [row[:min_cols] for row in m]
-        
+
         # Transpose
         transposed = [[m[i][j] for i in range(len(m))] for j in range(min_cols)]
         # Transpose again
-        double_transposed = [[transposed[i][j] for i in range(len(transposed))] 
+        double_transposed = [[transposed[i][j] for i in range(len(transposed))]
                             for j in range(len(m))]
-        
+
         assert double_transposed == m
 
     @given(st.integers(min_value=1, max_value=10))
@@ -240,10 +241,10 @@ class TestMatrixProperties:
         """Identity matrix multiplied by vector gives same vector."""
         identity = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
         vector = list(range(n))
-        
+
         # Matrix-vector multiplication
         result = [sum(identity[i][j] * vector[j] for j in range(n)) for i in range(n)]
-        
+
         assert result == vector
 
 
@@ -255,16 +256,16 @@ class TestMatrixProperties:
 class TestStatisticalProperties:
     """Property-based tests for statistical operations."""
 
-    @given(st.lists(st.floats(min_value=-1000, max_value=1000, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-1000, max_value=1000,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=100))
     def test_mean_bounded_by_extremes(self, values: list[float]) -> None:
         """Mean is bounded by min and max."""
         mean = sum(values) / len(values)
         assert min(values) <= mean <= max(values)
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=2, max_size=100))
     def test_variance_non_negative(self, values: list[float]) -> None:
         """Variance is non-negative."""
@@ -272,8 +273,8 @@ class TestStatisticalProperties:
         variance = sum((x - mean) ** 2 for x in values) / len(values)
         assert variance >= -1e-10  # Variance is theoretically >= 0; allow tiny negative values due to floating-point rounding
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=-100, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=100),
            st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False))
     def test_mean_shift_property(self, values: list[float], shift: float) -> None:
@@ -284,8 +285,8 @@ class TestStatisticalProperties:
         expected = original_mean + shift
         assert abs(shifted_mean - expected) < 1e-10
 
-    @given(st.lists(st.floats(min_value=0.1, max_value=100, 
-                              allow_nan=False, allow_infinity=False), 
+    @given(st.lists(st.floats(min_value=0.1, max_value=100,
+                              allow_nan=False, allow_infinity=False),
                     min_size=1, max_size=100),
            st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False))
     def test_mean_scale_property(self, values: list[float], scale: float) -> None:

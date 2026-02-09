@@ -13,8 +13,9 @@ Phase 48: Coverage improvement for 0% coverage module.
 """
 
 import os
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 class TestDefaultPreprocess:
@@ -93,13 +94,13 @@ class TestUpsertWithRetry:
         """Test upsert succeeds on first try."""
         try:
             from workers.embedding_worker import _upsert_with_retry
-            
+
             mock_adapter = MagicMock()
             mock_adapter.upsert_batch = MagicMock()
-            
+
             items = [{"id": "1", "embedding": [0.1, 0.2]}]
             _upsert_with_retry(mock_adapter, "default", items)
-            
+
             mock_adapter.upsert_batch.assert_called_once_with("default", items)
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")

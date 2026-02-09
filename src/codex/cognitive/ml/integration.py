@@ -17,7 +17,11 @@ from pathlib import Path
 from typing import Any
 
 from codex.cognitive.brain_interface import AgentBrainInterface
-from codex.cognitive.ml.data_pipeline import DataPipeline, FeatureExtractor, PatternSample
+from codex.cognitive.ml.data_pipeline import (
+    DataPipeline,
+    FeatureExtractor,
+    PatternSample,
+)
 from codex.cognitive.ml.recommender import ResolutionRecommender, SuccessPredictor
 from codex.cognitive.ml.symptom_classifier import SymptomClassifier
 
@@ -25,7 +29,7 @@ from codex.cognitive.ml.symptom_classifier import SymptomClassifier
 @dataclass
 class MLEnhancedQueryResult:
     """Result from ML-enhanced pattern query."""
-    
+
     query: str
     patterns: list[dict[str, Any]]
     ml_category: str | None
@@ -38,7 +42,7 @@ class MLEnhancedQueryResult:
 @dataclass
 class RoutingDecision:
     """ML-enhanced agent routing decision."""
-    
+
     symptom: str
     primary_agent: str
     fallback_agents: list[str]
@@ -53,7 +57,7 @@ class BrainMLBridge:
     
     Provides ML-enhanced functionality to the cognitive brain system.
     """
-    
+
     def __init__(
         self,
         pattern_store_path: Path | str | None = None,
@@ -68,23 +72,23 @@ class BrainMLBridge:
         """
         self.pattern_store_path = Path(pattern_store_path) if pattern_store_path else None
         self.model_cache_path = Path(model_cache_path) if model_cache_path else None
-        
+
         # Initialize components
         self._pipeline: DataPipeline | None = None
         self._classifier: SymptomClassifier | None = None
         self._recommender: ResolutionRecommender | None = None
         self._predictor: SuccessPredictor | None = None
         self._feature_extractor = FeatureExtractor()
-        
+
         # Training state
         self._is_trained = False
         self._training_samples_count = 0
-        
+
     @property
     def is_trained(self) -> bool:
         """Check if models are trained."""
         return self._is_trained
-    
+
     def train_from_pattern_store(self, pattern_store_path: Path | str | None = None) -> int:
         """
         Train ML models from pattern store data.
@@ -96,7 +100,7 @@ class BrainMLBridge:
             Number of samples used for training
         """
         path = Path(pattern_store_path) if pattern_store_path else self.pattern_store_path
-        
+
         if not path or not path.exists():
             # Create synthetic training data for testing
             samples = self._create_synthetic_training_data()
@@ -105,30 +109,30 @@ class BrainMLBridge:
             self._pipeline = DataPipeline(pattern_store_path=path)
             self._pipeline.load_pattern_store()
             samples = self._pipeline.generate_training_samples()
-        
+
         if not samples:
             return 0
-        
+
         # Initialize and train models
         self._classifier = SymptomClassifier()
         self._classifier.fit(samples)
-        
+
         self._recommender = ResolutionRecommender()
         self._recommender.fit(samples)
-        
+
         self._predictor = SuccessPredictor()
         self._predictor.fit(samples)
-        
+
         self._is_trained = True
         self._training_samples_count = len(samples)
-        
+
         return len(samples)
-    
+
     def _create_synthetic_training_data(self) -> list[PatternSample]:
         """Create synthetic training data for testing."""
         categories = ["testing", "ci_cd", "security", "documentation"]
         samples = []
-        
+
         for i, category in enumerate(categories):
             for j in range(5):  # 5 samples per category
                 samples.append(PatternSample(
@@ -144,9 +148,9 @@ class BrainMLBridge:
                         "word_count": float(10 + j),
                     },
                 ))
-        
+
         return samples
-    
+
     def enhance_query(
         self,
         brain_interface: AgentBrainInterface,
@@ -164,13 +168,13 @@ class BrainMLBridge:
         """
         # Get base patterns from brain interface
         patterns = brain_interface.query_patterns(query)
-        
+
         # ML enhancements
         ml_category = None
         confidence = 0.0
         recommended_agents: list[str] = []
         success_predictions: dict[str, float] = {}
-        
+
         if self._is_trained:
             # Classify the symptom
             if self._classifier:
@@ -181,10 +185,10 @@ class BrainMLBridge:
                 except (RuntimeError, Exception):
                     # ML classifier failed - fall back to default category
                     pass
-            
+
             # Get recommended agents based on category
             recommended_agents = self._get_agents_for_category(ml_category or "general")
-            
+
             # Predict success for each pattern
             if self._predictor and patterns:
                 for pattern in patterns:
@@ -194,7 +198,7 @@ class BrainMLBridge:
                         pattern_symptoms = " ".join(pattern_symptoms)
                     features = self._feature_extractor.extract_text_features(pattern_symptoms)
                     success_predictions[pattern_id] = self._predictor.predict(features)
-        
+
         return MLEnhancedQueryResult(
             query=query,
             patterns=patterns,
@@ -203,7 +207,7 @@ class BrainMLBridge:
             recommended_agents=recommended_agents,
             success_predictions=success_predictions,
         )
-    
+
     def _get_agents_for_category(self, category: str) -> list[str]:
         """Get recommended agents for a category."""
         category_agents = {
@@ -216,7 +220,7 @@ class BrainMLBridge:
             "general": ["ci-testing-agent", "coverage-roadmap-agent"],
         }
         return category_agents.get(category, category_agents["general"])
-    
+
     def get_recommendations(self, query: str, top_k: int = 3) -> list[dict[str, Any]]:
         """
         Get ML-based resolution recommendations.
@@ -230,7 +234,7 @@ class BrainMLBridge:
         """
         if not self._is_trained or not self._recommender:
             return []
-        
+
         try:
             # recommend() expects a list of symptoms
             result = self._recommender.recommend([query], top_k=top_k)
@@ -245,7 +249,7 @@ class BrainMLBridge:
             ]
         except (RuntimeError, Exception):
             return []
-    
+
     def save_models(self, path: Path | str | None = None) -> bool:
         """
         Save trained models to disk.
@@ -259,25 +263,25 @@ class BrainMLBridge:
         save_path = Path(path) if path else self.model_cache_path
         if not save_path:
             return False
-        
+
         save_path.mkdir(parents=True, exist_ok=True)
-        
+
         model_state = {
             "is_trained": self._is_trained,
             "training_samples_count": self._training_samples_count,
             "saved_at": datetime.now(timezone.utc).isoformat(),
         }
-        
+
         # Save classifier state if available
         if self._classifier:
             # Just record that we have a classifier, don't try to get vocabulary size
             model_state["has_classifier"] = True
-        
+
         with open(save_path / "model_state.json", "w") as f:
             json.dump(model_state, f, indent=2)
-        
+
         return True
-    
+
     def load_models(self, path: Path | str | None = None) -> bool:
         """
         Load trained models from disk.
@@ -291,13 +295,13 @@ class BrainMLBridge:
         load_path = Path(path) if path else self.model_cache_path
         if not load_path or not (load_path / "model_state.json").exists():
             return False
-        
+
         with open(load_path / "model_state.json") as f:
             model_state = json.load(f)
-        
+
         self._is_trained = model_state.get("is_trained", False)
         self._training_samples_count = model_state.get("training_samples_count", 0)
-        
+
         return True
 
 
@@ -307,7 +311,7 @@ class EnhancedAgentRouter:
     
     Uses ML classification to make smarter routing decisions.
     """
-    
+
     def __init__(self, bridge: BrainMLBridge | None = None) -> None:
         """
         Initialize the router.
@@ -316,7 +320,7 @@ class EnhancedAgentRouter:
             bridge: ML bridge instance (creates new if not provided)
         """
         self._bridge = bridge or BrainMLBridge()
-    
+
     def route(self, symptom: str) -> RoutingDecision:
         """
         Make an ML-enhanced routing decision.
@@ -330,7 +334,7 @@ class EnhancedAgentRouter:
         category = "general"
         confidence = 0.5
         reasoning = "Default routing (ML not trained)"
-        
+
         if self._bridge.is_trained and self._bridge._classifier:
             try:
                 result = self._bridge._classifier.predict([symptom])
@@ -343,9 +347,9 @@ class EnhancedAgentRouter:
                     "EnhancedAgentRouter: ML classifier prediction failed, using default routing",
                     exc_info=exc,
                 )
-        
+
         agents = self._bridge._get_agents_for_category(category)
-        
+
         return RoutingDecision(
             symptom=symptom,
             primary_agent=agents[0] if agents else "ci-testing-agent",
@@ -354,7 +358,7 @@ class EnhancedAgentRouter:
             confidence=confidence,
             reasoning=reasoning,
         )
-    
+
     def route_batch(self, symptoms: list[str]) -> list[RoutingDecision]:
         """
         Route multiple symptoms.
@@ -374,7 +378,7 @@ class MLEnhancedPatternMatcher:
     
     Combines traditional pattern matching with ML classification.
     """
-    
+
     def __init__(self, bridge: BrainMLBridge | None = None) -> None:
         """
         Initialize the matcher.
@@ -384,7 +388,7 @@ class MLEnhancedPatternMatcher:
         """
         self._bridge = bridge or BrainMLBridge()
         self._feature_extractor = FeatureExtractor()
-    
+
     def match(
         self,
         query: str,
@@ -404,35 +408,35 @@ class MLEnhancedPatternMatcher:
         """
         if not patterns:
             return []
-        
+
         query_features = self._feature_extractor.extract_text_features(query)
         results = []
-        
+
         for pattern in patterns:
             pattern_symptoms = pattern.get("symptoms", "")
             if isinstance(pattern_symptoms, list):
                 pattern_symptoms = " ".join(pattern_symptoms)
             pattern_features = self._feature_extractor.extract_text_features(pattern_symptoms)
-            
+
             # Compute similarity
             similarity = self._compute_similarity(query_features, pattern_features)
-            
+
             if similarity >= threshold:
                 results.append({
                     **pattern,
                     "ml_score": similarity,
                     "ml_rank": 0,  # Will be set after sorting
                 })
-        
+
         # Sort by ML score
         results.sort(key=lambda x: x["ml_score"], reverse=True)
-        
+
         # Set ranks
         for i, result in enumerate(results):
             result["ml_rank"] = i + 1
-        
+
         return results
-    
+
     def _compute_similarity(
         self,
         features1: dict[str, Any],
@@ -445,22 +449,22 @@ class MLEnhancedPatternMatcher:
             "keyword_overlap": 0.4,
             "error_type_match": 0.3,
         }
-        
+
         # Category match
         if features1.get("category") == features2.get("category"):
             score += weights["category_match"]
-        
+
         # Keyword overlap
         kw1 = set(features1.get("category_keywords", []))
         kw2 = set(features2.get("category_keywords", []))
         if kw1 and kw2:
             overlap = len(kw1 & kw2) / max(len(kw1 | kw2), 1)
             score += weights["keyword_overlap"] * overlap
-        
+
         # Error type match
         if features1.get("has_error_keywords") == features2.get("has_error_keywords"):
             score += weights["error_type_match"]
-        
+
         return min(score, 1.0)
 
 
@@ -470,7 +474,7 @@ class IntegratedPipeline:
     
     Combines all ML components into a unified interface.
     """
-    
+
     def __init__(
         self,
         pattern_store_path: Path | str | None = None,
@@ -486,15 +490,15 @@ class IntegratedPipeline:
         self._bridge = BrainMLBridge(pattern_store_path=pattern_store_path)
         self._router = EnhancedAgentRouter(bridge=self._bridge)
         self._matcher = MLEnhancedPatternMatcher(bridge=self._bridge)
-        
+
         if auto_train:
             self._bridge.train_from_pattern_store()
-    
+
     @property
     def is_ready(self) -> bool:
         """Check if pipeline is ready for use."""
         return self._bridge.is_trained
-    
+
     def process_symptom(
         self,
         symptom: str,
@@ -512,15 +516,15 @@ class IntegratedPipeline:
         """
         # Get routing decision
         routing = self._router.route(symptom)
-        
+
         # Get recommendations
         recommendations = self._bridge.get_recommendations(symptom, top_k=3)
-        
+
         # Enhance with brain interface if available
         enhanced_result = None
         if brain_interface:
             enhanced_result = self._bridge.enhance_query(brain_interface, symptom)
-        
+
         return {
             "symptom": symptom,
             "routing": {
@@ -543,7 +547,7 @@ class IntegratedPipeline:
             ),
             "pipeline_ready": self.is_ready,
         }
-    
+
     def process_batch(
         self,
         symptoms: list[str],
@@ -558,7 +562,7 @@ class IntegratedPipeline:
             List of analysis results
         """
         return [self.process_symptom(symptom) for symptom in symptoms]
-    
+
     def get_statistics(self) -> dict[str, Any]:
         """Get pipeline statistics."""
         return {
@@ -613,8 +617,8 @@ def enhance_brain_with_ml(
     if bridge is None:
         bridge = BrainMLBridge()
         bridge.train_from_pattern_store()
-    
+
     # Get the agent's last query or use a default
     query = "pattern query"  # Default
-    
+
     return bridge.enhance_query(brain_interface, query)

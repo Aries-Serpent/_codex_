@@ -16,7 +16,9 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 """Shared helpers for writing append-only evidence artifacts."""
 
@@ -26,7 +28,7 @@ import os
 import platform
 import subprocess
 from collections.abc import Mapping
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Any

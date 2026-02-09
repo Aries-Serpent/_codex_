@@ -7,7 +7,6 @@ Priority 1 - CRITICAL gap (0% → 80%)
 
 from unittest.mock import MagicMock, Mock, patch
 
-
 from src.codex.rag.gpu_utils import (
     check_cuda_available,
     get_gpu_memory,
@@ -263,19 +262,19 @@ class TestTryGpuIndex:
         """Test successful index conversion to GPU."""
         mock_torch = MagicMock()
         mock_torch.cuda.is_available.return_value = True
-        
+
         mock_faiss = MagicMock()
         mock_index = Mock()
         mock_gpu_index = Mock()
-        
+
         # Mock GPU resources and conversion
         mock_resources = Mock()
         mock_faiss.StandardGpuResources.return_value = mock_resources
         mock_faiss.index_cpu_to_gpu.return_value = mock_gpu_index
-        
+
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": mock_faiss}):
             result = try_gpu_index(mock_index, None, device="cuda")
-            
+
             assert result == mock_gpu_index
             mock_faiss.StandardGpuResources.assert_called_once()
             mock_faiss.index_cpu_to_gpu.assert_called_once_with(mock_resources, 0, mock_index)
@@ -305,34 +304,34 @@ class TestTryGpuIndex:
         """Test when faiss-gpu is not installed (CPU-only FAISS)."""
         mock_torch = MagicMock()
         mock_torch.cuda.is_available.return_value = True
-        
+
         mock_faiss = MagicMock()
         mock_index = Mock()
-        
+
         # Simulate faiss without GPU support - remove the attribute
         del mock_faiss.StandardGpuResources
-        
+
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": mock_faiss}):
             result = try_gpu_index(mock_index, None, device="cuda")
-            
+
             assert result == mock_index
 
     def test_try_gpu_index_conversion_error(self):
         """Test when GPU conversion fails with exception."""
         mock_torch = MagicMock()
         mock_torch.cuda.is_available.return_value = True
-        
+
         mock_faiss = MagicMock()
         mock_index = Mock()
-        
+
         # Mock GPU resources but make conversion fail
         mock_resources = Mock()
         mock_faiss.StandardGpuResources.return_value = mock_resources
         mock_faiss.index_cpu_to_gpu.side_effect = RuntimeError("GPU conversion failed")
-        
+
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": mock_faiss}):
             result = try_gpu_index(mock_index, None, device="cuda")
-            
+
             # Should return original index on error
             assert result == mock_index
 

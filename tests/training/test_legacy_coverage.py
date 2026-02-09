@@ -393,10 +393,10 @@ class TestConfigIntegration:
         """Test that default instances don't share mutable state."""
         config1 = TrainingRunConfig()
         config2 = TrainingRunConfig()
-        
+
         # Modify config1's nested settings
         config1.dataset["custom_key"] = "value"
-        
+
         # Ensure config2 is not affected
         assert "custom_key" not in config2.dataset
 

@@ -26,17 +26,17 @@ class TestCausalLMRegistry:
         # Create a mock loader
         def custom_loader(**kwargs: Any) -> MagicMock:
             return MagicMock(name="custom_model")
-        
+
         # Register it
         decorated = hf_loader.register_causal_lm("test_model")(custom_loader)
-        
+
         # Should be same function
         assert decorated is custom_loader
-        
+
         # Should be retrievable
         retrieved = hf_loader.get_registered_causal_lm("test_model")
         assert retrieved is custom_loader
-        
+
         # Clean up
         hf_loader.unregister_causal_lm("test_model")
         assert hf_loader.get_registered_causal_lm("test_model") is None
@@ -56,9 +56,9 @@ class TestCausalLMRegistry:
         @hf_loader.register_causal_lm("decorated_model")
         def my_loader(**kwargs: Any) -> str:
             return "loaded"
-        
+
         assert hf_loader.get_registered_causal_lm("decorated_model") is my_loader
-        
+
         # Clean up
         hf_loader.unregister_causal_lm("decorated_model")
 
@@ -71,7 +71,7 @@ class TestLocalIdentifier:
         # Create a temporary file
         test_file = tmp_path / "model_config.json"
         test_file.write_text("{}")
-        
+
         assert hf_loader._is_local_identifier(tmp_path) is True
         assert hf_loader._is_local_identifier(str(tmp_path)) is True
 
@@ -114,10 +114,10 @@ class TestAmpDtypeMapping:
     def test_bf16_mapping(self, skip_without_torch: None) -> None:
         """Test bfloat16 dtype mapping."""
         import torch
-        
+
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch
-        
+
         assert hf_loader._map_amp_dtype("bf16") == torch.bfloat16
         assert hf_loader._map_amp_dtype("bfloat16") == torch.bfloat16
         assert hf_loader._map_amp_dtype("BF16") == torch.bfloat16
@@ -125,10 +125,10 @@ class TestAmpDtypeMapping:
     def test_fp16_mapping(self, skip_without_torch: None) -> None:
         """Test float16 dtype mapping."""
         import torch
-        
+
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch
-        
+
         assert hf_loader._map_amp_dtype("fp16") == torch.float16
         assert hf_loader._map_amp_dtype("float16") == torch.float16
         assert hf_loader._map_amp_dtype("half") == torch.float16
@@ -173,7 +173,7 @@ class TestRequiredRevision:
             "HF_MODEL_REVISION": "",
             "CODEX_HF_REVISION": "",
         }
-        
+
         with patch.dict(os.environ, env_patch, clear=False):
             with patch.object(hf_loader, "_is_local_identifier", return_value=False):
                 with patch("codex_ml.hf_loader.get_hf_revision", return_value=None):
@@ -218,7 +218,7 @@ class TestRepoIdTypes:
         model_dir = tmp_path / "my_model"
         model_dir.mkdir()
         (model_dir / "config.json").write_text("{}")
-        
+
         assert hf_loader._is_local_identifier(model_dir) is True
 
 
@@ -228,21 +228,21 @@ class TestIntegration:
     def test_registry_integration(self) -> None:
         """Test registry works with real usage pattern."""
         call_count = 0
-        
+
         @hf_loader.register_causal_lm("integration_test_model")
         def loader(**kwargs: Any) -> dict:
             nonlocal call_count
             call_count += 1
             return {"loaded": True, "kwargs": kwargs}
-        
+
         # Retrieve and call
         fn = hf_loader.get_registered_causal_lm("integration_test_model")
         assert fn is not None
-        
+
         result = fn(device="cpu", dtype="float32")
         assert result["loaded"] is True
         assert result["kwargs"]["device"] == "cpu"
         assert call_count == 1
-        
+
         # Clean up
         hf_loader.unregister_causal_lm("integration_test_model")
