@@ -997,20 +997,42 @@ def protect_stderr():
     Solution: Save and restore stderr/stdout for every test.
     """
     import sys
-    
+    from typing import Any
+
+    class _NonClosingStream:
+        """Proxy stream that prevents tests from closing stderr/stdout."""
+
+        def __init__(self, stream: Any) -> None:
+            self._stream = stream
+
+        def __getattr__(self, name: str) -> Any:
+            return getattr(self._stream, name)
+
+        def write(self, data: str) -> int:
+            return self._stream.write(data)
+
+        def flush(self) -> None:
+            self._stream.flush()
+
+        def close(self) -> None:
+            # Intentionally ignore close attempts from tests.
+            return None
+
     original_stderr = sys.stderr
     original_stdout = sys.stdout
+
+    # Wrap stderr/stdout so tests can't close them mid-run.
+    sys.stderr = _NonClosingStream(original_stderr)
+    sys.stdout = _NonClosingStream(original_stdout)
     
     yield
     
     # Restore if modified or closed
     try:
-        if sys.stderr != original_stderr:
-            if not hasattr(sys.stderr, 'closed') or sys.stderr.closed:
-                sys.stderr = original_stderr
-        if sys.stdout != original_stdout:
-            if not hasattr(sys.stdout, 'closed') or sys.stdout.closed:
-                sys.stdout = original_stdout
+        if sys.stderr is not original_stderr:
+            sys.stderr = original_stderr
+        if sys.stdout is not original_stdout:
+            sys.stdout = original_stdout
     except Exception:
         # Force restore on any error
         sys.stderr = original_stderr
@@ -1033,17 +1055,57 @@ def force_file_cleanup():
     
     # Cleanup phase
     import gc
+    import os
     gc.collect()
+
+    if os.environ.get("CODEX_FORCE_FILE_CLEANUP", "0") != "1":
+        return
+
+    if not hasattr(force_file_cleanup, "_counter"):
+        force_file_cleanup._counter = 0  # type: ignore[attr-defined]
+    force_file_cleanup._counter += 1  # type: ignore[attr-defined]
+
+    # Only run full file-handle scans periodically to avoid large slowdowns.
+    if force_file_cleanup._counter % 20 != 0:  # type: ignore[attr-defined]
+        return
     
     # Close any lingering file objects found by garbage collector
+    import sys
+    import logging
+
+    handler_streams = []
+    for handler_ref in logging._handlerList:
+        handler = handler_ref()
+        if handler is not None and getattr(handler, "stream", None) is not None:
+            handler_streams.append(handler.stream)
+
+    protected_streams = (
+        sys.stdout,
+        sys.stderr,
+        sys.__stdout__,
+        sys.__stderr__,
+        sys.__stdin__,
+        *handler_streams,
+    )
     for obj in gc.get_objects():
         try:
+            close_method = getattr(obj, "close", None)
+            closed_attr = getattr(obj, "closed", None)
+            name_attr = getattr(obj, "name", None)
+        except Exception:
+            continue  # Skip objects with unsafe attribute access
+
+        try:
             # Check if object is file-like
-            if hasattr(obj, 'close') and hasattr(obj, 'closed') and hasattr(obj, 'name'):
-                if not obj.closed and not isinstance(obj.name, int):
+            if close_method is not None and closed_attr is not None and name_attr is not None:
+                if any(obj is stream for stream in protected_streams):
+                    continue
+                if name_attr in ("<stdin>", "<stdout>", "<stderr>"):
+                    continue
+                if not closed_attr and not isinstance(name_attr, int):
                     # It's an open file object (not stdin/stdout/stderr which have int names)
                     try:
-                        obj.close()
+                        close_method()
                     except Exception:
                         pass  # Already closed or not closeable
         except (ReferenceError, AttributeError):

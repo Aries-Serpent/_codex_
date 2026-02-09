@@ -11,8 +11,19 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Import CUDA detection utilities from conftest
-from conftest import is_cuda_available, skip_if_no_cuda
+def is_cuda_available() -> bool:
+    """Local CUDA detection to avoid conftest import path conflicts."""
+    try:
+        import torch
+        return torch.cuda.is_available()
+    except (ImportError, AttributeError):
+        return False
+
+
+skip_if_no_cuda = pytest.mark.skipif(
+    not is_cuda_available(),
+    reason="CUDA/GPU not available in this environment",
+)
 
 # Conditional imports for RAG dependencies
 try:
