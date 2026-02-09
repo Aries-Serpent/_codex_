@@ -205,7 +205,7 @@ Successfully monitored and resolved ALL issues in PR #3178 workflows, achieving:
 
 ## 📚 References
 
-- **Test Fixes:** `TEST_FIXES_SUMMARY.md`
+- **Test Fixes:** `.codex/pr_fixes/TEST_FIXES_SUMMARY.md`
 - **Workflow Analysis:** `/tmp/pr3178_workflow_analysis_final.md`
 - **Failure Patterns:** `.codex/PR_3095_RESOLUTION_PATTERNS.md`
 - **AI Agency Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`

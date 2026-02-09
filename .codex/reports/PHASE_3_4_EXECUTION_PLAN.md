@@ -32,7 +32,7 @@
 
 ### Phase 3: Optimization (P2) - IN PROGRESS
 - [ ] Task 1: Add nosec justifications (62 comments)
-- [ ] Task 2: Create .security-exceptions.md documentation
+- [ ] Task 2: Create docs/security/security-exceptions.md documentation
 - [ ] Task 3: Implement pre-commit hook for nosec validation
 - [ ] Task 4: Update Cognitive Brain status
 - [ ] Task 5: Design/update Custom Copilot Agents
@@ -79,7 +79,7 @@ Files:
 
 ### Security Documentation (1 hour)
 
-Create `.security-exceptions.md` with:
+Create `docs/security/security-exceptions.md` with:
 - Complete nosec inventory
 - Justification standards
 - Review schedule

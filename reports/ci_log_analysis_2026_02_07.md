@@ -202,7 +202,7 @@ Based on repository documentation review:
 
 ### 1. StopIteration Errors - RESOLVED ✅
 - **Status**: Fixed in recent commits
-- **Documentation**: `STOPITERATION_FIX_REPORT.md`
+- **Documentation**: `docs/testing/STOPITERATION_FIX_REPORT.md`
 - **Scope**: 20+ tests across 3 files
 - **Fix**: Conditional class definitions and safe iterator usage
 - **Files Fixed**: 
@@ -392,7 +392,7 @@ class FakeSentenceTransformer:
 - **Job Details**: https://github.com/Aries-Serpent/_codex_/actions/runs/21631025717/job/62343509037
 - **Commit**: c650b66f2d004a6c5b297f9b647c211dd47cdb98
 - **Related Documentation**:
-  - `STOPITERATION_FIX_REPORT.md` - Previous StopIteration fixes
+  - `docs/testing/STOPITERATION_FIX_REPORT.md` - Previous StopIteration fixes
   - `TEST_FIXES_SUMMARY.md` - Integration test fixes (PR #3178)
   - `.codex/cognitive_brain/test_failure_resolution_status.md` - Test pattern improvements
 

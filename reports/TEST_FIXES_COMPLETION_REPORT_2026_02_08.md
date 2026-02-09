@@ -19,7 +19,7 @@ Successfully completed comprehensive test fixing mission. All requested test bat
 - "Other" category
 
 **Reality**: Those batches were **already fixed in prior sessions**
-- ✅ StopIteration fixes documented in `STOPITERATION_FIX_REPORT.md`
+- ✅ StopIteration fixes documented in `docs/testing/STOPITERATION_FIX_REPORT.md`
 - ✅ MockRepo patterns implemented
 - ✅ No remaining JSON serialization errors
 
@@ -192,7 +192,7 @@ class MockSentenceTransformer:
 
 **Batch 4**: StopIteration (33 tests)
 - Status: ✅ Fixed in PR #3170
-- Evidence: `STOPITERATION_FIX_REPORT.md`
+- Evidence: `docs/testing/STOPITERATION_FIX_REPORT.md`
 
 **Batch 5**: RuntimeError/ValueError (34 tests)
 - Status: ✅ Fixed in prior sessions

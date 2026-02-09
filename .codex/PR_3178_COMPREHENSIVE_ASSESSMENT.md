@@ -257,7 +257,7 @@ Added new patterns to `.codex/cognitive_brain/`:
 1. **PR_3178_CI_MONITORING_LEARNINGS.md** - Cognitive brain insights
 2. **PR_3178_CUSTOM_AGENT_ENHANCEMENTS.md** - Agent improvements
 3. **PR_3178_COMPREHENSIVE_ASSESSMENT.md** - This document
-4. **TEST_FIXES_SUMMARY.md** - Detailed test fix analysis
+4. **`.codex/pr_fixes/TEST_FIXES_SUMMARY.md`** - Detailed test fix analysis
 5. **FINAL_TEST_STATUS.md** - Test execution report
 
 ### Code Changes
