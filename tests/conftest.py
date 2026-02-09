@@ -32,8 +32,16 @@ def pytest_configure(config: pytest.Config) -> None:
     the fail-under floor to zero for collection-only invocations while keeping
     the existing defaults for actual test runs.
     
-    Also registers custom markers for RAG tests.
+    Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
+    # Configure PyTorch to use CPU device globally to prevent meta tensor issues
+    try:
+        import torch
+        if hasattr(torch, 'set_default_device'):
+            torch.set_default_device("cpu")
+            logger.info("✓ PyTorch default device set to CPU (prevents meta tensor issues)")
+    except (ImportError, AttributeError):
+        pass  # PyTorch not available or stub version
 
     if getattr(config.option, "collectonly", False):
         if hasattr(config.option, "cov_fail_under"):
@@ -755,9 +763,9 @@ def ensure_cpu_device():
             yield
             return
         
-        # Set default device to CPU
-        if torch.cuda.is_available():
-            torch.set_default_device("cpu")
+        # Set default device to CPU (ALWAYS, not just when CUDA available)
+        # This prevents meta tensor issues during model loading
+        torch.set_default_device("cpu")
         
         # Ensure deterministic behavior
         torch.manual_seed(0)
