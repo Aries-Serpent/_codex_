@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from unittest.mock import Mock
 
-from codex_ml.utils.device import safe_model_to_device
+from codex.rag.utils import safe_model_to_device
 
 
 class SimpleModel(nn.Module):

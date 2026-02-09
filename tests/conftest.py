@@ -32,8 +32,27 @@ def pytest_configure(config: pytest.Config) -> None:
     the fail-under floor to zero for collection-only invocations while keeping
     the existing defaults for actual test runs.
     
-    Also registers custom markers for RAG tests.
+    Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
+    # Configure PyTorch to use CPU device globally to prevent meta tensor issues
+    try:
+        import torch
+        if hasattr(torch, 'set_default_device'):
+            torch.set_default_device("cpu")
+            logger.info("✓ PyTorch default device set to CPU (prevents meta tensor issues)")
+    except (ImportError, AttributeError):
+        pass  # PyTorch not available or stub version
+    
+    # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
+    try:
+        import resource
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        target_limit = min(hard, 4096)
+        if soft < target_limit:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (target_limit, hard))
+            logger.info(f"✓ File descriptor limit increased to {target_limit} (prevents I/O errors)")
+    except Exception as e:
+        logger.warning(f"Could not increase file descriptor limit: {e}")
 
     if getattr(config.option, "collectonly", False):
         if hasattr(config.option, "cov_fail_under"):
@@ -755,9 +774,9 @@ def ensure_cpu_device():
             yield
             return
         
-        # Set default device to CPU
-        if torch.cuda.is_available():
-            torch.set_default_device("cpu")
+        # Set default device to CPU (ALWAYS, not just when CUDA available)
+        # This prevents meta tensor issues during model loading
+        torch.set_default_device("cpu")
         
         # Ensure deterministic behavior
         torch.manual_seed(0)
@@ -858,3 +877,194 @@ def setup_audit_artifacts(tmp_path_factory):
         os.environ["CODEX_AUDIT_DIR"] = original_audit_dir
     else:
         os.environ.pop("CODEX_AUDIT_DIR", None)
+
+
+# ==============================================================================
+# RESOURCE MANAGEMENT FIXTURES (PR #3178 - Fix 744 Test Failures)
+# ==============================================================================
+# These fixtures prevent resource exhaustion that was causing fatal crashes
+# at 57% test completion. See .codex/COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
+#
+# Root cause: File handle leaks causing:
+#   - ValueError: I/O operation on closed file
+#   - lost sys.stderr
+#   - Process termination with exit code 1
+#
+# Solution: Global resource management + monitoring + forced cleanup
+# ==============================================================================
+
+@pytest.fixture(scope="session", autouse=True)
+def session_resource_manager():
+    """Manage resources across entire test session to prevent exhaustion.
+    
+    This fixture addresses the resource exhaustion crash at 57% test completion
+    (Job 62915466799) that blocked 474+ tests from running.
+    
+    Features:
+    - Tracks initial open files
+    - Monitors resource usage
+    - Reports leaks at session end
+    - Forces garbage collection
+    
+    See: .codex/COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
+    """
+    import gc
+    import warnings
+    
+    # Track initial state
+    initial_files = set()
+    try:
+        import psutil
+        process = psutil.Process()
+        initial_files = set(f.path for f in process.open_files())
+        logger.info(f"✓ Session resource manager: {len(initial_files)} files open at start")
+    except (ImportError, Exception) as e:
+        logger.debug(f"psutil not available for resource tracking: {e}")
+    
+    yield
+    
+    # Cleanup and report phase
+    gc.collect()
+    
+    try:
+        import psutil
+        process = psutil.Process()
+        final_files = set(f.path for f in process.open_files())
+        leaked = final_files - initial_files
+        
+        if leaked:
+            leak_count = len(leaked)
+            warnings.warn(
+                f"Resource leak detected: {leak_count} file(s) still open at session end",
+                ResourceWarning
+            )
+            # Show first 5 leaked files
+            for f in list(leaked)[:5]:
+                warnings.warn(f"  Leaked file: {f}", ResourceWarning)
+            
+            if leak_count > 5:
+                warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
+        else:
+            logger.info("✓ No resource leaks detected at session end")
+    except:
+        pass
+
+
+@pytest.fixture(autouse=True)
+def protect_stderr():
+    """Protect stderr/stdout from being closed or corrupted.
+    
+    This fixture prevents the "lost sys.stderr" fatal error that terminated
+    the test run at 57% completion.
+    
+    Issue: Tests were modifying or closing sys.stderr without restoration,
+    causing subsequent tests to fail with I/O errors.
+    
+    Solution: Save and restore stderr/stdout for every test.
+    """
+    import sys
+    
+    original_stderr = sys.stderr
+    original_stdout = sys.stdout
+    
+    yield
+    
+    # Restore if modified or closed
+    try:
+        if sys.stderr != original_stderr:
+            if not hasattr(sys.stderr, 'closed') or sys.stderr.closed:
+                sys.stderr = original_stderr
+        if sys.stdout != original_stdout:
+            if not hasattr(sys.stdout, 'closed') or sys.stdout.closed:
+                sys.stdout = original_stdout
+    except Exception:
+        # Force restore on any error
+        sys.stderr = original_stderr
+        sys.stdout = original_stdout
+
+
+@pytest.fixture(autouse=True)
+def force_file_cleanup():
+    """Force cleanup of file handles after each test.
+    
+    This fixture addresses file handle leaks that accumulated over 48 minutes
+    of test execution, eventually exhausting available file descriptors.
+    
+    Strategy:
+    - Force garbage collection after each test
+    - Explicitly close lingering file objects
+    - Prevent file handle accumulation
+    """
+    yield
+    
+    # Cleanup phase
+    import gc
+    gc.collect()
+    
+    # Close any lingering file objects found by garbage collector
+    for obj in gc.get_objects():
+        try:
+            # Check if object is file-like
+            if hasattr(obj, 'close') and hasattr(obj, 'closed') and hasattr(obj, 'name'):
+                if not obj.closed and not isinstance(obj.name, int):
+                    # It's an open file object (not stdin/stdout/stderr which have int names)
+                    try:
+                        obj.close()
+                    except Exception:
+                        pass  # Already closed or not closeable
+        except (ReferenceError, AttributeError):
+            pass  # Object was garbage collected during iteration
+
+
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_protocol(item, nextitem):
+    """Monitor resources during test execution.
+    
+    This hook tracks file handles and memory usage per test, providing warnings
+    when leaks are detected. This enables early identification of problematic tests
+    before they accumulate and cause session-level failures.
+    
+    Warnings are issued when:
+    - File handles increase by more than 5
+    - Memory usage increases by more than 20%
+    
+    See: .codex/TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 2
+    """
+    import warnings
+    
+    before_files = 0
+    before_memory = 0
+    
+    try:
+        import psutil
+        process = psutil.Process()
+        before_files = len(process.open_files())
+        before_memory = process.memory_info().rss / 1024 / 1024  # MB
+    except:
+        pass
+    
+    yield
+    
+    try:
+        import psutil
+        process = psutil.Process()
+        after_files = len(process.open_files())
+        after_memory = process.memory_info().rss / 1024 / 1024  # MB
+        
+        # Check for leaks
+        if after_files > before_files + 5:
+            warnings.warn(
+                f"{item.nodeid}: File handle leak detected "
+                f"({before_files} → {after_files}, +{after_files - before_files})",
+                ResourceWarning
+            )
+        
+        if after_memory > before_memory * 1.2:  # 20% increase
+            warnings.warn(
+                f"{item.nodeid}: Memory leak detected "
+                f"({before_memory:.1f}MB → {after_memory:.1f}MB, "
+                f"+{after_memory - before_memory:.1f}MB)",
+                ResourceWarning
+            )
+    except:
+        pass
