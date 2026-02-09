@@ -233,9 +233,14 @@ if _TOKENIZERS_STUB_FLAG or _tokenizers_spec is None:
             for offset, tok in enumerate(sorted_tokens, start=len(base)):
                 self.vocab[tok] = offset
 
-        def encode(self, text: str) -> types.SimpleNamespace:
+        def encode(self, text: str) -> object:
+            """Return encoded result as a simple object with ids attribute."""
             ids = [self.vocab.get(tok, 1) for tok in str(text).split()]
-            return types.SimpleNamespace(ids=ids)
+            # Use a simple class instead of SimpleNamespace for hashability
+            class EncodeResult:
+                def __init__(self, ids):
+                    self.ids = ids
+            return EncodeResult(ids)
 
         def save(self, path: str) -> None:
             Path(path).write_text(json.dumps({"vocab": self.vocab}), encoding="utf-8")
@@ -360,6 +365,20 @@ if _SPM_STUB_FLAG:
     sys.modules.setdefault("sentencepiece", _SPM_STUB)
 
 # If SentencePiece is entirely absent, individual tests handle skips via importorskip.
+
+
+@pytest.fixture
+def no_sentencepiece(monkeypatch):
+    """
+    Fixture to simulate missing sentencepiece module for import error testing.
+    
+    Temporarily sets the sentencepiece_adapter's spm attribute to None,
+    simulating an ImportError condition for testing fallback behavior.
+    """
+    import codex_ml.tokenization.sentencepiece_adapter as sp_adapter
+    monkeypatch.setattr(sp_adapter, "spm", None)
+    yield
+    # monkeypatch automatically restores original value
 
 
 if _SPM_STUB_FLAG and _SPM_STUB is not None:

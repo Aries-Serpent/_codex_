@@ -1,7 +1,8 @@
 """Comprehensive tests for src/services/workflow/parser.py module."""
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestWorkflowParser:

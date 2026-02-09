@@ -3,8 +3,9 @@ Integration tests for RAG indexing functionality.
 
 Tests text chunking, embedding generation, and FAISS index building.
 """
-import pytest
 import importlib.util
+
+import pytest
 
 # Check if required dependencies are available
 try:
@@ -34,17 +35,17 @@ class TestChunkText:
     def test_chunk_text_import(self):
         """Test chunk_text can be imported."""
         from codex.rag.indexer import chunk_text
-        
+
         assert chunk_text is not None
         assert callable(chunk_text)
 
     def test_chunk_text_basic(self):
         """Test chunk_text with basic input."""
         from codex.rag.indexer import chunk_text
-        
+
         text = "Hello world. This is a test."
         chunks = chunk_text(text, chunk_size=20, overlap=5)
-        
+
         assert isinstance(chunks, list)
         assert len(chunks) > 0
         for chunk in chunks:
@@ -53,42 +54,42 @@ class TestChunkText:
     def test_chunk_text_empty_returns_empty(self):
         """Test chunk_text with empty string returns empty list."""
         from codex.rag.indexer import chunk_text
-        
+
         chunks = chunk_text("", chunk_size=100, overlap=10)
-        
+
         assert chunks == []
 
     def test_chunk_text_invalid_chunk_size_raises(self):
         """Test chunk_text raises on invalid chunk_size."""
         from codex.rag.indexer import chunk_text
-        
+
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=0, overlap=0)
 
     def test_chunk_text_invalid_overlap_raises(self):
         """Test chunk_text raises on invalid overlap."""
         from codex.rag.indexer import chunk_text
-        
+
         with pytest.raises(ValueError, match="overlap must be non-negative"):
             chunk_text("test", chunk_size=100, overlap=-1)
 
     def test_chunk_text_overlap_ge_chunk_size(self):
         """Test chunk_text handles overlap >= chunk_size."""
         from codex.rag.indexer import chunk_text
-        
+
         # Should auto-adjust overlap
         chunks = chunk_text("test text here", chunk_size=5, overlap=128)
-        
+
         # Should not crash, overlap auto-adjusted
         assert isinstance(chunks, list)
 
     def test_chunk_text_respects_overlap(self):
         """Test chunk_text respects overlap parameter."""
         from codex.rag.indexer import chunk_text
-        
+
         text = "A" * 100
         chunks = chunk_text(text, chunk_size=30, overlap=10)
-        
+
         # Should have multiple chunks with overlap
         assert len(chunks) > 1
 
@@ -99,25 +100,25 @@ class TestEmbedChunks:
     def test_embed_chunks_import(self):
         """Test embed_chunks can be imported."""
         from codex.rag.indexer import embed_chunks
-        
+
         assert embed_chunks is not None
         assert callable(embed_chunks)
 
     def test_embed_chunks_empty_returns_empty(self):
         """Test embed_chunks with empty list."""
         from codex.rag.indexer import embed_chunks
-        
+
         result = embed_chunks([])
-        
+
         # Should return empty array or handle gracefully
         assert result is not None
 
     def test_embed_chunks_requires_model(self):
         """Test embed_chunks requires model or profile."""
         from codex.rag.indexer import embed_chunks
-        
+
         chunks = [(0, 10, "test text")]
-        
+
         # May require model_profile or raise error
         try:
             result = embed_chunks(chunks)
@@ -134,7 +135,7 @@ class TestIndexerMetadata:
     def test_indexer_has_metadata_functions(self):
         """Test indexer module has metadata functions."""
         from codex.rag import indexer
-        
+
         # Should have functions for metadata handling
         assert hasattr(indexer, 'chunk_text')
         assert hasattr(indexer, 'embed_chunks')
@@ -142,10 +143,10 @@ class TestIndexerMetadata:
     def test_indexer_chunk_metadata(self):
         """Test chunk metadata includes position information."""
         from codex.rag.indexer import chunk_text
-        
+
         text = "Hello world. This is a test."
         chunks = chunk_text(text, chunk_size=50, overlap=10)
-        
+
         for start, end, text_chunk in chunks:
             assert isinstance(start, int)
             assert isinstance(end, int)
@@ -179,7 +180,7 @@ class TestFAISSIntegration:
     def test_faiss_import_handled(self):
         """Test indexer handles FAISS import gracefully."""
         from codex.rag import indexer
-        
+
         # Should import without error even if FAISS unavailable
         assert indexer is not None
 
@@ -190,7 +191,7 @@ class TestFAISSIntegration:
         except ImportError:
             # FAISS is optional - test that indexer still imports without it
             pass
-        
+
         # Should not crash if FAISS unavailable
         from codex.rag import indexer
         assert indexer is not None

@@ -16,8 +16,8 @@ from argparse import Namespace
 from pathlib import Path
 
 import pytest
-
 import yaml
+
 from codex_ml.cli import config as config_cli
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

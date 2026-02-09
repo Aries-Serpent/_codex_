@@ -1,7 +1,9 @@
 """Capture and restore RNG state for deterministic resume support."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

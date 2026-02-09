@@ -17,11 +17,9 @@ from codex_utils import (
     OfflineTB,
     bootstrap_mlflow_env,
     mlflow_offline_session,
-)
-from codex_utils import repro as repro_mod
-from codex_utils import (
     sample_system_metrics,
 )
+from codex_utils import repro as repro_mod
 
 
 class _FakeRun:

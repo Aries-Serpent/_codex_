@@ -1,8 +1,8 @@
 """Phase 24 CLI workflow integration tests."""
 
 import pytest
-from omegaconf import OmegaConf
 
+from omegaconf import OmegaConf
 
 
 @pytest.mark.integration

@@ -14,7 +14,8 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import given, strategies as st, assume, settings
+    from hypothesis import assume, given, settings
+    from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
@@ -23,7 +24,7 @@ except ImportError:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
         return decorator
-    
+
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
@@ -46,10 +47,10 @@ except ImportError:
         @staticmethod
         def sampled_from(*args: Any, **kwargs: Any) -> Any:
             return None
-    
+
     def assume(condition: bool) -> None:
         pass
-    
+
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
@@ -87,7 +88,7 @@ class TestTextTransformationProperties:
         """Normalization preserves count of alphanumeric characters."""
         def normalize(s: str) -> str:
             return s.lower().strip()
-        
+
         original_alphanum = sum(1 for c in text if c.isalnum())
         normalized_alphanum = sum(1 for c in normalize(text) if c.isalnum())
         assert normalized_alphanum == original_alphanum
@@ -308,7 +309,7 @@ class TestTokenizationProperties:
         result_words = set(w for w in rejoined.split() if w.isalnum())
         assert original_words == result_words
 
-    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"), 
+    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
                     min_size=1, max_size=50))
     def test_token_count_bounded(self, tokens: list[str]) -> None:
         """Token count is bounded by character count."""

@@ -23,9 +23,9 @@ class TestSqliteDAL:
         """Test that DAL initializes and creates database."""
         db_path = tmp_path / "test.db"
         url = f"sqlite:///{db_path}"
-        
+
         dal = SqliteDAL.from_url(url)
-        
+
         assert dal is not None
         assert db_path.exists()
         assert dal.conn is not None
@@ -34,13 +34,13 @@ class TestSqliteDAL:
         """Test that schema creation works."""
         # Schema should be created during initialization
         cursor = dal.conn.cursor()
-        
+
         # Check that tables exist
         cursor.execute(
             "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
         )
         tables = {row[0] for row in cursor.fetchall()}
-        
+
         # Should have core tables
         expected_tables = {"artifact", "item", "event"}
         assert expected_tables.issubset(tables)
@@ -50,7 +50,7 @@ class TestSqliteDAL:
         with dal.txn():
             # Transaction should commit successfully
             pass
-        
+
         # Verify connection is still usable
         cursor = dal.conn.cursor()
         cursor.execute("SELECT 1")
@@ -59,16 +59,18 @@ class TestSqliteDAL:
     def test_summary_returns_stats(self, dal):
         """Test that summary returns database statistics."""
         summary = dal.summary()
-        
+
         assert isinstance(summary, dict)
-        # Should have counts for specific tables
-        assert "items" in summary or "artifact_count" in summary or "artifacts" in summary, \
-            f"Summary should contain expected keys, got: {list(summary.keys())}"
+        # Should have counts for artifacts
+        assert "count" in summary, \
+            f"Summary should contain 'count' key, got: {list(summary.keys())}"
+        assert "total_bytes" in summary, \
+            f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
 
     def test_recent_items_returns_list(self, dal):
         """Test that recent_items returns a list."""
         items = dal.recent_items(limit=10)
-        
+
         assert isinstance(items, list)
         # Empty database should return empty list
         assert len(items) == 0
@@ -83,9 +85,9 @@ class TestSqliteDAL:
             "compression": "zlib",
             "storage_driver": "db",
         }
-        
+
         result = dal.ensure_artifact(**artifact_data)
-        
+
         assert isinstance(result, dict)
         assert "id" in result
         assert result["content_sha256"] == artifact_data["sha"]
@@ -99,7 +101,7 @@ class TestSqliteDAL:
             mime="text/plain",
             blob=b"test",
         )
-        
+
         # Now create an item
         item_data = {
             "repo": "test/repo",
@@ -112,9 +114,9 @@ class TestSqliteDAL:
             "kind": "code",
             "metadata": {"test": "value"},
         }
-        
+
         result = dal.insert_item(**item_data)
-        
+
         assert isinstance(result, dict)
         assert "id" in result
         assert "tombstone_id" in result

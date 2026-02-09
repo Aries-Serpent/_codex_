@@ -1,23 +1,27 @@
 """Tests for distributed training setup."""
 
 import os
+
 import pytest
-import torch
-import torch.nn as nn
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 from unittest.mock import patch
 
+import torch
+import torch.nn as nn
 from codex_ml.training.distributed_setup import (
-    setup_distributed,
     cleanup_distributed,
-    is_distributed,
+    get_distributed_sampler,
     get_rank,
     get_world_size,
+    is_distributed,
     is_main_process,
-    setup_ddp_model,
-    get_distributed_sampler,
-    reduce_tensor,
-    print_once,
     log_once,
+    print_once,
+    reduce_tensor,
+    setup_ddp_model,
+    setup_distributed,
 )
 
 
@@ -114,7 +118,9 @@ def test_distributed_functions_with_mock(mock_world_size, mock_rank, mock_init):
 
     # Import after patching to ensure mocks are applied
     from codex_ml.training.distributed_setup import (
-        get_rank, get_world_size, is_main_process
+        get_rank,
+        get_world_size,
+        is_main_process,
     )
 
     assert get_rank() == 1

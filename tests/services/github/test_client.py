@@ -1,27 +1,27 @@
 """Tests for GitHub API Client."""
 
-import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from src.services.github.client import GitHubClient
-from src.services.github.types import (
-    RunStatus,
-    RunConclusion,
-    WorkflowInfo,
-    WorkflowRun,
-    WorkflowJob,
-    ArtifactInfo,
-    RateLimitInfo,
-)
 from src.services.github.exceptions import (
-    GitHubAPIError,
-    RateLimitError,
     AuthenticationError,
+    GitHubAPIError,
     NotFoundError,
+    RateLimitError,
     WorkflowTriggerError,
 )
-
+from src.services.github.types import (
+    ArtifactInfo,
+    RateLimitInfo,
+    RunConclusion,
+    RunStatus,
+    WorkflowInfo,
+    WorkflowJob,
+    WorkflowRun,
+)
 
 # ============================================================================
 # Fixtures

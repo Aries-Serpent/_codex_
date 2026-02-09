@@ -4,9 +4,10 @@ Performance benchmarking tests for inference server.
 Measures throughput, latency, and resource utilization.
 """
 
-import time
 import statistics
-from unittest.mock import patch, MagicMock
+import time
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -118,7 +119,7 @@ class TestLatencyDistribution:
         p95 = statistics.quantiles(latencies, n=20)[18]  # 95th percentile
         p99 = statistics.quantiles(latencies, n=100)[98]  # 99th percentile
 
-        print(f"\nHealth endpoint latency:")
+        print("\nHealth endpoint latency:")
         print(f"  P50: {p50:.2f}ms")
         print(f"  P95: {p95:.2f}ms")
         print(f"  P99: {p99:.2f}ms")
@@ -153,7 +154,7 @@ class TestLatencyDistribution:
                 p95 = statistics.quantiles(latencies, n=20)[18]
                 p99 = statistics.quantiles(latencies, n=100)[98]
 
-                print(f"\nInference endpoint latency:")
+                print("\nInference endpoint latency:")
                 print(f"  P50: {p50:.2f}ms")
                 print(f"  P95: {p95:.2f}ms")
                 print(f"  P99: {p99:.2f}ms")
@@ -287,8 +288,9 @@ class TestResourceUtilization:
 
     def test_memory_footprint_measurement(self, perf_client):
         """Measure memory footprint of inference server."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         baseline_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -300,7 +302,7 @@ class TestResourceUtilization:
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
         memory_growth = final_memory - baseline_memory
 
-        print(f"\nMemory usage:")
+        print("\nMemory usage:")
         print(f"  Baseline: {baseline_memory:.2f} MB")
         print(f"  After 100 requests: {final_memory:.2f} MB")
         print(f"  Growth: {memory_growth:.2f} MB")
@@ -310,8 +312,9 @@ class TestResourceUtilization:
 
     def test_cpu_utilization_patterns(self, perf_client):
         """Measure CPU utilization during inference."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
 
@@ -323,7 +326,7 @@ class TestResourceUtilization:
 
         end_cpu = process.cpu_percent(interval=0.1)
 
-        print(f"\nCPU utilization:")
+        print("\nCPU utilization:")
         print(f"  Start: {start_cpu:.1f}%")
         print(f"  End: {end_cpu:.1f}%")
 

@@ -830,6 +830,7 @@ def load_training_arguments(
 
     # Remove non-TrainingArguments keys from config
     for extra in (
+        "batch_size",
         "lora_r",
         "lora_alpha",
         "lora_dropout",
@@ -848,6 +849,22 @@ def load_training_arguments(
         "early_stopping_patience",
         "lora",
         "grad_accum",
+        "model",
+        "device",
+        "dtype",
+        "deterministic",
+        "sanitize_prompts",
+        "optimizer",
+        "scheduler",
+        "mixed_precision",
+        "tensorboard",
+        "mlflow_enable",
+        "max_epochs",
+        "dataset",
+        "checkpoint_every_n_steps",
+        "checkpoint_keep",
+        "eval_split",
+        "gradient_accumulation",
     ):
         cfg.pop(extra, None)
 

@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any, Dict, Iterable
 
 
-
 def _load_module(path: Path, name: str) -> types.ModuleType:
     """Load detector module dynamically."""
     if not path.is_absolute():
@@ -181,7 +180,7 @@ class TestMetricsCalculation:
         files = []
         for i in range(3):
             f = tmp_path / f"model{i}.py"
-            f.write_text(f"from peft import lora\nconfig = LoraConfig()\n", encoding="utf-8")
+            f.write_text("from peft import lora\nconfig = LoraConfig()\n", encoding="utf-8")
             files.append(f)
 
         detector_path = Path("scripts/space_traversal/detectors/detector_peft.py")

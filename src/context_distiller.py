@@ -8,11 +8,11 @@ Part of Phase 5: AI Agent Tooling Enhancement
 """
 from __future__ import annotations
 
+import hashlib
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from datetime import datetime
-import hashlib
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class ContextDistiller:
     Compresses source code, documentation, and configurations into
     digestible context for AI agents.
     """
-    
+
     def __init__(
         self,
         src_dirs: Optional[List[Path]] = None,
@@ -49,7 +49,7 @@ class ContextDistiller:
         ]
         self.max_tokens = max_tokens
         self.output_path = output_path or REPO_ROOT / "digest.md"
-        
+
         # File extensions to process
         self.code_extensions = {
             ".py", ".js", ".ts", ".jsx", ".tsx",
@@ -61,9 +61,9 @@ class ContextDistiller:
         self.config_extensions = {
             ".yaml", ".yml", ".json", ".toml", ".ini"
         }
-        
+
         logger.info(f"ContextDistiller initialized: max_tokens={max_tokens}")
-    
+
     def scan_codebase(self) -> Dict[str, List[Path]]:
         """
         Scan codebase for relevant files.
@@ -76,36 +76,36 @@ class ContextDistiller:
             "docs": [],
             "configs": []
         }
-        
+
         for src_dir in self.src_dirs:
             if not src_dir.exists():
                 logger.warning(f"Directory not found: {src_dir}")
                 continue
-            
+
             for file_path in src_dir.rglob("*"):
                 if not file_path.is_file():
                     continue
-                
+
                 # Skip common ignorable patterns
                 if self._should_ignore(file_path):
                     continue
-                
+
                 suffix = file_path.suffix.lower()
-                
+
                 if suffix in self.code_extensions:
                     results["code"].append(file_path)
                 elif suffix in self.doc_extensions:
                     results["docs"].append(file_path)
                 elif suffix in self.config_extensions:
                     results["configs"].append(file_path)
-        
+
         logger.info(
             f"Scanned codebase: {len(results['code'])} code files, "
             f"{len(results['docs'])} docs, {len(results['configs'])} configs"
         )
-        
+
         return results
-    
+
     def _should_ignore(self, file_path: Path) -> bool:
         """Check if file should be ignored."""
         ignore_patterns = {
@@ -123,10 +123,10 @@ class ContextDistiller:
             "test_",  # Test files
             "_test.",
         }
-        
+
         path_str = str(file_path)
         return any(pattern in path_str for pattern in ignore_patterns)
-    
+
     def extract_code_structure(self, file_path: Path) -> Dict[str, Any]:
         """
         Extract high-level structure from code file.
@@ -143,7 +143,7 @@ class ContextDistiller:
         except Exception as e:
             logger.error(f"Failed to read {file_path}: {e}")
             return {}
-        
+
         structure = {
             "path": str(file_path.relative_to(REPO_ROOT)),
             "size": len(content),
@@ -152,19 +152,19 @@ class ContextDistiller:
             "functions": [],
             "imports": []
         }
-        
+
         # Simple pattern matching for Python
         if file_path.suffix == ".py":
             import re
-            
+
             # Extract classes
             class_pattern = r'^class\s+(\w+)'
             structure["classes"] = re.findall(class_pattern, content, re.MULTILINE)
-            
+
             # Extract functions
             func_pattern = r'^def\s+(\w+)'
             structure["functions"] = re.findall(func_pattern, content, re.MULTILINE)
-            
+
             # Extract imports (handle both forms, skip relative and star imports)
             import_pattern = r'^(?:from\s+([\w.]+)\s+)?import\s+([\w, ]+)'
             imports = []
@@ -176,9 +176,9 @@ class ContextDistiller:
                 elif not module and '*' not in names:
                     imports.extend([n.strip() for n in names.split(',')])
             structure["imports"] = imports[:20]  # Limit to first 20 for brevity
-        
+
         return structure
-    
+
     def generate_digest(self) -> str:
         """
         Generate context digest.
@@ -187,12 +187,12 @@ class ContextDistiller:
             Markdown-formatted digest
         """
         files = self.scan_codebase()
-        
+
         digest = []
         digest.append("# Codebase Context Digest\n")
         digest.append(f"**Generated:** {datetime.now().isoformat()}\n")
         digest.append(f"**Token Budget:** {self.max_tokens:,}\n\n")
-        
+
         # Summary statistics
         digest.append("## Summary\n")
         total_files = sum(len(f) for f in files.values())
@@ -200,54 +200,54 @@ class ContextDistiller:
         digest.append(f"- **Code Files:** {len(files['code'])}\n")
         digest.append(f"- **Documentation:** {len(files['docs'])}\n")
         digest.append(f"- **Configurations:** {len(files['configs'])}\n\n")
-        
+
         # Code structure
         digest.append("## Code Structure\n\n")
-        
+
         for code_file in sorted(files['code'][:50]):  # Limit to 50 files
             structure = self.extract_code_structure(code_file)
-            
+
             if not structure:
                 continue
-            
+
             digest.append(f"### `{structure['path']}`\n")
             digest.append(f"- **Lines:** {structure['lines']}\n")
-            
+
             if structure.get('classes'):
                 digest.append(f"- **Classes:** {', '.join(structure['classes'][:10])}\n")
-            
+
             if structure.get('functions'):
                 digest.append(f"- **Functions:** {', '.join(structure['functions'][:10])}\n")
-            
+
             digest.append("\n")
-        
+
         if len(files['code']) > 50:
             digest.append(f"... and {len(files['code']) - 50} more code files\n\n")
-        
+
         # Key documentation
         digest.append("## Key Documentation\n\n")
-        
+
         for doc_file in sorted(files['docs'][:20]):
             rel_path = doc_file.relative_to(REPO_ROOT)
             digest.append(f"- `{rel_path}`\n")
-        
+
         if len(files['docs']) > 20:
             digest.append(f"- ... and {len(files['docs']) - 20} more docs\n")
-        
+
         digest.append("\n")
-        
+
         # Configuration files
         digest.append("## Configuration Files\n\n")
-        
+
         for config_file in sorted(files['configs'][:15]):
             rel_path = config_file.relative_to(REPO_ROOT)
             digest.append(f"- `{rel_path}`\n")
-        
+
         if len(files['configs']) > 15:
             digest.append(f"- ... and {len(files['configs']) - 15} more configs\n")
-        
+
         digest.append("\n")
-        
+
         # Module map
         digest.append("## Module Map\n\n")
         digest.append("```\n")
@@ -264,14 +264,14 @@ class ContextDistiller:
         digest.append("cognitive_app/\n")
         digest.append("└── src/orchestrator.py # OODA Loop orchestrator\n")
         digest.append("```\n\n")
-        
+
         # Digest metadata
         digest_text = "".join(digest)
         digest.append(f"**Digest Size:** {len(digest_text)} chars\n")
         digest.append(f"**Estimated Tokens:** ~{len(digest_text) // 4}\n")
-        
+
         return "".join(digest)
-    
+
     def save_digest(self, content: Optional[str] = None) -> Path:
         """
         Save digest to file.
@@ -284,24 +284,24 @@ class ContextDistiller:
         """
         if content is None:
             content = self.generate_digest()
-        
+
         # Ensure output directory exists
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write digest
         with open(self.output_path, 'w', encoding='utf-8') as f:
             f.write(content)
-        
+
         # Calculate checksum
         checksum = hashlib.sha256(content.encode()).hexdigest()[:16]
-        
+
         logger.info(
             f"Digest saved: {self.output_path} "
             f"({len(content)} chars, checksum: {checksum})"
         )
-        
+
         return self.output_path
-    
+
     def compress_with_sentencepiece(
         self,
         content: str,
@@ -325,19 +325,19 @@ class ContextDistiller:
                 "Install with: pip install sentencepiece"
             )
             return content  # Return uncompressed
-        
+
         if model_path and model_path.exists():
             sp = spm.SentencePieceProcessor(model_file=str(model_path))
             tokens = sp.encode(content, out_type=str)
-            
+
             # Reconstruct with token IDs for compression
             compressed = " ".join(tokens[:self.max_tokens])
-            
+
             logger.info(
                 f"Compressed with sentencepiece: "
                 f"{len(content)} → {len(compressed)} chars"
             )
-            
+
             return compressed
         else:
             logger.warning("Sentencepiece model not found, skipping compression")
@@ -368,8 +368,8 @@ def generate_context_digest(
 if __name__ == "__main__":
     # Generate digest when run as script
     print("🔍 Generating context digest...\n")
-    
+
     digest_path = generate_context_digest()
-    
+
     print(f"✅ Digest generated: {digest_path}")
     print(f"   Size: {digest_path.stat().st_size:,} bytes")

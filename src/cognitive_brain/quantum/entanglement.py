@@ -72,7 +72,7 @@ class CorrelationMeasurement:
     sample_size: int
     p_value: float = 1.0  # Default to not significant
     timestamp: float = field(default_factory=time.time)
-    
+
     @property
     def coefficient(self) -> float:
         """Alias for correlation for backward compatibility."""
@@ -214,7 +214,7 @@ class EntanglementManager:
 
         # Compute Pearson correlation
         correlation_coef = self._pearson_correlation(numeric1, numeric2)
-        
+
         # Calculate p-value (simplified - using two-tailed test)
         # For sample correlation, p-value approximation
         n = len(numeric1)
@@ -224,7 +224,7 @@ class EntanglementManager:
             p_value = max(0.001, 2 * (1 - abs(t_stat) / (n ** 0.5)))
         else:
             p_value = 1.0  # Not enough data for significance
-        
+
         # Calculate mutual information (simplified)
         mutual_info = -correlation_coef * math.log(abs(correlation_coef) + 1e-10) if correlation_coef != 0 else 0.0
 

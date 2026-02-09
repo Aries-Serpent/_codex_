@@ -17,8 +17,9 @@ disclosure. Override via CODEX_LOG_FILE_MODE environment variable for shared
 monitoring deployments.
 """
 
-import os
 import logging
+import os
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_LOG_FILE_MODE = 0o600  # Owner read/write only

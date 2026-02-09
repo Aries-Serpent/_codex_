@@ -80,12 +80,12 @@ def safe_model_to_device(
         import torch
 
         if isinstance(model, torch.nn.Module):
-            return model.to(device)
+            return model.to(device)  # safe-device-placement: internal implementation
     except ImportError:
         pass
 
     if hasattr(model, "to") and callable(getattr(model, "to", None)):
-        return model.to(device)
+        return model.to(device)  # safe-device-placement: internal implementation
 
     return model
 

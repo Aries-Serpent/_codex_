@@ -15,8 +15,7 @@ Tests cover:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
-
+from datetime import UTC, datetime, timedelta
 
 from codex_ml.features.feature_store import (
     Feature,
@@ -232,12 +231,12 @@ class TestFeatureStore:
         # Add versions manually
         version1 = FeatureVersion(
             version="1.0.0",
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             feature_name="test_feature",
         )
         version2 = FeatureVersion(
             version="1.1.0",
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             feature_name="test_feature",
         )
 
@@ -406,7 +405,7 @@ class TestFeatureHealthMonitor:
         monitor = FeatureHealthMonitor(freshness_threshold_minutes=10)
 
         # Record update in the past
-        past_time = datetime.now() - timedelta(minutes=30)
+        past_time = datetime.now(UTC) - timedelta(minutes=30)
         monitor.feature_updates["feature1"] = past_time
 
         status = monitor.check_feature_health("feature1")
@@ -450,7 +449,7 @@ class TestFeatureHealthMonitor:
 
         monitor.record_feature_update("fresh1")
 
-        past_time = datetime.now() - timedelta(hours=12)
+        past_time = datetime.now(UTC) - timedelta(hours=12)
         monitor.feature_updates["stale1"] = past_time
 
         report = monitor.get_freshness_report()
@@ -467,7 +466,7 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_update("fresh1")
 
         # Stale feature
-        past_time = datetime.now() - timedelta(hours=48)
+        past_time = datetime.now(UTC) - timedelta(hours=48)
         monitor.feature_updates["stale1"] = past_time
 
         stale_features = monitor.alert_stale_features(threshold_hours=24)
@@ -519,7 +518,7 @@ class TestHealthAlerts:
         status_warning = FeatureHealthStatus(
             feature_name="feature2",
             is_healthy=True,
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
             freshness_minutes=100,  # 100 min, SLA is 120, approaching (>80%)
             freshness_level="ACCEPTABLE",
         )
@@ -599,7 +598,7 @@ class TestHealthReporting:
         monitor = FeatureHealthMonitor()
 
         # Stale feature
-        past_time = datetime.now() - timedelta(hours=48)
+        past_time = datetime.now(UTC) - timedelta(hours=48)
         monitor.feature_updates["stale1"] = past_time
 
         # Feature with errors

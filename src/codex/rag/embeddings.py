@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional, Protocol
 
 import numpy as np
 
+from codex.rag.utils import safe_model_to_device
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -61,9 +63,10 @@ class LocalSentenceTransformerProvider:
         """Load the embedding model."""
         try:
             import os
-            import torch
 
             from sentence_transformers import SentenceTransformer
+
+            import torch
 
             logger.info(f"Loading local embedding model: {self.model_name}")
 
@@ -73,7 +76,7 @@ class LocalSentenceTransformerProvider:
             # CRITICAL FIX: Force CPU device and prevent meta tensors
             # Set default device to CPU before any model operations
             torch.set_default_device('cpu')
-            
+
             self.model = SentenceTransformer(
                 self.model_name,
                 device='cpu',
@@ -81,11 +84,11 @@ class LocalSentenceTransformerProvider:
                 trust_remote_code=False,
                 use_auth_token=use_auth_token if use_auth_token else None
             )
-            
-            # Explicitly move all parameters to CPU (double-check)
-            self.model = self.model.to('cpu')
+
+            # Safely move to CPU, handling meta tensors if present
+            self.model = safe_model_to_device(self.model, 'cpu')
             self.model.eval()
-            
+
             # Reset default device to avoid side effects
             torch.set_default_device(None)
 

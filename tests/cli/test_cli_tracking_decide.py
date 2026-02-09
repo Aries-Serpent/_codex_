@@ -17,7 +17,7 @@ from typer.testing import CliRunner  # type: ignore  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
-def restore_env(monkeypatch: pytest.MonkeyPatch) -> None:
+def restore_env(monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest) -> None:
     original = dict(os.environ)
 
     def restore() -> None:
@@ -27,7 +27,7 @@ def restore_env(monkeypatch: pytest.MonkeyPatch) -> None:
         for key, value in original.items():
             os.environ[key] = value
 
-    monkeypatch.addfinalizer(restore)
+    request.addfinalizer(restore)
 
 
 def test_tracking_decide_rewrites_remote_when_offline(monkeypatch: pytest.MonkeyPatch) -> None:

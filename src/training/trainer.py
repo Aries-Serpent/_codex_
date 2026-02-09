@@ -6,6 +6,7 @@ import contextlib
 import inspect
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
@@ -15,10 +16,10 @@ from typing import Any
 
 try:  # pragma: no cover - optional torch guard for import-time failures
     from torch.cuda.amp import GradScaler, autocast
-    from torch.utils.data import DataLoader
 
     import torch
     from torch import nn
+    from torch.utils.data import DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
     nn = Any  # type: ignore[assignment]

@@ -5,7 +5,6 @@ Provides registration and execution of multiple analyzers on AST trees.
 """
 from typing import Dict, List, Optional
 
-from codex_ml.ast.core.node import Finding, StandardizedASTNode
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
     ComplexityAnalyzer,
@@ -13,6 +12,7 @@ from codex_ml.ast.analysis.base_analyzer import (
     ParameterCountAnalyzer,
     UnusedCodeAnalyzer,
 )
+from codex_ml.ast.core.node import Finding, StandardizedASTNode
 
 
 class AnalyzerRegistry:

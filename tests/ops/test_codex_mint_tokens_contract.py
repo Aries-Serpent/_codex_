@@ -65,7 +65,7 @@ def test_exchange_and_revoke_offline(monkeypatch):
 
     # Create mock functions that use MockSession
     mock_session = MockSession()
-    
+
     def fake_post(url, headers=None, json=None, timeout=None, **kwargs):
         return mock_session.post(url, headers=headers, json=json, timeout=timeout)
 

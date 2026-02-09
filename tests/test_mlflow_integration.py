@@ -1,14 +1,15 @@
 """Tests for MLflow integration."""
 
-import pytest
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
 from codex_ml.training.mlflow_integration import (
     MLflowTracker,
-    is_mlflow_available,
     init_mlflow,
+    is_mlflow_available,
 )
 
 

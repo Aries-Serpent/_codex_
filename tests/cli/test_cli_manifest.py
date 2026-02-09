@@ -30,7 +30,7 @@ def test_hash_and_readme_update(tmp_path):
     }
     mpath.write_text(json.dumps(manifest), encoding="utf-8")
     readme.write_text("# Title\n\n", encoding="utf-8")
-    expected = schema_v2.digest(manifest)
+    expected = schema_v2.compute_manifest_digest(manifest)
     runner = CliRunner()
     res = runner.invoke(
         manifest_cli.app,

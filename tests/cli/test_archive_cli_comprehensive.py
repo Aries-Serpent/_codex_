@@ -8,10 +8,10 @@ Tests cover Click-based CLI for tombstone archive operations:
 - Service integration
 """
 
-import pytest
 from unittest.mock import Mock, patch
-from click.testing import CliRunner
 
+import pytest
+from click.testing import CliRunner
 
 # ==================== Fixtures ====================
 
@@ -78,8 +78,9 @@ class TestParseMetadata:
     def test_parse_metadata_invalid_format_raises(self):
         """Test that missing equals raises BadParameter."""
         try:
-            from src.codex.archive.cli import _parse_metadata
             import click
+
+            from src.codex.archive.cli import _parse_metadata
             with pytest.raises(click.BadParameter):
                 _parse_metadata(["invalid_no_equals"])
         except ImportError:
@@ -179,9 +180,10 @@ class TestBatchProgressLogger:
     def test_batch_progress_logger_creation(self, mock_config):
         """Test batch progress logger can be created."""
         try:
-            from src.codex.archive.cli import _batch_progress_logger
             import logging
-            
+
+            from src.codex.archive.cli import _batch_progress_logger
+
             logger = logging.getLogger("test")
             callback = _batch_progress_logger(logger, mock_config)
             assert callable(callback)
@@ -191,12 +193,13 @@ class TestBatchProgressLogger:
     def test_batch_progress_callback(self, mock_config, capsys):
         """Test batch progress callback outputs status."""
         try:
-            from src.codex.archive.cli import _batch_progress_logger
             import logging
-            
+
+            from src.codex.archive.cli import _batch_progress_logger
+
             logger = logging.getLogger("test")
             mock_config.batch.progress_interval = 1
-            
+
             with patch("src.codex.archive.cli.log_restore"):
                 with patch("click.echo") as mock_echo:
                     callback = _batch_progress_logger(logger, mock_config)
@@ -244,12 +247,13 @@ class TestSetupLogger:
     def test_setup_logger_returns_logger(self):
         """Test that setup_logger returns a Logger instance."""
         try:
-            from src.codex.archive.cli import _setup_logger
             import logging
-            
+
+            from src.codex.archive.cli import _setup_logger
+
             mock_config = Mock()
             mock_config.logging = Mock()
-            
+
             with patch("src.codex.archive.cli.setup_logging") as mock_setup:
                 mock_setup.return_value = logging.getLogger("test")
                 result = _setup_logger(mock_config)
@@ -280,7 +284,7 @@ class TestLoadConfig:
             from src.codex.archive.cli import _load_config
             config_file = tmp_path / "config.yaml"
             config_file.write_text("# test config")
-            
+
             with patch("src.codex.archive.config.ArchiveAppConfig.load") as mock_load:
                 mock_load.return_value = Mock()
                 _load_config(config_file)

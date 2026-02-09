@@ -1,8 +1,14 @@
 """Complete Feature Health Monitoring tests."""
 
+from datetime import UTC, datetime, timedelta
+
 import pytest
-from datetime import datetime, timedelta
-from codex_ml.features.monitoring import FeatureHealthMonitor, FeatureHealthStatus, HealthAlert
+
+from codex_ml.features.monitoring import (
+    FeatureHealthMonitor,
+    FeatureHealthStatus,
+    HealthAlert,
+)
 
 
 class TestFeatureHealthMonitor:
@@ -31,7 +37,7 @@ class TestFeatureHealthMonitor:
     def test_check_stale_feature(self, monitor):
         """Test checking a stale feature."""
         # Manually set old update time
-        monitor.feature_updates["stale_feature"] = datetime.now() - timedelta(hours=2)
+        monitor.feature_updates["stale_feature"] = datetime.now(UTC) - timedelta(hours=2)
 
         status = monitor.check_feature_health("stale_feature")
         assert not status.is_healthy
@@ -97,7 +103,7 @@ class TestFeatureHealthMonitor:
         """Test freshness distribution report."""
         monitor.record_feature_update("fresh1")
         monitor.record_feature_update("fresh2")
-        monitor.feature_updates["stale1"] = datetime.now() - timedelta(hours=12)
+        monitor.feature_updates["stale1"] = datetime.now(UTC) - timedelta(hours=12)
 
         report = monitor.get_freshness_report()
 
@@ -108,7 +114,7 @@ class TestFeatureHealthMonitor:
     def test_alert_stale_features(self, monitor):
         """Test alerting for stale features."""
         monitor.record_feature_update("fresh")
-        monitor.feature_updates["stale"] = datetime.now() - timedelta(hours=25)
+        monitor.feature_updates["stale"] = datetime.now(UTC) - timedelta(hours=25)
 
         stale_features = monitor.alert_stale_features(threshold_hours=24)
 
@@ -140,7 +146,7 @@ class TestFeatureHealthMonitor:
         """Test freshness distribution as percentages."""
         monitor.record_feature_update("f1")
         monitor.record_feature_update("f2")
-        monitor.feature_updates["f3"] = datetime.now() - timedelta(hours=12)
+        monitor.feature_updates["f3"] = datetime.now(UTC) - timedelta(hours=12)
 
         distribution = monitor.get_freshness_distribution()
 
@@ -179,7 +185,7 @@ class TestHealthAlerts:
             "approaching_sla": FeatureHealthStatus(
                 feature_name="approaching_sla",
                 is_healthy=True,
-                last_updated=datetime.now().isoformat(),
+                last_updated=datetime.now(UTC).isoformat(),
                 freshness_minutes=100,  # 100/120 = 83% of SLA
                 freshness_level="ACCEPTABLE",
             ),
@@ -196,7 +202,7 @@ class TestHealthAlerts:
             "error_feature": FeatureHealthStatus(
                 feature_name="error_feature",
                 is_healthy=False,
-                last_updated=datetime.now().isoformat(),
+                last_updated=datetime.now(UTC).isoformat(),
                 freshness_minutes=10,
                 error_count=10,
                 freshness_level="FRESH",
@@ -214,7 +220,7 @@ class TestHealthAlerts:
             feature_name="test",
             severity="WARNING",
             message="Test alert",
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             metric_value=50.0,
         )
 
@@ -238,14 +244,14 @@ class TestHealthReports:
             "healthy1": FeatureHealthStatus(
                 feature_name="healthy1",
                 is_healthy=True,
-                last_updated=datetime.now().isoformat(),
+                last_updated=datetime.now(UTC).isoformat(),
                 freshness_minutes=10,
                 freshness_level="FRESH",
             ),
             "stale1": FeatureHealthStatus(
                 feature_name="stale1",
                 is_healthy=False,
-                last_updated=(datetime.now() - timedelta(hours=12)).isoformat(),
+                last_updated=(datetime.now(UTC) - timedelta(hours=12)).isoformat(),
                 freshness_minutes=720,
                 freshness_level="STALE",
             ),
@@ -308,7 +314,7 @@ class TestFeatureHealthIntegration:
         monitor.record_feature_error("user_score")
 
         # Make one feature stale
-        monitor.feature_updates["transaction_amount"] = datetime.now() - timedelta(hours=2)
+        monitor.feature_updates["transaction_amount"] = datetime.now(UTC) - timedelta(hours=2)
 
         # Check all features
         statuses = monitor.check_all_features(features)
@@ -325,8 +331,8 @@ class TestFeatureHealthIntegration:
 
         # Record updates at different times
         monitor.record_feature_update("sla_compliant")
-        monitor.feature_updates["sla_warning"] = datetime.now() - timedelta(hours=23)
-        monitor.feature_updates["sla_violation"] = datetime.now() - timedelta(hours=26)
+        monitor.feature_updates["sla_warning"] = datetime.now(UTC) - timedelta(hours=23)
+        monitor.feature_updates["sla_violation"] = datetime.now(UTC) - timedelta(hours=26)
 
         features = ["sla_compliant", "sla_warning", "sla_violation"]
         statuses = monitor.check_all_features(features)

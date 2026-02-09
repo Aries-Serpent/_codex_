@@ -20,6 +20,8 @@ import sys
 
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
@@ -115,8 +117,11 @@ class TestConfigurationLoading:
     def test_load_valid_yaml_config(self, minimal_config):
         """Verify loading valid YAML configuration."""
         try:
-            from codex.utils.config_loader import load_config, get_loader  # noqa: F401 - Testing optional dependency availability
-            
+            from codex.utils.config_loader import (  # noqa: F401 - Testing optional dependency availability
+                get_loader,
+                load_config,
+            )
+
             get_loader()
             # Config loading should not raise
             assert minimal_config.exists()
@@ -127,7 +132,7 @@ class TestConfigurationLoading:
         """Verify configuration overrides work correctly."""
         try:
             from codex.utils.config_loader import get_loader
-            
+
             loader = get_loader()
             # Test override mechanism exists
             assert hasattr(loader, 'load_config') or callable(loader)
@@ -138,7 +143,7 @@ class TestConfigurationLoading:
         """Verify error handling for incomplete configuration."""
         incomplete_config = temp_workspace / "config" / "incomplete.yaml"
         incomplete_config.write_text("model:\n  hidden_size: 128\n")
-        
+
         # Should handle incomplete config gracefully
         assert incomplete_config.exists()
 
@@ -146,14 +151,14 @@ class TestConfigurationLoading:
         """Verify error handling for invalid YAML syntax."""
         invalid_config = temp_workspace / "config" / "invalid.yaml"
         invalid_config.write_text("model:\n  invalid: [unclosed")
-        
+
         assert invalid_config.exists()
 
     def test_config_with_environment_variables(self, minimal_config, monkeypatch):
         """Verify environment variable substitution in config."""
         monkeypatch.setenv("CODEX_BATCH_SIZE", "8")
         monkeypatch.setenv("CODEX_LEARNING_RATE", "0.002")
-        
+
         # Config should be loadable with env vars
         assert minimal_config.exists()
 
@@ -165,7 +170,7 @@ class TestTrainingPipelineInitialization:
         """Verify training pipeline initializes from config file."""
         try:
             from codex.training import TrainCfg
-            
+
             # Should be able to create training config
             cfg = TrainCfg(
                 epochs=1,
@@ -180,10 +185,10 @@ class TestTrainingPipelineInitialization:
         """Verify checkpoint resume initialization."""
         checkpoint_dir = temp_workspace / "checkpoints"
         checkpoint_path = checkpoint_dir / "checkpoint_step_5.pt"
-        
+
         # Create dummy checkpoint
         checkpoint_path.write_text("dummy checkpoint data")
-        
+
         assert checkpoint_path.exists()
 
     def test_initialize_with_distributed_config(self, minimal_config):
@@ -206,22 +211,22 @@ class TestEndToEndTrainingWorkflow:
         """Verify simple training workflow completes successfully."""
         try:
             import torch
-            
+
             model = torch.nn.Linear(10, 2)
             optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-            
+
             # Run mini training loop
             for step in range(3):
                 input_data = torch.randn(2, 10)
                 target = torch.tensor([0, 1])
-                
+
                 output = model(input_data)
                 loss = torch.nn.functional.cross_entropy(output, target)
-                
+
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-            
+
             # Should complete without errors
             assert loss.item() >= 0
         except ImportError:
@@ -237,21 +242,21 @@ class TestEndToEndTrainingWorkflow:
         with val_dataset.open("w") as f:
             for sample in samples:
                 f.write(json.dumps(sample) + "\n")
-        
+
         assert val_dataset.exists()
 
     def test_training_with_checkpointing(self, temp_workspace):
         """Verify training workflow with checkpoint saving."""
         checkpoint_dir = temp_workspace / "checkpoints"
-        
+
         try:
             import torch
-            
+
             model = torch.nn.Linear(10, 2)
             checkpoint_path = checkpoint_dir / "step_5.pt"
-            
+
             torch.save({"model": model.state_dict()}, checkpoint_path)
-            
+
             assert checkpoint_path.exists()
         except ImportError:
             pytest.skip("PyTorch not available")
@@ -262,7 +267,7 @@ class TestEndToEndTrainingWorkflow:
         best_loss = float('inf')
         patience = 3
         patience_counter = 0
-        
+
         losses = [1.0, 0.9, 0.85, 0.86, 0.87, 0.88]
         for loss in losses:
             if loss < best_loss:
@@ -270,10 +275,10 @@ class TestEndToEndTrainingWorkflow:
                 patience_counter = 0
             else:
                 patience_counter += 1
-            
+
             if patience_counter >= patience:
                 break
-        
+
         assert patience_counter >= patience
 
 
@@ -294,7 +299,7 @@ class TestErrorHandlingAndRecovery:
         """Verify handling of corrupted checkpoint files."""
         checkpoint_path = temp_workspace / "checkpoints" / "corrupted.pt"
         checkpoint_path.write_text("corrupted data")
-        
+
         assert checkpoint_path.exists()
 
     def test_handle_out_of_memory_error(self):
@@ -320,7 +325,7 @@ training:
         checkpoint_dir = temp_workspace / "checkpoints"
         recovery_checkpoint = checkpoint_dir / "last.pt"
         recovery_checkpoint.write_text("recovery checkpoint")
-        
+
         assert recovery_checkpoint.exists()
 
 
@@ -331,7 +336,7 @@ class TestOutputValidation:
         """Verify checkpoint files have correct format."""
         try:
             import torch
-            
+
             checkpoint_path = temp_workspace / "checkpoints" / "model.pt"
             checkpoint = {
                 "model_state_dict": {},
@@ -340,7 +345,7 @@ class TestOutputValidation:
                 "step": 100,
             }
             torch.save(checkpoint, checkpoint_path)
-            
+
             loaded = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
             assert "model_state_dict" in loaded
             assert "optimizer_state_dict" in loaded
@@ -351,7 +356,7 @@ class TestOutputValidation:
         """Verify training logs are generated correctly."""
         log_file = temp_workspace / "logs" / "training.log"
         log_file.write_text("Step 1: loss=1.5\nStep 2: loss=1.3\n")
-        
+
         assert log_file.exists()
         content = log_file.read_text()
         assert "loss=" in content
@@ -365,7 +370,7 @@ class TestOutputValidation:
             "learning_rate": [0.001, 0.001, 0.001],
         }
         metrics_file.write_text(json.dumps(metrics))
-        
+
         assert metrics_file.exists()
         loaded_metrics = json.loads(metrics_file.read_text())
         assert "train_loss" in loaded_metrics
@@ -374,7 +379,7 @@ class TestOutputValidation:
         """Verify final model is exported correctly."""
         model_path = temp_workspace / "output" / "final_model.pt"
         model_path.write_text("model weights")
-        
+
         assert model_path.exists()
 
 
@@ -385,17 +390,17 @@ class TestMultiStageTraining:
         """Verify pretrain → finetune workflow."""
         pretrain_checkpoint = temp_workspace / "checkpoints" / "pretrain.pt"
         pretrain_checkpoint.write_text("pretrain weights")
-        
+
         finetune_checkpoint = temp_workspace / "checkpoints" / "finetune.pt"
         finetune_checkpoint.write_text("finetune weights")
-        
+
         assert pretrain_checkpoint.exists()
         assert finetune_checkpoint.exists()
 
     def test_curriculum_learning_stages(self, temp_workspace):
         """Verify curriculum learning multi-stage training."""
         stages = ["easy", "medium", "hard"]
-        
+
         for stage in stages:
             stage_checkpoint = temp_workspace / "checkpoints" / f"stage_{stage}.pt"
             stage_checkpoint.write_text(f"{stage} stage weights")
@@ -404,7 +409,7 @@ class TestMultiStageTraining:
     def test_progressive_layer_training(self, temp_workspace):
         """Verify progressive layer-wise training."""
         layers = [1, 2, 3, 4]
-        
+
         for layer in layers:
             layer_checkpoint = temp_workspace / "checkpoints" / f"layer_{layer}.pt"
             layer_checkpoint.write_text(f"layer {layer} weights")
@@ -418,10 +423,10 @@ class TestConfigurationIntegration:
         """Verify Hydra config composition works correctly."""
         try:
             from omegaconf import OmegaConf
-            
+
             base_config = {"model": {"hidden_size": 128}}
             override_config = {"model": {"hidden_size": 256}}
-            
+
             merged = OmegaConf.merge(base_config, override_config)
             assert merged["model"]["hidden_size"] == 256
         except ImportError:
@@ -436,12 +441,12 @@ class TestConfigurationIntegration:
         """Verify config value interpolation works."""
         try:
             from omegaconf import OmegaConf
-            
+
             cfg = OmegaConf.create({
                 "base_lr": 0.001,
                 "scaled_lr": "${base_lr}",
             })
-            
+
             assert cfg.scaled_lr == cfg.base_lr
         except ImportError:
             pytest.skip("OmegaConf not available")
@@ -462,16 +467,16 @@ class TestCLIOutputFormatting:
         total_steps = 100
         current_step = 50
         progress_pct = (current_step / total_steps) * 100
-        
+
         assert progress_pct == 50.0
 
     def test_metric_display_formatting(self):
         """Verify metric display formatting."""
         metrics = {"loss": 1.234567, "accuracy": 0.987654}
-        
+
         formatted_loss = f"{metrics['loss']:.4f}"
         formatted_acc = f"{metrics['accuracy']:.4f}"
-        
+
         assert formatted_loss == "1.2346"
         assert formatted_acc == "0.9877"
 
@@ -489,6 +494,6 @@ class TestCLIOutputFormatting:
             "final_loss": 0.123,
             "duration": "1h 23m",
         }
-        
+
         assert summary["status"] == "completed"
         assert summary["total_steps"] == 1000

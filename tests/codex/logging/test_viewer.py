@@ -31,10 +31,10 @@ class TestViewerImports:
 
     def test_import_candidate_constants(self) -> None:
         from codex.logging.viewer import (
-            CANDIDATE_TS,
-            CANDIDATE_SID,
-            CANDIDATE_MSG,
             CANDIDATE_LVL,
+            CANDIDATE_MSG,
+            CANDIDATE_SID,
+            CANDIDATE_TS,
         )
         assert isinstance(CANDIDATE_TS, list)
         assert isinstance(CANDIDATE_SID, list)
@@ -106,31 +106,31 @@ class TestViewerHelperFunctions:
 
     def test_validate_table_name_valid(self) -> None:
         from codex.logging.viewer import _validate_table_name
-        
+
         result = _validate_table_name("session_events")
         assert result == "session_events"
 
     def test_validate_table_name_none(self) -> None:
         from codex.logging.viewer import _validate_table_name
-        
+
         result = _validate_table_name(None)
         assert result is None
 
     def test_validate_table_name_invalid(self) -> None:
         from codex.logging.viewer import _validate_table_name
-        
+
         with pytest.raises(argparse.ArgumentTypeError):
             _validate_table_name("invalid;table")
 
     def test_parse_iso_valid(self) -> None:
         from codex.logging.viewer import parse_iso
-        
+
         result = parse_iso("2025-01-01")
         assert result is not None
 
     def test_parse_iso_none(self) -> None:
         from codex.logging.viewer import parse_iso
-        
+
         result = parse_iso(None)
         assert result is None
 
@@ -181,13 +181,13 @@ class TestViewerConnectDb:
 
     def test_connect_db_with_valid_path(self) -> None:
         from codex.logging.viewer import connect_db
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             # Create the file
             conn = sqlite3.connect(db_path)
             conn.close()
-            
+
             result_conn = connect_db(db_path)
             assert result_conn is not None
             result_conn.close()

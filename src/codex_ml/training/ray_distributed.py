@@ -98,7 +98,7 @@ def ray_train_loop(config: dict[str, Any]) -> None:
     if not RAY_AVAILABLE:
         raise ImportError("Ray is not installed")
 
-    from ray.train.torch import prepare_model, prepare_data_loader
+    from ray.train.torch import prepare_data_loader, prepare_model
 
     # Get distributed info
     world_size = train.get_context().get_world_size()

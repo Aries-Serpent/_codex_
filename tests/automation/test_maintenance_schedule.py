@@ -6,9 +6,8 @@ scheduled tasks, recurring jobs, and maintenance windows.
 
 import json
 import tempfile
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-
 
 
 class TestScheduleConfiguration:
@@ -23,7 +22,7 @@ class TestScheduleConfiguration:
             "duration_hours": 4,
             "timezone": "UTC",
         }
-        
+
         assert window["day_of_week"] == "Sunday"
         assert window["duration_hours"] == 4
 
@@ -38,13 +37,13 @@ class TestScheduleConfiguration:
             },
             "action": "check_dependencies",
         }
-        
+
         assert task["schedule"]["frequency"] == "daily"
 
     def test_schedule_cron_expression(self):
         """Test parsing cron expression for schedule."""
         cron = "0 6 * * 1"  # Every Monday at 6:00 AM
-        
+
         parts = cron.split()
         schedule = {
             "minute": parts[0],
@@ -53,7 +52,7 @@ class TestScheduleConfiguration:
             "month": parts[3],
             "day_of_week": parts[4],
         }
-        
+
         assert schedule["hour"] == "6"
         assert schedule["day_of_week"] == "1"  # Monday
 
@@ -64,7 +63,7 @@ class TestScheduleConfiguration:
             {"name": "Weekly Update", "frequency": "weekly", "day": "Sunday", "time": "02:00"},
             {"name": "Monthly Audit", "frequency": "monthly", "day": 1, "time": "03:00"},
         ]
-        
+
         assert len(schedules) == 3
         assert schedules[0]["frequency"] == "daily"
         assert schedules[2]["day"] == 1
@@ -75,14 +74,14 @@ class TestScheduleConfiguration:
             {"name": "Holiday Freeze", "start": "2026-12-20", "end": "2027-01-05"},
             {"name": "Quarter End", "start": "2026-03-29", "end": "2026-03-31"},
         ]
-        
+
         # Check if date falls in blackout
         test_date = "2026-12-25"
         is_blackout = any(
             b["start"] <= test_date <= b["end"]
             for b in blackouts
         )
-        
+
         assert is_blackout
 
 
@@ -94,20 +93,20 @@ class TestTaskExecution:
         task = {
             "name": "Run Tests",
             "command": "pytest tests/",
-            "scheduled_for": datetime.now(),
+            "scheduled_for": datetime.now(UTC),
         }
-        
+
         execution = {
             "task": task["name"],
-            "started_at": datetime.now().isoformat(),
+            "started_at": datetime.now(UTC).isoformat(),
             "status": "running",
         }
-        
+
         # Simulate completion
-        execution["completed_at"] = datetime.now().isoformat()
+        execution["completed_at"] = datetime.now(UTC).isoformat()
         execution["status"] = "success"
         execution["exit_code"] = 0
-        
+
         assert execution["status"] == "success"
 
     def test_handle_task_timeout(self):
@@ -115,12 +114,12 @@ class TestTaskExecution:
         task = {
             "name": "Long Running Task",
             "timeout_minutes": 30,
-            "started_at": datetime.now() - timedelta(minutes=45),
+            "started_at": datetime.now(UTC) - timedelta(minutes=45),
         }
-        
-        elapsed = (datetime.now() - task["started_at"]).total_seconds() / 60
+
+        elapsed = (datetime.now(UTC) - task["started_at"]).total_seconds() / 60
         is_timed_out = elapsed > task["timeout_minutes"]
-        
+
         assert is_timed_out
 
     def test_task_retry_on_failure(self):
@@ -131,16 +130,16 @@ class TestTaskExecution:
             "current_retry": 0,
             "status": "failed",
         }
-        
+
         retry_attempts = []
         while task["status"] == "failed" and task["current_retry"] < task["max_retries"]:
             task["current_retry"] += 1
             retry_attempts.append(task["current_retry"])
-            
+
             # Simulate success on third try
             if task["current_retry"] == 3:
                 task["status"] = "success"
-        
+
         assert len(retry_attempts) == 3
         assert task["status"] == "success"
 
@@ -152,10 +151,10 @@ class TestTaskExecution:
             {"name": "test", "depends_on": ["update"], "status": "pending"},
             {"name": "deploy", "depends_on": ["test"], "status": "pending"},
         ]
-        
+
         execution_order = []
         completed = set()
-        
+
         while len(completed) < len(tasks):
             for task in tasks:
                 if task["name"] not in completed:
@@ -164,7 +163,7 @@ class TestTaskExecution:
                         task["status"] = "success"
                         completed.add(task["name"])
                         execution_order.append(task["name"])
-        
+
         assert execution_order == ["backup", "update", "test", "deploy"]
 
     def test_parallel_task_execution(self):
@@ -174,14 +173,14 @@ class TestTaskExecution:
             {"name": "task_b", "depends_on": [], "duration": 3},
             {"name": "task_c", "depends_on": [], "duration": 4},
         ]
-        
+
         # All tasks can run in parallel (no dependencies)
         parallelizable = [t for t in tasks if not t["depends_on"]]
-        
+
         # Total time = max duration (not sum)
         parallel_time = max(t["duration"] for t in parallelizable)
         sequential_time = sum(t["duration"] for t in parallelizable)
-        
+
         assert parallel_time == 5
         assert sequential_time == 12
 
@@ -196,14 +195,14 @@ class TestMaintenanceMonitoring:
             {"name": "cleanup", "status": "running", "started": "2026-01-18T02:00:00"},
             {"name": "update", "status": "pending", "scheduled": "2026-01-18T03:00:00"},
         ]
-        
+
         summary = {
             "total": len(jobs),
             "success": sum(1 for j in jobs if j["status"] == "success"),
             "running": sum(1 for j in jobs if j["status"] == "running"),
             "pending": sum(1 for j in jobs if j["status"] == "pending"),
         }
-        
+
         assert summary["success"] == 1
         assert summary["total"] == 3
 
@@ -215,14 +214,14 @@ class TestMaintenanceMonitoring:
             "error": "Disk full",
             "severity": "high",
         }
-        
+
         alert = {
             "type": "maintenance_failure",
             "job": job_result["name"],
             "message": f"Maintenance job '{job_result['name']}' failed: {job_result['error']}",
             "severity": job_result["severity"],
         }
-        
+
         assert alert["severity"] == "high"
         assert "Disk full" in alert["message"]
 
@@ -234,14 +233,14 @@ class TestMaintenanceMonitoring:
             {"name": "backup", "duration": 290, "status": "success"},
             {"name": "backup", "duration": 600, "status": "failed"},
         ]
-        
+
         metrics = {
             "total_runs": len(recent_jobs),
             "success_rate": sum(1 for j in recent_jobs if j["status"] == "success") / len(recent_jobs) * 100,
             "avg_duration": sum(j["duration"] for j in recent_jobs) / len(recent_jobs),
             "failures": sum(1 for j in recent_jobs if j["status"] == "failed"),
         }
-        
+
         assert metrics["success_rate"] == 75.0
         assert metrics["failures"] == 1
 
@@ -249,32 +248,32 @@ class TestMaintenanceMonitoring:
         """Test predicting maintenance job completion time."""
         job = {
             "name": "large_backup",
-            "started_at": datetime.now() - timedelta(minutes=30),
+            "started_at": datetime.now(UTC) - timedelta(minutes=30),
             "progress_percent": 60,
         }
-        
+
         elapsed_minutes = 30
         remaining_percent = 100 - job["progress_percent"]
-        
+
         # Estimate remaining time based on progress
         rate = job["progress_percent"] / elapsed_minutes  # percent per minute
         estimated_remaining = remaining_percent / rate if rate > 0 else float('inf')
-        
+
         assert round(estimated_remaining) == 20  # ~20 more minutes
 
     def test_maintenance_history_retention(self):
         """Test maintenance history retention policy."""
         retention_days = 30
         history = [
-            {"date": datetime.now() - timedelta(days=5), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=25), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=35), "job": "backup"},
-            {"date": datetime.now() - timedelta(days=60), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=5), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=25), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=35), "job": "backup"},
+            {"date": datetime.now(UTC) - timedelta(days=60), "job": "backup"},
         ]
-        
-        cutoff = datetime.now() - timedelta(days=retention_days)
+
+        cutoff = datetime.now(UTC) - timedelta(days=retention_days)
         retained = [h for h in history if h["date"] >= cutoff]
-        
+
         assert len(retained) == 2
 
 
@@ -292,14 +291,14 @@ class TestDocumentation:
                 {"step": 3, "action": "Verify integrity", "command": "pg_check"},
             ],
         }
-        
+
         doc = f"# {runbook['name']}\n\n"
         doc += f"Version: {runbook['version']}\n\n"
         doc += "## Steps\n\n"
         for step in runbook["steps"]:
             doc += f"{step['step']}. **{step['action']}**\n"
             doc += f"   ```\n   {step['command']}\n   ```\n\n"
-        
+
         assert "# Database Maintenance" in doc
         assert "pg_dump" in doc
 
@@ -310,19 +309,19 @@ class TestDocumentation:
             {"task": "Updates", "frequency": "Weekly", "time": "Sunday 02:00 UTC"},
             {"task": "Audit", "frequency": "Monthly", "time": "1st 03:00 UTC"},
         ]
-        
+
         doc = "# Maintenance Schedule\n\n"
         doc += "| Task | Frequency | Time |\n"
         doc += "|------|-----------|------|\n"
         for item in schedule:
             doc += f"| {item['task']} | {item['frequency']} | {item['time']} |\n"
-        
+
         assert "| Backup | Daily |" in doc
 
     def test_record_maintenance_changelog(self):
         """Test recording maintenance changelog."""
         changelog = []
-        
+
         # Add entry
         entry = {
             "date": "2026-01-18",
@@ -331,7 +330,7 @@ class TestDocumentation:
             "author": "automation",
         }
         changelog.append(entry)
-        
+
         assert len(changelog) == 1
         assert changelog[0]["type"] == "update"
 
@@ -346,7 +345,7 @@ class TestDocumentation:
                 {"date": "2026-01-15", "job": "backup", "issue": "Slow due to network"},
             ],
         }
-        
+
         report = f"""
 # Weekly Maintenance Report
 
@@ -361,7 +360,7 @@ class TestDocumentation:
 """
         for issue in report_data["issues"]:
             report += f"- {issue['date']}: {issue['job']} - {issue['issue']}\n"
-        
+
         assert "Jobs Run: 45" in report
         assert "97.8%" in report
 
@@ -369,7 +368,7 @@ class TestDocumentation:
         """Test exporting documentation to file."""
         with tempfile.TemporaryDirectory() as tmpdir:
             doc_file = Path(tmpdir) / "maintenance_docs.json"
-            
+
             docs = {
                 "runbooks": [
                     {"name": "Backup", "steps": 3},
@@ -379,8 +378,8 @@ class TestDocumentation:
                     {"task": "Daily Backup", "enabled": True},
                 ],
             }
-            
+
             doc_file.write_text(json.dumps(docs, indent=2))
-            
+
             loaded = json.loads(doc_file.read_text())
             assert len(loaded["runbooks"]) == 2

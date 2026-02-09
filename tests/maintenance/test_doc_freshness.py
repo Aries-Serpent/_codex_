@@ -28,7 +28,7 @@ class TestDocumentationFreshness:
         readme = REPO_ROOT / "README.md"
         if not readme.exists():
             pytest.skip("README.md not found")
-        
+
         # Just verify it exists and has content
         content = readme.read_text(encoding="utf-8")
         assert len(content) > 1000, "README should have substantial content"
@@ -39,7 +39,7 @@ class TestDocumentationFreshness:
             DOCS_DIR / "CHANGELOG.md",
             REPO_ROOT / "CHANGELOG.md",
         ]
-        
+
         for changelog in changelog_paths:
             if changelog.exists():
                 content = changelog.read_text(encoding="utf-8")
@@ -47,7 +47,7 @@ class TestDocumentationFreshness:
                 has_versions = re.search(r"\d+\.\d+\.\d+", content)
                 assert has_versions, "CHANGELOG should have version entries"
                 return
-        
+
         pytest.skip("No CHANGELOG found (optional)")
 
     def test_api_docs_match_source(self):
@@ -55,7 +55,7 @@ class TestDocumentationFreshness:
         api_docs_dir = DOCS_DIR / "api"
         if not api_docs_dir.exists():
             pytest.skip("No API docs directory")
-        
+
         # Just verify API docs exist
         api_files = list(api_docs_dir.glob("*.md"))
         assert len(api_files) >= 1, "Should have API documentation files"
@@ -68,14 +68,14 @@ class TestDocumentationCompleteness:
         """Verify major modules have documentation."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         # Find major packages (directories with __init__.py)
         major_packages = []
         for init_file in SRC_DIR.rglob("__init__.py"):
             package_dir = init_file.parent
             if package_dir.parent == SRC_DIR:
                 major_packages.append(package_dir.name)
-        
+
         # Just verify we found some packages
         assert len(major_packages) >= 1, "Should have major packages"
 
@@ -86,7 +86,7 @@ class TestDocumentationCompleteness:
             DOCS_DIR / "cli.md",
             DOCS_DIR / "cli",
         ]
-        
+
         found = any(p.exists() for p in cli_docs_paths)
         if not found:
             pytest.skip("No CLI documentation (optional)")
@@ -94,12 +94,12 @@ class TestDocumentationCompleteness:
     def test_configuration_documented(self):
         """Verify configuration options are documented."""
         config_docs_patterns = ["config", "configuration", "hydra"]
-        
+
         for doc_file in DOCS_DIR.glob("*.md"):
             name = doc_file.name.lower()
             if any(p in name for p in config_docs_patterns):
                 return  # Found config docs
-        
+
         pytest.skip("No configuration documentation (optional)")
 
 
@@ -116,7 +116,7 @@ class TestDocumentationQuality:
             "[ADD",
             "Lorem ipsum",
         ]
-        
+
         files_with_placeholders = []
         for doc_file in list(DOCS_DIR.rglob("*.md"))[:30]:
             try:
@@ -127,21 +127,21 @@ class TestDocumentationQuality:
                         break
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Allow some TODOs but not Lorem ipsum
         lorem_files = [f for f in files_with_placeholders if "Lorem" in str(f)]
         assert len(lorem_files) == 0, f"Placeholder text found: {lorem_files}"
 
     def test_code_examples_formatted(self):
         """Verify code examples use proper markdown fencing."""
-        
+
         for doc_file in list(DOCS_DIR.rglob("*.md"))[:20]:
             try:
                 content = doc_file.read_text(encoding="utf-8", errors="ignore")
                 # Check for unfenced code (4-space indent without ```)
                 lines = content.split("\n")
                 in_code_block = False
-                
+
                 for i, line in enumerate(lines):
                     if line.startswith("```"):
                         in_code_block = not in_code_block
@@ -157,7 +157,7 @@ class TestDocumentationQuality:
         """Verify internal links use relative paths where appropriate."""
         # This is a style check, not a strict requirement
         absolute_internal = []
-        
+
         for doc_file in list(DOCS_DIR.rglob("*.md"))[:20]:
             try:
                 content = doc_file.read_text(encoding="utf-8", errors="ignore")
@@ -166,7 +166,7 @@ class TestDocumentationQuality:
                     absolute_internal.append(doc_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Just log, don't fail
         if absolute_internal:
             pytest.skip(f"Absolute internal paths found: {absolute_internal[:3]}")
@@ -178,14 +178,14 @@ class TestDocumentationLinks:
     def test_no_404_references(self):
         """Check for references to non-existent files."""
         broken_refs = []
-        
+
         for doc_file in list(DOCS_DIR.rglob("*.md"))[:20]:
             try:
                 content = doc_file.read_text(encoding="utf-8", errors="ignore")
                 # Find local file references
                 link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
                 links = re.findall(link_pattern, content)
-                
+
                 for link_text, link_target in links[:5]:
                     # Skip external links and anchors
                     if link_target.startswith(("http://", "https://", "#", "mailto:")):
@@ -198,7 +198,7 @@ class TestDocumentationLinks:
                             broken_refs.append(f"{doc_file.name}: {target_path}")
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Log but don't fail (MkDocs has known issues)
         if broken_refs:
             pytest.skip(f"Potentially broken refs: {broken_refs[:3]}")

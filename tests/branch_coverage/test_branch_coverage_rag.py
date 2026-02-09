@@ -14,8 +14,6 @@ import os
 from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
 
-
-
 # ============================================================================
 # RAG Embeddings Module Tests
 # ============================================================================
@@ -49,7 +47,7 @@ class TestEmbeddingsModuleBranches:
         cache_exists = True
         metadata_exists = True
         cache_valid = True
-        
+
         if cache_exists and metadata_exists:
             if cache_valid:
                 source = "cache"
@@ -63,7 +61,7 @@ class TestEmbeddingsModuleBranches:
         """Test cache miss branch."""
         cache_exists = False
         metadata_exists = False
-        
+
         if cache_exists and metadata_exists:
             source = "cache"
         else:
@@ -75,7 +73,7 @@ class TestEmbeddingsModuleBranches:
         cache_exists = True
         metadata_exists = True
         cache_valid = False
-        
+
         if cache_exists and metadata_exists:
             if cache_valid:
                 source = "cache"
@@ -89,7 +87,7 @@ class TestEmbeddingsModuleBranches:
         """Test API key from parameter branch."""
         api_key = "provided_key"
         env_key = os.environ.get("OPENAI_API_KEY")
-        
+
         resolved_key = api_key or env_key
         if not resolved_key:
             error = "missing_key"
@@ -170,11 +168,11 @@ class TestEmbeddingsModuleBranches:
         texts = ["text1", "text2"]
         batch_size = 100
         batches = []
-        
+
         for i in range(0, len(texts), batch_size):
             batch = texts[i : i + batch_size]
             batches.append(batch)
-        
+
         assert len(batches) == 1
         assert len(batches[0]) == 2
 
@@ -183,11 +181,11 @@ class TestEmbeddingsModuleBranches:
         texts = ["text" + str(i) for i in range(250)]
         batch_size = 100
         batches = []
-        
+
         for i in range(0, len(texts), batch_size):
             batch = texts[i : i + batch_size]
             batches.append(batch)
-        
+
         assert len(batches) == 3
         assert len(batches[0]) == 100
         assert len(batches[1]) == 100
@@ -197,13 +195,13 @@ class TestEmbeddingsModuleBranches:
         """Test cache stats hit increment branch."""
         cache_hits = 0
         cache_misses = 0
-        
+
         cache_found = True
         if cache_found:
             cache_hits += 1
         else:
             cache_misses += 1
-        
+
         assert cache_hits == 1
         assert cache_misses == 0
 
@@ -211,13 +209,13 @@ class TestEmbeddingsModuleBranches:
         """Test cache stats miss increment branch."""
         cache_hits = 0
         cache_misses = 0
-        
+
         cache_found = False
         if cache_found:
             cache_hits += 1
         else:
             cache_misses += 1
-        
+
         assert cache_hits == 0
         assert cache_misses == 1
 
@@ -301,14 +299,14 @@ class TestIndexerModuleBranches:
         text_len = 500
         start = 0
         chunk_size = 1000
-        
+
         end = min(start + chunk_size, text_len)
-        
+
         if end < text_len:
             boundary_search = True
         else:
             boundary_search = False
-        
+
         assert end == 500
         assert boundary_search is False
 
@@ -317,14 +315,14 @@ class TestIndexerModuleBranches:
         text_len = 5000
         start = 0
         chunk_size = 1000
-        
+
         end = min(start + chunk_size, text_len)
-        
+
         if end < text_len:
             boundary_search = True
         else:
             boundary_search = False
-        
+
         assert end == 1000
         assert boundary_search is True
 
@@ -333,7 +331,7 @@ class TestIndexerModuleBranches:
         text = "This is sentence one. This is sentence two."
         search_start = 0
         end = 25
-        
+
         for delimiter in [".\n", ". ", "!\n", "! "]:
             last_pos = text.rfind(delimiter, search_start, end)
             if last_pos != -1:
@@ -341,7 +339,7 @@ class TestIndexerModuleBranches:
                 break
         else:
             found_pos = -1
-        
+
         assert found_pos == 20  # Position after "one."
 
     def test_indexer_sentence_delimiter_not_found_branch(self) -> None:
@@ -349,34 +347,34 @@ class TestIndexerModuleBranches:
         text = "This is continuous text without delimiters"
         search_start = 0
         end = 20
-        
+
         found = False
         for delimiter in [".\n", ". ", "!\n", "! "]:
             last_pos = text.rfind(delimiter, search_start, end)
             if last_pos != -1:
                 found = True
                 break
-        
+
         assert found is False
 
     def test_indexer_chunk_non_empty_added_branch(self) -> None:
         """Test non-empty chunk added branch."""
         chunk = "Sample chunk"
         chunks: List[str] = []
-        
+
         if chunk:
             chunks.append(chunk)
-        
+
         assert len(chunks) == 1
 
     def test_indexer_chunk_empty_skipped_branch(self) -> None:
         """Test empty chunk skipped branch."""
         chunk = ""
         chunks: List[str] = []
-        
+
         if chunk:
             chunks.append(chunk)
-        
+
         assert len(chunks) == 0
 
     def test_indexer_embed_chunks_empty_branch(self) -> None:
@@ -465,7 +463,7 @@ class TestIndexerModuleBranches:
         """Test embeddings and chunks count mismatch branch."""
         embeddings = [[0.1, 0.2]]
         chunks = [(0, 5, "a"), (5, 10, "b")]
-        
+
         if len(embeddings) != len(chunks):
             error = "mismatch"
         else:
@@ -476,7 +474,7 @@ class TestIndexerModuleBranches:
         """Test embeddings and chunks count match branch."""
         embeddings = [[0.1, 0.2], [0.3, 0.4]]
         chunks = [(0, 5, "a"), (5, 10, "b")]
-        
+
         if len(embeddings) != len(chunks):
             error = "mismatch"
         else:
@@ -514,12 +512,12 @@ class TestRetrieverModuleBranches:
         """Test similarity threshold filtering branch."""
         threshold = 0.7
         scores = [0.9, 0.6, 0.8, 0.5]
-        
+
         if threshold is not None:
             filtered = [s for s in scores if s >= threshold]
         else:
             filtered = scores
-        
+
         assert len(filtered) == 2
         assert 0.9 in filtered
         assert 0.8 in filtered
@@ -528,12 +526,12 @@ class TestRetrieverModuleBranches:
         """Test no similarity threshold branch."""
         threshold = None
         scores = [0.9, 0.6, 0.8, 0.5]
-        
+
         if threshold is not None:
             filtered = [s for s in scores if s >= threshold]
         else:
             filtered = scores
-        
+
         assert len(filtered) == 4
 
     def test_retriever_results_empty_branch(self) -> None:
@@ -597,12 +595,12 @@ class TestRetrieverModuleBranches:
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},
         ]
-        
+
         if metadata_filter:
             filtered = [r for r in results if r["metadata"] == metadata_filter]
         else:
             filtered = results
-        
+
         assert len(filtered) == 1
 
     def test_retriever_metadata_filtering_none_branch(self) -> None:
@@ -612,10 +610,10 @@ class TestRetrieverModuleBranches:
             {"text": "a", "metadata": {"source": "docs"}},
             {"text": "b", "metadata": {"source": "code"}},
         ]
-        
+
         if metadata_filter:
             filtered = [r for r in results if r["metadata"] == metadata_filter]
         else:
             filtered = results
-        
+
         assert len(filtered) == 2

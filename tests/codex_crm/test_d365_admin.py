@@ -12,8 +12,8 @@ class TestEmitD365Config:
     @patch("codex_crm.d365_admin.generate.load_cdm")
     def test_emit_d365_config_creates_directory(self, mock_cdm, tmp_path):
         """Test that output directory is created."""
-        from codex_crm.d365_admin.generate import emit_d365_config
         from codex_crm.cdm.loader import FieldDef
+        from codex_crm.d365_admin.generate import emit_d365_config
 
         mock_cdm.return_value = {
             "assignment": [
@@ -43,7 +43,7 @@ class TestEmitD365Config:
         with open(tables_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
-        
+
         assert len(rows) == 1
         assert rows[0]["table"] == "cdx_assignment"
         assert rows[0]["display_name"] == "Assignment"
@@ -51,8 +51,8 @@ class TestEmitD365Config:
     @patch("codex_crm.d365_admin.generate.load_cdm")
     def test_emit_d365_config_creates_columns(self, mock_cdm, tmp_path):
         """Test that columns.csv is created."""
-        from codex_crm.d365_admin.generate import emit_d365_config
         from codex_crm.cdm.loader import FieldDef
+        from codex_crm.d365_admin.generate import emit_d365_config
 
         mock_cdm.return_value = {
             "assignment": [
@@ -70,13 +70,13 @@ class TestEmitD365Config:
         with open(columns_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
-        
+
         assert len(rows) == 2
         assert rows[0]["logical_name"] == "cdx_status"
         assert rows[0]["display_name"] == "Status"
         assert rows[0]["required"] == "Yes"
         assert rows[0]["optionset"] == "open;closed"
-        
+
         assert rows[1]["logical_name"] == "cdx_priority"
         assert rows[1]["type"] == "Integer"
         assert rows[1]["required"] == "No"
@@ -97,7 +97,7 @@ class TestEmitD365Config:
         with open(slas_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
-        
+
         assert len(rows) == 1
         assert rows[0]["name"] == "cdx_assignment_standard"
 

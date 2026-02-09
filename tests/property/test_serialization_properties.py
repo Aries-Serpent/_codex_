@@ -16,7 +16,8 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import given, strategies as st, assume, settings
+    from hypothesis import assume, given, settings
+    from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
@@ -24,7 +25,7 @@ except ImportError:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
         return decorator
-    
+
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
@@ -56,10 +57,10 @@ except ImportError:
         @staticmethod
         def binary(*args: Any, **kwargs: Any) -> Any:
             return None
-    
+
     def assume(condition: bool) -> None:
         pass
-    
+
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
@@ -198,7 +199,7 @@ class TestStringEncodingProperties:
         decoded = encoded.decode('utf-8')
         assert decoded == s
 
-    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 
+    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
                    max_size=500))
     def test_ascii_roundtrip(self, s: str) -> None:
         """ASCII encode then decode is identity for ASCII strings."""
@@ -229,7 +230,7 @@ class TestStringEncodingProperties:
 class TestURLEncodingProperties:
     """Property-based tests for URL encoding."""
 
-    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~", 
+    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~",
                    max_size=200))
     def test_url_safe_chars_unchanged(self, s: str) -> None:
         """URL-safe characters are not encoded."""
@@ -258,7 +259,7 @@ class TestConfigSerializationProperties:
 
     @given(st.dictionaries(
         st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),
-        st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False), 
+        st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False),
                   st.text(max_size=50), st.booleans()),
         max_size=20
     ))

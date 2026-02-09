@@ -1,12 +1,13 @@
 """
 Tests for AST storage.
 """
-import pytest
 import tempfile
 from pathlib import Path
 
-from codex_ml.ast.storage.sqlite_storage import ASTStorage
+import pytest
+
 from codex_ml.ast.core.node import Finding, SourceLocation
+from codex_ml.ast.storage.sqlite_storage import ASTStorage
 
 
 class TestASTStorage:

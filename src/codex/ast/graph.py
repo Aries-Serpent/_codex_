@@ -15,16 +15,30 @@ class DependencyGraph:
         self.edges: dict[str, set[str]] = defaultdict(set)
         self.node_data: dict[str, dict] = {}
 
-    def add_node(self, node_id: str, data: dict | None = None) -> None:
-        """Add node to graph with optional metadata.
-        
+    def add_node(
+        self,
+        node_id: str,
+        dependencies: list[str] | None = None,
+        data: dict | None = None,
+    ) -> None:
+        """Add node to graph with optional metadata and dependencies.
+
         Args:
             node_id: The name/identifier of the node
+            dependencies: Optional list of node IDs this node depends on
             data: Optional dictionary of node attributes
+        
+        Note:
+            For each dependency, creates edge: dependency → node_id
+            This ensures dependencies appear before dependent nodes in topological order.
         """
         self.nodes.add(node_id)
         if data:
             self.node_data[node_id] = data
+        if dependencies:
+            for dep in dependencies:
+                # Edge from dependency to dependent (dep must come first)
+                self.add_edge(dep, node_id)
 
     def add_edge(self, source: str, target: str) -> None:
         """Add directed edge: source → target."""
@@ -95,7 +109,11 @@ class DependencyGraph:
         """Topological sort of DAG (fails if cycles exist).
 
         Returns:
-            list of nodes in topological order
+            list of nodes in topological order (dependencies before dependents).
+            
+            With edges dep→node (dependency points to dependent), post-order DFS
+            visits deepest nodes first, building stack as [deepest, ..., roots].
+            We need [roots, ..., deepest], so reverse the stack.
 
         Raises:
             ValueError: If graph contains cycles
@@ -118,6 +136,7 @@ class DependencyGraph:
             if node_id not in visited:
                 dfs(node_id)
 
+        # Reverse: post-order DFS gives [deepest, ..., roots], we need [roots, ..., deepest]
         return stack[::-1]
 
     def get_transitive_deps(self, node_id: str) -> set[str]:

@@ -5,6 +5,7 @@ Test module for session query.
 """
 
 import importlib
+
 import pytest
 
 

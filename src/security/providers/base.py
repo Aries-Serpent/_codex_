@@ -12,8 +12,8 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Dict, Any, List
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ class SecretProvider(ABC):
         ...         # Implementation
         ...         pass
     """
-    
+
     @abstractmethod
     def rotate_secret(
         self,
@@ -114,7 +114,7 @@ class SecretProvider(ABC):
             RotationError: If rotation fails
         """
         pass
-    
+
     @abstractmethod
     def validate_secret(
         self,
@@ -134,7 +134,7 @@ class SecretProvider(ABC):
             ValidationError: If validation fails
         """
         pass
-    
+
     @abstractmethod
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get metadata about a secret.
@@ -149,7 +149,7 @@ class SecretProvider(ABC):
             SecretProviderError: If secret not found
         """
         pass
-    
+
     @abstractmethod
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get expiration date of a secret.
@@ -164,7 +164,7 @@ class SecretProvider(ABC):
             SecretProviderError: If secret not found
         """
         pass
-    
+
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get scopes/permissions associated with a secret.
         
@@ -178,7 +178,7 @@ class SecretProvider(ABC):
             List of scope strings
         """
         return []
-    
+
     def revoke_secret(self, secret_id: str) -> bool:
         """Revoke a secret immediately.
         
@@ -197,7 +197,7 @@ class SecretProvider(ABC):
         raise NotImplementedError(
             f"{self.__class__.__name__} does not support revocation"
         )
-    
+
     def list_secrets(
         self,
         filter_tags: Optional[Dict[str, str]] = None
@@ -219,7 +219,7 @@ class SecretProvider(ABC):
         raise NotImplementedError(
             f"{self.__class__.__name__} does not support listing"
         )
-    
+
     @property
     @abstractmethod
     def provider_type(self) -> ProviderType:
@@ -229,7 +229,7 @@ class SecretProvider(ABC):
             ProviderType enum value
         """
         pass
-    
+
     @property
     def provider_name(self) -> str:
         """Get human-readable provider name with proper acronym capitalization.
@@ -250,7 +250,7 @@ class SecretProvider(ABC):
             raw_value,
             raw_value.replace("_", " ").title(),
         )
-    
+
     def __repr__(self) -> str:
         """String representation of provider."""
         return f"<{self.__class__.__name__} provider={self.provider_type.value}>"
@@ -261,7 +261,7 @@ class TokenProvider(SecretProvider):
     
     Extends SecretProvider with token-specific functionality.
     """
-    
+
     @abstractmethod
     def create_token(
         self,
@@ -283,7 +283,7 @@ class TokenProvider(SecretProvider):
             SecretProviderError: If creation fails
         """
         pass
-    
+
     @abstractmethod
     def update_token_scopes(
         self,
@@ -318,7 +318,7 @@ class ProviderConfig:
         ...     }
         ... )
     """
-    
+
     def __init__(
         self,
         provider_type: ProviderType,
@@ -332,7 +332,7 @@ class ProviderConfig:
         """
         self.provider_type = provider_type
         self.config = config
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value.
         
@@ -344,7 +344,7 @@ class ProviderConfig:
             Configuration value
         """
         return self.config.get(key, default)
-    
+
     def require(self, key: str) -> Any:
         """Get required configuration value.
         
@@ -362,7 +362,7 @@ class ProviderConfig:
                 f"Required configuration '{key}' not found for {self.provider_type.value}"
             )
         return self.config[key]
-    
+
     def __repr__(self) -> str:
         """String representation."""
         return f"<ProviderConfig provider={self.provider_type.value}>"

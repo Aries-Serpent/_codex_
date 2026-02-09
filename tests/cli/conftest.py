@@ -53,9 +53,15 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
             allow_module_level=True,
         )
 
-    spec = importlib.util.find_spec("torch")
-    if spec is None or _is_stub_spec(spec, "torch"):
+    # Check if torch is actually importable (not just present)
+    try:
+        importlib.import_module("torch")
+        spec = importlib.util.find_spec("torch")
+        if spec is None or _is_stub_spec(spec, "torch"):
+            raise ImportError("torch stubbed")
+    except (ImportError, OSError) as e:
+        # OSError can occur if torch libraries (libtorch_global_deps.so) are missing
         pytest.skip(
-            "Skipping CLI tests: torch unavailable or stubbed",
+            f"Skipping CLI tests: torch unavailable or unloadable ({e})",
             allow_module_level=True,
         )

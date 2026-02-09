@@ -19,17 +19,17 @@ BASE = CFG_DIR / "base.yaml"
 def ensure_cfg_dir(tmp_path, monkeypatch):
     """Work inside a temp copy and redirect config loader to temp directory."""
     import codex_ml.utils.config_loader as loader_module
-    
+
     tmp_repo = tmp_path / "repo"
     tmp_repo.mkdir(parents=True, exist_ok=True)
-    
+
     # Create the config directory structure in temp
     tmp_cfg_dir = tmp_repo / "configs" / "training"
     tmp_cfg_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Patch the module-level _CFG_DIR to point to our temp directory
     monkeypatch.setattr(loader_module, "_CFG_DIR", tmp_cfg_dir)
-    
+
     monkeypatch.chdir(tmp_repo)
     yield tmp_repo
 

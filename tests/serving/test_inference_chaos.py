@@ -5,7 +5,8 @@ Tests failure scenarios, resilience, and recovery mechanisms.
 """
 
 import time
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
 

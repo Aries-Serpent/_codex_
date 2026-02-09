@@ -5,6 +5,7 @@ Test module for  logger types.
 """
 
 import importlib
+
 import pytest
 
 

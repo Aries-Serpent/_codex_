@@ -10,13 +10,14 @@ Tests that physical laws are correctly implemented and maintained:
 6. Lorentz factor bounds
 """
 
-import pytest
 import numpy as np
+import pytest
+
 from codex.quantum_orchestrator.orchestrator import (
-    create_orchestrator,
     DiracSpinor,
     PhysicsConstants,
     TaskVector,
+    create_orchestrator,
 )
 
 

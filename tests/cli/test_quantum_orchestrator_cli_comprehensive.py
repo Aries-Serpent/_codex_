@@ -30,8 +30,8 @@ class TestHelperFunctions:
     def test_create_test_tasks_with_constants(self):
         """Test creating test tasks with custom constants."""
         try:
-            from codex.quantum_orchestrator.cli import create_test_tasks
             from codex.quantum_orchestrator import PhysicsConstants
+            from codex.quantum_orchestrator.cli import create_test_tasks
             constants = PhysicsConstants()
             tasks = create_test_tasks(3, constants)
             assert len(tasks) == 3
@@ -50,7 +50,10 @@ class TestHelperFunctions:
     def test_format_task_state(self):
         """Test formatting task state for display."""
         try:
-            from codex.quantum_orchestrator.cli import format_task_state, create_test_tasks
+            from codex.quantum_orchestrator.cli import (
+                create_test_tasks,
+                format_task_state,
+            )
             tasks = create_test_tasks(1)
             task = tasks["task_0"]
             output = format_task_state(task)
@@ -68,11 +71,11 @@ class TestExportMetrics:
     def test_export_metrics_prometheus(self):
         """Test exporting metrics in Prometheus format."""
         try:
-            from codex.quantum_orchestrator.cli import (
-                export_metrics_prometheus,
-                create_test_tasks,
-            )
             from codex.quantum_orchestrator import OrchestratorState, PhysicsConstants
+            from codex.quantum_orchestrator.cli import (
+                create_test_tasks,
+                export_metrics_prometheus,
+            )
 
             constants = PhysicsConstants()
             tasks = create_test_tasks(2, constants)
@@ -88,11 +91,11 @@ class TestExportMetrics:
     def test_export_metrics_per_task(self):
         """Test that per-task metrics are exported."""
         try:
-            from codex.quantum_orchestrator.cli import (
-                export_metrics_prometheus,
-                create_test_tasks,
-            )
             from codex.quantum_orchestrator import OrchestratorState, PhysicsConstants
+            from codex.quantum_orchestrator.cli import (
+                create_test_tasks,
+                export_metrics_prometheus,
+            )
 
             constants = PhysicsConstants()
             tasks = create_test_tasks(3, constants)

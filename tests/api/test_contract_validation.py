@@ -29,7 +29,7 @@ class TestAPIContractDiscovery:
         """Find Pydantic model definitions."""
         if not SRC_DIR.exists():
             return []
-        
+
         models = []
         for py_file in SRC_DIR.rglob("*.py"):
             try:
@@ -59,18 +59,18 @@ class TestAPIContractDiscovery:
         models = self._find_pydantic_models()
         if not models:
             pytest.skip("No Pydantic models found")
-        
+
         # Sample check
         sampled = models[:10]
         models_with_docs = 0
-        
+
         for file_path, model_name in sampled:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
             # Simple heuristic: check if class has immediate docstring
             pattern = rf'class\s+{model_name}\s*\([^)]*\)\s*:\s*\n\s*"""'
             if re.search(pattern, content):
                 models_with_docs += 1
-        
+
         if len(sampled) > 0:
             coverage = models_with_docs / len(sampled)
             # At least 30% should have docs
@@ -90,7 +90,7 @@ class TestSchemaValidation:
         """Verify all JSON schema files are valid JSON."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         invalid_schemas = []
         for schema_file in SCHEMAS_DIR.rglob("*.json"):
             try:
@@ -98,17 +98,17 @@ class TestSchemaValidation:
                 json.loads(content)
             except json.JSONDecodeError as e:
                 invalid_schemas.append(f"{schema_file.name}: {e}")
-        
+
         assert len(invalid_schemas) == 0, f"Invalid schemas: {invalid_schemas}"
 
     def test_json_schemas_have_schema_keyword(self):
         """Verify JSON schemas have $schema keyword."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         schemas_without_keyword = []
         schema_files = list(SCHEMAS_DIR.rglob("*.schema.json"))[:10]
-        
+
         for schema_file in schema_files:
             try:
                 content = json.loads(schema_file.read_text(encoding="utf-8"))
@@ -116,7 +116,7 @@ class TestSchemaValidation:
                     schemas_without_keyword.append(schema_file.name)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue
-        
+
         # Allow some without $schema
         max_missing = max(1, len(schema_files) // 2)
         assert len(schemas_without_keyword) <= max_missing, (
@@ -127,10 +127,10 @@ class TestSchemaValidation:
         """Verify JSON schemas have title or description."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         undocumented = []
         schema_files = list(SCHEMAS_DIR.rglob("*.schema.json"))[:10]
-        
+
         for schema_file in schema_files:
             try:
                 content = json.loads(schema_file.read_text(encoding="utf-8"))
@@ -139,7 +139,7 @@ class TestSchemaValidation:
                     undocumented.append(schema_file.name)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue
-        
+
         # Allow some undocumented
         max_undocumented = max(1, len(schema_files) // 2)
         assert len(undocumented) <= max_undocumented, (
@@ -154,7 +154,7 @@ class TestRequestResponseContracts:
         """Find FastAPI endpoint handler functions."""
         if not SRC_DIR.exists():
             return []
-        
+
         handlers = []
         for py_file in SRC_DIR.rglob("*.py"):
             try:
@@ -178,7 +178,7 @@ class TestRequestResponseContracts:
         handlers = self._find_endpoint_handlers()
         if not handlers:
             pytest.skip("No FastAPI endpoints found")
-        
+
         handlers_with_hints = 0
         for file_path, func_name in handlers[:10]:
             content = file_path.read_text(encoding="utf-8", errors="ignore")
@@ -186,7 +186,7 @@ class TestRequestResponseContracts:
             pattern = rf"def\s+{func_name}\s*\([^)]*\)\s*->"
             if re.search(pattern, content):
                 handlers_with_hints += 1
-        
+
         if len(handlers) > 0:
             coverage = handlers_with_hints / min(10, len(handlers))
             # At least 30% should have type hints
@@ -197,7 +197,7 @@ class TestRequestResponseContracts:
         handlers = self._find_endpoint_handlers()
         if not handlers:
             pytest.skip("No FastAPI endpoints found")
-        
+
         # This is a heuristic check
         # Just verify we can find POST handlers
         [h for h in handlers if "post" in str(h).lower()]
@@ -212,7 +212,7 @@ class TestAPIVersioning:
         openapi_files = list(SCHEMAS_DIR.rglob("openapi*.json")) if SCHEMAS_DIR.exists() else []
         if not openapi_files:
             pytest.skip("No OpenAPI files found")
-        
+
         for openapi_file in openapi_files:
             content = json.loads(openapi_file.read_text(encoding="utf-8"))
             if "info" in content:
@@ -224,11 +224,11 @@ class TestAPIVersioning:
         """Check if API routes use version prefixes."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         # Look for versioned routes
         version_patterns = ["/v1/", "/v2/", "/api/v", "prefix='/v"]
         found_versioned = False
-        
+
         for py_file in SRC_DIR.rglob("*.py"):
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
@@ -240,7 +240,7 @@ class TestAPIVersioning:
                 continue
             if found_versioned:
                 break
-        
+
         # Just log, don't require versioning
         if not found_versioned:
             pytest.skip("No versioned API routes found (optional)")
@@ -255,7 +255,7 @@ class TestBackwardCompatibility:
         # For now, just verify schemas exist and are valid
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         schema_files = list(SCHEMAS_DIR.rglob("*.json"))
         # Verify we have schemas
         if schema_files:
@@ -265,7 +265,7 @@ class TestBackwardCompatibility:
         """Verify required fields are documented in schemas."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         for schema_file in list(SCHEMAS_DIR.rglob("*.schema.json"))[:5]:
             try:
                 content = json.loads(schema_file.read_text(encoding="utf-8"))

@@ -10,14 +10,14 @@ Tests quantum principles:
 
 import json
 import math
+
+# Add scripts to path
+import sys
 import tempfile
 from pathlib import Path
 
 import numpy as np
 import pytest
-
-# Add scripts to path
-import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 

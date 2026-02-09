@@ -18,7 +18,7 @@ class TestCodexCLI:
             text=True,
             timeout=30
         )
-        
+
         assert result.returncode == 0
         assert "usage" in result.stdout.lower() or "Usage" in result.stdout
 
@@ -30,7 +30,7 @@ class TestCodexCLI:
             text=True,
             timeout=30
         )
-        
+
         # Should show some commands
         output = result.stdout.lower()
         assert "commands:" in output or "command" in output
@@ -43,7 +43,7 @@ class TestCodexCLI:
             text=True,
             timeout=30
         )
-        
+
         assert result.returncode == 0
 
 
@@ -58,10 +58,10 @@ class TestCodexMLCLI:
             text=True,
             timeout=30
         )
-        
+
         # Should succeed or indicate missing config (acceptable)
         assert result.returncode in (0, 1)  # May fail gracefully if no config
-        
+
         # If it succeeds, should show usage
         if result.returncode == 0:
             assert "usage" in result.stdout.lower() or "help" in result.stdout.lower()
@@ -78,7 +78,7 @@ class TestLoggingCLI:
             text=True,
             timeout=30
         )
-        
+
         # Should succeed or gracefully fail
         assert result.returncode in (0, 1, 2)  # Various CLIs may have different error codes
 
@@ -90,6 +90,6 @@ class TestLoggingCLI:
             text=True,
             timeout=30
         )
-        
+
         # Should succeed or gracefully fail
         assert result.returncode in (0, 1, 2)

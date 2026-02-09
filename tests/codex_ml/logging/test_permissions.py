@@ -17,12 +17,12 @@ from codex_ml.logging.permissions import (
 def env_mode_override():
     """Fixture to safely override and restore CODEX_LOG_FILE_MODE."""
     original_value = os.environ.get("CODEX_LOG_FILE_MODE")
-    
+
     def _set_mode(mode_str):
         os.environ["CODEX_LOG_FILE_MODE"] = mode_str
-    
+
     yield _set_mode
-    
+
     # Restore original value
     if original_value is None:
         os.environ.pop("CODEX_LOG_FILE_MODE", None)
@@ -89,21 +89,21 @@ def test_batch_logging_permissions():
 
 def test_tracking_writer_permissions():
     """Verify tracking writer also uses correct permissions."""
-    
+
     # Check if codex_ml.tracking is available
     try:
         from codex_ml.tracking.writers import OfflineJSONWriter
     except ImportError:
         # Skip test if tracking module not available
         return
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tracking_path = Path(tmpdir) / "tracking" / "summary.jsonl"
-        
+
         # Create writer and write data
         writer = OfflineJSONWriter(tracking_path)
         writer.append({"test": "tracking_data"})
-        
+
         # Check file permissions
         stat_info = tracking_path.stat()
         mode = stat_info.st_mode & 0o777

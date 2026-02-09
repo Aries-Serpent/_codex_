@@ -4,9 +4,10 @@ Target: 18+ edge case tests for services and cognitive brain components
 Coverage Target: src/codex/services/, src/codex/cognitive_brain/
 """
 
-import pytest
-import threading
 import asyncio
+import threading
+
+import pytest
 
 
 class TestServiceEdgeCases:
@@ -139,10 +140,10 @@ class TestAsyncEdgeCases:
         """Test async task cancellation"""
         async def long_task():
             await asyncio.sleep(100)
-        
+
         task = asyncio.create_task(long_task())
         task.cancel()
-        
+
         with pytest.raises(asyncio.CancelledError):
             await task
 
@@ -151,7 +152,7 @@ class TestAsyncEdgeCases:
         """Test async operation timeout"""
         async def slow_op():
             await asyncio.sleep(10)
-        
+
         with pytest.raises(asyncio.TimeoutError):
             await asyncio.wait_for(slow_op(), timeout=0.1)
 
@@ -160,6 +161,6 @@ class TestAsyncEdgeCases:
         """Test async exception propagation"""
         async def failing_task():
             raise ValueError("Test error")
-        
+
         with pytest.raises(ValueError):
             await failing_task()

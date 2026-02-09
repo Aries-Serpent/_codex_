@@ -11,8 +11,8 @@ import json
 import secrets
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional, Any, List, Set, Tuple
 from enum import Enum
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from ..security_utils import sanitize_log_message
 
@@ -35,7 +35,7 @@ class TokenClaims:
     jti: Optional[str] = None  # Token ID
     iss: str = "codex"  # Issuer
     aud: str = "codex-api"  # Audience
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert claims to dictionary."""
         return {
@@ -48,7 +48,7 @@ class TokenClaims:
             'iss': self.iss,
             'aud': self.aud,
         }
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'TokenClaims':
         """Create claims from dictionary."""
@@ -74,11 +74,11 @@ class SessionInfo:
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
     mfa_verified: bool = False
-    
+
     def is_active(self, timeout: int = 1800) -> bool:
         """Check if session is still active (default 30 minutes)."""
         return (time.time() - self.last_activity) < timeout
-    
+
     def update_activity(self):
         """Update last activity timestamp."""
         self.last_activity = time.time()
@@ -91,12 +91,12 @@ class TokenManager:
     Provides JWT-like token generation and validation without external
     dependencies. In production, consider using PyJWT library.
     """
-    
+
     # Token expiration times (in seconds)
     ACCESS_TOKEN_EXPIRY = 900  # 15 minutes
     REFRESH_TOKEN_EXPIRY = 604800  # 7 days
     SESSION_TOKEN_EXPIRY = 2592000  # 30 days
-    
+
     def __init__(self, secret_key: Optional[str] = None):
         """
         Initialize token manager.
@@ -121,11 +121,11 @@ class TokenManager:
                 UserWarning
             )
             secret_key = secrets.token_urlsafe(64)
-        
+
         self._secret_key = secret_key
         self._revoked_tokens: Set[str] = set()  # Use Redis in production
         self._sessions: Dict[str, SessionInfo] = {}  # Use database in production
-    
+
     def _encode_token(self, claims: TokenClaims) -> str:
         """
         Encode token (simplified JWT).
@@ -140,24 +140,24 @@ class TokenManager:
             Encoded token string
         """
         import base64
-        import hmac
         import hashlib
-        
+        import hmac
+
         # Create header
         header = {
             'typ': 'JWT',
             'alg': 'HS256',
         }
-        
+
         # Encode header and payload
         header_b64 = base64.urlsafe_b64encode(
             json.dumps(header).encode()
         ).decode().rstrip('=')
-        
+
         payload_b64 = base64.urlsafe_b64encode(
             json.dumps(claims.to_dict(), default=str).encode()
         ).decode().rstrip('=')
-        
+
         # Create signature
         message = f"{header_b64}.{payload_b64}"
         signature = hmac.new(
@@ -165,13 +165,13 @@ class TokenManager:
             message.encode(),
             hashlib.sha256
         ).digest()
-        
+
         signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip('=')
-        
+
         # Combine all parts
         token = f"{header_b64}.{payload_b64}.{signature_b64}"
         return token
-    
+
     def _decode_token(self, token: str) -> TokenClaims:
         """
         Decode and verify token.
@@ -186,17 +186,17 @@ class TokenManager:
             ValueError: If token is invalid or verification fails
         """
         import base64
-        import hmac
         import hashlib
-        
+        import hmac
+
         try:
             # Split token parts
             parts = token.split('.')
             if len(parts) != 3:
                 raise ValueError("Invalid token format")
-            
+
             header_b64, payload_b64, signature_b64 = parts
-            
+
             # Verify signature
             message = f"{header_b64}.{payload_b64}"
             expected_signature = hmac.new(
@@ -204,28 +204,28 @@ class TokenManager:
                 message.encode(),
                 hashlib.sha256
             ).digest()
-            
+
             # Add padding if needed
             signature_b64_padded = signature_b64 + '=' * (4 - len(signature_b64) % 4)
             actual_signature = base64.urlsafe_b64decode(signature_b64_padded)
-            
+
             if not secrets.compare_digest(expected_signature, actual_signature):
                 raise ValueError("Invalid token signature")
-            
+
             # Decode payload
             payload_b64_padded = payload_b64 + '=' * (4 - len(payload_b64) % 4)
             payload_bytes = base64.urlsafe_b64decode(payload_b64_padded)
             payload = json.loads(payload_bytes.decode())
-            
+
             # Create claims
             claims = TokenClaims.from_dict(payload)
-            
+
             return claims
-            
+
         except Exception as e:
             error_msg = sanitize_log_message(f"Token decode failed: {str(e)}")
             raise ValueError(error_msg)
-    
+
     def generate_access_token(self, user_id: str, scope: Optional[str] = None) -> str:
         """
         Generate access token.
@@ -239,7 +239,7 @@ class TokenManager:
         """
         now = time.time()
         jti = secrets.token_urlsafe(16)
-        
+
         claims = TokenClaims(
             sub=user_id,
             iat=now,
@@ -248,9 +248,9 @@ class TokenManager:
             scope=scope,
             jti=jti,
         )
-        
+
         return self._encode_token(claims)
-    
+
     def generate_refresh_token(self, user_id: str) -> str:
         """
         Generate refresh token.
@@ -263,7 +263,7 @@ class TokenManager:
         """
         now = time.time()
         jti = secrets.token_urlsafe(16)
-        
+
         claims = TokenClaims(
             sub=user_id,
             iat=now,
@@ -271,9 +271,9 @@ class TokenManager:
             type=TokenType.REFRESH,
             jti=jti,
         )
-        
+
         return self._encode_token(claims)
-    
+
     def generate_session_token(self, user_id: str, mfa_verified: bool = False,
                               ip_address: Optional[str] = None,
                               user_agent: Optional[str] = None) -> Tuple[str, str]:
@@ -291,7 +291,7 @@ class TokenManager:
         """
         now = time.time()
         session_id = secrets.token_urlsafe(32)
-        
+
         # Create session
         session = SessionInfo(
             session_id=session_id,
@@ -302,9 +302,9 @@ class TokenManager:
             user_agent=user_agent,
             mfa_verified=mfa_verified,
         )
-        
+
         self._sessions[session_id] = session
-        
+
         # Generate token
         claims = TokenClaims(
             sub=user_id,
@@ -313,10 +313,10 @@ class TokenManager:
             type=TokenType.SESSION,
             jti=session_id,
         )
-        
+
         token = self._encode_token(claims)
         return token, session_id
-    
+
     def validate_token(self, token: str, expected_type: Optional[TokenType] = None) -> TokenClaims:
         """
         Validate token and return claims.
@@ -333,19 +333,19 @@ class TokenManager:
         """
         # Decode token
         claims = self._decode_token(token)
-        
+
         # Check expiration
         if claims.exp < time.time():
             raise ValueError("Token expired")
-        
+
         # Check type if specified
         if expected_type and claims.type != expected_type:
             raise ValueError(f"Invalid token type: expected {expected_type.value}, got {claims.type.value}")
-        
+
         # Check revocation
         if claims.jti and claims.jti in self._revoked_tokens:
             raise ValueError("Token revoked")
-        
+
         # For session tokens, validate session
         if claims.type == TokenType.SESSION and claims.jti:
             session = self._sessions.get(claims.jti)
@@ -353,12 +353,12 @@ class TokenManager:
                 raise ValueError("Session not found")
             if not session.is_active():
                 raise ValueError("Session expired")
-            
+
             # Update activity
             session.update_activity()
-        
+
         return claims
-    
+
     def refresh_access_token(self, refresh_token: str) -> str:
         """
         Generate new access token from refresh token.
@@ -374,10 +374,10 @@ class TokenManager:
         """
         # Validate refresh token
         claims = self.validate_token(refresh_token, TokenType.REFRESH)
-        
+
         # Generate new access token
         return self.generate_access_token(claims.sub, claims.scope)
-    
+
     def revoke_token(self, token: str) -> bool:
         """
         Revoke a token.
@@ -392,18 +392,18 @@ class TokenManager:
             claims = self._decode_token(token)
             if claims.jti:
                 self._revoked_tokens.add(claims.jti)
-                
+
                 # If session token, remove session
                 if claims.type == TokenType.SESSION and claims.jti in self._sessions:
                     del self._sessions[claims.jti]
-                
+
                 return True
         except ValueError:
             # Invalid or malformed token; nothing to revoke (not an error condition)
             return False
-        
+
         return False
-    
+
     def revoke_all_user_tokens(self, user_id: str) -> int:
         """
         Revoke all tokens for a user (e.g., on password change).
@@ -415,16 +415,16 @@ class TokenManager:
             Number of sessions revoked
         """
         count = 0
-        
+
         # Revoke all sessions for user
         for session_id, session in list(self._sessions.items()):
             if session.user_id == user_id:
                 self._revoked_tokens.add(session_id)
                 del self._sessions[session_id]
                 count += 1
-        
+
         return count
-    
+
     def get_session(self, session_id: str) -> Optional[SessionInfo]:
         """
         Get session information.
@@ -436,7 +436,7 @@ class TokenManager:
             SessionInfo if found, None otherwise
         """
         return self._sessions.get(session_id)
-    
+
     def get_user_sessions(self, user_id: str) -> List[SessionInfo]:
         """
         Get all active sessions for a user.
@@ -451,7 +451,7 @@ class TokenManager:
             session for session in self._sessions.values()
             if session.user_id == user_id and session.is_active()
         ]
-    
+
     def cleanup_expired_sessions(self) -> int:
         """
         Clean up expired sessions.
@@ -464,5 +464,5 @@ class TokenManager:
             if not session.is_active():
                 del self._sessions[session_id]
                 count += 1
-        
+
         return count

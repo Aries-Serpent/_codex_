@@ -5,12 +5,13 @@ Computes classification accuracy from predictions and references.
 Supports both token-level and sequence-level accuracy.
 """
 
-from typing import Any
 import logging
+from typing import Any
+
 logger = logging.getLogger(__name__)
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 

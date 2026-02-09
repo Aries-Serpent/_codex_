@@ -1,9 +1,9 @@
 """Tests for data validation module."""
 
 from codex_ml.data.validation import (
+    DataTypeRule,
     DataValidator,
     RequiredColumnsRule,
-    DataTypeRule,
     ValidationResult,
 )
 

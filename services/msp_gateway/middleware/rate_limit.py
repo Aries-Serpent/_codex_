@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from fastapi import HTTPException, Request, status
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
@@ -193,9 +194,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # Check request rate limit
         if not rate_limiter.check_request_limit(tenant_id, quota):
             logger.warning(f"Request rate limit exceeded for tenant: {tenant_id}")
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Request rate limit exceeded. Please try again later.",
+                content={"detail": "Request rate limit exceeded. Please try again later."},
                 headers={"Retry-After": "60"},
             )
 
@@ -250,9 +251,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     requested_tokens,
                     available_tokens,
                 )
-                raise HTTPException(
+                return JSONResponse(
                     status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                    detail="Token quota exceeded. Please try again later.",
+                    content={"detail": "Token quota exceeded. Please try again later."},
                     headers={"Retry-After": "60"},
                 )
 

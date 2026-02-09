@@ -23,21 +23,21 @@ Enhanced Modules (v2):
 - graph_memory: Entity-relationship graph storage
 """
 
-from .normalizer import ContextNormalizer
-from .fingerprint import StatementFingerprinter
-from .deduplicator import SemanticDeduplicator
 from .budget import TokenBudgetEnforcer
-from .pruning import PriorityPruner
-from .guardrails import LoopGuardrail
-from .memory import ContextMemory
-from .observability import ContextObserver
 
 # Enhanced modules (v2)
 from .clustering import SemanticClusterer
-from .priority_queue import ContextPriorityQueue, Priority
-from .sliding_window import SlidingWindowManager, WindowStrategy
-from .hierarchical_memory import HierarchicalMemory, MemoryLayer, MemoryItem
 from .context_cache import ContextCache
+from .deduplicator import SemanticDeduplicator
+from .fingerprint import StatementFingerprinter
+from .guardrails import LoopGuardrail
+from .hierarchical_memory import HierarchicalMemory, MemoryItem, MemoryLayer
+from .memory import ContextMemory
+from .normalizer import ContextNormalizer
+from .observability import ContextObserver
+from .priority_queue import ContextPriorityQueue, Priority
+from .pruning import PriorityPruner
+from .sliding_window import SlidingWindowManager, WindowStrategy
 
 __all__ = [
     # Core modules

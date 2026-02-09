@@ -17,7 +17,7 @@ class TestReflectionType:
         """Test that all reflection types are defined."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import ReflectionType
-            
+
             assert hasattr(ReflectionType, 'DECISION')
             assert hasattr(ReflectionType, 'STRATEGY')
             assert hasattr(ReflectionType, 'OUTCOME')
@@ -31,7 +31,7 @@ class TestReflectionType:
         """Test reflection type string values."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import ReflectionType
-            
+
             assert ReflectionType.DECISION.value == "decision"
             assert ReflectionType.ERROR.value == "error"
             assert ReflectionType.SUCCESS.value == "success"
@@ -46,7 +46,7 @@ class TestQualityAssessment:
         """Test that all quality assessments are defined."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import QualityAssessment
-            
+
             assert hasattr(QualityAssessment, 'EXCELLENT')
             assert hasattr(QualityAssessment, 'GOOD')
             assert hasattr(QualityAssessment, 'ADEQUATE')
@@ -59,7 +59,7 @@ class TestQualityAssessment:
         """Test quality assessment string values."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import QualityAssessment
-            
+
             assert QualityAssessment.EXCELLENT.value == "excellent"
             assert QualityAssessment.FAILED.value == "failed"
         except ImportError:
@@ -73,9 +73,11 @@ class TestReflection:
         """Test creating a Reflection instance."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                Reflection, ReflectionType, QualityAssessment
+                QualityAssessment,
+                Reflection,
+                ReflectionType,
             )
-            
+
             reflection = Reflection(
                 reflection_id="test_001",
                 reflection_type=ReflectionType.DECISION,
@@ -85,7 +87,7 @@ class TestReflection:
                 learning="Continue this approach",
                 quality=QualityAssessment.GOOD,
             )
-            
+
             assert reflection.reflection_id == "test_001"
             assert reflection.subject == "Code review approach"
             assert reflection.quality == QualityAssessment.GOOD
@@ -96,9 +98,11 @@ class TestReflection:
         """Test Reflection string representation."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                Reflection, ReflectionType, QualityAssessment
+                QualityAssessment,
+                Reflection,
+                ReflectionType,
             )
-            
+
             reflection = Reflection(
                 reflection_id="test_002",
                 reflection_type=ReflectionType.ERROR,
@@ -108,7 +112,7 @@ class TestReflection:
                 learning="Add more test cases",
                 quality=QualityAssessment.POOR,
             )
-            
+
             string_repr = str(reflection)
             assert "Error handling" in string_repr
             assert "poor" in string_repr.lower()
@@ -123,14 +127,14 @@ class TestStrategyPattern:
         """Test creating a StrategyPattern."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import StrategyPattern
-            
+
             pattern = StrategyPattern(
                 pattern_id="pattern_001",
                 condition="When debugging",
                 behavior="Use logging first",
                 effectiveness=0.85,
             )
-            
+
             assert pattern.pattern_id == "pattern_001"
             assert pattern.effectiveness == 0.85
             assert pattern.occurrences == 0
@@ -145,14 +149,14 @@ class TestMetaKnowledge:
         """Test creating MetaKnowledge."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import MetaKnowledge
-            
+
             knowledge = MetaKnowledge(
                 domain="Python",
                 strength_assessment=0.9,
                 confidence=0.8,
                 evidence=["Completed 100+ Python PRs"],
             )
-            
+
             assert knowledge.domain == "Python"
             assert knowledge.strength_assessment == 0.9
             assert len(knowledge.evidence) == 1
@@ -167,11 +171,11 @@ class TestMetaCognitiveReflectionLayer:
         """Test layer initialization."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-1")
-            
+
             assert layer.agent_id == "test-agent-1"
             assert len(layer.reflections) == 0
             assert len(layer.strategy_patterns) == 0
@@ -182,11 +186,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test creating reflections."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-2")
-            
+
             reflection = layer.reflect(
                 reflection_type=ReflectionType.DECISION,
                 subject="API Design",
@@ -195,7 +201,7 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Consider GraphQL for complex queries",
                 quality=QualityAssessment.GOOD,
             )
-            
+
             assert len(layer.reflections) == 1
             assert reflection.subject == "API Design"
         except ImportError:
@@ -205,11 +211,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test reflect_on_decision convenience method."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-3")
-            
+
             reflection = layer.reflect_on_decision(
                 subject="Test strategy",
                 observation="Used TDD",
@@ -217,7 +225,7 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Continue TDD practice",
                 quality=QualityAssessment.EXCELLENT,
             )
-            
+
             assert reflection.reflection_type == ReflectionType.DECISION
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
@@ -226,11 +234,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test reflect_on_error convenience method."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-4")
-            
+
             reflection = layer.reflect_on_error(
                 subject="Production bug",
                 observation="Missed validation",
@@ -238,7 +248,7 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Add input validation",
                 quality=QualityAssessment.POOR,
             )
-            
+
             assert reflection.reflection_type == ReflectionType.ERROR
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
@@ -247,11 +257,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test reflect_on_success convenience method."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-5")
-            
+
             reflection = layer.reflect_on_success(
                 subject="Feature launch",
                 observation="Zero downtime",
@@ -259,7 +271,7 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Keep same approach",
                 quality=QualityAssessment.EXCELLENT,
             )
-            
+
             assert reflection.reflection_type == ReflectionType.SUCCESS
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
@@ -268,18 +280,18 @@ class TestMetaCognitiveReflectionLayer:
         """Test recording a new strategy pattern."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-6")
-            
+
             pattern = layer.record_strategy_pattern(
                 pattern_id="debug_pattern",
                 condition="When debugging",
                 behavior="Add logging first",
                 effectiveness=0.9,
             )
-            
+
             assert pattern.pattern_id == "debug_pattern"
             assert pattern.occurrences == 1
             assert len(layer.strategy_patterns) == 1
@@ -290,11 +302,11 @@ class TestMetaCognitiveReflectionLayer:
         """Test updating an existing strategy pattern."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-7")
-            
+
             # Record first time
             layer.record_strategy_pattern(
                 pattern_id="test_pattern",
@@ -302,7 +314,7 @@ class TestMetaCognitiveReflectionLayer:
                 behavior="Write test first",
                 effectiveness=0.8,
             )
-            
+
             # Record second time
             pattern = layer.record_strategy_pattern(
                 pattern_id="test_pattern",
@@ -310,7 +322,7 @@ class TestMetaCognitiveReflectionLayer:
                 behavior="Write test first",
                 effectiveness=1.0,
             )
-            
+
             assert pattern.occurrences == 2
             # Weighted average: 0.8 * 0.7 + 1.0 * 0.3 = 0.86
             assert 0.85 <= pattern.effectiveness <= 0.87
@@ -321,11 +333,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test pattern identification from reflections."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-8")
-            
+
             # Add multiple reflections on same subject
             layer.reflect(
                 ReflectionType.DECISION,
@@ -335,7 +349,7 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Learning 1",
                 quality=QualityAssessment.GOOD,
             )
-            
+
             layer.reflect(
                 ReflectionType.DECISION,
                 subject="Code review",
@@ -344,9 +358,9 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Learning 2",
                 quality=QualityAssessment.EXCELLENT,
             )
-            
+
             patterns = layer.identify_strategy_patterns()
-            
+
             assert len(patterns) >= 1
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
@@ -355,18 +369,18 @@ class TestMetaCognitiveReflectionLayer:
         """Test updating meta-knowledge for a new domain."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-9")
-            
+
             knowledge = layer.update_meta_knowledge(
                 domain="Python",
                 strength_assessment=0.85,
                 confidence=0.9,
                 evidence=["Completed Python certification"],
             )
-            
+
             assert knowledge.domain == "Python"
             assert knowledge.strength_assessment == 0.85
             assert len(layer.meta_knowledge) == 1
@@ -377,18 +391,18 @@ class TestMetaCognitiveReflectionLayer:
         """Test updating existing meta-knowledge."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-10")
-            
+
             # First update
             layer.update_meta_knowledge(
                 domain="JavaScript",
                 strength_assessment=0.6,
                 confidence=0.7,
             )
-            
+
             # Second update
             knowledge = layer.update_meta_knowledge(
                 domain="JavaScript",
@@ -396,7 +410,7 @@ class TestMetaCognitiveReflectionLayer:
                 confidence=0.8,
                 evidence=["Completed JS project"],
             )
-            
+
             # Weighted average: 0.6 * 0.7 + 0.9 * 0.3 = 0.69
             assert 0.68 <= knowledge.strength_assessment <= 0.70
             assert len(knowledge.evidence) == 1
@@ -407,16 +421,16 @@ class TestMetaCognitiveReflectionLayer:
         """Test getting strength domains."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-11")
-            
+
             layer.update_meta_knowledge("Strong Domain", 0.9, 0.8)
             layer.update_meta_knowledge("Weak Domain", 0.3, 0.8)
-            
+
             strengths = layer.get_strengths(threshold=0.7)
-            
+
             assert len(strengths) == 1
             assert strengths[0].domain == "Strong Domain"
         except ImportError:
@@ -426,16 +440,16 @@ class TestMetaCognitiveReflectionLayer:
         """Test getting weakness domains."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer
+                MetaCognitiveReflectionLayer,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-12")
-            
+
             layer.update_meta_knowledge("Strong Domain", 0.9, 0.8)
             layer.update_meta_knowledge("Weak Domain", 0.3, 0.8)
-            
+
             weaknesses = layer.get_weaknesses(threshold=0.5)
-            
+
             assert len(weaknesses) == 1
             assert weaknesses[0].domain == "Weak Domain"
         except ImportError:
@@ -445,11 +459,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test report generation."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-13")
-            
+
             # Add some data
             layer.reflect(
                 ReflectionType.SUCCESS,
@@ -461,9 +477,9 @@ class TestMetaCognitiveReflectionLayer:
             )
             layer.update_meta_knowledge("Python", 0.9, 0.95)
             layer.update_meta_knowledge("Rust", 0.3, 0.6)
-            
+
             report = layer.generate_self_assessment_report()
-            
+
             assert "test-agent-13" in report
             assert "STRENGTHS" in report
             assert "AREAS FOR IMPROVEMENT" in report
@@ -474,11 +490,13 @@ class TestMetaCognitiveReflectionLayer:
         """Test getting statistics."""
         try:
             from src.cognitive_brain.meta_cognitive_reflection import (
-                MetaCognitiveReflectionLayer, ReflectionType, QualityAssessment
+                MetaCognitiveReflectionLayer,
+                QualityAssessment,
+                ReflectionType,
             )
-            
+
             layer = MetaCognitiveReflectionLayer("test-agent-14")
-            
+
             layer.reflect(
                 ReflectionType.DECISION,
                 subject="Test",
@@ -487,9 +505,9 @@ class TestMetaCognitiveReflectionLayer:
                 learning="Learn",
                 quality=QualityAssessment.GOOD,
             )
-            
+
             stats = layer.get_stats()
-            
+
             assert stats["agent_id"] == "test-agent-14"
             assert stats["total_reflections"] == 1
             assert "good" in stats["reflections_by_quality"]

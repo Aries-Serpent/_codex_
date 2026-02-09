@@ -121,14 +121,14 @@ class TestApplyPragmas:
         """Test that WAL pragma is applied."""
         db_path = tmp_path / "test.db"
         conn = sqlite3.connect(str(db_path))
-        
+
         apply_pragmas(conn)
-        
+
         # Verify WAL mode was set
         cursor = conn.execute("PRAGMA journal_mode;")
         result = cursor.fetchone()[0]
         assert result.upper() == "WAL"
-        
+
         conn.close()
 
     def test_apply_pragmas_handles_error(self, apply_pragmas):
@@ -137,7 +137,7 @@ class TestApplyPragmas:
         mock_cursor = MagicMock()
         mock_cursor.execute.side_effect = sqlite3.Error("test error")
         mock_conn.cursor.return_value = mock_cursor
-        
+
         # Should not raise
         apply_pragmas(mock_conn)
 
@@ -163,9 +163,9 @@ class TestPooledConnect:
         """Test pooled_connect falls back to original when pooling disabled."""
         os.environ["CODEX_SQLITE_POOL"] = "0"
         db_path = str(tmp_path / "test.db")
-        
+
         conn = pooled_connect(db_path)
-        
+
         # Should return regular connection, not proxy
         assert isinstance(conn, sqlite3.Connection)
         conn.close()
@@ -173,10 +173,10 @@ class TestPooledConnect:
     def test_pooled_connect_with_pooling_enabled(self, pooled_connect, tmp_path, clean_env):
         """Test pooled_connect returns proxy when pooling enabled."""
         from codex.db.sqlite_patch import PooledConnectionProxy, _close_all
-        
+
         os.environ["CODEX_SQLITE_POOL"] = "1"
         db_path = str(tmp_path / "test.db")
-        
+
         try:
             conn = pooled_connect(db_path)
             assert isinstance(conn, PooledConnectionProxy)
@@ -185,19 +185,19 @@ class TestPooledConnect:
 
     def test_pooled_connect_reuses_connection(self, pooled_connect, tmp_path, clean_env):
         """Test that pooled_connect reuses connections."""
-        from codex.db.sqlite_patch import _CONN_POOL, _close_all, _POOL_LOCK
-        
+        from codex.db.sqlite_patch import _CONN_POOL, _POOL_LOCK, _close_all
+
         os.environ["CODEX_SQLITE_POOL"] = "1"
         db_path = str(tmp_path / "test.db")
-        
+
         try:
             # Clear pool first under lock
             with _POOL_LOCK:
                 _CONN_POOL.clear()
-            
+
             conn1 = pooled_connect(db_path)
             conn2 = pooled_connect(db_path)
-            
+
             # Should be same underlying connection
             assert conn1._conn is conn2._conn
         finally:
@@ -217,18 +217,18 @@ class TestEnableDisablePooling:
     def test_enable_pooling(self, save_connect):
         """Test enable_pooling replaces sqlite3.connect."""
         from codex.db.sqlite_patch import enable_pooling, pooled_connect
-        
+
         enable_pooling()
-        
+
         assert sqlite3.connect == pooled_connect
 
     def test_disable_pooling(self, save_connect):
         """Test disable_pooling restores original connect."""
-        from codex.db.sqlite_patch import disable_pooling, enable_pooling, _ORIG_CONNECT
-        
+        from codex.db.sqlite_patch import _ORIG_CONNECT, disable_pooling, enable_pooling
+
         enable_pooling()
         disable_pooling()
-        
+
         assert sqlite3.connect == _ORIG_CONNECT
 
 
@@ -253,29 +253,29 @@ class TestAutoEnableFromEnv:
     def test_auto_enable_when_env_set_to_1(self, clean_env, save_connect):
         """Test auto enable when CODEX_SQLITE_POOL=1."""
         from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
-        
+
         os.environ["CODEX_SQLITE_POOL"] = "1"
-        
+
         auto_enable_from_env()
-        
+
         assert sqlite3.connect == pooled_connect
 
     def test_auto_enable_when_env_set_to_true(self, clean_env, save_connect):
         """Test auto enable when CODEX_SQLITE_POOL=true."""
         from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
-        
+
         os.environ["CODEX_SQLITE_POOL"] = "true"
-        
+
         auto_enable_from_env()
-        
+
         assert sqlite3.connect == pooled_connect
 
     def test_no_enable_when_env_not_set(self, clean_env, save_connect):
         """Test no enable when env var not set."""
-        from codex.db.sqlite_patch import auto_enable_from_env, _ORIG_CONNECT
-        
+        from codex.db.sqlite_patch import _ORIG_CONNECT, auto_enable_from_env
+
         auto_enable_from_env()
-        
+
         # Should still be original
         assert sqlite3.connect == _ORIG_CONNECT
 
@@ -286,13 +286,13 @@ class TestCloseAll:
     def test_close_all_clears_pool(self, tmp_path):
         """Test that _close_all clears the connection pool."""
         from codex.db.sqlite_patch import _CONN_POOL, _close_all
-        
+
         # Add a connection to pool
         db_path = str(tmp_path / "test.db")
         conn = sqlite3.connect(db_path)
         key = (db_path, os.getpid(), threading.get_ident(), "")
         _CONN_POOL[key] = conn
-        
+
         _close_all()
-        
+
         assert len(_CONN_POOL) == 0

@@ -5,6 +5,7 @@ Test module for scorecard.
 """
 
 import importlib
+
 import pytest
 
 

@@ -30,7 +30,6 @@ def test_audit_diff_cli_with_self(tmp_path):
         pytest.skip("audit runner missing")
     try:
         import jinja2  # noqa: F401
-
         import yaml  # noqa: F401
     except Exception:
         pytest.skip("pyyaml/jinja2 not installed in test env")

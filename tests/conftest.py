@@ -22,6 +22,40 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_ROOT = REPO_ROOT / "src"
 
 
+# ============================================================================
+# CUDA Detection for GPU-Dependent Tests (PR #3178)
+# ============================================================================
+# Detect CUDA availability at module load time for test skip decorators
+try:
+    import torch
+    CUDA_AVAILABLE = torch.cuda.is_available()
+except (ImportError, AttributeError):
+    # PyTorch not installed or stub version without CUDA support
+    CUDA_AVAILABLE = False
+
+
+def is_cuda_available() -> bool:
+    """
+    Check if CUDA is available and functional.
+    
+    Returns:
+        bool: True if CUDA/GPU is available, False otherwise
+        
+    Note:
+        This function is used by test skip decorators to gracefully handle
+        GPU-dependent tests in CPU-only CI environments.
+    """
+    return CUDA_AVAILABLE
+
+
+# Pytest skip marker for CUDA-dependent tests
+# Usage: @pytest.mark.skipif(not is_cuda_available(), reason="CUDA not available")
+skip_if_no_cuda = pytest.mark.skipif(
+    not is_cuda_available(),
+    reason="CUDA/GPU not available in this environment"
+)
+
+
 def pytest_configure(config: pytest.Config) -> None:
     """Relax coverage enforcement during collection-only runs.
 
@@ -32,8 +66,27 @@ def pytest_configure(config: pytest.Config) -> None:
     the fail-under floor to zero for collection-only invocations while keeping
     the existing defaults for actual test runs.
     
-    Also registers custom markers for RAG tests.
+    Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
+    # Configure PyTorch to use CPU device globally to prevent meta tensor issues
+    try:
+        import torch
+        if hasattr(torch, 'set_default_device'):
+            torch.set_default_device("cpu")
+            logger.info("✓ PyTorch default device set to CPU (prevents meta tensor issues)")
+    except (ImportError, AttributeError):
+        pass  # PyTorch not available or stub version
+
+    # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
+    try:
+        import resource
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        target_limit = min(hard, 4096)
+        if soft < target_limit:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (target_limit, hard))
+            logger.info(f"✓ File descriptor limit increased to {target_limit} (prevents I/O errors)")
+    except Exception as e:
+        logger.warning(f"Could not increase file descriptor limit: {e}")
 
     if getattr(config.option, "collectonly", False):
         if hasattr(config.option, "cov_fail_under"):
@@ -41,7 +94,7 @@ def pytest_configure(config: pytest.Config) -> None:
         cov_plugin = config.pluginmanager.get_plugin("_cov")
         if cov_plugin:
             config.pluginmanager.unregister(cov_plugin)
-    
+
     # Register RAG-specific markers
     config.addinivalue_line(
         "markers", "rag: marks tests as RAG module tests"
@@ -189,7 +242,12 @@ def _importorskip_optional_dep(
         message = reason or f"{modname} is not installed"
         raise pytest.skip.Exception(message, allow_module_level=True)
 
-    return _ORIGINAL_IMPORTORSKIP(modname, minversion=minversion, reason=reason)
+    try:
+        return _ORIGINAL_IMPORTORSKIP(modname, minversion=minversion, reason=reason)
+    except (ImportError, OSError) as e:
+        # OSError can occur if libraries are missing (e.g., libtorch_global_deps.so)
+        message = reason or f"{modname} is not available: {e}"
+        raise pytest.skip.Exception(message, allow_module_level=True)
 
 
 pytest.importorskip = _importorskip_optional_dep
@@ -361,6 +419,7 @@ import tempfile
 from pathlib import Path
 from typing import Generator
 
+
 @pytest.fixture
 def temp_index_dir() -> Generator[Path, None, None]:
     """Provide a temporary directory for RAG index storage."""
@@ -402,19 +461,19 @@ def sample_rag_corpus(temp_index_dir):
     """Create a sample corpus of files for RAG testing."""
     docs_dir = temp_index_dir / "docs"
     docs_dir.mkdir()
-    
+
     corpus = {
         "python.txt": "Python is a versatile programming language. " * 30,
         "ml.txt": "Machine learning algorithms process data. " * 30,
         "docker.txt": "Docker containers isolate applications. " * 30,
     }
-    
+
     files = []
     for filename, content in corpus.items():
         file_path = docs_dir / filename
         file_path.write_text(content)
         files.append(file_path)
-    
+
     return {
         "files": files,
         "docs_dir": docs_dir,
@@ -459,11 +518,11 @@ def disable_torch_profiler():
     # Layer 1: Environment variable (attempted first, before torch import)
     os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
     os.environ["KINETO_LOG_LEVEL"] = "5"  # Suppress profiler logging
-    
+
     # Layer 2: Import torch and disable at C++ level
     try:
         import torch
-        
+
         # Method A: Disable via C++ API (if available)
         if hasattr(torch, '_C') and hasattr(torch._C, '_profiler'):
             try:
@@ -475,7 +534,7 @@ def disable_torch_profiler():
                     "continuing without C++ profiler changes.",
                     exc_info=True,
                 )
-        
+
         # Method B: Disable via Python profiler module
         if hasattr(torch, 'profiler'):
             try:
@@ -488,7 +547,7 @@ def disable_torch_profiler():
                     self.record_shapes = False
                     self.profile_memory = False
                     self.with_stack = False
-                
+
                 torch.profiler.profile.__init__ = noop_init
             except (AttributeError, TypeError):
                 # Best-effort: profiler API may have changed or be unavailable
@@ -497,7 +556,7 @@ def disable_torch_profiler():
                     "torch.profiler.profile may be unavailable or changed.",
                     exc_info=True,
                 )
-        
+
         # Method C: Monkey-patch record_function to no-op
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
             try:
@@ -511,7 +570,7 @@ def disable_torch_profiler():
                         return self
                     def __exit__(self, *args):
                         pass
-                
+
                 torch.autograd.profiler.record_function = NoOpRecordFunction
             except (AttributeError, TypeError):
                 # Best-effort patching: older/newer torch versions may not expose this API.
@@ -520,7 +579,7 @@ def disable_torch_profiler():
                     "torch.autograd.profiler.record_function could not be patched to NoOpRecordFunction",
                     exc_info=True,
                 )
-        
+
         # Method D: Disable autograd profiler globally
         if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
             try:
@@ -530,15 +589,15 @@ def disable_torch_profiler():
                 # Best-effort: emit_nvtx API may not be available
                 logger.debug("Failed to disable autograd profiler globally: %s", exc)
                 pass
-        
+
     except (ImportError, OSError) as exc:
         # Torch not installed or failed to load (e.g., missing shared libraries)
         # This is expected in CI environments without full CUDA setup
         logger.debug("Torch import failed (expected in some CI environments): %s", exc)
         pass
-    
+
     yield
-    
+
     # Cleanup environment variables
     os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
     os.environ.pop("KINETO_LOG_LEVEL", None)
@@ -555,18 +614,18 @@ def mock_json_serializable():
             json.dumps(mock_obj)  # Works with this fixture
     """
     from unittest.mock import MagicMock
-    
+
     original_default = json.JSONEncoder.default
-    
+
     def mock_default(encoder_self, obj):
         if isinstance(obj, MagicMock):
             return {"_mock": str(obj), "_mock_name": obj._mock_name or "MagicMock"}
         return original_default(encoder_self, obj)
-    
+
     json.JSONEncoder.default = mock_default
-    
+
     yield
-    
+
     json.JSONEncoder.default = original_default
 
 
@@ -577,12 +636,13 @@ def mock_json_serializable():
 @pytest.fixture
 def mock_transformer_model():
     """Provide a shared MockTransformerModel for testing."""
-    import torch
     from unittest.mock import Mock
-    
+
+    import torch
+
     class MockTransformerModel(torch.nn.Module):
         """Mock transformer model for testing."""
-        
+
         def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
             super().__init__()
             self.num_layers = num_layers
@@ -597,7 +657,7 @@ def mock_transformer_model():
                 'num_attention_heads': num_heads,
                 'hidden_size': hidden_dim
             })()
-        
+
         def _generate_mock_attention(self):
             """Generate realistic attention weight tensors."""
             weights = []
@@ -608,17 +668,17 @@ def mock_transformer_model():
                 )
                 weights.append(layer_weights)
             return weights
-        
+
         def get_attention_weights(self, layer_idx=None):
             """Return attention weights for specified layer or all layers."""
             if layer_idx is not None:
                 return self._attention_weights[layer_idx]
             return self._attention_weights
-            
+
         def forward(self, input_ids, attention_mask=None, output_attentions=False):
             batch_size = input_ids.size(0)
             seq_len = input_ids.size(1)
-            
+
             attentions = []
             for _ in range(self.num_layers):
                 attn = torch.softmax(
@@ -626,13 +686,13 @@ def mock_transformer_model():
                     dim=-1
                 )
                 attentions.append(attn)
-            
+
             mock_output = Mock()
             mock_output.attentions = attentions if output_attentions else None
             mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
-            
+
             return mock_output
-    
+
     return MockTransformerModel(num_layers=2, num_heads=4, seq_len=10)
 
 
@@ -640,7 +700,7 @@ def mock_transformer_model():
 def serializable_mock_model():
     """Provide a JSON-serializable mock model for evaluation tests."""
     from dataclasses import asdict, dataclass
-    
+
     @dataclass
     class SerializableModelConfig:
         """Test model config that supports JSON serialization."""
@@ -649,35 +709,35 @@ def serializable_mock_model():
         num_heads: int = 4
         hidden_size: int = 512
         vocab_size: int = 50257
-        
+
         def to_dict(self):
             return asdict(self)
-        
+
         def to_json(self):
             import json
             return json.dumps(self.to_dict())
-    
+
     class MockSerializableModel:
         """Mock model with JSON serialization support."""
-        
+
         def __init__(self):
             self.config = SerializableModelConfig()
             self._call_count = 0
-        
+
         def __call__(self, *args, **kwargs):
             self._call_count += 1
             return {"loss": 0.5, "logits": [[0.1, 0.9]]}
-        
+
         def to_dict(self):
             """Enable JSON serialization."""
             return {
                 "config": self.config.to_dict(),
                 "call_count": self._call_count
             }
-        
+
         def __repr__(self):
             return f"MockSerializableModel(config={self.config})"
-    
+
     return MockSerializableModel()
 
 
@@ -743,22 +803,22 @@ def ensure_cpu_device():
     """
     try:
         import torch
-        
+
         # Check if this is a stub/placeholder torch module
         if not hasattr(torch, 'Tensor') or not callable(getattr(torch, 'manual_seed', None)):
             # Stub torch module, skip fixture
             yield
             return
-        
-        # Set default device to CPU
-        if torch.cuda.is_available():
-            torch.set_default_device("cpu")
-        
+
+        # Set default device to CPU (ALWAYS, not just when CUDA available)
+        # This prevents meta tensor issues during model loading
+        torch.set_default_device("cpu")
+
         # Ensure deterministic behavior
         torch.manual_seed(0)
-        
+
         yield
-        
+
         # Cleanup
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -774,44 +834,46 @@ def mock_sentence_transformer(monkeypatch):
     Use this fixture when you want to test RAG logic without loading real models.
     """
     class MockSentenceTransformer:
-        def __init__(self, model_name, cache_folder=None, device="cpu"):
+        def __init__(self, model_name, cache_folder=None, device="cpu", trust_remote_code=False, use_auth_token=None):
             self.model_name = model_name
             self.device = device
             self.cache_folder = cache_folder
-            
-        def encode(self, texts, batch_size=32, show_progress_bar=False, 
+            self.trust_remote_code = trust_remote_code
+            self.use_auth_token = use_auth_token
+
+        def encode(self, texts, batch_size=32, show_progress_bar=False,
                    convert_to_numpy=True):
             import numpy as np
             # Return dummy embeddings with correct shape
             if isinstance(texts, str):
                 texts = [texts]
             return np.random.randn(len(texts), 384).astype(np.float32)
-        
+
         def to(self, device):
             self.device = device
             return self
-        
+
         def to_empty(self, device):
             self.device = device
             return self
-        
+
         def eval(self):
             return self
-        
+
         def parameters(self):
             # Return empty generator to avoid meta tensor checks
             return iter([])
-    
+
     try:
         import sentence_transformers  # noqa: F401 - Testing optional dependency availability
         monkeypatch.setattr(
-            "sentence_transformers.SentenceTransformer", 
+            "sentence_transformers.SentenceTransformer",
             MockSentenceTransformer
         )
     except ImportError:
         # sentence_transformers not available, nothing to mock
         pass
-    
+
     return MockSentenceTransformer
 
 
@@ -828,7 +890,7 @@ def setup_audit_artifacts(tmp_path_factory):
     """
     # Use pytest's temp directory factory for isolated test artifacts
     audit_dir = tmp_path_factory.mktemp("audit_artifacts")
-    
+
     # Create required files
     context_index = audit_dir / "context_index.json"
     context_index.write_text(json.dumps({
@@ -839,15 +901,268 @@ def setup_audit_artifacts(tmp_path_factory):
             "purpose": "test-fixture"
         }
     }, indent=2))
-    
+
     # Set environment variable so tests can find the temp audit directory
     original_audit_dir = os.environ.get("CODEX_AUDIT_DIR")
     os.environ["CODEX_AUDIT_DIR"] = str(audit_dir)
-    
+
     yield audit_dir
-    
+
     # Restore original environment variable
     if original_audit_dir is not None:
         os.environ["CODEX_AUDIT_DIR"] = original_audit_dir
     else:
         os.environ.pop("CODEX_AUDIT_DIR", None)
+
+
+# ==============================================================================
+# RESOURCE MANAGEMENT FIXTURES (PR #3178 - Fix 744 Test Failures)
+# ==============================================================================
+# These fixtures prevent resource exhaustion that was causing fatal crashes
+# at 57% test completion. See .codex/COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
+#
+# Root cause: File handle leaks causing:
+#   - ValueError: I/O operation on closed file
+#   - lost sys.stderr
+#   - Process termination with exit code 1
+#
+# Solution: Global resource management + monitoring + forced cleanup
+# ==============================================================================
+
+@pytest.fixture(scope="session", autouse=True)
+def session_resource_manager():
+    """Manage resources across entire test session to prevent exhaustion.
+    
+    This fixture addresses the resource exhaustion crash at 57% test completion
+    (Job 62915466799) that blocked 474+ tests from running.
+    
+    Features:
+    - Tracks initial open files
+    - Monitors resource usage
+    - Reports leaks at session end
+    - Forces garbage collection
+    
+    See: .codex/COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
+    """
+    import gc
+    import warnings
+
+    # Track initial state
+    initial_files = set()
+    try:
+        import psutil
+        process = psutil.Process()
+        initial_files = set(f.path for f in process.open_files())
+        logger.info(f"✓ Session resource manager: {len(initial_files)} files open at start")
+    except (ImportError, Exception) as e:
+        logger.debug(f"psutil not available for resource tracking: {e}")
+
+    yield
+
+    # Cleanup and report phase
+    gc.collect()
+
+    try:
+        import psutil
+        process = psutil.Process()
+        final_files = set(f.path for f in process.open_files())
+        leaked = final_files - initial_files
+
+        if leaked:
+            leak_count = len(leaked)
+            warnings.warn(
+                f"Resource leak detected: {leak_count} file(s) still open at session end",
+                ResourceWarning
+            )
+            # Show first 5 leaked files
+            for f in list(leaked)[:5]:
+                warnings.warn(f"  Leaked file: {f}", ResourceWarning)
+
+            if leak_count > 5:
+                warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
+        else:
+            logger.info("✓ No resource leaks detected at session end")
+    except:
+        pass
+
+
+@pytest.fixture(autouse=True)
+def protect_stderr():
+    """Protect stderr/stdout from being closed or corrupted.
+    
+    This fixture prevents the "lost sys.stderr" fatal error that terminated
+    the test run at 57% completion.
+    
+    Issue: Tests were modifying or closing sys.stderr without restoration,
+    causing subsequent tests to fail with I/O errors.
+    
+    Solution: Save and restore stderr/stdout for every test.
+    """
+    import sys
+    from typing import Any
+
+    class _NonClosingStream:
+        """Proxy stream that prevents tests from closing stderr/stdout."""
+
+        def __init__(self, stream: Any) -> None:
+            self._stream = stream
+
+        def __getattr__(self, name: str) -> Any:
+            return getattr(self._stream, name)
+
+        def write(self, data: str) -> int:
+            return self._stream.write(data)
+
+        def flush(self) -> None:
+            self._stream.flush()
+
+        def close(self) -> None:
+            # Intentionally ignore close attempts from tests.
+            return None
+
+    original_stderr = sys.stderr
+    original_stdout = sys.stdout
+
+    # Wrap stderr/stdout so tests can't close them mid-run.
+    sys.stderr = _NonClosingStream(original_stderr)
+    sys.stdout = _NonClosingStream(original_stdout)
+
+    yield
+
+    # Restore if modified or closed
+    try:
+        if sys.stderr is not original_stderr:
+            sys.stderr = original_stderr
+        if sys.stdout is not original_stdout:
+            sys.stdout = original_stdout
+    except Exception:
+        # Force restore on any error
+        sys.stderr = original_stderr
+        sys.stdout = original_stdout
+
+
+@pytest.fixture(autouse=True)
+def force_file_cleanup():
+    """Force cleanup of file handles after each test.
+    
+    This fixture addresses file handle leaks that accumulated over 48 minutes
+    of test execution, eventually exhausting available file descriptors.
+    
+    Strategy:
+    - Force garbage collection after each test
+    - Explicitly close lingering file objects
+    - Prevent file handle accumulation
+    """
+    yield
+
+    # Cleanup phase
+    import gc
+    import os
+    gc.collect()
+
+    if os.environ.get("CODEX_FORCE_FILE_CLEANUP", "0") != "1":
+        return
+
+    if not hasattr(force_file_cleanup, "_counter"):
+        force_file_cleanup._counter = 0  # type: ignore[attr-defined]
+    force_file_cleanup._counter += 1  # type: ignore[attr-defined]
+
+    # Only run full file-handle scans periodically to avoid large slowdowns.
+    if force_file_cleanup._counter % 20 != 0:  # type: ignore[attr-defined]
+        return
+
+    # Close any lingering file objects found by garbage collector
+    import logging
+    import sys
+
+    handler_streams = []
+    for handler_ref in logging._handlerList:
+        handler = handler_ref()
+        if handler is not None and getattr(handler, "stream", None) is not None:
+            handler_streams.append(handler.stream)
+
+    protected_streams = (
+        sys.stdout,
+        sys.stderr,
+        sys.__stdout__,
+        sys.__stderr__,
+        sys.__stdin__,
+        *handler_streams,
+    )
+    for obj in gc.get_objects():
+        try:
+            close_method = getattr(obj, "close", None)
+            closed_attr = getattr(obj, "closed", None)
+            name_attr = getattr(obj, "name", None)
+        except Exception:
+            continue  # Skip objects with unsafe attribute access
+
+        try:
+            # Check if object is file-like
+            if close_method is not None and closed_attr is not None and name_attr is not None:
+                if any(obj is stream for stream in protected_streams):
+                    continue
+                if name_attr in ("<stdin>", "<stdout>", "<stderr>"):
+                    continue
+                if not closed_attr and not isinstance(name_attr, int):
+                    # It's an open file object (not stdin/stdout/stderr which have int names)
+                    try:
+                        close_method()
+                    except Exception:
+                        pass  # Already closed or not closeable
+        except (ReferenceError, AttributeError):
+            pass  # Object was garbage collected during iteration
+
+
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_protocol(item, nextitem):
+    """Monitor resources during test execution.
+    
+    This hook tracks file handles and memory usage per test, providing warnings
+    when leaks are detected. This enables early identification of problematic tests
+    before they accumulate and cause session-level failures.
+    
+    Warnings are issued when:
+    - File handles increase by more than 5
+    - Memory usage increases by more than 20%
+    
+    See: .codex/TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 2
+    """
+    import warnings
+
+    before_files = 0
+    before_memory = 0
+
+    try:
+        import psutil
+        process = psutil.Process()
+        before_files = len(process.open_files())
+        before_memory = process.memory_info().rss / 1024 / 1024  # MB
+    except:
+        pass
+
+    yield
+
+    try:
+        import psutil
+        process = psutil.Process()
+        after_files = len(process.open_files())
+        after_memory = process.memory_info().rss / 1024 / 1024  # MB
+
+        # Check for leaks
+        if after_files > before_files + 5:
+            warnings.warn(
+                f"{item.nodeid}: File handle leak detected "
+                f"({before_files} → {after_files}, +{after_files - before_files})",
+                ResourceWarning
+            )
+
+        if after_memory > before_memory * 1.2:  # 20% increase
+            warnings.warn(
+                f"{item.nodeid}: Memory leak detected "
+                f"({before_memory:.1f}MB → {after_memory:.1f}MB, "
+                f"+{after_memory - before_memory:.1f}MB)",
+                ResourceWarning
+            )
+    except:
+        pass

@@ -16,7 +16,9 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 """Reference metric implementations used by Codex training loops."""
 
@@ -269,6 +271,10 @@ class BLEUScore(MetricBase):
             raise ValueError("n_gram must be >= 1")
         self.n_gram = n_gram
         self.smoothing = smoothing
+        self._matches = [0] * self.n_gram
+        self._totals = [0] * self.n_gram
+        self._pred_length = 0
+        self._ref_length = 0
         super().__init__("bleu_score")
 
     def reset(self) -> None:

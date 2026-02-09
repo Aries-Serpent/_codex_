@@ -8,7 +8,9 @@ New code should import from:
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import warnings as _warnings

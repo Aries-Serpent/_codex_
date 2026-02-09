@@ -32,7 +32,6 @@ def test_audit_explain_cli_smoke(tmp_path, monkeypatch):
     # Ensure YAML/template deps are installed in the environment running tests
     try:
         import jinja2  # noqa: F401
-
         import yaml  # noqa: F401
     except Exception:
         pytest.skip("pyyaml/jinja2 not installed in test env")

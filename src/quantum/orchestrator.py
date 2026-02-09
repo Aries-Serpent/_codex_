@@ -9,7 +9,6 @@ Cross-references:
 
 from __future__ import annotations
 
-import heapq
 import logging
 import math
 from dataclasses import dataclass, field
@@ -141,12 +140,11 @@ class ThermodynamicOrchestrator:
             - Minimize free energy
             - Respect energy budget
             - Achieve thermal equilibrium
+            - Respect dependency ordering
 
         Returns:
             Dictionary with execution results
         """
-        from src.common.error_handling import safe_call
-
         results = {
             "executed": [],
             "skipped": [],
@@ -155,15 +153,35 @@ class ThermodynamicOrchestrator:
             "final_temperature": self.global_temperature,
         }
 
-        # Build priority queue based on free energy
-        task_queue = []
-        for task in self.tasks:
-            heapq.heappush(task_queue, task)
+        # Track completed tasks
+        completed = set()
+        remaining = list(self.tasks)
 
         energy_budget = self.max_energy_per_cycle
 
-        while task_queue and energy_budget > 0:
-            task = heapq.heappop(task_queue)
+        while remaining and energy_budget > 0:
+            # Find tasks whose dependencies are satisfied
+            ready = [
+                t for t in remaining
+                if all(dep in completed for dep in t.dependencies)
+            ]
+
+            if not ready:
+                # No tasks can run (unresolvable dependencies)
+                for task in remaining:
+                    results["skipped"].append(
+                        {
+                            "name": task.name,
+                            "reason": "unresolved_dependencies",
+                            "missing": [d for d in task.dependencies if d not in completed],
+                        }
+                    )
+                break
+
+            # Sort ready tasks by free energy (lowest first)
+            ready.sort(key=lambda t: t.calculate_free_energy())
+            task = ready[0]
+            remaining.remove(task)
 
             # Check if we have enough energy
             if task.energy > energy_budget:
@@ -179,11 +197,7 @@ class ThermodynamicOrchestrator:
 
             # Execute task
             try:
-                result = safe_call(
-                    task.task_func,
-                    operation_name=f"Execute task {task.name}",
-                    default_return=None,
-                )
+                result = task.task_func()
 
                 results["executed"].append(
                     {
@@ -196,6 +210,7 @@ class ThermodynamicOrchestrator:
 
                 energy_budget -= task.energy
                 results["total_energy_used"] += task.energy
+                completed.add(task.name)
 
             except Exception as exc:
                 results["failed"].append({"name": task.name, "error": str(exc)})

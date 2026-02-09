@@ -8,7 +8,6 @@ Applies Quantum Test Methodology:
 
 import pytest
 
-
 # ==================== Import Tests ====================
 
 class TestModuleImports:
@@ -49,7 +48,7 @@ class TestModuleImports:
     def test_constants_import(self):
         """Test constants are defined."""
         try:
-            from src.tools.registry import MAX_TOOLS, MAX_TOOL_NAME_LENGTH
+            from src.tools.registry import MAX_TOOL_NAME_LENGTH, MAX_TOOLS
             assert MAX_TOOLS == 1000
             assert MAX_TOOL_NAME_LENGTH == 100
         except ImportError:
@@ -65,10 +64,10 @@ class TestToolDefinition:
         """Test creating ToolDefinition."""
         try:
             from src.tools.registry import ToolDefinition
-            
+
             def handler():
                 pass
-            
+
             tool = ToolDefinition(
                 name="test_tool",
                 description="A test tool",
@@ -84,7 +83,7 @@ class TestToolDefinition:
         """Test default values."""
         try:
             from src.tools.registry import ToolDefinition
-            
+
             tool = ToolDefinition(
                 name="test",
                 description="desc",
@@ -101,7 +100,7 @@ class TestToolDefinition:
         """Test custom values."""
         try:
             from src.tools.registry import ToolDefinition
-            
+
             tool = ToolDefinition(
                 name="custom",
                 description="Custom tool",
@@ -128,7 +127,7 @@ class TestToolResult:
         """Test successful result."""
         try:
             from src.tools.registry import ToolResult
-            
+
             result = ToolResult(success=True, output="Success!")
             assert result.success is True
             assert result.output == "Success!"
@@ -140,7 +139,7 @@ class TestToolResult:
         """Test failure result."""
         try:
             from src.tools.registry import ToolResult
-            
+
             result = ToolResult(success=False, error="Something went wrong")
             assert result.success is False
             assert result.error == "Something went wrong"
@@ -151,7 +150,7 @@ class TestToolResult:
         """Test default values."""
         try:
             from src.tools.registry import ToolResult
-            
+
             result = ToolResult(success=True)
             assert result.output is None
             assert result.error is None
@@ -169,7 +168,7 @@ class TestToolRegistry:
         """Test creating ToolRegistry."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             assert registry is not None
         except ImportError:
@@ -179,12 +178,12 @@ class TestToolRegistry:
         """Test registering a tool."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
-            
+
             def my_handler():
                 return "Hello"
-            
+
             result = registry.register(
                 name="my_tool",
                 handler=my_handler,
@@ -198,7 +197,7 @@ class TestToolRegistry:
         """Test that empty name fails registration."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             result = registry.register(
                 name="",
@@ -213,7 +212,7 @@ class TestToolRegistry:
         """Test that None name fails registration."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             result = registry.register(
                 name=None,
@@ -228,7 +227,7 @@ class TestToolRegistry:
         """Test registering tool with parameters."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             result = registry.register(
                 name="param_tool",
@@ -244,7 +243,7 @@ class TestToolRegistry:
         """Test registering tool requiring confirmation."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             result = registry.register(
                 name="confirm_tool",
@@ -260,7 +259,7 @@ class TestToolRegistry:
         """Test registering tool with custom timeout."""
         try:
             from src.tools.registry import ToolRegistry
-            
+
             registry = ToolRegistry()
             result = registry.register(
                 name="timeout_tool",

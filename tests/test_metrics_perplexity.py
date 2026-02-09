@@ -9,6 +9,8 @@ from types import SimpleNamespace
 
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 from codex_ml.metrics.evaluator import batch_metrics
 
 try:  # pragma: no cover - torch optional in CI

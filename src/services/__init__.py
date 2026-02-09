@@ -9,8 +9,10 @@ The github module provides GitHub API client functionality.
 """
 
 # Import workflow services (lightweight, no external deps beyond PyYAML/Pydantic)
-from .workflow import WorkflowInventory, WorkflowParser
 import logging
+
+from .workflow import WorkflowInventory, WorkflowParser
+
 logger = logging.getLogger(__name__)
 
 __all__: list[str] = [
@@ -21,7 +23,7 @@ __all__: list[str] = [
 # Conditionally import GitHub client (requires httpx)
 try:
     from .github import GitHubClient
-    
+
     __all__.append("GitHubClient")
 except ImportError as e:
     logger.debug(f"ImportError: {e}")

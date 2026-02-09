@@ -1184,8 +1184,9 @@ def run_training(
     art_dir_path: Path | None = default_art_dir
     try:
         art_dir_path.mkdir(parents=True, exist_ok=True)
-        telemetry_file = art_dir_path / "telemetry.ndjson"
-        telemetry_file.touch(exist_ok=True)
+        if _telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0:
+            telemetry_file = art_dir_path / "telemetry.ndjson"
+            telemetry_file.touch(exist_ok=True)
         metrics_ndjson = art_dir_path / "metrics.ndjson"
         metrics_ndjson.touch(exist_ok=True)
         metrics_json = art_dir_path / "metrics.json"

@@ -6,12 +6,12 @@ Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 """
 
 import logging
-logger = logging.getLogger(__name__)
-from typing import Optional, Callable
-from dataclasses import dataclass, field
-from enum import IntEnum
-from datetime import datetime
 
+logger = logging.getLogger(__name__)
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import IntEnum
+from typing import Callable, Optional
 
 # Token limits per Global Policies
 HARD_TOKEN_CEILING = 64_000

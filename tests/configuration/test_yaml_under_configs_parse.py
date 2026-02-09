@@ -10,7 +10,6 @@ import pathlib
 from typing import Iterable, List
 
 import pytest
-
 import yaml
 
 

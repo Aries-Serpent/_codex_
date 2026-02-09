@@ -263,7 +263,11 @@ class ModelLoader:
             Dictionary with model, tokenizer, and metadata
         """
         try:
-            from transformers import AutoConfig, AutoModel, AutoTokenizer  # noqa: F401 - Testing optional dependency availability
+            from transformers import (  # noqa: F401 - Testing optional dependency availability
+                AutoConfig,
+                AutoModel,
+                AutoTokenizer,
+            )
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)

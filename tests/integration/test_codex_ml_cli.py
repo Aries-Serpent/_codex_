@@ -20,7 +20,7 @@ class TestCodexMLCLIMain:
             text=True,
             timeout=30
         )
-        
+
         # Should succeed or fail gracefully
         assert result.returncode in (0, 1, 2)
 
@@ -32,7 +32,7 @@ class TestCodexMLCLIMain:
             text=True,
             timeout=30
         )
-        
+
         # May have different exit codes depending on CLI framework
         assert result.returncode in (0, 1, 2)
 
@@ -44,7 +44,7 @@ class TestCodexMLCLIMain:
             text=True,
             timeout=30
         )
-        
+
         # Version may or may not be implemented
         assert result.returncode in (0, 1, 2)
 
@@ -60,7 +60,7 @@ class TestCodexMLSubcommands:
             text=True,
             timeout=30
         )
-        
+
         # Should show help or indicate command exists
         assert result.returncode in (0, 1, 2)
 
@@ -72,7 +72,7 @@ class TestCodexMLSubcommands:
             text=True,
             timeout=30
         )
-        
+
         assert result.returncode in (0, 1, 2)
 
     def test_codex_ml_config_help(self):
@@ -83,7 +83,7 @@ class TestCodexMLSubcommands:
             text=True,
             timeout=30
         )
-        
+
         assert result.returncode in (0, 1, 2)
 
 

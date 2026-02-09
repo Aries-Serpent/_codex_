@@ -9,6 +9,7 @@ Test module for randomness.
 import os
 import random
 from unittest.mock import Mock, patch
+
 from src.common.randomness import set_seed
 
 

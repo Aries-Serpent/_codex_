@@ -10,12 +10,12 @@ from __future__ import annotations
 
 import functools
 import logging
-from typing import Callable, List, Optional, Any
 from contextvars import ContextVar
+from typing import Any, Callable, List, Optional
 
 from security.scope_validator import (
-    TokenScope,
     ScopeValidator,
+    TokenScope,
 )
 
 logger = logging.getLogger(__name__)
@@ -76,34 +76,34 @@ def require_scope(*required_scopes: str) -> Callable:
     """
     # Convert scope strings to TokenScope flags
     required_scope_flags = TokenScope.from_list(list(required_scopes))
-    
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             validator = get_scope_validator()
-            
+
             if validator is None:
                 raise RuntimeError(
                     "No scope validator found in context. "
                     "Ensure middleware/dependency sets validator before calling."
                 )
-            
+
             # Check scope and raise if insufficient
             validator.require_scope(required_scope_flags)
-            
+
             logger.debug(
                 f"Scope check passed for {func.__name__}: {required_scopes}"
             )
-            
+
             # Execute function
             return func(*args, **kwargs)
-        
+
         # Store metadata for introspection
         wrapper.__required_scopes__ = required_scopes  # type: ignore
         wrapper.__scope_protected__ = True  # type: ignore
-        
+
         return wrapper
-    
+
     return decorator
 
 
@@ -133,35 +133,35 @@ def require_any_scope(*required_scopes: str) -> Callable:
     required_scope_flags = [
         TokenScope.from_string(scope) for scope in required_scopes
     ]
-    
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             validator = get_scope_validator()
-            
+
             if validator is None:
                 raise RuntimeError(
                     "No scope validator found in context. "
                     "Ensure middleware/dependency sets validator before calling."
                 )
-            
+
             # Check scope and raise if insufficient
             validator.require_any_scope(required_scope_flags)
-            
+
             logger.debug(
                 f"Scope check passed for {func.__name__}: one of {required_scopes}"
             )
-            
+
             # Execute function
             return func(*args, **kwargs)
-        
+
         # Store metadata for introspection
         wrapper.__required_scopes__ = required_scopes  # type: ignore
         wrapper.__scope_protected__ = True  # type: ignore
         wrapper.__scope_any__ = True  # type: ignore
-        
+
         return wrapper
-    
+
     return decorator
 
 
@@ -190,7 +190,7 @@ def optional_scope(*scopes: str) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             validator = get_scope_validator()
-            
+
             if validator is not None:
                 # Log scope check but don't enforce
                 scope_flags = TokenScope.from_list(list(scopes))
@@ -199,26 +199,30 @@ def optional_scope(*scopes: str) -> Callable:
                     f"Optional scope check for {func.__name__}: "
                     f"{scopes} = {has_scopes}"
                 )
-            
+
             # Execute function regardless
             return func(*args, **kwargs)
-        
+
         # Store metadata
         wrapper.__optional_scopes__ = scopes  # type: ignore
         wrapper.__scope_optional__ = True  # type: ignore
-        
+
         return wrapper
-    
+
     return decorator
 
 
 # FastAPI dependency injection helpers
 try:
-    from fastapi import Depends, HTTPException, status  # noqa: F401 - Optional FastAPI integration
-    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials  # noqa: F401
-    
+    from fastapi import (  # noqa: F401 - Optional FastAPI integration
+        Depends,
+        HTTPException,
+        status,
+    )
+    from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer  # noqa: F401
+
     security = HTTPBearer()
-    
+
     async def get_token_scopes(
         credentials: HTTPAuthorizationCredentials = Depends(security),
     ) -> List[str]:
@@ -319,7 +323,7 @@ try:
             "Token scope extraction is not implemented. "
             "Implement get_token_scopes to validate tokens and extract scopes."
         )
-    
+
     async def scope_validator_dependency(
         scopes: List[str] = Depends(get_token_scopes),
     ) -> ScopeValidator:

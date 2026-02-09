@@ -2,7 +2,8 @@
 
 import pytest
 
-from src.services.workflow.types import WorkflowRun, WorkflowJob, WorkflowStep
+from src.services.workflow.types import WorkflowJobExecution as WorkflowJob
+from src.services.workflow.types import WorkflowRun, WorkflowStep
 
 
 @pytest.mark.integration

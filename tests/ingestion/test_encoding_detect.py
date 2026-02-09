@@ -5,9 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 
-
 def test_detect_encoding_handles_various_encodings(tmp_path: Path) -> None:
-    from ingestion.encoding_detect import detect_encoding, autodetect_encoding
+    from ingestion.encoding_detect import autodetect_encoding, detect_encoding
 
     utf8 = tmp_path / "utf8.txt"
     utf8.write_text("hello", encoding="utf-8")

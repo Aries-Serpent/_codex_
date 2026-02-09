@@ -11,6 +11,29 @@ _ALIASES: dict[str, str] = {
     # "decode": "codex_ml.tokenization.api:decode",
 }
 
+_warned = False
+_api = None
+
+
+def _get_api():
+    global _api
+    if _api is None:
+        _api = importlib.import_module("codex_ml.tokenization.api")
+    return _api
+
+
+def load_tokenizer(*args: Any, **kwargs: Any) -> Any:
+    """Backwards-compatible load_tokenizer with deprecation warning."""
+    global _warned
+    if not _warned:
+        warnings.warn(
+            "codex_ml.tokenization.compat.load_tokenizer is deprecated; use codex_ml.tokenization.api.load_tokenizer",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        _warned = True
+    return _get_api().load_tokenizer(*args, **kwargs)
+
 
 def __getattr__(name: str) -> Any:
     if name in _ALIASES:

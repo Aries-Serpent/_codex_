@@ -35,7 +35,7 @@ class TestMentalMappingExpanded:
             node_id="test-1",
             node_type=NodeType.OBSERVATION,
             content="Test observation",
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
         )
 
         assert node.node_id == "test-1"
@@ -80,7 +80,7 @@ class TestMentalMappingExpanded:
             node_id="test-node",
             node_type=NodeType.REASONING,
             content="Test reasoning",
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
         )
 
         model.add_node(node)

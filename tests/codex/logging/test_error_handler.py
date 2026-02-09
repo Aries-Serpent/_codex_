@@ -38,7 +38,7 @@ class TestCodexErrorHandlerInit:
 
     def test_init_with_default_log_dir(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -46,7 +46,7 @@ class TestCodexErrorHandlerInit:
 
     def test_init_creates_log_directory(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "new_logs"
             CodexErrorHandler(log_dir=log_dir)
@@ -54,7 +54,7 @@ class TestCodexErrorHandlerInit:
 
     def test_init_creates_error_log_file(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -64,7 +64,7 @@ class TestCodexErrorHandlerInit:
 
     def test_init_custom_max_bytes(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir, max_bytes=1024 * 1024)
@@ -72,7 +72,7 @@ class TestCodexErrorHandlerInit:
 
     def test_init_custom_backup_count(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir, backup_count=10)
@@ -84,7 +84,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_debug(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -93,7 +93,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_info(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -102,7 +102,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_warning(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -111,7 +111,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_error(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -120,7 +120,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_case_insensitive(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -129,7 +129,7 @@ class TestSetLogLevel:
 
     def test_set_log_level_invalid_raises(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -142,7 +142,7 @@ class TestLogErrorsDecorator:
 
     def test_log_errors_decorator_exists(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -151,29 +151,29 @@ class TestLogErrorsDecorator:
 
     def test_log_errors_decorator_normal_function(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            
+
             @handler.log_errors
             def normal_func():
                 return "success"
-            
+
             result = normal_func()
             assert result == "success"
 
     def test_log_errors_decorator_logs_exceptions(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            
+
             @handler.log_errors
             def error_func():
                 raise ValueError("Test error")
-            
+
             with pytest.raises(ValueError):
                 error_func()
 
@@ -183,7 +183,7 @@ class TestLogError:
 
     def test_log_error_method_exists(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -191,16 +191,16 @@ class TestLogError:
 
     def test_log_error_with_context(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            
+
             try:
                 raise ValueError("Test error")
             except ValueError as e:
                 handler.log_error(e, context={"key": "value"})
-            
+
             # Check log file has content
             assert handler.error_log.exists()
 
@@ -210,7 +210,7 @@ class TestLoggerAttributes:
 
     def test_logger_level(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -218,7 +218,7 @@ class TestLoggerAttributes:
 
     def test_logger_does_not_propagate(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
@@ -226,7 +226,7 @@ class TestLoggerAttributes:
 
     def test_logger_has_handlers(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)

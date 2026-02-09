@@ -6,7 +6,9 @@ WHY:
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import inspect
@@ -14,7 +16,7 @@ import json
 import os
 import warnings
 from contextlib import suppress
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 try:

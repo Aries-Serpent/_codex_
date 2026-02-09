@@ -7,7 +7,9 @@ when the command fails (for example when ``git`` is not installed or the
 directory is not a repository).
 """
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import locale

@@ -35,21 +35,21 @@ class TestJSONSchemaStructure:
         """Verify all JSON files in schemas/ are valid."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         invalid = []
         for json_file in SCHEMAS_DIR.rglob("*.json"):
             try:
                 json.loads(json_file.read_text(encoding="utf-8"))
             except json.JSONDecodeError as e:
                 invalid.append(f"{json_file.name}: {e}")
-        
+
         assert len(invalid) == 0, f"Invalid JSON files: {invalid}"
 
     def test_schema_files_have_type(self):
         """Verify schema files define a type."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         missing_type = []
         for schema_file in list(SCHEMAS_DIR.rglob("*.schema.json"))[:10]:
             try:
@@ -58,7 +58,7 @@ class TestJSONSchemaStructure:
                     missing_type.append(schema_file.name)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue
-        
+
         # Allow some without explicit type
         max_missing = max(1, len(list(SCHEMAS_DIR.rglob("*.schema.json"))[:10]) // 3)
         assert len(missing_type) <= max_missing, (
@@ -73,7 +73,7 @@ class TestYAMLSchemaValidation:
         """Verify configuration YAML files exist."""
         if not CONFIGS_DIR.exists():
             pytest.skip("configs/ directory not found")
-        
+
         yaml_files = list(CONFIGS_DIR.rglob("*.yaml")) + list(CONFIGS_DIR.rglob("*.yml"))
         assert len(yaml_files) > 0, "Should have YAML config files"
 
@@ -81,12 +81,12 @@ class TestYAMLSchemaValidation:
         """Verify YAML config files are parseable."""
         if not CONFIGS_DIR.exists():
             pytest.skip("configs/ directory not found")
-        
+
         try:
             import yaml
         except ImportError:
             pytest.skip("PyYAML not installed")
-        
+
         invalid = []
         for yaml_file in list(CONFIGS_DIR.rglob("*.yaml"))[:20]:
             try:
@@ -96,7 +96,7 @@ class TestYAMLSchemaValidation:
                 invalid.append(f"{yaml_file.name}: {e}")
             except UnicodeDecodeError:
                 continue
-        
+
         assert len(invalid) == 0, f"Invalid YAML files: {invalid}"
 
 
@@ -107,7 +107,7 @@ class TestPydanticSchemaGeneration:
         """Find files that import Pydantic."""
         if not SRC_DIR.exists():
             return []
-        
+
         files = []
         for py_file in SRC_DIR.rglob("*.py"):
             try:
@@ -123,7 +123,7 @@ class TestPydanticSchemaGeneration:
         files = self._find_pydantic_imports()
         if not files:
             pytest.skip("Pydantic not used in codebase")
-        
+
         assert len(files) > 0, "Should find Pydantic usage"
 
     def test_pydantic_models_have_field_descriptions(self):
@@ -131,10 +131,10 @@ class TestPydanticSchemaGeneration:
         files = self._find_pydantic_imports()
         if not files:
             pytest.skip("Pydantic not used in codebase")
-        
+
         models_with_descriptions = 0
         models_checked = 0
-        
+
         for py_file in files[:10]:
             content = py_file.read_text(encoding="utf-8", errors="ignore")
             # Check for Field with description
@@ -142,7 +142,7 @@ class TestPydanticSchemaGeneration:
                 models_checked += 1
                 if "description=" in content:
                     models_with_descriptions += 1
-        
+
         # Just log, don't require descriptions
 
 
@@ -153,7 +153,7 @@ class TestDataContractConsistency:
         """Check for Any type usage in public APIs (discouraged)."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         any_usage = []
         for py_file in list(SRC_DIR.rglob("*.py"))[:30]:
             try:
@@ -165,7 +165,7 @@ class TestDataContractConsistency:
                     any_usage.append(py_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Log but don't fail (Any is sometimes appropriate)
         if any_usage:
             pytest.skip(f"Found Any usage (acceptable): {any_usage[:3]}")
@@ -174,7 +174,7 @@ class TestDataContractConsistency:
         """Verify Optional fields have default values."""
         if not SRC_DIR.exists():
             pytest.skip("src/ directory not found")
-        
+
         # This is a complex check that would require AST parsing
         # Simplified version: just verify we have typing imports
         typing_files = 0
@@ -185,7 +185,7 @@ class TestDataContractConsistency:
                     typing_files += 1
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Verify typing is used
         assert typing_files > 0, "Should use typing module"
 
@@ -197,12 +197,12 @@ class TestSchemaEvolution:
         """Check if schema versions are documented."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         versioned_schemas = []
         for schema_file in SCHEMAS_DIR.rglob("*.json"):
             if re.search(r"v\d+|_v\d+|\.\d+\.", schema_file.name):
                 versioned_schemas.append(schema_file.name)
-        
+
         # Just verify we can find schemas
         # Versioning is optional
 
@@ -210,7 +210,7 @@ class TestSchemaEvolution:
         """Check for deprecation markers in schemas."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        
+
         for schema_file in list(SCHEMAS_DIR.rglob("*.json"))[:10]:
             try:
                 content = json.loads(schema_file.read_text(encoding="utf-8"))

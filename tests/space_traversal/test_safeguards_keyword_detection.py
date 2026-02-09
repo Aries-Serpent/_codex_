@@ -5,8 +5,8 @@ Tests keyword detection, context-aware patterns, density calculation,
 and validation following High Maturity Achievement Plan (target: 15-20 tests).
 """
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 
 class TestSafeguardsDetector:
@@ -28,7 +28,9 @@ class TestSafeguardsDetector:
 
     def test_keyword_list_complete(self):
         """Test safeguard keyword list is comprehensive."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         # Should have expanded keyword list (25 keywords)
         assert len(SAFEGUARD_KEYWORDS) >= 20
@@ -44,51 +46,67 @@ class TestKeywordDetection:
 
     def test_sha256_detection(self):
         """Test sha256 keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "sha256" in SAFEGUARD_KEYWORDS
 
     def test_checksum_detection(self):
         """Test checksum keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "checksum" in SAFEGUARD_KEYWORDS
 
     def test_validation_detection(self):
         """Test validation keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "validation" in SAFEGUARD_KEYWORDS
         assert "validate" in SAFEGUARD_KEYWORDS
 
     def test_sanitize_detection(self):
         """Test sanitize keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "sanitize" in SAFEGUARD_KEYWORDS
 
     def test_authentication_detection(self):
         """Test authentication keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "authenticate" in SAFEGUARD_KEYWORDS
         assert "authorization" in SAFEGUARD_KEYWORDS
 
     def test_rate_limit_detection(self):
         """Test rate limiting keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "rate_limit" in SAFEGUARD_KEYWORDS or "ratelimit" in SAFEGUARD_KEYWORDS
 
     def test_timeout_detection(self):
         """Test timeout keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "timeout" in SAFEGUARD_KEYWORDS
 
     def test_bounds_check_detection(self):
         """Test bounds checking keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         assert "bounds_check" in SAFEGUARD_KEYWORDS or "bounded" in SAFEGUARD_KEYWORDS
 
@@ -98,7 +116,9 @@ class TestContextAwareDetection:
 
     def test_try_except_pattern(self):
         """Test try-except pattern detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import DEFENSIVE_PATTERNS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            DEFENSIVE_PATTERNS,
+        )
 
         # Check if try-except pattern is defined
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
@@ -106,21 +126,27 @@ class TestContextAwareDetection:
 
     def test_null_check_pattern(self):
         """Test null/None check pattern."""
-        from scripts.space_traversal.detectors.detector_safeguards import DEFENSIVE_PATTERNS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            DEFENSIVE_PATTERNS,
+        )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
         assert any("null" in name or "none" in name.lower() for name in pattern_names)
 
     def test_assertion_pattern(self):
         """Test assertion pattern detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import DEFENSIVE_PATTERNS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            DEFENSIVE_PATTERNS,
+        )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
         assert any("assert" in name for name in pattern_names)
 
     def test_error_raise_pattern(self):
         """Test explicit error raising pattern."""
-        from scripts.space_traversal.detectors.detector_safeguards import DEFENSIVE_PATTERNS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            DEFENSIVE_PATTERNS,
+        )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
         assert any("error" in name for name in pattern_names)
@@ -261,7 +287,9 @@ class TestSafeguardsValidation:
 
     def test_deterministic_keyword_set(self):
         """Test that keyword set is deterministic (frozenset sorted at creation)."""
-        from scripts.space_traversal.detectors.detector_safeguards import SAFEGUARD_KEYWORDS
+        from scripts.space_traversal.detectors.detector_safeguards import (
+            SAFEGUARD_KEYWORDS,
+        )
 
         # Keywords are a frozenset; verify they are consistently iterable
         # and contain expected keywords (frozenset itself is unordered but deterministic)

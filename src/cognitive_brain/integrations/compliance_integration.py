@@ -39,7 +39,7 @@ class AuditResult:
     audit_id: str
     risk_level: str  # "low", "medium", "high"
     remediation_cost: float  # Estimated cost to fix issues
-    score: float = None  # 0.0 to 1.0  
+    score: float = None  # 0.0 to 1.0
     business_impact: float = 0.0  # Business value if approved (0-1)
     violations: List[str] = field(default_factory=list)  # List of violation descriptions
     repo_name: str = ""  # Optional repository name
@@ -53,7 +53,7 @@ class AuditResult:
         elif self.score is not None:
             if self.compliance_score is None:
                 self.compliance_score = self.score
-        
+
         # Validate score exists and is in range
         if self.score is None:
             raise ValueError("Either score or compliance_score must be provided")

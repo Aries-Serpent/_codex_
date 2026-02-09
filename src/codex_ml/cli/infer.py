@@ -16,7 +16,9 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 """Minimal inference CLI for loading a model and generating text."""
 
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 import json
 import os
 import sys
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Sequence

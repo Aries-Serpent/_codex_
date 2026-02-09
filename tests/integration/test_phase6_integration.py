@@ -10,10 +10,11 @@ Tests:
 All tests validate backward compatibility and performance.
 """
 
-import pytest
 import tempfile
-from pathlib import Path
 import time
+from pathlib import Path
+
+import pytest
 import yaml
 
 

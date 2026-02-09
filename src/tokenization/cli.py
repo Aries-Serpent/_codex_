@@ -1,7 +1,9 @@
 """Command line helpers for inspecting and exercising tokenizers."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import inspect as inspect_module

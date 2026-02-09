@@ -1,0 +1,255 @@
+"""Tests for safe model device placement."""
+
+import pytest
+
+import torch
+import torch.nn as nn
+from codex.rag.utils import safe_model_to_device
+
+
+class SimpleModel(nn.Module):
+    """Simple test model."""
+
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(10, 10)
+        self.bn = nn.BatchNorm1d(10)
+
+    def forward(self, x):
+        return self.bn(self.linear(x))
+
+
+class TestSafeModelToDevice:
+    """Test suite for safe_model_to_device function."""
+
+    def test_cpu_to_cpu(self):
+        """Test moving CPU model to CPU (no-op)."""
+        model = SimpleModel()
+        result = safe_model_to_device(model, 'cpu')
+
+        assert result is not None
+        assert all(p.device.type == 'cpu' for p in result.parameters())
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_cpu_to_cuda(self):
+        """Test moving CPU model to CUDA."""
+        model = SimpleModel()
+        result = safe_model_to_device(model, 'cuda:0')
+
+        assert all(p.device.type == 'cuda' for p in result.parameters())
+        assert all(p.device.index == 0 for p in result.parameters())
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_cuda_to_cpu(self):
+        """Test moving CUDA model to CPU."""
+        model = SimpleModel().to('cuda:0')
+        result = safe_model_to_device(model, 'cpu')
+
+        assert all(p.device.type == 'cpu' for p in result.parameters())
+
+    def test_with_dtype_conversion(self):
+        """Test device placement with dtype conversion."""
+        model = SimpleModel()
+        result = safe_model_to_device(model, 'cpu', dtype=torch.float16)
+
+        assert all(p.device.type == 'cpu' for p in result.parameters())
+        assert all(p.dtype == torch.float16 for p in result.parameters())
+
+    def test_meta_tensor_to_cpu(self):
+        """Test meta tensor conversion to CPU."""
+        # Create model with meta tensors
+        with torch.device('meta'):
+            model = SimpleModel()
+
+        # Verify model has meta tensors
+        assert any(p.is_meta for p in model.parameters())
+
+        # Should not raise NotImplementedError
+        result = safe_model_to_device(model, 'cpu')
+
+        # Verify materialized on CPU
+        assert all(not p.is_meta for p in result.parameters())
+        assert all(p.device.type == 'cpu' for p in result.parameters())
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_meta_tensor_to_cuda(self):
+        """Test meta tensor conversion to CUDA."""
+        with torch.device('meta'):
+            model = SimpleModel()
+
+        result = safe_model_to_device(model, 'cuda:0')
+
+        assert all(not p.is_meta for p in result.parameters())
+        assert all(p.device.type == 'cuda' for p in result.parameters())
+
+    def test_meta_tensor_with_dtype(self):
+        """Test meta tensor conversion with dtype."""
+        with torch.device('meta'):
+            model = SimpleModel()
+
+        result = safe_model_to_device(model, 'cpu', dtype=torch.float16)
+
+        assert all(not p.is_meta for p in result.parameters())
+        assert all(p.dtype == torch.float16 for p in result.parameters())
+
+    def test_non_blocking_transfer(self):
+        """Test non-blocking device transfer."""
+        model = SimpleModel()
+        result = safe_model_to_device(model, 'cpu', non_blocking=True)
+
+        # Should complete without error
+        assert result is not None
+
+    def test_invalid_device_type(self):
+        """Test error handling for invalid device."""
+        model = SimpleModel()
+
+        with pytest.raises((RuntimeError, ValueError)):
+            safe_model_to_device(model, 'invalid_device')
+
+    def test_non_module_input(self):
+        """Test TypeError for non-Module input."""
+        not_a_model = torch.randn(10, 10)
+
+        with pytest.raises(TypeError, match="Expected torch.nn.Module"):
+            safe_model_to_device(not_a_model, 'cpu')
+
+    def test_device_string_formats(self):
+        """Test various device string formats."""
+        model = SimpleModel()
+
+        # Test different string formats
+        for device in ['cpu', torch.device('cpu')]:
+            result = safe_model_to_device(model, device)
+            assert all(p.device.type == 'cpu' for p in result.parameters())
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_specific_gpu_selection(self):
+        """Test moving to specific GPU."""
+        if torch.cuda.device_count() < 2:
+            pytest.skip("Multiple GPUs required")
+
+        model = SimpleModel()
+        result = safe_model_to_device(model, 'cuda:1')
+
+        assert all(p.device.index == 1 for p in result.parameters())
+
+    def test_batchnorm_buffers_moved(self):
+        """Test that buffers (e.g., BatchNorm stats) are moved."""
+        model = SimpleModel()
+
+        # Initialize BatchNorm running stats
+        x = torch.randn(32, 10)
+        model.eval()
+        with torch.no_grad():
+            model(x)
+
+        # Move model
+        result = safe_model_to_device(model, 'cpu')
+
+        # Check buffers moved
+        assert all(b.device.type == 'cpu' for b in result.buffers())
+
+    def test_mixed_precision_workflow(self):
+        """Test typical mixed precision workflow."""
+        model = SimpleModel()
+
+        # FP32 → FP16 on CPU
+        model = safe_model_to_device(model, 'cpu', dtype=torch.float16)
+        assert all(p.dtype == torch.float16 for p in model.parameters())
+
+        # FP16 → FP32 on CPU
+        model = safe_model_to_device(model, 'cpu', dtype=torch.float32)
+        assert all(p.dtype == torch.float32 for p in model.parameters())
+
+    def test_preserves_gradient_state(self):
+        """Test that gradient state is preserved."""
+        model = SimpleModel()
+
+        # Set requires_grad
+        for p in model.parameters():
+            p.requires_grad = True
+
+        result = safe_model_to_device(model, 'cpu')
+
+        # Verify requires_grad preserved
+        assert all(p.requires_grad for p in result.parameters())
+
+    def test_model_training_mode_preserved(self):
+        """Test that training mode is preserved."""
+        model = SimpleModel()
+
+        # Set to eval mode
+        model.eval()
+        result = safe_model_to_device(model, 'cpu')
+        assert not result.training
+
+        # Set to train mode
+        model.train()
+        result = safe_model_to_device(model, 'cpu')
+        assert result.training
+
+
+class TestRAGModuleDevicePlacement:
+    """Test device placement in RAG modules."""
+
+    def test_indexer_device_placement(self):
+        """Test RAGIndexer device placement."""
+        pytest.importorskip('sentence_transformers')
+        from codex.rag.indexer import RAGIndexer
+
+        indexer = RAGIndexer(device='cpu')
+        assert indexer.device == 'cpu'
+        # Model should be on CPU
+        assert all(
+            p.device.type == 'cpu'
+            for p in indexer.model.parameters()
+        )
+
+    def test_embeddings_device_placement(self):
+        """Test EmbeddingModel device placement."""
+        pytest.importorskip('sentence_transformers')
+        from codex.rag.embeddings import EmbeddingModel
+
+        model = EmbeddingModel(device='cpu')
+        assert model.device == 'cpu'
+
+    def test_retriever_device_placement(self):
+        """Test RAGRetriever device placement."""
+        pytest.importorskip('sentence_transformers')
+        from codex.rag.retriever import RAGRetriever
+
+        retriever = RAGRetriever(device='cpu')
+        assert retriever.device == 'cpu'
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_indexer_cuda_placement(self):
+        """Test RAGIndexer CUDA placement."""
+        pytest.importorskip('sentence_transformers')
+        from codex.rag.indexer import RAGIndexer
+
+        indexer = RAGIndexer(device='cuda:0')
+        assert indexer.device == 'cuda:0'
+        assert all(
+            p.device.type == 'cuda'
+            for p in indexer.model.parameters()
+        )
+
+    def test_dynamic_device_change(self):
+        """Test dynamic device change in RAG modules."""
+        pytest.importorskip('sentence_transformers')
+        from codex.rag.indexer import RAGIndexer
+
+        indexer = RAGIndexer(device='cpu')
+
+        # Change device
+        indexer.move_to_device('cpu')  # Stay on CPU
+        assert indexer.device == 'cpu'
+        assert all(
+            p.device.type == 'cpu'
+            for p in indexer.model.parameters()
+        )
+
+
+if __name__ == '__main__':
+    pytest.main([__file__, '-v'])

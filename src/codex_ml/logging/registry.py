@@ -4,7 +4,9 @@ Includes a minimal NDJSON logger factory used by evaluation and smoke tests.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from pathlib import Path
@@ -41,7 +43,7 @@ class _NDJSONMetricsLogger:
         # Support both sys_metrics and include_sys_metrics for compatibility
         if include_sys_metrics is None:
             include_sys_metrics = sys_metrics
-        
+
         self._logger = NDJSONLogger(
             path,
             max_bytes=max_bytes,

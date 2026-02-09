@@ -554,6 +554,70 @@ result = calculate_reward()  # Unclear purpose
 
 ---
 
+## CI/CD Auto-Fix Workflows
+
+The repository includes automated workflows for detecting and fixing common CI issues with Copilot Agent integration.
+
+### Auto-Fix System Components
+
+#### 1. Auto-Fix Script (`scripts/ci/auto_fix_common_issues.py`)
+- **Purpose**: Detect and fix 8 common CI failure patterns
+- **JSON Output**: Machine-readable reports for agent integration
+- **Patterns**: Unused imports, coverage thresholds, CodeQL alerts (auto-fixable)
+- **Usage**: `python scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json`
+
+#### 2. Copilot Agent Helper (`scripts/ci/copilot_agent_auto_fix.py`)
+- **Purpose**: Orchestrate automated fixes with progress tracking
+- **Features**: Pattern-by-pattern application, validation, next-step guidance
+- **Usage**: `python scripts/ci/copilot_agent_auto_fix.py`
+
+#### 3. PR Auto-Fix Check Workflow (`.github/workflows/auto-fix-pr-check.yml`)
+- **Trigger**: PR opened/updated
+- **Actions**:
+  - Runs diagnostic check
+  - Posts Copilot Agent instructions to PR
+  - Creates check run with annotations
+  - Uploads diagnostic artifacts
+  - **Blocks merge** if auto-fixable issues found
+- **Artifacts**: 30-day retention
+
+#### 4. Pre-Merge Validation Workflow (`.github/workflows/pre-merge-validation.yml`)
+- **Trigger**: PR ready for review / approved
+- **Checks**:
+  - Auto-fix issues (required)
+  - Quick tests (warning)
+  - Code quality (warning)
+- **Output**: Posts validation summary comment
+- **Blocks merge**: Yes, if auto-fix check fails
+
+### Agent Responsibilities
+
+When PR check workflows fail:
+
+1. **Read the PR comment** - Contains detailed fix instructions
+2. **Choose fix method**:
+   - Option A: Use Copilot command from comment
+   - Option B: Run script locally
+   - Option C: Trigger workflow manually
+3. **Verify fixes** - Run check-only mode
+4. **Re-run tests** - Ensure no regressions
+5. **Document changes** - Clear commit messages
+
+### Integration with AI Agency Policy
+
+These workflows enforce the AI Codebase Agency Policy by:
+- Blocking merge on auto-fixable issues (no "pre-existing" excuse)
+- Providing clear fix instructions (no "don't know how" excuse)
+- Tracking all issues with JSON reports (full visibility)
+- Categorizing auto-fix vs manual review (clear responsibility)
+
+**References:**
+- Implementation: `.codex/PR3178_COMMENT_3873375083.txt`
+- Documentation: `AGENTS.md` → CI/CD Automation Tools section
+- System Docs: `.codex/docs/CI_AUTO_FIX_SYSTEM.md`
+
+---
+
 ## Documentation Standards
 
 ### Code Comments

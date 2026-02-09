@@ -134,7 +134,7 @@ class TestLoadDenylist:
     def test_load_valid_file(self, denylist_file: str):
         """Test loading a valid denylist YAML file."""
         rules = load_denylist(denylist_file)
-        
+
         assert "password" in rules.sensitive_terms
         assert "secret" in rules.sensitive_terms
         assert "delete_all" in rules.blocked_actions
@@ -153,7 +153,7 @@ class TestLoadDenylist:
             f.write("")
             f.flush()
             rules = load_denylist(f.name)
-        
+
         assert rules.sensitive_terms == []
         assert rules.blocked_actions == []
 
@@ -169,13 +169,13 @@ sensitive_terms:
             f.write(yaml_content)
             f.flush()
             rules = load_denylist(f.name)
-        
+
         assert "secret" in rules.sensitive_terms
 
     def test_load_with_redaction_patterns(self, denylist_file: str):
         """Test loading file with redaction patterns."""
         rules = load_denylist(denylist_file)
-        
+
         assert len(rules.redaction_patterns) > 0
         # Verify patterns are compiled
         for pattern, replacement in rules.redaction_patterns:
@@ -339,7 +339,7 @@ redaction_patterns:
             f.write(yaml_content)
             f.flush()
             enforcer = DenylistEnforcer.from_yaml(f.name)
-        
+
         redacted = enforcer.redact("SSN: 123-45-6789")
         assert "123-45-6789" not in redacted
 
@@ -356,7 +356,7 @@ sensitive_terms:
             f.write(yaml_content)
             f.flush()
             rules = load_denylist(f.name)
-        
+
         # Empty string should still work
         assert "password" in rules.sensitive_terms
 
@@ -374,7 +374,7 @@ sensitive_terms:
             f.write(yaml_content)
             f.flush()
             rules = load_denylist(f.name)
-        
+
         assert "пароль" in rules.sensitive_terms
         assert "密码" in rules.sensitive_terms
 
@@ -387,7 +387,7 @@ sensitive_terms:
             blocked_prompt_patterns=[".*danger.*"],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Should detect literal $secret
         assert enforcer.is_prompt_allowed("The $secret is here") is False
 
@@ -400,7 +400,7 @@ sensitive_terms:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        
+
         # Create a very long prompt
         long_prompt = "a" * 100000 + " password " + "b" * 100000
         assert enforcer.is_prompt_allowed(long_prompt) is False

@@ -8,7 +8,6 @@ Applies Quantum Test Methodology:
 
 import pytest
 
-
 # ==================== Import Tests ====================
 
 class TestModuleImports:
@@ -56,11 +55,11 @@ class TestSafeExecuteDecorator:
         """Test decorator allows successful execution."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_operation")
             def successful_func():
                 return "success"
-            
+
             result = successful_func()
             assert result == "success"
         except ImportError:
@@ -70,11 +69,11 @@ class TestSafeExecuteDecorator:
         """Test decorator catches exception and returns default."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("failing_operation", default_return="fallback")
             def failing_func():
                 raise ValueError("test error")
-            
+
             result = failing_func()
             assert result == "fallback"
         except ImportError:
@@ -84,11 +83,11 @@ class TestSafeExecuteDecorator:
         """Test default return is None when not specified."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_op")
             def error_func():
                 raise RuntimeError("error")
-            
+
             result = error_func()
             assert result is None
         except ImportError:
@@ -98,11 +97,11 @@ class TestSafeExecuteDecorator:
         """Test catching specific exception type."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_op", exception_types=(ValueError,), default_return="caught")
             def value_error_func():
                 raise ValueError("value error")
-            
+
             result = value_error_func()
             assert result == "caught"
         except ImportError:
@@ -112,11 +111,11 @@ class TestSafeExecuteDecorator:
         """Test that unhandled exception types propagate."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_op", exception_types=(ValueError,))
             def type_error_func():
                 raise TypeError("type error")
-            
+
             with pytest.raises(TypeError):
                 type_error_func()
         except ImportError:
@@ -126,11 +125,11 @@ class TestSafeExecuteDecorator:
         """Test that decorator preserves function name."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_op")
             def named_function():
                 pass
-            
+
             assert named_function.__name__ == "named_function"
         except ImportError:
             pytest.skip("Module not available")
@@ -139,11 +138,11 @@ class TestSafeExecuteDecorator:
         """Test different log levels."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("test_op", log_level="error")
             def error_log_func():
                 raise Exception("test")
-            
+
             # Should not raise
             result = error_log_func()
             assert result is None
@@ -160,10 +159,10 @@ class TestSafeCallFunction:
         """Test successful function call."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def add(a, b):
                 return a + b
-            
+
             result = safe_call(add, 1, 2)
             assert result == 3
         except ImportError:
@@ -173,10 +172,10 @@ class TestSafeCallFunction:
         """Test exception returns default value."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def failing():
                 raise RuntimeError("error")
-            
+
             result = safe_call(failing, default_return=-1)
             assert result == -1
         except ImportError:
@@ -186,10 +185,10 @@ class TestSafeCallFunction:
         """Test keyword arguments are passed."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def greet(name, greeting="Hello"):
                 return f"{greeting}, {name}!"
-            
+
             result = safe_call(greet, "World", greeting="Hi")
             assert result == "Hi, World!"
         except ImportError:
@@ -199,10 +198,10 @@ class TestSafeCallFunction:
         """Test operation_name parameter."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def risky():
                 raise ValueError("risky")
-            
+
             result = safe_call(
                 risky,
                 operation_name="risky operation",
@@ -216,10 +215,10 @@ class TestSafeCallFunction:
         """Test catching specific exception types."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def value_error():
                 raise ValueError("value")
-            
+
             result = safe_call(
                 value_error,
                 exception_types=(ValueError,),
@@ -233,10 +232,10 @@ class TestSafeCallFunction:
         """Test unhandled exceptions propagate."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def type_error():
                 raise TypeError("type")
-            
+
             with pytest.raises(TypeError):
                 safe_call(
                     type_error,
@@ -255,14 +254,14 @@ class TestEdgeCases:
         """Test nested decorated functions."""
         try:
             from src.common.error_handling import safe_execute
-            
+
             @safe_execute("outer")
             def outer():
                 @safe_execute("inner", default_return="inner_default")
                 def inner():
                     raise ValueError("inner error")
                 return inner()
-            
+
             result = outer()
             assert result == "inner_default"
         except ImportError:
@@ -272,7 +271,7 @@ class TestEdgeCases:
         """Test safe_call with lambda function."""
         try:
             from src.common.error_handling import safe_call
-            
+
             result = safe_call(
                 lambda x: x * 2,
                 5
@@ -285,10 +284,10 @@ class TestEdgeCases:
         """Test safe_call behavior with None function name."""
         try:
             from src.common.error_handling import safe_call
-            
+
             def no_name_func():
                 return "works"
-            
+
             result = safe_call(no_name_func)
             assert result == "works"
         except ImportError:

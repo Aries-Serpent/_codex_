@@ -17,16 +17,16 @@ Author: Codex Team
 
 from __future__ import annotations
 
-from fastapi import FastAPI
-
 import logging
+
+from fastapi import FastAPI
 
 from src.mcp.middleware.rate_limit_middleware import RateLimitMiddleware  # type: ignore
 from src.mcp.observability.metrics import Timer, increment  # type: ignore
 from src.mcp.server.adapter_loader import lazy_connect_all
+from src.mcp.server.jsonrpc_adapter import register_jsonrpc_routes
 from src.mcp.server.middleware.auth import APIKeyAuthMiddleware  # type: ignore
 from src.mcp.server.routes_health import register_health_routes
-from src.mcp.server.jsonrpc_adapter import register_jsonrpc_routes
 from src.mcp.server.tracing import ensure_request_id, init_tracing  # type: ignore
 
 APP = FastAPI(title="MCP Façade (FastAPI)")

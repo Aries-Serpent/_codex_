@@ -7,9 +7,9 @@ using cosine similarity with configurable thresholds.
 
 import hashlib
 import math
-from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass

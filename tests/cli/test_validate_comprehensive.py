@@ -56,14 +56,14 @@ class TestValidationErrorFormatting:
         """Test validation error formatting with mock."""
         try:
             from codex_ml.cli.validate import _format_validation_error
-            
+
             # Create mock error
             mock_error = MagicMock()
             mock_error.errors.return_value = [
                 {"loc": ("field1",), "msg": "required field"},
                 {"loc": ("field2", "subfield"), "msg": "invalid value"}
             ]
-            
+
             # May raise or return formatted string
             try:
                 result = _format_validation_error(mock_error)
@@ -138,7 +138,7 @@ class TestConfigValidation:
                 "hidden_size": 768
             }
         }
-        
+
         # Basic validation - should be valid YAML
         assert isinstance(config, dict)
         assert "training" in config
@@ -147,13 +147,13 @@ class TestConfigValidation:
     def test_validate_invalid_yaml_syntax(self):
         """Test handling of invalid YAML syntax."""
         invalid_yaml = "key: value\n  bad_indent: error"
-        
+
         with tempfile.NamedTemporaryFile(
             mode='w', suffix='.yaml', delete=False
         ) as f:
             f.write(invalid_yaml)
             temp_path = Path(f.name)
-        
+
         try:
             try:
                 with open(temp_path) as handle:
@@ -170,7 +170,7 @@ class TestConfigValidation:
         incomplete_config = {
             "training": {}  # Missing required fields
         }
-        
+
         # This should be flagged as incomplete
         assert "epochs" not in incomplete_config["training"]
         assert "batch_size" not in incomplete_config["training"]
@@ -192,17 +192,17 @@ class TestDiffValidation:
     def test_config_diff_detection(self):
         """Test detection of config differences."""
         import difflib
-        
+
         config1 = "epochs: 10\nbatch_size: 32"
         config2 = "epochs: 20\nbatch_size: 32"
-        
+
         diff = list(difflib.unified_diff(
             config1.splitlines(keepends=True),
             config2.splitlines(keepends=True),
             fromfile='config1.yaml',
             tofile='config2.yaml'
         ))
-        
+
         # Should detect difference in epochs
         assert len(diff) > 0
         assert any('epochs' in line for line in diff)

@@ -8,6 +8,7 @@ Test module for auto tune workflow.
 """Test suite for auto-tune workflow."""
 
 import pytest
+
 from services.audio.workflow.auto_tune_workflow import (
     AutoTuneWorkflow,
     WorkflowResult,
@@ -16,21 +17,21 @@ from services.audio.workflow.auto_tune_workflow import (
 
 class TestAutoTuneWorkflow:
     """Test cases for AutoTuneWorkflow."""
-    
+
     def test_workflow_initialization(self):
         """Test workflow initializes correctly."""
         workflow = AutoTuneWorkflow(cognitive_mode=True)
         assert workflow.cognitive_mode is True
-    
+
     def test_process_path_no_files(self, tmp_path):
         """Test processing empty directory."""
         workflow = AutoTuneWorkflow()
         result = workflow.process_path(str(tmp_path))
-        
+
         assert isinstance(result, WorkflowResult)
         assert result.success is False
         assert "No audio files found" in result.error
-    
+
     def test_process_path_with_files(self, tmp_path):
         """Test processing directory with audio files.
         
@@ -42,10 +43,10 @@ class TestAutoTuneWorkflow:
         # Create dummy audio files (text data for unit test simplicity)
         (tmp_path / "test1.mp3").write_text("audio data 1")
         (tmp_path / "test2.wav").write_text("audio data 2")
-        
+
         workflow = AutoTuneWorkflow()
         result = workflow.process_path(str(tmp_path))
-        
+
         assert isinstance(result, WorkflowResult)
         assert result.success is True
         assert result.total_files == 2

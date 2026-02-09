@@ -35,16 +35,16 @@ def safe_extract_tarfile(
         >>> safe_extract_tarfile(Path("archive.tar.gz"), Path("/tmp/extract"))
     """
     extract_to = extract_to.resolve()
-    
+
     with tarfile.open(tar_path) as tar:
         # Get members to extract
         to_extract = members if members is not None else tar.getmembers()
-        
+
         # Validate all paths before extraction
         for member in to_extract:
             # Resolve the extraction path
             member_path = (extract_to / member.name).resolve()
-            
+
             # Check if path escapes the extraction directory
             try:
                 member_path.relative_to(extract_to)
@@ -52,18 +52,18 @@ def safe_extract_tarfile(
                 raise ValueError(
                     f"Security: Attempted path traversal in tarfile member: {member.name}"
                 )
-            
+
             # Additional check for absolute paths
             if member.name.startswith("/") or member.name.startswith("\\"):
                 raise ValueError(
                     f"Security: Absolute path in tarfile member: {member.name}"
                 )
-        
+
         # Python 3.12+ has built-in filter, use it if available
         if hasattr(tarfile, "data_filter"):
             # Use Python 3.12+ secure filter
             tar.extraction_filter = tarfile.data_filter  # type: ignore
-        
+
         # Extract (now validated)
         tar.extractall(extract_to, members=to_extract)
 
@@ -80,10 +80,10 @@ def safe_create_file(path: Path, mode: int = 0o600, *, exist_ok: bool = False) -
     """
     if path.exists() and not exist_ok:
         raise FileExistsError(f"File already exists: {path}")
-    
+
     # Create parent directories if needed
     path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Create with secure permissions
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, mode)
     os.close(fd)

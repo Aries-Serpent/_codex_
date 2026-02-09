@@ -1,7 +1,8 @@
 """Tests for codex/archive/evidence_schema.py module."""
 
-import pytest
 from datetime import datetime
+
+import pytest
 
 
 class TestEvidenceSchemaImports:

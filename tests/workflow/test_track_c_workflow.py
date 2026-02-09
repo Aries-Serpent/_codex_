@@ -15,9 +15,9 @@ import pytest
 
 from codex_ml.workflow import DEFAULT_ROUTER, WorkflowOrchestrator, run_capability
 from codex_ml.workflow.track_c_workflow import (
+    SIX_PHASES,
     CapabilityPlan,
     CapabilityRouter,
-    SIX_PHASES,
     WorkflowContext,
 )
 

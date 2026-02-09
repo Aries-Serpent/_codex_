@@ -1,10 +1,10 @@
 """Tests for checkpoint management."""
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[2] / "scripts"))
-from list_checkpoints import list_checkpoints, apply_retention_policy
+from list_checkpoints import apply_retention_policy, list_checkpoints
 
 
 class TestCheckpointListing:

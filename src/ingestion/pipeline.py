@@ -125,7 +125,7 @@ class IngestionPipeline:
     - Timeout handling for long operations
     - Memory-efficient streaming
     """
-    
+
     def __init__(self, config: Optional[PipelineConfig] = None):
         """Initialize the pipeline with configuration.
         
@@ -134,7 +134,7 @@ class IngestionPipeline:
         """
         self.config = config or PipelineConfig()
         self._validate_config()
-    
+
     def _validate_config(self) -> None:
         """Validate configuration parameters.
         
@@ -152,7 +152,7 @@ class IngestionPipeline:
             raise ValueError("max_file_size_mb must be positive")
         if self.config.timeout_seconds <= 0:
             raise ValueError("timeout_seconds must be positive")
-    
+
     def _validate_file(self, path: Path) -> None:
         """Validate input file before processing.
         
@@ -170,7 +170,7 @@ class IngestionPipeline:
             raise FileNotFoundError(f"File not found: {path}")
         if path.is_dir():
             raise IsADirectoryError(f"Path is a directory: {path}")
-        
+
         # Bounds check: file size
         file_size_mb = path.stat().st_size / (1024 * 1024)
         if file_size_mb > self.config.max_file_size_mb:
@@ -178,7 +178,7 @@ class IngestionPipeline:
                 f"File size {file_size_mb:.2f}MB exceeds limit "
                 f"{self.config.max_file_size_mb}MB: {path}"
             )
-    
+
     def _detect_format(self, path: Path) -> str:
         """Detect file format from extension.
         
@@ -202,7 +202,7 @@ class IngestionPipeline:
             ".yml": "txt",
         }
         return format_map.get(suffix, "txt")
-    
+
     def _get_encoding(self, path: Path) -> str:
         """Get encoding for file.
         
@@ -215,7 +215,7 @@ class IngestionPipeline:
         if self.config.encoding.lower() == "auto":
             return detect_encoding(path)
         return self.config.encoding
-    
+
     def _read_csv(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read CSV file as records.
         
@@ -240,7 +240,7 @@ class IngestionPipeline:
                         )
                         row[key] = value[:MAX_FIELD_LENGTH]
                 yield row
-    
+
     def _read_json(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSON file as records.
         
@@ -253,7 +253,7 @@ class IngestionPipeline:
         """
         content = read_text(path, encoding=encoding)
         data = json.loads(content)
-        
+
         if isinstance(data, list):
             for item in data:
                 if isinstance(item, dict):
@@ -264,7 +264,7 @@ class IngestionPipeline:
             yield data
         else:
             yield {"value": data}
-    
+
     def _read_jsonl(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSONL/NDJSON file as records.
         
@@ -288,7 +288,7 @@ class IngestionPipeline:
                         yield {"value": data}
                 except json.JSONDecodeError as e:
                     logger.warning("Invalid JSON at line %d: %s", line_num, e)
-    
+
     def _read_text(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read text file as records (one per line).
         
@@ -302,7 +302,7 @@ class IngestionPipeline:
         with path.open("r", encoding=encoding, errors="replace") as f:
             for line in f:
                 yield {"text": line.rstrip("\n\r")}
-    
+
     def _transform_record(self, record: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Apply transformations to a record.
         
@@ -313,36 +313,36 @@ class IngestionPipeline:
             Transformed record or None if should be skipped
         """
         result = {}
-        
+
         for key, value in record.items():
             if value is None:
                 result[key] = None
                 continue
-            
+
             # Convert to string for text processing
             if isinstance(value, str):
                 text = value
-                
+
                 # Apply transformations
                 if self.config.strip_whitespace:
                     text = text.strip()
                 if self.config.lowercase:
                     text = text.lower()
-                
+
                 # Skip empty check
                 if self.config.skip_empty and not text:
                     continue
-                
+
                 result[key] = text
             else:
                 result[key] = value
-        
+
         # Skip if all text fields are empty
         if self.config.skip_empty and not result:
             return None
-        
+
         return result
-    
+
     def process(
         self,
         input_path: Union[str, Path],
@@ -364,22 +364,22 @@ class IngestionPipeline:
         errors: list[str] = []
         records_processed = 0
         records_skipped = 0
-        
+
         try:
             # Validate input
             self._validate_file(input_path)
-            
+
             # Detect format and encoding
             file_format = format_override or self._detect_format(input_path)
             encoding = self._get_encoding(input_path)
-            
+
             logger.info(
                 "Processing %s (format=%s, encoding=%s)",
                 input_path,
                 file_format,
                 encoding,
             )
-            
+
             # Select reader based on format
             readers = {
                 "csv": self._read_csv,
@@ -389,10 +389,10 @@ class IngestionPipeline:
                 "md": self._read_text,
             }
             reader = readers.get(file_format, self._read_text)
-            
+
             # Process records
             processed_records: list[dict[str, Any]] = []
-            
+
             for record in reader(input_path, encoding):
                 transformed = self._transform_record(record)
                 if transformed is not None:
@@ -400,22 +400,22 @@ class IngestionPipeline:
                     records_processed += 1
                 else:
                     records_skipped += 1
-            
+
             # Apply shuffle if configured
             if self.config.shuffle:
                 processed_records = deterministic_shuffle(
                     processed_records,
                     self.config.shuffle_seed,
                 )
-            
+
             # Write output if path provided
             output_file = None
             if output_path:
                 output_file = Path(output_path)
                 self._write_output(processed_records, output_file)
-            
+
             duration = time.time() - start_time
-            
+
             return PipelineResult(
                 success=True,
                 records_processed=records_processed,
@@ -429,13 +429,13 @@ class IngestionPipeline:
                     "shuffle": self.config.shuffle,
                 },
             )
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             duration = time.time() - start_time
             errors.append(str(e))
             logger.error("Pipeline error: %s", e)
-            
+
             return PipelineResult(
                 success=False,
                 records_processed=records_processed,
@@ -443,7 +443,7 @@ class IngestionPipeline:
                 errors=errors,
                 duration_seconds=duration,
             )
-    
+
     def _write_output(
         self,
         records: list[dict[str, Any]],
@@ -458,7 +458,7 @@ class IngestionPipeline:
             output_path: Output file path
         """
         output_format = self._detect_format(output_path)
-        
+
         if output_format == "json":
             with output_path.open("w", encoding="utf-8") as f:
                 json.dump(records, f, indent=2, ensure_ascii=False)
@@ -480,9 +480,9 @@ class IngestionPipeline:
             with output_path.open("w", encoding="utf-8") as f:
                 for record in records:
                     f.write(json.dumps(record, ensure_ascii=False) + "\n")
-        
+
         logger.info("Wrote %d records to %s", len(records), output_path)
-    
+
     def stream(
         self,
         input_path: Union[str, Path],
@@ -501,10 +501,10 @@ class IngestionPipeline:
         """
         input_path = Path(input_path)
         self._validate_file(input_path)
-        
+
         file_format = format_override or self._detect_format(input_path)
         encoding = self._get_encoding(input_path)
-        
+
         readers = {
             "csv": self._read_csv,
             "json": self._read_json,
@@ -513,7 +513,7 @@ class IngestionPipeline:
             "md": self._read_text,
         }
         reader = readers.get(file_format, self._read_text)
-        
+
         for record in reader(input_path, encoding):
             transformed = self._transform_record(record)
             if transformed is not None:
@@ -557,14 +557,14 @@ def ingest_directory(
     directory = Path(directory)
     if not directory.is_dir():
         raise NotADirectoryError(f"Not a directory: {directory}")
-    
+
     pipeline = IngestionPipeline(config)
-    
+
     if recursive:
         files = sorted(directory.rglob(pattern))
     else:
         files = sorted(directory.glob(pattern))
-    
+
     for file_path in files:
         if file_path.is_file():
             try:

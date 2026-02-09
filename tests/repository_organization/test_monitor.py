@@ -21,9 +21,9 @@ class TestMonitorOffloadCandidates:
         # Import after path setup
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import get_file_age_days
-        
+
         with tempfile.NamedTemporaryFile() as tmp:
             tmp_path = Path(tmp.name)
             age = get_file_age_days(tmp_path)
@@ -33,15 +33,15 @@ class TestMonitorOffloadCandidates:
         """Test file size calculation"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import get_file_size_mb
-        
+
         with tempfile.NamedTemporaryFile(mode='w') as tmp:
             tmp_path = Path(tmp.name)
             # Write 1MB of data
             tmp.write("x" * 1024 * 1024)
             tmp.flush()
-            
+
             size = get_file_size_mb(tmp_path)
             assert 0.9 < size < 1.1, f"1MB file should be ~1.0MB, got {size}"
 
@@ -49,16 +49,16 @@ class TestMonitorOffloadCandidates:
         """Test pattern matching logic"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import matches_pattern
-        
+
         test_cases = [
             (Path("temp/file.txt"), ["temp/"], True),
             (Path("logs/error.log"), ["*.log"], True),
             (Path("coverage_report.json"), ["coverage_"], True),
             (Path("src/main.py"), ["temp/"], False),
         ]
-        
+
         for file_path, patterns, expected in test_cases:
             result = matches_pattern(file_path, patterns)
             assert result == expected, f"Pattern match failed for {file_path} with {patterns}"
@@ -67,12 +67,12 @@ class TestMonitorOffloadCandidates:
         """Test file categorization"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import categorize_file
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
-            
+
             test_cases = [
                 ("temp/build.log", "temp"),
                 ("logs/error.log", "logs"),
@@ -81,12 +81,12 @@ class TestMonitorOffloadCandidates:
                 ("_codex_reports/status.md", "reports"),
                 ("src/main.py", None),
             ]
-            
+
             for rel_path, expected_category in test_cases:
                 file_path = repo_root / rel_path
                 file_path.parent.mkdir(parents=True, exist_ok=True)
                 file_path.touch()
-                
+
                 category = categorize_file(file_path, repo_root)
                 assert category == expected_category, f"Categorization failed for {rel_path}"
 
@@ -94,20 +94,20 @@ class TestMonitorOffloadCandidates:
         """Test basic repository scanning"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import scan_repository
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
-            
+
             # Create test structure
             (repo_root / "temp").mkdir()
             large_file = repo_root / "temp" / "large.log"
             large_file.write_text("x" * 2 * 1024 * 1024)  # 2MB file
-            
+
             # Scan
             results = scan_repository(repo_root)
-            
+
             # Verify structure
             assert "metadata" in results
             assert "summary" in results
@@ -119,18 +119,18 @@ class TestMonitorOffloadCandidates:
         """Test JSON report structure"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import scan_repository
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             repo_root = Path(tmpdir)
-            
+
             results = scan_repository(repo_root)
-            
+
             # Verify JSON serializable
             json_str = json.dumps(results)
             assert json_str, "Results should be JSON serializable"
-            
+
             # Verify structure
             parsed = json.loads(json_str)
             assert parsed["metadata"]["criteria"]["temp_files_age_days"] == 90
@@ -149,9 +149,9 @@ class TestMonitorOffloadCandidates:
         """Test recommendation logic"""
         import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-        
+
         from monitor_offload_candidates import _get_recommendation
-        
+
         recommendation = _get_recommendation(category, age, size)
         assert recommendation == expected, f"Recommendation mismatch for {category}/{age}d/{size}MB"
 
@@ -163,12 +163,12 @@ def test_integration_scan_real_repo():
     """Integration test with real repository (skipped by default)"""
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
-    
+
     from monitor_offload_candidates import scan_repository
-    
+
     repo_root = Path.cwd()
     results = scan_repository(repo_root)
-    
+
     # Basic sanity checks
     assert results["summary"]["total_candidates"] >= 0
     assert results["metadata"]["repo_root"] == str(repo_root)

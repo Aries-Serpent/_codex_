@@ -7,12 +7,12 @@ incremental analysis and historical comparison.
 import json
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
-from codex_ml.ast.core.node import Finding, SourceLocation
 from codex_ml.ast.core.exceptions import StorageError
+from codex_ml.ast.core.node import Finding, SourceLocation
 
 
 class ASTStorage:

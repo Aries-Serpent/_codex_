@@ -19,7 +19,6 @@ from typing import Any, Dict
 
 import pytest
 
-
 # ============================================================================
 # Fixtures
 # ============================================================================
@@ -149,7 +148,7 @@ class TestProvisioning:
         """Test requested resources are within limits."""
         specs = service_request_config["specifications"]
         max_res = provisioning_config["max_resources"]
-        
+
         within_limits = (
             specs["cpu_cores"] <= max_res["cpu_cores"]
             and specs["memory_gb"] <= max_res["memory_gb"]

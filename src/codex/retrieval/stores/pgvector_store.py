@@ -12,8 +12,8 @@ Part of PS-06 Enhancement: Index Sharding - Priority 4
 
 import asyncio
 import logging
-from typing import Any, Optional, List, Dict
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -93,19 +93,19 @@ class PGVectorStore:
         self.pool_size = pool_size
         self.shard_id = shard_id  # None = operate on all shards
         self.pool: Optional[AsyncConnectionPool] = None
-        
+
         if not HAS_PSYCOPG3:
             logger.warning(
                 "PGVectorStore is disabled: psycopg3 not installed. "
                 "Use FAISSStore for local vector search."
             )
-        
+
         if not connection_string:
             logger.warning(
                 "PGVectorStore initialized without connection string. "
                 "Call initialize() with connection_string to enable."
             )
-    
+
     async def initialize(self, connection_string: Optional[str] = None) -> None:
         """Initialize connection pool and create tables.
         
@@ -117,45 +117,45 @@ class PGVectorStore:
                 "PGVectorStore requires psycopg3. "
                 "Install: pip install psycopg[binary,pool]"
             )
-        
+
         conn_str = connection_string or self.connection_string
         if not conn_str:
             raise ValueError("connection_string required")
-        
+
         self.connection_string = conn_str
-        
+
         # Create async connection pool
         self.pool = AsyncConnectionPool(
             conn_str,
             min_size=2,
             max_size=self.pool_size,
         )
-        
+
         # Create shard tables
         await self._create_shard_tables()
-        
+
         logger.info(
             f"PGVectorStore initialized: {self.num_shards} shards, "
             f"pool size {self.pool_size}"
         )
-    
+
     async def _create_shard_tables(self) -> None:
         """Create shard tables with pgvector extension."""
         if not self.pool:
             raise RuntimeError("Pool not initialized")
-        
+
         target_shards = (
             [self.shard_id] if self.shard_id is not None
             else range(self.num_shards)
         )
-        
+
         async with self.pool.connection() as conn:
             # Enable pgvector extension
             await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
-            
+
             for shard_id in target_shards:
                 table_name = f"vectors_shard_{shard_id:02d}"
-                
+
                 # Create shard table with HNSW index
                 await conn.execute(f"""
                     CREATE TABLE IF NOT EXISTS {table_name} (
@@ -166,17 +166,17 @@ class PGVectorStore:
                         created_at TIMESTAMP DEFAULT NOW()
                     )
                 """)
-                
+
                 # Create HNSW index for fast similarity search
                 await conn.execute(f"""
                     CREATE INDEX IF NOT EXISTS {table_name}_embedding_idx
                     ON {table_name}
                     USING hnsw (embedding vector_cosine_ops)
                 """)
-                
+
             await conn.commit()
             logger.info(f"Created {len(target_shards)} shard tables")
-    
+
     async def search(
         self,
         query_vector: np.ndarray,
@@ -197,10 +197,10 @@ class PGVectorStore:
             raise RuntimeError(
                 "PGVectorStore not available in offline mode. Use FAISSStore."
             )
-        
+
         if not self.pool:
             raise RuntimeError("Call initialize() first")
-        
+
         # Determine target shards
         if self.shard_id is not None:
             shards_to_query = [self.shard_id]
@@ -208,24 +208,24 @@ class PGVectorStore:
             shards_to_query = target_shards
         else:
             shards_to_query = list(range(self.num_shards))
-        
+
         # Scatter: Query all shards in parallel
         tasks = [
             self._query_single_shard(shard_id, query_vector, top_k * 2)
             for shard_id in shards_to_query
         ]
         shard_results = await asyncio.gather(*tasks)
-        
+
         # Gather: Combine results from all shards
         all_results = []
         for shard_id, results in zip(shards_to_query, shard_results):
             all_results.extend(results)
-        
+
         # Global re-ranking by score
         all_results.sort(key=lambda r: r.score, reverse=True)
-        
+
         return all_results[:top_k]
-    
+
     async def _query_single_shard(
         self,
         shard_id: int,
@@ -244,9 +244,9 @@ class PGVectorStore:
         """
         if not self.pool:
             return []
-        
+
         table_name = f"vectors_shard_{shard_id:02d}"
-        
+
         async with self.pool.connection() as conn:
             # Execute local HNSW search on shard
             cursor = await conn.execute(
@@ -259,9 +259,9 @@ class PGVectorStore:
                 """,
                 (query_vector.tolist(), query_vector.tolist(), limit)
             )
-            
+
             rows = await cursor.fetchall()
-            
+
             return [
                 SearchResult(
                     document_id=row[0],
@@ -272,7 +272,7 @@ class PGVectorStore:
                 )
                 for row in rows
             ]
-    
+
     async def insert_batch(
         self,
         documents: List[Dict[str, Any]],
@@ -288,15 +288,15 @@ class PGVectorStore:
         """
         if not HAS_PSYCOPG3:
             raise RuntimeError("PGVectorStore not available")
-        
+
         if not self.pool:
             raise RuntimeError("Call initialize() first")
-        
+
         # Group documents by shard
         shard_groups: Dict[int, List[tuple]] = {
             i: [] for i in range(self.num_shards)
         }
-        
+
         for doc, emb in zip(documents, embeddings):
             if shard_mapper:
                 shard_id = shard_mapper(doc['id'])
@@ -314,18 +314,18 @@ class PGVectorStore:
                     # deterministic behavior across sessions/processes.
                     import hashlib
                     hash_val = int.from_bytes(
-                        hashlib.sha256(doc['id'].encode()).digest()[:8], 
+                        hashlib.sha256(doc['id'].encode()).digest()[:8],
                         'big'
                     )
                 shard_id = hash_val % self.num_shards
-            
+
             shard_groups[shard_id].append((
                 doc['id'],
                 emb.tolist(),
                 doc.get('content', ''),
                 doc.get('metadata', {}),
             ))
-        
+
         # Insert to each shard using pipeline
         tasks = [
             self._insert_to_shard(shard_id, docs)
@@ -333,9 +333,9 @@ class PGVectorStore:
             if docs
         ]
         await asyncio.gather(*tasks)
-        
+
         logger.info(f"Inserted {len(documents)} documents across {len(tasks)} shards")
-    
+
     async def _insert_to_shard(
         self,
         shard_id: int,
@@ -344,9 +344,9 @@ class PGVectorStore:
         """Insert documents to a single shard using pipeline."""
         if not self.pool:
             return
-        
+
         table_name = f"vectors_shard_{shard_id:02d}"
-        
+
         async with self.pool.connection() as conn:
             async with conn.pipeline():
                 for doc_id, embedding, content, metadata in documents:
@@ -362,13 +362,13 @@ class PGVectorStore:
                         (doc_id, embedding, content, metadata)
                     )
             await conn.commit()
-    
+
     async def close(self) -> None:
         """Close connection pool."""
         if self.pool:
             await self.pool.close()
             logger.info("PGVectorStore connection pool closed")
-    
+
     # Stub methods for backward compatibility
     def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
         """Stub: Use async insert_batch() instead."""

@@ -9,6 +9,7 @@ import pytest
 from codex_ml.utils.hf_pinning import load_from_pretrained
 
 pytest.importorskip("datasets")
+pytest.importorskip("torch")
 
 from src.training.datasets import to_hf_dataset  # noqa: E402
 

@@ -4,46 +4,67 @@ Unit tests for MLPScorer class.
 Tests MLP activation extraction, neuron importance scoring, and activation analysis.
 """
 
-import numpy as np
 import pytest
 
-import torch
-from src.codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
+# Graceful import handling for optional dependencies
+try:
+    import numpy as np
+
+    import torch
+    HAS_DEPS = True
+except ImportError:
+    HAS_DEPS = False
+    torch = None
+    np = None
+    pytestmark = pytest.mark.skip("Required dependencies (torch, numpy) not available")
+
+# Only import if dependencies are available
+if HAS_DEPS:
+    from src.codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
+else:
+    MLPAnalysis = None
+    MLPScorer = None
 
 
-class MockTransformerWithMLP(torch.nn.Module):
-    """Mock transformer model with MLP layers for testing."""
+# Conditional class definition - only define if torch is available
+if HAS_DEPS and torch is not None:
+    class MockTransformerWithMLP(torch.nn.Module):
+        """Mock transformer model with MLP layers for testing."""
 
-    def __init__(self, num_layers=2, hidden_dim=64, intermediate_dim=256):
-        super().__init__()
-        self.num_layers = num_layers
-        self.hidden_dim = hidden_dim
-        self.intermediate_dim = intermediate_dim
+        def __init__(self, num_layers=2, hidden_dim=64, intermediate_dim=256):
+            super().__init__()
+            self.num_layers = num_layers
+            self.hidden_dim = hidden_dim
+            self.intermediate_dim = intermediate_dim
 
-        # Create mock MLP layers
-        self.layers = torch.nn.ModuleList([
-            torch.nn.ModuleDict({
-                'mlp': torch.nn.Sequential(
-                    torch.nn.Linear(hidden_dim, intermediate_dim),
-                    torch.nn.GELU(),
-                    torch.nn.Linear(intermediate_dim, hidden_dim)
-                )
-            })
-            for _ in range(num_layers)
-        ])
+            # Create mock MLP layers
+            self.layers = torch.nn.ModuleList([
+                torch.nn.ModuleDict({
+                    'mlp': torch.nn.Sequential(
+                        torch.nn.Linear(hidden_dim, intermediate_dim),
+                        torch.nn.GELU(),
+                        torch.nn.Linear(intermediate_dim, hidden_dim)
+                    )
+                })
+                for _ in range(num_layers)
+            ])
 
-    def forward(self, input_ids, attention_mask=None):
-        batch_size = input_ids.size(0)
-        seq_len = input_ids.size(1)
+        def forward(self, input_ids, attention_mask=None):
+            batch_size = input_ids.size(0)
+            seq_len = input_ids.size(1)
 
-        # Generate mock hidden states
-        hidden = torch.randn(batch_size, seq_len, self.hidden_dim)
+            # Generate mock hidden states
+            hidden = torch.randn(batch_size, seq_len, self.hidden_dim)
 
-        # Pass through MLP layers
-        for layer in self.layers:
-            hidden = layer['mlp'](hidden)
+            # Pass through MLP layers
+            for layer in self.layers:
+                hidden = layer['mlp'](hidden)
 
-        return hidden
+            return hidden
+else:
+    # Dummy class when torch is not available
+    class MockTransformerWithMLP:
+        pass
 
 
 class TestMLPScorer:

@@ -1,13 +1,15 @@
 """Complete Feature Store tests."""
 
-import pytest
 import json
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime
+
+import pytest
+
 from codex_ml.features.feature_store import (
-    FeatureStore,
-    FeatureGroup,
     Feature,
+    FeatureGroup,
+    FeatureStore,
 )
 
 
@@ -91,7 +93,7 @@ class TestFeatureStoreComplete:
 
         time.sleep(0.1)
 
-        timestamp_between = datetime.now()
+        timestamp_between = datetime.now(UTC)
         time.sleep(0.1)
 
         # Create v2

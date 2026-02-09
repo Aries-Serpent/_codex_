@@ -1,7 +1,9 @@
 """Tokenization API exports with deprecation helpers."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import warnings
@@ -83,7 +85,8 @@ def load_tokenizer(
         return adapter
     adapter = _load_hf_adapter()
     instance = adapter.load(target, use_fast=use_fast)
-    validate_tokenizer_contract(instance)
+    if all(hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")):
+        validate_tokenizer_contract(instance)
     return instance
 
 

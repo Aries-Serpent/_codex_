@@ -49,32 +49,32 @@ def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> 
     """
     if prompt is None:
         return ""
-    
+
     # Convert to string if not already
     if not isinstance(prompt, str):
         prompt = str(prompt)
-    
+
     # Step 1: Remove control characters (U+0000 to U+001F and U+007F)
     # These include null bytes, carriage returns in middle of text, etc.
     prompt = re.sub(r'[\x00-\x1F\x7F]', '', prompt)
-    
+
     # Step 2: Remove ANSI escape sequences (terminal color codes, cursor movement)
     # Pattern handles both 2-character sequences and CSI (Control Sequence Introducer) sequences
     # Format: ESC followed by:
     #   - [@-Z\\-_] for 2-char sequences (Fe)
     #   - \[[0-?]*[ -/]*[@-~] for CSI sequences (most common)
     prompt = re.sub(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '', prompt)
-    
+
     # Step 3: Truncate to max_length if specified
     if max_length is not None:
         if not isinstance(max_length, int) or max_length < 0:
             raise ValueError(f"max_length must be a non-negative integer, got {max_length}")
         prompt = prompt[:max_length]
-    
+
     # Step 4: Escape HTML-sensitive characters for safe display
     # html.escape will replace &, <, >, " by default. Escape single-quote manually.
     escaped = html.escape(prompt, quote=True)
     # Optionally escape single quote for contexts that use single-quoted attributes
     escaped = escaped.replace("'", "&#x27;")
-    
+
     return escaped

@@ -7,7 +7,10 @@ Test module for cli logging integration.
 import json
 from pathlib import Path
 
-import torch
+import pytest
+
+# Skip entire module if torch is not available or unloadable
+torch = pytest.importorskip("torch", reason="PyTorch required for logging integration tests")
 from codex_ml.evaluation import cli as eval_cli
 from typer.testing import CliRunner
 
@@ -40,7 +43,7 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
         "logging": {"mlflow": False},
     }
     monkeypatch.setattr(eval_cli, "_load_config", lambda _: cfg)
-    
+
     # FIX: Check if build_loggers exists, otherwise create it temporarily
     if not hasattr(eval_cli, 'build_loggers'):
         # Function was refactored - inject mock for backward compatibility
@@ -52,7 +55,7 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
         monkeypatch.setattr(
             "codex_ml.evaluation.cli.build_loggers", lambda opts: [NoopLogger(tmp_path / "m.ndjson")]
         )
-    
+
     res = runner.invoke(eval_cli.app, ["run", "--config", str(tmp_path / "fake.json")])
     assert res.exit_code == 0
     assert (tmp_path / "m.ndjson").exists()

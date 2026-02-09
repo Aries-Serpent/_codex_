@@ -7,7 +7,6 @@ import time
 from pathlib import Path
 
 
-
 def test_aggregate_trends_basic(tmp_path: Path):
     """Test basic trend aggregation."""
     from scripts.space_traversal.trend_aggregator import aggregate_trends

@@ -9,9 +9,9 @@ Part of PS-05 Enhancement: Scope Validation Library - Priority 4
 from __future__ import annotations
 
 import logging
-from enum import Flag, auto
-from typing import Set, List, Optional
 from dataclasses import dataclass
+from enum import Flag, auto
+from typing import List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -44,44 +44,44 @@ class TokenScope(Flag):
         >>> scope.has(TokenScope.READ_REPO)
         True
     """
-    
+
     NONE = 0
-    
+
     # Repository scopes
     READ_REPO = auto()
     WRITE_REPO = auto()
     ADMIN_REPO = auto()
     DELETE_REPO = auto()
-    
+
     # Workflow scopes
     READ_WORKFLOW = auto()
     WRITE_WORKFLOW = auto()
     ADMIN_WORKFLOW = auto()
-    
+
     # Issues scopes
     READ_ISSUES = auto()
     WRITE_ISSUES = auto()
     ADMIN_ISSUES = auto()
-    
+
     # Packages scopes
     READ_PACKAGES = auto()
     WRITE_PACKAGES = auto()
     ADMIN_PACKAGES = auto()
-    
+
     # Organization scopes
     READ_ORG = auto()
     WRITE_ORG = auto()
     ADMIN_ORG = auto()
-    
+
     # User scopes
     READ_USER = auto()
     WRITE_USER = auto()
-    
+
     # Security scopes
     READ_SECURITY = auto()
     WRITE_SECURITY = auto()
     ADMIN_SECURITY = auto()
-    
+
     @classmethod
     def from_string(cls, scope: str) -> TokenScope:
         """Parse scope from string format.
@@ -102,7 +102,7 @@ class TokenScope(Flag):
             InvalidScopeError: If scope format is invalid
         """
         scope = scope.strip().lower()
-        
+
         # Mapping of string scopes to flags
         scope_map = {
             # Repository
@@ -111,48 +111,48 @@ class TokenScope(Flag):
             "repo:write": cls.WRITE_REPO | cls.READ_REPO,
             "repo:admin": cls.ADMIN_REPO | cls.WRITE_REPO | cls.READ_REPO,
             "repo:delete": cls.DELETE_REPO | cls.ADMIN_REPO | cls.WRITE_REPO | cls.READ_REPO,
-            
+
             # Workflow
             "workflow": cls.READ_WORKFLOW | cls.WRITE_WORKFLOW,
             "workflow:read": cls.READ_WORKFLOW,
             "workflow:write": cls.WRITE_WORKFLOW | cls.READ_WORKFLOW,
             "workflow:admin": cls.ADMIN_WORKFLOW | cls.WRITE_WORKFLOW | cls.READ_WORKFLOW,
-            
+
             # Issues
             "issues": cls.READ_ISSUES | cls.WRITE_ISSUES,
             "issues:read": cls.READ_ISSUES,
             "issues:write": cls.WRITE_ISSUES | cls.READ_ISSUES,
             "issues:admin": cls.ADMIN_ISSUES | cls.WRITE_ISSUES | cls.READ_ISSUES,
-            
+
             # Packages
             "packages": cls.READ_PACKAGES | cls.WRITE_PACKAGES,
             "packages:read": cls.READ_PACKAGES,
             "packages:write": cls.WRITE_PACKAGES | cls.READ_PACKAGES,
             "packages:admin": cls.ADMIN_PACKAGES | cls.WRITE_PACKAGES | cls.READ_PACKAGES,
-            
+
             # Organization
             "org": cls.READ_ORG | cls.WRITE_ORG,
             "org:read": cls.READ_ORG,
             "org:write": cls.WRITE_ORG | cls.READ_ORG,
             "org:admin": cls.ADMIN_ORG | cls.WRITE_ORG | cls.READ_ORG,
-            
+
             # User
             "user": cls.READ_USER | cls.WRITE_USER,
             "user:read": cls.READ_USER,
             "user:write": cls.WRITE_USER | cls.READ_USER,
-            
+
             # Security
             "security": cls.READ_SECURITY | cls.WRITE_SECURITY,
             "security:read": cls.READ_SECURITY,
             "security:write": cls.WRITE_SECURITY | cls.READ_SECURITY,
             "security:admin": cls.ADMIN_SECURITY | cls.WRITE_SECURITY | cls.READ_SECURITY,
         }
-        
+
         if scope not in scope_map:
             raise InvalidScopeError(f"Unknown scope: {scope}")
-        
+
         return scope_map[scope]
-    
+
     @classmethod
     def from_list(cls, scopes: List[str]) -> TokenScope:
         """Parse multiple scopes from list.
@@ -167,7 +167,7 @@ class TokenScope(Flag):
         for scope in scopes:
             result |= cls.from_string(scope)
         return result
-    
+
     def to_strings(self) -> Set[str]:
         """Convert scope flags to string representation.
         
@@ -175,7 +175,7 @@ class TokenScope(Flag):
             Set of scope strings
         """
         scopes = set()
-        
+
         # Map flags back to strings (simplified form)
         if self & TokenScope.READ_REPO:
             scopes.add("repo:read")
@@ -185,25 +185,25 @@ class TokenScope(Flag):
             scopes.add("repo:admin")
         if self & TokenScope.DELETE_REPO:
             scopes.add("repo:delete")
-        
+
         if self & TokenScope.READ_WORKFLOW:
             scopes.add("workflow:read")
         if self & TokenScope.WRITE_WORKFLOW:
             scopes.add("workflow:write")
         if self & TokenScope.ADMIN_WORKFLOW:
             scopes.add("workflow:admin")
-        
+
         if self & TokenScope.READ_ISSUES:
             scopes.add("issues:read")
         if self & TokenScope.WRITE_ISSUES:
             scopes.add("issues:write")
         if self & TokenScope.ADMIN_ISSUES:
             scopes.add("issues:admin")
-        
+
         # Add more as needed...
-        
+
         return scopes
-    
+
     def has(self, required: TokenScope) -> bool:
         """Check if this scope includes required permissions.
         
@@ -234,7 +234,7 @@ class ScopeValidator:
         >>> validator.require(TokenScope.READ_REPO)  # OK
         >>> validator.require(TokenScope.WRITE_WORKFLOW)  # Raises InsufficientScopeError
     """
-    
+
     def __init__(self, token_scopes: List[str] | TokenScope):
         """Initialize validator with token scopes.
         
@@ -245,9 +245,9 @@ class ScopeValidator:
             self.scopes = token_scopes
         else:
             self.scopes = TokenScope.from_list(token_scopes)
-        
+
         logger.debug(f"ScopeValidator initialized with: {self.scopes.to_strings()}")
-    
+
     def has_scope(self, required: TokenScope) -> bool:
         """Check if token has required scope.
         
@@ -258,7 +258,7 @@ class ScopeValidator:
             True if token has all required scopes
         """
         return self.scopes.has(required)
-    
+
     def has_any_scope(self, required_scopes: List[TokenScope]) -> bool:
         """Check if token has any of the required scopes.
         
@@ -269,7 +269,7 @@ class ScopeValidator:
             True if token has at least one of the required scopes
         """
         return any(self.has_scope(scope) for scope in required_scopes)
-    
+
     def require_scope(self, required: TokenScope) -> None:
         """Require specific scope, raising exception if not present.
         
@@ -287,7 +287,7 @@ class ScopeValidator:
                 f"Granted: {self.scopes.to_strings()}, "
                 f"Missing: {missing.to_strings()}"
             )
-    
+
     def require_any_scope(self, required_scopes: List[TokenScope]) -> None:
         """Require at least one of the specified scopes.
         
@@ -304,7 +304,7 @@ class ScopeValidator:
                 f"Need one of: {required_strings}, "
                 f"Granted: {self.scopes.to_strings()}"
             )
-    
+
     def validate(self, required: TokenScope) -> ScopeValidationResult:
         """Validate scope and return detailed result.
         
@@ -315,7 +315,7 @@ class ScopeValidator:
             ScopeValidationResult with validation details
         """
         has_scope = self.has_scope(required)
-        
+
         if has_scope:
             return ScopeValidationResult(
                 valid=True,
@@ -332,7 +332,7 @@ class ScopeValidator:
                 missing_scopes=missing,
                 message=f"Missing scopes: {missing.to_strings()}"
             )
-    
+
     def get_granted_scopes(self) -> Set[str]:
         """Get set of granted scope strings.
         

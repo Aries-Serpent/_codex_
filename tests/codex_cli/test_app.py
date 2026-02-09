@@ -11,9 +11,10 @@ Tests cover:
 Phase 48: Coverage improvement for 0% coverage module.
 """
 
-import pytest
 from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 
 class TestAppModule:
@@ -59,8 +60,8 @@ class TestTrackSmokeImpl:
     def test_track_smoke_impl_no_mlflow(self, mock_echo):
         """Test _track_smoke_impl when mlflow not available."""
         try:
-            from codex_cli.app import _track_smoke_impl, Exit
-            
+            from codex_cli.app import Exit, _track_smoke_impl
+
             with patch.dict("sys.modules", {"mlflow": None}):
                 with pytest.raises((Exit, SystemExit)):
                     _track_smoke_impl(None)
@@ -84,7 +85,7 @@ class TestSplitSmokeImpl:
         """Test _split_smoke_impl uses random when torch unavailable."""
         try:
             from codex_cli.app import _split_smoke_impl
-            
+
             # Should work even without torch by falling back to random
             try:
                 _split_smoke_impl(1337)
@@ -112,7 +113,7 @@ class TestCheckpointSmokeImpl:
         """Test _checkpoint_smoke_impl creates stub when torch unavailable."""
         try:
             from codex_cli.app import _checkpoint_smoke_impl
-            
+
             out_dir = tmp_path / "checkpoints"
             try:
                 _checkpoint_smoke_impl(out_dir)
@@ -245,7 +246,7 @@ class TestPathConstants:
     def test_curricula_root_under_template_root(self):
         """Test REASONING_CURRICULA_ROOT is under REASONING_TEMPLATE_ROOT."""
         try:
-            from codex_cli.app import REASONING_TEMPLATE_ROOT, REASONING_CURRICULA_ROOT
+            from codex_cli.app import REASONING_CURRICULA_ROOT, REASONING_TEMPLATE_ROOT
             # Curricula should be a subdirectory
             assert REASONING_TEMPLATE_ROOT in REASONING_CURRICULA_ROOT.parents
         except (ImportError, AssertionError):

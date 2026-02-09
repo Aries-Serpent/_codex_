@@ -6,9 +6,9 @@ Test module for cli config sweep.
 
 import hashlib
 
+import yaml
 from click.testing import CliRunner
 
-import yaml
 from codex_ml.cli.codex_cli import codex
 
 

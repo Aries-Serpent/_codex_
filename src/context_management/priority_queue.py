@@ -7,10 +7,10 @@ age-based degradation, and configurable priority levels.
 
 import heapq
 import math
-from typing import Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import IntEnum
+from typing import Any, Optional
 
 
 class Priority(IntEnum):

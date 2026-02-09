@@ -6,11 +6,10 @@ These checks ensure CPU-default allocations remain intact after meta tensor fixe
 from __future__ import annotations
 
 import builtins
+import sys
 import types
 from types import SimpleNamespace
 from typing import Callable, Dict, List
-
-import sys
 
 import pytest
 

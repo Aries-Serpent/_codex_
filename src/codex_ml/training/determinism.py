@@ -34,10 +34,10 @@ def set_seed(seed: int = 42) -> None:
         seed: Random seed value
     """
     random.seed(seed)
-    
+
     if NUMPY_AVAILABLE:
         np.random.seed(seed)
-    
+
     if TORCH_AVAILABLE:
         torch.manual_seed(seed)
         if torch.cuda.is_available():
@@ -79,7 +79,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True, seed: Option
             if seed is None:
                 seed = 42
             set_seed(seed)
-            
+
             # Enable CuDNN determinism
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False

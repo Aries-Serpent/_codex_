@@ -2,10 +2,10 @@
 Tests for RAG Indexer Module
 """
 
+import importlib.util
 import json
 import tempfile
 from pathlib import Path
-import importlib.util
 
 import numpy as np
 import pytest
@@ -351,14 +351,14 @@ class TestIndexerEdgeCases:
         """Test chunking with different sentence delimiters"""
         text = "First sentence.\nSecond sentence! Third sentence? Fourth sentence. "
         chunks = chunk_text(text, chunk_size=30, overlap=10)
-        
+
         assert len(chunks) > 0
 
     def test_chunk_text_with_no_delimiters(self):
         """Test chunking text with no sentence delimiters"""
         text = "a" * 500
         chunks = chunk_text(text, chunk_size=100, overlap=20)
-        
+
         assert len(chunks) > 0
 
     def test_persist_index_with_extensive_metadata(self):
@@ -366,13 +366,13 @@ class TestIndexerEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             chunks = [(0, 10, "Test")]
             embeddings = np.random.randn(1, 384).astype(np.float32)
-            
+
             metadata = {
                 "source": "test_source",
                 "version": "1.0",
                 "tags": ["test", "sample"],
             }
-            
+
             _ = persist_index(
                 index_name="rich_meta",
                 embeddings=embeddings,
@@ -381,13 +381,13 @@ class TestIndexerEdgeCases:
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             _, _, loaded_meta = load_index(
                 index_name="rich_meta",
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             assert loaded_meta["source"] == "test_source"
             assert loaded_meta["version"] == "1.0"
 
@@ -396,7 +396,7 @@ class TestIndexerEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             chunks = [(0, 10, "Test")]
             embeddings = np.random.randn(1, 384).astype(np.float32)
-            
+
             index_path = persist_index(
                 index_name="partial",
                 embeddings=embeddings,
@@ -404,16 +404,16 @@ class TestIndexerEdgeCases:
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             chunks_file = index_path / "chunks.json"
             chunks_file.unlink()
-            
+
             index, loaded_chunks, _ = load_index(
                 index_name="partial",
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             assert index is not None
             assert len(loaded_chunks) == 0
 
@@ -425,7 +425,7 @@ class TestManageTenantIndices:
         """Test with invalid operation"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -440,7 +440,7 @@ class TestManageTenantIndices:
         """Test CREATE operation without files parameter"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -455,7 +455,7 @@ class TestManageTenantIndices:
         """Test LIST operation with no indices"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -470,7 +470,7 @@ class TestManageTenantIndices:
         """Test DELETE operation on non-existent index"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -484,7 +484,7 @@ class TestManageTenantIndices:
         """Test MERGE operation without merge_name"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -499,7 +499,7 @@ class TestManageTenantIndices:
         """Test UPDATE operation without files parameter"""
         pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
         from codex.rag.indexer import manage_tenant_indices
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
                 tenant_id="test",
@@ -519,7 +519,7 @@ class TestEmbedChunksErrorPaths:
         embeddings = embed_chunks([])
         assert isinstance(embeddings, np.ndarray)
         assert len(embeddings) == 0
-        
+
     def test_embed_chunks_import_error_coverage(self):
         """
         Test to exercise ImportError path in embed_chunks.
@@ -552,17 +552,17 @@ class TestLoadIndexErrorPaths:
         """Test load_index when FAISS file is missing (line 247)"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create index directory structure but without FAISS file
             index_path = tmpdir / "test" / "test_index"
             index_path.mkdir(parents=True)
-            
+
             # Create metadata files but not index.faiss
             with open(index_path / "chunks.json", "w") as f:
                 json.dump([], f)
             with open(index_path / "metadata.json", "w") as f:
                 json.dump({}, f)
-            
+
             # Should raise FileNotFoundError for missing FAISS file
             with pytest.raises(FileNotFoundError, match="FAISS index file not found"):
                 load_index(
@@ -577,7 +577,7 @@ class TestLoadIndexErrorPaths:
             # Create a valid index first
             chunks = [(0, 10, "Test")]
             embeddings = np.random.randn(1, 384).astype(np.float32)
-            
+
             index_path = persist_index(
                 index_name="test",
                 embeddings=embeddings,
@@ -585,12 +585,12 @@ class TestLoadIndexErrorPaths:
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             # Corrupt the metadata.json
             metadata_file = index_path / "metadata.json"
             with open(metadata_file, "w") as f:
                 f.write("{invalid json content")
-            
+
             # Should raise JSONDecodeError
             with pytest.raises(json.JSONDecodeError):
                 load_index(
@@ -605,7 +605,7 @@ class TestLoadIndexErrorPaths:
             # Create a valid index first
             chunks = [(0, 10, "Test")]
             embeddings = np.random.randn(1, 384).astype(np.float32)
-            
+
             index_path = persist_index(
                 index_name="test",
                 embeddings=embeddings,
@@ -613,12 +613,12 @@ class TestLoadIndexErrorPaths:
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             # Corrupt the chunks.json
             chunks_file = index_path / "chunks.json"
             with open(chunks_file, "w") as f:
                 f.write("{invalid json")
-            
+
             # Should raise JSONDecodeError
             with pytest.raises(json.JSONDecodeError):
                 load_index(
@@ -631,22 +631,22 @@ class TestLoadIndexErrorPaths:
         """Test load_index with corrupted FAISS index file"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create index directory structure
             index_path = tmpdir / "test" / "test_index"
             index_path.mkdir(parents=True)
-            
+
             # Create a corrupted FAISS file
             faiss_file = index_path / "index.faiss"
             with open(faiss_file, "wb") as f:
                 f.write(b"corrupted data")
-            
+
             # Create valid JSON files
             with open(index_path / "chunks.json", "w") as f:
                 json.dump([], f)
             with open(index_path / "metadata.json", "w") as f:
                 json.dump({}, f)
-            
+
             # Should raise exception when reading corrupted FAISS index
             with pytest.raises(Exception):  # FAISS will raise various exceptions
                 load_index(
@@ -661,7 +661,7 @@ class TestLoadIndexErrorPaths:
             # Create a valid index first
             chunks = [(0, 10, "Test")]
             embeddings = np.random.randn(1, 384).astype(np.float32)
-            
+
             index_path = persist_index(
                 index_name="test",
                 embeddings=embeddings,
@@ -669,18 +669,18 @@ class TestLoadIndexErrorPaths:
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             # Remove metadata.json
             metadata_file = index_path / "metadata.json"
             metadata_file.unlink()
-            
+
             # Should load successfully with empty metadata
             index, loaded_chunks, metadata = load_index(
                 index_name="test",
                 tenant_id="test",
                 index_dir=tmpdir,
             )
-            
+
             assert index is not None
             assert len(loaded_chunks) == 1
             assert metadata == {}  # Empty dict when file missing

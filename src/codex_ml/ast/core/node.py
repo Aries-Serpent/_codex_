@@ -4,11 +4,11 @@ Core AST node data structures.
 Provides language-agnostic representations for AST nodes, source locations,
 and analysis findings.
 """
+import uuid
+import weakref
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import uuid
-import weakref
 
 
 @dataclass

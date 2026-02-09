@@ -4,8 +4,8 @@ Tests for Context Management System
 Comprehensive tests for all context management modules.
 """
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 
 class TestContextNormalizer:
@@ -193,7 +193,7 @@ class TestTokenBudgetEnforcer:
 
     def test_add_content(self):
         """Test adding content to budget."""
-        from src.context_management.budget import TokenBudgetEnforcer, ContentPriority
+        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=1000, soft_limit=800)
 
@@ -205,7 +205,7 @@ class TestTokenBudgetEnforcer:
 
     def test_budget_limits(self):
         """Test budget limit enforcement."""
-        from src.context_management.budget import TokenBudgetEnforcer, ContentPriority
+        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=100, soft_limit=80)
 
@@ -220,7 +220,7 @@ class TestTokenBudgetEnforcer:
 
     def test_get_context(self):
         """Test context retrieval."""
-        from src.context_management.budget import TokenBudgetEnforcer, ContentPriority
+        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer()
 
@@ -381,7 +381,7 @@ class TestContextObserver:
 
     def test_alerts(self):
         """Test alert generation."""
-        from src.context_management.observability import ContextObserver, AlertSeverity
+        from src.context_management.observability import AlertSeverity, ContextObserver
 
         observer = ContextObserver(enable_alerts=True)
 
@@ -457,10 +457,10 @@ class TestContextManagementIntegration:
         """Test full context management pipeline."""
         from src.context_management import (
             ContextNormalizer,
+            ContextObserver,
+            LoopGuardrail,
             SemanticDeduplicator,
             TokenBudgetEnforcer,
-            LoopGuardrail,
-            ContextObserver,
         )
         from src.context_management.budget import ContentPriority
 

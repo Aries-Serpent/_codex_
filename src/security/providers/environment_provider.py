@@ -10,16 +10,16 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime, UTC
-from typing import Optional, List, Dict, Any
+from datetime import UTC, datetime
+from typing import Any, Dict, List, Optional
 
 from security.providers.base import (
-    SecretProvider,
-    ProviderType,
-    SecretType,
-    SecretMetadata,
-    RotationResult,
     ProviderConfig,
+    ProviderType,
+    RotationResult,
+    SecretMetadata,
+    SecretProvider,
+    SecretType,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class EnvironmentProvider(SecretProvider):
         >>> provider.validate_secret("MY_SECRET")
         True
     """
-    
+
     def __init__(self, config: ProviderConfig):
         """Initialize environment provider.
         
@@ -50,12 +50,12 @@ class EnvironmentProvider(SecretProvider):
         self.config = config
         self.prefix = config.get("prefix", "")
         logger.info("Environment provider initialized")
-    
+
     @property
     def provider_type(self) -> ProviderType:
         """Get provider type."""
         return ProviderType.ENVIRONMENT
-    
+
     def rotate_secret(
         self,
         secret_id: str,
@@ -74,14 +74,14 @@ class EnvironmentProvider(SecretProvider):
             RotationResult with instructions
         """
         full_name = f"{self.prefix}{secret_id}"
-        
+
         if full_name not in os.environ:
             return RotationResult(
                 success=False,
                 old_secret_id=secret_id,
                 error_message=f"Environment variable {full_name} not found"
             )
-        
+
         return RotationResult(
             success=False,
             old_secret_id=secret_id,
@@ -90,7 +90,7 @@ class EnvironmentProvider(SecretProvider):
                 f"Manually update environment variable: {full_name}"
             )
         )
-    
+
     def validate_secret(
         self,
         secret_id: str,
@@ -107,15 +107,15 @@ class EnvironmentProvider(SecretProvider):
         """
         full_name = f"{self.prefix}{secret_id}"
         env_value = os.getenv(full_name)
-        
+
         if env_value is None:
             return False
-        
+
         if secret_value is not None:
             return env_value == secret_value
-        
+
         return True
-    
+
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get metadata for environment variable.
         
@@ -126,7 +126,7 @@ class EnvironmentProvider(SecretProvider):
             SecretMetadata with basic info
         """
         full_name = f"{self.prefix}{secret_id}"
-        
+
         return SecretMetadata(
             secret_id=secret_id,
             secret_type=SecretType.GENERIC,
@@ -138,7 +138,7 @@ class EnvironmentProvider(SecretProvider):
             tags={"source": "environment", "name": full_name},
             scopes=None,
         )
-    
+
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get expiration (always None for environment variables).
         
@@ -149,7 +149,7 @@ class EnvironmentProvider(SecretProvider):
             None (no expiration)
         """
         return None
-    
+
     def get_secret_value(self, secret_id: str) -> Optional[str]:
         """Get secret value from environment.
         
@@ -161,7 +161,7 @@ class EnvironmentProvider(SecretProvider):
         """
         full_name = f"{self.prefix}{secret_id}"
         return os.getenv(full_name)
-    
+
     def set_secret_value(self, secret_id: str, value: str) -> bool:
         """Set secret value in environment (for testing).
         
@@ -176,7 +176,7 @@ class EnvironmentProvider(SecretProvider):
         os.environ[full_name] = value
         logger.info("Set environment variable via EnvironmentSecretProvider")
         return True
-    
+
     def list_secrets(
         self,
         filter_tags: Optional[Dict[str, str]] = None
@@ -190,7 +190,7 @@ class EnvironmentProvider(SecretProvider):
             List of SecretMetadata for matching variables
         """
         secrets = []
-        
+
         for name in os.environ:
             if name.startswith(self.prefix):
                 # Remove prefix to get secret_id
@@ -201,5 +201,5 @@ class EnvironmentProvider(SecretProvider):
                 except Exception as e:
                     # Don't log environment variable names for security
                     logger.warning(f"Failed to get metadata for a secret: {type(e).__name__}")
-        
+
         return secrets

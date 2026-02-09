@@ -9,11 +9,11 @@ Part of Phase 3: Configuration Sprawl Resolution
 """
 from __future__ import annotations
 
-import os
 import logging
+import os
+import warnings
 from pathlib import Path
 from typing import Any, Dict, Optional
-import warnings
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class ConfigLoader:
     Deprecated directories (config/, config_legacy/, omegaconf/) are
     excluded by default and will log warnings if accessed.
     """
-    
+
     def __init__(
         self,
         config_dir: Optional[Path] = None,
@@ -66,7 +66,7 @@ class ConfigLoader:
         self.allow_deprecated = allow_deprecated
         self.strict_mode = strict_mode
         self._cache: Dict[str, Any] = {}
-        
+
         # Ensure primary config directory exists
         if not self.config_dir.exists():
             logger.warning(f"Primary config directory not found: {self.config_dir}")
@@ -74,9 +74,9 @@ class ConfigLoader:
             if CONFIG_DIRS["configs"].exists():
                 self.config_dir = CONFIG_DIRS["configs"]
                 logger.info(f"Using fallback config directory: {self.config_dir}")
-        
+
         logger.info(f"ConfigLoader initialized: {self.config_dir}")
-    
+
     def load(
         self,
         config_name: str,
@@ -95,18 +95,18 @@ class ConfigLoader:
             Loaded configuration as dictionary
         """
         cache_key = f"{config_path or ''}/{config_name}"
-        
+
         # Check cache
         if cache_key in self._cache and overrides is None:
             logger.debug(f"Loading from cache: {cache_key}")
             return self._cache[cache_key].copy()
-        
+
         # Construct full path
         if config_path:
             full_path = self.config_dir / config_path / config_name
         else:
             full_path = self.config_dir / config_name
-        
+
         # Try different extensions
         config_file = None
         for ext in [".yaml", ".yml", ".json", ".toml", ""]:
@@ -114,33 +114,33 @@ class ConfigLoader:
             if candidate.exists():
                 config_file = candidate
                 break
-        
+
         if not config_file:
             raise FileNotFoundError(
                 f"Configuration file not found: {config_name} "
                 f"in {config_path or self.config_dir}"
             )
-        
+
         # Load based on file type
         config = self._load_file(config_file)
-        
+
         # Apply overrides
         if overrides:
             config = self._apply_overrides(config, overrides)
-        
+
         # Cache result
         if overrides is None:
             self._cache[cache_key] = config.copy()
-        
+
         logger.debug(f"Loaded config: {cache_key}")
         return config
-    
+
     def _load_file(self, file_path: Path) -> Dict[str, Any]:
         """Load configuration file based on extension."""
         import json
-        
+
         suffix = file_path.suffix.lower()
-        
+
         try:
             if suffix in [".yaml", ".yml"]:
                 return self._load_yaml(file_path)
@@ -152,11 +152,11 @@ class ConfigLoader:
             else:
                 # Try YAML as default
                 return self._load_yaml(file_path)
-        
+
         except Exception as e:
             logger.error(f"Failed to load {file_path}: {e}")
             raise
-    
+
     def _load_yaml(self, file_path: Path) -> Dict[str, Any]:
         """Load YAML file."""
         try:
@@ -166,7 +166,7 @@ class ConfigLoader:
         except ImportError:
             logger.error("PyYAML not installed. Install with: pip install pyyaml")
             raise
-    
+
     def _load_toml(self, file_path: Path) -> Dict[str, Any]:
         """Load TOML file."""
         try:
@@ -176,7 +176,7 @@ class ConfigLoader:
         except ImportError:
             logger.error("tomli not installed. Install with: pip install tomli")
             raise
-    
+
     def _apply_overrides(
         self,
         config: Dict[str, Any],
@@ -184,22 +184,22 @@ class ConfigLoader:
     ) -> Dict[str, Any]:
         """Apply override values to configuration."""
         result = config.copy()
-        
+
         for key, value in overrides.items():
             # Support nested keys with dot notation (e.g., "model.hidden_size")
             if "." in key:
                 self._set_nested(result, key.split("."), value)
             else:
                 result[key] = value
-        
+
         return result
-    
+
     def _set_nested(self, d: Dict[str, Any], keys: List[str], value: Any) -> None:
         """Set nested dictionary value using list of keys."""
         for key in keys[:-1]:
             d = d.setdefault(key, {})
         d[keys[-1]] = value
-    
+
     def load_from_deprecated(self, directory: str, config_name: str) -> Dict[str, Any]:
         """
         Load from deprecated directory with warning.
@@ -222,15 +222,15 @@ class ConfigLoader:
             else:
                 warnings.warn(message, DeprecationWarning)
                 logger.warning(message)
-        
+
         # Load from deprecated location
         deprecated_dir = REPO_ROOT / directory
         if not deprecated_dir.exists():
             raise FileNotFoundError(f"Deprecated directory not found: {directory}")
-        
+
         full_path = deprecated_dir / config_name
         return self._load_file(full_path)
-    
+
     def get_env_var(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """
         Get environment variable with CODEX_ prefix.
@@ -244,7 +244,7 @@ class ConfigLoader:
         """
         env_key = ENV_VARS.get(key, f"CODEX_{key.upper()}")
         return os.environ.get(env_key, default)
-    
+
     def clear_cache(self) -> None:
         """Clear configuration cache."""
         self._cache.clear()
@@ -272,14 +272,14 @@ def get_config_loader(
         ConfigLoader instance
     """
     global _config_loader
-    
+
     if _config_loader is None:
         _config_loader = ConfigLoader(
             config_dir=config_dir,
             allow_deprecated=allow_deprecated,
             strict_mode=strict_mode
         )
-    
+
     return _config_loader
 
 
@@ -319,18 +319,18 @@ def detect_config_sprawl() -> Dict[str, List[str]]:
         Dictionary mapping directory names to lists of config files
     """
     results = {}
-    
+
     for name, path in CONFIG_DIRS.items():
         if not path.exists():
             continue
-        
+
         configs = []
         for ext in ["*.yaml", "*.yml", "*.json", "*.toml"]:
             configs.extend([str(f.relative_to(path)) for f in path.rglob(ext)])
-        
+
         if configs:
             results[name] = sorted(configs)
-    
+
     return results
 
 
@@ -342,38 +342,38 @@ def generate_migration_report() -> str:
         Markdown-formatted migration report
     """
     from datetime import datetime
-    
+
     sprawl = detect_config_sprawl()
-    
+
     report = ["# Configuration Sprawl Analysis\n"]
     report.append(f"**Analysis Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     report.append("## Summary\n")
-    
+
     total_files = sum(len(files) for files in sprawl.values())
     report.append(f"- **Total Config Files:** {total_files}\n")
     report.append(f"- **Directories:** {len(sprawl)}\n\n")
-    
+
     report.append("## Directory Breakdown\n")
-    
+
     for name, files in sprawl.items():
         status = "✅ Primary" if name == "primary" else "⚠️ Deprecated" if "deprecated" in name else "🔄 Secondary"
         report.append(f"\n### {name} - {status}\n")
         report.append(f"- **File Count:** {len(files)}\n")
         report.append(f"- **Path:** `{CONFIG_DIRS[name]}`\n")
-        
+
         if files:
             report.append("\n**Files:**\n")
             for f in files[:10]:  # Show first 10
                 report.append(f"- `{f}`\n")
             if len(files) > 10:
                 report.append(f"- ... and {len(files) - 10} more\n")
-    
+
     report.append("\n## Recommendations\n")
     report.append("1. Migrate all configs to `conf/` (primary)\n")
     report.append("2. Use `configs/` for application-specific runtime configs\n")
     report.append("3. Archive deprecated directories to `archive/removed/`\n")
     report.append("4. Update all import statements to use `load_config()`\n")
-    
+
     return "".join(report)
 
 

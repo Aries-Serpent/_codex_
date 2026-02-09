@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from utils.checkpointing import (
+from codex_ml.utils.checkpointing import (
     CheckpointManager,
     dump_rng_state,
     load_rng_state,

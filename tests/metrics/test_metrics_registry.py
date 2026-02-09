@@ -5,9 +5,17 @@ Tests for metrics registry and base metrics functionality
 import numpy as np
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 from src.codex_ml.metrics.base import BaseMetric
-from src.codex_ml.metrics.classification import StreamingAccuracy, accuracy, f1, precision, recall
+from src.codex_ml.metrics.classification import (
+    StreamingAccuracy,
+    accuracy,
+    f1,
+    precision,
+    recall,
+)
 from src.codex_ml.metrics.streaming import StreamingLoss
 
 
@@ -87,15 +95,15 @@ class TestStreamingMetrics:
         """Test StreamingAccuracy accumulates correctly"""
         metric = StreamingAccuracy()
 
-        # Batch 1: 3/4 correct
+        # Batch 1: 2/4 correct (indices 0,1 match)
         metric.update(torch.tensor([0, 1, 2, 0]), torch.tensor([0, 1, 0, 3]))
 
         # Batch 2: 2/2 correct
         metric.update(torch.tensor([1, 2]), torch.tensor([1, 2]))
 
-        # Overall: 5/6 correct
+        # Overall: 4/6 correct
         acc = metric.compute()
-        assert abs(acc - (5 / 6)) < 0.01
+        assert abs(acc - (4 / 6)) < 0.01
 
     def test_streaming_accuracy_reset(self):
         """Test StreamingAccuracy reset clears state"""

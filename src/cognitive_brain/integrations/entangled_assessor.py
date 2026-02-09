@@ -113,7 +113,7 @@ class EntangledComplianceSecurityAssessor:
         mgr = entanglement_mgr or entanglement_manager
         if mgr is None:
             raise ValueError("Either entanglement_mgr or entanglement_manager must be provided")
-        
+
         self.entanglement = mgr
         self.compliance = compliance_assessor
         self.security = security_scanner or MockSecurityScanner()

@@ -29,14 +29,14 @@ class TestDeployFunctions:
         """Test _load_yaml_file utility function."""
         try:
             from codex_ml.cli.deploy import _load_yaml_file
-            
+
             # Create temporary YAML file
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.yaml', delete=False
             ) as f:
                 yaml.dump({"test": "value", "nested": {"key": 123}}, f)
                 temp_path = Path(f.name)
-            
+
             try:
                 result = _load_yaml_file(temp_path)
                 assert result["test"] == "value"
@@ -50,14 +50,14 @@ class TestDeployFunctions:
         """Test _load_json_file utility function."""
         try:
             from codex_ml.cli.deploy import _load_json_file
-            
+
             # Create temporary JSON file
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.json', delete=False
             ) as f:
                 json.dump({"test": "value", "number": 42}, f)
                 temp_path = Path(f.name)
-            
+
             try:
                 result = _load_json_file(temp_path)
                 assert result["test"] == "value"
@@ -75,7 +75,7 @@ class TestDeployDryRun:
         """Test that dry_run=False raises RuntimeError."""
         try:
             from codex_ml.cli.deploy import run_deploy_dry_run
-            
+
             with pytest.raises(RuntimeError) as excinfo:
                 run_deploy_dry_run(
                     config_path=Path("/fake/config.yaml"),
@@ -91,14 +91,14 @@ class TestDeployDryRun:
         """Test that missing rollout_ring raises RuntimeError."""
         try:
             from codex_ml.cli.deploy import run_deploy_dry_run
-            
+
             # Create temp config without rollout_ring
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.yaml', delete=False
             ) as f:
                 yaml.dump({"pod": {"name": "test"}}, f)
                 config_path = Path(f.name)
-            
+
             try:
                 with pytest.raises(RuntimeError) as excinfo:
                     run_deploy_dry_run(
@@ -117,14 +117,14 @@ class TestDeployDryRun:
         """Test that missing run_metadata.json raises RuntimeError."""
         try:
             from codex_ml.cli.deploy import run_deploy_dry_run
-            
+
             # Create temp config with rollout_ring
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.yaml', delete=False
             ) as f:
                 yaml.dump({"pod": {"ring": "0A_base_"}}, f)
                 config_path = Path(f.name)
-            
+
             # Create temp metadata dir without run_metadata.json
             with tempfile.TemporaryDirectory() as temp_dir:
                 try:
@@ -163,7 +163,7 @@ class TestDeployValidation:
         """Test rollout_ring extraction from pod section."""
         try:
             from codex_ml.cli.deploy import _load_yaml_file
-            
+
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.yaml', delete=False
             ) as f:
@@ -174,7 +174,7 @@ class TestDeployValidation:
                     }
                 }, f)
                 config_path = Path(f.name)
-            
+
             try:
                 config = _load_yaml_file(config_path)
                 assert config["pod"]["ring"] == "0A_base_"
@@ -187,7 +187,7 @@ class TestDeployValidation:
         """Test rollout_ring extraction from top level."""
         try:
             from codex_ml.cli.deploy import _load_yaml_file
-            
+
             with tempfile.NamedTemporaryFile(
                 mode='w', suffix='.yaml', delete=False
             ) as f:
@@ -196,7 +196,7 @@ class TestDeployValidation:
                     "name": "test-deployment"
                 }, f)
                 config_path = Path(f.name)
-            
+
             try:
                 config = _load_yaml_file(config_path)
                 assert config["rollout_ring"] == "0B_base_"

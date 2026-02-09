@@ -23,7 +23,6 @@ from codex_ml.training.early_stopping import (
     inject_early_stopping,
 )
 
-
 # =============================================================================
 # Test Data & Fixtures
 # =============================================================================
@@ -76,7 +75,7 @@ def test_early_stopping_config_to_dict():
     """Test EarlyStoppingConfig.to_dict serialization."""
     config = EarlyStoppingConfig(patience=10, metric="eval_f1")
     config_dict = config.to_dict()
-    
+
     assert config_dict["patience"] == 10
     assert config_dict["metric"] == "eval_f1"
     assert config_dict["threshold"] == 0.0
@@ -95,7 +94,7 @@ def test_early_stopping_config_modes():
     """Test EarlyStoppingConfig with both min and max modes."""
     config_min = EarlyStoppingConfig(mode="min")
     config_max = EarlyStoppingConfig(mode="max")
-    
+
     assert config_min.mode == "min"
     assert config_max.mode == "max"
 
@@ -116,7 +115,7 @@ def test_codex_early_stopping_callback_with_config():
     """Test CodexEarlyStoppingCallback with custom config."""
     config = EarlyStoppingConfig(patience=7, threshold=0.01)
     callback = CodexEarlyStoppingCallback(config=config)
-    
+
     assert callback.config.patience == 7
     assert callback.config.threshold == 0.01
 
@@ -125,7 +124,7 @@ def test_codex_early_stopping_callback_override_patience():
     """Test CodexEarlyStoppingCallback overrides patience parameter."""
     config = EarlyStoppingConfig(patience=3)
     callback = CodexEarlyStoppingCallback(config=config, early_stopping_patience=10)
-    
+
     assert callback.config.patience == 10
 
 
@@ -133,7 +132,7 @@ def test_codex_early_stopping_callback_override_threshold():
     """Test CodexEarlyStoppingCallback overrides threshold parameter."""
     config = EarlyStoppingConfig(threshold=0.0)
     callback = CodexEarlyStoppingCallback(config=config, early_stopping_threshold=0.005)
-    
+
     assert callback.config.threshold == 0.005
 
 
@@ -142,7 +141,7 @@ def test_codex_callback_uses_hf_callback(mock_hf_callback):
     """Test CodexEarlyStoppingCallback wraps HF callback when available."""
     mock_instance = MagicMock()
     mock_hf_callback.return_value = mock_instance
-    
+
     callback = CodexEarlyStoppingCallback()
     assert callback.is_hf_callback is True
     assert callback.callback is mock_instance
@@ -163,10 +162,10 @@ def test_codex_callback_getattr_delegation():
         mock_instance = MagicMock()
         mock_instance.some_method = Mock(return_value=42)
         mock_hf.return_value = mock_instance
-        
+
         callback = CodexEarlyStoppingCallback()
         result = callback.some_method()
-        
+
         assert result == 42
 
 
@@ -179,7 +178,7 @@ def test_inject_early_stopping_empty_list():
     """Test inject_early_stopping adds callback to empty list."""
     callbacks = []
     result = inject_early_stopping(callbacks)
-    
+
     assert len(result) == 1
     assert isinstance(result[0], CodexEarlyStoppingCallback)
 
@@ -189,7 +188,7 @@ def test_inject_early_stopping_with_config():
     config = EarlyStoppingConfig(patience=15)
     callbacks = []
     result = inject_early_stopping(callbacks, config=config)
-    
+
     assert result[0].config.patience == 15
 
 
@@ -197,9 +196,9 @@ def test_inject_early_stopping_already_present():
     """Test inject_early_stopping skips if already present."""
     existing_callback = CodexEarlyStoppingCallback()
     callbacks = [existing_callback]
-    
+
     result = inject_early_stopping(callbacks)
-    
+
     # Should not add another one
     assert len(result) == 1
 
@@ -209,9 +208,9 @@ def test_inject_early_stopping_detects_hf_callback(mock_hf_callback):
     """Test inject_early_stopping detects HuggingFace callback."""
     mock_instance = mock_hf_callback.return_value
     callbacks = [mock_instance]
-    
+
     result = inject_early_stopping(callbacks)
-    
+
     # Should detect existing callback
     assert len(result) == 1
 
@@ -220,9 +219,9 @@ def test_inject_early_stopping_force_flag():
     """Test inject_early_stopping with force=True adds even if present."""
     existing_callback = CodexEarlyStoppingCallback()
     callbacks = [existing_callback]
-    
+
     result = inject_early_stopping(callbacks, force=True)
-    
+
     # Should add another one due to force=True
     assert len(result) == 2
 
@@ -232,9 +231,9 @@ def test_inject_early_stopping_preserves_other_callbacks():
     other_callback1 = MagicMock()
     other_callback2 = MagicMock()
     callbacks = [other_callback1, other_callback2]
-    
+
     result = inject_early_stopping(callbacks)
-    
+
     assert len(result) == 3
     assert other_callback1 in result
     assert other_callback2 in result
@@ -253,7 +252,7 @@ def test_auto_inject_with_eval_dataset(mock_eval_dataset):
         eval_dataset=mock_eval_dataset,
         callbacks=callbacks
     )
-    
+
     assert len(result) == 1
     assert isinstance(result[0], CodexEarlyStoppingCallback)
 
@@ -266,7 +265,7 @@ def test_auto_inject_without_eval_dataset():
         eval_dataset=None,
         callbacks=callbacks
     )
-    
+
     # Should not inject if no eval dataset
     assert len(result) == 0
 
@@ -278,7 +277,7 @@ def test_auto_inject_with_none_callbacks(mock_eval_dataset):
         eval_dataset=mock_eval_dataset,
         callbacks=None
     )
-    
+
     assert len(result) == 1
 
 
@@ -291,7 +290,7 @@ def test_auto_inject_with_custom_config(mock_eval_dataset):
         callbacks=[],
         config=config
     )
-    
+
     assert result[0].config.patience == 20
     assert result[0].config.metric == "eval_accuracy"
 
@@ -300,13 +299,13 @@ def test_auto_inject_preserves_existing_callbacks(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer preserves callbacks."""
     existing = MagicMock()
     callbacks = [existing]
-    
+
     result = auto_inject_early_stopping_for_trainer(
         trainer_class="Trainer",
         eval_dataset=mock_eval_dataset,
         callbacks=callbacks
     )
-    
+
     assert existing in result
     assert len(result) == 2
 
@@ -324,7 +323,7 @@ def test_early_stopping_config_validation():
         EarlyStoppingConfig(threshold=0.0),
         EarlyStoppingConfig(threshold=1.0),
     ]
-    
+
     for config in configs:
         assert config.patience >= 1 or config.patience == configs[0].patience
 
@@ -333,7 +332,7 @@ def test_callback_chain_integration(mock_eval_dataset):
     """Test full callback injection chain."""
     # Start with empty callbacks
     callbacks = []
-    
+
     # Auto-inject for trainer
     callbacks = auto_inject_early_stopping_for_trainer(
         trainer_class="Trainer",
@@ -341,7 +340,7 @@ def test_callback_chain_integration(mock_eval_dataset):
         callbacks=callbacks,
         config=EarlyStoppingConfig(patience=5)
     )
-    
+
     assert len(callbacks) == 1
     assert callbacks[0].config.patience == 5
 
@@ -349,15 +348,15 @@ def test_callback_chain_integration(mock_eval_dataset):
 def test_multiple_injection_attempts():
     """Test multiple injection attempts don't duplicate."""
     callbacks = []
-    
+
     # First injection
     callbacks = inject_early_stopping(callbacks)
     assert len(callbacks) == 1
-    
+
     # Second injection (should skip)
     callbacks = inject_early_stopping(callbacks)
     assert len(callbacks) == 1
-    
+
     # Third injection with force
     callbacks = inject_early_stopping(callbacks, force=True)
     assert len(callbacks) == 2
@@ -371,10 +370,10 @@ def test_early_stopping_config_serialization_round_trip():
         metric="eval_bleu",
         mode="max"
     )
-    
+
     config_dict = original.to_dict()
     restored = EarlyStoppingConfig(**config_dict)
-    
+
     assert restored.patience == original.patience
     assert restored.threshold == original.threshold
     assert restored.metric == original.metric

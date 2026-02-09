@@ -7,7 +7,6 @@ Part of deployment-infrastructure capability maturity improvement.
 from pathlib import Path
 
 import pytest
-
 import yaml
 
 

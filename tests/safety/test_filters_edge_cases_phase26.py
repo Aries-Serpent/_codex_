@@ -12,13 +12,15 @@ Comprehensive edge case testing for safety filters covering:
 Part of Phase 26: Coverage 70% → 75-80%
 """
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
+
 from codex_ml.safety.filters import (
-    SafetyFilters,
-    sanitize_prompt,
-    sanitize_output,
     REDACT_PLACEHOLDER,
+    SafetyFilters,
+    sanitize_output,
+    sanitize_prompt,
 )
 
 
@@ -75,7 +77,7 @@ class TestSafetyFiltersEdgeCases:
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
             assert result.allowed is True
-            assert REDACT_PLACEHOLDER in result.sanitized_text or result.flagged
+            assert REDACT_PLACEHOLDER in result.sanitized_text or len(result.matches) > 0
 
     def test_regex_dos_prevention(self):
         """Test that regex patterns don't cause ReDoS."""
@@ -196,7 +198,7 @@ class TestClassifierIntegrationEdgeCases:
         mock_module = Mock()
         mock_module.check = mock_classifier.check
         mock_import.return_value = mock_module
-        
+
         with patch.dict('os.environ', {'CODEX_SAFETY_CLASSIFIER': 'mock.classifier.check'}):
             filters = SafetyFilters.from_defaults()
             text = "test input"
@@ -319,18 +321,18 @@ class TestConcurrencyEdgeCases:
         """Test that filters work with threading (basic check)."""
         filters = SafetyFilters.from_defaults()
         import threading
-        
+
         results = []
         def worker(text):
             result = sanitize_prompt(text, filters=filters)
             results.append(result)
-        
+
         threads = [threading.Thread(target=worker, args=(f"text{i}",)) for i in range(10)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(results) == 10
         assert all(r.sanitized_text is not None for r in results)
 

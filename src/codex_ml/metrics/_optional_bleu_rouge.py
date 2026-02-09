@@ -12,8 +12,9 @@ Usage:
     patch_registry(BUILTIN)  # adds 'bleu','rouge_l' if deps present
 """
 
-from typing import Optional
 import logging
+from typing import Optional
+
 logger = logging.getLogger(__name__)
 
 

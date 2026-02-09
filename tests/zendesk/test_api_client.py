@@ -12,13 +12,11 @@ All tests use mocked responses - no real Zendesk API calls.
 
 from __future__ import annotations
 
-
 import pytest
 import responses
 from responses import matchers
 
 from src.zendesk.api_client import ZendeskAPIClient, ZendeskConfig
-
 
 # ==============================================================================
 # FIXTURES

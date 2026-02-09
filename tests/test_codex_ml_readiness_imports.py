@@ -11,7 +11,8 @@ import types
 
 import pytest
 
-
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 @pytest.fixture(autouse=True)
 def stub_optional_dependencies(monkeypatch, tmp_path):
     """Stub heavy/optional deps so imports remain lightweight."""
@@ -253,14 +254,14 @@ def test_tokenization_modules(module_name, monkeypatch):
 
 
 def test_safety_and_deployment_imports():
+    import codex_ml.deployment.package as package
+    import codex_ml.detectors.capability_detectors as capability_detectors
+    import codex_ml.detectors.experiment_summary as exp_summary
     import codex_ml.safety.moderation as moderation
     import codex_ml.safety.redaction as redaction
-    import codex_ml.safety.sanitizers as sanitizers
     import codex_ml.safety.sandbox as sandbox
-    import codex_ml.deployment.package as package
+    import codex_ml.safety.sanitizers as sanitizers
     import codex_ml.serving.deployment as serving
-    import codex_ml.detectors.experiment_summary as exp_summary
-    import codex_ml.detectors.capability_detectors as capability_detectors
 
     settings = moderation.ModerationSettings(enabled=False)
     decision = moderation.ModerationDecision(approved=True, stage="test", provider="offline")

@@ -7,6 +7,7 @@ Test module for logging config.
 #!/usr/bin/env python3
 """Tests for codex.logging.config module."""
 from pathlib import Path
+
 from src.codex.logging.config import DEFAULT_LOG_DB
 
 

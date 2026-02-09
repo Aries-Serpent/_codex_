@@ -52,34 +52,34 @@ def create_server_context(
     """
     cert_path = Path(cert_path)
     key_path = Path(key_path)
-    
+
     # Validate certificate files exist
     if not cert_path.exists():
         raise TLSConfigError(f"Server certificate not found: {cert_path}")
     if not key_path.exists():
         raise TLSConfigError(f"Server key not found: {key_path}")
-    
+
     # Create context for server with TLS 1.3 minimum
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.minimum_version = ssl.TLSVersion.TLSv1_3
-    
+
     # Load server certificate and key
     try:
         context.load_cert_chain(str(cert_path), str(key_path))
     except ssl.SSLError as e:
         raise TLSConfigError(f"Failed to load server certificate: {e}") from e
-    
+
     # Configure client authentication if required (mTLS)
     if require_client_cert:
         if ca_path is None:
             raise TLSConfigError(
                 "CA certificate required for client authentication"
             )
-        
+
         ca_path = Path(ca_path)
         if not ca_path.exists():
             raise TLSConfigError(f"CA certificate not found: {ca_path}")
-        
+
         context.verify_mode = ssl.CERT_REQUIRED
         try:
             context.load_verify_locations(str(ca_path))
@@ -87,14 +87,14 @@ def create_server_context(
             raise TLSConfigError(f"Failed to load CA certificate: {e}") from e
     else:
         context.verify_mode = ssl.CERT_NONE
-    
+
     # Security hardening
     context.check_hostname = False  # We verify client certs, not hostnames
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
-    
+
     # TLS 1.3 ciphersuites are secure by default (AES-GCM, ChaCha20-Poly1305)
     # No need to explicitly configure them as they're built into TLS 1.3
-    
+
     logger.info(
         f"Created server TLS context (client cert required: {require_client_cert})"
     )
@@ -131,7 +131,7 @@ def create_client_context(
     cert_path = Path(cert_path)
     key_path = Path(key_path)
     ca_path = Path(ca_path)
-    
+
     # Validate certificate files exist
     if not cert_path.exists():
         raise TLSConfigError(f"Client certificate not found: {cert_path}")
@@ -139,33 +139,33 @@ def create_client_context(
         raise TLSConfigError(f"Client key not found: {key_path}")
     if not ca_path.exists():
         raise TLSConfigError(f"CA certificate not found: {ca_path}")
-    
+
     # Create context for client with TLS 1.3 minimum
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.minimum_version = ssl.TLSVersion.TLSv1_3
-    
+
     # Load client certificate and key for mTLS
     try:
         context.load_cert_chain(str(cert_path), str(key_path))
     except ssl.SSLError as e:
         raise TLSConfigError(f"Failed to load client certificate: {e}") from e
-    
+
     # Load CA certificate for server verification
     context.verify_mode = ssl.CERT_REQUIRED
     try:
         context.load_verify_locations(str(ca_path))
     except ssl.SSLError as e:
         raise TLSConfigError(f"Failed to load CA certificate: {e}") from e
-    
+
     # Configure hostname checking
     context.check_hostname = check_hostname
-    
+
     # Security hardening
     context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
-    
+
     # TLS 1.3 ciphersuites are secure by default (AES-GCM, ChaCha20-Poly1305)
     # No need to explicitly configure them as they're built into TLS 1.3
-    
+
     logger.info("Created client TLS context")
     return context
 

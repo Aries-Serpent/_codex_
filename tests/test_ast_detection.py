@@ -3,8 +3,8 @@
 import tempfile
 from pathlib import Path
 
-from tools.dupinv.ast_parsers.python_parser import PythonASTParser
 from tools.dupinv.ast_detector import ASTDetector
+from tools.dupinv.ast_parsers.python_parser import PythonASTParser
 
 
 def test_function_extraction():

@@ -202,8 +202,8 @@ class TestOptimizerSetup:
         # Zero gradients
         optimizer.zero_grad()
 
-        # Check gradients are zeroed
-        assert torch.all(simple_model.weight.grad == 0)
+        # Check gradients are zeroed (set to None by zero_grad)
+        assert simple_model.weight.grad is None
 
     def test_optimizer_step(self, simple_model):
         """Test optimizer step updates parameters."""
@@ -237,8 +237,9 @@ class TestLearningRateScheduling:
         """Fixture providing optimizer with simple model."""
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
-        import torch.nn as nn
         import torch.optim as optim
+
+        import torch.nn as nn
 
         model = nn.Linear(10, 2)
         optimizer = optim.Adam(model.parameters(), lr=0.1)
@@ -366,10 +367,10 @@ class TestTrainingLoopIntegration:
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
         import torch.optim as optim
-        from torch.utils.data import DataLoader, TensorDataset
 
         import torch
         import torch.nn as nn
+        from torch.utils.data import DataLoader, TensorDataset
 
         # Model
         model = nn.Linear(10, 2)

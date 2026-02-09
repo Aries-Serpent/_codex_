@@ -57,7 +57,7 @@ class TestOpenDb:
         """Test opening database from environment variable."""
         db_path = str(tmp_path / "env_test.db")
         os.environ["CODEX_DB_PATH"] = db_path
-        
+
         conn = open_db()
         assert conn is not None
         conn.close()
@@ -139,9 +139,9 @@ class TestListTables:
         conn = sqlite3.connect(":memory:")
         conn.execute("CREATE TABLE users (id INTEGER)")
         conn.execute("CREATE TABLE logs (id INTEGER)")
-        
+
         tables = list_tables(conn)
-        
+
         assert "users" in tables
         assert "logs" in tables
         assert len(tables) == 2
@@ -161,9 +161,9 @@ class TestGetColumns:
         """Test getting columns from table."""
         conn = sqlite3.connect(":memory:")
         conn.execute("CREATE TABLE users (id INTEGER, name TEXT, email TEXT)")
-        
+
         columns = get_columns(conn, "users")
-        
+
         assert "id" in columns
         assert "name" in columns
         assert "email" in columns
@@ -174,9 +174,9 @@ class TestGetColumns:
         """Test that column names preserve case."""
         conn = sqlite3.connect(":memory:")
         conn.execute("CREATE TABLE test (ID INTEGER, UserName TEXT)")
-        
+
         columns = get_columns(conn, "test")
-        
+
         assert "ID" in columns
         assert "UserName" in columns
         conn.close()
@@ -203,9 +203,9 @@ class TestInferProbableTable:
         conn = sqlite3.connect(":memory:")
         conn.execute("CREATE TABLE random (id INTEGER)")
         conn.execute("CREATE TABLE session_events (id INTEGER, ts TEXT)")
-        
+
         result = infer_table(conn)
-        
+
         assert result == "session_events"
         conn.close()
 
@@ -214,9 +214,9 @@ class TestInferProbableTable:
         conn = sqlite3.connect(":memory:")
         conn.execute("CREATE TABLE random (id INTEGER)")
         conn.execute("CREATE TABLE logs (id INTEGER)")
-        
+
         result = infer_table(conn)
-        
+
         assert result == "logs"
         conn.close()
 
@@ -234,9 +234,9 @@ class TestInferProbableTable:
             )
         """)
         conn.execute("CREATE TABLE other (id INTEGER)")
-        
+
         result = infer_table(conn)
-        
+
         assert result == "my_logs"
         conn.close()
 
@@ -261,9 +261,9 @@ class TestInferColumns:
                 role TEXT
             )
         """)
-        
+
         result = infer_columns(conn, "logs")
-        
+
         assert result["timestamp"] == "timestamp"
         assert result["message"] == "message"
         assert result["role"] == "role"
@@ -280,9 +280,9 @@ class TestInferColumns:
                 speaker TEXT
             )
         """)
-        
+
         result = infer_columns(conn, "logs")
-        
+
         # Should find variants
         assert result["timestamp"] == "ts"
         assert result["message"] == "content"

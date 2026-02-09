@@ -5,12 +5,13 @@ Implements priority-based context pruning with configurable strategies
 for different content types.
 """
 
-from typing import Optional, Callable
 import logging
+from typing import Callable, Optional
+
 logger = logging.getLogger(__name__)
+import re
 from dataclasses import dataclass, field
 from enum import IntEnum
-import re
 
 
 class PruneStrategy(IntEnum):

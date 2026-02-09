@@ -34,7 +34,10 @@ def test_registry_persistence(tmp_path):
 
 
 def test_model_comparison_and_rollback(tmp_path):
-    from codex_ml.training.continuous_learning import ContinuousLearningPipeline, ModelVersion
+    from codex_ml.training.continuous_learning import (
+        ContinuousLearningPipeline,
+        ModelVersion,
+    )
 
     registry_path = tmp_path / "registry.json"
     pipeline = ContinuousLearningPipeline(

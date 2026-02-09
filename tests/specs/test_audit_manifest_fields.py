@@ -32,7 +32,6 @@ def test_manifest_contains_integrity_chain_and_weights(tmp_path):
     # Dependencies are optional
     try:
         import jinja2  # noqa: F401
-
         import yaml  # noqa: F401
     except Exception:
         pytest.skip("pyyaml/jinja2 not installed in test env")

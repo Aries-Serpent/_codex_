@@ -9,7 +9,7 @@ class TestDistributedTraining:
         """Test distributed world size."""
         # Arrange
         world_size = 4
-        
+
         # Assert
         assert world_size > 0
 
@@ -18,7 +18,7 @@ class TestDistributedTraining:
         # Arrange
         rank = 0
         world_size = 4
-        
+
         # Assert
         assert 0 <= rank < world_size
 
@@ -26,7 +26,7 @@ class TestDistributedTraining:
         """Test distributed local rank."""
         # Arrange
         local_rank = 0
-        
+
         # Assert
         assert local_rank >= 0
 
@@ -34,7 +34,7 @@ class TestDistributedTraining:
         """Test NCCL backend for distributed training."""
         # Arrange
         backend = "nccl"
-        
+
         # Assert
         assert backend == "nccl"
 
@@ -42,7 +42,7 @@ class TestDistributedTraining:
         """Test Gloo backend for distributed training."""
         # Arrange
         backend = "gloo"
-        
+
         # Assert
         assert backend == "gloo"
 
@@ -50,7 +50,7 @@ class TestDistributedTraining:
         """Test data parallel model wrapping."""
         # Arrange
         use_ddp = True
-        
+
         # Assert
         assert use_ddp is True
 
@@ -58,7 +58,7 @@ class TestDistributedTraining:
         """Test gradient accumulation steps."""
         # Arrange
         gradient_accumulation_steps = 4
-        
+
         # Assert
         assert gradient_accumulation_steps > 0
 
@@ -66,7 +66,7 @@ class TestDistributedTraining:
         """Test gradient synchronization."""
         # Arrange
         sync_gradients = True
-        
+
         # Assert
         assert sync_gradients is True
 
@@ -74,7 +74,7 @@ class TestDistributedTraining:
         """Test model sharding."""
         # Arrange
         shard_strategy = "zero3"
-        
+
         # Assert
         assert shard_strategy in ["zero1", "zero2", "zero3"]
 
@@ -82,7 +82,7 @@ class TestDistributedTraining:
         """Test checkpoint saving on all ranks."""
         # Arrange
         save_on_all_ranks = False  # Usually only rank 0 saves
-        
+
         # Assert
         assert save_on_all_ranks is False
 
@@ -90,7 +90,7 @@ class TestDistributedTraining:
         """Test distributed sampler."""
         # Arrange
         use_distributed_sampler = True
-        
+
         # Assert
         assert use_distributed_sampler is True
 
@@ -98,7 +98,7 @@ class TestDistributedTraining:
         """Test batch size per GPU."""
         # Arrange
         per_device_batch_size = 8
-        
+
         # Assert
         assert per_device_batch_size > 0
 
@@ -109,7 +109,7 @@ class TestDistributedTraining:
         world_size = 4
         grad_accum = 2
         effective = per_device * world_size * grad_accum
-        
+
         # Assert
         assert effective == 64
 
@@ -119,7 +119,7 @@ class TestDistributedTraining:
         base_lr = 1e-4
         scale_factor = 4
         scaled_lr = base_lr * scale_factor
-        
+
         # Assert
         assert scaled_lr == 4e-4
 
@@ -127,7 +127,7 @@ class TestDistributedTraining:
         """Test communication timeout."""
         # Arrange
         timeout_minutes = 30
-        
+
         # Assert
         assert timeout_minutes > 0
 
@@ -135,7 +135,7 @@ class TestDistributedTraining:
         """Test find unused parameters option."""
         # Arrange
         find_unused = False
-        
+
         # Assert
         assert find_unused is False
 
@@ -143,7 +143,7 @@ class TestDistributedTraining:
         """Test broadcast buffers option."""
         # Arrange
         broadcast = True
-        
+
         # Assert
         assert broadcast is True
 
@@ -151,7 +151,7 @@ class TestDistributedTraining:
         """Test mixed precision in distributed training."""
         # Arrange
         use_amp = True
-        
+
         # Assert
         assert use_amp is True
 
@@ -159,7 +159,7 @@ class TestDistributedTraining:
         """Test gradient clipping in distributed."""
         # Arrange
         max_grad_norm = 1.0
-        
+
         # Assert
         assert max_grad_norm > 0
 
@@ -167,7 +167,7 @@ class TestDistributedTraining:
         """Test all-reduce operation."""
         # Arrange
         op = "sum"
-        
+
         # Assert
         assert op in ["sum", "mean", "max", "min"]
 
@@ -175,7 +175,7 @@ class TestDistributedTraining:
         """Test barrier synchronization."""
         # Arrange
         use_barrier = True
-        
+
         # Assert
         assert use_barrier is True
 
@@ -183,6 +183,6 @@ class TestDistributedTraining:
         """Test process group creation."""
         # Arrange
         init_method = "env://"
-        
+
         # Assert
         assert init_method.startswith("env://") or init_method.startswith("tcp://")

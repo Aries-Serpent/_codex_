@@ -11,7 +11,7 @@ Components:
 
 from __future__ import annotations
 
-from .inferer import infer_intent, IntentSpec
+from .inferer import IntentSpec, infer_intent
 from .llm_client import CodexLLMClient
 
 __all__ = [

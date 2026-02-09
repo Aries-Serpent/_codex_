@@ -46,21 +46,21 @@ class SaaSKnowledgeLoader:
         if repo_root is None:
             # Auto-detect from this file's location
             repo_root = Path(__file__).resolve().parents[3]
-        
+
         self.repo_root = Path(repo_root)
-        
+
         self.zendesk_docs_root = (
             Path(zendesk_docs_root)
             if zendesk_docs_root
             else self.repo_root / "docs" / "vendors" / "zendesk"
         )
-        
+
         self.zendesk_index_path = (
             Path(zendesk_index_path)
             if zendesk_index_path
             else self.repo_root / "data" / "zendesk_api_index.json"
         )
-        
+
         self.d365_policies_path = (
             Path(d365_policies_path)
             if d365_policies_path
@@ -76,17 +76,17 @@ class SaaSKnowledgeLoader:
         if not self.zendesk_docs_root.exists():
             logger.warning(f"Zendesk docs root not found: {self.zendesk_docs_root}")
             return None
-        
+
         # Find dated directories (YYYY-MM-DD format)
         sync_dirs = [
             d for d in self.zendesk_docs_root.iterdir()
             if d.is_dir() and d.name.replace("-", "").isdigit()
         ]
-        
+
         if not sync_dirs:
             logger.warning("No Zendesk sync directories found")
             return None
-        
+
         # Sort by name (ISO date format sorts correctly)
         latest = sorted(sync_dirs, reverse=True)[0]
         logger.info(f"Latest Zendesk sync: {latest}")
@@ -101,7 +101,7 @@ class SaaSKnowledgeLoader:
         if not self.zendesk_index_path.exists():
             logger.warning(f"Zendesk index not found: {self.zendesk_index_path}")
             return {}
-        
+
         try:
             with self.zendesk_index_path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -120,7 +120,7 @@ class SaaSKnowledgeLoader:
         if not self.d365_policies_path.exists():
             logger.warning(f"D365 policies not found: {self.d365_policies_path}")
             return {}
-        
+
         try:
             with self.d365_policies_path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -146,19 +146,19 @@ class SaaSKnowledgeLoader:
             List of training document dictionaries with metadata
         """
         documents = []
-        
+
         if include_zendesk:
             latest_sync = self.get_latest_zendesk_sync()
             if latest_sync:
                 # Collect HTML files
                 html_files = list(latest_sync.rglob("*.html"))
                 logger.info(f"Found {len(html_files)} Zendesk documents")
-                
+
                 for html_file in html_files:
                     # Extract section/bucket from path
                     rel_path = html_file.relative_to(latest_sync)
                     parts = rel_path.parts
-                    
+
                     documents.append({
                         "source": "zendesk",
                         "path": str(html_file),
@@ -167,12 +167,12 @@ class SaaSKnowledgeLoader:
                         "sync_date": latest_sync.name,
                         "type": "documentation",
                     })
-        
+
         if include_d365:
             policies = self.load_d365_policies()
             policy_list = policies.get("policies", [])
             logger.info(f"Found {len(policy_list)} D365 policies")
-            
+
             for policy in policy_list:
                 documents.append({
                     "source": "dynamics365",
@@ -182,7 +182,7 @@ class SaaSKnowledgeLoader:
                     "type": "policy",
                     "version": policy.get("version", "1.0.0"),
                 })
-        
+
         logger.info(f"Collected {len(documents)} training documents")
         return documents
 
@@ -207,18 +207,18 @@ class SaaSKnowledgeLoader:
             include_zendesk=include_zendesk,
             include_d365=include_d365,
         )
-        
+
         # Create output directory
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write JSONL
         with output_path.open("w", encoding="utf-8") as f:
             for doc in documents:
                 f.write(json.dumps(doc) + "\n")
-        
+
         logger.info(f"Created training dataset: {output_path}")
         logger.info(f"  - {len(documents)} documents")
-        
+
         # Create metadata file
         metadata = {
             "created_at": datetime.now().isoformat(),
@@ -229,13 +229,13 @@ class SaaSKnowledgeLoader:
             },
             "zendesk_sync": str(self.get_latest_zendesk_sync()) if include_zendesk else None,
         }
-        
+
         metadata_path = output_path.with_suffix(".meta.json")
         with metadata_path.open("w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2)
-        
+
         logger.info(f"Created metadata: {metadata_path}")
-        
+
         return output_path
 
 

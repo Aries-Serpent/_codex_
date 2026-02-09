@@ -104,7 +104,7 @@ class JSONLMemoryBackend(MemoryProtocol):
 
         entries = []
         found = False
-        
+
         # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
             fcntl.flock(f.fileno(), fcntl.LOCK_SH)
@@ -122,7 +122,7 @@ class JSONLMemoryBackend(MemoryProtocol):
                         entries.append(line)
             finally:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-        
+
         # Write with exclusive lock if found
         if found:
             with open(self.storage_path, "w", encoding="utf-8") as f:
@@ -132,17 +132,17 @@ class JSONLMemoryBackend(MemoryProtocol):
                     f.flush()
                 finally:
                     fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-        
+
         return found
-    
+
     def clear_session(self, session_id: str) -> int:
         """Remove all entries for a session (with file locking)."""
         if not self.storage_path.exists():
             return 0
-        
+
         entries = []
         deleted_count = 0
-        
+
         # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
             fcntl.flock(f.fileno(), fcntl.LOCK_SH)
@@ -160,7 +160,7 @@ class JSONLMemoryBackend(MemoryProtocol):
                         entries.append(line)
             finally:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-        
+
         # Write with exclusive lock if any deleted
         if deleted_count > 0:
             with open(self.storage_path, "w", encoding="utf-8") as f:
@@ -170,20 +170,20 @@ class JSONLMemoryBackend(MemoryProtocol):
                     f.flush()
                 finally:
                     fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-        
+
         return deleted_count
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get storage statistics."""
         if not self.storage_path.exists():
             return {"entry_count": 0, "size_bytes": 0}
-        
+
         entry_count = 0
         with open(self.storage_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     entry_count += 1
-        
+
         return {
             "entry_count": entry_count,
             "size_bytes": self.storage_path.stat().st_size,
@@ -200,19 +200,19 @@ class SQLiteMemoryBackend(MemoryProtocol):
     Args:
         db_path: Path to the SQLite database file
     """
-    
+
     def __init__(self, db_path: Path | str):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Create database with secure permissions
         if not self.db_path.exists():
             # Create file with owner-only permissions (0o600)
             fd = os.open(self.db_path, os.O_CREAT | os.O_WRONLY, 0o600)
             os.close(fd)
-        
+
         self._init_db()
-    
+
     def _init_db(self) -> None:
         """Initialize database schema."""
         with sqlite3.connect(self.db_path) as conn:
@@ -232,7 +232,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
             conn.execute("CREATE INDEX IF NOT EXISTS idx_session_id ON memories(session_id)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON memories(timestamp)")
             conn.commit()
-    
+
     def store(self, entry: MemoryEntry) -> None:
         """Store entry in SQLite with timezone-aware timestamps."""
         with sqlite3.connect(self.db_path) as conn:
@@ -246,7 +246,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=timezone.utc)
                 timestamp_str = dt.isoformat()
-            
+
             conn.execute(
                 """
                 INSERT OR REPLACE INTO memories 
@@ -264,35 +264,35 @@ class SQLiteMemoryBackend(MemoryProtocol):
                 ),
             )
             conn.commit()
-    
+
     def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve entries using SQL queries."""
         sql = "SELECT * FROM memories WHERE 1=1"
         params = []
-        
+
         if query.agent_id:
             sql += " AND agent_id = ?"
             params.append(query.agent_id)
-        
+
         if query.session_id:
             sql += " AND session_id = ?"
             params.append(query.session_id)
-        
+
         if query.since:
             sql += " AND timestamp >= ?"
             params.append(query.since.isoformat())
-        
+
         if query.text:
             sql += " AND content LIKE ?"
             params.append(f"%{query.text}%")
-        
+
         sql += " ORDER BY timestamp DESC LIMIT ?"
         params.append(query.limit)
-        
+
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(sql, params)
-            
+
             entries = []
             for row in cursor:
                 entries.append(
@@ -306,29 +306,29 @@ class SQLiteMemoryBackend(MemoryProtocol):
                         "embedding": json.loads(row["embedding"]) if row["embedding"] else None,
                     })
                 )
-            
+
             return entries
-    
+
     def delete(self, entry_id: UUID) -> bool:
         """Delete entry by ID."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("DELETE FROM memories WHERE id = ?", (str(entry_id),))
             conn.commit()
             return cursor.rowcount > 0
-    
+
     def clear_session(self, session_id: str) -> int:
         """Delete all entries for a session."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("DELETE FROM memories WHERE session_id = ?", (session_id,))
             conn.commit()
             return cursor.rowcount
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get database statistics."""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM memories")
             entry_count = cursor.fetchone()[0]
-            
+
             return {
                 "entry_count": entry_count,
                 "size_bytes": self.db_path.stat().st_size if self.db_path.exists() else 0,

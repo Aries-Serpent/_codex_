@@ -52,7 +52,7 @@ class TestBaseMetric:
     def test_concrete_implementation_works(self) -> None:
         """Concrete subclass should work correctly."""
         metric = ConcreteMetric()
-        
+
         metric.update([1.0, 2.0, 3.0], None)
         assert metric.compute() == 2.0  # average of [1, 2, 3]
 
@@ -73,10 +73,10 @@ class TestBaseMetric:
     def test_multiple_updates(self) -> None:
         """Multiple updates should accumulate correctly."""
         metric = ConcreteMetric()
-        
+
         metric.update([1.0, 2.0], None)  # sum=3, count=2
         metric.update([3.0, 4.0], None)  # sum=10, count=4
-        
+
         assert metric.compute() == 2.5  # 10/4
 
     def test_single_value_update(self) -> None:
@@ -90,16 +90,16 @@ class TestBaseMetric:
         class KwargsMetric(BaseMetric):
             def __init__(self) -> None:
                 self.received_kwargs: dict = {}
-            
+
             def update(self, preds: Any, labels: Any, **kwargs) -> None:
                 self.received_kwargs = kwargs
-            
+
             def compute(self) -> Any:
                 return self.received_kwargs
-            
+
             def reset(self) -> None:
                 self.received_kwargs = {}
-        
+
         metric = KwargsMetric()
         metric.update(None, None, loss=1.0, step=5)
         result = metric.compute()
@@ -127,8 +127,8 @@ class TestMetricInterface:
         class IncompleteMetric(BaseMetric):
             def update(self, preds: Any, labels: Any, **kwargs) -> None:
                 pass
-            
+
             # Missing compute and reset
-        
+
         with pytest.raises(TypeError):
             IncompleteMetric()  # type: ignore[abstract]

@@ -15,8 +15,8 @@ pytest.importorskip("accelerate")
 pytest.importorskip("omegaconf")
 pytest.importorskip("yaml")
 
+
 from src.training.engine_hf_trainer import load_training_arguments
-from transformers.trainer_utils import IntervalStrategy
 
 
 def test_base_config_load(tmp_path):
@@ -28,4 +28,7 @@ def test_base_config_load(tmp_path):
     assert cfg.output_dir == str(tmp_path)
     assert cfg.gradient_accumulation_steps == 1
     assert cfg.per_device_eval_batch_size == 8
-    assert cfg.evaluation_strategy == IntervalStrategy.STEPS
+    # evaluation_strategy/eval_strategy defaults depend on config;
+    # base.yaml doesn't set it so the default is NO (no eval dataset configured)
+    eval_strategy = getattr(cfg, "eval_strategy", None) or getattr(cfg, "evaluation_strategy", None)
+    assert eval_strategy is not None

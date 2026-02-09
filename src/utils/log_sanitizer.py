@@ -49,10 +49,10 @@ def sanitize_log_input(value: Any, max_length: int = 500) -> str:
     """
     if value is None:
         return "None"
-    
+
     # Convert to string
     str_value = str(value)
-    
+
     # Remove ANSI escape codes (terminal color codes, etc.) before stripping control chars
     sanitized = re.sub(r'\x1b\[[0-9;]*m', '', str_value)
     sanitized = re.sub(r'\[[0-9;]*m', '', sanitized)
@@ -61,11 +61,11 @@ def sanitize_log_input(value: Any, max_length: int = 500) -> str:
     # \\x00-\\x1f: C0 control characters
     # \\x7f-\\x9f: DEL and C1 control characters
     sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', sanitized)
-    
+
     # Truncate to max length
     if len(sanitized) > max_length:
         sanitized = sanitized[:max_length] + '...[truncated]'
-    
+
     return sanitized
 
 
@@ -73,6 +73,7 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
     """
     Sanitize all values in a dictionary for logging.
     
+    Recursively sanitizes nested dictionaries.
     Useful for logging request/response bodies or configuration objects
     that may contain user-controlled data.
     
@@ -87,10 +88,16 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
         >>> sanitize_dict_for_log({"user": "test\\ninjection", "id": 123})
         {'user': 'testinjection', 'id': '123'}
     """
-    return {
-        key: sanitize_log_input(value, max_length)
-        for key, value in data.items()
-    }
+    def _sanitize_value(value: Any) -> Any:
+        """Recursively sanitize a value."""
+        if isinstance(value, dict):
+            return {k: _sanitize_value(v) for k, v in value.items()}
+        elif isinstance(value, (list, tuple)):
+            return type(value)(_sanitize_value(item) for item in value)
+        else:
+            return sanitize_log_input(value, max_length)
+
+    return _sanitize_value(data)
 
 
 # Shorthand alias for convenience

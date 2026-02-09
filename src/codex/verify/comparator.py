@@ -72,7 +72,7 @@ class ComparisonResult:
     comparisons: list[ComparisonDetail] = field(default_factory=list)
     flakiness_check: dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -92,7 +92,7 @@ class ComparisonResult:
             "flakiness_check": self.flakiness_check,
             "timestamp": self.timestamp.isoformat(),
         }
-    
+
     def save(self, path: Path) -> None:
         """Save comparison result to JSON file."""
         with path.open("w", encoding="utf-8") as f:
@@ -108,13 +108,13 @@ def _normalize_output(output: str, mode: ComparisonMode) -> str:
     """Normalize output based on comparison mode."""
     if mode == ComparisonMode.STRICT:
         return output
-    
+
     if mode == ComparisonMode.FUZZY:
         # Normalize whitespace
         lines = output.strip().split("\n")
         lines = [line.strip() for line in lines if line.strip()]
         return "\n".join(sorted(lines))
-    
+
     if mode == ComparisonMode.SEMANTIC:
         # More aggressive normalization
         import re
@@ -123,7 +123,7 @@ def _normalize_output(output: str, mode: ComparisonMode) -> str:
         normalized = re.sub(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', '<UUID>', normalized)
         normalized = re.sub(r'0x[0-9a-f]+', '<ADDR>', normalized)
         return normalized.strip()
-    
+
     return output
 
 
@@ -142,10 +142,10 @@ def _run_script(
     env = os.environ.copy()
     env["PYTHONHASHSEED"] = "42"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
-    
+
     if env_overrides:
         env.update(env_overrides)
-    
+
     script_path = script_path.resolve()
     if not script_path.exists():
         return "", f"Script not found: {script_path}", -1
@@ -154,11 +154,11 @@ def _run_script(
 
     python_exe = Path(sys.executable).resolve()
     cmd = [str(python_exe), str(script_path)]
-    
+
     stdin_content = None
     if input_file and input_file.exists():
         stdin_content = input_file.read_text(encoding="utf-8")
-    
+
     try:
         # Security: Using Python interpreter from PATH to execute script_path which is
         # validated to be a Path object. The input_file content and arguments should be
@@ -194,10 +194,10 @@ def _compare_outputs(
     """
     norm_baseline = _normalize_output(baseline, mode)
     norm_patched = _normalize_output(patched, mode)
-    
+
     if norm_baseline == norm_patched:
         return True, None
-    
+
     # Generate diff
     import difflib
     diff = difflib.unified_diff(
@@ -206,7 +206,7 @@ def _compare_outputs(
         fromfile="baseline",
         tofile="patched",
     )
-    
+
     return False, "".join(diff)
 
 
@@ -240,7 +240,7 @@ def compare(
     comparisons: list[ComparisonDetail] = []
     all_baseline_output = ""
     all_patched_output = ""
-    
+
     # Find entry points (look for main.py or __main__.py)
     baseline_entry = None
     for candidate in ["main.py", "__main__.py"]:
@@ -248,18 +248,18 @@ def compare(
         if path.exists():
             baseline_entry = path
             break
-    
+
     if not baseline_entry:
         # Find any .py file
         py_files = list(baseline_dir.glob("*.py"))
         if py_files:
             baseline_entry = py_files[0]
-    
+
     patched_entry = None
     if baseline_entry:
         rel_path = baseline_entry.relative_to(baseline_dir)
         patched_entry = patched_dir / rel_path
-    
+
     if not baseline_entry or not patched_entry or not patched_entry.exists():
         return ComparisonResult(
             result="warn",
@@ -272,30 +272,30 @@ def compare(
                 error="Could not find entry point script",
             )],
         )
-    
+
     # Run without inputs first
     inputs_to_test = sample_inputs or [None]
-    
+
     for input_file in inputs_to_test:
         input_ref = str(input_file) if input_file else "(no input)"
-        
+
         # Run baseline
         baseline_stdout, baseline_stderr, baseline_code = _run_script(
             baseline_entry, input_file, timeout
         )
         baseline_output = baseline_stdout + baseline_stderr
         all_baseline_output += baseline_output
-        
+
         # Run patched
         patched_stdout, patched_stderr, patched_code = _run_script(
             patched_entry, input_file, timeout
         )
         patched_output = patched_stdout + patched_stderr
         all_patched_output += patched_output
-        
+
         # Compare
         match, diff = _compare_outputs(baseline_output, patched_output, mode)
-        
+
         detail = ComparisonDetail(
             input_ref=input_ref,
             mode=mode,
@@ -304,14 +304,14 @@ def compare(
             patched_output=patched_output[:1000],
             diff=diff,
         )
-        
+
         # Check exit codes
         if baseline_code != patched_code:
             detail.result = "divergence"
             detail.diff = f"Exit code mismatch: baseline={baseline_code}, patched={patched_code}"
-        
+
         comparisons.append(detail)
-    
+
     # Flakiness check (run multiple times)
     flakiness_results = {"runs": flakiness_runs, "consistent": True}
     if flakiness_runs > 1:
@@ -319,22 +319,22 @@ def compare(
         for _ in range(flakiness_runs):
             stdout, stderr, _ = _run_script(baseline_entry, None, timeout)
             outputs.append(_normalize_output(stdout + stderr, mode))
-        
+
         if len(set(outputs)) > 1:
             flakiness_results["consistent"] = False
             logger.warning("Flaky baseline detected: %d unique outputs", len(set(outputs)))
-    
+
     # Determine overall result
     has_divergence = any(c.result == "divergence" for c in comparisons)
     has_error = any(c.result == "error" for c in comparisons)
-    
+
     if has_error:
         overall_result = "warn"
     elif has_divergence:
         overall_result = "fail"
     else:
         overall_result = "pass"
-    
+
     return ComparisonResult(
         result=overall_result,
         baseline_hash=_hash_output(all_baseline_output),
@@ -363,7 +363,7 @@ def generate_tests(
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     generated_files: list[Path] = []
-    
+
     # Generate test file
     test_content = '''"""
 Auto-generated behavior snapshot tests.
@@ -384,7 +384,7 @@ class TestBehaviorSnapshots:
     def golden_dir(self):
         return Path("{golden_dir}")
 '''
-    
+
     # Add test cases for each input/output pair
     for i, (input_path, output_path) in enumerate(zip(sample_inputs, golden_outputs)):
         # Use string concatenation to avoid format issues with nested braces
@@ -409,7 +409,7 @@ class TestBehaviorSnapshots:
         assert result.stdout.strip() == expected.strip()
 '''
         test_content += test_method
-    
+
     test_file = output_dir / "test_behavior_snapshot.py"
     test_file.write_text(
         test_content.format(
@@ -419,8 +419,8 @@ class TestBehaviorSnapshots:
         ),
         encoding="utf-8",
     )
-    
+
     generated_files.append(test_file)
     logger.info("Generated %d test files", len(generated_files))
-    
+
     return generated_files

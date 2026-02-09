@@ -14,8 +14,8 @@ Note: These tests are designed to work once the Rust library is built with matur
 For now, they serve as documentation and will be executed in CI.
 """
 
-import unittest
 import sys
+import unittest
 from pathlib import Path
 
 # Add project to path
@@ -24,12 +24,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestSwarmIntegration(unittest.TestCase):
     """Integration tests for swarm engine."""
-    
+
     def test_swarm_creation_and_basic_operations(self):
         """Test basic swarm creation and operations."""
         # This will work once codex_swarm is built
         # from codex_swarm import SwarmEngine
-        
+
         # For now, document the expected behavior
         expected_behavior = """
         swarm = SwarmEngine(100)
@@ -40,7 +40,7 @@ class TestSwarmIntegration(unittest.TestCase):
         assert processed == 1000
         """
         self.assertIsNotNone(expected_behavior)
-    
+
     def test_500_agents_10k_tasks(self):
         """
         Integration Test: 500 agents × 10,000 tasks
@@ -66,7 +66,7 @@ class TestSwarmIntegration(unittest.TestCase):
         assert throughput > 5000, f"Throughput: {throughput:.0f} tasks/s"
         """
         self.assertIsNotNone(expected_test)
-    
+
     def test_compression_integration(self):
         """Test compression in full pipeline."""
         expected_test = """
@@ -87,7 +87,7 @@ class TestSwarmIntegration(unittest.TestCase):
         assert ratio >= 10, f"Compression ratio: {ratio:.1f}x"
         """
         self.assertIsNotNone(expected_test)
-    
+
     def test_concurrent_access_patterns(self):
         """Test multiple concurrent operations."""
         expected_test = """
@@ -108,7 +108,7 @@ class TestSwarmIntegration(unittest.TestCase):
         assert all(results), "All workers should succeed"
         """
         self.assertIsNotNone(expected_test)
-    
+
     def test_error_recovery_integration(self):
         """Test error handling and recovery."""
         expected_test = """
@@ -141,7 +141,7 @@ class TestSwarmIntegration(unittest.TestCase):
 
 class TestTaskManagerIntegration(unittest.TestCase):
     """Integration tests for task manager."""
-    
+
     def test_task_lifecycle(self):
         """Test complete task lifecycle."""
         expected_test = """
@@ -164,7 +164,7 @@ class TestTaskManagerIntegration(unittest.TestCase):
 
 class TestMetricsIntegration(unittest.TestCase):
     """Integration tests for metrics collection."""
-    
+
     def test_metrics_collection(self):
         """Test metrics are collected correctly."""
         # This documents expected metrics integration
@@ -188,12 +188,12 @@ def main():
     print("Note: These tests document expected behavior.")
     print("They will execute once the Rust library is built with maturin.")
     print()
-    
+
     # Run tests
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
-    
+
     return 0 if result.wasSuccessful() else 1
 
 

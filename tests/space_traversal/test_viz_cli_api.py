@@ -445,8 +445,9 @@ def test_wiki_has_sidebar(tmp_path: Path):
 
 def test_create_wiki_bundle(tmp_path: Path):
     """Test wiki bundle creation."""
-    from scripts.space_traversal.wiki_generator import create_wiki_bundle
     import zipfile
+
+    from scripts.space_traversal.wiki_generator import create_wiki_bundle
 
     wiki_dir = tmp_path / "wiki"
     bundle_path = tmp_path / "wiki_bundle.zip"
@@ -498,8 +499,9 @@ def test_usage_tracker_record_run(tmp_path: Path):
 
 def test_usage_tracker_get_summary(tmp_path: Path):
     """Test getting usage summary."""
-    from scripts.space_traversal.actions_usage_tracker import UsageTracker
     from datetime import datetime
+
+    from scripts.space_traversal.actions_usage_tracker import UsageTracker
 
     tracker = UsageTracker(tmp_path / "usage.json")
     tracker.record_run(

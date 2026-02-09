@@ -10,7 +10,7 @@ from pathlib import Path
 def test_telemetry_rollover(tmp_path: Path, monkeypatch):
     # Set max items to 1 so the second event triggers rollover
     monkeypatch.setenv("CODEX_TELEMETRY_MAX_ITEMS", "1")
-    
+
     try:
         from src.codex_ml.train_loop import run_training
     except ImportError as e:
@@ -48,7 +48,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
     if not telem.exists():
         import pytest
         pytest.skip("telemetry.json not created - telemetry may be disabled")
-        
+
     rolled = list(outdir.glob("telemetry-*.json"))
     # Either rollover produced a file, or truncation fallback kept a single-element JSON
     if not rolled:

@@ -11,15 +11,16 @@ Tests cover:
 
 from __future__ import annotations
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Test security core if available
 try:
     from src.security.core import (
-        validate_input,
-        sanitize_path,
         check_permissions,
+        sanitize_path,
+        validate_input,
     )
     HAS_SECURITY_CORE = True
 except ImportError:
@@ -28,8 +29,8 @@ except ImportError:
 # Test content filters
 try:
     from src.security.content_filters import (
-        sanitize_html,
         filter_sql_injection,
+        sanitize_html,
         validate_email,
     )
     HAS_CONTENT_FILTERS = True
@@ -137,30 +138,30 @@ class TestSecurityPatterns:
         import logging
 
         logger = logging.getLogger("security_test")
-        
+
         # Simulate a function that should not log passwords
         password = "secret123"
         logger.info("User authentication successful")
-        
+
         # Check logs don't contain password
         assert password not in caplog.text
 
     def test_sanitize_log_message(self) -> None:
         """Test log message sanitization."""
         from src.utils.log_sanitizer import sanitize_log
-        
+
         sensitive_msg = "Error: API key abc123def456 failed"
         sanitized = sanitize_log(sensitive_msg)
-        
+
         # API keys should be redacted
         assert "abc123def456" not in sanitized or sanitized == sensitive_msg
 
     def test_path_validation_absolute_only(self) -> None:
         """Test path validation enforces absolute paths."""
-        from src.security.core import enforce_absolute_path, SecurityError
-        
+        from src.security.core import SecurityError, enforce_absolute_path
+
         relative_path = "../dangerous/path"
-        
+
         # Relative paths should be rejected in security contexts
         with pytest.raises((ValueError, SecurityError)):
             enforce_absolute_path(relative_path)
@@ -172,18 +173,18 @@ class TestEncryptionUtilities:
     def test_encrypt_decrypt_roundtrip(self) -> None:
         """Test encryption and decryption roundtrip."""
         try:
-            from src.security.encryption import encrypt, decrypt, generate_key
-            
+            from src.security.encryption import decrypt, encrypt, generate_key
+
             # Generate proper 32-byte key
             key = generate_key()
-            
+
             # Use bytes for plaintext (note the 'b' prefix)
             plaintext = b"sensitive data"
-            
+
             # Encrypt and decrypt
             encrypted = encrypt(plaintext, key)
             decrypted = decrypt(encrypted, key)
-            
+
             # Verify roundtrip
             assert decrypted == plaintext
             assert encrypted != plaintext
@@ -194,13 +195,13 @@ class TestEncryptionUtilities:
         """Test password hashing."""
         try:
             from src.security.encryption import hash_password, verify_password
-            
+
             password = "mypassword123"
             hashed = hash_password(password)
-            
+
             # Hash should be different from password
             assert hashed != password
-            
+
             # Verification should work
             assert verify_password(password, hashed) is True
             assert verify_password("wrong", hashed) is False
@@ -215,9 +216,9 @@ class TestSecretsManagement:
         """Test retrieving secret from environment."""
         try:
             from src.security.secrets import get_secret
-            
+
             monkeypatch.setenv("TEST_SECRET", "secret_value")
-            
+
             secret = get_secret("TEST_SECRET")
             assert secret == "secret_value"
         except ImportError:
@@ -227,7 +228,7 @@ class TestSecretsManagement:
         """Test missing secret raises error."""
         try:
             from src.security.secrets import get_secret
-            
+
             with pytest.raises((KeyError, ValueError)):
                 get_secret("NONEXISTENT_SECRET", required=True)
         except ImportError:
@@ -237,10 +238,10 @@ class TestSecretsManagement:
         """Test secrets are masked in log output."""
         try:
             from src.security.secrets import mask_secrets
-            
+
             log_line = "API_KEY=abc123 response=success"
             masked = mask_secrets(log_line)
-            
+
             # API key should be masked
             assert "abc123" not in masked or masked == log_line
             assert "***" in masked or masked == log_line
@@ -255,10 +256,10 @@ class TestAuditLogging:
         """Test creating audit log entries."""
         try:
             from src.security.audit_logger import log_audit_event
-            
+
             log_dir = tmp_path / "audit"
             log_dir.mkdir()
-            
+
             log_audit_event(
                 event_type="authentication",
                 user="test_user",
@@ -266,7 +267,7 @@ class TestAuditLogging:
                 success=True,
                 log_dir=log_dir,
             )
-            
+
             # Check log file was created
             log_files = list(log_dir.glob("*.log"))
             assert len(log_files) > 0
@@ -277,7 +278,7 @@ class TestAuditLogging:
         """Test audit logs contain required fields."""
         try:
             from src.security.audit_logger import AuditLogger
-            
+
             logger = AuditLogger(log_dir=tmp_path)
             logger.log_event(
                 event_type="file_access",
@@ -285,7 +286,7 @@ class TestAuditLogging:
                 action="read",
                 user="user123",
             )
-            
+
             # Verify log entry has required fields
             # Implementation specific
         except ImportError:
@@ -299,7 +300,7 @@ class TestInputValidation:
         """Test integer range validation."""
         def validate_age(age: int) -> bool:
             return 0 <= age <= 150
-        
+
         assert validate_age(25) is True
         assert validate_age(-1) is False
         assert validate_age(200) is False
@@ -307,11 +308,11 @@ class TestInputValidation:
     def test_validate_string_pattern(self) -> None:
         """Test string pattern validation."""
         import re
-        
+
         def validate_username(username: str) -> bool:
             pattern = r'^[a-zA-Z0-9_]{3,20}$'
             return bool(re.match(pattern, username))
-        
+
         assert validate_username("valid_user123") is True
         assert validate_username("ab") is False  # Too short
         assert validate_username("user@name") is False  # Invalid char
@@ -325,6 +326,6 @@ class TestInputValidation:
             # Remove path traversal
             safe = safe.replace('..', '')
             return safe
-        
+
         assert ".." not in sanitize_filename("../etc/passwd")
         assert "/" not in sanitize_filename("path/to/file")

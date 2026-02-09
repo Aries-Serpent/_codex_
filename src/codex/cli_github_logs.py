@@ -85,15 +85,15 @@ def fetch_check_run_logs(
     """
     try:
         client = _get_github_client()
-        
+
         click.echo(f"Fetching check run {check_run_id} logs from {owner}/{repo}...", err=True)
-        
+
         # Fetch the check run details first
         check_run = client.get_check_run(owner, repo, check_run_id)
-        
+
         # Fetch logs
         logs = client.get_check_run_logs(owner, repo, check_run_id)
-        
+
         # Format output
         if format == "json":
             output_data = {
@@ -112,7 +112,7 @@ def fetch_check_run_logs(
             output_text = json.dumps(output_data, indent=2)
         else:
             output_text = logs
-        
+
         # Write output
         if output:
             output_path = Path(output)
@@ -120,9 +120,9 @@ def fetch_check_run_logs(
             click.echo(f"Logs saved to {output_path}", err=True)
         else:
             click.echo(output_text)
-        
+
         click.echo(f"✓ Successfully fetched logs for check run {check_run_id}", err=True)
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
         raise click.ClickException(str(e))
@@ -166,12 +166,12 @@ def fetch_job_logs(
     """
     try:
         client = _get_github_client()
-        
+
         click.echo(f"Fetching job {job_id} logs from {owner}/{repo}...", err=True)
-        
+
         # Fetch logs
         logs = client.get_job_logs(owner, repo, job_id)
-        
+
         # Format output
         if format == "json":
             output_data = {
@@ -183,7 +183,7 @@ def fetch_job_logs(
             output_text = json.dumps(output_data, indent=2)
         else:
             output_text = logs
-        
+
         # Write output
         if output:
             output_path = Path(output)
@@ -191,9 +191,9 @@ def fetch_job_logs(
             click.echo(f"Logs saved to {output_path}", err=True)
         else:
             click.echo(output_text)
-        
+
         click.echo(f"✓ Successfully fetched logs for job {job_id}", err=True)
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
         raise click.ClickException(str(e))
@@ -235,24 +235,24 @@ def list_check_runs(
     """
     try:
         client = _get_github_client()
-        
+
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
-        
+
         from src.services.github.types import CheckRunStatus
         status_enum = CheckRunStatus(status) if status else None
-        
+
         check_runs = client.list_check_runs_for_ref(
             owner, repo, ref,
             check_name=name,
             status=status_enum
         )
-        
+
         if not check_runs:
             click.echo("No check runs found.", err=True)
             return
-        
+
         click.echo(f"\nFound {len(check_runs)} check run(s):\n")
-        
+
         for run in check_runs:
             click.echo(f"  ID: {run.id}")
             click.echo(f"  Name: {run.name}")
@@ -260,7 +260,7 @@ def list_check_runs(
             click.echo(f"  Conclusion: {run.conclusion or 'N/A'}")
             click.echo(f"  URL: {run.html_url}")
             click.echo()
-        
+
     except Exception as e:
         logger.error(f"Failed to list check runs: {e}", exc_info=True)
         raise click.ClickException(str(e))

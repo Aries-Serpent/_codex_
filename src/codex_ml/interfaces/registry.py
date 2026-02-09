@@ -5,7 +5,9 @@ string keys. Interfaces are loaded on demand via entry-points or config.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

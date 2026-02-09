@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Tests for the SentencePieceTokenizer adapter.
 
 Test module for sentencepiece tokenizer.

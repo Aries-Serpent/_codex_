@@ -67,7 +67,7 @@ class TestModelServing:
                     return  # Found FastAPI app
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No FastAPI app found (optional)")
 
 
@@ -77,7 +77,7 @@ class TestBatchInference:
     def test_batch_processing_exists(self):
         """Check for batch processing support."""
         batch_patterns = ["batch", "bulk", "parallel"]
-        
+
         for py_file in list(SRC_DIR.rglob("*.py"))[:50] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore").lower()
@@ -85,7 +85,7 @@ class TestBatchInference:
                     return  # Found batch processing
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No batch processing found (optional)")
 
 
@@ -95,7 +95,7 @@ class TestInferenceOptimization:
     def test_caching_exists(self):
         """Check for inference caching support."""
         cache_patterns = ["cache", "lru_cache", "memoize"]
-        
+
         for py_file in list(SRC_DIR.rglob("*.py"))[:30] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
@@ -103,13 +103,13 @@ class TestInferenceOptimization:
                     return  # Found caching
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No caching found (optional)")
 
     def test_quantization_support(self):
         """Check for quantization support."""
         quant_patterns = ["quantize", "int8", "fp16", "bfloat16"]
-        
+
         for py_file in list(SRC_DIR.rglob("*.py"))[:30] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore").lower()
@@ -117,7 +117,7 @@ class TestInferenceOptimization:
                     return  # Found quantization
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No quantization found (optional)")
 
 
@@ -127,7 +127,7 @@ class TestInferenceMonitoring:
     def test_metrics_endpoint_exists(self):
         """Check for metrics endpoint."""
         metrics_patterns = ["/metrics", "prometheus", "StatsD"]
-        
+
         for py_file in list(SRC_DIR.rglob("*.py"))[:30] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
@@ -135,13 +135,13 @@ class TestInferenceMonitoring:
                     return  # Found metrics endpoint
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No metrics endpoint found (optional)")
 
     def test_health_check_exists(self):
         """Check for health check endpoint."""
         health_patterns = ["/health", "/healthz", "/ready", "/live"]
-        
+
         for py_file in list(SRC_DIR.rglob("*.py"))[:30] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore")
@@ -149,5 +149,5 @@ class TestInferenceMonitoring:
                     return  # Found health check
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No health check found (optional)")

@@ -7,11 +7,12 @@ Comprehensive testing for complex RAG workflows:
 - Performance benchmarks and optimization
 """
 
-import pytest
-import numpy as np
-import time
 import tempfile
 import threading
+import time
+
+import numpy as np
+import pytest
 
 
 class TestComplexWorkflows:
@@ -20,15 +21,15 @@ class TestComplexWorkflows:
     def test_full_rag_pipeline(self):
         """Test complete RAG pipeline from indexing to retrieval."""
         try:
+            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             from src.codex.rag.indexer import CodexIndexer
             from src.codex.rag.retriever import CodexRetriever
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             # Initialize components
             TFIDFEmbeddingProvider()
             indexer = CodexIndexer()
             retriever = CodexRetriever()
-            
+
             # Index documents
             documents = [
                 ("doc1", "Python programming language tutorial"),
@@ -37,17 +38,17 @@ class TestComplexWorkflows:
                 ("doc4", "Data analysis with pandas"),
                 ("doc5", "Neural networks and deep learning"),
             ]
-            
+
             for doc_id, content in documents:
                 try:
                     indexer.add_document(doc_id, content)
                 except Exception:
                     pass
-            
+
             # Retrieve relevant documents
             query = "Python programming"
             results = retriever.retrieve(query, top_k=3)
-            
+
             # Should return results
             assert results is not None or results == []
         except ImportError:
@@ -57,16 +58,16 @@ class TestComplexWorkflows:
         """Test workflow with multiple sequential queries."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             queries = [
                 "machine learning algorithms",
                 "neural network architectures",
                 "data preprocessing techniques",
                 "model evaluation metrics",
             ]
-            
+
             all_results = []
             for query in queries:
                 try:
@@ -74,7 +75,7 @@ class TestComplexWorkflows:
                     all_results.append(results)
                 except Exception:
                     all_results.append([])
-            
+
             # Should handle multiple queries
             assert len(all_results) == len(queries)
         except ImportError:
@@ -84,13 +85,13 @@ class TestComplexWorkflows:
         """Test incremental document indexing."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add documents incrementally
             batch_sizes = [10, 20, 30]
             doc_count = 0
-            
+
             for batch_size in batch_sizes:
                 for i in range(batch_size):
                     doc_id = f"doc_{doc_count}"
@@ -100,7 +101,7 @@ class TestComplexWorkflows:
                         doc_count += 1
                     except Exception:
                         pass
-            
+
             # Should have added documents incrementally
             assert doc_count == sum(batch_sizes)
         except ImportError:
@@ -110,14 +111,14 @@ class TestComplexWorkflows:
         """Test updating documents and reindexing."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add initial document
             doc_id = "doc_update"
             initial_content = "Initial content"
             indexer.add_document(doc_id, initial_content)
-            
+
             # Update document
             updated_content = "Updated content with new information"
             try:
@@ -129,7 +130,7 @@ class TestComplexWorkflows:
                     indexer.add_document(doc_id, updated_content)
                 except Exception:
                     pass
-            
+
             assert True
         except ImportError:
             pytest.skip("Module not available")
@@ -142,13 +143,13 @@ class TestStressTests:
         """Test indexing 1000+ documents."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Index 1000 documents
             num_docs = 1000
             start_time = time.time()
-            
+
             for i in range(num_docs):
                 doc_id = f"stress_doc_{i}"
                 content = f"Document {i} with test content for stress testing. " * 10
@@ -156,12 +157,12 @@ class TestStressTests:
                     indexer.add_document(doc_id, content)
                 except Exception:
                     pass
-            
+
             duration = time.time() - start_time
-            
+
             # Should complete in reasonable time (< 60 seconds)
             assert duration < 60.0, f"Indexing took too long: {duration}s"
-            
+
             # Calculate throughput
             throughput = num_docs / duration
             assert throughput > 10, f"Low throughput: {throughput} docs/sec"
@@ -173,10 +174,10 @@ class TestStressTests:
         try:
             from src.codex.rag.indexer import CodexIndexer
             from src.codex.rag.retriever import CodexRetriever
-            
+
             indexer = CodexIndexer()
             retriever = CodexRetriever()
-            
+
             # Index documents
             for i in range(100):  # Reduced for faster test
                 doc_id = f"large_index_doc_{i}"
@@ -185,10 +186,10 @@ class TestStressTests:
                     indexer.add_document(doc_id, content)
                 except Exception:
                     pass
-            
+
             # Test retrieval performance
             queries = [f"topic {i}" for i in range(10)]
-            
+
             start_time = time.time()
             for query in queries:
                 try:
@@ -196,7 +197,7 @@ class TestStressTests:
                 except Exception:
                     pass
             duration = time.time() - start_time
-            
+
             # Should be fast (< 5 seconds for 10 queries)
             assert duration < 5.0, f"Retrieval took too long: {duration}s"
         except ImportError:
@@ -206,20 +207,20 @@ class TestStressTests:
         """Test batch embedding of 1000 texts."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Generate 1000 texts
             texts = [f"Test document number {i} with content" for i in range(1000)]
-            
+
             # Measure embedding time
             start_time = time.time()
             embeddings = provider.encode(texts)
             duration = time.time() - start_time
-            
+
             # Should complete in reasonable time (< 30 seconds)
             assert duration < 30.0, f"Embedding took too long: {duration}s"
-            
+
             # Verify embeddings
             assert len(embeddings) == 1000
             assert embeddings.shape[0] == 1000
@@ -229,24 +230,25 @@ class TestStressTests:
     def test_memory_usage_large_dataset(self):
         """Test memory usage with large dataset."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             import sys
-            
+
+            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Track memory
             initial_size = sys.getsizeof(provider)
-            
+
             # Process large dataset
             for batch_num in range(10):
                 texts = [f"Batch {batch_num} document {i}" for i in range(100)]
                 provider.encode(texts)
                 # Don't store embeddings to test provider memory
-            
+
             # Memory shouldn't grow excessively
             final_size = sys.getsizeof(provider)
             growth = final_size - initial_size
-            
+
             # Reasonable memory growth (< 100MB)
             assert growth < 100 * 1024 * 1024 or True  # May not track accurately
         except ImportError:
@@ -260,11 +262,11 @@ class TestConcurrentAccess:
         """Test concurrent embedding generation."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
             errors = []
             results = []
-            
+
             def generate_embeddings(thread_id):
                 try:
                     texts = [f"Thread {thread_id} text {i}" for i in range(10)]
@@ -272,18 +274,18 @@ class TestConcurrentAccess:
                     results.append((thread_id, emb))
                 except Exception as e:
                     errors.append((thread_id, e))
-            
+
             # Create threads
             threads = []
             for i in range(10):
                 t = threading.Thread(target=generate_embeddings, args=(i,))
                 threads.append(t)
                 t.start()
-            
+
             # Wait for completion
             for t in threads:
                 t.join()
-            
+
             # Should complete without errors
             assert len(errors) == 0, f"Errors in threads: {errors}"
             assert len(results) == 10
@@ -294,10 +296,10 @@ class TestConcurrentAccess:
         """Test concurrent document indexing."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
             errors = []
-            
+
             def index_documents(thread_id):
                 try:
                     for i in range(10):
@@ -306,18 +308,18 @@ class TestConcurrentAccess:
                         indexer.add_document(doc_id, content)
                 except Exception as e:
                     errors.append((thread_id, e))
-            
+
             # Create threads
             threads = []
             for i in range(5):
                 t = threading.Thread(target=index_documents, args=(i,))
                 threads.append(t)
                 t.start()
-            
+
             # Wait for completion
             for t in threads:
                 t.join()
-            
+
             # May have some errors if not thread-safe, but shouldn't crash
             # Thread safety is nice-to-have, not required
             assert True
@@ -328,11 +330,11 @@ class TestConcurrentAccess:
         """Test concurrent document retrieval."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
             errors = []
             results = []
-            
+
             def retrieve_documents(thread_id):
                 try:
                     for i in range(5):
@@ -341,18 +343,18 @@ class TestConcurrentAccess:
                         results.append((thread_id, res))
                 except Exception as e:
                     errors.append((thread_id, e))
-            
+
             # Create threads
             threads = []
             for i in range(10):
                 t = threading.Thread(target=retrieve_documents, args=(i,))
                 threads.append(t)
                 t.start()
-            
+
             # Wait for completion
             for t in threads:
                 t.join()
-            
+
             # Should handle concurrent reads
             assert len(errors) == 0 or True  # Some implementations may not be thread-safe
         except ImportError:
@@ -363,11 +365,11 @@ class TestConcurrentAccess:
         try:
             from src.codex.rag.indexer import CodexIndexer
             from src.codex.rag.retriever import CodexRetriever
-            
+
             indexer = CodexIndexer()
             retriever = CodexRetriever()
             errors = []
-            
+
             def writer(thread_id):
                 try:
                     for i in range(10):
@@ -376,7 +378,7 @@ class TestConcurrentAccess:
                         indexer.add_document(doc_id, content)
                 except Exception as e:
                     errors.append(('writer', thread_id, e))
-            
+
             def reader(thread_id):
                 try:
                     for i in range(10):
@@ -384,21 +386,21 @@ class TestConcurrentAccess:
                         retriever.retrieve(query, top_k=5)
                 except Exception as e:
                     errors.append(('reader', thread_id, e))
-            
+
             # Create mixed readers and writers
             threads = []
             for i in range(3):
                 threads.append(threading.Thread(target=writer, args=(i,)))
                 threads.append(threading.Thread(target=reader, args=(i,)))
-            
+
             # Start all
             for t in threads:
                 t.start()
-            
+
             # Wait for completion
             for t in threads:
                 t.join()
-            
+
             # Should handle concurrent read/write
             assert True  # Implementation may or may not be thread-safe
         except ImportError:
@@ -412,23 +414,23 @@ class TestPerformanceBenchmarks:
         """Benchmark embedding generation throughput."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Benchmark different batch sizes
             batch_sizes = [10, 50, 100, 500]
             throughputs = []
-            
+
             for batch_size in batch_sizes:
                 texts = [f"Benchmark text {i}" for i in range(batch_size)]
-                
+
                 start = time.time()
                 provider.encode(texts)
                 duration = time.time() - start
-                
+
                 throughput = batch_size / duration
                 throughputs.append((batch_size, throughput))
-            
+
             # Larger batches should have better throughput
             # (or at least reasonable throughput)
             for batch_size, throughput in throughputs:
@@ -440,13 +442,13 @@ class TestPerformanceBenchmarks:
         """Benchmark retrieval latency."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             # Test different top_k values
             top_k_values = [1, 5, 10, 50]
             latencies = []
-            
+
             for top_k in top_k_values:
                 start = time.time()
                 try:
@@ -455,7 +457,7 @@ class TestPerformanceBenchmarks:
                     pass
                 latency = (time.time() - start) * 1000  # ms
                 latencies.append((top_k, latency))
-            
+
             # Should complete quickly (< 1000ms)
             for top_k, latency in latencies:
                 assert latency < 1000, f"High latency for top_k={top_k}: {latency}ms"
@@ -466,16 +468,16 @@ class TestPerformanceBenchmarks:
         """Benchmark document indexing speed."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Measure indexing speed
             num_docs = 100
             doc_sizes = [100, 500, 1000]  # characters
-            
+
             for size in doc_sizes:
                 content = "x" * size
-                
+
                 start = time.time()
                 for i in range(num_docs):
                     try:
@@ -483,7 +485,7 @@ class TestPerformanceBenchmarks:
                     except Exception:
                         pass
                 duration = time.time() - start
-                
+
                 throughput = num_docs / duration
                 # Should index at least 10 docs/sec
                 assert throughput > 10 or True
@@ -498,26 +500,26 @@ class TestScalability:
         """Test that performance scales linearly with data size."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Test with increasing sizes
             sizes = [100, 200, 400]
             times = []
-            
+
             for size in sizes:
                 texts = [f"Text {i}" for i in range(size)]
-                
+
                 start = time.time()
                 provider.encode(texts)
                 duration = time.time() - start
                 times.append(duration)
-            
+
             # Time should roughly scale linearly
             # (or at least not exponentially)
             ratio_1 = times[1] / times[0]
             ratio_2 = times[2] / times[1]
-            
+
             # Ratios should be roughly similar for linear scaling
             # Allow for variance
             assert 0.5 < ratio_1 / ratio_2 < 2.5 or True
@@ -528,24 +530,24 @@ class TestScalability:
         """Test that caching improves performance."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             texts = ["cached text 1", "cached text 2", "cached text 3"]
-            
+
             # First call (uncached)
             start1 = time.time()
             emb1 = provider.encode(texts)
             time1 = time.time() - start1
-            
+
             # Second call (potentially cached)
             start2 = time.time()
             emb2 = provider.encode(texts)
             time2 = time.time() - start2
-            
+
             # Embeddings should be consistent
             assert np.allclose(emb1, emb2)
-            
+
             # Second call may be faster if cached
             # (but not required)
             assert time2 <= time1 * 2  # Allow some variance
@@ -560,20 +562,20 @@ class TestResourceManagement:
         """Test that resources are cleaned up properly."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 indexer = CodexIndexer(index_path=str(tmpdir))
-                
+
                 # Perform operations
                 for i in range(100):
                     indexer.add_document(f"cleanup_doc_{i}", "content")
-                
+
                 # Cleanup if method exists
                 if hasattr(indexer, 'close'):
                     indexer.close()
                 elif hasattr(indexer, 'cleanup'):
                     indexer.cleanup()
-                
+
                 # Should complete without errors
                 assert True
         except ImportError:
@@ -583,20 +585,20 @@ class TestResourceManagement:
         """Test graceful shutdown under load."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Start operations
             for i in range(50):
                 try:
                     indexer.add_document(f"shutdown_doc_{i}", "content")
                 except Exception:
                     pass
-            
+
             # Initiate shutdown
             if hasattr(indexer, 'shutdown'):
                 indexer.shutdown()
-            
+
             # Should shutdown cleanly
             assert True
         except ImportError:

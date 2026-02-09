@@ -8,7 +8,10 @@ import json
 import tempfile
 from pathlib import Path
 
-import torch
+import pytest
+
+# Skip entire module if torch is not available or unloadable
+torch = pytest.importorskip("torch", reason="PyTorch required for checkpoint tests")
 from codex_ml.checkpointing.bestk import update_and_prune
 
 

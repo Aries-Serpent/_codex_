@@ -16,10 +16,12 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
+import time
+
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-import time
 
 # In-memory token-bucket per principal (scoped to process). Replace with Redis for multi-process.
 _BUCKETS: dict[str, dict] = {}

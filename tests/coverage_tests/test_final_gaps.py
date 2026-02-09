@@ -28,7 +28,7 @@ class TestCoverageInfrastructure:
         pyproject = REPO_ROOT / "pyproject.toml"
         pytest_ini = REPO_ROOT / "pytest.ini"
         setup_cfg = REPO_ROOT / "setup.cfg"
-        
+
         coverage_configured = False
         for config in [pyproject, pytest_ini, setup_cfg]:
             if config.exists():
@@ -36,7 +36,7 @@ class TestCoverageInfrastructure:
                 if "cov" in content or "coverage" in content:
                     coverage_configured = True
                     break
-        
+
         assert coverage_configured, "Coverage should be configured"
 
     def test_coverage_threshold_set(self):
@@ -44,7 +44,7 @@ class TestCoverageInfrastructure:
         pyproject = REPO_ROOT / "pyproject.toml"
         if not pyproject.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         content = pyproject.read_text(encoding="utf-8")
         has_threshold = "fail_under" in content or "fail-under" in content
         assert has_threshold, "Coverage threshold should be set"
@@ -54,7 +54,7 @@ class TestCoverageInfrastructure:
         pyproject = REPO_ROOT / "pyproject.toml"
         if not pyproject.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         content = pyproject.read_text(encoding="utf-8")
         has_excludes = "omit" in content or "exclude" in content
         # Just verify, don't require
@@ -78,7 +78,7 @@ class TestTestDiscovery:
         """Verify test files follow naming convention."""
         test_files = list(TESTS_DIR.rglob("test_*.py"))
         assert len(test_files) > 0, "Should have test_*.py files"
-        
+
         # Check for non-standard names
         all_py_files = list(TESTS_DIR.rglob("*.py"))
         [
@@ -98,7 +98,7 @@ class TestModuleCoverage:
         """Get all source Python modules."""
         if not SRC_DIR.exists():
             return []
-        
+
         modules = []
         for py_file in SRC_DIR.rglob("*.py"):
             if "__pycache__" in str(py_file):
@@ -117,10 +117,10 @@ class TestModuleCoverage:
         """Verify source modules have corresponding tests."""
         source_modules = self._get_source_modules()
         test_modules = self._get_test_modules()
-        
+
         if not source_modules:
             pytest.skip("No source modules found")
-        
+
         # Count modules with tests (simplified check)
         modules_with_tests = len(test_modules)
         # Target: at least some tests exist
@@ -133,7 +133,7 @@ class TestModuleCoverage:
             relative = test_file.relative_to(TESTS_DIR)
             if len(relative.parts) > 1:
                 test_dirs.add(relative.parts[0])
-        
+
         # Should have tests in multiple directories
         assert len(test_dirs) >= 5, f"Should have tests in 5+ areas, found: {test_dirs}"
 
@@ -146,7 +146,7 @@ class TestBranchCoverage:
         pyproject = REPO_ROOT / "pyproject.toml"
         if not pyproject.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         content = pyproject.read_text(encoding="utf-8")
         # Branch coverage is a pytest-cov option
         # Just verify cov is configured
@@ -163,7 +163,7 @@ class TestBranchCoverage:
                     edge_case_tests.append(test_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         # Verify we have edge case tests
         assert len(edge_case_tests) >= 1, "Should have edge case tests"
 
@@ -181,14 +181,14 @@ class TestExceptionCoverage:
                     exception_tests.append(test_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         assert len(exception_tests) >= 5, "Should have exception tests"
 
     def test_error_handling_patterns(self):
         """Verify error handling patterns are tested."""
         error_patterns = ["error", "exception", "failure", "invalid"]
         matching_tests = []
-        
+
         for test_file in TESTS_DIR.rglob("test_*.py"):
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore").lower()
@@ -196,5 +196,5 @@ class TestExceptionCoverage:
                     matching_tests.append(test_file.name)
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         assert len(matching_tests) >= 10, "Should have error handling tests"

@@ -8,13 +8,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from codex_ml.eval.reasoning_metrics import (
+    calculate_consistency,
     calculate_critique_density,
     calculate_explanation_depth,
     calculate_judge_disagreement,
     calculate_latency_delta,
     calculate_trace_coverage,
     calculate_win_rate,
-    calculate_consistency,
     evaluate_reasoning,
 )
 

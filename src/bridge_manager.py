@@ -14,28 +14,32 @@ Enhanced with Bridge Protocol v2 (2026-01-09):
 """
 from __future__ import annotations
 
-import os
 import fcntl
 import json
 import logging
+import os
+import secrets
 import socket
 import ssl
 import tempfile
-import secrets
+from contextlib import contextmanager
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional
-from datetime import datetime, UTC
-from dataclasses import dataclass, asdict
-from contextlib import contextmanager
-from enum import Enum
 
 # Import Bridge Protocol v2 for enhanced features
 try:
     from bridge_protocol_v2 import (
-        encode_message as v2_encode,
-        decode_message as v2_decode,
-        MultiClientBridge,
         MAGIC_BYTES,  # Import magic bytes constant for consistency
+        MultiClientBridge,
+    )
+    from bridge_protocol_v2 import (
+        decode_message as v2_decode,
+    )
+    from bridge_protocol_v2 import (
+        encode_message as v2_encode,
     )
     HAS_PROTOCOL_V2 = True
 except ImportError:
@@ -46,8 +50,8 @@ except ImportError:
 # Import TLS configuration for distributed bridge
 try:
     from security.tls_config import (
-        create_server_context,
         create_client_context,
+        create_server_context,
     )
     HAS_TLS_SUPPORT = True
 except ImportError:
@@ -61,7 +65,7 @@ class BridgeMode(Enum):
     NAMED_PIPE = "named_pipe"  # Unix FIFO
     UNIX_SOCKET = "unix_socket"  # Unix domain socket
     TCP_TLS = "tcp_tls"  # TCP with TLS encryption (distributed)
-    
+
 
 @dataclass
 class ContextMessage:
@@ -77,17 +81,17 @@ class ContextMessage:
     context: Dict[str, Any]
     metadata: Optional[Dict[str, Any]] = None
     auth_token: Optional[str] = None  # Authentication token (PS-02)
-    
+
     def to_json(self) -> str:
         """Serialize to JSON string."""
         return json.dumps(asdict(self), indent=2)
-    
+
     @classmethod
     def from_json(cls, json_str: str) -> ContextMessage:
         """Deserialize from JSON string."""
         data = json.loads(json_str)
         return cls(**data)
-    
+
     def validate(self) -> bool:
         """Validate message structure."""
         required_fields = ["timestamp", "source", "message_type", "context"]
@@ -100,12 +104,12 @@ class BridgeLock:
     
     Prevents race conditions when multiple processes access the bridge.
     """
-    
+
     def __init__(self, lock_path: Path):
         """Initialize lock with path to lock file."""
         self.lock_path = lock_path
         self.lock_fd: Optional[int] = None
-    
+
     def acquire(self, timeout: int = 5) -> bool:
         """
         Acquire exclusive lock.
@@ -120,15 +124,15 @@ class BridgeLock:
             # Ensure lock file exists
             self.lock_path.parent.mkdir(parents=True, exist_ok=True)
             self.lock_path.touch(exist_ok=True)
-            
+
             # Open lock file
             self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
-            
+
             # Try to acquire lock with timeout
             fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             logger.debug(f"Lock acquired: {self.lock_path}")
             return True
-            
+
         except BlockingIOError:
             logger.warning(f"Failed to acquire lock (timeout): {self.lock_path}")
             if self.lock_fd:
@@ -141,7 +145,7 @@ class BridgeLock:
                 os.close(self.lock_fd)
                 self.lock_fd = None
             return False
-    
+
     def release(self) -> None:
         """Release the lock."""
         if self.lock_fd is not None:
@@ -167,10 +171,10 @@ def bridge_lock(lock_path: Path, timeout: int = 5):
     """
     lock = BridgeLock(lock_path)
     acquired = lock.acquire(timeout)
-    
+
     if not acquired:
         raise TimeoutError(f"Could not acquire bridge lock: {lock_path}")
-    
+
     try:
         yield lock
     finally:
@@ -195,7 +199,7 @@ class BridgeManager:
     - Multi-client support with routing
     - CRC32 integrity verification
     """
-    
+
     def __init__(
         self,
         bridge_dir: Optional[Path] = None,
@@ -240,12 +244,12 @@ class BridgeManager:
         if bridge_dir is None:
             # Use secure temp directory with restricted permissions
             bridge_dir = Path(tempfile.gettempdir()) / "codex_secure_bridge"
-        
+
         self.bridge_dir = Path(bridge_dir)
         self.mode = mode
         self.owner_only = owner_only
         self.require_auth = require_auth
-        
+
         # TLS configuration
         self.tls_host = tls_host
         self.tls_port = tls_port
@@ -256,7 +260,7 @@ class BridgeManager:
         self.tls_client_key = tls_client_key
         self.tls_require_client_cert = tls_require_client_cert
         self._tls_context: Optional[ssl.SSLContext] = None
-        
+
         # Validate TLS configuration if TCP_TLS mode
         if self.mode == BridgeMode.TCP_TLS:
             if not HAS_TLS_SUPPORT:
@@ -264,17 +268,17 @@ class BridgeManager:
                     "TLS support not available. Install security.tls_config module."
                 )
             self._validate_tls_config()
-        
+
         # Protocol v2 settings
         self.use_protocol_v2 = use_protocol_v2 and HAS_PROTOCOL_V2
         self.enable_compression = enable_compression
         self._max_clients = max_clients
-        
+
         # Multi-client bridge (v2 feature) - lazy initialization
         self._multi_client_bridge: Optional[MultiClientBridge] = None
         if self.use_protocol_v2:
             logger.info(f"Bridge Protocol v2 enabled (compression={enable_compression})")
-        
+
         # Get auth token from environment
         self.auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
         if self.require_auth and not self.auth_token:
@@ -283,37 +287,37 @@ class BridgeManager:
                 "Set CODEX_BRIDGE_TOKEN for secure operation."
             )
             self.require_auth = False
-        
+
         # Create bridge directory with secure permissions
         self.bridge_dir.mkdir(parents=True, exist_ok=True)
         if owner_only:
             os.chmod(self.bridge_dir, 0o700)  # Owner only: rwx------
-        
+
         # Set up paths
         self.lock_path = self.bridge_dir / "bridge.lock"
         self.pipe_path = self.bridge_dir / "bridge.fifo"
         self.socket_path = self.bridge_dir / "bridge.sock"
-        
+
         # Set up audit logging (PS-02)
         if audit_file is None:
             audit_file = self.bridge_dir / "audit.log"
         self.audit_file = audit_file
-        
+
         # Create audit log with secure permissions
         if not self.audit_file.exists():
             self.audit_file.touch()
             if owner_only:
                 os.chmod(self.audit_file, 0o600)
-        
+
         self._audit_log("BRIDGE_INIT", {
             "mode": mode.value,
             "owner_only": owner_only,
             "require_auth": require_auth,
             "bridge_dir": str(bridge_dir)
         })
-        
+
         logger.info(f"Bridge manager initialized: mode={mode.value}, dir={bridge_dir}")
-        
+
         # Initialize based on mode
         if mode == BridgeMode.NAMED_PIPE:
             self._init_named_pipe()
@@ -324,36 +328,36 @@ class BridgeManager:
             logger.info(f"TCP_TLS mode configured: {self.tls_host}:{self.tls_port}")
         else:
             raise ValueError(f"Unsupported bridge mode: {mode}")
-    
+
     def _init_named_pipe(self) -> None:
         """Initialize Named Pipe (FIFO)."""
         try:
             # Remove existing pipe if present
             if self.pipe_path.exists():
                 self.pipe_path.unlink()
-            
+
             # Create FIFO
             os.mkfifo(str(self.pipe_path), 0o600 if self.owner_only else 0o666)
             logger.info(f"Named pipe created: {self.pipe_path}")
-            
+
         except Exception as e:
             logger.error(f"Failed to create named pipe: {e}")
             raise
-    
+
     def _init_unix_socket(self) -> None:
         """Initialize Unix domain socket."""
         try:
             # Remove existing socket if present
             if self.socket_path.exists():
                 self.socket_path.unlink()
-            
+
             # Socket will be created on bind
             logger.info(f"Unix socket path prepared: {self.socket_path}")
-            
+
         except Exception as e:
             logger.error(f"Failed to prepare unix socket: {e}")
             raise
-    
+
     def _validate_tls_config(self) -> None:
         """Validate TLS configuration for TCP_TLS mode."""
         if not all([
@@ -364,7 +368,7 @@ class BridgeManager:
             raise ValueError(
                 "TCP_TLS mode requires server_cert, server_key, and ca_cert"
             )
-        
+
         # Validate paths exist
         for path_name, path_value in [
             ("server_cert", self.tls_server_cert),
@@ -373,9 +377,9 @@ class BridgeManager:
         ]:
             if not Path(path_value).exists():
                 raise FileNotFoundError(f"TLS {path_name} not found: {path_value}")
-        
+
         logger.info("TLS configuration validated")
-    
+
     def _create_tls_server_context(self) -> ssl.SSLContext:
         """Create TLS context for server mode."""
         if self._tls_context is None:
@@ -387,21 +391,21 @@ class BridgeManager:
             )
             logger.info("TLS server context created")
         return self._tls_context
-    
+
     def _create_tls_client_context(self) -> ssl.SSLContext:
         """Create TLS context for client mode."""
         if not all([self.tls_client_cert, self.tls_client_key, self.tls_ca_cert]):
             raise ValueError(
                 "Client mode requires client_cert, client_key, and ca_cert"
             )
-        
+
         return create_client_context(
             cert_path=self.tls_client_cert,
             key_path=self.tls_client_key,
             ca_path=self.tls_ca_cert,
             check_hostname=False,  # Internal bridge, no hostname verification
         )
-    
+
     def _audit_log(self, event: str, details: Dict[str, Any]) -> None:
         """
         Write security audit log entry (PS-02).
@@ -419,13 +423,13 @@ class BridgeManager:
                 "uid": os.getuid(),
                 "details": details
             }
-            
+
             with open(self.audit_file, 'a') as f:
                 f.write(json.dumps(log_entry) + '\n')
-                
+
         except Exception as e:
             logger.error(f"Failed to write audit log: {e}")
-    
+
     def _verify_auth_token(self, message: ContextMessage) -> bool:
         """
         Verify authentication token (PS-02).
@@ -438,7 +442,7 @@ class BridgeManager:
         """
         if not self.require_auth:
             return True
-        
+
         if not message.auth_token:
             self._audit_log("AUTH_FAILURE", {
                 "reason": "missing_token",
@@ -447,7 +451,7 @@ class BridgeManager:
             })
             logger.warning(f"Authentication failed: missing token from {message.source}")
             return False
-        
+
         # Compare tokens directly using constant-time comparison to prevent timing attacks
         # Note: secrets.compare_digest requires same-length inputs for security
         if not secrets.compare_digest(self.auth_token, message.auth_token):
@@ -458,13 +462,13 @@ class BridgeManager:
             })
             logger.warning(f"Authentication failed: invalid token from {message.source}")
             return False
-        
+
         self._audit_log("AUTH_SUCCESS", {
             "source": message.source,
             "message_type": message.message_type
         })
         return True
-    
+
     def write_message(self, message: ContextMessage) -> bool:
         """
         Write a message to the bridge with locking and authentication (PS-02).
@@ -482,11 +486,11 @@ class BridgeManager:
                 "message_type": message.message_type
             })
             return False
-        
+
         # Verify authentication token (PS-02)
         if not self._verify_auth_token(message):
             return False
-        
+
         try:
             with bridge_lock(self.lock_path):
                 if self.mode == BridgeMode.NAMED_PIPE:
@@ -495,16 +499,16 @@ class BridgeManager:
                     result = self._write_to_socket(message)
                 else:
                     result = False
-                
+
                 if result:
                     self._audit_log("MESSAGE_SENT", {
                         "source": message.source,
                         "message_type": message.message_type,
                         "mode": self.mode.value
                     })
-                
+
                 return result
-        
+
         except TimeoutError as e:
             logger.error(f"Bridge write timeout: {e}")
             self._audit_log("WRITE_TIMEOUT", {
@@ -519,7 +523,7 @@ class BridgeManager:
                 "source": message.source
             })
             return False
-    
+
     def _write_to_pipe(self, message: ContextMessage) -> bool:
         """Write message to named pipe with optional v2 protocol."""
         try:
@@ -528,7 +532,7 @@ class BridgeManager:
                 payload = message.to_json().encode('utf-8')
                 payload = v2_encode(payload, compress=self.enable_compression)
                 logger.debug(f"Using Protocol v2 (compressed={self.enable_compression})")
-                
+
                 # Binary mode for v2 protocol
                 with open(self.pipe_path, 'wb') as pipe:
                     pipe.write(payload)
@@ -539,42 +543,42 @@ class BridgeManager:
                     pipe.write(message.to_json())
                     pipe.write('\n')  # Message delimiter for v1
                     pipe.flush()
-            
+
             logger.debug(f"Message written to pipe: {message.message_type}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Pipe write error: {e}")
             return False
-    
+
     def _write_to_socket(self, message: ContextMessage) -> bool:
         """Write message to Unix socket with optional v2 protocol."""
         try:
             payload = message.to_json().encode('utf-8')
-            
+
             # Use Protocol v2 with compression if enabled
             if self.use_protocol_v2 and HAS_PROTOCOL_V2:
                 payload = v2_encode(payload, compress=self.enable_compression)
             else:
                 payload = payload + b'\n'  # Message delimiter for v1
-            
+
             # Connect to socket
             client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             client.connect(str(self.socket_path))
-            
+
             # Send message
             client.sendall(payload)
-            
+
             client.close()
             logger.debug(f"Message written to socket: {message.message_type}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Socket write error: {e}")
             return False
-    
+
     # ==================== Protocol v2 Methods ====================
-    
+
     def _ensure_multi_client_bridge(self) -> bool:
         """Lazy initialization of multi-client bridge."""
         if not self.use_protocol_v2:
@@ -582,7 +586,7 @@ class BridgeManager:
         if self._multi_client_bridge is None:
             self._multi_client_bridge = MultiClientBridge(max_clients=self._max_clients)
         return True
-    
+
     def register_client(self, client_id: str, socket_path: str, priority: int = 0) -> bool:
         """
         Register a client for multi-client bridge support (Protocol v2).
@@ -598,7 +602,7 @@ class BridgeManager:
         if not self._ensure_multi_client_bridge():
             logger.warning("Multi-client not available (Protocol v2 not enabled)")
             return False
-        
+
         result = self._multi_client_bridge.register_client(client_id, socket_path, priority)
         if result:
             self._audit_log("CLIENT_REGISTERED", {
@@ -606,17 +610,17 @@ class BridgeManager:
                 "priority": priority,
             })
         return result
-    
+
     def unregister_client(self, client_id: str) -> bool:
         """Unregister a client from the multi-client bridge."""
         if not self._multi_client_bridge:
             return False
-        
+
         result = self._multi_client_bridge.unregister_client(client_id)
         if result:
             self._audit_log("CLIENT_UNREGISTERED", {"client_id": client_id})
         return result
-    
+
     def get_bridge_stats(self) -> Dict[str, Any]:
         """Get bridge statistics including multi-client info."""
         stats = {
@@ -625,12 +629,12 @@ class BridgeManager:
             "compression_enabled": self.enable_compression,
             "auth_required": self.require_auth,
         }
-        
+
         if self._multi_client_bridge:
             stats["multi_client"] = self._multi_client_bridge.get_stats()
-        
+
         return stats
-    
+
     def read_message(self, timeout: Optional[int] = None) -> Optional[ContextMessage]:
         """
         Read a message from the bridge with locking and audit logging (PS-02).
@@ -649,21 +653,21 @@ class BridgeManager:
                     message = self._read_from_socket()
                 else:
                     message = None
-                
+
                 if message:
                     # Verify authentication for received messages (PS-02)
                     if not self._verify_auth_token(message):
                         return None
-                    
+
                     self._audit_log("MESSAGE_RECEIVED", {
                         "source": message.source,
                         "message_type": message.message_type,
                         "mode": self.mode.value
                     })
                     return message
-                
+
                 return None
-        
+
         except TimeoutError as e:
             logger.warning(f"Bridge read timeout: {e}")
             self._audit_log("READ_TIMEOUT", {"error": str(e)})
@@ -672,7 +676,7 @@ class BridgeManager:
             logger.error(f"Bridge read error: {e}")
             self._audit_log("READ_ERROR", {"error": str(e)})
             return None
-    
+
     def _read_from_pipe(self) -> Optional[ContextMessage]:
         """Read message from named pipe with auto-detection of v1/v2 protocol."""
         try:
@@ -681,7 +685,7 @@ class BridgeManager:
                 data = pipe.read()
                 if not data:
                     return None
-                
+
                 # Auto-detect v2 protocol by magic bytes (regardless of settings)
                 # Note: Using imported MAGIC_BYTES constant to maintain single source of truth
                 # Dynamic length check makes this resilient to future protocol changes
@@ -693,18 +697,18 @@ class BridgeManager:
                 else:
                     # Legacy v1 format
                     json_str = data.decode('utf-8').strip()
-                
+
                 if json_str:
                     message = ContextMessage.from_json(json_str)
                     logger.debug(f"Message read from pipe: {message.message_type}")
                     return message
-            
+
             return None
-            
+
         except Exception as e:
             logger.error(f"Pipe read error: {e}")
             return None
-    
+
     def _read_from_socket(self) -> Optional[ContextMessage]:
         """Read message from Unix socket with auto-detection of v1/v2 protocol."""
         try:
@@ -712,25 +716,25 @@ class BridgeManager:
             server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             server.bind(str(self.socket_path))
             server.listen(1)
-            
+
             # Set permissions
             if self.owner_only:
                 os.chmod(self.socket_path, 0o600)
-            
+
             # Accept connection
             conn, _ = server.accept()
-            
+
             # Receive message - auto-detect protocol
             data = b''
             is_v2 = False
             v2_expected_len = 0
-            
+
             while True:
                 chunk = conn.recv(4096)
                 if not chunk:
                     break
                 data += chunk
-                
+
                 # Auto-detect v2 protocol by magic bytes
                 if not is_v2 and len(data) >= 14 and data[:4] == MAGIC_BYTES:
                     is_v2 = True
@@ -739,17 +743,17 @@ class BridgeManager:
                         from bridge_protocol_v2 import ProtocolHeader
                         header = ProtocolHeader.from_bytes(data[:14])
                         v2_expected_len = 14 + header.length
-                
+
                 # Check if we have complete message
                 if is_v2 and v2_expected_len > 0:
                     if len(data) >= v2_expected_len:
                         break
                 elif b'\n' in data:
                     break
-            
+
             conn.close()
             server.close()
-            
+
             # Parse message with auto-detected protocol
             if data:
                 if HAS_PROTOCOL_V2 and len(data) >= 4 and data[:4] == MAGIC_BYTES:
@@ -757,17 +761,17 @@ class BridgeManager:
                     json_str = payload.decode('utf-8')
                 else:
                     json_str = data.decode('utf-8').strip()
-                
+
                 message = ContextMessage.from_json(json_str)
                 logger.debug(f"Message read from socket: {message.message_type}")
                 return message
-            
+
             return None
-            
+
         except Exception as e:
             logger.error(f"Socket read error: {e}")
             return None
-    
+
     def cleanup(self) -> None:
         """Clean up bridge resources and audit log final state (PS-02)."""
         try:
@@ -775,17 +779,17 @@ class BridgeManager:
                 "mode": self.mode.value,
                 "bridge_dir": str(self.bridge_dir)
             })
-            
+
             if self.mode == BridgeMode.NAMED_PIPE and self.pipe_path.exists():
                 self.pipe_path.unlink()
             elif self.mode == BridgeMode.UNIX_SOCKET and self.socket_path.exists():
                 self.socket_path.unlink()
-            
+
             if self.lock_path.exists():
                 self.lock_path.unlink()
-            
+
             logger.info("Bridge cleaned up")
-            
+
         except Exception as e:
             logger.error(f"Bridge cleanup error: {e}")
             self._audit_log("CLEANUP_ERROR", {"error": str(e)})
@@ -806,10 +810,10 @@ def share_context_with_copilot(context: Dict[str, Any], bridge: Optional[BridgeM
     """
     if bridge is None:
         bridge = BridgeManager()
-    
+
     # Get auth token from environment for authentication (PS-02)
     auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
-    
+
     message = ContextMessage(
         timestamp=datetime.now(UTC).isoformat(),
         source="cognitive_brain",
@@ -818,5 +822,5 @@ def share_context_with_copilot(context: Dict[str, Any], bridge: Optional[BridgeM
         metadata={"version": "1.0"},
         auth_token=auth_token
     )
-    
+
     return bridge.write_message(message)

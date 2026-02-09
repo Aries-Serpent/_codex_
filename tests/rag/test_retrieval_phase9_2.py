@@ -176,7 +176,7 @@ class TestRetrievalResponse:
         """Test creating a retrieval response."""
         # Arrange
         results = [RetrievalResult(id="1", content="test", score=0.9)]
-        
+
         # Act
         response = RetrievalResponse(
             query="test query",

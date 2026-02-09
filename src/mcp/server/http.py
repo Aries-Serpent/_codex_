@@ -6,7 +6,9 @@ Cloudflare Workers (edge proxy) and Fly.io (persistent container) hosts.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import os

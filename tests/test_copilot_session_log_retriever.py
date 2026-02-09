@@ -2,13 +2,14 @@
 
 import json
 import sqlite3
+
+# Add scripts to path
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
 
-# Add scripts to path
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from copilot_session_log_retriever import (
@@ -24,9 +25,9 @@ def temp_db():
     """Create a temporary database for testing."""
     with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
         db_path = f.name
-    
+
     yield Path(db_path)
-    
+
     # Cleanup
     Path(db_path).unlink(missing_ok=True)
 
@@ -36,12 +37,12 @@ def temp_repo():
     """Create a temporary repository directory."""
     with tempfile.TemporaryDirectory() as tmpdir:
         repo_path = Path(tmpdir)
-        
+
         # Create some test files
         (repo_path / "src").mkdir()
         (repo_path / "src" / "module.py").touch()
         (repo_path / "README.md").touch()
-        
+
         yield repo_path
 
 
@@ -90,7 +91,7 @@ def sample_session_data():
 def populate_test_db(db_path: Path, data: list):
     """Populate test database with sample data."""
     conn = sqlite3.connect(str(db_path))
-    
+
     # Create schema
     conn.execute("""
         CREATE TABLE IF NOT EXISTS logs (
@@ -102,7 +103,7 @@ def populate_test_db(db_path: Path, data: list):
             metadata TEXT
         )
     """)
-    
+
     # Insert data
     for entry in data:
         conn.execute(
@@ -115,7 +116,7 @@ def populate_test_db(db_path: Path, data: list):
                 json.dumps(entry["metadata"])
             )
         )
-    
+
     conn.commit()
     conn.close()
 
@@ -129,7 +130,7 @@ class TestCopilotSessionRetriever:
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         assert retriever.db_path == temp_db
         assert retriever.repo_root == temp_repo
 
@@ -137,24 +138,24 @@ class TestCopilotSessionRetriever:
         """Test database schema creation."""
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         retriever._create_schema()
-        
+
         # Verify schema exists
         conn = sqlite3.connect(str(temp_db))
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='logs'")
         result = cursor.fetchone()
         conn.close()
-        
+
         assert result is not None
         assert result[0] == "logs"
 
     def test_list_sessions(self, temp_db, sample_session_data):
         """Test listing sessions."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         sessions = retriever.list_sessions(limit=10)
-        
+
         assert len(sessions) == 2
         assert sessions[0]["session_id"] == "test-session-2"  # Most recent first
         assert sessions[1]["session_id"] == "test-session-1"
@@ -162,20 +163,20 @@ class TestCopilotSessionRetriever:
     def test_get_last_n_sessions(self, temp_db, sample_session_data):
         """Test getting last N sessions."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         session_ids = retriever.get_last_n_sessions(n=1)
-        
+
         assert len(session_ids) == 1
         assert session_ids[0] == "test-session-2"
 
     def test_get_session_logs(self, temp_db, sample_session_data):
         """Test retrieving session logs."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         logs = retriever.get_session_logs("test-session-1")
-        
+
         assert len(logs) == 3
         assert all(isinstance(log, SessionLogEntry) for log in logs)
         assert logs[0].role == "user"
@@ -184,13 +185,13 @@ class TestCopilotSessionRetriever:
     def test_extract_expected_files(self, temp_db, sample_session_data):
         """Test extracting expected files from logs."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         logs = retriever.get_session_logs("test-session-1")
         expected_files = retriever.extract_expected_files(logs)
-        
+
         assert len(expected_files) > 0
-        
+
         # Check that we extracted the files mentioned
         paths = [f.path for f in expected_files]
         assert "src/new_module.py" in paths
@@ -201,21 +202,21 @@ class TestCopilotSessionRetriever:
         # Create a file in temp repo
         test_file = temp_repo / "test_file.py"
         test_file.touch()
-        
+
         expected = ExpectedFile(
             path="test_file.py",
             operation="create",
             session_id="test",
             timestamp="2026-02-05T08:00:00Z"
         )
-        
+
         retriever = CopilotSessionRetriever(
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         verified = retriever.verify_files([expected])
-        
+
         assert len(verified) == 1
         assert verified[0].exists is True
         assert verified[0].verified is True
@@ -228,14 +229,14 @@ class TestCopilotSessionRetriever:
             session_id="test",
             timestamp="2026-02-05T08:00:00Z"
         )
-        
+
         retriever = CopilotSessionRetriever(
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         verified = retriever.verify_files([expected])
-        
+
         assert len(verified) == 1
         assert verified[0].exists is False
         assert verified[0].verified is False
@@ -243,17 +244,17 @@ class TestCopilotSessionRetriever:
     def test_analyze_session(self, temp_db, temp_repo, sample_session_data):
         """Test analyzing a complete session."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         # Create one of the expected files
         (temp_repo / "README.md").write_text("# Test")
-        
+
         retriever = CopilotSessionRetriever(
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         summary = retriever.analyze_session("test-session-1")
-        
+
         assert isinstance(summary, SessionSummary)
         assert summary.session_id == "test-session-1"
         assert summary.message_count == 3
@@ -264,33 +265,33 @@ class TestCopilotSessionRetriever:
     def test_process_sessions_in_batches(self, temp_db, temp_repo, sample_session_data):
         """Test processing multiple sessions in batches."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         session_ids = ["test-session-1", "test-session-2"]
         summaries = retriever.process_sessions_in_batches(
             session_ids,
             batch_size=2
         )
-        
+
         assert len(summaries) == 2
         assert all(isinstance(s, SessionSummary) for s in summaries)
 
     def test_generate_report(self, temp_db, temp_repo, sample_session_data):
         """Test report generation."""
         populate_test_db(temp_db, sample_session_data)
-        
+
         retriever = CopilotSessionRetriever(
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         summary = retriever.analyze_session("test-session-1")
         report = retriever.generate_report([summary])
-        
+
         assert "Copilot Session Log Verification Report" in report
         assert "test-session-1" in report
         assert "Overall Statistics" in report
@@ -304,9 +305,9 @@ class TestCopilotSessionRetriever:
             ('create path="src/new.py"', "src/new.py", "create"),
             ('edit path="src/old.py"', "src/old.py", "edit"),
         ]
-        
+
         retriever = CopilotSessionRetriever()
-        
+
         for message, expected_path, expected_op in test_cases:
             log = SessionLogEntry(
                 session_id="test",
@@ -314,12 +315,12 @@ class TestCopilotSessionRetriever:
                 role="assistant",
                 message=message
             )
-            
+
             files = retriever.extract_expected_files([log])
-            
+
             # Should extract at least one file
             assert len(files) >= 1, f"Failed to extract file from: {message}"
-            
+
             # Check if expected path is in results
             paths = [f.path for f in files]
             assert expected_path in paths, f"Expected {expected_path} in {paths}"
@@ -330,13 +331,13 @@ class TestCopilotSessionRetriever:
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         # Schema should be auto-created
         retriever._create_schema()
-        
+
         sessions = retriever.list_sessions()
         assert sessions == []
-        
+
         session_ids = retriever.get_last_n_sessions(n=10)
         assert session_ids == []
 
@@ -346,12 +347,12 @@ class TestCopilotSessionRetriever:
             db_path=str(temp_db),
             repo_root=str(temp_repo)
         )
-        
+
         # Schema should be auto-created
         retriever._create_schema()
-        
+
         summary = retriever.analyze_session("nonexistent-session")
-        
+
         assert summary.message_count == 0
         assert len(summary.expected_files) == 0
         assert "No logs found" in summary.notes

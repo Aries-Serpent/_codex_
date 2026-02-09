@@ -29,10 +29,10 @@ def test_clear_cache():
     """Test cache clearing via public API behavior."""
     # Clear any existing cache first
     LanguageRegistry.clear_cache()
-    
+
     # Clearing an empty cache should not raise
     LanguageRegistry.clear_cache()
-    
+
     # The cache should be functional after clearing
     # (get_language may return None if tree-sitter not installed,
     # but should not raise an exception)

@@ -52,7 +52,7 @@ class LanguageRegistry:
             return None
 
         module_name = cls.LANGUAGES[name]
-        
+
         # Security: Only allow importing from whitelist
         if module_name not in cls._ALLOWED_MODULES:
             logger.error(f"Module {module_name} not in allowed list")

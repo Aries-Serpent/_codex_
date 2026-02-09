@@ -79,7 +79,7 @@ class TestConfigFunctionality:
         ) as f:
             yaml.dump({"test": "config", "value": 123}, f)
             temp_path = f.name
-        
+
         try:
             result = subprocess.run(
                 [sys.executable, "-m", "codex_ml.cli.config", "show", temp_path],
@@ -95,7 +95,7 @@ class TestConfigFunctionality:
     def test_config_validate_invalid_file(self):
         """Test config validate with nonexistent file."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.config", "validate", 
+            [sys.executable, "-m", "codex_ml.cli.config", "validate",
              "/nonexistent/config.yaml"],
             capture_output=True,
             text=True,

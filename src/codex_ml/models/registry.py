@@ -1,7 +1,9 @@
 """Model registry built on :mod:`codex_ml.registry` primitives."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import os

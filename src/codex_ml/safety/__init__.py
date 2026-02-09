@@ -16,8 +16,10 @@ Author: Codex Team
 """
 
 # BEGIN: CODEX_SAFETY_INIT
-from .filters import SafetyFilters, SafetyViolation
 import logging
+
+from .filters import SafetyFilters, SafetyViolation
+
 logger = logging.getLogger(__name__)
 from .moderation import (
     ModerationAdapter,

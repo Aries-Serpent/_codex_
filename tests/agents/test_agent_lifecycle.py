@@ -13,7 +13,7 @@ Tests cover:
 """
 
 import tempfile
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -180,7 +180,7 @@ class TestStatePersistence:
             frame = ContextFrame(
                 frame_id="frame_persist",
                 task_description="Persisted task",
-                start_time=datetime.now().isoformat(),
+                start_time=datetime.now(UTC).isoformat(),
             )
             memory1.store_context_frame(frame)
 

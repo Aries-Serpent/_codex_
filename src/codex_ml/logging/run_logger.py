@@ -1,7 +1,9 @@
 """Utilities for writing structured run parameter and metric logs."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

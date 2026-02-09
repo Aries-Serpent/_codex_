@@ -15,9 +15,9 @@ Functions:
 Author: Codex Team
 """
 
-from typing import Iterable, Any, Generator
 import hashlib
 import json
+from typing import Any, Generator, Iterable
 
 
 def compute_checksum(item: dict) -> str:

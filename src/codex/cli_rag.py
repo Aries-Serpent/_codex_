@@ -15,10 +15,11 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
-import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
+
+import typer
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ def _validate_files(files: List[str]) -> List[Path]:
         typer.BadParameter: If no valid files found
     """
     from glob import glob
-    
+
     resolved = []
     for pattern in files:
         matches = glob(pattern, recursive=True)
@@ -54,10 +55,10 @@ def _validate_files(files: List[str]) -> List[Path]:
             console.print(f"[yellow]⚠️  No files found matching: {pattern}[/yellow]")
         else:
             resolved.extend(Path(m) for m in matches)
-    
+
     if not resolved:
         raise typer.BadParameter("No valid files found matching the provided patterns")
-    
+
     return resolved
 
 
@@ -133,26 +134,26 @@ def build(
     """
     try:
         from codex.rag import build_index_from_files
-        
+
         # Validate inputs
         if overlap >= chunk_size:
             console.print("[red]❌ Overlap must be less than chunk size[/red]")
             raise typer.Exit(1)
-        
+
         resolved_files = _validate_files(files)
-        
+
         console.print(f"[cyan]📚 Building index '{index_name}' for tenant '{tenant_id}'[/cyan]")
         console.print(f"[dim]   Files: {len(resolved_files)}[/dim]")
         console.print(f"[dim]   Chunk size: {chunk_size}, Overlap: {overlap}[/dim]")
         console.print(f"[dim]   Model: {model_name}[/dim]\n")
-        
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
             task = progress.add_task("Building index...", total=None)
-            
+
             index_path = build_index_from_files(
                 files=resolved_files,
                 index_name=index_name,
@@ -160,12 +161,12 @@ def build(
                 chunk_size=chunk_size,
                 overlap=overlap,
             )
-            
+
             progress.update(task, completed=True)
-        
+
         console.print("\n[green]✅ Index built successfully![/green]")
         console.print(f"[dim]   Location: {index_path}[/dim]")
-        
+
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         console.print("[yellow]Install with: pip install sentence-transformers faiss-cpu[/yellow]")
@@ -238,37 +239,37 @@ def query(
     """
     try:
         from codex.rag import Retriever
-        
+
         console.print(f"[cyan]🔍 Querying index '{index_name}' for tenant '{tenant_id}'[/cyan]\n")
-        
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
             task = progress.add_task("Loading index...", total=None)
-            
+
             retriever = Retriever(
                 index_name=index_name,
                 tenant_id=tenant_id,
             )
-            
+
             progress.update(task, description="Searching...")
-            
+
             results = retriever.query(
                 query_text=query_text,
                 top_k=top_k,
                 min_score=min_score,
             )
-            
+
             progress.update(task, completed=True)
-        
+
         if not results:
             console.print("[yellow]No results found[/yellow]")
             return
-        
+
         console.print(f"\n[green]Found {len(results)} results:[/green]\n")
-        
+
         if output_format == "json":
             print(json.dumps(results, indent=2, default=str))
         else:
@@ -276,23 +277,23 @@ def query(
             table.add_column("Score", style="green", width=8)
             table.add_column("File", style="blue")
             table.add_column("Text", style="white")
-            
+
             for result in results:
                 score = result.get("score", 0.0)
                 file_path = result.get("file", "unknown")
                 text = result.get("text", "")
-                
+
                 # Truncate text for display
                 display_text = text[:100] + "..." if len(text) > 100 else text
-                
+
                 table.add_row(
                     f"{score:.4f}",
                     str(file_path),
                     display_text,
                 )
-            
+
             console.print(table)
-        
+
     except FileNotFoundError:
         console.print(f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]")
         console.print("[yellow]Build an index first with: codex rag build[/yellow]")
@@ -335,12 +336,12 @@ def list_indices(
     """
     try:
         tenant_path = Path(index_dir) / tenant_id
-        
+
         if not tenant_path.exists():
             console.print(f"[yellow]No indices found for tenant '{tenant_id}'[/yellow]")
             console.print(f"[dim]   Path: {tenant_path}[/dim]")
             return
-        
+
         indices = []
         for index_path in tenant_path.iterdir():
             if index_path.is_dir():
@@ -357,19 +358,19 @@ def list_indices(
                         })
                     except Exception as e:
                         logger.warning(f"Failed to read metadata for {index_path}: {e}")
-        
+
         if not indices:
             console.print(f"[yellow]No valid indices found for tenant '{tenant_id}'[/yellow]")
             return
-        
+
         console.print(f"[cyan]📋 Indices for tenant '{tenant_id}':[/cyan]\n")
-        
+
         table = Table(show_header=True, header_style="bold cyan")
         table.add_column("Index Name", style="blue")
         table.add_column("Chunks", style="green", justify="right")
         table.add_column("Model", style="yellow")
         table.add_column("Created", style="dim")
-        
+
         for idx in indices:
             table.add_row(
                 idx["name"],
@@ -377,10 +378,10 @@ def list_indices(
                 idx["model"],
                 idx["created"],
             )
-        
+
         console.print(table)
         console.print(f"\n[dim]Total: {len(indices)} indices[/dim]")
-        
+
     except Exception as e:
         console.print(f"[red]❌ Failed to list indices: {e}[/red]")
         logger.exception("Error listing indices")
@@ -428,13 +429,13 @@ def delete(
     """
     try:
         import shutil
-        
+
         index_path = Path(index_dir) / tenant_id / index_name
-        
+
         if not index_path.exists():
             console.print(f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]")
             raise typer.Exit(1)
-        
+
         if not confirm:
             confirmed = typer.confirm(
                 f"Are you sure you want to delete index '{index_name}' for tenant '{tenant_id}'?",
@@ -443,10 +444,10 @@ def delete(
             if not confirmed:
                 console.print("[yellow]Cancelled[/yellow]")
                 return
-        
+
         shutil.rmtree(index_path)
         console.print(f"[green]✅ Deleted index '{index_name}' for tenant '{tenant_id}'[/green]")
-        
+
     except Exception as e:
         console.print(f"[red]❌ Failed to delete index: {e}[/red]")
         logger.exception("Error deleting index")
@@ -487,30 +488,30 @@ def merge(
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
     try:
-        from codex.rag import manage_tenant_indices, IndexOperation
-        
+        from codex.rag import IndexOperation, manage_tenant_indices
+
         if not source_indices or len(source_indices) < 2:
             console.print("[red]❌ At least 2 source indices required for merge[/red]")
             raise typer.Exit(1)
-        
+
         console.print(f"[cyan]🔀 Merging {len(source_indices)} indices into '{target_index}'[/cyan]\n")
-        
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
             task = progress.add_task("Merging indices...", total=None)
-            
+
             result = manage_tenant_indices(
                 tenant_id=tenant_id,
                 operation=IndexOperation.MERGE,
                 index_names=source_indices,
                 merge_name=target_index,
             )
-            
+
             progress.update(task, completed=True)
-        
+
         if result.success:
             console.print("\n[green]✅ Indices merged successfully![/green]")
             console.print(f"[dim]   Target: {target_index}[/dim]")
@@ -519,7 +520,7 @@ def merge(
         else:
             console.print(f"[red]❌ Merge failed: {result.message}[/red]")
             raise typer.Exit(1)
-        
+
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         raise typer.Exit(1)
@@ -569,28 +570,28 @@ def stats(
     """
     try:
         index_path = Path(index_dir) / tenant_id / index_name
-        
+
         if not index_path.exists():
             console.print(f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]")
             raise typer.Exit(1)
-        
+
         # Read metadata
         metadata_file = index_path / "metadata.json"
         if not metadata_file.exists():
             console.print("[red]❌ Index metadata not found[/red]")
             raise typer.Exit(1)
-        
+
         metadata = json.loads(metadata_file.read_text())
-        
+
         # Calculate directory size
         total_size = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())
-        
+
         console.print(f"[cyan]📊 Statistics for index '{index_name}' (tenant: {tenant_id})[/cyan]\n")
-        
+
         table = Table(show_header=False, box=None)
         table.add_column("Property", style="bold blue")
         table.add_column("Value", style="white")
-        
+
         table.add_row("Index Name", index_name)
         table.add_row("Tenant ID", tenant_id)
         table.add_row("Chunks", str(metadata.get("num_chunks", 0)))
@@ -599,9 +600,9 @@ def stats(
         table.add_row("Size", _format_bytes(total_size))
         table.add_row("Created", metadata.get("created_at", "unknown"))
         table.add_row("Location", str(index_path))
-        
+
         console.print(table)
-        
+
     except Exception as e:
         console.print(f"[red]❌ Failed to get stats: {e}[/red]")
         logger.exception("Error getting stats")
@@ -641,9 +642,9 @@ def metrics(
     """
     try:
         from codex.rag import get_metrics
-        
+
         metrics_obj = get_metrics()
-        
+
         if output_format == "prometheus":
             content = metrics_obj.export_prometheus()
         elif output_format == "json":
@@ -652,13 +653,13 @@ def metrics(
         else:
             console.print(f"[red]❌ Unknown format: {output_format}[/red]")
             raise typer.Exit(1)
-        
+
         if output_file:
             output_file.write_text(content)
             console.print(f"[green]✅ Metrics exported to {output_file}[/green]")
         else:
             print(content)
-        
+
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         raise typer.Exit(1)
@@ -718,46 +719,46 @@ def benchmark(
     """
     try:
         from codex.rag.benchmarks import (
+            benchmark_e2e_pipeline,
             benchmark_embedding_providers,
             benchmark_indexing,
             benchmark_retrieval,
-            benchmark_e2e_pipeline
         )
-        
+
         console.print(f"[bold blue]🔬 Running {benchmark_type} benchmarks...[/bold blue]")
-        
+
         results = []
-        
+
         if benchmark_type in ["embedding", "all"]:
             console.print("[cyan]→ Benchmarking embedding providers...[/cyan]")
             result = benchmark_embedding_providers(runs=runs)
             results.extend(result["results"])
-        
+
         if benchmark_type in ["indexing", "all"]:
             console.print("[cyan]→ Benchmarking indexing performance...[/cyan]")
             corpus_sizes = [corpus_size] if corpus_size else [100, 1000, 10000]
             result = benchmark_indexing(corpus_sizes=corpus_sizes, runs=runs)
             results.extend(result["results"])
-        
+
         if benchmark_type in ["retrieval", "all"]:
             console.print("[cyan]→ Benchmarking retrieval performance...[/cyan]")
             index_sizes = [corpus_size] if corpus_size else [100, 1000, 10000]
             result = benchmark_retrieval(index_sizes=index_sizes, runs=runs)
             results.extend(result["results"])
-        
+
         if benchmark_type in ["e2e", "all"]:
             console.print("[cyan]→ Benchmarking end-to-end pipeline...[/cyan]")
             corpus_sizes = [corpus_size] if corpus_size else [100, 1000]
             result = benchmark_e2e_pipeline(corpus_sizes=corpus_sizes, runs=runs)
             results.extend(result["results"])
-        
+
         # Display summary table
         table = Table(title="Benchmark Results")
         table.add_column("Benchmark", style="cyan")
         table.add_column("Duration (ms)", justify="right")
         table.add_column("Memory (MB)", justify="right")
         table.add_column("Status", justify="center")
-        
+
         for r in results:
             status = "✅" if r["success"] else "❌"
             table.add_row(
@@ -766,15 +767,15 @@ def benchmark(
                 f"{r['memory_mb']:.2f}",
                 status
             )
-        
+
         console.print(table)
-        
+
         # Export results
         if output:
             import json
             output_path = Path(output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             if output.endswith('.json'):
                 with open(output, 'w') as f:
                     json.dump({"results": results}, f, indent=2)
@@ -787,15 +788,15 @@ def benchmark(
                         writer.writeheader()
                         writer.writerows(results)
                 console.print(f"[green]✅ Results exported to {output}[/green]")
-        
+
         # Check for regressions
         if baseline:
             from codex.rag.benchmarks.runner import BenchmarkRunner
             runner = BenchmarkRunner()
             runner.results = [type('obj', (), r) for r in results]
-            
+
             comparison = runner.compare_with_baseline(baseline, threshold)
-            
+
             if comparison["has_regressions"]:
                 console.print("\n[red]⚠️  Performance regressions detected:[/red]")
                 for reg in comparison["regressions"]:
@@ -806,7 +807,7 @@ def benchmark(
                 raise typer.Exit(1)
             else:
                 console.print("\n[green]✅ No performance regressions detected[/green]")
-    
+
     except ImportError as e:
         console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")
         raise typer.Exit(1)

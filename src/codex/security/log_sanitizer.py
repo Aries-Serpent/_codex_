@@ -24,36 +24,35 @@ Usage:
 import re
 from typing import Any, Pattern
 
-
 # Patterns for detecting sensitive data
 SENSITIVE_PATTERNS: list[tuple[Pattern[str], str]] = [
     # API keys and tokens
-    (re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE), 
+    (re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE),
      r'\1=***REDACTED***'),
-    
+
     # Bearer tokens
-    (re.compile(r'Bearer\s+\S+', re.IGNORECASE), 
+    (re.compile(r'Bearer\s+\S+', re.IGNORECASE),
      'Bearer ***REDACTED***'),
-    
+
     # Base64-encoded secrets (40+ chars)
-    (re.compile(r'[a-zA-Z0-9+/]{40,}={0,2}'), 
+    (re.compile(r'[a-zA-Z0-9+/]{40,}={0,2}'),
      '***BASE64_REDACTED***'),
-    
+
     # Hex-encoded secrets (32+ chars)
-    (re.compile(r'\b[a-fA-F0-9]{32,}\b'), 
+    (re.compile(r'\b[a-fA-F0-9]{32,}\b'),
      '***HEX_REDACTED***'),
-    
+
     # AWS keys
-    (re.compile(r'AKIA[0-9A-Z]{16}'), 
+    (re.compile(r'AKIA[0-9A-Z]{16}'),
      '***AWS_KEY_REDACTED***'),
-    
+
     # JWT tokens
-    (re.compile(r'eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*'), 
+    (re.compile(r'eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*'),
      '***JWT_REDACTED***'),
-    
+
     # Private keys
-    (re.compile(r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----.*?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----', 
-                re.DOTALL), 
+    (re.compile(r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----.*?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----',
+                re.DOTALL),
      '***PRIVATE_KEY_REDACTED***'),
 ]
 
@@ -80,22 +79,22 @@ def sanitize_log(value: Any, max_length: int = 500) -> str:
     """
     if value is None:
         return "None"
-    
+
     # Convert to string
     str_value = str(value)
-    
+
     # Remove control characters (newlines, tabs, etc.)
     # \x00-\x1f: C0 control characters
     # \x7f-\x9f: DEL and C1 control characters
     sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', str_value)
-    
+
     # Remove ANSI escape codes (terminal color codes, etc.)
     sanitized = re.sub(r'\x1b\[[0-9;]*m', '', sanitized)
-    
+
     # Truncate to max length
     if len(sanitized) > max_length:
         sanitized = sanitized[:max_length] + '...[truncated]'
-    
+
     return sanitized
 
 
@@ -149,11 +148,11 @@ def safe_log_message(message: str, mask_secrets: bool = True) -> str:
     """
     # First remove control characters
     sanitized = sanitize_log(message)
-    
+
     # Then mask sensitive patterns if requested
     if mask_secrets:
         sanitized = mask_sensitive(sanitized)
-    
+
     return sanitized
 
 

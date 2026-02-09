@@ -15,6 +15,8 @@ Tests cover:
 import numpy as np
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 
 # Mark all tests in this module

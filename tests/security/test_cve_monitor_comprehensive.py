@@ -50,11 +50,11 @@ class TestCVEEntryAdvanced:
             package="test-pkg",
             affected_versions=["1.0.0", "1.0.1", "1.1.0", "2.0.0"],
         )
-        
+
         # Test exact matches
         assert cve.affects("1.0.0") is True
         assert cve.affects("2.0.0") is True
-        
+
         # Test non-affected versions
         assert cve.affects("1.0.2") is False
         assert cve.affects("3.0.0") is False
@@ -67,7 +67,7 @@ class TestCVEEntryAdvanced:
             package="test",
             affected_versions=[],
         )
-        
+
         assert cve.affects("1.0.0") is False
         assert cve.affects("") is False
 
@@ -79,7 +79,7 @@ class TestCVEEntryAdvanced:
             package="wildcard-test",
             affected_versions=["1.x", "2.0.x", "3.0.0"],
         )
-        
+
         # Exact match still works
         assert cve.affects("3.0.0") is True
         # Wildcard patterns need exact match (not range)
@@ -95,14 +95,14 @@ class TestCVEEntryAdvanced:
             description="Vulnerability in 日本語 module causes données exposure",
             published="2024-01-15T10:00:00Z",
         )
-        
+
         assert "日本語" in cve.description
         assert "données" in cve.description
 
     def test_cve_all_severity_levels(self):
         """Test CVE entries with all standard severity levels."""
         severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-        
+
         for i, severity in enumerate(severities):
             cve = CVEEntry(
                 cve_id=f"CVE-2024-000{i}",
@@ -122,7 +122,7 @@ class TestCVEEntryAdvanced:
             affected_versions=["1.0.0"],
             fixed_in=None,
         )
-        
+
         assert cve.fixed_in is None
 
     def test_cve_long_affected_versions_list(self):
@@ -134,7 +134,7 @@ class TestCVEEntryAdvanced:
             package="many-versions",
             affected_versions=versions,
         )
-        
+
         assert len(cve.affected_versions) == 100
         assert cve.affects("1.0.50") is True
         assert cve.affects("1.0.99") is True
@@ -153,17 +153,17 @@ class TestCVEDatabaseAdvanced:
         """Test that checksum is consistent for same data."""
         db1 = CVEDatabase()
         db2 = CVEDatabase()
-        
+
         cve = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
             package="test",
             affected_versions=["1.0.0"],
         )
-        
+
         db1.add_cve(cve)
         db2.add_cve(cve)
-        
+
         # Checksums should be the same for same data
         # (ignoring timestamp differences)
         assert len(db1.checksum) == 16
@@ -172,33 +172,33 @@ class TestCVEDatabaseAdvanced:
     def test_database_checksum_changes_on_update(self):
         """Test that checksum changes when database is updated."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
             package="test",
             affected_versions=["1.0.0"],
         )
-        
+
         db.add_cve(cve1)
         checksum1 = db.checksum
-        
+
         cve2 = CVEEntry(
             cve_id="CVE-2024-0002",
             severity="MEDIUM",
             package="test2",
             affected_versions=["2.0.0"],
         )
-        
+
         db.add_cve(cve2)
         checksum2 = db.checksum
-        
+
         assert checksum1 != checksum2
 
     def test_check_package_multiple_vulnerabilities(self):
         """Test checking package with multiple vulnerabilities."""
         db = CVEDatabase()
-        
+
         for i in range(5):
             cve = CVEEntry(
                 cve_id=f"CVE-2024-000{i}",
@@ -207,7 +207,7 @@ class TestCVEDatabaseAdvanced:
                 affected_versions=["1.0.0"],
             )
             db.add_cve(cve)
-        
+
         vulns = db.check_package("multi-vuln", "1.0.0")
         assert len(vulns) == 5
 
@@ -221,14 +221,14 @@ class TestCVEDatabaseAdvanced:
             affected_versions=["1.0.0"],
         )
         db.add_cve(cve)
-        
+
         results = db.check_all({})
         assert len(results) == 0
 
     def test_check_all_with_many_dependencies(self):
         """Test check_all with large dependency set."""
         db = CVEDatabase()
-        
+
         # Add CVEs for some packages
         for i in range(10):
             cve = CVEEntry(
@@ -238,10 +238,10 @@ class TestCVEDatabaseAdvanced:
                 affected_versions=["1.0.0"],
             )
             db.add_cve(cve)
-        
+
         # Create dependency dict with 100 packages
         deps = {f"pkg{i}": "1.0.0" if i < 10 else "2.0.0" for i in range(100)}
-        
+
         results = db.check_all(deps)
         # Only first 10 should be vulnerable
         assert len(results) == 10
@@ -249,7 +249,7 @@ class TestCVEDatabaseAdvanced:
     def test_to_dict_with_complex_data(self):
         """Test to_dict with complex CVE data."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="CRITICAL",
@@ -259,7 +259,7 @@ class TestCVEDatabaseAdvanced:
             description="Complex vulnerability",
             published="2024-01-15",
         )
-        
+
         cve2 = CVEEntry(
             cve_id="CVE-2024-0002",
             severity="HIGH",
@@ -267,12 +267,12 @@ class TestCVEDatabaseAdvanced:
             affected_versions=["2.0.0"],
             fixed_in="2.0.1",
         )
-        
+
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         data = db.to_dict()
-        
+
         assert "complex-pkg" in data["entries"]
         assert len(data["entries"]["complex-pkg"]) == 2
         assert data["last_updated"] != ""
@@ -290,9 +290,9 @@ class TestCVEDatabaseAdvanced:
                 ]
             },
         }
-        
+
         db = CVEDatabase.from_dict(data)
-        
+
         assert "minimal-pkg" in db.entries
         assert db.entries["minimal-pkg"][0].cve_id == "CVE-2024-0001"
         assert db.entries["minimal-pkg"][0].fixed_in is None
@@ -304,14 +304,14 @@ class TestCVEDatabaseAdvanced:
             "entries": {},
             "last_updated": timestamp,
         }
-        
+
         db = CVEDatabase.from_dict(data)
         assert db.last_updated == timestamp
 
     def test_database_persistence_roundtrip(self):
         """Test saving and loading database via JSON."""
         db1 = CVEDatabase()
-        
+
         cve = CVEEntry(
             cve_id="CVE-2024-PERSIST",
             severity="HIGH",
@@ -320,14 +320,14 @@ class TestCVEDatabaseAdvanced:
             fixed_in="1.0.2",
         )
         db1.add_cve(cve)
-        
+
         # Save to JSON
         json_data = json.dumps(db1.to_dict())
-        
+
         # Load from JSON
         loaded_data = json.loads(json_data)
         db2 = CVEDatabase.from_dict(loaded_data)
-        
+
         assert "persist-test" in db2.entries
         assert db2.entries["persist-test"][0].cve_id == "CVE-2024-PERSIST"
         assert db2.entries["persist-test"][0].fixed_in == "1.0.2"
@@ -345,7 +345,7 @@ class TestDependencyMonitor:
         """Test DependencyMonitor initialization."""
         db = CVEDatabase()
         monitor = DependencyMonitor(db)
-        
+
         assert monitor.cve_db == db
         assert monitor.alerts == []
 
@@ -353,14 +353,14 @@ class TestDependencyMonitor:
         """Test scanning dependencies with no vulnerabilities."""
         db = CVEDatabase()
         monitor = DependencyMonitor(db)
-        
+
         deps = {
             "safe-pkg-1": "1.0.0",
             "safe-pkg-2": "2.0.0",
         }
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 0
         assert results["total_vulnerabilities"] == 0
         assert results["safe"] is True
@@ -369,7 +369,7 @@ class TestDependencyMonitor:
     def test_scan_with_critical_vulnerabilities(self):
         """Test scanning with CRITICAL severity vulnerabilities."""
         db = CVEDatabase()
-        
+
         cve = CVEEntry(
             cve_id="CVE-2024-CRITICAL",
             severity="CRITICAL",
@@ -378,12 +378,12 @@ class TestDependencyMonitor:
             fixed_in="1.0.1",
         )
         db.add_cve(cve)
-        
+
         monitor = DependencyMonitor(db)
         deps = {"critical-pkg": "1.0.0"}
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 1
         assert results["safe"] is False
         assert len(results["critical"]) == 1
@@ -392,17 +392,17 @@ class TestDependencyMonitor:
     def test_scan_with_mixed_severities(self):
         """Test scanning with mixed severity levels."""
         db = CVEDatabase()
-        
+
         cves = [
             CVEEntry("CVE-2024-C", "CRITICAL", "pkg1", ["1.0.0"], "1.0.1"),
             CVEEntry("CVE-2024-H", "HIGH", "pkg2", ["2.0.0"], "2.0.1"),
             CVEEntry("CVE-2024-M", "MEDIUM", "pkg3", ["3.0.0"], "3.0.1"),
             CVEEntry("CVE-2024-L", "LOW", "pkg4", ["4.0.0"], "4.0.1"),
         ]
-        
+
         for cve in cves:
             db.add_cve(cve)
-        
+
         monitor = DependencyMonitor(db)
         deps = {
             "pkg1": "1.0.0",
@@ -410,9 +410,9 @@ class TestDependencyMonitor:
             "pkg3": "3.0.0",
             "pkg4": "4.0.0",
         }
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 4
         assert results["total_vulnerabilities"] == 4
         assert len(results["critical"]) == 1
@@ -423,7 +423,7 @@ class TestDependencyMonitor:
     def test_scan_package_with_multiple_cves(self):
         """Test scanning package with multiple CVEs."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -438,15 +438,15 @@ class TestDependencyMonitor:
             affected_versions=["1.0.0"],
             fixed_in="1.0.2",
         )
-        
+
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         monitor = DependencyMonitor(db)
         deps = {"multi-cve": "1.0.0"}
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 1
         assert results["total_vulnerabilities"] == 2
 
@@ -454,7 +454,7 @@ class TestDependencyMonitor:
         """Test report generation for safe dependencies."""
         db = CVEDatabase()
         monitor = DependencyMonitor(db)
-        
+
         scan_results = {
             "vulnerable_packages": 0,
             "total_vulnerabilities": 0,
@@ -464,9 +464,9 @@ class TestDependencyMonitor:
             "low": [],
             "safe": True,
         }
-        
+
         report = monitor.generate_report(scan_results)
-        
+
         assert "# Dependency Vulnerability Report" in report
         assert "✅ SAFE" in report
         assert "**Vulnerable Packages:** 0" in report
@@ -475,7 +475,7 @@ class TestDependencyMonitor:
         """Test report generation with vulnerabilities."""
         db = CVEDatabase()
         monitor = DependencyMonitor(db)
-        
+
         scan_results = {
             "vulnerable_packages": 2,
             "total_vulnerabilities": 3,
@@ -490,9 +490,9 @@ class TestDependencyMonitor:
             "low": [],
             "safe": False,
         }
-        
+
         report = monitor.generate_report(scan_results)
-        
+
         assert "⚠️ VULNERABILITIES FOUND" in report
         assert "## Critical" in report
         assert "## High" in report
@@ -503,7 +503,7 @@ class TestDependencyMonitor:
         """Test that generated report has proper markdown format."""
         db = CVEDatabase()
         monitor = DependencyMonitor(db)
-        
+
         scan_results = {
             "vulnerable_packages": 1,
             "total_vulnerabilities": 1,
@@ -515,9 +515,9 @@ class TestDependencyMonitor:
             "low": [],
             "safe": False,
         }
-        
+
         report = monitor.generate_report(scan_results)
-        
+
         lines = report.split("\n")
         assert lines[0] == "# Dependency Vulnerability Report"
         assert any("**Vulnerable Packages:**" in line for line in lines)
@@ -535,7 +535,7 @@ class TestIntegrationScenarios:
     def test_get_sample_cve_database(self):
         """Test the sample CVE database helper."""
         db = get_sample_cve_database()
-        
+
         assert isinstance(db, CVEDatabase)
         assert len(db.entries) > 0
 
@@ -543,7 +543,7 @@ class TestIntegrationScenarios:
         """Test complete workflow: database -> monitor -> scan -> report."""
         # Create database
         db = CVEDatabase()
-        
+
         # Add realistic CVEs
         db.add_cve(CVEEntry(
             cve_id="CVE-2023-45853",
@@ -553,7 +553,7 @@ class TestIntegrationScenarios:
             fixed_in="3.17.0",
             description="Path traversal vulnerability",
         ))
-        
+
         db.add_cve(CVEEntry(
             cve_id="CVE-2023-43804",
             severity="MEDIUM",
@@ -562,24 +562,24 @@ class TestIntegrationScenarios:
             fixed_in="2.0.7",
             description="Cookie request header leak",
         ))
-        
+
         # Create monitor
         monitor = DependencyMonitor(db)
-        
+
         # Scan project dependencies
         project_deps = {
             "zipp": "3.15.0",      # Vulnerable
             "urllib3": "2.0.7",    # Fixed
             "requests": "2.31.0",  # Not in database
         }
-        
+
         results = monitor.scan(project_deps)
-        
+
         # Verify results
         assert results["vulnerable_packages"] == 1
         assert results["safe"] is False
         assert len(results["high"]) == 1
-        
+
         # Generate report
         report = monitor.generate_report(results)
         assert "zipp" in report
@@ -589,7 +589,7 @@ class TestIntegrationScenarios:
         """Test scenario of updating database with new CVEs."""
         db = CVEDatabase()
         initial_checksum = db.checksum
-        
+
         # First batch of CVEs
         db.add_cve(CVEEntry(
             cve_id="CVE-2024-0001",
@@ -597,10 +597,10 @@ class TestIntegrationScenarios:
             package="old-vuln",
             affected_versions=["1.0.0"],
         ))
-        
+
         checksum_after_first = db.checksum
         assert checksum_after_first != initial_checksum
-        
+
         # Second batch (simulating update)
         db.add_cve(CVEEntry(
             cve_id="CVE-2024-0002",
@@ -608,14 +608,14 @@ class TestIntegrationScenarios:
             package="new-vuln",
             affected_versions=["2.0.0"],
         ))
-        
+
         checksum_after_second = db.checksum
         assert checksum_after_second != checksum_after_first
 
     def test_large_scale_scanning(self):
         """Test scanning with large number of dependencies."""
         db = CVEDatabase()
-        
+
         # Add 50 CVEs
         for i in range(50):
             db.add_cve(CVEEntry(
@@ -624,9 +624,9 @@ class TestIntegrationScenarios:
                 package=f"pkg-{i}",
                 affected_versions=["1.0.0"],
             ))
-        
+
         monitor = DependencyMonitor(db)
-        
+
         # Create 200 dependencies (50 vulnerable, 150 safe)
         deps = {}
         for i in range(200):
@@ -634,16 +634,16 @@ class TestIntegrationScenarios:
                 deps[f"pkg-{i}"] = "1.0.0"  # Vulnerable
             else:
                 deps[f"safe-pkg-{i}"] = "1.0.0"  # Safe
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 50
         assert results["total_vulnerabilities"] == 50
 
     def test_no_fix_available_scenario(self):
         """Test scenario where CVE has no fix available."""
         db = CVEDatabase()
-        
+
         db.add_cve(CVEEntry(
             cve_id="CVE-2024-NOFIX",
             severity="CRITICAL",
@@ -652,19 +652,19 @@ class TestIntegrationScenarios:
             fixed_in=None,  # No fix available
             description="Zero-day vulnerability",
         ))
-        
+
         monitor = DependencyMonitor(db)
         deps = {"zero-day": "1.0.1"}
-        
+
         results = monitor.scan(deps)
-        
+
         assert results["vulnerable_packages"] == 1
         assert results["critical"][0]["fixed_in"] is None
 
     def test_persistence_with_file_system(self):
         """Test database persistence to file system."""
         db1 = CVEDatabase()
-        
+
         db1.add_cve(CVEEntry(
             cve_id="CVE-2024-FILE",
             severity="HIGH",
@@ -672,19 +672,19 @@ class TestIntegrationScenarios:
             affected_versions=["1.0.0"],
             fixed_in="1.0.1",
         ))
-        
+
         # Save to temporary file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump(db1.to_dict(), f)
             temp_path = f.name
-        
+
         try:
             # Load from file
             with open(temp_path, 'r') as f:
                 data = json.load(f)
-            
+
             db2 = CVEDatabase.from_dict(data)
-            
+
             assert "file-test" in db2.entries
             assert db2.entries["file-test"][0].cve_id == "CVE-2024-FILE"
         finally:

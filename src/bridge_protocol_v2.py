@@ -31,7 +31,7 @@ MIN_COMPRESSION_SAVINGS = 0.1  # Only compress if 10%+ savings
 
 class MessageFlags(IntFlag):
     """Message flag bits for protocol header."""
-    
+
     NONE = 0
     COMPRESSED = 1 << 0  # Payload is zlib compressed
     ENCRYPTED = 1 << 1  # Payload is encrypted (reserved)
@@ -49,13 +49,13 @@ class ProtocolHeader:
     | Magic (4B) | Version (1B) | Flags (1B) | Length (4B) | Checksum (4B) |
     Total: 14 bytes
     """
-    
+
     magic: bytes = MAGIC_BYTES
     version: int = PROTOCOL_VERSION
     flags: MessageFlags = MessageFlags.NONE
     length: int = 0
     checksum: int = 0
-    
+
     def to_bytes(self) -> bytes:
         """Serialize header to bytes."""
         return (
@@ -65,17 +65,17 @@ class ProtocolHeader:
             self.length.to_bytes(4, "big") +
             self.checksum.to_bytes(4, "big")
         )
-    
+
     @classmethod
     def from_bytes(cls, data: bytes) -> ProtocolHeader:
         """Deserialize header from bytes."""
         if len(data) < 14:
             raise ValueError(f"Header too short: {len(data)} bytes")
-        
+
         magic = data[0:4]
         if magic != MAGIC_BYTES:
             raise ValueError(f"Invalid magic bytes: {magic!r}")
-        
+
         return cls(
             magic=magic,
             version=data[4],
@@ -83,7 +83,7 @@ class ProtocolHeader:
             length=int.from_bytes(data[6:10], "big"),
             checksum=int.from_bytes(data[10:14], "big"),
         )
-    
+
     @staticmethod
     def size() -> int:
         """Return header size in bytes."""
@@ -102,9 +102,9 @@ def compress_message(data: bytes, threshold: int = COMPRESSION_THRESHOLD) -> tup
     """
     if len(data) < threshold:
         return data, False
-    
+
     compressed = zlib.compress(data, level=6)
-    
+
     # Only use compression if we save at least MIN_COMPRESSION_SAVINGS
     savings = 1.0 - (len(compressed) / len(data))
     if savings >= MIN_COMPRESSION_SAVINGS:
@@ -113,7 +113,7 @@ def compress_message(data: bytes, threshold: int = COMPRESSION_THRESHOLD) -> tup
             f"({savings:.1%} savings)"
         )
         return compressed, True
-    
+
     return data, False
 
 
@@ -129,7 +129,7 @@ def decompress_message(data: bytes, is_compressed: bool) -> bytes:
     """
     if not is_compressed:
         return data
-    
+
     return zlib.decompress(data)
 
 
@@ -148,7 +148,7 @@ def compute_checksum(data: bytes) -> int:
 @dataclass
 class ClientInfo:
     """Information about a connected client."""
-    
+
     client_id: str
     socket_path: str
     priority: int = 0
@@ -157,15 +157,15 @@ class ClientInfo:
     message_count: int = 0
     bytes_sent: int = 0
     bytes_received: int = 0
-    
+
     def update_heartbeat(self) -> None:
         """Update last heartbeat timestamp."""
         self.last_heartbeat = time.time()
-    
+
     def is_alive(self, timeout: float = 60.0) -> bool:
         """Check if client is still alive based on heartbeat."""
         return (time.time() - self.last_heartbeat) < timeout
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary."""
         return {
@@ -190,7 +190,7 @@ class MultiClientBridge:
     - Round-robin load balancing
     - Client health monitoring
     """
-    
+
     def __init__(
         self,
         max_clients: int = 10,
@@ -207,13 +207,13 @@ class MultiClientBridge:
         self.max_clients = max_clients
         self.heartbeat_timeout = heartbeat_timeout
         self.cleanup_interval = cleanup_interval
-        
+
         self.clients: dict[str, ClientInfo] = {}
         self._lock = threading.RLock()
         self._round_robin_index = 0
         self._cleanup_thread: Optional[threading.Thread] = None
         self._running = False
-    
+
     def start(self) -> None:
         """Start the bridge manager."""
         self._running = True
@@ -224,14 +224,14 @@ class MultiClientBridge:
         )
         self._cleanup_thread.start()
         logger.info("MultiClientBridge started")
-    
+
     def stop(self) -> None:
         """Stop the bridge manager."""
         self._running = False
         if self._cleanup_thread:
             self._cleanup_thread.join(timeout=5.0)
         logger.info("MultiClientBridge stopped")
-    
+
     def register_client(
         self,
         client_id: str,
@@ -255,22 +255,22 @@ class MultiClientBridge:
                     f"({self.max_clients} clients)"
                 )
                 return False
-            
+
             if client_id in self.clients:
                 logger.warning(f"Client {client_id} already registered, updating")
-            
+
             self.clients[client_id] = ClientInfo(
                 client_id=client_id,
                 socket_path=socket_path,
                 priority=priority,
             )
-            
+
             logger.info(
                 f"Registered client {client_id} (priority={priority}, "
                 f"total={len(self.clients)})"
             )
             return True
-    
+
     def unregister_client(self, client_id: str) -> bool:
         """Unregister a client.
         
@@ -283,13 +283,13 @@ class MultiClientBridge:
         with self._lock:
             if client_id not in self.clients:
                 return False
-            
+
             del self.clients[client_id]
             logger.info(
                 f"Unregistered client {client_id} (total={len(self.clients)})"
             )
             return True
-    
+
     def heartbeat(self, client_id: str) -> bool:
         """Update client heartbeat.
         
@@ -302,10 +302,10 @@ class MultiClientBridge:
         with self._lock:
             if client_id not in self.clients:
                 return False
-            
+
             self.clients[client_id].update_heartbeat()
             return True
-    
+
     def get_client(self, client_id: str) -> Optional[ClientInfo]:
         """Get client info by ID.
         
@@ -317,7 +317,7 @@ class MultiClientBridge:
         """
         with self._lock:
             return self.clients.get(client_id)
-    
+
     def route_by_priority(self) -> Optional[str]:
         """Get socket path for highest priority alive client.
         
@@ -329,19 +329,19 @@ class MultiClientBridge:
                 c for c in self.clients.values()
                 if c.is_alive(self.heartbeat_timeout)
             ]
-            
+
             if not alive_clients:
                 return None
-            
+
             # Sort by priority (descending)
             sorted_clients = sorted(
                 alive_clients,
                 key=lambda c: c.priority,
                 reverse=True,
             )
-            
+
             return sorted_clients[0].socket_path
-    
+
     def route_round_robin(self) -> Optional[str]:
         """Get socket path using round-robin among alive clients.
         
@@ -353,17 +353,17 @@ class MultiClientBridge:
                 c for c in self.clients.values()
                 if c.is_alive(self.heartbeat_timeout)
             ]
-            
+
             if not alive_clients:
                 return None
-            
+
             # Round-robin selection
             self._round_robin_index %= len(alive_clients)
             client = alive_clients[self._round_robin_index]
             self._round_robin_index += 1
-            
+
             return client.socket_path
-    
+
     def broadcast_targets(self) -> list[str]:
         """Get socket paths for all alive clients (for broadcast).
         
@@ -376,7 +376,7 @@ class MultiClientBridge:
                 for c in self.clients.values()
                 if c.is_alive(self.heartbeat_timeout)
             ]
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get bridge statistics.
         
@@ -388,20 +388,20 @@ class MultiClientBridge:
                 1 for c in self.clients.values()
                 if c.is_alive(self.heartbeat_timeout)
             )
-            
+
             return {
                 "total_clients": len(self.clients),
                 "alive_clients": alive_count,
                 "max_clients": self.max_clients,
                 "clients": [c.to_dict() for c in self.clients.values()],
             }
-    
+
     def _cleanup_loop(self) -> None:
         """Background thread to clean up dead clients."""
         while self._running:
             time.sleep(self.cleanup_interval)
             self._cleanup_dead_clients()
-    
+
     def _cleanup_dead_clients(self) -> None:
         """Remove clients that haven't sent heartbeat."""
         with self._lock:
@@ -410,11 +410,11 @@ class MultiClientBridge:
                 for client_id, client in self.clients.items()
                 if not client.is_alive(self.heartbeat_timeout)
             ]
-            
+
             for client_id in dead_clients:
                 del self.clients[client_id]
                 logger.info(f"Cleaned up dead client: {client_id}")
-            
+
             if dead_clients:
                 logger.info(
                     f"Cleaned up {len(dead_clients)} dead clients, "
@@ -442,17 +442,17 @@ def encode_message(
         payload, was_compressed = compress_message(payload)
         if was_compressed:
             flags |= MessageFlags.COMPRESSED
-    
+
     # Compute checksum
     checksum = compute_checksum(payload)
-    
+
     # Create header
     header = ProtocolHeader(
         flags=flags,
         length=len(payload),
         checksum=checksum,
     )
-    
+
     return header.to_bytes() + payload
 
 
@@ -470,19 +470,19 @@ def decode_message(data: bytes) -> tuple[bytes, ProtocolHeader]:
     """
     if len(data) < ProtocolHeader.size():
         raise ValueError(f"Message too short: {len(data)} bytes")
-    
+
     # Parse header
     header = ProtocolHeader.from_bytes(data[:ProtocolHeader.size()])
-    
+
     # Extract payload
     payload = data[ProtocolHeader.size():ProtocolHeader.size() + header.length]
-    
+
     if len(payload) != header.length:
         raise ValueError(
             f"Payload length mismatch: expected {header.length}, "
             f"got {len(payload)}"
         )
-    
+
     # Verify checksum
     computed_checksum = compute_checksum(payload)
     if computed_checksum != header.checksum:
@@ -490,11 +490,11 @@ def decode_message(data: bytes) -> tuple[bytes, ProtocolHeader]:
             f"Checksum mismatch: expected {header.checksum:08x}, "
             f"got {computed_checksum:08x}"
         )
-    
+
     # Decompress if needed
     if MessageFlags.COMPRESSED in header.flags:
         payload = decompress_message(payload, True)
-    
+
     return payload, header
 
 

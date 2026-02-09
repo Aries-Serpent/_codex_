@@ -918,3 +918,103 @@ Generated comprehensive failure analysis for PR #3133 (0D_base_ → main):
 - `.codex/plans/pr_3145/test_case_mapping.md`
 - `.codex/plans/path_100_2026-02-04-15-00-30-UTC_tokenization-coverage.md`
 - `.github/agents/tokenization-coverage-agent.md`
+
+## 2026-02-07 - CI Log Analysis: PR #3178 Coverage Timeout
+
+**Agent:** ci-log-retrieval-agent  
+**Job:** 62830486435 (Art_Code Quality & Coverage Suite / Coverage Report Generation)  
+**Status:** Analysis Complete ✓
+
+### Summary
+
+Retrieved and analyzed failed coverage job logs from PR #3178. Job ran for 52m 43s (vs. <10min before), completing 99%+ of test suite before timing out on Docker build test.
+
+### Root Cause
+
+**Test:** `tests/deployment/test_docker_build.py::test_gpu_dockerfile_builds`  
+**Issue:** Docker GPU image build exceeds pytest's 300-second timeout  
+**Location:** Line 25 - `subprocess.run()` with no timeout parameter
+
+### Key Findings
+
+1. ✅ **Previous 23 test fixes were successful** - enabled suite to reach 99%+ completion
+2. ❌ **Docker build test timeout** - GPU image builds take 10-30 minutes in CI
+3. ℹ️ **Pre-existing issue** - masked by early test failures before fixes
+4. ⚠️ **300-400 other test failures** - unrelated to integration test fixes
+5. ✅ **CI infrastructure stable** - timeout is test design issue, not infra failure
+
+### Remediation Plan
+
+**Recommended:** Hybrid approach (Options 1 + 4)
+
+1. **Immediate:** Mark Docker tests with `@pytest.mark.slow`
+2. **Immediate:** Exclude slow tests from coverage: `pytest -m "not slow"`
+3. **Follow-up:** Create dedicated Docker build workflow with caching
+
+### Artifacts Generated
+
+- **Full analysis:** `reports/ci_failure_analysis_pr3178_job62830486435.md`
+- **Raw logs:** `reports/ci_logs/job_62830486435_raw_logs.txt` (118.9 KB)
+- **Test progress:** 99%+ completion, ~3000+ tests passed
+- **Timeout location:** Line 797 of logs (first timeout message)
+
+### Files to Modify
+
+1. `tests/deployment/test_docker_build.py` - Add slow marker, add subprocess timeout
+2. `.github/workflows/code-quality-coverage-suite.yml` - Exclude slow tests
+3. `.github/workflows/docker-build-tests.yml` - Create (optional follow-up)
+
+### Impact Assessment
+
+- **Severity:** Medium (CI incomplete, but test suite functional)
+- **Risk:** Low (CI-only, no production impact, changes reversible)
+- **Time to fix:** 15 minutes (immediate) to 2 hours (full solution)
+- **Blast radius:** Coverage reporting, artifact uploads
+
+### Verification Checklist
+
+- [x] Authenticated log retrieval successful
+- [x] Failure location identified (line 25, test_docker_build.py)
+- [x] Root cause determined (Docker build timeout)
+- [x] Stack trace analyzed
+- [x] Timeline reconstructed (52m 43s job duration)
+- [x] Test progress quantified (99%+ completion)
+- [x] Previous fixes validated (23 integration tests - successful)
+- [x] Remediation options provided (4 options)
+- [x] Risk assessment complete
+- [x] Implementation plan documented
+
+### Relationship to Previous Session
+
+The 23 integration test fixes from the previous session **were successful** and are **not the cause** of this failure. Those fixes allowed the test suite to progress from <5% to 99%+ completion, which **enabled discovery** of this pre-existing Docker timeout issue.
+
+**Causality:** Integration fixes (success) → Longer test run → Docker test reached → Timeout exposed
+
+This is a **positive outcome** - surface-level issues are resolved, revealing deeper infrastructure improvements needed.
+
+### Next Actions
+
+1. Implement immediate fix (mark slow, exclude from coverage)
+2. Verify coverage job completes in next run
+3. Consider dedicated Docker workflow
+4. Investigate 300-400 remaining test failures (separate issue)
+
+---
+
+**Log retrieval:** ✓ Authenticated via GitHub MCP  
+**Log size:** 118.9 KB (1000 lines)  
+**Analysis depth:** Comprehensive (timeline, stack trace, test progress, remediation)  
+**Documentation:** Complete (full report + change log)
+
+
+---
+
+## 2026-02-09 - PR3178 P0.2 Full Test Suite Execution
+
+- Ran full pytest suite with timeout and logging; collection halted with 149 errors, primarily due to missing dependencies (see log for full details).
+- Captured full output in `.codex/test_run_complete_20260209_154455_summary.log`.
+- Documented P0.2 results in `.codex/PR3178_P0_TEST_RUN_RESULTS.md`.
+- Added coverage recovery plan in `.codex/plans/path_100_20260209-154650_pr3178_p0_2_test_run.md`.
+
+Next steps: install missing dependencies, re-run full suite, then proceed to P0.3 failure categorization.
+

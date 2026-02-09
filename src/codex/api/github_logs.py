@@ -19,7 +19,7 @@ router = APIRouter(prefix="/github", tags=["github"])
 
 class CheckRunStatus(str, Enum):
     """Valid check run status values."""
-    
+
     QUEUED = "queued"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -108,13 +108,13 @@ async def get_check_run_logs(
     """
     try:
         client = _get_github_client()
-        
+
         # Fetch check run details
         check_run = client.get_check_run(owner, repo, check_run_id)
-        
+
         # Fetch logs
         logs = client.get_check_run_logs(owner, repo, check_run_id)
-        
+
         return CheckRunLogsResponse(
             check_run_id=check_run_id,
             owner=owner,
@@ -125,10 +125,10 @@ async def get_check_run_logs(
             check_run_url=check_run.html_url,
             logs=logs,
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
-        
+
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e))
@@ -166,20 +166,20 @@ async def get_job_logs(
     """
     try:
         client = _get_github_client()
-        
+
         # Fetch logs
         logs = client.get_job_logs(owner, repo, job_id)
-        
+
         return JobLogsResponse(
             job_id=job_id,
             owner=owner,
             repo=repo,
             logs=logs,
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
-        
+
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e))
@@ -221,17 +221,17 @@ async def list_check_runs(
     """
     try:
         client = _get_github_client()
-        
+
         from src.services.github.types import CheckRunStatus
         status_enum = CheckRunStatus(status) if status else None
-        
+
         # Fetch check runs
         check_runs = client.list_check_runs_for_ref(
             owner, repo, ref,
             check_name=check_name,
             status=status_enum
         )
-        
+
         # Convert to response format
         check_runs_info = [
             CheckRunInfo(
@@ -245,7 +245,7 @@ async def list_check_runs(
             )
             for run in check_runs
         ]
-        
+
         return CheckRunsListResponse(
             owner=owner,
             repo=repo,
@@ -253,10 +253,10 @@ async def list_check_runs(
             total_count=len(check_runs_info),
             check_runs=check_runs_info,
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to list check runs: {e}", exc_info=True)
-        
+
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
             raise HTTPException(status_code=404, detail=str(e))

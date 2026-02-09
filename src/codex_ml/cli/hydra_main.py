@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 import platform
 import sys
@@ -303,7 +304,7 @@ def main(argv: Sequence[str] | None = None) -> Any:
     if hydra is None or _hydra_entry is None:
         sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
         return 0
-    
+
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
     parser = parser_cls(prog="codex-train", add_help=False)
     parser.add_argument("--probe-json", action="store_true", help=argparse.SUPPRESS)

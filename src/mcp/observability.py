@@ -9,13 +9,12 @@ This module provides observability features including:
 
 import asyncio
 import logging
-import time
-from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
-from contextlib import contextmanager
-from functools import wraps
 import threading
-
+import time
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from functools import wraps
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MetricValue:
     """A single metric value with metadata."""
-    
+
     name: str
     value: float
     labels: dict[str, str] = field(default_factory=dict)
@@ -34,7 +33,7 @@ class MetricValue:
 @dataclass
 class TraceSpan:
     """A trace span for request tracking."""
-    
+
     trace_id: str
     span_id: str
     parent_span_id: Optional[str]
@@ -44,7 +43,7 @@ class TraceSpan:
     tags: dict[str, Any] = field(default_factory=dict)
     logs: list[dict[str, Any]] = field(default_factory=list)
     status: str = "ok"
-    
+
     @property
     def duration_ms(self) -> Optional[float]:
         """Get span duration in milliseconds."""
@@ -55,7 +54,7 @@ class TraceSpan:
 
 class MetricsRegistry:
     """Registry for collecting and exporting metrics."""
-    
+
     def __init__(self) -> None:
         """Initialize the metrics registry."""
         self._counters: dict[str, float] = {}
@@ -63,7 +62,7 @@ class MetricsRegistry:
         self._histograms: dict[str, list[float]] = {}
         self._lock = threading.Lock()
         self._labels: dict[str, dict[str, str]] = {}
-        
+
     def increment_counter(
         self,
         name: str,
@@ -82,7 +81,7 @@ class MetricsRegistry:
             self._counters[key] = self._counters.get(key, 0.0) + value
             if labels:
                 self._labels[key] = labels
-    
+
     def set_gauge(
         self,
         name: str,
@@ -101,7 +100,7 @@ class MetricsRegistry:
             self._gauges[key] = value
             if labels:
                 self._labels[key] = labels
-    
+
     def observe_histogram(
         self,
         name: str,
@@ -122,7 +121,7 @@ class MetricsRegistry:
             self._histograms[key].append(value)
             if labels:
                 self._labels[key] = labels
-    
+
     def _make_key(
         self,
         name: str,
@@ -133,7 +132,7 @@ class MetricsRegistry:
             return name
         label_str = ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
         return f"{name}{{{label_str}}}"
-    
+
     def _extract_metric_name(self, key: str) -> str:
         """Extract metric name from a key with labels.
         
@@ -144,7 +143,7 @@ class MetricsRegistry:
             The metric name without labels.
         """
         return key.split("{")[0]
-    
+
     def get_all_metrics(self) -> list[MetricValue]:
         """Get all collected metrics.
         
@@ -152,7 +151,7 @@ class MetricsRegistry:
             list of all metric values.
         """
         metrics: list[MetricValue] = []
-        
+
         with self._lock:
             for key, value in self._counters.items():
                 name = self._extract_metric_name(key)
@@ -163,7 +162,7 @@ class MetricsRegistry:
                     labels=labels,
                     metric_type="counter"
                 ))
-            
+
             for key, value in self._gauges.items():
                 name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
@@ -173,7 +172,7 @@ class MetricsRegistry:
                     labels=labels,
                     metric_type="gauge"
                 ))
-            
+
             for key, values in self._histograms.items():
                 name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
@@ -191,9 +190,9 @@ class MetricsRegistry:
                         labels=labels,
                         metric_type="counter"
                     ))
-        
+
         return metrics
-    
+
     def reset(self) -> None:
         """Reset all metrics (for testing)."""
         with self._lock:
@@ -205,19 +204,19 @@ class MetricsRegistry:
 
 class Tracer:
     """Simple tracer for request tracing."""
-    
+
     def __init__(self) -> None:
         """Initialize the tracer."""
         self._spans: list[TraceSpan] = []
         self._lock = threading.Lock()
         self._span_counter = 0
-        
+
     def _generate_id(self) -> str:
         """Generate a unique ID."""
         with self._lock:
             self._span_counter += 1
             return f"span-{self._span_counter:08x}"
-    
+
     def start_span(
         self,
         operation_name: str,
@@ -243,12 +242,12 @@ class Tracer:
             operation_name=operation_name,
             tags=tags or {}
         )
-        
+
         with self._lock:
             self._spans.append(span)
-        
+
         return span
-    
+
     def finish_span(self, span: TraceSpan, status: str = "ok") -> None:
         """Finish a trace span.
         
@@ -258,14 +257,14 @@ class Tracer:
         """
         span.end_time = time.time()
         span.status = status
-        
+
         logger.debug(
             "Span completed: %s (duration: %.2fms, status: %s)",
             span.operation_name,
             span.duration_ms or 0,
             span.status
         )
-    
+
     def add_log(self, span: TraceSpan, event: str, **kwargs: Any) -> None:
         """Add a log event to a span.
         
@@ -279,7 +278,7 @@ class Tracer:
             "event": event,
             **kwargs
         })
-    
+
     @contextmanager
     def trace(
         self,
@@ -314,7 +313,7 @@ class Tracer:
             span.tags["error.message"] = str(e)
             self.finish_span(span, status="error")
             raise
-    
+
     def get_spans(self, trace_id: Optional[str] = None) -> list[TraceSpan]:
         """Get collected spans.
         
@@ -328,7 +327,7 @@ class Tracer:
             if trace_id:
                 return [s for s in self._spans if s.trace_id == trace_id]
             return list(self._spans)
-    
+
     def clear(self) -> None:
         """Clear all collected spans (for testing)."""
         with self._lock:
@@ -337,7 +336,7 @@ class Tracer:
 
 class MCPMetrics:
     """Pre-defined MCP metrics."""
-    
+
     def __init__(self, registry: MetricsRegistry) -> None:
         """Initialize MCP metrics.
         
@@ -345,7 +344,7 @@ class MCPMetrics:
             registry: Metrics registry to use.
         """
         self._registry = registry
-    
+
     def record_request(
         self,
         method: str,
@@ -366,7 +365,7 @@ class MCPMetrics:
             duration_ms,
             labels={"method": method}
         )
-    
+
     def record_error(self, method: str, error_type: str) -> None:
         """Record an MCP error.
         
@@ -378,7 +377,7 @@ class MCPMetrics:
             "mcp_errors_total",
             labels={"method": method, "error_type": error_type}
         )
-    
+
     def set_active_connections(self, count: int) -> None:
         """set the number of active connections.
         
@@ -386,7 +385,7 @@ class MCPMetrics:
             count: Number of active connections.
         """
         self._registry.set_gauge("mcp_active_connections", float(count))
-    
+
     def record_tool_invocation(
         self,
         tool_name: str,
@@ -420,21 +419,21 @@ def traced(operation_name: Optional[str] = None):
     """
     def decorator(func: Callable) -> Callable:
         op_name = operation_name or func.__name__
-        
+
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             with get_tracer().trace(op_name):
                 return func(*args, **kwargs)
-        
+
         @wraps(func)
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             with get_tracer().trace(op_name):
                 return await func(*args, **kwargs)
-        
+
         if asyncio.iscoroutinefunction(func):
             return async_wrapper
         return wrapper
-    
+
     return decorator
 
 

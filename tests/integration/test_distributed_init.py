@@ -11,6 +11,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="torch required for distributed training tests")
+
 # Add training directory to path
 _REPO_ROOT = Path(__file__).parent.parent.parent
 _TRAINING_DIR = _REPO_ROOT / "training"
@@ -41,18 +44,18 @@ class TestAccelerateInitGuard:
         # Test with GPU not available
         with patch('torch.cuda.is_available') as mock_cuda:
             mock_cuda.return_value = False  # Return actual bool, not MagicMock
-            
+
             result = is_gpu_available()
-            
+
             assert isinstance(result, bool)
             assert result is False
-        
+
         # Test with GPU available
         with patch('torch.cuda.is_available') as mock_cuda:
             mock_cuda.return_value = True  # Return actual bool, not MagicMock
-            
+
             result = is_gpu_available()
-            
+
             assert isinstance(result, bool)
             assert result is True
 
@@ -101,7 +104,7 @@ class TestAccelerateInitGuard:
         # Mock torch.cuda.is_available to return actual bool
         with patch('torch.cuda.is_available') as mock_cuda:
             mock_cuda.return_value = False  # Return actual bool, not MagicMock
-            
+
             # Mock accelerate.PartialState if accelerate is available
             with patch('accelerate.PartialState', create=True) as mock_partial_state:
                 mock_state = MagicMock()
@@ -109,9 +112,9 @@ class TestAccelerateInitGuard:
                 mock_state.num_processes = 1
                 mock_state.process_index = 0
                 mock_partial_state.return_value = mock_state
-                
+
                 result = safe_accelerate_init()
-        
+
         # Verify result structure
         assert isinstance(result, AccelerateInitResult)
         assert isinstance(result.success, bool)

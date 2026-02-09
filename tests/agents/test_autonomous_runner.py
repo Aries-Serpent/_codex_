@@ -8,8 +8,9 @@ Tests the autonomous agent execution capabilities including:
 """
 
 import json
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 
 class TestMaxConstants:
@@ -19,11 +20,11 @@ class TestMaxConstants:
         """Test that safeguard constants are defined."""
         try:
             from src.agents.autonomous_runner import (
-                MAX_TASK_LENGTH,
-                MAX_RESPONSE_LENGTH,
                 MAX_REPORTS_COUNT,
+                MAX_RESPONSE_LENGTH,
+                MAX_TASK_LENGTH,
             )
-            
+
             assert MAX_TASK_LENGTH == 100000
             assert MAX_RESPONSE_LENGTH == 500000
             assert MAX_REPORTS_COUNT == 1000
@@ -38,15 +39,15 @@ class TestAutonomousAgentInit:
         """Test agent initialization with default path."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.agents.autonomous_runner.Path") as mock_path:
                 mock_path.return_value.mkdir = MagicMock()
                 mock_path.return_value.parent.mkdir = MagicMock()
-                
+
                 with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                     mock_client.return_value = MagicMock()
                     agent = AutonomousAgent(reports_dir=tmp_path)
-                    
+
                     assert agent.reports_dir == tmp_path
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -55,13 +56,13 @@ class TestAutonomousAgentInit:
         """Test agent initialization with custom path."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             custom_path = tmp_path / "custom_reports"
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client.return_value = MagicMock()
                 agent = AutonomousAgent(reports_dir=custom_path)
-                
+
                 assert agent.reports_dir == custom_path
                 assert custom_path.exists()
         except ImportError:
@@ -76,14 +77,14 @@ class TestAutonomousAgentExecute:
         """Test execution with empty task returns error."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
                 result = await agent.execute("")
-                
+
                 assert result.success is False
                 assert "non-empty string" in result.error
         except ImportError:
@@ -94,14 +95,14 @@ class TestAutonomousAgentExecute:
         """Test execution with None task returns error."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
                 result = await agent.execute(None)  # type: ignore
-                
+
                 assert result.success is False
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -110,22 +111,22 @@ class TestAutonomousAgentExecute:
     async def test_execute_truncates_long_task(self, tmp_path):
         """Test that very long tasks are truncated."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent, MAX_TASK_LENGTH
-            
+            from src.agents.autonomous_runner import MAX_TASK_LENGTH, AutonomousAgent
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 # Create task longer than MAX_TASK_LENGTH
                 long_task = "x" * (MAX_TASK_LENGTH + 1000)
-                
+
                 result = await agent.execute(long_task)
-                
+
                 # Should succeed (task truncated internally)
                 assert result.success is True
         except ImportError:
@@ -136,18 +137,18 @@ class TestAutonomousAgentExecute:
         """Test execution in dry-run mode."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4-turbo"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 result = await agent.execute("Test task")
-                
+
                 assert result.success is True
                 assert "DRY RUN" in result.response
                 assert result.model == "gpt-4-turbo"
@@ -159,18 +160,18 @@ class TestAutonomousAgentExecute:
         """Test that execution is logged."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 await agent.execute("Test task")
-                
+
                 mock_client_instance.log_execution.assert_called_once()
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -185,13 +186,13 @@ class TestSaveReport:
         try:
             from src.agents.autonomous_runner import AutonomousAgent
             from src.config.openai_client import ExecutionResult
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 result = ExecutionResult(
                     success=True,
                     model="gpt-4",
@@ -200,9 +201,9 @@ class TestSaveReport:
                     duration_ms=500,
                     estimated_cost=0.01,
                 )
-                
+
                 report_path = await agent._save_report("Test task", result)
-                
+
                 assert report_path.exists()
                 assert report_path.name.startswith("agent_")
                 assert report_path.suffix == ".json"
@@ -215,13 +216,13 @@ class TestSaveReport:
         try:
             from src.agents.autonomous_runner import AutonomousAgent
             from src.config.openai_client import ExecutionResult
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 result = ExecutionResult(
                     success=True,
                     model="gpt-4",
@@ -230,11 +231,11 @@ class TestSaveReport:
                     duration_ms=500,
                     estimated_cost=0.01,
                 )
-                
+
                 report_path = await agent._save_report("Test task", result)
-                
+
                 content = json.loads(report_path.read_text())
-                
+
                 assert "timestamp" in content
                 assert "task" in content
                 assert "result" in content
@@ -250,21 +251,21 @@ class TestCleanupOldReports:
     def test_cleanup_removes_old_reports(self, tmp_path):
         """Test that old reports are removed when exceeding limit."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent, MAX_REPORTS_COUNT
-            
+            from src.agents.autonomous_runner import MAX_REPORTS_COUNT, AutonomousAgent
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 # Create more reports than allowed
                 for i in range(MAX_REPORTS_COUNT + 10):
                     report_file = tmp_path / f"agent_{i:04d}.json"
                     report_file.write_text("{}")
-                
+
                 agent._cleanup_old_reports()
-                
+
                 remaining = list(tmp_path.glob("agent_*.json"))
                 assert len(remaining) <= MAX_REPORTS_COUNT
         except ImportError:
@@ -274,20 +275,20 @@ class TestCleanupOldReports:
         """Test that recent reports are kept."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 # Create a few reports (under limit)
                 for i in range(5):
                     report_file = tmp_path / f"agent_{i:04d}.json"
                     report_file.write_text("{}")
-                
+
                 agent._cleanup_old_reports()
-                
+
                 remaining = list(tmp_path.glob("agent_*.json"))
                 assert len(remaining) == 5
         except ImportError:
@@ -301,9 +302,10 @@ class TestMainFunction:
     async def test_main_function_exists(self):
         """Test that main function exists and is async."""
         try:
-            from src.agents.autonomous_runner import main
             import asyncio
-            
+
+            from src.agents.autonomous_runner import main
+
             assert asyncio.iscoroutinefunction(main)
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -312,9 +314,10 @@ class TestMainFunction:
     async def test_main_uses_environment_variables(self, tmp_path):
         """Test that main reads from environment variables."""
         try:
-            from src.agents.autonomous_runner import main
             import os
-            
+
+            from src.agents.autonomous_runner import main
+
             with patch.dict(os.environ, {
                 "AGENT_TASK": "Custom test task",
                 "MODEL_PREFERENCE": "gpt-4",
@@ -327,10 +330,10 @@ class TestMainFunction:
                     ))
                     mock_instance.client.get_usage_summary.return_value = {}
                     mock_agent.return_value = mock_instance
-                    
+
                     with patch("builtins.print"):
                         await main()
-                    
+
                     mock_instance.execute.assert_called_once()
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -344,19 +347,19 @@ class TestEdgeCases:
         """Test execution with special characters in task."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 special_task = "Test with émojis 🎉 and spëcial çhars"
                 result = await agent.execute(special_task)
-                
+
                 assert result.success is True
         except ImportError:
             pytest.skip("autonomous_runner module not available")
@@ -366,18 +369,18 @@ class TestEdgeCases:
         """Test execution with specific model preference."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4-turbo"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 await agent.execute("Test", model_preference="gpt-4-turbo")
-                
+
                 mock_client_instance.select_model.assert_called_with(
                     preferred_model="gpt-4-turbo"
                 )
@@ -389,18 +392,18 @@ class TestEdgeCases:
         """Test execution with auto model selection."""
         try:
             from src.agents.autonomous_runner import AutonomousAgent
-            
+
             with patch("src.config.openai_client.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
                 mock_client_instance.select_model.return_value = "gpt-4"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
-                
+
                 agent = AutonomousAgent(reports_dir=tmp_path)
-                
+
                 await agent.execute("Test", model_preference="auto")
-                
+
                 mock_client_instance.select_model.assert_called_with(
                     preferred_model=None
                 )

@@ -75,7 +75,7 @@ class IntentSpec:
     inference_method: Literal["heuristic", "llm", "hybrid"] = "heuristic"
     llm_provenance_ref: Optional[str] = None
     assumptions: list[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
@@ -98,7 +98,7 @@ class IntentSpec:
             "llm_provenance_ref": self.llm_provenance_ref,
             "assumptions": self.assumptions,
         }
-    
+
     def save(self, path: Path) -> None:
         """Save intent spec to YAML file."""
         try:
@@ -158,13 +158,13 @@ def _infer_heuristic(
     """
     now = datetime.now(timezone.utc)
     snapshot_id = static_report.get("snapshot_id", "unknown")
-    
+
     # Collect all imports across files
     all_imports: list[str] = []
     for file_data in static_report.get("files", []):
         all_imports.extend(file_data.get("imports", []))
     all_imports = list(set(all_imports))
-    
+
     # Determine code type
     goal = "Unknown Python code"
     actors = ["user"]
@@ -174,7 +174,7 @@ def _infer_heuristic(
     side_effects: list[str] = []
     confidence = 0.5
     assumptions: list[str] = []
-    
+
     if _detect_cli_tool(all_imports, []):
         goal = "Command-line tool for processing input and producing output"
         actors = ["user", "shell"]
@@ -213,12 +213,12 @@ def _infer_heuristic(
         goal = "Python script for general-purpose computation"
         assumptions.append("No specific framework detected, assuming general script")
         confidence = 0.40
-    
+
     # Check for main entry point patterns
     if "if __name__" in source_excerpt:
         constraints.append("Has executable entry point")
         confidence = min(confidence + 0.1, 1.0)
-    
+
     return IntentSpec(
         snapshot_id=snapshot_id,
         timestamp=now,
@@ -266,29 +266,29 @@ def infer_intent(
     """
     # Start with heuristic inference
     intent = _infer_heuristic(static_report, source_excerpt)
-    
+
     # Optionally enhance with LLM
     if use_llm and llm_client is not None:
         try:
-            
+
             # Build context for LLM
             context = {
                 "static_summary": static_report.get("summary", {}),
                 "imports": [],
                 "source_excerpt": source_excerpt[:8000],  # Token budget
             }
-            
+
             for file_data in static_report.get("files", []):
                 context["imports"].extend(file_data.get("imports", []))
             context["imports"] = list(set(context["imports"]))
-            
+
             # Add runtime observations if available
             if runtime_report:
                 context["runtime_observations"] = runtime_report.get("execution_results", [])
-            
+
             # Call LLM for enhanced inference
             llm_result = llm_client.infer_intent(context)
-            
+
             if llm_result:
                 # Merge LLM insights with heuristic base
                 if llm_result.get("goal"):
@@ -296,16 +296,16 @@ def infer_intent(
                 if llm_result.get("confidence"):
                     intent.confidence = (intent.confidence + llm_result["confidence"]) / 2
                 intent.inference_method = "hybrid"
-                
+
                 # Store provenance
                 if provenance_dir and llm_result.get("provenance_ref"):
                     intent.llm_provenance_ref = llm_result["provenance_ref"]
-                
+
                 logger.info("Enhanced intent with LLM: confidence=%.2f", intent.confidence)
-                
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.warning("LLM enhancement failed, using heuristic only: %s", e)
             intent.assumptions.append(f"LLM enhancement failed: {e}")
-    
+
     return intent

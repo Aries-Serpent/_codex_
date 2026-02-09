@@ -18,8 +18,8 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 from codex_ml.monitoring.metrics import (
     MetricsCollector,
     get_metrics_collector,
-    record_request,
     record_latency,
+    record_request,
 )
 
 
@@ -27,12 +27,12 @@ from codex_ml.monitoring.metrics import (
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
     from prometheus_client import REGISTRY
-    
+
     # Get collectors before test
     collectors_before = list(REGISTRY._collector_to_names.keys())
-    
+
     yield
-    
+
     # Clean up collectors added during test
     collectors_after = list(REGISTRY._collector_to_names.keys())
     for collector in collectors_after:

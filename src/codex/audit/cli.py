@@ -16,13 +16,13 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
         codex-audit --format html --output audit.html
     """
     click.echo("🔐 Running code audit...")
-    
+
     if check_dependencies:
         click.echo("  ✓ Checking dependencies")
-    
+
     if check_vulns:
         click.echo("  ✓ Checking vulnerabilities")
-    
+
     # TODO: Phase 2 - Implement full audit
     click.echo("\n⚠️  Full implementation coming in Phase 2")
     click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details")

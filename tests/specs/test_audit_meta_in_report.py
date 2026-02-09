@@ -38,7 +38,6 @@ def test_meta_propagates_and_renders(tmp_path):
     # Optional deps for S6 template
     try:
         import jinja2  # noqa: F401
-
         import yaml  # noqa: F401
     except Exception:
         pytest.skip("pyyaml/jinja2 not installed in test env")

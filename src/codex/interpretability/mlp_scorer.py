@@ -12,10 +12,12 @@ in transformer models. It supports:
 from __future__ import annotations
 
 import logging
-from typing import Optional, Union, Dict, List, Tuple
-import torch
-import numpy as np
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple, Union
+
+import numpy as np
+
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -23,19 +25,19 @@ logger = logging.getLogger(__name__)
 @dataclass
 class MLPAnalysis:
     """Results from MLP analysis."""
-    
+
     # MLP activations shape: (num_layers, hidden_dim)
     activations: np.ndarray
-    
+
     # Neuron importance scores shape: (num_layers, hidden_dim)
     neuron_importance: np.ndarray
-    
+
     # Layer-wise activation statistics
     layer_stats: Dict[str, np.ndarray]
-    
+
     # Layer names
     layer_names: List[str]
-    
+
     # Input shape
     input_shape: Tuple[int, ...]
 
@@ -66,7 +68,7 @@ class MLPScorer:
         >>> for layer_idx, neurons in top_neurons.items():
         ...     print(f"Layer {layer_idx}: {neurons}")
     """
-    
+
     def __init__(
         self,
         model: torch.nn.Module,
@@ -92,7 +94,7 @@ class MLPScorer:
             self.device = torch.device(device)
         self.model.to(self.device)
         self.model.eval()
-    
+
     def _is_mlp_layer(self, layer_name: str) -> bool:
         """
         Determine if a layer is an MLP/FFN layer based on its name.
@@ -115,7 +117,7 @@ class MLPScorer:
         if leaf_name in {"dense", "feedforward"}:
             return True
         return False
-        
+
     def extract_mlp_activations(
         self,
         input_ids: torch.Tensor,
@@ -136,10 +138,10 @@ class MLPScorer:
         input_ids = input_ids.to(self.device)
         if attention_mask is not None:
             attention_mask = attention_mask.to(self.device)
-        
+
         mlp_activations = []
         layer_names = []
-        
+
         # Hook to capture MLP activations
         def mlp_hook(module, input, output):
             # Capture the output of MLP layers
@@ -147,7 +149,7 @@ class MLPScorer:
                 mlp_activations.append(output.detach().cpu())
             elif isinstance(output, tuple):
                 mlp_activations.append(output[0].detach().cpu())
-        
+
         # Register hooks on MLP/FFN modules
         hooks = []
         for name, module in self.model.named_modules():
@@ -155,7 +157,7 @@ class MLPScorer:
                 hook = module.register_forward_hook(mlp_hook)
                 hooks.append(hook)
                 layer_names.append(name)
-        
+
         # Forward pass
         with torch.no_grad():
             try:
@@ -166,13 +168,13 @@ class MLPScorer:
             except Exception as e:
                 logger.error(f"Error during forward pass: {e}")
                 raise
-        
+
         # Remove hooks
         for hook in hooks:
             hook.remove()
-        
+
         return mlp_activations, layer_names
-    
+
     def compute_neuron_importance(
         self,
         mlp_activations: List[torch.Tensor],
@@ -190,27 +192,27 @@ class MLPScorer:
         """
         if not mlp_activations:
             raise ValueError("No MLP activations provided")
-        
+
         importance_per_layer = []
-        
+
         for activation in mlp_activations:
             # activation shape: (batch_size, seq_len, hidden_dim)
             # or (batch_size, hidden_dim)
-            
+
             if method == "mean_abs":
                 # Mean absolute activation across batch and sequence
                 if activation.dim() == 3:
                     importance = activation.abs().mean(dim=(0, 1)).numpy()
                 else:
                     importance = activation.abs().mean(dim=0).numpy()
-                    
+
             elif method == "max":
                 # Max activation across batch and sequence
                 if activation.dim() == 3:
                     importance = activation.abs().amax(dim=(0, 1)).numpy()
                 else:
                     importance = activation.abs().amax(dim=0).numpy()
-                    
+
             elif method == "variance":
                 # Variance of activations
                 if activation.dim() == 3:
@@ -219,15 +221,15 @@ class MLPScorer:
                     importance = activation.var(dim=0).numpy()
             else:
                 raise ValueError(f"Unknown method: {method}")
-            
+
             if self.normalize and importance.sum() > self.epsilon:
                 importance = importance / importance.sum()
-            
+
             importance_per_layer.append(importance)
-        
+
         # Stack all layers
         return np.stack(importance_per_layer)
-    
+
     def compute_activation_statistics(
         self,
         mlp_activations: List[torch.Tensor]
@@ -248,26 +250,26 @@ class MLPScorer:
             'max': [],
             'sparsity': []  # Fraction of near-zero activations
         }
-        
+
         for activation in mlp_activations:
             # Flatten spatial dimensions
             if activation.dim() == 3:
                 flat = activation.reshape(-1, activation.size(-1))
             else:
                 flat = activation
-            
+
             stats['mean'].append(flat.mean(dim=0).numpy())
             stats['std'].append(flat.std(dim=0).numpy())
             stats['min'].append(flat.min(dim=0)[0].numpy())
             stats['max'].append(flat.max(dim=0)[0].numpy())
-            
+
             # Sparsity: fraction of activations below threshold
             sparsity = (flat.abs() < 0.01).float().mean(dim=0).numpy()
             stats['sparsity'].append(sparsity)
-        
+
         # Stack across layers
         return {k: np.stack(v) for k, v in stats.items()}
-    
+
     def analyze_mlp(
         self,
         input_ids: torch.Tensor,
@@ -289,18 +291,18 @@ class MLPScorer:
         activations, layer_names = self.extract_mlp_activations(
             input_ids, attention_mask
         )
-        
+
         if not activations:
             raise ValueError("Failed to extract MLP activations from model")
-        
+
         # Compute neuron importance
         importance = self.compute_neuron_importance(
             activations, method=importance_method
         )
-        
+
         # Compute activation statistics
         stats = self.compute_activation_statistics(activations)
-        
+
         # Stack activations for output
         # Average across batch and sequence dimensions
         stacked_activations = []
@@ -309,9 +311,9 @@ class MLPScorer:
                 stacked_activations.append(act.mean(dim=(0, 1)).numpy())
             else:
                 stacked_activations.append(act.mean(dim=0).numpy())
-        
+
         stacked_activations = np.stack(stacked_activations)
-        
+
         return MLPAnalysis(
             activations=stacked_activations,
             neuron_importance=importance,
@@ -319,7 +321,7 @@ class MLPScorer:
             layer_names=layer_names,
             input_shape=input_ids.shape
         )
-    
+
     def get_top_neurons(
         self,
         analysis: MLPAnalysis,
@@ -336,18 +338,18 @@ class MLPScorer:
             Dictionary mapping layer_idx to list of (neuron_idx, importance_score) tuples
         """
         top_neurons = {}
-        
+
         for layer_idx in range(analysis.neuron_importance.shape[0]):
             layer_importance = analysis.neuron_importance[layer_idx]
             top_indices = np.argsort(layer_importance)[-top_k:][::-1]
-            
+
             top_neurons[layer_idx] = [
                 (int(idx), float(layer_importance[idx]))
                 for idx in top_indices
             ]
-        
+
         return top_neurons
-    
+
     def get_dead_neurons(
         self,
         analysis: MLPAnalysis,
@@ -364,15 +366,15 @@ class MLPScorer:
             Dictionary mapping layer_idx to list of dead neuron indices
         """
         dead_neurons = {}
-        
+
         sparsity = analysis.layer_stats['sparsity']
-        
+
         for layer_idx in range(sparsity.shape[0]):
             dead_indices = np.where(sparsity[layer_idx] > threshold)[0]
             dead_neurons[layer_idx] = dead_indices.tolist()
-        
+
         return dead_neurons
-    
+
     def compare_inputs(
         self,
         input_ids_1: torch.Tensor,
@@ -395,32 +397,32 @@ class MLPScorer:
         # Analyze both inputs
         analysis_1 = self.analyze_mlp(input_ids_1, attention_mask_1)
         analysis_2 = self.analyze_mlp(input_ids_2, attention_mask_2)
-        
+
         # Ensure same number of layers
         if analysis_1.activations.shape[0] != analysis_2.activations.shape[0]:
             raise ValueError("Models have different number of layers")
-        
+
         # Compute differences
         diff = analysis_1.activations - analysis_2.activations
-        
+
         # Compute correlation per layer
         correlations = []
         for layer_idx in range(analysis_1.activations.shape[0]):
             act1 = analysis_1.activations[layer_idx]
             act2 = analysis_2.activations[layer_idx]
-            
+
             # Check for constant arrays (zero variance) to avoid correlation errors
             if np.std(act1) < 1e-10 or np.std(act2) < 1e-10:
                 # If either array is constant, correlation is undefined; use 0 or 1 based on equality
                 corr = 1.0 if np.allclose(act1, act2) else 0.0
             else:
                 corr = np.corrcoef(act1, act2)[0, 1]
-            
+
             correlations.append(corr)
-        
+
         # Compute L2 distance per layer
         distances = np.linalg.norm(diff, axis=1)
-        
+
         return {
             'diff': diff,
             'correlation': np.array(correlations),

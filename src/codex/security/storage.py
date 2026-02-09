@@ -33,14 +33,14 @@ Usage:
 import os
 import stat
 from pathlib import Path
-from typing import Optional, Literal
+from typing import Literal, Optional
 
 try:
     from cryptography.fernet import Fernet
-    from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
     from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
     CRYPTO_AVAILABLE = True
 except ImportError:
     CRYPTO_AVAILABLE = False
@@ -75,9 +75,9 @@ class SecureStorage:
         >>> storage_gcm = SecureStorage(algorithm='aes-gcm')
         >>> storage_gcm.store_secret("secret_gcm.enc", "sensitive_data")
     """
-    
+
     def __init__(
-        self, 
+        self,
         key: Optional[str] = None,
         algorithm: EncryptionAlgorithm = 'fernet'
     ):
@@ -101,25 +101,25 @@ class SecureStorage:
                 "cryptography package required for SecureStorage. "
                 "Install with: pip install cryptography"
             )
-        
+
         # Validate algorithm early before any state is set
         if algorithm not in ('fernet', 'aes-gcm', 'chacha20'):
             raise ValueError(
                 f"Unsupported algorithm: {algorithm}. "
                 f"Use 'fernet', 'aes-gcm', or 'chacha20'."
             )
-        
+
         if key is None:
             key = os.getenv("ENCRYPTION_KEY")
-        
+
         if not key:
             raise ValueError(
                 "Encryption key required. Set ENCRYPTION_KEY environment "
                 "variable or pass key parameter."
             )
-        
+
         self.algorithm = algorithm
-        
+
         if algorithm == 'fernet':
             self.cipher = Fernet(key.encode() if isinstance(key, str) else key)
         elif algorithm == 'aes-gcm':
@@ -130,7 +130,7 @@ class SecureStorage:
             # ChaCha20-Poly1305 requires 32-byte key
             key_bytes = self._ensure_key_bytes(key, length=32)
             self.cipher = ChaCha20Poly1305(key_bytes)
-    
+
     def _ensure_key_bytes(self, key: str, length: int) -> bytes:
         """
         Convert key string to bytes of specified length.
@@ -142,9 +142,9 @@ class SecureStorage:
         Returns:
             Key bytes of required length
         """
-        from base64 import urlsafe_b64decode
         import binascii
-        
+        from base64 import urlsafe_b64decode
+
         # Try base64 decode first
         try:
             key_bytes = urlsafe_b64decode(key)
@@ -153,7 +153,7 @@ class SecureStorage:
         except (binascii.Error, ValueError):
             # Expected when key is not base64-encoded
             pass
-        
+
         # Try hex decode
         try:
             key_bytes = bytes.fromhex(key)
@@ -162,14 +162,14 @@ class SecureStorage:
         except (ValueError, AttributeError):
             # Expected when key is not hex-encoded
             pass
-        
+
         # Hash the key to get required length
         if isinstance(key, str):
             key = key.encode('utf-8')
-        
+
         import hashlib
         return hashlib.sha256(key).digest()[:length]
-    
+
     def encrypt(self, data: str) -> bytes:
         """
         Encrypt string data.
@@ -181,7 +181,7 @@ class SecureStorage:
             Encrypted bytes
         """
         data_bytes = data.encode('utf-8')
-        
+
         if self.algorithm == 'fernet':
             return self.cipher.encrypt(data_bytes)
         elif self.algorithm in ('aes-gcm', 'chacha20'):
@@ -193,7 +193,7 @@ class SecureStorage:
         else:
             # Should never reach here due to validation in __init__
             raise ValueError(f"Unsupported algorithm: {self.algorithm}")
-        
+
     def decrypt(self, encrypted: bytes) -> str:
         """
         Decrypt encrypted bytes to string.
@@ -219,7 +219,7 @@ class SecureStorage:
         else:
             # Should never reach here due to validation in __init__
             raise ValueError(f"Unsupported algorithm: {self.algorithm}")
-    
+
     def store_secret(self, filepath: str, secret: str) -> None:
         """
         Encrypt and store secret to file with secure permissions.
@@ -232,15 +232,15 @@ class SecureStorage:
             File permissions are set to 0o600 (owner read/write only)
         """
         encrypted = self.encrypt(secret)
-        
+
         # Write encrypted data
         path = Path(filepath)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(encrypted)
-        
+
         # Set secure file permissions (owner read/write only)
         os.chmod(filepath, stat.S_IRUSR | stat.S_IWUSR)  # 0o600
-    
+
     def load_secret(self, filepath: str) -> str:
         """
         Load and decrypt secret from file.
@@ -258,10 +258,10 @@ class SecureStorage:
         path = Path(filepath)
         if not path.exists():
             raise FileNotFoundError(f"Encrypted file not found: {filepath}")
-        
+
         encrypted = path.read_bytes()
         return self.decrypt(encrypted)
-    
+
     def secret_exists(self, filepath: str) -> bool:
         """
         Check if encrypted secret file exists.
@@ -320,10 +320,10 @@ def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tup
             "cryptography package required. "
             "Install with: pip install cryptography"
         )
-    
+
     if salt is None:
         salt = os.urandom(16)
-    
+
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -331,7 +331,7 @@ def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tup
         iterations=600000,  # OWASP recommendation 2023 (updated from 480,000)
         backend=default_backend()
     )
-    
+
     key = kdf.derive(password.encode('utf-8'))
     # Fernet expects base64-encoded 32-byte key
     from base64 import urlsafe_b64encode

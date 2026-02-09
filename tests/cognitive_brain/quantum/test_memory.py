@@ -12,7 +12,7 @@ Total: 25 tests validating Phase 8.1 implementation
 """
 
 import time
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pytest
@@ -57,7 +57,7 @@ def sample_pattern():
         features={"score": 0.75, "risk": 0.5, "cost": 0.3},
         decision="approve",
         confidence=0.85,
-        timestamp=datetime.now(),
+        timestamp=datetime.now(UTC),
     )
 
 
@@ -90,7 +90,7 @@ class TestStorage:
                 features={"feature1": float(i)},
                 decision="test",
                 confidence=0.8,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(UTC),
             )
             memory_manager.store_pattern(pattern)
 
@@ -107,7 +107,7 @@ class TestStorage:
                 features={"feature1": float(i)},
                 decision="test",
                 confidence=0.9,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(UTC),
                 access_count=10,  # High access for promotion
                 in_ltm=True,
             )
@@ -134,7 +134,7 @@ class TestStorage:
             features=sample_pattern.features,
             decision="reject",  # Different decision
             confidence=0.7,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
         id2 = memory_manager.store_pattern(duplicate)
 
@@ -145,18 +145,18 @@ class TestStorage:
 
     def test_timestamp_tracking(self, memory_manager):
         """Test 1.4: Timestamps are correctly tracked."""
-        before_time = datetime.now()
+        before_time = datetime.now(UTC)
 
         pattern = MemoryPattern(
             pattern_id="time-test",
             features={"feature1": 1.0},
             decision="test",
             confidence=0.8,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
         memory_manager.store_pattern(pattern)
 
-        after_time = datetime.now()
+        after_time = datetime.now(UTC)
 
         # Check timestamp is between before and after
         assert before_time <= pattern.timestamp <= after_time
@@ -190,7 +190,7 @@ class TestConsolidation:
             features={"feature1": 1.0},
             decision="approve",
             confidence=0.9,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=50,  # High access
             success_rate=0.95,  # High success
         )
@@ -202,7 +202,7 @@ class TestConsolidation:
             features={"feature1": 0.5},
             decision="reject",
             confidence=0.6,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=1,  # Low access
             success_rate=0.5,  # Low success
         )
@@ -222,7 +222,7 @@ class TestConsolidation:
             features={"score": 0.8, "risk": 0.3},
             decision="approve",
             confidence=0.9,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=50,
             success_rate=0.95,
         )
@@ -235,7 +235,7 @@ class TestConsolidation:
             features={"score": 0.81, "risk": 0.31},  # Very similar
             decision="approve",
             confidence=0.9,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=50,
             success_rate=0.95,
         )
@@ -258,7 +258,7 @@ class TestConsolidation:
             features={"feature1": 1.0},
             decision="approve",
             confidence=0.8,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=20,
             success_rate=0.95,  # Very high
         )
@@ -270,7 +270,7 @@ class TestConsolidation:
             features={"feature1": 0.5},
             decision="reject",
             confidence=0.8,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=20,
             success_rate=0.3,  # Very low
         )
@@ -289,7 +289,7 @@ class TestConsolidation:
             features={"feature1": 1.0},
             decision="approve",
             confidence=0.8,
-            timestamp=datetime.now() - timedelta(days=7),
+            timestamp=datetime.now(UTC) - timedelta(days=7),
             access_count=30,
             success_rate=0.9,
         )
@@ -299,7 +299,7 @@ class TestConsolidation:
             features={"feature1": 0.9},
             decision="approve",
             confidence=0.8,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             access_count=30,
             success_rate=0.9,
         )
@@ -322,7 +322,7 @@ class TestConsolidation:
                 features={"feature1": float(i)},
                 decision="approve",
                 confidence=0.9,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(UTC),
                 access_count=50,
                 success_rate=0.95,
             )
@@ -350,21 +350,21 @@ class TestRetrieval:
             features={"score": 0.8, "risk": 0.3, "cost": 0.5},
             decision="approve",
             confidence=0.85,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
         pattern2 = MemoryPattern(
             pattern_id="p2",
             features={"score": 0.82, "risk": 0.32, "cost": 0.52},  # Very similar to p1
             decision="approve",
             confidence=0.86,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
         pattern3 = MemoryPattern(
             pattern_id="p3",
             features={"score": 0.2, "risk": 0.9, "cost": 0.1},  # Very different
             decision="reject",
             confidence=0.7,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
         )
 
         memory_manager.store_pattern(pattern1)
@@ -388,7 +388,7 @@ class TestRetrieval:
                 features={"feature1": float(i) / 10},
                 decision="test",
                 confidence=0.8,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(UTC),
             )
             memory_manager.store_pattern(pattern)
 
@@ -405,7 +405,7 @@ class TestRetrieval:
             features={"score": 0.8},
             decision="approve",
             confidence=0.9,
-            timestamp=datetime.now() - timedelta(days=30),  # 30 days old
+            timestamp=datetime.now(UTC) - timedelta(days=30),  # 30 days old
         )
 
         # Create recent pattern
@@ -414,7 +414,7 @@ class TestRetrieval:
             features={"score": 0.79},  # Slightly less similar
             decision="approve",
             confidence=0.9,
-            timestamp=datetime.now(),  # Recent
+            timestamp=datetime.now(UTC),  # Recent
         )
 
         memory_manager.store_pattern(old_pattern)
