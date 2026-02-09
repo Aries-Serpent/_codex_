@@ -33,7 +33,7 @@ aiosignal==1.4.0
     # via aiohttp
 alembic==1.16.5
     # via mlflow
-altair==4.2.2
+altair==6.0.0
     # via great-expectations
 amqp==5.3.1
     # via kombu
