@@ -22,11 +22,13 @@ Options:
 """
 
 import argparse
+import json
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class CommonIssueFixer:
@@ -413,6 +415,91 @@ class CommonIssueFixer:
                 if len(issues) > fixed_count:
                     return True
         return False
+    
+    def generate_json_report(self, output_path: Optional[str] = None) -> dict:
+        """
+        Generate machine-readable JSON report for Copilot Agent.
+        
+        Args:
+            output_path: Optional path to write JSON file
+            
+        Returns:
+            Dictionary with structured diagnostic data
+        """
+        report = {
+            "timestamp": datetime.now().astimezone().isoformat(),
+            "status": "failed" if self.has_auto_fixable_issues() else "passed",
+            "total_issues": sum(len(issues) for issues in self.issues_found.values()),
+            "auto_fixable": sum(
+                len(issues) for name, issues in self.issues_found.items()
+                if name in self.auto_fixable_patterns
+            ),
+            "manual_review": sum(
+                len(issues) for name, issues in self.issues_found.items()
+                if name in self.manual_review_patterns
+            ),
+            "issues": [],
+            "fixes_applied": self.fixes_applied,
+            "next_steps": []
+        }
+        
+        # Build detailed issue list
+        pattern_map = {
+            "Unused Imports": 1,
+            "Unused Variables": 2,
+            "YAML Indentation": 3,
+            "Coverage Thresholds": 4,
+            "Tokenizer Fallbacks": 5,
+            "Test Assertions": 6,
+            "Redundant Imports": 7,
+            "CodeQL Alerts": 8,
+        }
+        
+        for pattern_name, issues in self.issues_found.items():
+            pattern_num = pattern_map.get(pattern_name, 0)
+            is_auto_fixable = pattern_name in self.auto_fixable_patterns
+            
+            for issue_str in issues:
+                # Parse issue string (format: "file:line - message")
+                parts = issue_str.split(" - ", 1)
+                file_info = parts[0] if parts else issue_str
+                message = parts[1] if len(parts) > 1 else ""
+                
+                file_parts = file_info.split(":")
+                file_path = file_parts[0] if file_parts else ""
+                line_num = int(file_parts[1]) if len(file_parts) > 1 and file_parts[1].isdigit() else 0
+                
+                report["issues"].append({
+                    "pattern": pattern_num,
+                    "pattern_name": pattern_name,
+                    "type": pattern_name.lower().replace(" ", "_"),
+                    "severity": "error" if is_auto_fixable else "warning",
+                    "file": file_path,
+                    "line": line_num,
+                    "message": message or issue_str,
+                    "auto_fix_available": is_auto_fixable,
+                    "suggested_fix": f"Run: python scripts/ci/auto_fix_common_issues.py --pattern {pattern_num}",
+                })
+        
+        # Add next steps
+        if report["auto_fixable"] > 0:
+            report["next_steps"] = [
+                "Run: python scripts/ci/auto_fix_common_issues.py",
+                "Or use Copilot Agent: @workspace Fix all auto-fixable CI issues",
+                f"Patterns to fix: {', '.join(str(pattern_map[n]) for n in self.auto_fixable_patterns if n in self.issues_found)}"
+            ]
+        else:
+            report["next_steps"] = ["All auto-fixable issues resolved!"]
+        
+        # Write to file if path provided
+        if output_path:
+            output_file = Path(output_path)
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_file, 'w') as f:
+                json.dump(report, f, indent=2)
+            print(f"JSON report written to {output_path}")
+        
+        return report
 
 
 def main():
@@ -437,6 +524,11 @@ def main():
         choices=range(1, 9),
         help="Only run specific pattern (1-8)"
     )
+    parser.add_argument(
+        "--json-output",
+        type=str,
+        help="Write JSON report to specified path (e.g., .codex/diagnostic-report.json)"
+    )
     
     args = parser.parse_args()
     
@@ -451,6 +543,10 @@ def main():
         fixer.run_all_patterns()
     else:
         fixer.run_all_patterns()
+    
+    # Generate JSON report if requested
+    if args.json_output:
+        fixer.generate_json_report(args.json_output)
     
     # Print report
     print(fixer.generate_report())
