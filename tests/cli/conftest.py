@@ -55,7 +55,7 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
 
     # Check if torch is actually importable (not just present)
     try:
-        import torch
+        importlib.import_module("torch")
         spec = importlib.util.find_spec("torch")
         if spec is None or _is_stub_spec(spec, "torch"):
             raise ImportError("torch stubbed")

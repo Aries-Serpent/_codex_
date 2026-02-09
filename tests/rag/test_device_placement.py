@@ -3,7 +3,6 @@
 import pytest
 import torch
 import torch.nn as nn
-from unittest.mock import Mock
 
 from codex.rag.utils import safe_model_to_device
 

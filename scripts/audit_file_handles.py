@@ -20,7 +20,7 @@ Output:
 import ast
 import sys
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 
 class FileHandleAuditor(ast.NodeVisitor):
