@@ -137,4 +137,4 @@ The codebase is now in better shape with:
 - Eliminated code duplication
 - Improved code maintainability
 
-Ready for merge! ��
+Ready for merge!
