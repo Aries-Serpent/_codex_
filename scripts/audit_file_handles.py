@@ -21,7 +21,6 @@ import ast
 import sys
 from pathlib import Path
 from typing import List, Dict, Tuple
-from collections import defaultdict
 
 
 class FileHandleAuditor(ast.NodeVisitor):
