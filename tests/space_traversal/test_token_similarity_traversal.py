@@ -5,10 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 
 
-
 def test_duplication_ratio_token_similarity_basic():
     """Test basic token similarity duplication detection."""
-    from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+    from scripts.space_traversal.dup_similarity import (
+        duplication_ratio_token_similarity,
+    )
 
     # Create test data
     evidence_files = ["src/module_a.py", "src/module_b.py", "src/different_file.py"]
@@ -30,7 +31,9 @@ def test_duplication_ratio_token_similarity_basic():
 
 def test_duplication_ratio_token_similarity_empty():
     """Test token similarity with empty/single file."""
-    from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+    from scripts.space_traversal.dup_similarity import (
+        duplication_ratio_token_similarity,
+    )
 
     # Empty list
     ratio = duplication_ratio_token_similarity([], {})
@@ -43,7 +46,9 @@ def test_duplication_ratio_token_similarity_empty():
 
 def test_duplication_ratio_token_similarity_max_pairwise():
     """Test that max_pairwise caps comparisons."""
-    from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+    from scripts.space_traversal.dup_similarity import (
+        duplication_ratio_token_similarity,
+    )
 
     # Create many files
     n = 20
@@ -60,7 +65,9 @@ def test_duplication_ratio_token_similarity_max_pairwise():
 
 def test_duplication_ratio_token_similarity_determinism():
     """Test that token similarity is deterministic."""
-    from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+    from scripts.space_traversal.dup_similarity import (
+        duplication_ratio_token_similarity,
+    )
 
     evidence_files = [f"file_{i}.py" for i in range(10)]
     file_cache = {f: f"content {i}" for i, f in enumerate(evidence_files)}

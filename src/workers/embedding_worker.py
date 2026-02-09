@@ -9,6 +9,7 @@ Safety:
 - Uses retry_on_exception decorator and metrics hooks
 """
 from __future__ import annotations
+
 import json
 import logging
 import os
@@ -17,11 +18,11 @@ from typing import Any, Iterable
 from src.mcp.embeddings.batcher import batch_iterable, compute_checksum  # type: ignore
 from src.mcp.embeddings.chunking import chunk_texts  # type: ignore
 from src.mcp.embeddings.dedupe import InMemoryDeduper  # type: ignore
-from src.mcp.workers.checkpoint import load_checkpoint, save_checkpoint  # type: ignore
-from src.mcp.server.adapter_loader import load_adapter  # type: ignore
-from src.mcp.observability.metrics import increment, Timer  # type: ignore
+from src.mcp.observability.metrics import Timer, increment  # type: ignore
 from src.mcp.retries import retry_on_exception  # type: ignore
+from src.mcp.server.adapter_loader import load_adapter  # type: ignore
 from src.mcp.server.safety_checks import live_tests_enabled  # type: ignore
+from src.mcp.workers.checkpoint import load_checkpoint, save_checkpoint  # type: ignore
 
 logger = logging.getLogger(__name__)
 

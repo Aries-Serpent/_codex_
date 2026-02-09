@@ -7,8 +7,9 @@ Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/codex_ml 11% → 16%+
 """
 
-import pytest
 from dataclasses import dataclass
+
+import pytest
 
 
 @dataclass
@@ -35,7 +36,7 @@ class TestConfigParsing:
     def test_default_config_values(self):
         """Default config values are set correctly."""
         config = TrainingConfig(model_name="bert-base-uncased")
-        
+
         assert config.model_name == "bert-base-uncased"
         assert config.learning_rate == 1e-4
         assert config.batch_size == 32
@@ -49,7 +50,7 @@ class TestConfigParsing:
             batch_size=16,
             epochs=3
         )
-        
+
         assert config.learning_rate == 5e-5
         assert config.batch_size == 16
         assert config.epochs == 3
@@ -58,15 +59,15 @@ class TestConfigParsing:
         """Config can be created from dictionary."""
         def config_from_dict(d):
             return TrainingConfig(**d)
-        
+
         config_dict = {
             "model_name": "roberta-base",
             "learning_rate": 2e-5,
             "batch_size": 8,
         }
-        
+
         config = config_from_dict(config_dict)
-        
+
         assert config.model_name == "roberta-base"
         assert config.learning_rate == 2e-5
 
@@ -82,12 +83,12 @@ class TestConfigValidation:
             if lr > 1:
                 raise ValueError("Learning rate too high")
             return True
-        
+
         assert validate_learning_rate(1e-4)
-        
+
         with pytest.raises(ValueError):
             validate_learning_rate(0)
-        
+
         with pytest.raises(ValueError):
             validate_learning_rate(-1e-4)
 
@@ -101,12 +102,12 @@ class TestConfigValidation:
             if batch_size > 1024:
                 raise ValueError("Batch size too large")
             return True
-        
+
         assert validate_batch_size(32)
-        
+
         with pytest.raises(ValueError):
             validate_batch_size(0)
-        
+
         with pytest.raises(TypeError):
             validate_batch_size(32.5)
 
@@ -116,9 +117,9 @@ class TestConfigValidation:
             if epochs < 1:
                 raise ValueError("Epochs must be at least 1")
             return True
-        
+
         assert validate_epochs(10)
-        
+
         with pytest.raises(ValueError):
             validate_epochs(0)
 
@@ -134,12 +135,12 @@ class TestConfigMerging:
                 if value is not None:
                     result[key] = value
             return result
-        
+
         base = {"model_name": "bert", "lr": 1e-4, "batch_size": 32}
         override = {"lr": 5e-5, "epochs": 5}
-        
+
         merged = merge_configs(base, override)
-        
+
         assert merged["model_name"] == "bert"  # From base
         assert merged["lr"] == 5e-5  # Overridden
         assert merged["epochs"] == 5  # New key
@@ -154,7 +155,7 @@ class TestConfigMerging:
                 else:
                     result[key] = value
             return result
-        
+
         base = {
             "training": {"lr": 1e-4, "batch_size": 32},
             "model": {"hidden_size": 768}
@@ -163,9 +164,9 @@ class TestConfigMerging:
             "training": {"lr": 5e-5},
             "model": {"dropout": 0.1}
         }
-        
+
         merged = deep_merge(base, override)
-        
+
         assert merged["training"]["lr"] == 5e-5
         assert merged["training"]["batch_size"] == 32
         assert merged["model"]["dropout"] == 0.1
@@ -177,10 +178,10 @@ class TestConfigSerialization:
     def test_config_to_dict(self):
         """Config can be serialized to dict."""
         from dataclasses import asdict
-        
+
         config = TrainingConfig(model_name="bert-base")
         config_dict = asdict(config)
-        
+
         assert config_dict["model_name"] == "bert-base"
         assert "learning_rate" in config_dict
 
@@ -195,10 +196,10 @@ class TestConfigSerialization:
                 else:
                     lines.append(f"{'  ' * indent}{key}: {value}")
             return lines
-        
+
         config_dict = {"model": "bert", "training": {"lr": 1e-4}}
         yaml_lines = to_yaml_lines(config_dict)
-        
+
         assert "model: bert" in yaml_lines
         assert "  lr: 0.0001" in yaml_lines
 
@@ -206,10 +207,10 @@ class TestConfigSerialization:
         """Config can be serialized to JSON."""
         import json
         from dataclasses import asdict
-        
+
         config = TrainingConfig(model_name="bert-base")
         json_str = json.dumps(asdict(config))
-        
+
         assert "bert-base" in json_str
         parsed = json.loads(json_str)
         assert parsed["model_name"] == "bert-base"
@@ -225,7 +226,7 @@ class TestConfigInheritance:
             "base": {"hidden_size": 768, "num_layers": 12},
             "large": {"hidden_size": 1024, "num_layers": 24},
         }
-        
+
         def get_config(size, overrides=None):
             if size not in base_configs:
                 raise ValueError(f"Unknown size: {size}")
@@ -233,9 +234,9 @@ class TestConfigInheritance:
             if overrides:
                 config.update(overrides)
             return config
-        
+
         config = get_config("base", {"dropout": 0.1})
-        
+
         assert config["hidden_size"] == 768
         assert config["dropout"] == 0.1
 
@@ -246,16 +247,16 @@ class TestConfigInheritance:
             "quick": {"epochs": 3, "eval_steps": 100},
             "full": {"epochs": 10, "save_steps": 500},
         }
-        
+
         def apply_preset(config, preset_name):
             if preset_name not in presets:
                 return config
             preset = presets[preset_name]
             return {**config, **preset}
-        
+
         config = {"model_name": "bert", "lr": 1e-4}
         debug_config = apply_preset(config, "debug")
-        
+
         assert debug_config["epochs"] == 1
         assert debug_config["batch_size"] == 2
         assert debug_config["lr"] == 1e-4  # Preserved

@@ -37,25 +37,25 @@ def windows_safe_timestamp(
     """
     if dt is None:
         dt = datetime.now(timezone.utc)
-    
+
     if fmt == "iso":
         # ISO-8601-ish but with hyphens: YYYY-MM-DDTHH-MM-SSZ
         base = dt.strftime("%Y-%m-%dT%H-%M")
         suffix = f"-{dt.strftime('%S')}Z" if include_seconds else "Z"
         return base + suffix
-    
+
     elif fmt == "compact":
         # Compact format: YYYYMMDD_HHMMSS
         if include_seconds:
             return dt.strftime("%Y%m%d_%H%M%S")
         return dt.strftime("%Y%m%d_%H%M")
-    
+
     elif fmt == "readable":
         # Human-readable: YYYY-MM-DD-HH-MM-SS-UTC
         base = dt.strftime("%Y-%m-%d-%H-%M")
         suffix = f"-{dt.strftime('%S')}-UTC" if include_seconds else "-UTC"
         return base + suffix
-    
+
     else:
         raise ValueError(f"Unknown format: {fmt}. Use 'iso', 'compact', or 'readable'")
 
@@ -76,8 +76,8 @@ def sanitize_filename(filename: str) -> str:
     # Replace illegal characters with underscores
     illegal_chars = r'[<>:"/\\|?*]'
     sanitized = re.sub(illegal_chars, '_', filename)
-    
+
     # Replace multiple underscores with single
     sanitized = re.sub(r'_+', '_', sanitized)
-    
+
     return sanitized

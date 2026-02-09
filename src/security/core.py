@@ -171,15 +171,15 @@ def enforce_absolute_path(path: str) -> Path:
         SecurityError: If path contains relative components or traversal
     """
     p = Path(path)
-    
+
     # Reject relative path traversal
     if ".." in path:
         raise SecurityError(f"Path traversal not allowed: {path}")
-    
+
     # Reject non-absolute paths
     if not p.is_absolute():
         raise SecurityError(f"Only absolute paths allowed: {path}")
-    
+
     return p
 
 
@@ -200,10 +200,10 @@ def sanitize_path(path: Path, base_dir: Path) -> Path:
         # Resolve both paths to absolute
         abs_path = path.resolve()
         abs_base = base_dir.resolve()
-        
+
         # Check if path is within base_dir
         abs_path.relative_to(abs_base)
-        
+
         return abs_path
     except ValueError:
         raise ValueError(f"Path {path} is outside base directory {base_dir}")
@@ -221,14 +221,14 @@ def check_permissions(path: Path, mode: str) -> bool:
     """
     if not path.exists():
         return False
-    
+
     if mode == "read":
         return os.access(path, os.R_OK)
     elif mode == "write":
         return os.access(path, os.W_OK)
     elif mode == "execute":
         return os.access(path, os.X_OK)
-    
+
     return False
 
 

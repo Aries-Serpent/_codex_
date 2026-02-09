@@ -3,9 +3,10 @@
 Tests for observability metrics collection infrastructure.
 """
 
-import pytest
-from unittest.mock import MagicMock
 import time
+from unittest.mock import MagicMock
+
+import pytest
 
 
 class TestCounterMetrics:

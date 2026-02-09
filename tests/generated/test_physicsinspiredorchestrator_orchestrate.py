@@ -13,8 +13,10 @@ Test Categories:
 - Integration tests
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
 from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
 

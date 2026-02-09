@@ -84,6 +84,8 @@ jobs:
           python -m pytest --version
 
       - name: Pre-download embedding models
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python -c "
           from sentence_transformers import SentenceTransformer
@@ -91,11 +93,17 @@ jobs:
           cache_dir = os.path.expanduser('~/.cache/torch/sentence_transformers')
           os.makedirs(cache_dir, exist_ok=True)
           print('Pre-downloading sentence-transformers model...')
-          model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', cache_folder=cache_dir)
+          # Use token for authentication
+          model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2',
+                                      cache_folder=cache_dir,
+                                      token=os.getenv('HF_TOKEN'))
           print(f'Model cached successfully to {cache_dir}')
           "
 
       - name: Run RAG tests with coverage
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"

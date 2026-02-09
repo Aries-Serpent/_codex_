@@ -3,18 +3,18 @@ Integration tests for RAG modules.
 Tests end-to-end workflows, multi-tenant isolation, and cross-module interactions.
 """
 
+import importlib.util
 import tempfile
 from pathlib import Path
-import importlib.util
 
 import numpy as np
 import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    from codex.rag.indexer import build_index_from_files, load_index
-    from codex.rag.retriever import Retriever, MultiIndexRetriever
     from codex.rag.embeddings import create_embedding_provider
+    from codex.rag.indexer import build_index_from_files, load_index
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
     RAG_INTEGRATION_AVAILABLE = True
 except ImportError:
     RAG_INTEGRATION_AVAILABLE = False
@@ -41,23 +41,23 @@ class TestEndToEndPipeline:
         """Test: Create corpus → Build index → Query → Verify provenance"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Step 1: Create diverse document corpus
             docs_dir = tmpdir / "docs"
             docs_dir.mkdir()
-            
+
             corpus = {
                 "python_guide.md": "# Python Programming\n\nPython is a high-level, interpreted language. " * 50,
                 "ml_intro.md": "# Machine Learning\n\nML uses statistical algorithms to learn from data. " * 50,
                 "docker_tutorial.md": "# Docker Containerization\n\nDocker packages applications in containers. " * 50,
             }
-            
+
             files = []
             for filename, content in corpus.items():
                 file_path = docs_dir / filename
                 file_path.write_text(content)
                 files.append(file_path)
-            
+
             # Step 2: Build FAISS index
             index_dir = tmpdir / "indices"
             index_path = build_index_from_files(
@@ -68,35 +68,35 @@ class TestEndToEndPipeline:
                 chunk_size=500,
                 overlap=100,
             )
-            
+
             assert index_path.exists()
             assert (index_path / "index.faiss").exists()
             assert (index_path / "chunks.json").exists()
             assert (index_path / "metadata.json").exists()
-            
+
             # Step 3: Load and verify index
             faiss_index, chunks, metadata = load_index(
                 index_name="test_docs",
                 tenant_id="default",
                 index_dir=str(index_dir),
             )
-            
+
             assert faiss_index.ntotal > 0
             assert len(chunks) > 0
             assert metadata["total_files"] == 3
-            
+
             # Step 4: Query with retriever
             retriever = Retriever(
                 index_dir=str(index_dir),
                 index_name="test_docs",
                 tenant_id="default",
             )
-            
+
             # Query about Python
             python_results = retriever.query("Python programming language", top_k=5)
             assert len(python_results) > 0
             assert python_results[0]["score"] < 100  # Reasonable similarity score
-            
+
             # Verify provenance
             for result in python_results:
                 assert "text" in result
@@ -106,15 +106,15 @@ class TestEndToEndPipeline:
                 assert "score" in result
                 assert "generated_at" in result
                 assert isinstance(result["score"], float)
-            
+
             # Query about Machine Learning
             ml_results = retriever.query("machine learning algorithms", top_k=5)
             assert len(ml_results) > 0
-            
+
             # Query about Docker
             docker_results = retriever.query("container deployment", top_k=5)
             assert len(docker_results) > 0
-            
+
             # Verify different queries return different results
             assert python_results[0]["text"] != ml_results[0]["text"]
 
@@ -128,18 +128,18 @@ class TestMultiTenantIsolation:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
             index_dir = tmpdir / "indices"
-            
+
             # Create indices for 3 different tenants
             tenants = ["tenant_a", "tenant_b", "tenant_c"]
-            
+
             for tenant in tenants:
                 # Create unique content for each tenant
                 docs_dir = tmpdir / f"docs_{tenant}"
                 docs_dir.mkdir()
-                
+
                 content_file = docs_dir / f"{tenant}_data.txt"
                 content_file.write_text(f"Sensitive data for {tenant}. " * 50)
-                
+
                 # Build index
                 build_index_from_files(
                     files=[content_file],
@@ -149,7 +149,7 @@ class TestMultiTenantIsolation:
                     chunk_size=300,
                     overlap=50,
                 )
-            
+
             # Verify each tenant can access their own data
             for tenant in tenants:
                 retriever = Retriever(
@@ -157,18 +157,18 @@ class TestMultiTenantIsolation:
                     index_name="data",
                     tenant_id=tenant,
                 )
-                
+
                 results = retriever.query("sensitive data", top_k=5)
                 assert len(results) > 0
-                
+
                 # Verify results contain the tenant's data
                 assert tenant in results[0]["text"]
-                
+
                 # Verify results don't contain other tenants' data
                 for other_tenant in tenants:
                     if other_tenant != tenant:
                         assert other_tenant not in results[0]["text"]
-            
+
             # Verify tenant directories are separate
             for tenant in tenants:
                 tenant_dir = index_dir / tenant / "data"
@@ -183,7 +183,7 @@ class TestCacheEffectiveness:
         """Test that cache provides significant speedup"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create provider with caching
             cache_dir = tmpdir / "cache"
             provider = create_embedding_provider(
@@ -191,23 +191,23 @@ class TestCacheEffectiveness:
                 use_cache=True,
                 cache_dir=str(cache_dir),
             )
-            
+
             texts = ["Test text 1", "Test text 2", "Test text 3"]
             cache_key = "test_docs"
-            
+
             # First encoding: cache miss
             embeddings1 = provider.encode(texts, cache_key=cache_key)
             assert provider.cache_misses == 1
             assert provider.cache_hits == 0
-            
+
             # Second encoding: cache hit
             embeddings2 = provider.encode(texts, cache_key=cache_key)
             assert provider.cache_hits == 1
             assert provider.cache_misses == 1
-            
+
             # Verify embeddings are identical
             np.testing.assert_array_equal(embeddings1, embeddings2)
-            
+
             # Verify cache hit rate
             stats = provider.get_stats()
             assert stats["hit_rate"] == 0.5
@@ -222,20 +222,20 @@ class TestCrossModuleInteractions:
         """Test that all modules work together seamlessly"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create embedding provider with cache (cache_dir declared but not explicitly used)
             _ = tmpdir / "cache"
-            
+
             # Create documents
             docs_dir = tmpdir / "docs"
             docs_dir.mkdir()
-            
+
             doc1 = docs_dir / "doc1.txt"
             doc1.write_text("Python is a programming language. " * 30)
-            
+
             doc2 = docs_dir / "doc2.txt"
             doc2.write_text("Docker is a container platform. " * 30)
-            
+
             # Build index (uses embeddings internally)
             index_dir = tmpdir / "indices"
             build_index_from_files(
@@ -244,14 +244,14 @@ class TestCrossModuleInteractions:
                 tenant_id="test",
                 index_dir=str(index_dir),
             )
-            
+
             # Retrieve (uses embeddings for query encoding)
             retriever = Retriever(
                 index_dir=str(index_dir),
                 index_name="docs",
                 tenant_id="test",
             )
-            
+
             results = retriever.query("programming", top_k=3)
             assert len(results) > 0
             assert "Python" in results[0]["text"] or "programming" in results[0]["text"]
@@ -266,22 +266,22 @@ class TestMultiIndexQueries:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
             index_dir = tmpdir / "indices"
-            
+
             # Create 2 separate indices with different content
             for idx in [1, 2]:
                 docs_dir = tmpdir / f"docs_{idx}"
                 docs_dir.mkdir()
-                
+
                 doc = docs_dir / "doc.txt"
                 doc.write_text(f"Content for index {idx}. " * 40)
-                
+
                 build_index_from_files(
                     files=[doc],
                     index_name=f"index_{idx}",
                     tenant_id="test",
                     index_dir=str(index_dir),
                 )
-            
+
             # Query across both indices
             multi_retriever = MultiIndexRetriever(
                 indices=[
@@ -290,18 +290,18 @@ class TestMultiIndexQueries:
                 ],
                 index_dir=str(index_dir),
             )
-            
+
             results = multi_retriever.query("content", top_k=10)
-            
+
             # Should get results from both indices
             assert len(results) > 0
-            
+
             # Check that results have index metadata
             for result in results:
                 assert "index_name" in result
                 assert "tenant_id" in result
                 assert result["index_name"] in ["index_1", "index_2"]
-            
+
             # Should have results from both indices (if top_k is large enough)
             index_names = set(r["index_name"] for r in results)
             assert len(index_names) >= 1  # At least one index represented
@@ -318,14 +318,14 @@ class TestPerformanceUnderLoad:
             tmpdir = Path(tmpdir)
             docs_dir = tmpdir / "docs"
             docs_dir.mkdir()
-            
+
             # Create 50 documents
             files = []
             for i in range(50):
                 doc = docs_dir / f"doc_{i}.txt"
                 doc.write_text(f"Document {i} content. " * 100)
                 files.append(doc)
-            
+
             # Build index
             index_dir = tmpdir / "indices"
             index_path = build_index_from_files(
@@ -336,26 +336,26 @@ class TestPerformanceUnderLoad:
                 chunk_size=500,
                 overlap=100,
             )
-            
+
             assert index_path.exists()
-            
+
             # Verify index
             faiss_index, chunks, metadata = load_index(
                 index_name="large_corpus",
                 tenant_id="test",
                 index_dir=str(index_dir),
             )
-            
+
             assert faiss_index.ntotal > 0
             assert metadata["total_files"] == 50
-            
+
             # Test queries
             retriever = Retriever(
                 index_dir=str(index_dir),
                 index_name="large_corpus",
                 tenant_id="test",
             )
-            
+
             results = retriever.query("document content", top_k=10)
             assert len(results) == 10
 
@@ -363,14 +363,14 @@ class TestPerformanceUnderLoad:
         """Test system with many queries"""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
-            
+
             # Create small corpus
             docs_dir = tmpdir / "docs"
             docs_dir.mkdir()
-            
+
             doc = docs_dir / "doc.txt"
             doc.write_text("Test content for queries. " * 50)
-            
+
             # Build index
             index_dir = tmpdir / "indices"
             build_index_from_files(
@@ -379,22 +379,22 @@ class TestPerformanceUnderLoad:
                 tenant_id="test",
                 index_dir=str(index_dir),
             )
-            
+
             # Create retriever
             retriever = Retriever(
                 index_dir=str(index_dir),
                 index_name="query_test",
                 tenant_id="test",
             )
-            
+
             # Execute many queries
             queries = [f"query {i}" for i in range(100)]
             results_list = []
-            
+
             for query in queries:
                 results = retriever.query(query, top_k=5)
                 results_list.append(results)
-            
+
             # All queries should succeed
             assert len(results_list) == 100
             assert all(len(r) > 0 for r in results_list)

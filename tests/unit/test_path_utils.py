@@ -18,7 +18,7 @@ class TestWindowsSafeTimestamp:
         """Test ISO format produces no colons."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="iso")
-        
+
         assert ":" not in result
         assert "2026-01-21T14-30-45Z" == result
 
@@ -26,7 +26,7 @@ class TestWindowsSafeTimestamp:
         """Test compact format is numeric only."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="compact")
-        
+
         assert result == "20260121_143045"
         assert re.match(r'^\d{8}_\d{6}$', result)
 
@@ -34,31 +34,31 @@ class TestWindowsSafeTimestamp:
         """Test readable format is human-friendly."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="readable")
-        
+
         assert ":" not in result
         assert result == "2026-01-21-14-30-45-UTC"
 
     def test_default_uses_current_time(self):
         """Test that omitting dt uses current time."""
         result = windows_safe_timestamp(fmt="compact")
-        
+
         # Should be 8 digits, underscore, 6 digits
         assert re.match(r'^\d{8}_\d{6}$', result)
 
     def test_invalid_format_raises(self):
         """Test invalid format raises ValueError."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
-        
+
         with pytest.raises(ValueError, match="Unknown format"):
             windows_safe_timestamp(dt, fmt="invalid")
 
     def test_no_seconds_option(self):
         """Test include_seconds=False removes seconds."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
-        
+
         iso_result = windows_safe_timestamp(dt, fmt="iso", include_seconds=False)
         assert iso_result == "2026-01-21T14-30Z"
-        
+
         compact_result = windows_safe_timestamp(dt, fmt="compact", include_seconds=False)
         assert compact_result == "20260121_1430"
 
@@ -70,10 +70,10 @@ class TestSanitizeFilename:
         """Test removal of Windows-illegal characters."""
         dirty = 'file<name>with:illegal"chars/path\\pipes|question?asterisk*'
         clean = sanitize_filename(dirty)
-        
+
         # Should have no illegal chars
         assert not re.search(r'[<>:"/\\|?*]', clean)
-        
+
         # Should be replaced with underscores
         assert "_" in clean
 
@@ -81,7 +81,7 @@ class TestSanitizeFilename:
         """Test multiple underscores are collapsed to single."""
         dirty = "file___with____many_____underscores"
         clean = sanitize_filename(dirty)
-        
+
         # Should not have consecutive underscores
         assert "__" not in clean
 
@@ -89,7 +89,7 @@ class TestSanitizeFilename:
         """Test clean filename passes through."""
         clean_name = "valid_filename-v1.2.3.txt"
         result = sanitize_filename(clean_name)
-        
+
         assert result == clean_name
 
     def test_empty_string(self):
@@ -102,7 +102,7 @@ class TestSanitizeFilename:
         # Timestamp with colons (ISO format problem)
         dirty = "report_2026-01-21T14:30:45Z.json"
         clean = sanitize_filename(dirty)
-        
+
         # Verify no illegal chars
         assert ":" not in clean
         assert re.match(r'^[a-zA-Z0-9._-]+$', clean)

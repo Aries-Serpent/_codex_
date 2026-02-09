@@ -42,11 +42,11 @@ class TestStreamingLoss:
 
     def test_basic_loss_accumulation(self) -> None:
         metric = StreamingLoss()
-        
+
         # Add loss via kwargs
         metric.update(None, None, loss=1.0)
         assert metric.compute() == 1.0
-        
+
         metric.update(None, None, loss=3.0)
         # Average of 1.0 and 3.0 = 2.0
         assert metric.compute() == 2.0
@@ -55,7 +55,7 @@ class TestStreamingLoss:
         metric = StreamingLoss()
         metric.update(None, None, loss=5.0)
         assert metric.compute() == 5.0
-        
+
         metric.reset()
         assert metric.compute() == 0.0
 
@@ -81,11 +81,11 @@ class TestStreamingLoss:
 
     def test_multiple_batches(self) -> None:
         metric = StreamingLoss()
-        
+
         losses = [1.0, 2.0, 3.0, 4.0, 5.0]
         for loss in losses:
             metric.update(None, None, loss=loss)
-        
+
         # Average of [1, 2, 3, 4, 5] = 15 / 5 = 3.0
         assert metric.compute() == 3.0
 
@@ -97,27 +97,27 @@ class TestStreamingLoss:
 
     def test_mixed_loss_sources(self) -> None:
         metric = StreamingLoss()
-        
+
         # First with explicit loss
         metric.update(None, None, loss=2.0)
-        
+
         # Second with mean of preds
         preds = np.array([4.0, 4.0, 4.0])
         metric.update(preds, None)
-        
+
         # Average of 2.0 and 4.0 = 3.0
         assert metric.compute() == 3.0
 
     def test_streaming_over_training_epoch(self) -> None:
         """Simulate a training epoch with varying batch losses."""
         metric = StreamingLoss()
-        
+
         # Simulate 10 batches with decreasing loss (training progress)
         batch_losses = [10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0]
-        
+
         for loss in batch_losses:
             metric.update(None, None, loss=loss)
-        
+
         # Average = 55 / 10 = 5.5
         assert metric.compute() == 5.5
 

@@ -52,19 +52,19 @@ class TestCodexCLIFunctions:
         """Test _csv_list utility function."""
         try:
             from codex_ml.cli.codex_cli import _csv_list
-            
+
             # Test basic CSV parsing
             result = _csv_list("a, b, c")
             assert result == ["a", "b", "c"]
-            
+
             # Test empty string
             result = _csv_list("")
             assert result == []
-            
+
             # Test single value
             result = _csv_list("single")
             assert result == ["single"]
-            
+
             # Test with extra whitespace
             result = _csv_list("  x  ,  y  ,  z  ")
             assert result == ["x", "y", "z"]
@@ -74,15 +74,16 @@ class TestCodexCLIFunctions:
     def test_update_path_function(self):
         """Test _update_path utility function."""
         try:
-            from codex_ml.cli.codex_cli import _update_path
             from types import SimpleNamespace
-            
+
+            from codex_ml.cli.codex_cli import _update_path
+
             # Create a nested object
             obj = SimpleNamespace()
             obj.level1 = SimpleNamespace()
             obj.level1.level2 = SimpleNamespace()
             obj.level1.level2.value = "original"
-            
+
             # Update nested path
             _update_path(obj, "level1.level2.value", "updated")
             assert obj.level1.level2.value == "updated"
@@ -160,7 +161,7 @@ class TestCodexCLIIntegration:
     def test_config_utilities_import(self):
         """Test that config utilities are properly imported."""
         try:
-            from codex_ml.cli.codex_cli import load_app_config, ConfigError
+            from codex_ml.cli.codex_cli import ConfigError, load_app_config
             assert callable(load_app_config)
             assert issubclass(ConfigError, Exception)
         except ImportError as e:

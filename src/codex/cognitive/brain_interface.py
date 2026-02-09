@@ -38,9 +38,9 @@ import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
-from enum import Enum
 
 # Setup logging
 logging.basicConfig(
@@ -246,13 +246,13 @@ class AgentBrainInterface:
         ...     context={"error": "import error", "fix": "added mock"}
         ... )
     """
-    
+
     # Default paths (relative to repo root)
     DEFAULT_COGNITIVE_BRAIN_DIR = ".codex/cognitive_brain"
     DEFAULT_PATTERN_STORE = "pattern_learning_store.json"
     DEFAULT_SESSION_TRACKER = "session_tracker.md"
     DEFAULT_OBJECTIVES_TRACKER = "objectives_tracker.md"
-    
+
     # Agent category mappings
     AGENT_CATEGORY_MAP: Dict[str, AgentCategory] = {
         "ci-testing-agent": AgentCategory.CI_CD,
@@ -279,7 +279,7 @@ class AgentBrainInterface:
         "session-analysis-agent": AgentCategory.SESSION,
         "session-log-retrieval-agent": AgentCategory.SESSION,
     }
-    
+
     def __init__(
         self,
         agent_id: str,
@@ -299,29 +299,29 @@ class AgentBrainInterface:
             agent_id, AgentCategory.UNKNOWN
         )
         self.repo_root = Path(repo_root) if repo_root else Path.cwd()
-        
+
         # Set up paths
         self.cognitive_brain_dir = self.repo_root / self.DEFAULT_COGNITIVE_BRAIN_DIR
         self.pattern_store_path = self.cognitive_brain_dir / self.DEFAULT_PATTERN_STORE
         self.session_tracker_path = self.cognitive_brain_dir / self.DEFAULT_SESSION_TRACKER
         self.objectives_path = self.cognitive_brain_dir / self.DEFAULT_OBJECTIVES_TRACKER
-        
+
         # Internal state
         self._patterns: Dict[str, Dict[str, Any]] = {}
         self._session_state: Dict[str, Any] = {}
         self._objectives: List[str] = []
         self._registered = False
-        
+
         # Load data
         self._load_patterns()
         self._load_session_state()
         self._load_objectives()
-        
+
         if auto_register:
             self._register_agent()
-        
+
         logger.info(f"AgentBrainInterface initialized for {agent_id}")
-    
+
     def _load_patterns(self) -> None:
         """Load patterns from the pattern store."""
         if self.pattern_store_path.exists():
@@ -336,7 +336,7 @@ class AgentBrainInterface:
         else:
             logger.debug("Pattern store not found, starting with empty patterns")
             self._patterns = {}
-    
+
     def _load_session_state(self) -> None:
         """Load current session state."""
         if self.session_tracker_path.exists():
@@ -348,7 +348,7 @@ class AgentBrainInterface:
                     "path": str(self.session_tracker_path),
                     "content_length": len(content)
                 }
-                
+
                 # Extract key values from markdown
                 for line in content.split('\n'):
                     if line.startswith('**Session ID:**'):
@@ -357,20 +357,20 @@ class AgentBrainInterface:
                         self._session_state['status'] = line.split('**')[-1].strip()
                     elif line.startswith('**Phase:**'):
                         self._session_state['phase'] = line.split('**')[-1].strip()
-                        
+
             except IOError as e:
                 logger.warning(f"Failed to load session state: {e}")
                 self._session_state = {}
         else:
             self._session_state = {}
-    
+
     def _load_objectives(self) -> None:
         """Load current objectives."""
         if self.objectives_path.exists():
             try:
                 content = self.objectives_path.read_text(encoding='utf-8')
                 self._objectives = []
-                
+
                 # Parse objectives from markdown
                 # Note: Substring checks below are for markdown heading detection,
                 # not for URL/domain validation. This is safe markdown parsing.
@@ -387,18 +387,18 @@ class AgentBrainInterface:
                         pass
                     elif in_objectives and line.startswith('#'):
                         in_objectives = False
-                        
+
             except IOError as e:
                 logger.warning(f"Failed to load objectives: {e}")
                 self._objectives = []
         else:
             self._objectives = []
-    
+
     def _register_agent(self) -> None:
         """Register the agent with the cognitive brain."""
         self._registered = True
         logger.debug(f"Agent {self.agent_id} registered with cognitive brain")
-    
+
     def _calculate_match_score(
         self,
         symptoms: List[str],
@@ -418,33 +418,33 @@ class AgentBrainInterface:
         """
         if not symptoms or not pattern_symptoms:
             return 0.0
-        
+
         # Convert to lowercase for comparison
         query_terms = set(' '.join(symptoms).lower().split())
         pattern_terms = set(' '.join(pattern_symptoms).lower().split())
-        
+
         if not pattern_terms:
             return 0.0
-        
+
         # Calculate Jaccard similarity
         intersection = len(query_terms & pattern_terms)
         union = len(query_terms | pattern_terms)
-        
+
         if union == 0:
             return 0.0
-        
+
         jaccard = intersection / union
-        
+
         # Boost score if exact symptom matches exist
         exact_matches = sum(
             1 for s in symptoms
             if any(s.lower() in ps.lower() for ps in pattern_symptoms)
         )
-        
+
         exact_boost = min(exact_matches * 0.1, 0.3)
-        
+
         return min(jaccard + exact_boost, 1.0)
-    
+
     def _get_confidence_level(self, score: float) -> PatternConfidence:
         """Convert numeric score to confidence level."""
         if score >= 0.85:
@@ -453,11 +453,11 @@ class AgentBrainInterface:
             return PatternConfidence.MEDIUM
         else:
             return PatternConfidence.LOW
-    
+
     # =========================================================================
     # Pattern Store Access
     # =========================================================================
-    
+
     def query_patterns(
         self,
         symptoms: Union[str, List[str]],
@@ -484,27 +484,27 @@ class AgentBrainInterface:
         """
         if isinstance(symptoms, str):
             symptoms = [symptoms]
-        
+
         matches: List[PatternMatch] = []
         min_score = {
             PatternConfidence.LOW: 0.0,
             PatternConfidence.MEDIUM: 0.60,
             PatternConfidence.HIGH: 0.85
         }.get(min_confidence, 0.0)
-        
+
         for pattern_name, pattern_data in self._patterns.items():
             # Apply category filter if specified
             if category and pattern_data.get("category") != category:
                 continue
-            
+
             pattern_symptoms = pattern_data.get("symptoms", [])
             score = self._calculate_match_score(symptoms, pattern_symptoms)
-            
+
             if score < min_score:
                 continue
-            
+
             confidence = self._get_confidence_level(score)
-            
+
             match = PatternMatch(
                 pattern_id=pattern_data.get("id", pattern_name),
                 category=pattern_data.get("category", "general"),
@@ -518,16 +518,16 @@ class AgentBrainInterface:
                 diagnosis_steps=pattern_data.get("diagnosis_steps", [])
             )
             matches.append(match)
-        
+
         # Sort by score descending
         matches.sort(key=lambda m: m.match_score, reverse=True)
-        
+
         logger.info(
             f"Query for symptoms {symptoms}: found {len(matches)} matches"
         )
-        
+
         return matches[:limit]
-    
+
     def get_pattern(self, pattern_id: str) -> Optional[PatternMatch]:
         """
         Get a specific pattern by ID.
@@ -553,7 +553,7 @@ class AgentBrainInterface:
                     diagnosis_steps=pattern_data.get("diagnosis_steps", [])
                 )
         return None
-    
+
     def submit_pattern(
         self,
         pattern_id: str,
@@ -576,7 +576,7 @@ class AgentBrainInterface:
             True if pattern was added successfully
         """
         pattern_name = pattern_id.lower().replace("-", "_")
-        
+
         self._patterns[pattern_name] = {
             "id": pattern_id,
             "category": category,
@@ -590,28 +590,28 @@ class AgentBrainInterface:
             "submitted_by": self.agent_id,
             "submitted_at": datetime.now(timezone.utc).isoformat()
         }
-        
+
         self._save_patterns()
         logger.info(f"New pattern submitted: {pattern_id}")
         return True
-    
+
     def _save_patterns(self) -> None:
         """Save patterns to the pattern store."""
         try:
             # Ensure directory exists
             self.cognitive_brain_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Load existing data to preserve metadata
             existing_data = {}
             if self.pattern_store_path.exists():
                 with open(self.pattern_store_path, 'r', encoding='utf-8') as f:
                     existing_data = json.load(f)
-            
+
             # Update patterns
             existing_data["patterns"] = self._patterns
             existing_data["metadata"] = existing_data.get("metadata", {})
             existing_data["metadata"]["last_updated"] = datetime.now(timezone.utc).isoformat()
-            
+
             # Recalculate statistics
             existing_data["statistics"] = {
                 "total_patterns": len(self._patterns),
@@ -622,18 +622,18 @@ class AgentBrainInterface:
                     p.get("success_rate", 0) for p in self._patterns.values()
                 ) / max(len(self._patterns), 1)
             }
-            
+
             with open(self.pattern_store_path, 'w', encoding='utf-8') as f:
                 json.dump(existing_data, f, indent=2)
-                
+
             logger.debug("Patterns saved successfully")
         except IOError as e:
             logger.error(f"Failed to save patterns: {e}")
-    
+
     # =========================================================================
     # Objective Alignment
     # =========================================================================
-    
+
     def check_alignment(
         self,
         proposed_action: str,
@@ -651,9 +651,9 @@ class AgentBrainInterface:
         """
         if not self._objectives:
             return ObjectiveAlignment.UNKNOWN
-        
+
         action_lower = proposed_action.lower()
-        
+
         # Check for misalignment keywords FIRST (these are strong signals)
         # Both single words and phrases are matched using substring search
         # e.g., "skip all tests" matches "skip", "skip all", etc.
@@ -661,38 +661,38 @@ class AgentBrainInterface:
             "skip", "ignore", "defer", "remove test", "disable",
             "skip all", "delete test", "bypass"
         ]
-        
+
         # Check for misalignment indicators first (substring matching)
         if any(keyword in action_lower for keyword in misalignment_keywords):
             logger.debug(f"Action '{proposed_action}' contains misalignment keyword")
             return ObjectiveAlignment.MISALIGNED
-        
+
         # Check for alignment keywords (substring matching works for phrases too)
         alignment_keywords = [
             "fix", "coverage", "security", "documentation",
             "implement", "complete", "verify", "validate", "improve",
             "add test", "increase coverage", "remediate"
         ]
-        
+
         # Check if action contains alignment keywords (substring matching)
         if any(keyword in action_lower for keyword in alignment_keywords):
             logger.debug(f"Action '{proposed_action}' contains alignment keyword")
             return ObjectiveAlignment.ALIGNED
-        
+
         # Check objectives for relevance (use significant words only)
         for objective in self._objectives:
             obj_lower = objective.lower()
             # Only check significant words (4+ chars) to avoid common word matches
             significant_words = [w for w in obj_lower.split() if len(w) >= 4]
-            
+
             # Check if action relates to objective
             if any(word in action_lower for word in significant_words):
                 logger.debug(f"Action '{proposed_action}' aligned with objective: {objective}")
                 return ObjectiveAlignment.ALIGNED
-        
+
         # Default to partially aligned if we can't determine
         return ObjectiveAlignment.PARTIALLY_ALIGNED
-    
+
     def get_objectives(
         self,
         include_completed: bool = False
@@ -709,9 +709,9 @@ class AgentBrainInterface:
         if include_completed:
             # Would need to re-parse the file to get completed
             self._load_objectives()
-        
+
         return self._objectives.copy()
-    
+
     def update_objective_progress(
         self,
         objective: str,
@@ -735,16 +735,16 @@ class AgentBrainInterface:
             f"Objective progress update: {objective} - "
             f"{'completed' if completed else 'in progress'}"
         )
-        
+
         if completed and objective in self._objectives:
             self._objectives.remove(objective)
-        
+
         return True
-    
+
     # =========================================================================
     # Session State
     # =========================================================================
-    
+
     def get_session_state(self) -> Dict[str, Any]:
         """
         Get the current session state.
@@ -753,7 +753,7 @@ class AgentBrainInterface:
             Dictionary containing session state information
         """
         return self._session_state.copy()
-    
+
     def update_session_state(
         self,
         updates: Dict[str, Any],
@@ -773,17 +773,17 @@ class AgentBrainInterface:
             self._session_state.update(updates)
         else:
             self._session_state = updates
-        
+
         self._session_state["last_updated"] = datetime.now(timezone.utc).isoformat()
         self._session_state["updated_by"] = self.agent_id
-        
+
         logger.debug(f"Session state updated by {self.agent_id}")
         return True
-    
+
     # =========================================================================
     # Learning Feedback
     # =========================================================================
-    
+
     def submit_learning(
         self,
         pattern_id: str,
@@ -824,16 +824,16 @@ class AgentBrainInterface:
             new_symptoms=new_symptoms or [],
             suggested_improvements=suggested_improvements or []
         )
-        
+
         # Update pattern success rate
         self._update_pattern_stats(feedback)
-        
+
         logger.info(
             f"Learning feedback submitted: {pattern_id} - {outcome}"
         )
-        
+
         return True
-    
+
     def _update_pattern_stats(self, feedback: LearningFeedback) -> None:
         """Update pattern statistics based on feedback."""
         pattern_name = None
@@ -841,30 +841,30 @@ class AgentBrainInterface:
             if pattern_data.get("id") == feedback.pattern_id:
                 pattern_name = name
                 break
-        
+
         if not pattern_name:
             logger.warning(f"Pattern {feedback.pattern_id} not found for stats update")
             return
-        
+
         pattern = self._patterns[pattern_name]
-        
+
         # Update times applied
         pattern["times_applied"] = pattern.get("times_applied", 0) + 1
         pattern["last_used"] = datetime.now(timezone.utc).isoformat()
-        
+
         # Update success rate using EMA (exponential moving average)
         old_rate = pattern.get("success_rate", 0.0)
         new_success = 1.0 if feedback.outcome == "success" else (0.5 if feedback.outcome == "partial" else 0.0)
         alpha = 0.3  # EMA smoothing factor
         pattern["success_rate"] = (alpha * new_success) + ((1 - alpha) * old_rate)
-        
+
         # Save updated patterns
         self._save_patterns()
-    
+
     # =========================================================================
     # Convenience Methods
     # =========================================================================
-    
+
     def diagnose(
         self,
         symptoms: Union[str, List[str]],
@@ -885,10 +885,10 @@ class AgentBrainInterface:
         """
         # Query patterns
         patterns = self.query_patterns(symptoms)
-        
+
         # Get relevant objectives
         objectives = self.get_objectives()
-        
+
         # Generate recommendations
         recommendations = []
         for pattern in patterns[:3]:  # Top 3 patterns
@@ -900,7 +900,7 @@ class AgentBrainInterface:
                 recommendations.append(
                     f"Try solution from {pattern.pattern_id}: {pattern.solutions[0]}"
                 )
-        
+
         return BrainResponse(
             success=True,
             message=f"Diagnosis complete: {len(patterns)} patterns matched",
@@ -914,7 +914,7 @@ class AgentBrainInterface:
                 "timestamp": datetime.now(timezone.utc).isoformat()
             }
         )
-    
+
     def __repr__(self) -> str:
         return (
             f"AgentBrainInterface("

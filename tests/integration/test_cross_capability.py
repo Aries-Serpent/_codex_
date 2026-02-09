@@ -12,9 +12,8 @@ import pytest
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
-
 
 # =============================================================================
 # Configuration + Logging Integration

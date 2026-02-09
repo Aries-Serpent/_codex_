@@ -6,15 +6,12 @@ Tests for optional metric fallbacks and end-to-end emission semantics.
 
 from __future__ import annotations
 
-import builtins
-import json
 from pathlib import Path
 
 import pytest
 
 pytest.importorskip("datasets")
 
-from codex_ml.eval.eval_runner import evaluate_datasets  # noqa: E402
 from codex_ml.metrics.registry import get_metric  # noqa: E402
 
 

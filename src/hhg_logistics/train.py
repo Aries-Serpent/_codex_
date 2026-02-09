@@ -55,9 +55,9 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from torch.optim import AdamW
-    from torch.utils.data import DataLoader, Dataset
 
     import torch
+    from torch.utils.data import DataLoader, Dataset
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
     AdamW = None  # type: ignore

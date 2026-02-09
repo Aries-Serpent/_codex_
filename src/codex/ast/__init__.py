@@ -17,17 +17,27 @@ Components:
 
 __version__ = "1.1.0"
 
-from .export import ExportFormat, ExportResult, KnowledgeGraphExporter, export_knowledge_graph
-from .graph import DependencyGraph
-from .metrics import CodeMetrics, MetricsAggregator
-from .node import NodeType, SourceLocation, StandardizedASTNode
-from .parser import ParseError, UniversalParser, parse_python
-from .smells import CodeSmell, CodeSmellDetector, SmellCategory, SmellSeverity, detect_smells
-
 # New components for incremental analysis
 from .baseline import BaselineManager
 from .delta import DeltaAnalyzer, DeltaResult
+from .export import (
+    ExportFormat,
+    ExportResult,
+    KnowledgeGraphExporter,
+    export_knowledge_graph,
+)
+from .graph import DependencyGraph
 from .language_registry import LanguageRegistry
+from .metrics import CodeMetrics, MetricsAggregator
+from .node import NodeType, SourceLocation, StandardizedASTNode
+from .parser import ParseError, UniversalParser, parse_python
+from .smells import (
+    CodeSmell,
+    CodeSmellDetector,
+    SmellCategory,
+    SmellSeverity,
+    detect_smells,
+)
 
 __all__ = [
     # Node representation (BLOCK-ARCH-001)

@@ -45,13 +45,13 @@ class TestMetricBase:
         """Test MetricBase stores name."""
         try:
             from codex_ml.metrics.metric_implementations import MetricBase
-            
+
             class DummyMetric(MetricBase):
                 def update(self, predictions, targets):
                     pass
                 def compute(self):
                     return {}
-            
+
             metric = DummyMetric("test_metric")
             assert metric.name == "test_metric"
         except ImportError as exc:

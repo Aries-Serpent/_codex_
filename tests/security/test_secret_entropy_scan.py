@@ -29,11 +29,11 @@ def test_entropy_scan():
     script_path = Path("scripts/security/secret_entropy_scan.py")
     if not script_path.exists():
         pytest.skip("secret_entropy_scan.py not found")
-    
+
     setup()
     env = os.environ.copy()
     env["SECRET_ENTROPY_THRESHOLD"] = "3.0"
-    
+
     try:
         result = subprocess.run(
             [sys.executable, str(script_path)],
@@ -50,10 +50,10 @@ def test_entropy_scan():
         stderr = result.stderr.strip()
         stdout = result.stdout.strip()
         pytest.skip(f"Script failed to run: {stderr or stdout}")
-    
+
     rep = ART / "secret_entropy_report.json"
     if not rep.exists():
         pytest.skip("Report not generated")
-    
+
     data = json.loads(rep.read_text())
     assert data["count"] > 0

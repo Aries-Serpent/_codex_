@@ -10,8 +10,6 @@ import types
 from pathlib import Path
 from typing import Any, Dict, Iterable
 
-
-
 # Constants for consistent test configuration
 DETECTOR_PATH = Path("scripts/space_traversal/detectors/detector_duplication.py")
 

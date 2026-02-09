@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from tokenizers import Tokenizer
+
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 
@@ -47,7 +48,7 @@ def _load_from_model_name(
     model_name_or_path: str, cache_dir: Path, allow_remote: bool
 ) -> PreTrainedTokenizerFast:
     from codex_ml.utils.hf_pinning import load_from_pretrained
-    
+
     tokenizer = load_from_pretrained(  # Uses revision pinning for security
         AutoTokenizer,
         model_name_or_path,

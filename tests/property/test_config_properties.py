@@ -14,7 +14,8 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import given, strategies as st, assume, settings
+    from hypothesis import assume, given, settings
+    from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
@@ -22,7 +23,7 @@ except ImportError:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
         return decorator
-    
+
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
@@ -51,10 +52,10 @@ except ImportError:
         @staticmethod
         def fixed_dictionaries(*args: Any, **kwargs: Any) -> Any:
             return None
-    
+
     def assume(condition: bool) -> None:
         pass
-    
+
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
@@ -74,7 +75,7 @@ class TestConfigKeyProperties:
         """Key normalization is idempotent."""
         def normalize_key(k: str) -> str:
             return k.lower().strip().replace("-", "_")
-        
+
         normalized = normalize_key(key)
         double_normalized = normalize_key(normalized)
         assert normalized == double_normalized
@@ -84,7 +85,7 @@ class TestConfigKeyProperties:
         """Key validation is consistent across calls."""
         def is_valid_key(k: str) -> bool:
             return bool(k) and k[0].isalpha() and all(c.isalnum() or c == "_" for c in k)
-        
+
         result1 = is_valid_key(key)
         result2 = is_valid_key(key)
         assert result1 == result2
@@ -189,7 +190,7 @@ class TestConfigValidationProperties:
         """Positive integer validation is correct."""
         def validate_positive(v: int) -> bool:
             return v > 0
-        
+
         assert validate_positive(value) is True
 
     @given(st.integers(max_value=0))
@@ -197,7 +198,7 @@ class TestConfigValidationProperties:
         """Non-positive integer validation is correct."""
         def validate_positive(v: int) -> bool:
             return v > 0
-        
+
         assert validate_positive(value) is False
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
@@ -205,7 +206,7 @@ class TestConfigValidationProperties:
         """Probability validation is correct."""
         def validate_probability(v: float) -> bool:
             return 0.0 <= v <= 1.0
-        
+
         assert validate_probability(value) is True
 
     @given(st.text(min_size=1, max_size=100))
@@ -213,7 +214,7 @@ class TestConfigValidationProperties:
         """Non-empty string validation is correct."""
         def validate_non_empty(v: str) -> bool:
             return len(v.strip()) > 0
-        
+
         has_content = len(value.strip()) > 0
         assert validate_non_empty(value) == has_content
 
@@ -253,7 +254,7 @@ class TestDefaultValueProperties:
 class TestPathResolutionProperties:
     """Property-based tests for path resolution."""
 
-    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"), 
+    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
                     min_size=1, max_size=5))
     def test_path_join_split_roundtrip(self, parts: list[str]) -> None:
         """Path join then split is identity."""
@@ -270,7 +271,7 @@ class TestPathResolutionProperties:
             while ".." in p:
                 p = p.replace("..", ".")
             return p.strip(".")
-        
+
         normalized = normalize_path(path)
         double_normalized = normalize_path(normalized)
         # Normalization should be idempotent

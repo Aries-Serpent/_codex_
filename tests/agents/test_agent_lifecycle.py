@@ -13,7 +13,7 @@ Tests cover:
 """
 
 import tempfile
-from datetime import datetime, UTC, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 

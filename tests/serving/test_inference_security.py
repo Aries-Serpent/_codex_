@@ -7,6 +7,7 @@ Tests authentication, authorization, and attack prevention.
 import base64
 import time
 from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 

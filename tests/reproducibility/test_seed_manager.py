@@ -1,9 +1,10 @@
 """Tests for reproducibility seed manager."""
 
-import pytest
 import json
 import tempfile
 from pathlib import Path
+
+import pytest
 
 
 class TestSeedManager:

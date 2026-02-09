@@ -138,7 +138,7 @@ class TestCVEDatabase:
             affected_versions=["2.25.0"],
         )
         db.add_cve(cve)
-        
+
         assert "requests" in db.entries
         assert len(db.entries["requests"]) == 1
         assert db.entries["requests"][0].cve_id == "CVE-2024-0001"
@@ -146,7 +146,7 @@ class TestCVEDatabase:
     def test_add_multiple_cves_same_package(self):
         """Test adding multiple CVEs for the same package."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -159,16 +159,16 @@ class TestCVEDatabase:
             package="requests",
             affected_versions=["2.26.0"],
         )
-        
+
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         assert len(db.entries["requests"]) == 2
 
     def test_add_cves_different_packages(self):
         """Test adding CVEs for different packages."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -181,10 +181,10 @@ class TestCVEDatabase:
             package="flask",
             affected_versions=["1.0.0"],
         )
-        
+
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         assert "requests" in db.entries
         assert "flask" in db.entries
 
@@ -192,7 +192,7 @@ class TestCVEDatabase:
         """Test that checksum is updated when CVE is added."""
         db = CVEDatabase()
         initial_checksum = db.checksum
-        
+
         cve = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -200,7 +200,7 @@ class TestCVEDatabase:
             affected_versions=["1.0.0"],
         )
         db.add_cve(cve)
-        
+
         assert db.checksum != initial_checksum
         assert len(db.checksum) == 16  # SHA256 truncated to 16 chars
 
@@ -208,7 +208,7 @@ class TestCVEDatabase:
         """Test that last_updated is set when CVE is added."""
         db = CVEDatabase()
         assert db.last_updated == ""
-        
+
         cve = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -216,7 +216,7 @@ class TestCVEDatabase:
             affected_versions=["1.0.0"],
         )
         db.add_cve(cve)
-        
+
         assert db.last_updated != ""
         # Verify it's a valid ISO timestamp
         datetime.fromisoformat(db.last_updated)
@@ -231,7 +231,7 @@ class TestCVEDatabase:
             affected_versions=["2.25.0", "2.25.1"],
         )
         db.add_cve(cve)
-        
+
         vulns = db.check_package("requests", "2.25.0")
         assert len(vulns) == 1
         assert vulns[0].cve_id == "CVE-2024-0001"
@@ -246,7 +246,7 @@ class TestCVEDatabase:
             affected_versions=["2.25.0"],
         )
         db.add_cve(cve)
-        
+
         vulns = db.check_package("requests", "2.26.0")
         assert len(vulns) == 0
 
@@ -259,7 +259,7 @@ class TestCVEDatabase:
     def test_check_all_dependencies(self):
         """Test checking all dependencies at once."""
         db = CVEDatabase()
-        
+
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
             severity="HIGH",
@@ -274,15 +274,15 @@ class TestCVEDatabase:
         )
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         dependencies = {
             "requests": "2.25.0",  # Vulnerable
             "flask": "2.0.0",      # Not vulnerable
             "django": "4.0.0",     # Unknown
         }
-        
+
         results = db.check_all(dependencies)
-        
+
         assert "requests" in results
         assert "flask" not in results
         assert "django" not in results
@@ -298,9 +298,9 @@ class TestCVEDatabase:
             fixed_in="2.26.0",
         )
         db.add_cve(cve)
-        
+
         data = db.to_dict()
-        
+
         assert "entries" in data
         assert "last_updated" in data
         assert "requests" in data["entries"]
@@ -320,9 +320,9 @@ class TestCVEDatabase:
             },
             "last_updated": "2024-01-15T12:00:00",
         }
-        
+
         db = CVEDatabase.from_dict(data)
-        
+
         assert db.last_updated == "2024-01-15T12:00:00"
         assert "requests" in db.entries
         assert db.entries["requests"][0].cve_id == "CVE-2024-0001"
@@ -338,11 +338,11 @@ class TestCVEDatabase:
             fixed_in="2.26.0",
         )
         db.add_cve(cve)
-        
+
         # Convert to dict and back
         data = db.to_dict()
         restored = CVEDatabase.from_dict(data)
-        
+
         assert "requests" in restored.entries
         assert restored.entries["requests"][0].cve_id == "CVE-2024-0001"
 
@@ -358,7 +358,7 @@ class TestCVEDatabaseIntegration:
     def test_realistic_vulnerability_check(self):
         """Test realistic vulnerability checking scenario."""
         db = CVEDatabase()
-        
+
         # Add several known CVEs
         cves = [
             CVEEntry(
@@ -384,19 +384,19 @@ class TestCVEDatabaseIntegration:
                 fixed_in="2.31.0",
             ),
         ]
-        
+
         for cve in cves:
             db.add_cve(cve)
-        
+
         # Check project dependencies
         project_deps = {
             "requests": "2.28.1",     # Vulnerable
             "urllib3": "1.26.5",      # Fixed version
             "certifi": "2023.1.1",    # Not affected
         }
-        
+
         vulns = db.check_all(project_deps)
-        
+
         # Only requests should be flagged
         assert "requests" in vulns
         assert "urllib3" not in vulns
@@ -405,7 +405,7 @@ class TestCVEDatabaseIntegration:
     def test_multiple_vulns_same_package(self):
         """Test package with multiple vulnerabilities."""
         db = CVEDatabase()
-        
+
         # Add multiple CVEs for same package
         cve1 = CVEEntry(
             cve_id="CVE-2024-0001",
@@ -421,9 +421,9 @@ class TestCVEDatabaseIntegration:
         )
         db.add_cve(cve1)
         db.add_cve(cve2)
-        
+
         vulns = db.check_package("vulnerable-lib", "1.0.0")
-        
+
         assert len(vulns) == 2
         cve_ids = {v.cve_id for v in vulns}
         assert "CVE-2024-0001" in cve_ids

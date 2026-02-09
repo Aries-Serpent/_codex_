@@ -75,7 +75,7 @@ class TestWriteEvidence:
 
         seeds_file = out_dir / "seeds.json"
         assert seeds_file.exists()
-        
+
         seeds = json.loads(seeds_file.read_text())
         assert "rng" in seeds
         assert seeds["rng"] == 1337
@@ -102,7 +102,7 @@ class TestWriteEvidence:
 
         env_file = out_dir / "env.json"
         assert env_file.exists()
-        
+
         env = json.loads(env_file.read_text())
         assert "platform" in env
         assert "python" in env
@@ -118,7 +118,7 @@ class TestWriteEvidence:
 
         checksums_file = out_dir / "checksums.json"
         assert checksums_file.exists()
-        
+
         checksums = json.loads(checksums_file.read_text())
         assert isinstance(checksums, dict)
 
@@ -131,7 +131,7 @@ class TestWriteEvidence:
 
         manifest_file = out_dir / "run_manifest.json"
         assert manifest_file.exists()
-        
+
         manifest = json.loads(manifest_file.read_text())
         assert "timestamp" in manifest
         assert "artifacts" in manifest

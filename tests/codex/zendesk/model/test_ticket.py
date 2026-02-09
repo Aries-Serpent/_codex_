@@ -11,7 +11,7 @@ from src.codex.zendesk.model.ticket import (
 
 class TestTicketComment:
     """Test TicketComment model."""
-    
+
     def test_create_comment(self):
         """Test creating a basic comment."""
         comment = TicketComment(
@@ -26,7 +26,7 @@ class TestTicketComment:
 
 class TestTicket:
     """Test Ticket model."""
-    
+
     def test_create_minimal_ticket(self):
         """Test creating a ticket with minimal required fields."""
         ticket = Ticket(
@@ -38,7 +38,7 @@ class TestTicket:
         assert ticket.description == "Test description"
         assert ticket.requester_id == 12345
         assert ticket.status == "new"  # Default value
-    
+
     def test_ticket_with_all_fields(self):
         """Test creating a ticket with all fields populated."""
         comment = TicketComment(
@@ -46,12 +46,12 @@ class TestTicket:
             body="Initial comment",
             public=True,
         )
-        
+
         custom_field = TicketCustomField(
             id=123,
             value="custom_value",
         )
-        
+
         ticket = Ticket(
             id=99999,
             subject="Full test ticket",
@@ -65,14 +65,14 @@ class TestTicket:
             custom_fields=[custom_field],
             comment=comment,
         )
-        
+
         assert ticket.id == 99999
         assert ticket.status == "open"
         assert ticket.priority == "high"
         assert len(ticket.tags) == 2
         assert len(ticket.custom_fields) == 1
         assert ticket.comment.body == "Initial comment"
-    
+
     def test_to_api_payload_create(self):
         """Test API payload generation for ticket creation."""
         comment = TicketComment(
@@ -80,7 +80,7 @@ class TestTicket:
             body="Creating a ticket",
             public=True,
         )
-        
+
         ticket = Ticket(
             subject="New ticket",
             description="Ticket description",
@@ -89,9 +89,9 @@ class TestTicket:
             tags=["api", "test"],
             comment=comment,
         )
-        
+
         payload = ticket.to_api_payload(for_create=True)
-        
+
         assert "ticket" in payload
         assert payload["ticket"]["subject"] == "New ticket"
         assert payload["ticket"]["priority"] == "high"

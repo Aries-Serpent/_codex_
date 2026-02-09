@@ -47,7 +47,7 @@ class TestModerationSettingsAdvanced:
             {"enabled": True, "fail_open": False},
             {"enabled": True, "fail_open": True},
         ]
-        
+
         for combo in combos:
             settings = ModerationSettings(**combo)
             assert settings.enabled == combo["enabled"]
@@ -60,7 +60,7 @@ class TestModerationSettingsAdvanced:
             rules_path="/custom/rules.yaml",
             audit_log="/var/log/moderation/audit.jsonl",
         )
-        
+
         assert settings.rules_path == "/custom/rules.yaml"
         assert settings.audit_log == "/var/log/moderation/audit.jsonl"
 
@@ -72,7 +72,7 @@ class TestModerationSettingsAdvanced:
             "custom.module:function",
             "",
         ]
-        
+
         for provider in providers:
             settings = ModerationSettings(provider=provider)
             assert settings.provider == provider
@@ -80,7 +80,7 @@ class TestModerationSettingsAdvanced:
     def test_settings_label_for_tracking(self):
         """Test label field for environment tracking."""
         labels = ["production", "staging", "dev", "test-suite"]
-        
+
         for label in labels:
             settings = ModerationSettings(label=label)
             assert settings.label == label
@@ -88,10 +88,10 @@ class TestModerationSettingsAdvanced:
     def test_settings_immutability(self):
         """Test that settings can be safely passed around."""
         settings = ModerationSettings(enabled=True)
-        
+
         # Create adapter with settings
         ModerationAdapter(settings)
-        
+
         # Original settings should be unchanged
         assert settings.enabled is True
 
@@ -112,14 +112,14 @@ class TestModerationDecisionAdvanced:
             "confidence": 0.95,
             "metadata": {"model": "v1", "timestamp": "2024-01-15"},
         }
-        
+
         decision = ModerationDecision(
             approved=True,
             stage="preflight",
             provider="custom",
             details=details,
         )
-        
+
         assert decision.details["scores"]["toxicity"] == 0.1
         assert decision.details["metadata"]["model"] == "v1"
 
@@ -134,9 +134,9 @@ class TestModerationDecisionAdvanced:
             sanitized_text="[REDACTED] safe content",
             details={"score": 0.85, "threshold": 0.5},
         )
-        
+
         result = decision.to_dict()
-        
+
         assert result["approved"] is False
         assert result["stage"] == "postflight"
         assert result["provider"] == "openai"
@@ -153,18 +153,18 @@ class TestModerationDecisionAdvanced:
             provider="offline",
             reasons=("safe",),
         )
-        
+
         dict1 = decision1.to_dict()
-        
+
         decision2 = ModerationDecision(
             approved=dict1["approved"],
             stage=dict1["stage"],
             provider=dict1["provider"],
             reasons=tuple(dict1["reasons"]),
         )
-        
+
         dict2 = decision2.to_dict()
-        
+
         # Compare important fields
         assert dict1["approved"] == dict2["approved"]
         assert dict1["stage"] == dict2["stage"]
@@ -179,7 +179,7 @@ class TestModerationDecisionAdvanced:
             reasons=(),
             matches=(),
         )
-        
+
         result = decision.to_dict()
         assert result["reasons"] == []
         assert result["matches"] == []
@@ -192,7 +192,7 @@ class TestModerationDecisionAdvanced:
             provider="offline",
             sanitized_text=None,
         )
-        
+
         assert decision.sanitized_text is None
         result = decision.to_dict()
         assert result["sanitized_text"] is None
@@ -214,10 +214,10 @@ class TestModerationRejectionAdvanced:
             provider="offline",
             matches=("harmful_pattern", "toxic_content"),
         )
-        
+
         rejection = ModerationRejection("preflight", decision)
         error_msg = str(rejection)
-        
+
         assert "preflight" in error_msg
         assert "harmful_pattern" in error_msg or "toxic_content" in error_msg
 
@@ -229,10 +229,10 @@ class TestModerationRejectionAdvanced:
             provider="openai",
             reasons=("violence", "hate", "harassment"),
         )
-        
+
         rejection = ModerationRejection("postflight", decision)
         error_msg = str(rejection)
-        
+
         # Should mention at least one reason
         assert any(r in error_msg for r in ["violence", "hate", "harassment"])
 
@@ -243,14 +243,14 @@ class TestModerationRejectionAdvanced:
             stage="preflight",
             provider="external",
         )
-        
+
         provider_error = Exception("API timeout after 30s")
         rejection = ModerationRejection(
             "preflight",
             decision,
             provider_error=provider_error,
         )
-        
+
         assert rejection.provider_error == provider_error
         assert str(rejection.provider_error) == "API timeout after 30s"
 
@@ -261,23 +261,23 @@ class TestModerationRejectionAdvanced:
             stage="preflight",
             provider="offline",
         )
-        
+
         with pytest.raises(ModerationRejection) as exc_info:
             raise ModerationRejection("preflight", decision)
-        
+
         assert exc_info.value.stage == "preflight"
         assert exc_info.value.decision == decision
 
     def test_rejection_inherits_runtime_error(self):
         """Test ModerationRejection is RuntimeError."""
         assert issubclass(ModerationRejection, RuntimeError)
-        
+
         decision = ModerationDecision(
             approved=False,
             stage="preflight",
             provider="offline",
         )
-        
+
         rejection = ModerationRejection("preflight", decision)
         assert isinstance(rejection, RuntimeError)
 
@@ -294,10 +294,10 @@ class TestModerationAdapterCore:
         """Test adapter behavior when moderation disabled."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         # Should return approved for anything
         decision = adapter.review("any text", stage="preflight")
-        
+
         assert decision.approved is True
         assert decision.provider == "disabled"
 
@@ -305,7 +305,7 @@ class TestModerationAdapterCore:
         """Test creating adapter via from_settings classmethod."""
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter.from_settings(settings)
-        
+
         assert adapter.settings == settings
         assert isinstance(adapter, ModerationAdapter)
 
@@ -313,7 +313,7 @@ class TestModerationAdapterCore:
         """Test provider_name property."""
         settings = ModerationSettings(provider="custom-provider")
         adapter = ModerationAdapter(settings)
-        
+
         # Should return provider name
         assert adapter.provider_name in ["custom-provider", "offline"]
 
@@ -324,7 +324,7 @@ class TestModerationAdapterCore:
             settings,
             default_policy="/path/to/default/policy.yaml",
         )
-        
+
         assert adapter._default_policy == "/path/to/default/policy.yaml"
 
     @patch('codex_ml.safety.moderation.importlib.import_module')
@@ -334,10 +334,10 @@ class TestModerationAdapterCore:
         mock_function = MagicMock()
         mock_module.my_function = mock_function
         mock_import.return_value = mock_module
-        
+
         settings = ModerationSettings(provider="my.module:my_function")
         adapter = ModerationAdapter(settings)
-        
+
         # Should have resolved provider
         assert adapter._provider is not None
 
@@ -345,7 +345,7 @@ class TestModerationAdapterCore:
         """Test provider resolution for offline mode."""
         settings = ModerationSettings(provider="offline")
         adapter = ModerationAdapter(settings)
-        
+
         assert adapter._provider is None
         assert adapter.provider_name == "offline"
 
@@ -353,7 +353,7 @@ class TestModerationAdapterCore:
         """Test handling of invalid provider format."""
         settings = ModerationSettings(provider="invalid-no-colon")
         adapter = ModerationAdapter(settings)
-        
+
         # Should fall back to offline
         assert adapter._provider is None
 
@@ -370,9 +370,9 @@ class TestReviewAndEnforce:
         """Test review when moderation is disabled."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("dangerous content", stage="preflight")
-        
+
         assert decision.approved is True
         assert decision.provider == "disabled"
 
@@ -388,12 +388,12 @@ class TestReviewAndEnforce:
             sanitized_text="clean text",
         )
         mock_filters.from_policy_file.return_value = mock_filter_instance
-        
+
         settings = ModerationSettings(enabled=True, provider="offline")
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("test text", stage="preflight")
-        
+
         assert decision.approved is True
         assert decision.provider == "offline"
 
@@ -408,10 +408,10 @@ class TestReviewAndEnforce:
             sanitized_text="safe text",
         )
         mock_filters.from_policy_file.return_value = mock_filter_instance
-        
+
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter(settings)
-        
+
         # Should not raise
         decision = adapter.enforce("safe content", stage="preflight")
         assert decision.approved is True
@@ -423,7 +423,7 @@ class TestReviewAndEnforce:
         mock_match.rule_id = "TOXIC-001"
         mock_match.description = "Toxic content"
         mock_match.severity = "HIGH"
-        
+
         mock_filter_instance = MagicMock()
         mock_filter_instance.evaluate.return_value = MagicMock(
             allowed=False,
@@ -433,10 +433,10 @@ class TestReviewAndEnforce:
         )
         mock_filter_instance.policy_path = None
         mock_filters.from_policy_file.return_value = mock_filter_instance
-        
+
         settings = ModerationSettings(enabled=True, fail_open=False)
         adapter = ModerationAdapter(settings)
-        
+
         with pytest.raises(ModerationRejection):
             adapter.enforce("toxic content", stage="preflight")
 
@@ -447,7 +447,7 @@ class TestReviewAndEnforce:
         mock_match.rule_id = "RULE-001"
         mock_match.description = "Blocked"
         mock_match.severity = "MEDIUM"
-        
+
         mock_filter_instance = MagicMock()
         mock_filter_instance.evaluate.return_value = MagicMock(
             allowed=False,
@@ -457,10 +457,10 @@ class TestReviewAndEnforce:
         )
         mock_filter_instance.policy_path = None
         mock_filters.from_policy_file.return_value = mock_filter_instance
-        
+
         settings = ModerationSettings(enabled=True, fail_open=True)
         adapter = ModerationAdapter(settings)
-        
+
         # Should not raise even though rejected
         decision = adapter.enforce("content", stage="preflight")
         assert decision.approved is False  # Still rejected
@@ -479,9 +479,9 @@ class TestOfflineFilterIntegration:
         """Test offline review when moderation is disabled."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("any content", stage="preflight")
-        
+
         assert decision.approved is True
         assert decision.provider == "disabled"
 
@@ -489,9 +489,9 @@ class TestOfflineFilterIntegration:
         """Test that offline review returns a decision."""
         settings = ModerationSettings(enabled=True, provider="offline")
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("test content", stage="preflight")
-        
+
         # Should return a decision object
         assert isinstance(decision, ModerationDecision)
         assert decision.stage == "preflight"
@@ -513,12 +513,12 @@ class TestProviderIntegration:
             stage="preflight",
             provider="custom",
         )
-        
+
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter(settings)
-        
+
         normalized = adapter._normalize_payload(original_decision, "preflight")
-        
+
         assert normalized == original_decision
 
     def test_normalize_payload_dict(self):
@@ -531,12 +531,12 @@ class TestProviderIntegration:
             "sanitized_text": "clean text",
             "extra_field": "extra_value",
         }
-        
+
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter._normalize_payload(payload, "preflight")
-        
+
         assert decision.approved is True
         assert len(decision.matches) == 2
         assert len(decision.reasons) == 2
@@ -547,12 +547,12 @@ class TestProviderIntegration:
     def test_normalize_payload_minimal_dict(self):
         """Test normalizing minimal dict payload."""
         payload = {"approved": False}
-        
+
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter._normalize_payload(payload, "preflight")
-        
+
         assert decision.approved is False
         assert decision.matches == ()
         assert decision.reasons == ()
@@ -561,9 +561,9 @@ class TestProviderIntegration:
         """Test normalizing invalid payload type."""
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter(settings)
-        
+
         result = adapter._normalize_payload("invalid", "preflight")
-        
+
         assert result is None
 
 
@@ -583,7 +583,7 @@ class TestAuditLogging:
             audit_log=audit_path,
         )
         adapter = ModerationAdapter(settings)
-        
+
         assert adapter.settings.audit_log == audit_path
 
     def test_audit_log_disabled_moderation(self):
@@ -593,7 +593,7 @@ class TestAuditLogging:
             audit_log="/tmp/audit.jsonl",
         )
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("test", stage="preflight")
         assert decision.approved is True
 
@@ -610,11 +610,11 @@ class TestIntegrationAndEdgeCases:
         """Test complete approval flow."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         # Review
         decision = adapter.review("safe content", stage="preflight")
         assert decision.approved is True
-        
+
         # Enforce
         result = adapter.enforce("safe content", stage="preflight")
         assert result.approved is True
@@ -624,7 +624,7 @@ class TestIntegrationAndEdgeCases:
         # Test that settings can configure rejection behavior
         settings = ModerationSettings(enabled=True, fail_open=False)
         adapter = ModerationAdapter(settings)
-        
+
         # Verify settings
         assert adapter.settings.fail_open is False
 
@@ -632,9 +632,9 @@ class TestIntegrationAndEdgeCases:
         """Test moderation at different stages."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         stages = ["preflight", "postflight", "inline"]
-        
+
         for stage in stages:
             decision = adapter.review("test", stage=stage)
             assert decision.stage == stage
@@ -643,15 +643,15 @@ class TestIntegrationAndEdgeCases:
         """Test text hashing utility."""
         settings = ModerationSettings()
         adapter = ModerationAdapter(settings)
-        
+
         text1 = "Hello, world!"
         text2 = "Hello, world!"
         text3 = "Different text"
-        
+
         hash1 = adapter._hash_text(text1)
         hash2 = adapter._hash_text(text2)
         hash3 = adapter._hash_text(text3)
-        
+
         assert hash1 == hash2
         assert hash1 != hash3
         assert len(hash1) == 64  # SHA256 hex digest
@@ -660,27 +660,27 @@ class TestIntegrationAndEdgeCases:
         """Test moderation with very long text."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         long_text = "test " * 100000
         decision = adapter.review(long_text, stage="preflight")
-        
+
         assert decision.approved is True
 
     def test_unicode_text(self):
         """Test moderation with unicode text."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         unicode_text = "Hello 世界 🌍 Привет"
         decision = adapter.review(unicode_text, stage="preflight")
-        
+
         assert decision.approved is True
 
     def test_empty_text(self):
         """Test moderation with empty text."""
         settings = ModerationSettings(enabled=False)
         adapter = ModerationAdapter(settings)
-        
+
         decision = adapter.review("", stage="preflight")
-        
+
         assert decision.approved is True

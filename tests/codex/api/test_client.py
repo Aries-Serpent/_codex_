@@ -1,7 +1,8 @@
 """Tests for codex/api/client.py module."""
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestApiClientImports:

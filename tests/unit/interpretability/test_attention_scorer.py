@@ -4,13 +4,15 @@ Unit tests for AttentionScorer class.
 Tests attention weight extraction, importance scoring, and attention flow analysis.
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 # Graceful import handling for optional dependencies
 try:
-    import torch
     import numpy as np
+
+    import torch
     HAS_DEPS = True
 except ImportError:
     HAS_DEPS = False
@@ -20,7 +22,10 @@ except ImportError:
 
 # Only import if dependencies are available
 if HAS_DEPS:
-    from src.codex.interpretability.attention_scorer import AttentionScorer, AttentionAnalysis
+    from src.codex.interpretability.attention_scorer import (
+        AttentionAnalysis,
+        AttentionScorer,
+    )
 else:
     AttentionScorer = None
     AttentionAnalysis = None
@@ -30,7 +35,7 @@ else:
 if HAS_DEPS and torch is not None:
     class MockTransformerModel(torch.nn.Module):
         """Mock transformer model for testing."""
-        
+
         def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
             super().__init__()
             self.num_layers = num_layers
@@ -45,7 +50,7 @@ if HAS_DEPS and torch is not None:
                 'num_attention_heads': num_heads,
                 'hidden_size': hidden_dim
             })()
-        
+
         def _generate_mock_attention(self):
             """Generate realistic attention weight tensors."""
             # Shape: [batch, num_layers, num_heads, seq_len, seq_len]
@@ -57,17 +62,17 @@ if HAS_DEPS and torch is not None:
                 )
                 weights.append(layer_weights)
             return weights
-        
+
         def get_attention_weights(self, layer_idx=None):
             """Return attention weights for specified layer or all layers."""
             if layer_idx is not None:
                 return self._attention_weights[layer_idx]
             return self._attention_weights
-            
+
         def forward(self, input_ids, attention_mask=None, output_attentions=False):
             batch_size = input_ids.size(0)
             seq_len = input_ids.size(1)
-            
+
             # Generate mock attention weights
             attentions = []
             for _ in range(self.num_layers):
@@ -77,12 +82,12 @@ if HAS_DEPS and torch is not None:
                     dim=-1
                 )
                 attentions.append(attn)
-            
+
             # Mock output
             mock_output = Mock()
             mock_output.attentions = attentions if output_attentions else None
             mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
-            
+
             return mock_output
 else:
     # Dummy class when torch is not available
@@ -92,7 +97,7 @@ else:
 
 class TestAttentionScorer:
     """Test suite for AttentionScorer."""
-    
+
     @pytest.fixture
     def mock_model(self):
         """Provide fresh mock transformer model for each test.
@@ -102,12 +107,12 @@ class TestAttentionScorer:
         """
         # Ensure each test gets independent instance
         return MockTransformerModel(num_layers=2, num_heads=4, seq_len=10)
-    
+
     @pytest.fixture
     def scorer(self, mock_model):
         """Create an AttentionScorer instance."""
         return AttentionScorer(mock_model, device='cpu')
-    
+
     @pytest.fixture
     def sample_input(self):
         """Create sample input tensors."""
@@ -116,27 +121,27 @@ class TestAttentionScorer:
         input_ids = torch.randint(0, 1000, (batch_size, seq_len))
         attention_mask = torch.ones(batch_size, seq_len)
         return input_ids, attention_mask
-    
+
     def test_initialization(self, mock_model):
         """Test AttentionScorer initialization."""
         scorer = AttentionScorer(mock_model)
         assert scorer.model == mock_model
         assert scorer.normalize is True
         assert isinstance(scorer.device, torch.device)
-    
+
     def test_initialization_custom_device(self, mock_model):
         """Test initialization with custom device."""
         scorer = AttentionScorer(mock_model, device='cpu')
         assert scorer.device == torch.device('cpu')
-    
+
     def test_extract_attention_weights(self, scorer, sample_input):
         """Test extraction of attention weights."""
         input_ids, attention_mask = sample_input
-        
+
         attn_weights, layer_names = scorer.extract_attention_weights(
             input_ids, attention_mask
         )
-        
+
         assert isinstance(attn_weights, list)
         assert isinstance(layer_names, list)
         # Enhanced assertion: should extract non-empty attention weights
@@ -144,7 +149,7 @@ class TestAttentionScorer:
         assert len(layer_names) == len(attn_weights)
         # Verify we got the expected number of layers
         assert len(attn_weights) == scorer.model.num_layers, f"Expected {scorer.model.num_layers} layers"
-        
+
         # Check shape of attention weights
         for attn in attn_weights:
             assert attn.dim() == 4  # (batch, heads, seq, seq)
@@ -152,7 +157,7 @@ class TestAttentionScorer:
             assert attn.size(2) == attn.size(3)  # square attention matrix
             # Verify sequence length matches
             assert attn.size(2) == scorer.model.seq_len, "Sequence length mismatch"
-    
+
     def test_compute_token_importance_mean(self, scorer):
         """Test token importance computation with mean method."""
         # Create mock attention weights
@@ -161,22 +166,22 @@ class TestAttentionScorer:
             torch.softmax(torch.randn(batch_size, num_heads, seq_len, seq_len), dim=-1)
             for _ in range(2)
         ]
-        
+
         importance = scorer.compute_token_importance(attn_weights, method="mean")
-        
+
         assert isinstance(importance, np.ndarray)
         assert importance.shape == (seq_len,)
         assert np.all(importance >= 0)
         # Check normalization
         assert np.abs(importance.sum() - 1.0) < 1e-5
-    
+
     def test_compute_token_importance_invalid_method(self, scorer):
         """Test that invalid method raises error."""
         attn_weights = [torch.randn(1, 4, 10, 10)]
-        
+
         with pytest.raises(ValueError, match="Unknown method"):
             scorer.compute_token_importance(attn_weights, method="invalid")
-    
+
     def test_compute_attention_flow_mean(self, scorer):
         """Test attention flow computation with mean aggregation."""
         batch_size, num_heads, seq_len = 1, 4, 10
@@ -184,24 +189,24 @@ class TestAttentionScorer:
             torch.softmax(torch.randn(batch_size, num_heads, seq_len, seq_len), dim=-1)
             for _ in range(2)
         ]
-        
+
         flow = scorer.compute_attention_flow(attn_weights, layer_aggregation="mean")
-        
+
         assert isinstance(flow, np.ndarray)
         assert flow.shape == (seq_len, seq_len)
         assert np.all(flow >= 0)
-    
+
     def test_analyze_attention(self, scorer, sample_input):
         """Test complete attention analysis."""
         input_ids, attention_mask = sample_input
         tokens = [f"token_{i}" for i in range(input_ids.size(1))]
-        
+
         analysis = scorer.analyze_attention(
             input_ids=input_ids,
             attention_mask=attention_mask,
             tokens=tokens
         )
-        
+
         assert isinstance(analysis, AttentionAnalysis)
         assert isinstance(analysis.attention_weights, np.ndarray)
         assert isinstance(analysis.token_importance, np.ndarray)
@@ -209,7 +214,7 @@ class TestAttentionScorer:
         assert isinstance(analysis.layer_names, list)
         assert analysis.tokens == tokens
         assert analysis.token_ids is not None
-    
+
     def test_get_top_attended_tokens(self, scorer):
         """Test getting top attended tokens."""
         # Create mock analysis
@@ -222,9 +227,9 @@ class TestAttentionScorer:
             token_ids=list(range(seq_len)),
             tokens=[f"token_{i}" for i in range(seq_len)]
         )
-        
+
         top_tokens = scorer.get_top_attended_tokens(analysis, top_k=5)
-        
+
         assert len(top_tokens) == 5
         for idx, score, token_str in top_tokens:
             assert isinstance(idx, int)

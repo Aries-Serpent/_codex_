@@ -49,13 +49,13 @@ def test_load_checkpoint_detects_corruption(tmp_path):
         save_checkpoint(str(path), model, opt, scheduler=None, epoch=1, extra={})
     except Exception as e:
         pytest.skip(f"Cannot test corruption detection: save_checkpoint failed with {e}")
-    
+
     # Verify checkpoint was created
     if not path.exists():
         pytest.skip("Checkpoint file was not created")
-    
+
     original = path.read_bytes()
-    
+
     # Corrupt the checkpoint
     path.write_bytes(b"corrupted")
 

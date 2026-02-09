@@ -4,8 +4,8 @@ Target: 15+ edge case tests for utility functions
 Coverage Target: src/codex/utils/, src/codex_ml/utils/
 """
 
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 
 class TestPathUtilsEdgeCases:
@@ -13,16 +13,16 @@ class TestPathUtilsEdgeCases:
 
     def test_path_traversal_prevention(self):
         """Test path utils prevent directory traversal"""
-        from pathlib import Path
         import os
-        
+        from pathlib import Path
+
         dangerous_paths = [
             "../../../etc/passwd",
             "..\\..\\windows\\system32",
             "/etc/shadow",
             "../../sensitive/data"
         ]
-        
+
         for path_str in dangerous_paths:
             path = Path(path_str)
             # Verify path contains traversal patterns
@@ -45,13 +45,13 @@ class TestPathUtilsEdgeCases:
     def test_path_unicode_characters(self):
         """Test path utils with Unicode in paths"""
         from pathlib import Path
-        
+
         unicode_paths = [
             "文件.txt",
             "файл.txt",
             "αρχείο.txt"
         ]
-        
+
         for path_str in unicode_paths:
             path = Path(path_str)
             # Verify Unicode is preserved
@@ -69,11 +69,11 @@ class TestPathUtilsEdgeCases:
     def test_path_null_bytes(self):
         """Test path utils with null bytes"""
         from pathlib import Path
-        
+
         path_with_null = "file\x00name.txt"
         # Verify null byte is present
         assert "\x00" in path_with_null
-        
+
         # PathLib should raise ValueError on null bytes
         try:
             path = Path(path_with_null)
@@ -92,10 +92,10 @@ class TestStringUtilsEdgeCases:
         unicode_str = "🚀" * 100
         # Should not break multi-byte characters
         assert len(unicode_str) == 100
-        
+
         # Verify multi-byte characters
         assert all(ord(c) > 127 for c in unicode_str if c != ' ')
-        
+
         # Test truncation doesn't break encoding
         truncated = unicode_str[:50]
         assert len(truncated) == 50
@@ -107,10 +107,10 @@ class TestStringUtilsEdgeCases:
         weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
         # Should normalize all Unicode whitespace
         assert "\u00A0" in weird_whitespace or "\u2000" in weird_whitespace
-        
+
         # Verify Unicode whitespace characters present
         assert any(c in weird_whitespace for c in ["\u00A0", "\u2000", "\u2001", "\u2002"])
-        
+
         # Test normalization to regular space
         normalized = weird_whitespace.replace("\u00A0", " ").replace("\u2000", " ").replace("\u2001", " ").replace("\u2002", " ")
         assert " " in normalized
@@ -123,11 +123,11 @@ class TestStringUtilsEdgeCases:
             "javascript:alert(1)",
             "<img src=x onerror=alert(1)>"
         ]
-        
+
         for xss in xss_attempts:
             # Verify dangerous patterns are present
             assert any(pattern in xss.lower() for pattern in ["script", "javascript", "onerror"])
-            
+
             # Test basic HTML escaping
             escaped = xss.replace("<", "&lt;").replace(">", "&gt;")
             assert "<" not in escaped and ">" not in escaped
@@ -162,19 +162,19 @@ class TestCryptoUtilsEdgeCases:
     def test_encrypt_decrypt_roundtrip(self):
         """Test encryption/decryption roundtrip"""
         from cryptography.fernet import Fernet
-        
+
         # Generate key and cipher
         key = Fernet.generate_key()
         cipher = Fernet(key)
-        
+
         # Test data
         original_data = b"Secret data for encryption test"
-        
+
         # Encrypt
         encrypted = cipher.encrypt(original_data)
         assert encrypted != original_data
         assert len(encrypted) > len(original_data)
-        
+
         # Decrypt
         decrypted = cipher.decrypt(encrypted)
         assert decrypted == original_data
@@ -193,32 +193,32 @@ class TestDateTimeUtilsEdgeCases:
     def test_datetime_leap_second(self):
         """Test datetime handling of leap seconds"""
         from datetime import datetime
-        
+
         # Note: Python datetime doesn't directly support leap seconds
         # But we can test edge second values
         test_datetime = datetime(2016, 12, 31, 23, 59, 59)
-        
+
         # Verify datetime is valid
         assert test_datetime.year == 2016
         assert test_datetime.month == 12
         assert test_datetime.second == 59
-        
+
         # Test addition doesn't break
         next_second = datetime(2017, 1, 1, 0, 0, 0)
         assert next_second > test_datetime
 
     def test_datetime_timezone_conversion(self):
         """Test timezone conversion edge cases"""
-        from datetime import datetime, timezone, timedelta
-        
+        from datetime import datetime, timedelta, timezone
+
         # Create timezone-aware datetimes
         utc_time = datetime(2024, 3, 10, 2, 30, tzinfo=timezone.utc)
-        
+
         # Convert to different timezone (EST = UTC-5)
         est_offset = timedelta(hours=-5)
         est_tz = timezone(est_offset)
         est_time = utc_time.astimezone(est_tz)
-        
+
         # Verify conversion
         assert est_time.hour == 21  # 2:30 UTC - 5 hours = 21:30 EST previous day
         assert est_time.day == 9

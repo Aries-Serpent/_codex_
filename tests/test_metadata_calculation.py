@@ -23,7 +23,11 @@ from typing import List
 
 # Try to import hypothesis, make tests optional if not available
 try:
-    from hypothesis import given, strategies as st, assume  # noqa: F401 - Testing optional dependency availability
+    from hypothesis import (  # noqa: F401 - Testing optional dependency availability
+        assume,
+        given,
+    )
+    from hypothesis import strategies as st
 
     HYP_AVAILABLE = True
 except ImportError:

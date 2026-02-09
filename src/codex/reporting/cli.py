@@ -17,7 +17,7 @@ def report_main(format: str, output: str, report_type: str):
     click.echo(f"📄 Generating {report_type} report...")
     click.echo(f"📊 Format: {format}")
     click.echo(f"💾 Output: {output}")
-    
+
     # TODO: Phase 3 - Implement report generation
     click.echo("\n⚠️  Full reporting coming in Phase 3")
 
@@ -33,7 +33,7 @@ def dashboard_main(output: str, open_browser: bool):
     """
     click.echo("📊 Generating interactive dashboard...")
     click.echo(f"💾 Output: {output}")
-    
+
     # TODO: Phase 3 - Implement dashboard
     click.echo("\n⚠️  Interactive dashboard coming in Phase 3")
     click.echo("Will include:")

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import zipfile
+
 import pytest
 
 
@@ -19,7 +20,10 @@ class TestPowerAutomateExceptions:
 
     def test_package_error_exists(self):
         """Test PowerAutomatePackageError exists as alias."""
-        from codex_crm.pa_legacy.reader import PowerAutomatePackageError, PowerAutomateParseError
+        from codex_crm.pa_legacy.reader import (
+            PowerAutomatePackageError,
+            PowerAutomateParseError,
+        )
 
         # Package error should be a subclass of ParseError
         assert issubclass(PowerAutomatePackageError, PowerAutomateParseError)
@@ -42,7 +46,7 @@ class TestReadPaLegacy:
             zf.writestr("flows/flow1.json", json.dumps(flow_def))
 
         result = read_pa_legacy(zip_path)
-        
+
         assert "manifest" in result
         assert result["manifest"]["name"] == "TestFlow"
         assert "flows" in result
@@ -62,12 +66,12 @@ class TestReadPaLegacy:
             zf.writestr("flows/nested/flow3.json", json.dumps({"id": "3"}))
 
         result = read_pa_legacy(zip_path)
-        
+
         assert len(result["flows"]) >= 2
 
     def test_read_pa_legacy_invalid_zip(self, tmp_path):
         """Test reading invalid ZIP raises error."""
-        from codex_crm.pa_legacy.reader import read_pa_legacy, PowerAutomateParseError
+        from codex_crm.pa_legacy.reader import PowerAutomateParseError, read_pa_legacy
 
         invalid_file = tmp_path / "invalid.zip"
         invalid_file.write_text("not a zip")
@@ -77,7 +81,7 @@ class TestReadPaLegacy:
 
     def test_read_pa_legacy_missing_manifest(self, tmp_path):
         """Test reading ZIP without manifest raises error."""
-        from codex_crm.pa_legacy.reader import read_pa_legacy, PowerAutomateParseError
+        from codex_crm.pa_legacy.reader import PowerAutomateParseError, read_pa_legacy
 
         zip_path = tmp_path / "no_manifest.zip"
         with zipfile.ZipFile(zip_path, "w") as zf:
@@ -108,7 +112,7 @@ class TestToTemplate:
         }
 
         template = to_template(package)
-        
+
         assert "connections" in template
         assert "flows" in template
         assert "variables" in template
@@ -123,7 +127,7 @@ class TestToTemplate:
 
         package = {"flows": {}}
         template = to_template(package)
-        
+
         assert template["connections"] == []
         assert template["flows"] == {}
         assert template["variables"] == []

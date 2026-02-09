@@ -11,7 +11,6 @@ import pytest
 
 from omegaconf import OmegaConf
 
-
 # Use pytest.importorskip for collection-safe conditional imports
 hydra = pytest.importorskip("hydra", reason="hydra-core not installed")
 

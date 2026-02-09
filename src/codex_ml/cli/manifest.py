@@ -42,7 +42,7 @@ BADGE_END = "<!-- codex:manifest:end -->"
 # Create Typer app for CLI tests
 if TYPER_AVAILABLE:
     app = typer.Typer(help="Manifest validation and hash commands")
-    
+
     @app.command()
     def validate(
         path: Path = typer.Option(..., help="Path to manifest JSON file"),
@@ -51,13 +51,13 @@ if TYPER_AVAILABLE:
         """Validate a manifest file against the schema."""
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-            
+
             # Check schema version
             schema = data.get("schema", "")
             if schema != "codex.checkpoint.v2":
                 typer.echo(f"Error: invalid schema '{schema}' (expected 'codex.checkpoint.v2')")
                 raise typer.Exit(2)
-            
+
             # In strict mode, reject unknown fields
             if strict:
                 known_fields = {"schema", "run", "weights", "format", "bytes"}
@@ -65,10 +65,10 @@ if TYPER_AVAILABLE:
                 if unknown:
                     typer.echo(f"Error: unknown fields in strict mode: {unknown}")
                     raise typer.Exit(2)
-            
+
             typer.echo("Validation passed")
             # Return normally for success (exit code 0)
-            
+
         except json.JSONDecodeError as e:
             typer.echo(f"Error: invalid JSON: {e}")
             raise typer.Exit(2)

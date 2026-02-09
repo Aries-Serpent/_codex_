@@ -10,7 +10,9 @@ must be deterministic and side-effect free.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

@@ -54,7 +54,7 @@ def test_composes_and_overrides() -> None:
     # Validate basic structure
     assert cfg.training.max_epochs == 2
     assert cfg.model.name
-    
+
     # Check experiment config if present
     if hasattr(cfg, 'experiment') and cfg.experiment is not None:
         assert cfg.experiment.name == "debug"

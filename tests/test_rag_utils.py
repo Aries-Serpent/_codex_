@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+
 def is_cuda_available() -> bool:
     """Local CUDA detection to avoid conftest import path conflicts."""
     try:
@@ -284,13 +285,20 @@ class TestIntegrationMetaTensorHandling:
         # Use a small model for faster testing
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
+        from huggingface_hub.errors import HfHubHTTPError
+
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Load model
-            model = SentenceTransformer(
-                model_name,
-                cache_folder=tmpdir,
-                trust_remote_code=False
-            )
+            try:
+                # Load model
+                model = SentenceTransformer(
+                    model_name,
+                    cache_folder=tmpdir,
+                    trust_remote_code=False
+                )
+            except HfHubHTTPError as e:
+                if "429" in str(e) or "rate limit" in str(e).lower():
+                    pytest.skip("HuggingFace API rate limited - requires HF_TOKEN")
+                raise
 
             # Apply safe_model_load_v2 - only accepts model and device parameters
             model = safe_model_load_v2(

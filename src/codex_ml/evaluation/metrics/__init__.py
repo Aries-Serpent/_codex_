@@ -22,9 +22,9 @@ Usage:
 
 from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 from codex_ml.evaluation.metrics.bleu import BleuMetric
-from codex_ml.evaluation.metrics.rouge import RougeMetric
-from codex_ml.evaluation.metrics.perplexity import PerplexityMetric
 from codex_ml.evaluation.metrics.latency import LatencyMetric
+from codex_ml.evaluation.metrics.perplexity import PerplexityMetric
+from codex_ml.evaluation.metrics.rouge import RougeMetric
 
 __all__ = [
     "AccuracyMetric",

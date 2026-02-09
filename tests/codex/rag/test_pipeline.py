@@ -1,7 +1,8 @@
 """Tests for codex/rag/pipeline.py module."""
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestRagPipelineImports:

@@ -37,14 +37,14 @@ def test_save_and_load_checkpoint(tmp_path: Path) -> None:
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
     checkpoint_path = tmp_path / "unit.ckpt"
-    
+
     # ADDED: Verify no mock objects in state
     import unittest.mock
     model_state = model.state_dict()
     for key, value in model_state.items():
         if isinstance(value, unittest.mock.MagicMock):
             pytest.fail(f"Model state contains MagicMock at key: {key}")
-    
+
     save_checkpoint(
         str(checkpoint_path), model, optimizer, scheduler=None, epoch=1, extra={"seed": 42}
     )

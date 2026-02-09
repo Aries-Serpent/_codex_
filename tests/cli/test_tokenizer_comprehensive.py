@@ -82,7 +82,7 @@ class TestTokenizerFunctionality:
     def test_tokenizer_encode_text(self):
         """Test tokenizer encode with sample text."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.tokenizer", "encode", 
+            [sys.executable, "-m", "codex_ml.cli.tokenizer", "encode",
              "--text", "Hello world"],
             capture_output=True,
             text=True,

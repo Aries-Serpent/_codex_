@@ -21,9 +21,9 @@ from fastapi.testclient import TestClient
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
 from tokenizers.pre_tokenizers import Whitespace
-from transformers import AutoModelForCausalLM, GPT2Config
 
 from cli import train_codex
+from transformers import AutoModelForCausalLM, GPT2Config
 
 api_app = importlib.import_module("codex.api.app")
 from codex_ml.security import DenylistEnforcer, DenylistViolation

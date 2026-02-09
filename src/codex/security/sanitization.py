@@ -2,9 +2,9 @@
 Security input sanitization utilities.
 Provides functions to sanitize user input and prevent XSS, injection attacks.
 """
+import logging
 import re
 from typing import Union
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
     """
     if not isinstance(content, str):
         return ""
-    
+
     # Step 1: Remove dangerous protocols (case-insensitive)
     dangerous_protocols = [
         r'javascript:',
@@ -40,7 +40,7 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
     ]
     for protocol in dangerous_protocols:
         content = re.sub(protocol, '', content, flags=re.IGNORECASE)
-    
+
     # Step 2: Remove event handlers (onclick, onerror, onload, etc.)
     # Using raw string to properly handle \s for whitespace
     content = re.sub(
@@ -49,7 +49,7 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
         content,
         flags=re.IGNORECASE
     )
-    
+
     # Step 3: Remove dangerous tags
     dangerous_tags = [
         r'<script[^>]*>.*?</script>',
@@ -63,15 +63,15 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
     ]
     for tag_pattern in dangerous_tags:
         content = re.sub(tag_pattern, '', content, flags=re.IGNORECASE | re.DOTALL)
-    
+
     # Step 4: Strip all HTML tags if not allowed
     if not allow_tags:
         content = re.sub(r'<[^>]+>', '', content)
-    
+
     # Note: HTML encoding of special characters is not performed here.
     # Tests expect tag/protocol removal rather than entity encoding.
     # For production use in HTML contexts, consider additional encoding.
-    
+
     logger.debug(f"Sanitized HTML: {len(content)} chars")
     return content.strip()
 
@@ -104,7 +104,7 @@ def sanitize_integer(
         # Handle None
         if value is None:
             return default
-        
+
         # If already int, validate and return
         if isinstance(value, int):
             result = value
@@ -117,7 +117,7 @@ def sanitize_integer(
         else:
             logger.warning(f"Cannot convert {type(value)} to integer: {value}")
             return default
-        
+
         # Apply bounds if specified
         if min_value is not None and result < min_value:
             logger.warning(f"Value {result} below minimum {min_value}, clamping")
@@ -125,9 +125,9 @@ def sanitize_integer(
         if max_value is not None and result > max_value:
             logger.warning(f"Value {result} above maximum {max_value}, clamping")
             return max_value
-        
+
         return result
-        
+
     except (ValueError, TypeError, AttributeError) as e:
         logger.debug(f"Integer sanitization failed for '{value}': {e}")
         return default
@@ -153,21 +153,21 @@ def sanitize_string(
     """
     if not isinstance(value, str):
         return ""
-    
+
     # Remove null bytes
     value = value.replace('\x00', '')
-    
+
     # Strip HTML if requested
     if strip_html:
         value = sanitize_html(value, allow_tags=False)
-    
+
     # Remove/replace newlines if not allowed
     if not allow_newlines:
         value = value.replace('\n', ' ').replace('\r', ' ')
-    
+
     # Truncate to max length
     if len(value) > max_length:
         value = value[:max_length]
         logger.warning(f"String truncated to {max_length} characters")
-    
+
     return value.strip()

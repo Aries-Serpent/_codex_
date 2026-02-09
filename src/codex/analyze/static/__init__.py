@@ -1,4 +1,4 @@
 """Static analysis module."""
-from .analyzer import analyze, StaticReport, FileAnalysis
+from .analyzer import FileAnalysis, StaticReport, analyze
 
 __all__ = ["analyze", "StaticReport", "FileAnalysis"]

@@ -12,7 +12,9 @@ avoids heavy dependencies and therefore expects the caller to have the
 
 """
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json
@@ -156,7 +158,7 @@ class SentencePieceAdapter:
         # Check if model file exists before attempting to load
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
-        
+
         module = _get_sentencepiece()
         cls = module.SentencePieceProcessor
         try:
@@ -202,9 +204,9 @@ class SentencePieceAdapter:
         """
         if self.sp is None:
             raise RuntimeError("adapter not loaded")
-        
+
         encoded = list(self.sp.encode(text, out_type=int))
-        
+
         # Apply padding if requested
         if padding and max_length is not None:
             pad_id = getattr(self.sp, "pad_id", lambda: 0)()
@@ -212,7 +214,7 @@ class SentencePieceAdapter:
                 encoded = encoded + [pad_id] * (max_length - len(encoded))
             elif len(encoded) > max_length:
                 encoded = encoded[:max_length]
-        
+
         return encoded
 
     def decode(self, ids: list[int] | tuple[int, ...]) -> str:

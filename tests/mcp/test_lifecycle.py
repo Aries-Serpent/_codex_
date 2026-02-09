@@ -151,7 +151,7 @@ class TestLifecycleManager:
     def test_manager_with_config(self):
         """Test creating LifecycleManager with config."""
         try:
-            from src.mcp.lifecycle import LifecycleManager, LifecycleConfig
+            from src.mcp.lifecycle import LifecycleConfig, LifecycleManager
             config = LifecycleConfig(shutdown_timeout_seconds=45.0)
             manager = LifecycleManager(config=config)
             assert manager is not None

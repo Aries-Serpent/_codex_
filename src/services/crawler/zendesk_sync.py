@@ -124,7 +124,7 @@ class ZendeskKnowledgeSyncService:
             logger.info(f"Initialized ZendeskKnowledgeSyncService for {subdomain}")
         else:
             self.base_url = None
-        
+
         # Original parameters
         self.manifest_path = manifest_path or MANIFEST_PATH
         self.api_index_path = api_index_path or API_INDEX_PATH
@@ -132,10 +132,10 @@ class ZendeskKnowledgeSyncService:
         self.user_agent = user_agent
         self.retries = retries
         self.backoff = backoff
-        
+
         # Load or initialize tracking cache
         self._cache: dict[str, ArticleMetadata] = self._load_cache()
-    
+
     def sync_articles(self) -> None:
         """Sync articles from Zendesk knowledge base.
         
@@ -150,17 +150,17 @@ class ZendeskKnowledgeSyncService:
             "sync_articles requires valid API credentials and connection. "
             "Use check_and_pull() or check_and_pull_incremental() instead."
         )
-        
+
     def _load_cache(self) -> dict[str, ArticleMetadata]:
         """Load the cached article metadata from disk."""
         if not self.api_index_path.exists():
             logger.info(f"No existing cache at {self.api_index_path}, starting fresh")
             return {}
-            
+
         try:
             with self.api_index_path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
-            
+
             # Convert to ArticleMetadata objects if present
             cache = {}
             if isinstance(data, dict) and "articles" in data:
@@ -169,18 +169,18 @@ class ZendeskKnowledgeSyncService:
                         cache[url] = ArticleMetadata(**meta_dict)
                     except (TypeError, ValueError) as e:
                         logger.warning(f"Invalid cache entry for {url}: {e}")
-            
+
             logger.info(f"Loaded {len(cache)} cached articles from {self.api_index_path}")
             return cache
         except (json.JSONDecodeError, OSError) as e:
             logger.error(f"Failed to load cache: {e}, starting fresh")
             return {}
-    
+
     def _save_cache(self) -> None:
         """Save the current cache to disk."""
         try:
             self.api_index_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             cache_data = {
                 "version": "2.0",
                 "last_sync": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -188,18 +188,18 @@ class ZendeskKnowledgeSyncService:
                     url: asdict(meta) for url, meta in self._cache.items()
                 }
             }
-            
+
             with self.api_index_path.open("w", encoding="utf-8") as f:
                 json.dump(cache_data, f, indent=2)
-            
+
             logger.info(f"Saved cache with {len(self._cache)} articles to {self.api_index_path}")
         except OSError as e:
             logger.error(f"Failed to save cache: {e}")
-    
+
     def _slug(self, text: str) -> str:
         """Convert text to a safe filename slug."""
         return SAFE_NAME.sub("-", text.lower()).strip("-")
-    
+
     def _fetch(self, url: str) -> tuple[bytes, dict[str, str]]:
         """Fetch content from URL with retry logic.
         
@@ -213,13 +213,13 @@ class ZendeskKnowledgeSyncService:
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme not in {"https"}:
             raise ValueError(f"Unsupported URL scheme for {url!r}")
-        
+
         req = urllib.request.Request(  # noqa: S310 - curated domains
             url,
             headers={"User-Agent": self.user_agent},
             method="GET",
         )
-        
+
         last_exc: Exception | None = None
         for attempt in range(self.retries):
             try:
@@ -242,9 +242,9 @@ class ZendeskKnowledgeSyncService:
                 logger.warning(f"Fetch attempt {attempt + 1}/{self.retries} failed for {url}: {exc}")
                 if attempt < self.retries - 1:
                     time.sleep(self.backoff * (2**attempt))
-        
+
         raise RuntimeError(f"Failed to fetch {url!r} after {self.retries} attempts") from last_exc
-    
+
     def _write_article(self, base: Path, url: str, body: bytes) -> Path:
         """Write article content to disk."""
         base.mkdir(parents=True, exist_ok=True)
@@ -252,7 +252,7 @@ class ZendeskKnowledgeSyncService:
         out = base / name
         out.write_bytes(body)
         return out
-    
+
     def _should_update(self, url: str, headers: dict[str, str]) -> bool:
         """Check if an article needs to be updated based on cache.
         
@@ -267,15 +267,15 @@ class ZendeskKnowledgeSyncService:
         if url not in self._cache:
             logger.debug(f"Article not in cache: {url}")
             return True
-        
+
         cached = self._cache[url]
-        
+
         # Check ETag if available
         etag = headers.get("ETag") or headers.get("etag")
         if etag and cached.etag and etag == cached.etag:
             logger.debug(f"ETag match, skipping: {url}")
             return False
-        
+
         # Check Last-Modified if available
         last_modified = headers.get("Last-Modified") or headers.get("last-modified")
         if last_modified and cached.last_modified:
@@ -286,11 +286,11 @@ class ZendeskKnowledgeSyncService:
                     return False
             except (ValueError, TypeError):
                 pass  # If comparison fails, fetch to be safe
-        
+
         # Default to fetching if we can't determine
         logger.debug(f"No cache hit or stale, will fetch: {url}")
         return True
-    
+
     def check_and_pull(
         self,
         *,
@@ -308,15 +308,15 @@ class ZendeskKnowledgeSyncService:
         """
         if not self.manifest_path.exists():
             raise FileNotFoundError(f"Manifest not found: {self.manifest_path}")
-        
+
         # Load manifest
         with self.manifest_path.open("r", encoding="utf-8") as f:
             manifest: dict[str, Any] = json.load(f)
-        
+
         # Prepare timestamp for output directory
         timestamp = dt.date.today().isoformat()
         outdir = self.output_root / timestamp
-        
+
         # Track statistics
         total = 0
         checked = 0
@@ -324,44 +324,44 @@ class ZendeskKnowledgeSyncService:
         failed = 0
         skipped = 0
         missing_articles = []  # Track 404 articles for reporting
-        
+
         # Process all articles
         for section, buckets in manifest.items():
             if not isinstance(buckets, dict):
                 continue
-                
+
             for bucket, urls in buckets.items():
                 if not isinstance(urls, list):
                     continue
-                    
+
                 for url in urls:
                     total += 1
-                    
+
                     try:
                         # Phase 1: Check (lightweight HEAD request or conditional GET)
                         if dry_run:
                             logger.info(f"[DRY-RUN] Would check: {section}/{bucket}: {url}")
                             checked += 1
                             continue
-                        
+
                         # Fetch with headers for change detection
                         logger.info(f"Checking: {section}/{bucket}: {url}")
                         content, headers = self._fetch(url)
                         checked += 1
-                        
+
                         # Determine if update is needed
                         needs_update = force or self._should_update(url, headers)
-                        
+
                         if not needs_update:
                             skipped += 1
                             logger.info(f"Skipped (up-to-date): {url}")
                             continue
-                        
+
                         # PII Scrubbing (MANDATORY before disk write)
                         scrubbed_content, pii_flags = scrub_pii(content.decode('utf-8') if isinstance(content, bytes) else content)
                         if any(pii_flags.values()):
                             logger.warning(f"PII detected and scrubbed in {url}: {pii_flags}")
-                        
+
                         # Phase 2: Pull (write to disk with scrubbed content)
                         output_path = self._write_article(
                             outdir / section / bucket,
@@ -369,7 +369,7 @@ class ZendeskKnowledgeSyncService:
                             scrubbed_content.encode('utf-8')
                         )
                         logger.info(f"Updated: {output_path}")
-                        
+
                         # Update cache
                         self._cache[url] = ArticleMetadata(
                             url=url,
@@ -380,7 +380,7 @@ class ZendeskKnowledgeSyncService:
                             etag=headers.get("ETag"),
                         )
                         updated += 1
-                        
+
                     except urllib.error.HTTPError as e:
                         # Handle 404 as a warning, not a failure
                         if e.code == 404:
@@ -393,16 +393,16 @@ class ZendeskKnowledgeSyncService:
                     except Exception as e:
                         logger.error(f"Failed to sync {url}: {e}")
                         failed += 1
-        
+
         # Save updated cache
         if not dry_run and updated > 0:
             self._save_cache()
-        
+
         # Generate JSON dataset if updates occurred
         dataset_path = None
         if not dry_run and updated > 0:
             dataset_path = self._export_json_dataset(outdir)
-        
+
         result = SyncResult(
             total_articles=total,
             checked=checked,
@@ -412,22 +412,22 @@ class ZendeskKnowledgeSyncService:
             timestamp=dt.datetime.now(dt.timezone.utc).isoformat(),
             dataset_path=str(dataset_path) if dataset_path else None,
         )
-        
+
         logger.info(
             f"Sync complete: {result.total_articles} total, "
             f"{result.checked} checked, {result.updated} updated, "
             f"{result.failed} failed, {result.skipped} skipped"
         )
-        
+
         # Log missing articles for reporting
         if missing_articles:
             logger.warning(
                 f"Found {len(missing_articles)} missing/stale articles (404):\n" +
                 "\n".join(f"  - {a['section']}/{a['bucket']}: {a['url']}" for a in missing_articles)
             )
-        
+
         return result
-    
+
     def check_and_pull_incremental(
         self,
         *,
@@ -464,17 +464,17 @@ class ZendeskKnowledgeSyncService:
                         e,
                     )
                     since = None  # Explicitly set to None to ensure full sync fallback
-            
+
             if since is None:
                 logger.warning("No previous sync found, performing full sync")
                 return self.check_and_pull(dry_run=dry_run, force=False)
-        
+
         logger.info(f"Starting incremental sync from {since}")
-        
+
         # Prepare output directory
         timestamp = dt.date.today().isoformat()
         outdir = self.output_root / timestamp
-        
+
         # Track statistics
         total = 0
         checked = 0
@@ -482,11 +482,11 @@ class ZendeskKnowledgeSyncService:
         failed = 0
         skipped = 0
         missing_articles = []  # Track 404 articles for reporting
-        
+
         # Build pagination URL for Zendesk Help Center Articles API
         # https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/
         base_url = f"{self.manifest_path.parent.parent / 'zendesk_api_index.json'}"
-        
+
         # Read Zendesk URL from manifest or environment
         zendesk_url = None
         if self.manifest_path.exists():
@@ -504,29 +504,29 @@ class ZendeskKnowledgeSyncService:
                                 break
                     if zendesk_url:
                         break
-        
+
         if not zendesk_url:
             logger.error("Could not determine Zendesk URL for API access")
             return SyncResult(0, 0, 0, 0, 0, dt.datetime.now(dt.timezone.utc).isoformat())
-        
+
         # Paginate through changed articles
         api_url = f"{zendesk_url}/api/v2/help_center/articles.json"
         page_num = 1
-        
+
         while api_url:
             try:
                 logger.info(f"Fetching page {page_num} from {api_url}")
-                
+
                 # Add since parameter for incremental sync
                 params_separator = "&" if "?" in api_url else "?"
                 paginated_url = f"{api_url}{params_separator}start_time={since}"
-                
+
                 content, headers = self._fetch(paginated_url)
                 data = json.loads(content.decode('utf-8'))
-                
+
                 articles = data.get("articles", [])
                 total += len(articles)
-                
+
                 for article in articles:
                     checked += 1
                     article_id = article.get("id")
@@ -534,27 +534,27 @@ class ZendeskKnowledgeSyncService:
                     updated_at = article.get("updated_at", "")
                     title = article.get("title", "unknown")
                     body = article.get("body", "")
-                    
+
                     if dry_run:
                         logger.info(f"[DRY-RUN] Would sync article {article_id}: {title}")
                         continue
-                    
+
                     # PII Scrubbing (MANDATORY)
                     scrubbed_body, pii_flags = scrub_pii(body)
                     if any(pii_flags.values()):
                         logger.warning(f"PII detected in article {article_id}: {pii_flags}")
-                    
+
                     # Determine section/bucket from URL or default
                     section = "articles"
                     bucket = "incremental"
-                    
+
                     # Write to disk
                     output_path = self._write_article(
                         outdir / section / bucket,
                         article_url,
                         scrubbed_body.encode('utf-8')
                     )
-                    
+
                     # Update cache
                     self._cache[article_url] = ArticleMetadata(
                         url=article_url,
@@ -566,11 +566,11 @@ class ZendeskKnowledgeSyncService:
                     )
                     updated += 1
                     logger.info(f"Updated article {article_id}: {output_path}")
-                
+
                 # Check for next page
                 api_url = data.get("next_page")
                 page_num += 1
-                
+
             except urllib.error.HTTPError as e:
                 # Handle 404 as a warning for incremental sync
                 if e.code == 404:
@@ -585,16 +585,16 @@ class ZendeskKnowledgeSyncService:
                 logger.error(f"Failed to fetch page {page_num}: {e}")
                 failed += len(articles) if 'articles' in locals() else 0
                 break
-        
+
         # Save updated cache
         if not dry_run and updated > 0:
             self._save_cache()
-        
+
         # Generate JSON dataset
         dataset_path = None
         if not dry_run and updated > 0:
             dataset_path = self._export_json_dataset(outdir)
-        
+
         result = SyncResult(
             total_articles=total,
             checked=checked,
@@ -604,21 +604,21 @@ class ZendeskKnowledgeSyncService:
             timestamp=dt.datetime.now(dt.timezone.utc).isoformat(),
             dataset_path=str(dataset_path) if dataset_path else None,
         )
-        
+
         logger.info(
             f"Incremental sync complete: {result.updated} articles updated "
             f"({result.failed} failed)"
         )
-        
+
         # Log missing articles/endpoints for reporting
         if missing_articles:
             logger.warning(
                 f"Found {len(missing_articles)} missing endpoints (404):\n" +
                 "\n".join(f"  - Page {a.get('page', 'N/A')}: {a['url']}" for a in missing_articles)
             )
-        
+
         return result
-    
+
     def _export_json_dataset(self, source_dir: Path) -> Path:
         """Export synchronized articles as a JSON dataset.
         
@@ -629,25 +629,25 @@ class ZendeskKnowledgeSyncService:
             Path to created JSON dataset file
         """
         dataset_path = source_dir / "zendesk_knowledge_dataset.json"
-        
+
         articles = []
         for html_file in source_dir.rglob("*.html"):
             try:
                 content = html_file.read_text(encoding='utf-8')
                 rel_path = html_file.relative_to(source_dir)
-                
+
                 # Extract metadata from path
                 parts = rel_path.parts
                 section = parts[0] if len(parts) > 0 else "unknown"
                 bucket = parts[1] if len(parts) > 1 else "unknown"
-                
+
                 # Find cached metadata if available
                 cached_meta = None
                 for url, meta in self._cache.items():
                     if meta.section == section and meta.bucket == bucket:
                         cached_meta = meta
                         break
-                
+
                 article_data = {
                     "file_path": str(html_file),
                     "section": section,
@@ -658,12 +658,12 @@ class ZendeskKnowledgeSyncService:
                     "last_modified": cached_meta.last_modified if cached_meta else None,
                     "url": cached_meta.url if cached_meta else None,
                 }
-                
+
                 articles.append(article_data)
-                
+
             except Exception as e:
                 logger.warning(f"Failed to process {html_file}: {e}")
-        
+
         # Write JSON dataset
         dataset_path.parent.mkdir(parents=True, exist_ok=True)
         with dataset_path.open("w", encoding="utf-8") as f:
@@ -677,10 +677,10 @@ class ZendeskKnowledgeSyncService:
                 f,
                 indent=2,
             )
-        
+
         logger.info(f"Exported {len(articles)} articles to {dataset_path}")
         return dataset_path
-    
+
     def pipeline_to_codex_digest(self, source_dir: Path | None = None) -> dict[str, Any]:
         """Pipeline synchronized content to codex_digest for tokenization.
         
@@ -702,15 +702,15 @@ class ZendeskKnowledgeSyncService:
             if not sync_dirs:
                 raise ValueError("No synchronized documentation found")
             source_dir = sync_dirs[0]
-        
+
         if not source_dir.exists():
             raise FileNotFoundError(f"Source directory not found: {source_dir}")
-        
+
         logger.info(f"Pipelining content from {source_dir} to codex_digest")
-        
+
         # Count files to process
         html_files = list(source_dir.rglob("*.html"))
-        
+
         # TODO: Integrate with codex_digest pipeline
         # For now, return metadata about what would be processed
         result = {
@@ -719,7 +719,7 @@ class ZendeskKnowledgeSyncService:
             "status": "ready_for_tokenization",
             "next_step": "Integrate with codex_digest.pipeline.process()",
         }
-        
+
         logger.info(f"Pipeline preparation complete: {len(html_files)} files ready")
         return result
 
@@ -727,7 +727,7 @@ class ZendeskKnowledgeSyncService:
 def main() -> int:
     """CLI entry point for the sync service."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="Zendesk Knowledge Synchronization Service"
     )
@@ -767,18 +767,18 @@ def main() -> int:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Configure logging
     logging.basicConfig(
         level=getattr(logging, args.log_level),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
-    
+
     # Create service and run sync
     service = ZendeskKnowledgeSyncService()
-    
+
     try:
         # Run sync based on mode
         if args.mode == "incremental":
@@ -793,7 +793,7 @@ def main() -> int:
                 dry_run=args.dry_run,
                 force=args.force,
             )
-        
+
         print(f"\n{'='*60}")
         print("Synchronization Results:")
         print(f"{'='*60}")
@@ -807,15 +807,15 @@ def main() -> int:
         if result.dataset_path:
             print(f"JSON Dataset:      {result.dataset_path}")
         print(f"{'='*60}\n")
-        
+
         # Pipeline if requested
         if args.pipeline and not args.dry_run and result.updated > 0:
             logger.info("Starting pipeline to codex_digest...")
             pipeline_result = service.pipeline_to_codex_digest()
             print(f"Pipeline Result: {json.dumps(pipeline_result, indent=2)}")
-        
+
         return 0 if result.failed == 0 else 1
-        
+
     except Exception as e:
         logger.error(f"Sync failed: {e}", exc_info=True)
         return 2

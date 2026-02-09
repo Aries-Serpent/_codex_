@@ -10,7 +10,7 @@ class TestModelLoading:
         """Test loading a model from a valid path."""
         # Arrange
         model_path = "/path/to/model"
-        
+
         # Assert
         assert model_path is not None
 
@@ -18,7 +18,7 @@ class TestModelLoading:
         """Test loading a model from an invalid path."""
         # Arrange
         model_path = ""
-        
+
         # Assert
         assert model_path == ""
 
@@ -26,7 +26,7 @@ class TestModelLoading:
         """Test loading a model with configuration."""
         # Arrange
         config = {"model_type": "transformer", "hidden_size": 768}
-        
+
         # Assert
         assert config["model_type"] == "transformer"
         assert config["hidden_size"] == 768
@@ -35,7 +35,7 @@ class TestModelLoading:
         """Test loading a model from checkpoint."""
         # Arrange
         checkpoint = {"epoch": 10, "model_state": {}}
-        
+
         # Assert
         assert checkpoint["epoch"] == 10
 
@@ -43,7 +43,7 @@ class TestModelLoading:
         """Test loading a pretrained model."""
         # Arrange
         pretrained_name = "bert-base-uncased"
-        
+
         # Assert
         assert "bert" in pretrained_name
 
@@ -51,7 +51,7 @@ class TestModelLoading:
         """Test lazy model loading."""
         # Arrange
         lazy_load = True
-        
+
         # Assert
         assert lazy_load is True
 
@@ -59,7 +59,7 @@ class TestModelLoading:
         """Test loading model on CPU device."""
         # Arrange
         device = "cpu"
-        
+
         # Assert
         assert device == "cpu"
 
@@ -67,7 +67,7 @@ class TestModelLoading:
         """Test loading model on CUDA device."""
         # Arrange
         device = "cuda:0"
-        
+
         # Assert
         assert "cuda" in device
 
@@ -76,7 +76,7 @@ class TestModelLoading:
         # Arrange
         quantize = True
         bits = 8
-        
+
         # Assert
         assert quantize is True
         assert bits in [4, 8, 16]
@@ -85,7 +85,7 @@ class TestModelLoading:
         """Test loading sharded model."""
         # Arrange
         shards = 4
-        
+
         # Assert
         assert shards > 0
 
@@ -93,7 +93,7 @@ class TestModelLoading:
         """Test model registry lookup."""
         # Arrange
         registry = {"gpt2": "models/gpt2", "bert": "models/bert"}
-        
+
         # Assert
         assert "gpt2" in registry
         assert "bert" in registry
@@ -102,7 +102,7 @@ class TestModelLoading:
         """Test model version validation."""
         # Arrange
         version = "1.0.0"
-        
+
         # Assert
         assert version.count(".") == 2
 
@@ -110,7 +110,7 @@ class TestModelLoading:
         """Test loading model with adapter."""
         # Arrange
         adapter_config = {"adapter_type": "lora", "rank": 8}
-        
+
         # Assert
         assert adapter_config["adapter_type"] == "lora"
 
@@ -118,7 +118,7 @@ class TestModelLoading:
         """Test memory efficient model loading."""
         # Arrange
         memory_efficient = True
-        
+
         # Assert
         assert memory_efficient is True
 
@@ -127,7 +127,7 @@ class TestModelLoading:
         # Arrange
         parallel = True
         num_gpus = 2
-        
+
         # Assert
         assert parallel is True
         assert num_gpus > 0
@@ -136,7 +136,7 @@ class TestModelLoading:
         """Test model warmup after loading."""
         # Arrange
         warmup_steps = 100
-        
+
         # Assert
         assert warmup_steps > 0
 
@@ -144,7 +144,7 @@ class TestModelLoading:
         """Test loading model with tokenizer."""
         # Arrange
         load_tokenizer = True
-        
+
         # Assert
         assert load_tokenizer is True
 
@@ -152,7 +152,7 @@ class TestModelLoading:
         """Test model with float16 dtype."""
         # Arrange
         dtype = "float16"
-        
+
         # Assert
         assert dtype in ["float16", "float32", "bfloat16"]
 
@@ -160,7 +160,7 @@ class TestModelLoading:
         """Test model with bfloat16 dtype."""
         # Arrange
         dtype = "bfloat16"
-        
+
         # Assert
         assert dtype == "bfloat16"
 
@@ -168,7 +168,7 @@ class TestModelLoading:
         """Test loading model with caching."""
         # Arrange
         use_cache = True
-        
+
         # Assert
         assert use_cache is True
 
@@ -176,7 +176,7 @@ class TestModelLoading:
         """Test model loading timeout."""
         # Arrange
         timeout_seconds = 300
-        
+
         # Assert
         assert timeout_seconds > 0
 
@@ -184,7 +184,7 @@ class TestModelLoading:
         """Test model verification after loading."""
         # Arrange
         verify = True
-        
+
         # Assert
         assert verify is True
 
@@ -192,7 +192,7 @@ class TestModelLoading:
         """Test loading model from hub."""
         # Arrange
         hub_id = "huggingface/model"
-        
+
         # Assert
         assert "/" in hub_id
 
@@ -200,7 +200,7 @@ class TestModelLoading:
         """Test loading specific model revision."""
         # Arrange
         revision = "main"
-        
+
         # Assert
         assert revision in ["main", "dev", "v1.0"]
 
@@ -208,7 +208,7 @@ class TestModelLoading:
         """Test model loading with retry."""
         # Arrange
         max_retries = 3
-        
+
         # Assert
         assert max_retries > 0
 
@@ -217,7 +217,7 @@ class TestModelLoading:
         # Arrange
         progress_callback = MagicMock()
         progress_callback(0.5)
-        
+
         # Assert
         progress_callback.assert_called_once_with(0.5)
 
@@ -225,7 +225,7 @@ class TestModelLoading:
         """Test model loading error handling."""
         # Arrange
         error_msg = "Model not found"
-        
+
         # Assert
         assert "not found" in error_msg.lower()
 
@@ -233,7 +233,7 @@ class TestModelLoading:
         """Test loading model with trust_remote_code."""
         # Arrange
         trust_remote_code = False
-        
+
         # Assert - safer to not trust remote code by default
         assert trust_remote_code is False
 
@@ -241,7 +241,7 @@ class TestModelLoading:
         """Test model architecture detection."""
         # Arrange
         architectures = ["BertForSequenceClassification"]
-        
+
         # Assert
         assert len(architectures) > 0
 
@@ -249,6 +249,6 @@ class TestModelLoading:
         """Test model config override."""
         # Arrange
         overrides = {"hidden_dropout_prob": 0.1}
-        
+
         # Assert
         assert "hidden_dropout_prob" in overrides

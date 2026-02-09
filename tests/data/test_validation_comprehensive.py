@@ -10,7 +10,6 @@ Tests cover:
 
 from __future__ import annotations
 
-
 import pytest
 
 # Import module under test
@@ -89,7 +88,7 @@ class TestValidationRule:
         """Test subclass must implement validate method."""
         class IncompleteRule(validation.ValidationRule):
             pass
-        
+
         with pytest.raises(TypeError):
             IncompleteRule("test")
 

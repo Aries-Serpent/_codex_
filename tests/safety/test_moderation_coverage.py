@@ -46,7 +46,7 @@ class TestModerationSettings:
     def test_default_values(self):
         """Test ModerationSettings default initialization."""
         settings = ModerationSettings()
-        
+
         assert settings.enabled is False
         assert settings.provider == "offline"
         assert settings.rules_path is None
@@ -61,7 +61,7 @@ class TestModerationSettings:
             provider="openai",
             rules_path="/path/to/rules.yaml",
         )
-        
+
         assert settings.enabled is True
         assert settings.provider == "openai"
         assert settings.rules_path == "/path/to/rules.yaml"
@@ -72,7 +72,7 @@ class TestModerationSettings:
             enabled=True,
             fail_open=True,
         )
-        
+
         assert settings.fail_open is True
 
     def test_audit_log_setting(self):
@@ -81,7 +81,7 @@ class TestModerationSettings:
             enabled=True,
             audit_log="/var/log/moderation.log",
         )
-        
+
         assert settings.audit_log == "/var/log/moderation.log"
 
     def test_custom_label(self):
@@ -89,7 +89,7 @@ class TestModerationSettings:
         settings = ModerationSettings(
             label="production-filter",
         )
-        
+
         assert settings.label == "production-filter"
 
 
@@ -108,7 +108,7 @@ class TestModerationDecision:
             stage="preflight",
             provider="offline",
         )
-        
+
         assert decision.approved is True
         assert decision.stage == "preflight"
         assert decision.provider == "offline"
@@ -122,7 +122,7 @@ class TestModerationDecision:
             reasons=("harmful_content", "violence"),
             matches=("matched pattern 1",),
         )
-        
+
         assert decision.approved is False
         assert decision.reasons == ("harmful_content", "violence")
         assert decision.matches == ("matched pattern 1",)
@@ -135,7 +135,7 @@ class TestModerationDecision:
             provider="offline",
             sanitized_text="[REDACTED] safe content",
         )
-        
+
         assert decision.sanitized_text == "[REDACTED] safe content"
 
     def test_decision_with_details(self):
@@ -146,7 +146,7 @@ class TestModerationDecision:
             provider="custom",
             details={"score": 0.95, "categories": ["safe"]},
         )
-        
+
         assert decision.details["score"] == 0.95
         assert decision.details["categories"] == ["safe"]
 
@@ -161,9 +161,9 @@ class TestModerationDecision:
             sanitized_text="text",
             details={"key": "value"},
         )
-        
+
         result = decision.to_dict()
-        
+
         assert isinstance(result, dict)
         assert result["approved"] is True
         assert result["stage"] == "preflight"
@@ -180,7 +180,7 @@ class TestModerationDecision:
             stage="preflight",
             provider="offline",
         )
-        
+
         assert decision.reasons == ()
         assert decision.matches == ()
 
@@ -191,7 +191,7 @@ class TestModerationDecision:
             stage="preflight",
             provider="offline",
         )
-        
+
         assert decision.details == {}
 
 
@@ -215,9 +215,9 @@ class TestModerationRejection:
             provider="offline",
             matches=("harmful_content",),
         )
-        
+
         rejection = ModerationRejection("preflight", decision)
-        
+
         assert rejection.stage == "preflight"
         assert rejection.decision == decision
         assert "harmful_content" in str(rejection)
@@ -230,9 +230,9 @@ class TestModerationRejection:
             provider="openai",
             reasons=("violence", "hate_speech"),
         )
-        
+
         rejection = ModerationRejection("postflight", decision)
-        
+
         assert "violence" in str(rejection) or "hate_speech" in str(rejection)
 
     def test_rejection_with_provider_error(self):
@@ -243,13 +243,13 @@ class TestModerationRejection:
             provider="external",
         )
         error = Exception("API timeout")
-        
+
         rejection = ModerationRejection(
             "preflight",
             decision,
             provider_error=error,
         )
-        
+
         assert rejection.provider_error == error
 
     def test_rejection_empty_matches_and_reasons(self):
@@ -259,9 +259,9 @@ class TestModerationRejection:
             stage="preflight",
             provider="offline",
         )
-        
+
         rejection = ModerationRejection("preflight", decision)
-        
+
         assert "moderation policy" in str(rejection)
 
 
@@ -277,7 +277,7 @@ class TestModerationAdapter:
         """Test creating adapter with default settings."""
         settings = ModerationSettings()
         adapter = ModerationAdapter(settings)
-        
+
         assert adapter.settings == settings
 
     def test_create_with_enabled_settings(self):
@@ -287,14 +287,14 @@ class TestModerationAdapter:
             provider="offline",
         )
         adapter = ModerationAdapter(settings)
-        
+
         assert adapter.settings.enabled is True
 
     def test_create_with_default_policy(self):
         """Test creating adapter with default policy."""
         settings = ModerationSettings()
         adapter = ModerationAdapter(settings, default_policy="strict")
-        
+
         assert adapter._default_policy == "strict"
 
     @patch.object(ModerationAdapter, '_resolve_provider')
@@ -302,9 +302,9 @@ class TestModerationAdapter:
         """Test provider resolution during initialization."""
         mock_resolve.return_value = None
         settings = ModerationSettings(provider="custom")
-        
+
         ModerationAdapter(settings)
-        
+
         mock_resolve.assert_called_once_with("custom")
 
 
@@ -325,9 +325,9 @@ class TestModerationIntegration:
             reasons=("dangerous_content",),
             details={"score": 0.1},
         )
-        
+
         rejection = ModerationRejection("preflight", decision)
-        
+
         # Verify we can access decision details from rejection
         assert rejection.decision.details["score"] == 0.1
         assert rejection.decision.reasons == ("dangerous_content",)
@@ -341,7 +341,7 @@ class TestModerationIntegration:
             label="test-adapter",
         )
         adapter = ModerationAdapter(settings)
-        
+
         assert adapter.settings.fail_open is True
         assert adapter.settings.label == "test-adapter"
 
@@ -356,9 +356,9 @@ class TestModerationIntegration:
             sanitized_text="clean text",
             details={"confidence": 0.99},
         )
-        
+
         dict1 = decision1.to_dict()
-        
+
         # Create another decision from same parameters
         decision2 = ModerationDecision(
             approved=dict1["approved"],
@@ -369,9 +369,9 @@ class TestModerationIntegration:
             sanitized_text=dict1["sanitized_text"],
             details=dict1["details"],
         )
-        
+
         dict2 = decision2.to_dict()
-        
+
         assert dict1 == dict2
 
 
@@ -398,7 +398,7 @@ class TestModerationEdgeCases:
             provider="offline",
             reasons=(long_reason,),
         )
-        
+
         assert len(decision.reasons[0]) == 10000
 
     def test_unicode_in_matches(self):
@@ -409,7 +409,7 @@ class TestModerationEdgeCases:
             provider="offline",
             matches=("危険なコンテンツ", "опасный контент"),
         )
-        
+
         assert "危険なコンテンツ" in decision.matches
         assert "опасный контент" in decision.matches
 
@@ -420,16 +420,16 @@ class TestModerationEdgeCases:
             stage="postflight",
             provider="offline",
         )
-        
+
         assert decision.sanitized_text is None
-        
+
         dict_form = decision.to_dict()
         assert dict_form["sanitized_text"] is None
 
     def test_multiple_stages(self):
         """Test decisions for different stages."""
         stages = ["preflight", "postflight", "inline", "custom"]
-        
+
         for stage in stages:
             decision = ModerationDecision(
                 approved=True,
@@ -460,7 +460,7 @@ class TestModerationEdgeCases:
             audit_log="/custom/audit.log",
             label="custom-label",
         )
-        
+
         assert settings.enabled is True
         assert settings.provider == "custom-provider"
         assert settings.rules_path == "/custom/rules.yaml"

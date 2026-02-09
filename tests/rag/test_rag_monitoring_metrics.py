@@ -8,8 +8,9 @@ Comprehensive testing for RAG monitoring and observability:
 - Error tracking and alerting
 """
 
-import pytest
 import time
+
+import pytest
 
 
 class TestPerformanceMetrics:
@@ -19,16 +20,16 @@ class TestPerformanceMetrics:
         """Test tracking of query latency."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record query latency
             query_id = "test_query_1"
             latency_ms = 150.5
-            
+
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency(query_id, latency_ms)
-                
+
                 # Should be able to retrieve metrics
                 if hasattr(metrics, 'get_query_latency'):
                     recorded = metrics.get_query_latency(query_id)
@@ -40,16 +41,16 @@ class TestPerformanceMetrics:
         """Test tracking embedding generation time."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record embedding time
             doc_count = 100
             duration_ms = 500.0
-            
+
             if hasattr(metrics, 'record_embedding_time'):
                 metrics.record_embedding_time(doc_count, duration_ms)
-                
+
                 # Calculate throughput
                 throughput = doc_count / (duration_ms / 1000.0)  # docs per second
                 assert throughput > 0
@@ -60,19 +61,19 @@ class TestPerformanceMetrics:
         """Test tracking index operation metrics."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             operations = [
                 ("add_document", 50.0),
                 ("remove_document", 20.0),
                 ("update_document", 75.0),
             ]
-            
+
             for op_name, duration in operations:
                 if hasattr(metrics, 'record_index_operation'):
                     metrics.record_index_operation(op_name, duration)
-                    
+
                     # Should be recorded
                     assert True
         except (ImportError, AttributeError):
@@ -86,16 +87,16 @@ class TestMetricsAggregation:
         """Test calculating average query latency."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record multiple queries
             latencies = [100, 150, 200, 120, 180]
-            
+
             if hasattr(metrics, 'record_query_latency'):
                 for i, latency in enumerate(latencies):
                     metrics.record_query_latency(f"query_{i}", latency)
-                
+
                 # Calculate average
                 if hasattr(metrics, 'get_average_latency'):
                     avg = metrics.get_average_latency()
@@ -108,22 +109,22 @@ class TestMetricsAggregation:
         """Test calculating latency percentiles."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record latencies
             latencies = list(range(100, 200))  # 100ms to 199ms
-            
+
             if hasattr(metrics, 'record_query_latency'):
                 for i, latency in enumerate(latencies):
                     metrics.record_query_latency(f"query_{i}", latency)
-                
+
                 # Calculate p50, p95, p99
                 if hasattr(metrics, 'get_latency_percentile'):
                     p50 = metrics.get_latency_percentile(50)
                     p95 = metrics.get_latency_percentile(95)
                     metrics.get_latency_percentile(99)
-                    
+
                     # p95 should be higher than p50
                     assert p95 >= p50 or (p95 is not None and p50 is not None)
         except (ImportError, AttributeError):
@@ -133,16 +134,16 @@ class TestMetricsAggregation:
         """Test calculating query throughput."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record queries over time
             if hasattr(metrics, 'record_query_latency'):
                 start_time = time.time()
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
                 time.time() - start_time
-                
+
                 # Calculate throughput
                 if hasattr(metrics, 'get_throughput'):
                     throughput = metrics.get_throughput()
@@ -158,9 +159,9 @@ class TestIndexHealthMonitoring:
         """Test tracking index size."""
         try:
             from src.codex.rag.monitoring import IndexHealth
-            
+
             health = IndexHealth()
-            
+
             # Get index size
             if hasattr(health, 'get_index_size'):
                 size = health.get_index_size()
@@ -173,9 +174,9 @@ class TestIndexHealthMonitoring:
         """Test tracking document count."""
         try:
             from src.codex.rag.monitoring import IndexHealth
-            
+
             health = IndexHealth()
-            
+
             # Get document count
             if hasattr(health, 'get_document_count'):
                 count = health.get_document_count()
@@ -188,9 +189,9 @@ class TestIndexHealthMonitoring:
         """Test checking index fragmentation."""
         try:
             from src.codex.rag.monitoring import IndexHealth
-            
+
             health = IndexHealth()
-            
+
             # Check fragmentation
             if hasattr(health, 'get_fragmentation_score'):
                 score = health.get_fragmentation_score()
@@ -204,9 +205,9 @@ class TestIndexHealthMonitoring:
         """Test overall index health check."""
         try:
             from src.codex.rag.monitoring import IndexHealth
-            
+
             health = IndexHealth()
-            
+
             # Perform health check
             if hasattr(health, 'check_health'):
                 status = health.check_health()
@@ -225,16 +226,16 @@ class TestErrorTracking:
         """Test logging of errors."""
         try:
             from src.codex.rag.monitoring import ErrorTracker
-            
+
             tracker = ErrorTracker()
-            
+
             # Log an error
             error_type = "EmbeddingError"
             error_msg = "Failed to generate embedding"
-            
+
             if hasattr(tracker, 'log_error'):
                 tracker.log_error(error_type, error_msg)
-                
+
                 # Should be logged
                 if hasattr(tracker, 'get_error_count'):
                     count = tracker.get_error_count(error_type)
@@ -246,16 +247,16 @@ class TestErrorTracking:
         """Test calculating error rate."""
         try:
             from src.codex.rag.monitoring import ErrorTracker
-            
+
             tracker = ErrorTracker()
-            
+
             # Log successes and errors
             if hasattr(tracker, 'log_error') and hasattr(tracker, 'log_success'):
                 for i in range(90):
                     tracker.log_success()
                 for i in range(10):
                     tracker.log_error("TestError", "Test error")
-                
+
                 # Calculate error rate
                 if hasattr(tracker, 'get_error_rate'):
                     rate = tracker.get_error_rate()
@@ -268,14 +269,14 @@ class TestErrorTracking:
         """Test alert threshold triggering."""
         try:
             from src.codex.rag.monitoring import ErrorTracker
-            
+
             tracker = ErrorTracker(alert_threshold=0.1)  # 10% error rate
-            
+
             # Log errors above threshold
             if hasattr(tracker, 'log_error'):
                 for i in range(20):  # 20 errors
                     tracker.log_error("TestError", "Test")
-                
+
                 # Check if alert triggered
                 if hasattr(tracker, 'should_alert'):
                     should_alert = tracker.should_alert()
@@ -291,16 +292,17 @@ class TestMetricsExport:
     def test_export_metrics_json(self):
         """Test exporting metrics as JSON."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
             import json
-            
+
+            from src.codex.rag.monitoring import RAGMetrics
+
             metrics = RAGMetrics()
-            
+
             # Record some metrics
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency("query_1", 100)
                 metrics.record_query_latency("query_2", 150)
-            
+
             # Export as JSON
             if hasattr(metrics, 'to_json'):
                 json_data = metrics.to_json()
@@ -314,13 +316,13 @@ class TestMetricsExport:
         """Test exporting metrics as dictionary."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record some metrics
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency("query_1", 100)
-            
+
             # Export as dict
             if hasattr(metrics, 'to_dict'):
                 data = metrics.to_dict()
@@ -334,13 +336,13 @@ class TestMetricsExport:
         """Test exporting metrics in Prometheus format."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record metrics
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency("query_1", 100)
-            
+
             # Export in Prometheus format
             if hasattr(metrics, 'to_prometheus'):
                 prom_data = metrics.to_prometheus()
@@ -359,22 +361,22 @@ class TestRealTimeMonitoring:
         """Test streaming metrics updates."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Set up streaming
             if hasattr(metrics, 'start_streaming'):
                 metrics.start_streaming()
-                
+
                 # Record metrics
                 if hasattr(metrics, 'record_query_latency'):
                     for i in range(10):
                         metrics.record_query_latency(f"query_{i}", 100 + i)
-                
+
                 # Stop streaming
                 if hasattr(metrics, 'stop_streaming'):
                     metrics.stop_streaming()
-                
+
                 assert True
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
@@ -383,21 +385,21 @@ class TestRealTimeMonitoring:
         """Test metrics callback mechanism."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
             callback_called = []
-            
+
             def metrics_callback(metric_name, value):
                 callback_called.append((metric_name, value))
-            
+
             # Register callback
             if hasattr(metrics, 'register_callback'):
                 metrics.register_callback(metrics_callback)
-                
+
                 # Record metric
                 if hasattr(metrics, 'record_query_latency'):
                     metrics.record_query_latency("query_1", 100)
-                
+
                 # Callback should have been called
                 assert len(callback_called) > 0 or True
         except (ImportError, AttributeError):
@@ -411,14 +413,14 @@ class TestDashboardIntegration:
         """Test getting data for monitoring dashboard."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record various metrics
             if hasattr(metrics, 'record_query_latency'):
                 for i in range(50):
                     metrics.record_query_latency(f"query_{i}", 100 + i * 2)
-            
+
             # Get dashboard data
             if hasattr(metrics, 'get_dashboard_data'):
                 data = metrics.get_dashboard_data()
@@ -433,15 +435,15 @@ class TestDashboardIntegration:
         """Test getting time series metrics data."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics()
-            
+
             # Record metrics over time
             if hasattr(metrics, 'record_query_latency'):
                 for i in range(20):
                     metrics.record_query_latency(f"query_{i}", 100)
                     time.sleep(0.01)  # Small delay
-            
+
             # Get time series
             if hasattr(metrics, 'get_time_series'):
                 series = metrics.get_time_series(metric_name="query_latency")
@@ -459,21 +461,21 @@ class TestMetricsIntegration:
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             provider = TFIDFEmbeddingProvider()
             metrics = RAGMetrics()
-            
+
             texts = ["text 1", "text 2", "text 3"]
-            
+
             # Monitor embedding generation
             start = time.time()
             embeddings = provider.encode(texts)
             duration = (time.time() - start) * 1000  # ms
-            
+
             # Record metrics
             if hasattr(metrics, 'record_embedding_time'):
                 metrics.record_embedding_time(len(texts), duration)
-            
+
             assert embeddings is not None
         except (ImportError, AttributeError):
             pytest.skip("Modules not available")
@@ -481,23 +483,23 @@ class TestMetricsIntegration:
     def test_monitor_retrieval_pipeline(self):
         """Test monitoring complete retrieval pipeline."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
             from src.codex.rag.monitoring import RAGMetrics
-            
+            from src.codex.rag.retriever import CodexRetriever
+
             retriever = CodexRetriever()
             metrics = RAGMetrics()
-            
+
             query = "test query"
-            
+
             # Monitor retrieval
             start = time.time()
             results = retriever.retrieve(query, top_k=5)
             duration = (time.time() - start) * 1000
-            
+
             # Record metrics
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency("test_query", duration)
-            
+
             # Results may be None if no index
             assert results is not None or results is None
         except (ImportError, AttributeError):
@@ -511,13 +513,13 @@ class TestAlerting:
         """Test alerting on high latency."""
         try:
             from src.codex.rag.monitoring import RAGMetrics
-            
+
             metrics = RAGMetrics(latency_threshold_ms=200)
-            
+
             # Record high latency
             if hasattr(metrics, 'record_query_latency'):
                 metrics.record_query_latency("slow_query", 500)
-                
+
                 # Check if alert triggered
                 if hasattr(metrics, 'get_alerts'):
                     alerts = metrics.get_alerts()
@@ -530,14 +532,14 @@ class TestAlerting:
         """Test alerting on high error rate."""
         try:
             from src.codex.rag.monitoring import ErrorTracker
-            
+
             tracker = ErrorTracker(alert_threshold=0.05)
-            
+
             # Log errors
             if hasattr(tracker, 'log_error'):
                 for i in range(10):
                     tracker.log_error("TestError", "Test")
-                
+
                 # Check alerts
                 if hasattr(tracker, 'get_alerts'):
                     alerts = tracker.get_alerts()

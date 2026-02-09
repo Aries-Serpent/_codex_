@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 
-
 def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
     """Test basic coverage XML parsing."""
     from scripts.space_traversal.coverage_ingest import parse_coverage_xml_to_map

@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.services.workflow.parser import WorkflowParser
 from src.services.workflow.inventory import WorkflowInventory
+from src.services.workflow.parser import WorkflowParser
 
 
 @pytest.mark.integration
@@ -39,7 +39,7 @@ def test_workflow_inventory_registration():
     """Test WorkflowInventory registers workflows."""
     inventory = WorkflowInventory()
     inventory.register("test.yml", {"name": "Test", "jobs": {}})
-    
+
     assert "test.yml" in inventory.workflows
     assert inventory.workflows["test.yml"]["name"] == "Test"
 
@@ -50,7 +50,7 @@ def test_workflow_inventory_query():
     inventory = WorkflowInventory()
     inventory.register("workflow1.yml", {"name": "Workflow 1", "jobs": {"job1": {}}})
     inventory.register("workflow2.yml", {"name": "Workflow 2", "jobs": {"job2": {}}})
-    
+
     results = inventory.query(name="Workflow 1")
     assert len(results) == 1
     assert results[0]["name"] == "Workflow 1"

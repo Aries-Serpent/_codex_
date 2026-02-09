@@ -16,6 +16,7 @@ Author: Codex Team
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 """Cloud events integration for multi-cloud support."""
 

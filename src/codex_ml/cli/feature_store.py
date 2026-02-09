@@ -8,7 +8,9 @@ Provides commands for:
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import sys
@@ -16,16 +18,17 @@ from pathlib import Path
 from typing import Optional
 
 try:
-    import typer
     from rich.console import Console
     from rich.table import Table
+
+    import typer
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)
 
-from codex_ml.features.feature_store import FeatureStore, FeatureGroup
+from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
 
 app = typer.Typer(

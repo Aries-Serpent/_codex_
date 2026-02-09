@@ -16,12 +16,14 @@ Author: Codex Team
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 """Minimal callback primitives shared by the training loops."""
 
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any, Optional
 
 __all__ = [

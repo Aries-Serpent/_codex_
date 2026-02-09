@@ -28,7 +28,7 @@ def _install_minimal_hf_stubs(
         pad_token = None
         eos_token = "</s>"
         pad_token_id = 0
-        
+
         def pad(self, *args, **kwargs):
             # Return input unchanged for padding stub
             if args and isinstance(args[0], dict):
@@ -45,11 +45,11 @@ def _install_minimal_hf_stubs(
                     "input_ids": [[0] for _ in text],
                     "attention_mask": [[1] for _ in text]
                 }
-            
+
             # Convert to tensors if requested (needed for HF Trainer data collator)
             if return_tensors == "pt":
                 result = {k: torch.tensor(v) for k, v in result.items()}
-            
+
             return result
 
         def save_pretrained(self, output_dir):  # pragma: no cover - stub
@@ -117,16 +117,16 @@ def _install_minimal_hf_stubs(
 
     def fake_prepare_dataset(texts, tokenizer):  # pragma: no cover - stub
         return list(texts or [])
-    
+
     class DummyDataCollator:
         """Mock data collator that converts lists to tensors for HF Trainer compatibility."""
         def __init__(self, *args, **kwargs):
             pass
-        
+
         def __call__(self, features):
             if not features:
                 return {}
-            
+
             batch = {}
             for key in features[0].keys() if isinstance(features[0], dict) else []:
                 values = [f[key] if isinstance(f, dict) else f for f in features]
@@ -137,11 +137,11 @@ def _install_minimal_hf_stubs(
                     batch[key] = torch.stack(values)
                 else:
                     batch[key] = torch.tensor(values)
-            
+
             # Add labels (copy of input_ids for language modeling)
             if "input_ids" in batch:
                 batch["labels"] = batch["input_ids"].clone()
-            
+
             return batch
 
     monkeypatch.setattr(

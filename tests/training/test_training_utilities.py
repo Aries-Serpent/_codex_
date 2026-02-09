@@ -83,7 +83,7 @@ def test_ray_distributed_guardrails():
 def test_fsdp_config_export():
     """FSDPConfig serialises core settings for logging."""
 
-    from codex_ml.training.fsdp_wrapper import FSDPConfig, TORCH_AVAILABLE, FSDPTrainer
+    from codex_ml.training.fsdp_wrapper import TORCH_AVAILABLE, FSDPConfig, FSDPTrainer
 
     cfg = FSDPConfig(sharding_strategy="NO_SHARD", mixed_precision=None)
     exported = cfg.to_dict()

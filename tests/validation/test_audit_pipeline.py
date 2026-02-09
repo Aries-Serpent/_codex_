@@ -6,8 +6,9 @@ Test module for audit pipeline.
 
 import json
 import subprocess
-import pytest
 from pathlib import Path
+
+import pytest
 
 # Expected error patterns that indicate known issues (not test failures)
 KNOWN_ERROR_PATTERNS = [
@@ -43,7 +44,7 @@ def test_audit_pipeline_produces_artifacts():
     """
     repo_root = Path(__file__).resolve().parents[2]
     artifacts_dir = repo_root / "audit_artifacts"
-    
+
     # Check if artifacts already exist (from previous run)
     if artifacts_dir.exists() and any(artifacts_dir.iterdir()):
         # Artifacts exist, validate structure
@@ -66,7 +67,7 @@ def test_audit_pipeline_produces_artifacts():
                 pytest.skip(f"Audit failed due to expected issue: {result.stderr[:200]}")
             else:
                 pytest.fail(f"Audit failed unexpectedly: {result.stderr}")
-        
+
         # Script succeeded but check if artifacts were actually created
         # In minimal CI environments, the script may run successfully but produce no artifacts
         if not artifacts_dir.exists() or not any(artifacts_dir.iterdir()):

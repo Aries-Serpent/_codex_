@@ -22,7 +22,9 @@ class TestCodexLogging:
     def test_ensure_local_mlflow_tracking_uri(self):
         """Test _ensure_local_mlflow_tracking_uri_default function."""
         try:
-            from codex_ml.monitoring.codex_logging import _ensure_local_mlflow_tracking_uri_default
+            from codex_ml.monitoring.codex_logging import (
+                _ensure_local_mlflow_tracking_uri_default,
+            )
             _ensure_local_mlflow_tracking_uri_default()
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

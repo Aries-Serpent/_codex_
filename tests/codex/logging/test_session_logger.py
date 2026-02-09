@@ -174,24 +174,24 @@ class TestInitDb:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             init_db(db_path)
-            
+
             conn = sqlite3.connect(db_path)
             cursor = conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='session_events'"
             )
             tables = cursor.fetchall()
             conn.close()
-            
+
             assert len(tables) == 1
 
     def test_idempotent(self) -> None:
-        from codex.logging.session_logger import init_db, INITIALIZED_PATHS
+        from codex.logging.session_logger import INITIALIZED_PATHS, init_db
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             # Clear cached paths
             INITIALIZED_PATHS.discard(str(db_path))
-            
+
             result1 = init_db(db_path)
             result2 = init_db(db_path)
             assert result1 == result2
@@ -238,7 +238,7 @@ class TestLogMessage:
                 log_message("test-session", "invalid_role", "Message", db_path=db_path)
 
     def test_coerces_message_to_string(self) -> None:
-        from codex.logging.session_logger import log_message, fetch_messages
+        from codex.logging.session_logger import fetch_messages, log_message
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -265,7 +265,7 @@ class TestSessionLoggerClass:
             db_path = Path(tmpdir) / "test.db"
             with SessionLogger(session_id="test-start", db_path=db_path):
                 pass
-            
+
             messages = fetch_messages("test-start", db_path=db_path)
             assert any("session_start" in msg.get("message", "") for msg in messages)
 
@@ -276,7 +276,7 @@ class TestSessionLoggerClass:
             db_path = Path(tmpdir) / "test.db"
             with SessionLogger(session_id="test-end", db_path=db_path):
                 pass
-            
+
             messages = fetch_messages("test-end", db_path=db_path)
             assert any("session_end" in msg.get("message", "") for msg in messages)
 
@@ -287,7 +287,7 @@ class TestSessionLoggerClass:
             db_path = Path(tmpdir) / "test.db"
             with SessionLogger(session_id="test-log", db_path=db_path) as sl:
                 sl.log("user", "Test message")
-            
+
             messages = fetch_messages("test-log", db_path=db_path)
             assert any("Test message" in msg.get("message", "") for msg in messages)
 
@@ -301,7 +301,7 @@ class TestSessionLoggerClass:
                     raise ValueError("Test exception")
             except ValueError:
                 pass
-            
+
             messages = fetch_messages("test-exc", db_path=db_path)
             # Should contain exception info in session_end
             assert any("ValueError" in msg.get("message", "") for msg in messages)
@@ -325,7 +325,7 @@ class TestFetchMessages:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             log_message("fetch-test", "user", "Hello world", db_path=db_path)
-            
+
             messages = fetch_messages("fetch-test", db_path=db_path)
             assert len(messages) > 0
             assert any("Hello world" in msg.get("message", "") for msg in messages)
@@ -335,12 +335,12 @@ class TestMigrateLegacyEvents:
     """Tests for migrate_legacy_events function."""
 
     def test_backfills_seq_column(self) -> None:
-        from codex.logging.session_logger import migrate_legacy_events, init_db
+        from codex.logging.session_logger import init_db, migrate_legacy_events
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             init_db(db_path)
-            
+
             # Insert a row without seq
             conn = sqlite3.connect(db_path)
             conn.execute(
@@ -349,10 +349,10 @@ class TestMigrateLegacyEvents:
             )
             conn.commit()
             conn.close()
-            
+
             # Run migration
             migrate_legacy_events(db_path)
-            
+
             # Check seq is now set
             conn = sqlite3.connect(db_path)
             cursor = conn.execute(
@@ -361,7 +361,7 @@ class TestMigrateLegacyEvents:
             )
             rows = cursor.fetchall()
             conn.close()
-            
+
             assert len(rows) > 0
             assert rows[0][0] is not None
 
@@ -370,32 +370,32 @@ class TestConcurrentAccess:
     """Tests for concurrent database access."""
 
     def test_concurrent_logging(self) -> None:
-        from codex.logging.session_logger import log_message, fetch_messages
+        from codex.logging.session_logger import fetch_messages, log_message
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
-            
+
             def log_messages(session_id: str, count: int) -> None:
                 for i in range(count):
                     log_message(session_id, "user", f"Message {i}", db_path=db_path)
-            
+
             threads = []
             for i in range(5):
                 t = threading.Thread(target=log_messages, args=(f"concurrent-{i}", 10))
                 threads.append(t)
-            
+
             for t in threads:
                 t.start()
-            
+
             for t in threads:
                 t.join()
-            
+
             # Verify messages were logged
             total = 0
             for i in range(5):
                 messages = fetch_messages(f"concurrent-{i}", db_path=db_path)
                 total += len(messages)
-            
+
             assert total == 50
 
 

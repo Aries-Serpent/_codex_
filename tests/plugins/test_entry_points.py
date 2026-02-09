@@ -1,12 +1,13 @@
 """Tests for entry-point plugin system."""
 
-import pytest
 from unittest.mock import Mock, patch
 
+import pytest
+
 from codex_ml.plugins.entry_points import (
+    EntryPointPluginRegistry,
     PluginInfo,
     PluginValidator,
-    EntryPointPluginRegistry,
     discover_plugins,
 )
 

@@ -8,7 +8,9 @@ handles errors and returns an empty list on failure.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import abc

@@ -17,7 +17,6 @@ from typing import Any
 
 import pytest
 
-
 # ============================================================================
 # Quality Metrics Data Structures
 # ============================================================================
@@ -32,7 +31,7 @@ class CoverageSnapshot:
     branch_coverage: float
     files_covered: int
     total_files: int
-    
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "timestamp": self.timestamp,
@@ -62,7 +61,7 @@ class FlakyTestReport:
     passes: int
     failures: int
     flakiness_score: float  # 0.0 = stable, 1.0 = completely flaky
-    
+
     @property
     def is_flaky(self) -> bool:
         """Test is considered flaky if it has inconsistent results."""
@@ -123,12 +122,12 @@ class TestCoverageTrendTracking:
             {"timestamp": "2026-01-17", "coverage": 75.0},
             {"timestamp": "2026-01-18", "coverage": 85.0},
         ]
-        
+
         # Calculate trend
         first_coverage = snapshots[0]["coverage"]
         last_coverage = snapshots[-1]["coverage"]
         trend = last_coverage - first_coverage
-        
+
         assert trend > 0  # Positive trend (improvement)
         assert trend == 15.0
 
@@ -139,9 +138,9 @@ class TestCoverageTrendTracking:
             {"timestamp": "2026-01-17", "coverage": 82.0},
             {"timestamp": "2026-01-18", "coverage": 78.0},
         ]
-        
+
         trend = snapshots[-1]["coverage"] - snapshots[0]["coverage"]
-        
+
         assert trend < 0  # Negative trend (regression)
         assert trend == -7.0
 
@@ -149,10 +148,10 @@ class TestCoverageTrendTracking:
         """Test coverage alert when below threshold."""
         threshold = 80.0
         current_coverage = 75.0
-        
+
         alert_triggered = current_coverage < threshold
         assert alert_triggered is True
-        
+
         current_coverage = 85.0
         alert_triggered = current_coverage < threshold
         assert alert_triggered is False
@@ -160,13 +159,13 @@ class TestCoverageTrendTracking:
     def test_coverage_history_storage(self) -> None:
         """Test storing coverage history."""
         history: list[dict[str, Any]] = []
-        
+
         for i in range(5):
             history.append({
                 "date": f"2026-01-{15 + i}",
                 "coverage": 70.0 + i * 3,
             })
-        
+
         assert len(history) == 5
         assert history[-1]["coverage"] == 82.0
 
@@ -184,7 +183,7 @@ class TestFlakyTestDetection:
         # Flakiness = 2 * min(pass_rate, fail_rate)
         # 0.0 = always pass or always fail
         # 1.0 = 50/50 pass/fail
-        
+
         def calculate_flakiness(passes: int, failures: int) -> float:
             total = passes + failures
             if total == 0:
@@ -192,16 +191,16 @@ class TestFlakyTestDetection:
             pass_rate = passes / total
             fail_rate = failures / total
             return 2 * min(pass_rate, fail_rate)
-        
+
         # Always passes
         assert calculate_flakiness(10, 0) == 0.0
-        
+
         # Always fails
         assert calculate_flakiness(0, 10) == 0.0
-        
+
         # 50/50 - maximum flakiness
         assert calculate_flakiness(5, 5) == 1.0
-        
+
         # Mostly passes - some flakiness
         flakiness = calculate_flakiness(8, 2)
         assert 0.0 < flakiness < 1.0
@@ -215,7 +214,7 @@ class TestFlakyTestDetection:
             failures=2,
             flakiness_score=0.2,
         )
-        
+
         assert report.is_flaky is True
         assert report.total_runs == 20
 
@@ -228,7 +227,7 @@ class TestFlakyTestDetection:
             failures=0,
             flakiness_score=0.0,
         )
-        
+
         assert report.is_flaky is False
 
     def test_flaky_test_aggregation(self) -> None:
@@ -238,14 +237,14 @@ class TestFlakyTestDetection:
             {"name": "test_b", "passes": 100, "failures": 0},
             {"name": "test_c", "passes": 95, "failures": 5},
         ]
-        
+
         flaky_tests = []
         for result in test_results:
             total = result["passes"] + result["failures"]
             pass_rate = result["passes"] / total
             if 0.05 < pass_rate < 0.95:  # Not all pass or all fail
                 flaky_tests.append(result["name"])
-        
+
         assert len(flaky_tests) == 2
         assert "test_a" in flaky_tests
         assert "test_c" in flaky_tests
@@ -254,17 +253,17 @@ class TestFlakyTestDetection:
         """Test quarantining flaky tests."""
         quarantine_list: list[str] = []
         threshold = 0.3  # Quarantine if flakiness > 30%
-        
+
         tests = [
             {"name": "test_flaky", "flakiness": 0.4},
             {"name": "test_stable", "flakiness": 0.0},
             {"name": "test_moderate", "flakiness": 0.2},
         ]
-        
+
         for test in tests:
             if test["flakiness"] > threshold:
                 quarantine_list.append(test["name"])
-        
+
         assert len(quarantine_list) == 1
         assert "test_flaky" in quarantine_list
 
@@ -294,7 +293,7 @@ class TestReliabilityMetrics:
         # Reliability = pass_rate * (1 - flakiness_rate)
         pass_rate = 0.95
         flakiness_rate = 0.05
-        
+
         reliability = pass_rate * (1 - flakiness_rate)
         assert reliability == pytest.approx(0.9025, rel=0.01)
 
@@ -307,7 +306,7 @@ class TestReliabilityMetrics:
             avg_duration_ms=150.0,
             flaky_test_count=5,
         )
-        
+
         assert metrics.coverage == 85.0
         assert metrics.test_count == 500
         assert metrics.flaky_test_count == 5
@@ -316,7 +315,7 @@ class TestReliabilityMetrics:
         """Test retaining metrics history."""
         max_history = 30  # Keep 30 days of history
         history: list[QualityMetrics] = []
-        
+
         for i in range(35):
             history.append(QualityMetrics(
                 coverage=80.0 + i * 0.1,
@@ -325,11 +324,11 @@ class TestReliabilityMetrics:
                 avg_duration_ms=150.0,
                 flaky_test_count=5,
             ))
-            
+
             # Trim to max history
             if len(history) > max_history:
                 history = history[-max_history:]
-        
+
         assert len(history) == max_history
 
 
@@ -355,14 +354,14 @@ class TestQualityDashboard:
             },
             "alerts": [],
         }
-        
+
         assert dashboard_data["summary"]["coverage"] == 85.0
         assert len(dashboard_data["trends"]["coverage_7d"]) == 7
 
     def test_alert_generation(self) -> None:
         """Test generating quality alerts."""
         alerts: list[dict[str, Any]] = []
-        
+
         # Coverage below threshold
         if 75.0 < 80.0:
             alerts.append({
@@ -371,7 +370,7 @@ class TestQualityDashboard:
                 "metric": "coverage",
                 "value": 75.0,
             })
-        
+
         # High flaky test count
         if 10 > 5:
             alerts.append({
@@ -380,7 +379,7 @@ class TestQualityDashboard:
                 "metric": "flaky_tests",
                 "value": 10,
             })
-        
+
         assert len(alerts) == 2
 
     def test_dashboard_json_export(self) -> None:
@@ -392,8 +391,8 @@ class TestQualityDashboard:
                 "tests": 500,
             },
         }
-        
+
         json_str = json.dumps(dashboard, indent=2)
         restored = json.loads(json_str)
-        
+
         assert restored["metrics"]["coverage"] == 85.0

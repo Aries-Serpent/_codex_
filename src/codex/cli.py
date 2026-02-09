@@ -1,7 +1,9 @@
 """Unified CLI for codex, using click for subcommands and input validation."""
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import importlib
@@ -478,9 +480,9 @@ def batch_triage(issues, from_file, output, as_json, group_by):
         codex batch-triage --from-file scripts/ci/links_extraction.csv
     """
     script = Path(__file__).resolve().parent.parent.parent / "scripts" / "ci" / "batch_triage.py"
-    
+
     args = [sys.executable, str(script), "--output", output, "--group-by", group_by]
-    
+
     if issues:
         args.extend(["--issues", issues])
     elif from_file:
@@ -488,10 +490,10 @@ def batch_triage(issues, from_file, output, as_json, group_by):
     else:
         click.echo("Error: Must provide either --issues or --from-file", err=True)
         sys.exit(1)
-    
+
     if as_json:
         args.append("--json")
-    
+
     try:
         subprocess.run(args, check=True)
     except Exception as exc:
@@ -1596,16 +1598,16 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         logger.warning(f"ImportError: {e}", exc_info=True)
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
-    
+
     inventory = WorkflowInventory(workflows_dir)
     count = inventory.scan()
-    
+
     if count == 0:
         click.echo(f"No workflows found in {workflows_dir}")
         return
-    
+
     workflows = inventory.get_triggerable() if triggerable_only else list(inventory.workflows.values())
-    
+
     if format == "json":
         data = [
             {

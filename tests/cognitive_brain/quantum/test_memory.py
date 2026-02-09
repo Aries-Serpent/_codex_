@@ -12,7 +12,7 @@ Total: 25 tests validating Phase 8.1 implementation
 """
 
 import time
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pytest

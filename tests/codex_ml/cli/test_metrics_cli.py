@@ -5,6 +5,7 @@ Test module for metrics cli.
 """
 
 import importlib
+
 import pytest
 
 

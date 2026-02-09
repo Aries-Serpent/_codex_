@@ -3,9 +3,9 @@
 import pytest
 
 from src.services.crawler import (
-    ZendeskKnowledgeSyncService,
-    MultiLocaleSyncManager,
     ContentDiffer,
+    MultiLocaleSyncManager,
+    ZendeskKnowledgeSyncService,
 )
 
 
@@ -26,7 +26,7 @@ def test_zendesk_sync_error_handling():
         api_token="invalid_token",
         subdomain="test",
     )
-    
+
     with pytest.raises(Exception):
         service.sync_articles()  # Should fail with invalid token
 
@@ -44,10 +44,10 @@ def test_multi_locale_sync_manager():
 def test_content_differ_detects_changes():
     """Test ContentDiffer detects content changes."""
     differ = ContentDiffer()
-    
+
     old_content = "Original content"
     new_content = "Modified content"
-    
+
     diff = differ.diff(old_content, new_content)
     assert diff.has_changes
     assert len(diff.segments) > 0
@@ -57,7 +57,7 @@ def test_content_differ_detects_changes():
 def test_content_differ_no_changes():
     """Test ContentDiffer handles identical content."""
     differ = ContentDiffer()
-    
+
     content = "Same content"
     diff = differ.diff(content, content)
     assert not diff.has_changes

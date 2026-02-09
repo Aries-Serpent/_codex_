@@ -9,11 +9,11 @@ Part of PS-06 Enhancement: Index Sharding - Priority 4
 
 from __future__ import annotations
 
+import bisect
 import hashlib
 import logging
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Callable
-import bisect
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +21,14 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ShardInfo:
     """Information about an index shard."""
-    
+
     shard_id: int
     shard_name: str
     total_documents: int = 0
     size_bytes: int = 0
     last_updated: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
         return {
@@ -62,7 +62,7 @@ class ConsistentHashRing:
         >>> shard_id = ring.get_shard("document-12345")
         >>> print(f"Document maps to shard: {shard_id}")
     """
-    
+
     def __init__(
         self,
         num_shards: int,
@@ -79,20 +79,20 @@ class ConsistentHashRing:
         self.num_shards = num_shards
         self.virtual_nodes = virtual_nodes
         self.hash_function = hash_function or self._default_hash
-        
+
         # Ring structure: sorted list of (hash_value, shard_id)
         self._ring: List[int] = []
         self._ring_map: Dict[int, int] = {}
-        
+
         # Build the ring
         self._build_ring()
-        
+
         logger.info(
             f"Consistent hash ring initialized: "
             f"{num_shards} shards, {virtual_nodes} virtual nodes each, "
             f"{len(self._ring)} total positions"
         )
-    
+
     def _default_hash(self, key: str) -> int:
         """Default hash function using xxhash or hashlib.
         
@@ -117,7 +117,7 @@ class ConsistentHashRing:
             # between Python runs for security reasons.
             import hashlib
             return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], 'big')
-    
+
     def _build_ring(self) -> None:
         """Build the consistent hash ring with virtual nodes."""
         for shard_id in range(self.num_shards):
@@ -125,14 +125,14 @@ class ConsistentHashRing:
                 # Create unique key for virtual node
                 vnode_key = f"shard-{shard_id}-vnode-{vnode_id}"
                 hash_value = self.hash_function(vnode_key)
-                
+
                 # Add to ring
                 self._ring.append(hash_value)
                 self._ring_map[hash_value] = shard_id
-        
+
         # Sort ring for binary search
         self._ring.sort()
-    
+
     def get_shard(self, key: str) -> int:
         """Get shard ID for a given key.
         
@@ -147,23 +147,23 @@ class ConsistentHashRing:
         """
         if not self._ring:
             raise ValueError("Hash ring is empty")
-        
+
         # Hash the key
         hash_value = self.hash_function(key)
-        
+
         # Find position in ring using binary search
         idx = bisect.bisect_right(self._ring, hash_value)
-        
+
         # Wrap around if necessary
         if idx == len(self._ring):
             idx = 0
-        
+
         # Get shard ID from ring map
         ring_hash = self._ring[idx]
         shard_id = self._ring_map[ring_hash]
-        
+
         return shard_id
-    
+
     def get_shard_distribution(
         self,
         keys: List[str]
@@ -180,13 +180,13 @@ class ConsistentHashRing:
             Dictionary mapping shard_id to count
         """
         distribution: Dict[int, int] = {i: 0 for i in range(self.num_shards)}
-        
+
         for key in keys:
             shard_id = self.get_shard(key)
             distribution[shard_id] += 1
-        
+
         return distribution
-    
+
     def add_shard(self) -> int:
         """Add a new shard to the ring.
         
@@ -195,20 +195,20 @@ class ConsistentHashRing:
         """
         new_shard_id = self.num_shards
         self.num_shards += 1
-        
+
         # Add virtual nodes for new shard
         for vnode_id in range(self.virtual_nodes):
             vnode_key = f"shard-{new_shard_id}-vnode-{vnode_id}"
             hash_value = self.hash_function(vnode_key)
-            
+
             # Insert into ring maintaining sorted order
             idx = bisect.bisect_left(self._ring, hash_value)
             self._ring.insert(idx, hash_value)
             self._ring_map[hash_value] = new_shard_id
-        
+
         logger.info(f"Added shard {new_shard_id} to ring")
         return new_shard_id
-    
+
     def remove_shard(self, shard_id: int) -> bool:
         """Remove a shard from the ring.
         
@@ -220,17 +220,17 @@ class ConsistentHashRing:
         """
         if shard_id >= self.num_shards:
             return False
-        
+
         # Remove all virtual nodes for this shard
         positions_to_remove = [
             pos for pos, sid in self._ring_map.items()
             if sid == shard_id
         ]
-        
+
         for pos in positions_to_remove:
             self._ring.remove(pos)
             del self._ring_map[pos]
-        
+
         logger.info(f"Removed shard {shard_id} from ring")
         return True
 
@@ -278,7 +278,7 @@ class ShardManager:
         >>> shard_id = manager.route_document("doc-12345")
         >>> shard_info = manager.get_shard_info(shard_id)
     """
-    
+
     def __init__(
         self,
         num_shards: int,
@@ -294,13 +294,13 @@ class ShardManager:
         """
         self.num_shards = num_shards
         self.shard_name_prefix = shard_name_prefix
-        
+
         # Initialize consistent hash ring
         self.hash_ring = ConsistentHashRing(
             num_shards=num_shards,
             virtual_nodes=virtual_nodes
         )
-        
+
         # Initialize shard info
         self.shards: Dict[int, ShardInfo] = {}
         for shard_id in range(num_shards):
@@ -308,9 +308,9 @@ class ShardManager:
                 shard_id=shard_id,
                 shard_name=f"{shard_name_prefix}_{shard_id:02d}"
             )
-        
+
         logger.info(f"ShardManager initialized with {num_shards} shards")
-    
+
     def route_document(self, doc_id: str) -> int:
         """Route document to appropriate shard.
         
@@ -321,7 +321,7 @@ class ShardManager:
             Shard ID
         """
         return self.hash_ring.get_shard(doc_id)
-    
+
     def get_shard_info(self, shard_id: int) -> Optional[ShardInfo]:
         """Get information about a shard.
         
@@ -332,7 +332,7 @@ class ShardManager:
             ShardInfo or None if not found
         """
         return self.shards.get(shard_id)
-    
+
     def get_shard_name(self, shard_id: int) -> str:
         """Get shard name for a shard ID.
         
@@ -346,7 +346,7 @@ class ShardManager:
         if shard_info:
             return shard_info.shard_name
         return f"{self.shard_name_prefix}_{shard_id:02d}"
-    
+
     def update_shard_stats(
         self,
         shard_id: int,
@@ -363,13 +363,13 @@ class ShardManager:
         if shard_id not in self.shards:
             logger.warning(f"Shard {shard_id} not found")
             return
-        
+
         if doc_count is not None:
             self.shards[shard_id].total_documents = doc_count
-        
+
         if size_bytes is not None:
             self.shards[shard_id].size_bytes = size_bytes
-    
+
     def get_all_shards(self) -> List[ShardInfo]:
         """Get information about all shards.
         
@@ -377,7 +377,7 @@ class ShardManager:
             List of ShardInfo objects
         """
         return list(self.shards.values())
-    
+
     def get_load_distribution(self) -> Dict[int, Dict[str, Any]]:
         """Get load distribution across shards.
         
@@ -386,7 +386,7 @@ class ShardManager:
         """
         total_docs = sum(s.total_documents for s in self.shards.values())
         total_size = sum(s.size_bytes for s in self.shards.values())
-        
+
         distribution = {}
         for shard_id, shard_info in self.shards.items():
             doc_percentage = (
@@ -397,7 +397,7 @@ class ShardManager:
                 (shard_info.size_bytes / total_size * 100)
                 if total_size > 0 else 0
             )
-            
+
             distribution[shard_id] = {
                 "shard_name": shard_info.shard_name,
                 "documents": shard_info.total_documents,
@@ -405,7 +405,7 @@ class ShardManager:
                 "doc_percentage": round(doc_percentage, 2),
                 "size_percentage": round(size_percentage, 2),
             }
-        
+
         return distribution
 
 

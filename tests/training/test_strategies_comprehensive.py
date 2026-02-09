@@ -27,7 +27,6 @@ from codex_ml.training.strategies import (
     resolve_strategy,
 )
 
-
 # =============================================================================
 # Test Data & Fixtures
 # =============================================================================
@@ -97,7 +96,7 @@ def test_training_result_empty_extra():
 def test_training_result_serialization():
     """Test TrainingResult can be serialized."""
     from dataclasses import asdict
-    
+
     result = TrainingResult(
         status="ok",
         backend="functional",
@@ -148,7 +147,7 @@ def test_safe_callbacks_with_callbacks():
     """Test _safe_callbacks preserves callback list."""
     cb1 = NoOpCallback()
     cb2 = NoOpCallback()
-    
+
     result = _safe_callbacks([cb1, cb2])
     assert len(result) == 2
     assert result[0] is cb1
@@ -220,10 +219,10 @@ def test_functional_strategy_run_basic(mock_import, mock_config, mock_callback):
     mock_module.TrainConfig = mock_train_config
     mock_module.train.return_value = {"loss": 0.5}
     mock_import.return_value = mock_module
-    
+
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [mock_callback])
-    
+
     assert result.status == "ok"
     assert result.backend == "functional"
     assert result.final_epoch == mock_config.epochs
@@ -233,15 +232,15 @@ def test_functional_strategy_run_basic(mock_import, mock_config, mock_callback):
 def test_functional_strategy_with_texts(mock_import, mock_config):
     """Test FunctionalStrategy.run with training texts."""
     mock_config.extra = {"train_texts": ["text1", "text2"]}
-    
+
     mock_module = MagicMock()
     mock_module.TrainConfig = MagicMock()
     mock_module.train.return_value = {"loss": 0.3}
     mock_import.return_value = mock_module
-    
+
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [])
-    
+
     assert result.extra.get("trained") is True
 
 
@@ -252,12 +251,12 @@ def test_functional_strategy_error_handling(mock_import, mock_config):
     mock_module.TrainConfig = MagicMock()
     mock_module.train.side_effect = RuntimeError("Training failed")
     mock_import.return_value = mock_module
-    
+
     mock_config.extra = {"train_texts": ["text"]}
-    
+
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [])
-    
+
     assert result.status == "error"
     assert "exception" in result.extra
 
@@ -273,14 +272,14 @@ def test_legacy_strategy_deprecation_warning(mock_warn, mock_import, mock_config
     """Test LegacyStrategy emits deprecation warning."""
     mock_module = MagicMock()
     mock_import.return_value = mock_module
-    
+
     strategy = LegacyStrategy()
-    
+
     try:
         strategy.run(mock_config, [])
     except:
         pass  # We only care about the warning
-    
+
     # Verify deprecation warning was called
     assert mock_warn.called
 
@@ -292,13 +291,13 @@ def test_legacy_strategy_run_basic(mock_import, mock_config):
     mock_module = MagicMock()
     legacy_run = MagicMock()
     mock_module.run_training = legacy_run
-    
+
     # Patch at the import location
     with patch("codex_ml.training.strategies.warnings.warn"):
         with patch("codex_ml.train_loop.run_training", legacy_run):
             strategy = LegacyStrategy()
             result = strategy.run(mock_config, [])
-            
+
             assert result.status == "ok"
             assert result.backend == "legacy"
 
@@ -314,22 +313,22 @@ def test_callback_protocol_methods():
     class CustomCallback:
         def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
             self.epoch_started = epoch
-        
+
         def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
             self.epoch_ended = epoch
-        
+
         def on_step(self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]) -> None:
             self.step_called = True
-        
+
         def on_checkpoint(self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]) -> None:
             self.checkpoint_saved = path
-    
+
     callback = CustomCallback()
     callback.on_epoch_start(1, {})
     callback.on_epoch_end(1, {"loss": 0.5}, {})
     callback.on_step(0, 0, 0.5, {})
     callback.on_checkpoint(1, "/path", {"loss": 0.5}, {})
-    
+
     assert callback.epoch_started == 1
     assert callback.epoch_ended == 1
     assert callback.step_called is True
@@ -343,10 +342,10 @@ def test_mock_callback_integration(mock_callback, mock_config):
         mock_module.TrainConfig = MagicMock()
         mock_module.train.return_value = {}
         mock_import.return_value = mock_module
-        
+
         strategy = FunctionalStrategy()
         strategy.run(mock_config, [mock_callback])
-        
+
         # Verify callbacks were invoked
         assert mock_callback.on_epoch_start.called
 
@@ -362,7 +361,7 @@ def test_strategy_result_consistency():
         ("functional", FunctionalStrategy()),
         ("legacy", LegacyStrategy()),
     ]
-    
+
     for name, strategy in strategies:
         assert hasattr(strategy, "backend_name")
         assert strategy.backend_name == name
@@ -375,21 +374,21 @@ def test_functional_strategy_resume_from(mock_config):
         mock_module.TrainConfig = MagicMock()
         mock_module.train.return_value = {}
         mock_import.return_value = mock_module
-        
+
         strategy = FunctionalStrategy()
         result = strategy.run(mock_config, [], resume_from="/checkpoint.pt")
-        
+
         assert result.extra.get("resume_from") == "/checkpoint.pt"
 
 
 def test_backend_strategy_protocol_compliance():
     """Test strategies comply with BackendStrategy protocol."""
     strategies = [FunctionalStrategy(), LegacyStrategy()]
-    
+
     for strategy in strategies:
         # Check required attributes
         assert hasattr(strategy, "backend_name")
         assert hasattr(strategy, "run")
-        
+
         # Check method signature
         assert callable(strategy.run)

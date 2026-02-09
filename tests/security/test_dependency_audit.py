@@ -40,10 +40,10 @@ class TestDependencyTracking:
             REPO_ROOT / "requirements-dev.txt",
         ]
         existing_req_files = [f for f in req_files if f.exists()]
-        
+
         if not existing_req_files:
             pytest.skip("No requirements.txt files")
-        
+
         # Just verify they're readable
         for req_file in existing_req_files:
             content = req_file.read_text(encoding="utf-8")
@@ -58,7 +58,7 @@ class TestDependencyVersioning:
         pyproject = REPO_ROOT / "pyproject.toml"
         if not pyproject.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         content = pyproject.read_text(encoding="utf-8")
         # Look for versioned dependencies
         version_patterns = [
@@ -75,12 +75,12 @@ class TestDependencyVersioning:
         pyproject = REPO_ROOT / "pyproject.toml"
         if not pyproject.exists():
             pytest.skip("pyproject.toml not found")
-        
+
         content = pyproject.read_text(encoding="utf-8")
         # Count exact pins vs ranges
         exact_pins = len(re.findall(r"==\d+\.\d+", content))
         range_pins = len(re.findall(r"[><=~!]=\d+\.\d+", content))
-        
+
         # Just log, don't enforce
         total = exact_pins + range_pins
         if total > 0:
@@ -111,7 +111,7 @@ class TestDependabot:
         dependabot_path = REPO_ROOT / ".github" / "dependabot.yml"
         if not dependabot_path.exists():
             pytest.skip("No Dependabot config (optional)")
-        
+
         try:
             import yaml
             content = yaml.safe_load(dependabot_path.read_text(encoding="utf-8"))
@@ -125,7 +125,7 @@ class TestDependabot:
         dependabot_path = REPO_ROOT / ".github" / "dependabot.yml"
         if not dependabot_path.exists():
             pytest.skip("No Dependabot config")
-        
+
         content = dependabot_path.read_text(encoding="utf-8")
         has_pip = "pip" in content or "python" in content
         # Just verify, don't require
@@ -151,7 +151,7 @@ class TestSecurityAdvisories:
             REPO_ROOT / "SECURITY.md",
             REPO_ROOT / "docs" / "SECURITY.md",
         ]
-        
+
         for sec_path in security_paths:
             if sec_path.exists():
                 content = sec_path.read_text(encoding="utf-8").lower()

@@ -26,19 +26,19 @@ class DummyModel(torch.nn.Module):
 
 class DummyLogger:
     """Test logger that properly manages file handles."""
-    
+
     def __init__(self, path: Path):
         self.path = path
         self.fh = None
         self._open()
-    
+
     def _open(self):
         """Open the log file."""
         self.fh = open(self.path, "a", encoding="utf-8")
-    
+
     def __enter__(self):
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
         return False
@@ -55,7 +55,7 @@ class DummyLogger:
                 self.fh = None
             except Exception:
                 pass
-    
+
     def __del__(self):
         """Ensure file is closed on deletion."""
         self.close()

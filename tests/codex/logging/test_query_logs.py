@@ -315,13 +315,13 @@ class TestFormatText:
         class MockRow:
             def __init__(self, data):
                 self._data = data
-            
+
             def __getitem__(self, key):
                 return self._data.get(key)
-            
+
             def keys(self):
                 return self._data.keys()
-        
+
         return [
             MockRow({"ts": "2025-01-01T10:00:00", "role": "user", "message": "Hello", "session_id": "S1", "metadata": None}),
             MockRow({"ts": "2025-01-01T10:01:00", "role": "assistant", "message": "Hi there", "session_id": "S1", "metadata": '{"key": "value"}'}),
@@ -391,9 +391,9 @@ class TestLogQueryEngine:
         mock_conn.execute.return_value = mock_cursor
         mock_db_manager.connection.return_value.__enter__ = MagicMock(return_value=mock_conn)
         mock_db_manager.connection.return_value.__exit__ = MagicMock(return_value=False)
-        
+
         result = engine.search("test query")
-        
+
         mock_db_manager.init_schema.assert_called_once()
         assert isinstance(result, list)
 
@@ -407,9 +407,9 @@ class TestLogQueryEngine:
         mock_conn.execute.return_value = mock_cursor
         mock_db_manager.connection.return_value.__enter__ = MagicMock(return_value=mock_conn)
         mock_db_manager.connection.return_value.__exit__ = MagicMock(return_value=False)
-        
+
         engine.search("test query", role="user")
-        
+
         # Check that role was passed in the query
         call_args = mock_conn.execute.call_args
         assert call_args is not None
@@ -450,17 +450,17 @@ class TestMain:
     def test_main_with_help(self, mock_infer_cols, mock_infer_table, mock_open_db):
         """Test main with --help flag."""
         from codex.logging.query_logs import main
-        
+
         with pytest.raises(SystemExit) as exc_info:
             main(["--help"])
-        
+
         # --help exits with code 0
         assert exc_info.value.code == 0
 
     def test_main_exits_on_missing_db(self):
         """Test that main exits when database doesn't exist."""
         from codex.logging.query_logs import main
-        
+
         # Should exit with error when db doesn't exist
         result = main(["--db", "/nonexistent/path/to/db.sqlite"])
         assert result != 0 or result is None  # Allow None for early exit

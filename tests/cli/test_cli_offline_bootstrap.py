@@ -29,7 +29,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
     payload = json.loads(proc.stdout)
 
     assert payload["ok"] is True
-    
+
     # Handle nested JSON structure: mlflow.env.MLFLOW_TRACKING_URI
     mlflow_section = payload.get("mlflow", {})
     mlflow_uri = (
@@ -40,7 +40,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
     )
     assert mlflow_uri and mlflow_uri.startswith("file:"), \
         f"Expected file:// URI, got: {mlflow_uri}"
-    
+
     wandb_section = payload.get("wandb", {})
     wandb_disabled = (
         wandb_section.get("WANDB_DISABLED")
@@ -50,7 +50,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
     )
     assert wandb_disabled == "true", \
         f"Expected WANDB_DISABLED='true', got: {wandb_disabled}"
-    
+
     assert (root / "mlruns").exists(), "mlruns directory not created"
     assert (root / "wandb").exists(), "wandb directory not created"
 

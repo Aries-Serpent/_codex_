@@ -18,12 +18,12 @@ class TestLegacyImport:
             warnings.simplefilter("always")
             # The import may already be cached, so we check for the function
             from training.seed_utils import set_all_seeds
-            
+
             # Function should exist
             assert callable(set_all_seeds)
 
     def test_all_exports(self):
         """Test __all__ exports."""
         from training.seed_utils import __all__
-        
+
         assert "set_all_seeds" in __all__

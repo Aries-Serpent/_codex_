@@ -17,9 +17,9 @@ import hmac
 import secrets
 import struct
 import time
-from dataclasses import dataclass, field
-from typing import List, Optional, Dict
 from base64 import b32encode
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 from urllib.parse import quote
 
 
@@ -33,7 +33,7 @@ class MFASecret:
     digits: int = 6
     period: int = 30
     created_at: float = field(default_factory=time.time)
-    
+
     def get_provisioning_uri(self, account_name: str) -> str:
         """
         Generate provisioning URI for QR code.
@@ -51,7 +51,7 @@ class MFASecret:
             f"digits={self.digits}",
             f"period={self.period}",
         ]
-        
+
         label = f"{quote(self.issuer)}:{quote(account_name)}"
         uri = f"otpauth://totp/{label}?{'&'.join(params)}"
         return uri
@@ -82,11 +82,11 @@ class MFAProvider:
     compatible with Google Authenticator, Authy, and similar apps.
     Includes backup codes and rate limiting for security.
     """
-    
+
     # Rate limiting configuration
     MAX_ATTEMPTS = 3
     LOCKOUT_DURATION = 900  # 15 minutes in seconds
-    
+
     def __init__(self):
         """
         Initialize MFA provider.
@@ -103,7 +103,7 @@ class MFAProvider:
         self._backup_codes: Dict[str, List[BackupCode]] = {}
         self._attempts: Dict[str, List[MFAAttempt]] = {}
         self._locked_users: Dict[str, float] = {}
-    
+
     def generate_totp_secret(self, user_id: str, issuer: str = "Codex") -> MFASecret:
         """
         Generate a new TOTP secret for a user.
@@ -119,18 +119,18 @@ class MFAProvider:
         secret_bytes = secrets.token_bytes(20)
         # Base32 encode without padding
         secret = b32encode(secret_bytes).decode('utf-8').rstrip('=')
-        
+
         mfa_secret = MFASecret(
             secret=secret,
             user_id=user_id,
             issuer=issuer,
         )
-        
+
         # Store secret (use database in production)
         self._secret_store[user_id] = mfa_secret
-        
+
         return mfa_secret
-    
+
     def _get_hotp_token(self, secret: str, counter: int, digits: int = 6) -> str:
         """
         Generate HOTP token.
@@ -145,33 +145,33 @@ class MFAProvider:
         """
         # Decode base32 secret
         key = self._base32_decode(secret)
-        
+
         # Convert counter to 8-byte big-endian
         counter_bytes = struct.pack('>Q', counter)
-        
+
         # HMAC-SHA1
         hmac_hash = hmac.new(key, counter_bytes, hashlib.sha1).digest()
-        
+
         # Dynamic truncation
         offset = hmac_hash[-1] & 0x0F
         truncated = struct.unpack('>I', hmac_hash[offset:offset+4])[0]
         truncated &= 0x7FFFFFFF
-        
+
         # Generate token
         token = str(truncated % (10 ** digits))
         return token.zfill(digits)
-    
+
     def _base32_decode(self, secret: str) -> bytes:
         """Decode base32 secret with padding."""
         # Add padding if needed
         missing_padding = len(secret) % 8
         if missing_padding:
             secret += '=' * (8 - missing_padding)
-        
+
         from base64 import b32decode
         return b32decode(secret, casefold=True)
-    
-    def generate_totp(self, secret: str, timestamp: Optional[float] = None, 
+
+    def generate_totp(self, secret: str, timestamp: Optional[float] = None,
                      period: int = 30, digits: int = 6) -> str:
         """
         Generate TOTP token.
@@ -187,13 +187,13 @@ class MFAProvider:
         """
         if timestamp is None:
             timestamp = time.time()
-        
+
         # Calculate counter
         counter = int(timestamp // period)
-        
+
         # Generate HOTP with counter
         return self._get_hotp_token(secret, counter, digits)
-    
+
     def verify_totp(self, secret: str, code: str, user_id: str,
                    window: int = 1, period: int = 30, digits: int = 6) -> bool:
         """
@@ -213,35 +213,35 @@ class MFAProvider:
         # Check if user is locked out
         if self._is_locked_out(user_id):
             return False
-        
+
         current_time = time.time()
-        
+
         # Check current period and adjacent periods
         for offset in range(-window, window + 1):
             check_time = current_time + (offset * period)
             expected_code = self.generate_totp(secret, check_time, period, digits)
-            
+
             if secrets.compare_digest(code, expected_code):
                 self._record_attempt(user_id, True)
                 return True
-        
+
         # Code didn't match
         self._record_attempt(user_id, False)
         return False
-    
+
     def _is_locked_out(self, user_id: str) -> bool:
         """Check if user is locked out due to failed attempts."""
         if user_id not in self._locked_users:
             return False
-        
+
         lockout_until = self._locked_users[user_id]
         if time.time() < lockout_until:
             return True
-        
+
         # Lockout expired, remove it
         del self._locked_users[user_id]
         return False
-    
+
     def _record_attempt(self, user_id: str, success: bool):
         """Record MFA verification attempt."""
         attempt = MFAAttempt(
@@ -249,29 +249,29 @@ class MFAProvider:
             timestamp=time.time(),
             success=success,
         )
-        
+
         if user_id not in self._attempts:
             self._attempts[user_id] = []
-        
+
         self._attempts[user_id].append(attempt)
-        
+
         # Clean old attempts (keep last hour)
         cutoff = time.time() - 3600
         self._attempts[user_id] = [
             a for a in self._attempts[user_id] if a.timestamp > cutoff
         ]
-        
+
         # Check for lockout
         if not success:
             recent_failures = [
                 a for a in self._attempts[user_id]
                 if not a.success and a.timestamp > time.time() - 300  # Last 5 minutes
             ]
-            
+
             if len(recent_failures) >= self.MAX_ATTEMPTS:
                 # Lock out user
                 self._locked_users[user_id] = time.time() + self.LOCKOUT_DURATION
-    
+
     def generate_backup_codes(self, user_id: str, count: int = 10) -> List[str]:
         """
         Generate backup codes for account recovery.
@@ -285,28 +285,28 @@ class MFAProvider:
         """
         codes = []
         backup_codes = []
-        
+
         for _ in range(count):
             # Generate 8-character code (format: XXXX-XXXX)
             code = secrets.token_hex(4).upper()
             formatted_code = f"{code[:4]}-{code[4:]}"
-            
+
             # Hash for storage
             code_hash = hashlib.sha256(formatted_code.encode()).hexdigest()
-            
+
             backup_code = BackupCode(
                 code=formatted_code,
                 code_hash=code_hash,
             )
-            
+
             codes.append(formatted_code)
             backup_codes.append(backup_code)
-        
+
         # Store backup codes (use database in production)
         self._backup_codes[user_id] = backup_codes
-        
+
         return codes
-    
+
     def verify_backup_code(self, user_id: str, code: str) -> bool:
         """
         Verify and consume a backup code.
@@ -321,14 +321,14 @@ class MFAProvider:
         # Check if user is locked out
         if self._is_locked_out(user_id):
             return False
-        
+
         if user_id not in self._backup_codes:
             self._record_attempt(user_id, False)
             return False
-        
+
         # Hash the provided code
         code_hash = hashlib.sha256(code.encode()).hexdigest()
-        
+
         # Find matching code
         for backup_code in self._backup_codes[user_id]:
             if secrets.compare_digest(backup_code.code_hash, code_hash):
@@ -342,11 +342,11 @@ class MFAProvider:
                     # Code already used
                     self._record_attempt(user_id, False)
                     return False
-        
+
         # No matching code
         self._record_attempt(user_id, False)
         return False
-    
+
     def get_remaining_backup_codes(self, user_id: str) -> int:
         """
         Get count of remaining (unused) backup codes.
@@ -359,9 +359,9 @@ class MFAProvider:
         """
         if user_id not in self._backup_codes:
             return 0
-        
+
         return sum(1 for code in self._backup_codes[user_id] if not code.used)
-    
+
     def disable_mfa(self, user_id: str) -> bool:
         """
         Disable MFA for a user.
@@ -373,23 +373,23 @@ class MFAProvider:
             True if MFA was disabled
         """
         removed = False
-        
+
         if user_id in self._secret_store:
             del self._secret_store[user_id]
             removed = True
-        
+
         if user_id in self._backup_codes:
             del self._backup_codes[user_id]
             removed = True
-        
+
         if user_id in self._attempts:
             del self._attempts[user_id]
-        
+
         if user_id in self._locked_users:
             del self._locked_users[user_id]
-        
+
         return removed
-    
+
     def is_mfa_enabled(self, user_id: str) -> bool:
         """
         Check if MFA is enabled for a user.
@@ -401,7 +401,7 @@ class MFAProvider:
             True if MFA is enabled
         """
         return user_id in self._secret_store
-    
+
     def get_mfa_user_count(self) -> int:
         """
         Get the number of users with MFA enabled.

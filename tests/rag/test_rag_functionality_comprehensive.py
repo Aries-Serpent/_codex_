@@ -8,10 +8,11 @@ Focus on core RAG functionality not fully covered:
 - Edge cases and boundary conditions
 """
 
-import pytest
-import numpy as np
 import tempfile
 from pathlib import Path
+
+import numpy as np
+import pytest
 
 
 class TestEmbeddingAccuracy:
@@ -21,14 +22,14 @@ class TestEmbeddingAccuracy:
         """Test that TF-IDF embeddings are consistent."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Same text should produce same embedding
             text = ["This is a test document"]
             emb1 = provider.encode(text)
             emb2 = provider.encode(text)
-            
+
             assert np.allclose(emb1, emb2), "Embeddings should be consistent"
         except ImportError:
             pytest.skip("Module not available")
@@ -37,21 +38,21 @@ class TestEmbeddingAccuracy:
         """Test that embedding dimensions are consistent."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Different texts should have same dimension
             texts = [
                 ["Short text"],
                 ["This is a longer text with more words"],
                 ["Multiple", "texts", "in", "batch"],
             ]
-            
+
             dimensions = []
             for text_batch in texts:
                 emb = provider.encode(text_batch)
                 dimensions.append(emb.shape[1])
-            
+
             assert len(set(dimensions)) == 1, "All embeddings should have same dimension"
         except ImportError:
             pytest.skip("Module not available")
@@ -60,26 +61,26 @@ class TestEmbeddingAccuracy:
         """Test that similar texts have similar embeddings."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Similar texts
             text1 = ["The cat sits on the mat"]
             text2 = ["A cat is sitting on a mat"]
             # Different text
             text3 = ["Python programming language"]
-            
+
             emb1 = provider.encode(text1)
             emb2 = provider.encode(text2)
             emb3 = provider.encode(text3)
-            
+
             # Calculate cosine similarity
             def cosine_sim(a, b):
                 return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
-            
+
             sim_12 = cosine_sim(emb1[0], emb2[0])
             sim_13 = cosine_sim(emb1[0], emb3[0])
-            
+
             # Similar texts should be more similar
             assert sim_12 > sim_13, "Similar texts should have higher similarity"
         except ImportError:
@@ -89,15 +90,15 @@ class TestEmbeddingAccuracy:
         """Test that embeddings are properly normalized."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             texts = ["Test document for normalization"]
             emb = provider.encode(texts)
-            
+
             # Check if normalized (L2 norm close to 1)
             norms = np.linalg.norm(emb, axis=1)
-            
+
             # Embeddings may or may not be normalized, just verify they're valid
             assert np.all(norms > 0), "Embeddings should have positive norm"
             assert np.all(np.isfinite(emb)), "Embeddings should be finite"
@@ -112,9 +113,9 @@ class TestRetrievalAccuracy:
         """Test that retrieval returns requested number of results."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             # Test different top_k values
             for k in [1, 5, 10]:
                 try:
@@ -131,16 +132,16 @@ class TestRetrievalAccuracy:
         """Test that retrieval results are properly ranked."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             try:
                 results = retriever.retrieve("test query", top_k=5)
-                
+
                 if results and len(results) > 1:
                     # Results should have scores
                     scores = [r.get('score', 0) for r in results if isinstance(r, dict)]
-                    
+
                     if scores:
                         # Scores should be in descending order (higher is better)
                         for i in range(len(scores) - 1):
@@ -155,12 +156,12 @@ class TestRetrievalAccuracy:
         """Test retrieval behavior with empty index."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             # Should handle empty index gracefully
             results = retriever.retrieve("query", top_k=5)
-            
+
             # Should return empty list or None, not crash
             assert results is None or isinstance(results, list)
             if isinstance(results, list):
@@ -172,15 +173,15 @@ class TestRetrievalAccuracy:
         """Test retrieval with various filters."""
         try:
             from src.codex.rag.retriever import CodexRetriever
-            
+
             retriever = CodexRetriever()
-            
+
             # Test with metadata filters
             filters = {
                 "source": "test",
                 "date": "2024-01-01",
             }
-            
+
             try:
                 results = retriever.retrieve(
                     "test query",
@@ -203,12 +204,12 @@ class TestIndexManagement:
         """Test index creation and initialization."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 index_path = Path(tmpdir) / "test_index"
-                
+
                 indexer = CodexIndexer(index_path=str(index_path))
-                
+
                 # Verify indexer is initialized
                 assert indexer is not None
                 if hasattr(indexer, 'index_path'):
@@ -220,15 +221,15 @@ class TestIndexManagement:
         """Test adding documents to index."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add test document
             doc_id = "test_doc_1"
             content = "This is a test document for indexing"
-            
+
             result = indexer.add_document(doc_id=doc_id, content=content)
-            
+
             # Should return success indicator
             assert result is not None
         except ImportError:
@@ -238,16 +239,16 @@ class TestIndexManagement:
         """Test removing documents from index."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add then remove document
             doc_id = "test_doc_remove"
             indexer.add_document(doc_id=doc_id, content="Test content")
-            
+
             # Remove document
             result = indexer.remove_document(doc_id=doc_id)
-            
+
             # Should handle removal (may return bool or None)
             assert result is None or isinstance(result, bool)
         except (ImportError, AttributeError):
@@ -257,20 +258,20 @@ class TestIndexManagement:
         """Test that index can be saved and loaded."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 index_path = Path(tmpdir) / "persistent_index"
-                
+
                 # Create and save index
                 indexer1 = CodexIndexer(index_path=str(index_path))
                 indexer1.add_document("doc1", "Test content 1")
-                
+
                 if hasattr(indexer1, 'save'):
                     indexer1.save()
-                
+
                 # Load index in new instance
                 indexer2 = CodexIndexer(index_path=str(index_path))
-                
+
                 # Should load existing index
                 assert indexer2 is not None
         except ImportError:
@@ -280,13 +281,13 @@ class TestIndexManagement:
         """Test retrieving index statistics."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add some documents
             for i in range(5):
                 indexer.add_document(f"doc_{i}", f"Content {i}")
-            
+
             # Get statistics
             if hasattr(indexer, 'get_stats'):
                 stats = indexer.get_stats()
@@ -306,24 +307,25 @@ class TestRAGPerformance:
     def test_batch_embedding_performance(self):
         """Test performance of batch embedding."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             import time
-            
+
+            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Test batch sizes
             batch_sizes = [10, 50, 100]
-            
+
             for batch_size in batch_sizes:
                 texts = [f"Document {i} with some test content" for i in range(batch_size)]
-                
+
                 start = time.time()
                 embeddings = provider.encode(texts)
                 duration = time.time() - start
-                
+
                 # Should complete in reasonable time (< 5 seconds for 100 docs)
                 assert duration < 5.0, f"Batch {batch_size} took too long: {duration}s"
-                
+
                 # Should return correct number of embeddings
                 assert len(embeddings) == batch_size
         except ImportError:
@@ -332,11 +334,12 @@ class TestRAGPerformance:
     def test_retrieval_performance(self):
         """Test retrieval performance."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
             import time
-            
+
+            from src.codex.rag.retriever import CodexRetriever
+
             retriever = CodexRetriever()
-            
+
             # Add documents if possible
             if hasattr(retriever, 'indexer'):
                 for i in range(100):
@@ -344,12 +347,12 @@ class TestRAGPerformance:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
                     except:
                         pass
-            
+
             # Test retrieval speed
             start = time.time()
             retriever.retrieve("test query", top_k=10)
             duration = time.time() - start
-            
+
             # Should complete quickly (< 1 second)
             assert duration < 1.0, f"Retrieval took too long: {duration}s"
         except ImportError:
@@ -363,9 +366,9 @@ class TestRAGEdgeCases:
         """Test embedding of empty text."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Test empty string
             try:
                 result = provider.encode([""])
@@ -381,14 +384,14 @@ class TestRAGEdgeCases:
         """Test handling of very long texts."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Test with very long text
             long_text = "word " * 10000  # 10k words
-            
+
             result = provider.encode([long_text])
-            
+
             # Should handle long text
             assert result is not None
             assert len(result) > 0
@@ -399,9 +402,9 @@ class TestRAGEdgeCases:
         """Test handling of special characters."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Test with various special characters
             special_texts = [
                 "Text with émojis 🎉🔥",
@@ -409,7 +412,7 @@ class TestRAGEdgeCases:
                 "RTL text: مرحبا بك",
                 "Mixed: Hello世界",
             ]
-            
+
             for text in special_texts:
                 result = provider.encode([text])
                 assert result is not None
@@ -421,16 +424,16 @@ class TestRAGEdgeCases:
         """Test handling of duplicate documents."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add same document twice
             doc_id = "duplicate_doc"
             content = "Test content"
-            
+
             indexer.add_document(doc_id, content)
             result = indexer.add_document(doc_id, content)
-            
+
             # Should handle duplicates (update or skip)
             assert result is not None or result is None
         except ImportError:
@@ -439,31 +442,32 @@ class TestRAGEdgeCases:
     def test_concurrent_operations(self):
         """Test thread safety of RAG operations."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
             import threading
-            
+
+            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+
             provider = TFIDFEmbeddingProvider()
             results = []
             errors = []
-            
+
             def embed_text(text):
                 try:
                     emb = provider.encode([text])
                     results.append(emb)
                 except Exception as e:
                     errors.append(e)
-            
+
             # Create multiple threads
             threads = []
             for i in range(10):
                 t = threading.Thread(target=embed_text, args=(f"Text {i}",))
                 threads.append(t)
                 t.start()
-            
+
             # Wait for all threads
             for t in threads:
                 t.join()
-            
+
             # Should complete without errors
             assert len(errors) == 0, f"Concurrent operations had errors: {errors}"
             assert len(results) == 10
@@ -479,25 +483,25 @@ class TestRAGIntegration:
         try:
             from src.codex.rag.indexer import CodexIndexer
             from src.codex.rag.retriever import CodexRetriever
-            
+
             # Create indexer and add documents
             indexer = CodexIndexer()
-            
+
             documents = [
                 ("doc1", "Python is a programming language"),
                 ("doc2", "Machine learning uses algorithms"),
                 ("doc3", "Natural language processing"),
             ]
-            
+
             for doc_id, content in documents:
                 indexer.add_document(doc_id, content)
-            
+
             # Create retriever
             retriever = CodexRetriever()
-            
+
             # Retrieve relevant documents
             results = retriever.retrieve("programming", top_k=2)
-            
+
             # Should return relevant results
             assert results is None or isinstance(results, list)
         except ImportError:
@@ -507,16 +511,16 @@ class TestRAGIntegration:
         """Test RAG operations with document metadata."""
         try:
             from src.codex.rag.indexer import CodexIndexer
-            
+
             indexer = CodexIndexer()
-            
+
             # Add document with metadata
             metadata = {
                 "source": "test",
                 "date": "2024-01-01",
                 "author": "tester",
             }
-            
+
             try:
                 indexer.add_document(
                     doc_id="meta_doc",

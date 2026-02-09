@@ -13,7 +13,7 @@ class TestStructuredLogRecord:
     def test_basic_creation(self):
         """Test StructuredLogRecord basic creation."""
         from codex.archive.logging_config import StructuredLogRecord
-        
+
         record = StructuredLogRecord(
             level="INFO",
             message="Test message",
@@ -21,7 +21,7 @@ class TestStructuredLogRecord:
             component="test_component",
             extra={"key": "value"}
         )
-        
+
         assert record.level == "INFO"
         assert record.message == "Test message"
         assert record.timestamp == "2024-01-01T00:00:00.000000Z"
@@ -31,7 +31,7 @@ class TestStructuredLogRecord:
     def test_to_dict(self):
         """Test to_dict method."""
         from codex.archive.logging_config import StructuredLogRecord
-        
+
         record = StructuredLogRecord(
             level="WARNING",
             message="Warning message",
@@ -39,9 +39,9 @@ class TestStructuredLogRecord:
             component="warning_component",
             extra={"warning_type": "deprecation"}
         )
-        
+
         result = record.to_dict()
-        
+
         assert result["level"] == "WARNING"
         assert result["message"] == "Warning message"
         assert result["timestamp"] == "2024-01-01T12:00:00.000000Z"
@@ -51,7 +51,7 @@ class TestStructuredLogRecord:
     def test_to_json(self):
         """Test to_json method."""
         from codex.archive.logging_config import StructuredLogRecord
-        
+
         record = StructuredLogRecord(
             level="ERROR",
             message="Error occurred",
@@ -59,9 +59,9 @@ class TestStructuredLogRecord:
             component="error_handler",
             extra={"code": 500}
         )
-        
+
         result = record.to_json()
-        
+
         # Should be valid JSON
         parsed = json.loads(result)
         assert parsed["level"] == "ERROR"
@@ -70,7 +70,7 @@ class TestStructuredLogRecord:
     def test_to_text_with_extra(self):
         """Test to_text method with extra fields."""
         from codex.archive.logging_config import StructuredLogRecord
-        
+
         record = StructuredLogRecord(
             level="DEBUG",
             message="Debug info",
@@ -78,9 +78,9 @@ class TestStructuredLogRecord:
             component="debugger",
             extra={"trace_id": "abc123"}
         )
-        
+
         result = record.to_text()
-        
+
         assert "[DEBUG]" in result
         assert "Debug info" in result
         assert "trace_id=abc123" in result
@@ -88,7 +88,7 @@ class TestStructuredLogRecord:
     def test_to_text_without_extra(self):
         """Test to_text method without extra fields."""
         from codex.archive.logging_config import StructuredLogRecord
-        
+
         record = StructuredLogRecord(
             level="INFO",
             message="Simple message",
@@ -96,9 +96,9 @@ class TestStructuredLogRecord:
             component="simple",
             extra={}
         )
-        
+
         result = record.to_text()
-        
+
         assert "[INFO]" in result
         assert "Simple message" in result
         assert "--" not in result
@@ -110,13 +110,13 @@ class TestModuleConstants:
     def test_iso_format(self):
         """Test ISO_FORMAT constant."""
         from codex.archive.logging_config import ISO_FORMAT
-        
+
         assert "%Y-%m-%dT%H:%M:%S" in ISO_FORMAT
 
     def test_standard_fields(self):
         """Test _STANDARD_FIELDS constant."""
         from codex.archive.logging_config import _STANDARD_FIELDS
-        
+
         assert "name" in _STANDARD_FIELDS
         assert "msg" in _STANDARD_FIELDS
         assert "levelname" in _STANDARD_FIELDS

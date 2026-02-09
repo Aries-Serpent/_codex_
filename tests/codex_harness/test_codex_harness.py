@@ -10,13 +10,14 @@ Phase 4: Coverage improvement - adding tests for 0% coverage module.
 """
 
 import json
-import pytest
 from datetime import datetime
 
+import pytest
+
 from codex_harness.honesty import (
-    HonestyStatement,
     HonestyMetadata,
     HonestyRecorder,
+    HonestyStatement,
     _utc_now,
 )
 from codex_harness.tool_trace import (

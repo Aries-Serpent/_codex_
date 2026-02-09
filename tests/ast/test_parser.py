@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from codex.ast.parser import ParseError, UniversalParser, parse_python
 from codex.ast.node import NodeType
+from codex.ast.parser import ParseError, UniversalParser, parse_python
 
 
 class TestUniversalParser:

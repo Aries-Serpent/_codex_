@@ -6,14 +6,15 @@ thread safety, memory management, and edge cases.
 Target: 90%+ coverage of src/codex/rag/monitoring.py
 """
 
-import pytest
-import time
 import threading
+import time
 from collections import deque
 
+import pytest
+
 from src.codex.rag.monitoring import (
-    MetricsConfig,
     MetricDataPoint,
+    MetricsConfig,
     RAGMetrics,
     get_metrics,
     reset_metrics,

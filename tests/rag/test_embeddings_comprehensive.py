@@ -62,7 +62,7 @@ class TestLocalSentenceTransformerProvider:
             provider = LocalSentenceTransformerProvider()
             texts = ["Hello world", "Test text", "Another example"]
             embeddings = provider.encode(texts)
-            
+
             assert isinstance(embeddings, np.ndarray)
             assert embeddings.shape[0] == 3
             mock_sentence_transformer.encode.assert_called_once()
@@ -73,7 +73,7 @@ class TestLocalSentenceTransformerProvider:
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2", "Text 3"]
             provider.encode(texts, batch_size=2)
-            
+
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
             assert call_kwargs['batch_size'] == 2
 
@@ -83,7 +83,7 @@ class TestLocalSentenceTransformerProvider:
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2"]
             provider.encode(texts, show_progress=True)
-            
+
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
             assert call_kwargs['show_progress_bar'] is True
 
@@ -105,7 +105,7 @@ class TestLocalSentenceTransformerProvider:
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
             provider = LocalSentenceTransformerProvider()
             provider.model = None
-            
+
             with pytest.raises(RuntimeError, match="Model not loaded"):
                 provider.encode(["test"])
 
@@ -114,7 +114,7 @@ class TestLocalSentenceTransformerProvider:
         with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
             provider = LocalSentenceTransformerProvider()
             provider.model = None
-            
+
             with pytest.raises(RuntimeError, match="Model not loaded"):
                 provider.get_dimension()
 
@@ -161,15 +161,15 @@ class TestOpenAIEmbeddingProvider:
             MagicMock(embedding=[0.1] * 1536),
             MagicMock(embedding=[0.2] * 1536),
         ]
-        
+
         mock_client = MagicMock()
         mock_client.embeddings.create.return_value = mock_response
-        
+
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")
             texts = ["Hello world", "Test text"]
             embeddings = provider.encode(texts)
-            
+
             assert isinstance(embeddings, np.ndarray)
             assert embeddings.shape == (2, 1536)
             mock_client.embeddings.create.assert_called_once()
@@ -178,15 +178,15 @@ class TestOpenAIEmbeddingProvider:
         """Test encoding with batch processing."""
         mock_response = MagicMock()
         mock_response.data = [MagicMock(embedding=[0.1] * 1536) for _ in range(5)]
-        
+
         mock_client = MagicMock()
         mock_client.embeddings.create.return_value = mock_response
-        
+
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")
             texts = ["Text " + str(i) for i in range(5)]
             provider.encode(texts, batch_size=3)
-            
+
             # Should make 2 API calls (3 + 2)
             assert mock_client.embeddings.create.call_count == 2
 
@@ -194,10 +194,10 @@ class TestOpenAIEmbeddingProvider:
         """Test that API errors are propagated."""
         mock_client = MagicMock()
         mock_client.embeddings.create.side_effect = Exception("API Error")
-        
+
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")
-            
+
             with pytest.raises(Exception, match="API Error"):
                 provider.encode(["test"])
 
@@ -247,7 +247,7 @@ class TestOpenAIEmbeddingProvider:
         with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")
             provider.client = None
-            
+
             with pytest.raises(RuntimeError, match="OpenAI client not initialized"):
                 provider.encode(["test"])
 
@@ -259,7 +259,7 @@ class TestCachedEmbeddingProvider:
         """Test cache initialization."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
-        
+
         assert cache.provider is mock_provider
         assert cache.cache_dir == Path(temp_cache_dir)
         assert cache.cache_hits == 0
@@ -270,11 +270,11 @@ class TestCachedEmbeddingProvider:
         """Test cache miss calls underlying provider."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         texts = ["Hello", "World"]
         cache.encode(texts, cache_key="test_key")
-        
+
         assert cache.cache_misses == 1
         assert cache.cache_hits == 0
         mock_provider.encode.assert_called_once_with(texts)
@@ -284,14 +284,14 @@ class TestCachedEmbeddingProvider:
         mock_provider = MagicMock(spec=EmbeddingProvider)
         expected_embeddings = np.random.randn(2, 384).astype(np.float32)
         mock_provider.encode.return_value = expected_embeddings
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         texts = ["Hello", "World"]
-        
+
         # First call - cache miss
         embeddings1 = cache.encode(texts, cache_key="test_key")
         assert cache.cache_misses == 1
-        
+
         # Second call - cache hit
         embeddings2 = cache.encode(texts, cache_key="test_key")
         assert cache.cache_hits == 1
@@ -302,13 +302,13 @@ class TestCachedEmbeddingProvider:
         """Test different cache keys create separate entries."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         texts = ["Hello", "World"]
-        
+
         cache.encode(texts, cache_key="key1")
         cache.encode(texts, cache_key="key2")
-        
+
         # Both should be cache misses
         assert cache.cache_misses == 2
         assert cache.cache_hits == 0
@@ -317,13 +317,13 @@ class TestCachedEmbeddingProvider:
         """Test encoding without cache key bypasses cache."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         texts = ["Hello", "World"]
-        
+
         cache.encode(texts)
         cache.encode(texts)
-        
+
         # Should call provider both times
         assert mock_provider.encode.call_count == 2
 
@@ -331,10 +331,10 @@ class TestCachedEmbeddingProvider:
         """Test get_dimension delegates to underlying provider."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.get_dimension.return_value = 768
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
         dimension = cache.get_dimension()
-        
+
         assert dimension == 768
         mock_provider.get_dimension.assert_called_once()
 
@@ -342,17 +342,17 @@ class TestCachedEmbeddingProvider:
         """Test cache hit/miss statistics tracking."""
         mock_provider = MagicMock(spec=EmbeddingProvider)
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
-        
+
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=temp_cache_dir)
-        
+
         # Three cache misses
         cache.encode(["text1"], cache_key="key1")
         cache.encode(["text2"], cache_key="key2")
         cache.encode(["text3"], cache_key="key3")
-        
+
         # Two cache hits
         cache.encode(["text1"], cache_key="key1")
         cache.encode(["text2"], cache_key="key2")
-        
+
         assert cache.cache_misses == 3
         assert cache.cache_hits == 2

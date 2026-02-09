@@ -34,7 +34,7 @@ class BaseBrainAdapter:
     Subclasses can override methods to provide category-specific
     behavior while maintaining the standard interface.
     """
-    
+
     def __init__(self, agent_id: str, **kwargs):
         """
         Initialize the adapter.
@@ -45,15 +45,15 @@ class BaseBrainAdapter:
         """
         self.brain = AgentBrainInterface(agent_id=agent_id, **kwargs)
         self.agent_id = agent_id
-    
+
     def query_patterns(self, symptoms, **kwargs):
         """Query patterns with optional category filtering."""
         return self.brain.query_patterns(symptoms, **kwargs)
-    
+
     def submit_learning(self, pattern_id: str, outcome: str, **kwargs):
         """Submit learning feedback."""
         return self.brain.submit_learning(pattern_id, outcome, **kwargs)
-    
+
     def diagnose(self, symptoms, **kwargs):
         """Perform diagnosis."""
         return self.brain.diagnose(symptoms, **kwargs)
@@ -65,9 +65,9 @@ class CICDAdapter(BaseBrainAdapter):
     
     Provides CI/CD-specific pattern querying and learning submission.
     """
-    
+
     CATEGORY = "ci_cd"
-    
+
     def query_patterns(self, symptoms, **kwargs):
         """Query CI/CD-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)
@@ -80,9 +80,9 @@ class TestingAdapter(BaseBrainAdapter):
     
     Provides testing-specific pattern querying and learning submission.
     """
-    
+
     CATEGORY = "testing"
-    
+
     def query_patterns(self, symptoms, **kwargs):
         """Query testing-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)
@@ -95,9 +95,9 @@ class SecurityAdapter(BaseBrainAdapter):
     
     Provides security-specific pattern querying and learning submission.
     """
-    
+
     CATEGORY = "security"
-    
+
     def query_patterns(self, symptoms, **kwargs):
         """Query security-specific patterns."""
         kwargs.setdefault("category", self.CATEGORY)

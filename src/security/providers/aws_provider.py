@@ -9,18 +9,18 @@ Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 from __future__ import annotations
 
 import logging
-from datetime import datetime, UTC
-from typing import Optional, List, Dict, Any
+from datetime import UTC, datetime
+from typing import Any, Dict, List, Optional
 
 from security.providers.base import (
-    SecretProvider,
-    ProviderType,
-    SecretType,
-    SecretMetadata,
-    RotationResult,
-    ValidationError,
     ProviderConfig,
     ProviderConfigError,
+    ProviderType,
+    RotationResult,
+    SecretMetadata,
+    SecretProvider,
+    SecretType,
+    ValidationError,
 )
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         >>> provider = AWSSecretsManagerProvider(config)
         >>> result = provider.rotate_secret("my-secret")
     """
-    
+
     def __init__(self, config: ProviderConfig):
         """Initialize AWS Secrets Manager provider.
         
@@ -68,29 +68,29 @@ class AWSSecretsManagerProvider(SecretProvider):
             raise ProviderConfigError(
                 "boto3 required for AWS provider. Install with: pip install boto3"
             )
-        
+
         self.config = config
         self.region = config.require("region")
-        
+
         # Create Secrets Manager client
         session_kwargs = {}
         if "aws_access_key_id" in config.config:
             session_kwargs["aws_access_key_id"] = config.get("aws_access_key_id")
             session_kwargs["aws_secret_access_key"] = config.get("aws_secret_access_key")
-        
+
         self.client = boto3.client(
             "secretsmanager",
             region_name=self.region,
             **session_kwargs
         )
-        
+
         logger.info(f"AWS Secrets Manager provider initialized (region={self.region})")
-    
+
     @property
     def provider_type(self) -> ProviderType:
         """Get provider type."""
         return ProviderType.AWS_SECRETS_MANAGER
-    
+
     def rotate_secret(
         self,
         secret_id: str,
@@ -118,7 +118,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 RotationLambdaARN=kwargs.get("rotation_lambda_arn"),
                 RotationRules=kwargs.get("rotation_rules", {}),
             )
-            
+
             return RotationResult(
                 success=True,
                 old_secret_id=secret_id,
@@ -128,12 +128,12 @@ class AWSSecretsManagerProvider(SecretProvider):
                     "arn": response["ARN"],
                 }
             )
-            
+
         except ClientError as e:
             error_code = e.response["Error"]["Code"]
             error_msg = e.response["Error"]["Message"]
             logger.error(f"AWS rotation failed ({error_code}): {error_msg}")
-            
+
             return RotationResult(
                 success=False,
                 old_secret_id=secret_id,
@@ -146,7 +146,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 old_secret_id=secret_id,
                 error_message=str(e)
             )
-    
+
     def validate_secret(
         self,
         secret_id: str,
@@ -168,7 +168,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             # Describe secret to check existence
             self.client.describe_secret(SecretId=secret_id)
             return True
-            
+
         except ClientError as e:
             error_code = e.response["Error"]["Code"]
             if error_code == "ResourceNotFoundException":
@@ -176,7 +176,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             raise ValidationError(f"Validation failed: {error_code}") from e
         except Exception as e:
             raise ValidationError(f"Validation failed: {e}") from e
-    
+
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get AWS secret metadata.
         
@@ -188,23 +188,23 @@ class AWSSecretsManagerProvider(SecretProvider):
         """
         try:
             response = self.client.describe_secret(SecretId=secret_id)
-            
+
             # Parse creation date
             created_at = response.get("CreatedDate")
             if created_at and not created_at.tzinfo:
                 created_at = created_at.replace(tzinfo=UTC)
-            
+
             # Parse last changed date
             updated_at = response.get("LastChangedDate", created_at)
             if updated_at and not updated_at.tzinfo:
                 updated_at = updated_at.replace(tzinfo=UTC)
-            
+
             # Parse tags
             tags = {
                 tag["Key"]: tag["Value"]
                 for tag in response.get("Tags", [])
             }
-            
+
             return SecretMetadata(
                 secret_id=response["Name"],
                 secret_type=SecretType.GENERIC,
@@ -216,10 +216,10 @@ class AWSSecretsManagerProvider(SecretProvider):
                 tags=tags,
                 scopes=None,
             )
-            
+
         except ClientError as e:
             raise ValidationError(f"Failed to get metadata: {e}") from e
-    
+
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get secret expiration.
         
@@ -232,7 +232,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             None (no expiration)
         """
         return None
-    
+
     def get_secret_value(self, secret_id: str) -> str:
         """Get secret value from AWS.
         
@@ -247,17 +247,17 @@ class AWSSecretsManagerProvider(SecretProvider):
         """
         try:
             response = self.client.get_secret_value(SecretId=secret_id)
-            
+
             # Return either SecretString or SecretBinary
             if "SecretString" in response:
                 return response["SecretString"]
             else:
                 import base64
                 return base64.b64encode(response["SecretBinary"]).decode("utf-8")
-                
+
         except ClientError as e:
             raise ValidationError(f"Failed to get secret value: {e}") from e
-    
+
     def create_secret(
         self,
         name: str,
@@ -281,17 +281,17 @@ class AWSSecretsManagerProvider(SecretProvider):
                 "Name": name,
                 "SecretString": secret_value,
             }
-            
+
             if description:
                 create_kwargs["Description"] = description
-            
+
             if tags:
                 create_kwargs["Tags"] = [
                     {"Key": k, "Value": v} for k, v in tags.items()
                 ]
-            
+
             response = self.client.create_secret(**create_kwargs)
-            
+
             return RotationResult(
                 success=True,
                 old_secret_id="",
@@ -302,14 +302,14 @@ class AWSSecretsManagerProvider(SecretProvider):
                     "version_id": response["VersionId"],
                 }
             )
-            
+
         except ClientError as e:
             return RotationResult(
                 success=False,
                 old_secret_id="",
                 error_message=str(e)
             )
-    
+
     def delete_secret(
         self,
         secret_id: str,
@@ -330,11 +330,11 @@ class AWSSecretsManagerProvider(SecretProvider):
                 RecoveryWindowInDays=recovery_window_days
             )
             return True
-            
+
         except ClientError as e:
             logger.error(f"Failed to delete secret: {e}")
             return False
-    
+
     def list_secrets(
         self,
         filter_tags: Optional[Dict[str, str]] = None
@@ -350,7 +350,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         try:
             secrets = []
             paginator = self.client.get_paginator("list_secrets")
-            
+
             # Build filters
             filters = []
             if filter_tags:
@@ -363,7 +363,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                         "Key": "tag-value",
                         "Values": [value]
                     })
-            
+
             # Paginate through results
             for page in paginator.paginate(Filters=filters):
                 for secret in page["SecretList"]:
@@ -373,9 +373,9 @@ class AWSSecretsManagerProvider(SecretProvider):
                     except Exception as e:
                         # Don't log secret names for security
                         logger.warning(f"Failed to get metadata for a secret: {type(e).__name__}")
-            
+
             return secrets
-            
+
         except ClientError as e:
             logger.error(f"Failed to list secrets: {e}")
             return []

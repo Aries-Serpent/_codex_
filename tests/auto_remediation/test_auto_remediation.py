@@ -1,8 +1,9 @@
 """Comprehensive test suite for auto-remediation system."""
 
-import pytest
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add tools to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "tools"))
@@ -217,7 +218,7 @@ if x > 0:
 
     def test_improvements_detection(self):
         """Test detection of improvements."""
-        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -243,7 +244,7 @@ if x > 0:
 
     def test_regression_detection(self):
         """Test detection of regressions."""
-        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -269,7 +270,7 @@ if x > 0:
 
     def test_confidence_calculation(self):
         """Test confidence score calculation."""
-        from auto_remediation.verifier import PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         # Good fix scenario
         pre_good = PreFixSnapshot(
@@ -305,7 +306,11 @@ if x > 0:
 
     def test_success_rate_tracking(self):
         """Test success rate calculation."""
-        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import (
+            PostFixSnapshot,
+            PreFixSnapshot,
+            VerificationResult,
+        )
 
         pre = PreFixSnapshot("hash", "code", {}, {}, "2026-01-01")
         post = PostFixSnapshot("hash", "code", {}, {}, "2026-01-01")
@@ -454,7 +459,11 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Simulate multiple remediation attempts
-        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import (
+            PostFixSnapshot,
+            PreFixSnapshot,
+            VerificationResult,
+        )
 
         pre = PreFixSnapshot("hash1", "code", {}, {}, "2026-01-01")
         post = PostFixSnapshot("hash2", "fixed", {}, {}, "2026-01-01")
@@ -473,7 +482,11 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Track multiple attempts
-        from auto_remediation.verifier import VerificationResult, PreFixSnapshot, PostFixSnapshot
+        from auto_remediation.verifier import (
+            PostFixSnapshot,
+            PreFixSnapshot,
+            VerificationResult,
+        )
 
         pre = PreFixSnapshot("hash", "code", {}, {}, "2026-01-01")
         post = PostFixSnapshot("hash2", "fixed", {}, {}, "2026-01-01")

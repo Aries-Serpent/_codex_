@@ -7,12 +7,14 @@ Error Capture, and Finalization.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
 PhaseAction = Callable[["WorkflowContext", "CapabilityPlan"], None]

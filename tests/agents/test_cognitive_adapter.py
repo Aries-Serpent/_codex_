@@ -7,7 +7,7 @@ to the new cognitive architecture.
 
 from __future__ import annotations
 
-from datetime import datetime, UTC, UTC
+from datetime import UTC, datetime
 from typing import Any, Dict, Optional
 from unittest.mock import MagicMock, patch
 

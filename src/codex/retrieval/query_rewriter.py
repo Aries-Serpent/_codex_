@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class QueryRewriteStrategy(Enum):
     """Available query rewrite strategies."""
-    
+
     NONE = "none"  # No rewriting
     NORMALIZE = "normalize"  # Basic normalization
     EXPAND = "expand"  # Query expansion
@@ -33,29 +33,29 @@ class QueryRewriteStrategy(Enum):
 @dataclass
 class QueryRewriteConfig:
     """Configuration for query rewriting."""
-    
+
     strategy: QueryRewriteStrategy = QueryRewriteStrategy.NORMALIZE
-    
+
     # Normalization options
     lowercase: bool = True
     remove_punctuation: bool = True
     remove_stopwords: bool = False
     stem_words: bool = False
-    
+
     # Expansion options
     max_expansions: int = 5
     expansion_method: str = "synonyms"  # synonyms, embeddings, llm
-    
+
     # Decomposition options
     max_sub_queries: int = 3
-    
+
     # Hybrid options
     sparse_weight: float = 0.3
     dense_weight: float = 0.7
-    
+
     # Multi-query options
     num_variants: int = 3
-    
+
     # Caching
     enable_cache: bool = True
     cache_size: int = 1000
@@ -64,19 +64,19 @@ class QueryRewriteConfig:
 @dataclass
 class RewrittenQuery:
     """Represents a rewritten query."""
-    
+
     original_query: str
     rewritten_query: str
     strategy: QueryRewriteStrategy
     expansions: list[str] = field(default_factory=list)
     sub_queries: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     @property
     def query_hash(self) -> str:
         """Generate hash for caching."""
         return hashlib.sha256(self.original_query.encode()).hexdigest()[:12]
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -91,10 +91,10 @@ class RewrittenQuery:
 
 class BaseQueryRewriter(ABC):
     """Base class for query rewrite strategies."""
-    
+
     def __init__(self, config: QueryRewriteConfig):
         self.config = config
-    
+
     @abstractmethod
     def rewrite(self, query: str) -> RewrittenQuery:
         """Rewrite the query."""
@@ -111,35 +111,35 @@ class NormalizeRewriter(BaseQueryRewriter):
     - Whitespace normalization
     - Optional stopword removal
     """
-    
+
     # Common English stopwords
     STOPWORDS = {
         "a", "an", "and", "are", "as", "at", "be", "by", "for",
         "from", "has", "he", "in", "is", "it", "its", "of", "on",
         "that", "the", "to", "was", "were", "will", "with",
     }
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """Normalize the query."""
         normalized = query
-        
+
         # Lowercase
         if self.config.lowercase:
             normalized = normalized.lower()
-        
+
         # Remove punctuation
         if self.config.remove_punctuation:
             normalized = re.sub(r'[^\w\s]', ' ', normalized)
-        
+
         # Normalize whitespace
         normalized = ' '.join(normalized.split())
-        
+
         # Remove stopwords
         if self.config.remove_stopwords:
             words = normalized.split()
             words = [w for w in words if w not in self.STOPWORDS]
             normalized = ' '.join(words)
-        
+
         return RewrittenQuery(
             original_query=query,
             rewritten_query=normalized,
@@ -157,7 +157,7 @@ class ExpansionRewriter(BaseQueryRewriter):
     - Related terms
     - Spelling corrections
     """
-    
+
     # Simple synonym map (can be expanded or loaded from file)
     SYNONYM_MAP = {
         "quick": ["fast", "rapid", "speedy"],
@@ -181,18 +181,18 @@ class ExpansionRewriter(BaseQueryRewriter):
         "api": ["interface", "endpoint", "service"],
         "database": ["db", "storage", "repository"],
     }
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """Expand the query with synonyms."""
         # First normalize
         normalizer = NormalizeRewriter(self.config)
         normalized = normalizer.rewrite(query)
-        
+
         # Find expansions with global limit
         words = normalized.rewritten_query.lower().split()
         expansions = set()
         max_per_word = max(1, self.config.max_expansions // max(1, len(words)))
-        
+
         for word in words:
             if word in self.SYNONYM_MAP:
                 # Limit per word to ensure fair distribution
@@ -200,15 +200,15 @@ class ExpansionRewriter(BaseQueryRewriter):
                     if len(expansions) >= self.config.max_expansions:
                         break
                     expansions.add(synonym)
-        
+
         expansions = list(expansions)[:self.config.max_expansions]
-        
+
         # Build expanded query
         if expansions:
             expanded_query = f"{normalized.rewritten_query} {' '.join(expansions)}"
         else:
             expanded_query = normalized.rewritten_query
-        
+
         return RewrittenQuery(
             original_query=query,
             rewritten_query=expanded_query,
@@ -225,16 +225,16 @@ class DecomposeRewriter(BaseQueryRewriter):
     Breaks complex queries into simpler sub-queries
     for more targeted retrieval.
     """
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """Decompose the query into sub-queries."""
         # Normalize first
         normalizer = NormalizeRewriter(self.config)
         normalized = normalizer.rewrite(query)
-        
+
         sub_queries = []
         query_text = normalized.rewritten_query
-        
+
         # Strategy 1: Split on conjunctions
         conjunctions = ["and", "or", "but", "also", "as well as"]
         for conj in conjunctions:
@@ -242,7 +242,7 @@ class DecomposeRewriter(BaseQueryRewriter):
                 parts = query_text.split(f" {conj} ")
                 sub_queries.extend([p.strip() for p in parts if p.strip()])
                 break
-        
+
         # Strategy 2: Split on question words
         if not sub_queries:
             question_patterns = [
@@ -254,7 +254,7 @@ class DecomposeRewriter(BaseQueryRewriter):
                     # Keep the original as the main query
                     sub_queries = [query_text]
                     break
-        
+
         # Strategy 3: Extract key phrases
         if not sub_queries:
             # Simple noun phrase extraction (can be enhanced with NLP)
@@ -266,14 +266,14 @@ class DecomposeRewriter(BaseQueryRewriter):
                     chunk = ' '.join(words[i:i + chunk_size])
                     if chunk.strip():
                         sub_queries.append(chunk)
-        
+
         # Limit sub-queries
         sub_queries = sub_queries[:self.config.max_sub_queries]
-        
+
         # If no decomposition possible, use original
         if not sub_queries:
             sub_queries = [query_text]
-        
+
         return RewrittenQuery(
             original_query=query,
             rewritten_query=query_text,
@@ -290,21 +290,21 @@ class HybridRewriter(BaseQueryRewriter):
     Generates both sparse (keyword-based) and dense
     (semantic) versions of the query.
     """
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """Generate hybrid query representations."""
         # Normalize for dense
         normalizer = NormalizeRewriter(self.config)
         normalized = normalizer.rewrite(query)
-        
+
         # For sparse: extract keywords and apply expansion
         expander = ExpansionRewriter(self.config)
         expanded = expander.rewrite(query)
-        
+
         # Build hybrid representation
         dense_query = normalized.rewritten_query
         sparse_query = expanded.rewritten_query
-        
+
         return RewrittenQuery(
             original_query=query,
             rewritten_query=dense_query,  # Use dense as primary
@@ -326,22 +326,22 @@ class MultiQueryRewriter(BaseQueryRewriter):
     Generates multiple query variants to capture
     different aspects of the user intent.
     """
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """Generate multiple query variants."""
         # Start with normalized query
         normalizer = NormalizeRewriter(self.config)
         normalized = normalizer.rewrite(query)
-        
+
         variants = [normalized.rewritten_query]
-        
+
         # Variant 1: Expanded query
         if len(variants) < self.config.num_variants:
             expander = ExpansionRewriter(self.config)
             expanded = expander.rewrite(query)
             if expanded.rewritten_query != normalized.rewritten_query:
                 variants.append(expanded.rewritten_query)
-        
+
         # Variant 2: Key terms only
         if len(variants) < self.config.num_variants:
             words = normalized.rewritten_query.split()
@@ -350,17 +350,17 @@ class MultiQueryRewriter(BaseQueryRewriter):
                 key_words = [w for w in words if len(w) > 3]
                 if key_words and len(key_words) < len(words):
                     variants.append(' '.join(key_words))
-        
+
         # Variant 3: First half / second half for long queries
         if len(variants) < self.config.num_variants:
             words = normalized.rewritten_query.split()
             if len(words) > 6:
                 half = len(words) // 2
                 variants.append(' '.join(words[:half]))
-        
+
         # Limit variants
         variants = variants[:self.config.num_variants]
-        
+
         return RewrittenQuery(
             original_query=query,
             rewritten_query=normalized.rewritten_query,
@@ -385,7 +385,7 @@ class QueryRewriter:
         print(rewritten.rewritten_query)
         print(rewritten.expansions)
     """
-    
+
     STRATEGY_MAP = {
         QueryRewriteStrategy.NORMALIZE: NormalizeRewriter,
         QueryRewriteStrategy.EXPAND: ExpansionRewriter,
@@ -393,14 +393,14 @@ class QueryRewriter:
         QueryRewriteStrategy.HYBRID: HybridRewriter,
         QueryRewriteStrategy.MULTI: MultiQueryRewriter,
     }
-    
+
     def __init__(self, config: Optional[QueryRewriteConfig] = None):
         """Initialize query rewriter with configuration."""
         self.config = config or QueryRewriteConfig()
-        
+
         # Initialize cache
         self._cache: dict[str, RewrittenQuery] = {}
-        
+
         if self.config.strategy == QueryRewriteStrategy.NONE:
             self._rewriter = None
         else:
@@ -409,7 +409,7 @@ class QueryRewriter:
                 NormalizeRewriter
             )
             self._rewriter = rewriter_class(self.config)
-    
+
     def rewrite(self, query: str) -> RewrittenQuery:
         """
         Rewrite the query.
@@ -426,13 +426,13 @@ class QueryRewriter:
                 rewritten_query=query,
                 strategy=self.config.strategy,
             )
-        
+
         # Check cache
         cache_key = hashlib.sha256(query.encode()).hexdigest()[:12]
         if self.config.enable_cache and cache_key in self._cache:
             logger.debug(f"Query cache hit for: {query[:50]}...")
             return self._cache[cache_key]
-        
+
         # No rewriting
         if self.config.strategy == QueryRewriteStrategy.NONE:
             result = RewrittenQuery(
@@ -442,7 +442,7 @@ class QueryRewriter:
             )
         else:
             result = self._rewriter.rewrite(query)
-        
+
         # Update cache
         if self.config.enable_cache:
             if len(self._cache) >= self.config.cache_size:
@@ -450,14 +450,14 @@ class QueryRewriter:
                 oldest_key = next(iter(self._cache))
                 del self._cache[oldest_key]
             self._cache[cache_key] = result
-        
+
         logger.debug(
             f"Query rewritten: '{query[:50]}...' -> '{result.rewritten_query[:50]}...' "
             f"({result.strategy.value})"
         )
-        
+
         return result
-    
+
     def rewrite_batch(self, queries: Sequence[str]) -> list[RewrittenQuery]:
         """
         Rewrite multiple queries.
@@ -469,12 +469,12 @@ class QueryRewriter:
             List of RewrittenQuery objects
         """
         return [self.rewrite(q) for q in queries]
-    
+
     def clear_cache(self) -> None:
         """Clear the query cache."""
         self._cache.clear()
         logger.debug("Query rewriter cache cleared")
-    
+
     def get_cache_stats(self) -> dict[str, int]:
         """Get cache statistics."""
         return {

@@ -10,7 +10,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 # Add scripts/cognitive to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'cognitive'))
 
@@ -28,7 +27,7 @@ from auto_continuation import (
 
 class TestLoadActionLog:
     """Tests for load_action_log function."""
-    
+
     def test_loads_valid_entries(self, tmp_path):
         """Test loading valid action log entries."""
         log_file = tmp_path / 'action_log.ndjson'
@@ -37,12 +36,12 @@ class TestLoadActionLog:
             {'timestamp': '2026-02-05T10:01:00Z', 'action': 'edited', 'path': 'src/old.py'},
         ]
         log_file.write_text('\n'.join(json.dumps(e) for e in entries))
-        
+
         result = load_action_log(log_file)
-        
+
         assert len(result) == 2
         assert result[0]['path'] == 'src/new.py'
-    
+
     def test_filters_by_hours(self, tmp_path):
         """Test filtering entries by hours."""
         log_file = tmp_path / 'action_log.ndjson'
@@ -52,32 +51,32 @@ class TestLoadActionLog:
             {'timestamp': datetime.now(timezone.utc).isoformat(), 'action': 'created', 'path': 'new.py'},
         ]
         log_file.write_text('\n'.join(json.dumps(e) for e in entries))
-        
+
         result = load_action_log(log_file, hours=1)
-        
+
         assert len(result) == 1
         assert result[0]['path'] == 'new.py'
-    
+
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing log file."""
         log_file = tmp_path / 'nonexistent.ndjson'
         result = load_action_log(log_file)
         assert result == []
-    
+
     def test_skips_malformed_json(self, tmp_path):
         """Test skipping malformed JSON lines."""
         log_file = tmp_path / 'action_log.ndjson'
         content = '{"action": "created", "path": "valid.py"}\nnot valid json\n{"action": "edited", "path": "another.py"}'
         log_file.write_text(content)
-        
+
         result = load_action_log(log_file)
-        
+
         assert len(result) == 2
 
 
 class TestLoadPatternStore:
     """Tests for load_pattern_store function."""
-    
+
     def test_loads_valid_store(self, tmp_path):
         """Test loading valid pattern store."""
         store_file = tmp_path / 'pattern_store.json'
@@ -88,23 +87,23 @@ class TestLoadPatternStore:
             "statistics": {}
         }
         store_file.write_text(json.dumps(store))
-        
+
         result = load_pattern_store(store_file)
-        
+
         assert "patterns" in result
         assert "test_pattern" in result["patterns"]
-    
+
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing store file."""
         store_file = tmp_path / 'nonexistent.json'
         result = load_pattern_store(store_file)
-        
+
         assert result == {"patterns": {}, "statistics": {}}
 
 
 class TestExtractSessionContext:
     """Tests for extract_session_context function."""
-    
+
     def test_extracts_file_operations(self):
         """Test extraction of file operations from entries."""
         entries = [
@@ -112,12 +111,12 @@ class TestExtractSessionContext:
             {'action': 'edited', 'path': 'src/old.py', 'timestamp': '2026-02-05T10:01:00Z'},
         ]
         pattern_store = {"patterns": {}, "learning_log": []}
-        
+
         result = extract_session_context(entries, pattern_store)
-        
+
         assert 'src/new.py' in result['files_created']
         assert 'src/old.py' in result['files_modified']
-    
+
     def test_extracts_session_info_from_pattern_store(self):
         """Test extraction of session info from pattern store."""
         entries = []
@@ -132,9 +131,9 @@ class TestExtractSessionContext:
                 }
             ]
         }
-        
+
         result = extract_session_context(entries, pattern_store)
-        
+
         assert result['session_id'] == "test-session"
         assert result['pr_number'] == 1234
         assert "pattern1" in result['patterns_applied']
@@ -142,53 +141,53 @@ class TestExtractSessionContext:
 
 class TestGenerateRecommendedActions:
     """Tests for generate_recommended_actions function."""
-    
+
     def test_includes_pending_task(self):
         """Test that pending tasks are included in recommendations."""
         context = {
             "pending_tasks": ["Complete documentation"]
         }
         pattern_store = {"patterns": {}}
-        
+
         result = generate_recommended_actions(context, pattern_store)
-        
+
         assert any("Complete documentation" in action for action in result)
-    
+
     def test_includes_standard_recommendations(self):
         """Test that standard recommendations are included."""
         context = {"pending_tasks": []}
         pattern_store = {"patterns": {}}
-        
+
         result = generate_recommended_actions(context, pattern_store)
-        
+
         assert any("cognitive brain" in action.lower() for action in result)
 
 
 class TestGenerateReferences:
     """Tests for generate_references function."""
-    
+
     def test_includes_existing_files(self, tmp_path):
         """Test that existing reference files are included."""
         # Create standard paths
         (tmp_path / '.codex' / 'cognitive_brain').mkdir(parents=True)
         (tmp_path / '.codex' / 'cognitive_brain' / 'pattern_learning_store.json').write_text('{}')
-        
+
         context = {"files_created": []}
         result = generate_references(context, tmp_path)
-        
+
         assert any('pattern' in ref['name'].lower() for ref in result)
-    
+
     def test_includes_created_files(self, tmp_path):
         """Test that recently created files are included."""
         context = {"files_created": ["src/new_module.py"]}
         result = generate_references(context, tmp_path)
-        
+
         assert any('new_module' in ref['name'] for ref in result)
 
 
 class TestGenerateMarkdownPrompt:
     """Tests for generate_markdown_prompt function."""
-    
+
     def test_includes_session_info(self):
         """Test that session info is included in markdown."""
         context = {
@@ -206,14 +205,14 @@ class TestGenerateMarkdownPrompt:
             "references": [],
             "activation_command": "Continue"
         }
-        
+
         result = generate_markdown_prompt(context)
-        
+
         assert "test-session" in result
         assert "#1234" in result
         assert "Task 1" in result
         assert "Task 2" in result
-    
+
     def test_includes_metrics_table(self):
         """Test that metrics table is included."""
         context = {
@@ -231,16 +230,16 @@ class TestGenerateMarkdownPrompt:
             "references": [],
             "activation_command": "Done"
         }
-        
+
         result = generate_markdown_prompt(context)
-        
+
         assert "Tasks Completed" in result
         assert "| 3 |" in result or "3" in result
 
 
 class TestGeneratePrCommentPrompt:
     """Tests for generate_pr_comment_prompt function."""
-    
+
     def test_includes_quick_summary(self):
         """Test that quick summary is included."""
         context = {
@@ -255,13 +254,13 @@ class TestGeneratePrCommentPrompt:
             "activation_command": "Continue",
             "blockers": []
         }
-        
+
         result = generate_pr_comment_prompt(context)
-        
+
         assert "Session Continuation" in result
         assert "Done 1" in result
         assert "Pending 1" in result
-    
+
     def test_includes_blockers_when_present(self):
         """Test that blockers are included when present."""
         context = {
@@ -276,16 +275,16 @@ class TestGeneratePrCommentPrompt:
             "activation_command": "Fix blockers",
             "blockers": ["CI failing", "Awaiting review"]
         }
-        
+
         result = generate_pr_comment_prompt(context)
-        
+
         assert "Blockers" in result
         assert "CI failing" in result
 
 
 class TestGenerateJsonPrompt:
     """Tests for generate_json_prompt function."""
-    
+
     def test_generates_valid_json(self):
         """Test that output is valid JSON."""
         context = {
@@ -307,13 +306,13 @@ class TestGenerateJsonPrompt:
             "activation_command": "Done",
             "blockers": []
         }
-        
+
         result = generate_json_prompt(context)
         parsed = json.loads(result)
-        
+
         assert parsed["session"]["id"] == "test"
         assert parsed["session"]["pr_number"] == 123
-    
+
     def test_includes_metrics(self):
         """Test that metrics are included in JSON."""
         context = {
@@ -335,10 +334,10 @@ class TestGenerateJsonPrompt:
             "activation_command": "Continue",
             "blockers": []
         }
-        
+
         result = generate_json_prompt(context)
         parsed = json.loads(result)
-        
+
         assert parsed["metrics"]["tasks_completed"] == 2
         assert parsed["metrics"]["tasks_pending"] == 1
         assert parsed["metrics"]["files_created"] == 2

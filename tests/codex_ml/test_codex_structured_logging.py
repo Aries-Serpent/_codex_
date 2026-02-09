@@ -12,7 +12,6 @@ import logging
 import os
 from unittest.mock import MagicMock, patch
 
-
 from codex_ml.codex_structured_logging import (
     JsonFormatter,
     _json_safe,
@@ -52,14 +51,14 @@ class TestJsonSafe:
         """Test dict values are recursively converted."""
         input_dict = {"key": "value", "nested": {"a": 1}}
         result = _json_safe(input_dict)
-        
+
         assert result == {"key": "value", "nested": {"a": 1}}
 
     def test_list_conversion(self) -> None:
         """Test list values are recursively converted."""
         input_list = ["a", 1, {"key": "value"}]
         result = _json_safe(input_list)
-        
+
         assert result == ["a", 1, {"key": "value"}]
 
     def test_custom_object_to_string(self) -> None:
@@ -67,16 +66,16 @@ class TestJsonSafe:
         class CustomClass:
             def __str__(self) -> str:
                 return "custom_value"
-        
+
         obj = CustomClass()
         result = _json_safe(obj)
-        
+
         assert result == "custom_value"
 
     def test_bytes_to_string(self) -> None:
         """Test bytes are converted to string."""
         result = _json_safe(b"hello")
-        
+
         assert result == "b'hello'"
 
 
@@ -87,21 +86,21 @@ class TestPrepareSessionPayload:
         """Test simple payload preparation."""
         data = {"key": "value", "number": 42}
         result = _prepare_session_payload(data)
-        
+
         assert result == {"key": "value", "number": 42}
 
     def test_nested_payload(self) -> None:
         """Test nested payload preparation."""
         data = {"outer": {"inner": "value"}}
         result = _prepare_session_payload(data)
-        
+
         assert result == {"outer": {"inner": "value"}}
 
     def test_non_string_keys(self) -> None:
         """Test non-string keys are converted."""
         data = {123: "value"}  # type: ignore
         result = _prepare_session_payload(data)
-        
+
         assert "123" in result
         assert result["123"] == "value"
 
@@ -124,7 +123,7 @@ class TestUtcIso:
         # Known timestamp: 2024-01-15 12:00:00 UTC
         ts = 1705320000.0
         result = _utc_iso(ts)
-        
+
         assert "2024-01-15" in result
         assert result.endswith("Z")
 
@@ -152,10 +151,10 @@ class TestJsonFormatter:
             args=(),
             exc_info=None,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert parsed["message"] == "Test message"
         assert parsed["log.level"] == "INFO"
         assert parsed["log.logger"] == "test_logger"
@@ -172,10 +171,10 @@ class TestJsonFormatter:
             args=(),
             exc_info=None,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert "timestamp" in parsed
         assert parsed["timestamp"].endswith("Z")
 
@@ -191,10 +190,10 @@ class TestJsonFormatter:
             args=(),
             exc_info=None,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert "process.pid" in parsed
         assert "thread.name" in parsed
 
@@ -210,23 +209,23 @@ class TestJsonFormatter:
             args=(),
             exc_info=None,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert "custom_field" in parsed
         assert parsed["custom_field"] == "custom_value"
 
     def test_exception_info(self) -> None:
         """Test formatting with exception info."""
         formatter = JsonFormatter()
-        
+
         try:
             raise ValueError("Test error")
         except ValueError:
             import sys
             exc_info = sys.exc_info()
-        
+
         record = logging.LogRecord(
             name="test",
             level=logging.ERROR,
@@ -236,10 +235,10 @@ class TestJsonFormatter:
             args=(),
             exc_info=exc_info,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert "error.kind" in parsed
         assert "error.message" in parsed
         assert "error.stack" in parsed
@@ -256,9 +255,9 @@ class TestSessionId:
             with patch("codex_ml.codex_structured_logging._session_id_ctx") as mock_ctx:
                 mock_ctx.get.return_value = None
                 mock_ctx.set = MagicMock()
-                
+
                 result = get_session_id()
-                
+
                 assert result is not None
                 assert len(result) > 0
 
@@ -268,7 +267,7 @@ class TestSessionId:
             with patch("codex_ml.codex_structured_logging._session_logger_ctx"):
                 with patch("codex_ml.codex_structured_logging.SessionLogger"):
                     result = set_session_id("test-session-id")
-                    
+
                     assert result == "test-session-id"
 
 
@@ -279,7 +278,7 @@ class TestInitJsonLogging:
         """Test that init_json_logging returns a logger."""
         with patch("codex_ml.codex_structured_logging.set_session_id"):
             result = init_json_logging()
-            
+
             assert isinstance(result, logging.Logger)
             assert result.name == "codex"
 
@@ -288,7 +287,7 @@ class TestInitJsonLogging:
         with patch.dict(os.environ, {"TEST_LOG_LEVEL": "DEBUG"}):
             with patch("codex_ml.codex_structured_logging.set_session_id"):
                 result = init_json_logging(level_env="TEST_LOG_LEVEL")
-                
+
                 assert result is not None
 
 
@@ -310,7 +309,7 @@ class TestEdgeCases:
             }
         }
         result = _json_safe(input_data)
-        
+
         assert result["level1"]["level2"]["level3"][2]["c"] == 1
 
     def test_formatter_unicode_handling(self) -> None:
@@ -325,9 +324,9 @@ class TestEdgeCases:
             args=(),
             exc_info=None,
         )
-        
+
         result = formatter.format(record)
         parsed = json.loads(result)
-        
+
         assert "日本語" in parsed["message"]
         assert "🎉" in parsed["message"]

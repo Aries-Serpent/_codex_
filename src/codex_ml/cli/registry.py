@@ -5,7 +5,9 @@ Command-line interface for MLflow Model Registry operations.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse
@@ -14,9 +16,9 @@ import sys
 from typing import Optional
 
 from codex_ml.registry.mlflow_registry import (
+    _HAS_MLFLOW,
     DeploymentStage,
     ModelRegistry,
-    _HAS_MLFLOW,
 )
 
 

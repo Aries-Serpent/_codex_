@@ -9,7 +9,7 @@ class TestOptimization:
         """Test Adam optimizer configuration."""
         # Arrange
         optimizer_type = "adam"
-        
+
         # Assert
         assert optimizer_type == "adam"
 
@@ -17,7 +17,7 @@ class TestOptimization:
         """Test AdamW optimizer configuration."""
         # Arrange
         optimizer_type = "adamw"
-        
+
         # Assert
         assert optimizer_type == "adamw"
 
@@ -25,7 +25,7 @@ class TestOptimization:
         """Test SGD optimizer configuration."""
         # Arrange
         optimizer_type = "sgd"
-        
+
         # Assert
         assert optimizer_type == "sgd"
 
@@ -33,7 +33,7 @@ class TestOptimization:
         """Test learning rate value."""
         # Arrange
         lr = 1e-4
-        
+
         # Assert
         assert lr > 0
         assert lr < 1
@@ -42,7 +42,7 @@ class TestOptimization:
         """Test weight decay parameter."""
         # Arrange
         weight_decay = 0.01
-        
+
         # Assert
         assert weight_decay >= 0
 
@@ -50,7 +50,7 @@ class TestOptimization:
         """Test momentum parameter."""
         # Arrange
         momentum = 0.9
-        
+
         # Assert
         assert 0 <= momentum <= 1
 
@@ -58,7 +58,7 @@ class TestOptimization:
         """Test Adam beta parameters."""
         # Arrange
         betas = (0.9, 0.999)
-        
+
         # Assert
         assert len(betas) == 2
         assert all(0 < b < 1 for b in betas)
@@ -67,7 +67,7 @@ class TestOptimization:
         """Test epsilon parameter."""
         # Arrange
         eps = 1e-8
-        
+
         # Assert
         assert eps > 0
 
@@ -75,7 +75,7 @@ class TestOptimization:
         """Test linear learning rate scheduler."""
         # Arrange
         scheduler_type = "linear"
-        
+
         # Assert
         assert scheduler_type == "linear"
 
@@ -83,7 +83,7 @@ class TestOptimization:
         """Test cosine learning rate scheduler."""
         # Arrange
         scheduler_type = "cosine"
-        
+
         # Assert
         assert scheduler_type == "cosine"
 
@@ -91,7 +91,7 @@ class TestOptimization:
         """Test warmup scheduler."""
         # Arrange
         warmup_steps = 1000
-        
+
         # Assert
         assert warmup_steps > 0
 
@@ -99,7 +99,7 @@ class TestOptimization:
         """Test warmup ratio."""
         # Arrange
         warmup_ratio = 0.1
-        
+
         # Assert
         assert 0 < warmup_ratio < 1
 
@@ -107,7 +107,7 @@ class TestOptimization:
         """Test step learning rate scheduler."""
         # Arrange
         step_size = 10
-        
+
         # Assert
         assert step_size > 0
 
@@ -115,7 +115,7 @@ class TestOptimization:
         """Test exponential learning rate scheduler."""
         # Arrange
         gamma = 0.95
-        
+
         # Assert
         assert 0 < gamma < 1
 
@@ -123,7 +123,7 @@ class TestOptimization:
         """Test max gradient norm for clipping."""
         # Arrange
         max_grad_norm = 1.0
-        
+
         # Assert
         assert max_grad_norm > 0
 
@@ -131,7 +131,7 @@ class TestOptimization:
         """Test gradient accumulation steps."""
         # Arrange
         gradient_accumulation_steps = 4
-        
+
         # Assert
         assert gradient_accumulation_steps >= 1
 
@@ -139,7 +139,7 @@ class TestOptimization:
         """Test optimizer state management."""
         # Arrange
         state = {"step": 100, "exp_avg": {}}
-        
+
         # Assert
         assert "step" in state
 
@@ -150,6 +150,6 @@ class TestOptimization:
             {"params": [], "lr": 1e-4},
             {"params": [], "lr": 1e-5}
         ]
-        
+
         # Assert
         assert len(param_groups) == 2

@@ -23,11 +23,10 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
-from typing import Callable, Dict, List, Optional, Set, Any
+from typing import Any, Callable, Dict, List, Optional, Set
 
-from .token_manager import TokenManager, TokenClaims
 from ..security_utils import sanitize_log_message
-
+from .token_manager import TokenClaims, TokenManager
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +65,7 @@ class AuthResult:
 
 class APIKeyValidator:
     """API key validation with secure HMAC-SHA256 hashing."""
-    
+
     def __init__(self, secret_key: Optional[str] = None):
         """
         Initialize API key validator.
@@ -78,7 +77,7 @@ class APIKeyValidator:
             ValueError: If AUTH_SECRET_KEY is not set in production environment.
         """
         self._keys: Dict[str, Dict[str, Any]] = {}  # hash -> key_info
-        
+
         # Get secret key from parameter, environment, or raise error in production
         if secret_key:
             self._secret_key = secret_key
@@ -97,7 +96,7 @@ class APIKeyValidator:
                         "AUTH_SECRET_KEY environment variable must be set in production. "
                         "Generate a secure random key: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
                     )
-    
+
     def _compute_hmac(self, api_key: str) -> str:
         """
         Compute a computationally expensive hash of an API key.
@@ -115,7 +114,7 @@ class APIKeyValidator:
             100_000,
         )
         return derived_key.hex()
-    
+
     def register_key(self, key_hash: str, user_id: str, scopes: Optional[List[str]] = None,
                     name: str = "default") -> None:
         """
@@ -134,7 +133,7 @@ class APIKeyValidator:
             "created_at": time.time(),
             "last_used": None,
         }
-    
+
     def validate_key(self, api_key: str) -> Optional[Dict[str, Any]]:
         """
         Validate an API key using secure HMAC-SHA256 hashing.
@@ -146,14 +145,14 @@ class APIKeyValidator:
             Key info dict if valid, None otherwise
         """
         key_hash = self._compute_hmac(api_key)
-        
+
         if key_hash in self._keys:
             key_info = self._keys[key_hash]
             key_info["last_used"] = time.time()
             return key_info
-        
+
         return None
-    
+
     def hash_api_key(self, api_key: str) -> str:
         """
         Hash an API key using HMAC-SHA256.
@@ -167,7 +166,7 @@ class APIKeyValidator:
             HMAC-SHA256 hash of the API key
         """
         return self._compute_hmac(api_key)
-    
+
     def revoke_key(self, key_hash: str) -> bool:
         """
         Revoke an API key.
@@ -186,7 +185,7 @@ class APIKeyValidator:
 
 class RateLimiter:
     """Simple in-memory rate limiter."""
-    
+
     def __init__(self, requests_per_window: int = 100, window_seconds: int = 60):
         """
         Initialize rate limiter.
@@ -198,7 +197,7 @@ class RateLimiter:
         self._requests_per_window = requests_per_window
         self._window_seconds = window_seconds
         self._counters: Dict[str, List[float]] = {}
-    
+
     def is_allowed(self, key: str) -> bool:
         """
         Check if request is allowed.
@@ -211,21 +210,21 @@ class RateLimiter:
         """
         now = time.time()
         window_start = now - self._window_seconds
-        
+
         if key not in self._counters:
             self._counters[key] = []
-        
+
         # Remove old entries
         self._counters[key] = [t for t in self._counters[key] if t > window_start]
-        
+
         # Check limit
         if len(self._counters[key]) >= self._requests_per_window:
             return False
-        
+
         # Record request
         self._counters[key].append(now)
         return True
-    
+
     def get_remaining(self, key: str) -> int:
         """
         Get remaining requests in current window.
@@ -238,14 +237,14 @@ class RateLimiter:
         """
         now = time.time()
         window_start = now - self._window_seconds
-        
+
         if key not in self._counters:
             return self._requests_per_window
-        
+
         # Count requests in window
         current_count = len([t for t in self._counters[key] if t > window_start])
         return max(0, self._requests_per_window - current_count)
-    
+
     def cleanup(self) -> int:
         """
         Clean up old entries.
@@ -256,13 +255,13 @@ class RateLimiter:
         now = time.time()
         window_start = now - self._window_seconds
         cleaned = 0
-        
+
         for key in list(self._counters.keys()):
             self._counters[key] = [t for t in self._counters[key] if t > window_start]
             if not self._counters[key]:
                 del self._counters[key]
                 cleaned += 1
-        
+
         return cleaned
 
 
@@ -278,7 +277,7 @@ class AuthMiddleware:
         token_manager = TokenManager(secret_key="your-secret")
         app.add_middleware(AuthMiddleware, token_manager=token_manager)
     """
-    
+
     def __init__(self, app, token_manager: TokenManager, config: Optional[AuthConfig] = None,
                  api_key_validator: Optional[APIKeyValidator] = None):
         """
@@ -298,46 +297,46 @@ class AuthMiddleware:
             self.config.rate_limit_requests,
             self.config.rate_limit_window
         )
-    
+
     async def __call__(self, scope, receive, send):
         """ASGI interface."""
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
-        
+
         # Check if path is exempt
         path = scope.get("path", "")
         if path in self.config.exempt_paths:
             await self.app(scope, receive, send)
             return
-        
+
         if not self.config.enabled:
             await self.app(scope, receive, send)
             return
-        
+
         # Extract headers
         headers = dict(scope.get("headers", []))
-        
+
         # Authenticate request
         auth_result = self._authenticate(headers)
-        
+
         # Store auth result in scope
         scope["auth"] = auth_result
-        
+
         if not auth_result.authenticated:
             # Return 401 Unauthorized
             await self._send_unauthorized(send, auth_result.error)
             return
-        
+
         # Check rate limit
         rate_key = auth_result.user_id or scope.get("client", ["unknown"])[0]
         if not self.rate_limiter.is_allowed(rate_key):
             await self._send_rate_limited(send)
             return
-        
+
         # Continue to app
         await self.app(scope, receive, send)
-    
+
     def _authenticate(self, headers: Dict[bytes, bytes]) -> AuthResult:
         """
         Authenticate request from headers.
@@ -352,26 +351,26 @@ class AuthMiddleware:
         auth_header = headers.get(b"authorization", b"").decode()
         if auth_header.startswith("Bearer "):
             return self._authenticate_jwt(auth_header[7:])
-        
+
         # Try API key
         api_key_header = self.config.api_key_header.lower().encode()
         api_key = headers.get(api_key_header, b"").decode()
         if api_key:
             return self._authenticate_api_key(api_key)
-        
+
         # No authentication provided
         return AuthResult(
             authenticated=False,
             method=AuthMethod.NONE,
             error="No authentication credentials provided"
         )
-    
+
     def _authenticate_jwt(self, token: str) -> AuthResult:
         """Authenticate using JWT token."""
         try:
             claims = self.token_manager.validate_token(token)
             scopes = set(claims.scope.split() if claims.scope else [])
-            
+
             return AuthResult(
                 authenticated=True,
                 method=AuthMethod.JWT,
@@ -387,11 +386,11 @@ class AuthMiddleware:
                 method=AuthMethod.JWT,
                 error=f"Invalid token: {error_msg}"
             )
-    
+
     def _authenticate_api_key(self, api_key: str) -> AuthResult:
         """Authenticate using API key."""
         key_info = self.api_key_validator.validate_key(api_key)
-        
+
         if key_info:
             return AuthResult(
                 authenticated=True,
@@ -399,23 +398,23 @@ class AuthMiddleware:
                 user_id=key_info["user_id"],
                 scopes=key_info["scopes"],
             )
-        
+
         logger.warning("API key authentication failed: Invalid key")
         return AuthResult(
             authenticated=False,
             method=AuthMethod.API_KEY,
             error="Invalid API key"
         )
-    
+
     async def _send_unauthorized(self, send, error: Optional[str] = None):
         """Send 401 Unauthorized response."""
         import json
-        
+
         body = json.dumps({
             "error": "Unauthorized",
             "detail": error or "Authentication required"
         }).encode()
-        
+
         await send({
             "type": "http.response.start",
             "status": 401,
@@ -428,16 +427,16 @@ class AuthMiddleware:
             "type": "http.response.body",
             "body": body,
         })
-    
+
     async def _send_rate_limited(self, send):
         """Send 429 Too Many Requests response."""
         import json
-        
+
         body = json.dumps({
             "error": "Too Many Requests",
             "detail": "Rate limit exceeded. Please try again later."
         }).encode()
-        
+
         await send({
             "type": "http.response.start",
             "status": 429,
@@ -467,33 +466,33 @@ def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[Auth
     """
     required_scopes = set(scopes or [])
     allowed_methods = set(methods or list(AuthMethod))
-    
+
     def decorator(func: Callable):
         @wraps(func)
         async def wrapper(request, *args, **kwargs):
             # Get auth result from request scope
             auth_result = getattr(request.scope.get("auth"), None, None)
-            
+
             if not auth_result or not auth_result.authenticated:
                 from fastapi import HTTPException
                 raise HTTPException(status_code=401, detail="Authentication required")
-            
+
             if auth_result.method not in allowed_methods:
                 from fastapi import HTTPException
                 raise HTTPException(status_code=401, detail="Invalid authentication method")
-            
+
             # Check scopes if required
             if required_scopes and not (required_scopes & auth_result.scopes):
                 from fastapi import HTTPException
                 raise HTTPException(status_code=403, detail="Insufficient permissions")
-            
+
             # Add user info to request state
             request.state.user_id = auth_result.user_id
             request.state.scopes = auth_result.scopes
             request.state.auth_method = auth_result.method
-            
+
             return await func(request, *args, **kwargs)
-        
+
         return wrapper
     return decorator
 

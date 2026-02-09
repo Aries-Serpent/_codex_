@@ -11,8 +11,9 @@ This module tests the main Codex CLI commands including:
 Phase: 46 - Coverage Improvement
 """
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 from click.testing import CliRunner
 
 
@@ -181,15 +182,15 @@ class TestConfigSweepCommand:
         """Test config-sweep command with basic options."""
         try:
             from codex_ml.cli.codex_cli import codex
-            
+
             # Create a mock base config
             base_config = tmp_path / "base.yaml"
             base_config.write_text("training:\n  seed: 42\n")
-            
+
             output = tmp_path / "sweep.yaml"
-            
+
             mock_subprocess.return_value = "abc123"
-            
+
             runner = CliRunner()
             result = runner.invoke(codex, [
                 "config-sweep",
@@ -310,11 +311,11 @@ class TestDeployCommand:
         """Test deploy command requires --dry-run flag."""
         try:
             from codex_ml.cli.codex_cli import codex
-            
+
             # Create mock config
             config = tmp_path / "deploy.yaml"
             config.write_text("deployment:\n  mode: test\n")
-            
+
             runner = CliRunner()
             result = runner.invoke(codex, ["deploy", "--config", str(config)])
             # Should fail without --dry-run
@@ -426,11 +427,11 @@ class TestHashDataset:
         """Test dataset hashing function."""
         try:
             from codex_ml.cli.codex_cli import _hash_dataset
-            
+
             # Create a test file
             test_file = tmp_path / "test_data.txt"
             test_file.write_text("test content for hashing")
-            
+
             hash_result = _hash_dataset(test_file)
             assert isinstance(hash_result, str)
             assert len(hash_result) == 64  # SHA256 hex digest length
@@ -441,14 +442,14 @@ class TestHashDataset:
         """Test that same content produces same hash."""
         try:
             from codex_ml.cli.codex_cli import _hash_dataset
-            
+
             # Create two files with same content
             file1 = tmp_path / "file1.txt"
             file2 = tmp_path / "file2.txt"
             content = "identical content"
             file1.write_text(content)
             file2.write_text(content)
-            
+
             hash1 = _hash_dataset(file1)
             hash2 = _hash_dataset(file2)
             assert hash1 == hash2
@@ -459,13 +460,13 @@ class TestHashDataset:
         """Test that different content produces different hash."""
         try:
             from codex_ml.cli.codex_cli import _hash_dataset
-            
+
             # Create two files with different content
             file1 = tmp_path / "file1.txt"
             file2 = tmp_path / "file2.txt"
             file1.write_text("content a")
             file2.write_text("content b")
-            
+
             hash1 = _hash_dataset(file1)
             hash2 = _hash_dataset(file2)
             assert hash1 != hash2
@@ -480,7 +481,7 @@ class TestGetTokenizerPipeline:
         """Test that tokenizer pipeline is cached."""
         try:
             from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
-            
+
             # First call
             pipeline1 = _get_tokenizer_pipeline()
             # Second call should return same cached instance

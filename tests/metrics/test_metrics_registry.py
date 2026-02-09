@@ -5,12 +5,17 @@ Tests for metrics registry and base metrics functionality
 import numpy as np
 import pytest
 
-
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch
 from src.codex_ml.metrics.base import BaseMetric
-from src.codex_ml.metrics.classification import StreamingAccuracy, accuracy, f1, precision, recall
+from src.codex_ml.metrics.classification import (
+    StreamingAccuracy,
+    accuracy,
+    f1,
+    precision,
+    recall,
+)
 from src.codex_ml.metrics.streaming import StreamingLoss
 
 

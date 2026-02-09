@@ -20,7 +20,6 @@ from typing import Any, Dict
 
 import pytest
 
-
 # ============================================================================
 # Fixtures
 # ============================================================================
@@ -120,7 +119,7 @@ class TestDeploymentStrategies:
         """Test rolling deployment maintains availability."""
         replicas = deployment_config["replicas"]
         max_unavailable = deployment_config["max_unavailable"]
-        
+
         min_available = replicas - max_unavailable
         assert min_available > 0
 
@@ -143,7 +142,7 @@ class TestDeploymentStrategies:
             "idle_environment": "green",
             "switch_traffic_percent": 100,
         }
-        
+
         assert blue_green["strategy"] == "blue-green"
         assert blue_green["switch_traffic_percent"] == 100
 
@@ -214,7 +213,7 @@ class TestDeploymentHealthChecks:
         """Test health check evaluation logic."""
         consecutive_successes = 3
         healthy_threshold = 3
-        
+
         is_healthy = consecutive_successes >= healthy_threshold
         assert is_healthy is True
 
@@ -280,11 +279,11 @@ class TestInfrastructureProvisioning:
     def test_resource_limits_greater_than_requests(self, infrastructure_config: Dict[str, Any]):
         """Test resource limits are greater than or equal to requests."""
         resources = infrastructure_config["resources"]
-        
+
         # Parse CPU values (e.g., "500m" vs "2000m")
         cpu_request = int(resources["cpu_request"].rstrip("m"))
         cpu_limit = int(resources["cpu_limit"].rstrip("m"))
-        
+
         assert cpu_limit >= cpu_request
 
     def test_scaling_config_valid(self, infrastructure_config: Dict[str, Any]):
@@ -309,7 +308,7 @@ class TestPostDeploymentVerification:
             {"name": "api_response", "passed": True},
             {"name": "database_connection", "passed": True},
         ]
-        
+
         all_passed = all(t["passed"] for t in smoke_tests)
         assert all_passed is True
 
@@ -317,11 +316,11 @@ class TestPostDeploymentVerification:
         """Test metrics are compared to baseline."""
         baseline = {"latency_p50_ms": 50, "error_rate": 0.001}
         current = {"latency_p50_ms": 55, "error_rate": 0.0012}
-        
+
         # Check if within acceptable range (10% degradation)
         latency_ok = current["latency_p50_ms"] <= baseline["latency_p50_ms"] * 1.1
         error_ok = current["error_rate"] <= baseline["error_rate"] * 1.1
-        
+
         assert latency_ok is True
         assert error_ok is True
 
@@ -335,7 +334,7 @@ class TestPostDeploymentVerification:
             "status": "success",
             "timestamp": datetime.utcnow().isoformat(),
         }
-        
+
         assert notification["status"] == "success"
         assert "timestamp" in notification
 
@@ -348,7 +347,7 @@ class TestPostDeploymentVerification:
             "timestamp": datetime.utcnow().isoformat(),
             "artifacts": ["api-service:2.1.0"],
         }
-        
+
         assert "deployed_by" in audit_entry
         assert "approved_by" in audit_entry
 
@@ -360,6 +359,6 @@ class TestPostDeploymentVerification:
             "rollback_count": 0,
             "health_check_failures": 0,
         }
-        
+
         assert metrics["deployment_duration_seconds"] > 0
         assert metrics["rollback_count"] == 0

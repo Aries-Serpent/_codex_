@@ -187,7 +187,7 @@ class TestCoVeResult:
         # Arrange
         claim1 = Claim(id="c1", text="Test1", source_span=(0, 5))
         claim2 = Claim(id="c2", text="Test2", source_span=(6, 11))
-        
+
         verifications = [
             VerificationResult(claim=claim1, status=VerificationStatus.VERIFIED),
             VerificationResult(claim=claim2, status=VerificationStatus.UNVERIFIED),
@@ -213,7 +213,7 @@ class TestCoVeResult:
         # Arrange
         claim1 = Claim(id="c1", text="Test1", source_span=(0, 5))
         claim2 = Claim(id="c2", text="Test2", source_span=(6, 11))
-        
+
         verifications = [
             VerificationResult(claim=claim1, status=VerificationStatus.VERIFIED),
             VerificationResult(claim=claim2, status=VerificationStatus.VERIFIED),

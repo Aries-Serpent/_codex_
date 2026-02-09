@@ -11,7 +11,6 @@ from typing import Callable
 
 import pytest
 
-
 CLI_MODULES = [
     "codex_ml.cli.tracking_decide",
     "codex_ml.cli.generate",

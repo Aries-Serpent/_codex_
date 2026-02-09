@@ -6,8 +6,9 @@ This module tests:
 - Integration with training configurations
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 
 # Test early stopping
@@ -236,8 +237,8 @@ def test_early_stopping_load_state_dict():
 def test_create_early_stopping_from_config():
     """Test creating early stopping from config."""
     from codex_ml.training.early_stopping import (
-        create_early_stopping_from_config,
         EarlyStoppingConfig,
+        create_early_stopping_from_config,
     )
 
     # Disabled config returns None
@@ -418,6 +419,7 @@ def test_training_enhancements_config_exists():
 def test_training_enhancements_config_valid():
     """Test that training enhancements config is valid YAML."""
     from pathlib import Path
+
     import yaml
 
     config_path = Path(__file__).parents[2] / "configs" / "base" / "training_enhancements.yaml"

@@ -12,10 +12,10 @@ Features:
 - Index optimization tools and performance tuning
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Optional
-import logging
 
 logger = logging.getLogger(__name__)
 

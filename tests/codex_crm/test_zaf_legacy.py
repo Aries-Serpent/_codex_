@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 import zipfile
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestZendeskAppPackageError:
@@ -47,7 +48,7 @@ class TestReadZaf:
             zf.writestr("src/app.js", "console.log('hello');")
 
         result = read_zaf(zip_path)
-        
+
         assert "archive_path" in result
         assert "manifest" in result
         assert "files" in result
@@ -101,7 +102,7 @@ class TestScaffoldTemplate:
 
         manifest_file = out_dir / "manifest.json"
         assert manifest_file.exists()
-        
+
         manifest = json.loads(manifest_file.read_text())
         assert manifest["name"] == "TestApp"
 
@@ -127,7 +128,7 @@ class TestScaffoldTemplate:
 
         manifest_file = out_dir / "manifest.json"
         manifest = json.loads(manifest_file.read_text())
-        
+
         api_base = next(p for p in manifest["parameters"] if p["name"] == "API_BASE")
         assert api_base["type"] == "text"
 
@@ -164,32 +165,35 @@ class TestNormaliseEntryPath:
 
     def test_normalise_basic_path(self):
         """Test normalising a basic path."""
-        from codex_crm.zaf_legacy.reader import _normalise_entry_path
         from zipfile import ZipInfo
+
+        from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
         entry = ZipInfo("src/app.js")
         result = _normalise_entry_path(entry)
-        
+
         assert result == Path("src/app.js")
 
     def test_normalise_empty_path(self):
         """Test normalising empty path returns None."""
-        from codex_crm.zaf_legacy.reader import _normalise_entry_path
         from zipfile import ZipInfo
+
+        from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
         entry = ZipInfo("")
         result = _normalise_entry_path(entry)
-        
+
         assert result is None
 
     def test_normalise_dot_path(self):
         """Test normalising dot-only path returns None."""
-        from codex_crm.zaf_legacy.reader import _normalise_entry_path
         from zipfile import ZipInfo
+
+        from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
         entry = ZipInfo("./")
         result = _normalise_entry_path(entry)
-        
+
         assert result is None
 
     def test_normalise_rejects_path_traversal(self):
@@ -197,7 +201,7 @@ class TestNormaliseEntryPath:
         from codex_crm.zaf_legacy.reader import _normalise_entry_path
 
         entry = zipfile.ZipInfo("../../../etc/passwd")
-        
+
         with pytest.raises(ValueError, match="escapes"):
             _normalise_entry_path(entry)
 

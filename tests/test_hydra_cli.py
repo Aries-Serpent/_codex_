@@ -10,7 +10,6 @@ import sys
 from pathlib import Path
 
 
-
 def test_cli_smoke():
     """Test that CLI can be invoked with --help."""
     cmd = [sys.executable, "-m", "codex_ml.cli.main", "--help"]

@@ -60,15 +60,15 @@ class Snapshot:
     created_at: datetime
     manifest: Optional[IngestManifest] = None
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     def get_source_dir(self) -> Path:
         """Get path to source directory within snapshot."""
         return self.snapshot_dir / "source"
-    
+
     def get_artifact_path(self, name: str) -> Path:
         """Get path to a named artifact within snapshot."""
         return self.snapshot_dir / name
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert snapshot to dictionary for serialization."""
         return {
@@ -93,7 +93,7 @@ def _compute_content_hash(path: Path) -> str:
         Hex-encoded SHA256 hash
     """
     hasher = hashlib.sha256()
-    
+
     if path.is_file():
         # Hash single file
         content = path.read_bytes()
@@ -107,7 +107,7 @@ def _compute_content_hash(path: Path) -> str:
                 rel_path = file_path.relative_to(path)
                 hasher.update(str(rel_path).encode("utf-8"))
                 hasher.update(file_path.read_bytes())
-    
+
     return hasher.hexdigest()
 
 
@@ -159,7 +159,7 @@ def _check_size_bounds(path: Path) -> None:
             raise ValueError(
                 f"Total size {size_mb:.2f}MB exceeds limit {MAX_TOTAL_SIZE_MB}MB"
             )
-        
+
         file_count = sum(1 for f in path.rglob("*") if f.is_file())
         if file_count > MAX_FILES_COUNT:
             raise ValueError(
@@ -306,21 +306,21 @@ def ingest(
     """
     source_str = str(source)
     artifacts_base = artifacts_dir or ARTIFACTS_DIR
-    
+
     # Parse manifest if provided
     manifest = None
     if manifest_path:
         manifest = parse_manifest(Path(manifest_path))
-    
+
     # Create timestamp for snapshot
     now = datetime.now(timezone.utc)
     timestamp = now.strftime("%Y%m%d-%H%M%S")
-    
+
     # Create temporary workspace
     with tempfile.TemporaryDirectory() as tmpdir:
         work_dir = Path(tmpdir) / "workspace"
         work_dir.mkdir()
-        
+
         # Determine source type and process
         if source_str.startswith(("http://", "https://", "git@")):
             # Git URL
@@ -330,7 +330,7 @@ def ingest(
         elif Path(source_str).exists():
             source_path = Path(source_str)
             _validate_path(source_path)
-            
+
             if source_path.suffix.lower() == ".zip":
                 # ZIP archive
                 logger.info("Extracting ZIP archive: %s", source_str)
@@ -355,27 +355,27 @@ def ingest(
                 raise ValueError(f"Unknown source type: {source_str}")
         else:
             raise FileNotFoundError(f"Source not found: {source_str}")
-        
+
         # Compute content hash
         content_hash = _compute_content_hash(work_dir)
         short_hash = content_hash[:8]
-        
+
         # Generate snapshot ID
         if not snapshot_id:
             snapshot_id = f"{timestamp}-{short_hash}"
-        
+
         # Create snapshot directory
         snapshot_dir = artifacts_base / snapshot_id
         snapshot_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Copy source to snapshot
         source_dir = snapshot_dir / "source"
         shutil.copytree(work_dir, source_dir)
-        
+
         # Copy manifest if provided
         if manifest_path:
             shutil.copy2(manifest_path, snapshot_dir / "manifest.yaml")
-        
+
         # Create snapshot metadata
         snapshot_meta = {
             "snapshot_id": snapshot_id,
@@ -384,18 +384,18 @@ def ingest(
             "created_at": now.isoformat(),
             "file_count": sum(1 for _ in source_dir.rglob("*") if _.is_file()),
         }
-        
+
         meta_path = snapshot_dir / "snapshot-meta.json"
         with meta_path.open("w", encoding="utf-8") as f:
             json.dump(snapshot_meta, f, indent=2)
-        
+
         # Create empty artifact directories
         (snapshot_dir / "patches").mkdir(exist_ok=True)
         (snapshot_dir / "tests" / "codex_generated").mkdir(parents=True, exist_ok=True)
         (snapshot_dir / "llm_provenance").mkdir(exist_ok=True)
-        
+
         logger.info("Created snapshot: %s at %s", snapshot_id, snapshot_dir)
-        
+
         return Snapshot(
             snapshot_id=snapshot_id,
             source_path=source_str,

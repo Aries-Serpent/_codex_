@@ -13,10 +13,10 @@ import pytest
 pytest.importorskip("torch")
 
 import torch
-from torch import nn
-from torch.utils.data import Dataset
 from src.training.functional_training import TrainCfg, run_custom_trainer
 from src.training.seed import ensure_global_seed
+from torch import nn
+from torch.utils.data import Dataset
 
 
 class TinyRegressionDataset(Dataset):

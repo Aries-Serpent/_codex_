@@ -16,8 +16,8 @@ Planset PS-04: Privacy-First Memory Implementation
 
 from __future__ import annotations
 
-import re
 import logging
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -48,7 +48,7 @@ _GPL = re.compile(r"GNU GENERAL PUBLIC LICENSE|GPL v[23]", re.I)
 
 class RedactionMode(Enum):
     """Redaction modes for PII scrubbing."""
-    
+
     TOKEN_REPLACEMENT = "token"  # Replace with [TYPE_REDACTED]
     SEMANTIC_PRESERVATION = "semantic"  # Replace with type-appropriate placeholder
     HASH_PRESERVATION = "hash"  # Replace with hash for deduplication
@@ -57,7 +57,7 @@ class RedactionMode(Enum):
 @dataclass
 class PIIFlags:
     """Flags indicating detected PII types and counts."""
-    
+
     pii_email: bool = False
     pii_phone: bool = False
     pii_ipv4: bool = False
@@ -75,7 +75,7 @@ def _luhn_check(card_number: str) -> bool:
     digits = [int(d) for d in card_number if d.isdigit()]
     if len(digits) < 13:
         return False
-    
+
     checksum = 0
     for i, digit in enumerate(reversed(digits)):
         if i % 2 == 1:
@@ -112,7 +112,7 @@ def scrub(
     """
     flags = PIIFlags()
     out = text
-    
+
     # Email scrubbing
     def mask_email(m: re.Match) -> str:
         flags.pii_email = True
@@ -125,7 +125,7 @@ def scrub(
             return "user@domain.com"
         else:
             return u[:2] + "***@" + ("***" + d[-4:])
-    
+
     # Phone scrubbing
     def mask_phone(m: re.Match) -> str:
         flags.pii_phone = True
@@ -137,7 +137,7 @@ def scrub(
             return "+1-555-000-0000"
         else:
             return "[PHONE_REDACTED]"
-    
+
     # IPv4 scrubbing
     def mask_ipv4(m: re.Match) -> str:
         flags.pii_ipv4 = True
@@ -149,21 +149,21 @@ def scrub(
             return "10.0.0.1"
         else:
             return "[IPV4_REDACTED]"
-    
+
     # IPv6 scrubbing
     def mask_ipv6(m: re.Match) -> str:
         flags.pii_ipv6 = True
         flags.total_redactions += 1
         flags.redaction_details.append({"type": "ipv6", "position": m.start()})
         return "[IPV6_REDACTED]"
-    
+
     # SSN scrubbing
     def mask_ssn(m: re.Match) -> str:
         flags.pii_ssn = True
         flags.total_redactions += 1
         flags.redaction_details.append({"type": "ssn", "position": m.start()})
         return "[SSN_REDACTED]"
-    
+
     # Credit card scrubbing with Luhn validation
     def mask_credit_card(m: re.Match) -> str:
         card_num = m.group(0)
@@ -183,38 +183,38 @@ def scrub(
         flags.total_redactions += 1
         flags.redaction_details.append({"type": "credit_card", "position": m.start()})
         return "[CREDIT_CARD_REDACTED]"
-    
+
     # AWS key scrubbing
     def mask_aws_key(m: re.Match) -> str:
         flags.pii_aws_key = True
         flags.total_redactions += 1
         flags.redaction_details.append({"type": "aws_key", "position": m.start()})
         return "[AWS_KEY_REDACTED]"
-    
+
     # Apply scrubbing in priority order (longer patterns first to avoid conflicts)
     # Credit cards first (16 digits) before phone (10 digits)
     if enable_credit_card:
         out = _CREDIT_CARD.sub(mask_credit_card, out)
-    
+
     if enable_aws_key:
         out = _AWS_KEY.sub(mask_aws_key, out)
-    
+
     out = _EMAIL.sub(mask_email, out)
     out = _PHONE.sub(mask_phone, out)
-    
+
     if enable_ip:
         out = _IPV4.sub(mask_ipv4, out)
         out = _IPV6.sub(mask_ipv6, out)
-    
+
     if enable_ssn:
         out = _SSN.sub(mask_ssn, out)
-    
+
     # License detection
     if _GPL.search(out):
         flags.license_gpl = True
         if not allow_gpl:
             out = "[LICENSE_BLOCKED_GPL]\n"
-    
+
     # Return backward-compatible dict format
     flags_dict = {
         "pii_email": flags.pii_email,
@@ -228,7 +228,7 @@ def scrub(
         "total_redactions": flags.total_redactions,
         "redaction_details": flags.redaction_details,
     }
-    
+
     return out, flags_dict
 
 

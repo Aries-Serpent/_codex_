@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import tarfile
 import time
-from datetime import datetime, UTC, UTC, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 

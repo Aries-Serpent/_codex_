@@ -2,19 +2,19 @@
 Tests for performance-optimized vectorized quantum orchestrator.
 """
 
-import pytest
 import numpy as np
+import pytest
 
 from codex.quantum_orchestrator.optimized import (
-    VectorizedEvolution,
-    SpatialIndex,
     BatchGradientComputer,
-    extract_batch_state,
+    SpatialIndex,
+    VectorizedEvolution,
     apply_batch_state,
+    extract_batch_state,
 )
 from codex.quantum_orchestrator.orchestrator import (
-    create_orchestrator,
     PhysicsConstants,
+    create_orchestrator,
 )
 
 

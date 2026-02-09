@@ -4,12 +4,13 @@ Test Experiment Logging
 Test module for experiment logging.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
+
 import yaml
 
+from codex_ml.cli import eval_minimal, train_minimal
 from codex_ml.logging.experiment import ExperimentTracker
-from codex_ml.cli import train_minimal, eval_minimal
 
 
 def test_experiment_tracker_writes_meta(tmp_path: Path):

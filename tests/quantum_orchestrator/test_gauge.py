@@ -10,26 +10,27 @@ Tests verify:
 - Conservation enforcement
 """
 
-import pytest
-import numpy as np
 from unittest.mock import Mock
 
+import numpy as np
+import pytest
+
 from codex.quantum_orchestrator.orchestrator import (
-    TaskState,
     DiracSpinor,
-    TaskVector,
     OrchestratorState,
     PhysicsConstants,
+    TaskState,
+    TaskVector,
 )
 from codex.quantum_orchestrator.qft.gauge import (
-    SymmetryType,
-    TransformationResult,
-    U1GaugeTransform,
-    TranslationSymmetry,
-    TimeTranslationSymmetry,
-    NoetherCurrent,
-    GaugeChecker,
     ConservationEnforcer,
+    GaugeChecker,
+    NoetherCurrent,
+    SymmetryType,
+    TimeTranslationSymmetry,
+    TransformationResult,
+    TranslationSymmetry,
+    U1GaugeTransform,
 )
 
 

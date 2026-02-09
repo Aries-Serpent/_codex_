@@ -15,13 +15,13 @@ def main():
     parser.add_argument('--preview', '-p', action='store_true', help='Generate preview')
     parser.add_argument('--aggressive', '-a', action='store_true', help='Aggressive cleaning')
     parser.add_argument('--interactive', '-i', action='store_true', help='Interactive mode')
-    
+
     args = parser.parse_args()
-    
+
     print("🎵" * 30)
     print("   INTELLIGENT AUDIO AUTO-TUNE")
     print("🎵" * 30)
-    
+
     try:
         from services.audio.workflow.auto_tune_workflow import AutoTuneWorkflow
         workflow = AutoTuneWorkflow(cognitive_mode=True)
@@ -32,11 +32,11 @@ def main():
             aggressive=args.aggressive,
             interactive=args.interactive
         )
-        
+
         print("\n" + "="*60)
         print("PROCESSING COMPLETE")
         print("="*60)
-        
+
         if result.success:
             print(f"✅ Successfully processed {result.total_files} file(s)")
             print(f"   Success rate: {result.success_rate:.1%}")

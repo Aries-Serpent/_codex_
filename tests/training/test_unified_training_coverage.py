@@ -30,7 +30,6 @@ from codex_ml.training.unified_training import (
     distributed_context,
 )
 
-
 # =============================================================================
 # Test Data & Fixtures
 # =============================================================================
@@ -300,7 +299,7 @@ def test_distributed_context_no_env(monkeypatch):
     monkeypatch.delenv("WORLD_SIZE", raising=False)
     monkeypatch.delenv("RANK", raising=False)
     monkeypatch.delenv("LOCAL_RANK", raising=False)
-    
+
     context = distributed_context()
     assert context["world_size"] == 1
     assert context["rank"] == 0
@@ -312,7 +311,7 @@ def test_distributed_context_from_env(monkeypatch):
     monkeypatch.setenv("WORLD_SIZE", "4")
     monkeypatch.setenv("RANK", "2")
     monkeypatch.setenv("LOCAL_RANK", "1")
-    
+
     context = distributed_context()
     assert context["world_size"] == 4
     assert context["rank"] == 2
@@ -323,7 +322,7 @@ def test_distributed_context_fallback_localworld(monkeypatch):
     """Test distributed_context falls back to LOCALWORLD variable."""
     monkeypatch.delenv("LOCAL_RANK", raising=False)
     monkeypatch.setenv("LOCALWORLD", "3")
-    
+
     context = distributed_context()
     assert context["local_rank"] == 3
 
@@ -332,7 +331,7 @@ def test_distributed_context_fallback_localworld(monkeypatch):
 def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
     """Test distributed_context integrates torch.distributed if available."""
     monkeypatch.setenv("WORLD_SIZE", "2")
-    
+
     # Mock torch.distributed at the module level where it's imported
     mock_dist = MagicMock()
     mock_dist.is_available.return_value = True
@@ -340,10 +339,10 @@ def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
     mock_dist.get_backend.return_value = "nccl"
     mock_dist.get_world_size.return_value = 4
     mock_dist.get_rank.return_value = 1
-    
+
     # Make torch.distributed accessible as an attribute
     mock_torch.distributed = mock_dist
-    
+
     # Also patch the actual torch.distributed import
     with patch("torch.distributed", mock_dist):
         context = distributed_context()
@@ -360,7 +359,7 @@ def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
 def test_unified_config_serialization(minimal_config):
     """Test UnifiedTrainingConfig can be serialized to dict."""
     from dataclasses import asdict
-    
+
     config_dict = asdict(minimal_config)
     assert config_dict["model_name"] == "test-model"
     assert config_dict["epochs"] == 2
@@ -397,7 +396,7 @@ def test_unified_config_grad_clip_optional():
     """Test UnifiedTrainingConfig with optional grad_clip_norm."""
     config = UnifiedTrainingConfig(model_name="test", grad_clip_norm=1.0)
     assert config.grad_clip_norm == 1.0
-    
+
     config2 = UnifiedTrainingConfig(model_name="test")
     assert config2.grad_clip_norm is None
 

@@ -346,30 +346,30 @@ def test_scan_file_extensions(
 def test_real_workflow_integration():
     """Integration test with actual repository workflows."""
     from pathlib import Path
-    
+
     # Use actual workflows directory
     workflows_dir = Path(__file__).parent.parent.parent.parent / ".github" / "workflows"
-    
+
     if not workflows_dir.exists():
         pytest.skip("Workflows directory not found")
-    
+
     inventory = WorkflowInventory(workflows_dir)
     count = inventory.scan()
-    
+
     # Verify we found workflows
     assert count > 0, "Should find at least one workflow"
     assert len(inventory.workflows) == count
-    
+
     # Verify stats make sense
     stats = inventory.get_stats()
     assert stats.total_workflows == count
     assert stats.total_jobs >= 0
     assert stats.total_triggers >= 0
-    
+
     # Verify triggerable workflows are identified
     triggerable = inventory.get_triggerable()
     assert all(item.filename in inventory.workflows for item in triggerable)
-    
+
     # Verify at least one workflow has proper metadata
     first_workflow = list(inventory.workflows.values())[0]
     assert first_workflow.name is not None
@@ -381,7 +381,7 @@ def test_workflow_inventory_import_from_services():
     """Test that WorkflowInventory can be imported from services module."""
     from src.services import WorkflowInventory as WI
     from src.services.workflow import WorkflowInventory
-    
+
     # Verify both import paths work
     assert WI is WorkflowInventory
 
@@ -389,14 +389,14 @@ def test_workflow_inventory_import_from_services():
 def test_parser_handles_invalid_yaml(temp_workflows_dir):
     """Test that parser handles invalid YAML gracefully."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     # Create file with invalid YAML
     invalid_file = temp_workflows_dir / "invalid.yml"
     invalid_file.write_text("name: test\non:\n  push: [\n  # Missing closing bracket")
-    
+
     parser = WorkflowParser()
     result = parser.parse_file(invalid_file)
-    
+
     # Should return None for invalid YAML
     assert result is None
 
@@ -404,14 +404,14 @@ def test_parser_handles_invalid_yaml(temp_workflows_dir):
 def test_parser_handles_invalid_utf8(temp_workflows_dir):
     """Test that parser handles invalid UTF-8 gracefully."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     # Create file with invalid UTF-8
     invalid_file = temp_workflows_dir / "invalid_utf8.yml"
     invalid_file.write_bytes(b"name: test\xc3\x28")  # Invalid UTF-8
-    
+
     parser = WorkflowParser()
     result = parser.parse_file(invalid_file)
-    
+
     # Should return None for invalid encoding
     assert result is None
 
@@ -421,13 +421,13 @@ def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_con
     # Create one valid and one invalid workflow
     valid_file = temp_workflows_dir / "valid.yml"
     valid_file.write_text(sample_workflow_content)
-    
+
     invalid_file = temp_workflows_dir / "invalid.yml"
     invalid_file.write_text("invalid: yaml: content: [[[")
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     count = inventory.scan()
-    
+
     # Should successfully parse the valid one
     assert count == 1
     assert "valid.yml" in inventory.workflows
@@ -436,18 +436,19 @@ def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_con
 
 def test_parser_handles_missing_required_fields():
     """Test parser handles workflows missing required fields."""
-    from src.services.workflow.parser import WorkflowParser
     from pathlib import Path
-    
+
+    from src.services.workflow.parser import WorkflowParser
+
     # Workflow with no jobs
     content = """
 name: Test
 on: push
 """
-    
+
     parser = WorkflowParser()
     result = parser.parse_content(content, Path("test.yml"))
-    
+
     # Should still parse (jobs can be empty)
     assert result is not None
     assert result.name == "Test"
@@ -466,7 +467,7 @@ jobs:
     with:
       param: value
 """)
-    
+
     reusable = temp_workflows_dir / "reusable.yml"
     reusable.write_text("""
 name: Reusable
@@ -481,10 +482,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     # Check dependencies are detected
     deps = inventory.get_workflow_dependencies("caller.yml")
     assert "reusable.yml" in deps
@@ -505,14 +506,14 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("scheduled.yml")
     assert wf is not None
     assert len(wf.triggers) > 0
-    
+
     # Find schedule trigger
     schedule_triggers = [t for t in wf.triggers if t.type.value == "schedule"]
     assert len(schedule_triggers) > 0
@@ -531,10 +532,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("conditional.yml")
     assert wf is not None
     assert "conditional-job" in wf.jobs
@@ -558,7 +559,7 @@ def test_refresh_nonexistent_workflow(temp_workflows_dir):
 def test_parser_with_list_trigger_format(temp_workflows_dir):
     """Test parsing workflows with list format triggers."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     content = """
 name: Multi Trigger
 on: [push, pull_request]
@@ -568,10 +569,10 @@ jobs:
     steps:
       - run: echo "test"
 """
-    
+
     parser = WorkflowParser()
     workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
-    
+
     assert workflow is not None
     assert len(workflow.triggers) == 2
 
@@ -579,7 +580,7 @@ jobs:
 def test_parser_with_string_trigger_format(temp_workflows_dir):
     """Test parsing workflows with string format triggers."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     content = """
 name: Simple
 on: push
@@ -589,10 +590,10 @@ jobs:
     steps:
       - run: echo "test"
 """
-    
+
     parser = WorkflowParser()
     workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
-    
+
     assert workflow is not None
     assert len(workflow.triggers) == 1
     assert workflow.triggers[0].type.value == "push"
@@ -615,10 +616,10 @@ jobs:
     steps:
       - run: echo "second"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("needs.yml")
     assert wf is not None
     assert "second" in wf.jobs
@@ -638,10 +639,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("timeout.yml")
     assert wf is not None
     assert wf.jobs["test"].timeout_minutes == 60
@@ -649,18 +650,19 @@ jobs:
 
 def test_clear_parser_cache():
     """Test clearing parser cache."""
-    from src.services.workflow.parser import WorkflowParser
     from pathlib import Path
-    
+
+    from src.services.workflow.parser import WorkflowParser
+
     parser = WorkflowParser()
-    
+
     # Parse something to populate cache
     content = "name: Test\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test"
     parser.parse_content(content, Path("test.yml"))
-    
+
     # Clear cache
     parser.clear_cache()
-    
+
     # Cache should be empty
     assert len(parser._cache) == 0
 
@@ -680,10 +682,10 @@ jobs:
     steps:
       - run: echo "deploy"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("depends.yml")
     assert wf is not None
 
@@ -701,10 +703,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("bad_needs.yml")
     assert wf is not None
     # needs should be None for invalid type
@@ -724,10 +726,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("perms.yml")
     assert wf is not None
     assert "default" in wf.permissions
@@ -746,10 +748,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("bad_env.yml")
     assert wf is not None
     # env should be empty dict for invalid type
@@ -779,10 +781,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("inputs.yml")
     assert wf is not None
     assert "environment" in wf.inputs
@@ -794,7 +796,7 @@ jobs:
 def test_input_with_invalid_type(temp_workflows_dir):
     """Test input with invalid type falls back to string."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     content = """
 name: Invalid Input
 on:
@@ -809,10 +811,10 @@ jobs:
     steps:
       - run: echo test
 """
-    
+
     parser = WorkflowParser()
     wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
-    
+
     assert wf is not None
     assert "test" in wf.inputs
     # Should fall back to STRING for invalid type
@@ -836,10 +838,10 @@ jobs:
       - name: Step 3
         run: echo "step 3"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("steps.yml")
     assert wf is not None
     assert wf.jobs["test"].steps == 4
@@ -856,10 +858,10 @@ jobs:
     runs-on: ubuntu-latest
     steps: "not a list"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("bad_steps.yml")
     assert wf is not None
     # steps should be 0 for invalid type
@@ -884,13 +886,13 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("branches.yml")
     assert wf is not None
-    
+
     # Check branches are parsed
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
     assert push_trigger.branches is not None
@@ -913,13 +915,13 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("paths.yml")
     assert wf is not None
-    
+
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
     assert push_trigger.paths is not None
     assert 'src/**' in push_trigger.paths
@@ -939,13 +941,13 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("types.yml")
     assert wf is not None
-    
+
     pr_trigger = [t for t in wf.triggers if t.type.value == "pull_request"][0]
     assert pr_trigger.types is not None
     assert "opened" in pr_trigger.types
@@ -954,7 +956,7 @@ jobs:
 def test_trigger_with_string_branches(temp_workflows_dir):
     """Test trigger with branches as string (single branch)."""
     from src.services.workflow.parser import WorkflowParser
-    
+
     content = """
 name: Single Branch
 on:
@@ -966,10 +968,10 @@ jobs:
     steps:
       - run: echo test
 """
-    
+
     parser = WorkflowParser()
     wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
-    
+
     assert wf is not None
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
     assert push_trigger.branches == ["main"]
@@ -995,10 +997,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("choice.yml")
     assert wf is not None
     assert "environment" in wf.inputs
@@ -1024,13 +1026,13 @@ jobs:
     steps:
       - run: echo "build"
 """)
-    
+
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
-    
+
     wf = inventory.get_workflow("props.yml")
     assert wf is not None
-    
+
     # Test properties
     assert wf.filename == "props.yml"
     assert wf.has_workflow_dispatch is True

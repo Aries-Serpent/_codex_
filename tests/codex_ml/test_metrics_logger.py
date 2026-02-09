@@ -4,8 +4,8 @@ Test Metrics Logger
 Test module for metrics logger.
 """
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 from codex_ml.logging.metrics import MetricLogger
 

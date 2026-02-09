@@ -20,7 +20,6 @@ from typing import Any, Dict
 
 import pytest
 
-
 # ============================================================================
 # Fixtures
 # ============================================================================
@@ -168,7 +167,7 @@ class TestDependencyManagement:
         """Test no circular dependencies exist."""
         # Build dependency graph
         deps = {t["id"]: set(t["depends_on"]) for t in workflow_definition["tasks"]}
-        
+
         # Check for cycles using visited tracking
         visited = set()
         for task_id in deps:
@@ -181,7 +180,7 @@ class TestDependencyManagement:
         """Test tasks can be ordered topologically."""
         tasks = workflow_definition["tasks"]
         [t["id"] for t in tasks]
-        
+
         # Simple check: first task should have no deps
         first_task = tasks[0]
         assert len(first_task["depends_on"]) == 0
@@ -201,7 +200,7 @@ class TestParallelExecution:
             {"id": "b", "depends_on": []},
             {"id": "c", "depends_on": ["a", "b"]},
         ]
-        
+
         # Tasks a and b can run in parallel
         no_deps = [t for t in tasks if len(t["depends_on"]) == 0]
         assert len(no_deps) == 2
@@ -217,10 +216,10 @@ class TestParallelExecution:
         """Test tracking completion of parallel tasks."""
         parallel_tasks = ["task-a", "task-b", "task-c"]
         completed = {"task-a", "task-b"}
-        
+
         all_complete = set(parallel_tasks) == completed
         assert all_complete is False
-        
+
         completed.add("task-c")
         all_complete = set(parallel_tasks) == completed
         assert all_complete is True
@@ -236,7 +235,7 @@ class TestErrorHandling:
     def test_task_failure_handling(self):
         """Test handling of task failures."""
         task_result = {"status": "failed", "error": "Build failed", "exit_code": 1}
-        
+
         is_failed = task_result["status"] == "failed"
         assert is_failed is True
 
@@ -244,7 +243,7 @@ class TestErrorHandling:
         """Test retry logic on failure."""
         max_retries = task_config["retry_count"]
         current_attempt = 1
-        
+
         should_retry = current_attempt < max_retries
         assert should_retry is True
 
@@ -252,7 +251,7 @@ class TestErrorHandling:
         """Test workflow aborts on critical failure."""
         critical_failure = True
         continue_on_error = False
-        
+
         should_abort = critical_failure and not continue_on_error
         assert should_abort is True
 
@@ -264,7 +263,7 @@ class TestErrorHandling:
             "error": "Task failed after retries",
             "timestamp": datetime.utcnow().isoformat(),
         }
-        
+
         assert notification["type"] == "workflow_failed"
         assert "error" in notification
 
@@ -284,7 +283,7 @@ class TestWorkflowMonitoring:
             "current_task": "build",
             "progress_percent": 20,
         }
-        
+
         assert status["status"] == "running"
         assert 0 <= status["progress_percent"] <= 100
 
@@ -296,7 +295,7 @@ class TestWorkflowMonitoring:
             "completed_at": "2026-01-19T06:05:00Z",
             "duration_seconds": 300,
         }
-        
+
         assert task_metrics["duration_seconds"] > 0
 
     def test_workflow_logs_collected(self):
@@ -305,7 +304,7 @@ class TestWorkflowMonitoring:
             {"timestamp": "2026-01-19T06:00:00Z", "level": "INFO", "message": "Starting build"},
             {"timestamp": "2026-01-19T06:05:00Z", "level": "INFO", "message": "Build complete"},
         ]
-        
+
         assert len(logs) > 0
         assert logs[0]["level"] in ["DEBUG", "INFO", "WARNING", "ERROR"]
 
@@ -318,13 +317,13 @@ class TestWorkflowMonitoring:
             "avg_duration_seconds": 450,
             "success_rate": 0.95,
         }
-        
+
         assert metrics["success_rate"] == metrics["successful_runs"] / metrics["total_runs"]
 
     def test_workflow_history_retention(self):
         """Test workflow history is retained."""
         retention_days = 90
         history_count = 500
-        
+
         assert retention_days > 0
         assert history_count > 0

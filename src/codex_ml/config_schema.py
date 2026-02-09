@@ -4,7 +4,9 @@ Extend/replace with rich Hydra Structured Configs as needed.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 from dataclasses import asdict, dataclass, field

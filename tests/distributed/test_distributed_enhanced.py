@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-
 # Add training directory to path
 training_dir = Path(__file__).parent.parent.parent / "training"
 sys.path.insert(0, str(training_dir))

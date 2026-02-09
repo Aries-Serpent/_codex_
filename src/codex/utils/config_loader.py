@@ -76,7 +76,7 @@ class ErrorConfig:
     message: str
     severity: str
     resolution: str
-    
+
     def format(self, **kwargs: Any) -> str:
         """Format error message with context."""
         return f"[{self.code}] {self.message.format(**kwargs)}"
@@ -84,7 +84,7 @@ class ErrorConfig:
 
 class ConfigLoader:
     """Centralized configuration loader using Hydra Compose API."""
-    
+
     def __init__(self, repo_root: Path | None = None) -> None:
         """Initialize the config loader.
         
@@ -94,7 +94,7 @@ class ConfigLoader:
         self.repo_root = repo_root or self._find_repo_root()
         self.error_config: dict[str, Any] = {}
         self._load_error_config()
-    
+
     @staticmethod
     def _find_repo_root() -> Path:
         """Find the repository root directory."""
@@ -104,7 +104,7 @@ class ConfigLoader:
                 return parent
         # Fallback to parent of src
         return current.parents[3]
-    
+
     def _load_error_config(self) -> None:
         """Load error configuration from conf/errors/defaults.yaml."""
         error_config_path = self.repo_root / "conf" / "errors" / "defaults.yaml"
@@ -112,7 +112,7 @@ class ConfigLoader:
             logger.warning(f"Error config not found at {error_config_path}")
             self.error_config = self._get_default_error_config()
             return
-        
+
         try:
             import yaml
             with error_config_path.open("r") as f:
@@ -123,7 +123,7 @@ class ConfigLoader:
         except Exception as e:
             logger.warning(f"Failed to load error config: {e}")
             self.error_config = self._get_default_error_config()
-    
+
     @staticmethod
     def _get_default_error_config() -> dict[str, Any]:
         """Get default error configuration when YAML loading fails."""
@@ -142,7 +142,7 @@ class ConfigLoader:
                 "fallback_enabled": True
             }
         }
-    
+
     def get_error(self, category: str, error_key: str) -> ErrorConfig | None:
         """Get structured error configuration.
         
@@ -161,7 +161,7 @@ class ConfigLoader:
         if error_data and isinstance(error_data, dict):
             return ErrorConfig(**error_data)
         return None
-    
+
     def _resolve_config_dir(self, config_dir: str | Path | None) -> Path:
         """Resolve config directory path with dual-path support.
         
@@ -181,7 +181,7 @@ class ConfigLoader:
             return self.repo_root / config_dir
         else:
             return Path(config_dir)
-    
+
     def _try_legacy_path(self, config_name: str, primary_dir: Path) -> Path | None:
         """Try to find config in legacy location.
         
@@ -196,21 +196,21 @@ class ConfigLoader:
         if primary_dir.name == "conf" or "conf" in str(primary_dir):
             # Map conf/ structure to configs/ structure
             relative_to_conf = primary_dir.relative_to(self.repo_root / "conf") if (self.repo_root / "conf") in primary_dir.parents else Path(".")
-            
+
             # Try common legacy mappings
             legacy_candidates = [
                 self.repo_root / "configs" / relative_to_conf / f"{config_name}.yaml",
                 self.repo_root / "configs" / "training" / relative_to_conf / f"{config_name}.yaml",
                 self.repo_root / "configs" / f"{config_name}.yaml",
             ]
-            
+
             for candidate in legacy_candidates:
                 if candidate.exists():
                     logger.debug(f"Found legacy config: {candidate}")
                     return candidate
-        
+
         return None
-    
+
     def load_config(
         self,
         config_name: str,
@@ -233,11 +233,11 @@ class ConfigLoader:
             MissingConfigException: If config not found and allow_fallback=False
         """
         overrides = overrides or []
-        
+
         # Resolve config directory with dual-path fallback
         config_dir = self._resolve_config_dir(config_dir)
         config_file = config_dir / f"{config_name}.yaml"
-        
+
         # Try legacy path if primary not found (backward compatibility)
         if not config_file.exists() and allow_fallback:
             legacy_file = self._try_legacy_path(config_name, config_dir)
@@ -245,13 +245,13 @@ class ConfigLoader:
                 logger.info(f"Using legacy config path: {legacy_file}")
                 config_file = legacy_file
                 config_dir = config_file.parent
-        
+
         # Try Hydra Compose API first
         if _HYDRA_AVAILABLE and config_dir.is_dir() and config_file.exists():
             try:
                 with initialize_config_dir(version_base=None, config_dir=str(config_dir)):
                     cfg = compose(config_name=config_name, overrides=overrides)
-                
+
                 if _OMEGACONF_AVAILABLE:
                     # Convert to container and back for cleaner structure
                     container = OmegaConf.to_container(cfg, resolve=True)
@@ -263,18 +263,18 @@ class ConfigLoader:
                 logger.warning(f"Hydra compose failed: {e}")
                 if not allow_fallback:
                     raise
-        
+
         # Fallback: load YAML directly
         if config_file.exists():
             try:
                 import yaml
                 with config_file.open("r") as f:
                     data = yaml.safe_load(f) or {}
-                
+
                 # Apply overrides manually
                 if overrides:
                     data = self._apply_overrides(data, overrides)
-                
+
                 if _OMEGACONF_AVAILABLE and OmegaConf:
                     return OmegaConf.create(data)
                 return data
@@ -286,7 +286,7 @@ class ConfigLoader:
                 logger.error(f"Failed to load config: {e}")
                 if not allow_fallback:
                     raise
-        
+
         # No config found
         if not allow_fallback:
             error = self.get_error("config_errors", "missing_config")
@@ -295,13 +295,13 @@ class ConfigLoader:
                 missing_cfg_file=str(config_file),
                 message=msg
             )
-        
+
         # Return empty config as fallback
         logger.warning(f"Config not found, returning empty fallback: {config_file}")
         if _OMEGACONF_AVAILABLE and OmegaConf:
             return OmegaConf.create({})
         return {}
-    
+
     @staticmethod
     def _apply_overrides(data: dict[str, Any], overrides: list[str]) -> dict[str, Any]:
         """Apply dotlist overrides to configuration dictionary.
@@ -316,17 +316,17 @@ class ConfigLoader:
         for override in overrides:
             if "=" not in override:
                 continue
-            
+
             key_path, value_str = override.split("=", 1)
             keys = key_path.split(".")
-            
+
             # Parse value
             try:
                 import yaml
                 value = yaml.safe_load(value_str)
             except Exception:
                 value = value_str
-            
+
             # Navigate and set value
             current = data
             for key in keys[:-1]:
@@ -334,7 +334,7 @@ class ConfigLoader:
                     current[key] = {}
                 current = current[key]
             current[keys[-1]] = value
-        
+
         return data
 
 

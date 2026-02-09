@@ -7,8 +7,9 @@ Based on REPO_ADMIN_IMPLEMENTATION_DECISIONS.md Section 4.3.3:
 - Support environment variable overrides
 """
 
-import os
 import logging
+import os
+
 logger = logging.getLogger(__name__)
 from pathlib import Path
 from typing import Optional
@@ -52,10 +53,10 @@ def ensure_codex_structure():
         REPORTS_DIR / "archive",
         CONFIG_DIR,
     ]
-    
+
     for d in dirs:
         d.mkdir(parents=True, exist_ok=True)
-    
+
     # Create README if not exists
     readme = CODEX_DIR / "README.md"
     if not readme.exists():
@@ -91,7 +92,7 @@ For backup, preserve `*.db` files. Cache can be regenerated.
 - `CODEX_ANALYSIS_DB_PATH` - Override analysis DB location
 - `CODEX_METRICS_DB_PATH` - Override metrics DB location
 """)
-    
+
     # Create .gitignore if not exists
     gitignore = CODEX_DIR / ".gitignore"
     if not gitignore.exists():
@@ -127,7 +128,7 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
     """
     if env_var and os.getenv(env_var):
         return Path(os.getenv(env_var))
-    
+
     ensure_codex_structure()
     return CODEX_DIR / f"{name}.db"
 

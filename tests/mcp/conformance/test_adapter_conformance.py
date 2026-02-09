@@ -9,13 +9,13 @@ Test module for adapter conformance.
 # to run against any adapter implementation that implements BackendAdapter.
 #
 # It is safe for CI: by default it expects to be run against the in-repo mock backend.
-import pytest
-from typing import Iterable, Dict, Any
-
 # Adapter factory lookup helper. Tests should set ADAPTER_UNDER_TEST to the import path
 # e.g. "src.mcp.backends.mock_backend.InMemoryMockBackend" or "src.mcp.backends.pinecone_adapter.PineconeAdapter"
 import importlib
 import os
+from typing import Any, Dict, Iterable
+
+import pytest
 
 ADAPTER_PATH = os.environ.get("ADAPTER_UNDER_TEST", "src.mcp.backends.mock_backend.InMemoryMockBackend")
 

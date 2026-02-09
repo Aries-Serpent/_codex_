@@ -240,11 +240,11 @@ class TestModuleImports:
         """Test that key classes are exported."""
         try:
             from src.agent.core import (
-                TaskStatus,
                 AgentConfig,
-                TaskResult,
-                ToolCall,
                 AgentCore,
+                TaskResult,
+                TaskStatus,
+                ToolCall,
             )
             assert all([TaskStatus, AgentConfig, TaskResult, ToolCall, AgentCore])
         except ImportError:

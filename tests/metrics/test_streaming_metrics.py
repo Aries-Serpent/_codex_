@@ -5,7 +5,6 @@ Tests for streaming metrics functionality
 import numpy as np
 import pytest
 
-
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch

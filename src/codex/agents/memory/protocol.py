@@ -25,7 +25,7 @@ class MemoryEntry:
         metadata: Additional metadata (tags, importance, etc.)
         embedding: Optional vector embedding for similarity search
     """
-    
+
     content: str | dict[str, Any]
     id: UUID = field(default_factory=uuid4)
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -33,7 +33,7 @@ class MemoryEntry:
     session_id: Optional[str] = None
     metadata: dict[str, Any] = field(default_factory=dict)
     embedding: Optional[list[float]] = None
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert entry to dictionary for serialization."""
         return {
@@ -45,7 +45,7 @@ class MemoryEntry:
             "metadata": self.metadata,
             "embedding": self.embedding,
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> MemoryEntry:
         """Create entry from dictionary."""
@@ -71,7 +71,7 @@ class MemoryQuery:
         limit: Maximum number of results
         since: Only return memories after this timestamp
     """
-    
+
     text: Optional[str] = None
     agent_id: Optional[str] = None
     session_id: Optional[str] = None
@@ -85,7 +85,7 @@ class MemoryProtocol(ABC):
     This protocol defines the interface that all memory backends must implement.
     Implementations can use files, databases, or vector stores.
     """
-    
+
     @abstractmethod
     def store(self, entry: MemoryEntry) -> None:
         """Store a memory entry.
@@ -94,7 +94,7 @@ class MemoryProtocol(ABC):
             entry: The memory entry to store
         """
         pass
-    
+
     @abstractmethod
     def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve memories matching the query.
@@ -106,7 +106,7 @@ class MemoryProtocol(ABC):
             list of matching memory entries, sorted by relevance
         """
         pass
-    
+
     @abstractmethod
     def delete(self, entry_id: UUID) -> bool:
         """Delete a memory entry by ID.
@@ -118,7 +118,7 @@ class MemoryProtocol(ABC):
             True if deleted, False if not found
         """
         pass
-    
+
     @abstractmethod
     def clear_session(self, session_id: str) -> int:
         """Clear all memories for a session.
@@ -130,7 +130,7 @@ class MemoryProtocol(ABC):
             Number of entries deleted
         """
         pass
-    
+
     @abstractmethod
     def get_stats(self) -> dict[str, Any]:
         """Get statistics about the memory store.

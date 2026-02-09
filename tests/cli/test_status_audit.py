@@ -117,10 +117,10 @@ def test_status_audit_full_run(status_audit_script, tmp_path):
     """Test full status audit run (slow test)."""
     output_dir = tmp_path / "test_reports"
     artifacts_dir = tmp_path / "test_artifacts"
-    
+
     # Create artifacts directory
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create minimal required artifacts
     capabilities_scored = artifacts_dir / "capabilities_scored.json"
     capabilities_scored.write_text(json.dumps({

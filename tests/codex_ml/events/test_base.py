@@ -58,7 +58,7 @@ class TestEvent:
             source="test_source",
             data={"model_id": "123"},
         )
-        
+
         assert event.event_type == EventType.MODEL_TRAINING_STARTED
         assert event.source == "test_source"
         assert event.data == {"model_id": "123"}
@@ -72,11 +72,11 @@ class TestEvent:
             source="deployer",
             data={},
         )
-        
+
         # event_id should be a valid UUID string
         assert len(event.event_id) == 36
         assert "-" in event.event_id
-        
+
         # timestamp should be ISO format
         datetime.fromisoformat(event.timestamp)
 
@@ -87,7 +87,7 @@ class TestEvent:
             data={"drift_score": 0.95},
             metadata={"severity": "high", "alert": True},
         )
-        
+
         assert event.metadata["severity"] == "high"
         assert event.metadata["alert"] is True
 
@@ -97,9 +97,9 @@ class TestEvent:
             source="pipeline_runner",
             data={"duration_seconds": 120},
         )
-        
+
         result = event.to_dict()
-        
+
         assert isinstance(result, dict)
         assert result["event_type"] == "pipeline.completed"
         assert result["source"] == "pipeline_runner"
@@ -113,9 +113,9 @@ class TestEvent:
             source="registry",
             data={"version": "1.0.0"},
         )
-        
+
         json_str = event.to_json()
-        
+
         # Should be valid JSON
         parsed = json.loads(json_str)
         assert parsed["event_type"] == "model.registered"
@@ -132,7 +132,7 @@ class TestEvent:
             source="trainer",
             data={},
         )
-        
+
         # Each event should have unique ID
         assert event1.event_id != event2.event_id
 
@@ -147,9 +147,9 @@ class TestEventBus:
             source="trainer",
             data={"model": "test"},
         )
-        
+
         result = bus.publish(event)
-        
+
         assert result is True
         assert len(bus.event_history) == 1
         assert bus.event_history[0] == event
@@ -161,28 +161,28 @@ class TestEventBus:
             Event(event_type=EventType.MODEL_TRAINING_STARTED, source="trainer", data={}),
             Event(event_type=EventType.PIPELINE_COMPLETED, source="pipeline", data={}),
         ]
-        
+
         result = bus.publish_batch(events)
-        
+
         assert result is True
         assert len(bus.event_history) == 3
 
     def test_subscribe_and_receive(self) -> None:
         bus = EventBus()
         received_events: list[Event] = []
-        
+
         def callback(event: Event) -> None:
             received_events.append(event)
-        
+
         bus.subscribe(EventType.MODEL_TRAINING_COMPLETED, callback)
-        
+
         event = Event(
             event_type=EventType.MODEL_TRAINING_COMPLETED,
             source="trainer",
             data={"accuracy": 0.95},
         )
         bus.publish(event)
-        
+
         assert len(received_events) == 1
         assert received_events[0] == event
 
@@ -190,10 +190,10 @@ class TestEventBus:
         bus = EventBus()
         training_events: list[Event] = []
         deployment_events: list[Event] = []
-        
+
         bus.subscribe(EventType.MODEL_TRAINING_COMPLETED, training_events.append)
         bus.subscribe(EventType.MODEL_DEPLOYED, deployment_events.append)
-        
+
         bus.publish(Event(
             event_type=EventType.MODEL_TRAINING_COMPLETED,
             source="trainer",
@@ -204,32 +204,32 @@ class TestEventBus:
             source="deployer",
             data={},
         ))
-        
+
         assert len(training_events) == 1
         assert len(deployment_events) == 1
 
     def test_unsubscribe(self) -> None:
         bus = EventBus()
         received_events: list[Event] = []
-        
+
         bus.subscribe(EventType.DRIFT_DETECTED, received_events.append)
         bus.unsubscribe(EventType.DRIFT_DETECTED)
-        
+
         bus.publish(Event(
             event_type=EventType.DRIFT_DETECTED,
             source="monitor",
             data={},
         ))
-        
+
         assert len(received_events) == 0
 
     def test_get_history_all(self) -> None:
         bus = EventBus()
         bus.publish(Event(event_type=EventType.MODEL_REGISTERED, source="s", data={}))
         bus.publish(Event(event_type=EventType.MODEL_DEPLOYED, source="s", data={}))
-        
+
         history = bus.get_history()
-        
+
         assert len(history) == 2
 
     def test_get_history_filtered(self) -> None:
@@ -237,9 +237,9 @@ class TestEventBus:
         bus.publish(Event(event_type=EventType.MODEL_REGISTERED, source="s", data={}))
         bus.publish(Event(event_type=EventType.MODEL_DEPLOYED, source="s", data={}))
         bus.publish(Event(event_type=EventType.MODEL_DEPLOYED, source="s", data={}))
-        
+
         history = bus.get_history(EventType.MODEL_DEPLOYED)
-        
+
         assert len(history) == 2
         assert all(e.event_type == EventType.MODEL_DEPLOYED for e in history)
 
@@ -247,23 +247,23 @@ class TestEventBus:
         bus = EventBus()
         bus.publish(Event(event_type=EventType.MODEL_RETIRED, source="s", data={}))
         assert len(bus.event_history) == 1
-        
+
         bus.clear_history()
-        
+
         assert len(bus.event_history) == 0
 
     def test_callback_exception_handling(self) -> None:
         bus = EventBus()
-        
+
         def failing_callback(event: Event) -> None:
             raise ValueError("Test error")
-        
+
         bus.subscribe(EventType.PIPELINE_FAILED, failing_callback)
-        
+
         # Should not raise, exception is logged
         event = Event(event_type=EventType.PIPELINE_FAILED, source="s", data={})
         result = bus.publish(event)
-        
+
         assert result is True
         assert len(bus.event_history) == 1
 
@@ -271,12 +271,12 @@ class TestEventBus:
         bus = EventBus()
         received1: list[Event] = []
         received2: list[Event] = []
-        
+
         bus.subscribe(EventType.DATASET_UPDATED, received1.append)
         bus.subscribe(EventType.DATASET_UPDATED, received2.append)
-        
+
         bus.publish(Event(event_type=EventType.DATASET_UPDATED, source="s", data={}))
-        
+
         # Both subscribers should receive the event
         assert len(received1) == 1
         assert len(received2) == 1
@@ -309,7 +309,7 @@ class TestEventBusIntegration:
         """Simulate a complete ML training workflow."""
         bus = EventBus()
         workflow_events: list[Event] = []
-        
+
         # Subscribe to all training events
         for event_type in [
             EventType.MODEL_TRAINING_STARTED,
@@ -317,26 +317,26 @@ class TestEventBusIntegration:
             EventType.MODEL_REGISTERED,
         ]:
             bus.subscribe(event_type, workflow_events.append)
-        
+
         # Simulate training workflow
         bus.publish(Event(
             event_type=EventType.MODEL_TRAINING_STARTED,
             source="trainer",
             data={"model_name": "my_model", "epochs": 10},
         ))
-        
+
         bus.publish(Event(
             event_type=EventType.MODEL_TRAINING_COMPLETED,
             source="trainer",
             data={"final_accuracy": 0.92, "duration": 3600},
         ))
-        
+
         bus.publish(Event(
             event_type=EventType.MODEL_REGISTERED,
             source="registry",
             data={"model_version": "1.0.0"},
         ))
-        
+
         assert len(workflow_events) == 3
         assert workflow_events[0].event_type == EventType.MODEL_TRAINING_STARTED
         assert workflow_events[1].event_type == EventType.MODEL_TRAINING_COMPLETED

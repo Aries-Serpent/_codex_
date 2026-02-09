@@ -1,13 +1,15 @@
 """Complete Feature Store tests."""
 
-import pytest
 import json
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, UTC, UTC
+
+import pytest
+
 from codex_ml.features.feature_store import (
-    FeatureStore,
-    FeatureGroup,
     Feature,
+    FeatureGroup,
+    FeatureStore,
 )
 
 

@@ -173,12 +173,12 @@ def mock_file_system(tmp_path: Path) -> Path:
     (tmp_path / "config").mkdir()
     (tmp_path / "output").mkdir()
     (tmp_path / "logs").mkdir()
-    
+
     # Create some files
     (tmp_path / "data" / "train.jsonl").write_text('{"text": "train"}\n')
     (tmp_path / "data" / "valid.jsonl").write_text('{"text": "valid"}\n')
     (tmp_path / "config" / "default.yaml").write_text("key: value\n")
-    
+
     return tmp_path
 
 
@@ -245,15 +245,15 @@ def capture_logs(tmp_path: Path) -> Generator[Path, None, None]:
     """Capture logs to a file."""
     log_file = tmp_path / "test.log"
     import logging
-    
+
     handler = logging.FileHandler(log_file)
     handler.setLevel(logging.DEBUG)
-    
+
     root_logger = logging.getLogger()
     root_logger.addHandler(handler)
-    
+
     yield log_file
-    
+
     root_logger.removeHandler(handler)
     handler.close()
 
@@ -289,20 +289,20 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
     """
     try:
         import urllib.request
-        
+
         def _block_urlopen(*args, **kwargs):
             raise OSError("Network access blocked in test (urlopen)")
-        
+
         monkeypatch.setattr(urllib.request, "urlopen", _block_urlopen)
     except ImportError:
         pass
-    
+
     try:
         import requests
-        
+
         def _block_requests(*args, **kwargs):
             raise OSError("Network access blocked in test (requests)")
-        
+
         monkeypatch.setattr(requests, "request", _block_requests)
         monkeypatch.setattr(requests, "get", _block_requests)
         monkeypatch.setattr(requests, "post", _block_requests)
@@ -420,26 +420,26 @@ def malicious_inputs() -> dict[str, list[str]]:
 def timer():
     """Provide a simple timer for performance tests."""
     import time
-    
+
     class Timer:
         def __init__(self):
             self.start_time = None
             self.elapsed = None
-        
+
         def start(self):
             self.start_time = time.time()
-        
+
         def stop(self):
             self.elapsed = time.time() - self.start_time
             return self.elapsed
-        
+
         def __enter__(self):
             self.start()
             return self
-        
+
         def __exit__(self, *args):
             self.stop()
-    
+
     return Timer()
 
 

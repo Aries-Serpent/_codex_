@@ -7,10 +7,11 @@ Phase 56: Integration Tests
 Coverage Target: src/mcp 32% → 45%+
 """
 
-import pytest
-from enum import Enum, auto
-from typing import Dict, Any, Optional
 from dataclasses import dataclass
+from enum import Enum, auto
+from typing import Any, Dict, Optional
+
+import pytest
 
 
 class SessionState(Enum):
@@ -40,7 +41,7 @@ class TestSessionLifecycle:
             session_id="sess-1",
             state=SessionState.DISCONNECTED
         )
-        
+
         assert session.session_id == "sess-1"
         assert session.state == SessionState.DISCONNECTED
         assert session.server_info is None
@@ -54,10 +55,10 @@ class TestSessionLifecycle:
             SessionState.READY: {SessionState.CLOSING, SessionState.DISCONNECTED},
             SessionState.CLOSING: {SessionState.DISCONNECTED},
         }
-        
+
         def can_transition(from_state, to_state):
             return to_state in valid_transitions.get(from_state, set())
-        
+
         assert can_transition(SessionState.DISCONNECTED, SessionState.CONNECTING)
         assert can_transition(SessionState.CONNECTING, SessionState.INITIALIZING)
         assert can_transition(SessionState.INITIALIZING, SessionState.READY)
@@ -68,13 +69,13 @@ class TestSessionLifecycle:
         class Session:
             def __init__(self):
                 self.state = SessionState.DISCONNECTED
-            
+
             def is_ready(self):
                 return self.state == SessionState.READY
-        
+
         session = Session()
         assert not session.is_ready()
-        
+
         session.state = SessionState.READY
         assert session.is_ready()
 
@@ -92,7 +93,7 @@ class TestSessionCapabilities:
             "tools": {"listChanged": True},
             "resources": {"subscribe": True},
         }
-        
+
         def negotiate_capabilities(client, server):
             negotiated = {}
             all_keys = set(client.keys()) | set(server.keys())
@@ -104,9 +105,9 @@ class TestSessionCapabilities:
                     # Only server supports
                     negotiated[key] = server[key]
             return negotiated
-        
+
         result = negotiate_capabilities(client_caps, server_caps)
-        
+
         assert "tools" in result
         assert "resources" in result
         assert "prompts" not in result  # Not supported by server
@@ -114,15 +115,15 @@ class TestSessionCapabilities:
     def test_required_capabilities(self):
         """Required capabilities are validated."""
         REQUIRED_CAPS = ["tools"]
-        
+
         def validate_capabilities(caps, required):
             missing = [r for r in required if r not in caps]
             if missing:
                 raise ValueError(f"Missing required capabilities: {missing}")
             return True
-        
+
         assert validate_capabilities({"tools": {}, "prompts": {}}, REQUIRED_CAPS)
-        
+
         with pytest.raises(ValueError):
             validate_capabilities({"prompts": {}}, REQUIRED_CAPS)
 
@@ -137,7 +138,7 @@ class TestSessionPool:
                 self.max_size = max_size
                 self.available = []
                 self.in_use = set()
-            
+
             def acquire(self):
                 if self.available:
                     session = self.available.pop()
@@ -147,23 +148,23 @@ class TestSessionPool:
                     raise RuntimeError("Pool exhausted")
                 self.in_use.add(session)
                 return session
-            
+
             def release(self, session):
                 if session in self.in_use:
                     self.in_use.remove(session)
                     self.available.append(session)
-        
+
         pool = SessionPool(max_size=2)
-        
+
         s1 = pool.acquire()
         _ = pool.acquire()  # Exhaust pool
-        
+
         with pytest.raises(RuntimeError):
             pool.acquire()  # Pool exhausted
-        
+
         pool.release(s1)
         s3 = pool.acquire()  # Reuses s1
-        
+
         assert s3 == s1
 
     def test_session_pool_health_check(self):
@@ -171,21 +172,21 @@ class TestSessionPool:
         class SessionPool:
             def __init__(self):
                 self.sessions = []
-            
+
             def health_check(self):
                 healthy = []
                 for session in self.sessions:
                     if session.get("healthy", True):
                         healthy.append(session)
                 return healthy
-        
+
         pool = SessionPool()
         pool.sessions = [
             {"id": "s1", "healthy": True},
             {"id": "s2", "healthy": False},
             {"id": "s3", "healthy": True},
         ]
-        
+
         healthy = pool.health_check()
         assert len(healthy) == 2
 
@@ -196,24 +197,24 @@ class TestSessionTimeout:
     def test_session_idle_timeout(self):
         """Sessions timeout after idle period."""
         import time
-        
+
         class SessionTimeout:
             def __init__(self, timeout_seconds):
                 self.timeout = timeout_seconds
                 self.last_activity = time.time()
-            
+
             def touch(self):
                 self.last_activity = time.time()
-            
+
             def is_expired(self):
                 return time.time() - self.last_activity > self.timeout
-        
+
         timeout = SessionTimeout(timeout_seconds=0.1)
         assert not timeout.is_expired()
-        
+
         time.sleep(0.15)
         assert timeout.is_expired()
-        
+
         timeout.touch()
         assert not timeout.is_expired()
 
@@ -222,19 +223,19 @@ class TestSessionTimeout:
         class Session:
             def __init__(self):
                 self.keepalive_count = 0
-            
+
             def send_keepalive(self):
                 self.keepalive_count += 1
                 return {"type": "ping"}
-            
+
             def handle_keepalive_response(self, response):
                 return response.get("type") == "pong"
-        
+
         session = Session()
-        
+
         ping = session.send_keepalive()
         assert ping["type"] == "ping"
-        
+
         assert session.handle_keepalive_response({"type": "pong"})
         assert not session.handle_keepalive_response({"type": "error"})
 
@@ -250,19 +251,19 @@ class TestSessionReconnection:
                 self.max_delay = max_delay
                 self.max_attempts = max_attempts
                 self.attempts = 0
-            
+
             def next_delay(self):
                 if self.attempts >= self.max_attempts:
                     return None  # Give up
                 delay = min(self.base_delay * (2 ** self.attempts), self.max_delay)
                 self.attempts += 1
                 return delay
-            
+
             def reset(self):
                 self.attempts = 0
-        
+
         policy = ReconnectionPolicy(base_delay=1.0, max_delay=30.0, max_attempts=5)
-        
+
         assert policy.next_delay() == 1.0   # Attempt 0
         assert policy.next_delay() == 2.0   # Attempt 1
         assert policy.next_delay() == 4.0   # Attempt 2
@@ -276,24 +277,24 @@ class TestSessionReconnection:
             def __init__(self):
                 self.subscriptions = set()
                 self.pending_requests = {}
-            
+
             def save_state(self):
                 return {
                     "subscriptions": list(self.subscriptions),
                     "pending_request_ids": list(self.pending_requests.keys())
                 }
-            
+
             def restore_state(self, state):
                 self.subscriptions = set(state.get("subscriptions", []))
                 # Pending requests need to be re-sent
-        
+
         state = SessionState()
         state.subscriptions.add("resource://docs")
         state.pending_requests["req-1"] = {"method": "tools/list"}
-        
+
         saved = state.save_state()
-        
+
         new_state = SessionState()
         new_state.restore_state(saved)
-        
+
         assert "resource://docs" in new_state.subscriptions

@@ -7,11 +7,12 @@ Comprehensive testing for all RAG embedding providers:
 - Provider switching and fallback
 """
 
-import pytest
-import numpy as np
-from unittest.mock import Mock, patch
 import tempfile
 from pathlib import Path
+from unittest.mock import Mock, patch
+
+import numpy as np
+import pytest
 
 
 class TestTFIDFProvider:
@@ -21,10 +22,10 @@ class TestTFIDFProvider:
         """Test TF-IDF provider initialization."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
             assert provider is not None
-            
+
             # Verify provider has required methods
             assert hasattr(provider, 'encode')
             assert callable(provider.encode)
@@ -35,13 +36,13 @@ class TestTFIDFProvider:
         """Test TF-IDF with empty corpus."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # First call might initialize vocabulary
             result = provider.encode(["test document"])
             assert result is not None
-            
+
             # Subsequent calls should work
             result2 = provider.encode(["another document"])
             assert result2 is not None
@@ -52,20 +53,20 @@ class TestTFIDFProvider:
         """Test TF-IDF vocabulary expansion."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Encode texts with different vocabulary
             texts1 = ["apple banana cherry"]
             texts2 = ["dog elephant fox"]
-            
+
             emb1 = provider.encode(texts1)
             emb2 = provider.encode(texts2)
-            
+
             # Both should produce embeddings
             assert emb1 is not None
             assert emb2 is not None
-            
+
             # Dimensions should be consistent or grow
             assert emb1.shape[1] > 0
             assert emb2.shape[1] > 0
@@ -76,15 +77,15 @@ class TestTFIDFProvider:
         """Test TF-IDF dense vs sparse representation."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             texts = ["word1 word2", "word3 word4 word5"]
             embeddings = provider.encode(texts)
-            
+
             # Should return numpy array (dense)
             assert isinstance(embeddings, np.ndarray)
-            
+
             # Check sparsity (most values should be zero for TF-IDF)
             sparsity = np.count_nonzero(embeddings == 0) / embeddings.size
             assert sparsity > 0.3, "TF-IDF should be relatively sparse"
@@ -95,12 +96,12 @@ class TestTFIDFProvider:
         """Test getting TF-IDF embedding dimension."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # May need to fit first
             provider.encode(["test document"])
-            
+
             if hasattr(provider, 'get_dimension'):
                 dim = provider.get_dimension()
                 assert isinstance(dim, int)
@@ -116,7 +117,7 @@ class TestLocalSentenceTransformerProvider:
         """Test local provider initialization."""
         try:
             from src.codex.rag.embeddings import LocalSentenceTransformerProvider
-            
+
             # Should handle model loading or skip if not available
             try:
                 provider = LocalSentenceTransformerProvider()
@@ -130,9 +131,9 @@ class TestLocalSentenceTransformerProvider:
         """Test local provider with custom model name."""
         try:
             from src.codex.rag.embeddings import LocalSentenceTransformerProvider
-            
+
             custom_model = "sentence-transformers/all-MiniLM-L6-v2"
-            
+
             try:
                 provider = LocalSentenceTransformerProvider(model_name=custom_model)
                 assert provider.model_name == custom_model
@@ -145,10 +146,10 @@ class TestLocalSentenceTransformerProvider:
         """Test local provider with custom cache directory."""
         try:
             from src.codex.rag.embeddings import LocalSentenceTransformerProvider
-            
+
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache_dir = Path(tmpdir) / "models"
-                
+
                 try:
                     provider = LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
                     assert provider.cache_dir == str(cache_dir)
@@ -161,18 +162,18 @@ class TestLocalSentenceTransformerProvider:
         """Test local provider encoding."""
         try:
             from src.codex.rag.embeddings import LocalSentenceTransformerProvider
-            
+
             try:
                 provider = LocalSentenceTransformerProvider()
-                
+
                 texts = ["This is a test sentence", "Another test sentence"]
                 embeddings = provider.encode(texts)
-                
+
                 # Should return dense embeddings
                 assert isinstance(embeddings, np.ndarray)
                 assert embeddings.shape[0] == 2
                 assert embeddings.shape[1] > 0  # Should have dimension
-                
+
                 # Check embeddings are normalized (common for sentence transformers)
                 norms = np.linalg.norm(embeddings, axis=1)
                 # May or may not be normalized, just check they're valid
@@ -186,10 +187,10 @@ class TestLocalSentenceTransformerProvider:
         """Test that local provider uses CPU correctly."""
         try:
             from src.codex.rag.embeddings import LocalSentenceTransformerProvider
-            
+
             try:
                 provider = LocalSentenceTransformerProvider()
-                
+
                 # Should be on CPU
                 if hasattr(provider, 'model'):
                     # Check model device - device attribute returns string directly
@@ -208,7 +209,7 @@ class TestOpenAIProvider:
         """Test OpenAI provider initialization."""
         try:
             from src.codex.rag.embeddings import OpenAIEmbeddingProvider
-            
+
             # Should handle missing API key gracefully
             try:
                 provider = OpenAIEmbeddingProvider()
@@ -223,7 +224,7 @@ class TestOpenAIProvider:
         """Test OpenAI provider with mocked API."""
         try:
             from src.codex.rag.embeddings import OpenAIEmbeddingProvider
-            
+
             # Mock the OpenAI client
             mock_client = Mock()
             mock_response = Mock()
@@ -233,15 +234,15 @@ class TestOpenAIProvider:
             ]
             mock_client.embeddings.create.return_value = mock_response
             mock_openai.return_value = mock_client
-            
+
             provider = OpenAIEmbeddingProvider(api_key="test_key")
-            
+
             texts = ["test1", "test2"]
             embeddings = provider.encode(texts)
-            
+
             # Should call OpenAI API
             mock_client.embeddings.create.assert_called_once()
-            
+
             # Should return embeddings
             assert embeddings is not None
             assert len(embeddings) == 2
@@ -252,10 +253,10 @@ class TestOpenAIProvider:
         """Test OpenAI provider dimension."""
         try:
             from src.codex.rag.embeddings import OpenAIEmbeddingProvider
-            
+
             try:
                 provider = OpenAIEmbeddingProvider()
-                
+
                 if hasattr(provider, 'get_dimension'):
                     dim = provider.get_dimension()
                     # OpenAI text-embedding-ada-002 is 1536 dimensions
@@ -273,11 +274,11 @@ class TestProviderSwitching:
         """Test getting default embedding provider."""
         try:
             from src.codex.rag.embeddings import get_embedding_provider
-            
+
             # Should return a provider (likely TF-IDF as fallback)
             provider = get_embedding_provider()
             assert provider is not None
-            
+
             # Should have encode method
             assert hasattr(provider, 'encode')
             assert callable(provider.encode)
@@ -288,10 +289,10 @@ class TestProviderSwitching:
         """Test getting provider by name."""
         try:
             from src.codex.rag.embeddings import get_embedding_provider
-            
+
             # Try different provider names
             provider_names = ['tfidf', 'local', 'openai']
-            
+
             for name in provider_names:
                 try:
                     provider = get_embedding_provider(provider_type=name)
@@ -306,14 +307,14 @@ class TestProviderSwitching:
         """Test provider fallback mechanism."""
         try:
             from src.codex.rag.embeddings import get_embedding_provider
-            
+
             # Try to get preferred provider, should fallback if not available
             try:
                 provider = get_embedding_provider(provider_type='openai')
             except Exception:
                 # Should fallback to TF-IDF
                 provider = get_embedding_provider(provider_type='tfidf')
-            
+
             assert provider is not None
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
@@ -326,14 +327,14 @@ class TestProviderCompatibility:
         """Test that all providers implement encode method."""
         try:
             from src.codex.rag import embeddings
-            
+
             # Get all provider classes
             provider_classes = [
                 'TFIDFEmbeddingProvider',
                 'LocalSentenceTransformerProvider',
                 'OpenAIEmbeddingProvider',
             ]
-            
+
             for class_name in provider_classes:
                 if hasattr(embeddings, class_name):
                     cls = getattr(embeddings, class_name)
@@ -346,17 +347,17 @@ class TestProviderCompatibility:
         """Test that all providers return numpy arrays."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             providers_to_test = []
-            
+
             # Test TF-IDF (always available)
             providers_to_test.append(TFIDFEmbeddingProvider())
-            
+
             # Test each provider
             for provider in providers_to_test:
                 texts = ["test text"]
                 result = provider.encode(texts)
-                
+
                 # Should return numpy array
                 assert isinstance(result, np.ndarray)
                 assert len(result) == 1
@@ -367,17 +368,17 @@ class TestProviderCompatibility:
         """Test that batch and single encoding are consistent."""
         try:
             from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            
+
             provider = TFIDFEmbeddingProvider()
-            
+
             # Single encoding
             single_text = ["test document"]
             single_emb = provider.encode(single_text)
-            
+
             # Batch encoding
             batch_texts = ["test document", "another document"]
             batch_emb = provider.encode(batch_texts)
-            
+
             # First embedding should be similar
             # (may not be exact due to vocabulary differences)
             assert single_emb.shape[1] > 0
@@ -392,13 +393,14 @@ class TestProviderEnvironmentConfig:
     def test_provider_respects_env_var(self):
         """Test that provider selection respects environment variable."""
         try:
-            from src.codex.rag.embeddings import get_embedding_provider
             import os
-            
+
+            from src.codex.rag.embeddings import get_embedding_provider
+
             # Set environment variable
             old_value = os.environ.get('RAG_EMBEDDING_PROVIDER')
             os.environ['RAG_EMBEDDING_PROVIDER'] = 'tfidf'
-            
+
             try:
                 provider = get_embedding_provider()
                 # Should get TF-IDF provider
@@ -415,13 +417,14 @@ class TestProviderEnvironmentConfig:
     def test_hf_token_usage(self):
         """Test that HF_TOKEN is used when available."""
         try:
-            from src.codex.rag.embeddings import LocalSentenceTransformerProvider
             import os
-            
+
+            from src.codex.rag.embeddings import LocalSentenceTransformerProvider
+
             # Set mock HF token
             old_value = os.environ.get('HF_TOKEN')
             os.environ['HF_TOKEN'] = 'test_token_12345'
-            
+
             try:
                 provider = LocalSentenceTransformerProvider()
                 # Should initialize (may fail on actual model download)

@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-
 # ============================================================================
 # Phase 4.1: Knowledge Distillation Tests
 # ============================================================================
@@ -483,7 +482,10 @@ class TestRetrievalResult:
 
     def test_retrieval_result_creation(self):
         """Test creating a retrieval result."""
-        from codex.cognitive.retrieval_optimizer import RetrievalResult, RetrievalStrategy
+        from codex.cognitive.retrieval_optimizer import (
+            RetrievalResult,
+            RetrievalStrategy,
+        )
 
         result = RetrievalResult(
             query="pytest error",
@@ -499,7 +501,10 @@ class TestRetrievalResult:
 
     def test_retrieval_result_to_dict(self):
         """Test converting to dict."""
-        from codex.cognitive.retrieval_optimizer import RetrievalResult, RetrievalStrategy
+        from codex.cognitive.retrieval_optimizer import (
+            RetrievalResult,
+            RetrievalStrategy,
+        )
 
         result = RetrievalResult(
             query="test",

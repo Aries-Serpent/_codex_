@@ -44,7 +44,7 @@ class TestDBManagerInitialization:
 
     def test_init_with_custom_path(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
@@ -52,7 +52,7 @@ class TestDBManagerInitialization:
 
     def test_init_creates_parent_directory(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "subdir" / "test.db"
             dm = DBManager(db_path=db_path)
@@ -65,7 +65,7 @@ class TestDBManagerSchema:
 
     def test_init_schema(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
@@ -74,24 +74,24 @@ class TestDBManagerSchema:
 
     def test_init_schema_creates_session_events_table(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            
+
             conn = sqlite3.connect(db_path)
             cursor = conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='session_events'"
             )
             tables = cursor.fetchall()
             conn.close()
-            
+
             assert len(tables) == 1
 
     def test_init_schema_idempotent(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
@@ -105,12 +105,12 @@ class TestDBManagerConnection:
 
     def test_get_connection(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            
+
             conn = dm.get_connection()
             assert conn is not None
             # Connection may be a proxy when pooling is enabled
@@ -119,12 +119,12 @@ class TestDBManagerConnection:
 
     def test_connection_context_manager(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            
+
             with dm.connection() as conn:
                 assert conn is not None
                 # Connection may be a proxy when pooling is enabled
@@ -132,12 +132,12 @@ class TestDBManagerConnection:
 
     def test_close_connection(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            
+
             conn = dm.get_connection()
             dm.close_connection(conn)
             # Should not raise even if called twice
@@ -166,51 +166,51 @@ class TestDBManagerThreadSafety:
 
     def test_concurrent_init_schema(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
-            
+
             errors = []
-            
+
             def init_thread():
                 try:
                     dm.init_schema()
                 except Exception as e:
                     errors.append(e)
-            
+
             threads = [threading.Thread(target=init_thread) for _ in range(5)]
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             assert len(errors) == 0
             assert db_path.exists()
 
     def test_concurrent_connections(self) -> None:
         from codex.logging.db_manager import DBManager
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            
+
             errors = []
-            
+
             def connect_thread():
                 try:
                     with dm.connection() as conn:
                         conn.execute("SELECT 1")
                 except Exception as e:
                     errors.append(e)
-            
+
             threads = [threading.Thread(target=connect_thread) for _ in range(10)]
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
-            
+
             assert len(errors) == 0
 
 

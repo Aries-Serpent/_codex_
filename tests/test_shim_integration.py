@@ -1,14 +1,15 @@
 """Tests for SHIM inventory integration."""
 
 import tempfile
-import yaml
 from pathlib import Path
+
 import pytest
+import yaml
 
 from tools.dupinv.shim_integration import (
-    ShimInventoryReader,
     CrossReference,
     ShimEntry,
+    ShimInventoryReader,
 )
 
 

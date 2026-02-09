@@ -136,7 +136,13 @@ def test_error_code_ranges():
 
 def test_mcp_error_mappings():
     """Test MCP error code to HTTP status mappings."""
-    from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound, Unauthorized, ValidationError
+    from mcp.errors import (
+        MCPError,
+        RateLimitExceeded,
+        ToolNotFound,
+        Unauthorized,
+        ValidationError,
+    )
 
     error_mappings = [
         (MCPError("base"), -32000, 500),

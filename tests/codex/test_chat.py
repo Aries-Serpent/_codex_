@@ -6,7 +6,6 @@ import os
 from typing import Any
 
 
-
 def test_chat_session_records_events(monkeypatch, tmp_path):
     """ChatSession should emit start/end and message events while restoring env."""
     events: list[tuple[str, str, str, Any]] = []

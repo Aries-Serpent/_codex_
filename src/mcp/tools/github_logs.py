@@ -73,24 +73,24 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
     try:
         # Validate input
         input_data = FetchCheckRunLogsInput(**params)
-        
+
         # Get client
         client = _get_github_client()
-        
+
         # Fetch check run details
         check_run = client.get_check_run(
             input_data.owner,
             input_data.repo,
             input_data.check_run_id
         )
-        
+
         # Fetch logs
         logs = client.get_check_run_logs(
             input_data.owner,
             input_data.repo,
             input_data.check_run_id
         )
-        
+
         return {
             "success": True,
             "check_run_id": input_data.check_run_id,
@@ -107,7 +107,7 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
             },
             "logs": logs,
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
         return {
@@ -144,17 +144,17 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
     try:
         # Validate input
         input_data = FetchJobLogsInput(**params)
-        
+
         # Get client
         client = _get_github_client()
-        
+
         # Fetch logs
         logs = client.get_job_logs(
             input_data.owner,
             input_data.repo,
             input_data.job_id
         )
-        
+
         return {
             "success": True,
             "job_id": input_data.job_id,
@@ -162,7 +162,7 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
             "repo": input_data.repo,
             "logs": logs,
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
         return {
@@ -203,13 +203,13 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
     try:
         # Validate input
         input_data = ListCheckRunsInput(**params)
-        
+
         # Get client
         client = _get_github_client()
-        
+
         from src.services.github.types import CheckRunStatus
         status_enum = CheckRunStatus(input_data.status) if input_data.status else None
-        
+
         # Fetch check runs
         check_runs = client.list_check_runs_for_ref(
             input_data.owner,
@@ -218,7 +218,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             check_name=input_data.check_name,
             status=status_enum
         )
-        
+
         # Convert to serializable format
         check_runs_list = [
             {
@@ -232,7 +232,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             }
             for run in check_runs
         ]
-        
+
         return {
             "success": True,
             "owner": input_data.owner,
@@ -241,7 +241,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             "total_count": len(check_runs_list),
             "check_runs": check_runs_list,
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to list check runs: {e}", exc_info=True)
         return {

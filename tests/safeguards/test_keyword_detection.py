@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any, Dict, Iterable
 
 
-
 def _load_module(path: Path, name: str) -> types.ModuleType:
     """Load detector module dynamically."""
     if not path.is_absolute():

@@ -7,10 +7,11 @@ Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/services 11% → 28%+
 """
 
-import pytest
+from datetime import datetime
 from enum import Enum
 from unittest.mock import MagicMock
-from datetime import datetime
+
+import pytest
 
 
 class HealthStatus(Enum):
@@ -27,9 +28,9 @@ class TestHealthChecks:
         """Basic health check returns status."""
         def health_check():
             return {"status": HealthStatus.HEALTHY.value, "timestamp": datetime.utcnow().isoformat()}
-        
+
         result = health_check()
-        
+
         assert result["status"] == "healthy"
         assert "timestamp" in result
 
@@ -37,25 +38,25 @@ class TestHealthChecks:
         """Component health is aggregated correctly."""
         def aggregate_health(components):
             statuses = [c["status"] for c in components]
-            
+
             if all(s == HealthStatus.HEALTHY for s in statuses):
                 return HealthStatus.HEALTHY
             elif any(s == HealthStatus.UNHEALTHY for s in statuses):
                 return HealthStatus.UNHEALTHY
             else:
                 return HealthStatus.DEGRADED
-        
+
         # All healthy
         components = [
             {"name": "db", "status": HealthStatus.HEALTHY},
             {"name": "cache", "status": HealthStatus.HEALTHY},
         ]
         assert aggregate_health(components) == HealthStatus.HEALTHY
-        
+
         # One unhealthy
         components[1]["status"] = HealthStatus.UNHEALTHY
         assert aggregate_health(components) == HealthStatus.UNHEALTHY
-        
+
         # One degraded
         components[1]["status"] = HealthStatus.DEGRADED
         assert aggregate_health(components) == HealthStatus.DEGRADED
@@ -65,16 +66,16 @@ class TestHealthChecks:
         class HealthChecker:
             def __init__(self, timeout_seconds=5):
                 self.timeout = timeout_seconds
-            
+
             def check(self, check_func):
                 # In real impl, would use asyncio.wait_for
                 try:
                     return check_func()
                 except TimeoutError:
                     return {"status": HealthStatus.UNHEALTHY, "error": "timeout"}
-        
+
         checker = HealthChecker(timeout_seconds=5)
-        
+
         result = checker.check(lambda: {"status": HealthStatus.HEALTHY})
         assert result["status"] == HealthStatus.HEALTHY
 
@@ -88,13 +89,13 @@ class TestReadinessProbes:
             def __init__(self):
                 self.dependencies_ready = False
                 self.warmup_complete = False
-            
+
             def is_ready(self):
                 return self.dependencies_ready and self.warmup_complete
-        
+
         readiness = ServiceReadiness()
         assert not readiness.is_ready()
-        
+
         readiness.dependencies_ready = True
         readiness.warmup_complete = True
         assert readiness.is_ready()
@@ -105,24 +106,24 @@ class TestReadinessProbes:
             def __init__(self, required_steps):
                 self.required_steps = required_steps
                 self.completed_steps = set()
-            
+
             def complete_step(self, step):
                 self.completed_steps.add(step)
-            
+
             def is_started(self):
                 return self.completed_steps >= self.required_steps
-            
+
             def progress(self):
                 return len(self.completed_steps) / len(self.required_steps) * 100
-        
+
         probe = StartupProbe({"config_loaded", "db_connected", "cache_warmed"})
-        
+
         assert not probe.is_started()
         assert probe.progress() == 0
-        
+
         probe.complete_step("config_loaded")
         assert probe.progress() == pytest.approx(33.33, rel=0.1)
-        
+
         probe.complete_step("db_connected")
         probe.complete_step("cache_warmed")
         assert probe.is_started()
@@ -136,7 +137,7 @@ class TestLivenessProbes:
         def liveness_check():
             # Check critical threads
             return {"alive": True, "uptime_seconds": 3600}
-        
+
         result = liveness_check()
         assert result["alive"] is True
 
@@ -146,7 +147,7 @@ class TestLivenessProbes:
             def __init__(self):
                 self.lock_holders = {}
                 self.lock_waiters = {}
-            
+
             def has_deadlock(self):
                 # Simplified cycle detection
                 for waiter, waiting_for in self.lock_waiters.items():
@@ -157,7 +158,7 @@ class TestLivenessProbes:
                                 if self.lock_holders[self.lock_waiters[holder]] == waiter:
                                     return True
                 return False
-        
+
         detector = DeadlockDetector()
         assert not detector.has_deadlock()
 
@@ -176,9 +177,9 @@ class TestHealthEndpoints:
                     "cache": {"status": "healthy", "latency_ms": 1},
                 }
             }
-        
+
         response = health_endpoint_handler()
-        
+
         assert response["status"] == "healthy"
         assert "checks" in response
         assert "database" in response["checks"]
@@ -192,7 +193,7 @@ class TestHealthEndpoints:
                 return 200  # Still 200 but with degraded status
             else:
                 return 503  # Service Unavailable
-        
+
         assert get_status_code(HealthStatus.HEALTHY) == 200
         assert get_status_code(HealthStatus.DEGRADED) == 200
         assert get_status_code(HealthStatus.UNHEALTHY) == 503
@@ -209,10 +210,10 @@ class TestDependencyHealth:
                 return {"status": HealthStatus.HEALTHY, "latency_ms": 5}
             except Exception as e:
                 return {"status": HealthStatus.UNHEALTHY, "error": str(e)}
-        
+
         mock_conn = MagicMock()
         mock_conn.execute.return_value = True
-        
+
         result = check_database(mock_conn)
         assert result["status"] == HealthStatus.HEALTHY
 
@@ -224,10 +225,10 @@ class TestDependencyHealth:
                 return {"status": HealthStatus.HEALTHY}
             except Exception:
                 return {"status": HealthStatus.UNHEALTHY}
-        
+
         mock_cache = MagicMock()
         mock_cache.ping.return_value = "PONG"
-        
+
         result = check_cache(mock_cache)
         assert result["status"] == HealthStatus.HEALTHY
 
@@ -236,6 +237,6 @@ class TestDependencyHealth:
         def check_external_service(url, timeout=5):
             # Mock HTTP check
             return {"status": HealthStatus.HEALTHY, "url": url, "latency_ms": 100}
-        
+
         result = check_external_service("https://api.example.com/health")
         assert result["status"] == HealthStatus.HEALTHY

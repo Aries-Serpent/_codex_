@@ -6,9 +6,9 @@ Test module for codex train cli.
 
 from collections.abc import Mapping
 
+import yaml
 from click.testing import CliRunner
 
-import yaml
 from codex_ml.cli.codex_cli import codex
 
 

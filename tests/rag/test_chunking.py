@@ -11,7 +11,7 @@ class TestChunkingPipeline:
     @pytest.fixture
     def pipeline(self):
         """Create a chunking pipeline for testing."""
-        from src.rag.pipelines.chunking import ChunkingPipeline, ChunkingConfig
+        from src.rag.pipelines.chunking import ChunkingConfig, ChunkingPipeline
 
         config = ChunkingConfig(
             chunk_size=100,

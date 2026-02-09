@@ -1,7 +1,8 @@
 """Tests for codex/api/endpoints.py module."""
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 
 class TestApiEndpointsImports:

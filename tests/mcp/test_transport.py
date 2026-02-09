@@ -8,8 +8,9 @@ Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/mcp 17% → 35%+
 """
 
-import pytest
 import json
+
+import pytest
 
 
 class TestStdioTransport:
@@ -21,10 +22,10 @@ class TestStdioTransport:
             body = json.dumps(content).encode('utf-8')
             header = f"Content-Length: {len(body)}\r\n\r\n"
             return header.encode('utf-8') + body
-        
+
         message = {"jsonrpc": "2.0", "method": "test", "id": 1}
         framed = frame_message(message)
-        
+
         assert b"Content-Length:" in framed
         assert b"\r\n\r\n" in framed
 
@@ -35,9 +36,9 @@ class TestStdioTransport:
             parts = data.split(b"\r\n\r\n", 1)
             if len(parts) != 2:
                 raise ValueError("Invalid frame")
-            
+
             header, body = parts
-            
+
             # Parse content length
             for line in header.decode().split("\r\n"):
                 if line.startswith("Content-Length:"):
@@ -45,12 +46,12 @@ class TestStdioTransport:
                     break
             else:
                 raise ValueError("Missing Content-Length")
-            
+
             return json.loads(body[:length])
-        
+
         raw = b"Content-Length: 42\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"test\",\"id\":1}"
         parsed = parse_frame(raw)
-        
+
         assert parsed["jsonrpc"] == "2.0"
         assert parsed["method"] == "test"
 
@@ -60,41 +61,41 @@ class TestStdioTransport:
             def __init__(self):
                 self.buffer = b""
                 self.messages = []
-            
+
             def feed(self, data):
                 self.buffer += data
                 self._try_parse()
-            
+
             def _try_parse(self):
                 while b"\r\n\r\n" in self.buffer:
                     header_end = self.buffer.index(b"\r\n\r\n")
                     header = self.buffer[:header_end].decode()
-                    
+
                     length = None
                     for line in header.split("\r\n"):
                         if line.startswith("Content-Length:"):
                             length = int(line.split(":")[1].strip())
                             break
-                    
+
                     if length is None:
                         break
-                    
+
                     body_start = header_end + 4
                     body_end = body_start + length
-                    
+
                     if len(self.buffer) < body_end:
                         break  # Not enough data yet
-                    
+
                     body = self.buffer[body_start:body_end]
                     self.messages.append(json.loads(body))
                     self.buffer = self.buffer[body_end:]
-        
+
         buffer = MessageBuffer()
-        
+
         # Feed partial data
         buffer.feed(b"Content-Length: 20\r\n\r\n{\"id\":")
         assert len(buffer.messages) == 0
-        
+
         # Feed rest
         buffer.feed(b"1,\"ok\":true}")
         assert len(buffer.messages) == 1
@@ -115,12 +116,12 @@ class TestHTTPTransport:
                 ""
             ]
             return "\r\n".join(headers).encode('utf-8') + body_bytes
-        
+
         request = encode_http_request(
             "POST", "/mcp",
             {"jsonrpc": "2.0", "method": "test", "id": 1}
         )
-        
+
         assert b"POST /mcp HTTP/1.1" in request
         assert b"Content-Type: application/json" in request
 
@@ -130,24 +131,24 @@ class TestHTTPTransport:
             parts = data.split(b"\r\n\r\n", 1)
             header_lines = parts[0].decode().split("\r\n")
             status_line = header_lines[0]
-            
+
             # Parse status
             _, status_code, status_text = status_line.split(" ", 2)
-            
+
             # Parse headers
             headers = {}
             for line in header_lines[1:]:
                 if ": " in line:
                     key, value = line.split(": ", 1)
                     headers[key.lower()] = value
-            
+
             body = parts[1] if len(parts) > 1 else b""
-            
+
             return int(status_code), headers, body
-        
+
         response = b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"result\":\"ok\"}"
         status, headers, body = parse_http_response(response)
-        
+
         assert status == 200
         assert headers["content-type"] == "application/json"
 
@@ -160,7 +161,7 @@ class TestHTTPTransport:
             404: "Not Found",
             500: "Internal Server Error",
         }
-        
+
         for code, text in error_codes.items():
             assert code >= 400
             assert len(text) > 0
@@ -174,10 +175,10 @@ class TestWebSocketTransport:
         def create_text_frame(payload):
             data = payload.encode('utf-8')
             frame = bytearray()
-            
+
             # FIN + text opcode
             frame.append(0x81)
-            
+
             # Length
             if len(data) < 126:
                 frame.append(len(data))
@@ -187,12 +188,12 @@ class TestWebSocketTransport:
             else:
                 frame.append(127)
                 frame.extend(len(data).to_bytes(8, 'big'))
-            
+
             frame.extend(data)
             return bytes(frame)
-        
+
         frame = create_text_frame('{"test": true}')
-        
+
         assert frame[0] == 0x81  # FIN + text opcode
         assert len(frame) > 2
 
@@ -200,14 +201,14 @@ class TestWebSocketTransport:
         """Ping/pong frames are handled for keepalive."""
         PING_OPCODE = 0x09
         PONG_OPCODE = 0x0A
-        
+
         def handle_control_frame(opcode, payload):
             if opcode == PING_OPCODE:
                 return (PONG_OPCODE, payload)  # Echo back as pong
             return None
-        
+
         result = handle_control_frame(PING_OPCODE, b"keepalive")
-        
+
         assert result[0] == PONG_OPCODE
         assert result[1] == b"keepalive"
 
@@ -220,7 +221,7 @@ class TestTransportReconnection:
         def calculate_backoff(attempt, base=1.0, max_delay=60.0):
             delay = min(base * (2 ** attempt), max_delay)
             return delay
-        
+
         assert calculate_backoff(0) == 1.0
         assert calculate_backoff(1) == 2.0
         assert calculate_backoff(2) == 4.0
@@ -229,24 +230,24 @@ class TestTransportReconnection:
     def test_retry_count_limit(self):
         """Reconnection attempts are limited."""
         MAX_RETRIES = 5
-        
+
         class ReconnectionManager:
             def __init__(self, max_retries):
                 self.max_retries = max_retries
                 self.attempts = 0
-            
+
             def should_retry(self):
                 return self.attempts < self.max_retries
-            
+
             def record_attempt(self):
                 self.attempts += 1
-        
+
         manager = ReconnectionManager(MAX_RETRIES)
-        
+
         for _ in range(MAX_RETRIES):
             assert manager.should_retry()
             manager.record_attempt()
-        
+
         assert not manager.should_retry()
 
 
@@ -259,19 +260,19 @@ class TestTransportSecurity:
             if url.startswith("http://") and "localhost" not in url and "127.0.0.1" not in url:
                 raise ValueError("TLS required for remote connections")
             return True
-        
+
         assert validate_endpoint("https://example.com/mcp")
         assert validate_endpoint("http://localhost:8080/mcp")
-        
+
         with pytest.raises(ValueError):
             validate_endpoint("http://example.com/mcp")
 
     def test_origin_validation(self):
         """WebSocket origin is validated."""
         ALLOWED_ORIGINS = ["https://example.com", "https://app.example.com"]
-        
+
         def validate_origin(origin):
             return origin in ALLOWED_ORIGINS
-        
+
         assert validate_origin("https://example.com")
         assert not validate_origin("https://evil.com")

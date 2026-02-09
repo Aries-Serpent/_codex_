@@ -18,7 +18,7 @@ def analyze_main(path: str, format: str, output: str, threshold: int):
     click.echo(f"🔍 Analyzing code in: {path}")
     click.echo(f"📊 Format: {format}")
     click.echo(f"📏 Threshold: {threshold} lines")
-    
+
     # TODO: Phase 2 - Implement full analysis
     click.echo("\n⚠️  Full implementation coming in Phase 2")
     click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details")

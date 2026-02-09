@@ -5,7 +5,9 @@ Prefer codex_ml.tokenization.sentencepiece_adapter for new code.
 """
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import warnings as _warnings

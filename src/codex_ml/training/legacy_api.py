@@ -927,7 +927,6 @@ def run_functional_training(
 
     try:
         from datasets import Dataset
-
         from transformers import AutoTokenizer
     except Exception:  # pragma: no cover - optional dependencies
         # Track failed optional dependencies
@@ -941,9 +940,8 @@ def run_functional_training(
         unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
 
         try:
-            from torch.utils.data import DataLoader
-
             import torch
+            from torch.utils.data import DataLoader
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
 
@@ -1152,7 +1150,8 @@ def run_functional_training(
     import numpy as np
 
     from codex_ml.models.registry import get_model
-    from codex_ml.training.functional_training import TrainConfig as TrainCfg, train as _ft_train
+    from codex_ml.training.functional_training import TrainConfig as TrainCfg
+    from codex_ml.training.functional_training import train as _ft_train
 
     def run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg):
         """Adapter wrapping functional_training.train for legacy API.

@@ -5,7 +5,6 @@ Tests category listing, file restoration, dry-run mode, and error handling.
 """
 from __future__ import annotations
 
-
 import pytest
 
 

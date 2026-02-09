@@ -6,9 +6,9 @@ Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 
 
 import pytest
-from typer.testing import CliRunner
 
 from codex.cli_rag import app
+from typer.testing import CliRunner
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def sample_docs(tmp_path):
     """Sample documentation files for testing."""
     docs_dir = tmp_path / "docs"
     docs_dir.mkdir()
-    
+
     # Create sample markdown files
     (docs_dir / "intro.md").write_text(
         "# Introduction\n\n"
@@ -39,13 +39,13 @@ def sample_docs(tmp_path):
         "Functions and classes for embedding and retrieval.\n"
         "Use create_embedding_provider to get started.\n"
     )
-    
+
     return docs_dir
 
 
 class TestTfidfIntegration:
     """Integration tests using TF-IDF provider (offline)."""
-    
+
     def test_build_with_tfidf(self, runner, sample_docs, tmp_path):
         """Test building index with TF-IDF provider."""
         # Note: This test requires scikit-learn
@@ -53,7 +53,7 @@ class TestTfidfIntegration:
             import sklearn  # noqa: F401 - Testing optional dependency availability
         except ImportError:
             pytest.skip("scikit-learn not installed")
-        
+
         result = runner.invoke(
             app,
             [
@@ -64,36 +64,36 @@ class TestTfidfIntegration:
             ],
             env={"RAG_EMBEDDING_PROVIDER": "tfidf"}
         )
-        
+
         # Should succeed or gracefully handle
         assert result.exit_code in [0, 1], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
-        
+
         # Check output
         if result.exit_code == 0:
             assert "Index built successfully" in result.stdout or "index" in result.stdout.lower()
-    
+
     def test_list_command(self, runner):
         """Test list command (should always work)."""
         result = runner.invoke(app, ["list", "--tenant-id", "test"])
-        
+
         # Should succeed even if no indices exist
         assert result.exit_code == 0
-    
+
     def test_stats_command(self, runner):
         """Test stats command error handling."""
         result = runner.invoke(
             app,
             ["stats", "--index-name", "nonexistent", "--tenant-id", "test"]
         )
-        
+
         # Should fail gracefully
         assert result.exit_code == 1
         assert "not found" in result.stdout.lower() or "error" in result.stdout.lower()
-    
+
     def test_help_commands(self, runner):
         """Test all help commands work."""
         commands = ["build", "query", "list", "delete", "merge", "stats", "metrics"]
-        
+
         for cmd in commands:
             result = runner.invoke(app, [cmd, "--help"])
             assert result.exit_code == 0, f"Help for {cmd} failed"
@@ -102,27 +102,27 @@ class TestTfidfIntegration:
 
 class TestProviderSelection:
     """Test provider selection logic."""
-    
+
     def test_tfidf_provider_import(self):
         """Test TF-IDF provider can be imported."""
         try:
             from codex.rag.embeddings import TfidfEmbeddingProvider
-            
+
             # Create provider
             provider = TfidfEmbeddingProvider(max_features=384)
             assert provider is not None
             assert provider.get_dimension() == 384
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
-    
+
     def test_create_provider_tfidf(self):
         """Test creating TF-IDF provider via factory."""
         try:
             from codex.rag.embeddings import create_embedding_provider
-            
+
             provider = create_embedding_provider(provider_type='tfidf')
             assert provider is not None
-            
+
             # Test encoding with longer, more varied text
             texts = [
                 "This is the first test document about machine learning and artificial intelligence",
@@ -134,20 +134,20 @@ class TestProviderSelection:
                 embeddings = provider.provider.encode(texts)
             else:
                 embeddings = provider.encode(texts)
-            
+
             assert embeddings.shape[0] == 3
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
-    
+
     def test_auto_fallback(self):
         """Test auto-fallback from transformers to TF-IDF."""
         try:
             from codex.rag.embeddings import create_embedding_provider
-            
+
             # Auto mode should fall back to TF-IDF if transformers unavailable
             provider = create_embedding_provider(provider_type='auto')
             assert provider is not None
-            
+
             # Verify it's using TF-IDF (wrapped in cache)
             assert 'CachedEmbeddingProvider' in provider.__class__.__name__ or \
                    'TfidfEmbeddingProvider' in provider.__class__.__name__
@@ -157,46 +157,46 @@ class TestProviderSelection:
 
 class TestOfflineCapability:
     """Test offline operation capabilities."""
-    
+
     def test_tfidf_no_network(self):
         """Verify TF-IDF works without network access."""
         try:
             from codex.rag.embeddings import TfidfEmbeddingProvider
             from codex.rag.indexer import chunk_text
-            
+
             # Create provider
             provider = TfidfEmbeddingProvider()
-            
+
             # Sample text
             text = """
             This is a test document about machine learning and AI.
             It contains multiple sentences for chunking.
             The RAG system uses embeddings for semantic search.
             """
-            
+
             # Chunk text
             chunks = chunk_text(text, chunk_size=50, overlap=10)
             assert len(chunks) > 0
-            
+
             # Encode chunks
             texts = [chunk[2] for chunk in chunks]
             embeddings = provider.encode(texts)
-            
+
             # Verify embeddings
             assert embeddings.shape[0] == len(chunks)
             assert embeddings.shape[1] <= 384  # May be less for small corpus
             assert embeddings.shape[1] > 0  # But must have some dimensions
-            
+
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
-    
+
     def test_full_pipeline_offline(self, tmp_path):
         """Test complete RAG pipeline offline."""
         try:
             from codex.rag.embeddings import TfidfEmbeddingProvider
             from codex.rag.indexer import chunk_text, persist_index
             from codex.rag.retriever import Retriever
-            
+
             # Create test document
             doc_path = tmp_path / "test.md"
             doc_path.write_text(
@@ -205,16 +205,16 @@ class TestOfflineCapability:
                 "Deep learning uses neural networks with many layers.\n"
                 "Natural language processing handles text and speech.\n"
             )
-            
+
             # Read and chunk
             text = doc_path.read_text()
             chunks = chunk_text(text, chunk_size=100, overlap=20)
-            
+
             # Create TF-IDF provider and encode
             provider = TfidfEmbeddingProvider()
             texts = [chunk[2] for chunk in chunks]
             embeddings = provider.encode(texts)
-            
+
             # Persist index
             index_dir = tmp_path / "indices"
             index_path = persist_index(
@@ -225,12 +225,12 @@ class TestOfflineCapability:
                 tenant_id="test",
                 index_dir=str(index_dir)
             )
-            
+
             # Verify index was created
             assert index_path.exists()
             assert (index_path / "index.faiss").exists()
             assert (index_path / "chunks.json").exists()
-            
+
             # Try to load and query (this tests retrieval too)
             # Note: Retriever might need sentence-transformers, skip if unavailable
             try:
@@ -244,7 +244,7 @@ class TestOfflineCapability:
             except Exception:
                 # Expected if sentence-transformers not available
                 pass
-                
+
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
 

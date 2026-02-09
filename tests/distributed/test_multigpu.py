@@ -19,10 +19,11 @@ import unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
 try:
-    import torch
-    import torch.nn as nn
     import torch.distributed as dist
     from torch.nn.parallel import DistributedDataParallel as DDP
+
+    import torch
+    import torch.nn as nn
 
     TORCH_AVAILABLE = True
 except ImportError:
@@ -334,8 +335,9 @@ class TestDistributedDataLoader(unittest.TestCase):
 
     def test_data_sharding(self):
         """Test data sharding across ranks."""
-        from torch.utils.data import Dataset, DataLoader
         from torch.utils.data.distributed import DistributedSampler
+
+        from torch.utils.data import DataLoader, Dataset
 
         class DummyDataset(Dataset):
             def __init__(self, size=100):

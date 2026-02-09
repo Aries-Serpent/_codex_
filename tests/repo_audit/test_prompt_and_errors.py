@@ -12,9 +12,9 @@ from codex_audit.errors import (
     attach_ra_references,
     load_error_records,
 )
+from codex_audit.gates import run_gates
 from codex_audit.policy import write_policy_mapping
 from codex_audit.prompting import prepare_repo_status_prompt
-from codex_audit.gates import run_gates
 
 
 def test_error_record_includes_ra_refs(tmp_path: Path) -> None:

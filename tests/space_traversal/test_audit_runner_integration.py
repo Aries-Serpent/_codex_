@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 
-
 def test_audit_runner_token_similarity_integration(tmp_path: Path):
     """Test audit runner with token_similarity duplication heuristic."""
     import importlib.util

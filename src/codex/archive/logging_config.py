@@ -6,7 +6,7 @@ import json
 import logging
 import sys
 from dataclasses import asdict, dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from .config import LoggingConfig, PerformanceConfig

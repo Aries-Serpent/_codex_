@@ -28,14 +28,14 @@ class TestTrainingPipelineSetup:
             SRC_DIR / "codex_ml" / "training",
             SRC_DIR / "training",
         ]
-        
+
         for path in training_paths:
             if path.exists():
                 # Check for __init__.py
                 init_file = path / "__init__.py"
                 assert init_file.exists(), f"{path} should have __init__.py"
                 return
-        
+
         pytest.skip("No training module found")
 
     def test_training_config_schema(self):
@@ -44,7 +44,7 @@ class TestTrainingPipelineSetup:
             CONFIGS_DIR / "training",
             CONFIGS_DIR / "train",
         ]
-        
+
         for config_path in training_config_paths:
             if config_path.exists():
                 yaml_files = list(config_path.rglob("*.yaml"))
@@ -60,7 +60,7 @@ class TestTrainingPipelineSetup:
                         pytest.skip("PyYAML not installed")
                     except Exception:
                         pass
-        
+
         pytest.skip("No training configs found")
 
 
@@ -130,7 +130,7 @@ class TestCheckpointingWorkflow:
     def test_checkpoint_config_exists(self):
         """Verify checkpoint configuration exists."""
         checkpoint_patterns = ["checkpoint", "save"]
-        
+
         for yaml_file in CONFIGS_DIR.rglob("*.yaml") if CONFIGS_DIR.exists() else []:
             try:
                 content = yaml_file.read_text(encoding="utf-8").lower()
@@ -138,7 +138,7 @@ class TestCheckpointingWorkflow:
                     return  # Found checkpoint config
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No checkpoint config found (optional)")
 
 
@@ -189,5 +189,5 @@ class TestMetricsWorkflow:
                     return  # Found TensorBoard support
             except (UnicodeDecodeError, OSError):
                 continue
-        
+
         pytest.skip("No TensorBoard support found (optional)")

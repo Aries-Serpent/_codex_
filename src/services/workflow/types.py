@@ -178,20 +178,20 @@ class InventoryStats(BaseModel):
 
 class WorkflowRun(BaseModel):
     """Workflow run execution metadata for service integration."""
-    
+
     id: int
     workflow_id: int
     status: str
     conclusion: str
     url: str
-    
+
     class Config:
         frozen = True
 
 
 class WorkflowJobExecution(BaseModel):
     """Workflow job execution metadata for service integration."""
-    
+
     id: int
     run_id: int
     name: str
@@ -200,18 +200,18 @@ class WorkflowJobExecution(BaseModel):
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
     if_condition: Optional[dict[str, Any]] = None
-    
+
     class Config:
         frozen = True
 
 
 class WorkflowStep(BaseModel):
     """Workflow step execution metadata for service integration."""
-    
+
     name: str
     status: str
     conclusion: str
     number: int
-    
+
     class Config:
         frozen = True

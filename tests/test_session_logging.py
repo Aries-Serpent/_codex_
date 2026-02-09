@@ -275,32 +275,32 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
     import os
     if os.geteuid() != 0:
         pytest.skip("Test requires root privileges to demote to nobody user")
-    
+
     session_id = f"RO-{uuid.uuid4()}"
     sessions_dir = tmp_path / f"codex_ro_{uuid.uuid4()}"  # CHANGED: Use tmp_path
     sessions_dir.mkdir(parents=True, exist_ok=True)
-    
+
     monkeypatch.setenv("CODEX_SESSION_ID", session_id)
     monkeypatch.setenv("CODEX_SESSION_LOG_DIR", str(sessions_dir))
 
     # Make directory read-only
     sessions_dir.chmod(0o555)
-    
+
     sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
-    
+
     if not sh.exists():
         pytest.skip("session_logging.sh not found")
-    
+
     cmd = f"source '{sh}'; set +e; codex_session_start"
-    
+
     try:
         import pwd
         nobody = pwd.getpwnam("nobody")
-        
+
         def demote():
             os.setgid(nobody.pw_gid)
             os.setuid(nobody.pw_uid)
-        
+
         cp = subprocess.run(
             ["bash", "--noprofile", "--norc", "-c", cmd],
             cwd=str(tmp_path),  # CHANGED: Use tmp_path

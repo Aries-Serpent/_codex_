@@ -60,10 +60,10 @@ class TestEvaluate:
         """Test evaluate with empty dataloader."""
         try:
             from codex_ml.training.eval import evaluate
-            
+
             def dummy_loss(outputs, batch):
                 return 0.0
-            
+
             class DummyModel:
                 training = True
                 def eval(self):
@@ -72,7 +72,7 @@ class TestEvaluate:
                     self.training = mode
                 def __call__(self, **kwargs):
                     return {}
-            
+
             model = DummyModel()
             result = evaluate(model, [], loss_fn=dummy_loss)
             assert isinstance(result, dict)
@@ -83,10 +83,10 @@ class TestEvaluate:
         """Test evaluate with single batch."""
         try:
             from codex_ml.training.eval import evaluate
-            
+
             def dummy_loss(outputs, batch):
                 return 1.0
-            
+
             class DummyModel:
                 training = True
                 def eval(self):
@@ -95,7 +95,7 @@ class TestEvaluate:
                     self.training = mode
                 def __call__(self, **kwargs):
                     return {"logits": [0.5]}
-            
+
             model = DummyModel()
             dataloader = [{"input": [1, 2, 3]}]
             result = evaluate(model, dataloader, loss_fn=dummy_loss)

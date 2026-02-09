@@ -11,7 +11,6 @@ Tests for validating DeepSpeed configurations including:
 import json
 
 
-
 class TestDeepSpeedZeROStages:
     """Test ZeRO stage configurations"""
 

@@ -6,6 +6,7 @@ Tests detection of security patterns like confirmation prompts, dry-run modes, s
 
 import tempfile
 from pathlib import Path
+
 from scripts.space_traversal.detectors import mcp_security_safeguards
 
 
