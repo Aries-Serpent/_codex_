@@ -22,6 +22,40 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC_ROOT = REPO_ROOT / "src"
 
 
+# ============================================================================
+# CUDA Detection for GPU-Dependent Tests (PR #3178)
+# ============================================================================
+# Detect CUDA availability at module load time for test skip decorators
+try:
+    import torch
+    CUDA_AVAILABLE = torch.cuda.is_available()
+except (ImportError, AttributeError):
+    # PyTorch not installed or stub version without CUDA support
+    CUDA_AVAILABLE = False
+
+
+def is_cuda_available() -> bool:
+    """
+    Check if CUDA is available and functional.
+    
+    Returns:
+        bool: True if CUDA/GPU is available, False otherwise
+        
+    Note:
+        This function is used by test skip decorators to gracefully handle
+        GPU-dependent tests in CPU-only CI environments.
+    """
+    return CUDA_AVAILABLE
+
+
+# Pytest skip marker for CUDA-dependent tests
+# Usage: @pytest.mark.skipif(not is_cuda_available(), reason="CUDA not available")
+skip_if_no_cuda = pytest.mark.skipif(
+    not is_cuda_available(),
+    reason="CUDA/GPU not available in this environment"
+)
+
+
 def pytest_configure(config: pytest.Config) -> None:
     """Relax coverage enforcement during collection-only runs.
 
