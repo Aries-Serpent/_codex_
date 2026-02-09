@@ -65,7 +65,7 @@ jobs:
       - name: Run auto-fix script (check mode)
         id: check
         run: |
-          python scripts/ci/auto_fix_common_issues.py
+          python scripts/ci/auto_fix_common_issues.py --check-only
         continue-on-error: true
       
       - name: Apply fixes (if not check-only)
