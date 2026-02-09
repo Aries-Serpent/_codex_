@@ -1011,8 +1011,8 @@ This is a **positive outcome** - surface-level issues are resolved, revealing de
 
 ## 2026-02-09 - PR3178 P0.2 Full Test Suite Execution
 
-- Ran full pytest suite with timeout and logging; collection halted with 149 errors due to missing dependencies and Typer attribute errors.
-- Captured full output in `.codex/test_run_complete_20260209_154455.log`.
+- Ran full pytest suite with timeout and logging; collection halted with 149 errors, primarily due to missing dependencies (see log for full details).
+- Captured full output in `.codex/test_run_complete_20260209_154455_summary.log`.
 - Documented P0.2 results in `.codex/PR3178_P0_TEST_RUN_RESULTS.md`.
 - Added coverage recovery plan in `.codex/plans/path_100_20260209-154650_pr3178_p0_2_test_run.md`.
 

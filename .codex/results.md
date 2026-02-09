@@ -546,4 +546,4 @@ Supporting files:
 - Test run: `PYENV_VERSION=3.11.14 PYTHONPATH=src pytest -m \"smoke\" -v --tb=short` (failed during collection: missing dependency stack; see terminal output for details).
 
 ## 2026-02-09T15:45:44Z - PR3178 P0.2 test suite execution
-- Test run: `PYENV_VERSION=3.12.12 PYTHONPATH=src pytest tests/ -v -m "not slow" --tb=short --timeout=300 --maxfail=0` (collection halted with 149 errors; missing numpy/PyYAML/hydra/mlflow/torch; Typer attribute error). Log: `.codex/test_run_complete_20260209_154455.log`.
+- Test run: `PYENV_VERSION=3.12.12 PYTHONPATH=src pytest tests/ -v -m "not slow" --tb=short --timeout=300 --maxfail=0` (collection halted with 149 errors; missing numpy/PyYAML/hydra/mlflow/torch). Log: `.codex/test_run_complete_20260209_154455_summary.log`.
