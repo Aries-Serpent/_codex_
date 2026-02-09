@@ -381,7 +381,7 @@ graph TB
 ### New Documentation Created
 1. **PR_3178_CI_MONITORING_LEARNINGS.md** - Cognitive brain learnings
 2. **PR_3178_CUSTOM_AGENT_ENHANCEMENTS.md** - This document
-3. **TEST_FIXES_SUMMARY.md** - Comprehensive test fix analysis
+3. **`.codex/pr_fixes/TEST_FIXES_SUMMARY.md`** - Comprehensive test fix analysis
 4. **FINAL_TEST_STATUS.md** - Test execution status
 
 ### Documentation to Update

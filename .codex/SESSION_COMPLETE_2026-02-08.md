@@ -92,7 +92,7 @@
 ### Documentation
 1. `.codex/SESSION_COMPLETE_2026-02-08.md` - This file
 2. `FINAL_REPORT.md` - Comprehensive analysis (via agent)
-3. `TEST_FIXES_PR3178.md` - Technical details (via agent)
+3. `.codex/pr_fixes/TEST_FIXES_PR3178.md` - Technical details (via agent)
 
 ---
 
