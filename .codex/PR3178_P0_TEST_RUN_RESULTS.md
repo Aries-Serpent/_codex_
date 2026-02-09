@@ -4,8 +4,9 @@ Date: 2026-02-09T15:45:44Z
 
 ## Environment
 - PYENV_VERSION: 3.12.12
-- pytest: 9.0.2
+- pytest: 9.0.2 (non-standard; repo pins pytest==8.3.4 and requirements.txt enforces pytest<9)
 - pytest-timeout: 2.4.0 (installed to enable `--timeout`)
+- Note: This P0.2 run was executed in a non-standard test environment. For reproducible runs, use the pinned pytest tooling from requirements.txt and requirements-test.txt.
 
 ## Commands Executed
 ```bash
@@ -13,7 +14,7 @@ PYENV_VERSION=3.12.12 PYTHONPATH=src pytest tests/ -v -m "not slow" \
   --tb=short \
   --timeout=300 \
   --maxfail=0 \
-  2>&1 | tee .codex/test_run_complete_20260209_154455_summary.log
+  2>&1 | tee .codex/test_run_complete_20260209_154455.log
 ```
 
 ## Summary

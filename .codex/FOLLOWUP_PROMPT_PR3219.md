@@ -37,7 +37,8 @@ PR #3219 successfully applied P0.2 test execution documentation and addressed al
 
 1. **Install Missing Dependencies**
    ```bash
-   pip install numpy PyYAML hydra-core mlflow 'torch>=2.6.0'
+   pip install -r requirements.txt -r requirements-test.txt
+   # Installs: numpy, PyYAML, hydra-core, mlflow, torch==2.10.0+cpu (via CPU-only index)
    ```
 
 2. **Verify Imports**

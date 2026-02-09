@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-09T18:00:00Z  
 **Phase**: P0.3 - Dependency Remediation & Full Test Execution  
-**Environment**: Python 3.12.3, pytest 8.3.4  
+**Environment**: Python 3.12.3 (commands use PYENV_VERSION=3.12.12), pytest 8.3.4  
 **Branch**: copilot/sub-pr-3178
 
 ## Execution Summary
