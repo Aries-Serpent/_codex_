@@ -328,19 +328,19 @@ steps:
 ## 📚 Documentation Index
 
 ### Getting Started
-- [Zendesk Newcomer Guide](../docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
-- [Zendesk Admin Runbook](../docs/crm/admin-runbooks/zendesk.md)
-- [D365 Admin Runbook](../docs/crm/admin-runbooks/d365.md)
+- [Zendesk Integration Deep Dive](../guides/codex_zendesk_integration_deep_dive.md)
+- [Zendesk Admin Runbook](admin-runbooks/zendesk.md)
+- [D365 Admin Runbook](admin-runbooks/d365.md)
 
 ### Technical Reference
-- [Zendesk API Catalog](../docs/zendesk_api_catalog_generated.md)
-- [Zendesk Workflow Diagrams](../docs/zendesk/WORKFLOW_DIAGRAMS.md)
-- [AI Agent App Builder](../docs/zendesk/AI_AGENT_APP_BUILDER.md)
+- [Zendesk API Catalog](../zendesk_api_catalog_generated.md)
+- [Zendesk API Reference](../zendesk_api_reference.md)
+- [Zendesk AI App Builder Limitations](../guides/zendesk_ai_app_builder_limitations.md)
 
 ### Runbooks
-- [Zendesk Admin Workflow](../docs/runbooks/zendesk_admin_workflow.md)
-- [Zendesk E2E Support Workflows](../docs/runbooks/zendesk_e2e_support_workflows_plan.md)
-- [Zendesk Docs Pipeline](../docs/runbooks/zendesk_docs_pipeline.md)
+- [Zendesk Admin Workflow](../runbooks/zendesk_admin_workflow.md)
+- [Zendesk E2E Support Workflows](../runbooks/zendesk_e2e_support_workflows_plan.md)
+- [Zendesk Docs Pipeline](../runbooks/zendesk_docs_pipeline.md)
 
 ### Code Reference
 - [`src/codex_crm/`](../src/codex_crm/) - CRM integration modules
