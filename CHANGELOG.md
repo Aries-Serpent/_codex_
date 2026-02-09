@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security - Critical Dependency Updates (2026-02-09)
+
+**Fixed 3 security vulnerabilities by updating nbconvert and litestar packages:**
+
+1. **[HIGH] CVE-2025-53000** - nbconvert 7.16.6 → 7.17.0
+   - **Issue**: Insecure Inkscape Windows path handling
+   - **Risk**: DLL hijacking and arbitrary code execution on Windows
+   - **Fix**: Secured path resolution (registry first + block CWD)
+   - **Impact**: Eliminates Windows-specific security vulnerability in notebook conversion
+   - **References**: [nbconvert CHANGELOG](https://github.com/jupyter/nbconvert/blob/main/CHANGELOG.md)
+
+2. **[MEDIUM] CVE-2026-25479** - litestar 2.19.0 → 2.20.0
+   - **Issue**: AllowedHosts validation bypass via regex metacharacters
+   - **Risk**: Host Header Injection attacks (CVSS 6.5)
+   - **Fix**: Proper escaping of regex metacharacters in hostname patterns
+   - **Impact**: Prevents malicious hosts from bypassing validation
+   - **References**: [GitHub Advisory GHSA-93ph-p7v4-hwh4](https://github.com/litestar-org/litestar/security/advisories/GHSA-93ph-p7v4-hwh4)
+
+3. **[MEDIUM] CVE-2026-25480** - litestar 2.19.0 → 2.20.0
+   - **Issue**: FileStore cache key collision vulnerability
+   - **Risk**: Cache poisoning and cross-user data leakage (CVSS 6.5)
+   - **Fix**: Enhanced cache key generation with proper separators
+   - **Impact**: Prevents different URLs from producing identical cache keys
+   - **References**: [GitHub Advisory GHSA-vxqx-rh46-q2pg](https://github.com/litestar-org/litestar/security/advisories/GHSA-vxqx-rh46-q2pg)
+
+**Impact Assessment**:
+- nbconvert: Low risk to codebase (optional notebook workflows only)
+- litestar: Low risk (indirect dependency via evidently, not directly used)
+- No breaking changes introduced
+- All validation tests passed
+
+**Files Modified**: 2 files
+- `requirements-notebook.txt`: Updated nbconvert to 7.17.0
+- `requirements/lock.txt`: Updated litestar to 2.20.0 and nbconvert to 7.17.0
+
+**Related**: Supersedes Dependabot PRs #3224 (UV group) and #3225 (PIP group)
+**Security Analysis**: See `.codex/PR3224_PR3225_SECURITY_ANALYSIS.md`
+**Implementation Guide**: See `.codex/PR3224_PR3225_IMPLEMENTATION_PROMPTS.md`
+**Agent Specification**: See `.github/agents/dependency-security-review-agent.md`
+
 ### Fixed - PR #3181 Phase 3 Validation (2026-02-07)
 
 **Completed Phase 3 validation tasks for PR #3181:**
