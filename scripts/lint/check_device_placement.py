@@ -107,10 +107,11 @@ class DevicePlacementChecker(ast.NodeVisitor):
         try:
             with open(self.filename) as f:
                 lines = f.readlines()
-                if lineno > 0 and lineno <= len(lines):
+                if 0 < lineno <= len(lines):
                     line = lines[lineno - 1]
                     return 'safe-device-placement:' in line
-        except:
+        except (OSError, IOError, UnicodeDecodeError):
+            # If the file cannot be read for any reason, treat as no annotation present.
             pass
         return False
 

@@ -288,9 +288,11 @@ All operations must be logged to:
 
 ### CI/CD Automation Tools 🆕
 
-**Auto-Fix Script:** `scripts/ci/auto_fix_common_issues.py`
+#### Auto-Fix Script with JSON Output
 
-Detects and fixes 8 common workflow failure patterns:
+**Script:** `scripts/ci/auto_fix_common_issues.py`
+
+Detects and fixes 8 common workflow failure patterns with machine-readable output for Copilot Agent integration:
 
 ```bash
 # Check for issues (no changes)
@@ -298,6 +300,9 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 
 # Apply automatic fixes
 python scripts/ci/auto_fix_common_issues.py
+
+# Generate JSON diagnostic report
+python scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json
 
 # Dry run (show what would change)
 python scripts/ci/auto_fix_common_issues.py --dry-run
@@ -316,10 +321,88 @@ python scripts/ci/auto_fix_common_issues.py --pattern 1
 - ⚠️ Pattern 7: Redundant imports (detect only)
 - ✅ Pattern 8: CodeQL alerts (ruff F401/F841)
 
+#### Copilot Agent Helper
+
+**Script:** `scripts/ci/copilot_agent_auto_fix.py`
+
+Orchestrates automated fixes with progress tracking:
+
+```bash
+# Parse diagnostic report and apply all auto-fixable issues
+python scripts/ci/copilot_agent_auto_fix.py
+```
+
+The helper script:
+1. Reads `.codex/diagnostic-report.json`
+2. Applies fixes pattern-by-pattern
+3. Validates all fixes are applied
+4. Provides next-step guidance
+
+#### PR Auto-Fix Workflow
+
+**Workflow:** `.github/workflows/auto-fix-pr-check.yml`
+
+Automatically triggered on PR events:
+- Runs diagnostic check
+- Generates JSON report
+- Posts Copilot Agent instructions to PR
+- Uploads diagnostic artifacts
+- Blocks merge if auto-fixable issues found
+
+**What it does:**
+1. Detects auto-fixable issues in PR
+2. Posts detailed comment with:
+   - Issue summary table
+   - Critical vs informational categorization
+   - Three fix options (Copilot, Local, Workflow)
+   - Step-by-step instructions
+3. Creates check run with inline annotations
+4. Uploads diagnostic report as artifact (30-day retention)
+
+#### Pre-Merge Validation Workflow
+
+**Workflow:** `.github/workflows/pre-merge-validation.yml`
+
+Final validation before merge approval:
+- Auto-fix check (required)
+- Quick test run (warning only)
+- Code quality check (warning only)
+- Posts validation summary
+
 **Integration Points:**
 1. **Pre-commit Hook** - Runs automatically on `git commit`
-2. **GitHub Actions** - Runs on PRs (check-only mode)
-3. **Manual CLI** - On-demand execution
+2. **PR Check** - Automatic on PR open/update
+3. **Pre-Merge** - Runs before merge approval
+4. **Manual CLI** - On-demand execution
+
+#### JSON Diagnostic Report Format
+
+```json
+{
+  "timestamp": "2026-02-09T19:30:00Z",
+  "status": "failed",
+  "total_issues": 10,
+  "auto_fixable": 5,
+  "manual_review": 5,
+  "issues": [
+    {
+      "pattern": 1,
+      "pattern_name": "Unused Imports",
+      "type": "unused_imports",
+      "severity": "error",
+      "file": "tests/test_example.py",
+      "line": 10,
+      "message": "Import 'Mock' is unused",
+      "auto_fix_available": true,
+      "suggested_fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 1"
+    }
+  ],
+  "fixes_applied": {},
+  "next_steps": [
+    "Run: python scripts/ci/auto_fix_common_issues.py"
+  ]
+}
+```
 
 **Documentation:** [.codex/docs/CI_AUTO_FIX_SYSTEM.md](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
 

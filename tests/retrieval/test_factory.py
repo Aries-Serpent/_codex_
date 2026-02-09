@@ -2,7 +2,7 @@
 Tests for Vector Store Factory and Registry
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 import types
 
 import numpy as np
