@@ -100,7 +100,7 @@ jobs:
       
       - name: Upload chain execution plan
         if: steps.init.outputs.chain_generated == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: agent-chain-plan-${{ github.run_number }}
           path: .codex/agents/chain_plan.json
@@ -166,7 +166,7 @@ jobs:
       
       - name: Upload handoff results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: agent-handoff-results-${{ github.run_number }}
           path: |
