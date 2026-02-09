@@ -32,6 +32,8 @@ class FileHandleAuditor(ast.NodeVisitor):
         self.issues: List[Dict] = []
         self.in_with_statement = False
         self.with_depth = 0
+        self.in_context_manager_method = False
+        self.current_function_name = None
     
     def visit_With(self, node):
         """Track when we're inside a 'with' statement."""
@@ -39,11 +41,27 @@ class FileHandleAuditor(ast.NodeVisitor):
         self.generic_visit(node)
         self.with_depth -= 1
     
+    def visit_FunctionDef(self, node):
+        """Track when we're inside context manager methods."""
+        prev_function = self.current_function_name
+        prev_in_cm = self.in_context_manager_method
+        
+        self.current_function_name = node.name
+        # Check if this is a context manager method or cleanup method
+        if node.name in ('__enter__', '__exit__', '__del__', 'close', '_open', '_close'):
+            self.in_context_manager_method = True
+        
+        self.generic_visit(node)
+        
+        self.current_function_name = prev_function
+        self.in_context_manager_method = prev_in_cm
+    
     def visit_Call(self, node):
         """Check for open() calls outside 'with' statements."""
         # Check for open() function
         if isinstance(node.func, ast.Name) and node.func.id == 'open':
-            if self.with_depth == 0:
+            # Allow open() in context manager methods and with statements
+            if self.with_depth == 0 and not self.in_context_manager_method:
                 self.issues.append({
                     'line': node.lineno,
                     'col': node.col_offset,
