@@ -202,8 +202,8 @@ class TestOptimizerSetup:
         # Zero gradients
         optimizer.zero_grad()
 
-        # Check gradients are zeroed
-        assert torch.all(simple_model.weight.grad == 0)
+        # Check gradients are zeroed (set to None by zero_grad)
+        assert simple_model.weight.grad is None
 
     def test_optimizer_step(self, simple_model):
         """Test optimizer step updates parameters."""

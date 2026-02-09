@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import HTTPException, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -428,9 +429,9 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         # Extract API key from Authorization header
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Missing or invalid Authorization header",
+                content={"detail": "Missing or invalid Authorization header"},
             )
 
         api_key = auth_header.replace("Bearer ", "")
@@ -438,10 +439,16 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         # Resolve tenant
         tenant = tenant_registry.get_tenant_by_api_key(api_key)
         if not tenant:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
+            return JSONResponse(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                content={"detail": "Invalid API key"},
+            )
 
         if not tenant.get("active", True):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant is inactive")
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={"detail": "Tenant is inactive"},
+            )
 
         # Attach tenant to request state
         request.state.tenant = tenant

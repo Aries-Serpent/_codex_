@@ -22,44 +22,58 @@ try:
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
+    torch = None
+    nn = None
+    Dataset = object  # Fallback base class
+    DataLoader = None
+    Adam = None
     pytestmark = pytest.mark.skip("PyTorch not available")
 
 
-class SimpleDataset(Dataset):
-    """Simple dataset for testing."""
-    
-    def __init__(self, size=100, input_dim=10):
-        self.size = size
-        self.input_dim = input_dim
-    
-    def __len__(self):
-        return self.size
-    
-    def __getitem__(self, idx):
-        return {
-            'input_ids': torch.randint(0, 1000, (self.input_dim,)),
-            'labels': torch.randint(0, 2, (1,))
-        }
+# Conditional class definitions - only define if torch is available
+if HAS_TORCH and torch is not None:
+    class SimpleDataset(Dataset):
+        """Simple dataset for testing."""
+        
+        def __init__(self, size=100, input_dim=10):
+            self.size = size
+            self.input_dim = input_dim
+        
+        def __len__(self):
+            return self.size
+        
+        def __getitem__(self, idx):
+            return {
+                'input_ids': torch.randint(0, 1000, (self.input_dim,)),
+                'labels': torch.randint(0, 2, (1,))
+            }
 
 
-class SimpleModel(nn.Module):
-    """Simple model for testing."""
-    
-    def __init__(self, input_dim=10, hidden_dim=20, output_dim=2):
-        super().__init__()
-        self.fc1 = nn.Linear(input_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, output_dim)
-    
-    def forward(self, input_ids, labels=None):
-        x = torch.relu(self.fc1(input_ids.float()))
-        logits = self.fc2(x)
+    class SimpleModel(nn.Module):
+        """Simple model for testing."""
         
-        loss = None
-        if labels is not None:
-            loss_fn = nn.CrossEntropyLoss()
-            loss = loss_fn(logits, labels.squeeze())
+        def __init__(self, input_dim=10, hidden_dim=20, output_dim=2):
+            super().__init__()
+            self.fc1 = nn.Linear(input_dim, hidden_dim)
+            self.fc2 = nn.Linear(hidden_dim, output_dim)
         
-        return {'loss': loss, 'logits': logits}
+        def forward(self, input_ids, labels=None):
+            x = torch.relu(self.fc1(input_ids.float()))
+            logits = self.fc2(x)
+            
+            loss = None
+            if labels is not None:
+                loss_fn = nn.CrossEntropyLoss()
+                loss = loss_fn(logits, labels.squeeze())
+            
+            return {'loss': loss, 'logits': logits}
+else:
+    # Dummy classes when torch is not available
+    class SimpleDataset:
+        pass
+    
+    class SimpleModel:
+        pass
 
 
 @pytest.fixture
@@ -96,7 +110,10 @@ class TestBasicTrainingIteration:
         
         # Get one batch - create iterator explicitly for Python 3.12+ compatibility
         dataloader_iter = iter(simple_dataloader)
-        batch = next(dataloader_iter)
+        try:
+            batch = next(dataloader_iter)
+        except StopIteration:
+            pytest.fail("Dataloader is empty - cannot get batch for test")
         
         # Forward pass
         outputs = simple_model(**batch)
@@ -371,7 +388,10 @@ class TestGradientAccumulation:
         
         # Model 1: Normal update with batch - create iterator explicitly for Python 3.12+ compatibility
         dataloader_iter = iter(simple_dataloader)
-        batch = next(dataloader_iter)
+        try:
+            batch = next(dataloader_iter)
+        except StopIteration:
+            pytest.fail("Dataloader is empty - cannot get batch for test")
         outputs1 = model1(**batch)
         loss1 = outputs1['loss']
         loss1.backward()

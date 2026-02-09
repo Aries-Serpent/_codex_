@@ -130,11 +130,11 @@ class TestStrategyResolution:
             pytest.skip("resolve_strategy not available")
 
     def test_resolve_strategy_returns_callable(self) -> None:
-        """Test that resolved strategy is callable."""
+        """Test that resolved strategy has a run method."""
         try:
             from codex_ml.training.strategies import resolve_strategy
             strategy = resolve_strategy("functional")
-            assert callable(strategy) or hasattr(strategy, "__call__")
+            assert hasattr(strategy, "run") or callable(strategy)
         except (ImportError, ValueError, KeyError):
             pytest.skip("strategy resolution not available")
 
@@ -148,47 +148,47 @@ class TestTrainingCallback:
     """Tests for TrainingCallback class."""
 
     def test_callback_instantiation(self) -> None:
-        """Test creating a TrainingCallback instance."""
+        """Test creating a TrainingCallback-compatible instance."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
-            callback = TrainingCallback()
+            from codex_ml.training.strategies import NoOpCallback
+            callback = NoOpCallback()
             assert callback is not None
         except ImportError:
-            pytest.skip("TrainingCallback not available")
+            pytest.skip("NoOpCallback not available")
 
     def test_callback_on_epoch_start(self) -> None:
         """Test on_epoch_start callback method."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
-            callback = TrainingCallback()
+            from codex_ml.training.strategies import NoOpCallback
+            callback = NoOpCallback()
             if hasattr(callback, "on_epoch_start"):
-                result = callback.on_epoch_start(epoch=0)
+                result = callback.on_epoch_start(epoch=0, state={})
                 # Should complete without error
                 assert result is None or result is not None
         except ImportError:
-            pytest.skip("TrainingCallback not available")
+            pytest.skip("NoOpCallback not available")
 
     def test_callback_on_epoch_end(self) -> None:
         """Test on_epoch_end callback method."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
-            callback = TrainingCallback()
+            from codex_ml.training.strategies import NoOpCallback
+            callback = NoOpCallback()
             if hasattr(callback, "on_epoch_end"):
-                result = callback.on_epoch_end(epoch=0, metrics={})
+                result = callback.on_epoch_end(epoch=0, metrics={}, state={})
                 assert result is None or result is not None
         except ImportError:
-            pytest.skip("TrainingCallback not available")
+            pytest.skip("NoOpCallback not available")
 
     def test_callback_on_step(self) -> None:
         """Test on_step callback method."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
-            callback = TrainingCallback()
+            from codex_ml.training.strategies import NoOpCallback
+            callback = NoOpCallback()
             if hasattr(callback, "on_step"):
-                result = callback.on_step(step=0, loss=0.5)
+                result = callback.on_step(batch_index=0, global_step=0, loss=0.5, state={})
                 assert result is None or result is not None
         except ImportError:
-            pytest.skip("TrainingCallback not available")
+            pytest.skip("NoOpCallback not available")
 
 
 # =============================================================================
@@ -247,11 +247,11 @@ class TestStrategyInterface:
     """Tests for strategy interface compliance."""
 
     def test_strategy_has_train_method(self) -> None:
-        """Test that resolved strategy has train method."""
+        """Test that resolved strategy has run method."""
         try:
             from codex_ml.training.strategies import resolve_strategy
             strategy = resolve_strategy("functional")
-            assert hasattr(strategy, "train") or callable(strategy)
+            assert hasattr(strategy, "run") or callable(strategy)
         except (ImportError, ValueError, KeyError):
             pytest.skip("strategy not available")
 
@@ -280,23 +280,23 @@ class TestCallbackRegistration:
     def test_register_callback(self) -> None:
         """Test registering a callback."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
+            from codex_ml.training.strategies import NoOpCallback, TrainingCallback
             
-            class CustomCallback(TrainingCallback):
-                def on_epoch_end(self, epoch: int, metrics: dict) -> None:
+            class CustomCallback(NoOpCallback):
+                def on_epoch_end(self, epoch: int, metrics: dict, state: dict) -> None:
                     pass
             
             callback = CustomCallback()
-            assert isinstance(callback, TrainingCallback)
+            assert isinstance(callback, NoOpCallback)
         except ImportError:
             pytest.skip("TrainingCallback not available")
 
     def test_multiple_callbacks(self) -> None:
         """Test using multiple callbacks."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
+            from codex_ml.training.strategies import NoOpCallback
             
-            callbacks = [TrainingCallback() for _ in range(3)]
+            callbacks = [NoOpCallback() for _ in range(3)]
             assert len(callbacks) == 3
         except ImportError:
-            pytest.skip("TrainingCallback not available")
+            pytest.skip("NoOpCallback not available")

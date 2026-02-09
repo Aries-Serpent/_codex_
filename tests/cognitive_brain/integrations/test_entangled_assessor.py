@@ -68,7 +68,9 @@ def compliance_assessor(config, engine, monitor, repository):
 def entangled_assessor(entanglement_mgr, compliance_assessor):
     """Entangled compliance-security assessor."""
     return EntangledComplianceSecurityAssessor(
-        entanglement_mgr, compliance_assessor, MockSecurityScanner()
+        compliance_assessor=compliance_assessor,
+        security_scanner=MockSecurityScanner(),
+        entanglement_mgr=entanglement_mgr,
     )
 
 

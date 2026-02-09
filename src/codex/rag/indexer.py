@@ -14,6 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from codex.rag.utils import safe_model_to_device
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -135,8 +137,8 @@ def embed_chunks(
             use_auth_token=use_auth_token if use_auth_token else None
         )
         
-        # Explicitly move all parameters to CPU (double-check)
-        model = model.to('cpu')
+        # Safely move to CPU, handling meta tensors if present
+        model = safe_model_to_device(model, 'cpu')
         model.eval()
         
         # Reset default device to avoid side effects

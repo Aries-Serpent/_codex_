@@ -75,7 +75,7 @@ class TestSafetyFiltersEdgeCases:
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
             assert result.allowed is True
-            assert REDACT_PLACEHOLDER in result.sanitized_text or result.flagged
+            assert REDACT_PLACEHOLDER in result.sanitized_text or len(result.matches) > 0
 
     def test_regex_dos_prevention(self):
         """Test that regex patterns don't cause ReDoS."""

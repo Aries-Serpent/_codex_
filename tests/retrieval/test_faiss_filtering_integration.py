@@ -3,7 +3,16 @@
 import numpy as np
 import pytest
 
-from src.codex.retrieval.stores.faiss_store import FAISSStore
+try:
+    from src.codex.retrieval.stores.faiss_store import FAISSStore
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(
+    not FAISS_AVAILABLE,
+    reason="FAISS not installed (pip install faiss-cpu)"
+)
 
 
 class TestFAISSStoreFiltering:
@@ -34,8 +43,7 @@ class TestFAISSStoreFiltering:
             {"category": "tech", "score": 0.85, "author": "bob"},
         ]
 
-        # Add to store
-        store.create_index(dimension=3)
+        # Add to store (index is created automatically by add() if needed)
         store.add(vectors, metadata=metadata)
 
         return store

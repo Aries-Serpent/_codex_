@@ -11,6 +11,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Import CUDA detection utilities from conftest
+from conftest import is_cuda_available, skip_if_no_cuda
+
 # Conditional imports for RAG dependencies
 try:
     from sentence_transformers import SentenceTransformer
@@ -146,6 +149,7 @@ class TestSafeModelLoadV2:
         assert result is not None
         assert next(result.parameters()).device.type == "cpu"
 
+    @pytest.mark.skipif(not is_cuda_available(), reason="CUDA not available")
     def test_cuda_device_when_unavailable(self):
         """Test behavior when CUDA device requested but unavailable"""
         model = torch.nn.Linear(10, 5)

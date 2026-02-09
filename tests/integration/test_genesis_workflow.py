@@ -93,7 +93,7 @@ class TestGenesisWorkflowIntegration:
     
     def test_genesis_bootstrap_workflow_exists(self, repo_root):
         """Test that Genesis bootstrap workflow file exists"""
-        workflow_path = repo_root / ".github" / "workflows" / "genesis-bootstrap.yml"
+        workflow_path = repo_root / ".github" / "misc" / "genesis-bootstrap.yml"
         assert workflow_path.exists(), "Genesis bootstrap workflow not found"
         
         with open(workflow_path) as f:
@@ -333,7 +333,7 @@ class TestGenesisWorkflowSafety:
     
     def test_workflow_safety_guards(self, repo_root):
         """Test that workflow has safety guards"""
-        workflow_path = repo_root / ".github" / "workflows" / "genesis-bootstrap.yml"
+        workflow_path = repo_root / ".github" / "misc" / "genesis-bootstrap.yml"
         with open(workflow_path) as f:
             workflow = yaml.safe_load(f)
         

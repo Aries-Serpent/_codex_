@@ -2,7 +2,8 @@
 Tests for Vector Store Factory and Registry
 """
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+import types
 
 import numpy as np
 import pytest
@@ -15,6 +16,18 @@ from src.codex.retrieval.stores.factory import (
     create_auto_store,
     get_default_store,
 )
+
+# Check if FAISS is available
+try:
+    import faiss
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+    # Create mock faiss module for type checking
+    faiss = types.SimpleNamespace()
+    faiss.IndexFlatL2 = type('IndexFlatL2', (), {})
+    faiss.IndexFlatIP = type('IndexFlatIP', (), {})
+
 
 
 class TestVectorStoreRegistry:
@@ -187,6 +200,7 @@ class TestAutoDetection:
 class TestFactoryIntegration:
     """Integration tests for factory"""
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_factory_with_faiss_operations(self):
         """Test full factory workflow with FAISS"""
         # Create store
@@ -223,6 +237,7 @@ class TestFactoryIntegration:
         # Should be different instances
         assert store1 != store2
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_config_workflow(self):
         """Test complete config-based workflow"""
         config = {

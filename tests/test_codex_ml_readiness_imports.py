@@ -12,6 +12,9 @@ import types
 import pytest
 
 
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 @pytest.fixture(autouse=True)
 def stub_optional_dependencies(monkeypatch, tmp_path):
     """Stub heavy/optional deps so imports remain lightweight."""

@@ -31,6 +31,7 @@ from typing import Any, Mapping, Optional
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
 from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.registry.tokenizers import encode_cached
@@ -929,13 +930,23 @@ def run_functional_training(
 
         from transformers import AutoTokenizer
     except Exception:  # pragma: no cover - optional dependencies
+        # Track failed optional dependencies
+        if "datasets" not in missing_optional:
+            missing_optional = list(missing_optional) + ["datasets"]
+        if "transformers" not in missing_optional:
+            missing_optional = list(missing_optional) + ["transformers"]
+
+        # Define tokens for manual encoding (used in fallback paths)
+        pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
+        unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
+
         try:
             from torch.utils.data import DataLoader
 
             import torch
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [
                 {"epoch": epoch, "tokens": tokens, "loss": round(1.0 / (epoch + 1), 4)}
@@ -943,9 +954,7 @@ def run_functional_training(
             ]
             return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
-            pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
-            unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
-
+        # Continue with manual encoding (torch available but not transformers)
         def _encode_texts(
             texts: list[str], vocab: dict[str, int], *, update: bool
         ) -> list[list[int]]:
@@ -1051,11 +1060,25 @@ def run_functional_training(
         log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
         metrics_target = Path(cfg.metrics_out)
         metrics_root = metrics_target.parent if str(metrics_target.parent) else Path(".")
-        logger = FileLogger(
+        file_logger = FileLogger(
             root=metrics_root,
             formats=log_formats,
             filename_stem=metrics_target.stem,
         )
+
+        # Log metadata before training begins
+        log_run_metadata(
+            file_logger,
+            seed=getattr(cfg, "seed", None),
+            deterministic=deterministic_flag,
+            resume=resume,
+            dataset_format=dataset_format,
+            train_examples=len(train_texts),
+            eval_examples=len(val_texts) if val_texts else 0,
+            missing_optional=missing_optional,
+            extras={"log_formats": list(log_formats)},
+        )
+
         num_epochs = max(int(cfg.max_epochs), 1)
         num_batches = len(train_loader)
         system_logger = None
@@ -1093,7 +1116,7 @@ def run_functional_training(
                     "train_loss": avg_loss,
                     "train_time_s": round(elapsed, 4),
                 }
-                logger.log({"phase": "train", **train_rec})
+                file_logger.log({"phase": "train", **train_rec})
                 metrics.append(train_rec)
 
                 if val_loader is not None and (epoch + 1) % eval_every == 0:
@@ -1107,7 +1130,7 @@ def run_functional_training(
                         metrics_fn=batch_metrics,
                     )
                     eval_rec = {"epoch": epoch + 1, **eval_metrics}
-                    logger.log({"phase": "eval", **eval_rec})
+                    file_logger.log({"phase": "eval", **eval_rec})
                     metrics.append(eval_rec)
 
                 if checkpoint_dir is not None:
@@ -1129,7 +1152,24 @@ def run_functional_training(
     import numpy as np
 
     from codex_ml.models.registry import get_model
-    from codex_ml.training.functional_training import TrainCfg, run_custom_trainer
+    from codex_ml.training.functional_training import TrainConfig as TrainCfg, train as _ft_train
+
+    def run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg):
+        """Adapter wrapping functional_training.train for legacy API.
+
+        Args:
+            model: PyTorch model to train.
+            tokenizer: Tokenizer instance (unused by functional training).
+            train_ds: Training dataset (iterable of items coerced to strings).
+            val_ds: Validation dataset or None.
+            train_cfg: TrainConfig instance for functional_training.train.
+
+        Returns:
+            Dict of training metrics from functional_training.train.
+        """
+        train_texts = [str(item) for item in train_ds] if train_ds else []
+        val_texts = [str(item) for item in val_ds] if val_ds else None
+        return _ft_train(train_texts, config=train_cfg, val_texts=val_texts, model=model)
 
     def _lookup(*keys: str, default: Any = None) -> Any:
         for key in keys:

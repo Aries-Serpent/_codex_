@@ -82,6 +82,30 @@ class WorkflowParser:
             logger.error(f"Failed to parse workflow {file_path}: {e}", exc_info=True)
             return None
 
+    def parse(self, content: str, file_path: Optional[Path] = None) -> Optional[WorkflowMetadata]:
+        """Parse workflow YAML content (convenience method).
+
+        Args:
+            content: YAML content as string.
+            file_path: Optional path to the workflow file (for metadata).
+
+        Returns:
+            Parsed workflow metadata, or None if parsing failed.
+            
+        Raises:
+            ValueError: If YAML is invalid and cannot be parsed.
+        """
+        if file_path is None:
+            file_path = Path("workflow.yml")
+        try:
+            # Parse YAML first to catch YAML errors
+            data = yaml.safe_load(content)
+            if not data or not isinstance(data, dict):
+                raise ValueError("Invalid YAML: must be a dictionary")
+            return self.parse_content(content, file_path)
+        except yaml.YAMLError as e:
+            raise ValueError(f"Invalid YAML: {e}") from e
+
     def parse_content(self, content: str, file_path: Path) -> Optional[WorkflowMetadata]:
         """Parse workflow YAML content.
 

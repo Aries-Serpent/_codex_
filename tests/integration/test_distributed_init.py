@@ -11,6 +11,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="torch required for distributed training tests")
+
 # Add training directory to path
 _REPO_ROOT = Path(__file__).parent.parent.parent
 _TRAINING_DIR = _REPO_ROOT / "training"

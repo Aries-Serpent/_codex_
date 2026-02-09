@@ -7,7 +7,10 @@ Test module for eval cli.
 import json
 from pathlib import Path
 
-import torch
+import pytest
+
+# Skip entire module if torch is not available or unloadable
+torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
 from codex_ml.evaluation import cli as eval_cli
 from typer.testing import CliRunner
 
@@ -22,19 +25,40 @@ class DummyModel(torch.nn.Module):
 
 
 class DummyLogger:
+    """Test logger that properly manages file handles."""
+    
     def __init__(self, path: Path):
         self.path = path
+        self.fh = None
+        self._open()
+    
+    def _open(self):
+        """Open the log file."""
         self.fh = open(self.path, "a", encoding="utf-8")
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+        return False
 
     def log(self, record):
-        self.fh.write(json.dumps(record) + "\n")
-        self.fh.flush()
+        if self.fh:
+            self.fh.write(json.dumps(record) + "\n")
+            self.fh.flush()
 
     def close(self):
-        try:
-            self.fh.close()
-        except Exception:
-            pass
+        if self.fh:
+            try:
+                self.fh.close()
+                self.fh = None
+            except Exception:
+                pass
+    
+    def __del__(self):
+        """Ensure file is closed on deletion."""
+        self.close()
 
 
 def test_run_command_json_output(tmp_path: Path, monkeypatch):

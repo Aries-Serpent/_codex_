@@ -9,6 +9,9 @@ from __future__ import annotations
 
 import pytest
 
+
+# Skip entire module if torch is not available or unloadable
+pytest.importorskip("torch", reason="PyTorch required for tests")
 try:
     import torch
 except Exception as exc:  # pragma: no cover - runtime guard

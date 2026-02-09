@@ -61,9 +61,11 @@ class TestSqliteDAL:
         summary = dal.summary()
         
         assert isinstance(summary, dict)
-        # Should have counts for specific tables
-        assert "items" in summary or "artifact_count" in summary or "artifacts" in summary, \
-            f"Summary should contain expected keys, got: {list(summary.keys())}"
+        # Should have counts for artifacts
+        assert "count" in summary, \
+            f"Summary should contain 'count' key, got: {list(summary.keys())}"
+        assert "total_bytes" in summary, \
+            f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
 
     def test_recent_items_returns_list(self, dal):
         """Test that recent_items returns a list."""

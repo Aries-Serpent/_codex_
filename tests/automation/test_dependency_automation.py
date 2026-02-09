@@ -5,7 +5,7 @@ version updates, compatibility checks, and security patching.
 """
 
 import re
-from datetime import datetime
+from datetime import datetime, UTC, UTC
 
 
 
@@ -249,7 +249,7 @@ class TestAutomatedUpdates:
         pr_data = {
             "title": "chore(deps): Update dependencies",
             "body": "## Dependency Updates\n\n",
-            "branch": f"deps/update-{datetime.now().strftime('%Y%m%d')}",
+            "branch": f"deps/update-{datetime.now(UTC).strftime('%Y%m%d')}",
         }
         
         for update in updates:

@@ -15,10 +15,10 @@ pytestmark = [pytest.mark.security]
 
 
 EXPECTED_SUPPRESSION_FILES: Dict[str, int] = {
-    "fix_github_broken_links.py": 1,
-    "fix_all_broken_links.py": 1,
-    "fix_specific_links.py": 1,
-    "fix_doc_links.py": 1,
+    "scripts/maintenance/fix_github_broken_links.py": 1,
+    "scripts/maintenance/fix_all_broken_links.py": 1,
+    "scripts/maintenance/fix_specific_links.py": 1,
+    "scripts/maintenance/fix_doc_links.py": 1,
     "scripts/mfa_enrollment_automation.py": 1,
     "scripts/phase10/automated_secrets_manager.py": 1,
     "scripts/security/close_codeql_alert.py": 1,
