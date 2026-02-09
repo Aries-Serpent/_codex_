@@ -13,7 +13,7 @@ PYENV_VERSION=3.12.12 PYTHONPATH=src pytest tests/ -v -m "not slow" \
   --tb=short \
   --timeout=300 \
   --maxfail=0 \
-  2>&1 | tee .codex/test_run_complete_20260209_154455.log
+  2>&1 | tee .codex/test_run_complete_20260209_154455_summary.log
 ```
 
 ## Summary
