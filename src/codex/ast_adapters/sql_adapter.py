@@ -6,11 +6,10 @@ supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL
 """
 
 from typing import List, Optional, Dict, Any
-from pathlib import Path
 import uuid
 import sqlparse
-from sqlparse.sql import Statement, Token, TokenList, Identifier, IdentifierList
-from sqlparse.tokens import Keyword, Name, Punctuation
+from sqlparse.sql import Statement, Identifier, IdentifierList
+from sqlparse.tokens import Keyword
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -30,13 +29,13 @@ class SQLASTAdapter(BaseASTAdapter):
         >>> tables = adapter.get_tables()
         >>> columns = adapter.get_columns()
     """
-    
+
     def __init__(self):
         """Initialize SQL adapter."""
         super().__init__()
         self._tables: List[str] = []
         self._columns: List[str] = []
-    
+
     def parse(self, source: str, file_path: Optional[str] = None) -> StandardizedASTNode:
         """Parse SQL source into standardized AST.
         
@@ -52,20 +51,20 @@ class SQLASTAdapter(BaseASTAdapter):
         """
         if not source or not source.strip():
             raise ValueError("SQL source cannot be empty")
-        
+
         # Reset state
         self._tables = []
         self._columns = []
-        
+
         # Parse SQL statements
         try:
             parsed = sqlparse.parse(source)
         except Exception as e:
             raise ValueError(f"Failed to parse SQL: {e}")
-        
+
         if not parsed:
             raise ValueError("No SQL statements found")
-        
+
         # Create document root
         root = StandardizedASTNode(
             node_id=str(uuid.uuid4()),
@@ -82,18 +81,18 @@ class SQLASTAdapter(BaseASTAdapter):
                 "source_length": len(source)
             }
         )
-        
+
         self.root_node = root
-        
+
         # Process each statement
         for idx, stmt in enumerate(parsed):
             stmt_node = self._process_statement(stmt, idx + 1)
             if stmt_node:
                 stmt_node.parent = root
                 root.children.append(stmt_node)
-        
+
         return root
-    
+
     def _process_statement(self, stmt: Statement, line_number: int) -> Optional[StandardizedASTNode]:
         """Process a single SQL statement.
         
@@ -106,7 +105,7 @@ class SQLASTAdapter(BaseASTAdapter):
         """
         # Identify statement type
         stmt_type = self._get_statement_type(stmt)
-        
+
         node = StandardizedASTNode(
             node_id=str(uuid.uuid4()),
             node_type="sql_statement",
@@ -121,7 +120,7 @@ class SQLASTAdapter(BaseASTAdapter):
                 "sql": str(stmt).strip()
             }
         )
-        
+
         # Extract components based on statement type
         if stmt_type == "SELECT":
             self._extract_select_components(stmt, node)
@@ -135,9 +134,9 @@ class SQLASTAdapter(BaseASTAdapter):
             self._extract_ddl_components(stmt, node)
         elif stmt_type in ("ALTER", "DROP"):
             self._extract_ddl_components(stmt, node)
-        
+
         return node
-    
+
     def _get_statement_type(self, stmt: Statement) -> str:
         """Get the type of SQL statement.
         
@@ -151,10 +150,10 @@ class SQLASTAdapter(BaseASTAdapter):
         first_token = stmt.token_first(skip_ws=True, skip_cm=True)
         if not first_token:
             return "UNKNOWN"
-        
+
         # Get the keyword value
         keyword = first_token.value.upper()
-        
+
         # For CREATE, get the object type
         if keyword == "CREATE":
             tokens = list(stmt.flatten())
@@ -167,9 +166,9 @@ class SQLASTAdapter(BaseASTAdapter):
                     if j < len(tokens):
                         return f"CREATE {tokens[j].value.upper()}"
             return "CREATE"
-        
+
         return keyword
-    
+
     def _extract_select_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from SELECT statement.
         
@@ -180,25 +179,25 @@ class SQLASTAdapter(BaseASTAdapter):
         tables = []
         columns = []
         has_where = False
-        
+
         # Check for WHERE clause in flattened tokens
         for token in stmt.flatten():
             if token.ttype is Keyword and token.value.upper() == 'WHERE':
                 has_where = True
                 break
-        
+
         # Find FROM clause
         from_seen = False
-        
+
         for token in stmt.tokens:
             if token.ttype is Keyword and token.value.upper() == 'FROM':
                 from_seen = True
                 continue
-            
+
             if token.ttype is Keyword and token.value.upper() == 'WHERE':
                 from_seen = False
                 continue
-            
+
             # Extract table names from FROM clause
             if from_seen:
                 if isinstance(token, Identifier):
@@ -212,17 +211,17 @@ class SQLASTAdapter(BaseASTAdapter):
                         if table_name:
                             tables.append(table_name)
                             self._tables.append(table_name)
-        
+
         # Extract column names (simplified - gets from SELECT clause)
         select_seen = False
         for token in stmt.tokens:
             if token.ttype is Keyword and token.value.upper() == 'SELECT':
                 select_seen = True
                 continue
-            
+
             if select_seen and token.ttype is Keyword:
                 break
-            
+
             if select_seen:
                 if isinstance(token, IdentifierList):
                     for identifier in token.get_identifiers():
@@ -235,13 +234,13 @@ class SQLASTAdapter(BaseASTAdapter):
                     if col_name and col_name != '*':
                         columns.append(col_name)
                         self._columns.append(col_name)
-        
+
         node.metadata.update({
             "tables": tables,
             "columns": columns,
             "has_where": has_where
         })
-    
+
     def _extract_insert_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from INSERT statement.
         
@@ -251,7 +250,7 @@ class SQLASTAdapter(BaseASTAdapter):
         """
         table_name = None
         columns = []
-        
+
         # Find table name - look for identifier or function (table with columns)
         for token in stmt.tokens:
             if isinstance(token, Identifier) or hasattr(token, 'get_real_name'):
@@ -260,12 +259,12 @@ class SQLASTAdapter(BaseASTAdapter):
                     table_name = name
                     self._tables.append(table_name)
                     break
-        
+
         node.metadata.update({
             "table": table_name,
             "columns": columns
         })
-    
+
     def _extract_update_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from UPDATE statement.
         
@@ -274,7 +273,7 @@ class SQLASTAdapter(BaseASTAdapter):
             node: AST node to populate
         """
         table_name = None
-        
+
         # Find table name - first identifier after UPDATE
         for token in stmt.tokens:
             if isinstance(token, Identifier):
@@ -282,11 +281,11 @@ class SQLASTAdapter(BaseASTAdapter):
                 if table_name:
                     self._tables.append(table_name)
                     break
-        
+
         node.metadata.update({
             "table": table_name
         })
-    
+
     def _extract_delete_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DELETE statement.
         
@@ -295,23 +294,23 @@ class SQLASTAdapter(BaseASTAdapter):
             node: AST node to populate
         """
         table_name = None
-        
+
         # Find table name (after FROM)
         from_seen = False
         for token in stmt.tokens:
             if token.ttype is Keyword and token.value.upper() == 'FROM':
                 from_seen = True
                 continue
-            
+
             if from_seen and isinstance(token, Identifier):
                 table_name = token.get_real_name()
                 self._tables.append(table_name)
                 break
-        
+
         node.metadata.update({
             "table": table_name
         })
-    
+
     def _extract_ddl_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DDL statement.
         
@@ -320,17 +319,17 @@ class SQLASTAdapter(BaseASTAdapter):
             node: AST node to populate
         """
         object_name = None
-        
+
         # Find object name (table, index, etc.)
         for token in stmt.tokens:
             if isinstance(token, Identifier):
                 object_name = token.get_real_name()
                 break
-        
+
         node.metadata.update({
             "object_name": object_name
         })
-    
+
     def get_tables(self) -> List[str]:
         """Get list of tables referenced in parsed SQL.
         
@@ -338,7 +337,7 @@ class SQLASTAdapter(BaseASTAdapter):
             List of table names
         """
         return list(set(self._tables))
-    
+
     def get_columns(self) -> List[str]:
         """Get list of columns referenced in parsed SQL.
         
@@ -346,7 +345,7 @@ class SQLASTAdapter(BaseASTAdapter):
             List of column names
         """
         return list(set(self._columns))
-    
+
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """Extract SQL-specific metadata from a node.
         
@@ -357,7 +356,7 @@ class SQLASTAdapter(BaseASTAdapter):
             Dictionary of metadata
         """
         metadata = {}
-        
+
         if node.node_type == "sql_document":
             metadata["statement_count"] = node.metadata.get("statement_count", 0)
             metadata["all_tables"] = self.get_tables()
@@ -366,5 +365,5 @@ class SQLASTAdapter(BaseASTAdapter):
             metadata["statement_type"] = node.metadata.get("statement_type", "UNKNOWN")
             metadata["tables"] = node.metadata.get("tables", [])
             metadata["columns"] = node.metadata.get("columns", [])
-        
+
         return metadata

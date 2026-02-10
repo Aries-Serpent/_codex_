@@ -13,7 +13,6 @@ Performance Targets:
 """
 
 import time
-import pytest
 from codex.ast_adapters import (
     PythonASTAdapter,
     YAMLASTAdapter,
@@ -36,21 +35,21 @@ class TestPythonPerformance:
                 f'    result = arg1 + arg2 + arg3\n'
                 f'    return result * {i}\n'
             )
-        
+
         source = '\n'.join(functions)
         assert len(source) > 10000  # Verify >10KB
-        
+
         adapter = PythonASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         functions_found = adapter.find_nodes_by_type("function")
         assert len(functions_found) == 500
-        
+
         # Performance assertion: <2s target
         assert elapsed < 2.0, f"Python parsing took {elapsed:.2f}s (target: <2s)"
         print(f"\n✅ Python: Parsed 500 functions in {elapsed:.3f}s (target: <2s)")
@@ -68,20 +67,20 @@ class TestPythonPerformance:
             lines.append(f'{indent}        """Method {i}."""')
             lines.append(f'{indent}        return {i}')
             indent_level += 1
-        
+
         source = '\n'.join(lines)
-        
+
         adapter = PythonASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         classes = adapter.find_nodes_by_type("class")
         assert len(classes) == 10
-        
+
         # Should be fast for nested structures
         assert elapsed < 1.0, f"Nested Python took {elapsed:.2f}s"
         print(f"\n✅ Python nested: Parsed 10 levels in {elapsed:.3f}s")
@@ -98,20 +97,20 @@ class TestYAMLPerformance:
             lines.append(f'section_{section}:')
             for key in range(100):
                 lines.append(f'  key_{key}: value_{section}_{key}')
-        
+
         yaml_source = '\n'.join(lines)
-        
+
         adapter = YAMLASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(yaml_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         mappings = adapter.find_nodes_by_type("mapping")
         assert len(mappings) >= 10  # At least 10 sections
-        
+
         # Performance assertion: <500ms target
         assert elapsed < 0.5, f"YAML parsing took {elapsed:.2f}s (target: <0.5s)"
         print(f"\n✅ YAML: Parsed 1000 keys in {elapsed:.3f}s (target: <0.5s)")
@@ -124,18 +123,18 @@ class TestYAMLPerformance:
             indent = '  ' * level
             lines.append(f'{indent}level_{level}:')
         lines.append('  ' * 20 + 'value: deep_value')
-        
+
         yaml_source = '\n'.join(lines)
-        
+
         adapter = YAMLASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(yaml_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
-        
+
         # Should handle deep nesting efficiently
         assert elapsed < 0.2, f"Deep YAML took {elapsed:.2f}s"
         print(f"\n✅ YAML nested: Parsed 20 levels in {elapsed:.3f}s")
@@ -148,7 +147,7 @@ class TestJSONPerformance:
         """Test parsing JSON with 10000+ items."""
         # Generate large JSON array (10000 items)
         import json
-        
+
         data = {
             "items": [
                 {
@@ -164,21 +163,21 @@ class TestJSONPerformance:
                 for i in range(10000)
             ]
         }
-        
+
         json_source = json.dumps(data)
         assert len(json_source) > 500000  # Verify large size
-        
+
         adapter = JSONASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(json_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         arrays = adapter.find_nodes_by_type("array")
         assert len(arrays) >= 1
-        
+
         # Performance assertion: <1s target
         assert elapsed < 1.0, f"JSON parsing took {elapsed:.2f}s (target: <1s)"
         print(f"\n✅ JSON: Parsed 10000 items in {elapsed:.3f}s (target: <1s)")
@@ -186,7 +185,7 @@ class TestJSONPerformance:
     def test_deeply_nested_json(self):
         """Test parsing deeply nested JSON structures."""
         import json
-        
+
         # Generate 50-level deep nesting
         data = {"level_0": {}}
         current = data["level_0"]
@@ -194,18 +193,18 @@ class TestJSONPerformance:
             current[f"level_{i}"] = {}
             current = current[f"level_{i}"]
         current["value"] = "deep_value"
-        
+
         json_source = json.dumps(data)
-        
+
         adapter = JSONASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(json_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
-        
+
         # Should handle deep nesting efficiently
         assert elapsed < 0.5, f"Deep JSON took {elapsed:.2f}s"
         print(f"\n✅ JSON nested: Parsed 50 levels in {elapsed:.3f}s")
@@ -227,20 +226,20 @@ class TestSQLPerformance:
                 f'created_at TIMESTAMP'
                 f');'
             )
-        
+
         sql_source = '\n'.join(statements)
-        
+
         adapter = SQLASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(sql_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         statements_found = adapter.find_nodes_by_type("sql_statement")
         assert len(statements_found) >= 100
-        
+
         # Performance assertion: <1s target
         assert elapsed < 1.0, f"SQL parsing took {elapsed:.2f}s (target: <1s)"
         print(f"\n✅ SQL: Parsed 100 tables in {elapsed:.3f}s (target: <1s)")
@@ -259,20 +258,20 @@ class TestSQLPerformance:
                 f'ORDER BY t1.created_at DESC '
                 f'LIMIT {i + 10};'
             )
-        
+
         sql_source = '\n'.join(statements)
-        
+
         adapter = SQLASTAdapter()
-        
+
         start_time = time.time()
         root = adapter.parse(sql_source)
         elapsed = time.time() - start_time
-        
+
         # Verify parsing succeeded
         assert root is not None
         statements_found = adapter.find_nodes_by_type("sql_statement")
         assert len(statements_found) >= 50
-        
+
         # Should handle complex queries efficiently
         assert elapsed < 1.0, f"Complex SQL took {elapsed:.2f}s"
         print(f"\n✅ SQL complex: Parsed 50 queries in {elapsed:.3f}s")
@@ -284,55 +283,55 @@ class TestMemoryEfficiency:
     def test_python_memory_efficient(self):
         """Verify Python adapter doesn't leak memory."""
         adapter = PythonASTAdapter()
-        
+
         # Parse the same file multiple times
         source = 'def test(): pass\n' * 100
-        
+
         for _ in range(10):
             root = adapter.parse(source)
             assert root is not None
-        
+
         print("\n✅ Python: No memory leaks detected")
 
     def test_yaml_memory_efficient(self):
         """Verify YAML adapter doesn't leak memory."""
         adapter = YAMLASTAdapter()
-        
+
         # Parse the same YAML multiple times
         yaml_source = 'key: value\n' * 100
-        
+
         for _ in range(10):
             root = adapter.parse(yaml_source)
             assert root is not None
-        
+
         print("\n✅ YAML: No memory leaks detected")
 
     def test_json_memory_efficient(self):
         """Verify JSON adapter doesn't leak memory."""
         import json
         adapter = JSONASTAdapter()
-        
+
         # Parse the same JSON multiple times
         data = {"items": [{"id": i} for i in range(100)]}
         json_source = json.dumps(data)
-        
+
         for _ in range(10):
             root = adapter.parse(json_source)
             assert root is not None
-        
+
         print("\n✅ JSON: No memory leaks detected")
 
     def test_sql_memory_efficient(self):
         """Verify SQL adapter doesn't leak memory."""
         adapter = SQLASTAdapter()
-        
+
         # Parse the same SQL multiple times
         sql_source = 'SELECT * FROM table_1;\n' * 100
-        
+
         for _ in range(10):
             root = adapter.parse(sql_source)
             assert root is not None
-        
+
         print("\n✅ SQL: No memory leaks detected")
 
 
@@ -345,17 +344,17 @@ class TestConcurrentParsing:
         yaml_adapter = YAMLASTAdapter()
         json_adapter = JSONASTAdapter()
         sql_adapter = SQLASTAdapter()
-        
+
         # Parse different formats simultaneously
         py_root = py_adapter.parse('def test(): pass')
         yaml_root = yaml_adapter.parse('key: value')
         json_root = json_adapter.parse('{"key": "value"}')
         sql_root = sql_adapter.parse('SELECT * FROM table1;')
-        
+
         # Verify all succeeded
         assert py_root is not None
         assert yaml_root is not None
         assert json_root is not None
         assert sql_root is not None
-        
+
         print("\n✅ Concurrent: All adapters work simultaneously")

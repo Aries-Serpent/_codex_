@@ -37,13 +37,13 @@ def get_adapter(language: str):
         "json": JSONASTAdapter,
         "sql": SQLASTAdapter,
     }
-    
+
     if language not in adapters:
         raise ValueError(
             f"Unsupported language: {language}. "
             f"Supported languages: {', '.join(adapters.keys())}"
         )
-    
+
     return adapters[language]()
 
 
@@ -61,17 +61,17 @@ def parse_command(args):
         if not file_path.exists():
             print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
-        
+
         adapter = get_adapter(args.language)
         root = adapter.parse_file(str(file_path))
-        
+
         # Convert AST to dictionary representation
         ast_dict = root.to_dict()
-        
+
         # Output as formatted JSON
         print(json.dumps(ast_dict, indent=2))
         return 0
-        
+
     except Exception as e:
         print(f"Error parsing file: {e}", file=sys.stderr)
         return 1
@@ -91,17 +91,17 @@ def stats_command(args):
         if not file_path.exists():
             print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
-        
+
         adapter = get_adapter(args.language)
         adapter.parse_file(str(file_path))
-        
+
         # Get statistics
         stats = adapter.get_stats()
-        
+
         # Output as formatted JSON
         print(json.dumps(stats, indent=2))
         return 0
-        
+
     except Exception as e:
         print(f"Error getting statistics: {e}", file=sys.stderr)
         return 1
@@ -121,13 +121,13 @@ def query_command(args):
         if not file_path.exists():
             print(f"Error: File not found: {file_path}", file=sys.stderr)
             return 1
-        
+
         adapter = get_adapter(args.language)
         adapter.parse_file(str(file_path))
-        
+
         # Query for nodes
         nodes = adapter.find_nodes_by_type(args.type)
-        
+
         # Build result list
         result = []
         for node in nodes:
@@ -143,11 +143,11 @@ def query_command(args):
             if args.metadata:
                 node_info["metadata"] = node.metadata
             result.append(node_info)
-        
+
         # Output as formatted JSON
         print(json.dumps(result, indent=2))
         return 0
-        
+
     except Exception as e:
         print(f"Error querying nodes: {e}", file=sys.stderr)
         return 1
@@ -167,9 +167,9 @@ def main(argv: Optional[list] = None):
         description="Parse and query AST structures across multiple languages",
         epilog="Supported languages: python, yaml, json, sql"
     )
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # Parse command
     parse_parser = subparsers.add_parser(
         "parse",
@@ -182,7 +182,7 @@ def main(argv: Optional[list] = None):
         choices=["python", "yaml", "json", "sql"],
         help="Source language"
     )
-    
+
     # Stats command
     stats_parser = subparsers.add_parser(
         "stats",
@@ -195,7 +195,7 @@ def main(argv: Optional[list] = None):
         choices=["python", "yaml", "json", "sql"],
         help="Source language"
     )
-    
+
     # Query command
     query_parser = subparsers.add_parser(
         "query",
@@ -218,13 +218,13 @@ def main(argv: Optional[list] = None):
         action="store_true",
         help="Include metadata in output"
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     if not args.command:
         parser.print_help()
         return 1
-    
+
     # Dispatch to command handler
     if args.command == "parse":
         return parse_command(args)

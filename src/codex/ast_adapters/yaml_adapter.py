@@ -27,11 +27,11 @@ class YAMLASTAdapter(BaseASTAdapter):
         >>> len(nodes)
         1
     """
-    
+
     def __init__(self):
         super().__init__()
         self._current_file: Optional[Path] = None
-    
+
     def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedASTNode:
         """
         Parse YAML source into standardized AST.
@@ -47,11 +47,11 @@ class YAMLASTAdapter(BaseASTAdapter):
             yaml.YAMLError: If YAML parsing fails
         """
         self._current_file = file_path
-        
+
         try:
             # Parse YAML
             data = yaml.safe_load(source)
-            
+
             # Create root document node
             root = StandardizedASTNode(
                 node_id=str(uuid.uuid4()),
@@ -67,20 +67,20 @@ class YAMLASTAdapter(BaseASTAdapter):
                     "yaml_version": "1.2"
                 }
             )
-            
+
             # Convert YAML data to AST nodes
             if data is not None:
                 child_node = self._convert_to_node(data, parent=root)
                 root.children.append(child_node)
-            
+
             # Store root for later access
             self.root_node = root
-            
+
             return root
-            
+
         except yaml.YAMLError as e:
             raise ValueError(f"Failed to parse YAML: {e}")
-    
+
     def _convert_to_node(
         self,
         data: Any,
@@ -111,14 +111,14 @@ class YAMLASTAdapter(BaseASTAdapter):
                 },
                 parent=parent
             )
-            
+
             # Add child nodes for each key-value pair
             for k, v in data.items():
                 child = self._convert_to_node(v, parent=node, key=k)
                 node.children.append(child)
-            
+
             return node
-            
+
         elif isinstance(data, list):
             # Sequence node
             node = StandardizedASTNode(
@@ -132,14 +132,14 @@ class YAMLASTAdapter(BaseASTAdapter):
                 },
                 parent=parent
             )
-            
+
             # Add child nodes for each item
             for i, item in enumerate(data):
                 child = self._convert_to_node(item, parent=node, key=f"[{i}]")
                 node.children.append(child)
-            
+
             return node
-            
+
         else:
             # Scalar node (string, int, float, bool, None)
             node = StandardizedASTNode(
@@ -154,9 +154,9 @@ class YAMLASTAdapter(BaseASTAdapter):
                 },
                 parent=parent
             )
-            
+
             return node
-    
+
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """
         Traverse AST depth-first, yielding all nodes.
@@ -169,15 +169,15 @@ class YAMLASTAdapter(BaseASTAdapter):
         """
         if node is None:
             node = self.root_node
-        
+
         if node is None:
             return []
-        
+
         nodes = [node]
         for child in node.children:
             nodes.extend(self.traverse(child))
         return nodes
-    
+
     def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
         """
         Find all nodes of a specific type.
@@ -190,14 +190,14 @@ class YAMLASTAdapter(BaseASTAdapter):
         """
         if not self.root_node:
             return []
-        
+
         matching_nodes = []
         for node in self.traverse(self.root_node):
             if node.node_type == node_type:
                 matching_nodes.append(node)
-        
+
         return matching_nodes
-    
+
     def get_value_at_path(self, path: str) -> Optional[Any]:
         """
         Get value at YAML path (e.g., "config.database.host").
@@ -210,14 +210,14 @@ class YAMLASTAdapter(BaseASTAdapter):
         """
         if not self.root_node or not self.root_node.children:
             return None
-        
+
         parts = path.split(".")
         current = self.root_node.children[0]  # First child is the data root
-        
+
         for part in parts:
             if current.node_type != "mapping":
                 return None
-            
+
             # Find child with matching name
             found = False
             for child in current.children:
@@ -225,16 +225,16 @@ class YAMLASTAdapter(BaseASTAdapter):
                     current = child
                     found = True
                     break
-            
+
             if not found:
                 return None
-        
+
         # Return value if it's a scalar
         if current.node_type == "scalar":
             return current.metadata.get("value")
-        
+
         return None
-    
+
     def get_keys(self, node: Optional[StandardizedASTNode] = None) -> List[str]:
         """
         Get all keys from a mapping node.
@@ -247,12 +247,12 @@ class YAMLASTAdapter(BaseASTAdapter):
         """
         if node is None:
             node = self.root_node
-        
+
         if not node or node.node_type != "mapping":
             return []
-        
+
         return node.metadata.get("keys", [])
-    
+
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract metadata from YAML node.
@@ -267,7 +267,7 @@ class YAMLASTAdapter(BaseASTAdapter):
             "node_type": node.node_type,
             "name": node.name,
         }
-        
+
         if node.node_type == "mapping":
             metadata["keys"] = node.metadata.get("keys", [])
             metadata["size"] = node.metadata.get("size", 0)
@@ -278,5 +278,5 @@ class YAMLASTAdapter(BaseASTAdapter):
             metadata["value"] = node.metadata.get("value")
             metadata["value_type"] = node.metadata.get("value_type")
             metadata["is_null"] = node.metadata.get("is_null", False)
-        
+
         return metadata

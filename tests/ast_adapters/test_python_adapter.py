@@ -3,13 +3,12 @@
 import pytest
 from pathlib import Path
 from codex.ast_adapters.python_adapter import PythonASTAdapter
-from codex.ast_adapters.base_adapter import StandardizedASTNode
 
 
 def test_python_adapter_initialization():
     """Test PythonASTAdapter initialization."""
     adapter = PythonASTAdapter()
-    
+
     assert adapter.file_path is None
     assert adapter.root_node is None
     assert adapter._cst_tree is None
@@ -22,14 +21,14 @@ def hello_world():
     \"\"\"A simple function.\"\"\"
     print("Hello, World!")
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     assert root is not None
     assert root.node_type == "module"
     assert len(root.children) > 0
-    
+
     # Find the function
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
@@ -48,15 +47,15 @@ class TestClass:
     def method2(self, arg1: str) -> int:
         return 42
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     # Find the class
     classes = adapter.find_nodes_by_type("class")
     assert len(classes) == 1
     assert classes[0].name == "TestClass"
-    
+
     # Find methods
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 2
@@ -70,13 +69,13 @@ def test_python_adapter_parse_with_decorators():
 def decorated_function():
     pass
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
-    
+
     func = functions[0]
     assert "decorators" in func.metadata
     assert len(func.metadata["decorators"]) == 2
@@ -88,13 +87,13 @@ def test_python_adapter_parse_with_type_hints():
 def typed_function(name: str, age: int = 0) -> str:
     return f"{name} is {age}"
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
-    
+
     func = functions[0]
     assert "parameters" in func.metadata
     assert len(func.metadata["parameters"]) == 2
@@ -109,13 +108,13 @@ import sys
 from pathlib import Path
 from typing import Dict, List
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     imports = adapter.find_nodes_by_type("import")
     import_froms = adapter.find_nodes_by_type("import_from")
-    
+
     assert len(imports) >= 2  # os and sys
     assert len(import_froms) >= 1  # pathlib and typing
 
@@ -127,10 +126,10 @@ x = 42
 y = "hello"
 z = [1, 2, 3]
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     assignments = adapter.find_nodes_by_type("assignment")
     assert len(assignments) >= 3
 
@@ -140,9 +139,9 @@ def test_python_adapter_parse_invalid_syntax():
     source = """
 def invalid syntax here
 """
-    
+
     adapter = PythonASTAdapter()
-    
+
     with pytest.raises(SyntaxError):
         adapter.parse(source)
 
@@ -160,12 +159,12 @@ class MyClass:
 def standalone_function():
     pass
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     stats = adapter.get_stats()
-    
+
     assert "module" in stats
     assert stats["module"] == 1
     assert "class" in stats
@@ -185,12 +184,12 @@ class OuterClass:
     def outer_method(self):
         pass
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     all_nodes = adapter.traverse()
-    
+
     assert len(all_nodes) > 0
     assert root in all_nodes
 
@@ -206,13 +205,13 @@ def documented_function():
     """
     pass
 '''
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
-    
+
     func = functions[0]
     assert "docstring" in func.metadata
     assert "comprehensive" in func.metadata["docstring"]
@@ -224,13 +223,13 @@ def test_python_adapter_extract_class_bases():
 class DerivedClass(BaseClass, MixinClass):
     pass
 """
-    
+
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
-    
+
     classes = adapter.find_nodes_by_type("class")
     assert len(classes) == 1
-    
+
     cls = classes[0]
     assert "bases" in cls.metadata
     assert len(cls.metadata["bases"]) == 2
@@ -240,13 +239,13 @@ def test_python_adapter_real_file():
     """Test parsing this test file itself."""
     adapter = PythonASTAdapter()
     test_file = Path(__file__)
-    
+
     if test_file.exists():
         root = adapter.parse_file(test_file)
-        
+
         assert root is not None
         assert root.node_type == "module"
-        
+
         # This file should have multiple test functions
         functions = adapter.find_nodes_by_type("function")
         assert len(functions) > 10  # We have many test functions

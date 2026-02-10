@@ -11,7 +11,7 @@ Provides Python-specific AST analysis with metadata extraction for:
 
 import libcst as cst
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -23,12 +23,12 @@ class PythonASTAdapter(BaseASTAdapter):
     libcst preserves formatting and provides full fidelity parsing,
     making it ideal for code analysis and transformation.
     """
-    
+
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize Python AST adapter."""
         super().__init__(file_path)
         self._cst_tree: Optional[cst.Module] = None
-    
+
     def parse(self, source_code: str) -> StandardizedASTNode:
         """
         Parse Python source code using libcst.
@@ -46,7 +46,7 @@ class PythonASTAdapter(BaseASTAdapter):
             self._cst_tree = cst.parse_module(source_code)
         except cst.ParserSyntaxError as e:
             raise SyntaxError(f"Python syntax error: {e}") from e
-        
+
         # Create root node
         self.root_node = StandardizedASTNode(
             node_id=self._generate_node_id(),
@@ -55,12 +55,12 @@ class PythonASTAdapter(BaseASTAdapter):
             file_path=self.file_path,
             metadata={"language": "python"}
         )
-        
+
         # Process the CST tree
         self._process_node(self._cst_tree, self.root_node)
-        
+
         return self.root_node
-    
+
     def _process_node(self, cst_node: cst.CSTNode, parent: StandardizedASTNode) -> None:
         """
         Recursively process CST nodes and build standardized tree.
@@ -74,24 +74,24 @@ class PythonASTAdapter(BaseASTAdapter):
             for stmt in cst_node.body:
                 self._process_node(stmt, parent)
             return
-        
+
         # Handle different node types
         if isinstance(cst_node, cst.FunctionDef):
             self._process_function(cst_node, parent)
             return  # Don't continue processing - children handled in _process_function
-        
+
         elif isinstance(cst_node, cst.ClassDef):
             self._process_class(cst_node, parent)
             return  # Don't continue processing - children handled in _process_class
-        
+
         elif isinstance(cst_node, cst.Import) or isinstance(cst_node, cst.ImportFrom):
             self._process_import(cst_node, parent)
             return
-        
+
         elif isinstance(cst_node, cst.Assign):
             self._process_assignment(cst_node, parent)
             return
-        
+
         # Recursively process children for other compound statements
         elif hasattr(cst_node, 'body'):
             if isinstance(cst_node.body, cst.IndentedBlock):
@@ -100,16 +100,16 @@ class PythonASTAdapter(BaseASTAdapter):
             elif isinstance(cst_node.body, (list, tuple)):
                 for stmt in cst_node.body:
                     self._process_node(stmt, parent)
-    
+
     def _process_function(self, func: cst.FunctionDef, parent: StandardizedASTNode) -> None:
         """Process function definition."""
         func_name = func.name.value
-        
+
         # Extract position info if available
         pos = func.name.metadata.get('position', None) if hasattr(func.name, 'metadata') else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
-        
+
         # Create function node
         func_node = StandardizedASTNode(
             node_id=self._generate_node_id(),
@@ -121,23 +121,23 @@ class PythonASTAdapter(BaseASTAdapter):
             parent=parent,
             metadata=self._extract_function_metadata(func)
         )
-        
+
         parent.children.append(func_node)
-        
+
         # Process function body
         if isinstance(func.body, cst.IndentedBlock):
             for stmt in func.body.body:
                 self._process_node(stmt, func_node)
-    
+
     def _process_class(self, cls: cst.ClassDef, parent: StandardizedASTNode) -> None:
         """Process class definition."""
         cls_name = cls.name.value
-        
+
         # Extract position info
         pos = cls.name.metadata.get('position', None) if hasattr(cls.name, 'metadata') else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
-        
+
         # Create class node
         cls_node = StandardizedASTNode(
             node_id=self._generate_node_id(),
@@ -149,21 +149,21 @@ class PythonASTAdapter(BaseASTAdapter):
             parent=parent,
             metadata=self._extract_class_metadata(cls)
         )
-        
+
         parent.children.append(cls_node)
-        
+
         # Process class body
         if isinstance(cls.body, cst.IndentedBlock):
             for stmt in cls.body.body:
                 self._process_node(stmt, cls_node)
-    
+
     def _process_import(self, imp: cst.CSTNode, parent: StandardizedASTNode) -> None:
         """Process import statement."""
         if isinstance(imp, cst.Import):
             for name in imp.names:
                 if isinstance(name, cst.ImportAlias):
                     import_name = name.name.value if isinstance(name.name, cst.Attribute) else name.name.value
-                    
+
                     import_node = StandardizedASTNode(
                         node_id=self._generate_node_id(),
                         node_type="import",
@@ -173,7 +173,7 @@ class PythonASTAdapter(BaseASTAdapter):
                         metadata={"alias": name.asname.name.value if name.asname else None}
                     )
                     parent.children.append(import_node)
-        
+
         elif isinstance(imp, cst.ImportFrom):
             module = imp.module.value if imp.module else ""
             for name in imp.names:
@@ -191,14 +191,14 @@ class PythonASTAdapter(BaseASTAdapter):
                         }
                     )
                     parent.children.append(import_node)
-    
+
     def _process_assignment(self, assign: cst.Assign, parent: StandardizedASTNode) -> None:
         """Process assignment statement."""
         # Extract variable names from targets
         for target in assign.targets:
             if isinstance(target.target, cst.Name):
                 var_name = target.target.value
-                
+
                 assign_node = StandardizedASTNode(
                     node_id=self._generate_node_id(),
                     node_type="assignment",
@@ -208,18 +208,18 @@ class PythonASTAdapter(BaseASTAdapter):
                     metadata={}
                 )
                 parent.children.append(assign_node)
-    
+
     def _extract_function_metadata(self, func: cst.FunctionDef) -> Dict[str, Any]:
         """Extract metadata from function definition."""
         metadata = {}
-        
+
         # Extract decorators
         if func.decorators:
             metadata["decorators"] = [
                 dec.decorator.value if isinstance(dec.decorator, cst.Name) else str(dec.decorator)
                 for dec in func.decorators
             ]
-        
+
         # Extract docstring
         if isinstance(func.body, cst.IndentedBlock) and func.body.body:
             first_stmt = func.body.body[0]
@@ -228,7 +228,7 @@ class PythonASTAdapter(BaseASTAdapter):
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
                         metadata["docstring"] = node.value.value.strip('"""\'\'\'')
                         break
-        
+
         # Extract parameters
         params = []
         for param in func.params.params:
@@ -239,31 +239,31 @@ class PythonASTAdapter(BaseASTAdapter):
                 param_info["default"] = str(param.default)
             params.append(param_info)
         metadata["parameters"] = params
-        
+
         # Extract return type
         if func.returns:
             metadata["return_type"] = str(func.returns.annotation)
-        
+
         return metadata
-    
+
     def _extract_class_metadata(self, cls: cst.ClassDef) -> Dict[str, Any]:
         """Extract metadata from class definition."""
         metadata = {}
-        
+
         # Extract decorators
         if cls.decorators:
             metadata["decorators"] = [
                 dec.decorator.value if isinstance(dec.decorator, cst.Name) else str(dec.decorator)
                 for dec in cls.decorators
             ]
-        
+
         # Extract base classes
         if cls.bases:
             metadata["bases"] = [
                 base.value.value if isinstance(base.value, cst.Name) else str(base.value)
                 for base in cls.bases
             ]
-        
+
         # Extract docstring
         if isinstance(cls.body, cst.IndentedBlock) and cls.body.body:
             first_stmt = cls.body.body[0]
@@ -272,9 +272,9 @@ class PythonASTAdapter(BaseASTAdapter):
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
                         metadata["docstring"] = node.value.value.strip('"""\'\'\'')
                         break
-        
+
         return metadata
-    
+
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract Python-specific metadata from a standardized node.
