@@ -143,7 +143,7 @@ extra_css:
 
 ### 5. Deployment Validation
 
-**Workflow**: `.github/workflows/pages-deploy.yml`
+**Workflow**: `.github/workflows/pages-mkdocs.yml`
 
 **Pre-Merge Validation**: `.github/workflows/pages-pre-merge-validation.yml`
 
@@ -189,15 +189,12 @@ extra_css:
    python scripts/validate_docs_links.py
    ```
 
-2. Review results in `.codex/link-validation-results.json`
+2. Review console output for broken links
 
 3. Fix broken links:
    ```bash
    # Auto-fix high-confidence matches
-   python scripts/validate_docs_links.py --auto-fix
-   
-   # Review suggestions for manual fixes
-   cat .codex/link-validation-results.json | jq '.broken_links'
+   python scripts/validate_docs_links.py --fix
    ```
 
 4. Re-validate:
@@ -218,7 +215,7 @@ extra_css:
 Add badges to README or docs:
 ```markdown
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://aries-serpent.github.io/_codex_/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Aries-Serpent/_codex_/pages-deploy.yml?branch=main)](https://github.com/Aries-Serpent/_codex_/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Aries-Serpent/_codex_/pages-mkdocs.yml?branch=main)](https://github.com/Aries-Serpent/_codex_/actions)
 ```
 
 ## Tools & Integrations
@@ -299,7 +296,7 @@ cache_performance:
 
 **Issue**: Slow validation
 - **Check**: Cache status with default run
-- **Fix**: Ensure `.codex/link_validation_cache.json` exists
+- **Fix**: Ensure `.codex/.validation_cache.json` exists
 - **Verify**: Should complete in <0.1s after first run
 
 **Issue**: False positive links reported
@@ -308,7 +305,7 @@ cache_performance:
 - **Verify**: Re-run validation
 
 **Issue**: Agent file too large (>30k chars)
-- **Solution**: This compact version (29,500 chars)
+- **Solution**: This compact version (~10KB)
 - **Verification**: `wc -c .github/agents/github-pages-manager.md`
 
 ## Quick Reference
@@ -338,7 +335,7 @@ git push origin main  # Triggers deployment workflow
 - `.codex/cognitive_brain/GITHUB_PAGES_LINK_VALIDATION_PATTERNS.md` - False positive patterns
 - `.codex/docs/CI_AUTO_FIX_SYSTEM.md` - CI automation
 - `docs/stylesheets/extra.css` - Custom CSS
-- `.github/workflows/pages-deploy.yml` - Deployment workflow
+- `.github/workflows/pages-mkdocs.yml` - Deployment workflow
 - `.github/workflows/pages-pre-merge-validation.yml` - Pre-merge checks
 
 ---
