@@ -89,6 +89,7 @@ class LinkValidator:
             r'^[a-z_]+\[.*\]$',  # list[T], dict[str, Any]
             r'^[a-z_]+\["[^"]+"\]$',  # state["key"]
             r':\s*list\[',  # items: list[T]
+            r'^[a-z_]+,\s+[a-z_]+\[',  # outputs, state["targets"] - function arguments
             
             # Blob URLs (external/ephemeral)
             r'^blob:https?://',
@@ -208,6 +209,12 @@ class LinkValidator:
             })
             return
         
+        # Find code blocks (triple backticks) to skip links inside them
+        code_block_pattern = r'```[^\n]*\n.*?```'
+        code_blocks = []
+        for match in re.finditer(code_block_pattern, content, re.DOTALL):
+            code_blocks.append((match.start(), match.end()))
+        
         # Find all markdown links: [text](url)
         link_pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
         links = re.finditer(link_pattern, content)
@@ -217,12 +224,20 @@ class LinkValidator:
             url = match.group(2)
             line_num = content[:match.start()].count('\n') + 1
             
-            self._validate_link(md_file, url, text, line_num)
+            # Check if link is inside a code block
+            in_code_block = any(start <= match.start() < end for start, end in code_blocks)
+            
+            self._validate_link(md_file, url, text, line_num, in_code_block)
     
-    def _validate_link(self, md_file: Path, url: str, text: str, line_num: int):
+    def _validate_link(self, md_file: Path, url: str, text: str, line_num: int, in_code_block: bool = False):
         """Validate a single link."""
         # Increment counter
         self.links_validated += 1
+        
+        # Skip links inside code blocks (unless in strict mode)
+        if in_code_block and not self.strict:
+            self.false_positives_skipped += 1
+            return
         
         # Check for false positives first (unless in strict mode)
         if self.is_false_positive(url, text):
