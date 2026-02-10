@@ -21,7 +21,7 @@
 
 3. **PHASE2_PREPARATION_GUIDE.md** (10 min read)
    - Phase 2 targets and candidates
-   - 4-week execution timeline
+   - 4 phase execution timeline
    - Success criteria
 
 ### For Technical Details

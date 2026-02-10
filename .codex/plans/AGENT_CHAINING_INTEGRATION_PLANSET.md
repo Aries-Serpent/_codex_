@@ -814,4 +814,4 @@ chain = orchestrator.create_chain('workflow-health-monitor', max_depth=2)
 
 **Status:** ✅ Ready for Implementation  
 **Prerequisites:** workflow-health-monitor agent deployed  
-**Estimated Effort:** 7 days
+**Estimated Effort:** 7 iterations

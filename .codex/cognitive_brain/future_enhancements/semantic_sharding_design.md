@@ -47,17 +47,17 @@ Query → Embedding → Nearest cluster → Search 1-2 shards only
 
 ## Implementation Phases
 
-### Phase 1: Prototype (4 weeks)
+### Phase 1: Prototype (4 phases)
 - Implement `SemanticShardMapper` class
 - Benchmark on 10K doc sample
 - Validate clustering quality
 
-### Phase 2: Integration (6 weeks)
+### Phase 2: Integration (6 phases)
 - Integrate with `PGVectorStore`
 - Add query routing logic
 - Write tests
 
-### Phase 3: Production (8 weeks)
+### Phase 3: Production (8 phases)
 - A/B test (50/50 split)
 - Monitor metrics
 - Gradual rollout

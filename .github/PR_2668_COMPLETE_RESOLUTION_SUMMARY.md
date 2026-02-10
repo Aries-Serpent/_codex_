@@ -245,7 +245,7 @@ from integrated_system import IntegratedEvolutionSystem
    - Must start with `@copilot` (no backticks, no spaces)
    - Triggers Copilot Agent for Phase 3 continuation
 
-2. **Monitoring Period** (2 weeks):
+2. **Monitoring Period** (2 phases):
    - Track Phase 2 workflow performance
    - Monitor cache hit rates and evictions
    - Verify usage remains stable

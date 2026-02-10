@@ -145,7 +145,7 @@ def test_utility_function_error_handling():
   5. Add socket mode tests (currently only pipe mode tested)
   
 **Estimated Tests:** +8 tests (26 total)
-**Timeline:** 1 day
+**Timeline:** 1 iteration
 
 ### Iteration 2: P1 Modules (Business Logic)
 
@@ -160,7 +160,7 @@ def test_utility_function_error_handling():
   5. Test circular reference detection
 
 **Estimated Tests:** +12 tests (42 total for config_loader)
-**Timeline:** 2 days
+**Timeline:** 2 iterations
 
 **Target:** Session Cache (src/codex/utils/session_cache.py)
 - **Current:** 0%
@@ -175,7 +175,7 @@ def test_utility_function_error_handling():
   7. Test error recovery
 
 **Estimated Tests:** +20 tests (NEW)
-**Timeline:** 3 days
+**Timeline:** 3 iterations
 
 **Target:** Validators (src/codex/utils/validators.py)
 - **Current:** 0%
@@ -189,7 +189,7 @@ def test_utility_function_error_handling():
   6. Property-based testing for validators
 
 **Estimated Tests:** +30 tests (NEW)
-**Timeline:** 3 days
+**Timeline:** 3 iterations
 
 ### Iteration 3: P2 Modules (Utilities)
 
@@ -203,7 +203,7 @@ def test_utility_function_error_handling():
   4. Test error handling for missing context
 
 **Estimated Tests:** +15 tests (NEW)
-**Timeline:** 2 days
+**Timeline:** 2 iterations
 
 **Target:** Subprocess (src/codex/utils/subprocess.py)
 - **Current:** 0%
@@ -215,7 +215,7 @@ def test_utility_function_error_handling():
   4. Test error conditions
 
 **Estimated Tests:** +5 tests (NEW)
-**Timeline:** 1 day
+**Timeline:** 1 iteration
 
 ### Iteration 4: Integration Tests
 
@@ -231,7 +231,7 @@ def test_utility_function_error_handling():
 4. Test performance under load
 
 **Estimated Tests:** +15 integration tests
-**Timeline:** 3 days
+**Timeline:** 3 iterations
 
 ### Iteration 5: Edge Cases & Property-Based Testing
 
@@ -247,7 +247,7 @@ def test_utility_function_error_handling():
 - Resource exhaustion scenarios
 
 **Estimated Tests:** +10 property-based tests
-**Timeline:** 2 days
+**Timeline:** 2 iterations
 
 ---
 

@@ -7,10 +7,10 @@ This document tracks the deprecation of workflows that have been consolidated in
 ## Deprecation Strategy
 
 1. **Phase 1**: Create consolidated workflows (✅ COMPLETE)
-2. **Phase 2**: Run both old and new workflows in parallel (1-2 weeks)
+2. **Phase 2**: Run both old and new workflows in parallel (1-2 phases)
 3. **Phase 3**: Monitor and validate consolidated workflows
 4. **Phase 4**: Disable old workflows by adding `.disabled` extension
-5. **Phase 5**: Archive to `workflow-archive/` after 30 days
+5. **Phase 5**: Archive to `workflow-archive/` after 30 iterations
 
 ## Workflows to Deprecate
 
@@ -128,7 +128,7 @@ These workflows will be consolidated in a future phase:
 
 ### Decision Criteria for Deprecation
 A workflow can be deprecated when:
-- ✅ Consolidated workflow runs successfully for 2 weeks
+- ✅ Consolidated workflow runs successfully for 2 phases
 - ✅ All features are verified working
 - ✅ Success rate ≥ old workflow success rate
 - ✅ No issues reported by users or agents

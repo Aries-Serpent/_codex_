@@ -181,7 +181,7 @@ REQUIREMENTS:
 1. OAuth2 authentication with Google Drive API
 2. Create folder structure (repos/{repo_name}/{date})
 3. Upload flatten-repo outputs
-4. Manage versions (keep last 10, cleanup >90 days)
+4. Manage versions (keep last 10, cleanup >90 iterations)
 5. Share links generation
 
 SPECIFICATIONS:
@@ -239,7 +239,7 @@ SPECIFICATIONS:
   - sync_incremental(changes: List[Change])
 
 SYNC STRATEGY:
-- Full sync: Weekly
+- Full sync: per-phase
 - Incremental: On file changes
 - Conflict resolution: Last-write-wins
 - Version tracking: Git SHA
@@ -452,7 +452,7 @@ MESSAGE TYPES:
 2. Error alerts
 3. Performance degradation
 4. Security alerts
-5. Daily summaries
+5. per-iteration summaries
 
 FORMATTING:
 ```python
@@ -490,7 +490,7 @@ RATE LIMITING:
 TASK: Create src/codex/security/secret_rotation.py for automated rotation
 
 REQUIREMENTS:
-1. Schedule-based rotation (daily, weekly, monthly, quarterly)
+1. Schedule-based rotation (per-iteration, per-phase, monthly, quarterly)
 2. Zero-downtime rotation
 3. Rollback on failure
 4. Multi-provider support (AWS, GitHub, Database)

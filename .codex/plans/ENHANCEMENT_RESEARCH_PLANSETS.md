@@ -470,13 +470,13 @@ All 14 agents have been defined in `.github/agents/`:
 - [x] Agent definition created `.github/agents/doc-freshness-checker.agent.md`
 - [ ] Configure link checker rules
 - [ ] Set staleness thresholds
-- [ ] Enable on PR and weekly schedule
+- [ ] Enable on PR and per-phase schedule
 
 #### Dependency Vulnerability Scanner
 - [x] Agent definition created `.github/agents/dependency-vulnerability-scanner.agent.md`
 - [ ] Configure severity thresholds
 - [ ] Enable auto-PR for patches
-- [ ] Enable on daily schedule
+- [ ] Enable on per-iteration schedule
 
 #### Integration Test Runner
 - [x] Agent definition created `.github/agents/integration-test-runner.agent.md`

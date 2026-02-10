@@ -73,7 +73,7 @@ Objective: Curate “no-reinventing” OSS patterns and finalize execution specs
   - Deep web research on: robust PyTorch evaluation loops; pip-audit + nox policy; atomic best‑k retention; Typer modular CLI; JSON/TOML + JSONSchema validation; determinism recipes; CPU-only Docker mirroring local nox/pytest.
   - Freeze module names, flags, CLI interface, schema layout, and acceptance criteria.
 - Decision gate: This document approved with resolved answers and specs.
-- Effort/deps: 0.5–1 day.
+- Effort/deps: 0.5–1 iteration.
 
 ### Phase 1 — Iteration 1 (Eval loop + logging wiring + pip‑audit + best‑k retention)
 Objective: Land core execution path upgrades with tests and security gates (≥95% coverage).
@@ -121,7 +121,7 @@ Objective: Maximize consistency and reproducibility; reduce friction to run.
 - Phase 1: evaluation.loop + CLI; logging wiring; best‑k retention; pip-audit nox session; tests (≥95%); API doc; security artifact.
 - Phase 2: Quickstart doc; experiments JSONSchema + samples (JSON+TOML); validator + nox session; AST CLI enhancements + tests (≥95%).
 - Phase 3: Style normalization PR; determinism test suite; CPU Dockerfile + deployment doc.
-- Final: Updated audit_artifacts (raw/scored/context/manifest), daily status report, coverage summaries, acceptance checklist.
+- Final: Updated audit_artifacts (raw/scored/context/manifest), per-iteration status report, coverage summaries, acceptance checklist.
 
 ---
 

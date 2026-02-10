@@ -70,11 +70,11 @@ github-secrets-cli list --scope repo --repo Aries-Serpent/_codex_
 1. Create `src/agent.py` (security validation logic)
 2. Create `src/audit_logger.py` (compliance tracking)
 3. Create workflow `.github/workflows/security-validator.yml`
-4. Schedule weekly runs
+4. Schedule per-phase runs
 
 **Validations to Implement**:
 - HA-OPT-002: Organization audit logging setup
-- HA-OPT-003: CodeQL suppressions review (90-day cycle)
+- HA-OPT-003: CodeQL suppressions review (90 iteration cycle)
 
 **Success Criteria**:
 - Audit logging verified operational

@@ -195,7 +195,7 @@ python -m pytest tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py -v
 
 ---
 
-## MEDIUM-TERM TASKS (Next 2 Weeks)
+## MEDIUM-TERM TASKS (Next 2 phases)
 
 ### Task 7: Achieve 95% Coverage Target
 
@@ -303,7 +303,7 @@ Guidelines and recommendations
 - ✅ Average score ≥ 0.85
 - ✅ All capabilities ≥ 0.70, 80% ≥ 0.85
 
-### Medium-term (2 Weeks)
+### Medium-term (2 phases)
 - ✅ Coverage: ≥ 95%
 - ✅ CI/CD gates: Enabled
 - ✅ MCP docs: Complete

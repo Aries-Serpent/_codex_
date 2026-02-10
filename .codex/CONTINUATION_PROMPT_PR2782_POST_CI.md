@@ -1631,9 +1631,9 @@ This is a comprehensive, multi-phase task designed for autonomous execution over
 
 **Expected Timeline**:
 - Phase 2: 30-60 minutes (this session)
-- Phase 3: 5-7 days (next week)
-- Phase 4: 3-5 days (week 2)
-- Phase 5: 1-2 weeks (month 1)
+- Phase 3: 5-7 iterations (next week)
+- Phase 4: 3-5 iterations (week 2)
+- Phase 5: 1-2 phases (month 1)
 
 **Success Definition**:
 The cognitive brain is successfully enhanced when:

@@ -155,12 +155,12 @@ GET /repos/Aries-Serpent/_codex_/code-scanning/alerts
 
 | Severity | Exploitability | Resolution Priority | Target SLA |
 |----------|----------------|---------------------|------------|
-| Critical | High | P0 | 24 hours |
-| Critical | Medium | P1 | 3 days |
-| High | High | P1 | 3 days |
-| High | Medium | P2 | 1 week |
-| Medium | High | P2 | 1 week |
-| Medium | Medium | P3 | 2 weeks |
+| Critical | High | P0 | 24 Commits |
+| Critical | Medium | P1 | 3 iterations |
+| High | High | P1 | 3 iterations |
+| High | Medium | P2 | 1 phase |
+| Medium | High | P2 | 1 phase |
+| Medium | Medium | P3 | 2 phases |
 | Low | Any | P4 | 1 month |
 
 ### Alert Routing Rules
@@ -429,7 +429,7 @@ PATCH /repos/Aries-Serpent/_codex_/code-scanning/alerts/{alert_number}
 
 **Schedule:**
 - Weekly full CodeQL scan (Sunday 3 AM UTC)
-- Daily incremental scan for changed files
+- per-iteration incremental scan for changed files
 - Pre-merge security gate for PRs
 
 #### 6.5 Security Training
@@ -529,12 +529,12 @@ def validate_fix(file_path: str, alert_id: str) -> bool:
 ## 📈 Success Metrics
 
 ### Quantitative Metrics
-- **Alert Resolution Rate:** 95% within 10 weeks
+- **Alert Resolution Rate:** 95% within 10 phases
 - **Mean Time to Remediation (MTTR):**
   - P0: < 24 hours
-  - P1: < 3 days
-  - P2: < 1 week
-  - P3: < 2 weeks
+  - P1: < 3 iterations
+  - P2: < 1 phase
+  - P3: < 2 phases
 - **False Positive Rate:** < 10%
 - **Regression Rate:** < 2%
 - **Test Coverage:** 100% for security fixes

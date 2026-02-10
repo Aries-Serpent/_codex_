@@ -351,7 +351,7 @@ After PR merges:
 1. **Tag Release**: `git tag v1.3.0-consolidated && git push origin v1.3.0-consolidated`
 2. **Update Docs**: Mark v1.3.0 as stable in README
 3. **Monitor**: Watch CI for 48 hours post-merge
-4. **Cleanup**: Remove backup branch after 30 days (if stable)
+4. **Cleanup**: Remove backup branch after 30 iterations (if stable)
 5. **Announce**: Notify team of deprecation timeline for legacy imports
 
 ## Troubleshooting
@@ -402,15 +402,15 @@ Consolidation is successful when:
 
 | Phase | Duration | Dependencies |
 |-------|----------|--------------|
-| 0. Preparation | 0.5 day | Decision gates met |
-| 1. Move modules | 1 day | Dry-run approved |
-| 2. Update root shims | 0.5 day | Phase 1 complete |
-| 3. Remove redundant shims | 0.5 day | Phase 2 complete |
-| 4. Update legacy imports | 1 day | Phase 3 complete |
-| 5. Final validation | 1 day | All changes complete |
-| 6. Baseline update | 0.25 day | Validation passes |
-| 7. Rollback validation | 0.25 day | Parallel with others |
-| **Total** | **4-5 days** | Sequential execution |
+| 0. Preparation | 0.5 iteration | Decision gates met |
+| 1. Move modules | 1 iteration | Dry-run approved |
+| 2. Update root shims | 0.5 iteration | Phase 1 complete |
+| 3. Remove redundant shims | 0.5 iteration | Phase 2 complete |
+| 4. Update legacy imports | 1 iteration | Phase 3 complete |
+| 5. Final validation | 1 iteration | All changes complete |
+| 6. Baseline update | 0.25 iteration | Validation passes |
+| 7. Rollback validation | 0.25 iteration | Parallel with others |
+| **Total** | **4-5 iterations** | Sequential execution |
 
 ## Revision History
 

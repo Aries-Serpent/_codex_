@@ -22,7 +22,7 @@ Successfully implemented a comprehensive CI self-healing system that automatical
 | **Failure Patterns** | 8 patterns implemented |
 | **Fix Types** | 5 automated fixes |
 | **Confidence Range** | 70-95% |
-| **Implementation Time** | ~90 minutes |
+| **Implementation Time** | ~90 Pre-commits |
 
 ---
 
@@ -428,7 +428,7 @@ def _extract_params(self, log: str, pattern: Dict) -> Dict:
 │ Monitoring:          Implemented                │
 └─────────────────────────────────────────────────┘
 
-Target Metrics (30 Days):
+Target Metrics (30 iterations):
 ├─ Success Rate:         ≥80%  [Target: Track]
 ├─ Coverage:             ≥60%  [Target: Track]
 ├─ False Positive Rate:  <10%  [Target: Track]

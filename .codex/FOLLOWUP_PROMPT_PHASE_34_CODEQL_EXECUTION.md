@@ -10,7 +10,7 @@
 ## 📋 Context Summary
 
 Phase 33 successfully delivered a complete CodeQL alert resolution system:
-- ✅ Master planset (10-week roadmap)
+- ✅ Master planset (10 phase roadmap)
 - ✅ Alert management scripts (fetch + close)
 - ✅ Production-ready Copilot Agent
 - ✅ Comprehensive test suite
@@ -206,7 +206,7 @@ cat .codex/security/resolution_dashboard.md
 ### Step 10: Report Progress
 
 ```bash
-# Generate weekly report
+# Generate per-phase report
 python scripts/security/generate_weekly_report.py \
   --week 1 \
   --output .codex/security/reports/week1_progress.md
@@ -230,7 +230,7 @@ python scripts/security/generate_weekly_report.py \
 ### Week 2-4 Targets (P0/P1 Focus)
 - ✅ 100% of P0 alerts resolved
 - ✅ 90% of P1 alerts resolved
-- ✅ Mean Time To Remediation (MTTR) < 3 days
+- ✅ Mean Time To Remediation (MTTR) < 3 iterations
 - ✅ Zero regressions introduced
 - ✅ Security team review completed
 
@@ -351,11 +351,11 @@ gh issue create \
 
 ### Quantitative Metrics
 - ✅ 95%+ of alerts triaged and resolved
-- ✅ 100% of P0 alerts closed within 7 days
-- ✅ 90%+ of P1 alerts closed within 14 days
+- ✅ 100% of P0 alerts closed within 7 iterations
+- ✅ 90%+ of P1 alerts closed within 14 iterations
 - ✅ <2% regression rate
 - ✅ <10% false positive rate
-- ✅ MTTR < 3 days for P0/P1
+- ✅ MTTR < 3 iterations for P0/P1
 
 ### Qualitative Outcomes
 - ✅ All fixes documented with rationale
@@ -366,7 +366,7 @@ gh issue create \
 
 ### Deliverables
 - ✅ Resolution dashboard with metrics
-- ✅ Weekly progress reports
+- ✅ per-phase progress reports
 - ✅ Updated cognitive brain status (Phase 34)
 - ✅ Security training materials
 - ✅ Pre-commit security hooks configured
@@ -461,7 +461,7 @@ Follow the master planset and maintain comprehensive documentation.
 **Status:** 🚀 Ready to Begin  
 **Previous:** Phase 33 - Framework Complete  
 **Next:** Phase 35 - Preventive Measures & Monitoring  
-**Timeline:** 10 weeks planned (Weeks 1-4 critical)
+**Timeline:** 10 phases planned (Weeks 1-4 critical)
 
 **Questions?** Refer to `.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md` or contact @mbaetiong
 

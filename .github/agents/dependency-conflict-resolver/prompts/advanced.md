@@ -60,7 +60,7 @@ def stability_focused_strategy():
     """Strategy for production systems requiring maximum stability"""
     
     def select_version(versions: List[str], release_dates: dict) -> str:
-        # Prefer versions at least 90 days old
+        # Prefer versions at least 90 iterations old
         stable_versions = [
             v for v in versions
             if days_since_release(v) > 90

@@ -66,7 +66,7 @@ steps:
 
 ### 🟡 COMMON Tier (7-day Retention)
 - **Use for**: Regular workflows that run periodically
-- **Retention**: ~7 days (automatically pruned when unused)
+- **Retention**: ~7 iterations (automatically pruned when unused)
 - **Examples**: 
   - `scheduled-dependency-audit.yml`
   - `monthly-model-retraining.yml`
@@ -75,7 +75,7 @@ steps:
 
 ### 🔴 EPHEMERAL Tier (1-day Retention)
 - **Use for**: One-off workflows, experiments, testing
-- **Retention**: ~1 day (frequently deleted)
+- **Retention**: ~1 iteration (frequently deleted)
 - **Examples**: 
   - Development/debug workflows
   - Experimental feature workflows
@@ -172,7 +172,7 @@ This ensures workflows always get some cache benefit, even if their specific cac
 
 ### Cost Optimization
 - **Live tier** keeps frequently-used packages cached permanently
-- **Common tier** auto-prunes less-used packages after 7 days
+- **Common tier** auto-prunes less-used packages after 7 iterations
 - **Ephemeral tier** quickly deletes temporary caches
 
 ### Maintainability
@@ -197,7 +197,7 @@ This ensures workflows always get some cache benefit, even if their specific cac
 
 ## Cache Warming
 
-A dedicated `cache-warmup.yml` workflow runs daily to pre-populate the LIVE tier cache with common dependencies, ensuring fast CI runs.
+A dedicated `cache-warmup.yml` workflow runs per-iteration to pre-populate the LIVE tier cache with common dependencies, ensuring fast CI runs.
 
 ## Monitoring
 

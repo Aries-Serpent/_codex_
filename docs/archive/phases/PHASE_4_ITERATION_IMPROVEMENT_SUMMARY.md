@@ -158,7 +158,7 @@ def test_token_scope_hierarchical_admin(self) -> None:
 - **Target Coverage**: 17-20% (from current 2.55%)
 - **Test Count**: 100-150 new integration tests
 - **Coverage Gain**: +15-18% absolute improvement
-- **Timeline**: 3-4 weeks
+- **Timeline**: 3-4 phases
 
 ---
 
@@ -298,7 +298,7 @@ def test_token_scope_hierarchical_admin(self) -> None:
 **Phase 5: Module Integration Testing**
 - Focus: Real production module testing
 - Target: +15-18% coverage improvement
-- Timeline: 3-4 weeks
+- Timeline: 3-4 phases
 - Tests: 100-150 integration tests
 
 ---

@@ -423,7 +423,7 @@ Phases:
 6. Track progress per commit cycle
 
 Target: 298 → 0 stubs
-Timeline: 12 weeks (throughout Phases 1-3)
+Timeline: 12 phases (throughout Phases 1-3)
 Approach: Automated + manual review
 ```
 

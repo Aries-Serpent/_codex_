@@ -7,7 +7,7 @@
 task_id: T4
 priority: P1
 phase: phase_2_reproducibility
-effort: 1-2 days
+effort: 1-2 iterations
 dependencies: [T1]  # Coverage infrastructure useful for testing
 ```
 

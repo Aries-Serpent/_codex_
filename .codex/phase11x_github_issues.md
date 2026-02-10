@@ -387,7 +387,7 @@ def identify_untested_modules():
 - [ ] 10 modules tested (Phase 1 milestone)
 - [ ] Test generation tools created
 - [ ] Coverage tracking dashboard
-- [ ] Weekly progress reports
+- [ ] per-phase progress reports
 
 ### References
 

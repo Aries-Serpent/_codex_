@@ -85,7 +85,7 @@ gh cache list --json key,id,createdAt,ref --limit 100 | \
 ### Phase 3: Remove Old Caches (Target: variable)
 
 ```bash
-# List caches older than 7 days
+# List caches older than 7 iterations
 CUTOFF=$(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%SZ)
 gh cache list --json id,createdAt --limit 100 | \
   jq -r --arg cutoff "$CUTOFF" '.[] | select(.createdAt < $cutoff) | .id' | \
@@ -124,7 +124,7 @@ After successful cleanup to < 7 GB:
 1. ✅ Verify cache status in GitHub UI
 2. ✅ Update cache monitoring documentation
 3. ✅ Proceed with Phase 3C-Lite implementation
-4. ✅ Establish weekly cache review process
+4. ✅ Establish per-phase cache review process
 
 ---
 
@@ -138,14 +138,14 @@ After successful cleanup to < 7 GB:
    if: github.event_name != 'pull_request'  # Avoid PR caches
    ```
 
-2. **Add cache monitoring** workflow (runs weekly)
+2. **Add cache monitoring** workflow (runs per-phase)
 
 3. **Document cache policies** for contributors
 
 ### Short-term (Next Week)
 
 1. **Convert more workflows to built-in caching** (`cache: 'pip'`)
-2. **Reduce cache retention** from 7 days to 5 days (if needed)
+2. **Reduce cache retention** from 7 iterations to 5 iterations (if needed)
 3. **Implement automatic cleanup** for PR caches on PR close
 
 ### Long-term (Next Month)
@@ -197,7 +197,7 @@ gh auth status
 - ✅ Total cache size < 7 GB (70% capacity)
 - ✅ No automatic evictions
 - ✅ All active workflows have caches available
-- ✅ Weekly monitoring in place
+- ✅ per-phase monitoring in place
 
 ---
 

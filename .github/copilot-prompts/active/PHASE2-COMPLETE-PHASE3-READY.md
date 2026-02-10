@@ -474,9 +474,9 @@ All PDA loops + AfterMath patterns MUST remain active throughout.
 ## Timeline & Resource Requirements
 
 ### Estimated Time
-- **Pre-commit 1-2**: Core implementation (7 days)
-- **Pre-commit 3-4**: Testing & documentation (7 days)
-- **Total**: 14 days (~2 weeks)
+- **Pre-commit 1-2**: Core implementation (7 iterations)
+- **Pre-commit 3-4**: Testing & documentation (7 iterations)
+- **Total**: 14 iterations (~2 phases)
 
 ### Dependencies
 - ✅ Phase 1 framework (complete)
@@ -513,7 +513,7 @@ Following same pattern as flaky-triage-agent:
 9. mcp-registry-adapter.v1
 10. compliance-checker-agent.v1
 
-Each agent: ~2,950 lines, 13 files, 2 weeks development time
+Each agent: ~2,950 lines, 13 files, 2 phases development time
 
 ---
 

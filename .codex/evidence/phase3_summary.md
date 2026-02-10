@@ -3,7 +3,7 @@
 ## Timeline
 - Start: 2025-10-24
 - End: 2025-10-24
-- Duration: 1 day
+- Duration: 1 iteration
 - Effort: ~4 hours
 
 ## Changes

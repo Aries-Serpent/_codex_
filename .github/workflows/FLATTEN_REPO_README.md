@@ -301,7 +301,7 @@ The following patterns are automatically excluded:
 
 1. **Never commit secrets** to the repository
 2. **Review metadata** before sharing flattened output
-3. **Use short retention** (7-14 days) for sensitive projects
+3. **Use short retention** (7-14 iterations) for sensitive projects
 4. **Enable secret detection** in repomix.config.json
 5. **Audit flattened output** before external sharing
 

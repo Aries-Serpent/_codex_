@@ -551,8 +551,8 @@ gh auth status
 
 ### Recommended Rotation Frequency
 
-- **Standard**: Every 90 days (quarterly)
-- **High Security**: Every 30 days (monthly)
+- **Standard**: Every 90 iterations (quarterly)
+- **High Security**: Every 30 iterations (monthly)
 - **Emergency**: Immediately if token compromised
 
 ### Next Rotation Date
@@ -564,9 +564,9 @@ gh auth status
 ### Rotation Reminder
 
 Set calendar reminders:
-- **30 days before expiry**: Start planning rotation
-- **14 days before expiry**: Execute rotation
-- **7 days before expiry**: Emergency rotation window
+- **30 iterations before expiry**: Start planning rotation
+- **14 iterations before expiry**: Execute rotation
+- **7 iterations before expiry**: Emergency rotation window
 
 ---
 

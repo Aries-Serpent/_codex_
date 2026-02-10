@@ -581,32 +581,32 @@ All analysis data and logs collected into structured artifact package:
 |------|--------|----------|-----------------|
 | Fix test-suite.yml YAML parse error | 30 min | ✅ YES | Unblocks all testing |
 | Create bandit.yaml configuration | 1 hour | ✅ YES | Unblocks security scans |
-| Resolve src/codex_plans package | 2 hours | ✅ YES | Unblocks releases |
+| Resolve src/codex_plans package | 2 Commits | ✅ YES | Unblocks releases |
 
 **Success Criteria**: All P0 workflows parse and execute, no blocking errors
 
 ### Phase 2: HIGH PRIORITY (P1) - 11 hours
-**Timeframe**: 1-3 days  
+**Timeframe**: 1-3 iterations  
 **Status**: Important but not blocking
 
 | Task | Effort | Impact | Priority |
 |------|--------|--------|----------|
-| Update Docker base images | 3 hours | Security & builds | HIGH |
-| Audit and fix nosec comments | 4 hours | Security posture | HIGH |
-| Test pypi-publish workflow | 2 hours | Release pipeline | MEDIUM |
-| Validate security scans | 2 hours | Compliance | HIGH |
+| Update Docker base images | 3 Commits | Security & builds | HIGH |
+| Audit and fix nosec comments | 4 Commits | Security posture | HIGH |
+| Test pypi-publish workflow | 2 Commits | Release pipeline | MEDIUM |
+| Validate security scans | 2 Commits | Compliance | HIGH |
 
 **Success Criteria**: All security scans pass, Docker builds succeed, releases work
 
 ### Phase 3: OPTIMIZATION (P2) - 14 hours
-**Timeframe**: 1 week  
+**Timeframe**: 1 phase  
 **Status**: Quality improvements
 
 | Task | Effort | Benefit |
 |------|--------|---------|
-| Migrate to uv package manager | 6 hours | 2-10x faster CI |
-| Consolidate duplicate workflows | 5 hours | Maintenance clarity |
-| Optimize caching strategy | 3 hours | Cost reduction |
+| Migrate to uv package manager | 6 Commits | 2-10x faster CI |
+| Consolidate duplicate workflows | 5 Commits | Maintenance clarity |
+| Optimize caching strategy | 3 Commits | Cost reduction |
 
 **Success Criteria**: 30% faster CI runs, reduced duplication, lower costs
 
@@ -616,9 +616,9 @@ All analysis data and logs collected into structured artifact package:
 
 | Task | Effort | Outcome |
 |------|--------|---------|
-| Document all workflows | 4 hours | Better onboarding |
-| Implement monitoring dashboard | 4 hours | Proactive alerts |
-| Schedule secret rotation | 2 hours | Enhanced security |
+| Document all workflows | 4 Commits | Better onboarding |
+| Implement monitoring dashboard | 4 Commits | Proactive alerts |
+| Schedule secret rotation | 2 Commits | Enhanced security |
 | Optimize cron schedules | 1 hour | Resource efficiency |
 
 **Success Criteria**: Complete documentation, active monitoring, automated maintenance
@@ -825,13 +825,13 @@ The following 15 workflows are intentionally disabled or archived:
 3. **Validate fixes** - Run critical workflows, verify no errors
 4. **Report progress** - Update PR with completion status
 
-### Short-term (1-3 Days)
+### Short-term (1-3 iterations)
 1. **Execute Phase 2 (P1)** - Security and Docker updates (11 hours)
 2. **Human admin review** - Security changes, Docker images
 3. **Test releases** - Validate pypi-publish.yml, docker-build-push.yml
 4. **Monitor metrics** - Track workflow success rates, durations
 
-### Medium-term (1 Week)
+### Medium-term (1 phase)
 1. **Execute Phase 3 (P2)** - Optimization (14 hours)
 2. **Measure improvements** - CI speed, cost reduction
 3. **Consolidate workflows** - Merge duplicates, archive obsolete

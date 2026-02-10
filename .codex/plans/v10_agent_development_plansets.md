@@ -549,7 +549,7 @@ triggers:
   - pull_request
   - push:
       branches: [main, develop]
-  - schedule: "0 0 * * *"  # Daily
+  - schedule: "0 0 * * *"  # per-iteration
 
 config:
   random_seed: 48

@@ -175,7 +175,7 @@ class MultiAgentCoordinator:
 - Update ARCHITECTURE.md with coordination diagrams
 - Create example prompts in agents/prompts/coordination/
 
-**Estimated Effort:** 3-4 days
+**Estimated Effort:** 3-4 iterations
 
 ---
 
@@ -212,7 +212,7 @@ class MindMapGenerator:
 - Update README.md with visualization examples
 - Add screenshots to PR template
 
-**Estimated Effort:** 5-6 days
+**Estimated Effort:** 5-6 iterations
 
 ---
 
@@ -254,7 +254,7 @@ class PredictiveAnalytics:
 - Update ARCHITECTURE.md with ML pipeline diagrams
 - Create training data format specification
 
-**Estimated Effort:** 6-8 days
+**Estimated Effort:** 6-8 iterations
 
 ---
 
@@ -290,7 +290,7 @@ class QuantumOrchestrator:
 - Entanglement of related decisions
 - Decoherence as deadline approaches
 
-**Estimated Effort:** 10-12 days (includes research)
+**Estimated Effort:** 10-12 iterations (includes research)
 
 ---
 
@@ -317,7 +317,7 @@ class NaturalLanguageQueryInterface:
 - Temporal queries ("What did I decide yesterday?")
 - Causal queries ("Why did this decision fail?")
 
-**Estimated Effort:** 7-9 days
+**Estimated Effort:** 7-9 iterations
 
 ---
 
@@ -348,7 +348,7 @@ class CapabilityDetector:
 - PR draft generation with boilerplate
 - Progress tracking in mental maps
 
-**Estimated Effort:** 5-7 days
+**Estimated Effort:** 5-7 iterations
 
 ---
 
@@ -455,14 +455,14 @@ class CapabilityDetector:
    - Run all workflows end-to-end
    - Validate mental mapping records correctly
    - Monitor for errors/warnings
-   - Duration: 1-2 days
+   - Duration: 1-2 iterations
 
 2. **Stage 2: Beta (Limited Release)**
    - Deploy to staging environment
    - Enable for select users/agents
    - Collect feedback and metrics
    - Iterate on issues found
-   - Duration: 3-5 days
+   - Duration: 3-5 iterations
 
 3. **Stage 3: Production (Full Release)**
    - Deploy to production environment
@@ -688,9 +688,9 @@ This PR represents a significant advancement in AI Agent orchestration capabilit
 
 **Next Steps:**
 1. **Immediate:** Final stakeholder approval and merge
-2. **Short-term:** Implement multi-agent coordination (3-4 days)
-3. **Medium-term:** Add visual mind map generation (5-6 days)
-4. **Long-term:** Predictive analytics and quantum orchestration (10-12 days)
+2. **Short-term:** Implement multi-agent coordination (3-4 iterations)
+3. **Medium-term:** Add visual mind map generation (5-6 iterations)
+4. **Long-term:** Predictive analytics and quantum orchestration (10-12 iterations)
 
 **Recommendation:** Approve and merge this PR. Begin next sprint with multi-agent coordination as first priority.
 

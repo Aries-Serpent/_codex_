@@ -60,7 +60,7 @@
 - Auto-fix effectiveness
 - Execution time (ms)
 - Per-language statistics
-- 7-day trends
+- 7 iteration trends
 
 **Dashboard Features**:
 - HTML + CSS responsive design
@@ -402,4 +402,4 @@ All deliverables are production-ready, tested, and documented. The cognitive bra
 
 **Document Version**: 2.0  
 **Last Updated**: 2026-01-22T02:30:00Z  
-**Next Review**: After Phase 3 planning or 30 days
+**Next Review**: After Phase 3 planning or 30 iterations

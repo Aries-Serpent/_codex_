@@ -103,14 +103,14 @@ The requirement called for 5 batches to reduce 45→≤15 imports:
 
 1. **Maintain analyzer v1.2.1**: Keep `hydra` excluded from LEGACY_MODULES
 2. **Monitor new imports**: CI should run analyzer on PRs
-3. **Deprecation timeline**: Schedule config_legacy removal (90 days suggested)
+3. **Deprecation timeline**: Schedule config_legacy removal (90 iterations suggested)
 4. **Documentation**: Update import guidelines for contributors
 
 ## Conclusion
 
 The legacy import reduction task was completed with **zero legacy imports**, far exceeding the target of ≤15 and stretch goal of ≤10. The key insight was identifying that 96.7% of flagged imports were false positives from the analyzer including a PyPI package name in the legacy modules list.
 
-**Time to completion:** <2 hours (vs planned 2-3 days)
+**Time to completion:** <2 hours (vs planned 2-3 iterations)
 **Efficiency gain:** Root cause analysis eliminated need for 5 planned refactor batches
 
 ---

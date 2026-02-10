@@ -326,12 +326,12 @@ model.eval()
 
 ## Future Enhancements
 
-### Short-Term (Next 30 Days)
+### Short-Term (Next 30 iterations)
 - [ ] Add performance benchmarks for different model sizes
 - [ ] Create developer training materials
 - [ ] Add telemetry for pattern adoption tracking
 
-### Long-Term (Next 90 Days)
+### Long-Term (Next 90 iterations)
 - [ ] Extend pattern to other ML modules
 - [ ] Create automated pattern migration tool
 - [ ] Integrate with MLOps platforms

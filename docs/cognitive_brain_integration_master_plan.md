@@ -17,7 +17,7 @@ This master plan integrates the GitHub Spark UI with the `Aries-Serpent/_codex_`
 5. **Real-time Metrics** - WebSocket-powered dashboard
 
 **Current State:** 3 iterations complete, stub components exist  
-**Target:** Production-ready full-stack integration in 4 weeks
+**Target:** Production-ready full-stack integration in 4 phases
 
 ---
 
@@ -1259,7 +1259,7 @@ curl http://localhost:8000/health
 
 ## Conclusion
 
-This master plan provides a complete, production-ready integration strategy for connecting the GitHub Spark UI with the _Codex_ cognitive brain backend. All code examples are complete and ready to implement. Follow the 4-week roadmap for systematic implementation, and use the success metrics to validate progress.
+This master plan provides a complete, production-ready integration strategy for connecting the GitHub Spark UI with the _Codex_ cognitive brain backend. All code examples are complete and ready to implement. Follow the 4 phase roadmap for systematic implementation, and use the success metrics to validate progress.
 
 **Key Deliverables:**
 - ✅ 6 FastAPI routers with complete implementations

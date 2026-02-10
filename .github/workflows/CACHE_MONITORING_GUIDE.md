@@ -64,12 +64,12 @@ This automatically includes compression/decompression.
 
 ## Monitoring Checklist
 
-### Daily (During Phase 2 Rollout)
+### per-iteration (During Phase 2 Rollout)
 - [ ] Check total cache usage in GitHub UI
 - [ ] Verify usage is under 9 GB
 - [ ] Look for any eviction warnings in workflow logs
 
-### Weekly
+### per-phase
 - [ ] Review cache trend (growing/stable)
 - [ ] Check for any failed cache operations
 - [ ] Verify all Phase 2 workflows are using cache correctly
@@ -106,7 +106,7 @@ This automatically includes compression/decompression.
 ### Option 1: Remove Low-Value Caches
 ```bash
 # Manually delete these caches from GitHub UI:
-# - scheduled-dependency-audit.yml cache (weekly workflow)
+# - scheduled-dependency-audit.yml cache (per-phase workflow)
 # - integration-gated.yml cache (manual-only workflow)
 ```
 

@@ -230,9 +230,9 @@ pip freeze > requirements/lock.txt
 
 ### 📋 Security Requirements
 
-- **Critical/High CVEs**: Must be fixed within 7 days
-- **Moderate CVEs**: Should be fixed within 30 days
-- **Low CVEs**: Review and fix within 90 days
+- **Critical/High CVEs**: Must be fixed within 7 iterations
+- **Moderate CVEs**: Should be fixed within 30 iterations
+- **Low CVEs**: Review and fix within 90 iterations
 
 ### ❌ DON'T: Ignore Dependabot Alerts
 
@@ -243,7 +243,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
 ```
 
 ---

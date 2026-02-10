@@ -205,7 +205,7 @@ From **Table 1** (Time Constraints):
 - physics_orchestrator ↔ mental_mapping
 - codex_client ↔ all orchestrators
 
-### Phases 4-5: 70% → 95% (4 weeks)
+### Phases 4-5: 70% → 95% (4 phases)
 
 **Pre-commit 1-2** (70% → 80%): Error paths & exception handling  
 **Pre-commit 3-4** (80% → 85%): Edge cases & null inputs  
@@ -216,7 +216,7 @@ From **Table 1** (Time Constraints):
 
 ## 🛠️ Toolkit Usage Reference
 
-### Daily Workflow
+### per-iteration Workflow
 
 ```bash
 # Morning: Validate system
@@ -262,10 +262,10 @@ python tools/coverage_physics_toolkit.py --mode velocity
 | Phase | Target | Time | Strategy |
 |-------|--------|------|----------|
 | **Phase 1** | **30%** | **Complete** | **Quick wins** |
-| Phase 2 | 50% | 8-10 hours | Deep coverage |
-| Phase 3 | 70% | 10-12 hours | Integration |
-| Phase 4 | 80% | 1 week | Error paths |
-| Phase 5 | 95% | 3 weeks | Edge/security |
+| Phase 2 | 50% | 8-10 Commits | Deep coverage |
+| Phase 3 | 70% | 10-12 Commits | Integration |
+| Phase 4 | 80% | 1 phase | Error paths |
+| Phase 5 | 95% | 3 phases | Edge/security |
 
 ---
 

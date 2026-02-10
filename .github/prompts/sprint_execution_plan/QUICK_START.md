@@ -8,7 +8,7 @@
 ## TL;DR - Immediate Action
 
 ```bash
-# Single command to execute complete 16-week transformation:
+# Single command to execute complete 16 phase transformation:
 @workspace Execute this plan:
 .github/prompts/sprint_execution_plan/MASTER_ORCHESTRATOR.md
 
@@ -23,7 +23,7 @@
 - ✅ 45 prioritized gaps from comprehensive audit
 - ✅ 298 TODOs/stubs/NotImplementedErrors
 - ✅ 18 capability domains (checkpointing → security)
-- ✅ 16-week transformation roadmap
+- ✅ 16 phase transformation roadmap
 - ✅ 4 phases with parallel execution tracks
 - ✅ Self-expanding, self-healing, self-validating prompts
 
@@ -36,23 +36,23 @@
 ├── README.md ← Framework overview (you are here)
 ├── TEMPLATE.md ← v2.0.0 autonomous prompt format
 ├── QUICK_START.md ← This file
-├── MASTER_ORCHESTRATOR.md ← Complete 16-week execution
+├── MASTER_ORCHESTRATOR.md ← Complete 16 phase execution
 │
 ├── phase_1_foundation/ (Pre-commit 1-8: Security & Monitoring)
 │   ├── _PHASE_OVERVIEW.md
-│   ├── T1_coverage_gate_enforcement.md (P0, 3-5 days)
-│   ├── T5_prompt_sanitization_default.md (P0, 1-2 days)
+│   ├── T1_coverage_gate_enforcement.md (P0, 3-5 iterations)
+│   ├── T5_prompt_sanitization_default.md (P0, 1-2 iterations)
 │   └── T7_T10_and_stub_cleanup.md (P0/P1, ongoing)
 │
 ├── phase_2_reproducibility/ (Pre-commit 9-16: Determinism)
 │   ├── _PHASE_OVERVIEW.md
-│   ├── T4_strict_resume_rng.md (P1, 1-2 days)
-│   └── T6_dataset_hash_manifest.md (P1, 2-3 days)
+│   ├── T4_strict_resume_rng.md (P1, 1-2 iterations)
+│   └── T6_dataset_hash_manifest.md (P1, 2-3 iterations)
 │
 ├── phase_3_autonomy/ (Pre-commit 17-24: Self-Healing)
 │   ├── _PHASE_OVERVIEW.md
-│   ├── T2_wandb_offline_default.md (P1, 0.5-1 day)
-│   └── T3_earlystopping_integration.md (P1, 1-2 days)
+│   ├── T2_wandb_offline_default.md (P1, 0.5-1 iteration)
+│   └── T3_earlystopping_integration.md (P1, 1-2 iterations)
 │
 └── phase_4_excellence/ (Pre-commit 25-32: Advanced Features)
     └── _PHASE_OVERVIEW.md
@@ -70,7 +70,7 @@
 
 File: .github/prompts/sprint_execution_plan/MASTER_ORCHESTRATOR.md
 
-Timeline: 16 weeks
+Timeline: 16 phases
 Supervision: Minimal (Copilot handles everything)
 Intervention: Only for blocking issues
 ```
@@ -155,7 +155,7 @@ File: phase_1_foundation/T5_prompt_sanitization_default.md
 - Stubs: 298
 - Maturity: Level 2-3
 
-**Target (after 16 weeks):**
+**Target (after 16 phases):**
 - Capability Scores: All ≥0.90
 - Autonomy: ≥95%
 - Reproducibility: ≥98%
@@ -167,7 +167,7 @@ File: phase_1_foundation/T5_prompt_sanitization_default.md
 
 ## Validation Checkpoints
 
-**Sprint Boundaries (every 2 weeks):**
+**Sprint Boundaries (every 2 phases):**
 ```bash
 # Sprint 1-2 (Pre-commit 3-4): Foundation
 pytest --cov=src --cov-fail-under=70
@@ -367,7 +367,7 @@ Instructions:
 5. Achieve Level 4 maturity
 6. Report progress per commit cycle
 
-Timeline: 16 weeks
+Timeline: 16 phases
 Approach: Fully autonomous
 Escalate: Only blocking issues
 ```

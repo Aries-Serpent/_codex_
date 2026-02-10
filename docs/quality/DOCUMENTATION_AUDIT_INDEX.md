@@ -2,7 +2,7 @@
 
 **Generated:** January 18, 2026  
 **Repository:** _codex_  
-**Purpose:** Phase 5 (8-week) Documentation Improvement Planning
+**Purpose:** Phase 5 (8 phase) Documentation Improvement Planning
 
 ---
 
@@ -32,7 +32,7 @@
 Quick overview with:
 - TL;DR key findings
 - Phase 5 execution plan
-- 8-week timeline breakdown
+- 8 phase timeline breakdown
 - Success metrics and gates
 - Risk mitigation strategies
 
@@ -63,7 +63,7 @@ Complete analysis including:
 Package-centric breakdown:
 - Coverage by package (30 packages analyzed)
 - 80/20 rule application (5 packages = 83% of work)
-- Weekly package targets
+- per-phase package targets
 - Package-specific risks
 - Automation scripts
 - Documentation templates
@@ -125,7 +125,7 @@ Machine-readable audit data:
 
 ## 🎯 PHASE 5 EXECUTION SUMMARY
 
-### Timeline: 8 Weeks
+### Timeline: 8 phases
 
 ```
 Week 1-2: Quick Wins & Foundation
@@ -245,7 +245,7 @@ Week 7-8: Polish & Completion
    pre-commit install
    ```
 4. **Create documentation templates** (see Package Prioritization doc)
-5. **Schedule weekly syncs** (every Friday)
+5. **Schedule per-phase syncs** (every Friday)
 
 ### Long-Term Actions
 
@@ -264,7 +264,7 @@ Week 7-8: Polish & Completion
 ✅ **Gate 2 (Week 6):** 10 tutorials complete  
 ✅ **Gate 3 (Week 8):** Overall score ≥ 92.0  
 
-### Weekly Progress Tracking
+### per-phase Progress Tracking
 
 ```yaml
 week_1:
@@ -277,7 +277,7 @@ week_2:
   packages_completed: [training]
   hours_spent: 40
 
-# ... continue tracking weekly
+# ... continue tracking per-phase
 ```
 
 ---
@@ -398,7 +398,7 @@ Overall Score = Weighted Average:
 
 ### Review Schedule
 
-- **Weekly Sync:** Every Friday 2pm
+- **per-phase Sync:** Every Friday 2pm
 - **Mid-Phase Review:** Week 4 (February 15, 2026)
 - **Final Review:** Week 8 (March 15, 2026)
 
@@ -443,7 +443,7 @@ March 20, 2026     - Phase 5 Complete
 The _codex_ repository has a **strong documentation foundation (85.5/100)** and is well-positioned for Phase 5 improvement. With focused execution on the top 5 packages (representing 83% of the gap), we can achieve:
 
 - **Target Score:** 92/100 (Grade A-)
-- **Timeline:** 8 weeks
+- **Timeline:** 8 phases
 - **Effort:** 160 hours (20 hrs/week)
 - **Risk:** Low (prioritized scope)
 

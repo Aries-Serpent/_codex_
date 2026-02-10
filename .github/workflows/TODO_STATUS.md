@@ -51,7 +51,7 @@ From the problem statement for Phase 30:
 - `.github/workflows/workflow-link-validation.yml`
 
 **Features:**
-- Runs on pull requests, push to main, and weekly schedule
+- Runs on pull requests, push to main, and per-phase schedule
 - Validates all markdown links in workflow documentation
 - Validates links in YAML workflow files
 - Creates PR comments for broken links
@@ -172,7 +172,7 @@ python scripts/deprecate_workflow.py workflow.yml --consolidated cache-suite.yml
 - Baseline and expected metrics
 - Known issues and mitigation strategies
 - Alert thresholds
-- Weekly report template
+- per-phase report template
 - Data collection procedures
 - Investigation procedures
 
@@ -261,7 +261,7 @@ Now that infrastructure is complete, the next phase involves:
    - Start metric collection
 
 2. **Initial Monitoring**
-   - Run performance monitoring daily
+   - Run performance monitoring per-iteration
    - Collect baseline metrics
    - Set up alerting
 
@@ -273,7 +273,7 @@ Now that infrastructure is complete, the next phase involves:
 ### Week 2 (2026-02-03 to 2026-02-09)
 
 4. **Performance Analysis**
-   - Generate weekly reports
+   - Generate per-phase reports
    - Compare consolidated vs original
    - Identify optimization opportunities
 
@@ -330,5 +330,5 @@ All three original TODO items have been completed:
 
 **Status:** ✅ TODO ITEMS COMPLETE  
 **Phase:** Ready for production deployment  
-**Next:** Begin 2-week validation period  
+**Next:** Begin 2 phase validation period  
 **Owner:** @mbaetiong

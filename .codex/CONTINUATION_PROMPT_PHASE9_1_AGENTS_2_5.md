@@ -254,7 +254,7 @@ cognitive_brain:
     - <agent_specific_metric_1>
     - <agent_specific_metric_2>
     - <agent_specific_metric_3>
-  reporting_interval: daily
+  reporting_interval: per-iteration
   storage:
     type: sqlite
     path: .codex/sessions/agent_metrics.db

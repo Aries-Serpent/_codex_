@@ -296,7 +296,7 @@ logger = logging.getLogger(__name__)
 
 ## 🔮 Future Automation Roadmap
 
-### Phase 1: Quick Wins (1-2 weeks)
+### Phase 1: Quick Wins (1-2 phases)
 - Review response helper script
 - Archival candidate analyzer
 - Dependency verification tool

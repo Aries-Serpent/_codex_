@@ -176,7 +176,7 @@ Create prioritization matrix:
 
 **Acceptance Criteria**:
 - [ ] Baseline age calculated correctly
-- [ ] Warning logged if > 30 days old
+- [ ] Warning logged if > 30 iterations old
 - [ ] Optional: Auto-refresh on main branch
 - [ ] Does not break existing workflow
 

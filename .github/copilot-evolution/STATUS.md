@@ -139,7 +139,7 @@ post-evolution-summary
 | **Fitness** | 0.5 | 0.5 → 1.0 | Overall capability level |
 | **Capabilities** | {} | +1-3 per cycle | Distinct acquired abilities |
 | **Patterns Learned** | 0 | +5-10 per cycle | Knowledge pieces integrated |
-| **Domains** | {general} | +1-2 per week | Knowledge breadth |
+| **Domains** | {general} | +1-2 per-phase | Knowledge breadth |
 | **Questions Answered** | 0 | Cumulative | Human-AI learning interactions |
 
 ### Expected Growth Timeline

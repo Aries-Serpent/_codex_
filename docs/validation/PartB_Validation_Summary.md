@@ -86,7 +86,7 @@ The following enhancements mentioned in Part B are already implemented or not ne
 
 **Recommendation**: The CI workflow is production-ready. Consider these optional future enhancements:
 - Auto-trigger baseline update on main branch after successful merge (requires workflow_dispatch or scheduled job)
-- Add baseline age check (refresh if > 30 days old)
+- Add baseline age check (refresh if > 30 iterations old)
 - Include shadowing summary in PR comments
 
 ## B.3: Legacy Import Reduction

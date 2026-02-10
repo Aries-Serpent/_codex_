@@ -385,7 +385,7 @@ Establish research infrastructure, form team, and begin highest-ROI research pro
    - Commit size features
    - Workload characteristics
    - System configuration state
-   - Temporal patterns (daily/per commit cycle cycles)
+   - Temporal patterns (per-iteration/per commit cycle cycles)
 
 3. **LSTM Model Training**
    - Implement multi-variate LSTM (CPU, memory, IO)
@@ -922,24 +922,24 @@ Monitor, maintain, and continuously improve V10 ecosystem
 
 | Metric Category | Key Metrics | Target | Tracking |
 |-----------------|-------------|--------|----------|
-| **Agent Performance** | Pattern detection accuracy | >95% | Weekly |
-| | False positive rate | <5% | Weekly |
-| | Resource prediction accuracy | >80% | Daily |
+| **Agent Performance** | Pattern detection accuracy | >95% | per-phase |
+| | False positive rate | <5% | per-phase |
+| | Resource prediction accuracy | >80% | per-iteration |
 | | Test prioritization time savings | 30-50% | Per commit |
 | | Build failure prediction rate | 80%+ | Per build |
 | | Causal attribution accuracy | >75% | Per incident |
 | **System Performance** | Operations latency | <1s | Real-time |
 | | Agent CPU overhead | <5% | Real-time |
 | | Memory usage | <500MB/agent | Real-time |
-| | Scale support | 10M+ LOC | Weekly |
+| | Scale support | 10M+ LOC | per-phase |
 | **Business Impact** | Developer productivity gain | +50% | Monthly |
 | | Bug detection improvement | +80% | Monthly |
-| | CI/CD time reduction | -40% | Daily |
-| | Doc coverage | 95% | Weekly |
+| | CI/CD time reduction | -40% | per-iteration |
+| | Doc coverage | 95% | per-phase |
 | | Agent adoption rate | 90% | Monthly |
 | **Quality** | Security incidents | 0 | Continuous |
 | | Test coverage | >100% | Per commit |
-| | Documentation completeness | 100% | Weekly |
+| | Documentation completeness | 100% | per-phase |
 | | User trust score | >95% | Monthly |
 
 ---
@@ -1050,7 +1050,7 @@ Meta-Learning (Theme 1):
 
 ## 📞 GOVERNANCE & COMMUNICATION
 
-### Weekly Standups
+### per-phase Standups
 - Team sync: Progress, blockers, plans
 - Metrics review
 - Adjust priorities as needed
@@ -1068,9 +1068,9 @@ Meta-Learning (Theme 1):
 - Strategic adjustments
 
 ### Communication Channels
-- Slack: Daily updates
+- Slack: per-iteration updates
 - GitHub Projects: Task tracking
-- Weekly Reports: Email to stakeholders
+- per-phase Reports: Email to stakeholders
 - Monthly Demos: Show progress to org
 
 ---
@@ -1083,7 +1083,7 @@ All original specifications have been verified as 100% complete and production-r
 ### Next Phases: PLANNED ✅
 Comprehensive 5-phase plan created with:
 - Clear objectives per phase
-- Week-by-week breakdown
+- phase-by-phase breakdown
 - Specific deliverables
 - Success criteria
 - Risk mitigation

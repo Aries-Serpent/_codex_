@@ -221,13 +221,13 @@ Pre-existing condition not introduced by current work. Fixing requires sustained
 1. Documented in `GAP_ANALYSIS.md`
 2. Created improvement roadmap (to be implemented)
 3. Phased approach: 15% → 30% → 60% → 90%
-4. Weekly progress tracking
+4. per-phase progress tracking
 5. Module-by-module coverage increases
 
 **Tracking**:
 - Issue: To be created
 - Target Date: Phase 1 (30%) by 2025-12-30
-- Review Frequency: Weekly
+- Review Frequency: per-phase
 
 **Risk Acceptance**:
 - Accepted By: AI Assistant Autonomous System
@@ -241,8 +241,8 @@ Pre-existing condition not introduced by current work. Fixing requires sustained
 
 ## Audit Process
 
-### Weekly Security Exception Review
-AI Assistant will automatically review this registry weekly:
+### per-phase Security Exception Review
+AI Assistant will automatically review this registry per-phase:
 
 1. ✅ Check if exceptions are still valid
 2. ✅ Verify mitigations are in place
@@ -259,7 +259,7 @@ graph LR
     B -->|No| D[Document Exception]
     D --> E[Implement Mitigations]
     E --> F[Risk Acceptance]
-    F --> G[Weekly Review]
+    F --> G[per-phase Review]
     G --> H{Still Valid?}
     H -->|No| I[Resolve Exception]
     H -->|Yes| J{Expired?}
@@ -302,6 +302,6 @@ If a security finding MUST be temporarily accepted during an incident:
 ---
 
 **Maintained by**: AI Assistant Security System  
-**Review Frequency**: Weekly  
+**Review Frequency**: per-phase  
 **Last Security Scan**: Pending (after PR merge)  
 **Next Scheduled Review**: 2025-12-23

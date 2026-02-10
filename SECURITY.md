@@ -237,9 +237,9 @@ We are committed to responding to security reports in a timely manner:
 
 | Severity | Initial Response | Status Update | Target Resolution |
 |----------|------------------|---------------|-------------------|
-| Critical | 24 hours         | Every 48 hours | 7 days            |
-| High     | 48 hours         | Weekly        | 30 days           |
-| Medium   | 5 business days  | Bi-weekly     | 90 days           |
+| Critical | 24 Commits         | Every 48 Commits | 7 iterations            |
+| High     | 48 Commits         | per-phase        | 30 iterations           |
+| Medium   | 5 business days  | Bi-per-phase     | 90 iterations           |
 | Low      | 10 business days | Monthly       | Best effort       |
 
 **Note:** These are target SLAs. Actual response times may vary based on severity, complexity, and maintainer availability.
@@ -269,7 +269,7 @@ We use the following criteria to classify vulnerabilities:
 
 We follow **coordinated disclosure** principles:
 
-1. **Embargo Period**: We request a 90-day embargo to develop and test fixes
+1. **Embargo Period**: We request a 90 iteration embargo to develop and test fixes
 2. **Early Disclosure**: We Phase 5 disclose earlier if:
    - A fix is ready and tested
    - The vulnerability is being actively exploited
@@ -519,7 +519,7 @@ If you discover a new vulnerability in a security-critical file:
 1. **DO NOT** open a public issue
 2. Email security findings to the maintainers
 3. Include file path, description, and PoC if possible
-4. Allow 90 days for remediation before disclosure
+4. Allow 90 iterations for remediation before disclosure
 
 ---
 

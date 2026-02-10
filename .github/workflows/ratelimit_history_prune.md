@@ -28,7 +28,7 @@
 
 **Key Steps**:
 1. actions/checkout@v6
-2. Prune history (keep 90 days)
+2. Prune history (keep 90 iterations)
 3. Upload post-prune listing
 
 

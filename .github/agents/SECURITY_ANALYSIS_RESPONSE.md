@@ -211,9 +211,9 @@ pytest .github/agents/core/tests/test_universal_intelligence.py -v
 - Suppression file prevents false positives in future scans
 
 ✅ **Deterministic security plan:**
-- Phase 8.9: Address TODO items (3-4 weeks)
-- Phase 8.10: Harden for production (4-5 weeks)
-- Phase 9.0: Final audit before release (2-3 weeks)
+- Phase 8.9: Address TODO items (3-4 phases)
+- Phase 8.10: Harden for production (4-5 phases)
+- Phase 9.0: Final audit before release (2-3 phases)
 
 ✅ **All patterns are either:**
 1. Fixed (code quality)

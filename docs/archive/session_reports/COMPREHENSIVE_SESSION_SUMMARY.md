@@ -288,7 +288,7 @@ Added: authenticate, authentication, authorization, audit_log,
    - Tests for test-weak group
    - **Target**: 0.85 average score
 
-### Medium-term (Next 2 Weeks - 8-12 hours)
+### Medium-term (Next 2 phases - 8-12 hours)
 
 7. **95% Coverage Target**
    - Additional targeted tests

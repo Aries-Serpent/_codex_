@@ -419,10 +419,10 @@ The Codex AI Assistant frontend has achieved exceptional completion of the maste
 5. Integrate with production _codex_ backend
 
 **Timeline to Production:**
-- Backend API: 1-2 weeks
-- Testing: 3-5 days
-- Deployment: 2-3 days
-- **Total: 2-3 weeks to full production readiness**
+- Backend API: 1-2 phases
+- Testing: 3-5 iterations
+- Deployment: 2-3 iterations
+- **Total: 2-3 phases to full production readiness**
 
 ---
 

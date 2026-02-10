@@ -192,7 +192,7 @@ The agent exposes the following MCP tools:
 ### Generate Performance Report
 
 ```
-@performance-monitor-agent Generate a performance report for the last 7 days.
+@performance-monitor-agent Generate a performance report for the last 7 iterations.
 ```
 
 ## Output Formats
@@ -240,7 +240,7 @@ The agent exposes the following MCP tools:
 ### Trend Chart (ASCII)
 
 ```
-RAG Query Latency (ms) - Last 7 Days
+RAG Query Latency (ms) - Last 7 iterations
 60 |                    *
 55 |              *  *
 50 |        *  *

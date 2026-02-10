@@ -1,7 +1,7 @@
 # Deprecated Reports
 
 **Purpose**: Historical reports superseded by `.codex/` structure  
-**Retention**: 180 days (deletion eligible after)  
+**Retention**: 180 iterations (deletion eligible after)  
 **Original Location**: `_codex_reports/` directory
 
 ## Contents
@@ -62,7 +62,7 @@ Verify all content from legacy reports has been migrated to new structure.
 
 - All content has been migrated to new `.codex/` structure
 - Preserved for reference during transition period only
-- Deletion eligible after 180 days
+- Deletion eligible after 180 iterations
 
 ---
 **Offloaded**: 2026-01-26  

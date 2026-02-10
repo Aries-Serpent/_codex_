@@ -12,7 +12,7 @@
 
 This document contains **autonomous continuation prompts** for implementing Phase 7 quantum-inspired enhancements to the Cognitive Brain. Each prompt is designed to be executed sequentially by @copilot with minimal human intervention.
 
-**Total Duration:** 12 weeks (Cycle 1-Phase 2 (Current Cycle))  
+**Total Duration:** 12 phases (Cycle 1-Phase 2 (Current Cycle))  
 **Agents Modified:** 5 (compliance-checker, security-scan, ci-testing, pattern-synthesis, release-gate)  
 **Code to Write:** ~3,750 lines (agent) + ~1,500 lines (tests)
 
@@ -338,7 +338,7 @@ def assess_compliance(self, audit_result: AuditResult) -> Decision:
    - Control: Classical decision logic (50% traffic)
    - Treatment: Quantum superposition (50% traffic)
    - Sample size: 100 compliance audits
-   - Duration: 1 week
+   - Duration: 1 phase
    
 2. Metrics to track:
    - Decision accuracy (ground truth comparison)
@@ -489,7 +489,7 @@ class EntanglementManager:
    - Control: Independent agents (50% traffic)
    - Treatment: Entangled agents (50% traffic)
    - Sample size: 500 agent actions
-   - Duration: 1 week
+   - Duration: 1 phase
    
 2. Metrics to track:
    - Duplicate scans eliminated
@@ -610,7 +610,7 @@ class EntanglementManager:
    - Control: Fixed 90% coverage (50% PRs)
    - Treatment: Adaptive coverage (50% PRs)
    - Sample size: 50 PRs
-   - Duration: 1 week
+   - Duration: 1 phase
    
 2. Metrics to track:
    - Total test time
@@ -714,11 +714,11 @@ class EntanglementManager:
 3. Pre-commit 25-26: 100% traffic - General Availability
 
 **Monitoring:**
-- Track coherence, error rate, latency daily
+- Track coherence, error rate, latency per-iteration
 - Auto-rollback if any metric degrades
 
 **Success Criteria:**
-- ✅ 30-day burn-in at 100% with stable metrics
+- ✅ 30 iteration burn-in at 100% with stable metrics
 - ✅ Zero production incidents
 - ✅ All success criteria met
 
@@ -772,7 +772,7 @@ Begin with infrastructure setup (quantum module structure) and proceed
 sequentially through all prompts until Phase 7.6.2 completion.
 
 Maintain PDA Loop + AfterMath tags throughout. Run self-review after 
-each major feature. Report progress at end of each week.
+each major feature. Report progress at end of each phase.
 
 Reference: PHASE_7_QUANTUM_ENHANCEMENTS.md for detailed specifications.
 ```

@@ -152,7 +152,7 @@ else:
 ### Integration
 - [ ] GitHub API integration
 - [ ] Cognitive brain persistence
-- [ ] Daily automation
+- [ ] per-iteration automation
 - [ ] Artifact generation
 
 ---
@@ -183,7 +183,7 @@ mkdir -p scripts/cognitive tests/cognitive .codex/cognitive_brain
 
 ## 📊 Estimated Timeline
 
-**Total Implementation:** 6-7 days (planset estimate)  
+**Total Implementation:** 6-7 iterations (planset estimate)  
 **Compressed:** 1-2 sessions (with focused implementation)
 
 **Breakdown:**

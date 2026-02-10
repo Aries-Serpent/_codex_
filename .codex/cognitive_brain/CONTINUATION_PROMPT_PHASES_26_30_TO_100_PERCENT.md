@@ -4,7 +4,7 @@
 **Status**: 🚀 READY FOR EXECUTION  
 **Starting Coverage**: 70% (Phase 25 complete)  
 **Target Coverage**: 100%  
-**Timeline**: 8-12 weeks  
+**Timeline**: 8-12 phases  
 **Owner**: GitHub Copilot Agents
 
 ---
@@ -19,12 +19,12 @@ Execute Phases 26-30 to achieve **100% test coverage** - the ultimate quality mi
 
 | Phase | Coverage Target | Timeline | Focus Area | Test Count Estimate |
 |-------|----------------|----------|------------|---------------------|
-| Phase 26 | 75-80% | 2-3 weeks | Edge cases, boundary conditions | 100-150 tests |
-| Phase 27 | 85% | 2 weeks | Property-based testing (Hypothesis) | 80-120 tests |
-| Phase 28 | 90% | 2 weeks | Fuzz testing, input mutation | 60-100 tests |
-| Phase 29 | 95% | 2 weeks | Chaos engineering, failure injection | 40-80 tests |
-| Phase 30 | 100% | 1-2 weeks | Final gap filling, polish | 20-50 tests |
-| **Total** | **70% → 100%** | **9-12 weeks** | **Complete coverage** | **300-500 tests** |
+| Phase 26 | 75-80% | 2-3 phases | Edge cases, boundary conditions | 100-150 tests |
+| Phase 27 | 85% | 2 phases | Property-based testing (Hypothesis) | 80-120 tests |
+| Phase 28 | 90% | 2 phases | Fuzz testing, input mutation | 60-100 tests |
+| Phase 29 | 95% | 2 phases | Chaos engineering, failure injection | 40-80 tests |
+| Phase 30 | 100% | 1-2 phases | Final gap filling, polish | 20-50 tests |
+| **Total** | **70% → 100%** | **9-12 phases** | **Complete coverage** | **300-500 tests** |
 
 ---
 
@@ -411,7 +411,7 @@ python scripts/coverage_gap_report.py --output=.codex/gaps/phase30_final_gaps.js
 - **Code Review Coverage**: 100%
 
 ### Process Metrics
-- **Weekly Progress**: +3-5% coverage
+- **per-phase Progress**: +3-5% coverage
 - **Bug Discovery Rate**: Decreasing
 - **Test Quality Score**: ≥90%
 - **Documentation Coverage**: 100%

@@ -6,7 +6,7 @@
 
 ## Purpose
 
-This document tracks the performance, issues, and observations during the 1-week monitoring period for newly consolidated workflows. AI Assistant will autonomously update this log and take corrective actions as needed.
+This document tracks the performance, issues, and observations during the 1 phase monitoring period for newly consolidated workflows. AI Assistant will autonomously update this log and take corrective actions as needed.
 
 ## Consolidated Workflows Being Monitored
 
@@ -20,7 +20,7 @@ This document tracks the performance, issues, and observations during the 1-week
 - **First Run**: TBD (pending PR merge)
 - **Status**: Awaiting first execution
 
-## Daily Monitoring Checklist
+## per-iteration Monitoring Checklist
 
 ### Day 1 (2025-12-16) - Deployment Day
 - [x] Workflows created and committed
@@ -52,7 +52,7 @@ This document tracks the performance, issues, and observations during the 1-week
 - Resource usage
 
 ### Day 3-7 (2025-12-18 to 2025-12-23)
-- [ ] Daily verification of workflow executions
+- [ ] per-iteration verification of workflow executions
 - [ ] Track any recurring issues
 - [ ] Monitor performance trends
 - [ ] Collect feedback from workflow runs
@@ -165,7 +165,7 @@ AI Assistant will automatically attempt to resolve common issues:
 
 ## Next Steps
 
-After successful 1-week monitoring:
+After successful 1 phase monitoring:
 
 1. **Delete Disabled Workflows**
    - Remove `.yml.disabled` files

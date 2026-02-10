@@ -12,7 +12,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 **Project Scope**: Full AST standardization with unified parser, dependency analysis, code smell detection, and knowledge graph capabilities.
 
-**Estimated Effort**: 11-13 weeks (3 person-months) dedicated engineering effort
+**Estimated Effort**: 11-13 phases (3 person-months) dedicated engineering effort
 
 **Status**: Planning complete (Phase 0), implementation deferred pending resource allocation
 
@@ -39,23 +39,23 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | ID | Blocker | Severity | Impact | Current State | Resolution Required | Estimated Effort |
 |----|---------|----------|--------|---------------|---------------------|------------------|
-| CB-01 | libcst dependency missing | CRITICAL | Parser unavailable | Not in core deps | Add to pyproject.toml | 1 day |
-| CB-02 | radon dependency missing | CRITICAL | Metrics unavailable | Not in core deps | Add to pyproject.toml | 1 day |
-| CB-03 | parso dependency missing | HIGH | Fallback parser unavailable | Not in core deps | Add to pyproject.toml | 1 day |
-| CB-04 | tree-sitter dependency missing | MEDIUM | Multi-language support unavailable | Not in core deps | Add to pyproject.toml | 2 days |
-| CB-05 | No standardized AST node representation | CRITICAL | Cannot unify parsers | No common interface | Design StandardizedASTNode class | 3 days |
-| CB-06 | No dependency graph infrastructure | CRITICAL | Cannot track relationships | No graph builder | Implement DependencyGraph class | 5 days |
-| CB-07 | No metrics aggregator | HIGH | Cannot collect code metrics | No aggregator | Implement MetricsAggregator | 3 days |
-| CB-08 | No plugin system | MEDIUM | Cannot extend functionality | No plugin interface | Design plugin architecture | 4 days |
-| CB-09 | No CLI tooling | HIGH | Cannot use from command line | No CLI commands | Implement CLI interface | 3 days |
-| CB-10 | No performance benchmarks | CRITICAL | Cannot measure performance | No baseline | Create benchmark suite | 2 days |
-| CB-11 | No AST cache mechanism | HIGH | Repeated parsing overhead | No caching | Implement cache layer | 3 days |
-| CB-12 | No error handling strategy | HIGH | Failures not managed | No error framework | Design error handling | 2 days |
-| CB-13 | No offline mode support | CRITICAL | Network dependencies | No offline parser | Ensure all parsers offline | 4 days |
-| CB-14 | Existing AST code fragmented | HIGH | 10+ files, no consistency | Multiple approaches | Refactor and consolidate | 5 days |
-| CB-15 | No documentation for AST system | HIGH | Cannot onboard engineers | No AST docs | Write comprehensive docs | 3 days |
+| CB-01 | libcst dependency missing | CRITICAL | Parser unavailable | Not in core deps | Add to pyproject.toml | 1 iteration |
+| CB-02 | radon dependency missing | CRITICAL | Metrics unavailable | Not in core deps | Add to pyproject.toml | 1 iteration |
+| CB-03 | parso dependency missing | HIGH | Fallback parser unavailable | Not in core deps | Add to pyproject.toml | 1 iteration |
+| CB-04 | tree-sitter dependency missing | MEDIUM | Multi-language support unavailable | Not in core deps | Add to pyproject.toml | 2 iterations |
+| CB-05 | No standardized AST node representation | CRITICAL | Cannot unify parsers | No common interface | Design StandardizedASTNode class | 3 iterations |
+| CB-06 | No dependency graph infrastructure | CRITICAL | Cannot track relationships | No graph builder | Implement DependencyGraph class | 5 iterations |
+| CB-07 | No metrics aggregator | HIGH | Cannot collect code metrics | No aggregator | Implement MetricsAggregator | 3 iterations |
+| CB-08 | No plugin system | MEDIUM | Cannot extend functionality | No plugin interface | Design plugin architecture | 4 iterations |
+| CB-09 | No CLI tooling | HIGH | Cannot use from command line | No CLI commands | Implement CLI interface | 3 iterations |
+| CB-10 | No performance benchmarks | CRITICAL | Cannot measure performance | No baseline | Create benchmark suite | 2 iterations |
+| CB-11 | No AST cache mechanism | HIGH | Repeated parsing overhead | No caching | Implement cache layer | 3 iterations |
+| CB-12 | No error handling strategy | HIGH | Failures not managed | No error framework | Design error handling | 2 iterations |
+| CB-13 | No offline mode support | CRITICAL | Network dependencies | No offline parser | Ensure all parsers offline | 4 iterations |
+| CB-14 | Existing AST code fragmented | HIGH | 10+ files, no consistency | Multiple approaches | Refactor and consolidate | 5 iterations |
+| CB-15 | No documentation for AST system | HIGH | Cannot onboard engineers | No AST docs | Write comprehensive docs | 3 iterations |
 
-**Total Effort**: 45 engineering days (~9 weeks)
+**Total Effort**: 45 engineering days (~9 phases)
 
 ---
 
@@ -65,31 +65,31 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | ID | Issue | Type | Current State | Required Action | Dependencies | Effort |
 |----|-------|------|---------------|-----------------|--------------|--------|
-| II-01 | 10+ files using different AST approaches | Code Debt | Fragmented | Consolidate to unified approach | CB-05, CB-14 | 5 days |
-| II-02 | No AST unit tests | Testing | 0% coverage | Create 50+ unit tests | CB-05, CB-06 | 4 days |
-| II-03 | No AST integration tests | Testing | 0% coverage | Create 30+ integration tests | CB-06, CB-07 | 3 days |
-| II-04 | No AST performance tests | Testing | 0% coverage | Create benchmark suite | CB-10 | 2 days |
-| II-05 | No AST edge case tests | Testing | 0% coverage | Create 20+ edge case tests | CB-05 | 2 days |
-| II-06 | ast_upgrade.py needs refactoring | Code Quality | Legacy code | Refactor to use StandardizedAST | CB-05 | 3 days |
-| II-07 | ast_signature_similarity.py needs refactoring | Code Quality | Legacy code | Refactor to use StandardizedAST | CB-05 | 3 days |
-| II-08 | tools/ast_*.py need consolidation | Code Quality | Scattered | Consolidate into unified module | CB-14 | 4 days |
-| II-09 | No AST API documentation | Documentation | Missing | Write API docs | CB-15 | 2 days |
-| II-10 | No AST user guide | Documentation | Missing | Write user guide | CB-15 | 2 days |
-| II-11 | No AST examples | Documentation | Missing | Create examples | CB-15 | 2 days |
-| II-12 | No AST tutorials | Documentation | Missing | Write tutorials | CB-15 | 3 days |
-| II-13 | Integration with existing audit system | Integration | Not designed | Design integration points | CB-05, CB-06 | 3 days |
-| II-14 | Integration with logging system | Integration | Not designed | Design integration points | CB-12 | 2 days |
-| II-15 | Integration with evidence collection | Integration | Not designed | Design integration points | CB-06 | 2 days |
-| II-16 | Code smell detector not implemented | Functionality | Missing | Implement detector using patterns | CB-05, CB-06 | 5 days |
-| II-17 | Knowledge graph exporter not implemented | Functionality | Missing | Implement graph exporter | CB-06 | 4 days |
-| II-18 | Universal parser facade not implemented | Functionality | Missing | Implement parser facade | CB-05 | 3 days |
-| II-19 | AST visualization not implemented | Functionality | Missing | Implement visualization (optional) | CB-06 | 3 days |
-| II-20 | Migration path for existing code | Migration | Not planned | Plan migration strategy | CB-14 | 2 days |
-| II-21 | Backward compatibility not ensured | Compatibility | Unknown | Test all existing AST usage | CB-14 | 3 days |
-| II-22 | Type hints missing in AST code | Code Quality | Incomplete | Add type hints | CB-05 | 2 days |
-| II-23 | No CI/CD integration for AST tests | CI/CD | Missing | Add to CI pipeline | II-02, II-03 | 1 day |
+| II-01 | 10+ files using different AST approaches | Code Debt | Fragmented | Consolidate to unified approach | CB-05, CB-14 | 5 iterations |
+| II-02 | No AST unit tests | Testing | 0% coverage | Create 50+ unit tests | CB-05, CB-06 | 4 iterations |
+| II-03 | No AST integration tests | Testing | 0% coverage | Create 30+ integration tests | CB-06, CB-07 | 3 iterations |
+| II-04 | No AST performance tests | Testing | 0% coverage | Create benchmark suite | CB-10 | 2 iterations |
+| II-05 | No AST edge case tests | Testing | 0% coverage | Create 20+ edge case tests | CB-05 | 2 iterations |
+| II-06 | ast_upgrade.py needs refactoring | Code Quality | Legacy code | Refactor to use StandardizedAST | CB-05 | 3 iterations |
+| II-07 | ast_signature_similarity.py needs refactoring | Code Quality | Legacy code | Refactor to use StandardizedAST | CB-05 | 3 iterations |
+| II-08 | tools/ast_*.py need consolidation | Code Quality | Scattered | Consolidate into unified module | CB-14 | 4 iterations |
+| II-09 | No AST API documentation | Documentation | Missing | Write API docs | CB-15 | 2 iterations |
+| II-10 | No AST user guide | Documentation | Missing | Write user guide | CB-15 | 2 iterations |
+| II-11 | No AST examples | Documentation | Missing | Create examples | CB-15 | 2 iterations |
+| II-12 | No AST tutorials | Documentation | Missing | Write tutorials | CB-15 | 3 iterations |
+| II-13 | Integration with existing audit system | Integration | Not designed | Design integration points | CB-05, CB-06 | 3 iterations |
+| II-14 | Integration with logging system | Integration | Not designed | Design integration points | CB-12 | 2 iterations |
+| II-15 | Integration with evidence collection | Integration | Not designed | Design integration points | CB-06 | 2 iterations |
+| II-16 | Code smell detector not implemented | Functionality | Missing | Implement detector using patterns | CB-05, CB-06 | 5 iterations |
+| II-17 | Knowledge graph exporter not implemented | Functionality | Missing | Implement graph exporter | CB-06 | 4 iterations |
+| II-18 | Universal parser facade not implemented | Functionality | Missing | Implement parser facade | CB-05 | 3 iterations |
+| II-19 | AST visualization not implemented | Functionality | Missing | Implement visualization (optional) | CB-06 | 3 iterations |
+| II-20 | Migration path for existing code | Migration | Not planned | Plan migration strategy | CB-14 | 2 iterations |
+| II-21 | Backward compatibility not ensured | Compatibility | Unknown | Test all existing AST usage | CB-14 | 3 iterations |
+| II-22 | Type hints missing in AST code | Code Quality | Incomplete | Add type hints | CB-05 | 2 iterations |
+| II-23 | No CI/CD integration for AST tests | CI/CD | Missing | Add to CI pipeline | II-02, II-03 | 1 iteration |
 
-**Total Effort**: 65 engineering days (~13 weeks)
+**Total Effort**: 65 engineering days (~13 phases)
 
 ---
 
@@ -99,16 +99,16 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | ID | Challenge | Impact | Risk Level | Mitigation Strategy | Design Decision Required | Effort |
 |----|-----------|--------|------------|---------------------|-------------------------|--------|
-| AC-01 | Offline mode compliance | High | HIGH | Ensure all parsers work offline, no network calls | Architecture approval | 3 days |
-| AC-02 | Performance with large codebases | High | HIGH | Implement caching, lazy parsing, streaming | Performance testing | 5 days |
-| AC-03 | Multi-language support scope | Medium | MEDIUM | Start with Python, design for extensibility | Product decision | 2 days |
-| AC-04 | Parser selection strategy | High | MEDIUM | Fallback chain: libcst → ast → parso | Architecture approval | 2 days |
-| AC-05 | Memory usage with deep ASTs | Medium | HIGH | Implement memory limits, streaming | Performance testing | 4 days |
-| AC-06 | Compatibility with existing code | High | HIGH | Maintain backward compatibility, gradual migration | Migration planning | 3 days |
-| AC-07 | Plugin system security | Medium | MEDIUM | Sandboxed execution, permission model | Security review | 3 days |
-| AC-08 | Knowledge graph scalability | Medium | MEDIUM | Graph database selection, query optimization | Architecture approval | 4 days |
+| AC-01 | Offline mode compliance | High | HIGH | Ensure all parsers work offline, no network calls | Architecture approval | 3 iterations |
+| AC-02 | Performance with large codebases | High | HIGH | Implement caching, lazy parsing, streaming | Performance testing | 5 iterations |
+| AC-03 | Multi-language support scope | Medium | MEDIUM | Start with Python, design for extensibility | Product decision | 2 iterations |
+| AC-04 | Parser selection strategy | High | MEDIUM | Fallback chain: libcst → ast → parso | Architecture approval | 2 iterations |
+| AC-05 | Memory usage with deep ASTs | Medium | HIGH | Implement memory limits, streaming | Performance testing | 4 iterations |
+| AC-06 | Compatibility with existing code | High | HIGH | Maintain backward compatibility, gradual migration | Migration planning | 3 iterations |
+| AC-07 | Plugin system security | Medium | MEDIUM | Sandboxed execution, permission model | Security review | 3 iterations |
+| AC-08 | Knowledge graph scalability | Medium | MEDIUM | Graph database selection, query optimization | Architecture approval | 4 iterations |
 
-**Total Effort**: 26 engineering days (~5 weeks)
+**Total Effort**: 26 engineering days (~5 phases)
 
 ---
 
@@ -118,7 +118,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | ID | Deferral Reason | Category | Impact on Maturity Work | Rationale | Alternative Taken |
 |----|-----------------|----------|------------------------|-----------|-------------------|
-| DR-01 | Requires 11-13 weeks dedicated effort | Resource Constraint | Would delay core maturity work | Maturity work targets 15 weeks total; AST would consume 73% | Created comprehensive planning docs |
+| DR-01 | Requires 11-13 phases dedicated effort | Resource Constraint | Would delay core maturity work | Maturity work targets 15 phases total; AST would consume 73% | Created comprehensive planning docs |
 | DR-02 | Not directly related to test coverage improvement | Scope Misalignment | Diverts from primary goal | Primary goal: improve test coverage 0.00-0.31 → 0.70+ | Focused on test creation (98 tests) |
 | DR-03 | Requires specialized AST expertise | Skill Gap | Quality risk without expertise | AST standardization requires deep compiler/parser knowledge | Documented requirements for experts |
 | DR-04 | 46 blockers identified | Complexity | Too many unknowns to estimate accurately | High uncertainty in estimates and approach | Detailed blocker analysis |
@@ -190,21 +190,21 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | Phase | Name | Duration | Prerequisites | Deliverables | Success Criteria | Team Size |
 |-------|------|----------|---------------|--------------|------------------|-----------|
-| P1 | Foundation & Dependencies | 1 week | Stakeholder approval | Dependencies installed, base classes | RC-01 to RC-04, RC-05 | 1 engineer |
-| P2 | Core AST Infrastructure | 2 weeks | P1 complete | StandardizedASTNode, UniversalParser, DependencyGraph | RC-05, RC-06, RC-08 | 1-2 engineers |
-| P3 | Metrics & Analysis | 2 weeks | P2 complete | MetricsAggregator, CodeSmellDetector | RC-07, RC-14 | 1 engineer |
-| P4 | Performance & Caching | 1 week | P2 complete | Cache mechanism, benchmarks | RC-11, RC-20 | 1 engineer |
-| P5 | Plugin System & CLI | 1.5 weeks | P3 complete | Plugin interface, CLI commands | RC-09, RC-10 | 1 engineer |
-| P6 | Knowledge Graph | 1.5 weeks | P3 complete | Graph exporter, visualization (optional) | RC-15, RC-16 | 1 engineer |
-| P7 | Testing | 2 weeks | P2-P6 complete | Unit, integration, edge case tests | RC-17 to RC-21 | 1-2 engineers |
-| P8 | Integration | 1 week | P7 complete | Audit, logging, evidence integration | RC-28 to RC-30 | 1 engineer |
-| P9 | Documentation | 1 week | P7 complete | API docs, user guide, examples, tutorials | RC-22 to RC-27 | 1 tech writer |
-| P10 | Migration & Refactoring | 1 week | P8 complete | Existing code migrated | RC-26, RC-35 | 1-2 engineers |
-| P11 | Final Review & Polish | 1 week | P10 complete | Security, performance, architecture reviews | RC-32 to RC-34 | Team |
+| P1 | Foundation & Dependencies | 1 phase | Stakeholder approval | Dependencies installed, base classes | RC-01 to RC-04, RC-05 | 1 engineer |
+| P2 | Core AST Infrastructure | 2 phases | P1 complete | StandardizedASTNode, UniversalParser, DependencyGraph | RC-05, RC-06, RC-08 | 1-2 engineers |
+| P3 | Metrics & Analysis | 2 phases | P2 complete | MetricsAggregator, CodeSmellDetector | RC-07, RC-14 | 1 engineer |
+| P4 | Performance & Caching | 1 phase | P2 complete | Cache mechanism, benchmarks | RC-11, RC-20 | 1 engineer |
+| P5 | Plugin System & CLI | 1.5 phases | P3 complete | Plugin interface, CLI commands | RC-09, RC-10 | 1 engineer |
+| P6 | Knowledge Graph | 1.5 phases | P3 complete | Graph exporter, visualization (optional) | RC-15, RC-16 | 1 engineer |
+| P7 | Testing | 2 phases | P2-P6 complete | Unit, integration, edge case tests | RC-17 to RC-21 | 1-2 engineers |
+| P8 | Integration | 1 phase | P7 complete | Audit, logging, evidence integration | RC-28 to RC-30 | 1 engineer |
+| P9 | Documentation | 1 phase | P7 complete | API docs, user guide, examples, tutorials | RC-22 to RC-27 | 1 tech writer |
+| P10 | Migration & Refactoring | 1 phase | P8 complete | Existing code migrated | RC-26, RC-35 | 1-2 engineers |
+| P11 | Final Review & Polish | 1 phase | P10 complete | Security, performance, architecture reviews | RC-32 to RC-34 | Team |
 
-**Total Duration**: 13 weeks  
+**Total Duration**: 13 phases  
 **Parallelization Opportunities**: P3-P6 can partially overlap, P7-P9 can partially overlap  
-**Minimum Duration with Parallelization**: 11 weeks  
+**Minimum Duration with Parallelization**: 11 phases  
 
 ---
 
@@ -214,14 +214,14 @@ This document provides comprehensive guidance for engineering a dedicated projec
 
 | Resource Type | Role | Count | Duration | Skills Required | Responsibility |
 |---------------|------|-------|----------|-----------------|----------------|
-| Engineering | Senior Python Engineer | 1 | 13 weeks | AST, parsers, compilers | P1-P11 implementation lead |
-| Engineering | Python Engineer | 1 | 6 weeks | Python, testing | P7 testing support, P10 migration |
-| QA | QA Engineer | 1 | 3 weeks | Testing, automation | P7 test design and execution |
-| Documentation | Technical Writer | 1 | 2 weeks | Technical writing | P9 documentation |
-| Architecture | Software Architect | 0.25 | 2 weeks | System design | P1 approval, P11 review |
-| Security | Security Engineer | 0.25 | 1 week | Security audits | P11 security review |
-| Performance | Performance Engineer | 0.25 | 1 week | Performance testing | P4, P11 performance review |
-| DevOps | DevOps Engineer | 0.25 | 1 week | CI/CD pipelines | P1 dependencies, P8 CI integration |
+| Engineering | Senior Python Engineer | 1 | 13 phases | AST, parsers, compilers | P1-P11 implementation lead |
+| Engineering | Python Engineer | 1 | 6 phases | Python, testing | P7 testing support, P10 migration |
+| QA | QA Engineer | 1 | 3 phases | Testing, automation | P7 test design and execution |
+| Documentation | Technical Writer | 1 | 2 phases | Technical writing | P9 documentation |
+| Architecture | Software Architect | 0.25 | 2 phases | System design | P1 approval, P11 review |
+| Security | Security Engineer | 0.25 | 1 phase | Security audits | P11 security review |
+| Performance | Performance Engineer | 0.25 | 1 phase | Performance testing | P4, P11 performance review |
+| DevOps | DevOps Engineer | 0.25 | 1 phase | CI/CD pipelines | P1 dependencies, P8 CI integration |
 
 **Total Person-Weeks**: 25.5 person-weeks (~6.4 person-months with parallelization)
 
@@ -253,7 +253,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 | R-11 | Memory issues with large files | MEDIUM | MEDIUM | 4 | Streaming parsing, memory limits | File size limits, chunked processing |
 | R-12 | Multi-language complexity underestimated | MEDIUM | MEDIUM | 4 | Start with Python only, extensible design | Defer multi-language to v2.0 |
 
-**Risk Mitigation Budget**: 10% of timeline (1.3 weeks)
+**Risk Mitigation Budget**: 10% of timeline (1.3 phases)
 
 ---
 
@@ -399,13 +399,13 @@ P1 → P2 → P3 → P7 → P8 → P10 → P11
 **Go Decision Criteria**:
 1. ✅ Stakeholder approval received (RC-34)
 2. ✅ Resources allocated (1 senior engineer + support)
-3. ✅ 13-week timeline accepted
+3. ✅ 13 phase timeline accepted
 4. ✅ Budget approved (~6.4 person-months effort)
 5. ✅ Infrastructure ready
 
 **No-Go Indicators**:
 1. ❌ Cannot allocate senior engineer with AST expertise
-2. ❌ Timeline cannot accommodate 13 weeks
+2. ❌ Timeline cannot accommodate 13 phases
 3. ❌ Cannot accept dependency changes
 4. ❌ Performance requirements too strict
 5. ❌ Business value unclear
@@ -455,7 +455,7 @@ P1 → P2 → P3 → P7 → P8 → P10 → P11
 4. Timeline issues → Project Sponsor
 
 ### Communication
-- **Status Updates**: Weekly
+- **Status Updates**: per-phase
 - **Stakeholder Reviews**: Bi-per commit cycle
 - **Demos**: End of each phase
 - **Documentation**: Confluence/Wiki
@@ -476,7 +476,7 @@ This comprehensive guide provides all necessary information to engineer a dedica
 
 **Ready for**: Stakeholder presentation and project kickoff
 
-**Timeline**: 11-13 weeks with dedicated resources
+**Timeline**: 11-13 phases with dedicated resources
 
 **Effort**: 6.4 person-months (with parallelization)
 

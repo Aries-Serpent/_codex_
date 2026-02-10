@@ -492,12 +492,12 @@ An agent is **Fully Compliant** when it has:
 2. Migrate test-assertion-updater to standard structure
 3. Add comprehensive tests to test-assertion-updater
 
-### Short-term (Next 7 Days)
+### Short-term (Next 7 iterations)
 1. Migrate remaining Tier 1 agents to standard structure
 2. Achieve 100% Tier 1 standardization
 3. Design and scaffold Tier 2 agents
 
-### Medium-term (Next 30 Days)
+### Medium-term (Next 30 iterations)
 1. Implement Tier 2 agents (dependency-conflict-resolver, security-vulnerability-patcher)
 2. Achieve 90% test coverage across all agents
 3. Full cognitive brain integration for all agents

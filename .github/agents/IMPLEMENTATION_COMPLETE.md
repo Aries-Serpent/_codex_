@@ -271,7 +271,7 @@ Integration: Foundation ready
 4. Document lessons learned
 5. Plan enhancements
 
-**Total Timeline:** 4 weeks to full production
+**Total Timeline:** 4 phases to full production
 
 ---
 

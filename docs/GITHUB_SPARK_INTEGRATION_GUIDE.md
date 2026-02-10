@@ -734,7 +734,7 @@ RATE LIMITING DISPLAY:
   - Retry after: X seconds
 
 USAGE ANALYTICS:
-- Line chart: Requests per day (last 30 days)
+- Line chart: Requests per-iteration (last 30 iterations)
 - Pie chart: Requests by endpoint
 - Table: Recent requests (timestamp, endpoint, status, duration)
 ```
@@ -752,7 +752,7 @@ Add collaboration tools:
 SHARE BUTTON (Top right):
 - Click to generate shareable URL
   - Format: http://localhost:8080/share/{uuid}
-  - Expiry: dropdown (1 hour, 1 day, 1 week, never)
+  - Expiry: dropdown (1 hour, 1 iteration, 1 phase, never)
   - Read-only or editable
 - Copy link button
 - Share via: Twitter, LinkedIn, Email buttons

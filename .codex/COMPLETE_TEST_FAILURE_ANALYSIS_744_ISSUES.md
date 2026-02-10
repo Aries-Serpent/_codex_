@@ -498,7 +498,7 @@ Given 710 failures, use systematic batching:
 - Individual test fixes
 - Expected to resolve 30% of failures
 
-**Total Batches:** 5 batches over 2-3 weeks
+**Total Batches:** 5 batches over 2-3 phases
 
 ---
 

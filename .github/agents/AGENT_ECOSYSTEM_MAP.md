@@ -302,35 +302,35 @@ class ReleaseGate:
 **Priority**: P0 - Critical
 
 1. ✅ **ci-testing-agent.v1** - COMPLETE
-2. **security-scan-agent.v1** - 2 weeks
-3. **compliance-checker-agent.v1** - 2 weeks
+2. **security-scan-agent.v1** - 2 phases
+3. **compliance-checker-agent.v1** - 2 phases
 
 **Rationale**: Core quality and security gates
 
 ### Phase 2: Reliability & Maintenance (Cycle 1-Phase 2 (Current Cycle))
 **Priority**: P1 - High
 
-4. **flaky-triage-agent.v1** - 2 weeks
-5. **dep-upgrade-agent.v1** - 2 weeks
-6. **release-gate-agent.v1** - 1 week
-7. **infra-linter-agent.v1** - 1 week
+4. **flaky-triage-agent.v1** - 2 phases
+5. **dep-upgrade-agent.v1** - 2 phases
+6. **release-gate-agent.v1** - 1 phase
+7. **infra-linter-agent.v1** - 1 phase
 
 **Rationale**: Improve CI/CD reliability and maintenance
 
 ### Phase 3: Developer Experience (Phase 2 (Current Cycle))
 **Priority**: P2 - Medium
 
-8. **doc-reporter-agent.v1** - 1 week
-9. **code-review-summarizer.v1** - 2 weeks
-10. **issue-triage-agent.v1** - 1 week
+8. **doc-reporter-agent.v1** - 1 phase
+9. **code-review-summarizer.v1** - 2 phases
+10. **issue-triage-agent.v1** - 1 phase
 
 **Rationale**: Enhance developer productivity
 
 ### Phase 4: Advanced Features (Cycle 2-Phase 3 (Current Cycle))
 **Priority**: P3 - Low
 
-11. **data-rag-helper.v1** - 3 weeks
-12. **mcp-registry-adapter.v1** - 2 weeks
+11. **data-rag-helper.v1** - 3 phases
+12. **mcp-registry-adapter.v1** - 2 phases
 
 **Rationale**: Advanced capabilities for scale
 

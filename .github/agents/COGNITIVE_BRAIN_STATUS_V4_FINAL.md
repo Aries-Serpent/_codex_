@@ -112,7 +112,7 @@ graph TB
 - Backward compatibility maintained
 
 **Cache Management (5 strategies):**
-1. `prune_by_age()` - Time-based cleanup (30-day default)
+1. `prune_by_age()` - Time-based cleanup (30 iteration default)
 2. `prune_by_access()` - LRU policy for LTM
 3. `prune_low_confidence()` - Quality filter (< 0.5)
 4. `get_cache_health()` - 8 comprehensive metrics
@@ -356,7 +356,7 @@ Output: Optimized cache + recommendations
 - Pattern learning speed: 2x improvement
 - Decision quality: +30% improvement
 
-**Timeline:** 2 weeks | **Prompt:** `.github/PHASE_8_3_CONTINUATION_PROMPT.md`
+**Timeline:** 2 phases | **Prompt:** `.github/PHASE_8_3_CONTINUATION_PROMPT.md`
 
 ### Phase 8.4: Cross-Domain Transfer Learning
 
@@ -379,7 +379,7 @@ Output: Optimized cache + recommendations
 - Transfer efficiency: 50% faster adaptation
 - Few-shot accuracy: >80% with 10 examples
 
-**Timeline:** 3 weeks | **Prompt:** `.github/PHASE_8_4_CONTINUATION_PROMPT.md`
+**Timeline:** 3 phases | **Prompt:** `.github/PHASE_8_4_CONTINUATION_PROMPT.md`
 
 ### Phase 8.5: Production Deployment
 
@@ -403,7 +403,7 @@ Output: Optimized cache + recommendations
 - Performance: 1000 req/sec, <100ms P99
 - Load testing with Locust
 
-**Timeline:** 4 weeks | **Prompt:** `.github/PHASE_8_5_CONTINUATION_PROMPT.md`
+**Timeline:** 4 phases | **Prompt:** `.github/PHASE_8_5_CONTINUATION_PROMPT.md`
 
 ### Phase 8.6: Advanced Optimization & Self-Healing
 
@@ -427,7 +427,7 @@ Output: Optimized cache + recommendations
 - Resource optimization (40% cost reduction target)
 - Zero manual intervention
 
-**Timeline:** 3 weeks | **Prompt:** `.github/PHASE_8_6_CONTINUATION_PROMPT.md`
+**Timeline:** 3 phases | **Prompt:** `.github/PHASE_8_6_CONTINUATION_PROMPT.md`
 
 ### Phase 8.7: Universal Intelligence & AGI Foundations
 
@@ -453,7 +453,7 @@ Output: Optimized cache + recommendations
 - AGI safety (alignment, robustness, interpretability, controllability)
 - Research preview: Cutting-edge AGI foundations
 
-**Timeline:** 8-12 weeks (research phase) | **Prompt:** `.github/PHASE_8_7_CONTINUATION_PROMPT.md`
+**Timeline:** 8-12 phases (research phase) | **Prompt:** `.github/PHASE_8_7_CONTINUATION_PROMPT.md`
 
 ---
 
@@ -567,10 +567,10 @@ Test Coverage by Phase
 - Documentation: 1 technical writer
 
 **Timeline:**
-- Phase 8.3: 2 weeks
-- Phase 8.4: 3 weeks
-- Phase 8.5: 4 weeks
-- **Total: 9 weeks to production**
+- Phase 8.3: 2 phases
+- Phase 8.4: 3 phases
+- Phase 8.5: 4 phases
+- **Total: 9 phases to production**
 
 ---
 

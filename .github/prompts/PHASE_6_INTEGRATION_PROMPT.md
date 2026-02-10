@@ -310,7 +310,7 @@ training_enhancements:
 ### Team Metrics (Month 3)
 - **Team Satisfaction:** ≥4/5 on feature usability survey
 - **Documentation Quality:** ≥4/5 on documentation clarity
-- **Support Requests:** <5 per week (decreasing trend)
+- **Support Requests:** <5 per-phase (decreasing trend)
 - **Feature Discovery:** ≥90% of team can find features independently
 
 ---
@@ -327,7 +327,7 @@ training_enhancements:
 **Risk 2: Team Adoption Resistance**
 - **Mitigation:** Clear benefits communication, hands-on training, early wins
 - **Monitoring:** Track adoption metrics, gather feedback
-- **Threshold:** Adjust approach if <50% adoption after 4 weeks
+- **Threshold:** Adjust approach if <50% adoption after 4 phases
 
 **Risk 3: Integration Complexity**
 - **Mitigation:** Phased approach, comprehensive testing, clear documentation

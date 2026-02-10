@@ -243,7 +243,7 @@ Build 4-layer cognitive system: **Perception → Decision → Action → AfterMa
 
 ### Phase 5: Continuous Evolution ✅ OPERATIONAL
 - [x] Monthly model retraining workflow
-- [x] Bi-weekly research digest workflow
+- [x] Bi-per-phase research digest workflow
 - [x] Quarterly improvement tracking
 - [x] Annual architecture review
 - [x] Community knowledge hub

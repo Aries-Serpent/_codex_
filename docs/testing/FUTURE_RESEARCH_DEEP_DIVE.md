@@ -228,25 +228,25 @@ Output only the test code, no explanations."""
 
 ### Implementation Roadmap
 
-**Phase 1: Proof of Concept** (Phase 2 (Current Cycle), 2 weeks)
+**Phase 1: Proof of Concept** (Phase 2 (Current Cycle), 2 phases)
 - Build basic coverage-to-test pipeline
 - Generate tests for 5-10 uncovered functions
 - Validate generated tests pass and improve coverage
 - Measure time savings vs manual
 
-**Phase 2: Template Library** (Phase 2 (Current Cycle), 3 weeks)
+**Phase 2: Template Library** (Phase 2 (Current Cycle), 3 phases)
 - Extract common test patterns from existing tests
 - Build template library (fixtures, assertions, mocks)
 - Implement template matching algorithm
 - Generate tests for simple uncovered code
 
-**Phase 3: LLM Integration** (Phase 3 (Current Cycle), 4 weeks)
+**Phase 3: LLM Integration** (Phase 3 (Current Cycle), 4 phases)
 - Integrate OpenAI/Claude API
 - Build prompt engineering pipeline
 - Implement validation & refinement loop
 - Generate tests for complex uncovered code
 
-**Phase 4: Automation & CI Integration** (Phase 3 (Current Cycle), 2 weeks)
+**Phase 4: Automation & CI Integration** (Phase 3 (Current Cycle), 2 phases)
 - CLI tool for test generation
 - GitHub Action for auto-generation on PR
 - Dashboard for coverage gaps and generated tests
@@ -533,22 +533,22 @@ jobs:
 
 ### Implementation Roadmap
 
-**Phase 1: Tool Selection** (Phase 1 (Current Cycle), 1 week)
+**Phase 1: Tool Selection** (Phase 1 (Current Cycle), 1 phase)
 - Evaluate `mutpy`, `cosmic-ray`, `mutmut`
 - Run benchmark on 10 modules
 - Select tool based on speed, accuracy, maintainability
 
-**Phase 2: Baseline Measurement** (Phase 2 (Current Cycle), 2 weeks)
+**Phase 2: Baseline Measurement** (Phase 2 (Current Cycle), 2 phases)
 - Run mutation testing on all test files
 - Generate baseline mutation scores
 - Identify weak test files (score < 60%)
 
-**Phase 3: Test Improvement** (Phase 2 (Current Cycle), 4 weeks)
+**Phase 3: Test Improvement** (Phase 2 (Current Cycle), 4 phases)
 - Fix weak tests identified in Phase 2
 - Target: All modules ≥ 75% mutation score
 - Document test improvement patterns
 
-**Phase 4: CI Integration** (Phase 2 (Current Cycle), 2 weeks)
+**Phase 4: CI Integration** (Phase 2 (Current Cycle), 2 phases)
 - Add mutation testing to CI pipeline
 - Set mutation score thresholds for PR approval
 - Create quality dashboard
@@ -785,22 +785,22 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 
 ### Implementation Roadmap
 
-**Phase 1: Identify Candidates** (Phase 1 (Current Cycle), 1 week)
+**Phase 1: Identify Candidates** (Phase 1 (Current Cycle), 1 phase)
 - Scan codebase for string processing, data transformations
 - List 20-30 functions suitable for property-based testing
 - Prioritize by bug risk and complexity
 
-**Phase 2: Implement Property Tests** (Phase 1 (Current Cycle), 3 weeks)
+**Phase 2: Implement Property Tests** (Phase 1 (Current Cycle), 3 phases)
 - Add property-based tests for 20-30 functions
 - Target: 20-30% of tests are property-based (up from 10%)
 - Document property testing patterns
 
-**Phase 3: Stateful Testing** (Phase 1 (Current Cycle), 2 weeks)
+**Phase 3: Stateful Testing** (Phase 1 (Current Cycle), 2 phases)
 - Implement stateful tests for WorkflowNavigator
 - Add stateful tests for other stateful systems
 - Validate state invariants
 
-**Phase 4: Documentation & Training** (Phase 1 (Current Cycle), 1 week)
+**Phase 4: Documentation & Training** (Phase 1 (Current Cycle), 1 phase)
 - Update testing guide with property-based examples
 - Document common properties and strategies
 - Share learnings from bugs found

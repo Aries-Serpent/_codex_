@@ -1,6 +1,6 @@
 # 🚀 MASTER KICKOFF PROMPT - Start Complete Transformation
 
-> **THIS IS THE ENTRY POINT FOR ENTIRE 16-WEEK AUTONOMOUS TRANSFORMATION**
+> **THIS IS THE ENTRY POINT FOR ENTIRE 16 phase AUTONOMOUS TRANSFORMATION**
 >
 > Copy this entire prompt into GitHub Copilot Chat/Workspace to begin execution.
 
@@ -10,7 +10,7 @@
 
 @workspace **EXECUTE COMPLETE MLOPS TRANSFORMATION**
 
-You are about to autonomously transform the `_codex_` repository from **Level 2-3 maturity** to **Level 4 production-grade autonomy** over 16 weeks.
+You are about to autonomously transform the `_codex_` repository from **Level 2-3 maturity** to **Level 4 production-grade autonomy** over 16 phases.
 
 ---
 
@@ -18,7 +18,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 
 **Repository:** Aries-Serpent/_codex_
 **Current Directory:** `/home/runner/work/_codex_/_codex_/`
-**Timeline:** 16 weeks (4 phases, 8 sprints, 45 tasks)
+**Timeline:** 16 phases (4 phases, 8 sprints, 45 tasks)
 **Scope:** ALL audit findings
 **Approach:** Fully autonomous with self-expansion, self-healing, self-validation
 
@@ -87,11 +87,11 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 1. READ: .github/prompts/sprint_execution_plan/phase_1_foundation/_PHASE_OVERVIEW.md
 2. EXECUTE: T1 (Coverage Gate) - CRITICAL PATH, NO DEPENDENCIES
    - File: phase_1_foundation/T1_coverage_gate_enforcement.md
-   - Expected: 3-5 days, coverage ≥70% enforced
+   - Expected: 3-5 iterations, coverage ≥70% enforced
 3. PARALLEL EXECUTE:
    - T5 (Prompt Sanitization)
      File: phase_1_foundation/T5_prompt_sanitization_default.md
-     Expected: 1-2 days, inference endpoints secure
+     Expected: 1-2 iterations, inference endpoints secure
 4. VALIDATE Sprint 1 Checkpoint:
    - pytest --cov=src --cov-fail-under=70
    - python cli/inference.py --prompt "test <script>alert()</script>"
@@ -103,14 +103,14 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 5. EXECUTE after T1 complete:
    - T9 (Security Scans in CI)
      File: phase_1_foundation/T7_T10_and_stub_cleanup.md → T9 section
-     Expected: 2 days, bandit/pip-audit/detect-secrets in CI
+     Expected: 2 iterations, bandit/pip-audit/detect-secrets in CI
 6. PARALLEL EXECUTE:
    - T7 (Health Probes)
      File: phase_1_foundation/T7_T10_and_stub_cleanup.md → T7 section
-     Expected: 2 days, /health and /ready endpoints
+     Expected: 2 iterations, /health and /ready endpoints
    - T8 (Prometheus Metrics)
      File: phase_1_foundation/T7_T10_and_stub_cleanup.md → T8 section
-     Expected: 2 days, /metrics endpoint operational
+     Expected: 2 iterations, /metrics endpoint operational
 7. ONGOING: P0 Stub Cleanup (15 items)
    - File: phase_1_foundation/T7_T10_and_stub_cleanup.md → Stub cleanup
    - Target: 15/15 P0 blocking stubs resolved
@@ -129,15 +129,15 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 10. EXECUTE:
     - T4 (Strict Resume RNG)
       File: phase_2_reproducibility/T4_strict_resume_rng.md
-      Expected: 1-2 days, RNG sidecar enforced
+      Expected: 1-2 iterations, RNG sidecar enforced
 11. EXECUTE:
     - Checkpoint Integrity (from T4 or separate)
       Add SHA256 validation, corruption detection
-      Expected: 1 day
+      Expected: 1 iteration
 12. EXECUTE:
     - Deterministic Algorithms
       Enforce torch.use_deterministic_algorithms()
-      Expected: 1 day
+      Expected: 1 iteration
 13. VALIDATE Sprint 3 Checkpoint:
     - pytest --strict-resume tests/test_rng_reproducibility.py
     - Verify bit-exact reproducibility
@@ -148,15 +148,15 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 14. EXECUTE:
     - T6 (Dataset Hash Manifest)
       File: phase_2_reproducibility/T6_dataset_hash_manifest.md
-      Expected: 2-3 days, dataset versioning operational
+      Expected: 2-3 iterations, dataset versioning operational
 15. EXECUTE:
     - T10 (SBOM Generation)
       File: phase_1_foundation/T7_T10_and_stub_cleanup.md → T10 section
-      Expected: 1 day, SBOM in releases
+      Expected: 1 iteration, SBOM in releases
 16. EXECUTE:
     - Config Drift Detection
       Hash configs, validate on resume
-      Expected: 1 day
+      Expected: 1 iteration
 17. VALIDATE Sprint 4 Checkpoint:
     - python cli/train_codex.py --verify-dataset-manifest
     - ls dist/sbom.json
@@ -171,14 +171,14 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 19. EXECUTE:
     - T2 (W&B Offline Default)
       File: phase_3_autonomy/T2_wandb_offline_default.md
-      Expected: 0.5-1 day, WANDB_MODE=offline by default
+      Expected: 0.5-1 iteration, WANDB_MODE=offline by default
 20. EXECUTE:
     - T3 (EarlyStopping Integration)
       File: phase_3_autonomy/T3_earlystopping_integration.md
-      Expected: 1-2 days, callback auto-injected
+      Expected: 1-2 iterations, callback auto-injected
 21. EXECUTE:
     - Drift Detection System (config/data/model)
-      Expected: 3 days, 3 drift types operational
+      Expected: 3 iterations, 3 drift types operational
 22. VALIDATE Sprint 5 Checkpoint:
     - python test_drift_detection.py
     - Verify drift alerts functional
@@ -189,7 +189,7 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 23. EXECUTE:
     - Auto-Remediation Framework
       OOM → batch size reduction, checkpoint rollback on regression
-      Expected: 4 days
+      Expected: 4 iterations
 24. EXECUTE:
     - Stub Cleanup Campaign
       File: STUB_RESOLUTION_AUTOMATION.md
@@ -209,15 +209,15 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 27. EXECUTE:
     - Continuous Improvement Loop
       Ingest gap registry, auto-prioritize, auto-open tasks
-      Expected: 3 days
+      Expected: 3 iterations
 28. EXECUTE:
     - Plugin Sandboxing
       Contract tests, sandboxed execution, auto-disable
-      Expected: 2 days
+      Expected: 2 iterations
 29. EXECUTE:
     - Documentation Enhancement
       API docs (Sphinx/MkDocs), notebook validation, runbooks
-      Expected: 4 days
+      Expected: 4 iterations
 30. VALIDATE Sprint 7 Checkpoint:
     - make docs
     - pytest --doctest-modules
@@ -229,16 +229,16 @@ You are about to autonomously transform the `_codex_` repository from **Level 2-
 31. EXECUTE:
     - Final Stub Cleanup
       Target: All remaining stubs → 0
-      Expected: 2 days
+      Expected: 2 iterations
 32. EXECUTE:
     - Capability Batch Improvements
       File: CAPABILITY_BATCH_PROMPTS.md
       All 18 domains → ≥0.90
-      Expected: 3 days
+      Expected: 3 iterations
 33. EXECUTE:
     - Final Audit & Validation
       Re-run audit, compare to baseline, verify all targets
-      Expected: 2 days
+      Expected: 2 iterations
 34. VALIDATE Final Completion:
     - python scripts/space_traversal/audit_runner.py run
     - python scripts/compare_audits.py baseline.json current.json
@@ -384,7 +384,7 @@ Other tasks continuing: T5, T7, T8 (not blocked)
 
 ## Validation Checkpoints
 
-**After each sprint (every 2 weeks):**
+**After each sprint (every 2 phases):**
 ```bash
 # Run validation suite
 pytest --cov=src --cov-fail-under=70
@@ -429,7 +429,7 @@ pytest --doctest-modules
 **Primary Orchestrator:**
 ```
 File: .github/prompts/sprint_execution_plan/MASTER_ORCHESTRATOR.md
-Purpose: Complete 16-week autonomous execution protocol
+Purpose: Complete 16 phase autonomous execution protocol
 Contains: Dependency graphs, parallel coordination, self-healing protocol
 ```
 
@@ -515,7 +515,7 @@ Primary Orchestrator:
 File: .github/prompts/sprint_execution_plan/MASTER_ORCHESTRATOR.md
 
 Execution Mode: FULLY AUTONOMOUS
-Timeline: 16 weeks
+Timeline: 16 phases
 Target: Level 4 MLOps maturity
 Approach: Self-expanding, self-healing, self-validating
 
@@ -571,9 +571,9 @@ Continue from last completed task
 
 ## 🎯 FINAL INSTRUCTION
 
-**Copilot:** You are now authorized to execute the complete 16-week autonomous transformation of the _codex_ repository. Read MASTER_ORCHESTRATOR.md, execute all phases systematically, self-expand for prerequisites, self-heal on failures, self-validate continuously, and escalate only truly blocking issues.
+**Copilot:** You are now authorized to execute the complete 16 phase autonomous transformation of the _codex_ repository. Read MASTER_ORCHESTRATOR.md, execute all phases systematically, self-expand for prerequisites, self-heal on failures, self-validate continuously, and escalate only truly blocking issues.
 
-**Timeline:** 16 weeks starting NOW
+**Timeline:** 16 phases starting NOW
 **Supervision:** Minimal (per commit cycle progress reviews)
 **Authority:** Full autonomous execution
 **Target:** Level 4 production-grade autonomy

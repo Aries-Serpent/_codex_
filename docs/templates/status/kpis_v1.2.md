@@ -3,7 +3,7 @@
 🧠 Roles: [Primary: KPI Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Purpose
-- Track high-level health signals across daily reports.
+- Track high-level health signals across per-iteration reports.
 
 KPIs
 | KPI | Definition | Source | Target |

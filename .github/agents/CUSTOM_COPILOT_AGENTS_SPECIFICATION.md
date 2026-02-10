@@ -544,7 +544,7 @@ reporting:
 - **LTM Size:** 8,234/10,000 (82.3%)
 
 ### Actions Taken (Last 24h)
-1. ✅ **Pruned 127 stale patterns** from LTM (age > 30 days)
+1. ✅ **Pruned 127 stale patterns** from LTM (age > 30 iterations)
 2. ✅ **Adjusted compression variance** retention: 95% → 96% (improved ratio)
 3. ✅ **Consolidated 89 patterns** from STM to LTM (threshold: 0.73)
 4. ✅ **Triggered GC** due to memory growth detection
@@ -591,7 +591,7 @@ quantization_bits: 7           # Adjusted from 8 (lower importance features)
 **Phase 3: Memory Agent** (Pre-commit 7-8)
 - Deploy after Phase 8.1 validation
 - Start with monitoring only
-- Enable auto-healing after 1-week observation
+- Enable auto-healing after 1 phase observation
 - Integrate with alerting system
 
 ### Success Metrics
@@ -602,7 +602,7 @@ quantization_bits: 7           # Adjusted from 8 (lower importance features)
 | Testing | Auto-Fix Rate | > 70% | - |
 | Testing | Regression Detection | > 95% | - |
 | Optimization | k₁ Improvement | 5-10% | - |
-| Optimization | Convergence Time | < 4 hours | - |
+| Optimization | Convergence Time | < 4 Commits | - |
 | Optimization | Config Stability | > 95% | - |
 | Memory | Issue Detection | > 95% | - |
 | Memory | Auto-Recovery | > 90% | - |

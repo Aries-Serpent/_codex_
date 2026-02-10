@@ -424,7 +424,7 @@ The Codex Quantum Reviewer has a solid foundation with all core components imple
 4. Collect feedback and iterate - **Pre-commit 3-8**
 5. Production rollout - **Month 2**
 
-**Timeline to Production:** 4-6 weeks with dedicated effort
+**Timeline to Production:** 4-6 phases with dedicated effort
 
 ---
 

@@ -15,7 +15,7 @@ Two GitHub Actions workflows enable automated and manual CI/CD analytics using t
    - Flexible reporting and action options
    
 2. **Scheduled Workflow Analytics** (`workflow-analytics-scheduled.yml`)
-   - Weekly automated health checks
+   - per-phase automated health checks
    - Auto-creates issues for problems
    - Maintains health dashboard
 
@@ -200,7 +200,7 @@ gh workflow run workflow-analytics-manual.yml \
 
 ### Purpose
 
-Automated weekly CI/CD health monitoring that:
+Automated per-phase CI/CD health monitoring that:
 - Runs every Monday at 00:00 UTC
 - Analyzes last 100 workflow runs
 - Auto-commits reports
@@ -244,7 +244,7 @@ schedule:
 You can also run the scheduled workflow manually:
 
 ```bash
-# Run weekly check now
+# Run per-phase check now
 gh workflow run workflow-analytics-scheduled.yml
 
 # Force report even if healthy
@@ -254,12 +254,12 @@ gh workflow run workflow-analytics-scheduled.yml \
 
 ### Outputs
 
-1. **Weekly Reports** (if issues detected):
+1. **per-phase Reports** (if issues detected):
    - Committed to `.codex/reports/`
    - Includes JSON and Markdown formats
 
 2. **Health Alert Issue** (if not healthy):
-   - Title: "⚠️ Weekly CI/CD Health Alert: Status <STATUS>"
+   - Title: "⚠️ per-phase CI/CD Health Alert: Status <STATUS>"
    - Priority: High
    - Assignee: @mbaetiong
    - Labels: `ci/cd`, `health-alert`, `automation`, `priority-high`

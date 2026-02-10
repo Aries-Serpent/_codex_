@@ -264,7 +264,7 @@ This agent stores the following information in memory:
 2. **Access:** Requires GitHub MCP server tools
 3. **Timing:** Cannot reduce actual workflow execution time
 4. **Fixes:** Can only fix workflow file issues, not test code bugs
-5. **History:** Limited to workflows from last 90 days
+5. **History:** Limited to workflows from last 90 iterations
 
 ---
 

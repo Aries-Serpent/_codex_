@@ -43,7 +43,7 @@ This document outlines security considerations and risk mitigation strategies.
 
 3. **Monitoring**
    - Real-time alerting on anomalies
-   - Audit logs retained for 90 days
+   - Audit logs retained for 90 iterations
    - Security events escalated immediately
 
 ## Compliance

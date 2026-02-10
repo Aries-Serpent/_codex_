@@ -113,7 +113,7 @@
 
 2. **CACHE_MONITORING_GUIDE.md** (UPDATED)
    - Compression section added
-   - Daily/weekly/monthly checklists
+   - per-iteration/per-phase/monthly checklists
    - Alert thresholds
    - Emergency procedures
 
@@ -142,7 +142,7 @@ The comprehensive Phase 3 follow-up prompt has been prepared in `/tmp/copilot_fo
 
 **Content of follow-up prompt**:
 - Phase 3 implementation plan (capacity-constrained)
-- Prerequisites (2-week monitoring period)
+- Prerequisites (2 phase monitoring period)
 - Tier 1-2 workflow priorities
 - Success criteria and abort conditions
 - Phase 2 performance review requirements
@@ -229,7 +229,7 @@ The comprehensive Phase 3 follow-up prompt has been prepared in `/tmp/copilot_fo
 ## Ready for Next Phase
 
 **Phase 3 Prerequisites**:
-1. Monitor Phase 2 for 2 weeks
+1. Monitor Phase 2 for 2 phases
 2. Verify cache usage <8.5 GB
 3. Confirm 90%+ hit rates
 4. Review actual vs projected savings

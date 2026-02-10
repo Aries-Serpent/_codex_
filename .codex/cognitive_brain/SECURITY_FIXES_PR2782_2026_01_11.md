@@ -351,7 +351,7 @@ graph TD
 **AfterMath**: Zero security issues, 100% test coverage, RFC compliant
 
 ### Monitoring Points
-1. **Weekly**: Run Semgrep scan on all new code
+1. **per-phase**: Run Semgrep scan on all new code
 2. **Monthly**: Review validation patterns for new attack vectors
 3. **Quarterly**: Security audit of all subprocess and network calls
 4. **Continuous**: CodeQL alerts on security-sensitive changes
@@ -359,7 +359,7 @@ graph TD
 ### Success Metrics
 - ✅ 0 critical Semgrep findings
 - ✅ 95%+ test coverage on security functions
-- ✅ < 1 day mean time to remediation (MTTR)
+- ✅ < 1 iteration mean time to remediation (MTTR)
 - ✅ 100% RFC compliance in HTTP/URL handling
 
 ---

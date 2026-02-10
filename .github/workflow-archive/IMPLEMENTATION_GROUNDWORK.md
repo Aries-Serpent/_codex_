@@ -53,12 +53,12 @@ Current count is 49 instead of target 48 due to:
 | **Container** | docker-build-push.yml | ✅ Present | Yes | Consolidates container-build.yml, build-container-cache.yml |
 | **Validation** | workflow-validation.yml | ❌ Missing | N/A | **ACTION REQUIRED**: Create or verify consolidation |
 | **Monitoring** | ci-health-monitor.yml | ✅ Present | Yes | New automated health checks (6-hour interval) |
-| **Status Pipeline** | daily-status-pipeline.yml | ❌ Missing | N/A | **ACTION REQUIRED**: Verify consolidation of 5 status workflows |
+| **Status Pipeline** | per-iteration-status-pipeline.yml | ❌ Missing | N/A | **ACTION REQUIRED**: Verify consolidation of 5 status workflows |
 | **Cache Mgmt** | cache-management.yml | ❌ Missing | N/A | **ACTION REQUIRED**: Verify consolidation of cache workflows |
 
 ### Gaps Identified
 1. **workflow-validation.yml**: Expected consolidation of workflow-lint.yml, workflow-validator.yml, template-validation.yml
-2. **daily-status-pipeline.yml**: Expected consolidation of 5 monitoring workflows
+2. **per-iteration-status-pipeline.yml**: Expected consolidation of 5 monitoring workflows
 3. **cache-management.yml**: Expected consolidation of cache-cleanup.yml, cache-warmer.yml
 
 **Root Cause**: These consolidations may have been planned but not yet implemented, OR the consolidated workflows have different names.
@@ -199,9 +199,9 @@ done
 1. **Monitor CI Runs**: Watch first 5-10 workflow executions for failures
 2. **Verify Health Monitor**: Confirm ci-health-monitor.yml runs successfully on schedule
 3. **Check Disabled Workflows**: Ensure no critical workflows were incorrectly disabled
-4. **Gap Resolution**: Investigate missing consolidated workflows (workflow-validation.yml, daily-status-pipeline.yml, cache-management.yml)
+4. **Gap Resolution**: Investigate missing consolidated workflows (workflow-validation.yml, per-iteration-status-pipeline.yml, cache-management.yml)
 
-### Short-term (1-7 days post-merge)
+### Short-term (1-7 iterations post-merge)
 1. **Collect Metrics**: CI runtime, failure rates, maintenance overhead
 2. **Team Feedback**: Survey developers on workflow consolidation impact
 3. **Documentation Review**: Ensure all guides are accurate and accessible
@@ -232,16 +232,16 @@ done
 | Trigger | Condition | Action |
 |---------|-----------|--------|
 | **PR Merged** | This PR successfully merged to main | Begin post-merge monitoring |
-| **CI Health Green** | All workflows pass for 24 hours | Proceed with gap resolution |
+| **CI Health Green** | All workflows pass for 24 Commits | Proceed with gap resolution |
 | **Gaps Resolved** | Missing workflows identified/fixed | Update parity checklist |
-| **Metrics Collected** | 7 days of CI data gathered | Analyze performance improvements |
+| **Metrics Collected** | 7 iterations of CI data gathered | Analyze performance improvements |
 | **Team Approval** | Stakeholders approve quantum spec | Begin Phase 1 quantum integration |
 
 ### Next Copilot Task
 ```
 @copilot After PR #2632 merges successfully, investigate the 3 missing consolidated workflows:
 1. workflow-validation.yml (expected consolidation of workflow-lint.yml, workflow-validator.yml, template-validation.yml)
-2. daily-status-pipeline.yml (expected consolidation of 5 monitoring workflows)
+2. per-iteration-status-pipeline.yml (expected consolidation of 5 monitoring workflows)
 3. cache-management.yml (expected consolidation of cache-cleanup.yml, cache-warmer.yml)
 
 Verify if these workflows exist under different names or if consolidation is incomplete. 
@@ -264,7 +264,7 @@ Create missing workflows if needed. Report findings with workflow status and nex
 - [x] Resume triggers documented
 - [ ] **ACTION REQUIRED**: Resolve 3 missing consolidated workflows (post-merge)
 - [ ] **ACTION REQUIRED**: Monitor CI for 24-48 hours post-merge
-- [ ] **ACTION REQUIRED**: Collect performance metrics after 7 days
+- [ ] **ACTION REQUIRED**: Collect performance metrics after 7 iterations
 
 ---
 

@@ -27,7 +27,7 @@ Successfully executed the integrated documentation evolution plan with multi-age
 - **Findings**:
   - 5 files with dates (29.4% baseline)
   - 12 files missing dates (70.6%)
-  - 4 fresh files (<30 days), 1 aging (31 days), 0 stale
+  - 4 fresh files (<30 iterations), 1 aging (31 iterations), 0 stale
   - 100% ISO 8601 compliance among dated files
   - 4 calendar language instances detected
 

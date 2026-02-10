@@ -48,21 +48,21 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 
 | Phase | Target Coverage | Duration | Focus Area | Threshold Setting |
 |-------|-----------------|----------|------------|-------------------|
-| 14.0 (Current) | 0% → 30% | 2 weeks | Foundation & Infrastructure | `fail_under = 0` |
-| 14.1 | 30% → 50% | 3 weeks | Core Modules (codex, codex_ml) | `fail_under = 30` |
-| 14.2 | 50% → 70% | 4 weeks | Training, Agents, RAG | `fail_under = 50` |
-| 14.3 | 70% → 85% | 3 weeks | Integration & Edge Cases | `fail_under = 70` |
-| 14.4 | 85% → 100% | 3 weeks | Final Gaps & Branch Coverage | `fail_under = 85` |
+| 14.0 (Current) | 0% → 30% | 2 phases | Foundation & Infrastructure | `fail_under = 0` |
+| 14.1 | 30% → 50% | 3 phases | Core Modules (codex, codex_ml) | `fail_under = 30` |
+| 14.2 | 50% → 70% | 4 phases | Training, Agents, RAG | `fail_under = 50` |
+| 14.3 | 70% → 85% | 3 phases | Integration & Edge Cases | `fail_under = 70` |
+| 14.4 | 85% → 100% | 3 phases | Final Gaps & Branch Coverage | `fail_under = 85` |
 | Post-14 | 100% | Ongoing | Maintenance & Regression | `fail_under = 100` |
 
-**Total Estimated Duration:** 15 weeks
+**Total Estimated Duration:** 15 phases
 
 ---
 
 ## Phase 14.0: Foundation (Current Phase)
 
 **Goal:** Establish test infrastructure and baseline coverage  
-**Duration:** 2 weeks  
+**Duration:** 2 phases  
 **Threshold:** `fail_under = 0`  
 **Status:** ✅ COMPLETE
 
@@ -89,7 +89,7 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 ## Phase 14.1: Core Modules (30% → 50%)
 
 **Goal:** Cover high-impact core modules  
-**Duration:** 3 weeks  
+**Duration:** 3 phases  
 **Threshold:** `fail_under = 30`  
 **Status:** 🚧 IN PROGRESS
 
@@ -153,7 +153,7 @@ src/codex_ml/data/    → 70%
 ## Phase 14.2: Training, Agents & RAG (50% → 70%)
 
 **Goal:** Cover ML training pipeline, agents, and RAG system  
-**Duration:** 4 weeks  
+**Duration:** 4 phases  
 **Threshold:** `fail_under = 50`
 
 ### Priority Modules
@@ -209,7 +209,7 @@ src/codex_ml/models/   → 80%
 ## Phase 14.3: Integration & Edge Cases (70% → 85%)
 
 **Goal:** Cover integration paths and edge cases  
-**Duration:** 3 weeks  
+**Duration:** 3 phases  
 **Threshold:** `fail_under = 70`
 
 ### Focus Areas
@@ -252,7 +252,7 @@ src/codex/quantum_orchestrator/ → 70%
 ## Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)
 
 **Goal:** Achieve 100% line and branch coverage  
-**Duration:** 3 weeks  
+**Duration:** 3 phases  
 **Threshold:** `fail_under = 85`
 
 ### Strategy
@@ -396,7 +396,7 @@ Track progress using:
 2. **HTML reports** - Detailed line-by-line coverage
 3. **CI badges** - Current coverage status
 
-### Weekly Check-ins
+### per-phase Check-ins
 
 | Week | Expected Coverage | Actual Coverage | Status |
 |------|-------------------|-----------------|--------|
@@ -537,4 +537,4 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 - [x] `tests/integration/test_phase14_edge_cases_coverage.py` - 45+ tests
 
 **Owner:** Phase 14 implementation team  
-**Review Cadence:** Weekly coverage review
+**Review Cadence:** per-phase coverage review

@@ -89,7 +89,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Trigger Frequency**: Daily (cron: '0 0 * * *')  
 **Estimated Impact**: 
-- 2-3 minutes saved per daily run
+- 2-3 minutes saved per per-iteration run
 - 60-90 minutes saved per month
 - Reduced network bandwidth usage
 
@@ -129,7 +129,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 **Trigger Frequency**: PRs, pushes to main, daily at 2 AM UTC  
 **Estimated Impact**:
 - 2-3 minutes saved per PR security scan
-- 2-3 minutes saved per daily scheduled scan
+- 2-3 minutes saved per per-iteration scheduled scan
 - ~90-120 minutes saved per month
 - Critical for PR workflows (high frequency)
 
@@ -205,7 +205,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - Variability Score: 88 (high execution variability)
 - Flow Efficiency: 0.92
 - Multi-Trigger Weight: 0.95
-- Frequency: 120 runs/90 days
+- Frequency: 120 runs/90 iterations
 
 **Cache Configuration**:
 ```yaml
@@ -233,7 +233,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - Variability Score: 92 (highest execution variability - multiple paths)
 - Flow Efficiency: 0.89
 - Multi-Trigger Weight: 0.88
-- Frequency: 45 runs/90 days
+- Frequency: 45 runs/90 iterations
 
 **Cache Configuration**:
 ```yaml
@@ -261,7 +261,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - Variability Score: 85
 - Flow Efficiency: 0.91
 - Multi-Trigger Weight: 0.92
-- Frequency: 95 runs/90 days
+- Frequency: 95 runs/90 iterations
 
 **Cache Configuration**:
 ```yaml
@@ -291,7 +291,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - Variability Score: 72
 - Flow Efficiency: 0.85
 - Multi-Trigger Weight: 0.78
-- Frequency: 38 runs/90 days
+- Frequency: 38 runs/90 iterations
 
 **Cache Configuration**:
 ```yaml
@@ -319,7 +319,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - Variability Score: 68
 - Flow Efficiency: 0.82
 - Multi-Trigger Weight: 0.75
-- Frequency: 25 runs/90 days
+- Frequency: 25 runs/90 iterations
 
 **Cache Configuration**:
 ```yaml
@@ -398,16 +398,16 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 - ✅ scheduled-dependency-audit.yml
 
 ### Phase 3A: Physics-Based Priority Workflows (✅ Completed 2025-12-30)
-- ✅ pr-followup-generator.yml (Physics Score: 94.2, 120 runs/90 days) - Explicit caching
-- ✅ agent-runtime.yml (Physics Score: 91.8, 45 runs/90 days) - Explicit caching
-- ✅ detect-duplicates.yml (Physics Score: 89.5, 95 runs/90 days) - Explicit caching
+- ✅ pr-followup-generator.yml (Physics Score: 94.2, 120 runs/90 iterations) - Explicit caching
+- ✅ agent-runtime.yml (Physics Score: 91.8, 45 runs/90 iterations) - Explicit caching
+- ✅ detect-duplicates.yml (Physics Score: 89.5, 95 runs/90 iterations) - Explicit caching
 
 ### Phase 3B: Built-in Caching Optimization (✅ Completed 2025-12-30)
 - ✅ **pr-followup-generator.yml** - Converted from explicit to built-in caching (storage optimization)
 - ✅ **agent-runtime.yml** - Converted from explicit to built-in caching (storage optimization)
 - ✅ **detect-duplicates.yml** - Converted from explicit to built-in caching (storage optimization)
-- ✅ **determinism.yml** (Physics Score: 78.3, 38 runs/90 days) - Built-in caching added
-- ✅ **draft-audit-pr.yml** (Physics Score: 75.1, 25 runs/90 days) - Built-in caching added
+- ✅ **determinism.yml** (Physics Score: 78.3, 38 runs/90 iterations) - Built-in caching added
+- ✅ **draft-audit-pr.yml** (Physics Score: 75.1, 25 runs/90 iterations) - Built-in caching added
 
 ### Phase 3C+: Remaining Workflows (Future)
 Systematically add built-in caching to remaining 23 workflows with Python dependencies based on physics prioritization.
@@ -417,12 +417,12 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 ### Estimated Time Savings
 
 **Phase 1 Results (Completed)**:
-- Daily runs: 3 workflows × 2.5 minutes = 7.5 minutes/day
+- per-iteration runs: 3 workflows × 2.5 minutes = 7.5 minutes/day
 - Monthly savings: 225 minutes (3.75 hours)
 - PR runs: ~2-3 minutes per PR
 
 **Phase 2 Results (✅ Completed 2025-12-30)**:
-- Additional security scans: ~3-4 minutes per PR + daily runs
+- Additional security scans: ~3-4 minutes per PR + per-iteration runs
 - Additional nox gates: ~3-4 minutes per PR
 - Monthly savings: ~300-360 minutes (5-6 hours)
 - **Total per 4-5 commit cycles savings (Phase 1 + 2)**: 525-585 minutes (8.75-9.75 hours)
@@ -475,7 +475,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 ## Recommendations
 
 ### Immediate Actions
-1. ✅ Add caching to critical daily workflows (COMPLETED)
+1. ✅ Add caching to critical per-iteration workflows (COMPLETED)
 2. ✅ Document caching standards (COMPLETED)
 3. Monitor cache hit rates in workflow runs
 
@@ -553,13 +553,13 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 
 ### Key Metrics to Track
 
-**Daily Monitoring** (Use GitHub UI):
+**per-iteration Monitoring** (Use GitHub UI):
 - **Total cache usage** (must stay under 10 GB)
 - **Cache trend** (growing/stable/shrinking)
 - **Number of active caches**
 - **LRU eviction events** (check workflow logs)
 
-**Weekly Review**:
+**per-phase Review**:
 - Cache hit rate by workflow
 - Time saved per workflow run
 - Cache storage utilization trend
@@ -572,7 +572,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 
 ### Maintenance Tasks
 
-**Weekly**:
+**per-phase**:
 - [ ] Check cache usage in GitHub Settings → Actions → Caches
 - [ ] Verify usage is under 9 GB (leave 1 GB buffer)
 - [ ] Review any eviction warnings in workflow logs
@@ -615,7 +615,7 @@ If approaching 9.5 GB, take these actions:
 **DO NOT implement full Phase 3 (28 workflows) without cache optimization!**
 
 **Recommended Phase 3 Approach**:
-1. **Monitor Phase 2 impact for 2 weeks**
+1. **Monitor Phase 2 impact for 2 phases**
 2. **If under 8.5 GB**: Add 5-8 highest priority workflows
 3. **If 8.5-9.5 GB**: Add 2-3 highest priority workflows only
 4. **If over 9.5 GB**: Remove caching from lowest-value workflows first
@@ -682,7 +682,7 @@ The implementation of caching across Phase 1, Phase 2, Phase 3A, and Phase 3B re
 - ✅ All YAML files validated
 
 ### Next Steps (Phase 3)
-1. Monitor cache hit rates for Phase 2 workflows over next 2 weeks
+1. Monitor cache hit rates for Phase 2 workflows over next 2 phases
 2. Systematically add caching to remaining 28 workflows
 3. Create cache analytics dashboard
 4. Implement cache size monitoring and optimization
@@ -698,5 +698,5 @@ The implementation of caching across Phase 1, Phase 2, Phase 3A, and Phase 3B re
 
 **Report Generated**: 2025-12-30 (Phase 2 Complete)  
 **Analysis Period**: Phase 1 (2025-12-30) + Phase 2 (2025-12-30)  
-**Next Review**: Recommended in 2-4 weeks to assess Phase 2 impact  
+**Next Review**: Recommended in 2-4 phases to assess Phase 2 impact  
 **Phase 3 Target**: Phase 1 (Current Cycle) - Remaining 28 workflows

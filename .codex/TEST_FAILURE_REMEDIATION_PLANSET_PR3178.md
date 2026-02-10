@@ -214,16 +214,16 @@ if __name__ == '__main__':
 
 | Priority | Category | Est. Count | Fix Time | Impact |
 |----------|----------|------------|----------|--------|
-| P0-Critical | Resource Management | 40-50 | 2-3 days | High - Blocks CI |
-| P0-Critical | Import/Dependency | 20-30 | 1 day | High - Blocks tests |
-| P1-High | API Mismatch | 30-40 | 2-3 days | Medium - Test accuracy |
-| P1-High | Test Isolation | 20-30 | 2 days | Medium - Flaky tests |
-| P2-Medium | Mock/Fixture | 30-40 | 2-3 days | Medium - Test quality |
-| P2-Medium | Assertion | 40-50 | 3-4 days | Low - Individual tests |
-| P3-Low | Timeout | 10-15 | 1 day | Low - Edge cases |
-| P3-Low | Configuration | 5-10 | 0.5 day | Low - Environment |
+| P0-Critical | Resource Management | 40-50 | 2-3 iterations | High - Blocks CI |
+| P0-Critical | Import/Dependency | 20-30 | 1 iteration | High - Blocks tests |
+| P1-High | API Mismatch | 30-40 | 2-3 iterations | Medium - Test accuracy |
+| P1-High | Test Isolation | 20-30 | 2 iterations | Medium - Flaky tests |
+| P2-Medium | Mock/Fixture | 30-40 | 2-3 iterations | Medium - Test quality |
+| P2-Medium | Assertion | 40-50 | 3-4 iterations | Low - Individual tests |
+| P3-Low | Timeout | 10-15 | 1 iteration | Low - Edge cases |
+| P3-Low | Configuration | 5-10 | 0.5 iteration | Low - Environment |
 
-**Total Estimated Effort:** 12-16 days with parallelization
+**Total Estimated Effort:** 12-16 iterations with parallelization
 
 **Deliverable:**
 - **TEST_FAILURE_PRIORITY_MATRIX.md**
@@ -1365,7 +1365,7 @@ Before declaring completion:
 - **Days 3-4:** Phase 10 (Monitoring)
 - **Day 5:** Final validation
 
-**Total Duration:** 4 weeks (20 working days)
+**Total Duration:** 4 phases (20 working days)
 
 ---
 

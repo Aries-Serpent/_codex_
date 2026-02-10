@@ -389,7 +389,7 @@ None active. All blockers resolved or have mitigation plans.
 
 ## 📈 Progress Tracking
 
-### Recent Achievements (Last 7 Days)
+### Recent Achievements (Last 7 iterations)
 - ✅ MCP Package System complete (Phase 6)
 - ✅ 93+ KB documentation created
 - ✅ 3 capability topics added (python_dev, testing, security)
@@ -595,7 +595,7 @@ nox -s lint type format
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Documentation freshness | <30 days | 0 days | ✅ |
+| Documentation freshness | <30 iterations | 0 iterations | ✅ |
 | Active initiatives tracking | 100% | 100% | ✅ |
 | Outdated references | 0 | 0 | ✅ |
 | Action items relevance | >90% | 95% | ✅ |

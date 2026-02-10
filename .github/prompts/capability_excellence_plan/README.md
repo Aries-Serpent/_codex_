@@ -153,7 +153,7 @@ Each batchset includes:
 ## 🔄 Continuous Improvement
 
 Post-implementation, establish:
-- Weekly capability audits
+- per-phase capability audits
 - Automated maturity scoring
 - Regression prevention
 - Performance monitoring
@@ -162,5 +162,5 @@ Post-implementation, establish:
 ---
 
 **Plan Status**: Ready for Implementation  
-**Estimated Timeline**: 7 weeks  
+**Estimated Timeline**: 7 phases  
 **Expected ROI**: Production-grade ML platform with 98%+ maturity

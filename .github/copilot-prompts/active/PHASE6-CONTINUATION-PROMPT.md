@@ -67,7 +67,7 @@ Copy the text below and post as a NEW COMMENT on the active PR to continue imple
 
 #### 1. release-gate-agent.v1 (HIGHEST PRIORITY)
 **Purpose**: Release readiness validation and gating
-**Estimated**: 1,400 lines, 4-5 days
+**Estimated**: 1,400 lines, 4-5 iterations
 
 **Modules to Implement**:
 ```
@@ -111,7 +111,7 @@ confidence = (
 
 #### 2. infra-linter-agent.v1
 **Purpose**: Infrastructure configuration validation
-**Estimated**: 1,300 lines, 3-4 days
+**Estimated**: 1,300 lines, 3-4 iterations
 
 **Modules to Implement**:
 ```
@@ -141,7 +141,7 @@ confidence = (
 
 #### 3. compliance-checker-agent.v1
 **Purpose**: Compliance validation automation
-**Estimated**: 1,500 lines, 4-5 days
+**Estimated**: 1,500 lines, 4-5 iterations
 
 **Modules to Implement**:
 ```
@@ -174,7 +174,7 @@ confidence = (
 
 #### 4. code-review-summarizer.v1
 **Purpose**: Code review analysis and summarization
-**Estimated**: 1,200 lines, 3 days
+**Estimated**: 1,200 lines, 3 iterations
 
 **Modules**: extractor.py, summarizer.py, synthesizer.py, learner.py
 
@@ -189,7 +189,7 @@ confidence = (
 
 #### 5. issue-triage-agent.v1
 **Purpose**: Automated issue classification and routing
-**Estimated**: 1,300 lines, 3-4 days
+**Estimated**: 1,300 lines, 3-4 iterations
 
 **Modules**: classifier.py, router.py, labeler.py, tracker.py
 
@@ -204,7 +204,7 @@ confidence = (
 
 #### 6. doc-reporter-agent.v1
 **Purpose**: Documentation coverage and quality reporting
-**Estimated**: 1,200 lines, 3 days
+**Estimated**: 1,200 lines, 3 iterations
 
 **Modules**: scanner.py, assessor.py, generator.py, reporter.py
 
@@ -221,7 +221,7 @@ confidence = (
 
 #### 7. data-rag-helper.v1
 **Purpose**: Context augmentation for agent queries
-**Estimated**: 1,100 lines, 2-3 days
+**Estimated**: 1,100 lines, 2-3 iterations
 
 **Modules**: retriever.py, augmenter.py, provider.py, learner.py
 
@@ -235,7 +235,7 @@ confidence = (
 
 #### 8. mcp-registry-adapter.v1
 **Purpose**: MCP protocol integration
-**Estimated**: 1,200 lines, 3 days
+**Estimated**: 1,200 lines, 3 iterations
 
 **Modules**: connector.py, mapper.py, integrator.py, tracker.py
 
@@ -501,16 +501,16 @@ code_review(
 6. Update progress regularly
 
 **Order of Implementation**:
-1. release-gate-agent.v1 (P1 - 4-5 days)
-2. infra-linter-agent.v1 (P1 - 3-4 days)
-3. compliance-checker-agent.v1 (P1 - 4-5 days)
-4. code-review-summarizer.v1 (P2 - 3 days)
-5. issue-triage-agent.v1 (P2 - 3-4 days)
-6. doc-reporter-agent.v1 (P2 - 3 days)
-7. data-rag-helper.v1 (P3 - 2-3 days)
-8. mcp-registry-adapter.v1 (P3 - 3 days)
+1. release-gate-agent.v1 (P1 - 4-5 iterations)
+2. infra-linter-agent.v1 (P1 - 3-4 iterations)
+3. compliance-checker-agent.v1 (P1 - 4-5 iterations)
+4. code-review-summarizer.v1 (P2 - 3 iterations)
+5. issue-triage-agent.v1 (P2 - 3-4 iterations)
+6. doc-reporter-agent.v1 (P2 - 3 iterations)
+7. data-rag-helper.v1 (P3 - 2-3 iterations)
+8. mcp-registry-adapter.v1 (P3 - 3 iterations)
 
-**Total Estimated Time**: 25-35 days (~5-7 weeks)
+**Total Estimated Time**: 25-35 iterations (~5-7 phases)
 
 ---
 

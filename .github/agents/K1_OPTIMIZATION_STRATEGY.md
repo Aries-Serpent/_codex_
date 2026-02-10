@@ -330,8 +330,8 @@ def validate_k1_improvement():
 
 **Timeline:** 
 - Phase 8.0: 2-3 hours (immediate)
-- Phase 8.1: 6-8 hours (within 1 week)
-- Phase 8.2-8.3: 12-15 hours (within 2 weeks)
+- Phase 8.1: 6-8 hours (within 1 phase)
+- Phase 8.2-8.3: 12-15 hours (within 2 phases)
 
 **Risk:** Low - incremental improvements with validation at each step.
 

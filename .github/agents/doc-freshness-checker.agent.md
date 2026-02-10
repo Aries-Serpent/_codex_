@@ -19,7 +19,7 @@ This agent ensures documentation remains up-to-date by checking freshness, ident
 
 ## When to Use
 
-- Weekly scheduled checks
+- per-phase scheduled checks
 - Before releases
 - When documentation is updated
 - During documentation audits
@@ -32,9 +32,9 @@ This agent ensures documentation remains up-to-date by checking freshness, ident
 
 | Age | Status | Action |
 |-----|--------|--------|
-| <30 days | ✅ Fresh | None |
-| 30-90 days | ⚠️ Aging | Review |
-| >90 days | 🔴 Stale | Update |
+| <30 iterations | ✅ Fresh | None |
+| 30-90 iterations | ⚠️ Aging | Review |
+| >90 iterations | 🔴 Stale | Update |
 
 ### MkDocs Warning Thresholds (Phase 12.1)
 

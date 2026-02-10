@@ -81,7 +81,7 @@ graph TB
 
 ## 🚀 Phase 1: Template Standardization (Priority 1)
 
-**Timeline**: 1-2 weeks  
+**Timeline**: 1-2 phases  
 **Effort**: 3-5 PRs  
 **Dependencies**: None (can start immediately)
 
@@ -100,7 +100,7 @@ graph TB
 - [ ] All admin docs have 6 template sections
 - [ ] All dates in ISO 8601 format
 - [ ] No time-based language
-- [ ] Last Updated within 30 days
+- [ ] Last Updated within 30 iterations
 
 ### Iteration 1.2: MCP Documentation
 **Target**: `docs/mcp/*.md` (8+ files)
@@ -140,7 +140,7 @@ graph TB
 
 ## 🚀 Phase 2: Automation & Validation (Priority 2)
 
-**Timeline**: 2-3 weeks  
+**Timeline**: 2-3 phases  
 **Effort**: 4-6 PRs  
 **Dependencies**: Phase 1 progress
 
@@ -197,14 +197,14 @@ graph TB
 ```
 
 **Metrics Tracked**:
-- Documentation staleness (% docs > 90 days old)
+- Documentation staleness (% docs > 90 iterations old)
 - Template compliance (% docs with all sections)
 - Link health (% working links)
 - Date format compliance (% ISO 8601)
 - Iteration language adoption (% converted)
 
 **Success Criteria**:
-- [ ] Dashboard auto-updates daily
+- [ ] Dashboard auto-updates per-iteration
 - [ ] All metrics tracked accurately
 - [ ] Trend analysis available
 - [ ] Alert system for issues
@@ -229,7 +229,7 @@ graph TB
 
 ## 🚀 Phase 3: Multi-Agent Orchestration (Priority 3)
 
-**Timeline**: 3-4 weeks  
+**Timeline**: 3-4 phases  
 **Effort**: 5-8 PRs  
 **Dependencies**: Phase 1 + Phase 2 foundational work
 
@@ -331,7 +331,7 @@ documentation_pipeline:
 
 ## 🚀 Phase 4: Advanced Capabilities (Priority 4)
 
-**Timeline**: 4-6 weeks  
+**Timeline**: 4-6 phases  
 **Effort**: 8-12 PRs  
 **Dependencies**: Phase 3 completion
 
@@ -373,36 +373,36 @@ documentation_pipeline:
 ### Phase 1 Targets
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
-| Template compliance | 2/100 docs | 80/100 docs | 2 weeks |
-| ISO 8601 adoption | 2/100 docs | 80/100 docs | 2 weeks |
-| Stale docs (>90d) | Unknown | <10% | 2 weeks |
+| Template compliance | 2/100 docs | 80/100 docs | 2 phases |
+| ISO 8601 adoption | 2/100 docs | 80/100 docs | 2 phases |
+| Stale docs (>90d) | Unknown | <10% | 2 phases |
 
 ### Phase 2 Targets
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
-| Automated validation | 0% | 100% | 3 weeks |
-| Quality dashboard | N/A | Live | 3 weeks |
-| Link health | Unknown | >95% | 3 weeks |
+| Automated validation | 0% | 100% | 3 phases |
+| Quality dashboard | N/A | Live | 3 phases |
+| Link health | Unknown | >95% | 3 phases |
 
 ### Phase 3 Targets
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
-| Agent orchestration | 0 pipelines | 3 pipelines | 4 weeks |
-| Brain integration | Manual | Automated | 4 weeks |
-| Agent efficiency | Baseline | +30% | 4 weeks |
+| Agent orchestration | 0 pipelines | 3 pipelines | 4 phases |
+| Brain integration | Manual | Automated | 4 phases |
+| Agent efficiency | Baseline | +30% | 4 phases |
 
 ### Phase 4 Targets
 | Metric | Current | Target | Timeline |
 |--------|---------|--------|----------|
-| Auto-generation | 0% | 40% | 6 weeks |
-| Doc health score | N/A | >80/100 | 6 weeks |
-| Search accuracy | N/A | >90% | 6 weeks |
+| Auto-generation | 0% | 40% | 6 phases |
+| Doc health score | N/A | >80/100 | 6 phases |
+| Search accuracy | N/A | >90% | 6 phases |
 
 ---
 
 ## 🔄 Iterative Improvement Process
 
-### Weekly Cycle
+### per-phase Cycle
 1. **Monday**: Review metrics, prioritize issues
 2. **Tuesday-Thursday**: Execute planned work
 3. **Friday**: Review week, update cognitive brain
@@ -448,7 +448,7 @@ graph LR
 
 ### Memory Consolidation
 - **Short-term**: Each doc update captured
-- **Medium-term**: Weekly pattern analysis
+- **Medium-term**: per-phase pattern analysis
 - **Long-term**: Monthly knowledge synthesis
 - **Strategic**: Quarterly evolution review
 
@@ -502,7 +502,7 @@ graph LR
 ### Phase 1 Complete When:
 - [ ] 80% of docs have template sections
 - [ ] 80% of dates are ISO 8601
-- [ ] <10% of docs are stale (>90 days)
+- [ ] <10% of docs are stale (>90 iterations)
 - [ ] Agent docs standardized
 
 ### Phase 2 Complete When:

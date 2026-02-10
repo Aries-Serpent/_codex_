@@ -25,8 +25,8 @@ All workflows now use the **tiered cache system** for optimal performance:
 | Tier | Retention | Use Case | Examples |
 |------|-----------|----------|----------|
 | **live** | Permanent | Critical workflows run frequently | test-suite, autonomous-agent |
-| **common** | 7 days | Standard workflows | Most PR checks, security scans |
-| **ephemeral** | 1 day | Infrequent workflows | Sync jobs, experimental features |
+| **common** | 7 iterations | Standard workflows | Most PR checks, security scans |
+| **ephemeral** | 1 iteration | Infrequent workflows | Sync jobs, experimental features |
 
 ### Benefits
 - ✅ **Faster builds**: Cache hits on subsequent runs
@@ -45,8 +45,8 @@ All workflows now use the **tiered cache system** for optimal performance:
 
 **Features:**
 - Scheduled warmup every 6 hours
-- Daily cleanup of old ephemeral caches
-- Weekly cache analysis and optimization
+- per-iteration cleanup of old ephemeral caches
+- per-phase cache analysis and optimization
 - Manual trigger with operation selection
 
 **Usage:**
@@ -240,9 +240,9 @@ gh workflow run test-suite.yml -f test-scope=core -f fail-fast=true
 ## Future Enhancements
 
 - [x] Security suite consolidation (security-scanning-suite.yml)
-- [x] Cognitive workflow consolidation (Phase 2 Week 1)
-- [x] Agent workflow consolidation (Phase 2 Week 1)
-- [x] Deployment consolidation (Phase 2 Week 2)
+- [x] Cognitive workflow consolidation (Phase 2 phase 1)
+- [x] Agent workflow consolidation (Phase 2 phase 1)
+- [x] Deployment consolidation (Phase 2 phase 2)
 - [ ] Advanced cache analytics
 - [ ] Predictive failure detection
 

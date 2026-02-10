@@ -69,7 +69,7 @@ git push
 ### 4. Artifacts
 - **Coverage Reports**: HTML and XML formats
 - **Test Results**: pytest cache for debugging
-- **Retention**: 30 days for coverage, 7 days for test results
+- **Retention**: 30 iterations for coverage, 7 iterations for test results
 
 ### 5. PR Integration
 - **Coverage Comments**: Automatic coverage comments on PRs (Python 3.12 only)

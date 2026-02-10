@@ -555,7 +555,7 @@ python3 .github/scripts/env_var_converter.py --mode encode --file ...
 ### 5. Audit Regularly
 
 ```bash
-# Weekly verification
+# per-phase verification
 python3 .github/scripts/env_var_converter.py --mode verify --all
 
 # Check for drift

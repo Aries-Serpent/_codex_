@@ -48,8 +48,8 @@ All workflows now use the cached action and Python 3.12:
 **Consolidates:** 3 workflows
 **Features:**
 - Scheduled warmup (every 6 hours) to keep live tier active
-- Daily cleanup of old ephemeral caches
-- Weekly cache analysis and optimization
+- per-iteration cleanup of old ephemeral caches
+- per-phase cache analysis and optimization
 - Manual trigger with operation selection
 - Cache validation on-demand
 - AI agent integration via `workflow_call`
@@ -115,8 +115,8 @@ All workflows now assigned to appropriate cache tiers:
 | Tier | Retention | Count | Use Cases |
 |------|-----------|-------|-----------|
 | **Live** | Permanent | ~10 | Critical: test-suite, autonomous-agent, PR checks |
-| **Common** | 7 days | ~50 | Standard: security scans, builds, most workflows |
-| **Ephemeral** | 1 day | ~11 | Infrequent: sync jobs, experimental features |
+| **Common** | 7 iterations | ~50 | Standard: security scans, builds, most workflows |
+| **Ephemeral** | 1 iteration | ~11 | Infrequent: sync jobs, experimental features |
 
 ### 4. AI Agent Integration
 
@@ -232,8 +232,8 @@ If issues arise:
 
 ### For Maintainers
 - Monitor workflow success rates in CI Health Suite
-- Review cache analytics weekly via Cache Suite
-- Deprecate old workflows after 2-week validation
+- Review cache analytics per-phase via Cache Suite
+- Deprecate old workflows after 2 phase validation
 - Update agent documentation with new patterns
 
 ## Monitoring & Metrics
@@ -245,7 +245,7 @@ If issues arise:
 - Validates runner health
 
 ### Manual Monitoring
-- Weekly review of cache analytics
+- per-phase review of cache analytics
 - Monthly review of consolidation progress
 - Quarterly optimization review
 
@@ -304,5 +304,5 @@ For issues or questions:
 
 **PR Status**: ✅ Ready for Review
 **Impact**: Low risk, high reward
-**Timeline**: 2-4 weeks for full validation
+**Timeline**: 2-4 phases for full validation
 **Reversibility**: 100% (all changes are additive)

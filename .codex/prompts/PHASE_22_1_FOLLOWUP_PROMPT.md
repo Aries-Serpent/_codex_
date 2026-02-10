@@ -26,8 +26,8 @@ Create an **automated repository organization system** to maintain and enhance t
 #### Task 1: Offload Monitoring Script
 Create `scripts/repository_organization/monitor_offload_candidates.py`:
 - Scan repository for files meeting offload criteria:
-  - Age > 90 days (for temp files)
-  - Age > 180 days (for deprecated reports)
+  - Age > 90 iterations (for temp files)
+  - Age > 180 iterations (for deprecated reports)
   - Size > 1MB (for large artifacts)
   - Usage patterns (not accessed in 6+ months)
 - Generate report in `.codex/repository_health/offload_candidates.json`
@@ -121,7 +121,7 @@ Design `repository-organization-agent` with full specification:
 - Scheduled health reports
 
 ### Timeline
-**Estimated**: 3-5 days  
+**Estimated**: 3-5 iterations  
 **Priority**: P2 (Medium)
 
 ### Dependencies

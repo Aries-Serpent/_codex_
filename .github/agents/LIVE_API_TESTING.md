@@ -509,7 +509,7 @@ aws logs filter-log-events \
 1. **If all tests pass:**
    - Deploy to staging
    - Expand to more repositories
-   - Monitor for 1 week
+   - Monitor for 1 phase
    - Deploy to production
 
 2. **If issues found:**
@@ -519,8 +519,8 @@ aws logs filter-log-events \
    - Iterate
 
 3. **Ongoing monitoring:**
-   - Daily metrics review
-   - Weekly pattern accuracy check
+   - per-iteration metrics review
+   - per-phase pattern accuracy check
    - Monthly security audit
    - Quarterly performance optimization
 

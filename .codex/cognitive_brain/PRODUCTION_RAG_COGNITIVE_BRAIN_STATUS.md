@@ -686,21 +686,21 @@ graph TB
 
 ## Cognitive Brain Enhancement Roadmap
 
-### Short Term (1-2 Weeks)
+### Short Term (1-2 phases)
 
 1. ✅ Phase 1 validation complete
 2. 🔄 API layer implemented
 3. 🔄 CI/CD pipeline active
 4. 🔄 Monitoring operational
 
-### Medium Term (3-4 Weeks)
+### Medium Term (3-4 phases)
 
 1. 🔄 Advanced features deployed
 2. 🔄 GPU acceleration available
 3. 🔄 Analytics dashboard live
 4. 🔄 Performance benchmarks established
 
-### Long Term (5-8 Weeks)
+### Long Term (5-8 phases)
 
 1. 🔄 Custom agents autonomous
 2. 🔄 Knowledge graph integrated

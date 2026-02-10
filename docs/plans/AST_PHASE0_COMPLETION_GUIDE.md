@@ -23,7 +23,7 @@
 - Documentation created: 13 documents (3,900+ lines total)
 - Blockers identified: 46 (15 critical, 23 issues, 8 challenges)
 - OSS references: 25+ validated implementations
-- Implementation complexity: Medium (requires 6-8 weeks with dedicated team)
+- Implementation complexity: Medium (requires 6-8 phases with dedicated team)
 
 ---
 
@@ -48,12 +48,12 @@
 
 ---
 
-### Phase 0 Critical Path (5 Days to Gate Decision)
+### Phase 0 Critical Path (5 iterations to Gate Decision)
 
 ```text
 Day 1-2: Stakeholder Review Meeting
   ├─ Present findings from deep research
-  ├─ Review Phase 1 Quick Wins proposal (5 days)
+  ├─ Review Phase 1 Quick Wins proposal (5 iterations)
   ├─ Address architecture questions
   └─ Decision: Approve Phase 1 or defer
 
@@ -65,7 +65,7 @@ Day 3: Architecture Review (if needed)
 
 Day 4: Resource Planning
   ├─ Allocate team for Phase 1 (1-2 developers)
-  ├─ Schedule 5-day implementation window
+  ├─ Schedule 5 iteration implementation window
   ├─ Plan testing/review cycles
   └─ Confirm timeline feasibility
 
@@ -83,7 +83,7 @@ Day 5: Final Go/No-Go Decision
 ### Research & Planning Documents (13 Total)
 
 **Maturity Improvement (5 docs)**:
-1. ✅ `MATURITY_IMPROVEMENT_PLAN.md` (750 lines) - Master 15-week roadmap
+1. ✅ `MATURITY_IMPROVEMENT_PLAN.md` (750 lines) - Master 15 phase roadmap
 2. ✅ `MATURITY_IMPLEMENTATION_SUMMARY.md` - Implementation metrics
 3. ✅ `MATURITY_REMAINING_WORK.md` (400+ lines) - Completion status + recommendations
 4. ✅ `IMPLEMENTATION_STATUS.md` (337 lines) - Comprehensive status report
@@ -135,13 +135,13 @@ Day 5: Final Go/No-Go Decision
 
 | Category | Count | Key Issues | Status | Effort |
 |----------|-------|-----------|--------|--------|
-| AST usage inconsistency | 4 | 10+ files using raw ast | ✅ Solution ready | 3 days |
-| Test infrastructure | 4 | Missing fixtures, benchmarks | ✅ Solution ready | 2 days |
-| Documentation | 4 | Missing API docs, examples | ✅ Solution ready | 2 days |
-| Integration | 4 | No CI/CD, pre-commit | ✅ Solution ready | 2 days |
-| Performance | 3 | Caching, streaming needed | ✅ Solution ready | 3 days |
-| Version compatibility | 2 | Python 3.8-3.12 | ✅ Solution ready | 2 days |
-| Error handling | 2 | Scattered patterns | ✅ Solution ready | 1 day |
+| AST usage inconsistency | 4 | 10+ files using raw ast | ✅ Solution ready | 3 iterations |
+| Test infrastructure | 4 | Missing fixtures, benchmarks | ✅ Solution ready | 2 iterations |
+| Documentation | 4 | Missing API docs, examples | ✅ Solution ready | 2 iterations |
+| Integration | 4 | No CI/CD, pre-commit | ✅ Solution ready | 2 iterations |
+| Performance | 3 | Caching, streaming needed | ✅ Solution ready | 3 iterations |
+| Version compatibility | 2 | Python 3.8-3.12 | ✅ Solution ready | 2 iterations |
+| Error handling | 2 | Scattered patterns | ✅ Solution ready | 1 iteration |
 
 **All 23 Issues Have Identified Solutions** ✅
 
@@ -164,13 +164,13 @@ Day 5: Final Go/No-Go Decision
 
 ## Part 4: Phase 1 Full Implementation Context
 
-### Phase 1: Quick Wins (5 Days) - Complete Specification
+### Phase 1: Quick Wins (5 iterations) - Complete Specification
 
 **Phase 1 Objective**: Establish foundational AST infrastructure with minimal scope
 
 **Scope**: 8 high-value, low-risk tasks
 
-#### Task 1: Add Core Dependencies (0.5 days)
+#### Task 1: Add Core Dependencies (0.5 iterations)
 
 **Blockers Addressed**: BLOCK-DEP-001, BLOCK-DEP-003, BLOCK-DEP-004
 
@@ -217,7 +217,7 @@ print(f'  parso: {parso.__version__}')
 
 ---
 
-#### Task 2: Create StandardizedASTNode Dataclass (1 day)
+#### Task 2: Create StandardizedASTNode Dataclass (1 iteration)
 
 **Blocker Addressed**: BLOCK-ARCH-001
 
@@ -407,7 +407,7 @@ def test_tree_traversal():
 
 ---
 
-#### Task 3: Implement DependencyGraph (1 day)
+#### Task 3: Implement DependencyGraph (1 iteration)
 
 **Blocker Addressed**: BLOCK-ARCH-002
 
@@ -590,7 +590,7 @@ def test_topological_sort():
 
 ---
 
-#### Task 4: Create MetricsAggregator (0.5 days)
+#### Task 4: Create MetricsAggregator (0.5 iterations)
 
 **Blocker Addressed**: BLOCK-ARCH-003
 
@@ -747,7 +747,7 @@ def test_quality_tier():
 
 ---
 
-#### Tasks 5-8: Test Suite, Documentation, CLI, Pre-commit (2 days)
+#### Tasks 5-8: Test Suite, Documentation, CLI, Pre-commit (2 iterations)
 
 **Files Created**:
 - `tests/ast/conftest.py` - Shared test fixtures
@@ -764,7 +764,7 @@ def test_quality_tier():
 ### Days 1-2: Stakeholder Alignment
 
 - [ ] Present deep research findings (25+ OSS references, 46 blockers analyzed)
-- [ ] Propose Phase 1 Quick Wins (5 days, low risk, high value)
+- [ ] Propose Phase 1 Quick Wins (5 iterations, low risk, high value)
 - [ ] Address questions on architecture, feasibility, timeline
 - [ ] Decision: Approve Phase 1 or defer
 
@@ -792,7 +792,7 @@ def test_quality_tier():
 - [x] **25+ OSS references** - Validated and cited ✅
 - [x] **Architecture designed** - Awaiting stakeholder approval 🟡
 - [x] **Dependencies validated** - Version compatibility confirmed ✅
-- [x] **Timeline realistic** - 5-day Phase 1 + 6-8 weeks Phase 2-3 ✅
+- [x] **Timeline realistic** - 5 iteration Phase 1 + 6-8 phases Phase 2-3 ✅
 - [x] **Resources estimated** - 6-8 person-months identified ✅
 - [x] **Risk assessed** - Mitigation strategies defined ✅
 - [ ] **Stakeholder approval** - Awaiting sign-off 🔴
@@ -805,10 +805,10 @@ def test_quality_tier():
 
 ## Phase 0 Final Recommendation
 
-### ✅ RECOMMEND: Proceed with Phase 1 (5-Day Quick Wins)
+### ✅ RECOMMEND: Proceed with Phase 1 (5 iteration Quick Wins)
 
 **Justification**:
-- ✅ **Low effort**: 5 days only (minimal disruption)
+- ✅ **Low effort**: 5 iterations only (minimal disruption)
 - ✅ **Low risk**: Reversible, additive changes only
 - ✅ **High value**: Foundation + 8 blockers resolved
 - ✅ **Aligned**: Supports 75% maturity improvement work
@@ -819,7 +819,7 @@ def test_quality_tier():
 
 **Justification**:
 - Beyond current scope (75% maturity work complete)
-- Requires dedicated team (11-13 weeks)
+- Requires dedicated team (11-13 phases)
 - Needs stakeholder approval + funding
 - Can be deferred without impacting Phase 1
 
@@ -839,7 +839,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 **🧠 Roles:** [Primary: Implementation Lead], [Secondary: QA Lead] | ⚡ Energy: 5/5
 
-⚛️ **Physics:** Path🛤️ [Design → Code → Test → Validate] | Fields🔄 [8 focused tasks] | Patterns👁️ [Modular implementation, atomic commits] | Redundancy🔀 [Unit + integration tests] | Balance⚖️ [Speed vs quality, 5 days timeline]
+⚛️ **Physics:** Path🛤️ [Design → Code → Test → Validate] | Fields🔄 [8 focused tasks] | Patterns👁️ [Modular implementation, atomic commits] | Redundancy🔀 [Unit + integration tests] | Balance⚖️ [Speed vs quality, 5 iterations timeline]
 
 ---
 
@@ -847,7 +847,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 **Scope**: 8 high-value, low-risk tasks to establish AST foundation
 
-**Timeline**: 5 days (1 developer or 2.5 days with 2 developers)
+**Timeline**: 5 iterations (1 developer or 2.5 iterations with 2 developers)
 
 **Blockers Resolved**: 8 of 46 (17% completion rate)
 
@@ -863,9 +863,9 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 ---
 
-## Part 1: Daily Implementation Schedule
+## Part 1: per-iteration Implementation Schedule
 
-### Day 1: Dependencies + Foundation (1 day)
+### Day 1: Dependencies + Foundation (1 iteration)
 
 **Morning**:
 - [ ] Update `pyproject.toml` with core dependencies (0.5d)
@@ -881,7 +881,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 ---
 
-### Day 2: Graph + Metrics (1 day)
+### Day 2: Graph + Metrics (1 iteration)
 
 **Morning**:
 - [ ] Create `src/codex/ast/graph.py` with DependencyGraph + Tarjan's SCC (1d)
@@ -896,7 +896,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 ---
 
-### Day 3: Testing (1 day)
+### Day 3: Testing (1 iteration)
 
 **All Day**:
 - [ ] Create `tests/ast/test_node.py` - 5 tests (0.25d)
@@ -910,7 +910,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 ---
 
-### Day 4: CLI + Documentation (1 day)
+### Day 4: CLI + Documentation (1 iteration)
 
 **Morning**:
 - [ ] Create `src/codex/ast/cli.py` with Click CLI interface (0.5d)
@@ -926,7 +926,7 @@ I'll continue with the Phase 1 complete implementation specification in the next
 
 ---
 
-### Day 5: Validation + Integration (1 day)
+### Day 5: Validation + Integration (1 iteration)
 
 **Morning**:
 - [ ] Run all tests: `nox -s test -- tests/ast/` (0.25d)
@@ -1191,7 +1191,7 @@ tests:
 
 ## Part 4: Verification Checklist
 
-### Day-by-Day Verification
+### iteration-by-iteration Verification
 
 **Day 1 End**:
 - [ ] `pip install -e .` succeeds without conflicts
@@ -1281,7 +1281,7 @@ tests:
 | Tests Passing | 20/20 | TBD | Pending |
 | Linting Issues | 0 | TBD | Pending |
 | Type Errors | 0 | TBD | Pending |
-| Timeline | 5 days | TBD | Pending |
+| Timeline | 5 iterations | TBD | Pending |
 | Budget | < 1 person-week | TBD | Pending |
 
 ---
@@ -1493,8 +1493,8 @@ stakeholders:
     dependencies: ["EXEC-001"]
     approval_path: |
       Phase 0: Approve $39/month Copilot Pro+ subscription (single seat)
-      Phase 1: Confirm proration usage (7-day window)
-      Phase 2-3: Confirm proration usage (77-day window) + monitor overage (expected $0)
+      Phase 1: Confirm proration usage (7 iteration window)
+      Phase 2-3: Confirm proration usage (77 iteration window) + monitor overage (expected $0)
     contact_email: "[TBD]"
     escalation_contact: "EXEC-001 (CTO)"
 
@@ -1510,7 +1510,7 @@ stakeholders:
     approval_path: |
       Phase 0: Confirm access and model policy compliance
       Phase 1: Execute commits/PRs via Copilot agent/workflows
-      Phase 2-3: Maintain usage within allowance; weekly reporting
+      Phase 2-3: Maintain usage within allowance; per-phase reporting
     contact_email: "mbaetiong@[TBD]"
     escalation_contact: "PM-001 (Project Manager)"
 
@@ -1627,7 +1627,7 @@ approval_matrix:
         approval_type: "Schedule & Reporting"
         deadline_days: 2
         approval_criteria:
-          - "Weekly usage monitoring enabled"
+          - "per-phase usage monitoring enabled"
           - "Alerts at 80% allowance configured"
     go_no_go_criteria:
       - "CTO decision recorded"
@@ -1649,7 +1649,7 @@ resource_allocation:
     enforcement:
       - "All Copilot Chat/Agent/coding agent sessions executed by seat_owner"
       - "Team members Phase 5 request tasks; execution performed via single seat"
-      - "Weekly usage report shared in project channel"
+      - "per-phase usage report shared in project channel"
     fallbacks:
       - "Prefer GPT-4o/GPT-4.1/GPT-5 mini (multiplier 0)"
       - "Sonnet 4.5 default for reasoning (1x)"
@@ -1735,7 +1735,7 @@ budget:
   financial_controls:
     premium_request_monitoring:
       alert_threshold_percent: 80
-      report_frequency: "weekly"
+      report_frequency: "per-phase"
       remedial_actions:
         - "Shift to multiplier-0 models (GPT-4o/4.1/5 mini)"
         - "Defer Opus requests to next allowance window"
@@ -1921,7 +1921,7 @@ summary:
     - "Approve single-seat Copilot Pro+ policy (CTO, CPO)"
     - "Approve budget ≤ $150 total (Finance)"
     - "Assign seat to OPS-001 (mbaetiong)"
-    - "Enable weekly usage monitoring"
+    - "Enable per-phase usage monitoring"
   critical_success_factors:
     - "All approvals by 2025-11-12"
     - "Zero overage (maintain model policy caps)"

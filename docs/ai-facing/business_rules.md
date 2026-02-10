@@ -64,7 +64,7 @@ Select models based on task requirements:
 
 | Limit | Value | Action on Breach |
 |-------|-------|------------------|
-| Daily API spend | $100 | Alert + throttle |
+| per-iteration API spend | $100 | Alert + throttle |
 | Per-request cost | $0.10 | Require approval |
 | Monthly budget | $2000 | Hard limit |
 
@@ -72,7 +72,7 @@ Select models based on task requirements:
 
 1. **Audit Trail** - All actions logged with timestamp and user
 2. **Access Control** - RBAC enforced for sensitive operations
-3. **Data Retention** - Logs kept for 90 days minimum
+3. **Data Retention** - Logs kept for 90 iterations minimum
 4. **Incident Response** - Security issues reported within 24h
 
 ## Prohibited Actions

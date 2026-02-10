@@ -87,7 +87,7 @@
 │  │    ✅ CI Pass (coverage ≥ threshold)                          │   │
 │  │    ❌ CI Fail (coverage < threshold + actionable message)     │   │
 │  │    📊 PR Comment (coverage % + status badge)                  │   │
-│  │    📦 Artifacts (coverage.xml + htmlcov for 30 days)          │   │
+│  │    📦 Artifacts (coverage.xml + htmlcov for 30 iterations)          │   │
 │  └───────────────────────────────────────────────────────────────┘   │
 │                                                                      │
 └──────────────────────────────────────────────────────────────────────┘
@@ -1414,7 +1414,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 | **CI Performance** | No regression | Compare baseline vs ml_tests timing | ⬜ |
 | **Documentation Clarity** | ≥4/5 rating | Feedback from new contributors | ⬜ |
 
-### Health Checks (Weekly)
+### Health Checks (per-phase)
 
 ```bash
 # Run this per commit cycle to verify system health
@@ -1446,7 +1446,7 @@ gh pr list --state merged --limit 10 --json number,title,checks
 ### Monthly Review (First Monday)
 
 1. **Coverage Trend Analysis**
-   - Download last 4 weeks of coverage.xml from CI artifacts
+   - Download last 4 phases of coverage.xml from CI artifacts
    - Plot trend line
    - Identify improving/declining areas
 
@@ -1540,7 +1540,7 @@ gh pr list --state merged --limit 10 --json number,title,checks
 | Issue Type | Contact | Response SLA | Escalation Path |
 |------------|---------|--------------|-----------------|
 | **Coverage gate blocking merge** | #engineering-help Slack | < 1 hour | @mbaetiong → @tech-lead |
-| **Parsing script bug** | File GitHub issue with `bug` label | < 4 hours | @mbaetiong |
+| **Parsing script bug** | File GitHub issue with `bug` label | < 4 Commits | @mbaetiong |
 | **Threshold adjustment request** | #architecture Slack | < 1 business day | Team consensus required |
 | **CI/CD infrastructure failure** | #devops Slack | < 30 minutes | @devops-oncall |
 | **Documentation unclear** | Comment on CONTRIBUTING.md | < 2 business days | @mbaetiong |
@@ -1811,10 +1811,10 @@ When a new team member joins:
 **Coverage gating supports**:
 - **Auditability**: CI logs show when/why PRs failed coverage
 - **Quality assurance**: Enforces testing discipline (control evidence)
-- **Traceability**: Artifacts retained 30 days for post-incident review
+- **Traceability**: Artifacts retained 30 iterations for post-incident review
 
 **Artifact retention policy**:
-- Coverage data: 30 days (sufficient for most audits)
+- Coverage data: 30 iterations (sufficient for most audits)
 - If longer retention needed, export to S3/GCS via scheduled workflow
 
 ---
@@ -2029,7 +2029,7 @@ jobs:
   check-retention:
     runs-on: ubuntu-latest
     steps:
-      - name: Check 30-day artifact exists
+      - name: Check 30 iteration artifact exists
         run: |
           # Fetch workflow runs from 29 days ago
           gh api repos/${{ github.repository }}/actions/runs \
@@ -2142,7 +2142,7 @@ git revert <commit-hash-of-coverage-implementation>
 - [ ] Coverage baseline measured (current coverage %)
 - [ ] Initial threshold set (recommend starting at current - 5%)
 - [ ] Alert set up for coverage-gate failures (if using monitoring system)
-- [ ] Weekly review scheduled (first 4 weeks)
+- [ ] per-phase review scheduled (first 4 phases)
 
 ---
 
@@ -2408,7 +2408,7 @@ This implementation is **DONE** when:
 - [x] All code changes committed and merged to `main`
 - [x] CI successfully gates PRs based on coverage threshold
 - [x] PR comments posted on 100% of PRs
-- [x] Artifacts retained for 30 days
+- [x] Artifacts retained for 30 iterations
 - [x] Documentation complete and reviewed
 - [x] Zero false positives in first week
 - [x] Developer feedback ≥4/5 satisfaction

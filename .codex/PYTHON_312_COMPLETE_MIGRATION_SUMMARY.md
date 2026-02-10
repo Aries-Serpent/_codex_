@@ -513,7 +513,7 @@ echo "ROLLBACK: Python 3.11 support restored temporarily"
 4. **Address Any Issues** - Fix any discovered problems
 5. **Update External Docs** - Notify users of breaking change
 
-### Medium-term (Next 1-2 weeks)
+### Medium-term (Next 1-2 phases)
 
 1. **Performance Benchmarking** - Measure Python 3.12 speedup
 2. **Cache Optimization** - Fine-tune cache strategy

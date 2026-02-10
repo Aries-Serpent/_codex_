@@ -353,7 +353,7 @@ jobs:
           print(f"Token-related events: {len(token_events)}")
           
           # Generate report
-          with open('.codex/audit-reports/daily-summary.txt', 'a') as f:
+          with open('.codex/audit-reports/per-iteration-summary.txt', 'a') as f:
               f.write(f"\n{datetime.now()}: {len(logs)} events, {len(token_events)} token events\n")
           PYEOF
       
@@ -362,7 +362,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/audit-reports/
-          git commit -m "audit: daily audit log summary" || true
+          git commit -m "audit: per-iteration audit log summary" || true
           git push
 ```
 
@@ -480,7 +480,7 @@ gh run list --workflow=inject-repository-secrets.yml
 ### 4. Monitor and Maintain
 ```bash
 # View audit logs
-cat .codex/audit-reports/daily-summary.txt
+cat .codex/audit-reports/per-iteration-summary.txt
 
 # Check compliance
 gh workflow run compliance-monitoring.yml
@@ -495,7 +495,7 @@ gh workflow run automated-token-rotation.yml
 
 1. **Never commit actual secrets** - Always use GitHub Secrets
 2. **Rotate regularly** - Implement automated rotation (monthly minimum)
-3. **Audit access** - Review audit logs weekly
+3. **Audit access** - Review audit logs per-phase
 4. **Principle of least privilege** - Grant minimum required permissions
 5. **Encrypt at rest** - Use GitHub's encrypted secrets storage
 6. **Monitor usage** - Set up alerts for unusual patterns

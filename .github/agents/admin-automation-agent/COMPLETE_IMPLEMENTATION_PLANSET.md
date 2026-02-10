@@ -3,7 +3,7 @@
 
 **Version**: 2.0.0 (Integrated)  
 **Created**: 2026-01-13T17:30:00Z  
-**Estimated Effort**: 2-3 weeks  
+**Estimated Effort**: 2-3 phases  
 **Integration Status**: NotebookLM architecture integrated  
 **Authorization**: FULL ACCESS granted by mbaetiong
 
@@ -107,17 +107,17 @@ graph TB
 
 | Week | Component | Effort | Priority | Dependencies |
 |------|-----------|--------|----------|--------------|
-| 1 | auth_manager.py | 6 hours | P0 | None |
-| 1 | secrets_manager.py (link) | 2 hours | P0 | auth_manager |
-| 1 | reporting_engine.py | 4 hours | P1 | None |
-| 2 | workflow_manager.py | 8 hours | P0 | auth_manager |
-| 2 | integration_manager.py | 6 hours | P1 | auth_manager |
-| 2 | validation_engine.py (link) | 2 hours | P1 | None |
-| 3 | Test suite (unit) | 8 hours | P0 | All components |
-| 3 | Test suite (integration) | 6 hours | P1 | All components |
-| 3 | Test suite (E2E) | 4 hours | P1 | All components |
+| 1 | auth_manager.py | 6 Commits | P0 | None |
+| 1 | secrets_manager.py (link) | 2 Commits | P0 | auth_manager |
+| 1 | reporting_engine.py | 4 Commits | P1 | None |
+| 2 | workflow_manager.py | 8 Commits | P0 | auth_manager |
+| 2 | integration_manager.py | 6 Commits | P1 | auth_manager |
+| 2 | validation_engine.py (link) | 2 Commits | P1 | None |
+| 3 | Test suite (unit) | 8 Commits | P0 | All components |
+| 3 | Test suite (integration) | 6 Commits | P1 | All components |
+| 3 | Test suite (E2E) | 4 Commits | P1 | All components |
 
-**Total Effort**: 46 hours (5-6 days of focused work)
+**Total Effort**: 46 hours (5-6 iterations of focused work)
 
 ---
 
@@ -511,7 +511,7 @@ def test_check_required_scopes_missing(auth_manager):
 - [ ] Deploy agent to GitHub Actions
 - [ ] Test Phase 10 setup automation
 - [ ] Validate NotebookLM sync pipeline
-- [ ] Configure weekly health checks
+- [ ] Configure per-phase health checks
 - [ ] Set up secret rotation schedule
 - [ ] Create operational runbook
 - [ ] Train team on agent usage
@@ -541,7 +541,7 @@ def test_check_required_scopes_missing(auth_manager):
 **Context**: Core agent working (18KB), NotebookLM sync 95% complete.
 Need to implement component managers and test framework.
 
-**Implementation Schedule** (2-3 weeks):
+**Implementation Schedule** (2-3 phases):
 
 **Week 1: Core Components**
 1. Create auth_manager.py (6 hours)
@@ -744,14 +744,14 @@ Success: All tasks execute successfully, reports generated, brain updated.
 Steps:
 1. Create requirements.txt
 2. Create .github/workflows/test-admin-agent.yml (test workflow)
-3. Create .github/workflows/admin-agent-weekly-health.yml (production)
+3. Create .github/workflows/admin-agent-per-phase-health.yml (production)
 4. Trigger test workflow manually
 5. Verify execution and logs
 6. Enable production schedule
 7. Monitor first automated run
 8. Update documentation
 
-Success: Agent deployed, weekly health checks running, no errors.
+Success: Agent deployed, per-phase health checks running, no errors.
 ```
 
 ---
@@ -784,18 +784,18 @@ Success: Agent deployed, weekly health checks running, no errors.
 | Phase | Component | Effort | Priority |
 |-------|-----------|--------|----------|
 | 1 | NotebookLM gap (secretlint) | 5 min | P2 |
-| 2 | auth_manager.py | 6 hours | P0 |
-| 2 | workflow_manager.py | 8 hours | P0 |
-| 2 | integration_manager.py | 6 hours | P1 |
-| 2 | reporting_engine.py | 4 hours | P1 |
-| 2 | Module linking | 4 hours | P1 |
-| 3 | Unit tests | 8 hours | P0 |
-| 3 | Integration tests | 6 hours | P1 |
-| 3 | E2E tests | 4 hours | P1 |
-| 4 | Deployment | 6 hours | P0 |
+| 2 | auth_manager.py | 6 Commits | P0 |
+| 2 | workflow_manager.py | 8 Commits | P0 |
+| 2 | integration_manager.py | 6 Commits | P1 |
+| 2 | reporting_engine.py | 4 Commits | P1 |
+| 2 | Module linking | 4 Commits | P1 |
+| 3 | Unit tests | 8 Commits | P0 |
+| 3 | Integration tests | 6 Commits | P1 |
+| 3 | E2E tests | 4 Commits | P1 |
+| 4 | Deployment | 6 Commits | P0 |
 | **Total** | | **52 hours** | |
 
-**Calendar Time**: 2-3 weeks (assuming 4-6 hours/day focused work)  
+**Calendar Time**: 2-3 phases (assuming 4-6 hours/day focused work)  
 **Critical Path**: auth_manager → workflow_manager → tests → deployment
 
 ---
@@ -815,7 +815,7 @@ Success: Agent deployed, weekly health checks running, no errors.
 **Document Status**: ✅ COMPLETE  
 **Integration Status**: ✅ NOTEBOOKLM ARCHITECTURE 95% MATCHED  
 **Implementation Ready**: ✅ YES  
-**Estimated Completion**: 2-3 weeks  
+**Estimated Completion**: 2-3 phases  
 **Next Action**: Execute Primary Implementation Prompt
 
 ---

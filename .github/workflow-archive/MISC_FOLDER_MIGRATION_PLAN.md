@@ -3,7 +3,7 @@
 **Purpose**: Systematic migration of deprecated, experimental, and one-off workflows to `.github/misc/` folder  
 **Date**: 2026-02-06  
 **Target Workflows**: 15-20 workflows  
-**Timeline**: 2 weeks (concurrent with Phase 1 consolidation)
+**Timeline**: 2 phases (concurrent with Phase 1 consolidation)
 
 ---
 
@@ -46,7 +46,7 @@ The **misc/** folder serves as a holding area for:
    - Functionality moved to consolidated workflow
    - Kept for reference only
 
-5. **Low Usage (<5 executions in 90 days)**
+5. **Low Usage (<5 executions in 90 iterations)**
    - Rarely triggered
    - Not critical to operations
 
@@ -493,7 +493,7 @@ git commit -m "restore: Activate $WORKFLOW from misc/$SOURCE_DIR"
 ---
 
 **Document Status**: ✅ Ready for Implementation  
-**Timeline**: 2 weeks  
+**Timeline**: 2 phases  
 **Dependencies**: None (can run parallel to Phase 1 consolidation)  
 **Risk**: Low (workflows are already non-functional or low-use)  
 

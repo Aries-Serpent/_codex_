@@ -91,10 +91,10 @@ python src/agent.py \
   --notify
 ```
 
-### Weekly Health Check (Scheduled)
+### per-phase Health Check (Scheduled)
 
 ```yaml
-# .github/workflows/weekly-health-check.yml
+# .github/workflows/per-phase-health-check.yml
 on:
   schedule:
     - cron: '0 9 * * 1'  # Every Monday 9 AM
@@ -149,7 +149,7 @@ jobs:
 
 | Metric | Without Agent | With Agent | Improvement |
 |--------|---------------|------------|-------------|
-| Setup Time | 2-3 hours | 5-10 min | 92% faster |
+| Setup Time | 2-3 Commits | 5-10 min | 92% faster |
 | Manual Steps | 12 | 0-3 | 75% reduction |
 | Error Rate | 15% | 2% | 87% reduction |
 | Validation | 90 min | 30 sec | 99.4% faster |
@@ -280,7 +280,7 @@ See [LICENSE](../../../LICENSE) for license information.
 
 **Agent Status**: ✅ **DESIGN COMPLETE - IMPLEMENTATION READY**
 
-**Implementation Effort**: 2-3 weeks  
+**Implementation Effort**: 2-3 phases  
 **Maintenance**: 2-4 hours/month  
 **ROI**: 10x (automation savings vs development cost)
 

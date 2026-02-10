@@ -42,7 +42,7 @@
 #### Task 1: Deploy CI Monitoring & Auto-Healing Agent 🚨
 
 **Priority**: CRITICAL  
-**Estimated Effort**: 2-3 days  
+**Estimated Effort**: 2-3 iterations  
 **Dependencies**: None
 
 **Deliverables**:
@@ -107,12 +107,12 @@ Impact: 80% reduction in manual CI investigation
 #### Task 2: Deploy Secrets Audit & Compliance Agent 🔐
 
 **Priority**: HIGH  
-**Estimated Effort**: 2 days  
+**Estimated Effort**: 2 iterations  
 **Dependencies**: None
 
 **Deliverables**:
 1. Custom agent implementation (`.github/agents/secrets-audit-agent/`)
-2. Weekly scheduled workflow
+2. per-phase scheduled workflow
 3. Compliance dashboard (GitHub Pages or Grafana)
 4. Alert system for rotation overdue
 
@@ -130,7 +130,7 @@ mkdir -p .github/agents/secrets-audit-agent/{prompts,workflows}
 # Schedule: Weekly Monday 8AM UTC
 
 # 4. Implement alert generation
-# Threshold: Secrets >80 days old
+# Threshold: Secrets >80 iterations old
 
 # 5. Create compliance dashboard
 # Display: Rotation status, access patterns, alerts
@@ -139,7 +139,7 @@ mkdir -p .github/agents/secrets-audit-agent/{prompts,workflows}
 ```
 
 **Validation**:
-- [ ] Weekly audit runs automatically
+- [ ] per-phase audit runs automatically
 - [ ] Detects secrets nearing rotation threshold
 - [ ] Generates compliance reports
 - [ ] Alerts on anomalous access patterns
@@ -150,7 +150,7 @@ mkdir -p .github/agents/secrets-audit-agent/{prompts,workflows}
 #### Task 3: Implement MFA Credential Secure Delivery 📲
 
 **Priority**: HIGH  
-**Estimated Effort**: 2 days  
+**Estimated Effort**: 2 iterations  
 **Dependencies**: Email/SMS service OR internal portal
 
 **Current State**: MFA enrollment generates credentials but doesn't deliver them securely (documented placeholder)
@@ -210,7 +210,7 @@ class SecureMFADelivery:
 #### Task 4: Deploy Performance Regression Detector 📊
 
 **Priority**: MEDIUM  
-**Estimated Effort**: 2 days
+**Estimated Effort**: 2 iterations
 
 **Deliverables**:
 1. Performance regression agent
@@ -226,7 +226,7 @@ mkdir -p .github/agents/performance-regression-agent/
 
 # 2. Implement statistical analysis
 # - Load benchmark results
-# - Compare vs baseline (30-day window)
+# - Compare vs baseline (30 iteration window)
 # - Calculate confidence intervals
 # - Detect regressions (>5% with 95% confidence)
 
@@ -254,7 +254,7 @@ mkdir -p .github/agents/performance-regression-agent/
 #### Task 5: Deploy Documentation Sync Agent 📖
 
 **Priority**: MEDIUM  
-**Estimated Effort**: 1-2 days
+**Estimated Effort**: 1-2 iterations
 
 **Deliverables**:
 1. Documentation sync agent
@@ -303,7 +303,7 @@ mkdir -p .github/agents/doc-sync-agent/
 #### Task 6: Create Unified Agent Dashboard 📊
 
 **Priority**: HIGH  
-**Estimated Effort**: 1 day
+**Estimated Effort**: 1 iteration
 
 **Deliverables**:
 1. Central monitoring dashboard
@@ -339,7 +339,7 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
 #### Task 7: End-to-End Testing & Validation ✅
 
 **Priority**: CRITICAL  
-**Estimated Effort**: 1-2 days
+**Estimated Effort**: 1-2 iterations
 
 **Test Scenarios**:
 1. **CI Failure Auto-Healing**:
@@ -348,7 +348,7 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
    - Confirm fix committed and CI re-runs successfully
 
 2. **Secret Rotation Alert**:
-   - Set secret to 85 days old (mock)
+   - Set secret to 85 iterations old (mock)
    - Verify audit agent creates alert issue
    - Confirm compliance report accuracy
 
@@ -426,7 +426,7 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
 ### Update Cadence
 
 - **After Each Agent Deployment**: Add agent-specific patterns
-- **Weekly**: Review and consolidate learnings
+- **per-phase**: Review and consolidate learnings
 - **Phase Complete**: Comprehensive cognitive brain update
 
 ---
@@ -500,8 +500,8 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
 
 ### Regular Updates
 
-- **Daily**: Progress summary in PR comments
-- **Weekly**: Detailed status report
+- **per-iteration**: Progress summary in PR comments
+- **per-phase**: Detailed status report
 - **Phase Complete**: Comprehensive completion report
 
 ---
@@ -538,7 +538,7 @@ Recommended: Start with Option 1, migrate to Option 2 if needed
 **Generated**: 2026-01-16  
 **For**: Phase 12 - Custom Agents & Production Hardening  
 **Executor**: @copilot (autonomous mode)  
-**Expected Duration**: 2-3 weeks  
+**Expected Duration**: 2-3 phases  
 **Success Criteria**: All agents deployed, metrics achieved, documentation complete
 
 **🚀 BEGIN PHASE 12 EXECUTION 🚀**

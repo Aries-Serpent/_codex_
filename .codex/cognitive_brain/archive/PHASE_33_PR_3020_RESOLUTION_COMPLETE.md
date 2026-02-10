@@ -521,13 +521,13 @@ None added in this phase.
 
 ## 📝 Follow-Up Items
 
-### Immediate (Within 1 day)
+### Immediate (Within 1 iteration)
 - [x] Review PR #3020 and verify CI checks pass
 - [x] Merge Phase 33 changes
 - [ ] Monitor CI/CD for QA Walkthrough timeout
 - [ ] Verify all workflows pass on merge
 
-### Short-Term (Within 1 week)
+### Short-Term (Within 1 phase)
 - [ ] Manual audit of 4 hardcoded secrets
 - [ ] Apply ruff auto-fixes for 49 code quality issues
 - [ ] Review eval/exec instances for security

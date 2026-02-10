@@ -225,7 +225,7 @@ except Exception as e:
 ```yaml
 stubs_remaining: 298 → 0
 completion_rate: 0% → 100%
-timeline: 16 weeks
+timeline: 16 phases
 effort: 2-3 engineers
 ```
 

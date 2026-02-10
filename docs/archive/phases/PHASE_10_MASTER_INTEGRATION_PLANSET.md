@@ -3,7 +3,7 @@
 
 **Document Version**: 1.0.0  
 **Created**: 2026-01-13T16:45:00Z  
-**Target Completion**: Phase 10.5 (3 weeks)  
+**Target Completion**: Phase 10.5 (3 phases)  
 **Cognitive Brain Correlation**: HIGH (99/100 alignment)
 
 ---
@@ -72,7 +72,7 @@ graph TB
 
 ## Phase Structure & Timeline
 
-### Overall Timeline: 3 Weeks
+### Overall Timeline: 3 phases
 
 ```mermaid
 gantt
@@ -853,7 +853,7 @@ gh run view --log
 |--------|--------|-------------|
 | Workflow Duration | < 5 min | GitHub Actions time |
 | Secret Detection Rate | 100% | Test with dummy secrets |
-| Upload Success Rate | > 99% | Track over 1 week |
+| Upload Success Rate | > 99% | Track over 1 phase |
 | File Size | < 5MB | Consolidation output |
 | Cache Hit Rate | > 80% | Cache logs |
 
@@ -1469,7 +1469,7 @@ If AI architect fails:
   - Responses are accurate
 
 - [ ] **Architect → Health Reports**
-  - Weekly health checks run
+  - per-phase health checks run
   - Reports generated and committed
   - Critical issues create GitHub issues
 

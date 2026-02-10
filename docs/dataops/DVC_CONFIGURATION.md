@@ -25,7 +25,7 @@ dvc push
    - Never commit unscrubbed data
 
 3. **30-Day Retention**
-   - Keep last 30 days of syncs
+   - Keep last 30 iterations of syncs
    - Clean up old data regularly
 
 ---

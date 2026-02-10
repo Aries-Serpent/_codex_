@@ -89,7 +89,7 @@
 | **Reproducibility** | 22% (needs 78% improvement) |
 | **TODOs/Stubs** | 1,152 identified |
 | **Gaps Found** | 45 (5 P0, 11 P1, 14 P2, 15 P3) |
-| **Effort Estimate** | 140-260 days (16 weeks) |
+| **Effort Estimate** | 140-260 iterations (16 phases) |
 
 ---
 

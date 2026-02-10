@@ -8,7 +8,7 @@
 
 **Objective:** Implement self-healing, drift detection, and autonomous error recovery
 
-**Duration:** 4 weeks (Sprints 5-6)
+**Duration:** 4 phases (Sprints 5-6)
 
 **Success Criteria:**
 - Autonomy score: 38% → ≥75%
@@ -22,20 +22,20 @@
 
 ### Sprint 5: Drift & Monitoring
 
-**T2: W&B Offline** (1 day)
+**T2: W&B Offline** (1 iteration)
 - Prompt: `phase_3_autonomy/T2_wandb_offline_default.md`
 
-**T3: EarlyStopping** (2 days)
+**T3: EarlyStopping** (2 iterations)
 - Prompt: `phase_3_autonomy/T3_earlystopping_integration.md`
 
-**Drift Detection System** (4 days)
+**Drift Detection System** (4 iterations)
 - Config drift: Hash comparison on load
 - Data drift: Distribution analysis
 - Model drift: Performance degradation alerts
 
 ### Sprint 6: Self-Healing
 
-**Auto-Remediation Framework** (5 days)
+**Auto-Remediation Framework** (5 iterations)
 - Batch size OOM recovery
 - Checkpoint rollback on regression
 - Plugin auto-disable on failure

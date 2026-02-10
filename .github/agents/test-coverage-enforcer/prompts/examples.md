@@ -254,7 +254,7 @@ cognitive_brain:
     - coverage_percentage
     - gap_count
     - tests_generated
-  reporting_interval: daily
+  reporting_interval: per-iteration
   storage:
     type: sqlite
     path: .codex/sessions/agent_metrics.db
@@ -263,7 +263,7 @@ cognitive_brain:
 ### Usage
 
 ```bash
-# Run daily coverage check
+# Run per-iteration coverage check
 python -m src.agent enforce --path src --threshold 80
 
 # Coverage data is automatically stored in SQLite DB
@@ -313,7 +313,7 @@ coverage = [r[1] for r in results]
 plt.plot(dates, coverage)
 plt.xlabel('Date')
 plt.ylabel('Coverage %')
-plt.title('Coverage Trend - Last 30 Days')
+plt.title('Coverage Trend - Last 30 iterations')
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.savefig('coverage_trend.png')

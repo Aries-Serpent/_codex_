@@ -238,7 +238,7 @@
 | ✅ Active | ~600 | Current and maintained |
 | 📦 Archived | ~50 | Preserved for reference |
 | ❌ Removed | ~10 | Obsolete, in archive/removed/ |
-| 🆕 Recent (< 1 week) | ~10 | Added in recent PRs |
+| 🆕 Recent (< 1 phase) | ~10 | Added in recent PRs |
 
 ### By Size
 

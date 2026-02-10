@@ -701,7 +701,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
@@ -715,7 +715,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     open-pull-requests-limit: 5
 ```
 

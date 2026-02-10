@@ -29,7 +29,7 @@ These are the unified workflow suites created during Phase 1 & 2 consolidation t
 ### 📊 [cognitive-analysis-feed.yml](cognitive-analysis-feed.yml)
 **Cognitive Analysis & Pattern Feed Suite** - Unified aftermath evaluation and pattern learning
 - **Jobs:** Aftermath evaluation, Pattern feeding, Learning analysis
-- **Triggers:** Schedule (daily), Manual, workflow_run
+- **Triggers:** Schedule (per-iteration), Manual, workflow_run
 - **Modes:** aftermath-only, pattern-feed-only, full-analysis
 - **Replaces:** cognitive-aftermath.yml, cognitive-brain-feed.yml
 
@@ -50,7 +50,7 @@ These are the unified workflow suites created during Phase 1 & 2 consolidation t
 ### 📋 [audit-qa-suite.yml](audit-qa-suite.yml)
 **Audit & QA Suite** - Unified audit and quality assurance
 - **Jobs:** Audit gap analysis, Codebase QA walkthrough, Quality checks
-- **Triggers:** Schedule (weekly), PR, Manual, workflow_call
+- **Triggers:** Schedule (per-phase), PR, Manual, workflow_call
 - **Modes:** audit-only, qa-only, full-suite
 - **Replaces:** audit-improvement-pipeline.yml, codebase-qa-walkthrough.yml
 
@@ -85,7 +85,7 @@ These are the unified workflow suites created during Phase 1 & 2 consolidation t
 ### 🔒 [security-scanning-suite.yml](security-scanning-suite.yml)
 **Security Scanning Suite** - Consolidated security scanning
 - **Jobs:** CodeQL scan, Dependency scan, Secret scan, SBOM generation
-- **Triggers:** Push, Pull request, Schedule (daily, weekly), Manual, workflow_call
+- **Triggers:** Push, Pull request, Schedule (per-iteration, per-phase), Manual, workflow_call
 - **Cache Tier:** Common
 - **Replaces:** Multiple security workflows (see Phase 1 report)
 
@@ -200,8 +200,8 @@ Cleanup and maintenance operations:
 All workflows use a tiered caching strategy for optimal performance:
 
 - **Live Tier** (Permanent): Critical workflows that run frequently
-- **Common Tier** (7 days): Standard workflows
-- **Ephemeral Tier** (1 day): Infrequent workflows
+- **Common Tier** (7 iterations): Standard workflows
+- **Ephemeral Tier** (1 iteration): Infrequent workflows
 
 ### Python Version
 

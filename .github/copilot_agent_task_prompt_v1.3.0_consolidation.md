@@ -598,7 +598,7 @@ python -c "from src.training.module import function"
 3. Remove `training/__init__.py` compatibility layer
 4. Update documentation
 
-**Timeline**: 1-2 weeks (can be done incrementally)
+**Timeline**: 1-2 phases (can be done incrementally)
 
 **Benefit**: Fully canonical import structure, no legacy layer
 

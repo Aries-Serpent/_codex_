@@ -3,7 +3,7 @@
 > **Version**: 1.0.0  
 > **Status**: 📋 PLANNED  
 > **Priority**: HIGH  
-> **Estimated Effort**: 3-5 days
+> **Estimated Effort**: 3-5 iterations
 
 ---
 

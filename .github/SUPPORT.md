@@ -27,9 +27,9 @@ Need help with _codex_? Here are your options:
 - **P3 (Low Severity)**: Best effort
 
 ### Response Times (Open Source Contributors)
-- **Bug reports**: Best effort, typically within 1 week
+- **Bug reports**: Best effort, typically within 1 phase
 - **Feature requests**: Reviewed in triage meetings
-- **Pull requests**: Initial review within 1 week for active branches
+- **Pull requests**: Initial review within 1 phase for active branches
 
 ### What NOT to Do
 - Don't open issues for general questions (use Discussions instead)

@@ -179,13 +179,13 @@ python scripts/refresh_requirements_lock.py
 ## 🚀 Future Features (Cycle 1-Phase 3 (Current Cycle))
 
 Planned MCP enhancements:
-1. **Size Estimation** (--estimate flag) - 2-3 days
-2. **Exclude Patterns** (--exclude parameter) - 2-3 days
-3. **Duplicate Resolution** (hash suffix) - 3-4 days
-4. **Package Diff Tool** (compare packages) - 3-4 days
-5. **Package Merge Tool** (combine with strategies) - 4-5 days
-6. **Interactive Mode** (TUI selector) - 5-7 days
-7. **Smart Recommendations** (git analysis) - 3-4 days
+1. **Size Estimation** (--estimate flag) - 2-3 iterations
+2. **Exclude Patterns** (--exclude parameter) - 2-3 iterations
+3. **Duplicate Resolution** (hash suffix) - 3-4 iterations
+4. **Package Diff Tool** (compare packages) - 3-4 iterations
+5. **Package Merge Tool** (combine with strategies) - 4-5 iterations
+6. **Interactive Mode** (TUI selector) - 5-7 iterations
+7. **Smart Recommendations** (git analysis) - 3-4 iterations
 
 See [ADVANCED_FEATURES_PLANSET.md](../docs/mcp/ADVANCED_FEATURES_PLANSET.md) for details.
 

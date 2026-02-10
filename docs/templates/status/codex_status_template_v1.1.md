@@ -1,9 +1,9 @@
-# Template: `_codex_` Daily Status Update
+# Template: `_codex_` per-iteration Status Update
 > Generated: 2025-11-02 11:32:31 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer] ⚡ Energy: 5  
 
 
-This is the canonical template for producing the daily, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance. It now supports dynamic Capability discovery and an extensible Reproducibility Registry.
+This is the canonical template for producing the per-iteration, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance. It now supports dynamic Capability discovery and an extensible Reproducibility Registry.
 
 Title format for each report (must use exactly):
 - H1 Title: "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
@@ -33,8 +33,8 @@ Title format for each report (must use exactly):
   - Author: <name/handle>
   - Reviewers: <list>
 - Prior Report Reference:
-  - Path: reports/daily/<YYYY‑MM‑DD>.md (default)
-  - Retention: keep last 30; archive (>90 days) optional zip
+  - Path: reports/per-iteration/<YYYY‑MM‑DD>.md (default)
+  - Retention: keep last 30; archive (>90 iterations) optional zip
 
 ---
 
@@ -220,7 +220,7 @@ For multi-file patches, sequence multiple blocks. Use feature flags for risky pa
 
 ---
 
-## 5. Automation Data Ingest (Daily)
+## 5. Automation Data Ingest (per-iteration)
 - Issues (full list; do not truncate):
 ```list type="issue"
 data:

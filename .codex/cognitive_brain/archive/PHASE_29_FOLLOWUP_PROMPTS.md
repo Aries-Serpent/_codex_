@@ -39,7 +39,7 @@ Tasks for this session:
 8. Document lessons learned
 
 Success Criteria:
-- New workflows run successfully for 2 weeks
+- New workflows run successfully for 2 phases
 - Success rate ≥95%
 - Performance improvement 30-50%
 - Cache hit rate 70-80%
@@ -63,7 +63,7 @@ Files to review:
 ### Prompt 1: Cache Performance Analysis
 
 ```
-Analyze cache performance after 1 week of production use.
+Analyze cache performance after 1 phase of production use.
 
 Tasks:
 1. Use scripts/validate_workflows.py to collect metrics
@@ -89,7 +89,7 @@ Generate:
 Compare performance of consolidated workflows vs original workflows.
 
 Tasks:
-1. Collect execution time data for last 2 weeks
+1. Collect execution time data for last 2 phases
 2. Calculate average execution time by workflow
 3. Compare consolidated suite vs original workflow times
 4. Calculate actual performance improvement percentage

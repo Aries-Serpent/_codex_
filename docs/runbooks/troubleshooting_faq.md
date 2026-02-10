@@ -182,11 +182,11 @@ python -m codex_ml.cli.feature_store health
 python scripts/refresh_features.py
 ```
 
-3. If expected (batch features updated weekly), adjust SLA:
+3. If expected (batch features updated per-phase), adjust SLA:
 ```yaml
 feature_store:
   sla:
-    freshness_sla_minutes: 10080  # 1 week
+    freshness_sla_minutes: 10080  # 1 phase
 ```
 
 ---

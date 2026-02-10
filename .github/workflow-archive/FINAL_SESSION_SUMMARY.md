@@ -91,7 +91,7 @@
    - **Mitigation**: Investigation plan in PARITY_CHECKLIST.md
    - **Fallback**: Restore from EMERGENCY_ROLLBACK.md
 
-2. **daily-status-pipeline.yml** (not found)
+2. **per-iteration-status-pipeline.yml** (not found)
    - **Impact**: 5 monitoring workflows disabled
    - **Risk**: MEDIUM (status may be distributed)
    - **Mitigation**: Investigation plan in PARITY_CHECKLIST.md
@@ -155,10 +155,10 @@
 2. ✅ Verify ci-health-monitor.yml executes
 3. 🔄 Investigate 3 missing consolidated workflows:
    - workflow-validation.yml (Task 1 - HIGH priority)
-   - daily-status-pipeline.yml (Task 2 - MEDIUM priority)
+   - per-iteration-status-pipeline.yml (Task 2 - MEDIUM priority)
    - cache-management.yml (Task 3 - LOW priority)
 
-### Short-term (1-7 days)
+### Short-term (1-7 iterations)
 1. Collect CI metrics (runtime, failure rates)
 2. Survey team on consolidation impact
 3. Create/enhance missing consolidated workflows if needed

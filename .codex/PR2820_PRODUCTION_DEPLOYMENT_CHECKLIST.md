@@ -108,7 +108,7 @@ pytest tests/ -v
 - [ ] No performance regressions
 - [ ] Disk space usage stable
 
-### Long-Term Success Criteria (Within 1 Week)
+### Long-Term Success Criteria (Within 1 phase)
 - [ ] Test-assertion-updater used successfully in 3+ scenarios
 - [ ] Cognitive brain documents referenced by agents
 - [ ] Agent standardization template adopted for 1+ new agent
@@ -159,7 +159,7 @@ gh pr create --title "Revert: PR #2820" --body "Reverting due to <reason>"
 
 ### Metrics to Track
 1. **Agent Usage**:
-   - test-assertion-updater invocations per day
+   - test-assertion-updater invocations per-iteration
    - Success rate of automatic fixes
    - Average fix generation time
 
@@ -224,7 +224,7 @@ cat config/agent_config.yaml
 grep "Last Updated" docs/system/CODEBASE_DASHBOARD.md
 
 # Compare with recent commits
-git log --since="1 week ago" -- docs/system/
+git log --since="1 phase ago" -- docs/system/
 ```
 
 **Resolution**:
@@ -253,9 +253,9 @@ git log --since="1 week ago" -- docs/system/
 | Issue Type | Contact | Response Time |
 |------------|---------|---------------|
 | Critical Production Bug | @mbaetiong | <1 hour |
-| Security Vulnerability | @mbaetiong | <2 hours |
-| Documentation Issues | @copilot | <24 hours |
-| Agent Standardization | @copilot | <48 hours |
+| Security Vulnerability | @mbaetiong | <2 Commits |
+| Documentation Issues | @copilot | <24 Commits |
+| Agent Standardization | @copilot | <48 Commits |
 
 ---
 

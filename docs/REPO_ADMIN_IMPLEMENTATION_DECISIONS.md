@@ -519,7 +519,7 @@ from agents.advanced_physics_calculators import RelativityScheduler
 | **Local Dev** | ❌ Optional | Fast feedback; developers don't need similarity on every save |
 | **Pull Request CI** | ✅ Yes | Catch duplication before merge; inform code reviews |
 | **Main Branch CI** | ✅ Yes | Track similarity trends over time |
-| **Nightly/Weekly** | ✅ Yes | Comprehensive analysis; generate refactoring reports |
+| **Nightly/per-phase** | ✅ Yes | Comprehensive analysis; generate refactoring reports |
 
 #### Recommendation
 
@@ -1799,9 +1799,9 @@ Visual reports serve different audience:
 
 | Report Type | Content | Audience | Update Frequency |
 |-------------|---------|----------|------------------|
-| **Dashboard** | KPIs, trends | Management | Daily/per commit cycle |
+| **Dashboard** | KPIs, trends | Management | per-iteration/per commit cycle |
 | **Detail Report** | File-level metrics | Developers | Per-commit |
-| **Trend Analysis** | Historical data | Tech leads | Weekly/per 4-5 commit cycles |
+| **Trend Analysis** | Historical data | Tech leads | per-phase/per 4-5 commit cycles |
 | **Comparison** | Before/after | Code reviewers | Per-PR |
 
 #### Recommendation

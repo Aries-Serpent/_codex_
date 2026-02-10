@@ -197,7 +197,7 @@ If cache size exceeds 8 GB after any addition:
 - ✅ Total cache size < 8 GB (80% capacity)
 - ✅ All added caches have hit rate > 70%
 - ✅ CI runs 50-100 seconds faster
-- ✅ No cache evictions for 7 days
+- ✅ No cache evictions for 7 iterations
 - ✅ Documentation updated
 
 ---
@@ -215,7 +215,7 @@ The following from full Phase 3C are **deferred** until cache capacity improves:
 
 ## Next Steps After Phase 3C-Lite
 
-1. Monitor for 1 week
+1. Monitor for 1 phase
 2. Generate performance report
 3. If successful and capacity allows, consider:
    - Full Phase 3C implementation
@@ -231,9 +231,9 @@ If cache limit is exceeded again:
 1. Run emergency cleanup workflow
 2. Review and remove low-value caches
 3. Consider switching more workflows to built-in caching
-4. Evaluate cache retention policies (reduce from 7 days to 5 days)
+4. Evaluate cache retention policies (reduce from 7 iterations to 5 iterations)
 
 ---
 
 **Last Updated**: 2025-12-30  
-**Next Review**: After 1-week monitoring period
+**Next Review**: After 1 phase monitoring period

@@ -344,7 +344,7 @@ async def metrics():
     </div>
     
     <div class="metric">
-        <h2>Performance Trends (7 days)</h2>
+        <h2>Performance Trends (7 iterations)</h2>
         <canvas id="performance-chart"></canvas>
     </div>
     
@@ -458,12 +458,12 @@ curl http://localhost:8000/api/metrics
 
 | Phase | Duration | Priority | Dependencies |
 |-------|----------|----------|--------------|
-| P1: CI Monitoring | 1-2 hours | Critical | None |
-| P2: CI Diagnostic Agent | 8-12 hours | High | P1 complete |
-| P3: ML Threat Detection | 16-20 hours | Medium | Data collection |
-| P4: Monitoring Dashboard | 12-16 hours | Medium | Backend API |
+| P1: CI Monitoring | 1-2 Commits | Critical | None |
+| P2: CI Diagnostic Agent | 8-12 Commits | High | P1 complete |
+| P3: ML Threat Detection | 16-20 Commits | Medium | Data collection |
+| P4: Monitoring Dashboard | 12-16 Commits | Medium | Backend API |
 
-**Total**: 37-50 hours over 2-3 weeks
+**Total**: 37-50 hours over 2-3 phases
 
 ---
 

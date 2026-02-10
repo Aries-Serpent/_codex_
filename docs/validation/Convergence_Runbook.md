@@ -380,7 +380,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 5. **CI Workflow Enhancements**:
    - Added determinism check to full audit job
-   - Implemented baseline age tracking (30-day refresh trigger)
+   - Implemented baseline age tracking (30 iteration refresh trigger)
    - Enhanced PR comments with quality metrics, shadowing status, and regression analysis
    - Added shadowing check step in quality-gates job
 

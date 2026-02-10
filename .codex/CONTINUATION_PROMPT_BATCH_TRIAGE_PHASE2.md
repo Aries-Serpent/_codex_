@@ -163,9 +163,9 @@ Your primary objective is to **elevate the batch triage system from tactical to 
    
    Add to `batch-triage-agent/src/notifier.py`:
    - Slack integration for critical failures (severity: critical/high)
-   - Email digests for engineering leads (daily/weekly)
+   - Email digests for engineering leads (per-iteration/per-phase)
    - GitHub issue comments with triage summaries
-   - Escalation for unresolved failures > 7 days
+   - Escalation for unresolved failures > 7 iterations
    
    Configuration in `.codex/config/batch_triage_notifications.yaml`:
    ```yaml
@@ -198,7 +198,7 @@ After Phase 1 is complete and validated:
    - Time-series analysis of failure patterns
    - Predict failure likelihood
    - Alert on emerging patterns
-   - Weekly/monthly trend reports
+   - per-phase/monthly trend reports
 
 2. **Caching & Performance**
    - Cache workflow logs (24h TTL)
@@ -224,7 +224,7 @@ After Phase 1 is complete and validated:
 7. Documentation updated
 
 ✅ **Phase 2 Complete When:**
-1. Trend analysis producing weekly reports
+1. Trend analysis producing per-phase reports
 2. Performance optimizations reducing triage time by 50%
 3. Issue lifecycle automation handling 80% of cases
 4. Caching reducing API calls by 60%

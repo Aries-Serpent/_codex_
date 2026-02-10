@@ -52,7 +52,7 @@ addopts =
 
 ### Phase 23: Raise to 30% Coverage
 **Target Date**: 2026-02-15  
-**Duration**: 3-4 weeks from Phase 21 completion  
+**Duration**: 3-4 phases from Phase 21 completion  
 **Status**: 🔄 NOT STARTED
 
 #### Prerequisites
@@ -92,7 +92,7 @@ addopts =
 
 ### Phase 24: Raise to 50% Coverage
 **Target Date**: 2026-03-01  
-**Duration**: 2 weeks from Phase 23 completion  
+**Duration**: 2 phases from Phase 23 completion  
 **Status**: 🔄 NOT STARTED
 
 #### Prerequisites
@@ -120,7 +120,7 @@ addopts =
 
 ### Phase 25: Raise to 70% Coverage
 **Target Date**: 2026-03-15  
-**Duration**: 2 weeks from Phase 24 completion  
+**Duration**: 2 phases from Phase 24 completion  
 **Status**: 🔄 NOT STARTED
 
 #### Prerequisites
@@ -158,7 +158,7 @@ addopts =
 
 #### Approach
 - **Incremental Raises**: 70% → 80% → 90% → 95% → 100%
-- **Each Step**: 1-2 weeks
+- **Each Step**: 1-2 phases
 - **Focus**: Edge cases, error handling, documentation examples
 - **Reality Check**: 100% may not be achievable/valuable for all code
 
@@ -294,9 +294,9 @@ If a threshold raise causes sustained issues:
 
 2. **Within 24 hours**: Create issue documenting rollback reason
 
-3. **Within 1 week**: Address root cause (flaky tests, xdist issues, etc.)
+3. **Within 1 phase**: Address root cause (flaky tests, xdist issues, etc.)
 
-4. **Re-attempt**: After stabilization period (1-2 weeks)
+4. **Re-attempt**: After stabilization period (1-2 phases)
 
 ---
 
@@ -312,7 +312,7 @@ If a threshold raise causes sustained issues:
 - ✅ Coverage ≥50%
 - ✅ Integration test suite (200+ tests)
 - ✅ CI green for 14 consecutive days
-- ✅ PR cycle time <2 days (tests don't block)
+- ✅ PR cycle time <2 iterations (tests don't block)
 
 ### Phase 25 Success
 - ✅ Coverage ≥70%

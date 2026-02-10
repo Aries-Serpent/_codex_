@@ -110,7 +110,7 @@ Create `docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md`:
 - Phased approach to reach 90%
 - Module-by-module coverage targets
 - Automated coverage tracking
-- Weekly progress milestones
+- per-phase progress milestones
 
 **Implementation Priority**: 5 (High value but requires sustained effort)
 
@@ -240,7 +240,7 @@ Create performance baseline:
 
 **Priority 5: Coverage Improvement Roadmap** ✅ COMPLETED
 - Created docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md
-- 12-week phased approach (15.9% → 30% → 60% → 90%)
+- 12 phase phased approach (15.9% → 30% → 60% → 90%)
 - Module-by-module coverage targets
 - Automated tracking infrastructure
 - Risk management and success criteria
@@ -253,7 +253,7 @@ Create performance baseline:
 - .security-exceptions.md
 - All intentional as-is code must have documented reason
 - Especially important for security scan findings
-- Weekly automated review process
+- per-phase automated review process
 - Exception lifecycle management
 
 **Copilot Review Exclusions** ✅ CREATED
@@ -292,7 +292,7 @@ Create performance baseline:
 **Infrastructure**:
 - Rollback Script: 1 automated tool
 - Validation: 1 automated workflow validator
-- Monitoring: Active 1-week monitoring period
+- Monitoring: Active 1 phase monitoring period
 
 ---
 

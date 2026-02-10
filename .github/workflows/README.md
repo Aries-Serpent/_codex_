@@ -329,7 +329,7 @@ run: |
 1. **Set Up Alerts**
    - GitHub Actions failures → Email/Slack
    - Security alerts → Immediate notification
-   - Token expiry → 30-day advance warning
+   - Token expiry → 30 iteration advance warning
 
 2. **Track Metrics**
    - Workflow success rate

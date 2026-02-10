@@ -56,16 +56,16 @@ A comprehensive repository-wide QA walkthrough has been successfully executed, p
 
 | Issue | Current | Target | Gap | Action |
 |-------|---------|--------|-----|--------|
-| **Test Coverage** | 27.5% | 70% | -42.5% | IP-001 (4-6 weeks) |
+| **Test Coverage** | 27.5% | 70% | -42.5% | IP-001 (4-6 phases) |
 | **Untested Modules** | 518 | 0 | 518 | Part of IP-001 |
-| **Production Auth** | Examples only | Production ready | Not ready | IP-004 (3-4 weeks) |
-| **Security Review** | 137 files | All reviewed | Pending | IP-003 (1 week) |
+| **Production Auth** | Examples only | Production ready | Not ready | IP-004 (3-4 phases) |
+| **Security Review** | 137 files | All reviewed | Pending | IP-003 (1 phase) |
 
 ### 🟡 MEDIUM PRIORITY
 
 | Issue | Details | Action |
 |-------|---------|--------|
-| Legacy Config | config_legacy vs config duplication | IP-002 (1-2 weeks) |
+| Legacy Config | config_legacy vs config duplication | IP-002 (1-2 phases) |
 | Legacy Modules | 17 modules need migration | Gradual migration |
 
 ### 🟢 STRENGTHS
@@ -97,11 +97,11 @@ Dependencies:              56 runtime + 9 requirement files
 
 | ID | Title | Priority | Effort | Timeline | Dependencies |
 |----|-------|----------|--------|----------|--------------|
-| **IP-001** | Increase Test Coverage to 70% | 🔴 HIGH | Large | 4-6 weeks | None |
-| **IP-002** | Consolidate Legacy Configuration | 🟡 MEDIUM | Medium | 1-2 weeks | None |
-| **IP-003** | Enhance Security Documentation | 🔴 HIGH | Small | 1 week | None |
-| **IP-004** | Production-Ready Authentication | 🔴 HIGH | Large | 3-4 weeks | IP-003 |
-| **IP-005** | Dependency Audit and Update | 🔴 HIGH | Medium | 2 weeks | None |
+| **IP-001** | Increase Test Coverage to 70% | 🔴 HIGH | Large | 4-6 phases | None |
+| **IP-002** | Consolidate Legacy Configuration | 🟡 MEDIUM | Medium | 1-2 phases | None |
+| **IP-003** | Enhance Security Documentation | 🔴 HIGH | Small | 1 phase | None |
+| **IP-004** | Production-Ready Authentication | 🔴 HIGH | Large | 3-4 phases | IP-003 |
+| **IP-005** | Dependency Audit and Update | 🔴 HIGH | Medium | 2 phases | None |
 
 ---
 

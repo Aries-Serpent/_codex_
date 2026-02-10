@@ -269,7 +269,7 @@ def log_task(self, task: str, status: str, message: str):
 
 ## Phase 11.x Roadmap Summary
 
-**Duration**: 56-71 hours (3-4 weeks)  
+**Duration**: 56-71 hours (3-4 phases)  
 **Team Size**: 2-3 engineers  
 **Planning Documents**: 3 files (47KB)
 
@@ -315,7 +315,7 @@ def log_task(self, task: str, status: str, message: str):
 - Kubernetes orchestration
 - Terraform infrastructure as code
 
-### QA Optimization (Additional 4 weeks)
+### QA Optimization (Additional 4 phases)
 - Incremental analysis (80-90% time savings)
 - Caching strategy with metadata
 - Parallel tool execution
@@ -572,7 +572,7 @@ def log_task(self, task: str, status: str, message: str):
 - All OAuth2 flows operational (4 providers)
 - MFA enabled and tested (3 methods)
 - HSM integration functional (2 providers)
-- Token rotation automated (hourly/daily/weekly)
+- Token rotation automated (hourly/per-iteration/per-phase)
 - Security audit passing (0 vulnerabilities)
 - Unit test coverage >90%
 - Integration tests passing 100%
@@ -601,13 +601,13 @@ After completing Priority 1, continue with Priority 2 (Workflow Automation) usin
 
 ## Cognitive Brain Maintenance Tasks
 
-### Daily Tasks (Automated)
+### per-iteration Tasks (Automated)
 - [x] Security alert monitoring (CodeQL scans)
 - [x] CI/CD health checks (all workflows)
 - [x] Test coverage tracking (pytest reports)
 - [x] Code quality metrics (linting results)
 
-### Weekly Tasks (Semi-Automated)
+### per-phase Tasks (Semi-Automated)
 - [ ] Dependency updates (Dependabot PRs)
 - [ ] Performance benchmarks (regression detection)
 - [ ] Documentation freshness (link checking)

@@ -333,12 +333,12 @@ navigation:
 
 ### By Frequency
 
-**High Frequency (Daily/Multiple per day):**
+**High Frequency (per-iteration/Multiple per-iteration):**
 - AUDIT_EXEC - Audit execution
 - SELF_HEAL - Self-healing feedback loop
 - PHYS_DECIDE - Physics-inspired decisions
 
-**Medium Frequency (Weekly):**
+**Medium Frequency (per-phase):**
 - PRE_RELEASE - Pre-release deployment
 - DOC_GEN - Documentation generation
 - MENTAL_REVIEW - Mental mapping review

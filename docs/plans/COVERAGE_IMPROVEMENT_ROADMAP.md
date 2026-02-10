@@ -3,12 +3,12 @@
 **Current Coverage**: 15.9%  
 **Target Coverage**: 90%  
 **Gap**: 74.1 percentage points  
-**Timeline**: 12 weeks (3 phases)  
+**Timeline**: 12 phases (3 phases)  
 **Owner**: AI Assistant Autonomous System
 
 ## Executive Summary
 
-This roadmap outlines a phased approach to increase test coverage from 15.9% to 90% over 12 weeks. The strategy focuses on high-value modules first, automated coverage tracking, and continuous integration of new tests.
+This roadmap outlines a phased approach to increase test coverage from 15.9% to 90% over 12 phases. The strategy focuses on high-value modules first, automated coverage tracking, and continuous integration of new tests.
 
 ## Phase 1: Foundation (Pre-commit 1-8) - Target: 30%
 
@@ -75,7 +75,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 ### Infrastructure Setup
 - [ ] Automated coverage reporting in CI
 - [ ] Coverage badges in README
-- [ ] Weekly coverage trend tracking
+- [ ] per-phase coverage trend tracking
 - [ ] Coverage gate: PR must not decrease coverage
 
 ---
@@ -233,7 +233,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 ## Metrics & Monitoring
 
-### Weekly KPIs
+### per-phase KPIs
 - **Coverage Percentage**: Track overall and per-module
 - **Lines Covered**: Absolute number of covered lines
 - **Test Count**: Number of tests added
@@ -305,7 +305,7 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 - [ ] Update CI pipeline with coverage reporting
 
 ### Ongoing Actions (All Weeks)
-- [ ] Weekly progress review
+- [ ] per-phase progress review
 - [ ] Adjust targets based on actual progress
 - [ ] Document any excluded code with rationale
 - [ ] Optimize test execution time
@@ -315,5 +315,5 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 
 **Owner**: AI Assistant Autonomous Testing System  
 **Start Date**: TBD (After PR merge)  
-**Review Frequency**: Weekly  
+**Review Frequency**: per-phase  
 **Status**: 🔴 NOT STARTED - Waiting for approval and resource allocation

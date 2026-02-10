@@ -47,7 +47,7 @@ The Cognitive Brain quantum enhancement project has successfully completed Phase
 ### Phase 8.1.1: User Enhancements ✅ COMPLETE
 - **70% Compression:** Adaptive PCA (95% variance) + variable quantization (4-8 bits)
 - **Cache Pruning:** 5 methods implemented
-  - `prune_by_age()` - Time-based (30-day default)
+  - `prune_by_age()` - Time-based (30 iteration default)
   - `prune_by_access()` - LRU policy
   - `prune_low_confidence()` - Quality filter
   - `get_cache_health()` - 8 comprehensive metrics

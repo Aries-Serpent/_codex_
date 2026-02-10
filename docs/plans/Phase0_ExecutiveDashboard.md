@@ -41,7 +41,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │ BLOCK-DEP-003 → radon                               │
 │ BLOCK-DEP-004 → parso                               │
 │ BLOCK-DEP-005 → SQLite schema                       │
-│ Duration: 3 days | Owner: DevOps Lead               │
+│ Duration: 3 iterations | Owner: DevOps Lead               │
 │ Gate: ✅ `pip install -e ".[ast]"` succeeds         │
 └─────────────┬───────────────────────────────────────┘
               │ (Must complete before ARCH)
@@ -53,7 +53,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │ BLOCK-ARCH-003 → MetricsAggregator                  │
 │ BLOCK-ARCH-004 → Incremental Analysis               │
 │ BLOCK-ARCH-005 → Plugin Architecture                │
-│ Duration: 7 days | Owner: Architecture Lead         │
+│ Duration: 7 iterations | Owner: Architecture Lead         │
 │ Gate: ✅ All designs approved by tech lead           │
 └─────────────┬───────────────────────────────────────┘
               │ (Parallel with PERF, must wait for DEP)
@@ -63,8 +63,8 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │PERF (D11)│  │TEST (D15)      │   │DOCS (D22)        │
 │Baseline  │  │Fixtures        │   │ADRs              │
 │Benchmks  │  │Benchmarks      │   │Migration         │
-│3 days    │  │Edge cases      │   │Examples          │
-│Gate: ✅  │  │7 days         │   │7 days           │
+│3 iterations    │  │Edge cases      │   │Examples          │
+│Gate: ✅  │  │7 iterations         │   │7 iterations           │
 │<5s/LOC   │  │Gate: ✅       │   │Gate: ✅          │
 └────┬─────┘  └────┬─────────┘   └────┬─────────────┘
      │             │                   │
@@ -76,7 +76,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │ ARCH-CHAL-001 → Offline-first                       │
 │ ARCH-CHAL-004 → Python version compat               │
 │ ARCH-CHAL-006 → Performance optimization            │
-│ Duration: 7 days | Owner: Architecture Lead         │
+│ Duration: 7 iterations | Owner: Architecture Lead         │
 │ Gate: ✅ All risks mitigated & tested                │
 └─────────────┬───────────────────────────────────────┘
               │
@@ -116,9 +116,9 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 | Issue ID | Description | Impact | Effort | Owner |
 |----------|-------------|--------|--------|-------|
-| **ISSUE-EXIST-001** | cli/ast_upgrade.py uses raw AST | Inconsistent with new layer | 3 days | Senior Dev |
-| **ISSUE-EXIST-002** | scripts/analysis/ast_signature_similarity.py custom logic | Duplicate code | 3 days | Senior Dev |
-| **ISSUE-EXIST-003** | No standardized error handling | Inconsistent behavior | 1 day | Dev Lead |
+| **ISSUE-EXIST-001** | cli/ast_upgrade.py uses raw AST | Inconsistent with new layer | 3 iterations | Senior Dev |
+| **ISSUE-EXIST-002** | scripts/analysis/ast_signature_similarity.py custom logic | Duplicate code | 3 iterations | Senior Dev |
+| **ISSUE-EXIST-003** | No standardized error handling | Inconsistent behavior | 1 iteration | Dev Lead |
 | **ISSUE-EXIST-004** | AST usage scattered | Hard to maintain | Deferred | Senior Dev |
 
 **Note:** Phase 1 refactoring deferred to post-Sprint 1 to unblock core AST work
@@ -153,7 +153,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 | **Tech Lead** | [TBD] | 20% | Review & sign-offs |
 | **Project Manager** | [TBD] | 50% | Coordination & gates |
 
-**Total Effort:** 5.5 FTE for 14 days = ~2.2 person-months
+**Total Effort:** 5.5 FTE for 14 iterations = ~2.2 person-months
 
 ---
 
@@ -173,7 +173,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │                                                             │
 │ Overall:   [████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 10%        │
 │                                                             │
-│ Days until GO/NO-GO: 14 days                              │
+│ Days until GO/NO-GO: 14 iterations                              │
 │ Status: ON TRACK (dependencies critical path)             │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
@@ -181,12 +181,12 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ---
 
-## 🎯 DAILY STANDUP TEMPLATE
+## 🎯 per-iteration STANDUP TEMPLATE
 
-**Use for daily 15-min sync:**
+**Use for per-iteration 15-min sync:**
 
 ```markdown
-# Phase 0 Daily Standup - [DATE]
+# Phase 0 per-iteration Standup - [DATE]
 
 ## Blockers Resolved Today
 - [ ] BLOCK-DEP-001: libcst → Status: [OPEN|IN_PROGRESS|RESOLVED]
@@ -213,7 +213,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 ### If Blocker Not Resolved Within Expected Time
 
 **Escalation Triggers:**
-- Blocker not resolved within ±1 day of estimate
+- Blocker not resolved within ±1 iteration of estimate
 - New blocker discovered
 - Resource availability changed
 - Critical security issue found
@@ -245,12 +245,12 @@ Day 3: Execute chosen option
 
 ## 📞 COMMUNICATION PLAN
 
-### Daily
+### per-iteration
 - **Standup:** 09:00 UTC (15 min)
 - **Slack channel:** #phase0-gaps-resolution
 - **Status updates:** Post in channel at end of day
 
-### Weekly
+### per-phase
 - **Sync meeting:** Monday 10:00 UTC (30 min)
 - **Review blockers & progress**
 - **Adjust priorities if needed**
@@ -274,7 +274,7 @@ Day 3: Execute chosen option
 | **Gate 0.6** | All risks mitigated | Arch Lead | Day 35 |
 | **GATE 0.7** | Go/No-Go decision | All leads | Day 14 |
 
-**If ANY gate fails:** ⚠️ DELAY TO REASSESS (1-2 weeks)
+**If ANY gate fails:** ⚠️ DELAY TO REASSESS (1-2 phases)
 
 ---
 
@@ -369,7 +369,7 @@ Day 3: Execute chosen option
 
 ### Decision Options
 1. ✅ **GO**: Proceed to Sprint 1 (all criteria met)
-2. 🚫 **NO-GO**: Defer 2 weeks; reassess (any criterion not met)
+2. 🚫 **NO-GO**: Defer 2 phases; reassess (any criterion not met)
 3. ⚠️ **GO WITH EXCEPTIONS**: Proceed with documented risk acceptance (rare)
 
 ---
@@ -417,7 +417,7 @@ BY 2025-11-10 09:00 UTC:
 
 ☐ 1. Notify all team members of Phase 0 kickoff
 ☐ 2. Assign owners to each blocker
-☐ 3. Schedule daily 15-min standup
+☐ 3. Schedule per-iteration 15-min standup
 ☐ 4. Create Phase 0 Slack channel
 ☐ 5. Start BLOCK-DEP-001 (libcst installation)
 ☐ 6. Begin architecture design sessions
@@ -522,12 +522,12 @@ Action:
 ### RISK-2: Architecture Complexity Too High (P=MEDIUM, I=HIGH)
 
 **Risk Description:**  
-Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plugins) may be overengineered for current scope. Team may struggle to implement in 7 days.
+Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plugins) may be overengineered for current scope. Team may struggle to implement in 7 iterations.
 
 **Impact if Realized:**
 - Architecture review blocked
 - Redesign needed
-- Sprint 1 delayed 1-2 weeks
+- Sprint 1 delayed 1-2 phases
 
 **Probability:** 50% (design complexity vs. timeline)  
 **Impact:** CRITICAL  
@@ -554,7 +554,7 @@ Is architecture approved by tech lead?
 
 CONTINGENCY OPTIONS:
 1. SIMPLIFY SCOPE: Drop plugin architecture (Phase 2)
-2. EXTEND TIMELINE: Add 1 week for design iteration
+2. EXTEND TIMELINE: Add 1 phase for design iteration
 3. BRING IN EXPERT: Hire external architect (cost trade-off)
 4. DEFER ARCHITECTURE: Proceed with simpler initial design
 ```text
@@ -607,7 +607,7 @@ If 1-2 targets MISSED → ⚠️ Optimization Sprint needed
 If 3+ targets MISSED → 🔴 Architecture revision needed
 
 CONTINGENCY OPTIONS:
-1. OPTIMIZE: 2-week optimization sprint (delay Sprint 1)
+1. OPTIMIZE: 2 phase optimization sprint (delay Sprint 1)
 2. RELAX TARGETS: Adjust NFR thresholds (Phase 5 impact user satisfaction)
 3. HYBRID APPROACH: Fast mode (less analysis) + full mode
 4. INCREMENTAL ROLLOUT: Ship basic features first, optimize later
@@ -665,12 +665,12 @@ CONTINGENCY OPTIONS:
 
 ### RISK-7: Scope Creep Into Phase 0 (P=HIGH, I=MEDIUM)
 
-**Risk:** New requirements discovered during implementation push Phase 0 beyond 14 days.
+**Risk:** New requirements discovered during implementation push Phase 0 beyond 14 iterations.
 
 **Mitigation:**
 - Strict scope freeze (no new features in Phase 0)
 - Change control process
-- Daily scope reviews
+- per-iteration scope reviews
 - Hard deadline enforcement
 
 **Contingency:** Defer any new work to Phase 1+
@@ -698,7 +698,7 @@ CONTINGENCY OPTIONS:
 **Mitigation:**
 - Scan with `pip audit` before and after each install
 - Use known-good versions
-- Monitor security advisories daily
+- Monitor security advisories per-iteration
 - Have fallback versions ready
 
 **Contingency:** Swap out affected dependency; delay if no alternative
@@ -727,7 +727,7 @@ CONTINGENCY OPTIONS:
 | **RISK-12** | Documentation falls behind | LOW | MED | 3/10 | Create doc templates early; assign writer Day 1 |
 | **RISK-13** | Benchmark suite not representative | MED | MED | 4/10 | Use real codebase samples; validate against expectations |
 | **RISK-14** | Integration gaps discovered late | MED | MED | 4/10 | Design integration points Day 6-7 |
-| **RISK-15** | Team burn-out from aggressive timeline | LOW | MED | 2/10 | Realistic estimates; break into 2-3 day chunks; daily retrospective |
+| **RISK-15** | Team burn-out from aggressive timeline | LOW | MED | 2/10 | Realistic estimates; break into 2-3 iteration chunks; per-iteration retrospective |
 
 ---
 
@@ -751,7 +751,7 @@ HIGH [····]      [····]      [····]     [····]
 
 ---
 
-## ⚡ DAILY RISK REVIEW TEMPLATE
+## ⚡ per-iteration RISK REVIEW TEMPLATE
 
 **Use this each morning standup:**
 
@@ -794,21 +794,21 @@ HIGH [····]      [····]      [····]     [····]
 ├────────────┼──────────────────┼──────────────────────┤
 │ CRITICAL   │ • Implement      │ Immediately notify   │
 │            │   contingency    │ Tech Lead + PM       │
-│            │ • Mitigate       │ Daily review         │
+│            │ • Mitigate       │ per-iteration review         │
 │            │   immediately    │ Decision required    │
 │            │ • Status update  │ within 24 hours      │
-│            │   daily          │                      │
+│            │   per-iteration          │                      │
 ├────────────┼──────────────────┼──────────────────────┤
-│ HIGH       │ • Deploy primary │ Notify at daily      │
+│ HIGH       │ • Deploy primary │ Notify at per-iteration      │
 │            │   mitigation     │ standup              │
-│            │ • Monitor daily  │ Weekly review        │
+│            │ • Monitor per-iteration  │ per-phase review        │
 │            │ • Escalate if    │ Escalate if P ↑ or  │
 │            │   P increases    │ I increases          │
 ├────────────┼──────────────────┼──────────────────────┤
 │ MEDIUM     │ • Execute        │ Track in risk        │
 │            │   mitigation if  │ backlog              │
-│            │   triggered      │ Weekly review        │
-│            │ • Monitor weekly │                      │
+│            │   triggered      │ per-phase review        │
+│            │ • Monitor per-phase │                      │
 ├────────────┼──────────────────┼──────────────────────┤
 │ LOW        │ • Log for        │ Monthly review       │
 │            │   reference      │                      │
@@ -825,12 +825,12 @@ HIGH [····]      [····]      [····]     [····]
 
 | Risk Category | Days Reserved | Allocation |
 |---------------|---------------|-----------|
-| Dependency conflicts | 2 days | +15% to Day 3 |
-| Architecture redesign | 3 days | +30% to Day 10 |
-| Performance optimization | 4 days | +35% to Day 14 |
-| Testing gaps | 2 days | +15% to Day 21 |
-| Documentation delays | 2 days | +20% to Day 28 |
-| **Total Buffer** | **13 days** | **+115%** ⚠️ OVER BUDGET |
+| Dependency conflicts | 2 iterations | +15% to Day 3 |
+| Architecture redesign | 3 iterations | +30% to Day 10 |
+| Performance optimization | 4 iterations | +35% to Day 14 |
+| Testing gaps | 2 iterations | +15% to Day 21 |
+| Documentation delays | 2 iterations | +20% to Day 28 |
+| **Total Buffer** | **13 iterations** | **+115%** ⚠️ OVER BUDGET |
 
 **Buffer Allocation Strategy:**
 - Compress non-critical work
@@ -853,13 +853,13 @@ Is risk CRITICAL?
 │  └─ Options: Mitigate|Accept|Defer
 │
 ├─ NO → Is risk HIGH?
-│  ├─ YES → Daily standup escalation
+│  ├─ YES → per-iteration standup escalation
 │  │  ├─ Notify: Owning team + Tech Lead
 │  │  ├─ Decision authority: AI Assistant autonomous system
 │  │  ├─ Timeframe: <48 hours
 │  │  └─ Options: Mitigate|Accept|Defer
 │  │
-│  └─ NO → Weekly review escalation
+│  └─ NO → per-phase review escalation
 │     ├─ Log in risk register
 │     ├─ Review: Monday standup
 │     └─ Decision: Track or close
@@ -934,7 +934,7 @@ All documents include:
 ✅ **Phase 0 Leadership** - Clear ownership and escalation  
 ✅ **Detailed Task Breakdown** - Each blocker with acceptance criteria  
 ✅ **Contingency Planning** - For all 3 CRITICAL risks  
-✅ **Daily/Weekly Cadence** - Standup templates and review schedules  
+✅ **per-iteration/per-phase Cadence** - Standup templates and review schedules  
 ✅ **GO/NO-GO Framework** - Clear decision criteria for 2025-11-23
 
 **Status:** Ready for immediate implementation starting 2025-11-10 09:00 UTC  

@@ -403,7 +403,7 @@ This report documents the comprehensive test coverage expansion effort across cr
 4. 🔄 Phase 4: Fix API alignment issues - **IN PROGRESS**
 5. 🔄 Phase 5: Complete documentation - **IN PROGRESS**
 
-### Short Term (Next 2 Weeks)
+### Short Term (Next 2 phases)
 
 6. Add EnergyLandscape tests
 7. Add ImportMigrationOrchestrator tests

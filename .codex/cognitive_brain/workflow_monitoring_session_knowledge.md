@@ -218,7 +218,7 @@ python scripts/monitoring/automated_triage.py --auto  # Auto-detect from status 
 3. Monitor for regression
 4. Update pattern database if new failures found
 
-### Short-Term (1-2 weeks)
+### Short-Term (1-2 phases)
 1. Add pre-commit hook for workflow YAML validation
 2. Implement machine learning for pattern discovery
 3. Create workflow health dashboard

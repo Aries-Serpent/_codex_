@@ -11,7 +11,7 @@
 ### ✅ Comprehensive Analysis (100% Complete)
 1. **Workflow Inventory**: All 108 workflows analyzed and categorized
 2. **Artifact Identification**: 42 workflows identified as producing artifacts
-3. **Consolidation Planning**: Detailed 12-week plan with 60 workflows to consolidate
+3. **Consolidation Planning**: Detailed 12 phase plan with 60 workflows to consolidate
 4. **Agent Mapping**: 79 workflows mapped to 15 custom agents
 5. **Migration Planning**: 15 workflows identified for misc/ folder
 6. **Documentation**: 8 comprehensive documents created
@@ -32,7 +32,7 @@ All files located in `.github/workflow-archive/`:
    - Verification procedures
 
 3. **WORKFLOW_CONSOLIDATION_PLANSET_V2.md** (19 KB)
-   - 12-week consolidation plan
+   - 12 phase consolidation plan
    - Phase 1: 10 groups, -30 workflows
    - Phase 2: Medium priority, -20 workflows
    - Phase 3: Final optimization, -10 workflows
@@ -45,7 +45,7 @@ All files located in `.github/workflow-archive/`:
 5. **MISC_FOLDER_MIGRATION_PLAN.md** (15.0 KB)
    - 15 workflows for misc/ folder
    - 7 subdirectory structure
-   - 2-week timeline
+   - 2 phase timeline
 
 6. **DELIVERABLES_SUMMARY_2026-02-06.md** (16 KB)
    - Executive summary
@@ -175,7 +175,7 @@ After artifact prefix implementation is complete and tested, begin consolidation
 **Key Steps**:
 1. Create new `unified-security-suite.yml` (YAML provided in planset)
 2. Test on feature branch
-3. Run in parallel with existing for 1 week
+3. Run in parallel with existing for 1 phase
 4. Disable old workflows after validation
 5. Move to `.github/workflow-archive/disabled/`
 6. Create `.meta` files for tracking

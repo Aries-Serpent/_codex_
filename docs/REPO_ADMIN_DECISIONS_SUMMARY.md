@@ -179,7 +179,7 @@ fail_on: [error, critical]    # Block on these severities
 
 1. **Review** full decision document ([REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_DECISIONS.md))
 2. **Approve** Phase 1 implementation plan
-3. **Assign** engineering resources (2-3 weeks for Phase 1)
+3. **Assign** engineering resources (2-3 phases for Phase 1)
 4. **Schedule** team briefing on new quality gates
 5. **Monitor** adoption metrics after Phase 1 deployment
 

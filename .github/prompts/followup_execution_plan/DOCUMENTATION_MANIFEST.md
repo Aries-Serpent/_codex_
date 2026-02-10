@@ -121,7 +121,7 @@
 - Testing procedures
 - Success criteria
 
-**Estimated Effort:** 2-3 days
+**Estimated Effort:** 2-3 iterations
 
 ---
 
@@ -137,7 +137,7 @@
 - Integration tests
 - Documentation updates
 
-**Estimated Effort:** 3-4 days
+**Estimated Effort:** 3-4 iterations
 
 ---
 
@@ -153,7 +153,7 @@
 - Configuration templates
 - Integration tests
 
-**Estimated Effort:** 2-3 days
+**Estimated Effort:** 2-3 iterations
 
 ---
 

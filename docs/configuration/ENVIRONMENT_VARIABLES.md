@@ -109,8 +109,8 @@ CODEX_MASTER_KEY  # For production deployments
    - Use environment-specific configs
 
 2. **Rotate credentials regularly**
-   - API tokens: Every 90 days
-   - Client secrets: Every 180 days
+   - API tokens: Every 90 iterations
+   - Client secrets: Every 180 iterations
    - Document rotation dates
 
 3. **Principle of least privilege**

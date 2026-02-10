@@ -13,11 +13,11 @@ Continue the systematic improvement of the _codex_ repository infrastructure, fo
 
 ---
 
-## 📋 Phase 22: Medium Priority Items (1-2 Weeks)
+## 📋 Phase 22: Medium Priority Items (1-2 phases)
 
 ### Objective 1: Secrets Management Enhancement
 **Priority**: P2 (Medium-High)  
-**Timeline**: 3-5 days  
+**Timeline**: 3-5 iterations  
 **Status**: 🔄 NOT STARTED
 
 #### Tasks
@@ -53,7 +53,7 @@ Continue the systematic improvement of the _codex_ repository infrastructure, fo
 
 ### Objective 2: Coverage Threshold Standardization
 **Priority**: P2 (Medium)  
-**Timeline**: 2 days  
+**Timeline**: 2 iterations  
 **Status**: 🔄 NOT STARTED
 
 #### Tasks
@@ -93,7 +93,7 @@ Continue the systematic improvement of the _codex_ repository infrastructure, fo
 
 ### Objective 3: Documentation Navigation Expansion
 **Priority**: P2 (Medium)  
-**Timeline**: 1 week  
+**Timeline**: 1 phase  
 **Status**: 🔄 NOT STARTED
 
 #### Tasks
@@ -138,11 +138,11 @@ Continue the systematic improvement of the _codex_ repository infrastructure, fo
 
 ---
 
-## 📋 Phase 23: Workflow Consolidation (2-4 Weeks)
+## 📋 Phase 23: Workflow Consolidation (2-4 phases)
 
 ### Objective 4: Workflow Audit & Consolidation
 **Priority**: P2 (Medium-High)  
-**Timeline**: 2-4 weeks  
+**Timeline**: 2-4 phases  
 **Status**: 🔄 NOT STARTED
 
 #### Current State

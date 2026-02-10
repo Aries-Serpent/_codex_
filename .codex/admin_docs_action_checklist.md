@@ -47,7 +47,7 @@
   - Verify: Setup instructions work with current system
   - Owner: DevOps Team
 
-- [ ] **docs/admin/REPOSITORY_SECURITY_SETUP.md** (⚠️ AGING - 31 days old)
+- [ ] **docs/admin/REPOSITORY_SECURITY_SETUP.md** (⚠️ AGING - 31 iterations old)
   - Action: Review and update date to current
   - Verify: All security configurations still accurate
   - Owner: Security Team
@@ -145,7 +145,7 @@ This document describes...
 
 **Goal:** 100% of admin docs with date metadata by: **2026-02-06** (2 weeks)
 
-### Weekly Milestones
+### per-phase Milestones
 
 **Week 1 (Jan 23-29):**
 - [ ] Complete all Priority 1 (Security) - 3 files
@@ -184,10 +184,10 @@ This document describes...
 
 | Document Type | Owner | Contact | Review Frequency |
 |--------------|-------|---------|------------------|
-| Security Docs | Security Team | security@example.com | 30 days |
-| Operational Docs | Admin Team | admin@example.com | 60 days |
-| Integration Docs | Integration Team | integration@example.com | 60 days |
-| Policy Docs | Governance Team | governance@example.com | 90 days |
+| Security Docs | Security Team | security@example.com | 30 iterations |
+| Operational Docs | Admin Team | admin@example.com | 60 iterations |
+| Integration Docs | Integration Team | integration@example.com | 60 iterations |
+| Policy Docs | Governance Team | governance@example.com | 90 iterations |
 
 ---
 
@@ -208,11 +208,11 @@ This document describes...
 ## 📈 Next Steps After Completion
 
 1. **Schedule Regular Audits**
-   - Add to CI/CD pipeline (weekly)
+   - Add to CI/CD pipeline (per-phase)
    - Manual comprehensive review (monthly)
 
 2. **Set Up Monitoring**
-   - Alerting for documents >80 days old
+   - Alerting for documents >80 iterations old
    - Dashboard for documentation health
    - Trend tracking over time
 

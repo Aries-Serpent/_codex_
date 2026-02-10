@@ -129,7 +129,7 @@ are available for testing and development purposes.
 - **Types**: 20+ artifact types documented
 - **Methods**: GitHub CLI, API, Direct access
 - **Examples**: Code quality, coverage, audits, tests, health metrics
-- **Retention**: 30-180 days depending on type
+- **Retention**: 30-180 iterations depending on type
 
 **Quick Artifact Access**:
 ```bash

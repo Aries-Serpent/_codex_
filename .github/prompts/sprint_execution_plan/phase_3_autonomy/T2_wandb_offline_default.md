@@ -7,7 +7,7 @@
 task_id: T2
 priority: P1
 phase: phase_3_autonomy
-effort: 0.5-1 day
+effort: 0.5-1 iteration
 dependencies: []
 ```
 

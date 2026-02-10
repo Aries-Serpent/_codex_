@@ -35,7 +35,7 @@ This index helps you navigate the RAG coverage analysis documentation.
 | Document | Size | Purpose | When to Use |
 |----------|------|---------|-------------|
 | **RAG_COVERAGE_ANALYSIS_PHASE_21_1.md** | 27K | Complete analysis with test code examples | Creating new tests |
-| **RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md** | 3.7K | Priority summary and quick facts | Daily reference |
+| **RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md** | 3.7K | Priority summary and quick facts | per-iteration reference |
 | **RAG_COVERAGE_GAP_ANALYSIS_DETAILED.md** | 12K | Detailed module analysis | Understanding gaps |
 
 ### For Project Management
@@ -128,7 +128,7 @@ This index helps you navigate the RAG coverage analysis documentation.
 - Key test scenarios (condensed)
 - Coverage validation commands
 
-**Use for:** Daily reference while coding
+**Use for:** per-iteration reference while coding
 
 **Key Sections:**
 - "Priority 1: CRITICAL" - Immediate tasks
@@ -227,7 +227,7 @@ python3 analyze_rag_coverage.py
 ```
 PHASE_21_1_COMPLETION_SUMMARY.md (Start here)
     ↓
-    ├─→ RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md (Daily use)
+    ├─→ RAG_COVERAGE_archive/sessions/2026-01/QUICK_REFERENCE.md (per-iteration use)
     │
     ├─→ RAG_COVERAGE_ANALYSIS_PHASE_21_1.md (Implementation guide)
     │   └─→ Detailed test code examples

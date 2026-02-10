@@ -180,7 +180,7 @@ gh run list --workflow=copilot-automation.yml --limit 1
 
 ## Token Rotation
 
-**Recommendation**: Rotate tokens every 90 days.
+**Recommendation**: Rotate tokens every 90 iterations.
 
 ### Rotation Process
 
@@ -315,7 +315,7 @@ python3 scripts/security/copilot_token_decoder.py
 - [ ] Original plaintext token revoked from GitHub settings
 - [ ] SHA-256 hash verification passes
 - [ ] Setup script and terminal history cleaned
-- [ ] Rotation reminder scheduled for 90 days
+- [ ] Rotation reminder scheduled for 90 iterations
 - [ ] No tokens visible in repository code or logs
 
 ---
@@ -325,7 +325,7 @@ python3 scripts/security/copilot_token_decoder.py
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
 | Token Encryption Method | AES-256-GCM | AES-256-GCM | 🟢 |
-| Token Rotation Frequency | 90 days | 90 days | 🟢 |
+| Token Rotation Frequency | 90 iterations | 90 iterations | 🟢 |
 | Plaintext Exposure | 0 instances | 0 instances | 🟢 |
 | Secret Validation | SHA-256 | SHA-256 | 🟢 |
 | Setup Completion Time | 30-45 min | <60 min | 🟢 |

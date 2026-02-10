@@ -158,8 +158,8 @@ Create a comprehensive document: `.codex/POST_MERGE_ACTIONS.md`
 
 Include:
 - Immediate actions (< 1 hour): CI monitoring, smoke tests
-- Short-term (1-3 days): Secret configuration, dependency testing
-- Medium-term (1-2 weeks): Wiki deployment, Phase 2 activation
+- Short-term (1-3 iterations): Secret configuration, dependency testing
+- Medium-term (1-2 phases): Wiki deployment, Phase 2 activation
 - Long-term (1+ months): Monitoring, maintenance, enhancements
 
 **Deliverable:** Merge readiness confirmed, post-merge guide created

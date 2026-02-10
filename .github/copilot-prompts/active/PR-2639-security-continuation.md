@@ -165,7 +165,7 @@ jobs:
 ```
 
 **Success Criteria**:
-- [ ] Workflow runs weekly
+- [ ] Workflow runs per-phase
 - [ ] Creates issue when rotation needed (80+ days)
 - [ ] Links to admin documentation
 - [ ] Can be triggered manually

@@ -62,13 +62,13 @@ Deploy agents to production environment:
 
 2. **Doc Freshness Checker**
    - Configure link checker rules
-   - Set staleness thresholds (30 days default)
-   - Enable on PR and weekly schedule
+   - Set staleness thresholds (30 iterations default)
+   - Enable on PR and per-phase schedule
 
 3. **Dependency Vulnerability Scanner**
    - Configure severity thresholds (CRITICAL, HIGH)
    - Enable auto-PR for patches
-   - Enable on daily schedule
+   - Enable on per-iteration schedule
 
 4. **Integration Test Runner**
    - Configure test parallelism

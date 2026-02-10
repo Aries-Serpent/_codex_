@@ -102,7 +102,7 @@ This occurs because the `satackey/action-google-drive@v1` action attempts an int
 |----------|----------|-----------|
 | **Phase 10 Master Plan** | `PHASE_10_MASTER_INTEGRATION_PLANSET.md` | Task 2: Google Drive upload configuration |
 | **Phase 11 Prompts** | `PHASE_11_X_PROMPTSETS.md` | Prompt 2.1: Google Drive integration implementation |
-| **Phase 12 Continuation** | `PHASE_12_CONTINUATION_PROMPT.md` | Week 1 Day 1-2: Google OAuth + Drive setup |
+| **Phase 12 Continuation** | `PHASE_12_CONTINUATION_PROMPT.md` | Week 1 iteration 1-2: Google OAuth + Drive setup |
 | **Admin Action Tracker** | `HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md` | HA-GC-001, HA-GH-001, HA-NB-001 action items |
 | **Automation Analysis** | `AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md` | §2.3: Google Drive upload automation analysis |
 | **NotebookLM Setup** | `docs/TASK_3_NOTEBOOKLM_SKILL_SETUP.md` | Claude Code integration guide for NotebookLM |
@@ -377,9 +377,9 @@ When ready to implement Google Drive integration, complete these phases in order
 - [ ] Monitor first automated run (push to main)
 - [ ] Verify end-to-end flow completes successfully
 
-### Phase 8: Production Monitoring — Ongoing (1 week minimum)
+### Phase 8: Production Monitoring — Ongoing (1 phase minimum)
 
-- [ ] Monitor workflow runs for 1 week
+- [ ] Monitor workflow runs for 1 phase
 - [ ] Check for authentication failures
 - [ ] Verify upload success rate
 - [ ] Monitor Drive quota usage
@@ -406,7 +406,7 @@ When ready to implement Google Drive integration, complete these phases in order
 - **Phase 10 Master Plan**: [`PHASE_10_MASTER_INTEGRATION_PLANSET.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_10_MASTER_INTEGRATION_PLANSET.md) — Task 2
 - **Admin Action Tracker**: [`HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md`](https://github.com/Aries-Serpent/_codex_/blob/main/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md) — HA-GC-001, HA-GH-001, HA-NB-001
 - **Phase 11 Prompts**: [`PHASE_11_X_PROMPTSETS.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_11_X_PROMPTSETS.md) — Prompt 2.1
-- **Phase 12 Continuation**: [`PHASE_12_CONTINUATION_PROMPT.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md) — Week 1 Day 1-2
+- **Phase 12 Continuation**: [`PHASE_12_CONTINUATION_PROMPT.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md) — Week 1 iteration 1-2
 - **Automation Analysis**: [`AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md`](https://github.com/Aries-Serpent/_codex_/blob/main/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md) — §2.3
 
 ### External Resources
@@ -460,7 +460,7 @@ The Google Drive integration is considered successfully implemented when:
 - ✅ NotebookLM notebook stays synced with repository changes
 - ✅ AI Architect queries return accurate, current information
 - ✅ Security scans complete before uploads
-- ✅ No authentication failures for 1 week continuous operation
+- ✅ No authentication failures for 1 phase continuous operation
 - ✅ Drive quota usage is within acceptable limits
 - ✅ Error handling and retry logic functions correctly
 - ✅ Documentation reflects actual implementation

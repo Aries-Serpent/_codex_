@@ -200,7 +200,7 @@ git commit -m "chore: Remove archived files from misc folder"
 ```
 
 **Option 2: Keep Temporarily**
-Leave files here for a grace period (30-90 days) before deletion.
+Leave files here for a grace period (30-90 iterations) before deletion.
 
 **Option 3: Restore Files**
 If any file is needed:

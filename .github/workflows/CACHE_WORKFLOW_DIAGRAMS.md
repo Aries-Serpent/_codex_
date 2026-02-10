@@ -351,7 +351,7 @@ flowchart TD
     
     Safe --> End([Continue])
     
-    Caution --> Monitor1[Daily Monitoring]
+    Caution --> Monitor1[per-iteration Monitoring]
     Monitor1 --> End
     
     Warning --> Plan[Create Optimization Plan]
@@ -475,5 +475,5 @@ graph TB
 ---
 
 **Report Generated**: 2025-12-30  
-**Next Review**: After Phase 2 monitoring (2 weeks)  
+**Next Review**: After Phase 2 monitoring (2 phases)  
 **Maintained By**: DevOps Team / Copilot Agent

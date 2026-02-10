@@ -107,13 +107,13 @@ This session completed:
 - [ ] Update CHANGELOG.md if needed
 - [ ] Tag release if applicable
 
-### Short-term (1-2 weeks)
+### Short-term (1-2 phases)
 - [ ] Implement core logic for test-assertion-updater
 - [ ] Implement core logic for cache-logic-validator
 - [ ] Create GitHub Actions workflow integrations
 - [ ] Add test suites for new agents
 
-### Medium-term (2-4 weeks)
+### Medium-term (2-4 phases)
 - [ ] Implement security-advisory-resolver
 - [ ] Implement ci-failure-diagnostician
 - [ ] Production monitoring setup

@@ -7,7 +7,7 @@
 task_id: T5
 priority: P0
 phase: phase_1_foundation
-effort: 1-2 days
+effort: 1-2 iterations
 dependencies: []
 ```
 

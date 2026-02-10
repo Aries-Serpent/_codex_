@@ -51,7 +51,7 @@ After Genesis Protocol Phase 2 completion:
 - **Authority Level:** Autonomous (within guardrails)
 - **Operational Mode:** Active monitoring
 - **Allowed Operations:** Maintenance, testing, documentation
-- **Rate Limits:** Max 5 PRs per day
+- **Rate Limits:** Max 5 PRs per-iteration
 
 ---
 
@@ -250,7 +250,7 @@ LOW │    MEDIUM│    HIGH
 
 ### Maintenance Tasks
 
-**Daily Operations:**
+**per-iteration Operations:**
 
 ```bash
 # Morning routine (automated)
@@ -266,10 +266,10 @@ LOW │    MEDIUM│    HIGH
 - Escalate high-risk findings
 ```
 
-**Weekly Operations:**
+**per-phase Operations:**
 
 ```bash
-# Weekly review (automated)
+# per-phase review (automated)
 1. Dependency vulnerability scan
 2. Code quality metrics
 3. Test coverage analysis
@@ -277,7 +277,7 @@ LOW │    MEDIUM│    HIGH
 5. Technical debt assessment
 
 # Actions:
-- Generate weekly report
+- Generate per-phase report
 - Update metrics dashboard
 - Create improvement PRs
 - Schedule human review
@@ -461,9 +461,9 @@ Specific question or decision needed from human
 | Issue Type | Contact | Response SLA |
 |------------|---------|-------------|
 | **Critical Security** | @mbaetiong | Immediate (< 1 hour) |
-| **High Priority** | @mbaetiong | 4 hours |
-| **Configuration** | @mbaetiong | 24 hours |
-| **General** | GitHub Issues | 48 hours |
+| **High Priority** | @mbaetiong | 4 Commits |
+| **Configuration** | @mbaetiong | 24 Commits |
+| **General** | GitHub Issues | 48 Commits |
 
 ---
 
@@ -472,8 +472,8 @@ Specific question or decision needed from human
 ### Operational Limits
 
 **Rate Limits:**
-- Maximum 5 PRs per day
-- Maximum 10 workflow runs per day
+- Maximum 5 PRs per-iteration
+- Maximum 10 workflow runs per-iteration
 - Maximum 100 API calls per hour
 
 **Scope Limits:**
@@ -484,8 +484,8 @@ Specific question or decision needed from human
 
 **Time Limits:**
 - Single operation: Max 30 minutes
-- Daily total: Max 2 hours of autonomous work
-- Weekly review required if limits approached
+- per-iteration total: Max 2 hours of autonomous work
+- per-phase review required if limits approached
 
 ### Prohibited Actions
 
@@ -819,7 +819,7 @@ This operational guide provides the framework for safe, effective autonomous age
 
 **Document Version:** 1.0.0  
 **Last Updated:** 2025-12-26  
-**Next Review:** After 30 days of Phase 3 operations  
+**Next Review:** After 30 iterations of Phase 3 operations  
 **Maintained By:** @mbaetiong and ai_org_repo_admin
 
 **For questions or clarifications:** Create an issue with `[AGENT-OPS]` tag or escalate to @mbaetiong.

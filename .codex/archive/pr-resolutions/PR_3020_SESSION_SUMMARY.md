@@ -112,7 +112,7 @@ Successfully addressed PR #3020 new requirement to follow AI Agency Policy and "
 
 ## Sprint 1 Roadmap (Next Agent)
 
-**Effort:** 8-16 hours | **Impact:** Health 78 → 83
+**Effort:** 8-16 Commits | **Impact:** Health 78 → 83
 
 ### Quick Wins Priority List
 

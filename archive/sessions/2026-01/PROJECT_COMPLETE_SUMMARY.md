@@ -278,7 +278,7 @@ _codex_/
 ### For Users
 - Workflows auto-run on push/schedule
 - Manual triggers available via workflow_dispatch
-- Artifacts retained for 30-90 days
+- Artifacts retained for 30-90 iterations
 - Issues auto-created on critical failures
 - CLI tools available for local testing
 

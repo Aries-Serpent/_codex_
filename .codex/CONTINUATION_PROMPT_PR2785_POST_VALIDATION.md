@@ -233,7 +233,7 @@ Before proceeding to merge, verify:
 
 ### Phase C: Custom Agent Development
 
-**Trigger**: Post-merge stabilization (1-2 weeks)
+**Trigger**: Post-merge stabilization (1-2 phases)
 
 **Tasks**:
 1. Implement `test-assertion-updater` agent

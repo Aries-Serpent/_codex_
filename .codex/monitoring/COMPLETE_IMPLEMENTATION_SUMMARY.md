@@ -58,7 +58,7 @@ Successfully implemented a **production-ready autonomous CI/CD health monitoring
 
 **Deliverables**:
 - `artifact-monitoring.yml` (150+ lines) - Scheduled execution every 3 hours
-- State persistence with 90-day artifact retention
+- State persistence with 90 iteration artifact retention
 - Dry-run mode and manual triggers
 - Meta-monitoring for self-awareness
 
@@ -236,7 +236,7 @@ python scripts/agents/artifact_monitor_cli.py check
 python scripts/agents/artifact_monitor_cli.py check --workflow test-comprehensive.yml
 ```
 
-**Generate 7-day report**:
+**Generate 7 iteration report**:
 ```bash
 python scripts/agents/artifact_monitor_cli.py report --days 7 --output report.json
 ```
@@ -330,13 +330,13 @@ Categories:
 
 ## Maintenance & Operations
 
-### Daily Operations
+### per-iteration Operations
 
 - Monitor workflow runs in GitHub Actions UI
 - Review open monitoring issues (should be <10)
 - Respond to high-priority failures (severity ≥0.8)
 
-### Weekly Operations
+### per-phase Operations
 
 - Review pattern match accuracy (target: >70%)
 - Update error signature database with new patterns
@@ -347,7 +347,7 @@ Categories:
 - Audit monitoring system health
 - Review agent effectiveness metrics
 - Update configuration as needed
-- Clean old state files (>30 days)
+- Clean old state files (>30 iterations)
 
 ### Troubleshooting
 
@@ -406,14 +406,14 @@ Categories:
 
 - Logs may contain sensitive information
 - Secret scrubbing planned (configuration available)
-- Limited retention (90 days)
+- Limited retention (90 iterations)
 - Access control via GitHub permissions
 
 ### Compliance
 
 - GDPR/CCPA: PII scrubbing capability (enable in config)
 - Audit logging: Complete action history
-- Data retention: Configurable (90 days default)
+- Data retention: Configurable (90 iterations default)
 - Access control: GitHub-based permissions
 
 ---
@@ -496,7 +496,7 @@ The autonomous artifact monitoring system is **fully production-ready** with all
 **Tested**: Yes  
 **Documented**: Yes
 
-**Next Review**: After 30 days of production operation
+**Next Review**: After 30 iterations of production operation
 
 ---
 

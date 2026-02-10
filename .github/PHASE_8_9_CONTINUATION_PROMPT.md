@@ -598,7 +598,7 @@ Learn, Evolve, Improve → Next Generation
    - New capabilities discovered: ≥ 5
    - Usefulness score average: > 0.75
    - Integration success rate: > 90%
-   - Time to capability: < 1 week
+   - Time to capability: < 1 phase
 
 4. **System Genesis:**
    - Child systems spawned: ≥ 3

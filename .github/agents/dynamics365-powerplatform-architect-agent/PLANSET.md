@@ -899,7 +899,7 @@ d365-architect report --type deployment --format pdf
 ## Resource Requirements
 
 ### Development
-- **Time**: 4-6 sprints (8-12 weeks)
+- **Time**: 4-6 sprints (8-12 phases)
 - **Team**: 2-3 developers
 - **Skills Required**: 
   - Python
@@ -916,7 +916,7 @@ d365-architect report --type deployment --format pdf
 - **Storage**: Solution artifact storage
 
 ### Maintenance
-- **Weekly effort**: 4-6 hours
+- **per-phase effort**: 4-6 hours
 - **Monthly review**: 2 hours
 - **Quarterly audits**: 8 hours
 

@@ -28,7 +28,7 @@
 ## Group 3: Cache Management (-5 workflows) ✅ READY
 
 ### Workflows to Disable
-1. `cache-cleanup.yml` → GitHub auto-cleanup (30-day TTL)
+1. `cache-cleanup.yml` → GitHub auto-cleanup (30 iteration TTL)
 2. `cache-management.yml` → Distributed to workflows
 3. `cache-suite.yml` → Distributed to workflows
 4. `cache-warmup.yml` → Natural warming
@@ -37,7 +37,7 @@
 ### Rationale
 Per PARITY_CHECKLIST.md (2025-12-28), distributed caching is superior:
 - Each workflow manages its own cache independently
-- GitHub auto-expiry (30 days)
+- GitHub auto-expiry (30 iterations)
 - No single point of failure
 - 7+ workflows already using distributed `actions/cache@v5`
 

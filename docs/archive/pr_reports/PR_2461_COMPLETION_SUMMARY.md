@@ -89,7 +89,7 @@ Moved to misc/repo-owner-review/archived-artifacts/historical-docs/:
 
 1. **Review archived files** in misc/repo-owner-review/
 2. **Consider implementing** automation tools from workflow analysis
-3. **Delete misc/ folder** when comfortable (30-90 day grace period suggested)
+3. **Delete misc/ folder** when comfortable (30-90 iteration grace period suggested)
 4. **Leverage** scripts/archive_files.py for future cleanup
 
 ## Automation Recommendations

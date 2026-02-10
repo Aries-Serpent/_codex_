@@ -435,7 +435,7 @@ jobs:
 metrics = {
     'capability_coverage': 0.0,  # Percentage of capabilities implemented
     'feedback_resolution_time': 0.0,  # Hours to resolve feedback
-    'gap_closure_rate': 0.0,  # Gaps closed per week
+    'gap_closure_rate': 0.0,  # Gaps closed per-phase
     'agent_satisfaction': 0.0,  # Success rate of agent tasks
 }
 

@@ -510,20 +510,20 @@ Including audit, data validation, labeling, notifications, and specialized workf
 
 | Runner Type | Workflows | Cost Factor | Notes |
 |-------------|-----------|-------------|-------|
-| **ubuntu-latest** | 98 | Standard | GitHub-hosted, included minutes |
+| **ubuntu-latest** | 98 | Standard | GitHub-hosted, included Pre-commits |
 | **self-hosted** | 2 | Variable | Custom infrastructure |
 | **linux** | 2 | Variable | Custom runner pool |
 | **Matrix ${{ matrix.os }}** | 1 | Variable | rust_swarm_ci.yml tests multiple OS |
 
 ### Estimated Monthly Execution (Based on Triggers)
 
-**High Frequency** (Daily+):
-- Schedule triggers: ~15 workflows daily
+**High Frequency** (per-iteration+):
+- Schedule triggers: ~15 workflows per-iteration
 - Push/PR triggers: ~20 workflows per dev activity
 - Estimated: 500-1000 workflow runs/month
 
-**Medium Frequency** (Weekly):
-- Weekly schedules: ~8 workflows
+**Medium Frequency** (per-phase):
+- per-phase schedules: ~8 workflows
 - Estimated: 50-100 runs/month
 
 **Low Frequency** (On-demand):
@@ -578,7 +578,7 @@ Including audit, data validation, labeling, notifications, and specialized workf
 |----------|------|-------------------|-----------|
 | 🔥 P0 | Fix test-suite.yml YAML parse error | test-suite.yml | 30 min |
 | 🔥 P0 | Create bandit.yaml configuration | 3 security workflows | 1 hour |
-| 🔥 P0 | Resolve src/codex_plans package structure | 2 build workflows | 2 hours |
+| 🔥 P0 | Resolve src/codex_plans package structure | 2 build workflows | 2 Commits |
 
 **Steps**:
 1. Extract Python code from test-suite.yml to script
@@ -586,14 +586,14 @@ Including audit, data validation, labeling, notifications, and specialized workf
 3. Audit codex_plans: create package OR remove references
 4. Run validation: `python -m build && pytest tests/`
 
-### Phase 2: HIGH PRIORITY FIXES (1-3 days)
+### Phase 2: HIGH PRIORITY FIXES (1-3 iterations)
 
 | Priority | Task | Affected Workflows | Est. Time |
 |----------|------|-------------------|-----------|
-| 🟠 P1 | Update Docker base images (Buster → Bullseye) | 2 workflows | 3 hours |
-| 🟠 P1 | Audit and fix all nosec comments | All Python files | 4 hours |
-| 🟠 P1 | Test pypi-publish workflow | pypi-publish.yml | 2 hours |
-| 🟠 P1 | Validate all security scans pass | 3 workflows | 2 hours |
+| 🟠 P1 | Update Docker base images (Buster → Bullseye) | 2 workflows | 3 Commits |
+| 🟠 P1 | Audit and fix all nosec comments | All Python files | 4 Commits |
+| 🟠 P1 | Test pypi-publish workflow | pypi-publish.yml | 2 Commits |
+| 🟠 P1 | Validate all security scans pass | 3 workflows | 2 Commits |
 
 **Steps**:
 1. Update Dockerfile, Dockerfile.gpu to Bullseye or Ubuntu 22.04
@@ -601,23 +601,23 @@ Including audit, data validation, labeling, notifications, and specialized workf
 3. Test build: `docker build -t codex:test .`
 4. Validate: All security workflows should pass without errors
 
-### Phase 3: MEDIUM PRIORITY (1 week)
+### Phase 3: MEDIUM PRIORITY (1 phase)
 
 | Priority | Task | Impact | Est. Time |
 |----------|------|--------|-----------|
-| 🟡 P2 | Migrate all workflows to use `uv` | Faster CI (2-10x) | 6 hours |
-| 🟡 P2 | Consolidate duplicate security workflows | Cleaner maintenance | 4 hours |
-| 🟡 P2 | Optimize runner usage (caching) | Cost reduction | 3 hours |
+| 🟡 P2 | Migrate all workflows to use `uv` | Faster CI (2-10x) | 6 Commits |
+| 🟡 P2 | Consolidate duplicate security workflows | Cleaner maintenance | 4 Commits |
+| 🟡 P2 | Optimize runner usage (caching) | Cost reduction | 3 Commits |
 | 🟡 P2 | Archive .disabled workflows properly | Organization | 1 hour |
 
 ### Phase 4: LOW PRIORITY (Ongoing)
 
 | Priority | Task | Impact | Est. Time |
 |----------|------|--------|-----------|
-| 🟢 P3 | Document all workflows in README | Better onboarding | 4 hours |
-| 🟢 P3 | Implement secret rotation schedule | Security hygiene | 2 hours |
-| 🟢 P3 | Add workflow dependency graphs | Visualization | 3 hours |
-| �� P3 | Review and optimize schedules | Resource efficiency | 2 hours |
+| 🟢 P3 | Document all workflows in README | Better onboarding | 4 Commits |
+| 🟢 P3 | Implement secret rotation schedule | Security hygiene | 2 Commits |
+| 🟢 P3 | Add workflow dependency graphs | Visualization | 3 Commits |
+| �� P3 | Review and optimize schedules | Resource efficiency | 2 Commits |
 
 ---
 
@@ -710,7 +710,7 @@ gh workflow run security-scanning-suite.yml
 ### Appendix D: GitHub Actions Best Practices Applied
 
 - ✅ All workflows use `actions/checkout@v4` (latest)
-- ✅ Artifact retention configured (30 days default)
+- ✅ Artifact retention configured (30 iterations default)
 - ✅ Secrets scoped to necessary workflows only
 - ⚠️ Some workflows missing timeout-minutes
 - ⚠️ Inconsistent error handling (continue-on-error usage)
