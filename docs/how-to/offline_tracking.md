@@ -11,6 +11,7 @@ Defaults
 - W&B: WANDB_MODE=offline unless explicitly set by user
 
 Environment toggles
+
 | Var | Meaning | Example |
 |-----|---------|---------|
 | CODEX_ALLOWLIST_HOSTS | Comma-separated allowlisted hosts | mlflow.mycorp.local,api.github.com |

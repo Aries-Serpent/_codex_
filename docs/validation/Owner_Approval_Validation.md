@@ -4,6 +4,7 @@
 This runbook verifies the OWNER approval window for cost-incurring workflows with a 24h duration. CI workflows remain disabled by policy; validation runs locally.
 
 Summary
+
 | Mode | Command | Expected |
 |---|---|---|
 | File-based (24h) | make owner-approve-24h && bash scripts/ci/owner_approval_test.sh docker-build-push | RESULT: APPROVED |

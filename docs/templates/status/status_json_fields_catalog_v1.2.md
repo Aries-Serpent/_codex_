@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Schema Catalog Author], [Secondary: Reviewer] ⚡ Energy: 5
 
 Top-Level
+
 | Field | Type | Required | Notes |
 |---|---|---:|---|
 | metadata | object | Yes | Title, timestamps, git_context, environment |
@@ -18,6 +19,7 @@ Top-Level
 | hydra_config_snapshot | object | No | Hydra config state |
 
 Snapshot Highlights
+
 | Path | Description |
 |---|---|
 | snapshot.capabilities[].id | CAP-XXX identifier |

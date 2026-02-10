@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Reviewer], [Secondary: QA Buddy] ⚡ Energy: 5
 
 Review Focus
+
 | Area | Questions | Accept Criteria |
 |---|---|---|
 | Metadata | Is git_context present? Is environment captured? | All fields present; UTC timestamp |

@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Tokenization Lead], [Secondary: Offline Readiness Reviewer] ⚡ Energy: 5
 
 Checklist
+
 | Area | What to Capture | Example |
 |---|---|---|
 | Current tokenizers | name, type, vocab_size, model_path, offline_available | {"name": "hf-gpt2", "type": "hf_fast"} |

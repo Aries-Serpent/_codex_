@@ -125,6 +125,7 @@ implementation_completed/
 ```
 
 **README Table Format**:
+
 | Component | Description | Repo Path | Commit SHA | Date | Version | Reward Score | Safe to Remove |
 |-----------|-------------|-----------|------------|------|---------|--------------|----------------|
 | fix_type_hints | Auto-fix missing typing imports | scripts/fix_type_hints.py | 60593d9 | 2025-12-11 | v1.0.0 | N/A | No |

@@ -413,6 +413,7 @@ Before committing:
 ## Key Metrics Dashboard
 
 ### Progress Metrics
+
 | Metric | Start | Current | Change | Target | Remaining |
 |--------|-------|---------|--------|--------|-----------|
 | Tests Passing | 354 | 435 | +81 | ~560 | ~125 |

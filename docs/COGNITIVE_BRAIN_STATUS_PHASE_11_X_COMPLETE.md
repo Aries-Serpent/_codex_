@@ -170,6 +170,7 @@ docs/
 ### 🔄 Automated Workflows Status
 
 #### Fully Operational Workflows
+
 | Workflow | Status | Purpose | Frequency |
 |----------|--------|---------|-----------|
 | `auth-token-rotation.yml` | ✅ Ready | JWT secret rotation | Monthly |

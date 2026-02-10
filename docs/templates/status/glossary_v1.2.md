@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Glossary Editor], [Secondary: Reviewer] ⚡ Energy: 5
 
 Terms
+
 | Term | Meaning |
 |---|---|
 | Capability (CAP-XXX) | A discrete, reviewable repo function or domain area |

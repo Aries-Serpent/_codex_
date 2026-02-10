@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Ownership Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Mapping
+
 | Area | Primary Owner | Backup | Notes |
 |---|---|---|---|
 | Template/Schema | @mbaetiong | @reviewer | Versioning, validations |

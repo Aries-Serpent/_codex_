@@ -143,6 +143,7 @@ class QuantumOperator:
 ## Remaining Issues (19 failures)
 
 ### Category 1: Missing Methods (8 failures)
+
 | Test | Issue | Module | Priority |
 |------|-------|--------|----------|
 | test_bfs_traversal | MentalNode not hashable | mental_mapping | P1 |
@@ -155,6 +156,7 @@ class QuantumOperator:
 | test_optimize_path | Parameter 'start' not accepted | physics_orchestrator | P2 |
 
 ### Category 2: Parameter Mismatches (7 failures)
+
 | Test | Issue | Module | Priority |
 |------|-------|--------|----------|
 | test_memory_mental_integration | store_memory() signature | agent_memory | P1 |
@@ -166,6 +168,7 @@ class QuantumOperator:
 | test_hamiltonian_evolver_properties | Missing properties | physics_orchestrator | P3 |
 
 ### Category 3: Import Issues (1 failure)
+
 | Test | Issue | Solution | Priority |
 |------|-------|----------|----------|
 | test_self_healing_with_physics_integration | Import verification | Already fixed, needs re-test | P1 |

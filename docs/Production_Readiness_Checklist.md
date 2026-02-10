@@ -127,6 +127,7 @@
 ## Acceptance Criteria Summary
 
 ### Critical (Must Pass)
+
 | Criterion | Status | Blocker |
 |-----------|--------|---------|
 | Determinism (2-run equality) | ⏸️ Pending | Requires full audit execution |
@@ -136,6 +137,7 @@
 | Security (0 critical) | ✅ PASS | - |
 
 ### Important (Should Pass)
+
 | Criterion | Status | Note |
 |-----------|--------|------|
 | CI artifacts uploaded | ✅ Ready | Workflow configured |

@@ -26,6 +26,7 @@ Summarize the user problem, measurable outcome, and scope boundaries. Reference 
 List experiments, spikes, or prototypes that validate feasibility. Link to notebooks under `../../notebooks/` or tests added to `../../tests/`.
 
 ## Decision Gates
+
 | Gate | Entry Criteria | Decision Owner |
 | --- | --- | --- |
 | Gate 1 — Intent review | Document circulated and placeholders resolved | Maintainer |
@@ -33,12 +34,14 @@ List experiments, spikes, or prototypes that validate feasibility. Link to noteb
 | Gate 3 — Launch approval | Success criteria met, rollout plan approved | Stakeholder |
 
 ## Risk Register
+
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
 | [PLACEHOLDER: RISK_DESCRIPTION] | [PLACEHOLDER: RISK_IMPACT] | [PLACEHOLDER: RISK_MITIGATION] |
 | [PLACEHOLDER: SECONDARY_RISK] | [PLACEHOLDER: SECONDARY_IMPACT] | [PLACEHOLDER: SECONDARY_MITIGATION] |
 
 ## Customization Guide
+
 | Placeholder | Description | Example |
 | --- | --- | --- |
 | `[PLACEHOLDER: INTENT_STATEMENT]` | One-sentence summary of desired outcome. | "Validate GPU fine-tuning pipeline for codex-14b." |

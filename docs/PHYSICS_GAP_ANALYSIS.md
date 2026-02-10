@@ -31,6 +31,7 @@ This living document tracks identified gaps, risks, incomplete implementations, 
 9. ❌ Unused imports and variables
 
 ### Priority Assessment
+
 | Gap | Impact | Risk | Priority |
 |-----|--------|------|----------|
 | Logic error (maxima) | High | High | P0 |

@@ -16,6 +16,7 @@ python -m src.codex_ml.data.cli metadata path/to/file.parquet
 ```
 
 ## Exit Codes
+
 | Code | Meaning |
 |------|---------|
 | 0 | Success |

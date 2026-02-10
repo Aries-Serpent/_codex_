@@ -6,6 +6,7 @@ Scope
 - Ensure encode/decode round-trip fidelity and fast/slow tokenizer parity.
 
 Gates
+
 | Check | Evidence | Pass Criteria |
 |---|---|---|
 | Round-trip | tests/tokenization/test_tokenization_roundtrip.py | Decoded text equals original (trimmed) |

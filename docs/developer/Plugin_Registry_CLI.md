@@ -1,6 +1,7 @@
 # Plugin Registry CLI — Developer Notes
 
 ## Entrypoints
+
 | Command | Purpose |
 |---------|---------|
 | codex-list-plugins | Print available plugins (text/json) |

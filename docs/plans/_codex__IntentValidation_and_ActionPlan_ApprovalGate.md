@@ -106,6 +106,7 @@ Objective: Maximize consistency and reproducibility; reduce friction to run.
 ---
 
 ## Risks and Mitigations
+
 | Risk | Severity | Mitigation |
 |---|---|---|
 | Over-broad style changes create merge conflicts | Medium | Isolate in Phase 3; rebase early; small focused commits |

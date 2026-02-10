@@ -9,6 +9,7 @@
 This document confirms all files required for the “meta propagation”, “component caps”, and “dup heuristic switch” enhancements are included and highlights two additional package markers to stabilize imports across environments.
 
 ## Included In Patch (Previously Delivered)
+
 | Area | File | Status |
 |------|------|--------|
 | Config | .copilot-space/workflow.yaml | Updated: component_caps, dup.heuristic |
@@ -24,6 +25,7 @@ This document confirms all files required for the “meta propagation”, “com
 | Tests | tests/specs/test_dup_similarity.py | New |
 
 ## Additional Files (Now Included)
+
 | File | Purpose | Impact |
 |------|---------|--------|
 | scripts/__init__.py | Mark top-level scripts as a package | Stabilizes absolute imports in varied runners |

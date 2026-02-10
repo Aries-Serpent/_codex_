@@ -38,6 +38,7 @@
 3. Validate `/ready` endpoint until status returns 200.
 
 ## Observability
+
 | Metric | SLO | Monitoring |
 |--------|-----|------------|
 | Availability | 99.9% | Prometheus + Alertmanager |

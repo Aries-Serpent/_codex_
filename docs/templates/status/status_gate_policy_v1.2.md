@@ -6,6 +6,7 @@ Goal
 - Define local gate thresholds and expectations enforced by tools/status_gate_from_statusrc.py and CI.
 
 Fields
+
 | Field | Type | Meaning | Example |
 |---|---|---|---|
 | fail_under_coverage | number | Minimum overall coverage (%) | 35 |

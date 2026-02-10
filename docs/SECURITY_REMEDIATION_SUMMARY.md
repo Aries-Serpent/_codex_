@@ -41,24 +41,28 @@ This document summarizes the comprehensive security remediation work completed t
 ### 2. Security Infrastructure Created
 
 #### Utilities
+
 | File | Lines | Purpose |
 |------|-------|---------|
 | `utils/safe_torch_loader.py` | 85 | Secure PyTorch model loading with `weights_only=True` enforcement |
 | `utils/torch_resource_manager.py` | 67 | Context manager for automatic GPU resource cleanup |
 
 #### API Security
+
 | File | Lines | Purpose |
 |------|-------|---------|
 | `services/api/middleware/form_validator.py` | 85 | Middleware to prevent multipart DoS attacks |
 | `services/api/config.py` | 54 | Security-focused API configuration |
 
 #### Verification & Monitoring
+
 | File | Lines | Purpose |
 |------|-------|---------|
 | `scripts/security_audit.py` | 171 | Automated verification of all security patches |
 | `.github/workflows/security-scan.yml` | 56 | Continuous security monitoring workflow |
 
 #### Documentation
+
 | File | Lines | Purpose |
 |------|-------|---------|
 | `docs/SECURITY_SCAN_REPORT.md` | 61 | Comprehensive code scanning findings report |

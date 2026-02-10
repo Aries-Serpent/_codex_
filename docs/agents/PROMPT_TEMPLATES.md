@@ -362,6 +362,7 @@ Analysis Steps:
 4. Create action items for each gap
 
 Output Format:
+
 | Component | Implemented | Tested | Documented | Priority | Action |
 |-----------|-------------|--------|------------|----------|--------|
 | [name]    | ✅/❌       | ✅/❌  | ✅/❌      | P0-P3    | [action] |

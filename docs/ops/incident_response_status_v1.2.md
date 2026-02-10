@@ -8,6 +8,7 @@ Trigger Conditions
 - audit_chain.yml integrity verification fails
 
 Response Playbook
+
 | Phase | Action | Owner | SLA |
 |---|---|---|---|
 | Triage | Assign IC, gather logs and artifacts | On-call | 30m |

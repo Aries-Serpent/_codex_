@@ -3,6 +3,7 @@
 This page summarizes the evaluator rules captured in `manifests/codex_eval_rules.v3.json`.
 
 ## Dimensions & Weights
+
 | Key | Weight | Description |
 | --- | --- | --- |
 | freshness_discipline | 3 | Uses absolute dates; browses for volatile topics. |

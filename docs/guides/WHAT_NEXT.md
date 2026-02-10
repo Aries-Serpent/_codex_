@@ -4,6 +4,7 @@ Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
 ## Final Additions Included
+
 | Area | File | Purpose |
 |------|------|---------|
 | Container CI | .github/workflows/container-build.yml | Build CPU/GPU images on PR/main |
@@ -17,6 +18,7 @@ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 | Docs | docs/deployment/docker_deployment_guide.md | Ops deployment guide |
 
 ## Optional (Future)
+
 | Option | Rationale |
 |--------|-----------|
 | Helm chart packaging | Easier K8s rollout for multiple envs |

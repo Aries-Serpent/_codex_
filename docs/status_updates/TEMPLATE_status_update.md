@@ -24,6 +24,7 @@
 - [ ] Deployment docs/presets in sync (no missing references).
 
 ## 3) Knobs Snapshot (control surface)
+
 | Knob | Current | Rationale | Next Experiment |
 |---|---|---|---|
 | Curriculum phase | `<phase-id>` | `<why>` | `<next>` |
@@ -47,6 +48,7 @@
 - Links verified: `docs/README_ROOT.md`, `docs/README.md`, `docs/guides/*`, `docs/deployment/*`
 
 ## 5) Gaps & Remediations
+
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
 | `<gap>` | `<impact>` | `<plan>` | `<0A/0B/0C/0D/main>` |

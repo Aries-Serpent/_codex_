@@ -495,6 +495,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 - [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py` ✅ CREATED
 
 **Phase 14.1 Progress Summary:**
+
 | Category | Target | Created | % |
 |----------|--------|---------|---|
 | CLI Tests | 55+ | 60+ | ✅ 100% |
@@ -507,6 +508,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 ## Phase 14.2: Security Hardening - ✅ COMPLETE
 
 **Security Tests Progress:**
+
 | Category | Target | Created | % |
 |----------|--------|---------|---|
 | CVE Monitor Tests | 15+ | 20+ | ✅ 100% |
@@ -526,6 +528,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 ## Phase 14.3: Integration & Edge Cases - ✅ COMPLETE
 
 **Integration Tests Progress:**
+
 | Category | Target | Created | % |
 |----------|--------|---------|---|
 | Cross-Module Integration | 30+ | 35+ | ✅ 100% |

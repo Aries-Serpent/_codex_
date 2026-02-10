@@ -7,6 +7,7 @@ Purpose
 - Pair with branch protection to require CODEOWNER reviews.
 
 Validation Dimensions
+
 | Dimension | Check | Method |
 |----------|------|--------|
 | Placement | .github/CODEOWNERS | validate_repo_codeowners() |

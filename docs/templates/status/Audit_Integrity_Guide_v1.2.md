@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Audit Lead], [Secondary: Release Auditor] ⚡ Energy: 5
 
 Artifacts
+
 | File | Description |
 |---|---|
 | audit_artifacts/context_index.json | Enumerated file listing |

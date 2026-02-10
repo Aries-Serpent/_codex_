@@ -64,6 +64,7 @@ Use this template when relocating Python files or packages while maintaining imp
 4. Document the rollback in the service change log with cause and follow-up actions.
 
 ## Customization Guide
+
 | Placeholder | Description | Example |
 | --- | --- | --- |
 | `[PLACEHOLDER: MIGRATION_INTENT_SUMMARY]` | One-sentence description of the move. | "Relocate shared tokenizer helpers to `codex.text` to unblock GPU builds." |

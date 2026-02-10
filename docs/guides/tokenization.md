@@ -18,6 +18,7 @@ tokenization.__all__           # ['sentencepiece_adapter', 'cli'] - only availab
 This pattern ensures minimal/offline installs work correctly. See `src/tokenization/__init__.py` for the implementation.
 
 ## Canonical Imports
+
 | Use case | Import |
 |----------|--------|
 | API | `from codex_ml.tokenization import api` |

@@ -19,6 +19,7 @@ Decision
 - Two documentation headers updated below to align with Space formatting (Generated + Physics).
 
 Delivered/Updated Files (recap)
+
 | Path | Type | Status |
 |------|------|--------|
 | .copilot-space/workflow.yaml | Config | Updated: added component_caps, dup.heuristic |

@@ -6,6 +6,7 @@ Scope
 - Define the complete validation flow for status reports and related schemas.
 
 Validation Flow
+
 | Step | Command | Purpose | Pass Criteria |
 |---|---|---|---|
 | 1. Skeleton | python tools/status_report.py --title "📍 `_codex_` : Status Update YYYY-MM-DD-HH:MM:UTC" --out reports/daily/YYYY-MM-DD.json | Generate base JSON | File created |
@@ -15,6 +16,7 @@ Validation Flow
 | 5. Audit chain | python scripts/audit/build_integrity_chain.py | Integrity manifest | audit_run_manifest.json present |
 
 Troubleshooting Matrix
+
 | Symptom | Likely Cause | Remediation |
 |---|---|---|
 | Schema test fails | Drift between example and schema | Update example or schema, re-run tests |

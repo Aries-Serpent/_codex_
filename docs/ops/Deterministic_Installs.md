@@ -7,6 +7,7 @@
 - Avoid network drift; prefer frozen syncs
 
 ## Commands
+
 | Task | Command | Notes |
 |------|--------|-------|
 | Sync from lock (frozen) | make uv-sync | Uses uv.lock; no updates |

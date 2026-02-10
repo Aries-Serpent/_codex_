@@ -3,6 +3,7 @@
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## 1. Added Metrics
+
 | Metric | Source Artifact | Influence |
 |--------|-----------------|-----------
 
@@ -20,6 +21,7 @@ If similarity unavailable: fallback `consistency = 1 - duplication_ratio`.
 If coverage absent: fallback `tests = test_file_ratio`.
 
 ## 4. Safeguards (Severity Influence)
+
 | Mode | Formula | Clamp |
 |------|---------|-------|
 | additive (default) | safeguards_raw × (1 + Σ weighted severity counts) | ≤ 1.25 |
@@ -42,6 +44,7 @@ If any auxiliary artifact or knob is missing:
 - No new warnings introduced.
 
 ## 8. Fallback Table
+
 | Component | Missing Artifact | Behavior |
 |-----------|------------------|----------|
 | consistency | token_similarity.json absent | Use duplication-only |
@@ -50,6 +53,7 @@ If any auxiliary artifact or knob is missing:
 | prefix validation | validator disabled | No prefix warning |
 
 ## 9. Warning Codes (Additions)
+
 | Code | Trigger |
 |------|--------|
 | prefix_violations:<n> | Prefix validation found n violations |

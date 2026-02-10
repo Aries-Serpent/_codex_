@@ -270,6 +270,7 @@ black --check scripts/
 ## Impact Analysis
 
 ### Performance Improvements
+
 | Metric | Before | After | Change |
 |--------|--------|-------|--------|
 | CI Success Rate | 66.7% (6/9 jobs) | 100% (9/9 jobs) | +33.3% |

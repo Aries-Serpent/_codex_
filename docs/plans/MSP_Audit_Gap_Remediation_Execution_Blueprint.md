@@ -125,6 +125,7 @@ make space-validate
 - [x] Remediation and validation docs created
 
 ## Risk Mitigation
+
 | Risk | Mitigation |
 |------|-----------|
 | Aggressive gating fails builds | Adjust options.* flags in workflow.yaml; phased rollout |

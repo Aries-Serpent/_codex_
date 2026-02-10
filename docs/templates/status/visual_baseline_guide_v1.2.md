@@ -6,6 +6,7 @@ Purpose
 - Maintain baseline screenshots to detect unintended visual regressions in rendered HTML reports.
 
 Structure
+
 | Path | Notes |
 |---|---|
 | visual_baseline/ | Root folder (committed) |

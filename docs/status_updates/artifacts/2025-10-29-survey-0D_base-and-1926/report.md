@@ -418,6 +418,7 @@ No local checkout or diff artifacts for PR #1926 were found. Unable to surface f
 - `docs/README_ROOT.md` documents `codex deploy --config ... --model ... --dry-run`, but `src/codex_ml/cli/codex_cli.py` deploy command only accepts `--config`, `--dry-run`, and `--run-metadata-dir`.
 
 ## 5) Gaps & Remediations
+
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
 | Deploy docs require unsupported `--model` flag. | Confuses reviewers executing dry-run commands. | Update docs or extend CLI to accept `--model` alias. | 0D_base_ |

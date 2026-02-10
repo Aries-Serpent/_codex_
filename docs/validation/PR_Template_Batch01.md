@@ -7,6 +7,7 @@
 Reduce legacy imports via AST-based refactors (batch-01), maintain determinism and validation gates, and update CI trend/baseline metadata.
 
 ## Mapping Applied
+
 | Old Prefix | New Prefix |
 |------------|------------|
 | training | src.training |
@@ -27,17 +28,20 @@ python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/baseli
 ```
 
 ## Determinism Equality Proof
+
 | Metric | Run A | Run B | Result |
 |--------|-------|-------|--------|
 | repo_root_sha | <shaA> | <shaB> | ✅ equal |
 | capabilities_scored.json (normalized) | <shaA> | <shaB> | ✅ equal |
 
 ## Tests Summary
+
 | Suite | Result |
 |-------|--------|
 | validation | PASS (paste pytest output) |
 
 ## Legacy Imports Before → After
+
 | Metric | Count |
 |--------|-------|
 | Before total (rows in CSV) | <count_before> |
@@ -50,6 +54,7 @@ python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/baseli
 ```
 
 ## Artifacts & SHAs
+
 | Artifact | SHA256 |
 |----------|--------|
 | audit_run_manifest.json | <sha> |

@@ -13,6 +13,7 @@
 - **Docstrings**: Google style
 
 ## Naming Conventions
+
 | Element | Pattern | Example |
 |---------|---------|---------|
 | Modules | snake_case | `model_loader.py` |

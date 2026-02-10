@@ -43,6 +43,7 @@ Coverage session failed during collection (15 errors) due to:
 - Centralized dependency availability checking
 
 ## Verification Checklist
+
 | Step | Status |
 |------|--------|
 | transformers added to requirements-dev.txt | ✅ |

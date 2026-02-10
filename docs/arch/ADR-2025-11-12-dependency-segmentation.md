@@ -13,6 +13,7 @@ We must reduce baseline environment footprint ≥ 2 GB without sacrificing:
 
 ## 3. Decision
 Segment dependencies into dedicated requirement surfaces:
+
 | Surface | File | Purpose |
 |---------|------|---------|
 | Baseline dev | `requirements-dev.txt` | Unit tests, linting, security gates |
@@ -29,6 +30,7 @@ Integrate evidence logging in environment scripts (`setup.sh`, `maintenance.sh`)
 Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict fail* via optional `CODEX_ABORT_ON_GPU_PULL=1`.
 
 ## 4. Decision Drivers
+
 | Driver | Notes |
 |--------|------|
 | Disk pressure relief | Multi-GB vendor and ML wheels removed from baseline |
@@ -38,6 +40,7 @@ Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict
 | Governance | ADR & CHANGELOG entries for high-impact removal families |
 
 ## 5. Considered Alternatives
+
 | Alternative | Rejected Because |
 |-------------|------------------|
 | Single requirements file (remove heavy deps ad-hoc) | Lacked explicit session boundaries; rollback ambiguous |
@@ -64,6 +67,7 @@ Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict
 - Evidence schema validation to prevent silent drift.
 
 ## 7. Risk Assessment
+
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|-----------|
 | Forgetting to update segmented files | Medium | Version drift | dependency_plan + reviewer checklist |
@@ -82,6 +86,7 @@ Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict
 8. Post-merge: enable `CODEX_CPU_MINIMAL=1` in baseline if safe (optional optimization).
 
 ## 9. Evidence & Provenance
+
 | Artifact | Path |
 |----------|------|
 | Triage document | `docs/analysis/dependency_space_triage.md` |
@@ -104,6 +109,7 @@ git rm requirements-ml-cpu.txt requirements-eval.txt requirements-notebook.txt
 Evidence historical lines remain; do NOT delete `.codex/evidence/dependency_ops.jsonl`.
 
 ## 12. Monitoring Post-Deployment
+
 | Metric | Source | Threshold |
 |--------|--------|-----------|
 | Vendor recurrence | maintenance summary JSON | >1 recurrence hash under fail policy triggers review |
@@ -112,6 +118,7 @@ Evidence historical lines remain; do NOT delete `.codex/evidence/dependency_ops.
 | Lock prune application | evidence lines | Evaluate if repeated GPU refs persist in diffs |
 
 ## 13. Future Enhancements
+
 | Enhancement | Description | Priority |
 |-------------|-------------|----------|
 | Signed evidence records | Sigstore OIDC signing per line | Medium |

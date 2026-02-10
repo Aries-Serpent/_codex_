@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Reviewer], [Secondary: Author] ⚡ Energy: 5
 
 Examples
+
 | Aspect | Good | Needs Work |
 |---|---|---|
 | Title | Correct emoji + UTC | Missing UTC or wrong title |

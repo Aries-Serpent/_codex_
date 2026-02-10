@@ -10,6 +10,7 @@ This document captures the major threats to the Codex platform and the controls 
 - User-supplied prompts and evaluation datasets
 
 ## Attack Surfaces
+
 | Surface | Description | Primary Controls |
 |---------|-------------|------------------|
 | REST API | FastAPI endpoints serving inference and management actions | Input validation, rate limiting, audit logging |

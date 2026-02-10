@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: On-call], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 Matrix
+
 | Failure | Signal | First Action | Next Steps |
 |---|---|---|---|
 | Schema test fails | pytest red | Open example JSON; align with schema | Run tools/schema_diff.py to inspect drift |

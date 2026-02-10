@@ -9,6 +9,7 @@ This repository ships an MCP authentication baseline to keep previews lightweigh
 - **Offline bypass**: set `MCP_OFFLINE=true` to disable API-key enforcement for local smoke tests.
 
 ## Environment variables
+
 | Name | Purpose | Default |
 | --- | --- | --- |
 | `MCP_API_KEY` | Primary API key for HTTP endpoints | `dev-key` (development only) |

@@ -7,6 +7,7 @@ Scope
 - Provides canonical shapes and examples for machine producers.
 
 Sections and Shapes
+
 | Field | Type | Required | Notes |
 |---|---|---:|---|
 | issues | array<object> | No | Full list of issues; match schema keys exactly |

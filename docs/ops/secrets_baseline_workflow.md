@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Security Maintainer], [Secondary: Reviewer] ⚡ Energy: 5
 
 Steps
+
 | Step | Command | Output | Notes |
 |---|---|---|---|
 | Generate | scripts/security/generate_secrets_baseline.sh | .secrets.baseline | Initial baseline |

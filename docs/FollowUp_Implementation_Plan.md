@@ -13,6 +13,7 @@ Roles: [Primary], [Secondary] ⚡ Energy: [5]
 - P1.14 (/infer tokenizer roundtrip test) ✅
 
 ## Newly Completed (This Increment)
+
 | Task | Implementation | Notes |
 |------|---------------|-------|
 | P1.5 Scheduler | Linear (custom) + Step (torch StepLR) | Stepped per epoch after optimizer loop |
@@ -21,6 +22,7 @@ Roles: [Primary], [Secondary] ⚡ Energy: [5]
 | P1.14 Tokenizer roundtrip | test_api_infer_tokenizer.py | Ensures echo / token path functional |
 
 ## Remaining Tasks
+
 | Priority | Task | Status | Notes |
 |----------|------|--------|-------|
 | P1.6 | Gradient accumulation refinement | Partial | Works; refine once real forward integrated |
@@ -42,12 +44,14 @@ Roles: [Primary], [Secondary] ⚡ Energy: [5]
 | P5.3 | Failure injection tests | Pending | Crash + resume integrity |
 
 ## Scheduler Details
+
 | Type | Behavior | Config Keys | State Saved |
 |------|----------|------------|-------------|
 | linear | Linear decay: base_lr -> base_lr * final_lr_scale over epochs | final_lr_scale | last_epoch |
 | step | Decay every step_size epochs by gamma | step_size, gamma | torch scheduler state_dict |
 
 ## Dataset Loader Details
+
 | Format | Function | Record Type | Notes |
 |--------|----------|-------------|-------|
 | JSONL | load_jsonl | dict per line | Non-dict coerced to {"value": obj} |
@@ -56,6 +60,7 @@ Roles: [Primary], [Secondary] ⚡ Energy: [5]
 Metadata keys: path, format, num_records, checksum, size_bytes
 
 ## /infer Test Coverage
+
 | Pattern | Example | Test Assertion |
 |---------|---------|----------------|
 | OpenAI key | sk-... | Masked "[SECRET]" |
@@ -67,6 +72,7 @@ Metadata keys: path, format, num_records, checksum, size_bytes
 | Disable flag | DISABLE_SECRET_FILTER=1 | Unmasked |
 
 ## Metrics Added / Updated
+
 | Metric | Source |
 |--------|--------|
 | scheduler_type | training loop result |
@@ -76,6 +82,7 @@ Metadata keys: path, format, num_records, checksum, size_bytes
 | dataset_checksums | list of file checksums |
 
 ## Risks / Mitigations
+
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | Large CSV/JSONL memory load | High mem usage | Future: streaming loader |
@@ -97,6 +104,7 @@ python -m codex_ml.cli.train epochs=3 steps_per_epoch=5 grad_accum=2 \
   dataset.sources='[data/train.jsonl]'
 ```text
 ## Validation Checklist (Current Increment)
+
 | Check | Status |
 |-------|--------|
 | Scheduler linear decay applied | ✅ |

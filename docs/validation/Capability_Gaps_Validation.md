@@ -6,6 +6,7 @@ Purpose
 - Identify low‑maturity and/or high‑risk capabilities to prioritize in patches and findings.
 
 Heuristics
+
 | Metric | Definition | Default Threshold | Notes |
 |---|---|---:|---|
 | Maturity | confidence / 5.0 | < 0.70 | Confidence is 1–5 scale from capability entries |

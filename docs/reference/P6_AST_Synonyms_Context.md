@@ -36,6 +36,7 @@ Consistency blend modes:
 - **max**: `consistency = max(1-dup, token_sim, ast_unique)`
 
 ### 2.4 Knobs
+
 | Knob | Default | Description |
 |------|---------|-------------|
 | AST_SIMILARITY_ENABLE | 0 | Compute AST uniqueness |
@@ -81,6 +82,7 @@ found_patterns = ["train", "training", "epoch", "fit", "checkpoint", "save_check
 ```text
 
 ### 3.4 Knobs
+
 | Knob | Default | Description |
 |------|---------|-------------|
 | SYNONYM_MAP_PATH | configs/synonyms/synonyms.json | Map file path |
@@ -106,12 +108,14 @@ Elevate entropy findings in sensitive contexts (auth/, config/, near credential 
 - Keywords: `password`, `api_key`, `token`, `secret`, `credential`
 
 ### 4.3 Elevation Levels
+
 | Level | Criteria |
 |-------|----------|
 | high | ≥2 context indicators |
 | medium | 1 context indicator |
 
 ### 4.4 Knobs
+
 | Knob | Default | Description |
 |------|---------|-------------|
 | SECRET_CONTEXT_ENABLE | 0 | Perform correlation |
@@ -135,6 +139,7 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
 - **Skips large files**: >2MB excluded
 
 ### 5.3 Knobs
+
 | Knob | Default | Description |
 |------|---------|-------------|
 | FEDERATION_ENABLE | 0 | Enable scanning |
@@ -174,6 +179,7 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
 ```text
 
 ### 6.2 Knob
+
 | Knob | Default | Description |
 |------|---------|-------------|
 | MANIFEST_EXTENDED_ENABLE | 1 | Include P6 provenance |

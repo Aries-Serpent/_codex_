@@ -50,6 +50,7 @@ __all__ = [k for k in globals() if not k.startswith("_")]
 ## Governance Rules
 
 ### Rule 1: Canonicalization Priority
+
 | Priority | Action | Timeline |
 |----------|--------|----------|
 | P0 | Migrate high-usage runtime modules to `src/` | Phase 1 (Current Cycle) |

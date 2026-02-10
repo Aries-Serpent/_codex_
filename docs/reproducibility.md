@@ -6,6 +6,7 @@ Roles: [Primary], [Secondary] ⚡ Energy: [5]
 This document outlines how training runs in the `_codex_` project preserve reproducibility and how to restore or continue experiments deterministically. It has been updated to include: CUDNN determinism helper, checkpoint SHA256 hashing, config snapshot persistence, and checkpoint retention utilities.
 
 ## Pillars
+
 | Pillar | Mechanism | Location / Artifact |
 |--------|-----------|---------------------|
 | Seeding | Unified `_set_seed` applying Python, NumPy, Torch | `codex_ml/train_loop.py` |
@@ -22,6 +23,7 @@ This document outlines how training runs in the `_codex_` project preserve repro
 | Retention Policy | Prune old epoch dirs | `utils/retention.py` |
 
 ## Seeds
+
 | Source | Action |
 |--------|--------|
 | Python `random` | `random.seed(seed)` |
@@ -98,6 +100,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
 
 ## Retention Policy
 Implemented via `prune_checkpoints()`:
+
 | Policy Key | Meaning |
 |------------|---------|
 | `keep_last` | Keep newest N epochs |
@@ -122,6 +125,7 @@ If `run_config` dict passed to `run_training`, it is written to:
 Overwritten each run (future enhancement: versioning / hashing).
 
 ## Failure Handling
+
 | Scenario | Behavior |
 |----------|----------|
 | Corrupt `latest.json` | Warn → start epoch 1 |
@@ -131,6 +135,7 @@ Overwritten each run (future enhancement: versioning / hashing).
 | Failed retention deletion | Warning only |
 
 ## Integrity
+
 | Aspect | Mechanism |
 |--------|-----------|
 | Checkpoint Hash | SHA256 of `checkpoint.pt` |
@@ -161,6 +166,7 @@ print(result["checkpoint_sha256_last"])
 ```text
 
 ## Reproducibility Checklist
+
 | Item | Status | Action |
 |------|--------|--------|
 | Fixed seed default | ✅ | Use / override `seed` |
