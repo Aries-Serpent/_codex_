@@ -28,10 +28,15 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
         # Check if model has parameters method
         if hasattr(model, 'parameters'):
             for param in model.parameters():
-                # Use is_meta attribute for direct meta tensor detection
+                # Use is_meta attribute for direct meta tensor detection (PyTorch 1.10+)
                 if hasattr(param, 'is_meta') and param.is_meta:
                     logger.debug(f"Found meta tensor parameter: {param.shape}")
                     return True
+                # Fallback: Check device.type for older versions or mock objects
+                if hasattr(param, 'device') and hasattr(param.device, 'type'):
+                    if param.device.type == 'meta':
+                        logger.debug(f"Found meta device parameter via device.type")
+                        return True
 
         # Also check buffers if available
         if hasattr(model, 'buffers'):
@@ -39,6 +44,30 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 if hasattr(buffer, 'is_meta') and buffer.is_meta:
                     logger.debug(f"Found meta tensor buffer: {buffer.shape}")
                     return True
+                # Fallback: Check device.type
+                if hasattr(buffer, 'device') and hasattr(buffer.device, 'type'):
+                    if buffer.device.type == 'meta':
+                        logger.debug(f"Found meta device buffer via device.type")
+                        return True
+
+        # Check named_modules for parameters (for comprehensive detection)
+        if hasattr(model, 'named_modules'):
+            for _, module in model.named_modules():
+                if hasattr(module, 'named_parameters'):
+                    for _, param in module.named_parameters():
+                        if hasattr(param, 'is_meta') and param.is_meta:
+                            logger.debug(f"Found meta tensor in module parameter")
+                            return True
+                        if hasattr(param, 'device') and hasattr(param.device, 'type'):
+                            if param.device.type == 'meta':
+                                logger.debug(f"Found meta device in module parameter via device.type")
+                                return True
+
+        # Check model's own device attribute
+        if hasattr(model, 'device') and hasattr(model.device, 'type'):
+            if model.device.type == 'meta':
+                logger.debug(f"Found meta device on model itself")
+                return True
 
         return False
     except Exception as e:
@@ -98,13 +127,17 @@ def safe_model_to_device(
 
             # Then reinitialize parameters (if needed)
             # This ensures all parameters have actual data
-            for module in model.modules():
-                if hasattr(module, 'reset_parameters'):
-                    try:
-                        module.reset_parameters()
-                        logger.debug(f"Reset parameters for {module.__class__.__name__}")
-                    except Exception as e:
-                        logger.debug(f"Could not reset parameters for {module}: {e}")
+            # Skip if model doesn't support modules() (e.g., mock objects in tests)
+            if hasattr(model, 'modules') and callable(getattr(model, 'modules', None)):
+                for module in model.modules():
+                    if hasattr(module, 'reset_parameters'):
+                        try:
+                            module.reset_parameters()
+                            logger.debug(f"Reset parameters for {module.__class__.__name__}")
+                        except Exception as e:
+                            logger.debug(f"Could not reset parameters for {module}: {e}")
+            else:
+                logger.debug("Model doesn't support modules(), skipping parameter reset")
 
             logger.info("Successfully moved model with meta tensors to device")
             return model
@@ -122,11 +155,18 @@ def safe_model_to_device(
             return model
 
     except ImportError:
-        # PyTorch not available - return model as-is
-        logger.warning("PyTorch not available, returning model as-is")
+        # PyTorch not available - try fallback .to() method if model has it
+        logger.warning("PyTorch not available, attempting fallback .to() method")
+        if hasattr(model, "to") and callable(getattr(model, "to", None)):
+            return model.to(device)  # safe-device-placement: internal implementation
+        # No fallback available
+        logger.warning("No device transfer method available, returning model as-is")
         return model
     except AttributeError as e:
-        # Model doesn't support .to() or .to_empty()
+        # Re-raise if this is about missing to_empty() (critical error)
+        if "to_empty" in str(e):
+            raise
+        # Otherwise, model doesn't support .to() method - return as-is
         logger.warning(f"Model does not support device transfer: {e}")
         return model
     except Exception as e:
