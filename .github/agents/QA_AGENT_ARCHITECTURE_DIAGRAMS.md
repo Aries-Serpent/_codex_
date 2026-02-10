@@ -1,49 +1,61 @@
-# Agent Architecture Diagrams - Production Ready
+# Agent Architecture Diagrams - codex-ml v0.1.0
 
-**Version**: 3.0.0  
-**Date**: 2026-01-23  
-**Status**: ✅ Production  
-**Agents**: 109 Active
+**Version**: v0.1.0 Pre-Release  
+**Package**: codex-ml  
+**Date**: 2026-02-09  
+**Status**: ✅ Production Ready  
+**Agents**: 53 Active (Curated from 109 total)  
+**Tests**: 1300+ | Coverage: 90%
 
 ---
 
-## Agent Ecosystem Architecture
+## Agent Ecosystem Architecture (v0.1.0)
 
 ### High-Level Overview
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          _codex_ Agent Ecosystem                            │
-│                              109 Custom Agents                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │  Testing    │  │ Documentation│  │  Security   │  │   CI/CD    │        │
-│  │   Agents    │  │   Agents     │  │   Agents    │  │   Agents   │        │
-│  │    (8)      │  │    (5)       │  │    (7)      │  │    (6)     │        │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘        │
-│         │                │                │                │                │
-│         ▼                ▼                ▼                ▼                │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    Cognitive Brain Core                              │   │
-│  │           PDA Loop (Perception → Decision → Action)                  │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│         │                │                │                │                │
-│         ▼                ▼                ▼                ▼                │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │  Quality    │  │    AI       │  │ Architecture│  │ Dependencies│        │
-│  │   Agents    │  │   Agents    │  │   Agents    │  │   Agents   │        │
-│  │    (4)      │  │    (3)      │  │    (3)      │  │    (3)     │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘        │
-│                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │              Other Categories (70 agents)                            │   │
-│  │  Deployment(2) | Validation(3) | Linting(2) | Monitoring(1)          │   │
-│  │  Automation(1) | Coordination(1) | Analysis(1) | Migration(1)        │   │
-│  │  Compliance(1) | Specialized(57)                                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "codex-ml v0.1.0 Agent Ecosystem"
+        subgraph "53 Production Agents"
+            Testing[Testing Agents<br/>12 agents<br/>✅ Coverage Enforcement]
+            Docs[Documentation Agents<br/>8 agents<br/>📚 Quality + Freshness]
+            Security[Security Agents<br/>7 agents<br/>🔒 26 CVEs Fixed]
+            CI[CI/CD Agents<br/>6 agents<br/>🔧 Auto-Fix]
+            Ops[Operations Agents<br/>8 agents<br/>⚙️ Repository Management]
+            ML[ML/RAG Agents<br/>6 agents<br/>🧠 Model Validation]
+            Gov[Governance Agents<br/>6 agents<br/>⚖️ Approval + Config]
+        end
+        
+        subgraph "Cognitive Brain Core"
+            Brain[Cognitive Brain<br/>k₁=0.35<br/>🧠 PDA Loop]
+            Memory[Memory Manager<br/>💾 STM/LTM<br/>60% Compression]
+        end
+        
+        subgraph "MCP Integration"
+            MCP[MCP System<br/>🔌 Protocol Layer]
+            Tools[Tool Registry<br/>🔧 Dynamic Discovery]
+        end
+    end
+    
+    %% Connections
+    Testing --> Brain
+    Docs --> Brain
+    Security --> Brain
+    CI --> Brain
+    Ops --> Brain
+    ML --> Brain
+    Gov --> Brain
+    
+    Brain --> Memory
+    Brain --> MCP
+    MCP --> Tools
+    
+    %% Styling
+    style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:3px,color:#fff
+    style Memory fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style MCP fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+    style Security fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    style Testing fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff
 ```
 
 ---

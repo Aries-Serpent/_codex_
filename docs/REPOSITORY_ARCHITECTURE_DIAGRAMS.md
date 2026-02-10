@@ -1,60 +1,64 @@
-# Repository Architecture Diagrams - Updated 2026-01-19
+# Repository Architecture Diagrams - v0.1.0 Pre-Release
 
-**Last Updated**: 2026-01-19T06:45:00Z  
-**Context**: Phase 20 Complete + Phase 21 Planning  
-**Purpose**: Updated architecture diagrams reflecting Phase 20 completion and Phase 21 planning
-
----
-
-## 🎯 Overview
-
-This document updates all key architecture diagrams to reflect:
-1. Phase 20 completion (420 new tests across monitoring, automation, self-healing, integration)
-2. Phase 21 planning and architecture
-3. Complete testing ecosystem (2410+ tests)
-4. CI/CD workflow fixes (pytest configuration, dependency order)
-5. New doc-test-scribe GitHub Action
-6. HTML index generation system
-7. Integrated security scanning workflow
-8. Testing conventions and custom action prerequisites
+**Version**: v0.1.0 Pre-Release  
+**Package**: codex-ml  
+**Last Updated**: 2026-02-09  
+**Context**: Production-ready with 1300+ tests, 90% coverage, 26 CVEs fixed, 53 agents  
+**Purpose**: Updated architecture diagrams reflecting v0.1.0 pre-release state
 
 ---
 
-## 📊 Diagram 1: Complete CI/CD & Testing Architecture
+## 🎯 Overview (v0.1.0)
 
-### Current State After Fixes
+This document presents all key architecture diagrams aligned with v0.1.0 pre-release:
+1. **1300+ Tests**: Comprehensive test coverage across all components
+2. **90% Coverage**: Production-grade quality threshold achieved
+3. **26 CVEs Fixed**: Security-hardened through IP-005 remediation
+4. **53 Autonomous Agents**: Full agent ecosystem operational
+5. **MCP System**: Model Context Protocol fully integrated
+6. **Cognitive Brain**: k₁=0.35 optimization complete (2.86x advantage)
+7. **Python Ingestion Pipeline**: Complete ingest→analyze→transform→verify flow
+8. **CI/CD Automation**: 75-87% time savings via auto-fix and self-healing
+
+---
+
+## 📊 Diagram 1: codex-ml v0.1.0 CI/CD & Testing Architecture
+
+### Current State (v0.1.0 Pre-Release)
 
 ```mermaid
 graph TB
-    subgraph "CI/CD Pipeline - Fixed Configuration"
-        TC[test-comprehensive.yml<br/>✅ pytest-rerunfailures<br/>✅ No duplicate timeouts]
-        TR[test-rag.yml<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini]
-        SH[self-healing.yml<br/>✅ PyYAML before cache<br/>✅ Correct dependency order]
+    subgraph "codex-ml v0.1.0 CI/CD Pipeline"
+        TC[test-comprehensive.yml<br/>✅ 1300+ Tests<br/>✅ 90% Coverage<br/>✅ pytest-rerunfailures]
+        TR[test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini]
+        SH[self-healing.yml<br/>✅ Auto-Fix + Self-Heal<br/>✅ 75-87% Time Savings<br/>✅ PyYAML dependency order]
+        SEC[security-scan.yml<br/>✅ 26 CVEs Fixed<br/>🔒 CodeQL + Bandit<br/>🔒 Safety + Semgrep]
     end
     
-    subgraph "pytest Configuration"
-        PI[pytest.ini<br/>--timeout=300<br/>--timeout-method=thread<br/>CENTRALIZED]
-        CONV[TESTING_CONVENTIONS.md<br/>Best practices<br/>Common pitfalls<br/>Quick reference]
+    subgraph "pytest Configuration (Centralized)"
+        PI[pytest.ini<br/>--timeout=300<br/>--timeout-method=thread<br/>🎯 Single Source of Truth]
+        CONV[TESTING_CONVENTIONS.md<br/>📚 Best practices<br/>⚠️ Common pitfalls<br/>🔍 Quick reference]
     end
     
-    subgraph "Custom Actions"
-        SPC[setup-python-cached<br/>✅ Requires PyYAML<br/>✅ Documented usage<br/>Tiered caching]
-        DTS[doc-test-scribe-action<br/>🆕 Auto-generate docs/tests<br/>🔒 Security scans<br/>🌐 HTML index]
+    subgraph "Custom Actions (v0.1.0)"
+        SPC[setup-python-cached<br/>✅ Requires PyYAML first<br/>✅ Tiered caching<br/>📝 Documented usage]
+        DTS[doc-test-scribe-action<br/>🆕 Auto-generate docs/tests<br/>🔒 Integrated security<br/>🌐 HTML index generation]
     end
     
     subgraph "Doc-Test-Scribe Workflow"
         MODE[Operation Mode<br/>document/test/both/<br/>security/full/index]
-        ANALYZE[TF-IDF Analysis<br/>Semantic code understanding]
-        GENDOC[Generate Documentation<br/>Google/Numpy/Sphinx styles]
-        GENTEST[Generate Tests<br/>Coverage targeting]
-        SECURITY[Security Scans<br/>Bandit/Safety/Semgrep]
-        HTML[Generate HTML Index<br/>Search + Navigation + Stats]
-        PR[Create @copilot PR<br/>Auto-review workflow]
+        ANALYZE[TF-IDF Analysis<br/>🧠 Semantic understanding<br/>📊 Code patterns]
+        GENDOC[Documentation Generator<br/>📚 Google/Numpy/Sphinx<br/>✨ API docs]
+        GENTEST[Test Generator<br/>✅ Unit + Integration<br/>📈 Coverage targeting]
+        SECURITY[Security Scans<br/>🔒 Bandit<br/>🔒 Safety<br/>🔒 Semgrep]
+        HTML[HTML Index Generation<br/>🌐 index.html<br/>🔍 Search interface<br/>📊 Coverage statistics]
+        PR[Create PR<br/>🤖 @copilot tagged<br/>📝 Comprehensive summary<br/>✅ Auto-review ready]
     end
     
     %% Configuration flows
     PI --> TC
     PI --> TR
+    PI --> SEC
     CONV -.guides.-> TC
     CONV -.guides.-> TR
     
@@ -62,6 +66,7 @@ graph TB
     SPC -.used by.-> TC
     SPC -.used by.-> TR
     SPC -.used by.-> SH
+    SPC -.used by.-> SEC
     
     %% Doc-Test-Scribe workflow
     MODE --> ANALYZE
@@ -74,15 +79,25 @@ graph TB
     
     %% Integration points
     DTS --> MODE
-    PR -.tags.-> Copilot[GitHub Copilot]
+    PR -.tags.-> Copilot[GitHub Copilot<br/>🤖 AI Review]
     
-    style TC fill:#10b981
-    style TR fill:#10b981
-    style SH fill:#10b981
-    style PI fill:#3b82f6
-    style DTS fill:#8b5cf6
-    style HTML fill:#f59e0b
+    %% Styling v0.1.0
+    style TC fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style TR fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style SH fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style SEC fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    style PI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+    style DTS fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+    style HTML fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
 ```
+
+### v0.1.0 Key Improvements
+- **1300+ Tests**: Comprehensive coverage across all modules
+- **90% Coverage**: Production-grade quality threshold
+- **26 CVEs Fixed**: Security hardening complete
+- **Auto-Fix**: 75-87% time savings (2-4 hours → 15-30 minutes)
+- **Self-Healing**: Automatic issue detection and remediation
+- **Centralized Config**: Single pytest.ini for all workflows
 
 ---
 
