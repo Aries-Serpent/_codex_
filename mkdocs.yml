@@ -12,13 +12,18 @@ markdown_extensions:
     custom_fences:
       - name: mermaid
         class: mermaid
-        format: !!python/name:pymdownx.superfences.fence_code_format
+        format: !!python/name:mermaid2.fence_mermaid_custom
 - pymdownx.tabbed:
     alternate_style: true
 - pymdownx.tasklist:
     custom_checkbox: true
 - attr_list
 - md_in_html
+
+plugins:
+  - search
+  - mermaid2
+
 nav:
 - Home: index.md
 - 📊 Status Dashboard: status/GITHUB_PAGES_STATUS.md

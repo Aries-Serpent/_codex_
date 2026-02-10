@@ -160,60 +160,113 @@ mkdocs serve
 - [ ] API documentation reflects current code
 - [ ] Navigation structure is complete
 
-### 4. Format Validation
+### 4. Format Validation & CSS-First Approach
 
-**Purpose**: Detect and fix markdown formatting issues
+**Philosophy**: Fix formatting issues via CSS/config first, then file-level fixes
 
-**Common Issues**:
-- **Malformed code fences**: ````text` used as closing fence
-- **Unclosed code fences**: Missing closing ```
-- **Table spacing**: Missing blank lines before tables
-- **Broken headings**: Incorrect heading levels or format
+**CSS-First Strategy**:
+1. **Attempt CSS fix first** - Add styles to `docs/stylesheets/extra.css`
+2. **Verify rendering** - Build and test locally
+3. **File-level fix only if needed** - If CSS can't solve it
 
-**Detection & Fixing**:
+**CSS Capabilities**:
+- Mermaid diagram rendering and theming
+- Table spacing and responsive design
+- Code block styling and syntax highlighting
+- Heading spacing and hierarchy
+- Dark/light mode support
+- Print-friendly styles
 
-1. **Code Fence Validation**:
+**Common Issues & CSS Solutions**:
+
+| Issue | CSS Solution | Location |
+|-------|-------------|----------|
+| Mermaid not rendering | `.mermaid` class styling | `extra.css` |
+| Tables overflow mobile | `overflow-x: auto` on tables | `extra.css` |
+| Code blocks hard to read | Color scheme variables | `extra.css` |
+| Headings too close | `margin-top/bottom` rules | `extra.css` |
+| Dark mode broken | `[data-md-color-scheme="slate"]` | `extra.css` |
+
+**Validation Workflow**:
+
+1. **CSS/Config Validation**:
+   ```bash
+   # Check CSS syntax
+   grep -E "(background-color|color|margin|padding)" docs/stylesheets/extra.css
+   
+   # Verify CSS is loaded in mkdocs.yml
+   grep "extra.css" mkdocs.yml
+   
+   # Check mermaid plugin enabled
+   grep -A2 "plugins:" mkdocs.yml | grep mermaid
+   ```
+
+2. **Build & Visual Validation**:
+   ```bash
+   # Strict build (catches config errors)
+   mkdocs build --strict
+   
+   # Serve locally for visual inspection
+   mkdocs serve
+   # Visit http://localhost:8000/architecture/
+   ```
+
+3. **File-Level Validation** (if CSS doesn't fix it):
    ```bash
    # Check for unclosed/malformed fences
    python scripts/validate_code_fences.py --check
    
-   # Preview fixes
-   python scripts/validate_code_fences.py --fix --dry-run
-   
-   # Apply fixes
-   python scripts/validate_code_fences.py --fix
-   ```
-
-2. **Table Spacing Validation**:
-   ```bash
+   # Check table spacing
    python scripts/validate_table_spacing.py --check
+   
+   # Apply fixes only if needed
+   python scripts/validate_code_fences.py --fix
    python scripts/validate_table_spacing.py --fix
    ```
 
-3. **Build Validation**:
-   ```bash
-   # Strict build catches formatting errors
-   mkdocs build --strict
-   ```
+**Example: Fixing Mermaid Diagrams**
 
-**Example: Fixing Malformed Code Fence**
+Problem: Mermaid diagrams show as code blocks instead of rendered diagrams
 
-Problem: ````text` appears after code block, causing text to render as heading
+**CSS-First Solution** (in `docs/stylesheets/extra.css`):
+```css
+/* Mermaid diagram support */
+.mermaid {
+    background-color: transparent;
+    text-align: center;
+    margin: 1.5em 0;
+}
 
-```markdown
-# Before (broken)
-```python
-code here
-```text
-This text renders huge!
-
-# After (fixed)
-```python
-code here
+.mermaid text {
+    fill: var(--md-default-fg-color) !important;
+}
 ```
 
-This text renders normally.
+**Config Solution** (in `mkdocs.yml`):
+```yaml
+plugins:
+  - mermaid2
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
 ```
+
+**File-Level Solution** (only if above don't work):
+- Check fence syntax: ` ```mermaid ` not ` ```diagram `
+- Verify closing fence: ` ``` ` on its own line
+- Check indentation: No extra spaces before fence
+
+**Standard CSS Stack**:
+- Table formatting (responsive, spacing)
+- Code block theming (light/dark)
+- Mermaid diagram rendering
+- Heading hierarchy and spacing
+- Print-friendly styles
+- Mobile responsive design
 
 ### 5. Theme Management
 
