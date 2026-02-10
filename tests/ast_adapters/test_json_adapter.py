@@ -232,6 +232,164 @@ class TestJSONASTAdapter:
         root = adapter.parse(json_source, file_path=file_path)
         assert root.file_path == file_path
     
+    def test_array_indexing_in_path(self, adapter):
+        """Test path navigation with array indices"""
+        json_source = '''
+        {
+            "users": [
+                {"name": "Alice", "age": 30},
+                {"name": "Bob", "age": 25}
+            ]
+        }
+        '''
+        adapter.parse(json_source)
+        
+        # Test array index access
+        name = adapter.get_value_at_path("users[0].name")
+        assert name == "Alice"
+        
+        age = adapter.get_value_at_path("users[1].age")
+        assert age == 25
+        
+        # Test out of bounds index
+        result = adapter.get_value_at_path("users[10].name")
+        assert result is None
+        
+        # Test invalid index
+        result = adapter.get_value_at_path("users[invalid].name")
+        assert result is None
+    
+    def test_path_on_empty_adapter(self, adapter):
+        """Test get_value_at_path when root is None"""
+        result = adapter.get_value_at_path("some.path")
+        assert result is None
+    
+    def test_extract_metadata_array(self, adapter):
+        """Test metadata extraction for arrays"""
+        json_source = '["item1", "item2", "item3"]'
+        root = adapter.parse(json_source)
+        
+        array = root.children[0]
+        metadata = adapter.extract_metadata(array)
+        
+        assert metadata["node_type"] == "JSON array"
+        assert metadata["element_count"] == 3
+    
+    def test_extract_metadata_primitive(self, adapter):
+        """Test metadata extraction for primitives"""
+        json_source = '{"text": "hello", "number": 42, "flag": true}'
+        root = adapter.parse(json_source)
+        
+        obj = root.children[0]
+        # Get first primitive (text)
+        text_node = obj.children[0]
+        metadata = adapter.extract_metadata(text_node)
+        
+        assert metadata["node_type"] == "JSON primitive"
+        assert "json_type" in metadata
+    
+    def test_deeply_nested_json(self, adapter):
+        """Test parsing very deeply nested JSON (10+ levels)"""
+        json_source = '''
+        {
+            "level1": {
+                "level2": {
+                    "level3": {
+                        "level4": {
+                            "level5": {
+                                "level6": {
+                                    "level7": {
+                                        "level8": {
+                                            "level9": {
+                                                "level10": "deep_value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        '''
+        root = adapter.parse(json_source)
+        
+        # Verify we can navigate deep
+        value = adapter.get_value_at_path("level1.level2.level3.level4.level5.level6.level7.level8.level9.level10")
+        assert value == "deep_value"
+        
+        # Count depth
+        nodes = list(adapter.traverse(root))
+        object_nodes = [n for n in nodes if n.node_type == "object"]
+        assert len(object_nodes) >= 10
+    
+    def test_large_array(self, adapter):
+        """Test parsing large arrays"""
+        # Create a large array with 1000 items
+        items = [{"id": i, "value": f"item_{i}"} for i in range(1000)]
+        import json
+        json_source = json.dumps({"items": items})
+        
+        root = adapter.parse(json_source)
+        
+        # Verify structure
+        obj = root.children[0]
+        assert obj.node_type == "object"
+        
+        items_array = obj.children[0]
+        assert items_array.node_type == "array"
+        assert items_array.metadata["length"] == 1000
+        
+        # Verify we can access random items
+        value = adapter.get_value_at_path("items[0].id")
+        assert value == 0
+        
+        value = adapter.get_value_at_path("items[999].id")
+        assert value == 999
+    
+    def test_special_json_values(self, adapter):
+        """Test parsing special JSON values"""
+        json_source = '''
+        {
+            "null_value": null,
+            "empty_string": "",
+            "zero": 0,
+            "negative": -42,
+            "float": 3.14159,
+            "scientific": 1.23e-10,
+            "true_val": true,
+            "false_val": false
+        }
+        '''
+        root = adapter.parse(json_source)
+        
+        # Test retrieval of special values
+        assert adapter.get_value_at_path("null_value") is None
+        assert adapter.get_value_at_path("empty_string") == ""
+        assert adapter.get_value_at_path("zero") == 0
+        assert adapter.get_value_at_path("negative") == -42
+        assert adapter.get_value_at_path("true_val") is True
+        assert adapter.get_value_at_path("false_val") is False
+    
+    def test_unicode_and_escapes(self, adapter):
+        """Test parsing JSON with Unicode and escape sequences"""
+        json_source = '''
+        {
+            "unicode": "Hello 世界 🌍",
+            "escaped": "Line1\\nLine2\\tTabbed",
+            "quote": "She said \\"hello\\""
+        }
+        '''
+        root = adapter.parse(json_source)
+        
+        unicode_val = adapter.get_value_at_path("unicode")
+        assert "世界" in unicode_val
+        assert "🌍" in unicode_val
+        
+        escaped_val = adapter.get_value_at_path("escaped")
+        assert "\\n" in escaped_val or "\n" in escaped_val
+    
     def test_complex_mixed_structure(self, adapter):
         """Test parsing complex mixed data structures"""
         json_source = '''
