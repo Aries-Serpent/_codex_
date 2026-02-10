@@ -26,7 +26,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 **Context**:
 - Current coverage: 17.27% (180/1,042 modules tested)
 - Target: 30% coverage threshold
-- Timeline: 3-4 weeks
+- Timeline: 3-4 phases
 - Agent: Coverage Roadmap Agent
 
 **Prerequisites**:
@@ -36,7 +36,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 - Coverage threshold standardized ✅
 
 **Execution Approach**:
-1. Follow PDA (Plan → Do → Analyze) process weekly
+1. Follow PDA (Plan → Do → Analyze) process per-phase
 2. Week 1: Add 120-150 unit tests for high-priority modules
 3. Week 2: Add 100-120 integration tests and gap-filling
 4. Week 3: Final push and raise threshold to 30%
@@ -44,7 +44,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 **Key Deliverables**:
 - 250-300 unit tests across CLI, training, data loading modules
 - 100-120 integration tests for module interactions
-- AfterMath analysis after each week
+- AfterMath analysis after each phase
 - pyproject.toml updated to fail_under=30
 
 **Success Criteria**:
@@ -63,7 +63,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 - Test Priority Matrix: `.codex/qa_walkthrough/test_priority_matrix.json`
 - Coverage Analysis: `.codex/qa_walkthrough/coverage_analysis.json`
 
-**Report Progress**: Use `report_progress` tool after each week with AfterMath analysis.
+**Report Progress**: Use `report_progress` tool after each phase with AfterMath analysis.
 
 **Tag Usage**: #Phase23 #Coverage30 #PDALoop #UnitTests #IntegrationTests
 ```
@@ -80,7 +80,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 **Context**:
 - Current coverage: 30.X% (Phase 23 complete)
 - Target: 50% coverage threshold
-- Timeline: 2-3 weeks
+- Timeline: 2-3 phases
 - Agent: Coverage Roadmap Agent
 
 **Prerequisites**:
@@ -123,7 +123,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 - Integration targets: `.codex/plans/phase24_integration_targets.json`
 - Coverage Roadmap: `.codex/plans/COVERAGE_THRESHOLD_ROADMAP.md`
 
-**Report Progress**: Weekly updates with PDA cycle completion.
+**Report Progress**: per-phase updates with PDA cycle completion.
 
 **Tag Usage**: #Phase24 #Coverage50 #IntegrationTests #WorkflowTests #E2E
 ```
@@ -140,7 +140,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 **Context**:
 - Current coverage: 50.X% (Phase 24 complete)
 - Target: 70% coverage threshold (PRODUCTION READY)
-- Timeline: 2 weeks
+- Timeline: 2 phases
 - Agent: Coverage Roadmap Agent
 - **Significance**: 70% represents production-ready quality threshold
 
@@ -197,7 +197,7 @@ This document provides the master continuation prompt for GitHub Copilot Agents 
 - Critical paths: `.codex/plans/phase25_critical_paths.json`
 - Coverage Roadmap: `.codex/plans/COVERAGE_THRESHOLD_ROADMAP.md`
 
-**Report Progress**: Weekly with production readiness assessment.
+**Report Progress**: per-phase with production readiness assessment.
 
 **Celebration**: Upon completion, create tag `coverage-70-production-ready` 🎉
 
@@ -330,13 +330,13 @@ python -m pytest tests/ --reruns=3 -v | grep "RERUN" | wc -l
 
 | Error Type | Phase | Severity | Resolution Time | Rollback Required |
 |------------|-------|----------|-----------------|-------------------|
-| Dependency conflict | Any | HIGH | <4 hours | Maybe |
-| Coverage regression | Any | MEDIUM | <1 day | No |
-| Flaky tests | Any | MEDIUM | <1 day | No |
-| CI infrastructure | Any | HIGH | <4 hours | Maybe |
+| Dependency conflict | Any | HIGH | <4 Commits | Maybe |
+| Coverage regression | Any | MEDIUM | <1 iteration | No |
+| Flaky tests | Any | MEDIUM | <1 iteration | No |
+| CI infrastructure | Any | HIGH | <4 Commits | Maybe |
 | Threshold premature raise | Any | HIGH | <1 hour | Yes |
-| Performance regression | 24-25 | HIGH | <1 day | Maybe |
-| Security vulnerability | 25 | CRITICAL | <4 hours | Yes |
+| Performance regression | 24-25 | HIGH | <1 iteration | Maybe |
+| Security vulnerability | 25 | CRITICAL | <4 Commits | Yes |
 
 ### Escalation Path
 1. **Agent Self-Healing** (0-2 iterations): Agent attempts fixes
@@ -358,7 +358,7 @@ python -m pytest tests/ --reruns=3 -v | grep "RERUN" | wc -l
 - `#PerformanceIssue`: Speed/resource concerns
 
 ### AfterMath Analysis Storage
-- Weekly: `.codex/plans/PHASE_X_WEEK_Y_AFTERMATH.md`
+- per-phase: `.codex/plans/PHASE_X_WEEK_Y_AFTERMATH.md`
 - Phase-level: `.codex/plans/PHASE_X_AFTERMATH_ANALYSIS.md`
 - Consolidated: `.codex/cognitive_brain/COVERAGE_JOURNEY_AFTERMATH.md`
 
@@ -424,7 +424,7 @@ Before starting each phase:
 - [ ] Agent activated
 
 During phase execution:
-- [ ] Follow PDA loop weekly
+- [ ] Follow PDA loop per-phase
 - [ ] Report progress regularly
 - [ ] Update cognitive brain files
 - [ ] Monitor CI health

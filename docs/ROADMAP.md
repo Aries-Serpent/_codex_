@@ -178,10 +178,10 @@
 **Effort**: 10-15 sessions (~300K-500K tokens)
 
 **Features**:
-1. Size estimation (--estimate flag) - 2-3 days
-2. Exclude patterns (--exclude parameter) - 2-3 days
-3. Duplicate resolution (hash suffix) - 3-4 days
-4. Package diff tool (compare packages) - 3-4 days
+1. Size estimation (--estimate flag) - 2-3 iterations
+2. Exclude patterns (--exclude parameter) - 2-3 iterations
+3. Duplicate resolution (hash suffix) - 3-4 iterations
+4. Package diff tool (compare packages) - 3-4 iterations
 
 **Deliverable**: 4 advanced features operational
 
@@ -243,7 +243,7 @@
 #### 6. **MCP Interactive Mode** (Phase 13)
 **Timeline**: 2026-03-15 to 2026-03-31  
 **Status**: 🟡 Planning  
-**Effort**: 5-7 days
+**Effort**: 5-7 iterations
 
 **Features**:
 - TUI file selector
@@ -357,7 +357,7 @@
 |--------|---------|-----------|-----------|-----------|
 | **Agent Autonomy** | 40% | 70%+ | 85%+ | 95%+ |
 | **Session Success Rate** | 85%+ | 90%+ | 95%+ | 98%+ |
-| **Iteration Cycle** | 1-2 days | 1 day | <1 day | <1 day |
+| **Iteration Cycle** | 1-2 iterations | 1 iteration | <1 iteration | <1 iteration |
 | **Blocker Resolution** | 100% | 100% | 100% | 100% |
 
 ### Business Metrics
@@ -365,8 +365,8 @@
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
 | **Developer Productivity** | High | Very High | Exceptional | Best-in-class |
-| **Time to Feature** | Days | Hours | Hours | Minutes |
-| **Bug Resolution Time** | Hours | Minutes | Minutes | Automated |
+| **Time to Feature** | Iterations | Commits | Commits | Pre-commits |
+| **Bug Resolution Time** | Commits | Pre-commits | Pre-commits | Automated |
 | **Documentation Quality** | Good | Excellent | Exceptional | Best-in-class |
 
 ---
@@ -390,12 +390,12 @@ None active.
 ## 🔄 Maintenance & Updates
 
 ### Update Frequency
-- **Roadmap**: Weekly or after major milestones
+- **Roadmap**: Per-phase or after major milestones
 - **Dashboard**: Real-time (every session)
 - **Cognitive Map**: Monthly or after architecture changes
 
 ### Review Cycle
-- **Weekly**: Progress check, adjust priorities
+- **Per-phase**: Progress check, adjust priorities
 - **Monthly**: Strategic review, roadmap refinement
 - **Quarterly**: Vision alignment, long-term planning
 

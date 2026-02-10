@@ -75,16 +75,16 @@ This session completed a comprehensive repository-wide QA walkthrough (Phase 21.
 - 0 known vulnerabilities in codebase
 
 ### Phase 22 Objectives
-1. **Secrets Management Enhancement** (P2) - 3-5 days
+1. **Secrets Management Enhancement** (P2) - 3-5 iterations
    - Audit all 15+ secrets across 55 workflow files
    - Create secrets usage matrix
    - Implement rotation tracking
 
-2. **Coverage Threshold Standardization** (P2) - 2 days
+2. **Coverage Threshold Standardization** (P2) - 2 iterations
    - Use pyproject.toml as single source of truth
    - Document incremental raise plan (0% → 30% → 50% → 70% → 100%)
 
-3. **Documentation Navigation Expansion** (P2) - 1 week
+3. **Documentation Navigation Expansion** (P2) - 1 phase
    - Expand MkDocs navigation to 50+ entries
    - Archive outdated content
    - Add doc quality tracking

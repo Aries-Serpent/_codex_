@@ -4,7 +4,7 @@
 **Session:** release-gate-agent.v1 Complete → infra-linter-agent.v1 Start  
 **Target Branch:** copilot/sub-pr-2675 (or new branch)  
 **Priority:** P1 (Critical for Production)  
-**Estimated Time:** 3-4 days  
+**Estimated Time:** 3-4 iterations  
 **Cognitive Brain Context:** Agent 7/13 (54% complete after this)
 
 ---
@@ -623,7 +623,7 @@ Once infra-linter-agent.v1 is complete:
 - ✅ 4-5 self-review iterations
 - ✅ Zero CodeQL alerts
 
-**Time Estimate:** 3-4 days  
+**Time Estimate:** 3-4 iterations  
 **Priority:** P1 (Critical)  
 **Agent:** 7/13 (54% after completion)
 

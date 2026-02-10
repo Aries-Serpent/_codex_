@@ -89,7 +89,7 @@ while IFS= read -r CACHE_ID; do
 done < duplicate_cache_ids.txt
 ```
 
-### Step 4: Delete Old Caches (older than 7 days)
+### Step 4: Delete Old Caches (older than 7 iterations)
 
 ```bash
 # Calculate cutoff date (7 days ago)
@@ -215,7 +215,7 @@ After cleanup, verify:
 - [ ] Total cache size < 7 GB (70% capacity)
 - [ ] No caches from closed PRs (especially PR #2668)
 - [ ] Only one pip cache per branch (most recent)
-- [ ] No caches older than 7 days
+- [ ] No caches older than 7 iterations
 - [ ] All active workflows still functional
 
 ---
@@ -225,7 +225,7 @@ After cleanup, verify:
 1. **Verify in GitHub UI**: https://github.com/Aries-Serpent/_codex_/actions/caches
 2. **Commit session summary** (already created)
 3. **Proceed with Phase 3C-Lite** implementation
-4. **Set up weekly monitoring**
+4. **Set up per-phase monitoring**
 
 ---
 

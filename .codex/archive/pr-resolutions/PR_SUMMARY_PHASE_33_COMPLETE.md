@@ -19,7 +19,7 @@ Delivered complete CodeQL alert resolution system to address 59+ pages of securi
 
 | # | File | Lines | Purpose |
 |---|------|-------|---------|
-| 1 | `.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md` | 686 | Master planset (10-week roadmap) |
+| 1 | `.codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md` | 686 | Master planset (10 phase roadmap) |
 | 2 | `scripts/security/fetch_codeql_alerts.py` | 643 | Alert fetcher with pagination |
 | 3 | `scripts/security/close_codeql_alert.py` | 429 | Alert closer with tracking |
 | 4 | `scripts/security/README.md` | 266 | Documentation & quick start |
@@ -62,7 +62,7 @@ Delivered complete CodeQL alert resolution system to address 59+ pages of securi
 
 ```
 CodeQL Alert Resolution System
-├─ Master Planset (6 phases, 10 weeks)
+├─ Master Planset (6 phases, 10 phases)
 ├─ Alert Management
 │  ├─ Fetcher (API pagination, 59+ pages)
 │  ├─ Closer (batch operations, tracking)
@@ -135,8 +135,8 @@ python scripts/security/fetch_codeql_alerts.py
 ```
 
 ### Success Criteria
-- ✅ 100% P0 alerts resolved within 7 days
-- ✅ 90% P1 alerts resolved within 14 days
+- ✅ 100% P0 alerts resolved within 7 iterations
+- ✅ 90% P1 alerts resolved within 14 iterations
 - ✅ 95% overall resolution rate
 - ✅ <2% regression rate
 - ✅ Comprehensive documentation
@@ -165,7 +165,7 @@ python scripts/security/fetch_codeql_alerts.py
 
 ### 1. Master Planset
 - 6-phase systematic approach
-- 10-week implementation timeline
+- 10 phase implementation timeline
 - Priority matrix (P0-P4)
 - Success metrics
 - Automation framework
@@ -295,7 +295,7 @@ Codebase is acceptable with minor improvements needed
 
 **Phase 33 Status:** ✅ COMPLETE  
 **Phase 34 Status:** 🚀 READY TO BEGIN  
-**Timeline:** 10 weeks for full resolution  
+**Timeline:** 10 phases for full resolution  
 **Confidence:** HIGH - Framework tested and validated
 
 ---

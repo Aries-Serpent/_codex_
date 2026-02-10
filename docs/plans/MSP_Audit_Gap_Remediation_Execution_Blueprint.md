@@ -87,8 +87,8 @@ New reusable module with:
 - 4: Gate validation failed (validate command)
 
 ### Artifact Retention
-- CI artifacts: 90 days
-- Baseline artifact: 90 days (uploaded after successful run)
+- CI artifacts: 90 iterations
+- Baseline artifact: 90 iterations (uploaded after successful run)
 
 ## Testing Strategy
 

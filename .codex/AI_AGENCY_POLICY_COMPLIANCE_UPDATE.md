@@ -21,18 +21,18 @@ This document records the identification and resolution of AI Agency Policy viol
 **Violations Found**: 15+ instances
 
 **Examples**:
-- ❌ "2-3 weeks"
+- ❌ "2-3 phases"
 - ❌ "Week 1-3"
 - ❌ "30-60 min"
-- ❌ "10-12 weeks"
-- ❌ "weekly, bi-weekly, monthly"
+- ❌ "10-12 phases"
+- ❌ "per-phase, bi-per-phase, monthly"
 
 **Corrections Applied**:
-- ✅ "2-3 weeks" → "4-6 Phases"
+- ✅ "2-3 phases" → "4-6 Phases"
 - ✅ "Week 1-3" → "Phase 1-3"
 - ✅ "30-60 min" → "2-3 pre-commits"
-- ✅ "10-12 weeks" → "20-24 Phases"
-- ✅ "weekly, bi-weekly, monthly" → "per Phase, per 2 Phases, per 4 Phases"
+- ✅ "10-12 phases" → "20-24 Phases"
+- ✅ "per-phase, bi-per-phase, monthly" → "per Phase, per 2 Phases, per 4 Phases"
 
 ---
 
@@ -86,7 +86,7 @@ This document records the identification and resolution of AI Agency Policy viol
 
 **Files Modified** (2 files):
 1. `.codex/PR_SUMMARY_RELEASE_PLANNING.md`
-   - Line 296: "2-3 weeks" → "4-6 Phases"
+   - Line 296: "2-3 phases" → "4-6 Phases"
    - Line 367: "Human admin" → "Repository maintainer"
 
 **Total**: 2 violations resolved

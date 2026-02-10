@@ -101,8 +101,8 @@ This document provides a comprehensive summary of the QA walkthrough for the _co
 | Historical Logs | 7 | ~1.4MB | Permanent | `historical-logs/` |
 | Historical Artifacts | 7 | ~500KB | Permanent | `historical-artifacts/` |
 | Archive Files | 3 | ~800KB | Permanent | `archive-files/` |
-| Temporary Outputs | 1 | ~280KB | 90 days | `temp-outputs/` |
-| Deprecated Reports | 6 | ~120KB | 180 days | `deprecated-reports/` |
+| Temporary Outputs | 1 | ~280KB | 90 iterations | `temp-outputs/` |
+| Deprecated Reports | 6 | ~120KB | 180 iterations | `deprecated-reports/` |
 | **Total** | **32** | **~6.8MB** | - | - |
 
 ### Active Files (Kept in Main Repo)
@@ -154,31 +154,31 @@ The offload structure supports QA walkthrough analysis:
    - **Size**: 28,703 bytes | **Lines**: ~850
    - **Rationale**: Main CLI entry point for ML operations
    - **Impact**: Critical - Core user interface
-   - **Effort**: 3-5 days
+   - **Effort**: 3-5 iterations
 
 2. **src/codex_ml/training/unified_training.py** - Score: 100
    - **Size**: 22,006 bytes | **Lines**: ~650
    - **Rationale**: Central training orchestration logic
    - **Impact**: Critical - Training pipeline stability
-   - **Effort**: 4-6 days
+   - **Effort**: 4-6 iterations
 
 3. **src/codex_ml/data/loader.py** - Score: 90
    - **Size**: 17,897 bytes | **Lines**: ~530
    - **Rationale**: Data loading infrastructure
    - **Impact**: High - Data pipeline reliability
-   - **Effort**: 3-4 days
+   - **Effort**: 3-4 iterations
 
 4. **src/codex_ml/data/validation.py** - Score: 90
    - **Size**: 16,778 bytes | **Lines**: ~495
    - **Rationale**: Data validation and quality checks
    - **Impact**: High - Data integrity
-   - **Effort**: 3-4 days
+   - **Effort**: 3-4 iterations
 
 5. **src/codex_ml/safety/moderation.py** - Score: 90
    - **Size**: 10,865 bytes | **Lines**: ~320
    - **Rationale**: Safety and content moderation
    - **Impact**: High - Security & compliance
-   - **Effort**: 2-3 days
+   - **Effort**: 2-3 iterations
 
 ---
 
@@ -296,7 +296,7 @@ The offload structure supports QA walkthrough analysis:
 
 **Status**: 🚧 In Progress  
 **Priority**: Critical  
-**Timeline**: 12 weeks (Phases 2-4)
+**Timeline**: 12 phases (Phases 2-4)
 
 **Objectives**:
 - Phase 2: 17% → 50% coverage (Weeks 3-5)
@@ -312,7 +312,7 @@ The offload structure supports QA walkthrough analysis:
 
 **Status**: 🚧 In Progress  
 **Priority**: High  
-**Timeline**: 8 weeks
+**Timeline**: 8 phases
 
 **Objectives**:
 - Document all public APIs (100%)
@@ -335,7 +335,7 @@ The offload structure supports QA walkthrough analysis:
 
 **Status**: 🚧 In Progress  
 **Priority**: Critical  
-**Timeline**: 4 weeks
+**Timeline**: 4 phases
 
 **Objectives**:
 - Address all CodeQL findings
@@ -398,14 +398,14 @@ The offload structure supports QA walkthrough analysis:
 4. ⬜ Test all custom agents functionality
 5. ⬜ Document test patterns and templates
 
-### Short-term (Phase 2 - Weeks 3-5)
+### Short-term (Phase 2 phases 3-5)
 
 1. ⬜ Begin critical module testing (50% target)
 2. ⬜ Focus on CLI, training, and security modules
 3. ⬜ Implement automated test generation
 4. ⬜ Create test coverage enforcement gates
 
-### Mid-term (Phase 3-4 - Weeks 6-12)
+### Mid-term (Phase 3-4 phases 6-12)
 
 1. ⬜ Achieve 70% coverage (Phase 3)
 2. ⬜ Reach 100% coverage (Phase 4)

@@ -18,7 +18,7 @@ Automatically validate documentation synchronization with codebase, detect seman
 - **Semantic Code-Doc Matching**: Uses vector embeddings to detect semantic drift
 - **Schema Validation**: Validates documentation structure and metadata
 - **Link Validation**: Checks all internal and external links
-- **Freshness Detection**: Identifies stale documentation (>90 days)
+- **Freshness Detection**: Identifies stale documentation (>90 iterations)
 - **API Doc Sync**: Ensures API docs match current implementation
 - **Content Drift Detection**: Detects when code changes outpace doc updates
 
@@ -121,7 +121,7 @@ See `config/agent_config.yaml` for full configuration options:
 
 ## 🎓 Examples
 
-### Example 1: Weekly Documentation Audit
+### Example 1: per-phase Documentation Audit
 
 ```bash
 python -m documentation_sync_validator.src.agent validate --all \

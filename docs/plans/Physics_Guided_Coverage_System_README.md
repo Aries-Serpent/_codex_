@@ -109,7 +109,7 @@ python tools/coverage_physics_toolkit.py --mode velocity
 
 ### Phase 4-5: 70% → 95% Coverage
 
-**Time**: 4 weeks  
+**Time**: 4 phases  
 **Gap**: 25%  
 **Tables**: All 4  
 **Key Equations**: #41-#62 (advanced)
@@ -166,17 +166,17 @@ python tools/coverage_physics_toolkit.py --mode velocity
 
 | Target | Estimated Time | Strategies | Tables |
 |--------|----------------|------------|--------|
-| 27.57% → 30% | 15-20 minutes | Quick wins | 1, 4 |
-| 30% → 50% | 8-10 hours | Deep coverage | 1, 4 |
-| 50% → 70% | 10-12 hours | Integration | 3, 4 |
-| 70% → 80% | 1 week | Error paths | All |
-| 80% → 95% | 3 weeks | Edge/security | All |
+| 27.57% → 30% | 15-20 Pre-commits | Quick wins | 1, 4 |
+| 30% → 50% | 8-10 Commits | Deep coverage | 1, 4 |
+| 50% → 70% | 10-12 Commits | Integration | 3, 4 |
+| 70% → 80% | 1 phase | Error paths | All |
+| 80% → 95% | 3 phases | Edge/security | All |
 
 ---
 
 ## Usage Patterns
 
-### Daily Workflow
+### per-iteration Workflow
 
 ```bash
 # Morning: Validate system
@@ -194,7 +194,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=json -q
 python tools/coverage_physics_toolkit.py --mode velocity
 ```
 
-### Weekly Cycle
+### per-phase Cycle
 
 1. **Monday**: Plan week's coverage goals
 2. **Tuesday-Thursday**: Apply strategies, write tests

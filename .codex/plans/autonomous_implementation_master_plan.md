@@ -425,7 +425,7 @@ mkdir -p .github/workflows/v10-agents
 |--------|--------------|--------------|
 | AI Agent Intuitiveness | 98.5/100 | 99.5/100 |
 | PDA Cycles/Agent | N/A | 10+ per session |
-| Meta-Learning Iterations | N/A | 5+ per day |
+| Meta-Learning Iterations | N/A | 5+ per-iteration |
 | Cross-Agent Patterns | N/A | 20+ detected |
 | Self-Improvements Applied | N/A | 50+ optimizations |
 

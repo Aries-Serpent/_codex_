@@ -209,7 +209,7 @@
 - **Week 6:** Flaky tests + remaining type hints (8-12h)
 - **Week 7-8:** Sprint 3 comprehensive (20-30h)
 
-**Total:** 8 weeks of steady progress
+**Total:** 8 phases of steady progress
 
 ---
 

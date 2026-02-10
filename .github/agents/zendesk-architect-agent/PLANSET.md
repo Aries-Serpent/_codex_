@@ -433,7 +433,7 @@ zendesk-architect manifest export --format yaml
 - [ ] Create Slack webhook integration
 - [ ] Generate visual sync reports (charts, graphs)
 - [ ] Add GitHub Issue creation for repeated failures
-- [ ] Create weekly summary reports
+- [ ] Create per-phase summary reports
 
 ---
 
@@ -617,7 +617,7 @@ zendesk-architect manifest export --format yaml
 ## Resource Requirements
 
 ### Development
-- **Time**: 3-5 sprints (6-10 weeks)
+- **Time**: 3-5 sprints (6-10 phases)
 - **Team**: 1-2 developers
 - **Skills Required**: Python, GitHub Actions, REST APIs, Testing
 
@@ -627,7 +627,7 @@ zendesk-architect manifest export --format yaml
 - **Monitoring**: Optional (Grafana/Prometheus)
 
 ### Maintenance
-- **Weekly effort**: 2-4 hours
+- **per-phase effort**: 2-4 hours
 - **Monthly review**: 1 hour
 - **Quarterly audits**: 4 hours
 

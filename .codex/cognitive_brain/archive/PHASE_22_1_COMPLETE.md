@@ -54,7 +54,7 @@ Successfully implemented comprehensive automated repository organization system 
 
 **Features**:
 - Scans repository for offload candidates based on configurable criteria
-- Age-based filtering (90 days for temp, 180 days for deprecated)
+- Age-based filtering (90 iterations for temp, 180 iterations for deprecated)
 - Size-based filtering (>1MB for large files)
 - Category-based classification (temp, logs, coverage, artifacts, reports)
 - JSON report generation with recommendations
@@ -97,7 +97,7 @@ Successfully implemented comprehensive automated repository organization system 
 5. Retention Policy Compliance (status, upcoming reviews)
 6. Top 10 Largest Files/Directories
 7. Automated Recommendations (P1/P2/P3 priorities)
-8. Maintenance Schedule (weekly/monthly/quarterly/annual)
+8. Maintenance Schedule (per-phase/monthly/quarterly/annual)
 9. Related Documentation
 10. Automation Scripts
 11. Health Check
@@ -151,7 +151,7 @@ python scripts/repository_organization/restore_offloaded_files.py --file histori
 **Features**:
 - Individual file compression (gzip)
 - Category-wide compression (tar.gz)
-- Age-based filtering (default: 180 days)
+- Age-based filtering (default: 180 iterations)
 - Compression ratio reporting
 - Original file removal post-compression
 - Action log integration
@@ -219,7 +219,7 @@ Repo         Executor       Docs
 **File**: `.github/workflows/repository-health-monitoring.yml`
 
 **Features**:
-- Scheduled execution (weekly on Mondays)
+- Scheduled execution (per-phase on Mondays)
 - Manual dispatch with optional offload execution
 - Automated PR creation with findings
 - Artifact upload (90-day retention)
@@ -254,7 +254,7 @@ Repo         Executor       Docs
 | Restoration Script | All categories | ✅ 6 supported | ✅ Complete |
 | Compression Strategy | 50-70% reduction | ⏳ Ready | ✅ Implemented |
 | Custom Agent Spec | Full architecture | ✅ 12KB | ✅ Complete |
-| GitHub Actions | Scheduled | ✅ Weekly | ✅ Complete |
+| GitHub Actions | Scheduled | ✅ per-phase | ✅ Complete |
 
 ### Repository Health Improvement
 
@@ -266,7 +266,7 @@ Repo         Executor       Docs
 - No centralized health dashboard
 
 **After Phase 22.1**:
-- ✅ Automated weekly monitoring
+- ✅ Automated per-phase monitoring
 - ✅ Intelligent candidate identification
 - ✅ One-command restoration
 - ✅ Compression ready (50-70% potential reduction)
@@ -363,7 +363,7 @@ Repo         Executor       Docs
 ### Phase 22.2: Advanced Automation (Recommended)
 
 **Priority**: P2 (Medium)  
-**Timeline**: 2-3 weeks
+**Timeline**: 2-3 phases
 
 **Tasks**:
 1. **ML-based Candidate Prediction**

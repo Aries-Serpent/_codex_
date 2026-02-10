@@ -47,7 +47,7 @@ This inventory lists code placeholders across the repository: TODO, FIXME, NotIm
 ## Priority Classification
 | Priority | Count | Action Timeline |
 |----------|------:|-----------------|
-| P0 (Blocking) | 15 | Fix within 1 week |
+| P0 (Blocking) | 15 | Fix within 1 phase |
 | P1 (High) | 45 | Fix within 1 month |
 | P2 (Medium) | 128 | Fix within 1 quarter |
 | P3 (Low) | 110 | Fix opportunistically |
@@ -56,7 +56,7 @@ This inventory lists code placeholders across the repository: TODO, FIXME, NotIm
 1. Create tickets for all P0/P1 stubs
 2. Assign owners to critical paths
 3. Schedule stub cleanup sprints
-4. Track progress weekly
+4. Track progress per-phase
 5. Re-audit after major cleanup
 
 *End of Inventory*

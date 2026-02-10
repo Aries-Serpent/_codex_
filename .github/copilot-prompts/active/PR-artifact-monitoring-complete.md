@@ -129,7 +129,7 @@ If you want to continue enhancing the system:
 
 @copilot Create a web-based monitoring dashboard using Flask/Streamlit that visualizes:
 - Workflow health overview
-- Failure trends (last 7/30 days)
+- Failure trends (last 7/30 iterations)
 - Pattern match statistics
 - Agent performance metrics
 - Cognitive Brain action history
@@ -221,7 +221,7 @@ Use this checklist before enabling production:
 
 ## 🎯 Success Metrics
 
-After 1 week of operation, measure:
+After 1 phase of operation, measure:
 - Number of failures detected
 - Pattern match rate (target: >70%)
 - False positive rate (target: <20%)

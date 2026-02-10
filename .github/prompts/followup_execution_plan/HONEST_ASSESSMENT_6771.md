@@ -228,34 +228,34 @@ This is FALSE because:
 
 ### To Actually Achieve 71/71 (100% Capability Coverage):
 
-**Step 1: Implement K8s Orchestration (~2-3 days)**
+**Step 1: Implement K8s Orchestration (~2-3 iterations)**
 - Create K8s manifests
 - Deploy to cluster
 - Configure auto-scaling
 - Test in production
 → This would close gaps for rows 14, 15, 16
 
-**Step 2: Implement Feature Store (~3-4 days)**
+**Step 2: Implement Feature Store (~3-4 iterations)**
 - Build feature store module
 - Add versioning system
 - Integrate with training
 - Add monitoring
 → This would close gap for row 27
 
-**Step 3: Implement Cloud Events (~2-3 days)**
+**Step 3: Implement Cloud Events (~2-3 iterations)**
 - Integrate Azure Event Grid
 - Add event emission
 - Configure webhooks
 - Test event flow
 → This would close gap for row 28
 
-**Step 4: Add Feature Freshness (~1 day)**
+**Step 4: Add Feature Freshness (~1 iteration)**
 - Enhance monitoring
 - Add freshness tracking
 - Configure alerts
 → This would complete row 63
 
-**Total Time: ~8-11 days of focused work**
+**Total Time: ~8-11 iterations of focused work**
 
 ---
 
@@ -301,7 +301,7 @@ This is FALSE because:
 
 If the goal is ACTUALLY 71/71:
 1. ✅ Use the gap prompts we created
-2. ✅ Implement each gap (8-11 days)
+2. ✅ Implement each gap (8-11 iterations)
 3. ✅ Verify each implementation
 4. ✅ Update assessment to 71/71
 
@@ -333,7 +333,7 @@ Until then: **Stay at 67/71 (94%)**
 
 **Recommendation:** MAINTAIN 67/71 (94%) in all documentation  
 **Rationale:** It's the truth, it's excellent, and it's honest  
-**Path Forward:** Implement gaps if business needs require (8-11 days)
+**Path Forward:** Implement gaps if business needs require (8-11 iterations)
 
 ---
 

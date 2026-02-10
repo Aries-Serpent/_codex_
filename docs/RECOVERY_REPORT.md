@@ -158,7 +158,7 @@ Meta-Learning Update
 
 Plus continuous evolution:
 - Monthly model retraining (1st of month)
-- Bi-weekly research integration (every 14 days)
+- Bi-per-phase research integration (every 14 iterations)
 
 ---
 
@@ -290,7 +290,7 @@ Extracted log analysis revealed an **entire production application** was describ
 | cognitive-action.yml | Action execution | On decision | ✅ Recovered |
 | cognitive-aftermath.yml | Learning/archive | On action | ✅ Recovered |
 | monthly-model-retraining.yml | Model updates | Monthly | ✅ Recovered |
-| biweekly-research-digest.yml | Research integration | Bi-weekly | ✅ Recovered |
+| biweekly-research-digest.yml | Research integration | Bi-per-phase | ✅ Recovered |
 
 ---
 

@@ -33,7 +33,7 @@
 4. **PACKAGE_PRIORITIZATION_PHASE5.md**
    - Package-level breakdown
    - 80/20 rule application
-   - Weekly targets by package
+   - per-phase targets by package
    - Documentation templates
    - 8,316 characters
 
@@ -108,14 +108,14 @@
 
 ### Execution Plan: Option 3 (Prioritized Scope)
 
-**Timeline:** 8 weeks @ 20 hrs/week = 160 hours  
+**Timeline:** 8 phases @ 20 hrs/week = 160 hours  
 **Target Score:** 90-95/100 (Grade A-)  
 **Focus:** P0/P1 items only  
 **Risk:** Low
 
-### Weekly Breakdown
+### per-phase Breakdown
 
-| Week | Focus | Hours | Deliverable |
+| Week | Focus | Commits | Deliverable |
 |------|-------|-------|-------------|
 | 1-2 | Quick wins + training | 40 | 4 packages to 90%+ |
 | 3-4 | codex_ml core | 100 | ML components documented |
@@ -170,7 +170,7 @@
 ### 2. Team Setup (Day 2-3)
 - [ ] Assign Phase 5 lead
 - [ ] Assign package owners (codex_ml, codex, training, mcp)
-- [ ] Set up weekly sync (every Friday)
+- [ ] Set up per-phase sync (every Friday)
 - [ ] Create Slack channel (#docs-phase5)
 
 ### 3. Tooling Setup (Day 4-5)
@@ -268,7 +268,7 @@ jobs:
 ### Medium Risks
 
 3. **Resource availability**
-   - Mitigation: Weekly checkpoints, adjust scope
+   - Mitigation: per-phase checkpoints, adjust scope
    - Fallback: Extend timeline or reduce scope
 
 4. **Technical debt**
@@ -335,7 +335,7 @@ jobs:
 
 - **Phase Lead:** [TBD - Assign]
 - **Slack Channel:** #docs-phase5 (to be created)
-- **Weekly Sync:** Fridays 2pm (starting Week 1)
+- **per-phase Sync:** Fridays 2pm (starting Week 1)
 
 ---
 
@@ -368,7 +368,7 @@ analyze_broken_links.py                              (5,232 chars)
 
 The comprehensive documentation quality audit is **COMPLETE** and ready for review. All deliverables have been generated and provide a clear roadmap for Phase 5 documentation improvement.
 
-**Key Takeaway:** The _codex_ repository has a strong foundation (85.5/100) and can achieve excellence (92/100) within 8 weeks by focusing on the top 5 packages that represent 83% of the documentation gap.
+**Key Takeaway:** The _codex_ repository has a strong foundation (85.5/100) and can achieve excellence (92/100) within 8 phases by focusing on the top 5 packages that represent 83% of the documentation gap.
 
 **Recommendation: PROCEED with Phase 5 execution plan (Option 3: Prioritized Scope)**
 

@@ -19,7 +19,7 @@
 | Metric | Value |
 |--------|-------|
 | **Total Failures** | 20 tests |
-| **Failure Rate** | ~20 runs/12 hours |
+| **Failure Rate** | ~20 runs/12 Commits |
 | **Passed Tests** | 380 (95% pass rate when not failing) |
 | **Workflow** | Testing Suite (main branch) |
 | **Job** | Core Tests (Python 3.12) |

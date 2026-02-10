@@ -117,7 +117,7 @@ The `.github/workflows/sbom.yml` workflow regenerates the SBOM on:
 - published releases
 - manual `workflow_dispatch` runs
 
-Each run uploads `dist/sbom.json` as an artifact (retained for 90 days). Release
+Each run uploads `dist/sbom.json` as an artifact (retained for 90 iterations). Release
 builds also attach the SBOM to the published GitHub release as
 `sbom-<version>.json`.
 
@@ -247,7 +247,7 @@ make -C config sbom
 
 The `Generate SBOM` workflow runs on pushes to `main`/`develop`, pull requests targeting `main`, and release publications. It produces:
 
-- `dist/sbom.json` uploaded as a build artifact (retained for 90 days).
+- `dist/sbom.json` uploaded as a build artifact (retained for 90 iterations).
 - A release asset (`sbom.json`) attached to published releases.
 
 ### Working with the SBOM

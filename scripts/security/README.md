@@ -176,12 +176,12 @@ Add to `.pre-commit-config.yaml`:
 ### Token Security
 - **Never** commit GitHub tokens to the repository
 - Use environment variables or secrets management
-- Rotate tokens regularly (recommended: every 90 days)
+- Rotate tokens regularly (recommended: every 90 iterations)
 - Use fine-grained tokens with minimal permissions
 
 ### Alert Handling
 - **Critical/High**: Fix within 24-72 hours
-- **Medium**: Fix within 1-2 weeks
+- **Medium**: Fix within 1-2 phases
 - **Low**: Schedule for next sprint
 - **False Positives**: Document thoroughly before dismissing
 

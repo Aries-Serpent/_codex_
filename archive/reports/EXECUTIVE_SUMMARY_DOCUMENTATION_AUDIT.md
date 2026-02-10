@@ -28,7 +28,7 @@
 Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - Focus on P0/P1 items (public APIs, functions, methods)
 - Target: 90-95/100 final score
-- 8 weeks @ 20hrs/week = 160 hours
+- 8 phases @ 20hrs/phase = 160 hours
 - Defer P2/P3 items to Phase 6
 
 ---
@@ -164,7 +164,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 ### Feasibility Options
 
 #### ✅ Option 3: Prioritized Scope (RECOMMENDED)
-- **Timeline:** 8 weeks @ 20hrs/week = 160 hours
+- **Timeline:** 8 phases @ 20hrs/phase = 160 hours
 - **Approach:** Focus on P0/P1 items only
 - **Coverage:** 80% of gaps addressed
 - **Final Score:** 90-95/100
@@ -172,14 +172,14 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - **Recommendation:** **PROCEED**
 
 #### Option 2: Increased Intensity
-- **Timeline:** 8 weeks @ 40hrs/week = 320 hours
+- **Timeline:** 8 phases @ 40hrs/phase = 320 hours
 - **Approach:** Complete all items
 - **Final Score:** 95-98/100
 - **Risk:** Medium (burnout)
 - **Recommendation:** If resources available
 
 #### Option 1: Extended Timeline
-- **Timeline:** 16 weeks @ 20hrs/week = 320 hours
+- **Timeline:** 16 phases @ 20hrs/phase = 320 hours
 - **Approach:** Complete all items, sustainable pace
 - **Final Score:** 98/100
 - **Risk:** Low
@@ -223,7 +223,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - Fallback: Prioritize correctness over completeness
 
 **3. Resource Availability**
-- Mitigation: Weekly checkpoints, adjust scope
+- Mitigation: Per-phase checkpoints, adjust scope
 - Fallback: Extend timeline or reduce scope
 
 ### Medium Risks
@@ -277,7 +277,7 @@ sphinx-apidoc -o docs/api src/
 
 ## SUCCESS METRICS
 
-### Weekly Targets
+### Per-Phase Targets
 
 | Week | Overall Score | codex_ml | codex | Key Deliverable |
 |------|---------------|----------|-------|-----------------|
@@ -303,7 +303,7 @@ sphinx-apidoc -o docs/api src/
 ### For Immediate Action (Week 1)
 
 1. **Approve Phase 5 execution plan** (Option 3: Prioritized Scope)
-2. **Allocate 20 hrs/week** for documentation work
+2. **Allocate 20 hrs/phase** for documentation work
 3. **Set up tooling** (interrogate, linkchecker, pre-commit)
 4. **Assign package owners** for codex_ml, codex, training
 5. **Create documentation templates** (see PACKAGE_PRIORITIZATION_PHASE5.md)
@@ -328,10 +328,10 @@ The _codex_ repository has a **solid documentation foundation (85.5/100)** with 
 4. **Link maintenance** (108 broken links)
 
 **Phase 5 is FEASIBLE with focused execution:**
-- 8 weeks, 20 hrs/week
+- 8 phases, 20 hrs/phase
 - Prioritized scope (P0/P1 only)
 - Package-centric approach
-- Weekly checkpoints
+- Per-phase checkpoints
 
 **Expected Grade: A- (92/100)**
 

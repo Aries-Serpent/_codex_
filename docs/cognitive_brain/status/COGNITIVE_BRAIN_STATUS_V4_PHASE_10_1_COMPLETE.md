@@ -168,7 +168,7 @@ Total: 9/9 ✅ ALL CHECKS PASSED
 
 **Responsibilities**:
 - HA-OPT-002: Organization audit logging validation
-- HA-OPT-003: CodeQL suppressions review (90-day rotation)
+- HA-OPT-003: CodeQL suppressions review (90 iteration rotation)
 - Branch protection validation
 - Secret scanning configuration validation
 
@@ -190,7 +190,7 @@ Validations:
 - Secret Scanning: ✅ PASSED (2 configs found: .secrets.baseline, .gitleaks.toml)
 
 Recommendations:
-1. Review 1 CodeQL suppressions older than 90 days
+1. Review 1 CodeQL suppressions older than 90 iterations
 2. Document branch protection rules in .github/branch_protection.yml
 ```
 
@@ -306,7 +306,7 @@ No warnings, clean execution ✅
 - [ ] Test end-to-end secret management
 - [ ] Document integration patterns
 
-### Priority 2: Additional Agent Managers (2-3 weeks)
+### Priority 2: Additional Agent Managers (2-3 phases)
 - [ ] Implement `auth_manager.py` (6 hours)
 - [ ] Implement `workflow_manager.py` (8 hours)
 - [ ] Implement `integration_manager.py` (6 hours)

@@ -413,14 +413,14 @@ for result in results:
 
 ### 1. Regular Cleanup
 ```bash
-# Archive old sessions (older than 30 days)
+# Archive old sessions (older than 30 iterations)
 python -m codex.logging.export \
   --before $(date -d '30 days ago' +%Y-%m-%d) \
   --output archive/old_sessions.ndjson
 
 # Delete archived sessions from DB
 sqlite3 .codex/session_logs.db \
-  "DELETE FROM logs WHERE timestamp < date('now', '-30 days')"
+  "DELETE FROM logs WHERE timestamp < date('now', '-30 iterations')"
 ```
 
 ### 2. Session Naming

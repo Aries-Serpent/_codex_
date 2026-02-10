@@ -211,12 +211,12 @@ def create_report():
 
 **Input:**
 ```markdown
-@copilot Fix Windows-incompatible filenames in reports/daily/
+@copilot Fix Windows-incompatible filenames in reports/per-iteration/
 ```
 
 **Agent Response:**
 ```markdown
-🔍 **Scanning:** `reports/daily/`
+🔍 **Scanning:** `reports/per-iteration/`
 
 **Violations Found:** 3 files
 
@@ -224,7 +224,7 @@ def create_report():
    → `reports/daily/status_2026-01-23-22_25Z.json`
 
 2. `reports/daily/audit_14:30:45.log`
-   → `reports/daily/audit_14_30_45.log`
+   → `reports/per-iteration/audit_14_30_45.log`
 
 3. `reports/daily/backup_<2026-01-23>.tar.gz`
    → `reports/daily/backup_2026-01-23.tar.gz`
@@ -283,7 +283,7 @@ python scripts/remediation/rename_windows_incompatible_files.py --execute
 - **Average Response Time:** <2 seconds per file
 
 ### Impact Metrics
-- **Pre-Remediation:** 1 CI failure per week from Windows issues
+- **Pre-Remediation:** 1 CI failure per-phase from Windows issues
 - **Post-Remediation:** 0 CI failures (target)
 - **Developer Time Saved:** ~2 hours per incident
 - **Prevention Rate:** 100% (with pre-commit hook)

@@ -791,7 +791,7 @@ security-scan-agent:
 dep-upgrade-agent:
   - upgrades_attempted: "Track per 4-5 commit cycles"
   - success_rate: ">85%"
-  - security_patches: "100% within 7 days"
+  - security_patches: "100% within 7 iterations"
   - breaking_changes_caught: "100%"
 ```
 

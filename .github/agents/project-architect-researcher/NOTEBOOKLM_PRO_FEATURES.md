@@ -15,7 +15,7 @@
 | **API Access** | ❌ Not available | ✅ Full API access |
 | **Custom Voices** | ❌ Not available | ✅ Multiple voice styles |
 | **Collaboration** | ❌ Not available | ✅ Real-time editing |
-| **Version History** | ❌ Not available | ✅ 30-day history |
+| **Version History** | ❌ Not available | ✅ 30 iteration history |
 | **Priority Support** | ❌ Not available | ✅ 24/7 support |
 
 ## 🎙️ Audio Overview Generation (PRO)
@@ -286,7 +286,7 @@ Start: Do you have NotebookLM PRO?
 - Cross-reference with cognitive brain
 
 ### 4. Exports
-- Schedule weekly PDF exports for archiving
+- Schedule per-phase PDF exports for archiving
 - Use Markdown for version control integration
 - DOCX for stakeholder editing
 - HTML for internal wikis
@@ -358,7 +358,7 @@ print(f"API calls remaining: {usage['api_quota_remaining']}")
 ### Week 4: Automation
 - [ ] Set up CI/CD integration
 - [ ] Automate source generation
-- [ ] Schedule weekly exports
+- [ ] Schedule per-phase exports
 - [ ] Monitor API quota
 
 ## 🚀 Advanced: CI/CD Integration

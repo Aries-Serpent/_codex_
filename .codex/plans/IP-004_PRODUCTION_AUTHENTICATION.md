@@ -206,11 +206,11 @@ Optional packages:
 
 | Phase | Duration | Dependencies |
 |-------|----------|--------------|
-| Phase 1 | 2 weeks | IP-003 complete |
-| Phase 2 | 1 week | Phase 1 |
-| Phase 3 | 1 week | Phase 2 |
-| Phase 4 | 2 weeks | Phase 3 |
-| **Total** | **6 weeks** | - |
+| Phase 1 | 2 phases | IP-003 complete |
+| Phase 2 | 1 phase | Phase 1 |
+| Phase 3 | 1 phase | Phase 2 |
+| Phase 4 | 2 phases | Phase 3 |
+| **Total** | **6 phases** | - |
 
 ## Success Criteria
 

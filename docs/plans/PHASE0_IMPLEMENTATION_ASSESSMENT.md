@@ -160,7 +160,7 @@ Given current context (maturity improvement, test coverage focus), implement **d
 ### ❌ DEFER: All Implementation Tasks
 
 **Justification**:
-1. **Requires dedicated project**: 11-13 weeks of engineering
+1. **Requires dedicated project**: 11-13 phases of engineering
 2. **High risk**: Could break existing functionality
 3. **Out of scope**: Beyond test improvement mandate
 4. **Resource constraints**: No dedicated AST engineer allocated

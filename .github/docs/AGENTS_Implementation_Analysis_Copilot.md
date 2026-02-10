@@ -229,7 +229,7 @@
 **Issues**:
 1. **Log rotation missing**
    ```python
-   # Current: Single file per day (can grow large)
+   # Current: Single file per-iteration (can grow large)
    error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
    
    # Recommended: Add RotatingFileHandler

@@ -10,7 +10,7 @@ The `docs/templates/` directory curates reusable runbooks that combine execution
 | [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) | Move Python files or packages while preserving import stability and release hygiene. | Codebase topology and backward compatibility |
 | [Migration — CLI Hardening](./Migration_CLIHardening.md) | Strengthen CLI ergonomics, validation, and coverage to meet the 85% testing baseline. | Developer experience and operational resilience |
 | [Planning — Intent Validation](./Planning_IntentValidation.md) | Facilitate structured discovery and approval gates before implementation begins. | Alignment, risk framing, and decision records |
-| [Status Update — Daily Report (v1.1)](./status/README.md) | Comprehensive daily status update with snapshot, delta tracking, and atomic patch diffs. | Repository audits, reproducibility, and automation |
+| [Status Update — per-iteration Report (v1.1)](./status/README.md) | Comprehensive per-iteration status update with snapshot, delta tracking, and atomic patch diffs. | Repository audits, reproducibility, and automation |
 
 ## When to Use Each Template
 
@@ -26,8 +26,8 @@ Use when tightening CLI interfaces, adopting new dependencies, or extending cove
 ### Planning — Intent Validation
 Use before implementing a substantial change. The template standardizes intent statements, validation evidence, risk logs, and approval criteria so AI Assistant validates scope through autonomous analysis and success markers.
 
-### Status Update — Daily Report (v1.1)
-Use for comprehensive daily repository audits and status tracking. The template provides:
+### Status Update — per-iteration Report (v1.1)
+Use for comprehensive per-iteration repository audits and status tracking. The template provides:
 - Full snapshot with capability audit and reproducibility tracking
 - Delta tracking from previous reports
 - Atomic patch diffs with validation checklists
@@ -52,7 +52,7 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 | Python File Relocation | `sitecustomize.py`, [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py), [`tests/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests) |
 | CLI Hardening | [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli), [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/conftest.py) |
-| Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), [`reports/daily/`](https://github.com/Aries-Serpent/_codex_/blob/main/reports/daily) |
+| Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), [`reports/per-iteration/`](https://github.com/Aries-Serpent/_codex_/blob/main/reports/per-iteration) |
 
 ## Maintenance Notes
 

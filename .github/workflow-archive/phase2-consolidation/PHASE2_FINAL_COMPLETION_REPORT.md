@@ -37,14 +37,14 @@ Phase 2 workflow consolidation has been **successfully completed**, achieving a 
 | Phase | Starting | Ending | Change | Method |
 |-------|----------|--------|--------|--------|
 | **Phase 1** | 108 | 73 | -35 (32%) | 10 consolidation groups |
-| **Phase 2 Week 1** | 73 | 65 | -8 | 10 → 5 unified workflows |
-| **Phase 2 Week 2** | 65 | 62 | -3 | 6 → 3 unified workflows |
-| **Phase 2 Week 3** | 62 | 55 | -7 | 7 moved to misc/ |
+| **Phase 2 phase 1** | 73 | 65 | -8 | 10 → 5 unified workflows |
+| **Phase 2 phase 2** | 65 | 62 | -3 | 6 → 3 unified workflows |
+| **Phase 2 phase 3** | 62 | 55 | -7 | 7 moved to misc/ |
 | **Total** | **108** | **55** | **-53 (49%)** | Combined strategy |
 
 ---
 
-## 🎯 Phase 2 Week-by-Week Summary
+## 🎯 Phase 2 phase-by-Week Summary
 
 ### Week 1: High-Priority Consolidations
 
@@ -114,9 +114,9 @@ Phase 2 workflow consolidation has been **successfully completed**, achieving a 
 
 **Total .meta files**: 75
 - Phase 1: 48 .meta files
-- Phase 2 Week 1: 10 .meta files
-- Phase 2 Week 2: 6 .meta files
-- Phase 2 Week 3: 7 .meta files (moves)
+- Phase 2 phase 1: 10 .meta files
+- Phase 2 phase 2: 6 .meta files
+- Phase 2 phase 3: 7 .meta files (moves)
 - Misc/ files: 11 .meta files
 
 **Metadata Structure**:
@@ -240,7 +240,7 @@ Located in `.github/workflow-archive/phase1-consolidation/`:
 
 **Pattern 2: Distributed Caching**
 - Per-workflow caching superior to centralized
-- GitHub auto-cleanup (30-day TTL)
+- GitHub auto-cleanup (30 iteration TTL)
 - No single point of failure
 - Improved performance
 
@@ -376,7 +376,7 @@ Located in `.github/workflow-archive/phase1-consolidation/`:
 
 ### Completion Report Structure
 1. Executive summary (achievements, metrics)
-2. Week-by-week breakdown
+2. phase-by-phase breakdown
 3. Consolidation details per group
 4. Workflow transition matrix
 5. Safety & rollback procedures
@@ -398,7 +398,7 @@ Located in `.github/workflow-archive/phase1-consolidation/`:
 
 ## 📋 Follow-Up Recommendations
 
-### Immediate (Next 1-2 weeks)
+### Immediate (Next 1-2 phases)
 
 1. **Monitor unified workflows**
    - Track usage of mode selection features

@@ -16,7 +16,7 @@ This document validates the **Path B** alternative: continuing consolidation fro
 ## 🎯 Path B Objectives
 
 **Goal**: Reduce from 55 to 48 workflows (-7 additional workflows)  
-**Timeline**: 5-7 days  
+**Timeline**: 5-7 iterations  
 **Risk Level**: Medium  
 **Rationale**: Achieve exact original target, maximum consolidation efficiency
 
@@ -118,7 +118,7 @@ Based on analysis of remaining workflows, Path B would target:
 
 ## 📋 Path B Implementation Plan
 
-### Week 4 Day 1-2: Group 1 & 2 (Specialized Testing + Monitoring)
+### Week 4 iteration 1-2: Group 1 & 2 (Specialized Testing + Monitoring)
 
 **Tasks**:
 1. Create `specialized-testing-suite.yml` (8-10 KB)
@@ -148,7 +148,7 @@ Based on analysis of remaining workflows, Path B would target:
 
 ---
 
-### Week 4 Day 3-4: Group 3 & 4 (Documentation + Misc Moves)
+### Week 4 iteration 3-4: Group 3 & 4 (Documentation + Misc Moves)
 
 **Tasks**:
 1. Create `documentation-suite.yml` (6-8 KB)
@@ -178,7 +178,7 @@ Based on analysis of remaining workflows, Path B would target:
 
 ---
 
-### Week 4 Day 5-6: Validation & Documentation
+### Week 4 iteration 5-6: Validation & Documentation
 
 **Tasks**:
 1. 5-iteration self-healing validation
@@ -211,7 +211,7 @@ Based on analysis of remaining workflows, Path B would target:
 
 ---
 
-### Week 4 Day 7: Final Review & Closure
+### Week 4 iteration 7: Final Review & Closure
 
 **Tasks**:
 1. Generate workflow dependency diagrams
@@ -315,7 +315,7 @@ Based on analysis of remaining workflows, Path B would target:
 - Comprehensive unified suites
 
 **Costs**:
-- Additional 5-7 days timeline
+- Additional 5-7 iterations timeline
 - Medium risk level
 - More complex rollback
 - Potential team disruption
@@ -331,7 +331,7 @@ Based on analysis of remaining workflows, Path B would target:
 2. **Diminishing returns** - further consolidation provides minimal benefit
 3. **Risk avoidance** - specialized workflows better kept separate
 4. **Team satisfaction** - minimal disruption achieved
-5. **Quick completion** - Path A takes 3-4 days vs 5-7 days
+5. **Quick completion** - Path A takes 3-4 iterations vs 5-7 iterations
 6. **Functionality preservation** - higher confidence with current state
 
 ### Path B Alternative Value
@@ -483,7 +483,7 @@ This planset provides a complete, validated implementation guide for achieving t
 
 1. **Feasibility**: ✅ All consolidations are technically feasible
 2. **Risk Level**: ⚠️ Medium (acceptable with proper validation)
-3. **Timeline**: ⏱️ 5-7 days (realistic with full team)
+3. **Timeline**: ⏱️ 5-7 iterations (realistic with full team)
 4. **Benefits**: 📊 Marginal (diminishing returns from 55 to 48)
 5. **Recommendation**: 🎯 Path A remains optimal choice
 

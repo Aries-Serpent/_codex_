@@ -230,7 +230,7 @@ IF CI_fails_on_windows_runner THEN
 
 **Recommended Next Steps:**
 1. Review and merge this PR
-2. Monitor Windows CI for 1 week
+2. Monitor Windows CI for 1 phase
 3. If all clear, consider optional Phase 2
 
 ---

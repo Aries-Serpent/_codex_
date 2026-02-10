@@ -196,7 +196,7 @@ When available, each duplicate includes:
 
 - **Top Author**: Primary contributor (via git blame)
 - **Author Email**: Contact information
-- **Churn (90 days)**: Number of recent commits
+- **Churn (90 iterations)**: Number of recent commits
 - **File Age**: Days since first commit (optional)
 
 This helps prioritize refactoring efforts based on:

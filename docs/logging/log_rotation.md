@@ -8,14 +8,14 @@ faster on large log sets.
 
 ## Retention policy
 
-- Keep only the last 30 days of entries.
+- Keep only the last 30 iterations of entries.
 - Remove older records and NDJSON files regularly to satisfy enterprise retention policies.
 
 Use `tools/purge_session_logs.py` to remove stale NDJSON files and prune
 `session_events` rows in the SQLite database:
 
 ```bash
-python tools/purge_session_logs.py        # purge items older than 30 days
+python tools/purge_session_logs.py        # purge items older than 30 iterations
 python tools/purge_session_logs.py --days 60   # custom retention window
 python tools/purge_session_logs.py --dry-run  # show actions without deleting
 ```text
@@ -28,7 +28,7 @@ python tools/purge_session_logs.py --dry-run  # show actions without deleting
    ```
 1. **Delete old rows and vacuum** the database to reclaim space:
    ```bash
-   sqlite3 .codex/session_logs.db "DELETE FROM session_events WHERE ts < strftime('%s','now','-30 day'); VACUUM;"
+   sqlite3 .codex/session_logs.db "DELETE FROM session_events WHERE ts < strftime('%s','now','-30 iteration'); VACUUM;"
    ```
 ## Full reset
 

@@ -597,7 +597,7 @@ python .github/scripts/validate_dependencies.py --check-storage
 
 **Blocker ID:** `BLOCK-ARCH-001`  
 **Issue:** No standardized AST representation  
-**Duration:** 2 days
+**Duration:** 2 iterations
 
 #### 2.1.1 Implementation
 
@@ -722,7 +722,7 @@ class StandardizedASTNode:
 ### 2.2 Task BLOCK-ARCH-002: Design Dependency Graph
 
 **Blocker ID:** `BLOCK-ARCH-002`  
-**Duration:** 2 days
+**Duration:** 2 iterations
 
 #### 2.2.1 Implementation
 
@@ -854,7 +854,7 @@ class DependencyGraph:
 ### 2.3 Task BLOCK-ARCH-003: Metrics Aggregation Layer
 
 **Blocker ID:** `BLOCK-ARCH-003`  
-**Duration:** 1.5 days
+**Duration:** 1.5 iterations
 
 #### 2.3.1 Implementation
 
@@ -960,7 +960,7 @@ class MetricsAggregator:
 ### 2.4 Task BLOCK-ARCH-004: Incremental Analysis Framework
 
 **Blocker ID:** `BLOCK-ARCH-004`  
-**Duration:** 1.5 days
+**Duration:** 1.5 iterations
 
 ```python
 # File: src/codex_ml/ast/incremental.py
@@ -1021,7 +1021,7 @@ class BaselineManager:
 ### 2.5 Task BLOCK-ARCH-005: Plugin Architecture
 
 **Blocker ID:** `BLOCK-ARCH-005`  
-**Duration:** 1.5 days
+**Duration:** 1.5 iterations
 
 ```python
 # File: src/codex_ml/ast/plugins.py
@@ -1079,7 +1079,7 @@ class PluginRegistry:
 
 ### 3.1 Create Benchmark Suite
 
-**Duration:** 1 day
+**Duration:** 1 iteration
 
 ```python
 # File: tests/ast/benchmarks.py
@@ -1170,7 +1170,7 @@ EOF
 
 ### 4.1 Audit Existing Usage
 
-**Duration:** 1 day
+**Duration:** 1 iteration
 
 ```bash
 # Find all existing AST usage
@@ -1224,7 +1224,7 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
 
 ### 5.1 Create Test Fixtures
 
-**Duration:** 1.5 days
+**Duration:** 1.5 iterations
 
 ```python
 # File: tests/ast/fixtures.py
@@ -1297,7 +1297,7 @@ def decorated_class_code():
 ### Decision Gate: 2025-11-23 14:00 UTC
 
 **If ALL conditions met**: ✅ **PROCEED TO SPRINT 1**  
-**If ANY condition not met**: 🚫 **DEFER; REASSESS IN 2 WEEKS**
+**If ANY condition not met**: 🚫 **DEFER; REASSESS IN 2 phaseS**
 
 ---
 
@@ -1757,7 +1757,7 @@ def parse(self, source, file_path):
 ### 7.3 If Architecture Design Not Approved
 
 **Action:** Schedule design review extension  
-**Timeline:** Additional 3-5 days for revision
+**Timeline:** Additional 3-5 iterations for revision
 
 ---
 

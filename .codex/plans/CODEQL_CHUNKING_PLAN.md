@@ -252,7 +252,7 @@ For PR-only scans, analyze only changed files:
 
 ## Strategy 3: Scheduled Full Scan
 
-Run full scans weekly to catch cross-file issues:
+Run full scans per-phase to catch cross-file issues:
 
 ```yaml
 on:
@@ -305,7 +305,7 @@ jobs:
 
 - Alert when any chunk exceeds 8MB (warning threshold)
 - Block PR if any chunk exceeds 10MB
-- Weekly report of chunk sizes
+- per-phase report of chunk sizes
 
 ---
 

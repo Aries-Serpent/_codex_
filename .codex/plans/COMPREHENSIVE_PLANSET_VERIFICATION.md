@@ -27,9 +27,9 @@ This document provides a complete verification of all plansets from immediate to
 
 | # | Task | Status | Dependencies | Estimated Time |
 |---|------|--------|--------------|----------------|
-| 1 | Complete IP-003: Security documentation | ⏳ NOT STARTED | None | 1 week |
-| 2 | Complete IP-002: Consolidate legacy config | ⏳ NOT STARTED | None | 1-2 weeks |
-| 3 | Begin IP-001 Phase 1: Unit tests | ✅ **IN PROGRESS** | None | 4-6 weeks total |
+| 1 | Complete IP-003: Security documentation | ⏳ NOT STARTED | None | 1 phase |
+| 2 | Complete IP-002: Consolidate legacy config | ⏳ NOT STARTED | None | 1-2 phases |
+| 3 | Begin IP-001 Phase 1: Unit tests | ✅ **IN PROGRESS** | None | 4-6 phases total |
 
 **IP-001 Phase 1 Progress**:
 - ✅ 197 unit tests added (commit b7cdd6b)
@@ -40,17 +40,17 @@ This document provides a complete verification of all plansets from immediate to
 
 | # | Task | Status | Dependencies | Estimated Time |
 |---|------|--------|--------------|----------------|
-| 1 | Complete IP-001: All phases to 70% | ⏳ IN PROGRESS | None | 8-10 weeks remaining |
-| 2 | Complete IP-004: Production authentication | ⏳ NOT STARTED | IP-003 | 3-4 weeks |
-| 3 | Complete IP-005: Dependency audit | ⏳ NOT STARTED | None | 2 weeks |
+| 1 | Complete IP-001: All phases to 70% | ⏳ IN PROGRESS | None | 8-10 phases remaining |
+| 2 | Complete IP-004: Production authentication | ⏳ NOT STARTED | IP-003 | 3-4 phases |
+| 3 | Complete IP-005: Dependency audit | ⏳ NOT STARTED | None | 2 phases |
 
 ### 🟢 LONG TERM (Months 4-6)
 
 | # | Task | Status | Dependencies | Estimated Time |
 |---|------|--------|--------------|----------------|
 | 1 | Achieve 100% test coverage | ⏳ NOT STARTED | IP-001 complete | 2-3 months |
-| 2 | Production RAG pipeline | ⏳ NOT STARTED | IP-004 | 4-6 weeks |
-| 3 | Remove all legacy code | ⏳ NOT STARTED | IP-002 | 2-4 weeks |
+| 2 | Production RAG pipeline | ⏳ NOT STARTED | IP-004 | 4-6 phases |
+| 3 | Remove all legacy code | ⏳ NOT STARTED | IP-002 | 2-4 phases |
 
 ---
 

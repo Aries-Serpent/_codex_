@@ -34,7 +34,7 @@
 5. **Actionable Reports** - Complete
    - 4 comprehensive markdown reports generated
    - Quick reference guide created
-   - Execution timeline provided (4-day plan)
+   - Execution timeline provided (4 iteration plan)
 
 ---
 
@@ -243,7 +243,7 @@ pytest tests/rag/ tests/test_rag*.py \
 
 ### Managed Risk ✅
 
-- **Time constraints:** 4-day estimate provided
+- **Time constraints:** 4 iteration estimate provided
   - **Mitigation:** Clear priorities, can defer P3 items
 - **Coverage accuracy:** Static analysis estimates
   - **Mitigation:** Run actual coverage validation early
@@ -307,7 +307,7 @@ Phase 21.1 successfully analyzed the RAG module's test coverage through:
 - 🔥 **Critical Gaps:** 3 (340 lines)
 - ⚡ **High Priority:** 2 (460 lines)
 - 📝 **Reports Generated:** 4
-- ⏱️ **Estimated Effort:** 4 days (30 hours)
+- ⏱️ **Estimated Effort:** 4 iterations (30 hours)
 - ✅ **Success Criteria:** 5 must-achieve + 3 stretch goals
 
 **Phase 21.1 Status: COMPLETE** ✅  

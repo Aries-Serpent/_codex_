@@ -209,7 +209,7 @@ The Cognitive Brain framework integration is progressing successfully with Phase
 - Automated Dependabot alerts: Active
 - Security workflow: `.github/workflows/security-alert-notification.yml`
 - Manual audit: Last performed 2026-01-06
-- Next audit: Weekly (automated)
+- Next audit: per-phase (automated)
 
 ---
 

@@ -121,7 +121,7 @@ graph TB
 ## III. Enhancement Implementation Plan
 
 ### Phase 1: Cognitive Brain Integration (High Priority)
-**Duration:** 3-5 days  
+**Duration:** 3-5 iterations  
 **Owner:** batch-triage-integration-agent
 
 #### Tasks:
@@ -149,7 +149,7 @@ graph TB
    - Dashboard integration for visualization
 
 ### Phase 2: Automation & Orchestration (Medium Priority)
-**Duration:** 2-3 days  
+**Duration:** 2-3 iterations  
 **Owner:** batch-triage-integration-agent
 
 #### Tasks:
@@ -172,7 +172,7 @@ graph TB
    - Update issue status based on remediation progress
 
 ### Phase 3: Advanced Features (Low Priority)
-**Duration:** 3-4 days  
+**Duration:** 3-4 iterations  
 **Owner:** batch-triage-integration-agent
 
 #### Tasks:
@@ -180,7 +180,7 @@ graph TB
    - Time-series analysis of failure patterns
    - Predict failure likelihood based on recent trends
    - Alert on emerging failure patterns
-   - Weekly/monthly trend reports
+   - per-phase/monthly trend reports
 
 2. **Caching & Performance**
    - Cache workflow logs and analysis results
@@ -271,7 +271,7 @@ graph TB
 4. ✅ Create automated remediation workflow
 5. ✅ Implement stakeholder notification system
 
-### Short-term (1-2 weeks)
+### Short-term (1-2 phases)
 1. Deploy batch triage agent to production
 2. Collect initial metrics and feedback
 3. Tune pattern recognition algorithms
@@ -396,7 +396,7 @@ The batch triage implementation is **production-ready** at a tactical level but 
 
 ### Final Status
 **Current State:** ✅ **OPERATIONAL** - Ready for production use  
-**Target State:** 🎯 **OPTIMIZED** - Full cognitive brain integration (2-3 weeks)  
+**Target State:** 🎯 **OPTIMIZED** - Full cognitive brain integration (2-3 phases)  
 **Confidence Level:** **HIGH** (95%) - Solid foundation, clear enhancement path
 
 ---

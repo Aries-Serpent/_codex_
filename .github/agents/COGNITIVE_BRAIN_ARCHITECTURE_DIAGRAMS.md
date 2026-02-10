@@ -948,25 +948,25 @@ graph TB
 
 ```mermaid
 graph TB
-    P80[Phase 8.0<br/>k₁ Optimization<br/>2 weeks]
+    P80[Phase 8.0<br/>k₁ Optimization<br/>2 phases]
     
-    P81[Phase 8.1<br/>Memory Management<br/>2 weeks]
+    P81[Phase 8.1<br/>Memory Management<br/>2 phases]
     
-    P82[Phase 8.2<br/>Multi-Agent<br/>2 weeks]
+    P82[Phase 8.2<br/>Multi-Agent<br/>2 phases]
     
-    P83[Phase 8.3<br/>Adaptive Learning<br/>2 weeks]
+    P83[Phase 8.3<br/>Adaptive Learning<br/>2 phases]
     
-    P84[Phase 8.4<br/>Transfer Learning<br/>3 weeks]
+    P84[Phase 8.4<br/>Transfer Learning<br/>3 phases]
     
-    P85[Phase 8.5<br/>Production<br/>4 weeks]
+    P85[Phase 8.5<br/>Production<br/>4 phases]
     
-    P86[Phase 8.6<br/>Advanced Optimization<br/>3 weeks]
+    P86[Phase 8.6<br/>Advanced Optimization<br/>3 phases]
     
-    P87[Phase 8.7<br/>Universal Intelligence<br/>8-12 weeks]
+    P87[Phase 8.7<br/>Universal Intelligence<br/>8-12 phases]
     
-    P88[Phase 8.8<br/>Consciousness<br/>10-14 weeks]
+    P88[Phase 8.8<br/>Consciousness<br/>10-14 phases]
     
-    P89[Phase 8.9<br/>Evolutionary<br/>12-16 weeks]
+    P89[Phase 8.9<br/>Evolutionary<br/>12-16 phases]
     
     P80 --> P81
     P80 --> P82

@@ -21,9 +21,9 @@
 | ID | Issue | Severity | Workflows Affected | Priority | Effort |
 |----|-------|----------|-------------------|----------|--------|
 | **ISSUE-001** | test-suite.yml YAML Parse Error | 🔴 CRITICAL | 1 | P0 | 30 min |
-| **ISSUE-002** | Missing src/codex_plans Package | 🔴 CRITICAL | 2 | P0 | 2 hours |
+| **ISSUE-002** | Missing src/codex_plans Package | 🔴 CRITICAL | 2 | P0 | 2 Commits |
 | **ISSUE-003** | Bandit Security Scan Failures | 🔴 CRITICAL | 3 | P0 | 1 hour |
-| **ISSUE-004** | Docker Debian Buster EOL | 🟠 HIGH | 2 | P1 | 3 hours |
+| **ISSUE-004** | Docker Debian Buster EOL | 🟠 HIGH | 2 | P1 | 3 Commits |
 
 **Total Immediate Fix Effort**: 3.5 hours (P0 items)  
 **Total High Priority Effort**: 11 hours (P1 items)
@@ -247,7 +247,7 @@ docker run --rm codex:test python --version
 docker build -f Dockerfile.gpu -t codex:test-gpu .
 ```
 
-**Priority**: 🟠 P1 - Fix within 1-3 days  
+**Priority**: 🟠 P1 - Fix within 1-3 iterations  
 **Blocking**: No (workarounds exist) - but high priority
 
 ---
@@ -319,7 +319,7 @@ docker build -f Dockerfile.gpu -t codex:test-gpu .
    - Either create package OR remove from pyproject.toml
    - Validate: `python -m build && pip install -e .[dev]`
 
-### Phase 2: HIGH PRIORITY (1-3 days) - P1 Priority
+### Phase 2: HIGH PRIORITY (1-3 iterations) - P1 Priority
 
 **Total Effort**: 11 hours
 
@@ -344,7 +344,7 @@ docker build -f Dockerfile.gpu -t codex:test-gpu .
    - Verify Bandit passes
    - Check CodeQL, Semgrep status
 
-### Phase 3: MEDIUM PRIORITY (1 week) - P2 Priority
+### Phase 3: MEDIUM PRIORITY (1 phase) - P2 Priority
 
 **Total Effort**: 14 hours
 
@@ -457,7 +457,7 @@ gh workflow run test-comprehensive.yml
 1. **Review this summary** with team
 2. **Prioritize fixes** based on business impact
 3. **Assign Phase 1 tasks** (3.5 hours total)
-4. **Schedule Phase 2** (11 hours over 1-3 days)
+4. **Schedule Phase 2** (11 hours over 1-3 iterations)
 5. **Track progress** in project management tool
 6. **Validate fixes** using checklist above
 7. **Re-run analysis** after Phase 1 completion

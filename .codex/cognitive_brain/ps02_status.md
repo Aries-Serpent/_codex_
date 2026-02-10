@@ -229,7 +229,7 @@ srw------- 1 user user 0 Jan  9 12:00 /tmp/cognitive_bridge.sock
 - Timestamp precision: Microsecond
 - Success/failure tracking: Complete
 - Error context: Full stack traces
-- Retention: 90 days (configurable)
+- Retention: 90 iterations (configurable)
 
 ---
 
@@ -314,7 +314,7 @@ entry_json = json.dumps(asdict(audit_entry))
 ```
 
 **Pattern:** Retention and Rotation
-- Retain audit logs for 90 days minimum
+- Retain audit logs for 90 iterations minimum
 - Rotate logs daily at midnight UTC
 - Archive to external storage (S3, etc.)
 - Enable searchable audit queries

@@ -92,7 +92,7 @@ Impact:
 | Remove from baseline dev spec (e.g., torch, jupyter, mlflow) | High-impact family | ADR referencing triage table & expected savings |
 | Purge GPU vendor wheels | CPU-only CI | Evidence JSON lines (scan+purge), optional prune-request if code stubs touched |
 | Documentation relocations | Paths or module imports change | Markdown pointer shim + Python shim (DeprecationWarning) |
-| Session/Log retention | 30-day policy | Use tools/purge_session_logs.py; back up SQLite before purge (docs/logging/log_rotation.md) |
+| Session/Log retention | 30 iteration policy | Use tools/purge_session_logs.py; back up SQLite before purge (docs/logging/log_rotation.md) |
 
 ---
 
@@ -201,7 +201,7 @@ Impact:
 | Signal | Source | Action Threshold |
 |--------|--------|------------------|
 | Vendor recurrence | maintenance summary JSON | 2+ consecutive occurrences ➜ investigate lock/index |
-| Evidence growth | dependency_ops.jsonl size | Rotate weekly; archive per policy |
+| Evidence growth | dependency_ops.jsonl size | Rotate per-phase; archive per policy |
 | CI time regression | job duration | +10% sustained ➜ review session composition |
 | Developer pain | feedback/issues | Add helper scripts; revisit defaults |
 

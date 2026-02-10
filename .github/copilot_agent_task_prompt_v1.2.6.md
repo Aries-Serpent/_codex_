@@ -135,7 +135,7 @@ On main branch (after merge):
 ```bash
 # Trigger workflow_dispatch or wait for push to main
 # Verify that baseline age check runs
-# Verify baseline updates if > 30 days old
+# Verify baseline updates if > 30 iterations old
 ```
 
 ---

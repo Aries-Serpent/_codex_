@@ -185,7 +185,7 @@ jobs:
         run: |
           EXIT1=$(cat determinism_pass1_exit.txt)
           EXIT2=$(cat determinism_pass2_exit.txt)
-          
+
           # Check if logs exist
           if [ ! -f "determinism_pass1.log" ] || [ ! -f "determinism_pass2.log" ]; then
             echo "❌ Missing log files - determinism check failed"
@@ -193,7 +193,7 @@ jobs:
             echo "❌ **Determinism check failed** - Missing log files" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
           # Compare exit codes
           if [ "$EXIT1" != "$EXIT2" ]; then
             echo "❌ Exit codes differ - non-deterministic behavior"
@@ -201,7 +201,7 @@ jobs:
             echo "❌ **Non-deterministic behavior** - Exit codes differ (pass1: $EXIT1, pass2: $EXIT2)" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
           # Handle exit code 5 (no tests collected) as success
           if [ "$EXIT1" = "5" ] && [ "$EXIT2" = "5" ]; then
             echo "⚠️  No determinism tests found (exit code 5) - skipping validation"
@@ -213,7 +213,7 @@ jobs:
             echo "- Remove @pytest.mark.skip decorators when tests are ready" >> $GITHUB_STEP_SUMMARY
             exit 0
           fi
-          
+
           # Handle exit code 2 (collection errors) when no tests with marker exist
           # Exit code 2 typically means internal error or collection failures
           # Check if the logs indicate "no tests collected" despite collection errors
@@ -221,7 +221,7 @@ jobs:
             # Check if both logs show "0 selected" (no tests matched the marker)
             SELECTED1=$(grep -E "0 selected" determinism_pass1.log || echo "")
             SELECTED2=$(grep -E "0 selected" determinism_pass2.log || echo "")
-            
+
             # If both runs had collection errors but 0 tests selected, treat as "no tests"
             if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
               echo "⚠️  Collection errors but no determinism tests selected (exit code 2)"
@@ -238,7 +238,7 @@ jobs:
               echo "- Add @pytest.mark.determinism to relevant test functions" >> $GITHUB_STEP_SUMMARY
               exit 0
             fi
-            
+
             # Otherwise, treat exit code 2 as a failure
             echo "❌ Collection errors during test execution (exit code 2)"
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -246,7 +246,7 @@ jobs:
             echo "Exit code 2 indicates pytest internal errors or collection failures" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
           # If both runs failed with a non-zero exit code (excluding 2 and 5), treat as error
           if [ "$EXIT1" != "0" ]; then
             echo "❌ Both test runs failed with exit code $EXIT1"
@@ -254,7 +254,7 @@ jobs:
             echo "❌ **Test failures detected** - Both runs failed with exit code $EXIT1" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
           # Compare log outputs
           if diff -u determinism_pass1.log determinism_pass2.log > determinism_diff.log; then
             echo "✅ Deterministic behavior confirmed - results identical"

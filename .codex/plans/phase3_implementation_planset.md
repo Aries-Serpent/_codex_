@@ -589,11 +589,11 @@ Build trend analysis system to detect regressions and predict issues.
 - Severity classification
 - Root cause suggestions based on patterns
 
-#### Task 3.5.3: Weekly Metrics Report Generator
+#### Task 3.5.3: per-phase Metrics Report Generator
 **File**: `scripts/ci/reporting/weekly_report.py`
 
 **Requirements**:
-- Generate comprehensive weekly report
+- Generate comprehensive per-phase report
 - Include: summary statistics, trends, regressions, recommendations
 - Multiple formats: Markdown, HTML, JSON
 - Auto-post to GitHub Discussions or create issue
@@ -785,7 +785,7 @@ Document Phase 3 implementation in cognitive brain.
 1. ✅ Build FastAPI metrics server
 2. ✅ Implement trend analyzer
 3. ✅ Build regression detector
-4. ✅ Create weekly report generator
+4. ✅ Create per-phase report generator
 5. ✅ Test API endpoints
 
 ### Session 4 (0.5 hour): Finalization

@@ -3,7 +3,7 @@
 **Version**: 2.0  
 **Status**: Production-Ready Implementation Scope  
 **Owner**: @copilot  
-**Timeline**: 3-4 weeks (Phases 8-10)
+**Timeline**: 3-4 phases (Phases 8-10)
 
 ---
 
@@ -24,7 +24,7 @@ This document provides complete implementation specifications for Phase 8 (Advan
 ### 8.1: GitHub Actions Workflow for CI Diagnostic Agent ⚡ IMMEDIATE
 
 **Priority**: Critical  
-**Timeline**: 1-2 days  
+**Timeline**: 1-2 iterations  
 **Dependencies**: CI Diagnostic Agent v1.0.0 (✅ Complete)
 
 #### Architecture
@@ -212,7 +212,7 @@ gh run download <run-id> -n ci-diagnostic-report-<run-id>
 ### 8.2: Historical CI Failure Testing ⏳ HIGH PRIORITY
 
 **Priority**: High  
-**Timeline**: 2-3 days  
+**Timeline**: 2-3 iterations  
 **Dependencies**: CI Diagnostic workflow (8.1)
 
 #### Implementation
@@ -478,7 +478,7 @@ pytest .github/agents/ci-diagnostic-agent/tests/ -v -m integration
 ### 8.3: ML Threat Detection Prototype 🤖 HIGH PRIORITY
 
 **Priority**: High  
-**Timeline**: 5-7 days  
+**Timeline**: 5-7 iterations  
 **Dependencies**: Historical CI data collection
 
 #### Architecture
@@ -1008,7 +1008,7 @@ if __name__ == "__main__":
 ### 8.4: Real-time Monitoring Dashboard 📊 MEDIUM PRIORITY
 
 **Priority**: Medium  
-**Timeline**: 4-5 days  
+**Timeline**: 4-5 iterations  
 **Dependencies**: ML model (8.3), CI diagnostic agent (8.1)
 
 #### Architecture
@@ -1045,7 +1045,7 @@ flowchart TD
 ## Summary of Implementation Scope
 
 **Total Components**: 12 major systems  
-**Estimated Timeline**: 3-4 weeks  
+**Estimated Timeline**: 3-4 phases  
 **Team Size**: 2-3 engineers + 1 ML specialist  
 **Budget**: Medium (existing infrastructure)
 

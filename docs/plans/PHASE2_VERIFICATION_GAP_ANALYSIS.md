@@ -388,7 +388,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch*.py -v --maxfail=5
 3. ⏳ Analyze gaps
 4. ⏳ Create remediation plan
 
-### Medium-term (Next 1 day)
+### Medium-term (Next 1 iteration)
 1. ⏳ Execute Remediation Cycle 1
 2. ⏳ Re-measure coverage
 3. ⏳ Execute Remediation Cycle 2 if needed

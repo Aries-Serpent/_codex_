@@ -233,7 +233,7 @@ cargo audit fix  # If fixable vulnerabilities exist
    - Effort: 1-2 hours
    - Risk: Low (isolated to Rust components)
 
-### Medium Priority (Within 1 Week)
+### Medium Priority (Within 1 phase)
 5. **Increase Test Timeouts** ⏱️
    - Action: Update workflow timeout settings for heavy tests
    - Impact: Prevents premature failures

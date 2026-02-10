@@ -43,7 +43,7 @@
 - **Path-based triggers:** Only run tests when RAG-related files change
 - **Model caching:** Pre-download models to reduce test time (from ~10min to ~3min)
 - **Secret management:** Use organization secrets for sensitive tokens
-- **Artifact retention:** Keep test results and coverage reports for 30 days
+- **Artifact retention:** Keep test results and coverage reports for 30 iterations
 
 **Best Practice Pattern:**
 ```yaml

@@ -231,7 +231,7 @@ The **Autonomous Artifact Monitoring System** provides continuous health monitor
 
 **Commands**:
 - `check`: Run monitoring checks (all or specific workflows)
-- `report`: Generate failure report with statistics (7-day default)
+- `report`: Generate failure report with statistics (7 iteration default)
 - `test-patterns`: Test pattern matching against log files
 - `interactive`: REPL-style troubleshooting interface
 
@@ -400,7 +400,7 @@ The **Autonomous Artifact Monitoring System** provides continuous health monitor
 ### GitHub Actions Artifact
 
 **Name**: `artifact-monitor-state`  
-**Retention**: 90 days  
+**Retention**: 90 iterations  
 **Purpose**: Persist state across workflow runs
 
 **Upload/Download**:
@@ -491,7 +491,7 @@ for attempt in range(max_retries):
 
 - **Log Handling**: Logs may contain sensitive information
   - Scrub before storage (Phase 6)
-  - Limited retention (90 days)
+  - Limited retention (90 iterations)
   - Access control via GitHub permissions
 
 - **Issue Content**: Public issues may expose failures
@@ -528,7 +528,7 @@ for attempt in range(max_retries):
 
 4. **State Size**:
    - JSON state grows with workflow history
-   - Mitigation: Periodic cleanup, rolling window (30 days)
+   - Mitigation: Periodic cleanup, rolling window (30 iterations)
 
 ### Optimization Strategies
 
@@ -631,7 +631,7 @@ See configuration files for detailed settings and options.
 
 ### Regular Tasks
 
-- **Weekly**: Review open monitoring issues
+- **per-phase**: Review open monitoring issues
 - **Monthly**: Audit pattern effectiveness (accuracy metrics)
 - **Quarterly**: Update error signature database with new patterns
 

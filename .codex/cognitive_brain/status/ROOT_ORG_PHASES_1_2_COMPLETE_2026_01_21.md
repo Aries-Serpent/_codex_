@@ -217,7 +217,7 @@ docs/cognitive_brain/
 ### Overall Goal: Root Organization
 **Target:** Relocate 156 files, keep <30 in root  
 **Progress:** 28/156 (18%)  
-**Timeline:** On track for 8-week plan  
+**Timeline:** On track for 8 phase plan  
 **Risk:** LOW (zero issues so far)
 
 ---
@@ -307,7 +307,7 @@ docs/cognitive_brain/
 - **Week 3-4:** HIGH risk assessment & execution
 - **Week 5-8:** Archive creation, final validation, documentation
 
-**Status:** ON TRACK for 8-week completion
+**Status:** ON TRACK for 8 phase completion
 
 ---
 

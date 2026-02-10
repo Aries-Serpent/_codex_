@@ -107,13 +107,13 @@ All 5 capabilities addressed with 27 tests created (100% passing):
    - Audit all AST usage across codebase
    - Standardize on single AST library (libcst recommended)
    - Create AST pattern library
-   - Estimated effort: 2-3 weeks dedicated engineering
+   - Estimated effort: 2-3 phases dedicated engineering
 
 2. **CI/CD Integration**
    - Configure pytest-cov in CI pipeline
    - Set up coverage reporting and badges
    - Implement coverage quality gates
-   - Estimated effort: 1 week DevOps engineering
+   - Estimated effort: 1 phase DevOps engineering
 
 ### Capability Decisions
 
@@ -232,7 +232,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
   - Expand existing status tests
 
 **Estimated Tests**: ~50-60 tests  
-**Estimated Time**: 2-3 weeks
+**Estimated Time**: 2-3 phases
 
 ---
 
@@ -267,7 +267,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
   - Create tests if implementing
 
 **Estimated Tests**: ~30-40 tests  
-**Estimated Time**: 2-3 weeks
+**Estimated Time**: 2-3 phases
 
 ---
 
@@ -283,7 +283,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 - **Target**: AST consistency score → 0.85+
 
 **Estimated Tests**: ~15-20 tests  
-**Estimated Time**: 1-2 weeks
+**Estimated Time**: 1-2 phases
 
 ---
 
@@ -300,7 +300,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 - **Target**: Full pytest-cov integration with branch coverage
 
 **Estimated Tests**: ~10 tests  
-**Estimated Time**: 1-2 weeks
+**Estimated Time**: 1-2 phases
 
 ---
 
@@ -320,7 +320,7 @@ The maturity improvement initiative has successfully addressed 75% of identified
 - Implement missing functionality or document deferrals
 - Add safeguards for stub components
 
-**Estimated Time**: 1-2 weeks
+**Estimated Time**: 1-2 phases
 
 ---
 
@@ -351,13 +351,13 @@ The maturity improvement initiative has successfully addressed 75% of identified
 
 ### Timeline
 
-- **Phase 2**: Pre-commit 7-12 (2-3 weeks)
-- **Phase 3**: Pre-commit 13-18 (2-3 weeks)
-- **Phase 4**: Pre-commit 19-22 (1-2 weeks)
-- **Phase 5**: Pre-commit 23-26 (1-2 weeks)
-- **Phase 6**: Pre-commit 27-30 (1-2 weeks)
+- **Phase 2**: Pre-commit 7-12 (2-3 phases)
+- **Phase 3**: Pre-commit 13-18 (2-3 phases)
+- **Phase 4**: Pre-commit 19-22 (1-2 phases)
+- **Phase 5**: Pre-commit 23-26 (1-2 phases)
+- **Phase 6**: Pre-commit 27-30 (1-2 phases)
 
-**Total Remaining Time**: 8-12 weeks
+**Total Remaining Time**: 8-12 phases
 
 ---
 

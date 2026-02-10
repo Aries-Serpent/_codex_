@@ -214,15 +214,15 @@ This is the largest category, indicating many workflows lack clear categorizatio
 | Workflow | Display Name | Artifacts | Retention | Prefix Status |
 |----------|-------------|-----------|-----------|---------------|
 | rust_swarm_ci.yml | Rust-Python Hybrid Swarm CI/CD | 6 | Varies | ❌ Missing |
-| test-suite.yml | Testing Suite | 5 | 30 days | ❌ Missing |
-| test-comprehensive.yml | Comprehensive Tests | 4 | 30 days | ❌ Missing |
-| security-scanning-suite.yml | Security Scanning Suite | 3 | 90 days | ❌ Missing |
-| root-org-validation.yml | Root Organization Validation | 3 | 30 days | ❌ Missing |
-| codeql-chunked.yml | CodeQL Chunked Analysis | 3 | 90 days | ❌ Missing |
-| test-rag.yml | RAG Module Tests | 2 | 30 days | ❌ Missing |
-| scheduled-dependency-audit.yml | Scheduled Dependency Audit | 2 | 90 days | ❌ Missing |
-| batch-ci-triage.yml | Batch CI Failure Triage | 2 | 30 days | ❌ Missing |
-| audit-improvement-pipeline.yml | Audit & Improvement Pipeline | 2 | 90 days | ❌ Missing |
+| test-suite.yml | Testing Suite | 5 | 30 iterations | ❌ Missing |
+| test-comprehensive.yml | Comprehensive Tests | 4 | 30 iterations | ❌ Missing |
+| security-scanning-suite.yml | Security Scanning Suite | 3 | 90 iterations | ❌ Missing |
+| root-org-validation.yml | Root Organization Validation | 3 | 30 iterations | ❌ Missing |
+| codeql-chunked.yml | CodeQL Chunked Analysis | 3 | 90 iterations | ❌ Missing |
+| test-rag.yml | RAG Module Tests | 2 | 30 iterations | ❌ Missing |
+| scheduled-dependency-audit.yml | Scheduled Dependency Audit | 2 | 90 iterations | ❌ Missing |
+| batch-ci-triage.yml | Batch CI Failure Triage | 2 | 30 iterations | ❌ Missing |
+| audit-improvement-pipeline.yml | Audit & Improvement Pipeline | 2 | 90 iterations | ❌ Missing |
 
 ### Complete Artifact Inventory (All 42 Workflows)
 
@@ -232,154 +232,154 @@ This is the largest category, indicating many workflows lack clear categorizatio
 1. **agent-chain-orchestrator.yml** (1 artifact)
    - `agent-chain-plan-${{ github.run_number }}`
    - Path: `.codex/agents/chain_plan.json`
-   - Retention: 30 days
+   - Retention: 30 iterations
 
 2. **audit-improvement-pipeline.yml** (2 artifacts)
    - `audit-results`
    - `audit-run-manifest`
-   - Retention: 90 days
+   - Retention: 90 iterations
 
 3. **auth-compliance-report.yml** (1 artifact)
    - `auth-compliance-report-${{ github.run_number }}`
    - Path: `.codex/auth/compliance_report.json`
-   - Retention: 90 days
+   - Retention: 90 iterations
 
 4. **batch-ci-triage.yml** (2 artifacts)
    - `triage-report-${{ github.run_number }}`
    - `failed-workflow-logs`
-   - Retention: 30 days
+   - Retention: 30 iterations
 
 5. **biweekly-research-digest.yml** (1 artifact)
    - `research-digest-${{ github.run_number }}`
-   - Retention: 90 days
+   - Retention: 90 iterations
 
 6. **ci-health-suite.yml** (1 artifact)
    - `ci-health-report-${{ github.run_number }}`
-   - Retention: 30 days
+   - Retention: 30 iterations
 
 7. **code-quality.yml** (1 artifact)
    - `code-quality-report`
    - Path: `.codex/reports/smells.json`
-   - Retention: 90 days
+   - Retention: 90 iterations
 
 8. **codebase-qa-walkthrough.yml** (1 artifact)
    - `qa-walkthrough-report-${{ github.run_number }}`
-   - Retention: 60 days
+   - Retention: 60 iterations
 
 9. **codeql-chunked.yml** (3 artifacts)
    - `codeql-results-chunk-1`
    - `codeql-results-chunk-2`
    - `codeql-results-chunk-3`
-   - Retention: 90 days
+   - Retention: 90 iterations
 
 10. **cognitive-action.yml** (1 artifact)
     - `cognitive-action-result-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 11. **cognitive-aftermath.yml** (1 artifact)
     - `cognitive-aftermath-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 12. **cognitive-brain-feed.yml** (1 artifact)
     - `cognitive-brain-feed-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 13. **cognitive-decision.yml** (1 artifact)
     - `cognitive-decision-result-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 14. **copilot-self-evolution.yml** (1 artifact)
     - `evolution-state`
     - Path: `.github/copilot-evolution/data/`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 15. **coverage_report.yml** (1 artifact)
     - `coverage-artifacts`
     - Path: `htmlcov/`, `coverage.xml`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 16. **data_validation.yml** (1 artifact)
     - `validation-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 17. **decode-validate-artifact.yml** (1 artifact)
     - `validation-result-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 18. **dependency-scan.yml** (1 artifact)
     - `dependency-scan-report`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 19. **detect-duplicates.yml** (1 artifact)
     - `duplicate-detection-report`
     - Path: `.codex/duplicate_analysis_pr/`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 20. **determinism.yml** (1 artifact)
     - `determinism-audit-${{ github.run_number }}`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 21. **documentation-link-checker.yml** (1 artifact)
     - `link-check-report`
     - Path: `link-check-report.json`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 22. **documentation-suite.yml** (1 artifact)
     - `documentation-artifacts`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 23. **flatten-repo-download.yml** (1 artifact)
     - `flattened-repo-${{ github.run_number }}`
-    - Retention: 7 days
+    - Retention: 7 iterations
 
 24. **generate-repository-structure.yml** (1 artifact)
     - `repository-structure-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 25. **html_visual_baseline.yml** (1 artifact)
     - `status-html-visual`
     - Path: `screenshots/baseline/`
-    - Retention: 180 days
+    - Retention: 180 iterations
 
 26. **html_visual_regression.yml** (1 artifact)
     - `status-html-screenshots`
     - Path: `screenshots/current/`, `screenshots/diff/`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 27. **integration-gated.yml** (1 artifact)
     - `integration-test-results`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 28. **monthly-model-retraining.yml** (1 artifact)
     - `model-training-artifacts-${{ github.run_number }}`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 29. **notebooklm-sync.yml** (1 artifact)
     - `notebooklm-sync-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 30. **post-merge-validation-optimized.yml** (1 artifact)
     - `modernization-report`
     - Path: `modernization_summary.json`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 31. **pr-followup-generator.yml** (1 artifact)
     - `pr-followup-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 32. **publish_dashboard_release.yml** (1 artifact)
     - `dashboard-release-${{ github.run_number }}`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 33. **repository-health-monitoring.yml** (1 artifact)
     - `health-monitoring-report-${{ github.run_number }}`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 34. **root-org-validation.yml** (3 artifacts)
     - `root-org-before-${{ github.run_number }}`
     - `root-org-after-${{ github.run_number }}`
     - `root-org-validation-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 35. **rust_swarm_ci.yml** (6 artifacts)
     - `rust-build-artifacts`
@@ -388,46 +388,46 @@ This is the largest category, indicating many workflows lack clear categorizatio
     - `coverage-report`
     - `benchmark-results`
     - `integration-test-logs`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 36. **scheduled-dependency-audit.yml** (2 artifacts)
     - `dependency-audit-report`
     - `sbom-artifacts`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 37. **security-scan.yml** (1 artifact)
     - `security-scan-report`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 38. **security-scanning-suite.yml** (3 artifacts)
     - `security-scan-results`
     - `vulnerability-report`
     - `sarif-results`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 39. **security-suite.yml** (1 artifact)
     - `security-suite-results`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 40. **self-healing.yml** (1 artifact)
     - `self-healing-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 41. **semgrep_sarif.yml** (1 artifact)
     - `semgrep-sarif-results`
-    - Retention: 90 days
+    - Retention: 90 iterations
 
 42. **test-comprehensive.yml** (4 artifacts)
     - `test-results`
     - `coverage-report`
     - `performance-metrics`
     - `test-logs`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 43. **test-rag.yml** (2 artifacts)
     - `rag-test-results`
     - `rag-coverage-report`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 44. **test-suite.yml** (5 artifacts)
     - `pytest-results`
@@ -435,28 +435,28 @@ This is the largest category, indicating many workflows lack clear categorizatio
     - `coverage-xml`
     - `test-logs`
     - `benchmark-results`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 45. **workflow-analytics-manual.yml** (1 artifact)
     - `workflow-analytics-report-${{ github.run_number }}`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 46. **workflow-analytics-scheduled.yml** (1 artifact)
     - `workflow-trends-${{ github.run_number }}`
     - Path: `/tmp/workflow_trend.csv`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 47. **workflow-health-check.yml** (1 artifact)
     - `workflow-health-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 48. **workflow-link-validation.yml** (1 artifact)
     - `link-validation-report-${{ github.run_number }}`
-    - Retention: 30 days
+    - Retention: 30 iterations
 
 49. **zendesk-knowledge-sync.yml** (1 artifact)
     - `zendesk-sync-report-${{ github.run_number }}`
-    - Retention: 60 days
+    - Retention: 60 iterations
 
 </details>
 
@@ -634,7 +634,7 @@ This is the largest category, indicating many workflows lack clear categorizatio
 ## 🚨 Risk Assessment
 
 ### High Risk
-- **Workflow Sprawl**: +125% growth in 40 days indicates lack of governance
+- **Workflow Sprawl**: +125% growth in 40 iterations indicates lack of governance
 - **Duplicate Functionality**: 106 duplicate pairs = significant maintenance burden
 - **Artifact Management**: 42 workflows without `Art_` prefix = discoverability issues
 
@@ -655,7 +655,7 @@ This is the largest category, indicating many workflows lack clear categorizatio
 ### For Repository Maintainers (@mbaetiong)
 - **Current state**: 108 workflows (225% of target)
 - **Consolidation opportunity**: Reduce to 48 (-56%)
-- **Timeline**: 12 weeks for full consolidation
+- **Timeline**: 12 phases for full consolidation
 - **Impact**: Reduced maintenance, improved discoverability, faster CI
 
 ### For Workflow Authors

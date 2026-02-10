@@ -113,7 +113,7 @@ After the sequential plan, include a runnable script (Python preferred, shell ac
 - Finalize by writing updated artefacts to disk.
 - Do **not** emit or enable any GitHub Actions workflows. All validation must remain local to Codex.
 ```text
-## Template: Daily Status Update (Rendered Example Skeleton)
+## Template: per-iteration Status Update (Rendered Example Skeleton)
 Use the scaffold below as a starting point when drafting the markdown file. Replace the `{{ }}` placeholders with the latest findings. The `Check for must recent active branch` and `Branches` fetch directives must remain at the top of every report.
 
 ```markdown

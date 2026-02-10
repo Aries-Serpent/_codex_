@@ -120,7 +120,7 @@ Phase 1 of the Unified Agent Framework is **90% complete** with all critical com
 
 **Status**: 🔴 Not Started  
 **Priority**: P1 - High  
-**Estimated Time**: 2-3 days
+**Estimated Time**: 2-3 iterations
 
 ### Objectives
 
@@ -168,7 +168,7 @@ Phase 1 of the Unified Agent Framework is **90% complete** with all critical com
 
 **Status**: 🔴 Not Started  
 **Priority**: P1 - High  
-**Estimated Time**: 3-4 days
+**Estimated Time**: 3-4 iterations
 
 ### Objectives
 
@@ -423,11 +423,11 @@ Once ci-testing-agent migration proven successful:
 
 | Phase | Estimated Time | Status |
 |-------|---------------|--------|
-| Phase 1: Framework | 2 days | 90% ✅ |
-| Phase 2: Patterns | 3 days | 0% 🔴 |
-| Phase 3: Flaky Agent | 4 days | 0% 🔴 |
-| Phase 4: 10 Agents | 30 days | 0% 🔴 |
-| **Total** | **39 days** (~2 months) | **5%** |
+| Phase 1: Framework | 2 iterations | 90% ✅ |
+| Phase 2: Patterns | 3 iterations | 0% 🔴 |
+| Phase 3: Flaky Agent | 4 iterations | 0% 🔴 |
+| Phase 4: 10 Agents | 30 iterations | 0% 🔴 |
+| **Total** | **39 iterations** (~2 months) | **5%** |
 
 ### Compute Resources
 

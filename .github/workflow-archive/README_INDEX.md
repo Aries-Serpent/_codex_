@@ -14,7 +14,7 @@
 ### 📊 Analysis Documents
 - **[WORKFLOW_ANALYSIS_COMPLETE.md](WORKFLOW_ANALYSIS_COMPLETE.md)** (22.2 KB) - Complete workflow inventory and analysis
 - **[ARTIFACT_PREFIX_REQUIREMENTS.md](ARTIFACT_PREFIX_REQUIREMENTS.md)** (16.3 KB) - 42 workflows needing Art_ prefix
-- **[WORKFLOW_CONSOLIDATION_PLANSET_V2.md](WORKFLOW_CONSOLIDATION_PLANSET_V2.md)** (19 KB) - 12-week consolidation plan
+- **[WORKFLOW_CONSOLIDATION_PLANSET_V2.md](WORKFLOW_CONSOLIDATION_PLANSET_V2.md)** (19 KB) - 12 phase consolidation plan
 - **[WORKFLOW_TO_AGENT_MAPPING.md](WORKFLOW_TO_AGENT_MAPPING.md)** (21.3 KB) - Workflow-agent integration map
 - **[MISC_FOLDER_MIGRATION_PLAN.md](MISC_FOLDER_MIGRATION_PLAN.md)** (15.0 KB) - Deprecated workflow migration
 - **[DELIVERABLES_SUMMARY_2026-02-06.md](DELIVERABLES_SUMMARY_2026-02-06.md)** (16 KB) - Complete deliverables overview
@@ -61,7 +61,7 @@
 
 ### Phase 1: High-Priority Consolidations (Weeks 2-5) 🎯
 **Status**: Planned  
-**Time**: 4 weeks  
+**Time**: 4 phases  
 **Risk**: Medium
 
 Consolidate 30 workflows:
@@ -80,7 +80,7 @@ Consolidate 30 workflows:
 
 ### Phase 2: Medium-Priority Consolidations (Weeks 6-9) 🔄
 **Status**: Planned  
-**Time**: 4 weeks  
+**Time**: 4 phases  
 **Risk**: Low
 
 Consolidate 20 additional workflows
@@ -89,7 +89,7 @@ Consolidate 20 additional workflows
 
 ### Phase 3: Final Optimization (Weeks 10-12) ✨
 **Status**: Planned  
-**Time**: 3 weeks  
+**Time**: 3 phases  
 **Risk**: Minimal
 
 Final consolidation and cleanup
@@ -146,7 +146,7 @@ Final consolidation and cleanup
 - **Total Consolidation Groups**: 23
 - **Workflows to Consolidate**: 60
 - **Target Reduction**: 56%
-- **Estimated Timeline**: 12 weeks
+- **Estimated Timeline**: 12 phases
 - **Estimated Effort**: ~120 hours
 
 ### Artifact Management

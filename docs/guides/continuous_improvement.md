@@ -4,7 +4,7 @@ This project includes maintenance utilities for pruning logs and keeping the rep
 
 ## Local scheduling with cron
 
-Use `cron` to run the maintenance script at an interval of your choice. The example below runs it every day at midnight:
+Use `cron` to run the maintenance script at an interval of your choice. The example below runs it every iteration at midnight:
 
 ```cron
 0 0 * * * /usr/bin/env python /path/to/repo/tools/codex_maintenance.py >> /path/to/repo/.codex/maintenance.log 2>&1

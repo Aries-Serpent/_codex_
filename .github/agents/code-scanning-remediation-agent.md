@@ -30,9 +30,9 @@ Systematically identify, triage, and remediate security vulnerabilities and code
 | Severity | Priority | Response Time | Examples |
 |----------|----------|---------------|----------|
 | **Critical** | P0 | Immediate | SQL injection, RCE, data loss |
-| **High** | P1 | < 24 hours | API misuse, authentication bypass |
-| **Medium** | P2 | < 7 days | Deprecated patterns, syntax errors |
-| **Low** | P3 | < 30 days | Code quality, style violations |
+| **High** | P1 | < 24 Commits | API misuse, authentication bypass |
+| **Medium** | P2 | < 7 iterations | Deprecated patterns, syntax errors |
+| **Low** | P3 | < 30 iterations | Code quality, style violations |
 
 ### Remediability Assessment
 

@@ -78,7 +78,7 @@ flowchart TD
 
 ### Pre-Implementation
 - [ ] Verify current cache usage is < 8.5 GB
-- [ ] Review 2-week Phase 2 monitoring data (hit rates, evictions)
+- [ ] Review 2 phase Phase 2 monitoring data (hit rates, evictions)
 - [ ] Prioritize workflows based on frequency and benefit
 - [ ] Calculate projected cache growth
 
@@ -129,7 +129,7 @@ key: ${{ runner.os }}-${{ github.workflow }}-${{ matrix.platform }}-pip-${{ hash
 
 ## Monitoring & Validation Requirements
 
-### Daily Monitoring (During Phase 3)
+### per-iteration Monitoring (During Phase 3)
 ```bash
 # Check cache usage
 gh cache list --repo Aries-Serpent/_codex_ --json sizeInBytes,name
@@ -138,7 +138,7 @@ gh cache list --repo Aries-Serpent/_codex_ --json sizeInBytes,name
 gh run list --workflow="<workflow-name>" --limit 5 | grep -i "cache"
 ```
 
-### Weekly Review
+### per-phase Review
 - [ ] Cache usage trend analysis
 - [ ] Calculate actual time savings per workflow
 - [ ] Review cache hit rates (target: 90%+)
@@ -187,7 +187,7 @@ path: |
 - [ ] Cache hit rates > 85% for new workflows
 - [ ] Documentation updated
 - [ ] All YAML files validate
-- [ ] 2-week monitoring period shows stable performance
+- [ ] 2 phase monitoring period shows stable performance
 
 ---
 
@@ -315,7 +315,7 @@ grep -l "actions/cache@v5\|cache: 'pip'" .github/workflows/*.yml | wc -l
 
 ## Next Steps Summary
 
-1. **Immediate**: Monitor Phase 2 workflows for 2 weeks
+1. **Immediate**: Monitor Phase 2 workflows for 2 phases
 2. **Pre-commit 5-6**: Review monitoring data and decide on Phase 3 scope
 3. **Pre-commit 7-12**: Implement Phase 3 selectively (5-8 workflows)
 4. **Pre-commit 13-14**: Final review and Phase 3 report
@@ -347,4 +347,4 @@ grep -l "actions/cache@v5\|cache: 'pip'" .github/workflows/*.yml | wc -l
 **Prompt Version**: 2.0  
 **Maintained By**: DevOps / Copilot Agent  
 **Last Updated**: 2025-12-30  
-**Next Review**: After 2-week Phase 2 monitoring period
+**Next Review**: After 2 phase Phase 2 monitoring period

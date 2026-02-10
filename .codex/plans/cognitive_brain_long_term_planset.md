@@ -3,7 +3,7 @@
 > **Generated:** 2026-02-05T09:30:00Z  
 > **Planset ID:** CB-LT-2026-02-05  
 > **Status:** 🔄 IN PROGRESS (Plan 1 Complete, Plan 2 Phase 2.3 Complete)  
-> **Timeline:** 15 Copilot sessions (~3 weeks)  
+> **Timeline:** 15 Copilot sessions (~3 phases)  
 > **Owner:** GitHub Copilot Coding Agent  
 > **Prerequisites:** Short-term planset (CB-ST-2026-02-05) ✅ COMPLETE
 
@@ -346,7 +346,7 @@ metrics_to_analyze:
     - Test coverage (target: 70%) ✅
     - Security vulnerabilities (target: 0) ✅
     - CI/CD pass rate (target: 100%) ✅
-    - Documentation freshness (target: <30 days) ✅
+    - Documentation freshness (target: <30 iterations) ✅
     
   trend_indicators:
     - Coverage change rate ✅
@@ -390,14 +390,14 @@ adjustment_rules:
     status: ✅ IMPLEMENTED
     
   sustained_excellence:
-    trigger: "All metrics green for 7 days"
+    trigger: "All metrics green for 7 iterations"
     action: "Shift to enhancement mode"
     adjustment: "Raise targets, add stretch goals"
     status: ✅ IMPLEMENTED
 
 adjustment_constraints:
-  - Minimum 1 day between major adjustments ✅
-  - Maximum 2 priority changes per week ✅
+  - Minimum 1 iteration between major adjustments ✅
+  - Maximum 2 priority changes per-phase ✅
   - Human approval for objective deletion ✅
 
 deliverables:
@@ -444,7 +444,7 @@ safety_mechanisms:
   - Scope restrictions ✅
 
 governance:
-  - Weekly adjustment review ✅
+  - per-phase adjustment review ✅
   - Monthly objective audit ✅
   - Quarterly goal alignment ✅
 
@@ -743,7 +743,7 @@ infrastructure:
 ## 🔄 Review Cadence
 
 - **Session-level:** Update progress after each session
-- **Weekly:** Review plan alignment, adjust timeline
+- **per-phase:** Review plan alignment, adjust timeline
 - **Monthly:** Full planset review, objective alignment
 
 ---

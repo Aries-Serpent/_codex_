@@ -2,7 +2,7 @@
 
 > **Target:** 0.85+ → ~1.00  
 > **Priority:** P2 High  
-> **Estimated Effort:** 2-3 days  
+> **Estimated Effort:** 2-3 iterations  
 > **Impact:** +0.15 capability score
 
 ---
@@ -314,5 +314,5 @@ Create comprehensive governance documentation:
 ---
 
 **Batchset Status**: Ready for Implementation  
-**Estimated Timeline**: 2-3 days  
+**Estimated Timeline**: 2-3 iterations  
 **Priority**: P2 High

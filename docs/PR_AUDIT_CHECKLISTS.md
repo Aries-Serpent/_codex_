@@ -69,8 +69,8 @@
 
 4. **🚀 Post-Merge Action Plan**
    - Immediate actions (0-24 hours)
-   - Short-term actions (1-7 days)
-   - Medium-term actions (1-4 weeks)
+   - Short-term actions (1-7 iterations)
+   - Medium-term actions (1-4 phases)
    - Long-term actions (1-3 months)
 
 5. **📜 Compliance Matrix**
@@ -107,7 +107,7 @@
 | Shadowing Risk | Medium | None | -100% ✅ |
 
 ### Efficiency Achievement
-- **Planned**: 2-3 days, 5 refactor batches
+- **Planned**: 2-3 iterations, 5 refactor batches
 - **Actual**: <2 hours, root cause fix
 - **Time Savings**: 96% faster
 - **Risk Reduction**: High → Low

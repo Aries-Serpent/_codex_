@@ -340,7 +340,7 @@ found 0 vulnerabilities
 - 0 low-severity issues
 - Secret exists but not actively used (safe state)
 - 28 references are documentation only
-- Rotation procedures documented (90-day cycle)
+- Rotation procedures documented (90 iteration cycle)
 
 **Risk Level:** 🟢 LOW  
 **Action:** None needed

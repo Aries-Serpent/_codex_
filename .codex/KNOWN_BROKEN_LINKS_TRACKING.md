@@ -289,7 +289,7 @@ grep -r "https://github.com/Aries-Serpent/_codex[^_]" --include="*.md"
 ### Current Measures
 
 1. **Workflow:** `.github/workflows/documentation-link-checker.yml`
-   - Runs on: Push, PR, Weekly schedule
+   - Runs on: Push, PR, per-phase schedule
    - Checks: All markdown files
    - Strategy: Fail on critical files, warn on others
 

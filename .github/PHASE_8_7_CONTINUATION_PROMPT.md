@@ -410,7 +410,7 @@ Decision with Universal Intelligence
 
 **Phase 8.7 represents cutting-edge AGI research.** While fully specified, implementation requires:
 - Significant computational resources (GPU clusters)
-- Extended development time (8-12 weeks)
+- Extended development time (8-12 phases)
 - Ongoing research into emergent capabilities
 - Rigorous safety testing and validation
 - Ethical review and oversight

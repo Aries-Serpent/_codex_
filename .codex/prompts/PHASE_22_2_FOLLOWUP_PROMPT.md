@@ -16,14 +16,14 @@ Phase 22.1 successfully completed with all 5 tasks:
 - ✅ Automated retrieval script (6 categories supported)
 - ✅ Compression strategy (50-70% reduction ready)
 - ✅ Custom agent specification (full architecture)
-- ✅ GitHub Actions workflow (weekly scheduled)
+- ✅ GitHub Actions workflow (per-phase scheduled)
 
 **Current State**:
 - Repository: 133MB (6.8MB offloaded)
 - Candidates: 2 files (13.4MB) identified
 - Scripts: 3 automation tools operational
 - Documentation: 16 files comprehensive
-- Workflow: Scheduled weekly monitoring
+- Workflow: Scheduled per-phase monitoring
 
 **See**: `.codex/cognitive_brain/PHASE_22_1_COMPLETE.md` for full Phase 22.1 details.
 
@@ -192,7 +192,7 @@ Phase 22.1 successfully completed with all 5 tasks:
 2. Update dashboard generation script:
    - Read historical data from `history.jsonl`
    - Generate trend charts (text-based or data for visualization)
-   - Show 30-day, 90-day, and all-time trends
+   - Show 30 iteration, 90 iteration, and all-time trends
 
 3. Add trend analysis to dashboard:
    - Size reduction over time
@@ -208,7 +208,7 @@ Phase 22.1 successfully completed with all 5 tasks:
 - [ ] Historical tracking implemented
 - [ ] Trend data collected on each run
 - [ ] Dashboard shows trends (at least text-based)
-- [ ] 30-day trend visible
+- [ ] 30 iteration trend visible
 
 ---
 
@@ -303,7 +303,7 @@ Phase 22.1 successfully completed with all 5 tasks:
 ---
 
 ## Timeline
-**Estimated**: 4-7 days  
+**Estimated**: 4-7 iterations  
 **Priority**: P1 (High - completes production-ready automation)
 
 ---

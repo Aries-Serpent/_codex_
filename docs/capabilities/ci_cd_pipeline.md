@@ -388,7 +388,7 @@ fi
 ### Key Metrics
 - **Build Success Rate**: Percentage of successful pipeline runs
 - **Build Duration**: Average time for pipeline completion
-- **Deployment Frequency**: Number of deployments per day/week
+- **Deployment Frequency**: Number of deployments per-iteration/week
 - **Mean Time to Recovery (MTTR)**: Time to recover from failures
 - **Change Failure Rate**: Percentage of deployments causing failures
 

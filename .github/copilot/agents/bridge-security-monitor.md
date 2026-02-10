@@ -25,7 +25,7 @@ Automated security monitoring agent for the Codex Secure Bridge. Continuously mo
 ### 2. Security Alert Generation
 - Triggers alerts when authentication failures exceed threshold (>5/hour)
 - Notifies on repeated failures from same source
-- Warns when token rotation is due (90-day cycle)
+- Warns when token rotation is due (90 iteration cycle)
 - Detects unusual message volume spikes
 
 ### 3. Incident Response Automation
@@ -35,7 +35,7 @@ Automated security monitoring agent for the Codex Secure Bridge. Continuously mo
 - Escalates to security team for critical issues
 
 ### 4. Security Metrics Dashboard
-- Daily/weekly security summary reports
+- per-iteration/per-phase security summary reports
 - Authentication success/failure rates
 - Source analysis (authorized vs. unauthorized processes)
 - Trend analysis and anomaly detection
@@ -57,7 +57,7 @@ Automated security monitoring agent for the Codex Secure Bridge. Continuously mo
 - **Escalation:** Notify security team if >10 failures
 
 **3. Token Rotation Reminder**
-- **Frequency:** Every 90 days
+- **Frequency:** Every 90 iterations
 - **Action:** Send rotation reminder
 - **Content:** Token rotation procedure and checklist
 
@@ -104,7 +104,7 @@ flowchart TD
     G --> M[Calculate Metrics]
     M --> N[Check Token Age]
     
-    N --> O{>75 days?}
+    N --> O{>75 iterations?}
     O -->|Yes| P[Add Rotation Reminder]
     O -->|No| Q[Final Report]
     
@@ -498,7 +498,7 @@ def test_alert_conditions():
 - Review hourly reports for trends
 - Investigate authentication failures promptly
 - Respond to critical alerts within 1 hour
-- Conduct weekly security reviews
+- Conduct per-phase security reviews
 
 ### Incident Response
 1. Critical alert received → Rotate token immediately

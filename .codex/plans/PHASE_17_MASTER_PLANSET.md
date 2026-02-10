@@ -26,7 +26,7 @@ Phase 17 focuses on continuous improvement, maintenance automation, and achievin
 ## Phase 17 Sub-Phases
 
 ### Phase 17.0: Continuous Improvement Infrastructure ✅
-**Duration:** 1 week  
+**Duration:** 1 phase  
 **Priority:** High  
 **Status:** ✅ COMPLETE
 
@@ -47,7 +47,7 @@ Phase 17 focuses on continuous improvement, maintenance automation, and achievin
 ---
 
 ### Phase 17.1: Coverage Threshold Increase 🚧
-**Duration:** 1 week  
+**Duration:** 1 phase  
 **Priority:** High  
 **Status:** 🚧 IN PROGRESS
 
@@ -67,7 +67,7 @@ Phase 17 focuses on continuous improvement, maintenance automation, and achievin
 ---
 
 ### Phase 17.2: Test Reliability ✅
-**Duration:** 1 week  
+**Duration:** 1 phase  
 **Priority:** Medium  
 **Status:** ✅ COMPLETE
 
@@ -88,7 +88,7 @@ Phase 17 focuses on continuous improvement, maintenance automation, and achievin
 ---
 
 ### Phase 17.3: Performance Monitoring ✅
-**Duration:** 1 week  
+**Duration:** 1 phase  
 **Priority:** Medium  
 **Status:** ✅ COMPLETE
 
@@ -107,7 +107,7 @@ Phase 17 focuses on continuous improvement, maintenance automation, and achievin
 ---
 
 ### Phase 17.4: Automation & Maintenance ✅
-**Duration:** 1 week  
+**Duration:** 1 phase  
 **Priority:** Medium  
 **Status:** ✅ COMPLETE
 
@@ -231,5 +231,5 @@ graph TD
 ---
 
 **Owner:** Phase 17 Implementation Team  
-**Review Cadence:** Weekly progress review  
+**Review Cadence:** per-phase progress review  
 **Last Updated:** 2026-01-18

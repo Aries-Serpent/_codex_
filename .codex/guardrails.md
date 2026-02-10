@@ -24,7 +24,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 - Human admin (mbaetiong) **must** create CODEX_MASTER_KEY secret in repository settings before enabling workflows
 - All PRs from agent **must** list the decision rationale and test results
 - Agent **must** escalate security-related changes to human admin immediately
-- Agent **must** respect rate limits and daily PR caps (max 5 PRs/day)
+- Agent **must** respect rate limits and per-iteration PR caps (max 5 PRs/day)
 - Agent **must** maintain audit trail in `.codex/change_log.md`
 - Agent **must** generate validation artifacts for all operations
 
@@ -41,7 +41,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 
 - **CODEX_MASTER_KEY**: Primary authentication token (Fine-grained PAT)
   - Required permissions: Actions, Administration, Contents, Pull Requests, Workflows
-  - Rotation schedule: Every 90 days
+  - Rotation schedule: Every 90 iterations
   - Storage: GitHub repository secrets only
   
 - **CODEX_WEBHOOK_SECRET**: Webhook signature verification
@@ -62,7 +62,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 ## Audit and Monitoring
 
 - All operations logged to `.codex/action_log.ndjson`
-- Validation reports stored for 90 days
+- Validation reports stored for 90 iterations
 - Change log maintained permanently in `.codex/change_log.md`
 - Results tracked in `.codex/results.md`
 
@@ -71,7 +71,7 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 - [ ] Define required reviewers for codex-production environment
 - [ ] Define acceptable risk thresholds for automatic execution
 - [ ] Configure notification channels for escalation alerts
-- [ ] Set up token rotation reminders (14 days before expiry)
+- [ ] Set up token rotation reminders (14 iterations before expiry)
 - [ ] Review and customize allowed_operations in autonomous_agent.yaml
 - [ ] Test escalation workflow with sample security issue
 - [ ] Document organization-specific compliance requirements
@@ -90,13 +90,13 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
 | Issue Type | Primary Contact | Response SLA |
 |------------|-----------------|--------------|
 | Critical Security | @mbaetiong | Immediate |
-| Configuration | @mbaetiong | 4 hours |
-| General | Repository Issues | 24 hours |
+| Configuration | @mbaetiong | 4 Commits |
+| General | Repository Issues | 24 Commits |
 
 ## Review Schedule
 
-- **Daily**: Review agent activity in action_log.ndjson
-- **Weekly**: Review PRs and merge activity
+- **per-iteration**: Review agent activity in action_log.ndjson
+- **per-phase**: Review PRs and merge activity
 - **Monthly**: Review and update guardrails as needed
 - **Quarterly**: Full security audit and token rotation
 

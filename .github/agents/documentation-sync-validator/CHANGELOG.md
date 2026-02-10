@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Semantic code-doc matching using vector embeddings
 - Schema validation for documentation metadata
 - Link validation (internal and external)
-- Freshness detection (identifies docs >90 days old)
+- Freshness detection (identifies docs >90 iterations old)
 - API documentation synchronization checking
 - Content drift detection between code and docs
 - Component reuse from doc-freshness-checker (75%)

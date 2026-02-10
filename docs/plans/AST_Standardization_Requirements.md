@@ -353,16 +353,16 @@ Source Code Files
 
 ## 📋 Phase 3: Implementation Roadmap
 
-### 3.1 Sprint Planning (2-3 Weeks)
+### 3.1 Sprint Planning (2-3 phases)
 
 | Sprint | Focus | Deliverables | Effort |
 |--------|-------|--------------|--------|
-| **Sprint 1** | Parser + Standardization | `parser.py`, `StandardizedAST`, unit tests | 5 days |
-| **Sprint 2** | Metrics + Analyzers | Complexity, LOC, Halstead metrics | 4 days |
-| **Sprint 3** | Dependency Analysis | Graph builder, cycle detection | 4 days |
-| **Sprint 4** | Code Smells + KG | Smell detector, KG builder, exporters | 4 days |
-| **Sprint 5** | CLI + Integration | `codex-analyze`, `codex-audit` tools | 3 days |
-| **Sprint 6** | Testing + Docs | 80%+ coverage, API docs, examples | 3 days |
+| **Sprint 1** | Parser + Standardization | `parser.py`, `StandardizedAST`, unit tests | 5 iterations |
+| **Sprint 2** | Metrics + Analyzers | Complexity, LOC, Halstead metrics | 4 iterations |
+| **Sprint 3** | Dependency Analysis | Graph builder, cycle detection | 4 iterations |
+| **Sprint 4** | Code Smells + KG | Smell detector, KG builder, exporters | 4 iterations |
+| **Sprint 5** | CLI + Integration | `codex-analyze`, `codex-audit` tools | 3 iterations |
+| **Sprint 6** | Testing + Docs | 80%+ coverage, API docs, examples | 3 iterations |
 
 ### 3.2 Detailed Implementation Tasks
 
@@ -948,10 +948,10 @@ jobs:
 
 | Phase | Activity | Duration | Owners |
 |-------|----------|----------|--------|
-| **Kickoff** | Present architecture & benefits | 1 week | Tech Lead |
-| **Pilot** | Analyze 2-3 key modules | 1 week | Early Adopters |
-| **Training** | Hands-on workshops for team | 1 week | Tech Lead |
-| **Rollout** | Integrate into CI/CD | 1 week | DevOps |
+| **Kickoff** | Present architecture & benefits | 1 phase | Tech Lead |
+| **Pilot** | Analyze 2-3 key modules | 1 phase | Early Adopters |
+| **Training** | Hands-on workshops for team | 1 phase | Tech Lead |
+| **Rollout** | Integrate into CI/CD | 1 phase | DevOps |
 | **Monitor** | Track adoption & feedback | Ongoing | Tech Lead |
 
 ---
@@ -1047,7 +1047,7 @@ This **AST Standardization Project** provides a **foundation for deep codebase a
 
 **Next Steps:**
 1. AI Assistant autonomous document review
-2. Allocate 2-3 weeks for dedicated engineering effort
+2. Allocate 2-3 phases for dedicated engineering effort
 3. Start with Sprint 1 (Parser + Standardization)
 4. Deliver CLI tools by end of Sprint 5
 5. Integrate into CI/CD in parallel
@@ -1057,7 +1057,7 @@ This **AST Standardization Project** provides a **foundation for deep codebase a
 **Document Version:** 1.0  
 **Status:** Ready for Implementation  
 **Assigned To:** mbaetiong (Architecture Lead)  
-**Review Cycle:** Bi-weekly
+**Review Cycle:** Bi-per-phase
 
 ---
 

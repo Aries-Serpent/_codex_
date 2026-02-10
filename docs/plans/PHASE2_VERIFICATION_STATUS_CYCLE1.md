@@ -146,7 +146,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch*.py \
 
 ---
 
-## Medium-Term Goals (1 Day) ⏳
+## Medium-Term Goals (1 iteration) ⏳
 
 ### Remediation Cycle 1
 **Target:** 80% → 90% coverage
@@ -358,7 +358,7 @@ jobs:
 3. ⏳ Review coverage report when available
 4. ⏳ Document any test failures
 
-### Short-Term (Next 1 Day)
+### Short-Term (Next 1 iteration)
 1. ⏳ Analyze coverage gaps
 2. ⏳ Create Remediation Cycle 1 plan
 3. ⏳ Implement high-priority fixes

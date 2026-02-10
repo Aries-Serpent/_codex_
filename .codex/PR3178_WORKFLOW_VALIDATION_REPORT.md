@@ -81,7 +81,7 @@ The Pytest GitHub Actions Workflow requested in comment #3872954539 has **alread
     - AttributeError
     - StopIteration
 13. ✅ **Artifact Upload**: Uses `actions/upload-artifact@v6`
-    - Retention: 30 days
+    - Retention: 30 iterations
     - Naming: `pytest-logs-py{version}-group{group}-{run_number}`
 14. ✅ **Summary Display**: Shows categorization results
 15. ✅ **PR Comment**: Posts summary to PR (if pull_request event)
@@ -186,7 +186,7 @@ gh workflow run pr3178-pytest-execution.yml \
 - **Categorization**: By error type (ImportError, TypeError, etc.)
 - **Prioritization**: P1/P2/P3 levels
 - **Output**: `.codex/PR3178_FAILURES_CATEGORIZED.md`
-- **Artifact Retention**: 30 days
+- **Artifact Retention**: 30 iterations
 
 ---
 
@@ -200,7 +200,7 @@ gh workflow run pr3178-pytest-execution.yml \
 | Python Versions | 3.10, 3.11, 3.12 |
 | Default Timeout | 300 seconds/test |
 | Job Timeout | 180 minutes (3 hours) |
-| Artifact Retention | 30 days |
+| Artifact Retention | 30 iterations |
 | Parallel Workers | auto |
 
 ---

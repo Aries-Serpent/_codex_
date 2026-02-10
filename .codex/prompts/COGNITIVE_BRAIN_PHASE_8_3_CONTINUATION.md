@@ -3,7 +3,7 @@
 **Generated:** 2026-01-05T16:44:00Z  
 **For:** GitHub Copilot Agent  
 **Purpose:** Implement Adaptive Learning Engine with Reinforcement Learning  
-**Duration:** 6 weeks (Jan 13 - Feb 23, 2026)
+**Duration:** 6 phases (Jan 13 - Feb 23, 2026)
 
 ---
 
@@ -706,10 +706,10 @@ Add to ALL new files:
 
 ## 📈 Progress Tracking
 
-### Weekly Report Template
+### per-phase Report Template
 
 ```markdown
-## Cognitive Brain Phase 8.3 - Week X Progress
+## Cognitive Brain Phase 8.3 phase X Progress
 
 **Date:** YYYY-MM-DD  
 **Phase:** 8.3 Adaptive Learning Engine  
@@ -785,14 +785,14 @@ Add to ALL new files:
 
 ## 🔄 Continuation Protocol
 
-At end of EACH week:
+At end of each phase:
 
 1. **Commit work** with descriptive message
 2. **Update** `.codex/plans/COGNITIVE_BRAIN_PHASE_8_STATUS_ASSESSMENT.md`
 3. **Create PR comment** (if not complete):
 
 ```
-@copilot Continue Cognitive Brain Phase 8.3 Week X
+@copilot Continue Cognitive Brain Phase 8.3 phase X
 
 **Completed This Week:**
 - OutcomeAnalyzer: [status + file]

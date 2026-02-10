@@ -8,7 +8,7 @@
 
 **Objective:** Achieve Level 4 MLOps maturity with continuous improvement
 
-**Duration:** 4 weeks (Sprints 7-8)
+**Duration:** 4 phases (Sprints 7-8)
 
 **Success Criteria:**
 - All capability scores ≥0.90
@@ -22,29 +22,29 @@
 
 ### Sprint 7: Advanced Observability
 
-**T8: Prometheus (if not done)** (1 day)
-**Continuous Learning Pipeline** (4 days)
+**T8: Prometheus (if not done)** (1 iteration)
+**Continuous Learning Pipeline** (4 iterations)
 - Auto-retraining on drift
 - A/B testing framework
 - Model performance tracking
 
-**Plugin Sandboxing** (3 days)
+**Plugin Sandboxing** (3 iterations)
 - Contract tests for all plugins
 - Sandboxed execution
 - Auto-disable failing plugins
 
 ### Sprint 8: Documentation & Validation
 
-**Documentation Enhancement** (5 days)
+**Documentation Enhancement** (5 iterations)
 - API docs (Sphinx/MkDocs)
 - Notebook validation
 - Runbook completion
 
-**Final Stub Cleanup** (3 days)
+**Final Stub Cleanup** (3 iterations)
 - Target: All stubs resolved
 - Technical debt: Zero
 
-**Final Audit** (2 days)
+**Final Audit** (2 iterations)
 - Re-run audit pipeline
 - Verify all scores ≥0.90
 - Validate autonomy complete

@@ -159,7 +159,7 @@ echo "your-org-master-token" | gh secret set ORG_MASTER_KEY \
 gh api /orgs/Aries-Serpent/actions/secrets | jq '.secrets[] | select(.name=="ORG_MASTER_KEY")'
 ```
 
-**Token Rotation Reminder:** Set calendar reminder for 90 days from today
+**Token Rotation Reminder:** Set calendar reminder for 90 iterations from today
 
 **Expected Outcome:** ORG_MASTER_KEY configured for org-wide operations
 
@@ -170,7 +170,7 @@ gh api /orgs/Aries-Serpent/actions/secrets | jq '.secrets[] | select(.name=="ORG
 
 ---
 
-## ⚠️ HIGH PRIORITY ACTIONS (P1 - Within 7 Days)
+## ⚠️ HIGH PRIORITY ACTIONS (P1 - Within 7 iterations)
 
 ### HA-004: Authorize Next Phase Production Work ❌ PENDING
 
@@ -294,7 +294,7 @@ gh api /repos/Aries-Serpent/_codex_/vulnerability-alerts
 
 ---
 
-## 📋 MEDIUM PRIORITY ACTIONS (P2 - Within 30 Days)
+## 📋 MEDIUM PRIORITY ACTIONS (P2 - Within 30 iterations)
 
 ### HA-007: Configure GitHub Actions Permissions ❌ NOT STARTED
 
@@ -330,7 +330,7 @@ gh api /repos/Aries-Serpent/_codex_/vulnerability-alerts
 **Action Required:**
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/audit-log
 2. Enable audit log streaming (if available in plan)
-3. Configure retention: 90 days minimum
+3. Configure retention: 90 iterations minimum
 4. Optional: Set up log forwarding to SIEM
 
 **Verification:**
@@ -504,8 +504,8 @@ gh api /orgs/Aries-Serpent/audit-log?per_page=1
 - **Next Rotation:** (Automated - no action required)
 
 ### ORG_MASTER_KEY Rotation
-- **Frequency:** Every 90 days (manual)
-- **Next Rotation:** 90 days from initial configuration
+- **Frequency:** Every 90 iterations (manual)
+- **Next Rotation:** 90 iterations from initial configuration
 - **Process:**
   1. Generate new PAT with same scopes
   2. Update ORG_MASTER_KEY secret
@@ -513,7 +513,7 @@ gh api /orgs/Aries-Serpent/audit-log?per_page=1
   4. Revoke old PAT
   5. Document in `.codex/key-archive/rotation-log.txt`
 
-**Rotation Reminders:** Set calendar alerts for 90 days from HA-003 completion
+**Rotation Reminders:** Set calendar alerts for 90 iterations from HA-003 completion
 
 ---
 

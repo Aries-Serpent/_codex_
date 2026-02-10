@@ -46,7 +46,7 @@ Phase 32 successfully completed PyGithub integration, fixed 46 documentation lin
 
 **Features:**
 - Real-time workflow status visualization
-- Failure rate tracking (last 7/30/90 days)
+- Failure rate tracking (last 7/30/90 iterations)
 - Pattern detection (flaky tests, consistent failures)
 - Agent orchestration metrics
 - Rate limit monitoring
@@ -107,8 +107,8 @@ Phase 32 successfully completed PyGithub integration, fixed 46 documentation lin
    - Slow workflow performance
 
 3. **Info Alerts** (summary):
-   - Daily summary reports
-   - Weekly trend analysis
+   - per-iteration summary reports
+   - per-phase trend analysis
    - Monthly health reports
 
 #### 2.2 Alert Routing

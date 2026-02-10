@@ -199,10 +199,10 @@ sequenceDiagram
 ### Timeline
 | Task | Duration | Status |
 |------|----------|--------|
-| Branch coverage tests | 1 day | 📋 Ready |
-| Exception handler tests | 0.5 day | 📋 Ready |
-| Documentation tests | 0.5 day | 📋 Ready |
-| Threshold update | 0.5 day | 📋 Ready |
+| Branch coverage tests | 1 iteration | 📋 Ready |
+| Exception handler tests | 0.5 iteration | 📋 Ready |
+| Documentation tests | 0.5 iteration | 📋 Ready |
+| Threshold update | 0.5 iteration | 📋 Ready |
 
 ---
 

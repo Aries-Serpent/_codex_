@@ -355,7 +355,7 @@ All critical Level 4 requirements are met.
 
 ## Implementation Plan for Gaps
 
-### Phase 1: Operational Runbooks (1-2 weeks)
+### Phase 1: Operational Runbooks (1-2 phases)
 
 **Goal:** Document operational procedures for incidents
 
@@ -376,11 +376,11 @@ All critical Level 4 requirements are met.
 - Incident response playbook
 - Escalation matrix
 
-**Effort:** 5 days
+**Effort:** 5 iterations
 
 ---
 
-### Phase 2: Fairness & Bias Checks (2-3 weeks)
+### Phase 2: Fairness & Bias Checks (2-3 phases)
 
 **Goal:** Add built-in fairness evaluation capabilities
 
@@ -411,11 +411,11 @@ All critical Level 4 requirements are met.
 - Bias detection integration
 - Fairness documentation
 
-**Effort:** 10 days
+**Effort:** 10 iterations
 
 ---
 
-### Phase 3: Regulatory Compliance Gates (2-3 weeks)
+### Phase 3: Regulatory Compliance Gates (2-3 phases)
 
 **Goal:** Codify regulatory requirements as automated gates
 
@@ -447,11 +447,11 @@ All critical Level 4 requirements are met.
 - Policy templates (GDPR, HIPAA, SOC2)
 - Integration with deployment
 
-**Effort:** 12 days
+**Effort:** 12 iterations
 
 ---
 
-### Phase 4: Advanced Monitoring Dashboards (Optional - 1-2 weeks)
+### Phase 4: Advanced Monitoring Dashboards (Optional - 1-2 phases)
 
 **Goal:** Centralized monitoring dashboard for all Level 4 metrics
 
@@ -477,7 +477,7 @@ All critical Level 4 requirements are met.
 - Alert manager setup
 - Documentation
 
-**Effort:** 8 days (optional enhancement)
+**Effort:** 8 iterations (optional enhancement)
 
 ---
 
@@ -489,7 +489,7 @@ Pre-commit 5-8:   Phase 2 - Fairness & Bias Checks
 Pre-commit 9-12:   Phase 3 - Regulatory Compliance Gates
 Pre-commit 13-16:   Phase 4 - Advanced Dashboards (Optional)
 
-Total Time: 6-8 weeks for complete Level 4+ implementation
+Total Time: 6-8 phases for complete Level 4+ implementation
 ```
 
 ---

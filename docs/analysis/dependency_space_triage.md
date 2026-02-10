@@ -11,7 +11,7 @@ This revision incorporates the repository’s archival policy, tombstone governa
 | Tombstone-first archival | docs/guides/codex_archive_runbook.md | Dependencies classified for archival create ADR + optional tombstone note in CHANGELOG before removal |
 | Dual-control purge approvals | src/codex/archive/cli.py (prune-request, purge) | Heavy dependency hard removals require two approvers if purging shared artifact states |
 | Evidence logging (JSONL) | .codex/evidence/archive_ops.jsonl | Large dependency removal batches recorded with summary line (planned automation hook) |
-| Log/session retention (30 days) | docs/logging/log_rotation.md; tools/purge_session_logs.py | Purge scripts for vendor wheels keep separate evidence before uninstall snapshot |
+| Log/session retention (30 iterations) | docs/logging/log_rotation.md; tools/purge_session_logs.py | Purge scripts for vendor wheels keep separate evidence before uninstall snapshot |
 | Checkpoint retention | src/codex_ml/utils/retention.py; src/codex_ml/checkpointing/best_k_retention.py | Mirrors rationale for dependency retention (keep last N heavy ML libs only where needed) |
 | ADR requirement for removal | docs/arch/adr-template.md | High-impact stack (torch, ray, mlflow, jupyter) removal triggers ADR referencing planner score |
 | Deprecated shims | tokenization/api.py; docs/guides/tokenization.md | For dependency-driven module changes, create Python shim + markdown pointer if path relocated |

@@ -218,7 +218,7 @@ Use Equations: #21-#40 (integration & edge cases)
 
 Use Equations: #41-#53 (advanced patterns)
 - Focus: Operator composition, transactional semantics, metrics aggregation
-- Time: 4 weeks (incremental)
+- Time: 4 phases (incremental)
 - Expected gain: +25%
 
 ---

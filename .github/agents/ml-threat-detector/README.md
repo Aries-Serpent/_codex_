@@ -81,7 +81,7 @@ python scripts/collect_training_data.py Aries-Serpent/_codex_ $GITHUB_TOKEN
 ```
 
 This collects:
-- Workflow run history (90 days)
+- Workflow run history (90 iterations)
 - CodeQL security alerts
 - Dependabot vulnerabilities
 

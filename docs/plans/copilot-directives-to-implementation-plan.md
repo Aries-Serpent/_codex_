@@ -16,7 +16,7 @@
     - "Agent model selection optimizes cost/performance trade-off (least resistance)"
     
   Fields🔄: 
-    - "Weekly cache warmer maintains persistent 'dependency field' strength"
+    - "per-phase cache warmer maintains persistent 'dependency field' strength"
     - "Organization-level code scanning creates security coverage field across all repos"
     - "OpenAI client propagates context (repo, org, task type) to all agent executions"
     - "Risk scores propagate through alert prioritization (severity × criticality × exploitability)"
@@ -24,7 +24,7 @@
     - "Semgrep baseline creates temporal field boundary (only new alerts trigger failures)"
     
   Patterns👁️: 
-    - "Dependency stability pattern: core libs (quarterly) → dev tools (monthly) → test (weekly)"
+    - "Dependency stability pattern: core libs (quarterly) → dev tools (monthly) → test (per-phase)"
     - "Alert clustering pattern: 80% of fixes apply to 20% of rule types"
     - "Codemod reuse pattern: subprocess, SQL injection, secrets share transformation structure"
     - "CI workflow pattern: lint (fast) → test (medium) → security (comprehensive)"
@@ -82,7 +82,7 @@
 | Principle | Applied To | Optimization Result |
 |-----------|-----------|---------------------|
 | 🛤️ **Path** | Dependency resolution | 10-100x faster installs (UV vs pip) |
-| 🔄 **Fields** | Cache warming | Zero cold-start penalty for 7-day window |
+| 🔄 **Fields** | Cache warming | Zero cold-start penalty for 7 iteration window |
 | 👁️ **Patterns** | Alert grouping | 60% reduction in fix PRs via batching |
 | 🔀 **Redundancy** | Multi-tier caching | 95% cache hit rate across environments |
 | ⚖️ **Balance** | Compression level | zstd-19:  3x size reduction, <5% time overhead |
@@ -91,7 +91,7 @@
 
 ### Stream A (Caching): Path Optimization Dominant
 - **Primary**:  Shortest path to dependencies (UV → CDN, no local cache needed)
-- **Secondary**: Field propagation (weekly warmer maintains cache field)
+- **Secondary**: Field propagation (per-phase warmer maintains cache field)
 - **Tertiary**:  Redundancy (3-tier fallback prevents cache misses)
 
 ### Stream B (OpenAI): Balance Optimization Dominant
@@ -650,12 +650,12 @@ jobs:
 
 ## Phase A.6: Cache Warming Workflow
 
-### Task A.6.1: Create Weekly Cache Warmer
+### Task A.6.1: Create per-phase Cache Warmer
 
 **File**:  `.github/workflows/cache-warmer.yml`
 
 ```yaml
-name: Weekly Cache Warmer
+name: per-phase Cache Warmer
 
 on:
   schedule:

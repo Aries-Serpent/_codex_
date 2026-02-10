@@ -131,7 +131,7 @@ Expected output: Status summary showing all checks passed.
 
 - ✅ Never commit secrets to repository
 - ✅ Store PAT securely in password manager
-- ✅ Set calendar reminder for token rotation (90 days)
+- ✅ Set calendar reminder for token rotation (90 iterations)
 - ✅ Review audit logs regularly (`.codex/action_log.ndjson`)
 
 ### Detailed Documentation

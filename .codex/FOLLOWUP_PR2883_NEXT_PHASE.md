@@ -230,8 +230,8 @@
 ## 🔄 Continuous Monitoring
 
 ### Week 1 (Days 1-7)
-- Daily: Check CI runs for artifact warnings
-- Daily: Review security scan results
+- per-iteration: Check CI runs for artifact warnings
+- per-iteration: Review security scan results
 - Day 3: First comprehensive review of changes
 - Day 7: Assess if tests are needed based on usage
 

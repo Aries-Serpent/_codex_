@@ -828,7 +828,7 @@ graph TD
 | **Transparency** | Subjective judgment | Objective measurements |
 | **Auditability** | Limited | Complete (all measurements logged) |
 | **Consistency** | Variable | 100% consistent |
-| **Speed** | Hours/days | Seconds/minutes |
+| **Speed** | Hours/days | Seconds/Pre-commits |
 | **Bias** | Possible | Eliminated (pure math) |
 | **Rollback** | Manual decision | Automated based on criteria |
 

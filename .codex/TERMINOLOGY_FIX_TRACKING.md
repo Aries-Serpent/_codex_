@@ -94,7 +94,7 @@
 | Pre-commit 3-6 | Pre-commit 5-8 | Multi-step work |
 | Month 1 | Pre-commit 1-8 | Longer phases |
 | Phase 1 (Current Cycle) | Phase 2-5 | Quarterly scope |
-| weekly | per commit cycle | Frequency |
+| per-phase | per commit cycle | Frequency |
 | monthly | per 4-5 commit cycles | Frequency |
 | quarterly | per phase | Frequency |
 

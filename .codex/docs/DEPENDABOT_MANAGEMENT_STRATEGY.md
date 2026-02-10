@@ -301,7 +301,7 @@ scripts/dependabot_metrics.sh --month 2026-02
 
 **Triggers:**
 - Manual dispatch (workflow_dispatch)
-- Optional: Weekly schedule (commented out)
+- Optional: per-phase schedule (commented out)
 
 **Inputs:**
 - `base_branch`: Branch to merge into (default: main)
@@ -327,7 +327,7 @@ scripts/dependabot_metrics.sh --month 2026-02
 2. **Slack/Discord Notifications**
    - Post consolidation summary to channels
    - Alert on failures
-   - Daily digest of Dependabot activity
+   - per-iteration digest of Dependabot activity
 
 3. **Auto-Merge for Low Risk**
    - After consolidation, auto-merge if CI passes

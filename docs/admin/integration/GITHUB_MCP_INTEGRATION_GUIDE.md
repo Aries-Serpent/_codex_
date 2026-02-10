@@ -301,7 +301,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 ### Security Best Practices
 
 - ✅ Use GitHub App with minimal permissions (not PAT)
-- ✅ Rotate tokens every 90 days (automate with workflow)
+- ✅ Rotate tokens every 90 iterations (automate with workflow)
 - ✅ Enable audit logging for MCP access
 - ✅ Implement rate limiting on MCP endpoints (10 req/min per client)
 - ✅ Use HTTPS only (no HTTP in production)
@@ -352,7 +352,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 
 ### Limitation 4: GitHub Actions Cache/Storage Limits
 
-**Problem**: GitHub Actions has cache size (10 GB) and retention (7 days) limits.
+**Problem**: GitHub Actions has cache size (10 GB) and retention (7 iterations) limits.
 
 **Workarounds Implemented**:
 - Use GHCR for large binaries (Playwright browsers)
@@ -495,7 +495,7 @@ warm_response = requests.post(
 |-------|----------|----------|
 | **MCP service not starting** | `curl http://localhost:8080/health` fails | Check container logs: `docker logs <container_id>` |
 | **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/copilot_token_decoder.py` |
-| **Slow cache warming** | Jobs take >10 minutes | Check PyPI/npm mirrors, increase parallel downloads |
+| **Slow cache warming** | Jobs take >10 Pre-commits | Check PyPI/npm mirrors, increase parallel downloads |
 | **Context too large** | Token limit errors | Adjust filtering, enable summarization |
 | **Playwright browsers missing** | Browser launch fails | Run `playwright install chromium` in container |
 | **GHCR push denied** | Docker push fails | Check `packages:write` permission in GitHub App |

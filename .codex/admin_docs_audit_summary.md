@@ -38,7 +38,7 @@
 
 ## 📋 Detailed Findings
 
-### ✅ Fresh Documents (<30 days)
+### ✅ Fresh Documents (<30 iterations)
 
 | File | Age | Last Updated |
 |------|-----|--------------|
@@ -47,7 +47,7 @@
 | `docs/admin/integration/GITHUB_ENVIRONMENT_SETUP.md` | 24 days | 2025-12-30 |
 | `docs/admin/integration/MCP_IMPLEMENTATION_SUMMARY.md` | 24 days | 2025-12-30 |
 
-### ⚠️ Aging Documents (30-90 days)
+### ⚠️ Aging Documents (30-90 iterations)
 
 | File | Age | Last Updated | Action Needed |
 |------|-----|--------------|---------------|
@@ -103,7 +103,7 @@
    **Last Updated**: YYYY-MM-DD
    ```
 
-### Priority 2: High (Within 1 Week)
+### Priority 2: High (Within 1 phase)
 
 2. **Add Date Metadata to Operational Documents**
    - `docs/admin/HUMAN_ACTION_REQUIRED.md`
@@ -112,11 +112,11 @@
    - `docs/admin/GENESIS_SETUP_GUIDE.md`
 
 3. **Review Aging Document**
-   - `docs/admin/REPOSITORY_SECURITY_SETUP.md` (31 days old)
+   - `docs/admin/REPOSITORY_SECURITY_SETUP.md` (31 iterations old)
    - Verify security setup instructions are current
    - Update date after review
 
-### Priority 3: Medium (Within 2 Weeks)
+### Priority 3: Medium (Within 2 phases)
 
 4. **Add Date Metadata to Remaining Documents**
    - `docs/admin/AST_IMPLEMENTATION_STATUS.md`
@@ -128,13 +128,13 @@
 ### Priority 4: Ongoing
 
 5. **Establish Update Schedule**
-   - Security docs: Review every 30 days
-   - Operational docs: Review every 60 days
-   - Reference docs: Review every 90 days
+   - Security docs: Review every 30 iterations
+   - Operational docs: Review every 60 iterations
+   - Reference docs: Review every 90 iterations
 
 6. **Automated Freshness Checks**
-   - Add this audit to weekly CI/CD pipeline
-   - Alert on files approaching 90-day threshold
+   - Add this audit to per-phase CI/CD pipeline
+   - Alert on files approaching 90 iteration threshold
    - Track trends over time
 
 ---
@@ -143,8 +143,8 @@
 
 ### Positive Trends
 - ✅ **100% ISO 8601 compliance** among dated files
-- ✅ Recent documentation activity (4 files updated in last 30 days)
-- ✅ Integration docs well-maintained (24 days old)
+- ✅ Recent documentation activity (4 files updated in last 30 iterations)
+- ✅ Integration docs well-maintained (24 iterations old)
 - ✅ Minimal calendar language usage
 
 ### Areas for Improvement
@@ -225,9 +225,9 @@
 - Calendar language detection
 
 **Thresholds Applied:**
-- Fresh: <30 days
-- Aging: 30-90 days
-- Stale: >90 days
+- Fresh: <30 iterations
+- Aging: 30-90 iterations
+- Stale: >90 iterations
 
 **Date Formats Supported:**
 - ISO 8601: YYYY-MM-DD (preferred)

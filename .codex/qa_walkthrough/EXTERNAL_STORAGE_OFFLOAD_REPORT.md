@@ -199,7 +199,7 @@ Audit Trail
 | Historical Logs | Permanent | N/A - Audit compliance |
 | Historical Artifacts | Permanent | N/A - Compliance |
 | Archive Files | Permanent | N/A - Reference only |
-| Temporary Outputs | 90 days | Weekly review after 90 days |
+| Temporary Outputs | 90 iterations | per-phase review after 90 iterations |
 | Deprecated Reports | 180 days | Review 2026-07-26 |
 
 ---
@@ -227,8 +227,8 @@ Audit Trail
 
 ## Next Steps (Future Maintenance)
 
-### Weekly Tasks
-- Review `temp-outputs/` for files > 90 days old
+### per-phase Tasks
+- Review `temp-outputs/` for files > 90 iterations old
 - Delete or relocate as appropriate
 
 ### Monthly Tasks

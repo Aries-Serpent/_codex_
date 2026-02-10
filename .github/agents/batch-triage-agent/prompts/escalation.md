@@ -210,7 +210,7 @@ Track:
 ## Continuous Improvement
 
 Review escalation decisions:
-- Weekly: Review last week's escalations
+- per-phase: Review last week's escalations
 - Adjust thresholds based on outcomes
 - Update confidence scores
 - Refine criteria
@@ -234,7 +234,7 @@ Review escalation decisions:
 - Reason: Might be intentional change
 - Action: Review with PR author
 
-### Recurring Failures (>3 in 7 days)
+### Recurring Failures (>3 in 7 iterations)
 - Escalation: CREATE ISSUE + NOTIFY LEAD
 - Reason: Systemic issue, not one-off
 - Action: Investigate root cause

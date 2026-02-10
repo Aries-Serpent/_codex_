@@ -196,7 +196,7 @@ gh api /repos/Aries-Serpent/_codex_/actions/runners
 **Steps:**
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/audit-log
 2. Enable audit log streaming (if available in your plan)
-3. Configure retention: 90 days minimum
+3. Configure retention: 90 iterations minimum
 4. Set up log forwarding to SIEM (optional)
 
 **Verification:**
@@ -267,7 +267,7 @@ gh run list --limit 5
 - **Manual Trigger:** `gh workflow run automated-token-rotation.yml`
 
 ### ORG_MASTER_KEY Rotation:
-- **Frequency:** Every 90 days (manual)
+- **Frequency:** Every 90 iterations (manual)
 - **Process:**
   1. Generate new PAT with same scopes
   2. Update ORG_MASTER_KEY secret

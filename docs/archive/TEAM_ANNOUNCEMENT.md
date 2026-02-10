@@ -24,7 +24,7 @@
 - SHIM inventory integration (prioritizes non-tracked duplicates)
 - Git metadata enrichment (blame, churn, file age)
 - Multi-format output (YAML, JSON, CSV, Markdown)
-- Weekly GitHub Actions monitoring
+- per-phase GitHub Actions monitoring
 
 ### 3. P1 Refactoring Executed ✅
 **Completed**:
@@ -105,8 +105,8 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 ## 🔄 Continuous Monitoring
 
-**Weekly automated scans**:
-- GitHub Actions workflow: `.github/workflows/duplicate-detection-weekly.yml`
+**per-phase automated scans**:
+- GitHub Actions workflow: `.github/workflows/duplicate-detection-per-phase.yml`
 - Runs every Monday at 2 AM UTC
 - Creates issues for new duplicates NOT in SHIM inventory
 - Uploads analysis artifacts
@@ -125,7 +125,7 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 ### Short-term (Next Sprint)
 1. 🎫 **Review P1 tickets** - 217 tickets in `.codex/duplicate_analysis_full/`
 2. 🔧 **Use DictSerializable** - Replace to_dict() implementations gradually
-3. 🔍 **Monitor weekly scans** - Review new duplicate alerts
+3. 🔍 **Monitor per-phase scans** - Review new duplicate alerts
 
 ### Medium-term (Next Quarter)
 1. 🏗️ **Execute P1 refactoring** - High-value consolidation opportunities

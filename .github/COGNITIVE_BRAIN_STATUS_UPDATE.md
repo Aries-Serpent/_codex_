@@ -314,7 +314,7 @@ _codex_/
 **Metrics**:
 - **Average Session**: 30K-60K tokens used
 - **Completion Rate**: 85%+ of planned items delivered
-- **Iteration Cycle**: 1-2 days per major phase
+- **Iteration Cycle**: 1-2 iterations per major phase
 - **Test Success Rate**: 100% (all new tests passing)
 
 **Recurring Patterns**:
@@ -375,7 +375,7 @@ _codex_/
 
 ## 7. Decision Log
 
-### Key Decisions (Last 7 Days)
+### Key Decisions (Last 7 iterations)
 
 **2025-12-31**: Review Comment Fixes + Status Update
 - **Decision**: Address all review comments and provide comprehensive status
@@ -498,7 +498,7 @@ Root → README.md → Cognitive Brain Links
 ### Current State
 The **_codex_** repository is in excellent operational health with a mature, production-ready foundation. The cognitive brain infrastructure provides comprehensive navigation and status tracking for both human and AI agents.
 
-### Key Achievements (Last 7 Days)
+### Key Achievements (Last 7 iterations)
 - ✅ MCP Package System: Production ready, 93+ KB docs
 - ✅ Cognitive Brain Infrastructure: Complete navigation system
 - ✅ Documentation Hub: 200+ KB comprehensive guides

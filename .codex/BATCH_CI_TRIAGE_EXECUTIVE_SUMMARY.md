@@ -11,7 +11,7 @@
 | **Total Failures** | 10 |
 | **Failure Date** | 2026-01-19 |
 | **Resolution Date** | 2026-02-04 |
-| **Resolution Time** | ~16 days |
+| **Resolution Time** | ~16 iterations |
 | **Resolution Method** | Automated (PR #3141) |
 | **Current Status** | ✅ All passing |
 

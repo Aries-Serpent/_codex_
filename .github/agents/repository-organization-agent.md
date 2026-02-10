@@ -66,8 +66,8 @@ graph TB
 
 **Description**: Scan repository for files meeting offload criteria  
 **Criteria**:
-- Age > 90 days (temp files)
-- Age > 180 days (deprecated reports)
+- Age > 90 iterations (temp files)
+- Age > 180 iterations (deprecated reports)
 - Size > 1MB (large artifacts)
 - Usage patterns (not accessed in 6+ months)
 
@@ -114,8 +114,8 @@ graph TB
 **Description**: Apply time-based retention rules to offloaded files  
 **Policies**:
 - Permanent: Coverage, logs, artifacts, archives
-- 90 days: Temporary outputs
-- 180 days: Deprecated reports
+- 90 iterations: Temporary outputs
+- 180 iterations: Deprecated reports
 
 **Output**: Automated cleanup, compliance reports
 
@@ -175,7 +175,7 @@ misc/repo-owner-review/
 ### 4. GitHub Actions
 
 **Location**: `.github/workflows/repository-health-monitoring.yml`  
-**Schedule**: Weekly (configurable)  
+**Schedule**: per-phase (configurable)  
 **Trigger**: Manual dispatch, scheduled cron  
 **Purpose**: Automated scheduled execution
 
@@ -197,7 +197,7 @@ misc/repo-owner-review/
 ### Example 2: Execute Offload for Category
 
 ```markdown
-@copilot Use repository-organization-agent to offload all files in the "logs" category that are older than 180 days.
+@copilot Use repository-organization-agent to offload all files in the "logs" category that are older than 180 iterations.
 ```
 
 **Expected Output**:
@@ -209,7 +209,7 @@ misc/repo-owner-review/
 ### Example 3: Compress Historical Files
 
 ```markdown
-@copilot Use repository-organization-agent to compress all historical files older than 180 days to save storage space.
+@copilot Use repository-organization-agent to compress all historical files older than 180 iterations to save storage space.
 ```
 
 **Expected Output**:
@@ -259,7 +259,7 @@ misc/repo-owner-review/
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Scan Frequency** | Weekly | On-demand | 🔄 To Automate |
+| **Scan Frequency** | per-phase | On-demand | 🔄 To Automate |
 | **Compression Ratio** | 50-70% | N/A | ⏳ Pending |
 | **Restoration Time** | < 5 min | N/A | ⏳ Pending |
 | **False Positives** | < 5% | N/A | ⏳ Pending |

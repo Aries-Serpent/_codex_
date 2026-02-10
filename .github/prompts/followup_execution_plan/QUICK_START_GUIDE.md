@@ -2,7 +2,7 @@
 
 **For:** GitHub Copilot Users  
 **Goal:** Go from 67/71 (94%) to 71/71 (100%) capability coverage  
-**Time:** 8-11 days  
+**Time:** 8-11 iterations  
 **Approach:** Copy-paste prompts into GitHub Copilot Chat
 
 ---
@@ -18,7 +18,7 @@
 
 ---
 
-## Day-by-Day Execution
+## iteration-by-iteration Execution
 
 ### 📅 Pre-commit 1-2: Kubernetes Orchestration
 
@@ -301,7 +301,7 @@ Use this checklist in your commit messages:
 
 ## What Success Looks Like
 
-After 11 days, you should have:
+After 11 iterations, you should have:
 - ✅ 10-15 new K8s manifest files
 - ✅ 3-4 new Python modules for features
 - ✅ 3-4 new Python modules for events

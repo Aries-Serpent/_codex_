@@ -565,10 +565,10 @@ security:
 ## 🎓 Training & Enablement
 
 ### Technical Team Training
-- D365 API deep dive (2 days)
-- ML model development (3 days)
-- Cognitive brain architecture (2 days)
-- Security best practices (1 day)
+- D365 API deep dive (2 iterations)
+- ML model development (3 iterations)
+- Cognitive brain architecture (2 iterations)
+- Security best practices (1 iteration)
 
 ### Business User Training
 - Dashboard usage (4 hours)
@@ -586,7 +586,7 @@ security:
 - **L3:** Complex issues, architectural changes
 
 ### Maintenance Windows
-- Weekly: Minor updates, bug fixes
+- per-phase: Minor updates, bug fixes
 - Monthly: Feature releases, model updates
 - Quarterly: Major enhancements, architecture changes
 
@@ -674,5 +674,5 @@ security:
 
 *To be integrated into Cognitive Brain v12.0*  
 *Priority: HIGH - Strategic Initiative*  
-*Timeline: 8 weeks for complete implementation*  
+*Timeline: 8 phases for complete implementation*  
 *ROI: Expected 3x return within 12 months*

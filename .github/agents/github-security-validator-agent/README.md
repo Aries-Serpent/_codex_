@@ -4,7 +4,7 @@ A specialized GitHub Copilot Agent for validating security configurations, audit
 
 ## Purpose
 
-Automates security validation activities including organization audit logging setup (HA-OPT-002) and CodeQL suppressions review with 90-day rotation cycle (HA-OPT-003) from the Human Admin Consolidated Action Tracker.
+Automates security validation activities including organization audit logging setup (HA-OPT-002) and CodeQL suppressions review with 90 iteration rotation cycle (HA-OPT-003) from the Human Admin Consolidated Action Tracker.
 
 ## Features
 
@@ -17,7 +17,7 @@ Automates security validation activities including organization audit logging se
 
 ### 2. CodeQL Suppressions Review (HA-OPT-003)
 - Reviews suppression comments in code
-- Validates 90-day rotation cycle
+- Validates 90 iteration rotation cycle
 - Identifies expired suppressions
 - Generates renewal recommendations
 - Tracks suppression patterns
@@ -57,7 +57,7 @@ python src/agent.py --task audit-logging --verbose
 
 **Checks**:
 - Organization audit log enabled
-- Retention period configured (minimum 90 days)
+- Retention period configured (minimum 90 iterations)
 - Log streaming to external SIEM
 - Audit log API access permissions
 - Compliance with security policies
@@ -71,7 +71,7 @@ python src/agent.py --task codeql-suppressions --verbose
 - Find all `// lgtm[rule-id]` comments
 - Find all `// codeql[rule-id]` comments
 - Calculate age of each suppression
-- Identify suppressions > 90 days old
+- Identify suppressions > 90 iterations old
 - Generate renewal recommendations
 
 ### Task 3: Branch Protection Validation
@@ -179,7 +179,7 @@ reporting:
   },
   "recommendations": [
     "Review 3 expired CodeQL suppressions",
-    "Update justification for suppressions older than 90 days"
+    "Update justification for suppressions older than 90 iterations"
   ]
 }
 ```
@@ -266,7 +266,7 @@ The agent provides actionable recommendations:
 
 1. **Expired Suppressions**: "Remove suppression at `file:line` or update justification"
 2. **Missing Justifications**: "Add justification comment for suppression at `file:line`"
-3. **Audit Log Issues**: "Enable audit log retention for minimum 90 days"
+3. **Audit Log Issues**: "Enable audit log retention for minimum 90 iterations"
 4. **Branch Protection**: "Enable required reviewers for branch `main`"
 
 ## Development

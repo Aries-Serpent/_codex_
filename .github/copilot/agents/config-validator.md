@@ -397,7 +397,7 @@ gh pr create --title "Test Config" --body "Test"
 ## Monitoring
 
 ### Metrics
-- **Validation Rate:** Configs validated per day
+- **Validation Rate:** Configs validated per-iteration
 - **Failure Rate:** % of configs failing validation
 - **Common Issues:** Top 10 validation errors
 - **Fix Time:** Average time to fix validation errors

@@ -1,7 +1,7 @@
-# Path to 100% Coverage: Phase 23 Week 1 CLI/Data Unit Tests
+# Path to 100% Coverage: Phase 23 phase 1 CLI/Data Unit Tests
 
 **Date**: 2026-01-20 04:21 UTC  
-**Feature**: Phase 23 Week 1 unit tests (CLI argument parsing + data split utilities)  
+**Feature**: Phase 23 phase 1 unit tests (CLI argument parsing + data split utilities)  
 **Owner**: Codex agent  
 **Status**: ✅ COMPLETE (Week 1 unit tests added)
 
@@ -21,5 +21,5 @@
 - `pytest -q tests/integration`
 
 ## Next Steps
-1. Continue Phase 23 Week 2 integration tests.
+1. Continue Phase 23 phase 2 integration tests.
 2. Address missing pytest plugins and optional deps.

@@ -67,7 +67,7 @@ This planset provides actionable guidance for the next iteration of _codex_ deve
 
 #### 1. Coverage Path to 70% (PLANSET_PHASE_23_COVERAGE_30.md → PLANSET_PHASE_25_COVERAGE_70.md)
 **Status:** 17.59% → Target 70%  
-**Effort:** 8-10 weeks  
+**Effort:** 8-10 phases  
 **Next Actions:**
 - Focus on untested CLI modules (src/codex/cli_rag.py, src/tokenization/cli.py)
 - Add tests for src/codex_ml/cli/codex_cli.py (846 lines)
@@ -75,7 +75,7 @@ This planset provides actionable guidance for the next iteration of _codex_ deve
 
 #### 2. RAG Production Pipeline (PRODUCTION_RAG_PIPELINE_PLANSET.md)
 **Status:** Meta tensor fixes complete, production validation needed  
-**Effort:** 2-3 weeks  
+**Effort:** 2-3 phases  
 **Next Actions:**
 - Validate embedding providers (TF-IDF, OpenAI, HuggingFace)
 - Complete end-to-end integration tests
@@ -83,7 +83,7 @@ This planset provides actionable guidance for the next iteration of _codex_ deve
 
 #### 3. Cognitive Brain Phase 2 (cognitive_brain_phase_implementation.md)
 **Status:** Infrastructure complete, enhancement phase  
-**Effort:** 3-4 weeks  
+**Effort:** 3-4 phases  
 **Next Actions:**
 - Implement autonomous decision escalation
 - Add pattern learning capabilities
@@ -93,7 +93,7 @@ This planset provides actionable guidance for the next iteration of _codex_ deve
 
 #### 4. Custom Agent Enhancement (v10_agents_enhanced_implementation_plan.md)
 **Status:** 290 agents, many need testing  
-**Effort:** 4-6 weeks  
+**Effort:** 4-6 phases  
 **Next Actions:**
 - Add tests for 60% of agents without has_tests=true
 - Standardize agent specification format
@@ -101,7 +101,7 @@ This planset provides actionable guidance for the next iteration of _codex_ deve
 
 #### 5. Documentation 100% Coverage (IP-002_LEGACY_CONFIG_AUDIT.md)
 **Status:** 68% estimated  
-**Effort:** 4 weeks  
+**Effort:** 4 phases  
 **Next Actions:**
 - Document all public APIs
 - Complete MkDocs navigation structure
@@ -241,7 +241,7 @@ Success criteria:
 ```markdown
 @copilot Optimize CI/CD pipeline:
 
-1. Analyze workflow execution times (last 30 days)
+1. Analyze workflow execution times (last 30 iterations)
 2. Identify and consolidate duplicate jobs
 3. Implement test impact analysis for selective testing
 4. Add tiered caching (L1: pip, L2: npm, L3: built artifacts)

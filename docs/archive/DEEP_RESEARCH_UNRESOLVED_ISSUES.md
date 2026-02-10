@@ -483,7 +483,7 @@ MCP tools: 10 tests / 1,600 total = 0.0062 impact
 
 ## Prioritized Action Plan for TRUE 100%
 
-### Phase 1: Quick Wins (2-3 weeks)
+### Phase 1: Quick Wins (2-3 phases)
 
 **Target**: Get archival-bundling and documentation-system to 0.70+
 
@@ -499,7 +499,7 @@ MCP tools: 10 tests / 1,600 total = 0.0062 impact
 
 ---
 
-### Phase 2: Medium Improvements (4-6 weeks)
+### Phase 2: Medium Improvements (4-6 phases)
 
 **Target**: Get MCP tools, safeguards, deployment to 0.70+
 
@@ -522,7 +522,7 @@ MCP tools: 10 tests / 1,600 total = 0.0062 impact
 
 ---
 
-### Phase 3: Major Implementations (8-12 weeks)
+### Phase 3: Major Implementations (8-12 phases)
 
 **Target**: Get inference-serving, duplication, vector-stores to 0.70+
 
@@ -552,12 +552,12 @@ MCP tools: 10 tests / 1,600 total = 0.0062 impact
 
 ## Total Effort Estimate
 
-| Phase | Capabilities | Estimated Hours | Timeline |
+| Phase | Capabilities | Estimated Commits | Timeline |
 |-------|-------------|-----------------|----------|
-| Phase 1 (Quick Wins) | 2 | 18-27 hours | 2-3 weeks |
-| Phase 2 (Medium) | 3 | 47-68 hours | 4-6 weeks |
-| Phase 3 (Major) | 3 | 95-135 hours | 8-12 weeks |
-| **TOTAL** | **8** | **160-230 hours** | **14-21 weeks** |
+| Phase 1 (Quick Wins) | 2 | 18-27 Commits | 2-3 phases |
+| Phase 2 (Medium) | 3 | 47-68 Commits | 4-6 phases |
+| Phase 3 (Major) | 3 | 95-135 Commits | 8-12 phases |
+| **TOTAL** | **8** | **160-230 hours** | **14-21 phases** |
 
 ---
 
@@ -618,10 +618,10 @@ MCP tools: 10 tests / 1,600 total = 0.0062 impact
 **Remaining Gap**: Actual functional implementations needed for TRUE 100%
 
 **Path Forward**: 
-1. **Immediate**: Quick wins (archival, docs) - 2-3 weeks
-2. **Medium-term**: Medium improvements (MCP, safeguards, deployment) - 4-6 weeks
-3. **Long-term**: Major implementations (inference, duplication, vectors) - 8-12 weeks
+1. **Immediate**: Quick wins (archival, docs) - 2-3 phases
+2. **Medium-term**: Medium improvements (MCP, safeguards, deployment) - 4-6 phases
+3. **Long-term**: Major implementations (inference, duplication, vectors) - 8-12 phases
 
-**Total Effort**: 160-230 hours over 14-21 weeks for TRUE 100% maturity
+**Total Effort**: 160-230 hours over 14-21 phases for TRUE 100% maturity
 
 **Key Insight**: Tests and documentation alone cannot achieve 100%. Must implement actual working functionality for each capability.

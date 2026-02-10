@@ -9,7 +9,7 @@
 **Current Status**: Phase 1 In Progress - Critical scope adjustment made  
 **Progress**: 71 Python modules documented (+18% coverage improvement)  
 **Self-Review Iterations**: 1 complete, proceeding with hybrid approach  
-**Timeline**: Adjusted from 2 days → 4 weeks for realistic 98% coverage
+**Timeline**: Adjusted from 2 iterations → 4 phases for realistic 98% coverage
 
 ---
 
@@ -30,8 +30,8 @@
 
 ### Approach Adjustment
 
-**Original Plan**: 2 days to 100% coverage  
-**Revised Plan**: 4-week hybrid approach to 98% coverage
+**Original Plan**: 2 iterations to 100% coverage  
+**Revised Plan**: 4 phase hybrid approach to 98% coverage
 
 **Hybrid Approach**:
 1. **Week 1**: High-priority modules + automation tooling ← **CURRENT**
@@ -99,7 +99,7 @@
 
 ### Phase 1: Documentation (Continue)
 
-#### Task 1.1: Complete High-Priority Modules (Est: 2 days)
+#### Task 1.1: Complete High-Priority Modules (Est: 2 iterations)
 
 **Command**:
 ```bash
@@ -124,7 +124,7 @@ done
 
 ---
 
-#### Task 1.2: Generate Workflow Documentation (Est: 1 day)
+#### Task 1.2: Generate Workflow Documentation (Est: 1 iteration)
 
 **Objective**: Create README.md for each GitHub Actions workflow
 
@@ -210,7 +210,7 @@ python scripts/generate_workflow_docs.py
 
 ---
 
-#### Task 1.3: Batch Script Documentation (Est: 2 days)
+#### Task 1.3: Batch Script Documentation (Est: 2 iterations)
 
 **Objective**: Add comprehensive headers to all 239 scripts
 
@@ -296,9 +296,9 @@ python scripts/add_script_headers.py
 
 ---
 
-### Phase 2: Automation (Begin After Phase 1 Week 1)
+### Phase 2: Automation (Begin After Phase 1 phase 1)
 
-#### Task 2.1: Audit Automation Coverage (Est: 1 day)
+#### Task 2.1: Audit Automation Coverage (Est: 1 iteration)
 
 **Objective**: Verify actual automation level (claimed 75%)
 
@@ -352,28 +352,28 @@ EOF
 
 ---
 
-#### Task 2.2: Implement High-ROI Automations (Est: 1 week)
+#### Task 2.2: Implement High-ROI Automations (Est: 1 phase)
 
 **Priority Automations** (sorted by ROI):
 
 1. **CI Failure Auto-Investigation** (Highest ROI)
    - Time saved: 15 hours/month
-   - Implementation: 1 day
+   - Implementation: 1 iteration
    - Create `.github/workflows/ci-auto-investigator.yml`
 
 2. **Automated Dependency Updates** (High ROI)
    - Time saved: 8 hours/month
-   - Implementation: 0.5 days
+   - Implementation: 0.5 iterations
    - Configure Dependabot + auto-merge
 
 3. **Documentation Sync** (High ROI)
    - Time saved: 20 hours/month
-   - Implementation: 1 day
+   - Implementation: 1 iteration
    - Create `.github/workflows/doc-sync.yml`
 
 4. **Performance Monitoring** (Medium ROI)
    - Time saved: 12 hours/month
-   - Implementation: 1 day
+   - Implementation: 1 iteration
    - Create continuous monitoring workflow
 
 **Implementation Order**:
@@ -524,15 +524,15 @@ After each major milestone, update cognitive brain with:
 
 ## Reporting Cadence
 
-### Daily Progress Reports
-Post daily summary including:
+### per-iteration Progress Reports
+Post per-iteration summary including:
 - Tasks completed
 - Current coverage metrics
 - Blockers or issues
 - Next 24-hour plan
 - Self-review findings
 
-### Weekly Milestone Reports
+### per-phase Milestone Reports
 Post comprehensive report including:
 - Week's achievements
 - Coverage improvements
@@ -602,7 +602,7 @@ To continue this work in the next session:
 ```
 @copilot Continue autonomous execution from docs/AUTONOMOUS_CONTINUATION_PROMPT_PHASE_1_2.md. 
 Resume at Priority 1 tasks and proceed through all checkpoints with self-review at each milestone.
-Report progress daily and escalate only if scope changes >20% or critical issues found.
+Report progress per-iteration and escalate only if scope changes >20% or critical issues found.
 ```
 
 ---
@@ -611,6 +611,6 @@ Report progress daily and escalate only if scope changes >20% or critical issues
 **Status**: 🚀 READY FOR AUTONOMOUS EXECUTION  
 **Self-Review**: Iteration 1 complete, realistic plan established  
 **Authorization**: Full autonomous execution within defined boundaries  
-**Expected Completion**: 4 weeks to 95%+ coverage on both metrics
+**Expected Completion**: 4 phases to 95%+ coverage on both metrics
 
 🎯 **Execute autonomously until complete or escalation required**

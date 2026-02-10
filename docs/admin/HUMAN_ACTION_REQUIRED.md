@@ -38,7 +38,7 @@ This document catalogs all items requiring human intervention, code owner review
 - [ ] **Team Allocated** - Resources committed (🔴 ACTION REQUIRED)
 ```
 **Impact**: AST Phase 0 implementation cannot proceed without these approvals  
-**Estimated Time**: 2-4 weeks (stakeholder meetings, budget approval process)
+**Estimated Time**: 2-4 phases (stakeholder meetings, budget approval process)
 
 ### 1.2 Security Configuration Review
 **File**: `SECURITY.md` (implied)  
@@ -411,8 +411,8 @@ grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" \
 
 | Priority | Count | Response Time | Owner Type |
 |----------|-------|---------------|------------|
-| CRITICAL | 3 | Immediate (0-7 days) | Repo Owner/Admin |
-| HIGH | 8 | Soon (1-2 weeks) | Code Owners |
+| CRITICAL | 3 | Immediate (0-7 iterations) | Repo Owner/Admin |
+| HIGH | 8 | Soon (1-2 phases) | Code Owners |
 | MEDIUM | 25 | Recommended (1 month) | Team Leads |
 | LOW | 20 | Optional (backlog) | Contributors |
 

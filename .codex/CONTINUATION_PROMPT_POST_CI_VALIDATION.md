@@ -53,10 +53,10 @@
 ## 🤖 Phase C: Custom Agent Development
 
 ### Priority Order
-1. **test-assertion-updater** (HIGH) - 3-5 days
-2. **cache-logic-validator** (HIGH) - 2-3 days
-3. **security-advisory-resolver** (MEDIUM) - 3-4 days
-4. **ci-failure-diagnostician** (MEDIUM) - 3-4 days
+1. **test-assertion-updater** (HIGH) - 3-5 iterations
+2. **cache-logic-validator** (HIGH) - 2-3 iterations
+3. **security-advisory-resolver** (MEDIUM) - 3-4 iterations
+4. **ci-failure-diagnostician** (MEDIUM) - 3-4 iterations
 
 ### Implementation Steps for Each Agent
 

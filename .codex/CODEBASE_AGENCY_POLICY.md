@@ -186,7 +186,7 @@ Philosophical Foundation: This convention implements Whiteheadian epochal time
 and Deleuzian Aion vs Chronos distinction.
 
 Chronos (Clock Time): Linear, measurable, calendar-based
-- "2 weeks", "30 days", "Q1 2026"
+- "2 phases", "30 iterations", "Q1 2026"
 - Maps to external, objective time
 - Appropriate for historical records ONLY
 
@@ -215,7 +215,7 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 | Weeks | Phases |
 | Months | Part X of N |
 | Quarter | Session |
-| Hours | pre-commit/commit |
+| Commits | pre-commit/commit |
 
 ### ✅ CORRECT Examples
 
@@ -228,10 +228,10 @@ For ALL future work and planning, use pre-commit/commit cycle terminology, NOT t
 
 ### ❌ WRONG Examples
 
-- "6 weeks" → use "6 Phases"
+- "6 phases" → use "6 Phases"
 - "Week 1-2" → use "Phase 1-2"
-- "Duration: 4 weeks" → use "Duration: 4 Phases"
-- "3 days" → use "3 Steps"
+- "Duration: 4 phases" → use "Duration: 4 Phases"
+- "3 iterations" → use "3 Steps"
 - "2 hours" → use "2 pre-commits"
 - "Monthly review" → use "Part X of N review"
 - "Quarterly planning" → use "Session planning"

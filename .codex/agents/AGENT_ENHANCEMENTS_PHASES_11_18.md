@@ -155,7 +155,7 @@ coverage:
 priority_matrix:
   source: .codex/test_priority_matrix.json
   modules: 518  # Total trackable modules
-  update_frequency: weekly
+  update_frequency: per-phase
   
   scoring:
     file_size_weight: 0.2
@@ -254,7 +254,7 @@ denylist:
   auto_update:
     enabled: true
     source: github_advisory_db
-    frequency: daily
+    frequency: per-iteration
 ```
 
 #### 3.3 Safety Sanitizer Validation (Phase 14.2)
@@ -564,7 +564,7 @@ agent:
   enabled: true
 
 scanning:
-  frequency: daily
+  frequency: per-iteration
   sources:
     - pyproject.toml
     - requirements.txt
@@ -703,12 +703,12 @@ monitoring:
 | Test Coverage | Coverage % | ≥95% |
 | Security Audit | CVE response time | <24h |
 | Flaky Test | Test reliability | ≥99% |
-| Performance | Regression detection | <1 day |
-| Dependency | Update lag | <7 days |
+| Performance | Regression detection | <1 iteration |
+| Dependency | Update lag | <7 iterations |
 | Doc Freshness | Stale docs | 0 |
 
 ---
 
 **Owner:** AI Agent Development Team  
-**Review Cadence:** Bi-weekly  
+**Review Cadence:** Bi-per-phase  
 **Last Updated:** 2026-01-18

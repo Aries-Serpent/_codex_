@@ -235,10 +235,10 @@ Update the QA walkthrough folder when:
 2. Coverage percentage changes significantly (>1%)
 3. New source modules are added to src/
 4. Major architectural changes occur
-5. Weekly/monthly scheduled maintenance runs
+5. per-phase/monthly scheduled maintenance runs
 
 ### Maintenance Schedule
-- **Weekly**: Check for new test additions
+- **per-phase**: Check for new test additions
 - **Per Phase**: Update after each phase completion
 - **Monthly**: Comprehensive validation and cleanup
 - **Quarterly**: Major version bump and full review

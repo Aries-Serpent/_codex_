@@ -547,7 +547,7 @@ Status: SUCCESS
 - **Secret Creation Rate**: Secrets created per hour
 - **Secret Verification Rate**: Verifications per hour
 - **API Failure Rate**: Failed API calls / total calls
-- **Token Usage**: API calls per token per day
+- **Token Usage**: API calls per token per-iteration
 
 ---
 

@@ -199,8 +199,8 @@ misc/repo-owner-review/
 
 5. **Retention Policies**
    - Permanent: Coverage, logs, artifacts (audit compliance)
-   - Temporary: Temp outputs (90 days), deprecated reports (180 days)
-   - Scheduled reviews: Weekly/monthly/quarterly
+   - Temporary: Temp outputs (90 iterations), deprecated reports (180 iterations)
+   - Scheduled reviews: per-phase/monthly/quarterly
 
 **Benefits**:
 - Reduces repository size without data loss
@@ -239,12 +239,12 @@ misc/repo-owner-review/
 
 ### Phase 22.1: Repository Organization Enhancement
 **Priority**: P2 (Medium)  
-**Timeline**: 3-5 days
+**Timeline**: 3-5 iterations
 
 **Recommended Tasks**:
 1. **Automated Offload Monitoring**
    - Create script to identify candidates for offload (age, size, usage)
-   - Weekly cron job to report offload candidates
+   - per-phase cron job to report offload candidates
    - Integration with `.codex/action_log.ndjson`
 
 2. **Offload Metrics Dashboard**
@@ -264,7 +264,7 @@ misc/repo-owner-review/
 
 ### Phase 22.2: Custom Agent Development
 **Priority**: P1 (High)  
-**Timeline**: 1 week
+**Timeline**: 1 phase
 
 **Recommended Agent**: `repository-organization-agent`
 
@@ -305,7 +305,7 @@ misc/repo-owner-review/
 ### Recommendations for Future
 1. Create `repository-organization-agent` for automation
 2. Implement monitoring dashboard for repository health
-3. Add compression for historical files after 180 days
+3. Add compression for historical files after 180 iterations
 4. Create restoration scripts for easy file recovery
 
 ---

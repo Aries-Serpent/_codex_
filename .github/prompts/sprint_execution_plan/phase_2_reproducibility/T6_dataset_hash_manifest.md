@@ -7,7 +7,7 @@
 task_id: T6
 priority: P1
 phase: phase_2_reproducibility
-effort: 2-3 days
+effort: 2-3 iterations
 dependencies: []
 ```
 

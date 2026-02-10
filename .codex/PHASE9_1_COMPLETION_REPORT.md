@@ -241,8 +241,8 @@ All 5 agents configured with cognitive brain metrics tracking:
 ### Storage
 - Type: SQLite
 - Path: `.codex/sessions/agent_metrics.db`
-- Retention: 90 days
-- Reporting: Daily
+- Retention: 90 iterations
+- Reporting: per-iteration
 
 ---
 

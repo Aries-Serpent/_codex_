@@ -20,7 +20,7 @@ This promptset provides ready-to-use prompt templates for autonomous implementat
 
 **Plan**: `.github/plans/RUST_SWARM_ARCHITECTURE_PLANSET.md`  
 **Phase**: Foundation → Orchestration → Optimization  
-**Duration**: 8 weeks autonomous execution  
+**Duration**: 8 phases autonomous execution  
 
 **Context**:
 Transitioning Codex from pure Python to Rust-orchestrated agent swarm to eliminate GIL bottlenecks and enable 500+ concurrent agents. Zero additional cost (GitHub Team + Copilot Pro+ only).

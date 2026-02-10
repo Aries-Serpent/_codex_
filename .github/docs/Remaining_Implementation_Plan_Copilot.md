@@ -14,7 +14,7 @@ This document outlines the 11 remaining implementation items identified during t
 
 **Current Progress**: 15 of 26 RC items complete (~58%)  
 **Remaining Items**: 11  
-**Est. Effort**: 3-5 weeks
+**Est. Effort**: 3-5 phases
 
 ## Guiding Principles
 
@@ -939,31 +939,31 @@ Remove audit file.
 | R9 | Extensibility | Medium | High | 7 | High |
 | R10 | Security | Medium | Low | 2 | Very Low |
 | R11 | Prompts | Low | Low | 1 | None |
-| **Total** | | | | **27 days** | |
+| **Total** | | | | **27 iterations** | |
 
-**Estimated Timeline**: 3-5 weeks (accounting for review cycles)
+**Estimated Timeline**: 3-5 phases (accounting for review cycles)
 
 ---
 
 ## Implementation Order
 
-### Phase 1: Documentation & Low-Hanging Fruit (1 week)
+### Phase 1: Documentation & Low-Hanging Fruit (1 phase)
 1. R7 - Architecture Diagrams
 2. R8 - End-to-End Example
 3. R6 - Helm Plan
 4. R11 - Prompt Audit
 
-### Phase 2: Tracking & Security (1 week)
+### Phase 2: Tracking & Security (1 phase)
 5. R3 - W&B Offline
 6. R10 - Secret Scanning + Deps Checker
 7. R5 - Registry Publishing
 
-### Phase 3: Training & Data (1-2 weeks)
+### Phase 3: Training & Data (1-2 phases)
 8. R1 - Distributed Tests
 9. R2 - Trainer Hooks
 10. R4 - Offline Streaming Robustness
 
-### Phase 4: Advanced Extensibility (1-2 weeks)
+### Phase 4: Advanced Extensibility (1-2 phases)
 11. R9 - Broader Plugin Interfaces
 
 ---

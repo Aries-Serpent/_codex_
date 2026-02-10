@@ -14,16 +14,16 @@
 
 ## Top 10 Priority Modules (Quick Wins)
 
-1. **src/codex_ml/security/cve_monitor.py** - 6.4KB, 2 days
-2. **src/codex_ml/data/loaders/hdf5_loader.py** - 5.9KB, 1-2 days
-3. **src/codex_ml/data/loaders/parquet_loader.py** - 5.8KB, 1-2 days
-4. **src/codex/security/log_sanitizer.py** - 6.6KB, 2 days
-5. **src/codex_ml/safety/sandbox.py** - 2.9KB, 1 day
-6. **src/codex_ml/data/loader.py** - 17.9KB, 3-4 days
-7. **src/codex_ml/data/validation.py** - 16.8KB, 3-4 days
-8. **src/codex/auth/oauth_manager.py** - 13.4KB, 3-4 days
-9. **src/codex_ml/cli/main.py** - 28.7KB, 3-5 days
-10. **src/codex/cli/main.py** - 11.0KB, 2-3 days
+1. **src/codex_ml/security/cve_monitor.py** - 6.4KB, 2 iterations
+2. **src/codex_ml/data/loaders/hdf5_loader.py** - 5.9KB, 1-2 iterations
+3. **src/codex_ml/data/loaders/parquet_loader.py** - 5.8KB, 1-2 iterations
+4. **src/codex/security/log_sanitizer.py** - 6.6KB, 2 iterations
+5. **src/codex_ml/safety/sandbox.py** - 2.9KB, 1 iteration
+6. **src/codex_ml/data/loader.py** - 17.9KB, 3-4 iterations
+7. **src/codex_ml/data/validation.py** - 16.8KB, 3-4 iterations
+8. **src/codex/auth/oauth_manager.py** - 13.4KB, 3-4 iterations
+9. **src/codex_ml/cli/main.py** - 28.7KB, 3-5 iterations
+10. **src/codex/cli/main.py** - 11.0KB, 2-3 iterations
 
 ## Phase 2 Plan (Weeks 3-5)
 

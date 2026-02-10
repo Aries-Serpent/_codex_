@@ -195,7 +195,7 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 - Incident response planning
 
 ### Documentation
-- Weekly documentation updates
+- per-phase documentation updates
 - Monthly comprehensive review
 - Quarterly major revisions
 - Continuous API documentation
@@ -209,7 +209,7 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 - End-to-end testing
 
 ### Code Quality
-- Weekly lint checks
+- per-phase lint checks
 - Monthly code reviews
 - Quarterly refactoring sprints
 - Continuous type safety improvements
@@ -352,7 +352,7 @@ This roadmap outlines the strategic development path for the _codex_ Cognitive B
 
 ## Communication Plan
 
-### Weekly Updates
+### per-phase Updates
 - Progress summary
 - Blockers identified
 - Next week priorities
@@ -411,7 +411,7 @@ The roadmap is successful when:
 2. [ ] Start performance optimization
 3. [ ] Begin quantum framework testing
 4. [ ] Create video tutorial (first)
-5. [ ] Weekly progress update
+5. [ ] per-phase progress update
 
 ### phase 3 (Jan 20-26, 2026)
 1. [ ] Bundle size optimization

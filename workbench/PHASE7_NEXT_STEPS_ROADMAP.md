@@ -52,7 +52,7 @@ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 | 7.1.4 | Deploy monitoring dashboards (Grafana/custom) | MEDIUM | 4h | DevOps |
 | 7.1.5 | Configure alerting channels (Slack/Email) | MEDIUM | 2h | DevOps |
 | 7.1.6 | Run integration tests in staging | HIGH | 2h | QA |
-| 7.1.7 | Gradual rollout: 10% → 50% → 100% | HIGH | 1 week | All |
+| 7.1.7 | Gradual rollout: 10% → 50% → 100% | HIGH | 1 phase | All |
 
 ### Validation Commands
 
@@ -156,7 +156,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 def track_mlflow_adoption():
-    """Query MLflow for training runs in last 7 days."""
+    """Query MLflow for training runs in last 7 iterations."""
     try:
         import mlflow
         runs = mlflow.search_runs(
@@ -219,7 +219,7 @@ survey:
 ### Acceptance Criteria
 
 - [ ] Adoption dashboard operational
-- [ ] Weekly adoption reports generated
+- [ ] per-phase adoption reports generated
 - [ ] Feedback survey distributed
 - [ ] ≥10 feedback responses collected
 - [ ] Barriers identified and documented
@@ -513,7 +513,7 @@ drift_detection:
 |----------|---------|---------|--------|
 | Engineering Team | Phase 7 kickoff announcement | Slack #engineering | Day 1 |
 | ML Team | Training session invitation | Email | Day 1 |
-| Leadership | Weekly progress report | Email | End of Pre-commit 1-2 |
+| Leadership | per-phase progress report | Email | End of Pre-commit 1-2 |
 | Stakeholders | Adoption metrics dashboard | Dashboard link | Pre-commit 3-4 |
 
 ---

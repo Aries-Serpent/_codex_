@@ -531,7 +531,7 @@ PR #3156 created for human review.
 ### Access Control
 - ✅ Requires `contents:write` permission (optional, advisory mode needs only `read`)
 - ✅ Requires `pull_requests:write` for PR creation
-- ✅ Token rotation every 90 days
+- ✅ Token rotation every 90 iterations
 
 ### Audit Trail
 - ✅ All fixes logged to `.codex/action_log.ndjson`

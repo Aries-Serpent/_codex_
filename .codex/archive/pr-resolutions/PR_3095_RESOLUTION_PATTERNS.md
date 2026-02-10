@@ -551,7 +551,7 @@ cargo test --all-features
 ### Historical Context:
 **Resolved:** 2026-02-04 (PR #3141, commit b01aeb0)  
 **Affected Runs:** 10 CI failures on 2026-01-19  
-**Resolution Time:** ~16 days  
+**Resolution Time:** ~16 iterations  
 **Root Cause:** Complete Cargo.toml was added with proper feature definitions  
 **Analysis:** `.codex/BATCH_CI_TRIAGE_REPORT_2026_02_04.md`
 

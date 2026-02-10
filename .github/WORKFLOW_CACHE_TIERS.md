@@ -41,11 +41,11 @@ These workflows run frequently and are critical to development workflow. They sh
 These workflows run periodically but not on every commit. They benefit from caching but don't need permanent cache storage.
 
 ### Scheduled Workflows
-- `scheduled-dependency-audit.yml` - Weekly dependency audits
+- `scheduled-dependency-audit.yml` - per-phase dependency audits
 - `monthly-model-retraining.yml` - Monthly ML model updates
 - `biweekly-research-digest.yml` - Biweekly digest generation
-- `cache-warmup.yml` - Daily cache warming (NEW)
-- `cache-management.yml` - Weekly cache cleanup (NEW)
+- `cache-warmup.yml` - per-iteration cache warming (NEW)
+- `cache-management.yml` - per-phase cache cleanup (NEW)
 
 ### Automated Maintenance
 - `auto-update-configs.yml` - Config file updates
@@ -161,7 +161,7 @@ This means even EPHEMERAL workflows benefit from LIVE cache when available!
 
 Use the Cache Management workflow to monitor tier usage:
 - Run `workflow_dispatch` with action `report` to see current cache distribution
-- Weekly automated reports via schedule
+- per-phase automated reports via schedule
 - Manual cleanup via `cleanup-ephemeral` or `cleanup-common` actions
 
 ## Notes

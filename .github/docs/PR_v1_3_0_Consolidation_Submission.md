@@ -335,7 +335,7 @@ git reset --hard v1.2.9-pre-consolidation
 3. ✅ Monitor deprecation warnings in logs
 4. ✅ Update team documentation with new import conventions
 
-### Within 30 Days
+### Within 30 iterations
 5. ⏸️ Gather usage statistics on legacy imports
 6. ⏸️ Track deprecation warning occurrences
 7. ⏸️ Plan remaining 42 legacy import updates (11 training + 29 hydra + 2 models)

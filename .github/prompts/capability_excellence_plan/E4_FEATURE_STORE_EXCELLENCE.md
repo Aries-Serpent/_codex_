@@ -2,7 +2,7 @@
 
 > **Target:** 0.80+ → ~1.00  
 > **Priority:** P2 High  
-> **Estimated Effort:** 2-3 days  
+> **Estimated Effort:** 2-3 iterations  
 > **Impact:** +0.20 capability score
 
 ---
@@ -309,5 +309,5 @@ Also create docs/troubleshooting/feature_store.md with 20+ common issues
 ---
 
 **Batchset Status**: Ready for Implementation  
-**Estimated Timeline**: 2-3 days  
+**Estimated Timeline**: 2-3 iterations  
 **Priority**: P2 High

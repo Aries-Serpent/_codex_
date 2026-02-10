@@ -244,7 +244,7 @@ All Codex-specific variables follow these conventions:
 **Storage:**
 - Use GitHub Secrets for CI/CD
 - Use environment variables or secure vaults locally
-- Rotate regularly (every 90 days for tokens)
+- Rotate regularly (every 90 iterations for tokens)
 
 ### Public Variables
 

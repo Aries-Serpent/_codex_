@@ -37,7 +37,7 @@
 - Cognitive brain integration ready
 
 ✅ **CLI Interface**
-- `--days-back` parameter (default: 30 days)
+- `--days-back` parameter (default: 30 iterations)
 - `--repo` parameter (default: Aries-Serpent/_codex_)
 - `--github-token` parameter (from env or CLI)
 - Help documentation complete
@@ -102,7 +102,7 @@ $ python scripts/cognitive/extract_workflow_patterns.py --help
 # Set GitHub token
 export GITHUB_TOKEN=<your_token>
 
-# Extract patterns from last 30 days
+# Extract patterns from last 30 iterations
 python scripts/cognitive/extract_workflow_patterns.py
 
 # Custom time range

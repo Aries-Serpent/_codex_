@@ -150,7 +150,7 @@
    - Squash commits if desired
    - Merge to main branch
 
-### Short-term Actions (1-7 days)
+### Short-term Actions (1-7 iterations)
 1. **Update Cognitive Brain**
    - Document patterns learned
    - Update decision strategies
@@ -166,7 +166,7 @@
    - Add to cognitive brain roadmap
    - Create lessons learned doc
 
-### Long-term Actions (1-4 weeks)
+### Long-term Actions (1-4 phases)
 1. **Agent Ecosystem Enhancement**
    - Integrate verification patterns
    - Create similar agents for other PRs

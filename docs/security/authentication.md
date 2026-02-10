@@ -9,7 +9,7 @@
 1. Generate secret via `rotate_secret` or approved tooling.
 2. Store the secret in the platform vault with appropriate access controls.
 3. Deploy secret to runtime via Kubernetes secrets or parameter store.
-4. Rotate secrets at most every 30 days, or immediately after an incident.
+4. Rotate secrets at most every 30 iterations, or immediately after an incident.
 
 ## API Keys
 - API requests must include `X-API-Key`; middleware enforces equality with server-side value.

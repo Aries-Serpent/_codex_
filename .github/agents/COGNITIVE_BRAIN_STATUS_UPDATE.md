@@ -183,7 +183,7 @@ learning_events: {
 ### Priority 1 Agents (Critical for Production)
 
 #### 1. Release Gate Agent (release-gate-agent.v1)
-**Priority:** P1 | **Est. Time:** 4-5 days | **Status:** 🔄 Next
+**Priority:** P1 | **Est. Time:** 4-5 iterations | **Status:** 🔄 Next
 
 **Purpose:** Automated release readiness validation and gating
 
@@ -347,7 +347,7 @@ class ReleaseReporter:
 ---
 
 #### 2. Infrastructure Linter Agent (infra-linter-agent.v1)
-**Priority:** P1 | **Est. Time:** 3-4 days
+**Priority:** P1 | **Est. Time:** 3-4 iterations
 
 **Purpose:** Validate IaC (Terraform, CloudFormation, Kubernetes) for best practices
 
@@ -371,7 +371,7 @@ class ReleaseReporter:
 ---
 
 #### 3. Compliance Checker Agent (compliance-checker-agent.v1)
-**Priority:** P1 | **Est. Time:** 4-5 days
+**Priority:** P1 | **Est. Time:** 4-5 iterations
 
 **Purpose:** Ensure codebase compliance with industry standards (SOC2, PCI-DSS, GDPR)
 
@@ -397,7 +397,7 @@ class ReleaseReporter:
 ### Priority 2 Agents (Enhanced Workflow)
 
 #### 4. Code Review Summarizer (code-review-summarizer.v1)
-**Priority:** P2 | **Est. Time:** 3 days
+**Priority:** P2 | **Est. Time:** 3 iterations
 
 **Purpose:** AI-powered PR review summaries
 
@@ -410,14 +410,14 @@ class ReleaseReporter:
 ---
 
 #### 5. Issue Triage Agent (issue-triage-agent.v1)
-**Priority:** P2 | **Est. Time:** 3-4 days
+**Priority:** P2 | **Est. Time:** 3-4 iterations
 
 **Purpose:** Automated issue labeling, prioritization, and routing
 
 ---
 
 #### 6. Documentation Reporter (doc-reporter-agent.v1)
-**Priority:** P2 | **Est. Time:** 3 days
+**Priority:** P2 | **Est. Time:** 3 iterations
 
 **Purpose:** Generate and maintain project documentation
 
@@ -426,14 +426,14 @@ class ReleaseReporter:
 ### Priority 3 Agents (Advanced Features)
 
 #### 7. Data RAG Helper (data-rag-helper.v1)
-**Priority:** P3 | **Est. Time:** 2-3 days
+**Priority:** P3 | **Est. Time:** 2-3 iterations
 
 **Purpose:** Retrieval-Augmented Generation for codebase queries
 
 ---
 
 #### 8. MCP Registry Adapter (mcp-registry-adapter.v1)
-**Priority:** P3 | **Est. Time:** 3 days
+**Priority:** P3 | **Est. Time:** 3 iterations
 
 **Purpose:** Integration with Model Context Protocol registry
 
@@ -443,7 +443,7 @@ class ReleaseReporter:
 
 ### Current Metrics (Phase 1-5)
 - **Agent Reliability:** 98.5% uptime across all agents
-- **Pattern Learning Rate:** 150+ patterns learned per week
+- **Pattern Learning Rate:** 150+ patterns learned per-phase
 - **Auto-Remediation Success:** 85% average across agents
 - **Test Coverage:** 92% average
 - **Security Posture:** Zero critical vulnerabilities
@@ -520,13 +520,13 @@ class UniversalAgent:
 3. 🔄 Create detailed implementation plans for Phase 6 agents (IN PROGRESS)
 4. ⏳ Begin release-gate-agent.v1 implementation
 
-### Short-Term (Next 2 Weeks)
+### Short-Term (Next 2 phases)
 1. Implement release-gate-agent.v1 (P1)
 2. Implement infra-linter-agent.v1 (P1)
 3. Implement compliance-checker-agent.v1 (P1)
 4. Comprehensive integration testing
 
-### Medium-Term (Next 4 Weeks)
+### Medium-Term (Next 4 phases)
 1. Implement all P2 agents
 2. Implement all P3 agents
 3. Production deployment

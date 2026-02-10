@@ -202,13 +202,13 @@ on:
 - Autonomous agents
 - Core CI/CD pipelines
 
-**Common Tier (7-day):**
+**Common Tier (7 iteration):**
 - Standard workflows (1-10x/day)
 - Security scans
 - Documentation builds
 - Most scheduled jobs
 
-**Ephemeral Tier (1-day):**
+**Ephemeral Tier (1 iteration):**
 - Sync operations
 - Experimental features
 - Infrequent workflows (<1x/day)

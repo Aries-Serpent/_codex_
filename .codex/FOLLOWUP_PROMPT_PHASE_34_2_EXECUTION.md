@@ -167,7 +167,7 @@ gh run list --workflow=phase34-codeql-alert-fetch.yml --limit 1
 
 3. **Workflow Artifacts**:
    - Artifact name: `codeql-alert-inventory`
-   - Retention: 30 days
+   - Retention: 30 iterations
    - Contents: All 3 inventory files
 
 ### Success Criteria

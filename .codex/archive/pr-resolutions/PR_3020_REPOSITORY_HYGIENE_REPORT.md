@@ -1132,33 +1132,33 @@ fdupes -r . --exclude=.git --exclude=node_modules --exclude=.venv
 
 | Priority | Total Issues | Total Effort | Quick Wins |
 |----------|-------------|--------------|------------|
-| **P0 Critical** | 0 | 0 hours | ✅ Complete |
-| **P1 High** | 104 | 31-52 hours | 8-16 hours |
-| **P2 Medium** | 2,507 | 66-96 hours | 22-39 hours |
-| **P3 Low** | 507 | 28-53 hours | N/A |
+| **P0 Critical** | 0 | 0 Commits | ✅ Complete |
+| **P1 High** | 104 | 31-52 Commits | 8-16 Commits |
+| **P2 Medium** | 2,507 | 66-96 Commits | 22-39 Commits |
+| **P3 Low** | 507 | 28-53 Commits | N/A |
 | **TOTAL** | **3,118** | **125-201 hours** | **30-55 hours** |
 
 ### By Category
 
 | Category | Issues | Effort | Quick Wins |
 |----------|--------|--------|------------|
-| Code Quality | 2,507 | 49-76 hours | 9-14 hours |
-| Security | 104 | 35-54 hours | 11-22 hours |
-| Documentation | 507 | 17-27 hours | 2-3 hours |
-| CI/CD | 15 | 16-26 hours | 0 hours |
-| Dependencies | 0 | 3-5 hours | 0 hours |
-| Structure | 97 | 8-13 hours | 1-2 hours |
+| Code Quality | 2,507 | 49-76 Commits | 9-14 Commits |
+| Security | 104 | 35-54 Commits | 11-22 Commits |
+| Documentation | 507 | 17-27 Commits | 2-3 Commits |
+| CI/CD | 15 | 16-26 Commits | 0 Commits |
+| Dependencies | 0 | 3-5 Commits | 0 Commits |
+| Structure | 97 | 8-13 Commits | 1-2 Commits |
 | **TOTAL** | **3,118** | **125-201 hours** | **30-55 hours** |
 
 ### Recommended Approach
 
-**Sprint 1 (1-2 weeks): Quick Wins - Security & Usability**
+**Sprint 1 (1-2 phases): Quick Wins - Security & Usability**
 - Focus: P1 quick wins (8-16 hours)
 - Root folder Phase 1 cleanup (1-2 hours)
 - Security audits: eval/exec, shell=True, SQL injection, secrets (7-14 hours)
 - **Outcome:** Major security validation, improved navigation
 
-**Sprint 2 (2-3 weeks): Code Quality Quick Wins**
+**Sprint 2 (2-3 phases): Code Quality Quick Wins**
 - Focus: P2 quick wins (22-39 hours)
 - Add type hints to public APIs (8-12 hours)
 - Add missing docstrings (4-8 hours)
@@ -1166,7 +1166,7 @@ fdupes -r . --exclude=.git --exclude=node_modules --exclude=.venv
 - Stabilize flaky tests (8-12 hours)
 - **Outcome:** Better developer experience, stable CI
 
-**Sprint 3 (3-4 weeks): Comprehensive Improvements**
+**Sprint 3 (3-4 phases): Comprehensive Improvements**
 - Focus: Remaining P1 + selected P2 (40-60 hours)
 - Complete root folder cleanup (remaining phases)
 - Full type hints coverage

@@ -31,7 +31,7 @@ The primary deliverable - a comprehensive executive summary of the entire audit 
 - Key findings and metrics
 - Overall maturity assessment (Level 2-3)
 - Strengths and critical gaps
-- 16-week roadmap to production autonomy
+- 16 phase roadmap to production autonomy
 - Top 20 priority actions
 
 **Start here** for a high-level understanding of the audit results.
@@ -150,7 +150,7 @@ Complete prioritized remediation backlog with **45 identified gaps**:
 
 **Breakdown:**
 - **P0 (Critical):** 5 gaps - Must fix immediately
-- **P1 (High):** 11 gaps - Fix within 2 weeks
+- **P1 (High):** 11 gaps - Fix within 2 phases
 - **P2 (Medium):** 14 gaps - Fix within 1 month
 - **P3 (Low):** 15 gaps - Fix within 1 quarter
 
@@ -210,7 +210,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 ### For Project Managers
 
 1. **Understand Scope** - Executive summary provides high-level overview
-2. **Budget Planning** - Estimated 140-260 days across 16 weeks
+2. **Budget Planning** - Estimated 140-260 iterations across 16 phases
 3. **Resource Allocation** - 45 tasks across 4 priority levels
 4. **Risk Assessment** - Critical gaps identified in autonomy, reproducibility, security
 5. **Milestone Planning** - 4 phases with clear success criteria
@@ -337,7 +337,7 @@ Ready-to-apply atomic code diffs for top 10 critical fixes:
 **A:** Yes! Every gap includes specific recommendations, and `remediation_diffs.md` provides ready-to-apply code changes for critical fixes.
 
 ### Q: How long will remediation take?
-**A:** Estimated 16 weeks (140-260 engineering days) with a team of 2-3 engineers, broken into 4 phases.
+**A:** Estimated 16 phases (140-260 engineering days) with a team of 2-3 engineers, broken into 4 phases.
 
 ### Q: Can we automate remediation?
 **A:** Partially. The `codex_ready_task_sequence.yaml` is designed for automation. Many tasks require human oversight for architectural decisions.
@@ -391,7 +391,7 @@ For questions or clarification on audit findings:
 - All 18 capability domains assessed
 - 45 gaps identified and prioritized
 - 10 critical fixes with diffs provided
-- 16-week roadmap established
+- 16 phase roadmap established
 
 ---
 

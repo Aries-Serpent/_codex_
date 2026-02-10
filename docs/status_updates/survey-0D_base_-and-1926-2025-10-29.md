@@ -467,7 +467,7 @@ triaging milestones or proposing architectural changes.
 | M0 | Trace coverage ≥95% on curated templates | Validate with `codex metrics summarize --metric reasoning.trace_coverage`. |
 | M1 | Curriculum win rate ≥0.55 on `benchmarks/cot-lite` | Run the curriculum smoke in [First principles curricula](first_principles_curricula.md). |
 | M2 | Shadow latency p95 ≤700 ms | Capture with `codex deploy --dry-run --latency-report`. |
-| M3 | Weekly redeploy cadence with zero manual overrides | Enforced by the deployment checklist in [`templates/`](../templates/README.md). |
+| M3 | per-phase redeploy cadence with zero manual overrides | Enforced by the deployment checklist in [`templates/`](../templates/README.md). |
 
 Milestones build sequentially: do not advance without closing action items or documenting explicit risk trade-offs in
 [`status_updates/`](../status_updates/).

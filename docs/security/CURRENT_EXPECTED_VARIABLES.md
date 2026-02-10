@@ -191,7 +191,7 @@ Use this checklist to verify your secrets/variables configuration:
 ### Security Considerations
 
 1. **Never Commit Secrets**: All secrets listed above should ONLY be stored in GitHub Settings → Secrets
-2. **Token Rotation**: Rotate `CODEX_GHP_TOKEN_*` secrets every 90 days
+2. **Token Rotation**: Rotate `CODEX_GHP_TOKEN_*` secrets every 90 iterations
 3. **API Key Rotation**: Rotate `OPENAI_API_KEY` and `PINECONE_API_KEY` quarterly
 4. **Access Control**: Limit repository admin access to trusted users only
 5. **Audit Logs**: Regularly review secret access logs in repository settings

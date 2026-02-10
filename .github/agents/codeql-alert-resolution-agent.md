@@ -220,7 +220,7 @@ bandit -r src/ -f json -o security-report.json
 - False positives: 100 (7%)
 - Remaining: 650 (43%)
 
-### Weekly Report
+### per-phase Report
 **Auto-generated:** Every Monday 9 AM UTC
 
 **Includes:**
@@ -397,9 +397,9 @@ tail -f .codex/security/agent_actions.log
 - ✅ 100% audit trail compliance
 
 ### Repository Security Targets
-- ✅ Zero P0/P1 alerts older than 7 days
+- ✅ Zero P0/P1 alerts older than 7 iterations
 - ✅ <10 P2 alerts in backlog
-- ✅ Weekly security scan passing
+- ✅ per-phase security scan passing
 - ✅ All developers security-trained
 
 ## 📞 Support & Escalation

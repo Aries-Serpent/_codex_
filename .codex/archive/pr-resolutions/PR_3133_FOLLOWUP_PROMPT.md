@@ -236,7 +236,7 @@ Update PR description after each commit to show progress.
 - Session 3: 8-10 pre-commits (Coverage)
 - Session 4: 6-8 pre-commits (Final cleanup)
 
-**Note**: Can be executed incrementally over multiple days/weeks as capacity allows.
+**Note**: Can be executed incrementally over multiple iterations/phases as capacity allows.
 
 ## 📞 Questions or Blockers?
 

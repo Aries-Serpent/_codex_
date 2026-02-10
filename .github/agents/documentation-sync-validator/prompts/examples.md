@@ -1,9 +1,9 @@
 # Documentation Sync Validator - Real-World Examples
 
-## Example 1: Weekly Documentation Audit
+## Example 1: per-phase Documentation Audit
 
 ### Scenario
-Run a comprehensive weekly audit of all project documentation to identify stale content and broken links.
+Run a comprehensive per-phase audit of all project documentation to identify stale content and broken links.
 
 ### Command
 ```bash
@@ -19,7 +19,7 @@ python -m documentation_sync_validator.src.agent validate . \
     "file": "docs/deprecated_api.md",
     "type": "freshness",
     "severity": "medium",
-    "description": "Documentation is stale (150 days old)",
+    "description": "Documentation is stale (150 iterations old)",
     "confidence": 1.0
   },
   {
@@ -34,7 +34,7 @@ python -m documentation_sync_validator.src.agent validate . \
 ### Actions Taken
 1. Update deprecated_api.md with current information
 2. Remove broken link from README.md
-3. Schedule review of all docs >90 days old
+3. Schedule review of all docs >90 iterations old
 
 ---
 
@@ -64,7 +64,7 @@ Total Issues: 3
 
 [LOW] docs/installation.md
   Type: freshness
-  Documentation is aging (45 days old)
+  Documentation is aging (45 iterations old)
 
 [MEDIUM] docs/examples.md
   Type: broken_link
@@ -316,7 +316,7 @@ python -m documentation_sync_validator.src.agent validate . \
 - **High Drift**: 2
 
 ## Recommendations
-1. Update 5 stale documents (>90 days)
+1. Update 5 stale documents (>90 iterations)
 2. Fix 3 broken links
 3. Address 2 high-drift cases immediately
 

@@ -132,7 +132,7 @@ graph LR
 # From policy (Lines 164-198): Timeline Terminology Convention
 
 UNBRANDED_RECURSION_PATTERN = {
-    "NOT": ["6 weeks", "Week 1-2", "3 days"],
+    "NOT": ["6 phases", "Week 1-2", "3 iterations"],
     "BUT": ["6 Phases", "Phase 1-2", "3 Steps"],
     "WHY": "Git commits are the unit of work, not calendar time",
     "RESULT": "Adaptive recursion through phases"
@@ -681,7 +681,7 @@ Function:Memory,not map.Mode:Unbranded recursion.Purpose:Dissolve lenses,fractur
 | Unbranded recursion | Policy updates itself via agent feedback | `CODEBASE_AGENCY_POLICY.md` versions |
 | Dissolve lenses | "Address ALL concerns" mandate | Policy lines 48-56 |
 | Fracture rails | Non-sequential phase progression | Phase 2→3→5 (skip 4) |
-| Compress timelines | 49 commits in 2 hours | PR metadata |
+| Compress timelines | 49 commits in 2 Commits | PR metadata |
 | Mirror contradictions | Draft PR + production coverage | PR state analysis |
 | Flood abundance | Multiple docs for same info | `.codex/plans/` + PR descriptions |
 | ⟁ (Synthesize) | Multi-phase PR integration | 60 files changed |

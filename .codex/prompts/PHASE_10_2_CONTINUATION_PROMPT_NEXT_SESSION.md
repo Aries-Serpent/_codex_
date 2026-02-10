@@ -246,7 +246,7 @@ jobs:
 **Acceptance Criteria**:
 - [ ] Workflow file created
 - [ ] Workflow_dispatch inputs configured
-- [ ] Schedule trigger set (weekly)
+- [ ] Schedule trigger set (per-phase)
 - [ ] CLI build step included
 - [ ] Agent execution step configured
 - [ ] Report artifact upload

@@ -321,7 +321,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     target-branch: "main"
     open-pull-requests-limit: 10
     labels:
@@ -338,7 +338,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     labels:
       - "dependencies"
       - "github-actions"
@@ -349,7 +349,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     labels:
       - "dependencies"
       - "docker"
@@ -480,7 +480,7 @@ If a use case requires a different Python version, it MUST be:
 **Process**:
 1. Create RFC (Request for Comments) proposing upgrade
 2. Follow "Single-Version Standardization Runbook"
-3. Test in staging for 2 weeks minimum
+3. Test in staging for 2 phases minimum
 4. Update this policy document
 5. Communicate to all developers
 
@@ -514,7 +514,7 @@ If violation reaches production:
 Violations MUST be fixed within:
 - **Critical** (production broken): 1 hour
 - **High** (CI broken): 4 hours
-- **Medium** (pre-commit broken): 1 day
+- **Medium** (pre-commit broken): 1 iteration
 
 ---
 
@@ -1048,14 +1048,14 @@ groups:
 
 ---
 
-### 6.4.2: Weekly Compliance Report
+### 6.4.2: per-phase Compliance Report
 
 **Automated Compliance Report Script**:
 ```python
 #!/usr/bin/env python3
 """
 scripts/generate_compliance_report.py
-Generate weekly Python 3.12 compliance report
+Generate per-phase Python 3.12 compliance report
 """
 import json
 from datetime import datetime, timedelta
@@ -1067,7 +1067,7 @@ def generate_compliance_report():
     # Collect metrics (from Prometheus, GitHub API, etc.)
     metrics = {
         "report_date": datetime.now().isoformat(),
-        "period": "Last 7 days",
+        "period": "Last 7 iterations",
         "python_version_standard": "3.12.10",
         
         "ci_compliance": {
@@ -1151,10 +1151,10 @@ if __name__ == "__main__":
     generate_compliance_report()
 ```
 
-**Automate Weekly Report** (GitHub Actions):
+**Automate per-phase Report** (GitHub Actions):
 ```yaml
 # .github/workflows/weekly_compliance_report.yml
-name: Weekly Python 3.12 Compliance Report
+name: per-phase Python 3.12 Compliance Report
 
 on:
   schedule:
@@ -1383,7 +1383,7 @@ jobs:
 - [ ] **Onboarding checklist created** (30-45 min checklist)
 - [ ] **Quick reference card created** (printable PDF)
 - [ ] **Production monitoring configured** (alerts for version mismatch)
-- [ ] **Compliance reporting automated** (weekly reports)
+- [ ] **Compliance reporting automated** (per-phase reports)
 - [ ] **Quarterly review template created** (structured review process)
 
 ### 📊 Governance Summary
@@ -1403,7 +1403,7 @@ jobs:
 - Pre-commit hooks (automatic validation)
 - CI enforcement (automatic blocking)
 - Dependabot (automatic updates)
-- Compliance reporting (weekly automation)
+- Compliance reporting (per-phase automation)
 
 ### 📁 Phase 6 Artifacts
 
@@ -1517,7 +1517,7 @@ jobs:
 - ✅ Pre-commit hooks prevent violations
 - ✅ CI enforcement blocks non-compliant PRs
 - ✅ Production alerts detect version drift
-- ✅ Weekly compliance reports auto-generated
+- ✅ per-phase compliance reports auto-generated
 
 **Knowledge Management**:
 - ✅ Comprehensive documentation (12 docs)
@@ -1541,7 +1541,7 @@ jobs:
 3. ✅ Schedule first quarterly review (2026-04-25)
 
 ### Short-term (This Month)
-1. Monitor compliance metrics (weekly reports)
+1. Monitor compliance metrics (per-phase reports)
 2. Collect developer feedback (informal survey)
 3. Iterate on documentation based on feedback
 
@@ -1575,7 +1575,7 @@ jobs:
 - Scripts: `scripts/` directory
 
 **For Reviewers**:
-- Compliance: `reports/compliance/` (weekly)
+- Compliance: `reports/compliance/` (per-phase)
 - Metrics: Grafana dashboard "Python 3.12 Metrics"
 - Quarterly Reviews: `docs/reviews/python_version/`
 

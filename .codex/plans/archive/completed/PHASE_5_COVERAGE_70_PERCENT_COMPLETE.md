@@ -213,7 +213,7 @@ Coverage Evolution: 2.86% → 70%
 - ML training schedulers and optimizers
 - Comprehensive evaluation metrics
 - Full CLI subcommand coverage
-- **Estimated:** 100 tests, 3-4 weeks
+- **Estimated:** 100 tests, 3-4 phases
 
 **Detailed Roadmap:** See `.codex/plans/COVERAGE_PATH_70_TO_100_PERCENT.md`
 

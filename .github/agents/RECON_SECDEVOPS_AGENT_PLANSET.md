@@ -274,7 +274,7 @@ triggers:
     - "**/*.tfvars"
   on_pr: true
   on_push_to_main: true
-  schedule: "0 2 * * *"  # Daily at 2 AM
+  schedule: "0 2 * * *"  # per-iteration at 2 AM
 
 outputs:
   - sarif
@@ -467,7 +467,7 @@ jobs:
 | Detection Coverage | > 85% OWASP Top 10 | Benchmark test suite |
 | Scan Time | < 5 min for 100K LOC | CI pipeline duration |
 | Remediation Adoption | > 60% fixes applied | PR merge rate |
-| Time to Detection | < 24 hours | From commit to alert |
+| Time to Detection | < 24 Commits | From commit to alert |
 
 ---
 

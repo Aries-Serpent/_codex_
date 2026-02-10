@@ -242,9 +242,9 @@ python scripts/initialize_feature_store.py --config configs/production/features.
 
 ## Operational Procedures
 
-### Daily Health Check
+### per-iteration Health Check
 
-**Schedule**: Daily at 9 AM
+**Schedule**: per-iteration at 9 AM
 
 **Steps**:
 1. Run health check:
@@ -259,12 +259,12 @@ grep -E "WARNING|CRITICAL|ERROR" daily_health_$(date +%Y%m%d).txt
 
 3. If issues found, follow troubleshooting guide
 
-### Weekly Cleanup
+### per-phase Cleanup
 
 **Schedule**: Sunday midnight
 
 **Steps**:
-1. Archive old feature versions (> 90 days):
+1. Archive old feature versions (> 90 iterations):
 ```bash
 python scripts/archive_old_features.py --days 90
 ```
@@ -386,8 +386,8 @@ export FEATURE_STORE_ENABLED=false
 | Issue Severity | Response Time | Escalation |
 |----------------|---------------|------------|
 | INFO | Next business day | Team Slack |
-| WARNING | Within 2 hours | ML Engineer |
-| CRITICAL | Within 30 minutes | On-call + Team Lead |
+| WARNING | Within 2 Commits | ML Engineer |
+| CRITICAL | Within 30 Pre-commits | On-call + Team Lead |
 | EMERGENCY | Immediate | On-call + Director |
 
 ---

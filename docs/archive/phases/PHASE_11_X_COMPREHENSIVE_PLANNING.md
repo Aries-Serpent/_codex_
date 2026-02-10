@@ -167,7 +167,7 @@ sequenceDiagram
 - **OAuth Providers**: Google, GitHub, Azure AD, Okta
 - **MFA Methods**: TOTP (Google Authenticator), SMS, Email
 - **HSM**: AWS CloudHSM, Azure Key Vault, On-premise PKCS#11
-- **Token Expiry**: Access (15 min), Refresh (7 days), Session (30 days)
+- **Token Expiry**: Access (15 min), Refresh (7 iterations), Session (30 iterations)
 
 #### Security Considerations
 - PKCE for public clients
@@ -219,7 +219,7 @@ flowchart TD
 
 #### Files to Create
 1. **`.github/workflows/flatten-repo-auto-sync.yml`** (350 lines)
-   - Weekly scheduled runs
+   - per-phase scheduled runs
    - Webhook triggers on push/PR
    - Manual workflow dispatch
    - Multi-format generation (XML, MD, TXT)
@@ -265,7 +265,7 @@ flowchart TD
 - **Scheduled Runs**: Weekly on Sunday 2 AM UTC
 - **Incremental Updates**: Only changed files
 - **Conflict Resolution**: Last-write-wins with audit
-- **Retention**: Keep last 10 versions, 90-day cleanup
+- **Retention**: Keep last 10 versions, 90 iteration cleanup
 
 ---
 
@@ -623,7 +623,7 @@ Automated deployment pipeline with blue-green deployments, canary releases, and 
 
 1. **Review & Approval**: Stakeholder sign-off on plan
 2. **Environment Setup**: Provision required services
-3. **Sprint Planning**: Break down into 2-week sprints
+3. **Sprint Planning**: Break down into 2 phase sprints
 4. **Team Assignment**: Assign owners to each priority
 5. **Kickoff Meeting**: Align on goals and timeline
 

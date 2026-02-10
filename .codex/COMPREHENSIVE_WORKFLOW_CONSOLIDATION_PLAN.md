@@ -436,14 +436,14 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ### Current Performance (Phase 4 (2025))
 - **Deployment Frequency**: 12 deployments/month (target: 20)
-- **Lead Time (code → production)**: 3.5 days (target: 1 day)
+- **Lead Time (code → production)**: 3.5 iterations (target: 1 iteration)
 - **Model Accuracy Drift**: 2.1% avg degradation/month (target: <1%)
 - **Incident Response Time**: 45 min (target: 15 min)
 - **Automated vs Manual Deployments**: 70% automated (target: 95%)
 
 ### Level 4 Targets (Phase 4 (2026))
 - **Deployment Frequency**: 30+ deployments/month
-- **Lead Time**: <1 day (fully automated)
+- **Lead Time**: <1 iteration (fully automated)
 - **Model Accuracy Drift**: <0.5% (proactive retraining)
 - **Incident Response**:  <10 min (automated rollback)
 - **Automated Deployments**: 98%+
@@ -788,7 +788,7 @@ def identify_consolidation_candidates(inventory: dict) -> dict:
             "reason": "Single validation pipeline with sequential jobs",
         },
         "monitoring": {
-            "keep": ["daily-status-pipeline.yml", "publish_dashboard_release.yml"],
+            "keep": ["per-iteration-status-pipeline.yml", "publish_dashboard_release.yml"],
             "remove":  ["daily_status_cron.yml", "daily_status_enrich.yml", "automation_ingest.yml", "produce-trend. yml", "report_publish.yml"],
             "reason":  "Consolidated into single pipeline with job dependencies",
         },
@@ -1020,7 +1020,7 @@ git commit -m "feat(ci): add workflow backup system with integrity verification
 - Copy all . yml/.yaml files from . github/workflows
 - Generate manifest with SHA256 checksums
 - Verify backup integrity (file count + checksums)
-- Support incremental daily backups
+- Support incremental per-iteration backups
 
 Backup location: .github/workflow-archive/backups/YYYY-MM-DD/
 
@@ -1437,11 +1437,11 @@ class WorkflowConsolidator:
         print("Phase 5: Monitoring Workflows")
         print("="*70)
         
-        self.disable_workflow("daily_status_cron.yml", "Merged into daily-status-pipeline.yml")
-        self.disable_workflow("daily_status_enrich.yml", "Merged into daily-status-pipeline.yml")
-        self.disable_workflow("automation_ingest.yml", "Merged into daily-status-pipeline.yml")
-        self.disable_workflow("produce-trend.yml", "Merged into daily-status-pipeline.yml")
-        self.disable_workflow("report_publish.yml", "Merged into daily-status-pipeline.yml")
+        self.disable_workflow("daily_status_cron.yml", "Merged into per-iteration-status-pipeline.yml")
+        self.disable_workflow("daily_status_enrich.yml", "Merged into per-iteration-status-pipeline.yml")
+        self.disable_workflow("automation_ingest.yml", "Merged into per-iteration-status-pipeline.yml")
+        self.disable_workflow("produce-trend.yml", "Merged into per-iteration-status-pipeline.yml")
+        self.disable_workflow("report_publish.yml", "Merged into per-iteration-status-pipeline.yml")
     
     def consolidate_maintenance_workflows(self):
         """Phase 6: Consolidate maintenance workflows."""
@@ -1542,7 +1542,7 @@ The following consolidated workflows now handle multiple responsibilities:
 - `workflow-validation.yml`: Lint, validate, and template checks
 
 ### Monitoring
-- `daily-status-pipeline.yml`: All status reporting and dashboards
+- `per-iteration-status-pipeline.yml`: All status reporting and dashboards
 - `publish_dashboard_release.yml`: Dashboard releases
 
 ### Maintenance
@@ -1647,7 +1647,7 @@ Phases:
 2. Documentation (docs.yml, validate-docs*. yml)
 3. Container (container-build.yml, build-container-cache.yml)
 4. Validation (workflow-lint.yml, workflow-validator.yml, template-validation.yml)
-5. Monitoring (5 status workflows → daily-status-pipeline.yml)
+5. Monitoring (5 status workflows → per-iteration-status-pipeline.yml)
 6. Maintenance (cache-cleanup.yml, cache-warmer.yml)
 7. Other (duplicate-detection-per commit cycle.yml, post-merge-validation.yml)
 

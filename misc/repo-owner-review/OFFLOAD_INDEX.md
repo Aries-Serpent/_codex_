@@ -53,12 +53,12 @@ misc/repo-owner-review/
 ### Temporary Outputs
 **Location**: `temp-outputs/`  
 **Rationale**: Move temp/ and output/ directory contents  
-**Retention**: Short-term (90 days) unless documented as needed
+**Retention**: Short-term (90 iterations) unless documented as needed
 
 ### Deprecated Reports
 **Location**: `deprecated-reports/`  
 **Rationale**: Move _codex_reports/ contents (superseded by .codex structure)  
-**Retention**: 180 days for reference, then eligible for deletion
+**Retention**: 180 iterations for reference, then eligible for deletion
 
 ## Offloaded Files Inventory
 
@@ -186,7 +186,7 @@ misc/repo-owner-review/
 
 ## Maintenance Schedule
 
-- **Weekly**: Review temp-outputs/ for files older than 90 days
+- **per-phase**: Review temp-outputs/ for files older than 90 iterations
 - **Monthly**: Update OFFLOAD_INDEX.md with new offloads
 - **Quarterly**: Review deprecated-reports/ for deletion candidates
 - **Annually**: Archive historical coverage/logs to compressed format

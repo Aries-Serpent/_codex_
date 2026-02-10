@@ -35,56 +35,56 @@
 - **Priority:** CRITICAL
 - **Rationale:** Main CLI entry point for ML operations
 - **Impact:** High - Core user interface
-- **Effort:** 3-5 days
+- **Effort:** 3-5 iterations
 
 #### 2. **src/codex_ml/training/unified_training.py** - Score: 100
 - **Size:** 22,006 bytes
 - **Priority:** CRITICAL
 - **Rationale:** Central training orchestration logic
 - **Impact:** High - Training pipeline stability
-- **Effort:** 4-6 days
+- **Effort:** 4-6 iterations
 
 #### 3. **src/codex_ml/data/loader.py** - Score: 90
 - **Size:** 17,897 bytes
 - **Priority:** HIGH
 - **Rationale:** Data loading infrastructure
 - **Impact:** High - Data pipeline reliability
-- **Effort:** 3-4 days
+- **Effort:** 3-4 iterations
 
 #### 4. **src/codex_ml/data/validation.py** - Score: 90
 - **Size:** 16,778 bytes
 - **Priority:** HIGH
 - **Rationale:** Data validation and quality checks
 - **Impact:** High - Data integrity
-- **Effort:** 3-4 days
+- **Effort:** 3-4 iterations
 
 #### 5. **src/codex_ml/safety/moderation.py** - Score: 90
 - **Size:** 10,865 bytes
 - **Priority:** HIGH
 - **Rationale:** Safety and content moderation
 - **Impact:** High - Security & compliance
-- **Effort:** 2-3 days
+- **Effort:** 2-3 iterations
 
 #### 6. **src/codex/cli/main.py** - Score: 90
 - **Size:** 11,039 bytes
 - **Priority:** HIGH
 - **Rationale:** Main CLI for codex operations
 - **Impact:** High - User-facing interface
-- **Effort:** 2-3 days
+- **Effort:** 2-3 iterations
 
 #### 7. **src/codex/auth/oauth_manager.py** - Score: 90
 - **Size:** 13,402 bytes
 - **Priority:** HIGH
 - **Rationale:** OAuth authentication management
 - **Impact:** High - Security critical
-- **Effort:** 3-4 days
+- **Effort:** 3-4 iterations
 
 #### 8. **src/codex/security/storage.py** - Score: 90
 - **Size:** 11,351 bytes
 - **Priority:** HIGH
 - **Rationale:** Secure storage implementation
 - **Impact:** High - Security critical
-- **Effort:** 2-3 days
+- **Effort:** 2-3 iterations
 
 ### Tier 1: High Priority (Score: 80-89)
 
@@ -93,56 +93,56 @@
 - **Priority:** HIGH
 - **Rationale:** Legacy training API compatibility
 - **Impact:** Medium - Backward compatibility
-- **Effort:** 8-10 days (complex)
+- **Effort:** 8-10 iterations (complex)
 
 #### 10. **src/codex_ml/config/__init__.py** - Score: 80
 - **Size:** 33,679 bytes
 - **Priority:** HIGH
 - **Rationale:** Configuration management
 - **Impact:** High - System-wide impact
-- **Effort:** 5-7 days
+- **Effort:** 5-7 iterations
 
 #### 11. **src/codex_ml/monitoring/codex_logging.py** - Score: 80
 - **Size:** 29,696 bytes
 - **Priority:** HIGH
 - **Rationale:** Logging infrastructure
 - **Impact:** Medium - Observability
-- **Effort:** 4-5 days
+- **Effort:** 4-5 iterations
 
 #### 12. **src/codex_ml/security/cve_monitor.py** - Score: 80
 - **Size:** 6,417 bytes
 - **Priority:** HIGH
 - **Rationale:** CVE monitoring and alerting
 - **Impact:** High - Security critical
-- **Effort:** 2 days
+- **Effort:** 2 iterations
 
 #### 13. **src/codex_ml/data/loaders/hdf5_loader.py** - Score: 80
 - **Size:** 5,929 bytes
 - **Priority:** HIGH
 - **Rationale:** HDF5 data loading
 - **Impact:** Medium - Data format support
-- **Effort:** 1-2 days
+- **Effort:** 1-2 iterations
 
 #### 14. **src/codex_ml/data/loaders/parquet_loader.py** - Score: 80
 - **Size:** 5,809 bytes
 - **Priority:** HIGH
 - **Rationale:** Parquet data loading
 - **Impact:** Medium - Data format support
-- **Effort:** 1-2 days
+- **Effort:** 1-2 iterations
 
 #### 15. **src/codex/security/log_sanitizer.py** - Score: 80
 - **Size:** 6,609 bytes
 - **Priority:** HIGH
 - **Rationale:** Log sanitization for PII
 - **Impact:** High - Privacy compliance
-- **Effort:** 2 days
+- **Effort:** 2 iterations
 
 #### 16. **src/codex/security/__init__.py** - Score: 80
 - **Size:** 7,119 bytes
 - **Priority:** HIGH
 - **Rationale:** Security module initialization
 - **Impact:** High - Security critical
-- **Effort:** 2 days
+- **Effort:** 2 iterations
 
 ### Tier 2: Important (Score: 70-79)
 
@@ -151,34 +151,34 @@
 - **Priority:** HIGH
 - **Rationale:** FSDP distributed training
 - **Impact:** Medium - Distributed training
-- **Effort:** 3-4 days
+- **Effort:** 3-4 iterations
 
 #### 18. **src/codex_ml/training/strategies.py** - Score: 70
 - **Size:** 18,099 bytes
 - **Priority:** HIGH
 - **Rationale:** Training strategies
 - **Impact:** Medium - Training flexibility
-- **Effort:** 3-4 days
+- **Effort:** 3-4 iterations
 
 #### 19. **src/codex_ml/cli/metrics_cli.py** - Score: 70
 - **Size:** 19,745 bytes
 - **Priority:** HIGH
 - **Rationale:** Metrics CLI interface
 - **Impact:** Medium - Monitoring
-- **Effort:** 3 days
+- **Effort:** 3 iterations
 
 #### 20. **src/codex_ml/cli/train.py** - Score: 70
 - **Size:** 17,667 bytes
 - **Priority:** HIGH
 - **Rationale:** Training CLI commands
 - **Impact:** High - User interface
-- **Effort:** 3 days
+- **Effort:** 3 iterations
 
 ---
 
 ## Quick Wins Analysis
 
-### Low Effort, High Impact (1-2 days, Score 70+)
+### Low Effort, High Impact (1-2 iterations, Score 70+)
 
 1. **src/codex_ml/security/cve_monitor.py** (6,417 bytes, Score: 80)
    - **Why:** Small, focused module with clear API
@@ -205,7 +205,7 @@
    - **Tests Needed:** 8-12 unit tests
    - **Estimated LOC:** 300-400 test lines
 
-### Medium Effort, High Impact (3-5 days, Score 90+)
+### Medium Effort, High Impact (3-5 iterations, Score 90+)
 
 6. **src/codex_ml/data/loader.py** (17,897 bytes, Score: 90)
    - **Why:** Core data infrastructure
@@ -355,11 +355,11 @@
 
 | Tier | Files | Est. Days | Est. Coverage Gain |
 |------|-------|-----------|-------------------|
-| Tier 1 (Critical) | 50 | 15 days | 12-15% |
-| Tier 2 (High) | 100 | 20 days | 15-18% |
-| Tier 3 (Medium) | 150 | 25 days | 12-15% |
-| Tier 4 (Low) | 218 | 30 days | 8-10% |
-| **TOTAL** | **518** | **90 days** | **47-58%** |
+| Tier 1 (Critical) | 50 | 15 iterations | 12-15% |
+| Tier 2 (High) | 100 | 20 iterations | 15-18% |
+| Tier 3 (Medium) | 150 | 25 iterations | 12-15% |
+| Tier 4 (Low) | 218 | 30 iterations | 8-10% |
+| **TOTAL** | **518** | **90 iterations** | **47-58%** |
 
 ### Phase 2 Focused Effort (Weeks 3-5)
 
@@ -419,17 +419,17 @@
 1. **Security Quick Wins** - Start with security modules for compliance
    - CVE monitor, log sanitizer, storage
    - ROI: High (critical paths secured)
-   - Effort: 2 days, 35 tests
+   - Effort: 2 iterations, 35 tests
 
 2. **Data Pipeline Foundation** - Build data reliability
    - loader.py, validation.py, format loaders
    - ROI: High (data quality gates)
-   - Effort: 3 days, 60 tests
+   - Effort: 3 iterations, 60 tests
 
 3. **Authentication Coverage** - Secure auth flows
    - oauth_manager.py
    - ROI: Critical (security requirement)
-   - Effort: 1.5 days, 35 tests
+   - Effort: 1.5 iterations, 35 tests
 
 ### Automation Opportunities
 
@@ -439,7 +439,7 @@
    - Security test template
 
 2. **Coverage Dashboard** - Real-time coverage monitoring
-   - Daily coverage reports
+   - per-iteration coverage reports
    - Module-level tracking
    - Trend analysis
 

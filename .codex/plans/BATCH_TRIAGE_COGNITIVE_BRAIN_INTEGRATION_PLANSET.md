@@ -78,7 +78,7 @@ This planset defines the **strategic-level integration** of the Batch CI Failure
 
 **Dependencies**: None (standalone milestone)
 
-**Estimated Effort**: 2-3 days
+**Estimated Effort**: 2-3 iterations
 
 ---
 
@@ -208,7 +208,7 @@ class BatchTriageLearningEngine:
 
 **Dependencies**: Milestone 1.1 (agent structure)
 
-**Estimated Effort**: 3-4 days
+**Estimated Effort**: 3-4 iterations
 
 ---
 
@@ -414,7 +414,7 @@ jobs:
 
 **Dependencies**: Milestones 1.1, 1.2
 
-**Estimated Effort**: 3-4 days
+**Estimated Effort**: 3-4 iterations
 
 ---
 
@@ -544,7 +544,7 @@ data:
 
 ---
 
-## 📈 Trends (30 Days)
+## 📈 Trends (30 iterations)
 
 **Batches Analyzed**: {{ batches_30d }}  
 **Failures Triaged**: {{ failures_30d }}  
@@ -579,7 +579,7 @@ data:
 - [ ] Add trend visualization
 - [ ] Add success rate breakdown
 - [ ] Add remediation leaderboard
-- [ ] Implement auto-refresh (daily)
+- [ ] Implement auto-refresh (per-iteration)
 - [ ] Write dashboard tests
 - [ ] Document metrics definitions
 
@@ -591,7 +591,7 @@ data:
 
 **Dependencies**: Milestones 1.2, 1.3
 
-**Estimated Effort**: 2-3 days
+**Estimated Effort**: 2-3 iterations
 
 ---
 
@@ -607,7 +607,7 @@ data:
 - Prediction of likely failures
 - Proactive alerts
 
-**Estimated Effort**: 4-5 days
+**Estimated Effort**: 4-5 iterations
 
 ---
 
@@ -621,7 +621,7 @@ data:
 - Incremental analysis
 - Rate limit handling
 
-**Estimated Effort**: 3-4 days
+**Estimated Effort**: 3-4 iterations
 
 ---
 
@@ -635,7 +635,7 @@ data:
 - Related issue linking
 - Status tracking
 
-**Estimated Effort**: 3-4 days
+**Estimated Effort**: 3-4 iterations
 
 ---
 
@@ -676,16 +676,16 @@ data:
    - **Mitigation**: Smart filtering, severity-based routing, digest mode
    
 2. **Stale Patterns**
-   - **Mitigation**: Pattern expiry (90 days), periodic review
+   - **Mitigation**: Pattern expiry (90 iterations), periodic review
 
 ---
 
 ## Resource Requirements
 
-- **Development Time**: 3-6 weeks (1 developer)
+- **Development Time**: 3-6 phases (1 developer)
 - **Testing Time**: Integrated throughout
-- **Documentation Time**: 1-2 days per milestone
-- **Review Time**: 2-3 days
+- **Documentation Time**: 1-2 iterations per milestone
+- **Review Time**: 2-3 iterations
 
 ---
 

@@ -388,13 +388,13 @@ class ConfigValidator:
 - [x] Update cognitive brain
 - [x] Create incident report
 
-### Short-Term (Next 7 Days)
+### Short-Term (Next 7 iterations)
 - [ ] Deploy Rust config validator agent
 - [ ] Test auto-fix capability
 - [ ] Monitor validation effectiveness
 - [ ] Gather metrics
 
-### Long-Term (Next 30 Days)
+### Long-Term (Next 30 iterations)
 - [ ] Expand pattern library to other languages
 - [ ] Build configuration validation dashboard
 - [ ] Implement predictive regression detection

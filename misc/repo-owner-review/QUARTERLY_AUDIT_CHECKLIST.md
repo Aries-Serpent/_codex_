@@ -55,7 +55,7 @@
 ### 4. Validation Log Cleanup
 
 - [ ] Check `.codex/validation/` run count
-- [ ] Archive runs older than 30 days
+- [ ] Archive runs older than 30 iterations
 - [ ] Keep last 5 runs
 - [ ] **Metric**: Runs archived: ___
 

@@ -3081,7 +3081,7 @@ Action: Extract common patterns if > 30%
 Auto-generate status dashboards:
 
 ```bash
-# Run daily
+# Run per-iteration
 python tools/orchestrate_improvements.py
 python tools/generate_status_dashboard.py
 

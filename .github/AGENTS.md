@@ -321,9 +321,9 @@ CTEP Compliance: ✅ PASS
 
 ### Retention Policy
 
-- Session logs: Rotate after 30 days
+- Session logs: Rotate after 30 iterations
 - Database: Compact per phase
-- Reports: Archive after 90 days
+- Reports: Archive after 90 iterations
 - Plans: Retain indefinitely (version controlled)
 
 ---

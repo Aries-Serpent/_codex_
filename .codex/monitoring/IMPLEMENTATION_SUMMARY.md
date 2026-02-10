@@ -338,7 +338,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
    - **Command Structure**: Typer/Click-based CLI with subcommands
    - **Commands**:
      - `check`: Run monitoring checks on all or specific workflows
-     - `report`: Generate failure statistics report (7-day default)
+     - `report`: Generate failure statistics report (7 iteration default)
      - `test-patterns`: Test pattern matching against log files
      - `interactive`: REPL-style troubleshooting interface
    - **Rich Output**: ANSI colors, formatted tables, progress bars
@@ -353,7 +353,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
    # Check specific workflow
    python scripts/agents/artifact_monitor_cli.py check --workflow test-comprehensive.yml
    
-   # Generate 7-day failure report
+   # Generate 7 iteration failure report
    python scripts/agents/artifact_monitor_cli.py report --days 7 --output report.json
    
    # Test pattern matching
@@ -553,7 +553,7 @@ AGENTS.md                                   # Updated root documentation
 
 - **Log Handling**: Logs may contain sensitive information
   - Secret scrubbing planned for Phase 6
-  - Limited retention (90 days)
+  - Limited retention (90 iterations)
   - Access control via GitHub permissions
 
 - **Issue Visibility**: Issues are public by default
@@ -577,12 +577,12 @@ AGENTS.md                                   # Updated root documentation
 
 ### Operational Runbooks
 
-**Daily Operations**:
+**per-iteration Operations**:
 - Monitor workflow runs in GitHub Actions UI
 - Review open monitoring issues
 - Respond to high-priority failures
 
-**Weekly Operations**:
+**per-phase Operations**:
 - Review pattern match accuracy
 - Update error signature database with new patterns
 - Analyze failure trends
@@ -731,7 +731,7 @@ The autonomous artifact monitoring system is **production-ready** for Phase 1-5 
 
 **Phases 6-7** will add advanced capabilities (Cognitive Brain integration, self-healing, comprehensive testing) but are not blockers for initial deployment. The system is designed with extensibility in mind and can be incrementally enhanced.
 
-**Recommendation**: Deploy Phase 1-5 in production with dry-run mode initially, validate behavior, then enable full issue creation after 1-2 weeks of observation.
+**Recommendation**: Deploy Phase 1-5 in production with dry-run mode initially, validate behavior, then enable full issue creation after 1-2 phases of observation.
 
 ---
 

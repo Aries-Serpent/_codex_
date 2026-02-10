@@ -449,7 +449,7 @@ ERROR: Cannot install due to conflicting dependencies
 - ✅ Store tokens in GitHub Secrets
 - ✅ Use OIDC when possible
 - ✅ Set token scope to single project
-- ✅ Rotate tokens every 90 days
+- ✅ Rotate tokens every 90 iterations
 - ✅ Revoke tokens immediately if compromised
 
 **Don't**:

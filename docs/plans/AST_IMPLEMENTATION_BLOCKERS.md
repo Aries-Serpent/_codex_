@@ -29,7 +29,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-DEP-004** | **parso not in core** | Cannot implement graceful degradation (NFR-REL-002) | Move parso from optional to core |
 | **BLOCK-DEP-005** | **SQLite storage not configured** | Cannot implement FR-AST-011 (Knowledge Graph Export) | Create schema and storage layer |
 
-**Resolution Time**: 1-2 days (dependency additions + testing)  
+**Resolution Time**: 1-2 iterations (dependency additions + testing)  
 **Risk**: Medium (some dependencies may conflict with existing pins)
 
 ---
@@ -44,7 +44,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-ARCH-004** | **No incremental analysis support** | Cannot implement FR-AST-012 (Delta Analysis) | Design baseline storage and diff algorithm |
 | **BLOCK-ARCH-005** | **No plugin architecture** | Cannot extend to new languages (NFR-AST-003) | Design plugin registry and loader |
 
-**Resolution Time**: 2-3 weeks (architecture design + implementation)  
+**Resolution Time**: 2-3 phases (architecture design + implementation)  
 **Risk**: High (requires AI Assistant autonomous design decisions and validation)
 
 ---
@@ -57,7 +57,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-PERF-002** | **No streaming parser** | Will violate NFR-PERF-003 (<500MB for 50K LOC) on large files | Implement streaming/chunking for large files |
 | **BLOCK-PERF-003** | **No parallel processing** | Will violate NFR-PERF-002 (<5s per 1000 LOC) | Implement concurrent parsing |
 
-**Resolution Time**: 1-2 weeks (performance engineering)  
+**Resolution Time**: 1-2 phases (performance engineering)  
 **Risk**: Medium (may require significant optimization)
 
 ---
@@ -80,7 +80,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ISSUE-EXIST-004** | AST usage scattered across cli/, tools/, scripts/ | Hard to maintain, refactor | Centralize in src/codex_ml/ast/ |
 
 **Impact**: Medium - Creates technical debt if not addressed  
-**Resolution**: 2-3 days refactoring per file (10+ files = 3-4 weeks)
+**Resolution**: 2-3 iterations refactoring per file (10+ files = 3-4 phases)
 
 ---
 
@@ -94,7 +94,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ISSUE-TEST-004** | No golden file tests for AST output | Hard to detect regressions | Create golden file test suite |
 
 **Impact**: Medium - Slows development, increases risk  
-**Resolution**: 1 week to create comprehensive test infrastructure
+**Resolution**: 1 phase to create comprehensive test infrastructure
 
 ---
 
@@ -108,7 +108,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ISSUE-DOC-004** | No migration guide from existing AST usage | Hard to refactor | Create migration guide |
 
 **Impact**: Low-Medium - Slows adoption but doesn't block implementation  
-**Resolution**: 1 week for comprehensive documentation
+**Resolution**: 1 phase for comprehensive documentation
 
 ---
 
@@ -122,7 +122,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ISSUE-INT-004** | No integration with existing audit tooling | Fragmented analysis | Design unified audit API |
 
 **Impact**: Medium - Reduces effectiveness of AST analysis  
-**Resolution**: 1-2 weeks for full integration
+**Resolution**: 1-2 phases for full integration
 
 ---
 
@@ -139,7 +139,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ARCH-CHAL-003** | Some type inference requires web lookups | Limited type analysis capability | Use only local inference |
 
 **Impact**: Medium - Limits some capabilities  
-**Resolution**: 2-3 days to create offline-compatible distribution
+**Resolution**: 2-3 iterations to create offline-compatible distribution
 
 ---
 
@@ -153,7 +153,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ARCH-CHAL-005** | Type hints syntax evolved significantly | Cannot parse all syntax in 3.8 | Use libcst for modern syntax |
 
 **Impact**: High - Core functionality affected  
-**Resolution**: 1 week to implement version compatibility layer
+**Resolution**: 1 phase to implement version compatibility layer
 
 ---
 
@@ -168,7 +168,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **ARCH-CHAL-008** | Parallel processing complicates error handling | Inconsistent behavior | Implement robust error aggregation |
 
 **Impact**: High - Core non-functional requirements at risk  
-**Resolution**: 2-3 weeks of performance optimization
+**Resolution**: 2-3 phases of performance optimization
 
 ---
 
@@ -180,13 +180,13 @@ Based on the requirements documents, here's the realistic effort breakdown:
 
 | Phase | Description | Effort (Person-Weeks) | Dependencies | Risk |
 |-------|-------------|----------------------|--------------|------|
-| **Sprint 1** | Parser + Standardization | 2 weeks | BLOCK-DEP-001 to 005 resolved | HIGH |
-| **Sprint 2** | Metrics + Complexity | 2 weeks | Sprint 1 complete | MEDIUM |
-| **Sprint 3** | Dependencies + Graph | 2 weeks | Sprint 1 complete | HIGH |
-| **Sprint 4** | Code Smells Detection | 1 week | Sprint 2, 3 complete | MEDIUM |
-| **Sprint 5** | CLI Tools + Integration | 2 weeks | All previous sprints | MEDIUM |
-| **Sprint 6** | Testing + Documentation | 2 weeks | All previous sprints | LOW |
-| **Total** | **Full AST Standardization** | **11-13 weeks** | Sequential dependencies | **HIGH** |
+| **Sprint 1** | Parser + Standardization | 2 phases | BLOCK-DEP-001 to 005 resolved | HIGH |
+| **Sprint 2** | Metrics + Complexity | 2 phases | Sprint 1 complete | MEDIUM |
+| **Sprint 3** | Dependencies + Graph | 2 phases | Sprint 1 complete | HIGH |
+| **Sprint 4** | Code Smells Detection | 1 phase | Sprint 2, 3 complete | MEDIUM |
+| **Sprint 5** | CLI Tools + Integration | 2 phases | All previous sprints | MEDIUM |
+| **Sprint 6** | Testing + Documentation | 2 phases | All previous sprints | LOW |
+| **Total** | **Full AST Standardization** | **11-13 phases** | Sequential dependencies | **HIGH** |
 
 **Critical Path**: Sprint 1 → Sprint 2/3 → Sprint 5 → Sprint 6
 
@@ -196,10 +196,10 @@ Based on the requirements documents, here's the realistic effort breakdown:
 
 | Resource | Requirement | Current State | Gap |
 |----------|-------------|---------------|-----|
-| **Engineering Time** | 1 full-time engineer, 11-13 weeks | Not allocated | **CRITICAL GAP** |
+| **Engineering Time** | 1 full-time engineer, 11-13 phases | Not allocated | **CRITICAL GAP** |
 | **Code Review** | Senior architect, 20% time | Available | ✅ OK |
-| **QA Time** | 2 weeks testing effort | Not allocated | **MEDIUM GAP** |
-| **Documentation** | Technical writer, 1 week | Not allocated | **LOW GAP** |
+| **QA Time** | 2 phases testing effort | Not allocated | **MEDIUM GAP** |
+| **Documentation** | Technical writer, 1 phase | Not allocated | **LOW GAP** |
 
 **Total Cost**: ~3 person-months of dedicated engineering effort
 
@@ -223,7 +223,7 @@ Based on the requirements documents, here's the realistic effort breakdown:
 
 | Risk ID | Risk | Probability | Impact | Mitigation |
 |---------|------|-------------|--------|-----------|
-| **RISK-PROJ-001** | Scope creep beyond 13 weeks | HIGH | HIGH | Strict scope management, phase gates |
+| **RISK-PROJ-001** | Scope creep beyond 13 phases | HIGH | HIGH | Strict scope management, phase gates |
 | **RISK-PROJ-002** | Insufficient testing before release | MEDIUM | HIGH | Mandatory test coverage gates |
 | **RISK-PROJ-003** | Poor adoption due to complexity | MEDIUM | MEDIUM | Comprehensive docs, examples |
 | **RISK-PROJ-004** | Integration breaking existing tools | LOW | HIGH | Comprehensive regression testing |
@@ -253,7 +253,7 @@ Based on the requirements documents, here's the realistic effort breakdown:
 
 If AST work must proceed despite recommendations, here's a **minimal viable scope**:
 
-**Minimal Scope** (2-3 weeks):
+**Minimal Scope** (2-3 phases):
 1. ✅ Add libcst to core dependencies (resolve BLOCK-DEP-001)
 2. ✅ Create basic StandardizedASTNode (resolve BLOCK-ARCH-001)
 3. ✅ Centralize existing AST usage (resolve ISSUE-EXIST-004)
@@ -273,7 +273,7 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 - CI/CD integration
 - MATURITY auto-update
 
-**Effort**: 2-3 weeks (25% of full project)  
+**Effort**: 2-3 phases (25% of full project)  
 **Value**: Foundation only, not full capabilities
 
 ---

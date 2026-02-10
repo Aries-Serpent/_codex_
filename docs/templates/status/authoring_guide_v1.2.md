@@ -1,18 +1,18 @@
-# Guide: Authoring the `_codex_` Daily Status Update (v1.2 — Enhanced with Schema & Security Validation)
+# Guide: Authoring the `_codex_` per-iteration Status Update (v1.2 — Enhanced with Schema & Security Validation)
 > Generated: 2025-11-02 12:07:19 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Authoring Guide Maintainer], [Secondary: QA Reviewer] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
-This guide explains how to produce the daily report using `codex_status_template_v1.2.md` with enhanced schema validation, security input validation coverage, and comprehensive, structured tracking.
+This guide explains how to produce the per-iteration report using `codex_status_template_v1.2.md` with enhanced schema validation, security input validation coverage, and comprehensive, structured tracking.
 
 ## 1. Cadence and Storage
-- **Frequency**: Daily (one comprehensive document).
+- **Frequency**: per-iteration (one comprehensive document).
 - **Location**:
   - **Template**: `docs/templates/status/codex_status_template_v1.2.md`
-  - **Reports**: `reports/daily/<YYYY‑MM‑DD>.md`
+  - **Reports**: `reports/per-iteration/<YYYY‑MM‑DD>.md`
 - **Retention**:
   - Keep last 30 reports (rolling window).
-  - Optional: archive older than 90 days into zip/tar.gz.
+  - Optional: archive older than 90 iterations into zip/tar.gz.
 
 ## 2. Title and Metadata
 - **Title (H1)**: "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
@@ -93,7 +93,7 @@ This guide explains how to produce the daily report using `codex_status_template
   - **NEW v1.2**: If patch touches configs, set `schema_impacted: true` and verify schema validation passes post-patch.
 - Prefer feature flags for risky changes and chunk large patches.
 
-## 11. Automation Inputs (Daily)
+## 11. Automation Inputs (per-iteration)
 - Populate:
   - Issues (full list, no truncation) in a list code block.
   - PRs (full list, no truncation) in a list code block.

@@ -186,7 +186,7 @@ fi
 ```python
 # Enhancement: Add to output
 print("\n⏰ TOKEN ROTATION REMINDER:")
-print("   - Rotate tokens every 90 days")
+print("   - Rotate tokens every 90 iterations")
 print("   - Next rotation due: {future_date}")
 print("   - Use: scripts/security/token_rotation.sh")
 ```

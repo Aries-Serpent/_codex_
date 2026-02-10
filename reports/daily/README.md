@@ -1,10 +1,10 @@
-# Daily Status Reports
+# per-iteration Status Reports
 
-This directory contains daily status update reports generated using the `_codex_` status template.
+This directory contains per-iteration status update reports generated using the `_codex_` status template.
 
 ## Purpose
 
-Daily reports provide:
+per-iteration reports provide:
 - Complete snapshot of repository state
 - Delta tracking from previous reports
 - High-signal findings with severity/confidence scoring
@@ -34,14 +34,14 @@ Each report is generated from the template at `docs/templates/status/codex_statu
 ## Retention Policy
 
 - **Keep**: Last 30 reports (rolling window)
-- **Archive**: Reports older than 90 days (optional zip/tar.gz)
-- **Location**: This directory (`reports/daily/`)
+- **Archive**: Reports older than 90 iterations (optional zip/tar.gz)
+- **Location**: This directory (`reports/per-iteration/`)
 
 ## Creating a New Report
 
 1. Copy the template:
    ```bash
-   cp docs/templates/status/codex_status_template_v1.1.md reports/daily/$(date +%Y-%m-%d).md
+   cp docs/templates/status/codex_status_template_v1.1.md reports/per-iteration/$(date +%Y-%m-%d).md
    ```
 
 2. Follow the authoring guide:
@@ -61,7 +61,7 @@ Reports can be validated against the schemas:
 Each report should reference the previous report in its metadata:
 ```markdown
 - Prior Report Reference:
-  - Path: reports/daily/YYYY-MM-DD.md
+  - Path: reports/per-iteration/YYYY-MM-DD.md
 ```text
 
 This enables delta tracking and historical analysis.

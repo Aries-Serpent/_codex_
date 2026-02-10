@@ -88,11 +88,11 @@ This document consolidates ALL unimplemented plans harvested from:
 #### Agent Memory System ✅ COMPLETE
 | Task | Priority | Effort | Status |
 |------|----------|--------|--------|
-| Design memory storage schema | MEDIUM | 1 day | ✅ Complete |
-| Implement key decision storage | MEDIUM | 2 days | ✅ Complete |
-| Enable context retrieval for similar tasks | MEDIUM | 2 days | ✅ Complete |
-| Pattern library for decision support | MEDIUM | 1 day | ✅ Complete |
-| SQLite-backed persistent storage | MEDIUM | 1 day | ✅ Complete |
+| Design memory storage schema | MEDIUM | 1 iteration | ✅ Complete |
+| Implement key decision storage | MEDIUM | 2 iterations | ✅ Complete |
+| Enable context retrieval for similar tasks | MEDIUM | 2 iterations | ✅ Complete |
+| Pattern library for decision support | MEDIUM | 1 iteration | ✅ Complete |
+| SQLite-backed persistent storage | MEDIUM | 1 iteration | ✅ Complete |
 
 **Implementation Details**: Created `agents/agent_memory.py` (750+ lines) with:
 - `AgentMemory`: SQLite-backed persistent storage
@@ -125,7 +125,7 @@ This document consolidates ALL unimplemented plans harvested from:
 
 | Task | Priority | Effort | Status |
 |------|----------|--------|--------|
-| Performance benchmarking suite | MEDIUM | 3 days | ✅ EXISTS (scripts/benchmarks/) |
+| Performance benchmarking suite | MEDIUM | 3 iterations | ✅ EXISTS (scripts/benchmarks/) |
 | Integration tests for audit_runner v1.5.5 | MEDIUM | DONE | ✅ COMPLETE |
 | Add edge case tests for 80%+ coverage | MEDIUM | DONE | ✅ COMPLETE |
 | Golden baseline tests for regression prevention | MEDIUM | DONE | ✅ COMPLETE |

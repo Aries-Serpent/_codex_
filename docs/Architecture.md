@@ -75,7 +75,7 @@ Before moving a module from legacy to `src/`:
 | Gate | Requirement | Validation |
 |------|-------------|------------|
 | **Ownership** | Owner approved in SHIM_INVENTORY.yaml | Manual review |
-| **Usage Trend** | Legacy imports for module < 10% for 90 days | Nightly audit metrics |
+| **Usage Trend** | Legacy imports for module < 10% for 90 iterations | Nightly audit metrics |
 | **Test Equivalence** | test_shim_equivalence + full suite PASS | CI validation |
 | **No Split-Brain** | verify_conflicts strict shows no violations | CI check |
 | **Low Risk** | Affects < 10 tests | Impact analysis |

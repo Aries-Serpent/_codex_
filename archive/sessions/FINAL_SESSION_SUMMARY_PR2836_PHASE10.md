@@ -117,7 +117,7 @@
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
 | Automation Rate | 57% | 74% | +30% |
-| Manual Time Required | 6-8 hours | 2-3 hours | 60% reduction |
+| Manual Time Required | 6-8 Commits | 2-3 Commits | 60% reduction |
 | Validation Time | 90 min manual | 30 sec automated | 99.4% faster |
 | Documentation Completeness | 0% | 100% | +100% |
 | Cognitive Brain Health | 98/100 | 97.8/100 | Maintained |
@@ -194,7 +194,7 @@
 - **Storage**: GitHub Secrets with PyNaCl encryption (Sodium sealed boxes)
 - **Injection**: Three methods (API, CLI, workflow) all encrypted
 - **Audit**: Complete trail with timestamps and authorization records
-- **Rotation**: Documented rotation policy (90 days for ORG_MASTER_KEY)
+- **Rotation**: Documented rotation policy (90 iterations for ORG_MASTER_KEY)
 
 ### Security Scanning
 - **Pre-commit**: Dual scanner (Secretlint + detect-secrets)
@@ -216,7 +216,7 @@
 - ✅ **Completeness**: All 4 tasks detailed with 28+ subtasks
 - ✅ **Clarity**: Step-by-step instructions with validation criteria
 - ✅ **Diagrams**: 5 Mermaid diagrams (pipeline, security, architecture)
-- ✅ **Timeline**: 3-week implementation schedule with milestones
+- ✅ **Timeline**: 3 phase implementation schedule with milestones
 - ✅ **Success Metrics**: 28 measurable criteria defined
 - ⚠️ **Improvement**: Could add more troubleshooting scenarios
 
@@ -382,16 +382,16 @@ cat .codex/validation/phase10/validation-*.json
 ./scripts/phase10/validate_gdrive_secrets.sh
 ```
 
-### Production Deployment (Priority 2 - Week 3)
+### Production Deployment (Priority 2 phase 3)
 
 ```
 Phase 10.5: Production Hardening
-1. Security audit (2 days)
-2. Performance optimization (2 days)
-3. Load testing (1 day)
-4. Documentation review (1 day)
-5. Team training (1 day)
-6. Production cutover (1 day)
+1. Security audit (2 iterations)
+2. Performance optimization (2 iterations)
+3. Load testing (1 iteration)
+4. Documentation review (1 iteration)
+5. Team training (1 iteration)
+6. Production cutover (1 iteration)
 ```
 
 ---

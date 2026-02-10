@@ -248,13 +248,13 @@ coverage:
 3. Push remaining 5 low-maturity capabilities above 0.70
 4. Final audit verification
 
-### Short-term (1-2 weeks)
+### Short-term (1-2 phases)
 1. Push 26 medium-maturity capabilities to ≥0.85
 2. Optimize test detection for better scores
 3. Fine-tune documentation keywords
 4. Achieve 0.85 average score
 
-### Medium-term (2-4 weeks)
+### Medium-term (2-4 phases)
 1. Achieve 95% test coverage target
 2. Enable automated quality gates in CI/CD
 3. Complete MCP documentation suite

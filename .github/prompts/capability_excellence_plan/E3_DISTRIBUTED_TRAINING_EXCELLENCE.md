@@ -2,7 +2,7 @@
 
 > **Target:** 0.75+ → ~1.00  
 > **Priority:** P1 Critical  
-> **Estimated Effort:** 4-5 days  
+> **Estimated Effort:** 4-5 iterations  
 > **Impact:** +0.25 capability score
 
 ---
@@ -426,5 +426,5 @@ Document results in docs/benchmarks/distributed_training.md
 ---
 
 **Batchset Status**: Ready for Implementation  
-**Estimated Timeline**: 4-5 days  
+**Estimated Timeline**: 4-5 iterations  
 **Priority**: P1 Critical

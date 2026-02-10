@@ -130,7 +130,7 @@ The uploaded artifact includes:
 - `org_secrets.txt` - Configured organization secrets
 - `org_vars.txt` - Configured organization variables
 
-Artifacts are retained for 90 days.
+Artifacts are retained for 90 iterations.
 
 ## Scanning Logic
 

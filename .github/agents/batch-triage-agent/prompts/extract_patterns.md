@@ -138,7 +138,7 @@ You are extracting recurring failure patterns from historical data to improve fu
    ```python
    success_rate = successful_fixes / total_fixes
    # Weight recent outcomes more heavily
-   # Decay factor: 0.95 per week
+   # Decay factor: 0.95 per-phase
    ```
 
 ## Best Practices
@@ -169,7 +169,7 @@ After each batch triage:
 2. Record remediation outcomes
 3. Adjust success rates
 4. Identify new patterns
-5. Archive obsolete patterns (>90 days no occurrence)
+5. Archive obsolete patterns (>90 iterations no occurrence)
 
 ---
 
