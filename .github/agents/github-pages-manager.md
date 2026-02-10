@@ -160,7 +160,62 @@ mkdocs serve
 - [ ] API documentation reflects current code
 - [ ] Navigation structure is complete
 
-### 4. Theme Management
+### 4. Format Validation
+
+**Purpose**: Detect and fix markdown formatting issues
+
+**Common Issues**:
+- **Malformed code fences**: ````text` used as closing fence
+- **Unclosed code fences**: Missing closing ```
+- **Table spacing**: Missing blank lines before tables
+- **Broken headings**: Incorrect heading levels or format
+
+**Detection & Fixing**:
+
+1. **Code Fence Validation**:
+   ```bash
+   # Check for unclosed/malformed fences
+   python scripts/validate_code_fences.py --check
+   
+   # Preview fixes
+   python scripts/validate_code_fences.py --fix --dry-run
+   
+   # Apply fixes
+   python scripts/validate_code_fences.py --fix
+   ```
+
+2. **Table Spacing Validation**:
+   ```bash
+   python scripts/validate_table_spacing.py --check
+   python scripts/validate_table_spacing.py --fix
+   ```
+
+3. **Build Validation**:
+   ```bash
+   # Strict build catches formatting errors
+   mkdocs build --strict
+   ```
+
+**Example: Fixing Malformed Code Fence**
+
+Problem: ````text` appears after code block, causing text to render as heading
+
+```markdown
+# Before (broken)
+```python
+code here
+```text
+This text renders huge!
+
+# After (fixed)
+```python
+code here
+```
+
+This text renders normally.
+```
+
+### 5. Theme Management
 
 **Dark/Light Mode Toggle**:
 
