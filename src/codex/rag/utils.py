@@ -154,7 +154,7 @@ def safe_model_to_device(
             # Then reinitialize parameters (if needed)
             # This ensures all parameters have actual data
             # Skip if model doesn't support modules() (e.g., mock objects in tests)
-            if hasattr(model, 'modules') and callable(getattr(model, 'modules', None)):
+            if hasattr(model, 'modules'):
                 for module in model.modules():
                     if hasattr(module, 'reset_parameters'):
                         try:
@@ -175,19 +175,12 @@ def safe_model_to_device(
                 return model.to(device)  # safe-device-placement: internal implementation
 
             # For SentenceTransformer or other models with .to() method
-            if hasattr(model, "to") and callable(getattr(model, "to", None)):
-                return model.to(device)  # safe-device-placement: internal implementation
-
-            return model
+            return _try_model_to(model, device)
 
     except ImportError:
         # PyTorch not available - try fallback .to() method if model has it
         logger.warning("PyTorch not available, attempting fallback .to() method")
-        if hasattr(model, "to") and callable(getattr(model, "to", None)):
-            return model.to(device)  # safe-device-placement: internal implementation
-        # No fallback available
-        logger.warning("No device transfer method available, returning model as-is")
-        return model
+        return _try_model_to(model, device)
     except AttributeError as e:
         # Re-raise if this is about missing to_empty() (critical error)
         if "to_empty" in str(e):
@@ -198,6 +191,24 @@ def safe_model_to_device(
     except Exception as e:
         logger.error(f"Error moving model to device {device}: {e}")
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
+
+
+def _try_model_to(model: Any, device: str) -> Any:
+    """
+    Helper function to attempt model.to() if available.
+    
+    Args:
+        model: Model to move
+        device: Target device
+    
+    Returns:
+        Model after attempting device transfer, or original model if not supported
+    """
+    if hasattr(model, "to") and callable(getattr(model, "to", None)):
+        return model.to(device)  # safe-device-placement: internal implementation
+    # Model doesn't have .to() method
+    logger.warning("No device transfer method available, returning model as-is")
+    return model
 
 
 # Backward compatibility aliases
