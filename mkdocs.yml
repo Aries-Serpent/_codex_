@@ -3,8 +3,25 @@ markdown_extensions:
 - tables
 - toc:
     permalink: true
+    toc_depth: 3
+- pymdownx.highlight:
+    anchor_linenums: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences:
+    custom_fences:
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.tasklist:
+    custom_checkbox: true
+- attr_list
+- md_in_html
 nav:
 - Home: index.md
+- 📊 Status Dashboard: status/GITHUB_PAGES_STATUS.md
 - README: README_ROOT.md
 - Getting Started: getting-started.md
 - API Reference:
@@ -1348,6 +1365,52 @@ site_name: Codex Docs
 strict: false
 theme:
   name: material
+  language: en
+  
+  # Dark/Light mode toggle - Three-way toggle (auto/light/dark)
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  
+  # Enhanced features for better navigation and usability
+  features:
+    - navigation.instant      # XHR loading for faster page transitions
+    - navigation.tracking     # URL updates in browser history
+    - navigation.tabs         # Top-level navigation tabs
+    - navigation.sections     # Section grouping in navigation
+    - navigation.expand       # Expand sections by default
+    - navigation.top          # Back to top button
+    - search.suggest          # Search suggestions
+    - search.highlight        # Highlight search terms
+    - search.share            # Share search results
+    - content.tabs.link       # Link content tabs across pages
+    - content.code.copy       # Copy code button
+    - content.code.annotate   # Code annotations
+  
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/book-open-page-variant
 validation:
   links:
     absolute_links: ignore
