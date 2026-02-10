@@ -2,119 +2,103 @@
 
 ## HTTP API (FastAPI)
 
-The Codex HTTP API provides REST endpoints for:
+The Codex HTTP API provides REST endpoints for text generation and RAG operations.
 
-- Model training
-- Inference
-- Evaluation
-- Status monitoring
+**Note**: This repository includes two FastAPI applications:
+- `src/codex/api/app.py` - Main text generation API
+- `src/codex/api/rag_api.py` - RAG (Retrieval Augmented Generation) API
 
-## Endpoints
+## Main API Endpoints (app.py)
 
-### Training
+### Health Check
 
-#### POST /train
+#### GET /health
 
-Enqueue a background training job.
+Check API health status.
+
+**Response:**
+```json
+{
+  "status": "healthy"
+}
+```
+
+### Root
+
+#### GET /
+
+API information.
+
+**Response:**
+```json
+{
+  "message": "Codex API v0.2.0",
+  "docs": "/docs"
+}
+```
+
+### Text Generation
+
+#### POST /predict
+
+Generate text predictions using the loaded model.
 
 **Request Body:**
 ```json
 {
-  "model_config": {
-    "architecture": "transformer",
-    "hidden_size": 768
-  },
-  "training_config": {
-    "epochs": 10,
-    "batch_size": 32
-  }
+  "text": "Sample input text",
+  "max_length": 100,
+  "temperature": 0.8
 }
 ```
 
 **Response:**
 ```json
 {
-  "job_id": "train_20260210_123456",
-  "status": "queued",
-  "artifacts_path": "/artifacts/train_20260210_123456"
+  "generated_text": "Generated output text...",
+  "model_name": "codex-model",
+  "tokens_generated": 50
 }
 ```
 
-### Inference
+## RAG API Endpoints (rag_api.py)
 
-#### POST /infer
+The RAG API provides retrieval-augmented generation with offline TF-IDF support.
 
-Run inference on input data.
+### Index Operations
 
-**Request Body:**
-```json
-{
-  "input": "Sample text for inference",
-  "model_id": "best_model_v1"
-}
-```
+#### POST /rag/build
 
-**Response:**
-```json
-{
-  "predictions": [...],
-  "confidence": 0.95,
-  "latency_ms": 42
-}
-```
+Build a new RAG index from documents.
 
-### Evaluation
+#### POST /rag/query
 
-#### POST /evaluate
+Query the RAG index with a question.
 
-Run model evaluation.
+#### GET /rag/indices
 
-**Request Body:**
-```json
-{
-  "model_id": "best_model_v1",
-  "dataset": "validation_set",
-  "metrics": ["accuracy", "f1"]
-}
-```
+List all available RAG indices.
 
-**Response:**
-```json
-{
-  "metrics": {
-    "accuracy": 0.92,
-    "f1": 0.89
-  },
-  "timestamp": "2026-02-10T21:30:00Z"
-}
-```
+#### GET /rag/stats
 
-### Status
+Get RAG system statistics.
 
-#### GET /status
-
-Get system and job status.
-
-**Response:**
-```json
-{
-  "queue_depth": 2,
-  "active_jobs": 1,
-  "completed_jobs": 15,
-  "system_health": "healthy"
-}
-```
+For complete RAG API documentation, see [RAG Pipelines](rag_pipelines.md).
 
 ## OpenAPI Documentation
 
 Interactive API documentation is available at `/docs` when running the FastAPI server:
 
 ```bash
-# Start the server
-uvicorn codex.api:app --reload
+# Start the main API server
+uvicorn src.codex.api.app:app --reload --port 8000
+
+# Start the RAG API server
+uvicorn src.codex.api.rag_api:app --reload --port 8001
 
 # Access documentation
-# Navigate to http://localhost:8000/docs
+# Main API: http://localhost:8000/docs
+# RAG API: http://localhost:8001/docs
 ```
 
 ## Related Documentation

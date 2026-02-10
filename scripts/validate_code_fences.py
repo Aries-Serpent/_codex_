@@ -19,6 +19,10 @@ def check_code_fences(file_path: Path) -> List[Dict[str, Any]]:
     Check for malformed code fences in markdown file.
     
     Returns list of issues: [{line, type, fence, suggestion}]
+    
+    Detects:
+    - unclosed_fence: Opening fence without matching close
+    - nested_fence: Fence inside another fence
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -43,8 +47,19 @@ def check_code_fences(file_path: Path) -> List[Dict[str, Any]]:
                     'has_lang': len(stripped) > 3 and stripped[3:].strip() != ''
                 })
             else:
-                # Closing fence - should be just ```
-                fence_stack.pop()
+                # Potential closing fence - should be just ```
+                # If it has a language specifier, it might be nested
+                if len(stripped) > 3 and stripped[3:].strip() != '':
+                    # This looks like an opening fence, but we're already in a fence
+                    issues.append({
+                        'line': i + 1,
+                        'type': 'nested_fence',
+                        'fence': stripped,
+                        'suggestion': 'Nested code fence detected - may cause rendering issues'
+                    })
+                else:
+                    # Proper closing fence
+                    fence_stack.pop()
     
     # Check for unclosed fences
     for fence in fence_stack:
@@ -74,19 +89,30 @@ def fix_code_fences(file_path: Path, issues: List[Dict[str, Any]], dry_run: bool
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
         return False
     
-    # Apply fixes (simple approach: convert malformed fences to proper closing)
+    # Track if we made any changes
+    changes_made = False
+    
+    # Apply fixes for unclosed fences
     for issue in issues:
-        if issue['type'] == 'malformed_fence':
-            line_idx = issue['line'] - 1
-            if line_idx < len(lines):
-                # Replace malformed fence with proper closing fence
-                lines[line_idx] = "```\n"
+        if issue['type'] == 'unclosed_fence':
+            # Append closing fence at end of file
+            if not lines[-1].endswith('\n'):
+                lines[-1] += '\n'
+            lines.append('```\n')
+            changes_made = True
+    
+    # Don't auto-fix nested fences (too risky)
+    # Just report them
     
     if dry_run:
-        print(f"[DRY RUN] Would fix {len(issues)} issues in {file_path}")
-        return True
+        if changes_made:
+            print(f"[DRY RUN] Would fix {len([i for i in issues if i['type'] == 'unclosed_fence'])} unclosed fences in {file_path}")
+        return changes_made
     
-    # Write back
+    if not changes_made:
+        return False
+    
+    # Write back only if changes were made
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(lines)
