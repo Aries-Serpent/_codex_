@@ -830,8 +830,14 @@ def ensure_cpu_device():
 @pytest.fixture
 def mock_sentence_transformer(monkeypatch):
     """
-    Mock SentenceTransformer to avoid actual model downloads in tests.
+    Enhanced mock SentenceTransformer to avoid actual model downloads in tests.
     Use this fixture when you want to test RAG logic without loading real models.
+    
+    Improvements (2026-02-10):
+    - Added get_sentence_embedding_dimension() method
+    - Enhanced encode() to handle kwargs properly
+    - Added modules() method for meta tensor compatibility
+    - Patches multiple import paths for indexer/embeddings/retriever modules
     """
     class MockSentenceTransformer:
         def __init__(self, model_name, cache_folder=None, device="cpu", trust_remote_code=False, use_auth_token=None):
@@ -842,12 +848,17 @@ def mock_sentence_transformer(monkeypatch):
             self.use_auth_token = use_auth_token
 
         def encode(self, texts, batch_size=32, show_progress_bar=False,
-                   convert_to_numpy=True):
+                   convert_to_numpy=True, **kwargs):
             import numpy as np
             # Return dummy embeddings with correct shape
             if isinstance(texts, str):
                 texts = [texts]
-            return np.random.randn(len(texts), 384).astype(np.float32)
+            embeddings = np.random.randn(len(texts), 384).astype(np.float32)
+            return embeddings if convert_to_numpy else embeddings.tolist()
+
+        def get_sentence_embedding_dimension(self):
+            """Return embedding dimension for FAISS index creation."""
+            return 384
 
         def to(self, device):
             self.device = device
@@ -864,12 +875,39 @@ def mock_sentence_transformer(monkeypatch):
             # Return empty generator to avoid meta tensor checks
             return iter([])
 
+        def modules(self):
+            # Return empty generator for meta tensor compatibility
+            return iter([])
+
     try:
         import sentence_transformers  # noqa: F401 - Testing optional dependency availability
+        # Patch multiple import paths for comprehensive coverage
         monkeypatch.setattr(
             "sentence_transformers.SentenceTransformer",
             MockSentenceTransformer
         )
+        # Also patch in specific modules that import it
+        try:
+            monkeypatch.setattr(
+                "codex.rag.embeddings.SentenceTransformer",
+                MockSentenceTransformer
+            )
+        except AttributeError:
+            pass
+        try:
+            monkeypatch.setattr(
+                "codex.rag.indexer.SentenceTransformer",
+                MockSentenceTransformer
+            )
+        except AttributeError:
+            pass
+        try:
+            monkeypatch.setattr(
+                "codex.rag.retriever.SentenceTransformer",
+                MockSentenceTransformer
+            )
+        except AttributeError:
+            pass
     except ImportError:
         # sentence_transformers not available, nothing to mock
         pass
