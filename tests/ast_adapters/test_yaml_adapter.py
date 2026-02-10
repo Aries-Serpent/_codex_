@@ -252,3 +252,91 @@ application:
         # Verify we can navigate to deep values
         host = adapter.get_value_at_path("application.environments.production.servers")
         # Note: path won't work for sequences, but structure is valid
+    
+    def test_traverse_empty_adapter(self, adapter):
+        """Test traverse when root is None"""
+        result = adapter.traverse(None)
+        assert result == []
+    
+    def test_find_nodes_empty_adapter(self, adapter):
+        """Test find_nodes_by_type when root is None"""
+        result = adapter.find_nodes_by_type("mapping")
+        assert result == []
+    
+    def test_get_keys_empty(self, adapter):
+        """Test get_keys with None node"""
+        result = adapter.get_keys(None)
+        assert result == []
+    
+    def test_get_keys_wrong_type(self, adapter):
+        """Test get_keys with non-mapping node"""
+        yaml_source = "- item1\n- item2"
+        root = adapter.parse(yaml_source)
+        sequence = root.children[0]
+        
+        result = adapter.get_keys(sequence)
+        assert result == []
+    
+    def test_extract_metadata_mapping(self, adapter):
+        """Test metadata extraction for mapping nodes"""
+        yaml_source = """
+config:
+  host: localhost
+  port: 5432
+"""
+        root = adapter.parse(yaml_source)
+        mapping = root.children[0]
+        
+        metadata = adapter.extract_metadata(mapping)
+        assert metadata["node_type"] == "mapping"
+        assert "keys" in metadata
+        assert "size" in metadata
+    
+    def test_extract_metadata_sequence(self, adapter):
+        """Test metadata extraction for sequence nodes"""
+        yaml_source = """
+items:
+  - value1
+  - value2
+  - value3
+"""
+        root = adapter.parse(yaml_source)
+        mapping = root.children[0]
+        sequence = mapping.children[0]
+        
+        metadata = adapter.extract_metadata(sequence)
+        assert metadata["node_type"] == "sequence"
+        assert "length" in metadata
+        assert "item_types" in metadata
+    
+    def test_extract_metadata_scalar(self, adapter):
+        """Test metadata extraction for scalar nodes"""
+        yaml_source = """
+text: hello
+number: 42
+flag: true
+"""
+        root = adapter.parse(yaml_source)
+        mapping = root.children[0]
+        scalar = mapping.children[0]  # First scalar
+        
+        metadata = adapter.extract_metadata(scalar)
+        assert metadata["node_type"] == "scalar"
+        assert "value" in metadata
+        assert "value_type" in metadata
+        assert "is_null" in metadata
+    
+    def test_yaml_with_comments(self, adapter):
+        """Test parsing YAML with comments"""
+        yaml_source = """
+# Configuration file
+database:
+  # Production database
+  host: localhost  # Hostname
+  port: 5432       # Default PostgreSQL port
+"""
+        root = adapter.parse(yaml_source)
+        
+        # Comments should be ignored, structure should be valid
+        host = adapter.get_value_at_path("database.host")
+        assert host == "localhost"
