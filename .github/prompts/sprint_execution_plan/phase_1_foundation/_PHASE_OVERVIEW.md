@@ -194,7 +194,7 @@ curl http://localhost:8000/metrics | grep requests_total
 ## Success Metrics
 
 ### Quantitative
-- [ ] Test Coverage: 90% → ≥70%
+- [ ] Test Coverage: 50% → ≥70%
 - [ ] Security score: 0.61 → ≥0.75
 - [ ] CI/Test infrastructure: 0.35 → ≥0.70
 - [ ] P0 stubs resolved: 15/15 (100%)

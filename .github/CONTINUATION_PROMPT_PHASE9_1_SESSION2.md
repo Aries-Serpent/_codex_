@@ -6,7 +6,7 @@
 - 56 MCP system tests (47 passing, 9 env-specific)
 - Future research documentation (28.8 KB)
 - 5-pass self-review (0 concerns)
-- Coverage: 90% → 75% (+3%)
+- Coverage: 72% → 75% (+3%)
 - Phase 9.1: 37% complete
 
 **Commits**: 6faff8d, 321f035, 98f2709, 1c040df
@@ -170,7 +170,7 @@ def test_ingest_syntax_error(tmp_path):
 **Quantitative**:
 - Tests added: 70-90 (cumulative: 126-146 / 150 target)
 - Pass rate: 100% of new tests
-- Coverage: 90% → 82-83% (+7-8%)
+- Coverage: 75% → 82-83% (+7-8%)
 - Phase 9.1 progress: 37% → 84-97%
 
 **Qualitative**:

@@ -680,7 +680,7 @@ When Phase 9.1 is complete:
 ## 🎯 Final Checklist Before Completion
 
 - [ ] 150-200 new tests added
-- [ ] Coverage: 90% → 85% (±2%)
+- [ ] Coverage: 75% → 90% (±2%)
 - [ ] All tests passing (100% pass rate)
 - [ ] No regressions (1615 original tests still pass)
 - [ ] Self-review: 5 passes complete, 0 concerns
