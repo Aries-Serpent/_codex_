@@ -132,7 +132,7 @@ def embed_chunks(
 
         model = SentenceTransformer(
             model_name,
-            device='cpu',
+            device=None,
             cache_folder=cache_dir,
             trust_remote_code=False,
             use_auth_token=use_auth_token if use_auth_token else None
