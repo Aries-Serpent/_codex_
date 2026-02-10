@@ -432,20 +432,6 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-3. **Commit documentation:**
-   ```bash
-   git add docs/operations/pypi-trusted-publishing-setup.md
-   git commit -m "docs: Add PyPI trusted publishing setup guide"
-   git push origin main
-   ```
-
-**Validation:**
-- [ ] Documentation file created
-- [ ] Content includes setup date and maintainer
-- [ ] File committed to repository
-
----
-
 ## 📊 Success Criteria
 
 **Definition of Done:**
@@ -537,23 +523,6 @@ Trusted publishing exchange failure: workflow not found
    - Navigate to: `https://pypi.org/manage/project/codex-ml/settings/publishing/`
    - Remove old publisher
    - Add new publisher with correct workflow name
-
----
-
-## 📚 Additional Resources
-
-**PyPI Documentation:**
-- Trusted Publishers: https://docs.pypi.org/trusted-publishers/
-- Adding a Publisher: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
-- Troubleshooting: https://docs.pypi.org/trusted-publishers/troubleshooting-oidc/
-
-**GitHub Actions:**
-- OIDC in GitHub Actions: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
-- Publishing Packages: https://docs.github.com/en/actions/publishing-packages/publishing-python-packages-to-pypi
-
-**pypa/gh-action-pypi-publish:**
-- Repository: https://github.com/pypa/gh-action-pypi-publish
-- Trusted Publishing: https://github.com/pypa/gh-action-pypi-publish#trusted-publishing
 
 ---
 
