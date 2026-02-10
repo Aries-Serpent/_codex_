@@ -1,4 +1,30 @@
-"""RAG utility functions for model loading and device management."""
+"""RAG utility functions for model loading and device management.
+
+This module provides utilities for safely loading and moving PyTorch models
+between devices, with special handling for meta tensors.
+
+Meta Tensor Background:
+----------------------
+Meta tensors are placeholder tensors without actual data, created when models
+are initialized on the 'meta' device. They are useful for:
+- Model architecture inspection without memory allocation
+- Efficient model initialization in distributed training
+- Model quantization and pruning workflows
+
+However, meta tensors cannot be directly moved using the standard `.to()` method.
+The NotImplementedError "Cannot copy out of meta tensor; no data!" occurs when
+attempting to use `.to()` on models with meta tensors.
+
+Solution:
+--------
+Use `.to_empty(device)` instead of `.to(device)` for models with meta tensors,
+followed by parameter reinitialization via `reset_parameters()` to ensure all
+parameters have actual data.
+
+See:
+- PyTorch Issue: https://github.com/pytorch/pytorch/issues/95372
+- PyTorch Docs: torch.nn.Module.to_empty()
+"""
 
 import logging
 from dataclasses import dataclass
@@ -13,28 +39,61 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
     """
     Check if model contains any meta tensors.
 
+    Meta tensors are placeholder tensors without actual data, created when
+    models are initialized on the 'meta' device. They must be handled specially
+    during device transfers.
+
     Args:
         model: PyTorch model to inspect
 
     Returns:
-        True if any parameter/buffer is on meta device
+        True if any parameter/buffer is on meta device, False otherwise,
+        None if model doesn't support parameter inspection
     """
     try:
-        for _, module in getattr(model, "named_modules", lambda: [])():
-            for _, param in getattr(module, "named_parameters", lambda: [])():
-                if getattr(getattr(param, "device", None), "type", None) == "meta":
+        # Check if model has parameters method
+        if hasattr(model, 'parameters'):
+            for param in model.parameters():
+                # Use is_meta attribute for direct meta tensor detection (PyTorch 1.10+)
+                if hasattr(param, 'is_meta') and param.is_meta:
+                    logger.debug(f"Found meta tensor parameter: {param.shape}")
                     return True
+                # Fallback: Check device.type for older versions or mock objects
+                if hasattr(param, 'device') and hasattr(param.device, 'type'):
+                    if param.device.type == 'meta':
+                        logger.debug(f"Found meta device parameter via device.type")
+                        return True
 
-        for param in getattr(model, "parameters", lambda: [])():
-            if getattr(getattr(param, "device", None), "type", None) == "meta":
+        # Also check buffers if available
+        if hasattr(model, 'buffers'):
+            for buffer in model.buffers():
+                if hasattr(buffer, 'is_meta') and buffer.is_meta:
+                    logger.debug(f"Found meta tensor buffer: {buffer.shape}")
+                    return True
+                # Fallback: Check device.type
+                if hasattr(buffer, 'device') and hasattr(buffer.device, 'type'):
+                    if buffer.device.type == 'meta':
+                        logger.debug(f"Found meta device buffer via device.type")
+                        return True
+
+        # Check named_modules for parameters (for comprehensive detection)
+        if hasattr(model, 'named_modules'):
+            for _, module in model.named_modules():
+                if hasattr(module, 'named_parameters'):
+                    for _, param in module.named_parameters():
+                        if hasattr(param, 'is_meta') and param.is_meta:
+                            logger.debug(f"Found meta tensor in module parameter")
+                            return True
+                        if hasattr(param, 'device') and hasattr(param.device, 'type'):
+                            if param.device.type == 'meta':
+                                logger.debug(f"Found meta device in module parameter via device.type")
+                                return True
+
+        # Check model's own device attribute
+        if hasattr(model, 'device') and hasattr(model.device, 'type'):
+            if model.device.type == 'meta':
+                logger.debug(f"Found meta device on model itself")
                 return True
-
-        for buffer in getattr(model, "buffers", lambda: [])():
-            if getattr(getattr(buffer, "device", None), "type", None) == "meta":
-                return True
-
-        if getattr(getattr(model, "device", None), "type", None) == "meta":
-            return True
 
         return False
     except Exception as e:
@@ -47,46 +106,130 @@ def safe_model_to_device(
     device: str = "cpu"
 ) -> Any:
     """
-    Safely move model to device, handling meta tensors.
+    Safely move a model to the specified device, handling meta tensors.
+
+    Meta tensors are placeholder tensors without actual data. When models
+    are initialized with meta tensors, they must use .to_empty() instead
+    of .to() for device transfers, followed by parameter reinitialization.
 
     Args:
-        model: Model to move
-        device: Target device ("cpu" or "cuda")
+        model: PyTorch model or SentenceTransformer model
+        device: Target device ('cpu', 'cuda', 'mps', etc.)
 
     Returns:
-        Model on target device
+        Model on the target device
 
     Raises:
-        RuntimeError: If model contains meta tensors after transfer
+        AttributeError: If model with meta tensors doesn't support to_empty()
+        RuntimeError: If model cannot be moved to device
     """
-    meta_status = has_meta_tensors(model)
-    if meta_status is None:
-        return model
-
-    if meta_status:
-        logger.warning(
-            f"Model contains meta tensors, using to_empty({device})"
-        )
-        if hasattr(model, "to_empty"):
-            return model.to_empty(device=device)
-
-        logger.error(
-            "PyTorch version does not support to_empty(). "
-            "Upgrade to PyTorch >= 2.0"
-        )
-        raise AttributeError("Model does not support to_empty()")
-
+    import time
+    start_time = time.time()
+    
     try:
         import torch
 
-        if isinstance(model, torch.nn.Module):
-            return model.to(device)  # safe-device-placement: internal implementation
-    except ImportError:
-        pass
+        # Check if model has any meta tensors
+        meta_status = has_meta_tensors(model)
+        if meta_status is None:
+            # Model doesn't support parameter inspection
+            logger.debug("Model doesn't support parameter inspection, returning as-is")
+            return model
 
+        if meta_status:
+            # Model has meta tensors - must use to_empty()
+            logger.warning(
+                f"Meta tensor detected in model. "
+                f"Using to_empty() for device transfer to {device}."
+            )
+
+            if not hasattr(model, "to_empty"):
+                logger.error(
+                    "PyTorch version does not support to_empty(). "
+                    "Upgrade to PyTorch >= 2.0"
+                )
+                raise AttributeError("Model does not support to_empty()")
+
+            logger.info(f"Moving model with meta tensors to {device} using to_empty()")
+
+            # First, move to the target device with to_empty()
+            model = model.to_empty(device=device)
+
+            # Then reinitialize parameters (if needed)
+            # This ensures all parameters have actual data
+            # Skip if model doesn't support modules() (e.g., mock objects in tests)
+            if hasattr(model, 'modules'):
+                for module in model.modules():
+                    if hasattr(module, 'reset_parameters'):
+                        try:
+                            module.reset_parameters()
+                            logger.debug(f"Reset parameters for {module.__class__.__name__}")
+                        except Exception as e:
+                            logger.debug(f"Could not reset parameters for {module}: {e}")
+            else:
+                logger.debug("Model doesn't support modules(), skipping parameter reset")
+
+            # Log completion time for production monitoring
+            duration = time.time() - start_time
+            logger.info(
+                f"Meta tensor device transfer completed in {duration:.3f}s. "
+                f"Device: {device}"
+            )
+            
+            # Optional: Add metrics if you have a metrics system
+            # Example integration points:
+            # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
+            # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
+            
+            return model
+
+        else:
+            # Standard device transfer for normal tensors
+            logger.debug(f"Moving model to {device} using standard .to()")
+            if isinstance(model, torch.nn.Module):
+                result = model.to(device)  # safe-device-placement: internal implementation
+                
+                # Log standard transfer timing
+                duration = time.time() - start_time
+                if duration > 1.0:  # Only log if takes more than 1 second
+                    logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
+                
+                return result
+
+            # For SentenceTransformer or other models with .to() method
+            return _try_model_to(model, device)
+
+    except ImportError:
+        # PyTorch not available - try fallback .to() method if model has it
+        logger.warning("PyTorch not available, attempting fallback .to() method")
+        return _try_model_to(model, device)
+    except AttributeError as e:
+        # Re-raise if this is about missing to_empty() (critical error)
+        if "to_empty" in str(e):
+            raise
+        # Otherwise, model doesn't support .to() method - return as-is
+        logger.warning(f"Model does not support device transfer: {e}")
+        return model
+    except Exception as e:
+        logger.error(f"Error moving model to device {device}: {e}")
+        raise RuntimeError(f"Failed to move model to {device}: {e}") from e
+
+
+def _try_model_to(model: Any, device: str) -> Any:
+    """
+    Helper function to attempt model.to() if available.
+    
+    Args:
+        model: Model to move
+        device: Target device
+    
+    Returns:
+        Model after attempting device transfer, or original model if not supported
+    """
     if hasattr(model, "to") and callable(getattr(model, "to", None)):
         return model.to(device)  # safe-device-placement: internal implementation
-
+    # Model doesn't have .to() method
+    logger.warning("No device transfer method available, returning model as-is")
     return model
 
 
