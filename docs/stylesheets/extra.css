@@ -1,0 +1,97 @@
+/* Custom CSS for GitHub Pages - Table Formatting Fix
+ * 
+ * Ensures proper spacing between headers and tables
+ * even when markdown doesn't have blank lines
+ */
+
+/* Add margin before tables to create visual separation */
+.md-typeset table {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* Extra spacing when table follows a header */
+.md-typeset h1 + table,
+.md-typeset h2 + table,
+.md-typeset h3 + table,
+.md-typeset h4 + table,
+.md-typeset h5 + table,
+.md-typeset h6 + table {
+  margin-top: 1.5em;
+}
+
+/* Also handle when table follows directly after header with no paragraph */
+.md-typeset h1:has(+ table),
+.md-typeset h2:has(+ table),
+.md-typeset h3:has(+ table),
+.md-typeset h4:has(+ table),
+.md-typeset h5:has(+ table),
+.md-typeset h6:has(+ table) {
+  margin-bottom: 0.5em;
+}
+
+/* Ensure proper spacing for table headers */
+.md-typeset table thead {
+  border-bottom: 2px solid var(--md-default-fg-color--lightest);
+}
+
+/* Better spacing for table cells */
+.md-typeset table th,
+.md-typeset table td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* First column emphasis for definition-style tables */
+.md-typeset table th:first-child,
+.md-typeset table td:first-child {
+  font-weight: 500;
+}
+
+/* Responsive table handling */
+@media screen and (max-width: 76.1875em) {
+  .md-typeset table {
+    font-size: 0.9em;
+  }
+  
+  .md-typeset table th,
+  .md-typeset table td {
+    padding: 0.6em 0.8em;
+  }
+}
+
+/* Dark mode specific adjustments */
+[data-md-color-scheme="slate"] .md-typeset table thead {
+  border-bottom-color: var(--md-default-fg-color--dark);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table th,
+[data-md-color-scheme="slate"] .md-typeset table td {
+  border-bottom-color: var(--md-default-fg-color--dark);
+}
+
+/* Improve table visibility in both light and dark modes */
+.md-typeset table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.md-typeset table thead th {
+  background-color: var(--md-code-bg-color);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Alternating row colors for better readability */
+.md-typeset table tbody tr:nth-child(even) {
+  background-color: var(--md-code-bg-color);
+  opacity: 0.5;
+}
+
+/* Hover effect for table rows */
+.md-typeset table tbody tr:hover {
+  background-color: var(--md-accent-fg-color);
+  opacity: 0.1;
+  transition: background-color 0.2s ease;
+}
