@@ -61,10 +61,12 @@ ruff check src/codex/ast_adapters/ src/codex/cli/ tests/ast_adapters/test_*.py t
 
 ## Impact
 
-- **Functional Changes**: None - purely cosmetic whitespace cleanup
-- **Test Changes**: None - no logic modifications
-- **Lines Changed**: 597 insertions(+), 606 deletions(-)
+- **Functional Changes (this commit)**: None - purely cosmetic whitespace cleanup in commit 370d7ee
+- **Test Changes (this commit)**: None - no logic modifications in commit 370d7ee
+- **Lines Changed (this commit)**: 597 insertions(+), 606 deletions(-)
 - **CI Status**: Should now pass ✅
+
+**Note**: This document describes only the W293 linting fix commit (370d7ee). The overall PR includes substantial new functionality (AST adapters, CLI tools, 149 tests). See PR description for complete feature list.
 
 ---
 

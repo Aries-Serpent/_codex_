@@ -99,15 +99,19 @@ class BaseASTAdapter(ABC):
     def parse(self, source_code: str) -> StandardizedASTNode:
         """
         Parse source code and return standardized AST root node.
-        
+
         Args:
             source_code: Source code string to parse
-            
+
         Returns:
             Root node of the standardized AST
-            
+
         Raises:
             SyntaxError: If source code has syntax errors
+
+        Note:
+            Subclasses may add optional parameters (e.g., file_path) to their
+            parse() signature. The base signature requires only source_code.
         """
         pass
 

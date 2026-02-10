@@ -35,18 +35,20 @@ class YAMLASTAdapter(BaseASTAdapter):
     def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedASTNode:
         """
         Parse YAML source into standardized AST.
-        
+
         Args:
             source: YAML source code as string
             file_path: Optional path to source file
-            
+
         Returns:
             Root StandardizedASTNode representing the YAML document
-            
+
         Raises:
-            yaml.YAMLError: If YAML parsing fails
+            ValueError: If YAML parsing fails
         """
-        self._current_file = file_path
+        # Use provided file_path or fall back to self.file_path
+        effective_path = file_path or self.file_path
+        self._current_file = effective_path
 
         try:
             # Parse YAML
@@ -57,7 +59,7 @@ class YAMLASTAdapter(BaseASTAdapter):
                 node_id=str(uuid.uuid4()),
                 node_type="document",
                 name="<yaml_document>",
-                file_path=file_path,
+                file_path=effective_path,
                 line_start=1,
                 line_end=len(source.splitlines()),
                 column_start=0,

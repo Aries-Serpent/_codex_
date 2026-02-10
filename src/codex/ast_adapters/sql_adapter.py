@@ -304,7 +304,8 @@ class SQLASTAdapter(BaseASTAdapter):
 
             if from_seen and isinstance(token, Identifier):
                 table_name = token.get_real_name()
-                self._tables.append(table_name)
+                if table_name:  # Guard against None
+                    self._tables.append(table_name)
                 break
 
         node.metadata.update({

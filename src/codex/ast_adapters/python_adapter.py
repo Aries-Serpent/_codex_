@@ -106,6 +106,9 @@ class PythonASTAdapter(BaseASTAdapter):
         func_name = func.name.value
 
         # Extract position info if available
+        # Note: Position metadata requires MetadataWrapper to be set up.
+        # Without it, line_start/line_end will default to 0.
+        # TODO: Consider wrapping module in MetadataWrapper for accurate positions.
         pos = func.name.metadata.get('position', None) if hasattr(func.name, 'metadata') else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
@@ -157,12 +160,21 @@ class PythonASTAdapter(BaseASTAdapter):
             for stmt in cls.body.body:
                 self._process_node(stmt, cls_node)
 
+    def _get_full_name(self, node: cst.CSTNode) -> str:
+        """Extract full dotted name from libcst node (handles Name and Attribute)."""
+        if isinstance(node, cst.Name):
+            return node.value
+        elif isinstance(node, cst.Attribute):
+            return f"{self._get_full_name(node.value)}.{node.attr.value}"
+        return str(node)
+
     def _process_import(self, imp: cst.CSTNode, parent: StandardizedASTNode) -> None:
         """Process import statement."""
         if isinstance(imp, cst.Import):
             for name in imp.names:
                 if isinstance(name, cst.ImportAlias):
-                    import_name = name.name.value if isinstance(name.name, cst.Attribute) else name.name.value
+                    # Handle both simple names (import foo) and dotted names (import a.b.c)
+                    import_name = self._get_full_name(name.name)
 
                     import_node = StandardizedASTNode(
                         node_id=self._generate_node_id(),
@@ -175,18 +187,22 @@ class PythonASTAdapter(BaseASTAdapter):
                     parent.children.append(import_node)
 
         elif isinstance(imp, cst.ImportFrom):
-            module = imp.module.value if imp.module else ""
+            # Handle dotted module names in from imports
+            module = self._get_full_name(imp.module) if imp.module else ""
             for name in imp.names:
                 if isinstance(name, cst.ImportAlias):
+                    imported_name = name.name.value if isinstance(name.name, cst.Name) else str(name.name)
+                    full_name = f"{module}.{imported_name}" if module else imported_name
+
                     import_node = StandardizedASTNode(
                         node_id=self._generate_node_id(),
                         node_type="import_from",
-                        name=f"{module}.{name.name.value}",
+                        name=full_name,
                         file_path=self.file_path,
                         parent=parent,
                         metadata={
                             "module": module,
-                            "name": name.name.value,
+                            "name": imported_name,
                             "alias": name.asname.name.value if name.asname else None
                         }
                     )
