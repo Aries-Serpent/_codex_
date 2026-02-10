@@ -65,6 +65,25 @@ class TestCheckTableSpacing:
         issues = check_table_spacing(test_file)
         assert len(issues) == 0
 
+    def test_skips_indented_code_blocks(self, tmp_path):
+        """Test that tables inside indented code blocks are ignored"""
+        test_file = tmp_path / "test.md"
+        test_file.write_text(
+            "In a list:\n"
+            "- Item 1\n"
+            "    ```python\n"
+            "    # Indented code\n"
+            "    | Table | In | Code |\n"
+            "    ```\n"
+            "\n"
+            "Real table:\n"
+            "\n"
+            "| Column 1 | Column 2 |\n"
+        )
+
+        issues = check_table_spacing(test_file)
+        assert len(issues) == 0
+
     def test_detects_multiple_issues(self, tmp_path):
         """Test detection of multiple table spacing issues"""
         test_file = tmp_path / "test.md"

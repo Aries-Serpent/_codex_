@@ -16,7 +16,7 @@ def check_table_spacing(file_path: Path) -> List[Dict[str, Any]]:
     """
     Check if tables have proper spacing after headers/text.
 
-    Returns list of issues found: [{line, text, next, fixed_content}]
+    Returns list of issues found: [{line, text, next, line_index}]
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -32,8 +32,8 @@ def check_table_spacing(file_path: Path) -> List[Dict[str, Any]]:
         current = lines[i].rstrip()
         next_line = lines[i + 1].rstrip()
 
-        # Track code block state
-        if current.startswith("```"):
+        # Track code block state (handle indented fences)
+        if current.strip().startswith("```"):
             in_code_block = not in_code_block
             continue
 
@@ -64,7 +64,7 @@ def fix_table_spacing(
     """
     Fix table spacing issues by inserting blank lines.
 
-    Returns True if fixes were applied, False otherwise.
+    Returns True if fixes were applied or would be applied in dry-run, False otherwise.
     """
     if not issues:
         return False
@@ -127,7 +127,11 @@ def scan_directory(
     print(f"{'=' * 80}\n")
 
     for file_path, issues in sorted(all_issues.items(), key=lambda kv: str(kv[0])):
-        rel_path = file_path.relative_to(docs_dir.parent)
+        try:
+            rel_path = file_path.relative_to(docs_dir.parent)
+        except ValueError:
+            # Fallback if relative_to fails
+            rel_path = file_path
         print(f"\n📄 {rel_path}:")
         print(f"   {len(issues)} issue(s) found")
 
