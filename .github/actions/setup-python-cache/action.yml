@@ -1,0 +1,158 @@
+name: 'Setup Python with Unified Cache'
+description: 'Setup Python with intelligent caching using the unified cache manager'
+author: 'Aries Serpent'
+
+inputs:
+  python-version:
+    description: 'Python version to setup'
+    required: true
+    default: '3.12'
+  
+  cache-type:
+    description: 'Type of cache (pip, nox, uv, etc.)'
+    required: false
+    default: 'pip'
+  
+  workflow-name:
+    description: 'Workflow name for cache isolation'
+    required: false
+    default: ${{ github.workflow }}
+  
+  extra-identifiers:
+    description: 'Additional cache identifiers (JSON: {"job":"test","python":"3.12"})'
+    required: false
+    default: '{}'
+  
+  additional-paths:
+    description: 'Additional paths to cache (one per line)'
+    required: false
+    default: ''
+
+outputs:
+  cache-key:
+    description: 'Generated cache key'
+    value: ${{ steps.cache-config.outputs.cache-key }}
+  
+  cache-hit:
+    description: 'Whether cache was hit'
+    value: ${{ steps.cache.outputs.cache-hit }}
+  
+  python-path:
+    description: 'Path to Python executable'
+    value: ${{ steps.setup-python.outputs.python-path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      id: setup-python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    
+    - name: Install Cache Manager Dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        # Install minimal dependencies for cache manager
+        if [ -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+          python -m pip install -e "$GITHUB_WORKSPACE" --no-deps
+        fi
+    
+    - name: Generate Cache Configuration
+      id: cache-config
+      shell: bash
+      env:
+        CACHE_TYPE: ${{ inputs.cache-type }}
+        WORKFLOW_NAME: ${{ inputs.workflow-name }}
+        EXTRA_IDS: ${{ inputs.extra-identifiers }}
+      run: |
+        # Generate cache key using unified cache manager
+        CACHE_KEY=$(python -m codex.ci.cache_manager generate-key \
+          --cache-type "$CACHE_TYPE" \
+          --workflow "$WORKFLOW_NAME" 2>/dev/null || echo "")
+        
+        if [ -z "$CACHE_KEY" ]; then
+          # Fallback to manual generation if cache manager not available
+          DEP_HASH=$(cat pyproject.toml requirements*.txt 2>/dev/null | sha256sum | cut -c1-12)
+          CACHE_KEY="${RUNNER_OS}-${WORKFLOW_NAME}-${CACHE_TYPE}-${DEP_HASH}"
+        fi
+        
+        echo "cache-key=${CACHE_KEY}" >> $GITHUB_OUTPUT
+        
+        # Generate restore keys
+        RESTORE_KEY1="${RUNNER_OS}-${WORKFLOW_NAME}-${CACHE_TYPE}-"
+        RESTORE_KEY2="${RUNNER_OS}-${CACHE_TYPE}-"
+        
+        echo "restore-key-1=${RESTORE_KEY1}" >> $GITHUB_OUTPUT
+        echo "restore-key-2=${RESTORE_KEY2}" >> $GITHUB_OUTPUT
+        
+        echo "✅ Cache key generated: ${CACHE_KEY}"
+    
+    - name: Determine Cache Paths
+      id: cache-paths
+      shell: bash
+      env:
+        CACHE_TYPE: ${{ inputs.cache-type }}
+        ADDITIONAL_PATHS: ${{ inputs.additional-paths }}
+      run: |
+        # Standard paths for cache types
+        case "$CACHE_TYPE" in
+          pip)
+            PATHS="~/.cache/pip"
+            ;;
+          nox)
+            PATHS="~/.cache/nox
+        .nox"
+            ;;
+          uv)
+            PATHS="~/.cache/uv"
+            ;;
+          huggingface)
+            PATHS="~/.cache/huggingface"
+            ;;
+          *)
+            PATHS="~/.cache/$CACHE_TYPE"
+            ;;
+        esac
+        
+        # Add additional paths if specified
+        if [ -n "$ADDITIONAL_PATHS" ]; then
+          PATHS="${PATHS}
+        ${ADDITIONAL_PATHS}"
+        fi
+        
+        # Save to output (multi-line)
+        echo "paths<<EOF" >> $GITHUB_OUTPUT
+        echo "$PATHS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        echo "✅ Cache paths configured for ${CACHE_TYPE}"
+    
+    - name: Restore Cache
+      id: cache
+      uses: actions/cache@v5
+      with:
+        path: ${{ steps.cache-paths.outputs.paths }}
+        key: ${{ steps.cache-config.outputs.cache-key }}
+        restore-keys: |
+          ${{ steps.cache-config.outputs.restore-key-1 }}
+          ${{ steps.cache-config.outputs.restore-key-2 }}
+    
+    - name: Report Cache Status
+      shell: bash
+      env:
+        CACHE_HIT: ${{ steps.cache.outputs.cache-hit }}
+        CACHE_KEY: ${{ steps.cache-config.outputs.cache-key }}
+      run: |
+        if [ "$CACHE_HIT" == "true" ]; then
+          echo "✅ Cache hit! Using cached dependencies"
+          echo "   Key: ${CACHE_KEY}"
+        else
+          echo "⚠️  Cache miss. Dependencies will be downloaded"
+          echo "   Key: ${CACHE_KEY}"
+        fi
+
+branding:
+  icon: 'package'
+  color: 'blue'
