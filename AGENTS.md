@@ -468,7 +468,7 @@ python scripts/remediation/check_windows_filenames.py <files...>
 
 The repository includes 53 specialized GitHub Copilot agents designed for specific tasks. See [.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md](.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md) for complete analysis.
 
-### Available Agents (53 Total)
+### Available Agents (54 Total)
 
 #### CI/CD & Build (18 agents)
 | Agent | Purpose | Location | Status |
@@ -515,7 +515,7 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 | **CodeQL Alert Resolution Agent** | Resolve CodeQL alerts | [.github/agents/codeql-alert-resolution-agent.md](.github/agents/codeql-alert-resolution-agent.md) | ✅ Active |
 | **Performance Regression Detector** | Detect performance regressions | [.github/agents/performance-regression-detector.agent.md](.github/agents/performance-regression-detector.agent.md) | ✅ Active |
 
-#### Documentation (5 agents)
+#### Documentation (6 agents)
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
 | **Documentation Consolidator** | Intelligent documentation consolidation | [.github/agents/documentation-consolidator.md](.github/agents/documentation-consolidator.md) | ✅ Active |
@@ -523,6 +523,7 @@ The repository includes 53 specialized GitHub Copilot agents designed for specif
 | **Link Validator Agent** | Cross-reference and link validation | [.github/agents/link-validator-agent.md](.github/agents/link-validator-agent.md) | ✅ Active |
 | **Semantic Search** | Semantic search over codebase and docs | [.github/agents/semantic-search.agent.md](.github/agents/semantic-search.agent.md) | ✅ Active |
 | **Claim Verification Agent** | Verify claims in commit messages and docs | [.github/agents/claim-verification-agent.md](.github/agents/claim-verification-agent.md) | ✅ Active |
+| **GitHub Pages Manager Agent** | Manages GitHub Pages deployment, theme, and live doc sync | [.github/agents/github-pages-manager.md](.github/agents/github-pages-manager.md) | ✅ Active |
 
 #### Configuration (2 agents)
 | Agent | Purpose | Location | Status |
