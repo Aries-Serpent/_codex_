@@ -2,7 +2,7 @@
 
 **Date**: 2025-12-30  
 **Session**: Terminology Migration Task  
-**Status**: ✅ COMPLETE
+**Status**: ✅ COMPLETE (with code review fixes)
 
 ---
 
@@ -10,11 +10,14 @@
 
 Successfully replaced ALL time-based terminology with iteration-based workflow terminology across the entire _codex_ repository while preserving technical time references.
 
+**Code Review Applied**: 10 critical edge cases identified and fixed to ensure technical metrics remain time-based.
+
 ### Statistics
 
 - **Files Analyzed**: 814
 - **Files Modified**: 357 (43.9%)
 - **Total Replacements**: 1,743
+- **Code Review Fixes**: 8 files (edge cases)
 - **Syntax Validation**: ✅ PASSED (all YAML files validated)
 - **Processing Time**: ~30 seconds
 
@@ -47,6 +50,12 @@ Successfully replaced ALL time-based terminology with iteration-based workflow t
 - Git log relative dates (`30 days ago`)
 - Variable names (`retention_days`, `cache_ttl`)
 - Expiration contexts
+- **Dependabot intervals** (`weekly` - required valid value)
+- **Document freshness metrics** (days - calendar age tracking)
+- **Session durations** (minutes - actual elapsed time)
+- **Scan durations** (minutes - performance metrics)
+- **Task time estimates** (minutes - real-time planning)
+- **Security fix tracking** (days - time-based tracking)
 
 ---
 
@@ -370,3 +379,52 @@ find .github/workflows -name "*.yml" | xargs -I {} python3 -c "import yaml; yaml
 **Script Author**: AI Agent (GitHub Copilot)  
 **Validation**: Automated + Manual spot checks  
 **Status**: ✅ APPROVED FOR COMMIT
+
+## Code Review Fixes Applied
+
+After initial migration, code review identified 10 edge cases where time terminology should be preserved. These were fixed in commit 6758528:
+
+### Critical Fixes
+
+1. **Dependabot Interval** (.github/SECURITY.md)
+   - ❌ Changed to: `interval: "per-phase"`
+   - ✅ Fixed to: `interval: "weekly"` (required valid Dependabot value)
+
+2. **Document Freshness Metrics** (.codex/admin_docs_audit_summary.md)
+   - ❌ Changed to: `Fresh (<30 iterations)`, `Aging (30-90 iterations)`
+   - ✅ Fixed to: `Fresh (<30 days)`, `Aging (30-90 days)` (calendar age tracking)
+
+3. **Session Duration** (.codex/FINAL_SESSION_SUMMARY_2026_01_12.md)
+   - ❌ Changed to: `~120 Pre-commits`
+   - ✅ Fixed to: `~120 minutes` (actual elapsed time)
+
+4. **Scan Duration** (.codex/HYGIENE_AUDIT_EXECUTIVE_SUMMARY.md)
+   - ❌ Changed to: `75 Pre-commits`
+   - ✅ Fixed to: `75 minutes` (performance metric)
+
+5. **Task Time Estimates** (.codex/HUMAN_ADMIN_REQUIRED_TOKEN_SETUP.md)
+   - ❌ Changed to: `2 Pre-commits`, `3 Pre-commits`, etc.
+   - ✅ Fixed to: `2 minutes`, `3 minutes`, etc. (real-time planning)
+
+6. **Security Metrics** (.github/agents/QA_AGENT_ARCHITECTURE_DIAGRAMS.md)
+   - ❌ Changed to: `Fixed (30 iterations)`
+   - ✅ Fixed to: `Fixed (30 days)` (time-based tracking)
+
+7. **Metrics Table Consistency** (.github/agents/PROJECT_ARCHITECT_RESEARCHER_COMPLETE.md)
+   - ❌ Mixed: `4 Commits` vs `30 min`
+   - ✅ Fixed to: `4 hours` vs `30 min` (consistent time units)
+
+8. **Terminology Guidelines** (.github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md)
+   - ❌ Example showed: `"2-3 phases"` under "NEVER USE"
+   - ✅ Fixed to: `"2-3 weeks"` under "NEVER USE" (correct example)
+
+### Rationale
+
+These fixes ensure:
+- **CI/CD Configuration Validity**: Dependabot requires specific interval values
+- **Clear Performance Metrics**: Scan/session times need actual time units
+- **Meaningful Freshness Tracking**: Document age is calendar-based, not iteration-based
+- **Accurate Planning**: Human task estimates need real-time context
+- **Consistent Metrics**: Time-based measurements remain in time units
+
+---
