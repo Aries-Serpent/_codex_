@@ -2,7 +2,7 @@
 
 > **Target:** 0.85+ → ~1.00  
 > **Priority:** P1 Critical  
-> **Estimated Effort:** 3-4 days  
+> **Estimated Effort:** 3-4 iterations  
 > **Impact:** +0.15 capability score
 
 ---
@@ -389,5 +389,5 @@ Add comprehensive scalability tests in tests/serving/test_inference_scalability.
 ---
 
 **Batchset Status**: Ready for Implementation  
-**Estimated Timeline**: 3-4 days  
+**Estimated Timeline**: 3-4 iterations  
 **Priority**: P1 Critical

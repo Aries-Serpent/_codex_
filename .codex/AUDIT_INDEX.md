@@ -100,7 +100,7 @@ cat admin_docs_audit.json | jq -r '
 - **Current Audit:** 2026-01-23
 - **Next Audit:** 2026-02-23 (30 days)
 - **Frequency:** Monthly (minimum)
-- **Automated Checks:** Weekly (recommended)
+- **Automated Checks:** per-phase (recommended)
 
 ---
 
@@ -137,7 +137,7 @@ python3 admin_docs_audit.py
 ### Customizing Thresholds
 
 Edit `admin_docs_audit.py` to adjust:
-- Staleness thresholds (default: 30/90 days)
+- Staleness thresholds (default: 30/90 iterations)
 - Date extraction patterns
 - Calendar language detection
 - Report formatting

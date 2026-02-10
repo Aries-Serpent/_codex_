@@ -482,7 +482,7 @@ codex-analyze --smell-threshold high src/
 
 | KPI | Target | Method |
 |-----|--------|--------|
-| **On-Time Delivery** | Complete in 12 weeks | Gantt chart tracking |
+| **On-Time Delivery** | Complete in 12 phases | Gantt chart tracking |
 | **Quality (Defect Rate)** | <5 bugs per 1000 LOC | Bug tracking post-release |
 | **Test Coverage** | ≥80% | Coverage reports |
 | **Performance** | Meet all NFR-PERF targets | Benchmark suite |
@@ -525,7 +525,7 @@ This requirements document provides **complete, verifiable, and measurable** spe
 **Next Actions:**
 1. **This Week:** Schedule kickoff with team; assign roles
 2. **Next Week:** Complete design review; begin Sprint 1
-3. **Weekly:** Status updates, risk reviews, sign-off gates
+3. **per-phase:** Status updates, risk reviews, sign-off gates
 
 ---
 
@@ -1357,7 +1357,7 @@ This **Implementation Guidance** provides:
 - Get explicit sign-off at each gate
 - Keep documentation in sync
 
-**Start with Sprint 1:** Parser + Standardization (2 weeks)
+**Start with Sprint 1:** Parser + Standardization (2 phases)
 
 ---
 

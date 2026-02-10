@@ -17,11 +17,11 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 
 | Phase | Name | Duration | Status |
 |-------|------|----------|--------|
-| 0 | Foundation & Planning | 1 week | ⏳ IN PROGRESS |
-| 1 | Core Components | 2 weeks | 🔜 PENDING |
-| 2 | Self-Healing Engine | 2 weeks | 🔜 PENDING |
-| 3 | User Experience | 1 week | 🔜 PENDING |
-| 4 | Production Hardening | 1 week | 🔜 PENDING |
+| 0 | Foundation & Planning | 1 phase | ⏳ IN PROGRESS |
+| 1 | Core Components | 2 phases | 🔜 PENDING |
+| 2 | Self-Healing Engine | 2 phases | 🔜 PENDING |
+| 3 | User Experience | 1 phase | 🔜 PENDING |
+| 4 | Production Hardening | 1 phase | 🔜 PENDING |
 
 ---
 

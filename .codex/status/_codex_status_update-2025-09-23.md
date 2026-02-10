@@ -50,7 +50,7 @@ Audit Scope
    7. Safety filters rely on external YAML policies; missing validation tests mean policy syntax errors surface only at runtime.【F:src/codex_ml/safety/filters.py†L50-L182】
    8. Tokenizer pipeline supports streaming toggles but lacks automated manifest regeneration, risking stale corpora indexes for audits.【F:src/codex_ml/tokenization/pipeline.py†L69-L123】
    9. Outstanding-questions ledger continues to require manual syncing with status reports, inviting drift if not embedded or referenced explicitly.【F:docs/status_update_outstanding_questions.md†L1-L74】
-   10. Status-update automation script (`tools/status/status_update_executor.py`) provides repo maps and placeholder scans, but reports still rely on manual embedding of results, slowing daily hygiene.【F:tools/status/status_update_executor.py†L98-L200】
+   10. Status-update automation script (`tools/status/status_update_executor.py`) provides repo maps and placeholder scans, but reports still rely on manual embedding of results, slowing per-iteration hygiene.【F:tools/status/status_update_executor.py†L98-L200】
 
 4. **Atomic Diffs**
 ### Atomic Diff 1 — Implement `codex repo_map`

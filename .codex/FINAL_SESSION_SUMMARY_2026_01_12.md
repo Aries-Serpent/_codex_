@@ -315,7 +315,7 @@ python .github/agents/ci-failure-diagnostician/src/diagnostician.py \
 
 | Metric | Value |
 |--------|-------|
-| **Total Session Time** | ~120 minutes |
+| **Total Session Time** | ~120 Pre-commits |
 | **Phases Completed** | 2/5 (1 & 4 - primary objectives) |
 | **Files Created** | 6 |
 | **Files Modified** | 1 |

@@ -673,7 +673,7 @@ Memory Usage: < 80% at peak
 - [ ] Communicate status to stakeholders
 
 ### Post-Launch
-- [ ] Monitor for 7 days continuously
+- [ ] Monitor for 7 iterations continuously
 - [ ] Review incident reports
 - [ ] Collect user feedback
 - [ ] Optimize based on real traffic

@@ -532,11 +532,11 @@ Phase Breakdown:
 
 ### Target: 98.5/100 (Realistic Maximum)
 
-**Note:** Perfect 100/100 requires production battle-testing and community validation over months. 98.5/100 is achievable in 2-3 weeks.
+**Note:** Perfect 100/100 requires production battle-testing and community validation over months. 98.5/100 is achievable in 2-3 phases.
 
 ---
 
-### Phase 1: Quick Wins (1 Week, +3.2 points → 95.0)
+### Phase 1: Quick Wins (1 phase, +3.2 points → 95.0)
 
 #### 1.1 Add Root-Level Navigation (4 hours)
 **Impact:** +1.5 points (Discovery)
@@ -606,7 +606,7 @@ Phase Breakdown:
 
 ---
 
-### Phase 2: Documentation Excellence (4 days, +1.8 points → 96.8)
+### Phase 2: Documentation Excellence (4 iterations, +1.8 points → 96.8)
 
 #### 2.1 Generate API Documentation (8 hours)
 **Impact:** +1.0 points (Documentation)
@@ -659,7 +659,7 @@ Phase Breakdown:
 
 ---
 
-### Phase 3: Instrumentation & Observability (3 days, +1.2 points → 98.0)
+### Phase 3: Instrumentation & Observability (3 iterations, +1.2 points → 98.0)
 
 #### 3.1 OpenTelemetry Integration (6 hours)
 **Impact:** +0.8 points (Runtime Introspection)
@@ -722,7 +722,7 @@ Phase Breakdown:
 
 ---
 
-### Phase 4: Advanced Features (Optional, 1 week, +0.5 points → 98.5)
+### Phase 4: Advanced Features (Optional, 1 phase, +0.5 points → 98.5)
 
 #### 4.1 Dependency Visualization (4 hours)
 **Impact:** +0.3 points (Code Structure)
@@ -764,7 +764,7 @@ Phase Breakdown:
 
 ## Implementation Timeline
 
-### Option A: Aggressive (2 weeks)
+### Option A: Aggressive (2 phases)
 ```
 Pre-commit 1-2:
 ├── Days 1-2: Phase 1 (Quick Wins)
@@ -775,16 +775,16 @@ Pre-commit 3-4:
 ├── Days 1-2: Phase 3 (Observability)
 └── Days 3-5: Phase 4 (Advanced Features)
 
-Result: 98.5/100 in 2 weeks
+Result: 98.5/100 in 2 phases
 ```
 
-### Option B: Steady (3 weeks)
+### Option B: Steady (3 phases)
 ```
 Pre-commit 1-2: Phase 1 (Quick Wins) + Start Phase 2
 Pre-commit 3-4: Complete Phase 2 + Phase 3
 Pre-commit 5-6: Phase 4 + Buffer for testing
 
-Result: 98.5/100 in 3 weeks with better quality
+Result: 98.5/100 in 3 phases with better quality
 ```
 
 ### Option C: Community-Driven (2 months)
@@ -803,7 +803,7 @@ Result: Approaching 100/100 with real-world validation
 
 ## Effort Summary
 
-| Phase | Hours | Points | ROI |
+| Phase | Commits | Points | ROI |
 |-------|-------|--------|-----|
 | Phase 1: Quick Wins | 8 | +3.2 | 0.40 pts/hr |
 | Phase 2: Documentation | 14 | +1.8 | 0.13 pts/hr |
@@ -823,25 +823,25 @@ Overall Score: 91.8/100 (Grade: A)
 Rank: Top 10% of AI/ML codebases
 ```
 
-### After Phase 1 (1 week)
+### After Phase 1 (1 phase)
 ```
 Projected Score: 95.0/100 (Grade: A+)
 Rank: Top 5% of AI/ML codebases
 ```
 
-### After Phase 2 (2 weeks)
+### After Phase 2 (2 phases)
 ```
 Projected Score: 96.8/100 (Grade: A+)
 Rank: Top 3% of AI/ML codebases
 ```
 
-### After Phase 3 (3 weeks)
+### After Phase 3 (3 phases)
 ```
 Projected Score: 98.0/100 (Grade: A+)
 Rank: Top 1% of AI/ML codebases
 ```
 
-### After Phase 4 (4 weeks)
+### After Phase 4 (4 phases)
 ```
 Projected Score: 98.5/100 (Grade: A+)
 Rank: Top 0.5% of AI/ML codebases
@@ -908,15 +908,15 @@ The _codex_ codebase has achieved **91.8/100 (Grade: A)** in AI Agent Intuitiven
 - Full safety mechanisms
 - Comprehensive benchmarking
 
-### Path to 98.5/100 (4 Weeks)
+### Path to 98.5/100 (4 phases)
 
 **Clear Roadmap:**
-1. **Phase 1 (1 week):** Quick wins → 95.0/100
-2. **Phase 2 (2 weeks):** Documentation → 96.8/100
-3. **Phase 3 (3 weeks):** Observability → 98.0/100
-4. **Phase 4 (4 weeks):** Advanced features → 98.5/100
+1. **Phase 1 (1 phase):** Quick wins → 95.0/100
+2. **Phase 2 (2 phases):** Documentation → 96.8/100
+3. **Phase 3 (3 phases):** Observability → 98.0/100
+4. **Phase 4 (4 phases):** Advanced features → 98.5/100
 
-**Total Effort:** 39 hours over 4 weeks
+**Total Effort:** 39 hours over 4 phases
 
 ### Long-Term Vision (100/100)
 

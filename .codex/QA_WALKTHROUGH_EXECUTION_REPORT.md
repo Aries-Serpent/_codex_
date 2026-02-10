@@ -108,30 +108,30 @@ A comprehensive repository-wide QA walkthrough has been successfully completed, 
 - **Target**: 70% (pyproject.toml requirement)
 - **Gap**: 42.5%
 - **Impact**: Would fail CI if coverage gate enforced
-- **Action**: Implement IP-001 (4-6 weeks)
+- **Action**: Implement IP-001 (4-6 phases)
 
 #### 2. Authentication Not Production-Ready
 - **Location**: examples/authentication/
 - **Status**: Examples only
 - **Impact**: Cannot deploy production apps requiring auth
-- **Action**: Implement IP-004 (3-4 weeks)
+- **Action**: Implement IP-004 (3-4 phases)
 
 #### 3. Security-Critical Files Review Needed
 - **Count**: 137 files
 - **Categories**: auth, security, secrets, tokens
 - **Impact**: Potential security vulnerabilities
-- **Action**: Implement IP-003 (1 week) + comprehensive review
+- **Action**: Implement IP-003 (1 phase) + comprehensive review
 
 #### 4. Ongoing Dependency Maintenance
 - **Current status**: Good (recent updates applied)
-- **Action**: Implement IP-005 (2 weeks initial, ongoing)
+- **Action**: Implement IP-005 (2 phases initial, ongoing)
 
 ### 🟡 Medium Priority Issues (2)
 
 #### 1. Legacy Configuration Duplication
 - **Conflicts**: config_legacy vs config, yaml_legacy vs configs
 - **Impact**: Maintenance burden, confusion
-- **Action**: Implement IP-002 (1-2 weeks)
+- **Action**: Implement IP-002 (1-2 phases)
 
 #### 2. Legacy Modules
 - **Count**: 17 modules
@@ -145,7 +145,7 @@ A comprehensive repository-wide QA walkthrough has been successfully completed, 
 ### IP-001: Increase Test Coverage to 70%
 - **Priority**: 🔴 **HIGH**
 - **Effort**: Large
-- **Timeline**: 4-6 weeks
+- **Timeline**: 4-6 phases
 - **Impact**: Close 42.5% coverage gap, meet governance requirements
 - **Includes**: 
   - TP-001: Unit tests for high-priority modules (+20-30%)
@@ -155,26 +155,26 @@ A comprehensive repository-wide QA walkthrough has been successfully completed, 
 ### IP-002: Consolidate Legacy Configuration
 - **Priority**: 🟡 **MEDIUM**
 - **Effort**: Medium
-- **Timeline**: 1-2 weeks
+- **Timeline**: 1-2 phases
 - **Impact**: Reduce maintenance burden, improve clarity
 
 ### IP-003: Enhance Security Documentation
 - **Priority**: 🔴 **HIGH**
 - **Effort**: Small
-- **Timeline**: 1 week
+- **Timeline**: 1 phase
 - **Impact**: Improve security practices, enable better reviews
 
 ### IP-004: Production-Ready Authentication
 - **Priority**: 🔴 **HIGH**
 - **Effort**: Large
-- **Timeline**: 3-4 weeks
+- **Timeline**: 3-4 phases
 - **Impact**: Enable production deployments with authentication
 - **Dependencies**: IP-003
 
 ### IP-005: Dependency Audit and Update
 - **Priority**: 🔴 **HIGH**
 - **Effort**: Medium
-- **Timeline**: 2 weeks (initial), ongoing
+- **Timeline**: 2 phases (initial), ongoing
 - **Impact**: Maintain security posture
 
 ---
@@ -246,16 +246,16 @@ A comprehensive repository-wide QA walkthrough has been successfully completed, 
 - [ ] Prioritize quick wins
 
 ### Weeks 1-2: Quick Wins
-- [ ] **IP-003**: Enhance security documentation (1 week)
-- [ ] **IP-002**: Consolidate legacy configuration (1-2 weeks)
+- [ ] **IP-003**: Enhance security documentation (1 phase)
+- [ ] **IP-002**: Consolidate legacy configuration (1-2 phases)
 
 ### Weeks 3-8: Coverage Improvement
-- [ ] **IP-001 Phase 1**: Unit tests for high-priority modules (2-3 weeks)
-- [ ] **IP-001 Phase 2**: Integration tests (2-3 weeks)
-- [ ] **IP-001 Phase 3**: E2E tests (2-3 weeks)
+- [ ] **IP-001 Phase 1**: Unit tests for high-priority modules (2-3 phases)
+- [ ] **IP-001 Phase 2**: Integration tests (2-3 phases)
+- [ ] **IP-001 Phase 3**: E2E tests (2-3 phases)
 
 ### Weeks 9-12: Production Readiness
-- [ ] **IP-004**: Production-ready authentication (3-4 weeks)
+- [ ] **IP-004**: Production-ready authentication (3-4 phases)
 
 ### Ongoing: Maintenance
 - [ ] **IP-005**: Dependency audit and updates (ongoing)
@@ -337,8 +337,8 @@ The codebase demonstrates **excellent architecture** and **strong security infra
 **Address the test coverage gap** - This is mandatory for governance (70% requirement in pyproject.toml) and critical for code quality and maintainability.
 
 ### Timeline to Full Resolution
-- **Quick wins**: 1-2 weeks (IP-002, IP-003)
-- **Coverage target (70%)**: 8-12 weeks (IP-001)
+- **Quick wins**: 1-2 phases (IP-002, IP-003)
+- **Coverage target (70%)**: 8-12 phases (IP-001)
 - **Full production readiness**: 3-6 months (all proposals)
 
 ---

@@ -466,11 +466,11 @@ Compare to toolkit predictions (20.65% per hour theoretical)
 
 | Phase | Target | Estimated Time | Strategies Used |
 |-------|--------|----------------|-----------------|
-| Phase 1 | 22% → 30% | 2-4 hours | Table 1, 4 (Eq #1, #2, #3, #49) |
-| Phase 2 | 30% → 50% | 8-10 hours | Table 4 extensively (Eq #1-#20) |
-| Phase 3 | 50% → 70% | 10-12 hours | Table 3, 4 (Eq #21-#40) |
-| Phase 4 | 70% → 80% | 1 week | All tables (error paths) |
-| Phase 5 | 80% → 95% | 3 weeks | All tables (edge cases, security) |
+| Phase 1 | 22% → 30% | 2-4 Commits | Table 1, 4 (Eq #1, #2, #3, #49) |
+| Phase 2 | 30% → 50% | 8-10 Commits | Table 4 extensively (Eq #1-#20) |
+| Phase 3 | 50% → 70% | 10-12 Commits | Table 3, 4 (Eq #21-#40) |
+| Phase 4 | 70% → 80% | 1 phase | All tables (error paths) |
+| Phase 5 | 80% → 95% | 3 phases | All tables (edge cases, security) |
 
 ---
 

@@ -73,21 +73,21 @@ This living document tracks identified gaps, risks, incomplete implementations, 
    - **Impact**: High for large-scale simulations
    - **Risk**: Medium (works but slow)
    - **Scope**: EM fields, Wave propagation
-   - **Estimated effort**: 2-3 days
+   - **Estimated effort**: 2-3 iterations
    - **Priority**: P1 for production scale
 
 2. **No adaptive grid resolution**
    - **Impact**: Medium (accuracy vs performance trade-off)
    - **Risk**: Low (fixed resolution works)
    - **Scope**: EM fields, Waves
-   - **Estimated effort**: 1-2 days
+   - **Estimated effort**: 1-2 iterations
    - **Priority**: P2
 
 3. **Chaos exploration not parallelized**
    - **Impact**: Medium (could explore faster)
    - **Risk**: Low (current speed acceptable)
    - **Scope**: ChaoticNeuralNetwork
-   - **Estimated effort**: 1 day
+   - **Estimated effort**: 1 iteration
    - **Priority**: P2
 
 #### Robustness Gaps
@@ -95,21 +95,21 @@ This living document tracks identified gaps, risks, incomplete implementations, 
    - **Impact**: Medium (invalid parameters cause issues)
    - **Risk**: Medium (users must know valid ranges)
    - **Scope**: All calculators
-   - **Estimated effort**: 2 days
+   - **Estimated effort**: 2 iterations
    - **Priority**: P1
 
 5. **Limited numerical stability checks**
    - **Impact**: Medium (can become unstable)
    - **Risk**: Medium (rare but possible)
    - **Scope**: Wave propagation, EM fields
-   - **Estimated effort**: 1-2 days
+   - **Estimated effort**: 1-2 iterations
    - **Priority**: P1
 
 6. **No checkpointing for long simulations**
    - **Impact**: Low (need to restart if interrupted)
    - **Risk**: Low (simulations are fast)
    - **Scope**: Wave propagation
-   - **Estimated effort**: 1 day
+   - **Estimated effort**: 1 iteration
    - **Priority**: P3
 
 #### Testing Gaps
@@ -117,21 +117,21 @@ This living document tracks identified gaps, risks, incomplete implementations, 
    - **Impact**: Medium (unknown behavior at scale)
    - **Risk**: Medium (might fail at scale)
    - **Scope**: All calculators
-   - **Estimated effort**: 2 days
+   - **Estimated effort**: 2 iterations
    - **Priority**: P1
 
 8. **No property-based testing (Hypothesis)**
    - **Impact**: Medium (more edge cases uncovered)
    - **Risk**: Low (current tests sufficient)
    - **Scope**: All calculators
-   - **Estimated effort**: 2-3 days
+   - **Estimated effort**: 2-3 iterations
    - **Priority**: P2
 
 9. **No benchmark regression tests**
    - **Impact**: Low (performance regressions undetected)
    - **Risk**: Low (can manual check)
    - **Scope**: All calculators
-   - **Estimated effort**: 1 day
+   - **Estimated effort**: 1 iteration
    - **Priority**: P3
 
 #### Integration Gaps
@@ -139,21 +139,21 @@ This living document tracks identified gaps, risks, incomplete implementations, 
     - **Impact**: Low (manual testing works)
     - **Risk**: Low (tests are reliable)
     - **Scope**: Test infrastructure
-    - **Estimated effort**: 1 day
+    - **Estimated effort**: 1 iteration
     - **Priority**: P2
 
 11. **No Prometheus metrics export**
     - **Impact**: Low (observability limited)
     - **Risk**: Low (logging available)
     - **Scope**: All orchestrators
-    - **Estimated effort**: 1-2 days
+    - **Estimated effort**: 1-2 iterations
     - **Priority**: P3
 
 12. **No REST API endpoints**
     - **Impact**: Low (Python API sufficient)
     - **Risk**: Low (not a requirement)
     - **Scope**: Developer orchestrator
-    - **Estimated effort**: 2-3 days
+    - **Estimated effort**: 2-3 iterations
     - **Priority**: P3
 
 ### Proposed Fixes (Prioritized)
@@ -232,51 +232,51 @@ This living document tracks identified gaps, risks, incomplete implementations, 
    - Combine quantum superposition with classical physics
    - Use quantum annealing for optimization
    - **Impact**: High for complex decisions
-   - **Effort**: 5-10 days
+   - **Effort**: 5-10 iterations
 
 2. **Multi-Physics Coupling**
    - Couple fluid dynamics with EM fields
    - Wave-particle duality in scheduling
    - **Impact**: Medium (more accurate modeling)
-   - **Effort**: 3-5 days
+   - **Effort**: 3-5 iterations
 
 3. **Physics-Informed Neural Networks (PINNs)**
    - Train networks to satisfy physics equations
    - Faster approximations of expensive calculations
    - **Impact**: High for real-time applications
-   - **Effort**: 10-15 days
+   - **Effort**: 10-15 iterations
 
 #### Developer Orchestrator Extensions
 4. **Database Schema Generation**
    - Generate SQLAlchemy models from requirements
    - Include migrations and seed data
    - **Impact**: High for app development
-   - **Effort**: 3-5 days
+   - **Effort**: 3-5 iterations
 
 5. **Deployment Configuration**
    - Generate Dockerfile, docker-compose, K8s manifests
    - Environment-specific configs
    - **Impact**: High for deployment automation
-   - **Effort**: 3-5 days
+   - **Effort**: 3-5 iterations
 
 6. **Test Generation**
    - Generate pytest tests from specifications
    - Use chaos theory for edge case discovery
    - **Impact**: High for test coverage
-   - **Effort**: 5-7 days
+   - **Effort**: 5-7 iterations
 
 #### Visualization & UI
 7. **Interactive Physics Dashboard**
    - Real-time visualization of fields and flows
    - 3D rendering of EM fields and waves
    - **Impact**: Medium (better understanding)
-   - **Effort**: 10-15 days
+   - **Effort**: 10-15 iterations
 
 8. **Web UI for Developer Orchestrator**
    - Visual requirement gathering
    - Interactive architecture editing
    - **Impact**: High for user experience
-   - **Effort**: 15-20 days
+   - **Effort**: 15-20 iterations
 
 ---
 
@@ -348,10 +348,10 @@ This living document tracks identified gaps, risks, incomplete implementations, 
 - Test coverage (95%)
 - Performance benchmarks (pending)
 - User satisfaction (to be collected)
-- Issue resolution time (avg 1 day)
+- Issue resolution time (avg 1 iteration)
 
 ### Review Schedule
-- **Weekly**: Quick gap scan
+- **per-phase**: Quick gap scan
 - **Monthly**: Full analysis iteration
 - **Quarterly**: Strategic feature planning
 

@@ -14,15 +14,15 @@
 **Issue Identified:** Calendar terminology usage violating `.codex/CODEBASE_AGENCY_POLICY.md` Section 4
 
 **Violations Found:**
-- Used "Day 1-2", "Week 1", "3-week timeline" in `docs/architecture/TOP_5_QUICK_WINS_PLAN.md`
+- Used "Day 1-2", "Week 1", "3 phase timeline" in `docs/architecture/TOP_5_QUICK_WINS_PLAN.md`
 - Should use "Pre-commit Cycle", "Phase", "implementation cycles"
 
 **Correction Applied:**
 - Automated replacement using Python regex
 - "Day X" → "Pre-commit Cycle X"
 - "Week X" → "Phase X"  
-- "3-week" → "3-phase"
-- "2 weeks" → "2 implementation cycles"
+- "3 phase" → "3-phase"
+- "2 phases" → "2 implementation cycles"
 
 **Result:** ✅ Zero calendar terminology violations remaining
 

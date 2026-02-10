@@ -148,15 +148,15 @@ A comprehensive repository-wide QA walkthrough has been executed, producing dete
 **Test Proposals**:
 1. **TP-001**: Unit tests for high-priority modules
    - Impact: 20-30% coverage increase
-   - Effort: Large (4-6 weeks)
+   - Effort: Large (4-6 phases)
    
 2. **TP-002**: Integration tests
    - Impact: 10-15% coverage increase
-   - Effort: Medium (2-3 weeks)
+   - Effort: Medium (2-3 phases)
    
 3. **TP-003**: E2E tests for critical workflows
    - Impact: 5-10% coverage increase
-   - Effort: Medium (2-3 weeks)
+   - Effort: Medium (2-3 phases)
 
 **Combined Impact**: Could reach 62.5-80% coverage with all proposals
 
@@ -194,11 +194,11 @@ A comprehensive repository-wide QA walkthrough has been executed, producing dete
 
 | ID | Title | Priority | Effort | Timeline |
 |----|-------|----------|--------|----------|
-| IP-001 | Increase Test Coverage to 70% | 🔴 High | Large | 4-6 weeks |
-| IP-002 | Consolidate Legacy Configuration | 🟡 Medium | Medium | 1-2 weeks |
-| IP-003 | Enhance Security Documentation | 🔴 High | Small | 1 week |
-| IP-004 | Production-Ready Authentication | 🔴 High | Large | 3-4 weeks |
-| IP-005 | Dependency Audit and Update | 🔴 High | Medium | 2 weeks |
+| IP-001 | Increase Test Coverage to 70% | 🔴 High | Large | 4-6 phases |
+| IP-002 | Consolidate Legacy Configuration | 🟡 Medium | Medium | 1-2 phases |
+| IP-003 | Enhance Security Documentation | 🔴 High | Small | 1 phase |
+| IP-004 | Production-Ready Authentication | 🔴 High | Large | 3-4 phases |
+| IP-005 | Dependency Audit and Update | 🔴 High | Medium | 2 phases |
 
 ---
 
@@ -308,10 +308,10 @@ A comprehensive repository-wide QA walkthrough has been executed, producing dete
 | Milestone | Coverage | Untested | Timeline | Status |
 |-----------|----------|----------|----------|--------|
 | Current | 27.5% | 518 | - | ✅ |
-| Phase 1 (TP-001) | 47-57% | 308-358 | +4-6 weeks | ⏳ |
-| Phase 2 (TP-002) | 57-72% | 200-250 | +2-3 weeks | ⏳ |
-| Phase 3 (TP-003) | 62-82% | 150-200 | +2-3 weeks | ⏳ |
-| Target | 70%+ | <200 | ~10-12 weeks | 🎯 |
+| Phase 1 (TP-001) | 47-57% | 308-358 | +4-6 phases | ⏳ |
+| Phase 2 (TP-002) | 57-72% | 200-250 | +2-3 phases | ⏳ |
+| Phase 3 (TP-003) | 62-82% | 150-200 | +2-3 phases | ⏳ |
+| Target | 70%+ | <200 | ~10-12 phases | 🎯 |
 | Aspirational | 100% | 0 | ~6 months | 🎯 |
 
 ---
@@ -467,12 +467,12 @@ Supporting files:
 | Agents | dependency-conflict-agent registered | ✅ |
 | Plansets | path_100 Phase 23-25 continuation plan added | ✅ |
 | Agents | Coverage Roadmap Agent created (10KB spec) | ✅ |
-| Tests | Phase 23 Week 1: 20 CLI/data unit tests added | ✅ |
-| Plansets | path_100 Phase 23 Week 1 completion report | ✅ |
-| Tests | Phase 23 Week 2: 15 integration tests added | ✅ |
-| Plansets | path_100 Phase 23 Week 2 completion report | ✅ |
-| Tests | Phase 23 Week 3: 38 utils gapfill tests added | ✅ |
-| Plansets | path_100 Phase 23 Week 3 completion report | ✅ |
+| Tests | Phase 23 phase 1: 20 CLI/data unit tests added | ✅ |
+| Plansets | path_100 Phase 23 phase 1 completion report | ✅ |
+| Tests | Phase 23 phase 2: 15 integration tests added | ✅ |
+| Plansets | path_100 Phase 23 phase 2 completion report | ✅ |
+| Tests | Phase 23 phase 3: 38 utils gapfill tests added | ✅ |
+| Plansets | path_100 Phase 23 phase 3 completion report | ✅ |
 | Coverage | fail_under raised to 70 in pyproject.toml | ✅ |
 | Agents | coverage-gapfill-agent registered | ✅ |
 | Tests | Phase 24: 47 integration/workflow/E2E/service tests added | ✅ |

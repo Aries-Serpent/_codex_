@@ -3,7 +3,7 @@
 **Session Handoff**: From Phase 8 Implementation to ML Model Training + Dashboard  
 **Status**: 50% Phase 8 Complete, Ready for 8.3-10.3  
 **Priority**: High  
-**Timeline**: 2-3 weeks remaining
+**Timeline**: 2-3 phases remaining
 
 ---
 
@@ -28,7 +28,7 @@
 ### Task 8.3: ML Threat Detection Prototype ⚡ CRITICAL
 
 **Priority**: High  
-**Timeline**: 4-5 days  
+**Timeline**: 4-5 iterations  
 **Dependencies**: Historical CI failure data
 
 #### Step 1: Collect Training Data
@@ -332,7 +332,7 @@ python scripts/train_model.py
 ### Task 8.4: Real-time Monitoring Dashboard 📊
 
 **Priority**: Medium  
-**Timeline**: 5-6 days
+**Timeline**: 5-6 iterations
 
 #### Architecture
 
@@ -543,7 +543,7 @@ uvicorn api.dashboard_api:app --reload
 
 ## Phase 9-10: Future Tasks
 
-### Phase 9: AI-Powered Security (2 weeks)
+### Phase 9: AI-Powered Security (2 phases)
 
 **9.1: Auto-remediation v2.0**
 - Intelligent fix selection based on ML predictions
@@ -560,7 +560,7 @@ uvicorn api.dashboard_api:app --reload
 - Pre-emptive failure warnings
 - Resource usage forecasting
 
-### Phase 10: Zero-Trust & Compliance (3-4 weeks)
+### Phase 10: Zero-Trust & Compliance (3-4 phases)
 
 **10.1: Zero-Trust Architecture**
 - Identity-based access control
@@ -648,7 +648,7 @@ uvicorn api.dashboard_api:app --reload
 **Owner**: @copilot (Phase 8.3-8.4), then Team (Phase 9-10)
 
 **Estimated Timeline**:
-- Phase 8.3-8.4: 1-2 weeks
-- Phase 9: 2 weeks
-- Phase 10: 3-4 weeks
-- **Total**: 6-8 weeks to full completion
+- Phase 8.3-8.4: 1-2 phases
+- Phase 9: 2 phases
+- Phase 10: 3-4 phases
+- **Total**: 6-8 phases to full completion

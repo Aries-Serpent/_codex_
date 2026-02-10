@@ -191,7 +191,7 @@ wrangler secret list
 1. **Never commit keys to source control**
    - Use `.env.local` for local development (gitignored)
    - Use platform secret stores for production
-   - Rotate keys regularly (every 90 days minimum)
+   - Rotate keys regularly (every 90 iterations minimum)
 
 2. **Use per-principal keys**
    - Issue unique keys per service/user

@@ -418,7 +418,7 @@ class ComplianceAssessor:
 **Setup:**
 - **Control Group (50%):** `CODEX_QUANTUM_SUPERPOSITION=false`
 - **Treatment Group (50%):** `CODEX_QUANTUM_SUPERPOSITION=true`
-- **Duration:** 100 compliance audits (2 weeks)
+- **Duration:** 100 compliance audits (2 phases)
 - **Metrics:** Accuracy, decision time, confidence, false positive rate
 
 **Success Criteria:**
@@ -926,7 +926,7 @@ class CITestingAgent:
 **Setup:**
 - **Control (50%):** Fixed 90% coverage all files
 - **Treatment (50%):** Adaptive coverage via uncertainty optimizer
-- **Duration:** 50 PRs (1 week)
+- **Duration:** 50 PRs (1 phase)
 - **Metrics:** Total test time, coverage per risk level, defect rate
 
 **Success Criteria:**
@@ -1438,7 +1438,7 @@ gantt
 - ✅ Zero production incidents during 10% rollout
 - ✅ Documentation complete (30KB+ technical docs)
 - ✅ Training materials for maintainers
-- ✅ 30-day burn-in period at 100% traffic with stable metrics
+- ✅ 30 iteration burn-in period at 100% traffic with stable metrics
 
 ### 12.3 Next Steps (Immediate)
 

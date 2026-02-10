@@ -353,7 +353,7 @@
 **Pre-commit 17-18**: data-rag-helper.v1
 **Pre-commit 19-20**: mcp-registry-adapter.v1
 
-**Total Remaining Time**: 8 weeks (~2 months)
+**Total Remaining Time**: 8 phases (~2 months)
 - Day 1-3: Core modules (monitor, evaluator)
 - Day 4-6: Upgrader + tracker
 - Day 7-10: Tests, docs, validation
@@ -369,14 +369,14 @@
 - Day 5-7: Tests, docs, tool integration
 
 **Pre-commit 9-14**: Developer experience agents (3 agents)
-- Each agent: 5-7 days development + testing
+- Each agent: 5-7 iterations development + testing
 - Focus on GitHub API integration
 - Emphasis on developer UX
 
 **Pre-commit 15-20**: Advanced capability agents (3 agents)
-- Compliance checker: 7 days (complex rules)
-- RAG helper: 5 days (cognitive brain focus)
-- MCP adapter: 5 days (protocol integration)
+- Compliance checker: 7 iterations (complex rules)
+- RAG helper: 5 iterations (cognitive brain focus)
+- MCP adapter: 5 iterations (protocol integration)
 
 ### Quality Gates (ENFORCED)
 

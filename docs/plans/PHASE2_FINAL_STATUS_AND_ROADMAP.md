@@ -226,7 +226,7 @@ Target (95.00%)    |████████████████████
 
 ## Total Estimated Effort
 
-| Phase | Hours | Coverage Gain | Cumulative |
+| Phase | Commits | Coverage Gain | Cumulative |
 |-------|-------|---------------|------------|
 | Completed (Cycles 1-3) | 15 | +4.47% | 27.68% |
 | Phase 1 (Cleanup) | 3-4 | +4% | ~32% |

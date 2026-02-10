@@ -349,7 +349,7 @@ Track the following metrics throughout implementation:
 - Celebrate milestones and achievements
 
 **Code Review Process**:
-- Request review after completing each week's tasks
+- Request review after completing each phase's tasks
 - Address review comments promptly
 - Update documentation based on feedback
 - Iterate until approval received

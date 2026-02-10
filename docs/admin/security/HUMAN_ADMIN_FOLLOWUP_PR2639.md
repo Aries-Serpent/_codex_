@@ -285,7 +285,7 @@ history -c  # Clears history in current session
 #### Task 5.3: Document Rotation Date
 
 ```bash
-# Create a reminder for token rotation (90 days)
+# Create a reminder for token rotation (90 iterations)
 # Add to your calendar: "Rotate _codex_ GitHub token"
 # Date: 2026-03-29 (90 days from 2025-12-29)
 ```
@@ -304,7 +304,7 @@ Before marking this complete, verify:
 - [ ] **Old Token Revoked**: Original plaintext token is deleted
 - [ ] **Local Cleanup**: Setup script and terminal history cleared
 - [ ] **Documentation Read**: Admin guide reviewed
-- [ ] **Rotation Scheduled**: Calendar reminder set for 90 days
+- [ ] **Rotation Scheduled**: Calendar reminder set for 90 iterations
 
 ---
 
@@ -368,7 +368,7 @@ After basic setup is complete, consider:
 
 3. **Set Up Automated Rotation**
    - Create GitHub Actions workflow to remind about rotation
-   - Schedule for every 90 days
+   - Schedule for every 90 iterations
 
 4. **Integrate with Other Workflows**
    - Update any workflows that use `GITHUB_TOKEN`
@@ -450,7 +450,7 @@ Once all phases are complete, update this document:
 ### Security Cleanup
 - [ ] Setup script deleted from local system
 - [ ] Terminal history cleared of sensitive data
-- [ ] Rotation reminder scheduled (90 days from creation)
+- [ ] Rotation reminder scheduled (90 iterations from creation)
 - [ ] Team documentation updated with rotation date
 - [ ] Security team notified of deployment completion
 

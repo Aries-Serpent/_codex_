@@ -372,7 +372,7 @@ graph TB
 ║  Coverage:           17.26%     │                              ║
 ╠════════════════════════════════════════════════════════════════╣
 ║  Markdown Files:      2,684     │  Known Vulnerabilities: 0    ║
-║  Workflows:              88     │  Fixed (30 days):       48   ║
+║  Workflows:              88     │  Fixed (30 iterations):       48   ║
 ║  Dependencies:          221     │  Security Tools:         5   ║
 ╚════════════════════════════════════════════════════════════════╝
 ```

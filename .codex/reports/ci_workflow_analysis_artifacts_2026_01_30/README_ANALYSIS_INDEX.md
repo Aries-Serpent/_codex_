@@ -159,9 +159,9 @@ This comprehensive analysis cross-references all GitHub Actions workflows with d
 | ID | Issue | Severity | Priority | Effort | Workflows |
 |----|-------|----------|----------|--------|-----------|
 | **ISSUE-001** | test-suite.yml Parse Error | 🔴 CRITICAL | P0 | 30 min | 1 |
-| **ISSUE-002** | Missing src/codex_plans | 🔴 CRITICAL | P0 | 2 hours | 2 |
+| **ISSUE-002** | Missing src/codex_plans | 🔴 CRITICAL | P0 | 2 Commits | 2 |
 | **ISSUE-003** | Bandit Scan Failures | 🔴 CRITICAL | P0 | 1 hour | 3 |
-| **ISSUE-004** | Docker Buster EOL | 🟠 HIGH | P1 | 3 hours | 2 |
+| **ISSUE-004** | Docker Buster EOL | 🟠 HIGH | P1 | 3 Commits | 2 |
 
 **Total Critical**: 8 workflows affected  
 **Immediate Fix Effort**: 3.5 hours (Phase 1 - P0)
@@ -205,7 +205,7 @@ This comprehensive analysis cross-references all GitHub Actions workflows with d
 1. Read **Executive Summary** sections (Issues, Action Plan)
 2. Review **Statistics** and **Cost Analysis**
 3. Approve **Phase 1** fixes (3.5 hours)
-4. Schedule **Phase 2** (11 hours over 1-3 days)
+4. Schedule **Phase 2** (11 hours over 1-3 iterations)
 
 ### For Engineers/Implementers
 1. Read **Executive Summary** for context
@@ -236,13 +236,13 @@ This comprehensive analysis cross-references all GitHub Actions workflows with d
 - [ ] Resolve src/codex_plans package issue
 - [ ] Run validation checklist
 
-### High Priority (Phase 2 - 1-3 days)
+### High Priority (Phase 2 - 1-3 iterations)
 - [ ] Update Docker images to Bullseye/Ubuntu 22.04
 - [ ] Audit and fix nosec comments
 - [ ] Test pypi-publish workflow
 - [ ] Validate all security scans pass
 
-### Medium Priority (Phase 3 - 1 week)
+### Medium Priority (Phase 3 - 1 phase)
 - [ ] Migrate workflows to uv installer
 - [ ] Consolidate duplicate security workflows
 - [ ] Optimize runner caching

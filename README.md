@@ -591,7 +591,7 @@ python -m scripts.space_traversal.wiki_generator
 - **SHIM Integration**: Cross-references with `.github/SHIM_INVENTORY.yaml` for prioritization
 - **Git Metadata**: Enriches findings with blame, churn, and age metrics
 - **Complete Documentation**: See [docs/DUPLICATE_DETECTION.md](docs/DUPLICATE_DETECTION.md)
-- **Automation**: Weekly GitHub Actions workflow for continuous monitoring
+- **Automation**: per-phase GitHub Actions workflow for continuous monitoring
 - **CLI Tool**: `python tools/duplicate_inventory.py` - full-featured duplicate scanner
 
 #### Nightly Audit Fix
@@ -971,7 +971,7 @@ The CI pipeline generates cryptographic manifests of all Python wheels built dur
 
 - **Manifest Generation**: Each wheel build produces a `manifest.json` with SHA256 hashes
 - **Per-Platform Baselines**: Separate manifests for `linux/amd64` and `linux/arm64` (when enabled)
-- **Artifact Storage**: Manifests uploaded to GitHub Actions artifacts for 30-90 days
+- **Artifact Storage**: Manifests uploaded to GitHub Actions artifacts for 30-90 iterations
 
 Generate a local manifest:
 ```bash
@@ -998,7 +998,7 @@ SBOMs are automatically:
 
 ### Scheduled Dependency Audit
 
-Weekly automated audit workflow (`scheduled-dependency-audit.yml`) runs:
+per-phase automated audit workflow (`scheduled-dependency-audit.yml`) runs:
 
 1. **Baseline Regeneration**: Rebuild wheelhouse and manifests
 2. **Drift Detection**: Compare with previous baseline, alert on changes
@@ -1017,7 +1017,7 @@ gh workflow run scheduled-dependency-audit.yml \
 
 | Scenario | Action | Trigger |
 |----------|--------|---------|
-| **Ray publishes 3.12 wheels** | Test in shadow matrix | Weekly audit detects availability |
+| **Ray publishes 3.12 wheels** | Test in shadow matrix | per-phase audit detects availability |
 | **Hash mismatch detected** | Review manifest diff, update pins | Drift detection alerts |
 | **CVE in dependency** | Review Grype SARIF, patch/upgrade | Security scan on PR |
 | **Multi-arch expansion** | Enable `ALLOW_MULTIARCH=true`, verify artifacts | Manual testing then repo variable |
@@ -1028,7 +1028,7 @@ gh workflow run scheduled-dependency-audit.yml \
 - ✅ All wheels integrity-verified via SHA256 manifest
 - ✅ SBOM generation on every PR build
 - ✅ Vulnerability scanning with Grype (critical = fail)
-- ✅ Weekly dependency drift detection
+- ✅ per-phase dependency drift detection
 - ✅ Automated Python version compatibility testing
 - ✅ GitHub Security integration for SARIF alerts
 

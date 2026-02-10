@@ -186,7 +186,7 @@ All references are either:
 
 3. **Ongoing:**
    - Review secret usage quarterly
-   - Rotate secret every 90 days (as documented)
+   - Rotate secret every 90 iterations (as documented)
    - Monitor GitHub audit logs for secret access
    - Keep documentation updated
 
@@ -421,15 +421,15 @@ git push origin main
 
 **Documentation Analysis:**
 - ✅ Rotation procedures documented in `docs/admin/GENESIS_SETUP_GUIDE.md`
-- ✅ Rotation cadence defined: **Every 90 days**
-- ✅ Rotation reminder process documented: **14 days before expiry**
+- ✅ Rotation cadence defined: **Every 90 iterations**
+- ✅ Rotation reminder process documented: **14 iterations before expiry**
 - ✅ Manual rotation steps provided
 
 ### Recommended Rotation Process
 
 **When CODEX_MASTER_KEY is actively used:**
 
-1. **Schedule:** Rotate every 90 days (or per policy)
+1. **Schedule:** Rotate every 90 iterations (or per policy)
 2. **Pre-Rotation:**
    ```bash
    # Check current secret age
@@ -454,7 +454,7 @@ git push origin main
 4. **Post-Rotation:**
    - Monitor workflow runs for failures
    - Update documentation with rotation date
-   - Schedule next rotation (90 days out)
+   - Schedule next rotation (90 iterations out)
 
 ### Audit Log Analysis
 
@@ -487,7 +487,7 @@ gh api /orgs/Aries-Serpent/audit-log \
 **Date:** YYYY-MM-DD HH:MM UTC
 **Performed By:** @username
 **Previous Expiry:** YYYY-MM-DD
-**New Expiry:** YYYY-MM-DD (90 days)
+**New Expiry:** YYYY-MM-DD (90 iterations)
 
 **Actions Taken:**
 1. ✅ Generated new 32-byte hex key
@@ -632,7 +632,7 @@ gh api /repos/Aries-Serpent/_codex_/actions/secrets/CODEX_MASTER_KEY \
 # }
 ```
 
-#### Step 3: Review Audit Logs (Last 90 Days)
+#### Step 3: Review Audit Logs (Last 90 iterations)
 ```bash
 gh api /orgs/Aries-Serpent/audit-log \
   --jq '.[] | select(.action | contains("secret")) | select(.data.secret_name == "CODEX_MASTER_KEY")'
@@ -645,9 +645,9 @@ gh api /orgs/Aries-Serpent/audit-log \
 
 #### Step 4: Verify Rotation Schedule
 ```bash
-# Calculate days until rotation (assuming 90-day cycle)
+# Calculate days until rotation (assuming 90 iteration cycle)
 UPDATED_DATE=$(gh api /repos/Aries-Serpent/_codex_/actions/secrets/CODEX_MASTER_KEY --jq '.updated_at')
-EXPIRY_DATE=$(date -d "$UPDATED_DATE + 90 days" +%Y-%m-%d)
+EXPIRY_DATE=$(date -d "$UPDATED_DATE + 90 iterations" +%Y-%m-%d)
 DAYS_UNTIL=$(( ($(date -d "$EXPIRY_DATE" +%s) - $(date +%s)) / 86400 ))
 
 echo "Secret last updated: $UPDATED_DATE"
@@ -673,7 +673,7 @@ gh pr review 2714 --approve --body "CODEX_MASTER_KEY verified: [status]"
 # 1. Secret exists
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY && echo "✅" || echo "❌"
 
-# 2. Updated within last 90 days
+# 2. Updated within last 90 iterations
 gh api /repos/Aries-Serpent/_codex_/actions/secrets/CODEX_MASTER_KEY \
   --jq '.updated_at' | xargs -I {} bash -c 'days=$((($(date +%s)-$(date -d {} +%s))/86400)); [ $days -lt 90 ] && echo "✅ Fresh ($days days old)" || echo "⚠️  Rotation needed ($days days old)"'
 

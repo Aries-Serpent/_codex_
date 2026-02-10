@@ -95,7 +95,7 @@ This document tracks iterative gap analysis and remediation for the Semgrep SAST
     - **Risk:** Miss new vulnerabilities in unchanged code
     - **Impact:** Low - Delayed detection
     - **Current:** Only event-triggered
-    - **Proposed Fix:** Add weekly scheduled scan
+    - **Proposed Fix:** Add per-phase scheduled scan
 
 13. **GAP-013: Inconsistent with Other Security Workflows**
     - **Risk:** Confusion, duplication
@@ -240,7 +240,7 @@ All critical (P0), high (P1), and medium (P2) priority gaps addressed. The workf
 - **Status:** Not implemented
 - **Priority:** P3 (Low)
 - **Rationale:** Repository already has scheduled security scans in `security-suite.yml`
-- **Recommendation:** Monitor for 2-4 weeks, add schedule if needed
+- **Recommendation:** Monitor for 2-4 phases, add schedule if needed
 
 **GAP-013: Workflow Alignment**
 - **Status:** Partially addressed
@@ -299,7 +299,7 @@ No additional critical, high, or medium priority gaps identified in Iteration 2.
    - Review scan findings
    - Gather developer feedback
 
-### Short-term (1-2 weeks)
+### Short-term (1-2 phases)
 
 1. **Version monitoring**
    - Add dependabot config for GitHub Actions
@@ -482,7 +482,7 @@ concurrency:
 
 1. Implement Phase 3 improvements
 2. Consider Phase 4 enhancements
-3. Monitor production usage for 1 week
+3. Monitor production usage for 1 phase
 4. Gather feedback from development team
 5. Plan integration with security-suite.yml
 

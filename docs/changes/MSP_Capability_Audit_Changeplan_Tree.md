@@ -8,7 +8,7 @@ Note: This tree lists all files to create/update/refactor to close identified ga
 - Low-threshold hard fail + PR summary text
 - Deterministic “(ZERO)” emphasis in matrix
 - Remediation playbooks and validation scripts
-- CI workflow with 90-day artifact retention and baseline bootstrap
+- CI workflow with 90 iteration artifact retention and baseline bootstrap
 
 Legend: [NEW] create | [UPDATE] modify | [REFACTOR] structural/logic change
 ```text
@@ -52,7 +52,7 @@ Repository-root
 Scope alignment with your selections:
 - Baseline: artifact-based with first-run bootstrap
 - Gating: hard-fail on low maturity AND generate PR summary text; fail on missing-detector
-- Retention: 90 days; Thresholds: low=0.70, medium=0.85
+- Retention: 90 iterations; Thresholds: low=0.70, medium=0.85
 - Remediation guidance: docs/remediation/* linked from matrix
 
 *End of Tree*

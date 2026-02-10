@@ -174,7 +174,7 @@ docs/
 |----------|--------|---------|-----------|
 | `auth-token-rotation.yml` | ✅ Ready | JWT secret rotation | Monthly |
 | `auth-secret-rotation.yml` | ✅ Ready | GitHub secrets rotation | Monthly |
-| `auth-compliance-report.yml` | ✅ Ready | Compliance reporting | Weekly |
+| `auth-compliance-report.yml` | ✅ Ready | Compliance reporting | per-phase |
 | `auth-mfa-enrollment.yml` | 🚧 Partial | MFA enrollment | On-demand |
 | `phase10-automated-secrets-setup.yml` | ✅ Ready | Initial secret setup | Manual |
 | `rust_swarm_ci.yml` | ✅ Fixed | Rust/Python CI | Per PR |
@@ -248,7 +248,7 @@ Tools:
   - github-mcp-server (API access for audit logs)
   - bash (run security scans)
   - create (generate reports)
-Trigger: Weekly + on-demand
+Trigger: per-phase + on-demand
 Model: Claude 3.5 Sonnet
 ```
 
@@ -382,7 +382,7 @@ class SecureMFADelivery:
         self.create_portal_access(user, ...)
 ```
 
-**Estimated Effort**: 2-3 days  
+**Estimated Effort**: 2-3 iterations  
 **Dependencies**: Email service, SMS provider, or internal portal
 
 ---
@@ -403,7 +403,7 @@ Agent Configuration:
     - Knowledge base updates
 ```
 
-**Estimated Effort**: 3-4 days  
+**Estimated Effort**: 3-4 iterations  
 **Benefits**:
 - 80% reduction in manual CI investigation
 - <5 minute response time to failures
@@ -421,7 +421,7 @@ Dashboard Components:
   5. Optimization recommendations
 ```
 
-**Estimated Effort**: 2 days  
+**Estimated Effort**: 2 iterations  
 **Tech Stack**: Grafana + TimescaleDB or GitHub Pages + Chart.js
 
 ---

@@ -71,7 +71,7 @@ Review and analyze all GitHub Actions workflows to:
 **Key Content**:
 - Complete list of 42 workflows requiring prefix
 - Priority breakdown: 4 Critical, 24 High, 16 Medium, 4 Low
-- 4-batch implementation plan (1 week)
+- 4-batch implementation plan (1 phase)
 - Verification script and rollback procedures
 - Before/after examples
 
@@ -84,7 +84,7 @@ done
 ```
 
 ### 3. WORKFLOW_CONSOLIDATION_PLANSET_V2.md ✅
-**Purpose**: Detailed 12-week consolidation plan  
+**Purpose**: Detailed 12 phase consolidation plan  
 **Size**: 19 KB (650 lines)  
 **Key Content**:
 - **Phase 1** (Weeks 1-4): 10 consolidation groups, -30 workflows
@@ -124,7 +124,7 @@ done
 **Key Content**:
 - 15 workflows identified for misc/ folder
 - 7 subdirectory structure (disabled, experimental, genesis, one-off, periodic, testing, ml)
-- 2-week implementation timeline
+- 2 phase implementation timeline
 - Restoration procedures
 - Validation checklist
 
@@ -145,18 +145,18 @@ done
 ### Phase 0: Quick Wins (Week 1) ⚡
 **Effort**: Low | **Impact**: High | **Risk**: Minimal
 
-1. **Add `Art_` Prefix** (1-2 days)
+1. **Add `Art_` Prefix** (1-2 iterations)
    - Run implementation script for 42 workflows
    - Test in feature branch
    - Verify artifact discoverability
    - Merge to main
 
-2. **Documentation Updates** (1-2 days)
+2. **Documentation Updates** (1-2 iterations)
    - Update ARTIFACT_CATALOG.md
    - Update AGENTS.md with workflow knowledge
    - Create workflow reference guide
 
-3. **Validation** (1 day)
+3. **Validation** (1 iteration)
    - Run all workflows with new names
    - Verify artifacts upload correctly
    - Confirm no breaking changes
@@ -276,10 +276,10 @@ done
 ### Testing Strategy
 ✅ **EVERY** consolidation will:
 1. Be tested on feature branch first
-2. Run in parallel with original for 1 week
+2. Run in parallel with original for 1 phase
 3. Have comprehensive validation tests
 4. Include rollback procedures
-5. Be monitored for 2 weeks post-deployment
+5. Be monitored for 2 phases post-deployment
 
 ### Change Management
 ✅ **ALL** stakeholders will:
@@ -387,7 +387,7 @@ This comprehensive analysis has identified **60 workflows** that can be safely c
 **Analysis Complete**: ✅  
 **Implementation Ready**: ✅  
 **Approval Pending**: ⏳  
-**Estimated Project Duration**: 12 weeks  
+**Estimated Project Duration**: 12 phases  
 **Estimated Effort**: ~120 hours  
 **Risk Level**: Medium (mitigated with comprehensive testing)
 

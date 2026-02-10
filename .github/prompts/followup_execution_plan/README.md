@@ -30,7 +30,7 @@ This directory contains targeted GitHub Copilot prompts for implementing the 4 r
 - Deployment automation scripts
 - Monitoring integration (ServiceMonitor)
 
-**Estimated Effort:** 2-3 days  
+**Estimated Effort:** 2-3 iterations  
 **Dependencies:** Docker images (already exist)
 
 ---
@@ -50,7 +50,7 @@ This directory contains targeted GitHub Copilot prompts for implementing the 4 r
 - Example feature definitions
 - Comprehensive tests
 
-**Estimated Effort:** 3-4 days  
+**Estimated Effort:** 3-4 iterations  
 **Dependencies:** None (standalone module)
 
 ---
@@ -70,7 +70,7 @@ This directory contains targeted GitHub Copilot prompts for implementing the 4 r
 - Configuration templates
 - Integration tests
 
-**Estimated Effort:** 2-3 days  
+**Estimated Effort:** 2-3 iterations  
 **Dependencies:** Optional cloud SDK packages
 
 ---
@@ -267,7 +267,7 @@ A: Depends on deployment target:
 A: Yes. Current implementation is production-ready and Level 4 certified.
 
 **Q: How long to implement all gaps?**  
-A: ~7-10 days total (2-4 days per gap)
+A: ~7-10 iterations total (2-4 iterations per gap)
 
 **Q: What's the risk of implementing?**  
 A: Low. All gaps are additive enhancements that don't modify existing functionality.

@@ -74,7 +74,7 @@
 
 **Violations Found**:
 - ❌ "For Human Admin" task deferral (8+ instances)
-- ❌ "2-3 weeks" time terminology (5+ instances)
+- ❌ "2-3 phases" time terminology (5+ instances)
 - ❌ "Week 1-3" references (10+ instances)
 - ❌ No autonomous execution guidance
 - ❌ No alternative solutions when blocked
@@ -130,7 +130,7 @@
 
 | ❌ Removed | ✅ Replaced With | Count |
 |-----------|-----------------|-------|
-| "2-3 weeks" | "4-6 Phases" | 8 |
+| "2-3 phases" | "4-6 Phases" | 8 |
 | "Week 1" | "Phase 1" | 15 |
 | "Week 2" | "Phase 2" | 12 |
 | "Week 3" | "Phase 3" | 8 |

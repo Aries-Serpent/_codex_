@@ -441,7 +441,7 @@ mutmut run --paths-to-mutate src/
 
 ## 📊 Reporting
 
-### Weekly Coverage Report
+### per-phase Coverage Report
 Generated automatically and posted to Dashboard:
 - Current coverage percentage
 - Coverage delta from last week

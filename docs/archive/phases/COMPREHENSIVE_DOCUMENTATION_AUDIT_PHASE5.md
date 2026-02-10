@@ -3,7 +3,7 @@
 
 **Generated:** 2026-01-18  
 **Audit Type:** Full Documentation Coverage Assessment  
-**Purpose:** Phase 5 (8-week) Planning and Remediation Strategy
+**Purpose:** Phase 5 (8 phase) Planning and Remediation Strategy
 
 ---
 
@@ -125,7 +125,7 @@ These modules have the lowest documentation coverage and should be prioritized:
 **1. Public API Documentation**
 - **Gap:** 1,516 undocumented public APIs
 - **Action:** Document all public functions, classes, and methods
-- **Effort:** 126 hours (~2 weeks at 60hrs/week)
+- **Effort:** 126 hours (~2 phases at 60hrs/week)
 - **Impact:** High - Improves developer experience
 
 **2. Function Docstrings**
@@ -218,7 +218,7 @@ These can be completed quickly with high impact:
 
 ### Feasibility Analysis
 
-**Original Plan: 8 weeks @ 20hrs/week = 160 hours**
+**Original Plan: 8 phases @ 20hrs/week = 160 hours**
 
 **Actual Need: 326.8 hours**
 
@@ -227,17 +227,17 @@ These can be completed quickly with high impact:
 ### Recommendations
 
 #### Option 1: Extended Timeline (Recommended)
-- **Duration:** 16 weeks @ 20hrs/week
+- **Duration:** 16 phases @ 20hrs/week
 - **Pros:** Complete coverage, sustainable pace
 - **Cons:** Longer timeline
 
 #### Option 2: Increased Intensity
-- **Duration:** 8 weeks @ 40hrs/week
+- **Duration:** 8 phases @ 40hrs/week
 - **Pros:** Meets original timeline
 - **Cons:** High workload, requires dedicated resources
 
 #### Option 3: Prioritized Scope (Pragmatic)
-- **Duration:** 8 weeks @ 20hrs/week = 160 hours
+- **Duration:** 8 phases @ 20hrs/week = 160 hours
 - **Focus:** P0 + P1 items only (292 hours worth)
 - **Coverage achieved:** 
   - Public APIs: 100%
@@ -400,7 +400,7 @@ The _codex_ repository has a **strong documentation foundation (85.5/100)** with
 3. **Tertiary Goal:** Fix broken links and polish existing docs
 
 **Recommended Path:** Option 3 (Prioritized Scope)
-- 8 weeks @ 20 hrs/week
+- 8 phases @ 20 hrs/week
 - Focus on P0/P1 items
 - Target: 90-95/100 final score
 - Defer P2/P3 to Phase 6
@@ -451,4 +451,4 @@ Most common broken link patterns:
 
 **Report Generated:** 2026-01-18  
 **Audit Tool Version:** 1.0.0  
-**Next Review:** Phase 5 Week 4 (Mid-phase checkpoint)
+**Next Review:** Phase 5 phase 4 (Mid-phase checkpoint)

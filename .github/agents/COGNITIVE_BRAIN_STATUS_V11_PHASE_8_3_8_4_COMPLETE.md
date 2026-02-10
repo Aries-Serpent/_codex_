@@ -159,7 +159,7 @@ Production Ready:    [███████████████████�
 - Workflow runs total
 - Success rate
 - Average duration
-- Builds per day
+- Builds per-iteration
 - Cache hit rate
 - Failed workflows
 
@@ -356,7 +356,7 @@ flowchart TB
 
 ### Dynamics 365 Cognitive Objectives
 
-**Status:** Planning Complete | Priority: HIGH | Timeline: 8 weeks
+**Status:** Planning Complete | Priority: HIGH | Timeline: 8 phases
 
 **Primary Objectives:**
 1. **Intelligent Datapoint Collection**

@@ -569,7 +569,7 @@ PR Created/Updated
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Developer Productivity | +30% | Time to PR completion |
-| CI Cost Reduction | -25% | GitHub Actions minutes |
+| CI Cost Reduction | -25% | GitHub Actions Pre-commits |
 | Agent Adoption Rate | 100% | Agent usage logs |
 | Incident Reduction | -50% | Environment-related failures |
 
@@ -628,7 +628,7 @@ PR Created/Updated
 ### Production Rollout (Week 7+)
 - Gradual rollout: 10% → 50% → 100%
 - Monitoring: Real-time dashboards, alerts
-- Support: 24/7 on-call for first 2 weeks
+- Support: 24/7 on-call for first 2 phases
 
 ---
 

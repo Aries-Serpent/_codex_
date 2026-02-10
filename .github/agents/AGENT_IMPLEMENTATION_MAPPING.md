@@ -512,12 +512,12 @@ All agents generate AfterMath reports:
 
 ### Rollout Plan
 
-**Phase 1: Canary** (1 week)
+**Phase 1: Canary** (1 phase)
 - Deploy to test repository
 - Monitor metrics, gather feedback
 - Fix critical issues
 
-**Phase 2: Beta** (2 weeks)
+**Phase 2: Beta** (2 phases)
 - Deploy to main repository
 - Advisory-only mode
 - Collect false positive data
@@ -560,7 +560,7 @@ Track:
 ---
 
 **Document Status**: ✅ Complete  
-**Next Review**: Weekly during Phase 1 (Current Cycle)  
+**Next Review**: per-phase during Phase 1 (Current Cycle)  
 **Owner**: Agent Development Team
 
 ---

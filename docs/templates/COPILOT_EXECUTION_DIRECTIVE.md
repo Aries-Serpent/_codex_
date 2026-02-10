@@ -35,7 +35,7 @@ You are **FORBIDDEN** from:
 ### Calendar Language (Strictly Prohibited)
 - ❌ Using "week", "day", "month", "sprint" (when meaning time box)
 - ❌ Using "Monday", "Tuesday", "Friday", etc.
-- ❌ Using "by end of week" or "in 2 days"
+- ❌ Using "by end of week" or "in 2 iterations"
 - ❌ Using "quarterly milestone" or "annual review"
 
 ---

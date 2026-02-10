@@ -79,7 +79,7 @@ All quantum mechanics principles validated
 - Phase encoding for features
 - Pattern correlation via interference
 
-**Timeline:** Estimated 6-7 days implementation
+**Timeline:** Estimated 6-7 iterations implementation
 
 ---
 
@@ -104,7 +104,7 @@ All quantum mechanics principles validated
 - Coherence (coordination quality)
 - Wave collapse (activation)
 
-**Timeline:** Estimated 7 days implementation
+**Timeline:** Estimated 7 iterations implementation
 
 ---
 
@@ -115,8 +115,8 @@ All quantum mechanics principles validated
 | Phase | Status | Files | Tests | Timeline |
 |-------|--------|-------|-------|----------|
 | **Phase 1** | ✅ Complete | 3/3 | 8/8 passing | Complete |
-| **Phase 2** | ⏳ Pending | 0/3 | 0/? | 6-7 days |
-| **Phase 3** | ⏳ Pending | 0/3 | 0/? | 7 days |
+| **Phase 2** | ⏳ Pending | 0/3 | 0/? | 6-7 iterations |
+| **Phase 3** | ⏳ Pending | 0/3 | 0/? | 7 iterations |
 
 **Total Progress:** 33% complete (1 of 3 phases)
 
@@ -188,7 +188,7 @@ All quantum mechanics principles validated
 
 **Reference:**
 - Complete specification: `.codex/plans/ML_PATTERN_FEEDING_PLANSET.md`
-- Expected duration: 6-7 days (compressed to 1-2 sessions)
+- Expected duration: 6-7 iterations (compressed to 1-2 sessions)
 - Test target: >85% coverage
 
 **Dependencies:**
@@ -207,7 +207,7 @@ All quantum mechanics principles validated
 
 **Reference:**
 - Complete specification: `.codex/plans/AGENT_CHAINING_INTEGRATION_PLANSET.md`
-- Expected duration: 7 days (compressed to 1-2 sessions)
+- Expected duration: 7 iterations (compressed to 1-2 sessions)
 
 ---
 

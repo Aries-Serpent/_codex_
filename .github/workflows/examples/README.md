@@ -187,7 +187,7 @@ Monitor MCP container logs:
 ## 🔐 Security Best Practices
 
 1. **Never Commit Secrets**: Use GitHub Secrets, not hardcoded values
-2. **Rotate Tokens**: Follow 90-day rotation schedule
+2. **Rotate Tokens**: Follow 90 iteration rotation schedule
 3. **Limit Permissions**: Grant minimal required permissions
 4. **Use GitHub Apps**: Preferred over Personal Access Tokens
 5. **Enable Audit Logging**: Track MCP access and usage

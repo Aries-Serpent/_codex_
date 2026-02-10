@@ -189,13 +189,13 @@ git diff --exit-code
 3. **Verify fixes are working** using provided commands
 4. **Check documentation quality** using Phase 3 checklist
 
-### Short-term (Within 1 day)
+### Short-term (Within 1 iteration)
 1. **Approve and merge** this PR if all checks pass
 2. **Create separate PR** for 200+ test failure remediation
 3. **Review code review comments** marked as "documented"
 4. **Investigate CodeQL configuration** issue
 
-### Medium-term (Within 1 week)
+### Medium-term (Within 1 phase)
 1. **Implement enhancements** from documented code review comments
 2. **Address pre-existing test failures** systematically
 3. **Review agent documentation** and suggest improvements

@@ -611,7 +611,7 @@ groups:
           team: rag-leadership
         annotations:
           summary: "SLO breach: availability"
-          description: "30-day availability is {{ $value | humanizePercentage }} (SLO: 99.9%)"
+          description: "30 iteration availability is {{ $value | humanizePercentage }} (SLO: 99.9%)"
           
       - alert: RAGSLOLatencyBreach
         expr: rag:slo:latency_p99_30d > 200
@@ -621,7 +621,7 @@ groups:
           team: rag-leadership
         annotations:
           summary: "SLO breach: latency"
-          description: "30-day P99 latency is {{ $value }}ms (SLO: 200ms)"
+          description: "30 iteration P99 latency is {{ $value }}ms (SLO: 200ms)"
 ```
 
 ### Task 4: Create Cost Dashboard

@@ -379,7 +379,7 @@ Analysis: .codex/BATCH_CI_TRIAGE_REPORT_2026_02_04.md
 ### Time to Resolution:
 - **Failure Date:** 2026-01-19
 - **Resolution Date:** 2026-02-04 01:35
-- **Duration:** ~16 days (includes holiday/weekend periods)
+- **Duration:** ~16 iterations (includes holiday/weekend periods)
 - **Resolution Method:** Automated fix in PR #3141
 
 ---

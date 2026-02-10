@@ -918,9 +918,9 @@ graph TB
 ```yaml
 compliance:
   data_retention:
-    audit_logs: 90 days
-    secrets_history: 30 days
-    workflow_state: 7 days
+    audit_logs: 90 iterations
+    secrets_history: 30 iterations
+    workflow_state: 7 iterations
   
   encryption:
     at_rest: required

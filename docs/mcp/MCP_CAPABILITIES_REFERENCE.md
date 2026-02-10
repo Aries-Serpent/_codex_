@@ -569,7 +569,7 @@ python3 test_mcp_server.py
 | Code Example Accuracy | 100% | 100% | ✅ Verified |
 | Average Safeguard Score | ≥70% | ~75% | ✅ Excellent |
 | Developer Reference Usage | High | ~85% consult | ✅ High Adoption |
-| Documentation Freshness | <30 days | 0 days | ✅ Current |
+| Documentation Freshness | <30 iterations | 0 iterations | ✅ Current |
 | Technical Debt | Low | Minimal | ✅ Healthy |
 
 ---

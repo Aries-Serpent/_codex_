@@ -22,21 +22,21 @@
 
 ## 🎯 Implementation Order (By Priority)
 
-### Priority 1: Critical for Production (12-14 days total)
-1. **release-gate-agent.v1** (4-5 days) - Release readiness validation
-2. **infra-linter-agent.v1** (3-4 days) - IaC linting and validation
-3. **compliance-checker-agent.v1** (4-5 days) - Compliance framework validation
+### Priority 1: Critical for Production (12-14 iterations total)
+1. **release-gate-agent.v1** (4-5 iterations) - Release readiness validation
+2. **infra-linter-agent.v1** (3-4 iterations) - IaC linting and validation
+3. **compliance-checker-agent.v1** (4-5 iterations) - Compliance framework validation
 
-### Priority 2: Enhanced Workflow (9-11 days total)
-4. **code-review-summarizer.v1** (3 days) - AI-powered PR summaries
-5. **issue-triage-agent.v1** (3-4 days) - Automated issue management
-6. **doc-reporter-agent.v1** (3 days) - Documentation generation
+### Priority 2: Enhanced Workflow (9-11 iterations total)
+4. **code-review-summarizer.v1** (3 iterations) - AI-powered PR summaries
+5. **issue-triage-agent.v1** (3-4 iterations) - Automated issue management
+6. **doc-reporter-agent.v1** (3 iterations) - Documentation generation
 
-### Priority 3: Advanced Features (5-6 days total)
-7. **data-rag-helper.v1** (2-3 days) - RAG for codebase queries
-8. **mcp-registry-adapter.v1** (3 days) - MCP integration
+### Priority 3: Advanced Features (5-6 iterations total)
+7. **data-rag-helper.v1** (2-3 iterations) - RAG for codebase queries
+8. **mcp-registry-adapter.v1** (3 iterations) - MCP integration
 
-**Total Estimated Time:** 26-31 days (4-5 weeks)
+**Total Estimated Time:** 26-31 iterations (4-5 phases)
 
 ---
 
@@ -122,7 +122,7 @@ For EACH agent, complete the following:
 ### Overview
 **Purpose:** Automated release readiness validation and gating  
 **Priority:** P1 (Critical)  
-**Estimated Time:** 4-5 days  
+**Estimated Time:** 4-5 iterations  
 **Dependencies:** ci-testing-agent, security-scan-agent, dep-upgrade-agent
 
 ### PDA Loop Architecture

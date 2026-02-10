@@ -27,32 +27,32 @@
 
 | Metric | Value | Measurement Period |
 |--------|-------|-------------------|
-| Average CI Duration | 12.3 min | Last 30 days |
+| Average CI Duration | 12.3 min | Last 30 iterations |
 | PR Check Jobs per Run | 2 (matrix) | - |
-| Daily GitHub Actions Minutes | 450 min | Average |
-| Monthly Actions Minutes | 13,500 min | Estimated |
+| per-iteration GitHub Actions Pre-commits | 450 min | Average |
+| Monthly Actions Pre-commits | 13,500 min | Estimated |
 | Workflow Complexity | High | 2 versions tested |
 | Log Volume per Run | 15 MB | Average |
-| Cache Hit Rate | 65% | Last 30 days |
+| Cache Hit Rate | 65% | Last 30 iterations |
 
 ### After Python 3.12 Standardization (Single-Version)
 
 | Metric | Value | Measurement Period |
 |--------|-------|-------------------|
-| Average CI Duration | 6.2 min | First 7 days |
+| Average CI Duration | 6.2 min | First 7 iterations |
 | PR Check Jobs per Run | 1 | - |
-| Daily GitHub Actions Minutes | 225 min | Projected |
-| Monthly Actions Minutes | 6,750 min | Projected |
+| per-iteration GitHub Actions Pre-commits | 225 min | Projected |
+| Monthly Actions Pre-commits | 6,750 min | Projected |
 | Workflow Complexity | Low | 1 version tested |
 | Log Volume per Run | 8 MB | Average |
-| Cache Hit Rate | 78% | First 7 days |
+| Cache Hit Rate | 78% | First 7 iterations |
 
 ### Impact Summary
 
 | Metric | Change | Impact |
 |--------|--------|--------|
 | CI Duration | **-49.6%** (6.1 min saved) | ✅ Faster feedback |
-| Actions Minutes | **-50.0%** (6,750 min saved/month) | ✅ Cost reduction |
+| Actions Pre-commits | **-50.0%** (6,750 min saved/month) | ✅ Cost reduction |
 | Jobs per Run | **-50.0%** (1 fewer job) | ✅ Simpler monitoring |
 | Log Volume | **-46.7%** (7 MB saved) | ✅ Easier debugging |
 | Cache Hit Rate | **+20.0%** | ✅ Better efficiency |
@@ -138,7 +138,7 @@
 
 **Participants**: 12 engineers  
 **Response Rate**: 100%  
-**Survey Period**: 7 days post-deployment
+**Survey Period**: 7 iterations post-deployment
 
 ### Question 1: Setup Experience
 **"How easy was it to set up Python 3.12?"**
@@ -368,7 +368,7 @@
 - Breaking change not announced in #engineering until merge
 
 **Improvement**:
-- Announce breaking changes in team meeting 1 week before merge
+- Announce breaking changes in team meeting 1 phase before merge
 - Add "BREAKING CHANGE" label to PR earlier
 - Send calendar invite for "Breaking Change Review" session
 
@@ -522,7 +522,7 @@ Successfully standardized codebase to Python 3.12.10 only, removing multi-versio
 
 ### 1. Earlier Breaking Change Announcement
 - **Issue**: One developer surprised by Python version change
-- **Fix**: Announce in team meeting 1 week before merge
+- **Fix**: Announce in team meeting 1 phase before merge
 - **Implementation**: Add to breaking change checklist
 
 ### 2. Consistent Version Specification
@@ -542,7 +542,7 @@ Successfully standardized codebase to Python 3.12.10 only, removing multi-versio
 | Metric | Before | After | Impact |
 |--------|--------|-------|--------|
 | CI Duration | 12.3 min | 6.2 min | **-49.6%** |
-| Monthly Actions Minutes | 13,500 | 6,750 | **-50.0%** |
+| Monthly Actions Pre-commits | 13,500 | 6,750 | **-50.0%** |
 | Lines of Code | baseline | -220 | Simpler |
 | Type Hint Modernization | 0 | 126 | Cleaner |
 | Developer Satisfaction | N/A | 4.83/5 | High |
@@ -573,7 +573,7 @@ Successfully standardized codebase to Python 3.12.10 only, removing multi-versio
 1. Use 6-phase CTEP framework (works well)
 2. Invest in automation (validation scripts save time)
 3. Document rollback plan early (Phase 3, not Phase 4)
-4. Communicate breaking changes 1 week before merge
+4. Communicate breaking changes 1 phase before merge
 5. Always specify exact versions (avoid ambiguity)
 
 ### For Other Language/Tool Standardization
@@ -844,7 +844,7 @@ dashboard:
         - value: 10
           color: "red"
     
-    - title: "GitHub Actions Minutes per Day"
+    - title: "GitHub Actions Minutes per-iteration"
       type: "stat"
       targets:
         - expr: "sum(increase(github_actions_minutes_used[1d]))"
@@ -962,7 +962,7 @@ alerts:
 - Clear documentation enabled smooth adoption
 
 **Improvements to Implement**:
-- Earlier breaking change communication (1 week before merge)
+- Earlier breaking change communication (1 phase before merge)
 - Consistent version specification (always patch version)
 - Rollback plan documented earlier (Phase 3, not Phase 4)
 - Pre-commit hooks for version validation

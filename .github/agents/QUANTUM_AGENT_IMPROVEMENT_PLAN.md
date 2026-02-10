@@ -996,7 +996,7 @@ cd docs && make clean && make html
 ### Phase 3: Measurement & Refinement (Pre-commit 5-6)
 
 **Continuous Measurement:**
-- Run discovery probability daily
+- Run discovery probability per-iteration
 - Monitor observable exports
 - Track agent feedback
 
@@ -1122,10 +1122,10 @@ Improvement Factor = 66.7 / 12.2 = 5.5x
 
 | Phase | Duration | Effort | Outcome |
 |-------|----------|--------|---------|
-| Phase 1: Quick Wins | 1 week | 40 hours | +15 points |
-| Phase 2: Structural | 1 week | 40 hours | +5 points |
-| Phase 3: Refinement | 1 week | 20 hours | +1 point |
-| **TOTAL** | **3 weeks** | **100 hours** | **+21 points** |
+| Phase 1: Quick Wins | 1 phase | 40 Commits | +15 points |
+| Phase 2: Structural | 1 phase | 40 Commits | +5 points |
+| Phase 3: Refinement | 1 phase | 20 Commits | +1 point |
+| **TOTAL** | **3 phases** | **100 hours** | **+21 points** |
 
 ### Resource Requirements
 

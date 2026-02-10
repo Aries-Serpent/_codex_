@@ -65,7 +65,7 @@ Phase 8 successfully completed! All 5 Tier 1 agents standardized (100%) with 88/
 Standardize **10 Tier 2 agents** using proven Tier 1 templates and workflows.
 
 ### Timeline
-**Estimated**: 2-3 weeks (10 agents, ~2-3 agents per session)
+**Estimated**: 2-3 phases (10 agents, ~2-3 agents per session)
 
 ### Tier 2 Agents (Priority Order)
 
@@ -202,7 +202,7 @@ Apply this protocol for **EVERY** agent standardization:
    - Set up metrics collection
    - Configure threshold alerts
    - Create monitoring dashboard
-   - Weekly report generation
+   - per-phase report generation
 
 3. **Deploy All 5 Tier 1 Agents**
    - ci-diagnostician (already active)
@@ -219,8 +219,8 @@ Apply this protocol for **EVERY** agent standardization:
 
 5. **Collect First Week Metrics**
    - Track success rates, fix times, errors
-   - Daily critical issue checks
-   - Weekly comprehensive reviews
+   - per-iteration critical issue checks
+   - per-phase comprehensive reviews
    - Monthly optimization
 
 ---
@@ -280,7 +280,7 @@ All comprehensive documentation available in `.codex/`:
 - **Week 1**: Agents 1-3 (dependency, security, documentation)
 - **Week 2**: Agents 4-7 (coverage, quality, performance, api)
 - **Week 3**: Agents 8-10 (config, database, integration)
-- **Total**: 2-3 weeks for 10 agents
+- **Total**: 2-3 phases for 10 agents
 
 ---
 

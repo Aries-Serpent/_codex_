@@ -196,7 +196,7 @@ gh api /repos/Aries-Serpent/_codex_/actions/runners
 **Steps:**
 1. Navigate to: https://github.com/organizations/Aries-Serpent/settings/audit-log
 2. Enable audit log streaming (if available in your plan)
-3. Configure retention: 90 days minimum
+3. Configure retention: 90 iterations minimum
 4. Set up log forwarding to SIEM (optional)
 
 **Verification:**
@@ -267,7 +267,7 @@ gh run list --limit 5
 - **Manual Trigger:** `gh workflow run automated-token-rotation.yml`
 
 ### ORG_MASTER_KEY Rotation:
-- **Frequency:** Every 90 days (manual)
+- **Frequency:** Every 90 iterations (manual)
 - **Process:**
   1. Generate new PAT with same scopes
   2. Update ORG_MASTER_KEY secret
@@ -286,13 +286,13 @@ gh run list --limit 5
 
 | Task | Estimated Time | Complexity |
 |------|----------------|------------|
-| Generate CODEX_MASTER_KEY | 2 minutes | Low |
-| Inject CODEX_MASTER_KEY | 3 minutes | Low |
-| Create ORG_MASTER_KEY (PAT) | 5 minutes | Medium |
-| Inject ORG_MASTER_KEY | 3 minutes | Low |
-| Configure larger runners | 10 minutes | Medium |
-| Enable audit logging | 5 minutes | Low |
-| Verify all configurations | 10 minutes | Low |
+| Generate CODEX_MASTER_KEY | 2 Pre-commits | Low |
+| Inject CODEX_MASTER_KEY | 3 Pre-commits | Low |
+| Create ORG_MASTER_KEY (PAT) | 5 Pre-commits | Medium |
+| Inject ORG_MASTER_KEY | 3 Pre-commits | Low |
+| Configure larger runners | 10 Pre-commits | Medium |
+| Enable audit logging | 5 Pre-commits | Low |
+| Verify all configurations | 10 Pre-commits | Low |
 | **Total** | **~40 minutes** | **Low-Medium** |
 
 ---

@@ -120,7 +120,7 @@ EOF
 - Use password manager
 - Add to team secrets vault
 - Never commit to git
-- Rotate every 90 days
+- Rotate every 90 iterations
 
 ---
 
@@ -265,7 +265,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
       day: "monday"
     open-pull-requests-limit: 10
     reviewers:
@@ -277,7 +277,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     labels:
       - "github-actions"
 ```
@@ -309,10 +309,10 @@ syft packages dir:. -o spdx-json > sbom.json
 
 | Severity | Response Time | Fix Time |
 |----------|---------------|----------|
-| Critical | 24 hours | 7 days |
-| High | 48 hours | 14 days |
-| Moderate | 1 week | 30 days |
-| Low | 2 weeks | 90 days |
+| Critical | 24 Commits | 7 iterations |
+| High | 48 Commits | 14 iterations |
+| Moderate | 1 phase | 30 iterations |
+| Low | 2 phases | 90 iterations |
 
 ---
 
@@ -375,7 +375,7 @@ repos:
 
 2. **CodeQL Analysis** (`.github/workflows/codeql-analysis.yml`)
    - Runs on push to main/0D_base_
-   - Weekly scheduled scan
+   - per-phase scheduled scan
    - Blocks merge on Critical/High findings
 
 3. **Dependency Audit** (`.github/workflows/scheduled-dependency-audit.yml`)
@@ -539,7 +539,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     auto-merge: true  # Add this
     auto-merge-patch: true
 ```
@@ -622,7 +622,7 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 
 ## Maintenance Schedule
 
-### Daily
+### per-iteration
 - Monitor Dependabot alerts
 - Review CodeQL findings
 
@@ -667,7 +667,7 @@ For questions or updates, contact: security@localhost
 
 ### Security Features Configuration
 - [ ] Dependabot alerts enabled and monitored
-- [ ] CodeQL scanning runs on push and weekly schedule
+- [ ] CodeQL scanning runs on push and per-phase schedule
 - [ ] Secret scanning with push protection active
 - [ ] Pre-commit hooks installed for all developers
 - [ ] Branch protection rules enforced on main/0D_base_
@@ -677,10 +677,10 @@ For questions or updates, contact: security@localhost
 - [ ] Fernet encryption key stored in team password manager
 - [ ] SecureStorage module functional in CI/CD workflows
 - [ ] All three algorithms (Fernet, AES-GCM, ChaCha20) tested
-- [ ] Key rotation schedule documented (90-day cycle)
+- [ ] Key rotation schedule documented (90 iteration cycle)
 
 ### Monitoring & Alerting
-- [ ] GitHub Security tab reviewed weekly
+- [ ] GitHub Security tab reviewed per-phase
 - [ ] Email notifications configured for admins
 - [ ] Slack webhook integrated for critical alerts (optional)
 - [ ] Dependabot PRs reviewed within SLA timeframes

@@ -73,7 +73,7 @@ Use these tags in commit messages and documentation:
 
 ## Phase-Specific Guidance
 
-### Phase 23: 17.27% → 30% (3-4 weeks)
+### Phase 23: 17.27% → 30% (3-4 phases)
 
 **Primary Focus**: Unit tests for high-priority modules
 
@@ -96,7 +96,7 @@ Use these tags in commit messages and documentation:
 - Zero critical test failures
 - AfterMath analysis complete
 
-### Phase 24: 30% → 50% (2-3 weeks)
+### Phase 24: 30% → 50% (2-3 phases)
 
 **Primary Focus**: Integration and workflow tests
 
@@ -118,7 +118,7 @@ Use these tags in commit messages and documentation:
 - CI green for 3 consecutive runs
 - Integration test stability validated
 
-### Phase 25: 50% → 70% (2 weeks - PRODUCTION READY)
+### Phase 25: 50% → 70% (2 phases - PRODUCTION READY)
 
 **Primary Focus**: Critical paths and production workflows
 
@@ -277,7 +277,7 @@ Focus on high-priority modules from test_priority_matrix.json.
 
 ## Progress Reporting
 
-### Weekly AfterMath Report Template
+### per-phase AfterMath Report Template
 ```markdown
 # Phase [23/24/25] Week [N] AfterMath Analysis
 

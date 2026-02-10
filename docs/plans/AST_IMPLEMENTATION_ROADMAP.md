@@ -14,10 +14,10 @@
 - **46 blockers** identified (15 critical, 23 implementation issues, 8 architectural challenges)
 - **25+ OSS references** provide proven solutions
 - **3 implementation phases** with distinct risk/effort profiles
-- **Phase 1 (Quick Wins)**: 5 days, can implement immediately
+- **Phase 1 (Quick Wins)**: 5 iterations, can implement immediately
 - **Phase 2-3**: Require stakeholder approval and dedicated resources
 
-**Recommendation**: ✅ **Implement Phase 1 Quick Wins ONLY** (5 days, low risk, high value)
+**Recommendation**: ✅ **Implement Phase 1 Quick Wins ONLY** (5 iterations, low risk, high value)
 
 ---
 
@@ -87,7 +87,7 @@
 
 ## Phase 1: Quick Wins - Detailed Implementation Guide
 
-### 1. Add Core Dependencies (0.5 days)
+### 1. Add Core Dependencies (0.5 iterations)
 
 **Blockers Resolved**: BLOCK-DEP-001, BLOCK-DEP-003, BLOCK-DEP-004
 
@@ -127,7 +127,7 @@ python -c "import libcst; import radon; import parso; print('✓ Dependencies OK
 
 ---
 
-### 2. Create StandardizedASTNode Dataclass (1 day)
+### 2. Create StandardizedASTNode Dataclass (1 iteration)
 
 **Blocker Resolved**: BLOCK-ARCH-001
 
@@ -222,7 +222,7 @@ def test_node_serialization():
 
 ---
 
-### 3. Implement Basic DependencyGraph (1 day)
+### 3. Implement Basic DependencyGraph (1 iteration)
 
 **Blocker Resolved**: BLOCK-ARCH-002
 
@@ -352,7 +352,7 @@ def test_topological_sort_dag():
 
 ---
 
-### 4. Add Simple MetricsAggregator (0.5 days)
+### 4. Add Simple MetricsAggregator (0.5 iterations)
 
 **Blocker Resolved**: BLOCK-ARCH-003
 
@@ -415,7 +415,7 @@ def test_metrics_aggregation():
 
 ---
 
-### 5. Create Basic Test Suite (1 day)
+### 5. Create Basic Test Suite (1 iteration)
 
 **Blocker Resolved**: BLOCK-TEST-001
 
@@ -429,7 +429,7 @@ def test_metrics_aggregation():
 
 ---
 
-### 6-8. Documentation, CLI, Pre-commit (1.25 days)
+### 6-8. Documentation, CLI, Pre-commit (1.25 iterations)
 
 Minimal implementations to complete Phase 1 foundation.
 
@@ -441,7 +441,7 @@ Minimal implementations to complete Phase 1 foundation.
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| Effort < 1 week | ✅ YES | 5.25 days |
+| Effort < 1 phase | ✅ YES | 5.25 iterations |
 | No architectural approval needed | ✅ YES | Additive only, no changes |
 | No external dependencies (license issues) | ✅ YES | All MIT licensed |
 | Aligns with maturity goals | ✅ YES | Improves code quality |
@@ -458,7 +458,7 @@ Minimal implementations to complete Phase 1 foundation.
 | Criterion | Status | Notes |
 |-----------|--------|-------|
 | Requires stakeholder approval | ❌ BLOCK | Need architecture review |
-| Needs dedicated engineering | ❌ BLOCK | 19.5 - 57 days effort |
+| Needs dedicated engineering | ❌ BLOCK | 19.5 - 57 iterations effort |
 | Performance impact assessment | ❌ BLOCK | Benchmarking required |
 | Security review required | ❌ BLOCK | SQLite, input validation |
 | Beyond current scope | ❌ BLOCK | 75% maturity work complete |
@@ -506,7 +506,7 @@ Minimal implementations to complete Phase 1 foundation.
 
 ### Immediate (Pre-commit -1-0)
 
-1. **✅ APPROVE Phase 1 Quick Wins** (5 days, low risk, high value)
+1. **✅ APPROVE Phase 1 Quick Wins** (5 iterations, low risk, high value)
    - Add dependencies to pyproject.toml
    - Create basic AST infrastructure (node, graph, metrics)
    - Add 20+ tests
@@ -514,7 +514,7 @@ Minimal implementations to complete Phase 1 foundation.
 
 2. **⏸️ HOLD Phase 2-3** for future dedicated project
    - Requires stakeholder alignment
-   - Needs dedicated resources (3-8 weeks)
+   - Needs dedicated resources (3-8 phases)
    - Performance and security review required
 
 ### Short-term (Pre-commit 1-4)
@@ -536,7 +536,7 @@ Minimal implementations to complete Phase 1 foundation.
 ## Conclusion
 
 **Phase 1 Quick Wins** represents the **optimal balance** of:
-- ✅ Low effort (5 days)
+- ✅ Low effort (5 iterations)
 - ✅ Low risk (reversible, additive)
 - ✅ High value (foundation, 8 blockers resolved)
 - ✅ Aligned with current goals (maturity improvement)

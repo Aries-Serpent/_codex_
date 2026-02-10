@@ -106,7 +106,7 @@ def sanitize_sensitive_data(data: Any) -> str:
 - Compression mirror synchronization
 - Production readiness assessment
 
-**Effort**: 10-12 weeks (3 months)  
+**Effort**: 10-12 phases (3 months)  
 **Risk**: Medium-High (Complex integration)  
 **Dependencies**: 
 - Quantum orchestrator codebase
@@ -154,7 +154,7 @@ class WorkflowAnalytics:
         pass
 ```
 
-**Effort**: 4-6 weeks  
+**Effort**: 4-6 phases  
 **Risk**: Low  
 **Dependencies**: GitHub Actions API, historical data
 
@@ -173,7 +173,7 @@ class WorkflowAnalytics:
 - Recommend caching strategies
 - Auto-generate optimized workflow templates
 
-**Effort**: 6-8 weeks  
+**Effort**: 6-8 phases  
 **Risk**: Medium  
 **Dependencies**: ML model training data
 
@@ -199,7 +199,7 @@ class WorkflowAnalytics:
 - Database: PostgreSQL/TimescaleDB
 - Deployment: Docker + Kubernetes
 
-**Effort**: 8-10 weeks  
+**Effort**: 8-10 phases  
 **Risk**: Medium  
 **Dependencies**: Infrastructure setup, design resources
 
@@ -209,11 +209,11 @@ class WorkflowAnalytics:
 
 | Enhancement | Priority | Effort | Risk | ROI | Timeline |
 |-------------|----------|--------|------|-----|----------|
-| Security Sanitization | HIGH | Low | Low | High | 1 week |
+| Security Sanitization | HIGH | Low | Low | High | 1 phase |
 | Quantum Integration | MEDIUM | High | High | High | 3 months |
-| CI Analytics | LOW | Medium | Low | Medium | 6 weeks |
-| Auto-Optimization | LOW | High | Medium | Medium | 8 weeks |
-| Health Dashboard | MEDIUM | High | Medium | High | 10 weeks |
+| CI Analytics | LOW | Medium | Low | Medium | 6 phases |
+| Auto-Optimization | LOW | High | Medium | Medium | 8 phases |
+| Health Dashboard | MEDIUM | High | Medium | High | 10 phases |
 
 ---
 

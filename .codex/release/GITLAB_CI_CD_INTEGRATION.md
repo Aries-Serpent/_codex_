@@ -397,7 +397,7 @@ Solution: Create environment in GitLab CI/CD settings
    - Prevents token leakage in logs
 
 3. **Rotate Tokens Regularly**:
-   - Generate new tokens every 90 days
+   - Generate new tokens every 90 iterations
    - Revoke old tokens immediately after rotation
 
 4. **Prefer OIDC Over Tokens**:

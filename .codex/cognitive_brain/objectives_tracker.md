@@ -156,12 +156,12 @@ corrective_action: null
 
 ## 📋 Objective Maintenance Actions
 
-### Daily
+### per-iteration
 - [ ] Update session tracker with current state
 - [ ] Log patterns applied and learned
 - [ ] Check CI/CD health status
 
-### Weekly
+### per-phase
 - [ ] Review objective progress
 - [ ] Update trend analysis
 - [ ] Identify drift risks
@@ -177,13 +177,13 @@ corrective_action: null
 
 ## 🧭 Strategic Direction
 
-### Short-term (Next 30 days)
+### Short-term (Next 30 iterations)
 1. Maintain 70%+ coverage
 2. Complete cognitive brain integration
 3. Achieve 100% CI health
 4. Consolidate to 49 agents
 
-### Medium-term (Next 90 days)
+### Medium-term (Next 90 iterations)
 1. Reach 85% coverage
 2. Full automation of handoffs
 3. ML-based pattern recognition

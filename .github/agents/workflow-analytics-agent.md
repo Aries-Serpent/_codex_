@@ -390,7 +390,7 @@ flowchart TB
 
 ## Operating Rules
 
-1. **Data Retention**: Workflow logs retained 90 days, artifacts per workflow config
+1. **Data Retention**: Workflow logs retained 90 iterations, artifacts per workflow config
 2. **Rate Limits**: GitHub API has rate limits; cache results when possible
 3. **Security**: Never expose secrets from logs; sanitize output
 4. **Documentation**: Document new error patterns in CI Testing Agent

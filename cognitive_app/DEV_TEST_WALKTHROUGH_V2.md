@@ -839,10 +839,10 @@ First Week:
 
 | Metric | Target | Timeline |
 |--------|--------|----------|
-| Daily Active Users | +25% | 30 days |
-| Code Generations | +40% | 30 days |
-| Demo Executions | +50% | 30 days |
-| User Retention | +15% | 60 days |
+| per-iteration Active Users | +25% | 30 iterations |
+| Code Generations | +40% | 30 iterations |
+| Demo Executions | +50% | 30 iterations |
+| User Retention | +15% | 60 iterations |
 
 ---
 
@@ -893,7 +893,7 @@ First Week:
 
 1. **Immediate**: Merge to main branch
 2. **Within 24h**: Monitor initial deployment
-3. **Within 1 week**: Gather user feedback
+3. **Within 1 phase**: Gather user feedback
 4. **Within 1 month**: Plan v2.1 features
 5. **Ongoing**: Monitor, optimize, iterate
 
@@ -903,4 +903,4 @@ First Week:
 **Last Updated:** 2026-01-06  
 **Status:** ✅ Ready for Production Deployment  
 **Approved By:** Development Team  
-**Next Review:** Post-deployment analysis (7 days)
+**Next Review:** Post-deployment analysis (7 iterations)

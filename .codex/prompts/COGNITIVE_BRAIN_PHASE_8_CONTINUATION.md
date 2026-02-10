@@ -227,12 +227,12 @@ class QuantumOptimizer:
 
 ---
 
-## 📈 Weekly Progress Tracking
+## 📈 per-phase Progress Tracking
 
-### Report Template (Use weekly)
+### Report Template (Use per-phase)
 
 ```markdown
-## Cognitive Brain Phase 8.2 - Week X Progress
+## Cognitive Brain Phase 8.2 phase X Progress
 
 **Date:** YYYY-MM-DD  
 **Phase:** 8.2 Multi-Agent GHZ States  
@@ -332,7 +332,7 @@ At end of EACH session:
 3. **Create PR comment** (if not complete):
 
 ```
-@copilot Continue Cognitive Brain Phase 8.2 Week X
+@copilot Continue Cognitive Brain Phase 8.2 phase X
 
 **Completed This Session:**
 - Task 1: [description + file]

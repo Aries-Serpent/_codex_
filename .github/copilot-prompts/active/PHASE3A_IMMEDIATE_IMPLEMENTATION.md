@@ -20,7 +20,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 
 ### 1. pr-followup-generator.yml (Physics Score: 94.2)
 **Analysis**:
-- Frequency: 120 runs/90 days (highest)
+- Frequency: 120 runs/90 iterations (highest)
 - Entropy Score: 88 (high variability)
 - Flow Efficiency: 0.92
 - Quantum Weight: 0.95
@@ -46,7 +46,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 
 ### 2. agent-runtime.yml (Physics Score: 91.8)
 **Analysis**:
-- Frequency: 45 runs/90 days
+- Frequency: 45 runs/90 iterations
 - Entropy Score: 92 (highest variability)
 - Flow Efficiency: 0.89
 - Quantum Weight: 0.88
@@ -72,7 +72,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 
 ### 3. detect-duplicates.yml (Physics Score: 89.5)
 **Analysis**:
-- Frequency: 95 runs/90 days
+- Frequency: 95 runs/90 iterations
 - Entropy Score: 85
 - Flow Efficiency: 0.91
 - Quantum Weight: 0.92
@@ -303,13 +303,13 @@ git commit -m "revert: Phase 3A cache implementation (reason: ...)"
 **Proceed to Phase 3B if**:
 - Phase 3A cache usage stabilizes < 8.5 GB
 - Hit rates are > 85%
-- No critical issues in 1-week monitoring
+- No critical issues in 1 phase monitoring
 - Workflows run successfully
 
 **Otherwise**:
 - Optimize existing caches
 - Reduce cache paths if needed
-- Wait for 2-week monitoring period
+- Wait for 2 phase monitoring period
 
 ---
 

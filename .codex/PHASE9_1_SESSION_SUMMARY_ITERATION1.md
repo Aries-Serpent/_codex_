@@ -45,7 +45,7 @@ Successfully completed Phase 9.1 Iteration 1 with implementation of first quick-
 - Expected coverage: ≥90%
 
 **Capabilities Implemented**:
-- Freshness detection (identifies stale docs >90 days)
+- Freshness detection (identifies stale docs >90 iterations)
 - Link validation (internal and external links)
 - Semantic drift detection (code-doc similarity analysis)
 - Schema validation (YAML frontmatter compliance)

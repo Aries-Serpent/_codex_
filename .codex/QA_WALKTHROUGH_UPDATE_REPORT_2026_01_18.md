@@ -194,7 +194,7 @@ Successfully updated **all 10 qa_walkthrough files** to accurately reflect the c
   "status": "in_progress",
   "priority": "critical",
   "phases": ["Phase 2: 50%", "Phase 3: 70%", "Phase 4: 100%"],
-  "estimated_effort": "12 weeks",
+  "estimated_effort": "12 phases",
   "related_documents": [
     ".codex/plans/MASTER_100_PERCENT_COVERAGE_PROMPTSET.md",
     "COGNITIVE_BRAIN_100_PERCENT_COVERAGE_EXECUTION.md"
@@ -520,7 +520,7 @@ All files are machine-readable and ready for:
 ### Short-term Actions
 
 1. ⬜ Start testing Tier 1 Critical modules
-2. ⬜ Track coverage progress weekly
+2. ⬜ Track coverage progress per-phase
 3. ⬜ Update files after major changes
 4. ⬜ Validate agent functionality
 
@@ -601,7 +601,7 @@ The qa_walkthrough directory now accurately reflects:
 1. Review this report
 2. Validate metrics
 3. Begin Phase 2 execution
-4. Track progress weekly
+4. Track progress per-phase
 
 ---
 

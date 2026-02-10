@@ -217,7 +217,7 @@ TOKEN=$(python -c 'import secrets; print(secrets.token_urlsafe(32))')
 python -c "import keyring; keyring.set_password('codex', 'bridge_token', '$TOKEN')"
 ```
 
-**Token Rotation (Every 90 Days):**
+**Token Rotation (Every 90 iterations):**
 1. Generate new token
 2. Update `CODEX_BRIDGE_TOKEN` environment variable
 3. Restart bridge manager processes
@@ -238,7 +238,7 @@ python -c "import keyring; keyring.set_password('codex', 'bridge_token', '$TOKEN
 tail -f /path/to/bridge/audit.log | jq 'select(.event == "AUTH_FAILURE")'
 ```
 
-**Daily Security Review:**
+**per-iteration Security Review:**
 ```bash
 # Count authentication failures
 jq 'select(.event == "AUTH_FAILURE")' audit.log | wc -l

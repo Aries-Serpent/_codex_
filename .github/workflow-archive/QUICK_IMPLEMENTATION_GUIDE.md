@@ -348,7 +348,7 @@ git push
 - [ ] Day 4: Disable old workflows
 - [ ] Day 5: Documentation and monitoring
 
-### Weekly Reporting Template
+### per-phase Reporting Template
 
 ```markdown
 ## Week X Progress Report

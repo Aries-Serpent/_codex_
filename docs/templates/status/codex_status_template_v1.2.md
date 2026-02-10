@@ -1,9 +1,9 @@
-# Template: `_codex_` Daily Status Update (v1.2 — Enhanced with Schema Validation & Audit Integration)
+# Template: `_codex_` per-iteration Status Update (v1.2 — Enhanced with Schema Validation & Audit Integration)
 > Generated: 2025-11-02 12:07:19 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer] ⚡ Energy: 5  
 
 
-This is the canonical template for producing the daily, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance, plus integrated schema validation with audit integrity chains.
+This is the canonical template for producing the per-iteration, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance, plus integrated schema validation with audit integrity chains.
 
 Title format for each report (must use exactly):
 - H1 Title: "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
@@ -34,8 +34,8 @@ Title format for each report (must use exactly):
   - **Author**: <name/handle>
   - **Reviewers**: <list>
 - **Prior Report Reference**:
-  - **Path**: reports/daily/<YYYY‑MM‑DD>.md (default)
-  - **Retention**: keep last 30; archive (>90 days) optional zip
+  - **Path**: reports/per-iteration/<YYYY‑MM‑DD>.md (default)
+  - **Retention**: keep last 30; archive (>90 iterations) optional zip
 - **Git Context**:
   - **Branch**: <branch>
   - **Commit SHA**: <full_sha>
@@ -300,7 +300,7 @@ Patch (canonical unified diff; use "Begin/End Patch" markers; chunk for large ch
 
 ---
 
-## 5. Automation Data Ingest (Daily)
+## 5. Automation Data Ingest (per-iteration)
 - **Issues (full list; do not truncate)**:
 ```list type="issue"
 data:

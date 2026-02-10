@@ -88,11 +88,11 @@ Integrate **Sigstore keyless signing** using GitHub OIDC tokens for cryptographi
 
 ## Implementation Plan
 
-1. **Phase 2a**: Create `SignstoreClient` class (2 weeks)
-2. **Phase 2b**: Integrate into `archive store()` (1 week)
-3. **Phase 2c**: Create verification tooling (1 week)
-4. **Phase 2d**: Documentation + training (1 week)
-5. **Phase 2e**: Testing + deployment (1 week)
+1. **Phase 2a**: Create `SignstoreClient` class (2 phases)
+2. **Phase 2b**: Integrate into `archive store()` (1 phase)
+3. **Phase 2c**: Create verification tooling (1 phase)
+4. **Phase 2d**: Documentation + training (1 phase)
+5. **Phase 2e**: Testing + deployment (1 phase)
 
 ## Configuration
 

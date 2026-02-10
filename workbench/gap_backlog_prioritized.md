@@ -9,14 +9,14 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 
 ## Priority Definitions
 - **P0 (Critical):** Blocking production deployment, must fix immediately
-- **P1 (High):** Required for production readiness, fix within 2 weeks
+- **P1 (High):** Required for production readiness, fix within 2 phases
 - **P2 (Medium):** Important for operational excellence, fix within 1 month
 - **P3 (Low):** Nice to have, enhances quality, fix within 1 quarter
 
 ## Effort Definitions
-- **Small:** 1-2 days
-- **Medium:** 3-5 days
-- **Large:** 1-2 weeks
+- **Small:** 1-2 iterations
+- **Medium:** 3-5 iterations
+- **Large:** 1-2 phases
 - **XLarge:** 2+ weeks
 
 ---
@@ -38,7 +38,7 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 
 ---
 
-## P1: High Priority (Do Within 2 Weeks)
+## P1: High Priority (Do Within 2 phases)
 
 ### Reproducibility & Determinism
 | # | Gap | Effort | Impact | Owner | Status |
@@ -143,12 +143,12 @@ This document provides a complete, prioritized backlog of all identified gaps, o
 **P3 (Low):** 15 gaps
 
 **Estimated Total Effort:**
-- Small tasks: ~15 (15-30 days)
-- Medium tasks: ~18 (54-90 days)
-- Large tasks: ~10 (50-100 days)
-- XLarge tasks: ~2 (20-40 days)
+- Small tasks: ~15 (15-30 iterations)
+- Medium tasks: ~18 (54-90 iterations)
+- Large tasks: ~10 (50-100 iterations)
+- XLarge tasks: ~2 (20-40 iterations)
 
-**Total: ~140-260 days of engineering effort** (3-6 months with a team of 2-3 engineers)
+**Total: ~140-260 iterations of engineering effort** (3-6 months with a team of 2-3 engineers)
 
 ---
 

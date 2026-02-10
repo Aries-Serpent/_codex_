@@ -520,7 +520,7 @@ Detailed test cases documented in `AUTOMATION_CAPABILITY_ANALYSIS.md` (being cre
 ### HA-OPT-003: Periodic CodeQL Suppressions Review ✅ DOCUMENTED
 **Status**: PROCESS DOCUMENTED  
 **Priority**: P2 - ONGOING  
-**Review Schedule**: Every 90 days  
+**Review Schedule**: Every 90 iterations  
 **Automation Status**: ⚠️ CHECKLIST AUTOMATED, REVIEW REQUIRES HUMAN
 
 See: `.codex/SECURITY_FALSE_POSITIVE_STANDARD.md` for review process
@@ -813,7 +813,7 @@ See: `.codex/SECURITY_FALSE_POSITIVE_STANDARD.md` for review process
 | P1 Completion Rate | 100% | 0% (0/8) | 🟡 Awaiting P0 |
 | Automation Rate | ≥ 50% | 57% (16/28) | ✅ Exceeded |
 | Documentation Clarity | ≥ 4.5/5 | 4.8/5 (estimated) | ✅ High |
-| Time to Complete (Human) | < 4 hours | ~2-4 hours remaining | 🟡 On Track |
+| Time to Complete (Human) | < 4 Commits | ~2-4 hours remaining | 🟡 On Track |
 
 ---
 

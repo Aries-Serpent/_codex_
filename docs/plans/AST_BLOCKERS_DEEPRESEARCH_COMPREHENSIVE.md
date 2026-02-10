@@ -17,7 +17,7 @@ Let me create the comprehensive deep research document directly in the workbench
 
 **Mission**: Conduct comprehensive deep research to gather **ideal code, docs, and solution references** from OSS, academia, and internal repositories to **unblock all 46 AST blockers** (15 critical, 23 implementation issues, 8 architectural challenges).
 
-**Scope**: Complete feasibility analysis + executable implementation guidance for Phase 0 AST implementation (11-13 weeks, 6.4 person-months).
+**Scope**: Complete feasibility analysis + executable implementation guidance for Phase 0 AST implementation (11-13 phases, 6.4 person-months).
 
 **Deliverable**: Comprehensive blocker resolution matrix with 3,000+ lines of guidance covering:
 - ✅ All 46 blockers with ideal solutions
@@ -35,16 +35,16 @@ Let me create the comprehensive deep research document directly in the workbench
 
 | Metric | Current State | Target | Gap | Effort to Close |
 |--------|---------------|--------|-----|-----------------|
-| **Files using AST** | 10+ scattered | 1 centralized layer | 9+ files consolidate | 3 days |
-| **AST libraries** | 3+ (stdlib, libcst optional, custom) | 1 (libcst standard) | Consolidate + test | 2 days |
-| **Error handling** | Scattered, inconsistent | Unified exception hierarchy | Define + implement | 1 day |
-| **Standardized node type** | None | StandardizedASTNode dataclass | Design + implement | 2 days |
-| **Dependency graph support** | None | Complete graph + cycle detection | Design + implement | 2 days |
-| **Metrics computation** | Partial (radon not core) | Full metrics suite | Add radon + integrate | 3 days |
-| **Test coverage (AST)** | 0% | >80% | Create test suite | 2 days |
-| **Documentation** | Minimal | Complete API docs + examples | Create + examples | 2 days |
-| **CLI interface** | None | Full CLI suite (analyze, audit, diff) | Design + implement | 3 days |
-| **GitHub integration** | None | Actions workflow + pre-commit | Configure + test | 2 days |
+| **Files using AST** | 10+ scattered | 1 centralized layer | 9+ files consolidate | 3 iterations |
+| **AST libraries** | 3+ (stdlib, libcst optional, custom) | 1 (libcst standard) | Consolidate + test | 2 iterations |
+| **Error handling** | Scattered, inconsistent | Unified exception hierarchy | Define + implement | 1 iteration |
+| **Standardized node type** | None | StandardizedASTNode dataclass | Design + implement | 2 iterations |
+| **Dependency graph support** | None | Complete graph + cycle detection | Design + implement | 2 iterations |
+| **Metrics computation** | Partial (radon not core) | Full metrics suite | Add radon + integrate | 3 iterations |
+| **Test coverage (AST)** | 0% | >80% | Create test suite | 2 iterations |
+| **Documentation** | Minimal | Complete API docs + examples | Create + examples | 2 iterations |
+| **CLI interface** | None | Full CLI suite (analyze, audit, diff) | Design + implement | 3 iterations |
+| **GitHub integration** | None | Actions workflow + pre-commit | Configure + test | 2 iterations |
 
 **Total Gap Closure Effort**: ~22 person-days
 
@@ -56,11 +56,11 @@ Let me create the comprehensive deep research document directly in the workbench
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
-| **BLOCK-DEP-001** | libcst not in core dependencies | Add `libcst>=1.0` to pyproject.toml core deps | [libcst PyPI](https://pypi.org/project/libcst/), [libcst GitHub](https://github.com/Instagram/LibCST) | Create dependency manager script | 1 day |
-| **BLOCK-DEP-002** | tree-sitter not available | Install `tree-sitter>=0.20` + language grammars | [py-tree-sitter](https://github.com/tree-sitter/py-tree-sitter), [tree-sitter-python](https://github.com/tree-sitter/tree-sitter-python) | Setup language registry | 1 day |
-| **BLOCK-DEP-003** | radon metrics missing | Add `radon>=6.0` to core dependencies | [radon PyPI](https://pypi.org/project/radon/), [radon GitHub](https://github.com/rubik/radon) | Verify complexity computation | 0.5 day |
-| **BLOCK-DEP-004** | parso not in core | Move `parso>=0.8` to core (graceful fallback) | [parso PyPI](https://pypi.org/project/parso/), [parso GitHub](https://github.com/davidhalter/parso) | Create fallback strategy | 0.5 day |
-| **BLOCK-DEP-005** | SQLite storage not configured | Design schema + implement StorageManager | [SQLite best practices](https://www.sqlite.org/bestpractice.html), [Python sqlite3](https://docs.python.org/3/library/sqlite3.html) | Create schema + test | 1.5 days |
+| **BLOCK-DEP-001** | libcst not in core dependencies | Add `libcst>=1.0` to pyproject.toml core deps | [libcst PyPI](https://pypi.org/project/libcst/), [libcst GitHub](https://github.com/Instagram/LibCST) | Create dependency manager script | 1 iteration |
+| **BLOCK-DEP-002** | tree-sitter not available | Install `tree-sitter>=0.20` + language grammars | [py-tree-sitter](https://github.com/tree-sitter/py-tree-sitter), [tree-sitter-python](https://github.com/tree-sitter/tree-sitter-python) | Setup language registry | 1 iteration |
+| **BLOCK-DEP-003** | radon metrics missing | Add `radon>=6.0` to core dependencies | [radon PyPI](https://pypi.org/project/radon/), [radon GitHub](https://github.com/rubik/radon) | Verify complexity computation | 0.5 iteration |
+| **BLOCK-DEP-004** | parso not in core | Move `parso>=0.8` to core (graceful fallback) | [parso PyPI](https://pypi.org/project/parso/), [parso GitHub](https://github.com/davidhalter/parso) | Create fallback strategy | 0.5 iteration |
+| **BLOCK-DEP-005** | SQLite storage not configured | Design schema + implement StorageManager | [SQLite best practices](https://www.sqlite.org/bestpractice.html), [Python sqlite3](https://docs.python.org/3/library/sqlite3.html) | Create schema + test | 1.5 iterations |
 
 **Dependencies Subtotal**: 4.5 person-days
 
@@ -90,11 +90,11 @@ ast = [
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
-| **BLOCK-ARCH-001** | No StandardizedASTNode | Design dataclass hierarchy + serialization | [libcst node design](https://libcst.readthedocs.io/en/latest/nodes.html), [dataclasses module](https://docs.python.org/3/library/dataclasses.html) | Create node.py + tests | 2 days |
-| **BLOCK-ARCH-002** | No dependency graph | Implement directed graph + Tarjan's SCC algorithm | [NetworkX SCC](https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py), [Tarjan's algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm) | Create graph.py + cycle detection | 2 days |
-| **BLOCK-ARCH-003** | No metrics aggregation | Design aggregator + correlation engine | [pandas agg](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html), [NumPy correlate](https://numpy.org/doc/stable/reference/generated/numpy.correlate.html) | Create metrics_aggregator.py | 1.5 days |
-| **BLOCK-ARCH-004** | No incremental analysis | Design baseline storage + diff algorithm | [Delta algorithms](https://en.wikipedia.org/wiki/Diff), [deepdiff library](https://github.com/seperman/deepdiff) | Create incremental.py | 1.5 days |
-| **BLOCK-ARCH-005** | No plugin architecture | Design registry + loader pattern | [Flask blueprints](https://flask.palletsprojects.com/en/latest/blueprints/), [pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) | Create plugins.py + registry | 1.5 days |
+| **BLOCK-ARCH-001** | No StandardizedASTNode | Design dataclass hierarchy + serialization | [libcst node design](https://libcst.readthedocs.io/en/latest/nodes.html), [dataclasses module](https://docs.python.org/3/library/dataclasses.html) | Create node.py + tests | 2 iterations |
+| **BLOCK-ARCH-002** | No dependency graph | Implement directed graph + Tarjan's SCC algorithm | [NetworkX SCC](https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py), [Tarjan's algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm) | Create graph.py + cycle detection | 2 iterations |
+| **BLOCK-ARCH-003** | No metrics aggregation | Design aggregator + correlation engine | [pandas agg](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html), [NumPy correlate](https://numpy.org/doc/stable/reference/generated/numpy.correlate.html) | Create metrics_aggregator.py | 1.5 iterations |
+| **BLOCK-ARCH-004** | No incremental analysis | Design baseline storage + diff algorithm | [Delta algorithms](https://en.wikipedia.org/wiki/Diff), [deepdiff library](https://github.com/seperman/deepdiff) | Create incremental.py | 1.5 iterations |
+| **BLOCK-ARCH-005** | No plugin architecture | Design registry + loader pattern | [Flask blueprints](https://flask.palletsprojects.com/en/latest/blueprints/), [pytest plugins](https://docs.pytest.org/en/latest/how-to-write-and-share-plugins.html) | Create plugins.py + registry | 1.5 iterations |
 
 **Architecture Subtotal**: 8.5 person-days
 
@@ -171,9 +171,9 @@ class DependencyGraph:
 
 | Blocker ID | Problem | Ideal Solution | OSS Reference | Implementation Path | Effort |
 |-----------|---------|----------------|----------------|-------------------|--------|
-| **BLOCK-PERF-001** | No performance baseline | Create comprehensive benchmark suite | [pytest-benchmark](https://pytest-benchmark.readthedocs.io/), [Python timeit](https://docs.python.org/3/library/timeit.html) | Create benchmarks.py + baselines | 1 day |
-| **BLOCK-PERF-002** | No streaming parser | Implement streaming + chunking for large files | [libcst streaming patterns](https://libcst.readthedocs.io/en/latest/tutorial.html#streaming), [file chunk processing](https://docs.python.org/3/library/io.html) | Create streaming_parser.py | 2 days |
-| **BLOCK-PERF-003** | No parallel processing | Implement multiprocessing framework | [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html), [multiprocessing](https://docs.python.org/3/library/multiprocessing.html) | Create parallel_analyzer.py | 2 days |
+| **BLOCK-PERF-001** | No performance baseline | Create comprehensive benchmark suite | [pytest-benchmark](https://pytest-benchmark.readthedocs.io/), [Python timeit](https://docs.python.org/3/library/timeit.html) | Create benchmarks.py + baselines | 1 iteration |
+| **BLOCK-PERF-002** | No streaming parser | Implement streaming + chunking for large files | [libcst streaming patterns](https://libcst.readthedocs.io/en/latest/tutorial.html#streaming), [file chunk processing](https://docs.python.org/3/library/io.html) | Create streaming_parser.py | 2 iterations |
+| **BLOCK-PERF-003** | No parallel processing | Implement multiprocessing framework | [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html), [multiprocessing](https://docs.python.org/3/library/multiprocessing.html) | Create parallel_analyzer.py | 2 iterations |
 
 **Performance Subtotal**: 5 person-days
 
@@ -234,13 +234,13 @@ class ParallelAnalyzer:
 
 | Category | Count | Key Issues | Ideal Solution | Reference | Effort |
 |----------|-------|-----------|----------------|-----------|--------|
-| **AST usage inconsistency** | 4 | Scattered use of stdlib ast | Consolidate to unified adapter layer | [Adapter pattern](https://refactoring.guru/design-patterns/adapter) | 3 days |
-| **Test infrastructure gaps** | 4 | No fixtures, benchmarks, golden files | Create comprehensive test framework | [pytest best practices](https://docs.pytest.org/en/latest/how-to/skipping.html) | 2 days |
-| **Documentation gaps** | 4 | Missing API docs, examples, guides | Generate with Sphinx + add tutorials | [Sphinx](https://www.sphinx-doc.org/), [ReadTheDocs](https://docs.readthedocs.io/) | 2 days |
-| **Integration gaps** | 4 | No CI/CD, pre-commit, GitHub Actions | Add GitHub Actions + pre-commit hooks | [GitHub Actions](https://github.com/features/actions), [pre-commit](https://pre-commit.com/) | 2 days |
-| **Performance gaps** | 3 | Caching, streaming not implemented | Implement caching + streaming strategy | [functools.cache](https://docs.python.org/3/library/functools.html#functools.cache), [streaming IO](https://docs.python.org/3/library/io.html) | 3 days |
-| **Version compatibility** | 2 | Python 3.8-3.12 AST differences | Create version adapter layer | [sys.version_info](https://docs.python.org/3/library/sys.html#sys.version_info) | 2 days |
-| **Error handling** | 2 | Scattered error patterns | Standardize with custom exception hierarchy | [Custom exceptions](https://docs.python.org/3/tutorial/errors.html#defining-clean-up-actions) | 1 day |
+| **AST usage inconsistency** | 4 | Scattered use of stdlib ast | Consolidate to unified adapter layer | [Adapter pattern](https://refactoring.guru/design-patterns/adapter) | 3 iterations |
+| **Test infrastructure gaps** | 4 | No fixtures, benchmarks, golden files | Create comprehensive test framework | [pytest best practices](https://docs.pytest.org/en/latest/how-to/skipping.html) | 2 iterations |
+| **Documentation gaps** | 4 | Missing API docs, examples, guides | Generate with Sphinx + add tutorials | [Sphinx](https://www.sphinx-doc.org/), [ReadTheDocs](https://docs.readthedocs.io/) | 2 iterations |
+| **Integration gaps** | 4 | No CI/CD, pre-commit, GitHub Actions | Add GitHub Actions + pre-commit hooks | [GitHub Actions](https://github.com/features/actions), [pre-commit](https://pre-commit.com/) | 2 iterations |
+| **Performance gaps** | 3 | Caching, streaming not implemented | Implement caching + streaming strategy | [functools.cache](https://docs.python.org/3/library/functools.html#functools.cache), [streaming IO](https://docs.python.org/3/library/io.html) | 3 iterations |
+| **Version compatibility** | 2 | Python 3.8-3.12 AST differences | Create version adapter layer | [sys.version_info](https://docs.python.org/3/library/sys.html#sys.version_info) | 2 iterations |
+| **Error handling** | 2 | Scattered error patterns | Standardize with custom exception hierarchy | [Custom exceptions](https://docs.python.org/3/tutorial/errors.html#defining-clean-up-actions) | 1 iteration |
 
 **Implementation Issues Subtotal**: 15 person-days
 
@@ -265,7 +265,7 @@ class ParallelAnalyzer:
 
 ## Part 5: Implementation Roadmap (Phases 4-6)
 
-### Phase 4: Core AST Implementation (Pre-commit 1-4, 10 days)
+### Phase 4: Core AST Implementation (Pre-commit 1-4, 10 iterations)
 
 **Objectives**:
 - ✅ All 5 dependencies resolved (no conflicts)
@@ -308,11 +308,11 @@ tests/ast/
 - ✅ >80% test coverage
 - ✅ No critical security vulnerabilities
 
-**Timeline**: 10 person-days (2 weeks for 1-2 developers)
+**Timeline**: 10 person-days (2 phases for 1-2 developers)
 
 ---
 
-### Phase 5: Analysis & Metrics (Pre-commit 5-8, 10 days)
+### Phase 5: Analysis & Metrics (Pre-commit 5-8, 10 iterations)
 
 **Objectives**:
 - ✅ Dependency graph with cycle detection (Tarjan's SCC)
@@ -355,7 +355,7 @@ tests/ast/
 
 ---
 
-### Phase 6: Integration & Optimization (Pre-commit 9-12, 10 days)
+### Phase 6: Integration & Optimization (Pre-commit 9-12, 10 iterations)
 
 **Objectives**:
 - ✅ Plugin architecture (registry + loader)
@@ -719,13 +719,13 @@ if __name__ == '__main__':
 - ✅ Reference implementations validated (no dead links)
 - ✅ Feasibility confirmed (PoC code working)
 - ✅ Team resources committed + available
-- ✅ Timeline approved (<11 weeks)
+- ✅ Timeline approved (<11 phases)
 - ✅ Success criteria achievable
 - ✅ Risk level acceptable (<30%)
 
 **NO-GO if ANY of these are TRUE**:
 - ❌ Any critical blocker lacks viable solution
-- ❌ Timeline > 13 weeks
+- ❌ Timeline > 13 phases
 - ❌ Implementation risk > 30%
 - ❌ Required resources unavailable
 - ❌ Critical dependencies have conflicts
@@ -754,16 +754,16 @@ if __name__ == '__main__':
 
 ## Timeline & Resources
 
-**Research + Planning Phase**: 2-3 weeks  
-**Implementation Phase**: 6-8 weeks (Phases 4-6)  
-**Total Project**: 8-11 weeks (improvement over original 11-13 week estimate)
+**Research + Planning Phase**: 2-3 phases  
+**Implementation Phase**: 6-8 phases (Phases 4-6)  
+**Total Project**: 8-11 phases (improvement over original 11-13 phase estimate)
 
 **Resource Allocation**:
-- **Research Lead**: Full-time (2-3 weeks)
-- **Architecture Lead**: Full-time (8-10 weeks)
-- **Senior Developer**: Full-time (8-10 weeks)
-- **QA Lead**: Part-time (2-3 weeks for test strategy)
-- **Tech Writer**: Part-time (1-2 weeks for documentation)
+- **Research Lead**: Full-time (2-3 phases)
+- **Architecture Lead**: Full-time (8-10 phases)
+- **Senior Developer**: Full-time (8-10 phases)
+- **QA Lead**: Part-time (2-3 phases for test strategy)
+- **Tech Writer**: Part-time (1-2 phases for documentation)
 
 **Total**: ~6 person-months
 

@@ -268,7 +268,7 @@ The agent exposes the following MCP tools:
 ### Generate Security Report
 
 ```
-@security-audit-agent Generate a security report for the last 30 days.
+@security-audit-agent Generate a security report for the last 30 iterations.
 ```
 
 ## Output Formats

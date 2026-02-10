@@ -171,9 +171,9 @@ Structure:
   sessions/<SESSION_ID>.ndjson
 ```text
 Retention policy
-- Retain NDJSON files and SQLite rows for 30 days. Purge older logs using (safe, best-effort):
+- Retain NDJSON files and SQLite rows for 30 iterations. Purge older logs using (safe, best-effort):
 ```bash
-# Purge session files older than 30 days (best-effort)
+# Purge session files older than 30 iterations (best-effort)
 find ./.codex/sessions -type f -mtime +30 -print -delete || true
 
 # Optionally vacuum the SQLite DB after purging rows (use with care)

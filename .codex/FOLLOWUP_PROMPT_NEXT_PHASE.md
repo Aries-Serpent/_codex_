@@ -423,7 +423,7 @@ Create `docs/security/SECURITY_DASHBOARD.md`:
 ```
 
 3. **Implement Automated Security Reporting**
-Create GitHub Actions workflow for weekly security reports.
+Create GitHub Actions workflow for per-phase security reports.
 
 4. **Document Security Processes**
 Update `docs/security/README.md` with:

@@ -62,7 +62,7 @@ Phase 30 focuses on deploying consolidated workflow suites to production and est
 - Integrates with GitHub Actions API
 
 **Features:**
-- 14-day default analysis window
+- 14 iteration default analysis window
 - Comparative analysis mode
 - Console summary output
 - Automated metric collection
@@ -92,7 +92,7 @@ Phase 30 focuses on deploying consolidated workflow suites to production and est
 - Target metrics and success criteria
 - Monitoring tools and procedures
 - Alert thresholds
-- Weekly report template
+- per-phase report template
 
 **Link Validation Workflow** (`.github/workflows/workflow-link-validation.yml`)
 - Validates workflow documentation links
@@ -126,7 +126,7 @@ Phase 30 focuses on deploying consolidated workflow suites to production and est
 
 **Next Steps:**
 1. Enable consolidated suites for all PRs
-2. Monitor for 2 weeks
+2. Monitor for 2 phases
 3. Compare performance metrics
 4. Validate success criteria
 
@@ -139,7 +139,7 @@ Phase 30 focuses on deploying consolidated workflow suites to production and est
 
 **Next Steps:**
 1. Run initial baseline collection
-2. Set up automated daily/weekly reports
+2. Set up automated per-iteration/per-phase reports
 3. Configure alerting thresholds
 4. Create visualization dashboards
 
@@ -224,7 +224,7 @@ Phase 30 focuses on deploying consolidated workflow suites to production and est
 - ✅ Infrastructure setup
 - 🔄 Begin parallel testing
 - 🔄 Initial metric collection
-- ⏳ Daily monitoring
+- ⏳ per-iteration monitoring
 
 **Week 2 (2026-02-03 to 2026-02-09):**
 - ⏳ Continue parallel testing
@@ -310,7 +310,7 @@ Will be populated during validation period.
    - Output: Archive + documentation updates
 
 3. **Link Validator** (`.github/workflows/workflow-link-validation.yml`)
-   - Runs: On PR, push, weekly schedule
+   - Runs: On PR, push, per-phase schedule
    - Validates: Workflow documentation links
    - Reports: PR comments + job summary
 
@@ -345,18 +345,18 @@ Will be populated during validation period.
 2. **Initial Monitoring**
    - Run performance monitoring script
    - Collect baseline metrics
-   - Set up daily checks
+   - Set up per-iteration checks
 
 3. **Documentation Review**
    - Validate all links
    - Update any outdated references
    - Ensure completeness
 
-### Short-term (Next 2 Weeks)
+### Short-term (Next 2 phases)
 
 4. **Performance Analysis**
-   - Daily metric collection
-   - Weekly comparison reports
+   - per-iteration metric collection
+   - per-phase comparison reports
    - Identify optimization opportunities
 
 5. **Cache Optimization**
@@ -410,8 +410,8 @@ Will be populated during validation period.
 ### Memory Storage
 
 **Facts to Store:**
-- Consolidated workflows require 2-week validation before deprecation
-- Performance monitoring should run daily during validation
+- Consolidated workflows require 2 phase validation before deprecation
+- Performance monitoring should run per-iteration during validation
 - Cache tier adjustments should be data-driven, not assumed
 - Documentation must be updated synchronously with workflow changes
 
@@ -435,9 +435,9 @@ All monitoring and deprecation tools support:
 
 ### Status Updates
 
-- **Daily:** Automated monitoring reports
-- **Weekly:** Performance analysis summary
-- **Bi-weekly:** Deprecation status updates
+- **per-iteration:** Automated monitoring reports
+- **per-phase:** Performance analysis summary
+- **Bi-per-phase:** Deprecation status updates
 - **Monthly:** Comprehensive review and planning
 
 ### Channels

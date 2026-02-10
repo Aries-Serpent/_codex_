@@ -1,18 +1,18 @@
-# Guide: Authoring the `_codex_` Daily Status Update (v1.1)
+# Guide: Authoring the `_codex_` per-iteration Status Update (v1.1)
 > Generated: 2025-11-02 11:32:31 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Authoring Guide Maintainer], [Secondary: QA Reviewer] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
-This guide explains how to produce the daily report using codex_status_template_v1.1.md.
+This guide explains how to produce the per-iteration report using codex_status_template_v1.1.md.
 
 ## 1. Cadence and Storage
-- Frequency: Daily (one comprehensive document).
+- Frequency: per-iteration (one comprehensive document).
 - Location:
   - Template: docs/templates/status/codex_status_template_v1.1.md
-  - Reports: reports/daily/<YYYY‑MM‑DD>.md
+  - Reports: reports/per-iteration/<YYYY‑MM‑DD>.md
 - Retention:
   - Keep last 30 reports (rolling window).
-  - Optional: archive older than 90 days into zip/tar.gz.
+  - Optional: archive older than 90 iterations into zip/tar.gz.
 
 ## 2. Title and Metadata
 - Title (H1): "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
@@ -55,7 +55,7 @@ This guide explains how to produce the daily report using codex_status_template_
   - CAP‑IDs and REPRO‑IDs impacted (when applicable).
 - Prefer feature flags for risky changes and chunk large patches.
 
-## 8. Automation Inputs (Daily)
+## 8. Automation Inputs (per-iteration)
 - Populate:
   - Issues (full list, no truncation) in a list code block:
     ```list type="issue"

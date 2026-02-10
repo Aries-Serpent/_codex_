@@ -84,12 +84,12 @@ ls .github/workflow-archive/disabled/build-container-cache.yml
 **Status**: ✅ **PRESENT**  
 **Location**: `.github/workflows/detect-duplicates.yml`  
 **Consolidates**:
-- duplicate-detection-weekly.yml (disabled ✅)
+- duplicate-detection-per-phase.yml (disabled ✅)
 
 **Verification**:
 ```bash
 ls .github/workflows/detect-duplicates.yml
-ls .github/workflow-archive/disabled/duplicate-detection-weekly.yml
+ls .github/workflow-archive/disabled/duplicate-detection-per-phase.yml
 ```
 
 **Parity**: ✅ **PASS**
@@ -185,9 +185,9 @@ The validation functionality was **not lost** but rather **distributed strategic
 ---
 
 ### 7. Monitoring/Status Workflows ✅ RESOLVED
-**Target**: daily-status-pipeline.yml  
+**Target**: per-iteration-status-pipeline.yml  
 **Status**: ✅ **PARITY CONFIRMED** (Distributed Consolidation + Strategic Deprecation)  
-**Expected Location**: `.github/workflows/daily-status-pipeline.yml`  
+**Expected Location**: `.github/workflows/per-iteration-status-pipeline.yml`  
 **Should Consolidate** (5 workflows):
 - daily_status_cron.yml (disabled ✅)
 - daily_status_enrich.yml (disabled ✅)
@@ -198,11 +198,11 @@ The validation functionality was **not lost** but rather **distributed strategic
 **Investigation Results**:
 ```bash
 # Check if consolidated file exists
-ls .github/workflows/daily-status-pipeline.yml
+ls .github/workflows/per-iteration-status-pipeline.yml
 # Result: File not found ❌
 
 # Check for functional replacement
-ls .github/workflows/publish_dashboard_release.yml  # ✅ FOUND - Weekly dashboard publishing
+ls .github/workflows/publish_dashboard_release.yml  # ✅ FOUND - per-phase dashboard publishing
 ls .github/workflows/ci-health-monitor.yml          # ✅ FOUND - CI health every 6 hours
 ls scripts/status/*.sh scripts/status/*.py          # ✅ FOUND - 19 status scripts functional
 
@@ -218,7 +218,7 @@ ls .github/workflow-archive/disabled/report_publish.yml         # ✅ Present
 
 | Disabled Workflow | Functionality | Covered By | Status |
 |------------------|---------------|------------|--------|
-| daily_status_cron.yml | Generate daily skeleton reports | `publish_dashboard_release.yml` (weekly) + scripts available | ✅ PARTIAL (strategic reduction) |
+| daily_status_cron.yml | Generate per-iteration skeleton reports | `publish_dashboard_release.yml` (per-phase) + scripts available | ✅ PARTIAL (strategic reduction) |
 | daily_status_enrich.yml | Enrich reports with artifacts | `ci-health-monitor.yml` + status scripts | ✅ COVERED |
 | automation_ingest.yml | Collect schema validation results | Status scripts callable on-demand | ✅ AVAILABLE |
 | produce-trend.yml | Generate capability trends | Capability audit scripts functional | ✅ AVAILABLE |
@@ -226,14 +226,14 @@ ls .github/workflow-archive/disabled/report_publish.yml         # ✅ Present
 
 **Detailed Coverage**:
 
-**1. daily_status_cron.yml (Daily Skeleton) - STRATEGIC REDUCTION**:
+**1. daily_status_cron.yml (per-iteration Skeleton) - STRATEGIC REDUCTION**:
 - **Original**: Ran daily at 09:00 UTC, generated skeleton reports
 - **Current**: `publish_dashboard_release.yml` runs weekly (Monday 10:15 UTC)
-- **Rationale**: Daily reports deemed excessive; weekly cadence sufficient
+- **Rationale**: per-iteration reports deemed excessive; per-phase cadence sufficient
 - **Status**: ✅ **Intentional reduction, not a gap**
 
 **2. daily_status_enrich.yml (Report Enrichment) - COVERED**:
-- **Original**: Enriched daily reports with artifact data
+- **Original**: Enriched per-iteration reports with artifact data
 - **Replacement**: `ci-health-monitor.yml` runs every 6 hours
   - Validates CI health metrics
   - Tracks workflow counts (active/disabled/target)
@@ -262,7 +262,7 @@ ls .github/workflow-archive/disabled/report_publish.yml         # ✅ Present
 - **Original**: Validated and bundled status artifacts
 - **Replacement**: 
   - `status_gate.yml` - Status validation on PR/push
-  - `publish_dashboard_release.yml` - Weekly releases
+  - `publish_dashboard_release.yml` - per-phase releases
   - `scripts/status/bundle_status_artifacts.sh` - Bundling script
   - `scripts/status/validate_and_publish.py` - Validation script
 - **Status**: ✅ **Distributed across workflows and scripts**
@@ -272,17 +272,17 @@ ls .github/workflow-archive/disabled/report_publish.yml         # ✅ Present
 The monitoring workflows were intentionally **consolidated and optimized**:
 
 1. **Frequency Optimization**:
-   - Daily cron (daily_status_cron) → Weekly release (more sustainable)
-   - Daily enrichment → 6-hour CI health checks (more responsive)
+   - per-iteration cron (daily_status_cron) → per-phase release (more sustainable)
+   - per-iteration enrichment → 6-hour CI health checks (more responsive)
 
 2. **Strategic Reduction**:
-   - Eliminated noisy daily reports
-   - Focused on actionable weekly summaries
+   - Eliminated noisy per-iteration reports
+   - Focused on actionable per-phase summaries
    - Preserved scripts for on-demand use
 
 3. **Distributed Responsibility**:
    - CI health → `ci-health-monitor.yml` (proactive)
-   - Dashboard → `publish_dashboard_release.yml` (weekly summary)
+   - Dashboard → `publish_dashboard_release.yml` (per-phase summary)
    - Status gate → `status_gate.yml` (PR validation)
    - Scripts → Available for manual/automated invocation
 
@@ -290,7 +290,7 @@ The monitoring workflows were intentionally **consolidated and optimized**:
 
 The monitoring functionality was **not lost** but rather **optimized and distributed**:
 - High-frequency health monitoring → `ci-health-monitor.yml` (every 6 hours)
-- Periodic summaries → `publish_dashboard_release.yml` (weekly)
+- Periodic summaries → `publish_dashboard_release.yml` (per-phase)
 - On-demand capabilities → Status scripts library (19 scripts)
 
 **Parity Status**: ✅ **PASS** (Improved monitoring with reduced noise)
@@ -330,22 +330,22 @@ ls .github/workflow-archive/disabled/cache-warmer.yml    # ✅ Present
 
 | Disabled Workflow | Functionality | Covered By | Status |
 |------------------|---------------|------------|--------|
-| cache-cleanup.yml | Weekly cache cleanup (Sunday) | GitHub auto-cleanup (30-day) | ✅ COVERED |
-| cache-warmer.yml | Weekly cache warming (Python + containers) | Individual workflow caching | ✅ DISTRIBUTED |
+| cache-cleanup.yml | per-phase cache cleanup (Sunday) | GitHub auto-cleanup (30 iteration) | ✅ COVERED |
+| cache-warmer.yml | per-phase cache warming (Python + containers) | Individual workflow caching | ✅ DISTRIBUTED |
 
 **Detailed Coverage**:
 
-**1. cache-cleanup.yml (Weekly Cleanup) - COVERED BY GITHUB**:
-- **Original**: Ran weekly on Sunday, used `gh actions-cache` to delete old caches
+**1. cache-cleanup.yml (per-phase Cleanup) - COVERED BY GITHUB**:
+- **Original**: Ran per-phase on Sunday, used `gh actions-cache` to delete old caches
 - **Current**: GitHub Actions automatic cache management
-  - **Auto-expiry**: Caches automatically deleted after 30 days of no access
+  - **Auto-expiry**: Caches automatically deleted after 30 iterations of no access
   - **Size limit**: 10GB per repository (oldest caches evicted first)
   - **Branch cleanup**: Caches for deleted branches automatically removed
 - **Rationale**: GitHub's built-in cleanup is more reliable and efficient
 - **Status**: ✅ **Superior replacement (no manual maintenance needed)**
 
-**2. cache-warmer.yml (Weekly Warming) - DISTRIBUTED APPROACH**:
-- **Original**: Ran weekly on Sunday
+**2. cache-warmer.yml (per-phase Warming) - DISTRIBUTED APPROACH**:
+- **Original**: Ran per-phase on Sunday
   - Warmed Python caches for versions 3.11, 3.12
   - Warmed container caches
   - Matrix strategy: 2 Python versions × 3 profiles = 6 jobs
@@ -397,7 +397,7 @@ Each workflow manages its own cache independently:
 
 - **Size Quota**: 10GB per repository
 - **Eviction Policy**: LRU (Least Recently Used) when quota exceeded
-- **TTL**: 30 days of no access → automatic deletion
+- **TTL**: 30 iterations of no access → automatic deletion
 - **Branch Handling**: Caches deleted when branch is deleted
 - **Restore Order**: Exact match → restore-keys → no cache
 
@@ -406,7 +406,7 @@ Each workflow manages its own cache independently:
 The cache management was intentionally **distributed and simplified**:
 
 1. **Elimination of Manual Cleanup**:
-   - GitHub's auto-cleanup handles expiry (30-day TTL)
+   - GitHub's auto-cleanup handles expiry (30 iteration TTL)
    - No need for manual `gh actions-cache delete` commands
    - Reduced maintenance overhead
 
@@ -423,7 +423,7 @@ The cache management was intentionally **distributed and simplified**:
 **Conclusion**: ✅ **DISTRIBUTED CACHING + GITHUB AUTO-CLEANUP**
 
 The cache management functionality was **not lost** but rather **distributed and automated**:
-- Cache cleanup → GitHub automatic expiry (30-day)
+- Cache cleanup → GitHub automatic expiry (30 iteration)
 - Cache warming → Distributed across 7+ workflows (on-demand)
 - Cache strategy → Workflow-specific optimization
 
@@ -487,7 +487,7 @@ The cache management functionality was **not lost** but rather **distributed and
 
 ---
 
-### Task 2: Locate or Create daily-status-pipeline.yml
+### Task 2: Locate or Create per-iteration-status-pipeline.yml
 **Priority**: Medium  
 **Impact**: Status reporting workflows currently disabled without replacement
 
@@ -502,7 +502,7 @@ The cache management functionality was **not lost** but rather **distributed and
 4. Determine if consolidation is needed or status reporting covered elsewhere
 
 **Acceptance Criteria**:
-- Daily status reporting functionality restored
+- per-iteration status reporting functionality restored
 - Dashboard publishing functional
 - Automation ingest covered
 
@@ -517,7 +517,7 @@ The cache management functionality was **not lost** but rather **distributed and
    ```bash
    grep -r "actions/cache" .github/workflows/
    ```
-2. Verify cache cleanup happens via GitHub's automatic cleanup (30 days default)
+2. Verify cache cleanup happens via GitHub's automatic cleanup (30 iterations default)
 3. Determine if dedicated cache management workflow is needed
 
 **Acceptance Criteria**:
@@ -538,7 +538,7 @@ The cache management functionality was **not lost** but rather **distributed and
 
 ### Requires Investigation (3 of 8 expected)
 - ⚠️ Validation workflows (workflow-validation.yml) - 3 workflows disabled
-- ⚠️ Monitoring workflows (daily-status-pipeline.yml) - 5 workflows disabled
+- ⚠️ Monitoring workflows (per-iteration-status-pipeline.yml) - 5 workflows disabled
 - ⚠️ Cache management (cache-management.yml) - 2 workflows disabled
 
 ### Risk Assessment
@@ -607,7 +607,7 @@ Rationale:
 ## 🎯 Next Actions
 
 ### High Priority
-1. **Investigate Monitoring Workflows** (daily-status-pipeline.yml)
+1. **Investigate Monitoring Workflows** (per-iteration-status-pipeline.yml)
    - Check `publish_dashboard_release.yml` for coverage
    - Check `ci-health-monitor.yml` for overlap
    - Verify 5 disabled status workflows functionality
@@ -710,11 +710,11 @@ gh run download --name audit-results
 
 | Type | Retention | Access Method |
 |------|-----------|---------------|
-| Test Results | 30 days | `gh run download --name test-results` |
-| Coverage | 90 days | `gh run download --name coverage-artifacts` |
+| Test Results | 30 iterations | `gh run download --name test-results` |
+| Coverage | 90 iterations | `gh run download --name coverage-artifacts` |
 | Security | Permanent | Security tab / API |
-| Audits | 90 days | `gh run download --name audit-results` |
-| Health Metrics | 30 days | `gh run download --name workflow-trends-*` |
+| Audits | 90 iterations | `gh run download --name audit-results` |
+| Health Metrics | 30 iterations | `gh run download --name workflow-trends-*` |
 
 ### Copilot Agent Retrieval Patterns
 

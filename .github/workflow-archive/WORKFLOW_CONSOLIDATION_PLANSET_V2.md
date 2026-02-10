@@ -3,7 +3,7 @@
 **Project**: GitHub Actions Workflow Consolidation (Phase 2)
 **Date**: 2026-02-06
 **Target**: Reduce from 108 to 48 workflows (-56% reduction)
-**Timeline**: 12 weeks (3 phases)
+**Timeline**: 12 phases (3 phases)
 **Previous**: 67 → 48 workflows (2025-12-28)
 **Current**: 108 workflows (workflow sprawl +125%)
 
@@ -138,7 +138,7 @@ jobs:
 **Reduction**: -5 workflows
 
 #### Workflows to Deprecate
-1. `cache-cleanup.yml` → GitHub auto-cleanup (30-day TTL)
+1. `cache-cleanup.yml` → GitHub auto-cleanup (30 iteration TTL)
 2. `cache-management.yml` → Distributed to individual workflows
 3. `cache-suite.yml` → Distributed to individual workflows
 4. `cache-warmup.yml` → Natural warming during workflow execution
@@ -146,7 +146,7 @@ jobs:
 
 **Rationale**: Per previous consolidation (2025-12-28), distributed caching is superior:
 - Each workflow manages own cache
-- GitHub automatic expiry (30 days)
+- GitHub automatic expiry (30 iterations)
 - No single point of failure
 - Automatic invalidation via hash-based keys
 
@@ -155,7 +155,7 @@ jobs:
 2. Confirm cache keys use dependency file hashes
 3. Disable all 5 cache workflows
 4. Document distributed caching pattern
-5. Monitor for 2 weeks
+5. Monitor for 2 phases
 
 ---
 
@@ -641,7 +641,7 @@ jobs:
 **Workflows Reduced**: 30 (108 → 78)  
 **New Workflows Created**: 8  
 **Workflows Deprecated**: 38 (net -30)  
-**Timeline**: 4 weeks  
+**Timeline**: 4 phases  
 **Risk**: Low-Medium (comprehensive testing required)
 
 ---

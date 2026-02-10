@@ -195,7 +195,7 @@ ci-testing-agent({
 - Generate flake reports
 
 **Use Cases**:
-- "Identify all flaky tests in the last 30 days"
+- "Identify all flaky tests in the last 30 iterations"
 - "Quarantine flaky tests and create tracking issues"
 
 ---

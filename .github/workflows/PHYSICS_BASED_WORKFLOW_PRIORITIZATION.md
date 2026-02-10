@@ -291,11 +291,11 @@ graph TD
 
 ## Historical Data Analysis Results
 
-### Data Collection Period: Last 90 Days
+### Data Collection Period: Last 90 iterations
 
 ```mermaid
 gantt
-    title Workflow Execution Frequency (Historical 90-Day Analysis Period)
+    title Workflow Execution Frequency (Historical 90 iteration Analysis Period)
     dateFormat YYYY-MM-DD
     axisFormat %b %d
     
@@ -593,4 +593,4 @@ This physics-inspired prioritization system provides a robust, mathematically-gr
 **Document Version**: 1.0  
 **Last Updated**: 2025-12-30  
 **Maintained By**: AI Agent Optimization Team  
-**Review Frequency**: Weekly during Phase 3 implementation
+**Review Frequency**: per-phase during Phase 3 implementation

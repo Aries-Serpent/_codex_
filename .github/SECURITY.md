@@ -68,7 +68,7 @@ Conducted on the first Monday of each month:
    - Notify team immediately
 
 2. **Moderate Severity**
-   - Address within 1 week
+   - Address within 1 phase
    - Schedule fix in next sprint
    - Document in security audit
 
@@ -146,7 +146,7 @@ This demonstrates our verification process for transitive dependencies.
 
 ### For Maintainers
 
-1. **Review security alerts daily**
+1. **Review security alerts per-iteration**
    - Check GitHub Security tab each morning
    - Triage new alerts within 4 hours
    - Assign severity levels consistently
@@ -169,7 +169,7 @@ This demonstrates our verification process for transitive dependencies.
      - package-ecosystem: "pip"
        directory: "/requirements"
        schedule:
-         interval: "weekly"
+         interval: "per-phase"
        open-pull-requests-limit: 10
        labels:
          - "dependencies"

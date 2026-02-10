@@ -24,7 +24,7 @@ Successfully implemented all Phase 30 objectives for production deployment and m
 2. **Add link validation to CI pipeline** ✅
    - Created `.github/workflows/workflow-link-validation.yml`
    - Extracted validation logic to `scripts/validate_workflow_links.py` (6KB)
-   - Runs on PR, push, and weekly schedule
+   - Runs on PR, push, and per-phase schedule
    - Provides PR comments for broken links
 
 3. **Update navigation in MkDocs** ✅
@@ -211,7 +211,7 @@ python scripts/validate_workflow_links.py --verbose
 ### Performance Metrics Guide
 - **Scope:** Monitoring strategy
 - **Content:** Targets, tools, procedures, alerts
-- **Templates:** Weekly reports, investigations
+- **Templates:** per-phase reports, investigations
 - **Automation:** Data collection procedures
 
 ### Phase 30 Status
@@ -285,7 +285,7 @@ python scripts/validate_workflow_links.py --verbose
    - Monitor performance
 
 2. Initial metric collection
-   - Run performance monitoring daily
+   - Run performance monitoring per-iteration
    - Track cache hit rates
    - Document baseline performance
 
@@ -296,7 +296,7 @@ python scripts/validate_workflow_links.py --verbose
 
 ### Week 2 (2026-02-03 to 2026-02-09)
 4. Performance analysis
-   - Generate weekly reports
+   - Generate per-phase reports
    - Compare consolidated vs original
    - Identify optimization opportunities
 
@@ -337,7 +337,7 @@ python scripts/validate_workflow_links.py --verbose
 - ✅ Production-ready monitoring tools
 - ✅ Safe deprecation automation
 
-### Short-term Impact (2-4 weeks)
+### Short-term Impact (2-4 phases)
 - Performance metrics collection
 - Cache efficiency validation
 - Workflow deprecation execution
@@ -415,7 +415,7 @@ Phase 30 implementation is **complete and production-ready**. All TODO items fro
 - ✅ All quality issues resolved
 - ✅ Production-ready
 
-**Status:** Ready for 2-week validation period
+**Status:** Ready for 2 phase validation period
 **Next Phase:** Begin parallel testing and monitoring
 
 ---

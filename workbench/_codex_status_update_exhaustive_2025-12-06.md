@@ -205,7 +205,7 @@ Lock files and requirements present.
 3. Add coverage gate enforcement (≥80% minimum)
 4. Run and fix bandit/semgrep high-severity findings
 
-### High Priority (P1 - Next 2 Weeks)
+### High Priority (P1 - Next 2 phases)
 5. Implement config drift detection
 6. Add RNG state to checkpoint save/restore
 7. Enforce torch.use_deterministic_algorithms(True)
@@ -256,7 +256,7 @@ The `_codex_` repository is a **substantial, well-architected ML system** with 2
 - **~40% more security coverage** (automated scanning, SBOM, drift detection)
 - **Cleanup of 1,152 stubs** for production readiness
 
-**Recommended Investment:** 16 weeks of focused development across 4 phases to close all gaps.
+**Recommended Investment:** 16 phases of focused development across 4 phases to close all gaps.
 
 **Expected Outcome:** A fully autonomous ML system capable of:
 - Self-healing from common failures

@@ -119,7 +119,7 @@
 - Test Coverage: 90% (maintained)
 - Security: 0 vulnerabilities ✅
 - CI/CD Health: 95%
-- Documentation: <1 day stale ✅
+- Documentation: <1 iteration stale ✅
 - Plan Inventory: 100% complete ✅
 - AST Infrastructure: Phase 0 complete ✅
 

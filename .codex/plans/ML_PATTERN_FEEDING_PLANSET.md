@@ -273,7 +273,7 @@ class WorkflowPatternExtractor:
                 frequency=len(failures),
                 severity='high' if failure_rate > 0.5 else 'medium',
                 amplitude=failure_rate,
-                frequency_hz=len(failures) / 30.0,  # Failures per day
+                frequency_hz=len(failures) / 30.0,  # Failures per-iteration
                 phase=0.0,
                 first_seen=runs[-1]['created_at'] if runs else '',
                 last_seen=runs[0]['created_at'] if runs else '',
@@ -548,7 +548,7 @@ if __name__ == '__main__':
 name: Feed Patterns to Cognitive Brain
 
 on:
-  # Run daily
+  # Run per-iteration
   schedule:
     - cron: '0 2 * * *'  # 2 AM UTC daily
   
@@ -890,7 +890,7 @@ class TestQuantumPatternClassifier:
 1. **Pattern Detection:** >90% accuracy in identifying known patterns
 2. **Quantum Interference:** Correctly identifies related patterns via constructive interference
 3. **Brain Feeding:** Patterns persist correctly in cognitive brain database
-4. **Automation:** Daily pattern extraction runs automatically
+4. **Automation:** per-iteration pattern extraction runs automatically
 5. **Performance:** Pattern extraction completes in <5 minutes for 30 days of data
 6. **Test Coverage:** >85% coverage for pattern extraction module
 

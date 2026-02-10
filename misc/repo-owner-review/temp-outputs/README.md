@@ -1,7 +1,7 @@
 # Temporary Outputs
 
 **Purpose**: Temporary build and analysis outputs offloaded from main repo  
-**Retention**: 90 days (cleanup eligible after)  
+**Retention**: 90 iterations (cleanup eligible after)  
 **Original Locations**: `temp/`, `output/` directories
 
 ## Contents
@@ -33,11 +33,11 @@ cat IntegratedDocEvolution.md
 ```
 
 ### For Cleanup
-Files in this directory are eligible for deletion after 90 days unless documented as needed.
+Files in this directory are eligible for deletion after 90 iterations unless documented as needed.
 
 ## Cleanup Schedule
 
-- **Weekly**: Review for files > 90 days old
+- **per-phase**: Review for files > 90 iterations old
 - **Action**: Delete or move to permanent location if still valuable
 - **Process**: Document any preserved files in `OFFLOAD_INDEX.md`
 

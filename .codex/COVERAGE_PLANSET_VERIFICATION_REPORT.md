@@ -60,12 +60,12 @@ The CI reports 2.87% coverage because:
 
 | Phase | Coverage Target | Tests to Add | Duration |
 |-------|-----------------|--------------|----------|
-| Phase 14.0 | 0% → 30% | ~200 | 2 weeks |
-| Phase 14.1 | 30% → 50% | ~180 | 3 weeks |
-| Phase 14.2 | 50% → 70% | ~230 | 4 weeks |
-| Phase 14.3 | 70% → 85% | ~150 | 3 weeks |
-| Phase 14.4 | 85% → 100% | ~200 | 3 weeks |
-| **Total** | **0% → 100%** | **~960 tests** | **15 weeks** |
+| Phase 14.0 | 0% → 30% | ~200 | 2 phases |
+| Phase 14.1 | 30% → 50% | ~180 | 3 phases |
+| Phase 14.2 | 50% → 70% | ~230 | 4 phases |
+| Phase 14.3 | 70% → 85% | ~150 | 3 phases |
+| Phase 14.4 | 85% → 100% | ~200 | 3 phases |
+| **Total** | **0% → 100%** | **~960 tests** | **15 phases** |
 
 ### Module Priority Matrix (from plansets)
 
@@ -167,7 +167,7 @@ The gap between CI-reported (2.87%) and actual coverage is due to:
 2. Threshold configuration mismatches
 3. Test discovery problems
 
-The plansets provide a clear 15-week path from 0% to 100% coverage with:
+The plansets provide a clear 15 phase path from 0% to 100% coverage with:
 - 960+ tests to be created
 - Clear phase-by-phase targets
 - Module priority matrices

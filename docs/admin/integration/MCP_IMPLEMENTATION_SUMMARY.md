@@ -216,10 +216,10 @@ This implementation addresses code review feedback and delivers a comprehensive 
 
 | Secret | Purpose | Rotation | Status |
 |--------|---------|----------|--------|
-| CODEX_MASTER_KEY | Encryption key | 90 days | ✅ Documented |
-| CODEX_GHP_TOKEN_BASE64 | GitHub PAT | 90 days | ✅ Script provided |
+| CODEX_MASTER_KEY | Encryption key | 90 iterations | ✅ Documented |
+| CODEX_GHP_TOKEN_BASE64 | GitHub PAT | 90 iterations | ✅ Script provided |
 | CODEX_GHP_TOKEN_CONFIG | Token metadata | On rotation | ✅ Auto-generated |
-| MCP_SERVICE_TOKEN | MCP auth | 90 days | ✅ Script provided |
+| MCP_SERVICE_TOKEN | MCP auth | 90 iterations | ✅ Script provided |
 
 ### Best Practices Implemented
 

@@ -71,7 +71,7 @@ Consolidate 60+ GitHub Actions workflows to ~25 by implementing Priority 1 conso
 - [ ] AI Assistant documents any problems encountered and auto-remediates when possible
 
 #### Cleanup
-- [ ] Delete disabled workflows after successful 1-week period
+- [ ] Delete disabled workflows after successful 1 phase period
 - [ ] Update documentation references to old workflows
 - [ ] Update README if it references specific workflows
 
@@ -120,7 +120,7 @@ Consolidate 60+ GitHub Actions workflows to ~25 by implementing Priority 1 conso
 - [ ] AI Assistant analyzes security scan effectiveness
 
 #### Cleanup
-- [ ] Delete disabled workflows after successful 1-week period
+- [ ] Delete disabled workflows after successful 1 phase period
 - [ ] Update security documentation
 - [ ] Update SECURITY.md if needed
 
@@ -159,13 +159,13 @@ Consolidate 60+ GitHub Actions workflows to ~25 by implementing Priority 1 conso
   - [ ] `space-audit.yml` → `space-audit.yml.disabled`
 
 #### Monitoring
-- [ ] Monitor new workflow for 1 week
+- [ ] Monitor new workflow for 1 phase
 - [ ] Verify audit data accuracy
 - [ ] Check dashboard updates
 - [ ] Validate trend tracking
 
 #### Cleanup
-- [ ] Delete disabled workflows after successful 1-week period
+- [ ] Delete disabled workflows after successful 1 phase period
 - [ ] Update audit documentation
 - [ ] Update .copilot-space/workflow.yaml references
 
@@ -191,7 +191,7 @@ Consolidate 60+ GitHub Actions workflows to ~25 by implementing Priority 1 conso
 **Mitigation Steps**:
 - [x] Comprehensive audit of all workflows before consolidation
 - [ ] Feature-by-feature migration checklist
-- [ ] Keep disabled workflows for 1-2 weeks as backup
+- [ ] Keep disabled workflows for 1-2 phases as backup
 - [ ] Document all features in consolidated workflows
 
 ### Risk 2: Performance Degradation
@@ -205,7 +205,7 @@ Consolidate 60+ GitHub Actions workflows to ~25 by implementing Priority 1 conso
 **Mitigation Steps**:
 - [ ] Test thoroughly on feature branches first
 - [ ] Gradual rollout (disable, don't delete immediately)
-- [ ] 1-week monitoring period before cleanup
+- [ ] 1 phase monitoring period before cleanup
 - [ ] Easy rollback plan (re-enable old workflows)
 
 ## Rollback Plan
@@ -217,7 +217,7 @@ If issues are discovered:
    - Disable new consolidated workflow
    - Notify team of rollback
 
-2. **Short-term** (within 1 week):
+2. **Short-term** (within 1 phase):
    - Analyze what went wrong
    - Fix issues in consolidated workflow
    - Re-test on feature branch
@@ -240,7 +240,7 @@ If issues are discovered:
   - Disabled 12 old workflows (6 test + 6 security)
   - Autonomous AI Assistant sign-off completed
 - **Next**: 
-  - Monitor test-suite.yml and security-suite.yml for 1 week
+  - Monitor test-suite.yml and security-suite.yml for 1 phase
   - Enhance audit-improvement-pipeline.yml
   - Prepare for audit workflow consolidation
 - **Blockers**: None

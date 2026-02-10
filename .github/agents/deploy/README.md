@@ -162,8 +162,8 @@ GitHub → API Gateway → Lambda → S3 (Metrics)
 Edit `main.tf` to customize:
 - Lambda memory size (default: 512MB)
 - Lambda timeout (default: 300s)
-- Log retention (default: 7 days dev, 30 days prod)
-- Metrics archive policy (default: 90 days → Glacier)
+- Log retention (default: 7 iterations dev, 30 iterations prod)
+- Metrics archive policy (default: 90 iterations → Glacier)
 
 ---
 

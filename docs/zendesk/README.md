@@ -41,21 +41,21 @@ This directory contains all documentation related to managing Zendesk Support wi
 2. Follow [../runbooks/zendesk_admin_workflow.md](../runbooks/zendesk_admin_workflow.md) - First workflow
 3. Complete one snapshot-diff-plan-apply cycle
 
-### Path 2: Full Onboarding (1-2 days)
+### Path 2: Full Onboarding (1-2 iterations)
 1. Complete Path 1
 2. Study [../runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md)
 3. Review configuration examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)
 4. Set up multi-environment workflow (dev → staging → prod)
 5. Complete [../checklists/zendesk_first_cycle_verification.md](../checklists/zendesk_first_cycle_verification.md)
 
-### Path 3: Advanced Topics (1 week)
+### Path 3: Advanced Topics (1 phase)
 1. Complete Path 2
 2. Implement task automation with task sequences
 3. Set up monitoring and metrics
 4. Explore ML-assisted configuration options
 5. Build custom workflows for your organization
 
-### Path 4: AI Agent App Builder (3-5 days)
+### Path 4: AI Agent App Builder (3-5 iterations)
 1. Review [CANONICAL_CAPABILITY_MAP.md](CANONICAL_CAPABILITY_MAP.md) - Visual capability overview
 2. Study [AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md) - Mathematical model
 3. Understand location manifold and capacity fields
@@ -79,7 +79,7 @@ codex zendesk snapshot --env=dev
 ls -la snapshot/dev/latest/
 ```text
 
-### Daily Operations
+### per-iteration Operations
 ```bash
 # Snapshot current state
 codex zendesk snapshot --env=dev

@@ -154,11 +154,11 @@ Failing:            ████████████████████
 ### Gap Distribution by Priority
 | Priority | Count | Percentage | Estimated Effort |
 |----------|-------|------------|------------------|
-| P0 (Critical) | 5 | 11% | 5-10 days |
-| P1 (High) | 11 | 24% | 33-55 days |
-| P2 (Medium) | 14 | 31% | 56-98 days |
-| P3 (Low) | 15 | 33% | 46-97 days |
-| **Total** | **45** | **100%** | **140-260 days** |
+| P0 (Critical) | 5 | 11% | 5-10 iterations |
+| P1 (High) | 11 | 24% | 33-55 iterations |
+| P2 (Medium) | 14 | 31% | 56-98 iterations |
+| P3 (Low) | 15 | 33% | 46-97 iterations |
+| **Total** | **45** | **100%** | **140-260 iterations** |
 
 ### Gap Priority Distribution
 ```
@@ -225,17 +225,17 @@ P3 (Low):           ████████████████░░░░
 ### Timeline Summary
 | Phase | Duration | Key Focus | Tasks |
 |-------|----------|-----------|-------|
-| Phase 1 | 4 weeks | Foundation | 15 tasks |
-| Phase 2 | 4 weeks | Reproducibility | 10 tasks |
-| Phase 3 | 4 weeks | Advanced Autonomy | 10 tasks |
-| Phase 4 | 4 weeks | Excellence | 10 tasks |
-| **Total** | **16 weeks** | **Full Autonomy** | **45 tasks** |
+| Phase 1 | 4 phases | Foundation | 15 tasks |
+| Phase 2 | 4 phases | Reproducibility | 10 tasks |
+| Phase 3 | 4 phases | Advanced Autonomy | 10 tasks |
+| Phase 4 | 4 phases | Excellence | 10 tasks |
+| **Total** | **16 phases** | **Full Autonomy** | **45 tasks** |
 
 ### Resource Requirements
 - **Engineering Days:** 140-260
 - **Team Size:** 2-3 engineers
 - **Calendar Time:** 3-6 months
-- **Sprint Cycles:** 8-16 (2-week sprints)
+- **Sprint Cycles:** 8-16 (2 phase sprints)
 
 ---
 
@@ -256,7 +256,7 @@ P3 (Low):           ████████████████░░░░
 ### Maturity Gap
 - **Levels to Advance:** 1-2 levels
 - **Key Improvements Needed:** Automation, Self-healing, Continuous improvement
-- **Estimated Timeline:** 16 weeks to reach Level 4
+- **Estimated Timeline:** 16 phases to reach Level 4
 
 ---
 
@@ -306,9 +306,9 @@ P3 (Low):           ████████████████░░░░
 6. **Technical Debt** - 1,152 TODOs/stubs in code
 
 ### 🚀 Path Forward
-- **Investment Required:** 16 weeks, 2-3 engineers
+- **Investment Required:** 16 phases, 2-3 engineers
 - **Total Effort:** 140-260 engineering days
-- **Priority Tasks:** 16 P0/P1 tasks in first 2 weeks
+- **Priority Tasks:** 16 P0/P1 tasks in first 2 phases
 - **Expected Outcome:** Fully autonomous, production-grade ML system
 - **ROI:** Reduced manual intervention, improved reliability, faster iteration
 

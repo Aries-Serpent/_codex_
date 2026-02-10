@@ -71,7 +71,7 @@ Some artifacts are committed to the repository:
 - **Path**: `.codex/reports/smells.json`
 - **Content**: Code smell detection results
 - **Format**: JSON
-- **Retention**: 90 days
+- **Retention**: 90 iterations
 - **Size**: ~50-200 KB
 - **Retrieval**:
   ```bash
@@ -113,7 +113,7 @@ Some artifacts are committed to the repository:
   - `.coverage` (SQLite database)
 - **Content**: Test coverage data
 - **Format**: Multiple formats (HTML, XML, SQLite)
-- **Retention**: 90 days
+- **Retention**: 90 iterations
 - **Retrieval**:
   ```bash
   gh run download --name coverage-artifacts
@@ -160,7 +160,7 @@ Some artifacts are committed to the repository:
 - **Content**: CI health metrics over time
 - **Format**: CSV
 - **Columns**: `timestamp,active_count,disabled_count,target,variance,health_score`
-- **Retention**: 30 days
+- **Retention**: 30 iterations
 - **Retrieval**:
   ```bash
   gh run download --name workflow-trends-12345
@@ -198,7 +198,7 @@ Some artifacts are committed to the repository:
   - `audit_artifacts/evidence/`
 - **Content**: Comprehensive capability audit
 - **Format**: JSON + evidence files
-- **Retention**: 90 days
+- **Retention**: 90 iterations
 - **Size**: 1-50 MB (varies with evidence)
 - **Retrieval**:
   ```bash
@@ -247,7 +247,7 @@ Some artifacts are committed to the repository:
 - **Path**: `.agents/reports/`
 - **Content**: Agent execution logs and results
 - **Format**: JSON + log files
-- **Retention**: 30 days
+- **Retention**: 30 iterations
 - **Retrieval**:
   ```bash
   gh run download --name agent-execution-report-123456789
@@ -305,7 +305,7 @@ Some artifacts are committed to the repository:
   - `baseline_manifest.json`
 - **Content**: Visual regression testing baselines
 - **Format**: PNG images + JSON manifest
-- **Retention**: 180 days (long retention for baselines)
+- **Retention**: 180 iterations (long retention for baselines)
 - **Retrieval**:
   ```bash
   gh run download --name status-html-visual
@@ -444,16 +444,16 @@ diff <(cat audit_artifacts_run1/capabilities_scored.json | jq '.capabilities | s
 
 | Artifact Type | Retention | Rationale |
 |---------------|-----------|-----------|
-| Test Results | 30 days | Historical analysis, recent runs most relevant |
-| Coverage Reports | 90 days | Trend analysis over quarters |
+| Test Results | 30 iterations | Historical analysis, recent runs most relevant |
+| Coverage Reports | 90 iterations | Trend analysis over quarters |
 | Security Scans | Permanent | Security audit trail |
-| Audit Results | 90 days | Compliance and improvement tracking |
-| Visual Baselines | 180 days | Long-term visual regression detection |
-| Agent Logs | 30 days | Operational monitoring |
-| CI Health Metrics | 30 days | Trend analysis |
-| Code Quality | 90 days | Quality improvement tracking |
+| Audit Results | 90 iterations | Compliance and improvement tracking |
+| Visual Baselines | 180 iterations | Long-term visual regression detection |
+| Agent Logs | 30 iterations | Operational monitoring |
+| CI Health Metrics | 30 iterations | Trend analysis |
+| Code Quality | 90 iterations | Quality improvement tracking |
 
-**Note**: GitHub Actions has a default artifact retention of 90 days. Individual workflows may override this.
+**Note**: GitHub Actions has a default artifact retention of 90 iterations. Individual workflows may override this.
 
 ---
 

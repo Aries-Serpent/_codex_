@@ -266,17 +266,17 @@ Target:      95% (final gap analysis)
 
 ### Recommended Next Steps
 
-1. **Immediate** (1-2 weeks):
+1. **Immediate** (1-2 phases):
    - Complete Phase 1 improvements for remaining 5 low-maturity capabilities
    - Focus on test detection improvements
    - Optimize documentation keyword matching
 
-2. **Short-term** (2-4 weeks):
+2. **Short-term** (2-4 phases):
    - Begin sequential activation of expansion batches 13-17
    - Target +37-57% coverage gain
    - Apply learnings from Phase 2 cycles 1-4
 
-3. **Medium-term** (4-8 weeks):
+3. **Medium-term** (4-8 phases):
    - Push all medium-maturity capabilities above 0.85
    - Achieve 95% test coverage target
    - Enable automated quality gates in CI/CD
@@ -356,7 +356,7 @@ The infrastructure is now in place with advanced features enabled, comprehensive
 
 **Status**: ✅ Phase 1 & 2 Implementation Complete  
 **Next**: Phase 3 (Advanced Optimizations) and Batch Activation  
-**Target Timeline**: 4-8 weeks to 0.85 average, 8-12 weeks to 0.95 average
+**Target Timeline**: 4-8 phases to 0.85 average, 8-12 phases to 0.95 average
 
 ---
 

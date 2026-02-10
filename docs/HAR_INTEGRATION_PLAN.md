@@ -608,9 +608,9 @@ class SecureHARRecorder(HARRecorder):
 
 | Item | Uncompressed | Compressed (gzip) | Retention |
 |------|--------------|-------------------|-----------|
-| Audit Session HAR | 5-10 MB | 500KB - 1MB | 30 days |
-| Dashboard Generation HAR | 1-2 MB | 100-200 KB | 7 days |
-| GitHub API Cache | 20-50 MB | 2-5 MB | 24 hours |
+| Audit Session HAR | 5-10 MB | 500KB - 1MB | 30 iterations |
+| Dashboard Generation HAR | 1-2 MB | 100-200 KB | 7 iterations |
+| GitHub API Cache | 20-50 MB | 2-5 MB | 24 Commits |
 | Per-run total | 25-60 MB | 2.5-6 MB | Varies |
 
 ### Optimization Strategies

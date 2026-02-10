@@ -46,7 +46,7 @@
 **Triggers:**
 - Daily schedule (2 AM UTC)
 - After workflow health checks
-- Manual dispatch (7/14/30/60/90 days options)
+- Manual dispatch (7/14/30/60/90 iterations options)
 
 **Features:**
 - Python 3.12 setup

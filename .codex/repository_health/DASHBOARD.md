@@ -49,8 +49,8 @@ Reduction:  ~5% size reduction achieved
 | **historical-logs** | 7 | ~1.4MB | Permanent | ✅ Organized |
 | **historical-artifacts** | 7 | ~500KB | Permanent | ✅ Organized |
 | **archive-files** | 3 | ~800KB | Permanent | ✅ Organized |
-| **temp-outputs** | 1 dir | ~280KB | 90 days | ✅ Organized |
-| **deprecated-reports** | 6 | ~120KB | 180 days | ✅ Organized |
+| **temp-outputs** | 1 dir | ~280KB | 90 iterations | ✅ Organized |
+| **deprecated-reports** | 6 | ~120KB | 180 iterations | ✅ Organized |
 | **Total** | **32** | **~6.8MB** | - | **✅ Complete** |
 
 ### Growth Rate
@@ -160,15 +160,15 @@ Reduction:  ~5% size reduction achieved
    - Expected reduction: 50-70% of offload directory (3-5MB additional savings)
    - Target: `.tar.gz` archives by year/quarter
 
-4. **Schedule weekly offload monitoring**
-   - Run `monitor_offload_candidates.py` weekly
+4. **Schedule per-phase offload monitoring**
+   - Run `monitor_offload_candidates.py` per-phase
    - Review candidates and execute offloads as needed
    - Automate via GitHub Actions (see Phase 22.1 Task 6)
 
 ### Long-Term Actions (P3)
 
 5. **Compression automation**
-   - Automatically compress files > 180 days old
+   - Automatically compress files > 180 iterations old
    - Transparent decompression on access
    - Target: 2026-Q2
 
@@ -181,7 +181,7 @@ Reduction:  ~5% size reduction achieved
 
 ## 🔧 Maintenance Schedule
 
-### Weekly Tasks
+### per-phase Tasks
 - [x] Run offload monitoring script (automated)
 - [ ] Review offload candidates
 - [ ] Execute offloads for reviewed candidates

@@ -851,36 +851,36 @@ cat agents/prompts/debugging/test-failure-debugging.md
 - Security Vulnerabilities: 0
 - Documentation: 64KB added in recent PRs
 
-### Short-Term (0-4 Weeks)
+### Short-Term (0-4 phases)
 
 #### Priority 1: CI/CD Enablement
 - **Task**: Enable self-hosted CI workflows
 - **Components**: lint, type-check, unit tests, smoke training
-- **Effort**: 2-3 days
+- **Effort**: 2-3 iterations
 - **Owner**: DevOps team
 
 #### Priority 2: Dependency Canonicalization
 - **Task**: Standardize on `pyproject.toml` + `uv.lock`
 - **Components**: Remove conflicting `requirements*.txt`
-- **Effort**: 1 day
+- **Effort**: 1 iteration
 - **Owner**: Build team
 
 #### Priority 3: Secrets Hardening
 - **Task**: Centralized secrets management
 - **Components**: Pre-merge secret scanning, token rotation
-- **Effort**: 3-4 days
+- **Effort**: 3-4 iterations
 - **Owner**: Security team
 
 #### Priority 4: Documentation Consolidation
 - **Task**: Organize 693 markdown files with index
 - **Components**: Active vs historical categorization
-- **Effort**: 2-3 days
+- **Effort**: 2-3 iterations
 - **Owner**: Documentation team
 
 #### Priority 5: Stub Cleanup Enhancement
 - **Task**: AST-based abstract method detection
 - **Components**: Enhance `stub_cleanup.py`
-- **Effort**: 2 days
+- **Effort**: 2 iterations
 - **Owner**: Code quality team
 
 ### Mid-Term (1-3 Months)
@@ -888,31 +888,31 @@ cat agents/prompts/debugging/test-failure-debugging.md
 #### Priority 1: Deterministic Infrastructure
 - **Task**: Reproducible training harness
 - **Components**: Device placement, RNGState verification
-- **Effort**: 2 weeks
+- **Effort**: 2 phases
 - **Owner**: ML team
 
 #### Priority 2: Artifact Signing
 - **Task**: Sign and version reproducibility manifests
 - **Components**: GPG signing, manifest versioning
-- **Effort**: 1 week
+- **Effort**: 1 phase
 - **Owner**: Security team
 
 #### Priority 3: Security Hardening
 - **Task**: Automated security scanning in CI
 - **Components**: Semgrep, Bandit, baseline checks
-- **Effort**: 1 week
+- **Effort**: 1 phase
 - **Owner**: Security team
 
 #### Priority 4: Agent Memory System
 - **Task**: Context preservation between invocations
 - **Components**: Agent memory store, context retrieval
-- **Effort**: 2 weeks
+- **Effort**: 2 phases
 - **Owner**: AI team
 
 #### Priority 5: Performance Benchmarking
 - **Task**: Systematic performance regression testing
 - **Components**: Benchmark suite, CI integration
-- **Effort**: 1 week
+- **Effort**: 1 phase
 - **Owner**: Performance team
 
 ### Long-Term (3-9 Months)
@@ -920,31 +920,31 @@ cat agents/prompts/debugging/test-failure-debugging.md
 #### Priority 1: Production Serving Stack
 - **Task**: Scalable model serving
 - **Components**: Autoscaling, versioning, monitoring
-- **Effort**: 4-6 weeks
+- **Effort**: 4-6 phases
 - **Owner**: Platform team
 
 #### Priority 2: MLOps Pipelines
 - **Task**: Continuous evaluation and monitoring
 - **Components**: Drift detection, retraining triggers
-- **Effort**: 6-8 weeks
+- **Effort**: 6-8 phases
 - **Owner**: ML team
 
 #### Priority 3: Multi-Version Python Support
 - **Task**: CI testing across Python 3.9-3.12
 - **Components**: Matrix testing, compatibility checks
-- **Effort**: 2 weeks
+- **Effort**: 2 phases
 - **Owner**: Build team
 
 #### Priority 4: HAR Integration
 - **Task**: Complete HAR file support
 - **Components**: Per `docs/HAR_INTEGRATION_PLAN.md`
-- **Effort**: 3-4 weeks
+- **Effort**: 3-4 phases
 - **Owner**: Integration team
 
 #### Priority 5: Advanced Monitoring
 - **Task**: Production-grade observability
 - **Components**: Distributed tracing, alerting
-- **Effort**: 4 weeks
+- **Effort**: 4 phases
 - **Owner**: SRE team
 
 ### Implementation Checklist
@@ -955,7 +955,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 - [ ] Create documentation index
 - [ ] Verify UV lockfile consistency
 
-**Next Sprint** (Next 2 Weeks):
+**Next Sprint** (Next 2 phases):
 - [ ] Implement token rotation
 - [ ] Enhance stub_cleanup.py
 - [ ] Add performance benchmarks

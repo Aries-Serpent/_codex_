@@ -13,7 +13,7 @@
 **Initial Estimate**:
 - Documentation Coverage: 90%
 - Gap: 2% (~15-20 items)
-- Timeline: 2 days
+- Timeline: 2 iterations
 
 **Actual Analysis Results**:
 - **Real Documentation Coverage: ~60%**
@@ -44,7 +44,7 @@
 
 ### What This Means
 
-- **Timeline Impact**: 2 days → 2-3 weeks for comprehensive documentation
+- **Timeline Impact**: 2 iterations → 2-3 phases for comprehensive documentation
 - **Resource Impact**: Automated tooling required for scale
 - **Quality vs. Speed**: Must balance thoroughness with pragmatism
 
@@ -161,7 +161,7 @@ The planset estimated:
 
 ### Option 1: Pragmatic Approach (Recommended)
 
-**Timeline**: 2-3 weeks  
+**Timeline**: 2-3 phases  
 **Coverage Target**: 95% (practical maximum)
 
 **Phase 1**: High-priority modules (Week 1)
@@ -187,7 +187,7 @@ The planset estimated:
 
 ### Option 2: Comprehensive Approach
 
-**Timeline**: 6-8 weeks  
+**Timeline**: 6-8 phases  
 **Coverage Target**: 100% with high quality
 
 **Benefits**:
@@ -208,11 +208,11 @@ The planset estimated:
 
 Given the scale of the documentation gap (40% not 2%), which approach should I proceed with?
 
-1. **Pragmatic** (2-3 weeks → 95% coverage): Focus on high-impact areas, use automation for baseline
+1. **Pragmatic** (2-3 phases → 95% coverage): Focus on high-impact areas, use automation for baseline
 
-2. **Comprehensive** (6-8 weeks → 100% coverage): Thoroughly document everything to the highest standard
+2. **Comprehensive** (6-8 phases → 100% coverage): Thoroughly document everything to the highest standard
 
-3. **Hybrid** (4 weeks → 98% coverage): Automated baseline + targeted comprehensive documentation
+3. **Hybrid** (4 phases → 98% coverage): Automated baseline + targeted comprehensive documentation
 
 **My Recommendation**: **Hybrid Approach**
 - Week 1: Critical modules + tooling
@@ -247,7 +247,7 @@ Given the scale of the documentation gap (40% not 2%), which approach should I p
 
 **Upon Approval**:
 1. Execute selected documentation approach
-2. Report progress daily
+2. Report progress per-iteration
 3. Adjust as needed based on findings
 
 ---

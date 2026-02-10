@@ -4,7 +4,7 @@
 **Session:** infra-linter-agent.v1 Complete → compliance-checker-agent.v1 Start  
 **Target Branch:** copilot/sub-pr-2675 (or new branch)  
 **Priority:** P1 (Critical for Production - Final P1 Agent)  
-**Estimated Time:** 4-5 days  
+**Estimated Time:** 4-5 iterations  
 **Cognitive Brain Context:** Agent 8/13 (62% complete after this)
 
 ---
@@ -529,7 +529,7 @@ Once compliance-checker-agent.v1 is complete:
 - ✅ 4-5 self-review iterations
 - ✅ Zero CodeQL alerts
 
-**Time Estimate:** 4-5 days  
+**Time Estimate:** 4-5 iterations  
 **Priority:** P1 (Critical - Final P1 Agent)  
 **Agent:** 8/13 (62% after completion)
 

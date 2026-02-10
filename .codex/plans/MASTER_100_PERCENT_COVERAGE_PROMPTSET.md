@@ -956,10 +956,10 @@ Data structures and schemas.
 
 | Metric | Target | Tracking |
 |--------|--------|----------|
-| Tests Added per Week | 100+ | Git stats |
-| Coverage Increase per Week | 5-10% | Coverage reports |
-| Docs Pages Added per Week | 10+ | MkDocs count |
-| Plans Created per Week | 3-5 | Plan directory count |
+| Tests Added per-phase | 100+ | Git stats |
+| Coverage Increase per-phase | 5-10% | Coverage reports |
+| Docs Pages Added per-phase | 10+ | MkDocs count |
+| Plans Created per-phase | 3-5 | Plan directory count |
 
 ---
 
@@ -1111,7 +1111,7 @@ Generate actionable report for Phase 2 execution."
 - [ ] Resources allocated (agent access, time)
 - [ ] Baseline measurements taken
 - [ ] Execution started (tasks created)
-- [ ] Progress monitored (daily/weekly)
+- [ ] Progress monitored (per-iteration/per-phase)
 - [ ] Blockers identified and resolved
 - [ ] Exit criteria validated
 - [ ] Phase retrospective completed

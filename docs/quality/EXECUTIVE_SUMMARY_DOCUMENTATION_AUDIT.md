@@ -3,7 +3,7 @@
 
 **Date:** January 18, 2026  
 **Audit Scope:** Complete repository documentation analysis  
-**Purpose:** Phase 5 (8-week) planning and remediation strategy
+**Purpose:** Phase 5 (8 phase) planning and remediation strategy
 
 ---
 
@@ -28,7 +28,7 @@
 Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - Focus on P0/P1 items (public APIs, functions, methods)
 - Target: 90-95/100 final score
-- 8 weeks @ 20hrs/week = 160 hours
+- 8 phases @ 20hrs/week = 160 hours
 - Defer P2/P3 items to Phase 6
 
 ---
@@ -153,7 +153,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 
 ### Total Estimated Hours: 326.8
 
-| Category | Hours | % |
+| Category | Commits | % |
 |----------|-------|---|
 | Docstring Writing | 265.8 | 81% |
 | Tutorial Creation | 21.0 | 6% |
@@ -164,7 +164,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 ### Feasibility Options
 
 #### ✅ Option 3: Prioritized Scope (RECOMMENDED)
-- **Timeline:** 8 weeks @ 20hrs/week = 160 hours
+- **Timeline:** 8 phases @ 20hrs/week = 160 hours
 - **Approach:** Focus on P0/P1 items only
 - **Coverage:** 80% of gaps addressed
 - **Final Score:** 90-95/100
@@ -172,14 +172,14 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - **Recommendation:** **PROCEED**
 
 #### Option 2: Increased Intensity
-- **Timeline:** 8 weeks @ 40hrs/week = 320 hours
+- **Timeline:** 8 phases @ 40hrs/week = 320 hours
 - **Approach:** Complete all items
 - **Final Score:** 95-98/100
 - **Risk:** Medium (burnout)
 - **Recommendation:** If resources available
 
 #### Option 1: Extended Timeline
-- **Timeline:** 16 weeks @ 20hrs/week = 320 hours
+- **Timeline:** 16 phases @ 20hrs/week = 320 hours
 - **Approach:** Complete all items, sustainable pace
 - **Final Score:** 98/100
 - **Risk:** Low
@@ -223,7 +223,7 @@ Phase 5 is **FEASIBLE** with prioritized scope (Option 3):
 - Fallback: Prioritize correctness over completeness
 
 **3. Resource Availability**
-- Mitigation: Weekly checkpoints, adjust scope
+- Mitigation: per-phase checkpoints, adjust scope
 - Fallback: Extend timeline or reduce scope
 
 ### Medium Risks
@@ -249,7 +249,7 @@ pip install sphinx interrogate linkchecker pydocstyle
 # Add pre-commit hooks
 pre-commit install
 
-# Weekly coverage check
+# per-phase coverage check
 interrogate --fail-under=75 src/
 
 # Link validation
@@ -277,7 +277,7 @@ sphinx-apidoc -o docs/api src/
 
 ## SUCCESS METRICS
 
-### Weekly Targets
+### per-phase Targets
 
 | Week | Overall Score | codex_ml | codex | Key Deliverable |
 |------|---------------|----------|-------|-----------------|
@@ -328,10 +328,10 @@ The _codex_ repository has a **solid documentation foundation (85.5/100)** with 
 4. **Link maintenance** (108 broken links)
 
 **Phase 5 is FEASIBLE with focused execution:**
-- 8 weeks, 20 hrs/week
+- 8 phases, 20 hrs/week
 - Prioritized scope (P0/P1 only)
 - Package-centric approach
-- Weekly checkpoints
+- per-phase checkpoints
 
 **Expected Grade: A- (92/100)**
 
@@ -359,7 +359,7 @@ The _codex_ repository has a **solid documentation foundation (85.5/100)** with 
 2. Approve execution plan
 3. Assign package owners
 4. Kick off Week 1 (quick wins)
-5. Weekly sync every Friday
+5. per-phase sync every Friday
 
 ---
 

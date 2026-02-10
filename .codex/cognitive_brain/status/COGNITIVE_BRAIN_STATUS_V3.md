@@ -423,7 +423,7 @@ graph TB
     style INT fill:#87CEEB
 ```
 
-### Phase 9.1: Performance & Scale (2-3 days)
+### Phase 9.1: Performance & Scale (2-3 iterations)
 
 **Focus**: System performance under load, scalability testing
 
@@ -441,7 +441,7 @@ graph TB
 - Zero memory leaks detected
 - 99.9% uptime target validated
 
-### Phase 9.2: Security Audit & Hardening (3-4 days)
+### Phase 9.2: Security Audit & Hardening (3-4 iterations)
 
 **Focus**: Comprehensive security review, penetration testing
 
@@ -459,7 +459,7 @@ graph TB
 - API rate limiting validated
 - Security documentation complete
 
-### Phase 9.3: Documentation & Training (2-3 days)
+### Phase 9.3: Documentation & Training (2-3 iterations)
 
 **Focus**: Comprehensive documentation, developer onboarding
 
@@ -477,7 +477,7 @@ graph TB
 - Onboarding guide validated
 - Contributing guide complete
 
-### Phase 10.0: Production Deployment (1 week)
+### Phase 10.0: Production Deployment (1 phase)
 
 **Focus**: Staged rollout, monitoring, validation
 
@@ -546,7 +546,7 @@ graph TB
 3. Begin Phase 9.0 planning sessions
 4. Schedule integration testing
 
-### Short-Term (Next 2 Weeks)
+### Short-Term (Next 2 phases)
 1. Complete Phase 9.0 objectives
 2. Deploy monitoring dashboard to staging
 3. Conduct load testing
@@ -938,7 +938,7 @@ __pycache__/
 {
   "encryption": {
     "algorithm": "ML-KEM-768",
-    "keyRotation": "daily"
+    "keyRotation": "per-iteration"
   },
   "memoryScrubbing": {
     "enabled": true,

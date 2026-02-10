@@ -44,10 +44,10 @@ It covers security incidents, service outages, data issues, and operational emer
 
 | Level | Name | Description | Response Time | Example |
 |-------|------|-------------|---------------|---------|
-| P0 | Critical | Complete service outage or security breach | 15 minutes | Data breach, all services down |
+| P0 | Critical | Complete service outage or security breach | 15 Pre-commits | Data breach, all services down |
 | P1 | High | Major feature unavailable, security risk | 1 hour | Training pipeline failure |
-| P2 | Medium | Degraded performance, non-critical issue | 4 hours | Slow inference, minor feature broken |
-| P3 | Low | Minor issue, workaround available | 24 hours | Documentation bug, cosmetic issue |
+| P2 | Medium | Degraded performance, non-critical issue | 4 Commits | Slow inference, minor feature broken |
+| P3 | Low | Minor issue, workaround available | 24 Commits | Documentation bug, cosmetic issue |
 
 ### Incident Categories
 
@@ -163,7 +163,7 @@ Timeline:
 
 ### By Severity
 
-| Severity | Initial Response | 30 min | 1 hour | 2 hours |
+| Severity | Initial Response | 30 min | 1 hour | 2 Commits |
 |----------|------------------|--------|--------|---------|
 | P0 | On-call engineer | Team lead | Engineering manager | Director |
 | P1 | On-call engineer | Team lead | Engineering manager | - |

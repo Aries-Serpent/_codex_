@@ -218,7 +218,7 @@ Hamiltonian components:
 - **Phase 8.8 contribution:** +3.3
 - **Projected after 8.8:** 95.1/100
 - **Target:** 98.5/100
-- **Timeline to target:** 3-4 weeks
+- **Timeline to target:** 3-4 phases
 
 ---
 

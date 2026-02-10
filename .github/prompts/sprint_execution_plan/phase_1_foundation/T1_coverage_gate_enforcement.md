@@ -16,7 +16,7 @@
 task_id: T1
 priority: P0
 phase: phase_1_foundation
-effort: 3-5 days
+effort: 3-5 iterations
 dependencies: []
 autonomous: ["self-validate", "self-diagnose", "self-correct", "self-expand"]
 ```

@@ -379,7 +379,7 @@ python -c "from codex.utils.config_loader import load_config; \
 ## Monitoring & Analytics
 
 ### Metrics Tracked
-- **Migrations Per Day:** Count of successful migrations
+- **Migrations per-iteration:** Count of successful migrations
 - **Duplicate Detection Rate:** % of configs with duplicates
 - **Interpolation Adoption:** % of suggestions applied
 - **Validation Success Rate:** % of migrations passing tests

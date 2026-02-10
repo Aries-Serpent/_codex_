@@ -140,10 +140,10 @@ tree = parser.parse_file("path/to/file.py")
 
 | Item | Effort | Priority |
 |------|--------|----------|
-| BLOCK-DEP-002: tree-sitter | 1 week | Low |
-| BLOCK-ARCH-004: Incremental analysis | 2 weeks | Medium |
-| BLOCK-ARCH-005: Plugin architecture | 2 weeks | Low |
-| Performance benchmarks | 1 week | Medium |
+| BLOCK-DEP-002: tree-sitter | 1 phase | Low |
+| BLOCK-ARCH-004: Incremental analysis | 2 phases | Medium |
+| BLOCK-ARCH-005: Plugin architecture | 2 phases | Low |
+| Performance benchmarks | 1 phase | Medium |
 
 ---
 
@@ -288,7 +288,7 @@ class LanguageRegistry:
 ### 6.2 BLOCK-ARCH-004: Incremental/Delta Analysis
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 2 weeks  
+**Effort**: 2 phases  
 **Priority**: Medium  
 **Dependencies**: SQLite export (✅ complete)
 
@@ -350,7 +350,7 @@ CREATE TABLE snapshot_nodes (
 ### 6.3 BLOCK-ARCH-005: Plugin Architecture
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 2 weeks  
+**Effort**: 2 phases  
 **Priority**: Low  
 **Dependencies**: Language Registry
 
@@ -402,7 +402,7 @@ class ASTPlugin(ABC):
 ### 6.4 BLOCK-PERF-001: Performance Benchmarks
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 1 week  
+**Effort**: 1 phase  
 **Priority**: Medium  
 **Dependencies**: None
 
@@ -462,7 +462,7 @@ jobs:
 ### 6.5 BLOCK-PERF-002: Streaming Parser
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 1 week  
+**Effort**: 1 phase  
 **Priority**: Medium  
 **Dependencies**: Universal Parser (✅ complete)
 
@@ -491,7 +491,7 @@ nodes = list(parser.parse_file("huge_file.py"))
 ### 6.6 BLOCK-PERF-003: Parallel Processing
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 1 week  
+**Effort**: 1 phase  
 **Priority**: Low  
 **Dependencies**: Streaming Parser
 
@@ -521,7 +521,7 @@ results = parser.parse_directory("src/", progress=on_progress)
 ### 6.7 CI/CD Integration
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 3 days  
+**Effort**: 3 iterations  
 **Priority**: High  
 **Dependencies**: Code Smell Detector (✅ complete)
 
@@ -597,7 +597,7 @@ jobs:
 ### 6.8 Pre-commit Hooks
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 2 days  
+**Effort**: 2 iterations  
 **Priority**: Medium  
 **Dependencies**: Code Smell Detector (✅ complete)
 
@@ -631,7 +631,7 @@ jobs:
 ### 6.9 MATURITY Auto-Update Integration
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 1 week  
+**Effort**: 1 phase  
 **Priority**: Medium  
 **Dependencies**: Delta Analysis, CI Integration
 
@@ -674,7 +674,7 @@ codex-ast diff path1 path2
 ### 6.11 HTML Visualization Report
 
 **Status**: ⏸️ NOT IMPLEMENTED  
-**Effort**: 1 week  
+**Effort**: 1 phase  
 **Priority**: Low  
 **Dependencies**: Knowledge Graph Export (✅ complete)
 
@@ -698,13 +698,13 @@ Based on the original AST_IMPLEMENTATION_BLOCKERS.md, here's the recommended spr
 
 | Sprint | Focus | Items | Effort | Priority |
 |--------|-------|-------|--------|----------|
-| **Next Sprint** | CI Integration | 6.7, 6.8 | 5 days | HIGH |
-| **Sprint +1** | Performance | 6.4, 6.5 | 2 weeks | MEDIUM |
-| **Sprint +2** | Incremental | 6.2, 6.9 | 2 weeks | MEDIUM |
-| **Sprint +3** | Multi-language | 6.1, 6.3 | 2 weeks | LOW |
-| **Sprint +4** | Polish | 6.6, 6.10, 6.11 | 2 weeks | LOW |
+| **Next Sprint** | CI Integration | 6.7, 6.8 | 5 iterations | HIGH |
+| **Sprint +1** | Performance | 6.4, 6.5 | 2 phases | MEDIUM |
+| **Sprint +2** | Incremental | 6.2, 6.9 | 2 phases | MEDIUM |
+| **Sprint +3** | Multi-language | 6.1, 6.3 | 2 phases | LOW |
+| **Sprint +4** | Polish | 6.6, 6.10, 6.11 | 2 phases | LOW |
 
-**Total Remaining Effort**: ~9 weeks
+**Total Remaining Effort**: ~9 phases
 
 ---
 
@@ -746,12 +746,12 @@ The **Phase 1 AST Standardization** is **complete and ready for review**.
 
 **Remaining (Future PRs)**:
 - ⏸️ Tree-sitter multi-language support (~4 hours)
-- ⏸️ Incremental/delta analysis (~2 weeks)
-- ⏸️ Performance benchmarks (~1 week)
-- ⏸️ CI/CD integration (~3 days)
-- ⏸️ Pre-commit hooks (~2 days)
-- ⏸️ Plugin architecture (~2 weeks)
-- ⏸️ HTML visualization (~1 week)
+- ⏸️ Incremental/delta analysis (~2 phases)
+- ⏸️ Performance benchmarks (~1 phase)
+- ⏸️ CI/CD integration (~3 iterations)
+- ⏸️ Pre-commit hooks (~2 iterations)
+- ⏸️ Plugin architecture (~2 phases)
+- ⏸️ HTML visualization (~1 phase)
 
 ### 9.2 Continuation Instructions
 
@@ -923,7 +923,7 @@ pytest tests/ast/test_parser.py -v
 - Documentation (680 lines)
 
 **P1 - Phase 2 Roadmap (documented, not started)**:
-- CI/CD integration (~3 days)
+- CI/CD integration (~3 iterations)
 - Performance benchmarks (~1 iteration)
 - Incremental analysis (~2 iterations)
 

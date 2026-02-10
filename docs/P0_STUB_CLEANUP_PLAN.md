@@ -27,7 +27,7 @@ These are code paths that raise NotImplementedError and would fail if executed.
 3. Implement minimal viable functionality OR
 4. Remove unused code paths
 
-**Estimated Effort:** 3-5 days
+**Estimated Effort:** 3-5 iterations
 
 ### Category 2: Critical TODOs
 
@@ -41,7 +41,7 @@ TODOs marked as P0, CRITICAL, or BLOCKING.
 3. Add tests for new implementations
 4. Update documentation
 
-**Estimated Effort:** 2-3 days
+**Estimated Effort:** 2-3 iterations
 
 ### Category 3: Security/Data Integrity TODOs
 
@@ -55,7 +55,7 @@ TODOs related to security or data integrity.
 3. Add security tests
 4. Document security features
 
-**Estimated Effort:** 1-2 days
+**Estimated Effort:** 1-2 iterations
 
 ## Resolution Phases
 
@@ -371,12 +371,12 @@ stubs_resolved = {
     "day_9": 50   # Complete
 }
 
-# Target: 50 P0 stubs resolved in 9 days
+# Target: 50 P0 stubs resolved in 9 iterations
 ```
 
-### Daily Reports
+### per-iteration Reports
 
-Track progress daily:
+Track progress per-iteration:
 ```markdown
 ## Day N Progress Report
 
@@ -399,7 +399,7 @@ Track progress daily:
 
 ## Conclusion
 
-P0 stub cleanup is a **non-blocking** task for production deployment but should be completed for long-term code quality. Estimated effort is 9 days with phased approach available if needed.
+P0 stub cleanup is a **non-blocking** task for production deployment but should be completed for long-term code quality. Estimated effort is 9 iterations with phased approach available if needed.
 
 **Current Recommendation:** Proceed with production deployment while addressing P0 stubs in parallel sprints.
 
@@ -407,5 +407,5 @@ P0 stub cleanup is a **non-blocking** task for production deployment but should 
 
 **Status:** Plan Created  
 **Priority:** High (but non-blocking)  
-**Estimated Effort:** 9 days  
+**Estimated Effort:** 9 iterations  
 **Target Date:** Pre-commit 33-36  

@@ -3,7 +3,7 @@
 **Session Handoff**: From Security Remediation to Advanced Monitoring  
 **Status**: Ready for Next Phase  
 **Priority**: High  
-**Estimated Duration**: 2-3 weeks
+**Estimated Duration**: 2-3 phases
 
 ## Context Summary
 
@@ -351,7 +351,7 @@ class MetricsDashboard:
     </div>
     
     <div class="metric">
-        <h2>Trends (7 days)</h2>
+        <h2>Trends (7 iterations)</h2>
         <img src="trends.png" />
     </div>
 </body>
@@ -366,7 +366,7 @@ class MetricsDashboard:
 - [ ] Trends are visible
 - [ ] Alerts trigger correctly
 
-## Phase 8: Advanced Monitoring (2-3 weeks)
+## Phase 8: Advanced Monitoring (2-3 phases)
 
 ### 8.1: ML-Based Threat Detection 🤖
 

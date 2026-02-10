@@ -89,7 +89,7 @@
 - **Progress:** 1/16 capabilities improved
 - **Completed:** mcp-lifecycle-management (0.22 → 0.56)
 - **Remaining:** 15 capabilities (duplication_ratio, safeguards_keywords, peft_hooks, vector-stores, etc.)
-- **Timeline:** 8-12 weeks total, currently Pre-commit 1-2
+- **Timeline:** 8-12 phases total, currently Pre-commit 1-2
 - **Next Steps:** 
   1. duplication_ratio (0.39 → 0.85+)
   2. safeguards_keywords (0.45 → 0.85+)
@@ -125,7 +125,7 @@
 
 1. **Complete HIGH_MATURITY_ACHIEVEMENT_PLAN Phase 1**
    - 15 remaining capabilities to improve
-   - Timeline: 2-3 weeks
+   - Timeline: 2-3 phases
    - Impact: Critical for overall system maturity
 
 ### 🟡 MEDIUM PRIORITY (Review & Assess)
@@ -133,17 +133,17 @@
 2. **AST Standardization Plans**
    - Multiple documents need consolidation
    - Assess current relevance
-   - Timeline: 1 week for review
+   - Timeline: 1 phase for review
 
 3. **Physics Equations Coverage**
    - Verify if superseded by current work
    - may already be complete
-   - Timeline: 2-3 days for verification
+   - Timeline: 2-3 iterations for verification
 
 4. **MSP Audit Gap Remediation**
    - Verify completion status
    - Cross-reference with MSP client enhancements
-   - Timeline: 1 day
+   - Timeline: 1 iteration
 
 ### 🟢 LOW PRIORITY (Historical/Informational)
 
@@ -163,12 +163,12 @@
 3. ⏳ **Mark completed plans appropriately**
 4. ⏳ **Identify truly open plans**
 
-### Short Term (Next 1-3 Days)
+### Short Term (Next 1-3 iterations)
 
 5. 📋 **Continue HIGH_MATURITY_ACHIEVEMENT_PLAN**
    - Implement duplication_ratio improvements
    - Follow established pattern from mcp-lifecycle-management
-   - Target: 4-5 capabilities in next 3 days
+   - Target: 4-5 capabilities in next 3 iterations
 
 6. 🔍 **Verify MSP Audit Gap Remediation**
    - Cross-reference gaps with current MSP client implementation
@@ -178,7 +178,7 @@
    - Compare against current physics test coverage
    - Determine if superseded by comprehensive tests
 
-### Medium Term (Next 1-2 Weeks)
+### Medium Term (Next 1-2 phases)
 
 8. 📋 **Continue Phase 1 of HIGH_MATURITY_ACHIEVEMENT**
    - Complete remaining 11 capabilities
@@ -189,7 +189,7 @@
    - Create unified status assessment
    - Determine next steps if still relevant
 
-### Long Term (3-4 Weeks)
+### Long Term (3-4 phases)
 
 10. 📋 **Begin Phase 2 of HIGH_MATURITY_ACHIEVEMENT**
     - MCP capabilities suite improvements
@@ -283,7 +283,7 @@ For ongoing plans, add checkpoint markers:
 3. Continue HIGH_MATURITY_ACHIEVEMENT_PLAN Phase 1
 4. Verify/close potentially complete plans
 
-**Timeline:** Verification and updates: 2-4 hours; Ongoing work: 8-12 weeks
+**Timeline:** Verification and updates: 2-4 hours; Ongoing work: 8-12 phases
 
 ---
 

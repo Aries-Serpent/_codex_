@@ -141,7 +141,7 @@ Continuous security scanning, vulnerability detection, and remediation guidance.
 - New dependency added
 - CVE published
 - Security scan failure
-- Scheduled daily
+- Scheduled per-iteration
 
 #### Implementation Notes
 ```yaml
@@ -192,7 +192,7 @@ Manage CodeQL analysis for large repositories exceeding the 10MB function size l
 #### Triggers
 - CodeQL size limit exceeded
 - Repository structure changes
-- Scheduled weekly scan
+- Scheduled per-phase scan
 
 #### Implementation Notes
 ```yaml
@@ -252,7 +252,7 @@ Track and optimize test and code performance, identifying bottlenecks and regres
 #### Triggers
 - Test suite >10% slower
 - Memory usage spike
-- Scheduled weekly
+- Scheduled per-phase
 
 #### Implementation Notes
 ```yaml
@@ -356,7 +356,7 @@ Ensure documentation stays current with code changes.
 #### Triggers
 - Code changes without doc updates
 - MkDocs build warnings
-- Scheduled weekly
+- Scheduled per-phase
 
 #### Implementation Notes
 ```yaml
@@ -407,7 +407,7 @@ Automated dependency vulnerability scanning and update management.
 #### Triggers
 - New CVE published
 - Dependency update available
-- Scheduled daily
+- Scheduled per-iteration
 
 #### Implementation Notes
 ```yaml
@@ -459,7 +459,7 @@ Optimize CI/CD pipeline performance, reduce build times, improve reliability.
 - Build time regression
 - Cache miss rate increase
 - Repeated failures
-- Scheduled weekly
+- Scheduled per-phase
 
 #### Implementation Notes
 ```yaml
@@ -543,11 +543,11 @@ graph LR
 | Performance Monitor | Slow test count | <10 |
 | Flaky Test | Pass rate | ≥99% |
 | Doc Freshness | Stale doc count | 0 |
-| Dependency | Update lag | <7 days |
+| Dependency | Update lag | <7 iterations |
 | CI/CD | Build time | <10 min |
 
 ---
 
 **Owner:** AI Agent Development Team  
-**Review Cadence:** Weekly  
+**Review Cadence:** per-phase  
 **Last Updated:** 2026-01-18

@@ -4,7 +4,7 @@ This document tracks performance metrics for consolidated GitHub Actions workflo
 
 ## 📊 Performance Targets
 
-Based on Phase 29 consolidation, these are our target metrics for the 2-week validation period:
+Based on Phase 29 consolidation, these are our target metrics for the 2 phase validation period:
 
 | Metric | Target | Measurement Method |
 |--------|--------|-------------------|
@@ -29,9 +29,9 @@ Based on Phase 29 consolidation, these are our target metrics for the 2-week val
 
 ## 📈 Monitoring Dashboard
 
-### Daily Metrics
+### per-iteration Metrics
 
-Track these metrics daily during the validation period:
+Track these metrics per-iteration during the validation period:
 
 1. **Workflow Execution Count**
    - Total runs per workflow
@@ -48,9 +48,9 @@ Track these metrics daily during the validation period:
    - Cost per workflow run
    - Comparison to baseline
 
-### Weekly Analysis
+### per-phase Analysis
 
-Perform weekly analysis to identify trends:
+Perform per-phase analysis to identify trends:
 
 1. **Performance Trends**
    - Execution time trends (improving/degrading)
@@ -204,9 +204,9 @@ Configure alerts for these conditions:
 | Cost Spike | >150% of baseline | Analyze expensive workflows |
 | Critical Workflow Failure | Any failure | Immediate notification |
 
-## 📝 Weekly Report Template
+## 📝 per-phase Report Template
 
-Use this template for weekly performance reports:
+Use this template for per-phase performance reports:
 
 ```markdown
 # Workflow Performance Report - Week [N]
@@ -282,13 +282,13 @@ Use this template for weekly performance reports:
 
 Set up these automated data collection mechanisms:
 
-1. **Daily Performance Snapshot**
+1. **per-iteration Performance Snapshot**
    ```bash
    # Cron: Daily at 2 AM UTC
    python scripts/monitor_workflow_performance.py --days 1 --format json
    ```
 
-2. **Weekly Comparison Report**
+2. **per-phase Comparison Report**
    ```bash
    # Cron: Sunday at 3 AM UTC
    python scripts/monitor_workflow_performance.py --days 7 --compare --format markdown
@@ -339,7 +339,7 @@ For ad-hoc analysis:
    - Implement smart triggers
 
 4. **Monitor Continuously**
-   - Track key metrics daily
+   - Track key metrics per-iteration
    - Set up alerts
    - Regular reviews
 
@@ -373,7 +373,7 @@ For ad-hoc analysis:
 - Provide recent performance data
 
 ### Performance Reviews
-- Weekly review meetings
+- per-phase review meetings
 - Monthly optimization sessions
 - Quarterly strategy planning
 

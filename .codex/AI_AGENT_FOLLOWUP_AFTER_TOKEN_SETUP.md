@@ -241,7 +241,7 @@ jobs:
         id: check
         run: |
           # Calculate days since last rotation
-          # For now, create reminder every 60 days
+          # For now, create reminder every 60 iterations
           echo "needs_rotation=true" >> $GITHUB_OUTPUT
       
       - name: Create reminder issue
@@ -254,7 +254,7 @@ jobs:
             --body "$(cat << 'ISSUE_BODY'
 ## Action Required: Rotate ORG_MASTER_KEY
 
-The ORG_MASTER_KEY should be rotated every 90 days for security.
+The ORG_MASTER_KEY should be rotated every 90 iterations for security.
 
 ### Steps to Rotate:
 1. Navigate to https://github.com/settings/tokens
@@ -287,12 +287,12 @@ git push
 
 ## Phase 3: Audit Logging & Monitoring (Priority: P1)
 
-### Task 3.1: Implement Daily Audit Collection
+### Task 3.1: Implement per-iteration Audit Collection
 
 ```bash
 # Use Template 6 from workflow templates
-cat > .github/workflows/daily-audit-collection.yml << 'EOF'
-name: Daily Audit Collection
+cat > .github/workflows/per-iteration-audit-collection.yml << 'EOF'
+name: per-iteration Audit Collection
 
 on:
   schedule:
@@ -354,7 +354,7 @@ for event_type, count in event_types.most_common(10):
     summary += f"- {event_type}: {count}\n"
 
 # Write summary
-with open('.codex/audit-reports/daily-summary.txt', 'a') as f:
+with open('.codex/audit-reports/per-iteration-summary.txt', 'a') as f:
     f.write(f"\n{summary}\n")
 
 print(summary)
@@ -365,12 +365,12 @@ PYEOF
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/audit-logs/ .codex/audit-reports/
-          git commit -m "audit: daily audit collection and analysis" || true
+          git commit -m "audit: per-iteration audit collection and analysis" || true
           git push
 EOF
 
-git add .github/workflows/daily-audit-collection.yml
-git commit -m "feat: implement daily audit collection"
+git add .github/workflows/per-iteration-audit-collection.yml
+git commit -m "feat: implement per-iteration audit collection"
 git push
 ```
 
@@ -442,11 +442,11 @@ git push
 
 ## Phase 4: Compliance Automation (Priority: P2)
 
-### Task 4.1: Weekly Compliance Reports
+### Task 4.1: per-phase Compliance Reports
 
 ```bash
-cat > .github/workflows/weekly-compliance-report.yml << 'EOF'
-name: Weekly Compliance Report
+cat > .github/workflows/per-phase-compliance-report.yml << 'EOF'
+name: per-phase Compliance Report
 
 on:
   schedule:
@@ -508,7 +508,7 @@ except:
     metrics['metrics']['rotation_compliant'] = False
 
 # Write report
-with open('.codex/compliance/weekly-report-latest.json', 'w') as f:
+with open('.codex/compliance/per-phase-report-latest.json', 'w') as f:
     json.dump(metrics, f, indent=2)
 
 print(json.dumps(metrics, indent=2))
@@ -519,12 +519,12 @@ PYEOF
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/compliance/
-          git commit -m "compliance: weekly report" || true
+          git commit -m "compliance: per-phase report" || true
           git push
 EOF
 
-git add .github/workflows/weekly-compliance-report.yml
-git commit -m "feat: implement weekly compliance reporting"
+git add .github/workflows/per-phase-compliance-report.yml
+git commit -m "feat: implement per-phase compliance reporting"
 git push
 ```
 
@@ -602,9 +602,9 @@ git push
 # Trigger all verification workflows
 gh workflow run verify-token-setup.yml
 gh workflow run test-token-permissions.yml
-gh workflow run daily-audit-collection.yml
+gh workflow run per-iteration-audit-collection.yml
 gh workflow run security-monitoring.yml
-gh workflow run weekly-compliance-report.yml
+gh workflow run per-phase-compliance-report.yml
 
 # Monitor all runs
 echo "Monitoring workflow executions..."
@@ -635,9 +635,9 @@ cat > .codex/IMPLEMENTATION_COMPLETE_REPORT.md << 'EOF'
 - Audit trail: Maintained in .codex/key-archive/
 
 ### 3. Monitoring & Audit ✅
-- Daily audit log collection
+- per-iteration audit log collection
 - Security alert monitoring (every 6 hours)
-- Weekly compliance reports
+- per-phase compliance reports
 - All logs stored in .codex/audit-logs/
 
 ### 4. Workflows Deployed ✅
@@ -645,21 +645,21 @@ cat > .codex/IMPLEMENTATION_COMPLETE_REPORT.md << 'EOF'
 - test-token-permissions.yml
 - rotate-codex-master-key.yml
 - remind-org-key-rotation.yml
-- daily-audit-collection.yml
+- per-iteration-audit-collection.yml
 - security-monitoring.yml
-- weekly-compliance-report.yml
+- per-phase-compliance-report.yml
 - intensive-operations.yml
 
 ## Operational Procedures
 
 ### Token Rotation
 - Automated: CODEX_MASTER_KEY (monthly)
-- Manual: ORG_MASTER_KEY (90 days, with reminders)
+- Manual: ORG_MASTER_KEY (90 iterations, with reminders)
 
 ### Monitoring
-- Audit logs: Daily collection
+- Audit logs: per-iteration collection
 - Security scans: Every 6 hours
-- Compliance reports: Weekly
+- Compliance reports: per-phase
 
 ### Incident Response
 1. Security alerts → Automatic issue creation
@@ -713,9 +713,9 @@ After implementation, these workflows will run automatically:
 |----------|-----------|---------|
 | rotate-codex-master-key | Monthly | Auto-rotate master key |
 | remind-org-key-rotation | Monthly | Remind manual rotation |
-| daily-audit-collection | Daily | Collect audit logs |
-| security-monitoring | Every 6 hours | Monitor security alerts |
-| weekly-compliance-report | Weekly | Generate compliance metrics |
+| per-iteration-audit-collection | per-iteration | Collect audit logs |
+| security-monitoring | Every 6 Commits | Monitor security alerts |
+| per-phase-compliance-report | per-phase | Generate compliance metrics |
 
 ---
 

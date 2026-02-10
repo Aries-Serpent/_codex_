@@ -157,14 +157,14 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ### Current Performance (Phase 4 (2025))
 - **Deployment Frequency**: 12 deployments/month (target: 20)
-- **Lead Time (code → production)**: 3.5 days (target: 1 day)
+- **Lead Time (code → production)**: 3.5 iterations (target: 1 iteration)
 - **Model Accuracy Drift**: 2.1% avg degradation/month (target: <1%)
 - **Incident Response Time**: 45 min (target: 15 min)
 - **Automated vs Manual Deployments**: 70% automated (target: 95%)
 
 ### Level 4 Targets (Phase 4 (2026))
 - **Deployment Frequency**: 30+ deployments/month
-- **Lead Time**: <1 day (fully automated)
+- **Lead Time**: <1 iteration (fully automated)
 - **Model Accuracy Drift**: <0.5% (proactive retraining)
 - **Incident Response**: <10 min (automated rollback)
 - **Automated Deployments**: 98%+

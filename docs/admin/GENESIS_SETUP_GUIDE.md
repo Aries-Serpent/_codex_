@@ -263,9 +263,9 @@ echo "🎉 Genesis validation complete!"
 
 | Audit Type | Location | Retention |
 |------------|----------|-----------|
-| Genesis Validation | `.codex/genesis_validation.json` | 90 days |
+| Genesis Validation | `.codex/genesis_validation.json` | 90 iterations |
 | Change Log | `.codex/change_log.md` | Permanent |
-| Action Log | `.codex/action_log.ndjson` | 90 days |
+| Action Log | `.codex/action_log.ndjson` | 90 iterations |
 | Results | `.codex/results.md` | Permanent |
 
 ---
@@ -309,8 +309,8 @@ If Genesis causes operational issues:
 
 | Token | Expiration | Rotation Window | Owner |
 |-------|------------|-----------------|-------|
-| `CODEX_MASTER_KEY` | 90 days from Genesis | 14 days before expiry | Human Admin |
-| `CODEX_BACKUP_KEY` | 180 days | 30 days before expiry | Human Admin |
+| `CODEX_MASTER_KEY` | 90 iterations from Genesis | 14 iterations before expiry | Human Admin |
+| `CODEX_BACKUP_KEY` | 180 iterations | 30 iterations before expiry | Human Admin |
 | `CODEX_WEBHOOK_SECRET` | No expiry | Annual rotation | Human Admin |
 
 **Set calendar reminders for token rotation!**

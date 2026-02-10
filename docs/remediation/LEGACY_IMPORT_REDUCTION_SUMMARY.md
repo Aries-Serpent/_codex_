@@ -110,7 +110,7 @@ If strict numeric compliance with ≤15 is required:
 
 **Option B: Hydra Dependency Reduction** 
 - Refactor 14+ hydra-core usage sites to reduce dependency footprint
-- Estimated effort: 2-3 days, involves restructuring CLI and config management
+- Estimated effort: 2-3 iterations, involves restructuring CLI and config management
 - Risk: may impact functionality that relies on hydra features
 
 **Option C: Accept Current State**

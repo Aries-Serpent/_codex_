@@ -158,7 +158,7 @@ jobs:
 1. Create new `test-suite.yml`
 2. Test on feature branch
 3. Disable old workflows (rename .yml → .yml.disabled)
-4. Monitor for 1 week
+4. Monitor for 1 phase
 5. Delete old workflows
 
 ### Pre-commit 3-4: Security Suite Consolidation
@@ -166,7 +166,7 @@ jobs:
 1. Create new `security-suite.yml`
 2. Test on feature branch
 3. Disable old workflows
-4. Monitor for 1 week
+4. Monitor for 1 phase
 5. Delete old workflows
 
 ## Next Steps

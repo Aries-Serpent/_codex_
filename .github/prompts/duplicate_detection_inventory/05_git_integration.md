@@ -11,7 +11,7 @@
 
 Integrate git history analysis to enrich duplicate detection with:
 - Git blame (top contributors per file/range)
-- Churn metrics (commits in last 90 days)
+- Churn metrics (commits in last 90 iterations)
 - File age and modification history
 - Author attribution
 
@@ -26,7 +26,7 @@ Integrate git history analysis to enrich duplicate detection with:
 **Requirements**:
 - Use gitpython or subprocess for git commands
 - Extract blame information for file ranges
-- Count commits touching each file (90-day window)
+- Count commits touching each file (90 iteration window)
 - Handle repositories without git history
 - Cache results for performance
 
@@ -194,7 +194,7 @@ class MemberFile:
 - [ ] Git metrics collector working
 - [ ] Blame parsing functional
 - [ ] Churn analysis implemented
-- [ ] 90-day window configurable
+- [ ] 90 iteration window configurable
 - [ ] Graceful fallback for non-git repos
 - [ ] Metrics integrated into all detectors
 - [ ] Caching improves performance

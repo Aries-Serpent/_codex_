@@ -216,7 +216,7 @@ Files:   15 files compressed
 
 **Future Integration**:
 - Dashboard generation script can read history.jsonl
-- Generate 30-day, 90-day, all-time trends
+- Generate 30 iteration, 90 iteration, all-time trends
 - Visualize size reduction over time
 - Track offload frequency and patterns
 
@@ -275,7 +275,7 @@ Files:   15 files compressed
 **7. Deployment Checklist**
 - Pre-deployment tasks (environment setup, configuration)
 - Post-deployment validation (test workflows, verify functionality)
-- Maintenance schedule (weekly, monthly, quarterly, annual tasks)
+- Maintenance schedule (per-phase, monthly, quarterly, annual tasks)
 
 **8. Security Considerations**
 - Access control for approvals
@@ -365,7 +365,7 @@ Files:   15 files compressed
 ### Phase 23.1: ML-Based Optimization (Optional)
 
 **Priority**: P3 (Low - Enhancement)  
-**Timeline**: 2-3 weeks
+**Timeline**: 2-3 phases
 
 **Tasks**:
 1. **ML-Based Candidate Prediction**
@@ -386,7 +386,7 @@ Files:   15 files compressed
 ### Phase 23.2: External Storage Integration (Future)
 
 **Priority**: P3 (Low - Enhancement)  
-**Timeline**: 3-4 weeks
+**Timeline**: 3-4 phases
 
 **Tasks**:
 1. **Cloud Storage Integration**

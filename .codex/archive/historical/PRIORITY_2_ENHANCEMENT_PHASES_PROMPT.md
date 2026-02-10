@@ -491,7 +491,7 @@ jobs:
       
       - name: Clean old caches
         run: |
-          # Delete caches older than 7 days
+          # Delete caches older than 7 iterations
           gh cache list --limit 100 | \
             awk '{if ($3 < 7) print $1}' | \
             xargs -I {} gh cache delete {}
@@ -962,7 +962,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "per-phase"
     open-pull-requests-limit: 10
     reviewers:
       - "security-team"
@@ -981,7 +981,7 @@ updates:
 **Acceptance Criteria:**
 - [ ] CVE scanning script created
 - [ ] Workflow created and validated
-- [ ] Daily scans configured
+- [ ] per-iteration scans configured
 - [ ] PR comment integration works
 - [ ] High/critical vulnerabilities block merge
 - [ ] Scan reports archived

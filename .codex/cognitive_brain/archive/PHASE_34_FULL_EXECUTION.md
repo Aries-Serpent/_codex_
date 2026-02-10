@@ -380,7 +380,7 @@ Then AI agent will:
 - Alert data is non-sensitive (public security findings)
 - No credentials or secrets in alert content
 - Safe to commit to repository
-- Artifacts retained for 30 days (configurable)
+- Artifacts retained for 30 iterations (configurable)
 
 ### Audit Trail ✅
 - All workflow runs logged in GitHub Actions

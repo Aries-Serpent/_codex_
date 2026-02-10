@@ -20,7 +20,7 @@
 - Duplicate detection analysis (106 candidates)
 - Consolidation opportunities by category
 - Risk assessment and recommendations
-- Timeline for 12-week consolidation project
+- Timeline for 12 phase consolidation project
 
 **Key Findings**:
 - 🚨 Workflow sprawl: +125% growth (48 → 108) since last consolidation
@@ -44,7 +44,7 @@
 
 **Key Highlights**:
 - ✅ All 42 workflows documented with artifact counts
-- 🎯 Batch implementation plan (4 weeks)
+- 🎯 Batch implementation plan (4 phases)
 - 🔴 Critical priority: rust_swarm_ci.yml (6 artifacts), codeql-chunked.yml (3 artifacts)
 - 📊 50% are high-priority workflows
 
@@ -52,7 +52,7 @@
 
 ### 3. WORKFLOW_CONSOLIDATION_PLANSET_V2.md ✅
 **Size**: 650 lines  
-**Purpose**: Detailed 12-week consolidation plan  
+**Purpose**: Detailed 12 phase consolidation plan  
 
 **Contents**:
 - Phase 1: High-priority consolidations (30 workflows, Weeks 1-4)
@@ -111,7 +111,7 @@
 - Migration criteria and rationale
 - 15 workflows identified for migration
 - Folder structure (disabled, experimental, genesis, one-off, periodic, testing, ml)
-- 2-week implementation plan
+- 2 phase implementation plan
 - Restoration procedures
 - Validation checklist
 
@@ -305,7 +305,7 @@
 ### For Repository Owner (@mbaetiong)
 - ✅ Complete analysis delivered
 - ✅ 5 comprehensive planning documents
-- ✅ Clear 12-week roadmap
+- ✅ Clear 12 phase roadmap
 - ✅ Risk assessment: Medium (requires approval)
 - 🎯 **Action Needed**: Review and approve consolidation plan
 
@@ -333,7 +333,7 @@
 - [x] Complexity analysis (job counts, triggers)
 
 ### Planning Deliverables
-- [x] 12-week consolidation planset
+- [x] 12 phase consolidation planset
 - [x] Artifact prefix requirements (42 workflows)
 - [x] Misc folder migration plan (15 workflows)
 - [x] Workflow-to-agent mapping (79 workflows, 15 agents)
@@ -395,7 +395,7 @@
 | **Analysis Files** | 2 (JSON) |
 | **Deliverable Documents** | 6 (MD) |
 | **Total Documentation** | ~100 KB |
-| **Time Investment** | ~4 hours |
+| **Time Investment** | ~4 Commits |
 | **Workflows Analyzed** | 108 (100%) |
 | **Artifacts Documented** | 64 |
 | **Agent Mappings** | 79 workflows |

@@ -8,7 +8,7 @@
 
 **Objective:** Establish security, monitoring, and basic autonomy foundation
 
-**Duration:** 4 weeks (Sprints 1-2)
+**Duration:** 4 phases (Sprints 1-2)
 
 **Team:** 2-3 engineers
 

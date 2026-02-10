@@ -244,10 +244,10 @@ Files to change or add for full v2 feature parity:
   - Add knobs: scoring.sources.coverage: true/false; options.fail_on_missing_detector: true/false; metrics.version: "2.0.0".
 
 Quick recommended small PRs:
-1. Apply capability_map.overrides merging in stage_s3 (3 days).
-2. Write JSON companion during S6 (1 day).
-3. Update template to reference thresholds rather than weight sum (0.2 day).
-4. Add missing-detector strict gate and unit tests (1 day).
+1. Apply capability_map.overrides merging in stage_s3 (3 iterations).
+2. Write JSON companion during S6 (1 iteration).
+3. Update template to reference thresholds rather than weight sum (0.2 iteration).
+4. Add missing-detector strict gate and unit tests (1 iteration).
 (Estimates: small changes; see Implementation Backlog in Enhancement Plan.)
 
 ---
@@ -353,9 +353,9 @@ Widgets:
 - Safeguard Radar (families vs density)
 - Duplication Cluster graph (token similarity clusters)
 - Temporal Trend (avg_score, avg_confidence, low_count)
-Data endpoints: reports/*.json companion files and weekly aggregates for time-series.
+Data endpoints: reports/*.json companion files and per-phase aggregates for time-series.
 
-Retention: keep raw artifacts for 90 days (configurable), weekly aggregates for 1 year.
+Retention: keep raw artifacts for 90 iterations (configurable), per-phase aggregates for 1 year.
 
 ---
 
@@ -397,12 +397,12 @@ CI expectations:
 ---
 
 ## 17. Appendix B — Suggested Small PRs (priority)
-- PR-1: Apply overrides merging in S3 + unit tests (owner: @maintainer) — 1–2 days.
-- PR-2: Fix capability_matrix.j2 Low Maturity label & pass thresholds into template context — 0.5 day.
-- PR-3: Write capability_matrix_<ts>.json companion in S6 & update make targets — 0.5 day.
-- PR-4: Hook capability_scoring.py functions into audit_runner.py stage_s4_scoring — 1 day.
-- PR-5: Add workflow.yaml option options.fail_on_missing_detector and enforce it in S3 — 0.5–1 day.
-- PR-6: Implement coverage_ingest.py and wire scoring.sources.coverage flag — 3–5 days (feature P1).
+- PR-1: Apply overrides merging in S3 + unit tests (owner: @maintainer) — 1–2 iterations.
+- PR-2: Fix capability_matrix.j2 Low Maturity label & pass thresholds into template context — 0.5 iteration.
+- PR-3: Write capability_matrix_<ts>.json companion in S6 & update make targets — 0.5 iteration.
+- PR-4: Hook capability_scoring.py functions into audit_runner.py stage_s4_scoring — 1 iteration.
+- PR-5: Add workflow.yaml option options.fail_on_missing_detector and enforce it in S3 — 0.5–1 iteration.
+- PR-6: Implement coverage_ingest.py and wire scoring.sources.coverage flag — 3–5 iterations (feature P1).
 
 ---
 

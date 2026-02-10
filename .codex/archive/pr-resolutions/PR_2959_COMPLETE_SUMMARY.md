@@ -256,12 +256,12 @@ Successfully resolved 5 critical test failures through systematic physics-based 
 
 ### Post-Merge Actions
 
-1. **Immediate** (< 1 day):
+1. **Immediate** (< 1 iteration):
    - Add pre-commit hooks for test pattern guardian
    - Monitor CI pipeline for regressions
    - Update CONTRIBUTING.md with new tools
 
-2. **Short-term** (< 1 week):
+2. **Short-term** (< 1 phase):
    - Integrate Test Pattern Guardian into development workflow
    - Create GitHub issues for out-of-scope items
    - Begin coverage roadmap Phase 1

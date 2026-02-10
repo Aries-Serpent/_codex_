@@ -556,10 +556,10 @@ If the plan is rejected or partially approved, the AI must revise accordingly an
 | Day 1, Day 2 | Commit 1.1, Commit 1.2 |
 | Monday, Tuesday | Pre-commit checkpoint, Commit task |
 | By Friday | Before Iteration N decision gate |
-| In 2 weeks | After Iteration N completion |
+| In 2 phases | After Iteration N completion |
 | Quarterly milestone | After Iteration N completion |
 | Sprint (when meaning time box) | Iteration |
-| Daily standup checkpoint | Per-commit checkpoint |
+| per-iteration standup checkpoint | Per-commit checkpoint |
 
 ### Approved Time References
 

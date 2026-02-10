@@ -44,7 +44,7 @@ This document outlines the continuation roadmap for Genesis Protocol enhancement
 - [ ] Test error handling and recovery
 - [ ] Document test procedures
 
-**Estimated Effort**: 2-3 days  
+**Estimated Effort**: 2-3 iterations  
 **Priority**: HIGH  
 **Dependencies**: Phase 1 complete, Python testing framework
 
@@ -80,7 +80,7 @@ tests/integration/
 - [ ] Create rotation audit trail
 - [ ] Document rotation procedures
 
-**Estimated Effort**: 2-3 days  
+**Estimated Effort**: 2-3 iterations  
 **Priority**: MEDIUM  
 **Dependencies**: Phase 1 complete, GitHub API access
 
@@ -98,7 +98,7 @@ scripts/token_rotation/
 ```
 
 **Acceptance Criteria**:
-- [ ] Automated check for token expiry (14 days before)
+- [ ] Automated check for token expiry (14 iterations before)
 - [ ] Email/notification sent to admin
 - [ ] Rotation process documented
 - [ ] Audit trail maintained in change_log.md
@@ -124,7 +124,7 @@ scripts/token_rotation/
 - [ ] Integrate with action_log.ndjson
 - [ ] Document dashboard usage
 
-**Estimated Effort**: 3-4 days  
+**Estimated Effort**: 3-4 iterations  
 **Priority**: MEDIUM  
 **Dependencies**: Phase 1 complete, monitoring infrastructure
 
@@ -188,7 +188,7 @@ monitoring/
 - Automated optimization suggestions
 - Learning from human feedback
 
-**Estimated Effort**: 5-7 days  
+**Estimated Effort**: 5-7 iterations  
 **Priority**: LOW  
 **Dependencies**: Phase 2 complete, ML infrastructure
 
@@ -204,7 +204,7 @@ monitoring/
 - Unified monitoring dashboard
 - Shared guardrails enforcement
 
-**Estimated Effort**: 4-5 days  
+**Estimated Effort**: 4-5 iterations  
 **Priority**: LOW  
 **Dependencies**: Phase 2 complete, multiple repos available
 
@@ -220,7 +220,7 @@ monitoring/
 - Automated audit report generation
 - Compliance dashboard
 
-**Estimated Effort**: 3-4 days  
+**Estimated Effort**: 3-4 iterations  
 **Priority**: LOW  
 **Dependencies**: Phase 2 complete, compliance requirements defined
 
@@ -350,9 +350,9 @@ class TestGenesisWorkflow:
 
 ### Long-term Goals
 
-- **90-day goal**: Phase 2 complete, all automation operational
-- **180-day goal**: Phase 3 started, ML-based decisions
-- **365-day goal**: Multi-repo support, full autonomy
+- **90 iteration goal**: Phase 2 complete, all automation operational
+- **180 iteration goal**: Phase 3 started, ML-based decisions
+- **365 iteration goal**: Multi-repo support, full autonomy
 
 ---
 

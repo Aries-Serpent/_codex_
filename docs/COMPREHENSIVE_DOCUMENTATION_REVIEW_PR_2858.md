@@ -317,7 +317,7 @@ graph TD
 ```
 
 **Capabilities**:
-- Weekly secret rotation monitoring
+- per-phase secret rotation monitoring
 - Access pattern anomaly detection
 - Compliance report generation
 - Automated alert creation
@@ -336,7 +336,7 @@ name: secrets-audit-agent
 model: claude-3-5-sonnet-20241022
 tools: [github, bash, create]
 triggers:
-  - schedule: "0 8 * * 1"  # Weekly Monday 8AM
+  - schedule: "0 8 * * 1"  # per-phase Monday 8AM
   - on_demand: manual
 alert_threshold: 80_percent_rotation_age
 compliance_standards: [SOC2, NIST_800-53]

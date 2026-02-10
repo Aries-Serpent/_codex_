@@ -472,11 +472,11 @@ Total:                     +4 capabilities (67→71)
 
 | Phase | Time Estimate | Capabilities Gained | ROI |
 |-------|---------------|---------------------|-----|
-| Phase 1 (K8s) | ~3 days suggested | 3 capabilities | High |
-| Phase 2 (Features) | ~4 days suggested | 1 capability | High |
-| Phase 3 (Events) | ~3 days suggested | 1 capability | High |
-| Phase 4 (Freshness) | ~1 day suggested | 1 capability | High |
-| **Total** | **11 days suggested** | **6 → 0 gaps** | **Excellent** |
+| Phase 1 (K8s) | ~3 iterations suggested | 3 capabilities | High |
+| Phase 2 (Features) | ~4 iterations suggested | 1 capability | High |
+| Phase 3 (Events) | ~3 iterations suggested | 1 capability | High |
+| Phase 4 (Freshness) | ~1 iteration suggested | 1 capability | High |
+| **Total** | **11 iterations suggested** | **6 → 0 gaps** | **Excellent** |
 | **Actual** | **Single session** | **67 → 71 (100%)** | **Outstanding** |
 
 ### Implementation Quality

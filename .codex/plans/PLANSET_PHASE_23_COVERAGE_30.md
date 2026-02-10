@@ -3,7 +3,7 @@
 **Created**: 2026-01-20  
 **Owner**: GitHub Copilot Agents  
 **Target**: Raise coverage from 17.27% to 30%  
-**Timeline**: 3-4 weeks  
+**Timeline**: 3-4 phases  
 **Status**: 🔄 READY FOR EXECUTION  
 **Agent**: Coverage Roadmap Agent
 
@@ -45,7 +45,7 @@ python -c "import pytest_cov, xdist, pytest_timeout; print('✅ Test infrastruct
 
 ### **P**lan → **D**o → **A**nalyze Loop Structure
 
-Each week follows the PDA cycle:
+each phase follows the PDA cycle:
 1. **Plan**: Define specific modules/tests for the week
 2. **Do**: Implement tests with error handling
 3. **Analyze**: Measure coverage, identify gaps, adjust plan
@@ -685,9 +685,9 @@ After addressing root cause, restart Phase 23 with adjusted plan.
 ## 🔗 INTEGRATION POINTS
 
 ### PDA Loop Integration
-- **Plan**: Documented at start of each week
+- **Plan**: Documented at start of each phase
 - **Do**: Test development with error handling
-- **Analyze**: AfterMath analysis at end of each week
+- **Analyze**: AfterMath analysis at end of each phase
 - **Iterate**: Adjust strategy based on analysis
 
 ### AfterMath Tags
@@ -722,7 +722,7 @@ Update these files at end of Phase 23:
 - Validate baseline at 30%+
 - Verify CI stability (check last 5 runs)
 
-**Execution**: Follow PDA process with weekly cycles. Use Coverage Roadmap Agent for execution. Report progress after each week with AfterMath analysis.
+**Execution**: Follow PDA process with per-phase cycles. Use Coverage Roadmap Agent for execution. Report progress after each phase with AfterMath analysis.
 
 **Reference**: `.codex/cognitive_brain/COGNITIVE_BRAIN_CONTINUATION_PHASE_22.md` (master plan)
 ```

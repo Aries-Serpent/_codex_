@@ -127,7 +127,7 @@ This document lists actions that **cannot be performed by GitHub Copilot Agent**
 
 * * *
 
-## High Priority Actions (Next 7 Days)
+## High Priority Actions (Next 7 iterations)
 
 ### 4. Test Dependency Installation Locally
 
@@ -181,7 +181,7 @@ This document lists actions that **cannot be performed by GitHub Copilot Agent**
 
 1. Create `.github/dependabot.yml` if not exists:
 
-<figure class="ToolCodeBlock-module__container--D9MMx" aria-labelledby=":ro3:"><div class="ToolCodeBlock-module__codeContainer--V645Q"><pre class="ToolCodeBlock-module__code--ITGLQ" tabindex="0"><code class="ToolCodeBlock-module__codeWrap--mnqde"><span class="hljs-attr">version:</span> <span class="hljs-number">2</span><span class="hljs-attr">updates:</span> <span class="hljs-bullet">-</span> <span class="hljs-attr">package-ecosystem:</span> <span class="hljs-string">"pip"</span> <span class="hljs-attr">directory:</span> <span class="hljs-string">"/"</span> <span class="hljs-attr">schedule:</span> <span class="hljs-attr">interval:</span> <span class="hljs-string">"weekly"</span> <span class="hljs-attr">open-pull-requests-limit:</span> <span class="hljs-number">10</span></code></pre></div></figure>
+<figure class="ToolCodeBlock-module__container--D9MMx" aria-labelledby=":ro3:"><div class="ToolCodeBlock-module__codeContainer--V645Q"><pre class="ToolCodeBlock-module__code--ITGLQ" tabindex="0"><code class="ToolCodeBlock-module__codeWrap--mnqde"><span class="hljs-attr">version:</span> <span class="hljs-number">2</span><span class="hljs-attr">updates:</span> <span class="hljs-bullet">-</span> <span class="hljs-attr">package-ecosystem:</span> <span class="hljs-string">"pip"</span> <span class="hljs-attr">directory:</span> <span class="hljs-string">"/"</span> <span class="hljs-attr">schedule:</span> <span class="hljs-attr">interval:</span> <span class="hljs-string">"per-phase"</span> <span class="hljs-attr">open-pull-requests-limit:</span> <span class="hljs-number">10</span></code></pre></div></figure>
 1. Commit and push configuration
 
 **Validation:**
@@ -228,7 +228,7 @@ This document lists actions that **cannot be performed by GitHub Copilot Agent**
 
 * * *
 
-## Medium Priority Actions (Next 30 Days)
+## Medium Priority Actions (Next 30 iterations)
 
 ### 7. Configure GitHub Actions Permissions
 

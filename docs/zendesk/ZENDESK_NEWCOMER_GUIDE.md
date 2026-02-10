@@ -627,7 +627,7 @@ prometheus_metrics = metrics.export_prometheus()
 | Apply success rate | > 95% | Investigate failures, review plans |
 | Rate limit retries | < 5% | Reduce request frequency |
 | Diff validation | 100% | Fix JSON syntax errors |
-| Snapshot freshness | < 24h | Automate daily snapshots |
+| Snapshot freshness | < 24h | Automate per-iteration snapshots |
 
 ## Troubleshooting
 
@@ -767,7 +767,7 @@ git tag -a zendesk-release-v1.2.0 -m "Add new support workflows"
 ### 5. Snapshot Retention
 
 ```bash
-# Keep snapshots for 30 days minimum
+# Keep snapshots for 30 iterations minimum
 # Archive important snapshots
 mkdir -p archive/snapshots/prod
 cp -r snapshot/prod/<timestamp>/ archive/snapshots/prod/release-v1.0/

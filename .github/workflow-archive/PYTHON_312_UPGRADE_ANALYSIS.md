@@ -310,9 +310,9 @@ strategy:
 
 ### Deployment
 - [ ] Deploy to test environment
-- [ ] Monitor for issues (1 week)
+- [ ] Monitor for issues (1 phase)
 - [ ] Deploy to staging
-- [ ] Monitor for issues (1 week)
+- [ ] Monitor for issues (1 phase)
 - [ ] Deploy to production
 - [ ] Monitor metrics and errors
 
@@ -361,7 +361,7 @@ strategy:
 2. ✅ **Create upgrade branch**: `git checkout -b python-3.12-upgrade`
 3. ✅ **Fix critical blockers**: Replace imp with importlib
 
-### Short-term (Next 2 Weeks)
+### Short-term (Next 2 phases)
 4. Test Python 3.12 in CI pipeline
 5. Update documentation
 6. Run comprehensive test suite

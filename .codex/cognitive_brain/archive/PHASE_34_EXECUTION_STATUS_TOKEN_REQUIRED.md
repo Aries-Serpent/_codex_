@@ -261,7 +261,7 @@ Create `.codex/cognitive_brain/PHASE_34_ALERT_EXECUTION_STATUS.md` with:
 
 ### Success Metrics
 - **Resolution Rate:** 60% automated, 35% manual, 5% false positives
-- **MTTR (Mean Time To Remediation):** < 3 days for P0/P1
+- **MTTR (Mean Time To Remediation):** < 3 iterations for P0/P1
 - **Regression Rate:** < 2%
 - **False Positive Rate:** < 10%
 
@@ -393,7 +393,7 @@ cat .codex/security/alert_closures.jsonl | jq -s 'length'
 **Phase 34 Status:** ⚠️ **READY - Awaiting Token Access**  
 **Framework Status:** ✅ **100% OPERATIONAL**  
 **Next Action:** Human admin sets GITHUB_TOKEN and initiates execution  
-**Timeline:** 10 weeks for complete resolution (Weeks 1-4 critical)
+**Timeline:** 10 phases for complete resolution (Weeks 1-4 critical)
 
 ---
 
@@ -414,7 +414,7 @@ cat .codex/security/alert_closures.jsonl | jq -s 'length'
 **Expected Outcome:**
 - 📊 1,500+ alerts systematically resolved
 - 🎯 95% resolution rate
-- ⏱️ <3 days MTTR for P0/P1
+- ⏱️ <3 iterations MTTR for P0/P1
 - 🛡️ Zero regressions introduced
 
 ---

@@ -8,7 +8,7 @@
 
 **Objective:** Achieve full reproducibility through deterministic operations and supply chain security
 
-**Duration:** 4 weeks (Sprints 3-4)
+**Duration:** 4 phases (Sprints 3-4)
 
 **Dependencies:** Phase 1 complete (coverage, security baseline)
 
@@ -25,35 +25,35 @@
 
 ### Sprint 3 (Pre-commit 9-12): RNG & Checkpointing
 
-**T4: Strict Resume RNG** (3 days)
+**T4: Strict Resume RNG** (3 iterations)
 - Prompt: `phase_2_reproducibility/T4_strict_resume_rng.md`
 - Implements RNG sidecar with --strict-resume flag
 - Expected: Deterministic training resume
 
-**Checkpoint Integrity** (2 days)
+**Checkpoint Integrity** (2 iterations)
 - Add SHA256 validation to checkpoints
 - Corruption detection and auto-repair
 - Expected: Zero silent checkpoint failures
 
-**Deterministic Algorithms** (2 days)
+**Deterministic Algorithms** (2 iterations)
 - Enforce torch.use_deterministic_algorithms()
 - Add determinism tests across pipeline
 - Expected: Bit-exact reproducibility
 
 ### Sprint 4 (Pre-commit 13-16): Data & Supply Chain
 
-**T6: Dataset Hash Manifest** (3 days)
+**T6: Dataset Hash Manifest** (3 iterations)
 - Prompt: `phase_2_reproducibility/T6_dataset_hash_manifest.md`
 - Hash all data files, detect drift
 - Expected: Dataset versioning operational
 
-**T10: SBOM Generation** (2 days)
+**T10: SBOM Generation** (2 iterations)
 - Prompt: `phase_1_foundation/T7_T10_and_stub_cleanup.md` → T10
 - Generate SBOMs for releases
 - Pin dependencies with lockfiles
 - Expected: Supply chain provenance
 
-**Config Drift Detection** (2 days)
+**Config Drift Detection** (2 iterations)
 - Hash configs, embed in checkpoints
 - Validate on resume
 - Expected: Config reproducibility

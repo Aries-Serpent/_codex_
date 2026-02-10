@@ -161,11 +161,11 @@ All prompts reference the following audit artifacts:
 
 ## Effort Estimates
 
-- **Small (S):** 1-2 days (8-16 hours)
-- **Medium (M):** 3-5 days (24-40 hours)
-- **Large (L):** 1-2 weeks (40-80 hours)
+- **Small (S):** 1-2 iterations (8-16 hours)
+- **Medium (M):** 3-5 iterations (24-40 hours)
+- **Large (L):** 1-2 phases (40-80 hours)
 
-**Total Timeline:** 16 weeks  
+**Total Timeline:** 16 phases  
 **Total Effort:** 140-260 engineering days  
 **Recommended Team:** 2-3 engineers
 

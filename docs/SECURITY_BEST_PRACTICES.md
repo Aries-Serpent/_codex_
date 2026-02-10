@@ -311,7 +311,7 @@ Track these metrics for ongoing security health:
 
 - Security alerts (target: 0 critical/high)
 - Test coverage for security utilities (target: >80%)
-- Time to patch vulnerabilities (target: <7 days for critical)
+- Time to patch vulnerabilities (target: <7 iterations for critical)
 - Security training completion (target: 100% of team)
 
 ---

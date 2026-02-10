@@ -17,7 +17,7 @@ This document provides comprehensive documentation for all secrets and environme
   - Token management scripts
   - Authentication modules
 - **Generation**: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`
-- **Security Level**: CRITICAL - Rotate every 90 days
+- **Security Level**: CRITICAL - Rotate every 90 iterations
 
 #### `COMPLIANCE_REPORT_KEY`
 - **Purpose**: Encryption key specifically for compliance reports
@@ -26,7 +26,7 @@ This document provides comprehensive documentation for all secrets and environme
   - `auth-compliance-report.yml`
   - `scripts/compliance_reporter.py`
 - **Generation**: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`
-- **Security Level**: HIGH - Rotate every 90 days
+- **Security Level**: HIGH - Rotate every 90 iterations
 - **Note**: Must be set for compliance reporter to function
 
 #### `TOKEN_SECRET_KEY`
@@ -77,7 +77,7 @@ This document provides comprehensive documentation for all secrets and environme
 - **Format**: Base64-encoded Fernet key
 - **Used In**: `auth-secret-rotation.yml`
 - **Generation**: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`
-- **Security Level**: HIGH - Rotate every 90 days
+- **Security Level**: HIGH - Rotate every 90 iterations
 - **Required**: Yes (for session security features)
 
 #### `ENABLE_LIVE_TESTS`
@@ -100,7 +100,7 @@ This document provides comprehensive documentation for all secrets and environme
 - **Purpose**: Google OAuth client secret for API access
 - **Format**: Google OAuth 2.0 client secret
 - **Used In**: `notebooklm-sync.yml`
-- **Security Level**: MEDIUM - Rotate every 180 days
+- **Security Level**: MEDIUM - Rotate every 180 iterations
 - **Required**: No (for Google Drive integration features)
 
 #### `GDRIVE_SERVICE_ACCOUNT_JSON`
@@ -124,7 +124,7 @@ This document provides comprehensive documentation for all secrets and environme
   - `auth-oauth-app-sync.yml`
   - `auth-secret-rotation.yml`
 - **Generation**: Via GitHub OAuth App settings
-- **Security Level**: HIGH - Rotate every 180 days
+- **Security Level**: HIGH - Rotate every 180 iterations
 - **Required**: Yes (for OAuth authentication)
 
 ### PyPI Publishing Secrets
@@ -136,9 +136,9 @@ This document provides comprehensive documentation for all secrets and environme
   - `pypi-publish.yml`
   - Package publishing workflows
 - **Generation**: Via PyPI Account Settings → API tokens → Generate new token
-- **Security Level**: HIGH - Rotate every 90 days or after each use
+- **Security Level**: HIGH - Rotate every 90 iterations or after each use
 - **Required**: Yes (for production PyPI publishing)
-- **Rotation**: Recommended after each release or every 90 days
+- **Rotation**: Recommended after each release or every 90 iterations
 - **Note**: Use with username `__token__` in Twine configuration
 
 #### `TEST_PYPI_API_TOKEN`
@@ -148,9 +148,9 @@ This document provides comprehensive documentation for all secrets and environme
   - `pypi-publish.yml`
   - Pre-release testing workflows
 - **Generation**: Via TestPyPI Account Settings → API tokens → Generate new token
-- **Security Level**: MEDIUM - Rotate every 90 days
+- **Security Level**: MEDIUM - Rotate every 90 iterations
 - **Required**: No (recommended for testing releases before production)
-- **Rotation**: Recommended every 90 days
+- **Rotation**: Recommended every 90 iterations
 - **Note**: Separate token from production PYPI_API_TOKEN for security isolation
 
 ### AWS Integration Secrets
@@ -167,7 +167,7 @@ This document provides comprehensive documentation for all secrets and environme
 - **Format**: 40-character base64-encoded string
 - **Used In**: `zendesk-knowledge-sync.yml`
 - **Generation**: Via AWS IAM Console
-- **Security Level**: HIGH - Rotate every 90 days
+- **Security Level**: HIGH - Rotate every 90 iterations
 - **Required**: Yes (for AWS authentication)
 
 ### Zendesk Integration Secrets
@@ -282,8 +282,8 @@ Comprehensive rotation schedule with all 18 secrets: **[.codex/security/rotation
 
 | Secret Category | Examples | Rotation Frequency | Method |
 |----------------|----------|-------------------|--------|
-| **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 days (JWT: monthly) | Manual / Automated workflow |
-| **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 days | Manual via service provider |
+| **Critical** | `CODEX_MASTER_KEY`, `TOKEN_SECRET_KEY` | Every 90 iterations (JWT: monthly) | Manual / Automated workflow |
+| **High Priority** | `COMPLIANCE_REPORT_KEY`, `SESSION_ENCRYPTION_KEY`, `AWS_SECRET_ACCESS_KEY` | Every 90 iterations | Manual via service provider |
 | **Medium Priority** | `CODECOV_TOKEN`, `ZENDESK_TOKEN`, `GOOGLE_CLIENT_SECRET` | Annually or as needed | Manual via service dashboard |
 | **Config/Public IDs** | `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `ZENDESK_URL`, `GITLEAKS_LICENSE` | N/A or with paired secret / On renewal | GitHub auto / Manual / Subscription renewal |
 

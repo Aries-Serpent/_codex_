@@ -21,7 +21,7 @@
   - Reviewers: mbaetiong
 - Prior Report Reference:
   - Path: reports/daily/2025-11-03.md
-  - Retention: keep last 30; archive (>90 days) optional zip
+  - Retention: keep last 30; archive (>90 iterations) optional zip
 - Git Context:
   - Branch: copilot/move-incomplete-aspects-to-markdown
   - Commit SHA: (current working state)
@@ -43,7 +43,7 @@
 - **Top 3 High-Signal Findings:**
   1. UTF-8 header corruption detected in prior commit — Severity 2 / Confidence 5.
   2. Deferred validation hooks for build helpers — Severity 3 / Confidence 4.
-  3. No automated schema gate for daily reports — Severity 2 / Confidence 4.
+  3. No automated schema gate for per-iteration reports — Severity 2 / Confidence 4.
 - **Key Deltas Since Last Report**
   - Code changes: UTF-8 normalization pass applied across manifests.
   - Risk/coverage: unchanged (97 % test coverage baseline).
@@ -51,7 +51,7 @@
   - Performance: stable, <2 % variance in benchmark suite.
 - **Immediate Next Steps**
   - Merge restoration branch and close PR #2107.
-  - Add schema gate for daily report templates.
+  - Add schema gate for per-iteration report templates.
   - Initiate reproducibility audit cycle.
 
 ---
@@ -106,7 +106,7 @@
    - **Proposed Action**: Add pre-commit hook for UTF-8 validation
    - **Links**: `CAP-002`
 
-2) **Schema validation missing for daily reports (FIND-002)**
+2) **Schema validation missing for per-iteration reports (FIND-002)**
    - **Severity**: 2, **Confidence**: 4
    - **Category**: reliability
    - **Status**: in_progress
@@ -173,7 +173,7 @@
 |---------|---------|------|--------|-----------|----:|--------|
 | `audit_orchestration.yaml` | internal schema | `pyyaml` | PASS | — | 1 | N/A |
 | helper manifests | inline spec | `jsonschema` | PASS | — | 1 | N/A |
-| daily report | template v1.2 | `schema_validate.py` | PASS | — | 1 | N/A |
+| per-iteration report | template v1.2 | `schema_validate.py` | PASS | — | 1 | N/A |
 
 ---
 
@@ -213,7 +213,7 @@
   - **Summary**: UTF-8 normalization applied across status reports; validation error extraction tool added
   - **Files Added/Modified/Deleted**: 3 / 2 / 0
   - **Lines Added/Deleted**: +350 / -15
-  - **Modules Touched**: `tools/`, `reports/daily/`
+  - **Modules Touched**: `tools/`, `reports/per-iteration/`
   - **Commits**: 4 commits on copilot/move-incomplete-aspects-to-markdown branch
 - **Tests & coverage delta**:
   - **Coverage**: 97% → 97% (Δ 0%)

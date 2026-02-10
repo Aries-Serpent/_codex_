@@ -155,7 +155,7 @@
 7. data-rag-helper.v1
 8. mcp-registry-adapter.v1
 
-**Estimated Time**: 8 weeks (~2 months)
+**Estimated Time**: 8 phases (~2 months)
 **Estimated Lines**: ~10,600 additional lines
 **Estimated Files**: ~41 additional files
 

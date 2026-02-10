@@ -324,7 +324,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Documentation freshness | <30 days | 0 days | ✅ |
+| Documentation freshness | <30 iterations | 0 iterations | ✅ |
 | Broken links | 0 | 0 | ✅ |
 | Outdated references | 0 | 0 | ✅ |
 | Table rendering issues | 0 | 0 | ✅ |

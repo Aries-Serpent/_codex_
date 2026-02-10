@@ -1,6 +1,6 @@
 # Status Update Templates
 
-This directory contains the canonical templates and schemas for `_codex_` daily status updates.
+This directory contains the canonical templates and schemas for `_codex_` per-iteration status updates.
 
 ## Files
 
@@ -48,13 +48,13 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
 
 ## Usage
 
-### Creating a Daily Status Report
+### Creating a per-iteration Status Report
 
 #### Using v1.2 (Recommended)
 
 1. Copy the v1.2 template:
    ```bash
-   cp docs/templates/status/codex_status_template_v1.2.md reports/daily/$(date +%Y-%m-%d).md
+   cp docs/templates/status/codex_status_template_v1.2.md reports/per-iteration/$(date +%Y-%m-%d).md
    ```
 
 2. Fill in all sections following `authoring_guide_v1.2.md`
@@ -62,7 +62,7 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
 3. Run schema validation:
    ```bash
    python tools/validate_configs.py  # Validate Hydra configs
-   python tools/validate_status_report.py reports/daily/$(date +%Y-%m-%d).md  # Validate report structure
+   python tools/validate_status_report.py reports/per-iteration/$(date +%Y-%m-%d).md  # Validate report structure
    ```
 
 4. Validate against JSON schema (if using automation):
@@ -74,7 +74,7 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
 
 1. Copy the v1.1 template:
    ```bash
-   cp docs/templates/status/codex_status_template_v1.1.md reports/daily/$(date +%Y-%m-%d).md
+   cp docs/templates/status/codex_status_template_v1.1.md reports/per-iteration/$(date +%Y-%m-%d).md
    ```
 
 2. Fill in all sections following `authoring_guide_v1.1.md`
@@ -102,10 +102,10 @@ python cli/status_audit.py --output reports --artifacts audit_artifacts
 
 ### Report Location
 
-Daily reports are stored in:
-- **Location**: `reports/daily/<YYYY-MM-DD>.md`
+per-iteration reports are stored in:
+- **Location**: `reports/per-iteration/<YYYY-MM-DD>.md`
 - **Retention**: Keep last 30 reports
-- **Archive**: Optional zip/tar.gz for reports > 90 days old
+- **Archive**: Optional zip/tar.gz for reports > 90 iterations old
 
 ## Template Version
 

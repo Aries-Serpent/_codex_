@@ -57,7 +57,7 @@ Configure at: `https://github.com/Aries-Serpent/_codex_/settings/variables/actio
 |--------------|------|---------|----------|---------------|---------------|
 | `MCP_ENDPOINT` | string | MCP service endpoint | No | `http://localhost:8080` | `http://localhost:8080`, `http://localhost:8080` |
 | `MCP_VERSION` | string | MCP protocol version | No | `1.0` | `1.0`, `2.0` |
-| `CACHE_WARM_SCHEDULE` | string | Cache warming cron | No | `15 3 * * *` | `15 3 * * *` (3:15 AM daily) |
+| `CACHE_WARM_SCHEDULE` | string | Cache warming cron | No | `15 3 * * *` | `15 3 * * *` (3:15 AM per-iteration) |
 | `RATE_LIMIT_RPM` | integer | Rate limit (requests/min) | No | `60` | `60`, `100` |
 | `CONTEXT_SIZE_LIMIT` | integer | Max context tokens | No | `100000` | `100000`, `128000` |
 
@@ -73,12 +73,12 @@ Configure at: `https://github.com/organizations/Aries-Serpent/settings/secrets/a
 
 | Secret Name | Type | Purpose | Required | How to Generate | Rotation Schedule |
 |------------|------|---------|----------|-----------------|-------------------|
-| `CODEX_MASTER_KEY` | hex string (32 bytes) | Encryption key for tokens | **Yes** | See Python script below | Every 90 days |
-| `CODEX_GHP_TOKEN_BASE64` | base64 string | Base64-encoded GitHub PAT | **Yes** | See Python script below | Every 90 days |
+| `CODEX_MASTER_KEY` | hex string (32 bytes) | Encryption key for tokens | **Yes** | See Python script below | Every 90 iterations |
+| `CODEX_GHP_TOKEN_BASE64` | base64 string | Base64-encoded GitHub PAT | **Yes** | See Python script below | Every 90 iterations |
 | `CODEX_GHP_TOKEN_CONFIG` | JSON string | Token metadata | No | See Python script below | When token rotated |
 | `CODEX_GITHUB_APP_ID` | integer | GitHub App ID | No | From GitHub App settings | N/A (static) |
-| `CODEX_GITHUB_APP_PRIVATE_KEY` | PEM string | GitHub App private key | No | Generated when creating App | Every 180 days |
-| `MCP_SERVICE_TOKEN` | string | MCP service auth token | No | Generated via `openssl rand -hex 32` | Every 90 days |
+| `CODEX_GITHUB_APP_PRIVATE_KEY` | PEM string | GitHub App private key | No | Generated when creating App | Every 180 iterations |
+| `MCP_SERVICE_TOKEN` | string | MCP service auth token | No | Generated via `openssl rand -hex 32` | Every 90 iterations |
 
 ### Repository-Level Secrets
 
@@ -86,7 +86,7 @@ Configure at: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
 
 | Secret Name | Type | Purpose | Required | How to Generate | Rotation Schedule |
 |------------|------|---------|----------|-----------------|-------------------|
-| `PINECONE_API_KEY` | string | Pinecone vector DB API key | No | From Pinecone dashboard | Every 180 days |
+| `PINECONE_API_KEY` | string | Pinecone vector DB API key | No | From Pinecone dashboard | Every 180 iterations |
 | `PLAYWRIGHT_LICENSE_KEY` | string | Playwright commercial license | No | From Playwright purchase | Per license term |
 
 ---
@@ -208,7 +208,7 @@ def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
         "created": datetime.now().strftime('%Y-%m-%d'),
         "expires": expiry_date,
         "scopes": ["repo", "workflow", "read:org", "write:discussion"],
-        "rotation_schedule": "90 days",
+        "rotation_schedule": "90 iterations",
         "encrypted": bool(master_key)
     }
     
@@ -626,7 +626,7 @@ if __name__ == "__main__":
 
 ### Patterns 👁️ (Configuration Recognition)
 - **Organization vs Repository Scope**: Clear table-based differentiation prevents misconfiguration
-- **Rotation Schedule Pattern**: 90-day security cycle for sensitive credentials
+- **Rotation Schedule Pattern**: 90 iteration security cycle for sensitive credentials
 - **Fallback Pattern**: GitHub App (production) ↔ Personal Access Token (development)
 - **Validation Pattern**: Health check → Token test → Service connection → Full workflow
 

@@ -45,7 +45,7 @@
 - Monitoring Dashboard: Display collection metrics
 - Cognitive Brain: Learn from D365 patterns
 
-**Timeline**: 1 week
+**Timeline**: 1 phase
 ```
 
 ---
@@ -103,7 +103,7 @@ security:
 - 100% schema compliance
 - Full lineage tracking
 
-**Timeline**: 1 week
+**Timeline**: 1 phase
 ```
 
 ---
@@ -172,7 +172,7 @@ THREAT_PATTERNS = {
 - Display alerts on Monitoring Dashboard
 - Update Cognitive Brain with learned patterns
 
-**Timeline**: 2 weeks
+**Timeline**: 2 phases
 ```
 
 ---
@@ -237,11 +237,11 @@ lead_scoring:
 **Success Criteria**:
 - All models meet accuracy targets
 - <1s prediction latency
-- Daily model retraining
+- per-iteration model retraining
 - Feature importance tracking
 - A/B testing capability
 
-**Timeline**: 2 weeks
+**Timeline**: 2 phases
 ```
 
 ---
@@ -317,7 +317,7 @@ COGNITIVE_CAPABILITIES = {
 - Connect to ML Threat Detector
 - Feed insights to Monitoring Dashboard
 
-**Timeline**: 2 weeks
+**Timeline**: 2 phases
 ```
 
 ---
@@ -373,7 +373,7 @@ graph TB
 - Real-time graph updates
 - Interactive visualization
 
-**Timeline**: 2 weeks
+**Timeline**: 2 phases
 ```
 
 ---
@@ -432,7 +432,7 @@ security_metrics:
 - Mobile-responsive UI
 - Real-time updates via WebSocket
 
-**Timeline**: 1 week
+**Timeline**: 1 phase
 ```
 
 ---
@@ -589,4 +589,4 @@ dynamics_365_objectives:
 
 *To be used in conjunction with DYNAMICS_365_ENHANCEMENT_PLANSET.md*  
 *All prompts ready for immediate execution by Copilot Agent System*  
-*Timeline: 8 weeks | Priority: HIGH | ROI: 3x*
+*Timeline: 8 phases | Priority: HIGH | ROI: 3x*

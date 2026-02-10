@@ -217,9 +217,9 @@ class WaveCollapseOptimizer:
    - Test coverage: 100%
 
 3. **Rollout Strategy**
-   - Phase 1: Enable for 1% of users (monitor for 1 week)
-   - Phase 2: Ramp to 10% (monitor for 1 week)
-   - Phase 3: Ramp to 50% (monitor for 2 weeks)
+   - Phase 1: Enable for 1% of users (monitor for 1 phase)
+   - Phase 2: Ramp to 10% (monitor for 1 phase)
+   - Phase 3: Ramp to 50% (monitor for 2 phases)
    - Phase 4: Full rollout to 100%
    - Rollback criteria: coherence < 0.3, error rate > 5%, latency > 2s
 
@@ -227,7 +227,7 @@ class WaveCollapseOptimizer:
    - Real-time coherence dashboard
    - Alert thresholds configured
    - Automatic rollback triggers
-   - Weekly performance reports
+   - per-phase performance reports
 
 5. **Risk Assessment**
    - Low risk: All features opt-in with flags

@@ -3,7 +3,7 @@
 **Created**: 2026-01-20  
 **Owner**: GitHub Copilot Agents  
 **Target**: Raise coverage from 30% to 50%  
-**Timeline**: 2-3 weeks  
+**Timeline**: 2-3 phases  
 **Status**: 🔄 READY FOR EXECUTION (after Phase 23)  
 **Agent**: Coverage Roadmap Agent  
 **Prerequisites**: Phase 23 complete with 30%+ coverage
@@ -406,7 +406,7 @@ cov_p23 = calc_coverage(phase23)
 cov_p24_w1 = calc_coverage(phase24_w1)
 
 print(f"Phase 23 End: {cov_p23:.2f}%")
-print(f"Phase 24 Week 1: {cov_p24_w1:.2f}%")
+print(f"Phase 24 phase 1: {cov_p24_w1:.2f}%")
 print(f"Improvement: {cov_p24_w1 - cov_p23:.2f}%")
 print(f"\nTarget: 50%")
 print(f"Gap remaining: {max(0, 50 - cov_p24_w1):.2f}%")
@@ -425,7 +425,7 @@ EOF
 
 **AfterMath Analysis**:
 ```markdown
-## Phase 24 Week 1 AfterMath Analysis
+## Phase 24 phase 1 AfterMath Analysis
 
 ### Integration Test Insights
 - [Which integration patterns were most effective]
@@ -434,7 +434,7 @@ EOF
 
 ### Coverage Progress
 - Phase 23 End: X%
-- Phase 24 Week 1: Y%
+- Phase 24 phase 1: Y%
 - Improvement: Z%
 - Target: 50%
 - Gap: [remaining]%

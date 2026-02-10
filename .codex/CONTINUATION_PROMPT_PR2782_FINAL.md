@@ -239,7 +239,7 @@ Use proven Tier 1 templates as foundation:
 1. Set up metrics collection:
    - `.codex/metrics/self_healing_metrics.yaml`
    - Dashboard integration (if available)
-   - Weekly report generation
+   - per-phase report generation
 
 2. Configure alerts:
    - Slack/email notifications for failures
@@ -297,8 +297,8 @@ Use proven Tier 1 templates as foundation:
 - Performance metrics (CPU, memory)
 
 **Review Schedule**:
-- Daily: Check for critical issues
-- Weekly: Comprehensive metrics review
+- per-iteration: Check for critical issues
+- per-phase: Comprehensive metrics review
 - per Part: Performance optimization
 
 ---
@@ -323,7 +323,7 @@ Store learnings in `.codex/cognitive_brain/patterns/`:
 - `deployment_patterns.yaml`
 
 #### Metrics Analysis
-Weekly automated analysis:
+per-phase automated analysis:
 - Trend detection (improving/degrading)
 - Anomaly detection (outliers)
 - Threshold optimization (auto-tuning)
@@ -432,7 +432,7 @@ Apply this protocol for EVERY agent standardization:
 ### Time Management
 - **Per Agent**: 2-3 pre-commits (template-based)
 - **Per Session**: 2-3 agents (4-8 pre-commits)
-- **Per Week**: 4-5 agents (2 sessions)
+- **per-phase**: 4-5 agents (2 sessions)
 - **Total Phase 9**: 2-3 Phases (10 agents)
 
 ---
@@ -558,7 +558,7 @@ gh pr review 2782 --request-reviewer mbaetiong
 
 ## 📊 METRICS TO TRACK
 
-### Phase 9 Metrics (Track Weekly)
+### Phase 9 Metrics (Track per-phase)
 
 #### Agent Standardization
 - [ ] Agents completed this Phases: ___ / 10

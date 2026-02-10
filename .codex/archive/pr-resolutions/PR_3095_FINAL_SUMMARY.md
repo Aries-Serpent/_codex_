@@ -356,13 +356,13 @@ assert len(results) > 0
 - [x] Code review
 - [ ] Final CI validation (next session or human admin)
 
-### Short-term (1-7 days)
+### Short-term (1-7 iterations)
 - [ ] Monitor automation in production
 - [ ] Collect metrics on time savings
 - [ ] Gather feedback from developers
 - [ ] Adjust patterns based on false positives
 
-### Long-term (1-4 weeks)
+### Long-term (1-4 phases)
 - [ ] Increase auto-fix coverage to 50%+ (add Patterns 2, 3, 7)
 - [ ] Add ML-based pattern prediction
 - [ ] Build dashboard for pattern trends

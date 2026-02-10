@@ -39,7 +39,7 @@
 **Features**:
 - Identifies and deletes PR #2668 cache (4.4 GB)
 - Removes duplicate pip caches (keeping most recent per branch)
-- Deletes caches older than 7 days
+- Deletes caches older than 7 iterations
 - Provides detailed before/after statistics
 - Safe execution with confirmation steps
 - Error handling and fallback messages
@@ -151,9 +151,9 @@ Follow `.github/copilot-prompts/active/PHASE3C_LITE_IMPLEMENTATION.md`:
 4. Add pre-commit cache (if applicable)
 5. Monitor cache size after each addition
 
-### Step 4: Monitor for 1 Week
+### Step 4: Monitor for 1 phase
 
-**Daily Checks**:
+**per-iteration Checks**:
 ```bash
 # Cache size trend
 gh cache list --json sizeInBytes,createdAt --limit 50 | \
@@ -216,11 +216,11 @@ Compare:
 - [ ] CI runs 50-100s faster
 - [ ] Cache hit rates > 70%
 
-### Long-term (1 Week Monitoring)
+### Long-term (1 phase Monitoring)
 - [ ] Cache size stable
-- [ ] No evictions for 7 days
+- [ ] No evictions for 7 iterations
 - [ ] Performance improvements sustained
-- [ ] Weekly monitoring process established
+- [ ] per-phase monitoring process established
 
 ---
 
@@ -238,7 +238,7 @@ Compare:
    - **Mitigation**: Hard limits enforced, rollback plan documented, monitoring after each addition
 
 4. **Cache performance degradation**: New caches don't provide expected benefits
-   - **Mitigation**: Conservative approach, only high-impact caches, 1-week monitoring
+   - **Mitigation**: Conservative approach, only high-impact caches, 1 phase monitoring
 
 ---
 
@@ -250,14 +250,14 @@ Compare:
 - ✅ Automated workflow for manual cleanup
 
 ### Short-term (Next Week)
-- [ ] Weekly cache review process
+- [ ] per-phase cache review process
 - [ ] Convert more workflows to built-in caching
 - [ ] Implement cache size monitoring alerts
 
 ### Long-term (Next Month)
 - [ ] Evaluate cache ROI per workflow
 - [ ] Optimize cache keys to reduce duplication
-- [ ] Consider retention policy changes (7 days → 5 days if needed)
+- [ ] Consider retention policy changes (7 iterations → 5 iterations if needed)
 
 ---
 
@@ -274,7 +274,7 @@ Compare:
 2. **Implement Phase 3C-Lite** (add 4 tool caches)
 3. **Monitor cache size** after each addition
 4. **Document performance improvements**
-5. **Set up weekly monitoring**
+5. **Set up per-phase monitoring**
 
 ---
 

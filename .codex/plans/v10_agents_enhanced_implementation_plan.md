@@ -16,7 +16,7 @@ This enhanced implementation plan integrates the comprehensive deep research fin
 - **Evidence-Based Approaches**: Leveraging 40+ cited research papers and industry case studies
 - **GitHub-Native Solutions**: All implementations using allowed GitHub Team tools
 - **Measurable Outcomes**: Specific metrics and evaluation plans for each research area
-- **Phased Execution**: 32-week research plan with clear dependencies
+- **Phased Execution**: 32 phase research plan with clear dependencies
 
 ---
 
@@ -1018,7 +1018,7 @@ class SecurityLayer:
 | Research Area | Agent | Weeks | Dependencies | Expected ROI |
 |--------------|-------|-------|--------------|-------------|
 | **R10: Test Prioritization** | 4 | 10-14 | None | 30-50% CI time reduction |
-| **R13: Causal Analysis** | 5 | 14-20 | Domain knowledge | Root cause in minutes |
+| **R13: Causal Analysis** | 5 | 14-20 | Domain knowledge | Root cause in Pre-commits |
 | **R18: Coalition Formation** | 6 | 12-18 | R16 | 50% multi-agent improvement |
 | **R11: Build Failure Prediction** | 4 | 8-12 | R10 | 80% failures predicted |
 | **R14: Counterfactual Reasoning** | 5 | 12-16 | R13 | Fast decision evaluation |
@@ -1240,7 +1240,7 @@ class SecurityLayer:
 
 1. **Team Formation**
    - Recruit: 2 ML engineers, 1 SE researcher, 1 DevOps, 1 UX researcher
-   - Schedule: Weekly research meetings + daily standups
+   - Schedule: per-phase research meetings + per-iteration standups
    - Tools: Set up Slack, GitHub Projects, MLflow
 
 2. **Data Infrastructure**
@@ -1306,6 +1306,6 @@ This enhanced implementation plan provides a comprehensive, research-backed road
 ---
 
 **Generated**: 2026-01-03T22:10:00Z  
-**Next Review**: Weekly research sync  
+**Next Review**: per-phase research sync  
 **Contact**: Research Team Lead  
 **Status**: ✅ READY FOR EXECUTION

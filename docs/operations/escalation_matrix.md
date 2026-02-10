@@ -5,9 +5,9 @@
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
 | P0 | Critical - Service down | Immediate | Model serving offline, data breach |
-| P1 | High - Degraded service | 30 minutes | Accuracy drop >10%, pipeline failures |
+| P1 | High - Degraded service | 30 Pre-commits | Accuracy drop >10%, pipeline failures |
 | P2 | Medium - Partial impact | 1 hour | Drift detected, slow performance |
-| P3 | Low - Minor issues | 4 hours | Documentation bugs, minor errors |
+| P3 | Low - Minor issues | 4 Commits | Documentation bugs, minor errors |
 
 ## Escalation Paths
 
@@ -42,4 +42,4 @@ Security Team: security@localhost | [Phone]
 
 ## On-Call Rotation
 
-Update weekly schedule in PagerDuty and Slack channel #ml-ops-oncall.
+Update per-phase schedule in PagerDuty and Slack channel #ml-ops-oncall.

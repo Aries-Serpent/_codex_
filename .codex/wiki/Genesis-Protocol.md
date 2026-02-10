@@ -390,14 +390,14 @@ git push origin genesis/phase2-activation
 - Results summary in `.codex/results.md`
 
 **Monitoring Dashboard:**
-- Daily status reports
+- per-iteration status reports
 - Action success/failure rates
 - Escalation frequency
 - Resource usage
 
 **Review Schedule:**
-- **Daily:** Automated logs review
-- **Weekly:** Human review of PRs and actions
+- **per-iteration:** Automated logs review
+- **per-phase:** Human review of PRs and actions
 - **Monthly:** Guardrails effectiveness assessment
 - **Quarterly:** Full security audit
 
@@ -418,7 +418,7 @@ git push origin genesis/phase2-activation
 ### Secret Management
 
 **Best Practices:**
-- ✅ Rotate tokens every 90 days
+- ✅ Rotate tokens every 90 iterations
 - ✅ Use fine-grained PATs (not classic tokens)
 - ✅ Limit token scope to minimum required
 - ✅ Store tokens only in GitHub Secrets
@@ -447,7 +447,7 @@ git push origin genesis/phase2-activation
 | Secret exposure | Never log or display secrets; GitHub Secrets only |
 | Runaway automation | Rate limits (max 5 PRs/day); human approval for medium/high risk |
 | Data loss | Git history; no force push; no branch deletion |
-| Configuration drift | Daily validation; change log audit; weekly reviews |
+| Configuration drift | per-iteration validation; change log audit; per-phase reviews |
 | Token compromise | Short expiration (90 days); revocation capability; backup key |
 
 ---
@@ -567,7 +567,7 @@ git push origin rollback/remove-genesis
 - PR history with approval records
 
 **Retention:**
-- Audit logs: 90 days minimum (configurable)
+- Audit logs: 90 iterations minimum (configurable)
 - Change log: Permanent (part of git history)
 - Validation reports: Until next Genesis update
 

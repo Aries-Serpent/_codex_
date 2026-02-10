@@ -360,7 +360,7 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 | Developer Satisfaction | >4/5 | 4.3/5 | ✅ High |
 | Support Ticket Reduction | >30% | ~35% | ✅ Excellent |
 | Search Hit Rate | >80% | ~75% | 🟢 Good |
-| Content Freshness | <30 days | 0 days | ✅ Current |
+| Content Freshness | <30 iterations | 0 iterations | ✅ Current |
 
 ---
 

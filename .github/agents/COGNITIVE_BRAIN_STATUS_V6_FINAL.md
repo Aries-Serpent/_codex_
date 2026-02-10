@@ -378,7 +378,7 @@ graph LR
 ### Immediate Next Steps (Phase 8.8)
 
 **Phase 8.8: Meta-Learning Enhancement & Agent Expansion**
-**Duration:** 2-3 weeks  
+**Duration:** 2-3 phases  
 **Status:** Not Started  
 **k₁ Target:** ≤ 0.26 (quantum advantage 3.85x)
 
@@ -748,7 +748,7 @@ graph TB
 5. ⏳ Create Phase 8.8 detailed plan
 6. ⏳ Submit follow-up prompt to PR
 
-### Short-Term (Next 2 Weeks)
+### Short-Term (Next 2 phases)
 
 1. Begin Phase 8.8 implementation
 2. Expand custom agent suite

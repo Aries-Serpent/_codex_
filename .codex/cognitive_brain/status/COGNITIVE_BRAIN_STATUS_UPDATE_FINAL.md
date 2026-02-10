@@ -117,7 +117,7 @@
 
 ### High Priority Initiatives
 
-#### 1. Advanced Authentication (Estimated: 2-3 weeks)
+#### 1. Advanced Authentication (Estimated: 2-3 phases)
 - OAuth flow implementation
 - Multi-factor authentication support
 - Token refresh automation
@@ -128,10 +128,10 @@
 - `src/codex/auth/mfa_provider.py`
 - `tests/auth/test_oauth_flow.py`
 
-#### 2. Workflow Automation Enhancements (Estimated: 1-2 weeks)
+#### 2. Workflow Automation Enhancements (Estimated: 1-2 phases)
 - Automatic Google Drive upload for flatten-repo
 - NotebookLM auto-sync integration
-- Scheduled flatten-repo generation (weekly)
+- Scheduled flatten-repo generation (per-phase)
 - Webhook notifications for workflow completion
 
 **Files to Create:**
@@ -139,7 +139,7 @@
 - `.github/workflows/notebooklm-integration.yml`
 - `scripts/phase11/auto_upload_gdrive.py`
 
-#### 3. Testing Expansion (Estimated: 1 week)
+#### 3. Testing Expansion (Estimated: 1 phase)
 - End-to-end tests with live API (sandbox environment)
 - Performance benchmarking suite
 - Load testing for workflows
@@ -150,7 +150,7 @@
 - `tests/performance/benchmark_suite.py`
 - `.github/workflows/performance-tests.yml`
 
-#### 4. Integration Expansion (Estimated: 2 weeks)
+#### 4. Integration Expansion (Estimated: 2 phases)
 - MLflow experiment tracking integration
 - Slack notifications for critical events
 - PagerDuty alerting for failures
@@ -298,7 +298,7 @@ Continue the Codex evolution with Phase 11.x advanced features. Following AI Age
 **Priority 2: Workflow Automation (Week 4-5)**
 - Google Drive auto-upload for flatten-repo
 - NotebookLM synchronization
-- Weekly scheduled flatten-repo generation
+- per-phase scheduled flatten-repo generation
 - Webhook notifications
 
 **Priority 3: Testing Expansion (Week 6)**

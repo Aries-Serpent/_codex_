@@ -450,13 +450,13 @@ release-gate run --version v1.0.0 --auto
 
 ### Immediate (Phase 6 Continuation)
 
-1. **infra-linter-agent.v1** (Priority 1, 3-4 days)
+1. **infra-linter-agent.v1** (Priority 1, 3-4 iterations)
    - Terraform validation
    - Kubernetes manifest linting
    - CloudFormation template checking
    - Security policy enforcement
 
-2. **compliance-checker-agent.v1** (Priority 1, 4-5 days)
+2. **compliance-checker-agent.v1** (Priority 1, 4-5 iterations)
    - SOC2 compliance validation
    - PCI-DSS requirements checking
    - GDPR data handling verification

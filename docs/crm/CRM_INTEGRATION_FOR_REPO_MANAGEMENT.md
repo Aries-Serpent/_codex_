@@ -376,7 +376,7 @@ steps:
 - [ ] Create Zendesk dashboards
 - [ ] Build D365 Power BI reports
 - [ ] Configure alerting rules
-- [ ] Set up weekly metrics reviews
+- [ ] Set up per-phase metrics reviews
 - [ ] Document best practices
 
 ---

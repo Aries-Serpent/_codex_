@@ -52,7 +52,7 @@ All 6 workflow failures on branch `copilot/sub-pr-2782-again` have been analyzed
 - Non-blocking scans (use `|| true` to allow failures)
 - JSON and text report generation
 - Automated severity classification
-- 30-day artifact retention
+- 30 iteration artifact retention
 - Checks for HIGH severity Bandit issues
 
 **Example Usage:**

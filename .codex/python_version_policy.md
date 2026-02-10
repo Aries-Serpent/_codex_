@@ -209,19 +209,19 @@ python scripts/validate_python_version.py
    - Create migration plan
    - Communicate to team
 
-2. **Testing** (2 weeks)
+2. **Testing** (2 phases)
    - Set up 3.13 test environment
    - Run full test suite on 3.13
    - Fix compatibility issues
    - Update dependencies
 
-3. **Execution** (1 week)
+3. **Execution** (1 phase)
    - Update configuration files
    - Update CI/CD workflows
    - Update documentation
    - Merge and deploy
 
-4. **Validation** (1 week)
+4. **Validation** (1 phase)
    - Monitor for issues
    - Fix any problems quickly
    - Update troubleshooting guide

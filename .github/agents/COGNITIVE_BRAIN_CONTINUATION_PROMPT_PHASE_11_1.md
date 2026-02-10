@@ -64,8 +64,8 @@ This continuation prompt adheres to the **AI Codebase Agency Policy**:
 
 ❌ **NEVER USE**:
 - "Week 1", "Week 2"
-- "2-3 weeks"
-- "Duration: 4 weeks"
+- "2-3 phases"
+- "Duration: 4 phases"
 - "Jan 8 - Jan 29, 2026" (for planning future work)
 
 **This applies to**:

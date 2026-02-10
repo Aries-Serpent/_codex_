@@ -303,7 +303,7 @@ jobs:
 |-------|----------|---------|--------|
 | Performance Regression Detector | `.github/copilot/agents/performance-regression-detector.yml` | CI completion | 📋 Ready |
 | Doc Freshness Checker | `.github/copilot/agents/doc-freshness-checker.yml` | PR/Schedule | 📋 Ready |
-| Dependency Vulnerability Scanner | `.github/copilot/agents/dependency-vulnerability-scanner.yml` | Daily | 📋 Ready |
+| Dependency Vulnerability Scanner | `.github/copilot/agents/dependency-vulnerability-scanner.yml` | per-iteration | 📋 Ready |
 | Integration Test Runner | `.github/copilot/agents/integration-test-runner.yml` | PR | 📋 Ready |
 
 ### Deployment Steps

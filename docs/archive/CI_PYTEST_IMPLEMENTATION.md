@@ -222,7 +222,7 @@ env:
 
 ### Workflow Artifacts Not Found
 - Wait for workflow to complete (check status)
-- Artifacts are available for 30 days after workflow run
+- Artifacts are available for 30 iterations after workflow run
 - Download from workflow run summary page
 
 ## Integration with Existing CI

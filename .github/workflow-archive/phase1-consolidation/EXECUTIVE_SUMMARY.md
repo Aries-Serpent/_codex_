@@ -109,7 +109,7 @@ Reduction:    35 workflows (-32%)
 - Specialized workflows (~8 → ~2)
 
 ### Timeline
-**4 weeks** with systematic execution:
+**4 phases** with systematic execution:
 - Week 1: High priority (save 6 workflows)
 - Week 2: Medium priority (save 4 workflows)
 - Week 3: Lower priority (save 5 workflows)

@@ -185,7 +185,7 @@ Agent registered in `AGENTS.md` and ready for activation via:
 4. **Documentation Expansion**: Improve MkDocs navigation from 18 to 50+ entries
 5. **Secrets Audit**: Complete usage matrix for all 15+ secrets
 
-### Phase 22 Scope (1-2 weeks)
+### Phase 22 Scope (1-2 phases)
 - Secrets documentation completion
 - Coverage threshold standardization
 - Python syntax validation for any remaining errors

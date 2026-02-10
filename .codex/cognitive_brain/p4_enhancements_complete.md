@@ -382,7 +382,7 @@ if should_update:
    - Implement multi-shard queries
    - Shard rebalancing logic
 
-### Short-term (1-2 weeks)
+### Short-term (1-2 phases)
 
 4. **Azure Key Vault Provider**
    - Implement `AzureKeyVaultProvider`
@@ -429,7 +429,7 @@ if should_update:
 - mTLS authentication
 
 ⚠️ **Recommendations:**
-- Regular certificate rotation (90 days)
+- Regular certificate rotation (90 iterations)
 - Certificate revocation checking (OCSP)
 - Certificate pinning for known clients
 - Audit log monitoring

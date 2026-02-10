@@ -158,11 +158,11 @@ Artifact Upload: ✅ PASS (4 artifacts)
 
 ### Week 1 (Jan 20-26)
 - **Immediate:** Next 3 CI runs on 0D_base_
-- **Daily:** Check for regressions or new conflicts
+- **per-iteration:** Check for regressions or new conflicts
 - **Metrics:** Track artifact upload success rate (target: 100%)
 
 ### Week 2-4 (Jan 27 - Feb 16)
-- **Weekly:** Stability verification
+- **per-phase:** Stability verification
 - **Metrics:** Track dependency resolution time (<60s target)
 
 ### Escalation Triggers

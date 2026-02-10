@@ -201,7 +201,7 @@ Document deployment steps in `.codex/DEPLOYMENT_PLAN_SELF_HEALING.md`:
 
 **Week 1: Soft Launch**
 - Enable workflow on this PR branch
-- Monitor for 3 days
+- Monitor for 3 iterations
 - Collect initial metrics
 - Review all auto-created PRs
 

@@ -146,7 +146,7 @@ restore-keys: |
 **Cache Paths**: `~/.cache/pip`
 
 **Trigger Frequency**: Daily (cron: '0 0 * * *')
-**Impact**: 2-3 minutes saved per daily run
+**Impact**: 2-3 minutes saved per per-iteration run
 
 ### Phase 2 Workflows
 
@@ -380,7 +380,7 @@ Cache optimization implementation is **complete and validated**:
 - ✅ ~25 hours/month additional time savings
 - ✅ All workflows validated and production-ready
 
-**Next Steps**: Monitor actual performance over 2-4 weeks and update metrics.
+**Next Steps**: Monitor actual performance over 2-4 phases and update metrics.
 
 ---
 

@@ -10,7 +10,7 @@ This folder contains deprecated, experimental, low-usage, or utility workflows t
 - **zendesk-quantum-packaging.yml** - Experimental quantum packaging workflow
 - **biweekly-research-digest.yml** - Low-priority research digest generator
 
-### Phase 2 Week 3 Moves (7 workflows)
+### Phase 2 phase 3 Moves (7 workflows)
 - **genesis-bootstrap.yml** - Genesis Protocol bootstrap template (rarely used)
 - **monthly-model-retraining.yml** - Monthly model retraining (low frequency)
 - **notebooklm-sync.yml** - NotebookLM synchronization utility
@@ -23,7 +23,7 @@ This folder contains deprecated, experimental, low-usage, or utility workflows t
 
 **Total**: 11 workflows
 - **Phase 1**: 4 workflows (inactive/deprecated)
-- **Phase 2 Week 3**: 7 workflows (low-usage utilities, archived)
+- **Phase 2 phase 3**: 7 workflows (low-usage utilities, archived)
 
 **Important**: Workflows in `.github/misc/` are **archived and inactive**. GitHub Actions only scans `.github/workflows/` for executable workflows. To use these workflows, they must first be restored to `.github/workflows/`.
 

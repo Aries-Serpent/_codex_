@@ -13,7 +13,7 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 **RECOMMENDATION**: **NO-GO** for immediate AST standardization implementation  
 **ALTERNATIVE**: **GO** for documentation and planning phase completion
 
-**Rationale**: AST standardization requires 11-13 weeks of dedicated engineering effort, far beyond current test improvement scope. However, comprehensive planning documentation provides high value with zero implementation risk.
+**Rationale**: AST standardization requires 11-13 phases of dedicated engineering effort, far beyond current test improvement scope. However, comprehensive planning documentation provides high value with zero implementation risk.
 
 ---
 
@@ -23,19 +23,19 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Blocker ID | Status | Can Resolve Now? | Effort if Attempted |
 |-----------|--------|------------------|-------------------|
-| **BLOCK-DEP-001** | 🔴 OPEN | ⚠️ YES (risky) | 1 day |
-| **BLOCK-DEP-002** | 🔴 OPEN | ⚠️ YES (risky) | 1 day |
-| **BLOCK-DEP-003** | 🔴 OPEN | ⚠️ YES (risky) | 0.5 day |
-| **BLOCK-DEP-004** | 🔴 OPEN | ⚠️ YES (risky) | 0.5 day |
-| **BLOCK-DEP-005** | 🔴 OPEN | ❌ NO (requires design) | 1.5 days |
-| **BLOCK-ARCH-001** | 🔴 OPEN | ❌ NO (requires design) | 2 days |
-| **BLOCK-ARCH-002** | 🔴 OPEN | ❌ NO (requires design) | 2 days |
-| **BLOCK-ARCH-003** | 🔴 OPEN | ❌ NO (requires design) | 1.5 days |
-| **BLOCK-ARCH-004** | 🔴 OPEN | ❌ NO (requires design) | 1.5 days |
-| **BLOCK-ARCH-005** | 🔴 OPEN | ❌ NO (requires design) | 1.5 days |
-| **BLOCK-PERF-001** | 🔴 OPEN | ❌ NO (requires impl) | 1 day |
-| **BLOCK-PERF-002** | 🔴 OPEN | ❌ NO (requires impl) | 1 week |
-| **BLOCK-PERF-003** | 🔴 OPEN | ❌ NO (requires impl) | 2 weeks |
+| **BLOCK-DEP-001** | 🔴 OPEN | ⚠️ YES (risky) | 1 iteration |
+| **BLOCK-DEP-002** | 🔴 OPEN | ⚠️ YES (risky) | 1 iteration |
+| **BLOCK-DEP-003** | 🔴 OPEN | ⚠️ YES (risky) | 0.5 iteration |
+| **BLOCK-DEP-004** | 🔴 OPEN | ⚠️ YES (risky) | 0.5 iteration |
+| **BLOCK-DEP-005** | 🔴 OPEN | ❌ NO (requires design) | 1.5 iterations |
+| **BLOCK-ARCH-001** | 🔴 OPEN | ❌ NO (requires design) | 2 iterations |
+| **BLOCK-ARCH-002** | 🔴 OPEN | ❌ NO (requires design) | 2 iterations |
+| **BLOCK-ARCH-003** | 🔴 OPEN | ❌ NO (requires design) | 1.5 iterations |
+| **BLOCK-ARCH-004** | 🔴 OPEN | ❌ NO (requires design) | 1.5 iterations |
+| **BLOCK-ARCH-005** | 🔴 OPEN | ❌ NO (requires design) | 1.5 iterations |
+| **BLOCK-PERF-001** | 🔴 OPEN | ❌ NO (requires impl) | 1 iteration |
+| **BLOCK-PERF-002** | 🔴 OPEN | ❌ NO (requires impl) | 1 phase |
+| **BLOCK-PERF-003** | 🔴 OPEN | ❌ NO (requires impl) | 2 phases |
 
 **Summary**: 13 of 13 blockers remain unresolved  
 **Resolvable Now**: 4 dependency blockers (but with risk)  
@@ -49,9 +49,9 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Issue ID | Status | Can Address Now? | Effort |
 |----------|--------|------------------|--------|
-| **ISSUE-EXIST-001** | 🔴 OPEN | ❌ NO | 3 days |
-| **ISSUE-EXIST-002** | 🔴 OPEN | ❌ NO | 3 days |
-| **ISSUE-EXIST-003** | 🔴 OPEN | ❌ NO | 1 day |
+| **ISSUE-EXIST-001** | 🔴 OPEN | ❌ NO | 3 iterations |
+| **ISSUE-EXIST-002** | 🔴 OPEN | ❌ NO | 3 iterations |
+| **ISSUE-EXIST-003** | 🔴 OPEN | ❌ NO | 1 iteration |
 | **ISSUE-EXIST-004** | 🔴 OPEN | ❌ NO | Deferred |
 
 **Summary**: Requires refactoring of 3,816 lines across 10 files
@@ -60,10 +60,10 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Issue ID | Status | Can Plan Now? | Implementation Effort |
 |----------|--------|---------------|----------------------|
-| **ISSUE-TEST-001** | 🟡 PLANNED | ✅ YES | 1 week (post-impl) |
-| **ISSUE-TEST-002** | 🟡 PLANNED | ✅ YES | 1 week (post-impl) |
-| **ISSUE-TEST-003** | 🟡 PLANNED | ✅ YES | 2-3 days (post-impl) |
-| **ISSUE-TEST-004** | 🟡 PLANNED | ✅ YES | 1 week (post-impl) |
+| **ISSUE-TEST-001** | 🟡 PLANNED | ✅ YES | 1 phase (post-impl) |
+| **ISSUE-TEST-002** | 🟡 PLANNED | ✅ YES | 1 phase (post-impl) |
+| **ISSUE-TEST-003** | 🟡 PLANNED | ✅ YES | 2-3 iterations (post-impl) |
+| **ISSUE-TEST-004** | 🟡 PLANNED | ✅ YES | 1 phase (post-impl) |
 
 **Summary**: Test strategy documented in `AST_TEST_STRATEGY.md`
 
@@ -167,7 +167,7 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 | Test strategy defined | YES | Complete | ✅ YES |
 | Existing code audited | YES | Complete | ✅ YES |
 | Risks assessed | YES | Complete | ✅ YES |
-| Effort estimated | YES | 11-13 weeks | ✅ YES |
+| Effort estimated | YES | 11-13 phases | ✅ YES |
 
 **Decision**: ✅ **GO for planning documentation**
 
@@ -179,11 +179,11 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Resource | Requirement | Available | Gap |
 |----------|-------------|-----------|-----|
-| **Engineering Time** | 1 FTE × 11-13 weeks | 0 | ❌ CRITICAL |
+| **Engineering Time** | 1 FTE × 11-13 phases | 0 | ❌ CRITICAL |
 | **AST Expertise** | Senior level | TBD | ❌ CRITICAL |
 | **Code Review** | 20% Tech Lead | Available | ✅ OK |
-| **QA Time** | 2 weeks testing | TBD | ⚠️ MEDIUM |
-| **Documentation** | 1 week | TBD | ⚠️ LOW |
+| **QA Time** | 2 phases testing | TBD | ⚠️ MEDIUM |
+| **Documentation** | 1 phase | TBD | ⚠️ LOW |
 
 **Total Gap**: ~3 person-months of dedicated effort
 
@@ -234,12 +234,12 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 1. **Resource gap**: No dedicated AST engineer allocated
 2. **Scope mismatch**: Beyond test improvement mandate
 3. **Risk level**: HIGH technical and project risks
-4. **Effort required**: 11-13 weeks (3 person-months)
+4. **Effort required**: 11-13 phases (3 person-months)
 5. **Dependencies**: Requires AI Assistant autonomous architectural validation and consensus algorithms
 
 ### Alternative Recommendation (If Must Proceed)
 
-⚠️ **MINIMAL SCOPE ONLY**: Dependencies + Basic Design (2-3 weeks)
+⚠️ **MINIMAL SCOPE ONLY**: Dependencies + Basic Design (2-3 phases)
 
 **Scope**:
 1. Add dependencies to pyproject.toml
@@ -249,7 +249,7 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 5. Document patterns
 
 **What This Provides**: Foundation only, not full capabilities  
-**Effort**: 2-3 weeks (vs. 11-13 weeks for full project)  
+**Effort**: 2-3 phases (vs. 11-13 phases for full project)  
 **Risk**: MEDIUM (still modifies dependencies, requires testing)
 
 ---
@@ -266,7 +266,7 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 ### If Implementation Attempted (NOT RECOMMENDED)
 
-1. ⏳ Allocate 1 FTE for 11-13 weeks
+1. ⏳ Allocate 1 FTE for 11-13 phases
 2. ⏳ Get architecture design approval
 3. ⏳ Resolve all 13 critical blockers
 4. ⏳ Complete Sprint 1-6 per Phase 0 guide

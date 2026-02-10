@@ -230,7 +230,7 @@ Phase 7 successfully implemented comprehensive integration testing for cross-mod
 - Load testing (15 tests)
 - Scalability validation (15 tests)
 
-**Estimated Duration**: 2 weeks
+**Estimated Duration**: 2 phases
 
 ### Phase 9 (90% → 95%) - Edge Cases
 **Target**: 60 additional tests  
@@ -245,7 +245,7 @@ Phase 7 successfully implemented comprehensive integration testing for cross-mod
 **Focus**: Final coverage completion
 
 **Total Remaining**: ~210 tests  
-**Estimated Duration**: 7-9 weeks
+**Estimated Duration**: 7-9 phases
 
 **Full Roadmap**: `.codex/plans/COVERAGE_PATH_70_TO_100_PERCENT.md`
 

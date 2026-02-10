@@ -351,7 +351,7 @@ Each phase must pass all gates before proceeding:
 
 ## Progress Tracking
 
-### Weekly Check-ins
+### per-phase Check-ins
 
 | Week | Coverage Target | Documentation Target | Plans Target | Status |
 |------|-----------------|---------------------|--------------|--------|

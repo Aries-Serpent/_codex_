@@ -38,7 +38,7 @@ $ python scripts/space_traversal/validate_template_hash.py
 - ✅ Multi-job structure (fast, full, quality-gates)
 - ✅ Baseline management with conditional regression diff
 - ✅ Quality metrics in PR comments
-- ✅ Artifact retention (30/90 days)
+- ✅ Artifact retention (30/90 iterations)
 - ✅ Cross-platform compatibility addressed
 
 **Enhancement Applied**:
@@ -207,7 +207,7 @@ This PR is ready for merge with the following understanding:
 
 ### For Follow-up Work
 1. **Priority 1**: Run determinism validation in CI to establish confidence
-2. **Priority 2**: Create legacy import refactoring PR (1-2 weeks)
+2. **Priority 2**: Create legacy import refactoring PR (1-2 phases)
 3. **Priority 3**: Consider baseline age monitoring (optional, low priority)
 
 ### For CI/CD

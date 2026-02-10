@@ -389,11 +389,11 @@ Missing `import json` in `scripts/ci/validate_cargo_features.py` caused GitHub A
 
 3. **Improvement Proposals**
    - Created 5 prioritized proposals:
-     - IP-001: Increase test coverage to 70% (HIGH priority, 4-6 weeks)
-     - IP-002: Consolidate legacy configuration (MEDIUM, 1-2 weeks)
-     - IP-003: Enhance security documentation (HIGH, 1 week)
-     - IP-004: Production-ready authentication (HIGH, 3-4 weeks)
-     - IP-005: Dependency audit and update (HIGH, 2 weeks)
+     - IP-001: Increase test coverage to 70% (HIGH priority, 4-6 phases)
+     - IP-002: Consolidate legacy configuration (MEDIUM, 1-2 phases)
+     - IP-003: Enhance security documentation (HIGH, 1 phase)
+     - IP-004: Production-ready authentication (HIGH, 3-4 phases)
+     - IP-005: Dependency audit and update (HIGH, 2 phases)
 
 #### Files Created:
 - `.codex/qa_walkthrough/reusable_patterns.json`
@@ -738,13 +738,13 @@ All Phase 11.x objectives have been completed, building on the successful QA wal
 - Added path-to-100% coverage planset for CI dependency fixes and artifact restoration.
 - Added dependency conflict agent documentation and registered it in agent listings.
 - Added Phase 23-25 execution continuation plan for path-to-100% coverage.
-- Added Phase 23 Week 1 unit tests for CLI argument parsing and data split utilities (20 tests).
-- Added Phase 23 Week 1 completion planset documenting CLI/data unit test additions.
-- Added Phase 23 Week 2 integration tests for CLI pipeline and data pipeline workflows (15 tests).
-- Added Phase 23 Week 2 completion planset documenting integration test additions.
-- Added Phase 23 Week 3 gap-filling tests for utils sanitization/logging modules (38 tests).
+- Added Phase 23 phase 1 unit tests for CLI argument parsing and data split utilities (20 tests).
+- Added Phase 23 phase 1 completion planset documenting CLI/data unit test additions.
+- Added Phase 23 phase 2 integration tests for CLI pipeline and data pipeline workflows (15 tests).
+- Added Phase 23 phase 2 completion planset documenting integration test additions.
+- Added Phase 23 phase 3 gap-filling tests for utils sanitization/logging modules (38 tests).
 - Raised coverage fail_under threshold to 70 in pyproject.toml per Phase 25 target.
-- Added Phase 23 Week 3 completion planset documenting gapfill tests and threshold raise.
+- Added Phase 23 phase 3 completion planset documenting gapfill tests and threshold raise.
 - Added Coverage Gapfill Agent definition and registered in AGENTS.md.
 - Added Phase 24 CLI workflow integration tests (5 tests).
 - Added Phase 24 workflow E2E tests for data pipeline flows (4 tests).
@@ -767,8 +767,8 @@ All Phase 11.x objectives have been completed, building on the successful QA wal
 **Total Tests Added**: ~120 tests across Phases 23-24 (unit, integration, E2E, service)..
 - Added best-effort path-to-100% coverage continuation plan for Phases 23-25 execution.
 - Created Coverage Roadmap Agent with PDA process integration and phase-specific guidance.
-- Phase 23 Week 1: Delivered 146 comprehensive unit tests via task agent (CLI: 61, training: 48, data: 37).
-- Added Phase 23 Week 1 completion planset documenting test delivery and continuation plan.
+- Phase 23 phase 1: Delivered 146 comprehensive unit tests via task agent (CLI: 61, training: 48, data: 37).
+- Added Phase 23 phase 1 completion planset documenting test delivery and continuation plan.
 
 ## 2026-01-21 - Phase 21.1: Comprehensive QA Walkthrough
 

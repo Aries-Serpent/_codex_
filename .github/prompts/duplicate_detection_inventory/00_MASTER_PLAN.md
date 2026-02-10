@@ -96,7 +96,7 @@ Create a supplemental inventory system (`SUPPLEMENTAL_DUPLICATE_INVENTORY.yaml`)
 ### Phase 5: Git Integration
 **Prompt**: `05_git_integration.md`
 - Add git blame analysis
-- Implement churn metrics (90-day window)
+- Implement churn metrics (90 iteration window)
 - Extract top contributors per file/range
 - Add commit history tracking
 

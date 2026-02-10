@@ -109,7 +109,7 @@
     - [x] merge_indices
   - [x] 8 triggers configured
     - [x] file_change (docs/**/*.md)
-    - [x] schedule (daily 2 AM)
+    - [x] schedule (per-iteration 2 AM)
     - [x] comment patterns
     - [x] slash commands
   - [x] Response templates

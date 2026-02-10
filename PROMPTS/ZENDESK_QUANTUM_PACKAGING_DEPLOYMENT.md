@@ -861,7 +861,7 @@ After deployment, run these verification prompts:
 I have 3 Zendesk tickets:
 1. Critical server outage (SLA: 1 hour, complexity: 9/10)
 2. Billing question (SLA: 48 hours, complexity: 2/10)
-3. Feature request (SLA: 7 days, complexity: 5/10)
+3. Feature request (SLA: 7 iterations, complexity: 5/10)
 
 Prioritize these using thermodynamic principles and explain the physics.
 ```

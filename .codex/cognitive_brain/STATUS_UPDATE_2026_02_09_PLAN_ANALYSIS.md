@@ -223,7 +223,7 @@
 | Test Coverage | 72% | 72% | → | ✅ Maintained |
 | Security Vulnerabilities | 0 | 0 | → | ✅ Maintained |
 | CI/CD Health | 95% | 95% | → | ⚠️ Action Required |
-| Documentation Freshness | <7 days | <1 day | ↑ | ✅ Excellent |
+| Documentation Freshness | <7 iterations | <1 iteration | ↑ | ✅ Excellent |
 
 ### Tier 2: Quality Objectives
 | Objective | Previous | Current | Change | Status |

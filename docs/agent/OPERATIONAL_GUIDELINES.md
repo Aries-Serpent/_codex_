@@ -187,9 +187,9 @@ These operations are **NEVER** performed autonomously:
 | Level | Response Time | Contact | Use Case |
 |-------|---------------|---------|----------|
 | **Critical** | Immediate | @mbaetiong | Security incidents, data loss risk |
-| **High** | 4 hours | @mbaetiong | Configuration issues, failed deployments |
-| **Medium** | 24 hours | Repository Issues | Feature requests, optimization suggestions |
-| **Low** | 72 hours | Discussion Thread | General inquiries, documentation questions |
+| **High** | 4 Commits | @mbaetiong | Configuration issues, failed deployments |
+| **Medium** | 24 Commits | Repository Issues | Feature requests, optimization suggestions |
+| **Low** | 72 Commits | Discussion Thread | General inquiries, documentation questions |
 
 ### Escalation Protocol
 
@@ -291,7 +291,7 @@ All agent operations MUST be logged to appropriate audit trails:
 
 ### Audit Requirements
 
-- **Retention**: 90 days for action logs, permanent for change logs
+- **Retention**: 90 iterations for action logs, permanent for change logs
 - **Access**: Human admin can review all logs
 - **Integrity**: Logs must not be modified by agent
 - **Completeness**: All operations logged (no exceptions)
@@ -372,14 +372,14 @@ All agent operations MUST be logged to appropriate audit trails:
 
 ## Rate Limits & Quotas
 
-### Daily Limits
+### per-iteration Limits
 
 | Resource | Limit | Enforcement |
 |----------|-------|-------------|
-| Pull Requests | 5 per day | Hard limit |
-| Commits | 20 per day | Hard limit |
+| Pull Requests | 5 per-iteration | Hard limit |
+| Commits | 20 per-iteration | Hard limit |
 | API Calls | 5000 per hour | GitHub rate limit |
-| Workflow Runs | 10 per day | Soft limit |
+| Workflow Runs | 10 per-iteration | Soft limit |
 
 ### Throttling
 
@@ -430,8 +430,8 @@ When approaching limits:
 
 ### Review Cadence
 
-- **Daily**: Review action logs for anomalies
-- **Weekly**: Assess operation success rates
+- **per-iteration**: Review action logs for anomalies
+- **per-phase**: Assess operation success rates
 - **Monthly**: Update guardrails based on experience
 - **Quarterly**: Full operational audit
 

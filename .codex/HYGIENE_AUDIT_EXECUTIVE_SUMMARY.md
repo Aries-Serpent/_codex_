@@ -13,7 +13,7 @@
 |--------|-------|
 | **Total Issues** | 3,118 |
 | **Files Scanned** | 7,238 (4,266 Python, 2,871 Markdown, 101 YAML) |
-| **Scan Duration** | 75 minutes |
+| **Scan Duration** | 75 Pre-commits |
 | **Critical (P0)** | 0 ✅ All resolved |
 | **High (P1)** | 104 🔴 |
 | **Medium (P2)** | 2,507 🟡 |
@@ -75,7 +75,7 @@
 
 ## 🚀 Recommended Action Plan
 
-### Sprint 1: Security & Usability Quick Wins (1-2 weeks, 8-16 hours)
+### Sprint 1: Security & Usability Quick Wins (1-2 phases, 8-16 hours)
 
 **Focus:** P1 quick wins
 - Root folder Phase 1 cleanup (1-2 hours)
@@ -83,7 +83,7 @@
 
 **Outcome:** Major security validation, improved navigation
 
-### Sprint 2: Code Quality Quick Wins (2-3 weeks, 22-39 hours)
+### Sprint 2: Code Quality Quick Wins (2-3 phases, 22-39 hours)
 
 **Focus:** P2 quick wins
 - Add type hints to public APIs (8-12 hours)
@@ -93,7 +93,7 @@
 
 **Outcome:** Better developer experience, stable CI
 
-### Sprint 3: Comprehensive Improvements (3-4 weeks, 40-60 hours)
+### Sprint 3: Comprehensive Improvements (3-4 phases, 40-60 hours)
 
 **Focus:** Remaining P1 + selected P2
 - Complete root folder cleanup (remaining phases)
@@ -107,7 +107,7 @@
 
 ## 📈 Projected Health Score Improvements
 
-| Milestone | Hours | Health Score | Grade |
+| Milestone | Commits | Health Score | Grade |
 |-----------|-------|--------------|-------|
 | **Current** | 0 | 78/100 | 🟡 Fair |
 | **After Sprint 1** | 8-16 | 83/100 | 🟢 Good |
@@ -210,7 +210,7 @@
 4. 📋 Create GitHub issues for tracking
 5. 📋 Assign ownership for Sprint 1 tasks
 
-### Short-Term (Next 2-4 Weeks)
+### Short-Term (Next 2-4 phases)
 1. Execute Sprint 1: Security & Usability (8-16 hours)
 2. Root folder Phase 1 cleanup
 3. Security audits (eval/exec, shell=True, SQL injection, secrets)

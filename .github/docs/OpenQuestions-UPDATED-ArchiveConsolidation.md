@@ -44,9 +44,9 @@ Recommend: Strategy B (Archive Backup + git mv)
 - Benefit: Full history + recovery capability
 
 **Question 7 (Low): Timeline/Cadence**
-Recommend: Atomic Incremental (3-5 PRs, 2-3 weeks)
-- PR 1: Documentation (1-2 days)
-- PR 2: Configuration (1 day)
-- PR 3: Scripts/Tools (1-2 days)
-- PR 4: Deployment (1 day)
-- PR 5: Cleanup & Summary (1 day)
+Recommend: Atomic Incremental (3-5 PRs, 2-3 phases)
+- PR 1: Documentation (1-2 iterations)
+- PR 2: Configuration (1 iteration)
+- PR 3: Scripts/Tools (1-2 iterations)
+- PR 4: Deployment (1 iteration)
+- PR 5: Cleanup & Summary (1 iteration)

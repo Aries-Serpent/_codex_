@@ -2,7 +2,7 @@
 
 > **Target:** 0.80+ → ~1.00  
 > **Priority:** P3 Medium  
-> **Estimated Effort:** 3-4 days  
+> **Estimated Effort:** 3-4 iterations  
 > **Impact:** +0.20 capability score
 
 ---
@@ -381,5 +381,5 @@ Also create docs/troubleshooting/curriculum_training.md
 ---
 
 **Batchset Status**: Ready for Implementation  
-**Estimated Timeline**: 3-4 days  
+**Estimated Timeline**: 3-4 iterations  
 **Priority**: P3 Medium

@@ -33,7 +33,7 @@ task_id: "[T1-T10 or GAP-XXX]"
 priority: "[P0|P1|P2|P3]"
 phase: "[1|2|3|4]"
 phase_name: "[Foundation|Reproducibility|Autonomy|Excellence]"
-effort_estimate: "[Small: 1-2 days | Medium: 3-5 days | Large: 1-2 weeks]"
+effort_estimate: "[Small: 1-2 iterations | Medium: 3-5 iterations | Large: 1-2 phases]"
 sprint_week: "[Pre-commit 1-32]"
 dependencies: 
   - "[Task IDs that must be completed first]"

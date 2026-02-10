@@ -203,7 +203,7 @@ component_analysis_template:
   recommendation:
     category: "[Quick Win/Strategic/Nice-to-Have/Avoid]"
     priority_score: [calculated score]
-    integration_timeline: "[1 week/1 month/3 months]"
+    integration_timeline: "[1 phase/1 month/3 months]"
     notes: "[Any additional context]"
 ```
 
@@ -315,7 +315,7 @@ quick_win_integration:
     - Monitor metrics
     - Rollback plan ready
     
-  timeline: "1-2 weeks"
+  timeline: "1-2 phases"
 ```
 
 ### Strategic Investment Integration Plan

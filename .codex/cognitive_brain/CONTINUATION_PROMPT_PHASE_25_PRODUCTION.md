@@ -12,7 +12,7 @@ Phase 23-24 implementation is complete with 256+ tests delivered and 70% coverag
 2. Reference PLANSET: `.codex/plans/PLANSET_PHASE_25_COVERAGE_70.md`
 3. Reference Master Guide: `.codex/plans/MASTER_CONTINUATION_PROMPT_PHASES_23_25.md`
 
-## Phase 25 Objectives (2 weeks)
+## Phase 25 Objectives (2 phases)
 
 ### Week 1: Critical Path Testing (80-100 tests)
 **PLAN**:
@@ -78,7 +78,7 @@ pytest --cov=src --cov-report=term-missing --cov-report=html tests/
 # Prioritize by criticality (auth, data persistence, monitoring)
 ```
 
-### Step 3: Phase 25 Week 1 - Critical Path Tests
+### Step 3: Phase 25 phase 1 - Critical Path Tests
 **Target Modules**:
 - `src/auth/` - Authentication and authorization flows
 - `src/persistence/` - Data storage and recovery
@@ -108,7 +108,7 @@ def test_token_expiration_handling():
     pass
 ```
 
-### Step 4: Phase 25 Week 2 - Production Readiness
+### Step 4: Phase 25 phase 2 - Production Readiness
 **Security Validation**:
 - [ ] All authentication flows tested
 - [ ] Authorization checks validated
@@ -184,7 +184,7 @@ def test_token_expiration_handling():
 
 ### Common Issues & Resolutions
 
-**Issue**: Coverage below 70% after Phase 25 Week 1
+**Issue**: Coverage below 70% after Phase 25 phase 1
 **Resolution**:
 1. Run coverage gap analysis
 2. Identify untested critical paths
@@ -216,13 +216,13 @@ def test_token_expiration_handling():
 
 ## PDA Process Integration
 
-### Weekly Cycles
+### per-phase Cycles
 **Week 1 PLAN**: Identify critical paths → **DO**: Add 80-100 tests → **ANALYZE**: Measure coverage
 **Week 2 PLAN**: Identify robustness gaps → **DO**: Add 40-60 tests → **ANALYZE**: Validate production ready
 
 ### AfterMath Analysis Template
 ```markdown
-## Phase 25 Week {N} AfterMath Analysis
+## Phase 25 phase {N} AfterMath Analysis
 
 **Date**: {date}
 **Coverage Achieved**: {percentage}%
@@ -275,7 +275,7 @@ def test_token_expiration_handling():
 **Phase 30** (100%): Complete coverage achieved
 
 ### Continuous Improvement
-- Weekly PDA cycles maintained
+- per-phase PDA cycles maintained
 - AfterMath analysis for each phase
 - Pattern documentation updated
 - Cognitive brain evolution continued
@@ -285,7 +285,7 @@ def test_token_expiration_handling():
 
 ### Available Agents for Phase 25
 ```
-@copilot Use the Coverage Roadmap Agent to execute Phase 25 Week 1 critical path testing.
+@copilot Use the Coverage Roadmap Agent to execute Phase 25 phase 1 critical path testing.
 
 @copilot Use the Coverage Gapfill Agent to identify and fill coverage gaps for authentication and authorization modules.
 
@@ -302,7 +302,7 @@ def test_token_expiration_handling():
 - CI reliability metrics
 - Performance benchmarks
 
-### Weekly Reports
+### per-phase Reports
 - Progress update to PR comment
 - Coverage percentage achieved
 - Test count added

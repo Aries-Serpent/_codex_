@@ -20,10 +20,10 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 |------------|------------|---------------|
 | Pre-commit 1-2, Pre-commit 3-4 | Iteration 1, Iteration 2 | "Iteration 1: Foundation" |
 | Day 1, Day 2 | Commit Step 1, Commit Step 2 | "Commit Step 3: Integration" |
-| Sprint 1-3 (6-9 weeks) | Iteration Cycles 1-3 | "Cycles 1-3 (flexible timeline)" |
-| 2-week timeline | Iteration cycle | "Complete in one iteration cycle" |
-| Weekly milestone | Iteration checkpoint | "Iteration checkpoint review" |
-| Daily tasks | Pre-commit checkpoints | "Pre-commit checkpoint tasks" |
+| Sprint 1-3 (6-9 phases) | Iteration Cycles 1-3 | "Cycles 1-3 (flexible timeline)" |
+| 2 phase timeline | Iteration cycle | "Complete in one iteration cycle" |
+| per-phase milestone | Iteration checkpoint | "Iteration checkpoint review" |
+| per-iteration tasks | Pre-commit checkpoints | "Pre-commit checkpoint tasks" |
 
 ### Phase References
 
@@ -97,7 +97,7 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 ### Before (Week-Based)
 
 ```markdown
-## Timeline: 6-8 Weeks
+## Timeline: 6-8 phases
 
 ### Pre-commit 1-4: Foundation
 - Day 1: Setup
