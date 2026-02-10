@@ -2,13 +2,11 @@
 #
 # Runs comprehensive validation on schedule:
 # - Daily validation of all documentation
-# - Weekly deep validation with external links
 # - Auto-creates issues for problems found
 # - Can auto-create PRs with fixes (if auto-fix enabled)
 #
 # Schedule:
-# - Daily at 00:00 UTC (quick validation)
-# - Weekly on Monday at 00:00 UTC (deep validation)
+# - Daily at 00:00 UTC
 #
 # Manual trigger available via workflow_dispatch
 
@@ -16,10 +14,8 @@ name: Pages Scheduled Validation
 
 on:
   schedule:
-    # Daily at 00:00 UTC (quick validation)
+    # Daily at 00:00 UTC
     - cron: '0 0 * * *'
-    # Weekly on Monday at 00:00 UTC (deep validation)
-    - cron: '0 0 * * 1'
   
   workflow_dispatch:
     inputs:
@@ -326,8 +322,8 @@ jobs:
             # Create backup
             cp "$DASHBOARD" "${DASHBOARD}.bak"
             
-            # Update timestamp
-            sed -i "s/Last Updated:.*$/Last Updated: $(date -u +%Y-%m-%dT%H:%M:%SZ)/" "$DASHBOARD"
+            # Update timestamp (match the actual markdown format with bold)
+            sed -i "s/^> \*\*Last Updated\*\*:.*$/> **Last Updated**: $(date -u +%Y-%m-%dT%H:%M:%SZ)/" "$DASHBOARD"
             
             echo "✅ Dashboard timestamp updated"
           else
@@ -337,6 +333,10 @@ jobs:
       - name: Commit dashboard updates
         if: always() && steps.config.outputs.create_pr == 'true'
         run: |
+          # TODO: PR creation not yet implemented
+          # This step creates a commit but doesn't push or open a PR
+          # Future enhancement: Push to branch and open PR via gh CLI
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
@@ -352,7 +352,7 @@ jobs:
               Timestamp: ${{ steps.config.outputs.timestamp }}
               Validation type: ${{ steps.config.outputs.validation_type }}"
               
-              # Push changes (or create PR)
-              echo "✅ Changes committed"
+              # Push changes (or create PR) - NOT YET IMPLEMENTED
+              echo "✅ Changes committed (local only - push not implemented)"
             fi
           fi

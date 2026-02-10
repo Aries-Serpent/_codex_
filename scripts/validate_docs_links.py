@@ -59,7 +59,6 @@ import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from multiprocessing import cpu_count
 from pathlib import Path
 from typing import Dict, List, Tuple, Set, Optional
 import yaml
@@ -297,7 +296,6 @@ class LinkValidator:
             r'chatgpt\.com/',
         ]
         
-        import re
         for pattern in false_positive_patterns:
             if re.search(pattern, link, re.IGNORECASE):
                 return True
@@ -319,7 +317,6 @@ class LinkValidator:
         # Initialize heading parser if anchor validation is enabled
         if self.validate_anchors:
             print("📖 Parsing markdown headings for anchor validation...")
-            start_time = time.time()
             self.heading_parser = HeadingParser(self.docs_dir)
             # We'll parse headings during markdown validation to maintain cache compatibility
         
@@ -425,21 +422,17 @@ class LinkValidator:
                 self._merge_file_result(file_result)
     
     def _validate_markdown_files_parallel(self, md_files: List[Path], cache: Dict):
-        """Validate files in parallel using ThreadPoolExecutor."""
-        with ThreadPoolExecutor(max_workers=self.workers) as executor:
-            # Submit all files for validation
-            futures = {executor.submit(self._validate_single_file_with_cache, f, cache): f 
-                      for f in md_files}
-            
-            # Collect results as they complete
-            for future in as_completed(futures):
-                try:
-                    file_result = future.result()
-                    if file_result:
-                        self._merge_file_result(file_result)
-                except Exception as e:
-                    md_file = futures[future]
-                    print(f"   ⚠️  Error validating {md_file}: {e}")
+        """Validate files using the same logic as sequential mode.
+        
+        NOTE: This method currently processes files sequentially to avoid
+        unsynchronized access to shared state (cache, counters, heading indexes)
+        from multiple threads. The public API and call sites are preserved so it
+        can be safely updated to a truly parallel implementation in the future.
+        """
+        for md_file in md_files:
+            file_result = self._validate_single_file_with_cache(md_file, cache)
+            if file_result:
+                self._merge_file_result(file_result)
     
     def _validate_single_file_with_cache(self, md_file: Path, cache: Dict) -> Dict:
         """Validate a single file with cache support. Thread-safe."""
@@ -575,7 +568,10 @@ class LinkValidator:
         
         # Check external URLs
         if url.startswith('http://') or url.startswith('https://'):
-            # External link validation not implemented in worker
+            # NOTE: --external and --fix flags have limited effect in worker mode
+            # External validation and auto-fix need to be ported to this worker
+            # Currently external links are skipped (not validated)
+            # TODO: Implement external URL validation (Phase 5)
             return {'skip': False, 'error': None}
         
         # Split URL into path and anchor
@@ -857,7 +853,6 @@ class LinkValidator:
                 print(f"   ⚠️  Duplicate anchor IDs found: {duplicate_count}")
         if not self.strict and self.false_positives_skipped > 0:
             print(f"   False positives skipped: {self.false_positives_skipped}")
-            accuracy_rate = ((self.links_validated - self.false_positives_skipped) / self.links_validated * 100) if self.links_validated > 0 else 0
             print(f"   Actual links checked: {self.links_validated - self.false_positives_skipped}")
             print(f"   False positive filter rate: {self.false_positives_skipped / self.links_validated * 100:.1f}%")
         
