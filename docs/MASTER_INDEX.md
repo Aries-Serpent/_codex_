@@ -74,6 +74,7 @@
 |----------|---------|----------|
 | [runbooks/](runbooks/) | Operational procedures | Ops |
 | [operations/runbooks/README.md](operations/runbooks/README.md) | Operations index | Ops |
+| [operations/pypi-trusted-publishing-setup.md](operations/pypi-trusted-publishing-setup.md) | PyPI OIDC setup guide | DevOps, Ops |
 | [workflows/COPILOT_CONTINUATION_GUIDE.md](workflows/COPILOT_CONTINUATION_GUIDE.md) | Workflow automation | DevOps |
 | [COPILOT_PR_TEMPLATE_USAGE_GUIDE.md](COPILOT_PR_TEMPLATE_USAGE_GUIDE.md) | PR templates | All |
 

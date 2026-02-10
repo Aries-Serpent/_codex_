@@ -420,9 +420,9 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ### Related Repository Documentation
 
-- [Release Process](../admin/RELEASE_CHECKLIST.md)
+- [Release Process](../RELEASE_CHECKLIST.md)
 - [Workflow Documentation](../../.github/workflows/README.md)
-- [Security Best Practices](../security/SECURITY_BEST_PRACTICES.md)
+- [Security Best Practices](../SECURITY_BEST_PRACTICES.md)
 
 ### Support
 
