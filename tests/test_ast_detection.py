@@ -40,7 +40,7 @@ def test_class_extraction():
 class MyClass:
     def method1(self, x):
         return x * 2
-    
+
     def method2(self, x):
         return x + 1
 """

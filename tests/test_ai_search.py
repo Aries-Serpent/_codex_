@@ -26,11 +26,11 @@ def temp_repo(tmp_path):
 
 class TestClass:
     """A test class."""
-    
+
     def method_one(self, arg1):
         """First method."""
         pass
-    
+
     def method_two(self, arg2):
         """Second method."""
         pass

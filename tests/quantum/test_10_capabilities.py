@@ -38,7 +38,7 @@ from src.quantum import (
 class TestCapability1RAGToAgentBridge:
     """
     Capability 1: RAG-to-Agent Bridge Pathway
-    
+
     Tests connection between quantum retrieval and agent orchestration.
     Physics principles: Superposition states, Entanglement
     Cross-references: src.rag.pipelines.*, src.agent.core
@@ -124,7 +124,7 @@ class TestCapability1RAGToAgentBridge:
 class TestCapability2PhysicsToTestingPipeline:
     """
     Capability 2: Physics-to-Testing Pipeline
-    
+
     Uses physics principles for test prioritization.
     Physics principles: Born Rule, Planck-Einstein, Shannon Entropy
     Cross-references: agents.advanced_physics_calculators.py
@@ -196,7 +196,7 @@ class TestCapability2PhysicsToTestingPipeline:
     def test_planck_einstein_energy_calculation(self):
         """
         Test E = ℏω energy calculation (Planck-Einstein relation).
-        
+
         Physics: E = ℏω where ω = 1/execution_time
         """
         test = QuantumTest(
@@ -222,7 +222,7 @@ class TestCapability2PhysicsToTestingPipeline:
 class TestCapability3MCPToQuantumMetrics:
     """
     Capability 3: MCP-to-Quantum Metrics Integration
-    
+
     Integrates telemetry with quantum measurements.
     Physics principles: State transitions, Energy tracking
     Cross-references: src.mcp.metrics.mcp_metrics
@@ -280,7 +280,7 @@ class TestCapability3MCPToQuantumMetrics:
     def test_shannon_entropy_calculation(self):
         """
         Test Shannon entropy: H = -Σ p_i log₂(p_i)
-        
+
         Physics: Information-theoretic entropy for test outcomes
         """
         suite = QuantumTestSuite()
@@ -300,7 +300,7 @@ class TestCapability3MCPToQuantumMetrics:
 class TestCapability4DependencyAwareOrchestration:
     """
     Capability 4: Dependency-Aware Orchestration
-    
+
     Smart scheduling using dependency graphs.
     Physics principles: Topological ordering, Energy minimization
     Cross-references: src.codex.ast.graph.DependencyGraph
@@ -411,7 +411,7 @@ class TestCapability4DependencyAwareOrchestration:
 class TestCapability5AdaptiveLoadingStrategy:
     """
     Capability 5: Adaptive Loading Strategy
-    
+
     Adjusts plugin loading based on system temperature.
     Physics principles: Boltzmann Distribution (exp(-E/kT))
     Cross-references: src.quantum.plugin_registry
@@ -421,7 +421,7 @@ class TestCapability5AdaptiveLoadingStrategy:
     def test_temperature_adaptation(self, temperature):
         """
         Test adaptive loading at different temperatures.
-        
+
         Physics: Boltzmann distribution P ∝ exp(-E/kT)
         Low T = selective, High T = permissive
         """

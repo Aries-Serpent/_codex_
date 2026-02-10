@@ -192,23 +192,23 @@ def test_detect_multiple_safeguards():
 def secure_operation(data, confirm=False, dry_run=False):
     # Sanitize input
     data = sanitize(data)
-    
+
     # Validate
     if not validate(data):
         return False
-    
+
     # Check bounds
     if len(data) > MAX_SIZE:
         return False
-    
+
     # Confirm before action
     if not confirm:
         return prompt_user()
-    
+
     # Support dry-run
     if dry_run:
         return simulate(data)
-    
+
     try:
         execute(data)
     except Exception:

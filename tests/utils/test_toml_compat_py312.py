@@ -72,7 +72,7 @@ testpaths = ["tests"]
     def test_handles_binary_mode(self, tmp_path):
         """
         Verify binary mode requirement for tomllib.
-        
+
         tomllib requires files to be opened in binary mode,
         unlike some other TOML parsers.
         """
@@ -231,7 +231,7 @@ class TestPython312TomlFeatures:
     def test_tomllib_load_performance(self, tmp_path):
         """
         Test tomllib performance in Python 3.12.
-        
+
         Python 3.12 has optimized tomllib implementation.
         """
         import time

@@ -46,7 +46,7 @@ class TestExceptionGroups:
     def test_except_star_syntax(self):
         """
         Test except* syntax for handling ExceptionGroup (Python 3.11+, standard in 3.12).
-        
+
         The except* syntax allows catching specific exception types
         from an ExceptionGroup.
         """
@@ -106,7 +106,7 @@ class TestPython312ExceptionImprovements:
     def test_improved_error_messages(self):
         """
         Test that Python 3.12 provides improved error messages.
-        
+
         Python 3.12 has enhanced error messages for better debugging.
         """
         # Test attribute error
@@ -120,7 +120,7 @@ class TestPython312ExceptionImprovements:
     def test_exception_notes(self):
         """
         Test exception notes feature (Python 3.11+).
-        
+
         Python 3.11+ allows adding notes to exceptions with add_note().
         """
         try:
@@ -143,7 +143,7 @@ class TestCodexMLExceptionHandling:
     def test_no_exception_group_usage_in_codebase(self):
         """
         Verify if codebase uses ExceptionGroup.
-        
+
         Search for ExceptionGroup usage in the codebase.
         If not used, this is informational.
         """

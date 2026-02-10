@@ -31,7 +31,7 @@ from security.tls_config import (
 @pytest.fixture
 def temp_cert_dir():
     """Create temporary directory for test certificates.
-    
+
     Preferred pattern for certificate testing. Use this fixture instead of
     direct tempfile.TemporaryDirectory() calls for consistency.
     """

@@ -198,13 +198,13 @@ class TestREADMEValidator:
         validator = READMEValidator()
         content = """
         # My Project
-        
+
         ## Installation
         pip install myproject
-        
+
         ## Usage
         import myproject
-        
+
         ## Requirements
         Python 3.8+
         """

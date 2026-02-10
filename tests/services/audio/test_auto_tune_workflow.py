@@ -34,7 +34,7 @@ class TestAutoTuneWorkflow:
 
     def test_process_path_with_files(self, tmp_path):
         """Test processing directory with audio files.
-        
+
         Note: Uses text data for simplicity in unit tests. The workflow logic
         being tested (file discovery, result aggregation) doesn't require actual
         audio decoding. For integration tests that validate audio processing

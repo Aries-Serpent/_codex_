@@ -19,18 +19,18 @@ def safe_extract_tarfile(
     members: Optional[list] = None,
 ) -> None:
     """Safely extract tarfile preventing path traversal attacks.
-    
+
     Security: Validates all paths before extraction to prevent directory traversal
     attacks (e.g., files with names like '../../../etc/passwd').
-    
+
     Args:
         tar_path: Path to the tarfile to extract
         extract_to: Directory to extract files to
         members: Optional list of specific members to extract (None = all)
-    
+
     Raises:
         ValueError: If any member path attempts to traverse outside extract directory
-        
+
     Example:
         >>> safe_extract_tarfile(Path("archive.tar.gz"), Path("/tmp/extract"))
     """
@@ -70,12 +70,12 @@ def safe_extract_tarfile(
 
 def safe_create_file(path: Path, mode: int = 0o600, *, exist_ok: bool = False) -> None:
     """Create file with secure permissions.
-    
+
     Args:
         path: Path to file to create
         mode: Permission mode (default: 0o600 for secure files)
         exist_ok: If True, don't raise error if file exists
-        
+
     Security Note: Default changed from 0o644 to 0o600 to prevent world-readable files.
     """
     if path.exists() and not exist_ok:

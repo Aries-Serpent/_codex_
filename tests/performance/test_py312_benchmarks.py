@@ -24,7 +24,7 @@ class TestPython312Performance:
     def test_dict_operations_faster(self):
         """
         Verify dict operations leverage 3.12 speedups.
-        
+
         Python 3.12 has optimized dict implementation.
         """
         iterations = 10000
@@ -45,7 +45,7 @@ class TestPython312Performance:
     def test_comprehension_inlining(self):
         """
         Test list/dict comprehension performance (3.12 optimization).
-        
+
         Python 3.12 inlines comprehensions for better performance.
         """
         iterations = 1000
@@ -68,7 +68,7 @@ class TestPython312Performance:
     def test_import_time_improved(self):
         """
         Verify module import times are improved.
-        
+
         Python 3.12 has faster import machinery.
         """
         import importlib
@@ -98,7 +98,7 @@ class TestPython312Performance:
     def test_function_call_performance(self):
         """
         Test function call performance.
-        
+
         Python 3.12 has optimizations for function calls.
         """
         def simple_func(a, b, c=10):

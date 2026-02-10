@@ -170,13 +170,13 @@ class TestDocstringExamples:
         """Test that docstring examples follow correct format."""
         example_docstring = '''
         Load a dataset from disk.
-        
+
         Args:
             path: Path to the dataset file.
-            
+
         Returns:
             The loaded dataset.
-            
+
         Example:
             >>> dataset = load_dataset("train.json")
             >>> len(dataset)
@@ -189,7 +189,7 @@ class TestDocstringExamples:
         """Test that class docstring examples follow correct format."""
         example_docstring = '''
         A trainer for fine-tuning language models.
-        
+
         Example:
             >>> trainer = Trainer(model, config)
             >>> trainer.train()
@@ -201,7 +201,7 @@ class TestDocstringExamples:
         """Test that module docstrings have descriptions."""
         example_module_docstring = '''
         This module provides utilities for data loading and processing.
-        
+
         It includes functions for:
         - Loading datasets from various formats
         - Validating data schemas
@@ -319,7 +319,7 @@ model:
   name: gpt2
   hidden_size: 768
   num_layers: 12
-  
+
 training:
   epochs: 10
   batch_size: 32

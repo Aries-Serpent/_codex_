@@ -311,7 +311,7 @@ class TestReproducibility:
         self, sample_training_config, sample_dataset
     ) -> None:
         """Test that training is reproducible with same seed.
-        
+
         Note: Add @pytest.mark.determinism when implementing actual test logic.
         """
         sample_training_config["seed"] = 42
@@ -324,7 +324,7 @@ class TestReproducibility:
     @pytest.mark.skip(reason="Placeholder test - implement when model module is ready")
     def test_model_output_is_deterministic(self, mock_model) -> None:
         """Test that model output is deterministic.
-        
+
         Note: Add @pytest.mark.determinism when implementing actual test logic.
         """
         # torch.manual_seed(42)

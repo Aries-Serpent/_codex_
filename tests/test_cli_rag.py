@@ -3,7 +3,7 @@ Tests for RAG CLI commands
 
 Comprehensive test coverage for:
 - Building indices
-- Querying indices  
+- Querying indices
 - Listing indices
 - Deleting indices
 - Merging indices

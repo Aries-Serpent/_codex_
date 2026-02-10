@@ -40,10 +40,10 @@ def test_python_adapter_parse_class():
     source = """
 class TestClass:
     \"\"\"A test class.\"\"\"
-    
+
     def method1(self):
         pass
-    
+
     def method2(self, arg1: str) -> int:
         return 42
 """
@@ -152,7 +152,7 @@ def test_python_adapter_get_stats():
 class MyClass:
     def method1(self):
         pass
-    
+
     def method2(self):
         pass
 
@@ -180,7 +180,7 @@ class OuterClass:
     class InnerClass:
         def inner_method(self):
             pass
-    
+
     def outer_method(self):
         pass
 """
@@ -200,7 +200,7 @@ def test_python_adapter_extract_docstring():
 def documented_function():
     """
     This is a comprehensive docstring.
-    
+
     It has multiple lines.
     """
     pass

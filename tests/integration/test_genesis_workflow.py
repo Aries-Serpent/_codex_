@@ -252,7 +252,7 @@ class TestGenesisWorkflowArtifacts:
 
     def test_pyproject_security_updates(self, repo_root):
         """Test that pyproject.toml has security updates applied.
-        
+
         Uses minimum version checks to allow for future security updates.
         """
         import re

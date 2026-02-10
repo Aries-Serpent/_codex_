@@ -82,7 +82,7 @@ from {self.spec.module_path} import {self.spec.class_name}
 
 class Test{self.spec.class_name}_{self.spec.method_name}:
     """Comprehensive test suite for {self.spec.method_name} orchestration flow."""
-    
+
 '''
 
         fixtures = self._generate_fixtures()
@@ -101,7 +101,7 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
     def {fixture}(self):
         """Fixture for {fixture}."""
         return Mock()
-    
+
 '''
 
         return fixture_code
@@ -111,19 +111,19 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
         inputs_str = ", ".join(f"{k}=..." for k in self.spec.inputs.keys())
 
         return f'''    # ========== HAPPY PATH TESTS ==========
-    
+
     def test_{self.spec.method_name}_happy_path(self):
         """Test successful execution through all {len(self.spec.stages)} stages."""
         # Arrange
         orchestrator = {self.spec.class_name}()
-        
+
         # Act
         result = orchestrator.{self.spec.method_name}({inputs_str})
-        
+
         # Assert
         assert result is not None
         # TODO: Add specific assertions for outputs
-    
+
 '''
 
     def _generate_edge_case_tests(self) -> str:
@@ -136,7 +136,7 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
         """Test {self.spec.method_name} with {edge_case} scenario."""
         # TODO: Implement {edge_case} test
         pass
-    
+
 '''
 
         return tests
@@ -144,12 +144,12 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
     def _generate_failure_tests(self) -> str:
         """Generate failure scenario tests."""
         return f'''    # ========== FAILURE SCENARIO TESTS ==========
-    
+
     def test_{self.spec.method_name}_invalid_input(self):
         """Test proper error handling for invalid input."""
         # TODO: Implement failure test
         pass
-    
+
     def test_{self.spec.method_name}_exception_handling(self):
         """Test exception handling in {self.spec.method_name}."""
         # TODO: Implement exception test
@@ -172,6 +172,6 @@ Test Categories:
   - Happy Path: 1 test
   - Edge Cases: {len(self.spec.edge_cases)} tests
   - Failure Scenarios: 2 tests
-  
+
 Total Estimated Tests: {3 + len(self.spec.edge_cases)}
 """

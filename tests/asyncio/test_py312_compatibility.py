@@ -21,7 +21,7 @@ class TestAsyncioCompatibility:
     async def test_no_deprecated_event_loop_calls(self):
         """
         Verify no usage of deprecated get_event_loop().
-        
+
         Python 3.12 deprecates asyncio.get_event_loop() in favor of
         asyncio.get_running_loop() within async contexts.
         """
@@ -149,7 +149,7 @@ class TestAsyncDataLoaders:
     async def test_async_pattern_no_event_loop_warning(self):
         """
         Test that async patterns don't trigger event loop warnings.
-        
+
         Python 3.12 warns about using asyncio.get_event_loop() outside
         of async contexts. This test ensures our code doesn't trigger that.
         """

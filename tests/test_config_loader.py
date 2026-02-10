@@ -48,7 +48,7 @@ config_errors:
     message: "Missing configuration file"
     severity: "error"
     resolution: "Ensure the configuration file exists"
-    
+
   invalid_config:
     code: "CONFIG_002"
     message: "Invalid configuration format"

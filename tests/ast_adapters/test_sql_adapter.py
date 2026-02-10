@@ -52,8 +52,8 @@ class TestSQLASTAdapter:
     def test_parse_select_with_join(self, adapter):
         """Test parsing SELECT with JOIN."""
         sql = """
-        SELECT u.id, u.name, p.title 
-        FROM users u 
+        SELECT u.id, u.name, p.title
+        FROM users u
         JOIN posts p ON u.id = p.user_id
         """
         root = adapter.parse(sql)
@@ -145,8 +145,8 @@ class TestSQLASTAdapter:
     def test_get_tables(self, adapter):
         """Test extracting table names."""
         sql = """
-        SELECT u.name, p.title 
-        FROM users u, posts p 
+        SELECT u.name, p.title
+        FROM users u, posts p
         WHERE u.id = p.user_id
         """
         adapter.parse(sql)
@@ -229,7 +229,7 @@ class TestSQLASTAdapter:
     def test_parse_complex_select(self, adapter):
         """Test parsing complex SELECT with subquery."""
         sql = """
-        SELECT u.id, u.name, 
+        SELECT u.id, u.name,
                (SELECT COUNT(*) FROM posts WHERE user_id = u.id) as post_count
         FROM users u
         WHERE u.active = 1
