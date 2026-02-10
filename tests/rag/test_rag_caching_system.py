@@ -2,7 +2,7 @@
 
 Comprehensive testing for RAG caching layer:
 - Embedding cache
-- Document cache  
+- Document cache
 - Query result cache
 - Cache invalidation
 - Cache persistence

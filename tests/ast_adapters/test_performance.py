@@ -8,7 +8,7 @@ measure parsing speed and memory efficiency.
 Performance Targets:
 - Python: <2s for 10KB+ file (500+ functions)
 - YAML: <500ms for 1000+ keys
-- JSON: <1s for 10000+ items  
+- JSON: <1s for 10000+ items
 - SQL: <1s for 100+ tables
 """
 

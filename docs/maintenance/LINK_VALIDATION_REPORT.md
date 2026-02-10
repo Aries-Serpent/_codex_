@@ -1,6 +1,34 @@
 # Documentation Link Validation Report
-**Total Files**: 1292
-**Broken Links**: 321
+
+> **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
+> 
+> **Current Status**: As of 2026-02-10, enhanced validation system deployed with:
+> - Smart false positive filtering (reduces noise by 93%)
+> - Code block detection to skip examples
+> - Pattern-based exclusions for code syntax
+> 
+> **Latest Results**: Only 5 errors (all acceptable/documented)
+> 
+> Run current validation:
+> ```bash
+> python scripts/validate_docs_links.py
+> ```
+> 
+> See: `.codex/validation_categorization_report.md` for current analysis
+
+---
+
+## Historical Report (Archived)
+
+**Report Date**: ~2025-2026 (Pre-Enhancement)  
+**Total Files**: 1292  
+**Broken Links**: 321 (includes many false positives)
+
+**Note**: This report contains numerous false positives including:
+- Regex patterns (e.g., `["\']([^"\']+)`)
+- Code examples (e.g., `ClassName(config)`)
+- Python syntax (e.g., `state["inputs"]`)
+- Blob URLs from external sources
 
 ---
 

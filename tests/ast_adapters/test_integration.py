@@ -176,7 +176,7 @@ def function2():
 class MyClass:
     def method1(self):
         pass
-    
+
     def method2(self):
         pass
 """
@@ -277,10 +277,10 @@ class TestRealWorldUsage:
 def greet(name: str) -> str:
     """
     Greet someone by name.
-    
+
     Args:
         name: The person's name
-        
+
     Returns:
         Greeting message
     """
@@ -301,7 +301,7 @@ def greet(name: str) -> str:
 app:
   name: MyApplication
   version: 1.0.0
-  
+
 server:
   host: 0.0.0.0
   port: 8000

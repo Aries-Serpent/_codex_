@@ -78,7 +78,7 @@ Available: 99 MB
         return """
 pytest tests/rag/ -v
 test_rag_query_basic PASSED
-test_rag_embedding_generation 
+test_rag_embedding_generation
 Error: Timeout after 300 seconds
 """
 
@@ -273,7 +273,7 @@ def test_pattern_coverage(failure_type, expected_pattern):
 def test_accuracy_benchmark():
     """
     Benchmark test: Validate 85%+ accuracy on historical data
-    
+
     This test should be run against a dataset of historical CI failures
     to validate the agent's accuracy meets the target threshold.
     """

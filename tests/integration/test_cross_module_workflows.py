@@ -322,7 +322,7 @@ class TestPluginDiscoveryLifecycle:
 class TestPlugin:
     def __init__(self):
         self.name = "test_plugin"
-    
+
     def execute(self):
         return "plugin executed"
 """

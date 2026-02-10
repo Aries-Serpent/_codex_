@@ -37,7 +37,7 @@ def is_known_error(stderr: str) -> bool:
 
 def test_audit_pipeline_produces_artifacts():
     """Test that the audit pipeline produces expected artifacts.
-    
+
     This test is expected to skip in CI environments where:
     - The audit module dependencies are not fully installed
     - The script runs but produces no artifacts (expected in minimal environments)

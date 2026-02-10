@@ -88,7 +88,7 @@ class TestFeatureSupport:
 
     def test_supports_feature_invalid_input(self):
         """Test defensive handling of invalid inputs.
-        
+
         Note: The function defensively handles invalid types even though
         they're not in the signature. This tests runtime robustness.
         """

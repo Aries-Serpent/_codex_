@@ -101,7 +101,7 @@ class TestAttentionScorer:
     @pytest.fixture
     def mock_model(self):
         """Provide fresh mock transformer model for each test.
-        
+
         Returns:
             MockTransformerModel: Configured with 2 layers, 4 heads, 10 sequence length
         """

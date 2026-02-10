@@ -60,7 +60,7 @@ class TestPython312TypeHints:
     def test_no_future_annotations_needed(self):
         """
         Verify __future__ annotations still work in 3.12.
-        
+
         The `from __future__ import annotations` should still be
         compatible and functional in Python 3.12.
         """
@@ -143,10 +143,10 @@ class TestGenericTypeHints:
     def test_pep_695_type_parameter_syntax(self):
         """
         Test PEP 695 type parameter syntax (Python 3.12+).
-        
+
         Python 3.12 introduces new syntax for generic types:
         def func[T](x: T) -> T: ...
-        
+
         This is more concise than TypeVar.
         """
         # Note: This syntax is only available in Python 3.12+
@@ -213,7 +213,7 @@ class TestPython312SpecificFeatures:
     def test_improved_error_messages(self):
         """
         Test that Python 3.12 provides better type error messages.
-        
+
         This is more of a demonstration than a functional test.
         """
         def typed_func(x: int) -> str:

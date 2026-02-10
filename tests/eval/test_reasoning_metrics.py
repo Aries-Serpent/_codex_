@@ -54,7 +54,7 @@ def test_critique_density_structured():
         1. First step
         2. Second step
         Therefore, the answer is X.
-        
+
         For example, consider Y.
         However, note that Z.
         """
@@ -128,7 +128,7 @@ def test_explanation_depth():
         - Because A
         - Therefore B
         - Thus C
-        
+
         Proof:
         1. Start with X
           1.1. Sub-step

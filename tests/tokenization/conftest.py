@@ -371,7 +371,7 @@ if _SPM_STUB_FLAG:
 def no_sentencepiece(monkeypatch):
     """
     Fixture to simulate missing sentencepiece module for import error testing.
-    
+
     Temporarily sets the sentencepiece_adapter's spm attribute to None,
     simulating an ImportError condition for testing fallback behavior.
     """

@@ -37,10 +37,10 @@ except (ImportError, AttributeError):
 def is_cuda_available() -> bool:
     """
     Check if CUDA is available and functional.
-    
+
     Returns:
         bool: True if CUDA/GPU is available, False otherwise
-        
+
     Note:
         This function is used by test skip decorators to gracefully handle
         GPU-dependent tests in CPU-only CI environments.
@@ -65,7 +65,7 @@ def pytest_configure(config: pytest.Config) -> None:
     an unnecessary failure. This hook disables coverage enforcement and raises
     the fail-under floor to zero for collection-only invocations while keeping
     the existing defaults for actual test runs.
-    
+
     Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
     # Configure PyTorch to use CPU device globally to prevent meta tensor issues
@@ -502,16 +502,16 @@ def rag_test_config():
 def disable_torch_profiler():
     """
     Disable PyTorch profiler to prevent type errors in Torch 2.6.0.
-    
+
     Issue: PyTorch 2.6.0 profiler has breaking changes in type checking
     for ScriptObject vs _RecordFunction, causing RuntimeError in tests.
-    
+
     Solution: Multi-layered profiler disabling:
     1. Environment variable
     2. Direct C++ profiler API
     3. Python-level profiler context override (no restoration needed - test env only)
     4. Global state manipulation
-    
+
     Note: Original functions are not restored as this is a test-only fixture
     and the modifications are intentionally persistent for the entire test session.
     """
@@ -607,7 +607,7 @@ def disable_torch_profiler():
 def mock_json_serializable():
     """
     Helper fixture to make MagicMock objects JSON serializable.
-    
+
     Usage:
         def test_example(mock_json_serializable):
             mock_obj = MagicMock()
@@ -832,7 +832,7 @@ def mock_sentence_transformer(monkeypatch):
     """
     Enhanced mock SentenceTransformer to avoid actual model downloads in tests.
     Use this fixture when you want to test RAG logic without loading real models.
-    
+
     Improvements (2026-02-10):
     - Added get_sentence_embedding_dimension() method
     - Enhanced encode() to handle kwargs properly
@@ -921,7 +921,7 @@ def mock_sentence_transformer(monkeypatch):
 def setup_audit_artifacts(tmp_path_factory):
     """
     Create audit_artifacts directory for tests using pytest's temporary directory system.
-    
+
     This fixture runs once per test session and ensures the directory
     structure required by depth gating tests exists in an isolated temp location.
     Sets the CODEX_AUDIT_DIR environment variable to point to the temporary directory.
@@ -970,16 +970,16 @@ def setup_audit_artifacts(tmp_path_factory):
 @pytest.fixture(scope="session", autouse=True)
 def session_resource_manager():
     """Manage resources across entire test session to prevent exhaustion.
-    
+
     This fixture addresses the resource exhaustion crash at 57% test completion
     (Job 62915466799) that blocked 474+ tests from running.
-    
+
     Features:
     - Tracks initial open files
     - Monitors resource usage
     - Reports leaks at session end
     - Forces garbage collection
-    
+
     See: .codex/COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
     """
     import gc
@@ -1027,13 +1027,13 @@ def session_resource_manager():
 @pytest.fixture(autouse=True)
 def protect_stderr():
     """Protect stderr/stdout from being closed or corrupted.
-    
+
     This fixture prevents the "lost sys.stderr" fatal error that terminated
     the test run at 57% completion.
-    
+
     Issue: Tests were modifying or closing sys.stderr without restoration,
     causing subsequent tests to fail with I/O errors.
-    
+
     Solution: Save and restore stderr/stdout for every test.
     """
     import sys
@@ -1082,10 +1082,10 @@ def protect_stderr():
 @pytest.fixture(autouse=True)
 def force_file_cleanup():
     """Force cleanup of file handles after each test.
-    
+
     This fixture addresses file handle leaks that accumulated over 48 minutes
     of test execution, eventually exhausting available file descriptors.
-    
+
     Strategy:
     - Force garbage collection after each test
     - Explicitly close lingering file objects
@@ -1155,15 +1155,15 @@ def force_file_cleanup():
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_protocol(item, nextitem):
     """Monitor resources during test execution.
-    
+
     This hook tracks file handles and memory usage per test, providing warnings
     when leaks are detected. This enables early identification of problematic tests
     before they accumulate and cause session-level failures.
-    
+
     Warnings are issued when:
     - File handles increase by more than 5
     - Memory usage increases by more than 20%
-    
+
     See: .codex/TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 2
     """
     import warnings

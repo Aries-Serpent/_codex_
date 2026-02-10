@@ -34,7 +34,7 @@ class TestSwarmIntegration(unittest.TestCase):
         expected_behavior = """
         swarm = SwarmEngine(100)
         assert swarm.agent_count() == 100
-        
+
         # Process batch
         processed = swarm.process_batch(1000)
         assert processed == 1000
@@ -50,16 +50,16 @@ class TestSwarmIntegration(unittest.TestCase):
         expected_test = """
         import time
         from codex_swarm import SwarmEngine
-        
+
         swarm = SwarmEngine(500)
         task_count = 10_000
-        
+
         tasks = [{"id": i, "type": "process"} for i in range(task_count)]
-        
+
         start_time = time.time()
         results = swarm.process_tasks(tasks)
         duration = time.time() - start_time
-        
+
         # Validate
         assert len(results) == task_count
         throughput = task_count / duration
@@ -71,18 +71,18 @@ class TestSwarmIntegration(unittest.TestCase):
         """Test compression in full pipeline."""
         expected_test = """
         from codex_swarm import Compression
-        
+
         # Create task data
         tasks = [{"id": i, "data": "x" * 1000} for i in range(100)]
         tasks_json = json.dumps(tasks).encode()
-        
+
         # Compress
         compressed = Compression.compress(tasks_json)
         ratio = len(tasks_json) / len(compressed)
-        
+
         # Decompress
         decompressed = Compression.decompress(compressed)
-        
+
         assert decompressed == tasks_json
         assert ratio >= 10, f"Compression ratio: {ratio:.1f}x"
         """
@@ -93,18 +93,18 @@ class TestSwarmIntegration(unittest.TestCase):
         expected_test = """
         import concurrent.futures
         from codex_swarm import SwarmEngine
-        
+
         swarm = SwarmEngine(500)
-        
+
         def worker(worker_id):
             tasks = [{"worker": worker_id, "task": i} for i in range(100)]
             results = swarm.process_tasks(tasks)
             return all(r["success"] for r in results)
-        
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             futures = [executor.submit(worker, i) for i in range(10)]
             results = [f.result() for f in concurrent.futures.as_completed(futures)]
-        
+
         assert all(results), "All workers should succeed"
         """
         self.assertIsNotNone(expected_test)
@@ -113,9 +113,9 @@ class TestSwarmIntegration(unittest.TestCase):
         """Test error handling and recovery."""
         expected_test = """
         from codex_swarm import SwarmEngine
-        
+
         swarm = SwarmEngine(500)
-        
+
         # Mix valid and invalid tasks
         tasks = []
         for i in range(1000):
@@ -123,14 +123,14 @@ class TestSwarmIntegration(unittest.TestCase):
                 tasks.append({"id": i, "type": "invalid"})
             else:
                 tasks.append({"id": i, "type": "normal"})
-        
+
         results = swarm.process_tasks(tasks)
-        
+
         # System should handle errors gracefully
         assert len(results) == 1000
         successful = sum(1 for r in results if r["success"])
         assert successful >= 900, "Most tasks should succeed"
-        
+
         # Verify system still responsive
         recovery_tasks = [{"id": i} for i in range(100)]
         recovery_results = swarm.process_tasks(recovery_tasks)
@@ -146,13 +146,13 @@ class TestTaskManagerIntegration(unittest.TestCase):
         """Test complete task lifecycle."""
         expected_test = """
         from codex_swarm import TaskManager
-        
+
         manager = TaskManager()
-        
+
         # Submit task
         task_id = manager.submit_task("test_task")
         assert isinstance(task_id, int)
-        
+
         # Retrieve result
         result = manager.get_result(timeout=1.0)
         assert result is not None

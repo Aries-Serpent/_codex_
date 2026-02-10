@@ -198,7 +198,7 @@ def test_javascript_normalizer_removes_multiline_comments():
     normalizer = JavaScriptNormalizer()
 
     code_with_comment = """function hello() {
-    /* This is a 
+    /* This is a
        multi-line comment */
     console.log('hello');
 }

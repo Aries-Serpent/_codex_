@@ -27,7 +27,7 @@ def temp_dataset(tmp_path):
 
 class TestClass:
     """A test class."""
-    
+
     def method(self, arg):
         """A method."""
         return arg * 2
