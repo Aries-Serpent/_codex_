@@ -179,6 +179,39 @@ class LinkValidator:
             
             if similar:
                 error["suggestions"] = similar
+                
+                # Auto-fix if confidence is high and auto_fix enabled
+                if self.auto_fix and len(similar) == 1:
+                    best_match = similar[0]
+                    # Calculate relative path from md_file to suggested file
+                    suggested_file = self.docs_dir / best_match
+                    try:
+                        # Get relative path
+                        rel_path = suggested_file.relative_to(md_file.parent)
+                        new_url = str(rel_path)
+                        
+                        # Apply the fix
+                        content = md_file.read_text(encoding='utf-8')
+                        # Replace the broken link
+                        old_link = f']({url})'
+                        new_link = f']({new_url})'
+                        
+                        if old_link in content:
+                            new_content = content.replace(old_link, new_link, 1)
+                            md_file.write_text(new_content, encoding='utf-8')
+                            
+                            fix = {
+                                "file": str(md_file.relative_to(self.root_dir)),
+                                "line": line_num,
+                                "old_url": url,
+                                "new_url": new_url,
+                                "message": f"Fixed broken link: {url} → {new_url}"
+                            }
+                            self.fixes_applied.append(fix)
+                            return  # Don't add to errors if fixed
+                    except Exception as e:
+                        # If auto-fix fails, continue to add as error
+                        error["auto_fix_error"] = str(e)
             
             self.errors.append(error)
     
