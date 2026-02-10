@@ -3,6 +3,8 @@
 **Date**: 2026-02-09  
 **Package**: codex-ml  
 **Version**: 0.1.0 Pre-Release  
+**Release**: [pre-release_v0.1.0](https://github.com/Aries-Serpent/_codex_/releases/tag/pre-release_v0.1.0)  
+**Git Tag**: `pre-release_v0.1.0`  
 **Status**: ✅ Complete
 
 ---

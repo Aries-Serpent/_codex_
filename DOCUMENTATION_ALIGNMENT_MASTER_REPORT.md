@@ -2,6 +2,8 @@
 
 **Date**: 2026-02-10  
 **Status**: ✅ **COMPLETE - PRODUCTION READY**  
+**Release**: [pre-release_v0.1.0](https://github.com/Aries-Serpent/_codex_/releases/tag/pre-release_v0.1.0)  
+**Git Tag**: `pre-release_v0.1.0`  
 **Branch**: `copilot/setup-pypi-trusted-publishing`
 
 ---

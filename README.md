@@ -1,6 +1,8 @@
 # `_codex_` (codex-ml)
 > 🏆 **v0.1.0 Pre-Release** - Level 4 MLOps Certified ML platform with 1300+ tests, 90% coverage, 26 CVEs fixed, and 53 autonomous agents
 
+**📦 Release**: [pre-release_v0.1.0](https://github.com/Aries-Serpent/_codex_/releases/tag/pre-release_v0.1.0) | **📥 Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/pre-release_v0.1.0/_codex_.v0.1.0.zip)
+
 ![Version](https://img.shields.io/badge/version-0.1.0--pre--release-blue)
 ![Tests](https://img.shields.io/badge/tests-1300%2B%20total%20%7C%20Phase%2014--18%20Complete-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-90%25%20threshold-brightgreen)
