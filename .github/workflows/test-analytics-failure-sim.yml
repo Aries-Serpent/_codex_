@@ -22,15 +22,15 @@ permissions:
 jobs:
   simulate-failure:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Simulate Failure
         run: |
           echo "Simulating failure type: ${{ github.event.inputs.failure_type }}"
-          
+
           case "${{ github.event.inputs.failure_type }}" in
             import_error)
               echo "Simulating ImportError..."
@@ -54,7 +54,7 @@ jobs:
               exit 1
               ;;
           esac
-      
+
       - name: Cleanup
         if: always()
         run: echo "Test failure simulation complete"
