@@ -249,7 +249,7 @@ application:
         assert len(all_nodes) > 10  # Should have many nodes
 
         # Verify we can navigate to deep values
-        host = adapter.get_value_at_path("application.environments.production.servers")
+        adapter.get_value_at_path("application.environments.production.servers")
         # Note: path won't work for sequences, but structure is valid
 
     def test_traverse_empty_adapter(self, adapter):
@@ -334,7 +334,7 @@ database:
   host: localhost  # Hostname
   port: 5432       # Default PostgreSQL port
 """
-        root = adapter.parse(yaml_source)
+        adapter.parse(yaml_source)
 
         # Comments should be ignored, structure should be valid
         host = adapter.get_value_at_path("database.host")

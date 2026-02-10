@@ -95,13 +95,13 @@ class TestCrossAdapterIntegration:
         assert len(py_stats) > 0
 
         # YAML
-        yaml_root = yaml_adapter.parse("key: value")
+        yaml_adapter.parse("key: value")
         yaml_stats = yaml_adapter.get_stats()
         assert isinstance(yaml_stats, dict)
         assert len(yaml_stats) > 0
 
         # JSON
-        json_root = json_adapter.parse('{"key": "value"}')
+        json_adapter.parse('{"key": "value"}')
         json_stats = json_adapter.get_stats()
         assert isinstance(json_stats, dict)
         assert len(json_stats) > 0
@@ -111,7 +111,7 @@ class TestCrossAdapterIntegration:
     ):
         """Test that YAML and JSON adapters handle similar data structures"""
         # YAML
-        yaml_root = yaml_adapter.parse("""
+        yaml_adapter.parse("""
 config:
   host: localhost
   port: 5432
@@ -119,7 +119,7 @@ config:
         yaml_mappings = yaml_adapter.find_nodes_by_type("mapping")
 
         # JSON equivalent
-        json_root = json_adapter.parse('''
+        json_adapter.parse('''
 {
     "config": {
         "host": "localhost",
