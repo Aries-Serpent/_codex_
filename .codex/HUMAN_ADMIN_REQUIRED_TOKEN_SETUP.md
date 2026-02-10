@@ -286,13 +286,13 @@ gh run list --limit 5
 
 | Task | Estimated Time | Complexity |
 |------|----------------|------------|
-| Generate CODEX_MASTER_KEY | 2 Pre-commits | Low |
-| Inject CODEX_MASTER_KEY | 3 Pre-commits | Low |
-| Create ORG_MASTER_KEY (PAT) | 5 Pre-commits | Medium |
-| Inject ORG_MASTER_KEY | 3 Pre-commits | Low |
-| Configure larger runners | 10 Pre-commits | Medium |
-| Enable audit logging | 5 Pre-commits | Low |
-| Verify all configurations | 10 Pre-commits | Low |
+| Generate CODEX_MASTER_KEY | 2 minutes | Low |
+| Inject CODEX_MASTER_KEY | 3 minutes | Low |
+| Create ORG_MASTER_KEY (PAT) | 5 minutes | Medium |
+| Inject ORG_MASTER_KEY | 3 minutes | Low |
+| Configure larger runners | 10 minutes | Medium |
+| Enable audit logging | 5 minutes | Low |
+| Verify all configurations | 10 minutes | Low |
 | **Total** | **~40 minutes** | **Low-Medium** |
 
 ---

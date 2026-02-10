@@ -261,8 +261,8 @@ similar_projects = architect.find_similar_projects(
 
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
-| Documentation Time | 4 Commits | 30 min | -87% |
-| Onboarding Time | 2 iterations | 4 Commits | -75% |
+| Documentation Time | 4 hours | 30 min | -87% |
+| Onboarding Time | 2 days | 4 hours | -75% |
 | Knowledge Retrieval | Manual search | AI-powered | ∞ |
 | Team Alignment | 60% | 95% | +58% |
 | Audio Summaries | 0 | Automated | ∞ |

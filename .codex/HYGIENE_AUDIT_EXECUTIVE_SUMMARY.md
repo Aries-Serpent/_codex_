@@ -13,7 +13,7 @@
 |--------|-------|
 | **Total Issues** | 3,118 |
 | **Files Scanned** | 7,238 (4,266 Python, 2,871 Markdown, 101 YAML) |
-| **Scan Duration** | 75 Pre-commits |
+| **Scan Duration** | 75 minutes |
 | **Critical (P0)** | 0 ✅ All resolved |
 | **High (P1)** | 104 🔴 |
 | **Medium (P2)** | 2,507 🟡 |

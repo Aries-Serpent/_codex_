@@ -169,7 +169,7 @@ This demonstrates our verification process for transitive dependencies.
      - package-ecosystem: "pip"
        directory: "/requirements"
        schedule:
-         interval: "per-phase"
+         interval: "weekly"
        open-pull-requests-limit: 10
        labels:
          - "dependencies"

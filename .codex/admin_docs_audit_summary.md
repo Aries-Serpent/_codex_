@@ -17,17 +17,17 @@
 | Files with Date Metadata | 5 | 29.4% |
 | Files Missing Date Metadata | 12 | 70.6% |
 | ISO 8601 Compliant | 5 | 100% of dated files |
-| Fresh (<30 iterations) | 4 | 80% of dated files |
-| Aging (30-90 iterations) | 1 | 20% of dated files |
-| Stale (>90 iterations) | 0 | 0% |
+| Fresh (<30 days) | 4 | 80% of dated files |
+| Aging (30-90 days) | 1 | 20% of dated files |
+| Stale (>90 days) | 0 | 0% |
 | Files with Calendar Language | 2 | 11.8% |
 
 ### Overall Health Score: 🟡 **MODERATE**
 
 **Strengths:**
 - ✅ All dated files use ISO 8601 format (excellent!)
-- ✅ No stale documents (>90 iterations)
-- ✅ Most dated files are fresh (<30 iterations)
+- ✅ No stale documents (>90 days)
+- ✅ Most dated files are fresh (<30 days)
 - ✅ Low calendar language usage (only 4 instances)
 
 **Concerns:**
