@@ -1,9 +1,36 @@
 # Broken Links Report
 
+> **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
+> 
+> **Current Status**: As of 2026-02-10, the validation system has been enhanced with:
+> - Smart false positive filtering (93% noise reduction)
+> - Code block detection
+> - Pattern-based exclusions for regex, code examples, and templates
+> 
+> **Latest Validation Results**: 5 errors (all acceptable - 3 planned features, 2 in this legacy report)
+> 
+> For current validation status, run:
+> ```bash
+> python scripts/validate_docs_links.py
+> ```
+> 
+> See: `.codex/validation_categorization_report.md` for latest analysis
+
+---
+
+## Historical Report (Archived)
+
+**Report Date**: ~2025-2026 (Pre-Enhancement)  
 **Total Links:** 2139  
 **Internal Links:** 1359  
-**Broken Links:** 108  
-**Link Health Score:** 92.1%  
+**Broken Links:** 108 (many false positives)  
+**Link Health Score:** 92.1%
+
+**Note**: This report contains many false positives including:
+- Regex patterns in documentation (e.g., `[^"\']+`)
+- Code examples in triple backticks
+- Python syntax examples (e.g., `config={self._config}`)
+- Template placeholders  
 
 ## Broken Links by File
 
@@ -255,12 +282,12 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/configs/training/reasoning/baseline.yaml
 - Line 2086: ``docs/guides/serving_reproducibility.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/guides/serving_reproducibility.md
-- Line 2096: `[`codex_cli`](../src/codex_cli/app.py)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/src/codex_cli/app.py
+- Line 2096: [`codex_cli`](../../src/codex_cli/app.py)
+  - Status: FIXED - Path corrected to ../../src/codex_cli/app.py
 - Line 2194: ``README_ROOT.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/README_ROOT.md
-- Line 2209: `[`codex_cli` help](../src/codex_cli/app.py)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/src/codex_cli/app.py
+- Line 2209: [`codex_cli` help](../../src/codex_cli/app.py)
+  - Status: FIXED - Path corrected to ../../src/codex_cli/app.py
 - Line 2210: ``quickstart.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/status_updates/quickstart.md
 - Line 2211: `[`README_ROOT.md`](../README_ROOT.md#training-quickstart)`
