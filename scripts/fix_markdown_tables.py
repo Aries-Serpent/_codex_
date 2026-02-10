@@ -59,7 +59,6 @@ class MarkdownTableFixer:
         """Process a single markdown file."""
         try:
             content = md_file.read_text(encoding='utf-8')
-            original_content = content
         except Exception as e:
             print(f"⚠️  Failed to read {md_file}: {e}")
             return
@@ -149,9 +148,10 @@ class MarkdownTableFixer:
                 print(f"  ⚠️  Failed to write {md_file}: {e}")
     
     def _is_header(self, line: str) -> bool:
-        """Check if line is a markdown header."""
+        """Check if line is a markdown header (h1-h6)."""
         stripped = line.strip()
-        return stripped.startswith('#') and not stripped.startswith('###')
+        # Match ATX headers: 1–6 '#' characters followed by at least one space and some text
+        return bool(re.match(r'#{1,6}\s+\S', stripped))
     
     def _is_table_header(self, line: str) -> bool:
         """Check if line looks like a table header."""

@@ -20,16 +20,6 @@
   margin-top: 1.5em;
 }
 
-/* Also handle when table follows directly after header with no paragraph */
-.md-typeset h1:has(+ table),
-.md-typeset h2:has(+ table),
-.md-typeset h3:has(+ table),
-.md-typeset h4:has(+ table),
-.md-typeset h5:has(+ table),
-.md-typeset h6:has(+ table) {
-  margin-bottom: 0.5em;
-}
-
 /* Ensure proper spacing for table headers */
 .md-typeset table thead {
   border-bottom: 2px solid var(--md-default-fg-color--lightest);
@@ -85,13 +75,11 @@
 
 /* Alternating row colors for better readability */
 .md-typeset table tbody tr:nth-child(even) {
-  background-color: var(--md-code-bg-color);
-  opacity: 0.5;
+  background-color: rgba(var(--md-code-hl-color), 0.05);
 }
 
 /* Hover effect for table rows */
 .md-typeset table tbody tr:hover {
-  background-color: var(--md-accent-fg-color);
-  opacity: 0.1;
+  background-color: rgba(var(--md-accent-fg-color), 0.1);
   transition: background-color 0.2s ease;
 }

@@ -137,7 +137,6 @@ AI Assistant will automatically attempt to resolve common issues:
 
 | Date | Workflow | Change | Reason |
 |------|----------|--------|--------|
-
 | - | - | - | - |
 
 ## End of Week Assessment

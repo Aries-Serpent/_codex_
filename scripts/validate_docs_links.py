@@ -17,8 +17,7 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
-from urllib.parse import urlparse
+from typing import Dict, List, Tuple
 import yaml
 
 

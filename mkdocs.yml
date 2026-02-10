@@ -1367,9 +1367,6 @@ theme:
   name: material
   language: en
   
-  # Custom CSS for table formatting fixes
-  custom_dir: docs/stylesheets
-  
   # Dark/Light mode toggle - Three-way toggle (auto/light/dark)
   palette:
     # Palette toggle for automatic mode
