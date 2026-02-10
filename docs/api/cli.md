@@ -1,0 +1,46 @@
+# CLI API Reference
+
+## Overview
+
+The Codex CLI provides command-line interfaces for:
+
+- Training models
+- Running evaluations
+- Managing datasets
+- Experiment tracking
+- Configuration management
+
+## Main CLI Entry Points
+
+### codex.cli
+
+Main CLI module providing command-line interface entry points.
+
+For detailed CLI documentation, see:
+
+- [CLI Module](../cli.md) - CLI implementation details
+- [Reference CLI](../reference/cli.md) - CLI reference documentation
+- [API Index](index.md) - Main API documentation index
+
+## Usage
+
+```bash
+# View available commands
+python -m codex.cli --help
+
+# Train a model
+python -m codex.cli train --config configs/train.yaml
+
+# Run evaluation
+python -m codex.cli eval --model-path models/best.pt
+
+# Manage datasets
+python -m codex.cli dataset --list
+```
+
+## Related Documentation
+
+- [CLI Implementation](../cli.md)
+- [Reference Documentation](../reference/cli.md)
+- [Training Guide](../guides/training.md)
+- [Configuration Guide](../guides/configuration.md)

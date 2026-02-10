@@ -92,6 +92,56 @@ python scripts/validate_table_spacing.py --check
 python scripts/validate_table_spacing.py --fix
 ```
 
+### 2. Broken Link Resolution
+
+**Purpose**: Automatically find and fix broken documentation links
+
+**Resolution Workflow**:
+
+1. **Detection** - Run link validator
+   ```bash
+   python scripts/validate_docs_links.py
+   ```
+
+2. **Analysis** - Categorize broken links:
+   - **Type A**: File moved/renamed → Search and update path
+   - **Type B**: File missing → Create redirect or stub
+   - **Type C**: Typo in path → Auto-fix with validator
+   - **Type D**: External/deprecated → Document as exception
+
+3. **Search for Correct File**:
+   ```bash
+   # By filename
+   find docs -name "*partial_name*" -type f
+   
+   # By content
+   grep -r "expected heading" docs/
+   ```
+
+4. **Fix Strategies**:
+
+   **Auto-fix (high confidence)**:
+   ```bash
+   python scripts/validate_docs_links.py --fix
+   ```
+
+   **Create Missing File**:
+   ```bash
+   cat > docs/missing/file.md << 'EOF'
+   # Title
+   
+   This page has moved to [New Location](../correct/path.md).
+   EOF
+   ```
+
+5. **Verification**:
+   ```bash
+   python scripts/validate_docs_links.py --strict --no-cache
+   mkdocs serve
+   ```
+
+**Resolution Rate Target**: Fix 95%+ of broken links per session
+
 ### 3. Documentation Sync
 
 **Validation**:
@@ -181,7 +231,74 @@ extra_css:
    grep -A5 "\.md-typeset table" docs/stylesheets/extra.css
    ```
 
-### Case 2: Validate Documentation Links
+### Case 2: Fix Broken Links
+
+**Problem**: Links to non-existent files or incorrect paths
+
+**Steps**:
+1. Run link validation:
+   ```bash
+   python scripts/validate_docs_links.py
+   ```
+
+2. Review broken links and identify patterns:
+   - Missing files that should exist
+   - Incorrect relative paths
+   - Files moved/renamed
+
+3. Fix strategies:
+
+   **Strategy A: Search for correct file**
+   ```bash
+   # Find the actual file location
+   find docs -name "*filename*" -type f
+   
+   # Or search by content
+   grep -r "expected content" docs/
+   ```
+
+   **Strategy B: Create missing file**
+   ```bash
+   # Create redirect file pointing to correct location
+   cat > docs/path/to/missing.md << 'EOF'
+   # Page Title
+   
+   This page has moved to [New Location](../correct/path.md).
+   
+   ## Content
+   
+   [Add appropriate content or redirect]
+   EOF
+   ```
+
+   **Strategy C: Auto-fix with validator**
+   ```bash
+   # Run validator with auto-fix for high-confidence matches
+   python scripts/validate_docs_links.py --fix
+   ```
+
+4. Verify fixes:
+   ```bash
+   python scripts/validate_docs_links.py --strict --no-cache
+   ```
+
+**Example: Fixing API Documentation Links**
+
+Problem: Links to `api/rag.md`, `api/cli.md`, `api/api_endpoints.md` return 404
+
+Solution:
+1. Check if files exist: `ls -la docs/api/*.md`
+2. If missing, create them:
+   ```bash
+   # Create rag.md with redirect to rag_pipelines.md
+   cat > docs/api/rag.md << 'EOF'
+   # RAG Pipeline API
+   
+   For detailed documentation, see [RAG Pipelines](rag_pipelines.md).
+   EOF
+   ```
+3. Build and test: `mkdocs serve`
+4. Verify on GitHub Pages after deploy
 
 **Steps**:
 1. Run validation:
