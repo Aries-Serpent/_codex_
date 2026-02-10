@@ -5,8 +5,6 @@ Tests for scripts/validate_code_fences.py
 import sys
 from pathlib import Path
 
-import pytest
-
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
 
@@ -180,7 +178,7 @@ class TestFixCodeFences:
         assert "```\n" in content
 
     def test_nested_fence_not_auto_fixed(self, tmp_path):
-        """Test that nested fences are not auto-fixed (too risky)"""
+        """Test that nested fences are detected but file structure may still be fixed for unclosed fences"""
         md_file = tmp_path / "test.md"
         original_content = (
             "```python\n"
@@ -192,11 +190,16 @@ class TestFixCodeFences:
         md_file.write_text(original_content)
         
         issues = check_code_fences(md_file)
-        result = fix_code_fences(md_file, issues, dry_run=False)
+        # This should detect nested fence AND unclosed fence
+        assert len(issues) >= 1
+        assert any(i['type'] == 'nested_fence' for i in issues)
         
-        # Nested fences should be detected but not auto-fixed
+        result = fix_code_fences(md_file, issues, dry_run=False)
+        # Result will be True because unclosed fences are fixed
+        # but nested fence issue is just reported, not auto-fixed
+        
+        # Nested fence detection should not cause script to crash
         content = md_file.read_text()
-        # Content should not change significantly
         assert "```python\n" in content
 
 
