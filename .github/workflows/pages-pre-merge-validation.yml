@@ -57,6 +57,20 @@ jobs:
           echo "exit_code=$?" >> $GITHUB_OUTPUT
           cat validation_report.txt
       
+      - name: Check table formatting
+        id: table_check
+        continue-on-error: true
+        run: |
+          python scripts/fix_markdown_tables.py --check-only > table_report.txt 2>&1
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          
+          # Extract issue count
+          ISSUE_COUNT=$(grep -oP "(?<=Summary: )\d+" table_report.txt | head -1 || echo "0")
+          echo "issue_count=$ISSUE_COUNT" >> $GITHUB_OUTPUT
+          
+          cat table_report.txt
+      
       - name: Test MkDocs build
         id: mkdocs_build
         continue-on-error: true
@@ -120,6 +134,19 @@ jobs:
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           
+          # Table formatting results
+          echo "### 📊 Table Formatting" >> $GITHUB_STEP_SUMMARY
+          TABLE_ISSUES="${{ steps.table_check.outputs.issue_count }}"
+          if [ "$TABLE_ISSUES" == "0" ] || [ -z "$TABLE_ISSUES" ]; then
+            echo "✅ **PASSED** - All tables properly formatted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️  **WARNINGS** - $TABLE_ISSUES table formatting issues" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> **Note**: Tables need blank lines before them and proper separator rows" >> $GITHUB_STEP_SUMMARY
+            echo "> Run \`python scripts/fix_markdown_tables.py\` to auto-fix" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
           # MkDocs build results
           echo "### 🏗️ MkDocs Build" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.mkdocs_build.outputs.exit_code }}" == "0" ]; then
@@ -179,6 +206,7 @@ jobs:
           name: validation-reports
           path: |
             validation_report.txt
+            table_report.txt
             build_report.txt
             cognitive_app_report.txt
           retention-days: 30
@@ -207,6 +235,7 @@ jobs:
 
             ### Results
             - **Link Validation:** ${{ steps.link_validation.outputs.exit_code == '0' && '✅ Passed' || '❌ Failed' }}
+            - **Table Formatting:** ${{ steps.table_check.outputs.issue_count == '0' && '✅ Passed' || format('⚠️ {0} issues', steps.table_check.outputs.issue_count) }}
             - **MkDocs Build:** ${{ steps.mkdocs_build.outputs.exit_code == '0' && '✅ Passed' || '❌ Failed' }}
             - **cognitive_app:** ${{ (steps.cognitive_app.outputs.exit_code == '0' || steps.cognitive_app.outputs.exit_code == '') && '✅ Passed' || '❌ Failed' }}
 
@@ -216,8 +245,8 @@ jobs:
             **GitHub Pages Manager Agent Commands:**
             \`\`\`
             @copilot Use github-pages-manager to find and fix broken links
+            @copilot Use github-pages-manager to fix markdown table formatting
             @copilot Use github-pages-manager to validate documentation sync
-            @copilot Use github-pages-manager to update status dashboard
             \`\`\`
             `;
             

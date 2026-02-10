@@ -972,3 +972,50 @@ Triggered by documentation changes, deployment events, manual invocation, or sch
 ---
 
 **Template Applied**: 2026-02-10T16:21:00Z
+
+### 7. Markdown Table Formatting
+
+**Purpose**: Ensure markdown tables render correctly in GitHub Pages
+
+**Common Issues**:
+- Tables missing blank line after headers
+- Tables missing separator row (`| --- | --- |`)
+- Inconsistent column alignment
+- Tables immediately following text without blank line
+
+**Formatting Rules**:
+```markdown
+# Correct Format
+
+## Header
+
+| Column 1 | Column 2 | Column 3 |
+| --- | --- | --- |
+| Data 1 | Data 2 | Data 3 |
+
+# Incorrect Format (will render as text)
+
+## Header
+| Column 1 | Column 2 | Column 3 |
+| --- | --- | --- |
+| Data 1 | Data 2 | Data 3 |
+```
+
+**Auto-Fix Tool**:
+```bash
+# Check for table formatting issues
+python scripts/fix_markdown_tables.py --check-only
+
+# Auto-fix table formatting
+python scripts/fix_markdown_tables.py
+
+# Fix specific file
+python scripts/fix_markdown_tables.py --file docs/path/to/file.md
+```
+
+**Validation**:
+- Pre-merge workflow checks table formatting
+- Warns if issues found (non-blocking)
+- Provides auto-fix command
+- Scheduled validation includes table checks
+
