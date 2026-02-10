@@ -1,6 +1,6 @@
 # Glossary
 
-> For AI Agents - Last Updated: 2025-12-24
+> For AI Agents - Last updated: 2026-02-10
 
 This document defines key terms used in the _codex_ system.
 

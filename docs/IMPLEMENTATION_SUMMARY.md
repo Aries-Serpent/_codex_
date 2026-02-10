@@ -311,7 +311,7 @@ for r in results:
 ```
 Total lines added:   3,500+
 Total tests created: 70+
-Test coverage:       90%+
+Test Coverage: 90%+
 Security issues:     0
 Documentation pages: 3
 Build scripts:       2 (created/updated)

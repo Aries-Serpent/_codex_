@@ -617,12 +617,12 @@ graph TB
     subgraph Capability["📊 Capability Metrics"]
         Cap1[Total Capabilities: 39]
         Cap2[Critical Above Threshold: 18/18]
-        Cap3[Coverage: 94%]
+        Cap3[Coverage: 90%]
     end
     
     subgraph Quality["✅ Quality Metrics"]
         Cycle 1[Test Files: 1,208+]
-        Cycle 2[Test Coverage: 72%]
+        Cycle 2[Test Coverage: 90%]
         Cycle 3[Security Vulnerabilities: 0]
     end
     

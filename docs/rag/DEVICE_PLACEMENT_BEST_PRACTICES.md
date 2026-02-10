@@ -34,4 +34,4 @@ For complete documentation, see: `.codex/CODING_STANDARDS_ML_DEVICE_PLACEMENT.md
 **Linter**: `scripts/lint/check_device_placement.py`  
 **Tests**: `tests/rag/test_device_placement.py`
 
-Last Updated: 2026-02-08
+Last updated: 2026-02-10

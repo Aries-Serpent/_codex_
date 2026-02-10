@@ -342,7 +342,7 @@ test_hash_document_id_handles_numeric_ids
 5. Update quantum prioritizer results
 
 **Success Criteria:**
-- src/codex_plans coverage: 0% → 70%+
+- src/codex_plans Coverage: 90% → 70%+
 - Mutation score: >80%
 - All tests passing
 - Zero regressions

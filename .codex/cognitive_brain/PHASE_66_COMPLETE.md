@@ -444,7 +444,7 @@ Tests needed: 10 comprehensive tests
 
 **Immediate Focus:** src/rag module
 - Current coverage: 33.3%
-- Target coverage: 70%
+- Target Coverage: 90%
 - Quantum priority: 0.6488 (CRITICAL)
 - Tests needed: 10 comprehensive tests
 - Expected patterns: RAG-specific security, embeddings, retrieval

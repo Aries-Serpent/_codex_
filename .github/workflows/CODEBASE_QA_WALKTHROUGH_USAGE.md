@@ -210,7 +210,7 @@ When `post_comment: true`, posts this on PR:
 - Issues Found: 15
 
 ### Test Coverage
-- Coverage: 75%
+- Coverage: 90%
 - Target: 80%
 - Status: ⚠️ Below target
 

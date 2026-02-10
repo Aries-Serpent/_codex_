@@ -59,7 +59,7 @@ All four Priority 4 enhancement categories have been successfully implemented, t
 - Development/production modes
 - Certificate rotation support
 
-### Test Coverage: 95%+
+### Test Coverage: 90%+
 
 **Test Categories:**
 - Certificate loading and validation (5 tests)
@@ -114,7 +114,7 @@ All four Priority 4 enhancement categories have been successfully implemented, t
 - Automatic scope validator creation
 - HTTPException on authorization failure
 
-### Test Coverage: 95%+
+### Test Coverage: 90%+
 
 **Test Categories:**
 - Scope parsing and serialization (7 tests)

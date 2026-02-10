@@ -335,7 +335,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 4. **Expected output:**
    ```
-   Version: 0.0.0
+   version: 0.1.0
    ```
 
 5. **Clean up:**

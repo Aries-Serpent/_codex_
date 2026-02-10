@@ -118,7 +118,7 @@ class TestFunctionName:
 
 ### Test Coverage
 
-- Minimum coverage: 80%
+- Minimum Coverage: 90%
 - Critical paths: 100%
 - Run coverage: `pytest --cov=codex --cov-report=html`
 

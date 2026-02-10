@@ -2936,7 +2936,7 @@ paths:
 ```markdown
 # Semgrep Suppression Register
 
-> Last Updated: 2025-12-17
+> Last updated: 2026-02-10
 > Maintained by: @mbaetiong
 
 ## Overview
@@ -3347,7 +3347,7 @@ jobs:
 ```markdown
 # Code Scanning Configuration Notes
 
-> Last Updated: 2025-12-17
+> Last updated: 2026-02-10
 > Maintained by:  Copilot Agent / @mbaetiong
 
 ## Current Configuration

@@ -380,7 +380,7 @@ All JSON files validated with `jq`:
 
 ```yaml
 Test Coverage: 27.45% (196/714 modules)
-Last Updated: 2025-01-16
+Last updated: 2026-02-10
 Source Modules: 714
 Test Files: ~500
 Custom Agents: ~30
@@ -390,7 +390,7 @@ Custom Agents: ~30
 
 ```yaml
 Test Coverage: 17.27% (180/1,042 modules)
-Last Updated: 2026-01-18
+Last updated: 2026-02-10
 Source Modules: 1,042
 Test Files: 1,730
 Custom Agents: 50+

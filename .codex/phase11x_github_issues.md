@@ -239,7 +239,7 @@ $ grep -r "def " src/ --include="*.py" | wc -l
 $ grep -r '"""' src/ --include="*.py" | wc -l
 ~800 docstrings
 
-# Estimated coverage: 40%
+# Estimated Coverage: 90%
 ```
 
 ### Target State
@@ -311,7 +311,7 @@ Current test coverage is ~27.5% with target of 70%. QA walkthrough identified 51
 Total Modules: ~2000
 Tested Modules: ~500 (27.5%)
 Untested Modules: 518 (documented)
-Target Coverage: 70% (~1400 modules)
+Target Coverage: 90% (~1400 modules)
 Gap: ~900 modules need tests
 ```
 
@@ -393,7 +393,7 @@ def identify_untested_modules():
 
 - QA Walkthrough: `.codex/qa_walkthrough/coverage_analysis.json`
 - Current coverage: ~27.5%
-- Target coverage: 70%
+- Target Coverage: 90%
 - Gap: 518 documented untested modules
 
 ---

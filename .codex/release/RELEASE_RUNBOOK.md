@@ -29,12 +29,12 @@ git checkout -b release/v0.1.0
 **1.2 Update Version**:
 ```bash
 # Edit src/codex_ml/__init__.py
-# Change: __version__ = "0.0.0"
-# To: __version__ = "0.1.0"
+# Change: __version__ = "0.1.0"
+# To: __version__ = "0.2.0"
 
 # Edit pyproject.toml line 70
-# Change: version = "0.0.0"  
-# To: version = "0.1.0"
+# Change: version = "0.1.0"  
+# To: version = "0.2.0"
 ```
 
 **1.3 Update CHANGELOG**:

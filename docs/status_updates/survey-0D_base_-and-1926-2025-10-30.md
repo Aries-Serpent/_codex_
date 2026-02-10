@@ -2290,7 +2290,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2025-10-25
+Last updated: 2026-02-10
 
 [END CONTENT]
 ````
@@ -2785,7 +2785,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2025-10-25
+Last updated: 2026-02-10
 
 --- docs/README_ROOT.md ---
 - `evaluation.preset`

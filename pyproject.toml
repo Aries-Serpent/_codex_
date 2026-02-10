@@ -67,7 +67,7 @@ dependencies = [
 # Version may be injected by CI or read dynamically.
 # If you keep a __version__ in package, uncomment the next line and remove the explicit version field.
 # dynamic = ["version"]
-version = "0.0.0"
+version = "0.1.0"
 
 [project.optional-dependencies]
 analysis = ["libcst>=1.0", "parso>=0.10"]

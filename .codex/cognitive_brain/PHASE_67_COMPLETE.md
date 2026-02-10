@@ -467,7 +467,7 @@ Focus Areas: Tokenizer loading, vocabulary, encoding/decoding
 
 **Immediate Focus:** src/tokenization module
 - Current coverage: 28.6%
-- Target coverage: 70%
+- Target Coverage: 90%
 - Quantum priority: 0.5873 (CRITICAL)
 - Tests needed: 10 comprehensive tests
 - Expected patterns: Tokenizer loading, vocabulary management, encoding/decoding

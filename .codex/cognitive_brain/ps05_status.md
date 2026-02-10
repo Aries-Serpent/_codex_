@@ -232,7 +232,7 @@ python scripts/security/verify_token_scope.py
 - ✅ Security score: 10/10 (Bandit scan)
 
 ### Code Quality Metrics
-- ✅ Test coverage: 95% (verify_token_scope.py)
+- ✅ Test Coverage: 90% (verify_token_scope.py)
 - ✅ Security audit: Passed (0 vulnerabilities)
 - ✅ Code review: All issues resolved
 - ✅ Documentation: Complete security guide

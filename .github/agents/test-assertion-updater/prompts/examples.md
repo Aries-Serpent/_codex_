@@ -237,7 +237,7 @@ def test_fix_handles_all_strings(test_string):
 ---
 
 *Version: 1.0.0*  
-*Last Updated: 2026-01-23*
+*Last updated: 2026-02-10*
 
 ---
 

@@ -213,7 +213,7 @@ ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
 ```markdown
 # IMDS Diagnostic Runbook
 > Generated: 2025-11-14 21:33:15 UTC | Author: mbaetiong
-> Script Version: 1.6 | Last Updated: 2025-11-14T23:14:07Z UTC
+> Script Version: 1.6 | Last updated: 2026-02-10 UTC
 
 ## Purpose
 ```text

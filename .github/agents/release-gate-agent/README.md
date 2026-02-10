@@ -173,7 +173,7 @@ All modules include comprehensive AfterMath tags for cognitive brain integration
 - `CODEX_DB_PATH` - Path to cognitive brain database (default: `.codex/brain.db`)
 
 ### Release Thresholds
-- Test coverage: 90%+ (configurable)
+- Test Coverage: 90%+ (configurable)
 - Risk score thresholds:
   - Low risk: < 0.3 → APPROVE
   - Moderate risk: 0.3 - 0.7 → APPROVE_WITH_MONITORING

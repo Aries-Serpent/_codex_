@@ -431,7 +431,7 @@ This security policy is reviewed and updated:
 - **As Needed**: In response to incidents or process changes
 - **Version History**: Tracked in git commits
 
-Last updated: 2026-01-16
+Last updated: 2026-02-10
 
 ---
 
