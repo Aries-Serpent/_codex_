@@ -123,6 +123,9 @@ def safe_model_to_device(
         AttributeError: If model with meta tensors doesn't support to_empty()
         RuntimeError: If model cannot be moved to device
     """
+    import time
+    start_time = time.time()
+    
     try:
         import torch
 
@@ -136,7 +139,8 @@ def safe_model_to_device(
         if meta_status:
             # Model has meta tensors - must use to_empty()
             logger.warning(
-                "Detected meta tensor in model. Using to_empty() for device transfer."
+                f"Meta tensor detected in model. "
+                f"Using to_empty() for device transfer to {device}."
             )
 
             if not hasattr(model, "to_empty"):
@@ -165,14 +169,32 @@ def safe_model_to_device(
             else:
                 logger.debug("Model doesn't support modules(), skipping parameter reset")
 
-            logger.info("Successfully moved model with meta tensors to device")
+            # Log completion time for production monitoring
+            duration = time.time() - start_time
+            logger.info(
+                f"Meta tensor device transfer completed in {duration:.3f}s. "
+                f"Device: {device}"
+            )
+            
+            # Optional: Add metrics if you have a metrics system
+            # Example integration points:
+            # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
+            # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
+            
             return model
 
         else:
             # Standard device transfer for normal tensors
             logger.debug(f"Moving model to {device} using standard .to()")
             if isinstance(model, torch.nn.Module):
-                return model.to(device)  # safe-device-placement: internal implementation
+                result = model.to(device)  # safe-device-placement: internal implementation
+                
+                # Log standard transfer timing
+                duration = time.time() - start_time
+                if duration > 1.0:  # Only log if takes more than 1 second
+                    logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
+                
+                return result
 
             # For SentenceTransformer or other models with .to() method
             return _try_model_to(model, device)

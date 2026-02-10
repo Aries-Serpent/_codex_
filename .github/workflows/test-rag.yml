@@ -104,6 +104,7 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
+          RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
         run: |
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
