@@ -197,6 +197,7 @@ class TestFixCodeFences:
         result = fix_code_fences(md_file, issues, dry_run=False)
         # Result will be True because unclosed fences are fixed
         # but nested fence issue is just reported, not auto-fixed
+        assert isinstance(result, bool)  # Use result in assertion
         
         # Nested fence detection should not cause script to crash
         content = md_file.read_text()

@@ -42,5 +42,5 @@ python -m codex.cli dataset --list
 
 - [CLI Implementation](../cli.md)
 - [Reference Documentation](../reference/cli.md)
-- [Training Guide](../guides/training.md)
-- [Configuration Guide](../guides/configuration.md)
+- [Unified Training](../dev/unified_training.md) - Training guide
+- [PEFT Configuration](../guides/peft_configuration.md) - Configuration reference

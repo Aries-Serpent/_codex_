@@ -104,5 +104,5 @@ uvicorn src.codex.api.rag_api:app --reload --port 8001
 ## Related Documentation
 
 - [API Index](index.md) - Main API documentation
-- [Getting Started](../guides/getting-started.md) - Setup guide
-- [Configuration](../guides/configuration.md) - Configuration reference
+- [CLI Documentation](cli.md) - Command-line interface
+- [RAG Pipeline](rag.md) - RAG API reference
