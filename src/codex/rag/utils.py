@@ -1,4 +1,30 @@
-"""RAG utility functions for model loading and device management."""
+"""RAG utility functions for model loading and device management.
+
+This module provides utilities for safely loading and moving PyTorch models
+between devices, with special handling for meta tensors.
+
+Meta Tensor Background:
+----------------------
+Meta tensors are placeholder tensors without actual data, created when models
+are initialized on the 'meta' device. They are useful for:
+- Model architecture inspection without memory allocation
+- Efficient model initialization in distributed training
+- Model quantization and pruning workflows
+
+However, meta tensors cannot be directly moved using the standard `.to()` method.
+The NotImplementedError "Cannot copy out of meta tensor; no data!" occurs when
+attempting to use `.to()` on models with meta tensors.
+
+Solution:
+--------
+Use `.to_empty(device)` instead of `.to(device)` for models with meta tensors,
+followed by parameter reinitialization via `reset_parameters()` to ensure all
+parameters have actual data.
+
+See:
+- PyTorch Issue: https://github.com/pytorch/pytorch/issues/95372
+- PyTorch Docs: torch.nn.Module.to_empty()
+"""
 
 import logging
 from dataclasses import dataclass
