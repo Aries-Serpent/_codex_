@@ -10,7 +10,7 @@ Security advisories, vulnerability fixes, and CodeQL remediation documentation.
 
 ## Security Resources
 - [Main Security Policy](../SECURITY.md) - Repository security policy
-- [Security Exceptions](../../.security-exceptions.md) - Documented exceptions
+- [Security Exceptions](./security-exceptions.md) - Documented exceptions
 
 ## Vulnerability Status
 - ✅ 48 vulnerabilities fixed (IP-005 Complete)
