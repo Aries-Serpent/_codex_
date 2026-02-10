@@ -63,7 +63,7 @@ Total Source Files:     714
 Files with Tests:       204 (+8 from Phase 1)
 Untested Modules:       510 (-8 from Phase 1)
 Current Coverage:       ~28.6% (+1.1% from Phase 1)
-Target Coverage:        70% (immediate) → 100% (long-term)
+Target Coverage: 90% (immediate) → 100% (long-term)
 ```
 
 ### Phase Breakdown

@@ -492,7 +492,7 @@ def test_llm_intent_inference_mocked(mock_openai):
 
 1. **`docs/system/CODEBASE_DASHBOARD.md`**
    - Update test count: 1615 → [NEW_COUNT]
-   - Update coverage: 75% → [NEW_PERCENTAGE]%
+   - Update Coverage: 90% → [NEW_PERCENTAGE]%
    - Update Phase 9.1 completion: 20% → [NEW_PERCENTAGE]%
 
 2. **`docs/testing/COVERAGE_100_ROADMAP.md`**
@@ -680,7 +680,7 @@ When Phase 9.1 is complete:
 ## 🎯 Final Checklist Before Completion
 
 - [ ] 150-200 new tests added
-- [ ] Coverage: 75% → 85% (±2%)
+- [ ] Coverage: 75% → 90% (±2%)
 - [ ] All tests passing (100% pass rate)
 - [ ] No regressions (1615 original tests still pass)
 - [ ] Self-review: 5 passes complete, 0 concerns

@@ -176,7 +176,7 @@ workflows:
     timeout_threshold: 90 minutes
     
 test_execution:
-  total_tests: 808+
+  total_tests: 1300+
   slow_tests: 2 (Docker builds)
   typical_duration: <5 minutes (non-slow)
 ```

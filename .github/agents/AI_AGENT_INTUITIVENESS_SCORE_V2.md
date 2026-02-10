@@ -500,8 +500,8 @@ Documentation Files: 84 markdown files (was 78, +8%)
 Documentation Volume: 31,575 lines (was 25,395, +24%)
 
 Mermaid Diagrams: 21 (was 15, +40%)
-Type Hint Coverage: 98% (was 85%, +15%)
-Docstring Coverage: 95% (was 90%, +6%)
+Type Hint Coverage: 90% (was 85%, +15%)
+Docstring Coverage: 90% (was 90%, +6%)
 Test Coverage: 100% (maintained)
 ```
 

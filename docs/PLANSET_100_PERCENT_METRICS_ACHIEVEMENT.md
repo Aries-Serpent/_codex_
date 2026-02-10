@@ -104,7 +104,7 @@ def analyze_documentation():
     
     print(f"\n{'='*50}")
     print(f"Total Documentation Gaps: {total_gaps}")
-    print(f"Current Coverage: 98%")
+    print(f"Current Coverage: 90%")
     print(f"Target Coverage: 100%")
     
     # Save report

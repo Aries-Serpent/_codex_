@@ -312,7 +312,7 @@ Continue the systematic improvement of the _codex_ repository infrastructure, fo
 - Public action candidates: 1 (setup-python-cached)
 
 ### Phase 25 KPIs
-- Test coverage: 30% → 50% → 70%
+- Test Coverage: 90% → 50% → 70%
 - Secret rotation: 100% automated
 - Security incidents: 0
 - Compliance score: 95%+

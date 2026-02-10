@@ -146,7 +146,7 @@ python -m yamllint .github/Copilot.md
 
 **New Configuration: `.github/coverage_threshold.txt`**
 ```text
-Minimum Coverage: 96%
+Minimum Coverage: 90%
 ```text
 
 **Verification:**

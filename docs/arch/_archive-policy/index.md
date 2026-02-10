@@ -1,6 +1,6 @@
 # Archive & Deprecation Policy Index
 
-> Last updated: 2025-10-24
+> Last updated: 2026-02-10
 > Status: Canonical policy consolidated; historical summaries retained for reference only.
 
 This directory hosts the authoritative guidance for archiving and deprecating code or documentation within the repository. The

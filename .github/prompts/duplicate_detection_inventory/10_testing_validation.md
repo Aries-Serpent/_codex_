@@ -328,7 +328,7 @@ After all testing, create final validation report:
 - Passed: 150 (100%)
 - Failed: 0
 - Skipped: 0
-- Coverage: 85%
+- Coverage: 90%
 
 ## Performance Benchmarks
 

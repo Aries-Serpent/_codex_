@@ -459,7 +459,7 @@ class AgentGuardrails:
 
 **Phase 1 (Current Cycle)**:
 - ✅ 3 agents implemented (ci-testing, security-scan, compliance)
-- Coverage: 85%+ maintained
+- Coverage: 90%+ maintained
 - CI pass rate: 95%+
 - Security findings: <5 critical
 

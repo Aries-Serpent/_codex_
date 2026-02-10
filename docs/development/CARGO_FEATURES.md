@@ -225,4 +225,4 @@ This document should be updated when:
 - Rust version upgraded (major version)
 - New build scenarios introduced
 
-Last Updated: 2026-01-22
+Last updated: 2026-02-10

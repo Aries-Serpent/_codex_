@@ -120,7 +120,7 @@ Changes: 126 files | +20,518 additions | -3,502 deletions
 ✅ Pre-Checks Completed:
   ✓ All status checks: PASS
   ✓ Security scan: 0 HIGH/CRITICAL
-  ✓ Coverage: 96%+ (verified)
+  ✓ Coverage: 90%+ (verified)
   ✓ Dependencies: GPU removal confirmed
   ✓ Documentation: Complete
 

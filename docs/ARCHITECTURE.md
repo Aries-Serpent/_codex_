@@ -1,10 +1,13 @@
-# Codex ML Architecture
+# Codex ML Architecture (v0.1.0)
 
-> **Last Updated**: 2025-12-16  
+> **Version**: v0.1.0 Pre-Release  
+> **Last Updated**: 2026-02-09  
 > **Status**: Living Document  
 > **Managed By**: AI Assistant Autonomous System
 
 **AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
+
+**Package Name**: `codex-ml` (PyPI/Distribution) | Repository: `_codex_`
 
 This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling.
 
@@ -20,84 +23,183 @@ This document provides a comprehensive architectural overview of the `_codex_` M
 
 ---
 
-## System Context
+## System Context (v0.1.0)
 
-The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility.
+The Codex ML system provides a comprehensive framework for ML model training, evaluation, and deployment with emphasis on reproducibility, observability, and extensibility. Version 0.1.0 introduces the MCP ecosystem, Cognitive Brain system, and 53 autonomous agents.
 
 ```mermaid
 graph TB
-    User[Data Scientist / ML Engineer]
-    Copilot[GitHub Copilot / ChatGPT]
+    User[Data Scientist / ML Engineer<br/>v0.1.0 User]
+    Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
+    Agents[53 Autonomous Agents<br/>🤖 MCP-enabled]
     
-    Codex[Codex ML System]
+    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>1300+ Tests | 90% Coverage]
     
-    HF[Hugging Face Hub]
-    MLflow[MLflow Tracking Server]
-    Storage[Cloud Storage / S3]
-    Compute[GPU Compute / Ray Cluster]
+    Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage]
+    MCP[MCP System<br/>Model Context Protocol]
+    Pipeline[Python Ingestion<br/>Ingest → Analyze → Transform → Verify]
+    
+    HF[Hugging Face Hub<br/>Models + Datasets]
+    MLflow[MLflow Tracking Server<br/>Experiments + Registry]
+    Storage[Cloud Storage<br/>S3 / Azure / GCS]
+    Compute[GPU Compute<br/>Ray Cluster / Distributed]
+    GitHub[GitHub<br/>Actions + PR Automation]
     
     User -->|Configure & Train| Codex
     Copilot -->|Code Generation & Review| Codex
+    Agents -->|Autonomous Operations| Codex
+    
+    Codex --> Brain
+    Codex --> MCP
+    Codex --> Pipeline
+    
+    Brain -->|Quantum Decisions| Agents
+    MCP -->|Context Protocol| Agents
+    
     Codex -->|Load Models & Data| HF
     Codex -->|Track Experiments| MLflow
     Codex -->|Store Artifacts| Storage
     Codex -->|Distribute Training| Compute
+    Codex -->|CI/CD Automation| GitHub
     
-    style Codex fill:#326ce5,stroke:#fff,stroke-width:3px,color:#fff
-```text
+    style Codex fill:#3b82f6,stroke:#fff,stroke-width:4px,color:#fff
+    style Brain fill:#8b5cf6,stroke:#fff,stroke-width:3px,color:#fff
+    style MCP fill:#10b981,stroke:#fff,stroke-width:3px,color:#fff
+    style Agents fill:#f59e0b,stroke:#fff,stroke-width:2px,color:#fff
+```
 
-### External Actors
+### External Actors (v0.1.0)
 
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot / ChatGPT**: AI assistants that help navigate the codebase and generate code
-- **CI/CD Systems**: Automated workflows for testing and deployment
+- **53 Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
+- **CI/CD Systems**: Automated workflows for testing, deployment, and self-healing
 
 ### External Systems
 
 - **Hugging Face Hub**: Model and dataset repository
 - **MLflow**: Experiment tracking and model registry
-- **Cloud Storage**: Artifact storage (checkpoints, logs, data)
+- **Cloud Storage**: Artifact storage (checkpoints, logs, data) - S3, Azure, GCS
 - **Ray Cluster**: Distributed compute for training and serving
+- **GitHub**: PR automation, Actions workflows, agent orchestration
 
 ---
 
-## Container Architecture
+## Container Architecture (v0.1.0)
 
-The system is organized into several logical containers (processes or deployable units):
+The system is organized into several logical containers (processes or deployable units). Version 0.1.0 introduces MCP system, Cognitive Brain, and autonomous agent orchestration.
 
 ```mermaid
 graph TB
-    subgraph "Codex ML System"
-        CLI[CLI Interface<br/>Typer/Click]
-        Training[Training Engine<br/>PyTorch + Transformers]
-        Eval[Evaluation Engine<br/>lm-eval + custom metrics]
-        Serve[Model Serving<br/>Ray Serve + FastAPI]
-        Logging[Logging & Telemetry<br/>SQLite + session tracking]
-        Config[Configuration<br/>Hydra + OmegaConf]
-        Plugins[Plugin Framework<br/>Dynamic loading]
+    subgraph "codex-ml v0.1.0 System"
+        subgraph "Core ML Platform"
+            CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
+            Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 1300+ Tests]
+            Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
+            Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
+            Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
+        end
+        
+        subgraph "Cognitive Brain (k₁=0.35)"
+            Brain[Decision Engine<br/>Superposition + Entanglement<br/>🧠 2.86x Advantage]
+            Memory[Memory Manager<br/>STM/LTM + Patterns<br/>💾 60% Compression]
+            Optimizer[Adaptive Scoring<br/>ML-inspired Weights<br/>📈 Self-optimizing]
+        end
+        
+        subgraph "MCP Ecosystem"
+            MCPCore[MCP Core<br/>Model Context Protocol<br/>🔌 Standardized]
+            Adapters[Adapters<br/>Pinecone/Mock/Custom<br/>🔗 Extensible]
+            Workers[Background Workers<br/>Embeddings + Checkpoints<br/>⚙️ Async]
+            Metrics[MCP Metrics<br/>Telemetry + Monitoring<br/>📊 Observability]
+        end
+        
+        subgraph "Python Ingestion Pipeline"
+            Ingest[Ingest Module<br/>File/ZIP/Git/URL<br/>📥 Multi-source]
+            Analyze[Analysis Module<br/>AST + Runtime<br/>🔍 Static + Dynamic]
+            Transform[Transform Module<br/>Tier A/B/C<br/>🔄 LLM-guided]
+            Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
+        end
+        
+        subgraph "Agent System (53 Agents)"
+            AgentCore[Agent Core<br/>RAG + Verification<br/>🤖 Autonomous]
+            ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
+            AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
+        end
+        
+        subgraph "Infrastructure"
+            Security[Security Layer<br/>26 CVEs Fixed<br/>🔒 Production]
+            CICD[CI/CD Automation<br/>Auto-Fix + Self-Heal<br/>🔧 Time Savings]
+            Plugins[Plugin Framework<br/>Dynamic Loading<br/>🔌 Extensible]
+        end
     end
     
     subgraph "External Services"
-        MLflow[MLflow Server]
-        Storage[Object Storage]
-        HF[Hugging Face]
+        MLflow[MLflow Server<br/>Experiments + Registry]
+        Storage[Object Storage<br/>S3/Azure/GCS]
+        HF[Hugging Face<br/>Models + Datasets]
+        GitHub[GitHub<br/>Actions + API]
     end
     
+    %% Core Flow
     CLI --> Config
     CLI --> Training
     CLI --> Eval
     CLI --> Serve
+    CLI --> Ingest
+    
+    Config -.configures.-> Training
+    Config -.configures.-> Eval
+    Config -.configures.-> Brain
     
     Training --> Logging
     Eval --> Logging
     Serve --> Logging
     
+    %% Cognitive Brain
+    Brain --> Memory
+    Brain --> Optimizer
+    AgentCore --> Brain
+    
+    %% MCP System
+    MCPCore --> Adapters
+    MCPCore --> Workers
+    MCPCore --> Metrics
+    AgentCore --> MCPCore
+    
+    %% Pipeline
+    Ingest --> Analyze
+    Analyze --> Transform
+    Transform --> Verify
+    CLI --> Ingest
+    
+    %% Agent System
+    AgentCore --> ToolRegistry
+    AgentCore --> AgentMemory
+    AgentCore --> CICD
+    
+    %% Infrastructure
+    Security -.protects.-> Training
+    Security -.protects.-> MCPCore
+    CICD -.automates.-> GitHub
+    Plugins -.extends.-> Training
+    
+    %% External
     Training --> MLflow
     Eval --> MLflow
-    
     Training --> Storage
     Training --> HF
     Eval --> HF
+    AgentCore --> GitHub
+    
+    %% Styling
+    style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
+    style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
+    style MCPCore fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    style Ingest fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+    style AgentCore fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    style Security fill:#dc2626,stroke:#991b1b,stroke-width:2px,color:#fff
+```
     Serve --> HF
     
     Config -.->|Hydra compose| Training

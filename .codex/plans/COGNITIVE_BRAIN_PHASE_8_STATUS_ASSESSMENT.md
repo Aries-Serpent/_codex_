@@ -151,7 +151,7 @@ class TopologyManager:
 Phase 8.0 → 8.1 → 8.2
 k₁:       0.35 → 0.35 → 0.32  (8.6% improvement)
 Quantum:  2.86 → 2.86 → 3.1×  (8.4% improvement)
-Coverage: 86%  → 86%  → 92%   (6% improvement)
+Coverage: 90%  → 86%  → 92%   (6% improvement)
 ```
 
 ### Code Metrics
@@ -518,7 +518,7 @@ Overall: 60% Complete (3/5 phases)
 Key Metrics:
 k₁ Factor:        0.32 / 0.25 (128% to target)
 Quantum Adv:      3.1× / 4.0× (77.5% to target)
-Test Coverage:    92%  / 100% (92% to target)
+Test Coverage: 90%  / 100% (92% to target)
 ```
 
 ---

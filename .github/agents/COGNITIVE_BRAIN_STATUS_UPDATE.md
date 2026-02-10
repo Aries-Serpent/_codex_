@@ -332,7 +332,7 @@ class ReleaseReporter:
 ```
 
 **Test Requirements:**
-- Test coverage: 90%+
+- Test Coverage: 90%+
 - Unit tests for each validation check
 - Integration tests with GitHub API
 - Mock deployment pipeline testing

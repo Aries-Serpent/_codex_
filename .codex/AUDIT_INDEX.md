@@ -167,6 +167,6 @@ Edit `admin_docs_audit.py` to adjust:
 
 ---
 
-*Last Updated: 2026-01-23*  
+*Last updated: 2026-02-10*  
 *Index Version: 1.0*  
 *Maintained by: doc-freshness-checker agent*

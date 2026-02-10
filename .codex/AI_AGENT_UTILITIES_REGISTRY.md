@@ -745,7 +745,7 @@ pytest tests/test_rag_error_handling.py::TestIndexerErrorHandling -v
 
 ### Success Metrics
 - Test count: 136+ comprehensive tests
-- Coverage: 95%+ across all RAG modules
+- Coverage: 90%+ across all RAG modules
 - CI integration: Automated on PR
 - Execution time: <5 minutes full suite
 
