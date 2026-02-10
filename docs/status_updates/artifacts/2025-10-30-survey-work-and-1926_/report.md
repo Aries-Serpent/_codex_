@@ -173,6 +173,7 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
 ```text
 
 ## 5) Gaps & Remediations
+
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
 | Deploy docs reference `--model` flag that CLI no longer exposes | Reviewers may expect a non-existent flag, blocking dry-run parity | Update `docs/guides/reasoning_overview.md` (Docs) to drop or clarify the flag | 0D_base_/main |

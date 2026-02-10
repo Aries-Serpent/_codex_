@@ -51,6 +51,7 @@ pytest -k plugin_policy
 ```text
 
 ## Best Practices
+
 | Scenario | Recommended Policy |
 |----------|--------------------|
 | Stable local metrics; experimental plugins | prefer_local |

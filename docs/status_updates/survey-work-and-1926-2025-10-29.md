@@ -85,6 +85,7 @@ def _render_buffer(buffer: Iterable[str]) -> list[str]:
 - None observed; README and script usage align.
 
 ## 5) Gaps & Remediations
+
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
 | _None_ | Tooling is ready for branch surveys. | N/A | main |

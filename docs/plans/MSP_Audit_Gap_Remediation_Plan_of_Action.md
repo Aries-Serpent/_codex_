@@ -7,6 +7,7 @@ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 - Provide remediation playbooks and validation scripts for follow-through teams.
 
 ## Approved Implementation Snapshot
+
 | Pillar | Status | Evidence |
 |--------|--------|----------|
 | Policy Gates | ✅ Enabled via `.copilot-space/workflow.yaml` and `audit_runner validate` | See docs/remediation/policy.md |

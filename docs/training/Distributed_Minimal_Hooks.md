@@ -8,6 +8,7 @@ This repository includes minimal distributed hooks intended to be environment-ga
 - Clear error messages on incompatible configurations
 
 ## Environment Flags
+
 | Variable | Effect |
 |----------|--------|
 | CODEX_DDP=1 | Opt-in to distributed hooks where available |

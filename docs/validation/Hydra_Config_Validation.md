@@ -6,6 +6,7 @@ Goals
 - Capture active Hydra configuration in status reports and validate against schemas.
 
 Snapshot Recipe
+
 | Step | Command | Output |
 |---|---|---|
 | List groups | hydra --help (or app CLI) | config group names |

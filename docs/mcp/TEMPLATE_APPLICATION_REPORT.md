@@ -205,6 +205,7 @@
 ✅ No deletions or destructive edits
 
 ### Additions by Category
+
 | Category | Count |
 |----------|-------|
 | Template sections added | 138 (6 per file × 23 files) |

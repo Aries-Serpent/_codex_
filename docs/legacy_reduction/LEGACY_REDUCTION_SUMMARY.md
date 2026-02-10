@@ -86,6 +86,7 @@ The requirement called for 5 batches to reduce 45→≤15 imports:
 ## Impact
 
 ### Module Import Status
+
 | Module | Legacy Path | Canonical Path | Status |
 |--------|-------------|----------------|--------|
 | training | training/* | src/training/* | Migrated ✓ |

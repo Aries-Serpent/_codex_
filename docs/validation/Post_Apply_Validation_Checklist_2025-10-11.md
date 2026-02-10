@@ -2,6 +2,7 @@
 > Generated: 2025-10-11 | Owner: Codex Ops
 
 ## Nox Sessions
+
 | Session | Command | Expected |
 |--------|---------|----------|
 | docs | `nox -s docs` | `artifacts/docs/` with pdoc output |

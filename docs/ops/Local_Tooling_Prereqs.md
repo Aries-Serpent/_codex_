@@ -6,6 +6,7 @@
 Document external CLI dependencies used by local hygiene gates (opt-in) and how to enable/defer them safely.
 
 ## Tools
+
 | Tool | Used by | Install | Verify |
 |------|---------|---------|--------|
 | hadolint | nox docker_lint / make docker-hadolint | [https://github.com/hadolint/hadolint](https://github.com/hadolint/hadolint) | `hadolint --version` |

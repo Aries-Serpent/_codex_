@@ -36,6 +36,7 @@
 `High/Critical vulnerabilities found (not allowlisted): <package:id:severity>`
 
 ## Remediation Checklist
+
 | Step | Action | Owner |
 |------|--------|-------|
 | 1 | Pin or upgrade package | Developer |

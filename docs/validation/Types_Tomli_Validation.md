@@ -13,6 +13,7 @@
 - Added minimal tests to validate loader behavior.
 
 ## Acceptance checks
+
 | Check | Command | Pass criteria |
 |---|---|---|
 | Dev deps install | pip install -r requirements-dev.txt | No error for types-tomli |

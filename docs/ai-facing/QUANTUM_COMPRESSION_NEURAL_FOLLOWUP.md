@@ -38,6 +38,7 @@ Represent information in Hilbert space:
 
 ```python
 # Information encoding
+
 |ψ⟩ = Σᵢ αᵢ|iⱼ⟩ ⊗ |kₖ⟩
 
 where:

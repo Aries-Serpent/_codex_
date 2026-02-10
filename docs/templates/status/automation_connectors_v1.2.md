@@ -6,6 +6,7 @@ Purpose
 - Capture API connector health (rate-limit, status) inside status.json for daily visibility.
 
 Fields (automation.connectors.github)
+
 | Field | Type | Notes |
 |---|---|---|
 | captured_utc | string | Snapshot timestamp |

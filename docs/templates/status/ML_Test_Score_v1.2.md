@@ -6,6 +6,7 @@ Purpose
 - Operationalize the "ml_test_score" section in the v1.2 status schema with concrete definitions, targets, and evidence paths.
 
 Categories and Targets
+
 | Category | Sub-Area | Definition | Target (v1) | Evidence Examples |
 |---|---|---|---|---|
 | Data Tests | feature_expectations | Column presence, types, ranges | >= 5 checks | tests/data/test_schema.py |

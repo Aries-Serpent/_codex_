@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Governance Lead], [Secondary: Reviewer] ⚡ Energy: 5
 
 RACI
+
 | Area | Responsible (R) | Accountable (A) | Consulted (C) | Informed (I) |
 |---|---|---|---|---|
 | Template & Schema | Author | Maintainer | Reviewers | All |

@@ -7,6 +7,7 @@ Purpose
 - Capture dependencies, offline-safety, and immediate post-merge validation focus.
 
 Scope Reviewed (All items OK to add)
+
 | Path | Type | Status | Notes / Dependencies |
 |------|------|--------|----------------------|
 | src/codex_ml/utils/atomic_io.py | code | Ready | Pure stdlib; atomic tmp+fsync+os.replace |

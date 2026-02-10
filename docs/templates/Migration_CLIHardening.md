@@ -54,6 +54,7 @@ Apply this template to harden a CLI module, expand regression coverage, and alig
 - [ ] Changelog updated with CLI hardening summary.
 
 ## Customization Guide
+
 | Placeholder | Description | Example |
 | --- | --- | --- |
 | `[PLACEHOLDER: CLI_HARDENING_SUMMARY]` | One-sentence overview of improvements. | "Improve `codex-cli sync` reliability and error messaging." |

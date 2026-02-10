@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Schema Owner], [Secondary: Reviewer] ⚡ Energy: 5
 
 Steps
+
 | Step | Owner | Action | Artifact |
 |---|---|---|---|
 | Detect | Author/CI | Run schema validations | workflow logs |

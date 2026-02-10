@@ -36,6 +36,7 @@ Weights normalized if Σ != 1.0 (warning added to manifest).
 | documentation | (# doc files containing capability token) / scaled corpus |
 
 ## 4. Evidence Prioritization Heuristics
+
 | Signal | Priority | Notes |
 |--------|----------|-------|
 | Direct pattern hit | High | Immediately increases functionality |
@@ -54,6 +55,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 4. Re-run: `python scripts/space_traversal/audit_runner.py stage S3`.
 
 ## 7. Determinism Guard Rails
+
 | Guard | Implementation |
 |-------|----------------|
 | Sorted traversal | Use `sorted(Path.rglob())` |
@@ -76,6 +78,7 @@ python scripts/space_traversal/audit_runner.py explain checkpointing
 Outputs component contributions + normalized weights.
 
 ## 10. Failure Mode Reference
+
 | Issue | Likely Root | Mitigation |
 |-------|-------------|------------|
 | Missing capability ID | Detector file syntax error | Run S3 & inspect stderr |
@@ -104,6 +107,7 @@ Outputs component contributions + normalized weights.
 ```text
 
 ## 12. Extensible Roadmap Hooks
+
 | Hook | Purpose | Candidate Enhancements |
 |------|---------|-----------------------|
 | Detector meta | Additional feature tags | Complexity classification |
@@ -112,6 +116,7 @@ Outputs component contributions + normalized weights.
 | Consistency heuristic | DRY validation | AST-level function signature overlap |
 
 ## 13. Policy Gates (Optional CI)
+
 | Gate | Condition | Outcome |
 |------|-----------|---------|
 | Hard Fail | Score < low threshold | Non-zero exit |
@@ -126,6 +131,7 @@ rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
 ```text
 
 ## 15. Life-cycle Integration Tips
+
 | Phase | Use |
 |-------|-----|
 | Pre-refactor | Baseline capture |

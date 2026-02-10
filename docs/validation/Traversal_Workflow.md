@@ -60,6 +60,7 @@ scoring:
 - Fallback: if token_similarity is selected but module unavailable, pipeline warns and uses simple.
 
 ## 4. Evidence Prioritization Heuristics
+
 | Signal | Priority | Notes |
 |--------|----------|-------|
 | Direct pattern hit | High | Immediately increases functionality |
@@ -78,6 +79,7 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 5. Re-run: `python scripts/space_traversal/audit_runner.py stage S3`.
 
 ## 7. Determinism Guard Rails
+
 | Guard | Implementation |
 |-------|----------------|
 | Sorted traversal | Use `sorted(Path.rglob())` |
@@ -100,6 +102,7 @@ python scripts/space_traversal/audit_runner.py explain checkpointing
 Outputs component contributions + normalized weights.
 
 ## 10. Failure Mode Reference
+
 | Issue | Likely Root | Mitigation |
 |-------|-------------|------------|
 | Missing capability ID | Detector file syntax error | Run S3 & inspect stderr |
@@ -119,6 +122,7 @@ Outputs component contributions + normalized weights.
 ```text
 
 ## 12. Roadmap Hooks
+
 | Hook | Purpose | Candidate Enhancements |
 |------|---------|-----------------------|
 | Detector meta | Feature tags | Complexity classification |

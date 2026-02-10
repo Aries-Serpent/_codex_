@@ -6,6 +6,7 @@ Purpose
 - Track high-level health signals across per-iteration reports.
 
 KPIs
+
 | KPI | Definition | Source | Target |
 |---|---|---|---|
 | Coverage (overall) | totals.percent_covered | .coverage.json | ≥ fail_under_coverage |

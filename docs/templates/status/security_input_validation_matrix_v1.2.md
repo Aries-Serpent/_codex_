@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: Security Matrix Curator], [Secondary: QA] ⚡ Energy: 5
 
 Patterns
+
 | Type | Regex/Method | Applied To | Severity (1–5) | Evidence |
 |---|---|---|---:|---|
 | SQL Injection | `;\s*(DROP|DELETE|UPDATE)`, `' OR '`, `--`, `/*...*/` | Config keys, CLI strings, loaders | 4 | src/security/core.py |

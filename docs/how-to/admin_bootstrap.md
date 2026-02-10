@@ -8,6 +8,7 @@ Purpose
 - Seed hygiene files (CODEOWNERS, PR/Issue templates) without enabling workflows.
 
 Prereqs (offline-by-default; opt-in online)
+
 | Var | Meaning | Example |
 |-----|---------|---------|
 | CODEX_NET_MODE | Enable online connectors | online_allowlist |

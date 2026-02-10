@@ -83,6 +83,7 @@ Phase 20 is now **COMPLETE** with all objectives achieved! Phase 20.0 completed 
 ## Changes Applied (Phase 20.0)
 
 ### Space Traversal Module Updates
+
 | File | Change |
 |------|--------|
 | audit_runner.py | Optional module imports via importlib spec |
@@ -96,6 +97,7 @@ Phase 20 is now **COMPLETE** with all objectives achieved! Phase 20.0 completed 
 | migrations/migrate_trends.py | Fixed `__future__` import placement |
 
 ### Detector Updates
+
 | Detector | Change |
 |----------|--------|
 | detector_duplication.py | Adjusted duplication ratio counting |

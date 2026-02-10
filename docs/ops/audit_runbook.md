@@ -80,6 +80,7 @@ make space-validate
 ```
 
 ### Exit Codes
+
 | Code | Meaning |
 |------|---------|
 | 0 | All gates pass |

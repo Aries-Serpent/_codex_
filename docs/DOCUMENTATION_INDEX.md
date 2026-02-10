@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last Updated**: 2025-12-11  
+**Last Updated**: 2026-02-10  
 **Total Files**: 693+ markdown files  
 **Purpose**: Comprehensive index of all documentation in the repository
 
@@ -23,12 +23,12 @@
 
 | Document | Purpose | Last Updated | Status |
 |----------|---------|--------------|--------|
-| [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project overview | Current | ✅ Active |
+| [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project overview | 2026-02-10 | ✅ Active |
 | [AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | Current | ✅ Active |
-| [SECURITY.md](./SECURITY.md) | Security policy | Current | ✅ Active |
-| [CODE_OF_CONDUCT.md](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md) | Community standards | Current | ✅ Active |
-| [GOVERNANCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Governance model | Current | ✅ Active |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | 2026-02-10 | ✅ Active |
+| [SECURITY.md](./SECURITY.md) | Security policy | 2026-02-10 | ✅ Active |
+| [CODE_OF_CONDUCT.md](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md) | Community standards | 2026-02-10 | ✅ Active |
+| [GOVERNANCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Governance model | 2026-02-10 | ✅ Active |
 
 ### Recent Additions (2025-12-11)
 
@@ -119,15 +119,15 @@
 | Guide | Audience | Updated |
 |-------|----------|---------|
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | New contributors | 2025-12-11 |
-| [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | Current |
-| [USAGE_GUIDE.md](https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md) | End users | Current |
+| [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | 2026-02-10 |
+| [USAGE_GUIDE.md](https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md) | End users | 2026-02-10 |
 
 ### Agent Guides
 
 | Guide | Purpose | Updated |
 |-------|---------|---------|
 | [AGENTS.md](./agents.md) | Comprehensive agent guide | 2025-12-10 |
-| [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | Current |
+| [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | 2026-02-10 |
 | [agents/prompts/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/README.md) | Prompts library | 2025-12-11 |
 
 ### Integration Guides

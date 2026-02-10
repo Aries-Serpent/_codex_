@@ -1,6 +1,7 @@
 # [Validation]: Optional Dependencies Soft-Fail Mechanism
 
 ## Mechanism
+
 | Component | Role | Behavior |
 |-----------|------|----------|
 | tools/codex_evaluator.py | Optional import layer | Populates MISSING_OPTIONALS; logs warning if SOFT_FAIL |
@@ -9,6 +10,7 @@
 | nox coverage session | Ensures pydantic/typer attempt | Expands coverage paths if install succeeds |
 
 ## Acceptance Criteria
+
 | Criterion | Pass Condition |
 |-----------|----------------|
 | No SystemExit/ImportError aborts | Pytest completes collection |

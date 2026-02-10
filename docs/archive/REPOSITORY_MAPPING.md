@@ -7,6 +7,7 @@
 ## 📊 Quick Navigation Matrix
 
 ### Core Entry Points
+
 | File | Purpose | Dependencies | Updates |
 |------|---------|--------------|---------|
 | `README.md` | Repository overview | None | Monthly |
@@ -15,6 +16,7 @@
 | `status_update_YYYY-MM-DD.md` | Iteration report | Audit artifacts | Per iteration |
 
 ### Configuration Files
+
 | File | Purpose | Format | Validation |
 |------|---------|--------|-----------|
 | `pyproject.toml` | Package metadata | TOML | setuptools |

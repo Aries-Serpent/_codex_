@@ -7,6 +7,7 @@ Purpose
 - Standardize identifiers used across reports, code, and CI to enable reliable cross-referencing and automation.
 
 ID Formats
+
 | Kind | Pattern | Example | Where Used |
 |---|---|---|---|
 | Capability | CAP-XXX (zero-padded) | CAP-001 | Template 2.2, patches[].capability_ids, repro.registry[].links |

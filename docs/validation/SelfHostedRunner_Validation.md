@@ -5,6 +5,7 @@ Goal
 - Validate end-to-end setup of a self-hosted runner using existing tokens (GH_PAT or _CODEX_BOT_RUNNER) without introducing new variables.
 
 Checklist
+
 | Step | Command | Expectation |
 |---|---|---|
 | Install Docker | sudo bash scripts/runner/install_docker.sh <runner_user> | docker info succeeds; user in docker group |

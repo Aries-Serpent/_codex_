@@ -6,6 +6,7 @@ Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 Enforce the Archival Inventory Process for any terminating action (remove, delete, sunset, prune) across code, docs, workflows, tests.
 
 ## 2) Required Steps (Summary)
+
 | Step | Requirement |
 |------|-------------|
 | ADR | docs/arch/ADR-*.md drafted and linked |

@@ -6,6 +6,7 @@ Purpose
 - Map key status.json fields to concrete tests and artifacts for easier review and gap detection.
 
 Mapping
+
 | Status JSON Path | Source/Artifact | Test(s) | Notes |
 |---|---|---|---|
 | metadata.git_context | git repo | tools/status_report.py | Auto-collected at skeleton gen |

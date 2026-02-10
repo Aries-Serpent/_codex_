@@ -12,6 +12,7 @@ Rules
 - Avoid linking to ephemeral CI logs; download essential snippets into repo artifacts.
 
 Examples
+
 | Claim | Evidence |
 |---|---|
 | "Coverage rose by 2.3%" | reports/.coverage.json (totals.percent_covered), delta.tests_coverage_delta |

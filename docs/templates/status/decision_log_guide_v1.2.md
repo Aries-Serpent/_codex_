@@ -6,6 +6,7 @@ Purpose
 - Capture important choices with context and impact.
 
 Fields
+
 | Field | Type | Required |
 |---|---|---:|
 | id (Phase 12-XXX) | string | Yes |

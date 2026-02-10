@@ -37,6 +37,7 @@
 
 ### Phase 4: Risk Assessment
 **Identified Risks:**
+
 | Risk | Probability | Mitigation |
 |------|-------------|-----------|
 | [Risk 1] | Low/Med/High | [Mitigation strategy] |
@@ -94,6 +95,7 @@
 - [x] Assumptions: Patch from trusted source, no merge conflicts expected
 
 ### Phase 4: Risk Assessment
+
 | Risk | Probability | Mitigation |
 |------|-------------|-----------|
 | Merge conflict | Low | Pre-validated with git apply --check |

@@ -2,6 +2,7 @@
 > Generated: 2025-12-04 | Author: mbaetiong
 
 ## Commands
+
 | Task | Command |
 |------|---------|
 | Full pipeline | `python scripts/space_traversal/audit_runner.py run` |

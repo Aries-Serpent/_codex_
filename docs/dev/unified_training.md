@@ -20,6 +20,7 @@ print(result)
 ```text
 
 ## Schema v2 Additions
+
 | Field | Purpose |
 |-------|---------|
 | schema_version | Forward compatibility |
@@ -29,6 +30,7 @@ print(result)
 | rng (_rng) | Deterministic resumption |
 
 ## Migration
+
 | Legacy | Replacement |
 |--------|-------------|
 | `run_training(...)` | Use `UnifiedTrainingConfig(..., backend="legacy")` |

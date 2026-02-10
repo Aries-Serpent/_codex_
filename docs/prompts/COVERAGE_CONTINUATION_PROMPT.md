@@ -132,6 +132,7 @@ python3 -m pytest tests/ --cov=agents --cov=src --cov-report=html -q
 ## 📊 FILES REQUIRING ATTENTION
 
 ### High Priority (Most Failures)
+
 | File | Failures | Primary Issue |
 |------|----------|---------------|
 | `test_phase2_deep_coverage_batch15_integration_depth.py` | ~14 | create_workflow, connect_nodes |
@@ -140,6 +141,7 @@ python3 -m pytest tests/ --cov=agents --cov=src --cov-report=html -q
 | `test_phase2_deep_coverage_batch17_final_gaps.py` | ~5 | Various API mismatches |
 
 ### Source Files Needing Coverage
+
 | File | Current Coverage | Target |
 |------|-----------------|--------|
 | `agents/physics_orchestrator.py` | ~27% | 100% |

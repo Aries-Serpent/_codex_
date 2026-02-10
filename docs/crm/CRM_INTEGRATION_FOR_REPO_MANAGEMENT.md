@@ -343,9 +343,9 @@ steps:
 - [Zendesk Docs Pipeline](../runbooks/zendesk_docs_pipeline.md)
 
 ### Code Reference
-- [`src/codex_crm/`](../src/codex_crm/) - CRM integration modules
-- [`configs/desired/zendesk/`](../configs/desired/zendesk/) - Zendesk configurations
-- [`configs/deployment/d365/`](../configs/deployment/d365/) - D365 configurations
+- CRM integration modules in `src/codex_crm/` directory
+- [Zendesk API Reference](../zendesk_api_reference.md) - Zendesk configurations
+- [D365 Admin Runbook](admin-runbooks/d365.md) - D365 configurations
 
 ---
 

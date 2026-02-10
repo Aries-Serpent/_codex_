@@ -22,6 +22,7 @@ We will add local-only evaluator & fence checks, plus the approval-gate template
 3. Self-Management — CLI wrapper and tests for evaluator & fences.
 
 **Risks and Mitigations**
+
 | Risk | Severity | Mitigation |
 | --- | --- | --- |
 | Strict fences reject PR text | Medium | Provide docs & examples; allow local bypass for emergency with documented follow-up. |

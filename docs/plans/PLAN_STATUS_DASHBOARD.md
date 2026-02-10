@@ -28,6 +28,7 @@
 **Unified Document:** `docs/plans/COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md`
 
 **Component Status:**
+
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 8.0 | k₁ Optimization | ✅ Complete |
@@ -94,6 +95,7 @@
 ### ✅ Priority 2: Python Ingestion Pipeline - COMPLETE
 
 **Components Implemented:**
+
 | Module | Key Classes | Lines |
 |--------|-------------|-------|
 | Ingest | Snapshot, IngestManifest | 625 |

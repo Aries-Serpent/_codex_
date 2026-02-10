@@ -43,6 +43,7 @@
 - `<bullets>`
 
 ## 5) Gaps & Remediations
+
 | Gap | Impact | Fix (owner) | Target Ring |
 |---|---|---|---|
 | `<gap>` | `<impact>` | `<plan>` | `<0A/0B/0C/0D/main>` |

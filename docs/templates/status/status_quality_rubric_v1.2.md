@@ -6,6 +6,7 @@ Overview
 - Use this rubric during review to grade completeness, correctness, and actionability of daily reports.
 
 Rubric
+
 | Dimension | 1 (Needs Work) | 3 (Good) | 5 (Excellent) |
 |---|---|---|---|
 | Metadata | Missing title/UTC, env, or git_context | Title/UTC correct; partial env/git_context | All fields complete and accurate |

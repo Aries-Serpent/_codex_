@@ -3,6 +3,7 @@
 This guide covers local, offline-friendly packaging for the Codex ML project.
 
 ## Project Identity
+
 | Field | Value |
 |------|-------|
 | Name | codex-ml |
@@ -73,6 +74,7 @@ PY
 ```text
 
 ## Troubleshooting (pyproject duplicates)
+
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | pre-commit: Black/Ruff TOML parse error | Duplicate [project].dependencies or [project.optional-dependencies] | Run: python tools/apply_pyproject_packaging.py (repairs duplicates non-destructively) |

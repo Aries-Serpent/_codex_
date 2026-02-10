@@ -11,6 +11,7 @@ Energy: 5/5
 - Nox resolves the floor from pyproject; runtime override: `CODEX_COV_FLOOR`.
 
 ## Artifacts
+
 | Type | Location |
 |------|----------|
 | JSON (timestamped) | artifacts/coverage/<ts>/coverage.json |

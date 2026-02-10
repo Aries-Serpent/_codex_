@@ -24,6 +24,7 @@ python scripts/space_traversal/status_update_report.py --base baseline/capabilit
 ```text
 
 ## Report Sections
+
 | Section | What to include |
 |---------|------------------|
 | Executive Summary | counts, average score, # low (< low threshold), warnings |

@@ -17,6 +17,7 @@ verify = verify_checkpoint(best_path)
 ```text
 
 Index Schema (index.json)
+
 | Field | Type | Notes |
 |-------|------|-------|
 | schema_version | str | "1.0" |

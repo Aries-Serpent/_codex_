@@ -4,6 +4,7 @@
 This runbook verifies the Docker workflow locally (CI remains gated). Use a machine with Docker installed.
 
 ## Summary
+
 | Step | Command | Pass criteria |
 |---|---|---|
 | Build | bash scripts/ci/build_image.sh codex:local Dockerfile --load | Image builds; labels show VERSION/VCS_REF/BUILD_DATE |

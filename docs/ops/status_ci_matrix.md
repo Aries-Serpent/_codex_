@@ -3,6 +3,7 @@
 🧠 Roles: [Primary: CI Matrix Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Matrix
+
 | Workflow | Purpose | Key Steps | Artifacts |
 |---|---|---|---|
 | status_validation.yml | Status schema + config validation | pytest schema test; validate_configs | audit_run_manifest.json |

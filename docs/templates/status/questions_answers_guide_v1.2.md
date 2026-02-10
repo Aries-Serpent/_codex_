@@ -6,6 +6,7 @@ Purpose
 - Standardize usage of `questions` in the status schema for traceability.
 
 Fields
+
 | Field | Type | Required | Notes |
 |---|---|---:|---|
 | id | string (Q-XXX) | Yes | Unique question ID |

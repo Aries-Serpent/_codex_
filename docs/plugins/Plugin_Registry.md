@@ -3,6 +3,7 @@
 This document captures the canonical programmatic registry surfaces and JSON contracts.
 
 ## Programmatic API
+
 | Module | Purpose |
 |--------|---------|
 | codex_ml.plugins.registry | Discover and enumerate plugins |

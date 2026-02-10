@@ -83,6 +83,7 @@ Title format for each report (must use exactly):
 Use BOTH a "Core Capability Table" for well-known areas and an "Extended Capability Catalog" for any discovered or newly added capabilities. The catalog is open‑ended; add rows for anything material (tools, scripts, configs, infra, policies).
 
 #### 2.2.1 Core Capability Table
+
 | Capability | Status | Existing Artifacts | Gaps | Risks | Severity (1–5) | Confidence (1–5) | Minimal Patch Plan | Rollback Plan |
 | --- | --- | --- | --- | --- | ---:| ---:| --- | --- |
 | Tokenization | <Implemented/Partial/Stub/Missing> | <refs> | <gaps> | <risks> | <#> | <#> | <plan> | <rollback> |
@@ -101,6 +102,7 @@ Use BOTH a "Core Capability Table" for well-known areas and an "Extended Capabil
 | Extensibility/Plugins | | | | | | | | |
 
 #### 2.2.2 Extended Capability Catalog (Dynamic)
+
 | Capability ID | Name | Category | Status | Artifacts/Refs | Gaps | Risks | Severity (1–5) | Confidence (1–5) | Tags | Minimal Patch Plan | Owner | ETA |
 |---|---|---|---|---|---|---|---:|---:|---|---|---|---|
 | CAP‑001 | <name> | <e.g., Data, Infra, Security, Docs, Tooling> | <status> | <links/paths> | <gaps> | <risks> | <#> | <#> | <#tags> | <plan> | <owner> | <date> |
@@ -112,6 +114,7 @@ Use BOTH a "Core Capability Table" for well-known areas and an "Extended Capabil
   - Link Atomic Patch Diffs that address specific CAP‑IDs.
 
 #### 2.2.3 Capability Discovery Log
+
 | Timestamp (UTC) | Discovered By | Capability ID | Name | Evidence/Path | Rationale for Inclusion |
 |---|---|---|---|---|---|
 | <ts> | <user/tool> | CAP‑00X | <name> | <ref> | <reason> |
@@ -153,6 +156,7 @@ Use BOTH a "Core Capability Table" for well-known areas and an "Extended Capabil
 Provide core controls plus an extensible registry to accommodate evolving needs.
 
 #### 2.5.1 Core Controls
+
 | Control | Status | Notes | Evidence |
 | --- | --- | --- | --- |
 | Seeds across Python/NumPy/Torch | <✅/⚠️/❌> | <notes> | <path_to_seeding_util> |
@@ -165,6 +169,7 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 | Documentation of reproducibility | <✅/⚠️/❌> | <notes> | `docs/repro.md` |
 
 #### 2.5.2 Reproducibility Registry (Dynamic)
+
 | Repro ID | Category | Control | Status | Severity (1–5) | Confidence (1–5) | Evidence/Path | Owner | Next Audit (UTC) | Notes |
 |---|---|---|---|---:|---:|---|---|---|---|
 | REPRO‑001 | Env | OS/hardware inventory captured | <status> | <#> | <#> | <ref> | <owner> | <date> | <notes> |
@@ -175,6 +180,7 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 **Purpose**: Ensure configuration and data artifacts conform to defined schemas; detect structural drift before runtime.
 
 #### 2.6.1 Schema Validation Results
+
 | Target | Schema Path | Validation Tool | Status | Findings | Severity (1–5) | Remediation |
 |---|---|---|---|---|---:|---|
 | configs/training/base.yaml | configs/schemas/training.schema.yaml | `tools/validate_configs.py` | <PASS/FAIL> | <summary> | <#> | <action> |
@@ -197,6 +203,7 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 **Purpose**: Surface input validation coverage for security posture.
 
 #### 2.7.1 Input Validation Patterns Enforced (from `src/security/core.py`)
+
 | Pattern Type | Detection | Coverage | Severity (1–5) | Notes |
 |---|---|---|---:|---|
 | SQL Injection | Regex: `;\s*(DROP\|DELETE\|UPDATE)`, `'\s*OR\s+'`, `--`, `/\*.*?\*/` | Applied to: config keys, CLI strings, data loaders | 4 | Patterns from `SQL_INJECTION_PATTERNS` |
@@ -220,6 +227,7 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 **Purpose**: Enable reproducible, tamper-evident audit trails via cryptographic hashes.
 
 #### 2.8.1 Integrity Chain Status
+
 | Component | Artifact Path | SHA256 Hash | Timestamp (UTC) | Notes |
 |---|---|---|---|---|
 | Context Index (file enumeration) | audit_artifacts/context_index.json | <hash> | <ts> | 6,384 files indexed |
@@ -398,6 +406,7 @@ Maintain an "Errors & Resolutions" log if recurring.
 ---
 
 ## 10. Decision Log
+
 | Decision (Phase 12-XXX) | Context | Options Considered | Chosen | Owner | Date (UTC) | Impact |
 |---|---|---|---|---|---|---|
 | <title> | <why> | <opt A/B/C> | <opt> | <owner> | <ts> | <impact> |

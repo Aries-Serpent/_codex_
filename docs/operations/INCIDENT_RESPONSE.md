@@ -270,6 +270,7 @@ We apologize for any inconvenience.
 - **Impact**: [Summary of impact]
 
 ## Timeline
+
 | Time | Event |
 |------|-------|
 | HH:MM | [Event] |
@@ -286,6 +287,7 @@ We apologize for any inconvenience.
 [What was done to resolve]
 
 ## Action Items
+
 | Action | Owner | Due Date | Status |
 |--------|-------|----------|--------|
 | [Action] | [Name] | [Date] | [Status] |

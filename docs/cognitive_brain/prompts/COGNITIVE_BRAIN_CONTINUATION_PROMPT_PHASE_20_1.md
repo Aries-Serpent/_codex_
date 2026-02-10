@@ -31,6 +31,7 @@
 - **Total: 104 new tests added**
 
 ### Files Modified/Created
+
 | Category | Count | Files |
 |----------|-------|-------|
 | Space Traversal Utilities | 10 | audit_runner.py, ci_integration.py, synonym_loader.py, etc. |

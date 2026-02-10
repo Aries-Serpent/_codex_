@@ -6,6 +6,7 @@ Purpose
 - Provide a minimal CPU-only smoke to assert seed handling and checkpoint round-trip integrity.
 
 Checklist
+
 | Item | Command | Expected |
 |------|---------|----------|
 | Seed behavior | `pytest -q tests/training/test_checkpoint_rng_restore.py` | Next RNG value matches pre-saved sequence |

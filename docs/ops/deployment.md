@@ -52,6 +52,7 @@ Override values per environment using `--values` or `--set` flags. For productio
 - [deployment_architecture.md](deployment_architecture.md) – infrastructure overview and scaling guidance.
 
 ## Environment Matrix
+
 | Environment | Purpose | Notes |
 |-------------|---------|-------|
 | Development | Local iteration via docker compose | Uses CPU runtime, minimal replicas |

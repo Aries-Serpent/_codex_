@@ -4,6 +4,7 @@
  Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## Remaining Gaps (Minor)
+
 | Gap | Impact | Proposed Patch | Status |
 |-----|--------|----------------|--------|
 | Detector meta in report | Low | Surface `meta` in detail sections | in-progress |

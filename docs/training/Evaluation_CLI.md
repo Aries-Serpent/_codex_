@@ -3,6 +3,7 @@
 This document describes the evaluation entrypoints and expected IO behavior.
 
 ## Entrypoints
+
 | Command | Target | Notes |
 |---------|--------|-------|
 | codex-eval | codex_ml.cli.entrypoints:eval_main | Primary evaluation entrypoint |
@@ -32,6 +33,7 @@ python -m codex_ml.eval.run_eval --help
 ```text
 
 ## Environment Controls
+
 | Variable | Meaning | Default |
 |----------|---------|---------|
 | CODEX_EVAL_ENTRY | Override evaluation entry module | autodetect |

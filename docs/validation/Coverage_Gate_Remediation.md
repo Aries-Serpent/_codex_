@@ -1,6 +1,7 @@
 # [Validation]: Coverage Gate Remediation — Dependency & Marker Stabilization
 
 ## Acceptance Criteria (Post-Remediation)
+
 | Gate | Criterion |
 |------|-----------|
 | Collection | Zero import errors (errors downgraded to skips if optional) |
@@ -16,6 +17,7 @@ nox -s coverage
 ```text
 
 ## Troubleshooting
+
 | Symptom | Likely Cause | Action |
 |---------|--------------|-------|
 | torch import fails | Wheel not installed | Pin trio: torch torchvision torchaudio |
@@ -25,6 +27,7 @@ nox -s coverage
 | SentencePiece errors | Missing `sentencepiece` build | Add `sentencepiece>=0.1.99` (pure wheel) |
 
 ## Skip Logic Summary
+
 | Marker | Skip Condition |
 |--------|----------------|
 | requires_torch | torch import fails |

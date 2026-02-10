@@ -1,6 +1,7 @@
 # [Validation]: CI Remediation Verification
 
 ## Post-Patch Verification Steps
+
 | Step | Command | Expected Result |
 |------|---------|-----------------|
 | Dependency sanity | `python .github/scripts/ci_dependency_sanity.py` | All critical imports OK |
@@ -12,6 +13,7 @@
 | Metrics test rename | Only one metrics test module | No duplicate import warnings |
 
 ## Acceptance Gates
+
 | Gate | Criterion |
 |------|-----------|
 | Import stability | 0 hard import errors |
@@ -21,6 +23,7 @@
 | Optional deps | Missing ones produce skips, not errors |
 
 ## If Failure Persists
+
 | Symptom | Mitigation |
 |---------|------------|
 | torch _C still missing | Force reinstall: `pip install --force-reinstall torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1` |

@@ -22,6 +22,7 @@ train/validation/test splits that align with the manifest checksums described
 below.
 
 Schema (v1.0)
+
 | Field | Type | Notes |
 |-------|------|-------|
 | schema_version | str | "1.0" |

@@ -3,6 +3,7 @@
 This guide clarifies the checkpointing modules and their intended usage. Canonical paths remain stable; legacy shims continue to work with deprecation guidance.
 
 ## Overview
+
 | Surface | Status | Purpose |
 |--------|--------|---------|
 | codex_ml/utils/checkpoint_core.py | Canonical | Low-level IO, integrity helpers (hash, atomics) |
@@ -67,6 +68,7 @@ python -m codex_ml.cli.checkpoint --info latest
 ```text
 
 ## Deprecation Mapping
+
 | Legacy Import | Use Instead |
 |---------------|-------------|
 | src/utils/checkpoint.py | codex_ml/utils/checkpointing.py |

@@ -161,6 +161,7 @@ gh pr checks | grep -i codeql
 - **Standardization:** Python 3.12 only
 
 ### Test Improvements
+
 | Suite | Before | After | Status |
 |-------|--------|-------|--------|
 | Prometheus Metrics | 0/11 | 11/11 | ✅ 100% |

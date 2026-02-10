@@ -3,6 +3,7 @@
 🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## 1) Executive Summary
+
 | Dimension | Status | Notes |
 |----------|--------|-------|
 | Build & Packaging | Stable | pyproject.toml (setuptools), reproducible build via nox build/session; wheel/sdist validation present. |
@@ -15,6 +16,7 @@
 | Gaps/Risks | Moderate | Dual/overlapping nox sessions, toolchain drift risk, import contract baseline minimal, optional binaries (hadolint/trivy) reliance. |
 
 ## 2) Repository Composition (Conceptual)
+
 | Area | Key Tech/Files | Notes |
 |------|----------------|-------|
 | Language Core | Python 3.10+ | src/codex_ml/*, tools/, scripts/ |
@@ -29,6 +31,7 @@
 | Audit Workflow (Space) | Audit runner & config | scripts/space_traversal/audit_runner.py, workflow.yaml, templates/** |
 
 ## 3) Build & Packaging
+
 | Topic | Evidence | Status |
 |-------|----------|--------|
 | PEP 621 packaging | pyproject.toml (setuptools>=69) | OK |
@@ -37,6 +40,7 @@
 | Extras & entry points | Optional deps (ml, logging, perf, ops, gpu, etc.) + console scripts | OK |
 
 ## 4) Tests & Determinism
+
 | Topic | Evidence | Status/Notes |
 |------|----------|--------------|
 | Deterministic pytest | pytest.ini: --disable-plugin-autoload; randomly_seed; plugins=pytest_cov,pytest_randomly | Strong |
@@ -46,6 +50,7 @@
 | Fast/local gates | tests_min, tests_sys, perf_smoke; Makefile fast-tests/sys-tests | Dev friendly |
 
 ## 5) Linting, Formatting, Typing
+
 | Topic | Evidence | Status |
 |------|----------|--------|
 | Lint | Ruff primary in nox lint; ruff config in pyproject (modern lint.* tables) | OK |
@@ -54,6 +59,7 @@
 | Type checking | mypy with strict-ish defaults; ignores for tests; ignore_missing_imports | Balanced strictness |
 
 ## 6) Security Posture
+
 | Tool | Invocation | Policy |
 |------|------------|--------|
 | Bandit | nox sec_scan / sec; pre-commit (manual stage also) | Local-first |
@@ -65,6 +71,7 @@
 | Docker scans | hadolint, trivy (imagescan gated) | Requires binaries in PATH |
 
 ## 7) Documentation & Knowledge
+
 | Topic | Evidence | Status |
 |------|----------|--------|
 | API docs | nox docs → artifacts/docs/ via pdoc | OK |
@@ -73,6 +80,7 @@
 | Commit practices | docs/ops/Commits.md; pre-commit commitizen hook; nox conventional | Enforced guidance |
 
 ## 8) Containers & Deployment
+
 | Topic | Evidence | Status |
 |------|----------|--------|
 | Dockerfiles | Dockerfile, Dockerfile.gpu | Present |
@@ -81,6 +89,7 @@
 | Lint & Scan | nox docker_lint (hadolint), imagescan (trivy image, gated) | Tool presence required |
 
 ## 9) Reproducibility & Seeding
+
 | Topic | Evidence | Notes |
 |------|----------|-------|
 | Central seeding | codex_ml.utils.seeding.set_reproducible/set_deterministic | Single SoT |
@@ -88,6 +97,7 @@
 | Checkpoint RNG state | utils.repro snapshot/restore APIs; tests present | Good coverage |
 
 ## 10) Audit Workflow (Space Traversal) Readiness
+
 | Stage | Artifact | Support in Repo | Notes |
 |-------|----------|-----------------|-------|
 | S1 Index | audit_artifacts/context_index.json | audit_runner.py | Deterministic listing & hashing |
@@ -99,6 +109,7 @@
 | S7 Manifest | audit_run_manifest.json | audit_runner.py | Hash chain, weights, warnings |
 
 ## 11) Quality Gates & Local Automation
+
 | Gate/Hook | Config | Behavior |
 |-----------|--------|----------|
 | Pre-commit | .pre-commit-config.yaml | Mixed fast checks by default; heavy scans manual/pre-push |
@@ -106,6 +117,7 @@
 | Nox | Broad session catalog (tests, cov, docs, sec, docker*, packaging) | Local CI parity |
 
 ## 12) Risks & Gaps (Prioritized)
+
 | Priority | Area | Finding | Recommendation |
 |---------|------|---------|----------------|
 | High | Tooling availability | Docker hygiene depends on external binaries (hadolint, trivy) | Document install prerequisites; add graceful skip messaging (present) + CI toggle if adopted |
@@ -129,6 +141,7 @@
   - Introduce targeted strict modules (e.g., `src.security` already enforced); add 1-2 modules per iteration.
 
 ## 14) Quick-Run Commands
+
 | Goal | Command |
 |------|---------|
 | Full quality loop | `make codex-gates` |
@@ -142,6 +155,7 @@
 | Repro seed smoke | `pytest -q tests/utils/test_seed.py -k seed_repro` |
 
 ## 15) Key Files & Pointers
+
 | Purpose | File |
 |---------|------|
 | Nox sessions | `configs/development/noxfile.py` |

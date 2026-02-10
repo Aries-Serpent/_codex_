@@ -1,6 +1,7 @@
 # Incident Response Plan
 
 ## Classification
+
 | Severity | Description | Response Time |
 |----------|-------------|---------------|
 | Low | Minor bug, no data exposure | 72 hours |

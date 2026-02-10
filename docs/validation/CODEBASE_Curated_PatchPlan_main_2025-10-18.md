@@ -5,11 +5,13 @@ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 Alignment: Incorporates recent P0 packaging changes (MANIFEST, build script, TOML parse guard, tests). This update enumerates the next diffs to implement and completes all remaining P1/P2 items with doc-first, low-churn changes.
 
 ## A) Deltas Landed (Reference)
+
 | Patch | Area | Outcome |
 |------|------|---------|
 | PS-1g/1h | Packaging normalization + parse guard | pyproject normalizer safer; MANIFEST tightened; wheel builder script; docs/tests added |
 
 ## B) Next Diffs To Implement (Now)
+
 | Patch Set | Priority | Contents |
 |-----------|----------|----------|
 | PS-2 | P1 | tests/plugins/test_list_plugins_cli_json_stdout_only.py to enforce stdout-only JSON |
@@ -21,6 +23,7 @@ Alignment: Incorporates recent P0 packaging changes (MANIFEST, build script, TOM
 | PS-8 | P2 | docs/validation/{Traversal_Workflow.md,Usage_Guide.md}, templates/audit/capability_matrix.md.j2 |
 
 ## C) Validation Matrix
+
 | PS | Command | Expected |
 |----|---------|----------|
 | PS-2 | python -m codex_ml.cli.list_plugins --format json | exit 0; stderr empty; valid JSON |

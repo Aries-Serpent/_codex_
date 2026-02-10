@@ -28,6 +28,7 @@ This session accomplished:
 ## Current State
 
 ### Batch Status
+
 | Batch | Name | Status |
 |-------|------|--------|
 | B0 | Plan Documentation | ✅ COMPLETE |

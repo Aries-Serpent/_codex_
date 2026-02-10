@@ -7,6 +7,7 @@ Scope
 - Document enforced input validation patterns and where they apply.
 
 Patterns and Coverage
+
 | Pattern | Regex/Method | Applies To | Severity (1–5) | Evidence |
 |---|---|---|---:|---|
 | SQL Injection | ;\\s*(DROP|DELETE|UPDATE), '\\s*OR\\s+', --, /*...*/ | Config keys, CLI strings, loaders | 4 | src/security/core.py |

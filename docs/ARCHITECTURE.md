@@ -593,7 +593,7 @@ flowchart TD
 ```bash
 python -m pip install -r requirements-dev.txt
 pytest -q tests/test_validate_fences.py
-```text
+```
 
 ---
 
