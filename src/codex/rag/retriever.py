@@ -105,7 +105,7 @@ class Retriever:
 
             self.model = SentenceTransformer(
                 self.model_name,
-                device='cpu',
+                device=None,
                 cache_folder=self.cache_dir,
                 trust_remote_code=False,
                 use_auth_token=use_auth_token if use_auth_token else None
