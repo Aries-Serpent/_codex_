@@ -71,7 +71,7 @@ graph TD
 | Component | Path | AI Intuitiveness | ACE Layer | Key Strengths | Improvement Area |
 |-----------|------|:----------------:|-----------|---------------|------------------|
 | **Codex Core** | `src/codex/` | 94/100 | L6 | Clear module boundaries, type hints, docstrings | API auto-docs |
-| **RAG Pipeline** | `src/codex/rag/` | 95/100 | L3 | Safe meta-tensor handling, device=None pattern | Inline examples |
+| **RAG Pipeline** | `src/codex/rag/` | 95/100 | L3 | Safe meta-tensor handling, device='cpu' default | Inline examples |
 | **CI Cache Manager** | `src/codex/ci/` | 92/100 | L5 | Unified key generation, rfind pattern | Integration tests |
 | **CLI** | `src/codex/cli.py` | 90/100 | L6 | Entry point clear, argparse structured | --help expansion |
 | **Interpretability** | `src/codex/interpretability/` | 88/100 | L3 | Attention/MLP scorers well-named | Visualization |
@@ -167,7 +167,7 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 | Run tests | `tests/` → `nox -s tests` | L5 |
 | Fix CI failures | `scripts/ci/auto_fix_common_issues.py` → `scripts/validate_*.py` | L5 |
 | Understand architecture | `docs/architecture/` → `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
-| Work with RAG | `src/codex/rag/` (device=None pattern, safe_model_to_device) | L3 |
+| Work with RAG | `src/codex/rag/` (device='cpu' initialization, no safe_model_to_device needed) | L3 |
 | Manage agents | `.github/agents/` → `AGENTS.md` | L4 |
 | Update documentation | `docs/` → `mkdocs.yml` → `scripts/validate_docs_links.py` | L2 |
 | Check security | `SECURITY.md` → `.codex/guardrails.md` | L1 |
@@ -181,7 +181,7 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 ```text
 Pattern                          Where                           Why
 ─────────────────────────────────────────────────────────────────────────
-device=None initialization       src/codex/rag/*.py              Safe meta-tensor handling
+device='cpu' initialization      src/codex/rag/*.py              Prevents meta-tensor creation
 Hydra dual-path config          conf/ → configs/ fallback        Backward compatibility
 rfind("-") for cache keys       src/codex/ci/cache_manager.py    Preserves hyphenated components
 --check (not --check-only)      scripts/validate_*.py            Correct validation flag
