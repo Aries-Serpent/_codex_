@@ -1,7 +1,7 @@
 # Evolution Timeline — _codex_ Cognitive AI Agency
 
 **Last Updated**: 2026-02-11  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Purpose**: Verified phase-by-phase history of the _codex_ project evolution, aligned with codebase evidence.  
 **Source of Truth**: Cross-referenced against `.codex/cognitive_brain/`, `docs/`, and `src/` artifacts.
 
@@ -133,9 +133,16 @@
 | Audit trail system | ✅ | `.codex/evidence/` directory |
 | Genesis bootstrap template | ✅ | `.codex/templates/` |
 
-**Note**: Full Genesis activation (SAFE_MODE → False) awaits human admin secret injection. Foundation and guard infrastructure is complete.
+**Genesis Activation Status** (2026-02-11):
 
-**Blocker**: Human admin secret injection (`CODEX_MASTER_KEY`) required for Phase 10 full activation.
+| Component | Status | Detail |
+|-----------|--------|--------|
+| CODEX_MASTER_KEY | ✅ Confirmed | Human admin granted full access with all confirmations |
+| Workflow guards (`if: false`) | ⏳ Ready | Removal authorized, awaiting implementation |
+| `SAFE_MODE → False` | ⏳ Ready | Activation authorized, awaiting implementation |
+| Token rotation plan | ✅ Planned | Rotation schedule confirmed |
+
+**Note**: Foundation 100% complete. Full Genesis activation authorized by human admin on 2026-02-11. Implementation deferred to dedicated Phase 10.1 activation session to ensure zero-risk transition.
 
 ---
 
@@ -144,38 +151,45 @@
 ### 🟢 Phase 11: MCP Advanced Features
 
 **Timeline**: 2026-01-20 — 2026-02-28  
-**Status**: 🟢 Active (Partial)  
-**Evidence**: `src/mcp/` modules exist; advanced CLI flags not yet implemented
+**Status**: 🟢 Active (Infrastructure complete, CLI features in progress)  
+**Evidence**: `src/mcp/` modules exist; advanced CLI flags being implemented  
+**Plansets**: PS-11 (Size Estimation), PS-12 (Exclude Patterns)
 
-| Deliverable | Status | Evidence |
-|-------------|--------|----------|
-| Size estimation (`--estimate`) | ⏳ Pending | Not found in CLI |
-| Exclude patterns (`--exclude`) | ⏳ Pending | Not found in CLI |
-| Duplicate resolution (hash suffix) | ⏳ Pending | Not implemented |
-| Package diff tool | ⏳ Pending | Not implemented |
-| MCP core infrastructure | ✅ | Config, auth, rate limiting, observability |
+| Deliverable | Status | Planset | Evidence |
+|-------------|--------|---------|----------|
+| MCP core infrastructure | ✅ | — | Config, auth, rate limiting, observability |
+| 9 predefined topics | ✅ | — | `scripts/mcp/topics.json` |
+| Manifest generation | ✅ | — | SHA256, size, language, tags |
+| Size estimation (`--estimate`) | 🟢 PS-11 | PS-11 | Implementation ready per planset |
+| Exclude patterns (`--exclude`) | 🟢 PS-12 | PS-12 | Implementation ready per planset |
+| Duplicate resolution (hash suffix) | ⏳ | — | Planned (Phase 11.2) |
+| Package diff tool | ⏳ | — | Planned (Phase 11.2) |
 
-**Remaining Work**: 4 advanced CLI features need implementation.
+**Remaining Work**: PS-11 and PS-12 implementation, then Phase 11.2 (duplicate resolution + diff tool).
 
 ---
 
 ### 🟢 Phase 12: Agent System Enhancement
 
 **Timeline**: 2026-02-01 — 2026-03-15  
-**Status**: 🟢 Active (Foundation work in progress)  
-**Evidence**: 53 agents deployed, cognitive brain operational, multi-agent coordination references exist
+**Status**: 🟢 Active (Foundation + coordination in progress)  
+**Evidence**: 53+ agents deployed, cognitive brain operational, coordination protocols designed  
+**Plansets**: PS-13 (Agent Task Router), PS-14 (MSV Dashboard)
 
-| Deliverable | Status | Evidence |
-|-------------|--------|----------|
-| 53+ specialized agents | ✅ | `.github/agents/` deployed |
-| Agent evolution map | ✅ | `COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` |
-| Multi-step reasoning references | 🟢 | `multi_agent_coordinator.py` |
-| Self-evolution infrastructure | 🟢 | `meta_learning_engine.py` |
-| Agent coordination protocols | 🟢 | Cognitive brain patterns |
-| Learning from feedback loops | 🟢 | `extract_learnings.py` |
-| Enhanced context awareness | 🟢 | RAG integration active |
+| Deliverable | Status | Planset | Evidence |
+|-------------|--------|---------|----------|
+| 53+ specialized agents | ✅ | — | `.github/agents/` deployed |
+| Agent evolution map | ✅ | — | `COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` |
+| Agent orchestrator | ✅ | — | `scripts/monitoring/agent_orchestrator.py` |
+| Meta-learning engine | ✅ | — | `scripts/cognitive/meta_learning_engine.py` |
+| Agent routing (automatic) | 🟢 PS-13 | PS-13 | Task classification taxonomy designed |
+| MSV dashboard component | 🟡 PS-14 | PS-14 | Design phase |
+| Multi-agent coordination | 🟢 | — | Phase 8.12 framework designed |
+| Self-evolution infrastructure | 🟢 | — | `meta_learning_engine.py` partial |
+| Learning from feedback loops | 🟢 | — | `extract_learnings.py` active |
+| Enhanced context awareness | ✅ | — | RAG integration active |
 
-**Remaining Work**: Formalize multi-agent coordination protocols, expand self-evolution capabilities.
+**Remaining Work**: PS-13 agent routing formalization, PS-14 MSV dashboard, coordination protocol integration.
 
 ---
 
@@ -232,8 +246,8 @@ Phase 7:     ████████████████████ 100% �
 Phase 8:     ████████████████████ 100% ✅ Doc Consolidation
 Phase 9:     ████████████████████ 100% ✅ Coverage & Perf
 Phase 10:    ████████████████████ 100% ✅ Genesis Foundation
-Phase 11:    ████░░░░░░░░░░░░░░░░  20% 🟢 MCP Advanced
-Phase 12:    ████████░░░░░░░░░░░░  40% 🟢 Agent Enhancement
+Phase 11:    ██████░░░░░░░░░░░░░░  30% 🟢 MCP Advanced (PS-11, PS-12 active)
+Phase 12:    ████████░░░░░░░░░░░░  40% 🟢 Agent Enhancement (PS-13, PS-14 active)
 Phase 13:    ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive
 Phase 14-18: ░░░░░░░░░░░░░░░░░░░░   0% 🟡 Future Cycles
 ```

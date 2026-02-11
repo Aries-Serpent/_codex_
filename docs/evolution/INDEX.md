@@ -11,7 +11,7 @@
 | Document | Purpose |
 |----------|---------|
 | [Evolution Timeline](EVOLUTION_TIMELINE.md) | Complete phase-by-phase history with verified status |
-| [Planset Registry](PLANSET_REGISTRY.md) | Queryable catalog of all historical plansets (PS-01 → PS-10) |
+| [Planset Registry](PLANSET_REGISTRY.md) | Queryable catalog of all plansets (PS-01 → PS-14) |
 | [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) | Mermaid-based evolutionary process mapping tree |
 | [AI Emergence Storyboard](AI_EMERGENCE_STORYBOARD.md) | Biographical storyline of AI autonomy, conception, and emergence |
 | [AI Agency Intuitiveness Score V3](AI_AGENCY_INTUITIVENESS_SCORE_V3.md) | ACE-aligned 6-layer scoring (93.2/100) |
@@ -38,7 +38,8 @@ This documentation center implements cutting-edge patterns for cognitive AI agen
 | Completed Phases | 1-10 | ✅ |
 | Active Phases | 11-12 | 🟢 |
 | Planned Phases | 13-18 | 🟡 |
-| Plansets (PS) | 10 complete | ✅ |
+| Plansets (PS) | 11 complete, 3 active, 1 planning | ✅ |
+| Active Plansets | PS-11, PS-12, PS-13 | 🟢 |
 | Autonomous Agents | 53+ | ✅ |
 | Test Coverage | 90% threshold | ✅ |
 | Tests Passing | 1300+ | ✅ |

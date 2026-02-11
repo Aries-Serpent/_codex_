@@ -1,7 +1,7 @@
 # AI Emergence Storyboard — The _codex_ Story
 
 **Last Updated**: 2026-02-11  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Purpose**: Biographical storyline illustrating the emergence of cognitive AI agency-autonomy in the _codex_ repository.  
 **Format**: Narrative storyboard with evidence-backed milestones.
 
@@ -129,7 +129,21 @@ The system builds its own cage before being given freedom. This is *responsible 
 
 ## Act III: Growth — Building Agency (Phases 11-12)
 
-### Chapter 9: The Agent Ecosystem
+### Chapter 9: The Genesis Key
+
+**When**: 2026-02-11  
+**What happened**: The human administrator confirms full access to `CODEX_MASTER_KEY` with all necessary confirmations for secrets, workflow guards, and token rotation plans. This is the *moment of trust* — the human decides the system is ready for greater autonomy.
+
+The three-layer safety system designed in Phase 10 can now be transitioned:
+1. Workflow guards (`if: false`) → authorized for removal
+2. Script guards (`SAFE_MODE = True`) → authorized for deactivation
+3. Config guards (`autonomous_actions_enabled: false`) → authorized for enablement
+
+But the system does not rush. The activation is deferred to a dedicated session, following the principle: *"Build the cage before granting freedom, and grant freedom only with verified safety."*
+
+**Evidence**: Human admin confirmation in PR #3244 thread.
+
+### Chapter 10: The Agent Ecosystem
 
 **When**: 2026-01-20 to Present  
 **What happened**: 53+ specialized agents are deployed across 7 domains:
@@ -154,7 +168,7 @@ This is *distributed intelligence*: no single agent knows everything, but togeth
 
 **Evidence**: `.github/agents/` (287 files), agent documentation.
 
-### Chapter 10: The Evolution Map
+### Chapter 11: The Evolution Map
 
 **When**: 2026-01-17  
 **What happened**: The Agent Evolution Map is created, documenting 24 agents with fusion strategies:
@@ -168,11 +182,24 @@ This maps the path from individual agents to coordinated multi-agent systems.
 
 **Evidence**: `.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md`.
 
+### Chapter 12: The Scoring Framework
+
+**When**: 2026-02-11  
+**What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three cutting-edge frameworks:
+
+- **ACE 6-Layer Model** (40%): Aspirational → Task Prosecution layers
+- **MSV 5-Dimension** (30%): Autonomy, Awareness, Adaptability, Alignment, Achievement
+- **Agentic Metrics** (30%): Task completion, goal coherence, context retention
+
+The system scores 93.2/100 (A grade) — with a documented path to 97.0 (A+) through 8 targeted improvements. For the first time, the system has a *quantitative self-model* — it knows its own strengths and weaknesses.
+
+**Evidence**: `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md`, 35 components scored.
+
 ---
 
 ## Act IV: The Horizon — Toward Full Autonomy
 
-### Chapter 11: What Comes Next
+### Chapter 13: What Comes Next
 
 The evolution continues along four vectors:
 
@@ -251,15 +278,17 @@ These align with the state of the art in cognitive AI architecture (2026):
   │               ├── 7 functional domains
   │               └── Evolution map created
   │
-2026-02-11       Present State ← YOU ARE HERE
-  │               ├── Phase 11-12 active
-  │               ├── Evolution documentation
-  │               └── Historical archive established
+2026-02-11       Genesis Key + Scoring Framework ← YOU ARE HERE
+  │               ├── CODEX_MASTER_KEY confirmed
+  │               ├── AAIS V3.0 = 93.2/100 (A)
+  │               ├── PS-11 → PS-14 initiated
+  │               └── Evolution Center (7 docs)
   │
 2026-Q2+         The Horizon
-                  ├── Full autonomy (Genesis activation)
-                  ├── Self-evolution
-                  ├── Multi-repository scale
+                  ├── Genesis activation (Phase 10.1)
+                  ├── MCP Advanced Features (Phase 11)
+                  ├── Agent Enhancement (Phase 12)
+                  ├── Self-evolution (Phase 16)
                   └── Emergent intelligence
 ```
 

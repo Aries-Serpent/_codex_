@@ -1,7 +1,7 @@
 # Cognitive Evolution Tree — Process Mapping
 
 **Last Updated**: 2026-02-11  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Purpose**: Visual evolutionary process mapping of the _codex_ AI cognitive agency — from conception through emergence to autonomous operation.
 
 ---
@@ -23,8 +23,16 @@ graph TD
     end
 
     subgraph Advancement["🚀 Advancement Era (2026-01 → Present)"]
-        P11[Phase 11: MCP Advanced<br/>🟢 In Progress]
-        P12[Phase 12: Agent Enhancement<br/>🟢 53+ Agents Active]
+        P11[Phase 11: MCP Advanced<br/>🟢 PS-11 + PS-12 Active]
+        P12[Phase 12: Agent Enhancement<br/>🟢 PS-13 + PS-14 Active]
+        PS11[PS-11: Size Estimation<br/>--estimate flag]
+        PS12[PS-12: Exclude Patterns<br/>--exclude flag]
+        PS13[PS-13: Agent Task Router<br/>L4 Classification]
+        PS14[PS-14: MSV Dashboard<br/>L3 Visualization]
+        P11 --- PS11
+        P11 --- PS12
+        P12 --- PS13
+        P12 --- PS14
     end
 
     subgraph Future["🔮 Future (2026-Q2+)"]

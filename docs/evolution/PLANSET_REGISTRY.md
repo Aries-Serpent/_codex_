@@ -1,7 +1,7 @@
 # Planset Registry — Historical Archive
 
 **Last Updated**: 2026-02-11  
-**Version**: 1.0.0  
+**Version**: 2.0.0  
 **Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.  
 **Format**: Structured for search, filtering, and AI agent consumption.
 
@@ -22,6 +22,10 @@
 | [PS-08](#ps-08-microservice-root-cleanup) | Microservice Root Cleanup | ✅ Complete | 2026-01-09 | Cognitive | Architecture |
 | [PS-09](#ps-09-training-entry-point-unification) | Training Entry Point Unification | ✅ Complete | 2026-01-09 | Cognitive | ML/Training |
 | [PS-10](#ps-10-owner-guard-cicd-enforcement) | Owner Guard CI/CD Enforcement | ✅ Complete | 2026-01-09 | Cognitive | Governance |
+| [PS-11](#ps-11-mcp-size-estimation) | MCP Size Estimation | 🟢 Active | 2026-02-11 | Advancement | MCP/Tooling |
+| [PS-12](#ps-12-mcp-exclude-patterns) | MCP Exclude Patterns | 🟢 Active | 2026-02-11 | Advancement | MCP/Tooling |
+| [PS-13](#ps-13-agent-task-router) | Agent Task Router | 🟢 Active | 2026-02-11 | Advancement | AI/Agents |
+| [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | 🟡 Planning | 2026-02-11 | Advancement | UI/Visualization |
 
 ---
 
@@ -274,6 +278,145 @@
 
 ---
 
+## 🚀 Advancement Era Plansets (Phase 11-12)
+
+### PS-11: MCP Size Estimation
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-11 |
+| **Name** | MCP Size Estimation (`--estimate` flag) |
+| **Status** | 🟢 ACTIVE — Implementation Ready |
+| **Date** | 2026-02-11 (initiated) |
+| **Phase** | 11 (MCP Advanced Features) |
+| **Category** | MCP / Tooling |
+| **Source** | `docs/mcp/ADVANCED_FEATURES_PLANSET.md` Feature 1 |
+
+**Objectives**:
+
+1. ⏳ Implement `estimate_size()` method in `scripts/mcp/mcp-package`
+2. ⏳ Add `--estimate` / `-e` CLI flag
+3. ⏳ Size breakdown by file type with color-coded warnings
+4. ⏳ Accuracy target: ±5% of actual package size
+5. ⏳ Performance target: <1 second for <1000 files
+
+**Key Deliverables**:
+
+- `estimate_size()` method returning `{total_size_mb, file_count, warnings}`
+- CLI flag integration with `--topic` and `--custom` selectors
+- Formatted output: green (<30 MB), yellow (30-50 MB), red (>50 MB)
+- Unit tests in `tests/mcp/test_advanced_features.py`
+
+**Implementation Pattern**: CLI Enhancement → Validate input → Execute → Format output
+
+**Effort**: 2-3 iteration-days  
+**Dependencies**: None (uses existing `select_components.py`)
+
+---
+
+### PS-12: MCP Exclude Patterns
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-12 |
+| **Name** | MCP Exclude Patterns (`--exclude` parameter) |
+| **Status** | 🟢 ACTIVE — Implementation Ready |
+| **Date** | 2026-02-11 (initiated) |
+| **Phase** | 11 (MCP Advanced Features) |
+| **Category** | MCP / Tooling |
+| **Source** | `docs/mcp/ADVANCED_FEATURES_PLANSET.md` Feature 2 |
+
+**Objectives**:
+
+1. ⏳ Enhance `expand_globs()` in `scripts/mcp/select_components.py` with exclusion support
+2. ⏳ Add `--exclude` / `-x` CLI parameter accepting comma-separated patterns
+3. ⏳ Show excluded file count in summary output
+4. ⏳ Performance target: <10% slowdown vs baseline
+
+**Key Deliverables**:
+
+- Modified `expand_globs()` with `exclude_patterns` parameter
+- CLI integration supporting `--exclude "tests/**,**/__pycache__/**"`
+- Backward compatibility with existing include-only usage
+- Combined include+exclude test cases
+
+**Implementation Pattern**: Pattern complement subtraction on file sets
+
+**Effort**: 2-3 iteration-days  
+**Dependencies**: None
+
+---
+
+### PS-13: Agent Task Router
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-13 |
+| **Name** | Agent Task Router (L4 Automatic Classification) |
+| **Status** | 🟢 ACTIVE — Design Complete |
+| **Date** | 2026-02-11 (initiated) |
+| **Phase** | 12 (Agent System Enhancement) |
+| **Category** | AI / Agent Coordination |
+| **Source** | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` Path to 97.0 |
+
+**Objectives**:
+
+1. ⏳ Formalize agent routing protocol using task classification taxonomy
+2. ⏳ Implement keyword→agent mapping in orchestrator
+3. ⏳ Add routing confidence scores with fallback chains
+4. ⏳ Create routing documentation for agent-to-agent handoffs
+5. ⏳ Integrate with cognitive brain pattern detection
+
+**Key Deliverables**:
+
+- Agent routing taxonomy (CI/CD, Testing, Security, Documentation, RAG/ML, Config, Repository)
+- `route_task()` function in orchestration module
+- Confidence-weighted routing with fallback to general-purpose
+- Routing metrics collection for meta-learning feedback
+
+**ACE Layer**: L4 (Executive Function) — automatic task-to-agent classification  
+**AAIS Impact**: +1.5 points (Executive Function efficiency)
+
+**Effort**: 3-4 iteration-days  
+**Dependencies**: Existing agent registry, orchestration module
+
+---
+
+### PS-14: Cognitive Dashboard MSV
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-14 |
+| **Name** | Cognitive Dashboard MSV Dimensions |
+| **Status** | 🟡 PLANNING — Design Phase |
+| **Date** | 2026-02-11 (initiated) |
+| **Phase** | 12 (Agent System Enhancement) |
+| **Category** | UI / Visualization |
+| **Source** | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` Path to 97.0 |
+
+**Objectives**:
+
+1. ⏳ Design MSV (Multi-Sensory Visualization) component for cognitive_app
+2. ⏳ Implement 5-dimension radar chart (Autonomy, Awareness, Adaptability, Alignment, Achievement)
+3. ⏳ Real-time score updates from cognitive brain metrics
+4. ⏳ Historical trend visualization with phase markers
+5. ⏳ Interactive drill-down to component-level scores
+
+**Key Deliverables**:
+
+- React component: `MSVDimensionsDashboard.tsx`
+- 5-dimension radar chart using existing charting library
+- Integration with cognitive brain metrics API
+- Phase milestone markers on timeline view
+
+**ACE Layer**: L3 (Agent Model) — self-awareness visualization  
+**AAIS Impact**: +2.0 points (Self-Model comprehension)
+
+**Effort**: 4-5 iteration-days  
+**Dependencies**: cognitive_app infrastructure, metrics collection hooks
+
+---
+
 ## 📊 Analytics
 
 ### By Category
@@ -287,12 +430,18 @@
 | Business Logic | 1 (PS-07) | ✅ Complete |
 | ML/Training | 1 (PS-09) | ✅ Complete |
 | Governance | 1 (PS-10) | ✅ Complete |
+| MCP/Tooling | 2 (PS-11, PS-12) | 🟢 Active |
+| AI/Agents | 1 (PS-13) | 🟢 Active |
+| UI/Visualization | 1 (PS-14) | 🟡 Planning |
 
 ### Completion Rate
 
-- **Total Plansets**: 11 (including PS-06e)
-- **Completed**: 11/11 (100%)
-- **Completion Date**: 2026-01-09
+- **Total Plansets**: 15 (including PS-06e)
+- **Completed**: 11/15 (73%)
+- **Active**: 3/15 (20%)
+- **Planning**: 1/15 (7%)
+- **Foundation Completion Date**: 2026-01-09
+- **Advancement Era Start**: 2026-02-11
 
 ---
 
