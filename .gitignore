@@ -8,32 +8,24 @@ Cargo.lock
 __pycache__/
 *.py[cod]
 *$py.class
-
 # Virtual environments
 .venv/
 venv/
-
 # Distribution / packaging
 build/
 dist/
 *.egg-info/
-
 # Python tooling
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
 .tox/
 .nox/
-
 # Rust build artifacts
 target/
-Cargo.lock
-*.pdb
-
 # IDEs
 .idea/
 .vscode/
-
 # Data & artifacts (kept out of git by default; use DVC for large files)
 data/*
 !data/zendesk_api_index.json
@@ -46,48 +38,36 @@ data/*
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep
-!data/zendesk_api_index.json
 !data/**/.gitkeep
 runs/
 mlruns/
 .checkpoints/
 .github/checkpoints/
-
 # Generated artifacts (build outputs)
 # (see detailed artifacts rules below around line 121)
-
 # Audit outputs (keep baselines committed)
 audit_artifacts/
 !audit_artifacts/baselines/
 !audit_artifacts/baselines/**
-
 # Disabled workflows (consolidation in progress)
 .github/workflows/*.disabled
-
 # Temporary files (anti-/tmp/ protection system)
 .github/tmp/
-
 # Reports (optional commit)
 reports/
-
 # DVC internals (allow .dvc top-level but ignore local caches)
 .dvc/tmp/
 .dvc/cache/
-
 # Coverage & reports
 .coverage
 htmlcov/
-
 # Notebooks
 *.ipynb_checkpoints
-
 # OS
 .DS_Store
 Thumbs.db
-
 # Codex session artifacts
 *.sqlite
-
 # Environment configuration (tracked via template only)
 .env
 .env.*
@@ -100,11 +80,9 @@ Thumbs.db
 *.secret
 *.secrets
 *.vault
-
 # Kubernetes secrets (tracked via template only)
 manifests/k8s/base/secret.yaml
 manifests/k8s/*/secret.yaml
-
 # Codex internal data (ignored by default)
 .codex/*
 !.codex/README.md
@@ -213,15 +191,9 @@ manifests/k8s/*/secret.yaml
 !.codex/*VERIFICATION*.md
 # Block validation artifacts but keep structure
 .codex/validation/
-
 # Test artifacts
-runs/
-.pytest_cache/
 **/__pycache__/
-
 # Monitoring runs
-mlruns/
-
 # Internal/transient artifacts
 site/
 reports/*
@@ -260,35 +232,23 @@ report.xml
 coverage.xml
 validation_summary.json
 *-validation.json
-
 # Platform/editor cruft
-Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
-.idea/
 *.swp
-
 # Python build artifacts
-*.py[cod]
 *.pyo
 *.pyd
-*.egg-info/
 .eggs/
-venv/
-
 # Node/JavaScript artifacts
 node_modules/
 npm-debug.log*
 yarn-error.log
 .pnpm-store/
-
 # Build output and coverage directories
-dist/
-build/
 out/
 coverage/
-htmlcov/
 .next/
 .nuxt/
 .cache/
@@ -296,35 +256,23 @@ htmlcov/
 .cypress/
 cypress/videos/
 cypress/screenshots/
-
 # Archives and generated bundles
 *.zip
 *.tar
 *.tar.gz
 *.7z
-
 # Exception: Allow archives in repo-owner-review for external storage offloading
 !misc/repo-owner-review/archived-artifacts/**/*.tar.gz
 !misc/repo-owner-review/archived-artifacts/**/*.tar
 !misc/repo-owner-review/archived-artifacts/**/*.zip
 !misc/repo-owner-review/archived-backups/**/*.tar.gz
-
 # Data and runtime noise
 *.db
 *.log
 /logs/
-
 # Additional project-specific ignores
-artifacts/coverage.xml
-.codex/validation/
-validation.log
-report.xml
-coverage.xml
-validation_summary.json
-*-validation.json
 config/sbom-config.yaml
 config/artifacts/
-
 # MSP Gateway artifacts
 .codex/msp_gateway.db
 .codex/tenants/
@@ -333,7 +281,6 @@ config/artifacts/
 artifacts/emb/
 *.faiss
 *.index
-
 # Capability audit runtime artifacts (uploaded by CI)
 audit_artifacts/*.json
 !audit_artifacts/README.md
@@ -343,42 +290,32 @@ audit_run_manifest.json
 .stubs/
 _codex_reports/
 index.html
-
 # Generated test/coverage artifacts (added 2025-12-10 for size reduction)
 pytest_validation*.txt
 artifacts/coverage/*.xml
-htmlcov/
 junit.xml
 test_pattern_report.txt
 bandit-report.json
 bandit-report.txt
-
 # Generated inventory files
 workbench/codebase_inventory.json
 *_inventory.json
-
 # Generated dashboard
-index.html
-
 # Large generated security reports
 artifacts/security/detect-secrets.txt
-
 # Semgrep artifacts (SARIF outputs, logs, cache)
 *.sarif
 *.sarif.json
 .semgrep_logs/
 .semgrep_cache/
-
 # Validation logs
 .codex/validation/*/pre-commit.log
 .hypothesis/
-
 # Agent state (session data) - keep structure, ignore session files
 .codex/agent_state/session_*.json
 .codex/agent_metrics/*.json
 !.codex/agent_state/.gitkeep
 !.codex/agent_metrics/.gitkeep
-# Test artifacts
 /index.json
 /index.md
 *.backup
@@ -386,16 +323,13 @@ artifacts/security/detect-secrets.txt
 secrets.txt
 temp/
 output/
-
 # Test marker management artifacts
 .test_markers.json
 docs/test_markers_report.md
 docs/stale_markers_report.md
-
 # Mutation testing
 mutants/
 .mutmut-cache/
-
 # Temporary artifacts
 _tmp_artifacts/
 parquet/
