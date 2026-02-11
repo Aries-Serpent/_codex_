@@ -80,24 +80,24 @@ def test_local_provider_uses_default_device_allocation(
     sentence_transformer_spy: SentenceTransformerSpy,
     tmp_path: Path,
 ) -> None:
-    """Local provider should use device=None to allow safe_model_to_device() to handle meta tensors."""
+    """Local provider should use device='cpu' for direct CPU initialization."""
     cache_dir = tmp_path / "rag_cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
     LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
     assert sentence_transformer_spy.calls
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") is None
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
 def test_local_provider_uses_device_none_pattern(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
-    """Local provider should use device=None, letting safe_model_to_device() handle device placement."""
+    """Local provider should use device='cpu' for direct CPU initialization."""
     LocalSentenceTransformerProvider()
     assert sentence_transformer_spy.calls
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") is None
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
@@ -112,11 +112,11 @@ def test_local_provider_calls_eval(sentence_transformer_spy: SentenceTransformer
 def test_embed_chunks_uses_default_device_allocation(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
-    """Indexer embed_chunks should use device=None to allow safe_model_to_device() to handle meta tensors."""
+    """Indexer embed_chunks should use device='cpu' for direct CPU initialization."""
     chunks = [(0, 10, "hello"), (11, 20, "world")]
     embed_chunks(chunks, model_profile={"model_name": "fake-model", "cache_dir": "cache"})
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") is None
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)
@@ -136,11 +136,11 @@ def test_retriever_load_model_uses_default_device_allocation(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    """Retriever model initialization should use device=None to allow safe_model_to_device() to handle meta tensors."""
+    """Retriever model initialization should use device='cpu' for direct CPU initialization."""
     monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
     Retriever(index_dir=str(tmp_path))
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") is None
+    assert kwargs.get("device") == "cpu"
 
 
 @pytest.mark.timeout(30)

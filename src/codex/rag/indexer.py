@@ -14,8 +14,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from codex.rag.utils import safe_model_to_device
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -121,29 +119,18 @@ def embed_chunks(
     try:
         import os
 
-        import torch
-
         # Use HF_TOKEN if available for authenticated downloads
         use_auth_token = os.environ.get('HF_TOKEN', False)
 
-        # CRITICAL FIX: Force CPU device and prevent meta tensors
-        # Set default device to CPU before any model operations
-        torch.set_default_device('cpu')
-
         model = SentenceTransformer(
             model_name,
-            device=None,
+            device='cpu',
             cache_folder=cache_dir,
             trust_remote_code=False,
             use_auth_token=use_auth_token if use_auth_token else None
         )
 
-        # Safely move to CPU, handling meta tensors if present
-        model = safe_model_to_device(model, 'cpu')
         model.eval()
-
-        # Reset default device to avoid side effects
-        torch.set_default_device(None)
 
         logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
