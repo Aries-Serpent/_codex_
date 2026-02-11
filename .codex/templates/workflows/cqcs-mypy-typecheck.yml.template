@@ -35,6 +35,14 @@ jobs:
           python-version: '3.12'
           cache-tier: 'live'
       
+      - name: Cache mypy cache
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: ${{ runner.os }}-mypy-cache-${{ hashFiles('src/**/*.py') }}
+          restore-keys: |
+            ${{ runner.os }}-mypy-cache-
+      
       - name: Install mypy and dependencies
         run: |
           python -m pip install --upgrade pip

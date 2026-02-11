@@ -35,6 +35,14 @@ jobs:
           python-version: '3.12'
           cache-tier: 'live'
       
+      - name: Cache Ruff installation
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/pipx/venvs/ruff
+          key: ${{ runner.os }}-ruff-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-ruff-
+      
       - name: Install ruff only
         run: |
           python -m pip install --upgrade pip
