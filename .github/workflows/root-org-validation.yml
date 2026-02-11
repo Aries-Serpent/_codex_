@@ -87,7 +87,7 @@ jobs:
         continue-on-error: true
         run: |
           if [ -f "mkdocs.yml" ]; then
-            pip install mkdocs mkdocs-material
+            pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin pymdown-extensions
             echo "Building MkDocs..."
             mkdocs build --strict || echo "MkDocs build warnings - baseline recorded"
           fi
