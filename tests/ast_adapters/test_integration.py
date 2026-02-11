@@ -244,7 +244,7 @@ config:
         source = json.dumps(large_data)
 
         start = time.time()
-        root = json_adapter.parse(source)  # noqa: F841 - parse populates adapter
+        json_adapter.parse(source)
         elapsed = time.time() - start
 
         assert elapsed < 1.0  # Should handle 1000 items in less than 1 second
@@ -287,7 +287,7 @@ def greet(name: str) -> str:
     """
     return f"Hello, {name}!"
 '''
-        root = python_adapter.parse(source)  # noqa: F841 - parse populates adapter
+        python_adapter.parse(source)
 
         functions = python_adapter.find_nodes_by_type("function")
         assert len(functions) == 1
@@ -319,7 +319,7 @@ database:
     database: myapp
     pool_size: 10
 """
-        root = yaml_adapter.parse(yaml_config)  # noqa: F841 - parse populates adapter
+        yaml_adapter.parse(yaml_config)
 
         # Test path navigation
         app_name = yaml_adapter.get_value_at_path("app.name")
@@ -361,7 +361,7 @@ database:
     }
 }
 '''
-        root = json_adapter.parse(api_response)  # noqa: F841 - parse populates adapter
+        json_adapter.parse(api_response)
 
         # Test path navigation
         status = json_adapter.get_value_at_path("status")

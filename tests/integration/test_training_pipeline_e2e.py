@@ -113,7 +113,6 @@ checkpoint:
         checkpoint_path = checkpoint_dir / "checkpoint_epoch_5.pt"
 
         if TORCH_AVAILABLE:
-            import torch  # noqa: F811
             torch.save(checkpoint, checkpoint_path)
 
             # Step 4: Verify checkpoint saved
@@ -139,7 +138,6 @@ class TestMultiGPUWorkflow:
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_distributed_setup_workflow(self):
         """Test distributed training coordination"""
-        import torch  # noqa: F811
 
         # Step 1: Check GPU availability
         torch.cuda.device_count() if torch.cuda.is_available() else 0

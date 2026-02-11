@@ -206,7 +206,7 @@ class TestSQLASTAdapter:
     def test_find_nodes_by_type(self, adapter):
         """Test finding nodes by type."""
         sql = "SELECT * FROM users; INSERT INTO posts VALUES (1)"
-        root = adapter.parse(sql)  # noqa: F841 - parse populates adapter
+        adapter.parse(sql)
 
         statements = adapter.find_nodes_by_type("sql_statement")
         assert len(statements) == 2
