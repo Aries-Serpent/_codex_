@@ -11,7 +11,7 @@ import pytest
 
 mlflow = pytest.importorskip("mlflow")
 
-from src.codex_ml.utils import experiment_tracking_mlflow as etm
+from src.codex_ml.utils import experiment_tracking_mlflow as etm  # noqa: E402
 
 
 def _reset_mlflow_uri() -> None:

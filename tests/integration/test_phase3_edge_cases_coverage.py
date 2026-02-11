@@ -380,7 +380,8 @@ class TestResourceExhaustionScenarios:
         selected_mode = None
         for mode, required_mb in sorted(
             features.items(),
-            key=lambda x: x[1],
+            def key(x):
+                return x[1],
             reverse=True
         ):
             if required_mb <= available_memory_mb:
@@ -531,7 +532,7 @@ class TestConcurrentAccessAndLocking:
                     locks[name].acquire()
                     acquired.append(name)
                 return True
-            except:
+            except Exception:
                 # Release in reverse order on failure
                 for name in reversed(acquired):
                     locks[name].release()

@@ -186,7 +186,7 @@ class TestOptimizerSetup:
         """Test optimizer zero_grad functionality."""
         import torch.optim as optim
 
-        import torch
+        import torch  # noqa: F811
 
         optimizer = optim.Adam(simple_model.parameters(), lr=0.001)
 
@@ -209,7 +209,7 @@ class TestOptimizerSetup:
         """Test optimizer step updates parameters."""
         import torch.optim as optim
 
-        import torch
+        import torch  # noqa: F811
 
         optimizer = optim.SGD(simple_model.parameters(), lr=0.1)
 
@@ -368,7 +368,7 @@ class TestTrainingLoopIntegration:
             pytest.skip("PyTorch not available")
         import torch.optim as optim
 
-        import torch
+        import torch  # noqa: F811
         import torch.nn as nn
         from torch.utils.data import DataLoader, TensorDataset
 

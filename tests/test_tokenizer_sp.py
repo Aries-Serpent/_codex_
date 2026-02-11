@@ -10,7 +10,7 @@ import pytest
 
 spm = pytest.importorskip("sentencepiece")  # noqa: F401
 
-from codex_ml.tokenization.sp_trainer import SPTokenizer
+from codex_ml.tokenization.sp_trainer import SPTokenizer  # noqa: E402
 
 
 def test_sentencepiece_trainer_roundtrip(tmp_path: pathlib.Path) -> None:

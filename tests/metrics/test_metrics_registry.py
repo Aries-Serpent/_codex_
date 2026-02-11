@@ -7,16 +7,16 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
-from src.codex_ml.metrics.base import BaseMetric
-from src.codex_ml.metrics.classification import (
+import torch  # noqa: E402
+from src.codex_ml.metrics.base import BaseMetric  # noqa: E402
+from src.codex_ml.metrics.classification import (  # noqa: E402
     StreamingAccuracy,
     accuracy,
     f1,
     precision,
     recall,
 )
-from src.codex_ml.metrics.streaming import StreamingLoss
+from src.codex_ml.metrics.streaming import StreamingLoss  # noqa: E402
 
 
 class TestBaseMetricInterface:

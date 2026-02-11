@@ -13,9 +13,9 @@ import pytest
 pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
 pytest.importorskip("jsonschema", reason="jsonschema not installed")
 
-from jsonschema import Draft7Validator  # type: ignore
+from jsonschema import Draft7Validator  # type: ignore  # noqa: E402
 
-from src.codex_ml import train_loop as train_loop_module
+from src.codex_ml import train_loop as train_loop_module  # noqa: E402
 
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)

@@ -19,18 +19,18 @@ Merged test script combining:
 - Robust multi-strategy invocation of build_query
 """
 
-import ast
-import importlib.util
-import inspect
-import json
-import os
-import pathlib
-import re
-import textwrap
-import types
-from typing import List, Optional, Tuple
+import ast  # noqa: E402
+import importlib.util  # noqa: E402
+import inspect  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import pathlib  # noqa: E402
+import re  # noqa: E402
+import textwrap  # noqa: E402
+import types  # noqa: E402
+from typing import List, Optional, Tuple  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
 # --------------------------------------------------------------------------------------
 # Configuration & Metrics

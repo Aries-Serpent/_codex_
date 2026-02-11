@@ -8,11 +8,11 @@ Test module for sentencepiece adapter edges.
 """Edge-case tests for SentencePieceAdapter using a vendored tiny model."""
 
 # ruff: noqa: INP001
-from pathlib import Path
+from pathlib import Path  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
-from src.tokenization.sentencepiece_adapter import SentencePieceAdapter
+from src.tokenization.sentencepiece_adapter import SentencePieceAdapter  # noqa: E402
 
 spm = pytest.importorskip("sentencepiece")
 

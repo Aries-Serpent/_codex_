@@ -26,9 +26,9 @@ pytest.importorskip("pydantic", reason="pydantic required for config validation"
 if "torch" not in sys.modules:
     sys.modules["torch"] = MagicMock()
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
-from pydantic import BaseModel, ConfigDict, Field, PositiveInt, ValidationError
+from hypothesis import given, settings  # noqa: E402
+from hypothesis import strategies as st  # noqa: E402
+from pydantic import BaseModel, ConfigDict, Field, PositiveInt, ValidationError  # noqa: E402
 
 
 # Local config schema implementation for testing without torch dependency

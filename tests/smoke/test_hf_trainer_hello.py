@@ -12,7 +12,7 @@ import pytest
 
 datasets = pytest.importorskip("datasets")
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
     AutoTokenizer,

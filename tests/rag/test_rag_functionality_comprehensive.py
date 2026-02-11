@@ -345,7 +345,7 @@ class TestRAGPerformance:
                 for i in range(100):
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
-                    except:
+                    except Exception:
                         pass
 
             # Test retrieval speed

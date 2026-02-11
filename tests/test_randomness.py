@@ -138,8 +138,10 @@ def test_set_seed_handles_cudnn_exception_gracefully():
     mock_cudnn = Mock()
     # Make setting deterministic raise an exception
     type(mock_cudnn).deterministic = property(
-        fget=lambda self: False,
-        fset=lambda self, value: (_ for _ in ()).throw(RuntimeError("test")),
+        def fget(self):
+            return False,
+        def fset(self, value):
+            return (_ for _ in ()).throw(RuntimeError("test")),
     )
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends

@@ -157,7 +157,7 @@ class TestTokenizationTrainingPipeline:
     def test_tokenizer_initialization(self, temp_workspace):
         """Verify tokenizer initialization."""
         try:
-            from codex_ml.tokenization import (
+            from codex_ml.tokenization import (  # noqa: F401
                 load_tokenizer,  # noqa: F401 - Testing optional dependency availability
             )
 

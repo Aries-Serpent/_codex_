@@ -12,11 +12,11 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch
-from src.training.functional_training import TrainCfg, run_custom_trainer
-from src.training.seed import ensure_global_seed
-from torch import nn
-from torch.utils.data import Dataset
+import torch  # noqa: E402
+from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
+from src.training.seed import ensure_global_seed  # noqa: E402
+from torch import nn  # noqa: E402
+from torch.utils.data import Dataset  # noqa: E402
 
 
 class TinyRegressionDataset(Dataset):

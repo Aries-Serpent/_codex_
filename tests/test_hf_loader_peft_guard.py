@@ -13,7 +13,7 @@ import pytest
 
 pytest.importorskip("transformers")
 
-import codex_ml.hf_loader as hf_loader
+import codex_ml.hf_loader as hf_loader  # noqa: E402
 
 
 def test_load_causal_lm_handles_missing_peft(monkeypatch, caplog):

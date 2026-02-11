@@ -95,7 +95,8 @@ class TestFeatureStore:
 
         feature = Feature(
             name="test_feature",
-            transform_fn=lambda x: x,
+            def transform_fn(x):
+                return x,
             dependencies=[],
         )
 

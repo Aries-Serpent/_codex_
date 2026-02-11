@@ -31,14 +31,14 @@ import pytest
 # Add src to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from src.codex_ml.evaluation.metrics import (
+from src.codex_ml.evaluation.metrics import (  # noqa: E402
     AccuracyMetric,
     BleuMetric,
     LatencyMetric,
     PerplexityMetric,
     RougeMetric,
 )
-from src.codex_ml.evaluation.runner import (
+from src.codex_ml.evaluation.runner import (  # noqa: E402
     EvaluationConfig,
     EvaluationRunner,
     MetricAdapter,
@@ -55,7 +55,7 @@ class TestEvaluationConfig:
         assert config.max_samples is None
         assert config.device == "cpu"
         assert config.output_dir == "artifacts/evaluation"
-        assert config.save_predictions == False
+        assert config.save_predictions is False
 
     def test_custom_config(self):
         """Test custom configuration values."""
@@ -70,7 +70,7 @@ class TestEvaluationConfig:
         assert config.max_samples == 1000
         assert config.device == "cuda"
         assert config.output_dir == "/tmp/eval"
-        assert config.save_predictions == True
+        assert config.save_predictions is True
 
 
 class TestMetricAdapter:
@@ -242,7 +242,7 @@ class TestLatencyMetric:
         """Test latency metric initialization."""
         metric = LatencyMetric()
         assert metric.name == "latency_ms"
-        assert metric.per_sample == False
+        assert metric.per_sample is False
 
     def test_latency_computation(self):
         """Test latency computation."""

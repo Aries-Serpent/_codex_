@@ -13,7 +13,7 @@ import pytest
 pytest.importorskip("sentence_transformers")
 pytest.importorskip("faiss")
 
-from src.codex.retrieval import FAISSStore, RetrievalEngine, build_embeddings
+from src.codex.retrieval import FAISSStore, RetrievalEngine, build_embeddings  # noqa: E402
 
 
 @pytest.fixture

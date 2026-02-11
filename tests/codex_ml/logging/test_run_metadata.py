@@ -33,7 +33,8 @@ def test_build_run_metadata_includes_commit_and_paths(tmp_path):
         eval_examples=5,
         missing_optional=["mlflow", "mlflow"],
         extras={"note": "demo", "skip": None},
-        commit_lookup=lambda: "abc123",
+        def commit_lookup():
+            return "abc123",
     )
 
     assert payload["git_commit"] == "abc123"
@@ -56,7 +57,8 @@ def test_log_run_metadata_invokes_logger(monkeypatch):
         dataset_source="s3://bucket/data",
         missing_optional=["wandb"],
         extras={"run_id": "run-1"},
-        commit_lookup=lambda: "commit-xyz",
+        def commit_lookup():
+            return "commit-xyz",
     )
 
     assert logger.calls and logger.calls[0] == payload

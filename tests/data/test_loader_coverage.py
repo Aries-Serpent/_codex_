@@ -110,7 +110,7 @@ class TestModuleImport:
     def test_exports_available(self) -> None:
         """Verify __all__ exports are accessible."""
         try:
-            from codex_ml.data.loader import (
+            from codex_ml.data.loader import (  # noqa: F401
                 CacheManifest,
                 DataPreparationError,
                 load_dataset,  # noqa: F401 - Testing optional dependency availability

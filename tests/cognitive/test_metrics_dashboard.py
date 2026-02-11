@@ -12,7 +12,7 @@ from pathlib import Path
 # Add scripts/cognitive to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'cognitive'))
 
-from dashboard_generator import (
+from dashboard_generator import (  # noqa: E402
     calculate_health_score,
     format_duration,
     generate_dashboard,
@@ -21,7 +21,7 @@ from dashboard_generator import (
     generate_trend_indicator,
     get_health_status,
 )
-from metrics_collector import (
+from metrics_collector import (  # noqa: E402
     calculate_trends,
     extract_session_metrics,
     generate_ascii_chart,

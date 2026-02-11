@@ -367,7 +367,7 @@ class TestTrainingDataGenerator:
 
         assert len(features) == len(sample_patterns)
         assert len(labels) == len(sample_patterns)
-        assert all(isinstance(l, bool) for l in labels)
+        assert all(isinstance(lbl, bool) for lbl in labels)
 
     def test_to_feature_matrix(self, sample_patterns):
         """Test converting to feature matrix."""

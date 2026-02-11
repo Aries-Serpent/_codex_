@@ -67,7 +67,8 @@ def test_evaluate_averages_batch_metrics() -> None:
     metrics = evaluate(
         model,
         batches,
-        loss_fn=lambda outputs, _batch: outputs.loss,
+        def loss_fn(outputs, _batch):
+            return outputs.loss,
         device="cpu",
         metrics_fn=batch_metrics,
     )

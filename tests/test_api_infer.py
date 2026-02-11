@@ -7,9 +7,9 @@ Test module for api infer.
 import pytest
 
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: E402
 
-from services.api.main import app
+from services.api.main import app  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

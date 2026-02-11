@@ -278,7 +278,8 @@ class TestRetrievalBenchmarks:
             return [doc_id for doc_id, _ in sorted_docs[:top_k]]
 
         query = [0.1] * 128
-        filter_fn = lambda m: m.get("category", -1) == 1
+        def filter_fn(m):
+            return m.get("category", -1) == 1
 
         iterations = 50
         start = time.perf_counter()

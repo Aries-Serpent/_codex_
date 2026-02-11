@@ -14,7 +14,7 @@ import pytest
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.agents.quantum_agent_orchestrator import (
+from scripts.agents.quantum_agent_orchestrator import (  # noqa: E402
     AgentQuantumState,
     QuantumAgentOrchestrator,
 )

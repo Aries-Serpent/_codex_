@@ -29,7 +29,8 @@ def test_registry_basic():
     registry = MCPToolRegistry()
     registry.register_tool(
         "echo",
-        handler=lambda x: x,
+        def handler(x):
+            return x,
         schema={"type": "object"},
         metadata={"description": "Echo tool"},
     )

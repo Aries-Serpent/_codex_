@@ -8,7 +8,7 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal, hash_credential
+from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal, hash_credential  # noqa: E402
 
 
 def test_hash_credential():

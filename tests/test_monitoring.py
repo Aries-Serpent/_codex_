@@ -47,14 +47,22 @@ def test_config_disable_gpu_polling(monkeypatch) -> None:
     """Explicit config disables NVML polling even when the stub is available."""
 
     stub = SimpleNamespace(
-        nvmlInit=lambda: None,
-        nvmlDeviceGetCount=lambda: 1,
-        nvmlDeviceGetHandleByIndex=lambda idx: idx,
-        nvmlDeviceGetUtilizationRates=lambda handle: SimpleNamespace(gpu=50.0),
-        nvmlDeviceGetMemoryInfo=lambda handle: SimpleNamespace(used=1024.0, total=2048.0),
-        nvmlDeviceGetTemperature=lambda handle, _: 65.0,
-        nvmlDeviceGetPowerUsage=lambda handle: 55000.0,
-        nvmlShutdown=lambda: None,
+        def nvmlInit():
+            return None,
+        def nvmlDeviceGetCount():
+            return 1,
+        def nvmlDeviceGetHandleByIndex(idx):
+            return idx,
+        def nvmlDeviceGetUtilizationRates(handle):
+            return SimpleNamespace(gpu=50.0),
+        def nvmlDeviceGetMemoryInfo(handle):
+            return SimpleNamespace(used=1024.0, total=2048.0),
+        def nvmlDeviceGetTemperature(handle, _):
+            return 65.0,
+        def nvmlDeviceGetPowerUsage(handle):
+            return 55000.0,
+        def nvmlShutdown():
+            return None,
         NVML_TEMPERATURE_GPU=0,
     )
 

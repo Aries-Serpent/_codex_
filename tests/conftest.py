@@ -415,9 +415,9 @@ def set_deterministic_seed():
 # RAG Module Fixtures (Added 2026-01-08)
 # ============================================================================
 
-import tempfile
-from pathlib import Path
-from typing import Generator
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Generator  # noqa: E402
 
 
 @pytest.fixture
@@ -1020,7 +1020,7 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except:
+    except Exception:
         pass
 
 
@@ -1176,7 +1176,7 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except:
+    except Exception:
         pass
 
     yield
@@ -1202,5 +1202,5 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning
             )
-    except:
+    except Exception:
         pass

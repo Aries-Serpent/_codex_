@@ -29,9 +29,12 @@ def test_logging_bootstrap_initialization(monkeypatch, tmp_path):
     monkeypatch.setattr(cl, "wandb", types.SimpleNamespace(init=fake_wandb_init))
 
     dummy_mlflow = types.SimpleNamespace(
-        set_tracking_uri=lambda uri: calls.setdefault("ml_uri", uri),
-        set_experiment=lambda exp: calls.setdefault("ml_exp", exp),
-        start_run=lambda: calls.setdefault("ml_run", True),
+        def set_tracking_uri(uri):
+            return calls.setdefault("ml_uri", uri),
+        def set_experiment(exp):
+            return calls.setdefault("ml_exp", exp),
+        def start_run():
+            return calls.setdefault("ml_run", True),
     )
     monkeypatch.setattr(cl, "mlflow", dummy_mlflow)
 

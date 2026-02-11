@@ -186,12 +186,16 @@ def test_seed_everything_sets_offline_defaults(monkeypatch: pytest.MonkeyPatch) 
         random=types.SimpleNamespace(seed=lambda value: numpy_calls.append(int(value)))
     )
     dummy_torch = types.SimpleNamespace(
-        manual_seed=lambda value: torch_calls.append(("manual_seed", int(value))),
+        def manual_seed(value):
+            return torch_calls.append(("manual_seed", int(value))),
         cuda=types.SimpleNamespace(
-            is_available=lambda: False,
-            manual_seed_all=lambda value: torch_calls.append(("manual_seed_all", int(value))),
+            def is_available():
+                return False,
+            def manual_seed_all(value):
+                return torch_calls.append(("manual_seed_all", int(value))),
         ),
-        use_deterministic_algorithms=lambda flag: torch_calls.append(("deterministic", bool(flag))),
+        def use_deterministic_algorithms(flag):
+            return torch_calls.append(("deterministic", bool(flag))),
     )
 
     monkeypatch.setitem(sys.modules, "numpy", dummy_numpy)

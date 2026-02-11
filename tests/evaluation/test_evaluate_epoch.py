@@ -10,9 +10,9 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
-from codex_ml.evaluation.loop import evaluate_epoch
-from codex_ml.metrics.generative import bleu
+import torch  # noqa: E402
+from codex_ml.evaluation.loop import evaluate_epoch  # noqa: E402
+from codex_ml.metrics.generative import bleu  # noqa: E402
 
 
 class DummyModel(torch.nn.Module):

@@ -148,7 +148,7 @@ class TestBasicTrainingIteration:
             losses.append(loss.item())
 
         assert len(losses) == 5, "Should have 5 loss values"
-        assert all(l > 0 for l in losses), "All losses should be positive"
+        assert all(loss > 0 for loss in losses), "All losses should be positive"
 
     def test_training_mode_toggle(self, simple_model):
         """Test toggling between train and eval modes."""

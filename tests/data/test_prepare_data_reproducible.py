@@ -18,9 +18,9 @@ try:  # optional dependency for RNG disturbance
 except Exception:  # pragma: no cover - numpy unavailable
     np = None
 
-from codex_ml.config import DataConfig
-from codex_ml.data.loader import prepare_data_from_config
-from codex_ml.utils.provenance import load_environment_summary
+from codex_ml.config import DataConfig  # noqa: E402
+from codex_ml.data.loader import prepare_data_from_config  # noqa: E402
+from codex_ml.utils.provenance import load_environment_summary  # noqa: E402
 
 
 def _read_lines(path) -> list[str]:

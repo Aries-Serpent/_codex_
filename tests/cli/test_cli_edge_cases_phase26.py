@@ -213,7 +213,7 @@ class TestCLIEdgeCases:
                 # Should sanitize or reject
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
-    def test_cli_unicode_arguments(self):
+    def test_cli_unicode_arguments_placeholder(self):
         """Test CLI with Unicode arguments"""
         unicode_args = ['你好世界', '🚀🔥', 'Ñoño', 'Москва']
         for arg in unicode_args:

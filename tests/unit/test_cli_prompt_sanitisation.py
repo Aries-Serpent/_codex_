@@ -21,9 +21,9 @@ try:  # pragma: no cover - hydra stub may omit utils
 except ModuleNotFoundError:
     pytest.skip("Hydra utilities unavailable", allow_module_level=True)
 
-from codex_ml.cli.evaluate import _sanitize_eval_config
-from codex_ml.cli.train import _run_from_cfg
-from omegaconf import OmegaConf
+from codex_ml.cli.evaluate import _sanitize_eval_config  # noqa: E402
+from codex_ml.cli.train import _run_from_cfg  # noqa: E402
+from omegaconf import OmegaConf  # noqa: E402
 
 
 def _make_base_cfg() -> Dict:

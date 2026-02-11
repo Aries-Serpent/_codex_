@@ -20,8 +20,10 @@ def _stub_tokenizers(monkeypatch):
         return
 
     stub = SimpleNamespace(
-        SentencePieceUnigramTokenizer=lambda *args, **kwargs: None,
-        Tokenizer=lambda *args, **kwargs: None,
+        def SentencePieceUnigramTokenizer(*args, **kwargs):
+            return None,
+        def Tokenizer(*args, **kwargs):
+            return None,
         models=SimpleNamespace(BPE=lambda *args, **kwargs: None),
         normalizers=SimpleNamespace(NFKC=lambda: None),
         pre_tokenizers=SimpleNamespace(ByteLevel=lambda: None),

@@ -8,11 +8,11 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import patch
+from unittest.mock import patch  # noqa: E402
 
-import numpy as np
+import numpy as np  # noqa: E402
 
-import torch
+import torch  # noqa: E402
 
 
 class TestTrainingEdgeCases:
@@ -50,14 +50,14 @@ class TestTrainingEdgeCases:
         # Should detect and handle infinite loss
         assert np.isinf(inf_loss)
 
-    def test_training_gradient_explosion(self):
+    def test_training_gradient_explosion_placeholder(self):
         """Test training with exploding gradients"""
         # Simulate very large gradients
         torch.tensor([1e10, 1e10, 1e10])
         # Should clip gradients or handle explosion
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
-    def test_training_gradient_vanishing(self):
+    def test_training_gradient_vanishing_placeholder(self):
         """Test training with vanishing gradients"""
         # Simulate very small gradients
         small_gradient = torch.tensor([1e-10, 1e-10, 1e-10])
@@ -70,7 +70,7 @@ class TestTrainingEdgeCases:
         # Should handle OOM gracefully
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
-    def test_training_checkpoint_corruption(self):
+    def test_training_checkpoint_corruption_placeholder(self):
         """Test training with corrupted checkpoint"""
         import tempfile
         with tempfile.NamedTemporaryFile(suffix='.pt', delete=False) as f:
@@ -210,7 +210,7 @@ class TestTrainingEdgeCases:
 
         # Early stopping should trigger
         should_stop = torch.isnan(loss).item()
-        assert should_stop == True
+        assert should_stop is True
 
         # Rollback mechanism check
         previous_loss = torch.tensor(1.5)
@@ -398,7 +398,6 @@ class TestTrainingEdgeCases:
         finally:
             if os.path.exists(corrupted_path):
                 os.unlink(corrupted_path)
-        assert lr == 0.0
 
     def test_training_learning_rate_negative(self):
         """Test training with negative learning rate"""

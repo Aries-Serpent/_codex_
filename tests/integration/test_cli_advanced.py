@@ -127,7 +127,7 @@ class TestCLIAnalyze:
         mean = sum(latencies) / len(latencies)
         threshold = mean * 2
 
-        anomalies = [l for l in latencies if l > threshold]
+        anomalies = [lat for lat in latencies if lat > threshold]
 
         assert len(anomalies) > 0
         assert 50 in anomalies

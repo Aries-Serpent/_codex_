@@ -421,7 +421,8 @@ class TestPartialRecovery:
         # Sort by priority
         recovery_order = sorted(
             [c for c in components if c["failed"]],
-            key=lambda c: c["priority"]
+            def key(c):
+                return c["priority"]
         )
 
         assert recovery_order[0]["name"] == "database"

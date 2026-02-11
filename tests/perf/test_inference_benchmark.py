@@ -257,7 +257,7 @@ class TestInferenceLatencyBenchmarks:
         def sample_token(logits: list[float], temperature: float = 1.0) -> int:
             # Softmax
             max_logit = max(logits)
-            exp_logits = [(l - max_logit) / temperature for l in logits]
+            exp_logits = [(val - max_logit) / temperature for val in logits]
             sum_exp = sum(e for e in exp_logits)
             probs = [e / sum_exp if sum_exp > 0 else 1/len(logits) for e in exp_logits]
 

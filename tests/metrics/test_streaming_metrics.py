@@ -7,9 +7,9 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
-from src.codex_ml.metrics.classification import StreamingAccuracy
-from src.codex_ml.metrics.streaming import StreamingLoss
+import torch  # noqa: E402
+from src.codex_ml.metrics.classification import StreamingAccuracy  # noqa: E402
+from src.codex_ml.metrics.streaming import StreamingLoss  # noqa: E402
 
 
 class TestStreamingLoss:

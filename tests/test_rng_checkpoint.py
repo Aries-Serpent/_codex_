@@ -6,18 +6,18 @@ Test module for rng checkpoint.
 
 #!/usr/bin/env python3
 """Tests for RNG checkpoint functionality."""
-import json
-import random
-import sys
-from pathlib import Path
+import json  # noqa: E402
+import random  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-import pytest
+import pytest  # noqa: E402
 
-from codex_ml.training.rng_checkpoint import RNGState, set_seed
+from codex_ml.training.rng_checkpoint import RNGState, set_seed  # noqa: E402
 
 
 def test_rng_state_capture():

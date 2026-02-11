@@ -131,6 +131,7 @@ def test_metric_mode_validation(tmp_path: Path) -> None:
             FakeOptimizer(),
             [(FakeTensor(0.0), FakeTensor(0.0))],
             metric_mode="invalid",
-            loss_fn=lambda outputs, targets: FakeTensor(0.0),
+            def loss_fn(outputs, targets):
+                return FakeTensor(0.0),
             checkpoint_dir=tmp_path / "ckpts",
         )

@@ -227,14 +227,16 @@ class TestCrossReferenceCapabilities:
         suite.add_test(
             QuantumTest(
                 name="high_energy_test",
-                test_func=lambda: True,
+                def test_func():
+                    return True,
                 amplitude=0.9,  # High amplitude = high energy state
             )
         )
         suite.add_test(
             QuantumTest(
                 name="low_energy_test",
-                test_func=lambda: True,
+                def test_func():
+                    return True,
                 amplitude=0.3,  # Low amplitude = low energy state
             )
         )
@@ -521,7 +523,8 @@ class TestCrossReferenceCapabilities:
             suite.add_test(
                 QuantumTest(
                     name=f"test_{i}",
-                    test_func=lambda: True,
+                    def test_func():
+                        return True,
                     amplitude=0.8,
                     phase=i * math.pi / 5,  # Distribute phases
                 )
@@ -588,7 +591,8 @@ class TestAgentAutonomyCapabilities:
         suite.add_test(
             QuantumTest(
                 name="import_error_test",
-                test_func=lambda: __import__("nonexistent_module"),
+                def test_func():
+                    return __import__("nonexistent_module"),
                 amplitude=0.7,
             )
         )

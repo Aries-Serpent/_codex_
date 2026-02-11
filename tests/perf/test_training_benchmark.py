@@ -235,10 +235,10 @@ class TestTrainingLatencyBenchmarks:
             logits = [item["x"] * 0.1 for item in batch]
 
             # Loss
-            loss = sum((l - item["y"]) ** 2 for l, item in zip(logits, batch)) / len(batch)
+            loss = sum((logit - item["y"]) ** 2 for logit, item in zip(logits, batch)) / len(batch)
 
             # Backward (simulated)
-            grads = [2 * (l - item["y"]) / len(batch) for l, item in zip(logits, batch)]
+            grads = [2 * (logit - item["y"]) / len(batch) for logit, item in zip(logits, batch)]
 
             return {"loss": loss, "grad_norm": sum(g ** 2 for g in grads) ** 0.5}
 

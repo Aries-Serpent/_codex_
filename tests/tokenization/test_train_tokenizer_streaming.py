@@ -52,7 +52,8 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
 
     fake_spm = types.SimpleNamespace(
         SentencePieceTrainer=types.SimpleNamespace(Train=fake_train),
-        SentencePieceProcessor=lambda: _DummyProcessor(),
+        def SentencePieceProcessor():
+            return _DummyProcessor(),
     )
     monkeypatch.setattr(train_tokenizer, "spm", fake_spm)
     monkeypatch.setattr(train_tokenizer, "_SPM_ERROR", RuntimeError("missing"))
@@ -116,7 +117,8 @@ def test_sentencepiece_streaming_seed_fallback_recreates_iterator(monkeypatch, t
 
     fake_spm = types.SimpleNamespace(
         SentencePieceTrainer=types.SimpleNamespace(Train=fake_train),
-        SentencePieceProcessor=lambda: _DummyProcessor(),
+        def SentencePieceProcessor():
+            return _DummyProcessor(),
     )
     monkeypatch.setattr(train_tokenizer, "spm", fake_spm)
     monkeypatch.setattr(train_tokenizer, "_SPM_ERROR", RuntimeError("missing"))

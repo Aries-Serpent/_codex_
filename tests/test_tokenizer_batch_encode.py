@@ -7,7 +7,7 @@ import pytest
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
 
-from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter  # noqa: E402
 
 
 class DummyTokenizer:

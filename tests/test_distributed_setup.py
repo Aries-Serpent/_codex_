@@ -6,11 +6,11 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import patch
+from unittest.mock import patch  # noqa: E402
 
-import torch
-import torch.nn as nn
-from codex_ml.training.distributed_setup import (
+import torch  # noqa: E402
+import torch.nn as nn  # noqa: E402
+from codex_ml.training.distributed_setup import (  # noqa: E402
     cleanup_distributed,
     get_distributed_sampler,
     get_rank,

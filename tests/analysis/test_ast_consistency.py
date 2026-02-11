@@ -42,7 +42,8 @@ class ASTPatternLibrary:
                 name="abstract_method",
                 description="Methods decorated with @abstractmethod",
                 node_type=ast.FunctionDef,
-                matcher=lambda n: (
+                def matcher(n):
+                    return (
                     any(
                         isinstance(d, ast.Name) and d.id == "abstractmethod"
                         for d in n.decorator_list
@@ -69,7 +70,8 @@ class ASTPatternLibrary:
                 name="async_function",
                 description="Async function definitions",
                 node_type=ast.AsyncFunctionDef,
-                matcher=lambda n: True,
+                def matcher(n):
+                    return True,
             )
         )
 
@@ -79,7 +81,8 @@ class ASTPatternLibrary:
                 name="class_with_init",
                 description="Classes that define __init__",
                 node_type=ast.ClassDef,
-                matcher=lambda n: any(
+                def matcher(n):
+                    return any(
                     isinstance(item, ast.FunctionDef) and item.name == "__init__"
                     for item in n.body
                 ),
@@ -92,7 +95,8 @@ class ASTPatternLibrary:
                 name="dataclass",
                 description="Classes decorated with @dataclass",
                 node_type=ast.ClassDef,
-                matcher=lambda n: (
+                def matcher(n):
+                    return (
                     any(
                         (isinstance(d, ast.Name) and d.id == "dataclass")
                         or (
@@ -114,7 +118,8 @@ class ASTPatternLibrary:
                 name="import_from",
                 description="From X import Y statements",
                 node_type=ast.ImportFrom,
-                matcher=lambda n: True,
+                def matcher(n):
+                    return True,
             )
         )
 
@@ -124,7 +129,8 @@ class ASTPatternLibrary:
                 name="todo_in_docstring",
                 description="Functions with TODO in docstring",
                 node_type=ast.FunctionDef,
-                matcher=lambda n: (
+                def matcher(n):
+                    return (
                     ast.get_docstring(n) is not None
                     and "TODO" in ast.get_docstring(n).upper()
                 ),

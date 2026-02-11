@@ -17,7 +17,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-from deployment_orchestrator import (
+from deployment_orchestrator import (  # noqa: E402
     DeploymentManifest,
     DeploymentOrchestrator,
     DeploymentPhase,

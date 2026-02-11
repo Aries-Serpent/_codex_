@@ -270,7 +270,8 @@ class TestPhase2_PerformanceOptimization:
         orchestrator = PhysicsOrchestrator()
         if hasattr(orchestrator, "optimize_with_energy"):
             result = orchestrator.optimize_with_energy(
-                objective=lambda x: x**2, initial_state={"x": 1.0}, max_iterations=5
+                def objective(x):
+                    return x**2, initial_state={"x": 1.0}, max_iterations=5
             )
             assert result is not None
 
@@ -534,7 +535,8 @@ class TestPhase2_OptimizationMethods:
         orchestrator = PhysicsInspiredOrchestrator()
         if hasattr(orchestrator, "simulated_annealing"):
             result = orchestrator.simulated_annealing(
-                objective=lambda x: x**2, initial_state={"x": 5.0}, temperature=10.0
+                def objective(x):
+                    return x**2, initial_state={"x": 5.0}, temperature=10.0
             )
             assert result is not None
         else:

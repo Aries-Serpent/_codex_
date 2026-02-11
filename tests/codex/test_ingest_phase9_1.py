@@ -18,6 +18,8 @@ import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from src.codex.ingest.adapter import (
     MAX_FILE_SIZE_MB,
     MAX_FILES_COUNT,

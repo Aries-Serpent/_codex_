@@ -29,9 +29,12 @@ def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):
     dummy_wandb = types.SimpleNamespace(init=fake_wandb_init)
     monkeypatch.setattr(cl, "wandb", dummy_wandb)
     dummy_mlflow = types.SimpleNamespace(
-        set_tracking_uri=lambda uri: called.setdefault("ml_uri", uri),
-        set_experiment=lambda exp: called.setdefault("ml_exp", exp),
-        start_run=lambda: called.setdefault("ml_run", True),
+        def set_tracking_uri(uri):
+            return called.setdefault("ml_uri", uri),
+        def set_experiment(exp):
+            return called.setdefault("ml_exp", exp),
+        def start_run():
+            return called.setdefault("ml_run", True),
     )
     monkeypatch.setattr(cl, "mlflow", dummy_mlflow)
 

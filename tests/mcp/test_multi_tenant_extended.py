@@ -143,7 +143,7 @@ def test_tenant_audit_logging():
     log_tenant_action("tenant1", "create_resource")
     log_tenant_action("tenant2", "delete_resource")
 
-    tenant1_logs = [l for l in audit_log if l["tenant"] == "tenant1"]
+    tenant1_logs = [entry for entry in audit_log if entry["tenant"] == "tenant1"]
     assert len(tenant1_logs) == 1
     assert tenant1_logs[0]["action"] == "create_resource"
 

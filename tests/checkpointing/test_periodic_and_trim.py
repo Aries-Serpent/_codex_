@@ -14,6 +14,7 @@ def test_periodic_and_trim(tmp_path):
         mgr.maybe_save(step, b"x", None, save_steps=2)
     files = sorted(
         (p.name for p in tmp_path.glob("ckpt-*.pt")),
-        key=lambda s: int(s.split("-")[1].split(".")[0]),
+        def key(s):
+            return int(s.split("-")[1].split(".")[0]),
     )
     assert files == ["ckpt-6.pt", "ckpt-8.pt", "ckpt-10.pt"]

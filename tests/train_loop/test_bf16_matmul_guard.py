@@ -28,8 +28,10 @@ def test_bf16_matmul_guard_raises_on_runtime_error(monkeypatch):
 
     fake_torch = types.SimpleNamespace(
         bfloat16=object(),
-        ones=lambda *args, **kwargs: FakeTensor(),
-        tensor=lambda *args, **kwargs: FakeTensor(),
+        def ones(*args, **kwargs):
+            return FakeTensor(),
+        def tensor(*args, **kwargs):
+            return FakeTensor(),
     )
 
     monkeypatch.setitem(sys.modules, "torch", fake_torch)

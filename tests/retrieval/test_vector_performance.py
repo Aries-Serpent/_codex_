@@ -11,7 +11,7 @@ import pytest
 # Skip if FAISS not available
 pytest.importorskip("faiss")
 
-from src.codex.retrieval.stores.faiss_store import FAISSStore
+from src.codex.retrieval.stores.faiss_store import FAISSStore  # noqa: E402
 
 
 class TestVectorStorePerformance:

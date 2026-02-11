@@ -8,12 +8,12 @@ import pytest
 # Add tools to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "tools"))
 
-from auto_remediation.fix_generator import (
+from auto_remediation.fix_generator import (  # noqa: E402
     FixContext,
     FixStrategy,
     IntelligentFixGenerator,
 )
-from auto_remediation.verifier import FixVerifier
+from auto_remediation.verifier import FixVerifier  # noqa: E402
 
 
 class TestFixGenerator:

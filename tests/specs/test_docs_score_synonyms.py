@@ -21,7 +21,7 @@ pytestmark = pytest.mark.skip(
 
 
 def test_expand_tokens_variants_include_synonyms():
-    toks = _expand_doc_tokens("tokenization", ["token"])
+    toks = _expand_doc_tokens("tokenization", ["token"])  # noqa: F821 - skipped module
     # Expect base token and known synonym variants
     assert "token" in toks
     assert "sentencepiece" in toks
@@ -34,12 +34,12 @@ def test_docs_score_hits_synonym_in_doc():
         "docs/tokenization.md": "We integrate SentencePiece for subword models.",
         "README.md": "Setup instructions",
     }
-    score = _docs_score("tokenization", cache, ["token"])
+    score = _docs_score("tokenization", cache, ["token"])  # noqa: F821 - skipped module
     # one doc hit among small corpus => positive score
     assert score > 0.0
 
 
 def test_docs_score_variants_plural_checkpoint():
     cache = {"docs/checkpoints.md": "How to manage checkpoints safely."}
-    score = _docs_score("checkpointing", cache, ["checkpoint"])
+    score = _docs_score("checkpointing", cache, ["checkpoint"])  # noqa: F821 - skipped module
     assert score > 0.0
