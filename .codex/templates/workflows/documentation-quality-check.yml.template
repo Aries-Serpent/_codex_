@@ -6,7 +6,8 @@ on:
       - 'docs/**'
       - '.codex/docs/**'
       - '**.md'
-      - '!.github/**'
+    paths-ignore:
+      - '.github/**'
   push:
     branches: [main]
     paths:
@@ -38,7 +39,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          # Install only minimal dependencies needed for validation scripts
+          pip install pyyaml requests
       
       - name: Check Documentation Links
         id: link-check
@@ -46,7 +48,7 @@ jobs:
           echo "🔍 Checking documentation links..."
           
           # Run link validator
-          python scripts/validate_docs_links.py --check-anchors > link-check-results.txt 2>&1 || true
+          python scripts/validate_docs_links.py --validate-anchors > link-check-results.txt 2>&1 || true
           
           # Extract results
           BROKEN_LINKS=$(grep -c "❌" link-check-results.txt || echo "0")
@@ -171,7 +173,7 @@ jobs:
           echo "💻 Validating code blocks..."
           
           # Run code fence validator
-          python scripts/validate_code_fences.py --check-only > code-fence-results.txt 2>&1 || true
+          python scripts/validate_code_fences.py --check > code-fence-results.txt 2>&1 || true
           
           ISSUES=$(grep -c "Issue" code-fence-results.txt || echo "0")
           echo "code_block_issues=${ISSUES}" >> $GITHUB_OUTPUT
@@ -193,7 +195,7 @@ jobs:
           fi
           
           # Check for missing blank lines before tables
-          python scripts/validate_table_spacing.py --check-only > table-spacing-results.txt 2>&1 || true
+          python scripts/validate_table_spacing.py --check > table-spacing-results.txt 2>&1 || true
           TABLE_ISSUES=$(grep -c "Issue" table-spacing-results.txt || echo "0")
           FORMATTING_ISSUES=$((FORMATTING_ISSUES + TABLE_ISSUES))
           

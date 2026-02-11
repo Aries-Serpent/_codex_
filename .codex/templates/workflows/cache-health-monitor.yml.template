@@ -42,7 +42,8 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          # Install only cache manager (no heavyweight deps)
+          pip install --no-deps -e .
       
       - name: Check Cache Health
         id: health-check
@@ -59,6 +60,8 @@ jobs:
           
           # Display report
           cat cache-health.txt
+        env:
+          GH_TOKEN: ${{ github.token }}
       
       - name: List Cache Usage
         id: cache-usage

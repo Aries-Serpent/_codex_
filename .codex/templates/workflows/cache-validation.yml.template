@@ -244,11 +244,12 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[test]"
+          # Install only test dependencies for cache manager tests
+          pip install pytest pytest-cov pytest-mock pyyaml
       
       - name: Run Cache Manager Tests
         run: |
-          pytest tests/ci/test_cache_manager.py -v --tb=short --cov=src/codex/ci/cache_manager --cov-report=term-missing
+          pytest tests/ci/test_cache_manager.py -v --tb=short --cov=codex.ci.cache_manager --cov-report=term-missing
       
       - name: Validate CLI Interface
         run: |
@@ -282,6 +283,7 @@ jobs:
           fi
           
           # Validate YAML syntax
+          python -m pip install --quiet pyyaml
           python -c "import yaml; yaml.safe_load(open('$ACTION_FILE'))"
           
           # Check required fields

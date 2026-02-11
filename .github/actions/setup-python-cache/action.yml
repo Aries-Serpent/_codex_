@@ -74,7 +74,10 @@ runs:
         
         if [ -z "$CACHE_KEY" ]; then
           # Fallback to manual generation if cache manager not available
-          DEP_HASH=$(cat pyproject.toml requirements*.txt 2>/dev/null | sha256sum | cut -c1-12)
+          # Use portable Python hashing (works on all platforms)
+          DEP_HASH=$(python -c "import hashlib; import sys; import glob; \
+content = b''.join(open(f,'rb').read() for f in sorted(glob.glob('pyproject.toml') + glob.glob('requirements*.txt')) if __import__('pathlib').Path(f).exists()); \
+print(hashlib.sha256(content + b'$EXTRA_IDS').hexdigest()[:12])")
           CACHE_KEY="${RUNNER_OS}-${WORKFLOW_NAME}-${CACHE_TYPE}-${DEP_HASH}"
         fi
         
@@ -103,7 +106,7 @@ runs:
             ;;
           nox)
             PATHS="~/.cache/nox
-        .nox"
+.nox"
             ;;
           uv)
             PATHS="~/.cache/uv"
@@ -118,8 +121,10 @@ runs:
         
         # Add additional paths if specified
         if [ -n "$ADDITIONAL_PATHS" ]; then
+          # Clean any leading whitespace from additional paths
+          CLEANED_PATHS=$(echo "$ADDITIONAL_PATHS" | sed 's/^[[:space:]]*//')
           PATHS="${PATHS}
-        ${ADDITIONAL_PATHS}"
+${CLEANED_PATHS}"
         fi
         
         # Save to output (multi-line)

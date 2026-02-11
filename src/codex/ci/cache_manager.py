@@ -21,8 +21,7 @@ Usage:
 
     # For cache validation
     health = manager.validate_cache_health()
-    if health.is_critical:
-        manager.cleanup_old_caches()
+    print(f"Cache health: {health}")
 """
 
 from __future__ import annotations
@@ -135,7 +134,10 @@ class CacheManager:
         """Initialize cache manager."""
         self.repo_root = repo_root or self._detect_repo_root()
         self.github_context = github_context or self._load_github_context()
-        self.is_ci = bool(os.environ.get("CI"))
+        
+        # Parse CI environment variable strictly
+        ci_raw = os.environ.get("CI", "").strip().lower()
+        self.is_ci = ci_raw in {"1", "true", "yes", "on"}
         
     def _detect_repo_root(self) -> Path:
         """Detect repository root directory."""
@@ -287,6 +289,8 @@ class CacheManager:
                     health.oldest_cache_days = (datetime.now(oldest.tzinfo) - oldest).days
                 
             except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError, subprocess.TimeoutExpired):
+                # Swallow errors when gh CLI is unavailable or times out
+                # Health metrics will remain at default values (0)
                 pass
         
         if health.total_size_gb > size_threshold_gb:
