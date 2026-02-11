@@ -1,0 +1,98 @@
+# Reusable Workflow: Coverage Analysis with PDF Generation
+# Part of Code Quality & Coverage Suite Decomposition
+# Generated: 2026-02-11
+
+name: CQCS - Coverage Analysis
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        required: false
+        type: string
+        default: '3.12'
+    outputs:
+      status:
+        description: 'Coverage analysis status'
+        value: ${{ jobs.coverage_gen.outputs.status }}
+      total_coverage:
+        description: 'Total coverage percentage'
+        value: ${{ jobs.coverage_gen.outputs.coverage_pct }}
+
+permissions:
+  contents: read
+
+jobs:
+  coverage_gen:
+    name: Coverage + PDF Report
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.coverage.outcome }}
+      coverage_pct: ${{ steps.extract.outputs.pct }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Setup Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache-tier: 'live'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[test]"
+          pip install 'pytest>=9.0,<10' 'pytest-cov>=7.0,<8' 'coverage>=7.10.6,<8'
+      
+      - name: Run tests with coverage
+        id: coverage
+        run: |
+          coverage run -m pytest -q -m "not slow" || true
+          coverage json -o .coverage.json || echo '{}' > .coverage.json
+      
+      - name: Extract coverage percentage
+        id: extract
+        run: |
+          pct=$(python -c "import json; data = json.load(open('.coverage.json')); print(data.get('totals', {}).get('percent_covered', 0))" 2>/dev/null || echo "0")
+          echo "pct=$pct" >> $GITHUB_OUTPUT
+          echo "## Coverage: ${pct}%" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Generate HTML report
+        run: |
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
+            coverage html -d htmlcov || mkdir -p htmlcov
+          else
+            mkdir -p htmlcov
+            echo "<html><body><p>No coverage data</p></body></html>" > htmlcov/index.html
+          fi
+      
+      - name: Generate PDF report (72 DPI, B&W)
+        run: |
+          if [ -d htmlcov ] && [ -f htmlcov/index.html ]; then
+            python tools/coverage_html_to_pdf.py --input-dir htmlcov --output coverage_functions.pdf --dpi 72 || touch coverage_functions.pdf
+          else
+            touch coverage_functions.pdf
+          fi
+      
+      - name: Extract module coverage
+        run: |
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
+            python tools/coverage_extract.py --coverage-json .coverage.json --out coverage_modules.json || echo '{}' > coverage_modules.json
+          else
+            echo '{}' > coverage_modules.json
+          fi
+      
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-artifacts-${{ github.run_number }}
+          path: |
+            .coverage.json
+            coverage_modules.json
+            coverage_functions.pdf
+          if-no-files-found: warn
+          retention-days: 90

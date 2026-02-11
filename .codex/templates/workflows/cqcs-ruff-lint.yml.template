@@ -1,0 +1,65 @@
+# Reusable Workflow: Ruff Linting
+# Part of Code Quality & Coverage Suite Decomposition
+# Generated: 2026-02-11
+
+name: CQCS - Ruff Lint Analysis
+
+on:
+  workflow_call:
+    outputs:
+      status:
+        description: 'Lint analysis status'
+        value: ${{ jobs.ruff_lint.outputs.status }}
+      issues_count:
+        description: 'Number of issues found'
+        value: ${{ jobs.ruff_lint.outputs.issues_count }}
+
+permissions:
+  contents: read
+
+jobs:
+  ruff_lint:
+    name: Ruff Linting
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.lint.outcome }}
+      issues_count: ${{ steps.count.outputs.count }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Setup Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+      
+      - name: Install ruff only
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      
+      - name: Run Ruff linting
+        id: lint
+        continue-on-error: true
+        run: |
+          echo "## Ruff Analysis" >> $GITHUB_STEP_SUMMARY
+          ruff check src/ tests/ --output-format=github || true
+          ruff check src/ tests/ --statistics > ruff-stats.txt 2>&1 || true
+          cat ruff-stats.txt >> $GITHUB_STEP_SUMMARY
+      
+      - name: Count issues
+        id: count
+        run: |
+          count=$(ruff check src/ tests/ --output-format=json | python -c "import sys, json; data = json.load(sys.stdin); print(len(data))" 2>/dev/null || echo "0")
+          echo "count=$count" >> $GITHUB_OUTPUT
+          echo "Found $count issues" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: ruff-results-${{ github.run_number }}
+          path: ruff-stats.txt
+          if-no-files-found: ignore
+          retention-days: 30

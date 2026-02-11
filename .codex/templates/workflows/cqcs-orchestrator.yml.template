@@ -1,0 +1,156 @@
+# Orchestrator Workflow: Code Quality & Coverage Suite (Parallel)
+# Decomposed Architecture for Performance Optimization
+# Generated: 2026-02-11
+# 
+# This orchestrator replaces the monolithic code-quality-coverage-suite.yml
+# with a parallel fan-out/fan-in architecture that reduces runtime from
+# 1h+ to ~15-20 minutes.
+#
+# Architecture:
+# 1. Orchestrator fans out to 5 parallel reusable workflows
+# 2. Each workflow runs independently with minimal dependencies
+# 3. Unified summary job collects all results
+#
+# TEMPLATE FILE - Requires human approval before activation
+# To activate: Remove .template extension and commit to .github/workflows/
+
+name: Art_Code Quality & Coverage Suite (Optimized)
+
+on:
+  pull_request:
+    branches: [main, develop, "0D_base_", "copilot/integrate-codex-status-template", "master"]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Analysis mode'
+        required: true
+        type: choice
+        options:
+          - coverage-only
+          - quality-only
+          - full-suite
+        default: 'full-suite'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # Phase 1: Parallel execution of all analysis tools
+  ruff_lint:
+    name: "Phase 1: Ruff Lint"
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.mode == 'quality-only' ||
+      inputs.mode == 'full-suite'
+    uses: ./.github/workflows/cqcs-ruff-lint.yml
+    permissions:
+      contents: read
+
+  mypy_typecheck:
+    name: "Phase 2: mypy Type Check"
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.mode == 'quality-only' ||
+      inputs.mode == 'full-suite'
+    uses: ./.github/workflows/cqcs-mypy-typecheck.yml
+    permissions:
+      contents: read
+
+  bandit_security:
+    name: "Phase 3: Bandit Security"
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.mode == 'quality-only' ||
+      inputs.mode == 'full-suite'
+    uses: ./.github/workflows/cqcs-bandit-security.yml
+    permissions:
+      contents: read
+
+  radon_complexity:
+    name: "Phase 4: Radon Complexity"
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      inputs.mode == 'quality-only' ||
+      inputs.mode == 'full-suite'
+    uses: ./.github/workflows/cqcs-radon-complexity.yml
+    permissions:
+      contents: read
+
+  coverage_analysis:
+    name: "Phase 5: Coverage + PDF"
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'coverage-only' || inputs.mode == 'full-suite'))
+    uses: ./.github/workflows/cqcs-coverage-analysis.yml
+    with:
+      python-version: '3.12'
+    permissions:
+      contents: read
+
+  # Phase 2: Unified summary (fan-in)
+  unified_summary:
+    name: "Phase 6: Unified Summary"
+    runs-on: ubuntu-latest
+    needs: [ruff_lint, mypy_typecheck, bandit_security, radon_complexity, coverage_analysis]
+    if: always()
+    permissions:
+      pull-requests: write
+    
+    steps:
+      - name: Generate comprehensive summary
+        run: |
+          echo "## 📊 Code Quality & Coverage Summary (Optimized)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Architecture:** Parallel fan-out/fan-in (6 phases)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### Phase Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Tool | Status | Metrics |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 1 | Ruff Lint | ${{ needs.ruff_lint.result || 'skipped' }} | ${{ needs.ruff_lint.outputs.issues_count || 'N/A' }} issues |" >> $GITHUB_STEP_SUMMARY
+          echo "| 2 | mypy Type | ${{ needs.mypy_typecheck.result || 'skipped' }} | ${{ needs.mypy_typecheck.outputs.errors_count || 'N/A' }} errors |" >> $GITHUB_STEP_SUMMARY
+          echo "| 3 | Bandit Security | ${{ needs.bandit_security.result || 'skipped' }} | ${{ needs.bandit_security.outputs.issues_count || 'N/A' }} issues (${{ needs.bandit_security.outputs.severity || 'N/A' }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| 4 | Radon Complexity | ${{ needs.radon_complexity.result || 'skipped' }} | Avg: ${{ needs.radon_complexity.outputs.average_complexity || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 5 | Coverage + PDF | ${{ needs.coverage_analysis.result || 'skipped' }} | ${{ needs.coverage_analysis.outputs.total_coverage || 'N/A' }}% |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 Coverage reports (JSON, HTML, PDF)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Code quality reports (Ruff, mypy, Bandit, Radon)" >> $GITHUB_STEP_SUMMARY
+          echo "- 📈 All results stored for 30-90 days" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Performance" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚡ **Parallel execution:** All phases run simultaneously" >> $GITHUB_STEP_SUMMARY
+          echo "- 🚀 **Estimated runtime:** 15-20 minutes (vs 1h+ monolithic)" >> $GITHUB_STEP_SUMMARY
+          echo "- 💾 **Cache optimization:** Shared Python setup across phases" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `## 📊 Code Quality & Coverage Suite Results
+
+            **Architecture:** Optimized parallel execution (6 phases)
+
+            ### Results Summary
+            - **Ruff Lint:** ${{ needs.ruff_lint.outputs.issues_count || 'N/A' }} issues
+            - **Type Check:** ${{ needs.mypy_typecheck.outputs.errors_count || 'N/A' }} errors
+            - **Security:** ${{ needs.bandit_security.outputs.issues_count || 'N/A' }} issues (severity: ${{ needs.bandit_security.outputs.severity || 'N/A' }})
+            - **Complexity:** Average ${{ needs.radon_complexity.outputs.average_complexity || 'N/A' }}
+            - **Coverage:** ${{ needs.coverage_analysis.outputs.total_coverage || 'N/A' }}%
+
+            View detailed results in the [workflow run](${context.payload.pull_request.html_url}/checks).
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

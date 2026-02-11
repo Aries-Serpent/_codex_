@@ -1,0 +1,66 @@
+# Reusable Workflow: Radon Complexity Analysis
+# Part of Code Quality & Coverage Suite Decomposition
+# Generated: 2026-02-11
+
+name: CQCS - Radon Complexity
+
+on:
+  workflow_call:
+    outputs:
+      status:
+        description: 'Complexity analysis status'
+        value: ${{ jobs.complexity_analysis.outputs.status }}
+      average_complexity:
+        description: 'Average cyclomatic complexity'
+        value: ${{ jobs.complexity_analysis.outputs.avg_complexity }}
+
+permissions:
+  contents: read
+
+jobs:
+  complexity_analysis:
+    name: Code Complexity (Radon)
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.analyze.outcome }}
+      avg_complexity: ${{ steps.stats.outputs.avg }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Setup Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+      
+      - name: Install radon only
+        run: |
+          python -m pip install --upgrade pip
+          pip install radon
+      
+      - name: Run Radon complexity analysis
+        id: analyze
+        continue-on-error: true
+        run: |
+          echo "## Code Complexity (Radon)" >> $GITHUB_STEP_SUMMARY
+          radon cc src/ -a -s | tee radon-output.txt || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -40 radon-output.txt >> $GITHUB_STEP_SUMMARY || echo "Analysis complete" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      
+      - name: Extract statistics
+        id: stats
+        run: |
+          avg=$(grep "Average complexity:" radon-output.txt | awk '{print $NF}' | head -1 || echo "0.0")
+          echo "avg=$avg" >> $GITHUB_OUTPUT
+          echo "Average complexity: $avg" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: radon-results-${{ github.run_number }}
+          path: radon-output.txt
+          if-no-files-found: ignore
+          retention-days: 30

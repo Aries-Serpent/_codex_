@@ -1,0 +1,67 @@
+# Reusable Workflow: mypy Type Checking
+# Part of Code Quality & Coverage Suite Decomposition
+# Generated: 2026-02-11
+
+name: CQCS - mypy Type Check
+
+on:
+  workflow_call:
+    outputs:
+      status:
+        description: 'Type check status'
+        value: ${{ jobs.mypy_check.outputs.status }}
+      errors_count:
+        description: 'Number of type errors found'
+        value: ${{ jobs.mypy_check.outputs.errors_count }}
+
+permissions:
+  contents: read
+
+jobs:
+  mypy_check:
+    name: Type Checking (mypy)
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.typecheck.outcome }}
+      errors_count: ${{ steps.count.outputs.count }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Setup Python with caching
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+      
+      - name: Install mypy and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy
+          pip install -e ".[dev]"
+      
+      - name: Run mypy type checking
+        id: typecheck
+        continue-on-error: true
+        run: |
+          echo "## Type Checking (mypy)" >> $GITHUB_STEP_SUMMARY
+          mypy src/ --ignore-missing-imports --no-error-summary 2>&1 | tee mypy-output.txt || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -30 mypy-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      
+      - name: Count errors
+        id: count
+        run: |
+          count=$(grep -c "error:" mypy-output.txt 2>/dev/null || echo "0")
+          echo "count=$count" >> $GITHUB_OUTPUT
+          echo "Found $count type errors" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v6
+        with:
+          name: mypy-results-${{ github.run_number }}
+          path: mypy-output.txt
+          if-no-files-found: ignore
+          retention-days: 30
