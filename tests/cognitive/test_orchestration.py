@@ -385,8 +385,7 @@ class TestSequentialChainExecution:
 
         result = orchestrator.execute_sequential_chain(
             ["agent-1", "agent-2", "agent-3"],
-            def task_fn(_):
-                return True,
+            task_fn=lambda _: True,
         )
 
         assert result.success is True
@@ -430,8 +429,7 @@ class TestParallelFanOutExecution:
 
         result = orchestrator.execute_parallel_fan_out(
             ["agent-1", "agent-2", "agent-3"],
-            def task_fn(_):
-                return True,
+            task_fn=lambda _: True,
         )
 
         assert result.success is True

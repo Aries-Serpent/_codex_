@@ -223,18 +223,13 @@ def test_offline_tb_disabled(monkeypatch, tmp_path):
 
 def test_sample_system_metrics_with_psutil(monkeypatch):
     process = types.SimpleNamespace(
-        def cpu_percent(interval=None):
-            return 7.0,
-        def memory_info():
-            return types.SimpleNamespace(rss=512 * 1024**2),
+        cpu_percent=lambda interval=None: 7.0,
+        memory_info=lambda: types.SimpleNamespace(rss=512 * 1024**2),
     )
     fake_psutil = types.SimpleNamespace(
-        def cpu_percent(interval=None):
-            return 42.0,
-        def virtual_memory():
-            return types.SimpleNamespace(percent=33.0, used=2 * 1024**3),
-        def Process():
-            return process,
+        cpu_percent=lambda interval=None: 42.0,
+        virtual_memory=lambda: types.SimpleNamespace(percent=33.0, used=2 * 1024**3),
+        Process=lambda: process,
     )
     monkeypatch.setattr("codex_utils.logging_setup.psutil", fake_psutil)
 

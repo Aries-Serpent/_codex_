@@ -489,8 +489,7 @@ class TestAdjustmentRule:
             id="test-rule",
             name="Test Rule",
             trigger=AdjustmentTrigger.THRESHOLD_BREACH,
-            def condition(r):
-                return True,
+            condition=lambda r: True,
             action=AdjustmentType.ADD_OBJECTIVE,
             parameters={},
             cooldown_hours=24

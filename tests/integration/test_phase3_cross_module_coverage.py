@@ -358,8 +358,7 @@ class TestRAGToAgentFlow:
         # Retrieve top-k documents
         results = sorted(
             index.items(),
-            def key(x):
-                return x[1]["score"],
+            key=lambda x: x[1]["score"],
             reverse=True
         )[:top_k]
 
@@ -489,8 +488,7 @@ class TestRAGToAgentFlow:
         # Rerank based on additional criteria
         reranked = sorted(
             initial_results,
-            def key(x):
-                return x["initial_score"],
+            key=lambda x: x["initial_score"],
             reverse=True
         )
 

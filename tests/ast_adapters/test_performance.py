@@ -13,11 +13,12 @@ Performance Targets:
 """
 
 import time
+
 from codex.ast_adapters import (
-    PythonASTAdapter,
-    YAMLASTAdapter,
     JSONASTAdapter,
+    PythonASTAdapter,
     SQLASTAdapter,
+    YAMLASTAdapter,
 )
 
 

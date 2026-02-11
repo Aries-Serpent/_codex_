@@ -45,7 +45,7 @@ database:
     username: admin
     password: secret
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         # Navigate to nested structure
         mappings = adapter.find_nodes_by_type("mapping")
@@ -59,7 +59,7 @@ items:
   - item2
   - item3
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         sequences = adapter.find_nodes_by_type("sequence")
         assert len(sequences) == 1
@@ -76,7 +76,7 @@ float: 3.14
 boolean: true
 null_value: null
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         scalars = adapter.find_nodes_by_type("scalar")
         assert len(scalars) == 5
@@ -112,7 +112,7 @@ config:
     - host: server2
       port: 8081
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         mappings = adapter.find_nodes_by_type("mapping")
         sequences = adapter.find_nodes_by_type("sequence")
@@ -130,7 +130,7 @@ config:
     host: localhost
     port: 5432
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         host = adapter.get_value_at_path("config.database.host")
         port = adapter.get_value_at_path("config.database.port")
@@ -144,7 +144,7 @@ config:
 config:
   value: test
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         result = adapter.get_value_at_path("config.nonexistent")
         assert result is None
@@ -179,7 +179,7 @@ database:
 # This is a comment
 key: value  # inline comment
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         # Comments should not create nodes
         scalars = adapter.find_nodes_by_type("scalar")
@@ -201,7 +201,7 @@ items:
   - item1
   - item2
 """
-        root = adapter.parse(yaml_source)
+        root = adapter.parse(yaml_source)  # noqa: F841 - parse populates adapter
 
         sequence = adapter.find_nodes_by_type("sequence")[0]
 

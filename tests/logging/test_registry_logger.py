@@ -23,10 +23,8 @@ def test_registry_ndjson_logger_includes_system_metrics(tmp_path, monkeypatch):
             return _DummyMem()
 
     fake_psutil = SimpleNamespace(
-        def Process():
-            return _DummyProcess(),
-        def cpu_percent(interval=None):
-            return 12.5,
+        Process=lambda: _DummyProcess(),
+        cpu_percent=lambda interval=None: 12.5,
     )
 
     monkeypatch.setattr(registry, "psutil", fake_psutil, raising=False)

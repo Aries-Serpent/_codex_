@@ -19,7 +19,11 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "security"))
 
 from close_codeql_alert import AlertCloser  # noqa: E402
-from fetch_codeql_alerts import AlertExporter, CodeQLAlertFetcher, CodeScanningAlert  # noqa: E402
+from fetch_codeql_alerts import (  # noqa: E402
+    AlertExporter,
+    CodeQLAlertFetcher,
+    CodeScanningAlert,
+)
 
 
 class TestCodeScanningAlert:

@@ -57,7 +57,7 @@ def test_registry_register_decorator():
 
     @registry.register("accuracy", category="classification")
     def accuracy(preds, labels):
-        return sum(p == l for p, l in zip(preds, labels)) / len(preds)
+        return sum(p == lbl for p, lbl in zip(preds, labels)) / len(preds)
 
     item = registry.get("accuracy")
     assert item is not None

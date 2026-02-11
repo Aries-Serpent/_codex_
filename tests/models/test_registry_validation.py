@@ -27,8 +27,7 @@ def test_lora_validation_strict_rejects_invalid_dtype(dummy_model_registration):
         get_model(
             dummy_model_registration,
             {"lora": {"enabled": True, "dtype": "not-a-dtype"}},
-            def adapter_loader(model, cfg):
-                return {"adapted": cfg},
+            adapter_loader=lambda model, cfg: {"adapted": cfg},
         )
 
 
@@ -37,8 +36,7 @@ def test_lora_validation_non_strict_warns(dummy_model_registration):
         model = get_model(
             dummy_model_registration,
             {"lora": {"enabled": True, "dtype": "bad", "strict_validation": False}},
-            def adapter_loader(model, cfg):
-                return {"adapted": cfg},
+            adapter_loader=lambda model, cfg: {"adapted": cfg},
         )
     assert any("Unsupported lora.dtype" in str(w.message) for w in caught)
     assert model.get("adapted") is not None

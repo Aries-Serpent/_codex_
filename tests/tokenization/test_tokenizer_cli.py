@@ -20,8 +20,7 @@ def test_train_cli(tmp_path, monkeypatch):
 
     sp_stub = types.SimpleNamespace(
         SentencePieceTrainer=types.SimpleNamespace(
-            def train(**kw):
-                return Path(kw["model_prefix"] + ".model").write_text(
+            train=lambda **kw: Path(kw["model_prefix"] + ".model").write_text(
                 "m", encoding="utf-8"
             ),
         ),

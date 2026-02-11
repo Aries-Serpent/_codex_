@@ -23,8 +23,7 @@ def test_train_roundtrip(tmp_path, monkeypatch):
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
     sp_stub = types.SimpleNamespace(
         SentencePieceTrainer=types.SimpleNamespace(
-            def train(**kw):
-                return Path(kw["model_prefix"] + ".model").write_text("m", encoding="utf-8")
+            train=lambda **kw: Path(kw["model_prefix"] + ".model").write_text("m", encoding="utf-8")
         ),
         SentencePieceProcessor=type(
             "P",

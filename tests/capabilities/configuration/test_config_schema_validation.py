@@ -28,7 +28,13 @@ if "torch" not in sys.modules:
 
 from hypothesis import given, settings  # noqa: E402
 from hypothesis import strategies as st  # noqa: E402
-from pydantic import BaseModel, ConfigDict, Field, PositiveInt, ValidationError  # noqa: E402
+from pydantic import (  # noqa: E402
+    BaseModel,
+    ConfigDict,
+    Field,
+    PositiveInt,
+    ValidationError,
+)
 
 
 # Local config schema implementation for testing without torch dependency

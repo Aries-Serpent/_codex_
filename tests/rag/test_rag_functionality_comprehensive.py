@@ -346,7 +346,7 @@ class TestRAGPerformance:
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
                     except Exception:
-                        pass
+                        pass  # Best-effort document insertion for perf test
 
             # Test retrieval speed
             start = time.time()

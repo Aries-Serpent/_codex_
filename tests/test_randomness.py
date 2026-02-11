@@ -6,11 +6,11 @@ Test module for randomness.
 
 #!/usr/bin/env python3
 """Tests for common.randomness module."""
-import os
-import random
-from unittest.mock import Mock, patch
+import os  # noqa: E402
+import random  # noqa: E402
+from unittest.mock import Mock, patch  # noqa: E402
 
-from src.common.randomness import set_seed
+from src.common.randomness import set_seed  # noqa: E402
 
 
 def test_set_seed_with_explicit_value():
@@ -138,10 +138,8 @@ def test_set_seed_handles_cudnn_exception_gracefully():
     mock_cudnn = Mock()
     # Make setting deterministic raise an exception
     type(mock_cudnn).deterministic = property(
-        def fget(self):
-            return False,
-        def fset(self, value):
-            return (_ for _ in ()).throw(RuntimeError("test")),
+        fget=lambda self: False,
+        fset=lambda self, value: (_ for _ in ()).throw(RuntimeError("test")),
     )
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends

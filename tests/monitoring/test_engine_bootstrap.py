@@ -52,12 +52,9 @@ def test_engine_bootstrap(monkeypatch, tmp_path):
         eng,
         "AutoModelForCausalLM",
         types.SimpleNamespace(
-            def from_pretrained(*a, **k):
-                return types.SimpleNamespace(
-                def resize_token_embeddings(*a, **k):
-                    return None,
-                def to(*a, **k):
-                    return None,
+            from_pretrained=lambda *a, **k: types.SimpleNamespace(
+                resize_token_embeddings=lambda *a, **k: None,
+                to=lambda *a, **k: None,
             )
         ),
     )

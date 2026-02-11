@@ -25,17 +25,14 @@ def stub_optional_dependencies(monkeypatch, tmp_path):
 
     # Torch stub with minimal attributes used across helpers
     torch = types.SimpleNamespace(
-        def manual_seed(_s=None):
-            return None,
-        def initial_seed():
-            return 42,
+        manual_seed=lambda _s=None: None,
+        initial_seed=lambda: 42,
         cuda=types.SimpleNamespace(manual_seed_all=lambda _s=None: None),
         backends=types.SimpleNamespace(
             cudnn=types.SimpleNamespace(deterministic=False, benchmark=True),
             cuda=types.SimpleNamespace(matmul=types.SimpleNamespace(allow_tf32=True)),
         ),
-        def use_deterministic_algorithms(_flag=False):
-            return None,
+        use_deterministic_algorithms=lambda _flag=False: None,
         float32="float32",
         float16="float16",
         bfloat16="bfloat16",

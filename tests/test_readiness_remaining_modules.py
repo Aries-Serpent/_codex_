@@ -42,16 +42,11 @@ def _torch_stub():
     stub = SimpleNamespace()
     stub.cuda = SimpleNamespace(is_available=lambda: False)
     stub.distributed = SimpleNamespace(
-        def is_available():
-            return False,
-        def is_initialized():
-            return False,
-        def init_process_group(*_, **__):
-            return None,
-        def get_rank():
-            return 0,
-        def get_world_size():
-            return 1,
+        is_available=lambda: False,
+        is_initialized=lambda: False,
+        init_process_group=lambda *_, **__: None,
+        get_rank=lambda: 0,
+        get_world_size=lambda: 1,
     )
     stub.nn = SimpleNamespace()
     stub.optim = SimpleNamespace()
@@ -83,8 +78,7 @@ def _sacrebleu_stub():
 
 def _rouge_stub():
     scorer = SimpleNamespace(
-        def score(*_args, **_kwargs):
-            return {"rouge1": SimpleNamespace(fmeasure=0.0)}
+        score=lambda *_args, **_kwargs: {"rouge1": SimpleNamespace(fmeasure=0.0)}
     )
     return SimpleNamespace(rouge_scorer=SimpleNamespace(RougeScorer=lambda *_, **__: scorer))
 

@@ -42,8 +42,7 @@ def test_peft_hooks_with_stub(monkeypatch):
         return model
 
     fake_module = types.SimpleNamespace(
-        def LoraConfig(**kwargs):
-            return _FakeConfig(**kwargs),
+        LoraConfig=lambda **kwargs: _FakeConfig(**kwargs),
         TaskType=_TaskType,
         get_peft_model=_fake_get_peft_model,
         PeftModel=_FakePeftModel,

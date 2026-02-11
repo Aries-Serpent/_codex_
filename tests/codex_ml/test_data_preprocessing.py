@@ -66,7 +66,7 @@ class TestDataPreprocessing:
     def test_label_encoding(self):
         """Test label encoding."""
         labels = ["positive", "negative", "neutral"]
-        encoded = {l: i for i, l in enumerate(labels)}
+        encoded = {lbl: i for i, lbl in enumerate(labels)}
         assert encoded["positive"] == 0
 
     def test_stratified_split(self):

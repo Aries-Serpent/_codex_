@@ -14,7 +14,10 @@ pytest.importorskip("fastapi.testclient")
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
-from src.mcp.middleware.rate_limit_middleware import RateLimitMiddleware, clear_buckets  # noqa: E402
+from src.mcp.middleware.rate_limit_middleware import (  # noqa: E402
+    RateLimitMiddleware,
+    clear_buckets,
+)
 
 
 def test_rate_limit_throttling():

@@ -53,8 +53,7 @@ class TestGitHubClient:
         """Test fetching repository information."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return {
+            json=lambda: {
                 "name": "test-repo",
                 "owner": {"login": "testuser"},
                 "description": "Test repository",
@@ -83,8 +82,7 @@ class TestGitHubClient:
         """Test listing repository issues."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return [
+            json=lambda: [
                 {
                     "number": 1,
                     "title": "Issue 1",
@@ -108,8 +106,7 @@ class TestGitHubClient:
         """Test fetching a specific issue."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return {
+            json=lambda: {
                 "number": 1,
                 "title": "Test Issue",
                 "body": "Issue description",
@@ -129,8 +126,7 @@ class TestGitHubClient:
         """Test creating a new issue."""
         mock_post.return_value = Mock(
             status_code=201,
-            def json():
-                return {
+            json=lambda: {
                 "number": 123,
                 "title": "New Issue",
                 "state": "open",
@@ -167,8 +163,7 @@ class TestGitHubPullRequests:
         """Test listing pull requests."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return [
+            json=lambda: [
                 {
                     "number": 1,
                     "title": "PR 1",
@@ -187,8 +182,7 @@ class TestGitHubPullRequests:
         """Test fetching a specific pull request."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return {
+            json=lambda: {
                 "number": 1,
                 "title": "Test PR",
                 "state": "open",
@@ -207,8 +201,7 @@ class TestGitHubPullRequests:
         """Test creating a pull request."""
         mock_post.return_value = Mock(
             status_code=201,
-            def json():
-                return {
+            json=lambda: {
                 "number": 42,
                 "title": "New PR",
                 "state": "open",
@@ -271,8 +264,7 @@ class TestGitHubRateLimiting:
         """Test getting rate limit information."""
         mock_get.return_value = Mock(
             status_code=200,
-            def json():
-                return {
+            json=lambda: {
                 "rate": {
                     "limit": 5000,
                     "remaining": 4999,

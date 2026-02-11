@@ -169,8 +169,7 @@ class TestSmellRule:
             description="This rule is disabled",
             severity=SmellSeverity.INFO,
             category=SmellCategory.STRUCTURE,
-            def detector(t, p):
-                return [],
+            detector=lambda t, p: [],
             enabled=False
         )
 

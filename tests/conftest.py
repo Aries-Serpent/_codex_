@@ -1021,7 +1021,7 @@ def session_resource_manager():
         else:
             logger.info("✓ No resource leaks detected at session end")
     except Exception:
-        pass
+        pass  # Best-effort cleanup; psutil may not be installed
 
 
 @pytest.fixture(autouse=True)
@@ -1177,7 +1177,7 @@ def pytest_runtest_protocol(item, nextitem):
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
     except Exception:
-        pass
+        pass  # psutil optional; skip resource tracking if unavailable
 
     yield
 
@@ -1203,4 +1203,4 @@ def pytest_runtest_protocol(item, nextitem):
                 ResourceWarning
             )
     except Exception:
-        pass
+        pass  # psutil optional; skip leak check if unavailable

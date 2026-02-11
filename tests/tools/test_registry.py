@@ -87,8 +87,7 @@ class TestToolDefinition:
             tool = ToolDefinition(
                 name="test",
                 description="desc",
-                def handler():
-                    return None
+                handler=lambda: None
             )
             assert tool.parameters == {}
             assert tool.requires_confirmation is False
@@ -105,8 +104,7 @@ class TestToolDefinition:
             tool = ToolDefinition(
                 name="custom",
                 description="Custom tool",
-                def handler():
-                    return None,
+                handler=lambda: None,
                 parameters={"arg1": "string"},
                 requires_confirmation=True,
                 timeout_seconds=60,
@@ -203,8 +201,7 @@ class TestToolRegistry:
             registry = ToolRegistry()
             result = registry.register(
                 name="",
-                def handler():
-                    return None,
+                handler=lambda: None,
                 description="Empty name tool"
             )
             assert result is False
@@ -219,8 +216,7 @@ class TestToolRegistry:
             registry = ToolRegistry()
             result = registry.register(
                 name=None,
-                def handler():
-                    return None,
+                handler=lambda: None,
                 description="None name tool"
             )
             assert result is False
@@ -235,8 +231,7 @@ class TestToolRegistry:
             registry = ToolRegistry()
             result = registry.register(
                 name="param_tool",
-                def handler(x):
-                    return x,
+                handler=lambda x: x,
                 description="Tool with params",
                 parameters={"x": "string"}
             )
@@ -252,8 +247,7 @@ class TestToolRegistry:
             registry = ToolRegistry()
             result = registry.register(
                 name="confirm_tool",
-                def handler():
-                    return None,
+                handler=lambda: None,
                 description="Needs confirmation",
                 requires_confirmation=True
             )
@@ -269,8 +263,7 @@ class TestToolRegistry:
             registry = ToolRegistry()
             result = registry.register(
                 name="timeout_tool",
-                def handler():
-                    return None,
+                handler=lambda: None,
                 description="Custom timeout",
                 timeout_seconds=120
             )

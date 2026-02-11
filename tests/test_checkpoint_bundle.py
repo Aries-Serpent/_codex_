@@ -10,7 +10,10 @@ import pytest
 
 torch = pytest.importorskip("torch")  # noqa: F401
 
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint  # noqa: E402
+from codex_ml.utils.checkpointing import (  # noqa: E402
+    load_training_checkpoint,
+    save_checkpoint,
+)
 
 
 class TinyModule(torch.nn.Module):

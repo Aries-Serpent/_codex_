@@ -8,7 +8,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.cognitive.batch_triage_learnings import BatchTriageLearningEngine  # noqa: E402
+from scripts.cognitive.batch_triage_learnings import (
+    BatchTriageLearningEngine,  # noqa: E402
+)
 
 
 @pytest.fixture

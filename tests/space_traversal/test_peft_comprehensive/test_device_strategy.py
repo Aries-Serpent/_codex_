@@ -29,19 +29,14 @@ def _with_stub(monkeypatch: pytest.MonkeyPatch, *, cuda: bool, bf16: bool = Fals
     """Create a stub torch module for testing."""
     module = importlib.reload(device_strategy)
     stub_cuda = types.SimpleNamespace(
-        def is_available():
-            return cuda,
-        def is_bf16_supported():
-            return bf16,
-        def get_device_capability():
-            return (8, 0) if bf16 else (7, 0),
+        is_available=lambda: cuda,
+        is_bf16_supported=lambda: bf16,
+        get_device_capability=lambda: (8, 0) if bf16 else (7, 0),
     )
     stub_backends = types.SimpleNamespace(
         mps=types.SimpleNamespace(
-            def is_built():
-                return False,
-            def is_available():
-                return False,
+            is_built=lambda: False,
+            is_available=lambda: False,
         )
     )
     stub_device = types.SimpleNamespace

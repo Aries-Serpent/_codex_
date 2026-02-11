@@ -2,8 +2,9 @@
 Tests for JSON AST Adapter.
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 from codex.ast_adapters.json_adapter import JSONASTAdapter
 
@@ -47,7 +48,7 @@ class TestJSONASTAdapter:
             }
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         # Navigate to nested structure
         objects = adapter.find_nodes_by_type("object")
@@ -56,7 +57,7 @@ class TestJSONASTAdapter:
     def test_parse_array(self, adapter):
         """Test parsing JSON arrays"""
         json_source = '{"items": ["item1", "item2", "item3"]}'
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         arrays = adapter.find_nodes_by_type("array")
         assert len(arrays) == 1
@@ -75,7 +76,7 @@ class TestJSONASTAdapter:
             "null_value": null
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         primitives = adapter.find_nodes_by_type("primitive")
         assert len(primitives) == 5
@@ -101,7 +102,7 @@ class TestJSONASTAdapter:
     def test_parse_empty_array(self, adapter):
         """Test parsing empty JSON array"""
         json_source = '{"items": []}'
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         arrays = adapter.find_nodes_by_type("array")
         assert len(arrays) == 1
@@ -110,7 +111,7 @@ class TestJSONASTAdapter:
     def test_parse_nested_arrays(self, adapter):
         """Test parsing nested arrays"""
         json_source = '{"matrix": [[1, 2], [3, 4], [5, 6]]}'
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         arrays = adapter.find_nodes_by_type("array")
         assert len(arrays) == 4  # 1 outer + 3 inner
@@ -163,7 +164,7 @@ class TestJSONASTAdapter:
             "settings": {"theme": "dark"}
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         objects = adapter.find_nodes_by_type("object")
         assert len(objects) == 4  # Root + settings + 2 user objects
@@ -183,7 +184,7 @@ class TestJSONASTAdapter:
             }
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
         stats = adapter.get_stats()
 
         assert stats["document"] == 1
@@ -362,7 +363,7 @@ class TestJSONASTAdapter:
             "false_val": false
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         # Test retrieval of special values
         assert adapter.get_value_at_path("null_value") is None
@@ -381,7 +382,7 @@ class TestJSONASTAdapter:
             "quote": "She said \\"hello\\""
         }
         '''
-        root = adapter.parse(json_source)
+        root = adapter.parse(json_source)  # noqa: F841 - parse populates adapter
 
         unicode_val = adapter.get_value_at_path("unicode")
         assert "世界" in unicode_val

@@ -21,37 +21,25 @@ def stub_torch_module(monkeypatch):
 
     fake_dist = SimpleNamespace(
         ReduceOp=SimpleNamespace(MIN="min", MAX="max"),
-        def barrier():
-            return None,
-        def all_reduce(tensor, op=None):
-            return None,
-        def is_available():
-            return False,
-        def is_initialized():
-            return False,
-        def get_world_size():
-            return 1,
-        def get_rank():
-            return 0,
+        barrier=lambda: None,
+        all_reduce=lambda tensor, op=None: None,
+        is_available=lambda: False,
+        is_initialized=lambda: False,
+        get_world_size=lambda: 1,
+        get_rank=lambda: 0,
     )
 
     fake_cuda = SimpleNamespace(
-        def is_available():
-            return False,
-        def device_count():
-            return 0,
-        def memory_allocated(index=0):
-            return 0,
-        def get_device_name(index=0):
-            return f"gpu-{index}",
+        is_available=lambda: False,
+        device_count=lambda: 0,
+        memory_allocated=lambda index=0: 0,
+        get_device_name=lambda index=0: f"gpu-{index}",
     )
 
     fake_torch = SimpleNamespace(
         Tensor=FakeTensor,
-        def tensor(value):
-            return FakeTensor(value),
-        def manual_seed(seed):
-            return None,
+        tensor=lambda value: FakeTensor(value),
+        manual_seed=lambda seed: None,
         Generator=type("Generator", (), {"manual_seed": lambda self, seed: None}),
         cuda=fake_cuda,
         distributed=fake_dist,

@@ -11,7 +11,11 @@ import pytest
 pytest.importorskip("pydantic")
 from pydantic import ValidationError  # noqa: E402
 
-from codex_ml.config_schema import LoraConfig, TrainConfig, validate_config  # noqa: E402
+from codex_ml.config_schema import (  # noqa: E402
+    LoraConfig,
+    TrainConfig,
+    validate_config,
+)
 
 
 def test_validate_config_invalid() -> None:

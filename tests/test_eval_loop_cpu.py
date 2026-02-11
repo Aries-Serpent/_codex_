@@ -62,8 +62,7 @@ def test_evaluate_accumulates_cpu_metrics() -> None:
     metrics = evaluate(
         model,
         batches,
-        def loss_fn(outputs, batch):
-            return outputs.loss,
+        loss_fn=lambda outputs, batch: outputs.loss,
         metrics_fn=batch_metrics,
         device="cpu",
     )
@@ -83,8 +82,7 @@ def test_evaluate_handles_none_loss_gracefully() -> None:
     metrics = evaluate(
         model,
         batches,
-        def loss_fn(_outputs, _batch):
-            return None,
+        loss_fn=lambda _outputs, _batch: None,
         metrics_fn=batch_metrics,
         device="cpu",
     )
@@ -105,8 +103,7 @@ def test_evaluate_writes_ndjson(tmp_path) -> None:
     metrics = evaluate(
         model,
         batches,
-        def loss_fn(outputs, batch):
-            return outputs.loss,
+        loss_fn=lambda outputs, batch: outputs.loss,
         metrics_fn=batch_metrics,
         device="cpu",
         ndjson_path=log_path,

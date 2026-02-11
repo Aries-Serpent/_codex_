@@ -56,8 +56,7 @@ class _StubProcessor:
 
 def _install_stub(monkeypatch: pytest.MonkeyPatch, pad_id: int = 0, piece_size: int = 0) -> None:
     stub = SimpleNamespace(
-        def SentencePieceProcessor():
-            return _StubProcessor(pad_id, piece_size),
+        SentencePieceProcessor=lambda: _StubProcessor(pad_id, piece_size),
     )
     monkeypatch.setitem(sys.modules, "sentencepiece", stub)
 

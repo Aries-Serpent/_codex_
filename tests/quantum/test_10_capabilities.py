@@ -139,14 +139,12 @@ class TestCapability2PhysicsToTestingPipeline:
             # Born Rule: Higher amplitude = higher priority
             suite.add_test(QuantumTest(
                 name="high_priority",
-                def test_func():
-                    return True,
+                test_func=lambda: True,
                 amplitude=0.9  # P = 0.81
             ))
             suite.add_test(QuantumTest(
                 name="low_priority",
-                def test_func():
-                    return True,
+                test_func=lambda: True,
                 amplitude=0.3  # P = 0.09
             ))
 
@@ -160,8 +158,7 @@ class TestCapability2PhysicsToTestingPipeline:
             # Edge: Zero amplitude (should still work)
             suite.add_test(QuantumTest(
                 name="zero_amp",
-                def test_func():
-                    return True,
+                test_func=lambda: True,
                 amplitude=0.0
             ))
 
@@ -172,8 +169,7 @@ class TestCapability2PhysicsToTestingPipeline:
             # Edge: Maximum amplitude
             suite.add_test(QuantumTest(
                 name="max_amp",
-                def test_func():
-                    return True,
+                test_func=lambda: True,
                 amplitude=1.0  # P = 1.0
             ))
 
@@ -187,8 +183,7 @@ class TestCapability2PhysicsToTestingPipeline:
         # Add test that will fail
         suite.add_test(QuantumTest(
             name="failing_test",
-            def test_func():
-                return False,
+            test_func=lambda: False,
             amplitude=0.8
         ))
 
@@ -206,8 +201,7 @@ class TestCapability2PhysicsToTestingPipeline:
         """
         test = QuantumTest(
             name="energy_test",
-            def test_func():
-                return True,
+            test_func=lambda: True,
             amplitude=0.8
         )
 
@@ -403,8 +397,7 @@ class TestCapability4DependencyAwareOrchestration:
         ))
         orch.register_task(ThermodynamicTask(
             name="dependent",
-            def task_func():
-                return None,
+            task_func=lambda: None,
             energy=1.0,
             dependencies=["failing"]
         ))

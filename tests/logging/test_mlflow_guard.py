@@ -21,18 +21,12 @@ def test_offline_mode_respects_env(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_init_mlflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
     stub_mlflow = types.SimpleNamespace(
-        def active_run():
-            return None,
-        def set_tracking_uri(uri):
-            return uri,
-        def start_run():
-            return None,
-        def log_metric(*args, **kwargs):
-            return None,
-        def log_params(*args, **kwargs):
-            return None,
-        def log_artifact(*args, **kwargs):
-            return None,
+        active_run=lambda: None,
+        set_tracking_uri=lambda uri: uri,
+        start_run=lambda: None,
+        log_metric=lambda *args, **kwargs: None,
+        log_params=lambda *args, **kwargs: None,
+        log_artifact=lambda *args, **kwargs: None,
     )
     with mock.patch.dict("sys.modules", {"mlflow": stub_mlflow}):
         monkeypatch.setattr(mlflow_guard, "mlflow", stub_mlflow, raising=False)
@@ -44,12 +38,9 @@ def test_init_mlflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_init_mlflow_failure(monkeypatch: pytest.MonkeyPatch) -> None:
     failing_mlflow = types.SimpleNamespace(
-        def active_run():
-            return None,
-        def set_tracking_uri(uri):
-            return (_ for _ in ()).throw(RuntimeError("boom")),
-        def start_run():
-            return None,
+        active_run=lambda: None,
+        set_tracking_uri=lambda uri: (_ for _ in ()).throw(RuntimeError("boom")),
+        start_run=lambda: None,
     )
     with mock.patch.dict("sys.modules", {"mlflow": failing_mlflow}):
         monkeypatch.setattr(mlflow_guard, "mlflow", failing_mlflow, raising=False)

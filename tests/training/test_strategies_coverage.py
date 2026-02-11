@@ -280,7 +280,10 @@ class TestCallbackRegistration:
     def test_register_callback(self) -> None:
         """Test registering a callback."""
         try:
-            from codex_ml.training.strategies import NoOpCallback, TrainingCallback  # noqa: F401
+            from codex_ml.training.strategies import (  # noqa: F401
+                NoOpCallback,
+                TrainingCallback,
+            )
 
             class CustomCallback(NoOpCallback):
                 def on_epoch_end(self, epoch: int, metrics: dict, state: dict) -> None:

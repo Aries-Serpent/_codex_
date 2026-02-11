@@ -402,8 +402,7 @@ class TestCompleteRAGWorkflow:
         # Sort by rerank score
         reranked = sorted(
             initial_results,
-            def key(x):
-                return x["rerank_score"],
+            key=lambda x: x["rerank_score"],
             reverse=True
         )
 

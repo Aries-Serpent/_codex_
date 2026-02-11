@@ -44,8 +44,7 @@ def test_evaluate_returns_only_loss_when_metrics_failures() -> None:
     metrics = evaluate(
         model,
         batches,
-        def loss_fn(outputs, _batch):
-            return outputs.loss,
+        loss_fn=lambda outputs, _batch: outputs.loss,
         metrics_fn=_boom,
         device="cpu",
     )
@@ -60,8 +59,7 @@ def test_evaluate_handles_empty_dataloader() -> None:
     metrics = evaluate(
         model,
         [],
-        def loss_fn(outputs, _batch):
-            return outputs.loss,
+        loss_fn=lambda outputs, _batch: outputs.loss,
         device="cpu",
     )
 
