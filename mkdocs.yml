@@ -33,6 +33,8 @@ nav:
   - Planset Registry: evolution/PLANSET_REGISTRY.md
   - Cognitive Evolution Tree: evolution/COGNITIVE_EVOLUTION_TREE.md
   - AI Emergence Storyboard: evolution/AI_EMERGENCE_STORYBOARD.md
+  - AI Agency Score V3: evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md
+  - Cognitive Codebase Map: evolution/COGNITIVE_CODEBASE_MAP.md
 - README: README_ROOT.md
 - Getting Started: getting-started.md
 - API Reference:

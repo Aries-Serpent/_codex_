@@ -14,6 +14,8 @@
 | [Planset Registry](PLANSET_REGISTRY.md) | Queryable catalog of all historical plansets (PS-01 → PS-10) |
 | [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) | Mermaid-based evolutionary process mapping tree |
 | [AI Emergence Storyboard](AI_EMERGENCE_STORYBOARD.md) | Biographical storyline of AI autonomy, conception, and emergence |
+| [AI Agency Intuitiveness Score V3](AI_AGENCY_INTUITIVENESS_SCORE_V3.md) | ACE-aligned 6-layer scoring (93.2/100) |
+| [Cognitive Codebase Map](COGNITIVE_CODEBASE_MAP.md) | Component-level AI intuitiveness mapping (35 components) |
 
 ---
 
@@ -41,6 +43,8 @@ This documentation center implements cutting-edge patterns for cognitive AI agen
 | Test Coverage | 90% threshold | ✅ |
 | Tests Passing | 1300+ | ✅ |
 | Security (CVEs Fixed) | 26 | ✅ |
+| **AAIS V3.0 Score** | **93.2/100 (A)** | ✅ |
+| Cognitive Map Components | 35 scored | ✅ |
 
 ---
 
@@ -52,7 +56,9 @@ docs/evolution/
 ├── EVOLUTION_TIMELINE.md           ← Phase-by-phase verified history
 ├── PLANSET_REGISTRY.md             ← Queryable planset catalog
 ├── COGNITIVE_EVOLUTION_TREE.md     ← Mermaid evolution diagrams
-└── AI_EMERGENCE_STORYBOARD.md     ← AI biographical storyline
+├── AI_EMERGENCE_STORYBOARD.md      ← AI biographical storyline
+├── AI_AGENCY_INTUITIVENESS_SCORE_V3.md ← ACE-aligned scoring framework
+└── COGNITIVE_CODEBASE_MAP.md       ← Component-level intuitiveness map
 ```
 
 **Backing Data** (in `.codex/cognitive_brain/`):
