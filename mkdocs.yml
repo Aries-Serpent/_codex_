@@ -27,6 +27,12 @@ plugins:
 nav:
 - Home: index.md
 - 📊 Status Dashboard: status/GITHUB_PAGES_STATUS.md
+- 🧬 Evolution Center:
+  - Overview: evolution/INDEX.md
+  - Evolution Timeline: evolution/EVOLUTION_TIMELINE.md
+  - Planset Registry: evolution/PLANSET_REGISTRY.md
+  - Cognitive Evolution Tree: evolution/COGNITIVE_EVOLUTION_TREE.md
+  - AI Emergence Storyboard: evolution/AI_EMERGENCE_STORYBOARD.md
 - README: README_ROOT.md
 - Getting Started: getting-started.md
 - API Reference:
@@ -58,6 +64,7 @@ nav:
 - Plugins:
   - Plugin API (Broader): plugins/Plugin_API_Broader.md
 - Reference:
+  - Roadmap: ROADMAP.md
   - Changelog: CHANGELOG.md
   - Changelog Archive:
     - Codex: CHANGELOG/changelog_codex.md
