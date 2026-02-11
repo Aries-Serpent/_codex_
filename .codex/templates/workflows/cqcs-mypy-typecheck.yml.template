@@ -53,8 +53,9 @@ jobs:
         id: typecheck
         continue-on-error: true
         run: |
+          set -o pipefail
           echo "## Type Checking (mypy)" >> $GITHUB_STEP_SUMMARY
-          mypy src/ --ignore-missing-imports --no-error-summary 2>&1 | tee mypy-output.txt || true
+          mypy src/ --ignore-missing-imports --no-error-summary 2>&1 | tee mypy-output.txt
           echo '```' >> $GITHUB_STEP_SUMMARY
           head -30 mypy-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY

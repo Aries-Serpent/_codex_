@@ -90,7 +90,7 @@ def test_local_provider_uses_default_device_allocation(
 
 
 @pytest.mark.timeout(30)
-def test_local_provider_sets_device_cpu(
+def test_local_provider_uses_device_none_pattern(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
     """Local provider should use device=None, letting safe_model_to_device() handle device placement."""

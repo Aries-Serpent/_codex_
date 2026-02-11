@@ -49,8 +49,8 @@ jobs:
         continue-on-error: true
         run: |
           echo "## Security Analysis (Bandit)" >> $GITHUB_STEP_SUMMARY
-          bandit -r src/ -f json -o bandit-report.json || true
-          bandit -r src/ -f txt | tee bandit-output.txt || true
+          bandit -r src/ -f json -o bandit-report.json
+          bandit -r src/ -f txt | tee bandit-output.txt
           echo '```' >> $GITHUB_STEP_SUMMARY
           tail -30 bandit-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -60,7 +60,8 @@ jobs:
         run: |
           if [ -f bandit-report.json ]; then
             count=$(python -c "import json; data = json.load(open('bandit-report.json')); print(len(data.get('results', [])))" 2>/dev/null || echo "0")
-            severity=$(python -c "import json; data = json.load(open('bandit-report.json')); severities = [r['issue_severity'] for r in data.get('results', [])]; print(max(severities, default='NONE'))" 2>/dev/null || echo "NONE")
+            # Fix severity calculation - use ordered ranking instead of lexicographic max
+            severity=$(python -c "import json; data = json.load(open('bandit-report.json')); order = {'NONE': 0, 'LOW': 1, 'MEDIUM': 2, 'HIGH': 3}; severities = [str(r.get('issue_severity', 'NONE')).upper() for r in data.get('results', [])]; print(max(severities, key=lambda s: order.get(s, 0)) if severities else 'NONE')" 2>/dev/null || echo "NONE")
           else
             count="0"
             severity="NONE"

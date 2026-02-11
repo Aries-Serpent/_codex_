@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "## Code Complexity (Radon)" >> $GITHUB_STEP_SUMMARY
-          radon cc src/ -a -s | tee radon-output.txt || true
+          radon cc src/ -a -s | tee radon-output.txt
           echo '```' >> $GITHUB_STEP_SUMMARY
           head -40 radon-output.txt >> $GITHUB_STEP_SUMMARY || echo "Analysis complete" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
