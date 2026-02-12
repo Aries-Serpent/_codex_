@@ -1026,8 +1026,8 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except Exception:
-        pass  # Best-effort cleanup; psutil may not be available
+    except Exception:  # Best-effort cleanup; psutil may not be available
+        pass
 
 
 @pytest.fixture(autouse=True)
@@ -1182,8 +1182,8 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except Exception:
-        pass  # psutil optional; skip resource tracking if unavailable
+    except Exception:  # psutil optional; skip resource tracking if unavailable
+        pass
 
     yield
 
@@ -1208,5 +1208,5 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning
             )
-    except Exception:
-        pass  # psutil optional; skip leak check if unavailable
+    except Exception:  # psutil optional; skip leak check if unavailable
+        pass

@@ -15,10 +15,9 @@ pytest.importorskip("torch")
 import torch  # noqa: E402
 from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
 from src.training.seed import ensure_global_seed  # noqa: E402
-from torch.utils.data import Dataset  # noqa: E402
 
 
-class TinyRegressionDataset(Dataset):
+class TinyRegressionDataset(torch.utils.data.Dataset):
     def __init__(self, n_items: int = 64) -> None:
         ensure_global_seed(7)
         xs = torch.linspace(-1.0, 1.0, n_items)
