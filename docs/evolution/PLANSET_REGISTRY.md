@@ -31,7 +31,7 @@
 | [PS-17](#ps-17-operational-excellence) | Operational Excellence | ✅ Complete | 2026-02-12 | Post-Merge | Operations |
 | [PS-18](#ps-18-continuous-improvement) | Continuous Improvement | ✅ Complete | 2026-02-12 | Continuous | Framework |
 | [PS-19](#ps-19-next-evolution) | Next Evolution Phase | ✅ Complete | 2026-02-12 | Evolution | AI/Platform |
-| [PS-20](#ps-20-v40-scoring) | V4.0 Scoring Implementation | 🟢 Active | 2026-02-12 | Evolution | AI/Scoring |
+| [PS-20](#ps-20-v40-scoring) | V4.0 Scoring Implementation | ✅ Complete | 2026-02-12 | Evolution | AI/Scoring |
 
 ---
 
@@ -705,10 +705,10 @@ Current Scores (PS-14 Implementation):
 
 **Sub-plansets:**
 - **PS-20a** ✅ V4.0 automated scorer (`scripts/ci/aais_v4_scorer.py`) — 4-pillar, 16-dimension model
-- **PS-20b** ⏳ Technical excellence metrics pipeline
-- **PS-20c** ⏳ Cognitive sophistication measurement
-- **PS-20d** ⏳ Operational maturity assessment
-- **PS-20e** ⏳ Ecosystem impact tracking
+- **PS-20b** ✅ Technical excellence metrics (`scripts/ci/technical_excellence.py`) — lint, tests, CI, security
+- **PS-20c** ✅ Cognitive sophistication measurement (`scripts/ci/cognitive_sophistication.py`) — awareness, learning, patterns, decisions
+- **PS-20d** ✅ Operational maturity assessment (`scripts/ci/operational_maturity.py`) — automation, reliability, observability, response
+- **PS-20e** ✅ Ecosystem impact tracking (`scripts/ci/ecosystem_impact.py`) — reusability, docs, community, integration
 
 **Deliverables:**
 - `scripts/ci/aais_v4_scorer.py` — Automated V4.0 scoring (99.8/100, S+ grade)
