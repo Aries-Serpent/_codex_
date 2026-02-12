@@ -404,3 +404,9 @@ jobs:
             });
 
             console.log(`Created issue #${issue.data.number}`);
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow self-healing 2>/dev/null || echo "Cache health: check skipped"

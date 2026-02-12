@@ -188,3 +188,9 @@ jobs:
           name: link-check-report
           path: link-check-report.json
           retention-days: 30
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow documentation-link-checker 2>/dev/null || echo "Cache health: check skipped"

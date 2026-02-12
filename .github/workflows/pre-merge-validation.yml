@@ -98,3 +98,9 @@ jobs:
         run: |
           echo "::error::Pre-merge validation failed - auto-fixable issues detected"
           exit 1
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow pre-merge-validation 2>/dev/null || echo "Cache health: check skipped"

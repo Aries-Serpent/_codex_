@@ -29,6 +29,7 @@
 | [PS-15](#ps-15-advanced-infrastructure) | Advanced Infrastructure | ✅ Complete | 2026-02-12 | Advancement | Infrastructure |
 | [PS-16](#ps-16-production-readiness) | Production Readiness | ✅ Complete | 2026-02-12 | Advancement | Production |
 | [PS-17](#ps-17-operational-excellence) | Operational Excellence | 🟢 Active | 2026-02-12 | Post-Merge | Operations |
+| [PS-18](#ps-18-continuous-improvement) | Continuous Improvement | ⏳ Planned | 2026-02-12 | Continuous | Framework |
 
 ---
 
@@ -597,7 +598,7 @@ Current Scores (PS-14 Implementation):
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
 - **Latest Completion**: PS-16 (2026-02-12)
-- **Current Active**: PS-17 (Operational Excellence)
+- **Current Active**: PS-17 (Operational Excellence), PS-18 (Continuous Improvement — Planned)
 
 ---
 
@@ -622,11 +623,36 @@ Current Scores (PS-14 Implementation):
 | PS-17c | Genesis Phase 10.1 | ⏳ Planned | 3-step guard removal after admin approval |
 | PS-17d | RAG Centralized Loader | ✅ Complete | safe_load_sentence_transformer() in _model_utils.py |
 | PS-17e | Dead Link Remediation | ✅ Complete | Fixed 3 dead links in docs |
+| PS-17f | CacheManager Phase 4 Batch 2 | ✅ Complete | Cache-health steps in 10 more workflows (25/61 total) |
 
 **Deliverables**:
 - `src/codex/rag/_model_utils.py` — Centralized SentenceTransformer loader
 - `pages-mkdocs.yml` — cognitive_app build + deploy step
-- 10 workflows updated with CacheManager cache-health steps
+- 20 workflows updated with CacheManager cache-health steps (Batch 1 + 2)
+
+---
+
+### PS-18: Continuous Improvement
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-18 |
+| **Status** | ⏳ Planned |
+| **Created** | 2026-02-12 |
+| **Era** | Continuous |
+| **Category** | Framework |
+
+**Objective**: Establish continuous improvement framework — CacheManager full coverage (61 workflows), automated AAIS scoring pipeline, cognitive brain autonomous healing activation, and workflow performance benchmarking.
+
+**Sub-Plansets**:
+
+| Sub-PS | Name | Status | Description |
+|--------|------|--------|-------------|
+| PS-18a | CacheManager Phase 4 Batch 3 | ⏳ Planned | Cache-health steps in next 10 workflows (35/61) |
+| PS-18b | CacheManager Phase 4 Batch 4 | ⏳ Planned | Cache-health steps in remaining 26 workflows (61/61) |
+| PS-18c | AAIS Automated Pipeline | ⏳ Planned | CI workflow for automated AAIS score calculation |
+| PS-18d | Cognitive Autonomous Healing | ⏳ Planned | Activate healing_loop.py in scheduled workflow |
+| PS-18e | Performance Benchmarking | ⏳ Planned | Workflow execution time tracking and optimization |
 
 ---
 

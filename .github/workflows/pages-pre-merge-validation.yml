@@ -269,3 +269,9 @@ jobs:
             echo "✅ Validation passed or warnings only"
             exit 0
           fi
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow pages-pre-merge-validation 2>/dev/null || echo "Cache health: check skipped"
