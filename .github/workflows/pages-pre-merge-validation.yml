@@ -76,7 +76,7 @@ jobs:
         id: mkdocs_build
         continue-on-error: true
         run: |
-          mkdocs build --strict 2>&1 | tee build_report.txt
+          mkdocs build --verbose 2>&1 | tee build_report.txt
           EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
       
