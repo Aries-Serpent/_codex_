@@ -4,11 +4,10 @@ Validates keyword→agent routing, confidence scoring, fallback chains,
 and the convenience ``route_task`` function.
 """
 
-import pytest
-
 import importlib.util
 import os
-import sys
+
+import pytest
 
 # Import directly from the module file to avoid __init__.py dependency chain
 _mod_path = os.path.join(

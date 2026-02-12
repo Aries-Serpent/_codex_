@@ -334,3 +334,5 @@ mutants/
 _tmp_artifacts/
 parquet/
 uri/
+# Fragile test scan output
+.codex/fragile_tests.json

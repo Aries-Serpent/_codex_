@@ -1,5 +1,37 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T07:30:00Z — Session 13: Test collection fix, PS-13, and infra hardening
+
+### 🔧 Test Collection Fix (P0)
+- **Fix**: Guarded `tests/zendesk/test_api_client.py` to use `pytest.importorskip("responses")`
+  so missing `responses` package skips the module instead of aborting all test collection.
+- **Added**: `responses>=0.25.0` to `requirements-dev.txt` (lightweight test dependency).
+- **Result**: `pytest --collect-only` now exits 0 with zero collection errors.
+
+### 🔧 Nox Session Update
+- **Changed**: `nox -s tests` session now installs the package editable (`pip install -e . --no-deps`)
+  before running pytest, ensuring `src/` imports resolve correctly.
+- **Added**: `*session.posargs` pass-through so `nox -s tests -- -k ingestion` works.
+
+### 🤖 PS-13: Agent Task Router (L4 Classification) — COMPLETE
+- **Added**: `TaskRouter` class and `route_task()` function to `scripts/monitoring/agent_orchestrator.py`
+- 7 routing categories (ci_cd, testing, security, documentation, rag_ml, configuration, repository)
+- 70+ keywords with confidence scoring and fallback chains
+- 18 tests in `tests/monitoring/test_task_router.py`
+- PLANSET_REGISTRY.md and mermaid diagrams updated
+
+### 🛡️ Fragile Tests Scanner
+- **Added**: `.codex/scripts/fragile_tests_scan.py` — AST-based scanner that finds test files
+  with unguarded top-level imports of optional packages (numpy, torch, hypothesis, etc.)
+- Identified 154 fragile test files (informational; none block collection currently).
+
+### Verification
+- `pytest --collect-only`: 0 collection errors ✅
+- Ingestion tests: 24/24 pass ✅
+- Zendesk tests: 33/33 pass ✅
+- Task router tests: 18/18 pass ✅
+- MCP packaging tests: 11/11 pass ✅
+
 ## 📝 2026-02-04T19:00:00Z - CI Log Retrieval and Analysis
 
 ### 🔍 GitHub Actions Log Diagnostics
