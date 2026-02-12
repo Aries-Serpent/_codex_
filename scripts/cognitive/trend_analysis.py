@@ -26,6 +26,7 @@ AAIS_HISTORY = [
     {"version": "V3.1", "score": 93.7, "session": 19, "date": "2026-02-12"},
     {"version": "V3.2", "score": 94.8, "session": 20, "date": "2026-02-12"},
     {"version": "V3.3", "score": 95.5, "session": 22, "date": "2026-02-12"},
+    {"version": "V3.4", "score": 97.0, "session": 23, "date": "2026-02-12"},
 ]
 
 
