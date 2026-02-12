@@ -68,14 +68,15 @@ def pytest_configure(config: pytest.Config) -> None:
 
     Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
-    # Configure PyTorch to use CPU device globally to prevent meta tensor issues
+    # Note: Do NOT call torch.set_default_device() here.
+    # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
+    # causing "Cannot copy out of meta tensor" errors. RAG modules already
+    # pass device='cpu' explicitly to SentenceTransformer constructors.
     try:
         import torch
-        if hasattr(torch, 'set_default_device'):
-            torch.set_default_device("cpu")
-            logger.info("✓ PyTorch default device set to CPU (prevents meta tensor issues)")
-    except (ImportError, AttributeError):
-        pass  # PyTorch not available or stub version
+        logger.info(f"✓ PyTorch {torch.__version__} available (RAG modules use device='cpu' directly)")
+    except ImportError:
+        pass  # PyTorch not available
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:
@@ -800,6 +801,11 @@ def ensure_cpu_device():
     """
     Ensure tests use CPU device and avoid meta tensor issues.
     Applied automatically to all tests to prevent PyTorch meta tensor errors.
+
+    Note: We do NOT call torch.set_default_device() because it interferes
+    with SentenceTransformer model loading in PyTorch >=2.0, causing
+    "Cannot copy out of meta tensor" errors. RAG modules pass device='cpu'
+    explicitly to SentenceTransformer constructors instead.
     """
     try:
         import torch
@@ -809,10 +815,6 @@ def ensure_cpu_device():
             # Stub torch module, skip fixture
             yield
             return
-
-        # Set default device to CPU (ALWAYS, not just when CUDA available)
-        # This prevents meta tensor issues during model loading
-        torch.set_default_device("cpu")
 
         # Ensure deterministic behavior
         torch.manual_seed(0)
