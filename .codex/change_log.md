@@ -1,5 +1,37 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T21:49:00Z — Session 29: Patch Logic Applied + PS-18 Complete + PS-19 Planned
+
+### Task 1: Patch Analysis & Application ✅ (13 source fixes)
+- Analyzed 137-file patch from repo owner
+- Applied 13 critical source code fixes:
+  - `cache_manager.py`: Extract `_is_ci_environment()` static method
+  - `seed_manager.py`: torch stub-safe `getattr` for version/cuda
+  - `checkpoint.py`: `getattr(torch, "cuda", None)` guard (2 locations)
+  - `provenance.py`: `json.dumps(default=str)` for serialization safety
+  - `prompt_sanitizer.py`: Full `<script>` tag pattern added
+  - `rag/utils.py`: `getattr` chain for `torch.nn.Module` check
+  - `logging_utils.py`: MLflow offline `set_tracking_uri` + `set_experiment`
+  - `unified_training.py`: `_seed_all()` torch-stub safe
+  - `cli.py`: `sys.path.append` instead of `insert(0)` + import fix
+  - `trainer.py`: `from src.metrics` import path fix
+
+### Task 2: PS-18c AAIS Automated Pipeline ✅
+- `scripts/ci/aais_scoring_pipeline.py`: automated AAIS V3 calculation
+- Weighted composite: ACE(40%) + MSV(30%) + Agentic(30%)
+
+### Task 3: PS-18e Performance Benchmarking ✅
+- `scripts/ci/performance_benchmark.py`: 5 automated benchmarks
+
+### Task 4: PS-18 ✅ Complete, PS-19 ⏳ Planned
+- PS-18: all 5/5 sub-plansets complete
+- PS-19: 5 sub-plansets defined for next evolution
+
+### Task 5: Planset Inventory ✅
+- Created `planset_inventory.md` (20 plansets tracked)
+
+### Dashboard: v3.4.0
+
 ## 📝 2026-02-12T21:15:00Z — Session 28: CacheManager Phase 4 Complete (100%) + Healing Loop Activation
 
 ### Task 1: CacheManager Phase 4 Batches 3+4 ✅ (36 workflows)

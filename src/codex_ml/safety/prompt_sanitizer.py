@@ -24,6 +24,7 @@ class PromptSanitizer:
 
     # Common injection patterns - based on OWASP Top 10
     INJECTION_PATTERNS = [
+        r"<script\b[^>]*>.*?</script>",
         r"<script",
         r"javascript:",
         r"onerror=",

@@ -148,9 +148,11 @@ def _capture_rng_state_raw() -> dict[str, Any]:
     if torch is not None:
         with suppress(Exception):  # pragma: no cover - guard against torch quirks
             state["torch_cpu"] = _torch_rng_get_state()
-        if torch.cuda.is_available():  # pragma: no cover - optional GPU support
-            with suppress(Exception):
-                state["torch_cuda_all"] = torch.cuda.get_rng_state_all()
+
+        cuda_mod = getattr(torch, "cuda", None)
+        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
+            with suppress(Exception):  # pragma: no cover - optional GPU support
+                state["torch_cuda_all"] = cuda_mod.get_rng_state_all()
     return state
 
 
@@ -256,7 +258,7 @@ def _restore_rng_state(state: Mapping[str, Any]) -> None:
             if torch_state is not None:
                 _torch_rng_set_state(torch_state)
         cuda_mod = getattr(torch, "cuda", None)
-        if cuda_mod is not None and hasattr(cuda_mod, "is_available") and cuda_mod.is_available():
+        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
             with suppress(Exception):
                 cuda_state = state.get("torch_cuda_all")
                 if cuda_state is not None:

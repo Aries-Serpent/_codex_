@@ -136,9 +136,14 @@ class CacheManager:
         self.github_context = github_context or self._load_github_context()
         
         # Parse CI environment variable strictly
+        self.is_ci = self._is_ci_environment()
+
+    @staticmethod
+    def _is_ci_environment() -> bool:
+        """Return True when current environment indicates CI execution."""
         ci_raw = os.environ.get("CI", "").strip().lower()
-        self.is_ci = ci_raw in {"1", "true", "yes", "on"}
-        
+        return ci_raw in {"1", "true", "yes", "on"}
+
     def _detect_repo_root(self) -> Path:
         """Detect repository root directory."""
         if "GITHUB_WORKSPACE" in os.environ:
