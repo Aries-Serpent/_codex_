@@ -9,6 +9,10 @@ Systematically applies physics-guided dimensional tunneling to:
 
 Target: +3-5% coverage gain
 """
+import pytest
+
+pytest.importorskip("numpy")
+
 
 class TestPhase2_PhysicsOrchestrator_TimeDimension:
     """
