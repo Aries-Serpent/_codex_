@@ -27,6 +27,7 @@
 | [PS-13](#ps-13-agent-task-router) | Agent Task Router | ✅ Complete | 2026-02-12 | Advancement | AI/Agents |
 | [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | ✅ Complete | 2026-02-12 | Advancement | UI/Visualization |
 | [PS-15](#ps-15-advanced-infrastructure) | Advanced Infrastructure | ✅ Complete | 2026-02-12 | Advancement | Infrastructure |
+| [PS-16](#ps-16-production-readiness) | Production Readiness | 🟢 Active | 2026-02-12 | Advancement | Production |
 
 ---
 
@@ -553,15 +554,49 @@ Current Scores (PS-14 Implementation):
 | UI/Visualization | 1 (PS-14) | ✅ Complete |
 | Infrastructure (Adv) | 1 (PS-15) | ✅ Complete |
 
+### PS-16: Production Readiness
+
+- **ID**: PS-16
+- **Status**: 🟢 Active
+- **Created**: 2026-02-12
+- **Era**: Advancement
+- **Category**: Production
+- **Description**: Final production hardening — MSV deployment, AAIS A+ target, CacheManager full rollout, Genesis guard removal, autonomous operation mode.
+
+**Sub-plansets**:
+
+| Sub-PS | Name | Status | Description |
+|--------|------|--------|-------------|
+| PS-16a | GitHub Pages Deployment | 🟢 Ready | Deploy cognitive_app MSV dashboard via GitHub Pages (vite.config.ts configured, awaiting merge) |
+| PS-16b | AAIS Path to 97.0 | 🟢 Active | 3 new improvements: #9 multi-agent consensus (+0.7), #10 context window optimization (+0.8), #11 cross-session knowledge transfer (+0.7) |
+| PS-16c | CacheManager Phase 4 | ⏳ Planning | Full key replacement in remaining 37 workflows (10 per batch) |
+| PS-16d | Genesis Phase 10.1 | ⏳ Planning | 3-step guard removal: workflow guard → script guard → config guard |
+| PS-16e | Autonomous Operation Mode | ⏳ Planning | 4-mode progression: advisory → supervised → semi-autonomous → autonomous |
+
+**AAIS Improvements Defined**:
+- **#9**: Multi-agent consensus protocol — TaskRouter confidence cross-validation with agent_introspection (+0.7 pts, ACE L4)
+- **#10**: Context window optimization — Session state compression + priority-based context selection (+0.8 pts, MSV Awareness)
+- **#11**: Cross-session knowledge transfer — Persistent pattern library with session-to-session learning (+0.7 pts, Agentic Metrics)
+
+**Key Files**:
+- `cognitive_app/vite.config.ts` — GitHub Pages base path configured
+- `scripts/monitoring/agent_introspection.py` — Agent capability scanner (consensus input)
+- `scripts/ci/generate_cache_keys.py` — CacheManager bridge for Phase 4
+- `.codex/ethics/imperatives.yaml` — Ethical framework for autonomous mode
+- `.codex/strategy/okr_tracking.yaml` — OKR-linked strategy tracking
+
+---
+
 ### Completion Rate
 
-- **Total Plansets**: 16 (including PS-06e)
-- **Completed**: 16/16 (100%)
-- **Active**: 0/16 (0%)
-- **Planning**: 0/16 (0%)
+- **Total Plansets**: 17 (including PS-06e)
+- **Completed**: 16/17 (94%)
+- **Active**: 1/17 (6%)
+- **Planning**: 0/17 (0%)
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
-- **Latest Completion**: PS-14 (2026-02-12)
+- **Latest Completion**: PS-15 (2026-02-12)
+- **Current Active**: PS-16 (Production Readiness)
 
 ---
 

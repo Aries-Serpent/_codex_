@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-**Overall AI Agency Intuitiveness Score: 93.7/100** (Grade: A) ⬆️ +0.5 from V3.0
+**Overall AI Agency Intuitiveness Score: 95.5/100** (Grade: A) ⬆️ +0.7 from V3.2
 
 The _codex_ codebase achieves **Level 4 AI Functional System** maturity with demonstrated cognitive capabilities across all six ACE architecture layers. V3.0 introduces research-backed scoring aligned with:
 
