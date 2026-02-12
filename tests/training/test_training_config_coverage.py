@@ -13,8 +13,6 @@ import pytest
 
 pytest.importorskip("torch")
 
-pytest.importorskip("torch")
-
 # Import with graceful fallback
 try:
     import torch  # noqa: F401 - Testing optional dependency availability

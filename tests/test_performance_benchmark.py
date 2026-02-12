@@ -4,10 +4,6 @@
 import pytest
 
 pytest.importorskip("torch")
-
-pytest.importorskip("torch")
-
-pytest.importorskip("torch")
 from torch.optim import Adam
 
 import torch
