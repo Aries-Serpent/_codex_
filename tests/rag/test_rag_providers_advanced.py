@@ -7,6 +7,10 @@ Comprehensive testing for all RAG embedding providers:
 - Provider switching and fallback
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch

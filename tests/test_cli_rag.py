@@ -11,6 +11,10 @@ Comprehensive test coverage for:
 - Metrics export
 """
 
+pytest.importorskip("typer")
+
+
+
 import json
 from unittest.mock import MagicMock, patch
 

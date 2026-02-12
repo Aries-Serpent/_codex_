@@ -8,6 +8,10 @@ Tests quantum principles:
 - Pattern correlation
 """
 
+pytest.importorskip("numpy")
+
+
+
 import json
 import math
 

@@ -12,6 +12,12 @@ Test Categories:
 - Data structure invariants
 """
 
+import pytest
+
+pytest.importorskip("hypothesis")
+
+
+
 import math
 
 from hypothesis import HealthCheck, assume, given, settings

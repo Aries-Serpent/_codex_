@@ -7,6 +7,10 @@ Comprehensive testing for complex RAG workflows:
 - Performance benchmarks and optimization
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 import threading
 import time

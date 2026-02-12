@@ -2,6 +2,10 @@
 Tests for VectorStore Interface and FAISS Implementation
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 
 import numpy as np

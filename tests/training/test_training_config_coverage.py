@@ -8,6 +8,12 @@ Tests focus on:
 - Learning rate scheduling
 """
 
+pytest.importorskip("torch")
+
+pytest.importorskip("torch")
+
+
+
 import pytest
 
 # Import with graceful fallback

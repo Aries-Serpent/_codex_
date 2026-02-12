@@ -9,6 +9,10 @@ Coverage targets:
 Target coverage: 33.40% → 85%+
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

@@ -2,6 +2,10 @@
 Tests for MLOps integration bridge.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import logging
 import time
 

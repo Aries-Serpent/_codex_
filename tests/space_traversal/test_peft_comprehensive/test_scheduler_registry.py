@@ -4,6 +4,10 @@ Test Scheduler Registry
 Test module for scheduler registry.
 """
 
+pytest.importorskip("torch")
+
+
+
 from __future__ import annotations
 
 import pytest

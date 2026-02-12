@@ -2,6 +2,10 @@
 Tests for Reranker Module.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

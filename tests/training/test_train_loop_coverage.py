@@ -9,6 +9,10 @@ Tests focus on:
 - Gradient accumulation
 """
 
+pytest.importorskip("torch")
+
+
+
 import tempfile
 from pathlib import Path
 

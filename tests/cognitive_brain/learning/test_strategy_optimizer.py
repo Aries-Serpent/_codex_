@@ -7,6 +7,10 @@ Tests convergence, improvement metrics, and OutcomeAnalyzer integration.
 AfterMath: Phase 8.3 Pre-commit 3-4 - Strategy Optimizer Testing
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

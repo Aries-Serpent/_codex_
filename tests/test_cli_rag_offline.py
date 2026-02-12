@@ -5,6 +5,10 @@ Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 """
 
 
+pytest.importorskip("typer")
+
+
+
 import pytest
 
 from codex.cli_rag import app

@@ -11,6 +11,10 @@ Test Coverage:
 Total: 25 tests validating Phase 8.1 implementation
 """
 
+pytest.importorskip("numpy")
+
+
+
 import time
 from datetime import UTC, datetime, timedelta
 

@@ -5,6 +5,10 @@ Tests adaptive scoring with extreme inputs, invalid configurations, and edge con
 to ensure robust behavior across the full input space.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

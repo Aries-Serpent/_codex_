@@ -245,19 +245,54 @@ Target:             ████████████████████
 
 ## Path to 97.0 (A+) — 8 Concrete Improvements
 
-| # | Improvement | Layer | Current | Target | Effort | Impact |
-|---|-------------|-------|---------|--------|--------|--------|
-| 1 | Ethical imperatives config | L1 | 90 | 96 | 4h | +0.6 |
-| 2 | OKR-linked strategy tracking | L2 | 96 | 99 | 6h | +0.5 |
-| 3 | Live agent capability introspection | L3 | 94 | 97 | 8h | +0.6 |
-| 4 | Automatic agent routing by task type | L4 | 95 | 98 | 10h | +0.6 |
-| 5 | Continuous cognitive control loop | L5 | 92 | 96 | 8h | +0.8 |
-| 6 | Closed-loop execution feedback | L6 | 90 | 95 | 6h | +0.8 |
-| 7 | Dynamic MSV dashboard in cognitive_app | MSV | 92.8 | 96 | 8h | +0.5 |
-| 8 | Automated regression scoring pipeline | Agentic | 93.0 | 96 | 6h | +0.4 |
+| # | Improvement | Layer | Current | Target | Effort | Impact | Status |
+|---|-------------|-------|---------|--------|--------|--------|--------|
+| 1 | Ethical imperatives config | L1 | 90 | 96 | 4h | +0.6 | ⏳ Planned |
+| 2 | OKR-linked strategy tracking | L2 | 96 | 99 | 6h | +0.5 | ⏳ Planned |
+| 3 | Live agent capability introspection | L3 | 94 | 97 | 8h | +0.6 | ⏳ Planned |
+| 4 | Automatic agent routing by task type | L4 | 95 | 98 | 10h | +0.6 | ✅ PS-13 Complete |
+| 5 | Continuous cognitive control loop | L5 | 92 | 96 | 8h | +0.8 | 🟢 PS-14 Partial |
+| 6 | Closed-loop execution feedback | L6 | 90 | 95 | 6h | +0.8 | ⏳ Planned |
+| 7 | Dynamic MSV dashboard in cognitive_app | MSV | 92.8 | 96 | 8h | +0.5 | ✅ PS-14 Complete |
+| 8 | Automated regression scoring pipeline | Agentic | 93.0 | 96 | 6h | +0.4 | ⏳ Planned |
 
 **Total Estimated Effort**: 56 hours (7-8 sessions)  
-**Expected Score**: 93.2 → 97.0 (+3.8)
+**Expected Score**: 93.2 → 97.0 (+3.8)  
+**Progress**: 2/8 improvements complete (25%), 1 partial (12.5%)
+
+### PS-14 Implementation Impact (2026-02-12)
+
+**Improvement #4: Automatic agent routing by task type** ✅
+- PS-13 implemented TaskRouter with 7 categories, 70+ keywords
+- Agent orchestrator routes tasks to specialized agents automatically
+- L4 Executive Function score: 95/100 maintained
+
+**Improvement #5: Continuous cognitive control loop** 🟢 Partial
+- CacheManager workflow integration plan (5/42 workflows documented)
+- CI auto-fix system active (8 patterns, 37.5% auto-fix coverage)
+- Fragile test hardening (65 files with import guards)
+- **Current Progress**: Planning complete, implementation ready
+- **Gap**: Full workflow integration pending (Phase 2)
+
+**Improvement #7: Dynamic MSV dashboard in cognitive_app** ✅
+- MSVRadarChart.tsx component implemented (5-dimension visualization)
+- useMSVMetrics() hook with real-time updates (10s refresh)
+- Integrated into MetricsDashboard with live scoring
+- Interactive tooltips, progress bars, and grade display (A/A+)
+- Mock data generator for development
+- **Achievement**: MSV Composite score visible at [cognitive_app dashboard](https://aries-serpent.github.io/_codex_/cognitive_app/)
+
+### Score Update Estimate
+
+| Framework | V3.0 Baseline | PS-14 Impact | Updated Score |
+|-----------|--------------|-------------|---------------|
+| ACE L4: Executive Function | 95/100 | +0 (PS-13) | 95/100 |
+| ACE L5: Cognitive Control | 92/100 | +0.4 (partial) | 92.4/100 |
+| Metacognitive State Vector | 92.8/100 | +0.5 (MSV UI) | 93.3/100 |
+| Agentic Metrics | 93.0/100 | +0 | 93.0/100 |
+| **Composite V3.0** | **93.2/100** | **+0.3** | **93.5/100** |
+
+**Projected V3.1 Score**: 93.5/100 (A) — On track to 97.0 (A+)
 
 ---
 

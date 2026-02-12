@@ -19,6 +19,12 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
 
     def test_force_vector_energy_calculation(self):
         """Test energy calculations (Eq #2: E² = p² c² + m² c⁴)"""
+import pytest
+
+pytest.importorskip("numpy")
+
+
+
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(

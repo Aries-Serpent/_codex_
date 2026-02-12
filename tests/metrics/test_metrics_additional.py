@@ -1,5 +1,9 @@
 """Smoke tests for classification, streaming, reward, generation, and evaluator metrics."""
 
+pytest.importorskip("numpy")
+
+
+
 from __future__ import annotations
 
 import sys

@@ -5,6 +5,10 @@ Integration tests for the HuggingFace loader module.
 Tests model/tokenizer loading, registry, and revision handling.
 """
 
+pytest.importorskip("torch")
+
+
+
 from __future__ import annotations
 
 import os

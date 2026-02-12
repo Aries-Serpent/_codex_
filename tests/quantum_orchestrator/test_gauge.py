@@ -10,6 +10,10 @@ Tests verify:
 - Conservation enforcement
 """
 
+pytest.importorskip("numpy")
+
+
+
 from unittest.mock import Mock
 
 import numpy as np

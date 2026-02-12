@@ -2,6 +2,10 @@
 Tests for Vector Store Factory and Registry
 """
 
+pytest.importorskip("numpy")
+
+
+
 import types
 from unittest.mock import Mock
 

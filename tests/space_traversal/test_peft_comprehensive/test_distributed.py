@@ -1,5 +1,9 @@
 """Tests for distributed training module."""
 
+pytest.importorskip("torch")
+
+
+
 import os
 
 import pytest

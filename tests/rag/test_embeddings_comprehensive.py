@@ -1,5 +1,9 @@
 """Comprehensive tests for RAG embeddings module."""
 
+pytest.importorskip("numpy")
+
+
+
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch

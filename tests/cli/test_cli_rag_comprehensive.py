@@ -10,6 +10,12 @@ Tests cover:
 - Error handling and edge cases
 """
 
+pytest.importorskip("typer")
+
+pytest.importorskip("typer")
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
