@@ -1,7 +1,7 @@
 # Cognitive Evolution Tree — Process Mapping
 
-**Last Updated**: 2026-02-11  
-**Version**: 2.0.0  
+**Last Updated**: 2026-02-12
+**Version**: 3.0.0  
 **Purpose**: Visual evolutionary process mapping of the _codex_ AI cognitive agency — from conception through emergence to autonomous operation.
 
 ---
@@ -23,12 +23,12 @@ graph TD
     end
 
     subgraph Advancement["🚀 Advancement Era (2026-01 → Present)"]
-        P11[Phase 11: MCP Advanced<br/>🟢 PS-11 + PS-12 Active]
-        P12[Phase 12: Agent Enhancement<br/>🟢 PS-13 + PS-14 Active]
-        PS11[PS-11: Size Estimation<br/>--estimate flag]
-        PS12[PS-12: Exclude Patterns<br/>--exclude flag]
-        PS13[PS-13: Agent Task Router<br/>L4 Classification]
-        PS14[PS-14: MSV Dashboard<br/>L3 Visualization]
+        P11[Phase 11: MCP Advanced<br/>✅ PS-11 + PS-12 Complete]
+        P12[Phase 12: Agent Enhancement<br/>✅ PS-13 Complete · 🟢 PS-14 Active]
+        PS11[PS-11: Size Estimation ✅<br/>--estimate flag]
+        PS12[PS-12: Exclude Patterns ✅<br/>--exclude flag]
+        PS13[PS-13: Agent Task Router ✅<br/>L4 Classification · 7 Categories]
+        PS14[PS-14: MSV Dashboard 🟢<br/>L3 Visualization · Design Complete]
         P11 --- PS11
         P11 --- PS12
         P12 --- PS13
@@ -64,8 +64,12 @@ graph TD
     style P8 fill:#2d5a27,color:#fff
     style P9 fill:#2d5a27,color:#fff
     style P10 fill:#2d5a27,color:#fff
-    style P11 fill:#1a6b3c,color:#fff
+    style P11 fill:#2d5a27,color:#fff
     style P12 fill:#1a6b3c,color:#fff
+    style PS11 fill:#2d5a27,color:#fff
+    style PS12 fill:#2d5a27,color:#fff
+    style PS13 fill:#2d5a27,color:#fff
+    style PS14 fill:#1a6b3c,color:#fff
     style P13 fill:#b8860b,color:#fff
     style P14 fill:#b8860b,color:#fff
     style P15 fill:#b8860b,color:#fff
@@ -103,6 +107,13 @@ graph LR
         PS10[PS-10: Owner Guard<br/>CI/CD]
     end
 
+    subgraph Advancement["🚀 Advancement Plansets"]
+        PS11[PS-11: MCP Size<br/>Estimation ✅]
+        PS12[PS-12: MCP Exclude<br/>Patterns ✅]
+        PS13[PS-13: Agent Task<br/>Router ✅]
+        PS14[PS-14: MSV Dashboard<br/>🟢 Active]
+    end
+
     PS01 -->|"Config foundation"| PS03
     PS03 -->|"Unified state"| PS08
     PS02 -->|"Secure channels"| PS04
@@ -112,6 +123,10 @@ graph LR
     PS09 -->|"Training gates"| PS10
     PS05 -->|"Security baseline"| PS10
     PS08 -->|"Clean architecture"| PS10
+    PS10 -->|"MCP features"| PS11
+    PS10 -->|"MCP features"| PS12
+    PS10 -->|"Agent routing"| PS13
+    PS13 -->|"Visualization"| PS14
 
     style PS01 fill:#2d5a27,color:#fff
     style PS02 fill:#2d5a27,color:#fff
@@ -124,6 +139,10 @@ graph LR
     style PS08 fill:#2d5a27,color:#fff
     style PS09 fill:#2d5a27,color:#fff
     style PS10 fill:#2d5a27,color:#fff
+    style PS11 fill:#2d5a27,color:#fff
+    style PS12 fill:#2d5a27,color:#fff
+    style PS13 fill:#2d5a27,color:#fff
+    style PS14 fill:#1a6b3c,color:#fff
 ```
 
 ---

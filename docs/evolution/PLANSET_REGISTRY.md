@@ -1,7 +1,7 @@
 # Planset Registry — Historical Archive
 
-**Last Updated**: 2026-02-11  
-**Version**: 2.0.0  
+**Last Updated**: 2026-02-12
+**Version**: 3.0.0
 **Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.  
 **Format**: Structured for search, filtering, and AI agent consumption.
 
@@ -24,8 +24,8 @@
 | [PS-10](#ps-10-owner-guard-cicd-enforcement) | Owner Guard CI/CD Enforcement | ✅ Complete | 2026-01-09 | Cognitive | Governance |
 | [PS-11](#ps-11-mcp-size-estimation) | MCP Size Estimation | ✅ Complete | 2026-02-12 | Advancement | MCP/Tooling |
 | [PS-12](#ps-12-mcp-exclude-patterns) | MCP Exclude Patterns | ✅ Complete | 2026-02-12 | Advancement | MCP/Tooling |
-| [PS-13](#ps-13-agent-task-router) | Agent Task Router | 🟢 Active | 2026-02-11 | Advancement | AI/Agents |
-| [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | 🟡 Planning | 2026-02-11 | Advancement | UI/Visualization |
+| [PS-13](#ps-13-agent-task-router) | Agent Task Router | ✅ Complete | 2026-02-12 | Advancement | AI/Agents |
+| [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | 🟢 Active | 2026-02-12 | Advancement | UI/Visualization |
 
 ---
 
@@ -353,32 +353,39 @@
 |-------|-------|
 | **ID** | PS-13 |
 | **Name** | Agent Task Router (L4 Automatic Classification) |
-| **Status** | 🟢 ACTIVE — Design Complete |
-| **Date** | 2026-02-11 (initiated) |
+| **Status** | ✅ COMPLETE — Production Ready |
+| **Date** | 2026-02-12 (completed) |
 | **Phase** | 12 (Agent System Enhancement) |
 | **Category** | AI / Agent Coordination |
-| **Source** | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` Path to 97.0 |
+| **Source** | `scripts/monitoring/agent_orchestrator.py` |
 
-**Objectives**:
+**Objectives Completed**:
 
-1. ⏳ Formalize agent routing protocol using task classification taxonomy
-2. ⏳ Implement keyword→agent mapping in orchestrator
-3. ⏳ Add routing confidence scores with fallback chains
-4. ⏳ Create routing documentation for agent-to-agent handoffs
-5. ⏳ Integrate with cognitive brain pattern detection
+1. ✅ Formalize agent routing protocol using task classification taxonomy (7 categories)
+2. ✅ Implement keyword→agent mapping in orchestrator (`TASK_ROUTING_TABLE`)
+3. ✅ Add routing confidence scores with fallback chains (`TaskRouter` class)
+4. ✅ Create routing documentation via `list_categories()` and docstrings
+5. ✅ Module-level convenience function `route_task()` for quick access
 
 **Key Deliverables**:
 
-- Agent routing taxonomy (CI/CD, Testing, Security, Documentation, RAG/ML, Config, Repository)
-- `route_task()` function in orchestration module
-- Confidence-weighted routing with fallback to general-purpose
-- Routing metrics collection for meta-learning feedback
+- `TASK_ROUTING_TABLE`: 7 categories (ci_cd, testing, security, documentation, rag_ml, configuration, repository)
+- `TaskRouter` class: keyword matching, confidence scoring, fallback chains
+- `route_task()` convenience function for single-call routing
+- 18 tests in `tests/monitoring/test_task_router.py` (100% passing)
 
-**ACE Layer**: L4 (Executive Function) — automatic task-to-agent classification  
+**Implementation Details**:
+
+- 7 categories with 70+ keywords total
+- Each category maps to primary agent + 1-2 fallback agents
+- Confidence = keyword_matches / total_keywords (0.0-1.0)
+- Threshold: 0.3 minimum to select a category
+- Default agent: `ci-testing-agent` when no match
+
+**ACE Layer**: L4 (Executive Function) — automatic task-to-agent classification
 **AAIS Impact**: +1.5 points (Executive Function efficiency)
 
-**Effort**: 3-4 iteration-days  
-**Dependencies**: Existing agent registry, orchestration module
+**Patterns Learned**: Keyword-based routing with confidence scoring, fallback chains
 
 ---
 
@@ -388,32 +395,78 @@
 |-------|-------|
 | **ID** | PS-14 |
 | **Name** | Cognitive Dashboard MSV Dimensions |
-| **Status** | 🟡 PLANNING — Design Phase |
-| **Date** | 2026-02-11 (initiated) |
+| **Status** | 🟢 ACTIVE — Design Complete, Implementation Ready |
+| **Date** | 2026-02-12 (design completed) |
 | **Phase** | 12 (Agent System Enhancement) |
 | **Category** | UI / Visualization |
 | **Source** | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` Path to 97.0 |
 
 **Objectives**:
 
-1. ⏳ Design MSV (Multi-Sensory Visualization) component for cognitive_app
-2. ⏳ Implement 5-dimension radar chart (Autonomy, Awareness, Adaptability, Alignment, Achievement)
+1. ✅ Design MSV component for cognitive_app (5-dimension radar chart)
+2. ⏳ Implement `MSVRadarChart.tsx` in `cognitive_app/src/components/quantum-viz/`
 3. ⏳ Real-time score updates from cognitive brain metrics
 4. ⏳ Historical trend visualization with phase markers
 5. ⏳ Interactive drill-down to component-level scores
 
+**Design Specification**:
+
+```
+Component: MSVRadarChart.tsx
+Location: cognitive_app/src/components/quantum-viz/
+Framework: React + TypeScript + Recharts (RadarChart)
+
+5 MSV Dimensions:
+  1. Autonomy     — Self-directed task execution (0-100)
+  2. Awareness    — Codebase & context understanding (0-100)
+  3. Adaptability — Learning from patterns & feedback (0-100)
+  4. Alignment    — Goal & policy compliance (0-100)
+  5. Achievement  — Task completion & quality metrics (0-100)
+
+Data Model:
+  interface MSVDimension {
+    dimension: string;    // "Autonomy" | "Awareness" | etc.
+    score: number;        // 0-100
+    target: number;       // target score for A+ rating
+    trend: 'up' | 'down' | 'stable';
+  }
+
+  interface MSVSnapshot {
+    timestamp: string;
+    overall: number;      // weighted average
+    dimensions: MSVDimension[];
+    phase: string;        // current phase label
+  }
+
+Current Scores (from AAIS V3.0):
+  Autonomy:     88/100
+  Awareness:    95/100
+  Adaptability: 90/100
+  Alignment:    98/100
+  Achievement:  95/100
+  Overall:      93.2/100 (A)
+
+Target (A+ = 97.0):
+  Autonomy:     95/100 (+7)
+  Awareness:    97/100 (+2)
+  Adaptability: 96/100 (+6)
+  Alignment:    99/100 (+1)
+  Achievement:  98/100 (+3)
+```
+
 **Key Deliverables**:
 
-- React component: `MSVDimensionsDashboard.tsx`
-- 5-dimension radar chart using existing charting library
-- Integration with cognitive brain metrics API
+- React component: `MSVRadarChart.tsx` with Recharts RadarChart
+- TypeScript interfaces for MSV data model
+- Integration hook: `useMSVMetrics()` for cognitive brain data
 - Phase milestone markers on timeline view
+- Color coding: green (≥90), yellow (70-89), red (<70)
 
-**ACE Layer**: L3 (Agent Model) — self-awareness visualization  
+**ACE Layer**: L3 (Agent Model) — self-awareness visualization
 **AAIS Impact**: +2.0 points (Self-Model comprehension)
 
-**Effort**: 4-5 iteration-days  
-**Dependencies**: cognitive_app infrastructure, metrics collection hooks
+**Effort**: 4-5 iteration-days
+**Dependencies**: cognitive_app infrastructure, Recharts library
 
 ---
 
@@ -431,17 +484,18 @@
 | ML/Training | 1 (PS-09) | ✅ Complete |
 | Governance | 1 (PS-10) | ✅ Complete |
 | MCP/Tooling | 2 (PS-11, PS-12) | ✅ Complete |
-| AI/Agents | 1 (PS-13) | 🟢 Active |
-| UI/Visualization | 1 (PS-14) | 🟡 Planning |
+| AI/Agents | 1 (PS-13) | ✅ Complete |
+| UI/Visualization | 1 (PS-14) | 🟢 Active |
 
 ### Completion Rate
 
 - **Total Plansets**: 15 (including PS-06e)
-- **Completed**: 11/15 (73%)
-- **Active**: 3/15 (20%)
-- **Planning**: 1/15 (7%)
+- **Completed**: 14/15 (93%)
+- **Active**: 1/15 (7%)
+- **Planning**: 0/15 (0%)
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
+- **Latest Completion**: PS-13 (2026-02-12)
 
 ---
 
