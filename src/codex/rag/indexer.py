@@ -119,6 +119,8 @@ def embed_chunks(
     try:
         import os
 
+        from codex.rag.utils import safe_model_to_device
+
         # Use HF_TOKEN if available for authenticated downloads
         use_auth_token = os.environ.get('HF_TOKEN', False)
 
@@ -130,6 +132,8 @@ def embed_chunks(
             use_auth_token=use_auth_token if use_auth_token else None
         )
 
+        # Handle meta tensors that PyTorch >=2.0 may create even with device='cpu'
+        model = safe_model_to_device(model, 'cpu')
         model.eval()
 
         logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")

@@ -64,6 +64,8 @@ class LocalSentenceTransformerProvider:
 
             from sentence_transformers import SentenceTransformer
 
+            from codex.rag.utils import safe_model_to_device
+
             logger.info(f"Loading local embedding model: {self.model_name}")
 
             # Use HF_TOKEN if available for authenticated downloads
@@ -77,6 +79,8 @@ class LocalSentenceTransformerProvider:
                 use_auth_token=use_auth_token if use_auth_token else None
             )
 
+            # Handle meta tensors that PyTorch >=2.0 may create even with device='cpu'
+            self.model = safe_model_to_device(self.model, 'cpu')
             self.model.eval()
 
             logger.info(f"Local embedding model loaded successfully on CPU (auth: {bool(use_auth_token)})")
