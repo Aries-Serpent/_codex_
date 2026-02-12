@@ -10,14 +10,13 @@ Tests verify:
 - Conservation enforcement
 """
 
-pytest.importorskip("numpy")
-
-
 
 from unittest.mock import Mock
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

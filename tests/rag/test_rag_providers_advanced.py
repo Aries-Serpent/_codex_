@@ -7,9 +7,6 @@ Comprehensive testing for all RAG embedding providers:
 - Provider switching and fallback
 """
 
-pytest.importorskip("numpy")
-
-
 
 import tempfile
 from pathlib import Path
@@ -17,6 +14,8 @@ from unittest.mock import Mock, patch
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestTFIDFProvider:

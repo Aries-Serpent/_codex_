@@ -8,9 +8,6 @@ Tests quantum principles:
 - Pattern correlation
 """
 
-pytest.importorskip("numpy")
-
-
 
 import json
 import math
@@ -22,6 +19,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 

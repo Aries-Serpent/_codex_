@@ -3,18 +3,17 @@ Comprehensive error handling tests for RAG modules.
 Tests all exception paths, edge cases, and failure scenarios.
 """
 
-pytest.importorskip("numpy")
-
-
-
 import os
 import tempfile
 import threading
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
+
+import numpy as np  # noqa: E402
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:

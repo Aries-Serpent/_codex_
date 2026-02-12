@@ -7,9 +7,6 @@ Comprehensive testing for complex RAG workflows:
 - Performance benchmarks and optimization
 """
 
-pytest.importorskip("numpy")
-
-
 
 import tempfile
 import threading
@@ -17,6 +14,8 @@ import time
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestComplexWorkflows:

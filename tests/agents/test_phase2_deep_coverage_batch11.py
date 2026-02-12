@@ -12,12 +12,11 @@ Systematically applies integration and coupling patterns:
 Target: +4-5% coverage gain (70% → 75%)
 """
 
-pytest.importorskip("numpy")
-
-
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_MultiModuleIntegration:

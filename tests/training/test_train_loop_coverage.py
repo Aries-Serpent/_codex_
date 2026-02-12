@@ -9,14 +9,13 @@ Tests focus on:
 - Gradient accumulation
 """
 
-pytest.importorskip("torch")
-
-
 
 import tempfile
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
 
 # Import with graceful fallback for torch
 try:

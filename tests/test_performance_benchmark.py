@@ -1,14 +1,13 @@
 """Tests for performance benchmarking suite."""
 
-pytest.importorskip("torch")
-
-pytest.importorskip("torch")
-
-pytest.importorskip("torch")
-
-
 
 import pytest
+
+pytest.importorskip("torch")
+
+pytest.importorskip("torch")
+
+pytest.importorskip("torch")
 from torch.optim import Adam
 
 import torch

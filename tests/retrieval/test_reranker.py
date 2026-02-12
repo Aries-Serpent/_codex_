@@ -2,12 +2,11 @@
 Tests for Reranker Module.
 """
 
-pytest.importorskip("numpy")
-
-
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.retrieval.reranker import (
     MMRReranker,

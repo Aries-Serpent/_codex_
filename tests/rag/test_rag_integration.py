@@ -1,8 +1,5 @@
 """Comprehensive integration tests for RAG pipeline."""
 
-pytest.importorskip("numpy")
-
-
 
 import json
 from pathlib import Path
@@ -10,6 +7,8 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.rag.indexer import chunk_text, embed_chunks, persist_index
 from codex.rag.postprocess import postprocess_output

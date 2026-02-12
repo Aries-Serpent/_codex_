@@ -3,9 +3,6 @@ Integration tests for RAG modules.
 Tests end-to-end workflows, multi-tenant isolation, and cross-module interactions.
 """
 
-pytest.importorskip("numpy")
-
-
 
 import importlib.util
 import tempfile
@@ -13,6 +10,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:

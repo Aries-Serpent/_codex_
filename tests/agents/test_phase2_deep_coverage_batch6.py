@@ -13,12 +13,11 @@ Systematically applies advanced physics patterns:
 Target: +4-5% coverage gain (47% → 52%)
 """
 
-pytest.importorskip("numpy")
-
-
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_ChaoticAttractors:

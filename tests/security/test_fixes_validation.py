@@ -4,11 +4,10 @@ Validation tests to ensure all 5 test fixes from job 61355404613 are working.
 This module serves as a smoke test to verify that the critical fixes remain functional.
 """
 
-pytest.importorskip("numpy")
-
-
 
 import pytest
+
+pytest.importorskip("numpy")
 
 
 def test_audit_logger_log_dir_parameter(tmp_path):

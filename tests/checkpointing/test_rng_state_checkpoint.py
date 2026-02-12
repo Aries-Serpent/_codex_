@@ -16,11 +16,10 @@ pytest.importorskip("torch")
 import torch  # noqa: E402
 from codex_ml.utils.checkpointing import build_payload_bytes, load_payload  # noqa: E402
 from src.training.checkpoint_manager import CheckpointManager  # noqa: E402
-from torch import nn  # noqa: E402
 
 
 def test_checkpoint_manager_persists_rng(tmp_path):
-    model = nn.Linear(1, 1)
+    model = torch.nn.Linear(1, 1)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
     manager = CheckpointManager(tmp_path)
 

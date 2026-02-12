@@ -11,15 +11,14 @@ Test Coverage:
 Total: 25 tests validating Phase 8.1 implementation
 """
 
-pytest.importorskip("numpy")
-
-
 
 import time
 from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from cognitive_brain.integrations.compliance_integration import AuditResult
 from cognitive_brain.integrations.memory_integration import (

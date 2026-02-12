@@ -100,6 +100,14 @@ def add_guard_to_file(filepath: Path, packages: set[str], dry_run: bool = False)
     if future_line >= 0 and insert_idx <= future_line:
         insert_idx = future_line + 1
 
+    # Safety: if 'import pytest' exists anywhere, guards MUST be after it
+    if has_pytest_import:
+        for i, line in enumerate(lines):
+            if line.strip() == "import pytest" or line.strip().startswith("import pytest  #"):
+                if insert_idx <= i:
+                    insert_idx = i + 1
+                break
+
     # Build guard lines
     guard_lines = []
     if not has_pytest_import:

@@ -2,9 +2,6 @@
 Tests for Embedding Cache Module.
 """
 
-pytest.importorskip("numpy")
-
-
 
 import tempfile
 import time
@@ -12,6 +9,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.rag.cache.embedding_cache import (
     EmbeddingCache,

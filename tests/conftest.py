@@ -1027,7 +1027,7 @@ def session_resource_manager():
         else:
             logger.info("✓ No resource leaks detected at session end")
     except Exception:
-        pass  # Best-effort cleanup; psutil may not be installed
+        pass  # Best-effort cleanup; psutil may not be available
 
 
 @pytest.fixture(autouse=True)

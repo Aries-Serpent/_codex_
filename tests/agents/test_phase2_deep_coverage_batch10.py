@@ -12,12 +12,11 @@ Systematically covers edge cases and boundary conditions:
 Target: +3-4% coverage gain (66% → 70%)
 """
 
-pytest.importorskip("numpy")
-
-
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_EdgeCases_ZeroHandling:

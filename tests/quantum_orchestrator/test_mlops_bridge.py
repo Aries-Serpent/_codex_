@@ -2,14 +2,13 @@
 Tests for MLOps integration bridge.
 """
 
-pytest.importorskip("numpy")
-
-
 
 import logging
 import time
 
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.quantum_orchestrator.mlops_bridge import (
     DistributedCoordinator,
