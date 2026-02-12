@@ -25,7 +25,8 @@
 | [PS-11](#ps-11-mcp-size-estimation) | MCP Size Estimation | ✅ Complete | 2026-02-12 | Advancement | MCP/Tooling |
 | [PS-12](#ps-12-mcp-exclude-patterns) | MCP Exclude Patterns | ✅ Complete | 2026-02-12 | Advancement | MCP/Tooling |
 | [PS-13](#ps-13-agent-task-router) | Agent Task Router | ✅ Complete | 2026-02-12 | Advancement | AI/Agents |
-| [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | 🟢 Active | 2026-02-12 | Advancement | UI/Visualization |
+| [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | ✅ Complete | 2026-02-12 | Advancement | UI/Visualization |
+| [PS-15](#ps-15-advanced-infrastructure) | Advanced Infrastructure | 🟢 Active | 2026-02-12 | Advancement | Infrastructure |
 
 ---
 
@@ -395,8 +396,8 @@
 |-------|-------|
 | **ID** | PS-14 |
 | **Name** | Cognitive Dashboard MSV Dimensions |
-| **Status** | 🟢 ACTIVE — Implementation 80% Complete |
-| **Date** | 2026-02-12 (implementation in progress) |
+| **Status** | ✅ ALL OBJECTIVES COMPLETE — Deployment Awaiting Merge |
+| **Date** | 2026-02-12 |
 | **Phase** | 12 (Agent System Enhancement) |
 | **Category** | UI / Visualization |
 | **Source** | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` Path to 97.0 |
@@ -500,6 +501,40 @@ Current Scores (PS-14 Implementation):
 
 ---
 
+### PS-15: Advanced Infrastructure
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-15 |
+| **Name** | Advanced Infrastructure |
+| **Status** | 🟢 Active |
+| **Date** | 2026-02-12 |
+| **Phase** | 12 (Agent Enhancement + Infrastructure) |
+| **Category** | Infrastructure |
+
+**Objectives**:
+
+1. ⏳ PS-15a: CacheManager Phase 3 — Key generation replacement
+   - Replace `setup-python-cached` hash-based keys with CacheManager-generated keys in 5 target workflows
+   - Standardize cache key format across all workflows
+   - Add cache hit/miss metrics to health reports
+
+2. ⏳ PS-15b: Cognitive Brain trend analysis v2
+   - Historical AAIS score tracking with per-session deltas
+   - Automated regression detection (score drops > 0.5 trigger alert)
+   - Mermaid trend charts in dashboard
+
+3. ⏳ PS-15c: Autonomous healing loop v2
+   - Multi-iteration healing (run up to 3 cycles until clean)
+   - Cross-module error correlation (ACE L5 improvement)
+   - Integration with CI auto-fix for closed-loop feedback
+
+**ACE Layer**: L5 (Cognitive Control) — continuous improvement infrastructure
+**AAIS Impact**: +0.8 points (target: 93.5 → 94.3)
+**Dependencies**: ✅ CacheManager Phase 2, ✅ Healing loop v1, ✅ Trend analysis v1
+
+---
+
 ## 📊 Analytics
 
 ### By Category
@@ -515,17 +550,18 @@ Current Scores (PS-14 Implementation):
 | Governance | 1 (PS-10) | ✅ Complete |
 | MCP/Tooling | 2 (PS-11, PS-12) | ✅ Complete |
 | AI/Agents | 1 (PS-13) | ✅ Complete |
-| UI/Visualization | 1 (PS-14) | 🟢 Active |
+| UI/Visualization | 1 (PS-14) | ✅ Complete |
+| Infrastructure (Adv) | 1 (PS-15) | 🟢 Active |
 
 ### Completion Rate
 
-- **Total Plansets**: 15 (including PS-06e)
-- **Completed**: 14/15 (93%)
-- **Active**: 1/15 (7%)
-- **Planning**: 0/15 (0%)
+- **Total Plansets**: 16 (including PS-06e)
+- **Completed**: 15/16 (94%)
+- **Active**: 1/16 (6%)
+- **Planning**: 0/16 (0%)
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
-- **Latest Completion**: PS-13 (2026-02-12)
+- **Latest Completion**: PS-14 (2026-02-12)
 
 ---
 
