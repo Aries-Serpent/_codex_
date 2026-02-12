@@ -48,3 +48,9 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow codeql-analysis --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

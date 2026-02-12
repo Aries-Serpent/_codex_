@@ -28,6 +28,7 @@
 | [PS-14](#ps-14-cognitive-dashboard-msv) | Cognitive Dashboard MSV | ✅ Complete | 2026-02-12 | Advancement | UI/Visualization |
 | [PS-15](#ps-15-advanced-infrastructure) | Advanced Infrastructure | ✅ Complete | 2026-02-12 | Advancement | Infrastructure |
 | [PS-16](#ps-16-production-readiness) | Production Readiness | ✅ Complete | 2026-02-12 | Advancement | Production |
+| [PS-17](#ps-17-operational-excellence) | Operational Excellence | 🟢 Active | 2026-02-12 | Post-Merge | Operations |
 
 ---
 
@@ -591,12 +592,41 @@ Current Scores (PS-14 Implementation):
 
 - **Total Plansets**: 17 (including PS-06e)
 - **Completed**: 16/17 (94%)
-- **Active**: 1/17 (6%)
-- **Planning**: 0/17 (0%)
+- **Active**: 1/18 (6%)
+- **Planning**: 0/18 (0%)
 - **Foundation Completion Date**: 2026-01-09
 - **Advancement Era Start**: 2026-02-11
-- **Latest Completion**: PS-15 (2026-02-12)
-- **Current Active**: PS-16 (Production Readiness)
+- **Latest Completion**: PS-16 (2026-02-12)
+- **Current Active**: PS-17 (Operational Excellence)
+
+---
+
+### PS-17: Operational Excellence
+
+| Field | Value |
+|-------|-------|
+| **ID** | PS-17 |
+| **Status** | 🟢 Active |
+| **Created** | 2026-02-12 |
+| **Era** | Post-Merge |
+| **Category** | Operations |
+
+**Objective**: Post-merge operational tasks — deploy cognitive_app to GitHub Pages, CacheManager Phase 4 (full key replacement in 56 remaining workflows), Genesis Phase 10.1 guard removal, and cognitive brain autonomous operation.
+
+**Sub-Plansets**:
+
+| Sub-PS | Name | Status | Description |
+|--------|------|--------|-------------|
+| PS-17a | GitHub Pages Deployment | ✅ Complete | cognitive_app build step added to pages-mkdocs.yml |
+| PS-17b | CacheManager Phase 4 Batch 1 | ✅ Complete | Cache-health steps in 10 additional workflows (15/61 total) |
+| PS-17c | Genesis Phase 10.1 | ⏳ Planned | 3-step guard removal after admin approval |
+| PS-17d | RAG Centralized Loader | ✅ Complete | safe_load_sentence_transformer() in _model_utils.py |
+| PS-17e | Dead Link Remediation | ✅ Complete | Fixed 3 dead links in docs |
+
+**Deliverables**:
+- `src/codex/rag/_model_utils.py` — Centralized SentenceTransformer loader
+- `pages-mkdocs.yml` — cognitive_app build + deploy step
+- 10 workflows updated with CacheManager cache-health steps
 
 ---
 

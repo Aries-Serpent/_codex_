@@ -1,5 +1,24 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T20:30:00Z — Session 26: Pages Deploy + CacheManager Phase 4 + PS-17
+
+### Task 1: Deploy cognitive_app to GitHub Pages ✅
+- Added cognitive_app build step to `pages-mkdocs.yml`
+- Builds with `npm ci && npm run build`, copies dist/ to site/cognitive_app/
+- Deployed alongside MkDocs documentation
+
+### Task 2: CacheManager Phase 4 Batch 1 ✅ (10 workflows)
+- Added cache-health steps to: codeql-analysis, security-scanning-suite, dependency-scan,
+  optimized-ci, nox_gates, audit-qa-suite, data-quality-suite, copilot-evolution-suite,
+  docker-build-push, auth-tests
+- Total CacheManager coverage: 15/61 workflows (25%)
+
+### Task 3: PS-17 Operational Excellence ✅
+- Created PS-17 with 5 sub-plansets (a-e)
+- PS-17a ✅ Pages deployment, PS-17b ✅ CacheManager Phase 4 batch 1,
+  PS-17c ⏳ Genesis 10.1 guard removal, PS-17d ✅ RAG centralized loader,
+  PS-17e ✅ Dead link remediation
+
 ## 📝 2026-02-12T20:10:00Z — Session 25: RAG Safe Loader + Dead Links + CodeQL Fixes
 
 ### Phase 1: RAG Centralized Safe Loader ✅

@@ -315,3 +315,9 @@ jobs:
           echo "- Audit gaps found: ${{ needs.audit_gap_analysis.outputs.gap_count || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
           echo "- QA issues found: ${{ needs.qa_walkthrough.outputs.issues_found || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Critical issues: ${{ needs.qa_walkthrough.outputs.critical_issues || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow audit-qa-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
