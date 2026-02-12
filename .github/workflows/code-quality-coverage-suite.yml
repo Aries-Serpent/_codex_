@@ -182,6 +182,17 @@ jobs:
     if: always()
 
     steps:
+      - name: Checkout for cache health
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: scripts/ci
+
+      - name: Cache health report
+        continue-on-error: true
+        run: |
+          pip install -q pip 2>/dev/null
+          python scripts/ci/generate_cache_keys.py --type pip --workflow code-quality-coverage-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
       - name: Generate comprehensive summary
         run: |
           echo "## 📊 Code Quality & Coverage Summary" >> $GITHUB_STEP_SUMMARY

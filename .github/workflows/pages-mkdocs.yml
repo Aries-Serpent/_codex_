@@ -135,6 +135,12 @@ jobs:
           # Phase 13: Strict mode temporarily disabled to identify warnings
           mkdocs build --verbose
 
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow pages-mkdocs --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

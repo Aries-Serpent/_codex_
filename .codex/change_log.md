@@ -1,5 +1,34 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T10:05:00Z — Session 16: CacheManager Workflow Steps + Healing Loop + Fragile Test Tooling
+
+### 🔧 CacheManager Workflow Integration (Phase 2 — Complete)
+- **Modified**: 5 workflow files with cache-health reporting steps:
+  - `pr-checks.yml` — Cache health before linting
+  - `test-rag.yml` — Cache health before artifact upload
+  - `code-quality-coverage-suite.yml` — Cache health in unified_summary job
+  - `pages-mkdocs.yml` — Cache health before artifact upload
+  - `rust_swarm_ci.yml` — Cache health in status_check job (cargo type)
+- **Pattern**: `continue-on-error: true` ensures cache health is informational, never blocks
+
+### 🧠 Cognitive Brain Autonomous Healing Loop
+- **Added**: `scripts/cognitive/healing_loop.py` — 4-check diagnostic + auto-fix loop
+  - Check 1: Lint (ruff) — auto-fix with `--fix`
+  - Check 2: Syntax validation (py_compile)
+  - Check 3: Auto-fix common CI issues
+  - Check 4: Fragile tests scan
+- **Usage**: `python scripts/cognitive/healing_loop.py [--dry-run] [--verbose] [--json]`
+
+### 🔍 Fragile Test Guard Tooling
+- **Added**: `.codex/scripts/add_import_guards.py` — Automated pytest.importorskip() insertion
+  - Reads fragile_tests.json, adds guards for top-10 packages
+  - Supports `--dry-run`, `--packages`, `--max-files` flags
+
+### 📊 Dashboard Updated to v2.4.0
+- Sessions: 16, Commits: 26, Files: 400+
+- CacheManager: 5/5 workflows integrated
+- Healing loop: autonomous healing active
+
 ## 📝 2026-02-12T09:53:00Z — Session 15: CacheManager Integration + Cognitive Brain Update
 
 ### 🔧 CacheManager Workflow Integration (Phase 1)
