@@ -1,5 +1,27 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T09:53:00Z — Session 15: CacheManager Integration + Cognitive Brain Update
+
+### 🔧 CacheManager Workflow Integration (Phase 1)
+- **Added**: `scripts/ci/generate_cache_keys.py` — Bridge script connecting CacheManager to GitHub Actions workflows
+  - Generates standardized cache keys, restore-keys, and paths via CLI
+  - Supports `--github-output` flag for direct workflow step output injection
+  - Supports `--health` flag for cache health reporting
+- **Added**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md` — Integration guide with architecture diagram,
+  migration path, and 5 target workflows documented
+- **Pattern**: CacheManager complements (not replaces) existing `setup-python-cached` action
+
+### 🧠 Cognitive Brain Update
+- Dashboard updated to v2.3.0 (Sessions 1-15, 99% health)
+- AAIS V3.0 score progression: 93.2 → 93.5 (+0.3)
+- Planset completion: 14/15 (93%)
+
+### Verification
+- `generate_cache_keys.py`: Syntax valid, import paths verified ✅
+- Integration doc: Mermaid diagram, 5-workflow plan documented ✅
+
+---
+
 ## 📝 2026-02-12T07:30:00Z — Session 13: Test collection fix, PS-13, and infra hardening
 
 ### 🔧 Test Collection Fix (P0)
