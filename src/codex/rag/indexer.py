@@ -102,7 +102,7 @@ def embed_chunks(
 
     # Import here to avoid hard dependency
     try:
-        from sentence_transformers import SentenceTransformer
+        import sentence_transformers  # noqa: F401
     except ImportError:
         logger.error(
             "sentence-transformers not installed. "
@@ -117,26 +117,9 @@ def embed_chunks(
 
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        import os
+        from codex.rag._model_utils import safe_load_sentence_transformer
 
-        from codex.rag.utils import safe_model_to_device
-
-        # Use HF_TOKEN if available for authenticated downloads
-        use_auth_token = os.environ.get('HF_TOKEN', False)
-
-        model = SentenceTransformer(
-            model_name,
-            device='cpu',
-            cache_folder=cache_dir,
-            trust_remote_code=False,
-            use_auth_token=use_auth_token if use_auth_token else None
-        )
-
-        # Handle meta tensors that PyTorch >=2.0 may create even with device='cpu'
-        model = safe_model_to_device(model, 'cpu')
-        model.eval()
-
-        logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
+        model = safe_load_sentence_transformer(model_name, cache_dir)
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")

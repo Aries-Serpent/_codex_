@@ -1691,4 +1691,4 @@ MIT License - see [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/L
 
 ---
 
-**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@localhost)
+**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@example.com)

@@ -88,28 +88,13 @@ class Retriever:
             raise ImportError("sentence-transformers not installed")
 
         try:
-            import os
-
-            from codex.rag.utils import safe_model_to_device
+            from codex.rag._model_utils import safe_load_sentence_transformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
 
-            # Use HF_TOKEN if available for authenticated downloads
-            use_auth_token = os.environ.get('HF_TOKEN', False)
-
-            self.model = SentenceTransformer(
-                self.model_name,
-                device='cpu',
-                cache_folder=self.cache_dir,
-                trust_remote_code=False,
-                use_auth_token=use_auth_token if use_auth_token else None
+            self.model = safe_load_sentence_transformer(
+                self.model_name, self.cache_dir
             )
-
-            # Handle meta tensors that PyTorch >=2.0 may create even with device='cpu'
-            self.model = safe_model_to_device(self.model, 'cpu')
-            self.model.eval()
-
-            logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")

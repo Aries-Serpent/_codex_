@@ -1,5 +1,23 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T20:10:00Z — Session 25: RAG Safe Loader + Dead Links + CodeQL Fixes
+
+### Phase 1: RAG Centralized Safe Loader ✅
+- Created `src/codex/rag/_model_utils.py` with `safe_load_sentence_transformer()` helper
+- Updated `indexer.py`, `retriever.py`, `embeddings.py` to use centralized loader
+- Meta tensor fallback: tries device='cpu' first, falls back to device='meta' + to_empty()
+- Eliminates duplicated model loading code across 3 RAG modules
+
+### Phase 3: Documentation Link Remediation ✅
+- Fixed `docs/HAR_INTEGRATION_PLAN.md`: haralyzer repo URL corrected
+- Fixed `docs/EXPANDED_CONTEXT_RAG.md`: OpenAI embeddings link updated
+- Fixed `docs/GITHUB_SPARK_INTEGRATION_GUIDE.md`: mailto:localhost → example.com
+
+### Phase 4: CodeQL Remediation ✅
+- Fixed `tests/training/test_train_loop_coverage.py`: removed duplicate pytestmark
+- Fixed `tests/test_rag_embeddings.py`: replaced `del provider` with `provider = None`
+- Fixed `src/codex/rag/indexer.py`: unused SentenceTransformer import → noqa
+
 ## 📝 2026-02-12T15:30:00Z — Session 23: AAIS 97.0 (A+) TARGET REACHED 🎯
 
 ### 🎯 PS-16: Production Readiness — ✅ Complete (all 5 sub-plansets)

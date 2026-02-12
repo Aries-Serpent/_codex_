@@ -208,7 +208,7 @@ class TestOpenAIEmbeddingProvider:
             assert provider.client is not None
 
             # Trigger destructor via deletion
-            del provider
+            provider = None  # Release reference for GC
 
 
 class TestCachedEmbeddingProvider:

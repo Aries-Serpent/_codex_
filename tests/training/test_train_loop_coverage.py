@@ -32,7 +32,6 @@ except ImportError:
     Dataset = object  # Fallback base class
     DataLoader = None
     Adam = None
-    pytestmark = pytest.mark.skip("PyTorch not available")
 
 
 # Conditional class definitions - only define if torch is available
