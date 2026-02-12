@@ -16,6 +16,9 @@ import sys
 from pathlib import Path
 
 import pytest
+pytest.importorskip("numpy")
+pytest.importorskip("torch")
+
 
 logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parent.parent

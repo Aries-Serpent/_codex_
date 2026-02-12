@@ -38,7 +38,6 @@ PKG_MAP = {
 def add_guard_to_file(filepath: Path, packages: set[str], dry_run: bool = False) -> bool:
     """Add importorskip guards to a single file. Returns True if modified."""
     content = filepath.read_text(encoding="utf-8", errors="ignore")
-    lines = content.splitlines(keepalinenums=False) if hasattr(content, 'splitlines') else content.split("\n")
     lines = content.split("\n")
 
     # Check if pytest is already imported
@@ -63,9 +62,11 @@ def add_guard_to_file(filepath: Path, packages: set[str], dry_run: bool = False)
         return True
 
     # Find insertion point: after last __future__ import, or after module docstring
+    # First pass: find the __future__ import (MUST be first real statement)
     insert_idx = 0
     in_docstring = False
     docstring_char = None
+    future_line = -1
 
     for i, line in enumerate(lines):
         stripped = line.strip()
@@ -83,9 +84,10 @@ def add_guard_to_file(filepath: Path, packages: set[str], dry_run: bool = False)
                 in_docstring = False
                 insert_idx = i + 1
             continue
-        # Track imports
+        # Track __future__ import (always takes priority)
         if stripped.startswith("from __future__"):
             insert_idx = i + 1
+            future_line = i
             continue
         if stripped == "import pytest":
             insert_idx = i + 1
@@ -93,6 +95,10 @@ def add_guard_to_file(filepath: Path, packages: set[str], dry_run: bool = False)
         # Stop at first non-import, non-blank, non-comment line after docstring
         if stripped and not stripped.startswith("#") and not stripped.startswith("import ") and not stripped.startswith("from "):
             break
+
+    # Safety: if __future__ exists but is after current insert_idx, move past it
+    if future_line >= 0 and insert_idx <= future_line:
+        insert_idx = future_line + 1
 
     # Build guard lines
     guard_lines = []

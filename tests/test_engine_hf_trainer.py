@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+pytest.importorskip("numpy")
+
 
 pytest.importorskip("torch")
 pytest.importorskip("transformers")

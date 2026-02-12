@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 
 import pytest
+pytest.importorskip("typer")
+
 
 typer = pytest.importorskip("typer", reason="typer not installed")
 from codex_ml.cli import checkpoint_validate  # noqa: E402

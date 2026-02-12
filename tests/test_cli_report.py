@@ -7,17 +7,13 @@ Tests cover:
 - Exit codes
 - Error handling
 """
-
-import pytest
-
-pytest.importorskip("typer")
-
-
-
 from __future__ import annotations
 
 import json
 
+import pytest
+
+pytest.importorskip("typer")
 
 def test_report_aggregates_metrics(tmp_path):
     """Test report command aggregates NDJSON metrics."""
@@ -51,7 +47,6 @@ def test_report_aggregates_metrics(tmp_path):
     assert output["count"] == 20
     assert output["metrics"]["accuracy"] == 0.85
     assert output["batches"] == 2
-
 
 def test_report_determinism_match(tmp_path):
     """Test report comparison with matching results."""
@@ -92,7 +87,6 @@ def test_report_determinism_match(tmp_path):
     assert result.exit_code == 0
     output = json.loads(result.stdout)
     assert output["determinism_match"] is True
-
 
 def test_report_determinism_mismatch(tmp_path):
     """Test report comparison with mismatched results (exit code 4)."""
@@ -152,7 +146,6 @@ def test_report_determinism_mismatch(tmp_path):
     output = json.loads(json_part)
     assert output["determinism_match"] is False
 
-
 def test_report_missing_input_file(tmp_path):
     """Test report with missing input file (exit code 2)."""
     from codex_ml.evaluation.cli import app
@@ -166,7 +159,6 @@ def test_report_missing_input_file(tmp_path):
     )
 
     assert result.exit_code == 2
-
 
 def test_report_no_epoch_records(tmp_path):
     """Test report with no epoch records (exit code 3)."""
@@ -186,7 +178,6 @@ def test_report_no_epoch_records(tmp_path):
     result = runner.invoke(app, ["report", "--input", str(metrics_file)])
 
     assert result.exit_code == 3
-
 
 def test_report_human_readable_output(tmp_path):
     """Test report with human-readable (non-JSON) output."""
@@ -214,7 +205,6 @@ def test_report_human_readable_output(tmp_path):
     assert result.exit_code == 0
     assert "loss=" in result.stdout
     assert "0.75" in result.stdout or "0.7500" in result.stdout
-
 
 def test_report_missing_compare_file(tmp_path):
     """Test report with missing compare file (exit code 2)."""
@@ -249,7 +239,6 @@ def test_report_missing_compare_file(tmp_path):
     )
 
     assert result.exit_code == 2
-
 
 def test_report_compare_no_epoch_records(tmp_path):
     """Test report comparison when compare file has no epoch records."""
@@ -287,7 +276,6 @@ def test_report_compare_no_epoch_records(tmp_path):
     )
 
     assert result.exit_code == 3
-
 
 def test_report_handles_empty_metrics(tmp_path):
     """Test report handles records with empty metrics dict."""

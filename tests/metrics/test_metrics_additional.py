@@ -1,9 +1,5 @@
 """Smoke tests for classification, streaming, reward, generation, and evaluator metrics."""
 
-pytest.importorskip("numpy")
-
-
-
 from __future__ import annotations
 
 import sys
@@ -11,6 +7,8 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 @pytest.fixture(autouse=True)
@@ -35,7 +33,6 @@ def stub_torch(monkeypatch):
     yield fake_torch
     sys.modules.pop("torch", None)
 
-
 def test_classification_metrics_numpy():
     """Classification helpers operate on numpy arrays and handle ignore_index."""
 
@@ -52,7 +49,6 @@ def test_classification_metrics_numpy():
     streaming.reset()
     assert streaming.compute() == 0.0
 
-
 def test_streaming_loss_from_kwargs():
     """StreamingLoss consumes scalar losses or tensor-like payloads."""
 
@@ -65,7 +61,6 @@ def test_streaming_loss_from_kwargs():
     metric.reset()
     assert metric.compute() == 0.0
 
-
 def test_reward_metrics():
     """Reward helpers coerce mappings and thresholds."""
 
@@ -74,7 +69,6 @@ def test_reward_metrics():
     predictions = [{"reward": 0.4}, {"reward": 0.6}, 0.8]
     assert reward.reward_mean(predictions, None) == pytest.approx((0.4 + 0.6 + 0.8) / 3)
     assert reward.reward_success_rate(predictions, None, threshold=0.5) == pytest.approx(2 / 3)
-
 
 def test_generation_scores():
     """BLEU and ROUGE utilities return bounded values."""
@@ -89,7 +83,6 @@ def test_generation_scores():
     assert 0.0 <= bp <= 1.0
     assert 0.0 <= bleu <= 1.0
     assert 0.0 <= rouge <= 1.0
-
 
 def test_evaluator_batch_metrics_text_and_loss():
     """batch_metrics derives text metrics and perplexity when available."""

@@ -4,17 +4,15 @@ Test Scheduler Registry
 Test module for scheduler registry.
 """
 
-pytest.importorskip("torch")
-
-
-
 from __future__ import annotations
 
 import pytest
 
+pytest.importorskip("torch")
+
+
 import torch
 from src.codex_ml.training.schedulers.registry import get_scheduler_registry
-
 
 def test_registry_lists_builtins():
     reg = get_scheduler_registry()
@@ -23,7 +21,6 @@ def test_registry_lists_builtins():
     assert "cosine_annealing" in names
     # Descriptions present
     assert isinstance(reg.describe("step_lr"), str)
-
 
 def test_build_step_lr_and_step_once():
     model = torch.nn.Linear(4, 2)
@@ -39,7 +36,6 @@ def test_build_step_lr_and_step_once():
     assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr)
     sched.step()  # epoch 2 -> decay
     assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr * 0.5)
-
 
 def test_build_cosine_annealing_progression():
     model = torch.nn.Linear(4, 2)

@@ -9,6 +9,8 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 

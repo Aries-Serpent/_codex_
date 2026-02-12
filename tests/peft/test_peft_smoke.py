@@ -7,6 +7,8 @@ Test module for peft smoke.
 from __future__ import annotations
 
 import pytest
+pytest.importorskip("torch")
+
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")

@@ -10,6 +10,8 @@ import json
 import re
 
 import pytest
+pytest.importorskip("typer")
+
 
 typer = pytest.importorskip("typer", reason="typer not installed")
 click = pytest.importorskip("click", reason="click not installed")

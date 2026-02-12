@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 
 import pytest
+pytest.importorskip("typer")
+
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")

@@ -12,6 +12,8 @@ import tempfile
 from pathlib import Path
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip(
     "hypothesis", reason="Hypothesis required for NDJSON property tests"

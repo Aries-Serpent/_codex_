@@ -7,6 +7,8 @@ Test module for evaluate epoch.
 from functools import partial
 
 import pytest
+pytest.importorskip("torch")
+
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")

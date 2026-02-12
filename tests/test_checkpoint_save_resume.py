@@ -4,15 +4,14 @@ Test Checkpoint Save Resume
 Test module for checkpoint save resume.
 """
 
-pytest.importorskip("torch")
-
-
-
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
+
 
 from codex_ml.utils.checkpointing import (
     TORCH_AVAILABLE,
@@ -21,7 +20,6 @@ from codex_ml.utils.checkpointing import (
 )
 
 pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="requires torch")
-
 
 def test_save_and_load_checkpoint(tmp_path: Path) -> None:
     import torch

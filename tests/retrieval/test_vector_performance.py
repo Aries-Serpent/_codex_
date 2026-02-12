@@ -7,6 +7,8 @@ import time
 
 import numpy as np
 import pytest
+pytest.importorskip("numpy")
+
 
 # Skip if FAISS not available
 pytest.importorskip("faiss")

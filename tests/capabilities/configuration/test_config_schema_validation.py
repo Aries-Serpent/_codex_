@@ -18,6 +18,8 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 pytest.importorskip("pydantic", reason="pydantic required for config validation")

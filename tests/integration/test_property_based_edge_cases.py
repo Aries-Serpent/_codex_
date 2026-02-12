@@ -6,6 +6,8 @@ import hashlib
 import json
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 

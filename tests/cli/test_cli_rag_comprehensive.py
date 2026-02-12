@@ -10,12 +10,6 @@ Tests cover:
 - Error handling and edge cases
 """
 
-pytest.importorskip("typer")
-
-pytest.importorskip("typer")
-
-
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -23,15 +17,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+pytest.importorskip("typer")
+
+
 from codex.cli_rag import _format_bytes, _validate_files, app
 from typer.testing import CliRunner
-
 
 @pytest.fixture
 def runner():
     """Provide CLI runner instance."""
     return CliRunner()
-
 
 @pytest.fixture
 def temp_test_files(tmp_path: Path):
@@ -45,7 +40,6 @@ def temp_test_files(tmp_path: Path):
     (files_dir / "subdir" / "doc3.md").write_text("# Document 3\n\nNested content")
 
     return files_dir
-
 
 class TestValidateFiles:
     """Test file validation helper."""
@@ -93,7 +87,6 @@ class TestValidateFiles:
         result = _validate_files([pattern1, pattern2])
         assert len(result) == 2
 
-
 class TestFormatBytes:
     """Test byte size formatting helper."""
 
@@ -116,7 +109,6 @@ class TestFormatBytes:
     def test_format_bytes_zero(self):
         """Verify zero byte handling."""
         assert "0.00 B" in _format_bytes(0)
-
 
 class TestBuildCommand:
     """Test RAG index build command."""
@@ -183,7 +175,6 @@ class TestBuildCommand:
         ])
 
         assert result.exit_code != 0
-
 
 class TestQueryCommand:
     """Test RAG query command."""
@@ -260,7 +251,6 @@ class TestQueryCommand:
         # Should contain JSON-formatted output
         assert "{" in result.output or "[" in result.output
 
-
 class TestStatsCommand:
     """Test RAG statistics command."""
 
@@ -295,7 +285,6 @@ class TestStatsCommand:
 
         assert result.exit_code == 0
 
-
 class TestListCommand:
     """Test RAG index listing command."""
 
@@ -314,7 +303,6 @@ class TestListCommand:
         assert result.exit_code == 0
         assert "index1" in result.output
         assert "index2" in result.output
-
 
 class TestTenantCommands:
     """Test tenant management commands."""
@@ -348,7 +336,6 @@ class TestTenantCommands:
 
         # Command might not exist yet
         # assert result.exit_code in [0, 2]
-
 
 class TestEdgeCases:
     """Test edge cases and error handling."""
@@ -414,7 +401,6 @@ class TestEdgeCases:
 
         assert result.exit_code != 0
 
-
 class TestParameterValidation:
     """Test parameter validation across commands."""
 
@@ -452,7 +438,6 @@ class TestParameterValidation:
 
         # Should use default or reject
         # Test behavior without strict assertions
-
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
