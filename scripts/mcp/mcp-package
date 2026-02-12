@@ -56,8 +56,107 @@ class MCPPackager:
             output_name += '.zip'
         return output_name
     
-    def package(self, topic: str = None, custom: str = None, output: str = None, 
-                dry_run: bool = False, verbose: bool = False):
+    def estimate(self, topic: str = None, custom: str = None,
+                 exclude: str = None, verbose: bool = False):
+        """Estimate package size without creating it (PS-11)."""
+        print("\n" + "=" * 70)
+        print("📊 MCP Package Size Estimator")
+        print("=" * 70)
+
+        if topic:
+            print(f"📂 Topic: {topic}")
+        if custom:
+            print(f"🔍 Custom filters: {custom}")
+        if exclude:
+            print(f"🚫 Exclude: {exclude}")
+        print("=" * 70 + "\n")
+
+        # Select files using select_components.py
+        temp_filelist = self.temp_dir / "mcp_estimate_filelist.txt"
+        select_cmd = [
+            "python", str(self.scripts_dir / "select_components.py"),
+            "--output", str(temp_filelist)
+        ]
+
+        if custom:
+            select_cmd.extend(["--overrides", custom])
+        elif topic:
+            select_cmd.extend(["--topic", topic])
+        else:
+            print("❌ Error: Must specify either --topic or --custom", file=sys.stderr)
+            return 1
+
+        if exclude:
+            select_cmd.extend(["--exclude", exclude])
+
+        try:
+            subprocess.run(select_cmd, capture_output=True, text=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Error selecting files: {e.stderr}", file=sys.stderr)
+            return 1
+
+        # Read file list and compute sizes
+        files = []
+        with open(temp_filelist) as f:
+            for line in f:
+                rel_path = line.strip()
+                if rel_path:
+                    files.append(rel_path)
+
+        total_size = 0
+        size_by_ext = {}
+        count_by_ext = {}
+        for rel_path in files:
+            full_path = self.repo_root / rel_path
+            if full_path.is_file():
+                file_size = full_path.stat().st_size
+                total_size += file_size
+                ext = Path(rel_path).suffix or '(no ext)'
+                size_by_ext[ext] = size_by_ext.get(ext, 0) + file_size
+                count_by_ext[ext] = count_by_ext.get(ext, 0) + 1
+
+        # Add ~10% overhead for manifest, README, index
+        overhead = int(total_size * 0.10)
+        estimated_total = total_size + overhead
+
+        file_count = len(files)
+        est_mb = estimated_total / (1024 * 1024)
+
+        # Color-coded warning
+        if est_mb > 50:
+            status = "🔴 EXCEEDS 50 MB LIMIT"
+        elif est_mb > 30:
+            status = "🟡 Approaching 50 MB limit"
+        else:
+            status = "🟢 Within recommended size"
+
+        print(f"Estimated size: {est_mb:.1f} MB ({file_count:,} files)")
+        print(f"Status: {status}\n")
+        print("Breakdown by type:")
+
+        sorted_exts = sorted(size_by_ext.items(), key=lambda x: x[1], reverse=True)
+        for ext, size in sorted_exts:
+            ext_mb = size / (1024 * 1024)
+            count = count_by_ext[ext]
+            print(f"  - {ext:12s}: {ext_mb:6.1f} MB ({count:,} files)")
+
+        print(f"\n  {'Subtotal':12s}: {total_size / (1024 * 1024):6.1f} MB")
+        print(f"  {'+ overhead':12s}: {overhead / (1024 * 1024):6.1f} MB (~10%)")
+        print(f"  {'= Estimated':12s}: {est_mb:6.1f} MB")
+
+        if verbose:
+            print("\nFile list:")
+            for i, f_path in enumerate(sorted(files), 1):
+                print(f"  {i:4d}. {f_path}")
+
+        # Cleanup
+        temp_filelist.unlink(missing_ok=True)
+
+        print("\n" + "=" * 70)
+        return 0
+
+    def package(self, topic: str = None, custom: str = None, output: str = None,
+                dry_run: bool = False, verbose: bool = False, exclude: str = None):
         """Package repository subset"""
         
         # Determine output filename
@@ -78,6 +177,8 @@ class MCPPackager:
             print(f"📂 Topic: {topic}")
         if custom:
             print(f"🔍 Custom filters: {custom}")
+        if exclude:
+            print(f"🚫 Exclude: {exclude}")
         print(f"📝 Output: {output_zip}")
         print(f"🔧 Mode: {'DRY RUN' if dry_run else 'LIVE'}")
         print("=" * 70 + "\n")
@@ -98,7 +199,10 @@ class MCPPackager:
         else:
             print("❌ Error: Must specify either --topic or --custom", file=sys.stderr)
             return 1
-        
+
+        if exclude:
+            select_cmd.extend(["--exclude", exclude])
+
         try:
             result = subprocess.run(select_cmd, capture_output=True, text=True, check=True)
             if verbose:
@@ -173,7 +277,7 @@ class MCPPackager:
             result = subprocess.run(manifest_cmd, capture_output=True, text=True, check=True, cwd=self.repo_root)
             manifest = json.loads(result.stdout)
             
-            print(f"✅ Manifest valid")
+            print("✅ Manifest valid")
             print(f"   - Files: {manifest['total_files']}")
             print(f"   - Size: {manifest['total_size_bytes'] / 1024 / 1024:.2f} MB")
             
@@ -269,7 +373,18 @@ def main():
         action='store_true',
         help='Show detailed output'
     )
-    
+
+    parser.add_argument(
+        '--estimate', '-e',
+        action='store_true',
+        help='Estimate package size without creating the archive (PS-11)'
+    )
+
+    parser.add_argument(
+        '--exclude', '-x',
+        help='Comma-separated glob patterns to exclude (e.g., "tests/**,**/*_test.py") (PS-12)'
+    )
+
     args = parser.parse_args()
     
     # Find repository root
@@ -294,14 +409,24 @@ def main():
     
     if args.topic and args.custom:
         parser.error('Cannot specify both --topic and --custom')
-    
-    # Package
+
+    # Handle estimate command (PS-11)
+    if args.estimate:
+        return packager.estimate(
+            topic=args.topic,
+            custom=args.custom,
+            exclude=args.exclude,
+            verbose=args.verbose,
+        )
+
+    # Package (with optional --exclude PS-12)
     return packager.package(
         topic=args.topic,
         custom=args.custom,
         output=args.output,
         dry_run=args.dry_run,
-        verbose=args.verbose
+        verbose=args.verbose,
+        exclude=args.exclude,
     )
 
 

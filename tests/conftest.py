@@ -74,9 +74,10 @@ def pytest_configure(config: pytest.Config) -> None:
     # pass device='cpu' explicitly to SentenceTransformer constructors.
     try:
         import torch
-        logger.info(f"✓ PyTorch {torch.__version__} available (RAG modules use device='cpu' directly)")
-    except ImportError:
-        pass  # PyTorch not available
+        version = getattr(torch, '__version__', 'unknown')
+        logger.info(f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)")
+    except (ImportError, AttributeError):
+        pass  # PyTorch not available or stub module
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:
