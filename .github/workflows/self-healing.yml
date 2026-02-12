@@ -350,6 +350,24 @@ jobs:
           print('✅ Metrics updated')
           "
 
+      - name: Run Cognitive Healing Loop
+        continue-on-error: true
+        run: |
+          python scripts/cognitive/healing_loop.py --max-iterations 3 --json > healing_report.json 2>&1 || true
+          if [ -f healing_report.json ]; then
+            echo "::group::Healing Loop Report"
+            cat healing_report.json
+            echo "::endgroup::"
+          fi
+
+      - name: Upload Healing Report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: healing-report-${{ github.run_id }}
+          path: healing_report.json
+          retention-days: 14
+
       - name: Generate Summary
         run: |
           echo "## 🤖 Self-Healing CI Summary" >> $GITHUB_STEP_SUMMARY

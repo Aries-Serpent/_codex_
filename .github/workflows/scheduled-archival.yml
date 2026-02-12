@@ -38,6 +38,10 @@ jobs:
         with:
           fetch-depth: 0  # Full history for age analysis
 
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow scheduled-archival 2>/dev/null || echo "Cache health: check skipped"
       - name: Find Archival Candidates
         id: find
         run: |

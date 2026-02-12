@@ -48,6 +48,10 @@ jobs:
         with:
           fetch-depth: 1
       
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow batch-ci-triage 2>/dev/null || echo "Cache health: check skipped"
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
