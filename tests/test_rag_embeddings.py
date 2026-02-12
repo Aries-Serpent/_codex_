@@ -2,6 +2,10 @@
 Tests for RAG Embeddings Module
 """
 
+pytest.importorskip("numpy")
+
+
+
 import importlib.util
 import os
 import tempfile

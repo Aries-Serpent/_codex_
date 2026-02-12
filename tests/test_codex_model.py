@@ -4,6 +4,10 @@ Test Codex Model
 Test module for codex model.
 """
 
+pytest.importorskip("torch")
+
+
+
 import importlib.util
 from pathlib import Path
 

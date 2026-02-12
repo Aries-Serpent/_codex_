@@ -2,6 +2,10 @@
 Tests for performance-optimized vectorized quantum orchestrator.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

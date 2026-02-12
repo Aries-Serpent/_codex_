@@ -3,6 +3,10 @@ Comprehensive error handling tests for RAG modules.
 Tests all exception paths, edge cases, and failure scenarios.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import os
 import tempfile
 import threading

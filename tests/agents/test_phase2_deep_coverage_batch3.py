@@ -11,6 +11,12 @@ Systematically applies entanglement and distributed patterns:
 Target: +4-5% coverage gain (38% → 43%)
 """
 
+import pytest
+
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 
 

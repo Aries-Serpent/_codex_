@@ -8,6 +8,10 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

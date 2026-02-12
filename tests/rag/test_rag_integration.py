@@ -1,5 +1,9 @@
 """Comprehensive integration tests for RAG pipeline."""
 
+pytest.importorskip("numpy")
+
+
+
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch

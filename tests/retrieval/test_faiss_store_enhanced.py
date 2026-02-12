@@ -2,6 +2,10 @@
 Comprehensive tests for FAISS Vector Store with safeguards
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 
 import numpy as np

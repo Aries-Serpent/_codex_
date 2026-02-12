@@ -8,6 +8,12 @@ Tests cover:
 - Error handling
 """
 
+import pytest
+
+pytest.importorskip("typer")
+
+
+
 from __future__ import annotations
 
 import json

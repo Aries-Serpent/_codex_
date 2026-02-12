@@ -4,6 +4,12 @@ Test Ast Cli
 Test module for ast cli.
 """
 
+import pytest
+
+pytest.importorskip("typer")
+
+
+
 from pathlib import Path
 
 from codex.ast.cli import app

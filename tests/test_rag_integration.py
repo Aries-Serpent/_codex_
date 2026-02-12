@@ -3,6 +3,10 @@ Integration tests for RAG modules.
 Tests end-to-end workflows, multi-tenant isolation, and cross-module interactions.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import importlib.util
 import tempfile
 from pathlib import Path

@@ -4,6 +4,10 @@ Test Checkpoint Save Resume
 Test module for checkpoint save resume.
 """
 
+pytest.importorskip("torch")
+
+
+
 from __future__ import annotations
 
 from pathlib import Path

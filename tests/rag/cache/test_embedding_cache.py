@@ -2,6 +2,10 @@
 Tests for Embedding Cache Module.
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 import time
 from pathlib import Path

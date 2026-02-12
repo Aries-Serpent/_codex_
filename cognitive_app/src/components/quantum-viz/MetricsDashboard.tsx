@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Atom, Brain, Database, Lightning, TrendUp } from '@phosphor-icons/react';
 import { MetricCard } from '@/components/quantum/MetricCard';
+import { MSVRadarChart } from '@/components/quantum-viz/MSVRadarChart';
 import { motion } from 'framer-motion';
 import { useQuantumState } from '@/hooks/use-quantum-state';
 import { useAgentOrchestration } from '@/hooks/use-agent-orchestration';
@@ -248,6 +249,8 @@ export function MetricsDashboard() {
             />
           </div>
         </Card>
+
+        <MSVRadarChart />
       </div>
     </div>
   );

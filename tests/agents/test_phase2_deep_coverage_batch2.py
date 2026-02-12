@@ -12,6 +12,10 @@ Systematically applies advanced physics-guided patterns:
 Target: +12-15% coverage gain (34% → 48%)
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

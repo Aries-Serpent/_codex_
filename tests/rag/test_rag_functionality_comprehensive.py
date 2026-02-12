@@ -8,6 +8,10 @@ Focus on core RAG functionality not fully covered:
 - Edge cases and boundary conditions
 """
 
+pytest.importorskip("numpy")
+
+
+
 import tempfile
 from pathlib import Path
 

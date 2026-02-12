@@ -12,6 +12,10 @@ Systematically applies integration and exception handling:
 Target: +3-4% coverage gain (62% → 66%)
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 

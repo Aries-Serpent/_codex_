@@ -15,6 +15,10 @@ Physics Reference Tables Applied:
 - Table 1, Eq #49: J = Coverage/Runtime optimization
 """
 
+pytest.importorskip("numpy")
+
+
+
 import pytest
 
 from agents.mental_mapping import (

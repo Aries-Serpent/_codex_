@@ -12,6 +12,10 @@ Systematically applies memory and cognitive patterns:
 Target: +4-5% coverage gain (52% → 57%)
 """
 
+pytest.importorskip("numpy")
+
+
+
 import numpy as np
 import pytest
 
