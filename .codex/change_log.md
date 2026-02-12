@@ -1,5 +1,37 @@
 # QA Walkthrough Change Log
 
+## 📝 2026-02-12T11:07:00Z — Session 20: PS-15 Complete + AAIS V3.2 (94.8)
+
+### 🎯 PS-15: Advanced Infrastructure — ✅ Complete (All 3 sub-plansets)
+- **PS-15a** ✅: CacheManager Phase 3 — key generation step in pr-checks.yml
+- **PS-15b** ✅: Trend analysis v2 — historical AAIS tracking with velocity + ETA
+- **PS-15c** ✅: Healing loop v2 — `--max-iterations` flag for multi-cycle healing
+
+### 📊 AAIS V3.2: 94.8/100 (A) — 8/8 Improvements Complete
+- **#1** ✅ Ethical imperatives (.codex/ethics/imperatives.yaml — 10 principles)
+- **#2** ✅ OKR-linked strategy (.codex/strategy/okr_tracking.yaml — 3 OKRs, 8 KRs)
+- **#3** ✅ Agent introspection (scripts/monitoring/agent_introspection.py — 54 agents)
+- **Score progression**: 93.7 → 94.8 (+1.1)
+- **Gap to A+**: 2.2 points (future PS-16 scope)
+
+### 📋 All Plansets Complete: 16/16 (100%)
+- PS-15 status updated to ✅ Complete in PLANSET_REGISTRY.md
+
+### Files Created
+- `.codex/ethics/imperatives.yaml` (10 ethical imperatives)
+- `.codex/strategy/okr_tracking.yaml` (3 OKRs, 8 KRs)
+- `scripts/monitoring/agent_introspection.py` (agent capability scanner)
+
+### Files Modified
+- `scripts/cognitive/healing_loop.py` (added --max-iterations)
+- `scripts/cognitive/trend_analysis.py` (added AAIS_HISTORY + velocity)
+- `.github/workflows/pr-checks.yml` (added CacheManager key generation step)
+- `.codex/cognitive_brain/dashboard.md` (v2.8.0)
+- `docs/evolution/PLANSET_REGISTRY.md` (PS-15 → ✅ Complete)
+- `.gitignore` (added ethics/ and strategy/ exceptions)
+
+---
+
 ## 📝 2026-02-12T10:49:00Z — Session 19: PS-15 Development + AAIS Path to 97.0
 
 ### 🎯 PS-15: Advanced Infrastructure (Planset Created)

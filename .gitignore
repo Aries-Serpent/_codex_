@@ -155,6 +155,10 @@ manifests/k8s/*/secret.yaml
 !.codex/templates/**
 !.codex/wiki/
 !.codex/wiki/**
+!.codex/ethics/
+!.codex/ethics/**
+!.codex/strategy/
+!.codex/strategy/**
 !.codex/external_analysis/
 !.codex/external_analysis/**
 !.codex/analysis/

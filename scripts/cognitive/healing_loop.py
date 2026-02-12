@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -114,38 +113,73 @@ def check_fragile_tests(verbose: bool = False) -> dict:
     }
 
 
-def run_healing_loop(dry_run: bool = False, verbose: bool = False) -> dict:
-    """Run the full healing loop and return results."""
+def _run_single_iteration(dry_run: bool, verbose: bool) -> dict:
+    """Run a single iteration of checks and return results."""
+    checks = []
+
+    # 1. Lint check
+    checks.append(check_lint(verbose=verbose, fix=not dry_run))
+
+    # 2. Syntax check
+    checks.append(check_syntax(verbose=verbose))
+
+    # 3. Auto-fix check
+    checks.append(check_auto_fix(verbose=verbose))
+
+    # 4. Fragile tests scan
+    checks.append(check_fragile_tests(verbose=verbose))
+
+    failed = [c for c in checks if c["status"] == "fail"]
+    return {
+        "checks": checks,
+        "status": "needs_attention" if failed else "healthy",
+        "failed_count": len(failed),
+    }
+
+
+def run_healing_loop(
+    dry_run: bool = False,
+    verbose: bool = False,
+    max_iterations: int = 1,
+) -> dict:
+    """Run the healing loop with multi-iteration support.
+
+    When *max_iterations* > 1 and fixes are applied (not dry-run), the loop
+    re-runs checks after each fix attempt until all checks pass or the
+    iteration limit is reached.
+    """
     results = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "mode": "dry-run" if dry_run else "active",
+        "max_iterations": max_iterations,
+        "iterations": [],
         "checks": [],
         "overall_status": "healthy",
     }
 
-    # 1. Lint check
-    lint_result = check_lint(verbose=verbose, fix=not dry_run)
-    results["checks"].append(lint_result)
+    for i in range(1, max_iterations + 1):
+        iteration = _run_single_iteration(dry_run=dry_run, verbose=verbose)
+        iteration["iteration"] = i
+        results["iterations"].append(iteration)
 
-    # 2. Syntax check
-    syntax_result = check_syntax(verbose=verbose)
-    results["checks"].append(syntax_result)
+        if iteration["status"] == "healthy" or dry_run:
+            # All checks passed or we're in dry-run mode — stop iterating
+            results["checks"] = iteration["checks"]
+            break
 
-    # 3. Auto-fix check
-    autofix_result = check_auto_fix(verbose=verbose)
-    results["checks"].append(autofix_result)
+        # In active mode with failures, the fixes were already applied
+        # (ruff --fix ran). Re-check on next iteration.
+        if i == max_iterations:
+            # Last iteration — use these results
+            results["checks"] = iteration["checks"]
 
-    # 4. Fragile tests scan
-    fragile_result = check_fragile_tests(verbose=verbose)
-    results["checks"].append(fragile_result)
+    # Determine overall status from final iteration
+    final = results["iterations"][-1]
+    results["overall_status"] = final["status"]
+    results["total_iterations"] = len(results["iterations"])
+    results["converged"] = final["status"] == "healthy"
 
-    # Determine overall status
     failed = [c for c in results["checks"] if c["status"] == "fail"]
-    if failed:
-        results["overall_status"] = "needs_attention"
-    else:
-        results["overall_status"] = "healthy"
-
     results["summary"] = {
         "total_checks": len(results["checks"]),
         "passed": len([c for c in results["checks"] if c["status"] == "pass"]),
@@ -162,15 +196,27 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="Check only, don't fix")
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
+    parser.add_argument(
+        "--max-iterations",
+        type=int,
+        default=1,
+        help="Maximum healing iterations (default: 1, recommended: 3)",
+    )
     args = parser.parse_args()
 
-    results = run_healing_loop(dry_run=args.dry_run, verbose=args.verbose)
+    results = run_healing_loop(
+        dry_run=args.dry_run,
+        verbose=args.verbose,
+        max_iterations=args.max_iterations,
+    )
 
     if args.json:
         print(json.dumps(results, indent=2))
     else:
         print(f"🧠 Cognitive Brain Healing Loop — {results['timestamp']}")
         print(f"   Mode: {results['mode']}")
+        print(f"   Iterations: {results['total_iterations']}/{results['max_iterations']}"
+              f" {'(converged)' if results.get('converged') else ''}")
         print()
         for check in results["checks"]:
             icon = {"pass": "✅", "fail": "❌", "skip": "⏭️", "info": "ℹ️"}.get(check["status"], "❓")

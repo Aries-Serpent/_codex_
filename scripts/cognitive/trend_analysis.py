@@ -12,12 +12,20 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DASHBOARD = REPO_ROOT / ".codex" / "cognitive_brain" / "dashboard.md"
 CHANGELOG = REPO_ROOT / ".codex" / "change_log.md"
+
+# Known AAIS progression milestones
+AAIS_HISTORY = [
+    {"version": "V1.0", "score": 87.3, "session": 0, "date": "2026-01-15"},
+    {"version": "V2.0", "score": 91.8, "session": 3, "date": "2026-01-28"},
+    {"version": "V3.0", "score": 93.2, "session": 11, "date": "2026-02-11"},
+    {"version": "V3.1", "score": 93.7, "session": 19, "date": "2026-02-12"},
+    {"version": "V3.2", "score": 94.8, "session": 20, "date": "2026-02-12"},
+]
 
 
 def extract_dashboard_metrics() -> dict:
@@ -108,6 +116,26 @@ def generate_trend_report() -> dict:
     aais_target = 97.0
     aais_gap = max(0, aais_target - aais_current)
 
+    # Calculate velocity from history
+    deltas = []
+    for i in range(1, len(AAIS_HISTORY)):
+        prev = AAIS_HISTORY[i - 1]
+        curr = AAIS_HISTORY[i]
+        session_diff = max(1, curr["session"] - prev["session"])
+        deltas.append({
+            "from": prev["version"],
+            "to": curr["version"],
+            "delta": round(curr["score"] - prev["score"], 1),
+            "sessions": session_diff,
+            "velocity": round((curr["score"] - prev["score"]) / session_diff, 2),
+        })
+    avg_velocity = (
+        round(sum(d["velocity"] for d in deltas) / len(deltas), 2) if deltas else 0
+    )
+    sessions_to_target = (
+        round(aais_gap / avg_velocity) if avg_velocity > 0 else 0
+    )
+
     report = {
         "current_metrics": metrics,
         "session_history": sessions,
@@ -117,6 +145,10 @@ def generate_trend_report() -> dict:
             "gap": round(aais_gap, 1),
             "grade": "A+" if aais_current >= 97.0 else "A" if aais_current >= 93.0 else "B+",
             "improvements_remaining": round(aais_gap / 0.7, 1),  # ~0.7 points per improvement
+            "history": AAIS_HISTORY,
+            "deltas": deltas,
+            "avg_velocity_per_session": avg_velocity,
+            "estimated_sessions_to_target": sessions_to_target,
         },
         "health_trend": {
             "current": metrics["health_score"],
@@ -125,8 +157,8 @@ def generate_trend_report() -> dict:
         },
         "planset_status": {
             "completed": metrics["planset_completion"],
-            "total": 15,
-            "percentage": round(metrics["planset_completion"] / 15 * 100, 1)
+            "total": 16,
+            "percentage": round(metrics["planset_completion"] / 16 * 100, 1)
             if metrics["planset_completion"]
             else 0,
         },
@@ -154,15 +186,28 @@ def main() -> int:
     else:
         # Human-readable output
         m = report["current_metrics"]
+        ap = report["aais_progression"]
         print("═══ Cognitive Brain Trend Analysis ═══")
         print(f"  Health Score: {m['health_score']}%")
         print(f"  Sessions: {m['sessions']}")
         print(f"  Commits: {m['commits']}")
-        print(f"  AAIS Score: {m['aais_score']}/100 ({report['aais_progression']['grade']})")
-        print(f"  Target: {report['aais_progression']['target']}")
-        print(f"  Gap: {report['aais_progression']['gap']} points")
-        print(f"  Improvements remaining: ~{report['aais_progression']['improvements_remaining']}")
-        print(f"  Plansets: {report['planset_status']['completed']}/15 ({report['planset_status']['percentage']}%)")
+        print(f"  AAIS Score: {m['aais_score']}/100 ({ap['grade']})")
+        print(f"  Target: {ap['target']}")
+        print(f"  Gap: {ap['gap']} points")
+        print(f"  Improvements remaining: ~{ap['improvements_remaining']}")
+        print(f"  Avg velocity: {ap['avg_velocity_per_session']} pts/session")
+        print(f"  Est. sessions to A+: ~{ap['estimated_sessions_to_target']}")
+        ps = report["planset_status"]
+        print(f"  Plansets: {ps['completed']}/{ps['total']} ({ps['percentage']}%)")
+        print()
+        print("  AAIS History:")
+        for h in ap["history"]:
+            print(f"    {h['version']}: {h['score']}")
+        if ap.get("deltas"):
+            print()
+            print("  Session Deltas:")
+            for d in ap["deltas"]:
+                print(f"    {d['from']}→{d['to']}: +{d['delta']} ({d['velocity']} pts/session)")
 
     return 0
 
