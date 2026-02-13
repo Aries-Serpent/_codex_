@@ -45,7 +45,7 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
    - Phase-based execution plan
    - Alternative solutions for blockers
 
-5. **[PACKAGE_PUBLISHING_GUIDE.md](.codex/release/PACKAGE_PUBLISHING_GUIDE.md)** (13KB)
+5. **[PACKAGE_PUBLISHING_GUIDE.md](../../release/PACKAGE_PUBLISHING_GUIDE.md)** (13KB)
    - PyPI publishing procedures
    - TestPyPI validation workflow
    - Package building instructions
@@ -63,7 +63,7 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
    - Decision points and gates
    - Rollback procedures
 
-8. **[RELEASE_RUNBOOK.md](.codex/release/RELEASE_RUNBOOK.md)** (8KB)
+8. **[RELEASE_RUNBOOK.md](../../release/RELEASE_RUNBOOK.md)** (8KB)
    - Operational runbook
    - Troubleshooting guide
    - Emergency procedures

@@ -590,6 +590,6 @@ def update_metrics():
 - ✅ Integrate with A/B testing
 
 **Next Steps:**
-- See [A/B Testing Guide](ab_testing_guide.md) for testing strategies
+- See [A/B Testing Guide](TESTING_GUIDE.md) for testing strategies
 - See [Production Deployment Guide](production_deployment.md) for deployment patterns
 - See [API Reference](../API_REFERENCE.md) for detailed API docs

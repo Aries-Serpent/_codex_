@@ -292,11 +292,11 @@ mypy src/
 
 ## Zendesk Support Administration
 
-_codex_ provides comprehensive tools for managing Zendesk Support as code. See the dedicated [Zendesk Newcomer Guide](./zendesk/ZENDESK_NEWCOMER_GUIDE.md) for details.
+_codex_ provides comprehensive tools for managing Zendesk Support as code. See the dedicated [Zendesk Newcomer Guide](zendesk/ZENDESK_NEWCOMER_GUIDE.md) for details.
 
 ### Zendesk Resources
 
-- **[Zendesk Configuration-as-Code Guide](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
+- **[Zendesk Configuration-as-Code Guide](zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
 - **[AI Agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
 - **[Workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
 - **[Quick Start Script](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/quickstart.sh)** - Interactive setup automation
@@ -458,7 +458,7 @@ See `.github/copilot-instructions.md` for complete list.
 
 ### For Support/DevOps Engineers
 
-1. Start with [./zendesk/ZENDESK_NEWCOMER_GUIDE.md](./zendesk/ZENDESK_NEWCOMER_GUIDE.md)
+1. Start with [./zendesk/ZENDESK_NEWCOMER_GUIDE.md](zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 2. If available in your checkout, run `examples/zendesk/quickstart.sh` for interactive setup
 3. Review [./zendesk/WORKFLOW_DIAGRAMS.md](./zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
 4. Study [docs/runbooks/zendesk_admin_workflow.md](./runbooks/zendesk_admin_workflow.md)

@@ -530,7 +530,7 @@ print(f"Supported: {MCP_VERSIONS}")
 - [MCP Security Guide](./MCP_SECURITY_GUIDE.md) - Security best practices
 - [MCP Capabilities Reference](./MCP_CAPABILITIES_REFERENCE.md) - All capabilities
 - [MCP FAQ](./MCP_FAQ.md) - Frequently asked questions
-- [Quick Start Guide](./QUICK_START.md) - Get started in 5 minutes
+- [Quick Start Guide](QUICK_START.md) - Get started in 5 minutes
 
 ---
 

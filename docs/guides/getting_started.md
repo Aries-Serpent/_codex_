@@ -568,7 +568,7 @@ manager.sandbox.enable_plugin(plugin_name)
 ## Next Steps
 
 - **Continuous Learning:** See [Continuous Learning Guide](continuous_learning_guide.md)
-- **A/B Testing:** See [A/B Testing Guide](ab_testing_guide.md)
+- **A/B Testing:** See [A/B Testing Guide](TESTING_GUIDE.md)
 - **Plugin Development:** See [Plugin Development Guide](plugin_development.md)
 - **Production Deployment:** See [Production Deployment Guide](production_deployment.md)
 - **API Reference:** See [API Reference](../API_REFERENCE.md)

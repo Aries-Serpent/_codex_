@@ -1190,7 +1190,7 @@ if __name__ == "__main__":
 For detailed guides, see:
 - [Getting Started Guide](guides/getting_started.md)
 - [Continuous Learning Guide](guides/continuous_learning_guide.md)
-- [A/B Testing Guide](guides/ab_testing_guide.md)
+- [A/B Testing Guide](guides/TESTING_GUIDE.md)
 - [Plugin Development Guide](guides/plugin_development.md)
 - [Production Deployment Guide](guides/production_deployment.md)
 

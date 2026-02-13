@@ -258,7 +258,7 @@
 - [Roadmap](../docs/ROADMAP.md)
 
 **Guides**:
-- [Testing Guide](docs/guides/TESTING_GUIDE.md)
+- [Testing Guide](../docs/guides/TESTING_GUIDE.md)
 - [Performance Guide](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)
 - [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
 
