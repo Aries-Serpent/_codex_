@@ -2373,7 +2373,7 @@ def fix_concat_sql(content:  str) -> tuple[str, list[str]]:
         # Clean up the after part
         after_clean = ""
         if sql_after:
-            after_match = re.search(r'["\'](.+?)["\']', sql_after)
+            after_match = re.search(r'<!-- BROKEN LINK: <!-- BROKEN LINK: ["\'](.+?) --> -->["\']', sql_after)
             if after_match:
                 after_clean = after_match.group(1)
         

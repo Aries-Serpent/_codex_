@@ -88,7 +88,7 @@ are available for testing and development purposes.
 3. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
 4. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 5. **[README.md](../../../agents/README.md)** - Repository overview (5 min)
-6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
+6. **<!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md) --> -->** - 🆕 Cognitive Brain System (20 min)
 
 ### Reference Documents
 
@@ -104,14 +104,14 @@ are available for testing and development purposes.
 
 **Workflow Consolidation**:
 - **Status**: ✅ COMPLETE (100% parity confirmed)
-- **Documentation**: [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)
+- **Documentation**: .github/workflow-archive/PARITY_CHECKLIST.md
 - **Categories**: 8 of 8 verified (Testing, Docs, Container, Validation, Monitoring, Cache, Duplication, Post-Merge)
 - **Patterns**: Monolithic, Distributed, Optimized, Automated consolidations
 - **Active Workflows**: 49 (target: 48 - within tolerance)
 - **Disabled**: 19 workflows (28.4% reduction)
 
 **Artifact Retrieval for Copilot Sessions**:
-- **Catalog**: [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)
+- **Catalog**: .github/workflow-archive/ARTIFACT_CATALOG.md
 - **Types**: 20+ artifact types documented
 - **Methods**: GitHub CLI, API, Direct access
 - **Examples**: Code quality, coverage, audits, tests, health metrics

@@ -49,7 +49,7 @@ python src/agent.py --task rotate_secrets --secrets CODEX_MASTER_KEY
 
 ## Agent Architecture
 
-See [AGENT_DESIGN.md](AGENT_DESIGN.md) for comprehensive architecture documentation.
+See <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [AGENT_DESIGN.md](AGENT_DESIGN.md) --> --> --> --> for comprehensive architecture documentation.
 
 **Core Components**:
 1. **Authentication Manager** - Multi-method auth (GitHub, Google)
@@ -228,11 +228,7 @@ pytest tests/performance/ --benchmark
 
 ## Documentation
 
-- [AGENT_DESIGN.md](AGENT_DESIGN.md) - Comprehensive architecture and design
-- [API.md](API.md) - Python API reference
-- [CLI.md](CLI.md) - Command-line interface guide
-- [EXAMPLES.md](EXAMPLES.md) - Usage examples and tutorials
-- [SECURITY.md](SECURITY.md) - Security considerations and best practices
+- <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [AGENT_DESIGN.md](AGENT_DESIGN.md) --> --> --> --> - Comprehensive architecture and design
 
 ---
 
