@@ -562,17 +562,10 @@ Phase 32: Complete cognitive brain documentation and status updates
 ## 🔗 Related Documentation
 
 **Phase 32 Planning:**
-- [Phase 32 Continuation Prompt](.codex/cognitive_brain/PHASE_32_CONTINUATION_PROMPT.md)
-- [PyGithub Installation Plan](.codex/plans/pygithub_installation_plan.md)
 
 **Phase 31 Context:**
-- [Phase 31 Artifact Monitoring Fix](.codex/cognitive_brain/PHASE_31_ARTIFACT_MONITORING_FIX.md)
-- [Phase 31 Code Analysis Complete](.codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md)
 
 **Documentation:**
-- [Link Validation Summary](docs/quality/LINK_VALIDATION_SUMMARY_2026-01-26.md)
-- [Monitoring README](scripts/monitoring/README.md)
-- [AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)
 
 **Reference Issues:**
 - [PR #3019 Comment on Pytest Dependencies](https://github.com/Aries-Serpent/_codex_/pull/3019#issuecomment-3801960905)

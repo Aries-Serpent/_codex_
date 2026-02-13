@@ -91,8 +91,6 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 ## 📚 Documentation
 
 **Complete guides available**:
-- [Duplicate Detection User Guide](./DUPLICATE_DETECTION.md)
-- [Remediation Scripts](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/remediation/README.md)
 - P1 Refactoring Tickets
 - [SHIM Inventory](https://github.com/Aries-Serpent/_codex_/blob/main/.github/SHIM_INVENTORY.yaml)
 
