@@ -204,20 +204,15 @@ for i in range(0, len(archive_files), 15):
 Historical documentation organized by category.
 
 ## Phase Documentation
-- [Phase 1](phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md)
-- [Phase 2](phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md)
 - ... (all phases)
 
 ## Session Summaries
-- [Session PR2836](sessions/SESSION_SUMMARY_PR2836_COMPLETE.md)
 - ... (all sessions)
 
 ## Completion Reports
-- [Audit Completion](completion/AUDIT_COMPLETION_SUMMARY.md)
 - ... (all reports)
 
 ## Continuation Prompts
-- [CodeQL Remediation](prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md)
 - ... (all prompts)
 ```
 
@@ -526,13 +521,10 @@ python scripts/root_org/validate_references.py QUICKSTART.md --dry-run --json > 
 ```markdown
 # docs/ci/INDEX.md
 # CI/CD Documentation
-- [Failure Analysis](CI_FAILURE_ANALYSIS.md)
-- [Fixes Summary](CI_FIXES_PYTEST_MKDOCS.md)
 ...
 
 # docs/quality/INDEX.md  
 # Documentation Quality
-- [Broken Links Report](BROKEN_LINKS_REPORT.md)
 ...
 
 # (Repeat for each category)

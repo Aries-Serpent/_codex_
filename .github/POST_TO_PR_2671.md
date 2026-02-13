@@ -187,9 +187,6 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 ## 📚 Reference Documents
 
 **Phase 9.1 Complete**:
-- [AFTERMATH_PHASE9_1_FINAL.md](.github/AFTERMATH_PHASE9_1_FINAL.md) - Complete metrics
-- [FINAL_SELF_REVIEW_PHASE9_1.md](.github/FINAL_SELF_REVIEW_PHASE9_1.md) - Quality validation
-- [CONTINUATION_PROMPT_PHASE9_2.md](.github/CONTINUATION_PROMPT_PHASE9_2.md) - This prompt
 
 **Cognitive Brain**:
 - [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)
@@ -197,8 +194,6 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 - [ROADMAP.md](../docs/ROADMAP.md)
 
 **Testing Guides**:
-- [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)
-- [FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)
 
 ---
 

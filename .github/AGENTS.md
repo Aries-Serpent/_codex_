@@ -288,9 +288,6 @@ CTEP Compliance: ✅ PASS
 
 ### Documentation Links
 
-- [Copilot Task Execution Protocol](./copilot_task_execution_protocol.md)
-- [CTEP Usage Examples](./ctep_usage_examples.md)
-- [CTEP Quick Reference](./ctep_quick_reference.md)
 
 ---
 

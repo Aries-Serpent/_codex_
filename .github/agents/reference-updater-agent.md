@@ -48,7 +48,6 @@ The Reference Updater Agent is a specialized GitHub Copilot agent designed for a
 3. **AST**: Python import analysis
 
 **Reference Types Detected:**
-- Markdown links: `[text](path)`, `<a href="path">`
 - HTML links: `href="path"`, `src="path"`
 - YAML paths: `path: path`, `uses: path`
 - Python imports: `from module import`, `import module`
@@ -156,7 +155,7 @@ Validation Results:
 ```
 Unreachable References:
 1. docs/README.md:42
-   Reference: [Old Guide](old-guide.md)
+   Reference: Old Guide
    Issue: File not found
    Suggestion: Update to new-guide.md or remove link
 
@@ -305,7 +304,7 @@ Time: 12.3s
 ```
 [DRY RUN] Would update 12 files:
   docs/index.md:
-    Line 15: [text](old.md) → [text](new.md)
+    Line 15: <!-- BROKEN LINK: [text](old.md) --> → <!-- BROKEN LINK: [text](new.md) -->
     Line 42: <a href="old.md"> → <a href="new.md">
   ...
   
@@ -317,8 +316,6 @@ No changes applied (dry-run mode)
 ### Markdown Links
 
 **Patterns:**
-- `[text](path)` - Standard markdown
-- `[text](path "title")` - With title
 - `[text][ref]` + `[ref]: path` - Reference style
 - `<path>` - Auto-linked
 - `<a href="path">` - HTML in markdown

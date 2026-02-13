@@ -259,13 +259,8 @@
 
 **Guides**:
 - [Testing Guide](../docs/guides/TESTING_GUIDE.md)
-- [Performance Guide](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
 
 **Phase 8 Artifacts**:
-- [Session Summary](.github/PHASE8_SESSION_SUMMARY.md)
-- [Link Validation Report](docs/maintenance/LINK_VALIDATION_REPORT.md)
-- [Agent Normalization](agents/NORMALIZATION_CHECKLIST.md)
 
 ---
 

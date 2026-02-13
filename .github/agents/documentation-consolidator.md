@@ -173,8 +173,6 @@ recommendation:
 [Content from guide1.md §3 + guide3.md §2]
 
 ## Related Resources
-- [Original Guide 1](archive/guide1.md)
-- [Original Guide 2](archive/guide2.md)
 ```
 
 **Strategy 3: Chronological Merge**
@@ -209,8 +207,8 @@ Consolidating:
 
 Updating references (15 found):
   ✓ docs/README.md:42
-    Old: [Status](../COGNITIVE_BRAIN_V3.md)
-    New: [Status](cognitive_brain/STATUS.md)
+    Old: <!-- BROKEN LINK: [Status](../COGNITIVE_BRAIN_V3.md) -->
+    New: <!-- BROKEN LINK: [Status](cognitive_brain/STATUS.md) -->
     
   ✓ .codex/plans/phase10.md:18
     Old: See COGNITIVE_BRAIN_V2.md for details
@@ -237,20 +235,16 @@ Creating redirects:
 # Cognitive Brain Documentation Index
 
 ## Current Status
-- [Latest Status](status/STATUS.md) - Current state and metrics
 - [Architecture](../../docs/ARCHITECTURE.md) - System design
 - [Roadmap](../../docs/ROADMAP.md) - Future development
 
 ## Phase Documentation
-- [Phase 11](phases/PHASE_11.md) - Authentication implementation
-- [Phase 10](phases/PHASE_10.md) - Master integration
-- [Phase 9](phases/PHASE_9.md) - Agent architecture
-- [Archive](archive/) - Completed phases
+- Archive - Completed phases
 
 ## Continuation Prompts
 - [Phase 12 Prompt](prompts/PHASE_12_CONTINUATION.md)
 - [Phase 11 Prompt](prompts/PHASE_11_CONTINUATION.md)
-- [Prompt Archive](prompts/archive/)
+- Prompt Archive
 
 ## Navigation
 - [Browse by Topic](BY_TOPIC.md)

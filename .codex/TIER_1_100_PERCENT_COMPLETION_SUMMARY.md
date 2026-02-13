@@ -227,16 +227,8 @@
 ## 🔗 Key References
 
 ### Documentation
-- [AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md) - v2.0.0, 100% Tier 1
-- [AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md) - Complete architecture
-- [CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md](.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md) - Original plan
 
 ### Agents
-- [ci-diagnostician](.github/agents/ci-diagnostician/) - 21/21 tests ✅
-- [test-assertion-updater](.github/agents/test-assertion-updater/) - 22/22 tests ✅
-- [rust-error-validator](.github/agents/rust-error-validator/) - 24/24 tests ✅
-- [pyo3-integration-tester](.github/agents/pyo3-integration-tester/) - 11/11 tests ✅
-- [project-architect-researcher](.github/agents/project-architect-researcher/) - 10/10 tests ✅
 
 ---
 

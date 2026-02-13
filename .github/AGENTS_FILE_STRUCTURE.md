@@ -266,9 +266,6 @@ All validation checks passed:
 **Reference Documents:**
 - [AGENTS.md](./AGENTS.md) — Root pointer
 - [_codex_/AGENTS.md](./AGENTS.md) — Canonical guide
-- [.codex/codex_index.yaml](.codex/codex_index.yaml) — Machine manifest
-- [inventory.md](../inventory.md) — File catalog
-- [validation.md](../validation.md) — Validation report
 
 **Implementation Complete:** 2025-11-09  
 **Status:** ✅ READY FOR MERGE

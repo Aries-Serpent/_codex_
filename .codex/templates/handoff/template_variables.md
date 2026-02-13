@@ -161,7 +161,6 @@ This document provides a comprehensive reference for all variables used in Agent
 ### URLs
 - **Format**: Full HTTPS URL or relative path
 - **Example**: `https://github.com/Aries-Serpent/_codex_/pull/3145#issuecomment-123`
-- **Markdown**: Use `[text](url)` format
 
 ### Status Indicators
 - **Format**: Emoji + Text
@@ -219,9 +218,6 @@ This document provides a comprehensive reference for all variables used in Agent
 **After Substitution**:
 ```markdown
 ### Deliverables
-- Coverage baseline: [tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)
-- Gap analysis: [coverage_tokenization.json](coverage_reports/coverage_tokenization.json)
-- Test mapping: [test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)
 ```
 
 ### Table Substitution

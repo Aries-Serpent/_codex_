@@ -776,10 +776,6 @@ aftermath:
 
 ## References
 
-- [Agent Ecosystem Map](.github/agents/AGENT_ECOSYSTEM_MAP.md)
-- [Custom Copilot Agents Specification](.github/agents/CUSTOM_COPILOT_AGENTS_SPECIFICATION.md)
-- [CI Testing Agent Implementation](.github/agents/ci-testing-agent/README.md)
-- [Cognitive Brain Architecture](.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md)
 
 ---
 

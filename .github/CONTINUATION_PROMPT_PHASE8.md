@@ -53,11 +53,11 @@
 **Objective**: Fix 256 broken documentation links discovered in Phase 8.
 
 **Steps**:
-1. Load [LINK_VALIDATION_TODO.md](docs/maintenance/LINK_VALIDATION_TODO.md)
+1. Load LINK_VALIDATION_TODO.md
 2. Create automated link checker script:
    ```python
    # scripts/maintenance/check_doc_links.py
-   # - Scan all .md files for [text](link) patterns
+   # - Scan all .md files for text patterns
    # - Resolve relative paths
    # - Report broken links with sources
    # - Suggest fixes (moved files, obsolete links)
@@ -140,10 +140,6 @@
    ls -la docs/prompts/
    ```
 2. Check current templates:
-   - [COVERAGE_ENHANCEMENT_PROMPT.md](docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md)
-   - [COVERAGE_CONTINUATION_PROMPT.md](docs/prompts/COVERAGE_CONTINUATION_PROMPT.md)
-   - [custom_gpt_self_healing_engineer.md](docs/prompts/custom_gpt_self_healing_engineer.md)
-   - [QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md](docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md)
 3. Create prompt template standard:
    ```markdown
    # [Prompt Title]
@@ -384,12 +380,11 @@
 - [Roadmap](../docs/ROADMAP.md) - Planning
 
 **Documentation**:
-- [Master Index](docs/MASTER_INDEX.md) - Documentation catalog
-- [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md) - This protocol
-- [Contributing Guide](CONTRIBUTING.md) - Contribution standards
+- Continuation Protocol - This protocol
+- Contributing Guide - Contribution standards
 
 **Phase 8 Specific**:
-- [Link Validation TODO](docs/maintenance/LINK_VALIDATION_TODO.md) - Broken links
+- Link Validation TODO - Broken links
 - [Agent README](../agents/README.md) - Agent architecture
 
 ---

@@ -821,15 +821,8 @@ python scripts/cognitive/cognitive_brain_core.py
 - [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
 - [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md) - Status
 - [Roadmap](../../../docs/ROADMAP.md) - Planning
-- [Master Index](docs/MASTER_INDEX.md) - Documentation hub
-- [Agent Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md) - Continuation
 
 **Key Components**:
-- [Codex Pipeline](src/codex/) - Code ingestion
-- [Agent System](agents/) - Autonomous agents
-- [MCP System](scripts/mcp/) - ChatGPT packaging
-- [Cognitive Brain](scripts/cognitive/) - Brain core
-- [Test Suite](tests/) - Testing infrastructure
 
 ---
 

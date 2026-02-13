@@ -319,7 +319,6 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 ## 📚 Reference Documents
 
 **Execution Plans**:
-- [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)
 - [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)
 
 **Cognitive Brain**:
@@ -328,9 +327,6 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 - [ROADMAP.md](../docs/ROADMAP.md)
 
 **Session 1 Artifacts**:
-- [AFTERMATH_PHASE9_1_COMPLETE.md](.github/AFTERMATH_PHASE9_1_COMPLETE.md)
-- [SELF_REVIEW_PHASE9_1_SESSION1.md](.github/SELF_REVIEW_PHASE9_1_SESSION1.md)
-- [FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)
 
 **Test Patterns** (from Session 1):
 - `tests/scripts/test_mcp_select_components.py` (fixture patterns)
