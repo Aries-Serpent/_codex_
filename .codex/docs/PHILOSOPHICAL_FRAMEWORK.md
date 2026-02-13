@@ -1261,5 +1261,5 @@ These principles are not merely theoretical - they are operationally manifest in
 
 **Related Documents:**
 - [Cognitive Architecture Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md)
-- [Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md)
+- [Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)
 - [AI Agent Operational Guidelines](../../docs/agent/OPERATIONAL_GUIDELINES.md)

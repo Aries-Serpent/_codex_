@@ -572,7 +572,7 @@ Phase 32: Complete cognitive brain documentation and status updates
 **Documentation:**
 - [Link Validation Summary](docs/quality/LINK_VALIDATION_SUMMARY_2026-01-26.md)
 - [Monitoring README](scripts/monitoring/README.md)
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)
 
 **Reference Issues:**
 - [PR #3019 Comment on Pytest Dependencies](https://github.com/Aries-Serpent/_codex_/pull/3019#issuecomment-3801960905)

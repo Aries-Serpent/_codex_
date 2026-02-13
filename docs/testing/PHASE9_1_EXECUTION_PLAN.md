@@ -293,7 +293,7 @@ def test_end_to_end_workflow():
 
 ## 📚 Reference Documents
 
-- [Coverage 100% Roadmap](COVERAGE_100_ROADMAP.md)
+- [Coverage 100% Roadmap](../ROADMAP.md)
 - [Testing Guide](../guides/TESTING_GUIDE.md)
 - [Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)
 - [MCP System README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md)

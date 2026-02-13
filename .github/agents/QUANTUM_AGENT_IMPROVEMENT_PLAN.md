@@ -778,7 +778,7 @@ Complete index of all public functions in observable basis |f⟩.
 - **Module:** `core.universal_intelligence`
 - **Signature:** `(task_id: str, task_data: List) -> Dict[str, float]`
 - **Quantum State:** |MAML_adaptation⟩
-- **Example:** [Meta-Learning Guide](guides/examples.md#maml)
+- **Example:** [Meta-Learning Guide](../../docs/guides/examples.md#maml)
 - **Tests:** `test_maml_adapt_to_task`
 
 ### adapt_with_maml (MetaPolicyRouter)

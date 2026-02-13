@@ -56,7 +56,7 @@
 | [MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md) | MCP server setup | Ops |
 | [mcp/MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP development | Developers |
 | [mcp/MCP_SECURITY_GUIDE.md](mcp/MCP_SECURITY_GUIDE.md) | Security best practices | Security |
-| [mcp/MCP_100_PERCENT_ROADMAP.md](mcp/MCP_100_PERCENT_ROADMAP.md) | MCP completion plan | PM |
+| [mcp/MCP_100_PERCENT_ROADMAP.md](ROADMAP.md) | MCP completion plan | PM |
 
 ### 🔧 Development & Testing
 

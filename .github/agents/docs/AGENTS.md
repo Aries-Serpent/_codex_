@@ -15,11 +15,11 @@
 
 **New AI Agent?** Read this first (5 min orientation):
 
-0. **🚨 CRITICAL: Read [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)** - MANDATORY
+0. **🚨 CRITICAL: Read [AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)** - MANDATORY
 1. **Repository Status:** Pre-Genesis (Template Mode - SAFE_MODE active)
 2. **Your Role:** Advisory only - No autonomous actions yet
 3. **Key Constraints:** See [.codex/guardrails.md](.codex/guardrails.md)
-4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
 ### ⚠️ AI Codebase Agency Policy (MANDATORY)
 
@@ -36,7 +36,7 @@
 - ✅ Fix ALL linting/type errors
 - ✅ Leave codebase better than found
 
-**Full Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)
+**Full Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 
@@ -85,15 +85,15 @@ are available for testing and development purposes.
 
 1. **[.codex/guardrails.md](.codex/guardrails.md)** - Operational constraints (5 min)
 2. **[.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)** - 🚨 CRITICAL: Never use /tmp/ for important files (2 min)
-3. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
-4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
+3. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
+4. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 5. **[README.md](README.md)** - Repository overview (5 min)
 6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
 
 ### Reference Documents
 
 - [scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md) - Agent setup
-- [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md) - Future plans
+- [docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md) - Future plans
 - [.codex/change_log.md](.codex/change_log.md) - Audit trail
 - [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
 - [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
@@ -179,7 +179,7 @@ Genesis Protocol establishes AI agent authority through secure initialization:
 - Workflow enablement
 - Genesis validation execution
 
-**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
+**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
 
 ---
 
@@ -349,9 +349,9 @@ To create a new specialized agent:
 ---
 
 **Complete Documentation:**
-- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
-- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md)
+- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
+- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
+- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong
 

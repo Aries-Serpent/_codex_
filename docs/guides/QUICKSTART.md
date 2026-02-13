@@ -603,7 +603,7 @@ for agent in coalition.agents:
 
 **Documentation**:
 - 📖 [V9 Complete Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md)
-- 🗺️ [V10 Roadmap](https://github.com/Aries-Serpent/_codex_/blob/main/docs/roadmap/V10_ROADMAP.md)
+- 🗺️ [V10 Roadmap](../ROADMAP.md)
 - 📋 [Consolidated Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md)
 
 ---

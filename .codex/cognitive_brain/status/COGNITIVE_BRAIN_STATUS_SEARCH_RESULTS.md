@@ -679,9 +679,9 @@ class FileCache:
 
 ## 📚 Context References
 
-- [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
-- [Dashboard](../system/CODEBASE_DASHBOARD.md)
-- [Roadmap](../ROADMAP.md)
+- [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)
+- [Roadmap](../../../docs/ROADMAP.md)
 - [Related Doc]
 
 **Branch**: [branch-name]
@@ -818,9 +818,9 @@ python scripts/cognitive/cognitive_brain_core.py
 ### 7.3 Quick Links
 
 **Documentation**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md) - Status
-- [Roadmap](docs/ROADMAP.md) - Planning
+- [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+- [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md) - Status
+- [Roadmap](../../../docs/ROADMAP.md) - Planning
 - [Master Index](docs/MASTER_INDEX.md) - Documentation hub
 - [Agent Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md) - Continuation
 
@@ -1038,4 +1038,4 @@ The _codex_ repository cognitive brain is **production-ready** with:
 
 ---
 
-**Questions?** Refer to [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) or [Dashboard](docs/system/CODEBASE_DASHBOARD.md).
+**Questions?** Refer to [Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md) or [Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md).

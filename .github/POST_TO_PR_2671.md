@@ -124,8 +124,8 @@ def test_public_api_workflow_navigator_create():
 ## 🧠 Cognitive Brain Integration
 
 **Before Starting**:
-1. Review [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Phase 9 status
-2. Review [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md) - Phase 9.2 details
+1. Review [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Phase 9 status
+2. Review [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md) - Phase 9.2 details
 3. Load Phase 9.1 patterns from test files
 
 **Test Patterns from Phase 9.1**:
@@ -192,9 +192,9 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 - [CONTINUATION_PROMPT_PHASE9_2.md](.github/CONTINUATION_PROMPT_PHASE9_2.md) - This prompt
 
 **Cognitive Brain**:
-- [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md)
-- [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md)
-- [ROADMAP.md](docs/ROADMAP.md)
+- [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)
+- [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)
+- [ROADMAP.md](../docs/ROADMAP.md)
 
 **Testing Guides**:
 - [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)

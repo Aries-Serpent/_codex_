@@ -561,7 +561,7 @@ None added in this phase.
 - [Path to 100% Coverage](.codex/cognitive_brain/PATH_TO_100_PERCENT_COVERAGE.md)
 
 **Policy Compliance:**
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)
 
 ---
 

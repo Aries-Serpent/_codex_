@@ -18,7 +18,7 @@ Administrative documentation including policies, governance, and tracking.
 
 ## Administrative Resources
 - [Genesis Setup Guide](GENESIS_SETUP_GUIDE.md) - Repository initialization
-- [Continuation Roadmap](CONTINUATION_ROADMAP.md) - Future planning
+- [Continuation Roadmap](../ROADMAP.md) - Future planning
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)

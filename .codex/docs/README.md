@@ -116,7 +116,7 @@
 **In Repository Root:**
 - [README.md](../../README.md) - Main repository overview
 - [AGENTS.md](../../AGENTS.md) - AI agent operational guide
-- [.codex/CODEBASE_AGENCY_POLICY.md](../ CODEBASE_AGENCY_POLICY.md) - Complete policy framework
+- [.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md) - Complete policy framework
 
 **In docs/ directory:**
 - [docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)

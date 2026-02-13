@@ -278,9 +278,9 @@
 ### Start Every Session With:
 
 1. **Load Cognitive Brain** (first 2K tokens):
-   - [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-   - [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current status
-   - [ROADMAP.md](docs/ROADMAP.md) - Planned work
+   - [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+   - [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current status
+   - [ROADMAP.md](../docs/ROADMAP.md) - Planned work
 
 2. **Identify Current Phase** from Dashboard:
    - Check "Active Initiatives" section
@@ -379,9 +379,9 @@
 ## 📚 Reference Documents
 
 **Cognitive Brain**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md) - Status
-- [Roadmap](docs/ROADMAP.md) - Planning
+- [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+- [Dashboard](../docs/system/CODEBASE_DASHBOARD.md) - Status
+- [Roadmap](../docs/ROADMAP.md) - Planning
 
 **Documentation**:
 - [Master Index](docs/MASTER_INDEX.md) - Documentation catalog

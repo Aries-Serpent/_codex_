@@ -317,7 +317,7 @@ Focus on high-priority modules from test_priority_matrix.json.
 
 ## Related Documentation
 
-- [Coverage Roadmap](../../.codex/plans/COVERAGE_THRESHOLD_ROADMAP.md)
+- [Coverage Roadmap](../../docs/ROADMAP.md)
 - [Phase 23 PLANSET](../../.codex/plans/PLANSET_PHASE_23_COVERAGE_30.md)
 - [Phase 24 PLANSET](../../.codex/plans/PLANSET_PHASE_24_COVERAGE_50.md)
 - [Phase 25 PLANSET](../../.codex/plans/PLANSET_PHASE_25_COVERAGE_70.md)

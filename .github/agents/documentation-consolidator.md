@@ -239,7 +239,7 @@ Creating redirects:
 ## Current Status
 - [Latest Status](status/STATUS.md) - Current state and metrics
 - [Architecture](architecture/ARCHITECTURE.md) - System design
-- [Roadmap](planning/ROADMAP.md) - Future development
+- [Roadmap](../../docs/ROADMAP.md) - Future development
 
 ## Phase Documentation
 - [Phase 11](phases/PHASE_11.md) - Authentication implementation

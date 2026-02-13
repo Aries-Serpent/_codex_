@@ -136,7 +136,7 @@
 |-------|-------|
 | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) | HAR file integration |
 | [COPILOT_PROMPT_100_PERCENT.md](https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md) | Copilot integration |
-| [MCP_100_PERCENT_ROADMAP.md](https://github.com/Aries-Serpent/_codex_/blob/main/MCP_100_PERCENT_ROADMAP.md) | MCP integration roadmap |
+| [MCP_100_PERCENT_ROADMAP.md](ROADMAP.md) | MCP integration roadmap |
 
 ---
 
@@ -175,7 +175,7 @@
 | Plan | Status | Location |
 |------|--------|----------|
 | HAR Integration | Planned | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) |
-| MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](https://github.com/Aries-Serpent/_codex_/blob/main/MCP_100_PERCENT_ROADMAP.md) |
+| MCP Roadmap | Complete | [MCP_100_PERCENT_ROADMAP.md](ROADMAP.md) |
 | Gap Remediation | Complete | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) |
 
 ---
