@@ -21,7 +21,7 @@ This document provides a comprehensive, actionable planset and promptset for ach
 5. [Custom AI Agents Enhancement (Phase 21.4)](#custom-ai-agents-enhancement-phase-214)
 6. [Cognitive Brain Architecture Updates (Phase 21.5)](#cognitive-brain-architecture-updates-phase-215)
 7. [Production Readiness Verification (Phase 21.6)](#production-readiness-verification-phase-216)
-8. <!-- BROKEN ANCHOR: [Continuous Integration & Self-Healing (Phase 21.7)](#continuous-integration--self-healing-phase-217) -->
+8. <!-- BROKEN ANCHOR: [Continuous Integration & Self-Healing (Phase 21.7)](#continuous-integration-self-healing-phase-217) -->
 
 ---
 

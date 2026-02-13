@@ -13,7 +13,7 @@
 1. [Prerequisites](#prerequisites)
 2. [Phase 0: Human Genesis Actions](#phase-0-human-genesis-actions)
 3. [Phase 1: Post-Genesis Agent Autonomy](#phase-1-post-genesis-agent-autonomy)
-4. <!-- BROKEN ANCHOR: [Validation & Audit](#validation--audit) -->
+4. <!-- BROKEN ANCHOR: [Validation & Audit](#validation-audit) -->
 5. [Troubleshooting](#troubleshooting)
 
 ## Prerequisites

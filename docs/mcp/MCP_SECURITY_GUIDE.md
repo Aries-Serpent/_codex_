@@ -10,12 +10,12 @@ This guide provides comprehensive security guidance for implementing and deployi
 
 ## Table of Contents
 
-1. <!-- BROKEN ANCHOR: [Authentication & Authorization](#authentication--authorization) -->
+1. <!-- BROKEN ANCHOR: [Authentication & Authorization](#authentication-authorization) -->
 2. [Rate Limiting](#rate-limiting)
 3. [Error Handling](#error-handling)
 4. [Multi-Tenant Security](#multi-tenant-security)
 5. [Protocol Security](#protocol-security)
-6. <!-- BROKEN ANCHOR: [Observability & Audit](#observability--audit) -->
+6. <!-- BROKEN ANCHOR: [Observability & Audit](#observability-audit) -->
 7. [Security Checklist](#security-checklist)
 
 ---

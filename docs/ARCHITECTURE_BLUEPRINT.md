@@ -37,13 +37,13 @@ This blueprint serves multiple audiences:
 1. [Repository Structure](#repository-structure)
 2. [Architecture Overview](#architecture-overview)
 3. [Core Components](#core-components)
-4. <!-- BROKEN ANCHOR: [Runtime & Data Flow](#runtime--data-flow) -->
-5. <!-- BROKEN ANCHOR: [CI/CD & Testing](#cicd--testing) -->
-6. <!-- BROKEN ANCHOR: [Security & Compliance](#security--compliance) -->
+4. <!-- BROKEN ANCHOR: [Runtime & Data Flow](#runtime-data-flow) -->
+5. <!-- BROKEN ANCHOR: [CI/CD & Testing](#cicd-testing) -->
+6. <!-- BROKEN ANCHOR: [Security & Compliance](#security-compliance) -->
 7. [AI Agent Integration](#ai-agent-integration)
-8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment--operations) -->
+8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment-operations) -->
 9. [Development Workflows](#development-workflows)
-10. <!-- BROKEN ANCHOR: [Roadmap & Priorities](#roadmap--priorities) -->
+10. <!-- BROKEN ANCHOR: [Roadmap & Priorities](#roadmap-priorities) -->
 11. [Appendices](#appendices)
 
 ---

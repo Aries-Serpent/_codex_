@@ -16,7 +16,7 @@
 5. [Error Recovery](#error-recovery)
 6. [Integration Points](#integration-points)
 7. [Security Controls](#security-controls)
-8. [Monitoring & Observability](#monitoring--observability)
+8. [Monitoring & Observability](#monitoring-observability)
 
 ---
 

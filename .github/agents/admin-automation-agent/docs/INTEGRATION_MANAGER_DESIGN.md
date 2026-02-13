@@ -15,8 +15,8 @@
 4. [Service Adapters](#service-adapters)
 5. [Data Flow](#data-flow)
 6. [Error Handling](#error-handling)
-7. [Security & Compliance](#security--compliance)
-8. [Monitoring & Observability](#monitoring--observability)
+7. [Security & Compliance](#security-compliance)
+8. [Monitoring & Observability](#monitoring-observability)
 
 ---
 

@@ -7,9 +7,9 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Architecture & Decision Flow](#architecture--decision-flow)
+2. [Architecture & Decision Flow](#architecture-decision-flow)
 3. [File Structure](#file-structure)
-4. [Error Scenarios & Debugging](#error-scenarios--debugging)
+4. [Error Scenarios & Debugging](#error-scenarios-debugging)
 5. [Troubleshooting Checklist](#troubleshooting-checklist)
 
 ---

@@ -22,7 +22,7 @@ This guide provides practical instructions for using the Model Context Protocol 
 5. [Configuration](#configuration)
 6. [Security Setup](#security-setup)
 7. [Multi-Tenant Usage](#multi-tenant-usage)
-8. <!-- BROKEN ANCHOR: [Monitoring & Debugging](#monitoring--debugging) -->
+8. <!-- BROKEN ANCHOR: [Monitoring & Debugging](#monitoring-debugging) -->
 9. [Common Workflows](#common-workflows)
 10. [Troubleshooting](#troubleshooting)
 
