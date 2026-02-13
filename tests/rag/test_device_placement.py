@@ -19,6 +19,10 @@ class SimpleModel(nn.Module):
 
     def forward(self, x):
         return self.bn(self.linear(x))
+    
+    def __call__(self, *args, **kwargs):
+        """Allow model(x) syntax by delegating to forward()."""
+        return self.forward(*args, **kwargs)
 
 
 class TestSafeModelToDevice:

@@ -58,7 +58,6 @@ import json
 import re
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Dict, List, Tuple, Set, Optional
 import yaml
@@ -164,7 +163,7 @@ class HeadingParser:
                     else:
                         anchor_counts[anchor_id] = [line_num]
         
-        except Exception as e:
+        except Exception:
             # Silently skip files with read errors
             pass
         
