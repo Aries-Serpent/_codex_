@@ -6,7 +6,7 @@ This document provides a formal, physics-inspired mathematical model for underst
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Visual Capability Maps](#visual-capability-maps)
 3. [Mathematical Foundation](#mathematical-foundation)
 4. [Location Manifold & Capacity Fields](#location-manifold--capacity-fields)

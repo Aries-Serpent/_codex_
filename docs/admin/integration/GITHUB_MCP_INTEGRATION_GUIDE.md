@@ -9,7 +9,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [MCP Architecture in _codex_](#mcp-architecture-in-_codex_)
 3. [Copilot Agent Integration Patterns](#copilot-agent-integration-patterns)
 4. [Current _codex_ MCP Implementation](#current-_codex_-mcp-implementation)

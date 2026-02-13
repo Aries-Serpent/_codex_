@@ -21,7 +21,7 @@ This agent provides comprehensive link validation across the documentation, dete
 |----------|---------|---------|
 | Internal | `./file.md`, `../dir/file.md` | `[Guide](./guide.md)` |
 | External | `https://...`, `http://...` | `[GitHub](https://github.com)` |
-| Anchor | `#heading`, `file.md#section` | `[Section](#overview)` |
+| Anchor | `#heading`, `file.md#section` | `[Section](#mission-overview)` |
 | Root-Level | `../README.md` (outside docs/) | Requires GitHub URL |
 
 ## Common Issues and Fixes

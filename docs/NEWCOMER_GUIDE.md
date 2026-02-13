@@ -4,9 +4,9 @@ Welcome to **_codex_**! This guide will help you understand the repository struc
 
 ## Table of Contents
 
-1. [What is _codex_?]()
+1. [What is _codex_?](#what-is-codex)
 2. [Repository Structure](#repository-structure)
-3. [Quick Start]()
+3. [Quick Start](#quick-start)
 4. [Key Concepts](#key-concepts)
 5. [Common Workflows](#common-workflows)
 6. [Zendesk Support Administration](#zendesk-support-administration)

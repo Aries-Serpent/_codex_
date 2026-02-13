@@ -7,7 +7,7 @@
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Setting Up GitHub OAuth](#setting-up-github-oauth)
 3. [Enabling Multi-Factor Authentication](#enabling-multi-factor-authentication)
 4. [Working with Tokens](#working-with-tokens)
