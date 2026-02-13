@@ -7,7 +7,7 @@ Fix high-priority relocated file references and actual broken links
 import os
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 class TargetedLinkFixer:
     """Fix high-priority broken links"""
@@ -86,7 +86,8 @@ class TargetedLinkFixer:
                         anchor = '#' + link_url.split('#', 1)[1] if '#' in link_url else ''
                         new_url = self._calculate_relative_path(source_file, correct_path) + anchor
                         return new_url, True
-            except:
+            except Exception:
+                # Best-effort heuristic: if anything goes wrong, leave link unchanged
                 pass
         
         # Pattern: Wrong relative path to .github/

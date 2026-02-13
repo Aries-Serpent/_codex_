@@ -326,7 +326,6 @@ class ComplexFileDisambiguator:
                     continue
                 
                 self.stats['files_scanned'] += 1
-                rel_path = md_file.relative_to(self.repo_root)
                 result = self.process_file(md_file)
                 
                 if result['links_fixed'] > 0 or result['links_found'] > 0:
