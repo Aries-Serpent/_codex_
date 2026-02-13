@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("transformers")
 
-from codex_ml.interfaces.tokenizer import HFTokenizer
+from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
 
 
 def test_round_trip():

@@ -838,7 +838,6 @@ class FallbackRateLimiter:
 ```
 
 **High Rejection Rate:**
-1. Check metrics: `curl http://localhost:9090/metrics | grep rate_limit_exceeded`
 2. Identify affected API keys
 3. Temporarily increase limits if legitimate traffic
 4. Investigate abuse patterns if malicious

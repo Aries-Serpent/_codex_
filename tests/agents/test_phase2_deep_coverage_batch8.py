@@ -12,8 +12,11 @@ Systematically applies orchestration and workflow patterns:
 Target: +4-5% coverage gain (57% → 62%)
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_DeveloperOrchestrator:

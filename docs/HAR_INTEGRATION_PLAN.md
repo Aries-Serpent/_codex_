@@ -873,9 +873,9 @@ har:
 
 ## References
 
-- [HAR 1.2 Spec](http://www.softwareishard.com/blog/har-12-spec/)
-- [HAR Viewer](http://www.softwareishard.com/har/viewer/)
-- [Python HAR Parser](https://github.com/JustusW/haralyzer)
+- [HAR 1.2 Spec](https://github.com/ahmadnassri/har-spec)
+- [HAR Viewer](https://github.com/janodvarko/harviewer)
+- [Python HAR Parser](https://github.com/haralyzer/haralyzer)
 - [Chrome DevTools HAR](https://developer.chrome.com/docs/devtools/network/reference/)
 
 ---

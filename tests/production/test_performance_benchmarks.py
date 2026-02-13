@@ -5,6 +5,12 @@ Tests performance characteristics for training, data loading, and API operations
 All tests are deterministic with fixed seeds and no external dependencies.
 """
 
+import pytest
+
+pytest.importorskip("numpy")
+
+
+
 import json
 import time
 

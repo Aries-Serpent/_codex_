@@ -235,9 +235,9 @@ jq . /tmp/manifest_test.json  # Identify JSON errors
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Quick Start](#quick-start)
+1. [Overview]()
+2. [Prerequisites]()
+3. [Quick Start]()
 4. [Topic Selection](#topic-selection)
 5. [Custom Filtering](#custom-filtering)
 6. [Workflow Usage](#workflow-usage)

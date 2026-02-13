@@ -8,7 +8,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [Required Environment Variables](#required-environment-variables)
 3. [Required Secrets](#required-secrets)
 4. [Configuration Instructions](#configuration-instructions)
@@ -55,7 +55,6 @@ Configure at: `https://github.com/Aries-Serpent/_codex_/settings/variables/actio
 
 | Variable Name | Type | Purpose | Required | Default Value | Example Value |
 |--------------|------|---------|----------|---------------|---------------|
-| `MCP_ENDPOINT` | string | MCP service endpoint | No | `http://localhost:8080` | `http://localhost:8080`, `http://localhost:8080` |
 | `MCP_VERSION` | string | MCP protocol version | No | `1.0` | `1.0`, `2.0` |
 | `CACHE_WARM_SCHEDULE` | string | Cache warming cron | No | `15 3 * * *` | `15 3 * * *` (3:15 AM per-iteration) |
 | `RATE_LIMIT_RPM` | integer | Rate limit (requests/min) | No | `60` | `60`, `100` |
@@ -489,7 +488,6 @@ if __name__ == "__main__":
 # In a workflow with MCP service container:
 - name: Test MCP Connection
   run: |
-    curl -f http://localhost:8080/health || (echo "❌ MCP service not reachable" && exit 1)
     echo "✅ MCP service is healthy"
 ```
 

@@ -10,16 +10,16 @@ Test suite for scripts/mcp/select_components.py
 Tests component selection, glob expansion, and topic filtering
 """
 
-import json
-import sys
-import tempfile
-from pathlib import Path
+import json  # noqa: E402
+import sys  # noqa: E402
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
 # Add scripts/mcp to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "mcp"))
-from select_components import (
+from select_components import (  # noqa: E402
     expand_globs,
     filter_by_globs,
     filter_by_topic,

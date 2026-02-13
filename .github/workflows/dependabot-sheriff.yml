@@ -48,6 +48,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow dependabot-sheriff 2>/dev/null || echo "Cache health: check skipped"
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"

@@ -303,3 +303,9 @@ jobs:
           echo "- Manifest validation completed" >> $GITHUB_STEP_SUMMARY
           echo "- Data drift analysis completed" >> $GITHUB_STEP_SUMMARY
           echo "- Determinism tests run twice for comparison" >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow data-quality-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

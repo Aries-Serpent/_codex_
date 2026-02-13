@@ -11,9 +11,9 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch
-import torch.nn as nn
-from codex_ml.utils.checkpointing import save_checkpoint
+import torch  # noqa: E402
+import torch.nn as nn  # noqa: E402
+from codex_ml.utils.checkpointing import save_checkpoint  # noqa: E402
 
 
 def test_checkpoint_emits_one_json_line(tmp_path, capsys, monkeypatch):

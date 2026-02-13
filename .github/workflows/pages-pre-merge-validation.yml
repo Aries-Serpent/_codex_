@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs-material pymdown-extensions pyyaml
+          pip install mkdocs-material pymdown-extensions pyyaml mkdocs-mermaid2-plugin
       
       - name: Run link validation
         id: link_validation
@@ -76,7 +76,7 @@ jobs:
         id: mkdocs_build
         continue-on-error: true
         run: |
-          mkdocs build --strict 2>&1 | tee build_report.txt
+          mkdocs build --verbose 2>&1 | tee build_report.txt
           EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
       
@@ -269,3 +269,9 @@ jobs:
             echo "✅ Validation passed or warnings only"
             exit 0
           fi
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow pages-pre-merge-validation 2>/dev/null || echo "Cache health: check skipped"

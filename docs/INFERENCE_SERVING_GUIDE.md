@@ -54,7 +54,6 @@ export CODEX_MODEL_DEVICE=cpu
 python -m src.codex_ml.serving.inference_server
 ```text
 
-The server will be available at `http://localhost:8000` with the following endpoints:
 
 - `GET /` - Server information
 - `GET /health` - Health check
@@ -458,11 +457,8 @@ export CODEX_MODEL_DEVICE=cpu
 python -m src.codex_ml.serving.inference_server
 
 # 4. Test endpoints
-curl http://localhost:8000/
-curl http://localhost:8000/health
 
 # 5. Make prediction
-curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
   -d '{
     "inputs": ["This is a test"],

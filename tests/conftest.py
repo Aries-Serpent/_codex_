@@ -16,6 +16,9 @@ import sys
 from pathlib import Path
 
 import pytest
+pytest.importorskip("numpy")
+pytest.importorskip("torch")
+
 
 logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -68,14 +71,16 @@ def pytest_configure(config: pytest.Config) -> None:
 
     Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
     """
-    # Configure PyTorch to use CPU device globally to prevent meta tensor issues
+    # Note: Do NOT call torch.set_default_device() here.
+    # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
+    # causing "Cannot copy out of meta tensor" errors. RAG modules already
+    # pass device='cpu' explicitly to SentenceTransformer constructors.
     try:
         import torch
-        if hasattr(torch, 'set_default_device'):
-            torch.set_default_device("cpu")
-            logger.info("✓ PyTorch default device set to CPU (prevents meta tensor issues)")
+        version = getattr(torch, '__version__', 'unknown')
+        logger.info(f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)")
     except (ImportError, AttributeError):
-        pass  # PyTorch not available or stub version
+        pass  # PyTorch not available or stub module
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:
@@ -415,9 +420,9 @@ def set_deterministic_seed():
 # RAG Module Fixtures (Added 2026-01-08)
 # ============================================================================
 
-import tempfile
-from pathlib import Path
-from typing import Generator
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Generator  # noqa: E402
 
 
 @pytest.fixture
@@ -800,6 +805,11 @@ def ensure_cpu_device():
     """
     Ensure tests use CPU device and avoid meta tensor issues.
     Applied automatically to all tests to prevent PyTorch meta tensor errors.
+
+    Note: We do NOT call torch.set_default_device() because it interferes
+    with SentenceTransformer model loading in PyTorch >=2.0, causing
+    "Cannot copy out of meta tensor" errors. RAG modules pass device='cpu'
+    explicitly to SentenceTransformer constructors instead.
     """
     try:
         import torch
@@ -809,10 +819,6 @@ def ensure_cpu_device():
             # Stub torch module, skip fixture
             yield
             return
-
-        # Set default device to CPU (ALWAYS, not just when CUDA available)
-        # This prevents meta tensor issues during model loading
-        torch.set_default_device("cpu")
 
         # Ensure deterministic behavior
         torch.manual_seed(0)
@@ -1020,7 +1026,7 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except:
+    except Exception:  # Best-effort cleanup; psutil may not be available
         pass
 
 
@@ -1176,7 +1182,7 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except:
+    except Exception:  # psutil optional; skip resource tracking if unavailable
         pass
 
     yield
@@ -1202,5 +1208,5 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning
             )
-    except:
+    except Exception:  # psutil optional; skip leak check if unavailable
         pass

@@ -8,6 +8,7 @@ Tests quantum principles:
 - Pattern correlation
 """
 
+
 import json
 import math
 
@@ -19,9 +20,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+pytest.importorskip("numpy")
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 
-from extract_workflow_patterns import (
+from extract_workflow_patterns import (  # noqa: E402
     CognitiveBrainFeeder,
     PatternWave,
     QuantumPatternClassifier,

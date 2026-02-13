@@ -37,7 +37,7 @@ def test_dockerfile_uses_specific_tags(dockerfiles):
             continue
 
         content = dockerfile.read_text(errors="ignore")
-        lines = [l for l in content.split("\n") if l.strip().startswith("FROM ")]
+        lines = [line for line in content.split("\n") if line.strip().startswith("FROM ")]
 
         for line in lines:
             # Allow 'latest' for local/dev images, but flag it

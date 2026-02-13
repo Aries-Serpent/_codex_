@@ -7,6 +7,8 @@ Test module for dataset wrapper.
 from __future__ import annotations
 
 import pytest
+pytest.importorskip("datasets")
+
 
 from codex_ml.data.dataset_wrapper import DATASETS_AVAILABLE, train_val_test_split
 

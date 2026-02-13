@@ -8,7 +8,10 @@ Tests focus on:
 - Learning rate scheduling
 """
 
+
 import pytest
+
+pytest.importorskip("torch")
 
 # Import with graceful fallback
 try:
@@ -186,8 +189,6 @@ class TestOptimizerSetup:
         """Test optimizer zero_grad functionality."""
         import torch.optim as optim
 
-        import torch
-
         optimizer = optim.Adam(simple_model.parameters(), lr=0.001)
 
         # Create some gradients
@@ -208,8 +209,6 @@ class TestOptimizerSetup:
     def test_optimizer_step(self, simple_model):
         """Test optimizer step updates parameters."""
         import torch.optim as optim
-
-        import torch
 
         optimizer = optim.SGD(simple_model.parameters(), lr=0.1)
 
@@ -367,8 +366,6 @@ class TestTrainingLoopIntegration:
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
         import torch.optim as optim
-
-        import torch
         import torch.nn as nn
         from torch.utils.data import DataLoader, TensorDataset
 

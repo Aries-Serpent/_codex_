@@ -1,8 +1,11 @@
 """Tests for distributed training module."""
 
+
 import os
 
 import pytest
+
+pytest.importorskip("torch")
 
 import torch
 from codex_ml.training.distributed import (

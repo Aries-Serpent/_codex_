@@ -18,7 +18,8 @@ def test_count_tokens_without_tokenizer():
 def test_count_tokens_with_tokenizer():
     """Test token counting with custom tokenizer"""
     text = "This is a test"
-    tokenizer = lambda t: t.split()  # Simple mock tokenizer
+    def tokenizer(t):
+        return t.split()  # Simple mock tokenizer
     count = _count_tokens(text, tokenizer)
     assert count == 4
 
@@ -67,7 +68,8 @@ def test_truncate_to_tokens_exact_limit():
 def test_truncate_to_tokens_with_custom_tokenizer():
     """Test truncation with custom tokenizer"""
     text = "This is a test text"
-    tokenizer = lambda t: t.split()
+    def tokenizer(t):
+        return t.split()
     result = _truncate_to_tokens(text, max_tokens=3, tokenizer=tokenizer)
     # Should be truncated to ~3 tokens
     assert "..." in result or len(result.split()) <= 4
@@ -113,7 +115,8 @@ class TestPromptTemplate:
 
     def test_init_with_tokenizer(self):
         """Test initialization with custom tokenizer"""
-        tokenizer = lambda t: t.split()
+        def tokenizer(t):
+            return t.split()
         template = PromptTemplate(tokenizer=tokenizer)
         assert template.tokenizer is tokenizer
 
@@ -347,7 +350,8 @@ def test_build_prompt_with_tokenizer():
     """Test build_prompt with custom tokenizer"""
     query = "Query"
     docs = [{"content": "Content", "metadata": {"source_id": "d1"}}]
-    tokenizer = lambda t: t.split()
+    def tokenizer(t):
+        return t.split()
 
     prompt = build_prompt(query, docs, use_rag=True, tokenizer=tokenizer)
     assert "Query" in prompt
@@ -370,7 +374,8 @@ def test_build_prompt_rag_with_empty_docs():
 def test_truncate_to_tokens_with_tokenizer_binary_search():
     """Test truncation uses binary search with custom tokenizer"""
     text = "One two three four five six seven eight nine ten"
-    tokenizer = lambda t: t.split()
+    def tokenizer(t):
+        return t.split()
     result = _truncate_to_tokens(text, max_tokens=5, tokenizer=tokenizer)
     # Should be truncated to approximately 5 tokens
     tokens = result.replace("...", "").split()

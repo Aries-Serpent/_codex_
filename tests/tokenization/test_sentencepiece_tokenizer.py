@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Tests for the SentencePieceTokenizer adapter.
 
 Test module for sentencepiece tokenizer.
 """
+
+from __future__ import annotations
 
 import json
 import sys
@@ -61,7 +61,10 @@ if "transformers" not in sys.modules:
         IS_CODEX_STUB=True,
     )
 
-from codex_ml.tokenization.adapter import SentencePieceTokenizer, TokenizerAdapter
+from codex_ml.tokenization.adapter import (  # noqa: E402
+    SentencePieceTokenizer,
+    TokenizerAdapter,
+)
 
 spm = pytest.importorskip("sentencepiece")
 

@@ -11,10 +11,13 @@ Comprehensive test coverage for:
 - Metrics export
 """
 
+
 import json
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+pytest.importorskip("typer")
 
 from codex.cli_rag import app
 from typer.testing import CliRunner

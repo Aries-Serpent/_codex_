@@ -9,10 +9,13 @@ Tests focus on:
 - Gradient accumulation
 """
 
+
 import tempfile
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
 
 # Import with graceful fallback for torch
 try:
@@ -29,7 +32,6 @@ except ImportError:
     Dataset = object  # Fallback base class
     DataLoader = None
     Adam = None
-    pytestmark = pytest.mark.skip("PyTorch not available")
 
 
 # Conditional class definitions - only define if torch is available
@@ -69,6 +71,10 @@ if HAS_TORCH and torch is not None:
                 loss = loss_fn(logits, labels.squeeze())
 
             return {'loss': loss, 'logits': logits}
+        
+        def __call__(self, *args, **kwargs):
+            """Allow model(x) syntax by delegating to forward()."""
+            return self.forward(*args, **kwargs)
 else:
     # Dummy classes when torch is not available
     class SimpleDataset:
@@ -148,7 +154,7 @@ class TestBasicTrainingIteration:
             losses.append(loss.item())
 
         assert len(losses) == 5, "Should have 5 loss values"
-        assert all(l > 0 for l in losses), "All losses should be positive"
+        assert all(loss > 0 for loss in losses), "All losses should be positive"
 
     def test_training_mode_toggle(self, simple_model):
         """Test toggling between train and eval modes."""

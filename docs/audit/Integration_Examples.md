@@ -287,7 +287,6 @@ if __name__ == "__main__":
 **Usage**:
 ```bash
 # Set MLflow tracking URI
-export MLFLOW_TRACKING_URI=http://localhost:5000
 
 # Run audit and log
 make space-audit

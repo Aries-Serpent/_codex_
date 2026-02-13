@@ -37,3 +37,9 @@ jobs:
         with:
           python-version: 3.12
           cache-tier: 'live'
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow optimized-ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

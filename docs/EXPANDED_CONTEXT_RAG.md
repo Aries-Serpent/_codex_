@@ -382,4 +382,4 @@ For slow queries:
 
 - [FAISS Documentation](https://github.com/facebookresearch/faiss/wiki)
 - [Sentence Transformers](https://www.sbert.net/)
-- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings)
+- [OpenAI Embeddings](https://platform.openai.com/docs/api-reference/embeddings)

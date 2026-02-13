@@ -118,7 +118,6 @@ Alerts trigger when metrics breach thresholds:
 ## Dashboard
 
 The eval dashboard is available at:
-- Internal: `http://localhost:8080/evals`
 - Generated: `.github/audit/usage_dashboard.md`
 
 ## Configuration

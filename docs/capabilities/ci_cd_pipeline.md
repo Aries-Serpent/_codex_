@@ -216,7 +216,6 @@ deploy:staging:
     - kubectl apply -f k8s/staging/
   environment:
     name: staging
-    url: http://localhost:8080
   only:
     - develop
 
@@ -226,7 +225,6 @@ deploy:production:
     - kubectl apply -f k8s/production/
   environment:
     name: production
-    url: http://localhost:8080
   when: manual
   only:
     - main

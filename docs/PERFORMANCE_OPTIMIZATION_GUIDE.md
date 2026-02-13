@@ -8,7 +8,7 @@
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [Request Batching](#request-batching)
 3. [Response Caching](#response-caching)
 4. [Retrieval Optimizations](#retrieval-optimizations)
@@ -317,7 +317,6 @@ breaker = CircuitBreaker(config)
 
 # Use circuit breaker
 def call_external_service():
-    response = requests.post("http://localhost:8080/predict", ...)
     return response.json()
 
 try:

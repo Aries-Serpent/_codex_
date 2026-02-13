@@ -14,10 +14,12 @@ import tempfile
 from pathlib import Path
 
 import pytest
+pytest.importorskip("torch")
+
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
+import torch  # noqa: E402
 
 # Mark all tests in this module - skip by default (slow)
 pytestmark = [pytest.mark.ml_comprehensive, pytest.mark.integration, pytest.mark.slow]

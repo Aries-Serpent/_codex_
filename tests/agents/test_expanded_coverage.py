@@ -27,7 +27,7 @@ class TestMentalMappingExpanded:
 
     def test_mental_node_creation(self):
         """Test MentalNode can be created."""
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         from agents.mental_mapping import MentalNode, NodeType
 
@@ -35,7 +35,7 @@ class TestMentalMappingExpanded:
             node_id="test-1",
             node_type=NodeType.OBSERVATION,
             content="Test observation",
-            timestamp=datetime.now(UTC).isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
         )
 
         assert node.node_id == "test-1"
@@ -71,7 +71,7 @@ class TestMentalMappingExpanded:
 
     def test_add_node(self):
         """Test adding a node to the model."""
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
 
@@ -80,7 +80,7 @@ class TestMentalMappingExpanded:
             node_id="test-node",
             node_type=NodeType.REASONING,
             content="Test reasoning",
-            timestamp=datetime.now(UTC).isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
         )
 
         model.add_node(node)

@@ -120,7 +120,7 @@ class my_class:
         code = """
 try:
     risky()
-except:
+except Exception:
     pass
 """
         detector = CodeSmellDetector()

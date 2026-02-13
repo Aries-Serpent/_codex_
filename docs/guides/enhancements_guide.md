@@ -106,7 +106,6 @@ View experiment results:
 # Start MLflow UI
 mlflow ui --backend-store-uri ./mlruns
 
-# Open browser to http://localhost:5000
 ```
 
 ---

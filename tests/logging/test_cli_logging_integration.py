@@ -8,11 +8,13 @@ import json
 from pathlib import Path
 
 import pytest
+pytest.importorskip("typer")
+
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for logging integration tests")
-from codex_ml.evaluation import cli as eval_cli
-from typer.testing import CliRunner
+from codex_ml.evaluation import cli as eval_cli  # noqa: E402
+from typer.testing import CliRunner  # noqa: E402
 
 
 class NoopLogger:
@@ -60,4 +62,4 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
     assert res.exit_code == 0
     assert (tmp_path / "m.ndjson").exists()
     lines = (tmp_path / "m.ndjson").read_text().strip().splitlines()
-    assert any(json.loads(l).get("type") == "epoch" for l in lines)
+    assert any(json.loads(line).get("type") == "epoch" for line in lines)

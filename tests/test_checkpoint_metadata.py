@@ -11,8 +11,8 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch
-from codex_ml.utils.checkpointing import save_checkpoint
+import torch  # noqa: E402
+from codex_ml.utils.checkpointing import save_checkpoint  # noqa: E402
 
 
 def test_checkpoint_records_git_and_env(tmp_path):

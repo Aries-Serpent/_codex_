@@ -33,6 +33,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow api-documentation 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

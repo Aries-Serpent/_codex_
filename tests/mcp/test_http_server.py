@@ -10,9 +10,9 @@ import pytest
 
 pytest.importorskip("fastapi")
 
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: E402
 
-from mcp.server.http import (
+from mcp.server.http import (  # noqa: E402
     ContextItem,
     ContextUpsertRequest,
     QueryRequest,

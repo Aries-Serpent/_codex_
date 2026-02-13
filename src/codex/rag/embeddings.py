@@ -12,8 +12,6 @@ from typing import Any, Dict, List, Optional, Protocol
 
 import numpy as np
 
-from codex.rag.utils import safe_model_to_device
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -62,37 +60,15 @@ class LocalSentenceTransformerProvider:
     def _load_model(self):
         """Load the embedding model."""
         try:
-            import os
-
-            from sentence_transformers import SentenceTransformer
-
-            import torch
+            from codex.rag._model_utils import safe_load_sentence_transformer
 
             logger.info(f"Loading local embedding model: {self.model_name}")
 
-            # Use HF_TOKEN if available for authenticated downloads
-            use_auth_token = os.environ.get('HF_TOKEN', False)
-
-            # CRITICAL FIX: Force CPU device and prevent meta tensors
-            # Set default device to CPU before any model operations
-            torch.set_default_device('cpu')
-
-            self.model = SentenceTransformer(
-                self.model_name,
-                device=None,
-                cache_folder=self.cache_dir,
-                trust_remote_code=False,
-                use_auth_token=use_auth_token if use_auth_token else None
+            self.model = safe_load_sentence_transformer(
+                self.model_name, self.cache_dir
             )
 
-            # Safely move to CPU, handling meta tensors if present
-            self.model = safe_model_to_device(self.model, 'cpu')
-            self.model.eval()
-
-            # Reset default device to avoid side effects
-            torch.set_default_device(None)
-
-            logger.info(f"Local embedding model loaded successfully on CPU (auth: {bool(use_auth_token)})")
+            logger.info("Local embedding model loaded successfully on CPU")
 
         except ImportError:
             logger.error(
@@ -126,6 +102,7 @@ class LocalSentenceTransformerProvider:
             batch_size=batch_size,
             show_progress_bar=show_progress,
             convert_to_numpy=True,
+            device="cpu",  # Explicit device specification
         )
 
         return embeddings

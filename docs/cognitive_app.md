@@ -6,7 +6,6 @@ The Cognitive Codex App is a quantum-enhanced code generation platform with real
 
 ## Quick Links
 
-- **Live Application:** [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/)
 - **Source Code:** [`/cognitive_app`](https://github.com/Aries-Serpent/_codex_/tree/main/cognitive_app)
 - **Integration Guide:** [cognitive_app/README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
 - **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
@@ -135,7 +134,6 @@ npm install
 npm run dev
 ```
 
-Access at: http://localhost:5173
 
 ### Build
 ```bash
@@ -149,7 +147,6 @@ The application is automatically deployed to GitHub Pages via GitHub Actions whe
 
 **Workflow:** `.github/workflows/deploy-cognitive-app.yml`
 
-**Live URL:** https://aries-serpent.github.io/_codex_/cognitive_app/
 
 ## Configuration
 
@@ -161,7 +158,6 @@ base: process.env.GITHUB_ACTIONS ? '/_codex_/cognitive_app/' : '/'
 
 ### Environment Variables (Future)
 ```bash
-VITE_CODEX_API=http://localhost:8000  # Backend API URL
 VITE_CODEX_KEY=demo-key               # API key
 ```
 

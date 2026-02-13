@@ -394,9 +394,14 @@ def mlflow_run(
 
     tracking_path = Path(tracking_dir)
     if offline:
-        os.environ.setdefault("MLFLOW_TRACKING_URI", f"file:{tracking_path.resolve()}")
+        offline_uri = f"file:{tracking_path.resolve()}"
+        os.environ.setdefault("MLFLOW_TRACKING_URI", offline_uri)
         with suppress(Exception):  # pragma: no cover - directory creation best-effort
             tracking_path.mkdir(parents=True, exist_ok=True)
+        with suppress(Exception):  # pragma: no cover - mlflow optional semantics
+            mlflow.set_tracking_uri(offline_uri)
+        with suppress(Exception):  # pragma: no cover - recreate default experiment when missing
+            mlflow.set_experiment("Default")
 
     mlflow.start_run(run_name=run_name)
     try:

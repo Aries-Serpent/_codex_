@@ -54,7 +54,6 @@ async def execute_query(query: str, limit: int = 100):
 import httpx
 
 class MCPClient:
-    def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
         self.client = httpx.AsyncClient(base_url=base_url)
     

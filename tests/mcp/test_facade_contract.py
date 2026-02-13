@@ -11,7 +11,7 @@ import pytest
 fastapi = pytest.importorskip("fastapi")
 pytest.importorskip("fastapi.testclient")
 
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

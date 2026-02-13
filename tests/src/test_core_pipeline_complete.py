@@ -10,11 +10,11 @@ Test suite for core pipeline: code ingestion, AST transformation, RAG retrieval,
 Complete test coverage for Phase 9.1 - 100 comprehensive tests
 """
 
-import json
-import tempfile
-from pathlib import Path
+import json  # noqa: E402
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
 # ============================================================================
 # CODE INGESTION TESTS (20 tests)

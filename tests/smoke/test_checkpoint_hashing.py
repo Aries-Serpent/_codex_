@@ -20,7 +20,7 @@ def test_project_save_checkpoint_hashes(tmp_path: Path):
     class M(torch.nn.Module):
         def __init__(self):
             super().__init__()
-            self.l = torch.nn.Linear(2, 2)
+            self.linear = torch.nn.Linear(2, 2)
 
     model = M()
     opt = torch.optim.SGD(model.parameters(), lr=0.01)

@@ -130,7 +130,6 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://*.spark.github.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -625,7 +624,6 @@ export function QuantumDecisionEngine() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/cognitive/state');
         const data = await response.json();
         setMetrics(data);
       } catch (error) {
@@ -741,7 +739,6 @@ export function AgentOrchestrationPanel() {
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/agents/state');
         const data = await response.json();
         setAgents(data.agents);
       } catch (error) {
@@ -757,7 +754,6 @@ export function AgentOrchestrationPanel() {
   const executeWorkflow = async (token: string) => {
     setExecuting(token);
     try {
-      await fetch('http://localhost:8000/api/agents/orchestrate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workflow_token: token }),
@@ -852,7 +848,6 @@ export function MemoryDashboard() {
   useEffect(() => {
     const fetchMemory = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/memory/state');
         const data = await response.json();
         setMemoryState(data);
       } catch (error) {
@@ -1158,7 +1153,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_CODEX_API=http://localhost:8000
       - VITE_CODEX_KEY=demo-key
     depends_on:
       - backend
@@ -1192,7 +1186,6 @@ LOG_LEVEL=info
 DATABASE_URL=sqlite:///.codex/session_logs.db
 
 # Frontend
-VITE_CODEX_API=http://localhost:8000
 VITE_CODEX_KEY=demo-key
 ```
 
@@ -1215,7 +1208,6 @@ uvicorn services.api.main:app --reload --port 8000
 # (GitHub Spark handles the frontend automatically)
 
 # Test the integration
-curl http://localhost:8000/health
 ```
 
 ---

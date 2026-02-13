@@ -317,7 +317,10 @@ def export_environment(
 
     info = environment_summary()
     summary_path = out / summary_filename
-    summary_path.write_text(json.dumps(info, indent=2, sort_keys=True), encoding="utf-8")
+    summary_path.write_text(
+        json.dumps(info, indent=2, sort_keys=True, default=str),
+        encoding="utf-8",
+    )
 
     freeze_lines = info.get("pip_freeze", []) or []
     freeze_path = out / freeze_filename
@@ -327,7 +330,7 @@ def export_environment(
         freeze_path.write_text("", encoding="utf-8")
 
     concise = _concise_summary(info, seed=seed, command=command, extras=extras)
-    ndjson_line = json.dumps(concise, sort_keys=True)
+    ndjson_line = json.dumps(concise, sort_keys=True, default=str)
     ndjson_path = out / ndjson_filename
     ndjson_path.write_text(ndjson_line + "\n", encoding="utf-8")
     if stream is not None:

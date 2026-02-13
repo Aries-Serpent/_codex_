@@ -32,3 +32,9 @@ jobs:
         run: nox -s gates
       - name: Pre-commit (informational)
         run: nox -s precommit || true
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow nox_gates --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

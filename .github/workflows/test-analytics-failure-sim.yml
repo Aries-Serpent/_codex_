@@ -27,6 +27,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow test-analytics-failure-sim 2>/dev/null || echo "Cache health: check skipped"
       - name: Simulate Failure
         run: |
           echo "Simulating failure type: ${{ github.event.inputs.failure_type }}"

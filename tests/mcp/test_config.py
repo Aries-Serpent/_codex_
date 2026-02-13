@@ -10,7 +10,7 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.config import MCPConfig, ToolDefinition, compute_checksum
+from mcp.config import MCPConfig, ToolDefinition, compute_checksum  # noqa: E402
 
 
 def test_compute_checksum():

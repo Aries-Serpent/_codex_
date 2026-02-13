@@ -20,7 +20,7 @@ _TRAINING_DIR = _REPO_ROOT / "training"
 if str(_TRAINING_DIR) not in sys.path:
     sys.path.insert(0, str(_TRAINING_DIR))
 
-from accelerate_init_guard import (
+from accelerate_init_guard import (  # noqa: E402
     AccelerateInitResult,
     get_distributed_env_info,
     is_accelerate_available,

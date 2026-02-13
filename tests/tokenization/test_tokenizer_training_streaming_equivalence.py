@@ -10,9 +10,9 @@ import pytest
 
 pytest.importorskip("tokenizers")
 
-from tokenizers import Tokenizer
+from tokenizers import Tokenizer  # noqa: E402
 
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 
 def test_bpe_streaming_equivalence(tmp_path):

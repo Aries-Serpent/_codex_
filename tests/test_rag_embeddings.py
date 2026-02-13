@@ -2,6 +2,7 @@
 Tests for RAG Embeddings Module
 """
 
+
 import importlib.util
 import os
 import tempfile
@@ -10,6 +11,8 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
@@ -205,7 +208,7 @@ class TestOpenAIEmbeddingProvider:
             assert provider.client is not None
 
             # Trigger destructor via deletion
-            del provider
+            provider = None  # Release reference for GC
 
 
 class TestCachedEmbeddingProvider:

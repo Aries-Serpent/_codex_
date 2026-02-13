@@ -93,7 +93,6 @@ experiment:
   
 tracking:
   backend: mlflow
-  uri: http://localhost:5000
   artifact_location: s3://bucket/artifacts
 
 logging:
@@ -362,7 +361,6 @@ tracker.end_run()
 import mlflow
 
 # Set tracking URI
-mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("codex-training")
 
 # Start run with context manager

@@ -12,7 +12,7 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for checkpoint tests")
-from codex_ml.checkpointing.bestk import update_and_prune
+from codex_ml.checkpointing.bestk import update_and_prune  # noqa: E402
 
 
 def _fake_save(path: Path):

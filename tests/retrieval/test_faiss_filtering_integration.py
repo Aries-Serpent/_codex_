@@ -1,7 +1,10 @@
 """Integration tests for metadata filtering with FAISS store"""
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 try:
     from src.codex.retrieval.stores.faiss_store import FAISSStore

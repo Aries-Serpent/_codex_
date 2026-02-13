@@ -26,6 +26,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow pypi-publish 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
         with:

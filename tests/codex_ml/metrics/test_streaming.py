@@ -9,11 +9,13 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
+pytest.importorskip("numpy")
+
 
 # Skip if torch not available
 torch = pytest.importorskip("torch")
 
-from codex_ml.metrics.streaming import StreamingLoss, _to_numpy
+from codex_ml.metrics.streaming import StreamingLoss, _to_numpy  # noqa: E402
 
 
 class TestToNumpy:

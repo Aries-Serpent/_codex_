@@ -1,11 +1,14 @@
 """Comprehensive tests for RAG embeddings module."""
 
+
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.rag.embeddings import (
     CachedEmbeddingProvider,

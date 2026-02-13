@@ -11,8 +11,11 @@ Focus on core RAG functionality not fully covered:
 import tempfile
 from pathlib import Path
 
-import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
+
+import numpy as np  # noqa: E402
 
 
 class TestEmbeddingAccuracy:
@@ -345,7 +348,7 @@ class TestRAGPerformance:
                 for i in range(100):
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
-                    except:
+                    except Exception:  # Best-effort document insertion for perf test
                         pass
 
             # Test retrieval speed

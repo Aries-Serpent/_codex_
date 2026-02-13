@@ -12,8 +12,6 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from codex.rag.utils import safe_model_to_device
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -90,35 +88,13 @@ class Retriever:
             raise ImportError("sentence-transformers not installed")
 
         try:
-            import os
-
-            import torch
+            from codex.rag._model_utils import safe_load_sentence_transformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
 
-            # Use HF_TOKEN if available for authenticated downloads
-            use_auth_token = os.environ.get('HF_TOKEN', False)
-
-            # CRITICAL FIX: Force CPU device and prevent meta tensors
-            # Set default device to CPU before any model operations
-            torch.set_default_device('cpu')
-
-            self.model = SentenceTransformer(
-                self.model_name,
-                device=None,
-                cache_folder=self.cache_dir,
-                trust_remote_code=False,
-                use_auth_token=use_auth_token if use_auth_token else None
+            self.model = safe_load_sentence_transformer(
+                self.model_name, self.cache_dir
             )
-
-            # Safely move to CPU, handling meta tensors if present
-            self.model = safe_model_to_device(self.model, 'cpu')
-            self.model.eval()
-
-            # Reset default device to avoid side effects
-            torch.set_default_device(None)
-
-            logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")
@@ -161,7 +137,9 @@ class Retriever:
 
         # Encode query
         logger.debug(f"Encoding query: {q[:100]}...")
-        query_embedding = self.model.encode([q], convert_to_numpy=True, show_progress_bar=False)
+        query_embedding = self.model.encode(
+            [q], convert_to_numpy=True, show_progress_bar=False, device="cpu"
+        )
 
         # Search index
         logger.debug(f"Searching index for top {top_k} results")

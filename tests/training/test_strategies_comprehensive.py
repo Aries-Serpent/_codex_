@@ -277,7 +277,7 @@ def test_legacy_strategy_deprecation_warning(mock_warn, mock_import, mock_config
 
     try:
         strategy.run(mock_config, [])
-    except:
+    except Exception:
         pass  # We only care about the warning
 
     # Verify deprecation warning was called

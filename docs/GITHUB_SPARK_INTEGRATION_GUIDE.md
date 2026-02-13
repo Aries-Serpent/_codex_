@@ -10,14 +10,14 @@
 
 ## Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [Architecture](#architecture)
 3. [Core Capabilities](#core-capabilities)
 4. [Promptset Plan](#promptset-plan)
 5. [Implementation Examples](#implementation-examples)
 6. [Backend Integration](#backend-integration)
 7. [Demonstration Scenarios](#demonstration-scenarios)
-8. [Quick Start](#quick-start)
+8. [Quick Start]()
 9. [Resources](#resources)
 
 ---
@@ -751,7 +751,6 @@ Add collaboration tools:
 
 SHARE BUTTON (Top right):
 - Click to generate shareable URL
-  - Format: http://localhost:8080/share/{uuid}
   - Expiry: dropdown (1 hour, 1 iteration, 1 phase, never)
   - Read-only or editable
 - Copy link button
@@ -947,7 +946,6 @@ import React, { useState, useCallback } from 'react';
 import { CodexAPIClient, CodexResponse } from './codex-api-client';
 import { Editor } from '@monaco-editor/react';
 
-const API_URL = process.env.REACT_APP_CODEX_API || 'http://localhost:8000';
 const API_KEY = process.env.REACT_APP_CODEX_KEY || 'demo-key';
 
 const client = new CodexAPIClient(API_URL, API_KEY);
@@ -1222,13 +1220,11 @@ cd /path/to/_codex_
 uvicorn services.api.main:app --reload --port 8000
 
 # Test with curl
-curl -X POST http://localhost:8000/infer \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer demo-key" \
   -d '{"prompt": "Create a function to parse CSV files", "context": {"tier": "B"}}'
 
 # Check status
-curl http://localhost:8000/status
 
 # Codex CLI commands
 python -m codex.cli ingest ./example.py
@@ -1505,7 +1501,6 @@ uvicorn services.api.main:app --reload --port 8000
 uvicorn services.api.main:app --workers 4 --port 8000
 
 # Verify API is running
-curl http://localhost:8000/health
 # Expected: {"status":"ok"}
 ```
 
@@ -1520,7 +1515,6 @@ Create a web app called "Codex AI Assistant" with React and TypeScript.
 Features needed:
 - Dark theme with gradient header (purple #667eea to indigo #764ba2)
 - Large text area (min 8 rows) for code generation prompts
-- "Generate Code" button that calls http://localhost:8000/infer
 - Display generated code with syntax highlighting (Monaco Editor)
 - Show metrics: k₁ factor, coherence, processing time
 - Copy-to-clipboard button
@@ -1542,7 +1536,6 @@ Styling:
 uvicorn services.api.main:app --reload --port 8000
 
 # Terminal 2: Test with curl
-curl -X POST http://localhost:8000/infer \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "Create a function to validate email addresses",
@@ -1691,4 +1684,4 @@ MIT License - see [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/L
 
 ---
 
-**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@localhost)
+**Need Help?** [Open a discussion](https://github.com/Aries-Serpent/_codex_/discussions) or [contact us](mailto:support@example.com)

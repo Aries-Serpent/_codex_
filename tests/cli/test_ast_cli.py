@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from codex.cli.ast_cli import main, get_adapter
+from codex.cli.ast_cli import get_adapter, main
 
 
 class TestGetAdapter:

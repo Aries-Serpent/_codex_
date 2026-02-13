@@ -21,7 +21,6 @@ This document describes the Cross-Origin Resource Sharing (CORS) configuration f
 **CORS_ORIGINS** - Comma-separated list of allowed origins
 ```bash
 # Development
-CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 
 # Production
 CORS_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
@@ -38,7 +37,6 @@ If `CORS_ORIGINS` is not set, the configuration defaults based on `ENVIRONMENT`:
 
 | Environment | Default CORS Origins |
 |-------------|---------------------|
-| `development` | `http://localhost:3000`, `http://localhost:8080`, `http://127.0.0.1:3000`, `http://127.0.0.1:8080` |
 | `staging` | No defaults - must explicitly set |
 | `production` | Restricted domains (configured per deployment) |
 
@@ -74,8 +72,6 @@ elif os.getenv("ENVIRONMENT", "development") == "production":
 else:
     # Development: Allow localhost only
     cors_origins = [
-        "http://localhost:3000",
-        "http://localhost:8080",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8080"
     ]
@@ -114,18 +110,14 @@ app.add_middleware(
 
 ```bash
 # Start service
-export CORS_ORIGINS="http://localhost:3000"
 uvicorn services.ita.app.main:app --reload
 
 # Test CORS headers
-curl -H "Origin: http://localhost:3000" \
      -H "Access-Control-Request-Method: POST" \
      -H "Access-Control-Request-Headers: Content-Type" \
      -X OPTIONS \
-     http://localhost:8000/api/endpoint
 
 # Should see:
-# Access-Control-Allow-Origin: http://localhost:3000
 # Access-Control-Allow-Methods: GET, POST, PUT, DELETE
 ```
 
@@ -180,7 +172,6 @@ services:
 
 ### CORS Errors in Browser
 
-**Symptom**: `Access to fetch at 'http://localhost:8000' from origin 'http://localhost:3000' has been blocked by CORS policy`
 
 **Solutions**:
 1. Check `CORS_ORIGINS` includes the requesting origin
@@ -195,9 +186,7 @@ services:
 import requests
 
 response = requests.options(
-    'http://localhost:8000/api/endpoint',
     headers={
-        'Origin': 'http://localhost:3000',
         'Access-Control-Request-Method': 'POST'
     }
 )

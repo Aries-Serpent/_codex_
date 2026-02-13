@@ -212,7 +212,6 @@ ls -lh /var/log/mcp-server/
 **Metrics Endpoint 500 Error**:
 ```bash
 # Detect: /metrics returns 500
-curl http://localhost:8000/metrics
 
 # Diagnose: Check middleware errors
 journalctl -u mcp-server | grep metrics

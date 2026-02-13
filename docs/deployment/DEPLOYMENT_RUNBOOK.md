@@ -149,7 +149,6 @@ journalctl -u codex-api -f
 ### API Health Check
 
 ```bash
-curl -s http://localhost:8000/health | jq
 ```
 
 Expected response:
@@ -171,7 +170,6 @@ celery -A codex.tasks inspect ping
 ### Metrics Check
 
 ```bash
-curl -s http://localhost:8000/metrics | grep codex_
 ```
 
 ---

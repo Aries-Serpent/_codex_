@@ -16,6 +16,8 @@ import tempfile
 from pathlib import Path
 
 import pytest
+pytest.importorskip("numpy")
+
 
 # Import the module under test
 from src.codex_ml.utils.reproducibility_hardening import (

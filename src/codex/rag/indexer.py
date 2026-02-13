@@ -14,8 +14,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from codex.rag.utils import safe_model_to_device
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -104,7 +102,7 @@ def embed_chunks(
 
     # Import here to avoid hard dependency
     try:
-        from sentence_transformers import SentenceTransformer
+        import sentence_transformers  # noqa: F401
     except ImportError:
         logger.error(
             "sentence-transformers not installed. "
@@ -119,33 +117,9 @@ def embed_chunks(
 
     logger.info(f"Loading embedding model: {model_name}")
     try:
-        import os
+        from codex.rag._model_utils import safe_load_sentence_transformer
 
-        import torch
-
-        # Use HF_TOKEN if available for authenticated downloads
-        use_auth_token = os.environ.get('HF_TOKEN', False)
-
-        # CRITICAL FIX: Force CPU device and prevent meta tensors
-        # Set default device to CPU before any model operations
-        torch.set_default_device('cpu')
-
-        model = SentenceTransformer(
-            model_name,
-            device=None,
-            cache_folder=cache_dir,
-            trust_remote_code=False,
-            use_auth_token=use_auth_token if use_auth_token else None
-        )
-
-        # Safely move to CPU, handling meta tensors if present
-        model = safe_model_to_device(model, 'cpu')
-        model.eval()
-
-        # Reset default device to avoid side effects
-        torch.set_default_device(None)
-
-        logger.info(f"Model loaded successfully on CPU (auth: {bool(use_auth_token)})")
+        model = safe_load_sentence_transformer(model_name, cache_dir)
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         logger.error(f"Failed to load embedding model: {e}")
@@ -153,13 +127,45 @@ def embed_chunks(
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
+    
+    # CRITICAL FIX: Validate and filter inputs BEFORE encoding
+    original_count = len(texts)
+    texts_filtered = [text.strip() for text in texts if text and text.strip()]
+    
+    if len(texts_filtered) < original_count:
+        logger.warning(
+            f"Filtered out {original_count - len(texts_filtered)} empty/whitespace texts"
+        )
+    
+    if not texts_filtered:
+        raise ValueError("No valid text chunks to encode after filtering empty inputs")
+    
+    logger.debug(
+        f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
+    )
 
-    # Generate embeddings
-    logger.info(f"Generating embeddings for {len(texts)} chunks")
-    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
-
-    logger.info(f"Generated embeddings with shape: {embeddings.shape}")
-    return embeddings
+    # Generate embeddings with explicit device parameter and detailed error handling
+    logger.info(f"Generating embeddings for {len(texts_filtered)} chunks")
+    try:
+        embeddings = model.encode(
+            texts_filtered,
+            batch_size=32,
+            show_progress_bar=True,
+            convert_to_numpy=True,
+            device="cpu",  # Explicit device specification
+        )
+        logger.info(f"Successfully encoded {len(texts_filtered)} texts, embedding shape: {embeddings.shape}")
+        return embeddings
+    except IndexError as e:
+        logger.error(f"IndexError during encoding: {e}")
+        logger.error(f"Texts count: {len(texts_filtered)}")
+        logger.error(f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}")
+        logger.error(f"Model info: {model}")
+        logger.error(f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}")
+        raise RuntimeError(
+            "Failed to encode texts due to IndexError. "
+            "Check input format and model compatibility."
+        ) from e
 
 
 def persist_index(

@@ -44,7 +44,7 @@ from logging_utils import (
     setup_logging,
     shutdown_logging,
 )
-from metrics import append_ndjson
+from src.metrics import append_ndjson
 
 from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer

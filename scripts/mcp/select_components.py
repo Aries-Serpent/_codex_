@@ -47,59 +47,90 @@ def load_topics(topics_file: Path) -> dict:
         return json.load(f)
 
 
-def expand_globs(patterns: List[str], base_dir: Path) -> Set[Path]:
-    """Expand glob patterns to actual file paths"""
-    matched_files = set()
-    
+def _resolve_patterns(patterns: List[str], base_dir: Path) -> Set[Path]:
+    """Resolve a list of glob patterns to relative file paths.
+
+    Handles both simple and ``**`` recursive patterns.
+    """
+    result: Set[Path] = set()
+
     for pattern in patterns:
-        # Handle ** recursive patterns
         if '**' in pattern:
-            # Split into parts and handle recursively
             parts = pattern.split('/')
             if parts[0] == '.':
                 parts = parts[1:]
-            
-            # Find the first ** position in the path parts
+
             try:
                 star_idx = parts.index('**')
             except ValueError:
-                # Pattern contains '**' but not as a separate path segment; use rglob
                 for path in base_dir.rglob(pattern):
                     if path.is_file():
-                        matched_files.add(path.relative_to(base_dir))
+                        result.add(path.relative_to(base_dir))
                 continue
-            # Path before **
+
             prefix = '/'.join(parts[:star_idx]) if star_idx > 0 else '.'
-            # Pattern after **
-            suffix_pattern = '/'.join(parts[star_idx+1:]) if star_idx < len(parts) - 1 else '*'
-            
+            suffix_pattern = '/'.join(parts[star_idx + 1:]) if star_idx < len(parts) - 1 else '*'
+
             prefix_path = base_dir / prefix
             if prefix_path.exists():
                 for path in prefix_path.rglob(suffix_pattern):
                     if path.is_file():
-                        matched_files.add(path.relative_to(base_dir))
+                        result.add(path.relative_to(base_dir))
         else:
-            # Simple glob without **
             for path in base_dir.glob(pattern):
                 if path.is_file():
-                    matched_files.add(path.relative_to(base_dir))
-    
+                    result.add(path.relative_to(base_dir))
+
+    return result
+
+
+def expand_globs(
+    patterns: List[str],
+    base_dir: Path,
+    exclude_patterns: List[str] | None = None,
+) -> Set[Path]:
+    """Expand glob patterns to actual file paths.
+
+    Args:
+        patterns: Include glob patterns.
+        base_dir: Root directory for glob expansion.
+        exclude_patterns: Optional list of glob patterns whose matches
+            are subtracted from the result (pattern complement).
+
+    Returns:
+        Set of relative ``Path`` objects.
+    """
+    matched_files = _resolve_patterns(patterns, base_dir)
+
+    # PS-12: Apply exclude patterns (complement subtraction)
+    if exclude_patterns:
+        matched_files -= _resolve_patterns(exclude_patterns, base_dir)
+
     return matched_files
 
 
-def filter_by_topic(topic: str, topics_map: dict, base_dir: Path) -> Set[Path]:
+def filter_by_topic(
+    topic: str,
+    topics_map: dict,
+    base_dir: Path,
+    exclude_patterns: List[str] | None = None,
+) -> Set[Path]:
     """Filter files by topic using the topics map"""
     if topic not in topics_map:
         raise ValueError(f"Unknown topic: {topic}. Available topics: {', '.join(topics_map.keys())}")
-    
+
     patterns = topics_map[topic]
-    return expand_globs(patterns, base_dir)
+    return expand_globs(patterns, base_dir, exclude_patterns=exclude_patterns)
 
 
-def filter_by_globs(glob_patterns: str, base_dir: Path) -> Set[Path]:
+def filter_by_globs(
+    glob_patterns: str,
+    base_dir: Path,
+    exclude_patterns: List[str] | None = None,
+) -> Set[Path]:
     """Filter files by custom glob patterns (comma-separated)"""
     patterns = [p.strip() for p in glob_patterns.split(',') if p.strip()]
-    return expand_globs(patterns, base_dir)
+    return expand_globs(patterns, base_dir, exclude_patterns=exclude_patterns)
 
 
 def main():
@@ -133,6 +164,10 @@ def main():
         default=Path.cwd(),
         help='Base directory for file selection (default: current directory)'
     )
+    parser.add_argument(
+        '--exclude',
+        help='Comma-separated glob patterns to exclude (e.g., "tests/**,**/*_test.py")'
+    )
     
     args = parser.parse_args()
     
@@ -147,14 +182,22 @@ def main():
     # Load topics
     topics_map = load_topics(args.topics_file)
     
+    # Parse exclude patterns
+    exclude_patterns = None
+    if args.exclude:
+        exclude_patterns = [p.strip() for p in args.exclude.split(',') if p.strip()]
+
     # Select files
     try:
         if args.overrides:
             print(f"Selecting files using custom globs: {args.overrides}")
-            selected_files = filter_by_globs(args.overrides, args.base_dir)
+            selected_files = filter_by_globs(args.overrides, args.base_dir, exclude_patterns=exclude_patterns)
         else:
             print(f"Selecting files for topic: {args.topic}")
-            selected_files = filter_by_topic(args.topic, topics_map, args.base_dir)
+            selected_files = filter_by_topic(args.topic, topics_map, args.base_dir, exclude_patterns=exclude_patterns)
+
+        if exclude_patterns:
+            print(f"Excluding patterns: {', '.join(exclude_patterns)}")
         
         # Sort for consistent output
         selected_files = sorted(selected_files)

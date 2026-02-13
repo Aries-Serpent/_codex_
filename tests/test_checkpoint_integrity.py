@@ -8,14 +8,14 @@ import pytest
 
 pytest.importorskip("torch")
 
-from torch.optim import SGD
+from torch.optim import SGD  # noqa: E402
 
-from codex_ml.utils.checkpointing import (
+from codex_ml.utils.checkpointing import (  # noqa: E402
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,
 )
-from torch import nn
+from torch import nn  # noqa: E402
 
 
 def test_load_checkpoint_detects_corruption(tmp_path):

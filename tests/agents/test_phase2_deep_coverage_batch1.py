@@ -9,6 +9,9 @@ Systematically applies physics-guided dimensional tunneling to:
 
 Target: +3-5% coverage gain
 """
+import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_PhysicsOrchestrator_TimeDimension:
@@ -59,7 +62,6 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
         assert path.action_type == ActionType.RESEARCH
         assert path.description == "Test action"
 
-
 class TestPhase2_PhysicsOrchestrator_FlowDimension:
     """
     Equation #4 (Flow-dimension): ∂ρ/∂t + ∇·j = 0
@@ -94,7 +96,6 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
         model = DiffusionFlowModel()
         assert model is not None
-
 
 class TestPhase2_QuantumGame_StateDimension:
     """
@@ -159,7 +160,6 @@ class TestPhase2_QuantumGame_StateDimension:
         )
         assert engine is not None
 
-
 class TestPhase2_MentalMapping_GraphDimension:
     """
     Equation #39 (Path-dimension): ΔS comparisons for graph operations
@@ -211,7 +211,6 @@ class TestPhase2_MentalMapping_GraphDimension:
         assert hasattr(EdgeType, "RELATED")
         assert hasattr(EdgeType, "DEPENDS_ON")
 
-
 class TestPhase2_AgentMemory_StorageDimension:
     """
     Equation #24 (Normalization): ∫ρ dx = 1
@@ -252,7 +251,6 @@ class TestPhase2_AgentMemory_StorageDimension:
         result = memory.retrieve_memory(key="test_key")
         assert result is None
 
-
 class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
     """
     Equation #11 (Path-dimension): S = ∫L dt for workflow optimization
@@ -278,7 +276,6 @@ class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
         else:
             # Method doesn't exist, test passes
             assert orchestrator is not None
-
 
 class TestPhase2_Operators_OperatorDimension:
     """
@@ -310,7 +307,6 @@ class TestPhase2_Operators_OperatorDimension:
         # Hamiltonian is composed internally
         assert orchestrator is not None
 
-
 class TestPhase2_Conservation_FlowDimension:
     """
     Equation #4, #16 (Conservation): ∂ρ/∂t + ∇·j = 0
@@ -340,7 +336,6 @@ class TestPhase2_Conservation_FlowDimension:
         orchestrator = PhysicsInspiredOrchestrator()
         # Conservation is maintained internally
         assert orchestrator is not None
-
 
 class TestPhase2_Integration_CouplingDimension:
     """
@@ -375,7 +370,6 @@ class TestPhase2_Integration_CouplingDimension:
         assert model is not None
         assert memory is not None
 
-
 class TestPhase2_Properties_Getters:
     """
     Equation #3 (Properties): γ = 1/√(1−v²/c²)
@@ -397,7 +391,6 @@ class TestPhase2_Properties_Getters:
 
         assert hasattr(ActionType, "ANALYZE")
         assert hasattr(ActionType, "EXECUTE")
-
 
 class TestPhase2_EdgeCases_Invariants:
     """

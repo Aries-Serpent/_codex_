@@ -14,9 +14,9 @@ Note: These tests are designed to work once the Rust library is built with matur
 For now, they serve as documentation and will be executed in CI.
 """
 
-import sys
-import unittest
-from pathlib import Path
+import sys  # noqa: E402
+import unittest  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 # Add project to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -157,7 +157,7 @@ class TestTaskManagerIntegration(unittest.TestCase):
         result = manager.get_result(timeout=1.0)
         assert result is not None
         assert result[0] == task_id  # task_id
-        assert result[1] == True  # success
+        assert result[1] is True  # success
         """
         self.assertIsNotNone(expected_test)
 

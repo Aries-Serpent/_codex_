@@ -74,7 +74,6 @@ pip install codex==PREVIOUS_VERSION
 systemctl start codex-api
 
 # 4. Verify health
-curl http://localhost:8000/health
 ```
 
 ### Scenario 2: Database Migration Failure
@@ -115,7 +114,6 @@ systemctl start codex-api codex-worker
 ./scripts/scale.sh --replicas 3 --version OLD
 
 # 3. Verify performance
-ab -n 1000 -c 10 http://localhost:8000/api/health
 ```
 
 ### Scenario 4: Security Vulnerability

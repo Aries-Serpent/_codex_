@@ -11,6 +11,10 @@ jobs:
     runs-on: ${{ fromJSON(vars.RUNS_ON || '["self-hosted","linux"]') }}
     timeout-minutes: 10
     steps:
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow runner-diagnostics 2>/dev/null || echo "Cache health: check skipped"
       - name: Print host and env
         shell: bash
         run: |

@@ -395,7 +395,6 @@ class MetricsCollector:
         pass
 
 if __name__ == "__main__":
-    collector = MetricsCollector(influxdb_url="http://localhost:8086", token="...")
     
     while True:
         ci_metrics = collector.collect_ci_metrics()
@@ -421,7 +420,6 @@ app = FastAPI(title="Codex Monitoring Dashboard")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
     allow_credentials=False,
     allow_methods=["GET"],
     allow_headers=["*"],
@@ -593,7 +591,6 @@ pytest api/tests/ -v
 # Start dashboard locally
 uvicorn api.dashboard_api:app --reload
 
-# Open browser to http://localhost:8000
 ```
 
 ---

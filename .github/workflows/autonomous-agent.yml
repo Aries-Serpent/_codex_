@@ -35,6 +35,10 @@ jobs:
             .github
             scripts/ci
 
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow autonomous-agent 2>/dev/null || echo "Cache health: check skipped"
       - name: Check Owner Approval
         id: guard
         env:

@@ -228,3 +228,9 @@ jobs:
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "📝 Cascade review completed for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow copilot-evolution-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

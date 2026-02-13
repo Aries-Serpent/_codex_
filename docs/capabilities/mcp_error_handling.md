@@ -424,7 +424,6 @@ export MCP_RETRY_MAX_DELAY="60.0"
 
 # Error reporting
 export MCP_ERROR_REPORTING_ENABLED="true"
-export MCP_ERROR_REPORTING_ENDPOINT="http://localhost:8080"
 ```
 
 ### Configuration File
@@ -453,7 +452,6 @@ error_handling:
     
   reporting:
     enabled: true
-    endpoint: "http://localhost:8080"
     sample_rate: 1.0
 ```
 

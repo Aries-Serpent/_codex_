@@ -281,3 +281,9 @@ jobs:
           echo "- Drift Detection: ${{ needs.drift-detection.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Artifacts:** Check the workflow run for SBOM files and wheel manifests." >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow scheduled-dependency-audit 2>/dev/null || echo "Cache health: check skipped"

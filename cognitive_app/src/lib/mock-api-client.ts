@@ -308,4 +308,33 @@ if __name__ == "__main__":
       },
     };
   }
+
+  async getMSVMetrics() {
+    await this.mockDelay(150);
+    
+    // Mock MSV metrics based on V3.0 baseline (93.2/100)
+    // Simulate realistic fluctuations around target values
+    const baseCorrectness = 95;
+    const baseConflict = 92;
+    const baseImportance = 94;
+    const baseExperience = 90;
+    const baseAdaptive = 93;
+    
+    const correctness = baseCorrectness + (Math.random() * 2 - 1);
+    const conflict = baseConflict + (Math.random() * 2 - 1);
+    const importance = baseImportance + (Math.random() * 2 - 1);
+    const experience = baseExperience + (Math.random() * 2 - 1);
+    const adaptive = baseAdaptive + (Math.random() * 2 - 1);
+    
+    return {
+      correctness_awareness: Math.max(0, Math.min(100, correctness)),
+      conflict_detection: Math.max(0, Math.min(100, conflict)),
+      importance_assessment: Math.max(0, Math.min(100, importance)),
+      experience_matching: Math.max(0, Math.min(100, experience)),
+      adaptive_response: Math.max(0, Math.min(100, adaptive)),
+      composite_score: (correctness + conflict + importance + experience + adaptive) / 5,
+      timestamp: new Date().toISOString(),
+      phase: 'Phase 12 - PS-14 Implementation',
+    };
+  }
 }

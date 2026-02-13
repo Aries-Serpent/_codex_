@@ -16,11 +16,13 @@ from enum import Enum
 from typing import Any
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings  # noqa: E402
+from hypothesis import strategies as st  # noqa: E402
 
 # --- Model Factory Tests ---
 
