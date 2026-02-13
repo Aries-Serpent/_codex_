@@ -16,7 +16,7 @@ This index provides navigation to all root organization documentation, plans, an
 **New here?** Start with:
 1. [Session Summary](.codex/reports/ROOT_ORG_SESSION_COMPLETE.md) - Overview of what was accomplished
 2. [Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md) - Full cleanup strategy
-3. <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> - Detailed execution report
+3. <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> - Detailed execution report
 
 ---
 
@@ -33,7 +33,7 @@ This index provides navigation to all root organization documentation, plans, an
 - **Status:** ✅ Complete
 
 ### Execution Plans
-📄 <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_CLEANUP_BATCH_1.json](.codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json) --> -->
+📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_CLEANUP_BATCH_1.json](.codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json) --> --> --> --> -->
 - Session reports (10 files)
 - **Status:** ✅ Executed
 
@@ -46,7 +46,7 @@ This index provides navigation to all root organization documentation, plans, an
 - **Status:** ✅ Executed
 
 ### Legacy Plans
-📄 <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_RELOCATION_PLAN.json](.codex/plans/ROOT_ORG_RELOCATION_PLAN.json) --> -->
+📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_RELOCATION_PLAN.json](.codex/plans/ROOT_ORG_RELOCATION_PLAN.json) --> --> --> --> -->
 - Original relocation plan (156 files)
 - **Status:** ⚠️ Superseded by new plan (144 already moved)
 
@@ -55,7 +55,7 @@ This index provides navigation to all root organization documentation, plans, an
 ## 📊 Execution Reports
 
 ### Phase 1 Summary
-📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> -->
+📄 <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> -->
 - Complete execution details
 - Batch-by-batch breakdown
 - Validation results
@@ -241,7 +241,7 @@ See [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appe
 When continuing this work:
 1. Read the [Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)
 2. Review [Tool Documentation](../../scripts/root_org/README.md)
-3. Check <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> for lessons learned
+3. Check <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md) --> --> --> --> --> --> --> --> --> --> for lessons learned
 4. Follow Physics Model directives (Energy=5)
 5. Maintain zero-break guarantee
 6. Update this index when adding new documentation

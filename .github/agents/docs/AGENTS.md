@@ -88,7 +88,7 @@ are available for testing and development purposes.
 3. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
 4. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 5. **[README.md](../../../agents/README.md)** - Repository overview (5 min)
-6. **<!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md) --> -->** - 🆕 Cognitive Brain System (20 min)
+6. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md) --> --> --> --> -->** - 🆕 Cognitive Brain System (20 min)
 
 ### Reference Documents
 

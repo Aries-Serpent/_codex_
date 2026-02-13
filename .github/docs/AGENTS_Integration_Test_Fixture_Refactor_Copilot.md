@@ -477,7 +477,7 @@ class TestDBManager:
         pool_state_tracker['assert_pool_grew']()
         
         # Verify pool has exactly 1 connection
-        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](1) --> --> --> -->
+        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](1) --> --> --> --> --> --> --> --> --> -->
         
         # Cleanup
         DBManager.close_all_pools()
@@ -519,7 +519,7 @@ class TestPoolingBehavior:
             pooling_db_manager.close_connection(conn)
         
         # Pool should have 3 connections
-        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](3) --> -->
+        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](3) --> --> --> --> -->
     
     def test_connection_reuse_from_pool(self, pooling_db_manager):
         """Test that connections are reused from pool."""
@@ -552,7 +552,7 @@ class TestPoolingBehavior:
         pooling_db_manager.close_connection(conn)
         
         # Pool should still have the connection
-        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](1) --> --> --> -->
+        pool_state_tracker<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ['assert_pool_size'](1) --> --> --> --> --> --> --> --> --> -->
         
         # Should be able to get a working connection
         conn2 = pooling_db_manager.get_connection()

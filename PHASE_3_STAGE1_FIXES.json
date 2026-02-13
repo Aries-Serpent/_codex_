@@ -1,14 +1,14 @@
 {
   "stats": {
     "files_processed": 20,
-    "files_modified": 8,
+    "files_modified": 7,
     "links_removed": 0,
-    "links_commented": 16,
+    "links_commented": 14,
     "links_skipped": 47,
     "actions": {
       "remove": 0,
       "remove_item": 0,
-      "comment": 16,
+      "comment": 14,
       "skip": 0
     }
   },
@@ -70,18 +70,6 @@
     {
       "file": ".codex/DOC_ALIGNMENT_MASTER_INDEX.md",
       "link": "update_docs_v0.1.0.py",
-      "action": "comment",
-      "reason": "Uncertain - comment for manual review"
-    },
-    {
-      "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
-      "link": ".codex/guardrails.md",
-      "action": "comment",
-      "reason": "Uncertain - comment for manual review"
-    },
-    {
-      "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
-      "link": ".codex/guardrails.md",
       "action": "comment",
       "reason": "Uncertain - comment for manual review"
     },
