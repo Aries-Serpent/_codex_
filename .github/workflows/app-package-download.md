@@ -324,6 +324,19 @@ Access detailed logs:
 - **Zendesk Voice Lines**: ~100-150 KB (ZIP)
 - **All Applications**: Varies based on `apps/` contents
 
+## Technical Notes
+
+### Artifact Upload Version
+
+This workflow uses `actions/upload-artifact@v4` instead of v6 for the following reasons:
+
+- **Compatibility**: v4 has stable, proven behavior with pre-compressed files
+- **No Double-Wrapping**: v4 doesn't re-wrap artifacts, preventing extraction issues
+- **No Password Issues**: v6 has known issues where downloaded artifacts appear password-protected due to double-compression
+- **Consistency**: Most workflows in this repository use v4 for binary artifacts
+
+If you experience any download or extraction issues, this is why the workflow explicitly uses v4.
+
 ## Related Documentation
 
 - [Zendesk Voice Lines User Guide](../../apps/dev/docs/USER_GUIDE.md)
