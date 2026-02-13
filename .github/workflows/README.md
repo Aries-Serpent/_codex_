@@ -63,6 +63,62 @@ Then check debug output in workflow logs.
 
 ---
 
+### Application Distribution Workflows
+
+#### `app-package-download.yml`
+**Status**: ✅ Active  
+**Last Updated**: 2026-02-13  
+**Trigger**: Manual (`workflow_dispatch`)
+
+**Purpose**: Package and distribute applications from the `apps/` directory as ready-to-use ZIP or TAR.GZ archives for end users.
+
+**Inputs**:
+- `app_name` (default: zd_voice_lines) - Application to package: zd_voice_lines, all
+- `branch` (default: copilot/add-zd-voice-lines-console-app) - Source branch: main, 0D_base_, copilot/add-zd-voice-lines-console-app
+- `custom_branch` (optional) - Custom branch name (overrides dropdown selection)
+- `include_dependencies` (default: true) - Include requirements.txt with dependencies
+- `package_format` (default: zip) - Archive format: zip, tar.gz
+
+**Permissions**:
+- `contents: read` - Read repository contents
+- `actions: read` - Read workflow information
+
+**Outputs**:
+- Package artifact (ZIP or TAR.GZ) - Complete application bundle with code, docs, tests
+- Package manifest (JSON) - Metadata about package creation
+- Retention: 30 days for packages, 90 days for manifests
+
+**Usage**:
+```bash
+# Trigger manually via UI
+# 1. Go to Actions > App Package Download
+# 2. Click "Run workflow"
+# 3. Select application, branch, and options
+# 4. Download from Artifacts section
+
+# Trigger via GitHub CLI
+gh workflow run app-package-download.yml \
+  --field app_name=zd_voice_lines \
+  --field branch=copilot/add-zd-voice-lines-console-app \
+  --field include_dependencies=true \
+  --field package_format=zip
+
+# Download artifact after run completes
+gh run download <run-id> --name <package-name>
+```
+
+**Package Contents** (Zendesk Voice Lines):
+- `zd_voice_lines.py` - Main GUI application (950 LOC)
+- `test_api_client.py` - Component tests (7 tests)
+- `requirements.txt` - Python dependencies
+- `PACKAGE_INFO.md` - Quick start and installation guide
+- `docs/` - Complete documentation (USER_GUIDE.md, DEVELOPMENT.md)
+- Supporting files: README, CHANGELOG, specs, mockups
+
+**Documentation**: See [app-package-download.md](./app-package-download.md) for complete guide.
+
+---
+
 ## Token Configuration
 
 **Last Token Refresh**: 2026-01-26T19:00:00Z  
