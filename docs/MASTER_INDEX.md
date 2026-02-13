@@ -17,9 +17,9 @@
 - **Operations**: Visit [Runbooks](runbooks/)
 
 ### Cognitive Brain (AI Agent Navigation)
-- **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
-- **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status & metrics
-- **[Roadmap](ROADMAP.md)** - Unified roadmap Cycle 1-Phase 3 (Current Cycle)
+- **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
+- **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status & metrics
+- **[Roadmap](./ROADMAP.md)** - Unified roadmap Cycle 1-Phase 3 (Current Cycle)
 
 ---
 
@@ -29,7 +29,7 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md) | Complete system architecture | All |
+| [CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md) | Complete system architecture | All |
 | [LEVEL_4_MLOPS_ASSESSMENT.md](LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity evaluation | Ops, DevOps |
 | [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) | Implementation status | PM, Leads |
 | [SPACE_TRAVERSAL_GUIDE.md](SPACE_TRAVERSAL_GUIDE.md) | State space navigation | ML Engineers |
@@ -38,7 +38,7 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) | Agent architecture overview | Developers |
+| [agents/README.md](../agents/README.md) | Agent architecture overview | Developers |
 | [agents/MCP_IMPLEMENTATION_GUIDE.md](agents/MCP_IMPLEMENTATION_GUIDE.md) | MCP integration for agents | Developers |
 | [AGENT_CONTINUATION_PROMPT.md](plans/AGENT_CONTINUATION_PROMPT.md) | Continuation protocol | AI Agents |
 | [ADVANCED_PHYSICS_GUIDE.md](ADVANCED_PHYSICS_GUIDE.md) | Physics-based orchestration | ML Engineers |
@@ -56,7 +56,7 @@
 | [MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md) | MCP server setup | Ops |
 | [mcp/MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP development | Developers |
 | [mcp/MCP_SECURITY_GUIDE.md](mcp/MCP_SECURITY_GUIDE.md) | Security best practices | Security |
-| [mcp/MCP_100_PERCENT_ROADMAP.md](ROADMAP.md) | MCP completion plan | PM |
+| [mcp/MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md) | MCP completion plan | PM |
 
 ### 🔧 Development & Testing
 
@@ -84,7 +84,7 @@
 |----------|---------|----------|
 | [security/README.md](security/README.md) | Security overview | Security |
 | [mcp/MCP_SECURITY_GUIDE.md](mcp/MCP_SECURITY_GUIDE.md) | MCP security | Security |
-| [admin/GENESIS_SETUP_GUIDE.md](admin/GENESIS_SETUP_GUIDE.md) | Genesis protocol | Admins |
+| [admin/GENESIS_SETUP_GUIDE.md](./admin/GENESIS_SETUP_GUIDE.md) | Genesis protocol | Admins |
 
 ### 🎯 API & Integration
 
@@ -126,8 +126,8 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [ROADMAP.md](ROADMAP.md) | Unified roadmap | All |
-| [system/CODEBASE_DASHBOARD.md](system/CODEBASE_DASHBOARD.md) | Live status | All |
+| [ROADMAP.md](./ROADMAP.md) | Unified roadmap | All |
+| [system/CODEBASE_DASHBOARD.md](./system/CODEBASE_DASHBOARD.md) | Live status | All |
 | [TASK_COMPLETION_SUMMARY.md](TASK_COMPLETION_SUMMARY.md) | Task tracking | PM |
 | [ITERATION_3_GAP_ANALYSIS.md](ITERATION_3_GAP_ANALYSIS.md) | Gap analysis | PM |
 | [CHANGELOG.md](CHANGELOG.md) | Change history | All |
@@ -157,7 +157,7 @@
 
 ### By Topic
 - **Getting Started**: [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
-- **Architecture**: [system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)
+- **Architecture**: [system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)
 - **Development**: [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md)
 - **Testing**: [guides/TESTING_GUIDE.md](guides/TESTING_GUIDE.md)
 - **MCP/Packaging**: [mcp/QUICK_START.md](mcp/QUICK_START.md)
@@ -170,7 +170,7 @@
 - **Developers**: See → [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md)
 - **ML Engineers**: Check → [INTERPRETABILITY_GUIDE.md](INTERPRETABILITY_GUIDE.md)
 - **DevOps**: Visit → [runbooks/](runbooks/)
-- **AI Agents**: Use → [system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)
+- **AI Agents**: Use → [system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)
 
 ---
 
@@ -181,13 +181,13 @@ Each topic has **one canonical document**. All other references should link to i
 
 | Topic | Canonical Document |
 |-------|-------------------|
-| **Architecture** | [system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md) |
-| **Status** | [system/CODEBASE_DASHBOARD.md](system/CODEBASE_DASHBOARD.md) |
-| **Roadmap** | [ROADMAP.md](ROADMAP.md) |
+| **Architecture** | [system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md) |
+| **Status** | [system/CODEBASE_DASHBOARD.md](./system/CODEBASE_DASHBOARD.md) |
+| **Roadmap** | [ROADMAP.md](./ROADMAP.md) |
 | **MCP Packaging** | [mcp/PACKAGING_GUIDE.md](mcp/PACKAGING_GUIDE.md) |
 | **Testing** | [guides/TESTING_GUIDE.md](guides/TESTING_GUIDE.md) |
 | **Code Style** | [dev/CODE_STYLE_GUIDE.md](dev/CODE_STYLE_GUIDE.md) |
-| **Agent System** | [agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) |
+| **Agent System** | [agents/README.md](../agents/README.md) |
 | **Operations** | [runbooks/](runbooks/) |
 
 ### Document Metadata

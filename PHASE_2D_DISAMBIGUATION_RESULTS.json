@@ -1,0 +1,837 @@
+{
+  "stats": {
+    "files_scanned": 2888,
+    "links_found": 253,
+    "links_fixed": 17,
+    "ambiguous_cases": 36,
+    "errors": []
+  },
+  "results": [
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/MASTER_INDEX.md",
+      "links_found": 10,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/README.md",
+      "links_found": 8,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/cognitive_app.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/ADMIN_DECISIONS_README.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/troubleshooting.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/index.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/CONTRIBUTING.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/DOCUMENTATION_INDEX.md",
+      "links_found": 6,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/GITHUB_SPARK_INTEGRATION_GUIDE.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/ROADMAP.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/quickstart.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/metrics.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/README_ROOT.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/NEWCOMER_GUIDE.md",
+      "links_found": 5,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/mcp/MCP_SECURITY_GUIDE.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/mcp/QUICK_START.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/mcp/PACKAGEABLE_CAPABILITIES.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/ops/deployment.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/quantum_orchestrator/architecture.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/bridge/README.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/testing/INDEX.md",
+      "links_found": 5,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/templates/README.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/templates/Migration_CLIHardening.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/templates/Migration_PythonFileRelocation.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/evolution/EVOLUTION_TIMELINE.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/evolution/INDEX.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/capabilities/peft_hooks.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/capabilities/train_loop.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/capabilities/duplication_detection.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/capabilities/code_quality_tooling.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/capabilities/checkpointing.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/prompts/README.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/prompts/TEMPLATE_PROMPT.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/ai-facing/glossary.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/zendesk/WORKFLOW_DIAGRAMS.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/training/distributed_troubleshooting.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/status_updates/CONTRIBUTING.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+      "links_found": 6,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/maintenance/LINK_VALIDATION_TODO.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/changelogs/INDEX.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/system/CODEBASE_DASHBOARD.md",
+      "links_found": 5,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/system/CODEBASE_COGNITIVE_MAP.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/TEAM_ANNOUNCEMENT.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/security/INDEX.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/operations/pypi-trusted-publishing-setup.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/quality/INDEX.md",
+      "links_found": 6,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/troubleshooting/API_Docs_Troubleshooting.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/api/api_endpoints.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/api/cli.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/api/rag.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/admin/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/human-facing/evals_and_metrics.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/human-facing/security_and_risks.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/human-facing/deployment.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/plugins/Plugin_API_Broader.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/ci/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/analysis/LINK_VALIDATION_FIX_SUMMARY.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/guides/examples.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/guides/reasoning_overview.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/guides/INDEX.md",
+      "links_found": 5,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/guides/_codex__Newcomer_Codebase_Overview.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/validation/API_Docs_Build_Validation.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/phases/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/sessions/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/merged_readmes/README_api.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/merged_readmes/README_docs_root.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/docs/archive/validation/INDEX.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/README.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/CONTINUATION_PROMPT_PHASE8.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/SUPPORT.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/codebase-qa-walkthrough-agent/README.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/workflows/INDEX.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/workflows/CODEBASE_QA_WALKTHROUGH_USAGE.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/session-analysis-agent.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[Cognitive Architecture](.codex/docs/COGNITIVE_ARCHITECTURE.md)",
+          "new": "[Cognitive Architecture](./ARCHITECTURE.md)",
+          "target": ".github/agents/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/AGENT_ECOSYSTEM_MAP.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/link-validator-agent.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/reference-updater-agent.md",
+      "links_found": 8,
+      "links_fixed": 5,
+      "fixes": [
+        {
+          "old": "[text](docs/README.md)",
+          "new": "[text](../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[Guide](docs/README.md)",
+          "new": "[Guide](../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[Guide](docs/README.md#section)",
+          "new": "[Guide](../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[Guide](README.md?v=1)",
+          "new": "[Guide](../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[Guide](docs/README.md?v=1)",
+          "new": "[Guide](../../agents/README.md)",
+          "target": "agents/README.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/documentation-consolidator.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[Architecture](architecture/ARCHITECTURE.md)",
+          "new": "[Architecture](./ARCHITECTURE.md)",
+          "target": ".github/agents/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/PHASE3_EXECUTIVE_SUMMARY.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[Architecture Documentation](.github/agents/ARCHITECTURE.md)",
+          "new": "[Architecture Documentation](./ARCHITECTURE.md)",
+          "target": ".github/agents/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/artifact-monitor-agent.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[Architecture](.codex/monitoring/ARCHITECTURE.md)",
+          "new": "[Architecture](./ARCHITECTURE.md)",
+          "target": ".github/agents/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/prompts/duplicate_detection_inventory/09_documentation.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[ARCHITECTURE.md](./ARCHITECTURE.md)",
+          "new": "[ARCHITECTURE.md](../../agents/ARCHITECTURE.md)",
+          "target": ".github/agents/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/codebase-qa-walkthrough-agent/examples/README.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/docs/AGENTS.md",
+      "links_found": 3,
+      "links_fixed": 3,
+      "fixes": [
+        {
+          "old": "[README.md](README.md)",
+          "new": "[README.md](../../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md)",
+          "new": "[scripts/AUTONOMOUS_AGENT_README.md](../../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[.github/agents/README.md](.github/agents/README.md)",
+          "new": "[.github/agents/README.md](../../../agents/README.md)",
+          "target": "agents/README.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/docs/PRODUCTION_SPECIFICATION.md",
+      "links_found": 3,
+      "links_fixed": 3,
+      "fixes": [
+        {
+          "old": "[README](/.github/agents/github-auth-manager/README.md)",
+          "new": "[README](../../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[README](/.github/agents/github-security-enforcer/README.md)",
+          "new": "[README](../../../agents/README.md)",
+          "target": "agents/README.md"
+        },
+        {
+          "old": "[README](/.github/agents/github-workflow-optimizer/README.md)",
+          "new": "[README](../../../agents/README.md)",
+          "target": "agents/README.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/docs/INDEX.md",
+      "links_found": 1,
+      "links_fixed": 1,
+      "fixes": [
+        {
+          "old": "[Main Repository Documentation](../../docs/README.md)",
+          "new": "[Main Repository Documentation](../../../agents/README.md)",
+          "target": "agents/README.md"
+        }
+      ]
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/deploy/README.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/test-coverage-enforcer/CHANGELOG.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/security-vulnerability-patcher/CHANGELOG.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/test-coverage-enforcer/prompts/advanced.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/test-coverage-enforcer/prompts/examples.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/COMPREHENSIVE_WORKFLOW_CONSOLIDATION_PLAN.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/DIAGRAM_UPDATE_v0.1.0_SUMMARY.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/FOLLOW_UP_PROMPT_TESTING_AND_DIAGNOSTICIAN.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/prompts/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/release/README.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/release/README_VERIFICATION_REPORT.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/docs/README.md",
+      "links_found": 6,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/docs/PHILOSOPHICAL_FRAMEWORK.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/wiki/Home.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/wiki/_Sidebar.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/reports/ROOT_ORG_INDEX.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/plans/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/status/_codex_status_update-2025-09-14.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/status/_codex_status_update-2025-09-16.md",
+      "links_found": 3,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/status/_codex_status_update-2025-09-15.md",
+      "links_found": 6,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/analysis/README.md",
+      "links_found": 4,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/archive/pr-resolutions/PR_SUMMARY_RELEASE_PLANNING.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/cognitive_brain/archive/PHASE_26_RELEASE_READINESS.md",
+      "links_found": 2,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/cognitive_brain/archive/PHASE_32_COMPLETE.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "links_found": 1,
+      "links_fixed": 0,
+      "fixes": []
+    }
+  ]
+}

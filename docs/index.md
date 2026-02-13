@@ -9,9 +9,9 @@
 ## 🧠 Cognitive Brain (Start Here for AI Agents)
 
 ### **Unified Navigation System**
-- 🗺️ **[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
-- 📊 **[Dashboard](system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
-- 🎯 **[Roadmap](ROADMAP.md)** - Iteration plans, priorities, future scope
+- 🗺️ **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
+- 📊 **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
+- 🎯 **[Roadmap](./ROADMAP.md)** - Iteration plans, priorities, future scope
 
 ### **Why This Matters**
 The cognitive brain enables:
@@ -26,7 +26,7 @@ The cognitive brain enables:
 ## 🚀 Quick Links
 
 ### Core Documentation
-- 📖 **[Architecture](ARCHITECTURE.md)** - Detailed technical architecture
+- 📖 **[Architecture](./ARCHITECTURE.md)** - Detailed technical architecture
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
 - 🔐 **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
 - 📚 **[API Reference](api/index.md)** - Complete API documentation

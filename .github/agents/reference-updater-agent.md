@@ -82,7 +82,7 @@ Total: 293 references across 87 files
   "file": "docs/README.md",
   "line": 15,
   "old": "[Agent Guide](../AGENTS.md)",
-  "new": "[Agent Guide](../.github/agents/AGENTS.md)",
+  "new": "[Agent Guide](../AGENTS.md)",
   "type": "markdown_link"
 }
 ```
@@ -193,7 +193,7 @@ Unreachable References:
 1. Scan for README.md references
 2. Generate update patches
 3. Apply atomically:
-   - Markdown: `[text](README.md)` → `[text](docs/README.md)`
+   - Markdown: `[text](README.md)` → `[text](../../agents/README.md)`
    - YAML: `path: README.md` → `path: docs/README.md)`
 4. Validate all links
 5. Report success
@@ -326,13 +326,13 @@ No changes applied (dry-run mode)
 **Transformation:**
 ```
 Old: [Guide](README.md)
-New: [Guide](docs/README.md)
+New: [Guide](../../agents/README.md)
 
 Old: [Guide](README.md#section)
-New: [Guide](docs/README.md#section)  # Preserves anchor
+New: [Guide](../../agents/README.md)  # Preserves anchor
 
-Old: [Guide](README.md?v=1)
-New: [Guide](docs/README.md?v=1)  # Preserves query
+Old: [Guide](../../agents/README.md)
+New: [Guide](../../agents/README.md)  # Preserves query
 ```
 
 ### Python Imports

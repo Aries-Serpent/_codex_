@@ -108,7 +108,7 @@
    - [ ] Type hints: 100% coverage for public APIs
    - [ ] Error handling: Try/except with specific exceptions
    - [ ] Docs: Module docstring, class docstring, method docstrings
-4. Update [agents/README.md](agents/README.md) with:
+4. Update [agents/README.md](../agents/README.md) with:
    - Architecture overview (already exists)
    - File organization guide
    - Naming conventions
@@ -390,7 +390,7 @@
 
 **Phase 8 Specific**:
 - [Link Validation TODO](docs/maintenance/LINK_VALIDATION_TODO.md) - Broken links
-- [Agent README](agents/README.md) - Agent architecture
+- [Agent README](../agents/README.md) - Agent architecture
 
 ---
 

@@ -261,7 +261,7 @@ cd cognitive_app && npm run dev
 5. Document changes
 
 ## Related Docs
-- [AGENTS.md](../../AGENTS.md)
+- [AGENTS.md](../AGENTS.md)
 - [GitHub Workflows](../workflows/)
 - [pyproject.toml](../../pyproject.toml)
 

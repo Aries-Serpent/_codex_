@@ -22,7 +22,7 @@ Successfully developed **comprehensive plans** for producing pre-releases, relea
 
 ### Core Release Documentation (12 Files, 100KB)
 
-1. **[README.md](.codex/release/README.md)** (7KB)
+1. **[README.md](../../../docs/README.md)** (7KB)
    - Central documentation index
    - Quick start guide
    - Release process overview

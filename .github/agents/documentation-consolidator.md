@@ -238,7 +238,7 @@ Creating redirects:
 
 ## Current Status
 - [Latest Status](status/STATUS.md) - Current state and metrics
-- [Architecture](architecture/ARCHITECTURE.md) - System design
+- [Architecture](../../docs/ARCHITECTURE.md) - System design
 - [Roadmap](../../docs/ROADMAP.md) - Future development
 
 ## Phase Documentation

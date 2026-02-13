@@ -1260,6 +1260,6 @@ These principles are not merely theoretical - they are operationally manifest in
 **End of Philosophical Frameworks Analysis**
 
 **Related Documents:**
-- [Cognitive Architecture Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md)
+- [Cognitive Architecture Analysis](../../docs/ARCHITECTURE.md)
 - [Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)
 - [AI Agent Operational Guidelines](../../docs/agent/OPERATIONAL_GUIDELINES.md)

@@ -360,7 +360,7 @@ All others with domain-specific functionality
 ### Template Documentation
 - [Physics-Aligned Template Specification](./AGENT_DEVELOPMENT_GUIDE.md)
 - [Agent Registry](./AGENT_REGISTRY.md)
-- [Agent Architecture](./ARCHITECTURE.md)
+- [Agent Architecture](../../docs/ARCHITECTURE.md)
 
 ### Automation Scripts
 - [Template Application Script](/tmp/apply_agent_template.py)

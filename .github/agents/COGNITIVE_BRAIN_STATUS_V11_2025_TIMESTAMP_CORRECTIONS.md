@@ -3,7 +3,7 @@
 > **Status:** ✅ ACTIVE - Session Complete with Continuation Ready  
 > **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)  
 > **Session Type:** Comprehensive Issue Resolution + Self-Review + Continuation Planning  
-> **Related Documents:** [AGENTS.md](../../AGENTS.md) | [CONTINUATION_PROMPT](./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md)
+> **Related Documents:** [AGENTS.md](../AGENTS.md) | [CONTINUATION_PROMPT](./COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md)
 
 **Date**: 2026-01-23 05:30 UTC  
 **Version**: 11.0 (Post-Timestamp Correction & Self-Review)  

@@ -1579,8 +1579,8 @@ pip install mangum
 
 ### Documentation
 
-- **[Codebase Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
-- **[Codebase Dashboard](system/CODEBASE_DASHBOARD.md)** - Live metrics
+- **[Codebase Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
+- **[Codebase Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live metrics
 - **[Repository README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)** - Complete project documentation
 - **[AGENTS.md](./agents.md)** - Autonomous agent system
 - **[MCP Quick Start](mcp/QUICK_START.md)** - Package system guide

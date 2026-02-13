@@ -428,7 +428,7 @@ class TestGenesisWorkflow:
 
 ### Documentation
 - Phase 1 Implementation Summary
-- [Genesis Setup Guide](GENESIS_SETUP_GUIDE.md)
+- [Genesis Setup Guide](./GENESIS_SETUP_GUIDE.md)
 - [Agent Operational Guidelines](../agent/OPERATIONAL_GUIDELINES.md)
 
 ### External Resources
