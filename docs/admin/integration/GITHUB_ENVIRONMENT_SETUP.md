@@ -8,7 +8,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Required Environment Variables](#required-environment-variables)
 3. [Required Secrets](#required-secrets)
 4. [Configuration Instructions](#configuration-instructions)

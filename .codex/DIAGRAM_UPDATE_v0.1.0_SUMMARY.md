@@ -180,7 +180,7 @@ graph TB
 
 - **Main Report**: [DIAGRAM_UPDATE_REPORT.md](../../DIAGRAM_UPDATE_REPORT.md)
 - **Updated README**: [README.md](../../README.md)
-- **Architecture Docs**: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
+- **Architecture Docs**: [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
 - **Agent Docs**: [.github/agents/README.md](../README.md)
 
 ---

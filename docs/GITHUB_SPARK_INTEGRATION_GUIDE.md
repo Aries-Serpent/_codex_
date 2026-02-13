@@ -10,14 +10,14 @@
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Architecture](#architecture)
 3. [Core Capabilities](#core-capabilities)
 4. [Promptset Plan](#promptset-plan)
 5. [Implementation Examples](#implementation-examples)
 6. [Backend Integration](#backend-integration)
 7. [Demonstration Scenarios](#demonstration-scenarios)
-8. [Quick Start]()
+8. [Quick Start](#quick-start)
 9. [Resources](#resources)
 
 ---
@@ -1579,8 +1579,8 @@ pip install mangum
 
 ### Documentation
 
-- **[Codebase Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
-- **[Codebase Dashboard](system/CODEBASE_DASHBOARD.md)** - Live metrics
+- **[Codebase Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
+- **[Codebase Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live metrics
 - **[Repository README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)** - Complete project documentation
 - **[AGENTS.md](./agents.md)** - Autonomous agent system
 - **[MCP Quick Start](mcp/QUICK_START.md)** - Package system guide

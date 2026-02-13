@@ -150,7 +150,7 @@ Configure GitHub Actions to post warnings when tests fail:
 ## Related Documentation
 
 - [Pull Request Template](.github/pull_request_template.md) - Pre-merge verification checklist
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md) - AI agent CI obligations
+- [AI Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md) - AI agent CI obligations
 - [Contributing Guide](CONTRIBUTING.md) - Development workflow
 
 ---

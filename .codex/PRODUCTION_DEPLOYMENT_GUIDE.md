@@ -15,7 +15,7 @@
 4. [Database Setup](#database-setup)
 5. [Service Configuration](#service-configuration)
 6. [Deployment Steps](#deployment-steps)
-7. [Monitoring & Observability](#monitoring--observability)
+7. <!-- BROKEN ANCHOR: [Monitoring & Observability](#monitoring--observability) -->
 8. [Rollback Procedures](#rollback-procedures)
 9. [Troubleshooting](#troubleshooting)
 

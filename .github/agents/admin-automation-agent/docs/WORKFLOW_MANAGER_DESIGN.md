@@ -842,7 +842,7 @@ logger.info(f"✅ Workflow complete: {workflow_type}", extra={
 - [GitHub Actions API](https://docs.github.com/en/rest/actions)
 - [Workflow Best Practices](https://docs.github.com/en/actions/learn-github-actions/best-practices-for-workflows)
 - [Admin Automation Agent](.github/agents/admin-automation-agent/)
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 

@@ -1,0 +1,59 @@
+{
+  "stats": {
+    "files_processed": 11,
+    "files_modified": 10,
+    "links_cleaned": 50
+  },
+  "fixes": [
+    {
+      "file": ".codex/archive/pr-resolutions/PR_SUMMARY_RELEASE_PLANNING.md",
+      "links_cleaned": 15,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_26_RELEASE_READINESS.md",
+      "links_cleaned": 8,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/archive/sessions/2026-01/SESSION_COMPLETION_SUMMARY_2026_01_12_PHASE_C.md",
+      "links_cleaned": 4,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_32_COMPLETE.md",
+      "links_cleaned": 7,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".github/workflow-archive/COMPLETION_SUMMARY.md",
+      "links_cleaned": 4,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/archive/sessions/2026-01/SESSION_SUMMARY_PHASE_40_COMPLETE.md",
+      "links_cleaned": 4,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_33_PR_3020_RESOLUTION_COMPLETE.md",
+      "links_cleaned": 4,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": "docs/archive/TEAM_ANNOUNCEMENT.md",
+      "links_cleaned": 2,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_FOLLOWUP_COMMENT.md",
+      "links_cleaned": 1,
+      "action": "bulk_cleaned"
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_3133_ANALYSIS_INDEX.md",
+      "links_cleaned": 1,
+      "action": "bulk_cleaned"
+    }
+  ]
+}

@@ -404,11 +404,6 @@ Hamiltonian components for Phase 8.8:
 
 ## 📚 References
 
-- [PHASE_8_8_CONTINUATION_PROMPT.md](.github/agents/PHASE_8_8_CONTINUATION_PROMPT.md) - Implementation prompt
-- [QUANTUM_DETERMINISTIC_PLANNING.md](.github/agents/QUANTUM_DETERMINISTIC_PLANNING.md) - Planning framework
-- [QUANTUM_AGENT_IMPROVEMENT_PLAN.md](.github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md) - Path to 98.5/100
-- [AI_AGENT_INTUITIVENESS_SCORE_V2.md](.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md) - Current score: 91.8/100
-- [SESSION_SUMMARY_PHASE_8_7_COMPLETE.md](.github/agents/SESSION_SUMMARY_PHASE_8_7_COMPLETE.md) - Phase 8.7 summary
 
 ---
 

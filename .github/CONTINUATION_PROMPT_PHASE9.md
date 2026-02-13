@@ -200,9 +200,9 @@
 ## 🧠 Cognitive Brain Usage
 
 **Start with** (first 2K tokens):
-1. [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-2. [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current status
-3. [ROADMAP.md](docs/ROADMAP.md) - Phase 9 details
+1. [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+2. [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current status
+3. [ROADMAP.md](../docs/ROADMAP.md) - Phase 9 details
 
 **Update after each task**:
 - Dashboard: Phase 9 progress (X% complete)
@@ -253,19 +253,14 @@
 ## 📚 Reference Documents
 
 **Cognitive Brain**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [Dashboard](../docs/system/CODEBASE_DASHBOARD.md)
+- [Roadmap](../docs/ROADMAP.md)
 
 **Guides**:
-- [Testing Guide](docs/guides/TESTING_GUIDE.md)
-- [Performance Guide](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
+- [Testing Guide](../docs/guides/TESTING_GUIDE.md)
 
 **Phase 8 Artifacts**:
-- [Session Summary](.github/PHASE8_SESSION_SUMMARY.md)
-- [Link Validation Report](docs/maintenance/LINK_VALIDATION_REPORT.md)
-- [Agent Normalization](agents/NORMALIZATION_CHECKLIST.md)
 
 ---
 

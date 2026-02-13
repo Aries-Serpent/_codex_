@@ -4,7 +4,6 @@
 **Created**: 2026-01-29  
 **Last Updated**: 2026-01-29  
 **Maintainer**: RAG Team, AI Agent Team  
-**Related Agent**: [Meta Tensor Validator](.github/agents/meta-tensor-validator.md)
 
 ---
 
@@ -216,9 +215,6 @@ AttributeError: 'Tensor' object has no attribute 'data'
 ## 📚 Resources
 
 ### Internal Documentation
-- **Agent**: [.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)
-- **Contributing**: [CONTRIBUTING.md](../CONTRIBUTING.md) - Safe Model Loading section
-- **Utility Registry**: [.codex/AI_AGENT_UTILITIES_REGISTRY.md](.codex/AI_AGENT_UTILITIES_REGISTRY.md)
 - **Fix Summary**: [RAG_META_TENSOR_FIX_SUMMARY.md](../RAG_META_TENSOR_FIX_SUMMARY.md)
 
 ### External Resources

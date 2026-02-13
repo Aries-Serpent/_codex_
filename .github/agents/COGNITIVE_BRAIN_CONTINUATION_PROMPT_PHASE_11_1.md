@@ -3,7 +3,7 @@
 > **Status:** ✅ READY FOR EXECUTION  
 > **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)  
 > **Prompt Type:** Continuation with Complete Implementation Plan  
-> **Related Documents:** [AGENTS.md](../../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
+> **Related Documents:** [AGENTS.md](../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
 
 **Generated**: 2026-01-08T05:30:00Z  
 **For**: GitHub Copilot Agent  
@@ -1426,9 +1426,7 @@ python scripts/analysis/list_all_folders.py --output-dir ./reports/folders
    ## All Folders (Alphabetical)
    
    - [`.` (root)](./)
-   - [`.codex`](./.codex)
-   - [`.codex/archive`](./.codex/archive)
-   - [`.codex/cognitive_brain`](./.codex/cognitive_brain)
+   - `.codex/archive`
    ...
    ```
 
@@ -1438,15 +1436,10 @@ python scripts/analysis/list_all_folders.py --output-dir ./reports/folders
    
    ## .CODEX
    
-   - [`.codex`](./.codex)
-   - [`.codex/archive`](./.codex/archive)
-   - [`.codex/cognitive_brain`](./.codex/cognitive_brain)
+   - `.codex/archive`
    
    ## .GITHUB
    
-   - [`.github`](./.github)
-   - [`.github/actions`](./.github/actions)
-   - [`.github/agents`](./.github/agents)
    ...
    ```
 
@@ -1456,9 +1449,9 @@ python scripts/analysis/list_all_folders.py --output-dir ./reports/folders
    
    [`.` (root)](./)
    
-   ├── [`.codex`](./.codex)
-   │   ├── [`archive`](./.codex/archive)
-   │   ├── [`cognitive_brain`](./.codex/cognitive_brain)
+   ├── <!-- BROKEN LINK: <!-- BROKEN LINK: [`.codex`](./.codex) --> -->
+   │   ├── `archive`
+   │   ├── <!-- BROKEN LINK: [`cognitive_brain`](./.codex/cognitive_brain) -->
    │   └── [`plans`](./.codex/plans)
    ├── [`.github`](./.github)
    │   ├── [`actions`](./.github/actions)

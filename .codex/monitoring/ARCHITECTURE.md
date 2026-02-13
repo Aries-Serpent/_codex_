@@ -14,9 +14,9 @@
 4. [Data Flow](#data-flow)
 5. [Integration Points](#integration-points)
 6. [State Management](#state-management)
-7. [Error Handling & Reliability](#error-handling--reliability)
-8. [Security & Privacy](#security--privacy)
-9. [Performance & Scalability](#performance--scalability)
+7. <!-- BROKEN ANCHOR: [Error Handling & Reliability](#error-handling--reliability) -->
+8. <!-- BROKEN ANCHOR: [Security & Privacy](#security--privacy) -->
+9. <!-- BROKEN ANCHOR: [Performance & Scalability](#performance--scalability) -->
 10. [Future Enhancements](#future-enhancements)
 
 ---

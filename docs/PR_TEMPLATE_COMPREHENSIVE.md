@@ -706,7 +706,7 @@
 ## 📚 REFERENCES
 
 - [Contributing Guidelines](CONTRIBUTING.md)
-- [Code Style Guide](./guides/code_style_guide.md)
+- [Code Style Guide](dev/CODE_STYLE_GUIDE.md)
 - [Testing Guidelines](./CONTRIBUTING.md#testing)
 - [Security Policy](SECURITY.md)
 - [Archival Policy](./agents.md)

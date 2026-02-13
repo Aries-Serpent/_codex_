@@ -9,12 +9,12 @@
 
 ## 📋 Table of Contents
 
-1. [Overview]()
-2. [Prerequisites]()
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
 3. [Migration Steps](#migration-steps)
 4. [Breaking Changes](#breaking-changes)
 5. [Performance Improvements](#performance-improvements)
-6. [Testing & Validation](#testing--validation)
+6. [Testing & Validation](#validation)
 7. [Rollback Procedure](#rollback-procedure)
 8. [Support Matrix](#support-matrix)
 9. [Troubleshooting](#troubleshooting)

@@ -18,8 +18,8 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 5. [Useful Commands](#useful-commands)
 6. [Prohibited Actions](#prohibited-actions)
 7. [Copilot Task Execution Protocol (CTEP)](#copilot-task-execution-protocol-ctep)
-8. [Log Directory & Retention](#log-directory--retention)
-9. [Error Handling & Backward Compatibility](#error-handling--backward-compatibility)
+8. [Log Directory & Retention](#-log-directory--retention)
+9. [Error Handling & Backward Compatibility](#️-error-handling--backward-compatibility)
 10. [Configuration Management (Hydra)](#configuration-management-hydra)
 11. [Next Steps & Production Readiness](#next-steps--production-readiness)
 12. [Troubleshooting Checklist](#troubleshooting-checklist)
@@ -288,9 +288,6 @@ CTEP Compliance: ✅ PASS
 
 ### Documentation Links
 
-- [Copilot Task Execution Protocol](./copilot_task_execution_protocol.md)
-- [CTEP Usage Examples](./ctep_usage_examples.md)
-- [CTEP Quick Reference](./ctep_quick_reference.md)
 
 ---
 

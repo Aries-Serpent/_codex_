@@ -278,7 +278,7 @@ permissions:
 
 ### Secret Rotation Schedule
 
-Comprehensive rotation schedule with all 18 secrets: **[.codex/security/rotation_schedule.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)**
+Comprehensive rotation schedule with all 18 secrets: **.codex/security/rotation_schedule.md**
 
 | Secret Category | Examples | Rotation Frequency | Method |
 |----------------|----------|-------------------|--------|
@@ -289,7 +289,7 @@ Comprehensive rotation schedule with all 18 secrets: **[.codex/security/rotation
 
 ### Secrets Usage Matrix
 
-Complete mapping of all secrets to workflows: **[.codex/security/secrets_usage_matrix.json](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json)**
+Complete mapping of all secrets to workflows: **.codex/security/secrets_usage_matrix.json**
 
 **Summary**:
 - Total Secrets: 18

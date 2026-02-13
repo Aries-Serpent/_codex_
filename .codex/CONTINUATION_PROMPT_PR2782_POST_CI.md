@@ -617,7 +617,7 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    @pytest.fixture
    def agent():
        """Create agent instance for testing"""
-       return [AgentName]()
+       return <!-- TODO: Add section or remove TOC entry - [AgentName]() -->
    
    
    def test_agent_initialization(agent):

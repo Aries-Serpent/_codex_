@@ -10,11 +10,11 @@ This document defines operational guidelines, constraints, and decision-making f
 
 ## Table of Contents
 
-1. [Agent Identity & Authority](#agent-identity--authority)
+1. <!-- BROKEN ANCHOR: [Agent Identity & Authority](#agent-identity--authority) -->
 2. [Operational Constraints](#operational-constraints)
 3. [Decision Framework](#decision-framework)
 4. [Escalation Procedures](#escalation-procedures)
-5. [Audit & Logging](#audit--logging)
+5. <!-- BROKEN ANCHOR: [Audit & Logging](#audit--logging) -->
 6. [Best Practices](#best-practices)
 
 ---

@@ -399,10 +399,6 @@ Comprehensive documentation (43KB) ensures knowledge transfer, reduces rework, a
 ## References & Links
 
 ### Documentation
-- [RAG Meta Tensor Remediation Report](.codex/RAG_META_TENSOR_REMEDIATION_REPORT.md)
-- [Phase 40 Completion](.codex/cognitive_brain/PHASE_40_RAG_META_TENSOR_COMPLETE.md)
-- [RAG Module Management Agent](.github/agents/rag-module-management-agent.md)
-- [Phase 41 Follow-Up Prompt](.codex/PR_3020_PHASE_41_FOLLOWUP_PROMPT.md)
 
 ### Code Locations
 - `src/codex/rag/utils.py` - safe_model_load implementation

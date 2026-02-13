@@ -272,10 +272,6 @@ DEPENDENCY_FILES = {
 
 ### Internal Documentation
 
-- [Unified Cache Management System](.codex/docs/UNIFIED_CACHE_MANAGEMENT.md)
-- [Cache Optimization Report](.github/workflows/CACHE_OPTIMIZATION_REPORT.md)
-- [Cache Analysis Report](.github/workflows/CACHE_ANALYSIS_REPORT.md)
-- [Cache Architecture Diagrams](.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md)
 
 ### Code References
 

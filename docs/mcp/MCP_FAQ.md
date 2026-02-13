@@ -317,7 +317,7 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 - [MCP Developer Guide](./MCP_DEVELOPER_GUIDE.md)
 - [MCP Security Guide](./MCP_SECURITY_GUIDE.md)
 - [MCP Implementation Summary](./MCP_IMPLEMENTATION_SUMMARY.md)
-- [Quick Start Guide](./QUICK_START.md)
+- [Quick Start Guide](QUICK_START.md)
 
 ---
 

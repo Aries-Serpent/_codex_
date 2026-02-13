@@ -2015,7 +2015,7 @@ gh run watch  # Monitor all workflows
 ## 📞 Support & Documentation
 
 ### Getting Help
-- **Documentation**: [_codex_ Evolution Guide](https://github.com/Aries-Serpent/_codex_/blob/main/. github/docs/evolution-guide.md)
+- **Documentation**: _codex_ Evolution Guide
 - **Issues**: [Report workflow failures](https://github.com/Aries-Serpent/_codex_/issues/new? template=workflow-failure.md)
 - **Discussions**: [Evolution Strategy Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
 

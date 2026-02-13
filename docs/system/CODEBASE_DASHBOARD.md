@@ -415,7 +415,7 @@ None active. All blockers resolved or have mitigation plans.
 ## 🔍 Quick Links
 
 ### Documentation
-- [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) - Architecture overview
+- [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) - Architecture overview
 - [Roadmap](../ROADMAP.md) - Feature roadmap (coming soon)
 - [Contributing](../CONTRIBUTING.md) - Contribution guide
 - [Architecture](../ARCHITECTURE.md) - Detailed architecture
@@ -423,13 +423,13 @@ None active. All blockers resolved or have mitigation plans.
 
 ### Key Components
 - [Codex Pipeline](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/README.md) - Code ingestion (coming soon)
-- [Agent System](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) - Autonomous agents (coming soon)
+- [Agent System](../../agents/README.md) - Autonomous agents (coming soon)
 - [MCP System](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md) - ChatGPT packaging
 - [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing infrastructure
 
 ### Workflows
 - [CI/CD Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows) - All workflows
-- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml) - Packaging
+- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/app-package-download.yml) - Packaging
 - [Security Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/scan-secrets-variables.yml) - Secrets scan
 
 ### Tools & Commands
@@ -645,7 +645,7 @@ nox -s lint type format
 
 ---
 
-**Questions?** Check [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) for architecture details.
+**Questions?** Check [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) for architecture details.
 
 **Want to contribute?** See [Contributing Guide](../CONTRIBUTING.md).
 

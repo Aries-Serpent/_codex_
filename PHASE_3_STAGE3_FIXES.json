@@ -1,0 +1,175 @@
+{
+  "stats": {
+    "files_processed": 18,
+    "files_modified": 18,
+    "refs_removed": 33,
+    "refs_failed": 0
+  },
+  "fixes": [
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/training/config.py",
+      "action": "removed"
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/codex_gap_registry.yaml",
+      "action": "removed"
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/T1_SOLUTION.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/notebooklm-sync.yml",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_11_X_PROMPTSETS.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/main.py",
+      "action": "removed"
+    },
+    {
+      "file": "docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json",
+      "action": "removed"
+    },
+    {
+      "file": "docs/mcp/MCP_DEVELOPER_GUIDE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/mcp/server/server.py",
+      "action": "removed"
+    },
+    {
+      "file": "docs/mcp/MCP_DEVELOPER_GUIDE.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/mcp/registry.py",
+      "action": "removed"
+    },
+    {
+      "file": "docs/guides/QUICKSTART.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/guides/QUICKSTART.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md",
+      "action": "removed"
+    },
+    {
+      "file": ".codex/wiki/Home.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+      "action": "removed"
+    },
+    {
+      "file": ".codex/wiki/Home.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md",
+      "action": "removed"
+    },
+    {
+      "file": ".codex/wiki/_Sidebar.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+      "action": "removed"
+    },
+    {
+      "file": ".codex/wiki/_Sidebar.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/index.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/README_ROOT.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/metrics.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/evaluation/README.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/templates/README.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/reports/per-iteration",
+      "action": "removed"
+    },
+    {
+      "file": "docs/capabilities/code_quality_tooling.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/code-quality.yml",
+      "action": "removed"
+    },
+    {
+      "file": "docs/archive/TEAM_ANNOUNCEMENT.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/security/CURRENT_EXPECTED_VARIABLES.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/scripts/security/copilot_token_decoder.py",
+      "action": "removed"
+    },
+    {
+      "file": "docs/security/bridge_hardening.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/STRIDE.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/workflows/PHASE1_TRACKING.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GAP_ANALYSIS.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/plans/fix_falied_workflows_2025-12-22.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/. github/docs/evolution-guide.md",
+      "action": "removed"
+    },
+    {
+      "file": "docs/configs/OmegaConf_Schema.md",
+      "url": "https://github.com/Aries-Serpent/_codex_/blob/main/configs/list_groups.py",
+      "action": "removed"
+    }
+  ]
+}

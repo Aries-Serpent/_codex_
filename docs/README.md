@@ -17,7 +17,7 @@ This documentation is organized into several key sections:
 - [Configuration](configs/OmegaConf_Schema.md) - Configuration management
 
 ### Architecture & Design
-- [Architecture Overview](ARCHITECTURE.md) - System architecture
+- [Architecture Overview](./ARCHITECTURE.md) - System architecture
 - [Design Decisions](adr/000-mcp-architecture.md) - Architecture decision records
 - [Module Structure](modules/cli.md) - Code organization
 
@@ -46,7 +46,7 @@ This documentation is organized into several key sections:
 
 ### For New Users
 1. Start with the [Quickstart Guide](QUICKSTART.md)
-2. Review [Architecture Overview](ARCHITECTURE.md)
+2. Review [Architecture Overview](./ARCHITECTURE.md)
 3. Explore [User Guides](#user-guides)
 
 ### For Contributors

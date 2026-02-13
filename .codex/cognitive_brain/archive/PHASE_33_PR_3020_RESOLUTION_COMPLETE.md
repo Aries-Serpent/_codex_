@@ -556,12 +556,8 @@ None added in this phase.
 - `archive/sessions/2026-01/QUICK_REFERENCE.md` - Quick status reference
 
 **Phase Context:**
-- [Phase 32 Complete](.codex/cognitive_brain/PHASE_32_COMPLETE.md)
-- [Phase 33 Continuation Prompt](.codex/cognitive_brain/PHASE_33_CONTINUATION_PROMPT.md)
-- [Path to 100% Coverage](.codex/cognitive_brain/PATH_TO_100_PERCENT_COVERAGE.md)
 
 **Policy Compliance:**
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 

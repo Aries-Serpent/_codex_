@@ -314,5 +314,5 @@ training, functional, reproducible, deterministic, experiment-tracking, checkpoi
 ## See Also
 
 - [Unified Training](./unified_training.md) - Alternative training approach with HuggingFace Trainer
-- [Checkpointing](./checkpointing.md) - Checkpoint management utilities
+- [Checkpointing](../capabilities/checkpointing.md) - Checkpoint management utilities
 - [Experiment Tracking](../monitoring/experiment_tracking.md) - MLflow integration details
