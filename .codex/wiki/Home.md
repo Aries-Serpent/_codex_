@@ -70,7 +70,7 @@
 | [Genesis Protocol](Genesis-Protocol.md) | Autonomous agent initialization | Admins, Agents |
 | [Agent Operations](Agent-Operations.md) | Agent decision framework | AI Agents |
 | [Security](https://github.com/Aries-Serpent/_codex_/blob/main/SECURITY.md) | Security policies and reporting | Everyone |
-| [Governance](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Project governance | Contributors |
+| Governance | Project governance | Contributors |
 
 ---
 
@@ -329,7 +329,7 @@ This project follows a [Code of Conduct](https://github.com/Aries-Serpent/_codex
 
 ## 📋 Changelog
 
-See [CHANGES.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md) and [.codex/change_log.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/change_log.md) for detailed change history.
+See CHANGES.md and [.codex/change_log.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/change_log.md) for detailed change history.
 
 ---
 

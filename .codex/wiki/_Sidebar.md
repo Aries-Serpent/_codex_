@@ -42,9 +42,9 @@
 
 ## Repository Info
 - [Code of Conduct](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md)
-- [Governance](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md)
+- Governance
 - [License](https://github.com/Aries-Serpent/_codex_/blob/main/LICENSE)
-- [Changelog](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md)
+- Changelog
 
 ## External Links
 - [GitHub Repository](https://github.com/Aries-Serpent/_codex_)

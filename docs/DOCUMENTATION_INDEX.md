@@ -28,7 +28,7 @@
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | 2026-02-10 | ✅ Active |
 | [SECURITY.md](./SECURITY.md) | Security policy | 2026-02-10 | ✅ Active |
 | [CODE_OF_CONDUCT.md](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md) | Community standards | 2026-02-10 | ✅ Active |
-| [GOVERNANCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Governance model | 2026-02-10 | ✅ Active |
+| GOVERNANCE.md | Governance model | 2026-02-10 | ✅ Active |
 
 ### Recent Additions (2025-12-11)
 
@@ -107,7 +107,7 @@
 | Document | Purpose |
 |----------|---------|
 | [.codex/docs/README.md](./README.md) | Codex environment setup |
-| [training/config.py](https://github.com/Aries-Serpent/_codex_/blob/main/training/config.py) | Training configuration (code) |
+| training/config.py | Training configuration (code) |
 | [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) | Project configuration |
 
 ---
@@ -120,7 +120,7 @@
 |-------|----------|---------|
 | [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md) | New contributors | 2025-12-11 |
 | [MCP_DEVELOPER_GUIDE.md](mcp/MCP_DEVELOPER_GUIDE.md) | MCP developers | 2026-02-10 |
-| [USAGE_GUIDE.md](https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md) | End users | 2026-02-10 |
+| USAGE_GUIDE.md | End users | 2026-02-10 |
 
 ### Agent Guides
 
@@ -135,7 +135,7 @@
 | Guide | Focus |
 |-------|-------|
 | [HAR_INTEGRATION_PLAN.md](./HAR_INTEGRATION_PLAN.md) | HAR file integration |
-| [COPILOT_PROMPT_100_PERCENT.md](https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md) | Copilot integration |
+| COPILOT_PROMPT_100_PERCENT.md | Copilot integration |
 | [MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md) | MCP integration roadmap |
 
 ---
@@ -148,7 +148,7 @@
 |--------|---------|------|
 | [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md) | Current gaps and priorities | 2025-12-11 |
 | [PR_FINAL_SUMMARY.md](archive/pr_reports/PR_FINAL_SUMMARY.md) | Latest PR summary | 2025-12-11 |
-| [codex_gap_registry.yaml](https://github.com/Aries-Serpent/_codex_/blob/main/codex_gap_registry.yaml) | Gap tracking (YAML) | 2025-12-11 |
+| codex_gap_registry.yaml | Gap tracking (YAML) | 2025-12-11 |
 
 ### Audit Reports
 
@@ -168,7 +168,7 @@
 |----------|-------|----------|
 | [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) | System architecture | Yes |
 | [LEVEL_4_MLOPS_ASSESSMENT.md](./LEVEL_4_MLOPS_ASSESSMENT.md) | MLOps maturity | No |
-| [T1_SOLUTION.md](https://github.com/Aries-Serpent/_codex_/blob/main/T1_SOLUTION.md) | T1 solution design | No |
+| T1_SOLUTION.md | T1 solution design | No |
 
 ### Implementation Plans
 

@@ -602,9 +602,9 @@ for agent in coalition.agents:
 - 🚧 Phase 8.13-8.15 planning
 
 **Documentation**:
-- 📖 [V9 Complete Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md)
+- 📖 V9 Complete Status
 - 🗺️ [V10 Roadmap](../ROADMAP.md)
-- 📋 [Consolidated Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md)
+- 📋 Consolidated Status
 
 ---
 
