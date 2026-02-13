@@ -65,7 +65,6 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344
 
 ### API Method
 ```bash
-curl "http://localhost:8000/github/check-runs/59990656344/logs?owner=Aries-Serpent&repo=_codex_" \
   -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 

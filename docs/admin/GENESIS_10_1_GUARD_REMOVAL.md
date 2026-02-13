@@ -30,7 +30,6 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 **Target**: `if: true` (enables workflow execution)
 
 ```yaml
-# .github/workflows/genesis-bootstrap.yml
 # Change: if: false → if: true
 ```
 

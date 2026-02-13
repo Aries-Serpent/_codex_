@@ -69,7 +69,6 @@ USER appuser
 
 # Health check endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s \
-  CMD curl -f http://localhost:8080/healthz || exit 1
 
 CMD ["python", "-m", "codex.serve"]
 ```
@@ -166,7 +165,6 @@ docker build -f Dockerfile -t codex-ml:latest .
 docker run -d \
   --name codex-ml \
   -p 8080:8080 \
-  --health-cmd="curl -f http://localhost:8080/healthz || exit 1" \
   --health-interval=30s \
   codex-ml:latest
 

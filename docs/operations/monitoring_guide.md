@@ -9,7 +9,6 @@
 docker run -d -p 3000:3000 grafana/grafana
 
 # Import dashboard
-curl -X POST http://localhost:3000/api/dashboards/db \
   -H "Content-Type: application/json" \
   -d @configs/grafana/dashboards/ml_operations.json
 ```

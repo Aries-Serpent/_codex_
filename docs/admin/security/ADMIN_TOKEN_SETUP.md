@@ -7,8 +7,8 @@
 
 ## 📋 Table of Contents
 
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
+1. [Overview]()
+2. [Prerequisites]()
 3. [Setup Process](#setup-process)
 4. [Verification](#verification)
 5. [Token Rotation](#token-rotation)

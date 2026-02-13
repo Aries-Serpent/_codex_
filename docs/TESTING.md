@@ -4,7 +4,7 @@ This document describes the testing infrastructure, conventions, and best practi
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Overview]()
 - [Required Pytest Plugins](#required-pytest-plugins)
 - [Running Tests](#running-tests)
 - [Test Configuration](#test-configuration)

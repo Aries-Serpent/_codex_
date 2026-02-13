@@ -263,7 +263,6 @@ xdg-open artifacts/docs/api/index.html
 
 # Or use Python's HTTP server
 python -m http.server -d artifacts/docs/api 8000
-# Then navigate to http://localhost:8000
 ```
 
 ---

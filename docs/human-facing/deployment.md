@@ -105,10 +105,8 @@ The MCP server exposes health endpoints:
 
 ```bash
 # Liveness probe
-curl http://localhost:8000/health
 
 # Readiness probe
-curl http://localhost:8000/ready
 ```
 
 ## Monitoring

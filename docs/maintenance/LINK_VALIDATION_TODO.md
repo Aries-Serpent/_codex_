@@ -32,7 +32,6 @@ Many links reference files that don't exist:
 
 Links that may point to renamed or relocated files:
 - `./decision_records/0001-record-architecture-decisions.md`
-- `../CODEBASE_AUDIT_2025-08-26_203612.md`
 - `./README_ROOT.md`
 
 ---

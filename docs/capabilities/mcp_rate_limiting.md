@@ -623,7 +623,6 @@ async def handle_rate_limited(request, retry_after):
             "error": "rate_limit_exceeded",
             "message": "Too many requests. Please retry later.",
             "retry_after": retry_after,
-            "documentation": "http://localhost:8080/rate-limits"
         }
     )
 ```

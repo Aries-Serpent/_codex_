@@ -9,7 +9,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [Repository Settings](#repository-settings)
 3. [Environment Variables](#environment-variables)
 4. [GitHub Actions Secrets](#github-actions-secrets)

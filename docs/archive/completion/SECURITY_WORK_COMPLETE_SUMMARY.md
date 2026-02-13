@@ -192,7 +192,6 @@ cargo test --verbose
 pre-commit run --all-files
 
 # CORS testing
-curl -H "Origin: http://localhost:3000" http://localhost:8000/health
 ```
 
 ## Key Learnings

@@ -7,7 +7,7 @@
 
 ## Table of Contents
 
-1. [Quick Start](#quick-start)
+1. [Quick Start]()
 2. [Setting Up GitHub OAuth](#setting-up-github-oauth)
 3. [Enabling Multi-Factor Authentication](#enabling-multi-factor-authentication)
 4. [Working with Tokens](#working-with-tokens)
@@ -46,8 +46,6 @@ print("Authentication system ready!")
 2. Click "New OAuth App"
 3. Fill in the details:
    - **Application name**: Codex Auth
-   - **Homepage URL**: `http://localhost:8000`
-   - **Authorization callback URL**: `http://localhost:8000/callback`
 4. Click "Register application"
 5. Copy the **Client ID** and **Client Secret**
 
@@ -58,7 +56,6 @@ Create a `.env` file in your project root:
 ```bash
 GITHUB_CLIENT_ID=your_client_id_here
 GITHUB_CLIENT_SECRET=your_client_secret_here
-GITHUB_REDIRECT_URI=http://localhost:8000/callback
 TOKEN_SECRET_KEY=your_random_secret_key_here
 ```
 

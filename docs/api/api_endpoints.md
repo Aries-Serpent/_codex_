@@ -97,8 +97,6 @@ uvicorn src.codex.api.app:app --reload --port 8000
 uvicorn src.codex.api.rag_api:app --reload --port 8001
 
 # Access documentation
-# Main API: http://localhost:8000/docs
-# RAG API: http://localhost:8001/docs
 ```
 
 ## Related Documentation

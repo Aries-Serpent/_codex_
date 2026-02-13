@@ -200,7 +200,6 @@ EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/health || exit 1
 
 # Run server
 CMD ["python", "-m", "uvicorn", "mcp.server.http:app", \
@@ -527,7 +526,6 @@ docker-compose logs -f mcp-server
 docker-compose ps
 
 # Test locally
-curl -H "X-MCP-API-Key: dev-key" http://localhost:8080/health
 
 # Stop services
 docker-compose --profile mcp down

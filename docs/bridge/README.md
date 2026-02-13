@@ -38,7 +38,6 @@ pip install -e .
 export ITA_API_KEY=$(python scripts/issue_api_key.py)
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 # health check
-curl -H "X-API-Key: $ITA_API_KEY" -H "X-Request-Id: demo" http://localhost:8080/healthz
 ```text
 ### 2. Try the Codex client demo
 
@@ -48,7 +47,6 @@ python -m venv .venv && source .venv/bin/activate
 pip install -U pip
 pip install -e .
 export OPENAI_API_KEY=YOUR_KEY
-export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 python -m codex_client.demo_plan_and_call --query "Search bridge docs"
 ```text
@@ -57,7 +55,6 @@ python -m codex_client.demo_plan_and_call --query "Search bridge docs"
 ```bash
 cd copilot/extension
 npm install
-export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 npm start
 # POST requests from the Copilot extension will hit /ext/* and forward to the ITA

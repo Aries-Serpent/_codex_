@@ -289,7 +289,6 @@ python -m src.codex_ml.serving.inference_server
 
 ```bash
 # Make request
-curl -X POST http://localhost:8000/embed \
   -H "Content-Type: application/json" \
   -d '{
     "texts": ["Hello world", "Vector embeddings"]

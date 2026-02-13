@@ -88,19 +88,16 @@ app.include_router(router)
 
 **Get Check Run Logs**
 ```bash
-curl "http://localhost:8000/github/check-runs/59990656344/logs?owner=Aries-Serpent&repo=_codex_" \
   -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 **Get Job Logs**
 ```bash
-curl "http://localhost:8000/github/jobs/12345678/logs?owner=Aries-Serpent&repo=_codex_" \
   -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 **List Check Runs**
 ```bash
-curl "http://localhost:8000/github/check-runs?owner=Aries-Serpent&repo=_codex_&ref=b6b52590b9551c4d29b90ea122d885ef83cd0d8d" \
   -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
@@ -241,7 +238,6 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344
 
 ### API Method
 ```bash
-curl "http://localhost:8000/github/check-runs/59990656344/logs?owner=Aries-Serpent&repo=_codex_"
 ```
 
 ### MCP Method

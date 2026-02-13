@@ -331,7 +331,6 @@ import requests
 
 # Single prediction
 response = requests.post(
-    "http://localhost:8080/predict",
     json={"inputs": [1.0, 2.0, 3.0, 4.0]}
 )
 print(response.json())
@@ -339,7 +338,6 @@ print(response.json())
 
 # Batch predictions
 batch_response = requests.post(
-    "http://localhost:8080/predict/batch",
     json={"batch": [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]}
 )
 print(batch_response.json())

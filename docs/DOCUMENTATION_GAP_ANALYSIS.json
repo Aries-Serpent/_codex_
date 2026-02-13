@@ -120,7 +120,6 @@
     ".github/workflows/build-chatgpt-package.yml",
     ".github/workflows/sync-env-vars.yml",
     ".github/workflows/audit-improvement-pipeline.yml",
-    ".github/workflows/genesis-bootstrap.yml",
     ".github/workflows/runner-diagnostics.yml",
     ".github/workflows/ci-diagnostic-automation.yml",
     ".github/workflows/cache-management.yml",

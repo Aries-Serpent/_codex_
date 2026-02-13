@@ -276,7 +276,6 @@ All images include health checks:
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -fsS http://localhost:8000/health || exit 1
 ```
 
 Check health status:

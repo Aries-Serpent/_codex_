@@ -7,7 +7,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [Automatic Token Retrieval](#automatic-token-retrieval)
 3. [Integration Patterns](#integration-patterns)
 4. [Workflow Examples](#workflow-examples)

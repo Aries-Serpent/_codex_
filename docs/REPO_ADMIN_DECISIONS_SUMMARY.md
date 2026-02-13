@@ -8,20 +8,20 @@
 
 | # | Question | Recommendation | Rationale | Priority | Page |
 |---|----------|----------------|-----------|----------|------|
-| **4.1.1** | Long function threshold (50 lines)? | ✅ **KEEP** | Industry standard (40-60), fractal analysis confirms | HIGH | [Link](#) |
-| **4.1.2** | Max arguments threshold (5)? | ✅ **KEEP** | Clean Code standard, cognitive load optimal | HIGH | [Link](#) |
-| **4.1.3** | Max nesting threshold (4 levels)? | ✅ **KEEP** | Complexity research, maintainability | HIGH | [Link](#) |
-| **4.1.4** | God class threshold (20 methods)? | ✅ **KEEP** | SRP boundary, industry tools alignment | HIGH | [Link](#) |
-| **4.1.5** | Keep all 5 export formats? | ✅ **YES** | Each serves distinct persona/workflow | MEDIUM | [Link](#) |
-| **4.1.6** | LibCST as primary parser? | ✅ **YES** | Refactoring-critical, formatting preservation | HIGH | [Link](#) |
-| **4.2.1** | AST similarity default CI? | ✅ **CI YES** / ❌ **Local NO** | Context-dependent (relativistic effects) | MEDIUM | [Link](#) |
-| **4.2.2** | Log encoding errors? | ✅ **YES** | Visibility critical, use `errors="replace"` | HIGH | [Link](#) |
-| **4.3.1** | Register CLI entry points? | ✅ **YES** | Discoverability, ecosystem integration | HIGH | [Link](#) |
-| **4.3.2** | CI merge blocking? | ⚠️ **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link](#) |
-| **4.3.3** | Standard SQLite location? | ✅ **YES** | `.codex/session_logs.db` convention | LOW | [Link](#) |
-| **4.4.1** | Tree-sitter for YAML/SQL? | ✅ **YES** | Cross-language analysis, validation | MEDIUM | [Link](#) |
-| **4.4.2** | Incremental analysis? | ✅ **YES** | Performance critical (10-100x faster) | HIGH | [Link](#) |
-| **4.4.3** | HTML report generation? | ✅ **YES** | User experience, stakeholder communication | MEDIUM | [Link](#) |
+| **4.1.1** | Long function threshold (50 lines)? | ✅ **KEEP** | Industry standard (40-60), fractal analysis confirms | HIGH | [Link(#top) |
+| **4.1.2** | Max arguments threshold (5)? | ✅ **KEEP** | Clean Code standard, cognitive load optimal | HIGH | [Link(#top) |
+| **4.1.3** | Max nesting threshold (4 levels)? | ✅ **KEEP** | Complexity research, maintainability | HIGH | [Link(#top) |
+| **4.1.4** | God class threshold (20 methods)? | ✅ **KEEP** | SRP boundary, industry tools alignment | HIGH | [Link(#top) |
+| **4.1.5** | Keep all 5 export formats? | ✅ **YES** | Each serves distinct persona/workflow | MEDIUM | [Link(#top) |
+| **4.1.6** | LibCST as primary parser? | ✅ **YES** | Refactoring-critical, formatting preservation | HIGH | [Link(#top) |
+| **4.2.1** | AST similarity default CI? | ✅ **CI YES** / ❌ **Local NO** | Context-dependent (relativistic effects) | MEDIUM | [Link(#top) |
+| **4.2.2** | Log encoding errors? | ✅ **YES** | Visibility critical, use `errors="replace"` | HIGH | [Link(#top) |
+| **4.3.1** | Register CLI entry points? | ✅ **YES** | Discoverability, ecosystem integration | HIGH | [Link(#top) |
+| **4.3.2** | CI merge blocking? | ⚠️ **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link(#top) |
+| **4.3.3** | Standard SQLite location? | ✅ **YES** | `.codex/session_logs.db` convention | LOW | [Link(#top) |
+| **4.4.1** | Tree-sitter for YAML/SQL? | ✅ **YES** | Cross-language analysis, validation | MEDIUM | [Link(#top) |
+| **4.4.2** | Incremental analysis? | ✅ **YES** | Performance critical (10-100x faster) | HIGH | [Link(#top) |
+| **4.4.3** | HTML report generation? | ✅ **YES** | User experience, stakeholder communication | MEDIUM | [Link(#top) |
 
 ---
 

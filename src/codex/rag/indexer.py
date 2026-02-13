@@ -127,13 +127,45 @@ def embed_chunks(
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
+    
+    # CRITICAL FIX: Validate and filter inputs BEFORE encoding
+    original_count = len(texts)
+    texts_filtered = [text.strip() for text in texts if text and text.strip()]
+    
+    if len(texts_filtered) < original_count:
+        logger.warning(
+            f"Filtered out {original_count - len(texts_filtered)} empty/whitespace texts"
+        )
+    
+    if not texts_filtered:
+        raise ValueError("No valid text chunks to encode after filtering empty inputs")
+    
+    logger.debug(
+        f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
+    )
 
-    # Generate embeddings
-    logger.info(f"Generating embeddings for {len(texts)} chunks")
-    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, convert_to_numpy=True)
-
-    logger.info(f"Generated embeddings with shape: {embeddings.shape}")
-    return embeddings
+    # Generate embeddings with explicit device parameter and detailed error handling
+    logger.info(f"Generating embeddings for {len(texts_filtered)} chunks")
+    try:
+        embeddings = model.encode(
+            texts_filtered,
+            batch_size=32,
+            show_progress_bar=True,
+            convert_to_numpy=True,
+            device="cpu",  # Explicit device specification
+        )
+        logger.info(f"Successfully encoded {len(texts_filtered)} texts, embedding shape: {embeddings.shape}")
+        return embeddings
+    except IndexError as e:
+        logger.error(f"IndexError during encoding: {e}")
+        logger.error(f"Texts count: {len(texts_filtered)}")
+        logger.error(f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}")
+        logger.error(f"Model info: {model}")
+        logger.error(f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}")
+        raise RuntimeError(
+            "Failed to encode texts due to IndexError. "
+            "Check input format and model compatibility."
+        ) from e
 
 
 def persist_index(

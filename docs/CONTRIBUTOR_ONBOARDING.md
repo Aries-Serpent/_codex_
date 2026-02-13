@@ -4,7 +4,7 @@ Welcome to the Codex repository! This guide will help you get started as a contr
 
 ## Table of Contents
 
-1. [Quick Start](#quick-start)
+1. [Quick Start]()
 2. [Repository Overview](#repository-overview)
 3. [Development Setup](#development-setup)
 4. [Understanding the Codebase](#understanding-the-codebase)

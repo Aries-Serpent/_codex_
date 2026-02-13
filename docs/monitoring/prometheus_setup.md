@@ -44,7 +44,6 @@ scrape_configs:
 
 ## 3. Inspect metrics
 
-* Open http://localhost:9090 and query `codex_ml_training_steps_total` or
   `codex_ml_training_loss` to view live values.
 * Combine the endpoint with Grafana to build dashboards for training curves and latency histograms.
 * For offline runs, the metrics exported to `artifacts/metrics.ndjson` use the schema

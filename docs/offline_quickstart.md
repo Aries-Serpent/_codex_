@@ -27,7 +27,6 @@ export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
 To use a remote tracking server, **opt in** explicitly:
 
 ```bash
-export MLFLOW_TRACKING_URI="http://localhost:5000"
 ```text
 
 This prevents accidental remote logging while keeping remote usage intentional.
