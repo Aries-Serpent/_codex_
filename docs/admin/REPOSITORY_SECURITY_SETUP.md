@@ -18,7 +18,7 @@
 7. [Dependency Management](#dependency-management)
 8. [Pre-commit Hooks Setup](#pre-commit-hooks-setup)
 9. [CI/CD Workflows](#cicd-workflows)
-10. [Monitoring & Alerting](#monitoring--alerting)
+10. <!-- BROKEN ANCHOR: [Monitoring & Alerting](#monitoring--alerting) -->
 11. [Team Permissions](#team-permissions)
 12. [Troubleshooting](#troubleshooting)
 

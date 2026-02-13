@@ -7,15 +7,15 @@
 ## 🔍 What Was Fixed
 
 ### 1. Empty TOC Links (34 fixes)
-Links that were `[Text]()` are now `[Text](#anchor)`
+Links that were `<!-- TODO: Add section or remove TOC entry - [Text]() -->` are now `[Text](#2-invalid-anchors-26-fixes)`
 
 **Example:**
 ```markdown
 # Before
-[Quick Start]()
+<!-- TODO: Add section or remove TOC entry - [Quick Start]() -->
 
 # After
-[Quick Start](#quick-start)
+<!-- BROKEN ANCHOR: [Quick Start](#quick-start) -->
 ```
 
 **Files Fixed:**
@@ -35,10 +35,10 @@ Anchors that didn't match headers are now corrected
 **Example:**
 ```markdown
 # Before
-[Critical Blockers Table](#critical-blockers-table)
+[Critical Blockers Table](#after-header-was-actually-1-critical-blockers-table)
 
 # After (header was actually "## 1. Critical Blockers Table")
-[Critical Blockers Table](#1-critical-blockers-table)
+[Critical Blockers Table](#after-header-was-actually-1-critical-blockers-table)
 ```
 
 **Files Fixed:**

@@ -97,25 +97,25 @@ All 979 issues categorized and prioritized:
 ### Empty TOC Link → Proper Anchor
 ```diff
 # docs/CONTRIBUTOR_ONBOARDING.md
--1. [Quick Start]()
-+1. [Quick Start](#quick-start)
+-1. <!-- TODO: Add section or remove TOC entry - [Quick Start]() -->
++1. <!-- BROKEN ANCHOR: [Quick Start](#quick-start) -->
 ```
 
 ### Invalid Anchor → Correct Match
 ```diff
 # docs/plans/AST_ENGINEERING_PROJECT_GUIDE.md
--1. [Critical Blockers Table](#critical-blockers-table)
-+1. [Critical Blockers Table](#1-critical-blockers-table)
+-1. <!-- BROKEN ANCHOR: [Critical Blockers Table](#critical-blockers-table) -->
++1. <!-- BROKEN ANCHOR: [Critical Blockers Table](#1-critical-blockers-table) -->
 ```
 
 ### Multiple Anchor Corrections
 ```diff
 # .codex/plans/cognitive_brain_phase_implementation.md
--[Phase 0: Foundation (COMPLETE)](#phase-0)
-+[Phase 0: Foundation (COMPLETE)](#phase-0-foundation-complete)
+-<!-- BROKEN ANCHOR: [Phase 0: Foundation (COMPLETE)](#phase-0) -->
++<!-- BROKEN ANCHOR: [Phase 0: Foundation (COMPLETE)](#phase-0-foundation-complete) -->
 
--[Phase 1: Cognitive Brain Core](#phase-1)
-+[Phase 1: Cognitive Brain Core](#phase-1-cognitive-brain-core-architecture-pre-commit-1-16-historical-complete)
+-<!-- BROKEN ANCHOR: [Phase 1: Cognitive Brain Core](#phase-1) -->
++<!-- BROKEN ANCHOR: [Phase 1: Cognitive Brain Core](#phase-1-cognitive-brain-core-architecture-pre-commit-1-16-historical-complete) -->
 ```
 
 ---

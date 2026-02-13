@@ -139,10 +139,10 @@ Anchor links that don't match any header and no automatic correction could be de
 
 ```markdown
 # Before
-[Quick Start]()
+<!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - [Quick Start]() --> -->
 
 # After
-[Quick Start](#quick-start)
+<!-- BROKEN ANCHOR: <!-- BROKEN ANCHOR: [Quick Start](#quick-start) --> -->
 ```
 
 **Files Fixed:**
@@ -155,10 +155,10 @@ Anchor links that don't match any header and no automatic correction could be de
 
 ```markdown
 # Before
-[Phase 0: Foundation](#phase-0)
+<!-- BROKEN ANCHOR: [Phase 0: Foundation](#phase-0) -->
 
 # After  
-[Phase 0: Foundation](#phase-0-foundation-complete)
+<!-- BROKEN ANCHOR: [Phase 0: Foundation](#phase-0-foundation-complete) -->
 ```
 
 **Notable Fix:**
@@ -227,7 +227,7 @@ Decide whether to:
 
 ### Link Validation Rules
 
-1. **Empty Links:** `[Text]()` - Check for matching header in same file
+1. **Empty Links:** `<!-- TODO: Add section or remove TOC entry - [Text]() -->` - Check for matching header in same file
 2. **Anchor Links:** `#section` - Validate against GitHub-style slugs (kebab-case)
 3. **Internal Links:** `./file.md` - Verify file exists at relative path
 4. **External Links:** `https://...` - Not validated in this pass (requires HTTP checks)
@@ -354,7 +354,7 @@ Remaining:              919 (93.9%)
  
 -1. [Quick Start]()
 +1. [Quick Start](#quick-start)
- 2. [Repository Overview](#repository-overview)
+ 2. <!-- BROKEN ANCHOR: [Repository Overview](#repository-overview) -->
 ```
 
 </details>
@@ -368,13 +368,13 @@ Remaining:              919 (93.9%)
 @@ -20,10 +20,10 @@
  ## Table of Contents
  
- 1. [Overview](#overview)
--2. [Critical Blockers Table](#critical-blockers-table)
--3. [Implementation Issues Table](#implementation-issues-table)
--4. [Architectural Challenges Table](#architectural-challenges-table)
-+2. [Critical Blockers Table](#1-critical-blockers-table)
-+3. [Implementation Issues Table](#2-implementation-issues-table)
-+4. [Architectural Challenges Table](#3-architectural-challenges-table)
+ 1. <!-- BROKEN ANCHOR: [Overview](#overview) -->
+-2. <!-- BROKEN ANCHOR: [Critical Blockers Table](#critical-blockers-table) -->
+-3. <!-- BROKEN ANCHOR: [Implementation Issues Table](#implementation-issues-table) -->
+-4. <!-- BROKEN ANCHOR: [Architectural Challenges Table](#architectural-challenges-table) -->
++2. <!-- BROKEN ANCHOR: [Critical Blockers Table](#1-critical-blockers-table) -->
++3. <!-- BROKEN ANCHOR: [Implementation Issues Table](#2-implementation-issues-table) -->
++4. <!-- BROKEN ANCHOR: [Architectural Challenges Table](#3-architectural-challenges-table) -->
 ```
 
 </details>

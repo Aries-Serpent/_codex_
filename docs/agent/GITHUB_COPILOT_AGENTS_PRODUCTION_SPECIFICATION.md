@@ -22,7 +22,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 5. [Implementation Guide](#implementation-guide)
 6. [Testing Strategy](#testing-strategy)
 7. [Deployment Guide](#deployment-guide)
-8. [Monitoring & Maintenance](#monitoring--maintenance)
+8. <!-- BROKEN ANCHOR: [Monitoring & Maintenance](#monitoring--maintenance) -->
 
 ---
 

@@ -8,7 +8,7 @@
 2. [Getting Started](#getting-started)
 3. [Schema Versioning](#schema-versioning)
 4. [Cryptographic Signing](#cryptographic-signing)
-5. [Validation & Verification](#validation--verification)
+5. <!-- BROKEN ANCHOR: [Validation & Verification](#validation--verification) -->
 6. [Migration Guide](#migration-guide)
 7. [Troubleshooting](#troubleshooting)
 8. [Best Practices](#best-practices)

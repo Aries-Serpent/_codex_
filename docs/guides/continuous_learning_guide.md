@@ -399,7 +399,7 @@ def monitor_with_alerts(monitor, alerts):
     results = monitor.monitor_all(...)
     
     if monitor.has_critical_drift():
-        alerts["critical"]()
+        alerts<!-- TODO: Add section or remove TOC entry - ["critical"]() -->
         
         # Save alert details
         monitor.save_alerts("alerts/drift_critical.json")

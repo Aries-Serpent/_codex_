@@ -10,11 +10,11 @@
 
 1. [Philosophical Foundations](#1-philosophical-foundations)
 2. [Deleuze: Rhizomatic Architecture](#2-deleuze-rhizomatic-architecture)
-3. [Whitehead: Process & Prehension](#3-whitehead-process--prehension)
+3. [Whitehead: Process & Prehension](#)
 4. [Process Philosophy: Becoming Over Being](#4-process-philosophy-becoming-over-being)
 5. [Cross-Framework Synthesis](#5-cross-framework-synthesis)
 6. [Implementation Guides](#6-implementation-guides)
-7. [Code Patterns & Templates](#7-code-patterns--templates)
+7. [Code Patterns & Templates](#)
 8. [Architectural Diagrams](#8-architectural-diagrams)
 9. [Refactoring Recommendations](#9-refactoring-recommendations)
 10. [Philosophical Metrics](#10-philosophical-metrics)

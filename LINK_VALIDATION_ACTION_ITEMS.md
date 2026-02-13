@@ -155,16 +155,16 @@ Action: Remove or add note: "Feature removed in v2.0"
 ### Files Requiring Review
 
 1. **docs/ARCHITECTURE.md**
-   - `[System Context]()` - No matching header
-   - `[Container Architecture]()` - No matching header
+   - `<!-- TODO: Add section or remove TOC entry - [System Context]() -->` - No matching header
+   - `<!-- TODO: Add section or remove TOC entry - [Container Architecture]() -->` - No matching header
    - **Action:** Create sections or remove from TOC
 
 2. **docs/distributed_training_guide.md**
-   - `["model_fn"]()` - Code reference placeholder
+   - `<!-- TODO: Add section or remove TOC entry - ["model_fn"]() -->` - Code reference placeholder
    - **Action:** Decide if section needed
 
 3. **docs/agents/CODE_TEMPLATES.md**
-   - Multiple placeholder entries: `[ClassName]()`, `[class_name]()`
+   - Multiple placeholder entries: `<!-- TODO: Add section or remove TOC entry - [ClassName]() -->`, `<!-- TODO: Add section or remove TOC entry - [class_name]() -->`
    - **Action:** Review template structure
 
 4. **Other files** (23 entries)
@@ -176,7 +176,7 @@ Action: Remove or add note: "Feature removed in v2.0"
 | Scenario | Action | Example |
 |----------|--------|---------|
 | Section planned but not written | Create section | Add ## System Context |
-| Placeholder in template | Keep as-is | `[YourClassName]()` |
+| Placeholder in template | Keep as-is | `<!-- TODO: Add section or remove TOC entry - [YourClassName]() -->` |
 | Obsolete TOC entry | Remove | Delete line from TOC |
 | Should reference existing | Update text | Match existing header |
 
@@ -204,18 +204,18 @@ Action: Remove or add note: "Feature removed in v2.0"
 
 ```markdown
 # Pattern 1: Header was renamed
-Link: [Details](#old-name)
+Link: <!-- BROKEN ANCHOR: [Details](#old-name) -->
 Header: ## New Name Details
-Fix: [Details](#new-name-details)
+Fix: <!-- BROKEN ANCHOR: [Details](#new-name-details) -->
 
 # Pattern 2: Section deleted
-Link: [Info](#removed-section)
+Link: <!-- BROKEN ANCHOR: [Info](#removed-section) -->
 Action: Remove link or point to related section
 
 # Pattern 3: Anchor typo
-Link: [Guide](#quck-start)
+Link: <!-- BROKEN ANCHOR: [Guide](#quck-start) -->
 Header: ## Quick Start
-Fix: [Guide](#quick-start)
+Fix: <!-- BROKEN ANCHOR: [Guide](#quick-start) -->
 ```
 
 ---
