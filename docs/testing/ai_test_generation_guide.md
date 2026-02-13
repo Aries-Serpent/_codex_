@@ -6,7 +6,7 @@ This guide explains how to use the test generation framework to create comprehen
 
 ## Table of Contents
 
-1. [Quick Start](#quick-start)
+1. [Quick Start]()
 2. [Test Generation Framework](#test-generation-framework)
 3. [Flow Specifications](#flow-specifications)
 4. [Creating Custom Specifications](#creating-custom-specifications)

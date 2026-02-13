@@ -66,7 +66,6 @@ CODEX_ZENDESK_DOCS_ROOT=docs/vendors/zendesk
 CODEX_D365_POLICIES_PATH=configs/deployment/d365/sla_policies.json
 
 # MLflow Configuration (optional)
-MLFLOW_TRACKING_URI=http://localhost:5000
 MLFLOW_EXPERIMENT_NAME=saas_knowledge_training
 ```
 

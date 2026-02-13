@@ -171,7 +171,6 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 | Manage agents | `.github/agents/` → `AGENTS.md` | L4 |
 | Update documentation | `docs/` → `mkdocs.yml` → `scripts/validate_docs_links.py` | L2 |
 | Check security | `SECURITY.md` → `.codex/guardrails.md` | L1 |
-| View cognitive state | [cognitive_app](https://aries-serpent.github.io/_codex_/cognitive_app/) | L6 |
 | Track evolution | `docs/evolution/EVOLUTION_TIMELINE.md` | L2 |
 | Score AI intuitiveness | `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` | L3 |
 | Create a planset | `.codex/cognitive_brain/ps01_status.md` (template) | L4 |
@@ -223,5 +222,4 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Completed plansets as evidence
 - [cognitive_app](../cognitive_app.md) — Human-facing dashboard
-- [cognitive_app Live](https://aries-serpent.github.io/_codex_/cognitive_app/) — Live dashboard access
 - [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage

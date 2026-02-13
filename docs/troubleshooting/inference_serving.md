@@ -119,13 +119,10 @@ print(f"Expires: {decoded['exp']}")
 #### Diagnostic Commands
 ```bash
 # Check circuit breaker state
-curl http://localhost:8000/metrics | grep circuit_breaker_state
 
 # Check failure count
-curl http://localhost:8000/metrics | grep circuit_breaker_failure_count
 
 # Check uptime ratio
-curl http://localhost:8000/metrics | grep circuit_breaker_uptime_ratio
 ```
 
 #### Solutions
@@ -168,13 +165,11 @@ curl http://localhost:8000/metrics | grep circuit_breaker_uptime_ratio
 
 1. **Check P95/P99 latency:**
    ```bash
-   curl http://localhost:8000/metrics | grep inference_latency_seconds
    ```
 
 2. **Identify bottleneck:**
    ```bash
    # Check model inference time
-   curl http://localhost:8000/metrics | grep model_prediction_latency_seconds
    
    # Check queueing time
    # latency_total - prediction_latency = queue_time
@@ -242,10 +237,8 @@ sizer = DynamicBatchSizer(
 #### Diagnostic Commands
 ```bash
 # Check rate limit metrics
-curl http://localhost:8000/metrics | grep rate_limit
 
 # Check request rate
-curl http://localhost:8000/metrics | grep request_count
 ```
 
 #### Solutions
@@ -264,7 +257,6 @@ import requests
 def predict_with_retry(data, max_retries=3):
     for attempt in range(max_retries):
         response = requests.post(
-            "http://localhost:8000/infer",
             json=data
         )
         if response.status_code == 429:
@@ -302,7 +294,6 @@ def predict_with_retry(data, max_retries=3):
 2. **Test connectivity:**
    ```bash
    # Local
-   curl http://localhost:8000/health
    
    # Remote
    curl http://<server-ip>:8000/health
@@ -344,10 +335,8 @@ def predict_with_retry(data, max_retries=3):
 #### Diagnostic Commands
 ```bash
 # Check deployment status
-curl http://localhost:8000/deployment/status
 
 # Check traffic weights
-curl http://localhost:8000/metrics | grep traffic_weight
 ```
 
 #### Solutions
@@ -388,8 +377,6 @@ splitter.set_weights(blue=70, green=30)  # 70% blue, 30% green
 #### Diagnostic Commands
 ```bash
 # Check cache metrics
-curl http://localhost:8000/metrics | grep cache_hit_rate
-curl http://localhost:8000/metrics | grep cache_size_bytes
 ```
 
 #### Solutions

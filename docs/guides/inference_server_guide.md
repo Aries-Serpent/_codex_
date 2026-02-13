@@ -54,7 +54,6 @@ python -c "from src.codex_ml.serving.inference_server import create_app; import 
 import requests
 
 # Health check
-response = requests.get("http://localhost:8000/health")
 print(response.json())
 # {"status": "healthy", "model_loaded": true, "uptime_seconds": 42.5, ...}
 
@@ -63,7 +62,6 @@ data = {
     "inputs": ["Hello world", "Another input"],
     "parameters": {"temperature": 0.7}
 }
-response = requests.post("http://localhost:8000/predict", json=data)
 results = response.json()
 print(results["predictions"])
 ```text
@@ -436,7 +434,6 @@ def test_predict():
 2. **Monitor rate limits**
    ```python
    # Check metrics regularly
-   response = requests.get("http://localhost:8000/metrics")
    print(f"Total requests: {response.json()['total_requests']}")
    ```
 
@@ -471,9 +468,6 @@ See `tests/codex_ml/test_inference_server.py` for comprehensive examples.
 ## OpenAPI Documentation
 
 Access auto-generated docs:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-- OpenAPI JSON: http://localhost:8000/openapi.json
 
 ## Support
 

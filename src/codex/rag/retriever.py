@@ -137,7 +137,9 @@ class Retriever:
 
         # Encode query
         logger.debug(f"Encoding query: {q[:100]}...")
-        query_embedding = self.model.encode([q], convert_to_numpy=True, show_progress_bar=False)
+        query_embedding = self.model.encode(
+            [q], convert_to_numpy=True, show_progress_bar=False, device="cpu"
+        )
 
         # Search index
         logger.debug(f"Searching index for top {top_k} results")

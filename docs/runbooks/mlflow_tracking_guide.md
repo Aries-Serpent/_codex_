@@ -45,7 +45,6 @@ with tracker:
 # Start MLflow UI
 mlflow ui --backend-store-uri file://./mlruns
 
-# Open browser to http://localhost:5000
 ```
 
 ---

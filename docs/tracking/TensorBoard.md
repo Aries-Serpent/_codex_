@@ -109,7 +109,6 @@ with get_tb_writer("/custom/path/to/logs") as writer:
 tensorboard --logdir artifacts/tb_runs
 ```text
 
-Access at: http://localhost:6006
 
 ### Custom Port
 

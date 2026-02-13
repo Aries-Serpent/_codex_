@@ -126,7 +126,6 @@ mlflow server --host 0.0.0.0 --port 5000
 ```yaml
 tracking:
   mlflow:
-    uri: "http://localhost:5000"  # Update to correct URI
 ```
 
 3. **Network issue**: Test connection

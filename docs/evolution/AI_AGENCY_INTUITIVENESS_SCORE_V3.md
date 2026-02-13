@@ -213,7 +213,6 @@ The Task Prosecution Layer executes plans and gathers environmental feedback.
 | cognitive_app Frontend | `cognitive_app/` (React/Vite) | ✅ Deployed |
 | Audit Trail | `.codex/evidence/`, `.codex/action_log.ndjson` | ✅ Active |
 
-**Strengths**: Comprehensive execution infrastructure with validation scripts, deployment pipelines, and audit trail. cognitive_app provides human-visible dashboard at [aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/).
 
 **Gap (-10)**: Limited closed-loop feedback from task execution back to higher layers. Execution results not automatically fed into cognitive brain for learning.
 
@@ -286,7 +285,6 @@ V3.4 (2026-02-12):  ████████████████████
 - Integrated into MetricsDashboard with live scoring
 - Interactive tooltips, progress bars, and grade display (A/A+)
 - Mock data generator for development
-- **Achievement**: MSV Composite score visible at [cognitive_app dashboard](https://aries-serpent.github.io/_codex_/cognitive_app/)
 
 **Improvement #6: Closed-loop execution feedback** ✅
 - Trend analysis script (`scripts/cognitive/trend_analysis.py`) extracts session metrics and AAIS progression
@@ -339,7 +337,6 @@ This assessment is grounded in peer-reviewed research and industry frameworks:
 
 The scoring system is designed for visibility through the **cognitive_app** — the human-facing dashboard for AI agency operations:
 
-**Live Dashboard**: [https://aries-serpent.github.io/_codex_/cognitive_app/](https://aries-serpent.github.io/_codex_/cognitive_app/)
 
 | cognitive_app Feature | Scoring Integration |
 |----------------------|---------------------|

@@ -10,7 +10,7 @@
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
+1. [Prerequisites]()
 2. [Phase 0: Human Genesis Actions](#phase-0-human-genesis-actions)
 3. [Phase 1: Post-Genesis Agent Autonomy](#phase-1-post-genesis-agent-autonomy)
 4. [Validation & Audit](#validation--audit)
@@ -148,7 +148,6 @@ Create `codex-production` environment:
 ### Step 0.5: Execute Genesis Bootstrap Workflow
 
 **Pre-Execution Steps:**
-1. Edit `.github/workflows/genesis-bootstrap.yml`
 2. Find line: `if: false # <<< HUMAN: remove this guard...`
 3. Remove or comment out: `# if: false # Guard removed by mbaetiong on 2025-12-26`
 4. Commit change: `chore(genesis): enable bootstrap workflow`

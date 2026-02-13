@@ -387,7 +387,6 @@ cd docs
 python -m http.server 8000
 
 # Open browser
-open http://localhost:8000/interactive-codebase-navigator.html
 ```
 
 ---

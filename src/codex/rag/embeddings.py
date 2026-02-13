@@ -102,6 +102,7 @@ class LocalSentenceTransformerProvider:
             batch_size=batch_size,
             show_progress_bar=show_progress,
             convert_to_numpy=True,
+            device="cpu",  # Explicit device specification
         )
 
         return embeddings

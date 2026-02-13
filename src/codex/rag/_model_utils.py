@@ -76,13 +76,28 @@ def safe_load_sentence_transformer(
             trust_remote_code=False,
             use_auth_token=token_value,
         )
-        if hasattr(model, "to_empty"):
-            model = model.to_empty(device="cpu")
-            model.eval()
-            logger.info("Model %s materialized via to_empty()", model_name)
-            return model
-        raise RuntimeError(
-            "PyTorch lacks torch.nn.Module.to_empty(). "
-            "Upgrade PyTorch or avoid meta tensors. "
-            f"Original error: {exc}"
-        ) from exc
+        if not hasattr(model, "to_empty"):
+            raise RuntimeError(
+                "PyTorch lacks torch.nn.Module.to_empty(). "
+                "Upgrade PyTorch to version with to_empty() support. "
+                f"Original error: {exc}"
+            ) from exc
+        
+        # Materialize meta tensors to CPU
+        model = model.to_empty(device="cpu")
+        model.eval()
+        
+        # CRITICAL: Verify no meta tensors remain
+        meta_params = []
+        for name, param in model.named_parameters():
+            if param.is_meta:
+                meta_params.append(name)
+        
+        if meta_params:
+            raise RuntimeError(
+                f"Meta tensors still present after to_empty(): {meta_params[:5]}... "
+                "Model may not be fully materialized."
+            )
+        
+        logger.info("Model %s materialized via to_empty() and verified", model_name)
+        return model

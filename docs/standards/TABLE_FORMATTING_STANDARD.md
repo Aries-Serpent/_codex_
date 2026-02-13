@@ -43,7 +43,6 @@ extra_css:
 
 ```bash
 python -m mkdocs serve
-# Visit http://localhost:8000
 ```
 
 **Live**: https://aries-serpent.github.io/_codex_/

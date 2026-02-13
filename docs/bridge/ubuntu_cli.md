@@ -33,7 +33,6 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -e .
-export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 # Optional when using the OpenAI Responses API demo
 export OPENAI_API_KEY=sk-...
@@ -47,12 +46,10 @@ network requests stay inside the Ubuntu host unless you point `ITA_URL` elsewher
 ```bash
 cd /workspace/_codex_/copilot/extension
 npm install
-export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 npm start
 ```text
 The Express server listens on port `3978`. Configure your Copilot extension manifest or testing tool
-to POST to `http://localhost:3978/ext/repo/hygiene` (and `/ext/tests/run`). Requests inherit the ITA
 guardrails because the shim copies the headers and never stores credentials on disk.
 
 ## 4. Optional GitHub App wiring

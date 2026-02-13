@@ -418,7 +418,6 @@ python scripts/ml/validate_model.py --test-set data/security_test.csv
 
 # 4. Test dashboard locally
 python scripts/monitoring/dashboard_backend.py &
-curl http://localhost:8000/api/metrics
 ```
 
 ---

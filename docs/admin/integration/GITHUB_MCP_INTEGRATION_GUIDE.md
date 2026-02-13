@@ -9,7 +9,7 @@
 
 ## 📋 Table of Contents
 
-1. [Overview](#overview)
+1. [Overview]()
 2. [MCP Architecture in _codex_](#mcp-architecture-in-_codex_)
 3. [Copilot Agent Integration Patterns](#copilot-agent-integration-patterns)
 4. [Current _codex_ MCP Implementation](#current-_codex_-mcp-implementation)
@@ -133,7 +133,6 @@ headers = {"Authorization": f"Bearer {token}"}
 
 # Request focused context
 response = requests.get(
-    "http://localhost:8080/index",
     headers=headers,
     params={"scope": "python", "depth": 2}
 )
@@ -167,11 +166,9 @@ jobs:
       
       - name: Wait for MCP service
         run: |
-          timeout 60 bash -c 'until curl -f http://localhost:8080/health; do sleep 2; done'
       
       - name: Execute Copilot task with MCP context
         run: |
-          python3 copilot_script.py --mcp-endpoint http://localhost:8080
 ```
 
 ### Pattern 3: VS Code Extension Integration (Local Development)
@@ -183,7 +180,6 @@ jobs:
     "contextProviders": [
       {
         "type": "http",
-        "endpoint": "http://localhost:8080",
         "authentication": "bearer",
         "tokenSource": "environment:CODEX_MCP_TOKEN"
       }
@@ -431,7 +427,6 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 import requests
 
 manifest = requests.get(
-    "http://localhost:8080/manifest",
     headers={"Authorization": f"Bearer {token}"}
 ).json()
 
@@ -449,10 +444,8 @@ model = torch.compile(model)  # New in 2.0+
 ```python
 # Create Playwright session via MCP
 session_response = requests.post(
-    "http://localhost:8080/sessions",
     headers={"Authorization": f"Bearer {token}"},
     json={
-        "url": "http://localhost:8080/login",
         "browser": "chromium",
         "headless": True
     }
@@ -467,7 +460,6 @@ session_response = requests.post(
 ```python
 # Get current cache manifest
 manifest = requests.get(
-    "http://localhost:8080/manifest",
     headers={"Authorization": f"Bearer {token}"}
 ).json()
 
@@ -479,7 +471,6 @@ updates = {
 
 # Warm cache for new versions
 warm_response = requests.post(
-    "http://localhost:8080/cache/warm",
     headers={"Authorization": f"Bearer {token}"},
     json={"targets": ["python"], "packages": updates, "force": True}
 ).json()
@@ -493,7 +484,6 @@ warm_response = requests.post(
 
 | Issue | Symptoms | Solution |
 |-------|----------|----------|
-| **MCP service not starting** | `curl http://localhost:8080/health` fails | Check container logs: `docker logs <container_id>` |
 | **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/copilot_token_decoder.py` |
 | **Slow cache warming** | Jobs take >10 Pre-commits | Check PyPI/npm mirrors, increase parallel downloads |
 | **Context too large** | Token limit errors | Adjust filtering, enable summarization |
@@ -519,7 +509,6 @@ Track these metrics via `mcp-observability`:
 
 ### External Documentation
 - MCP Specification: https://modelcontextprotocol.io/specification
-- GitHub Copilot API: https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension
 - Playwright Python: https://playwright.dev/python/docs/intro
 - JSON-RPC 2.0: https://www.jsonrpc.org/specification
 

@@ -1984,7 +1984,7 @@ def status_report(run_metadata_dir: Path) -> None:
 # codex-universal
 
 <!-- manifest-digest:start -->
-[![Manifest SHA256](https://img.shields.io/badge/manifest-unknown-blue)](#)
+[![Manifest SHA256](https://img.shields.io/badge/manifest-unknown-blue)(#top)
 <!-- manifest-digest:end -->
 
 The `_codex_` image now centers on **reasoning agents**. Use this document as the top-level map for roadmap milestones,

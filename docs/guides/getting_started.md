@@ -5,10 +5,10 @@ Welcome to Codex ML! This guide will help you get started with the autonomous ma
 ## Table of Contents
 
 - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
+  - [Prerequisites]()
   - [Install from Source](#install-from-source)
   - [Optional Dependencies](#optional-dependencies)
-- [Quick Start](#quick-start)
+- [Quick Start]()
   - [Basic Training with Determinism](#1-basic-training-with-determinism)
   - [Health Monitoring](#2-health-monitoring)
   - [Experiment Tracking (Offline-First)](#3-experiment-tracking-offline-first)

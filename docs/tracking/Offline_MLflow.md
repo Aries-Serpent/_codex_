@@ -67,7 +67,6 @@ scripts/tracking/mlflow_ui.sh
 mlflow ui --backend-store-uri file:./mlruns --port 5000
 ```text
 
-Access at: http://localhost:5000
 
 ## Example Run
 

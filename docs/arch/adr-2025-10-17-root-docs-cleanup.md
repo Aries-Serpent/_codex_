@@ -22,7 +22,6 @@ Archive the following files from the repository root effective 2025-10-17, using
 - `_codex_status_update-2025-10-06.md` → tombstone `1bd4c1f1-6165-4d8e-8a25-5121b511d577`
 - `_codex_status_update-2025-10-16.md` → tombstone `2d4d2f9d-e63f-4e69-8bb6-fe1158435431`
 - `done_resolution_plans_10-6_to_10-7.md` → tombstone `b131ecc9-21a2-4cb0-bf75-e56921b157bd`
-- `CODEBASE_AUDIT_2025-08-26_203612.md` → tombstone `f89cbae8-099b-4a4c-b016-9189ab6664b6`
 - `CODEBASE_AUDIT_2025-09-27_ITERATION3.md` → tombstone `a778bb0d-fd03-4642-a92d-55f28c68b193`
 - `_codex_codex-ready-sequence-and-patches-2025-09-27.md` → tombstone `94ba1b35-5745-40d6-8f08-8b3d0a62f786`
 - `codex_ready_sequence-2025-10-16.md` → tombstone `4c758c95-3c0b-4b5d-8bc7-27cc5c6f79d9`
