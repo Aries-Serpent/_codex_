@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-from src.training.cache import TokenCache
+from src.training.cache import TokenCache  # noqa: E402
 
 
 def test_cache_flush_threshold(tmp_path):

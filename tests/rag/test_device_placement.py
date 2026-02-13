@@ -1,6 +1,8 @@
 """Tests for safe model device placement."""
 
 import pytest
+pytest.importorskip("torch")
+
 
 import torch
 import torch.nn as nn

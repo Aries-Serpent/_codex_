@@ -11,12 +11,15 @@ import sys
 from pathlib import Path
 
 import pytest
+pytest.importorskip("mlflow")
+pytest.importorskip("typer")
+
 from click.testing import CliRunner
 
 from typer.testing import CliRunner as TyperCliRunner
 
 cli_module = importlib.import_module("codex.cli")
-from codex_cli.app import app as codex_cli_app
+from codex_cli.app import app as codex_cli_app  # noqa: E402
 
 
 @pytest.mark.parametrize(

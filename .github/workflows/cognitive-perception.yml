@@ -23,6 +23,10 @@ jobs:
         with:
           fetch-depth: 0  # Full history for git analysis
 
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow cognitive-perception 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:

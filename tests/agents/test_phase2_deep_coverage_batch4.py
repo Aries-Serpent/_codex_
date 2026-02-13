@@ -12,8 +12,11 @@ Systematically applies operator and performance patterns:
 Target: +4-5% coverage gain (38% → 43%)
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_MomentumOperators:

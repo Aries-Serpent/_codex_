@@ -7,9 +7,9 @@ from types import SimpleNamespace
 import pytest
 
 pytest.importorskip("typer")
-from codex_ml.cli import plugins_cli
-from codex_ml.plugins.registry import Registry
-from typer.testing import CliRunner
+from codex_ml.cli import plugins_cli  # noqa: E402
+from codex_ml.plugins.registry import Registry  # noqa: E402
+from typer.testing import CliRunner  # noqa: E402
 
 
 class DummyRegistry(Registry):

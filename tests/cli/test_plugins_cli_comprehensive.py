@@ -99,7 +99,8 @@ class TestListGroup:
         from codex_ml.cli.plugins_cli import _list_group
 
         echo_calls = []
-        mock_echo = lambda x: echo_calls.append(x)
+        def mock_echo(x):
+            return echo_calls.append(x)
 
         class MockException(Exception):
             pass
@@ -131,7 +132,8 @@ class TestDiagnoseGroup:
         from codex_ml.cli.plugins_cli import _diagnose_group
 
         echo_calls = []
-        mock_echo = lambda x: echo_calls.append(x)
+        def mock_echo(x):
+            return echo_calls.append(x)
 
         class MockException(Exception):
             pass
@@ -153,7 +155,8 @@ class TestDiagnoseGroup:
         from codex_ml.cli.plugins_cli import _diagnose_group
 
         echo_calls = []
-        mock_echo = lambda x: echo_calls.append(x)
+        def mock_echo(x):
+            return echo_calls.append(x)
 
         class MockException(Exception):
             pass
@@ -177,7 +180,8 @@ class TestExplainGroup:
         from codex_ml.cli.plugins_cli import _explain_group
 
         echo_calls = []
-        mock_echo = lambda x: echo_calls.append(x)
+        def mock_echo(x):
+            return echo_calls.append(x)
 
         class MockExitException(Exception):
             def __init__(self, code=0):

@@ -184,3 +184,9 @@ jobs:
           echo "**Dependency:** ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "**Secrets:** ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
           echo "**SBOM:** ${{ needs.sbom-generation.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow security-scanning-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

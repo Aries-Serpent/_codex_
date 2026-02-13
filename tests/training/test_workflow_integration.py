@@ -167,7 +167,7 @@ class TestEvaluationPhase:
     def test_validation_metrics(self):
         """Validation computes correct metrics."""
         def compute_accuracy(predictions, labels):
-            correct = sum(p == l for p, l in zip(predictions, labels))
+            correct = sum(p == label for p, label in zip(predictions, labels))
             return correct / len(labels)
 
         predictions = [1, 0, 1, 1, 0]
@@ -179,9 +179,9 @@ class TestEvaluationPhase:
     def test_f1_score_computation(self):
         """F1 score is computed correctly."""
         def compute_f1(predictions, labels, positive=1):
-            tp = sum(p == positive and l == positive for p, l in zip(predictions, labels))
-            fp = sum(p == positive and l != positive for p, l in zip(predictions, labels))
-            fn = sum(p != positive and l == positive for p, l in zip(predictions, labels))
+            tp = sum(p == positive and label == positive for p, label in zip(predictions, labels))
+            fp = sum(p == positive and label != positive for p, label in zip(predictions, labels))
+            fn = sum(p != positive and label == positive for p, label in zip(predictions, labels))
 
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0

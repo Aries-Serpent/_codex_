@@ -18,11 +18,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings  # noqa: E402
+from hypothesis import strategies as st  # noqa: E402
 
 # --- Centralized Metrics Sink Tests ---
 
@@ -535,6 +537,6 @@ class TestLogLevels:
             {"level": "ERROR", "msg": "error"},
         ]
         min_level = self.LEVELS["INFO"]
-        filtered = [l for l in logs if self.LEVELS.get(l["level"], 0) >= min_level]
+        filtered = [entry for entry in logs if self.LEVELS.get(entry["level"], 0) >= min_level]
         assert len(filtered) == 2
-        assert all(l["level"] != "DEBUG" for l in filtered)
+        assert all(entry["level"] != "DEBUG" for entry in filtered)

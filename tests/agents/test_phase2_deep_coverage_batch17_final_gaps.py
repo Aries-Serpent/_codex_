@@ -8,8 +8,11 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestUncoveredPaths_PhysicsOrchestrator:

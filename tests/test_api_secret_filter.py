@@ -11,7 +11,7 @@ pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402
 
-from services.api.main import app
+from services.api.main import app  # noqa: E402
 
 
 def test_secret_filtering_masks_keys():

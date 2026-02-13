@@ -22,7 +22,8 @@ class TestTokenHelpers:
 
     def test_count_tokens_with_tokenizer(self):
         """Test counting tokens with custom tokenizer."""
-        tokenizer = lambda text: list(range(10))  # Returns 10 tokens
+        def tokenizer(text):
+            return list(range(10))  # Returns 10 tokens
         count = _count_tokens("any text", tokenizer=tokenizer)
         assert count == 10
 
@@ -60,7 +61,8 @@ class TestTokenHelpers:
 
     def test_truncate_to_tokens_with_tokenizer(self):
         """Test truncation using custom tokenizer."""
-        tokenizer = lambda text: list(range(len(text.split())))
+        def tokenizer(text):
+            return list(range(len(text.split())))
         text = "One two three four five"
 
         result = _truncate_to_tokens(text, max_tokens=3, tokenizer=tokenizer)
@@ -108,7 +110,8 @@ class TestPromptTemplate:
     def test_template_initialization_custom(self):
         """Test template initialization with custom config."""
         config = PromptConfig(max_context_tokens=1000)
-        tokenizer = lambda x: [1, 2, 3]
+        def tokenizer(x):
+            return [1, 2, 3]
 
         template = PromptTemplate(config=config, tokenizer=tokenizer)
 

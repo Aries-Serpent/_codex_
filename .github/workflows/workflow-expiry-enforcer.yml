@@ -16,6 +16,10 @@ jobs:
     runs-on: [self-hosted, linux]
     timeout-minutes: 10
     steps:
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow workflow-expiry-enforcer 2>/dev/null || echo "Cache health: check skipped"
       - name: Raw checkout (git)
         shell: bash
         run: |

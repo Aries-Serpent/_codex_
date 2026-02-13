@@ -6,7 +6,7 @@ Test module for sanitize.
 
 #!/usr/bin/env python3
 """Tests for sanitize utility."""
-from src.utils.sanitize import sanitize_prompt
+from src.utils.sanitize import sanitize_prompt  # noqa: E402
 
 
 def test_sanitize_escapes_script_tag():

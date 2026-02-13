@@ -271,3 +271,9 @@ jobs:
             echo "- Image (sha): ${{ steps.vars.outputs.image_sha }}"
             echo "- Image (branch/latest): ${{ steps.vars.outputs.image_branch }}"
           } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow docker-build-push --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

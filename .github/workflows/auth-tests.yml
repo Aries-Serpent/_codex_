@@ -135,3 +135,9 @@ jobs:
           assert claims.sub == 'test_user', 'Token validation failed'
           print('✓ Token management verified')
           "
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow auth-tests --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

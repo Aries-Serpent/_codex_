@@ -1,7 +1,9 @@
 """Tests for Python AST adapter."""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from codex.ast_adapters.python_adapter import PythonASTAdapter
 
 
@@ -49,7 +51,7 @@ class TestClass:
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     # Find the class
     classes = adapter.find_nodes_by_type("class")
@@ -71,7 +73,7 @@ def decorated_function():
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
@@ -89,7 +91,7 @@ def typed_function(name: str, age: int = 0) -> str:
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
@@ -110,7 +112,7 @@ from typing import Dict, List
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     imports = adapter.find_nodes_by_type("import")
     import_froms = adapter.find_nodes_by_type("import_from")
@@ -128,7 +130,7 @@ z = [1, 2, 3]
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     assignments = adapter.find_nodes_by_type("assignment")
     assert len(assignments) >= 3
@@ -161,7 +163,7 @@ def standalone_function():
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     stats = adapter.get_stats()
 
@@ -207,7 +209,7 @@ def documented_function():
 '''
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
     assert len(functions) == 1
@@ -225,7 +227,7 @@ class DerivedClass(BaseClass, MixinClass):
 """
 
     adapter = PythonASTAdapter()
-    root = adapter.parse(source)
+    adapter.parse(source)
 
     classes = adapter.find_nodes_by_type("class")
     assert len(classes) == 1

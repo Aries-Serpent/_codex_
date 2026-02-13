@@ -144,9 +144,9 @@ class TestRetrieverModelLoading:
                 Retriever()
 
     @patch.dict('os.environ', {'HF_TOKEN': 'test_token'}, clear=False)
+    @patch('codex.rag.utils.safe_model_to_device', side_effect=lambda m, d: m)
     @patch('codex.rag.retriever.SentenceTransformer')
-    @patch('torch.set_default_device')
-    def test_load_model_uses_hf_token(self, mock_set_device, mock_st):
+    def test_load_model_uses_hf_token(self, mock_st, mock_safe):
         """Test _load_model uses HF_TOKEN when available."""
         from codex.rag.retriever import Retriever
 

@@ -12,7 +12,7 @@ import pytest
 np = pytest.importorskip("numpy")
 torch = pytest.importorskip("torch")
 
-from scripts import inference_pipeline as pipeline
+from scripts import inference_pipeline as pipeline  # noqa: E402
 
 
 class DummyTokenizer:

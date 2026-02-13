@@ -135,6 +135,32 @@ jobs:
           # Phase 13: Strict mode temporarily disabled to identify warnings
           mkdocs build --verbose
 
+      # Build cognitive_app dashboard and merge into site
+      - name: Build cognitive_app dashboard
+        continue-on-error: true
+        run: |
+          if [ -f cognitive_app/package.json ]; then
+            cd cognitive_app
+            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts 2>/dev/null || true
+            npm run build 2>/dev/null || true
+            if [ -d dist ]; then
+              mkdir -p ../site/cognitive_app
+              cp -r dist/* ../site/cognitive_app/
+              echo "✅ cognitive_app built and merged into site/cognitive_app/"
+            else
+              echo "⚠️ cognitive_app build did not produce dist/ directory"
+            fi
+            cd ..
+          else
+            echo "⚠️ cognitive_app/package.json not found — skipping"
+          fi
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow pages-mkdocs --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

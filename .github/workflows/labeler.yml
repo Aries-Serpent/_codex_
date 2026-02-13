@@ -13,3 +13,7 @@ jobs:
       - uses: actions/labeler@v6
         with:
           configuration-path: .github/labeler.yml
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow labeler 2>/dev/null || echo "Cache health: check skipped"

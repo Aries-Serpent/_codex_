@@ -197,6 +197,21 @@ class UnifiedTrainingConfig:
 def _seed_all(seed: int, *, deterministic: bool = True) -> None:
     set_seed(seed, deterministic=deterministic)
 
+    # Preserve legacy behavior for tests and call-sites that monkeypatch the
+    # module-level torch reference directly.
+    if torch is None:
+        return
+
+    manual_seed = getattr(torch, "manual_seed", None)
+    if callable(manual_seed):
+        manual_seed(seed)
+
+    cuda = getattr(torch, "cuda", None)
+    if cuda is not None and callable(getattr(cuda, "is_available", None)) and cuda.is_available():
+        manual_seed_all = getattr(cuda, "manual_seed_all", None)
+        if callable(manual_seed_all):
+            manual_seed_all(seed)
+
 
 def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
     if cfg.backend:

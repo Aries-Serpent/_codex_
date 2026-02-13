@@ -171,6 +171,12 @@ jobs:
             cat bandit-report.txt
           fi
 
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
       - name: Upload security report
         uses: actions/upload-artifact@v6
         if: always()

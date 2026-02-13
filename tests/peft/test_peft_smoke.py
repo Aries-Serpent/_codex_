@@ -7,14 +7,16 @@ Test module for peft smoke.
 from __future__ import annotations
 
 import pytest
+pytest.importorskip("torch")
+
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
+import torch  # noqa: E402
 
 pytest.skip("PEFT registry not available in this build", allow_module_level=True)
 
-from src.codex_ml.peft.peft_registry import get_peft_registry
+from src.codex_ml.peft.peft_registry import get_peft_registry  # noqa: E402
 
 
 def test_peft_registry_lists_expected_adapters():

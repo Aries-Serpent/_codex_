@@ -65,6 +65,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow agent-orchestration-unified 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:

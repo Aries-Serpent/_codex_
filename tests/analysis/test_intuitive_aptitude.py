@@ -1052,8 +1052,10 @@ def func():
         """Test handling lambda functions."""
         analyzer = intuitive_aptitude()
         code = """
-square = lambda x: x ** 2
-add = lambda a, b: a + b
+def square(x):
+    return x ** 2
+def add(a, b):
+    return a + b
 """
         result = analyzer.ingest(code)
         assert result is True

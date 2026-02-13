@@ -12,14 +12,12 @@ import pytest
 
 pytest.importorskip("torch")
 
-import torch
-from src.training.functional_training import TrainCfg, run_custom_trainer
-from src.training.seed import ensure_global_seed
-from torch import nn
-from torch.utils.data import Dataset
+import torch  # noqa: E402
+from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
+from src.training.seed import ensure_global_seed  # noqa: E402
 
 
-class TinyRegressionDataset(Dataset):
+class TinyRegressionDataset(torch.utils.data.Dataset):
     def __init__(self, n_items: int = 64) -> None:
         ensure_global_seed(7)
         xs = torch.linspace(-1.0, 1.0, n_items)
@@ -39,14 +37,14 @@ class TinyRegressionDataset(Dataset):
         }
 
 
-class TinyRegressor(nn.Module):
+class TinyRegressor(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        self.linear = nn.Linear(1, 1)
+        self.linear = torch.nn.Linear(1, 1)
 
     def forward(self, input_ids: torch.Tensor, labels: torch.Tensor) -> dict[str, torch.Tensor]:
         preds = self.linear(input_ids)
-        loss = nn.functional.mse_loss(preds, labels)
+        loss = torch.nn.functional.mse_loss(preds, labels)
         return {"loss": loss, "logits": preds}
 
 

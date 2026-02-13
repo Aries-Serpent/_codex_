@@ -14,11 +14,11 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import torch
-from codex.training import TrainCfg, run_custom_trainer
-from codex_ml.models import MiniLM, MiniLMConfig
-from src.training.data_utils import TextDataset
-from src.training.engine_hf_trainer import run_hf_trainer
+import torch  # noqa: E402
+from codex.training import TrainCfg, run_custom_trainer  # noqa: E402
+from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
+from src.training.data_utils import TextDataset  # noqa: E402
+from src.training.engine_hf_trainer import run_hf_trainer  # noqa: E402
 
 
 class _Tok:

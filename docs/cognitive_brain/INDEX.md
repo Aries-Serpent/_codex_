@@ -1,8 +1,23 @@
 # Cognitive Brain Documentation Index
 
-**Last Updated:** 2026-01-21  
+**Last Updated:** 2026-02-11  
 **Total Files:** 28 (organized from root)  
 **Structure:** 4 directories (status, prompts, architecture, root)
+
+---
+
+## 🧬 Evolution Tracking
+
+The cognitive brain's complete evolutionary history is documented in the **Evolution Center**:
+
+| Resource | Purpose |
+|----------|---------|
+| [Evolution Timeline](../evolution/EVOLUTION_TIMELINE.md) | Verified phase-by-phase history (Phases 1-18) |
+| [Planset Registry](../evolution/PLANSET_REGISTRY.md) | Queryable catalog of PS-01 → PS-10 |
+| [Cognitive Evolution Tree](../evolution/COGNITIVE_EVOLUTION_TREE.md) | Mermaid diagrams showing agent lineage and capability maturity |
+| [AI Emergence Storyboard](../evolution/AI_EMERGENCE_STORYBOARD.md) | Narrative of AI agency emergence |
+
+**Backing Data**: `.codex/cognitive_brain/ps01_status.md` → `ps10_status.md`, `status/` (31 files)
 
 ---
 

@@ -4,10 +4,13 @@ Test Codex Model
 Test module for codex model.
 """
 
+
 import importlib.util
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("torch")
 
 import torch
 from codex_ml.codex_model import ModelConfig, build_codex_model

@@ -138,3 +138,9 @@ jobs:
           echo "**Status**: ${{ steps.check_action.outputs.action_needed == 'true' && '⚠️ Action Needed' || '✅ Healthy' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See artifacts for detailed report." >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow repository-health-monitoring 2>/dev/null || echo "Cache health: check skipped"

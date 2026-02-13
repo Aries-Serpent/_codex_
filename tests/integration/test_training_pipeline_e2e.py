@@ -14,7 +14,7 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-from unittest.mock import Mock
+from unittest.mock import Mock  # noqa: E402
 
 # Test availability flags
 try:
@@ -113,7 +113,6 @@ checkpoint:
         checkpoint_path = checkpoint_dir / "checkpoint_epoch_5.pt"
 
         if TORCH_AVAILABLE:
-            import torch
             torch.save(checkpoint, checkpoint_path)
 
             # Step 4: Verify checkpoint saved
@@ -139,7 +138,6 @@ class TestMultiGPUWorkflow:
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_distributed_setup_workflow(self):
         """Test distributed training coordination"""
-        import torch
 
         # Step 1: Check GPU availability
         torch.cuda.device_count() if torch.cuda.is_available() else 0

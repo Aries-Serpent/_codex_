@@ -186,7 +186,9 @@ def safe_model_to_device(
         else:
             # Standard device transfer for normal tensors
             logger.debug(f"Moving model to {device} using standard .to()")
-            if isinstance(model, torch.nn.Module):
+            nn_mod = getattr(torch, "nn", None)
+            torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
+            if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
                 result = model.to(device)  # safe-device-placement: internal implementation
                 
                 # Log standard transfer timing

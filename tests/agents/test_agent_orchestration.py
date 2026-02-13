@@ -4,6 +4,7 @@ Test cases for quantum-inspired agent orchestration.
 Tests agent entanglement, chain creation, and optimization.
 """
 
+
 import json
 import sys
 from pathlib import Path
@@ -11,10 +12,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+pytest.importorskip("numpy")
+
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from scripts.agents.quantum_agent_orchestrator import (
+from scripts.agents.quantum_agent_orchestrator import (  # noqa: E402
     AgentQuantumState,
     QuantumAgentOrchestrator,
 )

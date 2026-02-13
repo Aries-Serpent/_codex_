@@ -1,5 +1,11 @@
 """Tests for retrieval optimizations"""
 
+import pytest
+
+pytest.importorskip("numpy")
+
+
+
 from unittest.mock import MagicMock, Mock
 
 import numpy as np

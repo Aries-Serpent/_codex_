@@ -8,11 +8,13 @@ import json
 from pathlib import Path
 
 import pytest
+pytest.importorskip("typer")
+
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
-from codex_ml.evaluation import cli as eval_cli
-from typer.testing import CliRunner
+from codex_ml.evaluation import cli as eval_cli  # noqa: E402
+from typer.testing import CliRunner  # noqa: E402
 
 
 class DummyModel(torch.nn.Module):
@@ -104,7 +106,7 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
     # Ensure NDJSON log file was written
     ndjson_file = tmp_path / "metrics.ndjson"
     assert ndjson_file.exists()
-    lines = [json.loads(l) for l in ndjson_file.read_text().splitlines() if l.strip()]
+    lines = [json.loads(line) for line in ndjson_file.read_text().splitlines() if line.strip()]
     assert any(rec.get("type") == "epoch" for rec in lines)
 
 

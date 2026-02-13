@@ -9,11 +9,13 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
+pytest.importorskip("hypothesis")
+
 
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 
-from hypothesis import assume, given, settings
-from hypothesis import strategies as st
+from hypothesis import assume, given, settings  # noqa: E402
+from hypothesis import strategies as st  # noqa: E402
 
 # =============================================================================
 # Configuration + Logging Integration
@@ -218,7 +220,8 @@ class TrainingCheckpointer:
         """Load best checkpoint by metric."""
         if not self.checkpoints:
             return None
-        key = lambda c: c["metrics"].get(metric, float("inf"))
+        def key(c):
+            return c["metrics"].get(metric, float("inf"))
         reverse = mode == "max"
         return sorted(self.checkpoints, key=key, reverse=reverse)[0]
 

@@ -11,7 +11,7 @@ import pytest
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.registry import MCPToolRegistry
+from mcp.registry import MCPToolRegistry  # noqa: E402
 
 
 def test_registry_initialization():
@@ -167,7 +167,7 @@ def test_tool_discovery_filters():
     all_tools = registry.list_tools()
 
     # Can filter public tools
-    public_tools = [t for t in all_tools if t.get("metadata", {}).get("public") == True]
+    public_tools = [t for t in all_tools if t.get("metadata", {}).get("public") is True]
 
     assert len(public_tools) == 2
 

@@ -6,16 +6,16 @@ Test module for prometheus metrics.
 
 #!/usr/bin/env python3
 """Tests for Prometheus metrics collection."""
-import sys
-from pathlib import Path
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
 # Add src to path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from codex_ml.monitoring.metrics import (
+from codex_ml.monitoring.metrics import (  # noqa: E402
     MetricsCollector,
     get_metrics_collector,
     record_latency,

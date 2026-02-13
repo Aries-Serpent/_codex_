@@ -214,10 +214,14 @@ class SeedManager:
         if NUMPY_AVAILABLE:
             env_info["numpy_version"] = np.__version__
         if TORCH_AVAILABLE:
-            env_info["torch_version"] = torch.__version__
-            env_info["cuda_available"] = torch.cuda.is_available()
-            if torch.cuda.is_available():
-                env_info["cuda_version"] = torch.version.cuda
+            env_info["torch_version"] = getattr(torch, "__version__", "unknown")
+            cuda = getattr(torch, "cuda", None)
+            cuda_available = bool(
+                cuda is not None and callable(getattr(cuda, "is_available", None)) and cuda.is_available()
+            )
+            env_info["cuda_available"] = cuda_available
+            if cuda_available:
+                env_info["cuda_version"] = getattr(getattr(torch, "version", None), "cuda", None)
 
         env_str = json.dumps(env_info, sort_keys=True)
         return hashlib.sha256(env_str.encode()).hexdigest()[:16]

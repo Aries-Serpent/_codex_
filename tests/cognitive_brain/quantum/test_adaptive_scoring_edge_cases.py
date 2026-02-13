@@ -5,8 +5,11 @@ Tests adaptive scoring with extreme inputs, invalid configurations, and edge con
 to ensure robust behavior across the full input space.
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.quantum.adaptive_scoring import (

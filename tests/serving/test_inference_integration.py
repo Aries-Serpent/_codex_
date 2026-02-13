@@ -9,7 +9,7 @@ import pytest
 fastapi = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402  # isort: skip
 
-from codex_ml.serving.inference_server import ModelConfig, create_app
+from codex_ml.serving.inference_server import ModelConfig, create_app  # noqa: E402
 
 
 def _build_client():

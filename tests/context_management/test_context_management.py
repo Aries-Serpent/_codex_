@@ -182,10 +182,10 @@ class TestSemanticDeduplicator:
         dedup.add_statement("First statement")
 
         is_dup, original = dedup.is_duplicate("First statement")
-        assert is_dup == True
+        assert is_dup is True
 
         is_dup, original = dedup.is_duplicate("Different statement")
-        assert is_dup == False
+        assert is_dup is False
 
 
 class TestTokenBudgetEnforcer:
@@ -198,7 +198,7 @@ class TestTokenBudgetEnforcer:
         enforcer = TokenBudgetEnforcer(hard_limit=1000, soft_limit=800)
 
         result = enforcer.add_content("Test content", priority=ContentPriority.MEDIUM)
-        assert result == True
+        assert result is True
 
         status = enforcer.get_budget_status()
         assert status["current_usage"] > 0
@@ -211,7 +211,7 @@ class TestTokenBudgetEnforcer:
 
         # Add content that fits
         result = enforcer.add_content("Short", priority=ContentPriority.HIGH)
-        assert result == True
+        assert result is True
 
         # Add content that exceeds limits
         long_content = "x" * 500

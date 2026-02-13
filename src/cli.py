@@ -13,7 +13,7 @@ from typing import Any
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
-from metrics import accuracy as metrics_accuracy
+from src.metrics import accuracy as metrics_accuracy
 from omegaconf import OmegaConf
 from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
@@ -28,7 +28,12 @@ except ImportError as e:
 
 CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
 PROJECT_ROOT = CLI_PACKAGE_PATH.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+# Keep project root importable but avoid shadowing installed third-party packages.
+# Remove cwd aliases to prevent local stub packages from shadowing site-packages.
+for candidate in ("", ".", str(PROJECT_ROOT)):
+    while candidate in sys.path:
+        sys.path.remove(candidate)
+sys.path.append(str(PROJECT_ROOT))
 
 TOKENIZATION_DIR = PROJECT_ROOT / "tokenization"
 tokenization_pkg = sys.modules.get("tokenization")

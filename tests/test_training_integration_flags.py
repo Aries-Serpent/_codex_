@@ -12,6 +12,8 @@ from typing import Dict, Iterator, List
 
 import numpy as np
 import pytest
+pytest.importorskip("numpy")
+
 
 try:
     torch = pytest.importorskip("torch")

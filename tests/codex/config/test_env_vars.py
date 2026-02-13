@@ -46,7 +46,8 @@ class TestEnvVarConfig:
         """Test creating config with validator."""
         from codex.config.env_vars import EnvVarConfig
 
-        validator = lambda v: v in ("0", "1")
+        def validator(v):
+            return v in ("0", "1")
         config = EnvVarConfig(
             name="TEST_VAR",
             validator=validator,

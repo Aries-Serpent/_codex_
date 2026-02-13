@@ -8,7 +8,10 @@ Focus: ChaoticAttractor, ChaoticNeuralNetwork, FractalAnalyzer, FluidChannel,
        AdvancedPhysicsOrchestrator
 """
 
+
 import pytest
+
+pytest.importorskip("numpy")
 
 # ============================================================================
 # CHAOTIC ATTRACTOR TESTS

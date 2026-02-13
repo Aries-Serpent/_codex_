@@ -531,7 +531,7 @@ class TestConcurrentAccessAndLocking:
                     locks[name].acquire()
                     acquired.append(name)
                 return True
-            except:
+            except Exception:
                 # Release in reverse order on failure
                 for name in reversed(acquired):
                     locks[name].release()

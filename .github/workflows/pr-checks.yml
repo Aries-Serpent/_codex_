@@ -54,6 +54,18 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ -x --tb=short
 
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
+      - name: Generate CacheManager keys
+        id: cache-keys
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow pr-checks --github-output "$GITHUB_OUTPUT" 2>/dev/null || echo "cache_key=fallback-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
       - name: Run linting
         run: |
           pip install ruff

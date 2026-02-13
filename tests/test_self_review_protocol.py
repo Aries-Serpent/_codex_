@@ -6,7 +6,7 @@ from pathlib import Path
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from ai_self_review_protocol import (
+from ai_self_review_protocol import (  # noqa: E402
     Issue,
     IssueType,
     Priority,
@@ -14,7 +14,7 @@ from ai_self_review_protocol import (
     ReviewStatus,
     SelfReviewProtocol,
 )
-from code_change_reviewer import CodeChangeReviewer
+from code_change_reviewer import CodeChangeReviewer  # noqa: E402
 
 
 def test_issue_creation():
@@ -362,7 +362,7 @@ def test_analyze_python_file_bare_except(tmp_path):
 def risky_function():
     try:
         dangerous_operation()
-    except:
+    except Exception:
         pass
 """)
 

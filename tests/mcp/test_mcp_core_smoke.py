@@ -12,16 +12,16 @@ import pytest
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.errors import (
+from mcp.errors import (  # noqa: E402
     MCPError,
     RateLimitExceeded,
     ToolNotFound,
     Unauthorized,
     ValidationError,
 )
-from mcp.rate_limit import MCPRateLimiter
-from mcp.registry import MCPToolRegistry
-from mcp.versioning import MCP_VERSIONS, negotiate_version
+from mcp.rate_limit import MCPRateLimiter  # noqa: E402
+from mcp.registry import MCPToolRegistry  # noqa: E402
+from mcp.versioning import MCP_VERSIONS, negotiate_version  # noqa: E402
 
 
 def test_registry_basic():

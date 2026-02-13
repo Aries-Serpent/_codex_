@@ -3,10 +3,17 @@ Test ExceptionGroup compatibility (Python 3.12 standard feature).
 
 ExceptionGroup was introduced in Python 3.11 and is fully supported in 3.12.
 """
+# ruff: noqa: F821
 
 from __future__ import annotations
 
+import sys
+
 import pytest
+
+pytestmark = pytest.mark.skipif(
+    sys.version_info < (3, 11), reason="ExceptionGroup requires Python 3.11+"
+)
 
 
 class TestExceptionGroups:

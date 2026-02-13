@@ -2,10 +2,13 @@
 Comprehensive tests for FAISS Vector Store with safeguards
 """
 
+
 import tempfile
 
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 try:
     from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore

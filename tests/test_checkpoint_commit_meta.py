@@ -11,7 +11,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from codex_ml.utils.checkpointing import save_checkpoint
+from codex_ml.utils.checkpointing import save_checkpoint  # noqa: E402
 
 
 @pytest.mark.ml
@@ -19,7 +19,7 @@ def test_checkpoint_records_git_commit(tmp_path):
     class Toy(torch.nn.Module):
         def __init__(self):
             super().__init__()
-            self.l = torch.nn.Linear(2, 2)
+            self.linear = torch.nn.Linear(2, 2)
 
     model = Toy()
     path = tmp_path / "ckpt.pt"

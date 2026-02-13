@@ -17,9 +17,9 @@ Tests:
 - JSON structure integrity
 """
 
-import json
-from pathlib import Path
-from typing import List
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import List  # noqa: E402
 
 # Try to import hypothesis, make tests optional if not available
 try:

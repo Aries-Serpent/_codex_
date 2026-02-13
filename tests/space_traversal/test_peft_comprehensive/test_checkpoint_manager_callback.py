@@ -11,11 +11,11 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 
-from torch.optim import SGD
+from torch.optim import SGD  # noqa: E402
 
-import torch
-from src.training.checkpoint_manager import CheckpointManager
-from transformers import TrainerControl, TrainerState
+import torch  # noqa: E402
+from src.training.checkpoint_manager import CheckpointManager  # noqa: E402
+from transformers import TrainerControl, TrainerState  # noqa: E402
 
 
 def test_callback_saves_and_prunes(tmp_path):

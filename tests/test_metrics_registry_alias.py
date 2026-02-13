@@ -8,7 +8,7 @@ import pytest
 
 pytest.importorskip("torch")  # noqa: F401
 
-from codex_ml.metrics.registry import get_metric
+from codex_ml.metrics.registry import get_metric  # noqa: E402
 
 
 def test_token_accuracy_alias() -> None:

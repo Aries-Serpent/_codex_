@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+pytest.importorskip("numpy")
+
 
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
@@ -17,8 +19,8 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import torch
-from src.training.engine_hf_trainer import run_hf_trainer
+import torch  # noqa: E402
+from src.training.engine_hf_trainer import run_hf_trainer  # noqa: E402
 
 
 def _install_minimal_hf_stubs(

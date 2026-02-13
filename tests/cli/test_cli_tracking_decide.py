@@ -10,6 +10,8 @@ import json
 import os
 
 import pytest
+pytest.importorskip("typer")
+
 
 typer = pytest.importorskip("typer", reason="typer not installed")
 from codex_ml.cli import tracking_decide  # noqa: E402

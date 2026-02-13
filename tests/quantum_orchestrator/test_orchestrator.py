@@ -11,8 +11,11 @@ Test coverage:
 7. Integration tests
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

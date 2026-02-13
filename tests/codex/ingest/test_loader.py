@@ -25,8 +25,8 @@ class TestIngestLoaderOperations:
         try:
             from src.codex.ingest import loader
             if hasattr(loader, 'Loader'):
-                l = loader.Loader()
-                assert l is not None
+                ldr = loader.Loader()
+                assert ldr is not None
         except (ImportError, AttributeError):
             pytest.skip("Loader not available")
 

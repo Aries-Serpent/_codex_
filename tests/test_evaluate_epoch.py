@@ -15,7 +15,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from codex_ml.evaluation.loop import evaluate_epoch
+from codex_ml.evaluation.loop import evaluate_epoch  # noqa: E402
 
 
 class _SimpleModel(torch.nn.Module):

@@ -4,8 +4,11 @@ Phase 8.1 Error Handling Tests - QuantumMemoryManager, PatternCompressor, Memory
 Tests error conditions, edge cases, and robustness of memory management components.
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,

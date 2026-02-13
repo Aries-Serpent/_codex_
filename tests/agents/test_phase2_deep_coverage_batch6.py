@@ -13,8 +13,11 @@ Systematically applies advanced physics patterns:
 Target: +4-5% coverage gain (47% → 52%)
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_ChaoticAttractors:
@@ -277,9 +280,9 @@ class TestPhase2_ElectromagneticFields:
     def test_magnetic_field_calculation(self):
         """Test magnetic field B = μ₀I/(2πr)"""
         mu0 = 4 * np.pi * 1e-7  # Permeability
-        I = 1.0  # current (A)
+        current_i = 1.0  # current (A)
         r = 0.1  # distance (m)
-        B = mu0 * I / (2 * np.pi * r)
+        B = mu0 * current_i / (2 * np.pi * r)
         assert B > 0
 
     def test_lorentz_force(self):

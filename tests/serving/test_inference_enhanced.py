@@ -9,7 +9,7 @@ import pytest
 pytest.importorskip("fastapi")
 pytest.importorskip("starlette")
 
-from src.codex_ml.serving.inference_server import (
+from src.codex_ml.serving.inference_server import (  # noqa: E402
     AuthManager,
     ModelConfig,
     create_app,
@@ -269,9 +269,7 @@ class TestCircuitBreakerIntegration:
         """Test circuit breaker is called during prediction"""
         # Skip if circuit breaker not available
         try:
-            from codex_ml.serving.resilience import (
-                CircuitBreaker,  # noqa: F401 - Testing optional dependency availability
-            )
+            from codex_ml.serving.resilience import CircuitBreaker  # noqa: F401
         except ImportError:
             pytest.skip("CircuitBreaker not available")
 

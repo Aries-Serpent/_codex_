@@ -750,7 +750,7 @@ peft==0.18.1
     #   lm-eval
 pexpect==4.9.0
     # via ipython
-pillow==12.1.0
+pillow==12.1.1
     # via
     #   matplotlib
     #   tensorboard

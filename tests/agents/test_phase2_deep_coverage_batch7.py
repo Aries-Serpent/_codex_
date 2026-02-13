@@ -12,8 +12,11 @@ Systematically applies memory and cognitive patterns:
 Target: +4-5% coverage gain (52% → 57%)
 """
 
+
 import numpy as np
 import pytest
+
+pytest.importorskip("numpy")
 
 
 class TestPhase2_AgentMemory:

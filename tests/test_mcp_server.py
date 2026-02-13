@@ -10,10 +10,10 @@ Test script for MCP JSON-RPC Server.
 Verifies complete functionality of the server.
 """
 
-import sys
-from pathlib import Path
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
 
 
 def find_repo_root() -> Path:

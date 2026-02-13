@@ -50,12 +50,12 @@ from __future__ import annotations
 import json
 import os
 import subprocess
-import tomllib
 from datetime import datetime
 from pathlib import Path
 from typing import List
 
 import nox
+import tomllib
 
 # Preferred Python versions (adjust as needed)
 PY_VERSIONS: List[str] = ["3.12", "3.11"]
@@ -312,6 +312,10 @@ def tests(session: nox.Session) -> None:
     """
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
+    # Install the package editable so src/ imports resolve and declared
+    # dependencies are available.  Use --no-deps to avoid pulling heavy
+    # runtime deps that aren't needed for the baseline test session.
+    session.run("pip", "install", "-e", ".", "--no-deps", external=True)
     _show_vendor_scan(session)
     # Include both src and training packages in coverage measurement
     session.run(
@@ -323,6 +327,7 @@ def tests(session: nox.Session) -> None:
         "--cov-fail-under=0",  # Temporarily disabled - see pyproject.toml for roadmap
         "-m",
         "not requires_torch",
+        *session.posargs,
         external=True,
     )
 
