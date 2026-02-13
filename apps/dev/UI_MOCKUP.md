@@ -23,6 +23,13 @@
 │  │      [ Test Connection ]        [ Get Voice Lines ]            │  │
 │  └─────────────────────────────────────────────────────────────────┘  │
 │                                                                        │
+│  Download Greeting File:                                              │
+│  ┌─────────────────────────────────────────────────────────────────┐  │
+│  │ Greeting Path: [29136121135501/file.mp3_______________]  [↓]   │  │
+│  │                Example: 29136121135501/74a7c698a...mp3          │  │
+│  │                API: /api/v2/channels/voice/greetings/{path}     │  │
+│  └─────────────────────────────────────────────────────────────────┘  │
+│                                                                        │
 ├────────────────────────────────────────────────────────────────────────┤
 │  Status: Connected                              Page 1 | Total: 250   │
 ├────────────────────────────────────────────────────────────────────────┤
@@ -88,6 +95,24 @@ File                    Help
 **Colors:**
 - Test Connection: Green (#4CAF50)
 - Get Voice Lines: Blue (#2196F3)
+
+### 2.5. Download Frame (NEW)
+```
+┌─────────────────────────────────────────┐
+│ Download Greeting File:                 │
+│                                         │
+│ Greeting Path: [Input Field___] [Pink] │
+│                Example text             │
+│                API endpoint info        │
+└─────────────────────────────────────────┘
+```
+
+**Colors:**
+- Download File: Pink (#E91E63)
+
+**State:**
+- Disabled: Until connection is tested
+- Enabled: After successful connection test
 
 ### 3. Status Frame
 ```
@@ -259,6 +284,7 @@ Export Options:
 ### Primary Colors
 - **Green (#4CAF50)**: Success, positive actions
 - **Blue (#2196F3)**: Primary actions, info
+- **Pink (#E91E63)**: Download action (NEW)
 - **Orange (#FF9800)**: JSON export
 - **Purple (#9C27B0)**: CSV export
 - **Teal (#009688)**: Excel export

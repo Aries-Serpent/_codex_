@@ -30,6 +30,13 @@ Click **"Test Connection"** → Should see "Connection successful!"
 2. Wait for progress indicator
 3. Data appears in preview
 
+### Download Greeting File (NEW)
+1. Test connection first
+2. Enter greeting path (e.g., `29136121135501/greeting.mp3`)
+3. Click **"Download File"**
+4. Choose save location
+5. File downloaded
+
 ### Navigate Pages
 - **◄ Previous**: Go back one page
 - **Next ►**: Go forward one page
@@ -63,6 +70,8 @@ Click **"Test Connection"** → Should see "Connection successful!"
 | Auth failed (401) | Regenerate API token |
 | No data loaded | Test connection first |
 | Excel export fails | Install: `pip install pandas openpyxl` |
+| File not found (404) | Verify greeting file path |
+| Download disabled | Test connection first |
 
 ## API Rate Limits
 

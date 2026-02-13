@@ -26,6 +26,7 @@ python zd_voice_lines.py
 - ⏭️ Page navigation (Previous/Next, Jump to page)
 - 📈 Real-time progress tracking
 - ⚡ Automatic rate limit handling
+- 🎵 **Download greeting files (MP3, WAV, etc.)**
 
 🎁 **Bonus Features:**
 - Preview data in formatted JSON
@@ -34,6 +35,7 @@ python zd_voice_lines.py
 - Search across all retrieved data with result navigation
 - Multiple export format options
 - Professional GUI with intuitive controls
+- Download voice greeting files from Zendesk
 
 ## Installation
 
@@ -86,6 +88,23 @@ Choose your preferred format:
 - **JSON**: Full structured data with metadata
 - **CSV**: Flattened data for spreadsheet analysis
 - **Excel**: Professional spreadsheet format (.xlsx)
+
+### 6. Download Greeting Files
+
+1. Ensure connection is tested (Download button enabled)
+2. Enter greeting file path in the "Greeting Path" field
+   - Example: `29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3`
+3. Click **"Download File"**
+4. Choose save location
+5. File is downloaded with original filename
+
+**API Endpoint:** `/api/v2/channels/voice/greetings/{path}`
+
+**Supported Formats:**
+- MP3 (audio)
+- WAV (audio)
+- OGG (audio)
+- Any file stored in voice greetings
 
 ## Authentication
 

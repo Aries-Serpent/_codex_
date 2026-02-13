@@ -42,6 +42,7 @@ from tkinter import (
 from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, VERTICAL, X, Y
 from typing import Any
 from urllib.parse import urljoin
+import os
 
 import requests
 
@@ -240,6 +241,37 @@ class ZendeskVoiceLinesClient:
 
         return pages
 
+    def download_greeting_file(
+        self,
+        greeting_path: str,
+    ) -> bytes:
+        """
+        Download a greeting file (e.g., MP3) from Zendesk Voice API.
+
+        Args:
+            greeting_path: Path to greeting file (e.g., "29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3")
+
+        Returns:
+            File content as bytes
+
+        Raises:
+            requests.exceptions.RequestException: On API errors
+        """
+        # Clean up path - remove leading slash if present
+        greeting_path = greeting_path.lstrip("/")
+        
+        url = f"{self.config.base_url}/channels/voice/greetings/{greeting_path}"
+
+        try:
+            response = self.session.get(url, timeout=30)
+            self._handle_rate_limit(response)
+            response.raise_for_status()
+            return response.content
+        except requests.exceptions.RequestException as e:
+            raise requests.exceptions.RequestException(
+                f"File download failed: {str(e)}"
+            ) from e
+
 
 class ZendeskVoiceLinesGUI:
     """
@@ -273,6 +305,7 @@ class ZendeskVoiceLinesGUI:
         # Initialize UI
         self._create_menu()
         self._create_config_frame()
+        self._create_download_frame()
         self._create_status_frame()
         self._create_preview_frame()
         self._create_navigation_frame()
@@ -346,6 +379,55 @@ class ZendeskVoiceLinesGUI:
             fg="white",
             padx=10,
         ).pack(side=LEFT, padx=5)
+
+    def _create_download_frame(self):
+        """Create file download frame."""
+        download_frame = Frame(self.root, padx=10, pady=10, relief="groove", borderwidth=2)
+        download_frame.pack(side=TOP, fill=X)
+
+        # Title
+        Label(download_frame, text="Download Greeting File:", font=("Arial", 10, "bold")).grid(
+            row=0, column=0, sticky="w", padx=5, pady=(0, 5)
+        )
+
+        # Greeting path input
+        Label(download_frame, text="Greeting Path:").grid(row=1, column=0, sticky="w", padx=5)
+        self.greeting_path_var = StringVar()
+        greeting_path_entry = Entry(download_frame, textvariable=self.greeting_path_var, width=60)
+        greeting_path_entry.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="ew")
+
+        # Info label with example
+        info_label = Label(
+            download_frame,
+            text="Example: 29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3",
+            font=("Arial", 8),
+            fg="gray",
+        )
+        info_label.grid(row=2, column=1, sticky="w", padx=5)
+
+        # API info label
+        api_label = Label(
+            download_frame,
+            text="API: /api/v2/channels/voice/greetings/{path}",
+            font=("Arial", 8),
+            fg="blue",
+        )
+        api_label.grid(row=3, column=1, sticky="w", padx=5)
+
+        # Download button
+        self.download_btn = Button(
+            download_frame,
+            text="Download File",
+            command=self._download_greeting_file,
+            bg="#E91E63",
+            fg="white",
+            padx=15,
+            state="disabled",
+        )
+        self.download_btn.grid(row=1, column=3, padx=5)
+
+        # Configure column weights for resizing
+        download_frame.columnconfigure(1, weight=1)
 
     def _create_status_frame(self):
         """Create status display frame."""
@@ -487,6 +569,8 @@ class ZendeskVoiceLinesGUI:
                 )
                 self.status_var.set("Connected")
                 self.client = client
+                # Enable download button when connected
+                self.download_btn.config(state="normal")
             else:
                 messagebox.showerror(
                     "Connection Test Failed",
@@ -779,6 +863,80 @@ Documentation Resources:
    https://developer.zendesk.com/api-reference/introduction/pagination/
         """
         messagebox.showinfo("Documentation", docs_text)
+
+    def _download_greeting_file(self):
+        """Download a greeting file from Zendesk Voice API."""
+        if not self.client:
+            messagebox.showerror(
+                "Error",
+                "Please test connection first to initialize the client.",
+            )
+            return
+
+        greeting_path = self.greeting_path_var.get().strip()
+        if not greeting_path:
+            messagebox.showerror("Error", "Please provide a greeting file path.")
+            return
+
+        try:
+            self.status_var.set("Downloading file...")
+            self.root.update()
+
+            # Download file content
+            file_content = self.client.download_greeting_file(greeting_path)
+
+            # Extract filename from path
+            filename = os.path.basename(greeting_path)
+            if not filename:
+                filename = "greeting_file.mp3"
+
+            # Ask user where to save
+            save_path = filedialog.asksaveasfilename(
+                defaultextension=os.path.splitext(filename)[1] or ".mp3",
+                initialfile=filename,
+                filetypes=[
+                    ("MP3 files", "*.mp3"),
+                    ("Audio files", "*.mp3 *.wav *.ogg"),
+                    ("All files", "*.*"),
+                ],
+            )
+
+            if save_path:
+                # Write file to disk
+                with open(save_path, "wb") as f:
+                    f.write(file_content)
+
+                file_size_kb = len(file_content) / 1024
+                messagebox.showinfo(
+                    "Success",
+                    f"File downloaded successfully!\n\n"
+                    f"Location: {save_path}\n"
+                    f"Size: {file_size_kb:.1f} KB",
+                )
+                self.status_var.set("File downloaded")
+            else:
+                self.status_var.set("Download cancelled")
+
+        except requests.exceptions.RequestException as e:
+            error_msg = str(e)
+            if "404" in error_msg:
+                messagebox.showerror(
+                    "File Not Found",
+                    f"The greeting file was not found.\n\n"
+                    f"Please check the path:\n{greeting_path}",
+                )
+            elif "403" in error_msg:
+                messagebox.showerror(
+                    "Access Forbidden",
+                    "You don't have permission to access this file.\n\n"
+                    "Please check your API permissions.",
+                )
+            else:
+                messagebox.showerror("Download Error", f"Failed to download file:\n\n{error_msg}")
+            self.status_var.set("Download failed")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred:\n\n{str(e)}")
+            self.status_var.set("Error")
 
 
 def main():

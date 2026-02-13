@@ -145,6 +145,13 @@ python zd_voice_lines.py
 - **File Menu**: Quick access to export functions
 - **Help Menu**: Access documentation and about information
 
+### 8. Greeting File Download (NEW)
+- Download voice greeting files (MP3, WAV, etc.)
+- Enter file path from Zendesk Voice API
+- Automatic filename detection
+- Custom save location
+- Error handling for missing files
+
 ---
 
 ## Usage Instructions
@@ -218,6 +225,50 @@ python zd_voice_lines.py
 3. Choose save location and filename
 4. Click "Save"
 5. Excel file (.xlsx) is created with formatted data
+
+### Downloading Greeting Files (NEW)
+
+The application now supports downloading voice greeting files from Zendesk.
+
+**Steps:**
+
+1. **Ensure Connection is Tested:**
+   - Connection must be successful before downloading
+
+2. **Enter Greeting File Path:**
+   - Locate the "Download Greeting File" section
+   - Enter the path in the format: `{greeting_id}/{filename}.ext`
+   - Example: `29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3`
+
+3. **Click "Download File":**
+   - Pink "Download File" button
+   - Wait for download to complete
+
+4. **Choose Save Location:**
+   - File dialog appears
+   - Choose where to save the file
+   - Original filename is suggested
+   - Click "Save"
+
+5. **Confirmation:**
+   - Success message shows file location and size
+   - File is ready to use
+
+**API Endpoint:**
+```
+GET https://{subdomain}.zendesk.com/api/v2/channels/voice/greetings/{path}
+```
+
+**Supported File Types:**
+- MP3 (audio)
+- WAV (audio)
+- OGG (audio)
+- Any file stored in Zendesk Voice greetings
+
+**Example Paths:**
+- `29136121135501/greeting.mp3`
+- `12345678901234/custom_message.wav`
+- `98765432109876/hold_music.ogg`
 
 ---
 
@@ -315,6 +366,28 @@ id,name,phone_number,enabled,created_at,updated_at,...
 - Wait for data retrieval to complete
 - Verify connection is successful
 
+### Download Issues
+
+**Problem:** "File Not Found (404)"
+
+**Solution:**
+- Verify the greeting file path is correct
+- Check that the file exists in Zendesk Voice greetings
+- Ensure you have the complete path including greeting ID and filename
+
+**Problem:** "Access Forbidden (403)" on file download
+
+**Solution:**
+- Verify your API token has access to voice greetings
+- Check Zendesk permissions for your user role
+- Contact your Zendesk administrator
+
+**Problem:** Download button is disabled
+
+**Solution:**
+- Test connection first to enable the download button
+- Ensure connection is successful before attempting download
+
 ### Export Issues
 
 **Problem:** "pandas is required for Excel export."
@@ -373,7 +446,27 @@ Typical retrieval times:
 
 The application automatically handles rate limits with retry logic.
 
-### Q: Can I export multiple pages to separate files?
+### Q: Can I download voice greeting files?
+
+**A:** Yes! As of version 1.1.0, you can download greeting files (MP3, WAV, etc.) from Zendesk Voice API. Enter the greeting file path in the "Download Greeting File" section and click "Download File".
+
+### Q: How do I find greeting file paths?
+
+**A:** Greeting file paths are typically found in:
+- Zendesk Voice line configurations
+- Voice greeting settings
+- Format: `{greeting_id}/{filename}.ext`
+- Example: `29136121135501/greeting.mp3`
+
+### Q: What file types can I download?
+
+**A:** The application supports downloading any file type stored in Zendesk Voice greetings:
+- MP3 (most common)
+- WAV
+- OGG
+- Other audio formats
+
+The file type is determined by the file extension in the path.
 
 **A:** Currently, exports combine all pages. To export individual pages:
 1. Navigate to desired page

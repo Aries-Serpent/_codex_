@@ -225,6 +225,31 @@ def test_search_logic():
     print("✓ Search logic tests passed")
 
 
+def test_greeting_download_url_construction():
+    """Test greeting download URL construction."""
+    print("Testing greeting download URL construction...")
+    
+    config = ZendeskVoiceLinesConfig(
+        subdomain="mycompany",
+        base64_auth="dGVzdA=="
+    )
+    
+    greeting_path = "29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3"
+    expected_url = "https://mycompany.zendesk.com/api/v2/channels/voice/greetings/29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3"
+    actual_url = f"{config.base_url}/channels/voice/greetings/{greeting_path}"
+    
+    assert actual_url == expected_url
+    
+    # Test with leading slash (should be stripped in actual implementation)
+    greeting_path_with_slash = "/29136121135501/74a7c698af52a08dc12eaa7b1c5dc31b.mp3"
+    cleaned_path = greeting_path_with_slash.lstrip("/")
+    actual_url_cleaned = f"{config.base_url}/channels/voice/greetings/{cleaned_path}"
+    
+    assert actual_url_cleaned == expected_url
+    
+    print("✓ Greeting download URL construction tests passed")
+
+
 def run_all_tests():
     """Run all tests."""
     print("="*60)
@@ -239,6 +264,7 @@ def run_all_tests():
         test_export_data_structure,
         test_rate_limit_detection,
         test_search_logic,
+        test_greeting_download_url_construction,
     ]
     
     passed = 0
