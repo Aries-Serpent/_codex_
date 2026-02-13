@@ -1,7 +1,7 @@
 {
-  "total_broken": 567,
-  "total_valid": 4330,
-  "files_with_broken_links": 150,
+  "total_broken": 544,
+  "total_valid": 4353,
+  "files_with_broken_links": 146,
   "results": [
     {
       "file": "docs/quality/BROKEN_LINKS_REPORT.md",
@@ -256,12 +256,6 @@
       "total_links": 21,
       "broken_links": [
         {
-          "text": "README.md",
-          "url": ".codex/release/README.md",
-          "full": "[README.md](.codex/release/README.md)",
-          "reason": "relative_broken:.codex/release/README.md"
-        },
-        {
           "text": "GITLAB_CI_CD_INTEGRATION.md",
           "url": ".codex/release/GITLAB_CI_CD_INTEGRATION.md",
           "full": "[GITLAB_CI_CD_INTEGRATION.md](.codex/release/GITLAB_CI_CD_INTEGRATION.md)",
@@ -370,122 +364,7 @@
           "reason": "relative_broken:.codex/release/PHASE_26_RELEASE_READINESS.md"
         }
       ],
-      "valid_links": 2
-    },
-    {
-      "file": ".github/agents/docs/AGENTS.md",
-      "total_links": 31,
-      "broken_links": [
-        {
-          "text": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
-          "url": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
-          "full": "[.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)",
-          "reason": "relative_broken:.codex/docs/AGENTS.md.original.cf4e8c9.md"
-        },
-        {
-          "text": ".codex/guardrails.md",
-          "url": ".codex/guardrails.md",
-          "full": "[.codex/guardrails.md](.codex/guardrails.md)",
-          "reason": "relative_broken:.codex/guardrails.md"
-        },
-        {
-          "text": ".codex/guardrails.md",
-          "url": ".codex/guardrails.md",
-          "full": "[.codex/guardrails.md](.codex/guardrails.md)",
-          "reason": "relative_broken:.codex/guardrails.md"
-        },
-        {
-          "text": ".github/TEMPORARY_FILES_POLICY.md",
-          "url": ".github/TEMPORARY_FILES_POLICY.md",
-          "full": "[.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)",
-          "reason": "relative_broken:.github/TEMPORARY_FILES_POLICY.md"
-        },
-        {
-          "text": ".codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
-          "url": ".codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
-          "full": "[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)",
-          "reason": "relative_broken:.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md"
-        },
-        {
-          "text": ".codex/change_log.md",
-          "url": ".codex/change_log.md",
-          "full": "[.codex/change_log.md](.codex/change_log.md)",
-          "reason": "relative_broken:.codex/change_log.md"
-        },
-        {
-          "text": ".github/workflow-archive/PARITY_CHECKLIST.md",
-          "url": ".github/workflow-archive/PARITY_CHECKLIST.md",
-          "full": "[.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)",
-          "reason": "relative_broken:.github/workflow-archive/PARITY_CHECKLIST.md"
-        },
-        {
-          "text": ".github/workflow-archive/ARTIFACT_CATALOG.md",
-          "url": ".github/workflow-archive/ARTIFACT_CATALOG.md",
-          "full": "[.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)",
-          "reason": "relative_broken:.github/workflow-archive/ARTIFACT_CATALOG.md"
-        },
-        {
-          "text": ".codex/plans/cognitive_brain_phase_implementation.md",
-          "url": ".codex/plans/cognitive_brain_phase_implementation.md",
-          "full": "[.codex/plans/cognitive_brain_phase_implementation.md](.codex/plans/cognitive_brain_phase_implementation.md)",
-          "reason": "relative_broken:.codex/plans/cognitive_brain_phase_implementation.md"
-        },
-        {
-          "text": "scripts/cognitive/",
-          "url": "scripts/cognitive/",
-          "full": "[scripts/cognitive/](scripts/cognitive/)",
-          "reason": "relative_broken:scripts/cognitive/"
-        },
-        {
-          "text": ".github/workflow-archive/PARITY_CHECKLIST.md",
-          "url": ".github/workflow-archive/PARITY_CHECKLIST.md",
-          "full": "[.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)",
-          "reason": "relative_broken:.github/workflow-archive/PARITY_CHECKLIST.md"
-        },
-        {
-          "text": ".github/workflow-archive/ARTIFACT_CATALOG.md",
-          "url": ".github/workflow-archive/ARTIFACT_CATALOG.md",
-          "full": "[.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)",
-          "reason": "relative_broken:.github/workflow-archive/ARTIFACT_CATALOG.md"
-        },
-        {
-          "text": ".github/agents/ci-testing-agent.md",
-          "url": ".github/agents/ci-testing-agent.md",
-          "full": "[.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md)",
-          "reason": "relative_broken:.github/agents/ci-testing-agent.md"
-        },
-        {
-          "text": ".github/agents/codex-reviewer.agent.yml",
-          "url": ".github/agents/codex-reviewer.agent.yml",
-          "full": "[.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml)",
-          "reason": "relative_broken:.github/agents/codex-reviewer.agent.yml"
-        },
-        {
-          "text": ".github/copilot-security/security_agent.py",
-          "url": ".github/copilot-security/security_agent.py",
-          "full": "[.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py)",
-          "reason": "relative_broken:.github/copilot-security/security_agent.py"
-        },
-        {
-          "text": ".github/agents/qa-walkthrough-agent.md",
-          "url": ".github/agents/qa-walkthrough-agent.md",
-          "full": "[.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md)",
-          "reason": "relative_broken:.github/agents/qa-walkthrough-agent.md"
-        },
-        {
-          "text": ".github/agents/dependency-conflict-agent.md",
-          "url": ".github/agents/dependency-conflict-agent.md",
-          "full": "[.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md)",
-          "reason": "relative_broken:.github/agents/dependency-conflict-agent.md"
-        },
-        {
-          "text": ".github/agents/coverage-gapfill-agent.md",
-          "url": ".github/agents/coverage-gapfill-agent.md",
-          "full": "[.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md)",
-          "reason": "relative_broken:.github/agents/coverage-gapfill-agent.md"
-        }
-      ],
-      "valid_links": 13
+      "valid_links": 3
     },
     {
       "file": ".github/agents/documentation-consolidator.md",
@@ -1320,61 +1199,6 @@
       "valid_links": 0
     },
     {
-      "file": ".github/agents/reference-updater-agent.md",
-      "total_links": 18,
-      "broken_links": [
-        {
-          "text": "text",
-          "url": "path",
-          "full": "[text](path)",
-          "reason": "relative_broken:path"
-        },
-        {
-          "text": "Agent Guide",
-          "url": "../.github/agents/AGENTS.md",
-          "full": "[Agent Guide](../.github/agents/AGENTS.md)",
-          "reason": "relative_broken:../.github/agents/AGENTS.md"
-        },
-        {
-          "text": "Old Guide",
-          "url": "old-guide.md",
-          "full": "[Old Guide](old-guide.md)",
-          "reason": "relative_broken:old-guide.md"
-        },
-        {
-          "text": "text",
-          "url": "old.md",
-          "full": "[text](old.md)",
-          "reason": "relative_broken:old.md"
-        },
-        {
-          "text": "text",
-          "url": "new.md",
-          "full": "[text](new.md)",
-          "reason": "relative_broken:new.md"
-        },
-        {
-          "text": "text",
-          "url": "path",
-          "full": "[text](path)",
-          "reason": "relative_broken:path"
-        },
-        {
-          "text": "text",
-          "url": "path \"title\"",
-          "full": "[text](path \"title\")",
-          "reason": "relative_broken:path \"title\""
-        },
-        {
-          "text": "\"\\'",
-          "url": "{old}",
-          "full": "[\"\\']({old})",
-          "reason": "relative_broken:{old}"
-        }
-      ],
-      "valid_links": 10
-    },
-    {
       "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
       "total_links": 8,
       "broken_links": [
@@ -1584,6 +1408,55 @@
           "url": "outputs, state[\"targets\"]",
           "full": "[\"criterion\"](outputs, state[\"targets\"])",
           "reason": "relative_broken:outputs, state[\"targets\"]"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "text",
+          "url": "path",
+          "full": "[text](path)",
+          "reason": "relative_broken:path"
+        },
+        {
+          "text": "Old Guide",
+          "url": "old-guide.md",
+          "full": "[Old Guide](old-guide.md)",
+          "reason": "relative_broken:old-guide.md"
+        },
+        {
+          "text": "text",
+          "url": "old.md",
+          "full": "[text](old.md)",
+          "reason": "relative_broken:old.md"
+        },
+        {
+          "text": "text",
+          "url": "new.md",
+          "full": "[text](new.md)",
+          "reason": "relative_broken:new.md"
+        },
+        {
+          "text": "text",
+          "url": "path",
+          "full": "[text](path)",
+          "reason": "relative_broken:path"
+        },
+        {
+          "text": "text",
+          "url": "path \"title\"",
+          "full": "[text](path \"title\")",
+          "reason": "relative_broken:path \"title\""
+        },
+        {
+          "text": "\"\\'",
+          "url": "{old}",
+          "full": "[\"\\']({old})",
+          "reason": "relative_broken:{old}"
         }
       ],
       "valid_links": 11
@@ -2340,37 +2213,6 @@
       "valid_links": 3
     },
     {
-      "file": ".github/AGENTS_FILE_STRUCTURE.md",
-      "total_links": 5,
-      "broken_links": [
-        {
-          "text": "_codex_/AGENTS.md",
-          "url": "_codex_/AGENTS.md",
-          "full": "[_codex_/AGENTS.md](_codex_/AGENTS.md)",
-          "reason": "relative_broken:_codex_/AGENTS.md"
-        },
-        {
-          "text": ".codex/codex_index.yaml",
-          "url": ".codex/codex_index.yaml",
-          "full": "[.codex/codex_index.yaml](.codex/codex_index.yaml)",
-          "reason": "relative_broken:.codex/codex_index.yaml"
-        },
-        {
-          "text": "inventory.md",
-          "url": "../inventory.md",
-          "full": "[inventory.md](../inventory.md)",
-          "reason": "relative_broken:../inventory.md"
-        },
-        {
-          "text": "validation.md",
-          "url": "../validation.md",
-          "full": "[validation.md](../validation.md)",
-          "reason": "relative_broken:../validation.md"
-        }
-      ],
-      "valid_links": 1
-    },
-    {
       "file": ".github/ai-evolution/README.md",
       "total_links": 4,
       "broken_links": [
@@ -2855,6 +2697,31 @@
       "valid_links": 13
     },
     {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": ".codex/codex_index.yaml",
+          "url": ".codex/codex_index.yaml",
+          "full": "[.codex/codex_index.yaml](.codex/codex_index.yaml)",
+          "reason": "relative_broken:.codex/codex_index.yaml"
+        },
+        {
+          "text": "inventory.md",
+          "url": "../inventory.md",
+          "full": "[inventory.md](../inventory.md)",
+          "reason": "relative_broken:../inventory.md"
+        },
+        {
+          "text": "validation.md",
+          "url": "../validation.md",
+          "full": "[validation.md](../validation.md)",
+          "reason": "relative_broken:../validation.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
       "file": ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
       "total_links": 3,
       "broken_links": [
@@ -2980,6 +2847,31 @@
       "valid_links": 1
     },
     {
+      "file": ".github/agents/docs/AGENTS.md",
+      "total_links": 31,
+      "broken_links": [
+        {
+          "text": ".codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
+          "url": "../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
+          "full": "[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)",
+          "reason": "relative_broken:../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md"
+        },
+        {
+          "text": ".github/workflow-archive/PARITY_CHECKLIST.md",
+          "url": ".github/workflow-archive/PARITY_CHECKLIST.md",
+          "full": "[.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)",
+          "reason": "relative_broken:.github/workflow-archive/PARITY_CHECKLIST.md"
+        },
+        {
+          "text": ".github/workflow-archive/ARTIFACT_CATALOG.md",
+          "url": ".github/workflow-archive/ARTIFACT_CATALOG.md",
+          "full": "[.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)",
+          "reason": "relative_broken:.github/workflow-archive/ARTIFACT_CATALOG.md"
+        }
+      ],
+      "valid_links": 28
+    },
+    {
       "file": ".github/agents/zendesk-architect-agent/PLANSET.md",
       "total_links": 3,
       "broken_links": [
@@ -3103,31 +2995,6 @@
         }
       ],
       "valid_links": 0
-    },
-    {
-      "file": ".codex/DIAGRAM_UPDATE_v0.1.0_SUMMARY.md",
-      "total_links": 4,
-      "broken_links": [
-        {
-          "text": "DIAGRAM_UPDATE_REPORT.md",
-          "url": "../../DIAGRAM_UPDATE_REPORT.md",
-          "full": "[DIAGRAM_UPDATE_REPORT.md](../../DIAGRAM_UPDATE_REPORT.md)",
-          "reason": "path_error:../../DIAGRAM_UPDATE_REPORT.md"
-        },
-        {
-          "text": "README.md",
-          "url": "../../README.md",
-          "full": "[README.md](../../README.md)",
-          "reason": "path_error:../../README.md"
-        },
-        {
-          "text": "docs/ARCHITECTURE.md",
-          "url": "../../docs/ARCHITECTURE.md",
-          "full": "[docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md)",
-          "reason": "path_error:../../docs/ARCHITECTURE.md"
-        }
-      ],
-      "valid_links": 1
     },
     {
       "file": ".codex/prompts/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
@@ -3634,6 +3501,25 @@
       "valid_links": 0
     },
     {
+      "file": ".codex/DIAGRAM_UPDATE_v0.1.0_SUMMARY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "DIAGRAM_UPDATE_REPORT.md",
+          "url": "../../DIAGRAM_UPDATE_REPORT.md",
+          "full": "[DIAGRAM_UPDATE_REPORT.md](../../DIAGRAM_UPDATE_REPORT.md)",
+          "reason": "path_error:../../DIAGRAM_UPDATE_REPORT.md"
+        },
+        {
+          "text": "README.md",
+          "url": "../../README.md",
+          "full": "[README.md](../../README.md)",
+          "reason": "path_error:../../README.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
       "file": ".codex/PR3224_PR3225_IMPLEMENTATION_PROMPTS.md",
       "total_links": 5,
       "broken_links": [
@@ -3832,19 +3718,6 @@
       "valid_links": 15
     },
     {
-      "file": "docs/system/CODEBASE_DASHBOARD.md",
-      "total_links": 14,
-      "broken_links": [
-        {
-          "text": "MCP Workflow",
-          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml",
-          "full": "[MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml)",
-          "reason": "github_broken:.github/workflows/build-chatgpt-package.yml"
-        }
-      ],
-      "valid_links": 13
-    },
-    {
       "file": "docs/archive/TEAM_ANNOUNCEMENT.md",
       "total_links": 4,
       "broken_links": [
@@ -3934,19 +3807,6 @@
         }
       ],
       "valid_links": 2
-    },
-    {
-      "file": "docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
-      "total_links": 4,
-      "broken_links": [
-        {
-          "text": "Architecture Diagrams",
-          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/cognitive_brain/ARCHITECTURE.md",
-          "full": "[Architecture Diagrams](https://github.com/Aries-Serpent/_codex_/blob/main/docs/cognitive_brain/ARCHITECTURE.md)",
-          "reason": "github_broken:docs/cognitive_brain/ARCHITECTURE.md"
-        }
-      ],
-      "valid_links": 3
     },
     {
       "file": ".github/codebase-qa-walkthrough-agent/README.md",
@@ -4339,19 +4199,6 @@
       "valid_links": 2
     },
     {
-      "file": ".codex/docs/PHILOSOPHICAL_FRAMEWORK.md",
-      "total_links": 13,
-      "broken_links": [
-        {
-          "text": "Cognitive Architecture Analysis",
-          "url": ".codex/docs/COGNITIVE_ARCHITECTURE.md",
-          "full": "[Cognitive Architecture Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md)",
-          "reason": "relative_broken:.codex/docs/COGNITIVE_ARCHITECTURE.md"
-        }
-      ],
-      "valid_links": 12
-    },
-    {
       "file": ".codex/plans/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md",
       "total_links": 2,
       "broken_links": [
@@ -4386,19 +4233,6 @@
           "url": ".codex/deferred_items.md",
           "full": "[`.codex/deferred_items.md`](.codex/deferred_items.md)",
           "reason": "relative_broken:.codex/deferred_items.md"
-        }
-      ],
-      "valid_links": 0
-    },
-    {
-      "file": ".codex/status/_codex_status_update-2025-09-07.md",
-      "total_links": 1,
-      "broken_links": [
-        {
-          "text": "docs/guides/AGENTS.md",
-          "url": "docs/guides/AGENTS.md",
-          "full": "[docs/guides/AGENTS.md](docs/guides/AGENTS.md)",
-          "reason": "relative_broken:docs/guides/AGENTS.md"
         }
       ],
       "valid_links": 0
