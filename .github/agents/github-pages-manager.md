@@ -1,13 +1,14 @@
 ---
 name: GitHub Pages Manager Agent
 description: Specialized agent for managing GitHub Pages deployment, documentation sync, theme configuration, link validation, and live site validation
-version: 2.1.0
+version: 2.2.0
 created: 2026-02-10
-updated: 2026-02-10T20:30:00Z
+updated: 2026-02-14T02:40:00Z
 category: Documentation & Deployment
 safety: LIVE_SYNC (ensure docs reflect actual source files)
 performance: 166x faster with caching (15s → 0.09s)
 accuracy: 100% (no false negatives, 93% false positive reduction)
+patterns_learned: Dead links in generated files (PR #3248)
 ---
 
 # GitHub Pages Manager Agent
@@ -92,7 +93,41 @@ python scripts/validate_table_spacing.py --check
 python scripts/validate_table_spacing.py --fix
 ```
 
-### 2. Broken Link Resolution
+### 2. Dead Links in Generated Files
+
+**New Pattern (Added: 2026-02-14)**: Handle dead external links in generated documentation
+
+**Problem**: Generated markdown files (e.g., from JSON manifests) can contain stale external URLs
+
+**Solution Workflow**:
+1. Identify dead link in generated `.md` file
+2. Trace to source data file (`.json`, `.yaml`, etc.)
+3. Fix source file (remove or update URL)
+4. Regenerate derived markdown file
+5. Validate both files updated correctly
+
+**Example (PR #3248)**:
+```bash
+# Dead link found
+File: docs/zendesk_api_catalog_generated.md:9
+URL: https://developer.zendesk.com/.../introduction-to-templates/
+
+# Traced to source
+Source: data/zendesk_docs_manifest.json
+Section: guide.themes array
+
+# Fix applied
+Updated: data/zendesk_docs_manifest.json (removed dead link)
+Regenerated: python scripts/zendesk_docs_catalog.py
+Validated: python scripts/validate_docs_links.py (0 errors)
+```
+
+**Prevention**:
+- Add link liveness checks to generation scripts
+- Implement periodic external link validation workflow
+- Document all generation script dependencies
+
+### 3. Broken Link Resolution
 
 **Purpose**: Automatically find and fix broken documentation links
 
