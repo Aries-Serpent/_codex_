@@ -76,17 +76,17 @@ PR #3248 has been successfully resolved with ALL failing checks addressed. This 
 
 ## 🔄 Remaining Work (Optional Future Enhancements)
 
-### High Priority (Recommended for Next PR)
+### High Priority (Recommended for Next Sprint)
 1. **Fix Pre-Existing Test Failures**
    - `tests/utils/test_repro_rng.py` - RNG reproducibility issues
    - `tests/utils/test_checkpointing_safe_load.py` - API parameter mismatch
-   - **Effort:** 1-2 hours
+   - **Effort:** Sprint 1 (small task set)
    - **Benefit:** 100% test pass rate
 
 2. **External Link Monitoring Workflow**
    - Add periodic external link validation
    - Implement alerting for broken links
-   - **Effort:** 2-3 hours
+   - **Effort:** Sprint 1 (medium task set)
    - **Benefit:** Prevent future link rot
 
 ### Medium Priority (Nice to Have)
@@ -94,21 +94,21 @@ PR #3248 has been successfully resolved with ALL failing checks addressed. This 
    - 6 tokenizer fallback manual reviews
    - 253 vague test assertions
    - 37 redundant imports
-   - **Effort:** 4-6 hours
+   - **Effort:** Sprint 2 (large task set)
    - **Benefit:** Code quality improvement
 
 4. **Documentation Generation Pipeline Enhancement**
    - Add link validation to generation scripts
    - Create dependency manifest
    - Document all generation workflows
-   - **Effort:** 3-4 hours
+   - **Effort:** Sprint 2 (medium task set)
    - **Benefit:** Better maintainability
 
 ### Low Priority (Future Consideration)
 5. **Table Formatting Automation**
    - Improve `fix_markdown_tables.py` to handle edge cases
    - Add pre-commit hook for table validation
-   - **Effort:** 2-3 hours
+   - **Effort:** Sprint 1 (small task set)
    - **Benefit:** Prevent formatting issues
 
 ---
@@ -207,12 +207,12 @@ pytest tests/utils/ -v --tb=short
 
 ## 💡 Recommendations for Repository
 
-### Immediate Actions
+### Immediate Actions (Current Iteration)
 1. ✅ **Merge PR #3248** - All checks passing, ready for merge
 2. 🔄 **Monitor Workflows** - Verify green checks post-merge
-3. 📝 **Plan Next PR** - Address pre-existing test failures
+3. 📝 **Plan Next Sprint** - Address pre-existing test failures
 
-### Short-Term Improvements (Next 2 Weeks)
+### Phase 1: Foundation Stabilization (Next 2 Sprints)
 1. **External Link Monitoring**
    - Implement scheduled workflow for link validation
    - Add Slack/email alerts for failures
@@ -223,7 +223,7 @@ pytest tests/utils/ -v --tb=short
    - Achieve 100% test pass rate
    - Add test failure prevention guidelines
 
-### Long-Term Enhancements (Next Quarter)
+### Phase 2: Pipeline Automation (Following 3 Sprints)
 1. **Documentation Pipeline Automation**
    - Standardize file generation workflows
    - Add validation to all generation scripts
