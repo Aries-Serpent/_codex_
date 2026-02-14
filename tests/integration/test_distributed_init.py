@@ -32,11 +32,6 @@ from accelerate_init_guard import (  # noqa: E402
     is_gpu_available,
     safe_accelerate_init,
 )
-    get_distributed_env_info,
-    is_accelerate_available,
-    is_gpu_available,
-    safe_accelerate_init,
-)
 
 
 @pytest.mark.integration
