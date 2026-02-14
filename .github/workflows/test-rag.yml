@@ -17,6 +17,7 @@ name: Art_RAG Module Tests
 jobs:
   test-rag:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       matrix:
         python-version: ['3.12']
@@ -115,7 +116,7 @@ jobs:
             -p pytest_cov \
             -n auto \
             -v \
-            --tb=short \
+            --tb=short --timeout=300 \
             --cov=src \
             --cov-report=xml \
             --cov-report=html \

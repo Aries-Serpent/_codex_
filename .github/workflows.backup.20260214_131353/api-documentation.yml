@@ -1,0 +1,44 @@
+# GitHub Pages API Documentation Workflow
+#
+# Generates and publishes API documentation to GitHub Pages.
+# Implements: R15, R16, E4 - Generate, publish, and auto-sync API docs
+
+name: API Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**/*.py'
+      - 'agents/**/*.py'
+      - 'docs/api/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow api-documentation 2>/dev/null || echo "Cache health: check skipped"
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'

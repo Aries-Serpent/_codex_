@@ -1,0 +1,34 @@
+name: Cognitive Perception Layer
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:
+    inputs:
+      since_date:
+        description: 'Collect data since (e.g., "7 days ago")'
+        required: false
+        default: '7 days ago'
+
+jobs:
+  perceive-environment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Full history for git analysis
+
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow cognitive-perception 2>/dev/null || echo "Cache health: check skipped"
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'

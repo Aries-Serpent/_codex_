@@ -35,6 +35,7 @@ jobs:
   consolidate-dependabot-prs:
     name: Consolidate Dependabot PRs
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     
     permissions:
       contents: write

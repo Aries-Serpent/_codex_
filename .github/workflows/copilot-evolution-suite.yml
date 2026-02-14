@@ -142,7 +142,7 @@ jobs:
         id: test
         run: |
           if [ -f "tests/copilot/test_evolution_system.py" ]; then
-            pytest tests/copilot/test_evolution_system.py -v --tb=short
+            pytest tests/copilot/test_evolution_system.py -v --tb=short --timeout=300
             echo "results=passed" >> $GITHUB_OUTPUT
           else
             echo "Evolution tests not found"
