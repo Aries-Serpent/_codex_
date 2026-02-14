@@ -35,25 +35,68 @@ def test_workflow_parser_invalid_yaml():
 
 
 @pytest.mark.integration
-def test_workflow_inventory_registration():
-    """Test WorkflowInventory registers workflows."""
-    inventory = WorkflowInventory()
-    inventory.register("test.yml", {"name": "Test", "jobs": {}})
-
+def test_workflow_inventory_registration(tmp_path):
+    """Test WorkflowInventory scans and registers workflows."""
+    workflows_dir = tmp_path / ".github" / "workflows"
+    workflows_dir.mkdir(parents=True)
+    
+    # Create a test workflow file
+    test_workflow = workflows_dir / "test.yml"
+    test_workflow.write_text("""
+name: Test Workflow
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(workflows_dir)
+    count = inventory.scan()
+    
+    assert count == 1
     assert "test.yml" in inventory.workflows
-    assert inventory.workflows["test.yml"]["name"] == "Test"
+    assert inventory.workflows["test.yml"].name == "Test Workflow"
 
 
 @pytest.mark.integration
-def test_workflow_inventory_query():
+def test_workflow_inventory_query(tmp_path):
     """Test WorkflowInventory query capabilities."""
-    inventory = WorkflowInventory()
-    inventory.register("workflow1.yml", {"name": "Workflow 1", "jobs": {"job1": {}}})
-    inventory.register("workflow2.yml", {"name": "Workflow 2", "jobs": {"job2": {}}})
-
-    results = inventory.query(name="Workflow 1")
-    assert len(results) == 1
-    assert results[0]["name"] == "Workflow 1"
+    workflows_dir = tmp_path / ".github" / "workflows"
+    workflows_dir.mkdir(parents=True)
+    
+    # Create test workflow files
+    (workflows_dir / "workflow1.yml").write_text("""
+name: Workflow 1
+on: [push]
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps: []
+""")
+    (workflows_dir / "workflow2.yml").write_text("""
+name: Workflow 2
+on: [push]
+jobs:
+  job2:
+    runs-on: ubuntu-latest
+    steps: []
+""")
+    
+    inventory = WorkflowInventory(workflows_dir)
+    inventory.scan()
+    
+    # Test get_workflow method
+    workflow1 = inventory.get_workflow("workflow1.yml")
+    assert workflow1 is not None
+    assert workflow1.name == "Workflow 1"
+    
+    # Test list_workflows method
+    all_workflows = inventory.list_workflows()
+    assert len(all_workflows) == 2
+    assert "workflow1.yml" in all_workflows
+    assert "workflow2.yml" in all_workflows
 
 
 @pytest.mark.integration
@@ -72,5 +115,6 @@ jobs:
 """
     parser = WorkflowParser()
     workflow = parser.parse(yaml_content)
-    assert "needs" in workflow.jobs["test"]
-    assert workflow.jobs["test"]["needs"] == "build"
+    # WorkflowJob uses Pydantic model with `needs` field
+    assert workflow.jobs["test"].needs is not None
+    assert workflow.jobs["test"].needs == ["build"]
