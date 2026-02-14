@@ -13,8 +13,6 @@ Part of Phase 7: Integration Scenarios (80-85% coverage)
 from __future__ import annotations
 
 import json
-import sys
-from pathlib import Path
 
 import pytest
 
