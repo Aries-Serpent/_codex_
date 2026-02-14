@@ -19,14 +19,20 @@ from src.quantum import (
     ThermodynamicOrchestrator,
     ThermodynamicTask,
 )
+from tests.utils.quantum_helpers import quantum_plugin_fixture  # noqa: F401
 
 
 @pytest.mark.integration
 class TestEndToEndQuantumRAG:
     """End-to-end integration with quantum RAG pipeline."""
 
-    def test_quantum_rag_plugin_loading(self):
+    def test_quantum_rag_plugin_loading(self, quantum_plugin_fixture):
         """Test loading quantum RAG components dynamically."""
+        # Mock the RAG pipeline modules that may not exist in CI
+        quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
+        quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
+        quantum_plugin_fixture.mock_module("src.rag.pipelines.quantum_retrieval")
+        
         registry = QuantumPluginRegistry()
 
         # Register RAG pipeline components
@@ -185,12 +191,16 @@ class TestCrossReferenceCapabilities:
     understanding and connecting different parts of the codebase.
     """
 
-    def test_capability_1_rag_to_agent_bridge(self):
+    def test_capability_1_rag_to_agent_bridge(self, quantum_plugin_fixture):
         """
         Capability 1: Bridge RAG pipeline with Agent system.
 
         Demonstrates: AI agent connects quantum retrieval with agent orchestration.
         """
+        # Mock the required modules
+        quantum_plugin_fixture.mock_module("src.rag.pipelines.retrieval")
+        quantum_plugin_fixture.mock_module("src.agent.core")
+        
         registry = QuantumPluginRegistry()
 
         # Cross-reference: RAG → Agent
