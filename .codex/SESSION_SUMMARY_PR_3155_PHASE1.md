@@ -245,8 +245,8 @@
 - `.codex/cognitive_brain/pr_3155_self_review_checklist.md`
 
 ### CI Resources
-- Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233
-- Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219
+- Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->
+- Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219 <!-- Note: Logs expire after 90 days -->
 - JUnit Artifact: 5384344851
 - Coverage HTML: 5384344717
 

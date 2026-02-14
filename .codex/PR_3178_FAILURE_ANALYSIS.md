@@ -7,7 +7,7 @@ From the workflow list provided, these workflows FAILED:
 ### 1. Art_Data Quality & Determinism Suite / Data Validation (Manifest & Drift)
 **Status:** Failing after 22s
 **Job ID:** 62833740344
-**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462230/job/62833740344
+**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462230 <!-- Note: Logs expire after 90 days -->/job/62833740344
 
 **Fix Status:** ✅ FIXED
 - Fixed in commit a95d56b
@@ -17,7 +17,7 @@ From the workflow list provided, these workflows FAILED:
 ### 2. Auto-Fix Common CI Issues / Detect and Fix Common Issues
 **Status:** Failing after 1m
 **Job ID:** 62833740402
-**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462259/job/62833740402
+**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462259 <!-- Note: Logs expire after 90 days -->/job/62833740402
 
 **Fix Status:** ⚠️ NEEDS INVESTIGATION
 - Need to check what auto-fix issues were detected

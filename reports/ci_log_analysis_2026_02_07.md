@@ -388,8 +388,8 @@ class FakeSentenceTransformer:
 
 ## References
 
-- **Workflow Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21631025717
-- **Job Details**: https://github.com/Aries-Serpent/_codex_/actions/runs/21631025717/job/62343509037
+- **Workflow Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21631025717 <!-- Note: Logs expire after 90 days -->
+- **Job Details**: https://github.com/Aries-Serpent/_codex_/actions/runs/21631025717 <!-- Note: Logs expire after 90 days -->/job/62343509037
 - **Commit**: c650b66f2d004a6c5b297f9b647c211dd47cdb98
 - **Related Documentation**:
   - `docs/testing/STOPITERATION_FIX_REPORT.md` - Previous StopIteration fixes

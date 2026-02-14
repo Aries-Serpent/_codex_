@@ -105,7 +105,7 @@ git commit -m "fix(agent): support YAML configuration files in autonomous_agent.
 Fixes:  JSONDecodeError in job 59026341881 at line 558
 Root cause:  Workflow passed . yaml file but script expected JSON
 
-Ref: https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934/job/59026341881#step:5:39"
+Ref: https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026341881#step:5:39"
 
 git push origin main
 ```
@@ -207,7 +207,7 @@ Workflow changes:
 Fixes:  Artifact not found error in job 59026394027
 Root cause: Script crash prevented save_state() execution
 
-Ref: https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934/job/59026394027"
+Ref: https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026394027"
 
 git push origin main
 ```
@@ -2384,8 +2384,8 @@ git push
 ## 📚 References
 
 - CI Failure Jobs: 
-  - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934/job/59026341881
-  - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934/job/59026394027
+  - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026341881
+  - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026394027
 
 - Documentation: 
   - Workflow Archive: . github/workflow-archive/

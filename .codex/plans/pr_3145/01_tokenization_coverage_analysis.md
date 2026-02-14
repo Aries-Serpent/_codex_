@@ -499,8 +499,8 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 - **Quantum Methodology**: `.codex/docs/QUANTUM_TEST_METHODOLOGY.md`
 - **Related PRs**: #3145 (current), #3144 (test development patterns)
 - **Workflow Logs**: 
-  - Auto-Fix CI: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855382/job/62481529224
-  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855416/job/62481529310
+  - Auto-Fix CI: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855382 <!-- Note: Logs expire after 90 days -->/job/62481529224
+  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855416 <!-- Note: Logs expire after 90 days -->/job/62481529310
 - **Technical Specifications**: pyproject.toml (test dependencies)
 
 ---

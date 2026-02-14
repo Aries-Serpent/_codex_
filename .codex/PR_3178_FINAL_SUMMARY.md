@@ -103,25 +103,25 @@ These workflows were actively running when fixes were implemented. They will com
 
 #### 1. Coverage Report Generation - Job 62833740369
 - **Status:** Running for 45+ minutes (extended beyond expected 25-30 min)
-- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462232/job/62833740369?pr=3178
+- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462232 <!-- Note: Logs expire after 90 days -->/job/62833740369?pr=3178
 - **Expected:** Will complete, likely approaching timeout threshold
 - **Action:** Monitor post-session for completion/timeout
 
 #### 2. Documentation Link Checker (PR) - Job 62833740367
 - **Status:** Running for 43+ minutes (significantly extended)
-- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462249/job/62833740367?pr=3178
+- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462249 <!-- Note: Logs expire after 90 days -->/job/62833740367?pr=3178
 - **Expected:** Large doc set or external link delays
 - **Action:** Review completion status, may need timeout adjustment
 
 #### 3. Documentation Link Checker (push) - Job 62833739338
 - **Status:** Running for 43+ minutes (significantly extended)
-- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776461775/job/62833739338?pr=3178
+- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776461775 <!-- Note: Logs expire after 90 days -->/job/62833739338?pr=3178
 - **Expected:** Similar to PR run, extended duration
 - **Action:** Review completion status
 
 #### 4. Rust Code Coverage - Job 62833776248
 - **Status:** Running for 43+ minutes (extended)
-- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462228/job/62833776248?pr=3178
+- **Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462228 <!-- Note: Logs expire after 90 days -->/job/62833776248?pr=3178
 - **Expected:** Comprehensive coverage analysis
 - **Action:** Review completion status
 

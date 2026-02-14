@@ -426,16 +426,16 @@ The Rust feature validation pattern is:
 
 | Issue | Workflow Run | URL |
 |-------|--------------|-----|
-| #2915 | 21145689720 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720 |
-| #2914 | 21145669711 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711 |
-| #2913 | 21145675824 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145675824 |
-| #2912 | 21145662776 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145662776 |
-| #2910 | 21145653936 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145653936 |
-| #2909 | 21145645758 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145645758 |
-| #2908 | 21145615595 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145615595 |
-| #2907 | 21145583258 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145583258 |
-| #2906 | 21145592938 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145592938 |
-| #2905 | 21145572518 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145572518 |
+| #2915 | 21145689720 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720 <!-- Note: Logs expire after 90 days --> |
+| #2914 | 21145669711 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711 <!-- Note: Logs expire after 90 days --> |
+| #2913 | 21145675824 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145675824 <!-- Note: Logs expire after 90 days --> |
+| #2912 | 21145662776 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145662776 <!-- Note: Logs expire after 90 days --> |
+| #2910 | 21145653936 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145653936 <!-- Note: Logs expire after 90 days --> |
+| #2909 | 21145645758 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145645758 <!-- Note: Logs expire after 90 days --> |
+| #2908 | 21145615595 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145615595 <!-- Note: Logs expire after 90 days --> |
+| #2907 | 21145583258 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145583258 <!-- Note: Logs expire after 90 days --> |
+| #2906 | 21145592938 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145592938 <!-- Note: Logs expire after 90 days --> |
+| #2905 | 21145572518 | https://github.com/Aries-Serpent/_codex_/actions/runs/21145572518 <!-- Note: Logs expire after 90 days --> |
 
 ### Appendix B: Resolution Commit Details
 

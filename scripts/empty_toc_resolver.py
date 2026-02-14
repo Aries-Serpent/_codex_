@@ -15,7 +15,7 @@ Part of: PR #3248 Sprint 2
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from collections import defaultdict
 
 # Repository root

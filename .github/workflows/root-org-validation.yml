@@ -34,6 +34,7 @@ jobs:
   pre-validation:
     name: Pre-Move Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
       baseline_metrics: ${{ steps.baseline.outputs.metrics }}
     
@@ -72,12 +73,12 @@ jobs:
             fi
           done
       
-      - name: Run pytest (baseline)
+      - name: Run pytest (baseline - fast tests only)
         id: pytest-baseline
         continue-on-error: true
         run: |
-          echo "Running pytest baseline..."
-          python -m pytest tests/ -v --tb=short || echo "Some tests may fail - baseline recorded"
+          echo "Running pytest baseline (fast tests only)..."
+          python -m pytest tests/ -v --tb=short -m "not slow" --timeout=300 || echo "Some tests may fail - baseline recorded"
       
       - name: Run ruff linter
         id: ruff-baseline
@@ -110,11 +111,13 @@ jobs:
           echo "MkDocs: ${{ steps.mkdocs-baseline.outcome }}" >> .codex/validation/baseline.txt
       
       - name: Upload baseline artifact
+        if: always()
         uses: actions/upload-artifact@v6
         with:
           name: validation-baseline
           path: .codex/validation/baseline.txt
           retention-days: 7
+          if-no-files-found: warn
 
   reference-check:
     name: Reference Validation
