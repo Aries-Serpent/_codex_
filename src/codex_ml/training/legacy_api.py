@@ -1357,8 +1357,8 @@ def run_functional_training(
     if cfg.grad_clip_norm is not None and "max_grad_norm" not in train_kwargs:
         try:
             train_kwargs["max_grad_norm"] = float(cfg.grad_clip_norm)
-        except (TypeError, ValueError):
-            pass
+        except (TypeError, ValueError) as e:
+            logger.debug("Failed to convert grad_clip_norm to float: %s", e)
 
     if cfg.amp_enable and "dtype" not in train_kwargs:
         dtype_override: Optional[str]
@@ -1409,8 +1409,8 @@ def run_functional_training(
         interval = getattr(cfg, "system_metrics_interval", 60.0)
         try:
             train_kwargs.setdefault("system_metrics_interval", float(interval))
-        except (TypeError, ValueError):
-            pass
+        except (TypeError, ValueError) as e:
+            logger.debug("Failed to convert system_metrics_interval to float: %s", e)
         system_path = getattr(cfg, "system_metrics_path", None)
         if isinstance(system_path, str) and system_path.strip():
             train_kwargs.setdefault("system_metrics_path", system_path.strip())

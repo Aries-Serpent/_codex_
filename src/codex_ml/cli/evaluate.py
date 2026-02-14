@@ -186,8 +186,8 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
                     parent = candidate_path.parent
                     if parent.exists():
                         return parent
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as e:
+            logger.debug("JSON decode error when parsing checkpoint path: %s", e)
 
     epoch_dirs = sorted(
         (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),

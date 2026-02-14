@@ -186,8 +186,8 @@ def _encode_labels(
         try:
             ints.append(int(value))
             continue
-        except (TypeError, ValueError):
-            pass
+        except (TypeError, ValueError) as e:
+            logger.debug("Type conversion failed for value '%s': %s", value, e)
         if value not in mapping:
             mapping[value] = len(mapping)
         ints.append(mapping[value])

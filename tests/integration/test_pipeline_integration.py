@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pytest
 
+# See tests/utils/__init__.py for exported test helpers.
 # Import torch helpers using absolute import from tests package
 from tests.utils.torch_helpers import require_torch
 

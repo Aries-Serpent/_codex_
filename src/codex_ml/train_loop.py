@@ -889,8 +889,8 @@ def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
         path = base_dir / "telemetry.ndjson"
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True) + "\n")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Telemetry write failed (best-effort): %s", e)
 
 
 def _telemetry_sample_rate() -> float:
@@ -1354,8 +1354,8 @@ def run_training(
             # Emit telemetry event when bf16 was requested but effective dtype differs
             try:
                 import torch as _torch  # noqa: F401
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Torch import failed for dtype telemetry: %s", e)
             else:
                 eff = _first_param_dtype(model)
                 requested_is_bf16 = False
@@ -1464,8 +1464,8 @@ def run_training(
                         eff_dtype,
                         str(dtype_obj),
                     )
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Failed to check optimizer dtype compatibility: %s", e)
 
     if (
         dp_settings is not None

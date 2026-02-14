@@ -11,7 +11,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Import torch helpers using absolute import from tests package
+# NOTE: removed ad-hoc sys.path modifications that previously attempted to add `tests/`
+# to sys.path. Adding `tests/` at top-level shadows stdlib modules (e.g. `ast`) and
+# causes unpredictable import resolution in CI. Tests should import test utilities
+# using the canonical `tests.utils.*` package import path.
 from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()

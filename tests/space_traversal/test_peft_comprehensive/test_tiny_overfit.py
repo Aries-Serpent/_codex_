@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 
+# Avoid modifying sys.path to prevent stdlib shadowing (e.g. tests/ast -> ast).
 # Import torch helpers using absolute import from tests package
 from tests.utils.torch_helpers import require_torch
 
