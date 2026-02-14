@@ -20,8 +20,8 @@ pytest.importorskip("torch")
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
-# Mark all tests as integration tests
-pytestmark = [pytest.mark.integration, pytest.mark.slow]
+# Mark all tests as integration tests (NOT slow by default - individual tests marked as needed)
+pytestmark = pytest.mark.integration
 
 
 @pytest.fixture
@@ -194,6 +194,7 @@ class TestRAGIndexingQueryPipeline:
         assert ml_docs[0]["id"] in ["doc2", "doc4"]
         assert prog_docs[0]["id"] in ["doc1", "doc5"]
 
+    @pytest.mark.slow
     def test_end_to_end_rag_pipeline(self, pipeline_workspace, sample_documents):
         """Test complete RAG pipeline: ingest → index → query → result."""
         docs_dir, documents = sample_documents
@@ -374,6 +375,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         assert lrs[0] == 0.1
         assert lrs[3] == 0.05  # After step_size=3
 
+    @pytest.mark.slow
     def test_end_to_end_training_pipeline(self, pipeline_workspace):
         """Test complete training pipeline: setup → train → eval → checkpoint."""
         import torch
@@ -538,6 +540,7 @@ class TestDataIngestionProcessingStorage:
         assert compressed_size < original_size
         assert compressed_file.exists()
 
+    @pytest.mark.slow
     def test_end_to_end_data_pipeline(self, pipeline_workspace):
         """Test complete data pipeline: ingest → process → store."""
         # Step 1: Ingest
