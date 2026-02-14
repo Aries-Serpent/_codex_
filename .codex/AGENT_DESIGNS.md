@@ -11,12 +11,12 @@
 
 1. [Executive Summary](#executive-summary)
 2. [Agent Architecture Overview](#agent-architecture-overview)
-3. <!-- BROKEN ANCHOR: [Agent Registry & Catalog](#agent-registry--catalog) -->
+3. <!-- BROKEN ANCHOR: [Agent Registry & Catalog](#agent-registry-catalog) -->
 4. [Individual Agent Specifications](#individual-agent-specifications)
-5. <!-- BROKEN ANCHOR: [Integration & Communication](#integration--communication) -->
-6. <!-- BROKEN ANCHOR: [Monitoring & Observability](#monitoring--observability) -->
-7. <!-- BROKEN ANCHOR: [Security & Compliance](#security--compliance) -->
-8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment--operations) -->
+5. <!-- BROKEN ANCHOR: [Integration & Communication](#integration-communication) -->
+6. <!-- BROKEN ANCHOR: [Monitoring & Observability](#monitoring-observability) -->
+7. <!-- BROKEN ANCHOR: [Security & Compliance](#security-compliance) -->
+8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment-operations) -->
 
 ---
 

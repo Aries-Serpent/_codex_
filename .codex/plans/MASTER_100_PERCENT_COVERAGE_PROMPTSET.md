@@ -32,7 +32,7 @@ This document provides a comprehensive, actionable promptset and planset to achi
 6. [Documentation Coverage Strategy](#documentation-coverage-strategy)
 7. [Test Coverage Strategy](#test-coverage-strategy)
 8. [Plan Coverage Strategy](#plan-coverage-strategy)
-9. <!-- BROKEN ANCHOR: [Quality Gates & Validation](#quality-gates--validation) -->
+9. <!-- BROKEN ANCHOR: [Quality Gates & Validation](#quality-gates-validation) -->
 10. [Success Metrics](#success-metrics)
 
 ---

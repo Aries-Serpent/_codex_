@@ -15,11 +15,11 @@
 4. <!-- BROKEN ANCHOR: [Current _codex_ MCP Implementation](#current-_codex_-mcp-implementation) -->
 5. [Authoritative Documentation](#authoritative-documentation)
 6. [Advanced Configuration for Maximum Copilot Capability](#advanced-configuration-for-maximum-copilot-capability)
-7. <!-- BROKEN ANCHOR: [Recommended Permissions & Security](#recommended-permissions--security) -->
-8. <!-- BROKEN ANCHOR: [Known Limitations & Workarounds](#known-limitations--workarounds) -->
+7. <!-- BROKEN ANCHOR: [Recommended Permissions & Security](#recommended-permissions-security) -->
+8. <!-- BROKEN ANCHOR: [Known Limitations & Workarounds](#known-limitations-workarounds) -->
 9. [Practical Implementation Checklist](#practical-implementation-checklist)
 10. <!-- BROKEN ANCHOR: [_codex_-Specific Integration Examples](#_codex_-specific-integration-examples) -->
-11. <!-- BROKEN ANCHOR: [Troubleshooting & Monitoring](#troubleshooting--monitoring) -->
+11. <!-- BROKEN ANCHOR: [Troubleshooting & Monitoring](#troubleshooting-monitoring) -->
 12. [References](#references)
 
 ---

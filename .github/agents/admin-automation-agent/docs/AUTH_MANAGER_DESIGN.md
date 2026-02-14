@@ -16,7 +16,7 @@
 5. [API Reference](#api-reference)
 6. [Integration Points](#integration-points)
 7. [Error Handling](#error-handling)
-8. [Monitoring & Audit](#monitoring--audit)
+8. [Monitoring & Audit](#monitoring-audit)
 
 ---
 

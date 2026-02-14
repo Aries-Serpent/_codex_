@@ -17,7 +17,7 @@
 5. [Component Interaction Maps](#component-interaction-maps)
 6. [Deployment Architecture](#deployment-architecture)
 7. [Custom Agent Architecture](#custom-agent-architecture)
-8. [Timeline & Dependencies](#timeline--dependencies)
+8. [Timeline & Dependencies](#timeline-dependencies)
 
 ---
 

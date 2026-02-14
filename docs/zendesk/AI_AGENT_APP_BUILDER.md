@@ -9,10 +9,10 @@ This document provides a formal, physics-inspired mathematical model for underst
 1. [Overview](#overview)
 2. [Visual Capability Maps](#visual-capability-maps)
 3. [Mathematical Foundation](#mathematical-foundation)
-4. <!-- BROKEN ANCHOR: [Location Manifold & Capacity Fields](#location-manifold--capacity-fields) -->
+4. <!-- BROKEN ANCHOR: [Location Manifold & Capacity Fields](#location-manifold-capacity-fields) -->
 5. [Capability Spectrum](#capability-spectrum)
 6. [Security Boundary Constraints](#security-boundary-constraints)
-7. <!-- BROKEN ANCHOR: [Data Flow & Latency Model](#data-flow--latency-model) -->
+7. <!-- BROKEN ANCHOR: [Data Flow & Latency Model](#data-flow-latency-model) -->
 8. [Feature Feasibility Classification](#feature-feasibility-classification)
 9. [Location-Capability Coupling](#location-capability-coupling)
 10. [Optimization Framework](#optimization-framework)
@@ -20,7 +20,7 @@ This document provides a formal, physics-inspired mathematical model for underst
 12. [Worked Examples](#worked-examples)
 13. [Implementation Guidance](#implementation-guidance)
 14. [Extended Visual Reference](#extended-visual-reference)
-15. <!-- BROKEN ANCHOR: [AI Assistant Context & Limitations](#ai-assistant-context--limitations) -->
+15. <!-- BROKEN ANCHOR: [AI Assistant Context & Limitations](#ai-assistant-context-limitations) -->
 
 ## Overview
 
