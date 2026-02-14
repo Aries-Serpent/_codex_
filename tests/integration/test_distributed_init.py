@@ -11,12 +11,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Add tests/utils to path for test helpers
-_TESTS_DIR = Path(__file__).parent.parent
-if str(_TESTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_TESTS_DIR))
-
-from utils.torch_helpers import require_torch  # noqa: E402
+# Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
@@ -28,6 +24,11 @@ if str(_TRAINING_DIR) not in sys.path:
 
 from accelerate_init_guard import (  # noqa: E402
     AccelerateInitResult,
+    get_distributed_env_info,
+    is_accelerate_available,
+    is_gpu_available,
+    safe_accelerate_init,
+)
     get_distributed_env_info,
     is_accelerate_available,
     is_gpu_available,
