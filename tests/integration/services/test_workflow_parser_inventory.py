@@ -116,5 +116,4 @@ jobs:
     parser = WorkflowParser()
     workflow = parser.parse(yaml_content)
     # WorkflowJob uses Pydantic model with `needs` field
-    assert workflow.jobs["test"].needs is not None
     assert workflow.jobs["test"].needs == ["build"]

@@ -37,7 +37,10 @@ def test_deployment_parse_manifests_if_present():
         assert isinstance(doc, dict | list)
         if isinstance(doc, dict):
             # Skip Helm Chart.yaml files - they have different structure
-            if f.name == "Chart.yaml" or "name" in doc and "appVersion" in doc and "description" in doc:
+            is_helm_chart = f.name == "Chart.yaml" or (
+                "name" in doc and "appVersion" in doc and "description" in doc
+            )
+            if is_helm_chart:
                 continue
             # K8s manifests must have apiVersion and kind
             assert "apiVersion" in doc and "kind" in doc

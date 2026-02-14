@@ -13,14 +13,19 @@ Part of Phase 7: Integration Scenarios (80-85% coverage)
 from __future__ import annotations
 
 import json
+import sys
+from pathlib import Path
 
 import pytest
 
-# Skip entire module if torch is not available or is just a stub
-torch = pytest.importorskip("torch", reason="PyTorch required for tests")
-# Check if torch is actually usable (not just the stub)
-if not hasattr(torch, 'nn') or not hasattr(torch.nn, 'Linear'):
-    pytest.skip("PyTorch is not fully functional (stub module detected)", allow_module_level=True)
+# Add tests/utils to path for test helpers
+_TESTS_DIR = Path(__file__).parent.parent
+if str(_TESTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_TESTS_DIR))
+
+from utils.torch_helpers import require_torch  # noqa: E402
+
+torch = require_torch()
 
 # Mark all tests as integration tests (NOT slow by default - individual tests marked as needed)
 pytestmark = pytest.mark.integration

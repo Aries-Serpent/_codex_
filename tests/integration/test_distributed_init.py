@@ -11,11 +11,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Skip entire module if torch is not available or is just a stub
-torch = pytest.importorskip("torch", reason="torch required for distributed training tests")
-# Check if torch is actually usable (not just the stub)
-if not hasattr(torch, 'cuda') or not hasattr(torch.cuda, 'is_available'):
-    pytest.skip("PyTorch is not fully functional (stub module detected)", allow_module_level=True)
+# Add tests/utils to path for test helpers
+_TESTS_DIR = Path(__file__).parent.parent
+if str(_TESTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_TESTS_DIR))
+
+from utils.torch_helpers import require_torch  # noqa: E402
+
+torch = require_torch()
 
 # Add training directory to path
 _REPO_ROOT = Path(__file__).parent.parent.parent
