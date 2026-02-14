@@ -11,12 +11,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Add tests/utils to path for test helpers
-_TESTS_DIR = Path(__file__).parent.parent
-if str(_TESTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_TESTS_DIR))
-
-from utils.torch_helpers import require_torch  # noqa: E402
+# NOTE: removed ad-hoc sys.path modifications that previously attempted to add `tests/`
+# to sys.path. Adding `tests/` at top-level shadows stdlib modules (e.g. `ast`) and
+# causes unpredictable import resolution in CI. Tests should import test utilities
+# using the canonical `tests.utils.*` package import path.
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
@@ -28,6 +27,11 @@ if str(_TRAINING_DIR) not in sys.path:
 
 from accelerate_init_guard import (  # noqa: E402
     AccelerateInitResult,
+    get_distributed_env_info,
+    is_accelerate_available,
+    is_gpu_available,
+    safe_accelerate_init,
+)
     get_distributed_env_info,
     is_accelerate_available,
     is_gpu_available,

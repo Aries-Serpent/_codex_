@@ -216,8 +216,8 @@ class CheckpointManager:
                                     "step": int(data.get("step", 0)),
                                 }
                             )
-                        except (TypeError, ValueError):
-                            pass  # Malformed checkpoint data; skip
+                        except (TypeError, ValueError) as e:
+                            logger.debug("Skipping malformed checkpoint data: %s", e)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)

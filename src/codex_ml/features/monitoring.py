@@ -515,8 +515,8 @@ class FeatureHealthMonitor:
                                 self.feature_updates[name] = datetime.fromisoformat(
                                     latest.created_at
                                 )
-                            except (ValueError, AttributeError):
-                                pass
+                            except (ValueError, AttributeError) as e:
+                                logger.debug("Failed to parse feature timestamp for '%s': %s", name, e)
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Could not load features from store: {e}")

@@ -11,12 +11,9 @@ from pathlib import Path
 
 import pytest
 
-# Add tests/utils to path for test helpers
-_TESTS_DIR = Path(__file__).parent.parent.parent
-if str(_TESTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_TESTS_DIR))
-
-from utils.torch_helpers import require_torch  # noqa: E402
+# Avoid modifying sys.path to prevent stdlib shadowing (e.g. tests/ast -> ast).
+# Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
