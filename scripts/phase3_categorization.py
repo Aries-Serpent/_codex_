@@ -5,10 +5,9 @@ Analyzes COMPREHENSIVE_LINK_AUDIT.json to categorize and prioritize fixes.
 """
 
 import json
-import re
 from pathlib import Path
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent

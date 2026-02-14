@@ -9,7 +9,7 @@ This document provides a comprehensive summary of the test collection failure fi
 
 ## Problem Statement
 
-**Failed Job**: [Core Tests (Python 3.12)](https://github.com/Aries-Serpent/_codex_/actions/runs/21683424653/job/62523872141)  
+**Failed Job**: [Core Tests (Python 3.12)](https://github.com/Aries-Serpent/_codex_/actions/runs/21683424653 <!-- Note: Logs expire after 90 days -->/job/62523872141)  
 **Commit**: `a9514f6609b461008502e95a1047d5a344032371`  
 **Root Cause**: pytest exit code 2 during test collection
 

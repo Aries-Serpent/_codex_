@@ -252,7 +252,7 @@ Cognitive Brain
 | Metric | Value |
 |--------|-------|
 | **Workflow** | test-comprehensive.yml |
-| **Run ID** | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678) |
+| **Run ID** | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->) |
 | **Branch** | main |
 | **Commit** | abc1234 |
 | **Started** | 2026-01-22T06:15:00Z |
@@ -265,11 +265,11 @@ Cognitive Brain
 
 | Resource | Link |
 |----------|------|
-| Workflow Run | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678) |
-| Logs | [View Logs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/logs) |
+| Workflow Run | [#12345678](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->) |
+| Logs | [View Logs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->/logs) |
 | Artifacts | [Download](https://github.com/Aries-Serpent/_codex_/actions/artifacts/67890) |
-| Debug Log | [Raw Debug](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/debug.log) |
-| Rerun | [Rerun Failed Jobs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678/rerun-failed-jobs) |
+| Debug Log | [Raw Debug](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->/debug.log) |
+| Rerun | [Rerun Failed Jobs](https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->/rerun-failed-jobs) |
 
 ---
 

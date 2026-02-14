@@ -18,6 +18,7 @@ jobs:
   test-authentication:
     name: Test Authentication Module
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       matrix:
         python-version: ['3.12']
@@ -40,7 +41,7 @@ jobs:
 
       - name: Run authentication tests
         run: |
-          pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term
+          pytest tests/auth/ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v5
@@ -75,6 +76,7 @@ jobs:
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: test-authentication
 
     steps:

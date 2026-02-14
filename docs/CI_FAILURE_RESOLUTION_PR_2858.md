@@ -3,7 +3,7 @@
 ## Executive Summary
 
 **PR**: #2858 - "0 d base"  
-**Workflow Run**: [#21051071553](https://github.com/Aries-Serpent/_codex_/actions/runs/21051071553)  
+**Workflow Run**: [#21051071553](https://github.com/Aries-Serpent/_codex_/actions/runs/21051071553 <!-- Note: Logs expire after 90 days -->)  
 **Status**: ✅ All failures resolved  
 **Date**: 2026-01-16  
 **Total Issues Fixed**: 10 (7 code review + 3 CI failures)

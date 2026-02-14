@@ -8,6 +8,7 @@ on:
 jobs:
   depscan:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
       - name: Setup Python

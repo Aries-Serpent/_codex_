@@ -259,7 +259,30 @@ pytest.importorskip = _importorskip_optional_dep
 
 
 def pytest_collection_modifyitems(session, config, items):
+    """Auto-mark slow tests and handle optional dependencies."""
+    
+    # Patterns that indicate a test is slow
+    slow_patterns = [
+        "sleep(",
+        "time.sleep",
+        "asyncio.sleep",
+        "integration",
+        "e2e",
+        "end_to_end",
+        "docker",
+        "deployment",
+    ]
+    
     for item in items:
+        # Auto-mark slow tests based on markers or patterns
+        if "slow" not in item.keywords:
+            # Check if test has markers that indicate it's slow
+            if any(marker in item.keywords for marker in ["integration", "e2e"]):
+                item.add_marker(pytest.mark.slow)
+            # Check if test name suggests it's slow
+            elif any(pattern in item.nodeid.lower() for pattern in slow_patterns):
+                item.add_marker(pytest.mark.slow)
+        
         for marker, modules in OPTIONAL_DEP_MARKERS.items():
             if marker in item.keywords:
                 missing = _missing_modules(modules)

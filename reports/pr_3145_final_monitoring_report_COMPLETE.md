@@ -377,12 +377,12 @@ git push origin 0D_base_
 
 ### Workflow Runs
 - [All PR #3145 Workflows](https://github.com/Aries-Serpent/_codex_/actions?query=branch%3A0D_base_+event%3Apull_request)
-- [Rust-Python Hybrid Swarm CI/CD](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815) ✅ SUCCESS
-- [Auto-Fix Common CI Issues](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841) ❌ FAILED
-- [Automatic Dependency Submission](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983) ❌ FAILED
-- [Codebase QA Walkthrough](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810) ❌ FAILED
-- [Testing Suite](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851) ❌ FAILED
-- [Comprehensive Tests](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848) ❌ FAILED
+- [Rust-Python Hybrid Swarm CI/CD](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815 <!-- Note: Logs expire after 90 days -->) ✅ SUCCESS
+- [Auto-Fix Common CI Issues](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Automatic Dependency Submission](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Codebase QA Walkthrough](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Testing Suite](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Comprehensive Tests](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
 
 ### PR Information
 - [PR #3145](https://github.com/Aries-Serpent/_codex_/pull/3145)

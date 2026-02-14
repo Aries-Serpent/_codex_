@@ -326,7 +326,7 @@ pip list | grep -E "torch|sentence-transformers|transformers"
 ### Issues
 - Original issue: PR #3020 (20 failed tests + 10 errors)
 - Resolution: Prevention-over-cure approach
-- CI Job: https://github.com/Aries-Serpent/_codex_/actions/runs/21459135765
+- CI Job: https://github.com/Aries-Serpent/_codex_/actions/runs/21459135765 <!-- Note: Logs expire after 90 days -->
 
 ### Related PRs
 - Previous attempts: commits 8cb2ef9, 095c2a4, 4ff8eb1 (post-init fixing - failed)

@@ -12,13 +12,13 @@
 - **Status**: ✅ Completed
 - **Conclusion**: ❌ Failure
 - **Duration**: ~12 minutes (02:48:12Z - 03:00:18Z)
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->
 
 ### 2. Comprehensive Tests with Caching (21689428219)
 - **Status**: ✅ Completed  
 - **Conclusion**: ❌ Failure
 - **Duration**: ~13 minutes (02:48:12Z - 03:01:24Z)
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219 <!-- Note: Logs expire after 90 days -->
 
 ---
 
@@ -97,12 +97,12 @@
 1. **Coverage HTML Report**:
    - Size: 6,454,792 bytes (~6.2 MB)
    - Artifact ID: 5384344717
-   - URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233/artifacts/5384344717
+   - URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->/artifacts/5384344717
 
 2. **JUnit Test Report**:
    - Size: 9,292 bytes (~9 KB)
    - Artifact ID: 5384344851
-   - URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233/artifacts/5384344851
+   - URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->/artifacts/5384344851
 
 3. **Codecov Upload**:
    - Status: ✅ Success
@@ -213,8 +213,8 @@ This is a significant achievement even though some tests fail during execution. 
 
 ## 🔗 Resources
 
-- **Testing Suite Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233
-- **Comprehensive Tests Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219
+- **Testing Suite Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->
+- **Comprehensive Tests Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219 <!-- Note: Logs expire after 90 days -->
 - **Coverage HTML**: Artifact 5384344717
 - **JUnit Report**: Artifact 5384344851
 - **Commit**: eff99bf145b123f88350b7a750f9c56bbba7d706
