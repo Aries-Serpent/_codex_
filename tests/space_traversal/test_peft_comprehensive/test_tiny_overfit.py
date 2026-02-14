@@ -6,13 +6,20 @@ Test module for tiny overfit.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
 
-pytest.importorskip("torch")
+# Add tests/utils to path for test helpers
+_TESTS_DIR = Path(__file__).parent.parent.parent
+if str(_TESTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_TESTS_DIR))
 
-import torch  # noqa: E402
+from utils.torch_helpers import require_torch  # noqa: E402
+
+torch = require_torch()
+
 from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
 from src.training.seed import ensure_global_seed  # noqa: E402
 

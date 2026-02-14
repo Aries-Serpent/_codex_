@@ -34,9 +34,14 @@ def test_zendesk_sync_error_handling():
 @pytest.mark.integration
 def test_multi_locale_sync_manager():
     """Test MultiLocaleSyncManager coordinates locale syncs."""
-    manager = MultiLocaleSyncManager(
-        locales=["en-US", "es-ES", "fr-FR"],
-    )
+    from src.services.crawler.multi_locale_sync import LocaleConfig
+    
+    locales = [
+        LocaleConfig("en-US", priority=10),
+        LocaleConfig("es-ES", priority=8),
+        LocaleConfig("fr-FR", priority=7),
+    ]
+    manager = MultiLocaleSyncManager(locales=locales)
     assert len(manager.locales) == 3
 
 

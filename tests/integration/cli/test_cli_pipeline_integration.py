@@ -68,15 +68,21 @@ def test_cli_pipeline_logging_defaults():
 @pytest.mark.integration
 def test_cli_pipeline_missing_data_config():
     """Test CLI handles missing data configuration."""
+    from src.cli.pipeline import validate_pipeline_config
+    
     config = _make_config()
     del config["data"]
+    # Actually validate the config which should raise KeyError
     with pytest.raises(KeyError, match="data"):
-        pass  # Should raise when data config is missing
+        validate_pipeline_config(config)
 
 
 @pytest.mark.integration
 def test_cli_pipeline_invalid_checkpoint():
     """Test CLI handles invalid checkpoint configuration."""
-    _make_config(trainer={"checkpoint": "invalid_string"})
+    from src.cli.pipeline import validate_pipeline_config
+    
+    config = _make_config(trainer={"checkpoint": "invalid_string"})
+    # Validate checkpoint config format - should raise ValueError for non-existent path
     with pytest.raises(ValueError, match="checkpoint"):
-        pass  # Should raise or handle gracefully
+        validate_pipeline_config(config)
