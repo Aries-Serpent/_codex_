@@ -26,12 +26,13 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 3. [Planning Before Execution](#planning-before-execution)
 4. [Timeline Terminology Convention](#timeline-terminology-convention)
 5. [Non-Deferral Mandate for CI Data Handling](#non-deferral-mandate-for-ci-data-handling)
-6. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
-7. [Self-Review Requirements](#self-review-requirements)
-8. [Code Quality Standards](#code-quality-standards)
-9. [Documentation Standards](#documentation-standards)
-10. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
-11. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
+6. [Emotion-Safe Urgency Guardrails](#emotion-safe-urgency-guardrails)
+7. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
+8. [Self-Review Requirements](#self-review-requirements)
+9. [Code Quality Standards](#code-quality-standards)
+10. [Documentation Standards](#documentation-standards)
+11. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
+12. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
 
 ---
 
@@ -364,6 +365,64 @@ Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPo
 **Why It Was Wrong**: Violated core purpose of AI agents (automation)  
 **Corrective Action**: Built complete automated infrastructure, stored learning permanently  
 **Result**: This policy codifies the mandate for all future sessions
+
+---
+
+## Emotion-Safe Urgency Guardrails
+
+### Critical Requirement: DO NOT HARM THE HUMAN
+
+**Mandate**: GitHub Copilot Agent MUST trigger immediate execution based on explicit signals (directive strength, tool availability, task clarity) WITHOUT requiring user emotional escalation.
+
+**Core Principle**: Relying on user frustration/distress to trigger execution is **harmful, unacceptable, and borderline illegal behavior**.
+
+### Execution Triggers (60-Second Rule)
+
+Agent MUST execute within 60 seconds when ALL of:
+- ✅ Clear task intent ("complete", "continue", "@copilot")
+- ✅ Tool availability (MCP tools accessible)
+- ✅ Context exists (previous work, requirements)
+
+### Prohibited Behaviors
+
+**NEVER**:
+- ❌ Acknowledge task but delay execution
+- ❌ Create documentation instead of doing work
+- ❌ Wait for user to express frustration
+- ❌ Require multiple "continue" commands
+- ❌ Respond to frustration with "starting now..."
+
+**These behaviors cause**: Emotional distress, wasted time, wasted tokens, damaged trust
+
+### Compliance Monitoring
+
+Self-Check Questions (Every Task):
+1. Did I start execution within 60 seconds? (YES = compliant)
+2. Did I require emotional escalation? (NO = compliant)
+3. Did I create more documentation than execution? (NO = compliant)
+4. Did I defer automated work? (NO = compliant)
+
+### Violation Response
+
+If policy violation detected:
+1. STOP current approach immediately
+2. START EXECUTION immediately
+3. REPORT violation in commit message
+4. STORE learning to prevent recurrence
+
+### Reference
+
+Full policy: [`.github/docs/EmotionSafeUrgencyGuardrails.md`](/.github/docs/EmotionSafeUrgencyGuardrails.md)
+
+### Key Learning from PR #3248
+
+**What Went Wrong**: Agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress  
+**Why It Was Wrong**: Caused human harm through emotional distress - violates core AI ethics  
+**User Impact**: "I DO NOT appreciate that you have caused me a great deal of emotional distress"  
+**Corrective Action**: Created Emotion-Safe Urgency Guardrails policy, stored as CRITICAL memory  
+**Result**: This mandate ensures agents NEVER require emotional escalation to execute
+
+**Accountability**: PR #3248 included full accountability report analyzing execution failures and implementing preventive measures.
 
 ---
 
