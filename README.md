@@ -213,6 +213,71 @@ python scripts/ci/auto_fix_common_issues.py
 **After:** Automatic detection in <30 seconds, 15-30 minutes per PR  
 **Prevented Issues:** Unused imports, inconsistent coverage, YAML errors, session logs in git
 
+### 🆕 Phase 1 CI Optimization Tools (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Large PR handling, pattern detection, rollback safety
+
+New tools for optimizing CI workflows based on PR #3248 failure analysis:
+
+#### 1. PR Size Analyzer Workflow
+Automatically categorizes PRs and determines appropriate validation strategy:
+
+- **Small (<20 files):** Full validation with all tests
+- **Medium (20-99 files):** Targeted tests for affected areas  
+- **Large (100-499 files):** Smoke tests only (on-demand full validation)
+- **Refactor (500+ files):** Import validation only
+
+**Usage:** Automatically runs on all PRs, posts size analysis comment
+
+#### 2. Telemetry Collection Script
+Collects and analyzes CI telemetry data from GitHub Actions:
+
+```bash
+python scripts/ci/collect_telemetry.py \
+  --owner Aries-Serpent \
+  --repo _codex_ \
+  --branch main \
+  --days 7
+```
+
+**Features:**
+- Collects workflow runs, jobs, and artifacts
+- Classifies failures into 5 identified patterns
+- Generates comprehensive JSON reports
+- Pattern distribution analysis
+
+#### 3. Auto-Fix with Rollback
+Enhanced auto-fix with safety guarantees and automatic rollback:
+
+```bash
+# Run pre-flight checks
+python scripts/ci/auto_fix_with_rollback.py --pre-flight
+
+# Apply fixes with rollback support
+python scripts/ci/auto_fix_with_rollback.py --apply
+```
+
+**Safety Features:**
+- Pre-flight validation (git state, permissions, tools)
+- Per-fix isolation with automatic rollback on failure
+- Retry logic with exponential backoff
+- Syntax validation after each fix
+- Comprehensive metrics logging
+
+#### 4. Coverage Timeout Guards Workflow
+Prevents coverage hangs with timeout protection and graceful degradation:
+
+**Features:**
+- 7-minute per-test timeout via pytest-timeout
+- 4-shard parallel execution for isolation
+- Partial coverage on timeout (no total failure)
+- Detailed timeout diagnostics and recommendations
+
+**Documentation:**
+- Implementation guide: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](FOLLOWUP_IMPLEMENTATION_PROMPT.md)
+- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+
 ## 🎨 Cognitive Codex Web Application
 
 **Status:** Integrated & Built Successfully ✅  
