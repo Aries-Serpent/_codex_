@@ -46,15 +46,20 @@ jobs:
           # Verify plugins are loaded
           python -m pytest --version
           python -c "import pytest_timeout; import xdist; print('✓ Pytest plugins verified')"
+          # Verify plugins are actually registered with pytest
+          python -m pytest --co -q 2>&1 | grep -E "(xdist|timeout)" || echo "Warning: plugins may not be loaded"
       
       - name: Run validation
         id: validate
         timeout-minutes: 45
+        env:
+          # Ensure pytest plugins are loaded properly
+          PYTEST_PLUGINS: "xdist.plugin,xdist.looponfail,pytest_timeout"
         run: |
           case "${{ matrix.test-group }}" in
             quick)
               # Quick tests: 60s timeout, parallel execution with 4 workers, fail after 20 failures
-              pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short -n 4 --maxfail=20
+              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short -n 4 --maxfail=20 -p xdist.plugin -p pytest_timeout
               ;;
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
@@ -62,11 +67,11 @@ jobs:
               ;;
             integration)
               # Integration tests: 300s timeout, parallel with 2 workers, fail after 10 failures
-              pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short -n 2 --maxfail=10
+              python -m pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short -n 2 --maxfail=10 -p xdist.plugin -p pytest_timeout
               ;;
             slow)
               # Slow tests: 600s timeout, sequential execution, fail after 5 failures
-              pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
+              python -m pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short -p pytest_timeout
               ;;
           esac
       
