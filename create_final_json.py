@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""
+Create final JSON in exact requested format
+"""
+import json
+
+# The data we collected
+final_data = {
+    "pr_number": 3248,
+    "repository": "Aries-Serpent/_codex_",
+    "total_commits": 100,
+    "commits_with_failures_or_artifacts": 1,
+    "commits": [
+        {
+            "sha": "95bcc8abc008d588e86e8283e2eba669dee556cf",
+            "failing_check_urls": [
+                "https://github.com/Aries-Serpent/_codex_/actions/runs/22031050538"
+            ],
+            "artifacts": []  # No artifacts found for the failing run
+        }
+    ],
+    "notes": [
+        "Only the HEAD commit (95bcc8abc008d588e86e8283e2eba669dee556cf) has failing checks",
+        "1 failing workflow: 'Resilient Validation Suite'",
+        "16 other workflows are passing on this commit",
+        "No artifacts were found for the failing workflow run",
+        "Artifacts for other runs can be collected using the API endpoints provided in pr3248_complete_report.json"
+    ]
+}
+
+print(json.dumps(final_data, indent=2))
