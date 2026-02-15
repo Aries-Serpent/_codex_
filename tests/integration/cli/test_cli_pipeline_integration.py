@@ -70,7 +70,13 @@ def _load_pipeline_module():
     import importlib.util
     from pathlib import Path
 
-    module_path = Path(__file__).resolve().parents[3] / "src" / "cli" / "pipeline.py"
+    # Walk up to find repository root (contains pyproject.toml)
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / "pyproject.toml").exists():
+            break
+        current = current.parent
+    module_path = current / "src" / "cli" / "pipeline.py"
     spec = importlib.util.spec_from_file_location("src.cli.pipeline", module_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
