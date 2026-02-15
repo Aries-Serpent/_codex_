@@ -46,11 +46,14 @@ jobs:
           pip install -e ".[test]"
           # Additional coverage tools
           pip install 'pytest>=9.0,<10' 'pytest-cov>=7.0,<8' 'coverage>=7.10.6,<8'
+          # Install pytest-xdist for parallel test execution and pytest-timeout
+          pip install pytest-xdist pytest-timeout
       
       - name: Run tests with coverage
         run: |
           # Run tests with coverage, allow test failures but ensure coverage data is collected
-          coverage run -m pytest -q -m "not slow" || true
+          # Timeout: 60s per test, fail fast after 50 failures, run in parallel with 4 workers
+          coverage run -m pytest -q -m "not slow" --timeout=60 --maxfail=50 -n 4 || true
           # Ensure coverage data file exists even if no tests ran
           coverage json -o .coverage.json || echo '{}' > .coverage.json
       

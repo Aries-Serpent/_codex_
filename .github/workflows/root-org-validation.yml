@@ -56,6 +56,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"  # Includes pytest, ruff, mypy
+          # Install pytest-xdist for parallel execution and pytest-timeout
+          pip install pytest-xdist pytest-timeout
       
       - name: Run link checker
         id: link-check
@@ -78,7 +80,8 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running pytest baseline (fast tests only)..."
-          python -m pytest tests/ -v --tb=short -m "not slow" --timeout=300 || echo "Some tests may fail - baseline recorded"
+          # Timeout: 60s per test, fail fast after 20 failures, run in parallel with 4 workers
+          python -m pytest tests/ -v --tb=short -m "not slow" --timeout=60 --maxfail=20 -n 4 || echo "Some tests may fail - baseline recorded"
       
       - name: Run ruff linter
         id: ruff-baseline

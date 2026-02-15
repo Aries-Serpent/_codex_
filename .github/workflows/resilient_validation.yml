@@ -49,16 +49,19 @@ jobs:
         run: |
           case "${{ matrix.test-group }}" in
             quick)
-              pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short
+              # Quick tests: 60s timeout, parallel execution with 4 workers, fail after 20 failures
+              pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short -n 4 --maxfail=20
               ;;
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
               python scripts/validate_docs.py --fix || echo "Doc validation warnings (non-blocking)"
               ;;
             integration)
-              pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short
+              # Integration tests: 300s timeout, parallel with 2 workers, fail after 10 failures
+              pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short -n 2 --maxfail=10
               ;;
             slow)
+              # Slow tests: 600s timeout, sequential execution, fail after 5 failures
               pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
               ;;
           esac
