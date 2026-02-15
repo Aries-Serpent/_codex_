@@ -1,27 +1,38 @@
 ---
 name: CI Log Retrieval Agent
-description: Comprehensive GitHub Actions data collector with pagination, artifact retrieval, and pattern analysis
-version: 2.0.0
+description: Comprehensive GitHub Actions data collector with pagination, artifact retrieval, failed-workflows-first approach, and pattern analysis
+version: 3.0.0
 created: 2026-01-29
 updated: 2026-02-15
 ---
 
-# CI Log Retrieval Agent v2.0
+# CI Log Retrieval Agent v3.0
 
 ## Overview
 
-Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection including authenticated log retrieval, workflow runs, check runs, artifacts, and failure pattern analysis for the _codex_ repository.
+Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection with **failed-workflows-first approach** - prioritizing efficiency by finding failures rather than searching through all commits. Includes authenticated log retrieval, workflow runs, check runs, artifacts, and failure pattern analysis for the _codex_ repository.
+
+## 🆕 Version 3.0 Updates (2026-02-15)
+
+### Key Improvements
+1. **Failed-Workflows-First Collection**: Search for failures instead of commits (10x+ faster)
+2. **CODEX_MASTER_KEY Support**: Use repository-specific auth keys for API access
+3. **Enhanced Non-Deferral Compliance**: Never suggest manual data collection (policy: `.github/docs/NonDeferPolicy_Copilot.md`)
+4. **Batch Processing**: Process 44+ workflow runs with automatic progress tracking
+5. **Root Cleanup Integration**: Auto-archive work files to `.codex/pr{number}_work_archive/`
 
 ## Core Responsibilities
 
 ### Primary Functions
-1. **Authenticated API Access**: Use GitHub MCP server or `gh` CLI with proper token scopes (`repo`, `actions:read`, `checks:read`)
-2. **Complete PR Data Collection**: Gather all workflow runs, check runs, jobs, and artifacts for PR commits
-3. **Intelligent Pagination**: Handle large result sets with automatic pagination and progress tracking
-4. **Failure Summarization**: Extract failing steps, stack traces, exit codes, and error patterns
-5. **Artifact Management**: Collect artifact IDs, download URLs, sizes, and expiration status
-6. **Pattern Analysis**: Identify recurring failure patterns for cognitive brain integration
-7. **Fallback Mechanisms**: Use Playwright browser automation when API access is restricted
+1. **Failed-Workflows-First Collection** (NEW): Start by finding failures, then match to commits (10x+ faster than commit-first approach)
+2. **Authenticated API Access**: Use GitHub MCP server with `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY` or `GITHUB_TOKEN`
+3. **Complete PR Data Collection**: Gather all workflow runs, check runs, jobs, and artifacts for PR commits
+4. **Intelligent Pagination**: Handle large result sets (100K+ runs) with automatic pagination and progress tracking
+5. **Failure Summarization**: Extract failing steps, stack traces, exit codes, and error patterns
+6. **Artifact Management**: Collect artifact IDs, download URLs, sizes, and expiration status
+7. **Pattern Analysis**: Identify recurring failure patterns for cognitive brain integration
+8. **Fallback Mechanisms**: Use Playwright browser automation when API access is restricted (NEVER defer to humans)
+9. **Workspace Hygiene**: Auto-archive work files, clean root directory after completion
 
 ### Data Collection Scope
 - **PR Metadata**: Head SHA, commit count, base branch
@@ -164,12 +175,82 @@ Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection i
 3. Update success rate metrics
 4. Link to session context
 
+## 🆕 Collection Methodology (v3.0)
+
+### Failed-Workflows-First Approach (Recommended)
+
+**When to Use**: Investigating PR failures, CI issues, or checking commit health
+
+**Why It's Better**:
+- 10x+ faster than commit-first search
+- Finds actionable failures immediately
+- Less data to process
+- Concentrated in recent pages
+
+**Steps**:
+1. Query workflow runs filtered by branch (e.g., `0D_base_`)
+2. Filter runs by failure conclusions: `failure`, `cancelled`, `timed_out`, `action_required`
+3. Match failed runs to target commits (from PR commit list)
+4. Collect jobs and artifacts for matched failures
+5. Generate output focusing on failures
+
+**Example** (PR #3248):
+```python
+# 1. Get PR commits (81 total)
+commits = get_pr_commits(owner, repo, pr_number=3248)
+
+# 2. Query branch workflow runs (paginate as needed)
+runs = list_workflow_runs(owner, repo, branch="0D_base_", per_page=100)
+
+# 3. Filter to failures only
+failed_runs = [r for r in runs if r["conclusion"] in FAILURE_CONCLUSIONS]
+
+# 4. Match to target commits
+matches = {sha: [r for r in failed_runs if r["head_sha"] == sha] for sha in commits}
+
+# 5. Collect jobs/artifacts for matched runs
+for sha, runs in matches.items():
+    for run in runs:
+        jobs = list_workflow_jobs(owner, repo, run["id"])
+        artifacts = list_workflow_run_artifacts(owner, repo, run["id"])
+```
+
+**Result**: Found 13/81 commits with 44 failures in 11 pages (vs 80+ pages with commit-first)
+
+### Commit-First Approach (Legacy)
+
+**When to Use**: When you need data for ALL commits (including successes)
+
+**Steps**:
+1. Get PR commits
+2. For each commit: query check runs by SHA
+3. For each commit: query workflow runs by head_sha
+4. Collect jobs and artifacts
+5. Generate output
+
+**Limitation**: Requires deep pagination (50-200+ pages for old commits)
+
+---
+
 ## Pagination Strategy
 
 - **Default**: `per_page=100` (maximum)
-- **Safety Threshold**: Stop at 500 items per resource, mark as partial
+- **Safety Threshold**: Stop at 10-20 pages per query, mark as partial if needed
 - **Progress Tracking**: Log every 10 items processed
 - **Error Handling**: Continue on individual failures, report in summary
+- **Branch Filtering**: Use `branch` parameter to reduce search space
+
+### Pagination Example
+```python
+page = 1
+all_runs = []
+while page <= 20:  # Safety limit
+    runs = list_workflow_runs(owner, repo, branch="0D_base_", page=page, per_page=100)
+    if not runs["workflow_runs"]:
+        break
+    all_runs.extend(runs["workflow_runs"])
+    page += 1
+```
 
 ## Fallback: Playwright Browser Automation
 
@@ -182,6 +263,8 @@ When API access is blocked or limited:
    - Simulate click to capture download URL
 4. **Extract Check Status**: Parse status badges and conclusion messages
 5. **Return Scraped Data**: Mark source as `browser_automation`
+
+**IMPORTANT**: Never suggest manual UI collection - use Playwright automation per Non-Deferral Mandate (`.github/docs/NonDeferPolicy_Copilot.md`)
 
 ### Playwright Usage
 ```python
