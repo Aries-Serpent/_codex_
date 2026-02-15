@@ -71,7 +71,7 @@ class BridgeMode(Enum):
 class ContextMessage:
     """
     Typed message format for bridge communication.
-    
+
     All messages sent through the bridge must follow this structure
     for type safety and validation.
     """
@@ -101,7 +101,7 @@ class ContextMessage:
 class BridgeLock:
     """
     File-based locking mechanism using fcntl.
-    
+
     Prevents race conditions when multiple processes access the bridge.
     """
 
@@ -113,10 +113,10 @@ class BridgeLock:
     def acquire(self, timeout: int = 5) -> bool:
         """
         Acquire exclusive lock.
-        
+
         Args:
             timeout: Maximum seconds to wait for lock
-            
+
         Returns:
             True if lock acquired, False on timeout
         """
@@ -163,7 +163,7 @@ class BridgeLock:
 def bridge_lock(lock_path: Path, timeout: int = 5):
     """
     Context manager for bridge locking.
-    
+
     Usage:
         with bridge_lock(lock_path):
             # Critical section - safe from race conditions
@@ -184,16 +184,16 @@ def bridge_lock(lock_path: Path, timeout: int = 5):
 class BridgeManager:
     """
     Secure IPC bridge manager with authentication and audit trail.
-    
+
     Replaces temp/bridge_codex_copilot_bridge with secure Named Pipe
     or Unix domain socket with proper permissions, authentication, and logging.
-    
+
     Security Features (PS-02):
     - Named pipes with 0o600 permissions (owner-only)
     - Authentication token validation (CODEX_BRIDGE_TOKEN)
     - Security audit trail logging
     - File-based locking for race condition prevention
-    
+
     Protocol v2 Features (PS-02 Enhancement):
     - Message compression for payloads >100KB
     - Multi-client support with routing
@@ -222,7 +222,7 @@ class BridgeManager:
     ):
         """
         Initialize bridge manager.
-        
+
         Args:
             bridge_dir: Directory for bridge files (defaults to secure temp location)
             mode: Communication mode (named_pipe, unix_socket, or tcp_tls)
@@ -409,7 +409,7 @@ class BridgeManager:
     def _audit_log(self, event: str, details: Dict[str, Any]) -> None:
         """
         Write security audit log entry (PS-02).
-        
+
         Args:
             event: Event type (e.g., "AUTH_SUCCESS", "AUTH_FAILURE", "MESSAGE_SENT")
             details: Event details dictionary
@@ -433,10 +433,10 @@ class BridgeManager:
     def _verify_auth_token(self, message: ContextMessage) -> bool:
         """
         Verify authentication token (PS-02).
-        
+
         Args:
             message: Message to authenticate
-            
+
         Returns:
             True if authentication passed, False otherwise
         """
@@ -472,10 +472,10 @@ class BridgeManager:
     def write_message(self, message: ContextMessage) -> bool:
         """
         Write a message to the bridge with locking and authentication (PS-02).
-        
+
         Args:
             message: Context message to send
-            
+
         Returns:
             True if write successful, False otherwise
         """
@@ -590,12 +590,12 @@ class BridgeManager:
     def register_client(self, client_id: str, socket_path: str, priority: int = 0) -> bool:
         """
         Register a client for multi-client bridge support (Protocol v2).
-        
+
         Args:
             client_id: Unique client identifier
             socket_path: Path to client's socket
             priority: Client priority (higher = more important)
-            
+
         Returns:
             True if registered successfully
         """
@@ -638,10 +638,10 @@ class BridgeManager:
     def read_message(self, timeout: Optional[int] = None) -> Optional[ContextMessage]:
         """
         Read a message from the bridge with locking and audit logging (PS-02).
-        
+
         Args:
             timeout: Maximum seconds to wait for message
-            
+
         Returns:
             ContextMessage if read successful, None otherwise
         """
@@ -800,11 +800,11 @@ class BridgeManager:
 def share_context_with_copilot(context: Dict[str, Any], bridge: Optional[BridgeManager] = None) -> bool:
     """
     Share cognitive context with Copilot watcher via secure bridge.
-    
+
     Args:
         context: Context data to share
         bridge: Optional bridge instance (creates default if not provided)
-        
+
     Returns:
         True if context shared successfully
     """
