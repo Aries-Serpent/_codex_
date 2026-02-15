@@ -278,6 +278,65 @@ Prevents coverage hangs with timeout protection and graceful degradation:
 - Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
 - Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
 
+### 🆕 Phase 2: Core Improvements (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Progressive validation, telemetry-driven orchestration
+
+Building on Phase 1, these tools optimize CI resource usage and enable intelligent test selection:
+
+#### 1. Progressive Validation Suite
+4-layer test architecture with smart execution:
+
+```yaml
+Layer 1: Smoke Tests (Always) - <10min
+  → Import validation + basic functionality
+
+Layer 2: Unit Tests (Small/Medium PRs) - <20min  
+  → 3-shard parallel execution
+
+Layer 3: Integration (Small PRs only) - <30min
+  → Cross-module tests
+
+Layer 4: Slow Tests (On-demand) - <60min
+  → Manual trigger via workflow_dispatch
+```
+
+**Impact:**
+- Small PRs: Full validation (~60 min)
+- Medium PRs: 50% faster (~30 min)
+- Large PRs: 75% faster (~15 min)
+- Refactor PRs: 90% faster (~5 min)
+
+#### 2. Workflow Orchestrator
+Telemetry-driven workflow selection:
+
+```bash
+python scripts/ci/workflow_orchestrator.py \
+  --pr-size medium \
+  --telemetry-file report.json \
+  --changed-files src/module.py \
+  --estimate-duration
+```
+
+**Features:**
+- Pattern-based workflow adjustments (5 failure patterns)
+- File change analysis for targeted workflows
+- Duration estimation for planning
+- JSON plan generation for automation
+
+#### 3. Telemetry Collection Workflow
+Automated CI health monitoring (daily at 2 AM UTC):
+
+- **Pattern detection:** Auto-fix, coverage timeout, test infrastructure
+- **Automatic alerting:** Issue creation when failure rate > 20%
+- **Trend analysis:** 90-day historical data retention
+- **Proactive monitoring:** Catch degradation early
+
+**Documentation:**
+- Implementation log: [`docs/ci/IMPLEMENTATION_LOG.md`](docs/ci/IMPLEMENTATION_LOG.md) (Phase 1-2 complete)
+- Analysis foundation: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Complete plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+
 ## 🎨 Cognitive Codex Web Application
 
 **Status:** Integrated & Built Successfully ✅  

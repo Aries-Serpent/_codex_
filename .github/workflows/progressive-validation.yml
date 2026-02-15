@@ -15,6 +15,9 @@ jobs:
   # Analyze PR size first
   analyze:
     uses: ./.github/workflows/pr-size-analyzer.yml
+    permissions:
+      contents: read
+      pull-requests: write
   
   # Layer 1: Smoke Tests (Always run - fast validation)
   smoke-tests:
