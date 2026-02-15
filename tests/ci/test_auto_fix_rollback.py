@@ -5,11 +5,9 @@ Tests pre-flight checks, rollback mechanisms, and fix application
 with safety guarantees.
 """
 
-import shutil
 import subprocess
-import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -179,7 +177,7 @@ class TestAutoFixWithRollback:
     def test_rollback_context_success(self, fixer, temp_repo):
         """Test rollback context manager with successful operation."""
         test_file = temp_repo / "src" / "test.py"
-        original_content = test_file.read_text()
+        _ = test_file.read_text()  # Read original content (not used in this test)
 
         with fixer.rollback_context(test_file):
             # Modify file

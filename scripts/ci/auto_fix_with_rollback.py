@@ -18,7 +18,6 @@ Options:
 import argparse
 import json
 import logging
-import os
 import shutil
 import subprocess
 import sys
@@ -27,7 +26,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List
 
 
 class PreFlightError(Exception):
@@ -163,7 +162,7 @@ class AutoFixWithRollback:
     def _check_branch_valid(self) -> bool:
         """Check if current branch is valid (not detached HEAD)."""
         try:
-            result = subprocess.run(
+            subprocess.run(
                 ["git", "symbolic-ref", "-q", "HEAD"],
                 cwd=self.repo_root,
                 check=True,
