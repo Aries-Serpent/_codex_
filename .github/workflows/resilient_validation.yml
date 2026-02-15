@@ -38,10 +38,14 @@ jobs:
       
       - name: Install dependencies
         run: |
+          # Install pytest plugins FIRST to ensure they're available for worker processes
+          pip install pytest-timeout pytest-xdist pytest-cov pytest-asyncio pytest-mock
           pip install -e .[dev]
-          pip install pytest-timeout pytest-xdist
           pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
           npm install -g markdown-link-check
+          # Verify plugins are loaded
+          python -m pytest --version
+          python -c "import pytest_timeout; import xdist; print('✓ Pytest plugins verified')"
       
       - name: Run validation
         id: validate
