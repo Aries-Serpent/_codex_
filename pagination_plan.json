@@ -1,0 +1,11 @@
+{
+  "total_runs": 100810,
+  "per_page": 100,
+  "total_pages": 1009,
+  "target_commits": 81,
+  "strategy": "sequential_pagination_until_complete",
+  "estimated_pages_needed": "50-200",
+  "status": "in_progress",
+  "pages_completed": 1,
+  "matches_found": 0
+}
