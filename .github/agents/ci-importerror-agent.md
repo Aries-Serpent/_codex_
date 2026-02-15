@@ -1,8 +1,8 @@
 ---
 name: CI ImportError Fixer Agent
 description: Diagnose and remediate ImportError/ModuleNotFoundError failures in the test suite by fixing sys.path issues, missing dependencies, and import path errors.
-version: 2.0.0
-last_updated: 2026-02-14
+version: 2.1.0
+last_updated: 2026-02-15
 ---
 
 # CI ImportError Fixer Agent
@@ -43,7 +43,7 @@ from mcp.auth import MCPAuthenticator  # noqa: E402
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 from mcp.auth import MCPAuthenticator
 ```
-**Success Rate**: 100% (PR #3248: Fixed 20 errors)
+**Success Rate**: 100% (PR #3248: Fixed 20 errors across 8 files)
 
 ### Pattern 2: Incorrect Relative Import
 **Symptom**: `ModuleNotFoundError: No module named 'utils.torch_helpers'`
@@ -84,6 +84,44 @@ pip install httpx pydantic typer
 # OR
 pytest.importorskip("httpx")
 ```
+
+### Pattern 6: Setuptools Package Discovery Mismatch ⭐ NEW
+**Symptom**: `error: package directory 'services/mcp' does not exist` during pip install
+**Root Cause**: Setuptools finds package references but package-dir mapping points to wrong location
+**Context**: Dual package locations (e.g., `services/` and `src/services/`) with conflicting mappings
+
+**Diagnosis Steps:**
+```python
+# 1. Check expected packages
+from setuptools.config.pyprojecttoml import read_configuration
+config = read_configuration('pyproject.toml')
+packages = config['tool']['setuptools']['packages']
+
+# 2. Check package-dir mappings  
+package_dir = config['tool']['setuptools']['package-dir']
+
+# 3. Find missing directories
+for pkg in packages:
+    if pkg.startswith('services.'):
+        subdir = pkg.replace('.', '/')
+        # Check if services/{subdir} exists
+```
+
+**Fix**: Create missing directories with placeholder __init__.py
+```bash
+# Example from PR #3248
+mkdir -p services/mcp services/github services/workflow
+echo "# Placeholder for package discovery" > services/mcp/__init__.py
+echo "# Placeholder for package discovery" > services/github/__init__.py
+echo "# Placeholder for package discovery" > services/workflow/__init__.py
+```
+
+**Prevention**: 
+- Use single package location (recommended: `src/` only)
+- OR ensure all autodiscovered packages exist at mapped locations
+- Add pre-commit hook to validate package discovery consistency
+
+**Success Rate**: 100% (PR #3248: Fixed 9 CI workflow failures)
 
 ---
 
@@ -242,7 +280,7 @@ python -m pytest tests/ --collect-only | grep "collected"
 
 ## 💡 Example Interventions
 
-### PR #3248: 20 Import Errors Fixed
+### PR #3248 Sprint 1-2: 20 Import Errors Fixed
 ```
 Symptom: 20 tests failed with ModuleNotFoundError
 Root Cause: 8 test files had sys.path.insert(0, repo_root)
@@ -253,9 +291,20 @@ Duration: 1 sprint
 Commit: 87919506
 ```
 
+### PR #3248 Sprint 3: 9 CI Build Failures Fixed
+```
+Symptom: error: package directory 'services/mcp' does not exist
+Root Cause: Dual package locations with setuptools autodiscovery mismatch
+Fix: Created 8 missing services/ subdirectories with __init__.py
+Files: services/{mcp,github,workflow,audio/*,ita}/__init__.py
+Result: All 9 CI workflows unblocked (Code Quality, Coverage, Pre-Merge, Resilient Validation x4)
+Duration: 1 sprint
+Commit: 206e6b9f
+```
+
 ---
 
-**Last Updated**: 2026-02-14  
-**Version**: 2.0.0 (Enhanced with PR #3248 patterns)  
+**Last Updated**: 2026-02-15  
+**Version**: 2.1.0 (Enhanced with setuptools package discovery pattern)  
 **Maintainer**: AI Development Team
 
