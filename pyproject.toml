@@ -309,6 +309,7 @@ tools = "tools"
 training = "src/training"
 examples = "examples"
 cli = "cli"
+services = "services"
 
 [tool.setuptools.packages.find]
 where = [".", "src"]
@@ -320,7 +321,7 @@ include = [
   "cli*",
   "common*",
   "cognitive_brain*",
-  # NOTE: services* intentionally excluded - see AGENTS.md "Project Structure" section for services/ layout and import patterns.
+  "services*",  # Re-enabled: Tests need to import from services/ directory
   # Root services/ contains application entry points (not library code), src/services/ is imported as src.services.*
   "tokenization*",
   "training*",
