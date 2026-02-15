@@ -7,6 +7,9 @@ on:
 jobs:
   analyze-size:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     outputs:
       pr_size: ${{ steps.analyze.outputs.pr_size }}
       changed_files_count: ${{ steps.analyze.outputs.changed_files_count }}

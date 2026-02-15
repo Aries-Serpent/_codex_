@@ -14,6 +14,9 @@ on:
 jobs:
   coverage-with-timeout:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -104,6 +107,9 @@ jobs:
   merge-coverage:
     needs: coverage-with-timeout
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     if: always()
     
     steps:
