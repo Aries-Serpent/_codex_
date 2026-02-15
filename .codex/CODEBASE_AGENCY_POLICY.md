@@ -25,12 +25,13 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 2. [Comprehensive Issue Resolution](#comprehensive-issue-resolution)
 3. [Planning Before Execution](#planning-before-execution)
 4. [Timeline Terminology Convention](#timeline-terminology-convention)
-5. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
-6. [Self-Review Requirements](#self-review-requirements)
-7. [Code Quality Standards](#code-quality-standards)
-8. [Documentation Standards](#documentation-standards)
-9. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
-10. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
+5. [Non-Deferral Mandate for CI Data Handling](#non-deferral-mandate-for-ci-data-handling)
+6. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
+7. [Self-Review Requirements](#self-review-requirements)
+8. [Code Quality Standards](#code-quality-standards)
+9. [Documentation Standards](#documentation-standards)
+10. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
+11. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
 
 ---
 
@@ -252,6 +253,117 @@ Historical references MAY use actual dates:
 - More accurate for AI-assisted development
 - Consistent terminology across all documentation
 - Prevents timeline estimation errors
+
+---
+
+## Non-Deferral Mandate for CI Data Handling
+
+### Critical Requirement
+
+GitHub Copilot Agents MUST NEVER defer CI/data-handling requests (e.g., populating failing checks tables, collecting workflow runs, jobs, artifacts) to humans. 
+
+**Mandate**: Agents must exhaust ALL MCP capabilities and complete tasks autonomously, escalating ONLY when access is explicitly and demonstrably blocked with documented evidence.
+
+### Scope
+
+**In Scope** (Agent MUST handle):
+- Retrieving and populating CI-related data for PRs/commits
+- All 9 required columns: run_id, run_html_url, run_name, run_conclusion, job_id, job_name, job_html_url, job_status, artifact_archive_download_url
+- PR and commit listings, branch refs, check-runs, Actions jobs/artifacts
+- Pagination through thousands of workflow runs
+- Evidence logging and verification
+
+**Out of Scope**:
+- Actions requiring privileged write access beyond branch-level commits/PRs
+- Operations expressly prohibited by org policy (still requires agent-only escalation, not human data collection)
+
+### Operational Guarantees
+
+All 9 required columns have guaranteed MCP endpoints:
+
+| Column | Primary Endpoint | Fallback |
+|--------|------------------|----------|
+| run_id | `GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}` | UI automation |
+| run_html_url | From run object | UI automation |
+| run_name | From run object | Check-run name |
+| run_conclusion | From run object | Check-run conclusion |
+| job_id | `GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs` | UI automation |
+| job_name | From job object | UI automation |
+| job_html_url | From job object | UI automation |
+| job_status | From job object | UI automation |
+| artifact_archive_download_url | `GET /repos/{owner}/{repo}/actions/artifacts/{id}/zip` | List + match by run_id |
+
+### Non-Deferral Justification
+
+| Industry Reason for Deferral | Why It Does NOT Apply | Agent Behavior |
+|------------------------------|----------------------|----------------|
+| Human-in-the-loop for ambiguity | CI metadata is objective and structured | Agent exhausts endpoints; no human data entry |
+| Safety/compliance (PII risk) | CI metadata contains no PII; read-only access | Agent logs evidence; complies with policy |
+| Access controls/SSO | MCP runner has org-approved access | Agent auto-refreshes SSO; retries with backoff |
+| Reliability/validation | Deterministic API + UI automation | Agent attaches JSON/HTML snapshots |
+| Rate limits/cost | Pagination and backoff make collection tractable | Agent manages limits; continues until done |
+
+### Exception & Escalation (Agent-Only)
+
+**Exception Criteria** (ALL must be true to escalate):
+1. Explicit 403/401/404/410 on required endpoints after retries, backoff, and SSO refresh
+2. UI automation unable to retrieve due to auth gating or archival
+3. Evidence captured: raw responses, headers, DOM snapshots, timestamps
+
+**Escalation Actions**:
+1. Open agent-authenticated PR comment/issue tagging repo admins
+2. Include evidence bundle and exact access scope required
+3. Continue automated collection for remaining accessible commits
+4. Annotate unavailable entries as ARCHIVED/UNAVAILABLE with evidence
+
+**PROHIBITED Actions**:
+- ❌ Requesting user to perform manual UI collection
+- ❌ Requesting user to supply data
+- ❌ Deferring completion when automation is viable
+- ❌ Suggesting "manual collection (X minutes)" 
+
+### Implementation Requirements
+
+**First-Row Priority**:
+- Agent MUST begin with first row
+- Exhaust all MCP routes before proceeding
+- Populate immediately once any path yields required fields
+- Attach evidence for all attempts
+
+**Evidence Required**:
+- Check-runs JSON per commit
+- Workflow runs JSON per commit  
+- Jobs JSON per run
+- Artifacts JSON per run
+- Optional UI HTML snapshot if used
+
+**SLO**:
+- First row: 10-30 minutes under normal rate limits
+- Full PR coverage: Within session limits (respects rate-limit reset)
+
+### Rationale
+
+CI data collection is:
+- ✅ Non-PII, bounded, machine-retrievable
+- ✅ Within agent's MCP access domain
+- ✅ EXACTLY what automation is designed for
+
+Deferral to humans:
+- ❌ Undermines reliability and auditability
+- ❌ Wastes user time
+- ❌ Defeats the purpose of AI agents
+- ❌ Creates technical debt
+
+### Reference
+
+Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPolicy_Copilot.md)
+
+### Key Learning from PR #3248
+
+**What Went Wrong**: Agent suggested "manual UI collection (60-80 min)"  
+**Why It Was Wrong**: Violated core purpose of AI agents (automation)  
+**Corrective Action**: Built complete automated infrastructure, stored learning permanently  
+**Result**: This policy codifies the mandate for all future sessions
 
 ---
 
