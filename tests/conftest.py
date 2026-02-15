@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 import pytest
+
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 
@@ -260,7 +261,7 @@ pytest.importorskip = _importorskip_optional_dep
 
 def pytest_collection_modifyitems(session, config, items):
     """Auto-mark slow tests and handle optional dependencies."""
-    
+
     # Patterns that indicate a test is slow (in test name/path)
     slow_patterns = [
         "sleep(",
@@ -271,7 +272,7 @@ def pytest_collection_modifyitems(session, config, items):
         "docker",
         "deployment",
     ]
-    
+
     for item in items:
         # Auto-mark slow tests based on patterns in test name/path
         # NOTE: Do NOT auto-mark based on "integration" marker alone.
@@ -280,7 +281,7 @@ def pytest_collection_modifyitems(session, config, items):
             # Check if test name/path suggests it's slow
             if any(pattern in item.nodeid.lower() for pattern in slow_patterns):
                 item.add_marker(pytest.mark.slow)
-        
+
         for marker, modules in OPTIONAL_DEP_MARKERS.items():
             if marker in item.keywords:
                 missing = _missing_modules(modules)

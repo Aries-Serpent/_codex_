@@ -39,7 +39,7 @@ def test_workflow_inventory_registration(tmp_path):
     """Test WorkflowInventory scans and registers workflows."""
     workflows_dir = tmp_path / ".github" / "workflows"
     workflows_dir.mkdir(parents=True)
-    
+
     # Create a test workflow file
     test_workflow = workflows_dir / "test.yml"
     test_workflow.write_text("""
@@ -51,10 +51,10 @@ jobs:
     steps:
       - run: echo "test"
 """)
-    
+
     inventory = WorkflowInventory(workflows_dir)
     count = inventory.scan()
-    
+
     assert count == 1
     assert "test.yml" in inventory.workflows
     assert inventory.workflows["test.yml"].name == "Test Workflow"
@@ -65,7 +65,7 @@ def test_workflow_inventory_query(tmp_path):
     """Test WorkflowInventory query capabilities."""
     workflows_dir = tmp_path / ".github" / "workflows"
     workflows_dir.mkdir(parents=True)
-    
+
     # Create test workflow files
     (workflows_dir / "workflow1.yml").write_text("""
 name: Workflow 1
@@ -83,15 +83,15 @@ jobs:
     runs-on: ubuntu-latest
     steps: []
 """)
-    
+
     inventory = WorkflowInventory(workflows_dir)
     inventory.scan()
-    
+
     # Test get_workflow method
     workflow1 = inventory.get_workflow("workflow1.yml")
     assert workflow1 is not None
     assert workflow1.name == "Workflow 1"
-    
+
     # Test list_workflows method
     all_workflows = inventory.list_workflows()
     assert len(all_workflows) == 2
