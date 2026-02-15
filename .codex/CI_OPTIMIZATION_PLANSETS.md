@@ -82,7 +82,7 @@ This document provides 5 comprehensive plansets for optimizing CI workflows base
 
 ### Implementation Steps
 
-#### Phase 1: Diagnostics (Week 1, Days 1-2)
+#### Phase 1: Diagnostics (Phase 1, Steps 1-2)
 
 **Step 1.1**: Add comprehensive logging to existing auto-fix script
 ```python
@@ -108,7 +108,7 @@ def apply_fixes():
 - Determine root cause category
 - Document edge cases
 
-#### Phase 2: Fix Implementation (Week 1, Days 3-5)
+#### Phase 2: Fix Implementation (Phase 1, Steps 3-5)
 
 **Step 2.1**: Add pre-flight checks
 ```python
@@ -174,7 +174,7 @@ def commit_and_push_fixes(changed_files):
         return False
 ```
 
-#### Phase 3: Testing (Week 2, Days 1-2)
+#### Phase 3: Testing (Phase 2, Steps 1-2)
 
 **Step 3.1**: Create test harness
 ```bash
@@ -210,7 +210,7 @@ echo "PASS: Auto-fix working correctly"
 - Permission denied scenarios
 - Large file handling
 
-#### Phase 4: Deployment (Week 2, Days 3-5)
+#### Phase 4: Deployment (Phase 2, Steps 3-5)
 
 **Step 4.1**: Update workflow YAML
 ```yaml
@@ -309,16 +309,16 @@ log_metrics('auto_fix', metrics)
 ### Cost-Benefit Analysis
 
 **Implementation Cost**:
-- Development: 3-5 days (1 developer)
-- Testing: 2-3 days
-- Total: ~1 week engineering time
+- Development: 3-5 steps (1 developer)
+- Testing: 2-3 steps
+- Total: ~1 phase engineering effort
 
 **Benefit**:
-- Eliminates manual fixes: ~15 min per PR → 0 min
-- Faster PR merges: ~30 min saved per PR
+- Eliminates manual fixes: ~15 min per iteration → 0 min
+- Faster PR merges: ~30 min saved per iteration
 - Better developer experience: Reduced frustration
 
-**ROI**: Positive after ~20 PRs
+**ROI**: Positive after ~20 iterations
 
 ---
 
@@ -385,7 +385,7 @@ log_metrics('auto_fix', metrics)
 
 ### Implementation Steps
 
-#### Phase 1: Diagnostic Collection (Week 1)
+#### Phase 1: Diagnostic Collection (Phase 1)
 
 **Step 1.1**: Add early failure detection
 ```python
@@ -428,7 +428,7 @@ pytest tests/ -m "slow" -v
 pytest tests/ -m "integration" -v
 ```
 
-#### Phase 2: Fix Implementation (Week 2-3)
+#### Phase 2: Fix Implementation (Phase 2-3)
 
 **Step 2.1**: Implement test layer separation
 ```yaml
@@ -508,7 +508,7 @@ def test_torch_functionality():
     # ... test code
 ```
 
-#### Phase 3: Parallel Execution (Week 3)
+#### Phase 3: Parallel Execution (Phase 3)
 
 **Step 3.1**: Implement pytest-xdist
 ```bash
@@ -614,7 +614,7 @@ steps:
 
 ### Implementation Steps
 
-#### Phase 1: Timeout Protection (Week 1, Days 1-2)
+#### Phase 1: Timeout Protection (Phase 1, Steps 1-2)
 
 **Step 1.1**: Add per-shard timeouts
 ```yaml
@@ -665,7 +665,7 @@ def combine_shards(shard_files):
     return total
 ```
 
-#### Phase 2: Incremental Coverage (Week 1, Days 3-5)
+#### Phase 2: Incremental Coverage (Phase 1, Steps 3-5)
 
 **Step 2.1**: Detect changed files
 ```bash
@@ -701,7 +701,7 @@ def calculate_delta(baseline_coverage, pr_coverage):
     return delta
 ```
 
-#### Phase 3: Module Exclusion (Week 2)
+#### Phase 3: Module Exclusion (Phase 2)
 
 **Step 3.1**: Identify problematic modules
 ```bash
@@ -737,8 +737,8 @@ omit =
 ### Risk Mitigation
 
 **Risk**: Incremental coverage misses regressions
-- **Mitigation**: Run full coverage weekly on main branch
-- **Validation**: Compare incremental vs full monthly
+- **Mitigation**: Run full coverage per-phase on main branch
+- **Validation**: Compare incremental vs full per-session
 
 **Risk**: Shard timeouts cause incomplete data
 - **Mitigation**: Report partial coverage with warning
@@ -805,7 +805,7 @@ omit =
 
 ### Implementation Steps
 
-#### Phase 1: Async File Operations (Week 1)
+#### Phase 1: Async File Operations (Phase 1)
 
 **Step 1.1**: Convert to async
 ```python
@@ -851,7 +851,7 @@ async def validate_with_progress(files):
             yield result
 ```
 
-#### Phase 2: Smart Caching (Week 1-2)
+#### Phase 2: Smart Caching (Phase 1-2)
 
 **Step 2.1**: Build file system cache
 ```python
@@ -909,7 +909,7 @@ async def validate_with_cache(cache: FileSystemCache):
     return results
 ```
 
-#### Phase 3: Change-Based Validation (Week 2)
+#### Phase 3: Change-Based Validation (Phase 2)
 
 **Step 3.1**: Detect changed files in PR
 ```python
@@ -1022,7 +1022,7 @@ on:
 
 ### Implementation Steps
 
-#### Phase 1: PR Size Detection (Week 1)
+#### Phase 1: PR Size Detection (Phase 1)
 
 **Step 1.1**: Create PR analyzer action
 ```yaml
@@ -1062,7 +1062,7 @@ jobs:
           fi
 ```
 
-#### Phase 2: Conditional Workflows (Week 1-2)
+#### Phase 2: Conditional Workflows (Phase 1-2)
 
 **Step 2.1**: Update validation workflows
 ```yaml
@@ -1110,7 +1110,7 @@ jobs:
       - run: python scripts/ci/validate_imports.py
 ```
 
-#### Phase 3: On-Demand Full Validation (Week 2)
+#### Phase 3: On-Demand Full Validation (Phase 2)
 
 **Step 3.1**: Add workflow dispatch trigger
 ```yaml
@@ -1174,7 +1174,7 @@ jobs:
       })
 ```
 
-#### Phase 4: Artifact Collection Strategy (Week 3)
+#### Phase 4: Artifact Collection Strategy (Phase 3)
 
 **Step 4.1**: Collect logs based on PR size
 ```yaml
@@ -1188,7 +1188,7 @@ jobs:
       coverage-reports/
       logs/
     retention-days: ${{ needs.check-pr-size.outputs.pr_size == 'small' && 7 || 30 }}
-    # Small PRs: 7 days, Large PRs: 30 days
+    # Small PRs: 7-iteration retention, Large PRs: 30-iteration retention
 ```
 
 **Step 4.2**: Smart artifact retention
@@ -1209,7 +1209,7 @@ def calculate_retention(pr_size, test_results):
     if test_results['failed'] > 0:
         retention *= 2
     
-    return min(retention, 90)  # Max 90 days
+    return min(retention, 90)  # Max 90-iteration retention
 ```
 
 ### Success Metrics
@@ -1222,7 +1222,7 @@ def calculate_retention(pr_size, test_results):
 
 **Cost Savings**:
 - Estimated: 50% reduction in GitHub Actions minutes
-- Monthly: ~$200-300 savings (for enterprise plan)
+- Per-Session: ~$200-300 savings (for enterprise plan)
 
 ### Risk Mitigation
 
@@ -1238,26 +1238,26 @@ def calculate_retention(pr_size, test_results):
 
 ## Implementation Roadmap
 
-### Week 1: Critical Fixes
-- [ ] **Day 1-2**: Planset 1 diagnostics (auto-fix logging)
-- [ ] **Day 3-4**: Planset 3 Phase 1 (coverage timeout protection)
-- [ ] **Day 5**: Planset 2 diagnostics (test infrastructure)
+### Phase 1: Critical Fixes
+- [ ] **Step 1-2**: Planset 1 diagnostics (auto-fix logging)
+- [ ] **Step 3-4**: Planset 3 Phase 1 (coverage timeout protection)
+- [ ] **Step 5**: Planset 2 diagnostics (test infrastructure)
 
-### Week 2: Core Improvements
-- [ ] **Day 1-2**: Planset 1 implementation (auto-fix fix)
-- [ ] **Day 3-4**: Planset 3 Phase 2 (incremental coverage)
-- [ ] **Day 5**: Planset 5 Phase 1 (PR size detection)
+### Phase 2: Core Improvements
+- [ ] **Step 1-2**: Planset 1 implementation (auto-fix fix)
+- [ ] **Step 3-4**: Planset 3 Phase 2 (incremental coverage)
+- [ ] **Step 5**: Planset 5 Phase 1 (PR size detection)
 
-### Week 3: Advanced Optimizations
-- [ ] **Day 1-2**: Planset 2 implementation (test layering)
-- [ ] **Day 3-4**: Planset 4 implementation (async validation)
-- [ ] **Day 5**: Planset 5 Phase 2 (conditional workflows)
+### Phase 3: Advanced Optimizations
+- [ ] **Step 1-2**: Planset 2 implementation (test layering)
+- [ ] **Step 3-4**: Planset 4 implementation (async validation)
+- [ ] **Step 5**: Planset 5 Phase 2 (conditional workflows)
 
-### Week 4: Polish & Monitoring
-- [ ] **Day 1-2**: Testing and bug fixes
-- [ ] **Day 3**: Documentation
-- [ ] **Day 4**: Monitoring dashboards
-- [ ] **Day 5**: Retrospective and lessons learned
+### Phase 4: Polish & Monitoring
+- [ ] **Step 1-2**: Testing and bug fixes
+- [ ] **Step 3**: Documentation
+- [ ] **Step 4**: Monitoring dashboards
+- [ ] **Step 5**: Retrospective and lessons learned
 
 ---
 
@@ -1273,23 +1273,23 @@ metrics_to_track = {
     'test_pass_rate': "% of test runs that pass",
     'coverage_collection_success': "% of coverage runs that complete",
     'average_feedback_time': "Mean time from push to first CI result",
-    'resource_utilization': "GitHub Actions minutes consumed per PR",
+    'resource_utilization': "GitHub Actions minutes consumed per iteration",
 }
 ```
 
 **Dashboard**:
 - Grafana/Prometheus setup tracking CI metrics
-- Weekly reports on improvement trends
+- Per-Phase reports on improvement trends
 - Alert on regression
 
 ### Continuous Improvement
 
-**Weekly Review**:
+**Per-Phase Review**:
 - Analyze failed runs
 - Identify new patterns
 - Adjust plansets as needed
 
-**Monthly Retrospective**:
+**Per-Session Retrospective**:
 - Review metrics against targets
 - Gather developer feedback
 - Plan next optimizations
@@ -1323,4 +1323,4 @@ metrics_to_track = {
 
 **Document Status**: COMPLETE  
 **Last Updated**: 2026-02-15T10:30:00Z  
-**Next Steps**: Begin Week 1 implementation (Plansets 1 & 3 diagnostics)
+**Next Steps**: Begin Phase 1 implementation (Plansets 1 & 3 diagnostics)
