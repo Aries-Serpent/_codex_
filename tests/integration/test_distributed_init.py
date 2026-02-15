@@ -104,6 +104,10 @@ class TestAccelerateInitGuard:
             assert not result.success
             assert result.error is None
 
+    @pytest.mark.skipif(
+        not is_accelerate_available(),
+        reason="accelerate not installed",
+    )
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
         # Mock is_gpu_available to return actual bool
