@@ -4,10 +4,8 @@ Tests for Workflow Orchestrator.
 Tests the telemetry-driven workflow orchestration logic.
 """
 
-import json
 import pytest
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 # Import the module to test
 import sys
@@ -198,7 +196,7 @@ class TestWorkflowOrchestrator:
 
     def test_estimate_duration(self, orchestrator_small):
         """Test duration estimation."""
-        plan = orchestrator_small.generate_plan()
+        _ = orchestrator_small.generate_plan()  # Generate plan first
         duration = orchestrator_small.estimate_duration()
 
         assert "total_minutes" in duration

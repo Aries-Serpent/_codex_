@@ -6,9 +6,8 @@ and report generation functionality.
 """
 
 import json
-from datetime import datetime, timedelta
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 import pytest
 
