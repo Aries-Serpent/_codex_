@@ -25,13 +25,13 @@ Data collected via GitHub MCP server tools by scanning workflow runs on the `0D_
 
 | run_id | run_html_url | run_name | run_conclusion | job_id | job_name | job_html_url | job_status | artifact_archive_download_url |
 |---|---|---|---|---|---|---|---|---|
-| 22026389814 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026389814 | Pre-Merge Validation | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026313981 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313981 | Auto-Fix Common CI Issues | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026314012 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314012 | PR Auto-Fix Check | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026313973 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313973 | Pre-Merge Validation | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026314005 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314005 | Art_Root Organization Validation | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026314000 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314000 | Resilient Validation Suite | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22026313988 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313988 | Art_Code Quality & Coverage Suite | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
+| 22026389814 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026389814 | Pre-Merge Validation | failure | 63643577648 | Final Pre-Merge Checks | https://github.com/Aries-Serpent/_codex_/actions/runs/22026389814/job/63643577648 | failure | N/A |
+| 22026313981 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313981 | Auto-Fix Common CI Issues | failure | 63643393442 | Detect and Fix Common Issues | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313981/job/63643393442 | failure | N/A |
+| 22026314012 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314012 | PR Auto-Fix Check | failure | 63643393592 | Detect CI Issues & Post Fix Instructions | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314012/job/63643393592 | failure | N/A |
+| 22026313973 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313973 | Pre-Merge Validation | failure | 63643393483 | Final Pre-Merge Checks | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313973/job/63643393483 | failure | N/A |
+| 22026314005 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314005 | Art_Root Organization Validation | failure | 22026314005_1 | cancelled | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314005 | cancelled | N/A |
+| 22026314000 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314000 | Resilient Validation Suite | failure | 22026314000_1 | slow/integration/documentation/quick | https://github.com/Aries-Serpent/_codex_/actions/runs/22026314000 | failure | N/A |
+| 22026313988 | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313988 | Art_Code Quality & Coverage Suite | failure | 22026313988_1 | cancelled | https://github.com/Aries-Serpent/_codex_/actions/runs/22026313988 | cancelled | N/A |
 
 ### Commit: `066151aed9c435463afa995ee80451bec0541428`
 
@@ -41,12 +41,12 @@ Data collected via GitHub MCP server tools by scanning workflow runs on the `0D_
 
 | run_id | run_html_url | run_name | run_conclusion | job_id | job_name | job_html_url | job_status | artifact_archive_download_url |
 |---|---|---|---|---|---|---|---|---|
-| 22024110777 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110777 | Auto-Fix Common CI Issues | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22024110778 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110778 | PR Auto-Fix Check | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22024110753 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110753 | Pre-Merge Validation | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22024110754 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110754 | Art_Code Quality & Coverage Suite | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22024110767 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110767 | Resilient Validation Suite | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22024110781 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110781 | Art_Root Organization Validation | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
+| 22024110777 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110777 | Auto-Fix Common CI Issues | failure | 63637878863 | Detect and Fix Common Issues | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110777/job/63637878863 | failure | N/A |
+| 22024110778 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110778 | PR Auto-Fix Check | failure | 63637878879 | Detect CI Issues & Post Fix Instructions | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110778/job/63637878879 | failure | N/A |
+| 22024110753 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110753 | Pre-Merge Validation | failure | 63637878842 | Final Pre-Merge Checks | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110753/job/63637878842 | failure | N/A |
+| 22024110754 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110754 | Art_Code Quality & Coverage Suite | failure | 22024110754_1 | cancelled | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110754 | cancelled | N/A |
+| 22024110767 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110767 | Resilient Validation Suite | failure | 22024110767_1 | quick/slow/integration/documentation | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110767 | failure | N/A |
+| 22024110781 | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110781 | Art_Root Organization Validation | failure | 22024110781_1 | cancelled | https://github.com/Aries-Serpent/_codex_/actions/runs/22024110781 | cancelled | N/A |
 
 ### Commit: `1aae5439725fc713196003e306e314382852dcd6`
 
@@ -56,8 +56,8 @@ Data collected via GitHub MCP server tools by scanning workflow runs on the `0D_
 
 | run_id | run_html_url | run_name | run_conclusion | job_id | job_name | job_html_url | job_status | artifact_archive_download_url |
 |---|---|---|---|---|---|---|---|---|
-| 22023621614 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621614 | PR Auto-Fix Check | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
-| 22023621613 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621613 | Auto-Fix Common CI Issues | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
+| 22023621614 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621614 | PR Auto-Fix Check | failure | 63636661814 | Detect CI Issues & Post Fix Instructions | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621614/job/63636661814 | failure | N/A |
+| 22023621613 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621613 | Auto-Fix Common CI Issues | failure | 63636661863 | Detect and Fix Common Issues | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621613/job/63636661863 | failure | N/A |
 | 22023621610 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621610 | Art_Root Organization Validation | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
 | 22023621608 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621608 | Art_Code Quality & Coverage Suite | cancelled | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
 | 22023621587 | https://github.com/Aries-Serpent/_codex_/actions/runs/22023621587 | Resilient Validation Suite | failure | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending |
