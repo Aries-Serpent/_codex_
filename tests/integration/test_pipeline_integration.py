@@ -340,7 +340,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         torch.save(checkpoint, checkpoint_path)
 
         assert checkpoint_path.exists()
-        loaded = torch.load(checkpoint_path)
+        loaded = torch.load(checkpoint_path, weights_only=False)
         assert loaded["step"] == 10
         assert "model_state_dict" in loaded
 
@@ -355,7 +355,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
         # Resume
         new_model = torch.nn.Linear(10, 5)
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=False)
         new_model.load_state_dict(checkpoint["model_state_dict"])
 
         assert checkpoint["step"] == 5
@@ -421,7 +421,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         # Verify pipeline completion
         assert len(train_losses) == 5
         assert checkpoint_path.exists()
-        loaded = torch.load(checkpoint_path)
+        loaded = torch.load(checkpoint_path, weights_only=False)
         assert "eval_loss" in loaded
 
 

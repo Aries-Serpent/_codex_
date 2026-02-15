@@ -366,6 +366,7 @@ class TestTrainingLoopIntegration:
         if not HAS_TORCH:
             pytest.skip("PyTorch not available")
         import torch.optim as optim
+
         import torch.nn as nn
         from torch.utils.data import DataLoader, TensorDataset
 

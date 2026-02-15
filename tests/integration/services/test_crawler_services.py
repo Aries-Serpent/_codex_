@@ -35,7 +35,7 @@ def test_zendesk_sync_error_handling():
 def test_multi_locale_sync_manager():
     """Test MultiLocaleSyncManager coordinates locale syncs."""
     from src.services.crawler.multi_locale_sync import LocaleConfig
-    
+
     locales = [
         LocaleConfig("en-US", priority=10),
         LocaleConfig("es-ES", priority=8),

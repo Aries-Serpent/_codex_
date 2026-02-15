@@ -7,6 +7,7 @@ Target: 25 tests for complete workflows
 import json
 
 import pytest
+
 pytest.importorskip("torch")
 
 
@@ -171,7 +172,7 @@ class TestMultiComponentWorkflows:
         ckpt = {"model": model.state_dict(), "rag": {"docs": 100}}
         path = e2e_workspace / "checkpoints" / "combined.pt"
         torch.save(ckpt, path)
-        loaded = torch.load(path)
+        loaded = torch.load(path, weights_only=False)
         assert "rag" in loaded
 
     def test_eval_rag_metrics(self, e2e_workspace):

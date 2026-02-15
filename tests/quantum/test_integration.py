@@ -19,7 +19,7 @@ from src.quantum import (
     ThermodynamicOrchestrator,
     ThermodynamicTask,
 )
-from tests.utils.quantum_helpers import quantum_plugin_fixture  # noqa: F401
+from tests.utils.quantum_helpers import quantum_plugin_fixture  # noqa: F401, F811
 
 
 @pytest.mark.integration
@@ -32,7 +32,7 @@ class TestEndToEndQuantumRAG:
         quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
         quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
         quantum_plugin_fixture.mock_module("src.rag.pipelines.quantum_retrieval")
-        
+
         registry = QuantumPluginRegistry()
 
         # Register RAG pipeline components
@@ -200,7 +200,7 @@ class TestCrossReferenceCapabilities:
         # Mock the required modules
         quantum_plugin_fixture.mock_module("src.rag.pipelines.retrieval")
         quantum_plugin_fixture.mock_module("src.agent.core")
-        
+
         registry = QuantumPluginRegistry()
 
         # Cross-reference: RAG → Agent

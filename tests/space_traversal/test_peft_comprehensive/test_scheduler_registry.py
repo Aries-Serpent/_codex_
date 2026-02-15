@@ -14,6 +14,7 @@ pytest.importorskip("torch")
 import torch
 from src.codex_ml.training.schedulers.registry import get_scheduler_registry
 
+
 def test_registry_lists_builtins():
     reg = get_scheduler_registry()
     names = reg.list()

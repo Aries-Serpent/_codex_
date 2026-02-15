@@ -23,6 +23,7 @@ pytest.importorskip("typer")
 from codex.cli_rag import _format_bytes, _validate_files, app
 from typer.testing import CliRunner
 
+
 @pytest.fixture
 def runner():
     """Provide CLI runner instance."""
