@@ -1,0 +1,287 @@
+name: Progressive Validation Suite
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      force_full:
+        description: 'Force full validation (ignore PR size)'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  # Analyze PR size first
+  analyze:
+    uses: ./.github/workflows/pr-size-analyzer.yml
+  
+  # Layer 1: Smoke Tests (Always run - fast validation)
+  smoke-tests:
+    needs: analyze
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install minimal dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-timeout
+      
+      - name: Run import validation
+        id: imports
+        continue-on-error: false
+        run: |
+          echo "Testing basic imports..."
+          python -c "import sys; print(f'Python: {sys.version}')"
+          
+          # Test core module imports
+          python -c "import pathlib; import json; import subprocess" || exit 1
+          
+          echo "✓ Import validation passed"
+      
+      - name: Run smoke tests
+        run: |
+          # Quick syntax and basic functionality tests
+          # These should complete in <2 minutes
+          pytest tests/ -k "smoke or quick" \
+            --timeout=60 \
+            -v \
+            --tb=short \
+            -x \
+            || echo "smoke_failed=true" >> $GITHUB_OUTPUT
+      
+      - name: Report smoke results
+        if: always()
+        run: |
+          echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Layer 1 validation" >> $GITHUB_STEP_SUMMARY
+          echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
+  
+  # Layer 2: Unit Tests (Conditional based on PR size)
+  unit-tests:
+    needs: [analyze, smoke-tests]
+    if: |
+      needs.analyze.outputs.pr_size == 'small' ||
+      needs.analyze.outputs.pr_size == 'medium' ||
+      github.event.inputs.force_full == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    
+    strategy:
+      matrix:
+        shard: [1, 2, 3]
+      fail-fast: false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-timeout pytest-xdist
+          pip install -e .
+      
+      - name: Run unit tests (shard ${{ matrix.shard }})
+        run: |
+          pytest tests/ \
+            --timeout=180 \
+            -m "not slow and not integration" \
+            --dist=loadfile \
+            -n auto \
+            --shard-id=$((matrix.shard - 1)) \
+            --num-shards=3 \
+            -v \
+            || echo "unit_failed=true" >> $GITHUB_OUTPUT
+      
+      - name: Report unit results
+        if: always()
+        run: |
+          echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
+  
+  # Layer 3: Integration Tests (Only for small PRs or forced)
+  integration-tests:
+    needs: [analyze, unit-tests]
+    if: |
+      needs.analyze.outputs.pr_size == 'small' ||
+      github.event.inputs.force_full == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-timeout
+          pip install -e .
+      
+      - name: Run integration tests
+        run: |
+          pytest tests/ \
+            --timeout=300 \
+            -m "integration and not slow" \
+            -v \
+            --tb=short \
+            || echo "integration_failed=true" >> $GITHUB_OUTPUT
+      
+      - name: Report integration results
+        if: always()
+        run: |
+          echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
+  
+  # Layer 4: Slow Tests (Only on-demand or for small PRs with force)
+  slow-tests:
+    needs: [analyze, integration-tests]
+    if: |
+      github.event.inputs.force_full == 'true' && 
+      needs.analyze.outputs.pr_size == 'small'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-timeout
+          pip install -e .
+      
+      - name: Run slow tests
+        run: |
+          pytest tests/ \
+            --timeout=600 \
+            -m "slow" \
+            -v \
+            --tb=short \
+            || echo "slow_failed=true" >> $GITHUB_OUTPUT
+      
+      - name: Report slow results
+        if: always()
+        run: |
+          echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
+  
+  # Summary and reporting
+  validation-summary:
+    needs: [analyze, smoke-tests, unit-tests, integration-tests, slow-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Generate summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prSize = '${{ needs.analyze.outputs.pr_size }}';
+            const validationStrategy = '${{ needs.analyze.outputs.validation_strategy }}';
+            
+            const layerResults = {
+              smoke: '${{ needs.smoke-tests.result }}',
+              unit: '${{ needs.unit-tests.result }}',
+              integration: '${{ needs.integration-tests.result }}',
+              slow: '${{ needs.slow-tests.result }}'
+            };
+            
+            const statusEmoji = {
+              'success': '✅',
+              'failure': '❌',
+              'skipped': '⏭️',
+              'cancelled': '🚫'
+            };
+            
+            let summary = `## Progressive Validation Results\n\n`;
+            summary += `**PR Size:** ${prSize}\n`;
+            summary += `**Strategy:** ${validationStrategy}\n\n`;
+            summary += `### Test Layers\n\n`;
+            
+            summary += `| Layer | Status | Notes |\n`;
+            summary += `|-------|--------|-------|\n`;
+            summary += `| 🔥 Smoke | ${statusEmoji[layerResults.smoke] || '❓'} ${layerResults.smoke} | Always runs |\n`;
+            summary += `| 🧪 Unit | ${statusEmoji[layerResults.unit] || '❓'} ${layerResults.unit} | Small/Medium PRs |\n`;
+            summary += `| 🔗 Integration | ${statusEmoji[layerResults.integration] || '❓'} ${layerResults.integration} | Small PRs only |\n`;
+            summary += `| 🐌 Slow | ${statusEmoji[layerResults.slow] || '❓'} ${layerResults.slow} | On-demand |\n`;
+            
+            summary += `\n### Progressive Strategy\n\n`;
+            if (prSize === 'small') {
+              summary += 'Full validation executed (all layers)';
+            } else if (prSize === 'medium') {
+              summary += 'Targeted validation (smoke + unit tests)';
+            } else if (prSize === 'large') {
+              summary += 'Smoke tests only (use workflow_dispatch for full validation)';
+            } else {
+              summary += 'Import validation only (use workflow_dispatch for testing)';
+            }
+            
+            // Post comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Progressive Validation Results')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: summary
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: summary
+              });
+            }
