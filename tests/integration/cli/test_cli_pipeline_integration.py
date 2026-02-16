@@ -102,5 +102,5 @@ def test_cli_pipeline_invalid_checkpoint():
 
     config = _make_config(trainer={"checkpoint": "invalid_string"})
     # Validate checkpoint config format - should raise ValueError for non-existent path
-    with pytest.raises(ValueError, match="checkpoint"):
+    with pytest.raises(ValueError, match="checkpoint file not found"):
         pipeline.validate_pipeline_config(config)
