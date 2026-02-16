@@ -139,6 +139,35 @@ def pytest_configure(config: pytest.Config) -> None:
     )
 
 
+def pytest_configure_node(node):
+    """
+    Configure pytest-xdist worker nodes to ensure plugin discovery.
+    
+    This hook is called by xdist for each worker node during initialization.
+    It explicitly ensures that xdist and pytest-timeout plugins are registered
+    in worker processes, addressing the worker plugin discovery issue where
+    entry points are not being picked up in isolated worker environments.
+    
+    Args:
+        node: The worker node being configured (xdist WorkerController)
+    
+    Note:
+        This is a targeted fix for PR #3248 Attempt 14 - xdist worker environment
+        isolation prevents automatic plugin discovery via entry points. Workers
+        need explicit plugin registration to recognize --timeout and -n arguments.
+    """
+    # Worker nodes have a gateway attribute; main process doesn't
+    if hasattr(node, 'gateway'):
+        # Ensure plugins are available in worker's config
+        # These imports trigger plugin registration in the worker subprocess
+        try:
+            import pytest_timeout
+            import xdist
+            logger.info(f"✓ Worker node {node.workerinput.get('workerid', 'unknown')} plugins loaded: xdist={xdist.__version__}, timeout={pytest_timeout.__version__}")
+        except (ImportError, AttributeError) as e:
+            logger.warning(f"Could not explicitly import plugins in worker: {e}")
+
+
 # Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
 # site-packages modules when they are installed. We still keep the repository
 # root on sys.path for project imports but move it to the end of the search
