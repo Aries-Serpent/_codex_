@@ -57,6 +57,10 @@ else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None
     AutoTokenizer = None
 
+# Compatibility alias for legacy tests that patch 'mlflow_run'
+# TODO: Remove after test migration to 'maybe_mlflow'
+mlflow_run = maybe_mlflow
+
 
 @dataclass
 class TrainConfig:

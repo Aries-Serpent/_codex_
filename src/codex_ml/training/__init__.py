@@ -20,6 +20,14 @@ from .legacy_api import (  # noqa: F401 re-exported via __all__
 from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 
+# Compatibility imports for legacy test patches
+# TODO: Remove after test migration
+try:
+    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
+    mlflow_run = maybe_mlflow  # Alias for legacy tests
+except ImportError:  # pragma: no cover - mlflow optional
+    mlflow_run = None  # type: ignore
+
 __all__ = [
     "SafetySettings",
     "OptimizerSettings",
