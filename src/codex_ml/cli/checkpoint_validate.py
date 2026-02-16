@@ -126,12 +126,9 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
     def validate_cmd(
         path: Annotated[
             Path,
-            typer.Option(
-                ...,
-                "--path",
-                "-p",
-                exists=True,
+            typer.Argument(
                 help="Checkpoint path to validate.",
+                exists=True,
             ),
         ],
         schema: Annotated[

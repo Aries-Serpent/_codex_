@@ -28,9 +28,9 @@ def quantum_config():
 
 
 @pytest.fixture
-def coherence_monitor(quantum_config):
+def coherence_monitor(quantum_config, metric_repository):
     """Fixture to provide CoherenceMonitor instance."""
-    return CoherenceMonitor(config=quantum_config)
+    return CoherenceMonitor(config=quantum_config, repository=metric_repository)
 
 
 @pytest.fixture
@@ -84,7 +84,7 @@ class TestQuantumMemoryManagerErrors:
             manager.store_pattern(pattern)
 
         # STM should not exceed capacity (oldest evicted or consolidated)
-        assert len(manager.short_term_memory) <= 5
+        assert len(manager.stm) <= 5
 
     def test_ltm_capacity_overflow(self, quantum_config):
         """Test behavior when LTM exceeds capacity."""
@@ -104,7 +104,7 @@ class TestQuantumMemoryManagerErrors:
                 manager.consolidate()
 
         # LTM should not exceed capacity
-        assert len(manager.long_term_memory) <= 20
+        assert len(manager.ltm) <= 20
 
     def test_retrieve_from_empty_memory(self, quantum_config):
         """Test retrieval when memory is empty."""
@@ -148,7 +148,7 @@ class TestPatternCompressorErrors:
         compressor = PatternCompressor(target_dimensions=2)
 
         with pytest.raises(ValueError, match="Compressor not fitted"):
-            compressor.compress({"f1": 0.5, "f2": 0.3})
+            compressor.compress({"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8)
 
     def test_fit_empty_patterns(self):
         """Test error when fitting on empty pattern list."""
@@ -176,7 +176,7 @@ class TestPatternCompressorErrors:
 
         # Try to compress pattern with different features
         with pytest.raises(ValueError, match="Feature mismatch"):
-            compressor.compress({"f1": 0.5, "f3": 0.7})
+            compressor.compress({"f1": 0.5, "f3": 0.7}, pattern_id="test", decision="approve", confidence=0.8)
 
     def test_decompress_invalid_compressed_pattern(self):
         """Test error when decompressing invalid pattern."""
@@ -209,7 +209,7 @@ class TestPatternCompressorErrors:
 
         # Should handle gracefully (use min of target_dimensions and n_features)
         compressor.fit(patterns)
-        compressed = compressor.compress({"f1": 0.5, "f2": 0.3})
+        compressed = compressor.compress({"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8)
         assert len(compressed.compressed_features) <= 2
 
 
@@ -269,7 +269,7 @@ class TestCachePruningEdgeCases:
         manager = QuantumMemoryManager(config=quantum_config, stm_capacity=100, ltm_capacity=1000)
 
         # Prune empty cache
-        result = manager.prune_by_age(max_age_days=30)
+        result = manager.prune_by_age(max_age_hours=30*24)
 
         assert result.aged_pruned == 0
 
@@ -289,7 +289,7 @@ class TestCachePruningEdgeCases:
             manager.store_pattern(pattern)
 
         # Prune with very short threshold
-        result = manager.prune_by_age(max_age_days=0.000001)  # ~0.1 seconds
+        result = manager.prune_by_age(max_age_hours=0.000001)  # ~0.0036 seconds
 
         # Most or all patterns should be removed
         assert result.aged_pruned > 0
