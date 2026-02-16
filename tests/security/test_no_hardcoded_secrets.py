@@ -11,7 +11,9 @@ from pathlib import Path
 
 SUSPICIOUS_PATTERNS = [
     re.compile(r"BEGIN RSA PRIVATE KEY"),
-    re.compile(r"aws_secret_access_key", re.IGNORECASE),
+    # Match aws_secret_access_key when assigned to a hardcoded value (not os.getenv)
+    # This allows legitimate config key usage but catches actual secrets
+    re.compile(r"aws_secret_access_key\s*=\s*['\"][^'\"]+['\"]", re.IGNORECASE),
     re.compile(r"api[_-]?key\s*=\s*['\"]\w+"),
 ]
 
