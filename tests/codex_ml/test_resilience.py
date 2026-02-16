@@ -219,7 +219,7 @@ class TestRetryWithBackoff:
         """Test all retries exhausted"""
         mock_func = Mock(side_effect=ValueError("fail"))
 
-        with pytest.raises(ValueError, match="fail"):
+        with pytest.raises(ValueError, match=r"^fail$"):
             retry_with_backoff(
                 mock_func,
                 max_retries=2,

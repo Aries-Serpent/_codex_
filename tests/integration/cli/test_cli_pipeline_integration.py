@@ -91,7 +91,7 @@ def test_cli_pipeline_missing_data_config():
     config = _make_config()
     del config["data"]
     # Actually validate the config which should raise KeyError
-    with pytest.raises(KeyError, match="data"):
+    with pytest.raises(KeyError, match=r"data configuration"):
         pipeline.validate_pipeline_config(config)
 
 
