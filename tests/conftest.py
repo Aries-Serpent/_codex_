@@ -84,7 +84,14 @@ def pytest_configure(config: pytest.Config) -> None:
     the existing defaults for actual test runs.
 
     Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
+    Also installs custom importorskip wrapper to handle stub modules.
     """
+    # Install custom importorskip wrapper (done here to avoid xdist worker issues)
+    global _ORIGINAL_IMPORTORSKIP
+    if _ORIGINAL_IMPORTORSKIP is None:
+        _ORIGINAL_IMPORTORSKIP = pytest.importorskip
+        pytest.importorskip = _importorskip_optional_dep
+    
     # Note: Do NOT call torch.set_default_device() here.
     # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
     # causing "Cannot copy out of meta tensor" errors. RAG modules already
@@ -268,19 +275,6 @@ def _importorskip_optional_dep(
         # OSError can occur if libraries are missing (e.g., libtorch_global_deps.so)
         message = reason or f"{modname} is not available: {e}"
         raise pytest.skip.Exception(message, allow_module_level=True)
-
-
-def pytest_configure(config):
-    """Configure pytest - install custom importorskip wrapper.
-    
-    This is done in pytest_configure hook (not at module level) to avoid
-    issues with xdist workers which may execute module imports before pytest
-    is fully initialized.
-    """
-    global _ORIGINAL_IMPORTORSKIP
-    if _ORIGINAL_IMPORTORSKIP is None:
-        _ORIGINAL_IMPORTORSKIP = pytest.importorskip
-        pytest.importorskip = _importorskip_optional_dep
 
 
 def pytest_collection_modifyitems(session, config, items):
