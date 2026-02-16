@@ -272,7 +272,7 @@ flask==3.1.2
     # via mlflow
 flatten-dict==0.4.2
     # via dvc
-flufl-lock==8.2.0
+flufl-lock==9.0.0
     # via dvc
 fonttools==4.61.1
     # via matplotlib
