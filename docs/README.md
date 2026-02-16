@@ -31,6 +31,12 @@ This documentation is organized into several key sections:
 - [Testing](TESTING.md) - Testing strategy and guidelines
 - [CI/CD](development/ci_optimization_guide.md) - Continuous integration/deployment
 
+### Operational Templates
+- [Template Index](templates/README.md) - Reusable operational templates
+- **Migration — Python File Relocation** - Standardized approach for relocating Python modules
+- **Migration — CLI Hardening** - Template for improving CLI robustness  
+- **Planning — Intent Validation** - Framework for validating implementation intent
+
 ### Advanced Topics
 - [RAG Integration](EXPANDED_CONTEXT_RAG.md) - Retrieval-augmented generation
 - [Distributed Training](distributed_training_guide.md) - Multi-node training
