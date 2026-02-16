@@ -1076,3 +1076,35 @@ As per AI Codebase Agency Policy, all discovered issues are being addressed:
 - ⏳ Verify 3 duplicate failures resolved
 
 ---
+
+## Attempt 19: Python 3.12 isinstance() Fixes - Union Type Annotations (2026-02-16T23:00:00Z - IN PROGRESS)
+
+- **Date**: 2026-02-16T23:00:00Z
+- **Branch**: copilot/sub-pr-3248 (PR #3248)
+- **Triggering Event**: User comment 3910875235 on PR #3248 requesting systematic CI resolution
+- **CI Run IDs**: 22079330623 (progressive), 22079330605 (resilient)
+- **Status**: ⏳ IN PROGRESS (8/25 fixes = 32%)
+- **Approach**: Systematic P0→P1→P2 categorization with protocol compliance
+- **Hypothesis**: Python 3.12 strict typing enforcement causes isinstance() errors with union type operators (`|`)
+- **Investigation**:
+  - ✅ Used GitHub MCP tools exclusively for ALL CI data retrieval (per new user requirement)
+  - ✅ Read README_FIRST_MANDATORY.md before any changes
+  - ✅ Reviewed PR_3248_FAILURE_TRACKING_LOG.md (18 attempts documented)
+  - ✅ Reviewed ACCOUNTABILITY_REPORT_2026_02_16.md for patterns to avoid
+  - ✅ Analyzed CI logs from runs 22079330623 and 22079330605
+  - ✅ Identified 25 test failures across 5 categories
+- **Root Cause Discovered**: 
+  - **Category 1** (12 tests): Python 3.12 rejects isinstance() when second arg is typing construct
+  - **Category 2** (6 tests): Quantum memory mock fixture incomplete + logic issues
+  - **Category 3** (2 tests): BLEU metric returning 0.0 instead of 1.0
+  - **Category 4** (5 tests): RAG/HuggingFace integration missing dependencies
+- **Changes Made (Commit 6f1876c2)**:
+  - Phase 1: services/api/main.py - str | None → Optional[str] in Pydantic model (8 tests)
+  - Phase 2: tests/cognitive_brain/quantum/test_memory.py - Added MockRepo.create() (4 tests)
+- **Expected Result**: 8-12/25 tests should pass
+- **Actual Result**: ⏳ PENDING (awaiting CI validation)
+- **Remaining Work**: 17 failures (CLI, checkpoint pickle, BLEU, RAG, quantum logic)
+- **Documentation Created**: .codex/PR_3248_ATTEMPT_19_ANALYSIS.md (comprehensive root cause analysis)
+- **QA Audit**: ⏳ PENDING (to be invoked after completion)
+
+---
