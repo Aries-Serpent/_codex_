@@ -118,6 +118,12 @@
   - .github/workflows/resilient_validation.yml: Removed PYTEST_PLUGINS env var
 - **Expected Result**: Plugin registration errors resolved
 - **Actual Result**: ✅ SUCCESS - Duplicate registration errors fixed, BUT revealed deeper worker isolation issue (Attempt 14)
+- **Why This Worked**:
+  - PYTEST_PLUGINS environment variable was causing explicit plugin loading
+  - When combined with entry point auto-registration, caused double registration
+  - Removing env var eliminated duplicate registration source
+  - Allowed entry points to be sole plugin registration mechanism
+  - Fixed "Plugin already registered" ValueError
 - **Lesson Learned**: Fixing duplicate registration exposed that workers can't discover plugins via entry points alone
 
 ### Attempt 12: Remove Duplicate Plugin Registration 🔴 PARTIAL FIX - WORKFLOW ISSUE REMAINED
@@ -155,6 +161,11 @@
   - This eliminated one source of duplicate registration
   - However, PYTEST_PLUGINS environment variable still present in workflow
   - Attempt 13 completed the fix by removing the env variable
+- **Lesson Learned**: 
+  - Partial fixes are progress - document them clearly as PARTIAL, not SUCCESS or FAILED
+  - Always check both code (pytest_plugins list) and configuration (env vars) for registration sources
+  - Multi-source plugin registration (list + env var + entry points) causes conflicts
+  - Use entry points exclusively for standard plugins
 
 ### Attempt 11: Fix xdist Worker Plugin Loading and Test Failures 🔴 FAILED - WRONG APPROACH
 - **Date**: 2026-02-16T14:27:00Z
@@ -245,6 +256,12 @@
   - Critical environment configuration was being skipped
   - Merging ensured ALL setup runs in correct order
   - **This WAS the actual root cause** - not version pinning, not plugin flags
+- **Why It Partially Succeeded**: 
+  - Merging duplicate pytest_configure functions fixed incomplete setup
+  - Critical environment configuration now runs (file descriptors, coverage, markers)
+  - Tests progressed from worker crashes to actual execution
+  - However, Attempt 11 immediately added pytest_plugins list causing new issues
+  - The fix was correct but immediately undone by next attempt
 - **Lesson Learned**: Always check for duplicate function definitions in Python. Use `grep -n "^def function_name" file.py` to find duplicates. Second definition silently overwrites first.
 
 ---
@@ -252,7 +269,7 @@
 ### Attempt 1: Added `-p` flags (de6430f7)
 - **Date**: 2026-02-15
 - **Change**: Added `-p xdist.plugin -p pytest_timeout` flags
-- **Result**: ❌ **FAILED** - "Plugin already registered" error
+- **Actual Result**: ❌ **FAILED** - "Plugin already registered" error
 - **Root Cause**: Explicit plugin loading causes double registration
 - **Why It Failed**: Plugins already auto-registered via entry points; explicit `-p` flags tried to register them again
 - **Lesson Learned**: Never use `-p` flags for plugins that have entry points. Entry point registration is automatic and sufficient.
@@ -260,7 +277,7 @@
 ### Attempt 2: Removed `-p` flags (ac49a922)
 - **Date**: 2026-02-16
 - **Change**: Removed `-p` flags completely
-- **Result**: ❌ **FAILED** - "unrecognized arguments: --timeout=X -n Y"
+- **Actual Result**: ❌ **FAILED** - "unrecognized arguments: --timeout=X -n Y"
 - **Root Cause**: Workers can't find plugins due to version mismatches
 - **Why It Failed**: Removed flags but didn't address underlying version/environment issues
 - **Lesson Learned**: Removing a failed fix doesn't solve the problem - must find and address root cause.
@@ -268,7 +285,7 @@
 ### Attempt 3: Re-added `-p` flags (17702636)
 - **Date**: 2026-02-16
 - **Change**: Re-added `-p` flags again
-- **Result**: ❌ **FAILED** - Repeated cycle, "Plugin already registered"
+- **Actual Result**: ❌ **FAILED** - Repeated cycle, "Plugin already registered"
 - **Root Cause**: Didn't read the root cause analysis, repeated mistake
 - **Why It Failed**: Exact same approach as Attempt 1 - this is thrashing
 - **Lesson Learned**: ALWAYS read tracking docs before trying a fix. Repeating failed approaches wastes time and indicates lack of root cause understanding.
@@ -278,7 +295,7 @@
 - **Change**: Pinned plugin versions, removed `-p` flags
 - **Files Changed**: .github/workflows/resilient_validation.yml
 - **Expected Result**: Plugin version stability should prevent worker environment mismatches, tests should execute without "unrecognized arguments" errors
-- **Result**: ❌ **FAILED** - Still had test failures
+- **Actual Result**: ❌ **FAILED** - Still had test failures
 - **Strategy**: Pin exact versions before package install
 - **Why It Failed**: Version pinning alone doesn't fix conftest issues or configuration problems
 - **Lesson Learned**: Version pinning is important but not sufficient when configuration issues exist in conftest.py or pytest setup.
@@ -290,7 +307,7 @@
 - **Change**: Pin exact plugin versions BEFORE `pip install -e .[dev]`
 - **Files Changed**: .github/workflows/resilient_validation.yml (added explicit version pins)
 - **Expected Result**: Plugin versions remain stable through package install, preventing version conflicts between main process and xdist workers
-- **Result**: ❌ **FAILED** - Version pinning alone didn't resolve root cause
+- **Actual Result**: ❌ **FAILED** - Version pinning alone didn't resolve root cause
 - **Why It Failed**: Versions were correct but pytest configuration had deeper issues (duplicate functions, config overlap)
 - **Lesson Learned**: Focus on root cause, not symptoms. If version pinning doesn't fix it, the problem is elsewhere.
 - **Note**: Documented in REPEATED_ISSUES_LOG_PR_3248.md
@@ -309,13 +326,14 @@
   - .github/workflows/pr3178-pytest-execution.yml
   - .github/workflows/test-rag.yml
 - **Expected Result**: Workflows follow correct plugin auto-discovery pattern, pre-flight validation passes, tests execute without plugin registration errors
-- **Result**: ❌ **FAILED** - Still had conftest/configuration issues (specifically: duplicate pytest_configure functions in tests/conftest.py not addressed)
+- **Actual Result**: ❌ **FAILED** - Still had conftest/configuration issues (specifically: duplicate pytest_configure functions in tests/conftest.py not addressed)
 - **Why It Failed**: Workflow fixes were correct but didn't address conftest.py duplicate pytest_configure functions
 - **Lesson Learned**: Can't fix conftest issues from workflow files. Need to fix the actual Python code.
 - **Note**: This is the "Previous Attempt: Auto-Discovery Protocol" referenced below
 
 ### Attempt 7: Critical Tracking Documentation ✅ COMPLETE
 - **Date**: 2026-02-16T12:59:00Z
+- **Commit**: 4a9610d7 (force-added tracking files)
 - **Changes**:
   1. ✅ Created `.codex/README_FIRST_MANDATORY.md` (11KB) - Mandatory pre-work protocol
   2. ✅ Created `.codex/REPEATED_ISSUES_LOG_PR_3248.md` (12KB) - Complete cyclic pattern analysis
