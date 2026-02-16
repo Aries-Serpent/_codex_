@@ -507,7 +507,7 @@ markupsafe==3.0.3
     #   mako
     #   nbconvert
     #   werkzeug
-marshmallow==3.26.1
+marshmallow==4.2.2
     # via great-expectations
 matplotlib==3.10.8
     # via mlflow
