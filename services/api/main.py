@@ -140,8 +140,8 @@ SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
     re.compile(rf"(?i)({_AWS_SECRET_PATTERN}\s*=\s*[A-Za-z0-9/+=]{{40}})"),
-    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{20,})"),  # Google API keys are typically 39 chars (AIza + 35)
-    re.compile(r"(?i)(ghp_[A-Za-z0-9]{35,})"),  # GitHub PATs are variable length, typically 36-40
+    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{20,})"),  # Google API keys: min 24 chars total (AIza + 20 suffix)
+    re.compile(r"(?i)(ghp_[A-Za-z0-9]{35,})"),  # GitHub PATs: min 39 chars total (ghp_ + 35 suffix)
     re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
 )
 
