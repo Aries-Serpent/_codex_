@@ -420,7 +420,7 @@ class Phase6Deployer:
                 config = yaml.safe_load(f)
             if config.get("tracking", {}).get("mlflow", {}).get("enabled") == True:
                 opt_in_features.append("tracking (enabled)")
-        except:
+        except Exception:  # Catch YAML loading or file access errors
             pass
 
         logger.info(

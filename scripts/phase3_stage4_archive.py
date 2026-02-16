@@ -63,7 +63,7 @@ def bulk_clean_file(file_path: Path) -> Tuple[int, str]:
     matches = list(re.finditer(broken_link_pattern, content))
     
     for match in matches:
-        link_text = match.group(1)
+        # link_text = match.group(1)  # Unused, but kept for potential debugging
         link_url = match.group(2)
         
         # Check if file exists

@@ -18,30 +18,24 @@ Author: Codex Team
 License: MIT
 """
 
-import base64
 import json
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 from tkinter import (
     Button,
     Entry,
     Frame,
     Label,
-    Listbox,
     Menu,
     Scrollbar,
     StringVar,
     Text,
     Tk,
-    Toplevel,
     filedialog,
     messagebox,
-    ttk,
 )
-from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, VERTICAL, X, Y
+from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, X, Y
 from typing import Any
-from urllib.parse import urljoin
 import os
 
 import requests
@@ -942,7 +936,7 @@ Documentation Resources:
 def main():
     """Main entry point for the application."""
     root = Tk()
-    app = ZendeskVoiceLinesGUI(root)
+    _ = ZendeskVoiceLinesGUI(root)  # GUI needs to be instantiated but stored reference is unused
     root.mainloop()
 
 

@@ -4,8 +4,6 @@ Collect all jobs and artifacts for PR #3248 failing workflow runs.
 This script uses the run IDs from failing_checks.md and calls GitHub MCP tools.
 """
 
-import re
-import json
 
 # Extract all run IDs from failing_checks.md
 run_ids = [

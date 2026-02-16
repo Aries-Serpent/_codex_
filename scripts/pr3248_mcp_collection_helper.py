@@ -7,11 +7,9 @@ CI/CD data for PR #3248 using the available MCP server tool outputs.
 """
 
 import json
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
 
 # Target commits (all 81 commits from user requirement)
 COMMIT_SHAS = [

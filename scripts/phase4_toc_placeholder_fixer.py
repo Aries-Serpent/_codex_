@@ -7,7 +7,7 @@ Fixes empty TOC links by either creating anchor targets or removing entries.
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent

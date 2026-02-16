@@ -7,7 +7,7 @@ Removes or updates references to deleted files in medium-priority documentation.
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent

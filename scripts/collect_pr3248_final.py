@@ -5,7 +5,6 @@ Uses direct commit workflow run queries to collect data for all 81 commits.
 """
 
 import json
-import sys
 from pathlib import Path
 from datetime import datetime
 

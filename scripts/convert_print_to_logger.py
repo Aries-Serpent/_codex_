@@ -109,7 +109,7 @@ class PrintDetector(ast.NodeVisitor):
                     args_str += ast.unparse(arg).lower()
                 else:
                     args_str += str(arg).lower()
-            except:
+            except Exception:  # Catch errors when converting AST node to string
                 pass
 
         # Check for error/warning indicators
