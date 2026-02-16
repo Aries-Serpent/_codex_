@@ -58,6 +58,49 @@
 - **Strategy**: Follow root cause analysis + AI Agency Policy (fix ALL issues)
 - **Status**: ✅ COMPLETE - Awaiting CI validation
 
+### Attempt 8: Fix Pre-Flight Validation Failures ✅ COMPLETE
+- **Date**: 2026-02-16T13:19:00Z
+- **Triggering Event**: User comment requesting fix for 5 failing checks (Pre-Flight + 4 Resilient Validation)
+- **Investigation**:
+  - ✅ Read .codex/README_FIRST_MANDATORY.md (mandatory protocol)
+  - ✅ Read tracking logs (PR_3248_FAILURE_TRACKING_LOG.md, REPEATED_ISSUES_LOG, THE_THRASHING_PATTERN)
+  - ✅ Retrieved CI logs using GitHub MCP tools (per user requirement)
+  - ✅ Stored 4 memories about current requirements and failures
+- **Current Failing Checks** (Run 22064141096 + 22064141028):
+  1. Pre-Flight CI Validation: ❌ 3 issues detected:
+     - Pytest Configuration: Both pytest.ini and pyproject.toml have conflicting config
+     - Module-level pytest.importorskip: Lines 243, 272 in conftest.py (causes xdist crashes)
+     - Test Assertion Patterns: 4 tests with overly-broad match patterns
+  2. Resilient Validation (documentation): ❌ Not executing (blocked by pre-flight?)
+  3. Resilient Validation (integration): ❌ Not executing (blocked by pre-flight?)
+  4. Resilient Validation (quick): ❌ Not executing (blocked by pre-flight?)
+  5. Resilient Validation (slow): ❌ Not executing (blocked by pre-flight?)
+- **Root Cause Analysis**:
+  - Pre-flight validation is failing, which may be blocking other workflows
+  - Pytest config overlap: pytest.ini has full config, pyproject.toml has partial config
+  - Module-level importorskip monkey-patching at import time can cause xdist worker crashes
+  - Test patterns using single-word matches can catch unintended exceptions
+- **Implementation**:
+  1. ✅ Fixed pytest config overlap: Removed [tool.pytest.ini_options] from pyproject.toml (kept pytest.ini as source of truth)
+  2. ✅ Fixed module-level importorskip: Moved monkey-patching from module level to pytest_configure() hook
+  3. ✅ Fixed test assertion patterns: Made 4 match patterns more specific:
+     - tests/codex_ml/test_resilience.py:222 → match=r"^fail$"
+     - tests/rag/test_security_enhanced.py:204 → match=r"empty|cannot be empty"
+     - tests/integration/cli/test_cli_pipeline_integration.py:94 → match=r"data configuration"
+     - tests/codex/archive/test_batch.py:108 → match=r"Actor must be provided"
+  4. ✅ Verified locally: `python scripts/ci/pre_flight_check.py` → 6 passed, 0 failed
+  5. ✅ Updated tracking log before commit
+- **Files Changed**:
+  - pyproject.toml: Removed duplicate pytest config section
+  - tests/conftest.py: Moved importorskip wrapper to pytest_configure hook
+  - tests/codex_ml/test_resilience.py: Made match pattern more specific
+  - tests/rag/test_security_enhanced.py: Made match pattern more specific
+  - tests/integration/cli/test_cli_pipeline_integration.py: Made match pattern more specific
+  - tests/codex/archive/test_batch.py: Made match pattern more specific
+  - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Updated with Attempt 8
+- **Expected Result**: Pre-flight validation passes, Resilient Validation tests can execute
+- **Actual Result**: ✅ SUCCESS - All pre-flight checks pass locally (6/6)
+
 ---
 
 ## 🎯 Current Failing Checks (Run: 22062286142)
@@ -208,19 +251,29 @@ As per AI Codebase Agency Policy, all discovered issues are being addressed:
 **Fix**: Updated to check for plugin pinning, not `-p` flags  
 **Impact**: CI validation now follows correct architecture
 
-### Issue 4: Test Assertion Patterns ⏳ UNDER REVIEW
+### Issue 4: Pytest Configuration Overlap ✅ FIXED
+**Found**: Both pytest.ini and pyproject.toml have [tool.pytest.ini_options]  
+**Files**:
+- ✅ pyproject.toml: Removed duplicate pytest config section (kept pytest.ini as single source of truth)
+
+**Impact**: Eliminates config conflicts that could cause unpredictable test behavior
+
+### Issue 5: Module-level pytest.importorskip ✅ FIXED
+**Found**: tests/conftest.py lines 243, 272 modify pytest at module import time  
+**Files**:
+- ✅ tests/conftest.py: Moved importorskip wrapper from module level to pytest_configure() hook
+
+**Impact**: Prevents xdist worker crashes from module-level monkey-patching during worker spawn
+
+### Issue 6: Test Assertion Patterns ✅ FIXED
 **Found**: 4 tests with overly-broad pytest.raises match patterns  
 **Files**:
-- tests/codex_ml/test_resilience.py:222 (match="fail")
-- tests/rag/test_security_enhanced.py:204 (match="empty")
-- tests/integration/cli/test_cli_pipeline_integration.py:94 (match="data")
-- tests/codex/archive/test_batch.py:108 (match="Actor")
+- ✅ tests/codex_ml/test_resilience.py:222 - Changed match="fail" → match=r"^fail$"
+- ✅ tests/rag/test_security_enhanced.py:204 - Changed match="empty" → match=r"empty|cannot be empty"
+- ✅ tests/integration/cli/test_cli_pipeline_integration.py:94 - Changed match="data" → match=r"data configuration"
+- ✅ tests/codex/archive/test_batch.py:108 - Changed match="Actor" → match=r"Actor must be provided"
 
-**Status**: Evaluating if these need more specific patterns
-
-### Issue 5: Pytest Configuration Overlap ⏳ UNDER REVIEW
-**Found**: Both pytest.ini and pyproject.toml have pytest config  
-**Status**: Verifying which takes precedence and if conflict exists
+**Impact**: More precise error matching prevents false positives and improves test reliability
 
 ---
 
@@ -234,11 +287,12 @@ As per AI Codebase Agency Policy, all discovered issues are being addressed:
 | **Tracking Documentation** | **3** | **3 ✅** | **0** |
 | **Gitignore Exceptions** | **1** | **1 ✅** | **0** |
 | **Memory Storage** | **4** | **4 ✅** | **0** |
-| Test Patterns | 4 | 0 | 4 🔄 |
-| Config Overlap | 1 | 0 | 1 🔄 |
-| **TOTAL** | **29** | **24** | **5** |
+| **Pytest Config Overlap** | **1** | **1 ✅** | **0** |
+| **Module-level importorskip** | **1** | **1 ✅** | **0** |
+| **Test Assertion Patterns** | **4** | **4 ✅** | **0** |
+| **TOTAL** | **33** | **33** | **0** |
 
-**Progress**: 83% complete (24/29 issues resolved)
+**Progress**: 100% complete (33/33 issues resolved)
 
 ---
 

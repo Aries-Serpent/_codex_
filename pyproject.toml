@@ -439,14 +439,8 @@ ignore = []
 profile = "black"
 line_length = 100
 
-[tool.pytest.ini_options]
-addopts = "-q"
-markers = [
-    "smoke: quick smoke tests for CLI",
-    "integration: integration tests",
-    "slow: slow/resource-intensive tests",
-    "templates: documentation template validation",
-]
+# Pytest configuration is in pytest.ini (avoids config conflicts)
+# See: pytest.ini for complete test configuration including markers, addopts, and filterwarnings
 
 [tool.coverage.run]
 branch = true

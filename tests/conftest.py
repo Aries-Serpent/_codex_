@@ -240,7 +240,8 @@ def _missing_modules(modules: list[str]) -> list[str]:
     return missing
 
 
-_ORIGINAL_IMPORTORSKIP = pytest.importorskip
+# Store reference to original importorskip for wrapper (initialized in pytest_configure)
+_ORIGINAL_IMPORTORSKIP = None
 
 
 def _importorskip_optional_dep(
@@ -269,7 +270,17 @@ def _importorskip_optional_dep(
         raise pytest.skip.Exception(message, allow_module_level=True)
 
 
-pytest.importorskip = _importorskip_optional_dep
+def pytest_configure(config):
+    """Configure pytest - install custom importorskip wrapper.
+    
+    This is done in pytest_configure hook (not at module level) to avoid
+    issues with xdist workers which may execute module imports before pytest
+    is fully initialized.
+    """
+    global _ORIGINAL_IMPORTORSKIP
+    if _ORIGINAL_IMPORTORSKIP is None:
+        _ORIGINAL_IMPORTORSKIP = pytest.importorskip
+        pytest.importorskip = _importorskip_optional_dep
 
 
 def pytest_collection_modifyitems(session, config, items):
