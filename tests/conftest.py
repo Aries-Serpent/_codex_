@@ -17,8 +17,18 @@ from pathlib import Path
 
 import pytest
 
-pytest.importorskip("numpy")
-pytest.importorskip("torch")
+# Note: These imports are required for conftest to load properly.
+# If numpy or torch are not available, many fixtures will be no-ops,
+# but conftest itself must load for pytest-xdist workers to function.
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+try:
+    import torch
+except ImportError:
+    torch = None
 
 
 logger = logging.getLogger(__name__)
@@ -30,10 +40,13 @@ SRC_ROOT = REPO_ROOT / "src"
 # CUDA Detection for GPU-Dependent Tests (PR #3178)
 # ============================================================================
 # Detect CUDA availability at module load time for test skip decorators
-try:
-    import torch
-    CUDA_AVAILABLE = torch.cuda.is_available()
-except (ImportError, AttributeError):
+if torch is not None and hasattr(torch, 'cuda'):
+    try:
+        CUDA_AVAILABLE = torch.cuda.is_available()
+    except (AttributeError, RuntimeError):
+        # CUDA methods may raise errors in some configurations
+        CUDA_AVAILABLE = False
+else:
     # PyTorch not installed or stub version without CUDA support
     CUDA_AVAILABLE = False
 
