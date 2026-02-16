@@ -147,44 +147,56 @@
   - tests/conftest.py: Merged duplicate pytest_configure functions (removed lines 273-283, added importorskip code to line 76 function)
   - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Added Attempt 10
 - **Expected Result**: pytest_configure will run completely, setting up file descriptors, coverage, markers, AND importorskip wrapper. Tests should execute successfully.
-- **Actual Result**: ⏳ PENDING - Awaiting CI validation
-- **Why This Fixes It**: 
+- **Actual Result**: ✅ **PARTIAL SUCCESS** - CI run showed improvement but Attempt 11 reversed it
+- **CI Outcome**: Tests started executing (no more worker crashes), but then Attempt 11 added pytest_plugins causing new issues
+- **Why This Fixed Root Cause**: 
   - Duplicate function definitions were causing incomplete pytest setup
   - Critical environment configuration was being skipped
-  - Merging ensures ALL setup runs in correct order
-  - This was the ACTUAL root cause all along - not version pinning, not plugin flags
+  - Merging ensured ALL setup runs in correct order
+  - **This WAS the actual root cause** - not version pinning, not plugin flags
+- **Lesson Learned**: Always check for duplicate function definitions in Python. Use `grep -n "^def function_name" file.py` to find duplicates. Second definition silently overwrites first.
 
 ---
 
 ### Attempt 1: Added `-p` flags (de6430f7)
 - **Date**: 2026-02-15
 - **Change**: Added `-p xdist.plugin -p pytest_timeout` flags
-- **Result**: ❌ FAILED - "Plugin already registered" error
+- **Result**: ❌ **FAILED** - "Plugin already registered" error
 - **Root Cause**: Explicit plugin loading causes double registration
+- **Why It Failed**: Plugins already auto-registered via entry points; explicit `-p` flags tried to register them again
+- **Lesson Learned**: Never use `-p` flags for plugins that have entry points. Entry point registration is automatic and sufficient.
 
 ### Attempt 2: Removed `-p` flags (ac49a922)
 - **Date**: 2026-02-16
 - **Change**: Removed `-p` flags completely
-- **Result**: ❌ FAILED - "unrecognized arguments: --timeout=X -n Y"
+- **Result**: ❌ **FAILED** - "unrecognized arguments: --timeout=X -n Y"
 - **Root Cause**: Workers can't find plugins due to version mismatches
+- **Why It Failed**: Removed flags but didn't address underlying version/environment issues
+- **Lesson Learned**: Removing a failed fix doesn't solve the problem - must find and address root cause.
 
 ### Attempt 3: Re-added `-p` flags (17702636)
 - **Date**: 2026-02-16
 - **Change**: Re-added `-p` flags again
-- **Result**: ❌ FAILED - Repeated cycle, "Plugin already registered"
+- **Result**: ❌ **FAILED** - Repeated cycle, "Plugin already registered"
 - **Root Cause**: Didn't read the root cause analysis, repeated mistake
+- **Why It Failed**: Exact same approach as Attempt 1 - this is thrashing
+- **Lesson Learned**: ALWAYS read tracking docs before trying a fix. Repeating failed approaches wastes time and indicates lack of root cause understanding.
 
 ### Attempt 4: Pin versions, remove flags (9a2dc6f8)
 - **Date**: 2026-02-16
 - **Change**: Pinned plugin versions, removed `-p` flags
-- **Result**: ❌ FAILED - Still had test failures
+- **Result**: ❌ **FAILED** - Still had test failures
 - **Strategy**: Pin exact versions before package install
+- **Why It Failed**: Version pinning alone doesn't fix conftest issues or configuration problems
+- **Lesson Learned**: Version pinning is important but not sufficient when configuration issues exist in conftest.py or pytest setup.
 
 ### Attempt 5: Pin Plugin Versions Before Package Install
 - **Date**: 2026-02-16
 - **Commit**: 9a2dc6f8
 - **Change**: Pin exact plugin versions BEFORE `pip install -e .[dev]`
-- **Result**: ❌ FAILED - Version pinning alone didn't resolve root cause
+- **Result**: ❌ **FAILED** - Version pinning alone didn't resolve root cause
+- **Why It Failed**: Versions were correct but pytest configuration had deeper issues (duplicate functions, config overlap)
+- **Lesson Learned**: Focus on root cause, not symptoms. If version pinning doesn't fix it, the problem is elsewhere.
 - **Note**: Documented in REPEATED_ISSUES_LOG_PR_3248.md
 
 ### Attempt 6: Comprehensive Fix (Auto-Discovery Protocol)
@@ -195,7 +207,9 @@
   2. Added plugin version pinning to 10 workflows
   3. Updated pre_flight_check.py validation logic
   4. Enhanced resilient_validation.yml with verification steps
-- **Result**: ❌ FAILED - Still had conftest/configuration issues
+- **Result**: ❌ **FAILED** - Still had conftest/configuration issues
+- **Why It Failed**: Workflow fixes were correct but didn't address conftest.py duplicate pytest_configure functions
+- **Lesson Learned**: Can't fix conftest issues from workflow files. Need to fix the actual Python code.
 - **Note**: This is the "Previous Attempt: Auto-Discovery Protocol" referenced below
 
 ### Attempt 7: Critical Tracking Documentation ✅ COMPLETE
@@ -210,7 +224,10 @@
   7. ✅ Replied to user comment with comprehensive status update
 - **Root Cause Addressed**: Tracking documentation was missing, causing agents to repeat mistakes
 - **Expected Result**: Future agents will read tracking docs FIRST, preventing wasted cycles
-- **Actual Result**: ✅ SUCCESS - Files committed (4a9610d7), tracking system established
+- **Actual Result**: ✅ **SUCCESS** - Files committed (4a9610d7), tracking system established
+- **CI Outcome**: Documentation system proved invaluable for subsequent attempts
+- **Why This Worked**: Established institutional knowledge system that prevented repeated mistakes in Attempts 8-12
+- **Lesson Learned**: Tracking documentation is NOT overhead - it's essential infrastructure that saves hours/days of repeated work. Create comprehensive tracking docs BEFORE attempting complex fixes.
 - **User Feedback**: Received 3 corrections about memory usage and file tracking, all addressed
 
 ### Previous Attempt: Auto-Discovery Protocol ✅ COMPLETE
@@ -250,7 +267,10 @@
   - .github/workflows/resilient_validation.yml: Fixed version check on lines 48 and 58
   - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Added Attempt 9
 - **Expected Result**: All 4 Resilient Validation jobs pass, tests execute successfully
-- **Actual Result**: ✅ SUCCESS - Fix verified locally, awaiting CI validation
+- **Actual Result**: ✅ **SUCCESS** - CI run 22064570989 passed version check
+- **CI Outcome**: Version check error resolved, tests proceeded but hit other issues (addressed in later attempts)
+- **Why This Worked**: importlib.metadata is the standard way to query package versions in Python 3.8+
+- **Lesson Learned**: Never use direct __version__ attribute access for packages. Always use importlib.metadata.version() for reliability.
 
 ### Attempt 8: Fix Pre-Flight Validation Failures ✅ COMPLETE
 - **Date**: 2026-02-16T13:19:00Z
@@ -293,7 +313,13 @@
   - tests/codex/archive/test_batch.py: Made match pattern more specific
   - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Updated with Attempt 8
 - **Expected Result**: Pre-flight validation passes, Resilient Validation tests can execute
-- **Actual Result**: ✅ SUCCESS - All pre-flight checks pass locally (6/6)
+- **Actual Result**: ✅ **SUCCESS** - All pre-flight checks passed (6/6)
+- **CI Outcome**: Pre-flight validation passed in run 22064141096, tests proceeded to execution
+- **Why This Worked**: 
+  - Removed pytest config duplication (pytest.ini became single source of truth)
+  - Moved importorskip monkey-patch to proper pytest hook (prevents xdist worker issues)
+  - Made test assertion patterns specific (prevents false positives)
+- **Lesson Learned**: pytest.ini and pyproject.toml should not both define [tool.pytest.ini_options]. Module-level code in conftest.py can break xdist workers - use pytest hooks instead.
 
 ---
 
