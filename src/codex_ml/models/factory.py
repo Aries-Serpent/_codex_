@@ -32,7 +32,9 @@ _TRUE_LITERALS = {"1", "true", "yes", "on", "enable", "enabled"}
 def _resolve_dtype(value: Any) -> Any:
     if value is None or torch is None:
         return value
-    if isinstance(value, torch.dtype):
+    # Check if value is already a torch.dtype by checking its type name
+    # Safe for Python 3.12+ where isinstance(x, torch.dtype) may fail
+    if hasattr(value, '__class__') and type(value).__name__ == 'dtype':
         return value
     if isinstance(value, str):
         token = value.replace("torch.", "").lower()
@@ -47,7 +49,8 @@ def _resolve_dtype(value: Any) -> Any:
         if token in alias:
             return alias[token]
         candidate = getattr(torch, token, None)
-        if isinstance(candidate, torch.dtype):
+        # Check if candidate is a torch.dtype by checking its type name
+        if candidate is not None and hasattr(candidate, '__class__') and type(candidate).__name__ == 'dtype':
             return candidate
     raise ValueError(f"Unsupported dtype value: {value!r}")
 
@@ -55,7 +58,9 @@ def _resolve_dtype(value: Any) -> Any:
 def _resolve_device(value: Any) -> Any:
     if value is None or torch is None:
         return value
-    if isinstance(value, torch.device):
+    # Check if value is already a torch.device by checking its type name
+    # Safe for Python 3.12+ where isinstance(x, torch.device) may fail
+    if hasattr(value, '__class__') and type(value).__name__ == 'device':
         return value
     if isinstance(value, str):
         token = value.strip().lower()

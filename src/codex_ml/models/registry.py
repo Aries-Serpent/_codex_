@@ -251,7 +251,9 @@ def _resolve_torch_dtype(value: Any | None):
         return None
     if value is None:
         return None
-    if isinstance(value, torch.dtype):
+    # Check if value is already a torch.dtype by checking its type name
+    # Safe for Python 3.12+ where isinstance(x, torch.dtype) may fail
+    if hasattr(value, '__class__') and type(value).__name__ == 'dtype':
         return value
     text = str(value).strip().lower()
     if not text:
@@ -259,7 +261,8 @@ def _resolve_torch_dtype(value: Any | None):
     alias = _DTYPE_ALIASES.get(text, text)
     attr = alias.split(".")[-1]
     torch_value = getattr(torch, attr, None)
-    if isinstance(torch_value, torch.dtype):
+    # Check if torch_value is a torch.dtype by checking its type name
+    if torch_value is not None and hasattr(torch_value, '__class__') and type(torch_value).__name__ == 'dtype':
         return torch_value
     return None
 
