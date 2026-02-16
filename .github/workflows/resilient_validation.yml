@@ -72,16 +72,18 @@ jobs:
         run: |
           case "${{ matrix.test-group }}" in
             quick)
-              # Quick tests: 60s timeout, parallel execution with 4 workers, fail after 20 failures
-              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short -n 4 --maxfail=20
+              # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
+              # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery issues
+              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20
               ;;
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
               python scripts/validate_docs.py --fix || echo "Doc validation warnings (non-blocking)"
               ;;
             integration)
-              # Integration tests: 300s timeout, parallel with 2 workers, fail after 10 failures
-              python -m pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short -n 2 --maxfail=10
+              # Integration tests: 300s timeout, SEQUENTIAL execution (PR #3248 Attempt 15)
+              # Removed -n 2 flag to avoid xdist worker subprocess plugin discovery issues
+              python -m pytest tests/ -v -m "integration and not slow" --timeout=300 --tb=short --maxfail=10
               ;;
             slow)
               # Slow tests: 600s timeout, sequential execution, fail after 5 failures
