@@ -255,7 +255,7 @@ class TestStatsCommand:
         tenant_path = tmp_path / "default"
         index_path = tenant_path / "default"
         index_path.mkdir(parents=True)
-        
+
         # Create metadata file
         metadata = {
             "num_chunks": 500,
@@ -264,7 +264,7 @@ class TestStatsCommand:
             "created_at": "2024-01-01T00:00:00Z"
         }
         (index_path / "metadata.json").write_text(json.dumps(metadata))
-        
+
         result = runner.invoke(app, ["stats", "--index-dir", str(tmp_path)])
 
         assert result.exit_code == 0
@@ -276,7 +276,7 @@ class TestStatsCommand:
         tenant_path = tmp_path / "default"
         index_path = tenant_path / "specific_index"
         index_path.mkdir(parents=True)
-        
+
         # Create metadata file
         metadata = {
             "num_chunks": 50,
@@ -302,7 +302,7 @@ class TestListCommand:
         # Create mock tenant directory structure
         tenant_path = tmp_path / "default"
         tenant_path.mkdir(parents=True)
-        
+
         # Create two mock indices
         for idx_name, num_chunks in [("index1", 100), ("index2", 50)]:
             index_path = tenant_path / idx_name
