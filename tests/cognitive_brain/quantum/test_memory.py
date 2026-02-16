@@ -468,6 +468,10 @@ class TestIntegration:
             def store_quantum_metric(self, *args, **kwargs):
                 pass
 
+            def create(self, metric):
+                """Mock create method for CoherenceMonitor."""
+                return metric
+
         return MockRepo()
 
     @pytest.fixture
