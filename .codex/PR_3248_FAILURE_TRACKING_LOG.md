@@ -1,9 +1,9 @@
 # PR #3248: Continuous Failure Tracking Log
 
-**Last Updated**: 2026-02-16T14:48:00Z  
+**Last Updated**: 2026-02-16T15:36:59Z  
 **PR**: #3248  
-**Branch**: copilot/sub-pr-3248  
-**Current Commit**: 05478710 (local), awaiting push
+**Branch**: 0D_base_  
+**Current Commit**: 973c7be (merged from copilot/sub-pr-3248)
 
 ---
 
@@ -29,7 +29,47 @@
 
 ## 🔄 Attempt History
 
-### Attempt 12: Remove Duplicate Plugin Registration 🔴 CRITICAL FIX
+### Attempt 13: Remove PYTEST_PLUGINS Environment Variable 🔴 CRITICAL FIX
+- **Date**: 2026-02-16T15:36:59Z
+- **Triggering Event**: User provided failing check status for commit 973c7be showing duplicate plugin registration errors
+- **Investigation**:
+  - ✅ Used GitHub MCP tools to retrieve job logs for 3 failing validation jobs:
+    - Job 63764549470 (quick): Failed with "Plugin already registered" error
+    - Job 63764549363 (integration): Failed with "Plugin already registered" error
+    - Job 63764549338 (slow): Failed with "Plugin already registered" error
+  - ✅ Analyzed logs: Found `PYTEST_PLUGINS: xdist.plugin,xdist.looponfail,pytest_timeout` environment variable
+  - ✅ Root cause: Workflow setting PYTEST_PLUGINS env var (line 74) attempts to register plugins already auto-registered via entry points
+- **Current Failing Checks** (Run 22067919244 from commit 973c7be):
+  1. Resilient Validation (quick): ❌ "ValueError: Plugin already registered under a different name: xdist.plugin"
+  2. Resilient Validation (integration): ❌ "ValueError: Plugin already registered under a different name: xdist.plugin"
+  3. Resilient Validation (slow): ❌ "ValueError: Plugin already registered under a different name: xdist.plugin"
+  4. CodeQL: ❌ "5 configurations not found" (known platform issue per memory, not fixable)
+- **Root Cause Analysis**:
+  - Attempt 11 added PYTEST_PLUGINS environment variable to resilient_validation.yml (line 74)
+  - Attempt 12 removed pytest_plugins list from tests/conftest.py
+  - BUT the workflow STILL has the PYTEST_PLUGINS environment variable
+  - Environment variable causes pytest to try registering plugins that are already auto-registered
+  - This triggers: `ValueError: Plugin already registered under a different name`
+  - **Solution**: Remove PYTEST_PLUGINS environment variable from workflow - entry points handle registration correctly
+- **Implementation**:
+  - ✅ Removed `PYTEST_PLUGINS` environment variable from `.github/workflows/resilient_validation.yml` (lines 72-74)
+  - ✅ Updated tracking log before commit (this entry)
+- **Files Changed**:
+  - .github/workflows/resilient_validation.yml: Removed PYTEST_PLUGINS env var from "Run validation" step
+  - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Added Attempt 13
+- **Expected Result**: 
+  - Plugin registration errors resolved
+  - Tests run normally with plugins auto-registered via entry points (no explicit env var needed)
+  - All 3 validation suites pass (quick, integration, slow)
+- **Actual Result**: ⏳ PENDING - Awaiting CI validation
+- **Why This Fixes It**: 
+  - Plugins are properly registered via entry points (setuptools automatic discovery)
+  - No duplicate registration attempts from environment variable
+  - Workers inherit plugin registry from main process automatically
+  - This is the CORRECT approach per pytest and xdist documentation
+  - Environment variables for plugin loading are NOT needed when using standard entry points
+
+### Attempt 12: Remove Duplicate Plugin Registration 🔴 PARTIAL FIX - WORKFLOW ISSUE REMAINED
 - **Date**: 2026-02-16T14:48:00Z
 - **Triggering Event**: User request to continue resolving failing checks in PR #3248, commit f8ea9ae
 - **Investigation**:
