@@ -54,6 +54,9 @@ jobs:
       
       - name: Install dependencies
         run: |
+          # Pin pytest plugins before package install (PR #3248 fix)
+          pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
+
           python -m pip install --upgrade pip
           pip install -e ".[dev]"  # Includes pytest, ruff, mypy
           # Install pytest-xdist for parallel execution and pytest-timeout

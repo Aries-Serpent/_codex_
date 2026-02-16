@@ -43,7 +43,13 @@ class PreFlightValidator:
         print(f"{symbol} {result.name}: {result.message}")
     
     def check_pytest_plugins_in_workflow(self) -> CheckResult:
-        """Check that workflow files use explicit plugin loading."""
+        """Check that workflows pin plugin versions and DON'T use explicit -p flags.
+        
+        Per PR #3248 root cause analysis:
+        - Explicit `-p` flags cause "Plugin already registered" errors
+        - Plugins should auto-discover via setuptools entry points
+        - Workflows MUST pin exact plugin versions before package install
+        """
         workflow_files = list(self.repo_root.glob(".github/workflows/*.yml"))
         issues = []
         
@@ -54,28 +60,40 @@ class PreFlightValidator:
             if "pytest" not in content:
                 continue
             
-            # Check for xdist usage without explicit plugin loading
-            if "-n " in content or "--numprocesses" in content:
-                if "-p xdist.plugin" not in content:
-                    issues.append(f"{workflow_file.name}: Uses -n flag without '-p xdist.plugin'")
+            # Check for INCORRECT explicit plugin loading (anti-pattern)
+            if "-p xdist.plugin" in content or "-p timeout" in content or "-p pytest_timeout" in content:
+                issues.append(f"{workflow_file.name}: ❌ Uses explicit -p flags (causes 'Plugin already registered' errors)")
             
-            # Check for timeout flag without explicit plugin loading
-            if "--timeout=" in content:
-                if "-p timeout" not in content and "-p pytest_timeout" not in content:
-                    issues.append(f"{workflow_file.name}: Uses --timeout flag without '-p timeout'")
+            # Check for plugin version pinning (required for stability)
+            uses_xdist = "-n " in content or "--numprocesses" in content
+            uses_timeout = "--timeout=" in content
+            
+            if uses_xdist or uses_timeout:
+                has_pinning = bool(re.search(r"pytest-xdist==\d+\.\d+\.\d+", content))
+                has_timeout_pinning = bool(re.search(r"pytest-timeout==\d+\.\d+\.\d+", content))
+                
+                if uses_xdist and not has_pinning:
+                    issues.append(f"{workflow_file.name}: ⚠️ Uses -n flag but doesn't pin pytest-xdist version")
+                if uses_timeout and not has_timeout_pinning:
+                    issues.append(f"{workflow_file.name}: ⚠️ Uses --timeout flag but doesn't pin pytest-timeout version")
         
         if issues:
             return CheckResult(
-                "Pytest Plugin Loading",
+                "Pytest Plugin Configuration",
                 False,
-                f"Found {len(issues)} workflow(s) with missing explicit plugin flags:\n  " + "\n  ".join(issues),
+                f"Found {len(issues)} workflow(s) with plugin configuration issues:\n  " + "\n  ".join(issues) +
+                "\n\nCorrect approach:\n" +
+                "  1. Pin exact versions: pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0\n" +
+                "  2. NO -p flags needed (plugins auto-discover)\n" +
+                "  3. Install package AFTER pinning plugins\n" +
+                "  See: .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md",
                 fixable=True
             )
         
         return CheckResult(
-            "Pytest Plugin Loading",
+            "Pytest Plugin Configuration",
             True,
-            "All workflows use explicit plugin loading flags"
+            "All workflows follow correct plugin configuration (pinned versions, no -p flags)"
         )
     
     def check_dummy_optimizer_in_tests(self) -> CheckResult:

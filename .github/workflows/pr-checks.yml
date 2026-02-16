@@ -48,6 +48,8 @@ jobs:
         env:
           UV_CACHE_DIR: /tmp/uv-cache
         run: |
+          pip install pytest-timeout==2.4.0
+
           export PATH="$HOME/.cargo/bin:$PATH"
           # Install package with dev dependencies (includes all test requirements)
           uv pip install --system -e .[dev]
