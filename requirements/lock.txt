@@ -583,7 +583,7 @@ nltk==3.9.2
     # via
     #   evidently
     #   rouge-score
-nodeenv==1.9.1
+nodeenv==1.10.0
     # via pre-commit
 notebook==7.4.7
     # via great-expectations
