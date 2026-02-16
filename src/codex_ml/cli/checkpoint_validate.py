@@ -126,12 +126,9 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
     def validate_cmd(
         path: Annotated[
             Path,
-            typer.Option(
-                ...,
-                "--path",
-                "-p",
-                exists=True,
+            typer.Argument(
                 help="Checkpoint path to validate.",
+                exists=True,
             ),
         ],
         schema: Annotated[
@@ -154,12 +151,14 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         try:
             # Convert empty string to None for backward compatibility
             schema_param = schema if schema else None
+            # Ensure show is boolean (not string) to avoid isidentifier() errors in CLI frameworks
+            show_output = bool(show) if show is not None else False
             info = validate_checkpoint(path, expect_schema=schema_param)
         except CheckpointValidationError as exc:
             logger.debug(f"CheckpointValidationError: {exc}")
             typer.echo(str(exc), err=True)
             raise typer.Exit(code=2) from exc
-        if show:
+        if show_output:
             typer.echo(json.dumps(dict(info), indent=2, sort_keys=True))
         else:
             typer.echo(f"OK: {path}")
