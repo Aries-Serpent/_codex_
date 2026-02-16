@@ -45,7 +45,7 @@ jobs:
           
           # Step 2: Verify plugin installation BEFORE package install
           echo "✅ Verifying plugin installation..."
-          python -c "import pytest; import pytest_timeout; import xdist; print(f'pytest={pytest.__version__}, pytest-xdist={xdist.__version__}, pytest-timeout={pytest_timeout.__version__}')"
+          python -c "import pytest; import xdist; from importlib.metadata import version; print(f'pytest={pytest.__version__}, pytest-xdist={xdist.__version__}, pytest-timeout={version(\"pytest-timeout\")}')"
           
           # Step 3: Install package AFTER plugins to avoid dependency conflicts
           echo "📦 Installing package with dev dependencies..."
@@ -55,7 +55,7 @@ jobs:
           
           # Step 4: Verify plugins are STILL available after package install
           echo "🔍 Final plugin verification (detecting version changes)..."
-          python -c "import pytest; import pytest_timeout; import xdist; print(f'AFTER: pytest={pytest.__version__}, pytest-xdist={xdist.__version__}, pytest-timeout={pytest_timeout.__version__}')"
+          python -c "import pytest; import xdist; from importlib.metadata import version; print(f'AFTER: pytest={pytest.__version__}, pytest-xdist={xdist.__version__}, pytest-timeout={version(\"pytest-timeout\")}')"
           
           # Step 5: Test that pytest recognizes plugin-provided arguments
           echo "🧪 Testing plugin argument recognition..."
