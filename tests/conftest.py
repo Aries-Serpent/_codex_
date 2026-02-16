@@ -17,10 +17,6 @@ from pathlib import Path
 
 import pytest
 
-# Explicitly load xdist and timeout plugins for worker processes
-# This ensures plugins are available even if entry points aren't properly registered
-pytest_plugins = ["xdist.plugin", "xdist.looponfail", "pytest_timeout"]
-
 # Note: These imports are required for conftest to load properly.
 # If numpy or torch are not available, many fixtures will be no-ops,
 # but conftest itself must load for pytest-xdist workers to function.

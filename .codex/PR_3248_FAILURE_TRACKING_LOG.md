@@ -1,8 +1,9 @@
 # PR #3248: Continuous Failure Tracking Log
 
-**Last Updated**: 2026-02-16T14:10:00Z  
+**Last Updated**: 2026-02-16T14:48:00Z  
 **PR**: #3248  
-**Branch**: 0D_base_ (copilot/sub-pr-3248-again)
+**Branch**: copilot/sub-pr-3248  
+**Current Commit**: 05478710 (local), awaiting push
 
 ---
 
@@ -28,7 +29,43 @@
 
 ## 🔄 Attempt History
 
-### Attempt 11: Fix xdist Worker Plugin Loading and Test Failures 🔴 CRITICAL FIX
+### Attempt 12: Remove Duplicate Plugin Registration 🔴 CRITICAL FIX
+- **Date**: 2026-02-16T14:48:00Z
+- **Triggering Event**: User request to continue resolving failing checks in PR #3248, commit f8ea9ae
+- **Investigation**:
+  - ✅ Checked stored memories FIRST (explicit acknowledgment per user reminder)
+  - ✅ Read mandatory tracking documentation
+  - ✅ Used GitHub MCP tools to retrieve workflow runs for commit 5a89c0e (latest code change before merge)
+  - ✅ Analyzed CI logs from run 22066686500: Found plugin registration error
+- **Current Failing Checks** (Run 22066686500 from commit 5a89c0e):
+  1. Resilient Validation (quick/integration/slow): ❌ "ValueError: Plugin already registered under a different name: xdist.plugin"
+  2. Data Quality & Determinism Suite: ❌ "Both test runs failed with exit code 1" (determinism check failed)
+  3. Security Scanning Suite (CodeQL): ❌ "ref 'refs/heads/copilot/sub-pr-3248' not found" (branch reference issue)
+- **Root Cause Analysis**:
+  - **MISTAKE IN ATTEMPT 11**: The `pytest_plugins` list in tests/conftest.py is causing duplicate registration
+  - xdist, xdist.looponfail, and pytest_timeout are ALREADY auto-registered via entry points
+  - Explicitly listing them in `pytest_plugins` tries to register them AGAIN
+  - This triggers: `ValueError: Plugin already registered under a different name`
+  - **The original memory was INCORRECT**: Adding pytest_plugins doesn't fix worker issues, it CAUSES them
+  - **Actual solution**: REMOVE the pytest_plugins list - entry points handle registration correctly
+- **Implementation**:
+  - ✅ Removed `pytest_plugins = ["xdist.plugin", "xdist.looponfail", "pytest_timeout"]` from tests/conftest.py
+  - ✅ Updated tracking log before commit (this entry)
+- **Files Changed**:
+  - tests/conftest.py: Removed duplicate pytest_plugins list (lines 20-22)
+  - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Added Attempt 12
+- **Expected Result**: 
+  - Plugin registration errors resolved
+  - Tests run normally with plugins auto-registered via entry points
+  - Validation suites pass (assuming no other issues)
+- **Actual Result**: ⏳ PENDING - Awaiting CI validation
+- **Why This Fixes It**: 
+  - Plugins are properly registered via entry points (setuptools automatic discovery)
+  - No duplicate registration attempts
+  - Workers inherit plugin registry from main process
+  - This is the CORRECT approach per pytest and xdist documentation
+
+### Attempt 11: Fix xdist Worker Plugin Loading and Test Failures 🔴 FAILED - WRONG APPROACH
 - **Date**: 2026-02-16T14:27:00Z
 - **Triggering Event**: User request to continue resolving failing checks in PR #3248, commit 1abd62d
 - **Investigation**:
@@ -72,12 +109,9 @@
   - 4 test failures fixed (DummyTokenizer, scheduler IndexError, deployment tolerance)
   - Performance benchmark skipped if meta tensor detected or marked slow
   - CodeQL remains failing (known platform issue, documented)
-- **Actual Result**: ⏳ PENDING - Awaiting CI validation
-- **Why This Fixes It**: 
-  - `pytest_plugins` ensures plugins are loaded in worker processes before they parse arguments
-  - Meta tensor guards skip tests that can't run on meta device
-  - DummyTokenizer now accepts all kwargs like real transformers tokenizers
-  - Deployment test now uses realistic values within tolerance
+- **Actual Result**: ❌ FAILED - Created duplicate plugin registration error
+- **Why It Failed**: pytest_plugins explicitly loads plugins that are already auto-registered via entry points, causing "Plugin already registered" ValueError
+- **Lesson Learned**: Trust entry points for plugin registration; explicit pytest_plugins only needed for custom/non-standard plugins
 
 ---
 
