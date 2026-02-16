@@ -177,8 +177,26 @@
 ### Attempt 4: Pin versions, remove flags (9a2dc6f8)
 - **Date**: 2026-02-16
 - **Change**: Pinned plugin versions, removed `-p` flags
-- **Result**: ⏳ PENDING - Awaiting CI results
+- **Result**: ❌ FAILED - Still had test failures
 - **Strategy**: Pin exact versions before package install
+
+### Attempt 5: Pin Plugin Versions Before Package Install
+- **Date**: 2026-02-16
+- **Commit**: 9a2dc6f8
+- **Change**: Pin exact plugin versions BEFORE `pip install -e .[dev]`
+- **Result**: ❌ FAILED - Version pinning alone didn't resolve root cause
+- **Note**: Documented in REPEATED_ISSUES_LOG_PR_3248.md
+
+### Attempt 6: Comprehensive Fix (Auto-Discovery Protocol)
+- **Date**: 2026-02-16
+- **Commit**: 29dcd616
+- **Changes**:
+  1. Removed anti-pattern `-p` flags from 3 workflows
+  2. Added plugin version pinning to 10 workflows
+  3. Updated pre_flight_check.py validation logic
+  4. Enhanced resilient_validation.yml with verification steps
+- **Result**: ❌ FAILED - Still had conftest/configuration issues
+- **Note**: This is the "Previous Attempt: Auto-Discovery Protocol" referenced below
 
 ### Attempt 7: Critical Tracking Documentation ✅ COMPLETE
 - **Date**: 2026-02-16T12:59:00Z
@@ -472,23 +490,27 @@ As per AI Codebase Agency Policy, all discovered issues are being addressed:
 
 ---
 
-## 🔄 Active Changes in This Session
+## 🔄 Active Changes in Current Session
 
-### Attempt 7: Critical Tracking Documentation (Current)
-1. **`.codex/README_FIRST_MANDATORY.md`**: Created mandatory pre-work protocol (11KB)
-2. **`.codex/REPEATED_ISSUES_LOG_PR_3248.md`**: Created cyclic pattern analysis (12KB)
-3. **`.codex/THE_THRASHING_PATTERN_PR_3248.md`**: Created contradiction mapping (16KB)
-4. **`.gitignore`**: Added 5 exception patterns for tracking files (lines 183-187)
-5. **Memory Storage**: Stored 4 critical facts about file tracking and memory usage
+### Attempt 12: Remove Duplicate Plugin Registration (CURRENT)
+1. **`tests/conftest.py`**: Removed pytest_plugins list causing duplicate registration
+2. **`.codex/PR_3248_FAILURE_TRACKING_LOG.md`**: 
+   - Added Attempt 12 documentation
+   - Added missing Attempts 5 and 6 for historical continuity
+   - Marked Attempt 11 as FAILED with lesson learned
+   - Updated to reflect current session state
+3. **Memory Storage**: Stored corrected fact about pytest plugin registration
 
-### Previous Attempt: Auto-Discovery Protocol
-1. **scripts/ci/pre_flight_check.py**: Updated plugin configuration check logic
-2. **.github/workflows/resilient_validation.yml**: Enhanced plugin verification
-3. **.github/workflows/*.yml**: 13 workflows updated with correct plugin configuration
-4. **tests/test_codex_sequence_validations.py**: Added param_groups to DummyOptimizer
-5. **tests/checkpoint/test_state_providers.py**: Added param_groups to DummyOptimizer
+### Recent Completed Attempts
+- **Attempt 11** (5a89c0e8): ❌ FAILED - Added pytest_plugins causing duplicate registration
+- **Attempt 10** (c51d7d99): ✅ SUCCESS - Merged duplicate pytest_configure functions
+- **Attempt 9** (c630da2): ✅ SUCCESS - Fixed pytest-timeout version check
+- **Attempt 8** (7bc5645a): ✅ SUCCESS - Fixed pre-flight validation
+- **Attempt 7** (4a9610d7): ✅ SUCCESS - Created tracking documentation system
+- **Attempt 6** (29dcd616): ❌ FAILED - Comprehensive fix incomplete
+- **Attempt 5** (9a2dc6f8): ❌ FAILED - Version pinning alone insufficient
 
 ---
 
-**Last Updated**: 2026-02-16T13:05:00Z  
-**Next Action**: Commit tracking documentation, then investigate current CI failures
+**Last Updated**: 2026-02-16T14:55:00Z  
+**Next Action**: Monitor CI for Attempt 12 validation, analyze results
