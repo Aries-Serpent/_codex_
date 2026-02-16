@@ -1128,7 +1128,7 @@ torch==2.9.1+cpu
     #   accelerate
     #   lm-eval
     #   peft
-tornado==6.5.2
+tornado==6.5.4
     # via
     #   ipykernel
     #   jupyter-client
