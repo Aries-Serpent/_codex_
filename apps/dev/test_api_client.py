@@ -7,8 +7,6 @@ This script validates the API client logic without requiring tkinter/GUI.
 
 import json
 from dataclasses import dataclass, field
-from typing import Any
-from unittest.mock import Mock, patch
 
 # Import our dataclass and client
 import sys

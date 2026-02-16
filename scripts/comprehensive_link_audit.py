@@ -8,7 +8,6 @@ import os
 import re
 from pathlib import Path
 from typing import Dict, List, Tuple
-from collections import defaultdict
 
 class ComprehensiveLinkAuditor:
     """Audit all internal markdown links"""

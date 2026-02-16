@@ -9,7 +9,6 @@ import re
 import json
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
-from collections import defaultdict
 
 class ComplexFileDisambiguator:
     """Disambiguates complex file references (README.md, INDEX.md, ARCHITECTURE.md)"""

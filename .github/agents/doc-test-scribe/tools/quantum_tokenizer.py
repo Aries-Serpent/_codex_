@@ -379,7 +379,7 @@ class QuantumTokenizer:
             context_lines = lines[start:end]
             
             return '\n'.join(context_lines)
-        except:
+        except Exception:  # Catch all exceptions during context extraction
             return ""
     
     def _extract_function_context(self, node: ast.FunctionDef, source: str) -> str:
@@ -509,7 +509,7 @@ class QuantumTokenizer:
                 
                 vectors = self.tfidf.transform([token1.context, token2.context])
                 context_sim = (vectors[0] * vectors[1].T).toarray()[0, 0]
-            except:
+            except Exception:  # Catch sklearn/tfidf errors during context similarity calculation
                 context_sim = 0.0
         else:
             context_sim = 0.0
@@ -630,7 +630,7 @@ class QuantumTokenizer:
         try:
             tree = ast.parse(context_code)
             type_annotations = self._extract_type_annotations(tree)
-        except:
+        except Exception:  # Catch AST parsing errors for malformed code context
             type_annotations = {}
         
         collapsed = []

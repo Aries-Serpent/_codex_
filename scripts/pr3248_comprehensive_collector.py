@@ -9,11 +9,10 @@ in PR #3248 using the github-mcp-server tools via Python.
 import json
 import logging
 import os
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 # Configure logging
 LOG_DIR = Path("logs")

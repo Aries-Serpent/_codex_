@@ -217,7 +217,11 @@ class AutoFixWithRollback:
         try:
             # Create backup
             if file_path.exists():
-                backup_path = Path(tempfile.mktemp(suffix=".backup"))
+                # FIX: Use secure tempfile.mkstemp instead of insecure mktemp
+                fd, backup_path_str = tempfile.mkstemp(suffix=".backup")
+                backup_path = Path(backup_path_str)
+                import os
+                os.close(fd)  # Close the file descriptor immediately
                 shutil.copy2(file_path, backup_path)
                 self.logger.debug(f"Created backup: {backup_path}")
 

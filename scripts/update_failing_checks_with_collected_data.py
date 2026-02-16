@@ -10,7 +10,7 @@ This script:
 
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # Paths
 REPO_ROOT = Path(__file__).parent.parent
