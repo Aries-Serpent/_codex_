@@ -278,7 +278,7 @@ fonttools==4.61.1
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
-frozenlist==1.7.0
+frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
