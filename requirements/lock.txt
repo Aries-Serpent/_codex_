@@ -528,7 +528,7 @@ mistune==3.1.4
     #   nbconvert
 mlflow==3.9.0
     # via codex-ml (pyproject.toml)
-mlflow-skinny==3.5.0rc0
+mlflow-skinny==3.10.0rc0
     # via mlflow
 mlflow-tracing==3.5.0rc0
     # via mlflow
