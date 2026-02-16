@@ -193,6 +193,7 @@ manifests/k8s/*/secret.yaml
 !.codex/*AGENT*.md
 !.codex/*CONTINUATION*.md
 !.codex/*FOLLOWUP*.md
+!.codex/*HISTORICAL*.md
 !.codex/*NEXT*.md
 !.codex/*REPORT*.md
 !.codex/*ASSESSMENT*.md

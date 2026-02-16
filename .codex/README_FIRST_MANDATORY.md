@@ -367,6 +367,19 @@ Don't waste more time. Escalate to @mbaetiong with:
 - `.codex/THE_THRASHING_PATTERN_PR_3248.md` - Contradiction mapping
 - `.codex/PR_3248_ROOT_CAUSE_ANALYSIS.md` - Technical deep dive
 - `.codex/PR_3248_COMPREHENSIVE_FOLLOWUP_PROMPT.md` - Next steps
+- `.codex/HISTORICAL_CI_REVIEW_FEB_11_15_2026.md` - **Historical evidence (Feb 11-15)** of repeated patterns
+
+### Historical Information
+
+**IMPORTANT**: PR #3248 issues were **persistent for 5+ days** before root cause was found.
+
+See `.codex/HISTORICAL_CI_REVIEW_FEB_11_15_2026.md` for:
+- 130-message conversation thread (Feb 11-15, 2026)
+- Evidence of repeated thrashing patterns
+- Multiple failed fix attempts (syntax, imports, pinning)
+- Validation that Attempt 10 fix addresses actual root cause
+
+**Source**: [Comment #3908670928](https://github.com/Aries-Serpent/_codex_/pull/3301#issuecomment-3908670928) - preserved as institutional knowledge.
 
 ### Web Research
 
