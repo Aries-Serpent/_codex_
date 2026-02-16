@@ -1,8 +1,8 @@
 # PR #3248: Continuous Failure Tracking Log
 
-**Last Updated**: 2026-02-16T12:34:00Z  
+**Last Updated**: 2026-02-16T13:35:00Z  
 **PR**: #3248  
-**Branch**: copilot/sub-pr-3248
+**Branch**: 0D_base_ (copilot/sub-pr-3248-again)
 
 ---
 
@@ -57,6 +57,34 @@
   5. ✅ Fixed DummyOptimizer mocks (param_groups attribute)
 - **Strategy**: Follow root cause analysis + AI Agency Policy (fix ALL issues)
 - **Status**: ✅ COMPLETE - Awaiting CI validation
+
+### Attempt 9: Fix pytest-timeout Version Check ✅ COMPLETE
+- **Date**: 2026-02-16T13:35:00Z
+- **Triggering Event**: User reminder to check CURRENT failing checks on PR #3248
+- **Investigation**:
+  - ✅ Checked stored memories FIRST (memory-first protocol followed)
+  - ✅ Retrieved current CI logs using GitHub MCP tools (run 22064570989)
+  - ✅ Identified actual failure: AttributeError on pytest_timeout.__version__
+  - ✅ Stored 2 memories about current PR status priority and pytest-timeout version check
+- **Current Failing Checks** (Run 22064570989):
+  1. Resilient Validation (slow): ❌ Line 48 - AttributeError: module 'pytest_timeout' has no attribute '__version__'
+  2. Resilient Validation (quick): ❌ Line 48 - Same error
+  3. Resilient Validation (documentation): ❌ Line 48 - Same error
+  4. Resilient Validation (integration): ❌ Line 48 - Same error
+- **Root Cause Analysis**:
+  - pytest-timeout package does not expose __version__ attribute
+  - Direct access (pytest_timeout.__version__) fails
+  - Need to use importlib.metadata.version() instead
+- **Implementation**:
+  - ✅ Fixed line 48: Changed to use `from importlib.metadata import version; version("pytest-timeout")`
+  - ✅ Fixed line 58: Same change for post-install verification
+  - ✅ Tested locally: Works correctly (outputs "pytest-timeout=2.4.0")
+  - ✅ Updated tracking log before commit (this entry)
+- **Files Changed**:
+  - .github/workflows/resilient_validation.yml: Fixed version check on lines 48 and 58
+  - .codex/PR_3248_FAILURE_TRACKING_LOG.md: Added Attempt 9
+- **Expected Result**: All 4 Resilient Validation jobs pass, tests execute successfully
+- **Actual Result**: ✅ SUCCESS - Fix verified locally, awaiting CI validation
 
 ### Attempt 8: Fix Pre-Flight Validation Failures ✅ COMPLETE
 - **Date**: 2026-02-16T13:19:00Z
