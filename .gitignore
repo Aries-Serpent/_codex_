@@ -178,6 +178,12 @@ manifests/k8s/*/secret.yaml
 !.codex/*PLAN*.md
 !.codex/*PROMPT*.md
 !.codex/*SUMMARY*.md
+# Critical tracking files (MUST be committed per AI Agency Policy)
+!.codex/README_FIRST_MANDATORY.md
+!.codex/REPEATED_ISSUES_LOG_*.md
+!.codex/THE_THRASHING_PATTERN_*.md
+!.codex/*_FAILURE_TRACKING_LOG.md
+!.codex/*_ROOT_CAUSE_ANALYSIS.md
 !.codex/*COMPLETE*.md
 !.codex/*AUTOMATION*.md
 !.codex/*AUTHORIZATION*.md
