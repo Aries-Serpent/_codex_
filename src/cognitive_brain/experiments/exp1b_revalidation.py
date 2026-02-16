@@ -30,7 +30,9 @@ from cognitive_brain.integrations.compliance_integration import (
     ComplianceAssessor,
     ComplianceDecision,
 )
+from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.adaptive_scoring import AdaptiveScoringOptimizer
+from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 
 
@@ -70,7 +72,11 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     # Initialize quantum assessor with Phase 8.0 optimized configuration
     config = QuantumConfig.from_env()
     config.superposition_enabled = True  # Required for complex scenario handling
-    assessor = ComplianceAssessor(config)
+    
+    # Initialize required dependencies for quantum compliance assessor
+    repository = QuantumMetricRepository(db_path=":memory:")  # In-memory DB for experiments
+    monitor = CoherenceMonitor(config, repository)
+    assessor = ComplianceAssessor(config, monitor, repository)
 
     # Verify optimized weights are loaded
     optimizer = AdaptiveScoringOptimizer(learning_rate=0.12)
@@ -90,7 +96,7 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
 
     for audit, ground_truth, complexity in scenario_data:
         start_time = time.time()
-        assessment = assessor.assess(audit)
+        assessment = assessor.assess_compliance(audit)
         elapsed_ms = (time.time() - start_time) * 1000
 
         total_time_ms += elapsed_ms

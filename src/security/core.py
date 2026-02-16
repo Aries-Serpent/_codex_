@@ -71,6 +71,11 @@ def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] 
     Security: Uses proper HTML parsing instead of regex to prevent XSS and ReDoS attacks.
     """
     text = _ensure_str(value)
+    
+    # Remove dangerous URL protocols (javascript:, data:, vbscript:) before HTML escaping
+    # This prevents XSS attacks via URL schemes that bypass HTML entity escaping
+    for pattern in XSS_PATTERNS:
+        text = pattern.sub("", text)
 
     if content_type == "html":
         # Use html.escape for HTML content (safe and efficient)
