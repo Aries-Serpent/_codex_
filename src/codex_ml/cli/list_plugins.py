@@ -10,7 +10,7 @@ import argparse
 import json
 import sys
 from collections.abc import Iterable, Sequence
-from typing import Any
+from typing import Union, Optional, Any
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -103,7 +103,7 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
         else:
             if isinstance(discovered, dict):
                 discovered_items = [f"{key}={value}" for key, value in discovered.items()]
-            elif isinstance(discovered, list | tuple | set):
+            elif isinstance(discovered, (list, tuple, set)):
                 discovered_items = [str(item) for item in discovered]
             elif discovered not in (None, False):
                 discovered_items = [str(discovered)]
@@ -164,7 +164,7 @@ def _build_parser() -> ArgparseJSONParser:
 
 
 @capture_exceptions
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     parser = _build_parser()
     parser.add_argument(

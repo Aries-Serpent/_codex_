@@ -182,7 +182,7 @@ else:
         _run_validation(config_path, echo=click.echo, exit_cls=click.exceptions.Exit)
 
 
-def main(argv: Sequence[str] | None = None) -> int:  # pragma: no cover - thin wrapper
+def main(argv: Optional[Sequence[str]] = None) -> int:  # pragma: no cover - thin wrapper
     logger = init_json_logging()
     arg_list = list(argv) if argv is not None else sys.argv[1:]
 

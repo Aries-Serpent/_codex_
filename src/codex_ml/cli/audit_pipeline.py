@@ -26,7 +26,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Union, Any, Iterable, Sequence
 
 from codex_ml.analysis.extractors import (
     extract_ast,
@@ -114,9 +114,9 @@ def _iter_py_files(root: Path) -> Iterable[Path]:
 def audit_repo(
     root: Path,
     *,
-    use_external_search: bool | None = None,
-    external_search_endpoint: str | None = None,
-    external_search_timeout: float | None = None,
+    use_external_search: Optional[bool] = None,
+    external_search_endpoint: Optional[str] = None,
+    external_search_timeout: Optional[float] = None,
 ) -> dict[str, Any]:
     results = []
     for path in _iter_py_files(root):
@@ -202,7 +202,7 @@ def audit_repo(
     return {"root": str(root), "files": results, "evidence": evidence}
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     ap = ArgparseJSONParser()
     ap.add_argument("--root", type=str, default=".")

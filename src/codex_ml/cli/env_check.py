@@ -33,7 +33,7 @@ def run_health_check(repo_root: Path) -> dict[str, int]:
     return results
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Run env & security health checks for _codex_.")
     parser.add_argument(
         "--repo-root",

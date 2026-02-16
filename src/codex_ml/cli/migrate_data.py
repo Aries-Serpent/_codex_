@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import json
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Union, Optional
 
 import typer
 from codex_ml.data.migration import AssignmentMappingMigration

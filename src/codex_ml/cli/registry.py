@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 import sys
-from typing import Optional
+from typing import Union, Optional
 
 from codex_ml.registry.mlflow_registry import (
     _HAS_MLFLOW,

@@ -28,7 +28,7 @@ import os
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict
-from typing import Annotated
+from typing import Union, Annotated
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -53,8 +53,8 @@ else:  # pragma: no cover - namespace stub without Typer attributes
         typer = None  # type: ignore[assignment]
 
 
-def _parse_env_overrides(values: Sequence[str]) -> dict[str, str | None]:
-    overrides: dict[str, str | None] = {}
+def _parse_env_overrides(values: Sequence[str]) -> dict[str, Optional[str]]:
+    overrides: dict[str, Optional[str]] = {}
     for raw in values:
         if "=" not in raw:
             overrides[raw] = None
@@ -65,7 +65,7 @@ def _parse_env_overrides(values: Sequence[str]) -> dict[str, str | None]:
 
 
 @contextmanager
-def _patched_environ(updates: Mapping[str, str | None]) -> Iterator[None]:
+def _patched_environ(updates: Mapping[str, Optional[str]]) -> Iterator[None]:
     original: dict[str, str] = {}
     removed: set[str] = set()
     try:
@@ -90,14 +90,14 @@ def _patched_environ(updates: Mapping[str, str | None]) -> Iterator[None]:
 
 
 def decide(
-    uri: str | None = None,
+    uri: Optional[str] = None,
     *,
     force: bool = False,
-    env_overrides: Mapping[str, str | None] | None = None,
+    env_overrides: Optional[Mapping[str, Optional[str]]] = None,
 ) -> GuardDecision:
     """Return the guard decision after applying ``env_overrides`` and ``uri``."""
 
-    overrides: dict[str, str | None] = dict(env_overrides or {})
+    overrides: dict[str, Optional[str]] = dict(env_overrides or {})
     if uri is not None:
         overrides["MLFLOW_TRACKING_URI"] = uri
     with _patched_environ(overrides):
@@ -111,7 +111,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
     @app.command("decide")
     def decide_cmd(
         uri: Annotated[
-            str | None,
+            Optional[str],
             typer.Option(
                 None,
                 "--uri",
@@ -119,7 +119,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
             ),
         ] = None,
         env: Annotated[
-            Iterable[str] | None,
+            Optional[Iterable[str]],
             typer.Option(
                 None,
                 "--env",
@@ -159,7 +159,7 @@ else:  # pragma: no cover - Typer missing
     app = None
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     """Entry point for ``python -m codex_ml.cli.tracking_decide``."""
 
     logger = init_json_logging()

@@ -29,7 +29,7 @@ import sys
 from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Union, Any, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -51,7 +51,7 @@ transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 _ = run_cmd
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     parser = ArgparseJSONParser(description=__doc__)
     parser.add_argument("--model-name", default="hf", help="model loader name (hf or decoder_only)")
@@ -133,7 +133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         model = model.to(args.device)
         torch.manual_seed(args.seed)
-        moderation_adapter: ModerationAdapter | None = None
+        moderation_adapter: Optional[ModerationAdapter] = None
         prompt_decision = None
         output_decision = None
         moderation_enabled = bool(

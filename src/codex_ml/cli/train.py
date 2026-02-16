@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 import os
 import sys
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Union, Optional, Any, Sequence
 
 try:
     from hydra.utils import to_absolute_path
@@ -40,7 +40,7 @@ _ = (ArgparseJSONParser, run_cmd)
 LOGGER = logging.getLogger(__name__)
 
 
-def _to_path(value: str | Path | None) -> Path | None:
+def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
     if value is None:
         return None
     return Path(to_absolute_path(str(value)))
@@ -67,7 +67,7 @@ def _cfg_to_list(value: Any) -> list[Any]:
     return [value]
 
 
-def _coerce_sequence(value: Any) -> list[Any] | None:
+def _coerce_sequence(value: Any) -> Optional[list[Any]]:
     """Return ``value`` as a list when it represents a textual sequence."""
 
     if value is None:
@@ -123,7 +123,7 @@ def _apply_prompt_sanitization(
     config_obj: Any,
     keys: Sequence[str],
     *,
-    update_dict: dict[str, Any] | None = None,
+    update_dict: Optional[dict[str, Any]] = None,
 ) -> int:
     """Sanitise string sequences stored under ``keys`` inside ``config_obj``."""
 
@@ -157,7 +157,7 @@ def _apply_prompt_sanitization(
     return total
 
 
-def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
+def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     artifacts_cfg = _cfg_to_dict(cfg.get("artifacts"))
     art_dir = _to_path(cfg.get("artifacts_dir") or artifacts_cfg.get("dir"))
 
@@ -209,7 +209,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     entry_cfg = _cfg_to_dict(plugin_cfg.get("entry_points"))
     entry_enable = bool(plugin_cfg.get("enable_entry_points", entry_cfg.get("enable", False)))
     entry_groups = entry_cfg.get("groups") or plugin_cfg.get("entry_point_groups")
-    groups_spec: dict[str, str] | list[str] | None = None
+    groups_spec: Optional[Union[dict[str, str], list[str]]] = None
     if isinstance(entry_groups, dict):
         groups_spec = {str(k): str(v) for k, v in entry_groups.items()}
     elif isinstance(entry_groups, (list, tuple, set)):
@@ -310,7 +310,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     seed_override = cfg.get("seed", None)
     if seed_override is None:
         seed_override = reproducibility_cfg.get("seed")
-    seed: int | None
+    seed: Optional[int]
     try:
         seed = int(seed_override) if seed_override is not None else None
     except (TypeError, ValueError):
@@ -345,7 +345,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     if batch_size is None:
         batch_size = optimizer_cfg.get("batch_size")
 
-    reasoning_cfg_dict: dict[str, Any] | None = None
+    reasoning_cfg_dict: Optional[dict[str, Any]] = None
     reasoning_section = cfg.get("reasoning")
     if isinstance(reasoning_section, (DictConfig, dict)):
         candidate = _cfg_to_dict(reasoning_section)
@@ -356,7 +356,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
             candidate = _cfg_to_dict(training_reasoning)
             reasoning_cfg_dict = candidate or None
 
-    evaluation_cfg_dict: dict[str, Any] | None = None
+    evaluation_cfg_dict: Optional[dict[str, Any]] = None
     evaluation_section = cfg.get("evaluation")
     if isinstance(evaluation_section, (DictConfig, dict)):
         evaluation_cfg_dict = _cfg_to_dict(evaluation_section) or None
@@ -365,7 +365,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         if isinstance(training_evaluation, (DictConfig, dict)):
             evaluation_cfg_dict = _cfg_to_dict(training_evaluation) or None
 
-    metadata_cfg: dict[str, Any] | None = None
+    metadata_cfg: Optional[dict[str, Any]] = None
     metadata_section = cfg.get("metadata")
     if isinstance(metadata_section, (DictConfig, dict)):
         metadata_cfg = _cfg_to_dict(metadata_section) or None

@@ -28,7 +28,7 @@ import platform
 import runpy
 import sys
 from importlib import import_module
-from typing import Any, NoReturn
+from typing import Union, Optional, Any, NoReturn
 
 try:  # pragma: no cover - structured logging is optional offline
     from codex_ml.codex_structured_logging import (
@@ -90,7 +90,7 @@ def train_main() -> int:
         return int(getattr(exc, "code", 0) or 0)
 
 
-def _load_main(module_path: str, failures: list[str]) -> int | None:
+def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
     """Attempt to import *module_path* and call its ``main`` attribute if present."""
 
     try:
@@ -242,7 +242,7 @@ def eval_main() -> int:
             return 0
         override = os.environ.get("CODEX_EVAL_ENTRY")
         override_failed = False
-        override_error: str | None = None
+        override_error: Optional[str] = None
         if override:
             try:
                 rc = _dispatch_from_spec(override)

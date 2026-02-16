@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Iterable
+from typing import Union, Optional, Iterable
 
 from ..detectors.aggregate import scorecard
 from ..detectors.experiment_summary import detector_experiment_summary
@@ -30,13 +30,13 @@ def _default_detectors() -> Iterable:
     return [detector_unified_training, detector_experiment_summary]
 
 
-def run(argv: list[str] | None = None) -> int:
+def run(argv: Optional[list[str]] = None) -> int:
     sc = scorecard(_default_detectors(), weights=None)
     sys.stdout.write(json.dumps(sc) + "\n")
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     # Simple command shim: `python -m codex_ml.cli.detectors run`
     args = sys.argv[1:] if argv is None else argv
     if not args or args[0] == "run":
