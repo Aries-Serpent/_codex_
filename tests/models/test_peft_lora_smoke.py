@@ -16,9 +16,9 @@ from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora  # noqa: E402
 
 
 def _tiny_torch_model():
-    from transformers import AutoConfig, AutoModelForSequenceClassification
+    from transformers import AutoModelForSequenceClassification, BertConfig
 
-    cfg = AutoConfig(
+    cfg = BertConfig(
         hidden_size=32,
         num_hidden_layers=1,
         num_attention_heads=4,

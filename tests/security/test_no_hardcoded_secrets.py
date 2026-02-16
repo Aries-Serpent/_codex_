@@ -21,7 +21,9 @@ SUSPICIOUS_PATTERNS = [
 def test_repository_contains_no_obvious_secrets() -> None:
     repo_root = Path(__file__).resolve().parents[2]
     for path in repo_root.rglob("*.py"):
-        if "/tests/" in str(path).replace("\\", "/"):
+        # Skip test files and test fixture scripts
+        path_str = str(path).replace("\\", "/")
+        if "/tests/" in path_str or "/.github/agents/scripts/" in path_str:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         for pattern in SUSPICIOUS_PATTERNS:

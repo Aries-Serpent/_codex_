@@ -391,7 +391,7 @@ def main(argv: Sequence[str] | None = None) -> Any:
 
     backup_argv = sys.argv[:]
     try:
-        sys.argv = [prog_name, *overrides]
+        sys.argv = [parser.prog, *overrides]
         return _hydra_entry()
     finally:
         sys.argv = backup_argv

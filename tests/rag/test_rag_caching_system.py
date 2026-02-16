@@ -20,10 +20,14 @@ class TestEmbeddingCache:
     def test_embedding_cache_initialization(self):
         """Test embedding cache initialization."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                cache = EmbeddingCache(cache_dir=tmpdir)
+                config = EmbeddingCacheConfig(
+                    enable_disk_cache=True, 
+                    disk_cache_path=tmpdir
+                )
+                cache = EmbeddingCache(config)
                 assert cache is not None
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
@@ -31,10 +35,14 @@ class TestEmbeddingCache:
     def test_embedding_cache_hit(self):
         """Test embedding cache hit."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                cache = EmbeddingCache(cache_dir=tmpdir)
+                config = EmbeddingCacheConfig(
+                    enable_disk_cache=True,
+                    disk_cache_path=tmpdir
+                )
+                cache = EmbeddingCache(config)
 
                 text = "test document for caching"
                 embedding = [0.1, 0.2, 0.3]
@@ -53,10 +61,14 @@ class TestEmbeddingCache:
     def test_embedding_cache_miss(self):
         """Test embedding cache miss."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                cache = EmbeddingCache(cache_dir=tmpdir)
+                config = EmbeddingCacheConfig(
+                    enable_disk_cache=True,
+                    disk_cache_path=tmpdir
+                )
+                cache = EmbeddingCache(config)
 
                 # Try to get non-existent entry
                 result = cache.get("non_existent_text")
@@ -68,17 +80,21 @@ class TestEmbeddingCache:
     def test_embedding_cache_persistence(self):
         """Test that embedding cache persists across instances."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
+                config = EmbeddingCacheConfig(
+                    enable_disk_cache=True,
+                    disk_cache_path=tmpdir
+                )
                 # Create first cache instance
-                cache1 = EmbeddingCache(cache_dir=tmpdir)
+                cache1 = EmbeddingCache(config)
                 text = "persistent text"
                 embedding = [0.5, 0.6, 0.7]
                 cache1.set(text, embedding)
 
                 # Create second cache instance
-                cache2 = EmbeddingCache(cache_dir=tmpdir)
+                cache2 = EmbeddingCache(config)
                 cached_emb = cache2.get(text)
 
                 if cached_emb is not None:
