@@ -960,6 +960,13 @@ def mock_sentence_transformer(monkeypatch):
             )
         except AttributeError:
             pass
+        try:
+            monkeypatch.setattr(
+                "codex.rag._model_utils.SentenceTransformer",
+                MockSentenceTransformer
+            )
+        except AttributeError:
+            pass
     except ImportError:
         # sentence_transformers not available, nothing to mock
         pass
