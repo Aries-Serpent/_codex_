@@ -69,9 +69,6 @@ jobs:
       - name: Run validation
         id: validate
         timeout-minutes: 45
-        env:
-          # Ensure xdist workers load plugins via entry points
-          PYTEST_PLUGINS: "xdist.plugin,xdist.looponfail,pytest_timeout"
         run: |
           case "${{ matrix.test-group }}" in
             quick)
