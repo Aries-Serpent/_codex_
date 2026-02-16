@@ -12,6 +12,7 @@ Tests cover:
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -114,12 +115,10 @@ class TestFormatBytes:
 class TestBuildCommand:
     """Test RAG index build command."""
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_build_basic(self, mock_indexer, runner: CliRunner, temp_test_files: Path):
+    @patch("codex.rag.build_index_from_files")
+    def test_build_basic(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify basic build command execution."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.build_index.return_value = {"chunks": 10, "documents": 2}
+        mock_build_index.return_value = Path("/tmp/test_index")
 
         result = runner.invoke(app, [
             "build",
@@ -128,15 +127,12 @@ class TestBuildCommand:
         ])
 
         assert result.exit_code == 0
-        mock_indexer.assert_called_once()
-        mock_instance.build_index.assert_called()
+        mock_build_index.assert_called_once()
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_build_with_tenant(self, mock_indexer, runner: CliRunner, temp_test_files: Path):
+    @patch("codex.rag.build_index_from_files")
+    def test_build_with_tenant(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify build with tenant ID."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.build_index.return_value = {"chunks": 5}
+        mock_build_index.return_value = Path("/tmp/test_index")
 
         result = runner.invoke(app, [
             "build",
@@ -146,12 +142,10 @@ class TestBuildCommand:
 
         assert result.exit_code == 0
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_build_with_chunk_size(self, mock_indexer, runner: CliRunner, temp_test_files: Path):
+    @patch("codex.rag.build_index_from_files")
+    def test_build_with_chunk_size(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify build with custom chunk size."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.build_index.return_value = {"chunks": 8}
+        mock_build_index.return_value = Path("/tmp/test_index")
 
         result = runner.invoke(app, [
             "build",
@@ -166,8 +160,8 @@ class TestBuildCommand:
         result = runner.invoke(app, ["build"])
         assert result.exit_code != 0
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_build_invalid_chunk_size(self, mock_indexer, runner: CliRunner, temp_test_files: Path):
+    @patch("codex.rag.build_index_from_files")
+    def test_build_invalid_chunk_size(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
         """Verify chunk size validation."""
         result = runner.invoke(app, [
             "build",
@@ -180,7 +174,7 @@ class TestBuildCommand:
 class TestQueryCommand:
     """Test RAG query command."""
 
-    @patch("codex.cli_rag.RAGRetriever")
+    @patch("codex.rag.Retriever")
     def test_query_basic(self, mock_retriever, runner: CliRunner):
         """Verify basic query execution."""
         mock_instance = MagicMock()
@@ -192,7 +186,7 @@ class TestQueryCommand:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "test query",
+            "test query",
             "--index-name", "test_index"
         ])
 
@@ -200,7 +194,7 @@ class TestQueryCommand:
         assert "Result 1" in result.output
         mock_instance.query.assert_called_once()
 
-    @patch("codex.cli_rag.RAGRetriever")
+    @patch("codex.rag.Retriever")
     def test_query_with_top_k(self, mock_retriever, runner: CliRunner):
         """Verify query with custom top_k."""
         mock_instance = MagicMock()
@@ -209,13 +203,13 @@ class TestQueryCommand:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "test",
+            "test",
             "--top-k", "10"
         ])
 
         assert result.exit_code == 0
 
-    @patch("codex.cli_rag.RAGRetriever")
+    @patch("codex.rag.Retriever")
     def test_query_with_tenant(self, mock_retriever, runner: CliRunner):
         """Verify query with tenant isolation."""
         mock_instance = MagicMock()
@@ -224,7 +218,7 @@ class TestQueryCommand:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "test",
+            "test",
             "--tenant-id", "tenant_456"
         ])
 
@@ -235,7 +229,7 @@ class TestQueryCommand:
         result = runner.invoke(app, ["query"])
         assert result.exit_code != 0
 
-    @patch("codex.cli_rag.RAGRetriever")
+    @patch("codex.rag.Retriever")
     def test_query_json_output(self, mock_retriever, runner: CliRunner):
         """Verify JSON output format."""
         mock_instance = MagicMock()
@@ -244,8 +238,8 @@ class TestQueryCommand:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "test",
-            "--output-json"
+            "test",
+            "--format", "json"
         ])
 
         assert result.exit_code == 0
@@ -255,33 +249,47 @@ class TestQueryCommand:
 class TestStatsCommand:
     """Test RAG statistics command."""
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_stats_basic(self, mock_indexer, runner: CliRunner):
+    def test_stats_basic(self, runner: CliRunner, tmp_path: Path):
         """Verify basic stats output."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.get_stats.return_value = {
-            "total_documents": 100,
-            "total_chunks": 500,
-            "index_size_bytes": 1024 * 1024
+        # Create mock index directory structure
+        tenant_path = tmp_path / "default"
+        index_path = tenant_path / "default"
+        index_path.mkdir(parents=True)
+        
+        # Create metadata file
+        metadata = {
+            "num_chunks": 500,
+            "embedding_dim": 384,
+            "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+            "created_at": "2024-01-01T00:00:00Z"
         }
-
-        result = runner.invoke(app, ["stats"])
+        (index_path / "metadata.json").write_text(json.dumps(metadata))
+        
+        result = runner.invoke(app, ["stats", "--index-dir", str(tmp_path)])
 
         assert result.exit_code == 0
-        assert "100" in result.output
-        assert "500" in result.output
+        assert "500" in result.output  # chunks
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_stats_with_index_name(self, mock_indexer, runner: CliRunner):
+    def test_stats_with_index_name(self, runner: CliRunner, tmp_path: Path):
         """Verify stats for specific index."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.get_stats.return_value = {"total_documents": 50}
+        # Create mock index directory structure
+        tenant_path = tmp_path / "default"
+        index_path = tenant_path / "specific_index"
+        index_path.mkdir(parents=True)
+        
+        # Create metadata file
+        metadata = {
+            "num_chunks": 50,
+            "embedding_dim": 384,
+            "model_name": "test-model",
+            "created_at": "2024-01-01T00:00:00Z"
+        }
+        (index_path / "metadata.json").write_text(json.dumps(metadata))
 
         result = runner.invoke(app, [
             "stats",
-            "--index-name", "specific_index"
+            "--index-name", "specific_index",
+            "--index-dir", str(tmp_path)
         ])
 
         assert result.exit_code == 0
@@ -289,17 +297,24 @@ class TestStatsCommand:
 class TestListCommand:
     """Test RAG index listing command."""
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_list_indices(self, mock_indexer, runner: CliRunner):
+    def test_list_indices(self, runner: CliRunner, tmp_path: Path):
         """Verify listing of available indices."""
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.list_indices.return_value = [
-            {"name": "index1", "documents": 100},
-            {"name": "index2", "documents": 50}
-        ]
+        # Create mock tenant directory structure
+        tenant_path = tmp_path / "default"
+        tenant_path.mkdir(parents=True)
+        
+        # Create two mock indices
+        for idx_name, num_chunks in [("index1", 100), ("index2", 50)]:
+            index_path = tenant_path / idx_name
+            index_path.mkdir()
+            metadata = {
+                "num_chunks": num_chunks,
+                "model_name": "test-model",
+                "created_at": "2024-01-01T00:00:00Z"
+            }
+            (index_path / "metadata.json").write_text(json.dumps(metadata))
 
-        result = runner.invoke(app, ["list"])
+        result = runner.invoke(app, ["list", "--index-dir", str(tmp_path)])
 
         assert result.exit_code == 0
         assert "index1" in result.output
