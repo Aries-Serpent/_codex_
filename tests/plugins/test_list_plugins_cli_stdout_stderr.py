@@ -16,7 +16,7 @@ def test_json_output_stays_on_stdout() -> None:
     env = os.environ.copy()
     env["PYTHONWARNINGS"] = "ignore"  # Suppress Python warnings
     env["CODEX_LOG_LEVEL"] = "ERROR"  # Suppress info/warning logs
-    
+
     proc = subprocess.run(
         [sys.executable, "-m", "codex_ml.cli.list_plugins", "--format", "json"],
         capture_output=True,

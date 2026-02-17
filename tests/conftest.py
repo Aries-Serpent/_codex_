@@ -91,7 +91,7 @@ def pytest_configure(config: pytest.Config) -> None:
     if _ORIGINAL_IMPORTORSKIP is None:
         _ORIGINAL_IMPORTORSKIP = pytest.importorskip
         pytest.importorskip = _importorskip_optional_dep
-    
+
     # Note: Do NOT call torch.set_default_device() here.
     # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
     # causing "Cannot copy out of meta tensor" errors. RAG modules already

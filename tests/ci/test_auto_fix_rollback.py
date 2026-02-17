@@ -6,16 +6,21 @@ with safety guarantees.
 """
 
 import subprocess
+
+# Import the module to test
+import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
 
-# Import the module to test
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from auto_fix_with_rollback import AutoFixWithRollback, PreFlightError, FixApplicationError
+from auto_fix_with_rollback import (
+    AutoFixWithRollback,
+    FixApplicationError,
+    PreFlightError,
+)
 
 
 class TestAutoFixWithRollback:
@@ -26,7 +31,7 @@ class TestAutoFixWithRollback:
         """Create a temporary git repository for testing."""
         repo_path = tmp_path / "test_repo"
         repo_path.mkdir()
-        
+
         # Initialize git repo
         subprocess.run(["git", "init"], cwd=repo_path, check=True, capture_output=True)
         subprocess.run(
@@ -41,11 +46,11 @@ class TestAutoFixWithRollback:
             check=True,
             capture_output=True,
         )
-        
+
         # Create directory structure
         (repo_path / "src").mkdir()
         (repo_path / "tests").mkdir()
-        
+
         # Create initial commit
         test_file = repo_path / "src" / "test.py"
         test_file.write_text("# Test file\n")
@@ -56,7 +61,7 @@ class TestAutoFixWithRollback:
             check=True,
             capture_output=True,
         )
-        
+
         return repo_path
 
     @pytest.fixture
@@ -89,7 +94,7 @@ class TestAutoFixWithRollback:
         # Modify a file
         test_file = temp_repo / "src" / "test.py"
         test_file.write_text("# Modified\n")
-        
+
         # Should detect modifications
         assert fixer._check_git_clean() is False
 
@@ -102,7 +107,7 @@ class TestAutoFixWithRollback:
         # Make src directory read-only
         src_dir = temp_repo / "src"
         src_dir.chmod(0o444)
-        
+
         try:
             result = fixer._check_files_writable()
             # May succeed on some systems, so just verify it runs
@@ -222,9 +227,9 @@ class TestAutoFixWithRollback:
     def test_apply_fix_with_retry_success(self, fixer):
         """Test fix application with successful fix on first try."""
         mock_fix = Mock(return_value=True)
-        
+
         result = fixer.apply_fix_with_retry("test fix", mock_fix)
-        
+
         assert result is True
         assert mock_fix.call_count == 1
         assert fixer.metrics["fixes_attempted"] == 1
@@ -233,9 +238,9 @@ class TestAutoFixWithRollback:
     def test_apply_fix_with_retry_failure(self, fixer):
         """Test fix application with persistent failure."""
         mock_fix = Mock(side_effect=Exception("Fix failed"))
-        
+
         result = fixer.apply_fix_with_retry("test fix", mock_fix)
-        
+
         assert result is False
         assert mock_fix.call_count == fixer.max_retries
         assert fixer.metrics["fixes_attempted"] == 1
@@ -245,9 +250,9 @@ class TestAutoFixWithRollback:
         """Test fix application succeeding after retries."""
         # Fail twice, succeed on third attempt
         mock_fix = Mock(side_effect=[Exception("Fail 1"), Exception("Fail 2"), True])
-        
+
         result = fixer.apply_fix_with_retry("test fix", mock_fix)
-        
+
         assert result is True
         assert mock_fix.call_count == 3
         assert fixer.metrics["fixes_succeeded"] == 1
@@ -255,17 +260,17 @@ class TestAutoFixWithRollback:
     def test_save_metrics(self, fixer, tmp_path):
         """Test metrics saving to file."""
         output_file = tmp_path / "metrics.json"
-        
+
         fixer.metrics["fixes_attempted"] = 5
         fixer.metrics["fixes_succeeded"] = 3
         fixer.save_metrics(str(output_file))
-        
+
         assert output_file.exists()
-        
+
         import json
         with open(output_file) as f:
             saved_metrics = json.load(f)
-        
+
         assert saved_metrics["fixes_attempted"] == 5
         assert saved_metrics["fixes_succeeded"] == 3
         assert "end_time" in saved_metrics
@@ -308,20 +313,20 @@ class TestIntegration:
             cwd=repo,
             capture_output=True,
         )
-        
+
         (repo / "src").mkdir()
         (repo / "tests").mkdir()
-        
+
         test_file = repo / "src" / "test.py"
         test_file.write_text("# test\n")
-        
+
         subprocess.run(["git", "add", "."], cwd=repo, capture_output=True)
         subprocess.run(
             ["git", "commit", "-m", "init"], cwd=repo, capture_output=True
         )
 
         fixer = AutoFixWithRollback(repo, verbose=False)
-        
+
         # This should pass pre-flight checks
         with patch.object(fixer, "_check_tools_available", return_value=True):
             result = fixer.run_pre_flight_checks()

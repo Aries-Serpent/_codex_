@@ -6,13 +6,14 @@ and report generation functionality.
 """
 
 import json
+
+# Import the module to test
+import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
 
-# Import the module to test
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
 from collect_telemetry import TelemetryCollector

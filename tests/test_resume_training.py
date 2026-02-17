@@ -67,7 +67,7 @@ def test_resume_flag_without_checkpoint(tmp_path):
 
 def test_optimizer_steps_and_metrics(tmp_path):
     """Test optimizer steps and metrics during training.
-    
+
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
     This is a known PyTorch bug, not a test or code issue.
     """
@@ -109,7 +109,7 @@ def test_optimizer_steps_and_metrics(tmp_path):
 
 def test_optimizer_resume_state(tmp_path):
     """Test optimizer state resumption.
-    
+
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
     This is a known PyTorch bug, not a test or code issue.
     """

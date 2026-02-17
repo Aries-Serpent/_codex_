@@ -130,7 +130,7 @@ def _torch_version_less_than(version_str: str) -> bool:
 )
 def test_tail_flush_triggers_optimizer_step(tokenizer_stub: _FakeTokenizer, tmp_path: Path) -> None:
     """Test that gradient accumulation tail flush triggers optimizer step.
-    
+
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
     This is a known PyTorch bug, not a test or code issue.
     """
