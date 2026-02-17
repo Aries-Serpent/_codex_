@@ -134,10 +134,10 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         (r'(A[KS]IA[A-Z0-9]{16})', '[REDACTED_AWS_KEY]'),
         # JWT tokens (three base64 segments separated by dots)
         (r'(eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)', '[REDACTED_JWT]'),
-        # Long base64-like strings (50+ chars) - increased threshold to reduce false positives
-        # This catches most tokens while avoiding legitimate identifiers
-        # Increased from 40 to 50 to be even more conservative
-        (r'([A-Za-z0-9+/]{50,}={0,2})', '[REDACTED_TOKEN]'),
+        # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
+        # This threshold balances security (catching tokens) with false positive reduction
+        # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
+        (r'([A-Za-z0-9+/]{40,}={0,2})', '[REDACTED_TOKEN]'),
     ]
 
     # Default whitelist patterns for common non-sensitive identifiers

@@ -76,6 +76,20 @@ def mock_repo(tmp_path):
     (repo / "test.py").write_text("# test")
     (repo / "README.md").write_text("# readme")
 
+    # Commit initial files so git ls-files works
+    subprocess.run(
+        ["git", "add", "."],
+        cwd=str(repo),
+        capture_output=True,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-m", "Initial commit"],
+        cwd=str(repo),
+        capture_output=True,
+        check=True,
+    )
+
     return repo
 
 
