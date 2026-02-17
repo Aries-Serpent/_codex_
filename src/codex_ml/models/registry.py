@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 import os
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, cast, Optional, Union
 
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
@@ -78,7 +78,7 @@ def _resolve_offline_checkpoint(
     *,
     default_remote: str,
     default_subdir: str,
-    specific_env: str | None = None,
+    specific_env: Optional[str] = None,
 ) -> str:
     """Resolve a checkpoint path respecting offline-first semantics."""
 
@@ -207,13 +207,13 @@ def _build_offline_tinyllama(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     return _load_hf_model("causal", cfg, "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 
 
-def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:
+def register_model(name: str, obj: Optional[Any] = None, *, override: bool = False) -> Any:
     """Register a model constructor under ``name``."""
 
     return model_registry.register(name, obj, override=override)
 
 
-def _normalise_device(device: Any | None) -> Any | None:
+def _normalise_device(device: Optional[Any]) -> Optional[Any]:
     if not _HAS_TORCH:
         if device in {None, "auto", "cuda"}:
             return "cpu"
@@ -244,7 +244,7 @@ _DTYPE_ALIASES = {
 }
 
 
-def _resolve_torch_dtype(value: Any | None):
+def _resolve_torch_dtype(value: Optional[Any]):
     """Best-effort conversion of ``value`` to a ``torch.dtype``."""
 
     if not _HAS_TORCH:
@@ -294,11 +294,11 @@ def _validate_lora_config(config: dict[str, Any]) -> dict[str, Any]:
 
 def get_model(
     name: str,
-    cfg: dict[str, Any] | None = None,
+    cfg: Optional[dict[str, Any]] = None,
     *,
-    device: Any | None = None,
-    dtype: Any | None = None,
-    adapter_loader: Any | None = None,
+    device: Optional[Any] = None,
+    dtype: Optional[Any] = None,
+    adapter_loader: Optional[Any] = None,
 ) -> Any:
     """Instantiate a model by name with optional device/dtype overrides."""
 

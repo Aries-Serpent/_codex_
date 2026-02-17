@@ -14,7 +14,7 @@ import os
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Union, Annotated, Any
+from typing import Union, Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
     import yaml  # type: ignore
