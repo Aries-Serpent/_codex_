@@ -1,8 +1,6 @@
 """
 from __future__ import annotations
 
-import logging
-logger = logging.getLogger(__name__)
 Capability Audit Trending Dashboard Generator (v1.0.0)
 
 Generates visual trending analysis across multiple audit runs:
@@ -28,10 +26,13 @@ Roles: [Audit Orchestrator], [Data Visualization Engineer] ⚡ Energy: 5
 
 import argparse
 import json
+import logging
 import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 

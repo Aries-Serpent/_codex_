@@ -31,8 +31,6 @@ Last Updated: 2026-01-16
 from __future__ import annotations
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Archival Compliance Checker (P6 Atomic Patchset)
 
 Purpose:
@@ -57,6 +55,7 @@ Notes / Limitations:
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys

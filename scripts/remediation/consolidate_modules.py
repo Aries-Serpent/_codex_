@@ -26,24 +26,14 @@ Exit Codes:
 
 Author: Codex Team
 Last Updated: 2026-01-16
+
+"""
+
 import logging
-logger = logging.getLogger(__name__)
-
-"""
-
-
-"""
-
-Python Module Consolidation Script
-
-Consolidates duplicate Python modules by:
-1. Removing scripts/analysis/ (keeping tools/dupinv/)
-2. Updating all imports
-3. Cleaning up references
-"""
-
 import re
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 class ModuleConsolidator:

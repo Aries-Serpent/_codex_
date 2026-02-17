@@ -26,40 +26,18 @@ Exit Codes:
 
 Author: Codex Team
 Last Updated: 2026-01-16
-import logging
-logger = logging.getLogger(__name__)
 
 """
 
-
-"""
-
-[Analysis]: Legacy Import Detector (v1.2.1)
-Scans the codebase for imports that reference the 'Split Brain' root directories
-(training, tokenization, models) instead of the `src` namespace.
-
-Note: 'hydra' is excluded from LEGACY_MODULES because it refers to the hydra-core
-PyPI package, not a local module. The local hydra directory was renamed to config_legacy.
-
-Update v1.2.1:
-- Removed 'hydra' from LEGACY_MODULES (imports refer to PyPI package hydra-core)
-- Ignore relative ImportFrom (level >= 1) to avoid false positives (e.g., `from .models import ...`)
-- Optional flag --include-relative to re-include relative imports for debugging.
-- Report includes a 'relative' boolean field for transparency.
-
-Output: reports/legacy_import_usage.csv
-
-Flags:
- --root-only          : Scan only repository root (exclude src/, tests/, scripts/, deploy/)
- --include-tests      : Include tests/ directory in the scan (default: included)
- --include-relative   : Include relative ImportFrom entries (level >= 1) in the output
-"""
 import argparse
 import ast
 import csv
+import logging
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[2]
 # Note: 'hydra' removed - it refers to PyPI package, not local module
