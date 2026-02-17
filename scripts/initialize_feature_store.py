@@ -42,6 +42,8 @@ Usage:
 
 import argparse
 import logging
+logger = logging.getLogger(__name__)
+
 import sys
 from pathlib import Path
 
@@ -61,7 +63,6 @@ except ImportError as e:
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-logger = logging.getLogger(__name__)
 
 
 def load_config(config_path: str) -> dict:

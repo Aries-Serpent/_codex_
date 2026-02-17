@@ -30,6 +30,9 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
+import logging
+logger = logging.getLogger(__name__)
+
 """
 import logging
 logger = logging.getLogger(__name__)

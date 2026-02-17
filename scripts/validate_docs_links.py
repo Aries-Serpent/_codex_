@@ -640,18 +640,6 @@ class LinkValidator:
         """Legacy method - now calls worker. Kept for compatibility."""
         result = self._validate_markdown_file_worker(md_file)
         self._merge_file_result(result)
-        link_pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
-        links = re.finditer(link_pattern, content)
-
-        for match in links:
-            text = match.group(1)
-            url = match.group(2)
-            line_num = content[:match.start()].count('\n') + 1
-
-            # Check if link is inside a code block
-            in_code_block = any(start <= match.start() < end for start, end in code_blocks)
-
-            self._validate_link(md_file, url, text, line_num, in_code_block)
 
     def _validate_link(self, md_file: Path, url: str, text: str, line_num: int, in_code_block: bool = False):
         """Validate a single link."""

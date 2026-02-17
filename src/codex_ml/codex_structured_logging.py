@@ -16,6 +16,8 @@ import contextvars
 import functools
 import json
 import logging
+logger = logging.getLogger(__name__)
+
 import os
 import shlex
 import subprocess

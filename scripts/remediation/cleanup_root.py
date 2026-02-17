@@ -26,12 +26,14 @@ Exit Codes:
 
 Author: Codex Team
 Last Updated: 2026-01-16
-"""
-
-
-"""
 import logging
 logger = logging.getLogger(__name__)
+
+"""
+
+
+"""
+
 [Remediation]: Root Directory Sanitation
 Purpose: Moves generated report and summary files from the repository root
 to a dedicated archive directory to reduce cognitive load and clutter.

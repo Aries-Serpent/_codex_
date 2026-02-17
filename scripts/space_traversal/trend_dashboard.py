@@ -33,6 +33,9 @@ from datetime import datetime
 from pathlib import Path
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 def calculate_trend(scores: list[float]) -> tuple[str, str, str]:
     """
     Calculate trend direction and classification

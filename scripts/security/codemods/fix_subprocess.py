@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import logging
 
+logger = logging.getLogger(__name__)
+
 # Import from the libcst-based implementation
 try:
     from .fix_subprocess_libcst import transform_file as _transform_file_libcst
@@ -28,7 +30,6 @@ except ImportError as e:
     _transform_file_libcst = None
 
 # Configure logging
-logger = logging.getLogger(__name__)
 
 # Safeguards
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
