@@ -25,8 +25,6 @@ from typing import Any, Mapping, Optional, Sequence
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from omegaconf import DictConfig, OmegaConf
 
-
-
 logger = logging.getLogger(__name__)
 
 def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:

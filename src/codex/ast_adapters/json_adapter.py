@@ -4,10 +4,10 @@ JSON AST Adapter for Codex AST Framework.
 Provides JSON parsing capabilities with standardized node representation.
 """
 
-from pathlib import Path
-from typing import Dict, Optional, Any
-import uuid
 import json
+import uuid
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -15,10 +15,10 @@ from .base_adapter import BaseASTAdapter, StandardizedASTNode
 class JSONASTAdapter(BaseASTAdapter):
     """
     AST adapter for JSON files.
-    
+
     Parses JSON documents into standardized AST representation, extracting
     structure, keys, values, and metadata.
-    
+
     Example:
         >>> adapter = JSONASTAdapter()
         >>> root = adapter.parse('{"key": "value", "list": [1, 2, 3]}')
@@ -90,12 +90,12 @@ class JSONASTAdapter(BaseASTAdapter):
     ) -> StandardizedASTNode:
         """
         Convert JSON data structure to StandardizedASTNode.
-        
+
         Args:
             data: JSON data (dict, list, scalar)
             parent: Parent node
             key: Key name if this is an object value
-            
+
         Returns:
             StandardizedASTNode representing the data
         """
@@ -161,10 +161,10 @@ class JSONASTAdapter(BaseASTAdapter):
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract JSON-specific metadata from a node.
-        
+
         Args:
             node: Node to extract metadata from
-            
+
         Returns:
             Dictionary of metadata
         """
@@ -185,13 +185,13 @@ class JSONASTAdapter(BaseASTAdapter):
     def get_value_at_path(self, path: str) -> Any:
         """
         Get value at a specific path in the JSON structure.
-        
+
         Path uses dot notation for objects and brackets for arrays.
         Example: "config.database.host" or "items[0].name"
-        
+
         Args:
             path: Dot-separated path to value
-            
+
         Returns:
             Value at the path, or None if not found
         """

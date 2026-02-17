@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/status_update_report.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/status_update_report.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging
@@ -64,9 +62,8 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
-
     import yaml  # type: ignore
+    from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 except Exception as exc:
     logger.debug(f"Exception: {exc}")
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)

@@ -34,7 +34,7 @@ def test_train_probe_json_output() -> None:
     env = os.environ.copy()
     env["PYTHONWARNINGS"] = "ignore"  # Suppress Python warnings
     env["CODEX_LOG_LEVEL"] = "ERROR"  # Suppress info/warning logs
-    
+
     proc = subprocess.run(
         [sys.executable, "-c", command, "--probe-json"],
         capture_output=True,

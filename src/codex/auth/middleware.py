@@ -6,10 +6,10 @@ Supports JWT, API key, and OAuth authentication methods.
 
 Usage:
     from codex.auth.middleware import AuthMiddleware, require_auth
-    
+
     app = FastAPI()
     app.add_middleware(AuthMiddleware, token_manager=token_manager)
-    
+
     @app.get("/protected")
     @require_auth(scopes=["read"])
     async def protected_endpoint(request: Request):
@@ -69,10 +69,10 @@ class APIKeyValidator:
     def __init__(self, secret_key: Optional[str] = None):
         """
         Initialize API key validator.
-        
+
         Args:
             secret_key: Secret key for HMAC hashing. If not provided, reads from environment.
-        
+
         Raises:
             ValueError: If AUTH_SECRET_KEY is not set in production environment.
         """
@@ -100,10 +100,10 @@ class APIKeyValidator:
     def _compute_hmac(self, api_key: str) -> str:
         """
         Compute a computationally expensive hash of an API key.
-        
+
         Args:
             api_key: The API key to hash
-        
+
         Returns:
             PBKDF2-HMAC-SHA256 hash as hexadecimal string
         """
@@ -119,7 +119,7 @@ class APIKeyValidator:
                     name: str = "default") -> None:
         """
         Register an API key.
-        
+
         Args:
             key_hash: Hashed API key (use hash_api_key() method to generate)
             user_id: Associated user ID
@@ -137,10 +137,10 @@ class APIKeyValidator:
     def validate_key(self, api_key: str) -> Optional[Dict[str, Any]]:
         """
         Validate an API key using secure HMAC-SHA256 hashing.
-        
+
         Args:
             api_key: The API key to validate
-        
+
         Returns:
             Key info dict if valid, None otherwise
         """
@@ -156,12 +156,12 @@ class APIKeyValidator:
     def hash_api_key(self, api_key: str) -> str:
         """
         Hash an API key using HMAC-SHA256.
-        
+
         Use this method when registering API keys to get the secure hash.
-        
+
         Args:
             api_key: The API key to hash
-        
+
         Returns:
             HMAC-SHA256 hash of the API key
         """
@@ -170,10 +170,10 @@ class APIKeyValidator:
     def revoke_key(self, key_hash: str) -> bool:
         """
         Revoke an API key.
-        
+
         Args:
             key_hash: Hash of the key to revoke
-        
+
         Returns:
             True if key was revoked
         """
@@ -189,7 +189,7 @@ class RateLimiter:
     def __init__(self, requests_per_window: int = 100, window_seconds: int = 60):
         """
         Initialize rate limiter.
-        
+
         Args:
             requests_per_window: Maximum requests per window
             window_seconds: Window duration in seconds
@@ -201,10 +201,10 @@ class RateLimiter:
     def is_allowed(self, key: str) -> bool:
         """
         Check if request is allowed.
-        
+
         Args:
             key: Rate limit key (e.g., user ID or IP)
-        
+
         Returns:
             True if request is allowed
         """
@@ -228,10 +228,10 @@ class RateLimiter:
     def get_remaining(self, key: str) -> int:
         """
         Get remaining requests in current window.
-        
+
         Args:
             key: Rate limit key
-        
+
         Returns:
             Number of remaining requests
         """
@@ -248,7 +248,7 @@ class RateLimiter:
     def cleanup(self) -> int:
         """
         Clean up old entries.
-        
+
         Returns:
             Number of keys cleaned up
         """
@@ -268,10 +268,10 @@ class RateLimiter:
 class AuthMiddleware:
     """
     Production authentication middleware.
-    
+
     Integrates with FastAPI/Starlette to provide request authentication.
     Supports JWT tokens, API keys, and OAuth tokens.
-    
+
     Example:
         app = FastAPI()
         token_manager = TokenManager(secret_key="your-secret")
@@ -282,7 +282,7 @@ class AuthMiddleware:
                  api_key_validator: Optional[APIKeyValidator] = None):
         """
         Initialize authentication middleware.
-        
+
         Args:
             app: ASGI application
             token_manager: Token manager for JWT validation
@@ -340,10 +340,10 @@ class AuthMiddleware:
     def _authenticate(self, headers: Dict[bytes, bytes]) -> AuthResult:
         """
         Authenticate request from headers.
-        
+
         Args:
             headers: Request headers
-        
+
         Returns:
             AuthResult with authentication status
         """
@@ -454,11 +454,11 @@ class AuthMiddleware:
 def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[AuthMethod]] = None):
     """
     Decorator to require authentication on endpoint.
-    
+
     Args:
         scopes: Required scopes (any of these grants access)
         methods: Allowed authentication methods
-    
+
     Usage:
         @require_auth(scopes=["read", "write"])
         async def protected_endpoint(request: Request):
@@ -500,10 +500,10 @@ def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[Auth
 def get_current_user(request) -> Optional[str]:
     """
     Get current authenticated user from request.
-    
+
     Args:
         request: FastAPI/Starlette request object
-    
+
     Returns:
         User ID if authenticated, None otherwise
     """
@@ -516,10 +516,10 @@ def get_current_user(request) -> Optional[str]:
 def get_current_scopes(request) -> Set[str]:
     """
     Get current user's scopes from request.
-    
+
     Args:
         request: FastAPI/Starlette request object
-    
+
     Returns:
         Set of scopes
     """

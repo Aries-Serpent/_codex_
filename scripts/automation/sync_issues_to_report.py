@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/automation/sync_issues_to_report.py [options]
-    
+
     Examples:
     $ python scripts/automation/sync_issues_to_report.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Stub: Sync issues/PRs into a status report JSON (offline-friendly placeholder).

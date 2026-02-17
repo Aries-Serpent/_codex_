@@ -8,7 +8,7 @@ from if-no-files-found: error in GitHub Actions upload-artifact steps.
 
 Usage:
     python scripts/ensure_test_artifacts.py [--coverage] [--junit] [--patterns]
-    
+
 Options:
     --coverage    Ensure coverage artifacts (coverage.xml, htmlcov/)
     --junit       Ensure JUnit XML report exists
@@ -32,10 +32,10 @@ from typing import List
 def windows_safe_timestamp(fmt: str = 'iso') -> str:
     """
     Generate Windows-safe timestamp string.
-    
+
     Args:
         fmt: Format type - 'iso', 'compact', or 'readable'
-        
+
     Returns:
         Formatted timestamp string safe for Windows filenames
     """
@@ -55,10 +55,10 @@ def windows_safe_timestamp(fmt: str = 'iso') -> str:
 def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
     """
     Ensure coverage.xml exists.
-    
+
     Args:
         path: Path to coverage.xml file
-        
+
     Returns:
         True if file exists or was created, False on error
     """
@@ -88,10 +88,10 @@ def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
 def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
     """
     Ensure htmlcov/ directory exists with index.html.
-    
+
     Args:
         path: Path to htmlcov directory
-        
+
     Returns:
         True if directory exists or was created, False on error
     """
@@ -143,10 +143,10 @@ def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
 def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
     """
     Ensure JUnit XML report exists.
-    
+
     Args:
         path: Path to junit.xml file
-        
+
     Returns:
         True if file exists or was created, False on error
     """
@@ -178,10 +178,10 @@ def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
 def ensure_test_pattern_report(path: Path = Path("test_pattern_report.txt")) -> bool:
     """
     Ensure test pattern analysis report exists.
-    
+
     Args:
         path: Path to test pattern report file
-        
+
     Returns:
         True if file exists or was created, False on error
     """
@@ -226,11 +226,11 @@ def ensure_bandit_reports(
 ) -> bool:
     """
     Ensure Bandit security scan reports exist.
-    
+
     Args:
         json_path: Path to bandit JSON report
         txt_path: Path to bandit text report
-        
+
     Returns:
         True if files exist or were created, False on error
     """
@@ -312,7 +312,7 @@ This is a placeholder report - no actual security scan was performed.
 def main() -> int:
     """
     Main entry point for artifact guarantee script.
-    
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """

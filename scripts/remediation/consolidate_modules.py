@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/consolidate_modules.py [options]
-    
+
     Examples:
     $ python scripts/remediation/consolidate_modules.py --help
 
@@ -40,8 +40,8 @@ Consolidates duplicate Python modules by:
 3. Cleaning up references
 """
 
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 class ModuleConsolidator:
@@ -189,7 +189,7 @@ class ModuleConsolidator:
                     print("⚠ Files differ - manual review needed")
                     self.changes.append(f"Manual review: {root_file} vs {src_file}")
         else:
-            print(f"One or both files don't exist:")
+            print("One or both files don't exist:")
             print(f"  {root_file.exists()}: {root_file}")
             print(f"  {src_file.exists()}: {src_file}")
         print()

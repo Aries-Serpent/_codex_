@@ -55,10 +55,10 @@ class TicketCustomField(_ZendeskBaseModel):
 
 class Ticket(_ZendeskBaseModel):
     """Representation of a Zendesk Ticket.
-    
+
     This model maps 1:1 to the Zendesk Ticket API schema, providing the
     authoritative contract for agent interactions with Zendesk tickets.
-    
+
     Attributes aligned with Zendesk API v2:
         https://developer.zendesk.com/api-reference/ticketing/tickets/tickets/
     """
@@ -163,12 +163,12 @@ class Ticket(_ZendeskBaseModel):
 
     def diff(self, other: Ticket) -> list[dict[str, Any]]:
         """Return JSON patch operations describing differences with ``other``.
-        
+
         This enables drift detection and change tracking for ticket state.
-        
+
         Args:
             other: Another Ticket instance to compare against
-            
+
         Returns:
             List of JSON Patch operations
         """
@@ -207,11 +207,11 @@ class Ticket(_ZendeskBaseModel):
 
     def to_api_payload(self, *, for_create: bool = True) -> dict[str, Any]:
         """Convert to Zendesk API request payload.
-        
+
         Args:
             for_create: If True, format for ticket creation (POST)
                        If False, format for ticket update (PUT)
-        
+
         Returns:
             Dictionary suitable for Zendesk API request
         """

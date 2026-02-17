@@ -136,13 +136,13 @@ def lite_sequence_evaluation(
 ) -> dict[str, float]:
     """
     Lightweight sequence evaluation without heavy dependencies.
-    
+
     Computes basic text metrics for sequence-to-sequence tasks.
-    
+
     Args:
         predictions: Predicted text sequences
         references: Reference/target text sequences
-        
+
     Returns:
         Dictionary with metrics: token_accuracy, exact_match, perplexity_proxy, samples
     """

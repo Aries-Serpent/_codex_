@@ -17,10 +17,10 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
 import hashlib
 import io
 import json
+import logging
 import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
@@ -33,7 +33,6 @@ from datetime import UTC, datetime
 from itertools import count
 from pathlib import Path
 from typing import Any
-
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +58,6 @@ except Exception:  # pragma: no cover - optional dependency failures tolerated
 
 from .atomic_io import safe_write_bytes, safe_write_text
 from .runmeta import collect_run_meta
-
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config

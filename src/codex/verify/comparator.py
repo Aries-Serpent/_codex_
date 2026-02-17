@@ -57,7 +57,7 @@ class ComparisonDetail:
 @dataclass
 class ComparisonResult:
     """Result of behavior comparison.
-    
+
     Attributes:
         result: Overall result (pass, fail, warn)
         baseline_hash: Hash of baseline output
@@ -134,7 +134,7 @@ def _run_script(
     env_overrides: Optional[dict[str, str]] = None,
 ) -> tuple[str, str, int]:
     """Run a Python script and capture output.
-    
+
     Returns:
         tuple of (stdout, stderr, exit_code)
     """
@@ -188,7 +188,7 @@ def _compare_outputs(
     mode: ComparisonMode,
 ) -> tuple[bool, Optional[str]]:
     """Compare two outputs based on mode.
-    
+
     Returns:
         tuple of (match, diff_or_None)
     """
@@ -219,9 +219,9 @@ def compare(
     flakiness_runs: int = DEFAULT_FLAKINESS_RUNS,
 ) -> ComparisonResult:
     """Compare baseline and patched code behavior.
-    
+
     Runs both versions with the same inputs and compares outputs.
-    
+
     Args:
         baseline_dir: Directory with baseline code
         patched_dir: Directory with patched code
@@ -229,10 +229,10 @@ def compare(
         mode: Comparison tolerance mode
         timeout: Execution timeout per run
         flakiness_runs: Number of runs for flakiness detection
-        
+
     Returns:
         ComparisonResult with comparison details
-        
+
     Example:
         >>> result = compare(Path("baseline/"), Path("patched/"))
         >>> print(f"Result: {result.result}")
@@ -351,13 +351,13 @@ def generate_tests(
     output_dir: Path,
 ) -> list[Path]:
     """Generate snapshot tests from sample I/O.
-    
+
     Args:
         source_dir: Directory with source code
         sample_inputs: list of input files
         golden_outputs: list of expected output files
         output_dir: Directory for generated tests
-        
+
     Returns:
         list of generated test file paths
     """
@@ -379,7 +379,7 @@ class TestBehaviorSnapshots:
     @pytest.fixture
     def source_dir(self):
         return Path("{source_dir}")
-    
+
     @pytest.fixture
     def golden_dir(self):
         return Path("{golden_dir}")
@@ -393,7 +393,7 @@ class TestBehaviorSnapshots:
         """Test against golden output {i+1}."""
         input_file = Path("{input_path}")
         expected_file = Path("{output_path}")
-        
+
         # Run and compare
         env = os.environ.copy()
         env["PYTHONHASHSEED"] = "42"
@@ -404,7 +404,7 @@ class TestBehaviorSnapshots:
             text=True,
             env=env,
         )
-        
+
         expected = expected_file.read_text() if expected_file.exists() else ""
         assert result.stdout.strip() == expected.strip()
 '''

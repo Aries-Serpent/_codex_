@@ -183,7 +183,7 @@ class SentencePieceAdapter:
         **kwargs: object,
     ) -> list[int]:
         """Encode text to token IDs with optional padding.
-        
+
         Parameters
         ----------
         text
@@ -196,7 +196,7 @@ class SentencePieceAdapter:
             Maximum sequence length when padding is enabled
         **kwargs
             Additional keyword arguments for compatibility
-            
+
         Returns
         -------
         list[int]
@@ -239,7 +239,7 @@ class SentencePieceAdapter:
         **kwargs: object,
     ) -> list[list[int]]:
         """Encode multiple texts to token IDs with optional padding.
-        
+
         Parameters
         ----------
         texts
@@ -252,7 +252,7 @@ class SentencePieceAdapter:
             Maximum sequence length when padding is enabled
         **kwargs
             Additional keyword arguments for compatibility
-            
+
         Returns
         -------
         list[list[int]]

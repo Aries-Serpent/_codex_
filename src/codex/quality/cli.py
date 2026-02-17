@@ -32,7 +32,7 @@ import yaml
 @click.option("--warn-on", multiple=True, help="Severity levels to warn on (warning)")
 def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: tuple):
     """Detect code smells based on configured thresholds.
-    
+
     Examples:
         codex-smell --format json --output smells.json
         codex-smell --fail-on error --warn-on warning

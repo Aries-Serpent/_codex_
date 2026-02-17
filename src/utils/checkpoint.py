@@ -19,7 +19,6 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any, Callable
 
-
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch as _torch  # type: ignore[import-not-found]

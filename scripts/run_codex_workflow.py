@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/run_codex_workflow.py [options]
-    
+
     Examples:
     $ python scripts/run_codex_workflow.py --help
 

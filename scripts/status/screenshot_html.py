@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/screenshot_html.py [options]
-    
+
     Examples:
     $ python scripts/status/screenshot_html.py --help
 

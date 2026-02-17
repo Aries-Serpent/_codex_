@@ -41,7 +41,7 @@ DOCS_HUB_TEMPLATE = """
             color: var(--text-primary);
             line-height: 1.6;
         }}
-        
+
         /* Header */
         .header {{
             background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
@@ -66,7 +66,7 @@ DOCS_HUB_TEMPLATE = """
             font-size: 0.85rem;
             margin-top: 15px;
         }}
-        
+
         /* Search */
         .search-container {{
             max-width: 600px;
@@ -87,14 +87,14 @@ DOCS_HUB_TEMPLATE = """
         .search-box:focus {{
             border-color: var(--accent);
         }}
-        
+
         /* Container */
         .container {{
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }}
-        
+
         /* Category Grid */
         .category-grid {{
             display: grid;
@@ -102,7 +102,7 @@ DOCS_HUB_TEMPLATE = """
             gap: 25px;
             margin-bottom: 40px;
         }}
-        
+
         /* Category Card */
         .category-card {{
             background: var(--bg-card);
@@ -133,7 +133,7 @@ DOCS_HUB_TEMPLATE = """
             font-size: 0.8rem;
             color: var(--text-secondary);
         }}
-        
+
         /* Doc Items */
         .doc-list {{
             padding: 10px;
@@ -173,7 +173,7 @@ DOCS_HUB_TEMPLATE = """
         .badge-new {{ background: var(--accent-green); color: #000; }}
         .badge-updated {{ background: var(--accent-orange); color: #000; }}
         .badge-api {{ background: var(--accent-purple); color: #fff; }}
-        
+
         /* Quick Links */
         .quick-links {{
             display: flex;
@@ -201,7 +201,7 @@ DOCS_HUB_TEMPLATE = """
             border-color: var(--accent);
             background: var(--bg-card);
         }}
-        
+
         /* Mermaid Diagram Section */
         .diagram-section {{
             margin: 40px 0;
@@ -222,7 +222,7 @@ DOCS_HUB_TEMPLATE = """
             border-radius: 8px;
             overflow-x: auto;
         }}
-        
+
         /* Footer */
         .footer {{
             text-align: center;
@@ -240,11 +240,11 @@ DOCS_HUB_TEMPLATE = """
         <div class="subtitle">{repo_name} - Comprehensive Documentation Portal</div>
         <span class="version">v{version}</span>
     </div>
-    
+
     <div class="search-container">
         <input type="text" class="search-box" placeholder="🔍 Search documentation..." id="searchInput" onkeyup="filterDocs()">
     </div>
-    
+
     <div class="container">
         <!-- Quick Links -->
         <div class="quick-links">
@@ -255,7 +255,7 @@ DOCS_HUB_TEMPLATE = """
             <a href="#architecture" class="quick-link">🏗️ Architecture</a>
             <a href="#wiki" class="quick-link">📝 Wiki</a>
         </div>
-        
+
         <!-- Architecture Diagram -->
         <div class="diagram-section" id="architecture">
             <h2>🏗️ System Architecture</h2>
@@ -266,12 +266,12 @@ flowchart TB
         AR[audit_runner.py] --> TD[(TrendDatabase)]
         AR --> TC[trend_compare.py]
         AR --> VIZ[Visualization]
-        
+
         subgraph Storage["💾 Storage Layer"]
             TD --> SQLite[(SQLite DB)]
             TD --> Migrations[Schema Migrations]
         end
-        
+
         subgraph Visualization["📊 Visualization"]
             VIZ --> ASCII[viz_ascii.py]
             VIZ --> HTML[viz_html.py]
@@ -280,7 +280,7 @@ flowchart TB
             VIZ --> SWAGGER[viz_swagger.py]
             VIZ --> DOCS[viz_docs_hub.py]
         end
-        
+
         subgraph Integration["🔗 Integration"]
             WH[webhooks.py] --> Slack
             WH --> Teams
@@ -289,21 +289,21 @@ flowchart TB
             CI --> Jenkins
         end
     end
-    
+
     subgraph Outputs["📤 Generated Outputs"]
         Dashboard[HTML Dashboard]
         Reports[Trend Reports]
         Wiki[Wiki Bundle]
         APIDoc[API Documentation]
     end
-    
+
     VIZ --> Dashboard
     TC --> Reports
     DOCS --> Wiki
     SWAGGER --> APIDoc
             </div>
         </div>
-        
+
         <!-- Documentation Categories -->
         <div class="category-grid" id="docGrid">
             <!-- Getting Started -->
@@ -352,7 +352,7 @@ flowchart TB
                     </div>
                 </div>
             </div>
-            
+
             <!-- Audit Pipeline -->
             <div class="category-card" id="audit-pipeline">
                 <div class="category-header">
@@ -427,7 +427,7 @@ flowchart TB
                     </div>
                 </div>
             </div>
-            
+
             <!-- API Reference -->
             <div class="category-card" id="api-reference">
                 <div class="category-header">
@@ -469,7 +469,7 @@ flowchart TB
                     </div>
                 </div>
             </div>
-            
+
             <!-- CLI Tools -->
             <div class="category-card" id="cli-tools">
                 <div class="category-header">
@@ -522,7 +522,7 @@ flowchart TB
                     </div>
                 </div>
             </div>
-            
+
             <!-- Configuration -->
             <div class="category-card">
                 <div class="category-header">
@@ -561,7 +561,7 @@ flowchart TB
                     </div>
                 </div>
             </div>
-            
+
             <!-- Wiki -->
             <div class="category-card" id="wiki">
                 <div class="category-header">
@@ -629,7 +629,7 @@ flowchart TB
                 </div>
             </div>
         </div>
-        
+
         <!-- Data Flow Diagram -->
         <div class="diagram-section">
             <h2>📊 Audit Pipeline Data Flow</h2>
@@ -642,39 +642,39 @@ sequenceDiagram
     participant Viz as Visualization
     participant CI as CI Integration
     participant Webhook as Webhooks
-    
+
     User->>CLI: audit run
     CLI->>CLI: Execute audit checks
     CLI->>DB: store_snapshot()
     DB-->>CLI: run_id
-    
+
     User->>CLI: check-regressions
     CLI->>DB: get_trend()
     CLI->>Compare: compare_runs()
     Compare-->>CLI: ComparisonResult[]
-    
+
     alt Regressions Detected
         CLI->>Webhook: send_slack_notification()
         Webhook-->>CLI: delivery status
     end
-    
+
     User->>CLI: dashboard
     CLI->>DB: get_latest_scores()
     CLI->>Viz: generate_dashboard()
     Viz-->>User: HTML Dashboard
-    
+
     User->>CLI: show-trend &lt;cap&gt;
     CLI->>DB: get_trend(capability)
     CLI->>Viz: sparkline(), bar_chart()
     Viz-->>User: ASCII visualization
-    
+
     Note over CI: CI/CD Integration
     CI->>CLI: trigger audit
     CLI->>CI: write_github_step_summary()
     CLI->>CI: set_github_output()
             </div>
         </div>
-        
+
         <!-- Module Dependency Diagram -->
         <div class="diagram-section">
             <h2>📦 Module Dependencies</h2>
@@ -685,7 +685,7 @@ graph LR
         TC[trend_compare.py]
         AR[audit_runner.py]
     end
-    
+
     subgraph Viz["Visualization"]
         VA[viz_ascii.py]
         VH[viz_html.py]
@@ -694,18 +694,18 @@ graph LR
         VS[viz_swagger.py]
         VDH[viz_docs_hub.py]
     end
-    
+
     subgraph Integration["Integration"]
         WH[webhooks.py]
         CI[ci_integration.py]
         PF[performance.py]
     end
-    
+
     subgraph Storage["Storage"]
         MG[migrations/]
         DB[(SQLite)]
     end
-    
+
     AR --> TD
     AR --> TC
     AR --> VA
@@ -713,32 +713,32 @@ graph LR
     AR --> WH
     AR --> CI
     AR --> PF
-    
+
     TD --> MG
     TD --> DB
-    
+
     TC --> TD
-    
+
     VH --> VA
     VCB --> VA
     VAC --> VA
     VS --> VA
     VDH --> VA
-    
+
     WH --> CI
-    
+
     style TD fill:#58a6ff
     style AR fill:#3fb950
     style VH fill:#a371f7
             </div>
         </div>
     </div>
-    
+
     <div class="footer">
         <p>Generated by Audit Pipeline v{version} • {timestamp}</p>
         <p>📚 <a href="https://github.com/{repo_name}" style="color: var(--accent);">View on GitHub</a></p>
     </div>
-    
+
     <script>
         // Initialize Mermaid
         mermaid.initialize({{
@@ -753,12 +753,12 @@ graph LR
                 tertiaryColor: '#161b22'
             }}
         }});
-        
+
         // Search functionality
         function filterDocs() {{
             const query = document.getElementById('searchInput').value.toLowerCase();
             const items = document.querySelectorAll('.doc-item');
-            
+
             items.forEach(item => {{
                 const title = item.querySelector('.title').textContent.toLowerCase();
                 const desc = item.querySelector('.desc').textContent.toLowerCase();
@@ -766,7 +766,7 @@ graph LR
                 item.style.display = match ? 'flex' : 'none';
             }});
         }}
-        
+
         // Open document
         function openDoc(path) {{
             // In production, this would open the actual document

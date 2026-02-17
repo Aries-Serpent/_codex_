@@ -40,13 +40,13 @@ logger = logging.getLogger(__name__)
 
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
-    
+
     Supports:
     - Personal Access Token (PAT) validation
     - Fine-grained PAT creation/rotation
     - Scope/permission management
     - Token expiration tracking
-    
+
     Example:
         >>> config = ProviderConfig(
         ...     provider_type=ProviderType.GITHUB,
@@ -59,7 +59,7 @@ class GitHubTokenProvider(TokenProvider):
 
     def __init__(self, config: ProviderConfig):
         """Initialize GitHub provider.
-        
+
         Args:
             config: Provider configuration with GitHub API settings
         """
@@ -81,20 +81,20 @@ class GitHubTokenProvider(TokenProvider):
         **kwargs: Any
     ) -> RotationResult:
         """Rotate GitHub token.
-        
+
         For fine-grained PATs, creates a new token with same scopes.
         For classic PATs, returns error (manual rotation required).
-        
+
         Args:
             secret_id: Token ID or note
             **kwargs: Optional rotation parameters:
                 - scopes: List of new scopes
                 - expires_in_days: Days until expiration
                 - note: Token description
-                
+
         Returns:
             RotationResult with new token details
-            
+
         Raises:
             RotationError: If rotation fails
         """
@@ -153,14 +153,14 @@ class GitHubTokenProvider(TokenProvider):
         secret_value: Optional[str] = None
     ) -> bool:
         """Validate GitHub token.
-        
+
         Args:
             secret_id: Token ID
             secret_value: Optional token value to validate
-            
+
         Returns:
             True if token is valid
-            
+
         Raises:
             ValidationError: If validation fails
         """
@@ -199,10 +199,10 @@ class GitHubTokenProvider(TokenProvider):
 
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get GitHub token metadata.
-        
+
         Args:
             secret_id: Token ID
-            
+
         Returns:
             SecretMetadata with token details
         """
@@ -223,10 +223,10 @@ class GitHubTokenProvider(TokenProvider):
 
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get GitHub token expiration.
-        
+
         Args:
             secret_id: Token ID
-            
+
         Returns:
             Expiration datetime or None
         """
@@ -239,10 +239,10 @@ class GitHubTokenProvider(TokenProvider):
 
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get GitHub token scopes.
-        
+
         Args:
             secret_id: Token ID
-            
+
         Returns:
             List of scope strings
         """
@@ -260,15 +260,15 @@ class GitHubTokenProvider(TokenProvider):
         expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create new GitHub token.
-        
+
         Args:
             name: Token description/note
             scopes: List of permissions
             expires_in_days: Days until expiration
-            
+
         Returns:
             RotationResult with new token details
-            
+
         Raises:
             NotImplementedError: This is a stub that must be implemented
         """
@@ -284,14 +284,14 @@ class GitHubTokenProvider(TokenProvider):
         scopes: List[str]
     ) -> bool:
         """Update GitHub token scopes.
-        
+
         For fine-grained PATs, updates permission set.
         For classic PATs, requires recreation.
-        
+
         Args:
             secret_id: Token ID
             scopes: New list of scopes
-            
+
         Returns:
             True if updated successfully
         """
@@ -311,10 +311,10 @@ class GitHubTokenProvider(TokenProvider):
 
     def revoke_secret(self, secret_id: str) -> bool:
         """Revoke GitHub token.
-        
+
         Args:
             secret_id: Token ID to revoke
-            
+
         Returns:
             True if revoked successfully
         """
@@ -340,10 +340,10 @@ class GitHubTokenProvider(TokenProvider):
         filter_tags: Optional[Dict[str, str]] = None
     ) -> List[SecretMetadata]:
         """List all GitHub tokens.
-        
+
         Args:
             filter_tags: Optional tag filters
-            
+
         Returns:
             List of SecretMetadata
         """

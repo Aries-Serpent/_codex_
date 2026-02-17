@@ -13,7 +13,7 @@ import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Any, Optional
 
 import yaml
 

@@ -62,10 +62,10 @@ def load_action_log(
     if not log_path.exists():
         logger.warning(f"Action log not found: {log_path}")
         return []
-    
+
     if hours and not since:
         since = datetime.now(timezone.utc) - timedelta(hours=hours)
-    
+
     entries = []
     with open(log_path, 'r') as f:
         for line in f:
@@ -87,7 +87,7 @@ def load_action_log(
                 entries.append(entry)
             except json.JSONDecodeError:
                 continue
-    
+
     return entries
 
 
@@ -95,7 +95,7 @@ def load_pattern_store(store_path: Path) -> Dict[str, Any]:
     """Load the pattern learning store."""
     if not store_path.exists():
         return {"patterns": {}, "statistics": {}}
-    
+
     try:
         with open(store_path, 'r') as f:
             return json.load(f)
@@ -107,12 +107,12 @@ def load_objectives(objectives_path: Path) -> Dict[str, Any]:
     """Load objectives tracker and extract status."""
     if not objectives_path.exists():
         return {"primary": None, "status": "unknown"}
-    
+
     content = objectives_path.read_text()
-    
+
     # Extract key metrics from markdown
     objectives = {"primary": None, "aligned": True, "metrics": []}
-    
+
     # Look for objective status
     if "✅ Achieved" in content:
         objectives["status"] = "achieved"
@@ -120,7 +120,7 @@ def load_objectives(objectives_path: Path) -> Dict[str, Any]:
         objectives["status"] = "in_progress"
     else:
         objectives["status"] = "unknown"
-    
+
     return objectives
 
 
@@ -146,33 +146,33 @@ def extract_session_context(
         "blockers": [],
         "references": [],
     }
-    
+
     # Extract from action entries
     for entry in action_entries:
         action = entry.get('action', '').lower()
         path = entry.get('path', '')
         summary = entry.get('summary', '')
         timestamp = entry.get('timestamp', '')
-        
+
         # Track file operations
         if action in ('create', 'created'):
             if path and path not in context["files_created"]:
                 context["files_created"].append(path)
             if summary:
                 context["completed_tasks"].append(f"Created {path}")
-        
+
         elif action in ('edit', 'edited', 'update', 'updated'):
             if path and path not in context["files_modified"]:
                 context["files_modified"].append(path)
             if summary:
                 context["completed_tasks"].append(f"Updated {path}")
-        
+
         # Track session info
         if not context["started"] and timestamp:
             context["started"] = timestamp
         if timestamp:
             context["ended"] = timestamp
-    
+
     # Extract patterns from pattern store
     if "learning_log" in pattern_store:
         for log_entry in pattern_store["learning_log"][-3:]:
@@ -180,16 +180,16 @@ def extract_session_context(
             learned = log_entry.get("patterns_learned", [])
             context["patterns_applied"].extend(applied)
             context["patterns_learned"].extend(learned)
-            
+
             if log_entry.get("session"):
                 context["session_id"] = log_entry.get("session")
             if log_entry.get("pr"):
                 context["pr_number"] = log_entry.get("pr")
-    
+
     # Deduplicate
     context["patterns_applied"] = list(set(context["patterns_applied"]))
     context["patterns_learned"] = list(set(context["patterns_learned"]))
-    
+
     return context
 
 
@@ -199,11 +199,11 @@ def generate_recommended_actions(
 ) -> List[str]:
     """Generate recommended next actions based on context."""
     actions = []
-    
+
     # If there are pending tasks
     if context.get("pending_tasks"):
         actions.append(f"Continue with: {context['pending_tasks'][0]}")
-    
+
     # Pattern-based recommendations
     patterns = pattern_store.get("patterns", {})
     if patterns:
@@ -216,12 +216,12 @@ def generate_recommended_actions(
             actions.append(
                 f"Apply high-success patterns: {', '.join(p[0] for p in top_patterns)}"
             )
-    
+
     # Standard recommendations
     actions.append("Review cognitive brain objectives for alignment")
     actions.append("Validate changes with tests before committing")
     actions.append("Update action_log.ndjson with file operations")
-    
+
     return actions
 
 
@@ -231,7 +231,7 @@ def generate_references(
 ) -> List[Dict[str, str]]:
     """Generate key reference links."""
     references = []
-    
+
     # Standard cognitive brain references
     standard_refs = [
         ("Pattern Store", ".codex/cognitive_brain/pattern_learning_store.json"),
@@ -240,15 +240,15 @@ def generate_references(
         ("Short-term Planset", ".codex/plans/cognitive_brain_short_term_planset.md"),
         ("Long-term Planset", ".codex/plans/cognitive_brain_long_term_planset.md"),
     ]
-    
+
     for name, path in standard_refs:
         if (repo_root / path).exists():
             references.append({"name": name, "path": path})
-    
+
     # Add recent files
     for f in context.get("files_created", [])[:3]:
         references.append({"name": f"Created: {Path(f).name}", "path": f})
-    
+
     return references
 
 
@@ -260,15 +260,15 @@ def render_template(
     if not template_path.exists():
         logger.warning(f"Template not found: {template_path}")
         return ""
-    
+
     template_content = template_path.read_text()
-    
+
     # Simple template rendering (basic Jinja2-like syntax)
     # For full Jinja2, you would: from jinja2 import Template
     # But we'll do a simpler approach to avoid dependencies
-    
+
     result = template_content
-    
+
     # Replace simple variables {{ var }}
     for key, value in context.items():
         if isinstance(value, str):
@@ -277,44 +277,44 @@ def render_template(
             result = result.replace(f"{{{{ {key} }}}}", str(value))
         elif isinstance(value, bool):
             result = result.replace(f"{{{{ {key} }}}}", str(value).lower())
-    
+
     return result
 
 
 def generate_markdown_prompt(context: Dict[str, Any]) -> str:
     """Generate a markdown continuation prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
-    
+
     prompt = f"""# Session Continuation Prompt
 
-> **Generated:** {timestamp}  
-> **Session ID:** {context.get('session_id', 'N/A')}  
-> **PR:** #{context.get('pr_number', 'N/A')}  
+> **Generated:** {timestamp}
+> **Session ID:** {context.get('session_id', 'N/A')}
+> **PR:** #{context.get('pr_number', 'N/A')}
 > **Status:** {context.get('status', 'in_progress')}
 
 ---
 
 ## 🎯 Session Summary
 
-**Started:** {context.get('started', 'N/A')}  
+**Started:** {context.get('started', 'N/A')}
 **Last Phase:** {context.get('last_phase', 'unknown')}
 
 ### What Was Completed
 """
-    
+
     for task in context.get('completed_tasks', [])[:10]:
         prompt += f"- [x] {task}\n"
-    
+
     if len(context.get('completed_tasks', [])) > 10:
         prompt += f"- ... and {len(context['completed_tasks']) - 10} more\n"
-    
+
     prompt += "\n### What Remains\n"
     for task in context.get('pending_tasks', []):
         prompt += f"- [ ] {task}\n"
-    
+
     if not context.get('pending_tasks'):
         prompt += "- No pending tasks\n"
-    
+
     prompt += f"""
 ---
 
@@ -334,30 +334,30 @@ def generate_markdown_prompt(context: Dict[str, Any]) -> str:
 
 ### Created
 """
-    
+
     for f in context.get('files_created', [])[:10]:
         prompt += f"- `{f}`\n"
-    
+
     if len(context.get('files_created', [])) > 10:
         prompt += f"- ... and {len(context['files_created']) - 10} more\n"
-    
+
     prompt += "\n### Modified\n"
     for f in context.get('files_modified', [])[:10]:
         prompt += f"- `{f}`\n"
-    
+
     if len(context.get('files_modified', [])) > 10:
         prompt += f"- ... and {len(context['files_modified']) - 10} more\n"
-    
+
     prompt += "\n---\n\n## 🎯 Recommended Next Actions\n\n"
-    
+
     for i, action in enumerate(context.get('recommended_actions', []), 1):
         prompt += f"{i}. {action}\n"
-    
+
     prompt += "\n---\n\n## 🔗 Key References\n\n"
-    
+
     for ref in context.get('references', []):
         prompt += f"- {ref['name']}: `{ref['path']}`\n"
-    
+
     prompt += f"""
 ---
 
@@ -369,47 +369,47 @@ def generate_markdown_prompt(context: Dict[str, Any]) -> str:
 
 ---
 
-**Generated By:** Automated Continuation Prompt Generator  
+**Generated By:** Automated Continuation Prompt Generator
 **Template:** standard.md
 """
-    
+
     return prompt
 
 
 def generate_pr_comment_prompt(context: Dict[str, Any]) -> str:
     """Generate a PR comment format prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
-    
+
     tasks_total = len(context.get('completed_tasks', [])) + len(context.get('pending_tasks', []))
-    
+
     prompt = f"""## 📋 Session Continuation
 
 > **Session:** {context.get('session_id', 'N/A')} | **PR:** #{context.get('pr_number', 'N/A')} | **Status:** {context.get('status', 'in_progress')}
 
-**Completed:** {len(context.get('completed_tasks', []))}/{tasks_total} tasks  
-**Files:** {len(context.get('files_created', []))} created, {len(context.get('files_modified', []))} modified  
+**Completed:** {len(context.get('completed_tasks', []))}/{tasks_total} tasks
+**Files:** {len(context.get('files_created', []))} created, {len(context.get('files_modified', []))} modified
 **Last Phase:** {context.get('last_phase', 'unknown')}
 
 ### ✅ Done
 """
-    
+
     for task in context.get('completed_tasks', [])[-5:]:
         prompt += f"- {task}\n"
-    
+
     if len(context.get('completed_tasks', [])) > 5:
         prompt += f"- ... and {len(context['completed_tasks']) - 5} more\n"
-    
+
     prompt += "\n### 📝 Pending\n"
-    
+
     for task in context.get('pending_tasks', [])[:5]:
         prompt += f"- {task}\n"
-    
+
     if len(context.get('pending_tasks', [])) > 5:
         prompt += f"- ... and {len(context['pending_tasks']) - 5} more\n"
-    
+
     if not context.get('pending_tasks'):
         prompt += "- No pending tasks\n"
-    
+
     prompt += f"""
 ### 🔄 Continue With
 
@@ -417,21 +417,21 @@ def generate_pr_comment_prompt(context: Dict[str, Any]) -> str:
 @copilot {context.get('activation_command', 'Continue with pending tasks')}
 ```
 """
-    
+
     if context.get('blockers'):
         prompt += "\n### ⚠️ Blockers\n"
         for blocker in context['blockers']:
             prompt += f"- {blocker}\n"
-    
+
     prompt += f"\n---\n*Generated: {timestamp}*"
-    
+
     return prompt
 
 
 def generate_json_prompt(context: Dict[str, Any]) -> str:
     """Generate a JSON format prompt."""
     timestamp = datetime.now(timezone.utc).isoformat()
-    
+
     output = {
         "version": "1.0.0",
         "generated": timestamp,
@@ -447,7 +447,7 @@ def generate_json_prompt(context: Dict[str, Any]) -> str:
             "completed": context.get("completed_tasks", []),
             "pending": context.get("pending_tasks", []),
             "completion_rate": (
-                len(context.get("completed_tasks", [])) / 
+                len(context.get("completed_tasks", [])) /
                 max(1, len(context.get("completed_tasks", [])) + len(context.get("pending_tasks", [])))
             )
         },
@@ -472,7 +472,7 @@ def generate_json_prompt(context: Dict[str, Any]) -> str:
         "activation_command": context.get("activation_command", "Continue with pending tasks"),
         "blockers": context.get("blockers", [])
     }
-    
+
     return json.dumps(output, indent=2)
 
 
@@ -484,18 +484,18 @@ def save_prompt(
 ) -> Path:
     """Save the generated prompt to a file."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     session_part = f"_{session_id}" if session_id else ""
-    
+
     if format_type == "json":
         filename = f"continuation{session_part}_{timestamp}.json"
     else:
         filename = f"continuation{session_part}_{timestamp}.md"
-    
+
     output_path = output_dir / filename
     output_path.write_text(prompt)
-    
+
     logger.info(f"Saved prompt to: {output_path}")
     return output_path
 
@@ -560,20 +560,20 @@ def main():
         action='store_true',
         help="Suppress informational output"
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.generate and not args.from_action_log:
         parser.print_help()
         return
-    
+
     repo_root = get_repo_root()
-    
+
     # Load data sources
     action_log_path = repo_root / '.codex' / 'action_log.ndjson'
     pattern_store_path = repo_root / '.codex' / 'cognitive_brain' / 'pattern_learning_store.json'
     # objectives_tracker.md is loaded via pattern store
-    
+
     # Extract context
     if args.from_action_log:
         action_entries = load_action_log(action_log_path, hours=args.hours)
@@ -594,7 +594,7 @@ def main():
             "blockers": [],
         }
         pattern_store = load_pattern_store(pattern_store_path)
-    
+
     # Override with CLI args
     if args.session_id:
         context["session_id"] = args.session_id
@@ -602,13 +602,13 @@ def main():
         context["pr_number"] = args.pr
     if args.pending_tasks:
         context["pending_tasks"] = args.pending_tasks
-    
+
     context["activation_command"] = args.activation_command
-    
+
     # Generate recommendations and references
     context["recommended_actions"] = generate_recommended_actions(context, pattern_store)
     context["references"] = generate_references(context, repo_root)
-    
+
     # Generate prompt based on format
     if args.format == 'json':
         prompt = generate_json_prompt(context)
@@ -616,12 +616,12 @@ def main():
         prompt = generate_pr_comment_prompt(context)
     else:
         prompt = generate_markdown_prompt(context)
-    
+
     # Output
     if args.output:
         output_dir = Path(args.output)
         save_prompt(prompt, output_dir, args.format, context.get("session_id"))
-    
+
     if not args.quiet:
         print(prompt)
 

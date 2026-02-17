@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/viz_html.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/viz_html.py --help
 

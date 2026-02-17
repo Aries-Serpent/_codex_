@@ -120,10 +120,10 @@ REPO = "_codex_"
 
 def run_gh_cli(args: List[str]) -> Optional[str]:
     """Run GitHub CLI command and return output.
-    
+
     Args:
         args: Command arguments
-        
+
     Returns:
         Command output or None on error
     """
@@ -146,25 +146,25 @@ def run_gh_cli(args: List[str]) -> Optional[str]:
 
 def fetch_commit_check_runs(sha: str) -> List[Dict[str, Any]]:
     """Fetch check runs for a commit using gh CLI.
-    
+
     Args:
         sha: Commit SHA
-        
+
     Returns:
         List of check run data
     """
     logger.info(f"Fetching check runs for {sha[:7]}...")
-    
+
     # Use gh API to get check runs
     output = run_gh_cli([
         "api",
         f"/repos/{OWNER}/{REPO}/commits/{sha}/check-runs",
         "--jq", ".check_runs"
     ])
-    
+
     if not output:
         return []
-    
+
     try:
         data = json.loads(output)
         return data if isinstance(data, list) else []
@@ -175,25 +175,25 @@ def fetch_commit_check_runs(sha: str) -> List[Dict[str, Any]]:
 
 def fetch_workflow_runs_for_commit(sha: str) -> List[Dict[str, Any]]:
     """Fetch workflow runs for a commit.
-    
+
     Args:
         sha: Commit SHA
-        
+
     Returns:
         List of workflow run data
     """
     logger.info(f"Fetching workflow runs for {sha[:7]}...")
-    
+
     output = run_gh_cli([
         "api",
         f"/repos/{OWNER}/{REPO}/actions/runs",
         "-f", f"head_sha={sha}",
         "--jq", ".workflow_runs"
     ])
-    
+
     if not output:
         return []
-    
+
     try:
         data = json.loads(output)
         return data if isinstance(data, list) else []
@@ -204,10 +204,10 @@ def fetch_workflow_runs_for_commit(sha: str) -> List[Dict[str, Any]]:
 
 def fetch_artifacts_for_run(run_id: int) -> List[Dict[str, Any]]:
     """Fetch artifacts for a workflow run.
-    
+
     Args:
         run_id: Workflow run ID
-        
+
     Returns:
         List of artifact data with IDs
     """
@@ -216,10 +216,10 @@ def fetch_artifacts_for_run(run_id: int) -> List[Dict[str, Any]]:
         f"/repos/{OWNER}/{REPO}/actions/runs/{run_id}/artifacts",
         "--jq", ".artifacts"
     ])
-    
+
     if not output:
         return []
-    
+
     try:
         data = json.loads(output)
         return data if isinstance(data, list) else []
@@ -230,37 +230,37 @@ def fetch_artifacts_for_run(run_id: int) -> List[Dict[str, Any]]:
 
 def is_check_failing(check_run: Dict[str, Any]) -> bool:
     """Determine if a check run is failing.
-    
+
     Args:
         check_run: Check run data
-        
+
     Returns:
         True if failing
     """
     status = check_run.get("status", "")
     conclusion = check_run.get("conclusion", "")
-    
+
     failing_conclusions = ["failure", "timed_out", "cancelled", "action_required"]
-    
+
     return (status != "completed") or (conclusion in failing_conclusions)
 
 
 def process_commit(sha: str) -> Dict[str, Any]:
     """Process a single commit to extract failing checks and artifacts.
-    
+
     Args:
         sha: Commit SHA
-        
+
     Returns:
         Dict with commit data
     """
     short_sha = sha[:7]
     logger.info(f"Processing commit {short_sha}...")
-    
+
     # Fetch check runs
     check_runs = fetch_commit_check_runs(sha)
     failing_checks = []
-    
+
     for check_run in check_runs:
         if is_check_failing(check_run):
             failing_checks.append({
@@ -269,11 +269,11 @@ def process_commit(sha: str) -> Dict[str, Any]:
                 "conclusion": check_run.get("conclusion", ""),
                 "status": check_run.get("status", "")
             })
-    
+
     # Fetch workflow runs and artifacts
     artifacts_list = []
     workflow_runs = fetch_workflow_runs_for_commit(sha)
-    
+
     for run in workflow_runs:
         run_id = run.get("id")
         if run_id:
@@ -287,7 +287,7 @@ def process_commit(sha: str) -> Dict[str, Any]:
                     "expired": artifact.get("expired", False),
                     "workflow_run_id": run_id
                 })
-    
+
     return {
         "sha": sha,
         "failing_checks": failing_checks,
@@ -297,13 +297,13 @@ def process_commit(sha: str) -> Dict[str, Any]:
 
 def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) -> None:
     """Generate markdown report with failing checks table.
-    
+
     Args:
         results: List of commit results
         output_path: Output file path
     """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
-    
+
     lines = [
         "# [Investigation Request]: Failing Checks per Commit",
         f"> Generated: {timestamp}",
@@ -319,15 +319,15 @@ def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) ->
         "| Commit SHA | Failing Check Workflows (explicit links to failing runs) | Artifacts (download links) |",
         "|---|---|---|"
     ]
-    
+
     for result in results:
         sha = result["sha"]
         failing_checks = result["failing_checks"]
         artifacts = result["artifacts"]
-        
+
         # Format commit SHA as link
         commit_link = f"[{sha[:7]}](https://github.com/{OWNER}/{REPO}/commit/{sha})"
-        
+
         # Format failing checks
         if failing_checks:
             check_links = []
@@ -338,7 +338,7 @@ def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) ->
             check_str = "<br>".join(check_links)
         else:
             check_str = "✅ All checks passing"
-        
+
         # Format artifacts with IDs
         if artifacts:
             artifact_links = []
@@ -351,9 +351,9 @@ def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) ->
             artifact_str = "<br>".join(artifact_links)
         else:
             artifact_str = "No artifacts"
-        
+
         lines.append(f"| {commit_link} | {check_str} | {artifact_str} |")
-    
+
     lines.extend([
         "",
         "---",
@@ -364,10 +364,10 @@ def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) ->
         "- 🔒 = Requires authentication",
         "- ✅ = All checks passing",
         "",
-        f"**Generated by:** `scripts/populate_pr3248_checks.py`",
+        "**Generated by:** `scripts/populate_pr3248_checks.py`",
         f"**Last Updated:** {timestamp}",
     ])
-    
+
     content = "\n".join(lines)
     output_path.write_text(content, encoding="utf-8")
     logger.info(f"Report written to {output_path}")
@@ -376,13 +376,13 @@ def generate_markdown_table(results: List[Dict[str, Any]], output_path: Path) ->
 def main():
     """Main entry point."""
     logger.info(f"Starting to process {len(COMMIT_SHAS)} commits...")
-    
+
     results = []
     for i, sha in enumerate(COMMIT_SHAS, 1):
         logger.info(f"Progress: {i}/{len(COMMIT_SHAS)}")
         result = process_commit(sha)
         results.append(result)
-    
+
     # Save detailed JSON
     json_path = Path("pr3248_detailed_results.json")
     with open(json_path, "w") as f:
@@ -393,11 +393,11 @@ def main():
             "commits": results
         }, f, indent=2)
     logger.info(f"Detailed JSON saved to {json_path}")
-    
+
     # Generate markdown report
     output_path = Path("failing_checks.md")
     generate_markdown_table(results, output_path)
-    
+
     logger.info("Processing complete!")
     return 0
 

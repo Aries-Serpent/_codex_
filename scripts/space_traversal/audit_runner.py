@@ -247,7 +247,9 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
 
             # Import token similarity function
             try:
-                from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+                from scripts.space_traversal.dup_similarity import (
+                    duplication_ratio_token_similarity,
+                )
                 return duplication_ratio_token_similarity(
                     evidence_files,
                     file_cache,
@@ -306,7 +308,9 @@ def stage_s4_scoring(cfg, raw_caps):
     if coverage_cfg.get("enabled", False):
         try:
             # Import and run coverage ingestion
-            from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
+            from scripts.space_traversal.coverage_ingest import (
+                discover_and_parse_coverage,
+            )
             coverage_map = discover_and_parse_coverage(cfg, artifacts_dir) or {}
             logger.info(f"Coverage integration enabled: {len(coverage_map)} files mapped")
         except (ImportError, Exception) as e:
@@ -421,7 +425,7 @@ def stage_s5_gaps(cfg, scored_caps):
     for cap in scored_caps:
         components = cap.get("components", {})
         zero_components = [name for name, value in components.items() if value == 0.0]
-        
+
         # Calculate missing patterns if not already present
         if "missing_patterns" in cap:
             missing_patterns = cap["missing_patterns"]
@@ -450,6 +454,161 @@ def stage_s5_gaps(cfg, scored_caps):
     (artifacts_dir / "component_gaps.json").write_text(json.dumps(comp_gaps_data, indent=2))
 
     logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
+
+
+def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
+    """
+    Apply capability overrides by merging alias IDs into canonical IDs.
+
+    Overrides allow multiple capability IDs to be merged into a single canonical ID.
+    This is useful when different detectors identify the same capability under different names.
+
+    Args:
+        capabilities: List of capability dicts with structure:
+            - id: Capability identifier
+            - evidence_files: List of files providing evidence
+            - found_patterns: List of patterns found
+            - required_patterns: List of patterns required
+            - meta: Metadata dict
+        cfg: Configuration dict with structure:
+            - capability_map.overrides: Dict mapping canonical_id -> list of alias IDs
+
+    Returns:
+        List of capabilities with aliases merged into canonical IDs.
+        Capabilities not in overrides are preserved unchanged.
+
+    Example:
+        >>> caps = [
+        ...     {"id": "train", "evidence_files": ["train.py"], "found_patterns": ["train"], ...},
+        ...     {"id": "train_loop", "evidence_files": ["loop.py"], "found_patterns": ["epoch"], ...}
+        ... ]
+        >>> cfg = {"capability_map": {"overrides": {"training-engine": ["train", "train_loop"]}}}
+        >>> result = apply_overrides(caps, cfg)
+        >>> len(result)
+        1
+        >>> result[0]["id"]
+        'training-engine'
+    """
+    # Get overrides configuration
+    overrides = cfg.get("capability_map", {}).get("overrides", {})
+
+    if not overrides:
+        # No overrides configured, return capabilities unchanged
+        return capabilities
+
+    # Build reverse mapping: alias_id -> canonical_id
+    alias_to_canonical = {}
+    for canonical_id, aliases in overrides.items():
+        for alias in aliases:
+            alias_to_canonical[alias] = canonical_id
+
+    # Group capabilities by their canonical ID
+    canonical_groups = {}
+    unaffected_caps = []
+
+    for cap in capabilities:
+        cap_id = cap["id"]
+        canonical_id = alias_to_canonical.get(cap_id)
+
+        if canonical_id:
+            # This capability should be merged
+            if canonical_id not in canonical_groups:
+                canonical_groups[canonical_id] = []
+            canonical_groups[canonical_id].append(cap)
+        else:
+            # This capability is not in overrides, preserve it
+            unaffected_caps.append(cap)
+
+    # Merge capabilities in each canonical group
+    merged_caps = []
+    for canonical_id, caps_to_merge in canonical_groups.items():
+        # Merge all capabilities into one
+        merged = {
+            "id": canonical_id,
+            "evidence_files": [],
+            "found_patterns": [],
+            "required_patterns": [],
+            "meta": {},
+        }
+
+        # Collect unique values from all capabilities
+        all_evidence_files = set()
+        all_found_patterns = set()
+        all_required_patterns = set()
+
+        for cap in caps_to_merge:
+            all_evidence_files.update(cap.get("evidence_files", []))
+            all_found_patterns.update(cap.get("found_patterns", []))
+            all_required_patterns.update(cap.get("required_patterns", []))
+
+            # Merge metadata (later entries override earlier)
+            merged["meta"].update(cap.get("meta", {}))
+
+        merged["evidence_files"] = sorted(all_evidence_files)
+        merged["found_patterns"] = sorted(all_found_patterns)
+        merged["required_patterns"] = sorted(all_required_patterns)
+
+        merged_caps.append(merged)
+
+    # Combine merged and unaffected capabilities
+    result = merged_caps + unaffected_caps
+
+    logger.debug(f"Applied overrides: {len(capabilities)} → {len(result)} capabilities")
+    return result
+
+
+def validate_detector_output(detector: Dict[str, Any], detector_name: str) -> bool:
+    """
+    Validate that a detector output has the required structure and fields.
+
+    Args:
+        detector: Dict containing detector output with expected fields:
+            - id (str): Capability identifier
+            - evidence_files (list): List of file paths
+            - found_patterns (list): List of patterns found
+            - required_patterns (list): List of patterns required
+        detector_name: Name of the detector for logging purposes
+
+    Returns:
+        True if detector output is valid, False otherwise
+
+    Example:
+        >>> det = {
+        ...     "id": "test-cap",
+        ...     "evidence_files": ["a.py"],
+        ...     "found_patterns": ["pat1"],
+        ...     "required_patterns": ["pat1", "pat2"]
+        ... }
+        >>> validate_detector_output(det, "test_detector")
+        True
+    """
+    required_fields = ["id", "evidence_files", "found_patterns", "required_patterns"]
+
+    # Check all required fields are present
+    for field in required_fields:
+        if field not in detector:
+            logger.warning(f"Detector '{detector_name}' output missing required field: {field}")
+            return False
+
+    # Validate field types
+    if not isinstance(detector["id"], str):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'id' type: {type(detector['id'])}")
+        return False
+
+    if not isinstance(detector["evidence_files"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'evidence_files' type: {type(detector['evidence_files'])}")
+        return False
+
+    if not isinstance(detector["found_patterns"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'found_patterns' type: {type(detector['found_patterns'])}")
+        return False
+
+    if not isinstance(detector["required_patterns"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'required_patterns' type: {type(detector['required_patterns'])}")
+        return False
+
+    logger.debug(f"Detector '{detector_name}' output validated successfully: {detector['id']}")
+    return True
 
 
 def command_validate(cfg):

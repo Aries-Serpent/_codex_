@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/verify_determinism.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/verify_determinism.py --help
 
@@ -34,9 +34,9 @@ Determinism Verifier
 Runs the audit pipeline multiple times and compares artifacts ignoring timestamp fields.
 Exits non-zero on mismatch.
 """
+import argparse
 import json
 import subprocess
-import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]

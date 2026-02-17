@@ -5,20 +5,21 @@ Tests error conditions, edge cases, and robustness of memory management componen
 """
 
 
+from datetime import datetime, timezone
+
 import numpy as np
 import pytest
-from datetime import datetime, timezone
 
 pytest.importorskip("numpy")
 
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,
 )
-from cognitive_brain.quantum.compression import PatternCompressor
-from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
-from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
+from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
+from cognitive_brain.quantum.compression import PatternCompressor
+from cognitive_brain.quantum.config import QuantumConfig
+from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
 
 
 @pytest.fixture
@@ -61,9 +62,9 @@ class TestQuantumMemoryManagerErrors:
 
         with pytest.raises(ValueError, match="pattern_id must be non-empty string"):
             MemoryPattern(  # Exception expected before pattern is returned
-                pattern_id="", 
-                features={"f1": 0.5}, 
-                decision="approve", 
+                pattern_id="",
+                features={"f1": 0.5},
+                decision="approve",
                 confidence=0.8,
                 timestamp=datetime.now(timezone.utc),
             )

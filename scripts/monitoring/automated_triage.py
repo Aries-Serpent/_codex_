@@ -20,7 +20,7 @@ from typing import Dict, List, Optional
 
 class FailurePattern:
     """Represents a known failure pattern with detection and remediation."""
-    
+
     def __init__(self, name: str, description: str, detection_patterns: List[str],
                  root_cause: str, solution: str, risk_level: str = "MEDIUM"):
         self.name = name
@@ -29,7 +29,7 @@ class FailurePattern:
         self.root_cause = root_cause
         self.solution = solution
         self.risk_level = risk_level
-    
+
     def matches(self, logs: str) -> bool:
         """Check if logs match this failure pattern."""
         for pattern in self.detection_patterns:
@@ -150,11 +150,11 @@ FAILURE_PATTERNS = [
 
 class WorkflowTriageAnalyzer:
     """Automated workflow failure triage and diagnosis."""
-    
+
     def __init__(self):
         self.patterns = FAILURE_PATTERNS
-    
-    def analyze_failure(self, run_id: str, workflow_name: str, 
+
+    def analyze_failure(self, run_id: str, workflow_name: str,
                        logs: Optional[str] = None) -> Dict:
         """Analyze a workflow failure and provide diagnosis."""
         analysis = {
@@ -165,14 +165,14 @@ class WorkflowTriageAnalyzer:
             'recommendations': [],
             'risk_level': 'UNKNOWN',
         }
-        
+
         if logs is None:
             analysis['status'] = 'NO_LOGS_PROVIDED'
             analysis['recommendations'].append(
                 "Provide logs for detailed analysis using GitHub API"
             )
             return analysis
-        
+
         # Check each pattern
         matched_any = False
         max_risk = "LOW"
@@ -186,15 +186,15 @@ class WorkflowTriageAnalyzer:
                     'solution': pattern.solution,
                     'risk_level': pattern.risk_level,
                 })
-                
+
                 # Track highest risk level
                 if pattern.risk_level == "HIGH":
                     max_risk = "HIGH"
                 elif pattern.risk_level == "MEDIUM" and max_risk != "HIGH":
                     max_risk = "MEDIUM"
-        
+
         analysis['risk_level'] = max_risk
-        
+
         if not matched_any:
             analysis['status'] = 'NO_KNOWN_PATTERN'
             analysis['recommendations'].append(
@@ -211,9 +211,9 @@ class WorkflowTriageAnalyzer:
             analysis['recommendations'].append(
                 "Review matched patterns and apply suggested solutions"
             )
-        
+
         return analysis
-    
+
     def generate_report(self, analysis: Dict) -> str:
         """Generate human-readable triage report."""
         lines = []
@@ -226,24 +226,24 @@ class WorkflowTriageAnalyzer:
         lines.append(f"Status: {analysis['status']}")
         lines.append(f"Risk Level: {analysis['risk_level']}")
         lines.append("-" * 80)
-        
+
         if analysis['matched_patterns']:
             lines.append("\nMATCHED FAILURE PATTERNS:")
             for i, pattern in enumerate(analysis['matched_patterns'], 1):
                 lines.append(f"\n{i}. {pattern['name']} [{pattern['risk_level']}]")
                 lines.append(f"   Description: {pattern['description']}")
                 lines.append(f"   Root Cause: {pattern['root_cause']}")
-                lines.append(f"   Solution:")
+                lines.append("   Solution:")
                 for line in pattern['solution'].split('\n'):
                     lines.append(f"      {line}")
-        
+
         lines.append("\nRECOMMENDATIONS:")
         for i, rec in enumerate(analysis['recommendations'], 1):
             lines.append(f"{i}. {rec}")
-        
+
         lines.append("\n" + "=" * 80)
         return '\n'.join(lines)
-    
+
     def batch_analyze(self, workflow_runs: List[Dict]) -> List[Dict]:
         """Analyze multiple workflow runs."""
         results = []
@@ -288,34 +288,34 @@ def main():
         action='store_true',
         help='Auto-detect failures from active_workflow_status.json'
     )
-    
+
     args = parser.parse_args()
-    
+
     analyzer = WorkflowTriageAnalyzer()
-    
+
     if args.auto:
         # Auto-detect from status file
         status_file = Path('.codex/active_workflow_status.json')
         if not status_file.exists():
             print(f"Error: {status_file} not found. Run parse_active_workflows.py first.")
             sys.exit(1)
-        
+
         with open(status_file) as f:
             data = json.load(f)
-        
+
         failed_workflows = [w for w in data.get('workflows', []) if w['status'] == 'FAILING']
         if not failed_workflows:
             print("No failing workflows detected.")
             sys.exit(0)
-        
+
         print(f"Found {len(failed_workflows)} failing workflow(s). Analyzing...")
         results = analyzer.batch_analyze(failed_workflows)
-        
+
         for analysis in results:
             report = analyzer.generate_report(analysis)
             print(report)
             print()
-    
+
     elif args.run_id and args.workflow_name:
         # Analyze specific workflow
         logs = None
@@ -324,25 +324,25 @@ def main():
             if logs_path.exists():
                 with open(logs_path) as f:
                     logs = f.read()
-        
+
         analysis = analyzer.analyze_failure(args.run_id, args.workflow_name, logs)
-        
+
         if args.json:
             output = json.dumps(analysis, indent=2)
         else:
             output = analyzer.generate_report(analysis)
-        
+
         # Write to file
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             f.write(output)
-        
+
         print(f"Triage report written to: {output_path}")
-        
+
         # Also print to stdout
         print("\n" + output)
-    
+
     else:
         parser.print_help()
         sys.exit(1)

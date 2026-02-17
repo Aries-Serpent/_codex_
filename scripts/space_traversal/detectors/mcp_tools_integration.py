@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/detectors/mcp_tools_integration.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/detectors/mcp_tools_integration.py --help
 

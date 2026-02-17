@@ -24,7 +24,7 @@ class TestEmbeddingCache:
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(
-                    enable_disk_cache=True, 
+                    enable_disk_cache=True,
                     disk_cache_path=tmpdir
                 )
                 cache = EmbeddingCache(config)

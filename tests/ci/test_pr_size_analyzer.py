@@ -10,12 +10,12 @@ import pytest
 
 def calculate_pr_size(changed_files: int) -> tuple[str, str]:
     """Calculate PR size category and validation strategy.
-    
+
     This replicates the logic from pr-size-analyzer.yml workflow.
-    
+
     Args:
         changed_files: Number of files changed in the PR
-        
+
     Returns:
         Tuple of (size_category, validation_strategy)
     """

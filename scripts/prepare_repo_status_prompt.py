@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/prepare_repo_status_prompt.py [options]
-    
+
     Examples:
     $ python scripts/prepare_repo_status_prompt.py --help
 
@@ -33,9 +33,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from codex_audit.prompting import prepare_repo_status_prompt
-from codex_audit.policy import write_policy_mapping
 from codex_audit.gates import run_gates
+from codex_audit.policy import write_policy_mapping
+from codex_audit.prompting import prepare_repo_status_prompt
 
 
 def main() -> int:

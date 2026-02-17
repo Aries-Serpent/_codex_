@@ -188,18 +188,18 @@ class QuantumPluginRegistry:
         # So to find what plugin_name depends on, we need to traverse backwards
         # We collect all nodes that have a path TO plugin_name
         visited = set()
-        
+
         def find_dependencies(node_id: str):
             """Recursively find all dependencies of node_id."""
             if node_id not in self.plugins:
                 return
-            
+
             plugin = self.plugins[node_id]
             for dep_name in plugin.dependencies:
                 if dep_name not in visited and dep_name in self.plugins:
                     visited.add(dep_name)
                     find_dependencies(dep_name)
-        
+
         find_dependencies(plugin_name)
         return visited
 

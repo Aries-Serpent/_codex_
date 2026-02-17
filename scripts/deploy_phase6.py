@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/deploy_phase6.py [options]
-    
+
     Examples:
     $ python scripts/deploy_phase6.py --help
 
@@ -52,6 +52,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+
 import yaml
 
 logging.basicConfig(
@@ -381,7 +382,7 @@ class Phase6Deployer:
                 config = yaml.safe_load(f)
 
             mlflow_enabled = config.get("mlflow_enabled", True)
-            if mlflow_enabled == False:
+            if not mlflow_enabled:
                 logger.info("  ✓ MLflow is opt-in (disabled by default)")
                 checks.append(True)
             else:
@@ -395,8 +396,9 @@ class Phase6Deployer:
         # Check 2: Training loop works without Phase 6 configs
         try:
             sys.path.insert(0, "src")
-            from codex_ml.training.loop import run_minimal_training
             import tempfile
+
+            from codex_ml.training.loop import run_minimal_training
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = {"training": {"base_loss": 10.0, "decay": 0.9}}
@@ -418,7 +420,7 @@ class Phase6Deployer:
         try:
             with open("configs/production/tracking.yaml") as f:
                 config = yaml.safe_load(f)
-            if config.get("tracking", {}).get("mlflow", {}).get("enabled") == True:
+            if config.get("tracking", {}).get("mlflow", {}).get("enabled"):
                 opt_in_features.append("tracking (enabled)")
         except Exception:  # Catch YAML loading or file access errors
             pass

@@ -91,7 +91,7 @@ def pytest_configure(config: pytest.Config) -> None:
     if _ORIGINAL_IMPORTORSKIP is None:
         _ORIGINAL_IMPORTORSKIP = pytest.importorskip
         pytest.importorskip = _importorskip_optional_dep
-    
+
     # Note: Do NOT call torch.set_default_device() here.
     # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
     # causing "Cannot copy out of meta tensor" errors. RAG modules already
@@ -549,105 +549,8 @@ def rag_test_config():
 # ============================================================================
 
 
-@pytest.fixture(autouse=True, scope="session")
-def disable_torch_profiler():
-    """
-    Disable PyTorch profiler to prevent type errors in Torch 2.6.0.
-
-    Issue: PyTorch 2.6.0 profiler has breaking changes in type checking
-    for ScriptObject vs _RecordFunction, causing RuntimeError in tests.
-
-    Solution: Multi-layered profiler disabling:
-    1. Environment variable
-    2. Direct C++ profiler API
-    3. Python-level profiler context override (no restoration needed - test env only)
-    4. Global state manipulation
-
-    Note: Original functions are not restored as this is a test-only fixture
-    and the modifications are intentionally persistent for the entire test session.
-    """
-    # Layer 1: Environment variable (attempted first, before torch import)
-    os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
-    os.environ["KINETO_LOG_LEVEL"] = "5"  # Suppress profiler logging
-
-    # Layer 2: Import torch and disable at C++ level
-    try:
-        import torch
-
-        # Method A: Disable via C++ API (if available)
-        if hasattr(torch, '_C') and hasattr(torch._C, '_profiler'):
-            try:
-                torch._C._profiler._set_profiler_enabled(False)
-            except (AttributeError, RuntimeError, TypeError):
-                # Best-effort: C++ profiler API may not be available in all PyTorch versions
-                logger.debug(
-                    "Failed to disable torch C++ profiler via _set_profiler_enabled; "
-                    "continuing without C++ profiler changes.",
-                    exc_info=True,
-                )
-
-        # Method B: Disable via Python profiler module
-        if hasattr(torch, 'profiler'):
-            try:
-                # Override profiler context managers to no-op
-                # Note: Not restored - test session should have profiler disabled
-                def noop_init(self, *args, **kwargs):
-                    """No-op profiler initialization."""
-                    self.enabled = False
-                    self.use_cuda = False
-                    self.record_shapes = False
-                    self.profile_memory = False
-                    self.with_stack = False
-
-                torch.profiler.profile.__init__ = noop_init
-            except (AttributeError, TypeError):
-                # Best-effort: profiler API may have changed or be unavailable
-                logger.debug(
-                    "Failed to disable torch profiler via Python API; "
-                    "torch.profiler.profile may be unavailable or changed.",
-                    exc_info=True,
-                )
-
-        # Method C: Monkey-patch record_function to no-op
-        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
-            try:
-                # Override record_function to no-op
-                # Note: Not restored - test session should have profiler disabled
-                class NoOpRecordFunction:
-                    """No-op context manager for record_function."""
-                    def __init__(self, *args, **kwargs):
-                        pass
-                    def __enter__(self):
-                        return self
-                    def __exit__(self, *args):
-                        pass
-
-                torch.autograd.profiler.record_function = NoOpRecordFunction
-            except (AttributeError, TypeError):
-                # Best-effort patching: older/newer torch versions may not expose this API.
-                # In that case, we skip the monkey-patch and continue with the default behavior.
-                logger.debug(
-                    "torch.autograd.profiler.record_function could not be patched to NoOpRecordFunction",
-                    exc_info=True,
-                )
-
-        # Method D: Disable autograd profiler globally
-        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
-            try:
-                torch.autograd.profiler.emit_nvtx(enabled=False)
-                # Note: Removed torch.autograd.profiler.profile(enabled=False) as profile is a class/context manager, not a function
-            except (AttributeError, TypeError, RuntimeError) as exc:
-                # Best-effort: emit_nvtx API may not be available
-                logger.debug("Failed to disable autograd profiler globally: %s", exc)
-                pass
-
-    except (ImportError, OSError) as exc:
-        # Torch not installed or failed to load (e.g., missing shared libraries)
-        # This is expected in CI environments without full CUDA setup
-        logger.debug("Torch import failed (expected in some CI environments): %s", exc)
-        pass
-
-    yield
+# Removed duplicate disable_torch_profiler fixture (F811)
+# The correct version is defined below at line ~1275 with autouse=False
 
     # Cleanup environment variables
     os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
@@ -1263,3 +1166,45 @@ def pytest_runtest_protocol(item, nextitem):
             )
     except Exception:  # psutil optional; skip leak check if unavailable
         pass
+
+
+# ============================================================================
+# PyTorch Profiler Guard Fixture (PR #3248 Fix)
+# ============================================================================
+# Prevents profiler::_record_function_exit() type errors in PyTorch tests
+# See: TEST_FAILURE_ANALYSIS_PR3248.md for details
+
+@pytest.fixture(autouse=False)
+def disable_torch_profiler(monkeypatch):
+    """
+    Disable PyTorch profiler for tests that fail with profiler type errors.
+
+    Usage:
+        def test_something(disable_torch_profiler):
+            # PyTorch profiler is mocked
+            pass
+
+    Background:
+    Some PyTorch versions have a type mismatch bug in the profiler exit handler
+    that causes: RuntimeError: profiler::_record_function_exit() Expected a
+    value of type '__torch__.torch.classes.profiler._RecordFunction' but
+    instead found type 'ScriptObject'.
+    """
+    import contextlib
+    if torch is not None:
+        monkeypatch.setattr(
+            'torch.autograd.profiler.record_function',
+            lambda *args, **kwargs: contextlib.nullcontext()
+        )
+
+
+# List of test files that commonly need the profiler disabled
+# (Can be removed once PyTorch version is upgraded/pinned)
+TORCH_PROFILER_PROBLEMATIC_TESTS = [
+    'test_checkpoint_restore_rng_torch.py',
+    'test_gradient_accumulation_tail_flush.py',
+    'test_training_integration_flags.py',
+    'test_resume_training.py',
+    'test_performance_benchmark.py',
+    'test_models_registry_api.py',
+]

@@ -14,7 +14,6 @@ Usage:
 import argparse
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
 
 # Agent batch definitions from chain-PR plan
 AGENT_BATCHES = {
@@ -214,7 +213,7 @@ monitor.checkpoint("pre-commit")  # Validates compliance
 
 def get_mcp_tools_section(agent_category: str) -> str:
     """Generate MCP tools section based on agent category."""
-    
+
     ci_tools = """
 **Primary MCP Capabilities**:
 1. **GitHub Actions Integration**
@@ -294,12 +293,12 @@ def get_mcp_tools_section(agent_category: str) -> str:
         "security": security_tools,
         "doc": doc_tools,
     }
-    
+
     # Determine category from filename
     for key, tools in category_map.items():
         if key in agent_category.lower():
             return tools
-    
+
     return default_tools
 
 
@@ -311,37 +310,37 @@ def enhance_agent(
 ) -> bool:
     """
     Enhance a single agent with cognitive brain integration.
-    
+
     Args:
         agent_path: Path to agent file
         cognitive_level: 1, 2, or 3
         aais_contribution: AAIS score contribution
         batch_name: PR batch identifier
-    
+
     Returns:
         True if successful
     """
     print(f"Enhancing {agent_path.name}...")
-    
+
     # Read existing content
     try:
         content = agent_path.read_text()
     except FileNotFoundError:
         print(f"  ⚠️  Agent file not found: {agent_path}")
         return False
-    
+
     # Extract agent name and current version
     name_match = re.search(r'^name:\s*(.+)$', content, re.MULTILINE)
     version_match = re.search(r'^version:\s*(.+)$', content, re.MULTILINE)
-    
+
     agent_name = name_match.group(1) if name_match else agent_path.stem
     current_version = version_match.group(1) if version_match else "2.0.0"
-    
+
     # Check if already enhanced
     if "cognitive_integration_level" in content:
-        print(f"  ℹ️  Already enhanced, skipping")
+        print("  ℹ️  Already enhanced, skipping")
         return True
-    
+
     # Determine concept and cache examples based on agent type
     agent_lower = agent_name.lower()
     if "test" in agent_lower:
@@ -364,12 +363,12 @@ def enhance_agent(
         concept_example = "code patterns"
         cache_key_example = "analysis_results"
         category = "general"
-    
+
     # Build level-specific sections
     level2_section = ""
     level3_section = ""
     qec_section = ""
-    
+
     if cognitive_level >= 2:
         level2_section = """
 **Level 2: Decision Integration**
@@ -377,7 +376,7 @@ def enhance_agent(
 - ✅ Uncertainty optimization for choices
 - ✅ Multi-agent entanglement
 - ✅ Memory compression for efficiency"""
-        
+
         qec_section = """
 # QEC - Quantum error correction for decisions
 from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
@@ -388,7 +387,7 @@ decision = qec.make_decision(
     context={"relevant": "context"}
 )
 # 99.9% accuracy, verified quantum advantage (p < 0.001)"""
-    
+
     if cognitive_level >= 3:
         level3_section = """
 **Level 3: Autonomous Orchestration**
@@ -396,15 +395,15 @@ decision = qec.make_decision(
 - ✅ Self-healing capabilities
 - ✅ Adaptive learning from outcomes
 - ✅ Continuous AAIS improvement"""
-    
+
     # Calculate AAIS breakdown
     aais_nav = aais_contribution * 0.4
     aais_intro = aais_contribution * 0.4
     aais_pattern = aais_contribution * 0.2
-    
+
     # Get MCP tools section
     mcp_tools = get_mcp_tools_section(category)
-    
+
     # Build cognitive integration section
     cognitive_section = COGNITIVE_INTEGRATION_TEMPLATE.format(
         level=cognitive_level,
@@ -419,7 +418,7 @@ decision = qec.make_decision(
         aais_pattern=aais_pattern,
         mcp_tools_section=mcp_tools,
     )
-    
+
     # Update frontmatter
     new_frontmatter = f"""---
 name: {agent_name}
@@ -429,11 +428,11 @@ cognitive_integration_level: {cognitive_level}
 aais_contribution: +{aais_contribution} points
 batch: {batch_name}
 ---"""
-    
+
     # Replace frontmatter
     frontmatter_pattern = r'^---\n.*?---\n'
     content = re.sub(frontmatter_pattern, new_frontmatter + '\n', content, count=1, flags=re.DOTALL)
-    
+
     # Insert cognitive section after first heading (## Overview or first ##)
     overview_pattern = r'(## Overview.*?\n\n)'
     if re.search(overview_pattern, content, re.DOTALL):
@@ -454,7 +453,7 @@ batch: {batch_name}
             count=1,
             flags=re.MULTILINE | re.DOTALL
         )
-    
+
     # Add version history section at end
     version_history = f"""
 ---
@@ -467,21 +466,21 @@ batch: {batch_name}
 - ✅ Topology navigation ({concept_example})
 - ✅ Cache awareness (4-layer hierarchy)
 - ✅ Hash table optimization (40% faster)
-{f"- ✅ QEC decision-making (99.9% accuracy)" if cognitive_level >= 2 else ""}
+{"- ✅ QEC decision-making (99.9% accuracy)" if cognitive_level >= 2 else ""}
 - ✅ AAIS contribution: +{aais_contribution} points
 
 ### v{current_version} (Previous)
 - See git history for previous changes
 """
-    
+
     # Append version history if not present
     if "## Version History" not in content:
         content += version_history
-    
+
     # Write enhanced content
     agent_path.write_text(content)
     print(f"  ✅ Enhanced successfully (Level {cognitive_level}, +{aais_contribution} AAIS)")
-    
+
     return True
 
 
@@ -504,30 +503,30 @@ def main():
         action="store_true",
         help="Show what would be done without making changes"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Get batches to process
     batches_to_process = list(AGENT_BATCHES.keys()) if args.batch == "all" else [args.batch]
-    
+
     total_agents = 0
     enhanced_agents = 0
-    
+
     for batch_id in batches_to_process:
         batch = AGENT_BATCHES[batch_id]
         print(f"\n{'='*60}")
         print(f"Processing {batch_id.upper()}: {batch['name']}")
         print(f"Agents: {len(batch['agents'])} | Cognitive Level: {batch['cognitive_level']} | AAIS: +{batch['aais_contribution']}")
         print(f"{'='*60}\n")
-        
+
         for agent_file in batch["agents"]:
             agent_path = args.agents_dir / agent_file
             total_agents += 1
-            
+
             if args.dry_run:
                 print(f"Would enhance: {agent_file}")
                 continue
-            
+
             if enhance_agent(
                 agent_path,
                 batch["cognitive_level"],
@@ -535,13 +534,13 @@ def main():
                 batch_id,
             ):
                 enhanced_agents += 1
-    
+
     print(f"\n{'='*60}")
     print(f"Summary: {enhanced_agents}/{total_agents} agents enhanced")
     if args.dry_run:
         print("(Dry run - no changes made)")
     print(f"{'='*60}\n")
-    
+
     return 0 if enhanced_agents == total_agents else 1
 
 

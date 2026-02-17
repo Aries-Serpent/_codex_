@@ -45,7 +45,7 @@ class WorkflowInventory:
     """
 
     def __init__(self, workflows_dir: Path | str):
-        """Initialize workflow inventory. 
+        """Initialize workflow inventory.
 
         Args:
             workflows_dir: Path to .github/workflows directory.
@@ -146,7 +146,7 @@ class WorkflowInventory:
         """Get workflows by trigger type.
 
         Args:
-            trigger_type:  Trigger type to filter by. 
+            trigger_type:  Trigger type to filter by.
 
         Returns:
             list of workflows with the specified trigger.
@@ -154,7 +154,7 @@ class WorkflowInventory:
         return [w for w in self._workflows.values() if trigger_type in w.trigger_types]
 
     def get_workflow_dependencies(self, filename: str) -> list[str]:
-        """Get workflows that this workflow depends on. 
+        """Get workflows that this workflow depends on.
 
         Args:
             filename:  Workflow filename.
@@ -165,7 +165,7 @@ class WorkflowInventory:
         return [dep.target for dep in self._dependencies if dep.source == filename]
 
     def get_workflow_dependents(self, filename: str) -> list[str]:
-        """Get workflows that depend on this workflow. 
+        """Get workflows that depend on this workflow.
 
         Args:
             filename:  Workflow filename.
@@ -245,7 +245,7 @@ class WorkflowInventory:
                             )
 
     def _find_workflow_by_name(self, workflow_name: str) -> Optional[str]:
-        """Find workflow filename by workflow name. 
+        """Find workflow filename by workflow name.
 
         Args:
             workflow_name: Workflow name (from 'name' field).
@@ -259,7 +259,7 @@ class WorkflowInventory:
         return None
 
     def list_workflows(self) -> list[str]:
-        """list all workflow filenames. 
+        """list all workflow filenames.
 
         Returns:
             Sorted list of workflow filenames.

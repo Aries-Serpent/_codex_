@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/copy_ideal_versions.py [options]
-    
+
     Examples:
     $ python scripts/security/copy_ideal_versions.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Alternative Merge Strategy: Copy Files from Ideal Commit
@@ -56,34 +54,34 @@ def run_command(cmd: list[str], check: bool = True) -> tuple[int, str, str]:
         text=True,
         cwd=Path(__file__).resolve().parent.parent.parent,
     )
-    
+
     if check and result.returncode != 0:
         print(f"Command failed: {' '.join(cmd)}", file=sys.stderr)
         print(f"STDERR: {result.stderr}", file=sys.stderr)
-    
+
     return result.returncode, result.stdout, result.stderr
 
 
 def get_changed_files_in_pr() -> list[str]:
     """
     Get list of all files changed in this PR compared to base commit.
-    
+
     Returns:
         List of file paths
     """
     # Get the base commit (bb92fab)
     base_commit = "bb92fab"
-    
+
     # Get all files changed from base to HEAD
     returncode, stdout, stderr = run_command(
         ["git", "diff", "--name-only", f"{base_commit}..HEAD"],
         check=False
     )
-    
+
     if returncode != 0:
         print(f"Error: Could not get changed files from {base_commit}", file=sys.stderr)
         return []
-    
+
     files = [line.strip() for line in stdout.strip().split('\n') if line.strip()]
     return files
 
@@ -91,12 +89,12 @@ def get_changed_files_in_pr() -> list[str]:
 def copy_file_from_head(filepath: str) -> bool:
     """
     Copy a file from HEAD (our corrected version) to working tree.
-    
+
     This ensures we have our corrected version ready for commit.
-    
+
     Args:
         filepath: Path to file
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -105,11 +103,11 @@ def copy_file_from_head(filepath: str) -> bool:
         ["git", "checkout", "HEAD", "--", filepath],
         check=False
     )
-    
+
     if returncode != 0:
         print(f"Failed to checkout {filepath}: {stderr}", file=sys.stderr)
         return False
-    
+
     return True
 
 
@@ -121,14 +119,14 @@ def main():
     print("This script prepares all corrected files from our PR branch")
     print("to be ready for merging without conflicts.")
     print()
-    
+
     # Get all files changed in this PR
     pr_files = get_changed_files_in_pr()
-    
+
     if not pr_files:
         print("✓ No files found to process")
         return 0
-    
+
     print(f"Found {len(pr_files)} files changed in this PR")
     print()
     print("Strategy:")
@@ -165,7 +163,7 @@ def main():
     print("  done")
     print("  git merge --continue")
     print()
-    
+
     return 0
 
 

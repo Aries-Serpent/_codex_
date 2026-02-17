@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/validate_documentation_links.py [options]
-    
+
     Examples:
     $ python scripts/validate_documentation_links.py --help
 
@@ -120,7 +120,7 @@ def validate_documentation_links() -> int:
         except Exception as e:
             print(f"⚠️  Error processing {md_file}: {e}")
 
-    print(f"\n📈 Validation Summary:")
+    print("\n📈 Validation Summary:")
     print(f"   Total markdown files: {len(md_files)}")
     print(f"   Total internal links checked: {total_links}")
     print(f"   Broken links found: {len(broken_links)}")

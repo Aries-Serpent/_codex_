@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 import os
 import sys
 from pathlib import Path
-from typing import Union, Optional, Any, Sequence
+from typing import Any, Optional, Sequence, Union
 
 try:
     from hydra.utils import to_absolute_path

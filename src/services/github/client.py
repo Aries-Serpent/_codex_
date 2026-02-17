@@ -50,17 +50,17 @@ class GitHubClient:
     Example:
         ```python
         client = GitHubClient()
-        
+
         # list workflows
         workflows = await client.list_workflows("owner", "repo")
-        
+
         # Trigger a workflow
         run_id = await client.trigger_workflow(
             "owner", "repo", "ci.yml",
             ref="main",
             inputs={"environment": "staging"}
         )
-        
+
         # Monitor status
         run = await client.get_workflow_run("owner", "repo", run_id)
         print(f"Status: {run.status}, Conclusion: {run.conclusion}")

@@ -448,7 +448,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
 def _now_ts() -> str:
     """Generate ISO 8601 timestamp with 'Z' suffix.
-    
+
     Returns:
         Timestamp string like "2026-02-01T12:34:56.789Z"
     """

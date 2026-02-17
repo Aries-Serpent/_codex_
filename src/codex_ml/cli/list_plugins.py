@@ -10,7 +10,7 @@ import argparse
 import json
 import sys
 from collections.abc import Iterable, Sequence
-from typing import Union, Optional, Any
+from typing import Any, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

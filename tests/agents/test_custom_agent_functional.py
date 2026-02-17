@@ -177,7 +177,14 @@ class TestAgentConfigFiles:
         if config_path.exists():
             content = config_path.read_text()
             try:
-                yaml.safe_load(content)
+                # Support multi-document YAML files (e.g., with version history)
+                # Use safe_load_all to handle files with multiple documents separated by ---
+                documents = list(yaml.safe_load_all(content))
+                assert len(documents) > 0, f"No documents found in {config_file}"
+                # Validate each document is valid YAML
+                for i, doc in enumerate(documents):
+                    if doc is not None:
+                        assert isinstance(doc, dict), f"Document {i} in {config_file} is not a dict: {type(doc)}"
             except yaml.YAMLError as e:
                 pytest.fail(f"Invalid YAML in {config_file}: {e}")
 

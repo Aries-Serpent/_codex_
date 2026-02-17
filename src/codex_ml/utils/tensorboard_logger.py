@@ -12,8 +12,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Generator
 
-
-
 logger = logging.getLogger(__name__)
 
 @contextmanager

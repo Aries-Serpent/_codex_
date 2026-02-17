@@ -402,8 +402,8 @@ def generate_dashboard(runs: list[dict], output_path: Path):
         <header>
             <h1>🔍 Capability Audit Trend Dashboard</h1>
             <div class="meta">
-                Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')} | 
-                Runs Analyzed: {len(runs)} | 
+                Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')} |
+                Runs Analyzed: {len(runs)} |
                 Period: {date_range}
             </div>
         </header>

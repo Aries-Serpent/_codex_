@@ -14,7 +14,7 @@ import os
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Union, Annotated, Any, Optional
+from typing import Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
     import yaml  # type: ignore
@@ -447,7 +447,7 @@ if typer is not None:
     cli = app
 
 else:
-    from typing import Union, Any
+    from typing import Any
 
     from codex_ml.codex_structured_logging import (
         ArgparseJSONParser,

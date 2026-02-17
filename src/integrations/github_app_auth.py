@@ -26,7 +26,6 @@ from urllib.parse import urlparse
 
 import requests
 
-
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency for JWT minting

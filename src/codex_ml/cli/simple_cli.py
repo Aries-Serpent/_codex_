@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 import json
 import random
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Any, Optional
 
 import click
 

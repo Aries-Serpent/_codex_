@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/secret_context_correlate.py [options]
-    
+
     Examples:
     $ python scripts/security/secret_context_correlate.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Secret Context Correlation (P6)
@@ -56,6 +54,7 @@ Integration:
   Severity classification can use elevated context for higher weights.
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

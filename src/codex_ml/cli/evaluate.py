@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path
-from typing import Union, Any, Optional, Sequence
+from typing import Any, Optional, Sequence, Union
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

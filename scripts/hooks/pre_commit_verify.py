@@ -122,7 +122,7 @@ def load_gitignore_patterns(repo_root: Path) -> List[str]:
     """Load patterns from .gitignore file."""
     gitignore_path = repo_root / '.gitignore'
     patterns = []
-    
+
     if gitignore_path.exists():
         with open(gitignore_path, 'r') as f:
             for line in f:
@@ -133,18 +133,18 @@ def load_gitignore_patterns(repo_root: Path) -> List[str]:
                     if line.startswith('/'):
                         pattern = '^' + pattern[1:]
                     patterns.append(pattern)
-    
+
     return patterns
 
 
 def should_ignore_file(filepath: str, extra_patterns: Optional[List[str]] = None) -> bool:
     """Check if a file should be ignored based on patterns."""
     all_patterns = IGNORE_PATTERNS + (extra_patterns or [])
-    
+
     for pattern in all_patterns:
         if re.search(pattern, filepath):
             return True
-    
+
     return False
 
 
@@ -157,21 +157,21 @@ def parse_action_log(
     if not log_path.exists():
         logger.warning(f"Action log not found: {log_path}")
         return []
-    
+
     operations = []
-    
+
     with open(log_path, 'r') as f:
         for line_num, line in enumerate(f, 1):
             line = line.strip()
             if not line:
                 continue
-            
+
             try:
                 entry = json.loads(line)
             except json.JSONDecodeError:
                 logger.debug(f"Skipping malformed JSON at line {line_num}")
                 continue
-            
+
             # Filter by timestamp if specified
             if since and 'timestamp' in entry:
                 try:
@@ -180,29 +180,29 @@ def parse_action_log(
                         continue
                 except (ValueError, TypeError):
                     pass
-            
+
             # Filter by session if specified
             if session_id and entry.get('session_id') != session_id:
                 continue
-            
+
             # Check if this is a file operation
             action = entry.get('action', '').lower()
             if action in COMMIT_OPERATIONS and 'path' in entry:
                 operations.append(entry)
-    
+
     return operations
 
 
 def extract_expected_files(operations: List[Dict], repo_root: Path) -> Set[str]:
     """Extract expected files from operations list."""
     expected = set()
-    
+
     for op in operations:
         filepath = op.get('path', '')
-        
+
         if not filepath:
             continue
-        
+
         # Normalize path
         if filepath.startswith('/'):
             # Absolute path - make relative to repo root
@@ -211,16 +211,16 @@ def extract_expected_files(operations: List[Dict], repo_root: Path) -> Set[str]:
             except ValueError:
                 # Path is outside repo
                 continue
-        
+
         # Check if file should be ignored
         if should_ignore_file(filepath):
             continue
-        
+
         # Check if file exists
         full_path = repo_root / filepath
         if full_path.exists():
             expected.add(filepath)
-    
+
     return expected
 
 
@@ -232,16 +232,16 @@ def verify_staged_files(
 ) -> Tuple[Set[str], Set[str], Set[str]]:
     """
     Verify that expected files are staged.
-    
+
     Returns:
         Tuple of (staged_expected, missing_modified, missing_untracked)
     """
     staged_expected = expected & staged
     missing = expected - staged
-    
+
     missing_modified = missing & modified
     missing_untracked = missing & untracked
-    
+
     return staged_expected, missing_modified, missing_untracked
 
 
@@ -257,34 +257,34 @@ def generate_report(
     lines.append("Pre-commit Verification Report")
     lines.append("=" * 60)
     lines.append("")
-    
+
     total = len(expected)
     staged_count = len(staged_expected)
     missing_count = len(missing_modified) + len(missing_untracked)
-    
+
     lines.append(f"Expected files from action log: {total}")
     lines.append(f"Correctly staged: {staged_count} ✅")
     lines.append(f"Missing from staging: {missing_count}")
     lines.append("")
-    
+
     if staged_expected:
         lines.append("✅ Staged Files (Correct):")
         for f in sorted(staged_expected):
             lines.append(f"   - {f}")
         lines.append("")
-    
+
     if missing_modified:
         lines.append("⚠️  Modified but not staged (need `git add`):")
         for f in sorted(missing_modified):
             lines.append(f"   - {f}")
         lines.append("")
-    
+
     if missing_untracked:
         lines.append("⚠️  Untracked files (need `git add`):")
         for f in sorted(missing_untracked):
             lines.append(f"   - {f}")
         lines.append("")
-    
+
     if missing_modified or missing_untracked:
         lines.append("To stage missing files:")
         all_missing = sorted(missing_modified | missing_untracked)
@@ -293,9 +293,9 @@ def generate_report(
         if len(all_missing) > 5:
             lines.append(f"   ... and {len(all_missing) - 5} more")
         lines.append("")
-    
+
     lines.append("=" * 60)
-    
+
     return '\n'.join(lines)
 
 
@@ -335,18 +335,18 @@ def main():
         default=24,
         help="Check operations from last N hours (default: 24)"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Get repo root
     repo_root = get_repo_root()
-    
+
     # Determine action log path
     if args.action_log:
         action_log_path = Path(args.action_log)
     else:
         action_log_path = repo_root / '.codex' / 'action_log.ndjson'
-    
+
     # Determine time filter
     since = None
     if args.since:
@@ -357,43 +357,43 @@ def main():
             sys.exit(1)
     elif args.hours:
         since = datetime.now(timezone.utc) - timedelta(hours=args.hours)
-    
+
     # Load gitignore patterns
     gitignore_patterns = load_gitignore_patterns(repo_root)
-    
+
     # Parse action log
     operations = parse_action_log(
         action_log_path,
         since=since,
         session_id=args.session_id
     )
-    
+
     if not operations:
         if not args.quiet:
             logger.info("No file operations found in action log")
         sys.exit(0)
-    
+
     # Extract expected files
     expected = extract_expected_files(operations, repo_root)
-    
+
     # Filter by gitignore
     expected = {f for f in expected if not should_ignore_file(f, gitignore_patterns)}
-    
+
     if not expected:
         if not args.quiet:
             logger.info("No committable files found in action log")
         sys.exit(0)
-    
+
     # Get git status
     staged = get_staged_files()
     modified = get_modified_files()
     untracked = get_untracked_files()
-    
+
     # Verify
     staged_expected, missing_modified, missing_untracked = verify_staged_files(
         expected, staged, modified, untracked
     )
-    
+
     # Generate report
     report = generate_report(
         expected,
@@ -401,13 +401,13 @@ def main():
         missing_modified,
         missing_untracked
     )
-    
+
     # Output
     has_issues = bool(missing_modified or missing_untracked)
-    
+
     if has_issues or not args.quiet:
         print(report)
-    
+
     # Exit code
     if has_issues and not args.check_only:
         logger.error("Some expected files are not staged!")

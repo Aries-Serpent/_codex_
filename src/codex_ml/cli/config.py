@@ -12,7 +12,7 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Union, Any, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -71,11 +71,11 @@ class TrainCfg:
 @dataclass
 class ExperimentConfig:
     """Configuration for experiment settings.
-    
+
     This class defines experimental configurations for training runs,
     testing scenarios, and deployment environments. It controls resource
     allocation, logging behavior, and checkpoint management.
-    
+
     Attributes:
         name: Experiment identifier (e.g., "debug", "production", "benchmark")
         type: Experiment category (e.g., "unit_test", "integration", "performance")

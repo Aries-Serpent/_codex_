@@ -23,8 +23,6 @@ from pathlib import Path
 
 from codex_ml.utils.optional import optional_dependency_error
 
-
-
 logger = logging.getLogger(__name__)
 
 def init_experiment(exp_name: str = "codex_experiment") -> None:

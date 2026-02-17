@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import logging
 import inspect as inspect_module
 import json
+import logging
 import shutil
 import sys
 import types
@@ -12,7 +12,6 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NoReturn
-
 
 logger = logging.getLogger(__name__)
 

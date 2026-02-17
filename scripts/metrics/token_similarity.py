@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/metrics/token_similarity.py [options]
-    
+
     Examples:
     $ python scripts/metrics/token_similarity.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging

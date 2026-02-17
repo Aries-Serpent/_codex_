@@ -163,7 +163,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
     """Analyzer for unused code detection.
 
     Identifies unused imports, variables, and functions.
-    
+
     Note:
         This analyzer is stateless and thread-safe. It collects all definitions
         and usages during a single analyze() call on the module node.
@@ -175,7 +175,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
 
     def analyze(self, node: StandardizedASTNode) -> List[Finding]:
         """Analyze for unused code.
-        
+
         This method is thread-safe as it uses local variables only.
         """
         findings = []

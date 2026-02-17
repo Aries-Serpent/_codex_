@@ -14,7 +14,6 @@ from __future__ import annotations
 import logging
 from typing import IO, Any
 
-
 logger = logging.getLogger(__name__)
 
 try:

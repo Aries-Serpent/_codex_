@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 import os
-from typing import Union, Optional, Any
+from typing import Any, Optional
 
 
 def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:

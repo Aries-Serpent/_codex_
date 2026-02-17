@@ -11,7 +11,6 @@ import logging
 from datetime import UTC, datetime
 from pathlib import Path
 
-
 logger = logging.getLogger(__name__)
 
 __all__ = ["append_error", "log_error", "append_error_to_file"]

@@ -13,7 +13,6 @@ import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 
 def get_repo_root() -> Path:
@@ -49,7 +48,7 @@ def format_entry(
 ### [{date}] {title}
 - **PR/Issue**: {pr_issue}
 - **Affected Workflows**: {workflows}
-- **Symptom**: 
+- **Symptom**:
   ```
   {symptom}
   ```
@@ -65,16 +64,16 @@ def format_entry(
 def interactive_mode() -> dict:
     """Interactive mode to collect failure details."""
     print("=== CI Failure Tracking Log Entry ===\n")
-    
+
     data = {}
     data["date"] = input(f"Date (default: {datetime.now().strftime('%Y-%m-%d')}): ").strip()
     if not data["date"]:
         data["date"] = datetime.now().strftime('%Y-%m-%d')
-    
+
     data["title"] = input("Issue Title: ").strip()
     data["pr_issue"] = input("PR/Issue Number (e.g., #3248): ").strip()
     data["workflows"] = input("Affected Workflows: ").strip()
-    
+
     print("\nSymptom (enter multi-line, end with empty line):")
     symptom_lines = []
     while True:
@@ -83,45 +82,45 @@ def interactive_mode() -> dict:
             break
         symptom_lines.append(line)
     data["symptom"] = "\n  ".join(symptom_lines)
-    
+
     data["root_cause"] = input("\nRoot Cause: ").strip()
     data["fix_applied"] = input("Fix Applied: ").strip()
     data["commit"] = input("Commit Hash: ").strip()
     data["prevention"] = input("Prevention Strategy: ").strip()
     data["recurrence"] = input("Recurrence (e.g., 'First occurrence', '3rd occurrence'): ").strip()
     data["status"] = input("Status (default: RESOLVED): ").strip() or "RESOLVED"
-    
+
     return data
 
 
 def add_entry_to_log(entry: str, resolved: bool = True) -> None:
     """Add entry to the log file."""
     log_file = get_log_file_path()
-    
+
     if not log_file.exists():
         print(f"Error: Log file not found at {log_file}")
         sys.exit(1)
-    
+
     content = log_file.read_text()
-    
+
     # Find the appropriate section
     if resolved:
         section_marker = "## Resolved Issues"
     else:
         section_marker = "## Active Issues (Unresolved)"
-    
+
     # Find insertion point (after section header)
     section_start = content.find(section_marker)
     if section_start == -1:
         print(f"Error: Could not find section '{section_marker}' in log file")
         sys.exit(1)
-    
+
     # Find next line after section header
     insertion_point = content.find("\n", section_start) + 1
-    
+
     # Insert the entry
     new_content = content[:insertion_point] + entry + content[insertion_point:]
-    
+
     # Write back
     log_file.write_text(new_content)
     print(f"\n✅ Entry added to {log_file}")
@@ -131,7 +130,7 @@ def add_entry_to_log(entry: str, resolved: bool = True) -> None:
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Add entry to CI failure tracking log")
-    parser.add_argument("--interactive", "-i", action="store_true", 
+    parser.add_argument("--interactive", "-i", action="store_true",
                         help="Interactive mode to collect all details")
     parser.add_argument("--issue", help="PR/Issue number")
     parser.add_argument("--title", help="Issue title")
@@ -144,9 +143,9 @@ def main():
     parser.add_argument("--recurrence", default="First occurrence", help="Recurrence info")
     parser.add_argument("--active", action="store_true", help="Add to Active Issues (not Resolved)")
     parser.add_argument("--date", help="Date (YYYY-MM-DD)")
-    
+
     args = parser.parse_args()
-    
+
     if args.interactive:
         data = interactive_mode()
         entry = format_entry(**data)

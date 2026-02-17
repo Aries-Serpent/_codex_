@@ -395,7 +395,7 @@ class KnowledgeGraphExporter:
             for n in node.walk():
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO nodes 
+                    INSERT OR REPLACE INTO nodes
                     (node_id, type, name, file_path, line_start, line_end, docstring, parent_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -432,8 +432,8 @@ class KnowledgeGraphExporter:
             for entity_id, m in self.metrics.metrics.items():
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO metrics 
-                    (entity_id, cyclomatic_complexity, cognitive_complexity, 
+                    INSERT OR REPLACE INTO metrics
+                    (entity_id, cyclomatic_complexity, cognitive_complexity,
                      lines_of_code, comment_lines, maintainability_index, quality_tier)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,

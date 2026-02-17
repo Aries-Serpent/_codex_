@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/dashboards/build_tiles_index.py [options]
-    
+
     Examples:
     $ python scripts/dashboards/build_tiles_index.py --help
 

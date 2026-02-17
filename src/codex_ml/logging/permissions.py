@@ -27,13 +27,13 @@ DEFAULT_LOG_FILE_MODE = 0o600  # Owner read/write only
 
 def get_log_file_mode() -> int:
     """Retrieve log file permission mode from environment or defaults.
-    
+
     Returns
     -------
     int
         The file permission mode as an octal integer. Defaults to 0o600
         (owner read/write only) if CODEX_LOG_FILE_MODE is not set or invalid.
-    
+
     Examples
     --------
     >>> import os
@@ -43,7 +43,7 @@ def get_log_file_mode() -> int:
     >>> os.environ["CODEX_LOG_FILE_MODE"] = "0o640"
     >>> get_log_file_mode()  # Environment override
     416
-    
+
     Notes
     -----
     The environment variable CODEX_LOG_FILE_MODE should be specified as an

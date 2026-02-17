@@ -14,7 +14,6 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
 
-
 logger = logging.getLogger(__name__)
 
 PhaseAction = Callable[["WorkflowContext", "CapabilityPlan"], None]

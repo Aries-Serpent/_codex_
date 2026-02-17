@@ -9,9 +9,10 @@ Provides Python-specific AST analysis with metadata extraction for:
 - Import statements
 """
 
-import libcst as cst
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+import libcst as cst
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -19,7 +20,7 @@ from .base_adapter import BaseASTAdapter, StandardizedASTNode
 class PythonASTAdapter(BaseASTAdapter):
     """
     Python AST adapter using libcst for concrete syntax tree parsing.
-    
+
     libcst preserves formatting and provides full fidelity parsing,
     making it ideal for code analysis and transformation.
     """
@@ -32,13 +33,13 @@ class PythonASTAdapter(BaseASTAdapter):
     def parse(self, source_code: str) -> StandardizedASTNode:
         """
         Parse Python source code using libcst.
-        
+
         Args:
             source_code: Python source code string
-            
+
         Returns:
             Root node of standardized AST
-            
+
         Raises:
             SyntaxError: If Python code has syntax errors
         """
@@ -64,7 +65,7 @@ class PythonASTAdapter(BaseASTAdapter):
     def _process_node(self, cst_node: cst.CSTNode, parent: StandardizedASTNode) -> None:
         """
         Recursively process CST nodes and build standardized tree.
-        
+
         Args:
             cst_node: libcst node to process
             parent: Parent standardized node
@@ -294,10 +295,10 @@ class PythonASTAdapter(BaseASTAdapter):
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract Python-specific metadata from a standardized node.
-        
+
         Args:
             node: Standardized AST node
-            
+
         Returns:
             Dictionary of Python-specific metadata
         """

@@ -30,14 +30,14 @@ def _get_github_client():
 @click.group(name="github-logs")
 def cli():
     """Fetch GitHub Actions logs via CLI.
-    
+
     Examples:
         # Fetch check run logs
         codex github-logs check-run Aries-Serpent _codex_ 59990656344
-        
+
         # Fetch job logs
         codex github-logs job Aries-Serpent _codex_ 12345678
-        
+
         # Save to file
         codex github-logs check-run Aries-Serpent _codex_ 59990656344 -o logs.txt
     """
@@ -67,19 +67,19 @@ def fetch_check_run_logs(
     format: str,
 ):
     """Fetch logs from a GitHub Actions check run.
-    
+
     Args:
         owner: Repository owner (e.g., 'Aries-Serpent')
         repo: Repository name (e.g., '_codex_')
         check_run_id: Check run ID (e.g., 59990656344)
-    
+
     Examples:
         # Fetch check run logs to stdout
         codex github-logs check-run Aries-Serpent _codex_ 59990656344
-        
+
         # Save to file
         codex github-logs check-run Aries-Serpent _codex_ 59990656344 -o logs.txt
-        
+
         # Get as JSON
         codex github-logs check-run Aries-Serpent _codex_ 59990656344 -f json
     """
@@ -151,16 +151,16 @@ def fetch_job_logs(
     format: str,
 ):
     """Fetch logs from a GitHub Actions workflow job.
-    
+
     Args:
         owner: Repository owner (e.g., 'Aries-Serpent')
         repo: Repository name (e.g., '_codex_')
         job_id: Job ID
-    
+
     Examples:
         # Fetch job logs to stdout
         codex github-logs job Aries-Serpent _codex_ 12345678
-        
+
         # Save to file
         codex github-logs job Aries-Serpent _codex_ 12345678 -o logs.txt
     """
@@ -220,16 +220,16 @@ def list_check_runs(
     name: Optional[str],
 ):
     """List check runs for a git reference.
-    
+
     Args:
         owner: Repository owner (e.g., 'Aries-Serpent')
         repo: Repository name (e.g., '_codex_')
         ref: Git reference (commit SHA, branch, or tag)
-    
+
     Examples:
         # List check runs for a commit
         codex github-logs list-check-runs Aries-Serpent _codex_ b6b52590b9551c4d29b90ea122d885ef83cd0d8d
-        
+
         # List only completed check runs
         codex github-logs list-check-runs Aries-Serpent _codex_ main --status completed
     """

@@ -13,13 +13,13 @@ The AgentBrainInterface provides:
 
 Usage:
     from codex.cognitive.brain_interface import AgentBrainInterface
-    
+
     # Initialize with agent ID
     brain = AgentBrainInterface(agent_id="ci-testing-agent")
-    
+
     # Query patterns
     patterns = brain.query_patterns("pytest collection error")
-    
+
     # Report learning
     brain.submit_learning(
         pattern_id="TFR-001",
@@ -82,7 +82,7 @@ class PatternConfidence(Enum):
 class AgentContext:
     """
     Context information provided by an agent when querying the brain.
-    
+
     Attributes:
         agent_id: Unique identifier for the agent
         agent_category: Category of the agent (CI_CD, TESTING, etc.)
@@ -105,7 +105,7 @@ class AgentContext:
 class PatternMatch:
     """
     A matched pattern from the pattern store.
-    
+
     Attributes:
         pattern_id: Unique identifier for the pattern
         category: Pattern category (testing, ci_cd, security, etc.)
@@ -133,7 +133,7 @@ class PatternMatch:
 class LearningFeedback:
     """
     Feedback submitted by an agent after applying a pattern.
-    
+
     Attributes:
         pattern_id: ID of the pattern that was applied
         outcome: Result of applying the pattern (success/failure/partial)
@@ -156,7 +156,7 @@ class LearningFeedback:
 class BrainResponse:
     """
     Response from the cognitive brain to an agent query.
-    
+
     Attributes:
         success: Whether the query was successful
         message: Human-readable response message
@@ -178,30 +178,30 @@ class BrainResponse:
 class AgentBrainInterface:
     """
     Standard interface for agent-brain communication.
-    
+
     This interface provides the core API for all agents to interact with
     the cognitive brain infrastructure, enabling:
-    
+
     1. Pattern Store Access
        - Query patterns based on symptoms
        - Submit new patterns learned during operation
        - Update pattern success rates
-    
+
     2. Objective Alignment
        - Check if proposed actions align with objectives
        - Get current objectives for context
        - Update objective progress
-    
+
     3. Session State
        - Read current session state
        - Update session state with progress
        - Share state across agent switches
-    
+
     4. Learning Feedback
        - Submit outcomes for pattern application
        - Report new discoveries
        - Contribute to continuous improvement
-    
+
     Architecture:
         ┌─────────────────────────────────────────────────────────────┐
         │                    Cognitive Brain Hub                       │
@@ -224,21 +224,21 @@ class AgentBrainInterface:
            │ CI/CD   │           │  Testing  │          │ Security│
            │ Agents  │           │  Agents   │          │ Agents  │
            └─────────┘           └───────────┘          └─────────┘
-    
+
     Example:
         >>> from codex.cognitive.brain_interface import AgentBrainInterface
-        >>> 
+        >>>
         >>> # Initialize interface for an agent
         >>> brain = AgentBrainInterface(agent_id="ci-testing-agent")
-        >>> 
+        >>>
         >>> # Query patterns for a symptom
         >>> patterns = brain.query_patterns("pytest collection error")
         >>> for pattern in patterns:
         ...     print(f"{pattern.pattern_id}: {pattern.solutions[0]}")
-        >>> 
+        >>>
         >>> # Check objective alignment
         >>> aligned = brain.check_alignment("run additional tests")
-        >>> 
+        >>>
         >>> # Submit learning feedback
         >>> brain.submit_learning(
         ...     pattern_id="TFR-001",
@@ -288,7 +288,7 @@ class AgentBrainInterface:
     ):
         """
         Initialize the Agent Brain Interface.
-        
+
         Args:
             agent_id: Unique identifier for the agent using this interface
             repo_root: Root directory of the repository (defaults to cwd)
@@ -406,13 +406,13 @@ class AgentBrainInterface:
     ) -> float:
         """
         Calculate match score between query symptoms and pattern symptoms.
-        
+
         Uses a combination of exact matching and fuzzy keyword matching.
-        
+
         Args:
             symptoms: List of symptoms from the query
             pattern_symptoms: List of symptoms in the pattern
-        
+
         Returns:
             Match score from 0.0 to 1.0
         """
@@ -467,16 +467,16 @@ class AgentBrainInterface:
     ) -> List[PatternMatch]:
         """
         Query the pattern store for matching patterns.
-        
+
         Args:
             symptoms: Symptoms to search for (string or list of strings)
             category: Optional category filter (testing, ci_cd, security, etc.)
             min_confidence: Minimum confidence level for matches
             limit: Maximum number of patterns to return
-        
+
         Returns:
             List of PatternMatch objects sorted by match score
-        
+
         Example:
             >>> patterns = brain.query_patterns("pytest collection error")
             >>> for p in patterns:
@@ -531,10 +531,10 @@ class AgentBrainInterface:
     def get_pattern(self, pattern_id: str) -> Optional[PatternMatch]:
         """
         Get a specific pattern by ID.
-        
+
         Args:
             pattern_id: The pattern ID to look up
-        
+
         Returns:
             PatternMatch if found, None otherwise
         """
@@ -564,14 +564,14 @@ class AgentBrainInterface:
     ) -> bool:
         """
         Submit a new pattern to the pattern store.
-        
+
         Args:
             pattern_id: Unique identifier for the pattern
             category: Pattern category
             symptoms: List of symptoms this pattern addresses
             solutions: List of solutions for this pattern
             diagnosis_steps: Optional list of diagnosis steps
-        
+
         Returns:
             True if pattern was added successfully
         """
@@ -641,11 +641,11 @@ class AgentBrainInterface:
     ) -> ObjectiveAlignment:
         """
         Check if a proposed action aligns with current objectives.
-        
+
         Args:
             proposed_action: Description of the proposed action
             context: Optional context for more accurate alignment check
-        
+
         Returns:
             ObjectiveAlignment indicating alignment status
         """
@@ -699,10 +699,10 @@ class AgentBrainInterface:
     ) -> List[str]:
         """
         Get current objectives.
-        
+
         Args:
             include_completed: Whether to include completed objectives
-        
+
         Returns:
             List of objective strings
         """
@@ -720,12 +720,12 @@ class AgentBrainInterface:
     ) -> bool:
         """
         Update progress on an objective.
-        
+
         Args:
             objective: The objective to update
             completed: Whether the objective is complete
             progress_note: Optional note about progress
-        
+
         Returns:
             True if update was successful
         """
@@ -748,7 +748,7 @@ class AgentBrainInterface:
     def get_session_state(self) -> Dict[str, Any]:
         """
         Get the current session state.
-        
+
         Returns:
             Dictionary containing session state information
         """
@@ -761,11 +761,11 @@ class AgentBrainInterface:
     ) -> bool:
         """
         Update the session state.
-        
+
         Args:
             updates: Dictionary of updates to apply
             merge: Whether to merge with existing state (True) or replace (False)
-        
+
         Returns:
             True if update was successful
         """
@@ -795,7 +795,7 @@ class AgentBrainInterface:
     ) -> bool:
         """
         Submit learning feedback after applying a pattern.
-        
+
         Args:
             pattern_id: ID of the pattern that was applied
             outcome: Result ("success", "failure", "partial")
@@ -803,10 +803,10 @@ class AgentBrainInterface:
             resolution_details: Details about how the issue was resolved
             new_symptoms: Any new symptoms discovered
             suggested_improvements: Suggestions for improving the pattern
-        
+
         Returns:
             True if feedback was submitted successfully
-        
+
         Example:
             >>> brain.submit_learning(
             ...     pattern_id="TFR-001",
@@ -872,14 +872,14 @@ class AgentBrainInterface:
     ) -> BrainResponse:
         """
         Perform a full diagnosis based on symptoms.
-        
+
         This convenience method combines pattern querying, objective checking,
         and generates recommendations.
-        
+
         Args:
             symptoms: Symptoms to diagnose
             auto_apply_patterns: Whether to automatically apply matching patterns
-        
+
         Returns:
             BrainResponse with patterns, objectives, and recommendations
         """

@@ -9,12 +9,12 @@ import logging
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Union, Any
+from typing import Any
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
-from src.metrics import accuracy as metrics_accuracy
 from omegaconf import OmegaConf
+from src.metrics import accuracy as metrics_accuracy
 from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 logger = logging.getLogger(__name__)

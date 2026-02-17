@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/scan_datasets.py [options]
-    
+
     Examples:
     $ python scripts/security/scan_datasets.py --help
 
@@ -30,6 +30,7 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import argparse
 import json
 import re

@@ -26,7 +26,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Union, Any, Iterable, Sequence
+from typing import Any, Iterable, Sequence
 
 from codex_ml.analysis.extractors import (
     extract_ast,

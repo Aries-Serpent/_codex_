@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/baseline/rotate_baselines.py [options]
-    
+
     Examples:
     $ python scripts/baseline/rotate_baselines.py --help
 
@@ -29,8 +29,9 @@ Last Updated: 2026-01-16
 """
 
 
-import shutil
 import logging
+import shutil
+
 logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path

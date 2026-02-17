@@ -16,15 +16,15 @@ Security Features:
 
 Usage:
     from codex.security.storage import SecureStorage
-    
+
     # Default: Fernet encryption
     storage = SecureStorage()
     storage.store_secret("api_key.enc", api_key)
-    
+
     # AES-256-GCM encryption
     storage = SecureStorage(algorithm='aes-gcm')
     storage.store_secret("db_password.enc", password)
-    
+
     # ChaCha20-Poly1305 encryption (faster on systems without AES-NI)
     storage = SecureStorage(algorithm='chacha20')
     storage.store_secret("secret.enc", data)
@@ -52,19 +52,19 @@ EncryptionAlgorithm = Literal['fernet', 'aes-gcm', 'chacha20']
 class SecureStorage:
     """
     Encrypted storage for sensitive data with multiple encryption algorithms.
-    
+
     Supports:
     - Fernet: AES-128-CBC + HMAC-SHA256 (default, balanced)
     - AES-GCM: AES-256-GCM (fast with AES-NI hardware)
     - ChaCha20: ChaCha20-Poly1305 (fast without AES-NI)
-    
+
     Requires the 'cryptography' package and ENCRYPTION_KEY environment variable.
-    
+
     Example:
         >>> import os
         >>> from codex.security.storage import generate_key
         >>> os.environ['ENCRYPTION_KEY'] = generate_key()
-        >>> 
+        >>>
         >>> # Default Fernet encryption
         >>> storage = SecureStorage()
         >>> storage.store_secret("secret.enc", "my_api_key_12345")
@@ -83,7 +83,7 @@ class SecureStorage:
     ):
         """
         Initialize secure storage with encryption key and algorithm.
-        
+
         Args:
             key: Encryption key (base64-encoded for Fernet, raw bytes for others).
                  If None, reads from ENCRYPTION_KEY environment variable.
@@ -91,7 +91,7 @@ class SecureStorage:
                 - 'fernet': Fernet (AES-128-CBC + HMAC) - recommended
                 - 'aes-gcm': AES-256-GCM - fast with AES-NI
                 - 'chacha20': ChaCha20-Poly1305 - fast without AES-NI
-        
+
         Raises:
             ImportError: If cryptography package not installed
             ValueError: If no encryption key provided or invalid algorithm
@@ -134,11 +134,11 @@ class SecureStorage:
     def _ensure_key_bytes(self, key: str, length: int) -> bytes:
         """
         Convert key string to bytes of specified length.
-        
+
         Args:
             key: Key string (base64 or hex)
             length: Required key length in bytes
-        
+
         Returns:
             Key bytes of required length
         """
@@ -173,10 +173,10 @@ class SecureStorage:
     def encrypt(self, data: str) -> bytes:
         """
         Encrypt string data.
-        
+
         Args:
             data: Plain text string to encrypt
-        
+
         Returns:
             Encrypted bytes
         """
@@ -197,13 +197,13 @@ class SecureStorage:
     def decrypt(self, encrypted: bytes) -> str:
         """
         Decrypt encrypted bytes to string.
-        
+
         Args:
             encrypted: Encrypted bytes
-        
+
         Returns:
             Decrypted plain text string
-        
+
         Raises:
             cryptography.fernet.InvalidToken: If decryption fails (Fernet)
             cryptography.exceptions.InvalidTag: If authentication fails (GCM/ChaCha20)
@@ -223,11 +223,11 @@ class SecureStorage:
     def store_secret(self, filepath: str, secret: str) -> None:
         """
         Encrypt and store secret to file with secure permissions.
-        
+
         Args:
             filepath: Path to encrypted file (will be created)
             secret: Secret data to encrypt and store
-        
+
         Note:
             File permissions are set to 0o600 (owner read/write only)
         """
@@ -244,13 +244,13 @@ class SecureStorage:
     def load_secret(self, filepath: str) -> str:
         """
         Load and decrypt secret from file.
-        
+
         Args:
             filepath: Path to encrypted file
-        
+
         Returns:
             Decrypted secret data
-        
+
         Raises:
             FileNotFoundError: If file doesn't exist
             cryptography.fernet.InvalidToken: If decryption fails
@@ -265,10 +265,10 @@ class SecureStorage:
     def secret_exists(self, filepath: str) -> bool:
         """
         Check if encrypted secret file exists.
-        
+
         Args:
             filepath: Path to check
-        
+
         Returns:
             True if file exists, False otherwise
         """
@@ -278,10 +278,10 @@ class SecureStorage:
 def generate_key() -> str:
     """
     Generate a new encryption key for use with SecureStorage.
-    
+
     Returns:
         Base64-encoded encryption key
-    
+
     Example:
         >>> from codex.security.storage import generate_key
         >>> key = generate_key()
@@ -299,17 +299,17 @@ def generate_key() -> str:
 def derive_key_from_password(password: str, salt: Optional[bytes] = None) -> tuple[str, bytes]:
     """
     Derive an encryption key from a password using PBKDF2.
-    
+
     Args:
         password: Password to derive key from
         salt: Optional salt (if None, generates random salt)
-    
+
     Returns:
         Tuple of (base64_key, salt_bytes)
-    
+
     Note:
         Store the salt securely - you'll need it to derive the same key again.
-    
+
     Example:
         >>> key, salt = derive_key_from_password("my_password")
         >>> # Store salt securely

@@ -12,18 +12,18 @@ logger = logging.getLogger(__name__)
 def sanitize_html(content: str, allow_tags: bool = False) -> str:
     """
     Sanitize HTML content to prevent XSS attacks.
-    
+
     Removes:
     - javascript: protocol
-    - data: protocol  
+    - data: protocol
     - vbscript: protocol
     - Event handlers (onclick, onerror, onload, etc.)
     - Dangerous tags (<script>, <iframe>, <object>, <embed>)
-    
+
     Args:
         content: HTML string to sanitize
         allow_tags: If False, strip all HTML tags
-        
+
     Returns:
         Sanitized string safe for display
     """
@@ -84,19 +84,19 @@ def sanitize_integer(
 ) -> int:
     """
     Safely convert input to integer.
-    
+
     Handles:
     - String representations of integers ("42")
     - String representations of floats ("42.7" → 42)
     - Already-integer values
     - Invalid inputs (returns default)
-    
+
     Args:
         value: Input to convert
         default: Value to return if conversion fails
         min_value: Minimum allowed value (None = no limit)
         max_value: Maximum allowed value (None = no limit)
-        
+
     Returns:
         Integer value or default
     """
@@ -141,13 +141,13 @@ def sanitize_string(
 ) -> str:
     """
     Sanitize string input for safe storage/display.
-    
+
     Args:
         value: String to sanitize
         max_length: Maximum allowed length
         allow_newlines: Whether to preserve newline characters
         strip_html: Whether to remove HTML tags
-        
+
     Returns:
         Sanitized string
     """

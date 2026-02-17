@@ -82,7 +82,7 @@ class SyncResult:
 
 class ZendeskKnowledgeSyncService:
     """Service for synchronizing Zendesk knowledge base with local cache.
-    
+
     This implements the "Crawler" pattern for Knowledge Synchronization,
     ensuring the Agent trains on the current state of the SaaS product.
     """
@@ -102,7 +102,7 @@ class ZendeskKnowledgeSyncService:
         **kwargs,
     ) -> None:
         """Initialize the sync service.
-        
+
         Args:
             api_token: Zendesk API authentication token (optional for test compatibility)
             subdomain: Zendesk subdomain (e.g., 'mycompany') (optional for test compatibility)
@@ -138,10 +138,10 @@ class ZendeskKnowledgeSyncService:
 
     def sync_articles(self) -> None:
         """Sync articles from Zendesk knowledge base.
-        
+
         This method requires valid API credentials and connection.
         Use check_and_pull() or check_and_pull_incremental() instead.
-        
+
         Raises:
             NotImplementedError: This is a placeholder for test compatibility.
                 Use check_and_pull() or check_and_pull_incremental() for actual sync.
@@ -202,10 +202,10 @@ class ZendeskKnowledgeSyncService:
 
     def _fetch(self, url: str) -> tuple[bytes, dict[str, str]]:
         """Fetch content from URL with retry logic.
-        
+
         Returns:
             Tuple of (content bytes, response headers dict)
-            
+
         Raises:
             urllib.error.HTTPError: If the URL returns a 404 (not retried)
             RuntimeError: If other network errors persist after retries
@@ -255,11 +255,11 @@ class ZendeskKnowledgeSyncService:
 
     def _should_update(self, url: str, headers: dict[str, str]) -> bool:
         """Check if an article needs to be updated based on cache.
-        
+
         Args:
             url: Article URL
             headers: HTTP response headers
-            
+
         Returns:
             True if article should be fetched/updated
         """
@@ -298,11 +298,11 @@ class ZendeskKnowledgeSyncService:
         force: bool = False,
     ) -> SyncResult:
         """Execute the Check and Pull synchronization cycle.
-        
+
         Args:
             dry_run: If True, only report what would be done without downloading
             force: If True, fetch all articles regardless of cache state
-            
+
         Returns:
             SyncResult with statistics about the sync operation
         """
@@ -435,14 +435,14 @@ class ZendeskKnowledgeSyncService:
         dry_run: bool = False,
     ) -> SyncResult:
         """Execute incremental sync - pull only changes since last run.
-        
+
         This method uses pagination to fetch only articles modified since
         the last sync, significantly reducing API calls and bandwidth.
-        
+
         Args:
             since: ISO 8601 timestamp to sync from (defaults to last_sync from cache)
             dry_run: If True, only report what would be done
-            
+
         Returns:
             SyncResult with statistics about the incremental sync
         """
@@ -621,10 +621,10 @@ class ZendeskKnowledgeSyncService:
 
     def _export_json_dataset(self, source_dir: Path) -> Path:
         """Export synchronized articles as a JSON dataset.
-        
+
         Args:
             source_dir: Directory containing synced HTML files
-            
+
         Returns:
             Path to created JSON dataset file
         """
@@ -683,13 +683,13 @@ class ZendeskKnowledgeSyncService:
 
     def pipeline_to_codex_digest(self, source_dir: Path | None = None) -> dict[str, Any]:
         """Pipeline synchronized content to codex_digest for tokenization.
-        
+
         This is Phase 3 of the sync process: Package the content for
         the Agent to train on.
-        
+
         Args:
             source_dir: Directory containing downloaded docs (defaults to latest)
-            
+
         Returns:
             Dictionary with pipeline results
         """

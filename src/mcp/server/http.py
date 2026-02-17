@@ -16,7 +16,6 @@ from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
 
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_API_KEY = "dev-key"  # pragma: allowlist secret

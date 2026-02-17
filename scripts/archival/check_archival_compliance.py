@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archival/check_archival_compliance.py [options]
-    
+
     Examples:
     $ python scripts/archival/check_archival_compliance.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archive_files.py [options]
-    
+
     Examples:
     $ python scripts/archive_files.py --help
 

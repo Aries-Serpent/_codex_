@@ -81,7 +81,7 @@ PR_NUMBER = 3248
 
 class GitHubActionsCollector:
     """Collector using GitHub Actions API through direct Python requests."""
-    
+
     def __init__(self):
         """Initialize the collector."""
         import requests
@@ -89,14 +89,14 @@ class GitHubActionsCollector:
         token = os.environ.get("GITHUB_TOKEN")
         if not token:
             raise ValueError("GITHUB_TOKEN environment variable required")
-        
+
         self.session.headers.update({
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28"
         })
         self.base_url = "https://api.github.com"
-    
+
     def get_commit_check_runs(self, sha: str) -> List[Dict[str, Any]]:
         """Get check runs for a commit."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/commits/{sha}/check-runs"
@@ -108,7 +108,7 @@ class GitHubActionsCollector:
         except Exception as e:
             logger.error(f"Failed to get check runs for {sha[:7]}: {e}")
             return []
-    
+
     def get_workflow_runs(self, sha: str) -> List[Dict[str, Any]]:
         """Get workflow runs for a commit."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/actions/runs"
@@ -121,7 +121,7 @@ class GitHubActionsCollector:
         except Exception as e:
             logger.error(f"Failed to get workflow runs for {sha[:7]}: {e}")
             return []
-    
+
     def get_run_artifacts(self, run_id: int) -> List[Dict[str, Any]]:
         """Get artifacts for a workflow run."""
         url = f"{self.base_url}/repos/{OWNER}/{REPO}/actions/runs/{run_id}/artifacts"
@@ -133,25 +133,25 @@ class GitHubActionsCollector:
         except Exception as e:
             logger.error(f"Failed to get artifacts for run {run_id}: {e}")
             return []
-    
+
     def is_check_failing(self, check: Dict[str, Any]) -> bool:
         """Determine if a check is failing."""
         status = check.get("status", "")
         conclusion = check.get("conclusion", "")
         failing = ["failure", "timed_out", "cancelled", "action_required"]
         return (status != "completed") or (conclusion in failing)
-    
+
     def process_commit(self, sha: str) -> Dict[str, Any]:
         """Process a single commit."""
         logger.info(f"Processing commit {sha[:7]}...")
-        
+
         # Get check runs
         check_runs = self.get_commit_check_runs(sha)
         failing_checks = [c for c in check_runs if self.is_check_failing(c)]
-        
+
         # Get workflow runs
         workflow_runs = self.get_workflow_runs(sha)
-        
+
         # Get artifacts for each workflow run
         all_artifacts = []
         for run in workflow_runs:
@@ -167,7 +167,7 @@ class GitHubActionsCollector:
                         "expired": art.get("expired", False),
                         "workflow_run_id": run_id
                     })
-        
+
         return {
             "sha": sha,
             "check_runs_total": len(check_runs),
@@ -188,7 +188,7 @@ class GitHubActionsCollector:
 def generate_markdown_table(results: List[Dict[str, Any]]) -> str:
     """Generate the markdown table."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
-    
+
     lines = [
         "# [Investigation Request]: Failing Checks per Commit",
         f"> Generated: {timestamp}",
@@ -204,26 +204,26 @@ def generate_markdown_table(results: List[Dict[str, Any]]) -> str:
         "| Commit SHA | Failing Check Workflows (explicit links to failing runs) | Artifacts (download links) |",
         "|---|---|---|"
     ]
-    
+
     for result in results:
         sha = result["sha"]
         failing_checks = result["failing_checks"]
         artifacts = result["artifacts"]
-        
+
         # Commit link
         commit_url = f"https://github.com/{OWNER}/{REPO}/commit/{sha}"
         commit_link = f"[{sha[:7]}]({commit_url})"
-        
+
         # Failing checks
         if failing_checks:
             check_links = [
-                f"[{c['name']}]({c['html_url']})" 
+                f"[{c['name']}]({c['html_url']})"
                 for c in failing_checks if c.get('html_url')
             ]
             checks_str = "<br>".join(check_links) if check_links else "No direct links"
         else:
             checks_str = "✅ All checks passing"
-        
+
         # Artifacts
         if artifacts:
             artifact_links = []
@@ -238,9 +238,9 @@ def generate_markdown_table(results: List[Dict[str, Any]]) -> str:
             artifacts_str = "<br>".join(artifact_links)
         else:
             artifacts_str = "No artifacts"
-        
+
         lines.append(f"| {commit_link} | {checks_str} | {artifacts_str} |")
-    
+
     lines.extend([
         "",
         "---",
@@ -251,26 +251,26 @@ def generate_markdown_table(results: List[Dict[str, Any]]) -> str:
         "- 🔒 = Requires authentication",
         "- ✅ = All checks passing",
         "",
-        f"**Generated by:** `scripts/pr3248_comprehensive_collector.py`",
+        "**Generated by:** `scripts/pr3248_comprehensive_collector.py`",
         f"**Last Updated:** {timestamp}",
     ])
-    
+
     return "\n".join(lines)
 
 
 def main():
     """Main entry point."""
     logger.info(f"Starting comprehensive collection for {len(COMMIT_SHAS)} commits...")
-    
+
     try:
         collector = GitHubActionsCollector()
         results = []
-        
+
         for i, sha in enumerate(COMMIT_SHAS, 1):
             logger.info(f"Progress: {i}/{len(COMMIT_SHAS)}")
             result = collector.process_commit(sha)
             results.append(result)
-        
+
         # Save JSON
         json_path = Path("pr3248_comprehensive_results.json")
         with open(json_path, "w") as f:
@@ -282,16 +282,16 @@ def main():
                 "commits": results
             }, f, indent=2)
         logger.info(f"JSON saved to {json_path}")
-        
+
         # Generate markdown
         markdown = generate_markdown_table(results)
         md_path = Path("failing_checks.md")
         md_path.write_text(markdown, encoding="utf-8")
         logger.info(f"Markdown table saved to {md_path}")
-        
+
         logger.info("✅ Collection complete!")
         return 0
-        
+
     except Exception as e:
         logger.error(f"Fatal error: {e}", exc_info=True)
         return 1

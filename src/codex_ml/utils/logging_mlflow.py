@@ -6,7 +6,6 @@ import logging
 from contextlib import ExitStack, contextmanager
 from typing import Any, Iterator, Mapping, Optional
 
-
 LOGGER = logging.getLogger(__name__)
 
 

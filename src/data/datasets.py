@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from utils.error_logging import append_error
 
-
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:  # pragma: no cover - imported for typing only

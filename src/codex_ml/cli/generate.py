@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 import argparse
 import sys
-from typing import Union, Optional, Any, Sequence
+from typing import Any, Optional, Sequence
 
 from codex_ml import __version__
 from codex_ml.codex_structured_logging import (

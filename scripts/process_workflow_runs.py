@@ -9,7 +9,7 @@ and filters it to our 81 target commits.
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Target commits
 TARGET_COMMITS = [
@@ -61,20 +61,20 @@ REPO = "_codex_"
 
 def process_workflow_runs_file(filepath: str) -> Dict[str, List[Any]]:
     """Process workflow runs JSON and filter to target commits."""
-    
+
     print(f"📂 Reading {filepath}...")
     with open(filepath) as f:
         data = json.load(f)
-    
+
     workflow_runs = data.get("workflow_runs", [])
     print(f"📊 Total workflow runs: {len(workflow_runs)}")
-    
+
     # Filter to target commits
     target_set = set(TARGET_COMMITS)
     matching_runs = [run for run in workflow_runs if run.get("head_sha") in target_set]
-    
+
     print(f"🎯 Matching runs for target commits: {len(matching_runs)}")
-    
+
     # Group by commit
     by_commit = {}
     for run in matching_runs:
@@ -88,15 +88,15 @@ def process_workflow_runs_file(filepath: str) -> Dict[str, List[Any]]:
             "conclusion": run.get("conclusion"),
             "status": run.get("status"),
         })
-    
+
     return by_commit
 
 def generate_markdown_table(by_commit: Dict[str, List[Any]]) -> str:
     """Generate markdown table from grouped data."""
-    
+
     lines = [
         "# [Investigation Request]: Failing Checks per Commit",
-        f"> Generated: 2026-02-15 (MCP Tools)",
+        "> Generated: 2026-02-15 (MCP Tools)",
         "> Pull Request: #3248",
         "> Repository: Aries-Serpent/_codex_",
         "",
@@ -109,12 +109,12 @@ def generate_markdown_table(by_commit: Dict[str, List[Any]]) -> str:
         "| Commit SHA | Failing Check Workflows (explicit links to failing runs) | Artifacts (download links) |",
         "|---|---|---|"
     ]
-    
+
     for sha in TARGET_COMMITS:
         runs = by_commit.get(sha, [])
         commit_url = f"https://github.com/{OWNER}/{REPO}/commit/{sha}"
         commit_link = f"[{sha[:7]}]({commit_url})"
-        
+
         if runs:
             # Filter to failing runs
             failing = [r for r in runs if r["conclusion"] in ["failure", "timed_out", "cancelled", "action_required"]]
@@ -127,9 +127,9 @@ def generate_markdown_table(by_commit: Dict[str, List[Any]]) -> str:
                 checks_str = "✅ All checks passing"
         else:
             checks_str = "⚠️ No workflow runs found"
-        
+
         lines.append(f"| {commit_link} | {checks_str} | Pending artifact collection |")
-    
+
     return "\n".join(lines)
 
 def main():
@@ -140,21 +140,21 @@ def main():
         print(f"❌ Input file not found: {input_file}")
         print("Run: github-mcp-server-actions_list to generate it first")
         return 1
-    
+
     # Process data
     by_commit = process_workflow_runs_file(input_file)
-    
+
     # Generate markdown
     markdown = generate_markdown_table(by_commit)
     output_file = Path("failing_checks.md")
     output_file.write_text(markdown, encoding="utf-8")
     print(f"✅ Generated: {output_file}")
-    
+
     # Stats
-    print(f"\n📈 Statistics:")
+    print("\n📈 Statistics:")
     print(f"  - Commits with runs: {len(by_commit)}")
     print(f"  - Commits without runs: {len(TARGET_COMMITS) - len(by_commit)}")
-    
+
     return 0
 
 if __name__ == "__main__":

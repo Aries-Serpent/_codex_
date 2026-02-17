@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/fix_type_hints.py [options]
-    
+
     Examples:
     $ python scripts/fix_type_hints.py --help
 
@@ -352,7 +352,7 @@ def main():
         stats = process_directory(args.directory, dry_run, args.fix or dry_run)
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Summary:")
+        logger.info("Summary:")
         logger.info(f"  Total files: {stats['total']}")
         logger.info(f"  Need fixes: {stats['needs_fix']}")
         if args.fix:

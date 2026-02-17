@@ -17,12 +17,10 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
 import csv
+import logging
 from collections.abc import Sequence
 from pathlib import Path
-
-
 
 logger = logging.getLogger(__name__)
 
