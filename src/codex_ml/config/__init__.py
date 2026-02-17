@@ -329,17 +329,17 @@ class TrainingConfig:
     reasoning: ReasoningConfig | None = None
 
     def __post_init__(self) -> None:
-        errs: list[str] = []
+        # Validate during dataclass construction
+        # Use generic ValueError here since we don't have path context yet
+        # The validate() method provides path-aware ConfigError
         if self.max_epochs < 0:
-            errs.append("max_epochs must be >= 0")
+            raise ValueError("training.max_epochs must be >= 0")
         if self.batch_size < 1:
-            errs.append("batch_size must be >= 1")
+            raise ValueError("training.batch_size must be >= 1")
         if self.gradient_accumulation < 1:
-            errs.append("gradient_accumulation must be >= 1")
+            raise ValueError("training.gradient_accumulation must be >= 1")
         if not (0 <= self.seed < 2**32):
-            errs.append("seed out of range")
-        if errs:
-            raise ValueError("; ".join(errs))
+            raise ValueError("training.seed out of range")
 
     def validate(self, path: str = "training") -> None:
         if self.learning_rate <= 0:
