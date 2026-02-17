@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Union, Any, Optional, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -64,7 +64,7 @@ METRIC_FUNCS = {
 _ = run_cmd
 
 
-def _coerce_sequence(value: Any) -> list[Any] | None:
+def _coerce_sequence(value: Any) -> Optional[list[Any]]:
     if value is None:
         return None
     if isinstance(value, (list, tuple, set)):
@@ -147,7 +147,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     return total
 
 
-def _to_path(value: str | Path | None) -> Path | None:
+def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
     if value is None:
         return None
     if isinstance(value, Path):
@@ -157,7 +157,7 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(value).expanduser().resolve()
 
 
-def _resolve_checkpoint_dir(value: str | Path | None) -> Path | None:
+def _resolve_checkpoint_dir(value: Optional[Union[str, Path]]) -> Optional[Path]:
     path = _to_path(value)
     if path is None:
         return None
@@ -166,7 +166,7 @@ def _resolve_checkpoint_dir(value: str | Path | None) -> Path | None:
     return path
 
 
-def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | None:
+def _load_latest_checkpoint_dir(checkpoint_dir: Optional[Union[str, Path]]) -> Optional[Path]:
     root = _resolve_checkpoint_dir(checkpoint_dir)
     if root is None:
         return None
@@ -209,7 +209,7 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
 
 
 def evaluate(
-    checkpoint_dir: str | Path | None,
+    checkpoint_dir: Optional[Union[str, Path]],
     model_name: Optional[str] = None,
     device: Optional[str] = None,
 ) -> dict[str, Any]:
@@ -287,7 +287,7 @@ if _HAS_HYDRA:
 
 else:
 
-    def main(argv: Sequence[str] | None = None) -> int:
+    def main(argv: Optional[Sequence[str]] = None) -> int:
         logger = init_json_logging()
         parser = ArgparseJSONParser(description="Evaluate latest checkpoint (skeleton).")
         parser.add_argument("--checkpoint-dir", required=True)

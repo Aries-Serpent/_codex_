@@ -9,7 +9,7 @@ import logging
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Union, Any
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
@@ -100,7 +100,7 @@ def _section_to_dict(section: Any) -> dict[str, Any]:
     return {}
 
 
-def simple_synthetic_data(**params: Any) -> tuple[Any, Any | None]:
+def simple_synthetic_data(**params: Any) -> tuple[Any, Optional[Any]]:
     """Expose the built-in synthetic dataset via a convenience wrapper."""
 
     return build_registered_dataset("synthetic_classification", **params)
@@ -153,7 +153,7 @@ def _instantiate_optimizer(optimizer_cfg: Mapping[str, Any], model: Any) -> Any:
     return factory(model.parameters(), **params)
 
 
-def _resolve_loss(loss_cfg: Mapping[str, Any] | None) -> Any:
+def _resolve_loss(loss_cfg: Optional[Mapping[str, Any]]) -> Any:
     if not loss_cfg:
         import torch.nn.functional as F
 
@@ -168,7 +168,7 @@ def _resolve_loss(loss_cfg: Mapping[str, Any] | None) -> Any:
     raise ValueError("loss configuration must provide a target")
 
 
-def _resolve_metric(metric_cfg: Mapping[str, Any] | None) -> Any:
+def _resolve_metric(metric_cfg: Optional[Mapping[str, Any]]) -> Any:
     if not metric_cfg:
         return None
     target = metric_cfg.get("target")
@@ -184,7 +184,7 @@ def _resolve_metric(metric_cfg: Mapping[str, Any] | None) -> Any:
     return None
 
 
-def _resolve_dataloaders(data_cfg: Mapping[str, Any]) -> tuple[Any, Any | None]:
+def _resolve_dataloaders(data_cfg: Mapping[str, Any]) -> tuple[Any, Optional[Any]]:
     if not data_cfg:
         raise ValueError("data configuration is required")
     params = _section_to_dict(data_cfg.get("params"))
@@ -202,7 +202,7 @@ def _resolve_dataloaders(data_cfg: Mapping[str, Any]) -> tuple[Any, Any | None]:
     return loaders, None
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Run Codex training via Hydra config")
     parser.add_argument("--config-path", required=True, help="Directory containing Hydra configs")
     parser.add_argument(
@@ -235,7 +235,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     logging_cfg = LoggingConfig(**logging_section) if logging_section else LoggingConfig()
     trainer_section.pop("logging", None)
     checkpoint_section = trainer_section.pop("checkpoint", None)
-    checkpoint_cfg: CheckpointConfig | None = None
+    checkpoint_cfg: Optional[CheckpointConfig] = None
     if checkpoint_section is not None:
         if isinstance(checkpoint_section, CheckpointConfig):
             checkpoint_cfg = checkpoint_section

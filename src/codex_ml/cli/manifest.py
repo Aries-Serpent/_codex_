@@ -21,7 +21,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Union, Optional
 
 try:
     import typer
@@ -113,7 +113,7 @@ def cmd_hash(path: Path, update_readme: Optional[Path]) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] != "hash":
         return _usage()

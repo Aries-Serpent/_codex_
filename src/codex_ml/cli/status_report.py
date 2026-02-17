@@ -18,10 +18,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Union, Optional, Any
 
 
-def _load_json_if_exists(p: Path) -> dict[str, Any] | None:
+def _load_json_if_exists(p: Path) -> Optional[dict[str, Any]]:
     if not p.exists():
         return None
     with p.open("r", encoding="utf-8") as f:

@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 import inspect
 import sys
-from typing import Sequence
+from typing import Union, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -161,7 +161,7 @@ else:
         )
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     arg_list = list(argv) if argv is not None else sys.argv[1:]
 

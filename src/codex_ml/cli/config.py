@@ -12,7 +12,7 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Union, Any, Optional
 
 
 @dataclass
@@ -196,7 +196,7 @@ def _extract_defaults_from_text(text: str) -> list[str]:
     return entries
 
 
-def _load_defaults_from_yaml(text: str) -> list[str] | None:
+def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
         import yaml  # type: ignore
     except Exception:  # pragma: no cover - optional dependency
@@ -291,7 +291,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))

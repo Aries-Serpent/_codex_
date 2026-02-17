@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Union, Optional
 
 try:
     from rich.console import Console

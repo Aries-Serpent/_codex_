@@ -80,7 +80,7 @@ def _update_path(target: object, dotted_path: str, value: object) -> None:
     parts = dotted_path.split(".")
     current: object = target
     for part in parts[:-1]:
-        next_obj: object | None = None
+        next_obj: Optional[object] = None
         if isinstance(current, dict):
             next_obj = current.get(part)
             if next_obj is None:
@@ -139,7 +139,7 @@ def tokenizer() -> None:
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
 def tokenizer_train(
-    config: str, streaming: bool | None, stream_chunk_size: int | None, dry_run: bool
+    config: str, streaming: Optional[bool], stream_chunk_size: Optional[int], dry_run: bool
 ) -> None:
     """Train a tokenizer according to the provided configuration."""
     tokenizer_pipeline = _get_tokenizer_pipeline()
@@ -185,7 +185,7 @@ def tokenizer_validate(config: str) -> None:
     type=click.Path(dir_okay=False, path_type=str),
     help="Path to the serialized tokenizer JSON file to use for encoding.",
 )
-def tokenizer_encode(text: str | None, tokenizer_path: str) -> None:
+def tokenizer_encode(text: Optional[str], tokenizer_path: str) -> None:
     """Encode text with a trained tokenizer."""
     if text is None:
         text = click.get_text_stream("stdin").read()
@@ -275,8 +275,8 @@ def config_sweep(
     base_config: Path,
     output: Path,
     seeds: str,
-    dataset_version: str | None,
-    dataset_path: Path | None,
+    dataset_version: Optional[str],
+    dataset_path: Optional[Path],
     param: tuple[str, ...],
     locked_override: tuple[str, ...],
 ) -> None:
@@ -412,14 +412,14 @@ def train(
     config: str,
     overrides: tuple[str, ...],
     resume: bool,
-    seed: int | None,
-    resume_from: str | None,
+    seed: Optional[int],
+    resume_from: Optional[str],
     enable_peft: bool,
-    mlflow_toggle: bool | None,
+    mlflow_toggle: Optional[bool],
     system_metrics: bool,
-    mlflow_tracking_uri: str | None,
-    mlflow_run_name: str | None,
-    mlflow_experiment: str | None,
+    mlflow_tracking_uri: Optional[str],
+    mlflow_run_name: Optional[str],
+    mlflow_experiment: Optional[str],
 ) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
@@ -472,7 +472,7 @@ def train(
         training_cfg.resume_from = resume_from
         resume = True
 
-    metrics_logger: SystemMetricsLogger | None = None
+    metrics_logger: Optional[SystemMetricsLogger] = None
     if system_metrics:
         metrics_path = Path(cfg_obj.training.output_dir) / "logs" / "system_metrics.ndjson"
         metrics_path.parent.mkdir(parents=True, exist_ok=True)
@@ -506,10 +506,10 @@ def train(
 @click.option("--mlflow-experiment", default=None, help="Optional MLflow experiment override.")
 def resume(
     manifest: str,
-    mlflow_toggle: bool | None,
-    mlflow_tracking_uri: str | None,
-    mlflow_run_name: str | None,
-    mlflow_experiment: str | None,
+    mlflow_toggle: Optional[bool],
+    mlflow_tracking_uri: Optional[str],
+    mlflow_run_name: Optional[str],
+    mlflow_experiment: Optional[str],
 ) -> None:
     """Resume training from a manifest emitted by the HF trainer."""
 
@@ -708,10 +708,10 @@ def evaluate(
     overrides: tuple[str, ...],
     metrics_only: bool,
     metrics_sink: str,
-    seed: int | None,
-    log_metrics: str | None,
-    run_id: str | None,
-    metrics_path: str | None,
+    seed: Optional[int],
+    log_metrics: Optional[str],
+    run_id: Optional[str],
+    metrics_path: Optional[str],
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
 
@@ -781,7 +781,7 @@ def evaluate(
     default=None,
     help="Override the shuffle seed (best-effort determinism).",
 )
-def prepare_data(config: str, overrides: tuple[str, ...], seed: int | None) -> None:
+def prepare_data(config: str, overrides: tuple[str, ...], seed: Optional[int]) -> None:
     from codex_ml.data.loader import DataPreparationError, prepare_data_from_config
 
     try:
@@ -817,13 +817,13 @@ def prepare_data(config: str, overrides: tuple[str, ...], seed: int | None) -> N
     default=None,
     help="Optional seed value to record with the snapshot.",
 )
-def export_env(output_dir: Path, seed: int | None) -> None:
+def export_env(output_dir: Path, seed: Optional[int]) -> None:
     """Write a standalone environment snapshot."""
 
     export_environment(output_dir, seed=seed, command="export-env", stream=click.echo)
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     arg_list = list(argv) if argv is not None else sys.argv[1:]
 

@@ -13,7 +13,7 @@ import json
 import os
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Union, TYPE_CHECKING, Any, Optional
 
 from codex_ml.utils.optional import optional_import
 

@@ -39,7 +39,7 @@ def _build_dummy_samples() -> list[Sample]:
     ]
 
 
-def run_minimal(experiment_name: str | None = None) -> MinimalRunResult:
+def run_minimal(experiment_name: Optional[str] = None) -> MinimalRunResult:
     """Run a minimal training+evaluation loop using in-repo scaffolding only."""
     config = cfg_load.load_config(experiment_name=experiment_name)
 

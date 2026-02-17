@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Union, Optional, Any
 
 try:  # pragma: no cover - optional dependency path
     import yaml  # type: ignore
@@ -59,7 +59,7 @@ def _list_key_files(repo_root: Path) -> list[str]:
     return results
 
 
-def _load_yaml(path: Path) -> Mapping[str, Any] | None:
+def _load_yaml(path: Path) -> Optional[Mapping[str, Any]]:
     if yaml is None:
         return None
     try:
@@ -106,7 +106,7 @@ def _collect_reasoning_sections(
     def _add_entry(
         *,
         section_key: str,
-        summary_key: str | None,
+        summary_key: Optional[str],
         rel_path: str,
         value: str,
     ) -> None:
@@ -272,7 +272,7 @@ def _format_reasoning_summary(summary: Mapping[str, Sequence[str]]) -> list[str]
     return lines
 
 
-def render_repo_map(*, reasoning: bool = False, include: Sequence[str] | None = None) -> str:
+def render_repo_map(*, reasoning: bool = False, include: Optional[Sequence[str]] = None) -> str:
     """Render repository metadata with optional reasoning overlays."""
 
     top_level = _list_top_level(REPO_ROOT)

@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Union, Annotated, Any
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -74,7 +74,7 @@ def _detect_state_file(directory: Path) -> Path:
 def validate_checkpoint(
     path: Path,
     *,
-    expect_schema: str | None = None,
+    expect_schema: Optional[str] = None,
     require_digest: bool = True,
 ) -> Mapping[str, Any]:
     """Validate ``path`` as a checkpoint directory or metadata file."""
@@ -165,7 +165,7 @@ else:  # pragma: no cover - Typer missing
     app = None
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     """Entry point for ``python -m codex_ml.cli.checkpoint_validate``."""
 
     logger = init_json_logging()

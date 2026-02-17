@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any
+from typing import Union, Any
 
 from codex_ml.cli import utils as cli_utils
 from codex_ml.logging.experiment import ExperimentTracker
@@ -51,7 +51,7 @@ def _build_argparser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = _build_argparser()
     args = parser.parse_args(argv)
 
