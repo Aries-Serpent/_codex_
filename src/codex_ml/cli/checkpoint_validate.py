@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Checkpoint Validate Module
 
 This module provides functionality for checkpoint validate.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 

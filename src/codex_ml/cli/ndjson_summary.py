@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Ndjson Summary Module
 
 This module provides functionality for ndjson summary.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 

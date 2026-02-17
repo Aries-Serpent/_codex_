@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 import logging
 logger = logging.getLogger(__name__)
 Capability Audit Trending Dashboard Generator (v1.0.0)
@@ -23,7 +25,6 @@ Generated: 2025-11-19 00:49:03 UTC
 Roles: [Audit Orchestrator], [Data Visualization Engineer] ⚡ Energy: 5
 """
 
-from __future__ import annotations
 
 import argparse
 import json

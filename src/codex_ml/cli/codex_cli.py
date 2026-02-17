@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Codex Cli Module
 
 This module provides functionality for codex cli.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -514,7 +515,6 @@ def resume(
 ) -> None:
     """Resume training from a manifest emitted by the HF trainer."""
 
-    from codex_ml.training import run_functional_training
 
     manifest_path = Path(manifest)
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
