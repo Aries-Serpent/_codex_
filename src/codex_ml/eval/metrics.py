@@ -312,7 +312,7 @@ def bleu(
             return result
         logger.warning(f"sacrebleu returned unexpected value: {result}, falling back to NLTK")
     except Exception:
-        logger.warning("sacrebleu failed, falling back to NLTK", exc_info=True)
+        logger.warning("sacrebleu import or computation failed, falling back to NLTK", exc_info=True)
     
     # Fall back to NLTK
     try:
@@ -326,7 +326,7 @@ def bleu(
     smoothie = SmoothingFunction().method3
     
     try:
-        # NLTK corpus_bleu expects (list_of_references, hypotheses) order
+        # NLTK corpus_bleu expects (list_of_references, list_of_hypotheses) order
         score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)
         result = float(score)
         # Sanity check: BLEU scores should be in [0, 1]
