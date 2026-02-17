@@ -241,6 +241,8 @@ class TestTelemetryCollector:
 
         # Verify pattern distribution
         assert "auto-fix" in report["pattern_distribution"]
+        # Note: coverage-timeout pattern may or may not be present depending on mock data
+        # The mock data includes a timed_out conclusion which should trigger this pattern
         assert "coverage-timeout" in report["pattern_distribution"]
 
         # Verify failed runs
