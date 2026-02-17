@@ -6,5 +6,22 @@ select = ["E", "F", "W", "I"]
 ignore = ["E501"]  # Line too long - handled by Black
 
 [lint.per-file-ignores]
-"__init__.py" = ["F401", "E402"]
-"tests/quantum/test_integration.py" = ["F811"]
+# Standard exceptions
+"__init__.py" = ["F401", "E402"]  # Re-exports and organization
+"tests/quantum/test_integration.py" = ["F811"]  # Intentional redefinitions
+
+# PR #3319: E402 acceptable patterns (documented in docs/contributing/CODE_QUALITY_IMPORT_GUIDELINES.md)
+# Pattern 1: Logger-before-imports (performance optimization)
+"src/codex_ml/training/*.py" = ["E402"]
+"src/codex_ml/cli/*.py" = ["E402"]
+"src/codex/cognitive/*.py" = ["E402"]
+
+# Pattern 2: sys.path modification (local imports)
+".github/agents/**/tests/*.py" = ["E402"]
+"scripts/**/*.py" = ["E402"]
+
+# Pattern 3-5: Lazy loading, conditional imports, documentation
+"src/codex/retrieval/stores/*.py" = ["E402"]
+"services/ita/app/*.py" = ["E402"]
+
+# Note: F821 has ZERO tolerance - no exceptions for undefined names
