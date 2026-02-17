@@ -15,7 +15,7 @@ import importlib.util
 import sys
 from dataclasses import dataclass
 from types import ModuleType
-from typing import Final
+from typing import Final, Optional, Union
 
 
 logger = logging.getLogger(__name__)
@@ -40,9 +40,9 @@ class TorchStatus:
 
     ok: bool
     detail: str
-    reinstall_hint: str | None
-    version: str | None
-    location: str | None
+    reinstall_hint: Optional[str]
+    version: Optional[str]
+    location: Optional[str]
 
     def summary(self) -> str:
         parts: list[str] = []
@@ -55,7 +55,7 @@ class TorchStatus:
         return f"{self.detail} ({', '.join(parts)})"
 
 
-def _load_torch(module: ModuleType | None = None) -> ModuleType:
+def _load_torch(module: Optional[ModuleType] = None) -> ModuleType:
     if module is not None:
         return module
     spec = importlib.util.find_spec("torch")
@@ -64,7 +64,7 @@ def _load_torch(module: ModuleType | None = None) -> ModuleType:
     return importlib.import_module("torch")
 
 
-def inspect_torch(module: ModuleType | None = None) -> TorchStatus:
+def inspect_torch(module: Optional[ModuleType] = None) -> TorchStatus:
     """Return diagnostics describing whether a real PyTorch install is available."""
 
     try:
@@ -121,7 +121,7 @@ def inspect_torch(module: ModuleType | None = None) -> TorchStatus:
     )
 
 
-def diagnostic_report(status: TorchStatus | None = None) -> str:
+def diagnostic_report(status: Optional[TorchStatus] = None) -> str:
     """Format a human-readable diagnostic summary for logs or gate output."""
 
     status = status or inspect_torch()
