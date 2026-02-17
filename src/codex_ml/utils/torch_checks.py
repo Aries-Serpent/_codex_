@@ -10,15 +10,15 @@ reinstalling offline builds.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import importlib
 import importlib.util
 import sys
 from dataclasses import dataclass
 from types import ModuleType
 from typing import Final
+
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "OFFICIAL_CPU_INDEX_URL",

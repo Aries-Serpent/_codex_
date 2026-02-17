@@ -20,9 +20,6 @@ Usage:
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import contextlib
 import importlib
 import importlib.util
@@ -36,6 +33,9 @@ from pathlib import Path
 from typing import Any
 
 from codex_ml.logging.mlflow_guard import (
+
+logger = logging.getLogger(__name__)
+
     init_mlflow_safe,
     log_metric_safe,
     log_params_safe,

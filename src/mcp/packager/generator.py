@@ -18,14 +18,14 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import json
 from pathlib import Path
 from typing import Any
 
 from src.mcp.packager.config import PackageConfig
+
+
+logger = logging.getLogger(__name__)
 
 try:
     import yaml

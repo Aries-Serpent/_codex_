@@ -18,12 +18,12 @@ Author: Codex Team
 # Minimal retry / backoff helper (exponential backoff with jitter)
 import functools
 import logging
-
-logger = logging.getLogger(__name__)
 import secrets
 import time
 from typing import Callable
 
+
+logger = logging.getLogger(__name__)
 _secure_random = secrets.SystemRandom()
 
 def retry_on_exception(

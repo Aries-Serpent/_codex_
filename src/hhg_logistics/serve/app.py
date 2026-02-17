@@ -33,6 +33,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 from ray import serve
 
+logger = logging.getLogger(__name__)
+
 try:
     import hydra
 except ImportError as e:
@@ -43,8 +45,6 @@ from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
 from hhg_logistics.model.adapters import load_adapters_into
 from hhg_logistics.model.peft_utils import load_hf_llm
 from omegaconf import DictConfig, OmegaConf
-
-logger = logging.getLogger(__name__)
 
 
 OFFLINE_ENV_VARS: dict[str, str] = {

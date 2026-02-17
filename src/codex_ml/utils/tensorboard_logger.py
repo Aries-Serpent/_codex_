@@ -7,14 +7,14 @@ TensorBoard is unavailable or disabled.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Generator
 
+
+
+logger = logging.getLogger(__name__)
 
 @contextmanager
 def get_tb_writer(

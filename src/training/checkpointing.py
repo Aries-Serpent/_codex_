@@ -20,14 +20,14 @@ from __future__ import annotations
 import inspect
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import math
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - torch is optional in minimal environments
     import torch
 except Exception:  # pragma: no cover - gracefully degrade when torch missing

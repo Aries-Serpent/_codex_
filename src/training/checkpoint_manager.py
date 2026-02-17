@@ -7,14 +7,14 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import json
 import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Optional
+
+
+logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",

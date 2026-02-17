@@ -6,14 +6,14 @@ import contextlib
 import inspect
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     from torch.cuda.amp import GradScaler, autocast
 

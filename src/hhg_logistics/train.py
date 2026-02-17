@@ -21,6 +21,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
+
 try:
     from hydra.utils import to_absolute_path
 except ImportError as e:
@@ -50,8 +52,6 @@ from hhg_logistics.model.peft_utils import (
 )
 from hhg_logistics.plugins import load_plugins
 from omegaconf import DictConfig, OmegaConf
-
-logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from torch.optim import AdamW

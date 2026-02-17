@@ -26,6 +26,7 @@ from typing import Any
 from codex_ml.utils.optional import optional_dependency_error
 from codex_ml.utils.optional_dependencies import build_optional_dependency_error
 
+logger = logging.getLogger(__name__)
 LOGGER = logging.getLogger(__name__)
 
 

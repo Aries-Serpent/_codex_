@@ -6,8 +6,6 @@ Includes retry logic, rate limit handling, and typed responses.
 
 import asyncio
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import time
 from datetime import datetime, timezone
@@ -16,6 +14,8 @@ from typing import Any, Optional, Union
 import httpx
 
 from .exceptions import (
+
+logger = logging.getLogger(__name__)
     AuthenticationError,
     GitHubAPIError,
     NotFoundError,

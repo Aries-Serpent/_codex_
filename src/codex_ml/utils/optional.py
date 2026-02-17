@@ -18,11 +18,11 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import importlib
 import types
+
+
+logger = logging.getLogger(__name__)
 
 _OPTIONAL_INSTALL_HINT = "pip install -r requirements/dev.txt"
 

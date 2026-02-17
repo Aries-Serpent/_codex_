@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import inspect as inspect_module
 import json
 import shutil
@@ -15,6 +12,9 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NoReturn
+
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer

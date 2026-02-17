@@ -9,11 +9,11 @@ offers a unified interface:
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from typing import Any, Optional
 
+
+
+logger = logging.getLogger(__name__)
 
 def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bool:
     """

@@ -9,8 +9,6 @@ Reference: Context Engineering Guide 2025 - 25-40% token savings through caching
 
 import hashlib
 import logging
-
-logger = logging.getLogger(__name__)
 import json
 import os
 import threading
@@ -20,6 +18,8 @@ from pathlib import Path
 from typing import Any, Optional
 
 
+
+logger = logging.getLogger(__name__)
 @dataclass
 class CacheEntry:
     """A cached context entry."""

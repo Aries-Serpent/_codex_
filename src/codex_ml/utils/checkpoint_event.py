@@ -18,9 +18,6 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
 import os
@@ -28,6 +25,9 @@ import sys
 import time
 from pathlib import Path
 from typing import IO, Optional
+
+
+logger = logging.getLogger(__name__)
 
 _ENV_FLAG = "CODEX_EMIT_CHECKPOINT_JSON"
 

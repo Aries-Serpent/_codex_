@@ -16,9 +16,6 @@ Minimal surface keeps legacy + functional backends pluggable.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy
@@ -29,6 +26,9 @@ from typing import Any, Iterable, Optional, Protocol
 
 from codex_ml.data.jsonl_loader import load_jsonl
 
+
+
+logger = logging.getLogger(__name__)
 
 class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...

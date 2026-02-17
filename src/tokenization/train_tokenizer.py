@@ -18,9 +18,6 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
 import random
@@ -32,6 +29,9 @@ from pathlib import Path
 from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 from ingestion import ingest
+
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     try:

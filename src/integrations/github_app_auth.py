@@ -18,9 +18,6 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 import time
 from pathlib import Path
@@ -28,6 +25,9 @@ from typing import Mapping, MutableMapping
 from urllib.parse import urlparse
 
 import requests
+
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency for JWT minting
     import jwt  # pyjwt
