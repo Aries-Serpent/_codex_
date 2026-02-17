@@ -33,6 +33,26 @@ def mock_repo(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
 
+    # Initialize git repository (required by mcp-package CLI)
+    subprocess.run(
+        ["git", "init"],
+        cwd=str(repo),
+        capture_output=True,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.com"],
+        cwd=str(repo),
+        capture_output=True,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test User"],
+        cwd=str(repo),
+        capture_output=True,
+        check=True,
+    )
+
     # Create topics.json
     scripts_mcp = repo / "scripts" / "mcp"
     scripts_mcp.mkdir(parents=True)
