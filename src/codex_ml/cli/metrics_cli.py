@@ -140,7 +140,9 @@ def _csv_to_sqlite(
     try:
         cur = con.cursor()
         _validate_table(table or "metrics", allow_unsafe_table_name)
-        cur.execute(  # nosec B608            f"CREATE TABLE IF NOT EXISTS {table_safe} "
+        # nosec B608
+        cur.execute(
+            f"CREATE TABLE IF NOT EXISTS {table_safe} "
             "(run_id TEXT, epoch REAL, key TEXT, value TEXT)"
         )
         con.execute("BEGIN IMMEDIATE")
