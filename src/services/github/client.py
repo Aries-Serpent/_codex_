@@ -14,8 +14,6 @@ from typing import Any, Optional, Union
 import httpx
 
 from .exceptions import (
-
-logger = logging.getLogger(__name__)
     AuthenticationError,
     GitHubAPIError,
     NotFoundError,
@@ -36,6 +34,8 @@ from .types import (
     WorkflowJob,
     WorkflowRun,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class GitHubClient:

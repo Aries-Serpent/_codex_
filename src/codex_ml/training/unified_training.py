@@ -33,9 +33,6 @@ from pathlib import Path
 from typing import Any
 
 from codex_ml.logging.mlflow_guard import (
-
-logger = logging.getLogger(__name__)
-
     init_mlflow_safe,
     log_metric_safe,
     log_params_safe,
@@ -53,6 +50,8 @@ from codex_ml.utils.checkpoint_core import (
     save_checkpoint,
 )
 from codex_ml.utils.repro import capture_environment, set_seed
+
+logger = logging.getLogger(__name__)
 
 try:  # optional torch
     import torch

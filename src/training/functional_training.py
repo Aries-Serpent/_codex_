@@ -34,7 +34,6 @@ from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
 from codex_ml.utils.checkpointing import (
-logger = logging.getLogger(__name__)
     dump_rng_state,
     load_rng_state,
     load_training_checkpoint,
@@ -45,6 +44,8 @@ from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlf
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
+
+logger = logging.getLogger(__name__)
 
 # ruff: noqa: I001
 
