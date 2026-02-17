@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Any, Optional
 
 try:  # pragma: no cover - optional dependency path
     import yaml  # type: ignore

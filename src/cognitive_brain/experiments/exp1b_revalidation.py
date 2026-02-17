@@ -72,7 +72,7 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     # Initialize quantum assessor with Phase 8.0 optimized configuration
     config = QuantumConfig.from_env()
     config.superposition_enabled = True  # Required for complex scenario handling
-    
+
     # Initialize required dependencies for quantum compliance assessor
     repository = QuantumMetricRepository(db_path=":memory:")  # In-memory DB for experiments
     monitor = CoherenceMonitor(config, repository)

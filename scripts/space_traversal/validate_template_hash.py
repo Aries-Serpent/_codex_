@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/validate_template_hash.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/validate_template_hash.py --help
 
@@ -34,8 +34,8 @@ Validate Template Hash
 Computes concatenated Jinja template hash and compares with manifest's template_hash.
 Warns on mismatch (non-blocking).
 """
-import json
 import hashlib
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]

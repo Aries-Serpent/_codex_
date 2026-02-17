@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/collect_ci_data.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/collect_ci_data.py --help
 
@@ -38,17 +38,17 @@ import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
     """
     Collect CI/CD workflow run data using GitHub CLI.
-    
+
     Args:
         max_runs: Maximum number of workflow runs to collect
         output_path: Path to save JSON output
-    
+
     Returns:
         Dictionary with CI/CD data and metrics
     """
@@ -59,25 +59,25 @@ def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
             "--limit", str(max_runs),
             "--json", "databaseId,name,displayTitle,event,status,conclusion,createdAt,updatedAt,workflowName,headBranch"
         ]
-        
+
         runs_result = subprocess.run(
             runs_cmd,
             capture_output=True,
             text=True,
             check=True
         )
-        
+
         runs = json.loads(runs_result.stdout)
-        
+
         # Calculate metrics
         total_runs = len(runs)
         successful_runs = sum(1 for r in runs if r.get("conclusion") == "success")
         failed_runs = sum(1 for r in runs if r.get("conclusion") == "failure")
         cancelled_runs = sum(1 for r in runs if r.get("conclusion") == "cancelled")
         in_progress_runs = sum(1 for r in runs if r.get("status") == "in_progress")
-        
+
         success_rate = (successful_runs / total_runs * 100) if total_runs > 0 else 0
-        
+
         # Calculate average duration for completed runs
         durations = []
         for run in runs:
@@ -86,9 +86,9 @@ def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
                 updated = datetime.fromisoformat(run["updatedAt"].replace('Z', '+00:00'))
                 duration_seconds = (updated - created).total_seconds()
                 durations.append(duration_seconds)
-        
+
         avg_duration = sum(durations) / len(durations) if durations else 0
-        
+
         # Group by workflow
         workflow_stats = {}
         for run in runs:
@@ -108,7 +108,7 @@ def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
                 workflow_stats[wf_name]["failure"] += 1
             elif conclusion == "cancelled":
                 workflow_stats[wf_name]["cancelled"] += 1
-        
+
         data = {
             "collection_timestamp": datetime.now().isoformat(),
             "max_runs_requested": max_runs,
@@ -125,22 +125,22 @@ def collect_ci_data(max_runs: int, output_path: str) -> Dict[str, Any]:
             "workflow_statistics": workflow_stats,
             "runs": runs
         }
-        
+
         # Save to file
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(output_file, 'w') as f:
             json.dump(data, f, indent=2)
-        
+
         print(f"✅ Collected {total_runs} CI/CD workflow runs")
         print(f"   Success: {successful_runs}, Failed: {failed_runs}, Cancelled: {cancelled_runs}")
         print(f"   Success rate: {success_rate:.1f}%")
         print(f"   Avg duration: {avg_duration/60:.1f} minutes")
         print(f"   Saved to: {output_path}")
-        
+
         return data
-        
+
     except subprocess.CalledProcessError as e:
         print(f"❌ GitHub CLI command failed: {e}")
         return {"error": str(e), "runs": []}
@@ -164,9 +164,9 @@ def main():
         required=True,
         help="Output JSON file path"
     )
-    
+
     args = parser.parse_args()
-    
+
     collect_ci_data(args.max_runs, args.output)
 
 

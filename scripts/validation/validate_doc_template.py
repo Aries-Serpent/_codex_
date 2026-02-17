@@ -63,7 +63,7 @@ SECTION_PATTERNS = {
 
 class ValidationResult:
     """Validation result for a single file"""
-    
+
     def __init__(self, file_path: Path):
         self.file_path = file_path
         self.errors: List[str] = []
@@ -72,11 +72,11 @@ class ValidationResult:
         self.found_sections: List[str] = []
         self.date_issues: List[Dict] = []
         self.calendar_language: List[Dict] = []
-        
+
     @property
     def is_valid(self) -> bool:
         return len(self.errors) == 0
-    
+
     @property
     def severity_score(self) -> int:
         return len(self.errors) * 3 + len(self.warnings) * 2
@@ -84,60 +84,60 @@ class ValidationResult:
 
 class DocTemplateValidator:
     """Validates documentation against template standards"""
-    
+
     def __init__(self, strict: bool = False, check_calendar: bool = True):
         self.strict = strict
         self.check_calendar = check_calendar
-        
+
     def validate_file(self, file_path: Path) -> ValidationResult:
         """Validate a single file"""
         result = ValidationResult(file_path)
-        
+
         if not file_path.exists():
             result.errors.append(f"File does not exist: {file_path}")
             return result
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except Exception as e:
             result.errors.append(f"Failed to read file: {e}")
             return result
-        
+
         self._check_sections(content, result)
         self._check_dates(content, result)
         if self.check_calendar:
             self._check_calendar_language(content, result)
-        
+
         return result
-    
+
     def _check_sections(self, content: str, result: ValidationResult):
         """Check for required template sections"""
         for section in REQUIRED_SECTIONS:
             found = False
             patterns = SECTION_PATTERNS.get(section, [])
-            
+
             for pattern in patterns:
                 if re.search(pattern, content, re.IGNORECASE):
                     found = True
                     result.found_sections.append(section)
                     break
-            
+
             if not found:
                 result.missing_sections.append(section)
                 if self.strict:
                     result.errors.append(f"Missing required section: {section}")
                 else:
                     result.warnings.append(f"Missing recommended section: {section}")
-    
+
     def _check_dates(self, content: str, result: ValidationResult):
         """Check date format compliance"""
         lines = content.split('\n')
-        
+
         date_patterns = [
             r'(Last\s+Updated|Generated|Date|Updated):\s*(.+)',
             r'\*\*(?:Last\s+Updated|Generated|Date|Updated)\*\*:\s*(.+)',
         ]
-        
+
         for line_num, line in enumerate(lines, 1):
             for pattern in date_patterns:
                 match = re.search(pattern, line, re.IGNORECASE)
@@ -145,7 +145,7 @@ class DocTemplateValidator:
                     # Get the last group (the date string)
                     date_str = match.groups()[-1].strip() if match.groups() else ""
                     is_iso = any(re.match(p, date_str) for p in ISO_8601_PATTERNS)
-                    
+
                     if not is_iso and date_str:
                         result.date_issues.append({
                             'line': line_num,
@@ -156,24 +156,24 @@ class DocTemplateValidator:
                             result.errors.append(f"Non-ISO 8601 date on line {line_num}: {date_str}")
                         else:
                             result.warnings.append(f"Non-ISO 8601 date on line {line_num}: {date_str}")
-    
+
     def _check_calendar_language(self, content: str, result: ValidationResult):
         """Check for calendar-based language"""
         lines = content.split('\n')
-        
+
         for line_num, line in enumerate(lines, 1):
             for term_pattern in CALENDAR_TERMS:
                 matches = re.finditer(term_pattern, line, re.IGNORECASE)
                 for match in matches:
                     if '```' in line or 'cron:' in line.lower():
                         continue
-                    
+
                     result.calendar_language.append({
                         'line': line_num,
                         'text': line.strip(),
                         'term': match.group(0),
                     })
-        
+
         if result.calendar_language:
             count = len(result.calendar_language)
             result.warnings.append(f"Found {count} calendar-based terms")
@@ -186,11 +186,11 @@ def main():
     parser.add_argument('--recursive', action='store_true', default=True, help='Recursive validation')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser.add_argument('--json', action='store_true', help='JSON output')
-    
+
     args = parser.parse_args()
-    
+
     validator = DocTemplateValidator(strict=args.strict)
-    
+
     results = []
     if args.path.is_file():
         results = [validator.validate_file(args.path)]
@@ -199,10 +199,10 @@ def main():
         for md_file in args.path.glob(pattern):
             if md_file.is_file():
                 results.append(validator.validate_file(md_file))
-    
+
     # Print results
     if args.json:
-        output = [{'file': str(r.file_path), 'valid': r.is_valid, 'errors': r.errors, 
+        output = [{'file': str(r.file_path), 'valid': r.is_valid, 'errors': r.errors,
                    'warnings': r.warnings, 'missing_sections': r.missing_sections}
                   for r in results]
         print(json.dumps(output, indent=2))
@@ -211,7 +211,7 @@ def main():
         valid = sum(1 for r in results if r.is_valid)
         print(f"\nValidation Report - Generated: {datetime.now(timezone.utc).isoformat()}Z")
         print(f"Total: {total} | Valid: {valid} | Invalid: {total-valid}")
-        
+
         for result in sorted(results, key=lambda r: r.severity_score, reverse=True):
             if not result.is_valid or args.verbose:
                 print(f"\n{result.file_path}")
@@ -226,7 +226,7 @@ def main():
                         print(f"  - {w}")
                 if result.missing_sections:
                     print(f"Missing: {', '.join(result.missing_sections)}")
-    
+
     return 1 if any(not r.is_valid for r in results) else 0
 
 

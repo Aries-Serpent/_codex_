@@ -21,7 +21,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional
 
 try:
     import typer

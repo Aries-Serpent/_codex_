@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 import inspect
 import sys
-from typing import Union, Sequence
+from typing import Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

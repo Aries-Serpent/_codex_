@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security_audit.py [options]
-    
+
     Examples:
     $ python scripts/security_audit.py --help
 
@@ -36,8 +36,9 @@ Run this after applying fixes to confirm remediation.
 This script checks that all security-critical dependencies meet their
 minimum required versions to address known CVEs.
 """
-import subprocess
 import logging
+import subprocess
+
 logger = logging.getLogger(__name__)
 import sys
 

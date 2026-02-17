@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/manage_plugins.py [options]
-    
+
     Examples:
     $ python scripts/manage_plugins.py --help
 
@@ -42,6 +42,7 @@ Usage:
 """
 import argparse
 import logging
+
 logger = logging.getLogger(__name__)
 import json
 import sys
@@ -136,7 +137,7 @@ def cmd_validate(args):
         print(f"\nError: {error}")
 
     if plugin_info.dependencies:
-        print(f"\nDependencies:")
+        print("\nDependencies:")
         for dep in plugin_info.dependencies:
             print(f"  - {dep}")
 
@@ -167,7 +168,7 @@ def cmd_info(args):
     print(f"Loaded: {'Yes' if plugin_info.loaded else 'No'}")
 
     if plugin_info.dependencies:
-        print(f"\nDependencies:")
+        print("\nDependencies:")
         for dep in plugin_info.dependencies:
             print(f"  - {dep}")
 

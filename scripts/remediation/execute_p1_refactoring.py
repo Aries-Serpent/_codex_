@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/execute_p1_refactoring.py [options]
-    
+
     Examples:
     $ python scripts/remediation/execute_p1_refactoring.py --help
 
@@ -85,23 +85,23 @@ from typing import Any, dict
 
 class DictSerializable:
     """Mixin class providing dict serialization capability.
-    
+
     Automatically converts object attributes to dictionary,
     excluding None values and private attributes.
-    
+
     Usage:
         @dataclass
         class MyModel(DictSerializable):
             name: str
             value: int = None
-            
+
         model = MyModel(name="test", value=42)
         data = model.to_dict()  # {"name": "test", "value": 42}
     """
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert object to dictionary representation.
-        
+
         Returns:
             Dictionary with non-None public attributes
         """
@@ -220,13 +220,13 @@ class DictSerializable:
         # Find to_dict implementations
         to_dict_impls = self.find_to_dict_implementations()
         print(f"📊 to_dict() implementations found: {len(to_dict_impls)}")
-        print(f"   Recommendation: Create DictSerializable mixin")
+        print("   Recommendation: Create DictSerializable mixin")
         print()
 
         # Find context managers
         ctx_managers = self.find_context_managers()
         print(f"📊 Context manager classes found: {len(ctx_managers)}")
-        print(f"   Recommendation: Review for contextlib.contextmanager usage")
+        print("   Recommendation: Review for contextlib.contextmanager usage")
         print()
 
         # MCP detectors

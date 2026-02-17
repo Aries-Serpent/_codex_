@@ -20,7 +20,7 @@ def _safe_json_loads(data: str) -> dict:
 
 class BaselineManager:
     """Manages AST baselines in SQLite database.
-    
+
     Provides persistent storage for AST analysis baselines,
     enabling incremental analysis and change detection.
     """
@@ -95,9 +95,9 @@ class BaselineManager:
             if row:
                 conn.execute(
                     """
-                    INSERT INTO baseline_history 
+                    INSERT INTO baseline_history
                     (file_path, ast_hash, node_count, complexity, timestamp, metadata, version)
-                    SELECT file_path, ast_hash, node_count, complexity, timestamp, metadata, version 
+                    SELECT file_path, ast_hash, node_count, complexity, timestamp, metadata, version
                     FROM baselines WHERE file_path = ?
                 """,
                     (file_path,),
@@ -106,7 +106,7 @@ class BaselineManager:
             # Insert or replace current baseline
             conn.execute(
                 """
-                INSERT OR REPLACE INTO baselines 
+                INSERT OR REPLACE INTO baselines
                 (file_path, ast_hash, node_count, complexity, metadata, version)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,

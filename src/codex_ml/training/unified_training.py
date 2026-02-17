@@ -19,11 +19,11 @@ Usage:
 
 from __future__ import annotations
 
-import logging
 import contextlib
 import importlib
 import importlib.util
 import json
+import logging
 import os
 import time
 import warnings

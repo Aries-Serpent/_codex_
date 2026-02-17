@@ -87,7 +87,7 @@ def _hash_prompt(prompt: str) -> str:
 
 def _truncate_context(text: str, max_chars: int = 24000) -> str:
     """Truncate text to fit within token budget.
-    
+
     Safeguard: Token budget enforcement.
     """
     if len(text) <= max_chars:
@@ -99,13 +99,13 @@ def _truncate_context(text: str, max_chars: int = 24000) -> str:
 
 class CodexLLMClient:
     """LLM client with safety guards and provenance tracking.
-    
+
     Provides a safe interface to OpenAI API with:
     - Rate limiting between calls
     - Token budget management
     - Provenance recording for all calls
     - Conservative inference mode
-    
+
     Example:
         >>> client = CodexLLMClient(provenance_dir=Path("llm_provenance"))
         >>> result = client.infer_intent(context)
@@ -120,7 +120,7 @@ class CodexLLMClient:
         allow_external_llm: bool = True,
     ):
         """Initialize LLM client.
-        
+
         Args:
             model: OpenAI model to use
             provenance_dir: Directory for storing provenance records
@@ -151,7 +151,7 @@ class CodexLLMClient:
 
     def _rate_limit(self) -> None:
         """Enforce rate limiting between calls.
-        
+
         Safeguard: Rate limiting.
         """
         delay = float(os.environ.get("CODEX_LLM_RATE_LIMIT_DELAY", RATE_LIMIT_DELAY))
@@ -162,7 +162,7 @@ class CodexLLMClient:
 
     def _build_intent_prompt(self, context: dict[str, Any]) -> str:
         """Build intent inference prompt.
-        
+
         Safeguard: Constrained prompt with safety instructions.
         """
         static_summary = json.dumps(context.get("static_summary", {}), indent=2)
@@ -205,10 +205,10 @@ Return ONLY valid JSON, no explanation or markdown."""
 
     def infer_intent(self, context: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Infer intent using LLM.
-        
+
         Args:
             context: Analysis context including static report and source
-            
+
         Returns:
             Dictionary with inferred intent or None if unavailable
         """
@@ -291,10 +291,10 @@ Return ONLY valid JSON, no explanation or markdown."""
 
     def summarize_code(self, source: str) -> Optional[str]:
         """Generate a brief summary of code.
-        
+
         Args:
             source: Source code to summarize
-            
+
         Returns:
             Summary string or None
         """

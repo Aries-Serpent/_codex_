@@ -16,14 +16,14 @@ class PipelineValidationError(Exception):
 def validate_pipeline_config(config: Dict[str, Any]) -> None:
     """
     Validate pipeline configuration.
-    
+
     Args:
         config: Pipeline configuration dictionary
-        
+
     Raises:
         KeyError: If required configuration keys are missing
         ValueError: If configuration values are invalid
-        
+
     Examples:
         >>> validate_pipeline_config({"data": {}, "model": {}})
         >>> validate_pipeline_config({})  # doctest: +SKIP
@@ -34,7 +34,7 @@ def validate_pipeline_config(config: Dict[str, Any]) -> None:
     # Check required keys
     if "data" not in config:
         raise KeyError("data configuration is required")
-    
+
     # Validate checkpoint if provided
     if "trainer" in config and isinstance(config["trainer"], dict):
         checkpoint = config["trainer"].get("checkpoint")
@@ -60,27 +60,27 @@ def run_pipeline(
 ) -> Dict[str, Any]:
     """
     Run training pipeline with validation.
-    
+
     Args:
         model: Model to train
         tokenizer: Optional tokenizer
         train_ds: Training dataset
         val_ds: Optional validation dataset
         config: Pipeline configuration
-        
+
     Returns:
         Dictionary with training results
-        
+
     Raises:
         KeyError: If required configuration is missing
         ValueError: If configuration is invalid
     """
     # Validate configuration first
     validate_pipeline_config(config)
-    
+
     # TODO: Implement actual pipeline logic
     # This is a placeholder for the actual implementation
-    
+
     return {
         "status": "success",
         "config_valid": True,

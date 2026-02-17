@@ -36,10 +36,10 @@ class OAuthToken:
     def is_expired(self, buffer_seconds: int = 300) -> bool:
         """
         Check if token is expired or will expire soon.
-        
+
         Args:
             buffer_seconds: Consider token expired this many seconds before actual expiry
-        
+
         Returns:
             True if token is expired or will expire soon
         """
@@ -66,7 +66,7 @@ class OAuthConfig:
 class OAuthManager:
     """
     OAuth2 authentication manager with GitHub focus.
-    
+
     Implements OAuth2 authorization code flow with PKCE support
     for enhanced security. Handles token exchange, refresh, and
     validation with comprehensive error handling.
@@ -80,7 +80,7 @@ class OAuthManager:
     def __init__(self, config: Optional[OAuthConfig] = None):
         """
         Initialize OAuth manager.
-        
+
         Args:
             config: Optional OAuth configuration. If not provided, will use GitHub defaults.
         """
@@ -92,13 +92,13 @@ class OAuthManager:
                            redirect_uri: str, scope: str = "repo user") -> OAuthConfig:
         """
         Create GitHub OAuth configuration.
-        
+
         Args:
             client_id: GitHub OAuth app client ID
             client_secret: GitHub OAuth app client secret (optional for PKCE)
             redirect_uri: Redirect URI registered with GitHub
             scope: OAuth scopes (default: repo, user)
-        
+
         Returns:
             OAuthConfig for GitHub
         """
@@ -124,7 +124,7 @@ class OAuthManager:
     def _generate_code_challenge(self, verifier: str) -> str:
         """
         Generate PKCE code challenge from verifier.
-        
+
         Uses S256 method (SHA-256 hash).
         """
         digest = hashlib.sha256(verifier.encode()).digest()
@@ -135,13 +135,13 @@ class OAuthManager:
     def initiate_flow(self, config: Optional[OAuthConfig] = None) -> Dict[str, str]:
         """
         Initiate OAuth2 authorization flow.
-        
+
         Args:
             config: OAuth configuration (uses self.config if not provided)
-        
+
         Returns:
             Dictionary with 'auth_url' and 'state' keys
-        
+
         Raises:
             ValueError: If no configuration is available
         """
@@ -189,10 +189,10 @@ class OAuthManager:
     def validate_state(self, state: str) -> bool:
         """
         Validate OAuth state parameter.
-        
+
         Args:
             state: State parameter from callback
-        
+
         Returns:
             True if state is valid, False otherwise
         """
@@ -211,14 +211,14 @@ class OAuthManager:
     def exchange_code(self, code: str, state: str) -> OAuthToken:
         """
         Exchange authorization code for access token.
-        
+
         Args:
             code: Authorization code from callback
             state: State parameter from callback
-        
+
         Returns:
             OAuthToken with access token and metadata
-        
+
         Raises:
             ValueError: If state is invalid or code exchange fails
         """
@@ -289,14 +289,14 @@ class OAuthManager:
     def refresh_token(self, refresh_token: str, config: Optional[OAuthConfig] = None) -> OAuthToken:
         """
         Refresh an access token using a refresh token.
-        
+
         Args:
             refresh_token: The refresh token
             config: OAuth configuration (uses self.config if not provided)
-        
+
         Returns:
             New OAuthToken with refreshed access token
-        
+
         Raises:
             ValueError: If refresh fails
         """
@@ -351,13 +351,13 @@ class OAuthManager:
     def get_github_user(self, access_token: str) -> Dict:
         """
         Get GitHub user information using access token.
-        
+
         Args:
             access_token: GitHub access token
-        
+
         Returns:
             User information dictionary
-        
+
         Raises:
             ValueError: If request fails
         """
@@ -383,14 +383,14 @@ class OAuthManager:
     def revoke_token(self, access_token: str, config: Optional[OAuthConfig] = None) -> bool:
         """
         Revoke an access token.
-        
+
         Note: GitHub doesn't have a standard token revocation endpoint,
         so this marks the token as revoked locally.
-        
+
         Args:
             access_token: Token to revoke
             config: OAuth configuration
-        
+
         Returns:
             True if revocation successful
         """

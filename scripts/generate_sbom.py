@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_sbom.py [options]
-    
+
     Examples:
     $ python scripts/generate_sbom.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Generate Software Bill of Materials (SBOM) for the project.
@@ -180,10 +182,10 @@ def main(argv: list[str] | None = None) -> int:
 Examples:
   # Generate SBOM in current directory
   python generate_sbom.py
-  
+
   # Generate SBOM in dist directory
   python generate_sbom.py --output dist/sbom.json
-  
+
   # Install cyclonedx-bom for better SBOM generation
   pip install cyclonedx-bom
 """,

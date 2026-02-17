@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/adoption/track_metrics.py [options]
-    
+
     Examples:
     $ python scripts/adoption/track_metrics.py --help
 

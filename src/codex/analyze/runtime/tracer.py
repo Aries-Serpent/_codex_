@@ -50,9 +50,9 @@ class TraceEntry:
 @dataclass
 class RuntimeReport:
     """Runtime analysis report.
-    
+
     Contains execution results and traces for analyzed code.
-    
+
     Attributes:
         snapshot_id: Snapshot being analyzed
         timestamp: When analysis was performed
@@ -83,18 +83,18 @@ class RuntimeReport:
 
 class RuntimeTracer:
     """Trace runtime behavior of Python code.
-    
+
     Executes code in a sandboxed environment and captures:
     - Standard output and error
     - Exit codes
     - Execution duration
     - Function call traces (optional)
-    
+
     Example:
         >>> tracer = RuntimeTracer("test-snapshot")
         >>> report = tracer.analyze(Path("source/"), sample_inputs=[Path("input.txt")])
         >>> print(f"Executed {len(report.execution_results)} samples")
-    
+
     Safeguards:
     - Sandboxed execution with resource limits
     - Deterministic environment
@@ -107,7 +107,7 @@ class RuntimeTracer:
         sandbox_config: Optional[SandboxConfig] = None,
     ):
         """Initialize runtime tracer.
-        
+
         Args:
             snapshot_id: ID of snapshot being analyzed
             sandbox_config: Optional sandbox configuration
@@ -118,12 +118,12 @@ class RuntimeTracer:
 
     def _find_entry_point(self, source_dir: Path) -> Optional[str]:
         """Find the entry point script.
-        
+
         Looks for common entry point patterns.
-        
+
         Args:
             source_dir: Source directory
-            
+
         Returns:
             Entry point filename or None
         """
@@ -148,11 +148,11 @@ class RuntimeTracer:
 
     def _detect_argparse_help(self, source_dir: Path, entry_point: str) -> Optional[str]:
         """Try to get help output from CLI scripts.
-        
+
         Args:
             source_dir: Source directory
             entry_point: Entry point script
-            
+
         Returns:
             Help output or None
         """
@@ -179,15 +179,15 @@ class RuntimeTracer:
         enable_tracing: bool = False,
     ) -> RuntimeReport:
         """Analyze runtime behavior of source code.
-        
+
         Executes the code with provided sample inputs and captures
         execution results.
-        
+
         Args:
             source_dir: Directory containing source files
             sample_inputs: Optional list of input files
             enable_tracing: Whether to enable call tracing
-            
+
         Returns:
             RuntimeReport with execution results
         """
@@ -280,15 +280,15 @@ class RuntimeTracer:
 
     def probe_script(self, source_dir: Path) -> dict[str, Any]:
         """Probe a script to understand its interface.
-        
+
         Attempts to discover:
         - CLI arguments (via --help)
         - Entry points
         - Module attributes
-        
+
         Args:
             source_dir: Source directory
-            
+
         Returns:
             Dictionary with discovered information
         """

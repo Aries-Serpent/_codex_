@@ -12,8 +12,6 @@ import logging
 import re
 import unicodedata
 
-
-
 logger = logging.getLogger(__name__)
 class ContextNormalizer:
     """

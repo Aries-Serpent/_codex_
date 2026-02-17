@@ -322,14 +322,14 @@ class SuperpositionEngine:
     ) -> Dict[str, Any]:
         """
         Convenience method to evaluate decisions in superposition.
-        
+
         This combines create_superposition, evaluate_parallel, and collapse
         into a single call for easier testing and simple use cases.
-        
+
         Args:
             decisions: List of (id, function) tuples
             context: Optional context dict
-            
+
         Returns:
             Dictionary with decision, coherence, and other metrics
         """

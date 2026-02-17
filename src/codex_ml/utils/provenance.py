@@ -14,7 +14,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
-
 logger = logging.getLogger(__name__)
 try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf

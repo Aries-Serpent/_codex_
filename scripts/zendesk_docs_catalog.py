@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/zendesk_docs_catalog.py [options]
-    
+
     Examples:
     $ python scripts/zendesk_docs_catalog.py --help
 
@@ -45,15 +45,15 @@ OUT_MD = ROOT / "docs" / "zendesk_api_catalog_generated.md"
 def main() -> int:
     payload: dict[str, Any] = json.loads(MANIFEST.read_text(encoding="utf-8"))
     lines: list[str] = ["# Zendesk API Catalog (Generated)", ""]
-    
+
     # Known schema fields to skip (not Zendesk sections)
     schema_fields = {'name', 'version', 'splits', 'checksums', 'features'}
-    
+
     # Only process Zendesk sections (which are dicts with URL arrays)
     for section, buckets in sorted(payload.items()):
         if section in schema_fields or not isinstance(buckets, dict):
             continue
-            
+
         lines.append(f"## {section.title()}")
         for bucket, urls in (buckets or {}).items():
             if not isinstance(urls, list):

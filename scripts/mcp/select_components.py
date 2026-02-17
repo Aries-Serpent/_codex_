@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/mcp/select_components.py [options]
-    
+
     Examples:
     $ python scripts/mcp/select_components.py --help
 
@@ -168,20 +168,20 @@ def main():
         '--exclude',
         help='Comma-separated glob patterns to exclude (e.g., "tests/**,**/*_test.py")'
     )
-    
+
     args = parser.parse_args()
-    
+
     # Validate inputs
     if not args.topic and not args.overrides:
         parser.error('Either --topic or --overrides must be specified')
-    
+
     if not args.topics_file.exists():
         print(f"Error: Topics file not found: {args.topics_file}", file=sys.stderr)
         return 1
-    
+
     # Load topics
     topics_map = load_topics(args.topics_file)
-    
+
     # Parse exclude patterns
     exclude_patterns = None
     if args.exclude:
@@ -198,21 +198,21 @@ def main():
 
         if exclude_patterns:
             print(f"Excluding patterns: {', '.join(exclude_patterns)}")
-        
+
         # Sort for consistent output
         selected_files = sorted(selected_files)
-        
+
         print(f"Selected {len(selected_files)} files")
-        
+
         # Write output
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with open(args.output, 'w') as f:
             for file_path in selected_files:
                 f.write(str(file_path) + '\n')
-        
+
         print(f"File list written to: {args.output}")
         return 0
-        
+
     except (ValueError, OSError, IOError) as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1

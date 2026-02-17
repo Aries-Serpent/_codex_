@@ -37,10 +37,10 @@ class MFASecret:
     def get_provisioning_uri(self, account_name: str) -> str:
         """
         Generate provisioning URI for QR code.
-        
+
         Args:
             account_name: User account name/email
-        
+
         Returns:
             otpauth:// URI for QR code generation
         """
@@ -77,7 +77,7 @@ class MFAAttempt:
 class MFAProvider:
     """
     Multi-Factor Authentication provider.
-    
+
     Implements TOTP (Time-based One-Time Password) authentication
     compatible with Google Authenticator, Authy, and similar apps.
     Includes backup codes and rate limiting for security.
@@ -90,7 +90,7 @@ class MFAProvider:
     def __init__(self):
         """
         Initialize MFA provider.
-        
+
         Warning:
             Uses in-memory storage for development/testing only.
             Production deployments MUST use:
@@ -107,11 +107,11 @@ class MFAProvider:
     def generate_totp_secret(self, user_id: str, issuer: str = "Codex") -> MFASecret:
         """
         Generate a new TOTP secret for a user.
-        
+
         Args:
             user_id: User identifier
             issuer: Service name for the authenticator app
-        
+
         Returns:
             MFASecret with the generated secret
         """
@@ -134,12 +134,12 @@ class MFAProvider:
     def _get_hotp_token(self, secret: str, counter: int, digits: int = 6) -> str:
         """
         Generate HOTP token.
-        
+
         Args:
             secret: Base32-encoded secret
             counter: Counter value
             digits: Number of digits in token
-        
+
         Returns:
             HOTP token as string
         """
@@ -175,13 +175,13 @@ class MFAProvider:
                      period: int = 30, digits: int = 6) -> str:
         """
         Generate TOTP token.
-        
+
         Args:
             secret: Base32-encoded secret
             timestamp: Unix timestamp (uses current time if not provided)
             period: Time period in seconds
             digits: Number of digits in token
-        
+
         Returns:
             TOTP token as string
         """
@@ -198,7 +198,7 @@ class MFAProvider:
                    window: int = 1, period: int = 30, digits: int = 6) -> bool:
         """
         Verify TOTP code with time window.
-        
+
         Args:
             secret: Base32-encoded secret
             code: TOTP code to verify
@@ -206,7 +206,7 @@ class MFAProvider:
             window: Number of time periods to check before/after current
             period: Time period in seconds
             digits: Number of digits in token
-        
+
         Returns:
             True if code is valid, False otherwise
         """
@@ -275,11 +275,11 @@ class MFAProvider:
     def generate_backup_codes(self, user_id: str, count: int = 10) -> List[str]:
         """
         Generate backup codes for account recovery.
-        
+
         Args:
             user_id: User identifier
             count: Number of backup codes to generate
-        
+
         Returns:
             List of backup codes (show to user only once)
         """
@@ -310,11 +310,11 @@ class MFAProvider:
     def verify_backup_code(self, user_id: str, code: str) -> bool:
         """
         Verify and consume a backup code.
-        
+
         Args:
             user_id: User identifier
             code: Backup code to verify
-        
+
         Returns:
             True if code is valid and not used, False otherwise
         """
@@ -350,10 +350,10 @@ class MFAProvider:
     def get_remaining_backup_codes(self, user_id: str) -> int:
         """
         Get count of remaining (unused) backup codes.
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             Number of unused backup codes
         """
@@ -365,10 +365,10 @@ class MFAProvider:
     def disable_mfa(self, user_id: str) -> bool:
         """
         Disable MFA for a user.
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             True if MFA was disabled
         """
@@ -393,10 +393,10 @@ class MFAProvider:
     def is_mfa_enabled(self, user_id: str) -> bool:
         """
         Check if MFA is enabled for a user.
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             True if MFA is enabled
         """
@@ -405,7 +405,7 @@ class MFAProvider:
     def get_mfa_user_count(self) -> int:
         """
         Get the number of users with MFA enabled.
-        
+
         Returns:
             Count of users with MFA enabled
         """

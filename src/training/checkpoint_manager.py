@@ -6,13 +6,12 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 
 from __future__ import annotations
 
-import logging
 import json
+import logging
 import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Optional
-
 
 logger = logging.getLogger(__name__)
 

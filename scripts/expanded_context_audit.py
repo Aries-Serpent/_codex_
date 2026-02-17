@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/expanded_context_audit.py [options]
-    
+
     Examples:
     $ python scripts/expanded_context_audit.py --help
 

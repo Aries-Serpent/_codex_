@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 class ParallelParser:
     """
     Parse multiple files concurrently using thread pool.
-    
+
     Provides thread-safe node ID generation and progress tracking.
     """
 
     def __init__(self, max_workers: Optional[int] = None):
         """
         Initialize parallel parser.
-        
+
         Args:
             max_workers: Maximum number of worker threads (None = CPU count)
         """
@@ -44,11 +44,11 @@ class ParallelParser:
     ) -> dict[str, StandardizedASTNode]:
         """
         Parse multiple files in parallel.
-        
+
         Args:
             file_paths: list of file paths to parse
             progress_callback: Optional callback(file_path, completed, total)
-            
+
         Returns:
             Dictionary mapping file_path to parsed node
         """
@@ -97,12 +97,12 @@ class ParallelParser:
     ) -> dict[str, StandardizedASTNode]:
         """
         Parse all files in directory in parallel.
-        
+
         Args:
             directory: Directory to scan
             pattern: Glob pattern for files
             progress_callback: Optional progress callback
-            
+
         Returns:
             Dictionary mapping file_path to parsed node
         """

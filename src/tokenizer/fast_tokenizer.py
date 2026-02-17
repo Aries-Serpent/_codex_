@@ -21,7 +21,6 @@ import logging
 from pathlib import Path
 from typing import Iterable, Sequence
 
-
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency

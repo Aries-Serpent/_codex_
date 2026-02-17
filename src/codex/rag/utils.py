@@ -61,7 +61,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 # Fallback: Check device.type for older versions or mock objects
                 if hasattr(param, 'device') and hasattr(param.device, 'type'):
                     if param.device.type == 'meta':
-                        logger.debug(f"Found meta device parameter via device.type")
+                        logger.debug("Found meta device parameter via device.type")
                         return True
 
         # Also check buffers if available
@@ -73,7 +73,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 # Fallback: Check device.type
                 if hasattr(buffer, 'device') and hasattr(buffer.device, 'type'):
                     if buffer.device.type == 'meta':
-                        logger.debug(f"Found meta device buffer via device.type")
+                        logger.debug("Found meta device buffer via device.type")
                         return True
 
         # Check named_modules for parameters (for comprehensive detection)
@@ -82,17 +82,17 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 if hasattr(module, 'named_parameters'):
                     for _, param in module.named_parameters():
                         if hasattr(param, 'is_meta') and param.is_meta:
-                            logger.debug(f"Found meta tensor in module parameter")
+                            logger.debug("Found meta tensor in module parameter")
                             return True
                         if hasattr(param, 'device') and hasattr(param.device, 'type'):
                             if param.device.type == 'meta':
-                                logger.debug(f"Found meta device in module parameter via device.type")
+                                logger.debug("Found meta device in module parameter via device.type")
                                 return True
 
         # Check model's own device attribute
         if hasattr(model, 'device') and hasattr(model.device, 'type'):
             if model.device.type == 'meta':
-                logger.debug(f"Found meta device on model itself")
+                logger.debug("Found meta device on model itself")
                 return True
 
         return False
@@ -125,7 +125,7 @@ def safe_model_to_device(
     """
     import time
     start_time = time.time()
-    
+
     try:
         import torch
 
@@ -175,12 +175,12 @@ def safe_model_to_device(
                 f"Meta tensor device transfer completed in {duration:.3f}s. "
                 f"Device: {device}"
             )
-            
+
             # Optional: Add metrics if you have a metrics system
             # Example integration points:
             # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
             # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
-            
+
             return model
 
         else:
@@ -190,12 +190,12 @@ def safe_model_to_device(
             torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
             if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
                 result = model.to(device)  # safe-device-placement: internal implementation
-                
+
                 # Log standard transfer timing
                 duration = time.time() - start_time
                 if duration > 1.0:  # Only log if takes more than 1 second
                     logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
-                
+
                 return result
 
             # For SentenceTransformer or other models with .to() method
@@ -220,11 +220,11 @@ def safe_model_to_device(
 def _try_model_to(model: Any, device: str) -> Any:
     """
     Helper function to attempt model.to() if available.
-    
+
     Args:
         model: Model to move
         device: Target device
-    
+
     Returns:
         Model after attempting device transfer, or original model if not supported
     """

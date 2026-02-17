@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import logging
 import hashlib
+import logging
 import subprocess
 import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
-
-
 
 logger = logging.getLogger(__name__)
 

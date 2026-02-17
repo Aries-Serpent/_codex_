@@ -71,7 +71,7 @@ Tool: None (internal state)
 Action: Acknowledge task and targets
 Output: Print PR number, commit count, HEAD SHA
 
-PHASE 2: LIST ALL WORKFLOW RUNS  
+PHASE 2: LIST ALL WORKFLOW RUNS
 --------------------------------
 Tool: github-mcp-server-actions_list
 Method: list_workflow_runs
@@ -106,14 +106,14 @@ For each run in matching_workflow_runs:
     - owner: "Aries-Serpent"
     - repo: "_codex_"
     - resource_id: str(run["id"])
-  
+
   Expected Output: Array of jobs with:
     - id (job_id)
     - name
     - status
     - conclusion
     - html_url
-  
+
   Store: run["jobs"] = jobs_array
 
 PHASE 5: COLLECT ARTIFACTS FOR EACH RUN
@@ -125,14 +125,14 @@ For each run in matching_workflow_runs:
     - owner: "Aries-Serpent"
     - repo: "_codex_"
     - resource_id: str(run["id"])
-  
+
   Expected Output: Array of artifacts with:
     - id (artifact_id)
     - name
     - archive_download_url
     - size_in_bytes
     - expired
-  
+
   Store: run["artifacts"] = artifacts_array
 
 PHASE 6: ORGANIZE BY COMMIT
@@ -214,11 +214,11 @@ print(f"\n📋 PR #{PR_NUMBER} Data Collection Task Specification")
 print(f"📊 Target Commits: {len(TARGET_COMMITS)}")
 print(f"🎯 HEAD SHA: {HEAD_SHA}")
 print(f"\n{WORKFLOW}")
-print(f"\n📁 Expected Output Files:")
+print("\n📁 Expected Output Files:")
 for f in EXPECTED_FILES:
     print(f"  - {f}")
-print(f"\n✅ Verification Criteria:")
+print("\n✅ Verification Criteria:")
 for key, value in VERIFICATION.items():
     print(f"  - {key}: {value}")
-print(f"\n🚀 Activation Command:")
+print("\n🚀 Activation Command:")
 print(ACTIVATION)

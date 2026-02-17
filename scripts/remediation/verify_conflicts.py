@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/verify_conflicts.py [options]
-    
+
     Examples:
     $ python scripts/remediation/verify_conflicts.py --help
 
@@ -45,10 +45,10 @@ Flags:
   --mode shim-aware       : Warn only for whitelisted duplicates from inventory
   --output FILE           : Write JSON findings to FILE
 """
-import sys
 import argparse
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 # Add repo root to sys.path to simulate how Python sees the repo context
@@ -87,7 +87,7 @@ def check_import(
         spec = importlib.util.find_spec(module_name)
         if spec is None:
             if not quiet:
-                print(f"  [FAIL] Module not found.")
+                print("  [FAIL] Module not found.")
             return False, ""
         origin = spec.origin or "namespace"
         if not quiet:
@@ -98,7 +98,7 @@ def check_import(
                 return True, origin
             else:
                 if not quiet:
-                    print(f"  [RISK] Unexpected location!")
+                    print("  [RISK] Unexpected location!")
                     print(
                         f"         Expected path containing: '{expected_location_substr}' or 'dist-packages'"
                     )
@@ -267,22 +267,22 @@ def main():
     legacy_hydra = ROOT / "hydra"
     legacy_config = ROOT / "config_legacy"
     if legacy_hydra.exists():
-        print(f"  [!] CRITICAL: Local 'hydra/' directory still exists at repository root.")
-        print(f"      This WILL shadow the installed hydra-core package.")
+        print("  [!] CRITICAL: Local 'hydra/' directory still exists at repository root.")
+        print("      This WILL shadow the installed hydra-core package.")
         print(
-            f"      Remediation: Rename 'hydra/' → 'config_legacy/' OR move under 'src/codex_conf/'."
+            "      Remediation: Rename 'hydra/' → 'config_legacy/' OR move under 'src/codex_conf/'."
         )
-        print(f"      Commands:")
-        print(f"        git mv hydra config_legacy || true")
+        print("      Commands:")
+        print("        git mv hydra config_legacy || true")
         print(
-            f"        # Update imports to hydra-core or src.codex_conf; add DeprecationWarning in config_legacy/__init__.py"
+            "        # Update imports to hydra-core or src.codex_conf; add DeprecationWarning in config_legacy/__init__.py"
         )
         if not args.allow_shadow:
             failures += 1
             hydra_ok = False
     elif legacy_config.exists():
-        print(f"  [OK] Legacy 'hydra/' has been renamed to 'config_legacy/'")
-        print(f"       Imports should now use 'import hydra' (from site-packages)")
+        print("  [OK] Legacy 'hydra/' has been renamed to 'config_legacy/'")
+        print("       Imports should now use 'import hydra' (from site-packages)")
 
     # Verify hydra resolves to site-packages
     hydra_ok, _ = check_import(

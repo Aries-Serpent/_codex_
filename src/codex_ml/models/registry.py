@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 import os
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry

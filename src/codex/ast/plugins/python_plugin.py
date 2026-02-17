@@ -12,7 +12,7 @@ from . import ASTPlugin, PluginMetadata
 class PythonPlugin(ASTPlugin):
     """
     Python language plugin using existing codex parser.
-    
+
     This serves as a reference implementation for other language plugins.
     """
 

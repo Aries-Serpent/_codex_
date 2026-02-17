@@ -33,12 +33,12 @@ class InvalidScopeError(ScopeError):
 
 class TokenScope(Flag):
     """Token scope flags with hierarchical permissions.
-    
+
     Scopes follow a hierarchical model where broader scopes
     imply narrower ones:
     - ADMIN_* implies WRITE_* and READ_*
     - WRITE_* implies READ_*
-    
+
     Examples:
         >>> scope = TokenScope.READ_REPO | TokenScope.WRITE_WORKFLOW
         >>> scope.has(TokenScope.READ_REPO)
@@ -85,19 +85,19 @@ class TokenScope(Flag):
     @classmethod
     def from_string(cls, scope: str) -> TokenScope:
         """Parse scope from string format.
-        
+
         Supports formats:
         - "repo" -> READ_REPO | WRITE_REPO
         - "repo:read" -> READ_REPO
         - "repo:write" -> WRITE_REPO (implies READ_REPO)
         - "admin:repo" -> ADMIN_REPO (implies WRITE_REPO and READ_REPO)
-        
+
         Args:
             scope: Scope string in format "resource:permission"
-            
+
         Returns:
             TokenScope flags
-            
+
         Raises:
             InvalidScopeError: If scope format is invalid
         """
@@ -156,10 +156,10 @@ class TokenScope(Flag):
     @classmethod
     def from_list(cls, scopes: List[str]) -> TokenScope:
         """Parse multiple scopes from list.
-        
+
         Args:
             scopes: List of scope strings
-            
+
         Returns:
             Combined TokenScope flags
         """
@@ -170,7 +170,7 @@ class TokenScope(Flag):
 
     def to_strings(self) -> Set[str]:
         """Convert scope flags to string representation.
-        
+
         Returns:
             Set of scope strings
         """
@@ -206,10 +206,10 @@ class TokenScope(Flag):
 
     def has(self, required: TokenScope) -> bool:
         """Check if this scope includes required permissions.
-        
+
         Args:
             required: Required scope flags
-            
+
         Returns:
             True if all required flags are present
         """
@@ -228,7 +228,7 @@ class ScopeValidationResult:
 
 class ScopeValidator:
     """Validates token scopes against required permissions.
-    
+
     Example:
         >>> validator = ScopeValidator(["repo:write", "workflow:read"])
         >>> validator.require(TokenScope.READ_REPO)  # OK
@@ -237,7 +237,7 @@ class ScopeValidator:
 
     def __init__(self, token_scopes: List[str] | TokenScope):
         """Initialize validator with token scopes.
-        
+
         Args:
             token_scopes: List of scope strings or TokenScope flags
         """
@@ -250,10 +250,10 @@ class ScopeValidator:
 
     def has_scope(self, required: TokenScope) -> bool:
         """Check if token has required scope.
-        
+
         Args:
             required: Required scope flags
-            
+
         Returns:
             True if token has all required scopes
         """
@@ -261,10 +261,10 @@ class ScopeValidator:
 
     def has_any_scope(self, required_scopes: List[TokenScope]) -> bool:
         """Check if token has any of the required scopes.
-        
+
         Args:
             required_scopes: List of acceptable scope flags
-            
+
         Returns:
             True if token has at least one of the required scopes
         """
@@ -272,10 +272,10 @@ class ScopeValidator:
 
     def require_scope(self, required: TokenScope) -> None:
         """Require specific scope, raising exception if not present.
-        
+
         Args:
             required: Required scope flags
-            
+
         Raises:
             InsufficientScopeError: If token lacks required scope
         """
@@ -290,10 +290,10 @@ class ScopeValidator:
 
     def require_any_scope(self, required_scopes: List[TokenScope]) -> None:
         """Require at least one of the specified scopes.
-        
+
         Args:
             required_scopes: List of acceptable scope flags
-            
+
         Raises:
             InsufficientScopeError: If token lacks all required scopes
         """
@@ -307,10 +307,10 @@ class ScopeValidator:
 
     def validate(self, required: TokenScope) -> ScopeValidationResult:
         """Validate scope and return detailed result.
-        
+
         Args:
             required: Required scope flags
-            
+
         Returns:
             ScopeValidationResult with validation details
         """
@@ -335,7 +335,7 @@ class ScopeValidator:
 
     def get_granted_scopes(self) -> Set[str]:
         """Get set of granted scope strings.
-        
+
         Returns:
             Set of scope strings
         """

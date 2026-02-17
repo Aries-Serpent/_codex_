@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/ops/bootstrap_self_hosted_runner.py [options]
-    
+
     Examples:
     $ python scripts/ops/bootstrap_self_hosted_runner.py --help
 

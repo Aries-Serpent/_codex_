@@ -26,7 +26,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - torch is optional in minimal environments
     import torch

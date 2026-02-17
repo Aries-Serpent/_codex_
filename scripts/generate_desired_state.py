@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_desired_state.py [options]
-    
+
     Examples:
     $ python scripts/generate_desired_state.py --help
 

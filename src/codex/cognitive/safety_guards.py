@@ -269,7 +269,7 @@ class AuditLog:
 class SafetyGuard:
     """
     Main class for enforcing safety and governance on autonomous actions.
-    
+
     This is the core component of Plan 3 Phase 3.4: Safety & Governance.
     """
 

@@ -8,16 +8,14 @@ Reference: Context Engineering Guide 2025 - 25-40% token savings through caching
 """
 
 import hashlib
-import logging
 import json
+import logging
 import os
 import threading
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-
-
 
 logger = logging.getLogger(__name__)
 @dataclass

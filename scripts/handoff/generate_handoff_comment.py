@@ -12,10 +12,9 @@ Usage:
 
 import argparse
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List
-
 
 # Template paths
 TEMPLATE_DIR = Path(".codex/templates/handoff")
@@ -34,13 +33,13 @@ def load_template(template_name: str) -> str:
         "copilot_to_codex": COPILOT_TO_CODEX_TEMPLATE,
         "codex_to_copilot": CODEX_TO_COPILOT_TEMPLATE
     }
-    
+
     template_path = template_map.get(template_name)
     if not template_path or not template_path.exists():
         print(f"❌ Template not found: {template_name}")
         print(f"   Expected at: {template_path}")
         sys.exit(1)
-    
+
     with open(template_path, 'r') as f:
         return f.read()
 
@@ -48,11 +47,11 @@ def load_template(template_name: str) -> str:
 def substitute_variables(template: str, variables: Dict[str, str]) -> str:
     """Substitute variables in template."""
     result = template
-    
+
     for key, value in variables.items():
         placeholder = f"{{{key}}}"
         result = result.replace(placeholder, value)
-    
+
     return result
 
 
@@ -68,10 +67,10 @@ def generate_copilot_to_codex_comment(
     handoff_id: str = ""
 ) -> str:
     """Generate Copilot → Codex hand-off comment."""
-    
+
     # Load template
     template = load_template("copilot_to_codex")
-    
+
     # Build deliverables list
     deliverables_str = ""
     if deliverables:
@@ -79,7 +78,7 @@ def generate_copilot_to_codex_comment(
             deliverables_str += f"- {d}\n"
     else:
         deliverables_str = "- (No deliverables specified)"
-    
+
     # Build metrics table
     metrics_str = ""
     if metrics:
@@ -91,7 +90,7 @@ def generate_copilot_to_codex_comment(
                 metrics_str += f"| {key} | {parts[0]} | {parts[1]} | {parts[2]} |\n"
     else:
         metrics_str = "(No metrics provided)"
-    
+
     # Build validation checklist
     validation_str = ""
     if validation_items:
@@ -99,7 +98,7 @@ def generate_copilot_to_codex_comment(
             validation_str += f"- [ ] {item}\n"
     else:
         validation_str = "- [ ] Review deliverables"
-    
+
     # Build variables dict
     variables = {
         "phase_name": phase,
@@ -116,7 +115,7 @@ def generate_copilot_to_codex_comment(
         "handoff_id": handoff_id or "HO-XXX",
         "timestamp": generate_timestamp()
     }
-    
+
     # Substitute and return
     return substitute_variables(template, variables)
 
@@ -133,10 +132,10 @@ def generate_codex_to_copilot_comment(
     handoff_id: str = ""
 ) -> str:
     """Generate Codex → Copilot hand-off response."""
-    
+
     # Load template
     template = load_template("codex_to_copilot")
-    
+
     # Map decision to status
     decision_map = {
         "approve": "✅ APPROVE",
@@ -144,7 +143,7 @@ def generate_codex_to_copilot_comment(
         "request_changes": "❌ REQUEST CHANGES"
     }
     decision_status = decision_map.get(decision, decision)
-    
+
     # Build lists
     strengths_str = ""
     if strengths:
@@ -152,21 +151,21 @@ def generate_codex_to_copilot_comment(
             strengths_str += f"- {s}\n"
     else:
         strengths_str = "- Deliverables complete\n"
-    
+
     improvements_str = ""
     if improvements:
         for i in improvements:
             improvements_str += f"- {i}\n"
     else:
         improvements_str = "- None identified"
-    
+
     issues_str = ""
     if issues:
         for issue in issues:
             issues_str += f"- {issue}\n"
     else:
         issues_str = "- None identified ✅"
-    
+
     # Build variables dict
     variables = {
         "phase_name": phase,
@@ -186,7 +185,7 @@ def generate_codex_to_copilot_comment(
         "response_time": "30 minutes",
         "timestamp": generate_timestamp()
     }
-    
+
     # Substitute and return
     return substitute_variables(template, variables)
 
@@ -213,12 +212,12 @@ def main():
     parser.add_argument("--issues", nargs="+", help="List of issues")
     parser.add_argument("--handoff-id", help="Hand-off ID (e.g., HO-002)")
     parser.add_argument("--output", help="Output file (default: stdout)")
-    
+
     args = parser.parse_args()
-    
+
     # Generate comment based on template
     comment = ""
-    
+
     if args.template == "copilot_to_codex":
         # Parse metrics if provided
         metrics_dict = {}
@@ -227,7 +226,7 @@ def main():
                 if "=" in m:
                     key, value = m.split("=", 1)
                     metrics_dict[key] = value
-        
+
         comment = generate_copilot_to_codex_comment(
             phase=args.phase,
             plan_file=args.plan or "",
@@ -239,12 +238,12 @@ def main():
             next_action=args.next_action,
             handoff_id=args.handoff_id or ""
         )
-    
+
     elif args.template == "codex_to_copilot":
         if not args.decision:
             print("❌ --decision required for codex_to_copilot template")
             sys.exit(1)
-        
+
         comment = generate_codex_to_copilot_comment(
             phase=args.phase,
             decision=args.decision,
@@ -256,7 +255,7 @@ def main():
             issues=args.issues,
             handoff_id=args.handoff_id or ""
         )
-    
+
     # Output
     if args.output:
         output_path = Path(args.output)

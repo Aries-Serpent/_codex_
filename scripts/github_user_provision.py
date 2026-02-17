@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/github_user_provision.py [options]
-    
+
     Examples:
     $ python scripts/github_user_provision.py --help
 
@@ -38,8 +38,12 @@ Usage:
     python scripts/github_user_provision.py --bulk users.json
 """
 
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from datetime import datetime, timedelta, timezone
+
 try:
     from github import Github
     import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -53,16 +57,16 @@ class GitHubUserProvisioner:
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
         self.repo_name = os.getenv('GITHUB_REPOSITORY', '')
-        
+
     def provision_user(self, username: str, email: str) -> dict:
         """Provision user with OAuth and MFA."""
         print(f"Provisioning user: {username}")
-        
+
         # Generate MFA secret
         secret = self.mfa.generate_totp_secret(username)
         _ = secret.get_provisioning_uri(email)  # URI generated but not logged for security
         backup_codes = self.mfa.generate_backup_codes(username, count=10)
-        
+
         # Create enrollment data
         # nosemgrep: url-substring-check - trusted GitHub enrollment URL for provisioning
         enrollment = {
@@ -73,15 +77,15 @@ class GitHubUserProvisioner:
             'backup_codes_count': len(backup_codes),
             'timestamp': datetime.now(timezone.utc).isoformat()
         }
-        
+
         print(f"✓ Provisioned {username} (MFA ready)")
         return enrollment
-    
+
     def bulk_provision(self, users_file: str) -> list:
         """Provision multiple users from JSON file."""
         with open(users_file) as f:
             users = json.load(f)
-        
+
         results = []
         for user in users:
             try:
@@ -90,11 +94,11 @@ class GitHubUserProvisioner:
             except Exception as e:
                 print(f"✗ Failed {user['username']}: {e}")
                 results.append({'username': user['username'], 'error': str(e)})
-        
+
         # Save results
         with open('enrollment_results.json', 'w') as f:
             json.dump({'users': results, 'deadline': (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()}, f, indent=2)
-        
+
         return results
 
 def main():
@@ -103,9 +107,9 @@ def main():
     parser.add_argument('--email', help='Email')
     parser.add_argument('--bulk', help='JSON file with users')
     args = parser.parse_args()
-    
+
     provisioner = GitHubUserProvisioner()
-    
+
     if args.bulk:
         results = provisioner.bulk_provision(args.bulk)
         print(f"Provisioned {len(results)} users")

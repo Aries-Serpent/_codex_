@@ -47,7 +47,7 @@ def transform_file(file_path: str) -> tuple[str, list[str]]:
     # Use libcst-based implementation if available
     if HAS_LIBCST and _transform_file_libcst:
         return _transform_file_libcst(file_path)
-    
+
     # Fallback message - libcst should always be available
     logger.warning(
         "libcst not available for AST-based transformations. "

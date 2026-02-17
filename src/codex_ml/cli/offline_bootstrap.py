@@ -17,7 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Union, Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 
 def _mlflow_env(root: Path) -> dict[str, str]:

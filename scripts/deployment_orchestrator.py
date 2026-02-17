@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/deployment_orchestrator.py [options]
-    
+
     Examples:
     $ python scripts/deployment_orchestrator.py --help
 

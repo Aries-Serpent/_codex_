@@ -95,7 +95,7 @@ class BaseReranker(ABC):
 class ScoreFusionReranker(BaseReranker):
     """
     Score fusion re-ranker.
-    
+
     Combines scores from multiple retrieval sources using
     configurable fusion methods.
     """
@@ -165,7 +165,7 @@ class ScoreFusionReranker(BaseReranker):
 class MMRReranker(BaseReranker):
     """
     Maximal Marginal Relevance (MMR) re-ranker.
-    
+
     Balances relevance with diversity to avoid redundant results.
     Uses the formula: MMR = λ * sim(q, d) - (1-λ) * max_s∈S sim(d, s)
     """
@@ -254,7 +254,7 @@ class MMRReranker(BaseReranker):
 class CrossEncoderReranker(BaseReranker):
     """
     Cross-encoder based re-ranker.
-    
+
     Uses a neural cross-encoder model to score query-document pairs.
     More accurate but slower than bi-encoder approaches.
     """
@@ -347,7 +347,7 @@ class CrossEncoderReranker(BaseReranker):
 class Reranker:
     """
     Main re-ranker class that dispatches to appropriate strategy.
-    
+
     Example:
         config = RerankingConfig(
             strategy=RerankingStrategy.MMR,
@@ -355,7 +355,7 @@ class Reranker:
             top_k=10,
         )
         reranker = Reranker(config)
-        
+
         results = retriever.search(query)
         reranked = reranker.rerank(query, results)
     """
@@ -394,12 +394,12 @@ class Reranker:
     ) -> list[RankedResult]:
         """
         Re-rank search results.
-        
+
         Args:
             query: Original search query
             results: List of search results to re-rank
             embeddings: Optional embeddings for diversity-aware re-ranking
-            
+
         Returns:
             List of RankedResult objects
         """
@@ -469,14 +469,14 @@ def rerank_results(
 ) -> list[RankedResult]:
     """
     Convenience function to re-rank results.
-    
+
     Args:
         query: Search query
         results: Results to re-rank
         strategy: Re-ranking strategy
         top_k: Number of results to return
         **kwargs: Additional config options
-        
+
     Returns:
         List of RankedResult objects
     """

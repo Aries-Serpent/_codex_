@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/cleanup_root.py [options]
-    
+
     Examples:
     $ python scripts/remediation/cleanup_root.py --help
 
@@ -43,9 +43,9 @@ Flags:
  --dry-run  : Print planned moves without performing them
  --yes      : Confirm execution (required unless --dry-run)
 """
+import argparse
 import shutil
 import sys
-import argparse
 from pathlib import Path
 
 # Anchor to repo root based on script location
@@ -72,7 +72,7 @@ def main():
     )
     args = parser.parse_args()
 
-    print(f"[*] Remediation: Root Sanitation")
+    print("[*] Remediation: Root Sanitation")
     print(f"[*] Target Root: {ROOT}")
 
     if not ROOT.exists():

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/dashboards/build_ratelimit_tile.py [options]
-    
+
     Examples:
     $ python scripts/dashboards/build_ratelimit_tile.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse

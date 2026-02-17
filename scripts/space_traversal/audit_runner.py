@@ -247,7 +247,9 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
 
             # Import token similarity function
             try:
-                from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+                from scripts.space_traversal.dup_similarity import (
+                    duplication_ratio_token_similarity,
+                )
                 return duplication_ratio_token_similarity(
                     evidence_files,
                     file_cache,
@@ -306,7 +308,9 @@ def stage_s4_scoring(cfg, raw_caps):
     if coverage_cfg.get("enabled", False):
         try:
             # Import and run coverage ingestion
-            from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
+            from scripts.space_traversal.coverage_ingest import (
+                discover_and_parse_coverage,
+            )
             coverage_map = discover_and_parse_coverage(cfg, artifacts_dir) or {}
             logger.info(f"Coverage integration enabled: {len(coverage_map)} files mapped")
         except (ImportError, Exception) as e:
@@ -421,7 +425,7 @@ def stage_s5_gaps(cfg, scored_caps):
     for cap in scored_caps:
         components = cap.get("components", {})
         zero_components = [name for name, value in components.items() if value == 0.0]
-        
+
         # Calculate missing patterns if not already present
         if "missing_patterns" in cap:
             missing_patterns = cap["missing_patterns"]

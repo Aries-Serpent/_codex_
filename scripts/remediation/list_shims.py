@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/list_shims.py [options]
-    
+
     Examples:
     $ python scripts/remediation/list_shims.py --help
 
@@ -30,8 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-
-
 """
 List shims & canonical module inventory.
 
@@ -43,6 +41,7 @@ Usage:
 """
 import argparse
 from pathlib import Path
+
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]

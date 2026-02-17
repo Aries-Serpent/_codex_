@@ -21,7 +21,6 @@ import logging
 from collections.abc import Callable, Iterable
 from typing import Any
 
-
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional import path when codex_ml unavailable

@@ -12,7 +12,6 @@ from __future__ import annotations
 import logging
 import warnings as _warnings
 
-
 logger = logging.getLogger(__name__)
 
 _warnings.warn(

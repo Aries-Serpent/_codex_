@@ -26,8 +26,6 @@ from typing import Any, Iterable, Optional, Protocol
 
 from codex_ml.data.jsonl_loader import load_jsonl
 
-
-
 logger = logging.getLogger(__name__)
 
 class TrainingCallback(Protocol):

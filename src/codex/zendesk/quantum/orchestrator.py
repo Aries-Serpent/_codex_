@@ -85,7 +85,7 @@ class ZendeskTicket(_ZendeskBaseModel):
 
 class ZendeskQuantumOrchestrator:
     """Quantum orchestrator for Zendesk ticket management with scope validation.
-    
+
     This orchestrator enforces scope-based authorization for all operations:
     - create_ticket: Requires WRITE_ISSUES or ADMIN scope
     - prioritize_tickets: Requires READ_ISSUES or higher
@@ -101,7 +101,7 @@ class ZendeskQuantumOrchestrator:
         enforce_scopes: bool = True,
     ) -> None:
         """Initialize orchestrator with optional scope enforcement.
-        
+
         Args:
             global_temperature: Global temperature for thermodynamic calculations
             max_energy_per_cycle: Maximum energy per orchestration cycle
@@ -125,7 +125,7 @@ class ZendeskQuantumOrchestrator:
 
     def set_scope_validator(self, validator: 'ScopeValidator') -> None:
         """Set scope validator for this context.
-        
+
         Args:
             validator: ScopeValidator instance with token scopes
         """
@@ -133,10 +133,10 @@ class ZendeskQuantumOrchestrator:
 
     def _check_scope(self, required_scopes: 'TokenScope') -> None:
         """Check if current context has required scopes.
-        
+
         Args:
             required_scopes: Required scope flags
-            
+
         Raises:
             InsufficientScopeError: If scopes insufficient
         """
@@ -159,16 +159,16 @@ class ZendeskQuantumOrchestrator:
         complexity: float = 1.0,
     ) -> ZendeskTicket:
         """Create a new ticket (requires WRITE_ISSUES or ADMIN scope).
-        
+
         Args:
             subject: Ticket subject
             priority: Ticket priority
             sla_deadline: SLA deadline in hours
             complexity: Ticket complexity score
-            
+
         Returns:
             Created ticket
-            
+
         Raises:
             InsufficientScopeError: If insufficient scopes
         """
@@ -197,15 +197,15 @@ class ZendeskQuantumOrchestrator:
         tickets: Iterable[ZendeskTicket],
     ) -> list[tuple[int, float]]:
         """Prioritize tickets using thermodynamic principles.
-        
+
         Requires READ_ISSUES or higher scope.
-        
+
         Args:
             tickets: Iterable of tickets to prioritize
-            
+
         Returns:
             List of (ticket_id, priority_score) tuples
-            
+
         Raises:
             InsufficientScopeError: If insufficient scopes
         """
@@ -232,12 +232,12 @@ class ZendeskQuantumOrchestrator:
 
     def execute_cycle(self) -> dict[str, Any]:
         """Execute one orchestration cycle.
-        
+
         Requires WRITE_WORKFLOWS or ADMIN scope.
-        
+
         Returns:
             Cycle execution results
-            
+
         Raises:
             InsufficientScopeError: If insufficient scopes
         """
@@ -251,13 +251,13 @@ class ZendeskQuantumOrchestrator:
 
     def query_knowledge_base(self, query: str) -> dict[str, Any]:
         """Query knowledge base (requires READ_REPO scope).
-        
+
         Args:
             query: Search query
-            
+
         Returns:
             Query results
-            
+
         Raises:
             InsufficientScopeError: If insufficient scopes
         """

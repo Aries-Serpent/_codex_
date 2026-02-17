@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/verify_dependency_hygiene.py [options]
-    
+
     Examples:
     $ python scripts/verify_dependency_hygiene.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/viz_swagger.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/viz_swagger.py --help
 
@@ -52,7 +52,6 @@ Example:
 from datetime import datetime
 from pathlib import Path
 
-
 __all__ = ["generate_swagger_docs", "SWAGGER_TEMPLATE"]
 
 
@@ -88,7 +87,7 @@ SWAGGER_TEMPLATE = """
             color: var(--text-primary);
             line-height: 1.6;
         }}
-        
+
         /* Header */
         .swagger-header {{
             background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
@@ -135,14 +134,14 @@ SWAGGER_TEMPLATE = """
         .swagger-header .meta a:hover {{
             text-decoration: underline;
         }}
-        
+
         /* Main Layout */
         .swagger-main {{
             display: flex;
             max-width: 1400px;
             margin: 0 auto;
         }}
-        
+
         /* Sidebar */
         .swagger-sidebar {{
             width: 280px;
@@ -196,14 +195,14 @@ SWAGGER_TEMPLATE = """
         .method-put {{ background: var(--accent-orange); color: #000; }}
         .method-delete {{ background: var(--accent-red); color: #fff; }}
         .method-run {{ background: var(--accent-purple); color: #fff; }}
-        
+
         /* Content */
         .swagger-content {{
             flex: 1;
             padding: 32px;
             min-height: calc(100vh - 180px);
         }}
-        
+
         /* Endpoint Card */
         .endpoint-card {{
             background: var(--bg-secondary);
@@ -246,7 +245,7 @@ SWAGGER_TEMPLATE = """
         .endpoint-card.expanded .endpoint-expand {{
             transform: rotate(180deg);
         }}
-        
+
         .endpoint-body {{
             display: none;
             padding: 20px;
@@ -255,14 +254,14 @@ SWAGGER_TEMPLATE = """
         .endpoint-card.expanded .endpoint-body {{
             display: block;
         }}
-        
+
         /* Description */
         .endpoint-description {{
             color: var(--text-secondary);
             margin-bottom: 24px;
             line-height: 1.7;
         }}
-        
+
         /* Parameters Section */
         .params-section {{
             margin-bottom: 24px;
@@ -326,7 +325,7 @@ SWAGGER_TEMPLATE = """
             border-radius: 3px;
             font-family: 'SF Mono', 'Consolas', monospace;
         }}
-        
+
         /* Try It Out Section */
         .try-section {{
             background: var(--bg-tertiary);
@@ -468,7 +467,7 @@ SWAGGER_TEMPLATE = """
         .try-toggle-switch.active::after {{
             transform: translateX(20px);
         }}
-        
+
         .try-execute {{
             display: flex;
             gap: 12px;
@@ -505,7 +504,7 @@ SWAGGER_TEMPLATE = """
         .try-btn-copy:hover {{
             background: var(--border);
         }}
-        
+
         /* Response Section */
         .response-section {{
             margin-top: 20px;
@@ -550,7 +549,7 @@ SWAGGER_TEMPLATE = """
         .response-code .number {{ color: #b5cea8; }}
         .response-code .keyword {{ color: #569cd6; }}
         .response-code .key {{ color: #9cdcfe; }}
-        
+
         /* Schema Section */
         .schema-section {{
             margin-top: 24px;
@@ -590,7 +589,7 @@ SWAGGER_TEMPLATE = """
             color: var(--text-secondary);
             font-size: 0.85rem;
         }}
-        
+
         /* Scrollbar */
         ::-webkit-scrollbar {{
             width: 8px;
@@ -606,7 +605,7 @@ SWAGGER_TEMPLATE = """
         ::-webkit-scrollbar-thumb:hover {{
             background: var(--text-muted);
         }}
-        
+
         /* Status Badges */
         .status-badge {{
             display: inline-flex;
@@ -625,7 +624,7 @@ SWAGGER_TEMPLATE = """
             background: rgba(249, 62, 62, 0.15);
             color: var(--accent-red);
         }}
-        
+
         /* Copy notification */
         .copy-toast {{
             position: fixed;
@@ -656,7 +655,7 @@ SWAGGER_TEMPLATE = """
                 <span class="version">v{version}</span>
             </h1>
             <p class="description">
-                Interactive documentation for the Audit Pipeline CLI. Build, test, and execute 
+                Interactive documentation for the Audit Pipeline CLI. Build, test, and execute
                 audit commands directly from this interface.
             </p>
             <div class="meta">
@@ -666,7 +665,7 @@ SWAGGER_TEMPLATE = """
             </div>
         </div>
     </div>
-    
+
     <!-- Main -->
     <div class="swagger-main">
         <!-- Sidebar -->
@@ -686,7 +685,7 @@ SWAGGER_TEMPLATE = """
                     <span>Validate</span>
                 </div>
             </div>
-            
+
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Analysis</div>
                 <div class="sidebar-item" onclick="scrollToEndpoint('explain')">
@@ -702,7 +701,7 @@ SWAGGER_TEMPLATE = """
                     <span>Compare Runs</span>
                 </div>
             </div>
-            
+
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Trends</div>
                 <div class="sidebar-item" onclick="scrollToEndpoint('store-trend')">
@@ -718,7 +717,7 @@ SWAGGER_TEMPLATE = """
                     <span>Check Regressions</span>
                 </div>
             </div>
-            
+
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Visualization</div>
                 <div class="sidebar-item" onclick="scrollToEndpoint('dashboard')">
@@ -735,16 +734,16 @@ SWAGGER_TEMPLATE = """
                 </div>
             </div>
         </div>
-        
+
         <!-- Content -->
         <div class="swagger-content" id="endpoints-container">
             <!-- Endpoints will be rendered here -->
         </div>
     </div>
-    
+
     <!-- Copy Toast -->
     <div class="copy-toast" id="copy-toast">✓ Command copied to clipboard</div>
-    
+
     <script>
         // API Endpoints Definition
         const endpoints = [
@@ -963,18 +962,18 @@ SWAGGER_TEMPLATE = """
                 example: 'python -m scripts.space_traversal.audit_runner api-collection'
             }}
         ];
-        
+
         // Render endpoints
         function renderEndpoints() {{
             const container = document.getElementById('endpoints-container');
             container.innerHTML = endpoints.map(ep => renderEndpoint(ep)).join('');
         }}
-        
+
         function renderEndpoint(ep) {{
-            const methodClass = ep.method.toLowerCase() === 'run' ? 'method-run' : 
-                               ep.method.toLowerCase() === 'post' ? 'method-post' : 
+            const methodClass = ep.method.toLowerCase() === 'run' ? 'method-run' :
+                               ep.method.toLowerCase() === 'post' ? 'method-post' :
                                ep.method.toLowerCase() === 'get' ? 'method-get' : 'method-get';
-            
+
             return `
                 <div class="endpoint-card" id="endpoint-${{ep.id}}">
                     <div class="endpoint-header" onclick="toggleEndpoint('${{ep.id}}')">
@@ -985,7 +984,7 @@ SWAGGER_TEMPLATE = """
                     </div>
                     <div class="endpoint-body">
                         <p class="endpoint-description">${{ep.description}}</p>
-                        
+
                         ${{ep.parameters && ep.parameters.length > 0 ? `
                         <div class="params-section">
                             <div class="params-title">📋 Parameters</div>
@@ -1016,7 +1015,7 @@ SWAGGER_TEMPLATE = """
                             </table>
                         </div>
                         ` : ''}}
-                        
+
                         <div class="try-section">
                             <div class="try-title">🧪 Try It Out</div>
                             <div class="try-form" id="try-form-${{ep.id}}">
@@ -1027,12 +1026,12 @@ SWAGGER_TEMPLATE = """
                                 <button class="try-btn try-btn-copy" onclick="copyCommand('${{ep.id}}')">📋 Copy</button>
                                 <button class="try-btn try-btn-clear" onclick="clearForm('${{ep.id}}')">Clear</button>
                             </div>
-                            
+
                             <div class="response-section">
                                 <div class="response-title">Generated Command</div>
                                 <div class="response-code" id="command-output-${{ep.id}}">${{ep.example}}</div>
                             </div>
-                            
+
                             ${{ep.response ? `
                             <div class="response-section">
                                 <div class="response-title">Example Response</div>
@@ -1044,20 +1043,20 @@ SWAGGER_TEMPLATE = """
                 </div>
             `;
         }}
-        
+
         function renderTryFields(ep) {{
             if (!ep.parameters) return '<p style="color:var(--text-muted)">No parameters required</p>';
-            
+
             return ep.parameters.map(p => {{
                 const id = `${{ep.id}}-${{p.name.replace(/--/g, '')}}`;
-                
+
                 if (p.type === 'boolean') {{
                     return `
                         <div class="try-field">
                             <label class="try-label">${{p.name}}</label>
                             <div class="try-toggle">
-                                <div class="try-toggle-switch ${{p.default === 'true' ? 'active' : ''}}" 
-                                     id="${{id}}" 
+                                <div class="try-toggle-switch ${{p.default === 'true' ? 'active' : ''}}"
+                                     id="${{id}}"
                                      onclick="toggleSwitch(this); updateTryCommand('${{ep.id}}')">
                                 </div>
                                 <span style="color:var(--text-muted);font-size:0.85rem">${{p.desc}}</span>
@@ -1078,8 +1077,8 @@ SWAGGER_TEMPLATE = """
                         <div class="try-field">
                             <label class="try-label">${{p.name}}</label>
                             <div class="try-slider-container">
-                                <input type="range" class="try-slider" id="${{id}}" 
-                                       min="${{p.min || 0}}" max="${{p.max || 100}}" 
+                                <input type="range" class="try-slider" id="${{id}}"
+                                       min="${{p.min || 0}}" max="${{p.max || 100}}"
                                        value="${{p.default || p.min || 0}}"
                                        step="${{p.type === 'number' ? '0.01' : '1'}}"
                                        oninput="document.getElementById('${{id}}-value').textContent = this.value; updateTryCommand('${{ep.id}}')">
@@ -1091,7 +1090,7 @@ SWAGGER_TEMPLATE = """
                     return `
                         <div class="try-field">
                             <label class="try-label">${{p.name}} ${{p.required ? '<span style="color:var(--accent-red)">*</span>' : ''}}</label>
-                            <input type="text" class="try-input" id="${{id}}" 
+                            <input type="text" class="try-input" id="${{id}}"
                                    placeholder="${{p.desc}}"
                                    oninput="updateTryCommand('${{ep.id}}')">
                         </div>
@@ -1099,25 +1098,25 @@ SWAGGER_TEMPLATE = """
                 }}
             }}).join('');
         }}
-        
+
         function toggleEndpoint(id) {{
             const card = document.getElementById('endpoint-' + id);
             card.classList.toggle('expanded');
         }}
-        
+
         function toggleSwitch(el) {{
             el.classList.toggle('active');
         }}
-        
+
         function updateTryCommand(epId) {{
             const ep = endpoints.find(e => e.id === epId);
             let cmd = 'python -m scripts.space_traversal.audit_runner ' + epId;
-            
+
             if (ep.parameters) {{
                 ep.parameters.forEach(p => {{
                     const inputId = `${{epId}}-${{p.name.replace(/--/g, '')}}`;
                     const el = document.getElementById(inputId);
-                    
+
                     if (p.type === 'boolean') {{
                         if (el.classList.contains('active') && p.default !== 'true') {{
                             cmd += ' ' + p.name;
@@ -1133,10 +1132,10 @@ SWAGGER_TEMPLATE = """
                     }}
                 }});
             }}
-            
+
             document.getElementById('command-output-' + epId).textContent = cmd;
         }}
-        
+
         function copyCommand(epId) {{
             const cmd = document.getElementById('command-output-' + epId).textContent;
             navigator.clipboard.writeText(cmd).then(() => {{
@@ -1145,13 +1144,13 @@ SWAGGER_TEMPLATE = """
                 setTimeout(() => toast.classList.remove('show'), 2000);
             }});
         }}
-        
+
         function executeCommand(epId) {{
             const cmd = document.getElementById('command-output-' + epId).textContent;
             alert('Copy and run in terminal:\\n\\n' + cmd);
             copyCommand(epId);
         }}
-        
+
         function clearForm(epId) {{
             const form = document.getElementById('try-form-' + epId);
             form.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
@@ -1159,16 +1158,16 @@ SWAGGER_TEMPLATE = """
             form.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
             updateTryCommand(epId);
         }}
-        
+
         function scrollToEndpoint(id) {{
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             event.target.closest('.sidebar-item').classList.add('active');
-            
+
             const card = document.getElementById('endpoint-' + id);
             card.classList.add('expanded');
             card.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
         }}
-        
+
         function downloadOpenAPI() {{
             const spec = {{
                 openapi: '3.0.0',
@@ -1179,7 +1178,7 @@ SWAGGER_TEMPLATE = """
                 }},
                 paths: {{}}
             }};
-            
+
             endpoints.forEach(ep => {{
                 spec.paths['/' + ep.id] = {{
                     [ep.method.toLowerCase()]: {{
@@ -1194,7 +1193,7 @@ SWAGGER_TEMPLATE = """
                     }}
                 }};
             }});
-            
+
             const blob = new Blob([JSON.stringify(spec, null, 2)], {{ type: 'application/json' }});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1202,7 +1201,7 @@ SWAGGER_TEMPLATE = """
             a.download = 'audit-cli-openapi.json';
             a.click();
         }}
-        
+
         // Initialize
         renderEndpoints();
     </script>

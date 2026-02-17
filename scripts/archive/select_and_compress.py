@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archive/select_and_compress.py [options]
-    
+
     Examples:
     $ python scripts/archive/select_and_compress.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging

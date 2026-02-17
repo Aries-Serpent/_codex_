@@ -17,9 +17,9 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
 import hashlib
 import json
+import logging
 import random
 import sys
 import warnings
@@ -29,7 +29,6 @@ from pathlib import Path
 from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 from ingestion import ingest
-
 
 logger = logging.getLogger(__name__)
 

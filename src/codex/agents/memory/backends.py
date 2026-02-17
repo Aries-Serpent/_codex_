@@ -193,10 +193,10 @@ class JSONLMemoryBackend(MemoryProtocol):
 
 class SQLiteMemoryBackend(MemoryProtocol):
     """SQLite-based memory storage for better query performance.
-    
+
     Provides indexed queries and better scalability than JSONL.
     Suitable for production use with thousands of memories.
-    
+
     Args:
         db_path: Path to the SQLite database file
     """
@@ -249,7 +249,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
 
             conn.execute(
                 """
-                INSERT OR REPLACE INTO memories 
+                INSERT OR REPLACE INTO memories
                 (id, content, timestamp, agent_id, session_id, metadata, embedding)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,

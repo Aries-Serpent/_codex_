@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import argparse
 import os
 import sys
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
 from codex_ml.training.unified_training import (
     UnifiedTrainingConfig,

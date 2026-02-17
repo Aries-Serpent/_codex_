@@ -298,7 +298,7 @@ def bleu(
 
     if len(candidates) != len(references):
         raise MetricError("bleu", "candidates and references length mismatch")
-    
+
     # Try sacrebleu first (faster, more accurate)
     try:
         import sacrebleu
@@ -313,18 +313,18 @@ def bleu(
         logger.warning(f"sacrebleu returned unexpected value: {result}, falling back to NLTK")
     except Exception:
         logger.warning("sacrebleu import or computation failed, falling back to NLTK", exc_info=True)
-    
+
     # Fall back to NLTK
     try:
         from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
     except Exception:
         logger.warning("NLTK not available", exc_info=True)
         return None
-    
+
     hyp_tok = [(c.lower() if lowercase else c).split() for c in candidates]
     ref_tok = [[(r.lower() if lowercase else r).split()] for r in references]
     smoothie = SmoothingFunction().method3
-    
+
     try:
         # NLTK corpus_bleu expects (list_of_references, list_of_hypotheses) order
         score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)

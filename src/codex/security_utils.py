@@ -12,23 +12,23 @@ from typing import Optional
 def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> str:
     """
     Redact a sensitive value for safe logging.
-    
+
     Args:
         value: The sensitive value to redact (can be None)
         show_preview: If True, show first/last 4 chars (DEVELOPMENT/DEBUG ONLY - DO NOT USE IN PRODUCTION)
-        
+
     Returns:
         Redacted string safe for logging
-        
+
     Warning:
         The show_preview parameter should NEVER be enabled in production environments.
         It is intended solely for local development debugging. Using it in production
         would leak partial sensitive data.
-        
+
         **PRODUCTION SAFETY**: This function checks the CODEX_ENV environment variable.
         If CODEX_ENV is set to 'production', 'prod', or 'prd', the show_preview parameter
         is automatically disabled regardless of its value.
-        
+
     Example:
         >>> redact_sensitive_value("my-secret-key-12345")
         '[REDACTED]'
@@ -66,17 +66,17 @@ def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> 
 def redact_secret_name(secret_name: str) -> str:
     """
     Redact or sanitize a secret name for safe logging.
-    
+
     Secret names themselves can sometimes reveal sensitive information
     about system architecture or credentials. This function provides
     safe logging of secret references.
-    
+
     Args:
         secret_name: The name of the secret
-        
+
     Returns:
         Sanitized secret reference safe for logging
-        
+
     Example:
         >>> redact_secret_name("CODEX_MASTER_KEY")
         'secret:[REDACTED]'
@@ -93,25 +93,25 @@ def redact_secret_name(secret_name: str) -> str:
 def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, whitelist_patterns: Optional[list] = None) -> str:
     """
     Sanitize a log message by redacting potential sensitive information.
-    
+
     Args:
         message: The log message to sanitize
         redact_patterns: Optional list of regex patterns to redact
         whitelist_patterns: Optional list of regex patterns for known-safe content to preserve
                             (e.g., common hash formats, UUIDs, etc.)
-        
+
     Returns:
         Sanitized message safe for logging
-        
+
     Note:
         Default patterns are designed to match known sensitive token formats.
         The base64 pattern is intentionally conservative (40+ chars) to minimize
         false positives while catching most tokens. Legitimate identifiers like
         UUIDs and short hashes (typically <36 chars) are not matched.
-        
+
         Whitelist patterns allow you to protect known-safe content from redaction.
         For example, you might whitelist git commit SHAs, UUIDs, or specific hash formats.
-        
+
     Example:
         >>> sanitize_log_message("Token: abc123def456")
         'Token: [REDACTED]'
@@ -191,16 +191,16 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
 def safe_secret_reference(operation: str = "") -> str:
     """
     Create a safe reference to a secret for logging purposes.
-    
+
     This function generates log-safe references that indicate
     a secret is being used without revealing sensitive details.
-    
+
     Args:
         operation: Optional operation being performed (e.g., 'set', 'verify')
-        
+
     Returns:
         Safe reference string for logging
-        
+
     Example:
         >>> safe_secret_reference("verify")
         'secret (verify)'
@@ -215,13 +215,13 @@ def safe_secret_reference(operation: str = "") -> str:
 def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
     """
     Redact a dictionary that uses secret names as keys.
-    
+
     Args:
         data: Dictionary with potentially sensitive keys (can be None)
-        
+
     Returns:
         Dictionary with redacted keys (indexed)
-        
+
     Example:
         >>> redact_dict_with_secret_keys({"SECRET_1": "value", "SECRET_2": "value"})
         {"secret_1": "value", "secret_2": "value"}

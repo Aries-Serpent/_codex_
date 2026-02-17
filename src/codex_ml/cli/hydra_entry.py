@@ -27,7 +27,7 @@ import os
 import sys
 from dataclasses import asdict
 from pathlib import Path
-from typing import Union, Optional, TYPE_CHECKING, Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 
 if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig

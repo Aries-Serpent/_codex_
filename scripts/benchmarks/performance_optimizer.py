@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/benchmarks/performance_optimizer.py [options]
-    
+
     Examples:
     $ python scripts/benchmarks/performance_optimizer.py --help
 
@@ -47,12 +47,12 @@ Agent Integration:
 import argparse
 import json
 import logging
+import statistics
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
-import statistics
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -185,8 +185,8 @@ class PerformanceOptimizer:
     def benchmark_validation_overhead(self) -> dict[str, Any]:
         """Benchmark data validation overhead."""
         try:
-            import pandas as pd
             import numpy as np
+            import pandas as pd
 
             # Create sample dataset
             data = pd.DataFrame(

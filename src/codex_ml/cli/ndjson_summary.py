@@ -29,7 +29,7 @@ import json
 from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Union, Any
+from typing import Any, Union
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -292,12 +292,12 @@ def summarize_directory(
     run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None
 ) -> Path:
     """Summarize metrics from a run directory to a specific format.
-    
+
     Args:
         run_dir: Directory containing metrics.ndjson files
-        fmt: Output format ('csv' or 'parquet')  
+        fmt: Output format ('csv' or 'parquet')
         destination: Optional destination path
-        
+
     Returns:
         Path to the generated summary file
     """
@@ -308,7 +308,7 @@ def summarize_directory(
 # Convenience wrapper for backward compatibility with tests
 def summarize(run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None) -> Path:
     """Convenience wrapper for summarize_directory.
-    
+
     This function provides a simpler interface compatible with existing tests.
     """
     return summarize_directory(run_dir, fmt, destination)

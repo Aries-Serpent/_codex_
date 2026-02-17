@@ -4,9 +4,9 @@ YAML AST Adapter for Codex AST Framework.
 Provides YAML parsing capabilities with standardized node representation.
 """
 
-from pathlib import Path
-from typing import Dict, List, Optional, Any
 import uuid
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -16,10 +16,10 @@ from .base_adapter import BaseASTAdapter, StandardizedASTNode
 class YAMLASTAdapter(BaseASTAdapter):
     """
     AST adapter for YAML files.
-    
+
     Parses YAML documents into standardized AST representation, extracting
     structure, keys, values, and metadata.
-    
+
     Example:
         >>> adapter = YAMLASTAdapter()
         >>> root = adapter.parse("key: value\\nlist:\\n  - item1")
@@ -91,12 +91,12 @@ class YAMLASTAdapter(BaseASTAdapter):
     ) -> StandardizedASTNode:
         """
         Convert YAML data structure to StandardizedASTNode.
-        
+
         Args:
             data: YAML data (dict, list, scalar)
             parent: Parent node
             key: Key name if this is a mapping value
-            
+
         Returns:
             StandardizedASTNode representing the data
         """
@@ -162,10 +162,10 @@ class YAMLASTAdapter(BaseASTAdapter):
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """
         Traverse AST depth-first, yielding all nodes.
-        
+
         Args:
             node: Root node to start traversal (defaults to self.root_node)
-            
+
         Returns:
             List of all nodes in depth-first order
         """
@@ -183,10 +183,10 @@ class YAMLASTAdapter(BaseASTAdapter):
     def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
         """
         Find all nodes of a specific type.
-        
+
         Args:
             node_type: Type to search for ("mapping", "sequence", "scalar", "document")
-            
+
         Returns:
             List of matching nodes
         """
@@ -203,10 +203,10 @@ class YAMLASTAdapter(BaseASTAdapter):
     def get_value_at_path(self, path: str) -> Optional[Any]:
         """
         Get value at YAML path (e.g., "config.database.host").
-        
+
         Args:
             path: Dot-separated path to value
-            
+
         Returns:
             Value at path, or None if not found
         """
@@ -240,10 +240,10 @@ class YAMLASTAdapter(BaseASTAdapter):
     def get_keys(self, node: Optional[StandardizedASTNode] = None) -> List[str]:
         """
         Get all keys from a mapping node.
-        
+
         Args:
             node: Mapping node (uses root if None)
-            
+
         Returns:
             List of keys
         """
@@ -258,10 +258,10 @@ class YAMLASTAdapter(BaseASTAdapter):
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract metadata from YAML node.
-        
+
         Args:
             node: Node to extract metadata from
-            
+
         Returns:
             Dictionary of metadata
         """

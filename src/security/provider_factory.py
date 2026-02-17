@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 
 class ProviderFactory:
     """Factory for creating secret provider instances.
-    
+
     Supports dynamic provider loading based on configuration,
     with fallback handling and validation.
-    
+
     Example:
         >>> config = ProviderConfig(
         ...     provider_type=ProviderType.GITHUB,
@@ -40,13 +40,13 @@ class ProviderFactory:
     @staticmethod
     def create_provider(config: ProviderConfig) -> SecretProvider:
         """Create provider instance from configuration.
-        
+
         Args:
             config: Provider configuration
-            
+
         Returns:
             SecretProvider instance
-            
+
         Raises:
             ProviderConfigError: If provider type unsupported or config invalid
         """
@@ -91,13 +91,13 @@ class ProviderFactory:
     @staticmethod
     def create_from_dict(config_dict: Dict[str, Any]) -> SecretProvider:
         """Create provider from dictionary configuration.
-        
+
         Args:
             config_dict: Configuration dictionary with 'provider_type' key
-            
+
         Returns:
             SecretProvider instance
-            
+
         Raises:
             ProviderConfigError: If configuration invalid
         """
@@ -120,10 +120,10 @@ class ProviderFactory:
     @staticmethod
     def get_available_providers() -> list[ProviderType]:
         """Get list of available provider types.
-        
+
         Checks which providers can be imported and returns
         only those that are available.
-        
+
         Returns:
             List of available ProviderType values
         """
@@ -159,16 +159,16 @@ class ProviderFactory:
     @staticmethod
     def validate_config(config: ProviderConfig) -> bool:
         """Validate provider configuration.
-        
+
         Checks that required configuration keys are present
         for the specified provider type.
-        
+
         Args:
             config: Provider configuration
-            
+
         Returns:
             True if configuration is valid
-            
+
         Raises:
             ProviderConfigError: If configuration invalid
         """
@@ -199,16 +199,16 @@ class ProviderFactory:
 # Convenience function for quick provider creation
 def create_provider_from_env(provider_type: ProviderType) -> SecretProvider:
     """Create provider using environment variables for configuration.
-    
+
     Args:
         provider_type: Type of provider to create
-        
+
     Returns:
         SecretProvider instance
-        
+
     Raises:
         ProviderConfigError: If environment variables not set
-        
+
     Example:
         >>> # With GITHUB_TOKEN environment variable set
         >>> provider = create_provider_from_env(ProviderType.GITHUB)

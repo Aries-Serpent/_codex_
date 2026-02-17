@@ -22,7 +22,6 @@ import secrets
 import time
 from typing import Callable
 
-
 logger = logging.getLogger(__name__)
 _secure_random = secrets.SystemRandom()
 

@@ -33,11 +33,11 @@ logger = logging.getLogger(__name__)
 def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
     """
     Merge all SARIF files in input_dir into a single report.
-    
+
     Args:
         input_dir: Directory containing SARIF files to merge
         output_file: Path to write the merged SARIF file
-        
+
     Returns:
         The merged SARIF data structure
     """
@@ -46,46 +46,46 @@ def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
         "version": "2.1.0",
         "runs": []
     }
-    
+
     # Find all SARIF files
     sarif_files = list(input_dir.glob("*.sarif"))
     sarif_files.extend(input_dir.glob("**/*.sarif"))
     sarif_files = list(set(sarif_files))  # Remove duplicates
-    
+
     if not sarif_files:
         logger.warning(f"No SARIF files found in {input_dir}")
         return merged
-    
+
     logger.info(f"Found {len(sarif_files)} SARIF files to merge")
-    
+
     total_results = 0
     for sarif_file in sorted(sarif_files):
         try:
             with open(sarif_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            
+
             if "runs" in data:
                 for run in data["runs"]:
                     # Track results count
                     results = run.get("results", [])
                     total_results += len(results)
-                    
+
                     # Add source file metadata
                     run["properties"] = run.get("properties", {})
                     run["properties"]["sourceFile"] = str(sarif_file.name)
                     run["properties"]["mergedAt"] = datetime.now(timezone.utc).isoformat()
-                    
+
                     merged["runs"].append(run)
-                
+
                 logger.info(f"Merged {sarif_file.name}: {len(data.get('runs', []))} runs")
             else:
                 logger.warning(f"No 'runs' found in {sarif_file}")
-                
+
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in {sarif_file}: {e}")
         except OSError as e:
             logger.error(f"Error reading {sarif_file}: {e}")
-    
+
     # Add merge metadata
     merged["properties"] = {
         "mergedAt": datetime.now(timezone.utc).isoformat(),
@@ -93,42 +93,42 @@ def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
         "totalRuns": len(merged["runs"]),
         "totalResults": total_results
     }
-    
+
     # Write merged output
     output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2)
-    
+
     logger.info(f"Merged SARIF written to {output_file}")
     logger.info(f"Total: {len(merged['runs'])} runs, {total_results} results")
-    
+
     return merged
 
 
 def validate_sarif(sarif_data: dict[str, Any]) -> bool:
     """
     Validate that a SARIF data structure is well-formed.
-    
+
     Args:
         sarif_data: The SARIF data to validate
-        
+
     Returns:
         True if valid, False otherwise
     """
     required_fields = ["version", "runs"]
-    
+
     for field in required_fields:
         if field not in sarif_data:
             logger.error(f"Missing required field: {field}")
             return False
-    
+
     if sarif_data.get("version") != "2.1.0":
         logger.warning(f"Unexpected SARIF version: {sarif_data.get('version')}")
-    
+
     if not isinstance(sarif_data.get("runs"), list):
         logger.error("'runs' must be a list")
         return False
-    
+
     return True
 
 
@@ -165,28 +165,28 @@ Examples:
         action="store_true",
         help="Enable verbose output"
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     # Validate input directory
     if not args.input_dir.exists():
         logger.error(f"Input directory does not exist: {args.input_dir}")
         return 1
-    
+
     if not args.input_dir.is_dir():
         logger.error(f"Input path is not a directory: {args.input_dir}")
         return 1
-    
+
     # Merge SARIF files
     try:
         merged = merge_sarif_files(args.input_dir, args.output)
     except Exception as e:
         logger.error(f"Error merging SARIF files: {e}")
         return 1
-    
+
     # Optionally validate output
     if args.validate:
         if validate_sarif(merged):
@@ -194,7 +194,7 @@ Examples:
         else:
             logger.error("Merged SARIF validation failed")
             return 1
-    
+
     return 0
 
 

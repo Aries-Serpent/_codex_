@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/vendor_guard.py [options]
-    
+
     Examples:
     $ python scripts/vendor_guard.py --help
 

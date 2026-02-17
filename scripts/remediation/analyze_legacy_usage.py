@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/analyze_legacy_usage.py [options]
-    
+
     Examples:
     $ python scripts/remediation/analyze_legacy_usage.py --help
 
@@ -52,12 +52,12 @@ Flags:
  --include-tests      : Include tests/ directory in the scan (default: included)
  --include-relative   : Include relative ImportFrom entries (level >= 1) in the output
 """
-import ast
-import sys
-import csv
 import argparse
-from pathlib import Path
+import ast
+import csv
+import sys
 from collections import defaultdict
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 # Note: 'hydra' removed - it refers to PyPI package, not local module

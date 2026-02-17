@@ -8,7 +8,6 @@ import pickle
 from pathlib import Path
 from typing import Any
 
-
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional torch dependency

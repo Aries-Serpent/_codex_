@@ -9,14 +9,13 @@ reinstalling offline builds.
 
 from __future__ import annotations
 
-import logging
 import importlib
 import importlib.util
+import logging
 import sys
 from dataclasses import dataclass
 from types import ModuleType
-from typing import Final, Optional, Union
-
+from typing import Final, Optional
 
 logger = logging.getLogger(__name__)
 

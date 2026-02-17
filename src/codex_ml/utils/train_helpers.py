@@ -6,8 +6,6 @@ import logging
 from contextlib import contextmanager
 from typing import Iterable, Iterator, Optional
 
-
-
 logger = logging.getLogger(__name__)
 
 @contextmanager
