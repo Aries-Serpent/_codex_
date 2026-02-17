@@ -18,11 +18,11 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from pathlib import Path
 from typing import Iterable, Sequence
+
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer

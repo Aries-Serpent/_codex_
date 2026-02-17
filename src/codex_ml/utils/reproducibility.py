@@ -11,15 +11,15 @@ advanced MLOps reproducibility tooling, without introducing hard dependencies.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import importlib.util
 import os
 import random
 import secrets
 from dataclasses import asdict, dataclass
 from typing import Any
+
+
+logger = logging.getLogger(__name__)
 
 _np_spec = importlib.util.find_spec("numpy")
 if _np_spec is not None:

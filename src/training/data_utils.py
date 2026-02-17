@@ -18,9 +18,6 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
 import os
@@ -28,6 +25,9 @@ from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar, cast
+
+
+logger = logging.getLogger(__name__)
 
 try:  # Optional dependency handling
     import numpy as np

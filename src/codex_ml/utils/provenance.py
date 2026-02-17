@@ -5,8 +5,6 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import platform
 import shutil
@@ -16,6 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
+
+logger = logging.getLogger(__name__)
 try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - optional

@@ -12,10 +12,10 @@ Notes:
 from __future__ import annotations
 
 import logging
+from typing import IO, Any
+
 
 logger = logging.getLogger(__name__)
-
-from typing import IO, Any
 
 try:
     import tomllib as _toml  # Python >=3.11

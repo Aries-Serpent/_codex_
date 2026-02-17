@@ -18,11 +18,11 @@ Author: Codex Team
 # Simple file-based checkpoint helper. Stores processed ids/checksums per input file.
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 from pathlib import Path
 
 
+
+logger = logging.getLogger(__name__)
 def load_checkpoint(path: str) -> set[str]:
     p = Path(path)
     if not p.exists():

@@ -6,8 +6,6 @@ Includes retry logic, rate limit handling, and typed responses.
 
 import asyncio
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import time
 from datetime import datetime, timezone
@@ -36,6 +34,8 @@ from .types import (
     WorkflowJob,
     WorkflowRun,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class GitHubClient:

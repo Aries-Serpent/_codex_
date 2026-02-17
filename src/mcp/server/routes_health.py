@@ -18,14 +18,12 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from .adapter_loader import load_adapter
 
+logger = logging.getLogger(__name__)
 
 def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None:
     @app.get("/health")

@@ -2,8 +2,6 @@
 
 The helpers in this module are intentionally lightweight so they can be used
 from training scripts, offline verifiers, and tests without pulling in the
-import logging
-logger = logging.getLogger(__name__)
 heavier checkpoint machinery.
 """
 
@@ -11,11 +9,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 SNAPSHOT_EXCLUDE_KEYS: set[str] = {
     # Hydra / OmegaConf internals that should not leak into manifests.

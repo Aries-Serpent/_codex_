@@ -10,8 +10,6 @@ from __future__ import annotations
 
 import inspect
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import random as _random
 import tempfile
@@ -21,6 +19,8 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any, Callable
 
+
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch as _torch  # type: ignore[import-not-found]
 except Exception:  # pragma: no cover - torch unavailable
