@@ -298,33 +298,45 @@ def bleu(
 
     if len(candidates) != len(references):
         raise MetricError("bleu", "candidates and references length mismatch")
+    
+    # Try sacrebleu first (faster, more accurate)
     try:
         import sacrebleu
 
         hyp = [c.lower() if lowercase else c for c in candidates]
         ref = [r.lower() if lowercase else r for r in references]
         score = sacrebleu.corpus_bleu(hyp, [ref])
-        return float(score.score / 100.0)
+        result = float(score.score / 100.0)
+        # Sanity check: BLEU scores should be in [0, 1]
+        if 0.0 <= result <= 1.0:
+            return result
+        logger.warning(f"sacrebleu returned unexpected value: {result}, falling back to NLTK")
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
-        try:
-            from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
-            return None
-        hyp_tok = [(c.lower() if lowercase else c).split() for c in candidates]
-        ref_tok = [[(r.lower() if lowercase else r).split()] for r in references]
-        smoothie = SmoothingFunction().method3
-        try:
-            # NLTK corpus_bleu expects (references, hypotheses) order
-            score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)
-            return float(score)
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
-            return None
+        logger.warning("sacrebleu failed, falling back to NLTK", exc_info=True)
+    
+    # Fall back to NLTK
+    try:
+        from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
+    except Exception:
+        logger.warning("NLTK not available", exc_info=True)
+        return None
+    
+    hyp_tok = [(c.lower() if lowercase else c).split() for c in candidates]
+    ref_tok = [[(r.lower() if lowercase else r).split()] for r in references]
+    smoothie = SmoothingFunction().method3
+    
+    try:
+        # NLTK corpus_bleu expects (list_of_references, hypotheses) order
+        score = corpus_bleu(ref_tok, hyp_tok, smoothing_function=smoothie)
+        result = float(score)
+        # Sanity check: BLEU scores should be in [0, 1]
+        if 0.0 <= result <= 1.0:
+            return result
+        logger.warning(f"NLTK corpus_bleu returned unexpected value: {result}")
+        return None
+    except Exception:
+        logger.warning("NLTK BLEU computation failed", exc_info=True)
+        return None
 
 
 def rouge_l(
