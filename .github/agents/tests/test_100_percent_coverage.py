@@ -14,15 +14,15 @@ AGENTS_DIR = Path(__file__).resolve().parents[1]
 if str(AGENTS_DIR) not in sys.path:
     sys.path.insert(0, str(AGENTS_DIR))
 
-from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult
-from codex_reviewer.security import SecurityValidator
-from codex_reviewer.secret_patterns import SecretPatterns, calculate_entropy, has_high_entropy
-from codex_reviewer.analyzers import QuantumPatternAnalyzer
-from codex_reviewer.orchestration import WorkflowOrchestrator
-from codex_reviewer.knowledge import KnowledgeGapDetector
-from codex_reviewer.learning import SelfEvolutionSystem
-from codex_reviewer.metrics import MetricsCollector, ReviewMetrics
-from codex_reviewer.github_client import GitHubAPIClient
+from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult  # noqa: E402
+from codex_reviewer.security import SecurityValidator  # noqa: E402
+from codex_reviewer.secret_patterns import SecretPatterns, calculate_entropy, has_high_entropy  # noqa: E402
+from codex_reviewer.analyzers import QuantumPatternAnalyzer  # noqa: E402
+from codex_reviewer.orchestration import WorkflowOrchestrator  # noqa: E402
+from codex_reviewer.knowledge import KnowledgeGapDetector  # noqa: E402
+from codex_reviewer.learning import SelfEvolutionSystem  # noqa: E402
+from codex_reviewer.metrics import MetricsCollector, ReviewMetrics  # noqa: E402
+from codex_reviewer.github_client import GitHubAPIClient  # noqa: E402
 
 
 class TestSecretPatternsComplete:

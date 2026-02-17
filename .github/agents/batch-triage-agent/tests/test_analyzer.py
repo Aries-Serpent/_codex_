@@ -11,8 +11,8 @@ REPO_ROOT = SCRIPT_DIR.parent.parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(SCRIPT_DIR.parent / "src"))
 
-from scripts.ci.batch_triage import FailureRecord, TriageGroup
-from analyzer import BatchTriageAnalyzer
+from scripts.ci.batch_triage import FailureRecord, TriageGroup  # noqa: E402
+from analyzer import BatchTriageAnalyzer  # noqa: E402
 
 
 def test_analyzer_initialization():

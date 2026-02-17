@@ -20,7 +20,7 @@ AGENTS_DIR = Path(__file__).resolve().parents[1]
 if str(AGENTS_DIR) not in sys.path:
     sys.path.insert(0, str(AGENTS_DIR))
 
-from codex_reviewer.main import CodexQuantumReviewer, ReviewContext
+from codex_reviewer.main import CodexQuantumReviewer, ReviewContext  # noqa: E402
 from codex_reviewer.secret_patterns import (  # noqa: E402
     SecretPatterns,
     calculate_entropy,

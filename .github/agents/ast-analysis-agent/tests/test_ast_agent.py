@@ -14,9 +14,9 @@ import tempfile
 agent_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'agent')
 sys.path.insert(0, agent_dir)
 
-from analyzer import ASTAnalysisAgent, CodeFinding, AnalysisContext
-from pattern_detector import PatternDetector
-from report_generator import ReportGenerator, ReportConfig
+from analyzer import ASTAnalysisAgent, CodeFinding, AnalysisContext  # noqa: E402
+from pattern_detector import PatternDetector  # noqa: E402
+from report_generator import ReportGenerator, ReportConfig  # noqa: E402
 
 
 class TestASTAnalysisAgent:
@@ -179,7 +179,7 @@ class Singleton:
             cls._instance = cls()
         return cls._instance
 '''
-        detector.detect_patterns(singleton_code)
+        patterns = detector.detect_patterns(singleton_code)
         
         singleton_patterns = [p for p in patterns if p.name == 'singleton']
         assert len(singleton_patterns) > 0
