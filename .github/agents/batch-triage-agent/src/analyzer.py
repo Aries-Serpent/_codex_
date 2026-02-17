@@ -15,7 +15,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.ci.batch_triage import (
+from scripts.ci.batch_triage import (  # noqa: E402
     BatchTriageEngine,
     FailureRecord,
     TriageGroup,
