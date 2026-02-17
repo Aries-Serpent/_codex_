@@ -14,7 +14,7 @@ PretrainedConfig = transformers.PretrainedConfig
 PreTrainedModel = transformers.PreTrainedModel
 
 
-def test_get_minilm() -> None:
+def test_get_minilm(disable_torch_profiler) -> None:
     cfg = {"vocab_size": 10, "lora": {"enabled": False}}
     model = get_model("MiniLM", cfg)
     inp = torch.randint(0, 10, (1, 4))

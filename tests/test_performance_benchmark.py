@@ -129,7 +129,7 @@ def test_benchmark_inference():
     assert "avg_ms_per_sample" in result.metadata
 
 
-def test_benchmark_data_loading():
+def test_benchmark_data_loading(disable_torch_profiler):
     """Test data loading benchmarking."""
     from torch.utils.data import DataLoader, TensorDataset
 

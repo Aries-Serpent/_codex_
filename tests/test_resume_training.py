@@ -107,7 +107,7 @@ def test_optimizer_steps_and_metrics(tmp_path):
         raise
 
 
-def test_optimizer_resume_state(tmp_path):
+def test_optimizer_resume_state(tmp_path, disable_torch_profiler):
     """Test optimizer state resumption.
 
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).

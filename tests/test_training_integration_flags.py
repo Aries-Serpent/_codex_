@@ -77,7 +77,7 @@ def _dummy_batch(seq_len: int = 4) -> Dict[str, torch.Tensor]:
     }
 
 
-def test_train_uses_autocast_and_clip(monkeypatch):
+def test_train_uses_autocast_and_clip(monkeypatch, disable_torch_profiler):
     import codex_ml.training.functional_training as ft
 
     counters = {"autocast": 0, "clip": 0, "mlflow": 0}

@@ -128,7 +128,7 @@ def _torch_version_less_than(version_str: str) -> bool:
     not hasattr(torch, "__version__") or _torch_version_less_than("2.0.0"),
     reason="Profiler API may be incompatible with torch < 2.0"
 )
-def test_tail_flush_triggers_optimizer_step(tokenizer_stub: _FakeTokenizer, tmp_path: Path) -> None:
+def test_tail_flush_triggers_optimizer_step(tokenizer_stub: _FakeTokenizer, tmp_path: Path, disable_torch_profiler) -> None:
     """Test that gradient accumulation tail flush triggers optimizer step.
 
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
