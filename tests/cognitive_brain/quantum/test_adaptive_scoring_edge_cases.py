@@ -17,6 +17,10 @@ from cognitive_brain.quantum.adaptive_scoring import (
     ScoringWeights,
 )
 
+# Constants for feature extraction
+_RISK_LEVEL_SCORES = {"low": 0.2, "medium": 0.5, "high": 0.8}
+_MAX_REMEDIATION_COST = 20000.0  # Maximum cost for normalization
+
 
 class AdaptiveScoringEngine:
     """Test adapter for AdaptiveScoringOptimizer with simplified API."""
@@ -68,8 +72,8 @@ class AdaptiveScoringEngine:
             # Extract features from AuditResult
             features = {
                 "compliance_score": audit.score if audit.score is not None else 0.5,
-                "risk_score": {"low": 0.2, "medium": 0.5, "high": 0.8}.get(audit.risk_level, 0.5),
-                "cost_score": min(1.0, audit.remediation_cost / 20000.0) if audit.remediation_cost else 0.5,
+                "risk_score": _RISK_LEVEL_SCORES.get(audit.risk_level, 0.5),
+                "cost_score": min(1.0, audit.remediation_cost / _MAX_REMEDIATION_COST) if audit.remediation_cost else 0.5,
                 "impact_score": audit.business_impact if audit.business_impact else 0.5,
             }
             return self.optimizer.compute_score(features)

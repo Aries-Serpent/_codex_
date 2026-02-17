@@ -230,9 +230,8 @@ class TestNumericTransformationProperties:
     @settings(suppress_health_check=[HealthCheck.filter_too_much])
     def test_factorial_property(self, n: int) -> None:
         """Factorial is always positive for non-negative integers."""
-        result = 1
-        for i in range(1, n + 1):
-            result *= i
+        import math
+        result = math.factorial(n)
         assert result > 0
 
     @given(st.integers(), st.integers())
