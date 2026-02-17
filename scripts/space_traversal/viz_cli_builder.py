@@ -1006,6 +1006,7 @@ def generate_cli_builder(
     """
     html = CLI_BUILDER_TEMPLATE.format(
         repo_name=repo_name,
+        version=version,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

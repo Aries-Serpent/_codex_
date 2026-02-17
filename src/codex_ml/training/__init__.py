@@ -28,6 +28,17 @@ try:
 except ImportError:  # pragma: no cover - mlflow optional
     mlflow_run = None  # type: ignore
 
+# Additional compatibility imports for tests (PR #3248)
+try:
+    from codex_ml.utils.train_helpers import maybe_autocast
+except ImportError:  # pragma: no cover - optional
+    maybe_autocast = None  # type: ignore
+
+try:
+    from codex_ml.utils.hf_pinning import load_from_pretrained
+except ImportError:  # pragma: no cover - optional
+    load_from_pretrained = None  # type: ignore
+
 __all__ = [
     "SafetySettings",
     "OptimizerSettings",
@@ -48,6 +59,8 @@ __all__ = [
     "DeviceMapper",
     "RNGState",
     "set_seed",
+    "maybe_autocast",  # Added for test compatibility (PR #3248)
+    "load_from_pretrained",  # Added for test compatibility (PR #3248)
 ]
 
 

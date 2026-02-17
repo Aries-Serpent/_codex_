@@ -1263,3 +1263,45 @@ def pytest_runtest_protocol(item, nextitem):
             )
     except Exception:  # psutil optional; skip leak check if unavailable
         pass
+
+
+# ============================================================================
+# PyTorch Profiler Guard Fixture (PR #3248 Fix)
+# ============================================================================
+# Prevents profiler::_record_function_exit() type errors in PyTorch tests
+# See: TEST_FAILURE_ANALYSIS_PR3248.md for details
+
+@pytest.fixture(autouse=False)
+def disable_torch_profiler(monkeypatch):
+    """
+    Disable PyTorch profiler for tests that fail with profiler type errors.
+    
+    Usage:
+        def test_something(disable_torch_profiler):
+            # PyTorch profiler is mocked
+            pass
+    
+    Background:
+    Some PyTorch versions have a type mismatch bug in the profiler exit handler
+    that causes: RuntimeError: profiler::_record_function_exit() Expected a 
+    value of type '__torch__.torch.classes.profiler._RecordFunction' but 
+    instead found type 'ScriptObject'.
+    """
+    import contextlib
+    if torch is not None:
+        monkeypatch.setattr(
+            'torch.autograd.profiler.record_function',
+            lambda *args, **kwargs: contextlib.nullcontext()
+        )
+
+
+# List of test files that commonly need the profiler disabled
+# (Can be removed once PyTorch version is upgraded/pinned)
+TORCH_PROFILER_PROBLEMATIC_TESTS = [
+    'test_checkpoint_restore_rng_torch.py',
+    'test_gradient_accumulation_tail_flush.py',
+    'test_training_integration_flags.py',
+    'test_resume_training.py',
+    'test_performance_benchmark.py',
+    'test_models_registry_api.py',
+]
