@@ -9,7 +9,7 @@ import logging
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
