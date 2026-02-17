@@ -30,9 +30,10 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
 import logging
 logger = logging.getLogger(__name__)
+
+"""
 Content Filter (P2 Full Implementation with Knob Normalization)
 
 - Allowlist filtering (profiles A/B/C with combinable syntax e.g. A+B+C)

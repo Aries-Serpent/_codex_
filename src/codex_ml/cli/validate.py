@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Validate Module
 
 This module provides functionality for validate.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -25,6 +26,7 @@ import difflib
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Optional
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError

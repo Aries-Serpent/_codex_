@@ -33,9 +33,12 @@ Last Updated: 2026-01-16
 Automated fix for try-except-pass patterns.
 Adds logging to all silent exception handlers.
 """
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def fix_try_except_pass(file_path: Path) -> int:

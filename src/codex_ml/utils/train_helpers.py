@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import contextmanager
-from typing import Iterable, Iterator, Optional
+from typing import Any, Iterable, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 

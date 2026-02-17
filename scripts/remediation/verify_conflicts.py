@@ -28,28 +28,14 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
-
-"""
-import logging
-logger = logging.getLogger(__name__)
-[Verification]: Import Conflict Checker
-Purpose: Verifies if local directories are shadowing standard libraries or
-causing ambiguous imports between root and src/.
-
-Usage:
-  python scripts/remediation/verify_conflicts.py
-Flags:
-  --expect-site-packages  : Enforce that 'hydra' resolves from site-packages
-  --allow-shadow          : Do not exit non-zero on hydra shadowing (logs warning only)
-  --mode strict           : Fail on any non-whitelisted duplicates (uses SHIM_INVENTORY.yaml)
-  --mode shim-aware       : Warn only for whitelisted duplicates from inventory
-  --output FILE           : Write JSON findings to FILE
-"""
 import argparse
 import importlib.util
 import json
+import logging
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Add repo root to sys.path to simulate how Python sees the repo context
 ROOT = Path(__file__).resolve().parents[2]

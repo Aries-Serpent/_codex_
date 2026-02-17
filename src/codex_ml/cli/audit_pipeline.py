@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Audit Pipeline Module
 
 This module provides functionality for audit pipeline.
@@ -16,7 +18,6 @@ Author: Codex Team
 """
 
 # src/codex_ml/cli/audit_pipeline.py
-from __future__ import annotations
 
 import logging
 
@@ -26,7 +27,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Optional, Sequence
 
 from codex_ml.analysis.extractors import (
     extract_ast,

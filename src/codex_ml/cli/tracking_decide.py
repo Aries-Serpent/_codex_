@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Tracking Decide Module
 
 This module provides functionality for tracking decide.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -28,7 +29,7 @@ import os
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict
-from typing import Annotated
+from typing import Annotated, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

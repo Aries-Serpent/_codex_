@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Ndjson Summary Module
 
 This module provides functionality for ndjson summary.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -29,7 +30,7 @@ import json
 from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 FIELDNAMES: Sequence[str] = (
     "run_id",

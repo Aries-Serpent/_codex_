@@ -28,15 +28,15 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+import numpy as np
+import pytest
+
 
 """
 Comprehensive test suite for Phase 4 Full Autonomy components.
 
 Tests self-healing, autonomous decision-making, multi-agent coalitions, and safety guardrails.
 """
-
-import numpy as np
-import pytest
 
 
 class TestSelfHealing:

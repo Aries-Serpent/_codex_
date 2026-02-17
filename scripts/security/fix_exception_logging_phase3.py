@@ -33,9 +33,12 @@ Last Updated: 2026-01-16
 Final comprehensive exception logging pass.
 Targets all remaining patterns to reach >70% coverage.
 """
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def comprehensive_fix(file_path: Path) -> int:

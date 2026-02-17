@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 import asyncio
 from datetime import datetime
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 import json
 from pathlib import Path
 import sys
@@ -20,11 +20,11 @@ AGENTS_DIR = Path(__file__).resolve().parents[1]
 if str(AGENTS_DIR) not in sys.path:
     sys.path.insert(0, str(AGENTS_DIR))
 
-from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult
-from codex_reviewer.security import SecurityValidator
-from codex_reviewer.secret_patterns import calculate_entropy
-from codex_reviewer.metrics import MetricsCollector, ReviewMetrics
-from codex_reviewer.github_client import GitHubAPIClient
+from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult  # noqa: E402
+from codex_reviewer.security import SecurityValidator  # noqa: E402
+from codex_reviewer.secret_patterns import calculate_entropy  # noqa: E402
+from codex_reviewer.metrics import MetricsCollector, ReviewMetrics  # noqa: E402
+from codex_reviewer.github_client import GitHubAPIClient  # noqa: E402
 
 
 class TestCompleteIntegration:

@@ -30,9 +30,10 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
 import logging
 logger = logging.getLogger(__name__)
+
+"""
 Status Update Audit Report Generator (v1.1.0)
 
 Purpose:

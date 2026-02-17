@@ -13,11 +13,17 @@ import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 __all__ = ["FeatureHealthMonitor", "FeatureHealthStatus", "HealthAlert"]
+
+# TYPE_CHECKING import for FeatureStore type hint
+try:
+    from codex_ml.features.store import FeatureStore
+except ImportError:
+    FeatureStore = None  # type: ignore[misc,assignment]
 
 
 @dataclass

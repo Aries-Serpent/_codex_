@@ -9,7 +9,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR.parent / "src"))
 
-from pattern_learner import PatternLearner, FailurePattern
+from pattern_learner import PatternLearner, FailurePattern  # noqa: E402
 
 
 def test_pattern_learner_initialization():

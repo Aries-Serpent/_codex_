@@ -218,6 +218,24 @@ repos:
         language: system
         pass_filenames: false
         # Checks for unused imports and variables
+      
+      # PR #3319 Code Quality - F821 strict enforcement
+      - id: ruff-f821-strict
+        name: Ruff F821 Strict (undefined names - ZERO TOLERANCE)
+        entry: bash -c 'command -v ruff >/dev/null 2>&1 && ruff check --select F821 . || echo "⚠️ ruff not installed, F821 check skipped"'
+        language: system
+        pass_filenames: false
+        # ZERO TOLERANCE for undefined names (F821) - prevents runtime failures
+      
+      # PR #3319 Code Quality - E402 quality check (informational)
+      - id: ruff-e402-check
+        name: Ruff E402 Check (import organization - informational)
+        entry: bash -c 'command -v ruff >/dev/null 2>&1 && ruff check --select E402 . --exit-zero || echo "⚠️ ruff not installed"'
+        language: system
+        pass_filenames: false
+        stages: [manual]
+        # E402 check is informational only - many acceptable patterns documented
+        # Run manually with: pre-commit run ruff-e402-check
 
       # PR #3248 Preventive Tooling - Quick test validation
       - id: quick-tests

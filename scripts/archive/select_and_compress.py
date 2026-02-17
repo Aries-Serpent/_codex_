@@ -30,9 +30,10 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-"""
 import logging
 logger = logging.getLogger(__name__)
+
+"""
 Archive & Pointer (P2) with Knob Normalization
 
 - Honors ARCHIVE_POINTER_STYLE: embedded | sidecar | both

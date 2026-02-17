@@ -33,9 +33,12 @@ Last Updated: 2026-01-16
 Enhanced exception handler logging - Phase 2.
 Targets remaining exception handlers without logging.
 """
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 def needs_logging_import(content: str) -> bool:

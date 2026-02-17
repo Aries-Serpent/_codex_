@@ -39,14 +39,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+
 try:
     import yaml
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     yaml = None
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
 
 # Scoring weights for adoption score calculation (decimal values where 0.10 = 10%)
 SCORING_WEIGHTS = {

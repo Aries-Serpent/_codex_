@@ -1,5 +1,7 @@
 """Learning rate scheduler factory for flexible scheduler selection.
 
+from __future__ import annotations
+
 This module provides a factory function to create various learning rate
 schedulers with configuration support.
 
@@ -21,9 +23,10 @@ Example usage:
     ```
 """
 
-from __future__ import annotations
 
 import logging
+logger = logging.getLogger(__name__)
+
 import math
 from typing import Any, Literal
 

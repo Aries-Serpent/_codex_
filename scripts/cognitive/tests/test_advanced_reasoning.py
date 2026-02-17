@@ -28,16 +28,16 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+import numpy as np
+import pandas as pd
+import pytest
+
 
 """
 Comprehensive test suite for Phase 3 Advanced Reasoning components.
 
 Tests causal inference (DoWhy), counterfactual reasoning (CausalML), and explainability (SHAP).
 """
-
-import numpy as np
-import pandas as pd
-import pytest
 
 
 class TestCausalReasoning:

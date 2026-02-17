@@ -9,7 +9,7 @@ import logging
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
@@ -126,7 +126,6 @@ def classification_accuracy(outputs: Any, labels: Any) -> float:
     if hasattr(labels, "cpu"):
         labels = labels.cpu()
     if hasattr(labels, "numpy"):
-        import numpy as np
 
         labels_array = np.asarray(labels)
     else:

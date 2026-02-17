@@ -28,6 +28,12 @@ Author: Codex Team
 Last Updated: 2026-01-16
 """
 
+import sys
+import tempfile
+from pathlib import Path
+
+import pytest
+
 
 """
 Comprehensive test suite for Phase 2 Meta-Learning components.
@@ -35,16 +41,10 @@ Comprehensive test suite for Phase 2 Meta-Learning components.
 Tests meta-learning engine, pattern library, knowledge transfer, and external ingestion.
 """
 
-import tempfile
-from pathlib import Path
-
-import pytest
-
 # Assume meta_learning_engine exists
 try:
-    import sys
     sys.path.insert(0, str(Path(__file__).parent.parent))
-    from meta_learning_engine import MetaLearningEngine, Pattern, SharedMemory
+    from meta_learning_engine import MetaLearningEngine, Pattern, SharedMemory  # noqa: E402
 except ImportError:
     MetaLearningEngine = None
     Pattern = None
