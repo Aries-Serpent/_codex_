@@ -61,7 +61,19 @@ class AdaptiveScoringEngine:
         return self.optimizer.weights.risk_weight
 
     def compute_score(self, scenario):
-        """Compute score from scenario dict."""
+        """Compute score from scenario tuple or dict."""
+        # Handle tuple format from generate_complex_scenarios
+        if isinstance(scenario, tuple):
+            audit, _ground_truth, _complexity = scenario
+            # Extract features from AuditResult
+            features = {
+                "compliance_score": audit.score if audit.score is not None else 0.5,
+                "risk_score": {"low": 0.2, "medium": 0.5, "high": 0.8}.get(audit.risk_level, 0.5),
+                "cost_score": min(1.0, audit.remediation_cost / 20000.0) if audit.remediation_cost else 0.5,
+                "impact_score": audit.business_impact if audit.business_impact else 0.5,
+            }
+            return self.optimizer.compute_score(features)
+        # Handle dict format
         return self.optimizer.compute_score(scenario)
 
     def train(self, scenarios, epochs=10):

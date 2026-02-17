@@ -52,6 +52,13 @@ logs = None
 tokenizer_group = None
 repro_group = None
 _fix_pool = None
+init_db_cmd = None
+export_env_cmd = None
+clean_logs_cmd = None
+session_logger_cmd = None
+query_logs_cmd = None
+validate_env_cmd = None
+list_sessions_cmd = None
 
 if cli is not None:
     # Import the groups from the loaded module
@@ -61,8 +68,30 @@ if cli is not None:
         tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
         repro_group = getattr(_cli_module, "repro_group", None)
         _fix_pool = getattr(_cli_module, "_fix_pool", None)
+        init_db_cmd = getattr(_cli_module, "init_db_cmd", None)
+        export_env_cmd = getattr(_cli_module, "export_env_cmd", None)
+        clean_logs_cmd = getattr(_cli_module, "clean_logs_cmd", None)
+        session_logger_cmd = getattr(_cli_module, "session_logger_cmd", None)
+        query_logs_cmd = getattr(_cli_module, "query_logs_cmd", None)
+        validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
+        list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
 
-__all__ = ["app", "main", "cli", "logs", "tokenizer_group", "repro_group", "_fix_pool"]
+__all__ = [
+    "app",
+    "main",
+    "cli",
+    "logs",
+    "tokenizer_group",
+    "repro_group",
+    "_fix_pool",
+    "init_db_cmd",
+    "export_env_cmd",
+    "clean_logs_cmd",
+    "session_logger_cmd",
+    "query_logs_cmd",
+    "validate_env_cmd",
+    "list_sessions_cmd",
+]
 
 if cli is None:
     # Non-fatal import warning, but tests will fail if Click CLI is required.
