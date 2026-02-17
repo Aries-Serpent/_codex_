@@ -32,6 +32,7 @@ from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Optional
 
 import click
 import yaml

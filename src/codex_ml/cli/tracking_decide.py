@@ -28,7 +28,7 @@ import os
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict
-from typing import Annotated
+from typing import Annotated, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

@@ -6,6 +6,7 @@ import argparse
 import shlex
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 
 def _run(cmd: str, cwd: Path) -> int:

@@ -25,6 +25,7 @@ import difflib
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Optional
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError

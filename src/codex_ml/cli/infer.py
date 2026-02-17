@@ -29,7 +29,7 @@ import sys
 from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Optional, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

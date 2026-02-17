@@ -14,7 +14,7 @@ import sqlite3
 import sys
 import time
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 Row = dict[str, Any]
 

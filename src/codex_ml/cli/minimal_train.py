@@ -15,6 +15,7 @@ tests or from the examples directory without external dependencies.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Optional
 
 from codex_ml.config import load as cfg_load
 from codex_ml.data.simple_dataset import Sample, SimpleDataset

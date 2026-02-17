@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

@@ -29,7 +29,7 @@ import json
 from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
