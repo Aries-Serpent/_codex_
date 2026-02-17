@@ -34,8 +34,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Refactor Import Tool (safe AST-based import rewrites)
 
 Usage:

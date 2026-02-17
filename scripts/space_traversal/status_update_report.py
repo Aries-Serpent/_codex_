@@ -34,8 +34,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Status Update Audit Report Generator (v1.1.0)
 
 Purpose:

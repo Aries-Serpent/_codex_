@@ -31,10 +31,8 @@ Last Updated: 2026-01-16
 
 """
 import logging
-import logging
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
 [Verification]: Import Conflict Checker
 Purpose: Verifies if local directories are shadowing standard libraries or
 causing ambiguous imports between root and src/.

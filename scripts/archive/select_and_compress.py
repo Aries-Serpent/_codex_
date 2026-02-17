@@ -34,8 +34,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Archive & Pointer (P2) with Knob Normalization
 
 - Honors ARCHIVE_POINTER_STYLE: embedded | sidecar | both
