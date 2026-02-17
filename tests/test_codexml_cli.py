@@ -60,7 +60,11 @@ def test_run_training_invokes_functional_entry(monkeypatch):
         captured["argv"] = argv or []
         return 0
 
-    monkeypatch.setattr(cli_main, "_functional_training_main", fake_main)
+    # Monkeypatch the _load_functional_training_main function to return our fake
+    def fake_load():
+        return fake_main
+    
+    monkeypatch.setattr(cli_main, "_load_functional_training_main", fake_load)
 
     cfg = OmegaConf.create(
         {
