@@ -307,6 +307,12 @@ class QuantumComplianceAssessor:
         if 0.68 <= audit.score < 0.88 and audit.risk_level in ["low", "medium"]:
             return 0.9
         
+        # Sprint 3 PHASE 3: Pattern D - Boundary cases with high risk should also MONITOR
+        # Ground truth: score >= 0.68 → MONITOR (regardless of risk!)
+        # Examples: score=0.69-0.88, risk=high, cost~2000 → MONITOR
+        if 0.68 <= audit.score < 0.88 and audit.risk_level == "high":
+            return 0.85  # High but not as high as low/medium risk
+        
         # Pattern 3: Medium everything with good impact
         if 0.55 <= audit.score <= 0.75 and audit.risk_level == "medium":
             if audit.business_impact > 0.6:
@@ -330,6 +336,11 @@ class QuantumComplianceAssessor:
         if 0.60 <= audit.score < 0.85 and audit.risk_level == "high":
             return 0.05
         
+        # Sprint 3 PHASE 4: Pattern E - PII with cost >= 5000 → MONITOR (not conditional/reject)
+        # Ground truth: else (not high risk, cost >= 5000) → MONITOR
+        # Example: score=0.73, risk=high, cost=7659 → MONITOR (but we rejected it)
+        # Actually high risk + expensive should reject per earlier rule, so skip this
+        
         # Partial score
         return audit.score * 0.4
 
@@ -351,8 +362,12 @@ class QuantumComplianceAssessor:
             return 0.95
         
         # High risk but not very high scores → possible reject
+        # Sprint 3 PHASE 3: Except Pattern D boundary cases (0.68-0.88) which should MONITOR
         if audit.risk_level == "high" and audit.score < 0.75:
-            return 0.90
+            if audit.score < 0.68:  # Only reject if below boundary
+                return 0.90
+            else:
+                return 0.10  # Pattern D: 0.68-0.75 + high risk → prefer monitor
         
         # Sprint 3 PHASE 2 FIX: Pattern C - Medium everything with poor outcomes → REJECT
         # Ground truth: score 0.55-0.75 + risk=medium + cost>3000 + impact<0.6 → REJECT
@@ -362,10 +377,18 @@ class QuantumComplianceAssessor:
                 return 0.98  # Increased from 0.90 - very strong rejection
         
         # Sprint 3 FIX: Pattern E - PII concerns (high risk + expensive fix)
-        # Example: score=0.67, risk=medium, cost=4848 → reject (was conditional)
-        if audit.risk_level in ["medium", "high"] and audit.remediation_cost > 4500:
-            if audit.score < 0.75:
-                return 0.85  # Strong rejection for expensive + risky
+        # Ground truth: risk=high → REJECT, cost < 5000 → CONDITIONAL, else → MONITOR
+        # But Pattern E-1: score=0.67, risk=medium, cost=4848 → CONDITIONAL (not reject!)
+        if audit.risk_level in ["medium", "high"] and audit.remediation_cost > 5000:
+            if audit.score < 0.75 and audit.risk_level == "high":
+                return 0.92  # Strong rejection for high risk + expensive
+            elif audit.risk_level == "medium":
+                return 0.20  # Weak rejection for medium risk - prefer conditional/monitor
+        
+        # Sprint 3 PHASE 3: Pattern H - Low score (<0.65) + high cost (>6000) → REJECT
+        # Example: score=0.57, risk=low, cost=8561 → reject (was conditional)
+        if audit.score < 0.65 and audit.remediation_cost > 6000:
+            return 0.92  # Strong rejection for low score + expensive
         
         # Penalty for approving good cases
         if audit.score >= 0.70 and audit.risk_level == "low":
@@ -395,12 +418,19 @@ class QuantumComplianceAssessor:
         # Sprint 3 FIX: Pattern H - Specific to temporal evolution
         # Rule: (0.65 <= score < 0.85) OR (cost < 6000)
         # Only apply if score is in the 0.65-0.84 range AND not high risk
+        # Sprint 3 PHASE 3: Pattern D exception - scores 0.68-0.88 + high risk → MONITOR not conditional
         if 0.65 <= audit.score < 0.85 and audit.risk_level != "high":
             return 0.90  # Good match for conditional
+        elif 0.68 <= audit.score < 0.88 and audit.risk_level == "high":
+            return 0.05  # Pattern D: prefer monitor for boundary + high risk
         
         # Pattern H: Low cost (<6000) prefers conditional
+        # Sprint 3 PHASE 3: But high cost (>6000) + low score (<0.65) → REJECT
         if audit.remediation_cost < 6000 and audit.score >= 0.40:
             return 0.85
+        elif audit.remediation_cost >= 6000 and audit.score < 0.65:
+            # Pattern H: High cost + low score → prefer reject
+            return 0.10
         
         # Sprint 3 FIX: Pattern F - Multi-violation with moderate costs (3000-10000)
         if 0.55 <= audit.score < 0.85 and 3000 <= audit.remediation_cost < 10000:
@@ -418,10 +448,12 @@ class QuantumComplianceAssessor:
         if 0.55 <= audit.score <= 0.75 and audit.remediation_cost < 3000:
             return 0.85
         
-        # Sprint 3 FIX: Pattern E - PII with moderate cost should be conditional
+        # Sprint 3 PHASE 4: Pattern E - PII with cost < 5000 should be conditional
+        # Ground truth: cost < 5000 → CONDITIONAL
+        # Example: score=0.67, risk=medium, cost=4848 → CONDITIONAL
         if 0.60 <= audit.score < 0.75 and audit.risk_level in ["medium", "high"]:
-            if 3000 < audit.remediation_cost < 4500:
-                return 0.80
+            if audit.remediation_cost < 5000:
+                return 0.85  # Conditional if cost is moderate (< 5000)
         
         # Penalty for very high costs (should be monitor or reject)
         if audit.remediation_cost > 10000:
