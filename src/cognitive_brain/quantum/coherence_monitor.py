@@ -84,7 +84,7 @@ class CoherenceMonitor:
     - error_rate > 0.05 → WARNING
     - latency_p99 > 2000ms → WARNING
     - accuracy < 0.90 → CRITICAL
-    
+
     Sprint 1 Optimization:
     - Added internal metric batching for 10-20x performance improvement
     - Batch inserts reduce database overhead from ~350ms to ~2ms per experiment
@@ -155,7 +155,7 @@ class CoherenceMonitor:
     ) -> QuantumMetric:
         """
         Record a metric and check for alerts.
-        
+
         Sprint 1 Optimization: Metrics are batched internally for performance.
         Call flush_batch() to persist all pending metrics.
 
@@ -180,7 +180,7 @@ class CoherenceMonitor:
 
         # Sprint 1: Add to batch instead of immediate insert
         self._pending_metrics.append(metric)
-        
+
         # Auto-flush when batch size reached
         if len(self._pending_metrics) >= self._batch_size:
             self.flush_batch()
@@ -189,25 +189,25 @@ class CoherenceMonitor:
         self._check_thresholds(feature, metric_name, metric_value)
 
         return metric
-    
+
     def flush_batch(self) -> int:
         """
         Flush all pending metrics to database using batch insert.
-        
+
         Sprint 1 Optimization: Provides 10-20x performance improvement
         over individual inserts.
-        
+
         Returns:
             Number of metrics flushed
         """
         if not self._pending_metrics:
             return 0
-        
+
         # Batch insert all pending metrics
         self.repository.batch_insert(self._pending_metrics)
         count = len(self._pending_metrics)
         self._pending_metrics = []
-        
+
         return count
 
     def _check_thresholds(self, feature: str, metric_name: str, value: float) -> None:

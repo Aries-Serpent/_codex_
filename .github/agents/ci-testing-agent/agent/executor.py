@@ -15,7 +15,7 @@ class SandboxExecutor:
     def __init__(self, workspace: Path, timeout: int = 300):
         """
         Initialize SandboxExecutor.
-        
+
         Args:
             workspace: Path to repository workspace
             timeout: Command timeout in seconds (default: 300)
@@ -26,14 +26,14 @@ class SandboxExecutor:
     def execute(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute test command in sandbox.
-        
+
         Args:
             task: Task dictionary containing:
                 - command: Command to execute (default: 'pytest')
                 - args: List of command arguments (optional)
                 - env: Environment variables dict (optional)
                 - timeout: Override default timeout (optional)
-        
+
         Returns:
             Dictionary with:
                 - status: 'success', 'failure', 'timeout', or 'error'
@@ -105,11 +105,11 @@ class SandboxExecutor:
     ) -> List[Dict[str, Any]]:
         """
         Execute multiple test commands in parallel.
-        
+
         Args:
             tasks: List of task dictionaries
             max_workers: Maximum number of parallel workers (default: 4)
-        
+
         Returns:
             List of result dictionaries
         """
@@ -143,10 +143,10 @@ class SandboxExecutor:
     def validate_command(self, command: str) -> bool:
         """
         Validate that command is safe to execute.
-        
+
         Args:
             command: Command to validate
-        
+
         Returns:
             True if command is safe, False otherwise
         """
@@ -168,10 +168,10 @@ class SandboxExecutor:
     def execute_with_validation(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute command with safety validation.
-        
+
         Args:
             task: Task dictionary
-        
+
         Returns:
             Result dictionary or error if validation fails
         """

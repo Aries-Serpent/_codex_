@@ -96,7 +96,7 @@ class QuantumMetricRepository:
         self.db_path = db_path or ":memory:"
         self._connection = connection
         self._own_connection = False  # Track if we own the connection
-        
+
         # Auto-initialize schema for in-memory databases
         # For :memory: databases, we must persist the connection
         if self.db_path == ":memory:" and not self._connection:
@@ -108,7 +108,7 @@ class QuantumMetricRepository:
     def initialize_schema(self) -> None:
         """
         Initialize database schema.
-        
+
         Creates quantum_metrics table and indexes if they don't exist.
         Safe to call multiple times (uses CREATE TABLE IF NOT EXISTS).
         """
@@ -428,7 +428,7 @@ class QuantumMetricRepository:
         # Note: lastrowid doesn't work reliably with executemany()
         cursor.execute("SELECT MAX(id) FROM quantum_metrics")
         last_id = cursor.fetchone()[0]
-        
+
         if last_id is None:
             # No rows in table, start from 1
             first_id = 1

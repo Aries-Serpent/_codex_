@@ -41,10 +41,10 @@ except ImportError as e:
     logger.debug("ImportError: %s", e)
     logger.warning("ImportError: %s", e, exc_info=True)
     import config_legacy as hydra
-from common.ndjson_tools import append_event_ndjson, make_run_metrics_path
-from hhg_logistics.model.adapters import load_adapters_into
-from hhg_logistics.model.peft_utils import load_hf_llm
-from omegaconf import DictConfig, OmegaConf
+from common.ndjson_tools import append_event_ndjson, make_run_metrics_path  # noqa: E402
+from hhg_logistics.model.adapters import load_adapters_into  # noqa: E402
+from hhg_logistics.model.peft_utils import load_hf_llm  # noqa: E402
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
 OFFLINE_ENV_VARS: dict[str, str] = {
     "WANDB_MODE": "offline",

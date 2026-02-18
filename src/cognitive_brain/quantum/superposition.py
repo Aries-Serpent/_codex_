@@ -383,12 +383,12 @@ class SuperpositionEngine:
         # Convert to tuple for caching (lists are not hashable)
         prob_tuple = tuple(probabilities) if probabilities else ()
         return self._calculate_coherence_cached(prob_tuple)
-    
+
     @lru_cache(maxsize=128)
     def _calculate_coherence_cached(self, probabilities: tuple) -> float:
         """
         Cached coherence calculation using tuple key.
-        
+
         Sprint 2 Optimization: LRU cache provides 20-30% speedup for repeated calculations.
         """
         if not probabilities or sum(probabilities) == 0:

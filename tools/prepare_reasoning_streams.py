@@ -18,7 +18,7 @@ if SRC_DIR.exists():
     if str(SRC_DIR) not in sys.path:
         sys.path.insert(0, str(SRC_DIR))
 
-from codex_ml.data.checksums import manifest_for_paths
+from codex_ml.data.checksums import manifest_for_paths  # noqa: E402
 
 SUPPORTED_TASKS = {"proof_logs", "math_word_problems", "tool_traces"}
 

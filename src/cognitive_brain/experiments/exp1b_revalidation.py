@@ -94,7 +94,7 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     correct_predictions = 0
     total_coherence = 0.0
     total_time_ms = 0.0
-    
+
     # Sprint 3: Diagnostic logging for failure analysis
     mismatches = []
     pattern_failures = {}  # Track failures by scenario pattern
@@ -126,12 +126,12 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
                 'complexity': complexity.ambiguity_score
             }
             mismatches.append(mismatch)
-            
+
             # Track by pattern
             if pattern not in pattern_failures:
                 pattern_failures[pattern] = []
             pattern_failures[pattern].append(mismatch)
-    
+
     # Sprint 1 Optimization: Flush any batched metrics
     # CoherenceMonitor may have batched metrics for performance
     if hasattr(monitor, 'flush_batch'):
@@ -180,31 +180,31 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
     print(f"  - Avg Conflicts:        {scenario_stats['avg_conflicting_signals']:.2f}")
     print(f"  - Avg Rule Coverage:    {scenario_stats['avg_rule_coverage']:.3f}")
     print("=" * 60)
-    
+
     # Sprint 3: Print diagnostic information
     if mismatches:
-        print(f"\n📊 Sprint 3 Diagnostic Analysis")
+        print("\n📊 Sprint 3 Diagnostic Analysis")
         print("=" * 60)
         print(f"Total Mismatches: {len(mismatches)} / {len(scenario_data)}")
-        print(f"\nFailures by Pattern:")
+        print("\nFailures by Pattern:")
         for pattern in sorted(pattern_failures.keys()):
             failures = pattern_failures[pattern]
             print(f"  Pattern {pattern}: {len(failures)} failures")
-            
+
             # Show common characteristics
             avg_score = sum(m['score'] for m in failures) / len(failures)
             avg_cost = sum(m['cost'] for m in failures) / len(failures)
             avg_coherence = sum(m['coherence'] for m in failures) / len(failures)
-            
+
             print(f"    Avg Score: {avg_score:.2f}, Avg Cost: {avg_cost:.0f}, Avg Coherence: {avg_coherence:.3f}")
-            
+
             # Show a few examples
             for i, m in enumerate(failures[:3]):
                 print(f"    Example {i+1}: {m['audit_id']}")
                 print(f"      Expected: {m['expected']}, Got: {m['predicted']}")
                 print(f"      Score: {m['score']:.2f}, Risk: {m['risk']}, Cost: {m['cost']:.0f}")
         print("=" * 60)
-    
+
 
     return EXP1BResults(
         k1=k1,

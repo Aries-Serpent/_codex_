@@ -15,13 +15,14 @@ PDA Loop: ACT Phase
 """
 
 import json
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
-from dataclasses import dataclass
 
 # Import from classifier
 import sys
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 sys.path.insert(0, str(Path(__file__).parent))
 from classifier import FlakyTestClassification, RemediationAction
 
@@ -40,9 +41,9 @@ class QuarantineEntry:
 class FlakyTestQuarantine:
     """
     Quarantine manager for flaky tests - ACT Phase.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: quarantine_management
-    
+
     Responsibilities:
     - Create flake index (JSON)
     - Generate quarantine lists (Markdown)
@@ -50,29 +51,29 @@ class FlakyTestQuarantine:
     - Create GitHub issues for investigation
     - Update test skip lists
     """
-    
+
     def __init__(self, repo_path: Path):
         """
         Initialize quarantine manager.
-        
+
         Args:
             repo_path: Path to repository
         """
         self.repo_path = repo_path
         self.flake_index_path = repo_path / ".codex" / "flake_index.json"
         self.quarantine_list_path = repo_path / ".codex" / "quarantine_list.md"
-        
+
         #AFTERMATH_METRIC: quarantine_initialized
-    
+
     def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
         """
         ACT phase - execute remediation actions.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: action_phase
-        
+
         Args:
             decision: Decision from DECIDE phase (classifier)
-            
+
         Returns:
             Result dictionary with executed actions
         """
@@ -84,56 +85,56 @@ class FlakyTestQuarantine:
             "tests_quarantined": 0,
             "tests_marked_flaky": 0
         }
-        
+
         classifications = decision.get("classifications", [])
         actions = decision.get("actions", {})
-        
+
         # Create flake index
         result["flake_index_created"] = self._create_flake_index(classifications)
-        
+
         # Create quarantine list
         result["quarantine_list_created"] = self._create_quarantine_list(
             classifications, actions
         )
-        
+
         # Execute actions for each test
         for classification in classifications:
             test_name = classification.test_name
             action = actions.get(test_name, {})
-            
+
             if action.get("type") == RemediationAction.QUARANTINE.value:
                 self._quarantine_test(classification, result)
                 result["tests_quarantined"] += 1
-            
+
             elif action.get("type") == RemediationAction.MARK_FLAKY.value:
                 self._mark_test_flaky(classification, result)
                 result["tests_marked_flaky"] += 1
-            
+
             elif action.get("type") == RemediationAction.INVESTIGATE.value:
                 self._create_investigation_issue(classification, result)
-        
+
         #AFTERMATH_METRIC: actions_executed = len(result["decorators_applied"]) + len(result["issues_created"])
         #AFTERMATH_METRIC: tests_quarantined = result["tests_quarantined"]
-        
+
         return result
-    
+
     def _create_flake_index(self, classifications: List[FlakyTestClassification]) -> bool:
         """
         Create flake index JSON file.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: index_creation
         """
         try:
             # Ensure directory exists
             self.flake_index_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Build index
             index = {
                 "generated_at": datetime.now().isoformat(),
                 "total_flaky_tests": len(classifications),
                 "tests": []
             }
-            
+
             for classification in classifications:
                 index["tests"].append({
                     "name": classification.test_name,
@@ -145,40 +146,40 @@ class FlakyTestQuarantine:
                     "impact_score": classification.impact_score,
                     "metadata": classification.metadata
                 })
-            
+
             # Write to file
             with open(self.flake_index_path, 'w') as f:
                 json.dump(index, f, indent=2)
-            
+
             #AFTERMATH_METRIC: flake_index_size = len(index["tests"])
             return True
-            
+
         except Exception as e:
             #AFTERMATH_PATTERN_IDENTIFIED: index_creation_failed
             print(f"Failed to create flake index: {e}")
             return False
-    
+
     def _create_quarantine_list(self, classifications: List[FlakyTestClassification],
                                 actions: Dict[str, Any]) -> bool:
         """
         Create quarantine list Markdown file.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: quarantine_list_creation
         """
         try:
             # Ensure directory exists
             self.quarantine_list_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Filter for quarantined tests
             quarantined = [
                 c for c in classifications
                 if c.recommended_action == RemediationAction.QUARANTINE
             ]
-            
+
             # Build markdown content
             content = f"""# Flaky Test Quarantine List
 
-**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}  
+**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 **Total Quarantined**: {len(quarantined)}
 
 ## Overview
@@ -190,11 +191,11 @@ This list contains tests that have been quarantined due to flakiness. These test
 | Test Name | Severity | Pass Rate | Reason | Status |
 |-----------|----------|-----------|--------|--------|
 """
-            
+
             for classification in quarantined:
                 content += f"| `{classification.test_name}` | {classification.severity.value} | {classification.pass_rate:.1%} | {', '.join(classification.reasons[:2])} | 🔴 Quarantined |\n"
-            
-            content += f"""
+
+            content += """
 
 ## Actions Required
 
@@ -213,24 +214,24 @@ This list contains tests that have been quarantined due to flakiness. These test
 
 *Generated by flaky-triage-agent.v1*
 """
-            
+
             # Write to file
             with open(self.quarantine_list_path, 'w') as f:
                 f.write(content)
-            
+
             #AFTERMATH_METRIC: quarantined_count = len(quarantined)
             return True
-            
+
         except Exception as e:
             #AFTERMATH_PATTERN_IDENTIFIED: quarantine_list_creation_failed
             print(f"Failed to create quarantine list: {e}")
             return False
-    
-    def _quarantine_test(self, classification: FlakyTestClassification, 
+
+    def _quarantine_test(self, classification: FlakyTestClassification,
                         result: Dict[str, Any]) -> None:
         """
         Quarantine a test by adding skip marker.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: test_quarantine
         """
         # In production, would modify test file to add @pytest.mark.skip
@@ -240,14 +241,14 @@ This list contains tests that have been quarantined due to flakiness. These test
             "decorator": "@pytest.mark.skip(reason='Quarantined due to flakiness')",
             "applied": False  # Would be True if actually modified file
         })
-        
+
         #AFTERMATH_METRIC: test_quarantined
-    
+
     def _mark_test_flaky(self, classification: FlakyTestClassification,
                         result: Dict[str, Any]) -> None:
         """
         Mark test as flaky with rerun decorator.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: test_marking
         """
         # In production, would modify test file to add @pytest.mark.flaky
@@ -257,14 +258,14 @@ This list contains tests that have been quarantined due to flakiness. These test
             "decorator": "@pytest.mark.flaky(reruns=3, reruns_delay=2)",
             "applied": False  # Would be True if actually modified file
         })
-        
+
         #AFTERMATH_METRIC: test_marked_flaky
-    
+
     def _create_investigation_issue(self, classification: FlakyTestClassification,
                                    result: Dict[str, Any]) -> None:
         """
         Create GitHub issue for test investigation.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: issue_creation
         """
         # In production, would create actual GitHub issue
@@ -275,19 +276,19 @@ This list contains tests that have been quarantined due to flakiness. These test
             "labels": ["flaky-test", f"severity-{classification.severity.value}"],
             "created": False  # Would be True if actually created
         }
-        
+
         result["issues_created"].append(issue)
-        
+
         #AFTERMATH_METRIC: issue_created
-    
+
     def _generate_issue_body(self, classification: FlakyTestClassification) -> str:
         """Generate GitHub issue body."""
         body = f"""## Flaky Test Detected
 
-**Test Name**: `{classification.test_name}`  
-**Severity**: {classification.severity.value}  
-**Pass Rate**: {classification.pass_rate:.1%}  
-**Confidence**: {classification.confidence:.1%}  
+**Test Name**: `{classification.test_name}`
+**Severity**: {classification.severity.value}
+**Pass Rate**: {classification.pass_rate:.1%}
+**Confidence**: {classification.confidence:.1%}
 **Impact Score**: {classification.impact_score:.2f}
 
 ### Reasons for Flakiness
@@ -295,7 +296,7 @@ This list contains tests that have been quarantined due to flakiness. These test
 """
         for i, reason in enumerate(classification.reasons, 1):
             body += f"{i}. {reason}\n"
-        
+
         body += f"""
 
 ### Metadata
@@ -322,13 +323,13 @@ This list contains tests that have been quarantined due to flakiness. These test
 *Auto-generated by flaky-triage-agent.v1*
 """
         return body
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """
         Generate quarantine summary.
-        
+
         #AFTERMATH_METRIC: quarantine_summary_generated
-        
+
         Returns:
             Summary dictionary
         """
@@ -336,7 +337,7 @@ This list contains tests that have been quarantined due to flakiness. These test
             "flake_index_path": str(self.flake_index_path),
             "quarantine_list_path": str(self.quarantine_list_path)
         }
-        
+
         # Load existing index if available
         if self.flake_index_path.exists():
             try:
@@ -347,6 +348,6 @@ This list contains tests that have been quarantined due to flakiness. These test
                 # Best-effort: if flake index is missing or malformed,
                 # continue with empty index. Will be regenerated on next run.
                 pass
-        
+
         #AFTERMATH_LESSON_LEARNED: quarantine_patterns_identified
         return summary

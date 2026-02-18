@@ -220,7 +220,7 @@ class ModelValidator:
 
         # Confusion matrix
         labels = sorted(set(y_true) | set(y_pred))
-        confusion = {label: {l: 0 for l in labels} for label in labels}
+        confusion = {label: {line_item: 0 for line_item in labels} for label in labels}
 
         for true, pred in zip(y_true, y_pred):
             confusion[true][pred] += 1

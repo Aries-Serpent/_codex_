@@ -6,11 +6,11 @@ Implements comprehensive security metrics tracking and lesson learning.
 """
 
 import json
-from pathlib import Path
-from typing import Dict, List, Any
+import sys
 from dataclasses import dataclass
 from datetime import datetime
-import sys
+from pathlib import Path
+from typing import Any, Dict, List
 
 # Add core to path for CognitiveBrain access
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "core"))
@@ -42,9 +42,9 @@ class SecurityReport:
 class SecurityReporter:
     """
     Security Reporter - AFTERMATH Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: security_outcome_analysis
-    
+
     Generates comprehensive reports and updates cognitive brain:
     - Security metrics tracking
     - Vulnerability trend analysis
@@ -52,18 +52,18 @@ class SecurityReporter:
     - Lesson learning
     - Recommendations for future scans
     """
-    
+
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
-        
-    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any], 
+
+    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any],
                   decision: Dict[str, Any]) -> None:
         """
         AFTERMATH: Generate reports, record metrics, and learn.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: comprehensive_security_reporting
-        
+
         Args:
             result: Remediation results from ACT phase
             context: Scan context from PERCEIVE phase
@@ -71,67 +71,67 @@ class SecurityReporter:
         """
         # Generate comprehensive report
         report = self._generate_report(result, context, decision)
-        
+
         # Record metrics in cognitive brain
         self._record_metrics(report)
-        
+
         # Store security patterns
         self._store_patterns(context, decision)
-        
+
         # Generate lessons learned
         lessons = self._generate_lessons(result, context, decision)
-        
+
         # Store lessons in cognitive brain
         for lesson in lessons:
             self._store_lesson(lesson)
-        
+
         # Generate recommendations
         recommendations = self._generate_recommendations(report)
-        
+
         # Save report files
         self._save_report_json(report)
         self._save_report_markdown(report, recommendations)
-        
+
         #AFTERMATH_METRIC: scan_completed = True
         #AFTERMATH_METRIC: total_vulnerabilities = report.total_vulnerabilities
         #AFTERMATH_METRIC: critical_vulnerabilities = report.critical_count
         #AFTERMATH_LESSON_LEARNED: security_scan_patterns_identified
-        
+
         print(f"✅ Security scan complete: {report.total_vulnerabilities} vulnerabilities found")
         print(f"   Critical: {report.critical_count}, High: {report.high_count}")
         print(f"   Auto-fixed: {report.auto_fixed_count}")
-    
+
     def _generate_report(self, result: Dict[str, Any], context: Dict[str, Any],
                         decision: Dict[str, Any]) -> SecurityReport:
         """
         Generate comprehensive security report.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: security_report_generation
         """
         analyses = decision.get("analyses", [])
-        
+
         # Count by severity
         critical = sum(1 for a in analyses if a.severity.value == "critical")
         high = sum(1 for a in analyses if a.severity.value == "high")
         medium = sum(1 for a in analyses if a.severity.value == "medium")
         low = sum(1 for a in analyses if a.severity.value == "low")
-        
+
         # Collect CVSS scores
         cvss_scores = [a.cvss_score for a in analyses]
         avg_cvss = sum(cvss_scores) / len(cvss_scores) if cvss_scores else 0.0
-        
+
         # Calculate overall risk score
         risk_score = self._calculate_risk_score(analyses)
-        
+
         # Assess compliance
         compliance = self._assess_compliance(analyses)
-        
+
         # Get top issues
         top_issues = self._get_top_issues(analyses)
-        
+
         # Generate lessons
         lessons = self._generate_lessons(result, context, decision)
-        
+
         return SecurityReport(
             scan_date=datetime.now().isoformat(),
             repository=str(self.repo_path),
@@ -154,11 +154,11 @@ class SecurityReporter:
                 "scan_duration": "N/A"  # Would track in real implementation
             }
         )
-    
+
     def _record_metrics(self, report: SecurityReport) -> None:
         """
         Record security metrics in cognitive brain.
-        
+
         #AFTERMATH_METRIC: security_scan_metrics
         """
         try:
@@ -166,7 +166,7 @@ class SecurityReporter:
                 agent_name="security-scan-agent",
                 task_description="Security vulnerability scan"
             )
-            
+
             # Record metrics
             metrics = {
                 "total_vulnerabilities": report.total_vulnerabilities,
@@ -179,27 +179,27 @@ class SecurityReporter:
                 "auto_fixed": report.auto_fixed_count,
                 "compliance_passing": sum(1 for v in report.compliance_status.values() if v)
             }
-            
+
             for key, value in metrics.items():
                 self.brain.record_metric(
                     session_id=session_id,
                     metric_name=key,
                     metric_value=value
                 )
-            
+
             self.brain.end_session(session_id, success=True)
         except Exception as e:
             print(f"Warning: Failed to record metrics: {e}")
-    
+
     def _store_patterns(self, context: Dict[str, Any], decision: Dict[str, Any]) -> None:
         """
         Store security patterns in cognitive brain.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: pattern_storage
         """
         try:
             analyses = decision.get("analyses", [])
-            
+
             for analysis in analyses[:10]:  # Top 10
                 pattern_data = {
                     "severity": analysis.severity.value,
@@ -208,7 +208,7 @@ class SecurityReporter:
                     "exploitability": analysis.exploitability,
                     "remediation_strategy": analysis.remediation_strategy
                 }
-                
+
                 self.brain.store_pattern(
                     pattern_type="security_vulnerability",
                     pattern_data=pattern_data,
@@ -217,52 +217,52 @@ class SecurityReporter:
                 )
         except Exception as e:
             print(f"Warning: Failed to store patterns: {e}")
-    
+
     def _generate_lessons(self, result: Dict[str, Any], context: Dict[str, Any],
                          decision: Dict[str, Any]) -> List[str]:
         """
         Generate lessons learned from security scan.
-        
+
         #AFTERMATH_LESSON_LEARNED: security_scan_insights
         """
         lessons = []
-        
+
         analyses = decision.get("analyses", [])
-        
+
         # Lesson 1: Most common vulnerability types
         if analyses:
             cwe_counts = {}
             for a in analyses:
                 cwe = a.metadata.get("cwe_id", "Unknown")
                 cwe_counts[cwe] = cwe_counts.get(cwe, 0) + 1
-            
+
             top_cwe = max(cwe_counts.items(), key=lambda x: x[1])
             lessons.append(f"Most common vulnerability type: {top_cwe[0]} ({top_cwe[1]} occurrences)")
-        
+
         # Lesson 2: Auto-fixable ratio
         auto_fixable = sum(1 for a in analyses if a.auto_fixable)
         if analyses:
             ratio = auto_fixable / len(analyses)
             lessons.append(f"Auto-fixable vulnerabilities: {ratio:.1%} ({auto_fixable}/{len(analyses)})")
-        
+
         # Lesson 3: Dependency vulnerabilities
         dep_vulns = [a for a in analyses if a.remediation_strategy == "dependency_upgrade"]
         if dep_vulns:
             lessons.append(f"Dependency vulnerabilities found: {len(dep_vulns)} - recommend regular updates")
-        
+
         # Lesson 4: Critical vulnerabilities
         critical = [a for a in analyses if a.severity.value == "critical"]
         if critical:
             lessons.append(f"Critical vulnerabilities require immediate attention: {len(critical)}")
-        
+
         # Lesson 5: Compliance gaps
         compliance = self._assess_compliance(analyses)
         failing = [k for k, v in compliance.items() if not v]
         if failing:
             lessons.append(f"Compliance gaps identified: {', '.join(failing)}")
-        
+
         return lessons
-    
+
     def _store_lesson(self, lesson: str) -> None:
         """Store individual lesson in cognitive brain."""
         try:
@@ -274,16 +274,16 @@ class SecurityReporter:
             )
         except Exception as e:
             print(f"Warning: Failed to store lesson: {e}")
-    
+
     def _calculate_risk_score(self, analyses: List[Any]) -> float:
         """Calculate overall risk score (0.0-10.0)."""
         if not analyses:
             return 0.0
-        
+
         # Weighted average of risk scores
         total_risk = sum(a.risk_score for a in analyses)
         return min(10.0, total_risk / len(analyses))
-    
+
     def _assess_compliance(self, analyses: List[Any]) -> Dict[str, bool]:
         """Assess compliance with security frameworks."""
         compliance = {
@@ -292,30 +292,30 @@ class SecurityReporter:
             "SOC2": True,
             "HIPAA": True
         }
-        
+
         for analysis in analyses:
             # Check for OWASP violations
             if "OWASP_TOP_10" in analysis.compliance_impact:
                 compliance["OWASP_TOP_10"] = False
-            
+
             # Check for PCI-DSS violations
             if "PCI_DSS" in analysis.compliance_impact:
                 compliance["PCI_DSS"] = False
-            
+
             # Check for SOC2 violations
             if "SOC2" in analysis.compliance_impact:
                 compliance["SOC2"] = False
-            
+
             # Critical/high = HIPAA concern
             if analysis.severity.value in ["critical", "high"]:
                 compliance["HIPAA"] = False
-        
+
         return compliance
-    
+
     def _get_top_issues(self, analyses: List[Any], limit: int = 5) -> List[Dict[str, Any]]:
         """Get top security issues by risk score."""
         sorted_analyses = sorted(analyses, key=lambda a: a.risk_score, reverse=True)
-        
+
         return [
             {
                 "id": a.finding_id,
@@ -327,49 +327,49 @@ class SecurityReporter:
             }
             for a in sorted_analyses[:limit]
         ]
-    
+
     def _generate_recommendations(self, report: SecurityReport) -> List[str]:
         """Generate actionable recommendations."""
         recommendations = []
-        
+
         # Critical vulnerabilities
         if report.critical_count > 0:
             recommendations.append(
                 f"🔴 URGENT: Address {report.critical_count} critical vulnerabilities immediately"
             )
-        
+
         # Auto-fixable issues
         if report.auto_fixed_count < report.total_vulnerabilities:
             remaining = report.total_vulnerabilities - report.auto_fixed_count
             recommendations.append(
                 f"Apply automated fixes to reduce {remaining} remaining vulnerabilities"
             )
-        
+
         # Compliance
         failing_compliance = [k for k, v in report.compliance_status.items() if not v]
         if failing_compliance:
             recommendations.append(
                 f"Address compliance gaps: {', '.join(failing_compliance)}"
             )
-        
+
         # Risk score
         if report.risk_score > 7.0:
             recommendations.append(
                 f"Overall risk score is high ({report.risk_score:.1f}/10.0) - prioritize remediation"
             )
-        
+
         # Regular scanning
         recommendations.append(
             "Schedule regular security scans (weekly recommended)"
         )
-        
+
         return recommendations
-    
+
     def _save_report_json(self, report: SecurityReport) -> None:
         """Save report as JSON."""
         report_path = self.repo_path / ".codex" / "security_scan_report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         report_dict = {
             "scan_date": report.scan_date,
             "repository": report.repository,
@@ -390,13 +390,13 @@ class SecurityReporter:
             "recommendations": report.recommendations,
             "lessons_learned": report.lessons_learned
         }
-        
+
         report_path.write_text(json.dumps(report_dict, indent=2))
-    
+
     def _save_report_markdown(self, report: SecurityReport, recommendations: List[str]) -> None:
         """Save report as Markdown."""
         report_path = self.repo_path / ".codex" / "SECURITY_SCAN_REPORT.md"
-        
+
         content = f"""# Security Scan Report
 
 **Date**: {report.scan_date}
@@ -422,7 +422,7 @@ class SecurityReporter:
         for framework, passing in report.compliance_status.items():
             status = "✅ PASS" if passing else "❌ FAIL"
             content += f"- **{framework}**: {status}\n"
-        
+
         content += f"""
 ## Top {len(report.top_issues)} Security Issues
 
@@ -438,19 +438,19 @@ class SecurityReporter:
 - **Auto-fixable**: {'Yes' if issue['auto_fixable'] else 'No'}
 
 """
-        
+
         content += """
 ## Recommendations
 
 """
         for rec in recommendations:
             content += f"- {rec}\n"
-        
+
         content += """
 ## Lessons Learned
 
 """
         for lesson in report.lessons_learned:
             content += f"- {lesson}\n"
-        
+
         report_path.write_text(content)

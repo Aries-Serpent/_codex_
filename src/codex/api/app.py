@@ -23,21 +23,21 @@ logger = logging.getLogger(__name__)
 """FastAPI application exposing health and text generation endpoints."""
 
 
-import os
-from functools import lru_cache
-from pathlib import Path
-from typing import Any
+import os  # noqa: E402
+from functools import lru_cache  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from tokenizers import Tokenizer
-from tokenizers.models import WordLevel
-from tokenizers.pre_tokenizers import Whitespace
+from fastapi import FastAPI, HTTPException  # noqa: E402
+from pydantic import BaseModel  # noqa: E402
+from tokenizers import Tokenizer  # noqa: E402
+from tokenizers.models import WordLevel  # noqa: E402
+from tokenizers.pre_tokenizers import Whitespace  # noqa: E402
 
-import torch
-from codex_ml.security import DenylistEnforcer, DenylistViolation
-from src.tokenization.loader import load_tokenizer
-from transformers import (
+import torch  # noqa: E402
+from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
+from src.tokenization.loader import load_tokenizer  # noqa: E402
+from transformers import (  # noqa: E402
     AutoModelForCausalLM,
     GPT2Config,
     PreTrainedTokenizerBase,

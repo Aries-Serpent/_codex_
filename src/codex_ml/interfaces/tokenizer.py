@@ -19,15 +19,18 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-from abc import ABC, abstractmethod
-from collections import OrderedDict
-from collections.abc import Iterable, Sequence
-from typing import Any, NoReturn, Protocol, runtime_checkable
+import os  # noqa: E402
+from abc import ABC, abstractmethod  # noqa: E402
+from collections import OrderedDict  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
+from typing import Any, NoReturn, Protocol, runtime_checkable  # noqa: E402
 
-from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
-from codex_ml.utils.hf_pinning import load_from_pretrained
-from codex_ml.utils.hf_revision import get_hf_revision
+from codex_ml.plugins.registries import (  # noqa: E402
+    load_tokenizer_entry_points,
+    tokenizers,
+)
+from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
+from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency

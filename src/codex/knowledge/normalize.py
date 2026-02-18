@@ -21,9 +21,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import html
-import re
-from pathlib import Path
+import html  # noqa: E402
+import re  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 _TAG = re.compile(r"<[^>]+>")
 _MSPACE = re.compile(r"[ \t\r\f\v]+")

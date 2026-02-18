@@ -4,7 +4,10 @@
 Automates GitHub authentication workflows.
 """
 
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from pathlib import Path
 
 # Add parent paths for imports
@@ -12,22 +15,23 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'src'))
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'scripts'))
 
 try:
-    from github import Github
-    from codex.auth import OAuthManager, MFAProvider, TokenManager
     import rotate_jwt_secret
+    from github import Github
+
+    from codex.auth import MFAProvider, OAuthManager, TokenManager
 except ImportError as e:
     print(f"Error: {e}")
     sys.exit(1)
 
 class GitHubAuthManagerAgent:
     """Automates authentication workflows."""
-    
+
     def __init__(self):
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.oauth = OAuthManager()
         self.mfa = MFAProvider()
         self.tokens = TokenManager(secret_key=os.getenv('TOKEN_SECRET_KEY', 'default'))
-        
+
     def rotate_tokens(self) -> dict:
         """Rotate JWT tokens."""
         print("[Auth Manager] Rotating tokens...")
@@ -35,7 +39,7 @@ class GitHubAuthManagerAgent:
         result = rotator.rotate_secret()
         print(f"✓ Tokens rotated: {result['status']}")
         return result
-    
+
     def check_mfa_status(self) -> dict:
         """Check MFA compliance."""
         print("[Auth Manager] Checking MFA status...")
@@ -47,7 +51,7 @@ class GitHubAuthManagerAgent:
         status['compliance'] = (status['enabled'] / status['total']) * 100
         print(f"✓ MFA compliance: {status['compliance']:.1f}%")
         return status
-    
+
     def sync_secrets(self) -> dict:
         """Sync secrets to GitHub."""
         print("[Auth Manager] Syncing secrets...")
@@ -55,7 +59,7 @@ class GitHubAuthManagerAgent:
         result = {'synced': True, 'count': 3}
         print(f"✓ Synced {result['count']} secrets")
         return result
-    
+
     def monitor(self) -> dict:
         """Monitor authentication system."""
         print("[Auth Manager] Monitoring auth system...")
@@ -67,7 +71,7 @@ class GitHubAuthManagerAgent:
         }
         print("✓ Monitoring: auth system metrics collected")
         return metrics
-    
+
     def run(self, action: str) -> dict:
         """Execute agent action."""
         actions = {
@@ -76,10 +80,10 @@ class GitHubAuthManagerAgent:
             'sync-secrets': self.sync_secrets,
             'monitor': self.monitor
         }
-        
+
         if action not in actions:
             raise ValueError(f"Unknown action: {action}")
-        
+
         return actions[action]()
 
 def main():
@@ -88,7 +92,7 @@ def main():
         'rotate-tokens', 'check-mfa', 'sync-secrets', 'monitor'
     ])
     args = parser.parse_args()
-    
+
     agent = GitHubAuthManagerAgent()
     result = agent.run(args.action)
     print(json.dumps(result, indent=2))

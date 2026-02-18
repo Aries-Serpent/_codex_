@@ -26,17 +26,17 @@ def test_eval_and_error_logging(monkeypatch):
         if "git identifier" in str(e) or "is not a valid" in str(e) or "offline" in str(e).lower():
             pytest.skip(f"Model not available offline: {e}")
         raise
-    
+
     err_path = Path(".codex/errors.ndjson")
     if err_path.exists():
         err_path.unlink()
     monkeypatch.setenv("CODEX_SAFETY_CLASSIFIER", "missing:hook")
     filt = SafetyFilters.from_defaults()
     filt.is_allowed("hi")
-    
+
     # Verify error was logged
     if not err_path.exists():
         pytest.skip("Error logging path not created - environment issue")
-    
+
     data = json.loads(err_path.read_text().strip().splitlines()[-1])
     assert data["step"] == "safety_classifier"

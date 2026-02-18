@@ -31,7 +31,7 @@ from pathlib import Path
 
 # Constants
 CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
-from typing import Any, Optional
+from typing import Any, Optional  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

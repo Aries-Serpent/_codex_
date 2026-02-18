@@ -14,14 +14,15 @@ Core Principles:
 
 import json
 import logging
+
 logger = logging.getLogger(__name__)
-import math
-import random
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from pathlib import Path
-from typing import Any, Optional, Union
+import math  # noqa: E402
+import random  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from datetime import datetime  # noqa: E402
+from enum import Enum  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional, Union  # noqa: E402
 
 
 class ActionType(Enum):
@@ -264,7 +265,7 @@ class PhysicsInspiredOrchestrator:
         Returns metrics about current state
         """
         print(f"\n{'='*60}")
-        print(f"ASSESSMENT PHASE")
+        print("ASSESSMENT PHASE")
         print(f"{'='*60}")
         print(f"Current Position: {state.current_position}")
         print(f"Goal Position: {state.goal_position}")
@@ -290,7 +291,7 @@ class PhysicsInspiredOrchestrator:
             "net_potential": attractive_potential - repulsive_potential,
         }
 
-        print(f"\nAssessment Results:")
+        print("\nAssessment Results:")
         for key, value in assessment.items():
             print(f"  {key}: {value:.3f}")
 
@@ -305,7 +306,7 @@ class PhysicsInspiredOrchestrator:
         This is the "thinking" phase where we weigh all options
         """
         print(f"\n{'='*60}")
-        print(f"DELIBERATION PHASE")
+        print("DELIBERATION PHASE")
         print(f"{'='*60}")
         print(f"Analyzing {len(possible_actions)} possible action paths...")
         print(f"Deliberation time: {self.config['deliberation_time']}s")
@@ -341,7 +342,7 @@ class PhysicsInspiredOrchestrator:
         ranked_paths = sorted(possible_actions, key=lambda p: p.optimization_score, reverse=True)
 
         print(f"\n{'='*60}")
-        print(f"RANKING SUMMARY")
+        print("RANKING SUMMARY")
         print(f"{'='*60}")
         for i, path in enumerate(ranked_paths):
             print(
@@ -361,7 +362,7 @@ class PhysicsInspiredOrchestrator:
         Returns the optimal path or None if no path meets criteria
         """
         print(f"\n{'='*60}")
-        print(f"OPTIMIZATION PHASE")
+        print("OPTIMIZATION PHASE")
         print(f"{'='*60}")
 
         # Apply constraints
@@ -369,7 +370,7 @@ class PhysicsInspiredOrchestrator:
         confidence_threshold = self.config["confidence_threshold"]
         risk_tolerance = self.config["risk_tolerance"]
 
-        print(f"Constraints:")
+        print("Constraints:")
         print(f"  Energy Budget: {energy_budget:.1f}")
         print(f"  Confidence Threshold: {confidence_threshold:.2f}")
         print(f"  Risk Tolerance: {risk_tolerance:.2f}")
@@ -393,9 +394,9 @@ class PhysicsInspiredOrchestrator:
                 print(f"   Expected Impact: {path.impact:.2f}")
                 return path
             else:
-                print(f"   ❌ Does not meet constraints")
+                print("   ❌ Does not meet constraints")
 
-        print(f"\n⚠️  No path meets all constraints")
+        print("\n⚠️  No path meets all constraints")
         return None
 
     def act(self, optimal_path: Optional[ActionPath], state: DecisionState) -> dict:
@@ -405,7 +406,7 @@ class PhysicsInspiredOrchestrator:
         Returns execution result
         """
         print(f"\n{'='*60}")
-        print(f"ACTION PHASE")
+        print("ACTION PHASE")
         print(f"{'='*60}")
 
         if optimal_path is None:
@@ -476,7 +477,7 @@ class PhysicsInspiredOrchestrator:
         This is the main entry point for decision making
         """
         print(f"\n{'#'*60}")
-        print(f"# PHYSICS-INSPIRED ORCHESTRATION CYCLE")
+        print("# PHYSICS-INSPIRED ORCHESTRATION CYCLE")
         print(f"{'#'*60}")
 
         # Phase 1: ASSESS
@@ -493,7 +494,7 @@ class PhysicsInspiredOrchestrator:
 
         # Final summary
         print(f"\n{'#'*60}")
-        print(f"# ORCHESTRATION COMPLETE")
+        print("# ORCHESTRATION COMPLETE")
         print(f"{'#'*60}")
         print(f"Decision: {result['action_taken']}")
         print(f"Timestamp: {result['timestamp']}")
@@ -740,7 +741,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         Returns assessment metrics and populates self.migrations.
         """
         print(f"\n{'='*60}")
-        print(f"IMPORT MIGRATION - ASSESSMENT PHASE")
+        print("IMPORT MIGRATION - ASSESSMENT PHASE")
         print(f"{'='*60}")
 
         self.migrations = []
@@ -792,7 +793,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
             "average_risk": sum(m.risk for m in self.migrations) / max(len(self.migrations), 1),
         }
 
-        print(f"\nAssessment Results:")
+        print("\nAssessment Results:")
         print(f"  Files scanned: {assessment['files_scanned']}")
         print(f"  Deprecated imports found: {assessment['deprecated_found']}")
         print(f"  Unique files affected: {assessment['unique_files']}")
@@ -806,13 +807,13 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         DELIBERATE PHASE: Rank migrations by optimization score.
         """
         print(f"\n{'='*60}")
-        print(f"IMPORT MIGRATION - DELIBERATION PHASE")
+        print("IMPORT MIGRATION - DELIBERATION PHASE")
         print(f"{'='*60}")
 
         # Sort by optimization score (highest first)
         ranked = sorted(self.migrations, key=lambda m: m.optimization_score, reverse=True)
 
-        print(f"\nTop migrations by optimization score:")
+        print("\nTop migrations by optimization score:")
         for i, m in enumerate(ranked[:10]):
             print(
                 f"  {i+1}. Score: {m.optimization_score:.4f} | "
@@ -831,7 +832,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         OPTIMIZE PHASE: Select migrations within energy budget.
         """
         print(f"\n{'='*60}")
-        print(f"IMPORT MIGRATION - OPTIMIZATION PHASE")
+        print("IMPORT MIGRATION - OPTIMIZATION PHASE")
         print(f"{'='*60}")
         print(f"Energy budget: {energy_budget:.1f}")
 
@@ -858,7 +859,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         ACTION PHASE: Execute the selected migrations.
         """
         print(f"\n{'='*60}")
-        print(f"IMPORT MIGRATION - ACTION PHASE")
+        print("IMPORT MIGRATION - ACTION PHASE")
         print(f"{'='*60}")
         print(f"Mode: {'DRY RUN' if dry_run else 'EXECUTE'}")
 
@@ -919,14 +920,14 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
         results["files_modified"] = len(results["files_modified"])
 
-        print(f"\nMigration Results:")
+        print("\nMigration Results:")
         print(f"  Attempted: {results['migrations_attempted']}")
         print(f"  Successful: {results['migrations_successful']}")
         print(f"  Failed: {results['migrations_failed']}")
         print(f"  Files modified: {results['files_modified']}")
 
         if results["errors"]:
-            print(f"\nErrors:")
+            print("\nErrors:")
             for error in results["errors"]:
                 print(f"  - {error}")
 
@@ -945,7 +946,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         4. ACT: Execute migrations
         """
         print(f"\n{'#'*60}")
-        print(f"# IMPORT MIGRATION ORCHESTRATION CYCLE")
+        print("# IMPORT MIGRATION ORCHESTRATION CYCLE")
         print(f"{'#'*60}")
 
         # Phase 1: ASSESS
@@ -966,7 +967,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
 
         # Final summary
         print(f"\n{'#'*60}")
-        print(f"# MIGRATION CYCLE COMPLETE")
+        print("# MIGRATION CYCLE COMPLETE")
         print(f"{'#'*60}")
 
         return {
@@ -2279,7 +2280,7 @@ class QuantumWalkExplorer:
             "variance": variance,
             "spread": math.sqrt(variance),
             "steps": steps,
-            "quantum_advantage": f"O(t) vs O(√t) classical spread",
+            "quantum_advantage": "O(t) vs O(√t) classical spread",
         }
 
     def explore_decision_tree(self, decisions: list[str], target_decision: str) -> dict[str, Any]:
@@ -3120,7 +3121,8 @@ class PathIntegralCalculator:
         Default Lagrangian: L = T - V (kinetic - potential)
         """
         if lagrangian is None:
-            lagrangian = lambda state: state.get("kinetic", 0) - state.get("potential", 0)
+            def lagrangian(state):
+                return state.get("kinetic", 0) - state.get("potential", 0)
 
         action = 0.0
         dt = 1.0 / len(path) if path else 1.0

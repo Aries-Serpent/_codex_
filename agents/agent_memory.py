@@ -404,8 +404,8 @@ class AgentMemory:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                INSERT OR REPLACE INTO memories 
-                (memory_id, category, content, context, confidence, 
+                INSERT OR REPLACE INTO memories
+                (memory_id, category, content, context, confidence,
                  access_count, last_accessed, created_at, tags, related_memories)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -486,7 +486,7 @@ class AgentMemory:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
@@ -524,7 +524,7 @@ class AgentMemory:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
@@ -648,8 +648,8 @@ class AgentMemory:
             # Get old, low-access memories
             cursor = conn.execute(
                 """
-                SELECT memory_id, content, confidence 
-                FROM memories 
+                SELECT memory_id, content, confidence
+                FROM memories
                 WHERE created_at < ? AND access_count < 3
             """,
                 (cutoff,),
@@ -1256,7 +1256,7 @@ if __name__ == "__main__":
 
     # Get guidance
     guidance = memory_system.get_guidance("fix security vulnerability path traversal")
-    print(f"\nGuidance for situation:")
+    print("\nGuidance for situation:")
     print(f"  Patterns matched: {len(guidance['patterns'])}")
     if guidance["suggested_approach"]:
         print(f"  Suggested approach: {guidance['suggested_approach']['based_on']}")
@@ -1284,7 +1284,7 @@ if __name__ == "__main__":
 
     # Show stats
     stats = memory_system.get_stats()
-    print(f"\nMemory System Stats:")
+    print("\nMemory System Stats:")
     print(f"  Total memories: {stats['memory_stats']['total_memories']}")
     print(f"  Patterns: {stats['patterns_count']}")
 

@@ -1,19 +1,22 @@
 """Tests for CI Optimizer Agent - 20 tests to reach 597 total"""
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from __init__ import create_agent, RANDOM_SEED
 from test_prioritizer import create_prioritizer
+
+from __init__ import RANDOM_SEED, create_agent
 
 TEST_SEED = 49
 
 class TestInit:
-    def test_agent_creation(self): 
+    def test_agent_creation(self):
         agent = create_agent()
         assert agent.seed == RANDOM_SEED
-    def test_custom_seed(self): 
+    def test_custom_seed(self):
         agent = create_agent(TEST_SEED)
         assert agent.seed == TEST_SEED
-    def test_components_init(self): 
+    def test_components_init(self):
         agent = create_agent(TEST_SEED)
         assert agent.test_prioritizer is not None
     def test_initialized_flag(self):

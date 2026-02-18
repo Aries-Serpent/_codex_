@@ -15,6 +15,7 @@ from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.utils.log_sanitizer import sanitize_log_input
+
 from ..config import settings
 from ..security import auth_manager
 

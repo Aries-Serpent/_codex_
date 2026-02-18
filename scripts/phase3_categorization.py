@@ -7,6 +7,7 @@ Analyzes COMPREHENSIVE_LINK_AUDIT.json to categorize and prioritize fixes.
 import json
 from collections import defaultdict
 from pathlib import Path
+from typing import Any, Dict
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -38,7 +39,7 @@ def categorize_broken_link(url: str, reason: str) -> str:
     else:
         return "other"
 
-def analyze_broken_links(data: dict) -> Dict[str, any]:
+def analyze_broken_links(data: dict) -> Dict[str, Any]:
     """Analyze and categorize all broken links."""
 
     categorized = defaultdict(list)

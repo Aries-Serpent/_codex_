@@ -148,9 +148,9 @@ def extract_learnings(
     # Summary
     learnings["summary"] = {
         "total_learnings": len(learnings["learnings"]),
-        "success_patterns": sum(1 for l in learnings["learnings"] if l.get("type") == "success_pattern"),
-        "failure_patterns": sum(1 for l in learnings["learnings"] if l.get("type") == "failure_pattern"),
-        "optimization_opportunities": sum(1 for l in learnings["learnings"] if l.get("type") == "optimization_opportunity"),
+        "success_patterns": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "success_pattern"),
+        "failure_patterns": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "failure_pattern"),
+        "optimization_opportunities": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "optimization_opportunity"),
         "actionable_insights": len(learnings["actionable_insights"])
     }
 

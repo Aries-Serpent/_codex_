@@ -10,6 +10,7 @@ import yaml
 
 try:  # pragma: no cover - hydra optional
     from hydra import compose, initialize
+
     from omegaconf import OmegaConf
 except Exception as exc:  # pragma: no cover - degrade gracefully
     raise RuntimeError("hydra-core and omegaconf are required for sweep smoke tests") from exc

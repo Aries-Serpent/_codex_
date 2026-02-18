@@ -6,8 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import math
-from typing import Iterable, Optional, Sequence
+import math  # noqa: E402
+from typing import Iterable, Optional, Sequence  # noqa: E402
 
 try:  # Optional dependency for efficiency
     import numpy as _np

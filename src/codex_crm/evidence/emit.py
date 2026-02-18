@@ -61,7 +61,7 @@ def write_evidence(out_dir: str | Path, seeds: dict[str, int] | None = None) -> 
         json.dumps(run_manifest, indent=2, sort_keys=True),
         encoding="utf-8",
     )
-    
+
     # Write simple manifest.json for CLI compatibility
     manifest = {"message": "Evidence pack placeholder"}
     (output / "manifest.json").write_text(

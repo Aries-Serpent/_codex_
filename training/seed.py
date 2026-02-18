@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.seed import ensure_global_seed
+from src.training.seed import ensure_global_seed  # noqa: E402
 
 __all__ = ["ensure_global_seed"]

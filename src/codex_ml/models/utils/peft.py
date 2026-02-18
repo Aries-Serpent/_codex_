@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 """Optional PEFT/LoRA integration helpers."""
 
 
-from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from peft import TaskType

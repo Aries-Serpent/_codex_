@@ -16,12 +16,11 @@ The mental map represents the agent's understanding of:
 
 import json
 import uuid
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
-
 
 # =============================================================================
 # CLOCK ABSTRACTION
@@ -466,7 +465,7 @@ class MentalMappingModel:
         Returns the problem node and the reasoning steps
         """
         print(f"\n{'='*60}")
-        print(f"THINKING THROUGH PROBLEM")
+        print("THINKING THROUGH PROBLEM")
         print(f"{'='*60}")
         print(f"Problem: {problem}")
 
@@ -574,7 +573,7 @@ class MentalMappingModel:
         This creates a decision node connected to the problem
         """
         print(f"\n{'='*60}")
-        print(f"MAKING DECISION")
+        print("MAKING DECISION")
         print(f"{'='*60}")
         print(f"Decision: {decision_content}")
         print(f"Confidence: {confidence:.2f}")
@@ -633,7 +632,7 @@ class MentalMappingModel:
             learned_lessons: Optional list of lessons learned from this outcome
         """
         print(f"\n{'='*60}")
-        print(f"RECORDING OUTCOME")
+        print("RECORDING OUTCOME")
         print(f"{'='*60}")
         print(f"Outcome: {outcome_content}")
         print(f"Success: {success}")
@@ -681,7 +680,7 @@ class MentalMappingModel:
         # Trigger self-appraisal
         self._self_appraise_decision(decision_node_id, outcome_node.node_id)
 
-        print(f"✓ Outcome recorded and self-appraisal triggered")
+        print("✓ Outcome recorded and self-appraisal triggered")
 
         return outcome_node
 
@@ -690,7 +689,7 @@ class MentalMappingModel:
         Perform self-appraisal of a decision based on its outcome
         """
         print(f"\n{'='*60}")
-        print(f"SELF-APPRAISAL")
+        print("SELF-APPRAISAL")
         print(f"{'='*60}")
 
         decision_node = self.nodes[decision_node_id]
@@ -724,7 +723,7 @@ class MentalMappingModel:
 
         decision_node.quality_score = quality
 
-        print(f"Decision Quality Analysis:")
+        print("Decision Quality Analysis:")
         print(f"  Expected Confidence: {expected_confidence:.2f}")
         print(f"  Actual Success: {actual_success}")
         print(f"  Actual Impact: {actual_impact:.2f}")
@@ -792,7 +791,7 @@ class MentalMappingModel:
         Returns list of node IDs that were reviewed
         """
         print(f"\n{'='*60}")
-        print(f"ITERATIVE REVIEW")
+        print("ITERATIVE REVIEW")
         print(f"{'='*60}")
         print(f"Quality Threshold: {review_threshold:.2f}")
 
@@ -1308,7 +1307,7 @@ if __name__ == "__main__":
     mental_map = MentalMappingModel(agent_id="codex_agent_001")
 
     print(f"\n{'#'*60}")
-    print(f"# MENTAL MAPPING MODEL DEMONSTRATION")
+    print("# MENTAL MAPPING MODEL DEMONSTRATION")
     print(f"{'#'*60}")
 
     # Think through a problem
@@ -1343,7 +1342,7 @@ if __name__ == "__main__":
 
     # Show summary
     print(f"\n{'='*60}")
-    print(f"MENTAL MAP SUMMARY")
+    print("MENTAL MAP SUMMARY")
     print(f"{'='*60}")
     summary = mental_map.get_mental_map_summary()
     for key, value in summary.items():
@@ -1356,7 +1355,7 @@ if __name__ == "__main__":
 
     # Visualize reasoning path
     print(f"\n{'='*60}")
-    print(f"REASONING PATH VISUALIZATION")
+    print("REASONING PATH VISUALIZATION")
     print(f"{'='*60}")
     print(mental_map.visualize_reasoning_path(problem_node.node_id))
 
@@ -1365,7 +1364,7 @@ if __name__ == "__main__":
     mental_map.save_mental_map(output_path)
 
     print(f"\n{'#'*60}")
-    print(f"# DEMONSTRATION COMPLETE")
+    print("# DEMONSTRATION COMPLETE")
     print(f"{'#'*60}")
 
 

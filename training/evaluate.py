@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.evaluate import evaluate
+from src.training.evaluate import evaluate  # noqa: E402
 
 __all__ = ["evaluate"]

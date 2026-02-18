@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Helpers for constructing small evaluation datasets."""
 
 
-import hashlib
-import json
-import warnings
-from dataclasses import asdict, dataclass
-from pathlib import Path
-from typing import Any, Iterable, Iterator, Sequence
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import warnings  # noqa: E402
+from dataclasses import asdict, dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Iterator, Sequence  # noqa: E402
 
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from datasets import (
@@ -242,7 +242,7 @@ def load_dataset(
             except TypeError:
                 # Fallback: check if it has the DatasetDict API (keys() method and dict-like)
                 is_dataset_dict = hasattr(ds, 'keys') and hasattr(ds, '__getitem__')
-            
+
             if is_dataset_dict:
                 if hf_split not in ds:
                     raise ValueError(f"Split '{hf_split}' not found in saved dataset")

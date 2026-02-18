@@ -21,9 +21,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-import warnings
-from typing import Iterable
+import os  # noqa: E402
+import warnings  # noqa: E402
+from typing import Iterable  # noqa: E402
 
 try:  # pragma: no cover - torch is optional
     import torch.distributed as dist

@@ -17,16 +17,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import sqlite3
-from dataclasses import dataclass
-from enum import Enum
-from pathlib import Path
-from typing import Any, Optional, Union
+import json  # noqa: E402
+import sqlite3  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from enum import Enum  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional, Union  # noqa: E402
 
-from .graph import DependencyGraph
-from .metrics import MetricsAggregator
-from .node import StandardizedASTNode
+from .graph import DependencyGraph  # noqa: E402
+from .metrics import MetricsAggregator  # noqa: E402
+from .node import StandardizedASTNode  # noqa: E402
 
 
 class ExportFormat(Enum):

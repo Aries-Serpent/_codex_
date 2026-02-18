@@ -12,7 +12,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from math import exp
+from math import exp  # noqa: E402
 
 try:  # optional dependency for a real classifier
     from transformers import pipeline  # type: ignore

@@ -184,9 +184,9 @@ class TestBatchInsert:
             metric_value=0.95,
             agent_id="test-agent-1"
         )
-        
+
         results = repo.batch_insert([metric])
-        
+
         assert len(results) == 1
         assert results[0].id is not None
         assert results[0].id > 0
@@ -204,12 +204,12 @@ class TestBatchInsert:
             )
             for i in range(10)
         ]
-        
+
         results = repo.batch_insert(metrics)
-        
+
         assert len(results) == 10
         assert all(m.id is not None for m in results)
-        
+
         # Verify all metrics persisted to database
         for metric in results:
             retrieved = repo.get_by_id(metric.id)
@@ -228,12 +228,12 @@ class TestBatchInsert:
             )
             for i in range(100)
         ]
-        
+
         results = repo.batch_insert(metrics)
-        
+
         assert len(results) == 100
         assert all(m.id is not None for m in results)
-        
+
         # Verify sample of metrics persisted
         assert repo.get_by_id(results[0].id) is not None
         assert repo.get_by_id(results[50].id) is not None
@@ -241,7 +241,6 @@ class TestBatchInsert:
 
     def test_batch_insert_ids_sequential(self, repo):
         """Test that batch_insert() assigns IDs sequentially."""
-        import time
         metrics = [
             QuantumMetric(
                 feature="uncertainty",
@@ -250,9 +249,9 @@ class TestBatchInsert:
             )
             for i in range(20)
         ]
-        
+
         results = repo.batch_insert(metrics)
-        
+
         # Check IDs are sequential
         first_id = results[0].id
         for i, metric in enumerate(results):
@@ -269,9 +268,9 @@ class TestBatchInsert:
             )
             for i in range(50)
         ]
-        
+
         results = repo.batch_insert(metrics)
-        
+
         # Verify every single metric is in database
         for result in results:
             retrieved = repo.get_by_id(result.id)
@@ -291,7 +290,7 @@ class TestBatchInsert:
             for _ in range(5)
         ]
         repo.batch_insert(batch_metrics)
-        
+
         # Then use traditional create()
         single_metric = QuantumMetric(
             feature="superposition",
@@ -299,7 +298,7 @@ class TestBatchInsert:
             metric_value=0.95
         )
         created = repo.create(single_metric)
-        
+
         assert created.id is not None
         retrieved = repo.get_by_id(created.id)
         assert retrieved is not None
@@ -313,9 +312,9 @@ class TestBatchInsert:
             QuantumMetric(feature="uncertainty", metric_name="latency_p99", metric_value=150.0),
             QuantumMetric(feature="wave_collapse", metric_name="accuracy", metric_value=0.88),
         ]
-        
+
         results = repo.batch_insert(metrics)
-        
+
         assert len(results) == 4
         assert results[0].feature == "superposition"
         assert results[1].feature == "entanglement"

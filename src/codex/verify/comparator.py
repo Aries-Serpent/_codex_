@@ -296,7 +296,7 @@ def compare(
         # Check for timeout errors
         baseline_timeout = "Timeout" in baseline_stderr
         patched_timeout = "Timeout" in patched_stderr
-        
+
         # Compare
         match, diff = _compare_outputs(baseline_output, patched_output, mode)
 
@@ -308,7 +308,7 @@ def compare(
             patched_output=patched_output[:1000],
             diff=diff,
         )
-        
+
         # Set error for timeout cases
         if baseline_timeout or patched_timeout:
             detail.result = "error"

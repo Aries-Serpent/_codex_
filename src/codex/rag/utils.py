@@ -217,7 +217,7 @@ def safe_model_to_device(
                 to_kwargs = {"device": device, "non_blocking": non_blocking}
                 if dtype is not None:
                     to_kwargs["dtype"] = dtype
-                
+
                 result = model.to(**to_kwargs)  # safe-device-placement: internal implementation
 
                 # Log standard transfer timing
@@ -264,7 +264,7 @@ def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_bloc
         to_kwargs = {"device": device, "non_blocking": non_blocking}
         if dtype is not None:
             to_kwargs["dtype"] = dtype
-        
+
         try:
             return model.to(**to_kwargs)  # safe-device-placement: internal implementation
         except TypeError:
@@ -273,7 +273,7 @@ def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_bloc
                 return model.to(device)  # safe-device-placement: internal implementation
             except Exception:
                 pass
-    
+
     # Model doesn't have .to() method
     logger.warning("No device transfer method available, returning model as-is")
     return model

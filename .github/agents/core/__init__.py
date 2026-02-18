@@ -14,26 +14,26 @@ All agents share common patterns for consistency and learning.
 
 from .base_agent import CognitiveAgent
 from .cognitive_brain import CognitiveBrain
-from .pattern_recognizer import (
-    PatternRecognizer,
-    PatternMatcher,
-    Pattern,
-    ExceptionPatternMatcher,
-    ImportPatternMatcher,
-    TestPatternMatcher,
-    DocstringPatternMatcher,
-)
 from .orchestrator import (
     AgentOrchestrator,
     AgentTask,
     TaskStatus,
+)
+from .pattern_recognizer import (
+    DocstringPatternMatcher,
+    ExceptionPatternMatcher,
+    ImportPatternMatcher,
+    Pattern,
+    PatternMatcher,
+    PatternRecognizer,
+    TestPatternMatcher,
 )
 
 __all__ = [
     # Base classes
     "CognitiveAgent",
     "CognitiveBrain",
-    
+
     # Pattern recognition
     "PatternRecognizer",
     "PatternMatcher",
@@ -42,7 +42,7 @@ __all__ = [
     "ImportPatternMatcher",
     "TestPatternMatcher",
     "DocstringPatternMatcher",
-    
+
     # Orchestration
     "AgentOrchestrator",
     "AgentTask",

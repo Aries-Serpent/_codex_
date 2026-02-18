@@ -33,11 +33,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Callable, Optional, Union
+import json  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Optional, Union  # noqa: E402
 
 try:
     import torch

@@ -61,7 +61,7 @@ except Exception as exc:  # pragma: no cover
 else:  # pragma: no cover - import succeeded
     _SPM_ERROR = None
 
-from tokenizers import (
+from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,
     Tokenizer,
     decoders,

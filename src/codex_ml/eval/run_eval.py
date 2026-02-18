@@ -10,13 +10,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import csv
-import json
-from pathlib import Path
-from typing import Iterable
+import argparse  # noqa: E402
+import csv  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable  # noqa: E402
 
-from .evaluator import run_evaluator
+from .evaluator import run_evaluator  # noqa: E402
 
 
 def _load_texts(path: str) -> list[str]:

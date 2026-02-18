@@ -19,6 +19,7 @@ License: MIT
 """
 
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from tkinter import (
@@ -36,7 +37,6 @@ from tkinter import (
 )
 from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, X, Y
 from typing import Any
-import os
 
 import requests
 
@@ -253,7 +253,7 @@ class ZendeskVoiceLinesClient:
         """
         # Clean up path - remove leading slash if present
         greeting_path = greeting_path.lstrip("/")
-        
+
         url = f"{self.config.base_url}/channels/voice/greetings/{greeting_path}"
 
         try:
@@ -820,7 +820,7 @@ class ZendeskVoiceLinesGUI:
 Zendesk Voice Lines API Client
 Version 1.0.0
 
-A comprehensive GUI application for interacting with 
+A comprehensive GUI application for interacting with
 the Zendesk Voice Lines API.
 
 Features:

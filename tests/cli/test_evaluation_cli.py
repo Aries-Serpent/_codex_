@@ -67,7 +67,7 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
     )
 
     assert result.exit_code == 0
-    
+
     # Parse output - handle potential NDJSON (multiple JSON objects)
     output_lines = result.output.strip().split('\n')
     # Try to parse as single JSON first, then as NDJSON
@@ -86,7 +86,7 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
         else:
             # If no valid JSON found, raise error with output for debugging
             raise AssertionError(f"No valid JSON found in output:\n{result.output}")
-    
+
     metrics_path = Path(summary["metrics_path"])
     assert metrics_path.exists()
     rows = [json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines()]

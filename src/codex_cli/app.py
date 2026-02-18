@@ -21,10 +21,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-from collections.abc import Iterable, Sequence
-from pathlib import Path
-from typing import Optional
+import os  # noqa: E402
+from collections.abc import Iterable, Sequence  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
 
 REASONING_TEMPLATE_ROOT = Path(__file__).resolve().parents[2] / "configs" / "training" / "reasoning"
 REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"

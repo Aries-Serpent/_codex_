@@ -13,7 +13,13 @@ Outputs a JSON object to stdout with:
 - summary: quick pass/fail flags for critical items
 """
 from __future__ import annotations
-import subprocess, json, os, sys, hashlib, shutil
+
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path.cwd()

@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Optional storage backends for synchronising checkpoints to remote targets."""
 
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Iterable, Iterator, Protocol, runtime_checkable
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable, Iterator, Protocol, runtime_checkable  # noqa: E402
 
 
 @runtime_checkable

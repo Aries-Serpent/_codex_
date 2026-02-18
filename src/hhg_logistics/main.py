@@ -28,10 +28,10 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     import config_legacy as hydra
-from common.randomness import set_seed
-from omegaconf import DictConfig, OmegaConf
+from common.randomness import set_seed  # noqa: E402
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
-from .pipeline import run_pipeline
+from .pipeline import run_pipeline  # noqa: E402
 
 
 @hydra.main(

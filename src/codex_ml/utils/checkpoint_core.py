@@ -56,8 +56,8 @@ try:  # provenance extras are optional
 except Exception:  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
-from .atomic_io import safe_write_bytes, safe_write_text
-from .runmeta import collect_run_meta
+from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
+from .runmeta import collect_run_meta  # noqa: E402
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config

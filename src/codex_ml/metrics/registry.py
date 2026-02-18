@@ -15,20 +15,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import math
-import os
-import re
-import threading
-from collections import Counter
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Callable, Optional, Sequence
+import json  # noqa: E402
+import math  # noqa: E402
+import os  # noqa: E402
+import re  # noqa: E402
+import threading  # noqa: E402
+from collections import Counter  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Callable, Optional, Sequence  # noqa: E402
 
-from codex_ml.registry.base import Registry, RegistryConflictError
+from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 # Ensure built-in generative metrics are registered on import.
-from . import generative as _generative
+from . import generative as _generative  # noqa: E402
 
 _ = _generative  # Imported for side effects (metric registration)
 

@@ -221,14 +221,14 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
             "ROOT", "SUPERUSER", "SUDO", "PRIVATE_KEY", "SECRET_KEY"
         ]
         name_upper = name.upper()
-        
+
         is_sensitive = any(keyword in name_upper for keyword in sensitive_keywords)
-        
+
         if is_sensitive:
             base = "secret [REDACTED_SECRET_NAME]"
         else:
             base = f"secret: {name}"
-    
+
     if operation:
         return f"{base} ({operation})"
     return base

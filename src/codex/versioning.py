@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Utilities for semantic versioning of Codex artifacts."""
 
 
-import datetime
-import json
-from pathlib import Path
+import datetime  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 
 class SemanticVersion:

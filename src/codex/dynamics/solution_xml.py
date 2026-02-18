@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 """Emit unmanaged Dynamics 365 Solution XML from config-as-data."""
 
 
-import json
-from pathlib import Path
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 try:
     # Note: defusedxml.ElementTree doesn't re-export Element/SubElement
@@ -38,9 +38,9 @@ except ImportError as exc:
         "defusedxml is required for safe XML handling in solution_xml; install it via pip"
     ) from exc
 
-from pydantic import AliasChoices, BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field  # noqa: E402
 
-from codex.evidence import utc_now
+from codex.evidence import utc_now  # noqa: E402
 
 __all__ = [
     "LocalizedName",

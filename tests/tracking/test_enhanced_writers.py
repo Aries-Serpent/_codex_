@@ -25,6 +25,7 @@ class TestMLflowMetricWriter:
     def test_write_metrics_success(self):
         """Test writing metrics successfully."""
         import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
         # Setup mock mlflow module
@@ -47,6 +48,7 @@ class TestMLflowMetricWriter:
     def test_write_metric_single(self):
         """Test writing single metric."""
         import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
         mock_mlflow = sys.modules["mlflow"]
@@ -68,6 +70,7 @@ class TestMLflowMetricWriter:
     def test_write_batch(self):
         """Test batch writing."""
         import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
         mock_mlflow = sys.modules["mlflow"]
@@ -98,6 +101,7 @@ class TestMLflowParamWriter:
     def test_write_params(self):
         """Test writing parameters."""
         import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter, MLflowParamWriter
 
         mock_mlflow = sys.modules["mlflow"]
@@ -121,6 +125,7 @@ class TestMLflowParamWriter:
     def test_write_config_flattened(self):
         """Test writing nested config."""
         import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter, MLflowParamWriter
 
         mock_mlflow = sys.modules["mlflow"]
@@ -157,6 +162,7 @@ class TestMLflowArtifactWriter:
     def test_log_artifact(self, tmp_path):
         """Test artifact logging with proper cleanup using pytest tmp_path."""
         import sys
+
         from codex_ml.tracking.writers import MLflowArtifactWriter, MLflowMetricWriter
 
         mock_mlflow = sys.modules["mlflow"]
@@ -197,6 +203,7 @@ class TestMLflowRunManager:
     def test_context_manager_with_mlflow(self):
         """Test context manager with MLflow."""
         import sys
+
         from codex_ml.tracking.writers import MLflowRunManager
 
         mock_mlflow = sys.modules["mlflow"]
@@ -221,6 +228,7 @@ class TestMLflowRunManager:
     def test_convenience_methods(self):
         """Test convenience logging methods."""
         import sys
+
         from codex_ml.tracking.writers import MLflowRunManager
 
         mock_mlflow = sys.modules["mlflow"]

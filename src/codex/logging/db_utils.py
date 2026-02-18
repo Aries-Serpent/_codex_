@@ -15,10 +15,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-import re
-import sqlite3
-from pathlib import Path
+import os  # noqa: E402
+import re  # noqa: E402
+import sqlite3  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -27,7 +27,7 @@ try:
 except Exception as e:
     logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
-from typing import Optional, Union
+from typing import Optional, Union  # noqa: E402
 
 # Common column name variants seen in repo/README and typical SQLite logs.
 LIKELY_MAP = {

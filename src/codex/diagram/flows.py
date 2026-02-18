@@ -41,18 +41,18 @@ def flow_to_mermaid(name: str, edges: Iterable[Edge]) -> str:
 
 def intake_to_mermaid(name: str, steps: Iterable[str]) -> str:
     """Backward compatible alias that accepts sequential intake steps.
-    
+
     Args:
         name: The name of the flow
         steps: Sequential intake steps (must contain at least one non-whitespace step)
-        
+
     Raises:
         ValueError: If steps is empty or contains only whitespace
     """
     steps_list = [s.strip() for s in steps if s.strip()]
     if not steps_list:
         raise ValueError("steps must contain at least one non-whitespace step")
-    
+
     return flow_to_mermaid(name, steps_list)
 
 

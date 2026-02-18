@@ -26,12 +26,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import asyncio
-import os
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Iterable
+import asyncio  # noqa: E402
+import os  # noqa: E402
+from abc import ABC, abstractmethod  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable  # noqa: E402
 
 __all__ = ["Connector", "LocalConnector", "ConnectorError"]
 

@@ -476,19 +476,19 @@ def _start_system_metrics_logger(path: Path, interval: float):
         return None
 
     try:
-        logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
+        metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
-        logger.start()
+        metrics_logger.start()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
-    return logger
+    return metrics_logger
 
 
 def _stop_system_metrics_logger(logger: Any) -> None:

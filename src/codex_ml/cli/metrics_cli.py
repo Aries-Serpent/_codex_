@@ -139,7 +139,7 @@ def _csv_to_sqlite(
     con = sqlite3.connect(sqlite_db)
     try:
         cur = con.cursor()
-        _validate_table(table or "metrics", allow_unsafe_table_name)
+        table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
         # nosec B608
         cur.execute(
             f"CREATE TABLE IF NOT EXISTS {table_safe} "

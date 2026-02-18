@@ -29,7 +29,7 @@ except ImportError as e:
 class GitHubTestOrchestratorAgent:
     """
     Orchestrates test execution across the repository.
-    
+
     Capabilities:
     - Intelligent test selection based on code changes
     - Parallel test execution coordination
@@ -37,16 +37,16 @@ class GitHubTestOrchestratorAgent:
     - Coverage gap analysis
     - Performance regression detection
     """
-    
+
     def __init__(self, config_path: Optional[str] = None):
         """Initialize the test orchestrator agent."""
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.repo_name = os.getenv('GITHUB_REPOSITORY', 'unknown/unknown')
-        
+
     def run(self, action: str, **kwargs) -> Dict:
         """Execute agent action."""
         print(f"[Test Orchestrator] Running action: {action}")
-        
+
         # Placeholder implementation
         return {
             'action': action,
@@ -61,7 +61,7 @@ def main():
     parser.add_argument('--action', required=True, choices=['execute', 'analyze', 'detect-flaky'])
     parser.add_argument('--dry-run', action='store_true')
     args = parser.parse_args()
-    
+
     agent = GitHubTestOrchestratorAgent()
     result = agent.run(args.action)
     print(json.dumps(result, indent=2))

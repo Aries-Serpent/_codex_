@@ -146,7 +146,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_accuracy_maintained(self):
         """Test 7: Ensure accuracy ≥ 84% with optimized weights
-        
+
         DEFERRED: Performance optimization required.
         - Current: ~20% accuracy
         - Target: ≥84% accuracy
@@ -172,7 +172,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_k1_target_achieved(self):
         """Test 8: Assert k₁ ≤ 0.35 with optimized configuration
-        
+
         DEFERRED: Performance optimization required.
         - Current: k₁=16.6092 (47x slower than target)
         - Target: k₁≤0.35
@@ -221,7 +221,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_deterministic_results(self):
         """Test 10: seed=42 reproducibility across runs
-        
+
         DEFERRED: Performance optimization required.
         - Current: k₁ values differ between runs (timing-dependent)
         - Target: Deterministic results with seed=42

@@ -179,8 +179,8 @@ def generate_html_dashboard(
 
     # Extract manifest data
     manifest_artifacts = manifest.get("artifacts", [])
-    manifest_version = manifest.get("version", "Unknown")
-    manifest_timestamp = manifest.get("timestamp", 0)
+    manifest.get("version", "Unknown")
+    manifest.get("timestamp", 0)
     manifest_weights = manifest.get("weights", {})
 
     html_content = """<!DOCTYPE html>

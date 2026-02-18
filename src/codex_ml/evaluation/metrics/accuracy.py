@@ -10,12 +10,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-import os
-import sys
+import os  # noqa: E402
+import sys  # noqa: E402
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from codex_ml.evaluation.runner import MetricAdapter
+from codex_ml.evaluation.runner import MetricAdapter  # noqa: E402
 
 try:
     import torch

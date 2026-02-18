@@ -12,8 +12,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import locale
-import subprocess
+import locale  # noqa: E402
+import subprocess  # noqa: E402
 
 
 def _decode(out: bytes | str) -> str:
