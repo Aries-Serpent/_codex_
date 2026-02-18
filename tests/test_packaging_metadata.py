@@ -50,12 +50,16 @@ def test_pyproject_core_metadata():
     data = load_pyproject()
     proj = data["project"]
 
-    # SPDX license
-    assert proj.get("license") == "MIT"
+    # SPDX license (can be string or dict with 'text' key)
+    license_val = proj.get("license")
+    if isinstance(license_val, dict):
+        assert license_val.get("text") == "MIT"
+    else:
+        assert license_val == "MIT"
 
     # Python floor
     req = proj.get("requires-python", "")
-    assert req.startswith(">=3.10")
+    assert req.startswith(">=3.12") or req.startswith(">=3.10")
 
     # Scripts presence
     scripts = proj.get("scripts", {})

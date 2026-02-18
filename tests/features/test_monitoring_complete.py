@@ -36,12 +36,12 @@ class TestFeatureHealthMonitor:
 
     def test_check_stale_feature(self, monitor):
         """Test checking a stale feature."""
-        # Manually set old update time
-        monitor.feature_updates["stale_feature"] = datetime.now(UTC) - timedelta(hours=2)
+        # Manually set old update time (>6 hours for STALE)
+        monitor.feature_updates["stale_feature"] = datetime.now(UTC) - timedelta(hours=12)
 
         status = monitor.check_feature_health("stale_feature")
         assert not status.is_healthy
-        assert status.freshness_minutes > 60
+        assert status.freshness_minutes > 360  # More than 6 hours
         assert status.freshness_level in ["STALE", "VERY_STALE"]
 
     def test_check_never_updated_feature(self, monitor):
