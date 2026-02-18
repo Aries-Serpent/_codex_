@@ -21,6 +21,20 @@ TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 pytestmark = pytest.mark.skipif(TORCH_STUB, reason="datasets tests require real torch")
 
 
+@pytest.fixture(autouse=True)
+def disable_torch_profiler(monkeypatch):
+    """Disable PyTorch profiler to avoid Protocol isinstance issues."""
+    try:
+        import torch.profiler as profiler_module
+        # Disable profiler record function to prevent Protocol isinstance errors
+        if hasattr(profiler_module, "_record_function_enter"):
+            monkeypatch.setattr(profiler_module, "_record_function_enter", lambda *args, **kwargs: None)
+        if hasattr(profiler_module, "_record_function_exit"):
+            monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
+    except (ImportError, AttributeError):
+        pass  # PyTorch profiler not available or already disabled
+
+
 def _write_dataset(tmp_path: Path, name: str, rows: list[tuple[str, int]]) -> Path:
     file_path = tmp_path / name
     with file_path.open("w", encoding="utf-8") as handle:
