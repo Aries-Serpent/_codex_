@@ -1004,9 +1004,14 @@ def generate_cli_builder(
         repo_name: Repository name for display
         version: Pipeline version
     """
+    from datetime import datetime, timezone
+    
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    
     html = CLI_BUILDER_TEMPLATE.format(
         repo_name=repo_name,
         version=version,
+        timestamp=timestamp,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
