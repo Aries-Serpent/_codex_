@@ -188,7 +188,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     return sanitized
 
 
-def safe_secret_reference(operation: str = "") -> str:
+def safe_secret_reference(name: str = "", operation: str = "") -> str:
     """
     Create a safe reference to a secret for logging purposes.
 
@@ -196,20 +196,42 @@ def safe_secret_reference(operation: str = "") -> str:
     a secret is being used without revealing sensitive details.
 
     Args:
+        name: Secret name (will be redacted if sensitive)
         operation: Optional operation being performed (e.g., 'set', 'verify')
 
     Returns:
         Safe reference string for logging
 
     Example:
-        >>> safe_secret_reference("verify")
-        'secret (verify)'
-        >>> safe_secret_reference()
-        'secret'
+        >>> safe_secret_reference("MY_API_KEY")
+        'secret: MY_API_KEY'
+        >>> safe_secret_reference("PROD_DATABASE_PASSWORD")
+        'secret [REDACTED_SECRET_NAME]'
+        >>> safe_secret_reference("", "verify")
+        'secret [EMPTY] (verify)'
     """
+    # Handle empty name
+    if not name:
+        base = "secret [EMPTY]"
+    else:
+        # Check if name is sensitive (contains production/critical environment keywords)
+        # Only redact names that indicate production or highly sensitive credentials
+        sensitive_keywords = [
+            "PROD", "PRODUCTION", "LIVE", "MASTER", "ADMIN",
+            "ROOT", "SUPERUSER", "SUDO", "PRIVATE_KEY", "SECRET_KEY"
+        ]
+        name_upper = name.upper()
+        
+        is_sensitive = any(keyword in name_upper for keyword in sensitive_keywords)
+        
+        if is_sensitive:
+            base = "secret [REDACTED_SECRET_NAME]"
+        else:
+            base = f"secret: {name}"
+    
     if operation:
-        return f"secret ({operation})"
-    return "secret"
+        return f"{base} ({operation})"
+    return base
 
 
 def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
