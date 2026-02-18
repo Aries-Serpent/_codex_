@@ -26,7 +26,6 @@ from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -320,7 +319,6 @@ class TestApplyQuantumNoisePublic:
 
     def test_full_noise_leaves_state_valid(self):
         """With all noise channels active, state remains internally consistent."""
-        import math
         config = QuantumConfig(
             noise_enabled=True,
             gate_error_rate=0.05,
@@ -611,7 +609,9 @@ class TestPhase3Integration:
 
     def test_phase2_metrics_maintained(self):
         """Phase 1+2 accuracy, coherence, k₁ targets still met with Phase 3 active."""
-        from cognitive_brain.experiments.exp1b_revalidation import run_exp1b_revalidation
+        from cognitive_brain.experiments.exp1b_revalidation import (
+            run_exp1b_revalidation,
+        )
         # Use default 100 scenarios + seed=42 — same configuration used to validate
         # Phase 1+2 targets; all 110 ground-truth scenarios covered.
         results = run_exp1b_revalidation(scenarios=100, seed=42)

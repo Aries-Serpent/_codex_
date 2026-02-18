@@ -6,7 +6,7 @@ environment variable-based feature flags and validation.
 """
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Optional
 
 
