@@ -293,6 +293,10 @@ def compare(
         patched_output = patched_stdout + patched_stderr
         all_patched_output += patched_output
 
+        # Check for timeout errors
+        baseline_timeout = "Timeout" in baseline_stderr
+        patched_timeout = "Timeout" in patched_stderr
+        
         # Compare
         match, diff = _compare_outputs(baseline_output, patched_output, mode)
 
@@ -304,9 +308,19 @@ def compare(
             patched_output=patched_output[:1000],
             diff=diff,
         )
+        
+        # Set error for timeout cases
+        if baseline_timeout or patched_timeout:
+            detail.result = "error"
+            timeout_msg = []
+            if baseline_timeout:
+                timeout_msg.append("baseline timed out")
+            if patched_timeout:
+                timeout_msg.append("patched timed out")
+            detail.error = "Timeout: " + " and ".join(timeout_msg)
 
         # Check exit codes
-        if baseline_code != patched_code:
+        elif baseline_code != patched_code:
             detail.result = "divergence"
             detail.diff = f"Exit code mismatch: baseline={baseline_code}, patched={patched_code}"
 

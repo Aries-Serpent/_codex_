@@ -481,9 +481,11 @@ else:
         def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
             return None
 
+    # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
 
     def _load_functional_training_main():
+        """Load functional training entry point (cached at module level)."""
         global _functional_training_main
         if _functional_training_main is None:
             try:

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ class FeatureHealthMonitor:
         Args:
             feature_name: Feature name
         """
-        self.feature_updates[feature_name] = datetime.now()
+        self.feature_updates[feature_name] = datetime.now(timezone.utc)
         logger.debug(f"Recorded update for feature: {feature_name}")
 
     def record_feature_error(self, feature_name: str):
@@ -148,7 +148,7 @@ class FeatureHealthMonitor:
         Returns:
             Feature health status
         """
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         last_updated = self.feature_updates.get(feature_name)
 
         if not last_updated:
@@ -254,7 +254,7 @@ class FeatureHealthMonitor:
         if not last_updated:
             return float("-inf")  # Already very stale
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         age = now - last_updated
         age_hours = age.total_seconds() / 3600
         return threshold_hours - age_hours
@@ -299,7 +299,7 @@ class FeatureHealthMonitor:
             list of health alerts
         """
         alerts = []
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         for feature_name, status in health_statuses.items():
             # Critical: Feature never updated or very stale
@@ -377,7 +377,7 @@ class FeatureHealthMonitor:
     ) -> str:
         """Generate JSON health report."""
         report = {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "summary": {
                 "total_features": len(health_statuses),
                 "healthy_features": sum(1 for s in health_statuses.values() if s.is_healthy),
@@ -411,7 +411,7 @@ class FeatureHealthMonitor:
         """Generate Markdown health report."""
         lines = []
         lines.append("# Feature Health Report")
-        lines.append(f"\n**Generated:** {datetime.now().isoformat()}\n")
+        lines.append(f"\n**Generated:** {datetime.now(timezone.utc).isoformat()}\n")
 
         # Summary
         healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
@@ -548,7 +548,7 @@ class FeatureHealthMonitor:
         alerts = self.generate_alerts(health_statuses, sla_minutes=120)
 
         return {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "overall_status": overall_status,
             "total_features": total_count,
             "healthy_features": healthy_count,
@@ -574,7 +574,7 @@ class FeatureHealthMonitor:
 
         # Generate default path if not provided
         if output_path is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
             ext = "json" if format == "json" else "md"
             output_path = f"health_report_{timestamp}.{ext}"
 

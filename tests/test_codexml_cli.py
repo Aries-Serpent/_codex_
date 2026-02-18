@@ -60,8 +60,9 @@ def test_run_training_invokes_functional_entry(monkeypatch):
         captured["argv"] = argv or []
         return 0
 
-    # Monkeypatch the _functional_training_main module variable
-    # (Cannot monkeypatch _load_functional_training_main as it's inside conditional block)
+    # Monkeypatch the cached module-level variable that _load_functional_training_main uses
+    # First, ensure the global is initialized so monkeypatch can set it
+    cli_main._functional_training_main = fake_main
     monkeypatch.setattr(cli_main, "_functional_training_main", fake_main)
 
     cfg = OmegaConf.create(

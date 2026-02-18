@@ -48,6 +48,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
 
+__version__ = "0.1.0"
+
+
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 from codex_ml.config import (
     ConfigError,
