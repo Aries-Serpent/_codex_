@@ -133,12 +133,13 @@ bash .codex/scripts/self_ci_validation.sh all
 - `HF_TOKEN` - HuggingFace token
 - `NPM_TOKEN` - NPM registry token
 - `PYPI_TOKEN` - PyPI registry token
-- `RAG_OPENAI_KEY` - OpenAI API key (same as OPENAI_API_KEY)
+- `RAG_OPENAI_KEY` - RAG-specific OpenAI key (separate from OPENAI_API_KEY)
 - `_CODEX_ACTION_RUNNER` - Action runner token
 
 **Token Usage:**
 - For GitHub operations: Use `CODEX_BACKUP_KEY` or `CODEX_MASTER_KEY`
-- For OpenAI/LLM operations: Use `RAG_OPENAI_KEY`
+- For RAG operations: Use `RAG_OPENAI_KEY`
+- **Note:** `RAG_OPENAI_KEY` and `OPENAI_API_KEY` are separate tokens
 
 ---
 
