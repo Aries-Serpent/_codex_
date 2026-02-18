@@ -151,7 +151,7 @@ class TestAutonomousAgentExecute:
 
                 assert result.success is True
                 assert "DRY RUN" in result.response
-                assert result.model == "gpt-4-turbo"
+                assert result.model == "gpt-4o-mini"  # Updated to match actual default model
         except ImportError:
             pytest.skip("autonomous_runner module not available")
 
