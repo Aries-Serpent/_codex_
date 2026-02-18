@@ -323,6 +323,20 @@ class QuantumComplianceAssessor:
         - Pattern E: PII indicators > 0 AND cost >= 5000 → MONITOR
         - Pattern F: Multi-violation (FALLBACK - check last)
         """
+        # STEP 2 FIX: Pattern C penalty - BEFORE Pattern D/E/H (Strong penalty for poor outcomes)
+        if (0.55 <= audit.score <= 0.75 and 
+            audit.risk_level == "medium" and 
+            audit.business_impact < 0.6 and 
+            audit.remediation_cost > 3000):
+            return 0.01  # Strong penalty - prefer reject
+        
+        # STEP 3 FIX: Pattern D - Boundary cases with high risk should MONITOR
+        # Ground truth: score >= 0.68 → MONITOR (regardless of risk!)
+        # Examples: score=0.69-0.89, risk=high, cost~2000 → MONITOR
+        # MOVED BEFORE Pattern H to take priority for 0.85-0.91 range with high risk
+        if 0.68 <= audit.score < 0.91 and audit.risk_level == "high":
+            return 0.92  # Strong preference for monitoring
+        
         # Phase 1 RECOMMENDATION: Pattern E - PII monitoring (refined)
         # PII exists BUT not reject/conditional criteria AND cost >= 5000 → MONITOR
         if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
@@ -347,13 +361,6 @@ class QuantumComplianceAssessor:
         # Strong match for medium-high scores with acceptable risk
         if 0.68 <= audit.score < 0.88 and audit.risk_level in ["low", "medium"]:
             return 0.9
-
-        # Sprint 3 PHASE 3+4: Pattern D - Boundary cases with high risk should also MONITOR
-        # Ground truth: score >= 0.68 → MONITOR (regardless of risk!)
-        # Examples: score=0.69-0.89, risk=high, cost~2000 → MONITOR
-        # Phase 4: Extended to 0.90 to catch 0.88-0.89 edge cases
-        if 0.68 <= audit.score < 0.90 and audit.risk_level == "high":
-            return 0.88  # Increased from 0.85 - stronger preference
 
         # Pattern 3: Medium everything with good impact
         if 0.55 <= audit.score <= 0.75 and audit.risk_level == "medium":
@@ -542,11 +549,14 @@ class QuantumComplianceAssessor:
                 * audit.violation_count
                 * (1.0 if audit.risk_level == "high" else 0.5)
             )
-            # Conditional if severity > 2.3
-            if 2.3 < severity <= 4.0:
-                return 0.90  # Strong conditional preference (moderate priority)
-            elif severity > 4.0:
+            # STEP 1 FIX: Reordered for clarity and added low-severity case
+            if severity > 4.0:
                 return 0.05  # Weak penalty for reject
+            elif severity > 2.3:
+                return 0.90  # Strong conditional for high severity
+            elif audit.business_impact <= 0.7:
+                return 0.85  # Moderate conditional for low severity + low impact
+            # else: low severity + high impact handled by monitor function
 
         # Sprint 3 FIX: Pattern F - Multi-violation with moderate costs (3000-10000)
         if 0.55 <= audit.score < 0.85 and 3000 <= audit.remediation_cost < 10000:
