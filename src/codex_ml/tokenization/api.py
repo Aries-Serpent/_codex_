@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, Optional, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Iterable, Optional, Protocol, Sequence, cast, runtime_checkable
 
 from codex_ml.interfaces.contracts import validate_tokenizer_contract
 from codex_ml.interfaces.tokenizer import HFTokenizer
@@ -21,6 +21,7 @@ PAD_TOKEN = "<PAD>"  # nosec B105 - conventional special token
 UNK_TOKEN = "<UNK>"  # nosec B105 - conventional special token
 
 
+@runtime_checkable
 class TokenizerAdapter(Protocol):
     """Minimal tokenizer interface for the symbolic pipeline."""
 

@@ -26,7 +26,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, Optional, Protocol, Sequence
+from typing import Any, Callable, Iterable, Optional, Protocol, Sequence, runtime_checkable
 from uuid import uuid4
 
 from codex_ml.metrics.api import get_metric
@@ -42,10 +42,12 @@ except ImportError:  # pragma: no cover
     torch = None  # type: ignore
 
 
+@runtime_checkable
 class Criterion(Protocol):
     def __call__(self, outputs, targets) -> "torch.Tensor": ...
 
 
+@runtime_checkable
 class Logger(Protocol):
     def log(self, record: dict[str, Any]) -> None: ...
     def close(self) -> None: ...

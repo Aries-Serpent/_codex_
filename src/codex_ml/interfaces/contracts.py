@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Protocol, Sequence
+from typing import Any, Mapping, Protocol, Sequence, runtime_checkable
 
 
 class TokenizationContractError(TypeError):
@@ -25,6 +25,7 @@ class TrainingContractError(TypeError):
     """Raised when a training component violates the formal contract."""
 
 
+@runtime_checkable
 class TokenizerContract(Protocol):
     """Minimal tokenizer surface used by training and evaluation."""
 
