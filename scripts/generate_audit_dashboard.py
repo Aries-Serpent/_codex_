@@ -77,6 +77,9 @@ def format_size(size_bytes: int) -> str:
 def format_timestamp(timestamp: float) -> str:
     """Format Unix timestamp to human-readable date."""
     try:
+        # Reject clearly invalid timestamps (negative or unreasonably large)
+        if timestamp < 0 or timestamp > 32503680000:  # Max: year 3000
+            return "Unknown"
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
     except (ValueError, OSError):
         logger.debug("Exception caught, returning", exc_info=True)
@@ -176,8 +179,8 @@ def generate_html_dashboard(
 
     # Extract manifest data
     manifest_artifacts = manifest.get("artifacts", [])
-    manifest.get("version", "Unknown")
-    manifest.get("timestamp", 0)
+    manifest_version = manifest.get("version", "Unknown")
+    manifest_timestamp = manifest.get("timestamp", 0)
     manifest_weights = manifest.get("weights", {})
 
     html_content = """<!DOCTYPE html>
