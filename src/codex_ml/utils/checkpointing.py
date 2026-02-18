@@ -27,7 +27,7 @@ import sys
 from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Optional, Protocol, Union
+from typing import Any, Literal, Optional, Protocol, Union, runtime_checkable
 
 try:  # Align schema metadata with checkpoint_core when available
     from codex_ml.utils import checkpoint_core
@@ -172,6 +172,7 @@ if TORCH_AVAILABLE:
         torch.manual_seed = _torch_manual_seed_with_snapshot
 
 
+@runtime_checkable
 class StateDictProvider(Protocol):
     def state_dict(self) -> Mapping[str, Any]: ...
 

@@ -117,7 +117,10 @@ class TestEnergyState:
         )
         # Should not raise ZeroDivisionError
         prob = state.boltzmann_probability()
-        assert prob > 0
+        # With clamped temp=0.01, exp(-50/0.01) = exp(-5000) ≈ 0 (underflow)
+        # The key is it doesn't raise ZeroDivisionError, value can be ~0
+        assert prob >= 0  # Non-negative, may underflow to 0 for large energies
+        assert not math.isnan(prob)  # Should be a valid number
 
 
 class TestEnergyLandscape:

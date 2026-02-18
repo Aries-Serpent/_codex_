@@ -17,6 +17,9 @@ pytest.importorskip("torch")
 
 pytest.importorskip("torch")
 
+# Apply disable_torch_profiler fixture to all tests in this module
+# to avoid profiler type errors
+pytestmark = pytest.mark.usefixtures("disable_torch_profiler")
 
 
 import os

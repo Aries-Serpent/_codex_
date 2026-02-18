@@ -38,6 +38,11 @@ class WorkflowResult:
     output_paths: List[str] = field(default_factory=list)
     error: Optional[str] = None
     metrics: Dict[str, Any] = field(default_factory=dict)
+    
+    @property
+    def total_files(self) -> int:
+        """Total files discovered for processing."""
+        return self.files_processed + self.files_failed
 
 
 class AutoTuneWorkflow:

@@ -23,7 +23,7 @@ import os
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from collections.abc import Iterable, Sequence
-from typing import Any, NoReturn, Protocol
+from typing import Any, NoReturn, Protocol, runtime_checkable
 
 from codex_ml.plugins.registries import load_tokenizer_entry_points, tokenizers
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -235,6 +235,7 @@ def _protocol_guard(method: str) -> NoReturn:
     raise RuntimeError(message)
 
 
+@runtime_checkable
 class TokenizerProtocol(Protocol):
     """Structural typing Protocol for minimal tokenizer usage across the repo.
 

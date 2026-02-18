@@ -55,8 +55,16 @@ def write_evidence(out_dir: str | Path, seeds: dict[str, int] | None = None) -> 
         encoding="utf-8",
     )
 
-    manifest = {"timestamp": time.time(), "artifacts": sorted(checksums)}
+    # Write run manifest with detailed artifacts
+    run_manifest = {"timestamp": time.time(), "artifacts": sorted(checksums)}
     (output / "run_manifest.json").write_text(
-        json.dumps(manifest, indent=2, sort_keys=True),
+        json.dumps(run_manifest, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    
+    # Write simple manifest.json for CLI compatibility
+    manifest = {"message": "Evidence pack placeholder"}
+    (output / "manifest.json").write_text(
+        json.dumps(manifest, indent=2),
         encoding="utf-8",
     )

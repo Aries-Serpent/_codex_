@@ -330,7 +330,7 @@ class TestEvaluationRunner:
         assert len(runner.metrics) == 1
         assert isinstance(runner.metrics[0], MetricAdapter)
 
-    def test_runner_mock_evaluation(self):
+    def test_runner_mock_evaluation(self, disable_torch_profiler):
         """Test evaluation with mocked model."""
         with tempfile.TemporaryDirectory() as tmpdir:
             # Mock model

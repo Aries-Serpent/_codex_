@@ -64,6 +64,7 @@ else:  # pragma: no cover - import succeeded
 from tokenizers import (
     SentencePieceUnigramTokenizer,
     Tokenizer,
+    decoders,
     models,
     normalizers,
     pre_tokenizers,
@@ -248,6 +249,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         )
         tokenizer.normalizer = normalizers.NFKC()
         tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
+        tokenizer.decoder = decoders.ByteLevel()
         trainer = trainers.BpeTrainer(
             vocab_size=cfg.vocab_size,
             special_tokens=["[PAD]", "[UNK]", "[BOS]", "[EOS]"],

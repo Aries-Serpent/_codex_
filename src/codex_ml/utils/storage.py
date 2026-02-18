@@ -25,9 +25,10 @@ logger = logging.getLogger(__name__)
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator, Protocol
+from typing import Iterable, Iterator, Protocol, runtime_checkable
 
 
+@runtime_checkable
 class StorageProvider(Protocol):
     """Protocol for checkpoint storage adapters."""
 
