@@ -138,6 +138,7 @@ class SuperpositionEngine:
         self.config = config
         self.monitor = monitor
         self.max_workers = max_workers
+        self.lightweight = getattr(config, 'lightweight_mode', False)
 
         self._evaluation_times: List[float] = []
 
@@ -159,8 +160,8 @@ class SuperpositionEngine:
 
         state = SuperpositionState(decisions=decisions)
 
-        # Record coherence if monitor available
-        if self.monitor:
+        # Record coherence if monitor available and not in lightweight mode
+        if self.monitor and not self.lightweight:
             self.monitor.record_metric(
                 feature="superposition",
                 metric_name="coherence",
@@ -174,8 +175,8 @@ class SuperpositionEngine:
         """
         Evaluate all decision paths in parallel.
 
-        Uses ThreadPoolExecutor to execute evaluation functions simultaneously,
-        then normalizes scores to probability distribution.
+        Uses ThreadPoolExecutor for large decision sets, or fast sequential
+        evaluation for small sets where thread overhead exceeds computation time.
 
         Args:
             state: SuperpositionState to evaluate
@@ -189,35 +190,52 @@ class SuperpositionEngine:
         num_workers = self.max_workers or len(state.decisions)
         num_workers = min(num_workers, len(state.decisions))
 
-        # Parallel evaluation
-        scores = []
-        with ThreadPoolExecutor(max_workers=num_workers) as executor:
-            # Submit all evaluation tasks
-            future_to_idx = {
-                executor.submit(decision.evaluate): idx
-                for idx, decision in enumerate(state.decisions)
-            }
-
-            # Collect results in order
-            results = [None] * len(state.decisions)
-            for future in as_completed(future_to_idx):
-                idx = future_to_idx[future]
+        # Fast path: sequential evaluation in lightweight mode
+        # Avoids ThreadPoolExecutor overhead (~0.5ms) for fast scoring functions
+        # Normal mode uses parallel path for I/O-bound evaluation functions
+        if self.lightweight and len(state.decisions) <= 8:
+            scores = []
+            for decision in state.decisions:
                 try:
-                    score = future.result()
-                    results[idx] = max(score, 0.0)  # Ensure non-negative
+                    score = decision.evaluate()
+                    scores.append(max(score, 0.0))
                 except Exception:
-                    # Fallback to zero score on error
-                    results[idx] = 0.0
+                    scores.append(0.0)
+        else:
+            # Parallel evaluation
+            scores = []
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                # Submit all evaluation tasks
+                future_to_idx = {
+                    executor.submit(decision.evaluate): idx
+                    for idx, decision in enumerate(state.decisions)
+                }
 
-            scores = results
+                # Collect results in order
+                results = [None] * len(state.decisions)
+                for future in as_completed(future_to_idx):
+                    idx = future_to_idx[future]
+                    try:
+                        score = future.result()
+                        results[idx] = max(score, 0.0)  # Ensure non-negative
+                    except Exception:
+                        # Fallback to zero score on error
+                        results[idx] = 0.0
 
-        # Normalize to probability distribution: P_i = score_i / Σ scores
-        total = sum(scores)
-        if total == 0:
-            # Equal probabilities if all scores are zero
+                scores = results
+
+        # Normalize to probability distribution using temperature-scaled softmax
+        # Softmax with temperature T: P_i = exp(s_i/T) / Σ exp(s_j/T)
+        # Lower temperature → sharper distribution → higher coherence
+        temperature = getattr(self.config, 'superposition_temperature', 0.15)
+        max_score = max(scores) if scores else 0.0
+        if max_score == 0:
             probabilities = [1.0 / len(scores)] * len(scores)
         else:
-            probabilities = [s / total for s in scores]
+            # Subtract max for numerical stability (log-sum-exp trick)
+            exp_scores = [math.exp((s - max_score) / temperature) for s in scores]
+            total_exp = sum(exp_scores)
+            probabilities = [e / total_exp for e in exp_scores]
 
         # Update state
         state.probabilities = probabilities
@@ -230,7 +248,7 @@ class SuperpositionEngine:
         elapsed = time.time() - start_time
         self._evaluation_times.append(elapsed)
 
-        if self.monitor:
+        if self.monitor and not self.lightweight:
             self.monitor.record_metric(
                 feature="superposition",
                 metric_name="evaluation_time",
@@ -272,7 +290,7 @@ class SuperpositionEngine:
         # Check coherence threshold
         if state.coherence < 0.3:
             # Coherence too low - fallback might be needed
-            if self.monitor:
+            if self.monitor and not self.lightweight:
                 self.monitor.record_metric(
                     feature="superposition",
                     metric_name="low_coherence_collapse",
@@ -285,7 +303,7 @@ class SuperpositionEngine:
         best_decision = state.decisions[best_idx]
 
         # Record collapse
-        if self.monitor:
+        if self.monitor and not self.lightweight:
             self.monitor.record_metric(
                 feature="superposition",
                 metric_name="collapse",
