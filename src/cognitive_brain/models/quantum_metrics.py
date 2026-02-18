@@ -388,9 +388,16 @@ class QuantumMetricRepository:
             batch_data,
         )
 
-        # Get starting ID for the batch
-        last_id = cursor.lastrowid
-        first_id = last_id - len(metrics) + 1
+        # Get the last inserted ID by querying the max ID
+        # Note: lastrowid doesn't work reliably with executemany()
+        cursor.execute("SELECT MAX(id) FROM quantum_metrics")
+        last_id = cursor.fetchone()[0]
+        
+        if last_id is None:
+            # No rows in table, start from 1
+            first_id = 1
+        else:
+            first_id = last_id - len(metrics) + 1
 
         # Populate IDs in the original metrics
         for i, metric in enumerate(metrics):
