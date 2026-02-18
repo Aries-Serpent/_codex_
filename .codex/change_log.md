@@ -1446,3 +1446,39 @@ Phase 3 complete. Production hardening of quantum compliance system:
 
 **Metrics maintained**: accuracy=100%, coherence=0.791, k₁≤0.35 ✅
 **Tests**: 46 new Phase 3 tests (test_phase3_hardening.py), 204 total passing
+
+
+---
+
+## 2026-02-18 - Phase 4 Enhancement PoCs (Quantum Compliance)
+
+Phase 4 complete. Research-backed enhancements behind feature flags:
+
+**Bayesian Networks PoC** (CODEX_BAYESIAN_MODE, default: false):
+- BayesianAssessor with CPD tables, posterior() inference, adjust_scores() blending
+- 19 tests in tests/cognitive_brain/analytics/test_bayesian.py
+- Research: Al Mamun 2023 (30%+ FP reduction)
+
+**Fuzzy Logic PoC** (CODEX_FUZZY_MODE, default: false):
+- trimf/trapmf membership functions, FuzzyEngine with Mamdani inference
+- fuzzy_blend() override for boundary cases
+- 21 tests in tests/cognitive_brain/analytics/test_fuzzy.py
+- Research: CHHIP 2021 (12% FN reduction)
+
+**Active Learning Hook** (CODEX_ACTIVE_LEARNING, default: false):
+- Records uncertain decisions (<0.70 confidence) for human expert review
+- Staging-only, non-blocking, append-only queue
+
+**Classical Baseline Artifact**: audit_artifacts/baselines/phase2_phase3.json
+
+**HMAC KMS Rotation Runbook**: docs/ops/HMAC_rotation.md
+
+**Scalability Validation**: --multi-seed --scenarios 200 across 5 seeds
+- Cross-seed accuracy: 91-94% (above 84% production minimum)
+- Coherence ≥ 0.650 maintained across all seeds
+- No errors or crashes
+
+**CI Fix**: 23 ruff lint issues (F401, W291, W293) auto-fixed in Phase 3 files
+
+**Metrics maintained**: accuracy=100%, coherence=0.791, k₁≤0.35 ✅
+**Tests**: 256 total passing (40 new Phase 4 analytics tests)

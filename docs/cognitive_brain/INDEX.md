@@ -37,6 +37,7 @@ Current cognitive brain status and historical versions.
 **Location:** `docs/cognitive_brain/status/`
 
 ### Latest
+- [Phase 4 Enhancement PoCs](phase4_DESIGN.md) - **Bayesian, Fuzzy Logic, Active Learning** ✅
 - [Phase 3 Production Hardening](phase3_production_hardening_plan.md) - **Quantum Compliance Phase 3 Complete** ✅
 - [Phase 2 Completion Report](phase2_coherence_k1_plan.md) - **Quantum Compliance Phase 2 Complete** ✅
 - [Phase 1 Completion (100%)](phase1_completion_100_percent.md) - Accuracy 81.8% → 100%
