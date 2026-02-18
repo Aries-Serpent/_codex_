@@ -95,6 +95,42 @@ class QuantumMetricRepository:
         """
         self.db_path = db_path or ":memory:"
         self._connection = connection
+        self._own_connection = False  # Track if we own the connection
+        
+        # Auto-initialize schema for in-memory databases
+        # For :memory: databases, we must persist the connection
+        if self.db_path == ":memory:" and not self._connection:
+            self._connection = sqlite3.connect(":memory:")
+            self._connection.row_factory = sqlite3.Row
+            self._own_connection = True
+            self.initialize_schema()
+
+    def initialize_schema(self) -> None:
+        """
+        Initialize database schema.
+        
+        Creates quantum_metrics table and indexes if they don't exist.
+        Safe to call multiple times (uses CREATE TABLE IF NOT EXISTS).
+        """
+        conn = self._get_connection()
+        conn.executescript("""
+            CREATE TABLE IF NOT EXISTS quantum_metrics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp DATETIME NOT NULL,
+                feature VARCHAR(50) NOT NULL,
+                metric_name VARCHAR(100) NOT NULL,
+                metric_value FLOAT NOT NULL,
+                agent_id VARCHAR(100),
+                metadata TEXT DEFAULT '{}',
+                UNIQUE(timestamp, feature, metric_name)
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_quantum_metrics_timestamp ON quantum_metrics(timestamp);
+            CREATE INDEX IF NOT EXISTS idx_quantum_metrics_feature ON quantum_metrics(feature);
+            CREATE INDEX IF NOT EXISTS idx_quantum_metrics_agent_id ON quantum_metrics(agent_id);
+        """)
+        conn.commit()
+        # Don't close the connection - it's managed by the repository
 
     def _get_connection(self) -> sqlite3.Connection:
         """Get database connection."""

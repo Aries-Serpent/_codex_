@@ -12,7 +12,8 @@ from cognitive_brain.quantum.config import QuantumConfig
 
 # Create test configuration
 config = QuantumConfig.from_env()
-config.superposition_enabled = True
+config.quantum_mode = True
+config.superposition = True
 
 # Initialize components
 repository = QuantumMetricRepository(db_path=":memory:")
