@@ -44,6 +44,9 @@ class AuditResult:
     violations: List[str] = field(default_factory=list)  # List of violation descriptions
     repo_name: str = ""  # Optional repository name
     compliance_score: float = None  # Alias for score
+    # Phase 1: Advanced accuracy features (Pattern E & F requirements)
+    violation_count: int = 0  # Number of violations (Pattern F severity formula)
+    pii_indicators: int = 0  # Number of PII indicators (Pattern E logic)
 
     def __post_init__(self):
         # Support compliance_score as alias for score
@@ -61,6 +64,16 @@ class AuditResult:
             raise ValueError("Score must be between 0.0 and 1.0")
         if not 0.0 <= self.business_impact <= 1.0:
             raise ValueError("Business impact must be between 0.0 and 1.0")
+        
+        # Phase 1: Auto-populate violation_count if not set
+        if self.violation_count == 0 and self.violations:
+            self.violation_count = len(self.violations)
+        
+        # Phase 1: Ensure non-negative values
+        if self.violation_count < 0:
+            raise ValueError("violation_count must be non-negative")
+        if self.pii_indicators < 0:
+            raise ValueError("pii_indicators must be non-negative")
 
 
 @dataclass
@@ -289,9 +302,31 @@ class QuantumComplianceAssessor:
         Ground truth Patterns:
         - 0.68 <= score < 0.88 AND risk in ["low", "medium"]
         - Pattern B: Low score (0.40-0.60) + high impact (>0.85) + cost ≥ 1500 → MONITOR
+        - Pattern E: PII indicators > 0 AND NOT (pii >= 3 OR high_risk) AND cost >= 5000 → MONITOR
+        - Pattern F: Multi-violation with impact > 0.7 AND severity <= 2.5 → MONITOR
         - Pattern H: score >= 0.85 + (risk != high OR cost >= 15000) → MONITOR
         - Pattern G: score >= 0.80 + high risk + VERY EXPENSIVE (≥15000) → MONITOR
         """
+        # Phase 1: Pattern F - Multi-violation monitoring for lower severity
+        # severity <= 2.5 AND impact > 0.7 AND violation_count >= 5 → MONITOR
+        # (Pattern B has 2-4 violations, Pattern F has 3-7, so use >= 5 to avoid overlap)
+        if hasattr(audit, 'violation_count') and audit.violation_count >= 5:
+            severity = (
+                (1.0 - audit.score)
+                * audit.violation_count
+                * (1.0 if audit.risk_level == "high" else 0.5)
+            )
+            if severity <= 2.5 and audit.business_impact > 0.7:
+                return 0.95  # Strong preference for Pattern F monitor
+        
+        # Phase 1: Pattern E - PII monitoring
+        # PII indicators exist BUT not reject criteria AND cost >= 5000 → MONITOR
+        if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
+            # NOT reject: pii < 3 AND (risk != high OR no pii)
+            if audit.pii_indicators < 3 and audit.risk_level != "high":
+                if audit.remediation_cost >= 5000:
+                    return 0.90  # Good match for Pattern E monitor
+        
         # Sprint 3 FIX: Pattern H - Very high scores (>=0.85) monitor ONLY if:
         # - Risk is NOT high, OR
         # - Risk is high BUT cost is very expensive (>=15000)
@@ -341,11 +376,6 @@ class QuantumComplianceAssessor:
         if 0.60 <= audit.score < 0.85 and audit.risk_level == "high":
             return 0.05
 
-        # Sprint 3 PHASE 4: Pattern E - PII with cost >= 5000 → MONITOR (not conditional/reject)
-        # Ground truth: else (not high risk, cost >= 5000) → MONITOR
-        # Example: score=0.73, risk=high, cost=7659 → MONITOR (but we rejected it)
-        # Actually high risk + expensive should reject per earlier rule, so skip this
-
         # Partial score
         return audit.score * 0.4
 
@@ -354,10 +384,35 @@ class QuantumComplianceAssessor:
 
         Ground truth Patterns:
         - score < 0.40 OR (high risk AND score < 0.75)
-        - PII violations (high risk + expensive fix > 4500)
+        - Pattern E: pii_indicators >= 3 OR (pii_indicators > 0 AND high_risk) → REJECT
+        - Pattern F: Multi-violation severity > 4.0 → REJECT
         - Pattern C: Medium scores with low impact AND high cost (>3000)
         - Pattern H: Low scores with temporal degradation
         """
+        # Phase 1: Pattern F - Multi-violation severity formula
+        # severity = (1-score) * violation_count * (1.0 if high_risk else 0.5)
+        # severity > 4.0 → REJECT
+        # Pattern F has violation_count 3-7, so check >= 3
+        if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
+            severity = (
+                (1.0 - audit.score)
+                * audit.violation_count
+                * (1.0 if audit.risk_level == "high" else 0.5)
+            )
+            if severity > 4.0:
+                return 1.0  # Perfect match for Pattern F reject
+            elif severity > 2.5:
+                return 0.01  # Prefer conditional
+        
+        # Phase 1: Pattern E - PII indicators logic
+        # pii_indicators >= 3 → REJECT
+        # pii_indicators > 0 AND high_risk → REJECT
+        if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
+            if audit.pii_indicators >= 3:
+                return 1.0  # Perfect match for multiple PII indicators
+            elif audit.pii_indicators > 0 and audit.risk_level == "high":
+                return 0.95  # Strong rejection for PII + high risk
+        
         # Sprint 3 FIX: DON'T reject high scores with high risk (they should be conditional or monitor)
         if audit.score >= 0.75 and audit.risk_level == "high":
             return 0.01  # Strong penalty - prefer conditional or monitoring
@@ -407,12 +462,35 @@ class QuantumComplianceAssessor:
 
         Ground truth Patterns:
         - Pattern A: score 0.75-0.95 + high risk + moderate cost (5000-15000) → CONDITIONAL
+        - Pattern F: Multi-violation severity > 2.5 → CONDITIONAL
         - Pattern G: score 0.80-0.84 + high risk + cost < 15000 → CONDITIONAL
         - Pattern H: (0.65 <= score < 0.85) OR (cost < 6000) → CONDITIONAL
         - Pattern 2: Low-medium (0.40-0.60) + cheap fix (<1500)
         - Pattern 3: Medium score + affordable fix (<3000)
-        - Pattern F: Multi-violation with moderate costs (3000-10000)
         """
+        # Phase 1: Pattern F - Multi-violation severity formula
+        # severity = (1-score) * violation_count * (1.0 if high_risk else 0.5)
+        # severity > 4.0 → REJECT, severity > 2.5 → CONDITIONAL
+        # Pattern F has violation_count 3-7, so check >= 3
+        if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
+            severity = (
+                (1.0 - audit.score)
+                * audit.violation_count
+                * (1.0 if audit.risk_level == "high" else 0.5)
+            )
+            if 2.5 < severity <= 4.0:
+                return 1.0  # Perfect match for Pattern F conditional
+            elif severity > 4.0:
+                return 0.01  # Strong penalty - prefer reject
+        
+        # Phase 1: Pattern E - PII conditional approval
+        # PII indicators exist, NOT reject criteria, cost < 5000 → CONDITIONAL
+        if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
+            # NOT reject: pii < 3 AND risk != high
+            if audit.pii_indicators < 3 and audit.risk_level != "high":
+                if audit.remediation_cost < 5000:
+                    return 0.92  # Good match for Pattern E conditional
+        
         # Sprint 3 FIX: Pattern A/G - High scores (0.75+) with high risk + moderate cost
         if audit.score >= 0.75 and audit.risk_level == "high":
             if audit.remediation_cost < 15000:

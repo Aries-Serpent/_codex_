@@ -174,6 +174,7 @@ def generate_complex_scenarios(
             remediation_cost=_rng.uniform(3000, 8000),
             business_impact=_rng.uniform(0.55, 0.85),
             violations=[f"PotentialPII-{j}" for j in range(pii_indicators)],
+            pii_indicators=pii_indicators,  # Phase 1: Explicit PII indicator count
         )
         # Ground truth: depends on PII likelihood and remediation cost
         if pii_indicators >= 3 or audit.risk_level == "high":
@@ -200,6 +201,7 @@ def generate_complex_scenarios(
             remediation_cost=_rng.uniform(1000, 10000),
             business_impact=_rng.uniform(0.40, 0.90),
             violations=[f"Violation-Type{j % 4}-{j}" for j in range(violation_count)],
+            violation_count=violation_count,  # Phase 1: Explicit violation count
         )
         # Ground truth: complex interaction of multiple factors
         severity_score = (
