@@ -17,9 +17,10 @@ Success Criteria:
 - Deterministic results with seed=42
 """
 
+import sys
 import time
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
 
 from cognitive_brain.experiments.complex_scenarios import (
     generate_complex_scenarios,
@@ -382,9 +383,96 @@ def calculate_k1(
     return (avg_time_ms * (1.0 + error_rate)) / (classical_baseline_ms * quality_factor)
 
 
+def run_scalability_test(
+    scenarios_per_seed: int = 1000,
+    seeds: List[int] = None,
+) -> Dict:
+    """
+    Run scalability validation across multiple seeds (Phase 3).
+
+    Generates ``scenarios_per_seed`` scenarios for each seed and verifies that
+    accuracy remains ≥ 95 % across all seeds, confirming the system generalises
+    well to diverse inputs and does not overfit to seed=42.
+
+    Args:
+        scenarios_per_seed: Scenarios to generate per seed (default 1000).
+        seeds: List of random seeds to test (default [42, 123, 456, 789, 1000]).
+
+    Returns:
+        Dictionary with per-seed results and aggregate statistics.
+    """
+    if seeds is None:
+        seeds = [42, 123, 456, 789, 1000]
+
+    print("\n" + "=" * 60)
+    print(f"Phase 3 Scalability Test: {scenarios_per_seed} scenarios × {len(seeds)} seeds")
+    print("=" * 60)
+
+    per_seed: List[EXP1BResults] = []
+    for seed in seeds:
+        print(f"\n--- Seed {seed} ---")
+        result = run_exp1b_revalidation(scenarios=scenarios_per_seed, seed=seed)
+        per_seed.append(result)
+
+    # Aggregate statistics
+    avg_accuracy = sum(r.accuracy for r in per_seed) / len(per_seed)
+    min_accuracy = min(r.accuracy for r in per_seed)
+    avg_coherence = sum(r.coherence for r in per_seed) / len(per_seed)
+    avg_k1 = sum(r.k1 for r in per_seed) / len(per_seed)
+    max_k1 = max(r.k1 for r in per_seed)
+
+    print("\n" + "=" * 60)
+    print("Scalability Test Summary")
+    print("=" * 60)
+    print(f"Seeds tested:      {seeds}")
+    print(f"Scenarios/seed:    {scenarios_per_seed}")
+    print(
+        f"Min Accuracy:      {min_accuracy:.1%} "
+        f"{'✅' if min_accuracy >= 0.95 else '❌'} (target ≥ 95%)"
+    )
+    print(f"Avg Accuracy:      {avg_accuracy:.1%}")
+    print(f"Avg Coherence:     {avg_coherence:.3f}")
+    print(f"Max k₁:            {max_k1:.4f} {'✅' if max_k1 <= 0.35 else '❌'} (target ≤ 0.35)")
+    print(f"Avg k₁:            {avg_k1:.4f}")
+    print("=" * 60)
+
+    scalability_pass = min_accuracy >= 0.95 and max_k1 <= 0.35
+    if scalability_pass:
+        print("\n✅ Scalability Test PASSED: ≥95% accuracy across all seeds")
+    else:
+        print("\n❌ Scalability Test FAILED: See details above")
+
+    return {
+        "seeds": seeds,
+        "scenarios_per_seed": scenarios_per_seed,
+        "per_seed_results": per_seed,
+        "avg_accuracy": avg_accuracy,
+        "min_accuracy": min_accuracy,
+        "avg_coherence": avg_coherence,
+        "avg_k1": avg_k1,
+        "max_k1": max_k1,
+        "passed": scalability_pass,
+    }
+
+
 if __name__ == "__main__":
-    # Run EXP-1B revalidation with 100 scenarios
-    results = run_exp1b_revalidation(scenarios=100, seed=42)
+    # Parse CLI arguments
+    multi_seed = "--multi-seed" in sys.argv
+    scenarios_arg = 100
+    for i, arg in enumerate(sys.argv):
+        if arg == "--scenarios" and i + 1 < len(sys.argv):
+            try:
+                scenarios_arg = int(sys.argv[i + 1])
+            except ValueError:
+                pass
+
+    if multi_seed:
+        # Phase 3: Scalability test across multiple seeds
+        scalability_results = run_scalability_test(scenarios_per_seed=scenarios_arg)
+        sys.exit(0 if scalability_results["passed"] else 1)
+
+    # Default: single-seed validation (seed=42, 100 scenarios)
+    results = run_exp1b_revalidation(scenarios=scenarios_arg, seed=42)
 
     # Validate success criteria
     success = (

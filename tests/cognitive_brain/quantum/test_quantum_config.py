@@ -216,6 +216,11 @@ class TestQuantumConfigMethods:
             "uncertainty": True,
             "wave_collapse": False,
             "rollout_percentage": 50,
+            "noise_enabled": False,
+            "t1_decoherence_us": 100.0,
+            "t2_decoherence_us": 50.0,
+            "gate_error_rate": 0.0,
+            "measurement_error_rate": 0.0,
         }
 
     def test_repr(self):
