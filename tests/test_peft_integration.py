@@ -16,12 +16,18 @@ peft = pytest.importorskip("peft")
 def disable_torch_profiler(monkeypatch):
     """Disable PyTorch profiler to avoid Protocol isinstance issues."""
     try:
+        import torch
         import torch.profiler as profiler_module
+        
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):
             monkeypatch.setattr(profiler_module, "_record_function_enter", lambda *args, **kwargs: None)
         if hasattr(profiler_module, "_record_function_exit"):
             monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
+        
+        # Force CPU device to avoid meta tensor initialization issues
+        torch.set_default_device("cpu")
+        
     except (ImportError, AttributeError):
         pass  # PyTorch profiler not available or already disabled
 
