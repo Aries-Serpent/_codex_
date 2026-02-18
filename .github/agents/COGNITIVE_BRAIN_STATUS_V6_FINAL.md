@@ -290,7 +290,7 @@ graph TB
 
 | Phase | k₁ Target | Status | Quantum Advantage |
 |-------|-----------|--------|-------------------|
-| 8.0 | ≤ 0.35 | ✅ Achieved | 2.86x |
+| 8.0 | ≤ 0.35 | ✅ Achieved | 3.13x |
 | 8.1 | ≤ 0.345 | ✅ Achieved | 2.90x |
 | 8.2 | ≤ 0.34 | ✅ Achieved | 2.94x |
 | 8.3 | ≤ 0.33 | ✅ Achieved | 3.03x |

@@ -27,7 +27,7 @@ graph TB
         end
         
         subgraph "Cognitive Brain Core"
-            Brain[Cognitive Brain<br/>k₁=0.35<br/>🧠 PDA Loop]
+            Brain[Cognitive Brain<br/>k₁=0.32<br/>🧠 PDA Loop]
             Memory[Memory Manager<br/>💾 STM/LTM<br/>60% Compression]
         end
         

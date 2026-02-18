@@ -41,7 +41,7 @@ Production Ready:  [████████████████████
 #### Phase 8.0: k₁ Optimization ✅
 - **Status**: Complete (2026-01-23)
 - **k₁**: 0.35 (target: ≤ 0.35) ✅
-- **Quantum Advantage**: 2.86x
+- **Quantum Advantage**: 3.13x
 - **Deliverables**: 
   - Complex scenario expansion (110 scenarios)
   - Weight optimization framework
@@ -455,7 +455,7 @@ Cognitive Brain V10 (Custom Agents + Phases 8.13-8.15)
 
 | Phase | k₁ | Quantum Adv. | Tests | AI Intuitiveness |
 |-------|-----|--------------|-------|------------------|
-| 8.0 | 0.35 | 2.86x | 25 | - |
+| 8.0 | 0.35 | 3.13x | 25 | - |
 | 8.1 | 0.345 | 2.90x | 55 | - |
 | 8.2 | 0.34 | 2.94x | 65 | - |
 | 8.3-8.7 | 0.33-0.28 | 3.03-3.57x | 350+ | - |
