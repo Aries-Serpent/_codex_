@@ -124,6 +124,16 @@ class ReasoningStep:
     alternatives_considered: list[str] = field(default_factory=list)
     evidence_used: list[str] = field(default_factory=list)
 
+    @property
+    def evidence(self) -> list[str]:
+        """Alias for evidence_used for backward compatibility."""
+        return self.evidence_used
+
+    @evidence.setter
+    def evidence(self, value: list[str]) -> None:
+        """Set evidence_used via evidence property."""
+        self.evidence_used = value
+
     def __post_init__(self):
         """Handle parameter aliases and defaults"""
         # Use description if provided and thought is empty
@@ -244,6 +254,16 @@ class MentalEdge:
     # Validation
     validated: bool = False
     validation_date: Optional[str] = None
+
+    @property
+    def source(self) -> str:
+        """Alias for source_id for backward compatibility."""
+        return self.source_id
+
+    @property
+    def target(self) -> str:
+        """Alias for target_id for backward compatibility."""
+        return self.target_id
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -595,10 +615,22 @@ class MentalMappingModel:
         return decision_node
 
     def record_outcome(
-        self, decision_node_id: str, outcome_content: str, success: bool, actual_impact: float
+        self,
+        decision_node_id: str,
+        outcome_content: str,
+        success: bool,
+        actual_impact: float,
+        learned_lessons: list[str] = None,
     ) -> MentalNode:
         """
         Record the outcome of a decision for learning
+
+        Args:
+            decision_node_id: ID of the decision node
+            outcome_content: Description of the outcome
+            success: Whether the decision was successful
+            actual_impact: Numerical impact (0-1)
+            learned_lessons: Optional list of lessons learned from this outcome
         """
         print(f"\n{'='*60}")
         print(f"RECORDING OUTCOME")
@@ -608,14 +640,26 @@ class MentalMappingModel:
         print(f"Impact: {actual_impact:.2f}")
 
         # Create outcome node
+        outcome_context = {
+            "success": success,
+            "actual_impact": actual_impact,
+        }
+        if learned_lessons:
+            outcome_context["learned_lessons"] = learned_lessons
+
         outcome_node = self.create_node(
             node_type=NodeType.OUTCOME,
             content=outcome_content,
             confidence=1.0,  # We're certain about what happened
             importance=actual_impact,
             tags=["outcome", "validated"],
-            context={"success": success, "actual_impact": actual_impact},
+            context=outcome_context,
         )
+
+        # Add learned lessons to the node if provided
+        if learned_lessons:
+            for lesson in learned_lessons:
+                outcome_node.add_lesson(lesson)
 
         # Connect to decision
         self.connect_nodes(
@@ -1167,6 +1211,38 @@ class MentalMappingModel:
 
         print(f"\n📂 Mental map loaded from: {input_path}")
         print(f"   Nodes: {len(self.nodes)}, Edges: {len(self.edges)}")
+
+    def save(self, output_path: Path) -> None:
+        """Alias for save_mental_map for backward compatibility."""
+        return self.save_mental_map(output_path)
+
+    def load(self, input_path: Path) -> None:
+        """Alias for load_mental_map for backward compatibility."""
+        return self.load_mental_map(input_path)
+
+    def get_connected_nodes(self, node_id: str) -> list[MentalNode]:
+        """
+        Get all nodes connected to the specified node.
+
+        Args:
+            node_id: The ID of the node to get connections for
+
+        Returns:
+            List of MentalNode objects connected to this node
+        """
+        if node_id not in self.nodes:
+            return []
+
+        connected = []
+        for edge in self.edges.values():
+            if edge.source_id == node_id:
+                if edge.target_id in self.nodes:
+                    connected.append(self.nodes[edge.target_id])
+            elif edge.target_id == node_id:
+                if edge.source_id in self.nodes:
+                    connected.append(self.nodes[edge.source_id])
+
+        return connected
 
     def calculate_metrics(self) -> dict[str, Any]:
         """
