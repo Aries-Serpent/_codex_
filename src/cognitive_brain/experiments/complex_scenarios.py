@@ -193,7 +193,8 @@ def generate_complex_scenarios(
     # Pattern 6: Multi-violation interaction scenarios (15%)
     for i in range(int(count * 0.15)):
         score = _rng.uniform(0.45, 0.75)
-        violation_count = _rng.randint(3, 7)  # Multiple violations
+        # Phase 1 SOLUTION: Changed from 3-7 to 5-8 for better differentiation from other patterns
+        violation_count = _rng.randint(5, 9)  # Multiple violations (5-8)
         audit = AuditResult(
             audit_id=f"COMPLEX-F-{i}",
             score=score,

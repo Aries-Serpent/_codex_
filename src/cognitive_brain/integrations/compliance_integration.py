@@ -561,24 +561,27 @@ class QuantumComplianceAssessor:
         if audit.score < 0.35:
             return 0.01
         
-        # Phase 1 RECOMMENDATION: Pattern F - Multi-violation FALLBACK (refined thresholds)
-        # Only apply if score is moderate (0.45-0.75) to avoid interfering with A/G/H
-        # Adjusted threshold: severity > 2.3 (was 2.5) for better accuracy
-        if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
-            if 0.45 <= audit.score <= 0.75:
-                severity = (
-                    (1.0 - audit.score)
-                    * audit.violation_count
-                    * (1.0 if audit.risk_level == "high" else 0.5)
-                )
-                # Conditional if severity > 2.3 OR (severity <= 2.3 AND impact <= 0.7)
-                if severity > 4.0:
-                    return 0.05  # Prefer reject
-                elif severity > 2.3:  # REFINED: was 2.5
-                    return 0.90  # Strong match for high severity conditional
-                elif audit.business_impact <= 0.7:
-                    return 0.85  # Good match for low impact conditional
-                # else: low severity + high impact → prefer monitor (don't return high score)
+        # SOLUTION: Pattern F - Multi-violation FALLBACK with comprehensive guards
+        # LOWEST PRIORITY - only applies if nothing else matched strongly
+        # Guards: violation_count >= 5, moderate score, moderate impact, not high risk
+        if (hasattr(audit, 'violation_count') and audit.violation_count >= 5 and  # Changed from >=3 to >=5
+            0.45 <= audit.score <= 0.75 and  # Moderate scores only
+            0.4 <= audit.business_impact <= 0.8 and  # Avoid B (high impact >0.85) and C (low impact <0.4)
+            audit.risk_level != "high"):  # Avoid A/G interference
+            
+            severity = (
+                (1.0 - audit.score)
+                * audit.violation_count
+                * (0.5 if audit.risk_level == "low" else 1.0)  # Medium risk gets full multiplier
+            )
+            # Conditional if severity > 2.3 OR (severity <= 2.3 AND impact <= 0.7)
+            if severity > 4.0:
+                return 0.05  # Weak penalty for reject (fallback)
+            elif severity > 2.3:
+                return 0.85  # Moderate match for conditional (fallback strength)
+            elif audit.business_impact <= 0.7:
+                return 0.80  # Weak match for low impact conditional
+            # else: low severity + high impact → prefer monitor (don't return score)
 
         # Partial score based on fix cost
         cost_factor = max(0, 1.0 - audit.remediation_cost / 10000)
