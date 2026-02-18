@@ -104,8 +104,8 @@ __all__ = [
     "build_loggers",
     "get_logger",
     "register_logger",
-    "NDJSONLogger",  # Export the metrics logger for tests
+    "NDJSONMetricsLogger",  # Export the metrics logger for tests
 ]
 
-# Export _NDJSONMetricsLogger as NDJSONLogger for backward compatibility with tests
-NDJSONLogger = _NDJSONMetricsLogger
+# Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
+NDJSONMetricsLogger = _NDJSONMetricsLogger
