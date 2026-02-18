@@ -69,6 +69,23 @@ class AuditResult:
         if self.violation_count == 0 and self.violations:
             self.violation_count = len(self.violations)
         
+        # Phase 1 RECOMMENDATION: Weighted PII severity calculation
+        # SSN/Credit=3, Address/Phone=2, Email=1
+        if self.pii_indicators == 0 and self.violations:
+            pii_weights = {
+                'ssn': 3, 'social': 3, 'credit': 3, 'card': 3,
+                'address': 2, 'phone': 2,
+                'email': 1, 'pii': 1, 'potential': 1
+            }
+            pii_severity = 0
+            for violation in self.violations:
+                violation_lower = violation.lower()
+                for pii_type, weight in pii_weights.items():
+                    if pii_type in violation_lower:
+                        pii_severity += weight
+                        break  # Count each violation once
+            self.pii_indicators = pii_severity
+        
         # Phase 1: Ensure non-negative values
         if self.violation_count < 0:
             raise ValueError("violation_count must be non-negative")
@@ -306,11 +323,13 @@ class QuantumComplianceAssessor:
         - Pattern E: PII indicators > 0 AND cost >= 5000 → MONITOR
         - Pattern F: Multi-violation (FALLBACK - check last)
         """
-        # Phase 1: Pattern E - PII monitoring
-        # PII indicators exist BUT not reject criteria AND cost >= 5000 → MONITOR
+        # Phase 1 RECOMMENDATION: Pattern E - PII monitoring (refined)
+        # PII exists BUT not reject/conditional criteria AND cost >= 5000 → MONITOR
         if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
-            # NOT reject: pii < 3 AND risk != high
-            if audit.pii_indicators < 3 and audit.risk_level != "high":
+            # NOT reject: pii < 3 AND NOT (pii >= 2 AND cost > 5000)
+            # NOT conditional: NOT (pii <= 2 AND cost < 5000)
+            # So: (pii == 1 OR pii == 2) AND cost >= 5000 AND risk != high → MONITOR
+            if audit.pii_indicators <= 2 and audit.risk_level != "high":
                 if audit.remediation_cost >= 5000:
                     return 0.90  # Good match for Pattern E monitor
         
@@ -362,6 +381,18 @@ class QuantumComplianceAssessor:
         # Penalty for moderate scores with high risk (prefer conditional)
         if 0.60 <= audit.score < 0.85 and audit.risk_level == "high":
             return 0.05
+        
+        # Phase 1 RECOMMENDATION: Pattern F - Multi-violation monitor FALLBACK (refined)
+        # severity <= 2.3 AND impact > 0.7 → MONITOR
+        if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
+            if 0.45 <= audit.score <= 0.75:  # Moderate scores only
+                severity = (
+                    (1.0 - audit.score)
+                    * audit.violation_count
+                    * (1.0 if audit.risk_level == "high" else 0.5)
+                )
+                if severity <= 2.3 and audit.business_impact > 0.7:  # REFINED: was 2.5
+                    return 0.88  # Good match for Pattern F monitor
 
         # Partial score
         return audit.score * 0.4
@@ -376,29 +407,36 @@ class QuantumComplianceAssessor:
         - Pattern C: Medium scores with low impact AND high cost (>3000)
         - Pattern H: Low scores with temporal degradation
         """
-        # Phase 1: Pattern F - Multi-violation severity formula
-        # severity = (1-score) * violation_count * (1.0 if high_risk else 0.5)
+        # Phase 1 RECOMMENDATION: Pattern F - Multi-violation severity formula (refined)
         # severity > 4.0 → REJECT
-        # Pattern F has violation_count 3-7, so check >= 3
+        # Pattern F has violation_count 3-7, moderate scores only
         if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
-            severity = (
-                (1.0 - audit.score)
-                * audit.violation_count
-                * (1.0 if audit.risk_level == "high" else 0.5)
-            )
-            if severity > 4.0:
-                return 1.0  # Perfect match for Pattern F reject
-            elif severity > 2.5:
-                return 0.01  # Prefer conditional
+            if 0.45 <= audit.score <= 0.75:  # Moderate scores only
+                severity = (
+                    (1.0 - audit.score)
+                    * audit.violation_count
+                    * (1.0 if audit.risk_level == "high" else 0.5)
+                )
+                if severity > 4.0:
+                    return 1.0  # Perfect match for Pattern F reject
+                elif severity > 2.3:  # REFINED: was 2.5
+                    return 0.05  # Prefer conditional
         
-        # Phase 1: Pattern E - PII indicators logic
-        # pii_indicators >= 3 → REJECT
-        # pii_indicators > 0 AND high_risk → REJECT
+        # Phase 1 RECOMMENDATION: Pattern E - Refined PII logic with weighted severity
+        # pii >= 3 OR (pii >= 2 AND cost > 5000) → REJECT
+        # pii == 1 OR (pii == 2 AND cost < 5000) → CONDITIONAL
+        # Pattern E: pii_indicators >= 3 OR (pii > 0 AND high_risk) → REJECT
         if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
+            # REJECT criteria (more specific)
             if audit.pii_indicators >= 3:
-                return 1.0  # Perfect match for multiple PII indicators
-            elif audit.pii_indicators > 0 and audit.risk_level == "high":
-                return 0.95  # Strong rejection for PII + high risk
+                return 1.0  # Perfect match for high PII severity
+            elif audit.pii_indicators >= 2 and audit.remediation_cost > 5000:
+                return 0.98  # Strong reject for moderate PII + expensive
+            elif audit.pii_indicators >= 2 and audit.risk_level == "high":
+                return 0.95  # Strong reject for moderate PII + high risk
+            elif audit.pii_indicators == 1 and audit.risk_level == "high":
+                return 0.85  # Moderate reject for low PII + high risk
+            # else: PII exists but not reject criteria → conditional or monitor
         
         # Sprint 3 FIX: DON'T reject high scores with high risk (they should be conditional or monitor)
         if audit.score >= 0.75 and audit.risk_level == "high":
@@ -464,13 +502,16 @@ class QuantumComplianceAssessor:
             else:
                 return 0.05  # Very expensive → prefer monitoring
         
-        # Phase 1: Pattern E - PII conditional approval
-        # PII indicators exist, NOT reject criteria, cost < 5000 → CONDITIONAL
+        # Phase 1 RECOMMENDATION: Pattern E - PII conditional approval (refined)
+        # PII == 1 OR (PII == 2 AND cost < 5000) → CONDITIONAL
         if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
-            # NOT reject: pii < 3 AND risk != high
-            if audit.pii_indicators < 3 and audit.risk_level != "high":
+            # NOT reject criteria AND cost manageable → CONDITIONAL
+            if audit.pii_indicators == 1 and audit.risk_level != "high":
                 if audit.remediation_cost < 5000:
-                    return 0.92  # Good match for Pattern E conditional
+                    return 0.95  # Strong match for low PII + cheap fix
+            elif audit.pii_indicators == 2 and audit.remediation_cost < 5000:
+                if audit.risk_level != "high":
+                    return 0.92  # Good match for moderate PII + cheap fix
 
         # Sprint 3 FIX: Pattern H - Specific to temporal evolution
         # Rule: (0.65 <= score < 0.85) OR (cost < 6000)
@@ -520,8 +561,9 @@ class QuantumComplianceAssessor:
         if audit.score < 0.35:
             return 0.01
         
-        # Phase 1: Pattern F - Multi-violation FALLBACK (check last, lower priority)
+        # Phase 1 RECOMMENDATION: Pattern F - Multi-violation FALLBACK (refined thresholds)
         # Only apply if score is moderate (0.45-0.75) to avoid interfering with A/G/H
+        # Adjusted threshold: severity > 2.3 (was 2.5) for better accuracy
         if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
             if 0.45 <= audit.score <= 0.75:
                 severity = (
@@ -529,11 +571,11 @@ class QuantumComplianceAssessor:
                     * audit.violation_count
                     * (1.0 if audit.risk_level == "high" else 0.5)
                 )
-                # Conditional if severity > 2.5 OR (severity <= 2.5 AND impact <= 0.7)
+                # Conditional if severity > 2.3 OR (severity <= 2.3 AND impact <= 0.7)
                 if severity > 4.0:
                     return 0.05  # Prefer reject
-                elif severity > 2.5:
-                    return 0.88  # Good match for high severity conditional
+                elif severity > 2.3:  # REFINED: was 2.5
+                    return 0.90  # Strong match for high severity conditional
                 elif audit.business_impact <= 0.7:
                     return 0.85  # Good match for low impact conditional
                 # else: low severity + high impact → prefer monitor (don't return high score)
