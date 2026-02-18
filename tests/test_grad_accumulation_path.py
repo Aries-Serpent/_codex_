@@ -17,7 +17,16 @@ from codex_ml.training import run_functional_training
 torch = pytest.importorskip("torch")
 
 
-def test_minimal_loop_honours_gradient_accumulation(monkeypatch, tmp_path: Path) -> None:
+@pytest.fixture(scope="function")
+def fresh_torch_state():
+    """Ensure fresh torch state for each test to prevent iterator exhaustion."""
+    import gc
+    gc.collect()
+    yield
+    gc.collect()
+
+
+def test_minimal_loop_honours_gradient_accumulation(monkeypatch, tmp_path: Path, fresh_torch_state) -> None:
     real_import = builtins.__import__
 
     def fake_import(name: str, *args: object, **kwargs: object):  # type: ignore[override]

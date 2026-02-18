@@ -235,7 +235,7 @@ class CoVeEngine:
 
         if not claims:
             logger.info("No claims found in response")
-            return CoVeResult(
+            result = CoVeResult(
                 response_id=response_id,
                 original_response=response,
                 claims=[],
@@ -243,6 +243,11 @@ class CoVeEngine:
                 overall_score=1.0,  # No claims to verify = verified
                 overall_status=VerificationStatus.VERIFIED,
             )
+            # Add to history even when no claims found
+            self._verification_history.append(result)
+            if len(self._verification_history) > 1000:
+                self._verification_history = self._verification_history[-1000:]
+            return result
 
         # Step 2: Verify each claim
         verifications: list[VerificationResult] = []
