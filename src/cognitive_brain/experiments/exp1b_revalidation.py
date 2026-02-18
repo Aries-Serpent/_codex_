@@ -104,6 +104,12 @@ def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42) -> EXP1BResults
 
         if assessment.decision == ground_truth:
             correct_predictions += 1
+    
+    # Sprint 1 Optimization: Flush any batched metrics
+    # CoherenceMonitor may have batched metrics for performance
+    if hasattr(monitor, 'flush_batch'):
+        monitor.flush_batch()
+        print("  - Flushed batched metrics to database")
 
     # Calculate classical baseline (simple rule-based)
     print("\nCalculating classical baseline...")
