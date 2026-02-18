@@ -24,7 +24,7 @@ from cognitive_brain.integrations.compliance_integration import (
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
-from cognitive_brain.quantum.superposition import SuperpositionEngine
+from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
 
 
 # ---------------------------------------------------------------------------
@@ -258,6 +258,85 @@ class TestQuantumNoiseApplication:
         assert wins / trials >= 0.90, f"Winner preserved {wins}/{trials} times"
 
 
+class TestApplyQuantumNoisePublic:
+    """SuperpositionEngine.apply_quantum_noise() — public Phase 3 API."""
+
+    def _decision(self, score=0.9):
+        return Decision(id="D1", name="Approve", evaluation_fn=lambda: score)
+
+    def test_noop_when_noise_disabled(self):
+        """Default config (noise_enabled=False) → state unchanged."""
+        config = QuantumConfig()  # noise_enabled defaults to False
+        engine = SuperpositionEngine(config)
+        state = engine.create_superposition([self._decision()])
+        state.coherence = 0.8
+        engine.apply_quantum_noise(state)
+        assert state.coherence == 0.8
+
+    def test_noop_when_all_params_zero(self):
+        """noise_enabled=True but all rates=0 → no change."""
+        config = QuantumConfig(
+            noise_enabled=True,
+            t1_decoherence_us=0.0,
+            t2_decoherence_us=0.0,
+            gate_error_rate=0.0,
+            measurement_error_rate=0.0,
+        )
+        engine = SuperpositionEngine(config)
+        state = engine.create_superposition([self._decision()])
+        state.coherence = 0.75
+        engine.apply_quantum_noise(state)
+        assert state.coherence == 0.75
+
+    def test_t2_decay_reduces_coherence(self):
+        """T2 dephasing decays coherence by exp(-dt/T2) with dt=100µs."""
+        import math
+        config = QuantumConfig(noise_enabled=True, t2_decoherence_us=50.0)
+        engine = SuperpositionEngine(config)
+        state = engine.create_superposition([self._decision()])
+        state.coherence = 0.9
+        engine.apply_quantum_noise(state)
+        expected = 0.9 * math.exp(-100.0 / 50.0)
+        assert abs(state.coherence - expected) < 1e-9
+
+    def test_coherence_never_goes_below_zero(self):
+        """Even with severe T2 decay, coherence is clamped to ≥ 0."""
+        config = QuantumConfig(noise_enabled=True, t2_decoherence_us=1.0)
+        engine = SuperpositionEngine(config)
+        state = engine.create_superposition([self._decision()])
+        state.coherence = 0.01
+        engine.apply_quantum_noise(state)
+        assert state.coherence >= 0.0
+
+    def test_amplitude_damping_renormalises(self):
+        """Gate error reduces amplitude magnitudes; they must be renormalised."""
+        config = QuantumConfig(noise_enabled=True, gate_error_rate=0.2)
+        engine = SuperpositionEngine(config)
+        decisions = [self._decision(0.9), self._decision(0.1)]
+        state = engine.create_superposition(decisions)
+        engine.apply_quantum_noise(state)
+        total = sum(abs(a) for a in state.amplitudes)
+        assert abs(total - 1.0) < 1e-9
+
+    def test_full_noise_leaves_state_valid(self):
+        """With all noise channels active, state remains internally consistent."""
+        import math
+        config = QuantumConfig(
+            noise_enabled=True,
+            gate_error_rate=0.05,
+            measurement_error_rate=0.05,
+            t2_decoherence_us=100.0,
+            t1_decoherence_us=200.0,
+        )
+        engine = SuperpositionEngine(config)
+        decisions = [self._decision(s) for s in [0.8, 0.5, 0.3, 0.1]]
+        state = engine.create_superposition(decisions)
+        state.coherence = 0.9
+        engine.apply_quantum_noise(state)
+        assert state.coherence >= 0.0
+        assert sum(abs(a) for a in state.amplitudes) == pytest.approx(1.0, abs=1e-9)
+
+
 # ===========================================================================
 # 4. Bias Detection
 # ===========================================================================
@@ -423,6 +502,71 @@ class TestQuantumAuditTrail:
         e1 = self.trail.log(audit, assessment)
         e2 = self.trail.log(audit, assessment)
         assert e1.input_hash == e2.input_hash
+
+    # ------------------------------------------------------------------
+    # HMAC chain tests (Gap 2 — tamper-evidence)
+    # ------------------------------------------------------------------
+
+    def test_entry_has_chain_hash(self):
+        """Every logged entry should carry a non-empty chain_hash."""
+        entry = self.trail.log(_make_audit(), self._make_assessment())
+        assert entry.chain_hash != ""
+        assert len(entry.chain_hash) == 16  # Short hex prefix
+
+    def test_chain_hash_differs_between_entries(self):
+        """Each entry's chain_hash must differ (proves chaining)."""
+        e1 = self.trail.log(_make_audit(audit_id="ch-001"), self._make_assessment())
+        e2 = self.trail.log(_make_audit(audit_id="ch-002"), self._make_assessment())
+        assert e1.chain_hash != e2.chain_hash
+
+    def test_chain_is_deterministic_same_key(self):
+        """Same inputs + same HMAC key → same chain hash (deterministic)."""
+        key = "test-secret-key-42"
+        trail_a = QuantumAuditTrail(hmac_key=key)
+        trail_b = QuantumAuditTrail(hmac_key=key)
+        audit = _make_audit(audit_id="det-001")
+        assessment = self._make_assessment()
+        e_a = trail_a.log(audit, assessment)
+        e_b = trail_b.log(audit, assessment)
+        assert e_a.chain_hash == e_b.chain_hash
+
+    def test_hmac_key_changes_chain_hash(self):
+        """Different HMAC keys produce different chain hashes."""
+        trail_x = QuantumAuditTrail(hmac_key="key-x")
+        trail_y = QuantumAuditTrail(hmac_key="key-y")
+        audit = _make_audit()
+        assessment = self._make_assessment()
+        e_x = trail_x.log(audit, assessment)
+        e_y = trail_y.log(audit, assessment)
+        assert e_x.chain_hash != e_y.chain_hash
+
+    def test_no_key_still_chains_via_sha256(self):
+        """Without an HMAC key, SHA-256 fallback still produces a chain_hash."""
+        trail = QuantumAuditTrail()  # no hmac_key
+        e1 = trail.log(_make_audit(audit_id="nk-001"), self._make_assessment())
+        e2 = trail.log(_make_audit(audit_id="nk-002"), self._make_assessment())
+        assert e1.chain_hash != ""
+        assert e2.chain_hash != ""
+        assert e1.chain_hash != e2.chain_hash
+
+    def test_chain_links_sequentially(self):
+        """Second entry's chain must depend on first (changing first breaks second)."""
+        key = "integrity-test-key"
+        trail_orig = QuantumAuditTrail(hmac_key=key)
+        audit1 = _make_audit(audit_id="seq-001")
+        audit2 = _make_audit(audit_id="seq-002")
+        a = self._make_assessment()
+        trail_orig.log(audit1, a)
+        e2_orig = trail_orig.log(audit2, a)
+
+        # Fresh trail: insert different first entry, then same second
+        trail_tampered = QuantumAuditTrail(hmac_key=key)
+        trail_tampered.log(_make_audit(audit_id="TAMPERED"), a)
+        e2_tampered = trail_tampered.log(audit2, a)
+
+        assert e2_orig.chain_hash != e2_tampered.chain_hash, (
+            "Chain hash must differ when first entry is tampered"
+        )
 
 
 # ===========================================================================

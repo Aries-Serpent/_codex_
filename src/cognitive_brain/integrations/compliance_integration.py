@@ -18,6 +18,7 @@ Phase 3 additions:
 """
 
 import hashlib
+import hmac as _hmac_lib
 import math
 import time
 import uuid
@@ -139,6 +140,7 @@ class AuditTrailEntry:
     input_hash: str     # SHA-256 prefix of serialised input (tamper detection)
     quantum_mode: bool  # Whether superposition was used
     bias_flags: List[str]  # Empty list when no bias detected
+    chain_hash: str = ""   # HMAC-chained link to previous entry (tamper-evidence)
 
 
 class QuantumAuditTrail:
@@ -157,13 +159,19 @@ class QuantumAuditTrail:
         print(trail.count)
     """
 
-    def __init__(self, retention_days: int = 2555) -> None:
+    def __init__(self, retention_days: int = 2555, hmac_key: str = "") -> None:
         """
         Args:
             retention_days: Logical retention period in days (default 2555 ≈ 7 years).
+            hmac_key: Optional secret key for HMAC chain integrity.  When provided,
+                each entry's ``chain_hash`` is an HMAC-SHA256 over the previous
+                chain hash + entry input hash, giving cryptographic tamper-evidence.
+                Must be rotated via KMS before production rollout.
         """
         self._entries: List[AuditTrailEntry] = []
         self.retention_days = retention_days
+        self._hmac_key: bytes = hmac_key.encode() if hmac_key else b""
+        self._prev_chain_hash: str = ""
 
     def log(
         self, audit: AuditResult, assessment: "ComplianceAssessment"
@@ -182,6 +190,19 @@ class QuantumAuditTrail:
             f"|{audit.remediation_cost}|{audit.business_impact}"
         )
         input_hash = hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+        # HMAC chain: links each entry cryptographically to its predecessor
+        chain_input = f"{self._prev_chain_hash}|{input_hash}|{assessment.decision.value}"
+        if self._hmac_key:
+            chain_hash = _hmac_lib.new(
+                self._hmac_key,
+                chain_input.encode(),
+                hashlib.sha256,
+            ).hexdigest()[:16]
+        else:
+            chain_hash = hashlib.sha256(chain_input.encode()).hexdigest()[:16]
+        self._prev_chain_hash = chain_hash
+
         entry = AuditTrailEntry(
             entry_id=str(uuid.uuid4()),
             timestamp=datetime.now(timezone.utc).isoformat(),
@@ -193,6 +214,7 @@ class QuantumAuditTrail:
             input_hash=input_hash,
             quantum_mode=assessment.used_superposition,
             bias_flags=list(assessment.bias_flags),
+            chain_hash=chain_hash,
         )
         self._entries.append(entry)
         return entry

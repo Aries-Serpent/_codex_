@@ -392,6 +392,67 @@ class SuperpositionEngine:
             "amplitudes": amplitudes,
         }
 
+    def apply_quantum_noise(self, state: SuperpositionState) -> None:
+        """
+        Apply physics-based quantum noise to a superposition state (Phase 3).
+
+        This is the public noise-simulation entry point, intended for production
+        readiness testing per the Phase 3 plan.  It models:
+
+        - **T2 coherence decay**: ``coherence *= exp(-dt / T2)`` where dt is a
+          fixed 100 µs simulation step.  Represents dephasing noise.
+        - **Amplitude damping**: amplitudes are scaled by ``(1 - gate_error_rate)``
+          and re-normalised to keep consistent probability mass.  Represents
+          depolarizing gate errors.
+        - **Metric recording**: logs pre/post coherence when a monitor is present.
+
+        This method is a **no-op** when all noise parameters are zero (safe default).
+
+        Args:
+            state: The ``SuperpositionState`` to apply noise to (mutated in place).
+        """
+        cfg = self.config
+        gate_err = getattr(cfg, "gate_error_rate", 0.0)
+        t2_us = getattr(cfg, "t2_decoherence_us", 0.0)
+        t1_us = getattr(cfg, "t1_decoherence_us", 0.0)
+        meas_err = getattr(cfg, "measurement_error_rate", 0.0)
+
+        # Fast-path: noise not enabled or all params are zero
+        if not getattr(cfg, "noise_enabled", False):
+            return
+        if gate_err == 0.0 and t2_us == 0.0 and t1_us == 0.0 and meas_err == 0.0:
+            return
+
+        pre_coherence = state.coherence
+
+        # T2 dephasing: coherence decay over fixed simulation step (100 µs)
+        if t2_us > 0.0:
+            dt_us = 100.0
+            decay = math.exp(-dt_us / t2_us)
+            state.coherence = max(0.0, state.coherence * decay)
+
+        # Amplitude damping proportional to gate_error_rate
+        if gate_err > 0.0 and state.amplitudes:
+            state.amplitudes = [a * (1.0 - gate_err) for a in state.amplitudes]
+            total = sum(abs(a) for a in state.amplitudes) or 1.0
+            state.amplitudes = [a / total for a in state.amplitudes]
+
+        # Record noise metrics for auditing
+        if self.monitor and not self.lightweight:
+            self.monitor.record_metric(
+                feature="superposition",
+                metric_name="applied_noise",
+                metric_value=1.0,
+                metadata={
+                    "t1_us": t1_us,
+                    "t2_us": t2_us,
+                    "gate_error_rate": gate_err,
+                    "measurement_error_rate": meas_err,
+                    "pre_coherence": pre_coherence,
+                    "post_coherence": state.coherence,
+                },
+            )
+
     def _apply_noise(
         self,
         scores: List[float],
