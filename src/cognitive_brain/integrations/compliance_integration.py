@@ -288,16 +288,19 @@ class QuantumComplianceAssessor:
         
         Ground truth Patterns:
         - 0.68 <= score < 0.88 AND risk in ["low", "medium"]
-        - Pattern G: HIGH SCORES (0.80+) + high risk + VERY EXPENSIVE (>15000) → MONITOR
-        - Medium score (0.55-0.75) + good business impact → monitor
+        - Pattern H: score >= 0.85 + (risk != high OR cost >= 15000) → MONITOR
+        - Pattern G: score >= 0.80 + high risk + VERY EXPENSIVE (≥15000) → MONITOR
         """
-        # Sprint 3 FIX: Pattern G - High scores with high risk AND very expensive → MONITOR
-        # Example: score=0.92, risk=high, cost=16000 → approve_with_monitoring
-        if audit.score >= 0.80 and audit.risk_level == "high":
-            if audit.remediation_cost >= 15000:
-                return 1.0  # Very expensive fixes prefer monitoring
+        # Sprint 3 FIX: Pattern H - Very high scores (>=0.85) monitor ONLY if:
+        # - Risk is NOT high, OR
+        # - Risk is high BUT cost is very expensive (>=15000)
+        if audit.score >= 0.85:
+            if audit.risk_level != "high":
+                return 1.0  # Monitor for high scores with low/medium risk
+            elif audit.remediation_cost >= 15000:
+                return 1.0  # Monitor for high scores + high risk + very expensive
             else:
-                return 0.01  # Moderate cost prefers conditional
+                return 0.01  # High risk + moderate cost → prefer conditional
         
         # Strong match for medium-high scores with acceptable risk
         if 0.68 <= audit.score < 0.88 and audit.risk_level in ["low", "medium"]:
@@ -313,15 +316,13 @@ class QuantumComplianceAssessor:
             if audit.business_impact > 0.85:
                 return 0.80
         
-        # Sprint 3 FIX: Pattern F - Multi-violation with good scores
-        # Example: score=0.71, risk=low, cost=7629 → conditional (but we predicted monitor)
-        # Reduce score if cost is very high
-        if 0.60 <= audit.score < 0.85 and audit.remediation_cost > 7000:
-            return 0.20  # Prefer conditional or reject for expensive fixes
-        
         # Penalty for very low scores
         if audit.score < 0.40:
             return 0.01
+        
+        # Penalty for moderate scores with high risk (prefer conditional)
+        if 0.60 <= audit.score < 0.85 and audit.risk_level == "high":
+            return 0.05
         
         # Partial score
         return audit.score * 0.4
@@ -370,54 +371,59 @@ class QuantumComplianceAssessor:
         """Score for conditional approval decision
         
         Ground truth Patterns:
-        - Pattern A: High compliance (0.75-0.95) + high risk + moderate cost (5000-15000) → CONDITIONAL
-        - Pattern G: High score (0.80+) + high risk + moderate cost (<15000) → CONDITIONAL
+        - Pattern A: score 0.75-0.95 + high risk + moderate cost (5000-15000) → CONDITIONAL
+        - Pattern G: score 0.80-0.84 + high risk + cost < 15000 → CONDITIONAL  
+        - Pattern H: (0.65 <= score < 0.85) OR (cost < 6000) → CONDITIONAL
         - Pattern 2: Low-medium (0.40-0.60) + cheap fix (<1500)
         - Pattern 3: Medium score + affordable fix (<3000)
-        - Pattern F: Multi-violation with affordable fixes
-        - Pattern H: Temporal evolution with moderate scores
+        - Pattern F: Multi-violation with moderate costs (3000-10000)
         """
-        # Sprint 3 FIX: Pattern A/G - High scores with high risk but moderate cost → CONDITIONAL
-        # Pattern A: score 0.75-0.95, risk=high, cost 5000-15000
-        # Pattern G: score 0.80-0.95, risk=high, cost 10000-15000 → conditional (cost < 15000)
+        # Sprint 3 FIX: Pattern A/G - High scores (0.75+) with high risk + moderate cost
         if audit.score >= 0.75 and audit.risk_level == "high":
-            if audit.remediation_cost < 15000:  # Moderate cost
-                return 1.0  # Perfect match for conditional
+            if audit.remediation_cost < 15000:
+                return 1.0  # Perfect match
             else:
-                return 0.10  # Very expensive → prefer monitoring
+                return 0.05  # Very expensive → prefer monitoring
         
-        # Sprint 3 FIX: Pattern F - Multi-violation with reasonable costs
-        # Example: score=0.71, risk=low, cost=7629 → conditional (was monitor)
-        if 0.60 <= audit.score < 0.85 and audit.remediation_cost > 3000:
-            if audit.remediation_cost < 10000:  # Expensive but fixable
-                return 0.85
+        # Sprint 3 FIX: Pattern H - Specific to temporal evolution
+        # Rule: (0.65 <= score < 0.85) OR (cost < 6000)
+        # Only apply if score is in the 0.65-0.84 range AND not high risk
+        if 0.65 <= audit.score < 0.85 and audit.risk_level != "high":
+            return 0.90  # Good match for conditional
         
-        # Sprint 3 FIX: Pattern H - Temporal evolution with moderate scores
-        # Example: score=0.83, risk=low, cost=9437 → conditional
-        if 0.70 <= audit.score < 0.90 and audit.risk_level == "low":
-            if audit.remediation_cost > 7000:
-                return 0.80
+        # Pattern H: Low cost (<6000) prefers conditional
+        if audit.remediation_cost < 6000 and audit.score >= 0.40:
+            return 0.85
+        
+        # Sprint 3 FIX: Pattern F - Multi-violation with moderate costs (3000-10000)
+        if 0.55 <= audit.score < 0.85 and 3000 <= audit.remediation_cost < 10000:
+            return 0.85
         
         # Pattern 2: Low score but high impact + cheap fix
         if 0.40 <= audit.score < 0.60:
             if audit.remediation_cost < 1500 and audit.business_impact > 0.85:
                 return 0.90
         
-        # Pattern 3: Medium everything with affordable fix
-        if 0.55 <= audit.score <= 0.75:
-            if audit.remediation_cost < 3000:
-                return 0.85
+        # Pattern 3: Medium everything with affordable fix (<3000)
+        if 0.55 <= audit.score <= 0.75 and audit.remediation_cost < 3000:
+            return 0.85
         
         # Sprint 3 FIX: Pattern E - PII with moderate cost should be conditional
-        # Example: score=0.67, risk=medium, cost=4848 → conditional (was reject)
         if 0.60 <= audit.score < 0.75 and audit.risk_level in ["medium", "high"]:
             if 3000 < audit.remediation_cost < 4500:
-                return 0.80  # Conditional if cost is moderate
+                return 0.80
         
-        # Pattern 4: Boundary cases near thresholds
-        if 0.68 <= audit.score < 0.88:
-            if audit.remediation_cost < 2100:
-                return 0.75
+        # Penalty for very high costs (should be monitor or reject)
+        if audit.remediation_cost > 10000:
+            return 0.10
+        
+        # Penalty for very low scores
+        if audit.score < 0.35:
+            return 0.01
+        
+        # Partial score based on fix cost
+        cost_factor = max(0, 1.0 - audit.remediation_cost / 10000)
+        return audit.score * 0.3 + cost_factor * 0.4
         
         # Pattern 5: PII concerns but fixable
         if 0.60 <= audit.score < 0.80:
