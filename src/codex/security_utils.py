@@ -137,7 +137,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
-        (r'([A-Za-z0-9+/]{40,}={0,2})', '[REDACTED_TOKEN]'),
+        (r'([A-Za-z0-9+/]{40,}={0,2})', '[REDACTED]'),
     ]
 
     # Default whitelist patterns for common non-sensitive identifiers

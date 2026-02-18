@@ -236,7 +236,14 @@ def load_dataset(
         # datasets.DatasetDict saved to disk
         elif path.exists() and path.is_dir() and HAS_DATASETS:
             ds = load_from_disk(str(path))
-            if DatasetDict is not None and isinstance(ds, DatasetDict):
+            # Check if ds is a DatasetDict (defensive isinstance check)
+            try:
+                is_dataset_dict = DatasetDict is not None and isinstance(ds, DatasetDict)
+            except TypeError:
+                # Fallback: check if it has the DatasetDict API (keys() method and dict-like)
+                is_dataset_dict = hasattr(ds, 'keys') and hasattr(ds, '__getitem__')
+            
+            if is_dataset_dict:
                 if hf_split not in ds:
                     raise ValueError(f"Split '{hf_split}' not found in saved dataset")
                 ds = ds[hf_split]
