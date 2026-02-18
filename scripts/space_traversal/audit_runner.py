@@ -611,6 +611,67 @@ def validate_detector_output(detector: Dict[str, Any], detector_name: str) -> bo
     return True
 
 
+def command_explain(args, cfg):
+    """
+    Explain the score breakdown for a specific capability.
+    
+    Args:
+        args: Namespace with args.capability (ID of capability to explain)
+        cfg: Configuration dict with:
+            - output.artifacts_dir: Path to artifacts directory
+            - weights: Component weights for scoring
+    
+    Prints detailed score breakdown to stdout.
+    """
+    from scripts.space_traversal.capability_scoring import explain_score
+    
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    weights = cfg.get("weights", {})
+    capability_id = getattr(args, "capability", None)
+    
+    # Load scored capabilities
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    if not scored_file.exists():
+        print(f"Error: capabilities_scored.json not found at {scored_file}", file=sys.stderr)
+        return
+    
+    try:
+        scored_data = json.loads(scored_file.read_text())
+        capabilities = scored_data.get("capabilities", [])
+    except Exception as e:
+        print(f"Error loading scored data: {e}", file=sys.stderr)
+        return
+    
+    # Find the capability
+    capability = None
+    for cap in capabilities:
+        if cap.get("id") == capability_id:
+            capability = cap
+            break
+    
+    if capability is None:
+        print(f"Capability '{capability_id}' not found", file=sys.stderr)
+        return
+    
+    # Generate explanation
+    explanation = explain_score(capability, weights)
+    
+    # Print formatted output
+    print(f"\nCapability: {explanation['id']}")
+    print(f"Overall Score: {explanation['score']:.4f}")
+    print("\nComponent Breakdown:")
+    print("-" * 60)
+    
+    for component, details in explanation["partials"].items():
+        component_val = details["component_value"]
+        weight = details["weight"]
+        contribution = details["contribution"]
+        print(f"{component:20s} | Value: {component_val:.2f} | Weight: {weight:.2f} | Contrib: {contribution:.4f}")
+    
+    print("-" * 60)
+    print(f"{'Total':20s} |              |           | {explanation['score']:.4f}\n")
+
+
 def command_validate(cfg):
     """
     Validate audit artifacts and fail if quality gates are not met.
