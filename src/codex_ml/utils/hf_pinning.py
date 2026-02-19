@@ -11,6 +11,20 @@ from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
+
+class HFModelUnavailableError(RuntimeError):
+    """Raised when a HuggingFace model cannot be loaded from cache or network.
+
+    Tests that require a specific model should catch this and call
+    ``pytest.skip()`` so CI runs gracefully in offline/cold-cache environments:
+
+        try:
+            tok = load_from_pretrained(AutoTokenizer, "sshleifer/tiny-gpt2")
+        except HFModelUnavailableError as exc:
+            pytest.skip(str(exc))
+    """
+
+
 # Hexadecimal commit hashes with at least 7 characters are considered immutable.
 _COMMIT_PATTERN = re.compile(r"^[0-9a-fA-F]{7,}$")
 _ENV_VARS = ("CODEX_HF_REVISION", "HF_REVISION", "HF_MODEL_REVISION")
@@ -102,13 +116,21 @@ def ensure_pinned_kwargs(
 def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
     """Invoke ``factory.from_pretrained`` with a verified revision.
 
-    Strategy:
-    1. Try ``local_files_only=True`` (use local HuggingFace cache — fast, offline).
-    2. Fall back to a full network download if the cache misses.
+    Degradation strategy (Try best option → fallback → skip-friendly error):
 
-    This avoids unnecessary network round-trips in CI environments that
-    pre-populate the HuggingFace cache, while gracefully degrading to a
-    download when the cache is cold.
+    1. Try ``local_files_only=True`` — use the local HuggingFace cache.
+       Fast and works fully offline when the model is pre-cached.
+    2. Fall back to a full network download if the cache misses.
+    3. If both fail, raise :class:`HFModelUnavailableError` — a named
+       exception that tests can catch to call ``pytest.skip()`` instead of
+       hard-failing in offline / cold-cache CI environments.
+
+    Example test usage::
+
+        try:
+            tok = load_from_pretrained(AutoTokenizer, "sshleifer/tiny-gpt2")
+        except HFModelUnavailableError as exc:
+            pytest.skip(str(exc))
     """
 
     revision, extra = ensure_pinned_kwargs(identifier, kwargs)
@@ -118,18 +140,38 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
     if revision is not None:
         call_kwargs["revision"] = revision
 
+    cache_exc: Exception | None = None
+
     # Attempt 1: local cache only (fast, works offline)
     if not call_kwargs.get("local_files_only"):
         try:
             return method(identifier, local_files_only=True, **call_kwargs)
-        except Exception as cache_exc:  # OSError / EnvironmentError for cache miss
+        except Exception as exc:  # OSError / EnvironmentError for cache miss
+            cache_exc = exc
             logger.debug(
                 "HF cache miss for %s (rev=%s): %s — falling back to network",
-                identifier, revision, cache_exc,
+                identifier, revision, exc,
             )
 
     # Attempt 2: full network download
-    return method(identifier, **call_kwargs)
+    try:
+        return method(identifier, **call_kwargs)
+    except Exception as network_exc:
+        # Both attempts failed — raise a named error so callers can skip gracefully
+        errors = []
+        if cache_exc is not None:
+            errors.append(f"cache: {cache_exc}")
+        errors.append(f"network: {network_exc}")
+        raise HFModelUnavailableError(
+            f"Model '{identifier}' (rev={revision}) is unavailable. "
+            f"Errors: {'; '.join(errors)}. "
+            "Pre-populate the HuggingFace cache or ensure network access."
+        ) from network_exc
 
 
-__all__ = ["ensure_pinned_kwargs", "load_from_pretrained", "KNOWN_MODEL_REVISIONS"]
+__all__ = [
+    "ensure_pinned_kwargs",
+    "load_from_pretrained",
+    "HFModelUnavailableError",
+    "KNOWN_MODEL_REVISIONS",
+]

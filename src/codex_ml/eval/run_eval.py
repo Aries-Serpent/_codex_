@@ -13,10 +13,12 @@ logger = logging.getLogger(__name__)
 import argparse  # noqa: E402
 import csv  # noqa: E402
 import json  # noqa: E402
+import sys  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Iterable  # noqa: E402
 
 from .evaluator import run_evaluator  # noqa: E402
+from codex_ml.utils.hf_pinning import HFModelUnavailableError  # noqa: E402
 
 
 def _load_texts(path: str) -> list[str]:
@@ -85,7 +87,13 @@ def main(argv: Iterable[str] | None = None) -> None:
 
         cfg = SafetyConfig()
         texts = [sanitize_prompt(t, cfg)["text"] for t in texts]
-    metrics = run_evaluator(args.model, texts)
+    try:
+        metrics = run_evaluator(args.model, texts)
+    except HFModelUnavailableError as exc:
+        # Model not in cache and network unavailable — exit 2 so callers
+        # (e.g. tests) can distinguish "model unavailable" from real errors.
+        print(f"SKIP: {exc}", file=sys.stderr)
+        sys.exit(2)
     print(json.dumps(metrics))
     if args.metrics_log:
         _summarise_log(args.metrics_log)

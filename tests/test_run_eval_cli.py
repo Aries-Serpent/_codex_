@@ -38,7 +38,17 @@ def test_run_eval_cli(tmp_path):
     subprocess_env["PYTHONPATH"] = (
         f"{src_path}:{existing_pythonpath}" if existing_pythonpath else src_path
     )
-    out = subprocess.check_output(cmd, text=True, cwd=repo_root, env=subprocess_env)
-    metrics = json.loads(out.strip().splitlines()[0])
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, cwd=repo_root, env=subprocess_env
+    )
+    # Exit 2 = HFModelUnavailableError (cache miss + network unreachable) — skip
+    if result.returncode == 2:
+        pytest.skip(f"Model unavailable (cache miss + network unreachable): {result.stderr.strip()}")
+    if result.returncode != 0:
+        raise AssertionError(
+            f"run_eval subprocess failed (exit {result.returncode}):\n"
+            f"stdout: {result.stdout}\nstderr: {result.stderr}"
+        )
+    metrics = json.loads(result.stdout.strip().splitlines()[0])
     assert "perplexity" in metrics
     assert "token_accuracy" in metrics

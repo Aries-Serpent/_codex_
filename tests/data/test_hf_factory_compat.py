@@ -4,11 +4,9 @@ Test Hf Factory Compat
 Test module for hf factory compat.
 """
 
-import os
-
 import pytest
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
 
 pytest.importorskip("datasets")
 pytest.importorskip("torch")
@@ -27,7 +25,11 @@ def test_hf_dataset_factory():
     pytest.importorskip("transformers")
     from transformers import AutoTokenizer
 
-    tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
+    try:
+        tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
+    except HFModelUnavailableError as exc:
+        pytest.skip(f"Model unavailable (cache miss + network unreachable): {exc}")
+
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     texts = ["a", "b"]
