@@ -118,7 +118,7 @@ jobs:
             -m "not slow and not integration" \
             --dist=loadfile \
             -n auto \
-            --shard-id=$((matrix.shard - 1)) \
+            --shard-id=$((${{ matrix.shard }} - 1)) \
             --num-shards=3 \
             -v \
             || echo "unit_failed=true" >> $GITHUB_OUTPUT
