@@ -3,7 +3,7 @@
 **Version:** v0.1.0 Pre-Release  
 **Package**: codex-ml  
 **Last Updated:** 2026-02-09  
-**Status:** Production Ready - k₁=0.32 Optimized (3.13x Quantum Advantage)  
+**Status:** Production Ready - k₁=0.332 Optimized (3.13x Quantum Advantage)  
 **Current Phase:** 8.1 Complete (Memory + Reviews) | Phases 8.2-8.9 Planned
 
 ---
@@ -29,7 +29,7 @@
 graph TB
     subgraph "codex-ml v0.1.0 Cognitive Brain"
         subgraph "Phase 8.0: Foundation ✅"
-            Adaptive[Adaptive Scoring Optimizer<br/>k₁=0.32 Achieved<br/>📈 ML-inspired Weights]
+            Adaptive[Adaptive Scoring Optimizer<br/>k₁=0.332 Achieved<br/>📈 ML-inspired Weights]
             Weights[Weight Optimization<br/>⚖️ 3.13x Advantage<br/>Production Ready]
         end
         
@@ -48,7 +48,7 @@ graph TB
         subgraph "Validation & Testing ✅"
             Tests[275/320 Tests<br/>✅ 86% Complete<br/>110 Complex Scenarios]
             Reviews[2 Code Reviews<br/>✅ 26 Issues Resolved<br/>Zero Code Smells]
-            Metrics[Production Metrics<br/>📊 k₁=0.32<br/>🎯 100.0% Accuracy]
+            Metrics[Production Metrics<br/>📊 k₁=0.332<br/>🎯 100.0% Accuracy]
         end
     end
     
@@ -91,7 +91,7 @@ graph TB
 ```
 
 ### v0.1.0 Key Achievements
-- **k₁=0.32**: Rayleigh criterion optimization complete
+- **k₁=0.332**: Rayleigh criterion optimization complete
 - **3.13x Advantage**: Quantum advantage over classical approach
 - **60% Compression**: Pattern compression via PCA + quantization
 - **275/320 Tests**: 86% test completion rate
@@ -259,7 +259,7 @@ graph TB
 
 ```mermaid
 graph LR
-    P80[Phase 8.0<br/>k₁=0.32<br/>Accuracy 100%<br/>Coherence 0.791] --> P81[Phase 8.1<br/>Production Hardening<br/>Error Handling]
+    P80[Phase 8.0<br/>k₁=0.332<br/>Accuracy 100%<br/>Coherence 0.791] --> P81[Phase 8.1<br/>Production Hardening<br/>Error Handling]
     P81 --> P82[Phase 8.2<br/>Scalability<br/>1000+ scenarios]
     P82 --> P83[Phase 8.3<br/>Bayesian Networks<br/>30% FP reduction]
     P83 --> P84[Phase 8.4<br/>Fuzzy Logic<br/>12% FN reduction]

@@ -453,37 +453,33 @@ class AgentMemory:
 
     def retrieve_memory(
         self, memory_id: str = None, key: str = None
-    ) -> Optional[Union[MemoryEntry, str]]:
+    ) -> Optional[str]:
         """
-        Retrieve a memory by ID or key.
+        Retrieve a memory's content string by ID or key.
 
         Args:
-            memory_id: The memory ID to retrieve (returns MemoryEntry)
-            key: Alternative parameter name for backward compatibility (returns content string)
+            memory_id: The memory ID to look up (positional or keyword — returns content string).
+            key: Alternative parameter name for backward compatibility (returns content string).
 
         Returns:
-            MemoryEntry object if using memory_id, or content string if using key parameter
+            Content string of the stored memory, or None if not found.
 
         Note:
-            For backward compatibility with existing tests:
-            - retrieve_memory(key="foo") returns content string
-            - retrieve_memory("foo") returns content string (positional arg treated as key)
-            - retrieve_memory(memory_id="foo") returns MemoryEntry object
+            All call forms return the content string for backward compatibility:
+            - retrieve_memory("foo") → content string
+            - retrieve_memory(memory_id="foo") → content string
+            - retrieve_memory(key="foo") → content string
         """
-        # Handle backward compatibility:
-        # - If called with positional arg, treat as key and return content only
-        # - If called with key= kwarg, return content only
-        # - If called with memory_id= kwarg explicitly, return MemoryEntry
         if key is not None:
-            # Explicit key parameter - return content only
             lookup_id = key
-            return_content_only = True
         elif memory_id is not None:
-            # Could be positional or explicit memory_id
-            # For backward compat, assume positional means key
             lookup_id = memory_id
-            return_content_only = True
         else:
+            return None
+
+        return_content_only = True
+
+        if lookup_id is None:
             return None
 
         if lookup_id is None:

@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The Quantum Cognitive Brain has successfully completed Phases 8.0, 8.1, and 8.2, achieving unprecedented performance improvements through quantum-inspired optimization, intelligent memory management, and multi-agent orchestration. The system demonstrates **3.13x quantum advantage** over classical baselines with a process factor k₁=0.32, establishing a new paradigm for AI-driven compliance assessment.
+The Quantum Cognitive Brain has successfully completed Phases 8.0, 8.1, and 8.2, achieving unprecedented performance improvements through quantum-inspired optimization, intelligent memory management, and multi-agent orchestration. The system demonstrates **3.13x quantum advantage** over classical baselines with a process factor k₁=0.332, establishing a new paradigm for AI-driven compliance assessment.
 
 ### Key Achievements
 
@@ -465,7 +465,7 @@ Output: Optimized cache + recommendations
 Quantum Advantage Meter
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Classical Baseline (k₁=1.0)    ████████████████████ 100%
-Phase 8.0 (k₁=0.32)           ███████ 35%  ⬅ 3.13x faster
+Phase 8.0 (k₁=0.332)           ███████ 35%  ⬅ 3.13x faster
 Phase 8.1 Target (k₁=0.345)   ██████▌ 34.5% (pending)
 Phase 8.2 Target (k₁=0.34)    ██████▊ 34%   (pending)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -17,7 +17,7 @@ add deterministic tests that close missing branches, error paths, and integratio
 
 
 **Level 2: Decision Integration**
-- ✅ Quantum decision engine (k₁=0.32)
+- ✅ Quantum decision engine (k₁=0.332)
 - ✅ Uncertainty optimization for choices
 - ✅ Multi-agent entanglement
 - ✅ Memory compression for efficiency
@@ -49,7 +49,7 @@ fast_cache = CuckooHashTable()  # O(1) guaranteed
 # QEC - Quantum error correction for decisions
 from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
 
-qec = QECQuantumDecisionEngine(k1=0.32)
+qec = QECQuantumDecisionEngine(k1=0.332)
 decision = qec.make_decision(
     options=["option_a", "option_b", "option_c"],
     context={"relevant": "context"}

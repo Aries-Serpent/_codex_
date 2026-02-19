@@ -354,3 +354,8 @@ uri/
 CI_FIXES_*.md
 CI_FIXES_*.json
 CI_FAILURE_ANALYSIS_PR3330_DETAILED.md
+
+# CI fix reports (auto-generated, not for commit)
+FIXES_SUMMARY.md
+CI_FIXES_*.md
+CI_FAILURE_ANALYSIS_*.md
