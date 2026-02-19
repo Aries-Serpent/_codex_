@@ -286,96 +286,6 @@ def _importorskip_optional_dep(
 def pytest_collection_modifyitems(session, config, items):
     """Auto-mark slow tests and handle optional dependencies."""
 
-    # Tests known to be false positives in CI due to PyTorch 2.x / Python 3.12
-    # profiler, storage-pickling, missing optional deps, or environment
-    # incompatibilities.  Marked xfail(strict=False) so they are reported as
-    # expected failures rather than blocking the suite.
-    _TORCH_COMPAT_XFAIL = frozenset({
-        # PyTorch 2.x profiler / storage-pickling (original set)
-        "tests/space_traversal/test_peft_comprehensive/test_overfit_smoke.py::test_overfit_smoke",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py::test_callback_saves_and_prunes",
-        "tests/test_training_integration_flags.py::test_train_uses_autocast_and_clip",
-        # Torch FloatStorage pickling error (Python 3.12 + PyTorch 2.x)
-        "tests/test_checkpoint_restore_rng_torch.py::test_rng_restoration_roundtrip",
-        "tests/test_checkpoint_bundle.py::test_checkpoint_roundtrip[0]",
-        "tests/test_checkpoint_bundle.py::test_checkpoint_roundtrip[3]",
-        # torch.__spec__ not set in CI environment
-        "tests/test_codex_model_dtype.py::test_build_codex_model_accepts_string_dtype",
-        "tests/test_codex_model_dtype.py::test_build_codex_model_accepts_torch_dtype",
-        # isinstance() / issubclass() union-type issue (Python 3.12 + torch)
-        "tests/modeling/test_model_registry.py::test_get_model_returns_minilm_config",
-        # MagicMock not JSON serializable in CI (torch 2.x mock serialization)
-        "tests/reproducibility/test_seed_manager.py::TestSeedManager::test_environment_hash",
-        "tests/test_checkpoint_system_meta.py::test_checkpoint_writes_system_meta",
-        "tests/config/test_provenance_snapshot.py::test_provenance_snapshot",
-        # accelerate not installed / CPU-only CI runner
-        "tests/distributed/test_distributed_enhanced.py::TestGradientSynchronization::test_gradient_accumulation_mock",
-        "tests/distributed/test_distributed_enhanced.py::TestAccelerateInitGuard::test_safe_init_no_accelerate",
-        "tests/distributed/test_distributed_enhanced.py::TestAccelerateInitGuard::test_safe_init_cpu_only",
-        "tests/distributed/test_distributed_enhanced.py::TestCPUFallback::test_cpu_only_mode",
-        "tests/distributed/test_distributed_enhanced.py::TestMockMultiGPU::test_distributed_init_with_gpu",
-        "tests/distributed/test_distributed_enhanced.py::TestAccelerateAvailability::test_is_gpu_available",
-        # HuggingFace Hub unavailable (network-isolated CI)
-        "tests/test_tokenizer.py::test_encode_decode_round_trip",
-        # sentencepiece not installed
-        "tests/tokenization/test_encode_decode_roundtrip.py::test_encode_decode_roundtrip",
-        # train_loop._ts missing / CLI arg parsing changed
-        "tests/test_train_loop.py::test_ts_format",
-        "tests/test_train_loop.py::test_cli_parsing_smoke",
-        # audit overrides: pre-existing assertion mismatch
-        "tests/space_traversal/test_audit_overrides.py::test_apply_overrides_basic",
-        # mlflow installed: test designed for missing-mlflow environment
-        "tests/test_training_engine.py::test_training_engine_handles_missing_mlflow",
-        # unified_training.strategies attribute missing
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py::test_unified_training_resume_flow",
-        # sentence_transformers not installed
-        "tests/rag/test_rag_integration.py::TestRAGErrorHandling::test_retriever_empty_query",
-        "tests/rag/test_rag_integration.py::TestRAGErrorHandling::test_retriever_no_index",
-        "tests/rag/test_rag_integration.py::TestEndToEndRAGPipeline::test_index_and_retrieve",
-        # ── Slow-validation failures (PyTorch 2.x profiler / issubclass in Python 3.12) ──
-        # RuntimeError: profiler::_record_function_exit — ScriptObject type mismatch
-        "tests/test_datasets_module.py::test_build_text_classification_dataloaders",
-        "tests/test_resume_training.py::test_optimizer_resume_state",
-        # TypeError: isinstance() arg 2 — torch DataLoader profiler exit
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py::test_hf_trainer_hydra_lora_cfg",
-        # issubclass() arg 2 — checkpointing.py pickle via torch.storage
-        "tests/checkpointing/test_checkpoint_json_event.py::test_checkpoint_emits_one_json_line",
-        # click.UsageError not caught as SystemExit (click version compat)
-        "tests/cli/test_codex_ml_cli_comprehensive.py::TestMainFunction::test_main_with_invalid_command",
-        # ── Quick-validation failures (pre-existing environment / config issues) ──
-        # telemetry gate uses threading.Event race not reproducible in CI
-        "tests/telemetry/test_sample_rate_gate.py::test_sample_rate_zero_disables_telemetry",
-        # codex-reviewer.agent.yml is a valid multi-doc YAML but second doc is a list
-        "tests/agents/test_custom_agent_functional.py::TestAgentConfigFiles::test_yaml_config_valid_syntax[codex-reviewer.agent.yml]",
-        # PEFT / LoRA: torch isinstance() issue (same root cause as others above)
-        "tests/models/test_peft_lora_smoke.py::test_lora_applies_and_forwards",
-        # mlflow offline guard: remote tracking_uri acceptance changed in newer mlflow
-        "tests/tracking/test_mlflow_offline_guard.py::test_blocks_remote_when_tracking_uri_argument_is_remote",
-        # typer CLI: command signature changed on base branch
-        "tests/test_cli.py::test_typer_cli_track_smoke",
-        # RAG device placement: isinstance() / nn.Module union type (Python 3.12 + torch)
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_device_string_formats",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_invalid_device_type",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_with_dtype_conversion",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_cpu_to_cpu",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_mixed_precision_workflow",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_non_blocking_transfer",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_meta_tensor_with_dtype",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_non_module_input",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_meta_tensor_to_cpu",
-        "tests/rag/test_device_placement.py::TestSafeModelToDevice::test_preserves_gradient_state",
-        # safety sanitizer: policy YAML override path changed on base branch
-        "tests/safety/test_sanitizers_coverage.py::TestSanitizePrompt::test_policy_yaml_override",
-        # inference serving detector: endpoint URL changed on base branch
-        "tests/specs/test_detector_inference_serving.py::test_inference_serving_detector_basic_path_signals",
-        # minilm forward: isinstance() union type (Python 3.12 + torch)
-        "tests/test_model_forward.py::test_minilm_forward_shape",
-        # test suite meta-validation: pre-existing helper files without __init__.py
-        "tests/validation/test_test_suite_validation.py::TestTestSuiteDiscovery::test_test_directories_have_init_files",
-        # pre-existing helper files not following test_*.py naming convention
-        "tests/validation/test_test_suite_validation.py::TestTestSuiteDiscovery::test_test_files_follow_naming_convention",
-    })
-
     # Patterns that indicate a test is slow (in test name/path)
     slow_patterns = [
         "sleep(",
@@ -388,19 +298,6 @@ def pytest_collection_modifyitems(session, config, items):
     ]
 
     for item in items:
-        # Mark known torch-compat false positives as xfail (non-blocking)
-        if item.nodeid in _TORCH_COMPAT_XFAIL:
-            item.add_marker(
-                pytest.mark.xfail(
-                    reason=(
-                        "PyTorch 2.x + Python 3.12 profiler/storage-pickling "
-                        "compatibility issue — expected environment false positive"
-                    ),
-                    strict=False,
-                    run=True,
-                )
-            )
-
         # Auto-mark slow tests based on patterns in test name/path
         # NOTE: Do NOT auto-mark based on "integration" marker alone.
         # Integration tests should explicitly use @pytest.mark.slow if they're slow.

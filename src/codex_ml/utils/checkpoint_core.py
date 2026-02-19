@@ -384,7 +384,7 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             else:
                 hasher.update(value)
             return
-        if isinstance(value, int | float | bool) or value is None:
+        if isinstance(value, (int, float, bool)) or value is None:
             hasher.update(b"prim")
             hasher.update(repr(value).encode("utf-8"))
             return

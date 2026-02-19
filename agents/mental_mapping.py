@@ -417,8 +417,8 @@ class MentalMappingModel:
         Create a connection between two nodes.
 
         Args:
-            source_id: Source node ID
-            target_id: Target node ID
+            source_id: Source node ID (or MentalNode object)
+            target_id: Target node ID (or MentalNode object)
             source: Alias for source_id
             target: Alias for target_id
             edge_type: Type of edge
@@ -427,6 +427,12 @@ class MentalMappingModel:
             justification: Reasoning for connection
             evidence: Supporting evidence
         """
+        # Handle MentalNode objects (extract node_id)
+        if hasattr(source_id, 'node_id'):
+            source_id = source_id.node_id
+        if hasattr(target_id, 'node_id'):
+            target_id = target_id.node_id
+        
         # Handle parameter aliases
         if source and not source_id:
             source_id = source
