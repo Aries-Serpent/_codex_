@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import re
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
+
+logger = logging.getLogger(__name__)
 
 # Hexadecimal commit hashes with at least 7 characters are considered immutable.
 _COMMIT_PATTERN = re.compile(r"^[0-9a-fA-F]{7,}$")
@@ -60,7 +63,16 @@ def ensure_pinned_kwargs(
     identifier: Any,
     kwargs: Mapping[str, Any] | None = None,
 ) -> tuple[str | None, dict[str, Any]]:
-    """Return ``(revision, other_kwargs)`` ensuring immutable revisions."""
+    """Return ``(revision, other_kwargs)`` ensuring immutable revisions.
+
+    Priority order:
+    1. Explicit ``revision`` / ``commit_id`` in kwargs (caller-supplied)
+    2. ``KNOWN_MODEL_REVISIONS`` — curated production pins always win over
+       environment variables so test stubs like ``HF_REVISION=abcdef0``
+       cannot shadow a carefully-pinned revision.
+    3. Environment variables (``CODEX_HF_REVISION``, ``HF_REVISION``, …)
+    4. Error — remote identifiers require an explicit hash.
+    """
 
     norm_id = _normalize_identifier(identifier)
     other = dict(kwargs or {})
@@ -72,12 +84,15 @@ def ensure_pinned_kwargs(
         return _validate_revision(str(revision)), other
     if _looks_like_local(norm_id):
         return None, other
+    # Check curated known revisions BEFORE env vars so that test stubs
+    # (e.g. HF_REVISION=abcdef0 set by tests/models/conftest.py) cannot
+    # accidentally override a legitimate pinned hash.
+    if norm_id and norm_id in KNOWN_MODEL_REVISIONS:
+        return KNOWN_MODEL_REVISIONS[norm_id], other
     for env_var in _ENV_VARS:
         env_revision = os.getenv(env_var)
         if env_revision:
             return _validate_revision(env_revision), other
-    if norm_id and norm_id in KNOWN_MODEL_REVISIONS:
-        return KNOWN_MODEL_REVISIONS[norm_id], other
     raise ValueError(
         "Remote Hugging Face identifiers require an explicit commit hash. "
         "Set one of {vars} or pass revision=... at the call site.".format(vars=", ".join(_ENV_VARS))
@@ -85,13 +100,36 @@ def ensure_pinned_kwargs(
 
 
 def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
-    """Invoke ``factory.from_pretrained`` with a verified revision."""
+    """Invoke ``factory.from_pretrained`` with a verified revision.
+
+    Strategy:
+    1. Try ``local_files_only=True`` (use local HuggingFace cache — fast, offline).
+    2. Fall back to a full network download if the cache misses.
+
+    This avoids unnecessary network round-trips in CI environments that
+    pre-populate the HuggingFace cache, while gracefully degrading to a
+    download when the cache is cold.
+    """
 
     revision, extra = ensure_pinned_kwargs(identifier, kwargs)
     method = getattr(factory, "from_pretrained")
-    if revision is None:
-        return method(identifier, **extra)
-    return method(identifier, revision=revision, **extra)
+
+    call_kwargs: dict[str, Any] = dict(extra)
+    if revision is not None:
+        call_kwargs["revision"] = revision
+
+    # Attempt 1: local cache only (fast, works offline)
+    if not call_kwargs.get("local_files_only"):
+        try:
+            return method(identifier, local_files_only=True, **call_kwargs)
+        except Exception as cache_exc:  # OSError / EnvironmentError for cache miss
+            logger.debug(
+                "HF cache miss for %s (rev=%s): %s — falling back to network",
+                identifier, revision, cache_exc,
+            )
+
+    # Attempt 2: full network download
+    return method(identifier, **call_kwargs)
 
 
 __all__ = ["ensure_pinned_kwargs", "load_from_pretrained", "KNOWN_MODEL_REVISIONS"]
