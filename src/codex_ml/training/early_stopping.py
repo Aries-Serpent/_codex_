@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["EarlyStoppingConfig", "inject_early_stopping", "CodexEarlyStoppingCallback"]
+__all__ = ["EarlyStoppingConfig", "inject_early_stopping", "CodexEarlyStoppingCallback", "EarlyStoppingCallback"]
 
 
 class EarlyStoppingConfig:
@@ -186,3 +186,7 @@ def auto_inject_early_stopping_for_trainer(
     callbacks = inject_early_stopping(callbacks, config=config)
 
     return callbacks
+
+
+# Alias for backward compatibility
+EarlyStoppingCallback = CodexEarlyStoppingCallback

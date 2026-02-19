@@ -13,12 +13,10 @@ from .legacy_api import (
     SchedulerSettings,
     TrainingRunConfig,
     build_dataloader,
+    run_functional_training as _legacy_run_functional_training,  # noqa: F401 re-exported via __all__
+    _evaluate_model,  # noqa: F401 - Compatibility exports for tests (PR #3330)
+    get_hf_revision,  # noqa: F401 - Compatibility exports for tests (PR #3330)
 )
-from .legacy_api import (  # noqa: F401 re-exported via __all__
-    run_functional_training as _legacy_run_functional_training,
-)
-# Compatibility exports for tests that import via codex_ml.training (PR #3330)
-from .legacy_api import _evaluate_model, get_hf_revision  # noqa: F401
 from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 

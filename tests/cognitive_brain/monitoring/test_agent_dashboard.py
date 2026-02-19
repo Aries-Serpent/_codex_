@@ -12,7 +12,6 @@ Tests for:
 - Prometheus no-op stubs
 """
 
-
 from cognitive_brain.monitoring.agent_dashboard import (
     AgentDashboard,
     AgentHealthMetrics,

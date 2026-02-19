@@ -9,8 +9,8 @@ Tests for:
 - Graceful degradation on missing / corrupt tuning rules file
 - EXP1BResults.k1_verified field population
 """
-import json
 
+import json
 
 from cognitive_brain.integrations.compliance_integration import (
     AuditResult,
@@ -356,6 +356,7 @@ class TestK1VerifiedField:
 
     def test_k1_verified_populated_in_verified_mode(self):
         """When use_verified_labels=True, k1_verified should be set (== k1)."""
+
         from cognitive_brain.experiments.exp1b_revalidation import run_exp1b_revalidation
 
         result = run_exp1b_revalidation(scenarios=20, seed=42, use_verified_labels=True)
@@ -364,6 +365,7 @@ class TestK1VerifiedField:
 
     def test_k1_verified_zero_in_raw_mode(self):
         """When use_verified_labels=False, k1_verified should be 0.0."""
+
         from cognitive_brain.experiments.exp1b_revalidation import run_exp1b_revalidation
 
         result = run_exp1b_revalidation(scenarios=20, seed=42, use_verified_labels=False)

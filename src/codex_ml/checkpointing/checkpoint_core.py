@@ -46,7 +46,7 @@ def save_checkpoint(
         "_created_at": datetime.now(UTC).isoformat(),
         "state": state,
     }
-    
+
     # Use new zipfile serialization to avoid pickling issues with torch.Storage
     try:
         torch.save(payload, weights, _use_new_zipfile_serialization=True)

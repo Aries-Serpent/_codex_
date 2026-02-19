@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 # ---------------------------------------------------------------------------
@@ -161,8 +161,6 @@ class CognitiveBrain:
             4. Generate agent_hints based on decision + coherence
             5. Persist to memory if session_id provided
         """
-        from cognitive_brain.integrations.compliance_integration import AuditResult
-
         try:
             audit = self._inputs_to_audit(inputs, session_id or str(uuid.uuid4()))
             assessment: Any = self._assessor.assess_compliance(audit)

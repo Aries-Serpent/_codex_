@@ -224,7 +224,7 @@ class ModelServer:
 
     def load_model(self) -> dict[str, Any]:
         try:
-            if self.config.model_type not in {"stub", "huggingface", "onnx"}:
+            if self.config.model_type not in {"stub", "huggingface", "onnx", "local"}:
                 raise ModelLoadError("Unsupported model type")
 
             if self.config.model_type in {"huggingface", "onnx"}:

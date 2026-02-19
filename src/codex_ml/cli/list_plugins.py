@@ -194,7 +194,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(arg_list)
 
     emit_logs = args.format != "json"
-    
+
     # Suppress logging to stderr when in JSON mode to keep output clean
     if not emit_logs:
         root_logger = logging.getLogger()

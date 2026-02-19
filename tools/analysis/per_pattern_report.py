@@ -44,9 +44,7 @@ def compute_per_pattern_stats(
 
     for seed_result in per_seed_results:
         seed = seed_result.get("seed", "?")
-        _total = seed_result.get("total_scenarios", 0)  # noqa: F841 – kept for clarity
         mismatches = seed_result.get("mismatches", [])
-        _mismatch_ids = {m["audit_id"] for m in mismatches}  # noqa: F841 – future use
 
         # We only have mismatch records, not all scenario IDs.
         # Estimate per-pattern totals proportionally from known distribution.

@@ -11,6 +11,7 @@ Tests for:
 - _detect_pattern_from_inputs() (all patterns + default)
 - _inputs_to_audit()
 """
+
 from cognitive_brain.agents.cognitive_interface import (
     AgentHealthSnapshot,
     CognitiveBrain,
