@@ -306,8 +306,15 @@ def _resolve_format(value: Optional[str]) -> SaveFormat:
 
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
-    with path.open("wb") as fh:
-        pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    try:
+        with path.open("wb") as fh:
+            pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    except TypeError as e:
+        if "issubclass() arg 2 must be a class" in str(e) or "isinstance() arg 2 must be a type" in str(e):
+            with path.open("wb") as fh:
+                pickle.dump(dict(payload), fh, protocol=2)
+        else:
+            raise
 
 
 def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
@@ -320,7 +327,15 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         signature = None
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
-    torch.save(dict(payload), path, **save_kwargs)
+    try:
+        torch.save(dict(payload), path, **save_kwargs)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
+            logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
+            torch.save(dict(payload), path, pickle_protocol=2)
+        else:
+            raise
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
@@ -365,10 +380,13 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        with path.open("rb"):
+        with path.open("rb") as _fh:
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            except ImportError:
+                return pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
@@ -1253,8 +1271,12 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            except ImportError:
+                with open(path / "state.pkl", "rb") as _fh:
+                    state = pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

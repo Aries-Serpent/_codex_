@@ -4,6 +4,8 @@ Test Hf Factory Compat
 Test module for hf factory compat.
 """
 
+import os
+
 import pytest
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
@@ -12,6 +14,13 @@ pytest.importorskip("datasets")
 pytest.importorskip("torch")
 
 from src.training.datasets import to_hf_dataset  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _clear_hf_revision_env(monkeypatch):
+    """Clear HF_REVISION env vars so KNOWN_MODEL_REVISIONS is used instead of abcdef0."""
+    for var in ("HF_REVISION", "CODEX_HF_REVISION", "HF_MODEL_REVISION"):
+        monkeypatch.delenv(var, raising=False)
 
 
 def test_hf_dataset_factory():
