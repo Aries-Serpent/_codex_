@@ -445,6 +445,11 @@ if FASTAPI_AVAILABLE:
             """Batch inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
+        @app.post("/infer", response_model=PredictionResponse, dependencies=auth_dependencies)
+        def infer(request: PredictionRequest, http_request: Request):
+            """Inference endpoint (alias for /predict with same logic)"""
+            return predict(request, http_request)
+
         return app
 
 else:

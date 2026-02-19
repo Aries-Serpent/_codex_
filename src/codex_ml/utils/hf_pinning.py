@@ -19,7 +19,7 @@ KNOWN_MODEL_REVISIONS: dict[str, str] = {  # pragma: allowlist secret
     "openai-community/gpt2": "607a30d783dfa663caf39e06633721c8d4cfcd7e",  # pragma: allowlist secret
     "gpt2": "607a30d783dfa663caf39e06633721c8d4cfcd7e",  # pragma: allowlist secret
     "sshleifer/tiny-gpt2": "5f91d94bd9cd7190a9f3216ff93cd1dd95f2c7be",  # pragma: allowlist secret
-    "hf-internal-testing/llama-tokenizer": "d02ad6cb9dd2c2296a6332199fa2fdca5938fef0",  # pragma: allowlist secret
+    "hf-internal-testing/llama-tokenizer": "99b822d16c88d1d1130b3806c97ee9d89a9c9999",  # pragma: allowlist secret
     "sentence-transformers/all-MiniLM-L6-v2": "8b3219a92973c328a8e22fadcfa821b5dc75636a",  # pragma: allowlist secret
 }
 
