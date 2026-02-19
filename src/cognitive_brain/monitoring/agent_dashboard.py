@@ -31,7 +31,7 @@ from __future__ import annotations
 import time
 from collections import deque
 from dataclasses import dataclass, field
-from typing import Any, Deque, Dict, List, Optional
+from typing import Any, Deque, Dict, List
 
 # ---------------------------------------------------------------------------
 # Optional Prometheus instrumentation
@@ -247,7 +247,6 @@ class AgentDashboard:
         one_minute_ago = now - 60.0
         recent = [r for r in self._records if r.timestamp >= one_minute_ago]
         errors_recent = sum(1 for r in recent if r.error)
-        error_rate = errors_recent / 60.0  # per-second basis → express as per-min
         error_rate_per_min = errors_recent
 
         total_sec = (

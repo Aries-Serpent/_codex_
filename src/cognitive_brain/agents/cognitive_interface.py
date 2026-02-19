@@ -25,15 +25,9 @@ Research basis:
 
 from __future__ import annotations
 
-import os
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    from cognitive_brain.integrations.compliance_integration import (
-        ComplianceAssessment,
-    )
+from typing import Any, Dict, List
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +165,7 @@ class CognitiveBrain:
 
         try:
             audit = self._inputs_to_audit(inputs, session_id or str(uuid.uuid4()))
-            assessment: "ComplianceAssessment" = self._assessor.assess_compliance(audit)
+            assessment: Any = self._assessor.assess_compliance(audit)
             alternatives = self._extract_alternatives(assessment)
             hints = self._generate_agent_hints(assessment, context)
             pattern = self._detect_pattern_from_inputs(inputs)

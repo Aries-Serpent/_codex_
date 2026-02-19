@@ -11,13 +11,11 @@ Tests for:
 - Trend computation
 - Prometheus no-op stubs
 """
-import time
 
 
 from cognitive_brain.monitoring.agent_dashboard import (
     AgentDashboard,
     AgentHealthMetrics,
-    DecisionRecord,
     _PROMETHEUS_AVAILABLE,
 )
 

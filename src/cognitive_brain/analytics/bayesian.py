@@ -186,7 +186,6 @@ class BayesianAssessor:
                 result[value] = prior
             else:
                 # Enumerate over parent assignments consistent with evidence
-                prob = 0.0
                 parent_value = self._resolve_parents(table, evidence)
                 if parent_value is not None:
                     prob = table.probs.get(parent_value, {}).get(value, 0.0)

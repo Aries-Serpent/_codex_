@@ -559,7 +559,7 @@ if __name__ == "__main__":
         if arg == "--scenarios" and i + 1 < len(sys.argv):
             try:
                 scenarios_arg = int(sys.argv[i + 1])
-            except ValueError:
+            except ValueError:  # ignore non-integer --scenarios argument; keep default
                 pass
         if arg == "--save-json" and i + 1 < len(sys.argv):
             save_json_arg = sys.argv[i + 1]

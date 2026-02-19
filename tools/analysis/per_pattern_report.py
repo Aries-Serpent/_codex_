@@ -44,9 +44,9 @@ def compute_per_pattern_stats(
 
     for seed_result in per_seed_results:
         seed = seed_result.get("seed", "?")
-        total = seed_result.get("total_scenarios", 0)
+        _total = seed_result.get("total_scenarios", 0)  # noqa: F841 – kept for clarity
         mismatches = seed_result.get("mismatches", [])
-        mismatch_ids = {m["audit_id"] for m in mismatches}
+        _mismatch_ids = {m["audit_id"] for m in mismatches}  # noqa: F841 – future use
 
         # We only have mismatch records, not all scenario IDs.
         # Estimate per-pattern totals proportionally from known distribution.
@@ -135,7 +135,7 @@ def main() -> int:
         if arg == "--min-accuracy" and i + 1 < len(args):
             try:
                 min_accuracy = float(args[i + 1])
-            except ValueError:
+            except ValueError:  # ignore non-float --min-accuracy argument; keep default
                 pass
 
     try:
