@@ -349,3 +349,7 @@ parquet/
 uri/
 # Fragile test scan output
 .codex/fragile_tests.json
+
+# Auto-generated CI agent reports (never commit to repo root)
+CI_FIXES_*.md
+CI_FIXES_*.json

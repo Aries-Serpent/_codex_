@@ -381,7 +381,9 @@ class QuantumComplianceAssessor:
         Returns:
             ComplianceAssessment with decision and metrics
         """
-        lightweight = self.enable_superposition and getattr(self.engine, 'lightweight', False)
+        lightweight = self.enable_superposition and getattr(
+            self.config, 'lightweight_mode', False
+        )
 
         if lightweight:
             # Lightweight mode: skip timing, monitoring, bias, and audit overhead
@@ -486,7 +488,7 @@ class QuantumComplianceAssessor:
         In lightweight mode, uses optimized direct computation path.
         In normal mode, uses full engine with monitoring.
         """
-        if getattr(self.engine, 'lightweight', False):
+        if getattr(self.config, 'lightweight_mode', False):
             return self._assess_superposition_fast(audit_result)
 
         # Full engine path with monitoring
