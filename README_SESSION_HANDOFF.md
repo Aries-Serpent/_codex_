@@ -338,3 +338,39 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 3. Run Active Learning (`CODEX_ACTIVE_LEARNING=true`) — query budget ≤50/day
 4. Execute `docs/ops/PYTHON312_MIGRATION_PLAN.md` Phase 1 (base-branch CI fix)
 5. Update 56+ agent files with Phase 4.5 metrics (k₁=0.332, coherence=0.814)
+
+---
+
+## Phase 5 Handoff (2026-02-19) — Production Deployment & Autonomous Agent Integration
+
+### Completed This Session
+- `src/cognitive_brain/agents/cognitive_interface.py` — `CognitiveBrain.create()` factory, `decide()` with session memory, `get_cognitive_state()`, `get_health()`, `explain()`, agent hints for all 4 decision types, graceful fallback
+- `src/cognitive_brain/monitoring/agent_dashboard.py` — `AgentDashboard.record_decision()`, `get_health()`, `trigger_self_correction()`, Prometheus no-op stubs, rolling window
+- 63 new tests (33 agent + 30 monitoring) → **346 total, all pass**
+- `docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE5.md` committed
+- `.github/agents/.TEMPLATE_COGNITIVE_AGENT.md` metrics updated (k₁=0.332)
+- `docs/ops/PYTHON312_MIGRATION_PHASE1_COMPLETE.md` — Phase 1 complete
+- `audit_artifacts/staging/bayesian_staging_report.md` — staging simulation artifacts
+
+### Next Steps (Phase 5 remaining)
+1. Python 3.12 full migration (Phase 2): restore `requires-python = ">=3.12"` after base-branch CI fixed
+2. Active Learning production graduation (`CODEX_ACTIVE_LEARNING=true`, query budget ≤50/day)
+3. Extended noise resilience (10% gate error, 1000 scenarios, target ≥90%)
+4. Grafana/Prometheus dashboard deployment (`k8s/monitoring/agent_dashboard.yaml`)
+5. Chain prompting serialization helper for cross-process agent handoffs
+6. Fuzzy membership calibration with domain expert review
+
+### Key Metrics
+- Accuracy: **100.0%** ✅ | Coherence: **0.814** ✅ | k₁: **0.332** ✅
+- Tests: **346 passed** ✅ | Scalability (1000×5): **96.8% min** ✅
+
+### Resume Commands
+```bash
+PYTHONPATH=src python -m pytest tests/cognitive_brain/ -v \
+  --ignore=tests/cognitive_brain/test_memory.py \
+  --ignore=tests/cognitive_brain/test_memory_errors.py
+# Expected: 346 passed
+
+PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py
+# Expected: Accuracy 100.0% ✅ Coherence ≥0.650 ✅ k₁ ≤0.35 ✅
+```
