@@ -353,3 +353,4 @@ uri/
 # Auto-generated CI agent reports (never commit to repo root)
 CI_FIXES_*.md
 CI_FIXES_*.json
+CI_FAILURE_ANALYSIS_PR3330_DETAILED.md
