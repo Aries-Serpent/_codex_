@@ -19,12 +19,14 @@ Phase 3 additions:
 
 import hashlib
 import hmac as _hmac_lib
+import json
+import os
 import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
@@ -357,6 +359,9 @@ class QuantumComplianceAssessor:
         self._bias_detector = BiasDetector()
         self.audit_trail = QuantumAuditTrail()
 
+        # Phase 4.5: PoC tuning rules cache (loaded lazily from target_patterns.json)
+        self._tuning_rules_cache: Optional[Dict[str, Any]] = None
+
     def assess_compliance(self, audit_result: AuditResult) -> ComplianceAssessment:
         """
         Assess compliance audit and make decision.
@@ -510,6 +515,16 @@ class QuantumComplianceAssessor:
 
         state = self.engine.create_superposition(decisions)
         probabilities = self.engine.evaluate_parallel(state)
+
+        # Phase 4.5: Apply PoC tuning (Bayesian + Fuzzy) between evaluation and collapse.
+        # Gated by CODEX_BAYESIAN_MODE / CODEX_FUZZY_MODE; no-op by default.
+        if self._is_tuning_enabled():
+            decision_names = [d.name for d in decisions]
+            tuned = self._apply_poc_tuning(list(probabilities), audit_result, decision_names)
+            # Update state probabilities so collapse() picks the tuned winner
+            state.probabilities = tuned
+            probabilities = tuned
+
         best_decision = self.engine.collapse(state)
         coherence = self.engine.get_coherence(state)
 
@@ -533,6 +548,178 @@ class QuantumComplianceAssessor:
             used_superposition=True,
             evaluation_time_ms=0.0,
         )
+
+    # ------------------------------------------------------------------
+    # Phase 4.5: PoC tuning helpers
+    # ------------------------------------------------------------------
+
+    def _is_tuning_enabled(self) -> bool:
+        """Return True if Bayesian or Fuzzy tuning is active via env flag."""
+        return (
+            os.getenv("CODEX_BAYESIAN_MODE", "false").lower() in ("true", "1", "yes")
+            or os.getenv("CODEX_FUZZY_MODE", "false").lower() in ("true", "1", "yes")
+        )
+
+    def _load_tuning_rules(self) -> Dict[str, Any]:
+        """
+        Load PoC tuning rules from ``audit_artifacts/poctune/target_patterns.json``.
+
+        Result is cached on the assessor instance after the first load.  Returns an
+        empty dict if the file is missing or malformed (graceful degradation).
+        """
+        if self._tuning_rules_cache is not None:
+            return self._tuning_rules_cache
+        # Search relative to repo root then package root
+        candidates = [
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..", "..", "..", "audit_artifacts", "poctune", "target_patterns.json",
+            ),
+            os.path.join(os.getcwd(), "audit_artifacts", "poctune", "target_patterns.json"),
+        ]
+        for path in candidates:
+            path = os.path.normpath(path)
+            if os.path.isfile(path):
+                try:
+                    with open(path, encoding="utf-8") as fh:
+                        self._tuning_rules_cache = json.load(fh)
+                    return self._tuning_rules_cache
+                except Exception:
+                    pass
+        self._tuning_rules_cache = {}
+        return self._tuning_rules_cache
+
+    def _detect_pattern(self, audit: AuditResult) -> Optional[str]:
+        """
+        Heuristically detect which compliance pattern this audit matches.
+
+        Uses the Phase 1 ground-truth boundary thresholds (DO NOT change without
+        full accuracy regression testing).
+
+        Returns one of "H", "F", "E", "C", or ``None`` when no pattern is matched.
+        """
+        # Pattern H: temporal evolution — score ≥ 0.95
+        if audit.score >= 0.95:
+            return "H"
+        # Pattern F: multi-violation — violation_count ≥ 5, high impact & moderate cost
+        if (
+            audit.violation_count >= 5
+            and audit.business_impact > 0.70
+            and audit.remediation_cost >= 3000
+        ):
+            return "F"
+        # Pattern E: PII exposure — weighted PII ≥ 3 or high risk with any PII
+        if audit.pii_indicators >= 3 or (
+            audit.risk_level == "high" and audit.pii_indicators > 0
+        ):
+            return "E"
+        # Pattern C: medium-score boundary — score in (0.65, 0.75], medium/high risk
+        if 0.65 < audit.score <= 0.75 and audit.risk_level in ("medium", "high"):
+            return "C"
+        return None
+
+    def _extract_bayesian_evidence(self, audit: AuditResult) -> Dict[str, str]:
+        """
+        Extract a string-keyed evidence dict for Bayesian tuning rule matching.
+
+        Values are "true"/"false" strings so they round-trip cleanly through JSON.
+        """
+        return {
+            "high_score":      "true" if audit.score >= 0.80 else "false",
+            "medium_score":    "true" if 0.55 <= audit.score <= 0.75 else "false",
+            "low_risk":        "true" if audit.risk_level == "low" else "false",
+            "high_risk":       "true" if audit.risk_level == "high" else "false",
+            "expensive":       "true" if audit.remediation_cost > 10_000 else "false",
+            "high_impact":     "true" if audit.business_impact > 0.75 else "false",
+            "has_pii":         "true" if audit.pii_indicators > 0 else "false",
+            "multi_violation": "true" if audit.violation_count >= 5 else "false",
+        }
+
+    def _apply_poc_tuning(
+        self,
+        probabilities: List[float],
+        audit: AuditResult,
+        decision_names: List[str],
+    ) -> List[float]:
+        """
+        Apply Bayesian and/or Fuzzy tuning to a copy of *probabilities* in place.
+
+        Only active when ``CODEX_BAYESIAN_MODE`` or ``CODEX_FUZZY_MODE`` is set.
+        Wraps all logic in try/except — on any error the original probabilities are
+        returned unchanged (graceful degradation).
+
+        Args:
+            probabilities:  Probability list from ``evaluate_parallel()`` (4 entries).
+            audit:          Current audit being assessed.
+            decision_names: Ordered decision name list matching *probabilities*.
+
+        Returns:
+            Renormalised tuned probability list (or original on failure).
+        """
+        if not self._is_tuning_enabled():
+            return probabilities
+
+        try:
+            rules = self._load_tuning_rules()
+            pattern = self._detect_pattern(audit)
+            if not pattern or pattern not in rules:
+                return probabilities
+
+            pattern_rules = rules[pattern]
+            tuned = list(probabilities)
+
+            # --- Bayesian probability boosting ---
+            if os.getenv("CODEX_BAYESIAN_MODE", "false").lower() in ("true", "1", "yes"):
+                evidence = self._extract_bayesian_evidence(audit)
+                for rule in pattern_rules.get("bayesian", []):
+                    rule_ev: Dict[str, str] = rule.get("evidence", {})
+                    # All rule evidence key-value pairs must match
+                    if not all(evidence.get(k) == v for k, v in rule_ev.items()):
+                        continue
+                    target_val: str = rule.get("target_value", "")
+                    effect: float = float(rule.get("effect", 1.0))
+                    if target_val in decision_names:
+                        idx = decision_names.index(target_val)
+                        tuned[idx] = min(1.0, tuned[idx] * effect)
+
+            # --- Fuzzy boundary adjustment ---
+            if os.getenv("CODEX_FUZZY_MODE", "false").lower() in ("true", "1", "yes"):
+                fuzzy_rules: Dict[str, Any] = pattern_rules.get("fuzzy", {})
+                if fuzzy_rules:
+                    try:
+                        from cognitive_brain.analytics.fuzzy import FuzzyEngine
+                        base_engine = FuzzyEngine()
+                        tuned_engine = base_engine.apply_membership_tuning(fuzzy_rules)
+                        # Use fuzzy blend to potentially override the current winner
+                        current_best_name = decision_names[
+                            tuned.index(max(tuned))
+                        ].lower().replace("_", " ")
+                        fuzzy_decision = tuned_engine.fuzzy_blend(
+                            current_best_name,
+                            audit.score,
+                            audit.business_impact,
+                            audit.remediation_cost,
+                        )
+                        # If fuzzy overrides to a different decision, apply a 1.15x boost
+                        if fuzzy_decision != current_best_name:
+                            # Normalise fuzzy decision name to our enum format
+                            fuzzy_norm = fuzzy_decision.upper().replace(" ", "_")
+                            if fuzzy_norm in decision_names:
+                                idx = decision_names.index(fuzzy_norm)
+                                tuned[idx] = min(1.0, tuned[idx] * 1.15)
+                    except Exception:
+                        pass  # Fuzzy module unavailable — skip
+
+            # Renormalise so probabilities sum to 1
+            total = sum(tuned)
+            if total > 0:
+                tuned = [p / total for p in tuned]
+
+            return tuned
+
+        except Exception:
+            # Graceful degradation: return original probabilities unchanged
+            return probabilities
 
     def _assess_superposition_fast(
         self, audit_result: AuditResult

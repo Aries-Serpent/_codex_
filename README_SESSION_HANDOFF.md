@@ -292,3 +292,29 @@ After next 1.5 hours:
 **Confidence**: Very High  
 
 **YOU'VE GOT THIS! 💪**
+
+---
+
+## Session 36 Handoff — Phase 4.5 PoC Tuning COMPLETE (2026-02-19)
+
+### Completed This Session
+- **compliance_integration.py tuning hooks**: `_apply_poc_tuning()`, `_detect_pattern()`, `_extract_bayesian_evidence()`, `_load_tuning_rules()`, `_is_tuning_enabled()` integrated between evaluate_parallel() and collapse()
+- **Verified-mode k₁**: `EXP1BResults.k1_verified` field; structural explanation note in scalability output
+- **audit_artifacts/poctune/target_patterns.json**: Tuning rules for H/F/E/C patterns
+- **27 new tuning tests** in `test_phase4_tuning.py` (283 total pass)
+- **Quantum compliance tuning agent**: `.github/agents/quantum-compliance-tuning-agent.md`
+- **Metrics maintained**: accuracy=100%, coherence=0.814, k₁=0.3406 ✅
+
+### To Activate Tuning in Staging
+```bash
+CODEX_BAYESIAN_MODE=true CODEX_FUZZY_MODE=true \
+PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
+  --multi-seed --scenarios 200 --use-verified-labels \
+  --save-json audit_artifacts/poctune/iteration_1_results.json
+```
+
+### Next Phase Priorities
+1. Run full 1000-scenario scalability test across 5 seeds
+2. Validate Pattern H/F/E/C accuracy improvement with tuning enabled (target: +10-15pp on failing patterns)
+3. Active Learning pipeline graduation to production (`CODEX_ACTIVE_LEARNING=true`)
+4. Phase 5 planning: Ensemble ML + qPCA integration
