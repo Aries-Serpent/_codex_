@@ -49,6 +49,8 @@ mlruns/
 audit_artifacts/
 !audit_artifacts/baselines/
 !audit_artifacts/baselines/**
+!audit_artifacts/poctune/
+!audit_artifacts/poctune/**
 # Disabled workflows (consolidation in progress)
 .github/workflows/*.disabled
 # Temporary files (anti-/tmp/ protection system)
