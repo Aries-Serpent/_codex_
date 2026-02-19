@@ -39,7 +39,6 @@ def compute_per_pattern_stats(
 
     Returns a dict mapping pattern_letter -> {total, failures, accuracy, examples}.
     """
-    pattern_totals: Dict[str, int] = {}
     pattern_failures: Dict[str, List[dict]] = {}
 
     for seed_result in per_seed_results:

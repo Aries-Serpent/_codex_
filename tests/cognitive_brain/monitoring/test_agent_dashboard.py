@@ -13,11 +13,10 @@ Tests for:
 """
 
 from cognitive_brain.monitoring.agent_dashboard import (
+    _PROMETHEUS_AVAILABLE,
     AgentDashboard,
     AgentHealthMetrics,
-    _PROMETHEUS_AVAILABLE,
 )
-
 
 # ---------------------------------------------------------------------------
 # TestAgentDashboardRecord

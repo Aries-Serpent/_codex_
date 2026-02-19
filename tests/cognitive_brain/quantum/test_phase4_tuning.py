@@ -20,7 +20,6 @@ from cognitive_brain.integrations.compliance_integration import (
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.config import QuantumConfig
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -357,7 +356,9 @@ class TestK1VerifiedField:
     def test_k1_verified_populated_in_verified_mode(self):
         """When use_verified_labels=True, k1_verified should be set (== k1)."""
 
-        from cognitive_brain.experiments.exp1b_revalidation import run_exp1b_revalidation
+        from cognitive_brain.experiments.exp1b_revalidation import (
+            run_exp1b_revalidation,
+        )
 
         result = run_exp1b_revalidation(scenarios=20, seed=42, use_verified_labels=True)
         assert hasattr(result, "k1_verified")
@@ -366,7 +367,9 @@ class TestK1VerifiedField:
     def test_k1_verified_zero_in_raw_mode(self):
         """When use_verified_labels=False, k1_verified should be 0.0."""
 
-        from cognitive_brain.experiments.exp1b_revalidation import run_exp1b_revalidation
+        from cognitive_brain.experiments.exp1b_revalidation import (
+            run_exp1b_revalidation,
+        )
 
         result = run_exp1b_revalidation(scenarios=20, seed=42, use_verified_labels=False)
         assert result.k1_verified == 0.0
