@@ -87,11 +87,18 @@ class DataConfig:
 class DataLoaderConfig:
     """User-facing config for text classification helpers."""
 
-    file_path: str
+    file_path: str = ""
     batch_size: int = 8
     max_length: int = 128
     validation_split: float = 0.2
     seed: int = 42
+    num_workers: int = 0
+
+    def __post_init__(self) -> None:
+        if int(self.batch_size) <= 0:
+            raise ValueError("batch_size must be positive")
+        if int(self.num_workers) < 0:
+            raise ValueError("num_workers must be non-negative")
 
     def to_data_config(self) -> DataConfig:
         if not 0 <= float(self.validation_split) < 1:
@@ -269,9 +276,11 @@ def build_dataloaders(
     if isinstance(data_path_or_tokenizer, (str, Path)):
         if len(split_ratio) != 2:
             raise ValueError("split_ratio must contain train and validation fractions")
+        if any(r <= 0 for r in split_ratio):
+            raise ValueError("split ratios must be positive")
         ratio_total = float(sum(split_ratio))
         if not 0.99 <= ratio_total <= 1.01:
-            raise ValueError("split_ratio values must sum to 1.0")
+            raise ValueError("split ratios must sum to 1.0")
         config = DataConfig(
             dataset_path=str(data_path_or_tokenizer),
             validation_path=validation_path,
@@ -323,6 +332,68 @@ def _compute_lengths(n: int, lengths_or_fracs: Sequence[int | float]) -> list[in
     return [int(x) for x in lengths_or_fracs]
 
 
+def split_dataset(
+    dataset: TorchDatasetType,
+    split_ratio: Sequence[float] = (0.8, 0.2),
+    *,
+    seed: int = 42,
+) -> tuple[Any, ...]:
+    """Split a torch Dataset into subsets by ratio.
+
+    Args:
+        dataset:     Dataset to split.
+        split_ratio: Fractions for each split (must sum to 1.0).
+        seed:        Random seed for reproducibility.
+
+    Returns:
+        Tuple of dataset subsets matching ``split_ratio`` length.
+
+    Raises:
+        ValueError: If the dataset is empty, ratios are invalid, or the
+                    dataset is too small to produce valid splits.
+    """
+    if torch is None or torch_random_split is None:
+        raise RuntimeError("torch is required for split_dataset")
+    try:
+        n = len(dataset)  # type: ignore[arg-type]
+    except Exception:
+        n = 0
+    if n == 0:
+        raise ValueError("Cannot split empty dataset")
+    lengths = _compute_lengths(n, split_ratio)
+    if any(ln == 0 for ln in lengths[1:]):
+        raise ValueError("Insufficient samples for validation split")
+    generator = torch.Generator().manual_seed(int(seed))
+    parts = torch_random_split(dataset, lengths, generator=generator)
+    return tuple(parts)
+
+
+def default_collate(batch: list[dict[str, Any]]) -> dict[str, Any]:
+    """Collate a list of dicts into a batched dict of tensors.
+
+    Requires every sample to contain an ``input_ids`` key.
+
+    Args:
+        batch: List of sample dicts, each containing tensor values.
+
+    Returns:
+        Dict with each key mapped to a stacked tensor.
+
+    Raises:
+        KeyError: If any sample is missing the ``input_ids`` key.
+    """
+    if not batch:
+        return {}
+    # Validate required key
+    for sample in batch:
+        if "input_ids" not in sample:
+            raise KeyError("input_ids")
+    keys = batch[0].keys()
+    if torch is None:
+        raise RuntimeError("torch is required for default_collate")
+    return {k: torch.stack([s[k] for s in batch]) for k in keys}
+
+
 def deterministic_split(
     dataset: TorchDatasetType,
     lengths_or_fracs: Sequence[int | float],
@@ -337,6 +408,48 @@ def deterministic_split(
     generator = torch.Generator().manual_seed(int(seed))
     parts = torch_random_split(dataset, lengths, generator=generator)
     return tuple(parts)
+
+
+def parse_tsv_dataset(path: str | Path) -> list[tuple[str, int]]:
+    """Parse TSV file with text and labels (text<tab>label format).
+
+    Args:
+        path: Path to TSV file.
+
+    Returns:
+        List of (text, label) tuples.  Malformed rows (no tab) are skipped
+        unless the *first* non-empty line is malformed, in which case a
+        ``ValueError`` is raised so callers can detect corrupt files early.
+
+    Raises:
+        ValueError: If the file contains no tab-separated rows at all and
+                    at least one non-empty line exists (``"Invalid TSV format"``).
+    """
+    result: list[tuple[str, int]] = []
+    has_any_line = False
+    file_path = Path(path)
+    with file_path.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            has_any_line = True
+            parts = line.split("\t")
+            if len(parts) < 2:
+                if not result:
+                    raise ValueError(
+                        f"Invalid TSV format: no tab separator found in line: {line!r}"
+                    )
+                continue  # skip malformed rows after valid ones
+            text = parts[0]
+            try:
+                label = int(parts[1])
+            except ValueError:
+                continue
+            result.append((text, label))
+    if has_any_line and not result:
+        raise ValueError("Invalid TSV format: no valid tab-separated rows found")
+    return result
 
 
 def tiny_tensor_dataset(
@@ -359,4 +472,5 @@ __all__ = [
     "build_dataloaders",
     "deterministic_split",
     "tiny_tensor_dataset",
+    "parse_tsv_dataset",  # Added for test compatibility
 ]

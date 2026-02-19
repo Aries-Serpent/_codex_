@@ -22,6 +22,7 @@ Integration point (behind feature flag):
 
 import os
 from dataclasses import dataclass
+from typing import Any, Dict, Tuple
 
 
 def _fuzzy_mode_enabled() -> bool:
@@ -232,6 +233,49 @@ class FuzzyEngine:
             reject=reject,
             dominant=dominant,
             confidence=confidence,
+        )
+
+    def apply_membership_tuning(
+        self, tuning_rules: Dict[str, Any]
+    ) -> "FuzzyEngine":
+        """
+        Apply membership-function parameter tuning and return a NEW FuzzyEngine.
+
+        Returns a new instance with updated membership bounds — does NOT mutate
+        ``self`` (safe for concurrent use).  Only applied when
+        ``CODEX_FUZZY_MODE=true``; returns ``self`` unchanged otherwise.
+
+        Supported keys in ``tuning_rules`` (each value is a tuple of floats):
+            ``score_low``, ``score_medium``, ``score_high``,
+            ``impact_low``, ``impact_high``,
+            ``cost_low``, ``cost_high``
+
+        Args:
+            tuning_rules: Dict mapping membership-parameter name → new tuple of
+                          boundary floats (3-tuple for triangular, 4-tuple for
+                          trapezoidal).
+
+        Returns:
+            New ``FuzzyEngine`` with adjusted parameters, or ``self`` if
+            ``CODEX_FUZZY_MODE`` is disabled.
+        """
+        if not _fuzzy_mode_enabled():
+            return self
+
+        def _t(key: str, default: Tuple) -> Tuple:
+            raw = tuning_rules.get(key)
+            if raw is None:
+                return default
+            return tuple(float(v) for v in raw)
+
+        return FuzzyEngine(
+            score_low=_t("score_low", self.score_low),
+            score_medium=_t("score_medium", self.score_medium),
+            score_high=_t("score_high", self.score_high),
+            impact_low=_t("impact_low", self.impact_low),
+            impact_high=_t("impact_high", self.impact_high),
+            cost_low=_t("cost_low", self.cost_low),
+            cost_high=_t("cost_high", self.cost_high),
         )
 
     def fuzzy_blend(

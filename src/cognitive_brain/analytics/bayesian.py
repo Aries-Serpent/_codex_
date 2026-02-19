@@ -22,7 +22,7 @@ Integration point (behind feature flag):
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Dict, List
 
 
 def _bayesian_mode_enabled() -> bool:
@@ -245,6 +245,62 @@ class BayesianAssessor:
         if total > 0:
             return {k: v / total for k, v in adjusted.items()}
         return adjusted
+
+    def apply_tuning_rules(
+        self,
+        rules: List[Dict[str, Any]],
+        evidence: Dict[str, str],
+        target_node: str = "decision",
+    ) -> Dict[str, float]:
+        """
+        Apply targeted tuning rules to amplify specific posterior decisions.
+
+        When the provided evidence matches a rule's evidence dict (ALL keys must
+        match), the posterior probability for ``target_value`` is multiplied by
+        ``effect`` and the distribution is re-normalised.  Clamps to [0, 1]
+        before normalisation.  No global state is mutated — returns a new dict.
+
+        Only active when ``CODEX_BAYESIAN_MODE=true``; returns the unmodified
+        posterior otherwise.
+
+        Args:
+            rules: List of tuning rule dicts, each with:
+                - ``evidence``: Dict of required evidence key→value pairs to match.
+                - ``target_node``: Node this rule applies to (default "decision").
+                - ``target_value``: Value in the posterior to amplify.
+                - ``effect``: Multiplication factor (> 1.0 boosts, < 1.0 suppresses).
+            evidence:    Current observed evidence dict.
+            target_node: Posterior node to tune.
+
+        Returns:
+            Tuned posterior distribution dict (or original if no rules match
+            or ``CODEX_BAYESIAN_MODE`` is disabled).
+        """
+        posterior = self.posterior(evidence, target_node)
+
+        if not _bayesian_mode_enabled():
+            return posterior
+
+        for rule in rules:
+            if rule.get("target_node", "decision") != target_node:
+                continue
+
+            rule_evidence: Dict[str, str] = rule.get("evidence", {})
+            # All rule evidence key-value pairs must match observed evidence
+            if not all(evidence.get(k) == v for k, v in rule_evidence.items()):
+                continue
+
+            target_value: str = rule.get("target_value", "")
+            effect: float = float(rule.get("effect", 1.0))
+
+            if target_value in posterior:
+                tuned = dict(posterior)
+                tuned[target_value] = min(1.0, tuned[target_value] * effect)
+                total = sum(tuned.values())
+                if total > 0:
+                    posterior = {k: v / total for k, v in tuned.items()}
+
+        return posterior
 
     # ------------------------------------------------------------------
     # Internal helpers

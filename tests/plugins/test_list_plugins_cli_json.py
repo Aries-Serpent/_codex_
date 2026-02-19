@@ -27,7 +27,7 @@ def test_json_shape_no_discover() -> None:
     assert "programmatic" in payload and "legacy" in payload and "options" in payload
     prog = payload["programmatic"]
     assert isinstance(prog, dict)
-    assert isinstance(prog.get("discovered"), int)
+    assert isinstance(prog.get("discovered"), list)  # discovered is a list, not int
     assert isinstance(prog.get("names"), list)
     legacy = payload["legacy"]
     assert isinstance(legacy, dict)
