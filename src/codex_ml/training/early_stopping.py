@@ -221,13 +221,20 @@ def inject_early_stopping(
     try:
         from transformers import EarlyStoppingCallback
 
+        # Check isinstance for real instances, or check type name for mocks
         has_early_stopping = any(
-            isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback)) for cb in callbacks
+            isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback))
+            or type(cb).__name__ in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
+            for cb in callbacks
         )
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
-        has_early_stopping = any(isinstance(cb, CodexEarlyStoppingCallback) for cb in callbacks)
+        has_early_stopping = any(
+            isinstance(cb, CodexEarlyStoppingCallback)
+            or type(cb).__name__ == "CodexEarlyStoppingCallback"
+            for cb in callbacks
+        )
 
     if has_early_stopping and not force:
         logger.info("EarlyStopping already present, skipping injection")

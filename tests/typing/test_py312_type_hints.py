@@ -7,7 +7,7 @@ Tests PEP 585 (list[T]), PEP 604 (X | Y), and generic types.
 from __future__ import annotations
 
 import sys
-from typing import Any, Callable, TypeVar, get_type_hints
+from typing import Any, Callable, Literal, Optional, TypeVar, Union, get_type_hints
 
 import pytest
 
