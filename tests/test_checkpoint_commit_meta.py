@@ -24,10 +24,10 @@ def test_checkpoint_records_git_commit(tmp_path):
 
     model = Toy()
     path = tmp_path / "ckpt.pt"
-    
+
     # Ensure the checkpoint directory exists
     path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     save_checkpoint(str(path), model, None, None, epoch=0)
     # Use map_location to avoid device issues and weights_only=False for custom classes
     ckpt = torch.load(str(path), weights_only=False, map_location='cpu')  # nosec B614 - Test checkpoint with custom model class requires weights_only=False

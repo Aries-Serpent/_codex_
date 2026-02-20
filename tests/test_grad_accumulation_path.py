@@ -49,10 +49,10 @@ def test_minimal_loop_honours_gradient_accumulation(monkeypatch, tmp_path: Path,
 
     metrics_path = tmp_path / "metrics.ndjson"
 
-    # Use a fresh list each time to avoid iterator exhaustion
+    # Use fresh list literals to ensure clean state for each test run
     train_texts = ["a b", "c d", "e f", "g h"]
     eval_texts = ["i j"]
-    
+
     config = {
         "seed": 0,
         "learning_rate": 1e-3,

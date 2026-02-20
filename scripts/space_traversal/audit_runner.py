@@ -278,11 +278,11 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
 def stage_s3_capabilities(cfg, facets):
     """
     Build capability list with override merging (Stage S3).
-    
+
     Args:
         cfg: Configuration dict with capability_map and options
         facets: Dict with facet data from stage s2
-        
+
     Returns:
         List of capability dicts with merged overrides applied
     """
@@ -290,10 +290,10 @@ def stage_s3_capabilities(cfg, facets):
     overrides = cap_map_cfg.get("overrides", {})
     options = cfg.get("options", {})
     fail_on_missing = options.get("fail_on_missing_detector", False)
-    
+
     facets_dict = facets.get("facets", {})
     capabilities = []
-    
+
     # Process overrides
     for canonical_name, aliases in overrides.items():
         # Check if any alias has files in facets
@@ -301,12 +301,12 @@ def stage_s3_capabilities(cfg, facets):
         for alias in aliases:
             if alias in facets_dict:
                 files_for_cap.extend(facets_dict[alias])
-        
+
         # If no files found and strict mode, fail
         if not files_for_cap and fail_on_missing:
             logger.error(f"Missing detector for capability '{canonical_name}' (aliases: {aliases})")
             sys.exit(EXIT_MISSING_DETECTOR)
-        
+
         # Create capability entry
         if files_for_cap or not fail_on_missing:
             capabilities.append({
@@ -316,7 +316,7 @@ def stage_s3_capabilities(cfg, facets):
                 "required_patterns": [],
                 "found_patterns": [],
             })
-    
+
     # Also add facets that aren't in overrides
     processed_aliases = set(alias for aliases in overrides.values() for alias in aliases)
     for facet_name, files in facets_dict.items():
@@ -328,7 +328,7 @@ def stage_s3_capabilities(cfg, facets):
                 "required_patterns": [],
                 "found_patterns": [],
             })
-    
+
     return capabilities
 
 
