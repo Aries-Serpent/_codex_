@@ -73,7 +73,7 @@ class EarlyStoppingConfig:
 
 class EarlyStopping:
     """Standalone EarlyStopping implementation for non-HuggingFace training loops.
-    
+
     Attributes:
         patience: Number of evaluation calls with no improvement before stopping
         monitor: Metric name to monitor

@@ -352,7 +352,6 @@ def load_dataset(
     skip_empty: bool = True,
 ) -> list[str]:
     """Load dataset from ``path`` with optional caching and manifest tracking."""
-    
     # Convert string path to Path object if needed
     if not isinstance(path, Path):
         path = Path(path)
