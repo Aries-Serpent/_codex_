@@ -393,11 +393,14 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import torch as _torch
+        import sys as _sys
+        _torch = _sys.modules.get("torch")  # use already-imported module, avoid duplicate import
+        if _torch is None:
+            raise ImportError("torch not loaded")
         _original_tensor_class = _torch.Tensor
         _original_tensor_fn = getattr(_torch, "tensor", None)
         _original_as_tensor = getattr(_torch, "as_tensor", None)
-    except ImportError:
+    except (ImportError, AttributeError):
         yield
         return
     yield
@@ -1339,7 +1342,7 @@ def disable_torch_profiler(monkeypatch):
                 monkeypatch.setattr(_torch_c, '_jit_set_profiling_mode',
                                     lambda *a, **k: None)
         except (ImportError, AttributeError):
-            pass
+            pass  # torch._C not available in this environment — skip JIT profiling patch
         try:
             if hasattr(torch, 'profiler') and hasattr(torch.profiler, 'record_function'):
                 monkeypatch.setattr(
@@ -1347,7 +1350,7 @@ def disable_torch_profiler(monkeypatch):
                     _NoopRecordFunction,
                 )
         except (ImportError, AttributeError):
-            pass
+            pass  # torch.profiler not available in this environment — skip patch
 
 
 # List of test files that commonly need the profiler disabled

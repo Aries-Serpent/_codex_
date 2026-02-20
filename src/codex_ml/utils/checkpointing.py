@@ -541,7 +541,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                 try:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
-                except Exception:
+                except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
                     pass
             info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
