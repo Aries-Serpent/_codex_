@@ -459,7 +459,8 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
         
         # Mock create_token since it's not implemented
-        with patch.object(provider, 'create_token') as mock_create:
+        # Use patch.object with the class to ensure it's applied before method call
+        with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
                 old_secret_id="",
@@ -478,13 +479,15 @@ class TestGitHubTokenProvider:
             assert result.new_secret_id is not None
             assert result.new_secret_value is not None
             assert "ghp_" in result.new_secret_value
+            mock_create.assert_called_once()
 
     def test_rotate_secret_with_revoke(self, github_config):
         """Test token rotation with old token revocation."""
         provider = GitHubTokenProvider(github_config)
         
         # Mock create_token since it's not implemented
-        with patch.object(provider, 'create_token') as mock_create:
+        # Use patch.object with the class to ensure it's applied before method call
+        with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
                 old_secret_id="",
@@ -493,7 +496,7 @@ class TestGitHubTokenProvider:
             )
             
             # Mock revoke_secret too
-            with patch.object(provider, 'revoke_secret') as mock_revoke:
+            with patch.object(GitHubTokenProvider, 'revoke_secret') as mock_revoke:
                 mock_revoke.return_value = True
                 
                 result = provider.rotate_secret(
@@ -502,6 +505,8 @@ class TestGitHubTokenProvider:
                 )
 
                 assert result.success is True
+                mock_create.assert_called_once()
+                mock_revoke.assert_called_once_with("old-token-id")
 
     def test_validate_secret_with_token(self, github_config):
         """Test token validation with provided value."""
