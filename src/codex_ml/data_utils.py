@@ -59,7 +59,7 @@ def split_dataset(
     from codex_ml.data.loader import apply_safety_filter, load_dataset
 
     # Load items
-    items = load_dataset(Path(texts)) if isinstance(texts, str | Path) else list(texts)
+    items = load_dataset(Path(texts)) if isinstance(texts, (str, Path)) else list(texts)
 
     # Apply safety filter with sanitization mapping
     items = apply_safety_filter(

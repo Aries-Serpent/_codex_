@@ -6,19 +6,19 @@ managing evaluation loops, and collecting metrics in a unified format.
 
 from __future__ import annotations
 
+import argparse
+import csv
+import json
 import logging
+import sys
+from pathlib import Path
+from typing import Iterable
+
+from codex_ml.utils.hf_pinning import HFModelUnavailableError
+
+from .evaluator import run_evaluator
 
 logger = logging.getLogger(__name__)
-
-import argparse  # noqa: E402
-import csv  # noqa: E402
-import json  # noqa: E402
-import sys  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Iterable  # noqa: E402
-
-from .evaluator import run_evaluator  # noqa: E402
-from codex_ml.utils.hf_pinning import HFModelUnavailableError  # noqa: E402
 
 
 def _load_texts(path: str) -> list[str]:

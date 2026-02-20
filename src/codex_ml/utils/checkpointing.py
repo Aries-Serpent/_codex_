@@ -498,6 +498,29 @@ def _safe_git_commit() -> Optional[str]:
     return _fallback_git_commit()
 
 
+def _safe_str_value(val: Any) -> Optional[str]:
+    """Safely convert a value to a string, handling MagicMock and other non-serializable types.
+    
+    Args:
+        val: Value to convert
+        
+    Returns:
+        String representation or None if not safely convertible
+    """
+    if val is None:
+        return None
+    # Check if it's a MagicMock or similar test object
+    if hasattr(val, '_mock_name') or type(val).__name__ == 'MagicMock':
+        return None
+    # Try to convert to string
+    try:
+        # Verify it's JSON-serializable by trying to encode it
+        json.dumps(str(val))
+        return str(val)
+    except (TypeError, ValueError):
+        return None
+
+
 def _minimal_env_summary() -> dict[str, Optional[str]]:
     """Collect minimal environment information (lightweight, no heavy deps)."""
     info: dict[str, Optional[str]] = {
@@ -506,20 +529,25 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
     }
     if TORCH_AVAILABLE:
         try:
-            info["torch"] = getattr(torch, "__version__", None)
-            info["cuda"] = (
-                torch.version.cuda
-                if hasattr(torch, "version") and torch.cuda.is_available()
-                else None
-            )
+            torch_version = getattr(torch, "__version__", None)
+            info["torch"] = _safe_str_value(torch_version)
+            
+            cuda_version = None
+            if hasattr(torch, "version") and hasattr(torch.cuda, "is_available"):
+                try:
+                    if torch.cuda.is_available():
+                        cuda_version = torch.version.cuda
+                except Exception:
+                    pass
+            info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            info["torch"] = (
-                getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
-            )
+            torch_version = getattr(torch, "__version__", None)
+            info["torch"] = _safe_str_value(torch_version)
     if NUMPY_AVAILABLE:
         try:
-            info["numpy"] = getattr(np, "__version__", None)
+            np_version = getattr(np, "__version__", None)
+            info["numpy"] = _safe_str_value(np_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             info["numpy"] = None

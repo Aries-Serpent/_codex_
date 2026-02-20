@@ -72,11 +72,14 @@ def _default_subprocess_cwd(monkeypatch):
 
     original_popen = _subprocess.Popen
 
-    def _patched_popen(*popenargs, **kwargs):
-        kwargs.setdefault("cwd", str(_PROJECT_ROOT))
-        return original_popen(*popenargs, **kwargs)
+    class _PatchedPopen(original_popen):  # type: ignore[misc]
+        """Class-based Popen wrapper so issubclass() checks still work."""
 
-    monkeypatch.setattr(_subprocess, "Popen", _patched_popen)
+        def __init__(self, *popenargs, **kwargs):
+            kwargs.setdefault("cwd", str(_PROJECT_ROOT))
+            super().__init__(*popenargs, **kwargs)
+
+    monkeypatch.setattr(_subprocess, "Popen", _PatchedPopen)
 
 
 _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
