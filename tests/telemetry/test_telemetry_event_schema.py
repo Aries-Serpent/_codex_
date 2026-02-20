@@ -27,7 +27,7 @@ try:
     import torch
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 except (ImportError, AttributeError):
-    pass  # torch not available — _TORCH_312_BUG stays False
+    _TORCH_312_BUG = False  # torch not installed; PyTorch/Python 3.12 bug cannot apply
 
 SCHEMA = {
     "type": "object",
