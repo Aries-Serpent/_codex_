@@ -25,12 +25,15 @@ from security.providers.base import (
 
 logger = logging.getLogger(__name__)
 
-# Optional boto3 import
+# Optional boto3 import - must be at module level for mocking in tests
 try:
     import boto3
     from botocore.exceptions import ClientError
     HAS_BOTO3 = True
 except ImportError:
+    # Set to None so tests can still patch the name
+    boto3 = None  # type: ignore
+    ClientError = Exception  # type: ignore
     HAS_BOTO3 = False
     logger.warning("boto3 not installed - AWS provider will be stub only")
 
