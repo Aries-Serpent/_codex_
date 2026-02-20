@@ -13,20 +13,23 @@ def dummy():
 
 def test_track_time_records_histogram():
     wrapped = track_time(REQUEST_LATENCY)(dummy)
-    
+
     # Get initial count (Histogram._sum has a _value attribute)
     if REQUEST_LATENCY and hasattr(REQUEST_LATENCY, '_sum'):
         count_before = REQUEST_LATENCY._sum._value.get()
     else:
         count_before = 0
-    
+
     wrapped()
-    
+
     # Get count after execution
     if REQUEST_LATENCY and hasattr(REQUEST_LATENCY, '_sum'):
         count_after = REQUEST_LATENCY._sum._value.get()
     else:
         count_after = 1
-    
+
     # If prometheus is available, count should increment
-    assert count_after > count_before if REQUEST_LATENCY else True
+    if REQUEST_LATENCY:
+        assert count_after > count_before
+    else:
+        assert True  # Test passes if prometheus not available

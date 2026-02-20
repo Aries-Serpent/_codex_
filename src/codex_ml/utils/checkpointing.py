@@ -504,10 +504,10 @@ def _safe_git_commit() -> Optional[str]:
 
 def _safe_str_value(val: Any) -> Optional[str]:
     """Safely convert a value to a string, handling MagicMock and other non-serializable types.
-    
+
     Args:
         val: Value to convert
-        
+
     Returns:
         String representation or None if not safely convertible
     """
@@ -535,7 +535,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
         try:
             torch_version = getattr(torch, "__version__", None)
             info["torch"] = _safe_str_value(torch_version)
-            
+
             cuda_version = None
             if hasattr(torch, "version") and hasattr(torch.cuda, "is_available"):
                 try:

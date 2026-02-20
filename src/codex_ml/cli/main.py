@@ -451,20 +451,20 @@ if typer is not None:
         """Wrapper around Typer app to handle --version/-V before Typer processes args."""
         import sys
         argv = args if args is not None else sys.argv[1:]
-        
+
         # Handle --version and -V before Typer sees them
         if "--version" in argv or "-V" in argv:
             from codex import __version__ as codex_version
             print(f"codex-ml-cli {codex_version}")
             return 0
-        
+
         # Let Typer handle the rest
         try:
             app(args)
             return 0
         except SystemExit as e:
             return e.code if e.code is not None else 0
-    
+
     cli = _typer_cli_wrapper
 
 else:

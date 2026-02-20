@@ -27,30 +27,30 @@ def stub_torch(monkeypatch):
 
         def numpy(self):  # pragma: no cover - compatibility shim
             return self._data
-        
+
         @property
         def device(self):
             return "cpu"
-        
+
         @property
         def shape(self):
             return self._data.shape
-        
+
         def to(self, device):
             return self
-        
+
         def __getitem__(self, key):
             return FakeTensor(self._data[key])
-        
+
         def any(self):
             return np.any(self._data)
-        
+
         def float(self):
             return FakeTensor(self._data.astype(np.float32))
-        
+
         def mean(self):
             return FakeTensor(np.mean(self._data))
-        
+
         def item(self):
             return float(np.asarray(self._data).item())
 

@@ -608,7 +608,7 @@ def _seed_everything(seed: int = 42):
     torch.backends.cudnn.benchmark = False
     try:
         torch.use_deterministic_algorithms(True)
-    except Exception:
+    except RuntimeError:
         # Some operations don't support deterministic algorithms
         pass
 
