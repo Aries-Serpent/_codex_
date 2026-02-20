@@ -37,7 +37,7 @@ def test_deployment_parse_manifests_if_present():
         # Handle multi-document YAML files (separated by ---)
         docs = list(yaml.safe_load_all(content))
         assert len(docs) > 0, f"No YAML documents found in {f}"
-        
+
         for doc in docs:
             if doc is None:  # Skip empty documents
                 continue
