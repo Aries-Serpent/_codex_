@@ -60,16 +60,8 @@ def test_prepare_data_from_config(tmp_path: Path) -> None:
         shard=ShardConfig(index=0, total=1),
     )
 
-    # ADDED: Convert OmegaConf to plain dict to avoid MagicMock serialization
-    try:
-        from omegaconf import OmegaConf
-        if hasattr(cfg, '__dict__'):
-            cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-            result = prepare_data_from_config(cfg_dict)
-        else:
-            result = prepare_data_from_config(cfg)
-    except (ImportError, AttributeError):
-        result = prepare_data_from_config(cfg)
+    # FIXED: prepare_data_from_config expects DataConfig, not dict
+    result = prepare_data_from_config(cfg)
 
     assert Path(result["manifest"]).exists()
     splits = result["splits"]

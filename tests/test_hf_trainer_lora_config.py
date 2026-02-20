@@ -60,7 +60,8 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
             # Provide state similar to HF Trainer for compatibility
             self.state = types.SimpleNamespace(
                 global_step=0,
-                last_model_checkpoint=None  # Add missing attribute
+                last_model_checkpoint=None,
+                best_model_checkpoint=None,  # HF Trainer state compat
             )
 
         def train(self, resume_from_checkpoint=None, **kwargs):

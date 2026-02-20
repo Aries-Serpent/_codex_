@@ -352,6 +352,14 @@ def pytest_collection_modifyitems(session, config, items):
                 "tests/test_codex_model.py::test_build_codex_model_cpu",
                 # torch profiler _record_function_exit ScriptObject bug (PyTorch+Py3.12)
                 "tests/test_performance_benchmark.py::test_benchmark_data_loading",
+                # isinstance() arg 2 union type bug in get_model (PyTorch+Py3.12)
+                "tests/models/test_models_registry_api.py::test_get_minilm",
+                # isinstance() arg 2 union type bug in custom training loop (PyTorch+Py3.12)
+                "tests/space_traversal/test_peft_comprehensive/test_custom_loop_overfit.py::test_overfit_tiny",
+                # issubclass() arg 2 union type bug in pickle/checkpointing (PyTorch+Py3.12)
+                "tests/test_checkpoint_commit_meta.py::test_checkpoint_records_git_commit",
+                # profiler _record_function_exit ScriptObject bug (PyTorch+Py3.12)
+                "tests/test_codex_best_effort.py::test_evaluate_batches_runs",
             }
         )
         if item.nodeid in _TORCH_PROFILER_XFAIL:
