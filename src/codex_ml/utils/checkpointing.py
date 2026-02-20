@@ -515,7 +515,6 @@ def _safe_str_value(val: Any) -> Optional[str]:
     # Try to convert to string
     try:
         # Verify it's JSON-serializable by trying to encode it
-        import json
         json.dumps(str(val))
         return str(val)
     except (TypeError, ValueError):
