@@ -103,6 +103,21 @@ class ActiveLearningHook:
     """
 
     _queue: list[UncertainSample] = field(default_factory=list, init=False)
+    query_budget_per_day: int = 50
+    _daily_counts: dict[str, int] = field(default_factory=dict, init=False)
+
+    def _enforce_query_budget(self) -> bool:
+        """Enforce daily query budget. Returns False when budget exceeded."""
+        today = datetime.now(timezone.utc).date().isoformat()
+        count = self._daily_counts.get(today, 0)
+        if count >= self.query_budget_per_day:
+            import logging
+            logging.getLogger(__name__).warning(
+                "Active learning query budget (%d/day) exceeded", self.query_budget_per_day
+            )
+            return False
+        self._daily_counts[today] = count + 1
+        return True
 
     def record_if_uncertain(
         self,
@@ -124,6 +139,9 @@ class ActiveLearningHook:
             ``True`` if the sample was queued, ``False`` otherwise.
         """
         if not _active_learning_enabled():
+            return False
+
+        if not self._enforce_query_budget():
             return False
 
         threshold = _uncertainty_threshold()
