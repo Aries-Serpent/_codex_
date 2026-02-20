@@ -12,49 +12,16 @@ from typing import (  # noqa: E402
     TYPE_CHECKING,
     Iterable,
     Optional,
-    Protocol,
     Sequence,
     cast,
-    runtime_checkable,
 )
 
 from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402
 from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
 
+from ._protocols import TokenizerAdapter  # noqa: E402 — re-exported for backward compat
+from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN  # noqa: E402 — re-exported
 from .adapter import WhitespaceTokenizer  # noqa: E402
-
-BOS_TOKEN = "<BOS>"  # nosec B105 - conventional special token
-EOS_TOKEN = "<EOS>"  # nosec B105 - conventional special token
-PAD_TOKEN = "<PAD>"  # nosec B105 - conventional special token
-UNK_TOKEN = "<UNK>"  # nosec B105 - conventional special token
-
-
-@runtime_checkable
-class TokenizerAdapter(Protocol):
-    """Minimal tokenizer interface for the symbolic pipeline."""
-
-    def encode(self, text: str) -> list[int]:
-        """Return token ids for text without adding special tokens."""
-
-    def decode(self, ids: Sequence[int]) -> str:
-        """Convert token ids back to a string."""
-
-    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:
-        """Register additional special tokens and return their id mapping."""
-
-    def save(self, path: Path) -> None:
-        """Persist tokenizer configuration to path.
-
-        path may be a directory or a tokenizer.json file location.
-        """
-
-    @property
-    def vocab_size(self) -> int:
-        """Return size of the tokenizer vocabulary."""
-
-    @property
-    def name_or_path(self) -> str:
-        """Return model identifier or local path backing the tokenizer."""
 
 
 if TYPE_CHECKING:  # pragma: no cover - import only used for typing

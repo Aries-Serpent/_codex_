@@ -300,6 +300,21 @@ def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> Any:
+    # --probe-json must be handled BEFORE the hydra availability check so it
+    # can function as a lightweight health-probe even when hydra is absent.
+    import argparse as _argparse
+
+    _pre = _argparse.ArgumentParser(add_help=False)
+    _pre.add_argument("--probe-json", action="store_true", dest="probe_json")
+    _pre_ns, _ = _pre.parse_known_args(argv if argv is not None else sys.argv[1:])
+    if _pre_ns.probe_json:
+        logger = init_json_logging()
+        with capture_exceptions(logger):
+            log_event(logger, "cli.start", prog="codex-train", args=list(argv or []))
+            print(json.dumps(_probe_payload()))
+            log_event(logger, "cli.finish", prog="codex-train", status="ok", mode="probe-json", rc=0)
+        return 0
+
     # Check for hydra availability early
     if hydra is None or _hydra_entry is None:
         sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")

@@ -64,6 +64,15 @@ class AdaptiveScoringEngine:
     def risk_weight(self):
         return self.optimizer.weights.risk_weight
 
+    @property
+    def impact_weight(self):
+        return self.optimizer.weights.impact_weight
+
+    @property
+    def mitigation_weight(self):
+        # cost_weight acts as the mitigation/remediation weight in this schema
+        return self.optimizer.weights.cost_weight
+
     def compute_score(self, scenario):
         """Compute score from scenario tuple or dict."""
         # Handle tuple format from generate_complex_scenarios
