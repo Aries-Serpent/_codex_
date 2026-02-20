@@ -898,7 +898,14 @@ def load_payload(
 
 
 def _write_json(path: Path, data: dict[str, Any]) -> None:
-    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+    class _SafeEncoder(json.JSONEncoder):
+        """Fallback encoder: renders non-serializable objects as their repr string."""
+        def default(self, o: Any) -> Any:
+            try:
+                return super().default(o)
+            except TypeError:
+                return repr(o)
+    path.write_text(json.dumps(data, indent=2, sort_keys=True, cls=_SafeEncoder), encoding="utf-8")
 
 
 def _read_json(path: Path) -> dict[str, Any]:

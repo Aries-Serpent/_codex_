@@ -328,6 +328,8 @@ def pytest_collection_modifyitems(session, config, items):
         #   pytorch/pytorch#118829
         _TORCH_PROFILER_XFAIL = frozenset({
             "tests/data/test_datasets_module.py::test_build_dataloaders_with_split",
+            "tests/unit/test_datasets_module.py::test_build_dataloaders",
+            "tests/smoke/test_hf_trainer_hello.py::test_hf_trainer_on_tiny_hello_dataset",
         })
         if item.nodeid in _TORCH_PROFILER_XFAIL:
             item.add_marker(

@@ -19,7 +19,7 @@ from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
 from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 from codex_ml.utils.optional import optional_import  # noqa: E402
 
-from .api import (  # noqa: E402 -- after utils to avoid circular-import (api.py lazily imports this module)
+from .api import (  # noqa: E402 -- relative import placed after absolute imports per isort convention
     BOS_TOKEN,
     EOS_TOKEN,
     PAD_TOKEN,
@@ -27,11 +27,11 @@ from .api import (  # noqa: E402 -- after utils to avoid circular-import (api.py
     TokenizerAdapter,
 )
 
+logger = logging.getLogger(__name__)
+
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import AutoTokenizer as HF_AutoTokenizer
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
-
-logger = logging.getLogger(__name__)
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
