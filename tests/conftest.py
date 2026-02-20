@@ -1312,7 +1312,6 @@ def disable_torch_profiler(monkeypatch):
     instead found type 'ScriptObject'. Patching both Python-level and C++-level
     profiler hooks prevents this error.
     """
-    import contextlib
     if torch is not None:
         # Replace record_function with a CLASS (not a lambda!) so that
         # isinstance(x, record_function) checks inside PyTorch C++ dispatch
