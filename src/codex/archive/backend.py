@@ -39,10 +39,10 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema  # noqa: E402
-from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: E402
 from .util import ensure_directory, json_dumps_sorted, utcnow  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
+    from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: F401
     from .config import ArchiveAppConfig as SettingsArchiveConfig
 
 Params = dict[str, Any]
@@ -60,6 +60,8 @@ class ArchiveConfig:
         runtime_env: dict[str, str] = dict(os.environ)
         if env is not None:
             runtime_env.update(env)
+        # Lazy import to avoid circular import: backend → config → backend
+        from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: PLC0415
         settings = RuntimeArchiveConfig.from_env(env=runtime_env)
         return cls(url=settings.backend.url, backend=settings.backend.backend)
 

@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
@@ -22,7 +19,7 @@ from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
 from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 from codex_ml.utils.optional import optional_import  # noqa: E402
 
-from .api import (  # noqa: E402
+from .api import (  # noqa: E402 -- after utils to avoid circular-import (api.py lazily imports this module)
     BOS_TOKEN,
     EOS_TOKEN,
     PAD_TOKEN,
@@ -33,8 +30,8 @@ from .api import (  # noqa: E402
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import AutoTokenizer as HF_AutoTokenizer
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
-else:  # pragma: no cover - runtime fallback when dependency missing
-    HF_AutoTokenizer = HF_PreTrainedTokenizerBase = object  # type: ignore
+
+logger = logging.getLogger(__name__)
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")

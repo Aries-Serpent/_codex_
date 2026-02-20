@@ -20,8 +20,10 @@ logger = logging.getLogger(__name__)
 # patch("src.training.accelerate_init_guard.Accelerator", ...)
 try:
     from accelerate import Accelerator  # noqa: F401
+    _ACCELERATOR_AVAILABLE = True
 except ImportError:
     Accelerator = None  # type: ignore[misc,assignment]
+    _ACCELERATOR_AVAILABLE = False
 
 
 @dataclass
@@ -64,6 +66,10 @@ class AccelerateInitResult:
 
 def is_accelerate_available() -> bool:
     """Check if accelerate package is importable."""
+    # _ACCELERATOR_AVAILABLE is set at module load from the Accelerator import attempt.
+    # Fall back to importlib check in case the module-level import was patched.
+    if _ACCELERATOR_AVAILABLE:
+        return True
     spec = importlib.util.find_spec("accelerate")
     return spec is not None
 
@@ -232,6 +238,7 @@ def get_distributed_env_info() -> dict[str, str]:
 
 
 __all__ = [
+    "Accelerator",
     "AccelerateInitResult",
     "is_accelerate_available",
     "is_gpu_available",
