@@ -302,6 +302,79 @@ class BayesianAssessor:
         return posterior
 
     # ------------------------------------------------------------------
+    # EM (Expectation-Maximisation) update
+    # ------------------------------------------------------------------
+
+    def update_cpds_em(
+        self,
+        corpus: list[dict[str, str]],
+        *,
+        learning_rate: float = 0.1,
+        min_count: int = 1,
+    ) -> None:
+        """Expectation-Maximisation update of Conditional Probability Distributions.
+
+        Soft-counts the corpus observations and blends them with the current
+        CPDs using *learning_rate* (0 = no update, 1 = full replacement).
+        Only tables whose nodes appear in the corpus observations are updated.
+
+        Parameters
+        ----------
+        corpus:
+            List of fully-observed variable assignments, e.g.
+            ``[{"risk_level": "high", "compliance": "reject"}, ...]``.
+        learning_rate:
+            Blend weight for the new soft-counts (default 0.1).
+        min_count:
+            Minimum observations for a parent-key bucket to be updated;
+            prevents over-fitting on rare evidence patterns (default 1).
+        """
+        if not corpus:
+            return
+
+        for node, table in self._tables.items():
+            # --- E step: accumulate soft counts from corpus observations ---
+            counts: dict[tuple, dict[str, float]] = {}
+            for obs in corpus:
+                if node not in obs:
+                    continue
+                value = obs[node]
+                if value not in table.values:
+                    continue
+                parent_key: tuple
+                if table.parents:
+                    if any(p not in obs for p in table.parents):
+                        continue  # incomplete observation — skip
+                    parent_key = tuple(obs[p] for p in table.parents)
+                else:
+                    parent_key = ()
+                bucket = counts.setdefault(parent_key, {v: 0.0 for v in table.values})
+                bucket[value] = bucket.get(value, 0.0) + 1.0
+
+            # --- M step: normalise soft counts and blend with current CPDs ---
+            for parent_key, raw in counts.items():
+                total = sum(raw.values())
+                if total < min_count:
+                    continue
+                new_dist = {v: raw.get(v, 0.0) / total for v in table.values}
+
+                if parent_key not in table.probs:
+                    # No prior for this parent combination — initialise directly
+                    table.probs[parent_key] = new_dist
+                else:
+                    old_dist = table.probs[parent_key]
+                    blended = {
+                        v: (1.0 - learning_rate) * old_dist.get(v, 0.0)
+                        + learning_rate * new_dist.get(v, 0.0)
+                        for v in table.values
+                    }
+                    # Re-normalise to guard against floating-point drift
+                    blend_total = sum(blended.values())
+                    if blend_total > 0:
+                        blended = {v: p / blend_total for v, p in blended.items()}
+                    table.probs[parent_key] = blended
+
+    # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
