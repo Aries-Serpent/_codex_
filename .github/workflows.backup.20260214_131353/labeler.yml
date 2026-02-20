@@ -1,0 +1,19 @@
+name: PR Labeler
+on:
+  pull_request_target:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+
+jobs:
+  triage:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v6
+        with:
+          configuration-path: .github/labeler.yml
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow labeler 2>/dev/null || echo "Cache health: check skipped"

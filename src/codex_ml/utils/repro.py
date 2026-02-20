@@ -16,10 +16,8 @@ Author: Codex Team
 """
 
 import hashlib
-import logging
-
-logger = logging.getLogger(__name__)
 import json
+import logging
 import os
 import re
 import shutil
@@ -32,6 +30,7 @@ from typing import Any
 from . import seeding as _seeding
 from .checkpointing import dump_rng_state, load_rng_state
 
+logger = logging.getLogger(__name__)
 set_reproducible = _seeding.set_reproducible
 _set_deterministic = _seeding.set_deterministic
 

@@ -28,5 +28,8 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     data = ckpt.read_bytes()
     ckpt.write_bytes(b"corrupt" + data[7:])
 
-    with pytest.raises(CheckpointLoadError, match="checksum"):
+    # Use exc_info to capture and check the exception without regex matching
+    with pytest.raises(CheckpointLoadError) as exc_info:
         load_training_checkpoint(str(ckpt), model, opt)
+    # Verify checksum is mentioned in the error
+    assert "checksum" in str(exc_info.value)

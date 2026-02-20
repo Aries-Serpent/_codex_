@@ -21,10 +21,10 @@ def main():
     """Run complete MLOps integration example."""
 
     # Import MLOps components
-    from codex_ml.tracking.mlflow_wrapper import MLflowTracker
-    from codex_ml.features.feature_store import FeatureStore, FeatureGroup, Feature
+    from codex_ml.features.feature_store import Feature, FeatureGroup, FeatureStore
     from codex_ml.features.monitoring import FeatureHealthMonitor
-    from codex_ml.utils.reproducibility import set_global_seed, capture_rng_snapshot
+    from codex_ml.tracking.mlflow_wrapper import MLflowTracker
+    from codex_ml.utils.reproducibility import capture_rng_snapshot, set_global_seed
 
     logger.info("=== Complete MLOps Integration Example ===\n")
 
@@ -54,7 +54,7 @@ def main():
         description="User demographic features",
     )
     feature_store.register_feature_group(feature_group)
-    logger.info(f"   ✓ Registered feature group: user_features v1.0.0\n")
+    logger.info("   ✓ Registered feature group: user_features v1.0.0\n")
 
     # 3. Set up feature health monitoring
     logger.info("3. Setting up feature health monitoring...")

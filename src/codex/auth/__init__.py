@@ -14,13 +14,13 @@ Production Features:
 
 Usage:
     from codex.auth import TokenManager, AuthMiddleware, require_auth
-    
+
     # Initialize token manager
     token_manager = TokenManager(secret_key="your-secret-key")
-    
+
     # Add middleware to FastAPI
     app.add_middleware(AuthMiddleware, token_manager=token_manager)
-    
+
     # Protect endpoints
     @require_auth(scopes=["read"])
     async def protected_endpoint(request):

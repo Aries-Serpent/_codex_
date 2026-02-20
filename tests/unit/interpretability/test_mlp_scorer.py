@@ -70,17 +70,17 @@ else:
 class TestMLPScorer:
     """Test suite for MLPScorer."""
 
-    @pytest.fixture
+    @pytest.fixture(scope="function")
     def mock_model(self):
         """Create a mock transformer model with MLP layers."""
         return MockTransformerWithMLP(num_layers=2, hidden_dim=64, intermediate_dim=256)
 
-    @pytest.fixture
+    @pytest.fixture(scope="function")
     def scorer(self, mock_model):
         """Create an MLPScorer instance."""
         return MLPScorer(mock_model, device='cpu')
 
-    @pytest.fixture
+    @pytest.fixture(scope="function")
     def sample_input(self):
         """Create sample input tensors."""
         batch_size = 1

@@ -24,8 +24,8 @@ Successfully identified and fixed **9 critical broken documentation links** caus
 
 ### CI Job Failure
 - **Workflow**: Workflow Documentation Link Validation
-- **Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663
-- **Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663/job/62719230029
+- **Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->
+- **Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->/job/62719230029
 - **Status**: ❌ Failing
 - **Root Cause**: 9 broken internal documentation links
 
@@ -319,8 +319,8 @@ Expected: All files exist at documented locations
   - 41 other phase documents
 
 ### CI/CD Resources
-- **Workflow Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663
-- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663/job/62719230029
+- **Workflow Run**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->
+- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->/job/62719230029
 - **Workflow File**: `.github/workflows/workflow-link-validation.yml`
 - **Validator Script**: `.github/scripts/validate-links.py`
 

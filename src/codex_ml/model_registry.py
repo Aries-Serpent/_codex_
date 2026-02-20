@@ -13,13 +13,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Mapping, MutableMapping, Optional, Sequence, Union
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Mapping, MutableMapping, Optional, Sequence, Union  # noqa: E402
 
-import torch
-from codex_ml.models import registry as _registry
-from codex_ml.models.utils.peft import apply_lora_if_available
+import torch  # noqa: E402
+from codex_ml.models import registry as _registry  # noqa: E402
+from codex_ml.models.utils.peft import apply_lora_if_available  # noqa: E402
 
 __all__ = ["LoraRequest", "ModelRequest", "get_model", "list_models", "register_model"]
 

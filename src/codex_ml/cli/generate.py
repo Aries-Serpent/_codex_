@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 import argparse
 import sys
-from typing import Any, Sequence
+from typing import Any, Optional, Sequence
 
 from codex_ml import __version__
 from codex_ml.codex_structured_logging import (
@@ -51,7 +51,7 @@ from codex_ml.utils.optional import optional_import
 _ = run_cmd
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     parser = ArgparseJSONParser(description=__doc__)
     parser.add_argument("--model", default="decoder_only")
@@ -117,7 +117,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         safety_cfg = SafetyConfig()
         prompt_result = sanitize_prompt(prompt, safety_cfg)
         prompt = prompt_result["text"]
-        filters: SafetyFilters | None = None
+        filters: Optional[SafetyFilters] = None
         if safety_enabled or args.safety:
             filters = SafetyFilters.from_policy_file(policy_path)
             try:

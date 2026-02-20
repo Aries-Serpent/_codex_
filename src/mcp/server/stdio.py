@@ -53,7 +53,7 @@ class InvalidMessageError(TransportError):
 
 class StdioTransport:
     """Stdio transport for MCP JSON-RPC communication.
-    
+
     This transport reads JSON-RPC messages from stdin and writes
     responses to stdout. Each message is expected to be on a single
     line (newline-delimited JSON).
@@ -66,7 +66,7 @@ class StdioTransport:
         writer: Optional[asyncio.StreamWriter] = None
     ) -> None:
         """Initialize the stdio transport.
-        
+
         Args:
             config: Transport configuration.
             reader: Optional custom reader (for testing).
@@ -108,10 +108,10 @@ class StdioTransport:
 
     async def read_message(self) -> Optional[dict[str, Any]]:
         """Read a single JSON-RPC message from stdin.
-        
+
         Returns:
             Parsed JSON-RPC message, or None if EOF reached.
-            
+
         Raises:
             MessageTooLargeError: If message exceeds max size.
             InvalidMessageError: If message cannot be parsed.
@@ -160,7 +160,7 @@ class StdioTransport:
 
     async def write_message(self, message: dict[str, Any]) -> None:
         """Write a JSON-RPC message to stdout.
-        
+
         Args:
             message: JSON-RPC message to write.
         """
@@ -182,7 +182,7 @@ class StdioTransport:
 
     async def message_stream(self) -> AsyncIterator[dict[str, Any]]:
         """Iterate over incoming messages.
-        
+
         Yields:
             Parsed JSON-RPC messages until EOF or error.
         """
@@ -223,7 +223,7 @@ class MockStdioTransport(StdioTransport):
 
     def __init__(self, messages: Optional[list] = None) -> None:
         """Initialize mock transport.
-        
+
         Args:
             messages: list of messages to return from read_message.
         """

@@ -7,7 +7,7 @@ Fixes empty TOC links by either creating anchor targets or removing entries.
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent
@@ -56,20 +56,20 @@ def fix_empty_toc_placeholder(file_path: Path) -> Tuple[int, List[dict]]:
             content = f.read()
     except Exception:
         return 0, []
-    
+
     original_content = content
     fixes = []
-    
+
     # Find all empty TOC links
     empty_links = find_empty_toc_links(content)
-    
+
     if not empty_links:
         return 0, []
-    
+
     for full_match, link_text in empty_links:
         # Check if corresponding section exists
         existing_anchor = check_if_section_exists(content, link_text)
-        
+
         if existing_anchor:
             # Section exists - add anchor
             new_link = f'[{link_text}]({existing_anchor})'
@@ -88,7 +88,7 @@ def fix_empty_toc_placeholder(file_path: Path) -> Tuple[int, List[dict]]:
                 'action': 'commented',
                 'reason': 'no_matching_section'
             })
-    
+
     # Write back if changed
     if content != original_content:
         try:
@@ -97,7 +97,7 @@ def fix_empty_toc_placeholder(file_path: Path) -> Tuple[int, List[dict]]:
             return len(fixes), fixes
         except Exception:
             return 0, []
-    
+
     return 0, []
 
 def main():
@@ -106,13 +106,13 @@ def main():
     print("🔧 Phase 4: Empty TOC Placeholders")
     print("=" * 80)
     print()
-    
+
     print("📂 Scanning for files with empty TOC links...")
-    
+
     # Find all markdown files
     md_files = list(REPO_ROOT.rglob('*.md'))
     md_files = [f for f in md_files if '.git' not in str(f) and 'node_modules' not in str(f)]
-    
+
     stats = {
         'files_scanned': 0,
         'files_with_empty_toc': 0,
@@ -120,46 +120,46 @@ def main():
         'anchors_added': 0,
         'entries_commented': 0
     }
-    
+
     fixes_log = []
-    
+
     print(f"   Found {len(md_files)} markdown files")
     print()
     print("🔧 Processing files with empty TOC placeholders...")
     print()
-    
+
     for md_file in md_files:
         stats['files_scanned'] += 1
-        
+
         fixes_count, fix_details = fix_empty_toc_placeholder(md_file)
-        
+
         if fixes_count > 0:
             stats['files_with_empty_toc'] += 1
             stats['files_modified'] += 1
-            
+
             rel_path = md_file.relative_to(REPO_ROOT)
-            
+
             for fix in fix_details:
                 if fix['action'] == 'added_anchor':
                     stats['anchors_added'] += 1
                 elif fix['action'] == 'commented':
                     stats['entries_commented'] += 1
-            
+
             fixes_log.append({
                 'file': str(rel_path),
                 'fixes_count': fixes_count,
                 'details': fix_details
             })
-            
+
             print(f"📄 {rel_path}")
             print(f"   ✅ Fixed {fixes_count} empty TOC placeholder(s)")
-            
+
             for fix in fix_details:
                 if fix['action'] == 'added_anchor':
                     print(f"      - Added anchor: [{fix['text']}]({fix['anchor']})")
                 elif fix['action'] == 'commented':
                     print(f"      - Commented: [{fix['text']}]() (no section found)")
-    
+
     print()
     print("=" * 80)
     print("📊 Phase 4 Summary")
@@ -170,7 +170,7 @@ def main():
     print(f"Anchors added: {stats['anchors_added']}")
     print(f"Entries commented (for review): {stats['entries_commented']}")
     print()
-    
+
     # Save log
     log_file = REPO_ROOT / "PHASE_4_TOC_FIXES.json"
     with open(log_file, 'w') as f:
@@ -178,12 +178,12 @@ def main():
             'stats': stats,
             'fixes': fixes_log
         }, f, indent=2)
-    
+
     print(f"📄 Fixes log saved to: {log_file.name}")
     print()
     print("✅ Phase 4 Complete!")
     print()
-    
+
     return 0
 
 if __name__ == "__main__":

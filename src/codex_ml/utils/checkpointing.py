@@ -27,7 +27,7 @@ import sys
 from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Protocol, Union
+from typing import Any, Literal, Optional, Protocol, Union, runtime_checkable
 
 try:  # Align schema metadata with checkpoint_core when available
     from codex_ml.utils import checkpoint_core
@@ -73,7 +73,7 @@ except Exception:  # pragma: no cover - fallback no-op
         msg: str,
         ctx: str,
         *,
-        errors_path: Path | None = None,
+        errors_path: Optional[Path] = None,
     ) -> str:
         return ""
 
@@ -94,18 +94,18 @@ except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
 
-_LAST_SEEDED_PYTHON_STATE: tuple[Any, ...] | None = None
-_LAST_SEEDED_NUMPY_STATE: Any | None = None
-_LAST_SEEDED_TORCH_STATE: Any | None = None
-_LAST_SEEDED_TORCH_CUDA_STATE: Any | None = None
+_LAST_SEEDED_PYTHON_STATE: Optional[tuple[Any, ...]] = None
+_LAST_SEEDED_NUMPY_STATE: Optional[Any] = None
+_LAST_SEEDED_TORCH_STATE: Optional[Any] = None
+_LAST_SEEDED_TORCH_CUDA_STATE: Optional[Any] = None
 
 
 def register_seed_snapshot(
     *,
-    python_state: Any | None = None,
-    numpy_state: Any | None = None,
-    torch_state: Any | None = None,
-    torch_cuda_state: Any | None = None,
+    python_state: Optional[Any] = None,
+    numpy_state: Optional[Any] = None,
+    torch_state: Optional[Any] = None,
+    torch_cuda_state: Optional[Any] = None,
 ) -> None:
     """Record RNG states captured immediately after a seeding operation."""
 
@@ -127,7 +127,7 @@ def register_seed_snapshot(
 _ORIGINAL_RANDOM_SEED = random.seed
 
 
-def _random_seed_with_snapshot(a: Any | None = None, version: int = 2) -> None:
+def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> None:
     """Wrap ``random.seed`` to preserve the pre-draw RNG state for restores."""
 
     _ORIGINAL_RANDOM_SEED(a, version)
@@ -172,6 +172,7 @@ if TORCH_AVAILABLE:
         torch.manual_seed = _torch_manual_seed_with_snapshot
 
 
+@runtime_checkable
 class StateDictProvider(Protocol):
     def state_dict(self) -> Mapping[str, Any]: ...
 
@@ -180,7 +181,7 @@ class StateDictProvider(Protocol):
 
 @dataclass
 class ModuleStateDictProvider(StateDictProvider):
-    module: Any | None
+    module: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
         if self.module is None:
@@ -210,7 +211,7 @@ class ModuleStateDictProvider(StateDictProvider):
 
 @dataclass
 class OptimizerStateDictProvider(StateDictProvider):
-    optimizer: Any | None
+    optimizer: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
         if self.optimizer is None:
@@ -235,7 +236,7 @@ class OptimizerStateDictProvider(StateDictProvider):
 
 @dataclass
 class SchedulerStateDictProvider(StateDictProvider):
-    scheduler: Any | None
+    scheduler: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
         if self.scheduler is None:
@@ -264,7 +265,7 @@ class SchedulerStateDictProvider(StateDictProvider):
 
 @dataclass
 class GradScalerStateDictProvider(StateDictProvider):
-    scaler: Any | None
+    scaler: Optional[Any]
 
     def state_dict(self) -> Mapping[str, Any]:
         if self.scaler is None:
@@ -297,7 +298,7 @@ class CheckpointLoadError(RuntimeError):
 SaveFormat = Literal["auto", "torch", "pickle"]
 
 
-def _resolve_format(value: str | None) -> SaveFormat:
+def _resolve_format(value: Optional[str]) -> SaveFormat:
     fmt = (value or "auto").lower()
     if fmt not in {"auto", "torch", "pickle"}:
         raise ValueError(f"unsupported checkpoint format: {value}")
@@ -305,8 +306,15 @@ def _resolve_format(value: str | None) -> SaveFormat:
 
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
-    with path.open("wb") as fh:
-        pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    try:
+        with path.open("wb") as fh:
+            pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    except TypeError as e:
+        if "issubclass() arg 2 must be a class" in str(e) or "isinstance() arg 2 must be a type" in str(e):
+            with path.open("wb") as fh:
+                pickle.dump(dict(payload), fh, protocol=2)
+        else:
+            raise
 
 
 def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
@@ -319,7 +327,15 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         signature = None
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
-    torch.save(dict(payload), path, **save_kwargs)
+    try:
+        torch.save(dict(payload), path, **save_kwargs)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
+            logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
+            torch.save(dict(payload), path, pickle_protocol=2)
+        else:
+            raise
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
@@ -347,7 +363,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         )
 
 
-def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> Any:
+def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -> Any:
     errors: list[BaseException] = []
     if fmt in {"auto", "torch"} and TORCH_AVAILABLE:
         try:
@@ -364,10 +380,13 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        with path.open("rb"):
+        with path.open("rb") as _fh:
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            except ImportError:
+                return pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
@@ -400,7 +419,7 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
         loader(state_dict)
 
 
-def _snapshot_state(source: Any | StateMapping | None) -> dict[str, Any] | None:
+def _snapshot_state(source: Union[Any, StateMapping, None]) -> Optional[dict[str, Any]]:
     if source is None:
         return None
     if isinstance(source, Mapping):
@@ -414,7 +433,7 @@ def _snapshot_state(source: Any | StateMapping | None) -> dict[str, Any] | None:
 
 
 def load_checkpoint(
-    path: str | Path, map_location: str | None = "cpu", *, format: str | None = None
+    path: Union[str, Path], map_location: Optional[str] = "cpu", *, format: Optional[str] = None
 ) -> Any:
     """Load a checkpoint payload returning the raw serialized state."""
 
@@ -454,7 +473,7 @@ def _verify_checksum_manifest(directory: Path) -> None:
         raise RuntimeError("checkpoint checksum mismatch")
 
 
-def _fallback_git_commit() -> str | None:
+def _fallback_git_commit() -> Optional[str]:
     """Return current Git commit hash if available (fallback to subprocess)."""
     try:
         repo_root = Path(__file__).resolve().parents[3]
@@ -466,7 +485,7 @@ def _fallback_git_commit() -> str | None:
         return None
 
 
-def _safe_git_commit() -> str | None:
+def _safe_git_commit() -> Optional[str]:
     """Try provenance _git_commit then fallback to subprocess."""
     try:
         if callable(_prov_git_commit):
@@ -479,9 +498,9 @@ def _safe_git_commit() -> str | None:
     return _fallback_git_commit()
 
 
-def _minimal_env_summary() -> dict[str, str | None]:
+def _minimal_env_summary() -> dict[str, Optional[str]]:
     """Collect minimal environment information (lightweight, no heavy deps)."""
-    info: dict[str, str | None] = {
+    info: dict[str, Optional[str]] = {
         "python": sys.version,
         "platform": platform.platform(),
     }
@@ -510,7 +529,7 @@ def _minimal_env_summary() -> dict[str, str | None]:
     return info
 
 
-def _compute_file_checksum(path: Path) -> str | None:
+def _compute_file_checksum(path: Path) -> Optional[str]:
     """Compute SHA-256 checksum of a file.
 
     Args:
@@ -534,7 +553,7 @@ def _compute_file_checksum(path: Path) -> str | None:
 
 
 def _capture_dataset_checksums(
-    dataset_paths: list[str | Path] | None = None,
+    dataset_paths: Optional[list[Union[str, Path]]] = None,
 ) -> dict[str, str]:
     """Capture checksums of dataset files for reproducibility.
 
@@ -580,15 +599,15 @@ def _safe_environment_summary() -> dict[str, Any]:
 
 
 def save_checkpoint(
-    path: str | Path,
-    model: StateDictProvider | None,
-    optimizer: Any | StateMapping | None,
-    scheduler: Any | StateMapping | None,
+    path: Union[str, Path],
+    model: Optional[StateDictProvider],
+    optimizer: Union[Any, StateMapping, None],
+    scheduler: Union[Any, StateMapping, None],
     epoch: int,
-    extra: Mapping[str, Any] | None = None,
+    extra: Optional[Mapping[str, Any]] = None,
     *,
-    format: str | None = None,
-    dataset_paths: list[str | Path] | None = None,
+    format: Optional[str] = None,
+    dataset_paths: Optional[list[Union[str, Path]]] = None,
 ) -> None:
     """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise.
 
@@ -675,14 +694,14 @@ def save_checkpoint(
 
 
 def load_training_checkpoint(
-    path: str | Path,
-    model: Any | None = None,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
+    path: Union[str, Path],
+    model: Optional[Any] = None,
+    optimizer: Optional[Any] = None,
+    scheduler: Optional[Any] = None,
     map_location: str = "cpu",
     *,
     strict: bool = True,
-    format: str | None = None,
+    format: Optional[str] = None,
 ) -> dict[str, Any]:
     """Load a training checkpoint and optionally restore state into live objects."""
 
@@ -775,9 +794,9 @@ def verify_ckpt_integrity(path: str) -> None:
 
 def build_payload_bytes(
     model: Any,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
-    scaler: Any | None = None,
+    optimizer: Optional[Any] = None,
+    scheduler: Optional[Any] = None,
+    scaler: Optional[Any] = None,
     *,
     rng_state: bool = False,
 ) -> bytes:
@@ -805,9 +824,9 @@ def build_payload_bytes(
 def load_payload(
     path: str,
     model: Any,
-    optimizer: Any | None = None,
-    scheduler: Any | None = None,
-    scaler: Any | None = None,
+    optimizer: Optional[Any] = None,
+    scheduler: Optional[Any] = None,
+    scaler: Optional[Any] = None,
 ) -> dict[str, Any]:
     """Load training state from path into provided objects."""
     if not TORCH_AVAILABLE:
@@ -918,17 +937,17 @@ def _rng_dump() -> dict[str, Any]:
 
 
 def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
-    def _python_payload() -> list[Any] | None:
+    def _python_payload() -> Optional[list[Any]]:
         if prefer_resume and "python_resume" in state:
             return state["python_resume"]
         return state.get("python")
 
-    def _numpy_payload() -> list[Any] | None:
+    def _numpy_payload() -> Optional[list[Any]]:
         if prefer_resume and "numpy_resume" in state:
             return state["numpy_resume"]
         return state.get("numpy")
 
-    def _torch_payload() -> dict[str, Any] | None:
+    def _torch_payload() -> Optional[dict[str, Any]]:
         if prefer_resume and "torch_resume" in state:
             return state["torch_resume"]
         if "torch" in state:
@@ -997,9 +1016,9 @@ def load_rng_state(state: dict[str, Any], *, prefer_resume: bool = True) -> None
 
 def set_seed(
     seed: int,
-    out_dir: Path | str | None = None,
+    out_dir: Optional[Union[Path, str]] = None,
     *,
-    deterministic: bool | None = None,
+    deterministic: Optional[bool] = None,
 ) -> dict[str, int]:
     """Set RNG seeds across libraries and optionally persist seeds.json."""
     if deterministic is None:
@@ -1037,8 +1056,8 @@ class CheckpointManager:
         keep_last: int = 5,
         keep_best: int = 1,
         *,
-        storage: StorageProvider | None = None,
-        remote_prefix: str | None = None,
+        storage: Optional[StorageProvider] = None,
+        remote_prefix: Optional[str] = None,
     ) -> None:
         self.root = Path(root)
         self.keep_last = int(keep_last)
@@ -1053,13 +1072,13 @@ class CheckpointManager:
     def save(
         self,
         epoch: int,
-        model: Any | None = None,
-        optimizer: Any | None = None,
-        scheduler: Any | None = None,
-        tokenizer: Any | None = None,
+        model: Optional[Any] = None,
+        optimizer: Optional[Any] = None,
+        scheduler: Optional[Any] = None,
+        tokenizer: Optional[Any] = None,
         *,
-        config: dict[str, Any] | None = None,
-        metrics: dict[str, Any] | None = None,
+        config: Optional[dict[str, Any]] = None,
+        metrics: Optional[dict[str, Any]] = None,
     ) -> Path:
         ep_dir = self.root / f"epoch-{epoch}"
         ep_dir.mkdir(parents=True, exist_ok=True)
@@ -1156,7 +1175,7 @@ class CheckpointManager:
         self,
         step: int,
         payload: Any,
-        metrics: dict[str, Any] | None = None,
+        metrics: Optional[dict[str, Any]] = None,
         prefix: str = "ckpt",
         *,
         rng_state: bool = False,
@@ -1227,9 +1246,9 @@ class CheckpointManager:
     def resume_from(
         self,
         path: Path,
-        model: Any | None = None,
-        optimizer: Any | None = None,
-        scheduler: Any | None = None,
+        model: Optional[Any] = None,
+        optimizer: Optional[Any] = None,
+        scheduler: Optional[Any] = None,
     ) -> dict[str, Any]:
         path = Path(path)
         if not path.exists():  # pragma: no cover
@@ -1252,8 +1271,12 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            except ImportError:
+                with open(path / "state.pkl", "rb") as _fh:
+                    state = pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")
@@ -1277,11 +1300,11 @@ class CheckpointManager:
 
     def load_latest(
         self,
-        model: Any | None = None,
-        optimizer: Any | None = None,
-        scheduler: Any | None = None,
+        model: Optional[Any] = None,
+        optimizer: Optional[Any] = None,
+        scheduler: Optional[Any] = None,
         *,
-        search_path: Path | None = None,
+        search_path: Optional[Path] = None,
         strict: bool = True,
     ) -> dict[str, Any]:
         """Resume from the most recent checkpoint available.
@@ -1317,7 +1340,7 @@ class CheckpointManager:
         candidates: list[Path] = []
         seen: set[str] = set()
 
-        def _register(candidate: Path | None) -> None:
+        def _register(candidate: Optional[Path]) -> None:
             if candidate is None:
                 return
             try:
@@ -1337,7 +1360,7 @@ class CheckpointManager:
 
         marker = root / "last"
         if marker.exists():
-            marker_path: Path | None = None
+            marker_path: Optional[Path] = None
             if marker.is_symlink():
                 with contextlib.suppress(Exception):
                     marker_path = marker.resolve(strict=False)

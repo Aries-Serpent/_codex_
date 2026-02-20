@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Consolidation planning for near-duplicate files."""
 
 
-import time
-from dataclasses import dataclass
-from fnmatch import fnmatch
-from pathlib import Path
-from typing import Iterable
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from fnmatch import fnmatch  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable  # noqa: E402
 
-from .detect import FileMeta, stat_file
-from .similarity import Similarity, compute_similarity
+from .detect import FileMeta, stat_file  # noqa: E402
+from .similarity import Similarity, compute_similarity  # noqa: E402
 
 
 def _serialise_path(path: Path, root: Path) -> str:

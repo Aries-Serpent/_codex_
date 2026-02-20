@@ -4,14 +4,12 @@ Centralized, import-light helpers for reproducible and deterministic runs.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import contextlib
+import logging
 import os
 import random
 
+logger = logging.getLogger(__name__)
 
 def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
     """

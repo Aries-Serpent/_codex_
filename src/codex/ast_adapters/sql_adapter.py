@@ -1,14 +1,15 @@
 """SQL AST Adapter using sqlparse.
 
 This module provides SQL parsing capabilities for the AST framework,
-supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL 
+supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL
 (CREATE, ALTER, DROP) statements.
 """
 
-from typing import List, Optional, Dict, Any
 import uuid
+from typing import Any, Dict, List, Optional
+
 import sqlparse
-from sqlparse.sql import Statement, Identifier, IdentifierList
+from sqlparse.sql import Identifier, IdentifierList, Statement
 from sqlparse.tokens import Keyword
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
@@ -16,13 +17,13 @@ from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
 class SQLASTAdapter(BaseASTAdapter):
     """SQL AST adapter using sqlparse library.
-    
+
     Parses SQL queries and DDL statements into standardized AST nodes.
     Supports:
     - DML: SELECT, INSERT, UPDATE, DELETE
     - DDL: CREATE, ALTER, DROP
     - Extracts tables, columns, conditions, and query structure
-    
+
     Example:
         >>> adapter = SQLASTAdapter()
         >>> root = adapter.parse("SELECT id, name FROM users WHERE active = 1")
@@ -38,14 +39,14 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def parse(self, source: str, file_path: Optional[str] = None) -> StandardizedASTNode:
         """Parse SQL source into standardized AST.
-        
+
         Args:
             source: SQL source code to parse
             file_path: Optional file path for the source
-            
+
         Returns:
             Root node of the standardized AST
-            
+
         Raises:
             ValueError: If SQL source is invalid
         """
@@ -95,11 +96,11 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _process_statement(self, stmt: Statement, line_number: int) -> Optional[StandardizedASTNode]:
         """Process a single SQL statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             line_number: Line number in source
-            
+
         Returns:
             AST node for the statement
         """
@@ -139,10 +140,10 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _get_statement_type(self, stmt: Statement) -> str:
         """Get the type of SQL statement.
-        
+
         Args:
             stmt: sqlparse Statement object
-            
+
         Returns:
             Statement type (e.g., 'SELECT', 'INSERT', 'CREATE TABLE')
         """
@@ -171,7 +172,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _extract_select_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from SELECT statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             node: AST node to populate
@@ -243,7 +244,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _extract_insert_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from INSERT statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             node: AST node to populate
@@ -267,7 +268,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _extract_update_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from UPDATE statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             node: AST node to populate
@@ -288,7 +289,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _extract_delete_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DELETE statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             node: AST node to populate
@@ -314,7 +315,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def _extract_ddl_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DDL statement.
-        
+
         Args:
             stmt: sqlparse Statement object
             node: AST node to populate
@@ -333,7 +334,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def get_tables(self) -> List[str]:
         """Get list of tables referenced in parsed SQL.
-        
+
         Returns:
             List of table names
         """
@@ -341,7 +342,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def get_columns(self) -> List[str]:
         """Get list of columns referenced in parsed SQL.
-        
+
         Returns:
             List of column names
         """
@@ -349,10 +350,10 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """Extract SQL-specific metadata from a node.
-        
+
         Args:
             node: AST node to extract metadata from
-            
+
         Returns:
             Dictionary of metadata
         """

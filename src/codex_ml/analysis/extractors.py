@@ -22,9 +22,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import ast
-from dataclasses import dataclass, field
-from typing import Any
+import ast  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:
     import libcst as cst  # optional

@@ -16,6 +16,7 @@ from collections import Counter
 from typing import Any
 
 import pytest
+
 pytest.importorskip("hypothesis")
 
 

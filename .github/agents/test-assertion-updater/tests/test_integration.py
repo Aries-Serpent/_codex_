@@ -1,14 +1,15 @@
 """Integration tests for Test Assertion Updater Agent"""
 
-import pytest
-from pathlib import Path
-import tempfile
 import sys
+import tempfile
+from pathlib import Path
+
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.agent import TestAssertionUpdater, AssertionMismatch
+from src.agent import AssertionMismatch, TestAssertionUpdater
 
 
 @pytest.fixture
@@ -27,9 +28,9 @@ def test_example():
     assert result == "old_value"
 """)
         temp_path = Path(f.name)
-    
+
     yield temp_path
-    
+
     # Cleanup
     if temp_path.exists():
         temp_path.unlink()
@@ -46,15 +47,15 @@ def test_end_to_end_string_format_fix(agent, temp_test_file):
         actual_value='"new_value"',
         confidence=0.9
     )
-    
+
     # Generate fix
     fix = agent.generate_fix(mismatch)
     assert fix is not None
-    
+
     # Validate fix
     is_valid = agent.validate_fix(fix, temp_test_file)
     assert is_valid is True
-    
+
     # Generate commit message
     message = agent.generate_commit_message(fix, mismatch)
     assert 'fix(tests)' in message
@@ -72,12 +73,12 @@ def test_end_to_end_data_structure_fix(agent):
         actual_value='[{"name": "item1"}, {"name": "item2"}]',
         confidence=0.95
     )
-    
+
     # Generate fix
     fix = agent.generate_fix(mismatch)
     assert fix is not None
     assert 'isinstance(item, dict)' in fix.fixed_code
-    
+
     # Validate fix
     is_valid = agent.validate_fix(fix, Path("test.py"))
     assert is_valid is True
@@ -94,12 +95,12 @@ def test_end_to_end_type_change_fix(agent):
         actual_value='{"count": 123}',
         confidence=0.90
     )
-    
+
     # Generate fix
     fix = agent.generate_fix(mismatch)
     assert fix is not None
     assert '["value"]' in fix.fixed_code
-    
+
     # Validate fix
     is_valid = agent.validate_fix(fix, Path("test.py"))
     assert is_valid is True
@@ -127,7 +128,7 @@ def test_multiple_mismatches_workflow(agent):
             confidence=0.95
         )
     ]
-    
+
     for mismatch in mismatches:
         fix = agent.generate_fix(mismatch)
         assert fix is not None
@@ -146,7 +147,7 @@ def test_agent_resilience_to_invalid_mismatch(agent):
         actual_value='something_else',
         confidence=0.5
     )
-    
+
     with pytest.raises(ValueError, match="Unknown mismatch type"):
         agent.generate_fix(mismatch)
 
@@ -167,7 +168,7 @@ settings:
     with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
         f.write(config_content)
         config_path = Path(f.name)
-    
+
     try:
         agent = TestAssertionUpdater(config_path=config_path)
         assert agent.config['settings']['timeout_seconds'] == 600

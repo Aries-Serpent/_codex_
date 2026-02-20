@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 @dataclass
 class Pattern:
     """Represents a detected code pattern.
-    
+
     Attributes:
         name: Pattern identifier
         category: Pattern category (structural, behavioral, antipattern)
@@ -27,7 +27,7 @@ class Pattern:
     locations: List[Dict[str, Any]] = field(default_factory=list)
     confidence: float = 1.0
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -42,12 +42,12 @@ class Pattern:
 
 class PatternDetector:
     """Detects code patterns in AST.
-    
+
     Implements pattern detection for:
     - Structural patterns (singleton, factory, decorator)
     - Behavioral patterns (observer, strategy, command)
     - Anti-patterns (god class, long parameter list)
-    
+
     Attributes:
         patterns: Registered pattern detectors
         detected: List of detected patterns
@@ -55,7 +55,7 @@ class PatternDetector:
         god_class_method_threshold: Threshold for god class method count
         god_class_attr_threshold: Threshold for god class attribute count
     """
-    
+
     def __init__(
         self,
         long_param_threshold: int = 5,
@@ -63,7 +63,7 @@ class PatternDetector:
         god_class_attr_threshold: int = 15,
     ):
         """Initialize pattern detector.
-        
+
         Args:
             long_param_threshold: Max parameters before flagging
             god_class_method_threshold: Max methods before flagging as god class
@@ -75,7 +75,7 @@ class PatternDetector:
         self.god_class_method_threshold = god_class_method_threshold
         self.god_class_attr_threshold = god_class_attr_threshold
         self._register_default_patterns()
-    
+
     def _register_default_patterns(self) -> None:
         """Register built-in pattern detectors."""
         self.patterns = {
@@ -85,56 +85,56 @@ class PatternDetector:
             'long_parameter_list': self._detect_long_params,
             'decorator_pattern': self._detect_decorator_pattern,
         }
-    
+
     def detect_patterns(
         self,
         source_code: str,
         file_path: str = "<unknown>",
     ) -> List[Pattern]:
         """Detect all patterns in source code.
-        
+
         Args:
             source_code: Python source code
             file_path: Path to source file
-            
+
         Returns:
             List of detected patterns
         """
         self.detected = []
-        
+
         try:
             tree = ast.parse(source_code)
         except SyntaxError:
             return []
-        
+
         for pattern_name, detector in self.patterns.items():
             patterns = detector(tree, file_path)
             self.detected.extend(patterns)
-        
+
         return self.detected
-    
+
     def _detect_singleton(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect singleton pattern."""
         patterns = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 # Check for singleton indicators
                 has_instance_attr = False
                 has_get_instance = False
-                
+
                 for item in node.body:
                     # Check for _instance class attribute
                     if isinstance(item, ast.Assign):
                         for target in item.targets:
                             if isinstance(target, ast.Name) and target.id in ('_instance', 'instance'):
                                 has_instance_attr = True
-                    
+
                     # Check for get_instance method
                     if isinstance(item, ast.FunctionDef):
                         if item.name in ('get_instance', 'getInstance', 'instance'):
                             has_get_instance = True
-                
+
                 if has_instance_attr and has_get_instance:
                     patterns.append(Pattern(
                         name='singleton',
@@ -147,13 +147,13 @@ class PatternDetector:
                         }],
                         confidence=0.85,
                     ))
-        
+
         return patterns
-    
+
     def _detect_factory(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect factory pattern."""
         patterns = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 # Check for factory indicators
@@ -174,19 +174,19 @@ class PatternDetector:
                                     confidence=0.75,
                                 ))
                                 break
-        
+
         return patterns
-    
+
     def _detect_god_class(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect god class anti-pattern."""
         patterns = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 # Count methods and attributes
                 method_count = sum(1 for item in node.body if isinstance(item, ast.FunctionDef))
                 attr_count = sum(1 for item in node.body if isinstance(item, ast.Assign))
-                
+
                 # Check for god class indicators using configurable thresholds
                 if method_count > self.god_class_method_threshold or attr_count > self.god_class_attr_threshold:
                     patterns.append(Pattern(
@@ -204,22 +204,22 @@ class PatternDetector:
                             'attribute_count': attr_count,
                         },
                     ))
-        
+
         return patterns
-    
+
     def _detect_long_params(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect long parameter list anti-pattern."""
         patterns = []
         threshold = self.long_param_threshold
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 # Count parameters (excluding self)
                 param_count = len([
-                    arg for arg in node.args.args 
+                    arg for arg in node.args.args
                     if arg.arg != 'self'
                 ])
-                
+
                 if param_count > threshold:
                     patterns.append(Pattern(
                         name='long_parameter_list',
@@ -236,13 +236,13 @@ class PatternDetector:
                             'threshold': threshold,
                         },
                     ))
-        
+
         return patterns
-    
+
     def _detect_decorator_pattern(self, tree: ast.AST, file_path: str) -> List[Pattern]:
         """Detect decorator pattern usage."""
         patterns = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef) and node.decorator_list:
                 for decorator in node.decorator_list:
@@ -251,7 +251,7 @@ class PatternDetector:
                         decorator_name = decorator.id
                     elif isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name):
                         decorator_name = decorator.func.id
-                    
+
                     if decorator_name:
                         patterns.append(Pattern(
                             name='decorator_pattern',
@@ -265,25 +265,25 @@ class PatternDetector:
                             }],
                             confidence=1.0,
                         ))
-        
+
         return patterns
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get detection statistics."""
         by_category = {}
         by_name = {}
-        
+
         for pattern in self.detected:
             # Count by category
             if pattern.category not in by_category:
                 by_category[pattern.category] = 0
             by_category[pattern.category] += 1
-            
+
             # Count by name
             if pattern.name not in by_name:
                 by_name[pattern.name] = 0
             by_name[pattern.name] += 1
-        
+
         return {
             'total_patterns': len(self.detected),
             'by_category': by_category,

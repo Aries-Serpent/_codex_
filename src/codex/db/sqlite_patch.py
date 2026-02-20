@@ -21,9 +21,9 @@ import atexit
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-import sqlite3
-import threading
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import threading  # noqa: E402
 
 _ORIG_CONNECT = sqlite3.connect
 _POOL_ENABLED_ENV = "CODEX_SQLITE_POOL"  # "1" enables pooling

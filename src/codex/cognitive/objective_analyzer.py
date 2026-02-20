@@ -24,7 +24,7 @@ from typing import Any
 class MetricType(Enum):
     """
     Types of metrics tracked by the analyzer.
-    
+
     Units for each metric:
     - COVERAGE: percentage (0-100), e.g., 75.0 for 75% coverage
     - SECURITY: count of vulnerabilities, e.g., 0 for no vulnerabilities
@@ -263,7 +263,7 @@ class TrendAnalyzer:
     ) -> TrendAnalysis | None:
         """
         Analyze the trend of a metric series.
-        
+
         Uses linear regression to determine trend direction and strength.
         """
         if len(metrics) < self.min_data_points:
@@ -338,7 +338,7 @@ class AnomalyDetector:
     def __init__(self, z_threshold: float = 2.0):
         """
         Initialize the anomaly detector.
-        
+
         Args:
             z_threshold: Number of standard deviations for anomaly detection
         """
@@ -347,7 +347,7 @@ class AnomalyDetector:
     def detect(self, metrics: list[MetricValue]) -> list[MetricValue]:
         """
         Detect anomalies in the metric series.
-        
+
         Returns a list of metric values that are anomalies.
         """
         if len(metrics) < 3:
@@ -380,7 +380,7 @@ class CorrelationAnalyzer:
     ) -> float | None:
         """
         Calculate Pearson correlation coefficient between two metric series.
-        
+
         Returns correlation coefficient (-1 to 1) or None if insufficient data.
         """
         if len(metrics_a) < 3 or len(metrics_b) < 3:
@@ -424,7 +424,7 @@ class CorrelationAnalyzer:
 class ObjectiveAnalyzer:
     """
     Main class for analyzing codebase metrics and generating health reports.
-    
+
     This is the core component of Plan 3 Phase 3.1: Metric Analysis Engine.
     """
 
@@ -491,11 +491,11 @@ class ObjectiveAnalyzer:
     ) -> tuple[bool, MetricAlert | None]:
         """
         Check if a metric breaches its threshold.
-        
+
         Args:
             metric_type: Type of metric to check
             value: Value to check (uses latest if None)
-            
+
         Returns:
             Tuple of (is_ok, alert) where alert is None if ok
         """

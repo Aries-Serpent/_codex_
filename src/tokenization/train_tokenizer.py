@@ -17,12 +17,9 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
+import logging
 import random
 import sys
 import warnings
@@ -32,6 +29,8 @@ from pathlib import Path
 from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 from ingestion import ingest
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     try:
@@ -62,9 +61,10 @@ except Exception as exc:  # pragma: no cover
 else:  # pragma: no cover - import succeeded
     _SPM_ERROR = None
 
-from tokenizers import (
+from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,
     Tokenizer,
+    decoders,
     models,
     normalizers,
     pre_tokenizers,
@@ -249,6 +249,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         )
         tokenizer.normalizer = normalizers.NFKC()
         tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
+        tokenizer.decoder = decoders.ByteLevel()
         trainer = trainers.BpeTrainer(
             vocab_size=cfg.vocab_size,
             special_tokens=["[PAD]", "[UNK]", "[BOS]", "[EOS]"],

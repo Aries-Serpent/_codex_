@@ -26,13 +26,13 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-import pathlib
-import sys
-import time
-import uuid
-from datetime import UTC, datetime
-from typing import Any, Iterable, Literal, Optional
+import os  # noqa: E402
+import pathlib  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+import uuid  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
+from typing import Any, Iterable, Literal, Optional  # noqa: E402
 
 try:  # Prefer DB-backed logging when available
     from .session_logger import log_event

@@ -19,10 +19,10 @@ from __future__ import annotations
 
 """Unified Codex executor for local orchestration."""
 
-import argparse
-import logging
-from pathlib import Path
-from typing import Any
+import argparse  # noqa: E402
+import logging  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 LOGGER = logging.getLogger(__name__)
 

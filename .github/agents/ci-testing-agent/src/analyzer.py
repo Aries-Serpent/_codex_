@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """CI Failure Analyzer - Analyzes CI failure logs and suggests automated fixes"""
 
-import click
 import json
 import re
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Optional
-from dataclasses import dataclass, asdict
-from datetime import datetime, timezone
+
+import click
 
 
 @dataclass
@@ -26,7 +27,7 @@ class FailureAnalysis:
 
 class CIFailureAnalyzer:
     """Analyzes CI failure logs and suggests fixes"""
-    
+
     def __init__(self):
         self.patterns = {
             'rust_formatting': {
@@ -86,11 +87,11 @@ class CIFailureAnalyzer:
                 'fix': 'Clean up disk space'
             },
         }
-    
+
     def analyze(self, log_file: Path) -> FailureAnalysis:
         """Analyze failure log and extract fix parameters"""
         log_content = log_file.read_text()
-        
+
         for pattern_name, pattern_info in self.patterns.items():
             if re.search(pattern_info['regex'], log_content, re.IGNORECASE):
                 fix_params = self._extract_params(log_content, pattern_info)
@@ -105,7 +106,7 @@ class CIFailureAnalyzer:
                     pattern_matched=pattern_name,
                     timestamp=datetime.now(timezone.utc).isoformat()
                 )
-        
+
         return FailureAnalysis(
             fix_available=False,
             fix_type='unknown',
@@ -116,16 +117,16 @@ class CIFailureAnalyzer:
             fix_description='Manual intervention required',
             timestamp=datetime.now(timezone.utc).isoformat()
         )
-    
+
     def _extract_params(self, log: str, pattern: Dict) -> Dict:
         """Extract fix parameters from log based on fix type"""
         params = {}
-        
+
         if pattern['fix_type'] == 'rust_format':
             # Extract file names that need formatting
             files = re.findall(r'Diff in ([^\s:]+\.rs)', log)
             params['files'] = files
-        
+
         elif pattern['fix_type'] == 'increase_timeout':
             # Extract current timeout value
             match = re.search(r'timed out after (\d+)', log)
@@ -136,19 +137,19 @@ class CIFailureAnalyzer:
             else:
                 params['current_timeout'] = 60
                 params['suggested_timeout'] = 120
-        
+
         elif pattern['fix_type'] == 'add_dependency':
             # Extract missing module name
             match = re.search(r"No module named '([^']+)'", log)
             if match:
                 params['missing_module'] = match.group(1)
-        
+
         elif pattern['fix_type'] == 'cargo_update':
             # Extract package name if available
             match = re.search(r'(failed to update.*`([^`]+)`|package `([^`]+)`)', log)
             if match:
                 params['package'] = match.group(2) or match.group(3)
-        
+
         return params
 
 

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/data/hash_dataset_files.py [options]
-    
+
     Examples:
     $ python scripts/data/hash_dataset_files.py --help
 

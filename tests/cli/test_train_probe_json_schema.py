@@ -24,21 +24,28 @@ def _validate(payload: dict[str, Any]) -> None:
 
 
 def test_train_probe_json_output() -> None:
+    import os
     command = (
         "import codex_ml.cli.hydra_main as H; "
         "import sys; "
         "res = H.main(); "
         "sys.exit(res if isinstance(res, int) else 0)"
     )
+    env = os.environ.copy()
+    env["PYTHONWARNINGS"] = "ignore"  # Suppress Python warnings
+    env["CODEX_LOG_LEVEL"] = "ERROR"  # Suppress info/warning logs
+
     proc = subprocess.run(
         [sys.executable, "-c", command, "--probe-json"],
         capture_output=True,
         text=True,
         check=False,
+        env=env,
     )
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     _validate(payload)
     for required_key in SCHEMA["required"]:
         assert required_key in payload
+    # Check for actual errors (Traceback), allow warnings
     assert "Traceback" not in (proc.stderr or "")

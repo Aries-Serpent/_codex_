@@ -66,8 +66,8 @@ for job_id, failure in ci_failures.items():
     print(f"**Description**: {failure['description']}")
     print(f"**Root Cause**: {failure['root_cause']}")
     print(f"**Remediation**: {failure['remediation']}")
-    print(f"\n**Affected Workflows**:")
-    
+    print("\n**Affected Workflows**:")
+
     for wf_name in failure['affected_workflows']:
         if wf_name in workflow_data['workflows']:
             wf = workflow_data['workflows'][wf_name]
@@ -111,18 +111,18 @@ for wf_name in priority_workflows:
     if wf_name in workflow_data['workflows']:
         wf = workflow_data['workflows'][wf_name]
         status = "✅ Active" if not wf['guarded'] else "🔴 Guarded"
-        
+
         # Determine known issues
         issues = []
         for job_id, failure in ci_failures.items():
             if wf_name in failure['affected_workflows']:
                 issues.append(f"{failure['failure_type']}")
-        
+
         if wf_name in workflow_data['errors']:
             issues.append("Parse Error")
-        
+
         issues_str = ", ".join(issues) if issues else "None"
-        
+
         # Determine action
         if issues:
             action = "🔥 URGENT FIX"
@@ -130,7 +130,7 @@ for wf_name in priority_workflows:
             action = "Review Guard"
         else:
             action = "Monitor"
-        
+
         print(f"| {wf_name} | {status} | 🔴 Critical | {issues_str} | {action} |")
     elif wf_name in workflow_data['errors']:
         print(f"| {wf_name} | ⚠️ Error | 🔴 Critical | Parse Error | 🔥 URGENT FIX |")
@@ -141,8 +141,8 @@ print()
 print("\n## Resource Requirements Summary\n")
 print("### Critical Workflows - Resource Needs\n")
 
-critical_workflows = [wf for wf, data in workflow_data['workflows'].items() 
-                      if 'Critical' in data.get('name', '') or 
+critical_workflows = [wf for wf, data in workflow_data['workflows'].items()
+                      if 'Critical' in data.get('name', '') or
                       any(x in wf.lower() for x in ['test', 'ci', 'security', 'build'])]
 
 runner_usage = {}
@@ -151,10 +151,10 @@ secrets_usage = {}
 for wf_name in critical_workflows[:20]:  # Top 20
     if wf_name in workflow_data['workflows']:
         wf = workflow_data['workflows'][wf_name]
-        
+
         for runner in wf['runners']:
             runner_usage[runner] = runner_usage.get(runner, 0) + 1
-        
+
         for secret in wf['secrets']:
             secrets_usage[secret] = secrets_usage.get(secret, 0) + 1
 

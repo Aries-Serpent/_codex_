@@ -137,7 +137,7 @@ class RotationEvent:
 
 class TokenRotationManager:
     """Manages automated token rotation lifecycle.
-    
+
     Features:
     - Scheduled rotation based on policy
     - Security event-triggered rotation
@@ -152,7 +152,7 @@ class TokenRotationManager:
         token_generator: Callable[[], str] | None = None,
     ):
         """Initialize the rotation manager.
-        
+
         Args:
             policy: Rotation policy configuration
             audit_log_path: Path for audit log file
@@ -183,14 +183,14 @@ class TokenRotationManager:
         provider: str = "github",
     ) -> TokenMetadata:
         """Register a token for management.
-        
+
         Args:
             token_id: Unique identifier for the token
             token_value: The actual token (only hash is stored)
             expires_at: Token expiration datetime
             scopes: List of permission scopes
             provider: Token provider (github, gitlab, etc.)
-            
+
         Returns:
             TokenMetadata for the registered token
         """
@@ -210,10 +210,10 @@ class TokenRotationManager:
 
     def check_rotation_needed(self, token_id: str) -> tuple[bool, RotationTrigger | None]:
         """Check if a token needs rotation.
-        
+
         Args:
             token_id: Token to check
-            
+
         Returns:
             Tuple of (needs_rotation, trigger_reason)
         """
@@ -231,14 +231,14 @@ class TokenRotationManager:
         metadata: dict[str, Any] | None = None,
     ) -> RotationEvent:
         """Perform token rotation.
-        
+
         Args:
             token_id: Token to rotate
             trigger: What triggered the rotation
             old_token: Current token value (for hash verification)
             new_token: New token value (generated if not provided)
             metadata: Additional context for audit
-            
+
         Returns:
             RotationEvent with results
         """
@@ -299,12 +299,12 @@ class TokenRotationManager:
         metadata: dict[str, Any] | None = None,
     ) -> list[RotationEvent]:
         """Handle a security event that may require token rotation.
-        
+
         Args:
             event_type: Type of security event (exposure, breach, etc.)
             affected_token_ids: Specific tokens affected, or all if None
             metadata: Event context
-            
+
         Returns:
             List of rotation events performed
         """
@@ -338,7 +338,7 @@ class TokenRotationManager:
 
     def get_rotation_schedule(self) -> list[dict[str, Any]]:
         """Get scheduled rotations for all managed tokens.
-        
+
         Returns:
             List of upcoming rotation schedules
         """
@@ -375,13 +375,13 @@ def check_token_rotation_needed(
     rotate_before_days: int = 14,
 ) -> tuple[bool, str | None]:
     """Convenience function to check if a token needs rotation.
-    
+
     Args:
         token_id: Token identifier
         expires_at: Token expiration datetime
         max_age_days: Maximum age before rotation
         rotate_before_days: Days before expiry to rotate
-        
+
     Returns:
         Tuple of (needs_rotation, reason)
     """

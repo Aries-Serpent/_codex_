@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_codex_init.py [options]
-    
+
     Examples:
     $ python scripts/generate_codex_init.py --help
 
@@ -34,8 +34,9 @@ Last Updated: 2026-01-16
 This script automatically generates __init__.py files with proper exports
 for all codex packages to ensure consistency and prevent manual maintenance drift.
 """
-from pathlib import Path
 import logging
+from pathlib import Path
+
 logger = logging.getLogger(__name__)
 import ast
 import sys
@@ -131,7 +132,7 @@ def generate_init_content(package_dir: Path) -> str:
 def main():
     """Main entry point."""
     repo_root = Path(__file__).parent.parent
-    
+
     if len(sys.argv) > 1:
         packages = [repo_root / arg for arg in sys.argv[1:]]
     else:
@@ -146,14 +147,14 @@ def main():
             continue
 
         init_file = package_path / "__init__.py"
-        
+
         # Check if file has DO NOT EDIT marker - if not, skip to preserve manual edits
         if init_file.exists():
             content = init_file.read_text()
             if "DO NOT EDIT" not in content and "AUTO-GENERATED" not in content:
                 print(f"ℹ {init_file}: Skipped (manual edits preserved)")
                 continue
-        
+
         new_content = generate_init_content(package_path)
 
         if init_file.exists():

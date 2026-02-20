@@ -1,5 +1,6 @@
 """Tests for evaluation metrics in codex_ml."""
 
+import pytest
 
 
 class TestEvaluationMetrics:
@@ -31,7 +32,7 @@ class TestEvaluationMetrics:
         precision = 0.8
         recall = 0.8
         f1 = 2 * (precision * recall) / (precision + recall)
-        assert f1 == 0.8
+        assert f1 == pytest.approx(0.8)
 
     def test_confusion_matrix(self):
         """Test confusion matrix."""
@@ -55,7 +56,7 @@ class TestEvaluationMetrics:
         predictions = [1.0, 2.0, 3.0]
         targets = [1.1, 2.1, 3.1]
         mae = sum(abs(p - t) for p, t in zip(predictions, targets)) / len(predictions)
-        assert mae == 0.1
+        assert mae == pytest.approx(0.1)
 
     def test_cross_entropy_loss(self):
         """Test cross entropy loss."""

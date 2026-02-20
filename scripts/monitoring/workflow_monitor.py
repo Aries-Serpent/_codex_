@@ -13,12 +13,12 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 
 class WorkflowMonitor:
     """Monitor GitHub Actions workflows for a specified duration."""
-    
+
     def __init__(self, owner: str, repo: str, branch: str, duration_minutes: int, check_interval_minutes: int):
         self.owner = owner
         self.repo = repo
@@ -27,7 +27,7 @@ class WorkflowMonitor:
         self.check_interval_minutes = check_interval_minutes
         self.start_time = datetime.now(timezone.utc)
         self.monitoring_log: List[Dict[str, Any]] = []
-        
+
     def get_workflow_runs(self) -> List[Dict[str, Any]]:
         """Get current workflow runs for the branch."""
         try:
@@ -37,12 +37,12 @@ class WorkflowMonitor:
         except Exception as e:
             print(f"Error fetching workflow runs: {e}")
             return []
-    
+
     def analyze_workflow_status(self, run: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze a workflow run and categorize its status."""
         status = run.get('status', 'unknown')
         conclusion = run.get('conclusion', 'N/A')
-        
+
         analysis = {
             'id': run.get('id'),
             'name': run.get('name'),
@@ -56,9 +56,9 @@ class WorkflowMonitor:
             'failed': conclusion == 'failure',
             'passed': conclusion == 'success',
         }
-        
+
         return analysis
-    
+
     def _categorize_status(self, status: str, conclusion: str) -> str:
         """Categorize workflow status for reporting."""
         if status == 'in_progress':
@@ -78,15 +78,15 @@ class WorkflowMonitor:
             return 'QUEUED'
         else:
             return 'UNKNOWN'
-    
+
     def check_workflows(self) -> Dict[str, Any]:
         """Perform a workflow status check."""
         timestamp = datetime.now(timezone.utc)
         elapsed_minutes = (timestamp - self.start_time).total_seconds() / 60
-        
+
         runs = self.get_workflow_runs()
         analyses = [self.analyze_workflow_status(run) for run in runs]
-        
+
         summary = {
             'timestamp': timestamp.isoformat(),
             'elapsed_minutes': round(elapsed_minutes, 2),
@@ -98,10 +98,10 @@ class WorkflowMonitor:
             'skipped': sum(1 for a in analyses if a['category'] == 'SKIPPED'),
             'workflows': analyses,
         }
-        
+
         self.monitoring_log.append(summary)
         return summary
-    
+
     def display_summary(self, summary: Dict[str, Any]) -> None:
         """Display a formatted summary of the check."""
         print("\n" + "="*80)
@@ -115,11 +115,11 @@ class WorkflowMonitor:
         print(f"  ⚠ Awaiting Action: {summary['awaiting_action']}")
         print(f"  ⊘ Skipped: {summary['skipped']}")
         print("-"*80)
-        
+
         for workflow in summary['workflows']:
             icon = self._get_status_icon(workflow['category'])
             print(f"{icon} {workflow['name']:<40s} | {workflow['category']:<15s}")
-    
+
     def _get_status_icon(self, category: str) -> str:
         """Get icon for workflow category."""
         icons = {
@@ -132,7 +132,7 @@ class WorkflowMonitor:
             'UNKNOWN': '?',
         }
         return icons.get(category, '•')
-    
+
     def save_report(self, output_path: Path) -> None:
         """Save monitoring report to file."""
         report = {
@@ -147,18 +147,18 @@ class WorkflowMonitor:
             'checks': self.monitoring_log,
             'summary': self._generate_final_summary(),
         }
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         print(f"\n📊 Report saved to: {output_path}")
-    
+
     def _generate_final_summary(self) -> Dict[str, Any]:
         """Generate final summary statistics."""
         if not self.monitoring_log:
             return {}
-        
+
         last_check = self.monitoring_log[-1]
         return {
             'total_checks': len(self.monitoring_log),
@@ -166,28 +166,28 @@ class WorkflowMonitor:
             'failures_detected': any(check['failed'] > 0 for check in self.monitoring_log),
             'completion_time': datetime.now(timezone.utc).isoformat(),
         }
-    
+
     def run(self) -> None:
         """Run the monitoring loop."""
-        print(f"\n🔍 Starting Workflow Monitor")
+        print("\n🔍 Starting Workflow Monitor")
         print(f"   Repository: {self.owner}/{self.repo}")
         print(f"   Branch: {self.branch}")
         print(f"   Duration: {self.duration_minutes} minutes")
         print(f"   Check Interval: {self.check_interval_minutes} minutes")
         print(f"   Start Time: {self.start_time.isoformat()}")
-        
+
         check_count = 0
         while True:
             check_count += 1
             elapsed = (datetime.now(timezone.utc) - self.start_time).total_seconds() / 60
-            
+
             if elapsed >= self.duration_minutes:
                 print(f"\n✓ Monitoring duration reached ({self.duration_minutes} minutes)")
                 break
-            
+
             summary = self.check_workflows()
             self.display_summary(summary)
-            
+
             remaining = self.duration_minutes - elapsed
             if remaining > self.check_interval_minutes:
                 print(f"\n⏱ Next check in {self.check_interval_minutes} minutes...")
@@ -195,7 +195,7 @@ class WorkflowMonitor:
                 time.sleep(self.check_interval_minutes * 60)
             else:
                 break
-        
+
         # Save final report
         output_path = Path('.codex/workflow_monitoring_results.json')
         self.save_report(output_path)
@@ -232,9 +232,9 @@ def main():
         default=5,
         help='Check interval in minutes (default: 5)'
     )
-    
+
     args = parser.parse_args()
-    
+
     monitor = WorkflowMonitor(
         owner=args.owner,
         repo=args.repo,
@@ -242,7 +242,7 @@ def main():
         duration_minutes=args.duration,
         check_interval_minutes=args.interval
     )
-    
+
     try:
         monitor.run()
     except KeyboardInterrupt:

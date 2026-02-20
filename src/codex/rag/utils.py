@@ -61,7 +61,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 # Fallback: Check device.type for older versions or mock objects
                 if hasattr(param, 'device') and hasattr(param.device, 'type'):
                     if param.device.type == 'meta':
-                        logger.debug(f"Found meta device parameter via device.type")
+                        logger.debug("Found meta device parameter via device.type")
                         return True
 
         # Also check buffers if available
@@ -73,7 +73,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 # Fallback: Check device.type
                 if hasattr(buffer, 'device') and hasattr(buffer.device, 'type'):
                     if buffer.device.type == 'meta':
-                        logger.debug(f"Found meta device buffer via device.type")
+                        logger.debug("Found meta device buffer via device.type")
                         return True
 
         # Check named_modules for parameters (for comprehensive detection)
@@ -82,17 +82,17 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                 if hasattr(module, 'named_parameters'):
                     for _, param in module.named_parameters():
                         if hasattr(param, 'is_meta') and param.is_meta:
-                            logger.debug(f"Found meta tensor in module parameter")
+                            logger.debug("Found meta tensor in module parameter")
                             return True
                         if hasattr(param, 'device') and hasattr(param.device, 'type'):
                             if param.device.type == 'meta':
-                                logger.debug(f"Found meta device in module parameter via device.type")
+                                logger.debug("Found meta device in module parameter via device.type")
                                 return True
 
         # Check model's own device attribute
         if hasattr(model, 'device') and hasattr(model.device, 'type'):
             if model.device.type == 'meta':
-                logger.debug(f"Found meta device on model itself")
+                logger.debug("Found meta device on model itself")
                 return True
 
         return False
@@ -103,7 +103,9 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
 
 def safe_model_to_device(
     model: Any,
-    device: str = "cpu"
+    device: str = "cpu",
+    dtype: Optional[Any] = None,
+    non_blocking: bool = False
 ) -> Any:
     """
     Safely move a model to the specified device, handling meta tensors.
@@ -115,19 +117,36 @@ def safe_model_to_device(
     Args:
         model: PyTorch model or SentenceTransformer model
         device: Target device ('cpu', 'cuda', 'mps', etc.)
+        dtype: Optional dtype to convert model parameters
+        non_blocking: If True, enable non-blocking device transfer
 
     Returns:
         Model on the target device
 
     Raises:
+        TypeError: If model is not a valid model type
         AttributeError: If model with meta tensors doesn't support to_empty()
         RuntimeError: If model cannot be moved to device
     """
     import time
     start_time = time.time()
-    
+
     try:
         import torch
+
+        # Validate input: model must be nn.Module for type checking
+        nn_mod = getattr(torch, "nn", None)
+        if nn_mod is not None:
+            torch_module_type = getattr(nn_mod, "Module", None)
+            if torch_module_type is not None:
+                # Check if model is a torch.nn.Module
+                if not isinstance(model, torch_module_type):
+                    # Allow models with .to() method (e.g., SentenceTransformer)
+                    if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
+                        raise TypeError(
+                            f"Expected torch.nn.Module or model with .to() method, "
+                            f"got {type(model).__name__}"
+                        )
 
         # Check if model has any meta tensors
         meta_status = has_meta_tensors(model)
@@ -169,18 +188,23 @@ def safe_model_to_device(
             else:
                 logger.debug("Model doesn't support modules(), skipping parameter reset")
 
+            # Apply dtype conversion if specified
+            if dtype is not None:
+                model = model.to(dtype=dtype)
+                logger.debug(f"Converted model to dtype: {dtype}")
+
             # Log completion time for production monitoring
             duration = time.time() - start_time
             logger.info(
                 f"Meta tensor device transfer completed in {duration:.3f}s. "
                 f"Device: {device}"
             )
-            
+
             # Optional: Add metrics if you have a metrics system
             # Example integration points:
             # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
             # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
-            
+
             return model
 
         else:
@@ -189,22 +213,27 @@ def safe_model_to_device(
             nn_mod = getattr(torch, "nn", None)
             torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
             if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
-                result = model.to(device)  # safe-device-placement: internal implementation
-                
+                # Build .to() kwargs
+                to_kwargs = {"device": device, "non_blocking": non_blocking}
+                if dtype is not None:
+                    to_kwargs["dtype"] = dtype
+
+                result = model.to(**to_kwargs)  # safe-device-placement: internal implementation
+
                 # Log standard transfer timing
                 duration = time.time() - start_time
                 if duration > 1.0:  # Only log if takes more than 1 second
                     logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
-                
+
                 return result
 
             # For SentenceTransformer or other models with .to() method
-            return _try_model_to(model, device)
+            return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
 
     except ImportError:
         # PyTorch not available - try fallback .to() method if model has it
         logger.warning("PyTorch not available, attempting fallback .to() method")
-        return _try_model_to(model, device)
+        return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
     except AttributeError as e:
         # Re-raise if this is about missing to_empty() (critical error)
         if "to_empty" in str(e):
@@ -217,19 +246,34 @@ def safe_model_to_device(
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
 
 
-def _try_model_to(model: Any, device: str) -> Any:
+def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_blocking: bool = False) -> Any:
     """
     Helper function to attempt model.to() if available.
-    
+
     Args:
         model: Model to move
         device: Target device
-    
+        dtype: Optional dtype to convert to
+        non_blocking: If True, enable non-blocking transfer
+
     Returns:
         Model after attempting device transfer, or original model if not supported
     """
     if hasattr(model, "to") and callable(getattr(model, "to", None)):
-        return model.to(device)  # safe-device-placement: internal implementation
+        # Build .to() kwargs
+        to_kwargs = {"device": device, "non_blocking": non_blocking}
+        if dtype is not None:
+            to_kwargs["dtype"] = dtype
+
+        try:
+            return model.to(**to_kwargs)  # safe-device-placement: internal implementation
+        except TypeError:
+            # Fallback: some models may not support all parameters
+            try:
+                return model.to(device)  # safe-device-placement: internal implementation
+            except Exception:
+                pass
+
     # Model doesn't have .to() method
     logger.warning("No device transfer method available, returning model as-is")
     return model

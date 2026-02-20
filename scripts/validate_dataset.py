@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/validate_dataset.py [options]
-    
+
     Examples:
     $ python scripts/validate_dataset.py --help
 

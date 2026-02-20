@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/convert_print_to_logger.py [options]
-    
+
     Examples:
     $ python scripts/convert_print_to_logger.py --help
 
@@ -109,7 +109,7 @@ class PrintDetector(ast.NodeVisitor):
                     args_str += ast.unparse(arg).lower()
                 else:
                     args_str += str(arg).lower()
-            except:
+            except Exception:  # Catch errors when converting AST node to string
                 pass
 
         # Check for error/warning indicators
@@ -321,7 +321,7 @@ def process_directory(directory: Path, fix: bool = False, dry_run: bool = True) 
 
             if not has_logging:
                 stats["needs_import"] += 1
-                logger.info(f"  ⚠️  No logging import found")
+                logger.info("  ⚠️  No logging import found")
                 if fix:
                     add_logging_import(py_file, dry_run)
 
@@ -364,7 +364,7 @@ def main():
                 logger.info(f"  Line {line}: {context} → logger.{level}()")
 
             if not has_logging:
-                logger.info(f"\n⚠️  No logging import found")
+                logger.info("\n⚠️  No logging import found")
                 if args.fix or dry_run:
                     add_logging_import(args.file, dry_run)
 
@@ -379,7 +379,7 @@ def main():
         stats = process_directory(args.directory, args.fix or dry_run, dry_run)
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Summary:")
+        logger.info("Summary:")
         logger.info(f"  Total files: {stats['total']}")
         logger.info(f"  Files with print(): {stats['with_prints']}")
         logger.info(f"  Total print() calls: {stats['total_prints']}")

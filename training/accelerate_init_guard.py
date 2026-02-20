@@ -15,7 +15,7 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.accelerate_init_guard import (
+from src.training.accelerate_init_guard import (  # noqa: E402
     AccelerateInitResult,
     get_distributed_env_info,
     is_accelerate_available,

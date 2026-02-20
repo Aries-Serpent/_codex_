@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Optional
 from fastapi import APIRouter, HTTPException, Request, status
 
 from src.utils.log_sanitizer import sanitize_log_input
+
 from ..config import settings
 from ..schemas.requests import KBQueryRequest
 from ..schemas.responses import AuditRef, KBQueryResponse, KBSearchResult

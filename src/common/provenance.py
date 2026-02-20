@@ -17,12 +17,9 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
+import logging
 import os
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -30,6 +27,8 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 try:
     from omegaconf import DictConfig, OmegaConf

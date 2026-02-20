@@ -21,20 +21,28 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import inspect
-import os
-import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Callable, Iterable, Optional, Protocol, Sequence
-from uuid import uuid4
+import inspect  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import (  # noqa: E402
+    Any,
+    Callable,
+    Iterable,
+    Optional,
+    Protocol,
+    Sequence,
+    runtime_checkable,
+)
+from uuid import uuid4  # noqa: E402
 
-from codex_ml.metrics.api import get_metric
-from codex_ml.metrics.writers import (
+from codex_ml.metrics.api import get_metric  # noqa: E402
+from codex_ml.metrics.writers import (  # noqa: E402
     BaseMetricsWriter,
 )
-from codex_ml.tracking.offline import decide_offline
-from codex_ml.training.engine import TrainingEngine
+from codex_ml.tracking.offline import decide_offline  # noqa: E402
+from codex_ml.training.engine import TrainingEngine  # noqa: E402
 
 try:
     import torch
@@ -42,10 +50,12 @@ except ImportError:  # pragma: no cover
     torch = None  # type: ignore
 
 
+@runtime_checkable
 class Criterion(Protocol):
     def __call__(self, outputs, targets) -> "torch.Tensor": ...
 
 
+@runtime_checkable
 class Logger(Protocol):
     def log(self, record: dict[str, Any]) -> None: ...
     def close(self) -> None: ...

@@ -4,10 +4,10 @@ Historical Files Compression Script
 
 Purpose:
     Compress historical files in offload directories to reduce storage
-    
+
 Usage:
     python scripts/repository_organization/compress_historical_files.py [options]
-    
+
     Examples:
     $ python scripts/repository_organization/compress_historical_files.py --category historical-coverage
     $ python scripts/repository_organization/compress_historical_files.py --all
@@ -19,7 +19,7 @@ Arguments:
     --min-age-days: Minimum file age for compression (default: 180)
     --dry-run: Show what would be compressed without making changes
     --log-actions: Log compression to action log (default: True)
-    
+
 Exit Codes:
     0: Success
     1: Error
@@ -67,31 +67,31 @@ def compress_file_gzip(source_path: Path, dry_run: bool = False) -> Path | None:
     """Compress a single file with gzip."""
     if source_path.suffix == ".gz":
         return None  # Already compressed
-    
+
     dest_path = source_path.with_suffix(source_path.suffix + ".gz")
-    
+
     if dry_run:
         print(f"  [DRY RUN] Would compress: {source_path.name} → {dest_path.name}")
         return dest_path
-    
+
     try:
         with open(source_path, "rb") as f_in:
             with gzip.open(dest_path, "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
-        
+
         # Capture original size before removing original file
         original_size = source_path.stat().st_size
-        
+
         # Remove original file
         source_path.unlink()
-        
+
         # Calculate compression ratio
         compressed_size = dest_path.stat().st_size
         ratio = (1 - compressed_size / original_size) * 100 if original_size > 0 else 0
-        
+
         print(f"  ✅ Compressed: {source_path.name} → {dest_path.name} ({ratio:.1f}% reduction)")
         return dest_path
-    
+
     except Exception as e:
         print(f"  ❌ Failed to compress {source_path.name}: {e}")
         return None
@@ -104,38 +104,38 @@ def compress_directory_tarball(
 ) -> Path | None:
     """Compress entire category directory into a tarball."""
     category_path = repo_root / OFFLOAD_ROOT / category
-    
+
     if not category_path.exists():
         return None
-    
+
     # Create archive name with timestamp
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
     archive_name = f"{category}_{timestamp}.tar.gz"
     archive_path = category_path.parent / archive_name
-    
+
     if dry_run:
         print(f"  [DRY RUN] Would create archive: {archive_name}")
         return archive_path
-    
+
     try:
         # Create tarball
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(category_path, arcname=category)
-        
+
         # Calculate sizes
         original_size = sum(
             f.stat().st_size for f in category_path.rglob("*") if f.is_file()
         )
         compressed_size = archive_path.stat().st_size
         ratio = (1 - compressed_size / original_size) * 100 if original_size > 0 else 0
-        
+
         print(f"  ✅ Created archive: {archive_name}")
         print(f"     Original: {original_size / (1024*1024):.2f}MB")
         print(f"     Compressed: {compressed_size / (1024*1024):.2f}MB")
         print(f"     Reduction: {ratio:.1f}%")
-        
+
         return archive_path
-    
+
     except Exception as e:
         print(f"  ❌ Failed to create archive for {category}: {e}")
         return None
@@ -149,46 +149,46 @@ def compress_category(
 ) -> dict[str, Any]:
     """Compress files in a category."""
     category_path = repo_root / OFFLOAD_ROOT / category
-    
+
     if not category_path.exists():
         print(f"❌ Category not found: {category}")
         return {"success": False, "files_compressed": 0}
-    
+
     print(f"📦 Compressing category: {category}")
     print(f"   Minimum age: {min_age_days} days")
     print()
-    
+
     files_compressed = 0
     total_original_size = 0
     total_compressed_size = 0
-    
+
     # Compress individual files
     for file_path in category_path.rglob("*"):
         if not file_path.is_file() or file_path.name == "README.md":
             continue
-        
+
         # Check age
         age_days = get_file_age_days(file_path)
         if age_days < min_age_days:
             continue
-        
+
         # Check if file should be compressed
         if file_path.suffix in COMPRESS_INDIVIDUALLY:
             original_size = file_path.stat().st_size
             compressed_path = compress_file_gzip(file_path, dry_run)
-            
+
             if compressed_path:
                 files_compressed += 1
                 total_original_size += original_size
                 if not dry_run and compressed_path.exists():
                     total_compressed_size += compressed_path.stat().st_size
-    
+
     # Calculate overall compression ratio
     if total_original_size > 0:
         overall_ratio = (1 - total_compressed_size / total_original_size) * 100
     else:
         overall_ratio = 0
-    
+
     return {
         "success": True,
         "files_compressed": files_compressed,
@@ -205,7 +205,7 @@ def log_to_action_log(
 ) -> None:
     """Log compression to action log."""
     action_log_path = repo_root / ".codex" / "action_log.ndjson"
-    
+
     action_entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "agent": "repository-organization-compress",
@@ -221,7 +221,7 @@ def log_to_action_log(
         "outcome": "success" if results["files_compressed"] > 0 else "no_action",
         "impact": f"Compressed {results['files_compressed']} file(s) with {results.get('compression_ratio', 0):.1f}% reduction",
     }
-    
+
     try:
         with open(action_log_path, "a") as f:
             f.write(json.dumps(action_entry) + "\n")
@@ -270,27 +270,27 @@ def main() -> int:
         help="Do not log compression to action log",
     )
     parser.set_defaults(log_actions=True)
-    
+
     args = parser.parse_args()
-    
+
     repo_root = Path.cwd()
-    
+
     # Validate arguments
     if not args.category and not args.all:
         print("❌ Error: Must specify --category or --all", file=sys.stderr)
         parser.print_help()
         return 1
-    
+
     # Determine categories to compress
     if args.all:
         categories = list(COMPRESSIBLE_CATEGORIES)
     else:
         categories = [args.category]
-    
+
     # Compress each category
     total_files = 0
     total_savings_mb = 0.0
-    
+
     for category in categories:
         results = compress_category(
             category,
@@ -298,28 +298,28 @@ def main() -> int:
             args.min_age_days,
             args.dry_run,
         )
-        
+
         if results["success"]:
             total_files += results["files_compressed"]
             if not args.dry_run:
                 savings = results.get("original_size_mb", 0) - results.get("compressed_size_mb", 0)
                 total_savings_mb += savings
-            
+
             # Log to action log
             if args.log_actions and not args.dry_run and results["files_compressed"] > 0:
                 log_to_action_log(category, results, repo_root)
-        
+
         print()
-    
+
     # Print overall summary
     print("📊 Compression Summary:")
     print(f"  ✅ Total files compressed: {total_files}")
     if not args.dry_run:
         print(f"  💾 Total storage saved: {total_savings_mb:.2f} MB")
-    
+
     if args.dry_run:
         print("\n⚠️  DRY RUN - No files were actually compressed")
-    
+
     return 0
 
 

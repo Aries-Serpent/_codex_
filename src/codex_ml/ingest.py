@@ -13,14 +13,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import csv
-import json
-import random
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Iterable, Iterator, Mapping, MutableMapping, Optional
+import csv  # noqa: E402
+import json  # noqa: E402
+import random  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import (  # noqa: E402
+    Any,
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    Optional,
+)
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
+from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load  # noqa: E402
 
 __all__ = ["ingest", "load_dataset", "ingest_sample"]
 

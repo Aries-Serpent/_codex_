@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 class ContextDistiller:
     """
     Distills codebase context into token-efficient summaries.
-    
+
     Compresses source code, documentation, and configurations into
     digestible context for AI agents.
     """
@@ -36,7 +36,7 @@ class ContextDistiller:
     ):
         """
         Initialize context distiller.
-        
+
         Args:
             src_dirs: Directories to process (defaults to src/ and codex_ml/)
             max_tokens: Maximum tokens in output
@@ -67,7 +67,7 @@ class ContextDistiller:
     def scan_codebase(self) -> Dict[str, List[Path]]:
         """
         Scan codebase for relevant files.
-        
+
         Returns:
             Dictionary mapping categories to file lists
         """
@@ -130,10 +130,10 @@ class ContextDistiller:
     def extract_code_structure(self, file_path: Path) -> Dict[str, Any]:
         """
         Extract high-level structure from code file.
-        
+
         Args:
             file_path: Path to code file
-            
+
         Returns:
             Dictionary with structure information
         """
@@ -182,7 +182,7 @@ class ContextDistiller:
     def generate_digest(self) -> str:
         """
         Generate context digest.
-        
+
         Returns:
             Markdown-formatted digest
         """
@@ -275,10 +275,10 @@ class ContextDistiller:
     def save_digest(self, content: Optional[str] = None) -> Path:
         """
         Save digest to file.
-        
+
         Args:
             content: Digest content (generates if not provided)
-            
+
         Returns:
             Path to saved digest file
         """
@@ -309,11 +309,11 @@ class ContextDistiller:
     ) -> str:
         """
         Compress content using sentencepiece tokenization.
-        
+
         Args:
             content: Content to compress
             model_path: Path to sentencepiece model (optional)
-            
+
         Returns:
             Compressed content
         """
@@ -350,11 +350,11 @@ def generate_context_digest(
 ) -> Path:
     """
     Convenience function to generate context digest.
-    
+
     Args:
         output_path: Output file path
         max_tokens: Maximum tokens
-        
+
     Returns:
         Path to generated digest
     """

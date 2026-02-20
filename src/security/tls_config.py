@@ -29,19 +29,19 @@ def create_server_context(
     require_client_cert: bool = True,
 ) -> ssl.SSLContext:
     """Create SSL context for bridge server.
-    
+
     Args:
         cert_path: Path to server certificate file (PEM format)
         key_path: Path to server private key file (PEM format)
         ca_path: Optional path to CA certificate for client verification
         require_client_cert: Whether to require client certificates (mTLS)
-        
+
     Returns:
         Configured SSL context for server
-        
+
     Raises:
         TLSConfigError: If certificate files are invalid or missing
-        
+
     Example:
         >>> context = create_server_context(
         ...     cert_path="/etc/bridge/server.crt",
@@ -108,19 +108,19 @@ def create_client_context(
     check_hostname: bool = False,
 ) -> ssl.SSLContext:
     """Create SSL context for bridge client.
-    
+
     Args:
         cert_path: Path to client certificate file (PEM format)
         key_path: Path to client private key file (PEM format)
         ca_path: Path to CA certificate for server verification
         check_hostname: Whether to verify server hostname (usually False for bridge)
-        
+
     Returns:
         Configured SSL context for client
-        
+
     Raises:
         TLSConfigError: If certificate files are invalid or missing
-        
+
     Example:
         >>> context = create_client_context(
         ...     cert_path="/etc/bridge/client.crt",
@@ -178,17 +178,17 @@ def validate_tls_config(
     client_key: str | Path,
 ) -> bool:
     """Validate all TLS configuration files are present and valid.
-    
+
     Args:
         server_cert: Path to server certificate
         server_key: Path to server key
         ca_cert: Path to CA certificate
         client_cert: Path to client certificate
         client_key: Path to client key
-        
+
     Returns:
         True if all files exist and can be loaded
-        
+
     Example:
         >>> valid = validate_tls_config(
         ...     server_cert="/etc/bridge/server.crt",

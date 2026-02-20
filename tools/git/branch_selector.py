@@ -14,7 +14,7 @@ def most_recent_branch() -> Optional[str]:
             stderr=subprocess.DEVNULL,
             text=True,
         )
-        lines = [l.strip() for l in out.splitlines() if l.strip()]
+        lines = [line_item.strip() for line_item in out.splitlines() if line_item.strip()]
         if not lines:
             return "main"
         # first line is most recent: "<date>\t<branch>"

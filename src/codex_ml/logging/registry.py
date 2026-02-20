@@ -9,11 +9,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Iterable, Mapping  # noqa: E402
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger
-from codex_ml.utils.optional import optional_import
+from codex_ml.logging.ndjson_logger import NDJSONLogger  # noqa: E402
+from codex_ml.utils.optional import optional_import  # noqa: E402
 
 _LOGGERS: dict[str, Callable[[str], None]] = {}
 psutil, _HAS_PSUTIL = optional_import("psutil")
@@ -104,8 +104,8 @@ __all__ = [
     "build_loggers",
     "get_logger",
     "register_logger",
-    "NDJSONLogger",  # Export the metrics logger for tests
+    "NDJSONMetricsLogger",  # Export the metrics logger for tests
 ]
 
-# Export _NDJSONMetricsLogger as NDJSONLogger for backward compatibility with tests
-NDJSONLogger = _NDJSONMetricsLogger
+# Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
+NDJSONMetricsLogger = _NDJSONMetricsLogger

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from unittest.mock import Mock
 
+# NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 from verification.cove import (
     MAX_CLAIMS_PER_RESPONSE,
     MAX_RESPONSE_LENGTH,

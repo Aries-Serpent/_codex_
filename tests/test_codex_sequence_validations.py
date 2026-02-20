@@ -74,6 +74,8 @@ def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
     class DummyOptimizer:
         def __init__(self, params, lr=0.001, weight_decay=0.0):
             self.params = list(params)
+            # PyTorch schedulers expect param_groups attribute (PR #3248 fix)
+            self.param_groups = [{"lr": lr, "weight_decay": weight_decay, "params": self.params}]
 
         def zero_grad(self, set_to_none: bool = True) -> None:  # noqa: D401
             for param in self.params:

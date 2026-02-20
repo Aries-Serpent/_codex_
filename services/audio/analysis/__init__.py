@@ -11,9 +11,9 @@ except ImportError:
 # Stub for IntelligentAudioAnalyzer if not available
 try:
     from src.services.audio.analysis.intelligent_analyzer import (
-        IntelligentAudioAnalyzer,
         AnalysisResult,
         AudioQualityMetrics,
+        IntelligentAudioAnalyzer,
     )
 except ImportError:
     from dataclasses import dataclass
@@ -41,14 +41,14 @@ except ImportError:
 
     class IntelligentAudioAnalyzer:
         """Stub for intelligent audio analyzer."""
-        
+
         def __init__(self, config: Optional[Dict[str, Any]] = None):
             self.config = config or {}
-        
+
         def analyze(self, audio_data: Any) -> AnalysisResult:
             """Analyze audio data."""
             return AnalysisResult()
-        
+
         def get_recommendations(self, result: AnalysisResult) -> List[str]:
             """Get recommendations based on analysis."""
             return result.recommendations if result else []

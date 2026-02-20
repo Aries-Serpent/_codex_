@@ -13,14 +13,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import abc
-import json
-import subprocess
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Optional
+import abc  # noqa: E402
+import json  # noqa: E402
+import subprocess  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
-from tools.security import net
+from tools.security import net  # noqa: E402
 
 
 class SearchProvider(abc.ABC):

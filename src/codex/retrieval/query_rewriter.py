@@ -104,7 +104,7 @@ class BaseQueryRewriter(ABC):
 class NormalizeRewriter(BaseQueryRewriter):
     """
     Basic query normalization.
-    
+
     Applies cleaning and normalization:
     - Lowercase conversion
     - Punctuation removal
@@ -151,7 +151,7 @@ class NormalizeRewriter(BaseQueryRewriter):
 class ExpansionRewriter(BaseQueryRewriter):
     """
     Query expansion using synonyms and related terms.
-    
+
     Expands the query with:
     - Synonyms from a word list
     - Related terms
@@ -221,7 +221,7 @@ class ExpansionRewriter(BaseQueryRewriter):
 class DecomposeRewriter(BaseQueryRewriter):
     """
     Query decomposition into sub-queries.
-    
+
     Breaks complex queries into simpler sub-queries
     for more targeted retrieval.
     """
@@ -286,7 +286,7 @@ class DecomposeRewriter(BaseQueryRewriter):
 class HybridRewriter(BaseQueryRewriter):
     """
     Hybrid query generator for sparse+dense retrieval.
-    
+
     Generates both sparse (keyword-based) and dense
     (semantic) versions of the query.
     """
@@ -322,7 +322,7 @@ class HybridRewriter(BaseQueryRewriter):
 class MultiQueryRewriter(BaseQueryRewriter):
     """
     Multi-query generation for improved recall.
-    
+
     Generates multiple query variants to capture
     different aspects of the user intent.
     """
@@ -373,14 +373,14 @@ class MultiQueryRewriter(BaseQueryRewriter):
 class QueryRewriter:
     """
     Main query rewriter class that dispatches to appropriate strategy.
-    
+
     Example:
         config = QueryRewriteConfig(
             strategy=QueryRewriteStrategy.EXPAND,
             max_expansions=5,
         )
         rewriter = QueryRewriter(config)
-        
+
         rewritten = rewriter.rewrite("find quick function")
         print(rewritten.rewritten_query)
         print(rewritten.expansions)
@@ -413,10 +413,10 @@ class QueryRewriter:
     def rewrite(self, query: str) -> RewrittenQuery:
         """
         Rewrite the query.
-        
+
         Args:
             query: Original query string
-            
+
         Returns:
             RewrittenQuery object with rewritten query and metadata
         """
@@ -461,10 +461,10 @@ class QueryRewriter:
     def rewrite_batch(self, queries: Sequence[str]) -> list[RewrittenQuery]:
         """
         Rewrite multiple queries.
-        
+
         Args:
             queries: List of query strings
-            
+
         Returns:
             List of RewrittenQuery objects
         """
@@ -490,12 +490,12 @@ def rewrite_query(
 ) -> RewrittenQuery:
     """
     Convenience function to rewrite a query.
-    
+
     Args:
         query: Query string
         strategy: Rewrite strategy
         **kwargs: Additional config options
-        
+
     Returns:
         RewrittenQuery object
     """

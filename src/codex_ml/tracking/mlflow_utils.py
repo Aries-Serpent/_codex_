@@ -22,16 +22,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import contextlib
-import hashlib
-import json
-import os
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, ContextManager, Iterable, Mapping, Optional, Union
+import contextlib  # noqa: E402
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, ContextManager, Iterable, Mapping, Optional, Union  # noqa: E402
 
-from codex_ml.tracking import mlflow_guard
-from codex_ml.utils.optional_dependencies import (
+from codex_ml.tracking import mlflow_guard  # noqa: E402
+from codex_ml.utils.optional_dependencies import (  # noqa: E402
     build_optional_dependency_error,
     raise_optional_dependency_error,
 )

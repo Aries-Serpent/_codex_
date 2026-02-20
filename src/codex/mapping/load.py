@@ -23,16 +23,16 @@ logger = logging.getLogger(__name__)
 """CSV mapping loaders with typed validation and evidence logging."""
 
 
-import csv
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Generic, TypeVar
+import csv  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Generic, TypeVar  # noqa: E402
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError  # noqa: E402
 
-from codex.evidence import append_evidence, utc_now
+from codex.evidence import append_evidence, utc_now  # noqa: E402
 
-from .models import RoutingPattern, SlaParity
+from .models import RoutingPattern, SlaParity  # noqa: E402
 
 __all__ = [
     "MappingLoadResult",

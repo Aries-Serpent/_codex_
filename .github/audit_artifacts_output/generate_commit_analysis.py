@@ -2,11 +2,11 @@
 """
 Analyze PR #2449 commits to extract objectives and build trace matrix.
 """
-import subprocess
-import json
 import csv
-import sys
+import json
 import shlex
+import subprocess
+import sys
 from pathlib import Path
 
 

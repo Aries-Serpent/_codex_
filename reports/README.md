@@ -79,7 +79,7 @@
 
 ## 🔗 Related Links
 
-- [Failed Run #21649553861](https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861)
+- [Failed Run #21649553861](https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861 <!-- Note: Logs expire after 90 days -->)
 - [Testing Suite Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/test-suite.yml)
 - [Open PR #3140](https://github.com/Aries-Serpent/_codex_/pull/3140)
 

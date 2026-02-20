@@ -99,7 +99,7 @@ class StandardizedASTNode:
         children: List of child nodes
         location: Source code location
         metadata: Extensible metadata dictionary
-        
+
     Note:
         Parent reference uses weakref to prevent circular reference memory leaks.
         Access parent via the `parent` property.

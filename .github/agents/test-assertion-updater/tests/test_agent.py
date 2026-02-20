@@ -1,13 +1,14 @@
 """Unit tests for Test Assertion Updater Agent"""
 
-import pytest
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.agent import TestAssertionUpdater, AssertionMismatch, FixProposal
+from src.agent import AssertionMismatch, FixProposal, TestAssertionUpdater
 
 
 @pytest.fixture
@@ -78,7 +79,7 @@ def test_generate_string_format_fix(agent):
         actual_value='"new detailed message"',
         confidence=0.9
     )
-    
+
     fix = agent.generate_fix(mismatch)
     assert fix.original_code is not None
     assert fix.fixed_code is not None
@@ -97,7 +98,7 @@ def test_generate_data_structure_fix(agent):
         actual_value='[{"name": "item"}]',
         confidence=0.9
     )
-    
+
     fix = agent.generate_fix(mismatch)
     assert fix.original_code is not None
     assert fix.fixed_code is not None
@@ -115,7 +116,7 @@ def test_generate_type_change_fix(agent):
         actual_value='{"value": 42}',
         confidence=0.9
     )
-    
+
     fix = agent.generate_fix(mismatch)
     assert fix.original_code is not None
     assert fix.fixed_code is not None
@@ -130,7 +131,7 @@ def test_validate_fix_valid_code(agent):
         reason='String format evolved',
         validation_strategy='string_contains'
     )
-    
+
     is_valid = agent.validate_fix(fix, Path("test.py"))
     assert is_valid is True
 
@@ -143,7 +144,7 @@ def test_validate_fix_invalid_code(agent):
         reason='String format evolved',
         validation_strategy='string_contains'
     )
-    
+
     is_valid = agent.validate_fix(fix, Path("test.py"))
     assert is_valid is False
 
@@ -159,14 +160,14 @@ def test_generate_commit_message(agent):
         actual_value='"new"',
         confidence=0.9
     )
-    
+
     fix = FixProposal(
         original_code='assert result == "old"',
         fixed_code='assert "old" in str(result)',
         reason='String format evolved',
         validation_strategy='string_contains'
     )
-    
+
     message = agent.generate_commit_message(fix, mismatch)
     assert 'fix(tests)' in message
     assert 'test_example::test_function' in message
@@ -181,7 +182,7 @@ def test_parse_pytest_output_basic(agent):
 tests/test_example.py::test_function FAILED
 AssertionError: assert result == "expected"
     """
-    
+
     mismatches = agent.parse_pytest_output(pytest_output)
     # Basic parsing might not capture all details in this simple case
     assert isinstance(mismatches, list)

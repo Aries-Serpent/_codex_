@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/cleanup_root.py [options]
-    
+
     Examples:
     $ python scripts/remediation/cleanup_root.py --help
 
@@ -26,27 +26,16 @@ Exit Codes:
 
 Author: Codex Team
 Last Updated: 2026-01-16
-"""
-
 
 """
+
+import argparse
 import logging
-logger = logging.getLogger(__name__)
-[Remediation]: Root Directory Sanitation
-Purpose: Moves generated report and summary files from the repository root
-to a dedicated archive directory to reduce cognitive load and clutter.
-
-Target Pattern: *_REPORT.md, *_SUMMARY.md
-Destination: reports/archive/
-
-Flags:
- --dry-run  : Print planned moves without performing them
- --yes      : Confirm execution (required unless --dry-run)
-"""
 import shutil
 import sys
-import argparse
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Anchor to repo root based on script location
 ROOT = Path(__file__).resolve().parents[2]
@@ -72,7 +61,7 @@ def main():
     )
     args = parser.parse_args()
 
-    print(f"[*] Remediation: Root Sanitation")
+    print("[*] Remediation: Root Sanitation")
     print(f"[*] Target Root: {ROOT}")
 
     if not ROOT.exists():

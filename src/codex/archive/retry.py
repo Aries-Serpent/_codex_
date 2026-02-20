@@ -6,12 +6,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import random
-import time
-from collections.abc import Callable
-from dataclasses import dataclass
-from functools import wraps
-from typing import Any, TypeVar
+import random  # noqa: E402
+import time  # noqa: E402
+from collections.abc import Callable  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from functools import wraps  # noqa: E402
+from typing import Any, TypeVar  # noqa: E402
 
 T = TypeVar("T")
 Func = Callable[..., T]

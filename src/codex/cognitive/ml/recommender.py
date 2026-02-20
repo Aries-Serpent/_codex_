@@ -66,11 +66,11 @@ class CosineSimilarity:
     @staticmethod
     def compute(vec1: list[float], vec2: list[float]) -> float:
         """Compute cosine similarity between two vectors.
-        
+
         Args:
             vec1: First vector.
             vec2: Second vector.
-            
+
         Returns:
             Cosine similarity score between -1 and 1.
         """
@@ -93,11 +93,11 @@ class JaccardSimilarity:
     @staticmethod
     def compute(set1: set[str], set2: set[str]) -> float:
         """Compute Jaccard similarity between two sets.
-        
+
         Args:
             set1: First set.
             set2: Second set.
-            
+
         Returns:
             Jaccard similarity score between 0 and 1.
         """
@@ -131,7 +131,7 @@ class ResolutionIndex:
 
     def add(self, sample: PatternSample) -> None:
         """Add a sample to the index.
-        
+
         Args:
             sample: Pattern sample to add.
         """
@@ -155,7 +155,7 @@ class ResolutionIndex:
 
     def build(self, samples: list[PatternSample]) -> None:
         """Build the index from samples.
-        
+
         Args:
             samples: List of pattern samples.
         """
@@ -174,12 +174,12 @@ class ResolutionIndex:
         top_k: int = 5,
     ) -> list[tuple[PatternSample, float]]:
         """Search for similar samples.
-        
+
         Args:
             symptoms: Query symptoms.
             category: Optional category filter.
             top_k: Number of results to return.
-            
+
         Returns:
             List of (sample, similarity_score) tuples.
         """
@@ -210,10 +210,10 @@ class ResolutionIndex:
 
     def get_by_pattern(self, pattern_id: str) -> list[PatternSample]:
         """Get all samples for a pattern.
-        
+
         Args:
             pattern_id: Pattern ID to lookup.
-            
+
         Returns:
             List of samples for the pattern.
         """
@@ -231,7 +231,7 @@ class ResolutionIndex:
 
     def save(self, path: str | Path) -> None:
         """Save index to file.
-        
+
         Args:
             path: Path to save to.
         """
@@ -248,10 +248,10 @@ class ResolutionIndex:
     @classmethod
     def load(cls, path: str | Path) -> ResolutionIndex:
         """Load index from file.
-        
+
         Args:
             path: Path to load from.
-            
+
         Returns:
             Loaded index.
         """
@@ -269,7 +269,7 @@ class ResolutionIndex:
 
 class ResolutionRecommender:
     """Main recommender for resolution suggestions.
-    
+
     Uses symptom similarity matching and success rate weighting
     to recommend the best resolutions for given symptoms.
     """
@@ -280,7 +280,7 @@ class ResolutionRecommender:
         similarity_weight: float = 0.7,
     ) -> None:
         """Initialize the recommender.
-        
+
         Args:
             success_weight: Weight for success rate in scoring.
             similarity_weight: Weight for similarity in scoring.
@@ -292,10 +292,10 @@ class ResolutionRecommender:
 
     def fit(self, samples: list[PatternSample]) -> ResolutionRecommender:
         """Train the recommender on samples.
-        
+
         Args:
             samples: Training samples.
-            
+
         Returns:
             Self.
         """
@@ -311,13 +311,13 @@ class ResolutionRecommender:
         min_confidence: float = 0.1,
     ) -> RecommendationResult:
         """Recommend resolutions for symptoms.
-        
+
         Args:
             symptoms: Query symptoms.
             category: Optional category filter.
             top_k: Maximum recommendations to return.
             min_confidence: Minimum confidence threshold.
-            
+
         Returns:
             Recommendation result.
         """
@@ -371,12 +371,12 @@ class ResolutionRecommender:
         top_k: int = 5,
     ) -> RecommendationResult:
         """Recommend resolutions from free-form text.
-        
+
         Args:
             text: Text containing symptoms/error description.
             category: Optional category filter.
             top_k: Maximum recommendations to return.
-            
+
         Returns:
             Recommendation result.
         """
@@ -391,10 +391,10 @@ class ResolutionRecommender:
 
     def get_resolutions_for_pattern(self, pattern_id: str) -> list[str]:
         """Get all resolutions for a pattern.
-        
+
         Args:
             pattern_id: Pattern ID.
-            
+
         Returns:
             List of resolutions.
         """
@@ -407,7 +407,7 @@ class ResolutionRecommender:
 
     def save(self, directory: str | Path) -> None:
         """Save recommender to directory.
-        
+
         Args:
             directory: Directory to save to.
         """
@@ -426,10 +426,10 @@ class ResolutionRecommender:
     @classmethod
     def load(cls, directory: str | Path) -> ResolutionRecommender:
         """Load recommender from directory.
-        
+
         Args:
             directory: Directory to load from.
-            
+
         Returns:
             Loaded recommender.
         """
@@ -453,11 +453,11 @@ class ResolutionRecommender:
         top_k: int = 3,
     ) -> dict[str, Any]:
         """Evaluate recommender on test samples.
-        
+
         Args:
             samples: Test samples.
             top_k: Number of recommendations to consider.
-            
+
         Returns:
             Evaluation metrics.
         """
@@ -491,7 +491,7 @@ class ResolutionRecommender:
 
 class SuccessPredictor:
     """Predict success probability for a resolution.
-    
+
     Uses logistic regression-like scoring based on features.
     """
 
@@ -511,12 +511,12 @@ class SuccessPredictor:
 
     def fit(self, samples: list[PatternSample], learning_rate: float = 0.01, epochs: int = 100) -> SuccessPredictor:
         """Train the predictor.
-        
+
         Args:
             samples: Training samples.
             learning_rate: Learning rate for gradient descent.
             epochs: Number of training epochs.
-            
+
         Returns:
             Self.
         """
@@ -555,10 +555,10 @@ class SuccessPredictor:
 
     def predict(self, features: dict[str, float]) -> float:
         """Predict success probability.
-        
+
         Args:
             features: Feature dictionary.
-            
+
         Returns:
             Success probability between 0 and 1.
         """
@@ -573,10 +573,10 @@ class SuccessPredictor:
 
     def predict_sample(self, sample: PatternSample) -> float:
         """Predict success probability for a sample.
-        
+
         Args:
             sample: Pattern sample.
-            
+
         Returns:
             Success probability.
         """
@@ -606,11 +606,11 @@ class SuccessPredictor:
 
     def evaluate(self, samples: list[PatternSample], threshold: float = 0.5) -> dict[str, Any]:
         """Evaluate predictor on test samples.
-        
+
         Args:
             samples: Test samples.
             threshold: Decision threshold.
-            
+
         Returns:
             Evaluation metrics.
         """

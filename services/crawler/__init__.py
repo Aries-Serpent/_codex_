@@ -4,12 +4,12 @@ from __future__ import annotations
 
 # Import from local content_diff module
 from .content_diff import (
-    SemanticDiffer,
-    ContentDiffResult,
     ChangeType,
     ContentDiffer,
-    IncrementalSyncDecider,
+    ContentDiffResult,
     DiffSegment,
+    IncrementalSyncDecider,
+    SemanticDiffer,
 )
 
 # For backwards compatibility, alias ContentDiffResult as DiffResult

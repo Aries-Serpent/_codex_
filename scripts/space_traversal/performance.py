@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/performance.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/performance.py --help
 
@@ -51,7 +51,6 @@ from __future__ import annotations
 #     if (result := cache.get("key")) is None:
 #         result = compute()
 #         cache.set("key", result, ttl_seconds=3600)
-
 import functools
 import hashlib
 import json

@@ -7,10 +7,10 @@ Provides detailed metrics on test quality and expected coverage impact.
 """
 
 import ast
+from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
-from dataclasses import dataclass
-from collections import defaultdict
 
 
 @dataclass
@@ -171,7 +171,7 @@ class TestSuiteAnalyzer:
             report.append(f"Test Files:            {len(phase1_files)}")
             report.append(f"Test Methods:          {phase1_methods}")
             report.append(f"Expected Gain:         {phase1_gain:.2f}%")
-            report.append(f"Current Coverage:      27.57%")
+            report.append("Current Coverage:      27.57%")
             report.append(f"Projected Coverage:    {27.57 + phase1_gain:.2f}%")
             report.append("")
 

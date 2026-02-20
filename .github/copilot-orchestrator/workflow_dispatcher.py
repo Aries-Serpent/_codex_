@@ -53,7 +53,7 @@ class WorkflowJob:
 
 class CopilotWorkflowOrchestrator:
     """Orchestrates GitHub Actions workflows for Copilot Agent."""
-    
+
     def __init__(
         self,
         github_token: Optional[str] = None,
@@ -61,7 +61,7 @@ class CopilotWorkflowOrchestrator:
         repo_name: Optional[str] = None,
     ):
         """Initialize workflow orchestrator.
-        
+
         Args:
             github_token: GitHub API token
             repo_owner: Repository owner
@@ -73,7 +73,7 @@ class CopilotWorkflowOrchestrator:
         self.active_jobs: Dict[str, WorkflowJob] = {}
         self.monitoring_tasks: Dict[str, asyncio.Task] = {}
         self.session: Optional[aiohttp.ClientSession] = None
-        
+
     async def __aenter__(self):
         """Async context manager entry."""
         if HAS_AIOHTTP:
@@ -85,12 +85,12 @@ class CopilotWorkflowOrchestrator:
                 }
             )
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit."""
         if self.session:
             await self.session.close()
-    
+
     async def trigger_workflow(
         self,
         workflow_name: str,
@@ -100,25 +100,25 @@ class CopilotWorkflowOrchestrator:
         ref: str = "main",
     ) -> WorkflowJob:
         """Trigger a GitHub Actions workflow with tracking.
-        
+
         Args:
             workflow_name: Name of the workflow file (e.g., 'ci.yml')
             inputs: Input parameters for the workflow
             priority: Priority level for the workflow
             wait_for_completion: Whether to wait for workflow to complete
             ref: Git ref to run workflow on
-            
+
         Returns:
             WorkflowJob object with tracking information
         """
         if not HAS_AIOHTTP:
             logger.error("aiohttp not available - cannot trigger workflows")
             return self._create_error_job(workflow_name, "aiohttp not available")
-        
+
         if not self.github_token:
             logger.error("No GitHub token - cannot trigger workflows")
             return self._create_error_job(workflow_name, "No GitHub token")
-        
+
         # Create job tracking object
         job = WorkflowJob(
             job_id=str(uuid.uuid4()),
@@ -130,13 +130,13 @@ class CopilotWorkflowOrchestrator:
                 "ref": ref,
             },
         )
-        
+
         # Add to active jobs
         self.active_jobs[job.job_id] = job
-        
+
         # Dispatch workflow
         dispatch_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/actions/workflows/{workflow_name}/dispatches"
-        
+
         payload = {
             "ref": ref,
             "inputs": {
@@ -145,17 +145,17 @@ class CopilotWorkflowOrchestrator:
                 "copilot_triggered": "true",
             },
         }
-        
+
         try:
             async with self.session.post(dispatch_url, json=payload) as response:
                 if response.status == 204:
                     job.status = "triggered"
                     logger.info(f"✅ Triggered workflow {workflow_name} (Job ID: {job.job_id})")
-                    
+
                     # Start monitoring task
                     monitor_task = asyncio.create_task(self._monitor_workflow(job))
                     self.monitoring_tasks[job.job_id] = monitor_task
-                    
+
                     if wait_for_completion:
                         await monitor_task
                 else:
@@ -167,9 +167,9 @@ class CopilotWorkflowOrchestrator:
             job.status = "failed_to_trigger"
             job.metadata["error"] = str(e)
             logger.error(f"❌ Exception triggering workflow {workflow_name}: {e}")
-        
+
         return job
-    
+
     def _create_error_job(self, workflow_name: str, error: str) -> WorkflowJob:
         """Create a job object representing an error state."""
         return WorkflowJob(
@@ -178,35 +178,35 @@ class CopilotWorkflowOrchestrator:
             status="error",
             metadata={"error": error},
         )
-    
+
     async def _monitor_workflow(self, job: WorkflowJob):
         """Monitor workflow execution status."""
         # Initial delay to allow workflow to start
         await asyncio.sleep(5)
-        
+
         runs_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/actions/runs"
-        
+
         max_attempts = 180  # 15 minutes with 5s intervals
         attempt = 0
-        
+
         while attempt < max_attempts:
             try:
                 async with self.session.get(runs_url, params={"per_page": 10}) as response:
                     if response.status == 200:
                         data = await response.json()
-                        
+
                         # Find our workflow run
                         for run in data.get("workflow_runs", []):
                             # Match by workflow name and recent trigger time
                             run_created = datetime.fromisoformat(run["created_at"].replace("Z", "+00:00"))
                             time_diff = abs((run_created - job.triggered_at).total_seconds())
-                            
+
                             if (run["name"] == job.workflow_name.replace(".yml", "").replace(".yaml", "") and
                                 time_diff < 60):  # Within 60 seconds
-                                
+
                                 job.run_id = run["id"]
                                 job.status = run["status"]
-                                
+
                                 # Update metadata
                                 job.metadata.update({
                                     "run_url": run["html_url"],
@@ -214,32 +214,32 @@ class CopilotWorkflowOrchestrator:
                                     "conclusion": run.get("conclusion"),
                                     "updated_at": run["updated_at"],
                                 })
-                                
+
                                 # Check if completed
                                 if run["status"] == "completed":
                                     logger.info(f"✅ Workflow {job.workflow_name} completed: {run.get('conclusion')}")
                                     job.metadata["completed_at"] = datetime.now().isoformat()
                                     job.metadata["duration"] = str(datetime.now() - job.triggered_at)
                                     return
-                
+
                 # Intelligent backoff
                 await asyncio.sleep(self._calculate_backoff(attempt))
                 attempt += 1
-                
+
             except Exception as e:
                 job.metadata["monitoring_error"] = str(e)
                 logger.warning(f"Error monitoring workflow: {e}")
                 await asyncio.sleep(5)
                 attempt += 1
-        
+
         # Timeout
         job.status = "monitoring_timeout"
         logger.warning(f"⏰ Monitoring timeout for workflow {job.workflow_name}")
-        
+
         # Cleanup
         if job.job_id in self.monitoring_tasks:
             del self.monitoring_tasks[job.job_id]
-    
+
     def _calculate_backoff(self, attempt: int) -> float:
         """Calculate intelligent backoff interval."""
         if attempt < 10:
@@ -248,14 +248,14 @@ class CopilotWorkflowOrchestrator:
             return 5  # Next 20 attempts: 5 seconds
         else:
             return 10  # Remaining: 10 seconds
-    
+
     async def get_job_status(self, job_id: str) -> Dict[str, Any]:
         """Get current status of a job."""
         if job_id not in self.active_jobs:
             return {"error": "Job not found"}
-        
+
         job = self.active_jobs[job_id]
-        
+
         return {
             "job_id": job.job_id,
             "workflow": job.workflow_name,
@@ -267,7 +267,7 @@ class CopilotWorkflowOrchestrator:
             "artifacts": job.artifacts,
             "metadata": job.metadata,
         }
-    
+
     def _calculate_progress(self, job: WorkflowJob) -> float:
         """Calculate estimated progress percentage."""
         if job.status == "completed":
@@ -278,7 +278,7 @@ class CopilotWorkflowOrchestrator:
             elapsed = datetime.now() - job.triggered_at
             progress = (elapsed.total_seconds() / job.estimated_duration.total_seconds()) * 100
             return min(progress, 95.0)  # Cap at 95% until actually complete
-    
+
     def get_active_jobs(self) -> List[Dict[str, Any]]:
         """Get list of all active jobs."""
         return [
@@ -296,18 +296,18 @@ class CopilotWorkflowOrchestrator:
 async def main():
     """Example usage of workflow orchestrator."""
     import sys
-    
+
     logging.basicConfig(level=logging.INFO)
-    
+
     orchestrator = CopilotWorkflowOrchestrator()
-    
+
     if not orchestrator.github_token:
         print("❌ No GitHub token available. Set GITHUB_TOKEN environment variable.")
         sys.exit(1)
-    
+
     print(f"🚀 Workflow Orchestrator for {orchestrator.repo_owner}/{orchestrator.repo_name}")
     print()
-    
+
     async with orchestrator:
         # Example: Trigger a workflow
         job = await orchestrator.trigger_workflow(
@@ -316,10 +316,10 @@ async def main():
             priority=WorkflowPriority.HIGH,
             wait_for_completion=False,
         )
-        
+
         print(f"Job ID: {job.job_id}")
         print(f"Status: {job.status}")
-        
+
         # Monitor progress
         for i in range(10):
             await asyncio.sleep(2)

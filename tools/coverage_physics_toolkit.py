@@ -14,12 +14,12 @@ Usage:
     python tools/coverage_physics_toolkit.py --mode validate --coverage-target 30
 """
 
+import argparse
 import ast
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Set
-import argparse
 
 
 @dataclass
@@ -520,7 +520,7 @@ def main():
         print(f"\nExpected Total Gain:     {velocity['total_gain']:.2f}%")
         print(f"Total Implementation:    {velocity['total_time_minutes']:.0f} minutes")
         print(f"Coverage Velocity:       {velocity['velocity_pct_per_hour']:.2f}% per hour")
-        print(f"\nEstimated Time to:")
+        print("\nEstimated Time to:")
         print(f"  30% coverage:          {velocity['estimated_to_30pct']:.1f} hours")
         print(f"  50% coverage:          {velocity['estimated_to_50pct']:.1f} hours")
         print(f"  70% coverage:          {velocity['estimated_to_70pct']:.1f} hours")

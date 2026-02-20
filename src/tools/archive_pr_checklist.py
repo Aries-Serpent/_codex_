@@ -24,16 +24,15 @@ changing the helper.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import argparse
+import logging
 import subprocess
 from collections.abc import Iterable, Sequence
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 ADR_PREFIX = "docs/arch/"
 CHANGELOG_PATH = "docs/CHANGELOG.md"

@@ -62,6 +62,7 @@ class TestLegacyImport:
             from training.accelerate_init_guard import is_gpu_available
 
             result = is_gpu_available()
+            # Should return bool (True or False depending on environment)
             assert isinstance(result, bool)
 
     def test_get_distributed_env_info(self):

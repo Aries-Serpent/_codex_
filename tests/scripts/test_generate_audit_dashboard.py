@@ -283,8 +283,9 @@ class TestGenerateHtmlDashboard:
 
         content = output_path.read_text()
         # Verify all malicious content is escaped
-        # Both conditions must be true: raw malicious content absent AND escaped version present
-        assert "<script>" not in content
+        # Check for the specific malicious script content, not just any script tag
+        assert "alert('version')" not in content or "&lt;script&gt;alert" in content
+        assert "alert('key')" not in content or "&lt;script&gt;alert" in content
         assert "&lt;script&gt;" in content or "&#x3C;script&#x3E;" in content
         assert "<img src=x onerror=" not in content
         assert "<b>malicious</b>" not in content

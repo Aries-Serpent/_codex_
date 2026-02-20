@@ -26,21 +26,21 @@ DECISIONS = {
         "reason": "Intentional example code pattern in documentation",
         "notes": "This is a regex pattern example, not a real link"
     },
-    
+
     # Item 2: AGENTS.md - Missing emoji in anchor
     ".github/AGENTS.md:22": {
         "action": "skip",
         "reason": "Already commented as broken anchor in source file (line 21)",
         "notes": "<!-- Log directory & retention --> already marks this section"
     },
-    
+
     # Item 3: FOLLOWUP_FOR_PHASE3.md - Regex pattern example
     ".codex/FOLLOWUP_FOR_PHASE3.md:146": {
         "action": "skip",
         "reason": "Regex pattern in documentation, not a real link",
         "notes": "Pattern: [.*\\](#.*) is example syntax"
     },
-    
+
     # Items 4-6: GITHUB_MCP_INTEGRATION_GUIDE.md - Already commented
     "docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md:13": {
         "action": "skip",
@@ -57,7 +57,7 @@ DECISIONS = {
         "reason": "Already marked with <!-- BROKEN ANCHOR: ... --> comment",
         "notes": "Underscores in anchor (_codex_) cause GitHub anchor generation issue"
     },
-    
+
     # Items 7-8: link-validator-agent.md - Intentional examples
     ".github/agents/link-validator-agent.md:50": {
         "action": "skip",
@@ -69,7 +69,7 @@ DECISIONS = {
         "reason": "Intentional example in agent documentation (Pattern 3: Missing Anchor)",
         "notes": "Shows 'after' state in example, not a real link to fix"
     },
-    
+
     # Items 9-13: USER_GUIDE.md - Already commented
     "docs/authentication/USER_GUIDE.md:12": {
         "action": "skip",
@@ -117,18 +117,18 @@ def apply_decisions(queue: List[Dict]) -> Dict:
         'fixed': 0,
         'items': []
     }
-    
+
     # Filter manual review items
     manual_items = [item for item in queue if not item.get('auto_fixable', False)]
     summary['total_reviewed'] = len(manual_items)
-    
+
     for item in manual_items:
         file_line = f"{item['file']}:{item['line']}"
-        
+
         if file_line in DECISIONS:
             decision = DECISIONS[file_line]
             action = decision['action']
-            
+
             summary['items'].append({
                 'file': item['file'],
                 'line': item['line'],
@@ -139,14 +139,14 @@ def apply_decisions(queue: List[Dict]) -> Dict:
                 'reason': decision['reason'],
                 'notes': decision['notes']
             })
-            
+
             if action == 'skip':
                 summary['skipped'] += 1
             elif action == 'comment':
                 summary['commented'] += 1
             elif action == 'fix':
                 summary['fixed'] += 1
-    
+
     return summary
 
 
@@ -215,53 +215,53 @@ def main():
     """Main execution function."""
     print("📋 Manual Review Decision Logger - PR #3248 Sprint 1 Part 3")
     print("=" * 60)
-    
+
     # Load review queue
     queue_file = REPO_ROOT / '.codex' / 'validation' / 'complex_anchors_review_queue.json'
     print(f"\n📊 Loading review queue: {queue_file.relative_to(REPO_ROOT)}")
-    
+
     queue = load_review_queue(queue_file)
     manual_items = [item for item in queue if not item.get('auto_fixable', False)]
-    
+
     print(f"   Manual review items: {len(manual_items)}")
-    
+
     # Apply decisions
-    print(f"\n🔍 Applying manual review decisions...")
+    print("\n🔍 Applying manual review decisions...")
     summary = apply_decisions(queue)
-    
-    print(f"\n✅ Manual Review Complete!")
+
+    print("\n✅ Manual Review Complete!")
     print(f"   Total reviewed: {summary['total_reviewed']}")
     print(f"   Skipped (intentional/already handled): {summary['skipped']}")
     print(f"   Commented as broken: {summary['commented']}")
     print(f"   Fixed manually: {summary['fixed']}")
-    
+
     # Show decisions
-    print(f"\n📋 Decision Summary:")
+    print("\n📋 Decision Summary:")
     for item in summary['items']:
         print(f"\n   {item['file']}:{item['line']}")
         print(f"      Action: {item['action'].upper()}")
         print(f"      Reason: {item['reason']}")
         if item['notes']:
             print(f"      Notes: {item['notes']}")
-    
+
     # Save decisions log
     output_dir = REPO_ROOT / '.codex' / 'validation'
     decisions_file = output_dir / 'manual_review_decisions.json'
-    
+
     with open(decisions_file, 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
-    
+
     print(f"\n📝 Decisions log saved: {decisions_file.relative_to(REPO_ROOT)}")
-    
+
     # Generate Sprint 1 completion report
     completion_report = generate_completion_report(summary)
     report_file = output_dir / 'sprint1_completion_report.json'
-    
+
     with open(report_file, 'w', encoding='utf-8') as f:
         json.dump(completion_report, f, indent=2, ensure_ascii=False)
-    
+
     print(f"📝 Sprint 1 completion report saved: {report_file.relative_to(REPO_ROOT)}")
-    
+
     print("\n" + "=" * 60)
     print("✨ Sprint 1: Complex Anchor Resolution COMPLETE!")
     print("=" * 60)
@@ -270,7 +270,7 @@ def main():
     print(f"   Part 2: Automated - {completion_report['parts']['part_2']['metrics']['fixes_applied']} fixes applied")
     print(f"   Part 3: Manual - {summary['total_reviewed']} items reviewed")
     print(f"   Overall: {completion_report['overall']['resolved']}/{completion_report['overall']['total_issues']} resolved ({completion_report['overall']['resolution_rate']})")
-    
+
     print("\n🎯 Next: Sprint 2 - Empty TOC Resolution")
 
 

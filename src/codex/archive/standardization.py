@@ -12,13 +12,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from typing import Any, Optional
+import os  # noqa: E402
+from dataclasses import asdict, dataclass  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
-from .evidence_schema import EvidenceSchemaValidator
-from .sigstore_client import SignstoreClient
+from .evidence_schema import EvidenceSchemaValidator  # noqa: E402
+from .sigstore_client import SignstoreClient  # noqa: E402
 
 STANDARDIZATION_VERSION = "2.0"
 SLSA_LEVEL = "L3"

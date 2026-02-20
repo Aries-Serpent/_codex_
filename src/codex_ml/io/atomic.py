@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 """Atomic file-system helpers for sidecar persistence."""
 
 
-import json
-import os
-import tempfile
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import os  # noqa: E402
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 __all__ = ["canonical_json_dumps", "atomic_write_text", "atomic_write_json"]
 

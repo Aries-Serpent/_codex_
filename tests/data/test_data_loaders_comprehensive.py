@@ -173,32 +173,29 @@ class TestLoadJsonl:
 
     def test_load_jsonl_basic(self, sample_jsonl_file: Path):
         """Verify basic JSONL loading."""
-        result = load_jsonl(sample_jsonl_file)
+        data, metadata = load_jsonl(sample_jsonl_file)
 
-        assert "data" in result
-        assert "metadata" in result
-        assert len(result["data"]) == 3
-        assert result["data"][0]["prompt"] == "What is AI?"
+        assert len(data) == 3
+        assert data[0]["prompt"] == "What is AI?"
+        assert "checksum" in metadata
+        assert metadata["num_records"] == 3
 
     def test_load_jsonl_metadata(self, sample_jsonl_file: Path):
         """Verify metadata includes checksum and count."""
-        result = load_jsonl(sample_jsonl_file)
-        metadata = result["metadata"]
+        data, metadata = load_jsonl(sample_jsonl_file)
 
         assert "checksum" in metadata
-        assert "record_count" in metadata
-        assert metadata["record_count"] == 3
+        assert "num_records" in metadata
+        assert metadata["num_records"] == 3
 
     def test_load_jsonl_empty_file(self, temp_data_dir: Path):
         """Verify empty JSONL file handling."""
         empty_file = temp_data_dir / "empty.jsonl"
         empty_file.write_text("")
-
-        result = load_jsonl(empty_file)
-
-        assert result["data"] == []
-        assert result["metadata"]["record_count"] == 0
-        assert result["metadata"]["empty_file"] is True
+        data, metadata = load_jsonl(empty_file)
+        assert len(data) == 0
+        assert metadata["empty_file"] is True
+        assert metadata["num_records"] == 0
 
     def test_load_jsonl_malformed_lines(self, temp_data_dir: Path):
         """Verify malformed lines are skipped."""
@@ -209,10 +206,10 @@ class TestLoadJsonl:
             f.write('{"valid": "line2"}\n')
             f.write('also not json\n')
 
-        result = load_jsonl(malformed_file)
+        data, metadata = load_jsonl(malformed_file)
 
-        assert len(result["data"]) == 2
-        assert result["metadata"]["skipped_malformed"] == 2
+        assert len(data) == 2
+        assert metadata["skipped_malformed"] == 2
 
     def test_load_jsonl_utf8_bom(self, temp_data_dir: Path):
         """Verify UTF-8 BOM handling."""
@@ -220,10 +217,10 @@ class TestLoadJsonl:
         with bom_file.open("w", encoding="utf-8-sig") as f:
             f.write('{"text": "with BOM"}\n')
 
-        result = load_jsonl(bom_file)
+        data, metadata = load_jsonl(bom_file)
 
-        assert len(result["data"]) == 1
-        assert result["data"][0]["text"] == "with BOM"
+        assert len(data) == 1
+        assert data[0]["text"] == "with BOM"
 
     def test_load_jsonl_unicode_content(self, temp_data_dir: Path):
         """Verify unicode content handling."""
@@ -244,9 +241,9 @@ class TestLoadJsonl:
         with nested_file.open("w") as f:
             f.write('{"outer": {"inner": {"deep": "value"}}}\n')
 
-        result = load_jsonl(nested_file)
+        data, metadata = load_jsonl(nested_file)
 
-        assert result["data"][0]["outer"]["inner"]["deep"] == "value"
+        assert data[0]["outer"]["inner"]["deep"] == "value"
 
     def test_load_jsonl_missing_file(self):
         """Verify error for missing file."""

@@ -43,7 +43,7 @@ class Tier(Enum):
 @dataclass
 class Patch:
     """A code patch to apply.
-    
+
     Attributes:
         file_path: Relative path to file
         original: Original content
@@ -75,7 +75,7 @@ class Patch:
 @dataclass
 class TransformResult:
     """Result of transformation operation.
-    
+
     Attributes:
         snapshot_id: Snapshot being transformed
         timestamp: When transformation was performed
@@ -216,7 +216,7 @@ def _run_isort(file_path: Path) -> Optional[str]:
 
 def _apply_pathlib_migration(content: str) -> str:
     """Apply os.path to pathlib migration.
-    
+
     Simple pattern-based replacement for common patterns.
     """
     import re
@@ -254,17 +254,17 @@ def transform(
     dry_run: bool = True,
 ) -> TransformResult:
     """Generate and optionally apply transformations.
-    
+
     Args:
         source_dir: Directory containing source files
         snapshot_id: Snapshot being transformed
         tier: Specific tier to apply (None for all)
         auto_apply: Whether to automatically apply Tier A
         dry_run: If True, don't modify files
-        
+
     Returns:
         TransformResult with generated patches
-        
+
     Example:
         >>> result = transform(Path("source/"), "20251217-abc123", auto_apply=True)
         >>> print(f"Generated {len(result.tier_a_patches)} Tier A patches")

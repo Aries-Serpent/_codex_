@@ -23,15 +23,15 @@ logger = logging.getLogger(__name__)
 """Shared helpers for writing append-only evidence artifacts."""
 
 
-import json
-import os
-import platform
-import subprocess
-from collections.abc import Mapping
-from datetime import UTC, datetime
-from functools import lru_cache
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import os  # noqa: E402
+import platform  # noqa: E402
+import subprocess  # noqa: E402
+from collections.abc import Mapping  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
+from functools import lru_cache  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 __all__ = [
     "append_evidence",

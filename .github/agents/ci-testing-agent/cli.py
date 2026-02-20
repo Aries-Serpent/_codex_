@@ -18,13 +18,13 @@ from agent.validator import CoverageValidator
 def load_manifest(path: Path) -> Dict[str, Any]:
     """
     Load task manifest from YAML file.
-    
+
     Args:
         path: Path to manifest YAML file
-        
+
     Returns:
         Dictionary containing manifest data
-        
+
     Raises:
         FileNotFoundError: If manifest file doesn't exist
         yaml.YAMLError: If manifest is invalid YAML
@@ -38,7 +38,7 @@ def load_manifest(path: Path) -> Dict[str, Any]:
 def main() -> int:
     """
     Main entry point for CI Testing Agent.
-    
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """

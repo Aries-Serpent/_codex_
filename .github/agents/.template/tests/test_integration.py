@@ -1,6 +1,7 @@
 """Integration tests for [Agent Name]"""
 
 import pytest
+
 from ..src.agent import AgentClass
 
 
@@ -19,9 +20,9 @@ def test_end_to_end_execution(agent):
             'param2': 'value2',
         }
     }
-    
+
     result = agent.execute(task)
-    
+
     assert result['status'] == 'success'
     assert 'output' in result
     assert 'timestamp' in result
@@ -32,7 +33,7 @@ def test_error_recovery(agent):
     # Test error handling
     invalid_task = {'description': ''}
     result = agent.execute(invalid_task)
-    
+
     # Agent should handle empty description gracefully
     assert result is not None
 
@@ -44,8 +45,8 @@ def test_performance(agent):
         {'description': f'task {i}'}
         for i in range(100)
     ]
-    
+
     results = [agent.execute(task) for task in tasks]
-    
+
     assert len(results) == 100
     assert all(r['status'] == 'success' for r in results)

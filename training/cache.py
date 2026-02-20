@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.cache import TokenCache
+from src.training.cache import TokenCache  # noqa: E402
 
 __all__ = ["TokenCache"]

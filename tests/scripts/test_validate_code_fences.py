@@ -26,7 +26,7 @@ class TestCheckCodeFences:
             "\n"
             "Text after.\n"
         )
-        
+
         issues = check_code_fences(md_file)
         assert len(issues) == 0
 
@@ -40,7 +40,7 @@ class TestCheckCodeFences:
             "code here\n"
             "# Missing closing fence\n"
         )
-        
+
         issues = check_code_fences(md_file)
         assert len(issues) == 1
         assert issues[0]['type'] == 'unclosed_fence'
@@ -59,7 +59,7 @@ class TestCheckCodeFences:
             "\n"
             "Text after.\n"
         )
-        
+
         issues = check_code_fences(md_file)
         # Should detect properly - indented fences not currently handled
         # This documents current behavior
@@ -77,7 +77,7 @@ class TestCheckCodeFences:
             "```\n"
             "```\n"
         )
-        
+
         issues = check_code_fences(md_file)
         # Should detect nested fence
         nested = [i for i in issues if i['type'] == 'nested_fence']
@@ -96,7 +96,7 @@ class TestCheckCodeFences:
             "```yaml\n"
             "code3\n"
         )
-        
+
         issues = check_code_fences(md_file)
         unclosed = [i for i in issues if i['type'] == 'unclosed_fence']
         # At least one unclosed fence detected
@@ -106,7 +106,7 @@ class TestCheckCodeFences:
         """Test handling of empty file"""
         md_file = tmp_path / "test.md"
         md_file.write_text("")
-        
+
         issues = check_code_fences(md_file)
         assert len(issues) == 0
 
@@ -123,10 +123,10 @@ class TestFixCodeFences:
             "```python\n"
             "code here\n"
         )
-        
+
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
-        
+
         assert result is True
         content = md_file.read_text()
         assert content.endswith("```\n")
@@ -138,10 +138,10 @@ class TestFixCodeFences:
             "```python\n"
             "code\n"
         )
-        
+
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=True)
-        
+
         assert result is True
         # Content should not change in dry-run
         content = md_file.read_text()
@@ -155,10 +155,10 @@ class TestFixCodeFences:
             "code\n"
             "```\n"
         )
-        
+
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
-        
+
         assert result is False
 
     def test_fix_multiple_unclosed_fences(self, tmp_path):
@@ -168,10 +168,10 @@ class TestFixCodeFences:
             "```python\n"
             "code1\n"
         )
-        
+
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
-        
+
         assert result is True
         content = md_file.read_text()
         # Should have at least one closing fence added
@@ -188,17 +188,17 @@ class TestFixCodeFences:
             "```\n"
         )
         md_file.write_text(original_content)
-        
+
         issues = check_code_fences(md_file)
         # This should detect nested fence AND unclosed fence
         assert len(issues) >= 1
         assert any(i['type'] == 'nested_fence' for i in issues)
-        
+
         result = fix_code_fences(md_file, issues, dry_run=False)
         # Result will be True because unclosed fences are fixed
         # but nested fence issue is just reported, not auto-fixed
         assert isinstance(result, bool)  # Use result in assertion
-        
+
         # Nested fence detection should not cause script to crash
         content = md_file.read_text()
         assert "```python\n" in content
@@ -211,10 +211,10 @@ class TestEdgeCases:
         """Test fence at end of file without newline"""
         md_file = tmp_path / "test.md"
         md_file.write_text("```python\ncode")  # No newline at end
-        
+
         issues = check_code_fences(md_file)
         assert len(issues) >= 1
-        
+
         # Fix should handle this
         fix_code_fences(md_file, issues, dry_run=False)
         content = md_file.read_text()
@@ -236,6 +236,6 @@ class TestEdgeCases:
             "yaml_code\n"
             "```\n"
         )
-        
+
         issues = check_code_fences(md_file)
         assert len(issues) == 0

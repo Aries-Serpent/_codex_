@@ -199,9 +199,9 @@ class InventoryWriter:
                         f"- **SHIM Status:** {status_emoji} In SHIM inventory ({group.shim_status})"
                     )
                     if group.is_whitelisted:
-                        lines.append(f"- **Whitelisted:** Yes")
+                        lines.append("- **Whitelisted:** Yes")
                 else:
-                    lines.append(f"- **SHIM Status:** ⚠️ NOT in SHIM inventory")
+                    lines.append("- **SHIM Status:** ⚠️ NOT in SHIM inventory")
 
                 lines.append("")
 

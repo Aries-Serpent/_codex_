@@ -217,7 +217,7 @@ python -c "from tests.framework.generator import UnitTestGenerator; print('✅ O
 - **Branch**: `copilot/fix-test-collection-error-again`
 - **Commit**: `d64c69e` (Add fix notice to CI analysis reports)
 - **Comparison**: [Compare with main](https://github.com/Aries-Serpent/_codex_/compare/main...copilot/fix-test-collection-error-again)
-- **Original Failing Job**: [#62523872141](https://github.com/Aries-Serpent/_codex_/actions/runs/2168342465/job/62523872141)
+- **Original Failing Job**: [#62523872141](https://github.com/Aries-Serpent/_codex_/actions/runs/2168342465 <!-- Note: Logs expire after 90 days -->/job/62523872141)
 - **CI Workflow**: `.github/workflows/test-suite.yml`
 
 ### Local Files

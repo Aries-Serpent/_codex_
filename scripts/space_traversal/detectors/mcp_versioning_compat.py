@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/detectors/mcp_versioning_compat.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/detectors/mcp_versioning_compat.py --help
 
@@ -28,9 +28,9 @@ Last Updated: 2026-01-16
 """
 
 
+import logging
 from pathlib import Path
 from typing import Any
-import logging
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)

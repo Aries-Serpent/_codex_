@@ -14,6 +14,16 @@ from fastapi.testclient import TestClient  # noqa: E402
 from services.api.main import app  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _set_env(monkeypatch):
+    """Configure environment to use fallback echo model."""
+    monkeypatch.setenv("API_TOKENIZER", "whitespace")
+    # Use non-existent model to trigger _EchoModel fallback
+    # This avoids PyTorch 2.x + Python 3.12 isinstance bug in weight init
+    monkeypatch.setenv("API_MODEL", "NonExistentModelForTesting")
+    yield
+
+
 def test_secret_filtering_masks_keys():
     client = TestClient(app)
     payload = {"prompt": "send sk-abcdef1234567890 now"}

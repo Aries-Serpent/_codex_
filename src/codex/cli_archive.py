@@ -21,32 +21,32 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-from pathlib import Path
+import json  # noqa: E402
+import os  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import click
+import click  # noqa: E402
 
-from codex.archive.api import db_check as archive_db_check
-from codex.archive.api import (
+from codex.archive.api import db_check as archive_db_check  # noqa: E402
+from codex.archive.api import (  # noqa: E402
     insert_referent,
     recent_tombstones,
     restore,
     store,
 )
-from codex.archive.api import summarize as archive_summarize
-from codex.archive.consolidate import build_consolidation_plan
-from codex.archive.dal import ArchiveDAL
-from codex.archive.detect import stat_file
-from codex.archive.plan import build_plan
-from codex.archive.shims import (
+from codex.archive.api import summarize as archive_summarize  # noqa: E402
+from codex.archive.consolidate import build_consolidation_plan  # noqa: E402
+from codex.archive.dal import ArchiveDAL  # noqa: E402
+from codex.archive.detect import stat_file  # noqa: E402
+from codex.archive.plan import build_plan  # noqa: E402
+from codex.archive.shims import (  # noqa: E402
     write_csv_pointer,
     write_json_pointer,
     write_markdown_pointer,
     write_python_shim,
 )
-from codex.archive.stub import make_stub_text
-from codex.archive.util import append_evidence, sha256_file, utcnow_iso
+from codex.archive.stub import make_stub_text  # noqa: E402
+from codex.archive.util import append_evidence, sha256_file, utcnow_iso  # noqa: E402
 
 
 @click.group(help="Codex Archive (tombstone) CLI")

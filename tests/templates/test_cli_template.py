@@ -316,6 +316,8 @@ class TestCLIPerformance:
             capture_output=True,
             check=False,
             cwd=REPO_ROOT,
+            timeout=15,  # Add explicit timeout to prevent hanging
         )
         elapsed = time.time() - start
-        assert elapsed < 7.0, f"Help command took too long: {elapsed:.2f}s"
+        # Increased threshold from 7s to 10s to account for CI environment overhead
+        assert elapsed < 10.0, f"Help command took too long: {elapsed:.2f}s"

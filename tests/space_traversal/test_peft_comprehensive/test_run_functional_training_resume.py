@@ -23,7 +23,8 @@ class _DummyTokenizer:
     eos_token = 0
 
     @classmethod
-    def from_pretrained(cls, _name: str) -> "_DummyTokenizer":
+    def from_pretrained(cls, _name: str, **kwargs) -> "_DummyTokenizer":
+        """Accept revision and other kwargs for compatibility."""
         return cls()
 
     def __call__(self, texts, *, padding, return_tensors):

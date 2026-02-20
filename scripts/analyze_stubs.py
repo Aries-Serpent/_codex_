@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/analyze_stubs.py [options]
-    
+
     Examples:
     $ python scripts/analyze_stubs.py --help
 
@@ -131,7 +131,7 @@ def generate_report(stubs, output_path):
                 f.write(f"**{file_path}:{line_num}** [{stub_type}]\n")
                 f.write(f"- Message: {message}\n\n")
 
-    print(f"\n✓ Stub analysis complete:")
+    print("\n✓ Stub analysis complete:")
     print(f"  Total stubs: {len(stubs)}")
     print(f"  P0: {p0_count}")
     print(f"  P1: {p1_count}")

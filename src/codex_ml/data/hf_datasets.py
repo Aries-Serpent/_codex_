@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 """HuggingFace dataset loaders with streaming support."""
 
 
-from typing import Any
+from typing import Any  # noqa: E402
 
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 
-from .registry import register_dataset
+from .registry import register_dataset  # noqa: E402
 
 try:  # optional dependency
     from datasets import load_dataset as _load_dataset

@@ -14,7 +14,7 @@ from typing import Any
 import pytest
 
 try:
-    from hypothesis import assume, given, settings
+    from hypothesis import HealthCheck, assume, given, settings
     from hypothesis import strategies as st
     HAS_HYPOTHESIS = True
 except ImportError:
@@ -226,13 +226,12 @@ class TestNumericTransformationProperties:
         """Float absolute value is always non-negative."""
         assert abs(n) >= 0
 
-    @given(st.integers(min_value=0, max_value=1000))
+    @given(st.integers(min_value=0, max_value=20))
+    @settings(suppress_health_check=[HealthCheck.filter_too_much])
     def test_factorial_property(self, n: int) -> None:
         """Factorial is always positive for non-negative integers."""
-        assume(n <= 20)  # Avoid very large factorials
-        result = 1
-        for i in range(1, n + 1):
-            result *= i
+        import math
+        result = math.factorial(n)
         assert result > 0
 
     @given(st.integers(), st.integers())

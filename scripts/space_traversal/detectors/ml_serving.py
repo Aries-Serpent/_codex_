@@ -12,7 +12,6 @@ Enhanced patterns for Codex ML platform.
 from __future__ import annotations
 
 
-
 def detect(file_index: dict) -> dict:
     """
     Detect ML serving capability.

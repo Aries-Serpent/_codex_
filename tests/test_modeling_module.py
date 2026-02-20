@@ -31,6 +31,10 @@ class DummyModel(torch.nn.Module):
         self.received_device = str(device)
         return self
 
+    def prepare_inputs_for_generation(self, *args, **kwargs):
+        """Mock method for generation compatibility."""
+        return {}
+
 
 def test_load_model_without_lora(monkeypatch):
     captured: dict[str, object] = {}
@@ -69,6 +73,9 @@ def test_load_model_with_lora(monkeypatch):
     class StubLoraConfig:
         def __init__(self, **kwargs) -> None:
             applied["lora_config"] = kwargs
+            # Store attributes for compatibility
+            for key, value in kwargs.items():
+                setattr(self, key, value)
 
     def fake_get_peft_model(model, config):
         applied["model"] = model
@@ -90,9 +97,13 @@ def test_load_model_with_lora(monkeypatch):
 
     assert model == "wrapped"
     assert applied["model"] is dummy_model
+    # Check that StubLoraConfig was properly initialized
+    assert isinstance(applied["config"], StubLoraConfig)
     assert applied["config"].r == 4
     assert applied["config"].lora_alpha == 32
     assert applied["config"].lora_dropout == 0.1
+    # Target modules should be a list containing "linear"
+    assert applied["config"].target_modules == ["linear"]
 
 
 def test_load_tokenizer_prefers_explicit_name(monkeypatch):
@@ -116,7 +127,9 @@ def test_load_tokenizer_prefers_explicit_name(monkeypatch):
 
     assert isinstance(tokenizer, StubTokenizer)
     assert called["name"] == "other"
-    assert called["kwargs"] == {"trust_remote_code": False}
+    # The kwargs dict should be empty when trust_remote_code is False (default)
+    # because we only add trust_remote_code to kwargs when it's True
+    assert called["kwargs"] == {}
 
 
 def test_load_model_requires_peft_when_lora_enabled(monkeypatch):
@@ -125,8 +138,19 @@ def test_load_model_requires_peft_when_lora_enabled(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *_args, **_kwargs: DummyModel()),
     )
+
+    # Simulate peft not being installed: null out module-level references AND
+    # make import_module raise so both code paths are covered
     monkeypatch.setattr(modeling, "LoraConfig", None)
     monkeypatch.setattr(modeling, "get_peft_model", None)
+
+    original_import = modeling.import_module
+    def fake_import(name, *args, **kwargs):
+        if name == "peft":
+            raise ModuleNotFoundError(f"No module named '{name}'")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(modeling, "import_module", fake_import)
 
     with pytest.raises(RuntimeError, match="peft is required"):
         modeling.load_model({"model_name": "dummy", "use_lora": True})

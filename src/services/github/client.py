@@ -6,8 +6,6 @@ Includes retry logic, rate limit handling, and typed responses.
 
 import asyncio
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import time
 from datetime import datetime, timezone
@@ -37,6 +35,8 @@ from .types import (
     WorkflowRun,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class GitHubClient:
     """GitHub API client for workflow operations.
@@ -50,17 +50,17 @@ class GitHubClient:
     Example:
         ```python
         client = GitHubClient()
-        
+
         # list workflows
         workflows = await client.list_workflows("owner", "repo")
-        
+
         # Trigger a workflow
         run_id = await client.trigger_workflow(
             "owner", "repo", "ci.yml",
             ref="main",
             inputs={"environment": "staging"}
         )
-        
+
         # Monitor status
         run = await client.get_workflow_run("owner", "repo", run_id)
         print(f"Status: {run.status}, Conclusion: {run.conclusion}")

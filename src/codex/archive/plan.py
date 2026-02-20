@@ -21,17 +21,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import re
-import time
-from collections.abc import Iterable
-from dataclasses import asdict, dataclass
-from fnmatch import fnmatch
-from pathlib import Path
-from re import Pattern
-from typing import Any, Final
+import re  # noqa: E402
+import time  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
+from dataclasses import asdict, dataclass  # noqa: E402
+from fnmatch import fnmatch  # noqa: E402
+from pathlib import Path  # noqa: E402
+from re import Pattern  # noqa: E402
+from typing import Any, Final  # noqa: E402
 
-from .detect import FileMeta, stat_file
-from .score import ScoreInput, archive_score
+from .detect import FileMeta, stat_file  # noqa: E402
+from .score import ScoreInput, archive_score  # noqa: E402
 
 DEPRECATION_PAT: Final[Pattern[str]] = re.compile(
     r"\b(DEPRECATED|LEGACY|PRUNE_ME)\b", re.IGNORECASE

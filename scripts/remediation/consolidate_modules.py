@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/consolidate_modules.py [options]
-    
+
     Examples:
     $ python scripts/remediation/consolidate_modules.py --help
 
@@ -26,22 +26,14 @@ Exit Codes:
 
 Author: Codex Team
 Last Updated: 2026-01-16
-"""
-
 
 """
+
 import logging
-logger = logging.getLogger(__name__)
-Python Module Consolidation Script
-
-Consolidates duplicate Python modules by:
-1. Removing scripts/analysis/ (keeping tools/dupinv/)
-2. Updating all imports
-3. Cleaning up references
-"""
-
-from pathlib import Path
 import re
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 class ModuleConsolidator:
@@ -189,7 +181,7 @@ class ModuleConsolidator:
                     print("⚠ Files differ - manual review needed")
                     self.changes.append(f"Manual review: {root_file} vs {src_file}")
         else:
-            print(f"One or both files don't exist:")
+            print("One or both files don't exist:")
             print(f"  {root_file.exists()}: {root_file}")
             print(f"  {src_file.exists()}: {src_file}")
         print()

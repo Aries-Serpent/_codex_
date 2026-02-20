@@ -25,11 +25,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import json
-import os
-import re
-import sqlite3
+import argparse  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import re  # noqa: E402
+import sqlite3  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -38,11 +38,16 @@ try:
 except Exception as e:
     logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
-import sys
-from typing import Any, Iterable, Optional
+import sys  # noqa: E402
+from typing import Any, Iterable, Optional  # noqa: E402
 
-from .config import DEFAULT_LOG_DB
-from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
+from .config import DEFAULT_LOG_DB  # noqa: E402
+from .db_utils import (  # noqa: E402
+    infer_columns,
+    infer_probable_table,
+    open_db,
+    resolve_db_path,
+)
 
 
 def _db_path(override: str | None = None) -> str:

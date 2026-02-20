@@ -23,18 +23,22 @@ logger = logging.getLogger(__name__)
 """Tokenizer pipeline utilities exposed via the Codex CLI."""
 
 
-import json
-from dataclasses import asdict, fields
-from glob import glob
-from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence
+import json  # noqa: E402
+from dataclasses import asdict, fields  # noqa: E402
+from glob import glob  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Optional, Sequence  # noqa: E402
 
-from tokenizers import Tokenizer
+from tokenizers import Tokenizer  # noqa: E402
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
+from codex_ml.utils.yaml_support import (  # noqa: E402
+    MissingPyYAMLError,
+    YAMLError,
+    safe_load,
+)
 
-from .sentencepiece_adapter import SentencePieceAdapter
-from .train_tokenizer import TrainTokenizerConfig, train
+from .sentencepiece_adapter import SentencePieceAdapter  # noqa: E402
+from .train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 
 class TokenizerPipelineError(RuntimeError):

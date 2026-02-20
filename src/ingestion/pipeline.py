@@ -58,7 +58,7 @@ __all__ = [
 @dataclass
 class PipelineConfig:
     """Configuration for the ingestion pipeline.
-    
+
     Attributes:
         encoding: File encoding (use 'auto' for detection)
         batch_size: Records per batch for streaming
@@ -86,7 +86,7 @@ class PipelineConfig:
 @dataclass
 class PipelineResult:
     """Result of a pipeline operation.
-    
+
     Attributes:
         success: Whether the operation succeeded
         records_processed: Number of records processed
@@ -107,18 +107,18 @@ class PipelineResult:
 
 class IngestionPipeline:
     """Unified ingestion pipeline for processing data files.
-    
+
     The pipeline supports multiple file formats and provides:
     - Automatic encoding detection
     - Configurable transformations
     - Streaming for large files
     - Comprehensive error handling
-    
+
     Example:
         >>> pipeline = IngestionPipeline()
         >>> result = pipeline.process("data.csv", output_path="processed.jsonl")
         >>> print(f"Processed {result.records_processed} records")
-    
+
     Safeguards:
     - Input validation on all parameters
     - File size bounds checking
@@ -128,7 +128,7 @@ class IngestionPipeline:
 
     def __init__(self, config: Optional[PipelineConfig] = None):
         """Initialize the pipeline with configuration.
-        
+
         Args:
             config: Pipeline configuration (uses defaults if None)
         """
@@ -137,7 +137,7 @@ class IngestionPipeline:
 
     def _validate_config(self) -> None:
         """Validate configuration parameters.
-        
+
         Safeguard: Bounds checking on configuration values.
         """
         if self.config.batch_size <= 0:
@@ -155,12 +155,12 @@ class IngestionPipeline:
 
     def _validate_file(self, path: Path) -> None:
         """Validate input file before processing.
-        
+
         Safeguard: Input validation and bounds checking.
-        
+
         Args:
             path: Path to validate
-            
+
         Raises:
             FileNotFoundError: If file doesn't exist
             ValueError: If file exceeds size limit
@@ -181,10 +181,10 @@ class IngestionPipeline:
 
     def _detect_format(self, path: Path) -> str:
         """Detect file format from extension.
-        
+
         Args:
             path: File path
-            
+
         Returns:
             Format string (csv, json, jsonl, txt, md)
         """
@@ -205,10 +205,10 @@ class IngestionPipeline:
 
     def _get_encoding(self, path: Path) -> str:
         """Get encoding for file.
-        
+
         Args:
             path: File path
-            
+
         Returns:
             Encoding string
         """
@@ -218,13 +218,13 @@ class IngestionPipeline:
 
     def _read_csv(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read CSV file as records.
-        
+
         Safeguard: Field length validation.
-        
+
         Args:
             path: CSV file path
             encoding: File encoding
-            
+
         Yields:
             dict records
         """
@@ -243,11 +243,11 @@ class IngestionPipeline:
 
     def _read_json(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSON file as records.
-        
+
         Args:
             path: JSON file path
             encoding: File encoding
-            
+
         Yields:
             dict records (wraps single objects in list)
         """
@@ -267,11 +267,11 @@ class IngestionPipeline:
 
     def _read_jsonl(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read JSONL/NDJSON file as records.
-        
+
         Args:
             path: JSONL file path
             encoding: File encoding
-            
+
         Yields:
             dict records
         """
@@ -291,11 +291,11 @@ class IngestionPipeline:
 
     def _read_text(self, path: Path, encoding: str) -> Iterator[dict[str, Any]]:
         """Read text file as records (one per line).
-        
+
         Args:
             path: Text file path
             encoding: File encoding
-            
+
         Yields:
             dict records with 'text' field
         """
@@ -305,10 +305,10 @@ class IngestionPipeline:
 
     def _transform_record(self, record: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Apply transformations to a record.
-        
+
         Args:
             record: Input record
-            
+
         Returns:
             Transformed record or None if should be skipped
         """
@@ -350,12 +350,12 @@ class IngestionPipeline:
         format_override: Optional[str] = None,
     ) -> PipelineResult:
         """Process an input file through the pipeline.
-        
+
         Args:
             input_path: Path to input file
             output_path: Path for output file (optional)
             format_override: Override auto-detected format
-            
+
         Returns:
             PipelineResult with processing statistics
         """
@@ -450,9 +450,9 @@ class IngestionPipeline:
         output_path: Path,
     ) -> None:
         """Write processed records to output file.
-        
+
         Output format is determined by file extension.
-        
+
         Args:
             records: Processed records
             output_path: Output file path
@@ -489,13 +489,13 @@ class IngestionPipeline:
         format_override: Optional[str] = None,
     ) -> Iterator[dict[str, Any]]:
         """Stream records from input file.
-        
+
         Memory-efficient processing for large files.
-        
+
         Args:
             input_path: Path to input file
             format_override: Override auto-detected format
-            
+
         Yields:
             Transformed records
         """
@@ -525,11 +525,11 @@ def ingest_file(
     config: Optional[PipelineConfig] = None,
 ) -> list[dict[str, Any]]:
     """Convenience function to ingest a single file.
-    
+
     Args:
         path: File path
         config: Pipeline configuration
-        
+
     Returns:
         list of processed records
     """
@@ -544,13 +544,13 @@ def ingest_directory(
     recursive: bool = False,
 ) -> Iterator[dict[str, Any]]:
     """Ingest all matching files from a directory.
-    
+
     Args:
         directory: Directory path
         pattern: Glob pattern for file matching
         config: Pipeline configuration
         recursive: Whether to search recursively
-        
+
     Yields:
         Processed records from all files
     """
@@ -579,11 +579,11 @@ def transform_records(
     transformers: list[Callable[[dict[str, Any]], Optional[dict[str, Any]]]],
 ) -> Iterator[dict[str, Any]]:
     """Apply a chain of transformers to records.
-    
+
     Args:
         records: Input records
         transformers: list of transformer functions
-        
+
     Yields:
         Transformed records (skips None results)
     """

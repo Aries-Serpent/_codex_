@@ -196,8 +196,8 @@ git push origin 0D_base_
 - **Sprint Plan**: `.github/prompts/sprint_execution_plan/`
 - **PR**: https://github.com/Aries-Serpent/_codex_/pull/3020
 - **CI Jobs**: 
-  - QA: https://github.com/Aries-Serpent/_codex_/actions/runs/21383801871/job/61555966606
-  - Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21383801841/job/61555961748
+  - QA: https://github.com/Aries-Serpent/_codex_/actions/runs/21383801871 <!-- Note: Logs expire after 90 days -->/job/61555966606
+  - Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21383801841 <!-- Note: Logs expire after 90 days -->/job/61555961748
 
 ---
 

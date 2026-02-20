@@ -187,9 +187,9 @@ All required artifacts successfully generated and available:
 
 | Artifact | Size | Status | Download Link |
 |----------|------|--------|---------------|
-| coverage-html-3.12 | 6.4 MB | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706491) |
-| junit-report-3.12 | 2.5 KB | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706794) |
-| security-scan-3.12 | 701 B | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141/artifacts/5359719837) |
+| coverage-html-3.12 | 6.4 MB | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491) |
+| junit-report-3.12 | 2.5 KB | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794) |
+| security-scan-3.12 | 701 B | ✅ Available | [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141 <!-- Note: Logs expire after 90 days -->/artifacts/5359719837) |
 | coverage.xml | Included | ✅ Uploaded | Codecov |
 
 ---

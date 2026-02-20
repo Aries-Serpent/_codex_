@@ -11,7 +11,14 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["EarlyStoppingConfig", "inject_early_stopping", "CodexEarlyStoppingCallback"]
+__all__ = [
+    "EarlyStoppingConfig",
+    "EarlyStopping",
+    "inject_early_stopping",
+    "CodexEarlyStoppingCallback",
+    "EarlyStoppingCallback",
+    "create_early_stopping_from_config",
+]
 
 
 class EarlyStoppingConfig:
@@ -22,6 +29,8 @@ class EarlyStoppingConfig:
         threshold: Minimum change to qualify as improvement
         metric: Metric to monitor (default: eval_loss)
         mode: 'min' for loss, 'max' for accuracy
+        enabled: Whether early stopping is enabled (default: True)
+        monitor: Alias for metric parameter (for compatibility)
     """
 
     def __init__(
@@ -30,6 +39,8 @@ class EarlyStoppingConfig:
         threshold: float = 0.0,
         metric: str = "eval_loss",
         mode: str = "min",
+        enabled: bool = False,
+        monitor: Optional[str] = None,
     ):
         """Initialize early stopping configuration.
 
@@ -38,11 +49,15 @@ class EarlyStoppingConfig:
             threshold: Minimum improvement threshold (default: 0.0)
             metric: Metric name to monitor (default: eval_loss)
             mode: 'min' or 'max' (default: min for loss)
+            enabled: Whether early stopping is enabled (default: False)
+            monitor: Alias for metric parameter (default: None)
         """
         self.patience = patience
         self.threshold = threshold
-        self.metric = metric
+        self.metric = monitor if monitor is not None else metric
+        self.monitor = self.metric  # Alias
         self.mode = mode
+        self.enabled = enabled
 
     def to_dict(self) -> dict[str, Any]:
         """Convert config to dict."""
@@ -51,7 +66,82 @@ class EarlyStoppingConfig:
             "threshold": self.threshold,
             "metric": self.metric,
             "mode": self.mode,
+            "enabled": self.enabled,
+            "monitor": self.monitor,
         }
+
+
+class EarlyStopping:
+    """Standalone EarlyStopping implementation for non-HuggingFace training loops.
+    
+    Attributes:
+        patience: Number of evaluation calls with no improvement before stopping
+        monitor: Metric name to monitor
+        mode: 'min' for metrics that should decrease, 'max' for metrics that should increase
+    """
+
+    def __init__(
+        self,
+        patience: int = 3,
+        monitor: str = "val_loss",
+        mode: str = "min",
+    ):
+        """Initialize early stopping.
+
+        Args:
+            patience: Epochs to wait for improvement (default: 3)
+            monitor: Metric name to monitor (default: val_loss)
+            mode: 'min' or 'max' (default: min for loss)
+        """
+        self.patience = patience
+        self.monitor = monitor
+        self.mode = mode
+        self.best_metric = None
+        self.patience_counter = 0
+        self.should_stop = False
+
+    def check_metric(self, metrics: dict[str, float]) -> bool:
+        """Check if training should stop based on metric.
+
+        Args:
+            metrics: Dictionary of metric values
+
+        Returns:
+            True if training should stop, False otherwise
+        """
+        if self.monitor not in metrics:
+            logger.warning(f"Monitored metric '{self.monitor}' not found in metrics")
+            return False
+
+        current_metric = metrics[self.monitor]
+
+        # First evaluation
+        if self.best_metric is None:
+            self.best_metric = current_metric
+            return False
+
+        # Check if improved
+        improved = False
+        if self.mode == "min":
+            improved = current_metric < self.best_metric
+        else:  # max
+            improved = current_metric > self.best_metric
+
+        if improved:
+            self.best_metric = current_metric
+            self.patience_counter = 0
+        else:
+            self.patience_counter += 1
+
+        if self.patience_counter >= self.patience:
+            self.should_stop = True
+            logger.info(
+                f"Early stopping triggered: no improvement in {self.monitor} "
+                f"for {self.patience} evaluations"
+            )
+            return True
+
+        return False
 
 
 class CodexEarlyStoppingCallback:
@@ -131,13 +221,20 @@ def inject_early_stopping(
     try:
         from transformers import EarlyStoppingCallback
 
+        # Check isinstance for real instances, or check type name for mocks
         has_early_stopping = any(
-            isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback)) for cb in callbacks
+            isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback))
+            or type(cb).__name__ in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
+            for cb in callbacks
         )
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
-        has_early_stopping = any(isinstance(cb, CodexEarlyStoppingCallback) for cb in callbacks)
+        has_early_stopping = any(
+            isinstance(cb, CodexEarlyStoppingCallback)
+            or type(cb).__name__ == "CodexEarlyStoppingCallback"
+            for cb in callbacks
+        )
 
     if has_early_stopping and not force:
         logger.info("EarlyStopping already present, skipping injection")
@@ -186,3 +283,26 @@ def auto_inject_early_stopping_for_trainer(
     callbacks = inject_early_stopping(callbacks, config=config)
 
     return callbacks
+
+
+def create_early_stopping_from_config(config: EarlyStoppingConfig) -> Optional[EarlyStopping]:
+    """Create EarlyStopping instance from configuration.
+
+    Args:
+        config: EarlyStoppingConfig instance
+
+    Returns:
+        EarlyStopping instance if enabled, None otherwise
+    """
+    if not getattr(config, 'enabled', True):
+        return None
+
+    return EarlyStopping(
+        patience=getattr(config, 'patience', 3),
+        monitor=getattr(config, 'monitor', getattr(config, 'metric', 'val_loss')),
+        mode=getattr(config, 'mode', 'min'),
+    )
+
+
+# Alias for backward compatibility
+EarlyStoppingCallback = CodexEarlyStoppingCallback

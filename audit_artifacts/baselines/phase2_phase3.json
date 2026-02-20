@@ -1,0 +1,21 @@
+{
+  "description": "Classical baseline for Phase 2/3 reproducibility verification",
+  "generated": "2026-02-19",
+  "seed": 42,
+  "scenarios": 110,
+  "results": {
+    "accuracy": 1.0,
+    "coherence": 0.7906,
+    "k1": 0.3272,
+    "mismatches": 0,
+    "total_scenarios": 110
+  },
+  "config": {
+    "noise_enabled": false,
+    "bayesian_mode": false,
+    "fuzzy_mode": false,
+    "lightweight_mode": false
+  },
+  "reproducibility_command": "PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py --seed 42",
+  "note": "Deterministic baseline: same inputs + same seed always produces same outputs. HMAC chain: same inputs + same key -> same chain_hash."
+}

@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 """Deterministic dataset helpers built on Hugging Face :mod:`datasets`."""
 
 
-import random
-from typing import Iterable
+import random  # noqa: E402
+from typing import Iterable  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from datasets import Dataset

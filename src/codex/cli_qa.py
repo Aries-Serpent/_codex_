@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 """Typer CLI for offline QA scoring."""
 
 
-import json
-from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import TYPE_CHECKING, Annotated  # noqa: E402
 
-import typer
+import typer  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - import guards
     from codex.qa.rubric import QARubric

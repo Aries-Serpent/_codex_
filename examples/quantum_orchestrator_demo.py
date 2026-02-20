@@ -9,8 +9,9 @@ Demonstrates:
 5. Self-healing behavior
 """
 
-from codex.quantum_orchestrator.orchestrator import create_orchestrator
 import numpy as np
+
+from codex.quantum_orchestrator.orchestrator import create_orchestrator
 
 
 def example_basic_orchestration():
@@ -74,7 +75,7 @@ def example_basic_orchestration():
     print("\nRunning orchestration...")
     results = orchestrator.run(max_iterations=100)
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Iterations: {results['iterations']}")
     print(f"  Completed tasks: {len(results['completed_tasks'])}/{results['total_tasks']}")
     print(f"  Completion rate: {results['completion_rate']:.1%}")
@@ -127,19 +128,19 @@ def example_with_deadlines():
         deadline=50.0,  # Flexible deadline
     )
 
-    print(f"\nTasks with deadlines:")
+    print("\nTasks with deadlines:")
     for task_id, task in orchestrator.state.tasks.items():
         print(f"  {task.name}: deadline at t={task.deadline}")
 
     # Run and monitor
     results = orchestrator.run(max_iterations=200)
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Completed: {len(results['completed_tasks'])}/{results['total_tasks']}")
     print(f"  Final time: {results['final_timestamp']:.2f}")
 
     # Check SLA compliance
-    print(f"\nSLA Compliance:")
+    print("\nSLA Compliance:")
     for task_id, task in orchestrator.state.tasks.items():
         completed = task_id in results["completed_tasks"]
         on_time = completed and results["final_timestamp"] <= task.deadline
@@ -188,11 +189,11 @@ def example_resource_constraints():
         dependencies=["ml_training"],
     )
 
-    print(f"\nAvailable resources:")
+    print("\nAvailable resources:")
     for resource, amount in orchestrator.state.resources.items():
         print(f"  {resource}: {amount}")
 
-    print(f"\nTask resource requirements:")
+    print("\nTask resource requirements:")
     for task_id, task in orchestrator.state.tasks.items():
         if task.required_resources:
             print(f"  {task.name}: {task.required_resources}")
@@ -200,7 +201,7 @@ def example_resource_constraints():
     # Run
     results = orchestrator.run(max_iterations=150)
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Completed: {len(results['completed_tasks'])}/{results['total_tasks']}")
 
     # Show bottlenecks if any
@@ -209,7 +210,7 @@ def example_resource_constraints():
             orchestrator.state, orchestrator.history[-1], orchestrator.dt
         )
         if bottlenecks:
-            print(f"\nIdentified bottlenecks:")
+            print("\nIdentified bottlenecks:")
             for bn in bottlenecks:
                 print(f"  {bn['task_id']}: severity={bn['severity']:.2f}")
 
@@ -229,7 +230,7 @@ def example_spinor_analysis():
 
     task = orchestrator.state.tasks["test_task"]
 
-    print(f"\nInitial spinor state:")
+    print("\nInitial spinor state:")
     print(f"  ψ₁ (pos energy, spin up): {task.spinor.psi_1}")
     print(f"  ψ₂ (pos energy, spin down): {task.spinor.psi_2}")
     print(f"  ψ₃ (neg energy, spin up): {task.spinor.psi_3}")
@@ -239,11 +240,11 @@ def example_spinor_analysis():
     print(f"  Negative energy prob: {task.spinor.negative_energy_prob:.3f}")
 
     # Evolve for a few steps
-    print(f"\nEvolving for 10 steps...")
+    print("\nEvolving for 10 steps...")
     for _ in range(10):
         orchestrator.evolve()
 
-    print(f"\nAfter evolution:")
+    print("\nAfter evolution:")
     print(f"  ψ₁: {task.spinor.psi_1:.4f}")
     print(f"  ψ₂: {task.spinor.psi_2:.4f}")
     print(f"  ψ₃: {task.spinor.psi_3:.4f}")
@@ -255,7 +256,7 @@ def example_spinor_analysis():
     helicity = orchestrator.dirac.helicity(task, orchestrator.state)
     zitter = orchestrator.dirac.zitterbewegung_amplitude(task)
 
-    print(f"\nPhysics properties:")
+    print("\nPhysics properties:")
     print(f"  Dirac current: {current}")
     print(f"  Current magnitude: {np.linalg.norm(current):.3f} (max={orchestrator.constants.c})")
     print(f"  Helicity: {helicity:.3f}")

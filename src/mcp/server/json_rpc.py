@@ -79,7 +79,7 @@ MethodHandler = Callable[[Optional[dict[str, Any]]], Awaitable[Any]]
 
 class JsonRpcHandler:
     """Handler for JSON-RPC 2.0 requests.
-    
+
     This handler implements the JSON-RPC 2.0 specification:
     - Request validation
     - Method dispatch
@@ -98,7 +98,7 @@ class JsonRpcHandler:
         handler: MethodHandler
     ) -> None:
         """Register a method handler.
-        
+
         Args:
             name: Method name (e.g., "mcp.listTools").
             handler: Async function to handle the method.
@@ -108,10 +108,10 @@ class JsonRpcHandler:
 
     def unregister_method(self, name: str) -> bool:
         """Unregister a method handler.
-        
+
         Args:
             name: Method name to unregister.
-            
+
         Returns:
             True if method was unregistered, False if not found.
         """
@@ -122,10 +122,10 @@ class JsonRpcHandler:
 
     def method(self, name: str) -> Callable[[MethodHandler], MethodHandler]:
         """Decorator for registering method handlers.
-        
+
         Args:
             name: Method name.
-            
+
         Returns:
             Decorator function.
         """
@@ -139,10 +139,10 @@ class JsonRpcHandler:
         data: dict[str, Any]
     ) -> Union[JsonRpcRequest, JsonRpcError]:
         """Parse and validate a JSON-RPC request.
-        
+
         Args:
             data: Raw request data.
-            
+
         Returns:
             Parsed request or error.
         """
@@ -192,13 +192,13 @@ class JsonRpcHandler:
 
     async def _dispatch(self, request: JsonRpcRequest) -> Any:
         """Dispatch a request to its handler.
-        
+
         Args:
             request: Parsed request.
-            
+
         Returns:
             Handler result.
-            
+
         Raises:
             JsonRpcError: If method not found or handler fails.
         """
@@ -216,10 +216,10 @@ class JsonRpcHandler:
         data: dict[str, Any]
     ) -> Optional[dict[str, Any]]:
         """Handle a single JSON-RPC request.
-        
+
         Args:
             data: Raw request data.
-            
+
         Returns:
             Response dictionary, or None for notifications.
         """
@@ -286,10 +286,10 @@ class JsonRpcHandler:
         requests: list[dict[str, Any]]
     ) -> list[dict[str, Any]]:
         """Handle a batch of JSON-RPC requests.
-        
+
         Args:
             requests: list of request dictionaries.
-            
+
         Returns:
             list of response dictionaries.
         """
@@ -327,10 +327,10 @@ class JsonRpcHandler:
         data: Union[dict[str, Any], list[dict[str, Any]]]
     ) -> Optional[Union[dict[str, Any], list[dict[str, Any]]]]:
         """Handle a JSON-RPC request or batch.
-        
+
         Args:
             data: Request data (single or batch).
-            
+
         Returns:
             Response data (single or batch), or None for notifications.
         """
@@ -342,7 +342,7 @@ class JsonRpcHandler:
 
     def get_registered_methods(self) -> list[str]:
         """Get list of registered method names.
-        
+
         Returns:
             list of method names.
         """

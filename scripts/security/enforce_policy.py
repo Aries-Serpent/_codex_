@@ -4,7 +4,7 @@ Enforce Policy
 
 Purpose:
     Main execution script for security policy enforcement.
-    
+
     Enforce security policy gates:
     - Validate secrets baseline presence when required
     - Run bandit and enforce severity threshold
@@ -12,7 +12,7 @@ Purpose:
 
 Usage:
     python scripts/security/enforce_policy.py [options]
-    
+
     Examples:
     $ python scripts/security/enforce_policy.py --help
 
@@ -33,7 +33,9 @@ Author: Codex Team
 Last Updated: 2026-01-22
 """
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

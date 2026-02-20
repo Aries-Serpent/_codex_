@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/secret_entropy_scan.py [options]
-    
+
     Examples:
     $ python scripts/security/secret_entropy_scan.py --help
 
@@ -30,8 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-
-
 """
 Secret Entropy Scan (P4)
 
@@ -43,6 +41,7 @@ Heuristic:
 - Writes secret_entropy_report.json with findings; does NOT mutate originals (non-destructive).
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

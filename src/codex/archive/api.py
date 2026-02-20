@@ -21,13 +21,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import uuid
-from pathlib import Path
+import json  # noqa: E402
+import os  # noqa: E402
+import uuid  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-from .dal import ArchiveDAL
-from .util import sha256_hex, utcnow_iso, zlib_compress
+from .dal import ArchiveDAL  # noqa: E402
+from .util import sha256_hex, utcnow_iso, zlib_compress  # noqa: E402
 
 __all__ = [
     "store",

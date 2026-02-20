@@ -20,12 +20,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-import uuid
-from pathlib import Path
-from typing import Optional
+import os  # noqa: E402
+import uuid  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
 
-from src.codex.logging.session_logger import log_event
+from src.codex.logging.session_logger import log_event  # noqa: E402
 
 
 class ChatSession:

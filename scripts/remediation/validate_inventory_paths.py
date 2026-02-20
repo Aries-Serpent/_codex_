@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/validate_inventory_paths.py [options]
-    
+
     Examples:
     $ python scripts/remediation/validate_inventory_paths.py --help
 
@@ -36,9 +36,10 @@ Used as a pre-check in CI to catch missing/stale inventory entries.
 Usage:
   python scripts/remediation/validate_inventory_paths.py
 """
-import yaml
 import sys
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 INVENTORY = ROOT / ".github" / "SHIM_INVENTORY.yaml"

@@ -4,12 +4,9 @@ Covers logging, metrics, tracing, and monitoring capabilities.
 """
 
 import logging
-import sys
 from io import StringIO
-from pathlib import Path
 
-repo_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(repo_root))
+# NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 
 
 def test_logging_configuration():

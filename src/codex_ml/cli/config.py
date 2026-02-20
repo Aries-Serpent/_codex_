@@ -71,11 +71,11 @@ class TrainCfg:
 @dataclass
 class ExperimentConfig:
     """Configuration for experiment settings.
-    
+
     This class defines experimental configurations for training runs,
     testing scenarios, and deployment environments. It controls resource
     allocation, logging behavior, and checkpoint management.
-    
+
     Attributes:
         name: Experiment identifier (e.g., "debug", "production", "benchmark")
         type: Experiment category (e.g., "unit_test", "integration", "performance")
@@ -196,7 +196,7 @@ def _extract_defaults_from_text(text: str) -> list[str]:
     return entries
 
 
-def _load_defaults_from_yaml(text: str) -> list[str] | None:
+def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
         import yaml  # type: ignore
     except Exception:  # pragma: no cover - optional dependency
@@ -291,7 +291,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))

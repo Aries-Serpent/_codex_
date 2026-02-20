@@ -151,8 +151,10 @@ class TestHistogramMetrics:
         """Histogram can compute percentiles."""
         def compute_percentile(values, percentile):
             sorted_values = sorted(values)
-            index = int(len(sorted_values) * percentile / 100)
-            return sorted_values[min(index, len(sorted_values) - 1)]
+            # Use proper percentile calculation: (n-1) * p/100
+            # For 50th percentile of 10 values: (10-1) * 50/100 = 4.5 → index 4 → value 0.5
+            index = int((len(sorted_values) - 1) * percentile / 100)
+            return sorted_values[index]
 
         values = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
