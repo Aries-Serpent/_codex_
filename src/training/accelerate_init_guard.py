@@ -67,8 +67,8 @@ class AccelerateInitResult:
 def is_accelerate_available() -> bool:
     """Check if accelerate package is importable."""
     # _ACCELERATOR_AVAILABLE is set at module load from the Accelerator import attempt.
-    # Fall back to importlib check in case the module-level import was patched.
-    if _ACCELERATOR_AVAILABLE:
+    # Accelerator is None when accelerate is not installed; non-None when it is.
+    if _ACCELERATOR_AVAILABLE and Accelerator is not None:
         return True
     spec = importlib.util.find_spec("accelerate")
     return spec is not None
