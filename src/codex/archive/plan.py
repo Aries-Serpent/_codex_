@@ -27,13 +27,12 @@ from collections.abc import Iterable  # noqa: E402
 from dataclasses import asdict, dataclass  # noqa: E402
 from fnmatch import fnmatch  # noqa: E402
 from pathlib import Path  # noqa: E402
-from re import Pattern  # noqa: E402
 from typing import Any, Final  # noqa: E402
 
 from .detect import FileMeta, stat_file  # noqa: E402
 from .score import ScoreInput, archive_score  # noqa: E402
 
-DEPRECATION_PAT: Final[Pattern[str]] = re.compile(
+DEPRECATION_PAT: Final[re.Pattern[str]] = re.compile(
     r"\b(DEPRECATED|LEGACY|PRUNE_ME)\b", re.IGNORECASE
 )
 

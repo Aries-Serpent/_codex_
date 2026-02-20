@@ -601,10 +601,20 @@ def _seed_everything(seed: int = 42):
     if np is not None:
         np.random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)  # For single GPU
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    torch.use_deterministic_algorithms(True)
+    if "CUBLAS_WORKSPACE_CONFIG" not in os.environ:
+        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+    try:
+        torch.use_deterministic_algorithms(True)
+    except RuntimeError as e:
+        try:
+            torch.use_deterministic_algorithms(True, warn_only=True)
+        except Exception:
+            logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
 def _worker_init_fn(worker_id):

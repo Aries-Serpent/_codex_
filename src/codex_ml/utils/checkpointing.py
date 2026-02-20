@@ -333,7 +333,11 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         _msg = str(e)
         if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
             logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
-            torch.save(dict(payload), path, pickle_protocol=2)
+            try:
+                torch.save(dict(payload), path, pickle_protocol=2)
+            except Exception as e2:
+                logger.error("torch.save failed even with pickle_protocol=2: %s", e2)
+                raise
         else:
             raise
 
@@ -500,10 +504,10 @@ def _safe_git_commit() -> Optional[str]:
 
 def _safe_str_value(val: Any) -> Optional[str]:
     """Safely convert a value to a string, handling MagicMock and other non-serializable types.
-    
+
     Args:
         val: Value to convert
-        
+
     Returns:
         String representation or None if not safely convertible
     """
@@ -531,13 +535,13 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
         try:
             torch_version = getattr(torch, "__version__", None)
             info["torch"] = _safe_str_value(torch_version)
-            
+
             cuda_version = None
             if hasattr(torch, "version") and hasattr(torch.cuda, "is_available"):
                 try:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
-                except Exception:
+                except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
                     pass
             info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
@@ -845,7 +849,16 @@ def build_payload_bytes(
     if rng_state:
         state["rng"] = _rng_dump()
     buf = io.BytesIO()
-    torch.save(state, buf)
+    try:
+        torch.save(state, buf)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "FloatStorage" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            buf = io.BytesIO()
+            torch.save(state, buf, pickle_protocol=2)
+        else:
+            raise
     return buf.getvalue()
 
 
@@ -885,7 +898,14 @@ def load_payload(
 
 
 def _write_json(path: Path, data: dict[str, Any]) -> None:
-    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+    class _SafeEncoder(json.JSONEncoder):
+        """Fallback encoder: renders non-serializable objects as their repr string."""
+        def default(self, o: Any) -> Any:
+            try:
+                return super().default(o)
+            except TypeError:
+                return repr(o)
+    path.write_text(json.dumps(data, indent=2, sort_keys=True, cls=_SafeEncoder), encoding="utf-8")
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -1071,7 +1091,15 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(state, p)
+    try:
+        torch.save(state, p)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            torch.save(state, p, pickle_protocol=2)
+        else:
+            raise
     _write_checksum_manifest(p)
 
 
@@ -1139,7 +1167,15 @@ class CheckpointManager:
                 state["optimizer"] = optimizer.state_dict()
             if scheduler is not None and hasattr(scheduler, "state_dict"):
                 state["scheduler"] = scheduler.state_dict()
-            torch.save(state, ep_dir / "state.pt")
+            try:
+                torch.save(state, ep_dir / "state.pt")
+            except (TypeError, RuntimeError) as e:
+                _msg = str(e)
+                if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+                    logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+                    torch.save(state, ep_dir / "state.pt", pickle_protocol=2)
+                else:
+                    raise
         else:  # pragma: no cover - fallback path
             state = {
                 "model": getattr(model, "__dict__", None),

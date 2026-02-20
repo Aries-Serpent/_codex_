@@ -39,11 +39,10 @@ except Exception:  # pragma: no cover
     sa = None
 
 from . import schema  # noqa: E402
-from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: E402
 from .util import ensure_directory, json_dumps_sorted, utcnow  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .config import ArchiveAppConfig as SettingsArchiveConfig
+    pass  # No imports needed; from __future__ import annotations makes all annotations lazy
 
 Params = dict[str, Any]
 
@@ -60,14 +59,16 @@ class ArchiveConfig:
         runtime_env: dict[str, str] = dict(os.environ)
         if env is not None:
             runtime_env.update(env)
-        settings = RuntimeArchiveConfig.from_env(env=runtime_env)
-        return cls(url=settings.backend.url, backend=settings.backend.backend)
+        # Read env vars directly — avoids the backend→config→backend cyclic import.
+        url = runtime_env.get("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
+        backend = runtime_env.get("CODEX_ARCHIVE_BACKEND") or infer_backend(url)
+        return cls(url=url, backend=backend)
 
     @classmethod
     def from_settings(
         cls,
-        settings: RuntimeArchiveConfig | SettingsArchiveConfig,
-    ) -> ArchiveConfig:
+        settings: Any,  # ArchiveAppConfig from .config — omitted to break cyclic import
+    ) -> "ArchiveConfig":
         """Create a runtime backend config from archive settings."""
 
         return cls(url=settings.backend.url, backend=settings.backend.backend)

@@ -23,7 +23,14 @@ from src.training.accelerate_init_guard import (  # noqa: E402
     safe_accelerate_init,
 )
 
+# Re-export Accelerator for tests that mock it
+try:
+    from accelerate import Accelerator  # noqa: E402
+except ImportError:
+    Accelerator = None  # type: ignore[misc,assignment]
+
 __all__ = [
+    "Accelerator",
     "AccelerateInitResult",
     "get_distributed_env_info",
     "is_accelerate_available",

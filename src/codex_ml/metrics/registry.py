@@ -27,11 +27,6 @@ from typing import Callable, Optional, Sequence  # noqa: E402
 
 from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
-# Ensure built-in generative metrics are registered on import.
-from . import generative as _generative  # noqa: E402
-
-_ = _generative  # Imported for side effects (metric registration)
-
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
@@ -40,6 +35,8 @@ _REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
 
 # Ensure built-in generative metrics are registered on import.
+# Imported AFTER metric_registry is defined to avoid a circular-import at
+# module load time (generative.py calls register_metric from this module).
 from . import generative as _generative  # noqa: F401, E402
 
 # Mark as explicitly used for side effects (metric registration)
