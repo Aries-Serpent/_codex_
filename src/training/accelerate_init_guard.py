@@ -65,7 +65,14 @@ class AccelerateInitResult:
 
 
 def is_accelerate_available() -> bool:
-    """Check if accelerate package is importable."""
+    """Check if accelerate package is importable.
+
+    The ``Accelerator is not None`` check is an explicit reference to the
+    module-level ``Accelerator`` symbol so that static analysis tools (CodeQL)
+    can confirm the symbol is used in executable code, not only in ``__all__``.
+    Logically, when ``_ACCELERATOR_AVAILABLE`` is ``True``, ``Accelerator`` is
+    guaranteed non-``None`` from the module-load try/except block above.
+    """
     # _ACCELERATOR_AVAILABLE is set at module load from the Accelerator import attempt.
     # Accelerator is None when accelerate is not installed; non-None when it is.
     if _ACCELERATOR_AVAILABLE and Accelerator is not None:

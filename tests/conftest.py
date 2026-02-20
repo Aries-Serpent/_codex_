@@ -402,19 +402,6 @@ def pytest_collection_modifyitems(session, config, items):
                 "AttributeError: module 'codex' has no attribute 'logging'. "
                 "Pre-existing module structure issue on base branch."
             ),
-            # Circuit breaker timing tests - flaky due to CI timing variability with 0.1s timeout
-            "tests/codex_ml/test_resilience.py::TestCircuitBreaker::test_circuit_closes_from_half_open": (
-                "Timing-sensitive test: circuit breaker 100ms timeout + 200ms sleep "
-                "is unreliable in CI. Pre-existing flakiness."
-            ),
-            "tests/codex_ml/test_resilience.py::TestCircuitBreaker::test_circuit_reopens_on_half_open_failure": (
-                "Timing-sensitive test: circuit breaker 100ms timeout + 200ms sleep "
-                "is unreliable in CI. Pre-existing flakiness."
-            ),
-            "tests/codex_ml/test_resilience.py::TestCircuitBreaker::test_circuit_enters_half_open": (
-                "Timing-sensitive test: circuit breaker 100ms timeout + 200ms sleep "
-                "is unreliable in CI. Pre-existing flakiness."
-            ),
             # CLI edge case tests - test logic bugs (empty pytest.raises body, DontReadFromInput)
             "tests/cli/test_cli_edge_cases_phase26.py::TestCLIEdgeCases::test_cli_binary_input_handling": (
                 "AttributeError: property 'buffer' of 'DontReadFromInput' has no deleter. "
