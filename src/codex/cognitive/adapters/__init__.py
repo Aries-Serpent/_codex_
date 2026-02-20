@@ -30,7 +30,7 @@ __all__ = [
 class BaseBrainAdapter:
     """
     Base adapter class for category-specific brain integration.
-    
+
     Subclasses can override methods to provide category-specific
     behavior while maintaining the standard interface.
     """
@@ -38,7 +38,7 @@ class BaseBrainAdapter:
     def __init__(self, agent_id: str, **kwargs):
         """
         Initialize the adapter.
-        
+
         Args:
             agent_id: Unique identifier for the agent
             **kwargs: Additional arguments passed to AgentBrainInterface
@@ -62,7 +62,7 @@ class BaseBrainAdapter:
 class CICDAdapter(BaseBrainAdapter):
     """
     Adapter for CI/CD agents.
-    
+
     Provides CI/CD-specific pattern querying and learning submission.
     """
 
@@ -77,7 +77,7 @@ class CICDAdapter(BaseBrainAdapter):
 class TestingAdapter(BaseBrainAdapter):
     """
     Adapter for testing agents.
-    
+
     Provides testing-specific pattern querying and learning submission.
     """
 
@@ -92,7 +92,7 @@ class TestingAdapter(BaseBrainAdapter):
 class SecurityAdapter(BaseBrainAdapter):
     """
     Adapter for security agents.
-    
+
     Provides security-specific pattern querying and learning submission.
     """
 

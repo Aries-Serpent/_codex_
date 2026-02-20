@@ -6,8 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from collections import Counter
-from typing import Iterable, Mapping
+from collections import Counter  # noqa: E402
+from typing import Iterable, Mapping  # noqa: E402
 
 try:  # pragma: no cover - torch optional in tests
     import torch

@@ -7,11 +7,10 @@ Prefer codex_ml.tokenization.sentencepiece_adapter for new code.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import warnings as _warnings
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "src.tokenization.sentencepiece_adapter is legacy; use "

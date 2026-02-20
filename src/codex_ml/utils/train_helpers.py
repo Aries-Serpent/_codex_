@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 import logging
+from contextlib import contextmanager
+from typing import Any, Iterable, Iterator, Optional
 
 logger = logging.getLogger(__name__)
-
-from contextlib import contextmanager
-from typing import Iterable, Iterator, Optional
-
 
 @contextmanager
 def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator[None]:

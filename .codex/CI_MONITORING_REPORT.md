@@ -18,7 +18,7 @@
 - **Status**: ⏳ IN PROGRESS
 - **Attempt**: 2 (re-run)
 - **Started**: 2026-02-05 02:48:12Z
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->
 
 **Jobs:**
 - ✅ Core Tests (Python 3.12): In Progress - Currently installing dependencies
@@ -32,7 +32,7 @@
 - **Status**: ⏳ IN PROGRESS
 - **Attempt**: 2 (re-run)
 - **Started**: 2026-02-05 02:48:12Z
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219 <!-- Note: Logs expire after 90 days -->
 
 #### Other Running Workflows
 

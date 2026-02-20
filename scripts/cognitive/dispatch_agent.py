@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/dispatch_agent.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/dispatch_agent.py --help
 
@@ -35,20 +35,20 @@ Dispatches tasks to V10 agents for execution
 """
 import argparse
 import json
-from pathlib import Path
-from typing import Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
 
 def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str, Any]:
     """
     Dispatch tasks to a specific agent.
-    
+
     Args:
         agent_id: Agent number (1-10)
         tasks_json: JSON string with tasks
         output_path: Path to save results
-    
+
     Returns:
         Execution results
     """
@@ -57,7 +57,7 @@ def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str
     except json.JSONDecodeError:
         print(f"❌ Invalid JSON: {tasks_json}")
         return {"error": "invalid_json", "agent": agent_id}
-    
+
     # Agent capabilities mapping
     agent_capabilities = {
         1: {"name": "Emergent Intelligence", "seed": 46, "capabilities": ["pattern_analysis", "code_analysis"]},
@@ -71,9 +71,9 @@ def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str
         9: {"name": "DevOps Lead", "seed": 54, "capabilities": ["infrastructure", "deployment"]},
         10: {"name": "UX Research", "seed": 55, "capabilities": ["user_studies", "adoption_tracking"]}
     }
-    
+
     agent_info = agent_capabilities.get(agent_id, {"name": f"Agent {agent_id}", "seed": 40 + agent_id})
-    
+
     # Execute tasks
     results = {
         "agent_id": agent_id,
@@ -85,15 +85,15 @@ def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str
         "tasks_failed": 0,
         "task_results": []
     }
-    
+
     task_list = tasks if isinstance(tasks, list) else [tasks]
-    
+
     for task in task_list:
         task_id = task.get("task_id", "unknown")
         task_type = task.get("task_type", "unknown")
-        
+
         print(f"   Executing task {task_id} ({task_type}) on Agent {agent_id}...")
-        
+
         # Simulate task execution
         # In production, this would call actual agent implementations
         task_result = {
@@ -103,22 +103,22 @@ def dispatch_agent(agent_id: int, tasks_json: str, output_path: str) -> Dict[str
             "execution_time_seconds": 2.5,
             "output": f"Task {task_id} completed by {agent_info['name']}"
         }
-        
+
         results["task_results"].append(task_result)
         results["tasks_completed"] += 1
-    
+
     # Calculate success rate
     results["success_rate"] = results["tasks_completed"] / results["tasks_received"] if results["tasks_received"] > 0 else 0
-    
+
     # Save results
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     print(f"   ✅ Agent {agent_id} completed {results['tasks_completed']}/{results['tasks_received']} tasks")
-    
+
     return results
 
 
@@ -128,7 +128,7 @@ def main():
     parser.add_argument("--tasks", required=True, help="Tasks JSON string")
     parser.add_argument("--output", required=True, help="Output path")
     args = parser.parse_args()
-    
+
     dispatch_agent(args.agent, args.tasks, args.output)
 
 

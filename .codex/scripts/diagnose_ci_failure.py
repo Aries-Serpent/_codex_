@@ -15,7 +15,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 # NOTE: `auto_fix` values are human-readable suggestions and are not dynamically
 # formatted. They describe the remediation action for operators to take manually.
 ERROR_PATTERNS: dict[str, dict[str, Any]] = {

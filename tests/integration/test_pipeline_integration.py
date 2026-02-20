@@ -15,13 +15,15 @@ from __future__ import annotations
 import json
 
 import pytest
-pytest.importorskip("torch")
 
+# See tests/utils/__init__.py for exported test helpers.
+# Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
-# Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
-# Mark all tests as integration tests
-pytestmark = [pytest.mark.integration, pytest.mark.slow]
+torch = require_torch()
+
+# Mark all tests as integration tests (NOT slow by default - individual tests marked as needed)
+pytestmark = pytest.mark.integration
 
 
 @pytest.fixture
@@ -194,6 +196,7 @@ class TestRAGIndexingQueryPipeline:
         assert ml_docs[0]["id"] in ["doc2", "doc4"]
         assert prog_docs[0]["id"] in ["doc1", "doc5"]
 
+    @pytest.mark.slow
     def test_end_to_end_rag_pipeline(self, pipeline_workspace, sample_documents):
         """Test complete RAG pipeline: ingest → index → query → result."""
         docs_dir, documents = sample_documents
@@ -337,7 +340,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         torch.save(checkpoint, checkpoint_path)
 
         assert checkpoint_path.exists()
-        loaded = torch.load(checkpoint_path)
+        loaded = torch.load(checkpoint_path, weights_only=False)
         assert loaded["step"] == 10
         assert "model_state_dict" in loaded
 
@@ -352,7 +355,7 @@ class TestTrainingEvaluationCheckpointPipeline:
 
         # Resume
         new_model = torch.nn.Linear(10, 5)
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=False)
         new_model.load_state_dict(checkpoint["model_state_dict"])
 
         assert checkpoint["step"] == 5
@@ -374,6 +377,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         assert lrs[0] == 0.1
         assert lrs[3] == 0.05  # After step_size=3
 
+    @pytest.mark.slow
     def test_end_to_end_training_pipeline(self, pipeline_workspace):
         """Test complete training pipeline: setup → train → eval → checkpoint."""
         import torch
@@ -417,7 +421,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         # Verify pipeline completion
         assert len(train_losses) == 5
         assert checkpoint_path.exists()
-        loaded = torch.load(checkpoint_path)
+        loaded = torch.load(checkpoint_path, weights_only=False)
         assert "eval_loss" in loaded
 
 
@@ -538,6 +542,7 @@ class TestDataIngestionProcessingStorage:
         assert compressed_size < original_size
         assert compressed_file.exists()
 
+    @pytest.mark.slow
     def test_end_to_end_data_pipeline(self, pipeline_workspace):
         """Test complete data pipeline: ingest → process → store."""
         # Step 1: Ingest

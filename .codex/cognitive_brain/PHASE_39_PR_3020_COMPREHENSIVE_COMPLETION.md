@@ -39,7 +39,6 @@ Successfully resolved ALL CI/test failures, code review comments, and security i
    - ✅ Fixed in commit e71d10bf
 
 3. **Malformed Regex Pattern** - `docs/plans/copilot-directives-to-implementation-plan.md:2376`
-   - Fixed pattern from `r'"\'["\']'` to `r'["\'](.+?)["\']'`
    - ✅ Fixed in commit e71d10bf
 
 4. **Malformed Regex Patterns** - `docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md:540,542`

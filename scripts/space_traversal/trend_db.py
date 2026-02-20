@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/trend_db.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/trend_db.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Trend Database for Audit Pipeline v1.5.0

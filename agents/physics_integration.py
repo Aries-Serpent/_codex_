@@ -8,8 +8,9 @@ This module provides integration points between:
 - Existing physics calculators (PINN, energy landscape, etc.)
 """
 
-from typing import Any, Optional
 import logging
+from typing import Any, Optional
+
 logger = logging.getLogger(__name__)
 
 try:

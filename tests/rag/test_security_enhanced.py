@@ -201,7 +201,7 @@ class TestHashDocumentIdMutationKilling:
 
     def test_hash_empty_doc_raises_error(self):
         """Empty document ID should raise ValueError."""
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match=r"empty|cannot be empty"):
             hash_document_id("")
 
 

@@ -12,12 +12,12 @@ Usage:
     python track_handoffs.py --init                     # Initialize tracking file
 """
 
-import json
 import argparse
+import json
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
-import sys
 
 # Constants
 TRACKING_FILE = Path(".codex/handoff_tracking.json")
@@ -207,14 +207,14 @@ def init_tracking_file() -> Dict:
             "average_response_time": None
         }
     }
-    
+
     # Create directory if it doesn't exist
     TRACKING_FILE.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Write file
     with open(TRACKING_FILE, 'w') as f:
         json.dump(data, f, indent=2)
-    
+
     print(f"✅ Initialized tracking file: {TRACKING_FILE}")
     return data
 
@@ -224,7 +224,7 @@ def load_tracking_data() -> Dict:
     if not TRACKING_FILE.exists():
         print("⚠️  Tracking file not found. Initializing...")
         return init_tracking_file()
-    
+
     with open(TRACKING_FILE, 'r') as f:
         return json.load(f)
 
@@ -239,27 +239,27 @@ def save_tracking_data(data: Dict):
 def calculate_metrics(data: Dict) -> Dict:
     """Calculate metrics from hand-off data."""
     handoffs = data["handoffs"]
-    
+
     total = len(handoffs)
     completed = sum(1 for h in handoffs if h["status"] == "complete")
     in_progress = sum(1 for h in handoffs if h["status"] == "in_progress")
     pending = sum(1 for h in handoffs if h["status"] == "pending")
     failed = sum(1 for h in handoffs if h["status"] == "failed")
-    
+
     success_rate = (completed / total * 100) if total > 0 else 0.0
-    
+
     # Calculate average response time (for completed hand-offs with response time)
     response_times = [
-        h["response_time"] for h in handoffs 
+        h["response_time"] for h in handoffs
         if h["status"] == "complete" and h["response_time"]
     ]
-    
+
     avg_response = None
     if response_times:
         # Simple average (assuming format like "30min" or "2hours")
         # For now, just count them
         avg_response = f"{len(response_times)} recorded"
-    
+
     metrics = {
         "total_handoffs": total,
         "completed": completed,
@@ -269,7 +269,7 @@ def calculate_metrics(data: Dict) -> Dict:
         "success_rate": round(success_rate, 1),
         "average_response_time": avg_response
     }
-    
+
     data["metrics"] = metrics
     return metrics
 
@@ -279,7 +279,7 @@ def show_tracking_table(data: Dict):
     print("\n## 📊 Hand-off Tracking Table\n")
     print("| **HO-ID** | **From** | **To** | **Phase** | **Status** | **Comment Link** | **Timestamp** | **Response Time** |")
     print("|-----------|----------|--------|-----------|------------|------------------|---------------|-------------------|")
-    
+
     status_icons = {
         "pending": "⏳ Pending",
         "in_progress": "🔄 In Progress",
@@ -289,24 +289,24 @@ def show_tracking_table(data: Dict):
         "paused": "⏸️ Paused",
         "skipped": "⏭️ Skipped"
     }
-    
+
     for handoff in data["handoffs"]:
         ho_id = handoff["id"]
         from_agent = handoff["from_agent"]
         to_agent = handoff["to_agent"]
         phase = handoff["phase"]
         status = status_icons.get(handoff["status"], handoff["status"])
-        
+
         comment = handoff["comment_link"] or "-"
         if comment != "-":
             comment_num = comment.split("#")[-1] if "#" in comment else "link"
             comment = f"[Comment #{comment_num}]({comment})"
-        
+
         timestamp = handoff["timestamp"] or "-"
         response_time = handoff["response_time"] or "-"
-        
+
         print(f"| {ho_id} | {from_agent} | {to_agent} | {phase} | {status} | {comment} | {timestamp} | {response_time} |")
-    
+
     print()
 
 
@@ -314,11 +314,11 @@ def show_metrics(data: Dict):
     """Display metrics summary."""
     metrics = calculate_metrics(data)
     save_tracking_data(data)
-    
+
     print("\n## 📊 Metrics Summary\n")
     print("### Overall Statistics\n")
-    print(f"| Metric | Value |")
-    print(f"|--------|-------|")
+    print("| Metric | Value |")
+    print("|--------|-------|")
     print(f"| **Total Hand-offs** | {metrics['total_handoffs']} |")
     print(f"| **Completed** | {metrics['completed']} (✅) |")
     print(f"| **In Progress** | {metrics['in_progress']} (🔄) |")
@@ -329,37 +329,37 @@ def show_metrics(data: Dict):
     print()
 
 
-def update_handoff(data: Dict, handoff_id: str, status: str, 
+def update_handoff(data: Dict, handoff_id: str, status: str,
                    comment_link: Optional[str] = None,
                    timestamp: Optional[str] = None,
                    response_time: Optional[str] = None,
                    deliverables: Optional[List[str]] = None):
     """Update a specific hand-off."""
     handoff = next((h for h in data["handoffs"] if h["id"] == handoff_id), None)
-    
+
     if not handoff:
         print(f"❌ Hand-off {handoff_id} not found")
         return False
-    
+
     handoff["status"] = status
-    
+
     if comment_link:
         handoff["comment_link"] = comment_link
-    
+
     if timestamp:
         handoff["timestamp"] = timestamp
     elif status in ["complete", "in_progress"]:
         handoff["timestamp"] = datetime.utcnow().isoformat() + "Z"
-    
+
     if response_time:
         handoff["response_time"] = response_time
-    
+
     if deliverables:
         handoff["deliverables"] = deliverables
-    
+
     calculate_metrics(data)
     save_tracking_data(data)
-    
+
     print(f"✅ Updated {handoff_id} to '{status}'")
     return True
 
@@ -371,35 +371,35 @@ def main():
     parser.add_argument("--metrics", action="store_true", help="Show metrics summary")
     parser.add_argument("--update", nargs="+", help="Update hand-off: HO-ID status [comment_link] [timestamp] [response_time]")
     parser.add_argument("--deliverables", nargs="+", help="Add deliverables to hand-off")
-    
+
     args = parser.parse_args()
-    
+
     if args.init:
         init_tracking_file()
         return
-    
+
     # Load data
     data = load_tracking_data()
-    
+
     if args.show:
         show_tracking_table(data)
-    
+
     if args.metrics:
         show_metrics(data)
-    
+
     if args.update:
         if len(args.update) < 2:
             print("❌ Usage: --update HO-ID status [comment_link] [timestamp] [response_time]")
             sys.exit(1)
-        
+
         handoff_id = args.update[0]
         status = args.update[1]
         comment_link = args.update[2] if len(args.update) > 2 else None
         timestamp = args.update[3] if len(args.update) > 3 else None
         response_time = args.update[4] if len(args.update) > 4 else None
-        
+
         update_handoff(data, handoff_id, status, comment_link, timestamp, response_time, args.deliverables)
-    
+
     # If no arguments, show help
     if not any([args.init, args.show, args.metrics, args.update]):
         parser.print_help()

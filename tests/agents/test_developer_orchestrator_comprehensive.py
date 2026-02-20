@@ -104,6 +104,7 @@ class TestCodeComponent:
     def test_code_component_initialization(self):
         """Test basic initialization."""
         component = CodeComponent(
+            component_id="comp_001",
             name="main.py",
             component_type="module",
             description="Main entry point",
@@ -117,6 +118,7 @@ class TestCodeComponent:
     def test_code_component_with_dependencies(self):
         """Test component with dependencies."""
         component = CodeComponent(
+            component_id="comp_002",
             name="utils.py",
             component_type="module",
             description="Utilities",
@@ -130,14 +132,15 @@ class TestCodeComponent:
     def test_code_component_with_complexity(self):
         """Test component with complexity score."""
         component = CodeComponent(
+            component_id="comp_003",
             name="complex.py",
             component_type="module",
             description="Complex module",
             code="# Complex code\n" * 100,
-            complexity_score=0.85,
+            complexity=0.85,
         )
 
-        assert component.complexity_score == 0.85
+        assert component.complexity == 0.85
 
 
 class TestPhysicsGuidedDeveloperOrchestrator:
@@ -300,7 +303,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         web_orchestrator.current_phase = DevelopmentPhase.IMPLEMENTATION
 
         if hasattr(web_orchestrator, "generate_code"):
-            code = web_orchestrator.generate_code()
+            code = web_orchestrator.generate_code(component_id="web_component_001")
             assert code is not None
 
     # ========== STATE MACHINE TESTS ==========

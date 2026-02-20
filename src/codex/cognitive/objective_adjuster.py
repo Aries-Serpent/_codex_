@@ -262,7 +262,7 @@ class ObjectiveStore:
 class ObjectiveAdjuster:
     """
     Main class for managing and adjusting objectives based on metrics.
-    
+
     This is the core component of Plan 3 Phase 3.2: Objective Adjustment Logic.
     """
 
@@ -384,7 +384,7 @@ class ObjectiveAdjuster:
     def evaluate_rules(self) -> list[Adjustment]:
         """
         Evaluate all rules against current health report.
-        
+
         Returns list of proposed adjustments.
         """
         report = self.analyzer.generate_health_report()
@@ -420,7 +420,7 @@ class ObjectiveAdjuster:
     ) -> Objective | None:
         """
         Apply an adjustment.
-        
+
         Returns the affected objective if applicable.
         """
         now = datetime.now(timezone.utc)

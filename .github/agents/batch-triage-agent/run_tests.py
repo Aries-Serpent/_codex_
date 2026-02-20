@@ -4,8 +4,8 @@ Simple test runner for batch-triage-agent tests.
 Bypasses pytest's conftest.py to run tests directly.
 """
 
-import sys
 import importlib.util
+import sys
 from pathlib import Path
 
 # Add paths

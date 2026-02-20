@@ -137,8 +137,8 @@ Expected output: Status summary showing all checks passed.
 ### Detailed Documentation
 
 For comprehensive instructions, see:
-- **Admin Guide**: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- **Agent Guidelines**: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+- **Admin Guide**: [docs/admin/GENESIS_SETUP_GUIDE.md](../docs/admin/GENESIS_SETUP_GUIDE.md)
+- **Agent Guidelines**: [docs/agent/OPERATIONAL_GUIDELINES.md](../docs/agent/OPERATIONAL_GUIDELINES.md)
 - **Guardrails**: [.codex/guardrails.md](.codex/guardrails.md)
 
 ### Support

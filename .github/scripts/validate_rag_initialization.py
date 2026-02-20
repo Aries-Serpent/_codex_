@@ -28,8 +28,9 @@ def check_model_tensors(model_name: str = "all-MiniLM-L6-v2") -> bool:
         True if all checks pass, False otherwise
     """
     try:
-        import torch
         from sentence_transformers import SentenceTransformer
+
+        import torch
     except ImportError as e:
         print(f"⚠️  Import failed: {e}")
         print("   Install dependencies: pip install sentence-transformers torch")

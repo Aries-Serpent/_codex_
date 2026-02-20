@@ -14,7 +14,7 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.datasets import (
+from src.training.datasets import (  # noqa: E402
     Dataset,
     IterableTextDataset,
     TextDataset,

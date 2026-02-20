@@ -18,11 +18,12 @@ The orchestrator assists in developing Python and console applications by:
 5. Optimizing development workflow
 """
 
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
+
 logger = logging.getLogger(__name__)
-from enum import Enum
-from typing import Any, Optional, Union
+from enum import Enum  # noqa: E402
+from typing import Any, Optional, Union  # noqa: E402
 
 try:
     import numpy as np
@@ -679,12 +680,12 @@ def main():
     """Main entry point for CLI."""
     parser = argparse.ArgumentParser(description='{description}')
     parser.add_argument('--version', action='version', version='1.0.0')
-    
+
     # Add subcommands here
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
-    
+
     args = parser.parse_args()
-    
+
     if args.command:
         print(f"Executing command: {{args.command}}")
     else:
@@ -753,11 +754,11 @@ if __name__ == '__main__':
 def {component.name}(*args, **kwargs):
     """
     {component.description}
-    
+
     Args:
         *args: Positional arguments
         **kwargs: Keyword arguments
-    
+
     Returns:
         Result of operation
     """

@@ -6,7 +6,7 @@ This guide explains how AI agents can effectively use the new consolidated workf
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Available Workflows](#available-workflows)
 3. [Integration Patterns](#integration-patterns)
 4. [Advanced Usage](#advanced-usage)

@@ -12,13 +12,13 @@ Key Features:
 
 Usage:
     from codex.security import mask_token, sanitize_log, hash_secure
-    
+
     # Mask sensitive data before logging
     logger.info(f"Token: {mask_token(api_key)}")
-    
+
     # Sanitize user input to prevent log injection
     logger.info(f"User input: {sanitize_log(user_data)}")
-    
+
     # Hash tokens securely for comparison
     token_hash = hash_secure(token)
 """
@@ -71,17 +71,17 @@ except ImportError:
 def sanitize_log(value: Any, max_length: int = 500) -> str:
     """
     Alias for sanitize_log_input for consistency with module naming.
-    
+
     Sanitizes user-controlled data for safe logging by removing control
     characters that could enable log injection attacks.
-    
+
     Args:
         value: Value to sanitize (converted to string)
         max_length: Maximum output length (default: 500)
-    
+
     Returns:
         Sanitized string safe for logging
-    
+
     Example:
         >>> sanitize_log("user\\nfake_entry")
         'userfake_entry'
@@ -92,21 +92,21 @@ def sanitize_log(value: Any, max_length: int = 500) -> str:
 def hash_secure(data: str, algorithm: str = 'sha256') -> str:
     """
     Securely hash data using SHA-256 or SHA-512.
-    
+
     Use this for hashing tokens, passwords, or other sensitive data
     for comparison purposes. Never use MD5 or SHA-1 for security.
-    
+
     Args:
         data: String data to hash
         algorithm: Hash algorithm ('sha256' or 'sha512')
-    
+
     Returns:
         Hexadecimal hash digest
-    
+
     Example:
         >>> hash_secure("my_secret_token")
         'a1b2c3...'  # 64-character hex string for SHA-256
-    
+
     Note:
         For password hashing, use specialized libraries like bcrypt,
         argon2, or scrypt instead of this function.
@@ -124,17 +124,17 @@ def hash_secure(data: str, algorithm: str = 'sha256') -> str:
 def mask_sensitive(value: str, show_chars: int = 4) -> str:
     """
     Mask sensitive string showing first and last N characters.
-    
+
     Useful for displaying partial values for verification while
     protecting the full secret.
-    
+
     Args:
         value: Sensitive string to mask
         show_chars: Number of characters to show at start/end
-    
+
     Returns:
         Masked string in format "xxxx***yyyy"
-    
+
     Example:
         >>> mask_sensitive("secret_key_12345")
         'secr***12345'
@@ -151,19 +151,19 @@ def mask_sensitive(value: str, show_chars: int = 4) -> str:
 def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
     """
     Validate that a URL belongs to an allowed domain.
-    
+
     This function prevents URL substring sanitization vulnerabilities by
     properly parsing the URL and checking the domain component, not just
     searching for the domain string anywhere in the URL.
-    
+
     Args:
         url: URL to validate
         allowed_domains: List of allowed domain names (e.g., ['example.com', 'api.example.com'])
                         If None, returns True for any valid URL with a domain.
-    
+
     Returns:
         True if URL is from an allowed domain, False otherwise
-    
+
     Example:
         >>> sanitize_url("http://example.com/path", ["example.com"])
         True
@@ -173,7 +173,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         False
         >>> sanitize_url("http://evilexample.com", ["example.com"])
         False
-    
+
     Security Note:
         This prevents attacks where malicious URLs contain the allowed domain
         as a substring in the path, query parameters, or as part of a different

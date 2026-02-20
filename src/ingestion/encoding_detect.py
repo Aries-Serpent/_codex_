@@ -17,13 +17,13 @@ they do not raise.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from pathlib import Path
 from typing import Optional, Union
 
 # Optional backends
+
+logger = logging.getLogger(__name__)
+
 try:
     import chardet as _chardet  # preferred if available
 except Exception:  # pragma: no cover - optional dependency

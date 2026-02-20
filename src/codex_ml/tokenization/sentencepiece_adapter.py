@@ -17,11 +17,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import numbers
-import os
-from pathlib import Path
-from typing import Optional, Sequence
+import json  # noqa: E402
+import numbers  # noqa: E402
+import os  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional, Sequence  # noqa: E402
 
 spm = None
 
@@ -183,7 +183,7 @@ class SentencePieceAdapter:
         **kwargs: object,
     ) -> list[int]:
         """Encode text to token IDs with optional padding.
-        
+
         Parameters
         ----------
         text
@@ -196,14 +196,18 @@ class SentencePieceAdapter:
             Maximum sequence length when padding is enabled
         **kwargs
             Additional keyword arguments for compatibility
-            
+
         Returns
         -------
         list[int]
             Encoded token IDs, optionally padded
         """
+        # Auto-load if not already loaded (for convenience)
         if self.sp is None:
-            raise RuntimeError("adapter not loaded")
+            if self.model_path.exists():
+                self.load()
+            else:
+                raise RuntimeError("adapter not loaded")
 
         encoded = list(self.sp.encode(text, out_type=int))
 
@@ -218,9 +222,43 @@ class SentencePieceAdapter:
         return encoded
 
     def decode(self, ids: list[int] | tuple[int, ...]) -> str:
+        # Auto-load if not already loaded (for convenience)
         if self.sp is None:
-            raise RuntimeError("adapter not loaded")
+            if self.model_path.exists():
+                self.load()
+            else:
+                raise RuntimeError("adapter not loaded")
         return self.sp.decode(ids)
+
+    def batch_encode(
+        self,
+        texts: list[str],
+        add_special_tokens: bool = True,
+        padding: str | bool = False,
+        max_length: int | None = None,
+        **kwargs: object,
+    ) -> list[list[int]]:
+        """Encode multiple texts to token IDs with optional padding.
+
+        Parameters
+        ----------
+        texts
+            List of texts to encode
+        add_special_tokens
+            Whether to add special tokens (currently ignored for compatibility)
+        padding
+            Padding strategy: False, True, "max_length", "longest"
+        max_length
+            Maximum sequence length when padding is enabled
+        **kwargs
+            Additional keyword arguments for compatibility
+
+        Returns
+        -------
+        list[list[int]]
+            List of encoded token ID sequences, optionally padded
+        """
+        return [self.encode(text, add_special_tokens=add_special_tokens, padding=padding, max_length=max_length, **kwargs) for text in texts]
 
     def add_special_tokens(
         self, tokens: Sequence[str], existing: Optional[dict[str, int]] = None

@@ -16,14 +16,14 @@ PDA Loop Integration:
 import ast
 import re
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class PerformancePattern:
     """Performance anti-pattern or optimization opportunity."""
-    
+
     name: str
     pattern_type: str  # "n+1_query", "inefficient_loop", "memory", "complexity", "caching"
     description: str
@@ -38,31 +38,31 @@ class PerformancePattern:
 class PerformancePatternMatcher:
     """
     Detects performance anti-patterns and optimization opportunities.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: performance_pattern_detection
-    
+
     PDA Loop:
     - PERCEIVE: Multi-layer performance analysis (AST + regex)
     - DECIDE: Severity classification based on impact
     - ACT: Pattern detection with optimization guidance
     - AFTERMATH: Metrics + cognitive brain learning
     """
-    
+
     def __init__(self):
         """Initialize performance pattern matcher."""
         self.detected_patterns: List[PerformancePattern] = []
         #AFTERMATH_METRIC: performance_matcher_initialized
-    
+
     def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[PerformancePattern]:
         """
         Analyze a file for performance issues.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: file_performance_analysis
-        
+
         Args:
             file_path: Path to file to analyze
             content: Optional file content (will read if not provided)
-            
+
         Returns:
             List of detected performance patterns
         """
@@ -71,9 +71,9 @@ class PerformancePatternMatcher:
                 content = file_path.read_text()
             except (IOError, UnicodeDecodeError):
                 return []
-        
+
         detected: List[PerformancePattern] = []
-        
+
         # PERCEIVE: Multi-layer performance scanning
         if file_path.suffix == ".py":
             # Python-specific analysis using AST
@@ -89,23 +89,23 @@ class PerformancePatternMatcher:
                 # Intentionally skip files with syntax errors
                 # Performance analysis requires valid AST
                 pass
-        
+
         # General regex-based detection (all file types)
         detected.extend(self._detect_regex_patterns(content, file_path))
-        
+
         # AFTERMATH: Record metrics
         #AFTERMATH_METRIC: performance_issues_count = len(detected)
-        
+
         return detected
-    
+
     def _detect_n_plus_one(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
         """
         Detect N+1 query problems.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: n_plus_one_detection
         """
         detected = []
-        
+
         # Look for database queries inside loops
         for node in ast.walk(tree):
             if isinstance(node, (ast.For, ast.While)):
@@ -113,7 +113,7 @@ class PerformancePatternMatcher:
                 for inner_node in ast.walk(node):
                     if isinstance(inner_node, ast.Call):
                         func_name = self._get_call_name(inner_node)
-                        if any(db_op in func_name.lower() for db_op in 
+                        if any(db_op in func_name.lower() for db_op in
                               ['select', 'query', 'filter', 'get', 'fetch', 'find']):
                             detected.append(PerformancePattern(
                                 name="n_plus_one_query",
@@ -133,21 +133,21 @@ class PerformancePatternMatcher:
                                     "function": func_name
                                 }
                             ))
-        
+
         return detected
-    
+
     def _detect_inefficient_loops(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
         """
         Detect inefficient loop patterns.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: inefficient_loop_detection
         """
         detected = []
-        
+
         for node in ast.walk(tree):
             # Nested loops (O(n²) or worse)
             if isinstance(node, (ast.For, ast.While)):
-                nested_loops = [n for n in ast.walk(node) 
+                nested_loops = [n for n in ast.walk(node)
                                if isinstance(n, (ast.For, ast.While)) and n != node]
                 if len(nested_loops) >= 1:
                     detected.append(PerformancePattern(
@@ -168,7 +168,7 @@ class PerformancePatternMatcher:
                             "nesting_level": len(nested_loops) + 1
                         }
                     ))
-                
+
                 # List operations in loops
                 for inner in ast.walk(node):
                     if isinstance(inner, ast.AugAssign) and isinstance(inner.op, ast.Add):
@@ -190,17 +190,17 @@ class PerformancePatternMatcher:
                                     "line": inner.lineno
                                 }
                             ))
-        
+
         return detected
-    
+
     def _detect_memory_issues(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
         """
         Detect memory-inefficient operations.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: memory_issue_detection
         """
         detected = []
-        
+
         for node in ast.walk(tree):
             # String concatenation in loops
             if isinstance(node, (ast.For, ast.While)):
@@ -224,7 +224,7 @@ class PerformancePatternMatcher:
                                     "line": inner.lineno
                                 }
                             ))
-                    
+
                     # Dict.copy() in loops
                     if isinstance(inner, ast.Call):
                         func_name = self._get_call_name(inner)
@@ -247,17 +247,17 @@ class PerformancePatternMatcher:
                                     "function": func_name
                                 }
                             ))
-        
+
         return detected
-    
+
     def _detect_complexity(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
         """
         Detect high-complexity algorithms.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: algorithm_complexity_detection
         """
         detected = []
-        
+
         for node in ast.walk(tree):
             # Sorting in loops
             if isinstance(node, (ast.For, ast.While)):
@@ -283,24 +283,24 @@ class PerformancePatternMatcher:
                                     "function": func_name
                                 }
                             ))
-        
+
         return detected
-    
+
     def _detect_caching_opportunities(self, tree: ast.AST, file_path: Path) -> List[PerformancePattern]:
         """
         Detect opportunities for caching/memoization.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: caching_opportunity_detection
         """
         detected = []
-        
+
         # Look for repeated function calls with same arguments
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 # Check if function has no side effects (good caching candidate)
                 has_global = any(isinstance(n, ast.Global) for n in ast.walk(node))
                 has_nonlocal = any(isinstance(n, ast.Nonlocal) for n in ast.walk(node))
-                
+
                 if not has_global and not has_nonlocal:
                     # Pure function - good caching candidate
                     detected.append(PerformancePattern(
@@ -321,17 +321,17 @@ class PerformancePatternMatcher:
                             "function": node.name
                         }
                     ))
-        
+
         return detected
-    
+
     def _detect_regex_patterns(self, content: str, file_path: Path) -> List[PerformancePattern]:
         """
         Detect performance issues using regex patterns.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: regex_performance_detection
         """
         detected = []
-        
+
         # Inefficient list comprehension patterns
         if re.search(r'\[.*for.*in.*for.*in.*\]', content):
             detected.append(PerformancePattern(
@@ -348,9 +348,9 @@ class PerformancePatternMatcher:
                 },
                 metadata={"file": str(file_path)}
             ))
-        
+
         return detected
-    
+
     def _get_call_name(self, node: ast.Call) -> str:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
@@ -365,13 +365,13 @@ class PerformancePatternMatcher:
                 parts.append(current.id)
             return '.'.join(reversed(parts))
         return "unknown"
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """
         Generate summary of detected performance issues.
-        
+
         #AFTERMATH_METRIC: performance_summary_generated
-        
+
         Returns:
             Dictionary with performance metrics
         """
@@ -381,10 +381,10 @@ class PerformancePatternMatcher:
             "by_severity": {},
             "optimization_opportunities": len([p for p in self.detected_patterns if p.severity in ["high", "critical"]])
         }
-        
+
         for pattern in self.detected_patterns:
             summary["by_type"][pattern.pattern_type] = summary["by_type"].get(pattern.pattern_type, 0) + 1
             summary["by_severity"][pattern.severity] = summary["by_severity"].get(pattern.severity, 0) + 1
-        
+
         #AFTERMATH_LESSON_LEARNED: performance_patterns_summarized
         return summary

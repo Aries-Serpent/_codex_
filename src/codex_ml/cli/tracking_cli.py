@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 import argparse
 import json
 import os
-from typing import Any
+from typing import Any, Optional
 
 
-def _enable_mlflow(uri: str | None) -> dict[str, Any]:
+def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
     result: dict[str, Any] = {"enabled": False, "tracking_uri": uri or "mlruns"}
     try:
         import mlflow
@@ -39,7 +39,7 @@ def _enable_mlflow(uri: str | None) -> dict[str, Any]:
     return result
 
 
-def _enable_wandb(project: str | None, mode: str) -> dict[str, Any]:
+def _enable_wandb(project: Optional[str], mode: str) -> dict[str, Any]:
     result: dict[str, Any] = {"enabled": False}
     if mode:
         os.environ["WANDB_MODE"] = mode
@@ -105,7 +105,7 @@ def _cmd_bootstrap(args: argparse.Namespace) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = _mk_parser()
     namespace = parser.parse_args(argv)
     return int(namespace.func(namespace))

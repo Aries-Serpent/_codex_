@@ -17,7 +17,7 @@ This documentation is organized into several key sections:
 - [Configuration](configs/OmegaConf_Schema.md) - Configuration management
 
 ### Architecture & Design
-- [Architecture Overview](ARCHITECTURE.md) - System architecture
+- [Architecture Overview](./ARCHITECTURE.md) - System architecture
 - [Design Decisions](adr/000-mcp-architecture.md) - Architecture decision records
 - [Module Structure](modules/cli.md) - Code organization
 
@@ -30,6 +30,12 @@ This documentation is organized into several key sections:
 - [Development Guide](development/modernization_guide.md) - Developer documentation
 - [Testing](TESTING.md) - Testing strategy and guidelines
 - [CI/CD](development/ci_optimization_guide.md) - Continuous integration/deployment
+
+### Operational Templates
+- [Template Index](templates/README.md) - Reusable operational templates
+- **Migration — Python File Relocation** - Standardized approach for relocating Python modules
+- **Migration — CLI Hardening** - Template for improving CLI robustness  
+- **Planning — Intent Validation** - Framework for validating implementation intent
 
 ### Advanced Topics
 - [RAG Integration](EXPANDED_CONTEXT_RAG.md) - Retrieval-augmented generation
@@ -46,7 +52,7 @@ This documentation is organized into several key sections:
 
 ### For New Users
 1. Start with the [Quickstart Guide](QUICKSTART.md)
-2. Review [Architecture Overview](ARCHITECTURE.md)
+2. Review [Architecture Overview](./ARCHITECTURE.md)
 3. Explore [User Guides](#user-guides)
 
 ### For Contributors

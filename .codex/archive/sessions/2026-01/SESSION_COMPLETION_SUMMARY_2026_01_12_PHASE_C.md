@@ -243,10 +243,6 @@ Successfully executed Phase C (Custom Agent Development) per continuation prompt
 ## 🔗 References
 
 ### Key Documents
-- [AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md) - v1.2.0
-- [AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md) - Architecture (20.8KB)
-- [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Updated
-- [CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md](.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md)
 
 ### Completed Agents
 - [ci-diagnostician](.github/agents/ci-diagnostician/) - 21/21 tests

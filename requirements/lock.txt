@@ -268,7 +268,7 @@ filelock==3.20.3
     #   torch
     #   transformers
     #   virtualenv
-flask==3.1.2
+flask==3.1.3
     # via mlflow
 flatten-dict==0.4.2
     # via dvc
@@ -1077,7 +1077,7 @@ sqlalchemy==2.0.43
     #   mlflow
 sqlitedict==2.1.0
     # via lm-eval
-sqlparse==0.5.3
+sqlparse==0.5.4
     # via mlflow-skinny
 sqltrie==0.11.2
     # via dvc-data
@@ -1285,9 +1285,9 @@ websocket-client==1.9.0
     # via jupyter-server
 websockets==15.0.1
     # via uvicorn
-# Updated to werkzeug==3.1.4 for security fixes and bug improvements:
+# Updated to werkzeug==3.1.6 for security fixes and bug improvements:
 # See: https://github.com/pallets/werkzeug/releases/tag/3.1.4
-werkzeug==3.1.4
+werkzeug==3.1.6
     # via
     #   flask
     #   tensorboard

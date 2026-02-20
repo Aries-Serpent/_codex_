@@ -16,7 +16,6 @@ from typing import Any, Dict
 
 import yaml
 
-
 VALID_RISK_LEVELS = {"low", "medium", "high"}
 
 

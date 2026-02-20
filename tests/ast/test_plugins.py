@@ -33,7 +33,8 @@ class TestPythonPlugin:
         node = plugin.parse(code, "test.py")
 
         assert node is not None
-        assert node.type in ["Module", "module"]
+        # Fix: NodeType enum needs .value to get string representation
+        assert node.type.value in ["Module", "module"]
 
     def test_plugin_validation(self):
         """Test plugin validates successfully."""

@@ -16,7 +16,7 @@
 5. [API Reference](#api-reference)
 6. [Integration Points](#integration-points)
 7. [Error Handling](#error-handling)
-8. [Monitoring & Audit](#monitoring--audit)
+8. [Monitoring & Audit](#monitoring-audit)
 
 ---
 
@@ -582,7 +582,7 @@ Status: SUCCESS
 - [PyNaCl Documentation](https://pynacl.readthedocs.io/)
 - [OpenSSL Random Bytes](https://www.openssl.org/docs/man1.1.1/man1/rand.html)
 - [OAuth 2.0 Best Practices](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 

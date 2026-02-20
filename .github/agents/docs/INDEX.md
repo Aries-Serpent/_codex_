@@ -3,7 +3,7 @@
 Central hub for GitHub Copilot agent documentation, specifications, and changelogs.
 
 ## Primary Documentation
-- [AGENTS.md](AGENTS.md) - Master agent documentation and registry
+- [AGENTS.md](../../AGENTS.md) - Master agent documentation and registry
 - [Agent Registry](../AGENT_REGISTRY.md) - Complete agent catalog (v1.3.0+)
 
 ## Specifications
@@ -11,7 +11,7 @@ Central hub for GitHub Copilot agent documentation, specifications, and changelo
 - [Changelog](CHANGELOG.md) - Agent changes and updates
 
 ## Archive
-- [AGENTS.md.original](archive/AGENTS.md.original) - Original documentation backup
+- [AGENTS.md.original](../../AGENTS.md) - Original documentation backup
 
 ## Agent Categories
 
@@ -53,7 +53,7 @@ Central hub for GitHub Copilot agent documentation, specifications, and changelo
 See template in `../*.md` files for agent specification format.
 
 ## Quick Links
-- [Main Repository Documentation](../../docs/README.md)
+- [Main Repository Documentation](../../../agents/README.md)
 - [Root Organization Scripts](../../scripts/root_org/)
 - [CI/CD Workflows](../workflows/)
 

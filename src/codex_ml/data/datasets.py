@@ -19,9 +19,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Callable, Iterable, Sequence
+from dataclasses import dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Callable, Iterable, Sequence  # noqa: E402
 
 
 @dataclass

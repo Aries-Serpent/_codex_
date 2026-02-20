@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/review_root_markdown.py [options]
-    
+
     Examples:
     $ python scripts/review_root_markdown.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Root-level Markdown File Review and Archival Tool.

@@ -5,14 +5,14 @@ Dependency Monitor Module - PERCEIVE Phase
 Implements dependency version monitoring and vulnerability scanning.
 """
 
-import subprocess
 import json
 import re
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+import subprocess
 from dataclasses import dataclass
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class UpdateType(Enum):
@@ -41,29 +41,29 @@ class DependencyUpdate:
 class DependencyMonitor:
     """
     Dependency Monitor - PERCEIVE Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: dependency_version_monitoring
-    
+
     Monitors dependencies for:
     - Available updates (semver-aware)
     - Known vulnerabilities (CVE/advisory databases)
     - Breaking changes in changelogs
     - Update frequency and stability
     """
-    
+
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.updates: List[DependencyUpdate] = []
-        
+
     def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         PERCEIVE: Monitor dependencies for updates and vulnerabilities.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: dependency_update_detection
-        
+
         Args:
             task: Task configuration
-            
+
         Returns:
             Context with update information
         """
@@ -77,26 +77,26 @@ class DependencyMonitor:
             "total_outdated": len(self.updates),
             "security_critical": sum(1 for u in self.updates if u.has_vulnerability)
         }
-        
+
         #AFTERMATH_METRIC: total_dependencies = len(context["current_dependencies"])
         #AFTERMATH_METRIC: updates_available = len(self.updates)
-        
+
         return context
-    
+
     def _read_current_dependencies(self) -> Dict[str, str]:
         """
         Read current dependencies from lock files.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: dependency_file_parsing
         """
         dependencies = {}
-        
+
         # Validate base path
         try:
             self.repo_path.resolve()
         except (OSError, ValueError):
             return dependencies
-        
+
         # Read requirements.txt with path validation
         req_file = self.repo_path / "requirements.txt"
         if self._is_safe_path(req_file):
@@ -110,7 +110,7 @@ class DependencyMonitor:
                         package, operator, version = match.groups()
                         if operator == '==':
                             dependencies[package] = version
-        
+
         # Read Pipfile.lock (if exists) with path validation
         pipfile_lock = self.repo_path / "Pipfile.lock"
         if self._is_safe_path(pipfile_lock):
@@ -126,7 +126,7 @@ class DependencyMonitor:
                 # Best-effort: if Pipfile.lock is malformed, skip Python dependency
                 # parsing but continue with other dependency files.
                 pass
-        
+
         # Read package-lock.json (for Node.js) with path validation
         package_lock = self.repo_path / "package-lock.json"
         if self._is_safe_path(package_lock):
@@ -140,28 +140,28 @@ class DependencyMonitor:
                 # Best-effort: if package-lock.json is malformed, skip Node.js dependency
                 # parsing but continue with other dependency files.
                 pass
-        
+
         return dependencies
-    
+
     def _is_safe_path(self, file_path: Path) -> bool:
         """Validate path is within repo and exists."""
         try:
             file_resolved = file_path.resolve()
             repo_resolved = self.repo_path.resolve()
-            return (str(file_resolved).startswith(str(repo_resolved)) 
+            return (str(file_resolved).startswith(str(repo_resolved))
                    and file_path.exists())
         except (OSError, ValueError):
             return False
-    
+
     def _check_for_updates(self) -> List[DependencyUpdate]:
         """
         Check for available updates using pip-outdated or npm outdated.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: update_availability_check
         """
         updates = []
         current_deps = self._read_current_dependencies()
-        
+
         # Check Python packages
         try:
             result = subprocess.run(
@@ -170,7 +170,7 @@ class DependencyMonitor:
                 capture_output=True,
                 timeout=60
             )
-            
+
             if result.returncode == 0:
                 outdated = json.loads(result.stdout)
                 for pkg in outdated:
@@ -187,7 +187,7 @@ class DependencyMonitor:
             # Best-effort: if pip is unavailable, times out, or returns invalid JSON,
             # skip Python dependency updates but continue monitoring other ecosystems.
             pass
-        
+
         # Check npm packages
         try:
             result = subprocess.run(
@@ -196,7 +196,7 @@ class DependencyMonitor:
                 capture_output=True,
                 timeout=60
             )
-            
+
             # npm outdated returns exit code 1 when updates found
             if result.returncode in [0, 1] and result.stdout:
                 outdated = json.loads(result.stdout)
@@ -213,14 +213,14 @@ class DependencyMonitor:
             # Best-effort: if npm is unavailable, times out, or returns invalid JSON,
             # skip Node.js dependency updates but continue monitoring other ecosystems.
             pass
-        
+
         return updates
-    
-    def _create_update_entry(self, package: str, current: str, 
+
+    def _create_update_entry(self, package: str, current: str,
                             latest: str, ecosystem: str) -> DependencyUpdate:
         """Create DependencyUpdate entry."""
         update_type = self._determine_update_type(current, latest)
-        
+
         return DependencyUpdate(
             package_name=package,
             current_version=current,
@@ -233,24 +233,24 @@ class DependencyMonitor:
             download_count=0,
             metadata={"ecosystem": ecosystem}
         )
-    
+
     def _determine_update_type(self, current: str, latest: str) -> UpdateType:
         """
         Determine update type based on semver.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: semver_analysis
         """
         try:
             # Parse versions (simplified)
             curr_parts = [int(x) for x in current.split('.')[:3]]
             latest_parts = [int(x) for x in latest.split('.')[:3]]
-            
+
             # Pad to 3 parts
             while len(curr_parts) < 3:
                 curr_parts.append(0)
             while len(latest_parts) < 3:
                 latest_parts.append(0)
-            
+
             if latest_parts[0] > curr_parts[0]:
                 return UpdateType.MAJOR
             elif latest_parts[1] > curr_parts[1]:
@@ -261,15 +261,15 @@ class DependencyMonitor:
                 return UpdateType.PATCH
         except (ValueError, IndexError):
             return UpdateType.MINOR
-    
+
     def _scan_vulnerabilities(self) -> List[Dict[str, Any]]:
         """
         Scan dependencies for known vulnerabilities.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: vulnerability_scanning
         """
         vulnerabilities = []
-        
+
         # Use Safety for Python
         req_file = self.repo_path / "requirements.txt"
         # Validate path is within repo to prevent path traversal
@@ -280,7 +280,7 @@ class DependencyMonitor:
                 return vulnerabilities
         except (OSError, ValueError):
             return vulnerabilities
-        
+
         if req_file.exists():
             try:
                 result = subprocess.run(
@@ -288,7 +288,7 @@ class DependencyMonitor:
                     capture_output=True,
                     timeout=60
                 )
-                
+
                 if result.returncode in [0, 64]:  # 64 = vulns found
                     vulns = json.loads(result.stdout)
                     for vuln in vulns:
@@ -299,50 +299,50 @@ class DependencyMonitor:
                                 update.has_vulnerability = True
                                 update.vulnerability_ids.append(vuln.get('cve', 'N/A'))
                                 update.update_type = UpdateType.SECURITY
-                        
+
                         vulnerabilities.append(vuln)
             except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
                 # Best-effort: if security scanning tool (pip-audit, npm audit, etc.)
                 # is unavailable, times out, or returns invalid JSON, continue without
                 # vulnerability data. Security checks can be performed manually.
                 pass
-        
+
         return vulnerabilities
-    
+
     def _analyze_changelogs(self) -> Dict[str, Dict[str, Any]]:
         """
         Analyze changelogs for breaking changes.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: changelog_analysis
         """
         changelog_data = {}
-        
+
         for update in self.updates:
             changelog_data[update.package_name] = {
                 "has_breaking_changes": self._detect_breaking_changes(update),
                 "has_deprecations": False,  # Would parse changelog
                 "migration_guide_available": False
             }
-        
+
         return changelog_data
-    
+
     def _detect_breaking_changes(self, update: DependencyUpdate) -> bool:
         """Detect if update contains breaking changes."""
         # Major version bump = breaking changes
         if update.update_type == UpdateType.MAJOR:
             return True
-        
+
         # Could also parse changelog for keywords
         return False
-    
+
     def _assess_package_health(self) -> Dict[str, Dict[str, Any]]:
         """
         Assess health of packages.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: package_health_assessment
         """
         health = {}
-        
+
         for update in self.updates:
             health[update.package_name] = {
                 "is_maintained": True,  # Would check last commit date
@@ -350,9 +350,9 @@ class DependencyMonitor:
                 "download_trend": "stable",
                 "security_score": 0.8
             }
-        
+
         return health
-    
+
     def _query_brain_patterns(self) -> List[Dict[str, Any]]:
         """Query cognitive brain for historical update patterns."""
         try:
@@ -361,7 +361,7 @@ class DependencyMonitor:
             if _core_path not in sys.path:
                 sys.path.insert(0, _core_path)
             from cognitive_brain import CognitiveBrain
-            
+
             brain = CognitiveBrain(Path(".codex/brain.db"))
             patterns = brain.query_patterns(
                 pattern_type="dependency_update",
@@ -370,7 +370,7 @@ class DependencyMonitor:
             return [p.__dict__ for p in patterns[:10]]
         except Exception:
             return []
-    
+
     def _get_changelog_url(self, package: str, ecosystem: str) -> Optional[str]:
         """Get changelog URL for package."""
         if ecosystem == "python":

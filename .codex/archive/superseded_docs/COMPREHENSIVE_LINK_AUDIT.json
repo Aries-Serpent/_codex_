@@ -1,0 +1,4293 @@
+{
+  "total_broken": 544,
+  "total_valid": 4353,
+  "files_with_broken_links": 146,
+  "results": [
+    {
+      "file": "docs/quality/BROKEN_LINKS_REPORT.md",
+      "total_links": 26,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "\"criterion\"",
+          "url": "outputs, state[\"targets\"]",
+          "full": "[\"criterion\"](outputs, state[\"targets\"])",
+          "reason": "relative_broken:outputs, state[\"targets\"]"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "\"criterion\"",
+          "url": "outputs, state[\"targets\"]",
+          "full": "[\"criterion\"](outputs, state[\"targets\"])",
+          "reason": "relative_broken:outputs, state[\"targets\"]"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "total_links": 28,
+      "broken_links": [
+        {
+          "text": "`{folder}`",
+          "url": "./{folder}",
+          "full": "[`{folder}`](./{folder})",
+          "reason": "relative_broken:./{folder}"
+        },
+        {
+          "text": "`{folder}`",
+          "url": "./{folder}",
+          "full": "[`{folder}`](./{folder})",
+          "reason": "relative_broken:./{folder}"
+        },
+        {
+          "text": "`{name}`",
+          "url": "./{current_path}",
+          "full": "[`{name}`](./{current_path})",
+          "reason": "relative_broken:./{current_path}"
+        },
+        {
+          "text": "`.codex`",
+          "url": "./.codex",
+          "full": "[`.codex`](./.codex)",
+          "reason": "relative_broken:./.codex"
+        },
+        {
+          "text": "`.codex/archive`",
+          "url": "./.codex/archive",
+          "full": "[`.codex/archive`](./.codex/archive)",
+          "reason": "relative_broken:./.codex/archive"
+        },
+        {
+          "text": "`.codex/cognitive_brain`",
+          "url": "./.codex/cognitive_brain",
+          "full": "[`.codex/cognitive_brain`](./.codex/cognitive_brain)",
+          "reason": "relative_broken:./.codex/cognitive_brain"
+        },
+        {
+          "text": "`.codex`",
+          "url": "./.codex",
+          "full": "[`.codex`](./.codex)",
+          "reason": "relative_broken:./.codex"
+        },
+        {
+          "text": "`.codex/archive`",
+          "url": "./.codex/archive",
+          "full": "[`.codex/archive`](./.codex/archive)",
+          "reason": "relative_broken:./.codex/archive"
+        },
+        {
+          "text": "`.codex/cognitive_brain`",
+          "url": "./.codex/cognitive_brain",
+          "full": "[`.codex/cognitive_brain`](./.codex/cognitive_brain)",
+          "reason": "relative_broken:./.codex/cognitive_brain"
+        },
+        {
+          "text": "`.github`",
+          "url": "./.github",
+          "full": "[`.github`](./.github)",
+          "reason": "relative_broken:./.github"
+        },
+        {
+          "text": "`.github/actions`",
+          "url": "./.github/actions",
+          "full": "[`.github/actions`](./.github/actions)",
+          "reason": "relative_broken:./.github/actions"
+        },
+        {
+          "text": "`.github/agents`",
+          "url": "./.github/agents",
+          "full": "[`.github/agents`](./.github/agents)",
+          "reason": "relative_broken:./.github/agents"
+        },
+        {
+          "text": "`.codex`",
+          "url": "./.codex",
+          "full": "[`.codex`](./.codex)",
+          "reason": "relative_broken:./.codex"
+        },
+        {
+          "text": "`archive`",
+          "url": "./.codex/archive",
+          "full": "[`archive`](./.codex/archive)",
+          "reason": "relative_broken:./.codex/archive"
+        },
+        {
+          "text": "`cognitive_brain`",
+          "url": "./.codex/cognitive_brain",
+          "full": "[`cognitive_brain`](./.codex/cognitive_brain)",
+          "reason": "relative_broken:./.codex/cognitive_brain"
+        },
+        {
+          "text": "`plans`",
+          "url": "./.codex/plans",
+          "full": "[`plans`](./.codex/plans)",
+          "reason": "relative_broken:./.codex/plans"
+        },
+        {
+          "text": "`.github`",
+          "url": "./.github",
+          "full": "[`.github`](./.github)",
+          "reason": "relative_broken:./.github"
+        },
+        {
+          "text": "`actions`",
+          "url": "./.github/actions",
+          "full": "[`actions`](./.github/actions)",
+          "reason": "relative_broken:./.github/actions"
+        },
+        {
+          "text": "`agents`",
+          "url": "./.github/agents",
+          "full": "[`agents`](./.github/agents)",
+          "reason": "relative_broken:./.github/agents"
+        }
+      ],
+      "valid_links": 9
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_SUMMARY_RELEASE_PLANNING.md",
+      "total_links": 21,
+      "broken_links": [
+        {
+          "text": "GITLAB_CI_CD_INTEGRATION.md",
+          "url": ".codex/release/GITLAB_CI_CD_INTEGRATION.md",
+          "full": "[GITLAB_CI_CD_INTEGRATION.md](.codex/release/GITLAB_CI_CD_INTEGRATION.md)",
+          "reason": "relative_broken:.codex/release/GITLAB_CI_CD_INTEGRATION.md"
+        },
+        {
+          "text": "ACTIVESTATE_OIDC_INTEGRATION.md",
+          "url": ".codex/release/ACTIVESTATE_OIDC_INTEGRATION.md",
+          "full": "[ACTIVESTATE_OIDC_INTEGRATION.md](.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md)",
+          "reason": "relative_broken:.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md"
+        },
+        {
+          "text": "AI_AGENT_AUTONOMOUS_OPERATIONS.md",
+          "url": ".codex/release/AI_AGENT_AUTONOMOUS_OPERATIONS.md",
+          "full": "[AI_AGENT_AUTONOMOUS_OPERATIONS.md](.codex/release/AI_AGENT_AUTONOMOUS_OPERATIONS.md)",
+          "reason": "relative_broken:.codex/release/AI_AGENT_AUTONOMOUS_OPERATIONS.md"
+        },
+        {
+          "text": "PRE_RELEASE_CHECKLIST.md",
+          "url": ".codex/release/PRE_RELEASE_CHECKLIST.md",
+          "full": "[PRE_RELEASE_CHECKLIST.md](.codex/release/PRE_RELEASE_CHECKLIST.md)",
+          "reason": "relative_broken:.codex/release/PRE_RELEASE_CHECKLIST.md"
+        },
+        {
+          "text": "RELEASE_WORKFLOW_PLAN.md",
+          "url": ".codex/release/RELEASE_WORKFLOW_PLAN.md",
+          "full": "[RELEASE_WORKFLOW_PLAN.md](.codex/release/RELEASE_WORKFLOW_PLAN.md)",
+          "reason": "relative_broken:.codex/release/RELEASE_WORKFLOW_PLAN.md"
+        },
+        {
+          "text": "COGNITIVE_BRAIN_ALIGNMENT.md",
+          "url": ".codex/release/COGNITIVE_BRAIN_ALIGNMENT.md",
+          "full": "[COGNITIVE_BRAIN_ALIGNMENT.md](.codex/release/COGNITIVE_BRAIN_ALIGNMENT.md)",
+          "reason": "relative_broken:.codex/release/COGNITIVE_BRAIN_ALIGNMENT.md"
+        },
+        {
+          "text": "README_VERIFICATION_REPORT.md",
+          "url": ".codex/release/README_VERIFICATION_REPORT.md",
+          "full": "[README_VERIFICATION_REPORT.md](.codex/release/README_VERIFICATION_REPORT.md)",
+          "reason": "relative_broken:.codex/release/README_VERIFICATION_REPORT.md"
+        },
+        {
+          "text": "PINNED_SHAS.md",
+          "url": ".codex/release/PINNED_SHAS.md",
+          "full": "[PINNED_SHAS.md](.codex/release/PINNED_SHAS.md)",
+          "reason": "relative_broken:.codex/release/PINNED_SHAS.md"
+        },
+        {
+          "text": "PHASE_26_RELEASE_READINESS.md",
+          "url": ".codex/cognitive_brain/PHASE_26_RELEASE_READINESS.md",
+          "full": "[PHASE_26_RELEASE_READINESS.md](.codex/cognitive_brain/PHASE_26_RELEASE_READINESS.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_26_RELEASE_READINESS.md"
+        },
+        {
+          "text": "PHASE_26_RELEASE_READINESS.md",
+          "url": ".codex/release/PHASE_26_RELEASE_READINESS.md",
+          "full": "[PHASE_26_RELEASE_READINESS.md](.codex/release/PHASE_26_RELEASE_READINESS.md)",
+          "reason": "relative_broken:.codex/release/PHASE_26_RELEASE_READINESS.md"
+        },
+        {
+          "text": "pypi-publish.yml (GitHub Actions workflow)",
+          "url": ".codex/release/pypi-publish.yml (GitHub Actions workflow",
+          "full": "[pypi-publish.yml (GitHub Actions workflow)](.codex/release/pypi-publish.yml (GitHub Actions workflow)",
+          "reason": "relative_broken:.codex/release/pypi-publish.yml (GitHub Actions workflow"
+        },
+        {
+          "text": "pypi-publish.yml + integration guides",
+          "url": ".codex/release/pypi-publish.yml + integration guides",
+          "full": "[pypi-publish.yml + integration guides](.codex/release/pypi-publish.yml + integration guides)",
+          "reason": "relative_broken:.codex/release/pypi-publish.yml + integration guides"
+        },
+        {
+          "text": "PHASE_26_RELEASE_READINESS.md",
+          "url": ".codex/release/PHASE_26_RELEASE_READINESS.md",
+          "full": "[PHASE_26_RELEASE_READINESS.md](.codex/release/PHASE_26_RELEASE_READINESS.md)",
+          "reason": "relative_broken:.codex/release/PHASE_26_RELEASE_READINESS.md"
+        },
+        {
+          "text": "pypi-publish.yml (GitHub Actions workflow)",
+          "url": ".codex/release/pypi-publish.yml (GitHub Actions workflow",
+          "full": "[pypi-publish.yml (GitHub Actions workflow)](.codex/release/pypi-publish.yml (GitHub Actions workflow)",
+          "reason": "relative_broken:.codex/release/pypi-publish.yml (GitHub Actions workflow"
+        },
+        {
+          "text": "ACTIVESTATE_OIDC_INTEGRATION.md",
+          "url": ".codex/release/ACTIVESTATE_OIDC_INTEGRATION.md",
+          "full": "[ACTIVESTATE_OIDC_INTEGRATION.md](.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md)",
+          "reason": "relative_broken:.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md"
+        },
+        {
+          "text": "Release Documentation Index",
+          "url": ".codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md",
+          "full": "[Release Documentation Index](.codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md)",
+          "reason": "relative_broken:.codex/release/GITLAB_CI_CD_INTEGRATION.md + ACTIVESTATE_OIDC_INTEGRATION.md"
+        },
+        {
+          "text": "FOLLOWUP_PROMPT_RELEASE_PLANNING.md",
+          "url": ".codex/FOLLOWUP_PROMPT_RELEASE_PLANNING.md",
+          "full": "[FOLLOWUP_PROMPT_RELEASE_PLANNING.md](.codex/FOLLOWUP_PROMPT_RELEASE_PLANNING.md)",
+          "reason": "relative_broken:.codex/FOLLOWUP_PROMPT_RELEASE_PLANNING.md"
+        },
+        {
+          "text": "PHASE_26_RELEASE_READINESS.md",
+          "url": ".codex/release/PHASE_26_RELEASE_READINESS.md",
+          "full": "[PHASE_26_RELEASE_READINESS.md](.codex/release/PHASE_26_RELEASE_READINESS.md)",
+          "reason": "relative_broken:.codex/release/PHASE_26_RELEASE_READINESS.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "Original Guide 1",
+          "url": "archive/guide1.md",
+          "full": "[Original Guide 1](archive/guide1.md)",
+          "reason": "relative_broken:archive/guide1.md"
+        },
+        {
+          "text": "Original Guide 2",
+          "url": "archive/guide2.md",
+          "full": "[Original Guide 2](archive/guide2.md)",
+          "reason": "relative_broken:archive/guide2.md"
+        },
+        {
+          "text": "Status",
+          "url": "../COGNITIVE_BRAIN_V3.md",
+          "full": "[Status](../COGNITIVE_BRAIN_V3.md)",
+          "reason": "relative_broken:../COGNITIVE_BRAIN_V3.md"
+        },
+        {
+          "text": "Status",
+          "url": "cognitive_brain/STATUS.md",
+          "full": "[Status](cognitive_brain/STATUS.md)",
+          "reason": "relative_broken:cognitive_brain/STATUS.md"
+        },
+        {
+          "text": "Latest Status",
+          "url": "status/STATUS.md",
+          "full": "[Latest Status](status/STATUS.md)",
+          "reason": "relative_broken:status/STATUS.md"
+        },
+        {
+          "text": "Phase 11",
+          "url": "phases/PHASE_11.md",
+          "full": "[Phase 11](phases/PHASE_11.md)",
+          "reason": "relative_broken:phases/PHASE_11.md"
+        },
+        {
+          "text": "Phase 10",
+          "url": "phases/PHASE_10.md",
+          "full": "[Phase 10](phases/PHASE_10.md)",
+          "reason": "relative_broken:phases/PHASE_10.md"
+        },
+        {
+          "text": "Phase 9",
+          "url": "phases/PHASE_9.md",
+          "full": "[Phase 9](phases/PHASE_9.md)",
+          "reason": "relative_broken:phases/PHASE_9.md"
+        },
+        {
+          "text": "Archive",
+          "url": "archive/",
+          "full": "[Archive](archive/)",
+          "reason": "relative_broken:archive/"
+        },
+        {
+          "text": "Phase 12 Prompt",
+          "url": "prompts/PHASE_12_CONTINUATION.md",
+          "full": "[Phase 12 Prompt](prompts/PHASE_12_CONTINUATION.md)",
+          "reason": "relative_broken:prompts/PHASE_12_CONTINUATION.md"
+        },
+        {
+          "text": "Phase 11 Prompt",
+          "url": "prompts/PHASE_11_CONTINUATION.md",
+          "full": "[Phase 11 Prompt](prompts/PHASE_11_CONTINUATION.md)",
+          "reason": "relative_broken:prompts/PHASE_11_CONTINUATION.md"
+        },
+        {
+          "text": "Prompt Archive",
+          "url": "prompts/archive/",
+          "full": "[Prompt Archive](prompts/archive/)",
+          "reason": "relative_broken:prompts/archive/"
+        },
+        {
+          "text": "Browse by Topic",
+          "url": "BY_TOPIC.md",
+          "full": "[Browse by Topic](BY_TOPIC.md)",
+          "reason": "relative_broken:BY_TOPIC.md"
+        },
+        {
+          "text": "Browse by Date",
+          "url": "BY_DATE.md",
+          "full": "[Browse by Date](BY_DATE.md)",
+          "reason": "relative_broken:BY_DATE.md"
+        },
+        {
+          "text": "Search Keywords",
+          "url": "KEYWORDS.md",
+          "full": "[Search Keywords](KEYWORDS.md)",
+          "reason": "relative_broken:KEYWORDS.md"
+        },
+        {
+          "text": "docs/cognitive_brain/STATUS.md",
+          "url": "../STATUS.md",
+          "full": "[docs/cognitive_brain/STATUS.md](../STATUS.md)",
+          "reason": "relative_broken:../STATUS.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".codex/templates/handoff/handoff_tracking_template.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        },
+        {
+          "text": "{link_text}",
+          "url": "{comment_url}",
+          "full": "[{link_text}]({comment_url})",
+          "reason": "relative_broken:{comment_url}"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "total_links": 15,
+      "broken_links": [
+        {
+          "text": "tokenization_coverage_baseline.md",
+          "url": "{link_1}",
+          "full": "[tokenization_coverage_baseline.md]({link_1})",
+          "reason": "relative_broken:{link_1}"
+        },
+        {
+          "text": "coverage_tokenization.json",
+          "url": "{link_2}",
+          "full": "[coverage_tokenization.json]({link_2})",
+          "reason": "relative_broken:{link_2}"
+        },
+        {
+          "text": "test_case_mapping.md",
+          "url": "{link_3}",
+          "full": "[test_case_mapping.md]({link_3})",
+          "reason": "relative_broken:{link_3}"
+        },
+        {
+          "text": "{plan_name}",
+          "url": "{plan_link}",
+          "full": "[{plan_name}]({plan_link})",
+          "reason": "relative_broken:{plan_link}"
+        },
+        {
+          "text": "{artifact_dir}",
+          "url": "{artifact_dir_link}",
+          "full": "[{artifact_dir}]({artifact_dir_link})",
+          "reason": "relative_broken:{artifact_dir_link}"
+        },
+        {
+          "text": "{log_file}",
+          "url": "{log_link}",
+          "full": "[{log_file}]({log_link})",
+          "reason": "relative_broken:{log_link}"
+        },
+        {
+          "text": "{brain_doc}",
+          "url": "{brain_link}",
+          "full": "[{brain_doc}]({brain_link})",
+          "reason": "relative_broken:{brain_link}"
+        },
+        {
+          "text": "tokenization_coverage_baseline.md",
+          "url": ".codex/plans/pr_3145/tokenization_coverage_baseline.md",
+          "full": "[tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/tokenization_coverage_baseline.md"
+        },
+        {
+          "text": "coverage_tokenization.json",
+          "url": "coverage_reports/coverage_tokenization.json",
+          "full": "[coverage_tokenization.json](coverage_reports/coverage_tokenization.json)",
+          "reason": "relative_broken:coverage_reports/coverage_tokenization.json"
+        },
+        {
+          "text": "test_case_mapping.md",
+          "url": ".codex/plans/pr_3145/test_case_mapping.md",
+          "full": "[test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/test_case_mapping.md"
+        },
+        {
+          "text": "analyze_tokenization_coverage.py",
+          "url": "scripts/analyze_tokenization_coverage.py",
+          "full": "[analyze_tokenization_coverage.py](scripts/analyze_tokenization_coverage.py)",
+          "reason": "relative_broken:scripts/analyze_tokenization_coverage.py"
+        },
+        {
+          "text": "Tokenization Coverage Analysis",
+          "url": ".codex/plans/pr_3145/01_tokenization_coverage_analysis.md",
+          "full": "[Tokenization Coverage Analysis](.codex/plans/pr_3145/01_tokenization_coverage_analysis.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/01_tokenization_coverage_analysis.md"
+        },
+        {
+          "text": "pr_3145 artifacts",
+          "url": ".codex/plans/pr_3145/",
+          "full": "[pr_3145 artifacts](.codex/plans/pr_3145/)",
+          "reason": "relative_broken:.codex/plans/pr_3145/"
+        },
+        {
+          "text": "coverage_analysis.log",
+          "url": "logs/coverage_analysis.log",
+          "full": "[coverage_analysis.log](logs/coverage_analysis.log)",
+          "reason": "relative_broken:logs/coverage_analysis.log"
+        },
+        {
+          "text": "PR 3145 Planset Registration",
+          "url": ".codex/cognitive_brain/pr_3145_planset_registration.md",
+          "full": "[PR 3145 Planset Registration](.codex/cognitive_brain/pr_3145_planset_registration.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/pr_3145_planset_registration.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/prompts/sprint_execution_plan/README.md",
+      "total_links": 15,
+      "broken_links": [
+        {
+          "text": "T1: Coverage Gate Enforcement",
+          "url": "./phase1_t1_coverage_gate.md",
+          "full": "[T1: Coverage Gate Enforcement](./phase1_t1_coverage_gate.md)",
+          "reason": "relative_broken:./phase1_t1_coverage_gate.md"
+        },
+        {
+          "text": "T5: Prompt Sanitization Default",
+          "url": "./phase1_t5_prompt_sanitize.md",
+          "full": "[T5: Prompt Sanitization Default](./phase1_t5_prompt_sanitize.md)",
+          "reason": "relative_broken:./phase1_t5_prompt_sanitize.md"
+        },
+        {
+          "text": "T9: Security Scans in CI",
+          "url": "./phase1_t9_security_scans.md",
+          "full": "[T9: Security Scans in CI](./phase1_t9_security_scans.md)",
+          "reason": "relative_broken:./phase1_t9_security_scans.md"
+        },
+        {
+          "text": "T4: Strict Resume RNG",
+          "url": "./phase2_t4_strict_resume.md",
+          "full": "[T4: Strict Resume RNG](./phase2_t4_strict_resume.md)",
+          "reason": "relative_broken:./phase2_t4_strict_resume.md"
+        },
+        {
+          "text": "T6: Dataset Hash Manifest",
+          "url": "./phase2_t6_dataset_hash.md",
+          "full": "[T6: Dataset Hash Manifest](./phase2_t6_dataset_hash.md)",
+          "reason": "relative_broken:./phase2_t6_dataset_hash.md"
+        },
+        {
+          "text": "T2: W&B Offline Default",
+          "url": "./phase3_t2_wandb_offline.md",
+          "full": "[T2: W&B Offline Default](./phase3_t2_wandb_offline.md)",
+          "reason": "relative_broken:./phase3_t2_wandb_offline.md"
+        },
+        {
+          "text": "T3: EarlyStopping Integration",
+          "url": "./phase3_t3_earlystopping.md",
+          "full": "[T3: EarlyStopping Integration](./phase3_t3_earlystopping.md)",
+          "reason": "relative_broken:./phase3_t3_earlystopping.md"
+        },
+        {
+          "text": "T7: Health/Readiness Probes",
+          "url": "./phase3_t7_health_probes.md",
+          "full": "[T7: Health/Readiness Probes](./phase3_t7_health_probes.md)",
+          "reason": "relative_broken:./phase3_t7_health_probes.md"
+        },
+        {
+          "text": "T8: Prometheus Metrics",
+          "url": "./phase4_t8_prometheus.md",
+          "full": "[T8: Prometheus Metrics](./phase4_t8_prometheus.md)",
+          "reason": "relative_broken:./phase4_t8_prometheus.md"
+        },
+        {
+          "text": "T10: SBOM Generation",
+          "url": "./phase4_t10_sbom.md",
+          "full": "[T10: SBOM Generation](./phase4_t10_sbom.md)",
+          "reason": "relative_broken:./phase4_t10_sbom.md"
+        },
+        {
+          "text": "Audit Complete Summary",
+          "url": "../../../AUDIT_COMPLETE.md",
+          "full": "[Audit Complete Summary](../../../AUDIT_COMPLETE.md)",
+          "reason": "relative_broken:../../../AUDIT_COMPLETE.md"
+        },
+        {
+          "text": "Executive Status Update",
+          "url": "../../../reports/_codex_status_update-(2025-12-06",
+          "full": "[Executive Status Update](../../../reports/_codex_status_update-(2025-12-06)",
+          "reason": "relative_broken:../../../reports/_codex_status_update-(2025-12-06"
+        },
+        {
+          "text": "Gap Backlog Prioritized",
+          "url": "../../../workbench/exhaustive_audit/gap_backlog_prioritized.md",
+          "full": "[Gap Backlog Prioritized](../../../workbench/exhaustive_audit/gap_backlog_prioritized.md)",
+          "reason": "relative_broken:../../../workbench/exhaustive_audit/gap_backlog_prioritized.md"
+        },
+        {
+          "text": "Remediation Diffs",
+          "url": "../../../workbench/exhaustive_audit/remediation_diffs.md",
+          "full": "[Remediation Diffs](../../../workbench/exhaustive_audit/remediation_diffs.md)",
+          "reason": "relative_broken:../../../workbench/exhaustive_audit/remediation_diffs.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/reports/ROOT_ORG_INDEX.md",
+      "total_links": 17,
+      "broken_links": [
+        {
+          "text": "Session Summary",
+          "url": ".codex/reports/ROOT_ORG_SESSION_COMPLETE.md",
+          "full": "[Session Summary](.codex/reports/ROOT_ORG_SESSION_COMPLETE.md)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_SESSION_COMPLETE.md"
+        },
+        {
+          "text": "Comprehensive Plan",
+          "url": ".codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md",
+          "full": "[Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md"
+        },
+        {
+          "text": "Execution Summary",
+          "url": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+          "full": "[Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md"
+        },
+        {
+          "text": "ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md",
+          "url": ".codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md",
+          "full": "[ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md"
+        },
+        {
+          "text": "ROOT_ORG_CLEANUP_BATCH_1.json",
+          "url": ".codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json",
+          "full": "[ROOT_ORG_CLEANUP_BATCH_1.json](.codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json"
+        },
+        {
+          "text": "ROOT_ORG_CLEANUP_BATCH_2.json",
+          "url": ".codex/plans/ROOT_ORG_CLEANUP_BATCH_2.json",
+          "full": "[ROOT_ORG_CLEANUP_BATCH_2.json](.codex/plans/ROOT_ORG_CLEANUP_BATCH_2.json)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_CLEANUP_BATCH_2.json"
+        },
+        {
+          "text": "ROOT_ORG_CLEANUP_BATCH_3.json",
+          "url": ".codex/plans/ROOT_ORG_CLEANUP_BATCH_3.json",
+          "full": "[ROOT_ORG_CLEANUP_BATCH_3.json](.codex/plans/ROOT_ORG_CLEANUP_BATCH_3.json)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_CLEANUP_BATCH_3.json"
+        },
+        {
+          "text": "ROOT_ORG_RELOCATION_PLAN.json",
+          "url": ".codex/plans/ROOT_ORG_RELOCATION_PLAN.json",
+          "full": "[ROOT_ORG_RELOCATION_PLAN.json](.codex/plans/ROOT_ORG_RELOCATION_PLAN.json)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_RELOCATION_PLAN.json"
+        },
+        {
+          "text": "ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+          "url": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+          "full": "[ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md"
+        },
+        {
+          "text": "ROOT_ORG_SESSION_COMPLETE.md",
+          "url": ".codex/reports/ROOT_ORG_SESSION_COMPLETE.md",
+          "full": "[ROOT_ORG_SESSION_COMPLETE.md](.codex/reports/ROOT_ORG_SESSION_COMPLETE.md)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_SESSION_COMPLETE.md"
+        },
+        {
+          "text": "Execution Summary",
+          "url": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appendix-b-reference-update-details",
+          "full": "[Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appendix-b-reference-update-details)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md"
+        },
+        {
+          "text": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+          "url": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+          "full": "[.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md](.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md)",
+          "reason": "relative_broken:.codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md"
+        },
+        {
+          "text": "Comprehensive Plan",
+          "url": ".codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md",
+          "full": "[Comprehensive Plan](.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md)",
+          "reason": "relative_broken:.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md"
+        },
+        {
+          "text": "Execution Summary",
+          "url": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+          "full": "[Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md)",
+          "reason": "relative_broken:.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "total_links": 13,
+      "broken_links": [
+        {
+          "text": "SELF_REVIEW_ITERATION_1.md",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md",
+          "full": "[SELF_REVIEW_ITERATION_1.md](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md"
+        },
+        {
+          "text": "SELF_REVIEW_ITERATION_2.md",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md",
+          "full": "[SELF_REVIEW_ITERATION_2.md](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md"
+        },
+        {
+          "text": "Final Audit Report",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/final_audit_report.md",
+          "full": "[Final Audit Report](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/final_audit_report.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/final_audit_report.md"
+        },
+        {
+          "text": "Final Validation Report",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/FINAL_VALIDATION_REPORT.md",
+          "full": "[Final Validation Report](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/FINAL_VALIDATION_REPORT.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/FINAL_VALIDATION_REPORT.md"
+        },
+        {
+          "text": "Completion Checklist",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/completion_checklist.md",
+          "full": "[Completion Checklist](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/completion_checklist.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/completion_checklist.md"
+        },
+        {
+          "text": "Gap List",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/gap_list.md",
+          "full": "[Gap List](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/gap_list.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/gap_list.md"
+        },
+        {
+          "text": "Configuration Guide",
+          "url": "tree/copilot/complete-pr-2449-implementation/docs/audit/Configuration_v1.4.0.md",
+          "full": "[Configuration Guide](tree/copilot/complete-pr-2449-implementation/docs/audit/Configuration_v1.4.0.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/docs/audit/Configuration_v1.4.0.md"
+        },
+        {
+          "text": "Migration Guide",
+          "url": "tree/copilot/complete-pr-2449-implementation/docs/audit/Migration_v1.3_to_v1.4.md",
+          "full": "[Migration Guide](tree/copilot/complete-pr-2449-implementation/docs/audit/Migration_v1.3_to_v1.4.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/docs/audit/Migration_v1.3_to_v1.4.md"
+        },
+        {
+          "text": "Troubleshooting",
+          "url": "tree/copilot/complete-pr-2449-implementation/docs/audit/Troubleshooting_v1.4.0.md",
+          "full": "[Troubleshooting](tree/copilot/complete-pr-2449-implementation/docs/audit/Troubleshooting_v1.4.0.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/docs/audit/Troubleshooting_v1.4.0.md"
+        },
+        {
+          "text": "API Reference",
+          "url": "tree/copilot/complete-pr-2449-implementation/docs/audit/API_Reference_v1.4.0.md",
+          "full": "[API Reference](tree/copilot/complete-pr-2449-implementation/docs/audit/API_Reference_v1.4.0.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/docs/audit/API_Reference_v1.4.0.md"
+        },
+        {
+          "text": "Updated Audit Template",
+          "url": "tree/copilot/complete-pr-2449-implementation/docs/audit/Audit_Pipeline_Reference_v1.4.0.md",
+          "full": "[Updated Audit Template](tree/copilot/complete-pr-2449-implementation/docs/audit/Audit_Pipeline_Reference_v1.4.0.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/docs/audit/Audit_Pipeline_Reference_v1.4.0.md"
+        },
+        {
+          "text": "Iteration 1 Report",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md",
+          "full": "[Iteration 1 Report](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md"
+        },
+        {
+          "text": "Iteration 2 Report",
+          "url": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md",
+          "full": "[Iteration 2 Report](tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md)",
+          "reason": "relative_broken:tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "docs/analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md",
+      "total_links": 23,
+      "broken_links": [
+        {
+          "text": "reports/PR_3133_EXECUTIVE_SUMMARY.md",
+          "url": "reports/PR_3133_EXECUTIVE_SUMMARY.md",
+          "full": "[reports/PR_3133_EXECUTIVE_SUMMARY.md](reports/PR_3133_EXECUTIVE_SUMMARY.md)",
+          "reason": "relative_broken:reports/PR_3133_EXECUTIVE_SUMMARY.md"
+        },
+        {
+          "text": "reports/PR_3133_CI_LOG_SUMMARY.md",
+          "url": "reports/PR_3133_CI_LOG_SUMMARY.md",
+          "full": "[reports/PR_3133_CI_LOG_SUMMARY.md](reports/PR_3133_CI_LOG_SUMMARY.md)",
+          "reason": "relative_broken:reports/PR_3133_CI_LOG_SUMMARY.md"
+        },
+        {
+          "text": ".codex/PR_3133_FINAL_CHECK_ANALYSIS.md",
+          "url": ".codex/PR_3133_FINAL_CHECK_ANALYSIS.md",
+          "full": "[.codex/PR_3133_FINAL_CHECK_ANALYSIS.md](.codex/PR_3133_FINAL_CHECK_ANALYSIS.md)",
+          "reason": "relative_broken:.codex/PR_3133_FINAL_CHECK_ANALYSIS.md"
+        },
+        {
+          "text": "artifacts/PR_3133_log_retrieval_manifest.txt",
+          "url": "artifacts/PR_3133_log_retrieval_manifest.txt",
+          "full": "[artifacts/PR_3133_log_retrieval_manifest.txt](artifacts/PR_3133_log_retrieval_manifest.txt)",
+          "reason": "relative_broken:artifacts/PR_3133_log_retrieval_manifest.txt"
+        },
+        {
+          "text": ".codex/change_log.md",
+          "url": ".codex/change_log.md",
+          "full": "[.codex/change_log.md](.codex/change_log.md)",
+          "reason": "relative_broken:.codex/change_log.md"
+        },
+        {
+          "text": "PHASE_2_QUICK_REFERENCE.md",
+          "url": "../archive/sessions/2026-01/PHASE_2_QUICK_REFERENCE.md",
+          "full": "[PHASE_2_QUICK_REFERENCE.md](../archive/sessions/2026-01/PHASE_2_QUICK_REFERENCE.md)",
+          "reason": "relative_broken:../archive/sessions/2026-01/PHASE_2_QUICK_REFERENCE.md"
+        },
+        {
+          "text": "PHASE_2_QUICK_REFERENCE.md",
+          "url": "phases/PHASE_2_QUICK_REFERENCE.md",
+          "full": "[PHASE_2_QUICK_REFERENCE.md](phases/PHASE_2_QUICK_REFERENCE.md)",
+          "reason": "relative_broken:phases/PHASE_2_QUICK_REFERENCE.md"
+        },
+        {
+          "text": "Workflow Fixes Summary",
+          "url": "archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md",
+          "full": "[Workflow Fixes Summary](archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md)",
+          "reason": "relative_broken:archive/reports/workflows/WORKFLOW_FIXES_SUMMARY.md"
+        },
+        {
+          "text": "Workflow Fix Quick Reference",
+          "url": "WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md",
+          "full": "[Workflow Fix Quick Reference](WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md)",
+          "reason": "relative_broken:WORKFLOW_FIX_archive/sessions/2026-01/QUICK_REFERENCE.md"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "T",
+          "url": "items: list[T]",
+          "full": "[T](items: list[T])",
+          "reason": "relative_broken:items: list[T]"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "LINK_VALIDATION_TODO.md",
+          "url": "docs/maintenance/LINK_VALIDATION_TODO.md",
+          "full": "[LINK_VALIDATION_TODO.md](docs/maintenance/LINK_VALIDATION_TODO.md)",
+          "reason": "relative_broken:docs/maintenance/LINK_VALIDATION_TODO.md"
+        },
+        {
+          "text": "text",
+          "url": "link",
+          "full": "[text](link)",
+          "reason": "relative_broken:link"
+        },
+        {
+          "text": "COVERAGE_ENHANCEMENT_PROMPT.md",
+          "url": "docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md",
+          "full": "[COVERAGE_ENHANCEMENT_PROMPT.md](docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md)",
+          "reason": "relative_broken:docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md"
+        },
+        {
+          "text": "COVERAGE_CONTINUATION_PROMPT.md",
+          "url": "docs/prompts/COVERAGE_CONTINUATION_PROMPT.md",
+          "full": "[COVERAGE_CONTINUATION_PROMPT.md](docs/prompts/COVERAGE_CONTINUATION_PROMPT.md)",
+          "reason": "relative_broken:docs/prompts/COVERAGE_CONTINUATION_PROMPT.md"
+        },
+        {
+          "text": "custom_gpt_self_healing_engineer.md",
+          "url": "docs/prompts/custom_gpt_self_healing_engineer.md",
+          "full": "[custom_gpt_self_healing_engineer.md](docs/prompts/custom_gpt_self_healing_engineer.md)",
+          "reason": "relative_broken:docs/prompts/custom_gpt_self_healing_engineer.md"
+        },
+        {
+          "text": "QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md",
+          "url": "docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md",
+          "full": "[QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md](docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md)",
+          "reason": "relative_broken:docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md"
+        },
+        {
+          "text": "Master Index",
+          "url": "docs/MASTER_INDEX.md",
+          "full": "[Master Index](docs/MASTER_INDEX.md)",
+          "reason": "relative_broken:docs/MASTER_INDEX.md"
+        },
+        {
+          "text": "Continuation Protocol",
+          "url": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+          "full": "[Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)",
+          "reason": "relative_broken:docs/workflows/AGENT_CONTINUATION_PROTOCOL.md"
+        },
+        {
+          "text": "Contributing Guide",
+          "url": "CONTRIBUTING.md",
+          "full": "[Contributing Guide](CONTRIBUTING.md)",
+          "reason": "relative_broken:CONTRIBUTING.md"
+        },
+        {
+          "text": "Link Validation TODO",
+          "url": "docs/maintenance/LINK_VALIDATION_TODO.md",
+          "full": "[Link Validation TODO](docs/maintenance/LINK_VALIDATION_TODO.md)",
+          "reason": "relative_broken:docs/maintenance/LINK_VALIDATION_TODO.md"
+        }
+      ],
+      "valid_links": 8
+    },
+    {
+      "file": "docs/plans/copilot-directives-to-implementation-plan.md",
+      "total_links": 16,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": ".+?",
+          "full": "[\"\\'](.+?)",
+          "reason": "relative_broken:.+?"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        }
+      ],
+      "valid_links": 7
+    },
+    {
+      "file": ".github/agents/codebase-qa-walkthrough-agent/README.md",
+      "total_links": 9,
+      "broken_links": [
+        {
+          "text": "Agent Configuration",
+          "url": "./docs/CONFIGURATION.md",
+          "full": "[Agent Configuration](./docs/CONFIGURATION.md)",
+          "reason": "relative_broken:./docs/CONFIGURATION.md"
+        },
+        {
+          "text": "Custom Checks",
+          "url": "./docs/CUSTOM_CHECKS.md",
+          "full": "[Custom Checks](./docs/CUSTOM_CHECKS.md)",
+          "reason": "relative_broken:./docs/CUSTOM_CHECKS.md"
+        },
+        {
+          "text": "Integration Guide",
+          "url": "./docs/INTEGRATION.md",
+          "full": "[Integration Guide](./docs/INTEGRATION.md)",
+          "reason": "relative_broken:./docs/INTEGRATION.md"
+        },
+        {
+          "text": "Python Project QA",
+          "url": "./examples/python-qa.md",
+          "full": "[Python Project QA](./examples/python-qa.md)",
+          "reason": "relative_broken:./examples/python-qa.md"
+        },
+        {
+          "text": "Rust Project QA",
+          "url": "./examples/rust-qa.md",
+          "full": "[Rust Project QA](./examples/rust-qa.md)",
+          "reason": "relative_broken:./examples/rust-qa.md"
+        },
+        {
+          "text": "Architecture Review",
+          "url": "./examples/architecture-review.md",
+          "full": "[Architecture Review](./examples/architecture-review.md)",
+          "reason": "relative_broken:./examples/architecture-review.md"
+        },
+        {
+          "text": "Quality Standards",
+          "url": "./docs/QUALITY_STANDARDS.md",
+          "full": "[Quality Standards](./docs/QUALITY_STANDARDS.md)",
+          "reason": "relative_broken:./docs/QUALITY_STANDARDS.md"
+        },
+        {
+          "text": "Best Practices",
+          "url": "./docs/BEST_PRACTICES.md",
+          "full": "[Best Practices](./docs/BEST_PRACTICES.md)",
+          "reason": "relative_broken:./docs/BEST_PRACTICES.md"
+        },
+        {
+          "text": "Troubleshooting",
+          "url": "./docs/TROUBLESHOOTING.md",
+          "full": "[Troubleshooting](./docs/TROUBLESHOOTING.md)",
+          "reason": "relative_broken:./docs/TROUBLESHOOTING.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "AGENT_REGISTRY.md",
+          "url": ".github/agents/AGENT_REGISTRY.md",
+          "full": "[AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md)",
+          "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
+        },
+        {
+          "text": "AGENT_DESIGNS.md",
+          "url": ".codex/AGENT_DESIGNS.md",
+          "full": "[AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md)",
+          "reason": "relative_broken:.codex/AGENT_DESIGNS.md"
+        },
+        {
+          "text": "CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+          "url": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+          "full": "[CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md](.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md)",
+          "reason": "relative_broken:.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md"
+        },
+        {
+          "text": "ci-diagnostician",
+          "url": ".github/agents/ci-diagnostician/",
+          "full": "[ci-diagnostician](.github/agents/ci-diagnostician/)",
+          "reason": "relative_broken:.github/agents/ci-diagnostician/"
+        },
+        {
+          "text": "test-assertion-updater",
+          "url": ".github/agents/test-assertion-updater/",
+          "full": "[test-assertion-updater](.github/agents/test-assertion-updater/)",
+          "reason": "relative_broken:.github/agents/test-assertion-updater/"
+        },
+        {
+          "text": "rust-error-validator",
+          "url": ".github/agents/rust-error-validator/",
+          "full": "[rust-error-validator](.github/agents/rust-error-validator/)",
+          "reason": "relative_broken:.github/agents/rust-error-validator/"
+        },
+        {
+          "text": "pyo3-integration-tester",
+          "url": ".github/agents/pyo3-integration-tester/",
+          "full": "[pyo3-integration-tester](.github/agents/pyo3-integration-tester/)",
+          "reason": "relative_broken:.github/agents/pyo3-integration-tester/"
+        },
+        {
+          "text": "project-architect-researcher",
+          "url": ".github/agents/project-architect-researcher/",
+          "full": "[project-architect-researcher](.github/agents/project-architect-researcher/)",
+          "reason": "relative_broken:.github/agents/project-architect-researcher/"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "Phase 1",
+          "url": "phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+          "full": "[Phase 1](phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md)",
+          "reason": "relative_broken:phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md"
+        },
+        {
+          "text": "Phase 2",
+          "url": "phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+          "full": "[Phase 2](phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md)",
+          "reason": "relative_broken:phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md"
+        },
+        {
+          "text": "Session PR2836",
+          "url": "sessions/SESSION_SUMMARY_PR2836_COMPLETE.md",
+          "full": "[Session PR2836](sessions/SESSION_SUMMARY_PR2836_COMPLETE.md)",
+          "reason": "relative_broken:sessions/SESSION_SUMMARY_PR2836_COMPLETE.md"
+        },
+        {
+          "text": "Audit Completion",
+          "url": "completion/AUDIT_COMPLETION_SUMMARY.md",
+          "full": "[Audit Completion](completion/AUDIT_COMPLETION_SUMMARY.md)",
+          "reason": "relative_broken:completion/AUDIT_COMPLETION_SUMMARY.md"
+        },
+        {
+          "text": "CodeQL Remediation",
+          "url": "prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md",
+          "full": "[CodeQL Remediation](prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md)",
+          "reason": "relative_broken:prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md"
+        },
+        {
+          "text": "Failure Analysis",
+          "url": "CI_FAILURE_ANALYSIS.md",
+          "full": "[Failure Analysis](CI_FAILURE_ANALYSIS.md)",
+          "reason": "relative_broken:CI_FAILURE_ANALYSIS.md"
+        },
+        {
+          "text": "Fixes Summary",
+          "url": "CI_FIXES_PYTEST_MKDOCS.md",
+          "full": "[Fixes Summary](CI_FIXES_PYTEST_MKDOCS.md)",
+          "reason": "relative_broken:CI_FIXES_PYTEST_MKDOCS.md"
+        },
+        {
+          "text": "Broken Links Report",
+          "url": "BROKEN_LINKS_REPORT.md",
+          "full": "[Broken Links Report](BROKEN_LINKS_REPORT.md)",
+          "reason": "relative_broken:BROKEN_LINKS_REPORT.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_26_RELEASE_READINESS.md",
+      "total_links": 9,
+      "broken_links": [
+        {
+          "text": "PyPI Publishing Workflow",
+          "url": "../../.github/workflows/pypi-publish.yml",
+          "full": "[PyPI Publishing Workflow](../../.github/workflows/pypi-publish.yml)",
+          "reason": "relative_broken:../../.github/workflows/pypi-publish.yml"
+        },
+        {
+          "text": "GitLab CI/CD Integration",
+          "url": "../release/GITLAB_CI_CD_INTEGRATION.md",
+          "full": "[GitLab CI/CD Integration](../release/GITLAB_CI_CD_INTEGRATION.md)",
+          "reason": "relative_broken:../release/GITLAB_CI_CD_INTEGRATION.md"
+        },
+        {
+          "text": "ActiveState OIDC Integration",
+          "url": "../release/ACTIVESTATE_OIDC_INTEGRATION.md",
+          "full": "[ActiveState OIDC Integration](../release/ACTIVESTATE_OIDC_INTEGRATION.md)",
+          "reason": "relative_broken:../release/ACTIVESTATE_OIDC_INTEGRATION.md"
+        },
+        {
+          "text": "Release Gate Agent",
+          "url": "../../.github/agents/release-gate-agent/README.md",
+          "full": "[Release Gate Agent](../../.github/agents/release-gate-agent/README.md)",
+          "reason": "relative_broken:../../.github/agents/release-gate-agent/README.md"
+        },
+        {
+          "text": "Path to 100%",
+          "url": "CONTINUATION_PROMPT_PHASES_26_30_TO_100_PERCENT.md",
+          "full": "[Path to 100%](CONTINUATION_PROMPT_PHASES_26_30_TO_100_PERCENT.md)",
+          "reason": "relative_broken:CONTINUATION_PROMPT_PHASES_26_30_TO_100_PERCENT.md"
+        },
+        {
+          "text": "CHANGELOG.md",
+          "url": "../../CHANGELOG.md",
+          "full": "[CHANGELOG.md](../../CHANGELOG.md)",
+          "reason": "relative_broken:../../CHANGELOG.md"
+        },
+        {
+          "text": "pyproject.toml",
+          "url": "../../pyproject.toml",
+          "full": "[pyproject.toml](../../pyproject.toml)",
+          "reason": "relative_broken:../../pyproject.toml"
+        },
+        {
+          "text": "README.md",
+          "url": "../../README.md",
+          "full": "[README.md](../../README.md)",
+          "reason": "relative_broken:../../README.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "\"criterion\"",
+          "url": "outputs, state[\"targets\"]",
+          "full": "[\"criterion\"](outputs, state[\"targets\"])",
+          "reason": "relative_broken:outputs, state[\"targets\"]"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "total_links": 18,
+      "broken_links": [
+        {
+          "text": "text",
+          "url": "path",
+          "full": "[text](path)",
+          "reason": "relative_broken:path"
+        },
+        {
+          "text": "Old Guide",
+          "url": "old-guide.md",
+          "full": "[Old Guide](old-guide.md)",
+          "reason": "relative_broken:old-guide.md"
+        },
+        {
+          "text": "text",
+          "url": "old.md",
+          "full": "[text](old.md)",
+          "reason": "relative_broken:old.md"
+        },
+        {
+          "text": "text",
+          "url": "new.md",
+          "full": "[text](new.md)",
+          "reason": "relative_broken:new.md"
+        },
+        {
+          "text": "text",
+          "url": "path",
+          "full": "[text](path)",
+          "reason": "relative_broken:path"
+        },
+        {
+          "text": "text",
+          "url": "path \"title\"",
+          "full": "[text](path \"title\")",
+          "reason": "relative_broken:path \"title\""
+        },
+        {
+          "text": "\"\\'",
+          "url": "{old}",
+          "full": "[\"\\']({old})",
+          "reason": "relative_broken:{old}"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "total_links": 15,
+      "broken_links": [
+        {
+          "text": "Master Index",
+          "url": "docs/MASTER_INDEX.md",
+          "full": "[Master Index](docs/MASTER_INDEX.md)",
+          "reason": "relative_broken:docs/MASTER_INDEX.md"
+        },
+        {
+          "text": "Agent Protocol",
+          "url": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+          "full": "[Agent Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)",
+          "reason": "relative_broken:docs/workflows/AGENT_CONTINUATION_PROTOCOL.md"
+        },
+        {
+          "text": "Codex Pipeline",
+          "url": "src/codex/",
+          "full": "[Codex Pipeline](src/codex/)",
+          "reason": "relative_broken:src/codex/"
+        },
+        {
+          "text": "Agent System",
+          "url": "agents/",
+          "full": "[Agent System](agents/)",
+          "reason": "relative_broken:agents/"
+        },
+        {
+          "text": "MCP System",
+          "url": "scripts/mcp/",
+          "full": "[MCP System](scripts/mcp/)",
+          "reason": "relative_broken:scripts/mcp/"
+        },
+        {
+          "text": "Cognitive Brain",
+          "url": "scripts/cognitive/",
+          "full": "[Cognitive Brain](scripts/cognitive/)",
+          "reason": "relative_broken:scripts/cognitive/"
+        },
+        {
+          "text": "Test Suite",
+          "url": "tests/",
+          "full": "[Test Suite](tests/)",
+          "reason": "relative_broken:tests/"
+        }
+      ],
+      "valid_links": 8
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "total_links": 81,
+      "broken_links": [
+        {
+          "text": "GOVERNANCE.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+          "full": "[GOVERNANCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md)",
+          "reason": "github_broken:GOVERNANCE.md"
+        },
+        {
+          "text": "training/config.py",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/training/config.py",
+          "full": "[training/config.py](https://github.com/Aries-Serpent/_codex_/blob/main/training/config.py)",
+          "reason": "github_broken:training/config.py"
+        },
+        {
+          "text": "USAGE_GUIDE.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md",
+          "full": "[USAGE_GUIDE.md](https://github.com/Aries-Serpent/_codex_/blob/main/USAGE_GUIDE.md)",
+          "reason": "github_broken:USAGE_GUIDE.md"
+        },
+        {
+          "text": "COPILOT_PROMPT_100_PERCENT.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md",
+          "full": "[COPILOT_PROMPT_100_PERCENT.md](https://github.com/Aries-Serpent/_codex_/blob/main/COPILOT_PROMPT_100_PERCENT.md)",
+          "reason": "github_broken:COPILOT_PROMPT_100_PERCENT.md"
+        },
+        {
+          "text": "codex_gap_registry.yaml",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/codex_gap_registry.yaml",
+          "full": "[codex_gap_registry.yaml](https://github.com/Aries-Serpent/_codex_/blob/main/codex_gap_registry.yaml)",
+          "reason": "github_broken:codex_gap_registry.yaml"
+        },
+        {
+          "text": "T1_SOLUTION.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/T1_SOLUTION.md",
+          "full": "[T1_SOLUTION.md](https://github.com/Aries-Serpent/_codex_/blob/main/T1_SOLUTION.md)",
+          "reason": "github_broken:T1_SOLUTION.md"
+        }
+      ],
+      "valid_links": 75
+    },
+    {
+      "file": "docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md",
+      "total_links": 11,
+      "broken_links": [
+        {
+          "text": "`.github/workflows/notebooklm-sync.yml`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/notebooklm-sync.yml",
+          "full": "[`.github/workflows/notebooklm-sync.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/notebooklm-sync.yml)",
+          "reason": "github_broken:.github/workflows/notebooklm-sync.yml"
+        },
+        {
+          "text": "`PHASE_10_MASTER_INTEGRATION_PLANSET.md`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_10_MASTER_INTEGRATION_PLANSET.md",
+          "full": "[`PHASE_10_MASTER_INTEGRATION_PLANSET.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_10_MASTER_INTEGRATION_PLANSET.md)",
+          "reason": "github_broken:PHASE_10_MASTER_INTEGRATION_PLANSET.md"
+        },
+        {
+          "text": "`HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md",
+          "full": "[`HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md`](https://github.com/Aries-Serpent/_codex_/blob/main/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md)",
+          "reason": "github_broken:HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md"
+        },
+        {
+          "text": "`PHASE_11_X_PROMPTSETS.md`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_11_X_PROMPTSETS.md",
+          "full": "[`PHASE_11_X_PROMPTSETS.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_11_X_PROMPTSETS.md)",
+          "reason": "github_broken:PHASE_11_X_PROMPTSETS.md"
+        },
+        {
+          "text": "`PHASE_12_CONTINUATION_PROMPT.md`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md",
+          "full": "[`PHASE_12_CONTINUATION_PROMPT.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md)",
+          "reason": "github_broken:PHASE_12_CONTINUATION_PROMPT.md"
+        },
+        {
+          "text": "`AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md",
+          "full": "[`AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md`](https://github.com/Aries-Serpent/_codex_/blob/main/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md)",
+          "reason": "github_broken:AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/README.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "AGENT_DESIGN.md",
+          "url": "AGENT_DESIGN.md",
+          "full": "[AGENT_DESIGN.md](AGENT_DESIGN.md)",
+          "reason": "relative_broken:AGENT_DESIGN.md"
+        },
+        {
+          "text": "AGENT_DESIGN.md",
+          "url": "AGENT_DESIGN.md",
+          "full": "[AGENT_DESIGN.md](AGENT_DESIGN.md)",
+          "reason": "relative_broken:AGENT_DESIGN.md"
+        },
+        {
+          "text": "API.md",
+          "url": "API.md",
+          "full": "[API.md](API.md)",
+          "reason": "relative_broken:API.md"
+        },
+        {
+          "text": "CLI.md",
+          "url": "CLI.md",
+          "full": "[CLI.md](CLI.md)",
+          "reason": "relative_broken:CLI.md"
+        },
+        {
+          "text": "EXAMPLES.md",
+          "url": "EXAMPLES.md",
+          "full": "[EXAMPLES.md](EXAMPLES.md)",
+          "reason": "relative_broken:EXAMPLES.md"
+        },
+        {
+          "text": "SECURITY.md",
+          "url": "SECURITY.md",
+          "full": "[SECURITY.md](SECURITY.md)",
+          "reason": "relative_broken:SECURITY.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".codex/update_pr_template_for_continuation.md",
+      "total_links": 23,
+      "broken_links": [
+        {
+          "text": "Updated Follow-Up Prompt",
+          "url": ". github/copilot-prompts/active/PR-{pr_number}-followup.md",
+          "full": "[Updated Follow-Up Prompt](. github/copilot-prompts/active/PR-{pr_number}-followup.md)",
+          "reason": "relative_broken:. github/copilot-prompts/active/PR-{pr_number}-followup.md"
+        },
+        {
+          "text": "`.github/copilot-prompts/active/PR-{pr_number}-followup.md`",
+          "url": ". github/copilot-prompts/active/PR-{pr_number}-followup.md",
+          "full": "[`.github/copilot-prompts/active/PR-{pr_number}-followup.md`](. github/copilot-prompts/active/PR-{pr_number}-followup.md)",
+          "reason": "relative_broken:. github/copilot-prompts/active/PR-{pr_number}-followup.md"
+        },
+        {
+          "text": "complete follow-up prompt",
+          "url": ".github/copilot-prompts/active/PR-{pr_number}-followup.md",
+          "full": "[complete follow-up prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)",
+          "reason": "relative_broken:.github/copilot-prompts/active/PR-{pr_number}-followup.md"
+        },
+        {
+          "text": "View",
+          "url": ".github/copilot-prompts/active/PR-{pr_number}-followup.md",
+          "full": "[View](.github/copilot-prompts/active/PR-{pr_number}-followup.md)",
+          "reason": "relative_broken:.github/copilot-prompts/active/PR-{pr_number}-followup.md"
+        },
+        {
+          "text": "`{output_file}`",
+          "url": "{output_file}",
+          "full": "[`{output_file}`]({output_file})",
+          "reason": "relative_broken:{output_file}"
+        },
+        {
+          "text": "full prompt",
+          "url": "{output_file}",
+          "full": "[full prompt]({output_file})",
+          "reason": "relative_broken:{output_file}"
+        }
+      ],
+      "valid_links": 17
+    },
+    {
+      "file": ".codex/templates/handoff/codex_to_copilot_template.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "{review_report_name}",
+          "url": "{review_report_link}",
+          "full": "[{review_report_name}]({review_report_link})",
+          "reason": "relative_broken:{review_report_link}"
+        },
+        {
+          "text": "{checklist_name}",
+          "url": "{checklist_link}",
+          "full": "[{checklist_name}]({checklist_link})",
+          "reason": "relative_broken:{checklist_link}"
+        },
+        {
+          "text": "{next_plan_name}",
+          "url": "{next_plan_link}",
+          "full": "[{next_plan_name}]({next_plan_link})",
+          "reason": "relative_broken:{next_plan_link}"
+        },
+        {
+          "text": "Pre-commit 3-4 Review Report",
+          "url": ".codex/reviews/precommit_3_4_review.md",
+          "full": "[Pre-commit 3-4 Review Report](.codex/reviews/precommit_3_4_review.md)",
+          "reason": "relative_broken:.codex/reviews/precommit_3_4_review.md"
+        },
+        {
+          "text": "Coverage Analysis Checklist",
+          "url": ".codex/reviews/coverage_analysis_checklist.md",
+          "full": "[Coverage Analysis Checklist](.codex/reviews/coverage_analysis_checklist.md)",
+          "reason": "relative_broken:.codex/reviews/coverage_analysis_checklist.md"
+        },
+        {
+          "text": "Comprehensive Test Implementation",
+          "url": ".codex/plans/pr_3145/02_comprehensive_test_implementation.md",
+          "full": "[Comprehensive Test Implementation](.codex/plans/pr_3145/02_comprehensive_test_implementation.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/02_comprehensive_test_implementation.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/templates/handoff/template_variables.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "file1.md",
+          "url": "link",
+          "full": "[file1.md](link)",
+          "reason": "relative_broken:link"
+        },
+        {
+          "text": "file2.json",
+          "url": "link",
+          "full": "[file2.json](link)",
+          "reason": "relative_broken:link"
+        },
+        {
+          "text": "text",
+          "url": "url",
+          "full": "[text](url)",
+          "reason": "relative_broken:url"
+        },
+        {
+          "text": "tokenization_coverage_baseline.md",
+          "url": ".codex/plans/pr_3145/tokenization_coverage_baseline.md",
+          "full": "[tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/tokenization_coverage_baseline.md"
+        },
+        {
+          "text": "coverage_tokenization.json",
+          "url": "coverage_reports/coverage_tokenization.json",
+          "full": "[coverage_tokenization.json](coverage_reports/coverage_tokenization.json)",
+          "reason": "relative_broken:coverage_reports/coverage_tokenization.json"
+        },
+        {
+          "text": "test_case_mapping.md",
+          "url": ".codex/plans/pr_3145/test_case_mapping.md",
+          "full": "[test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)",
+          "reason": "relative_broken:.codex/plans/pr_3145/test_case_mapping.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/archive/sessions/2026-01/SESSION_COMPLETION_SUMMARY_2026_01_12_PHASE_C.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "AGENT_REGISTRY.md",
+          "url": ".github/agents/AGENT_REGISTRY.md",
+          "full": "[AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md)",
+          "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
+        },
+        {
+          "text": "AGENT_DESIGNS.md",
+          "url": ".codex/AGENT_DESIGNS.md",
+          "full": "[AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md)",
+          "reason": "relative_broken:.codex/AGENT_DESIGNS.md"
+        },
+        {
+          "text": "CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+          "url": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+          "full": "[CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md](.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md)",
+          "reason": "relative_broken:.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md"
+        },
+        {
+          "text": "ci-diagnostician",
+          "url": ".github/agents/ci-diagnostician/",
+          "full": "[ci-diagnostician](.github/agents/ci-diagnostician/)",
+          "reason": "relative_broken:.github/agents/ci-diagnostician/"
+        },
+        {
+          "text": "test-assertion-updater",
+          "url": ".github/agents/test-assertion-updater/",
+          "full": "[test-assertion-updater](.github/agents/test-assertion-updater/)",
+          "reason": "relative_broken:.github/agents/test-assertion-updater/"
+        },
+        {
+          "text": "rust-error-validator",
+          "url": ".github/agents/rust-error-validator/",
+          "full": "[rust-error-validator](.github/agents/rust-error-validator/)",
+          "reason": "relative_broken:.github/agents/rust-error-validator/"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_32_COMPLETE.md",
+      "total_links": 9,
+      "broken_links": [
+        {
+          "text": "Phase 32 Continuation Prompt",
+          "url": ".codex/cognitive_brain/PHASE_32_CONTINUATION_PROMPT.md",
+          "full": "[Phase 32 Continuation Prompt](.codex/cognitive_brain/PHASE_32_CONTINUATION_PROMPT.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_32_CONTINUATION_PROMPT.md"
+        },
+        {
+          "text": "PyGithub Installation Plan",
+          "url": ".codex/plans/pygithub_installation_plan.md",
+          "full": "[PyGithub Installation Plan](.codex/plans/pygithub_installation_plan.md)",
+          "reason": "relative_broken:.codex/plans/pygithub_installation_plan.md"
+        },
+        {
+          "text": "Phase 31 Artifact Monitoring Fix",
+          "url": ".codex/cognitive_brain/PHASE_31_ARTIFACT_MONITORING_FIX.md",
+          "full": "[Phase 31 Artifact Monitoring Fix](.codex/cognitive_brain/PHASE_31_ARTIFACT_MONITORING_FIX.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_31_ARTIFACT_MONITORING_FIX.md"
+        },
+        {
+          "text": "Phase 31 Code Analysis Complete",
+          "url": ".codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md",
+          "full": "[Phase 31 Code Analysis Complete](.codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md"
+        },
+        {
+          "text": "Link Validation Summary",
+          "url": "docs/quality/LINK_VALIDATION_SUMMARY_2026-01-26.md",
+          "full": "[Link Validation Summary](docs/quality/LINK_VALIDATION_SUMMARY_2026-01-26.md)",
+          "reason": "relative_broken:docs/quality/LINK_VALIDATION_SUMMARY_2026-01-26.md"
+        },
+        {
+          "text": "Monitoring README",
+          "url": "scripts/monitoring/README.md",
+          "full": "[Monitoring README](scripts/monitoring/README.md)",
+          "reason": "relative_broken:scripts/monitoring/README.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "total_links": 12,
+      "broken_links": [
+        {
+          "text": "Performance Guide",
+          "url": "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
+          "full": "[Performance Guide](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)",
+          "reason": "relative_broken:docs/PERFORMANCE_OPTIMIZATION_GUIDE.md"
+        },
+        {
+          "text": "Continuation Protocol",
+          "url": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+          "full": "[Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)",
+          "reason": "relative_broken:docs/workflows/AGENT_CONTINUATION_PROTOCOL.md"
+        },
+        {
+          "text": "Session Summary",
+          "url": ".github/PHASE8_SESSION_SUMMARY.md",
+          "full": "[Session Summary](.github/PHASE8_SESSION_SUMMARY.md)",
+          "reason": "relative_broken:.github/PHASE8_SESSION_SUMMARY.md"
+        },
+        {
+          "text": "Link Validation Report",
+          "url": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+          "full": "[Link Validation Report](docs/maintenance/LINK_VALIDATION_REPORT.md)",
+          "reason": "relative_broken:docs/maintenance/LINK_VALIDATION_REPORT.md"
+        },
+        {
+          "text": "Agent Normalization",
+          "url": "agents/NORMALIZATION_CHECKLIST.md",
+          "full": "[Agent Normalization](agents/NORMALIZATION_CHECKLIST.md)",
+          "reason": "relative_broken:agents/NORMALIZATION_CHECKLIST.md"
+        }
+      ],
+      "valid_links": 7
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "total_links": 11,
+      "broken_links": [
+        {
+          "text": "`NEWCOMER_GUIDE.md`",
+          "url": "../NEWCOMER_GUIDE.md",
+          "full": "[`NEWCOMER_GUIDE.md`](../NEWCOMER_GUIDE.md)",
+          "reason": "relative_broken:../NEWCOMER_GUIDE.md"
+        },
+        {
+          "text": "`CONTRIBUTING.md`",
+          "url": "CONTRIBUTING.md",
+          "full": "[`CONTRIBUTING.md`](CONTRIBUTING.md)",
+          "reason": "relative_broken:CONTRIBUTING.md"
+        },
+        {
+          "text": "Bug Report template",
+          "url": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "full": "[Bug Report template](.github/ISSUE_TEMPLATE/bug_report.yml)",
+          "reason": "relative_broken:.github/ISSUE_TEMPLATE/bug_report.yml"
+        },
+        {
+          "text": "Feature Request template",
+          "url": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "full": "[Feature Request template](.github/ISSUE_TEMPLATE/feature_request.yml)",
+          "reason": "relative_broken:.github/ISSUE_TEMPLATE/feature_request.yml"
+        },
+        {
+          "text": "GOVERNANCE.md",
+          "url": "../GOVERNANCE.md",
+          "full": "[GOVERNANCE.md](../GOVERNANCE.md)",
+          "reason": "relative_broken:../GOVERNANCE.md"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "total_links": 11,
+      "broken_links": [
+        {
+          "text": "PHASE9_1_EXECUTION_PLAN.md",
+          "url": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+          "full": "[PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)",
+          "reason": "relative_broken:docs/testing/PHASE9_1_EXECUTION_PLAN.md"
+        },
+        {
+          "text": "PHASE9_1_EXECUTION_PLAN.md",
+          "url": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+          "full": "[PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)",
+          "reason": "relative_broken:docs/testing/PHASE9_1_EXECUTION_PLAN.md"
+        },
+        {
+          "text": "AFTERMATH_PHASE9_1_COMPLETE.md",
+          "url": ".github/AFTERMATH_PHASE9_1_COMPLETE.md",
+          "full": "[AFTERMATH_PHASE9_1_COMPLETE.md](.github/AFTERMATH_PHASE9_1_COMPLETE.md)",
+          "reason": "relative_broken:.github/AFTERMATH_PHASE9_1_COMPLETE.md"
+        },
+        {
+          "text": "SELF_REVIEW_PHASE9_1_SESSION1.md",
+          "url": ".github/SELF_REVIEW_PHASE9_1_SESSION1.md",
+          "full": "[SELF_REVIEW_PHASE9_1_SESSION1.md](.github/SELF_REVIEW_PHASE9_1_SESSION1.md)",
+          "reason": "relative_broken:.github/SELF_REVIEW_PHASE9_1_SESSION1.md"
+        },
+        {
+          "text": "FUTURE_RESEARCH_DEEP_DIVE.md",
+          "url": "docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md",
+          "full": "[FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)",
+          "reason": "relative_broken:docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "total_links": 10,
+      "broken_links": [
+        {
+          "text": "AFTERMATH_PHASE9_1_FINAL.md",
+          "url": ".github/AFTERMATH_PHASE9_1_FINAL.md",
+          "full": "[AFTERMATH_PHASE9_1_FINAL.md](.github/AFTERMATH_PHASE9_1_FINAL.md)",
+          "reason": "relative_broken:.github/AFTERMATH_PHASE9_1_FINAL.md"
+        },
+        {
+          "text": "FINAL_SELF_REVIEW_PHASE9_1.md",
+          "url": ".github/FINAL_SELF_REVIEW_PHASE9_1.md",
+          "full": "[FINAL_SELF_REVIEW_PHASE9_1.md](.github/FINAL_SELF_REVIEW_PHASE9_1.md)",
+          "reason": "relative_broken:.github/FINAL_SELF_REVIEW_PHASE9_1.md"
+        },
+        {
+          "text": "CONTINUATION_PROMPT_PHASE9_2.md",
+          "url": ".github/CONTINUATION_PROMPT_PHASE9_2.md",
+          "full": "[CONTINUATION_PROMPT_PHASE9_2.md](.github/CONTINUATION_PROMPT_PHASE9_2.md)",
+          "reason": "relative_broken:.github/CONTINUATION_PROMPT_PHASE9_2.md"
+        },
+        {
+          "text": "PHASE9_1_EXECUTION_PLAN.md",
+          "url": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+          "full": "[PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)",
+          "reason": "relative_broken:docs/testing/PHASE9_1_EXECUTION_PLAN.md"
+        },
+        {
+          "text": "FUTURE_RESEARCH_DEEP_DIVE.md",
+          "url": "docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md",
+          "full": "[FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)",
+          "reason": "relative_broken:docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".github/plans/plan6.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "Migration Guide",
+          "url": "../migration/python_312.md",
+          "full": "[Migration Guide](../migration/python_312.md)",
+          "reason": "relative_broken:../migration/python_312.md"
+        },
+        {
+          "text": "Standardization Runbook",
+          "url": "../playbooks/single_version_standardization.md",
+          "full": "[Standardization Runbook](../playbooks/single_version_standardization.md)",
+          "reason": "relative_broken:../playbooks/single_version_standardization.md"
+        },
+        {
+          "text": "Lessons Learned",
+          "url": "../retrospectives/python_312_standardization.md",
+          "full": "[Lessons Learned](../retrospectives/python_312_standardization.md)",
+          "reason": "relative_broken:../retrospectives/python_312_standardization.md"
+        },
+        {
+          "text": "Python Version Policy",
+          "url": "./docs/policies/python_version_policy.md",
+          "full": "[Python Version Policy](./docs/policies/python_version_policy.md)",
+          "reason": "relative_broken:./docs/policies/python_version_policy.md"
+        },
+        {
+          "text": "`docs/policies/python_version_policy.md`",
+          "url": "../../policies/python_version_policy.md",
+          "full": "[`docs/policies/python_version_policy.md`](../../policies/python_version_policy.md)",
+          "reason": "relative_broken:../../policies/python_version_policy.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "PHASE_8_8_CONTINUATION_PROMPT.md",
+          "url": ".github/agents/PHASE_8_8_CONTINUATION_PROMPT.md",
+          "full": "[PHASE_8_8_CONTINUATION_PROMPT.md](.github/agents/PHASE_8_8_CONTINUATION_PROMPT.md)",
+          "reason": "relative_broken:.github/agents/PHASE_8_8_CONTINUATION_PROMPT.md"
+        },
+        {
+          "text": "QUANTUM_DETERMINISTIC_PLANNING.md",
+          "url": ".github/agents/QUANTUM_DETERMINISTIC_PLANNING.md",
+          "full": "[QUANTUM_DETERMINISTIC_PLANNING.md](.github/agents/QUANTUM_DETERMINISTIC_PLANNING.md)",
+          "reason": "relative_broken:.github/agents/QUANTUM_DETERMINISTIC_PLANNING.md"
+        },
+        {
+          "text": "QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+          "url": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+          "full": "[QUANTUM_AGENT_IMPROVEMENT_PLAN.md](.github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md)",
+          "reason": "relative_broken:.github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md"
+        },
+        {
+          "text": "AI_AGENT_INTUITIVENESS_SCORE_V2.md",
+          "url": ".github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md",
+          "full": "[AI_AGENT_INTUITIVENESS_SCORE_V2.md](.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md)",
+          "reason": "relative_broken:.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md"
+        },
+        {
+          "text": "SESSION_SUMMARY_PHASE_8_7_COMPLETE.md",
+          "url": ".github/agents/SESSION_SUMMARY_PHASE_8_7_COMPLETE.md",
+          "full": "[SESSION_SUMMARY_PHASE_8_7_COMPLETE.md](.github/agents/SESSION_SUMMARY_PHASE_8_7_COMPLETE.md)",
+          "reason": "relative_broken:.github/agents/SESSION_SUMMARY_PHASE_8_7_COMPLETE.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "Agent Integration Guide",
+          "url": "docs/guides/agent_integration.md",
+          "full": "[Agent Integration Guide](docs/guides/agent_integration.md)",
+          "reason": "relative_broken:docs/guides/agent_integration.md"
+        },
+        {
+          "text": "Developer Guide",
+          "url": "docs/guides/developer.md",
+          "full": "[Developer Guide](docs/guides/developer.md)",
+          "reason": "relative_broken:docs/guides/developer.md"
+        },
+        {
+          "text": "Research Documentation",
+          "url": "docs/guides/research.md",
+          "full": "[Research Documentation](docs/guides/research.md)",
+          "reason": "relative_broken:docs/guides/research.md"
+        },
+        {
+          "text": "API Documentation",
+          "url": "docs/api/index.md",
+          "full": "[API Documentation](docs/api/index.md)",
+          "reason": "relative_broken:docs/api/index.md"
+        },
+        {
+          "text": "Notebook 02",
+          "url": "../examples/notebooks/02_meta_learning.ipynb",
+          "full": "[Notebook 02](../examples/notebooks/02_meta_learning.ipynb)",
+          "reason": "relative_broken:../examples/notebooks/02_meta_learning.ipynb"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/cognitive_brain/PHASE_39_PR_3020_COMPREHENSIVE_COMPLETION.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": ".+?",
+          "full": "[\"\\'](.+?)",
+          "reason": "relative_broken:.+?"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "{old}",
+          "full": "[\"\\']({old})",
+          "reason": "relative_broken:{old}"
+        },
+        {
+          "text": "\\`{folder}\\`",
+          "url": "./{folder}",
+          "full": "[\\`{folder}\\`](./{folder})",
+          "reason": "relative_broken:./{folder}"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "docs/GITHUB_AGENT_PR_REVIEWER_IMPLEMENTATION.md",
+      "total_links": 12,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "Agent Implementation Details",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/main.py",
+          "full": "[Agent Implementation Details](https://github.com/Aries-Serpent/_codex_/blob/main/main.py)",
+          "reason": "github_broken:main.py"
+        }
+      ],
+      "valid_links": 8
+    },
+    {
+      "file": "docs/analysis/LINK_VALIDATION_FIX_SUMMARY.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        },
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/...",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/...)",
+          "reason": "relative_broken:blob:https://chatgpt.com/..."
+        },
+        {
+          "text": "T",
+          "url": "items: list[T]",
+          "full": "[T](items: list[T])",
+          "reason": "relative_broken:items: list[T]"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/ai-evolution/README.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Capability Gap Analysis Theory",
+          "url": "./docs/capability_gaps.md",
+          "full": "[Capability Gap Analysis Theory](./docs/capability_gaps.md)",
+          "reason": "relative_broken:./docs/capability_gaps.md"
+        },
+        {
+          "text": "Tool Generation Patterns",
+          "url": "./docs/tool_patterns.md",
+          "full": "[Tool Generation Patterns](./docs/tool_patterns.md)",
+          "reason": "relative_broken:./docs/tool_patterns.md"
+        },
+        {
+          "text": "Evolution Strategies",
+          "url": "./docs/evolution.md",
+          "full": "[Evolution Strategies](./docs/evolution.md)",
+          "reason": "relative_broken:./docs/evolution.md"
+        },
+        {
+          "text": "Meta-Learning Approaches",
+          "url": "./docs/meta_learning.md",
+          "full": "[Meta-Learning Approaches](./docs/meta_learning.md)",
+          "reason": "relative_broken:./docs/meta_learning.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/workflow-archive/COMPLETION_SUMMARY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "FINAL_CONSOLIDATION_REPORT.md",
+          "url": ".github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md",
+          "full": "[FINAL_CONSOLIDATION_REPORT.md](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)",
+          "reason": "relative_broken:.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md"
+        },
+        {
+          "text": "WORKFLOW_INVENTORY.yaml",
+          "url": ".github/workflow-archive/WORKFLOW_INVENTORY.yaml",
+          "full": "[WORKFLOW_INVENTORY.yaml](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)",
+          "reason": "relative_broken:.github/workflow-archive/WORKFLOW_INVENTORY.yaml"
+        },
+        {
+          "text": "Workflow Restore Tool",
+          "url": ".github/workflows/workflow-restore.yml",
+          "full": "[Workflow Restore Tool](.github/workflows/workflow-restore.yml)",
+          "reason": "relative_broken:.github/workflows/workflow-restore.yml"
+        },
+        {
+          "text": "INVENTORY_SUMMARY.md",
+          "url": ".github/workflow-archive/INVENTORY_SUMMARY.md",
+          "full": "[INVENTORY_SUMMARY.md](.github/workflow-archive/INVENTORY_SUMMARY.md)",
+          "reason": "relative_broken:.github/workflow-archive/INVENTORY_SUMMARY.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/cache-management-agent.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "Unified Cache Management System",
+          "url": ".codex/docs/UNIFIED_CACHE_MANAGEMENT.md",
+          "full": "[Unified Cache Management System](.codex/docs/UNIFIED_CACHE_MANAGEMENT.md)",
+          "reason": "relative_broken:.codex/docs/UNIFIED_CACHE_MANAGEMENT.md"
+        },
+        {
+          "text": "Cache Optimization Report",
+          "url": ".github/workflows/CACHE_OPTIMIZATION_REPORT.md",
+          "full": "[Cache Optimization Report](.github/workflows/CACHE_OPTIMIZATION_REPORT.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_OPTIMIZATION_REPORT.md"
+        },
+        {
+          "text": "Cache Analysis Report",
+          "url": ".github/workflows/CACHE_ANALYSIS_REPORT.md",
+          "full": "[Cache Analysis Report](.github/workflows/CACHE_ANALYSIS_REPORT.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_ANALYSIS_REPORT.md"
+        },
+        {
+          "text": "Cache Architecture Diagrams",
+          "url": ".github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md",
+          "full": "[Cache Architecture Diagrams](.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/agents/dependency-security-review-agent.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Security Guidelines",
+          "url": "/docs/security/SECURITY_GUIDELINES.md",
+          "full": "[Security Guidelines](/docs/security/SECURITY_GUIDELINES.md)",
+          "reason": "path_error:/docs/security/SECURITY_GUIDELINES.md"
+        },
+        {
+          "text": "Dependency Management Strategy",
+          "url": "/.codex/docs/DEPENDABOT_MANAGEMENT_STRATEGY.md",
+          "full": "[Dependency Management Strategy](/.codex/docs/DEPENDABOT_MANAGEMENT_STRATEGY.md)",
+          "reason": "path_error:/.codex/docs/DEPENDABOT_MANAGEMENT_STRATEGY.md"
+        },
+        {
+          "text": "Cognitive Brain Architecture",
+          "url": "/.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md",
+          "full": "[Cognitive Brain Architecture](/.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md)",
+          "reason": "path_error:/.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md"
+        },
+        {
+          "text": "Agent Development Guide",
+          "url": "/.github/agents/AGENT_DEVELOPMENT_GUIDE.md",
+          "full": "[Agent Development Guide](/.github/agents/AGENT_DEVELOPMENT_GUIDE.md)",
+          "reason": "path_error:/.github/agents/AGENT_DEVELOPMENT_GUIDE.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "Phase 1 Report",
+          "url": "../../_admin/PHASE1_TEMPLATE_APPLICATION_REPORT.md",
+          "full": "[Phase 1 Report](../../_admin/PHASE1_TEMPLATE_APPLICATION_REPORT.md)",
+          "reason": "relative_broken:../../_admin/PHASE1_TEMPLATE_APPLICATION_REPORT.md"
+        },
+        {
+          "text": "Phase 2 Report",
+          "url": "../../.mcp/PHASE2_TEMPLATE_APPLICATION_REPORT.md",
+          "full": "[Phase 2 Report](../../.mcp/PHASE2_TEMPLATE_APPLICATION_REPORT.md)",
+          "reason": "relative_broken:../../.mcp/PHASE2_TEMPLATE_APPLICATION_REPORT.md"
+        },
+        {
+          "text": "Template Application Script",
+          "url": "/tmp/apply_agent_template.py",
+          "full": "[Template Application Script](/tmp/apply_agent_template.py)",
+          "reason": "path_error:/tmp/apply_agent_template.py"
+        },
+        {
+          "text": "Verification Script",
+          "url": "/tmp/verify_template.sh",
+          "full": "[Verification Script](/tmp/verify_template.sh)",
+          "reason": "path_error:/tmp/verify_template.sh"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "AGENT_DESIGNS.md",
+          "url": ".codex/AGENT_DESIGNS.md",
+          "full": "[AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md)",
+          "reason": "relative_broken:.codex/AGENT_DESIGNS.md"
+        },
+        {
+          "text": "AGENT_REGISTRY.md",
+          "url": ".github/agents/AGENT_REGISTRY.md",
+          "full": "[AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md)",
+          "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
+        },
+        {
+          "text": "COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+          "url": ".codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+          "full": "[COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md](.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md)",
+          "reason": "relative_broken:.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md"
+        },
+        {
+          "text": "CONTINUATION_PROMPT_PR2782_POST_CI.md",
+          "url": ".codex/CONTINUATION_PROMPT_PR2782_POST_CI.md",
+          "full": "[CONTINUATION_PROMPT_PR2782_POST_CI.md](.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md)",
+          "reason": "relative_broken:.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/FINAL_IMPLEMENTATION_REPORT.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "\n    (r'create.*?[`\\'\"",
+          "url": "[^`\\'\"]+",
+          "full": "[\n    (r'create.*?[`\\'\"]([^`\\'\"]+)",
+          "reason": "relative_broken:[^`\\'\"]+"
+        },
+        {
+          "text": "`\\'\"",
+          "url": "[^`\\'\"]+",
+          "full": "[`\\'\"]([^`\\'\"]+)",
+          "reason": "relative_broken:[^`\\'\"]+"
+        },
+        {
+          "text": "`\\'\"",
+          "url": "[^`\\'\"]+",
+          "full": "[`\\'\"]([^`\\'\"]+)",
+          "reason": "relative_broken:[^`\\'\"]+"
+        },
+        {
+          "text": "`\\'\"",
+          "url": "[^`\\'\"]+",
+          "full": "[`\\'\"]([^`\\'\"]+)",
+          "reason": "relative_broken:[^`\\'\"]+"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/DOC_ALIGNMENT_MASTER_INDEX.md",
+      "total_links": 10,
+      "broken_links": [
+        {
+          "text": "update_docs_v0.1.0.py",
+          "url": "update_docs_v0.1.0.py",
+          "full": "[update_docs_v0.1.0.py](update_docs_v0.1.0.py)",
+          "reason": "relative_broken:update_docs_v0.1.0.py"
+        },
+        {
+          "text": "doc_update_log.txt",
+          "url": "doc_update_log.txt",
+          "full": "[doc_update_log.txt](doc_update_log.txt)",
+          "reason": "relative_broken:doc_update_log.txt"
+        },
+        {
+          "text": "doc_update_log.txt",
+          "url": "doc_update_log.txt",
+          "full": "[doc_update_log.txt](doc_update_log.txt)",
+          "reason": "relative_broken:doc_update_log.txt"
+        },
+        {
+          "text": "update_docs_v0.1.0.py",
+          "url": "update_docs_v0.1.0.py",
+          "full": "[update_docs_v0.1.0.py](update_docs_v0.1.0.py)",
+          "reason": "relative_broken:update_docs_v0.1.0.py"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".codex/prompts/PHASE_12_CONTINUATION_PROMPT.md",
+      "total_links": 9,
+      "broken_links": [
+        {
+          "text": "GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+          "url": "/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+          "full": "[GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md](/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md)",
+          "reason": "path_error:/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md"
+        },
+        {
+          "text": "COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+          "url": "/COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md",
+          "full": "[COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md](/COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md)",
+          "reason": "path_error:/COGNITIVE_BRAIN_STATUS_PR_2858_UPDATE.md"
+        },
+        {
+          "text": "AI_AGENCY_POLICY_VERIFICATION.md",
+          "url": "/AI_AGENCY_POLICY_VERIFICATION.md",
+          "full": "[AI_AGENCY_POLICY_VERIFICATION.md](/AI_AGENCY_POLICY_VERIFICATION.md)",
+          "reason": "path_error:/AI_AGENCY_POLICY_VERIFICATION.md"
+        },
+        {
+          "text": "docs/testing/PERFORMANCE_THRESHOLDS.md",
+          "url": "/docs/testing/PERFORMANCE_THRESHOLDS.md",
+          "full": "[docs/testing/PERFORMANCE_THRESHOLDS.md](/docs/testing/PERFORMANCE_THRESHOLDS.md)",
+          "reason": "path_error:/docs/testing/PERFORMANCE_THRESHOLDS.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".codex/docs/PYTORCH_META_TENSOR_TRACKING.md",
+      "total_links": 10,
+      "broken_links": [
+        {
+          "text": "Meta Tensor Validator",
+          "url": ".github/agents/meta-tensor-validator.md",
+          "full": "[Meta Tensor Validator](.github/agents/meta-tensor-validator.md)",
+          "reason": "relative_broken:.github/agents/meta-tensor-validator.md"
+        },
+        {
+          "text": ".github/agents/meta-tensor-validator.md",
+          "url": ".github/agents/meta-tensor-validator.md",
+          "full": "[.github/agents/meta-tensor-validator.md](.github/agents/meta-tensor-validator.md)",
+          "reason": "relative_broken:.github/agents/meta-tensor-validator.md"
+        },
+        {
+          "text": "CONTRIBUTING.md",
+          "url": "../CONTRIBUTING.md",
+          "full": "[CONTRIBUTING.md](../CONTRIBUTING.md)",
+          "reason": "relative_broken:../CONTRIBUTING.md"
+        },
+        {
+          "text": ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+          "url": ".codex/AI_AGENT_UTILITIES_REGISTRY.md",
+          "full": "[.codex/AI_AGENT_UTILITIES_REGISTRY.md](.codex/AI_AGENT_UTILITIES_REGISTRY.md)",
+          "reason": "relative_broken:.codex/AI_AGENT_UTILITIES_REGISTRY.md"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "total_links": 13,
+      "broken_links": [
+        {
+          "text": ".codex/guardrails.md",
+          "url": ".codex/guardrails.md",
+          "full": "[.codex/guardrails.md](.codex/guardrails.md)",
+          "reason": "relative_broken:.codex/guardrails.md"
+        },
+        {
+          "text": ".codex/guardrails.md",
+          "url": ".codex/guardrails.md",
+          "full": "[.codex/guardrails.md](.codex/guardrails.md)",
+          "reason": "relative_broken:.codex/guardrails.md"
+        },
+        {
+          "text": "scripts/AUTONOMOUS_AGENT_README.md",
+          "url": "scripts/AUTONOMOUS_AGENT_README.md",
+          "full": "[scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md)",
+          "reason": "relative_broken:scripts/AUTONOMOUS_AGENT_README.md"
+        },
+        {
+          "text": ".codex/change_log.md",
+          "url": ".codex/change_log.md",
+          "full": "[.codex/change_log.md](.codex/change_log.md)",
+          "reason": "relative_broken:.codex/change_log.md"
+        }
+      ],
+      "valid_links": 9
+    },
+    {
+      "file": ".codex/agents/AGENT_INTEGRATION_GUIDE.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Agent Specifications",
+          "url": ".codex/agents/CUSTOM_AGENT_SPECIFICATIONS.md",
+          "full": "[Agent Specifications](.codex/agents/CUSTOM_AGENT_SPECIFICATIONS.md)",
+          "reason": "relative_broken:.codex/agents/CUSTOM_AGENT_SPECIFICATIONS.md"
+        },
+        {
+          "text": "Agent Enhancements",
+          "url": ".codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md",
+          "full": "[Agent Enhancements](.codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md)",
+          "reason": "relative_broken:.codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md"
+        },
+        {
+          "text": "Agent Registry",
+          "url": ".github/agents/AGENT_REGISTRY.md",
+          "full": "[Agent Registry](.github/agents/AGENT_REGISTRY.md)",
+          "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
+        },
+        {
+          "text": "Agent Ecosystem Map",
+          "url": ".github/agents/AGENT_ECOSYSTEM_MAP.md",
+          "full": "[Agent Ecosystem Map](.github/agents/AGENT_ECOSYSTEM_MAP.md)",
+          "reason": "relative_broken:.github/agents/AGENT_ECOSYSTEM_MAP.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Agent Ecosystem Map",
+          "url": ".github/agents/AGENT_ECOSYSTEM_MAP.md",
+          "full": "[Agent Ecosystem Map](.github/agents/AGENT_ECOSYSTEM_MAP.md)",
+          "reason": "relative_broken:.github/agents/AGENT_ECOSYSTEM_MAP.md"
+        },
+        {
+          "text": "Custom Copilot Agents Specification",
+          "url": ".github/agents/CUSTOM_COPILOT_AGENTS_SPECIFICATION.md",
+          "full": "[Custom Copilot Agents Specification](.github/agents/CUSTOM_COPILOT_AGENTS_SPECIFICATION.md)",
+          "reason": "relative_broken:.github/agents/CUSTOM_COPILOT_AGENTS_SPECIFICATION.md"
+        },
+        {
+          "text": "CI Testing Agent Implementation",
+          "url": ".github/agents/ci-testing-agent/README.md",
+          "full": "[CI Testing Agent Implementation](.github/agents/ci-testing-agent/README.md)",
+          "reason": "relative_broken:.github/agents/ci-testing-agent/README.md"
+        },
+        {
+          "text": "Cognitive Brain Architecture",
+          "url": ".github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md",
+          "full": "[Cognitive Brain Architecture](.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md)",
+          "reason": "relative_broken:.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/archive/sessions/2026-01/SESSION_SUMMARY_PHASE_40_COMPLETE.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "RAG Meta Tensor Remediation Report",
+          "url": ".codex/RAG_META_TENSOR_REMEDIATION_REPORT.md",
+          "full": "[RAG Meta Tensor Remediation Report](.codex/RAG_META_TENSOR_REMEDIATION_REPORT.md)",
+          "reason": "relative_broken:.codex/RAG_META_TENSOR_REMEDIATION_REPORT.md"
+        },
+        {
+          "text": "Phase 40 Completion",
+          "url": ".codex/cognitive_brain/PHASE_40_RAG_META_TENSOR_COMPLETE.md",
+          "full": "[Phase 40 Completion](.codex/cognitive_brain/PHASE_40_RAG_META_TENSOR_COMPLETE.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_40_RAG_META_TENSOR_COMPLETE.md"
+        },
+        {
+          "text": "RAG Module Management Agent",
+          "url": ".github/agents/rag-module-management-agent.md",
+          "full": "[RAG Module Management Agent](.github/agents/rag-module-management-agent.md)",
+          "reason": "relative_broken:.github/agents/rag-module-management-agent.md"
+        },
+        {
+          "text": "Phase 41 Follow-Up Prompt",
+          "url": ".codex/PR_3020_PHASE_41_FOLLOWUP_PROMPT.md",
+          "full": "[Phase 41 Follow-Up Prompt](.codex/PR_3020_PHASE_41_FOLLOWUP_PROMPT.md)",
+          "reason": "relative_broken:.codex/PR_3020_PHASE_41_FOLLOWUP_PROMPT.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "docs/ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md",
+      "total_links": 61,
+      "broken_links": [
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        },
+        {
+          "text": "!\\[GitHub\\",
+          "url": "blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1",
+          "full": "[!\\[GitHub\\](blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1)",
+          "reason": "relative_broken:blob:https://chatgpt.com/605ab1eb-dbcf-4f51-8968-026373f955d1"
+        }
+      ],
+      "valid_links": 58
+    },
+    {
+      "file": ".github/AGENTS.md",
+      "total_links": 16,
+      "broken_links": [
+        {
+          "text": "Copilot Task Execution Protocol",
+          "url": "./copilot_task_execution_protocol.md",
+          "full": "[Copilot Task Execution Protocol](./copilot_task_execution_protocol.md)",
+          "reason": "relative_broken:./copilot_task_execution_protocol.md"
+        },
+        {
+          "text": "CTEP Usage Examples",
+          "url": "./ctep_usage_examples.md",
+          "full": "[CTEP Usage Examples](./ctep_usage_examples.md)",
+          "reason": "relative_broken:./ctep_usage_examples.md"
+        },
+        {
+          "text": "CTEP Quick Reference",
+          "url": "./ctep_quick_reference.md",
+          "full": "[CTEP Quick Reference](./ctep_quick_reference.md)",
+          "reason": "relative_broken:./ctep_quick_reference.md"
+        }
+      ],
+      "valid_links": 13
+    },
+    {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": ".codex/codex_index.yaml",
+          "url": ".codex/codex_index.yaml",
+          "full": "[.codex/codex_index.yaml](.codex/codex_index.yaml)",
+          "reason": "relative_broken:.codex/codex_index.yaml"
+        },
+        {
+          "text": "inventory.md",
+          "url": "../inventory.md",
+          "full": "[inventory.md](../inventory.md)",
+          "reason": "relative_broken:../inventory.md"
+        },
+        {
+          "text": "validation.md",
+          "url": "../validation.md",
+          "full": "[validation.md](../validation.md)",
+          "reason": "relative_broken:../validation.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "'assert_pool_size'",
+          "url": "1",
+          "full": "['assert_pool_size'](1)",
+          "reason": "relative_broken:1"
+        },
+        {
+          "text": "'assert_pool_size'",
+          "url": "3",
+          "full": "['assert_pool_size'](3)",
+          "reason": "relative_broken:3"
+        },
+        {
+          "text": "'assert_pool_size'",
+          "url": "1",
+          "full": "['assert_pool_size'](1)",
+          "reason": "relative_broken:1"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_V10_ROADMAP.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "QUANTUM_DETERMINISTIC_PLANNING.md",
+          "url": "../../docs/QUANTUM_DETERMINISTIC_PLANNING.md",
+          "full": "[QUANTUM_DETERMINISTIC_PLANNING.md](../../docs/QUANTUM_DETERMINISTIC_PLANNING.md)",
+          "reason": "relative_broken:../../docs/QUANTUM_DETERMINISTIC_PLANNING.md"
+        },
+        {
+          "text": "QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+          "url": "../../docs/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+          "full": "[QUANTUM_AGENT_IMPROVEMENT_PLAN.md](../../docs/QUANTUM_AGENT_IMPROVEMENT_PLAN.md)",
+          "reason": "relative_broken:../../docs/QUANTUM_AGENT_IMPROVEMENT_PLAN.md"
+        },
+        {
+          "text": "AI_AGENT_INTUITIVENESS_SCORE_V2.md",
+          "url": "../../docs/AI_AGENT_INTUITIVENESS_SCORE_V2.md",
+          "full": "[AI_AGENT_INTUITIVENESS_SCORE_V2.md](../../docs/AI_AGENT_INTUITIVENESS_SCORE_V2.md)",
+          "reason": "relative_broken:../../docs/AI_AGENT_INTUITIVENESS_SCORE_V2.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/agents/link-validator-agent.md",
+      "total_links": 14,
+      "broken_links": [
+        {
+          "text": "Guide",
+          "url": "./guide.md",
+          "full": "[Guide](./guide.md)",
+          "reason": "relative_broken:./guide.md"
+        },
+        {
+          "text": "Guide",
+          "url": "docs/guide.md",
+          "full": "[Guide](docs/guide.md)",
+          "reason": "relative_broken:docs/guide.md"
+        },
+        {
+          "text": "Guide",
+          "url": "./guide.md",
+          "full": "[Guide](./guide.md)",
+          "reason": "relative_broken:./guide.md"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".github/agents/github-pages-manager.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "New Location",
+          "url": "../correct/path.md",
+          "full": "[New Location](../correct/path.md)",
+          "reason": "relative_broken:../correct/path.md"
+        },
+        {
+          "text": "New Location",
+          "url": "../correct/path.md",
+          "full": "[New Location](../correct/path.md)",
+          "reason": "relative_broken:../correct/path.md"
+        },
+        {
+          "text": "RAG Pipelines",
+          "url": "rag_pipelines.md",
+          "full": "[RAG Pipelines](rag_pipelines.md)",
+          "reason": "relative_broken:rag_pipelines.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/agents/PHASE3_EXECUTIVE_SUMMARY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Phase 3 Detailed Report",
+          "url": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+          "full": "[Phase 3 Detailed Report](.github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md)",
+          "reason": "relative_broken:.github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md"
+        },
+        {
+          "text": "Agent Development Guide",
+          "url": ".github/agents/AGENT_DEVELOPMENT_GUIDE.md",
+          "full": "[Agent Development Guide](.github/agents/AGENT_DEVELOPMENT_GUIDE.md)",
+          "reason": "relative_broken:.github/agents/AGENT_DEVELOPMENT_GUIDE.md"
+        },
+        {
+          "text": "Agent Registry",
+          "url": ".github/agents/AGENT_REGISTRY.md",
+          "full": "[Agent Registry](.github/agents/AGENT_REGISTRY.md)",
+          "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/agents/docs/AGENTS.md",
+      "total_links": 31,
+      "broken_links": [
+        {
+          "text": ".codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
+          "url": "../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
+          "full": "[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)",
+          "reason": "relative_broken:../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md"
+        },
+        {
+          "text": ".github/workflow-archive/PARITY_CHECKLIST.md",
+          "url": ".github/workflow-archive/PARITY_CHECKLIST.md",
+          "full": "[.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)",
+          "reason": "relative_broken:.github/workflow-archive/PARITY_CHECKLIST.md"
+        },
+        {
+          "text": ".github/workflow-archive/ARTIFACT_CATALOG.md",
+          "url": ".github/workflow-archive/ARTIFACT_CATALOG.md",
+          "full": "[.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)",
+          "reason": "relative_broken:.github/workflow-archive/ARTIFACT_CATALOG.md"
+        }
+      ],
+      "valid_links": 28
+    },
+    {
+      "file": ".github/agents/zendesk-architect-agent/PLANSET.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Zendesk API Reference",
+          "url": "../../docs/zendesk_api_reference.md",
+          "full": "[Zendesk API Reference](../../docs/zendesk_api_reference.md)",
+          "reason": "relative_broken:../../docs/zendesk_api_reference.md"
+        },
+        {
+          "text": "Zendesk Admin Workflow",
+          "url": "../../docs/runbooks/zendesk_admin_workflow.md",
+          "full": "[Zendesk Admin Workflow](../../docs/runbooks/zendesk_admin_workflow.md)",
+          "reason": "relative_broken:../../docs/runbooks/zendesk_admin_workflow.md"
+        },
+        {
+          "text": "Zendesk Docs Pipeline",
+          "url": "../../docs/runbooks/zendesk_docs_pipeline.md",
+          "full": "[Zendesk Docs Pipeline](../../docs/runbooks/zendesk_docs_pipeline.md)",
+          "reason": "relative_broken:../../docs/runbooks/zendesk_docs_pipeline.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/test-assertion-updater/README.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Full Planset",
+          "url": ".codex/plans/CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md",
+          "full": "[Full Planset](.codex/plans/CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md)",
+          "reason": "relative_broken:.codex/plans/CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md"
+        },
+        {
+          "text": "Cognitive Brain Pattern",
+          "url": "../.codex/cognitive_brain/STATUS_UPDATE_2026_01_11_PR2785.md#pattern-test-assertion-alignment",
+          "full": "[Cognitive Brain Pattern](../.codex/cognitive_brain/STATUS_UPDATE_2026_01_11_PR2785.md#pattern-test-assertion-alignment)",
+          "reason": "relative_broken:../.codex/cognitive_brain/STATUS_UPDATE_2026_01_11_PR2785.md"
+        },
+        {
+          "text": "CI Testing Agent",
+          "url": ".github/agents/ci-testing-agent/",
+          "full": "[CI Testing Agent](.github/agents/ci-testing-agent/)",
+          "reason": "relative_broken:.github/agents/ci-testing-agent/"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/dynamics365-powerplatform-architect-agent/PLANSET.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "D365 Admin Runbook",
+          "url": "../../docs/crm/admin-runbooks/d365.md",
+          "full": "[D365 Admin Runbook](../../docs/crm/admin-runbooks/d365.md)",
+          "reason": "relative_broken:../../docs/crm/admin-runbooks/d365.md"
+        },
+        {
+          "text": "Dynamics System Documentation",
+          "url": "../../docs/dynamical-system.md",
+          "full": "[Dynamics System Documentation](../../docs/dynamical-system.md)",
+          "reason": "relative_broken:../../docs/dynamical-system.md"
+        },
+        {
+          "text": "CRM Configuration Guide",
+          "url": "../../docs/crm/",
+          "full": "[CRM Configuration Guide](../../docs/crm/)",
+          "reason": "relative_broken:../../docs/crm/"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".codex/AUDIT_INDEX.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "QUICK_REFERENCE.md",
+          "url": "archive/sessions/2026-01/QUICK_REFERENCE.md",
+          "full": "[QUICK_REFERENCE.md](archive/sessions/2026-01/QUICK_REFERENCE.md)",
+          "reason": "relative_broken:archive/sessions/2026-01/QUICK_REFERENCE.md"
+        },
+        {
+          "text": "../admin_docs_audit.py",
+          "url": "../admin_docs_audit.py",
+          "full": "[../admin_docs_audit.py](../admin_docs_audit.py)",
+          "reason": "relative_broken:../admin_docs_audit.py"
+        },
+        {
+          "text": "Phase 12 Documentation Quality Planset",
+          "url": "../docs/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md",
+          "full": "[Phase 12 Documentation Quality Planset](../docs/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md)",
+          "reason": "relative_broken:../docs/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2782_POST_CI.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "CHANGELOG.md",
+          "url": "./CHANGELOG.md",
+          "full": "[CHANGELOG.md](./CHANGELOG.md)",
+          "reason": "relative_broken:./CHANGELOG.md"
+        },
+        {
+          "text": "advanced.md",
+          "url": "./advanced.md",
+          "full": "[advanced.md](./advanced.md)",
+          "reason": "relative_broken:./advanced.md"
+        },
+        {
+          "text": "AgentName",
+          "url": "Path(config",
+          "full": "[AgentName](Path(config)",
+          "reason": "relative_broken:Path(config"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/prompts/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Security Utils Documentation",
+          "url": "src/codex/security_utils.py",
+          "full": "[Security Utils Documentation](src/codex/security_utils.py)",
+          "reason": "relative_broken:src/codex/security_utils.py"
+        },
+        {
+          "text": "QA Agent README",
+          "url": ".github/agents/codebase-qa-walkthrough-agent/README.md",
+          "full": "[QA Agent README](.github/agents/codebase-qa-walkthrough-agent/README.md)",
+          "reason": "relative_broken:.github/agents/codebase-qa-walkthrough-agent/README.md"
+        },
+        {
+          "text": "Flatten-Repo README",
+          "url": ".github/workflows/FLATTEN_REPO_README.md",
+          "full": "[Flatten-Repo README](.github/workflows/FLATTEN_REPO_README.md)",
+          "reason": "relative_broken:.github/workflows/FLATTEN_REPO_README.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/docs/UNIFIED_CACHE_MANAGEMENT.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "Cache Optimization Report",
+          "url": ".github/workflows/CACHE_OPTIMIZATION_REPORT.md",
+          "full": "[Cache Optimization Report](.github/workflows/CACHE_OPTIMIZATION_REPORT.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_OPTIMIZATION_REPORT.md"
+        },
+        {
+          "text": "Cache Analysis Report",
+          "url": ".github/workflows/CACHE_ANALYSIS_REPORT.md",
+          "full": "[Cache Analysis Report](.github/workflows/CACHE_ANALYSIS_REPORT.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_ANALYSIS_REPORT.md"
+        },
+        {
+          "text": "Cache Architecture Diagrams",
+          "url": ".github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md",
+          "full": "[Cache Architecture Diagrams](.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md)",
+          "reason": "relative_broken:.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".codex/plans/phase3_implementation_planset.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Validation Dashboard",
+          "url": ".codex/metrics/dashboard.html",
+          "full": "[Validation Dashboard](.codex/metrics/dashboard.html)",
+          "reason": "relative_broken:.codex/metrics/dashboard.html"
+        },
+        {
+          "text": "Incident Report",
+          "url": ".codex/incident_reports/ci_failure_batch_2026_01_19.md",
+          "full": "[Incident Report](.codex/incident_reports/ci_failure_batch_2026_01_19.md)",
+          "reason": "relative_broken:.codex/incident_reports/ci_failure_batch_2026_01_19.md"
+        },
+        {
+          "text": "Cognitive Brain Learnings",
+          "url": ".codex/cognitive_brain/incident_learnings_2026_01_22.md",
+          "full": "[Cognitive Brain Learnings](.codex/cognitive_brain/incident_learnings_2026_01_22.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/incident_learnings_2026_01_22.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/plans/PHASE_9_1_COMPLETION_SUMMARY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Test Priority Matrix",
+          "url": ".codex/qa_walkthrough/test_priority_matrix.json",
+          "full": "[Test Priority Matrix](.codex/qa_walkthrough/test_priority_matrix.json)",
+          "reason": "relative_broken:.codex/qa_walkthrough/test_priority_matrix.json"
+        },
+        {
+          "text": "Coverage Analysis",
+          "url": ".codex/qa_walkthrough/coverage_analysis.json",
+          "full": "[Coverage Analysis](.codex/qa_walkthrough/coverage_analysis.json)",
+          "reason": "relative_broken:.codex/qa_walkthrough/coverage_analysis.json"
+        },
+        {
+          "text": "AfterMath Analysis",
+          "url": ".codex/qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md",
+          "full": "[AfterMath Analysis](.codex/qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md)",
+          "reason": "relative_broken:.codex/qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/cognitive_brain/PRODUCTION_RAG_COGNITIVE_BRAIN_STATUS.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Production RAG Pipeline Planset",
+          "url": ".codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md",
+          "full": "[Production RAG Pipeline Planset](.codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md)",
+          "reason": "relative_broken:.codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md"
+        },
+        {
+          "text": "RAG Quickstart Guide",
+          "url": "../docs/RAG_QUICKSTART.md",
+          "full": "[RAG Quickstart Guide](../docs/RAG_QUICKSTART.md)",
+          "reason": "relative_broken:../docs/RAG_QUICKSTART.md"
+        },
+        {
+          "text": "RAG Enhancement Plansets",
+          "url": "../docs/RAG_ENHANCEMENT_PLANSETS.md",
+          "full": "[RAG Enhancement Plansets](../docs/RAG_ENHANCEMENT_PLANSETS.md)",
+          "reason": "relative_broken:../docs/RAG_ENHANCEMENT_PLANSETS.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_33_PR_3020_RESOLUTION_COMPLETE.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "Phase 32 Complete",
+          "url": ".codex/cognitive_brain/PHASE_32_COMPLETE.md",
+          "full": "[Phase 32 Complete](.codex/cognitive_brain/PHASE_32_COMPLETE.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_32_COMPLETE.md"
+        },
+        {
+          "text": "Phase 33 Continuation Prompt",
+          "url": ".codex/cognitive_brain/PHASE_33_CONTINUATION_PROMPT.md",
+          "full": "[Phase 33 Continuation Prompt](.codex/cognitive_brain/PHASE_33_CONTINUATION_PROMPT.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PHASE_33_CONTINUATION_PROMPT.md"
+        },
+        {
+          "text": "Path to 100% Coverage",
+          "url": ".codex/cognitive_brain/PATH_TO_100_PERCENT_COVERAGE.md",
+          "full": "[Path to 100% Coverage](.codex/cognitive_brain/PATH_TO_100_PERCENT_COVERAGE.md)",
+          "reason": "relative_broken:.codex/cognitive_brain/PATH_TO_100_PERCENT_COVERAGE.md"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": "agents/prompts/documentation/generate-wiki.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "update-agents-md.md",
+          "url": "update-agents-md.md",
+          "full": "[update-agents-md.md](update-agents-md.md)",
+          "reason": "relative_broken:update-agents-md.md"
+        },
+        {
+          "text": "generate-api-docs.md",
+          "url": "generate-api-docs.md",
+          "full": "[generate-api-docs.md](generate-api-docs.md)",
+          "reason": "relative_broken:generate-api-docs.md"
+        },
+        {
+          "text": "deploy-github-pages.md",
+          "url": "deploy-github-pages.md",
+          "full": "[deploy-github-pages.md](deploy-github-pages.md)",
+          "reason": "relative_broken:deploy-github-pages.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "agents/prompts/organization/repository-cleanup.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "analyze-dependencies.md",
+          "url": "analyze-dependencies.md",
+          "full": "[analyze-dependencies.md](analyze-dependencies.md)",
+          "reason": "relative_broken:analyze-dependencies.md"
+        },
+        {
+          "text": "generate-repo-map.md",
+          "url": "generate-repo-map.md",
+          "full": "[generate-repo-map.md](generate-repo-map.md)",
+          "reason": "relative_broken:generate-repo-map.md"
+        },
+        {
+          "text": "cleanup-workflows.md",
+          "url": "cleanup-workflows.md",
+          "full": "[cleanup-workflows.md](cleanup-workflows.md)",
+          "reason": "relative_broken:cleanup-workflows.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": ".codex/security/rotation_schedule.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md",
+          "full": "[.codex/security/rotation_schedule.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)",
+          "reason": "github_broken:.codex/security/rotation_schedule.md"
+        },
+        {
+          "text": ".codex/security/secrets_usage_matrix.json",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json",
+          "full": "[.codex/security/secrets_usage_matrix.json](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/secrets_usage_matrix.json)",
+          "reason": "github_broken:.codex/security/secrets_usage_matrix.json"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": "docs/GITHUB_PAGES_MANAGER_IMPLEMENTATION.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "User Guide",
+          "url": "../guides/user-guide.md",
+          "full": "[User Guide](../guides/user-guide.md)",
+          "reason": "relative_broken:../guides/user-guide.md"
+        },
+        {
+          "text": "User Guide",
+          "url": "../guides/getting-started.md",
+          "full": "[User Guide](../guides/getting-started.md)",
+          "reason": "relative_broken:../guides/getting-started.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "docs/mcp/MCP_DEVELOPER_GUIDE.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "MCP Server Implementation",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/mcp/server/server.py",
+          "full": "[MCP Server Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/server/server.py)",
+          "reason": "github_broken:mcp/server/server.py"
+        },
+        {
+          "text": "Tool Registry",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/mcp/registry.py",
+          "full": "[Tool Registry](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/registry.py)",
+          "reason": "github_broken:mcp/registry.py"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": "docs/capabilities/functional_training.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "\"model\"",
+          "url": "state[\"inputs\"]",
+          "full": "[\"model\"](state[\"inputs\"])",
+          "reason": "relative_broken:state[\"inputs\"]"
+        },
+        {
+          "text": "\"criterion\"",
+          "url": "outputs, state[\"targets\"]",
+          "full": "[\"criterion\"](outputs, state[\"targets\"])",
+          "reason": "relative_broken:outputs, state[\"targets\"]"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+      "total_links": 56,
+      "broken_links": [
+        {
+          "text": "`codex_cli`",
+          "url": "../src/codex_cli/app.py",
+          "full": "[`codex_cli`](../src/codex_cli/app.py)",
+          "reason": "relative_broken:../src/codex_cli/app.py"
+        },
+        {
+          "text": "`codex_cli` help",
+          "url": "../src/codex_cli/app.py",
+          "full": "[`codex_cli` help](../src/codex_cli/app.py)",
+          "reason": "relative_broken:../src/codex_cli/app.py"
+        }
+      ],
+      "valid_links": 54
+    },
+    {
+      "file": "docs/guides/QUICKSTART.md",
+      "total_links": 9,
+      "broken_links": [
+        {
+          "text": "V9 Complete Status",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md",
+          "full": "[V9 Complete Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/V9_COMPLETE_STATUS.md)",
+          "reason": "github_broken:docs/status/V9_COMPLETE_STATUS.md"
+        },
+        {
+          "text": "Consolidated Status",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md",
+          "full": "[Consolidated Status](https://github.com/Aries-Serpent/_codex_/blob/main/docs/status/CONSOLIDATED_STATUS.md)",
+          "reason": "github_broken:docs/status/CONSOLIDATED_STATUS.md"
+        }
+      ],
+      "valid_links": 7
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_2.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "PHASE9_1_EXECUTION_PLAN.md",
+          "url": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+          "full": "[PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)",
+          "reason": "relative_broken:docs/testing/PHASE9_1_EXECUTION_PLAN.md"
+        },
+        {
+          "text": "FUTURE_RESEARCH_DEEP_DIVE.md",
+          "url": "docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md",
+          "full": "[FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)",
+          "reason": "relative_broken:docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".github/BRANCH_PROTECTION_CONFIG.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Pull Request Template",
+          "url": ".github/pull_request_template.md",
+          "full": "[Pull Request Template](.github/pull_request_template.md)",
+          "reason": "relative_broken:.github/pull_request_template.md"
+        },
+        {
+          "text": "Contributing Guide",
+          "url": "CONTRIBUTING.md",
+          "full": "[Contributing Guide](CONTRIBUTING.md)",
+          "reason": "relative_broken:CONTRIBUTING.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/plans/plan3.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "MIGRATION.md",
+          "url": "./docs/MIGRATION.md",
+          "full": "[MIGRATION.md](./docs/MIGRATION.md)",
+          "reason": "relative_broken:./docs/MIGRATION.md"
+        },
+        {
+          "text": "Python 3.11 to 3.12 Migration Guide",
+          "url": "./docs/migration/python_312.md",
+          "full": "[Python 3.11 to 3.12 Migration Guide](./docs/migration/python_312.md)",
+          "reason": "relative_broken:./docs/migration/python_312.md"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": ".github/plans/plan4.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "Migration Guide",
+          "url": "./docs/migration/python_312.md",
+          "full": "[Migration Guide](./docs/migration/python_312.md)",
+          "reason": "relative_broken:./docs/migration/python_312.md"
+        },
+        {
+          "text": "Migration Guide",
+          "url": "./docs/migration/python_312.md",
+          "full": "[Migration Guide](./docs/migration/python_312.md)",
+          "reason": "relative_broken:./docs/migration/python_312.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/session-analysis-agent.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Session Log Retrieval Agent",
+          "url": ".github/agents/session-log-retrieval-agent.md",
+          "full": "[Session Log Retrieval Agent](.github/agents/session-log-retrieval-agent.md)",
+          "reason": "relative_broken:.github/agents/session-log-retrieval-agent.md"
+        },
+        {
+          "text": "Agent Handoff Protocol",
+          "url": ".codex/docs/AGENT_HANDOFF_PROTOCOL.md",
+          "full": "[Agent Handoff Protocol](.codex/docs/AGENT_HANDOFF_PROTOCOL.md)",
+          "reason": "relative_broken:.codex/docs/AGENT_HANDOFF_PROTOCOL.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/agents/AGENT_REGISTRY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Agent Design Specifications",
+          "url": ".codex/AGENT_DESIGNS.md",
+          "full": "[Agent Design Specifications](.codex/AGENT_DESIGNS.md)",
+          "reason": "relative_broken:.codex/AGENT_DESIGNS.md"
+        },
+        {
+          "text": "Cognitive Brain Update",
+          "url": ".codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+          "full": "[Cognitive Brain Update](.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md)",
+          "reason": "relative_broken:.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/actions/doc-test-scribe-action/README.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": ".github/agents/doc-test-scribe/",
+          "url": "../agents/doc-test-scribe/",
+          "full": "[.github/agents/doc-test-scribe/](../agents/doc-test-scribe/)",
+          "reason": "relative_broken:../agents/doc-test-scribe/"
+        },
+        {
+          "text": "TESTING_CONVENTIONS.md",
+          "url": "/TESTING_CONVENTIONS.md",
+          "full": "[TESTING_CONVENTIONS.md](/TESTING_CONVENTIONS.md)",
+          "reason": "path_error:/TESTING_CONVENTIONS.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/agents/docs/PRODUCTION_SPECIFICATION.md",
+      "total_links": 15,
+      "broken_links": [
+        {
+          "text": "AI Agency Policy",
+          "url": "/AI_AGENCY_POLICY_VERIFICATION.md",
+          "full": "[AI Agency Policy](/AI_AGENCY_POLICY_VERIFICATION.md)",
+          "reason": "path_error:/AI_AGENCY_POLICY_VERIFICATION.md"
+        },
+        {
+          "text": "Agent Development Guide",
+          "url": "/.github/agents/AGENT_DEVELOPMENT_GUIDE.md",
+          "full": "[Agent Development Guide](/.github/agents/AGENT_DEVELOPMENT_GUIDE.md)",
+          "reason": "path_error:/.github/agents/AGENT_DEVELOPMENT_GUIDE.md"
+        }
+      ],
+      "valid_links": 13
+    },
+    {
+      "file": ".github/agents/ci-testing-agent/docs/runbook.md",
+      "total_links": 11,
+      "broken_links": [
+        {
+          "text": "CI Testing Agent Documentation",
+          "url": "../ci-testing-agent.md",
+          "full": "[CI Testing Agent Documentation](../ci-testing-agent.md)",
+          "reason": "relative_broken:../ci-testing-agent.md"
+        },
+        {
+          "text": "Implementation Plan",
+          "url": "../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md",
+          "full": "[Implementation Plan](../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md)",
+          "reason": "relative_broken:../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md"
+        }
+      ],
+      "valid_links": 9
+    },
+    {
+      "file": ".codex/HYGIENE_AUDIT_EXECUTIVE_SUMMARY.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": ".codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md",
+          "url": ".codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md",
+          "full": "[.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md](.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md)",
+          "reason": "relative_broken:.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md"
+        },
+        {
+          "text": "PR_3020_REPOSITORY_HYGIENE_REPORT.md",
+          "url": "./.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md",
+          "full": "[PR_3020_REPOSITORY_HYGIENE_REPORT.md](./.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md)",
+          "reason": "relative_broken:./.codex/PR_3020_REPOSITORY_HYGIENE_REPORT.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/DIAGRAM_UPDATE_v0.1.0_SUMMARY.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "DIAGRAM_UPDATE_REPORT.md",
+          "url": "../../DIAGRAM_UPDATE_REPORT.md",
+          "full": "[DIAGRAM_UPDATE_REPORT.md](../../DIAGRAM_UPDATE_REPORT.md)",
+          "reason": "path_error:../../DIAGRAM_UPDATE_REPORT.md"
+        },
+        {
+          "text": "README.md",
+          "url": "../../README.md",
+          "full": "[README.md](../../README.md)",
+          "reason": "path_error:../../README.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".codex/PR3224_PR3225_IMPLEMENTATION_PROMPTS.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "Full Security Analysis",
+          "url": ".codex/PR3224_PR3225_SECURITY_ANALYSIS.md",
+          "full": "[Full Security Analysis](.codex/PR3224_PR3225_SECURITY_ANALYSIS.md)",
+          "reason": "relative_broken:.codex/PR3224_PR3225_SECURITY_ANALYSIS.md"
+        },
+        {
+          "text": "Full Test Report",
+          "url": ".codex/PR3224_TEST_RESULTS.md",
+          "full": "[Full Test Report](.codex/PR3224_TEST_RESULTS.md)",
+          "reason": "relative_broken:.codex/PR3224_TEST_RESULTS.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".codex/wiki/Home.md",
+      "total_links": 26,
+      "broken_links": [
+        {
+          "text": "Governance",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+          "full": "[Governance](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md)",
+          "reason": "github_broken:GOVERNANCE.md"
+        },
+        {
+          "text": "CHANGES.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md",
+          "full": "[CHANGES.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md)",
+          "reason": "github_broken:CHANGES.md"
+        }
+      ],
+      "valid_links": 24
+    },
+    {
+      "file": ".codex/wiki/_Sidebar.md",
+      "total_links": 36,
+      "broken_links": [
+        {
+          "text": "Governance",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md",
+          "full": "[Governance](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md)",
+          "reason": "github_broken:GOVERNANCE.md"
+        },
+        {
+          "text": "Changelog",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md",
+          "full": "[Changelog](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md)",
+          "reason": "github_broken:CHANGES.md"
+        }
+      ],
+      "valid_links": 34
+    },
+    {
+      "file": ".codex/plans/PHASE_3_4_QUANTUM_AUTONOMOUS_PLANSETS.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "\\'\"",
+          "url": "' + '|'.join(old_dirs",
+          "full": "[\\'\"](' + '|'.join(old_dirs)",
+          "reason": "relative_broken:' + '|'.join(old_dirs"
+        },
+        {
+          "text": "\\'\"",
+          "url": "' + '|'.join(old_dirs",
+          "full": "[\\'\"](' + '|'.join(old_dirs)",
+          "reason": "relative_broken:' + '|'.join(old_dirs"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/plans/COGNITIVE_BRAIN_STATUS_POST_PR2956.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Branch Protection Config",
+          "url": ".github/BRANCH_PROTECTION_CONFIG.md",
+          "full": "[Branch Protection Config](.github/BRANCH_PROTECTION_CONFIG.md)",
+          "reason": "relative_broken:.github/BRANCH_PROTECTION_CONFIG.md"
+        },
+        {
+          "text": "Cognitive Brain Status V2",
+          "url": ".codex/plans/COGNITIVE_BRAIN_STATUS_V2.md",
+          "full": "[Cognitive Brain Status V2](.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md)",
+          "reason": "relative_broken:.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": "agents/prompts/audit/run-full-audit.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "generate-dashboard.md",
+          "url": "generate-dashboard.md",
+          "full": "[generate-dashboard.md](generate-dashboard.md)",
+          "reason": "relative_broken:generate-dashboard.md"
+        },
+        {
+          "text": "show-trend.md",
+          "url": "show-trend.md",
+          "full": "[show-trend.md](show-trend.md)",
+          "reason": "relative_broken:show-trend.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": "agents/prompts/audit/check-regressions.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "show-trend.md",
+          "url": "show-trend.md",
+          "full": "[show-trend.md](show-trend.md)",
+          "reason": "relative_broken:show-trend.md"
+        },
+        {
+          "text": "store-trend.md",
+          "url": "store-trend.md",
+          "full": "[store-trend.md](store-trend.md)",
+          "reason": "relative_broken:store-trend.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": "docs/index.md",
+      "total_links": 37,
+      "broken_links": [
+        {
+          "text": "README_ROOT.md",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/README_ROOT.md",
+          "full": "[README_ROOT.md](https://github.com/Aries-Serpent/_codex_/blob/main/README_ROOT.md)",
+          "reason": "github_broken:README_ROOT.md"
+        }
+      ],
+      "valid_links": 36
+    },
+    {
+      "file": "docs/GITHUB_SPARK_INTEGRATION_GUIDE.md",
+      "total_links": 24,
+      "broken_links": [
+        {
+          "text": "contact us",
+          "url": "mailto:support@example.com",
+          "full": "[contact us](mailto:support@example.com)",
+          "reason": "relative_broken:mailto:support@example.com"
+        }
+      ],
+      "valid_links": 23
+    },
+    {
+      "file": "docs/metrics.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "Evaluation Guide",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/evaluation/README.md",
+          "full": "[Evaluation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/evaluation/README.md)",
+          "reason": "github_broken:evaluation/README.md"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": "docs/templates/README.md",
+      "total_links": 21,
+      "broken_links": [
+        {
+          "text": "`reports/per-iteration/`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/reports/per-iteration",
+          "full": "[`reports/per-iteration/`](https://github.com/Aries-Serpent/_codex_/blob/main/reports/per-iteration)",
+          "reason": "github_broken:reports/per-iteration"
+        }
+      ],
+      "valid_links": 20
+    },
+    {
+      "file": "docs/capabilities/code_quality_tooling.md",
+      "total_links": 16,
+      "broken_links": [
+        {
+          "text": "Code Quality Workflow",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/code-quality.yml",
+          "full": "[Code Quality Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/code-quality.yml)",
+          "reason": "github_broken:.github/workflows/code-quality.yml"
+        }
+      ],
+      "valid_links": 15
+    },
+    {
+      "file": "docs/archive/TEAM_ANNOUNCEMENT.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "P1 Refactoring Tickets",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/.codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md",
+          "full": "[P1 Refactoring Tickets](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md)",
+          "reason": "github_broken:.codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": "docs/security/CURRENT_EXPECTED_VARIABLES.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "`scripts/security/copilot_token_decoder.py`",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/scripts/security/copilot_token_decoder.py",
+          "full": "[`scripts/security/copilot_token_decoder.py`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/security/copilot_token_decoder.py)",
+          "reason": "github_broken:scripts/security/copilot_token_decoder.py"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": "docs/security/bridge_hardening.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "STRIDE Threat Model",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/STRIDE.md",
+          "full": "[STRIDE Threat Model](https://github.com/Aries-Serpent/_codex_/blob/main/STRIDE.md)",
+          "reason": "github_broken:STRIDE.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": "docs/workflows/PHASE1_TRACKING.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Gap Analysis",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/GAP_ANALYSIS.md",
+          "full": "[Gap Analysis](https://github.com/Aries-Serpent/_codex_/blob/main/GAP_ANALYSIS.md)",
+          "reason": "github_broken:GAP_ANALYSIS.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": "docs/plans/fix_falied_workflows_2025-12-22.md",
+      "total_links": 13,
+      "broken_links": [
+        {
+          "text": "_codex_ Evolution Guide",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/. github/docs/evolution-guide.md",
+          "full": "[_codex_ Evolution Guide](https://github.com/Aries-Serpent/_codex_/blob/main/. github/docs/evolution-guide.md)",
+          "reason": "github_broken:. github/docs/evolution-guide.md"
+        }
+      ],
+      "valid_links": 12
+    },
+    {
+      "file": "docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "T",
+          "url": "items: list[T]",
+          "full": "[T](items: list[T])",
+          "reason": "relative_broken:items: list[T]"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": "docs/configs/OmegaConf_Schema.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Config Groups Discovery",
+          "url": "https://github.com/Aries-Serpent/_codex_/blob/main/configs/list_groups.py",
+          "full": "[Config Groups Discovery](https://github.com/Aries-Serpent/_codex_/blob/main/configs/list_groups.py)",
+          "reason": "github_broken:configs/list_groups.py"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/codebase-qa-walkthrough-agent/README.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "Error Pattern Database",
+          "url": "../../.codex/reports/ERROR_PATTERN_DATABASE.md",
+          "full": "[Error Pattern Database](../../.codex/reports/ERROR_PATTERN_DATABASE.md)",
+          "reason": "relative_broken:../../.codex/reports/ERROR_PATTERN_DATABASE.md"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": ".github/docs/Remaining_Implementation_Plan_Copilot.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "name",
+          "url": "**kwargs",
+          "full": "[name](**kwargs)",
+          "reason": "relative_broken:**kwargs"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/plans/plan1.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "\"\\'",
+          "url": "[^\"\\']+",
+          "full": "[\"\\']([^\"\\']+)",
+          "reason": "relative_broken:[^\"\\']+"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/agents/AGENT_ECOSYSTEM_MAP.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "PDA Loop Guide",
+          "url": "../../docs/system/PDA_LOOP_GUIDE.md",
+          "full": "[PDA Loop Guide](../../docs/system/PDA_LOOP_GUIDE.md)",
+          "reason": "relative_broken:../../docs/system/PDA_LOOP_GUIDE.md"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/agents/artifact-monitor-agent.md",
+      "total_links": 11,
+      "broken_links": [
+        {
+          "text": "Configuration",
+          "url": ".codex/config/monitoring.yaml",
+          "full": "[Configuration](.codex/config/monitoring.yaml)",
+          "reason": "relative_broken:.codex/config/monitoring.yaml"
+        }
+      ],
+      "valid_links": 10
+    },
+    {
+      "file": ".github/agents/root-organizer-agent.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "text",
+          "url": "file.md",
+          "full": "[text](file.md)",
+          "reason": "relative_broken:file.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/actions/setup-secure-token/README.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Token Decoder Module",
+          "url": "../../../scripts/security/copilot_token_decoder.py",
+          "full": "[Token Decoder Module](../../../scripts/security/copilot_token_decoder.py)",
+          "reason": "relative_broken:../../../scripts/security/copilot_token_decoder.py"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": ".github/prompts/duplicate_detection_inventory/09_documentation.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "TROUBLESHOOTING.md",
+          "url": "./TROUBLESHOOTING.md",
+          "full": "[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)",
+          "reason": "relative_broken:./TROUBLESHOOTING.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".github/copilot-prompts/active/PR-2639-completion-summary.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "Token Decoder Module",
+          "url": "../../../scripts/security/copilot_token_decoder.py",
+          "full": "[Token Decoder Module](../../../scripts/security/copilot_token_decoder.py)",
+          "reason": "relative_broken:../../../scripts/security/copilot_token_decoder.py"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": ".github/copilot-prompts/active/PR-2639-security-continuation.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "Admin Guide",
+          "url": "docs/admin/security/ADMIN_TOKEN_SETUP.md#token-rotation",
+          "full": "[Admin Guide](docs/admin/security/ADMIN_TOKEN_SETUP.md#token-rotation)",
+          "reason": "relative_broken:docs/admin/security/ADMIN_TOKEN_SETUP.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".github/agents/docs/INDEX.md",
+      "total_links": 8,
+      "broken_links": [
+        {
+          "text": "Root Organization Scripts",
+          "url": "../../scripts/root_org/",
+          "full": "[Root Organization Scripts](../../scripts/root_org/)",
+          "reason": "relative_broken:../../scripts/root_org/"
+        }
+      ],
+      "valid_links": 7
+    },
+    {
+      "file": ".github/agents/ci-testing-agent/README.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Implementation Plan",
+          "url": "../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md",
+          "full": "[Implementation Plan](../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md)",
+          "reason": "relative_broken:../CI_TESTING_AGENT_IMPLEMENTATION_PLAN.md"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".github/agents/security-vulnerability-patcher/README.md",
+      "total_links": 7,
+      "broken_links": [
+        {
+          "text": "API Reference",
+          "url": "../../API_REFERENCE.md",
+          "full": "[API Reference](../../API_REFERENCE.md)",
+          "reason": "relative_broken:../../API_REFERENCE.md"
+        }
+      ],
+      "valid_links": 6
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/docs/INTEGRATION_MANAGER_DESIGN.md",
+      "total_links": 14,
+      "broken_links": [
+        {
+          "text": "Admin Automation Agent",
+          "url": ".github/agents/admin-automation-agent/",
+          "full": "[Admin Automation Agent](.github/agents/admin-automation-agent/)",
+          "reason": "relative_broken:.github/agents/admin-automation-agent/"
+        }
+      ],
+      "valid_links": 13
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/docs/WORKFLOW_MANAGER_DESIGN.md",
+      "total_links": 12,
+      "broken_links": [
+        {
+          "text": "Admin Automation Agent",
+          "url": ".github/agents/admin-automation-agent/",
+          "full": "[Admin Automation Agent](.github/agents/admin-automation-agent/)",
+          "reason": "relative_broken:.github/agents/admin-automation-agent/"
+        }
+      ],
+      "valid_links": 11
+    },
+    {
+      "file": ".codex/AUTOMATION_IMPLEMENTATION_MASTER_PLANSET.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "\n            \"## References\",\n            \"\",\n            \"- [Security False Positive Standard",
+          "url": ".codex/SECURITY_FALSE_POSITIVE_STANDARD.md",
+          "full": "[\n            \"## References\",\n            \"\",\n            \"- [Security False Positive Standard](.codex/SECURITY_FALSE_POSITIVE_STANDARD.md)",
+          "reason": "relative_broken:.codex/SECURITY_FALSE_POSITIVE_STANDARD.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/README_FUTURE_WORK_PLANSETS.md",
+      "total_links": 10,
+      "broken_links": [
+        {
+          "text": "../COPILOT_CONTINUATION_PROMPT.md",
+          "url": "../COPILOT_CONTINUATION_PROMPT.md",
+          "full": "[../COPILOT_CONTINUATION_PROMPT.md](../COPILOT_CONTINUATION_PROMPT.md)",
+          "reason": "relative_broken:../COPILOT_CONTINUATION_PROMPT.md"
+        }
+      ],
+      "valid_links": 9
+    },
+    {
+      "file": ".codex/BATCH_CI_TRIAGE_REPORT_2026_02_04.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "PR #3095 Resolution Patterns",
+          "url": ".codex/PR_3095_RESOLUTION_PATTERNS.md",
+          "full": "[PR #3095 Resolution Patterns](.codex/PR_3095_RESOLUTION_PATTERNS.md)",
+          "reason": "relative_broken:.codex/PR_3095_RESOLUTION_PATTERNS.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/GITHUB_PAGES_FOLLOWUP_PROMPT.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "text",
+          "url": "pattern",
+          "full": "[text](pattern)",
+          "reason": "relative_broken:pattern"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/FOLLOWUP_FOR_PHASE3.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": ".*\\",
+          "url": ".*/.*\\.md",
+          "full": "[.*\\](.*/.*\\.md)",
+          "reason": "relative_broken:.*/.*\\.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/FOLLOW_UP_PROMPT_TESTING_AND_DIAGNOSTICIAN.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "Learn More",
+          "url": ".codex/CI_SELF_HEALING_README.md",
+          "full": "[Learn More](.codex/CI_SELF_HEALING_README.md)",
+          "reason": "relative_broken:.codex/CI_SELF_HEALING_README.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/BATCH_CI_TRIAGE_ANALYSIS_3106.md",
+      "total_links": 5,
+      "broken_links": [
+        {
+          "text": "PR_3095_FOLLOW_UP.md",
+          "url": "./PR_3095_FOLLOW_UP.md",
+          "full": "[PR_3095_FOLLOW_UP.md](./PR_3095_FOLLOW_UP.md)",
+          "reason": "relative_broken:./PR_3095_FOLLOW_UP.md"
+        }
+      ],
+      "valid_links": 4
+    },
+    {
+      "file": ".codex/FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "CI Issue Resolution Guide",
+          "url": ".codex/CI_ISSUE_RESOLUTION_PR_3240.md",
+          "full": "[CI Issue Resolution Guide](.codex/CI_ISSUE_RESOLUTION_PR_3240.md)",
+          "reason": "relative_broken:.codex/CI_ISSUE_RESOLUTION_PR_3240.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+      "total_links": 6,
+      "broken_links": [
+        {
+          "text": "CONTINUATION_PROMPT_PR2782_POST_CI.md",
+          "url": ".codex/CONTINUATION_PROMPT_PR2782_POST_CI.md",
+          "full": "[CONTINUATION_PROMPT_PR2782_POST_CI.md](.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md)",
+          "reason": "relative_broken:.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md"
+        }
+      ],
+      "valid_links": 5
+    },
+    {
+      "file": ".codex/LINK_VALIDATION_FIX_SUMMARY.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "text",
+          "url": "path",
+          "full": "[text](path)",
+          "reason": "relative_broken:path"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/SESSION_SUMMARY_PR_3240.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "Follow-Up Documentation",
+          "url": ".codex/FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md",
+          "full": "[Follow-Up Documentation](.codex/FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md)",
+          "reason": "relative_broken:.codex/FOLLOW_UP_PROMPT_POST_MERGE_VALIDATION.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "link",
+          "url": "path/to/missing.md",
+          "full": "[link](path/to/missing.md)",
+          "reason": "relative_broken:path/to/missing.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/release/README.md",
+      "total_links": 42,
+      "broken_links": [
+        {
+          "text": "Cognitive Brain Status",
+          "url": "../cognitive_brain/PHASE_26_RELEASE_READINESS.md",
+          "full": "[Cognitive Brain Status](../cognitive_brain/PHASE_26_RELEASE_READINESS.md)",
+          "reason": "relative_broken:../cognitive_brain/PHASE_26_RELEASE_READINESS.md"
+        }
+      ],
+      "valid_links": 41
+    },
+    {
+      "file": ".codex/release/README_VERIFICATION_REPORT.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "../README.md",
+          "url": "../README.md",
+          "full": "[../README.md](../README.md)",
+          "reason": "relative_broken:../README.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/archive/README_UPDATED.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "Dockerfile",
+          "url": "Dockerfile",
+          "full": "[Dockerfile](Dockerfile)",
+          "reason": "relative_broken:Dockerfile"
+        }
+      ],
+      "valid_links": 2
+    },
+    {
+      "file": ".codex/plans/PHASE_12_DOCUMENTATION_QUALITY_PLANSET.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "README.md",
+          "url": "../README.md",
+          "full": "[README.md](../README.md)",
+          "reason": "relative_broken:../README.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/plans/PHASE34_YAML_SYNTAX_FIX_ITERATION_PLAN.md",
+      "total_links": 2,
+      "broken_links": [
+        {
+          "text": "YAML Heredoc Constraints",
+          "url": ".codex/YAML_HEREDOC_SYNTAX_CONSTRAINTS.md",
+          "full": "[YAML Heredoc Constraints](.codex/YAML_HEREDOC_SYNTAX_CONSTRAINTS.md)",
+          "reason": "relative_broken:.codex/YAML_HEREDOC_SYNTAX_CONSTRAINTS.md"
+        }
+      ],
+      "valid_links": 1
+    },
+    {
+      "file": ".codex/status/_codex_status_update-2025-08-31.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "`.codex/deferred_items.md`",
+          "url": ".codex/deferred_items.md",
+          "full": "[`.codex/deferred_items.md`](.codex/deferred_items.md)",
+          "reason": "relative_broken:.codex/deferred_items.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_FOLLOWUP_COMMENT.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": ".*\\",
+          "url": "\\..*\\.md",
+          "full": "[.*\\](\\..*\\.md)",
+          "reason": "relative_broken:\\..*\\.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_3133_ANALYSIS_INDEX.md",
+      "total_links": 1,
+      "broken_links": [
+        {
+          "text": "docs/analysis/PR_3133_ANALYSIS.md",
+          "url": "../docs/analysis/PR_3133_ANALYSIS.md",
+          "full": "[docs/analysis/PR_3133_ANALYSIS.md](../docs/analysis/PR_3133_ANALYSIS.md)",
+          "reason": "relative_broken:../docs/analysis/PR_3133_ANALYSIS.md"
+        }
+      ],
+      "valid_links": 0
+    },
+    {
+      "file": "agents/prompts/debugging/performance-optimization.md",
+      "total_links": 4,
+      "broken_links": [
+        {
+          "text": "Codex performance utilities",
+          "url": "../../scripts/space_traversal/performance.py",
+          "full": "[Codex performance utilities](../../scripts/space_traversal/performance.py)",
+          "reason": "relative_broken:../../scripts/space_traversal/performance.py"
+        }
+      ],
+      "valid_links": 3
+    },
+    {
+      "file": "agents/prompts/deployment/pre-release-deployment.md",
+      "total_links": 3,
+      "broken_links": [
+        {
+          "text": "validate-release.md",
+          "url": "validate-release.md",
+          "full": "[validate-release.md](validate-release.md)",
+          "reason": "relative_broken:validate-release.md"
+        }
+      ],
+      "valid_links": 2
+    }
+  ]
+}

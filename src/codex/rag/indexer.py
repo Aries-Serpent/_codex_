@@ -127,19 +127,19 @@ def embed_chunks(
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
-    
+
     # CRITICAL FIX: Validate and filter inputs BEFORE encoding
     original_count = len(texts)
     texts_filtered = [text.strip() for text in texts if text and text.strip()]
-    
+
     if len(texts_filtered) < original_count:
         logger.warning(
             f"Filtered out {original_count - len(texts_filtered)} empty/whitespace texts"
         )
-    
+
     if not texts_filtered:
         raise ValueError("No valid text chunks to encode after filtering empty inputs")
-    
+
     logger.debug(
         f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
     )

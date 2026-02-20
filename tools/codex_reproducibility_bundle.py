@@ -18,8 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, Any, List
-
+from typing import Any, Dict, List
 
 DEFAULT_FILES = [
     "_codex_status_update-2025-11-27.md",

@@ -11,12 +11,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import os
-from typing import Optional
+import os  # noqa: E402
+from typing import Optional  # noqa: E402
 
-from ..tracking import mlflow_utils as _tracking_mlflow_utils
-from ..tracking.mlflow_guard import bootstrap_offline_tracking
-from ..tracking.mlflow_utils import *  # noqa: F401,F403
+from ..tracking import mlflow_utils as _tracking_mlflow_utils  # noqa: E402
+from ..tracking.mlflow_guard import bootstrap_offline_tracking  # noqa: E402
+from ..tracking.mlflow_utils import *  # noqa: F401,F403,E402
 
 # Expose the underlying ``mlflow`` module so older call sites and tests that
 # patch ``mlflow_utils.mlflow`` continue to work.

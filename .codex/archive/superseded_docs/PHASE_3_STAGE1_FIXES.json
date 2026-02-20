@@ -1,0 +1,101 @@
+{
+  "stats": {
+    "files_processed": 20,
+    "files_modified": 7,
+    "links_removed": 0,
+    "links_commented": 14,
+    "links_skipped": 47,
+    "actions": {
+      "remove": 0,
+      "remove_item": 0,
+      "comment": 14,
+      "skip": 0
+    }
+  },
+  "fixes": [
+    {
+      "file": ".codex/reports/ROOT_ORG_INDEX.md",
+      "link": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".codex/reports/ROOT_ORG_INDEX.md",
+      "link": ".codex/plans/ROOT_ORG_CLEANUP_BATCH_1.json",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".codex/reports/ROOT_ORG_INDEX.md",
+      "link": ".codex/plans/ROOT_ORG_RELOCATION_PLAN.json",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".codex/reports/ROOT_ORG_INDEX.md",
+      "link": ".codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": "docs/analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md",
+      "link": "phases/PHASE_2_QUICK_REFERENCE.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": "docs/plans/copilot-directives-to-implementation-plan.md",
+      "link": ".+?",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/README.md",
+      "link": "AGENT_DESIGN.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/README.md",
+      "link": "AGENT_DESIGN.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".codex/DOC_ALIGNMENT_MASTER_INDEX.md",
+      "link": "update_docs_v0.1.0.py",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".codex/DOC_ALIGNMENT_MASTER_INDEX.md",
+      "link": "update_docs_v0.1.0.py",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+      "link": "1",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+      "link": "3",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+      "link": "1",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    },
+    {
+      "file": ".github/agents/docs/AGENTS.md",
+      "link": "../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
+      "action": "comment",
+      "reason": "Uncertain - comment for manual review"
+    }
+  ]
+}

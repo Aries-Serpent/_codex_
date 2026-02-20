@@ -1,0 +1,31 @@
+# Default configuration for evaluation CLI
+# This file provides default values for the evaluation pipeline
+
+dataset:
+  path: null  # Path to dataset file (required)
+  loader: jsonl  # Dataset loader type
+  split: test  # Dataset split to use
+
+output_dir: outputs  # Directory for evaluation outputs
+
+tokenizer:
+  name: null  # Tokenizer name (required)
+  cfg:
+    path: null  # Path to tokenizer config/vocabulary
+
+model:
+  name: null  # Model name (optional)
+  checkpoint: null  # Checkpoint path (optional)
+
+metrics:
+  - accuracy  # List of metrics to compute
+
+limit: null  # Limit number of samples (null = all)
+batch_size: 32  # Batch size for evaluation
+device: cpu  # Device to use (cpu/cuda)
+
+# MLflow tracking (optional)
+mlflow:
+  enabled: false
+  experiment_name: evaluation
+  run_name: null

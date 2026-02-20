@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/benchmark_logging.py [options]
-    
+
     Examples:
     $ python scripts/benchmark_logging.py --help
 

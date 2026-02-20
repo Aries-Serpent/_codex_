@@ -4,7 +4,7 @@ Welcome to Zendesk administration with **_codex_**! This guide will help you und
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Core Concepts](#core-concepts)
 3. [Getting Started](#getting-started)
 4. [Zendesk Workflow](#zendesk-workflow)

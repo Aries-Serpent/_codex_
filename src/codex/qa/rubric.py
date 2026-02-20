@@ -23,12 +23,12 @@ logger = logging.getLogger(__name__)
 """Offline QA rubric handling and score generation utilities."""
 
 
-import csv
-import json
-from pathlib import Path
-from typing import Any
+import csv  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field  # noqa: E402
 
 
 class RubricCriterion(BaseModel):

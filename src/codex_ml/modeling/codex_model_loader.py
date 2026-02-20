@@ -21,12 +21,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
-from typing import Any, Optional
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.optional import optional_import
+from codex_ml.utils.hf_pinning import (  # noqa: E402
+    ensure_pinned_kwargs,
+    load_from_pretrained,
+)
+from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
+from codex_ml.utils.optional import optional_import  # noqa: E402
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:

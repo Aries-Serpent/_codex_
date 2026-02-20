@@ -15,11 +15,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import hashlib
-import json
-import os
-from datetime import datetime, timezone
-from typing import Any, Optional
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 class SignstoreClient:

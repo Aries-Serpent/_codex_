@@ -423,10 +423,10 @@ Address identified QA validation failures.
 - **Auto-Fix Script**: `scripts/ci/auto_fix_common_issues.py`
 - **Auto-Fix Docs**: `.codex/docs/CI_AUTO_FIX_SYSTEM.md`
 - **Workflow Logs**:
-  - Auto-Fix: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855382/job/62481529224
-  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855416/job/62481529310
-  - Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855388/job/62481529146
-  - QA Walkthrough: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855398/job/62481541195
+  - Auto-Fix: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855382 <!-- Note: Logs expire after 90 days -->/job/62481529224
+  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855416 <!-- Note: Logs expire after 90 days -->/job/62481529310
+  - Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855388 <!-- Note: Logs expire after 90 days -->/job/62481529146
+  - QA Walkthrough: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855398 <!-- Note: Logs expire after 90 days -->/job/62481541195
 - **CI Patterns**: `.codex/PR_3095_RESOLUTION_PATTERNS.md`
 
 ---

@@ -12,7 +12,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import math
+import math  # noqa: E402
 
 
 def perplexity_from_loss(loss: float) -> float:

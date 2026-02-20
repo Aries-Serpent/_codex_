@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/ops/codex_repo_admin_bootstrap.py [options]
-    
+
     Examples:
     $ python scripts/ops/codex_repo_admin_bootstrap.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Harden a GitHub repository without touching workflows."""

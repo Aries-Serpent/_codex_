@@ -1,11 +1,11 @@
 {
-  "last_update": "2026-02-16T04:20:14.632160",
-  "total_patterns": 93,
+  "last_update": "2026-02-19T04:15:00.946598",
+  "total_patterns": 102,
   "new_patterns": 5,
-  "updated_patterns": 20,
+  "updated_patterns": 31,
   "pattern_types": {
-    "duration_variance": 44,
-    "high_failure_rate": 27,
-    "test_flakiness": 22
+    "duration_variance": 50,
+    "high_failure_rate": 28,
+    "test_flakiness": 24
   }
 }

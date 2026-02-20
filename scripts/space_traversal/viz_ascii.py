@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/viz_ascii.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/viz_ascii.py --help
 

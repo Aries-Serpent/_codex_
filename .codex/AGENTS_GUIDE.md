@@ -10,10 +10,10 @@
 
 1. [Environment Variables](#environment-variables)
 2. [Logging Roles](#logging-roles)
-3. [Tooling & Testing](#tooling--testing)
+3. <!-- BROKEN ANCHOR: [Tooling & Testing](#tooling-testing) -->
 4. [Testing Requirements](#testing-requirements)
 5. [Pytest Plugin Configuration](#pytest-plugin-configuration)
-6. [CLI & Tool Usage](#cli--tool-usage)
+6. <!-- BROKEN ANCHOR: [CLI & Tool Usage](#cli-tool-usage) -->
 7. [Prohibited Actions](#prohibited-actions)
 
 ---

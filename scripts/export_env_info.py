@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/export_env_info.py [options]
-    
+
     Examples:
     $ python scripts/export_env_info.py --help
 

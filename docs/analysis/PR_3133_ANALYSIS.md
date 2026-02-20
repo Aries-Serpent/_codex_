@@ -180,9 +180,9 @@ Auto-Fix Check (FAILED: detected 1 alert)
 - **Actions Tab**: https://github.com/Aries-Serpent/_codex_/actions
 
 ### Artifact Downloads
-- **Coverage HTML**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706491
-- **JUnit Report**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706794
-- **Security Scan**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141/artifacts/5359719837
+- **Coverage HTML**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491
+- **JUnit Report**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794
+- **Security Scan**: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141 <!-- Note: Logs expire after 90 days -->/artifacts/5359719837
 
 ### Related Documents
 - **PR #3095 Analysis**: .codex/PR_3095_COMPLETE_CHECK_ANALYSIS.md

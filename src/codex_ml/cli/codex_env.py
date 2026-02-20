@@ -6,6 +6,7 @@ import argparse
 import shlex
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 
 def _run(cmd: str, cwd: Path) -> int:
@@ -104,7 +105,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
     func = getattr(args, "func", None)

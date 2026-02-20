@@ -18,6 +18,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 
 class WorkflowStatus(Enum):
     """Status of a workflow run."""
@@ -343,7 +345,7 @@ class WorkflowAnalyzer:
 
     def _parse_workflow_basic(self, path: Path) -> WorkflowInfo | None:
         """Basic workflow parsing without yaml library.
-        
+
         Note: The substring checks below (e.g., 'push:' in content) are used
         to detect YAML keys in workflow files, not for URL/domain validation.
         This is safe as we're parsing local workflow files, not validating URLs.

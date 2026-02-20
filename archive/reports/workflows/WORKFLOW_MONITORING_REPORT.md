@@ -38,7 +38,7 @@ This report tracks all 18 workflows triggered by the push event to main branch a
 - **Started:** 2026-02-05T23:06:06Z
 - **Completed:** 2026-02-05T23:40:26Z
 - **Runtime:** 34 minutes 20 seconds
-- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917104
+- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917104 <!-- Note: Logs expire after 90 days -->
 - **Note:** Longer than typical 20-30 min Rust test duration
 
 ### 2. Documentation Link Checker ✅
@@ -48,7 +48,7 @@ This report tracks all 18 workflows triggered by the push event to main branch a
 - **Started:** 2026-02-05T23:06:06Z
 - **Completed:** 2026-02-05T23:25:36Z
 - **Runtime:** 19 minutes 30 seconds
-- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917144
+- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917144 <!-- Note: Logs expire after 90 days -->
 
 ---
 
@@ -61,7 +61,7 @@ This report tracks all 18 workflows triggered by the push event to main branch a
 - **Started:** 2026-02-05T23:06:06Z
 - **Completed:** 2026-02-05T23:18:16Z
 - **Duration:** ~12 minutes
-- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917109
+- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917109 <!-- Note: Logs expire after 90 days -->
 - **Note:** Transitioned from `in_progress` to `failure` during monitoring
 - **Action Required:** Investigate failure logs
 
@@ -72,7 +72,7 @@ This report tracks all 18 workflows triggered by the push event to main branch a
 - **Started:** 2026-02-05T23:06:06Z
 - **Completed:** 2026-02-05T23:18:49Z
 - **Duration:** ~13 minutes
-- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917123
+- **URL:** https://github.com/Aries-Serpent/_codex_/actions/runs/21731917123 <!-- Note: Logs expire after 90 days -->
 - **Action Required:** Investigate failure logs
 
 ---

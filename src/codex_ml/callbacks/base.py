@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 """Minimal callback primitives shared by the training loops."""
 
 
-from datetime import UTC, datetime
-from typing import Any, Optional
+from datetime import UTC, datetime  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 __all__ = [
     "Callback",

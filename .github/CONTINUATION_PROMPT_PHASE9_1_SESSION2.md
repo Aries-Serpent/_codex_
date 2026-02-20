@@ -185,9 +185,9 @@ def test_ingest_syntax_error(tmp_path):
 ## 🧠 Cognitive Brain Usage
 
 **Before Starting**:
-1. Review [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current Phase 9 status
+1. Review [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current Phase 9 status
 2. Review [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md) - Test priorities
-3. Review [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md) - Overall strategy
+3. Review [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md) - Overall strategy
 
 **During Session**:
 - Use existing test patterns from Phase 9.1 Session 1
@@ -319,18 +319,14 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 ## 📚 Reference Documents
 
 **Execution Plans**:
-- [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)
-- [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md)
+- [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)
 
 **Cognitive Brain**:
-- [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md)
-- [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [ROADMAP.md](docs/ROADMAP.md)
+- [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)
+- [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [ROADMAP.md](../docs/ROADMAP.md)
 
 **Session 1 Artifacts**:
-- [AFTERMATH_PHASE9_1_COMPLETE.md](.github/AFTERMATH_PHASE9_1_COMPLETE.md)
-- [SELF_REVIEW_PHASE9_1_SESSION1.md](.github/SELF_REVIEW_PHASE9_1_SESSION1.md)
-- [FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)
 
 **Test Patterns** (from Session 1):
 - `tests/scripts/test_mcp_select_components.py` (fixture patterns)

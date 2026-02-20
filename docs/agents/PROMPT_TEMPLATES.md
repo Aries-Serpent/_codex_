@@ -145,7 +145,7 @@ class Test[Class]:
     @pytest.fixture
     def instance(self):
         """Create test instance."""
-        return [Class]()
+        return <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - [Class]() --> -->
     
     def test_init_defaults(self, instance):
         """Test initialization with defaults."""
@@ -256,7 +256,7 @@ from src.mcp.[module_name] import [Class]
 
 # Basic usage
 instance = [Class]()
-result = instance.[method]()
+result = instance.<!-- TODO: Add section or remove TOC entry - [method]() -->
 \`\`\`
 
 ## Configuration

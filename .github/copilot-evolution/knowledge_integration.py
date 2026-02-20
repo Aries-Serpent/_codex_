@@ -994,10 +994,10 @@ def test_{func_name}_basic():
     """Test {concept}: {expected_behavior[:50]}..."""
     # Arrange
     # TODO: Set up test data based on {concept}
-    
+
     # Act
     # result = {func_name}(...)
-    
+
     # Assert
     # assert result == expected
     pass

@@ -33,11 +33,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Callable, Optional, Union
+import json  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Optional, Union  # noqa: E402
 
 try:
     import torch
@@ -60,6 +60,11 @@ class EvaluationConfig:
     output_dir: str = "artifacts/evaluation"
     save_predictions: bool = False
     log_interval: int = 10
+    # Additional fields expected by tests
+    max_batches: Optional[int] = None
+    seed: Optional[int] = None
+    metrics: Optional[Any] = None
+    system_metrics: bool = False
 
 
 class MetricAdapter:

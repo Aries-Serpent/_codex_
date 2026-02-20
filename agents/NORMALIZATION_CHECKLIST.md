@@ -206,8 +206,8 @@ Phase 3 complete when:
 ## 📚 Related Documentation
 
 - [agents/README.md](../README.md) - Agent architecture overview
-- [Coding Standards](../../docs/dev/CODE_STYLE_GUIDE.md) - Repository conventions
-- [Testing Guide](../../docs/guides/TESTING_GUIDE.md) - Testing requirements
+- [Coding Standards](../docs/dev/CODE_STYLE_GUIDE.md) - Repository conventions
+- [Testing Guide](../docs/guides/TESTING_GUIDE.md) - Testing requirements
 
 ---
 

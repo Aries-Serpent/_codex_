@@ -314,7 +314,7 @@ git commit -m "feat(tests): Phase 9.1 coverage enhancement to 30%+ #Phase9.1 #Co
 
 ## 📚 References
 
-- [Coverage Roadmap](.codex/plans/COVERAGE_THRESHOLD_ROADMAP.md)
+- [Coverage Roadmap](../../docs/ROADMAP.md)
 - [Test Priority Matrix](.codex/qa_walkthrough/test_priority_matrix.json)
 - [Coverage Analysis](.codex/qa_walkthrough/coverage_analysis.json)
 - [AfterMath Analysis](.codex/qa_walkthrough/PHASE_9_1_AFTERMATH_ANALYSIS.md)

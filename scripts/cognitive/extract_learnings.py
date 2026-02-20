@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/extract_learnings.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/extract_learnings.py --help
 
@@ -35,9 +35,9 @@ Part of AfterMath - extracts learnings from evaluations
 """
 import argparse
 import json
-from pathlib import Path
-from typing import Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
 
 def extract_learnings(
@@ -47,19 +47,19 @@ def extract_learnings(
 ) -> Dict[str, Any]:
     """
     Extract learnings from evaluation results.
-    
+
     Args:
         evaluation_path: Path to evaluation.json
         output_path: Path to save learnings
         patterns: Types of patterns to extract
-    
+
     Returns:
         Extracted learnings
     """
     # Load evaluation
     with open(evaluation_path) as f:
         evaluation = json.load(f)
-    
+
     # Extract learnings
     learnings = {
         "extraction_timestamp": datetime.now().isoformat(),
@@ -68,9 +68,9 @@ def extract_learnings(
         "actionable_insights": [],
         "knowledge_contributions": []
     }
-    
+
     pattern_list = patterns.split(",")
-    
+
     # Extract success patterns
     if "success" in pattern_list:
         for strength in evaluation.get("performance_assessment", {}).get("strengths", []):
@@ -81,7 +81,7 @@ def extract_learnings(
                 "actionable": True,
                 "recommendation": f"Continue and reinforce: {strength}"
             })
-    
+
     # Extract failure patterns
     if "failure" in pattern_list:
         for weakness in evaluation.get("performance_assessment", {}).get("weaknesses", []):
@@ -92,7 +92,7 @@ def extract_learnings(
                 "actionable": True,
                 "recommendation": f"Address weakness: {weakness}"
             })
-    
+
     # Extract optimization opportunities
     if "optimization" in pattern_list:
         for improvement in evaluation.get("improvement_areas", []):
@@ -104,7 +104,7 @@ def extract_learnings(
                 "confidence": 0.80,
                 "priority": improvement.get("priority", "medium")
             })
-    
+
     # Generate actionable insights
     learnings["actionable_insights"] = [
         {
@@ -126,7 +126,7 @@ def extract_learnings(
             "implementation_effort": "medium"
         }
     ]
-    
+
     # Knowledge contributions for shared memory
     learnings["knowledge_contributions"] = [
         {
@@ -144,29 +144,29 @@ def extract_learnings(
             "applicable_to": ["all_agents"]
         }
     ]
-    
+
     # Summary
     learnings["summary"] = {
         "total_learnings": len(learnings["learnings"]),
-        "success_patterns": sum(1 for l in learnings["learnings"] if l.get("type") == "success_pattern"),
-        "failure_patterns": sum(1 for l in learnings["learnings"] if l.get("type") == "failure_pattern"),
-        "optimization_opportunities": sum(1 for l in learnings["learnings"] if l.get("type") == "optimization_opportunity"),
+        "success_patterns": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "success_pattern"),
+        "failure_patterns": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "failure_pattern"),
+        "optimization_opportunities": sum(1 for line_item in learnings["learnings"] if line_item.get("type") == "optimization_opportunity"),
         "actionable_insights": len(learnings["actionable_insights"])
     }
-    
+
     # Save learnings
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(learnings, f, indent=2)
-    
-    print(f"✅ Learning extraction complete")
+
+    print("✅ Learning extraction complete")
     print(f"   Total learnings: {learnings['summary']['total_learnings']}")
     print(f"   Success patterns: {learnings['summary']['success_patterns']}")
     print(f"   Optimization opportunities: {learnings['summary']['optimization_opportunities']}")
     print(f"   Actionable insights: {learnings['summary']['actionable_insights']}")
-    
+
     return learnings
 
 
@@ -176,7 +176,7 @@ def main():
     parser.add_argument("--output", required=True, help="Output path")
     parser.add_argument("--patterns", default="success,failure,optimization", help="Patterns to extract")
     args = parser.parse_args()
-    
+
     extract_learnings(args.evaluation, args.output, args.patterns)
 
 

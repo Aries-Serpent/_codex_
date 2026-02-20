@@ -48,7 +48,9 @@ class _StubProcessor:
         return [ord(ch) for ch in text]
 
     def decode(self, ids: Iterable[int]) -> str:
-        return "".join(chr(int(i)) for i in ids)
+        # Convert iterable to list to handle generators properly
+        ids_list = list(ids) if not isinstance(ids, list) else ids
+        return "".join(chr(int(i)) for i in ids_list)
 
     def DecodeIds(self, ids: Iterable[int]) -> str:  # noqa: N802
         return self.decode(ids)

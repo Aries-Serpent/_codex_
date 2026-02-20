@@ -16,17 +16,17 @@ Exit codes:
 import os
 import re
 import sys
-from pathlib import Path
 from collections import defaultdict
-from typing import List, Tuple, Dict, Optional
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 
 def find_markdown_links(content: str) -> List[Tuple[str, str]]:
     """Find all markdown links in content.
-    
+
     Args:
         content: The markdown content to search
-        
+
     Returns:
         List of (text, url) tuples
     """
@@ -44,31 +44,31 @@ def find_markdown_links(content: str) -> List[Tuple[str, str]]:
 
 def validate_local_link(link: str, base_path: Path) -> Tuple[bool, Optional[str]]:
     """Validate a local file link.
-    
+
     Args:
         link: The link to validate
         base_path: The base path of the file containing the link
-        
+
     Returns:
         Tuple of (is_valid, error_message)
     """
     # Remove anchors
     link = link.split('#')[0]
-    
+
     # Skip external URLs
     if link.startswith(('http://', 'https://', 'mailto:')):
         return True, None
-    
+
     # Skip empty or anchor-only links
     if not link or link.startswith('#'):
         return True, None
-    
+
     # Resolve relative path
     if link.startswith('/'):
         full_path = Path(link[1:])
     else:
         full_path = (base_path.parent / link).resolve()
-    
+
     # Check if file exists
     if full_path.exists():
         return True, None
@@ -78,24 +78,24 @@ def validate_local_link(link: str, base_path: Path) -> Tuple[bool, Optional[str]
 
 def validate_workflow_links(verbose: bool = False) -> int:
     """Validate all workflow documentation links.
-    
+
     Args:
         verbose: Print verbose output
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
     # Scan workflow documentation
     workflow_dir = Path('.github/workflows')
-    
+
     broken_links: Dict[str, List[Dict[str, str]]] = defaultdict(list)
     total_links = 0
-    
+
     # Check workflow markdown files
     for md_file in workflow_dir.rglob('*.md'):
         content = md_file.read_text()
         links = find_markdown_links(content)
-        
+
         for text, link in links:
             total_links += 1
             valid, error = validate_local_link(link, md_file)
@@ -107,14 +107,14 @@ def validate_workflow_links(verbose: bool = False) -> int:
                 })
                 if verbose:
                     print(f"❌ {md_file}: [{text}]({link}) - {error}")
-    
+
     # Check YAML workflow files for documentation URLs
     workflow_files = list(workflow_dir.glob('*.yml')) + list(workflow_dir.glob('*.yaml'))
     for yml_file in workflow_files:
         try:
             content = yml_file.read_text()
             links = find_markdown_links(content)
-            
+
             for text, link in links:
                 total_links += 1
                 valid, error = validate_local_link(link, yml_file)
@@ -129,14 +129,14 @@ def validate_workflow_links(verbose: bool = False) -> int:
         except Exception as e:
             if verbose:
                 print(f"⚠️  Warning: Could not parse {yml_file}: {e}")
-    
+
     # Generate report
     print(f"\n{'='*60}")
     print("WORKFLOW DOCUMENTATION LINK VALIDATION")
     print(f"{'='*60}\n")
     print(f"Total links checked: {total_links}")
     print(f"Broken links found: {sum(len(v) for v in broken_links.values())}\n")
-    
+
     if broken_links:
         print("BROKEN LINKS:\n")
         for file, links in broken_links.items():
@@ -144,7 +144,7 @@ def validate_workflow_links(verbose: bool = False) -> int:
             for link in links:
                 print(f"  - [{link['text']}]({link['link']})")
                 print(f"    Error: {link['error']}")
-        
+
         # Write to GitHub step summary if available
         github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
         if github_step_summary_path:
@@ -156,11 +156,11 @@ def validate_workflow_links(verbose: bool = False) -> int:
                     for link in links:
                         f.write(f"- `[{link['text']}]({link['link']})` - {link['error']}\n")
                     f.write("\n")
-        
+
         return 1
     else:
         print("✅ All links are valid!")
-        
+
         # Write to GitHub step summary if available
         github_step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
         if github_step_summary_path:
@@ -168,18 +168,18 @@ def validate_workflow_links(verbose: bool = False) -> int:
             with github_step_summary.open('a') as f:
                 f.write("## ✅ All Links Valid\n\n")
                 f.write(f"Validated {total_links} links in workflow documentation.\n")
-        
+
         return 0
 
 
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description='Validate workflow documentation links')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     args = parser.parse_args()
-    
+
     exit_code = validate_workflow_links(args.verbose)
     sys.exit(exit_code)
 

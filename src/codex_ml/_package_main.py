@@ -11,8 +11,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import sys
+import importlib  # noqa: E402
+import sys  # noqa: E402
 
 
 def _run_cli() -> int:

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archive/select_and_compress.py [options]
-    
+
     Examples:
     $ python scripts/archive/select_and_compress.py --help
 
@@ -30,11 +30,11 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
+import logging
 
+logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Archive & Pointer (P2) with Knob Normalization
 
 - Honors ARCHIVE_POINTER_STYLE: embedded | sidecar | both

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Generate Ai Index
 
@@ -8,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/generate_ai_index.py [options]
-    
+
     Examples:
     $ python scripts/generate_ai_index.py --help
 
@@ -37,17 +38,18 @@ repository navigation, search, and understanding. It combines semantic,
 structural, content, and metadata indices for efficient discovery.
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
 import ast
-import json
 import hashlib
-from typing import Any, Optional
-from dataclasses import dataclass, asdict, field
+import json
 import re
-from datetime import datetime
 import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 
 @dataclass
@@ -94,7 +96,7 @@ class RepositoryIndexer:
     PYTHON_EXTENSIONS = {'.py'}
     CONFIG_EXTENSIONS = {'.yaml', '.yml', '.toml', '.ini', '.json', '.cfg'}
     DOC_EXTENSIONS = {'.md', '.rst', '.txt'}
-    
+
     # Directories to skip
     SKIP_DIRS = {
         '.git', '.venv', 'venv', '__pycache__', '.tox', '.pytest_cache',
@@ -106,7 +108,7 @@ class RepositoryIndexer:
         self.repo_path = repo_path.resolve()
         self.output_dir = output_dir or (repo_path / ".codex" / "ai_index")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Indices
         self.semantic_index: dict[str, list[str]] = {}  # keyword -> file paths
         self.structural_index: dict[str, Any] = {}  # module hierarchy
@@ -125,7 +127,7 @@ class RepositoryIndexer:
     def extract_python_entities(self, filepath: Path) -> list[CodeEntity]:
         """Extract code entities from Python file using AST."""
         entities = []
-        
+
         try:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
@@ -138,7 +140,7 @@ class RepositoryIndexer:
 
         for node in ast.walk(tree):
             entity = None
-            
+
             if isinstance(node, ast.ClassDef):
                 entity = CodeEntity(
                     type="class",
@@ -149,7 +151,7 @@ class RepositoryIndexer:
                     docstring=ast.get_docstring(node),
                     tags=self._extract_tags(node)
                 )
-                
+
             elif isinstance(node, ast.FunctionDef):
                 # Determine if it's a method or function
                 is_method = any(
@@ -157,7 +159,7 @@ class RepositoryIndexer:
                     for parent in ast.walk(tree)
                     if any(n is node for n in ast.walk(parent))
                 )
-                
+
                 entity = CodeEntity(
                     type="method" if is_method else "function",
                     name=node.name,
@@ -168,7 +170,7 @@ class RepositoryIndexer:
                     docstring=ast.get_docstring(node),
                     tags=self._extract_tags(node)
                 )
-                
+
             elif isinstance(node, ast.AsyncFunctionDef):
                 entity = CodeEntity(
                     type="async_function",
@@ -197,7 +199,7 @@ class RepositoryIndexer:
     def _extract_tags(self, node: ast.AST) -> list[str]:
         """Extract semantic tags from AST node."""
         tags = []
-        
+
         # Check decorators
         if hasattr(node, 'decorator_list'):
             for decorator in node.decorator_list:
@@ -205,13 +207,13 @@ class RepositoryIndexer:
                     tags.append(f"@{decorator.id}")
                 elif isinstance(decorator, ast.Attribute):
                     tags.append(f"@{decorator.attr}")
-        
+
         return tags
 
     def extract_imports(self, filepath: Path) -> list[str]:
         """Extract import statements from Python file."""
         imports = []
-        
+
         try:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
@@ -232,20 +234,20 @@ class RepositoryIndexer:
     def extract_keywords(self, content: str, docstring: Optional[str] = None) -> list[str]:
         """Extract semantic keywords from content."""
         keywords = set()
-        
+
         # Extract from docstring if available
         if docstring:
             # Simple keyword extraction: words longer than 3 chars
             words = re.findall(r'\b[a-z]{4,}\b', docstring.lower())
             keywords.update(words[:20])  # Limit keywords
-        
+
         # Extract class/function names from content
         class_pattern = r'class\s+([A-Z][a-zA-Z0-9_]*)'
         func_pattern = r'def\s+([a-z_][a-zA-Z0-9_]*)'
-        
+
         keywords.update(re.findall(class_pattern, content))
         keywords.update(re.findall(func_pattern, content))
-        
+
         return sorted(keywords)[:30]  # Limit to 30 keywords
 
     def index_file(self, filepath: Path) -> Optional[FileIndex]:
@@ -255,7 +257,7 @@ class RepositoryIndexer:
 
         relative_path = str(filepath.relative_to(self.repo_path))
         extension = filepath.suffix.lower()
-        
+
         # Determine language
         if extension in self.PYTHON_EXTENSIONS:
             language = "python"
@@ -280,7 +282,7 @@ class RepositoryIndexer:
         if language == "python":
             file_index.entities = self.extract_python_entities(filepath)
             file_index.imports = self.extract_imports(filepath)
-            
+
             # Extract exports from __all__ if present
             try:
                 content = filepath.read_text(encoding='utf-8')
@@ -289,10 +291,10 @@ class RepositoryIndexer:
                 if match:
                     exports = re.findall(r'["\']([^"\']+)["\']', match.group(1))
                     file_index.exports = exports
-                
+
                 # Extract keywords
                 file_index.keywords = self.extract_keywords(content)
-                
+
             except (UnicodeDecodeError, ValueError):
                 # If the file cannot be decoded or parsed for __all__/keywords,
                 # skip these optional enrichments but still index the file itself.
@@ -310,16 +312,16 @@ class RepositoryIndexer:
     def build_structural_index(self):
         """Build hierarchical structure of the repository."""
         structure = {}
-        
+
         for file_path, file_index in self.content_index.items():
             parts = Path(file_index.relative_path).parts
             current = structure
-            
+
             for part in parts[:-1]:
                 if part not in current:
                     current[part] = {}
                 current = current[part]
-            
+
             # Add file entry
             filename = parts[-1]
             current[filename] = {
@@ -327,7 +329,7 @@ class RepositoryIndexer:
                 "entities": len(file_index.entities),
                 "size": file_index.size
             }
-        
+
         self.structural_index = structure
 
     def build_semantic_index(self):
@@ -338,13 +340,13 @@ class RepositoryIndexer:
                 if keyword not in self.semantic_index:
                     self.semantic_index[keyword] = []
                 self.semantic_index[keyword].append(file_index.relative_path)
-            
+
             # Index by entity names
             for entity in file_index.entities:
                 if entity.name not in self.semantic_index:
                     self.semantic_index[entity.name] = []
                 self.semantic_index[entity.name].append(file_index.relative_path)
-            
+
             # Index by semantic tags
             for tag in file_index.semantic_tags:
                 if tag not in self.semantic_index:
@@ -362,18 +364,18 @@ class RepositoryIndexer:
             "top_keywords": [],
             "directory_summary": {}
         }
-        
+
         # Count by language
         for file_index in self.content_index.values():
             lang = file_index.language
             self.metadata_index["languages"][lang] = \
                 self.metadata_index["languages"].get(lang, 0) + 1
-        
+
         # Top keywords
         keyword_counts = {}
         for keyword, files in self.semantic_index.items():
             keyword_counts[keyword] = len(files)
-        
+
         top_keywords = sorted(
             keyword_counts.items(),
             key=lambda x: x[1],
@@ -386,7 +388,7 @@ class RepositoryIndexer:
     def scan_repository(self):
         """Scan the entire repository and build indices."""
         print(f"Scanning repository: {self.repo_path}")
-        
+
         file_count = 0
         for filepath in self.repo_path.rglob("*"):
             # Skip directories
@@ -394,36 +396,36 @@ class RepositoryIndexer:
                 if self.should_skip_dir(filepath):
                     continue
                 continue
-            
+
             # Skip if in skip directory
             if any(self.should_skip_dir(parent) for parent in filepath.parents):
                 continue
-            
+
             # Index file
             file_index = self.index_file(filepath)
             if file_index:
                 self.content_index[str(filepath)] = file_index
                 file_count += 1
-                
+
                 if file_count % 100 == 0:
                     print(f"  Indexed {file_count} files...", end='\r')
-        
+
         print(f"✓ Indexed {file_count} files                    ")
-        
+
         # Build other indices
         print("Building structural index...")
         self.build_structural_index()
-        
+
         print("Building semantic index...")
         self.build_semantic_index()
-        
+
         print("Building metadata index...")
         self.build_metadata_index()
 
     def save_indices(self):
         """Save all indices to disk."""
         print(f"Saving indices to {self.output_dir}")
-        
+
         # Save content index (file-level details)
         content_index_path = self.output_dir / "content_index.json"
         with open(content_index_path, 'w', encoding='utf-8') as f:
@@ -437,25 +439,25 @@ class RepositoryIndexer:
             }
             json.dump(content_data, f, indent=2)
         print(f"  ✓ {content_index_path}")
-        
+
         # Save semantic index (keyword -> files)
         semantic_index_path = self.output_dir / "semantic_index.json"
         with open(semantic_index_path, 'w', encoding='utf-8') as f:
             json.dump(self.semantic_index, f, indent=2)
         print(f"  ✓ {semantic_index_path}")
-        
+
         # Save structural index (directory tree)
         structural_index_path = self.output_dir / "structural_index.json"
         with open(structural_index_path, 'w', encoding='utf-8') as f:
             json.dump(self.structural_index, f, indent=2)
         print(f"  ✓ {structural_index_path}")
-        
+
         # Save metadata index (summary stats)
         metadata_index_path = self.output_dir / "metadata_index.json"
         with open(metadata_index_path, 'w', encoding='utf-8') as f:
             json.dump(self.metadata_index, f, indent=2)
         print(f"  ✓ {metadata_index_path}")
-        
+
         # Save entity index (all code entities)
         entity_index_path = self.output_dir / "entity_index.json"
         with open(entity_index_path, 'w', encoding='utf-8') as f:
@@ -465,7 +467,7 @@ class RepositoryIndexer:
             }
             json.dump(entity_data, f, indent=2)
         print(f"  ✓ {entity_index_path}")
-        
+
         print(f"\n✅ Generated {len(self.content_index)} file indices")
         print(f"✅ Indexed {len(self.entity_index)} code entities")
         print(f"✅ Created {len(self.semantic_index)} semantic mappings")
@@ -474,14 +476,14 @@ class RepositoryIndexer:
 def main():
     """Main entry point."""
     repo_root = Path(__file__).parent.parent
-    
+
     if len(sys.argv) > 1:
         repo_root = Path(sys.argv[1])
-    
+
     indexer = RepositoryIndexer(repo_root)
     indexer.scan_repository()
     indexer.save_indices()
-    
+
     return 0
 
 

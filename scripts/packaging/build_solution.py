@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/packaging/build_solution.py [options]
-    
+
     Examples:
     $ python scripts/packaging/build_solution.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """Solution Packaging for Zendesk Quantum Workflows.
 
@@ -71,13 +69,13 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     """Load the packaging manifest YAML."""
     if not manifest_path.exists():
         raise FileNotFoundError(f"Manifest not found: {manifest_path}")
-    
+
     with manifest_path.open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
-    
+
     if not isinstance(data, dict):
         raise ValueError("Invalid manifest: expected dictionary")
-    
+
     return data
 
 
@@ -96,12 +94,12 @@ def copy_includes(
     includes: list[str],
 ) -> list[dict[str, str]]:
     """Copy included files/directories to package root.
-    
+
     Returns:
         List of file manifests with paths and hashes
     """
     file_manifest = []
-    
+
     def ignore_patterns(directory: str, names: list[str]) -> set[str]:
         """Ignore patterns for shutil.copytree."""
         ignored = set()
@@ -113,16 +111,16 @@ def copy_includes(
             elif name.endswith((".egg-info", ".dist-info")):
                 ignored.add(name)
         return ignored
-    
+
     for entry in includes:
         source = repo_root / entry
-        
+
         if not source.exists():
             logger.warning(f"Include path not found: {source}")
             continue
-        
+
         destination = package_root / entry
-        
+
         if source.is_dir():
             shutil.copytree(
                 source,
@@ -144,7 +142,7 @@ def copy_includes(
                 "path": str(destination.relative_to(package_root)),
                 "hash": calculate_file_hash(destination),
             })
-    
+
     return file_manifest
 
 
@@ -180,17 +178,17 @@ def write_readme(package_root: Path, metadata: dict[str, Any]) -> None:
         f"**Created:** {metadata['created_at']}",
         "",
     ]
-    
+
     if metadata.get("entry_point"):
         content.extend([
             "## Entry Point",
             "",
-            f"```python",
+            "```python",
             f"{metadata['entry_point']}",
-            f"```",
+            "```",
             "",
         ])
-    
+
     if metadata.get("capabilities"):
         content.extend([
             "## Capabilities",
@@ -198,7 +196,7 @@ def write_readme(package_root: Path, metadata: dict[str, Any]) -> None:
         ])
         content.extend([f"- {cap}" for cap in metadata["capabilities"]])
         content.append("")
-    
+
     if metadata.get("dependencies"):
         content.extend([
             "## Dependencies",
@@ -208,7 +206,7 @@ def write_readme(package_root: Path, metadata: dict[str, Any]) -> None:
             "```",
             "",
         ])
-    
+
     if metadata.get("physics_paradigms"):
         content.extend([
             "## Physics Paradigms",
@@ -216,7 +214,7 @@ def write_readme(package_root: Path, metadata: dict[str, Any]) -> None:
         ])
         content.extend([f"- {paradigm}" for paradigm in metadata["physics_paradigms"]])
         content.append("")
-    
+
     readme_path = package_root / "README.md"
     readme_path.write_text("\n".join(content), encoding="utf-8")
 
@@ -234,12 +232,12 @@ def create_archive(
     archive_format: str = "zip",
 ) -> Path:
     """Create archive from package directory.
-    
+
     Args:
         package_root: Directory to archive
         output_path: Output archive path (without extension)
         archive_format: "zip" or "tar.gz"
-        
+
     Returns:
         Path to created archive
     """
@@ -250,15 +248,15 @@ def create_archive(
                 if file_path.is_file():
                     arcname = file_path.relative_to(package_root.parent)
                     zipf.write(file_path, arcname)
-    
+
     elif archive_format == "tar.gz":
         archive_path = output_path.with_suffix(".tar.gz")
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(package_root, arcname=package_root.name)
-    
+
     else:
         raise ValueError(f"Unsupported archive format: {archive_format}")
-    
+
     return archive_path
 
 
@@ -270,58 +268,58 @@ def build_solution_package(
     archive_format: str = "zip",
 ) -> Path:
     """Build a solution package.
-    
+
     Args:
         package_spec: Package specification from manifest
         repo_root: Repository root directory
         output_dir: Output directory for packages
         version: Version string for the package
         archive_format: Archive format ("zip" or "tar.gz")
-        
+
     Returns:
         Path to created archive
     """
     package_name = package_spec.get("name", "unknown")
     logger.info(f"Building package: {package_name}")
-    
+
     # Create staging directory
     staging_dir = output_dir / "staging" / package_name
     if staging_dir.exists():
         shutil.rmtree(staging_dir)
     staging_dir.mkdir(parents=True)
-    
+
     # Create skeleton directories
     skeleton_dirs = package_spec.get("skeleton_dirs", [])
     for skeleton_dir in skeleton_dirs:
         (staging_dir / skeleton_dir).mkdir(parents=True, exist_ok=True)
-    
+
     # Copy includes
     includes = package_spec.get("includes", [])
     file_manifest = copy_includes(staging_dir, repo_root, includes)
-    
+
     logger.info(f"Copied {len(file_manifest)} files to package")
-    
+
     # Create metadata
     metadata = create_package_metadata(package_spec, file_manifest, version)
-    
+
     # Write README and manifest
     write_readme(staging_dir, metadata)
     write_manifest(staging_dir, metadata)
-    
+
     # Create archive
     archive_output = output_dir / f"{package_name}-{version}"
     archive_path = create_archive(staging_dir, archive_output, archive_format)
-    
+
     logger.info(f"Created archive: {archive_path}")
-    
+
     # Calculate archive hash
     archive_hash = calculate_file_hash(archive_path)
     logger.info(f"Archive SHA256: {archive_hash}")
-    
+
     # Write hash file
     hash_path = archive_path.with_suffix(archive_path.suffix + ".sha256")
     hash_path.write_text(f"{archive_hash}  {archive_path.name}\n")
-    
+
     return archive_path
 
 
@@ -332,33 +330,33 @@ def build_all_solutions(
     archive_format: str = "zip",
 ) -> list[Path]:
     """Build all solution packages from manifest.
-    
+
     Args:
         manifest_path: Path to manifest YAML
         output_dir: Output directory
         version: Version override, or None to use manifest version
         archive_format: Archive format
-        
+
     Returns:
         List of created archive paths
     """
     manifest = load_manifest(manifest_path)
-    
+
     # Get version
     if version is None:
         version = manifest.get("version", "1.0.0")
-    
+
     logger.info(f"Building solutions from {manifest_path}")
     logger.info(f"Version: {version}")
     logger.info(f"Output: {output_dir}")
-    
+
     # Create output directory
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Build packages
     packages = manifest.get("packages", [])
     archives = []
-    
+
     for package_spec in packages:
         try:
             archive_path = build_solution_package(
@@ -371,7 +369,7 @@ def build_all_solutions(
             archives.append(archive_path)
         except Exception as e:
             logger.error(f"Failed to build package {package_spec.get('name')}: {e}")
-    
+
     # Create build summary
     summary = {
         "manifest": str(manifest_path),
@@ -387,13 +385,13 @@ def build_all_solutions(
             for archive in archives
         ],
     }
-    
+
     summary_path = output_dir / f"build_summary_{version}.json"
     with summary_path.open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
-    
+
     logger.info(f"Build summary: {summary_path}")
-    
+
     return archives
 
 
@@ -431,15 +429,15 @@ def main() -> int:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Configure logging
     logging.basicConfig(
         level=getattr(logging, args.log_level),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
-    
+
     try:
         archives = build_all_solutions(
             manifest_path=args.manifest,
@@ -447,7 +445,7 @@ def main() -> int:
             version=args.version,
             archive_format=args.format,
         )
-        
+
         print(f"\n{'='*60}")
         print("Solution Packaging Complete")
         print(f"{'='*60}")
@@ -456,9 +454,9 @@ def main() -> int:
             size_mb = archive.stat().st_size / (1024 * 1024)
             print(f"  - {archive.name} ({size_mb:.2f} MB)")
         print(f"{'='*60}\n")
-        
+
         return 0
-    
+
     except Exception as e:
         logger.error(f"Build failed: {e}", exc_info=True)
         return 1

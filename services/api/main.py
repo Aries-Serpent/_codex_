@@ -9,7 +9,7 @@ import time
 from collections.abc import MutableMapping
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -109,6 +109,7 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
     torch.long = int  # type: ignore[attr-defined]
     torch.no_grad = _fake_no_grad  # type: ignore[attr-defined]
 from codex_ml.peft.peft_adapter import apply_lora
+from codex_ml.registry.base import RegistryError
 from codex_ml.registry.models import get_model
 from codex_ml.registry.tokenizers import get_tokenizer
 
@@ -140,8 +141,8 @@ SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
     re.compile(rf"(?i)({_AWS_SECRET_PATTERN}\s*=\s*[A-Za-z0-9/+=]{{40}})"),
-    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{35})"),
-    re.compile(r"(?i)(ghp_[A-Za-z0-9]{36})"),
+    re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{20,})"),  # Google API keys: min 24 chars total (AIza + 20 suffix)
+    re.compile(r"(?i)(ghp_[A-Za-z0-9]{35,})"),  # GitHub PATs: min 39 chars total (ghp_ + 35 suffix)
     re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),
 )
 
@@ -189,7 +190,7 @@ def _extract_logits(output: Any) -> torch.Tensor:
     raise TypeError("model output does not contain logits tensor")
 
 
-def _resolve_context_limit(tokenizer: Any, model: Any) -> int | None:
+def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
     env_override = os.getenv("API_MAX_PROMPT_TOKENS")
     if env_override:
         try:
@@ -201,7 +202,7 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> int | None:
                 return parsed
             logger.warning("API_MAX_PROMPT_TOKENS must be positive", extra={"value": env_override})
 
-    def _coerce_int(value: Any) -> int | None:
+    def _coerce_int(value: Any) -> Optional[int]:
         if isinstance(value, bool):  # bool is subclass of int
             return None
         if isinstance(value, int) and value > 0:
@@ -210,7 +211,7 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> int | None:
             return int(value)
         return None
 
-    def _get_attr(obj: Any, *names: str) -> int | None:
+    def _get_attr(obj: Any, *names: str) -> Optional[int]:
         current = obj
         for name in names:
             current = getattr(current, name, None)
@@ -242,10 +243,10 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> int | None:
     return None
 
 
-def _get_model_vocab_size(model: Any) -> int | None:
+def _get_model_vocab_size(model: Any) -> Optional[int]:
     """Best-effort extraction of a model's vocabulary size."""
 
-    def _valid_size(value: Any) -> int | None:
+    def _valid_size(value: Any) -> Optional[int]:
         if isinstance(value, bool):  # pragma: no cover - defensive
             return None
         if isinstance(value, int) and value > 0:
@@ -332,7 +333,7 @@ def _load_components() -> tuple[Any, Any]:
         tokenizer = get_tokenizer(tokenizer_name)
         try:
             model = get_model(model_name, model_cfg)
-        except (ImportError, AttributeError) as exc:
+        except (ImportError, AttributeError, RegistryError, ValueError) as exc:
             logger.warning("Falling back to echo inference model", extra={"error": str(exc)})
             model = _EchoModel()
         model.eval()
@@ -355,7 +356,7 @@ class InferResponse(BaseModel):
 
 class TrainRequest(BaseModel):
     epochs: int = Field(1, ge=1, le=100)
-    notes: str | None = None
+    notes: Optional[str] = None
 
 
 class EvalRequest(BaseModel):

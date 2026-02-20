@@ -21,11 +21,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-from dataclasses import dataclass, field
-from datetime import UTC, datetime
-from pathlib import Path
-from typing import Iterable, Mapping, Optional
+import json  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable, Mapping, Optional  # noqa: E402
 
 
 @dataclass

@@ -8,15 +8,15 @@ from __future__ import annotations
 import logging
 logger = logging.getLogger(__name__)
 
-import argparse
-import hashlib
-import json
-import os
-import sys
-import time
-from datetime import datetime, UTC
-from pathlib import Path
-from typing import Any, Optional, Sequence, Union
+import argparse  # noqa: E402
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+from datetime import datetime, UTC  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional, Sequence, Union  # noqa: E402
 
 try:
     import torch
@@ -27,18 +27,18 @@ except Exception:  # keep imports resilient
     F = None  # type: ignore[assignment]
     clip_grad_norm_ = None  # type: ignore[assignment]
 
-from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.monitoring.codex_logging import (
+from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
+from codex_ml.monitoring.codex_logging import (  # noqa: E402
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
 )
-from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
-from codex_ml.monitoring.codex_logging import (
+from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse  # noqa: E402
+from codex_ml.monitoring.codex_logging import (  # noqa: E402
     _codex_sample_system,
 )
-from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
-from codex_ml.symbolic_pipeline import (
+from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt  # noqa: E402
+from codex_ml.symbolic_pipeline import (  # noqa: E402
     PretrainCfg,
     RewardModelCfg,
     RLHFCfg,
@@ -46,12 +46,12 @@ from codex_ml.symbolic_pipeline import (
     Weights,
     run_codex_symbolic_pipeline,
 )
-from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
-from codex_ml.utils.checkpointing import CheckpointManager, set_seed
-from codex_ml.utils.error_log import log_error
-from codex_ml.utils.provenance import export_environment
-from codex_ml.utils.repro import record_dataset_checksums
-from codex_utils.repro import log_env_info
+from codex_ml.tokenization import TokenizerAdapter, load_tokenizer  # noqa: E402
+from codex_ml.utils.checkpointing import CheckpointManager, set_seed  # noqa: E402
+from codex_ml.utils.error_log import log_error  # noqa: E402
+from codex_ml.utils.provenance import export_environment  # noqa: E402
+from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402
+from codex_utils.repro import log_env_info  # noqa: E402
 
 # Import TrainCfg and run_custom_trainer from training module
 # These are used by tests in tests/space_traversal/test_peft_comprehensive/

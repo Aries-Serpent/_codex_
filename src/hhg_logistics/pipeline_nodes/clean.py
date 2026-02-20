@@ -17,14 +17,12 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import csv
+import logging
 from collections.abc import Sequence
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
 
 def _coerce_row(row: dict, required: Sequence[str]) -> dict:
     coerced: dict = {}

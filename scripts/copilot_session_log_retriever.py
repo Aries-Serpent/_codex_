@@ -92,7 +92,7 @@ class CopilotSessionRetriever:
             repo_root: Root directory of repository for file verification
         """
         self.db_path = Path(db_path or os.getenv(
-            "CODEX_LOG_DB_PATH", 
+            "CODEX_LOG_DB_PATH",
             ".codex/session_logs.db"
         ))
         self.repo_root = Path(repo_root or os.getcwd())
@@ -105,7 +105,7 @@ class CopilotSessionRetriever:
             logger.warning(f"Database not found at {self.db_path}")
             # Create empty database with schema
             self._create_schema()
-        
+
         conn = sqlite3.connect(str(self.db_path))
         conn.row_factory = sqlite3.Row
         return conn
@@ -125,7 +125,7 @@ class CopilotSessionRetriever:
             )
         """)
         conn.execute("""
-            CREATE INDEX IF NOT EXISTS idx_session_timestamp 
+            CREATE INDEX IF NOT EXISTS idx_session_timestamp
             ON logs(session_id, timestamp)
         """)
         conn.commit()
@@ -146,7 +146,7 @@ class CopilotSessionRetriever:
         cursor = conn.cursor()
 
         query = """
-            SELECT 
+            SELECT
                 session_id,
                 MIN(timestamp) as start_time,
                 MAX(timestamp) as end_time,
@@ -156,10 +156,10 @@ class CopilotSessionRetriever:
             ORDER BY MAX(timestamp) DESC
             LIMIT ?
         """
-        
+
         cursor.execute(query, (limit,))
         sessions = []
-        
+
         for row in cursor.fetchall():
             sessions.append({
                 'session_id': row['session_id'],
@@ -167,7 +167,7 @@ class CopilotSessionRetriever:
                 'end_time': row['end_time'],
                 'message_count': row['message_count']
             })
-        
+
         conn.close()
         return sessions
 
@@ -203,10 +203,10 @@ class CopilotSessionRetriever:
             WHERE session_id = ?
             ORDER BY timestamp ASC
         """
-        
+
         cursor.execute(query, (session_id,))
         entries = []
-        
+
         for row in cursor.fetchall():
             metadata = {}
             if row['metadata']:
@@ -214,7 +214,7 @@ class CopilotSessionRetriever:
                     metadata = json.loads(row['metadata'])
                 except json.JSONDecodeError:
                     pass
-            
+
             entries.append(SessionLogEntry(
                 session_id=row['session_id'],
                 timestamp=row['timestamp'],
@@ -222,7 +222,7 @@ class CopilotSessionRetriever:
                 message=row['message'] or "",
                 metadata=metadata
             ))
-        
+
         conn.close()
         return entries
 
@@ -249,13 +249,13 @@ class CopilotSessionRetriever:
                 for match in matches:
                     # Clean up the path
                     file_path = match.strip()
-                    
+
                     # Skip if already seen
                     if (file_path, operation) in seen_files:
                         continue
-                    
+
                     seen_files.add((file_path, operation))
-                    
+
                     expected_files.append(ExpectedFile(
                         path=file_path,
                         operation=operation,
@@ -286,7 +286,7 @@ class CopilotSessionRetriever:
 
             # Check existence
             expected.exists = file_path.exists()
-            
+
             if expected.exists:
                 expected.verified = True
                 expected.notes = f"File exists at {file_path}"
@@ -308,7 +308,7 @@ class CopilotSessionRetriever:
             Session summary with verification results
         """
         logs = self.get_session_logs(session_id)
-        
+
         if not logs:
             logger.warning(f"No logs found for session {session_id}")
             return SessionSummary(
@@ -324,13 +324,13 @@ class CopilotSessionRetriever:
 
         start_time = logs[0].timestamp
         end_time = logs[-1].timestamp
-        
+
         # Extract expected files
         expected_files = self.extract_expected_files(logs)
-        
+
         # Verify files
         verified_files = self.verify_files(expected_files)
-        
+
         # Count results
         verified_count = sum(1 for f in verified_files if f.verified)
         missing_count = len(verified_files) - verified_count
@@ -346,8 +346,8 @@ class CopilotSessionRetriever:
         )
 
     def process_sessions_in_batches(
-        self, 
-        session_ids: List[str], 
+        self,
+        session_ids: List[str],
         batch_size: int = 5
     ) -> List[SessionSummary]:
         """
@@ -362,21 +362,21 @@ class CopilotSessionRetriever:
         """
         summaries = []
         total_sessions = len(session_ids)
-        
+
         logger.info(f"Processing {total_sessions} sessions in batches of {batch_size}")
-        
+
         for i in range(0, total_sessions, batch_size):
             batch = session_ids[i:i + batch_size]
             batch_num = (i // batch_size) + 1
             total_batches = (total_sessions + batch_size - 1) // batch_size
-            
+
             logger.info(f"Processing batch {batch_num}/{total_batches}: {len(batch)} sessions")
-            
+
             for session_id in batch:
                 logger.info(f"  Analyzing session: {session_id}")
                 summary = self.analyze_session(session_id)
                 summaries.append(summary)
-                
+
                 # Log summary
                 logger.info(
                     f"    Messages: {summary.message_count}, "
@@ -388,7 +388,7 @@ class CopilotSessionRetriever:
         return summaries
 
     def generate_report(
-        self, 
+        self,
         summaries: List[SessionSummary],
         output_path: Optional[str] = None
     ) -> str:
@@ -470,7 +470,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Retrieve and verify Copilot session logs"
     )
-    
+
     parser.add_argument(
         "--db-path",
         help="Path to session logs database"
@@ -532,7 +532,7 @@ def main():
         print(f"\n{'=' * 80}")
         print(f"Available Sessions (Last {args.last})")
         print(f"{'=' * 80}\n")
-        
+
         for i, session in enumerate(sessions, 1):
             print(f"{i}. Session ID: {session['session_id']}")
             print(f"   Start: {session['start_time']}")
@@ -554,13 +554,13 @@ def main():
 
     # Process last N sessions in batches
     session_ids = retriever.get_last_n_sessions(args.last)
-    
+
     if not session_ids:
         logger.warning("No sessions found in database")
         return
 
     logger.info(f"Retrieved {len(session_ids)} session IDs")
-    
+
     summaries = retriever.process_sessions_in_batches(
         session_ids,
         batch_size=args.batch_size
@@ -571,7 +571,7 @@ def main():
         summaries,
         output_path=args.output or ".codex/session_verification_report.md"
     )
-    
+
     print("\n" + "=" * 80)
     print(report)
     print("=" * 80)

@@ -1,5 +1,5 @@
 # Mutation Testing Configuration for Phase 15.2
-# 
+#
 # This file configures mutmut for mutation testing.
 # Run with: mutmut run --paths-to-mutate=src/
 #
@@ -29,15 +29,15 @@ def pre_mutation(context):
     # Skip test files
     if context.filename.startswith("tests/"):
         context.skip = True
-    
+
     # Skip __init__.py files
     if context.filename.endswith("__init__.py"):
         context.skip = True
-    
+
     # Skip type stubs
     if context.filename.endswith(".pyi"):
         context.skip = True
-    
+
     # Skip generated files
     if "generated" in context.filename:
         context.skip = True
@@ -50,7 +50,7 @@ def pre_mutation_ast(context):
         context.skip = True
     if context.current_source_line.strip().startswith("'''"):
         context.skip = True
-    
+
     # Skip comments
     if context.current_source_line.strip().startswith("#"):
         context.skip = True

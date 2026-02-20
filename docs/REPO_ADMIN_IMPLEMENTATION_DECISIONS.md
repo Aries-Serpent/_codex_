@@ -15,7 +15,7 @@
 5. [Section 4.3: Integration Questions](#section-43-integration-questions)
 6. [Section 4.4: Future Direction Questions](#section-44-future-direction-questions)
 7. [Implementation Roadmap](#implementation-roadmap)
-8. [References & Additional Context](#references--additional-context)
+8. <!-- BROKEN ANCHOR: [References & Additional Context](#references-additional-context) -->
 
 ---
 

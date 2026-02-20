@@ -10,12 +10,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import ast
-import re
-from dataclasses import dataclass, field
-from enum import Enum
-from pathlib import Path
-from typing import Callable, Optional, Union
+import ast  # noqa: E402
+import re  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from enum import Enum  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Callable, Optional, Union  # noqa: E402
 
 
 class SmellSeverity(Enum):

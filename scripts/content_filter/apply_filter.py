@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/content_filter/apply_filter.py [options]
-    
+
     Examples:
     $ python scripts/content_filter/apply_filter.py --help
 
@@ -30,11 +30,11 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
+import logging
 
+logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Content Filter (P2 Full Implementation with Knob Normalization)
 
 - Allowlist filtering (profiles A/B/C with combinable syntax e.g. A+B+C)

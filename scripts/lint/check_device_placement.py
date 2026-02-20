@@ -8,7 +8,7 @@ safe_model_to_device() instead.
 
 Usage:
     python scripts/lint/check_device_placement.py [files...]
-    
+
 Exit codes:
     0 - No issues found
     1 - Unsafe patterns detected
@@ -23,13 +23,13 @@ from typing import List, Tuple
 
 class DevicePlacementChecker(ast.NodeVisitor):
     """AST visitor to detect unsafe model.to() patterns."""
-    
+
     def __init__(self, filename: str):
         self.filename = filename
         self.issues: List[Tuple[int, str]] = []
         self.in_model_class = False
         self.model_var_names = set()
-        
+
     def visit_ClassDef(self, node: ast.ClassDef):
         """Track if we're in a model class definition."""
         # Check if class inherits from nn.Module
@@ -40,14 +40,14 @@ class DevicePlacementChecker(ast.NodeVisitor):
             base.value.attr == 'nn'
             for base in node.bases
         )
-        
+
         old_in_model = self.in_model_class
         if is_model_class:
             self.in_model_class = True
-        
+
         self.generic_visit(node)
         self.in_model_class = old_in_model
-        
+
     def visit_Assign(self, node: ast.Assign):
         """Track variable names that hold models."""
         # Look for model assignments
@@ -59,9 +59,9 @@ class DevicePlacementChecker(ast.NodeVisitor):
                         self.model_var_names.add(target.id)
                     elif isinstance(target, ast.Attribute):
                         self.model_var_names.add(target.attr)
-        
+
         self.generic_visit(node)
-    
+
     def visit_Call(self, node: ast.Call):
         """Check for direct .to() calls on models."""
         if isinstance(node.func, ast.Attribute) and node.func.attr == 'to':
@@ -72,11 +72,11 @@ class DevicePlacementChecker(ast.NodeVisitor):
                 if not self._has_exception_annotation(lineno):
                     self.issues.append((
                         lineno,
-                        f"Direct .to() call on model detected. Use safe_model_to_device() instead."
+                        "Direct .to() call on model detected. Use safe_model_to_device() instead."
                     ))
-        
+
         self.generic_visit(node)
-    
+
     def _is_model_instantiation(self, node: ast.Call) -> bool:
         """Check if call looks like model instantiation."""
         if isinstance(node.func, ast.Name):
@@ -87,21 +87,21 @@ class DevicePlacementChecker(ast.NodeVisitor):
                 'Transformer', 'BERT', 'GPT', 'Embedding'
             ])
         return False
-    
+
     def _is_model_to_call(self, node: ast.AST) -> bool:
         """Check if expression refers to a model variable."""
         if isinstance(node, ast.Name):
             # Direct variable: model.to()
             return node.id in self.model_var_names or \
                    any(pattern in node.id for pattern in ['model', 'net', 'encoder', 'decoder'])
-        
+
         elif isinstance(node, ast.Attribute):
             # Attribute: self.model.to()
             return node.attr in self.model_var_names or \
                    any(pattern in node.attr for pattern in ['model', 'net', 'encoder', 'decoder'])
-        
+
         return False
-    
+
     def _has_exception_annotation(self, lineno: int) -> bool:
         """Check if line has exception annotation comment."""
         try:
@@ -119,12 +119,12 @@ class DevicePlacementChecker(ast.NodeVisitor):
 def check_file(filepath: Path) -> List[Tuple[int, str]]:
     """
     Check a Python file for unsafe device placement patterns.
-    
+
     Parameters
     ----------
     filepath : Path
         Path to Python file to check
-        
+
     Returns
     -------
     List[Tuple[int, str]]
@@ -133,11 +133,11 @@ def check_file(filepath: Path) -> List[Tuple[int, str]]:
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             tree = ast.parse(f.read(), filename=str(filepath))
-        
+
         checker = DevicePlacementChecker(str(filepath))
         checker.visit(tree)
         return checker.issues
-    
+
     except SyntaxError as e:
         print(f"Syntax error in {filepath}: {e}", file=sys.stderr)
         return []
@@ -149,12 +149,12 @@ def check_file(filepath: Path) -> List[Tuple[int, str]]:
 def main(files: List[str]) -> int:
     """
     Main entry point for linter.
-    
+
     Parameters
     ----------
     files : List[str]
         List of file paths to check
-        
+
     Returns
     -------
     int
@@ -163,28 +163,28 @@ def main(files: List[str]) -> int:
     if not files:
         print("Usage: check_device_placement.py <file1.py> [file2.py ...]", file=sys.stderr)
         return 2
-    
+
     total_issues = 0
-    
+
     for filepath in files:
         path = Path(filepath)
-        
+
         # Skip test files and this script itself
         if 'test_' in path.name or path.name == 'check_device_placement.py':
             continue
-        
+
         # Skip if not a Python file
         if path.suffix != '.py':
             continue
-        
+
         issues = check_file(path)
-        
+
         if issues:
             print(f"\n{filepath}:")
             for lineno, message in issues:
                 print(f"  Line {lineno}: {message}")
             total_issues += len(issues)
-    
+
     if total_issues > 0:
         print(f"\n❌ Found {total_issues} unsafe device placement pattern(s).")
         print("Please use safe_model_to_device() instead of direct .to() calls.")

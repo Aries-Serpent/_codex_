@@ -21,13 +21,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import shutil
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Optional
-from urllib.parse import urlparse
+import json  # noqa: E402
+import os  # noqa: E402
+import shutil  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
+from urllib.parse import urlparse  # noqa: E402
 
 
 def _file_uri(p: Path) -> str:

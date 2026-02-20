@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/consolidate_configs.py [options]
-    
+
     Examples:
     $ python scripts/remediation/consolidate_configs.py --help
 
@@ -38,8 +38,8 @@ Consolidates duplicate configuration files following the canonical structure:
 """
 
 import shutil
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Configuration consolidation map
 # Format: (source_path, target_path, action)
@@ -122,12 +122,12 @@ class ConfigConsolidator:
                 if tgt_path.exists():
                     # Compare before removing
                     if self.compare_files(src_path, tgt_path):
-                        print(f"  Status: Identical - safe to remove source")
+                        print("  Status: Identical - safe to remove source")
                         if not self.dry_run:
                             src_path.unlink()
                             self.actions_taken.append(f"Removed {source}")
                     else:
-                        print(f"  ⚠ WARNING: Files differ! Manual review needed.")
+                        print("  ⚠ WARNING: Files differ! Manual review needed.")
                         self.errors.append(f"Difference: {source} ≠ {target}")
                 else:
                     print(f"  ⚠ WARNING: Target {target} doesn't exist!")
@@ -138,11 +138,11 @@ class ConfigConsolidator:
                         self.actions_taken.append(f"Moved {source} → {target}")
 
             elif action == "keep_both_update_shim":
-                print(f"  Status: Keep both, add to SHIM inventory")
+                print("  Status: Keep both, add to SHIM inventory")
                 self.actions_taken.append(f"Track in SHIM: {source} ↔ {target}")
 
             elif action == "merge":
-                print(f"  Status: Requires manual merge")
+                print("  Status: Requires manual merge")
                 self.errors.append(f"Manual merge needed: {source} + {target}")
 
             print()

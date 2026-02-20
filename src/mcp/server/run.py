@@ -28,6 +28,7 @@ from typing import Optional
 
 import uvicorn
 
+logger = logging.getLogger(__name__)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run MCP FastAPI server")

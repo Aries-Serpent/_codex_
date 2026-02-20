@@ -13,10 +13,10 @@ Key features:
 
 Usage:
     from codex.utils.config_loader import load_config, load_error_config
-    
+
     # Load error configuration
     errors = load_error_config()
-    
+
     # Load application configuration
     cfg = load_config(config_name="base", config_dir="conf")
 """
@@ -87,7 +87,7 @@ class ConfigLoader:
 
     def __init__(self, repo_root: Path | None = None) -> None:
         """Initialize the config loader.
-        
+
         Args:
             repo_root: Root directory of the repository. If None, auto-detected.
         """
@@ -145,11 +145,11 @@ class ConfigLoader:
 
     def get_error(self, category: str, error_key: str) -> ErrorConfig | None:
         """Get structured error configuration.
-        
+
         Args:
             category: Error category (e.g., 'config_errors', 'hydra_errors')
             error_key: Specific error key within category
-            
+
         Returns:
             ErrorConfig object or None if not found
         """
@@ -164,10 +164,10 @@ class ConfigLoader:
 
     def _resolve_config_dir(self, config_dir: str | Path | None) -> Path:
         """Resolve config directory path with dual-path support.
-        
+
         Args:
             config_dir: Config directory path (None, relative, or absolute)
-            
+
         Returns:
             Resolved Path object
         """
@@ -184,11 +184,11 @@ class ConfigLoader:
 
     def _try_legacy_path(self, config_name: str, primary_dir: Path) -> Path | None:
         """Try to find config in legacy location.
-        
+
         Args:
             config_name: Name of the config file
             primary_dir: Primary directory that was checked
-            
+
         Returns:
             Path to legacy config file or None if not found
         """
@@ -219,16 +219,16 @@ class ConfigLoader:
         allow_fallback: bool = True
     ) -> DictConfig | dict[str, Any]:
         """Load configuration using Hydra Compose API.
-        
+
         Args:
             config_name: Name of config file (without .yaml extension)
             config_dir: Directory containing config files (relative to repo root or absolute)
             overrides: List of config overrides (e.g., ["key=value"])
             allow_fallback: Whether to use fallback when config not found
-            
+
         Returns:
             DictConfig (or dict if OmegaConf unavailable)
-            
+
         Raises:
             MissingConfigException: If config not found and allow_fallback=False
         """
@@ -305,11 +305,11 @@ class ConfigLoader:
     @staticmethod
     def _apply_overrides(data: dict[str, Any], overrides: list[str]) -> dict[str, Any]:
         """Apply dotlist overrides to configuration dictionary.
-        
+
         Args:
             data: Configuration dictionary
             overrides: List of override strings (e.g., ["key.subkey=value"])
-            
+
         Returns:
             Modified configuration dictionary
         """
@@ -357,13 +357,13 @@ def load_config(
     allow_fallback: bool = True
 ) -> DictConfig | dict[str, Any]:
     """Load configuration using global loader.
-    
+
     Args:
         config_name: Name of config file (without .yaml extension)
         config_dir: Directory containing config files
         overrides: List of config overrides
         allow_fallback: Whether to use fallback when config not found
-        
+
     Returns:
         Configuration object
     """
@@ -373,7 +373,7 @@ def load_config(
 
 def load_error_config() -> dict[str, Any]:
     """Load error configuration.
-    
+
     Returns:
         Error configuration dictionary
     """

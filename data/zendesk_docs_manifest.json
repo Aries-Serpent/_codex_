@@ -14,9 +14,7 @@
     ]
   },
   "guide": {
-    "themes": [
-      "https://developer.zendesk.com/documentation/help_center/help-center-templates/introduction-to-templates/"
-    ]
+    "themes": []
   },
   "routing": {
     "skills": [

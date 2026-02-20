@@ -94,8 +94,8 @@ class TestCircuitBreaker:
 
         assert cb.state == CircuitState.OPEN
 
-        # Wait for timeout
-        time.sleep(0.15)
+        # Wait for timeout with buffer for timing precision
+        time.sleep(0.2)  # Increased from 0.15 to 0.2 for reliability
 
         # Next call should enter half-open
         def success_func():
@@ -122,8 +122,8 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        # Wait and enter half-open
-        time.sleep(0.15)
+        # Wait and enter half-open with buffer
+        time.sleep(0.2)  # Increased from 0.15 to 0.2
 
         # Successful calls should close circuit
         def success_func():
@@ -149,8 +149,8 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        # Wait and enter half-open
-        time.sleep(0.15)
+        # Wait and enter half-open with buffer
+        time.sleep(0.2)  # Increased from 0.15 to 0.2
 
         # Failure in half-open should reopen circuit
         with pytest.raises(ValueError):
@@ -219,7 +219,7 @@ class TestRetryWithBackoff:
         """Test all retries exhausted"""
         mock_func = Mock(side_effect=ValueError("fail"))
 
-        with pytest.raises(ValueError, match="fail"):
+        with pytest.raises(ValueError, match=r"^fail$"):
             retry_with_backoff(
                 mock_func,
                 max_retries=2,

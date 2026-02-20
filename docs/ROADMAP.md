@@ -406,10 +406,10 @@ None active.
 
 ## 📚 Related Documents
 
-- [Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md) - Architecture overview
-- [Dashboard](system/CODEBASE_DASHBOARD.md) - Live status
+- [Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md) - Architecture overview
+- [Dashboard](./system/CODEBASE_DASHBOARD.md) - Live status
 - [Contributing](CONTRIBUTING.md) - How to contribute
-- [Architecture](ARCHITECTURE.md) - Technical architecture
+- [Architecture](./ARCHITECTURE.md) - Technical architecture
 - [MCP Planset](mcp/ADVANCED_FEATURES_PLANSET.md) - MCP roadmap details
 
 ---
@@ -419,6 +419,6 @@ None active.
 **Next Review**: 2026-01-06  
 **Version**: 1.0.0
 
-**Questions?** Check [Dashboard](system/CODEBASE_DASHBOARD.md) for current status.
+**Questions?** Check [Dashboard](./system/CODEBASE_DASHBOARD.md) for current status.
 
 **Want to contribute?** See phase-specific tasks above or [Contributing Guide](CONTRIBUTING.md).

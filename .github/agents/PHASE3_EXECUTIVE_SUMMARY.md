@@ -255,7 +255,7 @@ The integrated documentation evolution initiative has successfully transformed t
 - [Phase 3 Detailed Report](.github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md)
 - [Agent Development Guide](.github/agents/AGENT_DEVELOPMENT_GUIDE.md)
 - [Agent Registry](.github/agents/AGENT_REGISTRY.md)
-- [Architecture Documentation](.github/agents/ARCHITECTURE.md)
+- [Architecture Documentation](../../docs/ARCHITECTURE.md)
 
 ---
 

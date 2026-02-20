@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_tests.py [options]
-    
+
     Examples:
     $ python scripts/generate_tests.py --help
 
@@ -47,12 +47,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from tests.framework.test_generator import UnitTestGenerator
 from tests.specs.flow_specifications import (
-    physics_orchestration_spec,
     diffusion_flow_spec,
-    quantum_game_spec,
     mental_mapping_spec,
+    physics_orchestration_spec,
+    quantum_game_spec,
 )
-
 
 SPEC_MAP = {
     "physics_orchestration": physics_orchestration_spec,

@@ -100,7 +100,10 @@ def test_split_error_conditions():
 
     # Empty dataset
     with pytest.raises(ValueError, match="Cannot split empty dataset"):
-        datasets.split_dataset(torch.utils.data.TensorDataset(), split_ratio=(0.8, 0.2))
+        datasets.split_dataset(
+            torch.utils.data.TensorDataset(torch.zeros(0, 5), torch.zeros(0, dtype=torch.long)),
+            split_ratio=(0.8, 0.2),
+        )
 
     # Single sample with validation
     with pytest.raises(ValueError, match="Insufficient samples for validation split"):

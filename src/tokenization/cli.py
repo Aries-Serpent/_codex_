@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import inspect as inspect_module
 import json
+import logging
 import shutil
 import sys
 import types
@@ -15,6 +12,8 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NoReturn
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
@@ -109,7 +108,7 @@ if _typer is None:  # pragma: no cover - fallback CLI when typer missing
 else:  # pragma: no cover - typer available
     typer = _typer
 
-from tokenizer.fast_tokenizer import build_tokenizer
+from tokenizer.fast_tokenizer import build_tokenizer  # noqa: E402
 
 app = typer.Typer(help="Tokenizer utilities")
 

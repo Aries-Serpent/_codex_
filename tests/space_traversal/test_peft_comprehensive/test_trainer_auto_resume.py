@@ -24,6 +24,22 @@ HAS_TORCH_RUNTIME = bool(
 )
 
 
+@pytest.fixture(autouse=True)
+def disable_torch_profiler(monkeypatch):
+    """Disable PyTorch profiler to avoid Protocol isinstance issues."""
+    if not HAS_TORCH_RUNTIME:
+        return
+    try:
+        import torch.profiler as profiler_module
+        # Disable profiler record function to prevent Protocol isinstance errors
+        if hasattr(profiler_module, "_record_function_enter"):
+            monkeypatch.setattr(profiler_module, "_record_function_enter", lambda *args, **kwargs: None)
+        if hasattr(profiler_module, "_record_function_exit"):
+            monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
+    except (ImportError, AttributeError):
+        pass  # PyTorch profiler not available or already disabled
+
+
 def _make_loader(torch):
     inputs = torch.zeros((4, 2))
     targets = torch.zeros((4,), dtype=torch.long)

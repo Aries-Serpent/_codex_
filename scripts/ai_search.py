@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Ai Search
 
@@ -8,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/ai_search.py [options]
-    
+
     Examples:
     $ python scripts/ai_search.py --help
 
@@ -36,13 +37,14 @@ This module provides efficient search capabilities across the multi-layered
 repository indices for AI assistants and agents.
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
 import json
-from typing import Any, Optional
-from dataclasses import dataclass
 import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Optional
 
 
 @dataclass
@@ -65,7 +67,7 @@ class AIRepositorySearch:
         self.structural_index: dict[str, Any] = {}
         self.entity_index: dict[str, Any] = {}
         self.metadata_index: dict[str, Any] = {}
-        
+
         self.load_indices()
 
     def load_indices(self):
@@ -76,7 +78,7 @@ class AIRepositorySearch:
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
-            print(f"⚠ Warning: content_index.json not found", file=sys.stderr)
+            print("⚠ Warning: content_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "semantic_index.json", 'r') as f:
@@ -84,7 +86,7 @@ class AIRepositorySearch:
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
-            print(f"⚠ Warning: semantic_index.json not found", file=sys.stderr)
+            print("⚠ Warning: semantic_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "structural_index.json", 'r') as f:
@@ -92,7 +94,7 @@ class AIRepositorySearch:
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
-            print(f"⚠ Warning: structural_index.json not found", file=sys.stderr)
+            print("⚠ Warning: structural_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "entity_index.json", 'r') as f:
@@ -100,7 +102,7 @@ class AIRepositorySearch:
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
-            print(f"⚠ Warning: entity_index.json not found", file=sys.stderr)
+            print("⚠ Warning: entity_index.json not found", file=sys.stderr)
 
         try:
             with open(self.index_dir / "metadata_index.json", 'r') as f:
@@ -108,13 +110,13 @@ class AIRepositorySearch:
         except FileNotFoundError as e:
             logger.debug(f"FileNotFoundError: {e}")
             logger.warning(f"FileNotFoundError: {e}", exc_info=True)
-            print(f"⚠ Warning: metadata_index.json not found", file=sys.stderr)
+            print("⚠ Warning: metadata_index.json not found", file=sys.stderr)
 
     def search_by_keyword(self, keyword: str, max_results: int = 10) -> list[SearchResult]:
         """Search for files by keyword."""
         results = []
         keyword_lower = keyword.lower()
-        
+
         # Exact match
         if keyword in self.semantic_index:
             for path in self.semantic_index[keyword][:max_results]:
@@ -124,7 +126,7 @@ class AIRepositorySearch:
                     match_type="keyword_exact",
                     context={"keyword": keyword}
                 ))
-        
+
         # Partial match
         if len(results) < max_results:
             for key, paths in self.semantic_index.items():
@@ -137,21 +139,21 @@ class AIRepositorySearch:
                                 match_type="keyword_partial",
                                 context={"keyword": key, "query": keyword}
                             ))
-                
+
                 if len(results) >= max_results:
                     break
-        
+
         return results[:max_results]
 
     def search_by_entity(self, entity_name: str, entity_type: Optional[str] = None) -> list[SearchResult]:
         """Search for entities (classes, functions, etc.)."""
         results = []
-        
+
         for hash, entity in self.entity_index.items():
             if entity['name'] == entity_name:
                 if entity_type and entity['type'] != entity_type:
                     continue
-                
+
                 results.append(SearchResult(
                     path=entity['path'],
                     relevance_score=1.0,
@@ -162,7 +164,7 @@ class AIRepositorySearch:
                         "line_end": entity['line_end']
                     }
                 ))
-        
+
         # Partial match on name
         if not results:
             entity_name_lower = entity_name.lower()
@@ -170,7 +172,7 @@ class AIRepositorySearch:
                 if entity_name_lower in entity['name'].lower():
                     if entity_type and entity['type'] != entity_type:
                         continue
-                    
+
                     results.append(SearchResult(
                         path=entity['path'],
                         relevance_score=0.6,
@@ -181,14 +183,14 @@ class AIRepositorySearch:
                             "line_end": entity['line_end']
                         }
                     ))
-        
+
         return results
 
     def search_by_path_pattern(self, pattern: str) -> list[SearchResult]:
         """Search for files matching a path pattern."""
         results = []
         pattern_lower = pattern.lower()
-        
+
         for file_path, file_data in self.content_index.items():
             relative_path = file_data['relative_path']
             if pattern_lower in relative_path.lower():
@@ -203,13 +205,13 @@ class AIRepositorySearch:
                         "entities_count": len(file_data['entities'])
                     }
                 ))
-        
+
         return sorted(results, key=lambda r: r.relevance_score, reverse=True)
 
     def search_by_tag(self, tag: str) -> list[SearchResult]:
         """Search for files by semantic tag."""
         results = []
-        
+
         for file_path, file_data in self.content_index.items():
             if tag in file_data.get('semantic_tags', []):
                 results.append(SearchResult(
@@ -221,49 +223,49 @@ class AIRepositorySearch:
                         "language": file_data['language']
                     }
                 ))
-        
+
         return results
 
     def find_similar_files(self, reference_path: str, max_results: int = 5) -> list[SearchResult]:
         """Find files similar to the reference file."""
         results = []
-        
+
         # Find reference file data
         reference_data = None
         for file_path, file_data in self.content_index.items():
             if file_data['relative_path'] == reference_path:
                 reference_data = file_data
                 break
-        
+
         if not reference_data:
             return results
-        
+
         # Calculate similarity based on keywords and tags
         reference_keywords = set(reference_data.get('keywords', []))
         reference_tags = set(reference_data.get('semantic_tags', []))
-        
+
         similarities = []
         for file_path, file_data in self.content_index.items():
             if file_data['relative_path'] == reference_path:
                 continue
-            
+
             file_keywords = set(file_data.get('keywords', []))
             file_tags = set(file_data.get('semantic_tags', []))
-            
+
             # Calculate Jaccard similarity
             keyword_overlap = len(reference_keywords & file_keywords)
             tag_overlap = len(reference_tags & file_tags)
-            
+
             if keyword_overlap > 0 or tag_overlap > 0:
                 score = (keyword_overlap * 0.7 + tag_overlap * 0.3) / max(
                     len(reference_keywords | file_keywords),
                     1
                 )
                 similarities.append((file_data['relative_path'], score, file_data))
-        
+
         # Sort by similarity
         similarities.sort(key=lambda x: x[1], reverse=True)
-        
+
         for path, score, file_data in similarities[:max_results]:
             results.append(SearchResult(
                 path=path,
@@ -275,7 +277,7 @@ class AIRepositorySearch:
                     "shared_keywords": len(reference_keywords & set(file_data.get('keywords', [])))
                 }
             ))
-        
+
         return results
 
     def get_file_details(self, relative_path: str) -> Optional[dict[str, Any]]:
@@ -292,16 +294,16 @@ class AIRepositorySearch:
     def multi_search(self, query: str, max_results: int = 10) -> list[SearchResult]:
         """Perform multi-strategy search combining different search types."""
         all_results = []
-        
+
         # Keyword search
         all_results.extend(self.search_by_keyword(query, max_results))
-        
+
         # Entity search
         all_results.extend(self.search_by_entity(query))
-        
+
         # Path pattern search
         all_results.extend(self.search_by_path_pattern(query))
-        
+
         # Deduplicate and sort by relevance
         seen_paths = set()
         unique_results = []
@@ -309,7 +311,7 @@ class AIRepositorySearch:
             if result.path not in seen_paths:
                 seen_paths.add(result.path)
                 unique_results.append(result)
-        
+
         unique_results.sort(key=lambda r: r.relevance_score, reverse=True)
         return unique_results[:max_results]
 
@@ -317,7 +319,7 @@ class AIRepositorySearch:
 def main():
     """Demo search interface."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Search AI-indexed repository")
     parser.add_argument("query", help="Search query")
     parser.add_argument("--type", choices=["keyword", "entity", "path", "multi"],
@@ -327,16 +329,16 @@ def main():
     parser.add_argument("--index-dir", type=Path,
                         default=Path(__file__).parent.parent / ".codex" / "ai_index",
                         help="Index directory")
-    
+
     args = parser.parse_args()
-    
+
     if not args.index_dir.exists():
         print(f"❌ Index directory not found: {args.index_dir}")
         print("Run: python scripts/generate_ai_index.py")
         return 1
-    
+
     search = AIRepositorySearch(args.index_dir)
-    
+
     # Perform search
     if args.type == "keyword":
         results = search.search_by_keyword(args.query, args.max_results)
@@ -346,18 +348,18 @@ def main():
         results = search.search_by_path_pattern(args.query)
     else:  # multi
         results = search.multi_search(args.query, args.max_results)
-    
+
     # Display results
     print(f"\n🔍 Search results for: {args.query}")
     print(f"Found {len(results)} result(s)\n")
-    
+
     for i, result in enumerate(results, 1):
         print(f"{i}. {result.path}")
         print(f"   Score: {result.relevance_score:.2f} | Type: {result.match_type}")
         if result.context:
             print(f"   Context: {json.dumps(result.context, indent=6)}")
         print()
-    
+
     return 0
 
 

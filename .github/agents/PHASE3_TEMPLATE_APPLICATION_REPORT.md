@@ -353,14 +353,12 @@ All others with domain-specific functionality
 ## 📚 Related Documentation
 
 ### Phase Documentation
-- [Phase 1 Report](../../_admin/PHASE1_TEMPLATE_APPLICATION_REPORT.md)
-- [Phase 2 Report](../../.mcp/PHASE2_TEMPLATE_APPLICATION_REPORT.md)
 - [Phase 3 Report](./PHASE3_TEMPLATE_APPLICATION_REPORT.md) (this document)
 
 ### Template Documentation
 - [Physics-Aligned Template Specification](./AGENT_DEVELOPMENT_GUIDE.md)
 - [Agent Registry](./AGENT_REGISTRY.md)
-- [Agent Architecture](./ARCHITECTURE.md)
+- [Agent Architecture](../../docs/ARCHITECTURE.md)
 
 ### Automation Scripts
 - [Template Application Script](/tmp/apply_agent_template.py)

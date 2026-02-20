@@ -6,15 +6,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import json
-import os
-import sqlite3
-import subprocess
-import sys
-from pathlib import Path
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import click
+import click  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer
@@ -474,7 +474,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
               default="root_cause", help="Grouping strategy")
 def batch_triage(issues, from_file, output, as_json, group_by):
     """Batch triage CI/test failures with automated remediation suggestions.
-    
+
     Examples:
         codex batch-triage --issues 2905,2906,2907,2908,2909,2910,2912,2913,2914,2915
         codex batch-triage --from-file scripts/ci/links_extraction.csv

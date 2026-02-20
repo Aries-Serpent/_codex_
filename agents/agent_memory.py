@@ -404,8 +404,8 @@ class AgentMemory:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                INSERT OR REPLACE INTO memories 
-                (memory_id, category, content, context, confidence, 
+                INSERT OR REPLACE INTO memories
+                (memory_id, category, content, context, confidence,
                  access_count, last_accessed, created_at, tags, related_memories)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -458,45 +458,57 @@ class AgentMemory:
         Retrieve a memory by ID or key.
 
         Args:
-            memory_id: The memory ID to retrieve
-            key: Alternative parameter name for backward compatibility (deprecated, use retrieve_content instead)
+            memory_id: The memory ID to retrieve (returns MemoryEntry)
+            key: Alternative parameter name for backward compatibility (returns content string)
 
         Returns:
-            MemoryEntry object, or the content string if using key parameter (for backward compatibility)
+            MemoryEntry object if using memory_id, or content string if using key parameter
 
         Note:
-            When using key parameter, returns content string only.
-            For new code, use retrieve_content(key) to get content or retrieve_memory(memory_id) to get MemoryEntry.
+            For backward compatibility with existing tests:
+            - retrieve_memory(key="foo") returns content string
+            - retrieve_memory("foo") returns MemoryEntry object (positional arg treated as memory_id)
+            - retrieve_memory(memory_id="foo") returns MemoryEntry object
         """
-        # Handle backward compatibility with 'key' parameter
-        if key is not None and memory_id is None:
-            memory_id = key
+        # Handle backward compatibility:
+        # - If called with key= kwarg, return content only
+        # - If called with memory_id= kwarg or positional, return MemoryEntry
+        if key is not None:
+            # Explicit key parameter - return content only
+            lookup_id = key
             return_content_only = True
-        else:
+        elif memory_id is not None:
+            # memory_id parameter (kwarg or positional) - return MemoryEntry
+            lookup_id = memory_id
             return_content_only = False
+        else:
+            return None
 
-        if memory_id is None:
+        if lookup_id is None:
+            return None
+
+        if lookup_id is None:
             return None
 
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (memory_id,))
+            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()
 
             if row:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), memory_id),
+                    (datetime.now().isoformat(), lookup_id),
                 )
                 conn.commit()
 
                 memory_entry = self._row_to_memory(row)
-                # Return just content if using key parameter (backward compat)
+                # Return just content for backward compat
                 if return_content_only:
                     return memory_entry.content
                 return memory_entry
@@ -524,7 +536,7 @@ class AgentMemory:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
@@ -648,8 +660,8 @@ class AgentMemory:
             # Get old, low-access memories
             cursor = conn.execute(
                 """
-                SELECT memory_id, content, confidence 
-                FROM memories 
+                SELECT memory_id, content, confidence
+                FROM memories
                 WHERE created_at < ? AND access_count < 3
             """,
                 (cutoff,),
@@ -1256,7 +1268,7 @@ if __name__ == "__main__":
 
     # Get guidance
     guidance = memory_system.get_guidance("fix security vulnerability path traversal")
-    print(f"\nGuidance for situation:")
+    print("\nGuidance for situation:")
     print(f"  Patterns matched: {len(guidance['patterns'])}")
     if guidance["suggested_approach"]:
         print(f"  Suggested approach: {guidance['suggested_approach']['based_on']}")
@@ -1284,7 +1296,7 @@ if __name__ == "__main__":
 
     # Show stats
     stats = memory_system.get_stats()
-    print(f"\nMemory System Stats:")
+    print("\nMemory System Stats:")
     print(f"  Total memories: {stats['memory_stats']['total_memories']}")
     print(f"  Patterns: {stats['patterns_count']}")
 

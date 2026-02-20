@@ -21,8 +21,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from pathlib import Path
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 _EXT_TO_MIME = {
     ".py": "text/x-python",

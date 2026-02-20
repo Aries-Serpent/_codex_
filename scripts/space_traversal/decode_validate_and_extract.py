@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/decode_validate_and_extract.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/decode_validate_and_extract.py --help
 
@@ -29,7 +29,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,8 +62,8 @@ def decode_and_validate(
       FileNotFoundError, jsonschema.ValidationError if schema invalid
       TypeError if input args are malformed
     """
-    from pathlib import Path
     import json
+    from pathlib import Path
 
     selected_path = input_path if input_path is not None else artifact_path
     if selected_path is None:
@@ -120,12 +122,12 @@ import base64
 import gzip
 import json
 import os
+import subprocess
 import sys
 import time
-import subprocess
 from pathlib import Path
 from typing import Any, Optional
-from urllib.request import urlopen, Request
+from urllib.request import Request, urlopen
 
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024
 GAP_KEYS = {"gaps", "missing_files", "missing", "evidence", "failures", "errors"}

@@ -29,7 +29,7 @@ except (ImportError, AttributeError):
 
 def set_seed(seed: int = 42) -> None:
     """Set random seeds for Python, NumPy, and PyTorch.
-    
+
     Args:
         seed: Random seed value
     """
@@ -61,7 +61,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True, seed: Option
     Example:
         # Enable for reproducibility with default seed
         set_deterministic_mode(True)
-        
+
         # Enable with custom seed
         set_deterministic_mode(True, seed=123)
 

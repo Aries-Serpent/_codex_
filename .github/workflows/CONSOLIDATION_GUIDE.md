@@ -251,7 +251,7 @@ gh workflow run test-suite.yml -f test-scope=core -f fail-fast=true
 - [Custom Actions README](../actions/)
 - [Cache Architecture](CACHE_ARCHITECTURE_DIAGRAMS.md)
 - [Workflow Analytics](WORKFLOW_ANALYTICS_USAGE.md)
-- [Agent Integration Guide](../docs/agent/OPERATIONAL_GUIDELINES.md)
+- [Agent Integration Guide](../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
 ## Support
 

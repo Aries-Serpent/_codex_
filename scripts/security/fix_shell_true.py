@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/fix_shell_true.py [options]
-    
+
     Examples:
     $ python scripts/security/fix_shell_true.py --help
 
@@ -33,26 +33,28 @@ Last Updated: 2026-01-16
 Fix shell=False in subprocess calls across the codebase.
 Replaces shell=False with shell=False and uses shlex.split for command parsing.
 """
-import re
 import logging
+import re
+
 logger = logging.getLogger(__name__)
-from pathlib import Path
 import sys
+from pathlib import Path
+
 
 def fix_shell_true_in_file(file_path: Path) -> bool:
     """Fix shell=False in a single file."""
     try:
         content = file_path.read_text(encoding='utf-8')
         original = content
-        
+
         # Check if file has subprocess.call with shell=False
         if 'shell=False' not in content:
             return False
-        
+
         # Skip files that are documentation, tests, or already have nosec comments
         if any(x in str(file_path) for x in ['docs/', 'tests/security/', 'semgrep_rules/', '.md']):
             return False
-        
+
         # Pattern 1: subprocess.call(shlex.split(cmd) if isinstance(cmd, str) else cmd, shell=False) → subprocess.call(shlex.split(cmd), shell=False)
         # Only fix simple cases where cmd is a single variable
         if re.search(r'subprocess\.call\([^,]+,\s*shell=False\)', content):
@@ -65,25 +67,25 @@ def fix_shell_true_in_file(file_path: Path) -> bool:
                     content,
                     count=1
                 )
-            
+
             # Replace subprocess.call(shlex.split(cmd) if isinstance(cmd, str) else cmd, shell=False) with safe version
             content = re.sub(
                 r'subprocess\.call\(([a-zA-Z_][a-zA-Z0-9_]*),\s*shell=False\)',
                 r'subprocess.call(shlex.split(\1) if isinstance(\1, str) else \1, shell=False)',
                 content
             )
-        
+
         # Pattern 2: subprocess.run(..., shell=False, ...) → subprocess.run(..., shell=False, ...)
         content = re.sub(
             r'\bshell=True\b',
             'shell=False',
             content
         )
-        
+
         if content != original:
             file_path.write_text(content, encoding='utf-8')
             return True
-        
+
         return False
     except Exception as e:
         logger.debug(f"Exception: {e}")
@@ -94,14 +96,14 @@ def main():
     """Fix all Python files."""
     base_dir = Path('/home/runner/work/_codex_/_codex_')
     fixed_count = 0
-    
+
     # Search in specific directories
     for pattern in ['src/**/*.py', 'scripts/**/*.py', 'agents/**/*.py']:
         for py_file in base_dir.glob(pattern):
             if fix_shell_true_in_file(py_file):
                 print(f"✅ Fixed: {py_file.relative_to(base_dir)}")
                 fixed_count += 1
-    
+
     print(f"\n✅ Fixed {fixed_count} files with shell=False issues")
     return 0
 

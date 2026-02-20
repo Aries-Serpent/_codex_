@@ -17,13 +17,10 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import io
 import json
+import logging
 import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
@@ -36,6 +33,8 @@ from datetime import UTC, datetime
 from itertools import count
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:
     import torch
@@ -52,7 +51,13 @@ try:  # packaging is optional but preferred for version parsing
 except Exception:  # pragma: no cover - treated as unavailable
     Version = None  # type: ignore[assignment]
 
-from .atomic_io import safe_write_bytes, safe_write_text
+try:  # provenance extras are optional
+    from .provenance import environment_summary as _environment_summary
+except Exception:  # pragma: no cover - optional dependency failures tolerated
+    _environment_summary = None  # type: ignore[assignment]
+
+from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
+from .runmeta import collect_run_meta  # noqa: E402
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
@@ -61,12 +66,6 @@ except Exception:  # pragma: no cover - optional dependency issues tolerated
 
     def snapshot_config(_config: object) -> dict[str, Any]:
         return {}
-
-
-try:  # provenance extras are optional
-    from .provenance import environment_summary as _environment_summary
-except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[assignment]
 
 
 try:  # runtime metadata sidecar (best-effort)
@@ -79,8 +78,6 @@ except Exception:  # pragma: no cover - optional dependency
     def write_run_manifest(*_args: object, **_kwargs: object) -> None:
         return None
 
-
-from .runmeta import collect_run_meta
 
 # NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
 # All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
@@ -387,7 +384,7 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             else:
                 hasher.update(value)
             return
-        if isinstance(value, int | float | bool) or value is None:
+        if isinstance(value, (int, float, bool)) or value is None:
             hasher.update(b"prim")
             hasher.update(repr(value).encode("utf-8"))
             return

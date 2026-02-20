@@ -14,11 +14,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-import typer
+import typer  # noqa: E402
 
 app = typer.Typer(help="AST tools: analyze, audit, diff.")
 

@@ -48,6 +48,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
 
+__version__ = "0.1.0"
+
+
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 from codex_ml.config import (
     ConfigError,
@@ -448,7 +451,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
 def _now_ts() -> str:
     """Generate ISO 8601 timestamp with 'Z' suffix.
-    
+
     Returns:
         Timestamp string like "2026-02-01T12:34:56.789Z"
     """
@@ -889,8 +892,8 @@ def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
         path = base_dir / "telemetry.ndjson"
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True) + "\n")
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Telemetry write failed (best-effort): %s", e)
 
 
 def _telemetry_sample_rate() -> float:
@@ -1354,8 +1357,8 @@ def run_training(
             # Emit telemetry event when bf16 was requested but effective dtype differs
             try:
                 import torch as _torch  # noqa: F401
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Torch import failed for dtype telemetry: %s", e)
             else:
                 eff = _first_param_dtype(model)
                 requested_is_bf16 = False
@@ -1464,8 +1467,8 @@ def run_training(
                         eff_dtype,
                         str(dtype_obj),
                     )
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("Failed to check optimizer dtype compatibility: %s", e)
 
     if (
         dp_settings is not None
@@ -1636,7 +1639,11 @@ def run_training(
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
-            env_payload["torch_version"] = torch.__version__
+            try:
+                env_payload["torch_version"] = torch.__version__
+            except AttributeError:
+                # torch might be a mock without __version__
+                env_payload["torch_version"] = "unknown"
 
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))

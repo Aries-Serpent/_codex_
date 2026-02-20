@@ -2,10 +2,16 @@
 
 from unittest.mock import MagicMock
 
+import pytest
+
 
 class TestFixtureReusability:
     """Verify fixtures can be called multiple times without exhaustion."""
 
+    @pytest.mark.skipif(
+        not hasattr(pytest, "importorskip") or pytest.importorskip("torch", minversion=None) is None,
+        reason="torch not available in test environment"
+    )
     def test_mock_model_fixture_multiple_calls(self, mock_transformer_model):
         """Test mock_model fixture works across multiple calls."""
         # First call
@@ -18,6 +24,10 @@ class TestFixtureReusability:
         assert result2 is not None
         assert len(result2) > 0
 
+    @pytest.mark.skipif(
+        not hasattr(pytest, "importorskip") or pytest.importorskip("torch", minversion=None) is None,
+        reason="torch not available in test environment"
+    )
     def test_fixture_independence(self, mock_transformer_model):
         """Test fixture provides independent instances."""
         # Modify one instance

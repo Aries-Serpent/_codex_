@@ -16,14 +16,14 @@ PDA Loop Integration:
 import ast
 import re
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class ConcurrencyPattern:
     """Concurrency issue or thread safety problem."""
-    
+
     name: str
     pattern_type: str  # "race_condition", "deadlock", "thread_unsafe", "blocking"
     description: str
@@ -38,31 +38,31 @@ class ConcurrencyPattern:
 class ConcurrencyPatternMatcher:
     """
     Detects concurrency issues and thread safety problems.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: concurrency_pattern_detection
-    
+
     PDA Loop:
     - PERCEIVE: Multi-layer concurrency analysis (AST + regex)
     - DECIDE: Risk-based severity classification
     - ACT: Pattern detection with mitigation strategies
     - AFTERMATH: Metrics + cognitive brain learning
     """
-    
+
     def __init__(self):
         """Initialize concurrency pattern matcher."""
         self.detected_patterns: List[ConcurrencyPattern] = []
         #AFTERMATH_METRIC: concurrency_matcher_initialized
-    
+
     def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[ConcurrencyPattern]:
         """
         Analyze a file for concurrency issues.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: file_concurrency_analysis
-        
+
         Args:
             file_path: Path to file to analyze
             content: Optional file content (will read if not provided)
-            
+
         Returns:
             List of detected concurrency patterns
         """
@@ -71,9 +71,9 @@ class ConcurrencyPatternMatcher:
                 content = file_path.read_text()
             except (IOError, UnicodeDecodeError):
                 return []
-        
+
         detected: List[ConcurrencyPattern] = []
-        
+
         # PERCEIVE: Multi-layer concurrency scanning
         if file_path.suffix == ".py":
             # Python-specific analysis using AST
@@ -88,23 +88,23 @@ class ConcurrencyPatternMatcher:
                 # Intentionally skip files with syntax errors
                 # Concurrency analysis requires valid AST
                 pass
-        
+
         # General regex-based detection (all file types)
         detected.extend(self._detect_regex_patterns(content, file_path))
-        
+
         # AFTERMATH: Record metrics
         #AFTERMATH_METRIC: concurrency_issues_count = len(detected)
-        
+
         return detected
-    
+
     def _detect_race_conditions(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
         """
         Detect potential race conditions.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: race_condition_detection
         """
         detected = []
-        
+
         # Look for shared state access without synchronization
         for node in ast.walk(tree):
             # Global variable access in threaded code
@@ -124,7 +124,7 @@ class ConcurrencyPatternMatcher:
                         "variables": node.names
                     }
                 ))
-            
+
             # Check-then-act pattern (classic race condition)
             if isinstance(node, ast.If):
                 # Look for file existence checks followed by operations
@@ -143,10 +143,10 @@ class ConcurrencyPatternMatcher:
                             "line": node.lineno
                         }
                     ))
-            
+
             # Dictionary/list modification in concurrent code
             if isinstance(node, (ast.Assign, ast.AugAssign)):
-                if isinstance(node.targets[0] if isinstance(node, ast.Assign) else node.target, 
+                if isinstance(node.targets[0] if isinstance(node, ast.Assign) else node.target,
                              (ast.Subscript, ast.Attribute)):
                     # Look for threading imports in file
                     if self._has_threading_usage(tree):
@@ -164,17 +164,17 @@ class ConcurrencyPatternMatcher:
                                 "line": node.lineno
                             }
                         ))
-        
+
         return detected
-    
+
     def _detect_deadlock_risks(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
         """
         Detect potential deadlock scenarios.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: deadlock_detection
         """
         detected = []
-        
+
         # Look for nested lock acquisitions
         lock_acquisitions = []
         for node in ast.walk(tree):
@@ -184,7 +184,7 @@ class ConcurrencyPatternMatcher:
                         func_name = self._get_call_name(item.context_expr)
                         if 'lock' in func_name.lower() or 'acquire' in func_name.lower():
                             lock_acquisitions.append((node, func_name))
-        
+
         # Check for nested locks
         for outer_node, outer_lock in lock_acquisitions:
             for inner_node, inner_lock in lock_acquisitions:
@@ -205,7 +205,7 @@ class ConcurrencyPatternMatcher:
                             "inner_lock": inner_lock
                         }
                     ))
-        
+
         # Thread.join() inside lock
         for node in ast.walk(tree):
             if isinstance(node, ast.With):
@@ -232,17 +232,17 @@ class ConcurrencyPatternMatcher:
                                                 "line": inner.lineno
                                             }
                                         ))
-        
+
         return detected
-    
+
     def _detect_thread_unsafe(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
         """
         Detect thread-unsafe operations.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: thread_unsafe_detection
         """
         detected = []
-        
+
         # Non-atomic operations on shared state
         for node in ast.walk(tree):
             # ++ operation (not atomic in Python)
@@ -262,7 +262,7 @@ class ConcurrencyPatternMatcher:
                             "line": node.lineno
                         }
                     ))
-            
+
             # Time.sleep() in critical section
             if isinstance(node, ast.With):
                 for item in node.items:
@@ -288,17 +288,17 @@ class ConcurrencyPatternMatcher:
                                                 "line": inner.lineno
                                             }
                                         ))
-        
+
         return detected
-    
+
     def _detect_blocking_operations(self, tree: ast.AST, file_path: Path) -> List[ConcurrencyPattern]:
         """
         Detect blocking operations in async/concurrent code.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: blocking_operation_detection
         """
         detected = []
-        
+
         # Blocking I/O in async functions
         for node in ast.walk(tree):
             if isinstance(node, ast.AsyncFunctionDef):
@@ -306,7 +306,7 @@ class ConcurrencyPatternMatcher:
                 for inner in ast.walk(node):
                     if isinstance(inner, ast.Call):
                         func_name = self._get_call_name(inner)
-                        if any(blocking in func_name.lower() for blocking in 
+                        if any(blocking in func_name.lower() for blocking in
                               ['open', 'read', 'write', 'connect', 'send', 'recv']):
                             if not func_name.startswith('await'):
                                 detected.append(ConcurrencyPattern(
@@ -324,17 +324,17 @@ class ConcurrencyPatternMatcher:
                                         "function": func_name
                                     }
                                 ))
-        
+
         return detected
-    
+
     def _detect_regex_patterns(self, content: str, file_path: Path) -> List[ConcurrencyPattern]:
         """
         Detect concurrency issues using regex patterns.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: regex_concurrency_detection
         """
         detected = []
-        
+
         # GIL-dependent code
         if re.search(r'from\s+multiprocessing\s+import.*Process', content):
             detected.append(ConcurrencyPattern(
@@ -348,9 +348,9 @@ class ConcurrencyPatternMatcher:
                 mitigation="Use multiprocessing.Manager for shared state or message passing",
                 metadata={"file": str(file_path)}
             ))
-        
+
         return detected
-    
+
     def _contains_file_check(self, node: ast.AST) -> bool:
         """Check if expression contains file existence check."""
         for inner in ast.walk(node):
@@ -359,26 +359,26 @@ class ConcurrencyPatternMatcher:
                 if any(check in func_name.lower() for check in ['exists', 'isfile', 'isdir']):
                     return True
         return False
-    
+
     def _has_threading_usage(self, tree: ast.AST) -> bool:
         """Check if file uses threading."""
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                if any(alias.name in ['threading', 'concurrent.futures', 'asyncio', 'multiprocessing'] 
+                if any(alias.name in ['threading', 'concurrent.futures', 'asyncio', 'multiprocessing']
                       for alias in node.names):
                     return True
             elif isinstance(node, ast.ImportFrom):
                 if node.module in ['threading', 'concurrent.futures', 'asyncio', 'multiprocessing']:
                     return True
         return False
-    
+
     def _is_nested(self, outer: ast.AST, inner: ast.AST) -> bool:
         """Check if inner node is nested within outer node."""
         for node in ast.walk(outer):
             if node is inner:
                 return True
         return False
-    
+
     def _get_call_name(self, node: ast.Call) -> str:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
@@ -393,13 +393,13 @@ class ConcurrencyPatternMatcher:
                 parts.append(current.id)
             return '.'.join(reversed(parts))
         return "unknown"
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """
         Generate summary of detected concurrency issues.
-        
+
         #AFTERMATH_METRIC: concurrency_summary_generated
-        
+
         Returns:
             Dictionary with concurrency metrics
         """
@@ -409,10 +409,10 @@ class ConcurrencyPatternMatcher:
             "by_severity": {},
             "critical_risks": len([p for p in self.detected_patterns if p.severity in ["high", "critical"]])
         }
-        
+
         for pattern in self.detected_patterns:
             summary["by_type"][pattern.pattern_type] = summary["by_type"].get(pattern.pattern_type, 0) + 1
             summary["by_severity"][pattern.severity] = summary["by_severity"].get(pattern.severity, 0) + 1
-        
+
         #AFTERMATH_LESSON_LEARNED: concurrency_patterns_summarized
         return summary
