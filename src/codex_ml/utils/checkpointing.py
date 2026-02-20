@@ -849,7 +849,16 @@ def build_payload_bytes(
     if rng_state:
         state["rng"] = _rng_dump()
     buf = io.BytesIO()
-    torch.save(state, buf)
+    try:
+        torch.save(state, buf)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "FloatStorage" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            buf = io.BytesIO()
+            torch.save(state, buf, pickle_protocol=2)
+        else:
+            raise
     return buf.getvalue()
 
 
@@ -1075,7 +1084,15 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(state, p)
+    try:
+        torch.save(state, p)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            torch.save(state, p, pickle_protocol=2)
+        else:
+            raise
     _write_checksum_manifest(p)
 
 
@@ -1143,7 +1160,15 @@ class CheckpointManager:
                 state["optimizer"] = optimizer.state_dict()
             if scheduler is not None and hasattr(scheduler, "state_dict"):
                 state["scheduler"] = scheduler.state_dict()
-            torch.save(state, ep_dir / "state.pt")
+            try:
+                torch.save(state, ep_dir / "state.pt")
+            except (TypeError, RuntimeError) as e:
+                _msg = str(e)
+                if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+                    logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+                    torch.save(state, ep_dir / "state.pt", pickle_protocol=2)
+                else:
+                    raise
         else:  # pragma: no cover - fallback path
             state = {
                 "model": getattr(model, "__dict__", None),
