@@ -59,10 +59,10 @@ class ArchiveConfig:
         runtime_env: dict[str, str] = dict(os.environ)
         if env is not None:
             runtime_env.update(env)
-        # Lazy import to avoid circular import: backend → config → backend
-        from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: PLC0415
-        settings = RuntimeArchiveConfig.from_env(env=runtime_env)
-        return cls(url=settings.backend.url, backend=settings.backend.backend)
+        # Read env vars directly — avoids the backend→config→backend cyclic import.
+        url = runtime_env.get("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive.sqlite")
+        backend = runtime_env.get("CODEX_ARCHIVE_BACKEND") or infer_backend(url)
+        return cls(url=url, backend=backend)
 
     @classmethod
     def from_settings(
