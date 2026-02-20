@@ -918,13 +918,13 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                 results["migrations_failed"] += len(file_migrations)
                 results["errors"].append(f"{file_path}: {str(e)}")
 
-        results["files_modified"] = len(results["files_modified"])
+        results["files_modified"] = list(results["files_modified"])
 
         print("\nMigration Results:")
         print(f"  Attempted: {results['migrations_attempted']}")
         print(f"  Successful: {results['migrations_successful']}")
         print(f"  Failed: {results['migrations_failed']}")
-        print(f"  Files modified: {results['files_modified']}")
+        print(f"  Files modified: {len(results['files_modified'])}")
 
         if results["errors"]:
             print("\nErrors:")

@@ -144,7 +144,7 @@ class TestMockMultiGPU:
         monkeypatch.setenv("RANK", "0")
 
         # Mock Accelerator
-        with patch("src.training.accelerate_init_guard.Accelerator") as mock_accelerator:
+        with patch("src.training.accelerate_init_guard.Accelerator", create=True) as mock_accelerator:
             mock_acc_instance = Mock()
             mock_acc_instance.state = Mock()
             mock_acc_instance.state.distributed_type = "MULTI_GPU"
@@ -184,11 +184,11 @@ class TestGradientSynchronization:
         assert len(reduced_grads) == 2
         assert reduced_grads[0] == [0.5, 1.0, 1.5]
 
-    @patch("src.training.accelerate_init_guard.Accelerator")
+    @patch("src.training.accelerate_init_guard.Accelerator", create=True)
     def test_gradient_accumulation_mock(self, mock_accelerator):
         """Test gradient accumulation with accelerator"""
-        mock_acc = Mock()
-        mock_acc.accumulate = Mock()
+        from unittest.mock import MagicMock
+        mock_acc = MagicMock()
         mock_accelerator.return_value = mock_acc
 
         # Simulate gradient accumulation context
@@ -283,7 +283,7 @@ class TestCheckpointSynchronization:
 class TestCPUFallback:
     """Test CPU-only fallback scenarios"""
 
-    @patch("accelerate_init_guard.is_gpu_available", return_value=False)
+    @patch("src.training.accelerate_init_guard.is_gpu_available", return_value=False)
     def test_cpu_only_mode(self, mock_gpu):
         """Test training in CPU-only mode"""
         result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)

@@ -11,25 +11,22 @@ def dummy():
     pass
 
 
+def _get_histogram_count(histogram):
+    """Get observation count using the stable prometheus_client public API."""
+    if histogram is None:
+        return 0
+    for metric_family in histogram.collect():
+        for sample in metric_family.samples:
+            if sample.name.endswith("_count"):
+                return int(sample.value)
+    return 0
+
+
 def test_track_time_records_histogram():
     wrapped = track_time(REQUEST_LATENCY)(dummy)
-
-    # Get initial count (Histogram._sum has a _value attribute)
-    if REQUEST_LATENCY and hasattr(REQUEST_LATENCY, '_sum'):
-        count_before = REQUEST_LATENCY._sum._value.get()
-    else:
-        count_before = 0
-
+    count_before = _get_histogram_count(REQUEST_LATENCY)
     wrapped()
+    count_after = _get_histogram_count(REQUEST_LATENCY)
 
-    # Get count after execution
-    if REQUEST_LATENCY and hasattr(REQUEST_LATENCY, '_sum'):
-        count_after = REQUEST_LATENCY._sum._value.get()
-    else:
-        count_after = 1
-
-    # If prometheus is available, count should increment
     if REQUEST_LATENCY:
-        assert count_after > count_before
-    else:
-        assert True  # Test passes if prometheus not available
+        assert count_after == count_before + 1

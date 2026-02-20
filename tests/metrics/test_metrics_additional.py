@@ -60,6 +60,7 @@ def stub_torch(monkeypatch):
     fake_torch = SimpleNamespace(
         Tensor=FakeTensor,
         argmax=fake_argmax,
+        is_tensor=lambda x: isinstance(x, FakeTensor),
     )
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     yield fake_torch

@@ -16,6 +16,13 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+# Exported at module level so tests can patch via
+# patch("src.training.accelerate_init_guard.Accelerator", ...)
+try:
+    from accelerate import Accelerator  # noqa: F401
+except ImportError:
+    Accelerator = None  # type: ignore[misc,assignment]
+
 
 @dataclass
 class AccelerateInitResult:
@@ -66,10 +73,9 @@ def is_gpu_available() -> bool:
     try:
         import torch
 
-        return torch.cuda.is_available()
-    except ImportError as e:
+        return bool(torch.cuda.is_available())
+    except (ImportError, AttributeError) as e:
         logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
         return False
 
 
@@ -100,11 +106,12 @@ def safe_accelerate_init(
         ...     print(f"Error: {result.error}")
     """
     cpu_only_env = os.environ.get("CUDA_VISIBLE_DEVICES") == ""
-    # Check GPU availability
-    gpu_available = is_gpu_available()
+    # Reference functions through module namespace so mock patches take effect
+    _mod = sys.modules[__name__]
+    gpu_available = _mod.is_gpu_available()
 
     # Check accelerate availability
-    if not is_accelerate_available():
+    if not _mod.is_accelerate_available():
         if cpu_fallback and cpu_only_env:
             result = AccelerateInitResult(
                 success=False,
@@ -147,14 +154,16 @@ def safe_accelerate_init(
 
     # Try to initialize accelerate
     try:
-        # Check for distributed environment variables
-        from accelerate import Accelerator
+        # Use module-level Accelerator so tests can patch it
+        _AcceleratorCls = sys.modules[__name__].Accelerator
+        if _AcceleratorCls is None:
+            raise ImportError("accelerate not available")
 
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         rank = int(os.getenv("RANK", "0"))
 
         # Create accelerator (this will auto-detect distributed setup)
-        accelerator = Accelerator()
+        accelerator = _AcceleratorCls()
 
         # Determine backend
         backend = None
