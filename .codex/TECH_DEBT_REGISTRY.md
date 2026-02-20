@@ -485,6 +485,17 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 - **Session Target**: S56  
 - **DR**: DR-008
 
+### TD-048 · `typer/` stub directory at repo root shadows installed typer (namespace package)
+- **Severity**: High  
+- **Owner**: @mbaetiong  
+- **Root Cause**: `typer/testing.py` was added as a fallback stub to allow `from typer.testing import CliRunner` without real typer. Without `__init__.py`, Python treats `typer/` as a namespace package that wins over site-packages. `hasattr(typer, "Typer")` → False → all CLI `app` variables set to `None`. Fixed in S52 via `typer/__init__.py` transparent proxy.  
+- **Locations**: `typer/__init__.py` (new), `typer/testing.py`  
+- **Fix**: The `typer/__init__.py` proxy now loads real typer from site-packages when present. Monitor: if typer is removed from dependencies, the proxy gracefully degrades.  
+- **AI Agent**: `ci-importerror-agent`  
+- **Session Target**: S52 ✅ fixed  
+- **DR**: DR-009  
+- **Search Anchor**: `python -c "import typer; print(hasattr(typer, 'Typer'))"`
+
 ---
 
 ## Deep Research Questions
@@ -537,13 +548,27 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 > **Web**: https://www.martinfowler.com/articles/technical-debt.html  
 > **Question**: Which stub implementations have tests that are currently PASSING (masking the stub) vs FAILING (exposing it)?
 
+### DR-009 · Python namespace package shadowing of third-party dependencies
+> **Scope**: `typer/` stub at repo root shadowing installed `typer` wheel; any other stub dirs  
+> **Internal**: `find . -maxdepth 2 -name '__init__.py' -not -path './.git/*' -not -path './src/*' -not -path './tests/*' | xargs dirname | sort` — check all top-level dirs that could shadow packages  
+> **Web**: https://docs.python.org/3/reference/import.html#namespace-packages, https://peps.python.org/pep-0420/  
+> **Question**: Are there other directories at the repo root (or in `src/`) that are namespace packages shadowing installed wheels? Pattern: directory exists, no `__init__.py`, same name as a PyPI package.  
+> **Search**: `for d in $(ls -d */); do python -c "import ${d%/}; print('${d%/}:', __import__('${d%/}').__file__)" 2>/dev/null; done`
+
+### DR-010 · pytest test file path resolution (`parents[N]` fragility)
+> **Scope**: `_load_module()` in `tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py` uses `parents[2]` resolving to `tests/` not repo root; `detector_peft.py` `REPO_ROOT` uses hardcoded `parents[3]`  
+> **Internal**: `grep -rn "parents\[" tests/ scripts/ --include="*.py" | grep -v "__pycache__"` — audit all hardcoded parent-index path resolution  
+> **Web**: https://docs.pytest.org/en/latest/reference/fixtures.html#tmp-path, https://docs.python.org/3/library/pathlib.html#pathlib.Path.parents  
+> **Question**: How many other test/script files use hardcoded `parents[N]` for root detection? Should a shared `_repo_root()` utility (sentinel walk-up via `pyproject.toml`) be added to `tests/conftest.py`?  
+> **Fix Applied**: `_find_repo_root()` walk-up function added to `detector_peft.py` in S52 (TD-024).
+
 ---
 
 ## Session Delivery Map
 
 | Session | Items | Focus |
 |---------|-------|-------|
-| **S52** | TD-002, TD-007, TD-010, TD-014, TD-015 | CI fix session — isidentifier, unified_training, python_requires |
+| **S52** | TD-002, TD-007, TD-010, TD-014, TD-015, TD-048 ✅ | CI fix session — typer shadow, isidentifier, unified_training, python_requires |
 | **S53** | TD-003, TD-006, TD-008, TD-009, TD-017, TD-024, TD-027, TD-030, TD-033 | Reliability — PyTorch upgrade, security, RNG isolation |
 | **S54** | TD-011, TD-012, TD-016, TD-026, TD-029, TD-036, TD-039, TD-043 | Code quality — exception handling, tokenization, logging |
 | **S55** | TD-004, TD-019, TD-020, TD-023, TD-025, TD-031, TD-032, TD-045 | Debt clearance — TODO triage, DataValidator, BayesianEM |
@@ -557,11 +582,14 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 
 | Priority | Count | % |
 |----------|-------|---|
-| P1 — Immediate | 7 | 15% |
-| P2 — Near-term | 10 | 21% |
-| P3 — Code Quality | 17 | 36% |
-| P4 — Future | 13 | 28% |
-| **Total** | **47** | **100%** |
+| P1 — Immediate | 8 | 16% |
+| P2 — Near-term | 10 | 20% |
+| P3 — Code Quality | 17 | 34% |
+| P4 — Future | 13 | 26% |
+| **Total** | **48** | **100%** |
+
+**Deep Research Questions**: 10 (DR-001–DR-010)  
+**Fixed in S52**: TD-005 (partial), TD-006 (partial), TD-007 (deferred — skipped in CI), TD-013, TD-048 ✅
 
 ---
 

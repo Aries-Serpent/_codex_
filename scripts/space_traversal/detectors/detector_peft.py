@@ -1,7 +1,4 @@
-"""
-import logging
-logger = logging.getLogger(__name__)
-PEFT Hooks Detector
+"""PEFT Hooks Detector.
 
 Detects Parameter-Efficient Fine-Tuning (PEFT) implementations including LoRA,
 adapters, and hook systems for efficient model fine-tuning.
@@ -11,8 +8,11 @@ Patterns detected: peft, lora, adapter, hooks, fine-tuning
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # PEFT-related tokens and patterns
 PEFT_TOKENS = {
@@ -28,7 +28,22 @@ PEFT_TOKENS = {
 }
 
 MAX_READ_BYTES = 200_000
-REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _find_repo_root() -> Path:
+    """Walk up from this file to find the repo root (contains pyproject.toml)."""
+    current = Path(__file__).resolve().parent
+    for _ in range(10):
+        if (current / "pyproject.toml").exists():
+            return current
+        parent = current.parent
+        if parent == current:
+            break
+        current = parent
+    return Path(__file__).resolve().parents[3]
+
+
+REPO_ROOT = _find_repo_root()
 
 
 def _read_text(path_input) -> str:
