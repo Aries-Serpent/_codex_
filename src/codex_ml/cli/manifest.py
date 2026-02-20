@@ -79,6 +79,24 @@ if TYPER_AVAILABLE:
             typer.echo(f"Error: {e}")
             raise typer.Exit(2)
 
+    @app.command()
+    def init(
+        out: Path = typer.Option(..., help="Output path for the manifest JSON file"),
+        run_id: str = typer.Option(..., help="Run identifier"),
+    ):
+        """Create a new manifest file with schema codex.checkpoint.v2."""
+        import time
+        manifest_data = {
+            "schema": "codex.checkpoint.v2",
+            "run": {
+                "id": run_id,
+                "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            },
+        }
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
+        typer.echo(f"Manifest written to {out}")
+
 
 def _usage() -> int:
     sys.stdout.write(HELP)

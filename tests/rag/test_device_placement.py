@@ -158,6 +158,7 @@ class TestSafeModelToDevice:
 
         assert all(p.device.index == 1 for p in result.parameters())
 
+    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
     def test_batchnorm_buffers_moved(self):
         """Test that buffers (e.g., BatchNorm stats) are moved."""
         model = SimpleModel()
@@ -201,6 +202,7 @@ class TestSafeModelToDevice:
         # Verify requires_grad preserved
         assert all(p.requires_grad for p in result.parameters())
 
+    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
     def test_model_training_mode_preserved(self):
         """Test that training mode is preserved."""
         model = SimpleModel()

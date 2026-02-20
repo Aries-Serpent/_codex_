@@ -95,14 +95,14 @@ def _fix_pool(max_workers: int | None = None) -> None:
     try:  # pragma: no cover - implementation detail
         import concurrent.futures as _cf
 
-        if max_workers is not None:
+        if max_workers is not None and max_workers > 0:
             executor = getattr(_cf, "_executor", None)
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
     except Exception as exc:  # pragma: no cover - best effort
         _log_error("POOL", "fix executor", str(exc), "configure thread pool")
-        return
+        # Don't return — continue to enable SQLite pooling below
 
     # --- Enable SQLite connection pooling ---
     from .db import sqlite_patch
