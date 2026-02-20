@@ -29,7 +29,14 @@ spm = None
 def _get_sentencepiece():
     """Return the ``sentencepiece`` module or raise ``ImportError``."""
 
+    import sys as _sys
+
     global spm
+    # Check sys.modules first — allows tests to inject a stub via
+    # monkeypatch.setitem(sys.modules, "sentencepiece", stub)
+    patched = _sys.modules.get("sentencepiece")
+    if patched is not None and hasattr(patched, "SentencePieceProcessor"):
+        return patched
     if spm is not None:
         return spm
     try:  # pragma: no cover - optional dependency

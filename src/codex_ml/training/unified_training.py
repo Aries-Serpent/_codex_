@@ -39,7 +39,6 @@ from codex_ml.logging.mlflow_guard import (
 )
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
 from codex_ml.training.rng_checkpoint import RNGState
-import codex_ml.training.strategies as strategies
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
