@@ -179,9 +179,11 @@ class OptimizedVectorStore:
 
         # Check cache
         if use_cache and self.cache:
+            t_cache = time.time()
             cached_result = self.cache.get(cache_key)
+            cache_latency = time.time() - t_cache
             if cached_result is not None:
-                self.metrics.record_search(0.0, batch_size=1)  # count cache hits too
+                self.metrics.record_search(cache_latency, batch_size=1)
                 logger.debug("Cache hit for query")
                 return cached_result
 

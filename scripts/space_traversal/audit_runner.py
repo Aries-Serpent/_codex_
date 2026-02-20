@@ -874,7 +874,7 @@ def main() -> None:
             validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
             warnings: list[str] = []
             if prefix_mode and validate_auto:
-                bundles_dir = Path("audit_artifacts/bundles")
+                bundles_dir = artifacts_dir / "bundles"
                 if bundles_dir.exists():
                     for bundle_file in bundles_dir.glob("*.tar.gz"):
                         if not bundle_file.name.startswith("bundle_"):

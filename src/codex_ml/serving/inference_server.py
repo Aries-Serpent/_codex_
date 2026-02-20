@@ -359,7 +359,8 @@ if FASTAPI_AVAILABLE:
         """Reject model names containing path-traversal or injection sequences."""
         if model_name is None:
             return
-        for bad in ("..", "/", "\\", ";", "'", '"', "<", ">"):
+        # Block path traversal and SQL/shell injection; allow '/' for namespaced models (e.g. org/model)
+        for bad in ("..", "\\", ";", "'", '"', "<", ">"):
             if bad in model_name:
                 raise HTTPException(
                     status_code=400,
