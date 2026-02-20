@@ -35,9 +35,16 @@ class TestDBManagerPoolCleanup:
             manager.init_schema()
 
             # Populate pool with connections
+            # Note: Pool reuses connections, so we need to create them concurrently
+            # to actually have multiple connections in the pool
+            conns = []
             for _ in range(5):
                 conn = manager.get_connection()
-                manager.close_connection(conn)  # Returns to pool
+                conns.append(conn)
+            
+            # Now return them all to pool
+            for conn in conns:
+                manager.close_connection(conn)
 
             # Verify pool has connections
             assert len(DBManager._CONNECTION_POOL) > 0, "Pool should be populated"

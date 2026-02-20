@@ -31,8 +31,12 @@ try:
     from botocore.exceptions import ClientError
     HAS_BOTO3 = True
 except ImportError:
-    # Set to None so tests can still patch the name
-    boto3 = None  # type: ignore
+    # Create placeholder module for boto3 to allow test patching
+    # This enables @patch("security.providers.aws_provider.boto3") to work
+    import sys
+    from types import ModuleType
+    boto3 = ModuleType("boto3")  # type: ignore
+    sys.modules.setdefault("boto3", boto3)
     ClientError = Exception  # type: ignore
     HAS_BOTO3 = False
     logger.warning("boto3 not installed - AWS provider will be stub only")
