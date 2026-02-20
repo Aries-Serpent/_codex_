@@ -139,14 +139,17 @@ class EarlyStopping:
         self.min_delta = min_delta
         self.verbose = verbose
 
-        # State tracking
+        # Primary state tracking (canonical attributes)
         self.wait = 0
         self.best_value: Optional[float] = None
         self.best_epoch = 0
         self.stopped_epoch = 0
-        self.best_metric = None  # Backward compatibility
-        self.patience_counter = 0  # Backward compatibility
-        self._should_stop_flag = False  # Backward compatibility flag
+        # Backward-compatible aliases: legacy code using check_metric() read
+        # best_metric / patience_counter / _should_stop_flag directly.
+        # These mirror wait / best_value / (wait >= patience) respectively.
+        self.best_metric: Optional[float] = None  # alias for best_value
+        self.patience_counter = 0  # alias for wait
+        self._should_stop_flag = False  # set True when stopped
 
     def _is_improvement(self, value: float) -> bool:
         """Check if a value represents an improvement over the best value.

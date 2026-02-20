@@ -3,6 +3,7 @@
 Conftest to avoid ImportError during collection when optional heavy dependencies
 are not installed in the CI/test environment.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -40,7 +41,7 @@ SRC_ROOT = REPO_ROOT / "src"
 # CUDA Detection for GPU-Dependent Tests (PR #3178)
 # ============================================================================
 # Detect CUDA availability at module load time for test skip decorators
-if torch is not None and hasattr(torch, 'cuda'):
+if torch is not None and hasattr(torch, "cuda"):
     try:
         CUDA_AVAILABLE = torch.cuda.is_available()
     except (AttributeError, RuntimeError):
@@ -68,8 +69,7 @@ def is_cuda_available() -> bool:
 # Pytest skip marker for CUDA-dependent tests
 # Usage: @pytest.mark.skipif(not is_cuda_available(), reason="CUDA not available")
 skip_if_no_cuda = pytest.mark.skipif(
-    not is_cuda_available(),
-    reason="CUDA/GPU not available in this environment"
+    not is_cuda_available(), reason="CUDA/GPU not available in this environment"
 )
 
 
@@ -98,19 +98,25 @@ def pytest_configure(config: pytest.Config) -> None:
     # pass device='cpu' explicitly to SentenceTransformer constructors.
     try:
         import torch
-        version = getattr(torch, '__version__', 'unknown')
-        logger.info(f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)")
+
+        version = getattr(torch, "__version__", "unknown")
+        logger.info(
+            f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)"
+        )
     except (ImportError, AttributeError):
         pass  # PyTorch not available or stub module
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         target_limit = min(hard, 4096)
         if soft < target_limit:
             resource.setrlimit(resource.RLIMIT_NOFILE, (target_limit, hard))
-            logger.info(f"✓ File descriptor limit increased to {target_limit} (prevents I/O errors)")
+            logger.info(
+                f"✓ File descriptor limit increased to {target_limit} (prevents I/O errors)"
+            )
     except Exception as e:
         logger.warning(f"Could not increase file descriptor limit: {e}")
 
@@ -122,15 +128,11 @@ def pytest_configure(config: pytest.Config) -> None:
             config.pluginmanager.unregister(cov_plugin)
 
     # Register RAG-specific markers
-    config.addinivalue_line(
-        "markers", "rag: marks tests as RAG module tests"
-    )
+    config.addinivalue_line("markers", "rag: marks tests as RAG module tests")
     config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
-    config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests"
-    )
+    config.addinivalue_line("markers", "integration: marks tests as integration tests")
     config.addinivalue_line(
         "markers", "gpu: marks tests that require GPU (skipped without GPU)"
     )
@@ -202,7 +204,9 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
 }
 
 
-def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = None) -> bool:
+def _is_stub_module(
+    name: str, spec: importlib.machinery.ModuleSpec | None = None
+) -> bool:
     """Return True when ``name`` resolves to an in-repo stub instead of the real package."""
 
     module = sys.modules.get(name)
@@ -231,7 +235,9 @@ def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | Non
     if primary_spec and not _is_stub_module(modname, primary_spec):
         return primary_spec
 
-    clean_paths = [p for p in sys.path if not Path(p).resolve().is_relative_to(REPO_ROOT)]
+    clean_paths = [
+        p for p in sys.path if not Path(p).resolve().is_relative_to(REPO_ROOT)
+    ]
     try:
         alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
     except ValueError:
@@ -310,9 +316,7 @@ def pytest_collection_modifyitems(session, config, items):
             if marker in item.keywords:
                 missing = _missing_modules(modules)
                 if missing:
-                    reason = (
-                        f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
-                    )
+                    reason = f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
                     item.add_marker(pytest.mark.skip(reason=reason))
 
         if "heavy_dep" in item.keywords:
@@ -326,28 +330,30 @@ def pytest_collection_modifyitems(session, config, items):
         # valid at runtime in Py3.12, causing RuntimeError deep inside torch internals.
         # Cannot be fixed without patching PyTorch itself.  See:
         #   pytorch/pytorch#118829
-        _TORCH_PROFILER_XFAIL = frozenset({
-            "tests/data/test_datasets_module.py::test_build_dataloaders_with_split",
-            "tests/unit/test_datasets_module.py::test_build_dataloaders",
-            "tests/smoke/test_hf_trainer_hello.py::test_hf_trainer_on_tiny_hello_dataset",
-            # RAG model-to-device placement: isinstance() arg 2 union type bug (PyTorch+Py3.12)
-            "tests/test_rag_initialization_patterns.py::test_embed_chunks_uses_default_device_allocation",
-            "tests/test_rag_initialization_patterns.py::test_embed_chunks_passes_cache_folder",
-            "tests/test_rag_initialization_patterns.py::test_retriever_load_model_uses_default_device_allocation",
-            "tests/test_rag_initialization_patterns.py::test_local_provider_calls_eval",
-            "tests/test_rag_initialization_patterns.py::test_local_provider_uses_device_none_pattern",
-            "tests/test_rag_initialization_patterns.py::test_retriever_load_model_calls_eval",
-            "tests/test_rag_initialization_patterns.py::test_local_provider_uses_default_device_allocation",
-            # FastAPI inference endpoints: isinstance() arg 2 union type bug (PyTorch+Py3.12)
-            "tests/test_api_infer_tokenizer.py::test_multiple_requests_cached_components",
-            "tests/test_api_infer_tokenizer.py::test_roundtrip_basic",
-            "tests/services/api/test_infer_limits.py::test_infer_masks_secrets_and_projects_tokens",
-            # torch.FloatStorage PicklingError — same PyTorch+Py3.12 pickle protocol bug
-            "tests/test_codex_model.py::test_build_codex_model_with_lora",
-            "tests/test_codex_model.py::test_build_codex_model_cpu",
-            # torch profiler _record_function_exit ScriptObject bug (PyTorch+Py3.12)
-            "tests/test_performance_benchmark.py::test_benchmark_data_loading",
-        })
+        _TORCH_PROFILER_XFAIL = frozenset(
+            {
+                "tests/data/test_datasets_module.py::test_build_dataloaders_with_split",
+                "tests/unit/test_datasets_module.py::test_build_dataloaders",
+                "tests/smoke/test_hf_trainer_hello.py::test_hf_trainer_on_tiny_hello_dataset",
+                # RAG model-to-device placement: isinstance() arg 2 union type bug (PyTorch+Py3.12)
+                "tests/test_rag_initialization_patterns.py::test_embed_chunks_uses_default_device_allocation",
+                "tests/test_rag_initialization_patterns.py::test_embed_chunks_passes_cache_folder",
+                "tests/test_rag_initialization_patterns.py::test_retriever_load_model_uses_default_device_allocation",
+                "tests/test_rag_initialization_patterns.py::test_local_provider_calls_eval",
+                "tests/test_rag_initialization_patterns.py::test_local_provider_uses_device_none_pattern",
+                "tests/test_rag_initialization_patterns.py::test_retriever_load_model_calls_eval",
+                "tests/test_rag_initialization_patterns.py::test_local_provider_uses_default_device_allocation",
+                # FastAPI inference endpoints: isinstance() arg 2 union type bug (PyTorch+Py3.12)
+                "tests/test_api_infer_tokenizer.py::test_multiple_requests_cached_components",
+                "tests/test_api_infer_tokenizer.py::test_roundtrip_basic",
+                "tests/services/api/test_infer_limits.py::test_infer_masks_secrets_and_projects_tokens",
+                # torch.FloatStorage PicklingError — same PyTorch+Py3.12 pickle protocol bug
+                "tests/test_codex_model.py::test_build_codex_model_with_lora",
+                "tests/test_codex_model.py::test_build_codex_model_cpu",
+                # torch profiler _record_function_exit ScriptObject bug (PyTorch+Py3.12)
+                "tests/test_performance_benchmark.py::test_benchmark_data_loading",
+            }
+        )
         if item.nodeid in _TORCH_PROFILER_XFAIL:
             item.add_marker(
                 pytest.mark.xfail(
@@ -541,7 +547,10 @@ def _restore_torch_tensor():
     """
     try:
         import sys as _sys
-        _torch = _sys.modules.get("torch")  # use already-imported module, avoid duplicate import
+
+        _torch = _sys.modules.get(
+            "torch"
+        )  # use already-imported module, avoid duplicate import
         if _torch is None:
             raise ImportError("torch not loaded")
         _original_tensor_class = _torch.Tensor
@@ -566,17 +575,22 @@ def _isolate_rng_state():
     call set_seed/set_reproducible, ensuring repeatable results.
     """
     import random as _random
+
     py_state = _random.getstate()
 
     try:
         import numpy as _np
+
         np_state = _np.random.get_state()
         _has_numpy = True
     except ImportError:
         _has_numpy = False
 
+    _torch = None  # bound before try so teardown reuses reference (fixes CodeQL duplicate-import alert)
+    torch_state = None
     try:
         import torch as _torch
+
         torch_state = _torch.random.get_rng_state()
         _has_torch = True
     except (ImportError, Exception):
@@ -587,9 +601,9 @@ def _isolate_rng_state():
     _random.setstate(py_state)
     if _has_numpy:
         import numpy as _np  # noqa: F811
+
         _np.random.set_state(np_state)
-    if _has_torch:
-        import torch as _torch  # noqa: F811
+    if _has_torch and _torch is not None and torch_state is not None:
         _torch.random.set_rng_state(torch_state)
 
 
@@ -607,9 +621,9 @@ def pool_state_tracker():
 
     def assert_pool_grew():
         current = _pool_size()
-        assert (
-            current > baseline
-        ), f"Expected pool to grow beyond {baseline}, current size {current}"
+        assert current > baseline, (
+            f"Expected pool to grow beyond {baseline}, current size {current}"
+        )
 
     def assert_pool_size(expected: int):
         current = _pool_size()
@@ -814,14 +828,12 @@ def rag_test_config():
         "cache_enabled": True,
     }
 
+    # ============================================================================
+    # PyTorch Profiler and JSON Serialization Fixtures (Added 2026-01-22)
+    # ============================================================================
 
-# ============================================================================
-# PyTorch Profiler and JSON Serialization Fixtures (Added 2026-01-22)
-# ============================================================================
-
-
-# Removed duplicate disable_torch_profiler fixture (F811)
-# The correct version is defined below at line ~1275 with autouse=False
+    # Removed duplicate disable_torch_profiler fixture (F811)
+    # The correct version is defined below at line ~1275 with autouse=False
 
     # Cleanup environment variables
     os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
@@ -858,6 +870,7 @@ def mock_json_serializable():
 # Shared Test Fixtures and Utilities
 # =============================================================================
 
+
 @pytest.fixture
 def mock_transformer_model():
     """Provide a shared MockTransformerModel for testing."""
@@ -877,19 +890,22 @@ def mock_transformer_model():
             # Pre-generate attention weights to avoid exhaustion
             self._attention_weights = self._generate_mock_attention()
             # Configure model attributes
-            self.config = type('Config', (), {
-                'num_hidden_layers': num_layers,
-                'num_attention_heads': num_heads,
-                'hidden_size': hidden_dim
-            })()
+            self.config = type(
+                "Config",
+                (),
+                {
+                    "num_hidden_layers": num_layers,
+                    "num_attention_heads": num_heads,
+                    "hidden_size": hidden_dim,
+                },
+            )()
 
         def _generate_mock_attention(self):
             """Generate realistic attention weight tensors."""
             weights = []
             for _ in range(self.num_layers):
                 layer_weights = torch.softmax(
-                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
-                    dim=-1
+                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len), dim=-1
                 )
                 weights.append(layer_weights)
             return weights
@@ -907,14 +923,15 @@ def mock_transformer_model():
             attentions = []
             for _ in range(self.num_layers):
                 attn = torch.softmax(
-                    torch.randn(batch_size, self.num_heads, seq_len, seq_len),
-                    dim=-1
+                    torch.randn(batch_size, self.num_heads, seq_len, seq_len), dim=-1
                 )
                 attentions.append(attn)
 
             mock_output = Mock()
             mock_output.attentions = attentions if output_attentions else None
-            mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
+            mock_output.last_hidden_state = torch.randn(
+                batch_size, seq_len, self.hidden_dim
+            )
 
             return mock_output
 
@@ -929,6 +946,7 @@ def serializable_mock_model():
     @dataclass
     class SerializableModelConfig:
         """Test model config that supports JSON serialization."""
+
         model_type: str = "test_transformer"
         num_layers: int = 2
         num_heads: int = 4
@@ -940,6 +958,7 @@ def serializable_mock_model():
 
         def to_json(self):
             import json
+
             return json.dumps(self.to_dict())
 
     class MockSerializableModel:
@@ -955,10 +974,7 @@ def serializable_mock_model():
 
         def to_dict(self):
             """Enable JSON serialization."""
-            return {
-                "config": self.config.to_dict(),
-                "call_count": self._call_count
-            }
+            return {"config": self.config.to_dict(), "call_count": self._call_count}
 
         def __repr__(self):
             return f"MockSerializableModel(config={self.config})"
@@ -973,11 +989,13 @@ def serializable_mock_model():
 # They check for dependencies during test execution rather than at module
 # import time, preventing worker crashes during test collection.
 
+
 @pytest.fixture(scope="session")
 def sentence_transformers_available():
     """Check if sentence_transformers is available (session-scoped for performance)."""
     try:
         import sentence_transformers  # noqa: F401
+
         return True
     except ImportError:
         return False
@@ -988,6 +1006,7 @@ def faiss_available():
     """Check if faiss is available (session-scoped for performance)."""
     try:
         import faiss  # noqa: F401
+
         return True
     except ImportError:
         return False
@@ -1035,7 +1054,9 @@ def ensure_cpu_device():
         import torch
 
         # Check if this is a stub/placeholder torch module
-        if not hasattr(torch, 'Tensor') or not callable(getattr(torch, 'manual_seed', None)):
+        if not hasattr(torch, "Tensor") or not callable(
+            getattr(torch, "manual_seed", None)
+        ):
             # Stub torch module, skip fixture
             yield
             return
@@ -1065,17 +1086,32 @@ def mock_sentence_transformer(monkeypatch):
     - Added modules() method for meta tensor compatibility
     - Patches multiple import paths for indexer/embeddings/retriever modules
     """
+
     class MockSentenceTransformer:
-        def __init__(self, model_name, cache_folder=None, device="cpu", trust_remote_code=False, use_auth_token=None):
+        def __init__(
+            self,
+            model_name,
+            cache_folder=None,
+            device="cpu",
+            trust_remote_code=False,
+            use_auth_token=None,
+        ):
             self.model_name = model_name
             self.device = device
             self.cache_folder = cache_folder
             self.trust_remote_code = trust_remote_code
             self.use_auth_token = use_auth_token
 
-        def encode(self, texts, batch_size=32, show_progress_bar=False,
-                   convert_to_numpy=True, **kwargs):
+        def encode(
+            self,
+            texts,
+            batch_size=32,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            **kwargs,
+        ):
             import numpy as np
+
             # Return dummy embeddings with correct shape
             if isinstance(texts, str):
                 texts = [texts]
@@ -1107,37 +1143,33 @@ def mock_sentence_transformer(monkeypatch):
 
     try:
         import sentence_transformers  # noqa: F401 - Testing optional dependency availability
+
         # Patch multiple import paths for comprehensive coverage
         monkeypatch.setattr(
-            "sentence_transformers.SentenceTransformer",
-            MockSentenceTransformer
+            "sentence_transformers.SentenceTransformer", MockSentenceTransformer
         )
         # Also patch in specific modules that import it
         try:
             monkeypatch.setattr(
-                "codex.rag.embeddings.SentenceTransformer",
-                MockSentenceTransformer
+                "codex.rag.embeddings.SentenceTransformer", MockSentenceTransformer
             )
         except AttributeError:
             pass
         try:
             monkeypatch.setattr(
-                "codex.rag.indexer.SentenceTransformer",
-                MockSentenceTransformer
+                "codex.rag.indexer.SentenceTransformer", MockSentenceTransformer
             )
         except AttributeError:
             pass
         try:
             monkeypatch.setattr(
-                "codex.rag.retriever.SentenceTransformer",
-                MockSentenceTransformer
+                "codex.rag.retriever.SentenceTransformer", MockSentenceTransformer
             )
         except AttributeError:
             pass
         try:
             monkeypatch.setattr(
-                "codex.rag._model_utils.SentenceTransformer",
-                MockSentenceTransformer
+                "codex.rag._model_utils.SentenceTransformer", MockSentenceTransformer
             )
         except AttributeError:
             pass
@@ -1146,8 +1178,6 @@ def mock_sentence_transformer(monkeypatch):
         pass
 
     return MockSentenceTransformer
-
-
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -1164,14 +1194,16 @@ def setup_audit_artifacts(tmp_path_factory):
 
     # Create required files
     context_index = audit_dir / "context_index.json"
-    context_index.write_text(json.dumps({
-        "version": "1.0",
-        "contexts": [],
-        "metadata": {
-            "created": "test-session",
-            "purpose": "test-fixture"
-        }
-    }, indent=2))
+    context_index.write_text(
+        json.dumps(
+            {
+                "version": "1.0",
+                "contexts": [],
+                "metadata": {"created": "test-session", "purpose": "test-fixture"},
+            },
+            indent=2,
+        )
+    )
 
     # Set environment variable so tests can find the temp audit directory
     original_audit_dir = os.environ.get("CODEX_AUDIT_DIR")
@@ -1200,6 +1232,7 @@ def setup_audit_artifacts(tmp_path_factory):
 # Solution: Global resource management + monitoring + forced cleanup
 # ==============================================================================
 
+
 @pytest.fixture(scope="session", autouse=True)
 def session_resource_manager():
     """Manage resources across entire test session to prevent exhaustion.
@@ -1222,9 +1255,12 @@ def session_resource_manager():
     initial_files = set()
     try:
         import psutil
+
         process = psutil.Process()
         initial_files = set(f.path for f in process.open_files())
-        logger.info(f"✓ Session resource manager: {len(initial_files)} files open at start")
+        logger.info(
+            f"✓ Session resource manager: {len(initial_files)} files open at start"
+        )
     except (ImportError, Exception) as e:
         logger.debug(f"psutil not available for resource tracking: {e}")
 
@@ -1235,6 +1271,7 @@ def session_resource_manager():
 
     try:
         import psutil
+
         process = psutil.Process()
         final_files = set(f.path for f in process.open_files())
         leaked = final_files - initial_files
@@ -1243,7 +1280,7 @@ def session_resource_manager():
             leak_count = len(leaked)
             warnings.warn(
                 f"Resource leak detected: {leak_count} file(s) still open at session end",
-                ResourceWarning
+                ResourceWarning,
             )
             # Show first 5 leaked files
             for f in list(leaked)[:5]:
@@ -1329,6 +1366,7 @@ def force_file_cleanup():
     # Cleanup phase
     import gc
     import os
+
     gc.collect()
 
     if os.environ.get("CODEX_FORCE_FILE_CLEANUP", "0") != "1":
@@ -1370,7 +1408,11 @@ def force_file_cleanup():
 
         try:
             # Check if object is file-like
-            if close_method is not None and closed_attr is not None and name_attr is not None:
+            if (
+                close_method is not None
+                and closed_attr is not None
+                and name_attr is not None
+            ):
                 if any(obj is stream for stream in protected_streams):
                     continue
                 if name_attr in ("<stdin>", "<stdout>", "<stderr>"):
@@ -1406,6 +1448,7 @@ def pytest_runtest_protocol(item, nextitem):
 
     try:
         import psutil
+
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -1416,6 +1459,7 @@ def pytest_runtest_protocol(item, nextitem):
 
     try:
         import psutil
+
         process = psutil.Process()
         after_files = len(process.open_files())
         after_memory = process.memory_info().rss / 1024 / 1024  # MB
@@ -1425,7 +1469,7 @@ def pytest_runtest_protocol(item, nextitem):
             warnings.warn(
                 f"{item.nodeid}: File handle leak detected "
                 f"({before_files} → {after_files}, +{after_files - before_files})",
-                ResourceWarning
+                ResourceWarning,
             )
 
         if after_memory > before_memory * 1.2:  # 20% increase
@@ -1433,7 +1477,7 @@ def pytest_runtest_protocol(item, nextitem):
                 f"{item.nodeid}: Memory leak detected "
                 f"({before_memory:.1f}MB → {after_memory:.1f}MB, "
                 f"+{after_memory - before_memory:.1f}MB)",
-                ResourceWarning
+                ResourceWarning,
             )
     except Exception:  # psutil optional; skip leak check if unavailable
         pass
@@ -1444,6 +1488,7 @@ def pytest_runtest_protocol(item, nextitem):
 # ============================================================================
 # Prevents profiler::_record_function_exit() type errors in PyTorch tests
 # See: TEST_FAILURE_ANALYSIS_PR3248.md for details
+
 
 @pytest.fixture(autouse=False)
 def disable_torch_profiler(monkeypatch):
@@ -1469,31 +1514,39 @@ def disable_torch_profiler(monkeypatch):
         class _NoopRecordFunction:
             def __init__(self, *args, **kwargs):
                 pass
+
             def __enter__(self):
                 return self
+
             def __exit__(self, *args):
                 pass
 
         monkeypatch.setattr(
-            'torch.autograd.profiler.record_function',
+            "torch.autograd.profiler.record_function",
             _NoopRecordFunction,
         )
         # Also disable the C++/TorchScript level profiling that causes
         # the ScriptObject type mismatch on PyTorch 2.x + Python 3.12
         try:
             import torch._C as _torch_c
-            if hasattr(_torch_c, '_jit_set_profiling_executor'):
-                monkeypatch.setattr(_torch_c, '_jit_set_profiling_executor',
-                                    lambda *a, **k: None)
-            if hasattr(_torch_c, '_jit_set_profiling_mode'):
-                monkeypatch.setattr(_torch_c, '_jit_set_profiling_mode',
-                                    lambda *a, **k: None)
+
+            if hasattr(_torch_c, "_jit_set_profiling_executor"):
+                monkeypatch.setattr(
+                    _torch_c, "_jit_set_profiling_executor", lambda *a, **k: None
+                )
+            if hasattr(_torch_c, "_jit_set_profiling_mode"):
+                monkeypatch.setattr(
+                    _torch_c, "_jit_set_profiling_mode", lambda *a, **k: None
+                )
         except (ImportError, AttributeError):
             pass  # torch._C not available in this environment — skip JIT profiling patch
         try:
-            if hasattr(torch, 'profiler') and hasattr(torch.profiler, 'record_function'):
+            if hasattr(torch, "profiler") and hasattr(
+                torch.profiler, "record_function"
+            ):
                 monkeypatch.setattr(
-                    torch.profiler, 'record_function',
+                    torch.profiler,
+                    "record_function",
                     _NoopRecordFunction,
                 )
         except (ImportError, AttributeError):
@@ -1503,10 +1556,10 @@ def disable_torch_profiler(monkeypatch):
 # List of test files that commonly need the profiler disabled
 # (Can be removed once PyTorch version is upgraded/pinned)
 TORCH_PROFILER_PROBLEMATIC_TESTS = [
-    'test_checkpoint_restore_rng_torch.py',
-    'test_gradient_accumulation_tail_flush.py',
-    'test_training_integration_flags.py',
-    'test_resume_training.py',
-    'test_performance_benchmark.py',
-    'test_models_registry_api.py',
+    "test_checkpoint_restore_rng_torch.py",
+    "test_gradient_accumulation_tail_flush.py",
+    "test_training_integration_flags.py",
+    "test_resume_training.py",
+    "test_performance_benchmark.py",
+    "test_models_registry_api.py",
 ]

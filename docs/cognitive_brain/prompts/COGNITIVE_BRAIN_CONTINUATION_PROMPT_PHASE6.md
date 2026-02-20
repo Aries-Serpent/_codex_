@@ -1,14 +1,15 @@
 # Cognitive Brain Continuation Prompt — Phase 6 Production Graduation
 
-> **Version:** 6.1.0
+> **Version:** 6.2.0
 > **Created:** 2026-02-19 (Session 39)
-> **Updated:** 2026-02-20 (Session 42) — PR #3339 CI resolution complete
-> **Status:** READY FOR EXECUTION (after PR #3339 merges)
-> **Blocking PR**: [#3339](https://github.com/Aries-Serpent/_codex_/pull/3339) — must merge first
+> **Updated:** 2026-02-20 (Session 43) — PR #3336 CI+CodeQL resolution complete
+> **Status:** READY FOR EXECUTION (PR #3336 fixes committed, pending CI green)
+> **Blocking PR**: [#3336](https://github.com/Aries-Serpent/_codex_/pull/3336) — CI fixes pending
 > **Full Planset**: `.codex/plans/PHASE6_CONTINUATION_PLANSET.md`
-> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–39) — ✅ COMPLETE
-> **Branch:** `copilot/implement-production-hardening-phase-3`
-> **PR:** #3330
+> **Consolidation Map**: `.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md` 🆕
+> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–43) — ✅ COMPLETE
+> **Branch:** `copilot/sub-pr-3336`
+> **PR:** #3336
 
 ---
 

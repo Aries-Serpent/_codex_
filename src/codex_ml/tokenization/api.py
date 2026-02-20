@@ -58,7 +58,6 @@ class TokenizerAdapter(Protocol):
 
 
 if TYPE_CHECKING:  # pragma: no cover - import only used for typing
-    from .hf_tokenizer import HFTokenizerAdapter as _HFTokenizerAdapter  # noqa: F401
     from .sp_trainer import SPTokenizer as _SPTokenizer  # noqa: F401
 
 
@@ -94,7 +93,9 @@ def load_tokenizer(
         return adapter
     adapter = _load_hf_adapter()
     instance = adapter.load(target, use_fast=use_fast)
-    if all(hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")):
+    if all(
+        hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")
+    ):
         validate_tokenizer_contract(instance)
     return instance
 
