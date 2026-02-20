@@ -46,7 +46,13 @@ def save_checkpoint(
         "_created_at": datetime.now(UTC).isoformat(),
         "state": state,
     }
-    torch.save(payload, weights)
+
+    # Use new zipfile serialization to avoid pickling issues with torch.Storage
+    try:
+        torch.save(payload, weights, _use_new_zipfile_serialization=True)
+    except (TypeError, AttributeError):
+        # Fallback for older PyTorch versions that don't support this parameter
+        torch.save(payload, weights)
 
     # Include schema version in metadata for validation
     with open(metadata, "w", encoding="utf-8") as f:

@@ -1639,7 +1639,11 @@ def run_training(
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
-            env_payload["torch_version"] = torch.__version__
+            try:
+                env_payload["torch_version"] = torch.__version__
+            except AttributeError:
+                # torch might be a mock without __version__
+                env_payload["torch_version"] = "unknown"
 
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))

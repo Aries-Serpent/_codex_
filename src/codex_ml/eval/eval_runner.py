@@ -66,7 +66,7 @@ def _bootstrap(
     """Compute fn with optional bootstrap confidence interval."""
     val = fn(preds, targets)
     # Only numeric results can be bootstrapped
-    if not isinstance(val, (int | float)):
+    if not isinstance(val, (int, float)):
         return None if val is None else float(val), None, None
     if n <= 0 or len(preds) == 0:
         return float(val), None, None
@@ -77,7 +77,7 @@ def _bootstrap(
         sp = [preds[i] for i in idx]
         st = [targets[i] for i in idx]
         sub = fn(sp, st)
-        if isinstance(sub, (int | float)):
+        if isinstance(sub, (int, float)):
             vals.append(float(sub))
     if not vals:
         return float(val), None, None

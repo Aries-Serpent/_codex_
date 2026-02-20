@@ -695,6 +695,9 @@ class ZendeskKnowledgeSyncService:
         """
         # Find the most recent sync directory if not specified
         if source_dir is None:
+            # Check if output_root exists before trying to iterate
+            if not self.output_root.exists():
+                raise ValueError("No synchronized documentation found")
             sync_dirs = sorted(
                 [d for d in self.output_root.iterdir() if d.is_dir()],
                 reverse=True

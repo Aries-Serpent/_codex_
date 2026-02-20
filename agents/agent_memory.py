@@ -458,28 +458,40 @@ class AgentMemory:
         Retrieve a memory by ID or key.
 
         Args:
-            memory_id: The memory ID to retrieve
-            key: Alternative parameter name for backward compatibility (deprecated, use retrieve_content instead)
+            memory_id: The memory ID to retrieve (returns MemoryEntry)
+            key: Alternative parameter name for backward compatibility (returns content string)
 
         Returns:
-            MemoryEntry object, or the content string if using key parameter (for backward compatibility)
+            MemoryEntry object if using memory_id, or content string if using key parameter
 
         Note:
-            When using key parameter, returns content string only.
-            For new code, use retrieve_content(key) to get content or retrieve_memory(memory_id) to get MemoryEntry.
+            For backward compatibility with existing tests:
+            - retrieve_memory(key="foo") returns content string
+            - retrieve_memory("foo") returns MemoryEntry object (positional arg treated as memory_id)
+            - retrieve_memory(memory_id="foo") returns MemoryEntry object
         """
-        # Handle backward compatibility with 'key' parameter
-        if key is not None and memory_id is None:
-            memory_id = key
+        # Handle backward compatibility:
+        # - If called with key= kwarg, return content only
+        # - If called with memory_id= kwarg or positional, return MemoryEntry
+        if key is not None:
+            # Explicit key parameter - return content only
+            lookup_id = key
             return_content_only = True
-        else:
+        elif memory_id is not None:
+            # memory_id parameter (kwarg or positional) - return MemoryEntry
+            lookup_id = memory_id
             return_content_only = False
+        else:
+            return None
 
-        if memory_id is None:
+        if lookup_id is None:
+            return None
+
+        if lookup_id is None:
             return None
 
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (memory_id,))
+            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()
 
             if row:
@@ -491,12 +503,12 @@ class AgentMemory:
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), memory_id),
+                    (datetime.now().isoformat(), lookup_id),
                 )
                 conn.commit()
 
                 memory_entry = self._row_to_memory(row)
-                # Return just content if using key parameter (backward compat)
+                # Return just content for backward compat
                 if return_content_only:
                     return memory_entry.content
                 return memory_entry

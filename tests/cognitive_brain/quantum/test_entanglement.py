@@ -180,7 +180,7 @@ def test_measure_correlation_no_correlation(manager):
 
 def test_measure_correlation_insufficient_data(manager):
     """Test correlation measurement with insufficient observations.
-    
+
     When insufficient observations exist, the implementation auto-populates
     with mock data based on correlation strength, so it returns a valid result.
     """

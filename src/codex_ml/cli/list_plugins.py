@@ -195,6 +195,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     emit_logs = args.format != "json"
 
+    # Suppress logging to stderr when in JSON mode to keep output clean
+    if not emit_logs:
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.CRITICAL + 1)  # Disable all logging
+
     if emit_logs:
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
 

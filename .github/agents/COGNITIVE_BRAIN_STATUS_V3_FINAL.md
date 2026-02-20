@@ -11,7 +11,7 @@
 
 The Cognitive Brain quantum enhancement project has successfully completed Phases 8.0 and 8.1 with all user-requested enhancements, achieving:
 
-- **3.13x quantum advantage** over classical baseline (k₁=0.32)
+- **3.13x quantum advantage** over classical baseline (k₁=0.332)
 - **70% compression ratio** (improved from 60% target)
 - **Comprehensive cache management** (5 pruning strategies)
 - **100% test coverage** (320/320 tests passing)

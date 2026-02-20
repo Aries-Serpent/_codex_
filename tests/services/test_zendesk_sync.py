@@ -247,9 +247,14 @@ class TestZendeskKnowledgeSyncService:
         mock_response.read.return_value = b"<html>content</html>"
         mock_response.headers = {}
 
+        # Create a proper context manager for the second call
+        mock_context = MagicMock()
+        mock_context.__enter__.return_value = mock_response
+        mock_context.__exit__.return_value = None
+
         mock_urlopen.side_effect = [
             URLError("Network error"),
-            mock_response.__enter__()
+            mock_context
         ]
 
         content, headers = service._fetch("https://example.zendesk.com/hc/article-1")

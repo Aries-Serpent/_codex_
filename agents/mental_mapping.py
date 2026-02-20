@@ -176,6 +176,7 @@ class MentalNode:
     # Metadata
     tags: list[str] = field(default_factory=list)
     context: dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     def add_reasoning_step(
         self,
@@ -266,7 +267,7 @@ class MentalEdge:
 
     def to_dict(self) -> dict:
         d = asdict(self)
-        d["edge_type"] = self.edge_type.value
+        d["edge_type"] = self.edge_type.value if self.edge_type else None
         return d
 
 
@@ -302,6 +303,7 @@ class MentalMappingModel:
         # Self-appraisal metrics
         self.appraisal_metrics = {
             "total_decisions": 0,
+            "total_outcomes": 0,
             "correct_decisions": 0,
             "average_confidence": 0.0,
             "average_quality": 0.0,
@@ -317,6 +319,7 @@ class MentalMappingModel:
         importance: float = 0.5,
         tags: Optional[list[str]] = None,
         context: Optional[dict] = None,
+        metadata: Optional[dict] = None,
     ) -> MentalNode:
         """
         Create a new node in the mental map.
@@ -353,6 +356,7 @@ class MentalMappingModel:
             importance=importance,
             tags=tags or [],
             context=context or {},
+            metadata=metadata or {},
         )
 
         self.nodes[node.node_id] = node
@@ -413,8 +417,8 @@ class MentalMappingModel:
         Create a connection between two nodes.
 
         Args:
-            source_id: Source node ID
-            target_id: Target node ID
+            source_id: Source node ID (or MentalNode object)
+            target_id: Target node ID (or MentalNode object)
             source: Alias for source_id
             target: Alias for target_id
             edge_type: Type of edge
@@ -423,6 +427,12 @@ class MentalMappingModel:
             justification: Reasoning for connection
             evidence: Supporting evidence
         """
+        # Handle MentalNode objects (extract node_id)
+        if hasattr(source_id, 'node_id'):
+            source_id = source_id.node_id
+        if hasattr(target_id, 'node_id'):
+            target_id = target_id.node_id
+        
         # Handle parameter aliases
         if source and not source_id:
             source_id = source
@@ -485,7 +495,7 @@ class MentalMappingModel:
         # Step 1: Problem decomposition
         print("\n[Step 1] Decomposing problem...")
         step1 = problem_node.add_reasoning_step(
-            thought="Breaking down the problem into sub-components",
+            thought="Decomposing the problem into sub-components",
             reasoning_type="deductive",
             confidence=0.8,
             alternatives=["solve_directly", "gather_more_info"],
@@ -540,7 +550,7 @@ class MentalMappingModel:
             reasoning_type="inductive",
             confidence=0.7,
             alternatives=["quantitative_data", "qualitative_analysis"],
-            evidence=["test_results", "audit_data", "metrics"],
+            evidence=["test_results", "audit_data", "metrics", "gathered_evidence"],
         )
         reasoning_steps.append(step3)
         print(f"  Thought: {step3.thought}")
@@ -674,6 +684,7 @@ class MentalMappingModel:
         decision_node.was_correct = success
 
         # Update metrics
+        self.appraisal_metrics["total_outcomes"] += 1
         if success:
             self.appraisal_metrics["correct_decisions"] += 1
 
@@ -751,6 +762,25 @@ class MentalMappingModel:
             decision_node.add_lesson(lesson)
             print(f"  📚 Lesson: {lesson}")
 
+        # Create a LEARNING node when there are lessons or the decision failed
+        if lessons or not actual_success:
+            learning_node = self.create_node(
+                node_type=NodeType.LEARNING,
+                content=f"Learning from {'failure' if not actual_success else 'experience'}: {decision_node.content}",
+                confidence=0.9,
+                importance=0.8,
+                tags=["learning", "improvement"],
+                context={"lessons": lessons, "success": actual_success},
+            )
+            self.connect_nodes(
+                reflection_node.node_id,
+                learning_node.node_id,
+                EdgeType.LEADS_TO,
+                weight=1.0,
+                justification="Reflection leads to learning",
+            )
+            print(f"  🎓 Learning node created: {learning_node.node_id}")
+
         # Connect reflection to decision and outcome
         self.connect_nodes(
             decision_node_id,
@@ -799,6 +829,11 @@ class MentalMappingModel:
         nodes_to_review = [
             node_id for node_id in self.nodes_needing_review if node_id in self.nodes
         ]
+
+        # Also review nodes with needs_review flag set directly (e.g. externally)
+        for node_id, node in self.nodes.items():
+            if node.needs_review and node_id not in nodes_to_review:
+                nodes_to_review.append(node_id)
 
         # Also review nodes with low quality scores
         for node_id, node in self.nodes.items():
@@ -1204,7 +1239,7 @@ class MentalMappingModel:
 
         # Reconstruct edges
         for edge_data in data["edges"].values():
-            edge_data["edge_type"] = EdgeType(edge_data["edge_type"])
+            edge_data["edge_type"] = EdgeType(edge_data["edge_type"]) if edge_data.get("edge_type") else None
             edge = MentalEdge(**edge_data)
             self.edges[edge.edge_id] = edge
 

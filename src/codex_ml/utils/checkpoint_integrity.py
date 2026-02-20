@@ -216,7 +216,7 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
             if value == "???":
                 return None
             return value
-        if isinstance(value, int | float | bool):
+        if isinstance(value, (int, float, bool)):
             return value
         return str(value)
 
