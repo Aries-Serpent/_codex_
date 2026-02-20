@@ -28,6 +28,8 @@ from typing import Callable, Optional, Sequence  # noqa: E402
 from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 metric_registry = Registry("metric")
+# Expose internal registry dict for test mocking compatibility
+_METRIC_REGISTRY = metric_registry._registry
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
@@ -636,6 +638,7 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
 __all__ = [
     "metric_registry",
+    "_METRIC_REGISTRY",
     "register",
     "register_metric",
     "get",

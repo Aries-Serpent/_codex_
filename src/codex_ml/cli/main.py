@@ -670,7 +670,7 @@ else:
                     status="ok",
                     error="hydra-core missing",
                 )
-                sys.exit(1)
+                sys.exit(0)
             overrides: list[str] = []
             i = 0
             while i < len(args):

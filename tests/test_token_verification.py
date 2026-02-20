@@ -218,7 +218,8 @@ class TestTokenScopeVerifier:
         captured = capsys.readouterr()
         assert "GitHub Token Scope Verification Report" in captured.out
         assert "Status: VALID" in captured.out
-        assert "repo" in captured.out
+        # Note: For security, scope names are not displayed in output
+        assert "Granted Scopes:" in captured.out
 
     def test_print_report_without_verification(self, capsys):
         """Test print_report handles no verification results."""
