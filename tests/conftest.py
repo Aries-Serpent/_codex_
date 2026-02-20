@@ -608,9 +608,7 @@ def _isolate_rng_state():
 
     _random.setstate(py_state)
     if _has_numpy:
-        import numpy as _np  # noqa: F811
-
-        _np.random.set_state(np_state)
+        _np.random.set_state(np_state)  # type: ignore[union-attr]  # _np captured at setup, not re-imported
     if _has_torch and _torch is not None and torch_state is not None:
         _torch.random.set_rng_state(torch_state)
 

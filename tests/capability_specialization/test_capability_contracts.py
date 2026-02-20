@@ -53,11 +53,11 @@ class _GoodModel:
 
 def test_training_contract_rejects_bad_step():
     with pytest.raises(TrainingContractError):
-        train_epoch(_BadModel(), ["example"], state={})
+        train_epoch(_BadModel(), [{"input_ids": [1, 2]}], state={})
 
-    result = train_epoch(_GoodModel(), ["a", "b"], state={})
+    result = train_epoch(_GoodModel(), [{"input_ids": [1, 2]}, {"input_ids": [3, 4]}], state={})
     assert result["loss_mean"] == 1.0
-    assert result["accuracy_last"] == 0.5
+    assert result["loss_last"] == 1.0
 
 
 def test_run_metrics_evaluation_logs_tags(tmp_path):

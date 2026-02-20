@@ -24,12 +24,8 @@ from unittest.mock import Mock, patch
 import pytest
 
 # botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
-_HAS_BOTOCORE = False
-try:
-    import botocore  # noqa: F401
-    _HAS_BOTOCORE = True
-except ImportError:
-    pass
+import importlib.util as _importlib_util
+_HAS_BOTOCORE = _importlib_util.find_spec("botocore") is not None
 
 from security.provider_factory import ProviderFactory, create_provider_from_env
 from security.providers.base import (

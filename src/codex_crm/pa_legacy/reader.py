@@ -56,38 +56,21 @@ def read_pa_legacy(zip_path: str | Path) -> dict[str, Any]:
 def to_template(package: dict[str, Any]) -> dict[str, Any]:
     """Render a sanitised template representation from a parsed package."""
 
-    # Validate package structure
-    if not package.get("flows"):
-        raise PowerAutomatePackageError("Package must contain at least one flow")
-
-    # Build connections dictionary from flow connection references
-    connections_by_flow: dict[str, list[str]] = {}
-
-    for flow_name, flow in package.get("flows", {}).items():
-        flow_connections = []
-        # Extract connection references from flow properties
-        conn_refs = (flow.get("properties") or {}).get("connectionReferences", {})
-        for conn_name in conn_refs.keys():
-            flow_connections.append(conn_name)
-        connections_by_flow[flow_name] = flow_connections
-
-    # Templatize connection names in flows
-    templatized_flows = {}
-    for flow_name, flow in package.get("flows", {}).items():
-        flow_copy = flow.copy()
-        props = flow_copy.get("properties", {})
-        if props and "connectionReferences" in props:
-            conn_refs = props["connectionReferences"]
-            for conn_name, conn_data in conn_refs.items():
-                # Replace actual connection name with template variable
-                conn_upper = conn_name.upper()
-                placeholder = f"{{{{{conn_upper}_CONNECTION}}}}"
-                if isinstance(conn_data, dict) and "connectionName" in conn_data:
-                    conn_data["connectionName"] = placeholder
-        templatized_flows[flow_name] = flow_copy
+    connections: list[dict[str, str]] = []
+    for flow in package.get("flows", {}).values():
+        resources = (flow.get("definition") or {}).get("resources", {})
+        for name, resource in resources.items():
+            placeholder = f"${{CONN_{name.upper()}}}"
+            connections.append(
+                {
+                    "name": name,
+                    "type": resource.get("type", "unknown"),
+                    "placeholder": placeholder,
+                }
+            )
 
     return {
-        "manifest": package.get("manifest", {}),
-        "flows": templatized_flows,
-        "connections": connections_by_flow,
+        "connections": connections,
+        "flows": package.get("flows", {}),
+        "variables": [],
     }

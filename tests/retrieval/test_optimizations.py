@@ -37,7 +37,7 @@ class TestRetrievalMetrics:
         metrics.record_search(0.15, batch_size=1)
 
         assert metrics.search_count == 3
-        assert metrics.total_search_time == 0.45
+        assert metrics.total_search_time == pytest.approx(0.45)
         assert len(metrics.search_latencies) == 3
         assert len(metrics.query_batch_sizes) == 3
 
@@ -48,7 +48,7 @@ class TestRetrievalMetrics:
         metrics.record_search(0.2)
         metrics.record_search(0.3)
 
-        assert metrics.get_average_latency() == 0.2
+        assert metrics.get_average_latency() == pytest.approx(0.2)
 
     def test_latency_percentiles(self):
         """Test latency percentile calculation"""

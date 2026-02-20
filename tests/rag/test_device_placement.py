@@ -17,7 +17,7 @@ _TORCH_312_BUG = False
 try:
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 except (ImportError, AttributeError):
-    pass
+    pass  # torch not available — _TORCH_312_BUG stays False
 
 
 class SimpleModel(nn.Module):

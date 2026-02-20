@@ -12,7 +12,7 @@ import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    import sentence_transformers  # noqa: F401 — required by CachedRetriever at runtime
+    import sentence_transformers as _st  # noqa: F401 — existence check; used by CachedRetriever
     from codex.rag.indexer import build_index_from_files
     from codex.rag.retriever import CachedRetriever, LRUCache
     RAG_RETRIEVER_AVAILABLE = True

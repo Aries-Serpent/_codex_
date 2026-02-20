@@ -14,11 +14,8 @@ import pytest
 
 from codex_ml.utils.mlflow_entrypoints import configure_mlflow_uri
 
-try:
-    import sitecustomize as _sitecustomize  # noqa: F401
-    _HAS_SITECUSTOMIZE = True
-except ImportError:
-    _HAS_SITECUSTOMIZE = False
+import importlib.util
+_HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
 
 def test_configure_mlflow_blocks_remote_uri(monkeypatch):

@@ -12,11 +12,8 @@ import pytest
 
 mlflow = pytest.importorskip("mlflow")
 
-try:
-    import sitecustomize as _sitecustomize  # noqa: F401
-    _HAS_SITECUSTOMIZE = True
-except ImportError:
-    _HAS_SITECUSTOMIZE = False
+import importlib.util
+_HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
 
 @pytest.mark.skipif(not _HAS_SITECUSTOMIZE, reason="sitecustomize not installed in this environment")

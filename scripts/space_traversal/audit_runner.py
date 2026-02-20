@@ -38,6 +38,7 @@ import argparse
 import importlib.util
 import json
 import logging
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -806,7 +807,7 @@ def main() -> None:
 
     # stage subcommand
     stage_parser = subparsers.add_parser("stage", help="Run a specific audit stage")
-    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4"], help="Stage to run")
+    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4", "S7"], help="Stage to run")
     stage_parser.add_argument("--config", type=Path, help="Configuration file")
     stage_parser.add_argument("--output", type=Path, help="Output file path")
 
@@ -867,6 +868,26 @@ def main() -> None:
             output_file = artifacts_dir / "capabilities_scored.json"
             output_file.write_text(json.dumps(result, indent=2))
             print(f"Stage S4 complete: {output_file}")
+        elif args.stage_name == "S7":
+            # Stage 7: Prefix auto-validation — scan bundles for naming convention violations
+            prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
+            validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
+            warnings: list[str] = []
+            if prefix_mode and validate_auto:
+                bundles_dir = Path("audit_artifacts/bundles")
+                if bundles_dir.exists():
+                    for bundle_file in bundles_dir.glob("*.tar.gz"):
+                        if not bundle_file.name.startswith("bundle_"):
+                            warnings.append(
+                                f"prefix_violations: {bundle_file.name} does not match required prefix 'bundle_'"
+                            )
+            manifest = {
+                "stage": "S7",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "warnings": warnings,
+            }
+            Path("audit_run_manifest.json").write_text(json.dumps(manifest, indent=2))
+            print(f"Stage S7 complete: audit_run_manifest.json ({len(warnings)} warnings)")
         return
 
     elif args.command == "explain":

@@ -39,12 +39,18 @@ import torch  # noqa: E402  (import after skip checks)
 
 
 def _make_model() -> torch.nn.Module:
-    base = torch.nn.Linear(4, 4)
+    class _Wrapped(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.fc = torch.nn.Linear(4, 4)
+
+    base = _Wrapped()
     cfg = LoraConfig(
         r=2,
         lora_alpha=4,
         lora_dropout=0.0,
         task_type=TaskType.FEATURE_EXTRACTION,
+        target_modules=["fc"],
     )
     return get_peft_model(base, cfg)
 

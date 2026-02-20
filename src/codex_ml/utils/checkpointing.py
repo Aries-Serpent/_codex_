@@ -618,6 +618,10 @@ def _safe_environment_summary() -> dict[str, Any]:
                 gc = env.get("git_commit") or _safe_git_commit()
                 if gc:
                     env.setdefault("git_commit", gc)
+                # Sanitize: keep only pickle-safe scalar types to prevent
+                # MagicMock or other non-serializable objects from leaking in.
+                safe_types = (str, int, float, bool, type(None))
+                env = {k: v for k, v in env.items() if isinstance(v, safe_types)}
                 return env
     except Exception as exc:
         logger.debug(f"Exception: {exc}")

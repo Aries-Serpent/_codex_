@@ -56,7 +56,6 @@ class _StubCompliance:
 try:
     from cognitive_brain.integrations.compliance_integration import (
         AuditResult,
-        ComplianceDecision,
         QuantumComplianceAssessor,
     )
     from cognitive_brain.quantum.config import QuantumConfig

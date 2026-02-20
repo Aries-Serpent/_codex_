@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 try:
-    from fastapi import FastAPI, HTTPException, Request, Security
+    from fastapi import FastAPI, Header, HTTPException, Request, Security
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from pydantic import BaseModel, Field
@@ -355,6 +355,17 @@ if FASTAPI_AVAILABLE:
         if any(len(text) > MAX_INPUT_LENGTH for text in inputs):
             raise HTTPException(status_code=400, detail="Input length exceeds limit")
 
+    def _validate_model_name(model_name: Optional[str]) -> None:
+        """Reject model names containing path-traversal or injection sequences."""
+        if model_name is None:
+            return
+        for bad in ("..", "/", "\\", ";", "'", '"', "<", ">"):
+            if bad in model_name:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid model_name: disallowed character sequence",
+                )
+
     def create_app(config: Optional[ModelConfig] = None) -> FastAPI:
         app = FastAPI(title="Codex Inference Server", version="0.2.0")
         app.add_middleware(
@@ -387,11 +398,29 @@ if FASTAPI_AVAILABLE:
 
             async def verify_auth(
                 api_key: Optional[str] = Security(API_KEY_HEADER),
+                authorization: Optional[str] = Header(default=None),
             ) -> None:
-                """Verify API key authentication"""
-                if not auth_manager.verify_api_key(api_key):
+                """Verify API key or JWT authentication."""
+                # JWT path: Authorization: Bearer <token>
+                if auth_manager.jwt_secret and authorization:
+                    scheme, _, token = authorization.partition(" ")
+                    if scheme.lower() == "bearer" and token:
+                        try:
+                            auth_manager.verify_jwt(token)
+                            return  # JWT valid
+                        except AuthenticationError as exc:
+                            raise HTTPException(status_code=401, detail=str(exc))
+                # API key path
+                if auth_manager.api_keys is not None:
+                    if not auth_manager.verify_api_key(api_key):
+                        raise HTTPException(
+                            status_code=401, detail="Invalid or missing API key"
+                        )
+                    return
+                # JWT configured but no bearer token provided
+                if auth_manager.jwt_secret:
                     raise HTTPException(
-                        status_code=401, detail="Invalid or missing API key"
+                        status_code=401, detail="Authorization header required"
                     )
 
             auth_dependencies = [Security(verify_auth)]
@@ -451,6 +480,7 @@ if FASTAPI_AVAILABLE:
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 
             _validate_payload(request.inputs)
+            _validate_model_name(request.model_name)
 
             t0 = time.time()
             if server.model is None:

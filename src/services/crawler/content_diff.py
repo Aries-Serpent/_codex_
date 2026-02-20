@@ -228,8 +228,8 @@ class ContentDiffer:
         old_lines = old_normalized.splitlines()
         new_lines = new_normalized.splitlines()
 
-        # Use SequenceMatcher for similarity calculation
-        matcher = difflib.SequenceMatcher(None, old_normalized, new_normalized)
+        # Use SequenceMatcher for similarity calculation (autojunk=False for accurate ratio)
+        matcher = difflib.SequenceMatcher(None, old_normalized, new_normalized, autojunk=False)
         similarity_ratio = matcher.ratio()
         change_ratio = 1.0 - similarity_ratio
 
