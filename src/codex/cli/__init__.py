@@ -59,6 +59,7 @@ session_logger_cmd = None
 query_logs_cmd = None
 validate_env_cmd = None
 list_sessions_cmd = None
+viewer_cmd = None
 
 if cli is not None:
     # Import the groups from the loaded module
@@ -75,6 +76,7 @@ if cli is not None:
         query_logs_cmd = getattr(_cli_module, "query_logs_cmd", None)
         validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
         list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
+        viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
 
 __all__ = [
     "app",
@@ -91,6 +93,7 @@ __all__ = [
     "query_logs_cmd",
     "validate_env_cmd",
     "list_sessions_cmd",
+    "viewer_cmd",
 ]
 
 if cli is None:

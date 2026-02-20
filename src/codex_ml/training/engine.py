@@ -27,6 +27,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+# Sentinel: distinguishes "explicitly passed None (no mlflow)" from "not provided (auto-detect)"
+_MLFLOW_UNSET: object = object()
+
 
 def _normalize_params(params: Mapping[str, Any]) -> dict[str, str | float | int]:
     normalized: dict[str, str | float | int] = {}
@@ -53,7 +56,7 @@ class TrainingEngine:
     mlflow_run_name: str | None = None
     mlflow_tags: Mapping[str, Any] | None = None
     auto_log_datasets: bool = True
-    _mlflow_module: Any | None = field(default=None, repr=False)
+    _mlflow_module: Any | None = field(default=_MLFLOW_UNSET, repr=False)  # type: ignore[assignment]
     _active_run: Any | None = field(default=None, init=False, repr=False)
     _mlflow_configured: bool = field(default=False, init=False, repr=False)
     _mlflow_error: str | None = field(default=None, init=False, repr=False)
@@ -64,12 +67,14 @@ class TrainingEngine:
     _registered_datasets: list[dict[str, str]] = field(default_factory=list, init=False, repr=False)
 
     def __post_init__(self) -> None:
-        if self._mlflow_module is None:
+        if self._mlflow_module is _MLFLOW_UNSET:
+            # Auto-detect mlflow only when caller did not explicitly pass a module
             try:  # pragma: no cover - optional dependency path
                 import mlflow as _mlflow
             except Exception:  # pragma: no cover - mlflow missing
                 _mlflow = None
             self._mlflow_module = _mlflow
+        # If caller explicitly passed None, treat as "no mlflow available"
         if self.enable_mlflow:
             self._configure_mlflow()
 

@@ -654,7 +654,7 @@ else:
                     print("Powered by Hydra (install hydra-core)", file=sys.stderr)
                     print(guidance, file=sys.stderr)
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
-                return 0
+                sys.exit(0)
             if not _HAS_HYDRA:
                 guidance = (
                     "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -670,7 +670,7 @@ else:
                     status="ok",
                     error="hydra-core missing",
                 )
-                return 0
+                sys.exit(1)
             overrides: list[str] = []
             i = 0
             while i < len(args):

@@ -14,6 +14,7 @@ mlflow = pytest.importorskip("mlflow")
 
 
 def test_default_file_backend(tmp_path, monkeypatch):
+    pytest.importorskip("sitecustomize", reason="sitecustomize not installed in this environment")
     monkeypatch.chdir(tmp_path)
     # Make sure user didn't predefine the URI
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)

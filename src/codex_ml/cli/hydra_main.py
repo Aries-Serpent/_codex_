@@ -303,7 +303,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
     # Check for hydra availability early
     if hydra is None or _hydra_entry is None:
         sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
-        return 0
+        sys.exit(2)
 
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
     parser = parser_cls(prog="codex-train", add_help=False)
