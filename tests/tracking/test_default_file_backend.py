@@ -12,9 +12,15 @@ import pytest
 
 mlflow = pytest.importorskip("mlflow")
 
+try:
+    import sitecustomize as _sitecustomize  # noqa: F401
+    _HAS_SITECUSTOMIZE = True
+except ImportError:
+    _HAS_SITECUSTOMIZE = False
 
+
+@pytest.mark.skipif(not _HAS_SITECUSTOMIZE, reason="sitecustomize not installed in this environment")
 def test_default_file_backend(tmp_path, monkeypatch):
-    pytest.importorskip("sitecustomize", reason="sitecustomize not installed in this environment")
     monkeypatch.chdir(tmp_path)
     # Make sure user didn't predefine the URI
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
