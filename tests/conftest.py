@@ -1188,7 +1188,8 @@ def disable_torch_profiler(monkeypatch):
     Some PyTorch versions have a type mismatch bug in the profiler exit handler
     that causes: RuntimeError: profiler::_record_function_exit() Expected a
     value of type '__torch__.torch.classes.profiler._RecordFunction' but
-    instead found type 'ScriptObject'.
+    instead found type 'ScriptObject'. Patching both Python-level and C++-level
+    profiler hooks prevents this error.
     """
     import contextlib
     if torch is not None:
@@ -1196,6 +1197,26 @@ def disable_torch_profiler(monkeypatch):
             'torch.autograd.profiler.record_function',
             lambda *args, **kwargs: contextlib.nullcontext()
         )
+        # Also disable the C++/TorchScript level profiling that causes
+        # the ScriptObject type mismatch on PyTorch 2.x + Python 3.12
+        try:
+            import torch._C as _torch_c
+            if hasattr(_torch_c, '_jit_set_profiling_executor'):
+                monkeypatch.setattr(_torch_c, '_jit_set_profiling_executor',
+                                    lambda *a, **k: None)
+            if hasattr(_torch_c, '_jit_set_profiling_mode'):
+                monkeypatch.setattr(_torch_c, '_jit_set_profiling_mode',
+                                    lambda *a, **k: None)
+        except (ImportError, AttributeError):
+            pass
+        try:
+            if hasattr(torch, 'profiler') and hasattr(torch.profiler, 'record_function'):
+                monkeypatch.setattr(
+                    torch.profiler, 'record_function',
+                    lambda *args, **kwargs: contextlib.nullcontext()
+                )
+        except (ImportError, AttributeError):
+            pass
 
 
 # List of test files that commonly need the profiler disabled

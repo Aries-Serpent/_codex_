@@ -3,6 +3,17 @@ name: PR Size Analyzer
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_call:
+    outputs:
+      pr_size:
+        description: 'PR size category (small, medium, large, refactor)'
+        value: ${{ jobs.analyze-size.outputs.pr_size }}
+      changed_files_count:
+        description: 'Number of changed files'
+        value: ${{ jobs.analyze-size.outputs.changed_files_count }}
+      validation_strategy:
+        description: 'Recommended validation strategy'
+        value: ${{ jobs.analyze-size.outputs.validation_strategy }}
 
 jobs:
   analyze-size:
@@ -14,25 +25,40 @@ jobs:
       pr_size: ${{ steps.analyze.outputs.pr_size }}
       changed_files_count: ${{ steps.analyze.outputs.changed_files_count }}
       validation_strategy: ${{ steps.analyze.outputs.validation_strategy }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Analyze PR Size
         id: analyze
         run: |
           # Count changed files between base and head
-          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          # Support both direct PR trigger and workflow_call
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            # When called via workflow_call, fetch base from event
+            BASE_SHA="${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1' }}"
+          fi
           HEAD_SHA="${{ github.sha }}"
-          
+
           echo "Comparing $BASE_SHA...$HEAD_SHA"
-          
-          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | wc -l)
+
+          # Ensure we have the base ref
+          git fetch origin "$BASE_SHA" 2>/dev/null || true
+
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | wc -l)
+
+          # If git diff failed, try alternative method
+          if [ "$CHANGED_FILES" -eq 0 ]; then
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | wc -l)
+          fi
+
           echo "changed_files_count=$CHANGED_FILES" >> $GITHUB_OUTPUT
-          
+
           # Determine size tier and validation strategy
           if [ "$CHANGED_FILES" -lt 20 ]; then
             echo "pr_size=small" >> $GITHUB_OUTPUT
@@ -47,7 +73,7 @@ jobs:
             echo "pr_size=refactor" >> $GITHUB_OUTPUT
             echo "validation_strategy=import_validation" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Report PR Size
         run: |
           echo "### PR Size Analysis Results" >> $GITHUB_STEP_SUMMARY
@@ -56,63 +82,65 @@ jobs:
           echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}" >> $GITHUB_STEP_SUMMARY
           echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Also output to job log
           echo "================================"
           echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
           echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
           echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
           echo "================================"
-      
+
       - name: Add PR Comment
+        # Only add comment when triggered directly by PR, not via workflow_call
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const prSize = '${{ steps.analyze.outputs.pr_size }}';
             const fileCount = '${{ steps.analyze.outputs.changed_files_count }}';
             const strategy = '${{ steps.analyze.outputs.validation_strategy }}';
-            
+
             const sizeEmoji = {
               'small': '🟢',
               'medium': '🟡',
               'large': '🟠',
               'refactor': '🔴'
             };
-            
+
             const strategyDescription = {
               'full_validation': 'Full test suite execution',
               'targeted_tests': 'Targeted test execution for affected areas',
               'smoke_tests': 'Smoke tests only (on-demand full validation available)',
               'import_validation': 'Import validation only (on-demand testing available)'
             };
-            
+
             const comment = `## ${sizeEmoji[prSize]} PR Size Analysis
-            
+
             - **Size Category:** \`${prSize}\` (${fileCount} files changed)
             - **Validation Strategy:** ${strategyDescription[strategy]}
-            
+
             <details>
             <summary>Size Thresholds</summary>
-            
+
             - **Small:** < 20 files → Full validation
             - **Medium:** 20-99 files → Targeted tests
             - **Large:** 100-499 files → Smoke tests
             - **Refactor:** 500+ files → Import validation
-            
+
             </details>`;
-            
+
             // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('PR Size Analysis')
             );
-            
+
             if (botComment) {
               // Update existing comment
               await github.rest.issues.updateComment({

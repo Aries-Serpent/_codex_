@@ -60,6 +60,11 @@ class EvaluationConfig:
     output_dir: str = "artifacts/evaluation"
     save_predictions: bool = False
     log_interval: int = 10
+    # Additional fields expected by tests
+    max_batches: Optional[int] = None
+    seed: Optional[int] = None
+    metrics: Optional[Any] = None
+    system_metrics: bool = False
 
 
 class MetricAdapter:

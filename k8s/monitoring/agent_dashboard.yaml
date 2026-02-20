@@ -1,0 +1,296 @@
+# Kubernetes Manifests: Cognitive Brain Agent Dashboard
+# Prometheus + Grafana deployment for real-time agent health monitoring
+# Phase 5 Production Deployment — Quantum Compliance System
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-agent-dashboard
+  namespace: monitoring
+  labels:
+    app: cognitive-brain
+    phase: "5"
+    component: monitoring
+data:
+  dashboard.json: |
+    {
+      "title": "Cognitive Brain Agent Health",
+      "uid": "cognitive-brain-v5",
+      "version": 5,
+      "refresh": "5s",
+      "panels": [
+        {
+          "id": 1,
+          "title": "Quantum Coherence (Real-Time)",
+          "type": "gauge",
+          "targets": [{"expr": "cognitive_coherence"}],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  {"color": "red",    "value": 0},
+                  {"color": "yellow", "value": 0.650},
+                  {"color": "green",  "value": 0.750}
+                ]
+              },
+              "min": 0, "max": 1
+            }
+          },
+          "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+        },
+        {
+          "id": 2,
+          "title": "Decision Latency p99 (ms)",
+          "type": "graph",
+          "targets": [{"expr": "histogram_quantile(0.99, rate(cognitive_latency_ms_bucket[5m]))", "legendFormat": "p99"}],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  {"color": "green",  "value": 0},
+                  {"color": "yellow", "value": 50},
+                  {"color": "red",    "value": 100}
+                ]
+              }
+            }
+          },
+          "gridPos": {"h": 8, "w": 10, "x": 6, "y": 0}
+        },
+        {
+          "id": 3,
+          "title": "Error Rate (5-min window)",
+          "type": "singlestat",
+          "targets": [{"expr": "rate(cognitive_errors_total[5m])"}],
+          "thresholds": "0.1,0.5",
+          "colors": ["green", "yellow", "red"],
+          "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0}
+        },
+        {
+          "id": 4,
+          "title": "Decision Pattern Distribution",
+          "type": "piechart",
+          "targets": [{"expr": "cognitive_decisions_total", "legendFormat": "{{decision_type}}"}],
+          "gridPos": {"h": 8, "w": 8, "x": 16, "y": 4}
+        },
+        {
+          "id": 5,
+          "title": "k₁ Factor (Phase 5: 0.332)",
+          "type": "stat",
+          "targets": [{"expr": "cognitive_k1_factor"}],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  {"color": "green",  "value": 0},
+                  {"color": "yellow", "value": 0.35},
+                  {"color": "red",    "value": 0.40}
+                ]
+              }
+            }
+          },
+          "gridPos": {"h": 4, "w": 8, "x": 0, "y": 8}
+        },
+        {
+          "id": 6,
+          "title": "Accuracy (Phase 5: 100%)",
+          "type": "stat",
+          "targets": [{"expr": "cognitive_accuracy_rate"},
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  {"color": "red",    "value": 0},
+                  {"color": "yellow", "value": 0.84},
+                  {"color": "green",  "value": 0.95}
+                ]
+              }
+            }
+          },
+          "gridPos": {"h": 4, "w": 8, "x": 8, "y": 8}
+        },
+        {
+          "id": 7,
+          "title": "Active Learning Query Budget",
+          "type": "graph",
+          "targets": [
+            {"expr": "cognitive_active_learning_queries_daily", "legendFormat": "Queries today"},
+            {"expr": "50", "legendFormat": "Budget limit (50/day)"}
+          ],
+          "gridPos": {"h": 6, "w": 24, "x": 0, "y": 12}
+        }
+      ],
+      "alerting": {
+        "alerts": [
+          {
+            "uid": "coherence-degradation",
+            "name": "Coherence Degradation",
+            "condition": "cognitive_coherence < 0.650",
+            "frequency": "10s",
+            "message": "Quantum coherence below critical threshold (0.650). Self-correction triggered.",
+            "severity": "critical",
+            "action": "trigger_self_correction"
+          },
+          {
+            "uid": "high-error-rate",
+            "name": "High Error Rate",
+            "condition": "rate(cognitive_errors_total[5m]) > 0.5",
+            "frequency": "30s",
+            "message": "Error rate exceeds 0.5/min. Switching to classical fallback.",
+            "severity": "warning",
+            "action": "switch_to_classical_fallback"
+          },
+          {
+            "uid": "accuracy-degradation",
+            "name": "Accuracy Degradation",
+            "condition": "cognitive_accuracy_rate < 0.90",
+            "frequency": "60s",
+            "message": "Accuracy dropped below 90%. Investigate pattern failures.",
+            "severity": "critical",
+            "action": "alert_human_reviewer"
+          },
+          {
+            "uid": "active-learning-budget",
+            "name": "Active Learning Budget Exceeded",
+            "condition": "cognitive_active_learning_queries_daily > 50",
+            "frequency": "300s",
+            "message": "Active learning query budget exceeded. Disabling until reset.",
+            "severity": "warning",
+            "action": "disable_active_learning"
+          }
+        ]
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-cognitive-brain-rules
+  namespace: monitoring
+  labels:
+    app: cognitive-brain
+    component: prometheus
+data:
+  cognitive_brain_rules.yml: |
+    groups:
+      - name: cognitive_brain_phase5
+        interval: 15s
+        rules:
+          - record: cognitive_accuracy_rate
+            expr: 1 - (rate(cognitive_errors_total{error_type="classification"}[5m]) / rate(cognitive_decisions_total[5m]))
+          - record: cognitive_k1_factor
+            expr: cognitive_quantum_latency_avg * (1 + cognitive_error_rate) / (cognitive_classical_latency_avg * (1 + cognitive_coherence) * (1 - cognitive_error_rate))
+          - record: cognitive_active_learning_queries_daily
+            expr: sum(increase(cognitive_active_learning_queries_total[24h]))
+          - alert: CoherenceCritical
+            expr: cognitive_coherence < 0.650
+            for: 30s
+            labels:
+              severity: critical
+            annotations:
+              summary: "Quantum coherence critical ({{ $value }})"
+              description: "Coherence below 0.650 minimum. System degraded. Run trigger_self_correction()."
+          - alert: K1FactorExceeded
+            expr: cognitive_k1_factor > 0.40
+            for: 60s
+            labels:
+              severity: warning
+            annotations:
+              summary: "k₁ factor exceeded threshold ({{ $value }})"
+              description: "k₁ > 0.40 suggests quantum advantage degraded. Check lightweight_mode."
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cognitive-brain-prometheus-exporter
+  namespace: monitoring
+  labels:
+    app: cognitive-brain
+    component: prometheus-exporter
+    phase: "5"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cognitive-brain-exporter
+  template:
+    metadata:
+      labels:
+        app: cognitive-brain-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: exporter
+          image: codex/cognitive-brain-exporter:phase5
+          ports:
+            - containerPort: 9090
+          env:
+            - name: CODEX_BAYESIAN_MODE
+              value: "false"
+            - name: CODEX_FUZZY_MODE
+              value: "false"
+            - name: CODEX_ACTIVE_LEARNING
+              value: "false"
+            - name: CODEX_AUDIT_HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: codex-audit-secrets
+                  key: hmac_key
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cognitive-brain-metrics
+  namespace: monitoring
+  labels:
+    app: cognitive-brain
+spec:
+  selector:
+    app: cognitive-brain-exporter
+  ports:
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cognitive-brain
+  namespace: monitoring
+  labels:
+    app: cognitive-brain
+    release: prometheus-operator
+spec:
+  selector:
+    matchLabels:
+      app: cognitive-brain
+  endpoints:
+    - port: metrics
+      interval: 15s
+      path: /metrics

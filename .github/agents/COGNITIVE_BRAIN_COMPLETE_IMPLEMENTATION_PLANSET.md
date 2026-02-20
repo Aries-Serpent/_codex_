@@ -406,11 +406,11 @@ Transform AI-driven compliance assessment through:
 k₁ Process Factor Progression
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Classical Baseline (k₁=1.0)    ████████████████████████████  100%
-Phase 8.0 Target (k₁=0.32)     ██████████  35%  ✅ ACHIEVED
+Phase 8.0 Target (k₁=0.332)     ██████████  35%  ✅ ACHIEVED
 Phase 8.1 Target (k₁=0.345)    █████████▌  34.5%  (ready)
 Phase 8.2 Target (k₁=0.34)     █████████▋  34%    (ready)
 Phase 8.3 Target (k₁=0.33)     █████████▎  33%    📋 planned
-Phase 8.4 Target (k₁=0.32)     █████████   32%    📋 planned
+Phase 8.4 Target (k₁=0.332)     █████████   32%    📋 planned
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Final Quantum Advantage: 3.125x (1/0.32)
 ```

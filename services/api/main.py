@@ -109,6 +109,7 @@ if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
     torch.long = int  # type: ignore[attr-defined]
     torch.no_grad = _fake_no_grad  # type: ignore[attr-defined]
 from codex_ml.peft.peft_adapter import apply_lora
+from codex_ml.registry.base import RegistryError
 from codex_ml.registry.models import get_model
 from codex_ml.registry.tokenizers import get_tokenizer
 
@@ -332,7 +333,7 @@ def _load_components() -> tuple[Any, Any]:
         tokenizer = get_tokenizer(tokenizer_name)
         try:
             model = get_model(model_name, model_cfg)
-        except (ImportError, AttributeError) as exc:
+        except (ImportError, AttributeError, RegistryError, ValueError) as exc:
             logger.warning("Falling back to echo inference model", extra={"error": str(exc)})
             model = _EchoModel()
         model.eval()

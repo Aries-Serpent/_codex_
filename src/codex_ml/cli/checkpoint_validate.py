@@ -129,7 +129,6 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
             Path,
             typer.Argument(
                 help="Checkpoint path to validate.",
-                exists=True,
             ),
         ],
         schema: Annotated[

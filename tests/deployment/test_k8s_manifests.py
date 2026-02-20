@@ -33,14 +33,21 @@ def test_deployment_parse_manifests_if_present():
     if not files:
         pytest.skip("No deployment manifests found; skipping")
     for f in files:
-        doc = yaml.safe_load(f.read_text(encoding="utf-8"))
-        assert isinstance(doc, dict | list)
-        if isinstance(doc, dict):
-            # Skip Helm Chart.yaml files - they have different structure
-            is_helm_chart = f.name == "Chart.yaml" or (
-                "name" in doc and "appVersion" in doc and "description" in doc
-            )
-            if is_helm_chart:
+        content = f.read_text(encoding="utf-8")
+        # Handle multi-document YAML files (separated by ---)
+        docs = list(yaml.safe_load_all(content))
+        assert len(docs) > 0, f"No YAML documents found in {f}"
+        
+        for doc in docs:
+            if doc is None:  # Skip empty documents
                 continue
-            # K8s manifests must have apiVersion and kind
-            assert "apiVersion" in doc and "kind" in doc
+            assert isinstance(doc, dict | list)
+            if isinstance(doc, dict):
+                # Skip Helm Chart.yaml files - they have different structure
+                is_helm_chart = f.name == "Chart.yaml" or (
+                    "name" in doc and "appVersion" in doc and "description" in doc
+                )
+                if is_helm_chart:
+                    continue
+                # K8s manifests must have apiVersion and kind
+                assert "apiVersion" in doc and "kind" in doc

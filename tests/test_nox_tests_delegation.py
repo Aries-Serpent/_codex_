@@ -5,27 +5,34 @@ Test module for nox tests delegation.
 """
 
 import importlib
+from unittest.mock import MagicMock
 
 import pytest
 
 pytest.importorskip("nox")
 
 
-class _DummySession:
-    """Minimal stand-in for nox.Session just to capture notify() calls."""
-
-    def __init__(self) -> None:
-        self.notified = []
-
-    # nox exposes Session.notify(name: str), we only need the name
-    def notify(self, name: str) -> None:  # pragma: no cover - trivial
-        self.notified.append(name)
-
-
 def test_tests_session_delegates_to_coverage():
+    """Test that tests session runs pytest with coverage directly (no delegation)."""
     # Import user noxfile; the decorated function remains callable.
     noxfile = importlib.import_module("noxfile")
-    sess = _DummySession()
-    # Call the session function directly; ensure delegation happens.
+
+    # Create a mock session with all required methods
+    sess = MagicMock()
+    sess.python = None
+    sess.posargs = []
+
+    # Call the session function
     noxfile.tests(sess)
-    assert "coverage" in sess.notified, "nox 'tests' session must notify 'coverage'"
+
+    # Verify pytest was called with coverage (not delegated to separate session)
+    # The session should call run() with pytest and --cov flags
+    run_calls = [call for call in sess.run.call_args_list]
+    pytest_calls = [call for call in run_calls if 'pytest' in str(call)]
+
+    # Should have at least one pytest call with coverage flags
+    assert len(pytest_calls) > 0, "tests session must run pytest"
+
+    # Check that coverage flags are present
+    all_args = str(sess.run.call_args_list)
+    assert '--cov' in all_args, "tests session must run pytest with coverage"
