@@ -10,7 +10,7 @@ Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple, Set
+from typing import List, Set, Tuple
 
 # Patterns to detect GitHub context variables
 GITHUB_CONTEXT_PATTERN = re.compile(r'\$\{\{[^}]+\}\}')
@@ -67,7 +67,7 @@ class LinkValidator:
     def is_anchor_link(self, link: str) -> bool:
         """Check if link is an anchor (fragment identifier)"""
         return link.startswith('#')
-    
+
     def should_skip_link(self, link: str) -> bool:
         """Check if link should be skipped based on patterns"""
         for pattern in SKIP_LINK_PATTERNS:
@@ -85,7 +85,7 @@ class LinkValidator:
         """
         # Remove trailing slash for path resolution
         clean_link = link.rstrip('/')
-        
+
         # Handle absolute paths (starting with /) as repository root relative
         if clean_link.startswith('/'):
             # Convert absolute path to repository root relative
@@ -98,7 +98,7 @@ class LinkValidator:
             if clean_link.startswith('./'):
                 clean_link = clean_link[2:]
             target_path = (source_dir / clean_link).resolve()
-        
+
         return target_path
 
     def is_in_code_block(self, content: str, position: int) -> bool:
@@ -141,7 +141,7 @@ class LinkValidator:
             # Skip links inside code blocks
             if self.is_in_code_block(content, match.start()):
                 continue
-                
+
             link_text = match.group(1)
             link_path = match.group(2)
 
@@ -152,7 +152,7 @@ class LinkValidator:
             # Skip anchor links
             if self.is_anchor_link(link_path):
                 continue
-            
+
             # Skip patterns that shouldn't be validated
             if self.should_skip_link(link_path):
                 continue
@@ -178,7 +178,7 @@ class LinkValidator:
             # Resolve and validate internal file path
             try:
                 target_path = self.resolve_link_path(file_path, link_path)
-                
+
                 # Check if target is within repository
                 try:
                     target_path.relative_to(self.repo_root)
@@ -190,7 +190,7 @@ class LinkValidator:
                         f"Link points outside repository: {link_path}"
                     ))
                     continue
-                
+
                 # Check if target exists (file or directory)
                 if not target_path.exists():
                     self.errors.append((

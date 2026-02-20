@@ -480,7 +480,7 @@ Organization:
 - [AGENTS.md](../agents.md) - Agent operations playbook
 - [MATURITY_REMAINING_WORK.md](MATURITY_REMAINING_WORK.md) - Maturity improvement plan
 - [REMAINING_WORK.md](REMAINING_WORK.md) - General remaining work
-- [agents/prompts/ARCHITECTURE.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/ARCHITECTURE.md) - System architecture
+- [agents/prompts/ARCHITECTURE.md](../ARCHITECTURE.md) - System architecture
 - [reports/stub_analysis.md](https://github.com/Aries-Serpent/_codex_/blob/main/reports/stub_analysis.md) - Detailed stub analysis
 
 ---

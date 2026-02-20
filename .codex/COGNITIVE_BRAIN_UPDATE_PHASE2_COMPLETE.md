@@ -354,7 +354,7 @@ See [AGENT_DESIGNS.md](#) for comprehensive agent architectures
 - [AGENT_DESIGNS.md](#) - Comprehensive agent architectures (to be created)
 - [AGENT_REGISTRY.yaml](#) - Agent metadata and status (to be created)
 - [.template/](#) - Agent scaffolding template (to be created)
-- [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Repository health metrics
+- [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Repository health metrics
 
 ---
 

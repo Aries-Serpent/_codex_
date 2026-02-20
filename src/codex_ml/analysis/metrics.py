@@ -22,8 +22,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import ast
-import math
+import ast  # noqa: E402
+import math  # noqa: E402
 
 
 def mccabe_minimal(ast_tree: ast.AST) -> int:

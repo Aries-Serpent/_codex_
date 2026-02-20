@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/monitoring/collect_adoption_metrics.py [options]
-    
+
     Examples:
     $ python scripts/monitoring/collect_adoption_metrics.py --help
 

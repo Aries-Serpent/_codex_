@@ -327,10 +327,6 @@ analyzer.analyze_interaction(interaction)
 
 ## 📖 References
 
-- [Capability Gap Analysis Theory](./docs/capability_gaps.md)
-- [Tool Generation Patterns](./docs/tool_patterns.md)
-- [Evolution Strategies](./docs/evolution.md)
-- [Meta-Learning Approaches](./docs/meta_learning.md)
 
 ## 🎓 Learning Resources
 

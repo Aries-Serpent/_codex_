@@ -21,10 +21,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-from pathlib import Path
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-from .core import DetectorResult, clamp01
+from .core import DetectorResult, clamp01  # noqa: E402
 
 
 def detector_experiment_summary(

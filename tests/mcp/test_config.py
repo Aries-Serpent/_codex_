@@ -3,14 +3,11 @@ Tests for MCP configuration management.
 """
 
 import json
-import sys
 import tempfile
 from pathlib import Path
 
-repo_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(repo_root))
-
-from mcp.config import MCPConfig, ToolDefinition, compute_checksum  # noqa: E402
+# NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
+from mcp.config import MCPConfig, ToolDefinition, compute_checksum
 
 
 def test_compute_checksum():

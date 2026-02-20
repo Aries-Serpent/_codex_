@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Session-scoped structured logging utilities."""
 
 
-import json
-import os
-import uuid
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any, Iterable, Mapping
+import json  # noqa: E402
+import os  # noqa: E402
+import uuid  # noqa: E402
+from datetime import datetime, timedelta, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Mapping  # noqa: E402
 
-from codex_ml.safety.redaction import SecretRedactor
+from codex_ml.safety.redaction import SecretRedactor  # noqa: E402
 
 DEFAULT_LOG_DIR = Path(".codex") / "logs"
 

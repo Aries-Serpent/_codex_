@@ -22,11 +22,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import sys
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Optional
+import json  # noqa: E402
+import sys  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None

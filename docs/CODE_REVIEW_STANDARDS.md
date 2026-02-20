@@ -13,7 +13,7 @@ Standards and guidelines for code review in the _codex_ project.
 ## Related Documentation
 
 - [Contributing Guide](./CONTRIBUTING.md)
-- [Code Style Guide](./guides/code_style_guide.md)
+- [Code Style Guide](dev/CODE_STYLE_GUIDE.md)
 
 ---
 

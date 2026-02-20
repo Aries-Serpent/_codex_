@@ -82,22 +82,22 @@ def safe_load_sentence_transformer(
                 "Upgrade PyTorch to version with to_empty() support. "
                 f"Original error: {exc}"
             ) from exc
-        
+
         # Materialize meta tensors to CPU
         model = model.to_empty(device="cpu")
         model.eval()
-        
+
         # CRITICAL: Verify no meta tensors remain
         meta_params = []
         for name, param in model.named_parameters():
             if param.is_meta:
                 meta_params.append(name)
-        
+
         if meta_params:
             raise RuntimeError(
                 f"Meta tensors still present after to_empty(): {meta_params[:5]}... "
                 "Model may not be fully materialized."
             )
-        
+
         logger.info("Model %s materialized via to_empty() and verified", model_name)
         return model

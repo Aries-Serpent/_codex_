@@ -394,7 +394,7 @@ When ready to implement Google Drive integration, complete these phases in order
 
 ### Repository Files
 
-- **Workflow**: [`.github/workflows/notebooklm-sync.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/notebooklm-sync.yml)
+- **Workflow**: `.github/workflows/notebooklm-sync.yml`
 - **Secret Validation**: [`scripts/phase10/validate_gdrive_secrets.sh`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/phase10/validate_gdrive_secrets.sh)
 - **Secret Injector**: [`scripts/phase10/execute_secrets_injection_now.py`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/phase10/execute_secrets_injection_now.py)
 - **Automation Manager**: [`scripts/phase10/automated_secrets_manager.py`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/phase10/automated_secrets_manager.py)
@@ -403,11 +403,11 @@ When ready to implement Google Drive integration, complete these phases in order
 
 ### Documentation
 
-- **Phase 10 Master Plan**: [`PHASE_10_MASTER_INTEGRATION_PLANSET.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_10_MASTER_INTEGRATION_PLANSET.md) — Task 2
-- **Admin Action Tracker**: [`HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md`](https://github.com/Aries-Serpent/_codex_/blob/main/HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md) — HA-GC-001, HA-GH-001, HA-NB-001
-- **Phase 11 Prompts**: [`PHASE_11_X_PROMPTSETS.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_11_X_PROMPTSETS.md) — Prompt 2.1
-- **Phase 12 Continuation**: [`PHASE_12_CONTINUATION_PROMPT.md`](https://github.com/Aries-Serpent/_codex_/blob/main/PHASE_12_CONTINUATION_PROMPT.md) — Week 1 iteration 1-2
-- **Automation Analysis**: [`AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md`](https://github.com/Aries-Serpent/_codex_/blob/main/AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md) — §2.3
+- **Phase 10 Master Plan**: `PHASE_10_MASTER_INTEGRATION_PLANSET.md` — Task 2
+- **Admin Action Tracker**: `HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md` — HA-GC-001, HA-GH-001, HA-NB-001
+- **Phase 11 Prompts**: `PHASE_11_X_PROMPTSETS.md` — Prompt 2.1
+- **Phase 12 Continuation**: `PHASE_12_CONTINUATION_PROMPT.md` — Week 1 iteration 1-2
+- **Automation Analysis**: `AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md` — §2.3
 
 ### External Resources
 

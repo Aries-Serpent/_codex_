@@ -10,14 +10,14 @@ import shlex
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 
 class RiskLevel(Enum):
     """Risk levels for remediation actions."""
-    
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -25,7 +25,7 @@ class RiskLevel(Enum):
 
 class RemediationType(Enum):
     """Types of remediation actions."""
-    
+
     DEPENDENCY_UPDATE = "dependency_update"
     CONFIG_FIX = "config_fix"
     CODE_FIX = "code_fix"
@@ -37,7 +37,7 @@ class RemediationType(Enum):
 @dataclass
 class RemediationAction:
     """A remediation action with risk classification."""
-    
+
     action_id: str
     remediation_type: RemediationType
     risk_level: RiskLevel
@@ -48,19 +48,19 @@ class RemediationAction:
     files_to_modify: Optional[List[str]] = None
     approval_required: bool = True
     estimated_resolution_time_minutes: int = 30
-    
+
     def __post_init__(self):
         if self.manual_steps is None:
             self.manual_steps = []
         if self.files_to_modify is None:
             self.files_to_modify = []
-        
+
         # Auto-determine approval requirement
         if self.risk_level == RiskLevel.LOW and self.confidence >= 0.9:
             self.approval_required = False
         else:
             self.approval_required = True
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -80,14 +80,14 @@ class RemediationAction:
 class RemediationEngine:
     """
     Generates and applies remediation actions with risk-based approval gates.
-    
+
     Capabilities:
     - Auto-fix generation
     - Risk classification
     - Approval gate management
     - Safe fix application
     """
-    
+
     # Whitelist of allowed command prefixes for automated fixes
     ALLOWED_COMMANDS = {
         "gh",           # GitHub CLI
@@ -101,7 +101,7 @@ class RemediationEngine:
         "cargo",        # Rust package manager
         "npm",          # Node package manager
     }
-    
+
     def __init__(
         self,
         repo_root: Path = Path("."),
@@ -109,7 +109,7 @@ class RemediationEngine:
     ):
         """
         Initialize remediation engine.
-        
+
         Args:
             repo_root: Repository root path
             dry_run: If True, simulate fixes without applying
@@ -117,29 +117,29 @@ class RemediationEngine:
         self.repo_root = repo_root
         self.dry_run = dry_run
         self.actions: List[RemediationAction] = []
-    
+
     def _validate_command(self, cmd_string: str) -> bool:
         """
         Validate that a command is safe to execute.
-        
+
         Args:
             cmd_string: Command string to validate
-            
+
         Returns:
             True if command is allowed, False otherwise
         """
         if not cmd_string or not cmd_string.strip():
             return False
-        
+
         # Parse the command to get the executable
         try:
             cmd_parts = shlex.split(cmd_string)
             if not cmd_parts:
                 return False
-            
+
             # Get the base command (first part)
             base_cmd = cmd_parts[0]
-            
+
             # Check if the base command is in the whitelist
             if base_cmd not in self.ALLOWED_COMMANDS:
                 logger.warning(
@@ -147,13 +147,13 @@ class RemediationEngine:
                     f"Allowed: {', '.join(sorted(self.ALLOWED_COMMANDS))}"
                 )
                 return False
-            
+
             return True
-            
+
         except ValueError as e:
             logger.error(f"Failed to parse command '{cmd_string}': {e}")
             return False
-    
+
     def generate_remediation(
         self,
         failure_type: str,
@@ -164,19 +164,19 @@ class RemediationEngine:
     ) -> List[RemediationAction]:
         """
         Generate remediation actions for a failure.
-        
+
         Args:
             failure_type: Type of failure
             root_cause: Root cause description
             detected_issues: List of detected issues
             suggested_actions: List of suggested actions
             confidence: Confidence score
-            
+
         Returns:
             List of remediation actions
         """
         actions = []
-        
+
         # Generate actions based on failure type
         if failure_type == "test_failure":
             actions.extend(self._generate_test_failure_remediations(
@@ -199,16 +199,16 @@ class RemediationEngine:
             actions.append(self._generate_generic_remediation(
                 failure_type, root_cause, confidence
             ))
-        
+
         # Add suggested actions from self-healing engine
         for suggested in suggested_actions:
             action = self._convert_suggested_action(suggested, confidence)
             if action:
                 actions.append(action)
-        
+
         self.actions.extend(actions)
         return actions
-    
+
     def _generate_test_failure_remediations(
         self,
         root_cause: str,
@@ -217,7 +217,7 @@ class RemediationEngine:
     ) -> List[RemediationAction]:
         """Generate remediations for test failures."""
         actions = []
-        
+
         # Check if it's an assertion error
         if "assertion" in root_cause.lower():
             actions.append(RemediationAction(
@@ -244,9 +244,9 @@ class RemediationEngine:
                 automated_fix="gh workflow run test.yml",
                 estimated_resolution_time_minutes=5,
             ))
-        
+
         return actions
-    
+
     def _generate_import_error_remediations(
         self,
         root_cause: str,
@@ -255,12 +255,12 @@ class RemediationEngine:
     ) -> List[RemediationAction]:
         """Generate remediations for import errors."""
         actions = []
-        
+
         # Extract module name
         import re
         match = re.search(r"module['\"]?\s*['\"]?(\S+)['\"]?", root_cause, re.IGNORECASE)
         module_name = match.group(1) if match else "unknown"
-        
+
         actions.append(RemediationAction(
             action_id=f"dep_install_{id(root_cause)}",
             remediation_type=RemediationType.DEPENDENCY_UPDATE,
@@ -275,9 +275,9 @@ class RemediationEngine:
             ],
             estimated_resolution_time_minutes=10,
         ))
-        
+
         return actions
-    
+
     def _generate_build_failure_remediations(
         self,
         root_cause: str,
@@ -286,7 +286,7 @@ class RemediationEngine:
     ) -> List[RemediationAction]:
         """Generate remediations for build failures."""
         actions = []
-        
+
         actions.append(RemediationAction(
             action_id=f"build_investigate_{id(root_cause)}",
             remediation_type=RemediationType.INVESTIGATE,
@@ -301,9 +301,9 @@ class RemediationEngine:
             ],
             estimated_resolution_time_minutes=60,
         ))
-        
+
         return actions
-    
+
     def _generate_lint_error_remediations(
         self,
         root_cause: str,
@@ -312,7 +312,7 @@ class RemediationEngine:
     ) -> List[RemediationAction]:
         """Generate remediations for lint errors."""
         actions = []
-        
+
         actions.append(RemediationAction(
             action_id=f"lint_fix_{id(root_cause)}",
             remediation_type=RemediationType.CODE_FIX,
@@ -328,9 +328,9 @@ class RemediationEngine:
             ],
             estimated_resolution_time_minutes=10,
         ))
-        
+
         return actions
-    
+
     def _generate_generic_remediation(
         self,
         failure_type: str,
@@ -353,7 +353,7 @@ class RemediationEngine:
             ],
             estimated_resolution_time_minutes=45,
         )
-    
+
     def _convert_suggested_action(
         self,
         suggested: Dict[str, Any],
@@ -362,7 +362,7 @@ class RemediationEngine:
         """Convert suggested action to RemediationAction."""
         action_type = suggested.get("action_type", "unknown")
         description = suggested.get("description", "No description")
-        
+
         # Map action types to remediation types
         type_mapping = {
             "dependency_update": RemediationType.DEPENDENCY_UPDATE,
@@ -370,16 +370,16 @@ class RemediationEngine:
             "code_fix": RemediationType.CODE_FIX,
             "rerun": RemediationType.RERUN,
         }
-        
+
         remediation_type = type_mapping.get(action_type, RemediationType.INVESTIGATE)
-        
+
         # Determine risk level
         risk_level = RiskLevel.MEDIUM
         if remediation_type == RemediationType.RERUN:
             risk_level = RiskLevel.LOW
         elif remediation_type == RemediationType.CODE_FIX:
             risk_level = RiskLevel.HIGH
-        
+
         return RemediationAction(
             action_id=f"action_{id(suggested)}",
             remediation_type=remediation_type,
@@ -388,67 +388,67 @@ class RemediationEngine:
             description=description,
             estimated_resolution_time_minutes=30,
         )
-    
+
     def classify_risk(self, action: RemediationAction) -> RiskLevel:
         """
         Classify risk level for a remediation action.
-        
+
         Args:
             action: Remediation action
-            
+
         Returns:
             Risk level
         """
         # Already classified, but allow re-evaluation
-        
+
         # Low risk: high confidence, no code changes, reversible
-        if (action.confidence >= 0.9 and 
+        if (action.confidence >= 0.9 and
             action.remediation_type in [RemediationType.RERUN, RemediationType.DEPENDENCY_UPDATE]):
             return RiskLevel.LOW
-        
+
         # High risk: code changes, low confidence, affects multiple files
         if (action.remediation_type == RemediationType.CODE_FIX or
             action.confidence < 0.5 or
             (action.files_to_modify and len(action.files_to_modify) > 5)):
             return RiskLevel.HIGH
-        
+
         # Medium risk: everything else
         return RiskLevel.MEDIUM
-    
+
     def filter_by_risk(self, risk_level: RiskLevel) -> List[RemediationAction]:
         """
         Filter actions by risk level.
-        
+
         Args:
             risk_level: Risk level to filter by
-            
+
         Returns:
             List of matching actions
         """
         return [a for a in self.actions if a.risk_level == risk_level]
-    
+
     def apply_action(self, action: RemediationAction) -> Dict[str, Any]:
         """
         Apply a remediation action.
-        
+
         Args:
             action: Action to apply
-            
+
         Returns:
             Result dictionary
         """
         if self.dry_run:
             logger.info(f"[DRY RUN] Would apply action: {action.action_id}")
             return {"success": True, "dry_run": True, "action_id": action.action_id}
-        
+
         if action.approval_required:
             logger.warning(f"Action {action.action_id} requires approval - skipping auto-apply")
             return {"success": False, "error": "Approval required", "action_id": action.action_id}
-        
+
         if not action.automated_fix:
             logger.warning(f"Action {action.action_id} has no automated fix")
             return {"success": False, "error": "No automated fix", "action_id": action.action_id}
-        
+
         # Validate command before execution
         if not self._validate_command(action.automated_fix):
             logger.error(f"Action {action.action_id} contains invalid or disallowed command: {action.automated_fix}")
@@ -457,7 +457,7 @@ class RemediationEngine:
                 "error": "Command validation failed - not in allowed commands whitelist",
                 "action_id": action.action_id
             }
-        
+
         # Apply automated fix
         try:
             import subprocess
@@ -472,7 +472,7 @@ class RemediationEngine:
                 timeout=300,
                 cwd=self.repo_root,
             )
-            
+
             success = result.returncode == 0
             return {
                 "success": success,
@@ -484,11 +484,11 @@ class RemediationEngine:
         except Exception as e:
             logger.error(f"Failed to apply action {action.action_id}: {e}")
             return {"success": False, "error": str(e), "action_id": action.action_id}
-    
+
     def generate_report(self) -> Dict[str, Any]:
         """
         Generate remediation report.
-        
+
         Returns:
             Report dictionary
         """
@@ -497,7 +497,7 @@ class RemediationEngine:
             "medium": self.filter_by_risk(RiskLevel.MEDIUM),
             "high": self.filter_by_risk(RiskLevel.HIGH),
         }
-        
+
         return {
             "total_actions": len(self.actions),
             "by_risk_level": {

@@ -86,45 +86,45 @@ def convert_html_to_grayscale_css() -> str:
         filter: grayscale(100%) !important;
         -webkit-filter: grayscale(100%) !important;
     }
-    
+
     /* Ensure all colors are converted to grayscale */
     * {
         color: black !important;
         background-color: white !important;
         border-color: #666 !important;
     }
-    
+
     /* Preserve table structure readability */
     table {
         border-collapse: collapse;
     }
-    
+
     th, td {
         border: 1px solid #333 !important;
         padding: 4px 8px;
     }
-    
+
     th {
         background-color: #ccc !important;
         font-weight: bold;
     }
-    
+
     /* Links in black */
     a {
         color: black !important;
         text-decoration: underline;
     }
-    
+
     /* Coverage percentage styling */
     .pc_cov {
         font-weight: bold;
     }
-    
+
     @page {
         size: letter;
         margin: 0.5in;
     }
-    
+
     @media print {
         html, body {
             filter: grayscale(100%) !important;
@@ -198,7 +198,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
     """
     try:
         # Try weasyprint first (best quality)
-        from weasyprint import HTML, CSS
+        from weasyprint import CSS, HTML
 
         grayscale_css = CSS(string=convert_html_to_grayscale_css())
 
@@ -238,8 +238,8 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
     # Last resort: Create a simple text-based PDF
     try:
         from reportlab.lib.pagesizes import letter
-        from reportlab.pdfgen import canvas
         from reportlab.lib.units import inch
+        from reportlab.pdfgen import canvas
 
         # Read HTML and extract text content
         html_content = html_path.read_text(encoding="utf-8")

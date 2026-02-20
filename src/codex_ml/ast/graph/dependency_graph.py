@@ -391,7 +391,7 @@ class DependencyGraph:
 
     def edge_count(self) -> int:
         """Return number of edges in the graph.
-        
+
         Note: This is O(n) where n is number of nodes. For frequent access,
         consider caching if the graph is large and mostly static.
         """

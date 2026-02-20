@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/maturity/update_from_ast.py [options]
-    
+
     Examples:
     $ python scripts/maturity/update_from_ast.py --help
 

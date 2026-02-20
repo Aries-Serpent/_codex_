@@ -16,8 +16,19 @@ import sys
 from pathlib import Path
 
 import pytest
-pytest.importorskip("numpy")
-pytest.importorskip("torch")
+
+# Note: These imports are required for conftest to load properly.
+# If numpy or torch are not available, many fixtures will be no-ops,
+# but conftest itself must load for pytest-xdist workers to function.
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+try:
+    import torch
+except ImportError:
+    torch = None
 
 
 logger = logging.getLogger(__name__)
@@ -29,10 +40,13 @@ SRC_ROOT = REPO_ROOT / "src"
 # CUDA Detection for GPU-Dependent Tests (PR #3178)
 # ============================================================================
 # Detect CUDA availability at module load time for test skip decorators
-try:
-    import torch
-    CUDA_AVAILABLE = torch.cuda.is_available()
-except (ImportError, AttributeError):
+if torch is not None and hasattr(torch, 'cuda'):
+    try:
+        CUDA_AVAILABLE = torch.cuda.is_available()
+    except (AttributeError, RuntimeError):
+        # CUDA methods may raise errors in some configurations
+        CUDA_AVAILABLE = False
+else:
     # PyTorch not installed or stub version without CUDA support
     CUDA_AVAILABLE = False
 
@@ -70,7 +84,14 @@ def pytest_configure(config: pytest.Config) -> None:
     the existing defaults for actual test runs.
 
     Also registers custom markers for RAG tests and configures PyTorch for CPU-only.
+    Also installs custom importorskip wrapper to handle stub modules.
     """
+    # Install custom importorskip wrapper (done here to avoid xdist worker issues)
+    global _ORIGINAL_IMPORTORSKIP
+    if _ORIGINAL_IMPORTORSKIP is None:
+        _ORIGINAL_IMPORTORSKIP = pytest.importorskip
+        pytest.importorskip = _importorskip_optional_dep
+
     # Note: Do NOT call torch.set_default_device() here.
     # It interferes with SentenceTransformer model loading in PyTorch >=2.0,
     # causing "Cannot copy out of meta tensor" errors. RAG modules already
@@ -117,6 +138,12 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers", "network: marks tests that require network access"
     )
 
+
+# Note: pytest_configure_node hook removed in PR #3248 Attempt 15
+# The hook didn't work because it runs AFTER CLI argument parsing in workers.
+# Solution: Removed xdist parallelization (-n flags) from workflows.
+# Workers spawned via execnet.remote_exec() start fresh Python interpreters
+# that don't inherit the parent process's plugin registry.
 
 # Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
 # site-packages modules when they are installed. We still keep the repository
@@ -226,7 +253,8 @@ def _missing_modules(modules: list[str]) -> list[str]:
     return missing
 
 
-_ORIGINAL_IMPORTORSKIP = pytest.importorskip
+# Store reference to original importorskip for wrapper (initialized in pytest_configure)
+_ORIGINAL_IMPORTORSKIP = None
 
 
 def _importorskip_optional_dep(
@@ -255,11 +283,29 @@ def _importorskip_optional_dep(
         raise pytest.skip.Exception(message, allow_module_level=True)
 
 
-pytest.importorskip = _importorskip_optional_dep
-
-
 def pytest_collection_modifyitems(session, config, items):
+    """Auto-mark slow tests and handle optional dependencies."""
+
+    # Patterns that indicate a test is slow (in test name/path)
+    slow_patterns = [
+        "sleep(",
+        "time.sleep",
+        "asyncio.sleep",
+        "e2e",
+        "end_to_end",
+        "docker",
+        "deployment",
+    ]
+
     for item in items:
+        # Auto-mark slow tests based on patterns in test name/path
+        # NOTE: Do NOT auto-mark based on "integration" marker alone.
+        # Integration tests should explicitly use @pytest.mark.slow if they're slow.
+        if "slow" not in item.keywords:
+            # Check if test name/path suggests it's slow
+            if any(pattern in item.nodeid.lower() for pattern in slow_patterns):
+                item.add_marker(pytest.mark.slow)
+
         for marker, modules in OPTIONAL_DEP_MARKERS.items():
             if marker in item.keywords:
                 missing = _missing_modules(modules)
@@ -503,105 +549,8 @@ def rag_test_config():
 # ============================================================================
 
 
-@pytest.fixture(autouse=True, scope="session")
-def disable_torch_profiler():
-    """
-    Disable PyTorch profiler to prevent type errors in Torch 2.6.0.
-
-    Issue: PyTorch 2.6.0 profiler has breaking changes in type checking
-    for ScriptObject vs _RecordFunction, causing RuntimeError in tests.
-
-    Solution: Multi-layered profiler disabling:
-    1. Environment variable
-    2. Direct C++ profiler API
-    3. Python-level profiler context override (no restoration needed - test env only)
-    4. Global state manipulation
-
-    Note: Original functions are not restored as this is a test-only fixture
-    and the modifications are intentionally persistent for the entire test session.
-    """
-    # Layer 1: Environment variable (attempted first, before torch import)
-    os.environ["PYTORCH_PROFILER_DISABLE"] = "1"
-    os.environ["KINETO_LOG_LEVEL"] = "5"  # Suppress profiler logging
-
-    # Layer 2: Import torch and disable at C++ level
-    try:
-        import torch
-
-        # Method A: Disable via C++ API (if available)
-        if hasattr(torch, '_C') and hasattr(torch._C, '_profiler'):
-            try:
-                torch._C._profiler._set_profiler_enabled(False)
-            except (AttributeError, RuntimeError, TypeError):
-                # Best-effort: C++ profiler API may not be available in all PyTorch versions
-                logger.debug(
-                    "Failed to disable torch C++ profiler via _set_profiler_enabled; "
-                    "continuing without C++ profiler changes.",
-                    exc_info=True,
-                )
-
-        # Method B: Disable via Python profiler module
-        if hasattr(torch, 'profiler'):
-            try:
-                # Override profiler context managers to no-op
-                # Note: Not restored - test session should have profiler disabled
-                def noop_init(self, *args, **kwargs):
-                    """No-op profiler initialization."""
-                    self.enabled = False
-                    self.use_cuda = False
-                    self.record_shapes = False
-                    self.profile_memory = False
-                    self.with_stack = False
-
-                torch.profiler.profile.__init__ = noop_init
-            except (AttributeError, TypeError):
-                # Best-effort: profiler API may have changed or be unavailable
-                logger.debug(
-                    "Failed to disable torch profiler via Python API; "
-                    "torch.profiler.profile may be unavailable or changed.",
-                    exc_info=True,
-                )
-
-        # Method C: Monkey-patch record_function to no-op
-        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
-            try:
-                # Override record_function to no-op
-                # Note: Not restored - test session should have profiler disabled
-                class NoOpRecordFunction:
-                    """No-op context manager for record_function."""
-                    def __init__(self, *args, **kwargs):
-                        pass
-                    def __enter__(self):
-                        return self
-                    def __exit__(self, *args):
-                        pass
-
-                torch.autograd.profiler.record_function = NoOpRecordFunction
-            except (AttributeError, TypeError):
-                # Best-effort patching: older/newer torch versions may not expose this API.
-                # In that case, we skip the monkey-patch and continue with the default behavior.
-                logger.debug(
-                    "torch.autograd.profiler.record_function could not be patched to NoOpRecordFunction",
-                    exc_info=True,
-                )
-
-        # Method D: Disable autograd profiler globally
-        if hasattr(torch, 'autograd') and hasattr(torch.autograd, 'profiler'):
-            try:
-                torch.autograd.profiler.emit_nvtx(enabled=False)
-                # Note: Removed torch.autograd.profiler.profile(enabled=False) as profile is a class/context manager, not a function
-            except (AttributeError, TypeError, RuntimeError) as exc:
-                # Best-effort: emit_nvtx API may not be available
-                logger.debug("Failed to disable autograd profiler globally: %s", exc)
-                pass
-
-    except (ImportError, OSError) as exc:
-        # Torch not installed or failed to load (e.g., missing shared libraries)
-        # This is expected in CI environments without full CUDA setup
-        logger.debug("Torch import failed (expected in some CI environments): %s", exc)
-        pass
-
-    yield
+# Removed duplicate disable_torch_profiler fixture (F811)
+# The correct version is defined below at line ~1275 with autouse=False
 
     # Cleanup environment variables
     os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
@@ -914,6 +863,13 @@ def mock_sentence_transformer(monkeypatch):
             )
         except AttributeError:
             pass
+        try:
+            monkeypatch.setattr(
+                "codex.rag._model_utils.SentenceTransformer",
+                MockSentenceTransformer
+            )
+        except AttributeError:
+            pass
     except ImportError:
         # sentence_transformers not available, nothing to mock
         pass
@@ -1210,3 +1166,66 @@ def pytest_runtest_protocol(item, nextitem):
             )
     except Exception:  # psutil optional; skip leak check if unavailable
         pass
+
+
+# ============================================================================
+# PyTorch Profiler Guard Fixture (PR #3248 Fix)
+# ============================================================================
+# Prevents profiler::_record_function_exit() type errors in PyTorch tests
+# See: TEST_FAILURE_ANALYSIS_PR3248.md for details
+
+@pytest.fixture(autouse=False)
+def disable_torch_profiler(monkeypatch):
+    """
+    Disable PyTorch profiler for tests that fail with profiler type errors.
+
+    Usage:
+        def test_something(disable_torch_profiler):
+            # PyTorch profiler is mocked
+            pass
+
+    Background:
+    Some PyTorch versions have a type mismatch bug in the profiler exit handler
+    that causes: RuntimeError: profiler::_record_function_exit() Expected a
+    value of type '__torch__.torch.classes.profiler._RecordFunction' but
+    instead found type 'ScriptObject'. Patching both Python-level and C++-level
+    profiler hooks prevents this error.
+    """
+    import contextlib
+    if torch is not None:
+        monkeypatch.setattr(
+            'torch.autograd.profiler.record_function',
+            lambda *args, **kwargs: contextlib.nullcontext()
+        )
+        # Also disable the C++/TorchScript level profiling that causes
+        # the ScriptObject type mismatch on PyTorch 2.x + Python 3.12
+        try:
+            import torch._C as _torch_c
+            if hasattr(_torch_c, '_jit_set_profiling_executor'):
+                monkeypatch.setattr(_torch_c, '_jit_set_profiling_executor',
+                                    lambda *a, **k: None)
+            if hasattr(_torch_c, '_jit_set_profiling_mode'):
+                monkeypatch.setattr(_torch_c, '_jit_set_profiling_mode',
+                                    lambda *a, **k: None)
+        except (ImportError, AttributeError):
+            pass
+        try:
+            if hasattr(torch, 'profiler') and hasattr(torch.profiler, 'record_function'):
+                monkeypatch.setattr(
+                    torch.profiler, 'record_function',
+                    lambda *args, **kwargs: contextlib.nullcontext()
+                )
+        except (ImportError, AttributeError):
+            pass
+
+
+# List of test files that commonly need the profiler disabled
+# (Can be removed once PyTorch version is upgraded/pinned)
+TORCH_PROFILER_PROBLEMATIC_TESTS = [
+    'test_checkpoint_restore_rng_torch.py',
+    'test_gradient_accumulation_tail_flush.py',
+    'test_training_integration_flags.py',
+    'test_resume_training.py',
+    'test_performance_benchmark.py',
+    'test_models_registry_api.py',
+]

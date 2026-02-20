@@ -18,7 +18,7 @@ After analyzing the efficiency curve and diminishing returns, revised k₁ targe
 
 | Phase | Core Capability | Original k₁ | Original QA | Optimized k₁ | Optimized QA | Improvement | Status |
 |-------|----------------|-------------|-------------|--------------|--------------|-------------|--------|
-| 8.0 | Quantum optimization | 0.35 | 2.86x | **0.35** | 2.86x | Baseline | ✅ Complete |
+| 8.0 | Quantum optimization | 0.35 | 3.13x | **0.35** | 3.13x | Baseline | ✅ Complete |
 | 8.1 | Memory management | 0.345 | 2.90x | **0.3325** | 3.01x | 5.0% | ✅ Complete |
 | 8.2 | Multi-agent orchestration | 0.34 | 2.94x | **0.315** | 3.17x | 5.1% | ✅ Complete |
 | 8.3 | Adaptive learning | 0.33 | 3.03x | **0.30** | 3.33x | 4.8% | 📋 Specified |

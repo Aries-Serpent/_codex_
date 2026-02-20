@@ -21,9 +21,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import csv
-import json
-from pathlib import Path
+import csv  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 try:  # Optional dependency: Typer preferred when present
     import typer
@@ -33,7 +33,7 @@ else:  # pragma: no cover - namespace stub
     if not hasattr(typer, "Typer"):
         typer = None  # type: ignore[assignment]
 
-from .schema import LogRecord
+from .schema import LogRecord  # noqa: E402
 
 
 def _inspect_file(path: str, *, echo) -> None:

@@ -21,15 +21,19 @@ class TestMLflowMetricWriter:
                 assert result is False
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_write_metrics_success(self, mock_mlflow):
+    @patch("sys.modules", {"mlflow": Mock()})
+    def test_write_metrics_success(self):
         """Test writing metrics successfully."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
-        # Setup mock
+        # Setup mock mlflow module
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_metrics = Mock()
 
         writer = MLflowMetricWriter()
         writer._initialized = True
@@ -40,14 +44,18 @@ class TestMLflowMetricWriter:
         mock_mlflow.log_metrics.assert_called_once_with({"loss": 0.5, "accuracy": 0.9}, step=10)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_write_metric_single(self, mock_mlflow):
+    @patch("sys.modules", {"mlflow": Mock()})
+    def test_write_metric_single(self):
         """Test writing single metric."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_metric = Mock()
 
         writer = MLflowMetricWriter()
         writer._initialized = True
@@ -58,14 +66,18 @@ class TestMLflowMetricWriter:
         mock_mlflow.log_metrics.assert_called_once_with({"accuracy": 0.95}, step=5)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_write_batch(self, mock_mlflow):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_write_batch(self):
         """Test batch writing."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_metrics = Mock()
 
         writer = MLflowMetricWriter()
         writer._initialized = True
@@ -85,14 +97,18 @@ class TestMLflowParamWriter:
     """Test parameter writer."""
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_write_params(self, mock_mlflow):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_write_params(self):
         """Test writing parameters."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter, MLflowParamWriter
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_params = Mock()
 
         metric_writer = MLflowMetricWriter()
         metric_writer._initialized = True
@@ -105,14 +121,18 @@ class TestMLflowParamWriter:
         mock_mlflow.log_params.assert_called_once_with({"lr": "0.001", "epochs": "10"})
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_write_config_flattened(self, mock_mlflow):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_write_config_flattened(self):
         """Test writing nested config."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowMetricWriter, MLflowParamWriter
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_params = Mock()
 
         metric_writer = MLflowMetricWriter()
         metric_writer._initialized = True
@@ -138,14 +158,18 @@ class TestMLflowArtifactWriter:
     """Test artifact writer."""
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_log_artifact(self, mock_mlflow, tmp_path):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_log_artifact(self, tmp_path):
         """Test artifact logging with proper cleanup using pytest tmp_path."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowArtifactWriter, MLflowMetricWriter
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_artifact = Mock()
 
         metric_writer = MLflowMetricWriter()
         metric_writer._initialized = True
@@ -175,11 +199,14 @@ class TestMLflowRunManager:
             assert manager.run_id is None
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_context_manager_with_mlflow(self, mock_mlflow):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_context_manager_with_mlflow(self):
         """Test context manager with MLflow."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowRunManager
 
+        mock_mlflow = sys.modules["mlflow"]
         # Setup mock run
         mock_run = Mock()
         mock_run.info.run_id = "test_run_123"
@@ -197,14 +224,18 @@ class TestMLflowRunManager:
             assert manager.run_id == "test_run_123"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("codex_ml.tracking.writers.mlflow")
-    def test_convenience_methods(self, mock_mlflow):
+    @patch.dict("sys.modules", {"mlflow": Mock()})
+    def test_convenience_methods(self):
         """Test convenience logging methods."""
+        import sys
+
         from codex_ml.tracking.writers import MLflowRunManager
 
+        mock_mlflow = sys.modules["mlflow"]
         mock_mlflow.active_run.return_value = Mock()
         mock_mlflow.set_tracking_uri = Mock()
         mock_mlflow.set_experiment = Mock()
+        mock_mlflow.log_metrics = Mock()
 
         manager = MLflowRunManager()
         manager.metric_writer._initialized = True

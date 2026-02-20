@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/generate_baseline.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/generate_baseline.py --help
 

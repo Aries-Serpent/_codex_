@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/check_licenses.py [options]
-    
+
     Examples:
     $ python scripts/check_licenses.py --help
 
@@ -29,7 +29,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
 """Simple license checker using pip-licenses."""

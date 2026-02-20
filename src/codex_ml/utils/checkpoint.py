@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import inspect
 import json
+import logging
 import pickle
 import random as _random
 import shutil
@@ -16,6 +13,8 @@ from collections.abc import Iterable, Mapping
 from contextlib import suppress
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:  # Keep schema alignment with checkpoint_core when available
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION

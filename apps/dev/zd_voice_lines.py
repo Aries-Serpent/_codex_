@@ -18,31 +18,25 @@ Author: Codex Team
 License: MIT
 """
 
-import base64
 import json
+import os
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 from tkinter import (
     Button,
     Entry,
     Frame,
     Label,
-    Listbox,
     Menu,
     Scrollbar,
     StringVar,
     Text,
     Tk,
-    Toplevel,
     filedialog,
     messagebox,
-    ttk,
 )
-from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, VERTICAL, X, Y
+from tkinter.constants import BOTH, BOTTOM, END, HORIZONTAL, LEFT, RIGHT, TOP, X, Y
 from typing import Any
-from urllib.parse import urljoin
-import os
 
 import requests
 
@@ -259,7 +253,7 @@ class ZendeskVoiceLinesClient:
         """
         # Clean up path - remove leading slash if present
         greeting_path = greeting_path.lstrip("/")
-        
+
         url = f"{self.config.base_url}/channels/voice/greetings/{greeting_path}"
 
         try:
@@ -826,7 +820,7 @@ class ZendeskVoiceLinesGUI:
 Zendesk Voice Lines API Client
 Version 1.0.0
 
-A comprehensive GUI application for interacting with 
+A comprehensive GUI application for interacting with
 the Zendesk Voice Lines API.
 
 Features:
@@ -942,7 +936,7 @@ Documentation Resources:
 def main():
     """Main entry point for the application."""
     root = Tk()
-    app = ZendeskVoiceLinesGUI(root)
+    _ = ZendeskVoiceLinesGUI(root)  # GUI needs to be instantiated but stored reference is unused
     root.mainloop()
 
 

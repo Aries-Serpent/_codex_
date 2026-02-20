@@ -130,7 +130,7 @@ def _run_training(
 
 
 def test_gradient_accumulation_matches_large_batch(
-    tokenizer_stub: _FakeTokenizer, tmp_path: Path
+    tokenizer_stub: _FakeTokenizer, tmp_path: Path, disable_torch_profiler
 ) -> None:
     texts = ["0 1 2", "1 2 3", "2 3 4", "3 4 5"]
     vocab_size = len(tokenizer_stub.vocab)

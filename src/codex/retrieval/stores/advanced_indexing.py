@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Optional
 
+import numpy as np
+
 logger = logging.getLogger(__name__)
 
 
@@ -607,19 +609,19 @@ HNSW Index:
 -----------
 >>> from codex.retrieval.stores.advanced_indexing import HNSWIndex, HNSWConfig
 >>> import numpy as np
->>> 
+>>>
 >>> # Create index with custom config
 >>> config = HNSWConfig(M=32, ef_construction=200, ef_search=100, metric='l2')
 >>> index = HNSWIndex(dimension=768, config=config)
->>> 
+>>>
 >>> # Add vectors
 >>> vectors = np.random.rand(10000, 768).astype('float32')
 >>> index.add(vectors)
->>> 
+>>>
 >>> # Search
 >>> query = np.random.rand(768).astype('float32')
 >>> distances, indices = index.search(query, k=10)
->>> 
+>>>
 >>> # Save/load
 >>> index.save('my_hnsw_index.bin')
 >>> index.load('my_hnsw_index.bin')
@@ -628,19 +630,19 @@ IVF-PQ Index:
 ------------
 >>> from codex.retrieval.stores.advanced_indexing import IVFPQIndex, IVFPQConfig
 >>> import numpy as np
->>> 
+>>>
 >>> # Create index
 >>> config = IVFPQConfig(nlist=1000, m=8, nbits=8, nprobe=10)
 >>> index = IVFPQIndex(dimension=768, config=config)
->>> 
+>>>
 >>> # Train on representative data
 >>> training_data = np.random.rand(50000, 768).astype('float32')
 >>> index.train(training_data)
->>> 
+>>>
 >>> # Add vectors
 >>> vectors = np.random.rand(1000000, 768).astype('float32')
 >>> index.add(vectors)
->>> 
+>>>
 >>> # Search
 >>> query = np.random.rand(768).astype('float32')
 >>> distances, indices = index.search(query, k=10)
@@ -648,7 +650,7 @@ IVF-PQ Index:
 Parameter Optimization:
 ----------------------
 >>> from codex.retrieval.stores.advanced_indexing import optimize_index_parameters, IndexType
->>> 
+>>>
 >>> # Get recommendations for 1M vectors
 >>> params = optimize_index_parameters(
 ...     index_type=IndexType.HNSW,
@@ -657,6 +659,6 @@ Parameter Optimization:
 ...     target_recall=0.95
 ... )
 >>> print(params)
-{'M': 32, 'ef_construction': 200, 'ef_search': 100, 
+{'M': 32, 'ef_construction': 200, 'ef_search': 100,
  'estimated_memory_gb': 3.2, 'estimated_build_time': 'medium'}
 """

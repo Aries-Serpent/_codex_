@@ -23,23 +23,26 @@ logger = logging.getLogger(__name__)
 """Standalone evaluation runner emitting NDJSON/CSV metrics with optional CLI."""
 
 
-import csv
-import random
-import uuid
-from collections.abc import Sequence
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Annotated
+import csv  # noqa: E402
+import random  # noqa: E402
+import uuid  # noqa: E402
+from collections.abc import Sequence  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Annotated  # noqa: E402
 
 try:  # pragma: no cover - optional
     import typer
 except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
-from codex_ml.eval.datasets import DatasetBundle, load_dataset
-from codex_ml.logging.run_logger import DEFAULT_SCHEMA_VERSION, METRICS_SCHEMA_URI
-from codex_ml.metrics.registry import get_metric
-from codex_ml.tracking.writers import NdjsonWriter
+from codex_ml.eval.datasets import DatasetBundle, load_dataset  # noqa: E402
+from codex_ml.logging.run_logger import (  # noqa: E402
+    DEFAULT_SCHEMA_VERSION,
+    METRICS_SCHEMA_URI,
+)
+from codex_ml.metrics.registry import get_metric  # noqa: E402
+from codex_ml.tracking.writers import NdjsonWriter  # noqa: E402
 
 CSV_FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -63,7 +66,7 @@ def _bootstrap(
     """Compute fn with optional bootstrap confidence interval."""
     val = fn(preds, targets)
     # Only numeric results can be bootstrapped
-    if not isinstance(val, (int | float)):
+    if not isinstance(val, (int, float)):
         return None if val is None else float(val), None, None
     if n <= 0 or len(preds) == 0:
         return float(val), None, None
@@ -74,7 +77,7 @@ def _bootstrap(
         sp = [preds[i] for i in idx]
         st = [targets[i] for i in idx]
         sub = fn(sp, st)
-        if isinstance(sub, (int | float)):
+        if isinstance(sub, (int, float)):
             vals.append(float(sub))
     if not vals:
         return float(val), None, None

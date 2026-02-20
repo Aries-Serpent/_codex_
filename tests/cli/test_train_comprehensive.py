@@ -169,8 +169,8 @@ class TestCoerceSequence:
 class TestSanitizePromptSequence:
     """Test _sanitize_prompt_sequence helper function."""
 
-    @patch("codex_ml.cli.train.sanitize_prompt")
-    @patch("codex_ml.cli.train.SafetyConfig")
+    @patch("codex_ml.safety.sanitize_prompt")
+    @patch("codex_ml.safety.SafetyConfig")
     def test_sanitize_prompt_sequence_basic(self, mock_safety_config, mock_sanitize):
         """Test basic prompt sanitization."""
         if hasattr(train, "_sanitize_prompt_sequence"):

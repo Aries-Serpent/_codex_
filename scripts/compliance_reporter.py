@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/compliance_reporter.py [options]
-    
+
     Examples:
     $ python scripts/compliance_reporter.py --help
 
@@ -56,6 +56,7 @@ if SRC_PATH.exists() and str(SRC_PATH) not in sys.path:
 try:
     from cryptography.fernet import Fernet
     from github import Github
+
     from codex.auth import MFAProvider, TokenManager
 except ImportError as e:
     print(f"Error: Missing required dependencies: {e}", file=sys.stderr)
@@ -68,10 +69,10 @@ except ImportError as e:
 class ComplianceReporter:
     def __init__(self):
         """Initialize the Compliance Reporter with required authentication and encryption.
-        
+
         This constructor sets up the necessary clients and encryption keys for generating
         compliance reports on authentication security practices.
-        
+
         Environment Variables Required:
             GITHUB_TOKEN: GitHub personal access token for API access (required for GitHub operations)
             CODEX_MASTER_KEY: Master encryption key for token management operations (used by TokenManager)
@@ -79,16 +80,16 @@ class ComplianceReporter:
                 - Must be a valid 32-byte URL-safe base64-encoded Fernet key
                 - Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
                 - Used to encrypt sensitive compliance data before storage/transmission
-        
+
         Key Differences:
             - CODEX_MASTER_KEY: Used by TokenManager for encrypting/decrypting authentication tokens
             - COMPLIANCE_REPORT_KEY: Used by this reporter to encrypt compliance report data containing
               sensitive security information (MFA status, token lifecycle data, etc.)
-        
+
         Raises:
             RuntimeError: If COMPLIANCE_REPORT_KEY is missing, not ASCII-encodable, or not a valid Fernet key
             ImportError: If required dependencies (PyGithub, cryptography) are not installed
-        
+
         Attributes:
             github (Github): Authenticated GitHub API client
             mfa (MFAProvider): Multi-factor authentication provider
@@ -148,11 +149,11 @@ class ComplianceReporter:
             else:
                 redacted[key] = value
         return redacted
-        
+
     def generate_compliance_data(self) -> dict:
         """Generate comprehensive compliance data."""
         print("Generating compliance data...")
-        
+
         data = {
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'mfa_enabled_users': 0,
@@ -161,68 +162,68 @@ class ComplianceReporter:
             'expired_tokens': 0,
             'compliance_score': 0
         }
-        
+
         # Count MFA-enabled users using the public API
         data['mfa_enabled_users'] = self.mfa.get_mfa_user_count()
         data['total_users'] = max(10, data['mfa_enabled_users'])  # Mock data
-        
+
         # Token statistics (placeholder)
         data['active_tokens'] = len(self.tokens._revoked_tokens)
         data['expired_tokens'] = 0
-        
+
         # Calculate compliance score
         if data['total_users'] > 0:
             mfa_score = (data['mfa_enabled_users'] / data['total_users']) * 100
             data['compliance_score'] = int(mfa_score)
-        
+
         # Save data
         with open('compliance_data.json', 'w') as f:
             json.dump(data, f, indent=2)
-        
+
         # Output for GitHub Actions
         if 'GITHUB_OUTPUT' in os.environ:
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
                 f.write(f"score={data['compliance_score']}\n")
                 if data['compliance_score'] < 80:
-                    f.write(f"issues=MFA adoption below 80%\n")
-        
+                    f.write("issues=MFA adoption below 80%\n")
+
         print(f"✓ Compliance score: {data['compliance_score']}%")
         return data
-    
+
     def analyze_mfa(self) -> dict:
         """Analyze MFA adoption."""
         print("Analyzing MFA adoption...")
-        
+
         analysis = {
             'enabled': self.mfa.get_mfa_user_count(),
             'disabled': 0,
             'adoption_rate': 0
         }
-        
+
         total = analysis['enabled'] + analysis['disabled']
         if total > 0:
             analysis['adoption_rate'] = (analysis['enabled'] / total) * 100
-        
+
         print(f"✓ MFA adoption: {analysis['adoption_rate']:.1f}%")
         return analysis
-    
+
     def check_tokens(self) -> dict:
         """Check token lifecycle status."""
         print("Checking token lifecycle...")
-        
+
         status = {
             'active': 0,
             'revoked': len(self.tokens._revoked_tokens),
             'total_sessions': len(self.tokens._sessions)
         }
-        
+
         print(f"✓ Active sessions: {status['total_sessions']}, Revoked tokens: {status['revoked']}")
         return status
-    
+
     def generate_report(self) -> str:
         """Generate markdown compliance report."""
         print("Generating compliance report...")
-        
+
         raw_data = self.generate_compliance_data()
         raw_mfa = self.analyze_mfa()
         tokens = self.check_tokens()
@@ -230,7 +231,7 @@ class ComplianceReporter:
         # Sanitize any potentially sensitive fields before persisting to disk
         data = self._sanitize_sensitive_fields(raw_data)
         mfa = self._sanitize_sensitive_fields(raw_mfa)
-        
+
         report = f"""# Authentication Security Compliance Report
 
 **Generated**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}
@@ -261,7 +262,7 @@ Scheduled for: {(datetime.now(timezone.utc) + timedelta(days=7)).strftime('%Y-%m
 ---
 *Automated Compliance Report - Auth Security*
 """
-        
+
         report_file = f'compliance_report_{datetime.now(timezone.utc).strftime("%Y%m%d")}.md'
         encrypted_report = self.report_cipher.encrypt(report.encode('utf-8'))
         with open(report_file, 'wb') as f:
@@ -269,7 +270,7 @@ Scheduled for: {(datetime.now(timezone.utc) + timedelta(days=7)).strftime('%Y-%m
 
         with open('compliance_report_latest.md', 'wb') as f:
             f.write(encrypted_report)
-        
+
         print(f"✓ Report saved (encrypted): {report_file}")
         return report
 
@@ -280,9 +281,9 @@ def main():
     parser.add_argument('--check-tokens', action='store_true')
     parser.add_argument('--visualize', action='store_true')
     args = parser.parse_args()
-    
+
     reporter = ComplianceReporter()
-    
+
     if args.generate:
         reporter.generate_compliance_data()
     elif args.analyze_mfa:

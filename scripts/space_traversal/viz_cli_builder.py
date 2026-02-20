@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/viz_cli_builder.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/viz_cli_builder.py --help
 
@@ -89,7 +89,7 @@ CLI_BUILDER_TEMPLATE = """
             line-height: 1.6;
         }}
         .container {{ max-width: 1200px; margin: 0 auto; }}
-        
+
         /* Header */
         .header {{
             display: flex;
@@ -111,7 +111,7 @@ CLI_BUILDER_TEMPLATE = """
             color: var(--text-secondary);
             font-size: 0.9rem;
         }}
-        
+
         /* Main Layout */
         .main-grid {{
             display: grid;
@@ -121,7 +121,7 @@ CLI_BUILDER_TEMPLATE = """
         @media (max-width: 900px) {{
             .main-grid {{ grid-template-columns: 1fr; }}
         }}
-        
+
         /* Sidebar - Command Selection */
         .sidebar {{
             background: var(--bg-secondary);
@@ -136,7 +136,7 @@ CLI_BUILDER_TEMPLATE = """
             letter-spacing: 1px;
             margin-bottom: 16px;
         }}
-        
+
         /* Command Buttons */
         .command-list {{
             display: flex;
@@ -174,14 +174,14 @@ CLI_BUILDER_TEMPLATE = """
         .command-btn.active .cmd-desc {{
             color: var(--text-primary);
         }}
-        
+
         /* Main Content */
         .content {{
             display: flex;
             flex-direction: column;
             gap: 24px;
         }}
-        
+
         /* Cards */
         .card {{
             background: var(--bg-secondary);
@@ -199,7 +199,7 @@ CLI_BUILDER_TEMPLATE = """
             align-items: center;
             gap: 8px;
         }}
-        
+
         /* Form Controls */
         .form-group {{
             margin-bottom: 20px;
@@ -216,7 +216,7 @@ CLI_BUILDER_TEMPLATE = """
         .form-label .required {{
             color: var(--accent);
         }}
-        
+
         /* Text Input */
         .form-input {{
             width: 100%;
@@ -235,7 +235,7 @@ CLI_BUILDER_TEMPLATE = """
         .form-input::placeholder {{
             color: var(--text-secondary);
         }}
-        
+
         /* Select */
         .form-select {{
             width: 100%;
@@ -251,7 +251,7 @@ CLI_BUILDER_TEMPLATE = """
             outline: none;
             border-color: var(--accent);
         }}
-        
+
         /* Range Slider (Knob) */
         .knob-container {{
             display: flex;
@@ -295,7 +295,7 @@ CLI_BUILDER_TEMPLATE = """
             font-family: 'Consolas', monospace;
             font-weight: 600;
         }}
-        
+
         /* Rotary Knob Style */
         .rotary-knob-container {{
             display: flex;
@@ -356,7 +356,7 @@ CLI_BUILDER_TEMPLATE = """
             text-transform: uppercase;
             letter-spacing: 1px;
         }}
-        
+
         /* Number Stepper */
         .stepper-container {{
             display: flex;
@@ -392,7 +392,7 @@ CLI_BUILDER_TEMPLATE = """
             font-weight: 600;
             background: var(--bg-primary);
         }}
-        
+
         /* Toggle Switch */
         .toggle-container {{
             display: flex;
@@ -428,7 +428,7 @@ CLI_BUILDER_TEMPLATE = """
         .toggle-label {{
             color: var(--text-secondary);
         }}
-        
+
         /* Checkbox Group */
         .checkbox-group {{
             display: flex;
@@ -473,7 +473,7 @@ CLI_BUILDER_TEMPLATE = """
             font-weight: bold;
             font-size: 12px;
         }}
-        
+
         /* Command Preview */
         .preview-box {{
             background: #0d1117;
@@ -500,7 +500,7 @@ CLI_BUILDER_TEMPLATE = """
         .preview-value {{
             color: #a5d6ff;
         }}
-        
+
         /* Copy Button */
         .copy-btn {{
             position: absolute;
@@ -523,7 +523,7 @@ CLI_BUILDER_TEMPLATE = """
             background: var(--success);
             color: #000;
         }}
-        
+
         /* Action Buttons */
         .action-buttons {{
             display: flex;
@@ -557,14 +557,14 @@ CLI_BUILDER_TEMPLATE = """
         .btn-secondary:hover {{
             background: var(--border);
         }}
-        
+
         /* Help Text */
         .help-text {{
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 6px;
         }}
-        
+
         /* Info Box */
         .info-box {{
             background: rgba(88, 166, 255, 0.1);
@@ -582,7 +582,7 @@ CLI_BUILDER_TEMPLATE = """
             color: var(--text-secondary);
             font-size: 0.85rem;
         }}
-        
+
         /* Hidden */
         .hidden {{
             display: none !important;
@@ -597,7 +597,7 @@ CLI_BUILDER_TEMPLATE = """
                 <div class="meta">{repo_name} • v{version} • {timestamp}</div>
             </div>
         </div>
-        
+
         <div class="main-grid">
             <!-- Sidebar: Command Selection -->
             <div class="sidebar">
@@ -645,13 +645,13 @@ CLI_BUILDER_TEMPLATE = """
                     </button>
                 </div>
             </div>
-            
+
             <!-- Main Content -->
             <div class="content">
                 <!-- Parameters Card -->
                 <div class="card">
                     <h3>⚙️ Parameters</h3>
-                    
+
                     <!-- run command options -->
                     <div id="params-run" class="params-section">
                         <div class="info-box">
@@ -659,7 +659,7 @@ CLI_BUILDER_TEMPLATE = """
                             <p>Runs all stages S1→S7: Index → Facets → Capabilities → Scoring → Gaps → Render → Manifest</p>
                         </div>
                     </div>
-                    
+
                     <!-- validate command options -->
                     <div id="params-validate" class="params-section hidden">
                         <div class="info-box">
@@ -667,7 +667,7 @@ CLI_BUILDER_TEMPLATE = """
                             <p>Checks quality gates including low maturity thresholds and missing detectors.</p>
                         </div>
                     </div>
-                    
+
                     <!-- store-trend command options -->
                     <div id="params-store-trend" class="params-section hidden">
                         <div class="info-box">
@@ -675,7 +675,7 @@ CLI_BUILDER_TEMPLATE = """
                             <p>Stores the current audit results in the SQLite trend database for historical tracking.</p>
                         </div>
                     </div>
-                    
+
                     <!-- show-trend command options -->
                     <div id="params-show-trend" class="params-section hidden">
                         <div class="form-group">
@@ -697,7 +697,7 @@ CLI_BUILDER_TEMPLATE = """
                             <div class="help-text">Filter results by git branch</div>
                         </div>
                     </div>
-                    
+
                     <!-- check-regressions command options -->
                     <div id="params-check-regressions" class="params-section hidden">
                         <div class="form-group">
@@ -717,7 +717,7 @@ CLI_BUILDER_TEMPLATE = """
                             <div class="help-text">Number of previous runs to compare against</div>
                         </div>
                     </div>
-                    
+
                     <!-- compare-runs command options -->
                     <div id="params-compare-runs" class="params-section hidden">
                         <div class="form-group">
@@ -740,7 +740,7 @@ CLI_BUILDER_TEMPLATE = """
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- dashboard command options -->
                     <div id="params-dashboard" class="params-section hidden">
                         <div class="form-group">
@@ -749,7 +749,7 @@ CLI_BUILDER_TEMPLATE = """
                             <div class="help-text">Leave empty for default location</div>
                         </div>
                     </div>
-                    
+
                     <!-- explain command options -->
                     <div id="params-explain" class="params-section hidden">
                         <div class="form-group">
@@ -758,7 +758,7 @@ CLI_BUILDER_TEMPLATE = """
                             <div class="help-text">The capability ID to explain</div>
                         </div>
                     </div>
-                    
+
                     <!-- diff command options -->
                     <div id="params-diff" class="params-section hidden">
                         <div class="form-group">
@@ -770,7 +770,7 @@ CLI_BUILDER_TEMPLATE = """
                             <input type="text" class="form-input" id="diff-new" placeholder="path/to/new_report.json" oninput="updatePreview()">
                         </div>
                     </div>
-                    
+
                     <!-- stage command options -->
                     <div id="params-stage" class="params-section hidden">
                         <div class="form-group">
@@ -788,7 +788,7 @@ CLI_BUILDER_TEMPLATE = """
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Command Preview Card -->
                 <div class="card">
                     <h3>📝 Command Preview</h3>
@@ -797,7 +797,7 @@ CLI_BUILDER_TEMPLATE = """
                         <span class="preview-prompt">$ </span>
                         <span id="command-preview" class="preview-command">python -m scripts.space_traversal.audit_runner run</span>
                     </div>
-                    
+
                     <div class="action-buttons">
                         <button class="btn btn-primary" onclick="copyCommand()">
                             📋 Copy to Clipboard
@@ -807,7 +807,7 @@ CLI_BUILDER_TEMPLATE = """
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Quick Actions Card -->
                 <div class="card">
                     <h3>⚡ Quick Actions</h3>
@@ -833,13 +833,13 @@ CLI_BUILDER_TEMPLATE = """
             </div>
         </div>
     </div>
-    
+
     <script>
         let currentCommand = 'run';
-        
+
         function selectCommand(cmd) {{
             currentCommand = cmd;
-            
+
             // Update button states
             document.querySelectorAll('.command-btn').forEach(btn => {{
                 btn.classList.remove('active');
@@ -847,7 +847,7 @@ CLI_BUILDER_TEMPLATE = """
                     btn.classList.add('active');
                 }}
             }});
-            
+
             // Show/hide parameter sections
             document.querySelectorAll('.params-section').forEach(section => {{
                 section.classList.add('hidden');
@@ -856,18 +856,18 @@ CLI_BUILDER_TEMPLATE = """
             if (params) {{
                 params.classList.remove('hidden');
             }}
-            
+
             updatePreview();
         }}
-        
+
         function updateKnobValue(slider, valueId, isFloat = false) {{
             const valueEl = document.getElementById(valueId);
             valueEl.textContent = isFloat ? parseFloat(slider.value).toFixed(2) : slider.value;
         }}
-        
+
         function updatePreview() {{
             let cmd = 'python -m scripts.space_traversal.audit_runner ' + currentCommand;
-            
+
             switch(currentCommand) {{
                 case 'show-trend':
                     const cap = document.getElementById('show-trend-capability').value;
@@ -877,14 +877,14 @@ CLI_BUILDER_TEMPLATE = """
                     const branch = document.getElementById('show-trend-branch').value;
                     if (branch) cmd += ' --branch ' + branch;
                     break;
-                    
+
                 case 'check-regressions':
                     const threshold = document.getElementById('regression-threshold').value;
                     if (threshold !== '0.02') cmd += ' --threshold ' + threshold;
                     const lookback = document.getElementById('regression-lookback').value;
                     if (lookback !== '5') cmd += ' --lookback ' + lookback;
                     break;
-                    
+
                 case 'compare-runs':
                     const oldPath = document.getElementById('compare-old').value;
                     const newPath = document.getElementById('compare-new').value;
@@ -895,35 +895,35 @@ CLI_BUILDER_TEMPLATE = """
                     const cmpThreshold = document.getElementById('compare-threshold').value;
                     if (cmpThreshold !== '0.02') cmd += ' --threshold ' + cmpThreshold;
                     break;
-                    
+
                 case 'dashboard':
                     const dashOutput = document.getElementById('dashboard-output').value;
                     if (dashOutput) cmd += ' --output ' + dashOutput;
                     break;
-                    
+
                 case 'explain':
                     const explainCap = document.getElementById('explain-capability').value;
                     if (explainCap) cmd += ' ' + explainCap;
                     break;
-                    
+
                 case 'diff':
                     const diffOld = document.getElementById('diff-old').value;
                     const diffNew = document.getElementById('diff-new').value;
                     if (diffOld) cmd += ' --old ' + diffOld;
                     if (diffNew) cmd += ' --new ' + diffNew;
                     break;
-                    
+
                 case 'stage':
                     const stageId = document.getElementById('stage-id').value;
                     cmd += ' ' + stageId;
                     break;
             }}
-            
+
             // Syntax highlight the command
             const preview = document.getElementById('command-preview');
             preview.innerHTML = highlightCommand(cmd);
         }}
-        
+
         function highlightCommand(cmd) {{
             // Simple syntax highlighting
             return cmd
@@ -931,7 +931,7 @@ CLI_BUILDER_TEMPLATE = """
                 .replace(/(--\\w+)/g, '<span class="preview-flag">$1</span>')
                 .replace(/( [A-Z]\\d)/g, '<span class="preview-arg">$1</span>');
         }}
-        
+
         function copyCommand() {{
             const preview = document.getElementById('command-preview');
             const text = preview.textContent || preview.innerText;
@@ -945,7 +945,7 @@ CLI_BUILDER_TEMPLATE = """
                 }}, 2000);
             }});
         }}
-        
+
         function resetForm() {{
             // Reset all form inputs
             document.querySelectorAll('.form-input').forEach(input => {{
@@ -962,7 +962,7 @@ CLI_BUILDER_TEMPLATE = """
             document.getElementById('stage-id').selectedIndex = 0;
             updatePreview();
         }}
-        
+
         function quickAction(action) {{
             switch(action) {{
                 case 'self-audit':
@@ -982,7 +982,7 @@ CLI_BUILDER_TEMPLATE = """
                     break;
             }}
         }}
-        
+
         // Initialize
         updatePreview();
     </script>
@@ -1004,8 +1004,14 @@ def generate_cli_builder(
         repo_name: Repository name for display
         version: Pipeline version
     """
+    from datetime import datetime, timezone
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
     html = CLI_BUILDER_TEMPLATE.format(
         repo_name=repo_name,
+        version=version,
+        timestamp=timestamp,
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

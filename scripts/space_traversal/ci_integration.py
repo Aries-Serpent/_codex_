@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/ci_integration.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/ci_integration.py --help
 
@@ -351,8 +351,8 @@ def generate_pr_comment(
         [
             "### Summary",
             "",
-            f"| Metric | Value |",
-            f"|--------|-------|",
+            "| Metric | Value |",
+            "|--------|-------|",
             f"| Capabilities | {len(capabilities)} |",
             f"| High scores (≥0.85) | {high} |",
             f"| Low scores (<0.70) | {low} |",

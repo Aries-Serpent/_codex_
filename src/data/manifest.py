@@ -23,15 +23,15 @@ logger = logging.getLogger(__name__)
 """Dataset manifest helpers used by the modular training stack."""
 
 
-import hashlib
-import json
-import os
-import time
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
-from typing import Any, cast
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from dataclasses import asdict, dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, cast  # noqa: E402
 
-from codex_ml.utils.atomic_io import safe_write_text
+from codex_ml.utils.atomic_io import safe_write_text  # noqa: E402
 
 
 def _sha256_file(path: Path, chunk_size: int = 1 << 16) -> str:

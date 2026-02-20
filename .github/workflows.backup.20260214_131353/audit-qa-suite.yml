@@ -1,0 +1,323 @@
+name: Art_Audit & QA Suite (Unified)
+
+on:
+  # Weekly audit on Monday
+  schedule:
+    - cron: '0 6 * * 1'
+  
+  # On PRs for QA walkthrough
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+  
+  # On issue comments for QA review
+  issue_comment:
+    types: [created]
+  
+  # Manual trigger with comprehensive options
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Execution mode'
+        required: true
+        type: choice
+        options:
+          - audit-only
+          - qa-only
+          - full-suite
+        default: 'full-suite'
+      audit_type:
+        description: 'Type of audit to run (for audit mode)'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - gap-analysis
+          - code-quality
+          - capability-validation
+      review_depth:
+        description: 'Review depth level (for QA mode)'
+        required: false
+        type: choice
+        options:
+          - quick
+          - standard
+          - comprehensive
+        default: standard
+      target_ref:
+        description: 'Git ref to review (branch, tag, or commit SHA)'
+        required: false
+        type: string
+        default: ''
+      pr_number:
+        description: 'Pull request number to review (optional)'
+        required: false
+        type: number
+      focus_areas:
+        description: 'Focus areas (comma-separated)'
+        required: false
+        type: string
+        default: 'security,performance,testing,documentation'
+      create_improvement_pr:
+        description: 'Create PR with improvements'
+        required: false
+        default: 'false'
+        type: boolean
+      fail_on_critical:
+        description: 'Fail workflow if critical issues found'
+        required: false
+        type: boolean
+        default: true
+
+  # Allow other workflows to call this
+  workflow_call:
+    inputs:
+      mode:
+        required: false
+        type: string
+        default: 'full-suite'
+      review_depth:
+        required: false
+        type: string
+        default: standard
+      target_ref:
+        required: false
+        type: string
+        default: ''
+      pr_number:
+        required: false
+        type: number
+      focus_areas:
+        required: false
+        type: string
+        default: 'security,performance,testing,documentation'
+      fail_on_critical:
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  audit_gap_analysis:
+    name: Run Audit Gap Analysis
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only' || inputs.mode == 'full-suite'))
+    outputs:
+      gap_count: ${{ steps.analyze.outputs.gap_count }}
+      improvement_areas: ${{ steps.analyze.outputs.improvement_areas }}
+      has_regressions: ${{ steps.analyze.outputs.has_regressions }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2 pyyaml pytest || true
+          pip install -e . || true
+
+      - name: Run Full Audit
+        id: analyze
+        env:
+          AUDIT_TYPE: ${{ inputs.audit_type || 'full' }}
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          if [ -f "scripts/space_traversal/audit_runner.py" ]; then
+            if [ "$AUDIT_TYPE" == "full" ]; then
+              python scripts/space_traversal/audit_runner.py run
+            elif [ "$AUDIT_TYPE" == "gap-analysis" ]; then
+              python scripts/space_traversal/audit_runner.py run --stages S1,S2,S3
+            elif [ "$AUDIT_TYPE" == "code-quality" ]; then
+              python scripts/space_traversal/audit_runner.py run --focus code-quality
+            else
+              python scripts/space_traversal/audit_runner.py run
+            fi
+            
+            # Extract metrics if available
+            if [ -f ".codex/audit/results.json" ]; then
+              gap_count=$(jq '.gap_count // 0' .codex/audit/results.json)
+              echo "gap_count=$gap_count" >> $GITHUB_OUTPUT
+              echo "has_regressions=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Audit runner script not found"
+            echo "gap_count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: audit-results-${{ github.run_number }}
+          path: |
+            .codex/audit/*.json
+            .codex/audit/*.md
+            reports/audit/*.html
+          if-no-files-found: ignore
+          retention-days: 90
+
+  qa_walkthrough:
+    name: Codebase QA Walkthrough
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'qa-only' || inputs.mode == 'full-suite')) ||
+      github.event_name == 'workflow_call'
+    outputs:
+      issues_found: ${{ steps.qa.outputs.issues_found }}
+      critical_issues: ${{ steps.qa.outputs.critical_issues }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.target_ref || github.event.pull_request.head.sha || '' }}
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Install QA dependencies
+        run: |
+          pip install pylint mypy bandit safety
+
+      - name: Run QA walkthrough
+        id: qa
+        env:
+          REVIEW_DEPTH: ${{ inputs.review_depth || 'standard' }}
+          FOCUS_AREAS: ${{ inputs.focus_areas || 'security,performance,testing,documentation' }}
+          PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}
+        run: |
+          if [ -f "scripts/qa/codebase_walkthrough.py" ]; then
+            python scripts/qa/codebase_walkthrough.py \
+              --depth "$REVIEW_DEPTH" \
+              --focus "$FOCUS_AREAS" \
+              ${PR_NUMBER:+--pr "$PR_NUMBER"}
+            
+            # Extract results
+            if [ -f ".codex/qa/results.json" ]; then
+              issues=$(jq '.total_issues // 0' .codex/qa/results.json)
+              critical=$(jq '.critical_issues // 0' .codex/qa/results.json)
+              echo "issues_found=$issues" >> $GITHUB_OUTPUT
+              echo "critical_issues=$critical" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "QA walkthrough script not found"
+            echo "issues_found=0" >> $GITHUB_OUTPUT
+            echo "critical_issues=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Post QA comment
+        if: |
+          inputs.post_comment != 'false' &&
+          (github.event_name == 'pull_request' || github.event_name == 'issue_comment')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('.codex/qa/comment.md')) {
+              const comment = fs.readFileSync('.codex/qa/comment.md', 'utf8');
+              const prNumber = ${{ inputs.pr_number || github.event.pull_request.number || 0 }};
+              if (prNumber) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: comment
+                });
+              }
+            }
+
+      - name: Upload QA results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: qa-walkthrough-${{ github.run_number }}
+          path: |
+            .codex/qa/*.json
+            .codex/qa/*.md
+            .codex/qa/*.html
+          if-no-files-found: ignore
+          retention-days: 60
+
+      - name: Fail on critical issues
+        if: |
+          inputs.fail_on_critical == 'true' &&
+          steps.qa.outputs.critical_issues != '0'
+        run: |
+          echo "❌ Critical issues found: ${{ steps.qa.outputs.critical_issues }}"
+          exit 1
+
+  create_improvement_pr:
+    name: Create Improvement PR
+    runs-on: ubuntu-latest
+    needs: [audit_gap_analysis, qa_walkthrough]
+    if: |
+      always() &&
+      inputs.create_improvement_pr == 'true' &&
+      (needs.audit_gap_analysis.outputs.gap_count > 0 || needs.qa_walkthrough.outputs.issues_found > 0)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate improvement PR
+        run: |
+          echo "## 🔧 Automated Improvements" > improvement_pr_body.md
+          echo "" >> improvement_pr_body.md
+          echo "This PR contains automated improvements based on:" >> improvement_pr_body.md
+          echo "- Audit gaps: ${{ needs.audit_gap_analysis.outputs.gap_count }}" >> improvement_pr_body.md
+          echo "- QA issues: ${{ needs.qa_walkthrough.outputs.issues_found }}" >> improvement_pr_body.md
+          
+          # Note: Actual PR creation would be done via gh CLI or GitHub API
+
+  unified_summary:
+    name: Generate Unified Summary
+    runs-on: ubuntu-latest
+    needs: [audit_gap_analysis, qa_walkthrough, create_improvement_pr]
+    if: always()
+
+    steps:
+      - name: Generate comprehensive summary
+        run: |
+          echo "## 🔍 Audit & QA Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Audit Gap Analysis: ${{ needs.audit_gap_analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- QA Walkthrough: ${{ needs.qa_walkthrough.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Improvement PR: ${{ needs.create_improvement_pr.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Audit gaps found: ${{ needs.audit_gap_analysis.outputs.gap_count || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- QA issues found: ${{ needs.qa_walkthrough.outputs.issues_found || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Critical issues: ${{ needs.qa_walkthrough.outputs.critical_issues || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow audit-qa-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'

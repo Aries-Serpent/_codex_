@@ -12,7 +12,7 @@
 2. [Agent Architecture](#agent-architecture)
 3. [Core Agents](#core-agents)
 4. [Integration Agents](#integration-agents)
-5. [Testing & Validation](#testing--validation)
+5. [Testing & Validation](#testing-validation)
 6. [Configuration](#configuration)
 7. [Troubleshooting](#troubleshooting)
 

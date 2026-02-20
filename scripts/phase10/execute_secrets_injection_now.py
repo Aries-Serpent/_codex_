@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/phase10/execute_secrets_injection_now.py [options]
-    
+
     Examples:
     $ python scripts/phase10/execute_secrets_injection_now.py --help
 
@@ -41,8 +41,8 @@ Never log secret values or names in clear text.
 """
 
 import os
-import sys
 import subprocess
+import sys
 
 # WARNING: Do NOT log secret names or values in clear text.
 # Use redaction for any sensitive information.
@@ -51,7 +51,7 @@ def check_environment():
     """Check if we have the necessary tokens and tools."""
     print("🔍 Checking environment...")
     print("=" * 60)
-    
+
     # Check for GitHub token
     token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
     if token:
@@ -59,7 +59,7 @@ def check_environment():
     else:
         print("❌ No GitHub token found")
         return False
-    
+
     # Check for gh CLI
     try:
         result = subprocess.run(
@@ -70,11 +70,11 @@ def check_environment():
         print(f"✅ gh CLI available: {result.stdout.decode().split()[2]}")
     except Exception:
         print("⚠️  gh CLI not available (will use API)")
-    
+
     # Check repository context
     repo = os.getenv("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
     print(f"📦 Repository: {repo}")
-    
+
     return True
 
 def inject_secret_via_cli(name, value):
@@ -91,9 +91,9 @@ def inject_secret_via_cli(name, value):
             text=True,
             env=os.environ.copy()
         )
-        
+
         stdout, stderr = process.communicate(input=value)
-        
+
         if process.returncode == 0:
             print(f"✅ {name} injected successfully via gh CLI")
             return True
@@ -138,12 +138,12 @@ def main():
     print("User Authorization: FULL ACCESS granted by mbaetiong")
     print("Comment: #3745423798 + new_requirement")
     print("")
-    
+
     if not check_environment():
         print("\n❌ Environment check failed")
         print("Required: GITHUB_TOKEN or GH_TOKEN + gh CLI")
         return 1
-    
+
     print("\n📋 Phase 10 Secrets Setup Plan")
     print("=" * 60)
     print("1. ✅ CODEX_MASTER_KEY - AUTO-GENERATE (if not exists)")
@@ -151,11 +151,11 @@ def main():
     print("3. ⏸️  GOOGLE_CLIENT_ID - REQUIRES GOOGLE CLOUD SETUP")
     print("4. ⏸️  GOOGLE_CLIENT_SECRET - REQUIRES GOOGLE CLOUD SETUP")
     print("")
-    
+
     # Step 1: CODEX_MASTER_KEY (can auto-generate)
     print("\n🔑 Step 1: CODEX_MASTER_KEY")
     print("-" * 60)
-    
+
     if verify_secret_exists("CODEX_MASTER_KEY"):
         print("✅ CODEX_MASTER_KEY already exists")
         print("   (Use --force flag in workflow to regenerate)")
@@ -164,7 +164,7 @@ def main():
         key = generate_codex_master_key()
         if key:
             # Security: Don't log key values, even partial
-            print(f"🔑 Generated 256-bit key successfully")
+            print("🔑 Generated 256-bit key successfully")
             if inject_secret_via_cli("CODEX_MASTER_KEY", key):
                 print("✅ CODEX_MASTER_KEY configured successfully")
             else:
@@ -173,7 +173,7 @@ def main():
         else:
             print("❌ Failed to generate CODEX_MASTER_KEY")
             return 1
-    
+
     # Steps 2-4: Google Cloud secrets (require user input)
     print("\n🔐 Steps 2-4: Google Cloud Secrets")
     print("-" * 60)
@@ -193,11 +193,11 @@ def main():
     print("  1. Navigate to repository Settings → Secrets")
     print("  2. Add each secret manually")
     print("")
-    
+
     # Check current status
     print("\n📊 Current Secrets Status")
     print("=" * 60)
-    
+
     secrets_to_check = [
         "CODEX_MASTER_KEY",
         "GDRIVE_SERVICE_ACCOUNT_JSON",
@@ -205,7 +205,7 @@ def main():
         "GOOGLE_CLIENT_SECRET",
         "NOTEBOOKLM_WEBHOOK_URL"
     ]
-    
+
     configured_count = 0
     for idx, secret in enumerate(secrets_to_check, 1):
         if verify_secret_exists(secret):
@@ -217,10 +217,10 @@ def main():
             # Security: Don't log secret names - CodeQL alert #3340, #3341
             # Use index for operational visibility
             print(f"⏸️  Secret #{idx} not configured")
-    
+
     print("")
     print(f"Progress: {configured_count}/{len(secrets_to_check)} secrets configured")
-    
+
     if configured_count == len(secrets_to_check):
         print("\n🎉 All Phase 10 secrets configured!")
         print("Ready to proceed with:")
@@ -230,14 +230,14 @@ def main():
         print("\n✅ Partial success - CODEX_MASTER_KEY ready")
         print("⏸️  Complete Google Cloud setup for remaining secrets")
         print("   See: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md (HA-GC-001)")
-    
+
     print("\n📚 Documentation References")
     print("=" * 60)
     print("  • Full tracker: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md")
     print("  • Automation analysis: AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md")
     print("  • Python API tool: scripts/phase10/automated_secrets_manager.py")
     print("  • Workflow: .github/workflows/phase10-automated-secrets-setup.yml")
-    
+
     return 0
 
 if __name__ == "__main__":

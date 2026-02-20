@@ -10,10 +10,10 @@ This agent implements the PDA Loop pattern for compliance validation:
 All modules integrate with the Cognitive Brain for pattern learning.
 """
 
-from .auditor import ComplianceAuditor, ComplianceFinding, AuditResult
-from .assessor import ComplianceAssessor, AssessmentResult, ComplianceStatus
+from .assessor import AssessmentResult, ComplianceAssessor, ComplianceStatus
+from .auditor import AuditResult, ComplianceAuditor, ComplianceFinding
 from .enforcer import ComplianceEnforcer, EnforcementResult
-from .reporter import ComplianceReporter, AftermathReport
+from .reporter import AftermathReport, ComplianceReporter
 
 __all__ = [
     'ComplianceAuditor',

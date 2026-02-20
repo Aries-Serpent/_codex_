@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Validate Module
 
 This module provides functionality for validate.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -25,6 +26,7 @@ import difflib
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Optional
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
@@ -182,7 +184,7 @@ else:
         _run_validation(config_path, echo=click.echo, exit_cls=click.exceptions.Exit)
 
 
-def main(argv: Sequence[str] | None = None) -> int:  # pragma: no cover - thin wrapper
+def main(argv: Optional[Sequence[str]] = None) -> int:  # pragma: no cover - thin wrapper
     logger = init_json_logging()
     arg_list = list(argv) if argv is not None else sys.argv[1:]
 

@@ -57,12 +57,12 @@ class ProfileMatch:
 
 class IntelligentAudioAnalyzer:
     """Intelligent audio analyzer with ML-based recommendations."""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """Initialize analyzer with optional config."""
         self.config = config or {}
         self._initialized = True
-        
+
         # Initialize default profiles
         self.profiles = [
             AudioProfile(
@@ -81,15 +81,15 @@ class IntelligentAudioAnalyzer:
                 settings={"noise_reduction": 0.3, "preserve_lows": True}
             ),
         ]
-    
+
     def analyze(self, audio_data: Any, **kwargs) -> AnalysisResult:
         """
         Analyze audio data and return quality metrics.
-        
+
         Args:
             audio_data: Audio data to analyze (numpy array, file path, etc.)
             **kwargs: Additional analysis options
-            
+
         Returns:
             AnalysisResult with quality metrics and recommendations
         """
@@ -103,29 +103,29 @@ class IntelligentAudioAnalyzer:
             confidence=0.92,
             recommendations=["Consider noise reduction", "Audio quality is good"],
         )
-    
+
     def get_recommendations(self, result: AnalysisResult) -> List[str]:
         """Get actionable recommendations from analysis result."""
         return result.recommendations if result else []
-    
+
     def batch_analyze(self, audio_files: List[Any]) -> List[AnalysisResult]:
         """Analyze multiple audio files."""
         return [self.analyze(f) for f in audio_files]
-    
+
     def analyze_file(self, file_path: Path, **kwargs) -> AudioAnalysis:
         """
         Analyze audio file and return comprehensive analysis.
-        
+
         Args:
             file_path: Path to audio file
             **kwargs: Additional analysis options
-            
+
         Returns:
             AudioAnalysis with comprehensive details
         """
         # Determine content type (stub implementation)
         content_type = "music"  # Default
-        
+
         # Perform basic analysis
         quality_metrics = AudioQualityMetrics(
             signal_to_noise=42.0,
@@ -134,12 +134,12 @@ class IntelligentAudioAnalyzer:
             dynamic_range=55.0,
             peak_level=-3.5,
         )
-        
+
         quality_score = (
             quality_metrics.signal_to_noise / 10 +
             quality_metrics.clarity_score * 10
         ) / 2
-        
+
         return AudioAnalysis(
             file_path=file_path,
             content_type=content_type,
@@ -147,7 +147,7 @@ class IntelligentAudioAnalyzer:
             quality_metrics=quality_metrics,
             recommendations=["Consider noise reduction", "Audio quality is acceptable"],
         )
-    
+
     def select_profile(
         self,
         analysis: AudioAnalysis,
@@ -155,11 +155,11 @@ class IntelligentAudioAnalyzer:
     ) -> ProfileMatch:
         """
         Select best matching profile for the analyzed audio.
-        
+
         Args:
             analysis: AudioAnalysis result
             aggressive: Whether to use aggressive matching
-            
+
         Returns:
             ProfileMatch with selected profile and confidence
         """
@@ -168,12 +168,12 @@ class IntelligentAudioAnalyzer:
             (p for p in self.profiles if p.name == analysis.content_type),
             self.profiles[0]  # Default to first profile
         )
-        
+
         # Calculate confidence
         base_confidence = 0.75
         if aggressive:
             base_confidence = min(1.0, base_confidence + 0.15)
-        
+
         return ProfileMatch(
             profile=profile,
             confidence=base_confidence,

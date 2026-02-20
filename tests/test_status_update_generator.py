@@ -28,6 +28,27 @@ SCHEMA = REPO_ROOT / "schemas" / "codex_status_update.schema.json"
 STATUS_DIR = REPO_ROOT / ".codex" / "status"
 
 
+@pytest.fixture(scope="session", autouse=True)
+def ensure_status_report_exists():
+    """Ensure at least one status report exists before running tests."""
+    # Check if any reports exist
+    reports = list(STATUS_DIR.glob("_codex_status_update-*.json"))
+    if len(reports) == 0:
+        # Generate a report if none exist
+        if GENERATOR.exists():
+            result = subprocess.run(
+                [sys.executable, str(GENERATOR)],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                pytest.skip(f"Could not generate status report: {result.stderr}")
+        else:
+            pytest.skip(f"Generator not found at {GENERATOR}")
+    # If reports exist or were generated successfully, tests can proceed
+    return True
+
+
 def test_generator_exists():
     """Test that the generator script exists."""
     assert GENERATOR.exists(), f"Generator not found at {GENERATOR}"

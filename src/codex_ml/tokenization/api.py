@@ -6,14 +6,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import warnings
-from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, Optional, Protocol, Sequence, cast
+import warnings  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import (  # noqa: E402
+    TYPE_CHECKING,
+    Iterable,
+    Optional,
+    Protocol,
+    Sequence,
+    cast,
+    runtime_checkable,
+)
 
-from codex_ml.interfaces.contracts import validate_tokenizer_contract
-from codex_ml.interfaces.tokenizer import HFTokenizer
+from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E402
+from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
 
-from .adapter import WhitespaceTokenizer
+from .adapter import WhitespaceTokenizer  # noqa: E402
 
 BOS_TOKEN = "<BOS>"  # nosec B105 - conventional special token
 EOS_TOKEN = "<EOS>"  # nosec B105 - conventional special token
@@ -21,6 +29,7 @@ PAD_TOKEN = "<PAD>"  # nosec B105 - conventional special token
 UNK_TOKEN = "<UNK>"  # nosec B105 - conventional special token
 
 
+@runtime_checkable
 class TokenizerAdapter(Protocol):
     """Minimal tokenizer interface for the symbolic pipeline."""
 

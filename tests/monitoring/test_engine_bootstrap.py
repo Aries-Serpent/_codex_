@@ -67,7 +67,11 @@ def test_engine_bootstrap(monkeypatch, tmp_path):
 
     class DummyTrainer:
         def __init__(self, *a, **k):
-            self.state = types.SimpleNamespace(global_step=0)
+            self.state = types.SimpleNamespace(
+                global_step=0,
+                last_model_checkpoint=None,
+                best_model_checkpoint=None
+            )
 
         def train(self, resume_from_checkpoint=None):
             return types.SimpleNamespace(metrics={"loss": 0.0})

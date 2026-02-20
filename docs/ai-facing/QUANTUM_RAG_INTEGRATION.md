@@ -11,7 +11,7 @@ This guide explains how to integrate the quantum-thermodynamic retrieval scoring
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Integration Patterns](#integration-patterns)
 3. [System Integrations](#system-integrations)
 4. [Configuration](#configuration)

@@ -9,7 +9,7 @@
 ## 🎯 Quick Start
 
 **For a quick overview**: Start with **[Master Report](#master-report)** below  
-**For detailed analysis**: See **[Detailed Reports](#detailed-reports)**  
+**For detailed analysis**: See **<!-- BROKEN ANCHOR: [Detailed Reports](#detailed-reports) -->**  
 **For statistics**: See **[Statistics Summary](#statistics-summary)**
 
 ---

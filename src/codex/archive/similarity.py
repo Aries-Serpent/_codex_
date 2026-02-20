@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Similarity utilities for consolidation heuristics."""
 
 
-import ast
-import hashlib
-from dataclasses import dataclass
-from pathlib import Path
+import ast  # noqa: E402
+import hashlib  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 _SPLIT = set(" \t\r\n,.;:()[]{}<>+-=*/\\|!@#$%^&~`'\"")
 

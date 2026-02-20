@@ -634,7 +634,7 @@ class PPO(RLAlgorithm):
 
         # Softmax to get probabilities
         max_logit = max(logits.values())
-        exp_logits = {a: np.exp(l - max_logit) for a, l in logits.items()}
+        exp_logits = {a: np.exp(logit_val - max_logit) for a, logit_val in logits.items()}
         total = sum(exp_logits.values())
         probs = {a: e / total for a, e in exp_logits.items()}
 

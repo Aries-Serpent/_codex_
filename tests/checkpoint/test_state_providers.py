@@ -37,6 +37,8 @@ def test_module_state_provider_roundtrip():
 class DummyOptimizer:
     def __init__(self):
         self.state = {"lr": 0.1}
+        # PyTorch schedulers expect param_groups attribute (PR #3248 fix)
+        self.param_groups = [{"lr": 0.1}]
 
     def state_dict(self):
         return dict(self.state)

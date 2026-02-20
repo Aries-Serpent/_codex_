@@ -21,9 +21,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from importlib import metadata
-from typing import Any, Iterator, Mapping, Optional
+from dataclasses import dataclass  # noqa: E402
+from importlib import metadata  # noqa: E402
+from typing import Any, Iterator, Mapping, Optional  # noqa: E402
 
 
 class RegistryError(RuntimeError):

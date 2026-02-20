@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/scan_secrets_runtime.py [options]
-    
+
     Examples:
     $ python scripts/security/scan_secrets_runtime.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 import argparse
 import json

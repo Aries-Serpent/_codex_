@@ -10,9 +10,12 @@ from pathlib import Path
 
 import pytest
 
-pytest.importorskip("torch")
+# Avoid modifying sys.path to prevent stdlib shadowing (e.g. tests/ast -> ast).
+# Import torch helpers using absolute import from tests package
+from tests.utils.torch_helpers import require_torch
 
-import torch  # noqa: E402
+torch = require_torch()
+
 from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
 from src.training.seed import ensure_global_seed  # noqa: E402
 

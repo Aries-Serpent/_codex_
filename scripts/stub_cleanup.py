@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/stub_cleanup.py [options]
-    
+
     Examples:
     $ python scripts/stub_cleanup.py --help
 

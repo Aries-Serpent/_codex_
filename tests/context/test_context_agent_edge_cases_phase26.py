@@ -29,7 +29,7 @@ class TestContextEdgeCases:
         # Simulate exceeding token limit
         long_message = "word " * 100000
         # Should truncate or reject
-        assert len(long_message) > 500000
+        assert len(long_message) >= 500000  # Changed from > to >= to fix off-by-one
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_concurrent_modifications(self):

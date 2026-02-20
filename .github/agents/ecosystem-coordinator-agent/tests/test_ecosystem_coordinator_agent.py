@@ -1,8 +1,11 @@
 """Tests for Ecosystem Coordinator Agent - 20 tests"""
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from __init__ import create_agent, RANDOM_SEED
 from task_decomposer import create_decomposer
+
+from __init__ import RANDOM_SEED, create_agent
 
 TEST_SEED = 51
 

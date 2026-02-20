@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/sbom_cyclonedx.py [options]
-    
+
     Examples:
     $ python scripts/sbom_cyclonedx.py --help
 
@@ -29,7 +29,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse

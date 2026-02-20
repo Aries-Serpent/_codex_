@@ -158,7 +158,7 @@ codex evaluate --config configs/evaluation/reasoning.yaml \
 ```text
 
 The `+reasoning=baseline` overlay activates trace logging, NDJSON ledgers, and evaluator hooks described in
-[`guides/reasoning_overview.md`](guides/reasoning_overview.md). Pair these commands with the bespoke hosting checklist in
+[`guides/reasoning_overview.md`](status_updates/guides/reasoning_overview.md). Pair these commands with the bespoke hosting checklist in
 [`deployment/reasoning_pod.md`](deployment/reasoning_pod.md) when graduating a model.
 
 ## 4. Run a deterministic training session

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/trend_compare.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/trend_compare.py --help
 

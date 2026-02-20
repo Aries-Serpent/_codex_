@@ -30,23 +30,23 @@ logger = logging.getLogger(__name__)
 def task_scan(workspace: Path, output_dir: Path, skip_tools: list[str]) -> dict[str, Any]:
     """
     Run security scans.
-    
+
     Args:
         workspace: Repository workspace
         output_dir: Output directory for results
         skip_tools: List of tools to skip
-        
+
     Returns:
         Task result dictionary
     """
     scanner = SecurityScanner(workspace, output_dir)
-    
+
     results = scanner.run_all_scans(
         skip_bandit="bandit" in skip_tools,
         skip_semgrep="semgrep" in skip_tools,
         skip_safety="safety" in skip_tools,
     )
-    
+
     return {
         "task": "scan",
         "status": "success",
@@ -65,21 +65,21 @@ def task_scan(workspace: Path, output_dir: Path, skip_tools: list[str]) -> dict[
 def task_parse(sarif_file: Path, output_dir: Path) -> dict[str, Any]:
     """
     Parse SARIF results.
-    
+
     Args:
         sarif_file: Path to SARIF file
         output_dir: Output directory
-        
+
     Returns:
         Task result dictionary
     """
     parser = SARIFParser()
     parsed = parser.parse_file(sarif_file)
-    
+
     # Write parsed results to JSON
     output_file = output_dir / "parsed_results.json"
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, "w") as f:
         json.dump({
             "tool": parsed.tool_name,
@@ -101,7 +101,7 @@ def task_parse(sarif_file: Path, output_dir: Path) -> dict[str, Any]:
                 for f in parsed.findings
             ]
         }, f, indent=2)
-    
+
     return {
         "task": "parse",
         "status": "success",
@@ -118,19 +118,19 @@ def task_filter(
 ) -> dict[str, Any]:
     """
     Filter false positives.
-    
+
     Args:
         parsed_file: Path to parsed results JSON
         output_dir: Output directory
         apply_defaults: Apply default filter rules
-        
+
     Returns:
         Task result dictionary
     """
     # Load parsed findings
     with open(parsed_file) as f:
         data = json.load(f)
-    
+
     # Reconstruct Finding objects (simplified for CLI)
     from agent.parser import Finding, Location
     findings = [
@@ -149,11 +149,11 @@ def task_filter(
         )
         for f in data["findings"]
     ]
-    
+
     # Apply filter
     filter_engine = FalsePositiveFilter()
     valid, filtered = filter_engine.filter_findings(findings, apply_defaults)
-    
+
     # Write results
     output_file = output_dir / "filtered_results.json"
     with open(output_file, "w") as f:
@@ -162,7 +162,7 @@ def task_filter(
             "filtered_count": len(filtered),
             "filter_stats": filter_engine.get_filter_stats(filtered),
         }, f, indent=2)
-    
+
     return {
         "task": "filter",
         "status": "success",
@@ -179,19 +179,19 @@ def task_annotate(
 ) -> dict[str, Any]:
     """
     Generate PR annotations.
-    
+
     Args:
         findings_file: Path to findings JSON
         output_dir: Output directory
         max_annotations: Maximum annotations
-        
+
     Returns:
         Task result dictionary
     """
     # Load findings
     with open(findings_file) as f:
         data = json.load(f)
-    
+
     # Reconstruct Finding objects
     from agent.parser import Finding, Location
     findings = [
@@ -211,19 +211,19 @@ def task_annotate(
         )
         for f in data.get("findings", [])
     ]
-    
+
     # Generate annotations
     annotator = PRAnnotator()
     annotations = annotator.generate_annotations(findings, max_annotations)
     summary = annotator.generate_summary(findings, findings, [])
-    
+
     # Write outputs
     annotations_file = output_dir / "annotations.json"
     summary_file = output_dir / "summary.md"
-    
+
     annotator.write_annotations_file(annotations, annotations_file)
     annotator.write_summary_file(summary, summary_file)
-    
+
     return {
         "task": "annotate",
         "status": "success",
@@ -246,9 +246,9 @@ def main() -> int:
     parser.add_argument("--findings-file", type=Path)
     parser.add_argument("--skip-tools", nargs="*", default=[])
     parser.add_argument("--max-annotations", type=int, default=50)
-    
+
     args = parser.parse_args()
-    
+
     try:
         # Execute task
         if args.task == "scan":
@@ -267,11 +267,11 @@ def main() -> int:
             result = task_annotate(args.findings_file, args.output_dir, args.max_annotations)
         else:
             return 1
-        
+
         # Print result
         print(json.dumps(result, indent=2))
         return 0
-    
+
     except Exception as e:
         logger.error("Task failed: %s", e, exc_info=True)
         print(json.dumps({

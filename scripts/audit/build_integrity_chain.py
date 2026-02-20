@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/audit/build_integrity_chain.py [options]
-    
+
     Examples:
     $ python scripts/audit/build_integrity_chain.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging

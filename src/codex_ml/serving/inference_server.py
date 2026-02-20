@@ -224,7 +224,7 @@ class ModelServer:
 
     def load_model(self) -> dict[str, Any]:
         try:
-            if self.config.model_type not in {"stub", "huggingface", "onnx"}:
+            if self.config.model_type not in {"stub", "huggingface", "onnx", "local"}:
                 raise ModelLoadError("Unsupported model type")
 
             if self.config.model_type in {"huggingface", "onnx"}:
@@ -443,6 +443,11 @@ if FASTAPI_AVAILABLE:
         @app.post("/batch_infer", response_model=PredictionResponse, dependencies=auth_dependencies)
         def batch_infer(request: PredictionRequest, http_request: Request):
             """Batch inference endpoint (alias for /predict with same logic)"""
+            return predict(request, http_request)
+
+        @app.post("/infer", response_model=PredictionResponse, dependencies=auth_dependencies)
+        def infer(request: PredictionRequest, http_request: Request):
+            """Inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
         return app

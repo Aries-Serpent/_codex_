@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/sync_zendesk_docs.py [options]
-    
+
     Examples:
     $ python scripts/sync_zendesk_docs.py --help
 

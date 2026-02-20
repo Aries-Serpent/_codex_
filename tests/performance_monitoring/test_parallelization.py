@@ -271,8 +271,11 @@ class TestExecutionOptimization:
                 fixture_groups[fixtures_key] = []
             fixture_groups[fixtures_key].append(test["name"])
 
-        assert fixture_groups[("db", "cache")] == ["test_a"]
+        # Keys are alphabetically sorted, so "cache" comes before "db"
+        assert fixture_groups[("cache", "db")] == ["test_a"]
+        assert fixture_groups[("cache",)] == ["test_c"]
         assert fixture_groups[("db",)] == ["test_b"]
+        assert fixture_groups[()] == ["test_d"]
 
     def test_minimize_fixture_setup(self):
         """Test minimizing fixture setup overhead."""

@@ -24,13 +24,13 @@ Integration with QUANTUM_DETERMINISTIC_PLANNING.md:
 - Schrödinger evolution for pattern dynamics
 """
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Set, Callable
+import hashlib
 import random
 from collections import deque
-from enum import Enum
+from dataclasses import dataclass, field
 from datetime import datetime
-
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 # =============================================================================
 # CONSTANTS FOR PHASE 8.9
@@ -86,7 +86,7 @@ class PatternType(Enum):
 @dataclass
 class EmergentPattern:
     """Represents an emergent pattern detected in the system.
-    
+
     Attributes:
         pattern_id: Unique identifier
         pattern_type: Type of pattern
@@ -109,7 +109,7 @@ class EmergentPattern:
     last_observed: datetime = field(default_factory=datetime.now)
     observation_count: int = 0
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate pattern metrics."""
         assert 0.0 <= self.novelty <= 1.0, f"Novelty must be in [0, 1], got {self.novelty}"
@@ -120,7 +120,7 @@ class EmergentPattern:
 @dataclass
 class TemporalSnapshot:
     """Snapshot of system state at a point in time.
-    
+
     Attributes:
         timestamp: When the snapshot was taken
         state: System state representation
@@ -133,16 +133,16 @@ class TemporalSnapshot:
 
 class EmergentPatternDetector:
     """Detects emergent patterns in system behavior.
-    
+
     This detector monitors system evolution and identifies novel,
     complex, and stable patterns that emerge from component interactions.
-    
+
     Quantum interpretation:
     - Pattern emergence as phase transitions: |ground⟩ → |emergent⟩
     - Novelty as distance in Hilbert space: d(|ψ_new⟩, |ψ_known⟩)
     - Stability as eigenvalue of evolution operator
     """
-    
+
     def __init__(
         self,
         novelty_threshold: float = PATTERN_NOVELTY_THRESHOLD,
@@ -151,7 +151,7 @@ class EmergentPatternDetector:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize emergent pattern detector.
-        
+
         Args:
             novelty_threshold: Minimum novelty for pattern detection
             complexity_threshold: Minimum complexity for pattern detection
@@ -162,31 +162,31 @@ class EmergentPatternDetector:
         self.complexity_threshold = complexity_threshold
         self.stability_window = stability_window
         self.seed = seed
-        
+
         # State tracking
         self.detected_patterns: Dict[str, EmergentPattern] = {}
         self.temporal_history: deque = deque(maxlen=stability_window * 2)
         self.pattern_signatures: Set[str] = set()
-        
+
         # Metrics
         self.total_observations = 0
         self.patterns_detected = 0
-        
+
         # Set random seed
         random.seed(seed)
-    
+
     def observe(self, state: Dict[str, Any], metrics: Optional[Dict[str, float]] = None) -> List[EmergentPattern]:
         """Observe system state and detect emergent patterns.
-        
+
         Args:
             state: Current system state
             metrics: Optional metrics to track
-            
+
         Returns:
             List of newly detected or updated patterns
         """
         self.total_observations += 1
-        
+
         # Create temporal snapshot
         snapshot = TemporalSnapshot(
             timestamp=datetime.now(),
@@ -194,27 +194,27 @@ class EmergentPatternDetector:
             metrics=metrics or {},
         )
         self.temporal_history.append(snapshot)
-        
+
         # Detect patterns
         detected = []
-        
+
         # Check for behavioral patterns
         behavioral = self._detect_behavioral_patterns()
         detected.extend(behavioral)
-        
+
         # Check for structural patterns
         structural = self._detect_structural_patterns(state)
         detected.extend(structural)
-        
+
         # Check for temporal patterns
         if len(self.temporal_history) >= self.stability_window:
             temporal = self._detect_temporal_patterns()
             detected.extend(temporal)
-        
+
         # Check for relational patterns
         relational = self._detect_relational_patterns(state)
         detected.extend(relational)
-        
+
         # Update pattern tracking
         for pattern in detected:
             if pattern.pattern_id in self.detected_patterns:
@@ -228,27 +228,27 @@ class EmergentPatternDetector:
                 # New pattern
                 self.detected_patterns[pattern.pattern_id] = pattern
                 self.patterns_detected += 1
-        
+
         return detected
-    
+
     def _detect_behavioral_patterns(self) -> List[EmergentPattern]:
         """Detect behavioral patterns in recent history."""
         patterns = []
-        
+
         if len(self.temporal_history) < 2:
             return patterns
-        
+
         # Analyze metric trends
         recent_snapshots = list(self.temporal_history)[-self.stability_window:]
-        
+
         for metric_name in recent_snapshots[0].metrics.keys():
             values = [s.metrics.get(metric_name, 0.0) for s in recent_snapshots]
-            
+
             # Check for monotonic increase
             if all(values[i] < values[i+1] for i in range(len(values)-1)):
                 pattern_id = f"behavioral_increase_{metric_name}"
                 signature = self._compute_signature(pattern_id)
-                
+
                 if signature not in self.pattern_signatures:
                     pattern = EmergentPattern(
                         pattern_id=pattern_id,
@@ -262,18 +262,18 @@ class EmergentPatternDetector:
                     )
                     patterns.append(pattern)
                     self.pattern_signatures.add(signature)
-        
+
         return patterns
-    
+
     def _detect_structural_patterns(self, state: Dict[str, Any]) -> List[EmergentPattern]:
         """Detect structural patterns in state."""
         patterns = []
-        
+
         # Check for hierarchical structures
         if self._has_hierarchical_structure(state):
             pattern_id = "structural_hierarchy"
             signature = self._compute_signature(pattern_id)
-            
+
             if signature not in self.pattern_signatures:
                 pattern = EmergentPattern(
                     pattern_id=pattern_id,
@@ -287,18 +287,18 @@ class EmergentPatternDetector:
                 )
                 patterns.append(pattern)
                 self.pattern_signatures.add(signature)
-        
+
         return patterns
-    
+
     def _detect_temporal_patterns(self) -> List[EmergentPattern]:
         """Detect temporal patterns in history."""
         patterns = []
-        
+
         # Check for periodic behavior
         if self._has_periodic_pattern():
             pattern_id = "temporal_periodic"
             signature = self._compute_signature(pattern_id)
-            
+
             if signature not in self.pattern_signatures:
                 pattern = EmergentPattern(
                     pattern_id=pattern_id,
@@ -312,13 +312,13 @@ class EmergentPatternDetector:
                 )
                 patterns.append(pattern)
                 self.pattern_signatures.add(signature)
-        
+
         return patterns
-    
+
     def _detect_relational_patterns(self, state: Dict[str, Any]) -> List[EmergentPattern]:
         """Detect relational patterns between components."""
         patterns = []
-        
+
         # Check for coupling between components
         if len(state) >= 2:
             keys = list(state.keys())
@@ -327,7 +327,7 @@ class EmergentPatternDetector:
                     if self._are_coupled(state[keys[i]], state[keys[j]]):
                         pattern_id = f"relational_coupling_{keys[i]}_{keys[j]}"
                         signature = self._compute_signature(pattern_id)
-                        
+
                         if signature not in self.pattern_signatures:
                             pattern = EmergentPattern(
                                 pattern_id=pattern_id,
@@ -341,38 +341,38 @@ class EmergentPatternDetector:
                             )
                             patterns.append(pattern)
                             self.pattern_signatures.add(signature)
-        
+
         return patterns
-    
+
     def _has_hierarchical_structure(self, state: Dict[str, Any]) -> bool:
         """Check if state has hierarchical structure."""
         for value in state.values():
             if isinstance(value, dict) and len(value) > 0:
                 return True
         return False
-    
+
     def _has_periodic_pattern(self) -> bool:
         """Check for periodic patterns in temporal history."""
         if len(self.temporal_history) < self.stability_window:
             return False
-        
+
         # Simple periodicity check: compare first and second half
         snapshots = list(self.temporal_history)
         mid = len(snapshots) // 2
         first_half = snapshots[:mid]
         second_half = snapshots[mid:mid+mid]
-        
+
         if len(first_half) != len(second_half):
             return False
-        
+
         # Check if metrics follow similar patterns
         similarity_count = 0
         for i in range(len(first_half)):
             if first_half[i].metrics == second_half[i].metrics:
                 similarity_count += 1
-        
+
         return similarity_count >= len(first_half) * 0.6
-    
+
     def _are_coupled(self, val1: Any, val2: Any) -> bool:
         """Check if two values show coupling behavior."""
         # Simple heuristic: if both are numbers and similar
@@ -381,17 +381,17 @@ class EmergentPatternDetector:
                 ratio = abs(val1 / val2)
                 return 0.8 <= ratio <= 1.25
         return False
-    
+
     def _compute_signature(self, pattern_id: str) -> str:
         """Compute unique signature for pattern."""
         return hashlib.md5(pattern_id.encode(), usedforsecurity=False).hexdigest()[:16]  # nosec B324 - Not for security, signature generation only
-    
+
     def get_patterns(self, pattern_type: Optional[PatternType] = None) -> List[EmergentPattern]:
         """Get detected patterns, optionally filtered by type.
-        
+
         Args:
             pattern_type: Optional pattern type filter
-            
+
         Returns:
             List of patterns
         """
@@ -399,10 +399,10 @@ class EmergentPatternDetector:
         if pattern_type:
             patterns = [p for p in patterns if p.pattern_type == pattern_type]
         return patterns
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get detector metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -425,7 +425,7 @@ class EmergentPatternDetector:
 @dataclass
 class PerformanceBaseline:
     """Baseline performance metrics.
-    
+
     Attributes:
         metric_name: Name of the metric
         baseline_value: Baseline value
@@ -441,7 +441,7 @@ class PerformanceBaseline:
 @dataclass
 class ImprovementAction:
     """Action taken to improve system.
-    
+
     Attributes:
         action_id: Unique identifier
         action_type: Type of improvement action
@@ -460,16 +460,16 @@ class ImprovementAction:
 
 class SelfImprovementEngine:
     """Engine for autonomous self-improvement.
-    
+
     This engine monitors system performance, identifies improvement
     opportunities, applies modifications, and rolls back failed changes.
-    
+
     Quantum interpretation:
     - Performance as energy eigenvalue: Ĥ|ψ⟩ = E|ψ⟩
     - Improvement as gradient descent: |ψ_{t+1}⟩ = |ψ_t⟩ - η∇H
     - Rollback as quantum reset: |ψ⟩ → |ψ_baseline⟩
     """
-    
+
     def __init__(
         self,
         improvement_threshold: float = IMPROVEMENT_THRESHOLD,
@@ -478,7 +478,7 @@ class SelfImprovementEngine:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize self-improvement engine.
-        
+
         Args:
             improvement_threshold: Minimum improvement to trigger action
             rollback_threshold: Performance drop threshold for rollback
@@ -489,25 +489,25 @@ class SelfImprovementEngine:
         self.rollback_threshold = rollback_threshold
         self.baseline_history_size = baseline_history_size
         self.seed = seed
-        
+
         # State
         self.baselines: Dict[str, PerformanceBaseline] = {}
         self.actions: List[ImprovementAction] = []
         self.active_actions: List[ImprovementAction] = []
-        
+
         # Metrics
         self.improvements_applied = 0
         self.rollbacks_performed = 0
-        
+
         random.seed(seed)
-    
+
     def establish_baseline(self, metric_name: str, samples: List[float]) -> PerformanceBaseline:
         """Establish performance baseline for a metric.
-        
+
         Args:
             metric_name: Name of the metric
             samples: Historical samples
-            
+
         Returns:
             Baseline object
         """
@@ -519,29 +519,29 @@ class SelfImprovementEngine:
         )
         self.baselines[metric_name] = baseline
         return baseline
-    
+
     def evaluate_improvement_opportunity(
         self,
         metric_name: str,
         current_value: float,
     ) -> bool:
         """Evaluate if there's an improvement opportunity.
-        
+
         Args:
             metric_name: Metric to evaluate
             current_value: Current metric value
-            
+
         Returns:
             True if improvement opportunity exists
         """
         if metric_name not in self.baselines:
             return False
-        
+
         baseline = self.baselines[metric_name]
         improvement = (current_value - baseline.baseline_value) / baseline.baseline_value
-        
+
         return improvement >= self.improvement_threshold
-    
+
     def apply_improvement(
         self,
         action_type: str,
@@ -549,12 +549,12 @@ class SelfImprovementEngine:
         parameters: Optional[Dict[str, Any]] = None,
     ) -> ImprovementAction:
         """Apply an improvement action.
-        
+
         Args:
             action_type: Type of action
             description: Description of action
             parameters: Action parameters
-            
+
         Returns:
             Applied action
         """
@@ -565,41 +565,41 @@ class SelfImprovementEngine:
             description=description,
             parameters=parameters or {},
         )
-        
+
         self.actions.append(action)
         self.active_actions.append(action)
         self.improvements_applied += 1
-        
+
         return action
-    
+
     def check_rollback_needed(
         self,
         metric_name: str,
         current_value: float,
     ) -> bool:
         """Check if rollback is needed.
-        
+
         Args:
             metric_name: Metric to check
             current_value: Current value
-            
+
         Returns:
             True if rollback needed
         """
         if metric_name not in self.baselines:
             return False
-        
+
         baseline = self.baselines[metric_name]
         degradation = (current_value - baseline.baseline_value) / baseline.baseline_value
-        
+
         return degradation <= self.rollback_threshold
-    
+
     def rollback(self, action_id: str) -> bool:
         """Rollback a specific improvement action.
-        
+
         Args:
             action_id: ID of action to rollback
-            
+
         Returns:
             True if successful
         """
@@ -610,10 +610,10 @@ class SelfImprovementEngine:
                 self.rollbacks_performed += 1
                 return True
         return False
-    
+
     def update_baseline(self, metric_name: str, new_value: float) -> None:
         """Update baseline with new value.
-        
+
         Args:
             metric_name: Metric name
             new_value: New value to add
@@ -624,10 +624,10 @@ class SelfImprovementEngine:
             if len(baseline.samples) > self.baseline_history_size:
                 baseline.samples = baseline.samples[-self.baseline_history_size:]
             baseline.baseline_value = sum(baseline.samples) / len(baseline.samples)
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get engine metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -658,7 +658,7 @@ class CapabilityType(Enum):
 @dataclass
 class Capability:
     """Represents a discovered system capability.
-    
+
     Attributes:
         capability_id: Unique identifier
         capability_type: Type of capability
@@ -677,7 +677,7 @@ class Capability:
     utility: float = 0.0
     prerequisites: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate capability metrics."""
         assert 0.0 <= self.complexity <= 1.0, f"Complexity must be in [0, 1], got {self.complexity}"
@@ -687,7 +687,7 @@ class Capability:
 @dataclass
 class CapabilityTaxonomy:
     """Hierarchical taxonomy of capabilities.
-    
+
     Attributes:
         levels: Capabilities organized by taxonomy level
         relationships: Parent-child relationships
@@ -698,16 +698,16 @@ class CapabilityTaxonomy:
 
 class CapabilityDiscoverer:
     """Discovers and combines system capabilities.
-    
+
     This discoverer explores the capability space, identifies novel
     capability combinations, and builds a hierarchical taxonomy.
-    
+
     Quantum interpretation:
     - Capability space: |C⟩ = Σₖ γₖ |cap_k⟩
     - Combination: |C_combo⟩ = |C₁⟩ ⊗ |C₂⟩
     - Discovery as measurement: P(cap) = |⟨cap|ψ⟩|²
     """
-    
+
     def __init__(
         self,
         taxonomy_depth: int = CAPABILITY_TAXONOMY_DEPTH,
@@ -715,7 +715,7 @@ class CapabilityDiscoverer:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize capability discoverer.
-        
+
         Args:
             taxonomy_depth: Maximum depth of capability taxonomy
             combination_search_max: Maximum combinations to search
@@ -724,100 +724,100 @@ class CapabilityDiscoverer:
         self.taxonomy_depth = taxonomy_depth
         self.combination_search_max = combination_search_max
         self.seed = seed
-        
+
         # State
         self.discovered_capabilities: Dict[str, Capability] = {}
         self.taxonomy = CapabilityTaxonomy()
         self.combination_cache: Dict[Tuple[str, str], Optional[str]] = {}
-        
+
         # Metrics
         self.discoveries_made = 0
         self.combinations_attempted = 0
         self.successful_combinations = 0
-        
+
         random.seed(seed)
-    
+
     def discover_capabilities(self, context: Dict[str, Any]) -> List[Capability]:
         """Discover capabilities in given context.
-        
+
         Args:
             context: Context containing system state and behaviors
-            
+
         Returns:
             List of discovered capabilities
         """
         discovered = []
-        
+
         # Discover reasoning capabilities
         if "reasoning" in context:
             cap = self._discover_reasoning_capability(context["reasoning"])
             if cap:
                 discovered.append(cap)
-        
+
         # Discover planning capabilities
         if "planning" in context:
             cap = self._discover_planning_capability(context["planning"])
             if cap:
                 discovered.append(cap)
-        
+
         # Discover learning capabilities
         if "learning" in context:
             cap = self._discover_learning_capability(context["learning"])
             if cap:
                 discovered.append(cap)
-        
+
         # Discover adaptation capabilities
         if "adaptation" in context:
             cap = self._discover_adaptation_capability(context["adaptation"])
             if cap:
                 discovered.append(cap)
-        
+
         # Discover coordination capabilities
         if "coordination" in context:
             cap = self._discover_coordination_capability(context["coordination"])
             if cap:
                 discovered.append(cap)
-        
+
         # Discover optimization capabilities
         if "optimization" in context:
             cap = self._discover_optimization_capability(context["optimization"])
             if cap:
                 discovered.append(cap)
-        
+
         # Store discovered capabilities
         for cap in discovered:
             if cap.capability_id not in self.discovered_capabilities:
                 self.discovered_capabilities[cap.capability_id] = cap
                 self.discoveries_made += 1
-        
+
         # Build taxonomy
         self._build_taxonomy()
-        
+
         return discovered
-    
+
     def combine_capabilities(self, cap1: Capability, cap2: Capability) -> Optional[Capability]:
         """Combine two capabilities to create a new one.
-        
+
         Args:
             cap1: First capability
             cap2: Second capability
-            
+
         Returns:
             Combined capability or None if combination not valid
         """
         self.combinations_attempted += 1
-        
+
         # Check cache
         cache_key = (cap1.capability_id, cap2.capability_id)
         if cache_key in self.combination_cache:
             combo_id = self.combination_cache[cache_key]
             return self.discovered_capabilities.get(combo_id) if combo_id else None
-        
+
         # Check if combination is valid
         if not self._can_combine(cap1, cap2):
             self.combination_cache[cache_key] = None
             return None
-        
+
         # Create combined capability
         combo_id = f"combo_{cap1.capability_id}_{cap2.capability_id}"
         combo = Capability(
@@ -834,20 +834,20 @@ class CapabilityDiscoverer:
                 "synergy": 0.15,
             },
         )
-        
+
         # Store combination
         self.discovered_capabilities[combo_id] = combo
         self.combination_cache[cache_key] = combo_id
         self.successful_combinations += 1
-        
+
         return combo
-    
+
     def _discover_reasoning_capability(self, context: Any) -> Optional[Capability]:
         """Discover reasoning capability."""
         cap_id = "cap_reasoning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.REASONING,
@@ -857,13 +857,13 @@ class CapabilityDiscoverer:
             utility=0.8,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _discover_planning_capability(self, context: Any) -> Optional[Capability]:
         """Discover planning capability."""
         cap_id = "cap_planning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.PLANNING,
@@ -873,13 +873,13 @@ class CapabilityDiscoverer:
             utility=0.85,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _discover_learning_capability(self, context: Any) -> Optional[Capability]:
         """Discover learning capability."""
         cap_id = "cap_learning_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.LEARNING,
@@ -889,13 +889,13 @@ class CapabilityDiscoverer:
             utility=0.9,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _discover_adaptation_capability(self, context: Any) -> Optional[Capability]:
         """Discover adaptation capability."""
         cap_id = "cap_adaptation_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.ADAPTATION,
@@ -905,13 +905,13 @@ class CapabilityDiscoverer:
             utility=0.75,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _discover_coordination_capability(self, context: Any) -> Optional[Capability]:
         """Discover coordination capability."""
         cap_id = "cap_coordination_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.COORDINATION,
@@ -921,13 +921,13 @@ class CapabilityDiscoverer:
             utility=0.8,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _discover_optimization_capability(self, context: Any) -> Optional[Capability]:
         """Discover optimization capability."""
         cap_id = "cap_optimization_" + hashlib.md5(str(context).encode(), usedforsecurity=False).hexdigest()[:8]  # nosec B324 - Not for security, capability ID generation only
         if cap_id in self.discovered_capabilities:
             return None
-        
+
         return Capability(
             capability_id=cap_id,
             capability_type=CapabilityType.OPTIMIZATION,
@@ -937,32 +937,32 @@ class CapabilityDiscoverer:
             utility=0.85,
             metadata={"context": str(context)[:100]},
         )
-    
+
     def _can_combine(self, cap1: Capability, cap2: Capability) -> bool:
         """Check if two capabilities can be combined."""
         # Don't combine same type at basic level
         if cap1.capability_type == cap2.capability_type:
             return False
-        
+
         # Check complexity limit
         if cap1.complexity + cap2.complexity > 1.8:
             return False
-        
+
         # Check for circular dependencies
         if cap1.capability_id in cap2.prerequisites or cap2.capability_id in cap1.prerequisites:
             return False
-        
+
         return True
-    
+
     def _build_taxonomy(self) -> None:
         """Build hierarchical capability taxonomy."""
         self.taxonomy.levels.clear()
         self.taxonomy.relationships.clear()
-        
+
         # Level 0: Base capabilities (no prerequisites)
         level_0 = [cap for cap in self.discovered_capabilities.values() if not cap.prerequisites]
         self.taxonomy.levels[0] = level_0
-        
+
         # Build higher levels
         for level in range(1, self.taxonomy_depth):
             level_caps = []
@@ -974,16 +974,16 @@ class CapabilityDiscoverer:
                         if prereq not in self.taxonomy.relationships:
                             self.taxonomy.relationships[prereq] = []
                         self.taxonomy.relationships[prereq].append(cap.capability_id)
-            
+
             if level_caps:
                 self.taxonomy.levels[level] = level_caps
-    
+
     def get_capabilities(self, capability_type: Optional[CapabilityType] = None) -> List[Capability]:
         """Get discovered capabilities, optionally filtered by type.
-        
+
         Args:
             capability_type: Optional type filter
-            
+
         Returns:
             List of capabilities
         """
@@ -991,10 +991,10 @@ class CapabilityDiscoverer:
         if capability_type:
             caps = [c for c in caps if c.capability_type == capability_type]
         return caps
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get discoverer metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -1015,7 +1015,7 @@ class CapabilityDiscoverer:
 @dataclass
 class LearningStrategy:
     """Represents a learning strategy.
-    
+
     Attributes:
         strategy_id: Unique identifier
         name: Strategy name
@@ -1035,7 +1035,7 @@ class LearningStrategy:
 @dataclass
 class MetaStrategy:
     """Meta-level learning strategy.
-    
+
     Attributes:
         meta_strategy_id: Unique identifier
         base_strategies: Base learning strategies
@@ -1050,18 +1050,18 @@ class MetaStrategy:
 
 class MetaMetaLearner:
     """Learning-to-learn-to-learn (L³) framework.
-    
+
     This learner operates at three levels:
     1. Base learning (L¹): Learn task-specific knowledge
     2. Meta-learning (L²): Learn how to learn tasks
     3. Meta-meta-learning (L³): Learn how to learn how to learn
-    
+
     Quantum interpretation:
     - Learning as state evolution: |ψ_{t+1}⟩ = U_learn|ψ_t⟩
     - Meta-learning as operator evolution: U_{t+1} = M(U_t)
     - Meta-meta as evolution of M: M_{t+1} = MM(M_t)
     """
-    
+
     def __init__(
         self,
         recursion_depth: int = META_META_RECURSION_DEPTH,
@@ -1069,7 +1069,7 @@ class MetaMetaLearner:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize meta-meta learner.
-        
+
         Args:
             recursion_depth: Depth of meta-learning recursion
             evolution_generations: Number of evolution generations
@@ -1078,48 +1078,48 @@ class MetaMetaLearner:
         self.recursion_depth = recursion_depth
         self.evolution_generations = evolution_generations
         self.seed = seed
-        
+
         # State
         self.strategies: Dict[str, LearningStrategy] = {}
         self.meta_strategies: Dict[str, MetaStrategy] = {}
         self.strategy_evolution_history: List[List[str]] = []
-        
+
         # Metrics
         self.total_learning_iterations = 0
         self.strategy_evolutions = 0
-        
+
         random.seed(seed)
-    
+
     def meta_meta_learn(
         self,
         task: Dict[str, Any],
         meta_strategy: Optional[MetaStrategy] = None,
     ) -> LearningStrategy:
         """Perform meta-meta-learning on task.
-        
+
         Args:
             task: Task specification
             meta_strategy: Optional meta-strategy to use
-            
+
         Returns:
             Evolved learning strategy
         """
         self.total_learning_iterations += 1
-        
+
         # Level 1: Base learning
         base_strategy = self._base_learn(task)
-        
+
         # Level 2: Meta-learning (learn strategy for this task)
         if self.recursion_depth >= 2:
             meta_learned_strategy = self._meta_learn(task, base_strategy)
         else:
             meta_learned_strategy = base_strategy
-        
+
         # Level 3: Meta-meta-learning (learn how to learn strategies)
         if self.recursion_depth >= 3:
             if meta_strategy is None:
                 meta_strategy = self._initialize_meta_strategy()
-            
+
             evolved_strategy = self._meta_meta_learn_internal(
                 task,
                 meta_learned_strategy,
@@ -1127,18 +1127,18 @@ class MetaMetaLearner:
             )
         else:
             evolved_strategy = meta_learned_strategy
-        
+
         # Evolve strategies
         self._evolve_strategies()
-        
+
         return evolved_strategy
-    
+
     def _base_learn(self, task: Dict[str, Any]) -> LearningStrategy:
         """Base-level learning (L¹).
-        
+
         Args:
             task: Task specification
-            
+
         Returns:
             Base learning strategy
         """
@@ -1154,29 +1154,29 @@ class MetaMetaLearner:
             performance=[0.5],  # Initial performance
             generation=0,
         )
-        
+
         self.strategies[strategy_id] = strategy
         return strategy
-    
+
     def _meta_learn(
         self,
         task: Dict[str, Any],
         base_strategy: LearningStrategy,
     ) -> LearningStrategy:
         """Meta-learning (L²): Learn how to learn.
-        
+
         Args:
             task: Task specification
             base_strategy: Base learning strategy
-            
+
         Returns:
             Meta-learned strategy
         """
         strategy_id = f"meta_strategy_{len(self.strategies)}"
-        
+
         # Analyze base strategy performance
         avg_performance = sum(base_strategy.performance) / len(base_strategy.performance)
-        
+
         # Create improved strategy
         strategy = LearningStrategy(
             strategy_id=strategy_id,
@@ -1190,10 +1190,10 @@ class MetaMetaLearner:
             performance=[min(1.0, avg_performance * 1.1)],
             generation=base_strategy.generation + 1,
         )
-        
+
         self.strategies[strategy_id] = strategy
         return strategy
-    
+
     def _meta_meta_learn_internal(
         self,
         task: Dict[str, Any],
@@ -1201,24 +1201,24 @@ class MetaMetaLearner:
         meta_meta_strategy: MetaStrategy,
     ) -> LearningStrategy:
         """Meta-meta-learning (L³): Learn how to learn how to learn.
-        
+
         Args:
             task: Task specification
             meta_strategy: Meta-learned strategy
             meta_meta_strategy: Meta-meta strategy
-            
+
         Returns:
             Evolved strategy
         """
         strategy_id = f"meta_meta_strategy_{len(self.strategies)}"
-        
+
         # Analyze meta-strategy performance
         avg_performance = sum(meta_strategy.performance) / len(meta_strategy.performance)
-        
+
         # Apply meta-meta evolution
         evolved_lr = meta_strategy.parameters.get("learning_rate", 0.01)
         evolved_lr *= (1.0 + meta_meta_strategy.adaptation_rate)
-        
+
         strategy = LearningStrategy(
             strategy_id=strategy_id,
             name="Meta-Meta Learner",
@@ -1232,10 +1232,10 @@ class MetaMetaLearner:
             performance=[min(1.0, avg_performance * 1.15)],
             generation=meta_strategy.generation + 1,
         )
-        
+
         self.strategies[strategy_id] = strategy
         return strategy
-    
+
     def _initialize_meta_strategy(self) -> MetaStrategy:
         """Initialize default meta-strategy."""
         meta_id = f"meta_strategy_{len(self.meta_strategies)}"
@@ -1247,46 +1247,46 @@ class MetaMetaLearner:
         )
         self.meta_strategies[meta_id] = meta_strategy
         return meta_strategy
-    
+
     def _evolve_strategies(self) -> None:
         """Evolve strategy population."""
         if self.total_learning_iterations % self.evolution_generations == 0:
             self.strategy_evolutions += 1
-            
+
             # Track evolution
             current_generation = [s.strategy_id for s in self.strategies.values()]
             self.strategy_evolution_history.append(current_generation)
-            
+
             # Select top performers
             strategies = list(self.strategies.values())
             strategies.sort(key=lambda s: sum(s.performance) / len(s.performance), reverse=True)
-            
+
             # Keep top 50%
             top_strategies = strategies[:len(strategies)//2 + 1]
-            
+
             # Update generation
             for strategy in top_strategies:
                 strategy.generation += 1
-    
+
     def get_best_strategy(self) -> Optional[LearningStrategy]:
         """Get best performing strategy.
-        
+
         Returns:
             Best strategy or None
         """
         if not self.strategies:
             return None
-        
+
         strategies = list(self.strategies.values())
         strategies.sort(
             key=lambda s: sum(s.performance) / len(s.performance),
             reverse=True,
         )
         return strategies[0]
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get learner metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -1307,7 +1307,7 @@ class MetaMetaLearner:
 @dataclass
 class Goal:
     """Represents a planning goal.
-    
+
     Attributes:
         goal_id: Unique identifier
         description: Goal description
@@ -1320,7 +1320,7 @@ class Goal:
     priority: float = 0.5
     state: str = "pending"
     parent_goal: Optional[str] = None
-    
+
     def __post_init__(self):
         """Validate goal metrics."""
         assert 0.0 <= self.priority <= 1.0, f"Priority must be in [0, 1], got {self.priority}"
@@ -1329,7 +1329,7 @@ class Goal:
 @dataclass
 class Subgoal:
     """Represents a subgoal in hierarchical plan.
-    
+
     Attributes:
         subgoal_id: Unique identifier
         parent_goal: Parent goal ID
@@ -1347,7 +1347,7 @@ class Subgoal:
 @dataclass
 class Plan:
     """Represents a hierarchical plan.
-    
+
     Attributes:
         plan_id: Unique identifier
         goal: Top-level goal
@@ -1363,7 +1363,7 @@ class Plan:
 @dataclass
 class ExecutionResult:
     """Result of plan execution.
-    
+
     Attributes:
         plan_id: Executed plan ID
         success: Whether execution succeeded
@@ -1380,16 +1380,16 @@ class ExecutionResult:
 
 class HierarchicalPlanner:
     """Hierarchical planner with quantum state planning.
-    
+
     This planner decomposes high-level goals into subgoals,
     creates execution plans, and monitors progress.
-    
+
     Quantum interpretation:
     - Goal as quantum state: |G⟩ = Σᵢ αᵢ|gᵢ⟩
     - Decomposition as measurement: |G⟩ → {|g₁⟩, |g₂⟩, ...}
     - Plan as unitary evolution: U_plan|initial⟩ = |goal⟩
     """
-    
+
     def __init__(
         self,
         max_depth: int = PLANNING_MAX_DEPTH,
@@ -1397,7 +1397,7 @@ class HierarchicalPlanner:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize hierarchical planner.
-        
+
         Args:
             max_depth: Maximum planning depth
             branching_factor: Maximum subgoals per goal
@@ -1406,36 +1406,36 @@ class HierarchicalPlanner:
         self.max_depth = max_depth
         self.branching_factor = branching_factor
         self.seed = seed
-        
+
         # State
         self.goals: Dict[str, Goal] = {}
         self.plans: Dict[str, Plan] = {}
         self.execution_results: List[ExecutionResult] = []
-        
+
         # Metrics
         self.total_plans_created = 0
         self.total_plans_executed = 0
         self.successful_executions = 0
-        
+
         random.seed(seed)
-    
+
     def decompose_goal(self, goal: Goal) -> List[Subgoal]:
         """Decompose goal into subgoals.
-        
+
         Args:
             goal: Goal to decompose
-            
+
         Returns:
             List of subgoals
         """
         subgoals = []
-        
+
         # Store goal
         self.goals[goal.goal_id] = goal
-        
+
         # Decompose based on goal description
         num_subgoals = min(self.branching_factor, 3)  # Default 3 subgoals
-        
+
         for i in range(num_subgoals):
             subgoal_id = f"{goal.goal_id}_sub_{i}"
             subgoal = Subgoal(
@@ -1446,7 +1446,7 @@ class HierarchicalPlanner:
                 order=i,
             )
             subgoals.append(subgoal)
-        
+
         # Recursive decomposition if needed
         if goal.priority > 0.7 and self.max_depth > 1:
             for subgoal in subgoals[:]:  # Copy to avoid modification during iteration
@@ -1460,17 +1460,17 @@ class HierarchicalPlanner:
                     )
                     nested_subgoals = self._decompose_recursive(sub_goal, subgoal.level)
                     subgoals.extend(nested_subgoals)
-        
+
         return subgoals
-    
+
     def _decompose_recursive(self, goal: Goal, current_level: int) -> List[Subgoal]:
         """Recursively decompose goal."""
         if current_level >= self.max_depth:
             return []
-        
+
         subgoals = []
         num_subgoals = max(1, self.branching_factor // (current_level + 1))
-        
+
         for i in range(num_subgoals):
             subgoal_id = f"{goal.goal_id}_sub_{i}"
             subgoal = Subgoal(
@@ -1481,24 +1481,24 @@ class HierarchicalPlanner:
                 order=i,
             )
             subgoals.append(subgoal)
-        
+
         return subgoals
-    
+
     def create_plan(self, goal: Goal) -> Plan:
         """Create hierarchical plan for goal.
-        
+
         Args:
             goal: Goal to plan for
-            
+
         Returns:
             Hierarchical plan
         """
         # Decompose goal
         subgoals = self.decompose_goal(goal)
-        
+
         # Determine execution order (breadth-first)
         execution_order = self._compute_execution_order(subgoals)
-        
+
         # Create plan
         plan_id = f"plan_{self.total_plans_created}"
         plan = Plan(
@@ -1507,47 +1507,47 @@ class HierarchicalPlanner:
             subgoals=subgoals,
             execution_order=execution_order,
         )
-        
+
         self.plans[plan_id] = plan
         self.total_plans_created += 1
-        
+
         return plan
-    
+
     def _compute_execution_order(self, subgoals: List[Subgoal]) -> List[str]:
         """Compute execution order for subgoals."""
         # Sort by level and order
         sorted_subgoals = sorted(subgoals, key=lambda s: (s.level, s.order))
         return [s.subgoal_id for s in sorted_subgoals]
-    
+
     def execute_plan(self, plan: Plan) -> ExecutionResult:
         """Execute a plan.
-        
+
         Args:
             plan: Plan to execute
-            
+
         Returns:
             Execution result
         """
         self.total_plans_executed += 1
         start_time = datetime.now()
-        
+
         completed = []
         failed = []
-        
+
         # Execute subgoals in order
         for subgoal_id in plan.execution_order:
             # Simulate execution (with 80% success rate)
             success = random.random() < 0.8
-            
+
             if success:
                 completed.append(subgoal_id)
             else:
                 failed.append(subgoal_id)
                 # Stop on failure
                 break
-        
+
         execution_time = (datetime.now() - start_time).total_seconds()
-        
+
         # Create result
         result = ExecutionResult(
             plan_id=plan.plan_id,
@@ -1556,20 +1556,20 @@ class HierarchicalPlanner:
             failed_subgoals=failed,
             execution_time=execution_time,
         )
-        
+
         if result.success:
             self.successful_executions += 1
             # Update goal state
             plan.goal.state = "completed"
         else:
             plan.goal.state = "failed"
-        
+
         self.execution_results.append(result)
         return result
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get planner metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -1578,7 +1578,7 @@ class HierarchicalPlanner:
             if self.total_plans_executed > 0
             else 0.0
         )
-        
+
         return {
             "total_plans_created": self.total_plans_created,
             "total_plans_executed": self.total_plans_executed,
@@ -1596,7 +1596,7 @@ class HierarchicalPlanner:
 @dataclass
 class Agent:
     """Represents an agent in the swarm.
-    
+
     Attributes:
         agent_id: Unique identifier
         state: Agent state
@@ -1612,7 +1612,7 @@ class Agent:
 @dataclass
 class SwarmState:
     """State of the swarm.
-    
+
     Attributes:
         agents: List of agents
         coherence: Swarm coherence [0, 1]
@@ -1628,7 +1628,7 @@ class SwarmState:
 @dataclass
 class Proposal:
     """Represents a proposal for consensus.
-    
+
     Attributes:
         proposal_id: Unique identifier
         description: Proposal description
@@ -1646,7 +1646,7 @@ class Proposal:
 @dataclass
 class Decision:
     """Result of consensus decision.
-    
+
     Attributes:
         decision_id: Unique identifier
         chosen_proposal: Selected proposal ID
@@ -1661,16 +1661,16 @@ class Decision:
 
 class SwarmCoordinator:
     """Coordinates multi-agent swarms with emergent behaviors.
-    
+
     This coordinator manages swarm interactions, facilitates consensus,
     and monitors emergent collective behaviors.
-    
+
     Quantum interpretation:
     - Swarm state: |Ψ⟩ = ⊗ᵢ |ψᵢ⟩
     - Coherence: ⟨ψᵢ|ψⱼ⟩ = ρᵢⱼ e^(iφᵢⱼ)
     - Consensus as entanglement: |Ψ_consensus⟩ = (|agree⟩⊗ⁿ + |disagree⟩⊗ⁿ)/√2
     """
-    
+
     def __init__(
         self,
         swarm_size: int = SWARM_SIZE,
@@ -1679,7 +1679,7 @@ class SwarmCoordinator:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize swarm coordinator.
-        
+
         Args:
             swarm_size: Number of agents in swarm
             consensus_threshold: Threshold for consensus
@@ -1690,28 +1690,28 @@ class SwarmCoordinator:
         self.consensus_threshold = consensus_threshold
         self.coherence_decay = coherence_decay
         self.seed = seed
-        
+
         # State
         self.swarm_state: Optional[SwarmState] = None
         self.decisions: List[Decision] = []
-        
+
         # Metrics
         self.total_coordinations = 0
         self.successful_consensus = 0
-        
+
         random.seed(seed)
-    
+
     def coordinate_swarm(self, agents: List[Agent]) -> SwarmState:
         """Coordinate swarm of agents.
-        
+
         Args:
             agents: List of agents to coordinate
-            
+
         Returns:
             Updated swarm state
         """
         self.total_coordinations += 1
-        
+
         # Initialize or update swarm state
         if self.swarm_state is None:
             self.swarm_state = SwarmState(
@@ -1724,28 +1724,28 @@ class SwarmCoordinator:
             self.swarm_state.agents = agents
             # Apply coherence decay
             self.swarm_state.coherence *= self.coherence_decay
-        
+
         # Detect emergent behaviors
         emergent = self._detect_swarm_emergent_behaviors()
         self.swarm_state.emergent_behaviors.extend(emergent)
-        
+
         # Update consensus level
         self.swarm_state.consensus_level = self._compute_consensus_level()
-        
+
         return self.swarm_state
-    
+
     def achieve_consensus(self, proposals: List[Proposal]) -> Decision:
         """Achieve consensus on proposals.
-        
+
         Args:
             proposals: List of proposals
-            
+
         Returns:
             Consensus decision
         """
         if not self.swarm_state:
             raise ValueError("Swarm state not initialized. Call coordinate_swarm first.")
-        
+
         # Voting phase
         for _ in self.swarm_state.agents:
             # Each agent votes on each proposal (simplified)
@@ -1754,24 +1754,24 @@ class SwarmCoordinator:
                     proposal.support += 1
                 else:
                     proposal.opposition += 1
-        
+
         # Select proposal with highest support
         proposals.sort(key=lambda p: p.support, reverse=True)
         chosen = proposals[0] if proposals else None
-        
+
         if chosen is None:
             raise ValueError("No proposals provided for consensus")
-        
+
         # Calculate consensus level
         total_votes = chosen.support + chosen.opposition
         consensus_level = chosen.support / total_votes if total_votes > 0 else 0.0
-        
+
         # Check if consensus threshold met
         consensus_achieved = consensus_level >= self.consensus_threshold
-        
+
         if consensus_achieved:
             self.successful_consensus += 1
-        
+
         # Create decision
         decision = Decision(
             decision_id=f"decision_{len(self.decisions)}",
@@ -1779,53 +1779,53 @@ class SwarmCoordinator:
             consensus_level=consensus_level,
             participating_agents=[a.agent_id for a in self.swarm_state.agents],
         )
-        
+
         self.decisions.append(decision)
         return decision
-    
+
     def _detect_swarm_emergent_behaviors(self) -> List[str]:
         """Detect emergent behaviors in swarm."""
         behaviors = []
-        
+
         if not self.swarm_state:
             return behaviors
-        
+
         # Check for synchronization
         if len(self.swarm_state.agents) > 1:
             # Simple check: if agents have similar states
             states = [a.state for a in self.swarm_state.agents]
             if self._are_synchronized(states):
                 behaviors.append("synchronization")
-        
+
         # Check for clustering
         if len(self.swarm_state.agents) >= 3:
             if self._has_clusters():
                 behaviors.append("clustering")
-        
+
         # Check for collective decision-making
         if self.swarm_state.consensus_level > 0.7:
             behaviors.append("collective_decision")
-        
+
         return behaviors
-    
+
     def _are_synchronized(self, states: List[Dict[str, Any]]) -> bool:
         """Check if agent states are synchronized."""
         if len(states) < 2:
             return False
-        
+
         # Simple heuristic: check if states have similar keys
         first_keys = set(states[0].keys())
         for state in states[1:]:
             if set(state.keys()) != first_keys:
                 return False
-        
+
         return True
-    
+
     def _has_clusters(self) -> bool:
         """Check if swarm has formed clusters."""
         if not self.swarm_state:
             return False
-        
+
         # Simple heuristic: check if agents have overlapping capabilities
         agents = self.swarm_state.agents
         for i in range(len(agents)):
@@ -1833,20 +1833,20 @@ class SwarmCoordinator:
                 shared_caps = set(agents[i].capabilities) & set(agents[j].capabilities)
                 if len(shared_caps) >= 2:
                     return True
-        
+
         return False
-    
+
     def _compute_consensus_level(self) -> float:
         """Compute current consensus level in swarm."""
         if not self.swarm_state or len(self.swarm_state.agents) == 0:
             return 0.0
-        
+
         # Simple heuristic: average coherence
         return self.swarm_state.coherence
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get coordinator metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -1855,7 +1855,7 @@ class SwarmCoordinator:
             if self.decisions
             else 0.0
         )
-        
+
         return {
             "total_coordinations": self.total_coordinations,
             "successful_consensus": self.successful_consensus,
@@ -1881,7 +1881,7 @@ class ErrorSeverity(Enum):
 @dataclass
 class ErrorContext:
     """Context information for an error.
-    
+
     Attributes:
         error_type: Type of error
         severity: Error severity
@@ -1901,7 +1901,7 @@ class ErrorContext:
 @dataclass
 class RecoveryAction:
     """Action to recover from error.
-    
+
     Attributes:
         action_id: Unique identifier
         action_type: Type of recovery action
@@ -1917,7 +1917,7 @@ class RecoveryAction:
 @dataclass
 class DegradedMode:
     """Represents a degraded operational mode.
-    
+
     Attributes:
         mode_id: Unique identifier
         description: Mode description
@@ -1932,19 +1932,19 @@ class DegradedMode:
 
 class ProductionHardeningManager:
     """Manages production hardening, error handling, and graceful degradation.
-    
+
     This manager ensures robust production operation through:
     - Comprehensive error handling
     - Monitoring and observability hooks
     - Graceful degradation strategies
     - Recovery mechanisms
-    
+
     Quantum interpretation:
     - Error as decoherence: |ψ⟩ → ρ_mixed
     - Recovery as quantum error correction: C|ψ_error⟩ ≈ |ψ_correct⟩
     - Degradation as partial measurement: Π_ok|ψ⟩
     """
-    
+
     def __init__(
         self,
         enable_monitoring: bool = True,
@@ -1952,7 +1952,7 @@ class ProductionHardeningManager:
         seed: int = RANDOM_SEED_8_9,
     ):
         """Initialize production hardening manager.
-        
+
         Args:
             enable_monitoring: Enable monitoring hooks
             auto_recovery: Enable automatic recovery
@@ -1961,38 +1961,38 @@ class ProductionHardeningManager:
         self.enable_monitoring = enable_monitoring
         self.auto_recovery = auto_recovery
         self.seed = seed
-        
+
         # State
         self.errors: List[ErrorContext] = []
         self.recovery_actions: List[RecoveryAction] = []
         self.degraded_modes: Dict[str, DegradedMode] = {}
         self.current_mode: Optional[str] = None
-        
+
         # Monitoring hooks
         self.monitoring_callbacks: List[Callable] = []
-        
+
         # Metrics
         self.total_errors = 0
         self.recovered_errors = 0
         self.degradation_activations = 0
-        
+
         random.seed(seed)
-    
+
     def handle_error(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> RecoveryAction:
         """Handle an error with appropriate recovery action.
-        
+
         Args:
             error: The error to handle
             context: Optional context information
-            
+
         Returns:
             Recovery action taken
         """
         self.total_errors += 1
-        
+
         # Classify error
         severity = self._classify_error_severity(error)
-        
+
         # Create error context
         error_context = ErrorContext(
             error_type=type(error).__name__,
@@ -2002,11 +2002,11 @@ class ProductionHardeningManager:
             metadata=context or {},
         )
         self.errors.append(error_context)
-        
+
         # Trigger monitoring
         if self.enable_monitoring:
             self._trigger_monitoring(error_context)
-        
+
         # Determine recovery action
         if self.auto_recovery:
             recovery = self._attempt_recovery(error_context)
@@ -2017,44 +2017,44 @@ class ProductionHardeningManager:
                 description="Manual intervention required",
                 success=False,
             )
-        
+
         self.recovery_actions.append(recovery)
-        
+
         if recovery.success:
             self.recovered_errors += 1
-        
+
         return recovery
-    
+
     def degrade_gracefully(self, failure: str) -> DegradedMode:
         """Degrade gracefully in response to failure.
-        
+
         Args:
             failure: Description of failure
-            
+
         Returns:
             Activated degraded mode
         """
         self.degradation_activations += 1
-        
+
         # Determine degraded mode based on failure
         mode_id = f"degraded_{len(self.degraded_modes)}"
-        
+
         # Define capabilities to disable
         disabled_capabilities = self._determine_disabled_capabilities(failure)
-        
+
         # Estimate performance impact
         performance_impact = min(1.0, len(disabled_capabilities) * 0.2)
-        
+
         mode = DegradedMode(
             mode_id=mode_id,
             description=f"Degraded mode due to: {failure}",
             capabilities_disabled=disabled_capabilities,
             performance_impact=performance_impact,
         )
-        
+
         self.degraded_modes[mode_id] = mode
         self.current_mode = mode_id
-        
+
         # Trigger monitoring
         if self.enable_monitoring:
             self._trigger_monitoring({
@@ -2062,45 +2062,45 @@ class ProductionHardeningManager:
                 "mode": mode_id,
                 "reason": failure,
             })
-        
+
         return mode
-    
+
     def register_monitoring_callback(self, callback: Callable) -> None:
         """Register a monitoring callback.
-        
+
         Args:
             callback: Callback function
         """
         self.monitoring_callbacks.append(callback)
-    
+
     def _classify_error_severity(self, error: Exception) -> ErrorSeverity:
         """Classify error severity."""
         error_type = type(error).__name__
-        
+
         # Critical errors
         if error_type in ["MemoryError", "SystemError"]:
             return ErrorSeverity.CRITICAL
-        
+
         # High severity
         if error_type in ["RuntimeError", "ValueError"]:
             return ErrorSeverity.HIGH
-        
+
         # Medium severity
         if error_type in ["KeyError", "IndexError"]:
             return ErrorSeverity.MEDIUM
-        
+
         # Default to low
         return ErrorSeverity.LOW
-    
+
     def _get_stack_trace(self, error: Exception) -> str:
         """Get stack trace from error."""
         import traceback
         return "".join(traceback.format_exception(type(error), error, error.__traceback__))
-    
+
     def _attempt_recovery(self, error_context: ErrorContext) -> RecoveryAction:
         """Attempt automatic recovery from error."""
         action_id = f"recovery_{len(self.recovery_actions)}"
-        
+
         # Recovery strategies based on severity
         if error_context.severity == ErrorSeverity.LOW:
             # Retry with backoff
@@ -2110,7 +2110,7 @@ class ProductionHardeningManager:
                 description="Retry with exponential backoff",
                 success=True,
             )
-        
+
         elif error_context.severity == ErrorSeverity.MEDIUM:
             # Fallback to alternative method
             return RecoveryAction(
@@ -2119,7 +2119,7 @@ class ProductionHardeningManager:
                 description="Use fallback implementation",
                 success=True,
             )
-        
+
         elif error_context.severity == ErrorSeverity.HIGH:
             # Initiate graceful degradation
             self.degrade_gracefully(error_context.message)
@@ -2129,7 +2129,7 @@ class ProductionHardeningManager:
                 description="Graceful degradation initiated",
                 success=True,
             )
-        
+
         else:  # CRITICAL
             # Escalate to manual intervention
             return RecoveryAction(
@@ -2138,7 +2138,7 @@ class ProductionHardeningManager:
                 description="Critical error - manual intervention required",
                 success=False,
             )
-    
+
     def _determine_disabled_capabilities(self, failure: str) -> List[str]:
         """Determine which capabilities to disable."""
         # Simple heuristic based on failure description
@@ -2150,7 +2150,7 @@ class ProductionHardeningManager:
             return ["heavy_computation", "parallel_processing"]
         else:
             return ["non_critical_features"]
-    
+
     def _trigger_monitoring(self, event: Any) -> None:
         """Trigger monitoring callbacks."""
         for callback in self.monitoring_callbacks:
@@ -2159,10 +2159,10 @@ class ProductionHardeningManager:
             except Exception as e:
                 # Don't let monitoring failures cascade
                 print(f"Monitoring callback failed: {e}")
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get hardening manager metrics.
-        
+
         Returns:
             Dictionary of metrics
         """
@@ -2171,7 +2171,7 @@ class ProductionHardeningManager:
             if self.total_errors > 0
             else 0.0
         )
-        
+
         return {
             "total_errors": self.total_errors,
             "recovered_errors": self.recovered_errors,

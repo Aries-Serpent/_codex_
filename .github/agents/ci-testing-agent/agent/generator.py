@@ -13,7 +13,7 @@ class TestGenerator:
     def __init__(self, workspace: Path):
         """
         Initialize TestGenerator.
-        
+
         Args:
             workspace: Path to repository workspace
         """
@@ -23,13 +23,13 @@ class TestGenerator:
     def generate(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Generate test files based on task specification.
-        
+
         Args:
             task: Task dictionary containing:
                 - module: Target module to generate tests for
                 - threshold: Coverage threshold (optional, default 85)
                 - output_dir: Output directory for tests (optional)
-        
+
         Returns:
             Dictionary with:
                 - status: 'success' or 'error'
@@ -101,10 +101,10 @@ class TestGenerator:
     def _resolve_module_path(self, module: str) -> Path:
         """
         Resolve module name to filesystem path.
-        
+
         Args:
             module: Module name (e.g., 'codex.ingest')
-        
+
         Returns:
             Path to module directory or file
         """
@@ -123,10 +123,10 @@ class TestGenerator:
     def _extract_functions(self, module_path: Path) -> List[Dict[str, Any]]:
         """
         Extract function definitions from module.
-        
+
         Args:
             module_path: Path to module file or directory
-        
+
         Returns:
             List of function information dictionaries
         """
@@ -166,11 +166,11 @@ class TestGenerator:
     def _has_test_coverage(self, func: Dict[str, Any], output_dir: str) -> bool:
         """
         Check if function has existing test coverage.
-        
+
         Args:
             func: Function information dictionary
             output_dir: Test output directory
-        
+
         Returns:
             True if tests exist, False otherwise
         """
@@ -195,11 +195,11 @@ class TestGenerator:
     def _scaffold_test(self, func: Dict[str, Any], module: str) -> str:
         """
         Generate test scaffold for function.
-        
+
         Args:
             func: Function information dictionary
             module: Module name
-        
+
         Returns:
             Test code as string
         """
@@ -221,10 +221,10 @@ class Test{class_name}:
         """Test basic functionality of {func['name']}."""
         # Arrange
         # TODO: Setup test data and mocks
-        
+
         # Act
         # result = {func['name']}(...)
-        
+
         # Assert
         # assert result == expected_value
         pytest.skip("Generated test scaffold - needs implementation")
@@ -245,12 +245,12 @@ class Test{class_name}:
     ) -> Path:
         """
         Determine output path for test file.
-        
+
         Args:
             func: Function information dictionary
             module: Module name
             output_dir: Test output directory
-        
+
         Returns:
             Path for test file
         """

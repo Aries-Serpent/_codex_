@@ -12,9 +12,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Mapping, Protocol, Sequence
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Mapping, Protocol, Sequence, runtime_checkable  # noqa: E402
 
 
 class TokenizationContractError(TypeError):
@@ -25,6 +25,7 @@ class TrainingContractError(TypeError):
     """Raised when a training component violates the formal contract."""
 
 
+@runtime_checkable
 class TokenizerContract(Protocol):
     """Minimal tokenizer surface used by training and evaluation."""
 

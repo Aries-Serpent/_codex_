@@ -54,7 +54,7 @@ class HTMLVisualizer:
 <body>
     <div class="container">
         <h1>🔍 AST Analysis Report</h1>
-        
+
         <div class="metrics">
             <div class="metric-card">
                 <div class="metric-label">Total Nodes</div>
@@ -73,25 +73,25 @@ class HTMLVisualizer:
                 <div class="metric-value">{sum(1 for n in nodes_data if 'class' in n.get('type', '').lower())}</div>
             </div>
         </div>
-        
+
         <div class="legend">
             <strong>Legend:</strong> Hover over nodes to see details. Circle size represents complexity.
         </div>
-        
+
         <div id="graph"></div>
-        
+
         <script>
         const data = {json.dumps(nodes_data, indent=2)};
-        
+
         // Create D3 visualization
         const width = 1160;
         const height = 600;
-        
+
         const svg = d3.select("#graph")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
-        
+
         // Simple node visualization
         const nodes = svg.selectAll("circle")
             .data(data)
@@ -107,10 +107,10 @@ class HTMLVisualizer:
             .on("mouseout", function(event, d) {{
                 d3.select(this).attr("r", d => Math.min(20, 10 + (d.children || 0)));
             }});
-        
+
         nodes.append("title")
             .text(d => 'Type: ' + d.type + '\\nName: ' + (d.name || 'N/A') + '\\nChildren: ' + (d.children || 0));
-        
+
         // Add labels
         svg.selectAll("text")
             .data(data)

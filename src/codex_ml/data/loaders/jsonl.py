@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 """JSON Lines dataset loader with deterministic caching and splitting."""
 
 
-import hashlib
-import json
-import random
-from pathlib import Path
-from typing import Any, Iterator, Mapping
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import random  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterator, Mapping  # noqa: E402
 
-from codex_ml.utils.repro import record_dataset_checksums
+from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402
 
 CacheKey = tuple[str, tuple[float, float, float], int, bool]
 DEFAULT_CACHE_DIR = Path("artifacts/data_cache")

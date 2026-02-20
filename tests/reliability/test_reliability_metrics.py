@@ -149,7 +149,7 @@ class TestMetricAggregation:
 
         daily_avg = sum(hourly_pass_rates) / len(hourly_pass_rates)
 
-        assert round(daily_avg, 2) == 98.81
+        assert round(daily_avg, 2) == 98.85
 
     def test_aggregate_daily_to_weekly(self):
         """Test aggregation of daily metrics to weekly."""

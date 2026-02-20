@@ -15,6 +15,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.offline_wandb import force_offline
+from src.training.offline_wandb import force_offline  # noqa: E402
 
 __all__ = ["force_offline"]

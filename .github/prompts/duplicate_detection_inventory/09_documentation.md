@@ -122,7 +122,7 @@ python scripts/analysis/cli.py . --config .duplicate-scan.yml
 
 ## Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
+See [ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) for detailed architecture documentation.
 
 ## Troubleshooting
 

@@ -28,7 +28,8 @@ class TestCreateScheduler:
             from codex_ml.training.scheduler_factory import create_scheduler
 
             class DummyOptimizer:
-                pass
+                def __init__(self):
+                    self.param_groups = [{'lr': 0.01}]
 
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(optimizer, scheduler_type="constant")
@@ -42,13 +43,15 @@ class TestCreateScheduler:
             from codex_ml.training.scheduler_factory import create_scheduler
 
             class DummyOptimizer:
-                pass
+                def __init__(self):
+                    self.param_groups = [{'lr': 0.01}]
 
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(
                 optimizer,
                 scheduler_type="constant_with_warmup",
-                num_warmup_steps=100
+                num_warmup_steps=100,
+                num_training_steps=1000
             )
             assert scheduler is not None
         except ImportError as exc:
@@ -60,7 +63,8 @@ class TestCreateScheduler:
             from codex_ml.training.scheduler_factory import create_scheduler
 
             class DummyOptimizer:
-                pass
+                def __init__(self):
+                    self.param_groups = [{'lr': 0.01}]
 
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(
@@ -78,7 +82,8 @@ class TestCreateScheduler:
             from codex_ml.training.scheduler_factory import create_scheduler
 
             class DummyOptimizer:
-                pass
+                def __init__(self):
+                    self.param_groups = [{'lr': 0.01}]
 
             optimizer = DummyOptimizer()
             scheduler = create_scheduler(

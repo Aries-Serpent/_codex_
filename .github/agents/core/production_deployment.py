@@ -9,13 +9,13 @@ Phase 8.5 Implementation:
 
 Status: Skeleton implementation (Phase 8.5)
 """
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Callable, Tuple
-from abc import ABC, abstractmethod
-from enum import Enum
 import json
 import time
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 class HealthStatus(Enum):
@@ -29,7 +29,7 @@ class HealthStatus(Enum):
 @dataclass
 class HealthCheckResult:
     """Result of a health check.
-    
+
     Attributes:
         component: Component name
         status: Health status
@@ -44,7 +44,7 @@ class HealthCheckResult:
     latency_ms: float = 0.0
     details: Dict[str, Any] = field(default_factory=dict)
     timestamp: str = ""
-    
+
     def __post_init__(self):
         """Initialize computed fields."""
         if not self.timestamp:
@@ -53,13 +53,13 @@ class HealthCheckResult:
 
 class HealthCheck(ABC):
     """Abstract base class for health checks."""
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
         """Get check name."""
         pass
-    
+
     @abstractmethod
     def check(self) -> HealthCheckResult:
         """Perform health check."""
@@ -68,23 +68,23 @@ class HealthCheck(ABC):
 
 class MemoryHealthCheck(HealthCheck):
     """Check memory usage health."""
-    
+
     @property
     def name(self) -> str:
         return "memory"
-    
+
     def __init__(self, threshold_mb: float = 1024.0):
         """Initialize memory health check.
-        
+
         Args:
             threshold_mb: Memory threshold in MB
         """
         self.threshold_mb = threshold_mb
-    
+
     def check(self) -> HealthCheckResult:
         """Check memory usage."""
         start = time.time()
-        
+
         try:
             # NOTE: This is a placeholder implementation for demonstration only.
             # In production, integrate with psutil (e.g. Process().memory_info().rss)
@@ -92,13 +92,13 @@ class MemoryHealthCheck(HealthCheck):
             # Here we report a fixed near-zero value to make it explicit that this is
             # not performing real memory monitoring.
             memory_mb = 0.0
-            
+
             latency = (time.time() - start) * 1000
-            
+
             # For placeholder, always report healthy since we're not measuring real usage
             status = HealthStatus.HEALTHY
             message = f"Memory check completed (placeholder, not real usage): {memory_mb:.4f}MB"
-            
+
             return HealthCheckResult(
                 component=self.name,
                 status=status,
@@ -117,23 +117,23 @@ class MemoryHealthCheck(HealthCheck):
 
 class DatabaseHealthCheck(HealthCheck):
     """Check database connectivity health."""
-    
+
     @property
     def name(self) -> str:
         return "database"
-    
+
     def __init__(self, db_path: Optional[str] = None):
         """Initialize database health check.
-        
+
         Args:
             db_path: Path to database file
         """
         self.db_path = db_path or ":memory:"
-    
+
     def check(self) -> HealthCheckResult:
         """Check database connectivity."""
         start = time.time()
-        
+
         try:
             import sqlite3
             conn = sqlite3.connect(self.db_path, timeout=5.0)
@@ -141,9 +141,9 @@ class DatabaseHealthCheck(HealthCheck):
             cursor.execute("SELECT 1")
             cursor.fetchone()
             conn.close()
-            
+
             latency = (time.time() - start) * 1000
-            
+
             return HealthCheckResult(
                 component=self.name,
                 status=HealthStatus.HEALTHY,
@@ -162,23 +162,23 @@ class DatabaseHealthCheck(HealthCheck):
 
 class LearningEngineHealthCheck(HealthCheck):
     """Check learning engine health."""
-    
+
     @property
     def name(self) -> str:
         return "learning_engine"
-    
+
     def __init__(self, engine: Optional[Any] = None):
         """Initialize learning engine health check.
-        
+
         Args:
             engine: Learning engine instance to check
         """
         self.engine = engine
-    
+
     def check(self) -> HealthCheckResult:
         """Check learning engine status."""
         start = time.time()
-        
+
         if self.engine is None:
             return HealthCheckResult(
                 component=self.name,
@@ -186,14 +186,14 @@ class LearningEngineHealthCheck(HealthCheck):
                 message="No engine configured",
                 latency_ms=(time.time() - start) * 1000,
             )
-        
+
         try:
             # Check engine has required methods
             has_select = hasattr(self.engine, 'select_action')
             has_update = hasattr(self.engine, 'update')
-            
+
             latency = (time.time() - start) * 1000
-            
+
             if has_select and has_update:
                 return HealthCheckResult(
                     component=self.name,
@@ -221,18 +221,18 @@ class LearningEngineHealthCheck(HealthCheck):
 
 class HealthCheckEndpoint:
     """Aggregated health check endpoint.
-    
+
     Manages multiple health checks and provides unified health status.
-    
+
     Attributes:
         checks: Registered health checks
         results: Last check results
         check_interval_seconds: Interval between automatic checks
     """
-    
+
     def __init__(self, check_interval_seconds: float = 30.0):
         """Initialize health check endpoint.
-        
+
         Args:
             check_interval_seconds: Interval between checks
         """
@@ -240,39 +240,39 @@ class HealthCheckEndpoint:
         self.results: Dict[str, HealthCheckResult] = {}
         self.check_interval_seconds = check_interval_seconds
         self._last_check_time: Optional[float] = None
-    
+
     def register(self, check: HealthCheck) -> None:
         """Register a health check.
-        
+
         Args:
             check: Health check to register
         """
         self.checks.append(check)
-    
+
     def run_checks(self) -> Dict[str, HealthCheckResult]:
         """Run all registered health checks.
-        
+
         Returns:
             Results for all checks
         """
         for check in self.checks:
             result = check.check()
             self.results[check.name] = result
-        
+
         self._last_check_time = time.time()
         return dict(self.results)
-    
+
     def get_overall_status(self) -> HealthStatus:
         """Get overall health status.
-        
+
         Returns:
             Aggregated health status
         """
         if not self.results:
             return HealthStatus.UNKNOWN
-        
+
         statuses = [r.status for r in self.results.values()]
-        
+
         if all(s == HealthStatus.HEALTHY for s in statuses):
             return HealthStatus.HEALTHY
         elif any(s == HealthStatus.UNHEALTHY for s in statuses):
@@ -281,10 +281,10 @@ class HealthCheckEndpoint:
             return HealthStatus.DEGRADED
         else:
             return HealthStatus.UNKNOWN
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for API response.
-        
+
         Returns:
             Dictionary representation
         """
@@ -312,7 +312,7 @@ class HealthCheckEndpoint:
 @dataclass
 class MetricValue:
     """A metric measurement.
-    
+
     Attributes:
         name: Metric name
         value: Metric value
@@ -323,7 +323,7 @@ class MetricValue:
     value: float
     labels: Dict[str, str] = field(default_factory=dict)
     timestamp: str = ""
-    
+
     def __post_init__(self):
         if not self.timestamp:
             self.timestamp = datetime.utcnow().isoformat()
@@ -331,22 +331,22 @@ class MetricValue:
 
 class MetricsCollector:
     """Collects and aggregates metrics.
-    
+
     Attributes:
         metrics: Collected metrics
         counters: Counter metrics
         gauges: Gauge metrics
     """
-    
+
     def __init__(self):
         """Initialize metrics collector."""
         self.metrics: List[MetricValue] = []
         self.counters: Dict[str, float] = {}
         self.gauges: Dict[str, float] = {}
-    
+
     def increment(self, name: str, value: float = 1.0, labels: Optional[Dict[str, str]] = None) -> None:
         """Increment a counter metric.
-        
+
         Args:
             name: Counter name
             value: Increment value
@@ -355,10 +355,10 @@ class MetricsCollector:
         key = self._make_key(name, labels or {})
         self.counters[key] = self.counters.get(key, 0) + value
         self.metrics.append(MetricValue(name, self.counters[key], labels or {}))
-    
+
     def gauge(self, name: str, value: float, labels: Optional[Dict[str, str]] = None) -> None:
         """Set a gauge metric.
-        
+
         Args:
             name: Gauge name
             value: Gauge value
@@ -367,24 +367,24 @@ class MetricsCollector:
         key = self._make_key(name, labels or {})
         self.gauges[key] = value
         self.metrics.append(MetricValue(name, value, labels or {}))
-    
+
     def _make_key(self, name: str, labels: Dict[str, str]) -> str:
         """Create unique key from name and labels."""
         if not labels:
             return name
         label_str = ','.join(f'{k}={v}' for k, v in sorted(labels.items()))
         return f"{name}{{{label_str}}}"
-    
+
     def get_counter(self, name: str, labels: Optional[Dict[str, str]] = None) -> float:
         """Get counter value."""
         key = self._make_key(name, labels or {})
         return self.counters.get(key, 0)
-    
+
     def get_gauge(self, name: str, labels: Optional[Dict[str, str]] = None) -> float:
         """Get gauge value."""
         key = self._make_key(name, labels or {})
         return self.gauges.get(key, 0)
-    
+
     def get_all_metrics(self) -> Dict[str, Any]:
         """Get all collected metrics."""
         return {
@@ -406,7 +406,7 @@ class LogLevel(Enum):
 @dataclass
 class LogEntry:
     """A log entry.
-    
+
     Attributes:
         level: Log level
         message: Log message
@@ -419,11 +419,11 @@ class LogEntry:
     logger: str = "cognitive_brain"
     timestamp: str = ""
     extra: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if not self.timestamp:
             self.timestamp = datetime.utcnow().isoformat()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -437,72 +437,72 @@ class LogEntry:
 
 class LogAggregator:
     """Aggregates log entries for monitoring.
-    
+
     Attributes:
         entries: Log entries
         max_entries: Maximum entries to retain
     """
-    
+
     def __init__(self, max_entries: int = 1000):
         """Initialize log aggregator.
-        
+
         Args:
             max_entries: Maximum entries to keep
         """
         self.entries: List[LogEntry] = []
         self.max_entries = max_entries
-    
+
     def log(self, level: LogLevel, message: str, **extra) -> LogEntry:
         """Add a log entry.
-        
+
         Args:
             level: Log level
             message: Log message
             **extra: Additional context
-            
+
         Returns:
             Created log entry
         """
         entry = LogEntry(level=level, message=message, extra=extra)
         self.entries.append(entry)
-        
+
         # Trim if needed
         if len(self.entries) > self.max_entries:
             self.entries = self.entries[-self.max_entries:]
-        
+
         return entry
-    
+
     def debug(self, message: str, **extra) -> LogEntry:
         """Log debug message."""
         return self.log(LogLevel.DEBUG, message, **extra)
-    
+
     def info(self, message: str, **extra) -> LogEntry:
         """Log info message."""
         return self.log(LogLevel.INFO, message, **extra)
-    
+
     def warning(self, message: str, **extra) -> LogEntry:
         """Log warning message."""
         return self.log(LogLevel.WARNING, message, **extra)
-    
+
     def error(self, message: str, **extra) -> LogEntry:
         """Log error message."""
         return self.log(LogLevel.ERROR, message, **extra)
-    
+
     def critical(self, message: str, **extra) -> LogEntry:
         """Log critical message."""
         return self.log(LogLevel.CRITICAL, message, **extra)
-    
+
     def get_entries(
         self,
         level: Optional[LogLevel] = None,
         limit: int = 100,
     ) -> List[LogEntry]:
         """Get log entries.
-        
+
         Args:
             level: Filter by level
             limit: Maximum entries to return
-            
+
         Returns:
             Matching log entries
         """
@@ -514,25 +514,25 @@ class LogAggregator:
 
 class MonitoringIntegration:
     """Unified monitoring integration.
-    
+
     Combines health checks, metrics, and logging.
-    
+
     Attributes:
         health: Health check endpoint
         metrics: Metrics collector
         logs: Log aggregator
     """
-    
+
     def __init__(self):
         """Initialize monitoring integration."""
         self.health = HealthCheckEndpoint()
         self.metrics = MetricsCollector()
         self.logs = LogAggregator()
-        
+
         # Register default health checks
         self.health.register(MemoryHealthCheck())
         self.health.register(DatabaseHealthCheck())
-    
+
     def record_action(
         self,
         action: str,
@@ -541,7 +541,7 @@ class MonitoringIntegration:
         **labels,
     ) -> None:
         """Record an action execution.
-        
+
         Args:
             action: Action name
             success: Whether action succeeded
@@ -557,17 +557,17 @@ class MonitoringIntegration:
             latency_ms,
             labels={'action': action, **labels},
         )
-        
+
         level = LogLevel.INFO if success else LogLevel.WARNING
         self.logs.log(level, f"Action executed: {action}", success=success, latency_ms=latency_ms)
-    
+
     def record_learning_update(
         self,
         domain: str,
         q_value_delta: float,
     ) -> None:
         """Record a learning update.
-        
+
         Args:
             domain: Learning domain
             q_value_delta: Change in Q-value
@@ -581,10 +581,10 @@ class MonitoringIntegration:
             q_value_delta,
             labels={'domain': domain},
         )
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get full monitoring status.
-        
+
         Returns:
             Status dictionary
         """
@@ -609,7 +609,7 @@ class MonitoringIntegration:
 @dataclass
 class ContainerConfig:
     """Container configuration.
-    
+
     Attributes:
         image: Container image name
         tag: Image tag
@@ -634,7 +634,7 @@ class ContainerConfig:
 @dataclass
 class KubernetesConfig:
     """Kubernetes deployment configuration.
-    
+
     Attributes:
         name: Deployment name
         namespace: Kubernetes namespace
@@ -656,32 +656,32 @@ class KubernetesConfig:
 
 class DeploymentConfiguration:
     """Generates deployment configurations.
-    
+
     Creates Docker and Kubernetes configurations for
     production deployment.
-    
+
     Attributes:
         container: Container configuration
         k8s: Kubernetes configuration
     """
-    
+
     def __init__(
         self,
         container: Optional[ContainerConfig] = None,
         k8s: Optional[KubernetesConfig] = None,
     ):
         """Initialize deployment configuration.
-        
+
         Args:
             container: Container config
             k8s: Kubernetes config
         """
         self.container = container or ContainerConfig()
         self.k8s = k8s or KubernetesConfig()
-    
+
     def generate_dockerfile(self) -> str:
         """Generate Dockerfile content.
-        
+
         Returns:
             Dockerfile content
         """
@@ -689,9 +689,9 @@ class DeploymentConfiguration:
             f'ENV {k}={v}'
             for k, v in self.container.environment.items()
         )
-        
+
         port_expose = ' '.join(str(p) for p in self.container.ports.keys())
-        
+
         return f'''# Cognitive Brain Production Dockerfile
 # Generated by DeploymentConfiguration
 
@@ -719,10 +719,10 @@ EXPOSE {port_expose}
 # Run
 CMD ["python", "-m", "cognitive_brain.server"]
 '''
-    
+
     def generate_k8s_deployment(self) -> Dict[str, Any]:
         """Generate Kubernetes deployment manifest.
-        
+
         Returns:
             Kubernetes deployment as dictionary
         """
@@ -787,10 +787,10 @@ CMD ["python", "-m", "cognitive_brain.server"]
                 },
             },
         }
-    
+
     def generate_k8s_service(self) -> Dict[str, Any]:
         """Generate Kubernetes service manifest.
-        
+
         Returns:
             Kubernetes service as dictionary
         """
@@ -810,17 +810,17 @@ CMD ["python", "-m", "cognitive_brain.server"]
                 'type': 'ClusterIP',
             },
         }
-    
+
     def to_json(self, manifest: Dict[str, Any]) -> str:
         """Convert manifest to JSON string.
-        
+
         Note: For YAML output, use PyYAML library in production.
         This method provides JSON-formatted output which is compatible
         with Kubernetes (kubectl apply -f supports JSON).
-        
+
         Args:
             manifest: Manifest dictionary
-            
+
         Returns:
             JSON string (Kubernetes-compatible)
         """
@@ -834,23 +834,23 @@ CMD ["python", "-m", "cognitive_brain.server"]
 
 class ProductionTest(ABC):
     """Abstract base class for production tests."""
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
         """Test name."""
         pass
-    
+
     @property
     @abstractmethod
     def critical(self) -> bool:
         """Whether test is critical for deployment."""
         pass
-    
+
     @abstractmethod
     def run(self) -> Tuple[bool, str]:
         """Run the test.
-        
+
         Returns:
             Tuple of (passed, message)
         """
@@ -859,25 +859,25 @@ class ProductionTest(ABC):
 
 class HealthEndpointTest(ProductionTest):
     """Test health endpoint availability."""
-    
+
     @property
     def name(self) -> str:
         return "health_endpoint"
-    
+
     @property
     def critical(self) -> bool:
         return True
-    
+
     def __init__(self, endpoint: HealthCheckEndpoint):
         """Initialize test."""
         self.endpoint = endpoint
-    
+
     def run(self) -> Tuple[bool, str]:
         """Run health endpoint test."""
         try:
             self.endpoint.run_checks()
             status = self.endpoint.get_overall_status()
-            
+
             if status in (HealthStatus.HEALTHY, HealthStatus.DEGRADED):
                 return True, f"Health endpoint operational: {status.value}"
             else:
@@ -888,31 +888,31 @@ class HealthEndpointTest(ProductionTest):
 
 class LearningEngineTest(ProductionTest):
     """Test learning engine functionality."""
-    
+
     @property
     def name(self) -> str:
         return "learning_engine"
-    
+
     @property
     def critical(self) -> bool:
         return True
-    
+
     def __init__(self, engine: Optional[Any] = None):
         """Initialize test."""
         self.engine = engine
-    
+
     def run(self) -> Tuple[bool, str]:
         """Run learning engine test."""
         if self.engine is None:
             return False, "No learning engine configured"
-        
+
         try:
             # Check basic methods exist
             if not hasattr(self.engine, 'select_action'):
                 return False, "Learning engine missing select_action"
             if not hasattr(self.engine, 'update'):
                 return False, "Learning engine missing update"
-            
+
             return True, "Learning engine operational"
         except Exception as e:
             return False, f"Learning engine test failed: {str(e)}"
@@ -920,53 +920,53 @@ class LearningEngineTest(ProductionTest):
 
 class ProductionTestSuite:
     """Production-ready test harness.
-    
+
     Runs production tests before and after deployment.
-    
+
     Attributes:
         tests: Registered tests
         results: Test results
     """
-    
+
     def __init__(self):
         """Initialize test suite."""
         self.tests: List[ProductionTest] = []
         self.results: Dict[str, Tuple[bool, str]] = {}
-    
+
     def register(self, test: ProductionTest) -> None:
         """Register a production test.
-        
+
         Args:
             test: Test to register
         """
         self.tests.append(test)
-    
+
     def run_all(self) -> bool:
         """Run all registered tests.
-        
+
         Returns:
             True if all critical tests passed
         """
         all_critical_passed = True
-        
+
         for test in self.tests:
             passed, message = test.run()
             self.results[test.name] = (passed, message)
-            
+
             if test.critical and not passed:
                 all_critical_passed = False
-        
+
         return all_critical_passed
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Get test summary.
-        
+
         Returns:
             Summary dictionary
         """
         passed = sum(1 for p, _ in self.results.values() if p)
         failed = len(self.results) - passed
-        
+
         return {
             'total': len(self.results),
             'passed': passed,
@@ -990,39 +990,39 @@ class ProductionTestSuite:
 
 class ProcessHealthCheck(HealthCheck):
     """Check process resource usage with psutil-like metrics.
-    
+
     Provides CPU and memory monitoring without external dependencies.
     Uses resource module on Unix or approximations elsewhere.
     """
-    
+
     @property
     def name(self) -> str:
         return "process"
-    
+
     def __init__(
         self,
         cpu_threshold: float = 80.0,
         memory_threshold_mb: float = 1024.0,
     ):
         """Initialize process health check.
-        
+
         Args:
             cpu_threshold: CPU usage threshold percentage
             memory_threshold_mb: Memory threshold in MB
         """
         self.cpu_threshold = cpu_threshold
         self.memory_threshold_mb = memory_threshold_mb
-    
+
     def check(self) -> HealthCheckResult:
         """Check process resource usage."""
         start = time.time()
-        
+
         try:
             import os
-            
+
             # Get process info
             pid = os.getpid()
-            
+
             # Memory usage placeholder
             # NOTE: This is intentionally a non-functional placeholder. It does NOT
             # represent actual process memory usage. In production, replace with:
@@ -1030,26 +1030,26 @@ class ProcessHealthCheck(HealthCheck):
             #   memory_mb = psutil.Process(pid).memory_info().rss / (1024 * 1024)
             # psutil is not included as a dependency to keep the module lightweight.
             memory_mb = 0.0
-            
+
             # CPU time (using os.times if available)
             try:
                 times = os.times()
                 cpu_time = times.user + times.system
             except (AttributeError, OSError):
                 cpu_time = 0.0
-            
+
             latency = (time.time() - start) * 1000
-            
+
             # Determine status
             status = HealthStatus.HEALTHY
             messages = []
-            
+
             if memory_mb > self.memory_threshold_mb:
                 status = HealthStatus.DEGRADED
                 messages.append(f"Memory usage high: {memory_mb:.2f}MB")
-            
+
             message = "; ".join(messages) if messages else f"Process healthy (PID: {pid})"
-            
+
             return HealthCheckResult(
                 component=self.name,
                 status=status,
@@ -1072,14 +1072,14 @@ class ProcessHealthCheck(HealthCheck):
 
 class NetworkHealthCheck(HealthCheck):
     """Check network connectivity health."""
-    
+
     @property
     def name(self) -> str:
         return "network"
-    
+
     def __init__(self, endpoints: Optional[List[str]] = None):
         """Initialize network health check.
-        
+
         Args:
             endpoints: List of endpoints to check (not used in offline mode)
         """
@@ -1087,20 +1087,20 @@ class NetworkHealthCheck(HealthCheck):
         self._network_available: Optional[bool] = None
         self._last_check_time: float = 0.0
         self._cache_ttl_seconds: float = 30.0  # Cache result for 30 seconds
-    
+
     def check(self) -> HealthCheckResult:
         """Check network status (offline-safe).
-        
+
         Uses cached result if available and within TTL to avoid
         frequent socket creation overhead.
         """
         start = time.time()
-        
+
         try:
             import socket
-            
+
             # Use cached result if within TTL
-            if (self._network_available is not None and 
+            if (self._network_available is not None and
                 (time.time() - self._last_check_time) < self._cache_ttl_seconds):
                 network_available = self._network_available
             else:
@@ -1112,16 +1112,16 @@ class NetworkHealthCheck(HealthCheck):
                     network_available = True
                 except Exception:
                     network_available = False
-                
+
                 # Cache the result
                 self._network_available = network_available
                 self._last_check_time = time.time()
-            
+
             latency = (time.time() - start) * 1000
-            
+
             status = HealthStatus.HEALTHY if network_available else HealthStatus.DEGRADED
             message = "Network stack available" if network_available else "Network stack unavailable"
-            
+
             return HealthCheckResult(
                 component=self.name,
                 status=status,
@@ -1149,7 +1149,7 @@ class NetworkHealthCheck(HealthCheck):
 @dataclass
 class NodeInfo:
     """Information about a deployment node.
-    
+
     Attributes:
         node_id: Unique node identifier
         host: Hostname or IP address
@@ -1165,7 +1165,7 @@ class NodeInfo:
     status: str = "unknown"
     last_heartbeat: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if not self.last_heartbeat:
             self.last_heartbeat = datetime.utcnow().isoformat()
@@ -1173,26 +1173,26 @@ class NodeInfo:
 
 class DistributedDeployment:
     """Manages distributed multi-node deployments.
-    
+
     Provides:
     - Node registration and discovery
     - Leader election (simple)
     - Health aggregation across nodes
     - Load balancing configuration
-    
+
     Attributes:
         nodes: Registered nodes
         leader_id: Current leader node ID
         replication_factor: Number of replicas
     """
-    
+
     def __init__(
         self,
         replication_factor: int = 3,
         heartbeat_interval: float = 10.0,
     ):
         """Initialize distributed deployment.
-        
+
         Args:
             replication_factor: Number of replicas for HA
             heartbeat_interval: Seconds between heartbeats
@@ -1202,29 +1202,29 @@ class DistributedDeployment:
         self.replication_factor = replication_factor
         self.heartbeat_interval = heartbeat_interval
         self._node_health: Dict[str, HealthCheckResult] = {}
-    
+
     def register_node(self, node: NodeInfo) -> None:
         """Register a deployment node.
-        
+
         Args:
             node: Node information
         """
         self.nodes[node.node_id] = node
-        
+
         # Simple leader election: first node becomes leader
         if self.leader_id is None:
             self.leader_id = node.node_id
             node.role = "primary"
-    
+
     def unregister_node(self, node_id: str) -> None:
         """Unregister a node.
-        
+
         Args:
             node_id: Node to remove
         """
         if node_id in self.nodes:
             del self.nodes[node_id]
-            
+
             # Re-elect leader if needed
             if node_id == self.leader_id:
                 self.leader_id = None
@@ -1232,20 +1232,20 @@ class DistributedDeployment:
                     new_leader = next(iter(self.nodes.keys()))
                     self.leader_id = new_leader
                     self.nodes[new_leader].role = "primary"
-    
+
     def update_heartbeat(self, node_id: str) -> None:
         """Update node heartbeat.
-        
+
         Args:
             node_id: Node sending heartbeat
         """
         if node_id in self.nodes:
             self.nodes[node_id].last_heartbeat = datetime.utcnow().isoformat()
             self.nodes[node_id].status = "healthy"
-    
+
     def record_health(self, node_id: str, result: HealthCheckResult) -> None:
         """Record health check result for a node.
-        
+
         Args:
             node_id: Node ID
             result: Health check result
@@ -1253,10 +1253,10 @@ class DistributedDeployment:
         self._node_health[node_id] = result
         if node_id in self.nodes:
             self.nodes[node_id].status = result.status.value
-    
+
     def get_healthy_nodes(self) -> List[NodeInfo]:
         """Get list of healthy nodes.
-        
+
         Returns:
             List of healthy nodes
         """
@@ -1264,16 +1264,16 @@ class DistributedDeployment:
             node for node in self.nodes.values()
             if node.status == "healthy"
         ]
-    
+
     def get_cluster_status(self) -> Dict[str, Any]:
         """Get overall cluster status.
-        
+
         Returns:
             Cluster status dictionary
         """
         healthy_count = len(self.get_healthy_nodes())
         total_count = len(self.nodes)
-        
+
         return {
             'total_nodes': total_count,
             'healthy_nodes': healthy_count,
@@ -1291,18 +1291,18 @@ class DistributedDeployment:
                 for node_id, node in self.nodes.items()
             },
         }
-    
+
     def generate_k8s_statefulset(self, config: KubernetesConfig) -> Dict[str, Any]:
         """Generate Kubernetes StatefulSet for distributed deployment.
-        
+
         Args:
             config: Kubernetes configuration
-            
+
         Returns:
             StatefulSet manifest as dictionary
         """
         container_config = config.container
-        
+
         return {
             'apiVersion': 'apps/v1',
             'kind': 'StatefulSet',
@@ -1382,7 +1382,7 @@ class DistributedDeployment:
 @dataclass
 class StructuredLog:
     """Structured log entry for aggregation.
-    
+
     Attributes:
         timestamp: ISO timestamp
         level: Log level
@@ -1401,7 +1401,7 @@ class StructuredLog:
     span_id: str = ""
     labels: Dict[str, str] = field(default_factory=dict)
     fields: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_json(self) -> str:
         """Convert to JSON for Loki/ELK ingestion."""
         return json.dumps({
@@ -1414,7 +1414,7 @@ class StructuredLog:
             'labels': self.labels,
             **self.fields,
         })
-    
+
     def to_logfmt(self) -> str:
         """Convert to logfmt format."""
         parts = [
@@ -1436,26 +1436,26 @@ class StructuredLog:
 
 class LoggingAggregator:
     """Aggregates logs for external systems.
-    
+
     Provides:
     - Structured logging with trace context
     - Multiple output formats (JSON, logfmt)
     - Label-based filtering
     - Batch export support
-    
+
     Attributes:
         logs: Collected structured logs
         max_buffer_size: Maximum logs to buffer
         service_name: Service identifier
     """
-    
+
     def __init__(
         self,
         service_name: str = "cognitive-brain",
         max_buffer_size: int = 10000,
     ):
         """Initialize logging aggregator.
-        
+
         Args:
             service_name: Service name for logs
             max_buffer_size: Maximum buffer size
@@ -1464,10 +1464,10 @@ class LoggingAggregator:
         self.max_buffer_size = max_buffer_size
         self.logs: List[StructuredLog] = []
         self._trace_context: Dict[str, str] = {}
-    
+
     def set_trace_context(self, trace_id: str, span_id: str = "") -> None:
         """Set trace context for correlation.
-        
+
         Args:
             trace_id: Distributed trace ID
             span_id: Span ID within trace
@@ -1476,11 +1476,11 @@ class LoggingAggregator:
             'trace_id': trace_id,
             'span_id': span_id,
         }
-    
+
     def clear_trace_context(self) -> None:
         """Clear trace context."""
         self._trace_context = {}
-    
+
     def log(
         self,
         level: str,
@@ -1489,13 +1489,13 @@ class LoggingAggregator:
         **fields,
     ) -> StructuredLog:
         """Create a structured log entry.
-        
+
         Args:
             level: Log level (debug, info, warning, error, critical)
             message: Log message
             labels: Log labels for filtering
             **fields: Additional fields
-            
+
         Returns:
             Created log entry
         """
@@ -1509,41 +1509,41 @@ class LoggingAggregator:
             labels=labels or {},
             fields=fields,
         )
-        
+
         self.logs.append(entry)
-        
+
         # Trim buffer if needed
         if len(self.logs) > self.max_buffer_size:
             self.logs = self.logs[-self.max_buffer_size:]
-        
+
         return entry
-    
+
     def debug(self, message: str, **kwargs) -> StructuredLog:
         """Log debug message."""
         return self.log('debug', message, **kwargs)
-    
+
     def info(self, message: str, **kwargs) -> StructuredLog:
         """Log info message."""
         return self.log('info', message, **kwargs)
-    
+
     def warning(self, message: str, **kwargs) -> StructuredLog:
         """Log warning message."""
         return self.log('warning', message, **kwargs)
-    
+
     def error(self, message: str, **kwargs) -> StructuredLog:
         """Log error message."""
         return self.log('error', message, **kwargs)
-    
+
     def critical(self, message: str, **kwargs) -> StructuredLog:
         """Log critical message."""
         return self.log('critical', message, **kwargs)
-    
+
     def export_json(self, filter_labels: Optional[Dict[str, str]] = None) -> str:
         """Export logs as JSON array (for ELK/Loki).
-        
+
         Args:
             filter_labels: Optional label filter
-            
+
         Returns:
             JSON string of log entries
         """
@@ -1554,25 +1554,25 @@ class LoggingAggregator:
                 if all(log.labels.get(k) == v for k, v in filter_labels.items())
             ]
         return json.dumps([json.loads(log.to_json()) for log in logs], indent=2)
-    
+
     def export_logfmt(self) -> str:
         """Export logs in logfmt format.
-        
+
         Returns:
             Logfmt formatted logs
         """
         return '\n'.join(log.to_logfmt() for log in self.logs)
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get log statistics.
-        
+
         Returns:
             Statistics dictionary
         """
         level_counts: Dict[str, int] = {}
         for log in self.logs:
             level_counts[log.level] = level_counts.get(log.level, 0) + 1
-        
+
         return {
             'total_logs': len(self.logs),
             'levels': level_counts,
@@ -1588,21 +1588,21 @@ class LoggingAggregator:
 
 class PrometheusExporter:
     """Exports metrics in Prometheus format.
-    
+
     Provides:
     - Counter metrics with labels
     - Gauge metrics with labels
     - Histogram metrics (approximation)
     - Text format export
-    
+
     Attributes:
         prefix: Metric name prefix
         metrics: Collected metrics
     """
-    
+
     def __init__(self, prefix: str = "cognitive_brain"):
         """Initialize Prometheus exporter.
-        
+
         Args:
             prefix: Prefix for all metric names
         """
@@ -1612,10 +1612,10 @@ class PrometheusExporter:
         self.histograms: Dict[str, List[float]] = {}
         self._help_text: Dict[str, str] = {}
         self._type_text: Dict[str, str] = {}
-    
+
     def register_counter(self, name: str, help_text: str = "") -> None:
         """Register a counter metric.
-        
+
         Args:
             name: Metric name
             help_text: Help text for metric
@@ -1624,10 +1624,10 @@ class PrometheusExporter:
         self.counters[full_name] = {}
         self._help_text[full_name] = help_text or f"Counter: {name}"
         self._type_text[full_name] = "counter"
-    
+
     def register_gauge(self, name: str, help_text: str = "") -> None:
         """Register a gauge metric.
-        
+
         Args:
             name: Metric name
             help_text: Help text for metric
@@ -1636,10 +1636,10 @@ class PrometheusExporter:
         self.gauges[full_name] = {}
         self._help_text[full_name] = help_text or f"Gauge: {name}"
         self._type_text[full_name] = "gauge"
-    
+
     def register_histogram(self, name: str, help_text: str = "") -> None:
         """Register a histogram metric.
-        
+
         Args:
             name: Metric name
             help_text: Help text for metric
@@ -1648,17 +1648,17 @@ class PrometheusExporter:
         self.histograms[full_name] = []
         self._help_text[full_name] = help_text or f"Histogram: {name}"
         self._type_text[full_name] = "histogram"
-    
+
     def _make_labels(self, labels: Dict[str, str]) -> str:
         """Create Prometheus label string."""
         if not labels:
             return ""
         label_pairs = [f'{k}="{v}"' for k, v in sorted(labels.items())]
         return '{' + ','.join(label_pairs) + '}'
-    
+
     def inc_counter(self, name: str, value: float = 1.0, labels: Optional[Dict[str, str]] = None) -> None:
         """Increment a counter.
-        
+
         Args:
             name: Counter name
             value: Increment value
@@ -1667,13 +1667,13 @@ class PrometheusExporter:
         full_name = f"{self.prefix}_{name}"
         if full_name not in self.counters:
             self.register_counter(name)
-        
+
         label_key = self._make_labels(labels or {})
         self.counters[full_name][label_key] = self.counters[full_name].get(label_key, 0) + value
-    
+
     def set_gauge(self, name: str, value: float, labels: Optional[Dict[str, str]] = None) -> None:
         """Set a gauge value.
-        
+
         Args:
             name: Gauge name
             value: Gauge value
@@ -1682,13 +1682,13 @@ class PrometheusExporter:
         full_name = f"{self.prefix}_{name}"
         if full_name not in self.gauges:
             self.register_gauge(name)
-        
+
         label_key = self._make_labels(labels or {})
         self.gauges[full_name][label_key] = value
-    
+
     def observe_histogram(self, name: str, value: float) -> None:
         """Observe a histogram value.
-        
+
         Args:
             name: Histogram name
             value: Observed value
@@ -1696,54 +1696,54 @@ class PrometheusExporter:
         full_name = f"{self.prefix}_{name}"
         if full_name not in self.histograms:
             self.register_histogram(name)
-        
+
         self.histograms[full_name].append(value)
         # Keep limited history
         if len(self.histograms[full_name]) > 10000:
             self.histograms[full_name] = self.histograms[full_name][-10000:]
-    
+
     def export(self) -> str:
         """Export all metrics in Prometheus text format.
-        
+
         Returns:
             Prometheus text format string
         """
         lines = []
-        
+
         # Export counters
         for name, values in self.counters.items():
             lines.append(f"# HELP {name} {self._help_text.get(name, '')}")
             lines.append(f"# TYPE {name} counter")
             for labels, value in values.items():
                 lines.append(f"{name}{labels} {value}")
-        
+
         # Export gauges
         for name, values in self.gauges.items():
             lines.append(f"# HELP {name} {self._help_text.get(name, '')}")
             lines.append(f"# TYPE {name} gauge")
             for labels, value in values.items():
                 lines.append(f"{name}{labels} {value}")
-        
+
         # Export histograms (simplified - just count, sum, buckets)
         for name, values in self.histograms.items():
             if not values:
                 continue
-            
+
             lines.append(f"# HELP {name} {self._help_text.get(name, '')}")
             lines.append(f"# TYPE {name} histogram")
-            
+
             # Calculate buckets
             sorted_values = sorted(values)
             buckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
-            
+
             for bucket in buckets:
                 count = sum(1 for v in sorted_values if v <= bucket)
                 lines.append(f'{name}_bucket{{le="{bucket}"}} {count}')
-            
+
             lines.append(f'{name}_bucket{{le="+Inf"}} {len(values)}')
             lines.append(f'{name}_sum {sum(values)}')
             lines.append(f'{name}_count {len(values)}')
-        
+
         return '\n'.join(lines)
 
 
@@ -1755,7 +1755,7 @@ class PrometheusExporter:
 @dataclass
 class HardeningItem:
     """Production hardening checklist item.
-    
+
     Attributes:
         category: Item category
         name: Item name
@@ -1776,24 +1776,24 @@ class HardeningItem:
 
 class ProductionHardeningChecklist:
     """Production hardening verification checklist.
-    
+
     Verifies production readiness across categories:
     - Security
     - Performance
     - Reliability
     - Observability
     - Configuration
-    
+
     Attributes:
         items: Checklist items
         results: Check results
     """
-    
+
     def __init__(self):
         """Initialize hardening checklist."""
         self.items: List[HardeningItem] = []
         self._initialize_default_items()
-    
+
     def _initialize_default_items(self) -> None:
         """Initialize default checklist items."""
         # Security items
@@ -1815,7 +1815,7 @@ class ProductionHardeningChecklist:
             description="Input validation enabled",
             severity="critical",
         ))
-        
+
         # Performance items
         self.items.append(HardeningItem(
             category="performance",
@@ -1829,7 +1829,7 @@ class ProductionHardeningChecklist:
             description="Connection pooling enabled",
             severity="medium",
         ))
-        
+
         # Reliability items
         self.items.append(HardeningItem(
             category="reliability",
@@ -1849,7 +1849,7 @@ class ProductionHardeningChecklist:
             description="Circuit breakers for external calls",
             severity="medium",
         ))
-        
+
         # Observability items
         self.items.append(HardeningItem(
             category="observability",
@@ -1869,7 +1869,7 @@ class ProductionHardeningChecklist:
             description="Distributed trace correlation",
             severity="medium",
         ))
-        
+
         # Configuration items
         self.items.append(HardeningItem(
             category="configuration",
@@ -1883,18 +1883,18 @@ class ProductionHardeningChecklist:
             description="Secrets properly managed",
             severity="critical",
         ))
-    
+
     def add_item(self, item: HardeningItem) -> None:
         """Add a hardening item.
-        
+
         Args:
             item: Item to add
         """
         self.items.append(item)
-    
+
     def check_item(self, name: str, passed: bool, message: str = "") -> None:
         """Mark an item as checked.
-        
+
         Args:
             name: Item name
             passed: Whether check passed
@@ -1905,10 +1905,10 @@ class ProductionHardeningChecklist:
                 item.passed = passed
                 item.message = message
                 break
-    
+
     def run_all_checks(self) -> Dict[str, Any]:
         """Run all checks with functions.
-        
+
         Returns:
             Results dictionary
         """
@@ -1921,12 +1921,12 @@ class ProductionHardeningChecklist:
                 except Exception as e:
                     item.passed = False
                     item.message = f"Check failed: {str(e)}"
-        
+
         return self.get_summary()
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Get checklist summary.
-        
+
         Returns:
             Summary dictionary
         """
@@ -1941,13 +1941,13 @@ class ProductionHardeningChecklist:
                 'passed': item.passed,
                 'message': item.message,
             })
-        
+
         passed = sum(1 for item in self.items if item.passed)
         failed_critical = sum(
             1 for item in self.items
             if not item.passed and item.severity == 'critical'
         )
-        
+
         return {
             'total_items': len(self.items),
             'passed': passed,
@@ -1956,20 +1956,20 @@ class ProductionHardeningChecklist:
             'production_ready': failed_critical == 0,
             'by_category': by_category,
         }
-    
+
     def to_markdown(self) -> str:
         """Export checklist as Markdown.
-        
+
         Returns:
             Markdown formatted checklist
         """
         lines = ["# Production Hardening Checklist", ""]
         summary = self.get_summary()
-        
+
         lines.append(f"**Status:** {'✅ Production Ready' if summary['production_ready'] else '❌ Not Ready'}")
         lines.append(f"**Passed:** {summary['passed']}/{summary['total_items']}")
         lines.append("")
-        
+
         for category, items in summary['by_category'].items():
             lines.append(f"## {category.title()}")
             lines.append("")
@@ -1980,5 +1980,5 @@ class ProductionHardeningChecklist:
                 if item['message']:
                     lines.append(f"  - {item['message']}")
             lines.append("")
-        
+
         return '\n'.join(lines)

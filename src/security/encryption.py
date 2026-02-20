@@ -14,13 +14,12 @@ Notes:
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import base64
+import logging
 import os
 from typing import cast
+
+logger = logging.getLogger(__name__)
 
 try:
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM

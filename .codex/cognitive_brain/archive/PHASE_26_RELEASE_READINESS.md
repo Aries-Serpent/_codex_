@@ -417,19 +417,11 @@ Phase 30: ⏳ FUTURE (Final gap filling)
 ## 🔗 Related Documents
 
 ### Release Documentation
-- [PyPI Publishing Workflow](../../.github/workflows/pypi-publish.yml)
-- [GitLab CI/CD Integration](../release/GITLAB_CI_CD_INTEGRATION.md)
-- [ActiveState OIDC Integration](../release/ACTIVESTATE_OIDC_INTEGRATION.md)
-- [Release Gate Agent](../../.github/agents/release-gate-agent/README.md)
 
 ### Cognitive Brain Status
-- [Phase 25 Complete](PHASE_25_COMPLETE_PRODUCTION_READY.md)
-- [Path to 100%](CONTINUATION_PROMPT_PHASES_26_30_TO_100_PERCENT.md)
 
 ### Repository Documentation
-- [CHANGELOG.md](../../CHANGELOG.md)
 - [pyproject.toml](../../pyproject.toml)
-- [README.md](../../README.md)
 
 ---
 

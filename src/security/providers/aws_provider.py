@@ -37,13 +37,13 @@ except ImportError:
 
 class AWSSecretsManagerProvider(SecretProvider):
     """AWS Secrets Manager provider.
-    
+
     Supports:
     - Secret creation and rotation
     - Automatic rotation with Lambda
     - Version management
     - Tag-based organization
-    
+
     Example:
         >>> config = ProviderConfig(
         ...     provider_type=ProviderType.AWS_SECRETS_MANAGER,
@@ -57,10 +57,10 @@ class AWSSecretsManagerProvider(SecretProvider):
 
     def __init__(self, config: ProviderConfig):
         """Initialize AWS Secrets Manager provider.
-        
+
         Args:
             config: Provider configuration with AWS credentials
-            
+
         Raises:
             ProviderConfigError: If boto3 not installed or config invalid
         """
@@ -97,16 +97,16 @@ class AWSSecretsManagerProvider(SecretProvider):
         **kwargs: Any
     ) -> RotationResult:
         """Rotate AWS secret.
-        
+
         Args:
             secret_id: Secret name or ARN
             **kwargs: Optional parameters:
                 - rotation_lambda_arn: Lambda function for rotation
                 - rotation_rules: Rotation schedule rules
-                
+
         Returns:
             RotationResult with rotation details
-            
+
         Raises:
             RotationError: If rotation fails
         """
@@ -153,14 +153,14 @@ class AWSSecretsManagerProvider(SecretProvider):
         secret_value: Optional[str] = None
     ) -> bool:
         """Validate AWS secret exists and is accessible.
-        
+
         Args:
             secret_id: Secret name or ARN
             secret_value: Not used (secret stored in AWS)
-            
+
         Returns:
             True if secret is valid
-            
+
         Raises:
             ValidationError: If validation fails
         """
@@ -179,10 +179,10 @@ class AWSSecretsManagerProvider(SecretProvider):
 
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get AWS secret metadata.
-        
+
         Args:
             secret_id: Secret name or ARN
-            
+
         Returns:
             SecretMetadata with secret details
         """
@@ -222,12 +222,12 @@ class AWSSecretsManagerProvider(SecretProvider):
 
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get secret expiration.
-        
+
         AWS Secrets Manager doesn't have expiration concept.
-        
+
         Args:
             secret_id: Secret name or ARN
-            
+
         Returns:
             None (no expiration)
         """
@@ -235,13 +235,13 @@ class AWSSecretsManagerProvider(SecretProvider):
 
     def get_secret_value(self, secret_id: str) -> str:
         """Get secret value from AWS.
-        
+
         Args:
             secret_id: Secret name or ARN
-            
+
         Returns:
             Secret value string
-            
+
         Raises:
             ValidationError: If secret not found
         """
@@ -266,13 +266,13 @@ class AWSSecretsManagerProvider(SecretProvider):
         tags: Optional[Dict[str, str]] = None
     ) -> RotationResult:
         """Create new AWS secret.
-        
+
         Args:
             name: Secret name
             secret_value: Secret value (string or JSON)
             description: Optional description
             tags: Optional tags
-            
+
         Returns:
             RotationResult with creation details
         """
@@ -316,11 +316,11 @@ class AWSSecretsManagerProvider(SecretProvider):
         recovery_window_days: int = 30
     ) -> bool:
         """Delete AWS secret (with recovery window).
-        
+
         Args:
             secret_id: Secret name or ARN
             recovery_window_days: Days before permanent deletion
-            
+
         Returns:
             True if deleted successfully
         """
@@ -340,10 +340,10 @@ class AWSSecretsManagerProvider(SecretProvider):
         filter_tags: Optional[Dict[str, str]] = None
     ) -> List[SecretMetadata]:
         """List all secrets in AWS Secrets Manager.
-        
+
         Args:
             filter_tags: Optional tag filters
-            
+
         Returns:
             List of SecretMetadata
         """

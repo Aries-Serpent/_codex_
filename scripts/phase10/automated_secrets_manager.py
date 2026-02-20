@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/phase10/automated_secrets_manager.py [options]
-    
+
     Examples:
     $ python scripts/phase10/automated_secrets_manager.py --help
 
@@ -47,12 +47,12 @@ SECURITY WARNING: This script handles sensitive credentials.
 Never log secret values or names in clear text. Use redaction utilities.
 """
 
-import os
-import sys
 import base64
-import subprocess
-from typing import Dict, List, Optional, Tuple
 import logging
+import os
+import subprocess
+import sys
+from typing import Dict, List, Optional, Tuple
 
 logging.basicConfig(
     level=logging.INFO,
@@ -81,7 +81,7 @@ class GitHubSecretsManager:
     Automated secrets management for GitHub repositories.
     Supports multiple injection methods: API, CLI, MCP.
     """
-    
+
     def __init__(
         self,
         owner: str = "Aries-Serpent",
@@ -90,7 +90,7 @@ class GitHubSecretsManager:
     ):
         """
         Initialize secrets manager.
-        
+
         Args:
             owner: Repository owner (default: Aries-Serpent)
             repo: Repository name (default: _codex_)
@@ -101,18 +101,18 @@ class GitHubSecretsManager:
         self.token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
         # nosemgrep: url-substring-check - trusted GitHub API base for automation
         self.api_base = "https://api.github.com"
-        
+
         if not self.token:
             logger.error("No GitHub token found. Set GITHUB_TOKEN or GH_TOKEN")
             logger.error("Token must have 'repo' and 'workflow' scopes")
-    
+
     def generate_secure_key(self, length: int = 32) -> str:
         """
         Generate cryptographically secure random key.
-        
+
         Args:
             length: Key length in bytes (default: 32 for 256-bit)
-            
+
         Returns:
             Base64-encoded secure random key
         """
@@ -133,24 +133,24 @@ class GitHubSecretsManager:
         except FileNotFoundError:
             logger.error("❌ OpenSSL not found. Install openssl.")
             raise
-    
+
     def get_public_key_api(self) -> Tuple[str, str]:
         """
         Get repository public key for secret encryption (API method).
-        
+
         Returns:
             Tuple of (key_id, public_key)
         """
         if not REQUESTS_AVAILABLE:
             raise RuntimeError("requests library required for API method")
-        
+
         url = f"{self.api_base}/repos/{self.owner}/{self.repo}/actions/secrets/public-key"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28"
         }
-        
+
         try:
             response = requests.get(url, headers=headers, timeout=30)
             response.raise_for_status()
@@ -160,21 +160,21 @@ class GitHubSecretsManager:
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Failed to get public key: {e}")
             raise
-    
+
     def encrypt_secret_value(self, public_key: str, secret_value: str) -> str:
         """
         Encrypt secret value using repository public key.
-        
+
         Args:
             public_key: Repository public key (base64)
             secret_value: Secret value to encrypt
-            
+
         Returns:
             Base64-encoded encrypted secret
         """
         if not NACL_AVAILABLE:
             raise RuntimeError("PyNaCl library required for encryption. Install: pip install PyNaCl")
-        
+
         try:
             public_key_bytes = base64.b64decode(public_key)
             sealed_box = public.SealedBox(public.PublicKey(public_key_bytes))
@@ -185,7 +185,7 @@ class GitHubSecretsManager:
         except Exception as e:
             logger.error(f"❌ Failed to encrypt secret: {e}")
             raise
-    
+
     def set_secret_api(
         self,
         secret_name: str,
@@ -194,28 +194,28 @@ class GitHubSecretsManager:
     ) -> bool:
         """
         Set repository secret via GitHub API.
-        
+
         Args:
             secret_name: Name of the secret (e.g., CODEX_MASTER_KEY)
             secret_value: Value to store
             overwrite: Whether to overwrite existing secret (default: True)
-            
+
         Returns:
             True if successful, False otherwise
         """
         if not REQUESTS_AVAILABLE:
             raise RuntimeError("requests library required for API method")
-        
+
         if not NACL_AVAILABLE:
             raise RuntimeError("PyNaCl library required for encryption")
-        
+
         try:
             # Get public key
             key_id, public_key = self.get_public_key_api()
-            
+
             # Encrypt secret
             encrypted_value = self.encrypt_secret_value(public_key, secret_value)
-            
+
             # Set secret
             url = f"{self.api_base}/repos/{self.owner}/{self.repo}/actions/secrets/{secret_name}"
             headers = {
@@ -227,21 +227,21 @@ class GitHubSecretsManager:
                 "encrypted_value": encrypted_value,
                 "key_id": key_id
             }
-            
+
             response = requests.put(url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
-            
+
             # Security: Don't log secret names - CodeQL alert #3329
-            logger.info(f"✅ Secret set successfully via API")
+            logger.info("✅ Secret set successfully via API")
             return True
-            
+
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ Failed to set secret via API: {e}")
             return False
         except Exception as e:
             logger.error(f"❌ Unexpected error: {e}")
             return False
-    
+
     def set_secret_cli(
         self,
         secret_name: str,
@@ -250,12 +250,12 @@ class GitHubSecretsManager:
     ) -> bool:
         """
         Set repository secret via gh CLI.
-        
+
         Args:
             secret_name: Name of the secret
             secret_value: Value to store
             overwrite: Whether to overwrite (CLI always overwrites)
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -266,7 +266,7 @@ class GitHubSecretsManager:
                 capture_output=True,
                 check=True
             )
-            
+
             # Set secret via gh CLI
             process = subprocess.Popen(
                 [
@@ -278,31 +278,31 @@ class GitHubSecretsManager:
                 stderr=subprocess.PIPE,
                 text=True
             )
-            
+
             stdout, stderr = process.communicate(input=secret_value)
-            
+
             if process.returncode == 0:
                 # Security: Don't log secret names - CodeQL alert #3330
-                logger.info(f"✅ Secret set successfully via gh CLI")
+                logger.info("✅ Secret set successfully via gh CLI")
                 return True
             else:
                 logger.error(f"❌ Failed to set secret via gh CLI: {stderr}")
                 return False
-                
+
         except FileNotFoundError:
             logger.error("❌ gh CLI not found. Install from: https://cli.github.com/")
             return False
         except subprocess.CalledProcessError as e:
             logger.error(f"❌ gh CLI error: {e}")
             return False
-    
+
     def verify_secret_exists(self, secret_name: str) -> bool:
         """
         Verify that a secret exists in the repository.
-        
+
         Args:
             secret_name: Name of the secret to check
-            
+
         Returns:
             True if secret exists, False otherwise
         """
@@ -318,18 +318,18 @@ class GitHubSecretsManager:
                 response = requests.get(url, headers=headers, timeout=30)
                 if response.status_code == 200:
                     # Security: Don't log secret names - CodeQL alert #3331
-                    logger.info(f"✅ Secret exists")
+                    logger.info("✅ Secret exists")
                     return True
                 elif response.status_code == 404:
                     # Security: Don't log secret names - CodeQL alert #3332
-                    logger.info(f"ℹ️  Secret does not exist")
+                    logger.info("ℹ️  Secret does not exist")
                     return False
                 else:
                     logger.warning(f"⚠️  Unexpected status code: {response.status_code}")
                     return False
             except Exception as e:
                 logger.warning(f"⚠️  API verification failed: {e}")
-        
+
         # Fallback to gh CLI
         try:
             result = subprocess.run(
@@ -341,19 +341,19 @@ class GitHubSecretsManager:
             exists = secret_name in result.stdout
             if exists:
                 # Security: Don't log secret names - CodeQL alert #3333
-                logger.info(f"✅ Secret exists (verified via CLI)")
+                logger.info("✅ Secret exists (verified via CLI)")
             else:
                 # Security: Don't log secret names - CodeQL alert #3334
-                logger.info(f"ℹ️  Secret does not exist (verified via CLI)")
+                logger.info("ℹ️  Secret does not exist (verified via CLI)")
             return exists
         except Exception as e:
             logger.warning(f"⚠️  CLI verification failed: {e}")
             return False
-    
+
     def list_secrets(self) -> List[str]:
         """
         List all secrets in the repository.
-        
+
         Returns:
             List of secret names
         """
@@ -374,7 +374,7 @@ class GitHubSecretsManager:
                 return secrets
             except Exception as e:
                 logger.warning(f"⚠️  API list failed: {e}")
-        
+
         # Fallback to gh CLI
         try:
             result = subprocess.run(
@@ -393,41 +393,41 @@ class GitHubSecretsManager:
         except Exception as e:
             logger.error(f"❌ Failed to list secrets: {e}")
             return []
-    
+
     def setup_phase10_secrets(self, force: bool = False) -> Dict[str, bool]:
         """
         Automated setup of all Phase 10 required secrets.
-        
+
         Args:
             force: If True, regenerate and overwrite existing secrets
-            
+
         Returns:
             Dict mapping secret names to success status
         """
         logger.info("🚀 Starting Phase 10 secrets setup")
         logger.info("=" * 60)
-        
+
         results = {}
-        
+
         # 1. CODEX_MASTER_KEY
         secret_name = "CODEX_MASTER_KEY"
         if not force and self.verify_secret_exists(secret_name):
             # Security: Don't log secret names - CodeQL alert #3335
-            logger.info(f"ℹ️  Secret already exists (use --force to regenerate)")
+            logger.info("ℹ️  Secret already exists (use --force to regenerate)")
             results[secret_name] = "skipped"
         else:
             # Security: Don't log secret names - CodeQL alert #3336
-            logger.info(f"🔑 Generating secret...")
+            logger.info("🔑 Generating secret...")
             key = self.generate_secure_key(32)  # 256-bit
-            
+
             # Try API first, fallback to CLI
             success = self.set_secret_api(secret_name, key)
             if not success:
                 logger.info("Falling back to gh CLI...")
                 success = self.set_secret_cli(secret_name, key)
-            
+
             results[secret_name] = success
-        
+
         # Note: Google Cloud secrets require user-provided values
         # These cannot be auto-generated
         google_secrets = [
@@ -435,18 +435,18 @@ class GitHubSecretsManager:
             "GOOGLE_CLIENT_ID",
             "GOOGLE_CLIENT_SECRET"
         ]
-        
+
         for secret_name in google_secrets:
             if self.verify_secret_exists(secret_name):
                 # Security: Don't log secret names - CodeQL alert #3337
-                logger.info(f"✅ Secret already configured")
+                logger.info("✅ Secret already configured")
                 results[secret_name] = "exists"
             else:
                 # Security: Don't log secret names - CodeQL alert #3338
-                logger.warning(f"⚠️  Secret requires manual configuration")
-                logger.warning(f"    See: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md")
+                logger.warning("⚠️  Secret requires manual configuration")
+                logger.warning("    See: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md")
                 results[secret_name] = "manual_required"
-        
+
         # Summary
         logger.info("")
         logger.info("📊 Phase 10 Secrets Setup Summary")
@@ -460,14 +460,14 @@ class GitHubSecretsManager:
                 logger.warning(f"⚠️  {name}: Manual setup required")
             else:
                 logger.error(f"❌ {name}: Failed")
-        
+
         return results
 
 
 def main():
     """CLI entry point for automated secrets management."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="Automated GitHub Secrets Manager for Copilot Agents"
     )
@@ -512,18 +512,18 @@ def main():
         default=32,
         help="Key length in bytes for generate-key (default: 32)"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Initialize manager
     manager = GitHubSecretsManager(owner=args.owner, repo=args.repo)
-    
+
     if not manager.token:
         logger.error("❌ No GitHub token found")
         logger.error("Set GITHUB_TOKEN or GH_TOKEN environment variable")
         logger.error("Token must have 'repo' and 'workflow' scopes")
         return 1
-    
+
     # Execute action
     if args.action == "setup":
         results = manager.setup_phase10_secrets(force=args.force)
@@ -533,7 +533,7 @@ def main():
             logger.error(f"❌ Failed to configure: {', '.join(failed)}")
             return 1
         return 0
-    
+
     elif args.action == "generate-key":
         key = manager.generate_secure_key(args.key_length)
         print(f"\n🔑 Generated Key ({args.key_length*8}-bit):")
@@ -543,7 +543,7 @@ def main():
         print("\n⚠️  Store securely immediately!")
         if args.name:
             # Security: Don't log secret names
-            logger.info(f"Setting secret...")
+            logger.info("Setting secret...")
             if args.method in ["api", "auto"]:
                 success = manager.set_secret_api(args.name, key)
                 if not success and args.method == "auto":
@@ -553,12 +553,12 @@ def main():
                 success = manager.set_secret_cli(args.name, key)
             return 0 if success else 1
         return 0
-    
+
     elif args.action == "set":
         if not args.name or not args.value:
             logger.error("❌ --name and --value required for set action")
             return 1
-        
+
         if args.method in ["api", "auto"]:
             success = manager.set_secret_api(args.name, args.value)
             if not success and args.method == "auto":
@@ -566,16 +566,16 @@ def main():
                 success = manager.set_secret_cli(args.name, args.value)
         else:
             success = manager.set_secret_cli(args.name, args.value)
-        
+
         return 0 if success else 1
-    
+
     elif args.action == "verify":
         if not args.name:
             logger.error("❌ --name required for verify action")
             return 1
         exists = manager.verify_secret_exists(args.name)
         return 0 if exists else 1
-    
+
     elif args.action == "list":
         secrets = manager.list_secrets()
         print(f"\n📋 Secrets in {args.owner}/{args.repo}:")
@@ -585,7 +585,7 @@ def main():
             print(f"  {i}. [Secret configured]")
         print(f"\nTotal: {len(secrets)} secrets")
         return 0
-    
+
     return 0
 
 

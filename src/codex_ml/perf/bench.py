@@ -22,14 +22,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import importlib
-import json
-import os
-import statistics as stats
-import time
-from dataclasses import dataclass
-from typing import Any, Callable
+import argparse  # noqa: E402
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import statistics as stats  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from typing import Any, Callable  # noqa: E402
 
 
 def _maybe_cuda_sync() -> None:

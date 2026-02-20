@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/dependency_analyzer.py [options]
-    
+
     Examples:
     $ python scripts/dependency_analyzer.py --help
 

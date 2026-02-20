@@ -31,9 +31,8 @@ except Exception:  # pragma: no cover - numpy might be unavailable
     np = None  # type: ignore
 
 try:  # Optional dependency for seeding and evaluation tests
-    from torch.utils.data import DataLoader
-
     import torch
+    from torch.utils.data import DataLoader
 except Exception:  # pragma: no cover - torch might be unavailable
     torch = None  # type: ignore
     DataLoader = None  # type: ignore

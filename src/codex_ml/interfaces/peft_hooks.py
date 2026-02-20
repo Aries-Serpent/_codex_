@@ -6,8 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from typing import Any
+from dataclasses import dataclass  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, PeftModel, TaskType, get_peft_model

@@ -6,16 +6,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-from collections.abc import Mapping as MappingABC
-from collections.abc import Sequence as SequenceABC
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Mapping, Optional
+import json  # noqa: E402
+import os  # noqa: E402
+from collections.abc import Mapping as MappingABC  # noqa: E402
+from collections.abc import Sequence as SequenceABC  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Mapping, Optional  # noqa: E402
 
-from codex_ml.logging.ndjson_logger import is_legacy_mode
-from codex_ml.tracking.writers import BaseWriter, NdjsonWriter
+from codex_ml.logging.ndjson_logger import is_legacy_mode  # noqa: E402
+from codex_ml.tracking.writers import BaseWriter, NdjsonWriter  # noqa: E402
 
 PARAMS_SCHEMA_URI = "https://codexml.ai/schemas/run_params.schema.json"
 METRICS_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"

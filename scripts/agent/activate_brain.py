@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/agent/activate_brain.py [options]
-    
+
     Examples:
     $ python scripts/agent/activate_brain.py --help
 

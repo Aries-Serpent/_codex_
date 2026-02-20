@@ -25,7 +25,7 @@ class AuditLogger:
 
     def __init__(self, path: Path | None = None, log_dir: Path | None = None):
         """Initialize audit logger with path or log_dir.
-        
+
         Args:
             path: Direct path to log file (takes precedence)
             log_dir: Directory for audit logs (creates audit.log inside)
@@ -39,7 +39,7 @@ class AuditLogger:
 
     def log_event(self, event_type: str, resource: str, action: str, user: str) -> None:
         """Log a security audit event.
-        
+
         Args:
             event_type: Type of security event
             resource: Resource being accessed
@@ -112,11 +112,11 @@ def log_audit_event(
     log_dir: Path | None = None,
 ) -> None:
     """Helper function to log a structured audit event to file-based hash chain.
-    
+
     This function logs security-relevant events to a file-based audit trail with
     hash chain integrity verification. For simple logger-based event logging,
     use src.security.core.log_security_event instead.
-    
+
     Args:
         event_type: Type of security event (e.g., 'authentication')
         user: User performing the action

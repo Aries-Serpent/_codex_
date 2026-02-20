@@ -143,7 +143,7 @@ done
 **Issue 2: Anchor Links**
 ```bash
 # Find all anchor links
-grep -r "#" docs/ --include="*.md" | grep "\[.*\](#.*)"
+grep -r "#" docs/ --include="*.md" | grep "\<!-- BROKEN ANCHOR: [.*\](#.*) -->"
 
 # Validate anchors exist
 # (may need custom script)

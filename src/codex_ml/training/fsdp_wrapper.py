@@ -289,7 +289,8 @@ class FSDPTrainer:
         if not transformer_layer_cls:
             return
 
-        check_fn = lambda submodule: isinstance(submodule, tuple(transformer_layer_cls))
+        def check_fn(submodule):
+            return isinstance(submodule, tuple(transformer_layer_cls))
 
         apply_activation_checkpointing(
             model,

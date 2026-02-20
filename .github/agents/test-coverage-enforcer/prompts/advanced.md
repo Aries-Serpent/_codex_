@@ -1068,7 +1068,7 @@ advanced:
 
 **For more information:**
 - [Main Prompts](main.md)
-- [Usage Examples](examples.md)
+- [Usage Examples](../../../../docs/guides/examples.md)
 - [README](../README.md)
 - [CHANGELOG](../CHANGELOG.md)
 

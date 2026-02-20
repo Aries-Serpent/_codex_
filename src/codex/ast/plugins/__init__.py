@@ -26,7 +26,7 @@ class PluginMetadata:
 class ASTPlugin(ABC):
     """
     Base class for AST analysis plugins.
-    
+
     Implement this interface to add support for new languages
     or custom analysis capabilities.
     """
@@ -42,7 +42,7 @@ class ASTPlugin(ABC):
     def language(self) -> str:
         """
         Return primary language name this plugin handles.
-        
+
         Examples: 'python', 'javascript', 'rust'
         """
         pass
@@ -52,7 +52,7 @@ class ASTPlugin(ABC):
     def file_extensions(self) -> list[str]:
         """
         Return list of file extensions this plugin handles.
-        
+
         Examples: ['.py', '.pyw'], ['.js', '.jsx']
         """
         pass
@@ -61,10 +61,10 @@ class ASTPlugin(ABC):
     def can_parse(self, file_path: str) -> bool:
         """
         Check if this plugin can parse the given file.
-        
+
         Args:
             file_path: Path to file to check
-            
+
         Returns:
             True if plugin can handle this file
         """
@@ -74,14 +74,14 @@ class ASTPlugin(ABC):
     def parse(self, code: str, file_path: str) -> StandardizedASTNode:
         """
         Parse code and return standardized AST node.
-        
+
         Args:
             code: Source code to parse
             file_path: Path to source file
-            
+
         Returns:
             StandardizedASTNode representing the AST
-            
+
         Raises:
             SyntaxError: If code cannot be parsed
         """
@@ -90,12 +90,12 @@ class ASTPlugin(ABC):
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Perform custom analysis on AST node.
-        
+
         Optional hook for plugins to provide additional analysis.
-        
+
         Args:
             node: AST node to analyze
-            
+
         Returns:
             Dictionary of analysis results
         """
@@ -104,7 +104,7 @@ class ASTPlugin(ABC):
     def validate(self) -> bool:
         """
         Validate plugin is properly configured.
-        
+
         Returns:
             True if plugin is ready to use
         """
@@ -114,7 +114,7 @@ class ASTPlugin(ABC):
 class AnalysisPlugin(ABC):
     """
     Base class for custom analysis plugins.
-    
+
     Use this for plugins that analyze existing AST nodes
     rather than parsing new languages.
     """
@@ -129,10 +129,10 @@ class AnalysisPlugin(ABC):
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
         Analyze an AST node.
-        
+
         Args:
             node: Node to analyze
-            
+
         Returns:
             Analysis results
         """

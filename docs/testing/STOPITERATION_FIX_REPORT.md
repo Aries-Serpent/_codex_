@@ -203,7 +203,7 @@ pytest tests/training/test_train_loop_coverage.py -v
 
 ## References
 
-- **CI Logs**: https://github.com/Aries-Serpent/_codex_/actions/runs/21792821999/job/62875310963
+- **CI Logs**: https://github.com/Aries-Serpent/_codex_/actions/runs/21792821999 <!-- Note: Logs expire after 90 days -->/job/62875310963
 - **PEP 479**: https://www.python.org/dev/peps/pep-0479/
 - **Python 3.12 Release Notes**: https://docs.python.org/3/whatsnew/3.12.html
 - **Pytest Skip Documentation**: https://docs.pytest.org/en/stable/how-to/skipping.html

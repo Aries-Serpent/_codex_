@@ -31,7 +31,7 @@ AGENT_INTERFACE_TEMPLATE = """
     <meta name="agent-version" content="chatgpt-5.1">
     <meta name="pipeline-version" content="{version}">
     <title>🤖 Agent Control Interface - {repo_name}</title>
-    
+
     <!-- Agent-readable metadata -->
     <script type="application/ld+json">
     {{
@@ -56,7 +56,7 @@ AGENT_INTERFACE_TEMPLATE = """
         ]
     }}
     </script>
-    
+
     <style>
         :root {{
             --bg-primary: #0f1419;
@@ -73,9 +73,9 @@ AGENT_INTERFACE_TEMPLATE = """
             --border: #38444d;
             --hover: #2c3640;
         }}
-        
+
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        
+
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg-primary);
@@ -83,7 +83,7 @@ AGENT_INTERFACE_TEMPLATE = """
             line-height: 1.5;
             min-height: 100vh;
         }}
-        
+
         /* Agent Instructions Banner */
         .agent-banner {{
             background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent) 100%);
@@ -99,14 +99,14 @@ AGENT_INTERFACE_TEMPLATE = """
             opacity: 0.9;
             font-size: 0.95rem;
         }}
-        
+
         /* Main Container */
         .container {{
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }}
-        
+
         /* Agent Instructions Section */
         .agent-instructions {{
             background: var(--bg-card);
@@ -130,7 +130,7 @@ AGENT_INTERFACE_TEMPLATE = """
             font-size: 0.9rem;
             line-height: 1.6;
         }}
-        
+
         /* Action Grid */
         .action-grid {{
             display: grid;
@@ -138,7 +138,7 @@ AGENT_INTERFACE_TEMPLATE = """
             gap: 20px;
             margin-bottom: 24px;
         }}
-        
+
         /* Action Card */
         .action-card {{
             background: var(--bg-card);
@@ -152,7 +152,7 @@ AGENT_INTERFACE_TEMPLATE = """
         .action-card[data-priority="medium"] {{
             border-color: var(--accent-orange);
         }}
-        
+
         .card-header {{
             padding: 16px 20px;
             background: var(--bg-secondary);
@@ -178,7 +178,7 @@ AGENT_INTERFACE_TEMPLATE = """
         .badge-primary {{ background: var(--accent); }}
         .badge-success {{ background: var(--accent-green); }}
         .badge-warning {{ background: var(--accent-orange); }}
-        
+
         .card-body {{
             padding: 20px;
         }}
@@ -186,7 +186,7 @@ AGENT_INTERFACE_TEMPLATE = """
             color: var(--text-secondary);
             margin-bottom: 16px;
         }}
-        
+
         /* Form Controls */
         .form-group {{
             margin-bottom: 16px;
@@ -213,7 +213,7 @@ AGENT_INTERFACE_TEMPLATE = """
             outline: none;
             border-color: var(--accent);
         }}
-        
+
         /* Checkbox Group */
         .checkbox-group {{
             display: grid;
@@ -238,7 +238,7 @@ AGENT_INTERFACE_TEMPLATE = """
             height: 18px;
             accent-color: var(--accent);
         }}
-        
+
         /* Action Buttons */
         .action-btn {{
             display: flex;
@@ -283,7 +283,7 @@ AGENT_INTERFACE_TEMPLATE = """
         .action-btn-secondary:hover {{
             background: var(--hover);
         }}
-        
+
         /* Command Output */
         .command-output {{
             background: var(--bg-input);
@@ -296,7 +296,7 @@ AGENT_INTERFACE_TEMPLATE = """
             white-space: pre-wrap;
             word-break: break-all;
         }}
-        
+
         /* Capability List */
         .capability-list {{
             max-height: 300px;
@@ -338,7 +338,7 @@ AGENT_INTERFACE_TEMPLATE = """
         .score-high {{ background: var(--accent-green); color: #000; }}
         .score-medium {{ background: var(--accent-orange); color: #000; }}
         .score-low {{ background: var(--accent-red); color: #fff; }}
-        
+
         /* Quick Actions Bar */
         .quick-actions {{
             display: flex;
@@ -364,7 +364,7 @@ AGENT_INTERFACE_TEMPLATE = """
             background: var(--hover);
             border-color: var(--accent);
         }}
-        
+
         /* Status Indicator */
         .status-bar {{
             display: flex;
@@ -389,7 +389,7 @@ AGENT_INTERFACE_TEMPLATE = """
         .status-dot.active {{ background: var(--accent-green); }}
         .status-dot.warning {{ background: var(--accent-orange); }}
         .status-dot.error {{ background: var(--accent-red); }}
-        
+
         /* Results Panel */
         .results-panel {{
             background: var(--bg-card);
@@ -417,12 +417,12 @@ AGENT_INTERFACE_TEMPLATE = """
             font-size: 0.85rem;
             white-space: pre-wrap;
         }}
-        
+
         /* Agent Data Section */
         .agent-data {{
             display: none;
         }}
-        
+
         /* Responsive */
         @media (max-width: 768px) {{
             .action-grid {{
@@ -443,7 +443,7 @@ AGENT_INTERFACE_TEMPLATE = """
         <h1>🤖 AI Agent Control Interface</h1>
         <p>Audit Pipeline v{version} • Designed for ChatGPT 5.1 Agent Mode</p>
     </div>
-    
+
     <div class="container">
         <!-- Agent Instructions -->
         <section class="agent-instructions" data-section="instructions" aria-label="Instructions for AI Agents">
@@ -455,21 +455,21 @@ AGENT NAVIGATION GUIDE:
 1. FULL REPOSITORY VALIDATION:
    → Click "🔍 Run Full Audit" button in Quick Actions
    → Or use Action Card: "Repository-Wide Validation"
-   
+
 2. PER-CAPABILITY AUDIT:
    → Go to "Capability Selection" card
    → Check desired capabilities from the list
    → Click "Run Selected Capability Audit"
-   
+
 3. GENERATE REPORTS:
    → Use "Report Generation" card
    → Select report type (Dashboard, Trend, Comparison)
    → Configure options and click generate
-   
+
 4. CHECK REGRESSIONS:
    → Click "⚠️ Check Regressions" in Quick Actions
    → Or configure threshold in "Regression Detection" card
-   
+
 5. VIEW TRENDS:
    → Select capability in "Trend Analysis" card
    → Choose time range and visualization type
@@ -483,7 +483,7 @@ python -m scripts.space_traversal.audit_runner dashboard
 python -m scripts.space_traversal.audit_runner store-trend
             </pre>
         </section>
-        
+
         <!-- Status Bar -->
         <div class="status-bar" data-section="status" aria-label="System Status">
             <div class="status-item">
@@ -503,7 +503,7 @@ python -m scripts.space_traversal.audit_runner store-trend
                 <span>Capabilities: 18 tracked</span>
             </div>
         </div>
-        
+
         <!-- Quick Actions -->
         <nav class="quick-actions" data-section="quick-actions" aria-label="Quick Actions">
             <button class="quick-action" data-action="full-audit" onclick="runFullAudit()">
@@ -525,7 +525,7 @@ python -m scripts.space_traversal.audit_runner store-trend
                 📚 View Documentation
             </button>
         </nav>
-        
+
         <!-- Action Grid -->
         <div class="action-grid">
             <!-- Repository-Wide Validation -->
@@ -537,7 +537,7 @@ python -m scripts.space_traversal.audit_runner store-trend
                 </div>
                 <div class="card-body">
                     <p>Execute comprehensive repository audit across all capabilities with configurable options.</p>
-                    
+
                     <div class="form-group">
                         <label for="validation-scope">Validation Scope</label>
                         <select id="validation-scope" data-param="scope">
@@ -546,7 +546,7 @@ python -m scripts.space_traversal.audit_runner store-trend
                             <option value="critical">Critical Capabilities Only</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Validation Options</label>
                         <div class="checkbox-group">
@@ -568,18 +568,18 @@ python -m scripts.space_traversal.audit_runner store-trend
                             </label>
                         </div>
                     </div>
-                    
+
                     <button class="action-btn action-btn-success" data-action="run-validation" onclick="runValidation()">
                         ▶️ Execute Full Validation
                     </button>
-                    
+
                     <div class="command-output" id="validation-output">
 Command: python -m scripts.space_traversal.audit_runner run --store-trend
 Status: Ready
                     </div>
                 </div>
             </article>
-            
+
             <!-- Capability Selection -->
             <article class="action-card" data-priority="high" data-action-type="capability-audit">
                 <div class="card-header">
@@ -589,7 +589,7 @@ Status: Ready
                 </div>
                 <div class="card-body">
                     <p>Select specific capabilities to audit. Click to select, then run audit on selection.</p>
-                    
+
                     <div class="form-group">
                         <div style="display: flex; gap: 8px; margin-bottom: 12px;">
                             <button class="action-btn action-btn-secondary" style="flex:1" onclick="selectAll()">Select All</button>
@@ -597,7 +597,7 @@ Status: Ready
                             <button class="action-btn action-btn-secondary" style="flex:1" onclick="selectFailing()">Select Failing</button>
                         </div>
                     </div>
-                    
+
                     <div class="capability-list" data-component="capability-selector" aria-label="Capability Selection List">
                         <label class="capability-item" data-capability="checkpointing" data-score="0.95">
                             <input type="checkbox" name="capability" value="checkpointing">
@@ -690,13 +690,13 @@ Status: Ready
                             <span class="score score-medium">0.84</span>
                         </label>
                     </div>
-                    
+
                     <button class="action-btn action-btn-primary" style="margin-top: 16px" data-action="run-selected" onclick="runSelectedCapabilities()">
                         ▶️ Run Selected Capability Audit
                     </button>
                 </div>
             </article>
-            
+
             <!-- Report Generation -->
             <article class="action-card" data-priority="medium" data-action-type="report">
                 <div class="card-header">
@@ -706,7 +706,7 @@ Status: Ready
                 </div>
                 <div class="card-body">
                     <p>Generate various reports and visualizations from audit data.</p>
-                    
+
                     <div class="form-group">
                         <label for="report-type">Report Type</label>
                         <select id="report-type" data-param="report-type" onchange="updateReportOptions()">
@@ -717,33 +717,33 @@ Status: Ready
                             <option value="csv">CSV Export</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="report-output">Output Path</label>
                         <input type="text" id="report-output" data-param="output" value="audit_artifacts/dashboard.html">
                     </div>
-                    
+
                     <div class="form-group" id="trend-options" style="display:none">
                         <label for="trend-limit">Trend History Limit</label>
                         <input type="number" id="trend-limit" data-param="limit" value="30" min="5" max="100">
                     </div>
-                    
+
                     <div class="form-group" id="comparison-options" style="display:none">
                         <label for="baseline-path">Baseline Path</label>
                         <input type="text" id="baseline-path" data-param="baseline" value="audit_artifacts/baseline.json">
                     </div>
-                    
+
                     <button class="action-btn action-btn-primary" data-action="generate-report" onclick="generateReport()">
                         📝 Generate Report
                     </button>
-                    
+
                     <div class="command-output" id="report-output-display">
 Command: python -m scripts.space_traversal.audit_runner dashboard --output audit_artifacts/dashboard.html
 Status: Ready
                     </div>
                 </div>
             </article>
-            
+
             <!-- Regression Detection -->
             <article class="action-card" data-priority="medium" data-action-type="regression">
                 <div class="card-header">
@@ -753,7 +753,7 @@ Status: Ready
                 </div>
                 <div class="card-body">
                     <p>Detect and analyze score regressions compared to historical data.</p>
-                    
+
                     <div class="form-group">
                         <label for="regression-threshold">Regression Threshold</label>
                         <input type="range" id="regression-threshold" data-param="threshold" min="0.01" max="0.10" step="0.01" value="0.02" oninput="updateThresholdDisplay()">
@@ -763,7 +763,7 @@ Status: Ready
                             <span>10%</span>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="lookback-runs">Lookback Runs</label>
                         <select id="lookback-runs" data-param="lookback">
@@ -773,7 +773,7 @@ Status: Ready
                             <option value="20">Last 20 runs</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Options</label>
                         <div class="checkbox-group">
@@ -787,13 +787,13 @@ Status: Ready
                             </label>
                         </div>
                     </div>
-                    
+
                     <button class="action-btn action-btn-warning" data-action="check-regressions" onclick="runRegressionCheck()">
                         🔎 Run Regression Check
                     </button>
                 </div>
             </article>
-            
+
             <!-- Trend Analysis -->
             <article class="action-card" data-priority="medium" data-action-type="trend">
                 <div class="card-header">
@@ -803,7 +803,7 @@ Status: Ready
                 </div>
                 <div class="card-body">
                     <p>Analyze historical trends for specific capabilities.</p>
-                    
+
                     <div class="form-group">
                         <label for="trend-capability">Capability</label>
                         <select id="trend-capability" data-param="capability">
@@ -828,7 +828,7 @@ Status: Ready
                             <option value="governance">governance</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="trend-range">Time Range</label>
                         <select id="trend-range" data-param="range">
@@ -838,7 +838,7 @@ Status: Ready
                             <option value="50">Last 50 runs</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="trend-format">Output Format</label>
                         <select id="trend-format" data-param="format">
@@ -848,13 +848,13 @@ Status: Ready
                             <option value="csv">CSV</option>
                         </select>
                     </div>
-                    
+
                     <button class="action-btn action-btn-primary" data-action="show-trend" onclick="showTrend()">
                         📊 Show Trend
                     </button>
                 </div>
             </article>
-            
+
             <!-- Webhook Configuration -->
             <article class="action-card" data-priority="low" data-action-type="webhook">
                 <div class="card-header">
@@ -864,7 +864,7 @@ Status: Ready
                 </div>
                 <div class="card-body">
                     <p>Configure and test webhook notifications.</p>
-                    
+
                     <div class="form-group">
                         <label for="webhook-type">Notification Type</label>
                         <select id="webhook-type" data-param="type">
@@ -873,12 +873,12 @@ Status: Ready
                             <option value="generic">Generic Webhook</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="webhook-url">Webhook URL</label>
                         <input type="text" id="webhook-url" data-param="url" placeholder="https://hooks.slack.com/...">
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Trigger Events</label>
                         <div class="checkbox-group">
@@ -900,14 +900,14 @@ Status: Ready
                             </label>
                         </div>
                     </div>
-                    
+
                     <button class="action-btn action-btn-secondary" data-action="test-webhook" onclick="testWebhook()">
                         🧪 Test Webhook
                     </button>
                 </div>
             </article>
         </div>
-        
+
         <!-- Results Panel -->
         <section class="results-panel" data-section="results" aria-label="Action Results">
             <div class="results-header">📋 Action Results</div>
@@ -931,7 +931,7 @@ Status: Ready
             </div>
         </section>
     </div>
-    
+
     <!-- Agent-readable data (hidden) -->
     <div class="agent-data" aria-hidden="true">
         <script type="application/json" id="agent-commands">
@@ -959,21 +959,21 @@ Status: Ready
         }}
         </script>
     </div>
-    
+
     <script>
         // Agent-friendly JavaScript functions
-        
+
         function updateResults(content) {{
             document.getElementById('results-content').textContent = content;
         }}
-        
+
         function runFullAudit() {{
             const scope = document.getElementById('validation-scope').value;
             const options = [];
             document.querySelectorAll('[data-option]:checked').forEach(cb => {{
                 options.push(cb.dataset.option);
             }});
-            
+
             const cmd = `python -m scripts.space_traversal.audit_runner run --scope ${{scope}}`;
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
@@ -995,15 +995,15 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function runValidation() {{
             runFullAudit();
         }}
-        
+
         function checkRegressions() {{
             const threshold = document.getElementById('regression-threshold').value;
             const lookback = document.getElementById('lookback-runs').value;
-            
+
             const cmd = `python -m scripts.space_traversal.audit_runner check-regressions --threshold ${{threshold}} --lookback ${{lookback}}`;
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
@@ -1023,11 +1023,11 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function runRegressionCheck() {{
             checkRegressions();
         }}
-        
+
         function generateDashboard() {{
             const cmd = 'python -m scripts.space_traversal.audit_runner dashboard --output audit_artifacts/dashboard.html';
             updateResults(`
@@ -1046,7 +1046,7 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function storeTrend() {{
             const cmd = 'python -m scripts.space_traversal.audit_runner store-trend';
             updateResults(`
@@ -1065,7 +1065,7 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function exportCSV() {{
             const cmd = 'python -c "from scripts.space_traversal.trend_db import TrendDatabase; db = TrendDatabase(); db.export_csv(Path(\\'audit_artifacts/trends.csv\\'))"';
             updateResults(`
@@ -1084,7 +1084,7 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function openDocs() {{
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
@@ -1098,22 +1098,22 @@ LOCAL FILES:
 
 GENERATED DOCS (run commands to generate):
 - CLI Builder:     python -m scripts.space_traversal.audit_runner cli-builder
-- API Collection:  python -m scripts.space_traversal.audit_runner api-collection  
+- API Collection:  python -m scripts.space_traversal.audit_runner api-collection
 - API Docs:        python -m scripts.space_traversal.audit_runner api-docs
 - Wiki:            python -m scripts.space_traversal.wiki_generator
 
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function selectAll() {{
             document.querySelectorAll('.capability-list input[type="checkbox"]').forEach(cb => cb.checked = true);
         }}
-        
+
         function selectNone() {{
             document.querySelectorAll('.capability-list input[type="checkbox"]').forEach(cb => cb.checked = false);
         }}
-        
+
         function selectFailing() {{
             document.querySelectorAll('.capability-item').forEach(item => {{
                 const score = parseFloat(item.dataset.score);
@@ -1121,18 +1121,18 @@ GENERATED DOCS (run commands to generate):
                 checkbox.checked = score < 0.85;
             }});
         }}
-        
+
         function runSelectedCapabilities() {{
             const selected = [];
             document.querySelectorAll('.capability-list input[type="checkbox"]:checked').forEach(cb => {{
                 selected.push(cb.value);
             }});
-            
+
             if (selected.length === 0) {{
                 updateResults('⚠️ No capabilities selected. Please select at least one capability.');
                 return;
             }}
-            
+
             const cmds = selected.map(cap => `python -m scripts.space_traversal.audit_runner show-trend ${{cap}}`);
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
@@ -1151,12 +1151,12 @@ COPY THESE COMMANDS AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function updateReportOptions() {{
             const type = document.getElementById('report-type').value;
             document.getElementById('trend-options').style.display = type === 'trend' ? 'block' : 'none';
             document.getElementById('comparison-options').style.display = type === 'comparison' ? 'block' : 'none';
-            
+
             const outputMap = {{
                 'dashboard': 'audit_artifacts/dashboard.html',
                 'trend': 'audit_artifacts/trend_report.md',
@@ -1166,11 +1166,11 @@ COPY THESE COMMANDS AND RUN IN TERMINAL
             }};
             document.getElementById('report-output').value = outputMap[type] || 'audit_artifacts/report.html';
         }}
-        
+
         function generateReport() {{
             const type = document.getElementById('report-type').value;
             const output = document.getElementById('report-output').value;
-            
+
             const cmdMap = {{
                 'dashboard': `python -m scripts.space_traversal.audit_runner dashboard --output ${{output}}`,
                 'trend': `python -m scripts.space_traversal.audit_runner trend-report --output ${{output}}`,
@@ -1178,7 +1178,7 @@ COPY THESE COMMANDS AND RUN IN TERMINAL
                 'regression': `python -m scripts.space_traversal.audit_runner check-regressions --output ${{output}}`,
                 'csv': `python -c "from scripts.space_traversal.trend_db import TrendDatabase; from pathlib import Path; db = TrendDatabase(); db.export_csv(Path('${{output}}'))"`
             }};
-            
+
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
 ║  EXECUTING: Report Generation                                                  ║
@@ -1195,25 +1195,25 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
-            
+
             document.getElementById('report-output-display').textContent = `Command: ${{cmdMap[type]}}\\nStatus: Ready`;
         }}
-        
+
         function updateThresholdDisplay() {{
             const value = document.getElementById('regression-threshold').value;
             document.getElementById('threshold-value').textContent = (value * 100).toFixed(0) + '%';
         }}
-        
+
         function showTrend() {{
             const capability = document.getElementById('trend-capability').value;
             const range = document.getElementById('trend-range').value;
             const format = document.getElementById('trend-format').value;
-            
+
             if (!capability) {{
                 updateResults('⚠️ Please select a capability to view its trend.');
                 return;
             }}
-            
+
             const cmd = `python -m scripts.space_traversal.audit_runner show-trend ${{capability}} --limit ${{range}} --format ${{format}}`;
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
@@ -1233,16 +1233,16 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         function testWebhook() {{
             const type = document.getElementById('webhook-type').value;
             const url = document.getElementById('webhook-url').value;
-            
+
             if (!url) {{
                 updateResults('⚠️ Please enter a webhook URL to test.');
                 return;
             }}
-            
+
             updateResults(`
 ╔════════════════════════════════════════════════════════════════════════════════╗
 ║  WEBHOOK TEST                                                                  ║
@@ -1271,7 +1271,7 @@ print(f"Success: {{result.success}}")
 ╚════════════════════════════════════════════════════════════════════════════════╝
             `);
         }}
-        
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {{
             console.log('Agent Control Interface v{version} loaded');

@@ -450,19 +450,10 @@ Track quality metrics over time:
 ## Support
 
 ### Documentation
-- [Agent Configuration](./docs/CONFIGURATION.md)
-- [Custom Checks](./docs/CUSTOM_CHECKS.md)
-- [Integration Guide](./docs/INTEGRATION.md)
 
 ### Examples
-- [Python Project QA](./examples/python-qa.md)
-- [Rust Project QA](./examples/rust-qa.md)
-- [Architecture Review](./examples/architecture-review.md)
 
 ### Resources
-- [Quality Standards](./docs/QUALITY_STANDARDS.md)
-- [Best Practices](./docs/BEST_PRACTICES.md)
-- [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
 ---
 

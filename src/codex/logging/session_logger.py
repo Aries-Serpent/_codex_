@@ -24,15 +24,15 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-import sqlite3
-import threading
-import time
-import uuid
-from dataclasses import dataclass
-from importlib import import_module
-from pathlib import Path
-from typing import Any, Literal, Optional
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import threading  # noqa: E402
+import time  # noqa: E402
+import uuid  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from importlib import import_module  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Literal, Optional  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto

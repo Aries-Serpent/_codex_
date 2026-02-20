@@ -166,3 +166,157 @@ class TestQuantumMetricRepositoryQueries:
         assert 0.85 <= stats["avg_coherence"] <= 0.95
         assert stats["min_coherence"] == 0.85
         assert stats["max_coherence"] == 0.95
+
+
+class TestBatchInsert:
+    """Test batch_insert() functionality for Sprint 1 optimization."""
+
+    def test_batch_insert_empty_list(self, repo):
+        """Test batch_insert() with 0 metrics (empty list)."""
+        metrics = repo.batch_insert([])
+        assert metrics == []
+
+    def test_batch_insert_single_metric(self, repo):
+        """Test batch_insert() with 1 metric."""
+        metric = QuantumMetric(
+            feature="superposition",
+            metric_name="coherence",
+            metric_value=0.95,
+            agent_id="test-agent-1"
+        )
+
+        results = repo.batch_insert([metric])
+
+        assert len(results) == 1
+        assert results[0].id is not None
+        assert results[0].id > 0
+        assert results[0].feature == "superposition"
+        assert results[0].metric_value == 0.95
+
+    def test_batch_insert_ten_metrics(self, repo):
+        """Test batch_insert() with 10 metrics."""
+        metrics = [
+            QuantumMetric(
+                feature="superposition",
+                metric_name="coherence",
+                metric_value=0.9 + i * 0.01,
+                agent_id=f"test-agent-{i}"
+            )
+            for i in range(10)
+        ]
+
+        results = repo.batch_insert(metrics)
+
+        assert len(results) == 10
+        assert all(m.id is not None for m in results)
+
+        # Verify all metrics persisted to database
+        for metric in results:
+            retrieved = repo.get_by_id(metric.id)
+            assert retrieved is not None
+            assert retrieved.feature == "superposition"
+            assert retrieved.metric_name == "coherence"
+
+    def test_batch_insert_hundred_metrics(self, repo):
+        """Test batch_insert() with 100 metrics."""
+        metrics = [
+            QuantumMetric(
+                feature="entanglement",
+                metric_name="error_rate",
+                metric_value=0.01 + i * 0.0001,
+                agent_id=f"agent-{i}"
+            )
+            for i in range(100)
+        ]
+
+        results = repo.batch_insert(metrics)
+
+        assert len(results) == 100
+        assert all(m.id is not None for m in results)
+
+        # Verify sample of metrics persisted
+        assert repo.get_by_id(results[0].id) is not None
+        assert repo.get_by_id(results[50].id) is not None
+        assert repo.get_by_id(results[99].id) is not None
+
+    def test_batch_insert_ids_sequential(self, repo):
+        """Test that batch_insert() assigns IDs sequentially."""
+        metrics = [
+            QuantumMetric(
+                feature="uncertainty",
+                metric_name=f"latency_p99_{i}",  # Unique metric name to avoid constraint
+                metric_value=100.0 + i
+            )
+            for i in range(20)
+        ]
+
+        results = repo.batch_insert(metrics)
+
+        # Check IDs are sequential
+        first_id = results[0].id
+        for i, metric in enumerate(results):
+            assert metric.id == first_id + i
+
+    def test_batch_insert_all_persisted(self, repo):
+        """Test that all metrics from batch_insert() are persisted to database."""
+        metrics = [
+            QuantumMetric(
+                feature="wave_collapse",
+                metric_name=f"accuracy_{i}",  # Unique metric name to avoid constraint
+                metric_value=0.85 + i * 0.001,
+                metadata={"test_id": i}
+            )
+            for i in range(50)
+        ]
+
+        results = repo.batch_insert(metrics)
+
+        # Verify every single metric is in database
+        for result in results:
+            retrieved = repo.get_by_id(result.id)
+            assert retrieved is not None
+            assert "accuracy_" in retrieved.metric_name
+            assert retrieved.metadata.get("test_id") is not None
+
+    def test_batch_insert_backward_compatibility(self, repo):
+        """Test backward compatibility - create() still works after batch_insert()."""
+        # First do batch insert
+        batch_metrics = [
+            QuantumMetric(
+                feature="superposition",
+                metric_name="coherence",
+                metric_value=0.9
+            )
+            for _ in range(5)
+        ]
+        repo.batch_insert(batch_metrics)
+
+        # Then use traditional create()
+        single_metric = QuantumMetric(
+            feature="superposition",
+            metric_name="coherence",
+            metric_value=0.95
+        )
+        created = repo.create(single_metric)
+
+        assert created.id is not None
+        retrieved = repo.get_by_id(created.id)
+        assert retrieved is not None
+        assert retrieved.metric_value == 0.95
+
+    def test_batch_insert_mixed_features(self, repo):
+        """Test batch_insert() with multiple feature types."""
+        metrics = [
+            QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.9),
+            QuantumMetric(feature="entanglement", metric_name="error_rate", metric_value=0.02),
+            QuantumMetric(feature="uncertainty", metric_name="latency_p99", metric_value=150.0),
+            QuantumMetric(feature="wave_collapse", metric_name="accuracy", metric_value=0.88),
+        ]
+
+        results = repo.batch_insert(metrics)
+
+        assert len(results) == 4
+        assert results[0].feature == "superposition"
+        assert results[1].feature == "entanglement"
+        assert results[2].feature == "uncertainty"
+        assert results[3].feature == "wave_collapse"

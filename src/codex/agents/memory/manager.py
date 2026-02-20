@@ -17,15 +17,15 @@ logger = logging.getLogger(__name__)
 
 class MemoryManager:
     """High-level manager for agent memory operations.
-    
+
     Provides a simple API for storing and retrieving memories with automatic
     session management and context tracking.
-    
+
     Args:
         backend: Memory storage backend (defaults to SQLite)
         agent_id: ID of the agent using this manager
         session_id: Current session ID (optional)
-    
+
     Examples:
         >>> manager = MemoryManager(agent_id="assistant-1")
         >>> manager.store("User prefers concise responses", metadata={"importance": "high"})
@@ -56,12 +56,12 @@ class MemoryManager:
         session_id: Optional[str] = None,
     ) -> MemoryEntry:
         """Store a new memory.
-        
+
         Args:
             content: The memory content (text or structured data)
             metadata: Optional metadata (importance, tags, etc.)
             session_id: Override session ID for this memory
-            
+
         Returns:
             The stored memory entry
         """
@@ -84,13 +84,13 @@ class MemoryManager:
         agent_id: Optional[str] = None,
     ) -> list[MemoryEntry]:
         """Retrieve memories matching the query.
-        
+
         Args:
             query_text: Text to search for in memory content
             limit: Maximum number of results
             session_id: Filter by session ID (None = current session)
             agent_id: Filter by agent ID (None = current agent)
-            
+
         Returns:
             list of matching memories, sorted by relevance
         """
@@ -107,10 +107,10 @@ class MemoryManager:
 
     def recall_all(self, limit: int = 100) -> list[MemoryEntry]:
         """Retrieve all memories for current agent/session.
-        
+
         Args:
             limit: Maximum number of results
-            
+
         Returns:
             list of all memories
         """
@@ -118,10 +118,10 @@ class MemoryManager:
 
     def clear_session(self, session_id: Optional[str] = None) -> int:
         """Clear all memories for a session.
-        
+
         Args:
             session_id: Session to clear (defaults to current session)
-            
+
         Returns:
             Number of memories deleted
         """
@@ -135,7 +135,7 @@ class MemoryManager:
 
     def get_stats(self) -> dict[str, Any]:
         """Get memory storage statistics.
-        
+
         Returns:
             Dictionary with statistics
         """
@@ -143,7 +143,7 @@ class MemoryManager:
 
     def set_session(self, session_id: str) -> None:
         """Change the current session ID.
-        
+
         Args:
             session_id: New session ID
         """

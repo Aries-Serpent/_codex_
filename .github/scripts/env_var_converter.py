@@ -21,7 +21,7 @@ import hashlib
 import json
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional, Tuple
@@ -280,7 +280,7 @@ class EnvVarConverter:
 
             # Check file status
             if not file_path.exists():
-                print(f"   Status: ❌ File not found")
+                print("   Status: ❌ File not found")
             else:
                 size = file_path.stat().st_size
                 encoded_size = int(size * BASE64_OVERHEAD)
@@ -290,7 +290,7 @@ class EnvVarConverter:
                 print(f"   Env usage: {pct_used:.1f}% of 48KB")
 
                 if encoded_size > MAX_ENV_SIZE:
-                    print(f"   Fits: ❌ TOO LARGE (exceeds 48KB limit)")
+                    print("   Fits: ❌ TOO LARGE (exceeds 48KB limit)")
                 else:
                     print(f"   Fits: ✅ YES ({MAX_ENV_SIZE - encoded_size:,} bytes headroom)")
 
@@ -301,11 +301,11 @@ class EnvVarConverter:
                         print(f"   Sync status: ⚠️  OUT OF SYNC - {reason}")
                     else:
                         meta = self.metadata[env_var]
-                        print(f"   Sync status: ✅ UP TO DATE")
+                        print("   Sync status: ✅ UP TO DATE")
                         print(f"   Last synced: {meta.last_updated}")
                         print(f"   Git commit: {meta.git_commit}")
                 else:
-                    print(f"   Sync status: 🔄 NEVER SYNCED")
+                    print("   Sync status: 🔄 NEVER SYNCED")
 
             print()
 
@@ -333,7 +333,7 @@ class EnvVarConverter:
 
             # Check if auto-sync enabled
             if not config["auto_sync"]:
-                print(f"  ⏭️  Skipped (manual sync required)")
+                print("  ⏭️  Skipped (manual sync required)")
                 skipped_count += 1
                 print()
                 continue
@@ -366,10 +366,10 @@ class EnvVarConverter:
                 if not dry_run:
                     # Update GitHub environment variable
                     self._update_github_env_var(environment, env_var, encoded)
-                    print(f"  ✅ Synced to GitHub")
+                    print("  ✅ Synced to GitHub")
                     synced_count += 1
                 else:
-                    print(f"  🔍 Would sync to GitHub (dry run)")
+                    print("  🔍 Would sync to GitHub (dry run)")
                     synced_count += 1
 
             except Exception as e:
@@ -468,7 +468,7 @@ class EnvVarConverter:
                     up_to_date.append((env_var, config["path"]))
 
         # Report
-        print(f"📊 SUMMARY:")
+        print("📊 SUMMARY:")
         print(f"  Up to date: {len(up_to_date)}")
         print(f"  Needs sync: {len(needs_sync)}")
         print(f"  Never synced: {len(not_synced)}")

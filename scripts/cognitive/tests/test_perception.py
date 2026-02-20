@@ -1,22 +1,23 @@
 """
 Tests for Cognitive Brain Perception Layer
 """
-import pytest
 import json
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import pytest
 
 
 def test_git_data_collector():
     """Test Git data collection."""
     from scripts.cognitive.collect_git_data import collect_git_commits
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         output_path = Path(tmpdir) / "git_data.json"
-        
+
         # Collect data
         result = collect_git_commits("7 days ago", str(output_path))
-        
+
         # Verify structure
         assert isinstance(result, dict)
         assert "collection_timestamp" in result
@@ -27,12 +28,12 @@ def test_git_data_collector():
 def test_pattern_detection():
     """Test pattern detection."""
     from scripts.cognitive.detect_patterns import detect_patterns
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create mock data
         input_dir = Path(tmpdir) / "input"
         input_dir.mkdir()
-        
+
         mock_git_data = {
             "commits": [
                 {
@@ -49,15 +50,15 @@ def test_pattern_detection():
                 }
             ]
         }
-        
+
         with open(input_dir / "git_data.json", 'w') as f:
             json.dump(mock_git_data, f)
-        
+
         output_path = Path(tmpdir) / "patterns.json"
-        
+
         # Detect patterns
         result = detect_patterns(str(input_dir), str(output_path))
-        
+
         # Verify structure
         assert isinstance(result, dict)
         assert "patterns_detected" in result
@@ -67,12 +68,12 @@ def test_pattern_detection():
 def test_anomaly_detection():
     """Test anomaly detection."""
     from scripts.cognitive.detect_anomalies import detect_anomalies
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create mock data
         input_dir = Path(tmpdir) / "input"
         input_dir.mkdir()
-        
+
         mock_ci_data = {
             "metrics": {
                 "total_runs": 100,
@@ -82,20 +83,20 @@ def test_anomaly_detection():
                 "avg_duration_minutes": 45
             }
         }
-        
+
         with open(input_dir / "ci_data.json", 'w') as f:
             json.dump(mock_ci_data, f)
-        
+
         output_path = Path(tmpdir) / "anomalies.json"
-        
+
         # Detect anomalies
         result = detect_anomalies(str(input_dir), str(output_path))
-        
+
         # Verify structure
         assert isinstance(result, dict)
         assert "anomalies_detected" in result
         assert isinstance(result["anomalies_detected"], list)
-        
+
         # Should detect low success rate anomaly
         anomaly_types = [a["anomaly_type"] for a in result["anomalies_detected"]]
         assert "low_ci_success_rate" in anomaly_types
@@ -104,12 +105,12 @@ def test_anomaly_detection():
 def test_perception_report_generation():
     """Test perception report generation."""
     from scripts.cognitive.generate_perception_report import generate_perception_report
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create mock data
         input_dir = Path(tmpdir) / "input"
         input_dir.mkdir()
-        
+
         mock_data = {
             "git_data": {
                 "total_commits": 10,
@@ -129,18 +130,18 @@ def test_perception_report_generation():
                 ]
             }
         }
-        
+
         with open(input_dir / "git_data.json", 'w') as f:
             json.dump(mock_data["git_data"], f)
-        
+
         with open(input_dir / "patterns.json", 'w') as f:
             json.dump(mock_data["patterns"], f)
-        
+
         output_path = Path(tmpdir) / "report.md"
-        
+
         # Generate report
         report = generate_perception_report(str(input_dir), str(output_path))
-        
+
         # Verify report
         assert isinstance(report, str)
         assert "Cognitive Brain - Perception Report" in report
@@ -151,13 +152,13 @@ def test_perception_report_generation():
 def test_cognitive_brain_core():
     """Test main Cognitive Brain coordinator."""
     from scripts.cognitive.cognitive_brain_core import CognitiveBrain
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         brain = CognitiveBrain(workspace_dir=tmpdir)
-        
+
         # Run one cycle
         results = brain.run_pda_cycle()
-        
+
         # Verify results
         assert isinstance(results, dict)
         assert "cycle_number" in results

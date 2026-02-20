@@ -9,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/zendesk_docs_fetch.py [options]
-    
+
     Examples:
     $ python scripts/zendesk_docs_fetch.py --help
 
@@ -39,6 +39,7 @@ Constraints:
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse
@@ -64,15 +65,15 @@ def _slug(text: str) -> str:
 
 def _fetch(url: str, retries: int = 3, backoff: float = 0.8) -> bytes:
     """Fetch URL with HTTPS-only validation and retry logic.
-    
+
     Args:
         url: URL to fetch (must be HTTPS)
         retries: Number of retry attempts
         backoff: Backoff multiplier for retries
-        
+
     Returns:
         Response body as bytes
-        
+
     Raises:
         ValueError: If URL scheme is not HTTPS
         RuntimeError: If all retries fail
@@ -87,7 +88,7 @@ def _fetch(url: str, retries: int = 3, backoff: float = 0.8) -> bytes:
     # Additional validation: ensure hostname is present
     if not parsed.hostname:
         raise ValueError(f"URL must have a valid hostname: {url!r}")
-    
+
     req = urllib.request.Request(
         url,
         headers={"User-Agent": "codex-zendesk-docs/1.0 (+offline-snapshot)"},
@@ -133,7 +134,7 @@ def main() -> int:
     for section, buckets in manifest.items():
         if section in schema_fields or not isinstance(buckets, dict):
             continue
-            
+
         for bucket, urls in (buckets or {}).items():
             if not isinstance(urls, list):
                 continue

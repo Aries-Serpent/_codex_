@@ -12,7 +12,7 @@ from typing import Iterable, List
 
 import pytest
 
-FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)", re.IGNORECASE)
+FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)(?:\s+AS\s+\w+)?", re.IGNORECASE)
 
 
 def _iter_dockerfiles() -> List[pathlib.Path]:

@@ -1,6 +1,6 @@
 """
-import logging
-logger = logging.getLogger(__name__)
+from __future__ import annotations
+
 Capability Audit Trending Dashboard Generator (v1.0.0)
 
 Generates visual trending analysis across multiple audit runs:
@@ -23,14 +23,17 @@ Generated: 2025-11-19 00:49:03 UTC
 Roles: [Audit Orchestrator], [Data Visualization Engineer] ⚡ Energy: 5
 """
 
-from __future__ import annotations
 
 import argparse
 import json
+import logging
 import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
 
 
 def calculate_trend(scores: list[float]) -> tuple[str, str, str]:
@@ -402,8 +405,8 @@ def generate_dashboard(runs: list[dict], output_path: Path):
         <header>
             <h1>🔍 Capability Audit Trend Dashboard</h1>
             <div class="meta">
-                Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')} | 
-                Runs Analyzed: {len(runs)} | 
+                Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')} |
+                Runs Analyzed: {len(runs)} |
                 Period: {date_range}
             </div>
         </header>

@@ -28,10 +28,10 @@ _scope_validator_context: ContextVar[Optional[ScopeValidator]] = ContextVar(
 
 def set_scope_validator(validator: ScopeValidator) -> None:
     """Set scope validator for current request context.
-    
+
     This should be called by middleware/dependency injection
     after extracting token scopes from the request.
-    
+
     Args:
         validator: ScopeValidator instance for current request
     """
@@ -40,7 +40,7 @@ def set_scope_validator(validator: ScopeValidator) -> None:
 
 def get_scope_validator() -> Optional[ScopeValidator]:
     """Get scope validator from current request context.
-    
+
     Returns:
         ScopeValidator instance or None if not set
     """
@@ -54,20 +54,20 @@ def clear_scope_validator() -> None:
 
 def require_scope(*required_scopes: str) -> Callable:
     """Decorator to require specific scopes for function execution.
-    
+
     The decorated function will only execute if the current request
     has all required scopes. Otherwise, InsufficientScopeError is raised.
-    
+
     Args:
         *required_scopes: Scope strings required (e.g., "repo:write", "workflow:read")
-        
+
     Returns:
         Decorator function
-        
+
     Raises:
         InsufficientScopeError: If token lacks required scopes
         RuntimeError: If no scope validator is set in context
-        
+
     Example:
         >>> @require_scope("repo:write", "workflow:read")
         ... def update_workflow(workflow_id: str):
@@ -109,20 +109,20 @@ def require_scope(*required_scopes: str) -> Callable:
 
 def require_any_scope(*required_scopes: str) -> Callable:
     """Decorator to require at least one of the specified scopes.
-    
+
     The decorated function will only execute if the current request
     has at least one of the required scopes.
-    
+
     Args:
         *required_scopes: Scope strings (at least one required)
-        
+
     Returns:
         Decorator function
-        
+
     Raises:
         InsufficientScopeError: If token lacks all required scopes
         RuntimeError: If no scope validator is set in context
-        
+
     Example:
         >>> @require_any_scope("repo:write", "repo:admin")
         ... def modify_repository():
@@ -167,16 +167,16 @@ def require_any_scope(*required_scopes: str) -> Callable:
 
 def optional_scope(*scopes: str) -> Callable:
     """Decorator that checks scopes if validator is present, but doesn't require it.
-    
+
     Useful for endpoints that behave differently based on permissions
     but don't strictly require them.
-    
+
     Args:
         *scopes: Scope strings to check
-        
+
     Returns:
         Decorator function
-        
+
     Example:
         >>> @optional_scope("repo:write")
         ... def get_repository(repo_id: str):
@@ -227,27 +227,27 @@ try:
         credentials: HTTPAuthorizationCredentials = Depends(security),
     ) -> List[str]:
         """FastAPI dependency to extract scopes from token.
-        
+
         **CRITICAL SECURITY WARNING**: This placeholder implementation MUST be
         replaced with actual token validation before production deployment.
-        
+
         The current implementation raises NotImplementedError to ensure fail-closed
         behavior and prevent unintended access grants.
-        
+
         Production implementations should:
         1. Validate the token signature and expiration
         2. Extract scopes/permissions from token payload
         3. Return the actual scopes for authorization checks
-        
+
         Implementation Examples:
-        
+
         **Option 1: JWT Token Validation (Recommended for stateless auth)**
-        
+
         ```python
         import jwt
         from fastapi import Depends, HTTPException, status
         from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-        
+
         async def get_token_scopes(
             credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
         ) -> List[str]:
@@ -265,15 +265,15 @@ try:
             except jwt.InvalidTokenError:
                 raise HTTPException(401, "Invalid token")
         ```
-        
+
         Configuration: JWT_SECRET_KEY, JWT_ALGORITHM (e.g., "HS256"), JWT_AUDIENCE
-        
+
         **Option 2: OAuth Token Introspection (RFC 7662)**
-        
+
         ```python
         import httpx
         from fastapi import Depends, HTTPException
-        
+
         async def get_token_scopes(
             credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
         ) -> List[str]:
@@ -288,27 +288,27 @@ try:
                     raise HTTPException(401, "Token not active")
                 return data.get("scope", "").split()
         ```
-        
+
         Configuration: OAUTH_INTROSPECTION_ENDPOINT, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
-        
+
         **Testing with Mocks:**
-        
+
         ```python
         from unittest.mock import AsyncMock
-        
+
         @pytest.mark.asyncio
         async def test_endpoint(mocker):
-            mocker.patch("module.get_token_scopes", 
+            mocker.patch("module.get_token_scopes",
                         new=AsyncMock(return_value=["read:data"]))
             # Test protected endpoint...
         ```
-        
+
         Args:
             credentials: Bearer token from request
-            
+
         Returns:
             List of scope strings (never reached - raises error)
-            
+
         Raises:
             NotImplementedError: Always raised to prevent production use
         """
@@ -328,9 +328,9 @@ try:
         scopes: List[str] = Depends(get_token_scopes),
     ) -> ScopeValidator:
         """FastAPI dependency to create and set scope validator.
-        
+
         Use this as a dependency in routes that need scope checking:
-        
+
         Example:
             >>> @app.get("/repo/{repo_id}")
             ... async def get_repo(
@@ -351,13 +351,13 @@ except ImportError:
 
 def scope_metadata(func: Callable) -> dict:
     """Extract scope metadata from decorated function.
-    
+
     Args:
         func: Function to inspect
-        
+
     Returns:
         Dictionary with scope metadata
-        
+
     Example:
         >>> @require_scope("repo:write")
         ... def my_func():

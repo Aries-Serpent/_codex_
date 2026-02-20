@@ -23,14 +23,14 @@ This planset outlines the autonomous transition from pure Python execution to a 
 ## Table of Contents
 
 1. [Architecture Overview](#architecture-overview)
-2. [Compliance & Policy](#compliance--policy)
+2. [Compliance & Policy](#compliance-policy)
 3. [Foundation Phase (Weeks 1-2)](#foundation-phase-weeks-1-2)
 4. [Orchestration Phase (Weeks 3-5)](#orchestration-phase-weeks-3-5)
 5. [Optimization Phase (Weeks 6-8)](#optimization-phase-weeks-6-8)
 6. [Cognitive Brain Integration](#cognitive-brain-integration)
 7. [Autonomous Execution Protocol](#autonomous-execution-protocol)
 8. [Self-Healing Mechanisms](#self-healing-mechanisms)
-9. [Validation & Testing](#validation--testing)
+9. [Validation & Testing](#validation-testing)
 10. [Rollout Strategy](#rollout-strategy)
 
 ---

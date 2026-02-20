@@ -1,0 +1,1476 @@
+{
+  "files_modified": 46,
+  "fixes_applied": 136,
+  "results": [
+    {
+      "file": "docs/MASTER_INDEX.md",
+      "fixes_applied": 15,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](./system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](ROADMAP.md)",
+          "new": "[Roadmap](./ROADMAP.md)"
+        },
+        {
+          "old": "[CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)",
+          "new": "[agents/README.md](../agents/README.md)"
+        },
+        {
+          "old": "[mcp/MCP_100_PERCENT_ROADMAP.md](ROADMAP.md)",
+          "new": "[mcp/MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md)"
+        },
+        {
+          "old": "[admin/GENESIS_SETUP_GUIDE.md](admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[admin/GENESIS_SETUP_GUIDE.md](./admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[ROADMAP.md](ROADMAP.md)",
+          "new": "[ROADMAP.md](./ROADMAP.md)"
+        },
+        {
+          "old": "[system/CODEBASE_DASHBOARD.md](system/CODEBASE_DASHBOARD.md)",
+          "new": "[system/CODEBASE_DASHBOARD.md](./system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[system/CODEBASE_COGNITIVE_MAP.md](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[system/CODEBASE_COGNITIVE_MAP.md](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[system/CODEBASE_DASHBOARD.md](system/CODEBASE_DASHBOARD.md)",
+          "new": "[system/CODEBASE_DASHBOARD.md](./system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[ROADMAP.md](ROADMAP.md)",
+          "new": "[ROADMAP.md](./ROADMAP.md)"
+        },
+        {
+          "old": "[agents/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)",
+          "new": "[agents/README.md](../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/README.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Architecture Overview](ARCHITECTURE.md)",
+          "new": "[Architecture Overview](./ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Architecture Overview](ARCHITECTURE.md)",
+          "new": "[Architecture Overview](./ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/index.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](./system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](ROADMAP.md)",
+          "new": "[Roadmap](./ROADMAP.md)"
+        },
+        {
+          "old": "[Architecture](ARCHITECTURE.md)",
+          "new": "[Architecture](./ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/DOCUMENTATION_INDEX.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[agents/prompts/ARCHITECTURE.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/ARCHITECTURE.md)",
+          "new": "[agents/prompts/ARCHITECTURE.md](./ARCHITECTURE.md)"
+        },
+        {
+          "old": "[.codex/docs/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/docs/README.md)",
+          "new": "[.codex/docs/README.md](./README.md)"
+        },
+        {
+          "old": "[MCP_100_PERCENT_ROADMAP.md](ROADMAP.md)",
+          "new": "[MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md)"
+        },
+        {
+          "old": "[MCP_100_PERCENT_ROADMAP.md](ROADMAP.md)",
+          "new": "[MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/GITHUB_SPARK_INTEGRATION_GUIDE.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Codebase Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Codebase Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Codebase Dashboard](system/CODEBASE_DASHBOARD.md)",
+          "new": "[Codebase Dashboard](./system/CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](./system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Architecture](ARCHITECTURE.md)",
+          "new": "[Architecture](./ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Dashboard](system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](./system/CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/COPILOT_SESSION_LOG_RETRIEVER.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../AGENTS.md)",
+          "new": "[AGENTS.md](../.github/AGENTS.md)"
+        },
+        {
+          "old": "[Operational Guidelines](agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[Operational Guidelines](./agent/OPERATIONAL_GUIDELINES.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/NEWCOMER_GUIDE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[./ARCHITECTURE.md](./ARCHITECTURE.md)",
+          "new": "[./ARCHITECTURE.md](./ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/mcp/PACKAGEABLE_CAPABILITIES.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Agent Architecture Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)",
+          "new": "[Agent Architecture Documentation](../../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Coverage 100% Roadmap](../ROADMAP.md)",
+          "new": "[Coverage 100% Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)",
+          "new": "[Agent README](../../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/testing/COVERAGE_100_ROADMAP.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/evolution/AI_EMERGENCE_STORYBOARD.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Project Roadmap](../ROADMAP.md)",
+          "new": "[Project Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/evolution/EVOLUTION_TIMELINE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Project Roadmap](../ROADMAP.md)",
+          "new": "[Project Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/evolution/INDEX.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Project Roadmap](../ROADMAP.md)",
+          "new": "[Project Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/prompts/README.md",
+      "fixes_applied": 6,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/prompts/TEMPLATE_PROMPT.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/maintenance/DIAGRAM_UPDATE_SYSTEM.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Coverage Roadmap](../ROADMAP.md)",
+          "new": "[Coverage Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/agent/OPERATIONAL_GUIDELINES.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Genesis Setup Guide](../admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](../admin/GENESIS_SETUP_GUIDE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/system/CODEBASE_DASHBOARD.md",
+      "fixes_applied": 5,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](./CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Architecture](../ARCHITECTURE.md)",
+          "new": "[Architecture](../ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Agent System](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)",
+          "new": "[Agent System](../../agents/README.md)"
+        },
+        {
+          "old": "[Cognitive Map](CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](./CODEBASE_COGNITIVE_MAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/system/CODEBASE_COGNITIVE_MAP.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[Codebase Dashboard](CODEBASE_DASHBOARD.md)",
+          "new": "[Codebase Dashboard](./CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Architecture](../ARCHITECTURE.md)",
+          "new": "[Architecture](../ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Dashboard](CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](./CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/archive/COMPREHENSIVE_GAP_ANALYSIS.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[agents/prompts/ARCHITECTURE.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/ARCHITECTURE.md)",
+          "new": "[agents/prompts/ARCHITECTURE.md](../ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/governance/CONTRIBUTING.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[docs/guides/AGENTS.md](../guides/AGENTS.md)",
+          "new": "[docs/guides/AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+      "fixes_applied": 9,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../ROADMAP.md)",
+          "new": "[Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/admin/CONTINUATION_ROADMAP.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Genesis Setup Guide](GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](./GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[Agent Operational Guidelines](../agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[Agent Operational Guidelines](../agent/OPERATIONAL_GUIDELINES.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/admin/INDEX.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Genesis Setup Guide](GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](./GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[Continuation Roadmap](../ROADMAP.md)",
+          "new": "[Continuation Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/ci/CI_TEST_FIXES_PR2883.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[CODEBASE_AGENCY_POLICY.md](../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[CODEBASE_AGENCY_POLICY.md](../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/guides/QUICKSTART.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[V10 Roadmap](../ROADMAP.md)",
+          "new": "[V10 Roadmap](../ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/validation/Windows_Filename_Remediation.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md - Cross-Platform Guidelines](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md#cross-platform-filename-requirements)",
+          "new": "[AGENTS.md - Cross-Platform Guidelines](../../.github/AGENTS.md#cross-platform-filename-requirements)"
+        }
+      ]
+    },
+    {
+      "file": "docs/archive/phases/PHASE_11_0_EXECUTIVE_SUMMARY.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Architecture Diagrams](https://github.com/Aries-Serpent/_codex_/blob/main/docs/cognitive_brain/ARCHITECTURE.md)",
+          "new": "[Architecture Diagrams](../../ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": "docs/archive/phases/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/README.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[../AGENTS.md](../AGENTS.md)",
+          "new": "[../AGENTS.md](./AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "fixes_applied": 6,
+      "fixes": [
+        {
+          "old": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../docs/ROADMAP.md)",
+          "new": "[Roadmap](../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "fixes_applied": 8,
+      "fixes": [
+        {
+          "old": "[agents/README.md](agents/README.md)",
+          "new": "[agents/README.md](../agents/README.md)"
+        },
+        {
+          "old": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../docs/ROADMAP.md)",
+          "new": "[Roadmap](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[Agent README](agents/README.md)",
+          "new": "[Agent README](../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/COGNITIVE_BRAIN_STATUS_UPDATE.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_2.md",
+      "fixes_applied": 5,
+      "fixes": [
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[ROADMAP.md](../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../AGENTS.md)",
+          "new": "[AGENTS.md](./AGENTS.md)"
+        },
+        {
+          "old": "[_codex_/AGENTS.md](_codex_/AGENTS.md)",
+          "new": "[_codex_/AGENTS.md](./AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)",
+          "new": "[`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "fixes_applied": 6,
+      "fixes": [
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[ROADMAP.md](../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/BRANCH_PROTECTION_CONFIG.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "fixes_applied": 5,
+      "fixes": [
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[ROADMAP.md](../docs/ROADMAP.md)",
+          "new": "[ROADMAP.md](../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/codebase-qa-walkthrough-agent/README.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[`.codex/CODEBASE_AGENCY_POLICY.md`](../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[`.codex/CODEBASE_AGENCY_POLICY.md`](../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[Remediation Procedures](../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[Remediation Procedures](../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/workflows/CONSOLIDATION_GUIDE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Agent Integration Guide](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[Agent Integration Guide](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/copilot-evolution/CHANGELOG.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](AGENTS.md)",
+          "new": "[AGENTS.md](../AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/session-analysis-agent.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Cognitive Architecture](./ARCHITECTURE.md)",
+          "new": "[Cognitive Architecture](../../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/AGENT_ECOSYSTEM_MAP.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Cognitive Brain Documentation](../../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Brain Documentation](../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/ci-testing-agent.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../AGENTS.md)"
+        },
+        {
+          "old": "[Timeline Terminology](../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)",
+          "new": "[Timeline Terminology](../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "fixes_applied": 8,
+      "fixes": [
+        {
+          "old": "[Agent Guide](../AGENTS.md)",
+          "new": "[Agent Guide](../AGENTS.md)"
+        },
+        {
+          "old": "[Agent Guide](../AGENTS.md)",
+          "new": "[Agent Guide](../AGENTS.md)"
+        },
+        {
+          "old": "[Agent Guide](../.github/agents/AGENTS.md)",
+          "new": "[Agent Guide](../AGENTS.md)"
+        },
+        {
+          "old": "[text](../../agents/README.md)",
+          "new": "[text](../../agents/README.md)"
+        },
+        {
+          "old": "[Guide](../../agents/README.md)",
+          "new": "[Guide](../../agents/README.md)"
+        },
+        {
+          "old": "[Guide](../../agents/README.md)",
+          "new": "[Guide](../../agents/README.md)"
+        },
+        {
+          "old": "[Guide](../../agents/README.md)",
+          "new": "[Guide](../../agents/README.md)"
+        },
+        {
+          "old": "[Guide](../../agents/README.md)",
+          "new": "[Guide](../../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[Architecture](./ARCHITECTURE.md)",
+          "new": "[Architecture](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Roadmap](../../docs/ROADMAP.md)",
+          "new": "[Roadmap](../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/PHASE3_EXECUTIVE_SUMMARY.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Architecture Documentation](./ARCHITECTURE.md)",
+          "new": "[Architecture Documentation](../../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/artifact-monitor-agent.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Architecture](./ARCHITECTURE.md)",
+          "new": "[Architecture](../../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Agent Architecture](./ARCHITECTURE.md)",
+          "new": "[Agent Architecture](../../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/coverage-roadmap-agent.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Coverage Roadmap](../../docs/ROADMAP.md)",
+          "new": "[Coverage Roadmap](../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/prompts/duplicate_detection_inventory/09_documentation.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[ARCHITECTURE.md](../../agents/ARCHITECTURE.md)",
+          "new": "[ARCHITECTURE.md](../../../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/docs/agent/OPERATIONAL_GUIDELINES.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/docs/AGENTS.md",
+      "fixes_applied": 14,
+      "fixes": [
+        {
+          "old": "[.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)",
+          "new": "[.codex/docs/AGENTS.md.original.cf4e8c9.md](../../AGENTS.md)"
+        },
+        {
+          "old": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[README.md](../../../agents/README.md)",
+          "new": "[README.md](../../../agents/README.md)"
+        },
+        {
+          "old": "[scripts/AUTONOMOUS_AGENT_README.md](../../../agents/README.md)",
+          "new": "[scripts/AUTONOMOUS_AGENT_README.md](../../../agents/README.md)"
+        },
+        {
+          "old": "[docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)",
+          "new": "[docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[.github/agents/README.md](../../../agents/README.md)",
+          "new": "[.github/agents/README.md](../../../agents/README.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)",
+          "new": "[docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/docs/PRODUCTION_SPECIFICATION.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[README](../../../agents/README.md)",
+          "new": "[README](../../../agents/README.md)"
+        },
+        {
+          "old": "[README](../../../agents/README.md)",
+          "new": "[README](../../../agents/README.md)"
+        },
+        {
+          "old": "[README](../../../agents/README.md)",
+          "new": "[README](../../../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/docs/INDEX.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](AGENTS.md)",
+          "new": "[AGENTS.md](../../AGENTS.md)"
+        },
+        {
+          "old": "[AGENTS.md.original](archive/AGENTS.md.original)",
+          "new": "[AGENTS.md.original](../../AGENTS.md)"
+        },
+        {
+          "old": "[Main Repository Documentation](../../../agents/README.md)",
+          "new": "[Main Repository Documentation](../../../agents/README.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/docs/INTEGRATION_MANAGER_DESIGN.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/docs/WORKFLOW_MANAGER_DESIGN.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".github/agents/admin-automation-agent/docs/AUTH_MANAGER_DESIGN.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/README_FUTURE_WORK_PLANSETS.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[.codex/CODEBASE_AGENCY_POLICY.md](CODEBASE_AGENCY_POLICY.md)",
+          "new": "[.codex/CODEBASE_AGENCY_POLICY.md](./CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[../AGENTS.md](../AGENTS.md)",
+          "new": "[../AGENTS.md](../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/DIAGRAM_UPDATE_v0.1.0_SUMMARY.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md)",
+          "new": "[docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/prompts/PHASE_10_2_CONTINUATION_PROMPT_FOR_NEXT_SESSION.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/docs/README.md",
+      "fixes_applied": 12,
+      "fixes": [
+        {
+          "old": "[COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)",
+          "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[AGENTS.md.original.cf4e8c9.md](./AGENTS.md.original.cf4e8c9.md)",
+          "new": "[AGENTS.md.original.cf4e8c9.md](../../.github/AGENTS.md)"
+        },
+        {
+          "old": "[COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)",
+          "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)",
+          "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)",
+          "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        },
+        {
+          "old": "[.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[docs/system/CODEBASE_COGNITIVE_MAP.md](../../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[docs/system/CODEBASE_COGNITIVE_MAP.md](../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[../../AGENTS.md](../../AGENTS.md)",
+          "new": "[../../AGENTS.md](../../.github/AGENTS.md)"
+        },
+        {
+          "old": "[../CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[../CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "fixes_applied": 8,
+      "fixes": [
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md)",
+          "new": "[docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        },
+        {
+          "old": "[docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md)",
+          "new": "[docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/docs/PHILOSOPHICAL_FRAMEWORK.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[Cognitive Architecture Analysis](.codex/docs/COGNITIVE_ARCHITECTURE.md)",
+          "new": "[Cognitive Architecture Analysis](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[AI Agent Operational Guidelines](../../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[AI Agent Operational Guidelines](../../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/wiki/Home.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        },
+        {
+          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/wiki/Genesis-Protocol.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        },
+        {
+          "old": "[Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/wiki/_Sidebar.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/plans/COGNITIVE_BRAIN_STATUS_POST_PR2956.md",
+      "fixes_applied": 2,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)"
+        },
+        {
+          "old": "[Genesis Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/plans/PHASE_9_1_COMPLETION_SUMMARY.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Coverage Roadmap](../../docs/ROADMAP.md)",
+          "new": "[Coverage Roadmap](../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/status/_codex_status_update-2025-09-07.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[docs/guides/AGENTS.md](docs/guides/AGENTS.md)",
+          "new": "[docs/guides/AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/cognitive_brain/PRODUCTION_RAG_COGNITIVE_BRAIN_STATUS.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Cognitive Brain Production Roadmap](../../docs/ROADMAP.md)",
+          "new": "[Cognitive Brain Production Roadmap](../../docs/ROADMAP.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/analysis/README.md",
+      "fixes_applied": 4,
+      "fixes": [
+        {
+          "old": "[Cognitive Architecture](../docs/COGNITIVE_ARCHITECTURE.md)",
+          "new": "[Cognitive Architecture](../../docs/ARCHITECTURE.md)"
+        },
+        {
+          "old": "[.codex/docs README](../docs/README.md)",
+          "new": "[.codex/docs README](../../docs/README.md)"
+        },
+        {
+          "old": "[Quantitative Analysis](../docs/COGNITIVE_ARCHITECTURE.md#quantitative-analysis)",
+          "new": "[Quantitative Analysis](../../docs/ARCHITECTURE.md#quantitative-analysis)"
+        },
+        {
+          "old": "[Implementation Status](../docs/README.md#implementation-status)",
+          "new": "[Implementation Status](../../docs/README.md#implementation-status)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_SUMMARY_RELEASE_PLANNING.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[README.md](.codex/release/README.md)",
+          "new": "[README.md](../../../docs/README.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/archive/pr-resolutions/PR_3020_SELF_REVIEW_COMPLETE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[.codex/CODEBASE_AGENCY_POLICY.md](../../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[.codex/CODEBASE_AGENCY_POLICY.md](../../CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/archive/sessions/2026-01/SESSION_COMPLETION_SUMMARY_2026_01_12_PHASE_C.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[CODEBASE_DASHBOARD.md](../../../../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[CODEBASE_DASHBOARD.md](../../../../docs/system/CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_32_COMPLETE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/cognitive_brain/archive/PHASE_33_PR_3020_RESOLUTION_COMPLETE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)",
+          "new": "[AI Codebase Agency Policy](../../CODEBASE_AGENCY_POLICY.md)"
+        }
+      ]
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "fixes_applied": 8,
+      "fixes": [
+        {
+          "old": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../../../docs/ROADMAP.md)",
+          "new": "[Roadmap](../../../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)"
+        },
+        {
+          "old": "[Roadmap](../../../docs/ROADMAP.md)",
+          "new": "[Roadmap](../../../docs/ROADMAP.md)"
+        },
+        {
+          "old": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)",
+          "new": "[Dashboard](../../../docs/system/CODEBASE_DASHBOARD.md)"
+        }
+      ]
+    },
+    {
+      "file": "agents/README.md",
+      "fixes_applied": 3,
+      "fixes": [
+        {
+          "old": "[Agent Guidelines](../docs/agent/OPERATIONAL_GUIDELINES.md)",
+          "new": "[Agent Guidelines](../docs/agent/OPERATIONAL_GUIDELINES.md)"
+        },
+        {
+          "old": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)",
+          "new": "[Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)"
+        },
+        {
+          "old": "[Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md)",
+          "new": "[Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md)"
+        }
+      ]
+    },
+    {
+      "file": "agents/prompts/ARCHITECTURE.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": "agents/prompts/README.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[AGENTS.md](../../AGENTS.md)",
+          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+        }
+      ]
+    },
+    {
+      "file": "agents/prompts/debugging/test-failure-debugging.md",
+      "fixes_applied": 1,
+      "fixes": [
+        {
+          "old": "[Codex testing conventions](../../../AGENTS.md#testing)",
+          "new": "[Codex testing conventions](../../../.github/AGENTS.md#testing)"
+        }
+      ]
+    }
+  ]
+}

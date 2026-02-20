@@ -16,16 +16,17 @@ Usage:
     python -m service_integration_tester.src.agent validate-contract --spec openapi.yaml
 """
 
-import re
-import json
 import hashlib
-import subprocess
+import json
+import re
 import shlex
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 import yaml
 
 
@@ -123,7 +124,7 @@ class TestMetrics:
 
 class ServiceIntegrationTester:
     """Main agent class for service integration testing"""
-    
+
     def __init__(self, config_path: Optional[Path] = None):
         """Initialize the agent with optional configuration"""
         self.config = self._load_config(config_path) if config_path else {}
@@ -131,7 +132,7 @@ class ServiceIntegrationTester:
         self.metrics = TestMetrics()
         self.mock_data_cache: Dict[str, Any] = {}
         self.discovered_endpoints: Dict[str, List[Endpoint]] = {}
-        
+
         # PII scrubbing patterns (from pii-scrubber component)
         self.pii_patterns = {
             'email': re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'),
@@ -141,28 +142,28 @@ class ServiceIntegrationTester:
             'ip_address': re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b'),
             'aws_key': re.compile(r'AKIA[0-9A-Z]{16}'),
         }
-    
+
     def _load_config(self, config_path: Path) -> Dict[str, Any]:
         """Load agent configuration from YAML file"""
         if not config_path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")
-        
+
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
-    
+
     def scrub_pii(self, text: str, mode: str = "token") -> str:
         """
         Remove PII from text (from pii-scrubber component)
-        
+
         Args:
             text: Input text potentially containing PII
             mode: Redaction mode ('token', 'hash', 'semantic')
-        
+
         Returns:
             Text with PII removed or redacted
         """
         result = text
-        
+
         for pii_type, pattern in self.pii_patterns.items():
             if mode == "token":
                 replacement = f"[{pii_type.upper()}_REDACTED]"
@@ -176,29 +177,29 @@ class ServiceIntegrationTester:
                 continue
             elif mode == "semantic":
                 # Keep semantic structure
-                replacement = f"user@example.com" if pii_type == "email" else f"[{pii_type}]"
+                replacement = "user@example.com" if pii_type == "email" else f"[{pii_type}]"
             else:
                 replacement = f"[{pii_type.upper()}_REDACTED]"
-            
+
             result = pattern.sub(replacement, result)
-        
+
         return result
-    
+
     def generate_mock_data(self, schema: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """
         Generate privacy-safe mock data for testing (using pii-scrubber patterns)
-        
+
         Args:
             schema: Dictionary mapping field names to data types
-        
+
         Returns:
             Dictionary of generated mock data
         """
         if schema is None:
             schema = {'id': 'uuid', 'name': 'name', 'created_at': 'timestamp'}
-        
+
         mock_data = {}
-        
+
         for field_name, data_type in schema.items():
             if data_type == MockDataType.STRING.value or data_type == 'string':
                 mock_data[field_name] = f"test_{field_name}_value"
@@ -220,9 +221,9 @@ class ServiceIntegrationTester:
                 mock_data[field_name] = datetime.now(timezone.utc).isoformat()
             else:
                 mock_data[field_name] = f"mock_{field_name}"
-        
+
         return mock_data
-    
+
     def scan_endpoints(
         self,
         base_url: str,
@@ -230,16 +231,16 @@ class ServiceIntegrationTester:
     ) -> List[Endpoint]:
         """
         Discover service endpoints (from rag-index-manager component)
-        
+
         Args:
             base_url: Base URL of the service
             spec_source: OpenAPI spec path, list of paths, or "common"
-        
+
         Returns:
             List of discovered endpoints
         """
         endpoints = []
-        
+
         if spec_source == "common":
             # Common health/status endpoints
             common_paths = [
@@ -249,7 +250,7 @@ class ServiceIntegrationTester:
                 ("/metrics", EndpointMethod.GET, "Metrics endpoint"),
                 ("/version", EndpointMethod.GET, "Version info"),
             ]
-            
+
             for path, method, desc in common_paths:
                 endpoints.append(Endpoint(
                     path=path,
@@ -258,13 +259,13 @@ class ServiceIntegrationTester:
                     description=desc,
                     requires_auth=False
                 ))
-        
+
         elif isinstance(spec_source, Path):
             # Parse OpenAPI specification
             if spec_source.exists():
                 with open(spec_source, 'r') as f:
                     spec = yaml.safe_load(f)
-                
+
                 paths = spec.get('paths', {})
                 for path, methods in paths.items():
                     for method, details in methods.items():
@@ -276,7 +277,7 @@ class ServiceIntegrationTester:
                                 description=details.get('summary', ''),
                                 requires_auth='security' in details
                             ))
-        
+
         elif isinstance(spec_source, list):
             # Direct list of endpoint definitions
             for item in spec_source:
@@ -288,12 +289,12 @@ class ServiceIntegrationTester:
                         description=item.get('description', ''),
                         requires_auth=item.get('requires_auth', False)
                     ))
-        
+
         # Cache discovered endpoints
         self.discovered_endpoints[base_url] = endpoints
-        
+
         return endpoints
-    
+
     def test_endpoint_sync(
         self,
         endpoint: Endpoint,
@@ -303,37 +304,37 @@ class ServiceIntegrationTester:
     ) -> TestResult:
         """
         Test a single endpoint synchronously (mock implementation)
-        
+
         Args:
             endpoint: Endpoint to test
             headers: Optional HTTP headers
             payload: Optional request payload
             expected_status: Expected HTTP status code
-        
+
         Returns:
             Test result
         """
         # This is a mock implementation for testing
         # In production, this would use requests library or httpx
-        
+
         start_time = datetime.now(timezone.utc)
-        
+
         try:
             # Simulate HTTP request
             full_url = f"{endpoint.base_url}{endpoint.path}"
-            
+
             # Scrub any PII from payload if present
             if payload:
                 payload_str = json.dumps(payload)
                 scrubbed = self.scrub_pii(payload_str, mode="token")
                 payload = json.loads(scrubbed)
-            
+
             # Mock response simulation
             # In real implementation, would be: response = requests.request(endpoint.method.value, full_url, ...)
-            
+
             # Simulate network delay
             response_time_ms = 50.0 + (hash(full_url) % 200)
-            
+
             # Simulate status code
             if endpoint.path in ['/health', '/status', '/ready']:
                 status_code = 200
@@ -341,11 +342,11 @@ class ServiceIntegrationTester:
                 status_code = 201
             else:
                 status_code = 200
-            
+
             # Check against expected status
             expected = expected_status or endpoint.expected_status
             status = TestStatus.SUCCESS if status_code == expected else TestStatus.FAILURE
-            
+
             result = TestResult(
                 endpoint=endpoint,
                 status=status,
@@ -353,13 +354,13 @@ class ServiceIntegrationTester:
                 response_time_ms=response_time_ms,
                 timestamp=start_time
             )
-            
+
             # Update metrics
             self.test_results.append(result)
             self._update_metrics(result)
-            
+
             return result
-            
+
         except Exception as e:
             result = TestResult(
                 endpoint=endpoint,
@@ -370,7 +371,7 @@ class ServiceIntegrationTester:
             self.test_results.append(result)
             self._update_metrics(result)
             return result
-    
+
     def test_service_contract(
         self,
         contract: ServiceContract,
@@ -378,28 +379,28 @@ class ServiceIntegrationTester:
     ) -> List[TestResult]:
         """
         Test all endpoints in a service contract
-        
+
         Args:
             contract: Service contract to test
             auth_token: Optional authentication token
-        
+
         Returns:
             List of test results for all endpoints
         """
         results = []
         headers = {}
-        
+
         if auth_token and contract.auth_type == 'bearer':
             headers['Authorization'] = f'Bearer {auth_token}'
         elif auth_token and contract.auth_type == 'api_key':
             headers['X-API-Key'] = auth_token
-        
+
         for endpoint in contract.endpoints:
             result = self.test_endpoint_sync(endpoint, headers=headers)
             results.append(result)
-        
+
         return results
-    
+
     def run_integration_suite(
         self,
         suite: IntegrationTestSuite,
@@ -407,11 +408,11 @@ class ServiceIntegrationTester:
     ) -> Tuple[bool, TestMetrics]:
         """
         Run a complete integration test suite
-        
+
         Args:
             suite: Test suite to run
             verbose: Enable verbose output
-        
+
         Returns:
             Tuple of (success, metrics)
         """
@@ -428,22 +429,22 @@ class ServiceIntegrationTester:
                     print(f"Setup command failed: {cmd}")
                     print(f"Error: {e}")
                 # Continue with other setup commands
-        
+
         all_results = []
-        
+
         try:
             # Test each service contract
             for contract in suite.contracts:
                 if verbose:
                     print(f"\nTesting service: {contract.service_name}")
-                
+
                 results = self.test_service_contract(contract)
                 all_results.extend(results)
-                
+
                 if verbose:
                     passed = sum(1 for r in results if r.status == TestStatus.SUCCESS)
                     print(f"  Results: {passed}/{len(results)} passed")
-        
+
         finally:
             # Run teardown commands
             for cmd in suite.teardown_commands:
@@ -458,12 +459,12 @@ class ServiceIntegrationTester:
                         print(f"Teardown command failed: {cmd}")
                         print(f"Error: {e}")
                     # Continue with other teardown commands
-        
+
         # Determine overall success
         success = all(r.status == TestStatus.SUCCESS for r in all_results)
-        
+
         return success, self.metrics
-    
+
     def validate_contract_compliance(
         self,
         spec_path: Path,
@@ -471,39 +472,39 @@ class ServiceIntegrationTester:
     ) -> Tuple[bool, List[str]]:
         """
         Validate that service implementation matches OpenAPI contract
-        
+
         Args:
             spec_path: Path to OpenAPI specification
             base_url: Base URL of service to test
-        
+
         Returns:
             Tuple of (compliant, violations)
         """
         violations = []
-        
+
         # Discover endpoints from spec
         endpoints = self.scan_endpoints(base_url, spec_path)
-        
+
         if not endpoints:
             violations.append("No endpoints discovered from specification")
             return False, violations
-        
+
         # Test each endpoint
         for endpoint in endpoints:
             result = self.test_endpoint_sync(endpoint)
-            
+
             if result.status != TestStatus.SUCCESS:
                 violations.append(
                     f"{endpoint.method.value} {endpoint.path}: "
                     f"Expected {endpoint.expected_status}, got {result.status_code}"
                 )
-            
+
             if result.validation_errors:
                 violations.extend(result.validation_errors)
-        
+
         compliant = len(violations) == 0
         return compliant, violations
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get current test metrics"""
         return {
@@ -524,14 +525,14 @@ class ServiceIntegrationTester:
             ),
             'max_response_time_ms': self.metrics.max_response_time_ms,
         }
-    
+
     def generate_report(self, output_path: Optional[Path] = None) -> str:
         """
         Generate a comprehensive test report
-        
+
         Args:
             output_path: Optional path to write report
-        
+
         Returns:
             Report as string
         """
@@ -541,7 +542,7 @@ class ServiceIntegrationTester:
         lines.append("=" * 70)
         lines.append(f"Generated: {datetime.now(timezone.utc).isoformat()}")
         lines.append("")
-        
+
         metrics = self.get_metrics()
         lines.append("SUMMARY")
         lines.append("-" * 70)
@@ -556,7 +557,7 @@ class ServiceIntegrationTester:
         lines.append(f"Min Response:   {metrics['min_response_time_ms']:.2f}ms")
         lines.append(f"Max Response:   {metrics['max_response_time_ms']:.2f}ms")
         lines.append("")
-        
+
         # Group results by service
         by_service: Dict[str, List[TestResult]] = {}
         for result in self.test_results:
@@ -564,14 +565,14 @@ class ServiceIntegrationTester:
             if service not in by_service:
                 by_service[service] = []
             by_service[service].append(result)
-        
+
         lines.append("RESULTS BY SERVICE")
         lines.append("-" * 70)
         for service, results in by_service.items():
             passed = sum(1 for r in results if r.status == TestStatus.SUCCESS)
             lines.append(f"\n{service}")
             lines.append(f"  Tests: {len(results)}, Passed: {passed}/{len(results)}")
-            
+
             for result in results:
                 status_icon = "✅" if result.status == TestStatus.SUCCESS else "❌"
                 lines.append(
@@ -580,18 +581,18 @@ class ServiceIntegrationTester:
                 )
                 if result.error:
                     lines.append(f"     Error: {result.error}")
-        
+
         lines.append("")
         lines.append("=" * 70)
-        
+
         report = "\n".join(lines)
-        
+
         if output_path:
             with open(output_path, 'w') as f:
                 f.write(report)
-        
+
         return report
-    
+
     def export_results_json(self, output_path: Path) -> None:
         """Export test results as JSON"""
         data = {
@@ -614,14 +615,14 @@ class ServiceIntegrationTester:
                 for r in self.test_results
             ]
         }
-        
+
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=2)
-    
+
     def _update_metrics(self, result: TestResult) -> None:
         """Update aggregated metrics with new test result"""
         self.metrics.total_tests += 1
-        
+
         if result.status == TestStatus.SUCCESS:
             self.metrics.passed += 1
         elif result.status == TestStatus.FAILURE:
@@ -630,7 +631,7 @@ class ServiceIntegrationTester:
             self.metrics.skipped += 1
         elif result.status == TestStatus.ERROR:
             self.metrics.errors += 1
-        
+
         if result.response_time_ms is not None:
             self.metrics.total_response_time_ms += result.response_time_ms
             self.metrics.min_response_time_ms = min(
@@ -641,7 +642,7 @@ class ServiceIntegrationTester:
                 self.metrics.max_response_time_ms,
                 result.response_time_ms
             )
-            
+
             # Update average
             if self.metrics.total_tests > 0:
                 self.metrics.avg_response_time_ms = (
@@ -652,7 +653,7 @@ class ServiceIntegrationTester:
 def main():
     """CLI entry point"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Service Integration Tester Agent")
     parser.add_argument(
         'command',
@@ -665,42 +666,42 @@ def main():
     parser.add_argument('--config', type=Path, help='Path to agent configuration')
     parser.add_argument('--output', type=Path, help='Output file path')
     parser.add_argument('--verbose', action='store_true', help='Verbose output')
-    
+
     args = parser.parse_args()
-    
+
     tester = ServiceIntegrationTester(args.config)
-    
+
     if args.command == 'test':
         if not args.base_url:
             print("Error: --base-url required for test command")
             return 1
-        
+
         endpoints = tester.scan_endpoints(args.base_url, "common")
         print(f"Testing {len(endpoints)} endpoints...")
-        
+
         for endpoint in endpoints:
             result = tester.test_endpoint_sync(endpoint)
             status_icon = "✅" if result.status == TestStatus.SUCCESS else "❌"
             print(f"{status_icon} {endpoint.method.value} {endpoint.path}: {result.status_code}")
-    
+
     elif args.command == 'scan':
         if not args.base_url:
             print("Error: --base-url required for scan command")
             return 1
-        
+
         spec = args.spec if args.spec else "common"
         endpoints = tester.scan_endpoints(args.base_url, spec)
         print(f"Discovered {len(endpoints)} endpoints:")
         for ep in endpoints:
             print(f"  {ep.method.value} {ep.path}")
-    
+
     elif args.command == 'validate-contract':
         if not args.spec or not args.base_url:
             print("Error: --spec and --base-url required for validate-contract")
             return 1
-        
+
         compliant, violations = tester.validate_contract_compliance(args.spec, args.base_url)
-        
+
         if compliant:
             print("✅ Service is compliant with contract")
             return 0
@@ -709,12 +710,12 @@ def main():
             for violation in violations:
                 print(f"  - {violation}")
             return 1
-    
+
     elif args.command == 'generate-report':
         report = tester.generate_report(args.output)
         if not args.output:
             print(report)
-    
+
     return 0
 
 

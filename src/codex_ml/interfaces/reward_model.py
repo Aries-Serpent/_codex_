@@ -7,11 +7,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from abc import ABC, abstractmethod  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from typing import Any, Iterable, Mapping, Optional, Sequence  # noqa: E402
 
-from codex_ml.plugins import reward_models
+from codex_ml.plugins import reward_models  # noqa: E402
 
 __all__ = ["RewardModel", "HeuristicRewardModel", "RewardModelError"]
 

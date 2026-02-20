@@ -6,14 +6,12 @@ for different content types.
 """
 
 import logging
-from typing import Callable, Optional
-
-logger = logging.getLogger(__name__)
 import re
 from dataclasses import dataclass, field
 from enum import IntEnum
+from typing import Callable, Optional
 
-
+logger = logging.getLogger(__name__)
 class PruneStrategy(IntEnum):
     """Pruning strategy for content blocks."""
 

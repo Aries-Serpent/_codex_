@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/agent/probe_env.py [options]
-    
+
     Examples:
     $ python scripts/agent/probe_env.py --help
 
@@ -31,6 +31,7 @@ Last Updated: 2026-01-16
 
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 import os
 import platform

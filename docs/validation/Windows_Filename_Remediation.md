@@ -11,7 +11,7 @@ Windows filesystems prohibit certain characters in filenames, including colons (
 
 **Impact:** `git checkout` fails on Windows runners during CI/CD, blocking the multi-platform pipeline.
 
-**Failing Job:** [Performance Regression Detection #60974199331](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604/job/60974199331)
+**Failing Job:** [Performance Regression Detection #60974199331](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604 <!-- Note: Logs expire after 90 days -->/job/60974199331)
 
 ## Solution Summary
 
@@ -153,9 +153,9 @@ If issues arise, temporarily disable pre-commit hook:
 
 ## References
 
-- [Failing CI Job](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604/job/60974199331)
+- [Failing CI Job](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604 <!-- Note: Logs expire after 90 days -->/job/60974199331)
 - [Windows Filename Restrictions (Microsoft Docs)](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
-- [AGENTS.md - Cross-Platform Guidelines](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md#cross-platform-filename-requirements)
+- [AGENTS.md - Cross-Platform Guidelines](../../.github/AGENTS.md#cross-platform-filename-requirements)
 
 ## Support
 

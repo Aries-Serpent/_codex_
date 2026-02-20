@@ -14,7 +14,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
 def run_validator(target: pathlib.Path) -> subprocess.CompletedProcess[str]:
-    script = ROOT / "validate_fences.py"
+    script = ROOT / "tools" / "validate_fences.py"
     return subprocess.run(
         [sys.executable, str(script), str(target)],
         check=False,

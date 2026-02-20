@@ -29,12 +29,12 @@
 
 | Workflow | Run ID | Status | Started | Duration | Action |
 |----------|--------|--------|---------|----------|--------|
-| **Rust-Python Hybrid Swarm CI/CD** | [21678671815](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815) | in_progress | 16:02:22Z | 24+ min | Continue monitoring |
+| **Rust-Python Hybrid Swarm CI/CD** | [21678671815](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815 <!-- Note: Logs expire after 90 days -->) | in_progress | 16:02:22Z | 24+ min | Continue monitoring |
 
 ### ❌ Failed Workflows (5) - Detailed Analysis
 
 #### 1. Auto-Fix Common CI Issues
-**Run ID:** [21678671841](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841)  
+**Run ID:** [21678671841](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841 <!-- Note: Logs expire after 90 days -->)  
 **Status:** ❌ FAILED - Auto-fixable issues detected  
 **Job:** Detect and Fix Common Issues
 
@@ -58,7 +58,7 @@ This will automatically fix all 98 issues.
 ---
 
 #### 2. Automatic Dependency Submission (Python)
-**Run ID:** [21678669983](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983)  
+**Run ID:** [21678669983](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983 <!-- Note: Logs expire after 90 days -->)  
 **Status:** ❌ FAILED - GitHub API error  
 **Job:** submit-pypi
 
@@ -83,7 +83,7 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 3. Codebase QA Walkthrough
-**Run ID:** [21678671810](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810)  
+**Run ID:** [21678671810](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810 <!-- Note: Logs expire after 90 days -->)  
 **Status:** ❌ FAILED - 5 critical security issues  
 **Job:** QA Analysis (standard)
 
@@ -135,7 +135,7 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 4. Testing Suite
-**Run ID:** [21678671851](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851)  
+**Run ID:** [21678671851](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851 <!-- Note: Logs expire after 90 days -->)  
 **Status:** ❌ FAILED - Test summary evaluation  
 **Job:** Core Tests (Python 3.12)
 
@@ -155,7 +155,7 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 5. Comprehensive Tests with Caching
-**Run ID:** [21678671848](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848)  
+**Run ID:** [21678671848](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848 <!-- Note: Logs expire after 90 days -->)  
 **Status:** ❌ FAILED - Test summary failure  
 **Jobs Failed:** 2 (Python 3.12 Tests, Test Summary)
 
@@ -331,12 +331,12 @@ Before committing fixes to 0D_base_ branch:
 
 ### Workflow Runs
 - [All PR #3145 Workflows](https://github.com/Aries-Serpent/_codex_/actions?query=branch%3A0D_base_+event%3Apull_request)
-- [Rust-Python Hybrid Swarm CI/CD](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815) ⏳ IN PROGRESS
-- [Auto-Fix Common CI Issues](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841) ❌ FAILED
-- [Automatic Dependency Submission](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983) ❌ FAILED
-- [Testing Suite](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851) ❌ FAILED
-- [Codebase QA Walkthrough](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810) ❌ FAILED
-- [Comprehensive Tests](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848) ❌ FAILED
+- [Rust-Python Hybrid Swarm CI/CD](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671815 <!-- Note: Logs expire after 90 days -->) ⏳ IN PROGRESS
+- [Auto-Fix Common CI Issues](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Automatic Dependency Submission](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Testing Suite](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Codebase QA Walkthrough](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
+- [Comprehensive Tests](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848 <!-- Note: Logs expire after 90 days -->) ❌ FAILED
 
 ### PR Details
 - [PR #3145](https://github.com/Aries-Serpent/_codex_/pull/3145)

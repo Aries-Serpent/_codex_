@@ -58,7 +58,7 @@ class CodeScanningAlert:
     dismissed_reason: Optional[str] = None
     dismissed_comment: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary, excluding metadata if empty."""
         data = asdict(self)
@@ -69,7 +69,7 @@ class CodeScanningAlert:
 
 class CodeQLAlertFetcher:
     """Fetch and manage CodeQL code scanning alerts."""
-    
+
     def __init__(
         self,
         owner: str,
@@ -79,7 +79,7 @@ class CodeQLAlertFetcher:
     ):
         """
         Initialize the alert fetcher.
-        
+
         Args:
             owner: Repository owner (e.g., "Aries-Serpent")
             repo: Repository name (e.g., "_codex_")
@@ -88,7 +88,7 @@ class CodeQLAlertFetcher:
         """
         if not HAS_REQUESTS:
             raise ImportError("requests library is required. Install with: pip install requests")
-        
+
         self.owner = owner
         self.repo = repo
         self.token = token or os.environ.get("GITHUB_TOKEN", "")
@@ -96,7 +96,7 @@ class CodeQLAlertFetcher:
         # nosemgrep: url-substring-check - GitHub API base for alert retrieval
         self.base_url = "https://api.github.com"
         self.session = requests.Session()
-        
+
         if self.token:
             self.session.headers.update({
                 "Authorization": f"token {self.token}",
@@ -105,7 +105,7 @@ class CodeQLAlertFetcher:
             })
         else:
             logger.warning("No GitHub token provided. Rate limits will be lower.")
-    
+
     def fetch_all_alerts(
         self,
         state: str = "open",
@@ -114,28 +114,28 @@ class CodeQLAlertFetcher:
     ) -> List[CodeScanningAlert]:
         """
         Fetch all code scanning alerts with pagination.
-        
+
         Args:
             state: Alert state ("open", "closed", "dismissed", "fixed")
             severity: Filter by severity ("critical", "high", "medium", "low")
             ref: Git reference (branch/tag) to filter by
-            
+
         Returns:
             List of CodeScanningAlert objects
         """
         all_alerts = []
         page = 1
         per_page = 100  # Maximum allowed by GitHub API
-        
+
         logger.info(f"Fetching {state} alerts for {self.owner}/{self.repo}")
-        
+
         while True:
             if self.max_pages and page > self.max_pages:
                 logger.info(f"Reached max_pages limit ({self.max_pages})")
                 break
-            
+
             logger.info(f"Fetching page {page}...")
-            
+
             # Build query parameters
             params = {
                 "state": state,
@@ -146,13 +146,13 @@ class CodeQLAlertFetcher:
                 params["severity"] = severity
             if ref:
                 params["ref"] = ref
-            
+
             # Make API request
             url = f"{self.base_url}/repos/{self.owner}/{self.repo}/code-scanning/alerts"
-            
+
             try:
                 response = self.session.get(url, params=params, timeout=30)
-                
+
                 # Check rate limits
                 remaining = int(response.headers.get("X-RateLimit-Remaining", 0))
                 if remaining < 10:
@@ -160,26 +160,26 @@ class CodeQLAlertFetcher:
                     wait_seconds = max(reset_time - time.time(), 0) + 1
                     logger.warning(f"Rate limit low ({remaining}). Waiting {wait_seconds}s...")
                     time.sleep(wait_seconds)
-                
+
                 if response.status_code == 200:
                     alerts_data = response.json()
-                    
+
                     if not alerts_data:
                         logger.info(f"No more alerts found (page {page})")
                         break
-                    
+
                     # Parse alerts
                     for alert_data in alerts_data:
                         alert = self._parse_alert(alert_data)
                         if alert:
                             all_alerts.append(alert)
-                    
+
                     logger.info(f"  Found {len(alerts_data)} alerts on page {page}")
                     page += 1
-                    
+
                     # Rate limiting: be nice to the API
                     time.sleep(0.5)
-                    
+
                 elif response.status_code == 403:
                     logger.error("API rate limit exceeded or insufficient permissions")
                     break
@@ -189,14 +189,14 @@ class CodeQLAlertFetcher:
                 else:
                     logger.error(f"API request failed: {response.status_code} - {response.text}")
                     break
-                    
+
             except requests.exceptions.RequestException as e:
                 logger.error(f"Request error on page {page}: {e}")
                 break
-        
+
         logger.info(f"Total alerts fetched: {len(all_alerts)}")
         return all_alerts
-    
+
     def _parse_alert(self, data: Dict[str, Any]) -> Optional[CodeScanningAlert]:
         """Parse GitHub API alert data into CodeScanningAlert."""
         try:
@@ -205,24 +205,24 @@ class CodeQLAlertFetcher:
             rule_id = rule.get("id", "unknown")
             severity = rule.get("severity", "medium")
             description = rule.get("description") or rule.get("name", "Unknown vulnerability")
-            
+
             # Extract location information
             most_recent = data.get("most_recent_instance", {})
             location = most_recent.get("location", {})
             file_path = location.get("path", "unknown")
             line_start = location.get("start_line", 0)
             line_end = location.get("end_line", 0)
-            
+
             # Extract CWE ID
             cwe_id = self._extract_cwe_id(rule)
-            
+
             # Extract dismissal information
             dismissed_reason = data.get("dismissed_reason")
             dismissed_comment = data.get("dismissed_comment")
-            
+
             # Tool information
             tool_name = data.get("tool", {}).get("name", "CodeQL")
-            
+
             return CodeScanningAlert(
                 alert_number=data.get("number", 0),
                 rule_id=rule_id,
@@ -246,11 +246,11 @@ class CodeQLAlertFetcher:
                     "dismissed_by": data.get("dismissed_by", {}).get("login") if data.get("dismissed_by") else None,
                 }
             )
-            
+
         except Exception as e:
             logger.warning(f"Error parsing alert: {e}")
             return None
-    
+
     def _extract_cwe_id(self, rule: Dict[str, Any]) -> Optional[str]:
         """Extract CWE ID from rule tags."""
         tags = rule.get("tags", [])
@@ -258,66 +258,66 @@ class CodeQLAlertFetcher:
             if tag.startswith("external/cwe/cwe-"):
                 return f"CWE-{tag.split('-')[-1]}"
         return None
-    
+
     def _determine_category(self, rule_id: str) -> str:
         """Determine vulnerability category from rule ID."""
         rule_lower = rule_id.lower()
-        
+
         # Injection vulnerabilities
         if any(x in rule_lower for x in ["sql", "command", "injection", "xss"]):
             return "injection"
-        
+
         # Path traversal
         if any(x in rule_lower for x in ["path", "traversal", "file"]):
             return "path-traversal"
-        
+
         # Cryptographic issues
         if any(x in rule_lower for x in ["crypto", "hash", "secret", "password"]):
             return "cryptography"
-        
+
         # Authentication/Authorization
         if any(x in rule_lower for x in ["auth", "session", "token", "jwt"]):
             return "authentication"
-        
+
         # Information disclosure
         if any(x in rule_lower for x in ["leak", "exposure", "disclosure"]):
             return "information-disclosure"
-        
+
         # Resource management
         if any(x in rule_lower for x in ["resource", "memory", "dos", "loop"]):
             return "resource-management"
-        
+
         return "security"
 
 
 class AlertExporter:
     """Export alerts to various formats."""
-    
+
     @staticmethod
     def export_json(alerts: List[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to JSON format."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         data = {
             "exported_at": datetime.utcnow().isoformat() + "Z",
             "total_alerts": len(alerts),
             "alerts": [alert.to_dict() for alert in alerts]
         }
-        
+
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
-        
+
         logger.info(f"Exported {len(alerts)} alerts to JSON: {output_path}")
-    
+
     @staticmethod
     def export_csv(alerts: List[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to CSV format."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         if not alerts:
             logger.warning("No alerts to export to CSV")
             return
-        
+
         # Get all field names (excluding metadata for simplicity)
         fieldnames = [
             "alert_number", "rule_id", "severity", "state", "file_path",
@@ -325,33 +325,33 @@ class AlertExporter:
             "html_url", "cwe_id", "tool_name", "category",
             "dismissed_reason", "dismissed_comment"
         ]
-        
+
         with open(output_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            
+
             for alert in alerts:
                 row = {k: v for k, v in alert.to_dict().items() if k in fieldnames}
                 writer.writerow(row)
-        
+
         logger.info(f"Exported {len(alerts)} alerts to CSV: {output_path}")
-    
+
     @staticmethod
     def export_markdown(alerts: List[CodeScanningAlert], output_path: Path) -> None:
         """Export alerts to Markdown format with summary statistics."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Calculate statistics
         total = len(alerts)
         by_severity = {}
         by_category = {}
         by_state = {}
-        
+
         for alert in alerts:
             by_severity[alert.severity] = by_severity.get(alert.severity, 0) + 1
             by_category[alert.category] = by_category.get(alert.category, 0) + 1
             by_state[alert.state] = by_state.get(alert.state, 0) + 1
-        
+
         # Generate markdown
         lines = [
             "# CodeQL Code Scanning Alerts",
@@ -366,12 +366,12 @@ class AlertExporter:
             "| Severity | Count | Percentage |",
             "|----------|-------|------------|",
         ]
-        
+
         for severity in ["critical", "high", "medium", "low", "warning", "note"]:
             count = by_severity.get(severity, 0)
             pct = (count / total * 100) if total > 0 else 0
             lines.append(f"| {severity.title()} | {count} | {pct:.1f}% |")
-        
+
         lines.extend([
             "",
             "### By Category",
@@ -379,11 +379,11 @@ class AlertExporter:
             "| Category | Count | Percentage |",
             "|----------|-------|------------|",
         ])
-        
+
         for category, count in sorted(by_category.items(), key=lambda x: -x[1]):
             pct = (count / total * 100) if total > 0 else 0
             lines.append(f"| {category} | {count} | {pct:.1f}% |")
-        
+
         lines.extend([
             "",
             "### By State",
@@ -391,11 +391,11 @@ class AlertExporter:
             "| State | Count | Percentage |",
             "|-------|-------|------------|",
         ])
-        
+
         for state, count in sorted(by_state.items(), key=lambda x: -x[1]):
             pct = (count / total * 100) if total > 0 else 0
             lines.append(f"| {state.title()} | {count} | {pct:.1f}% |")
-        
+
         lines.extend([
             "",
             "## 🔍 Alert Details",
@@ -403,14 +403,14 @@ class AlertExporter:
             "| # | Severity | Rule | File | Line | State |",
             "|---|----------|------|------|------|-------|",
         ])
-        
+
         # Sort by severity then alert number
         severity_order = {"critical": 0, "high": 1, "medium": 2, "low": 3, "warning": 4, "note": 5}
         sorted_alerts = sorted(
             alerts,
             key=lambda a: (severity_order.get(a.severity, 99), -a.alert_number)
         )
-        
+
         for alert in sorted_alerts[:100]:  # Limit to first 100 for readability
             lines.append(
                 f"| [{alert.alert_number}]({alert.html_url}) | "
@@ -418,13 +418,13 @@ class AlertExporter:
                 f"`{alert.file_path}` | {alert.line_start} | "
                 f"{alert.state} |"
             )
-        
+
         if total > 100:
             lines.append(f"\n*Showing first 100 of {total} alerts. See JSON/CSV for complete data.*")
-        
+
         with open(output_path, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
-        
+
         logger.info(f"Exported alert summary to Markdown: {output_path}")
 
 
@@ -437,18 +437,18 @@ def main() -> int:
 Examples:
   # Fetch all open alerts
   %(prog)s --owner Aries-Serpent --repo _codex_
-  
+
   # Fetch only critical/high severity alerts
   %(prog)s --owner Aries-Serpent --repo _codex_ --severity high
-  
+
   # Fetch first 10 pages only (for testing)
   %(prog)s --owner Aries-Serpent --repo _codex_ --max-pages 10
-  
+
   # Export to specific directory
   %(prog)s --owner Aries-Serpent --repo _codex_ --output-dir /tmp/alerts
         """
     )
-    
+
     parser.add_argument(
         "--owner",
         default="Aries-Serpent",
@@ -494,12 +494,12 @@ Examples:
         action="store_true",
         help="Enable verbose output"
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     # Initialize fetcher
     try:
         fetcher = CodeQLAlertFetcher(
@@ -511,7 +511,7 @@ Examples:
     except ImportError as e:
         logger.error(str(e))
         return 1
-    
+
     # Fetch alerts
     logger.info("Starting alert fetch...")
     alerts = fetcher.fetch_all_alerts(
@@ -519,27 +519,27 @@ Examples:
         severity=args.severity,
         ref=args.ref
     )
-    
+
     if not alerts:
         logger.warning("No alerts found")
         return 0
-    
+
     # Export to multiple formats
     exporter = AlertExporter()
-    
+
     json_path = args.output_dir / "alert_inventory.json"
     exporter.export_json(alerts, json_path)
-    
+
     csv_path = args.output_dir / "alert_inventory.csv"
     exporter.export_csv(alerts, csv_path)
-    
+
     md_path = args.output_dir / "alert_summary.md"
     exporter.export_markdown(alerts, md_path)
-    
+
     logger.info("✅ Alert fetch complete!")
     logger.info(f"📁 Output directory: {args.output_dir}")
     logger.info(f"📊 Total alerts: {len(alerts)}")
-    
+
     return 0
 
 

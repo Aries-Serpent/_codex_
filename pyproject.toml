@@ -12,8 +12,8 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
-license = {text = "MIT"}
+requires-python = ">=3.11,<3.13"  # Temporarily support 3.11 for base branch CI compatibility
+license = "MIT"
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -294,6 +294,7 @@ codex-audit-runner = "cli.audit_runner_root:main"
 codex-status-audit = "cli.status_audit:main"
 
 [tool.setuptools]
+license-files = ["LICENSE", "LICENSES/*"]
 
 [tool.setuptools.package-dir]
 "" = "src"
@@ -309,6 +310,7 @@ tools = "tools"
 training = "src/training"
 examples = "examples"
 cli = "cli"
+services = "services"
 
 [tool.setuptools.packages.find]
 where = [".", "src"]
@@ -320,7 +322,7 @@ include = [
   "cli*",
   "common*",
   "cognitive_brain*",
-  # NOTE: services* intentionally excluded - see AGENTS.md "Project Structure" section for services/ layout and import patterns.
+  "services*",  # Re-enabled: Tests need to import from services/ directory
   # Root services/ contains application entry points (not library code), src/services/ is imported as src.services.*
   "tokenization*",
   "training*",
@@ -438,14 +440,8 @@ ignore = []
 profile = "black"
 line_length = 100
 
-[tool.pytest.ini_options]
-addopts = "-q"
-markers = [
-    "smoke: quick smoke tests for CLI",
-    "integration: integration tests",
-    "slow: slow/resource-intensive tests",
-    "templates: documentation template validation",
-]
+# Pytest configuration is in pytest.ini (avoids config conflicts)
+# See: pytest.ini for complete test configuration including markers, addopts, and filterwarnings
 
 [tool.coverage.run]
 branch = true

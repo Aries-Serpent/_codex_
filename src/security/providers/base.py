@@ -84,10 +84,10 @@ class ValidationError(SecretProviderError):
 
 class SecretProvider(ABC):
     """Abstract base class for secret providers.
-    
+
     All secret management providers must implement this interface
     to support token rotation, validation, and metadata retrieval.
-    
+
     Example:
         >>> class MyProvider(SecretProvider):
         ...     def rotate_secret(self, secret_id: str) -> RotationResult:
@@ -102,14 +102,14 @@ class SecretProvider(ABC):
         **kwargs: Any
     ) -> RotationResult:
         """Rotate a secret to a new value.
-        
+
         Args:
             secret_id: Identifier of secret to rotate
             **kwargs: Provider-specific options
-            
+
         Returns:
             RotationResult with new secret details
-            
+
         Raises:
             RotationError: If rotation fails
         """
@@ -122,14 +122,14 @@ class SecretProvider(ABC):
         secret_value: Optional[str] = None
     ) -> bool:
         """Validate a secret is valid and not expired.
-        
+
         Args:
             secret_id: Identifier of secret to validate
             secret_value: Optional secret value to validate
-            
+
         Returns:
             True if secret is valid
-            
+
         Raises:
             ValidationError: If validation fails
         """
@@ -138,13 +138,13 @@ class SecretProvider(ABC):
     @abstractmethod
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get metadata about a secret.
-        
+
         Args:
             secret_id: Identifier of secret
-            
+
         Returns:
             SecretMetadata with secret details
-            
+
         Raises:
             SecretProviderError: If secret not found
         """
@@ -153,13 +153,13 @@ class SecretProvider(ABC):
     @abstractmethod
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get expiration date of a secret.
-        
+
         Args:
             secret_id: Identifier of secret
-            
+
         Returns:
             Expiration datetime or None if no expiration
-            
+
         Raises:
             SecretProviderError: If secret not found
         """
@@ -167,13 +167,13 @@ class SecretProvider(ABC):
 
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get scopes/permissions associated with a secret.
-        
+
         Default implementation returns empty list.
         Override in providers that support scopes (e.g., GitHub).
-        
+
         Args:
             secret_id: Identifier of secret
-            
+
         Returns:
             List of scope strings
         """
@@ -181,16 +181,16 @@ class SecretProvider(ABC):
 
     def revoke_secret(self, secret_id: str) -> bool:
         """Revoke a secret immediately.
-        
+
         Default implementation raises NotImplementedError.
         Override in providers that support revocation.
-        
+
         Args:
             secret_id: Identifier of secret to revoke
-            
+
         Returns:
             True if revoked successfully
-            
+
         Raises:
             NotImplementedError: If provider doesn't support revocation
         """
@@ -203,16 +203,16 @@ class SecretProvider(ABC):
         filter_tags: Optional[Dict[str, str]] = None
     ) -> List[SecretMetadata]:
         """List all secrets managed by this provider.
-        
+
         Default implementation raises NotImplementedError.
         Override in providers that support listing.
-        
+
         Args:
             filter_tags: Optional tags to filter by
-            
+
         Returns:
             List of SecretMetadata
-            
+
         Raises:
             NotImplementedError: If provider doesn't support listing
         """
@@ -224,7 +224,7 @@ class SecretProvider(ABC):
     @abstractmethod
     def provider_type(self) -> ProviderType:
         """Get the provider type.
-        
+
         Returns:
             ProviderType enum value
         """
@@ -233,7 +233,7 @@ class SecretProvider(ABC):
     @property
     def provider_name(self) -> str:
         """Get human-readable provider name with proper acronym capitalization.
-        
+
         Returns:
             Provider name string with correct casing for brands/acronyms
         """
@@ -258,7 +258,7 @@ class SecretProvider(ABC):
 
 class TokenProvider(SecretProvider):
     """Specialized provider for API tokens/personal access tokens.
-    
+
     Extends SecretProvider with token-specific functionality.
     """
 
@@ -270,15 +270,15 @@ class TokenProvider(SecretProvider):
         expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create a new token.
-        
+
         Args:
             name: Human-readable token name
             scopes: List of scopes/permissions
             expires_in_days: Optional expiration (days from now)
-            
+
         Returns:
             RotationResult with new token details
-            
+
         Raises:
             SecretProviderError: If creation fails
         """
@@ -291,14 +291,14 @@ class TokenProvider(SecretProvider):
         scopes: List[str]
     ) -> bool:
         """Update scopes for an existing token.
-        
+
         Args:
             secret_id: Identifier of token
             scopes: New list of scopes
-            
+
         Returns:
             True if updated successfully
-            
+
         Raises:
             SecretProviderError: If update fails
         """
@@ -307,7 +307,7 @@ class TokenProvider(SecretProvider):
 
 class ProviderConfig:
     """Configuration for secret providers.
-    
+
     Example:
         >>> config = ProviderConfig(
         ...     provider_type=ProviderType.AWS_SECRETS_MANAGER,
@@ -325,7 +325,7 @@ class ProviderConfig:
         **config: Any
     ):
         """Initialize provider configuration.
-        
+
         Args:
             provider_type: Type of provider
             **config: Provider-specific configuration
@@ -335,11 +335,11 @@ class ProviderConfig:
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value.
-        
+
         Args:
             key: Configuration key
             default: Default value if key not found
-            
+
         Returns:
             Configuration value
         """
@@ -347,13 +347,13 @@ class ProviderConfig:
 
     def require(self, key: str) -> Any:
         """Get required configuration value.
-        
+
         Args:
             key: Configuration key
-            
+
         Returns:
             Configuration value
-            
+
         Raises:
             ProviderConfigError: If key not found
         """

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/env/export_env_json.py [options]
-    
+
     Examples:
     $ python scripts/env/export_env_json.py --help
 
@@ -33,6 +33,7 @@ Last Updated: 2026-01-16
 
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 import platform
 import subprocess

@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
+import logging
 import subprocess
 import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
 
 def python_version() -> str:
     return ".".join(map(str, sys.version_info[:3]))

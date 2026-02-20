@@ -151,7 +151,7 @@ output_path = ROOT / ".github/audit_artifacts_output/audit_artifacts_validation.
 output_path.parent.mkdir(parents=True, exist_ok=True)
 output_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
 
-print(f"\nValidation Summary:")
+print("\nValidation Summary:")
 print(f"  Required files: {total_required}")
 print(f"  Passed: {required_passed}")
 print(f"  Failed: {total_required - required_passed}")

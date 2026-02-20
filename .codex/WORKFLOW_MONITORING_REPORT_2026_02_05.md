@@ -25,7 +25,7 @@
 - **Completed**: 2026-02-05T06:05:00Z
 - **Duration**: 11 minutes 14 seconds
 - **Conclusion**: failure
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569785
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569785 <!-- Note: Logs expire after 90 days -->
 
 **Job Details**:
 - Job ID: 62580038085
@@ -39,7 +39,7 @@
 - **Completed**: 2026-02-05T06:07:05Z
 - **Duration**: 13 minutes 19 seconds
 - **Conclusion**: failure
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569790
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569790 <!-- Note: Logs expire after 90 days -->
 
 **Job Details**:
 - Multiple jobs failed including Python 3.12 Tests and Test Summary
@@ -51,7 +51,7 @@
 - **Completed**: 2026-02-05T06:27:26Z
 - **Duration**: 33 minutes 40 seconds
 - **Conclusion**: success ✅
-- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569779
+- **URL**: https://github.com/Aries-Serpent/_codex_/actions/runs/21700569779 <!-- Note: Logs expire after 90 days -->
 
 **Note**: This workflow completed successfully and is no longer "in progress" as stated in initial problem statement.
 

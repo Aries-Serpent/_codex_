@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Utilities for establishing deterministic seeds across common libraries."""
 
 
-import os
-import random
-from typing import Any
+import os  # noqa: E402
+import random  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:
     import numpy as np  # type: ignore
@@ -108,7 +108,8 @@ def set_all_seeds(seed: int = 1337, deterministic: bool = True) -> dict[str, Any
         structured logging during smoke tests.
     """
 
-    os.environ.setdefault("PYTHONHASHSEED", str(seed))
+    # Always set PYTHONHASHSEED to ensure reproducibility
+    os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     _set_numpy_seed(seed)
     torch_info = _set_torch_seed(seed, deterministic)

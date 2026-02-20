@@ -38,13 +38,13 @@ _JSON_INJECTION_PATTERN = re.compile(r"__proto__|constructor|prototype", re.IGNO
 
 def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     """Sanitize user input for safe logging (prevents log injection).
-    
+
     Removes newlines, control characters, and truncates to prevent log poisoning.
-    
+
     Args:
         value: Input value to sanitize
         max_length: Maximum length of output (default: 200)
-    
+
     Returns:
         Sanitized string safe for logging
     """
@@ -67,10 +67,15 @@ def _ensure_str(value: Any) -> str:
 
 def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] = "html") -> str:
     """Sanitize user generated content for safe rendering.
-    
+
     Security: Uses proper HTML parsing instead of regex to prevent XSS and ReDoS attacks.
     """
     text = _ensure_str(value)
+
+    # Remove dangerous URL protocols (javascript:, data:, vbscript:) before HTML escaping
+    # This prevents XSS attacks via URL schemes that bypass HTML entity escaping
+    for pattern in XSS_PATTERNS:
+        text = pattern.sub("", text)
 
     if content_type == "html":
         # Use html.escape for HTML content (safe and efficient)
@@ -160,13 +165,13 @@ def _validate_path_input(value: str) -> None:
 
 def enforce_absolute_path(path: str) -> Path:
     """Validate and enforce absolute path requirements.
-    
+
     Args:
         path: Path string to validate
-        
+
     Returns:
         Validated absolute Path object
-        
+
     Raises:
         SecurityError: If path contains relative components or traversal
     """
@@ -185,14 +190,14 @@ def enforce_absolute_path(path: str) -> Path:
 
 def sanitize_path(path: Path, base_dir: Path) -> Path:
     """Sanitize and validate a path within a base directory.
-    
+
     Args:
         path: Path to sanitize
         base_dir: Base directory to constrain path within
-        
+
     Returns:
         Sanitized absolute Path object
-        
+
     Raises:
         ValueError: If path escapes base_dir or contains traversal
     """
@@ -211,11 +216,11 @@ def sanitize_path(path: Path, base_dir: Path) -> Path:
 
 def check_permissions(path: Path, mode: str) -> bool:
     """Check if a path has the specified permissions.
-    
+
     Args:
         path: Path to check
         mode: Permission mode ('read', 'write', 'execute')
-        
+
     Returns:
         True if path has the specified permission
     """

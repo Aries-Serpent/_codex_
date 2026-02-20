@@ -5,12 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from dataclasses import dataclass, asdict
+import sys
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, List
-
-import sys
-
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
@@ -18,10 +16,10 @@ if str(REPO_ROOT) not in sys.path:
 
 STRICT = os.getenv("CODEX_VALIDATION_STRICT", "0") == "1"
 
-from tools import detect_gaps
-from tools.analyze_code_entropy import analyze_paths, iter_files
-from tools.analyze_import_paths import analyze_coupling
-from tools.find_untested_modules import find_missing_tests
+from tools import detect_gaps  # noqa: E402
+from tools.analyze_code_entropy import analyze_paths, iter_files  # noqa: E402
+from tools.analyze_import_paths import analyze_coupling  # noqa: E402
+from tools.find_untested_modules import find_missing_tests  # noqa: E402
 
 
 @dataclass

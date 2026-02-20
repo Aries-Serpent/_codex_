@@ -54,7 +54,7 @@ class RoutingDecision:
 class BrainMLBridge:
     """
     Bridge between cognitive brain and ML models.
-    
+
     Provides ML-enhanced functionality to the cognitive brain system.
     """
 
@@ -65,7 +65,7 @@ class BrainMLBridge:
     ) -> None:
         """
         Initialize the bridge.
-        
+
         Args:
             pattern_store_path: Path to pattern learning store JSON
             model_cache_path: Optional path to cache trained models
@@ -92,10 +92,10 @@ class BrainMLBridge:
     def train_from_pattern_store(self, pattern_store_path: Path | str | None = None) -> int:
         """
         Train ML models from pattern store data.
-        
+
         Args:
             pattern_store_path: Override path to pattern store
-            
+
         Returns:
             Number of samples used for training
         """
@@ -158,11 +158,11 @@ class BrainMLBridge:
     ) -> MLEnhancedQueryResult:
         """
         Perform ML-enhanced pattern query.
-        
+
         Args:
             brain_interface: The agent's brain interface
             query: Query string
-            
+
         Returns:
             Enhanced query result with ML insights
         """
@@ -224,11 +224,11 @@ class BrainMLBridge:
     def get_recommendations(self, query: str, top_k: int = 3) -> list[dict[str, Any]]:
         """
         Get ML-based resolution recommendations.
-        
+
         Args:
             query: Query/symptom string
             top_k: Number of recommendations to return
-            
+
         Returns:
             List of recommended resolutions with scores
         """
@@ -253,10 +253,10 @@ class BrainMLBridge:
     def save_models(self, path: Path | str | None = None) -> bool:
         """
         Save trained models to disk.
-        
+
         Args:
             path: Path to save models
-            
+
         Returns:
             True if successful
         """
@@ -285,10 +285,10 @@ class BrainMLBridge:
     def load_models(self, path: Path | str | None = None) -> bool:
         """
         Load trained models from disk.
-        
+
         Args:
             path: Path to load models from
-            
+
         Returns:
             True if successful
         """
@@ -308,14 +308,14 @@ class BrainMLBridge:
 class EnhancedAgentRouter:
     """
     ML-enhanced agent routing.
-    
+
     Uses ML classification to make smarter routing decisions.
     """
 
     def __init__(self, bridge: BrainMLBridge | None = None) -> None:
         """
         Initialize the router.
-        
+
         Args:
             bridge: ML bridge instance (creates new if not provided)
         """
@@ -324,10 +324,10 @@ class EnhancedAgentRouter:
     def route(self, symptom: str) -> RoutingDecision:
         """
         Make an ML-enhanced routing decision.
-        
+
         Args:
             symptom: The symptom/issue description
-            
+
         Returns:
             Routing decision with primary and fallback agents
         """
@@ -362,10 +362,10 @@ class EnhancedAgentRouter:
     def route_batch(self, symptoms: list[str]) -> list[RoutingDecision]:
         """
         Route multiple symptoms.
-        
+
         Args:
             symptoms: List of symptom descriptions
-            
+
         Returns:
             List of routing decisions
         """
@@ -375,14 +375,14 @@ class EnhancedAgentRouter:
 class MLEnhancedPatternMatcher:
     """
     ML-enhanced pattern matching.
-    
+
     Combines traditional pattern matching with ML classification.
     """
 
     def __init__(self, bridge: BrainMLBridge | None = None) -> None:
         """
         Initialize the matcher.
-        
+
         Args:
             bridge: ML bridge instance
         """
@@ -397,12 +397,12 @@ class MLEnhancedPatternMatcher:
     ) -> list[dict[str, Any]]:
         """
         Match query against patterns using ML enhancement.
-        
+
         Args:
             query: Query string
             patterns: List of patterns to match against
             threshold: Minimum similarity threshold
-            
+
         Returns:
             Matched patterns with scores
         """
@@ -471,7 +471,7 @@ class MLEnhancedPatternMatcher:
 class IntegratedPipeline:
     """
     Complete integrated ML pipeline for cognitive brain.
-    
+
     Combines all ML components into a unified interface.
     """
 
@@ -482,7 +482,7 @@ class IntegratedPipeline:
     ) -> None:
         """
         Initialize the integrated pipeline.
-        
+
         Args:
             pattern_store_path: Path to pattern store
             auto_train: Whether to auto-train on initialization
@@ -506,11 +506,11 @@ class IntegratedPipeline:
     ) -> dict[str, Any]:
         """
         Process a symptom through the complete pipeline.
-        
+
         Args:
             symptom: The symptom/issue description
             brain_interface: Optional brain interface for context
-            
+
         Returns:
             Complete analysis results
         """
@@ -554,10 +554,10 @@ class IntegratedPipeline:
     ) -> list[dict[str, Any]]:
         """
         Process multiple symptoms.
-        
+
         Args:
             symptoms: List of symptom descriptions
-            
+
         Returns:
             List of analysis results
         """
@@ -582,13 +582,13 @@ def create_integrated_pipeline(
 ) -> IntegratedPipeline:
     """
     Create an integrated ML pipeline.
-    
+
     Convenience function for creating the pipeline.
-    
+
     Args:
         pattern_store_path: Path to pattern store
         auto_train: Whether to auto-train
-        
+
     Returns:
         Configured IntegratedPipeline instance
     """
@@ -604,13 +604,13 @@ def enhance_brain_with_ml(
 ) -> MLEnhancedQueryResult:
     """
     Enhance a brain interface query with ML.
-    
+
     Convenience function for one-off ML enhancement.
-    
+
     Args:
         brain_interface: The brain interface to enhance
         bridge: Optional pre-configured bridge
-        
+
     Returns:
         Enhanced query result
     """

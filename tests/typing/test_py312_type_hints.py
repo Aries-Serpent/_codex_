@@ -7,7 +7,7 @@ Tests PEP 585 (list[T]), PEP 604 (X | Y), and generic types.
 from __future__ import annotations
 
 import sys
-from typing import Any, Callable, TypeVar, get_type_hints
+from typing import Any, Callable, Literal, Optional, TypeVar, Union, get_type_hints
 
 import pytest
 
@@ -169,8 +169,7 @@ class TestTypeHintCompatibility:
 
     def test_optional_style_variations(self):
         """Test different ways to express Optional."""
-        from typing import Optional
-
+        # Optional is already imported at module level
         # Old style
         def func1(x: Optional[str]) -> Optional[int]:
             return len(x) if x else None
@@ -188,8 +187,7 @@ class TestTypeHintCompatibility:
 
     def test_union_style_variations(self):
         """Test different ways to express Union."""
-        from typing import Union
-
+        # Union is already imported at module level
         # Old style
         def func1(x: Union[str, int]) -> Union[str, None]:
             return str(x) if isinstance(x, int) else x
@@ -245,8 +243,7 @@ class TestPython312SpecificFeatures:
 
     def test_literal_types(self):
         """Test Literal types work in Python 3.12."""
-        from typing import Literal
-
+        # Literal is already imported at module level
         def set_mode(mode: Literal["train", "eval", "test"]) -> str:
             return f"Mode: {mode}"
 

@@ -72,7 +72,7 @@ class ContentDiffResult:
     @property
     def has_changes(self) -> bool:
         """Check if there are any changes between old and new content.
-        
+
         Returns:
             True if changes were detected, False otherwise
         """
@@ -97,10 +97,10 @@ class ContentDiffResult:
 
     def should_sync(self, min_change_ratio: float = 0.01) -> bool:
         """Determine if content should be synced based on change ratio.
-        
+
         Args:
             min_change_ratio: Minimum change ratio to trigger sync (default 1%)
-            
+
         Returns:
             True if content should be synced
         """
@@ -109,7 +109,7 @@ class ContentDiffResult:
 
 class ContentDiffer:
     """Intelligent content differ for knowledge base articles.
-    
+
     Features:
     - Line-by-line diff comparison
     - Change classification (minor/moderate/major)
@@ -129,7 +129,7 @@ class ContentDiffer:
         ignore_whitespace: bool = True,
     ):
         """Initialize the content differ.
-        
+
         Args:
             min_change_ratio: Minimum change to report (default 1%)
             strip_html: Strip HTML tags before comparison
@@ -146,10 +146,10 @@ class ContentDiffer:
 
     def _normalize_content(self, content: str) -> str:
         """Normalize content for comparison.
-        
+
         Args:
             content: Raw content string
-            
+
         Returns:
             Normalized content
         """
@@ -168,10 +168,10 @@ class ContentDiffer:
 
     def _classify_change(self, change_ratio: float) -> ChangeType:
         """Classify the change based on ratio.
-        
+
         Args:
             change_ratio: Ratio of change (0.0 to 1.0)
-            
+
         Returns:
             ChangeType classification
         """
@@ -193,12 +193,12 @@ class ContentDiffer:
         normalize: bool = True,
     ) -> ContentDiffResult:
         """Compute diff between old and new content.
-        
+
         Args:
             old_content: Previous content version
             new_content: New content version
             normalize: Whether to normalize content before comparison
-            
+
         Returns:
             ContentDiffResult with detailed diff information
         """
@@ -267,11 +267,11 @@ class ContentDiffer:
         new_lines: List[str],
     ) -> List[DiffSegment]:
         """Extract changed segments from line diff.
-        
+
         Args:
             old_lines: Lines from old content
             new_lines: Lines from new content
-            
+
         Returns:
             List of DiffSegment objects
         """
@@ -343,11 +343,11 @@ class ContentDiffer:
         new_content: str,
     ) -> Tuple[bool, ChangeType, float]:
         """Quick check if content should be resynced.
-        
+
         Args:
             old_content: Previous content version
             new_content: New content version
-            
+
         Returns:
             Tuple of (should_resync, change_type, change_ratio)
         """
@@ -361,7 +361,7 @@ class ContentDiffer:
 
 class IncrementalSyncDecider:
     """Decision logic for incremental sync based on content diffs.
-    
+
     Uses content diffing to determine the optimal sync strategy:
     - Skip: No changes or changes below threshold
     - Micro-update: Minor changes, update only changed sections
@@ -375,7 +375,7 @@ class IncrementalSyncDecider:
         full_update_threshold: float = 0.50,  # >50% change
     ):
         """Initialize the sync decider.
-        
+
         Args:
             differ: ContentDiffer instance
             micro_update_threshold: Max change for micro-update
@@ -391,11 +391,11 @@ class IncrementalSyncDecider:
         new_content: str,
     ) -> Dict[str, Any]:
         """Decide sync strategy for content change.
-        
+
         Args:
             old_content: Previous content version
             new_content: New content version
-            
+
         Returns:
             Decision dictionary with strategy and metadata
         """
@@ -437,10 +437,10 @@ class IncrementalSyncDecider:
 
 class SemanticDiffer:
     """Semantic content differ using embeddings.
-    
+
     PS-06 P4 Enhancement: Upgrades content diffing from line-based to
     semantic-based using embeddings to reduce noise in knowledge drift alerts.
-    
+
     Example:
         >>> differ = SemanticDiffer(similarity_threshold=0.98)
         >>> result = differ.compute_semantic_diff(old_text, new_text)
@@ -455,7 +455,7 @@ class SemanticDiffer:
         ngram_range: tuple = (1, 2),
     ):
         """Initialize semantic differ.
-        
+
         Args:
             similarity_threshold: Cosine similarity threshold (0.98 = 98% similar)
             use_embeddings: Use embeddings for comparison (fallback to TF-IDF)
@@ -491,11 +491,11 @@ class SemanticDiffer:
         text2: str
     ) -> float:
         """Compute semantic similarity between two texts.
-        
+
         Args:
             text1: First text
             text2: Second text
-            
+
         Returns:
             Cosine similarity score (0.0 to 1.0)
         """
@@ -520,11 +520,11 @@ class SemanticDiffer:
 
     def _basic_similarity(self, text1: str, text2: str) -> float:
         """Text similarity, preferring TF-IDF cosine similarity when available.
-        
+
         Args:
             text1: First text
             text2: Second text
-            
+
         Returns:
             Similarity score (0.0 to 1.0)
         """
@@ -562,11 +562,11 @@ class SemanticDiffer:
         new_content: str
     ) -> Dict[str, Any]:
         """Compute semantic diff between content versions.
-        
+
         Args:
             old_content: Original content
             new_content: New content
-            
+
         Returns:
             Dictionary with semantic diff results
         """
@@ -606,13 +606,13 @@ class SemanticDiffer:
 
     def _normalize_text(self, text: str) -> str:
         """Normalize text for semantic comparison.
-        
+
         Removes extra whitespace, normalizes line breaks, and
         converts to lowercase for consistent comparison.
-        
+
         Args:
             text: Text to normalize
-            
+
         Returns:
             Normalized text
         """
@@ -633,11 +633,11 @@ class SemanticDiffer:
         new_content: str
     ) -> Tuple[bool, Dict[str, Any]]:
         """Determine if content should be resynced based on semantic diff.
-        
+
         Args:
             old_content: Original content
             new_content: New content
-            
+
         Returns:
             Tuple of (should_resync, diff_details)
         """

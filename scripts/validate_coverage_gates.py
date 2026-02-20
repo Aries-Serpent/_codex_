@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/validate_coverage_gates.py [options]
-    
+
     Examples:
     $ python scripts/validate_coverage_gates.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Validate 3.5% coverage gate enforcement across all test contexts.

@@ -410,7 +410,7 @@ graph TB
 - [MCP Developer Guide](./MCP_DEVELOPER_GUIDE.md) - Implementation guide
 - [MCP Security Guide](./MCP_SECURITY_GUIDE.md) - Security best practices
 - [MCP FAQ](./MCP_FAQ.md) - Frequently asked questions
-- [Quick Start Guide](./QUICK_START.md) - Getting started
+- [Quick Start Guide](QUICK_START.md) - Getting started
 
 ---
 

@@ -444,6 +444,6 @@ Files affected:
 - Iteration-over-iteration improvement: Monitoring active
 
 **Related Documentation**:
-- [Packaging Guide](./PACKAGING_GUIDE.md)
+- [Packaging Guide](PACKAGING_GUIDE.md)
 - [Packageable Capabilities](./PACKAGEABLE_CAPABILITIES.md)
 - [Generic Navigation System](./GENERIC_NAVIGATION_SYSTEM.md)

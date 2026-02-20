@@ -1,0 +1,89 @@
+name: Pre-Flight CI Validation
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'tests/**'
+      - 'pytest.ini'
+      - 'pyproject.toml'
+      - 'scripts/ci/**'
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+    paths:
+      - '.github/workflows/**'
+      - 'tests/**'
+      - 'pytest.ini'
+
+jobs:
+  pre-flight-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Run pre-flight checks
+        id: pre_flight
+        run: |
+          python scripts/ci/pre_flight_check.py
+        continue-on-error: true
+      
+      - name: Comment on PR with results (on failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ⚠️ Pre-Flight CI Validation Failed
+            
+            Common issues were detected that are likely to cause CI failures.
+            
+            ### What to do:
+            
+            1. **Run locally**:
+               \`\`\`bash
+               python scripts/ci/pre_flight_check.py
+               \`\`\`
+            
+            2. **Auto-fix (where possible)**:
+               \`\`\`bash
+               python scripts/ci/pre_flight_check.py --fix
+               \`\`\`
+            
+            3. **Review changes** and commit fixes
+            
+            ### Common Issues:
+            
+            - ❌ Pytest workflows using explicit \`-p\` flags (causes double registration)
+            - ❌ Missing plugin version pinning in workflows
+            - ❌ DummyOptimizer mocks missing \`param_groups\` attribute  
+            - ❌ Module-level \`pytest.importorskip()\` in conftest.py
+            
+            **Correct approach**: Pin plugin versions, NO \`-p\` flags needed (see .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md)
+            
+            ### Reference:
+            
+            - 📋 [CI Failure Tracking Log](.codex/CI_FAILURE_TRACKING_LOG.md)
+            - 📋 [Detailed logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+      
+      - name: Fail if checks didn't pass
+        if: steps.pre_flight.outcome == 'failure'
+        run: |
+          echo "❌ Pre-flight checks failed. See output above for details."
+          exit 1

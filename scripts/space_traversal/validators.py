@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/validators.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/validators.py --help
 

@@ -17,25 +17,24 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import contextlib
 import hashlib
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import mlflow
 except Exception:  # pragma: no cover - mlflow not installed or misconfigured
     mlflow = None  # type: ignore
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
-from .provenance import _read_dvc_lock, collect_dvc_stage
+from .provenance import _read_dvc_lock, collect_dvc_stage  # noqa: E402
 
 
 def _config_fingerprint(cfg: DictConfig) -> str:

@@ -598,7 +598,7 @@ git push origin rollback/remove-genesis
 **Key Documents:**
 - [Guardrails](../guardrails.md) - Operational constraints
 - [Agent Operations](Agent-Operations.md) - Decision framework
-- [AGENTS.md](../../AGENTS.md) - AI agent orientation
+- [AGENTS.md](../../.github/AGENTS.md) - AI agent orientation
 - [Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md) - Detailed instructions
 
 **External Resources:**

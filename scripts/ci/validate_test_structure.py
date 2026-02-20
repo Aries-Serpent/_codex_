@@ -44,12 +44,12 @@ def check_conftest(tests_dir: Path) -> tuple[bool, str]:
     conftest = tests_dir / "conftest.py"
     if not conftest.exists():
         return True, "No conftest.py found (optional)"
-    
+
     try:
         # Add tests directory to path for import
         sys.path.insert(0, str(tests_dir.parent))
         sys.path.insert(0, str(tests_dir.parent / "src"))
-        
+
         # Try to compile it
         with open(conftest, "r", encoding="utf-8") as f:
             compile(f.read(), str(conftest), "exec")
@@ -62,11 +62,11 @@ def main():
     """Run all validation checks."""
     repo_root = Path(__file__).resolve().parent.parent.parent
     tests_dir = repo_root / "tests"
-    
+
     print("=== Test Structure Validation ===")
     print(f"Tests directory: {tests_dir}")
     print()
-    
+
     # Check 1: __init__.py files
     print("Check 1: __init__.py files in test directories")
     missing_init = check_init_files(tests_dir)
@@ -79,7 +79,7 @@ def main():
     else:
         print("✓ All test directories have __init__.py")
     print()
-    
+
     # Check 2: Python syntax
     print("Check 2: Python syntax in test files")
     syntax_errors = check_syntax(tests_dir)
@@ -93,7 +93,7 @@ def main():
     else:
         print("✓ All test files have valid syntax")
     print()
-    
+
     # Check 3: conftest.py
     print("Check 3: conftest.py loading")
     conftest_ok, conftest_msg = check_conftest(tests_dir)
@@ -102,7 +102,7 @@ def main():
     else:
         print(f"⚠️  {conftest_msg}")
     print()
-    
+
     # Summary
     print("=== Validation Summary ===")
     if missing_init:
@@ -112,11 +112,11 @@ def main():
         return 1
     if not conftest_ok:
         print("⚠️  conftest.py has issues (non-blocking)")
-    
+
     if not syntax_errors:
         print("✅ Test structure validation passed")
         return 0
-    
+
     return 1
 
 

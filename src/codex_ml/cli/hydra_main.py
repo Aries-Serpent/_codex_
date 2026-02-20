@@ -13,7 +13,7 @@ import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import yaml
 
@@ -299,7 +299,7 @@ def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
         return 0
 
 
-def main(argv: Sequence[str] | None = None) -> Any:
+def main(argv: Optional[Sequence[str]] = None) -> Any:
     # Check for hydra availability early
     if hydra is None or _hydra_entry is None:
         sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
@@ -391,7 +391,7 @@ def main(argv: Sequence[str] | None = None) -> Any:
 
     backup_argv = sys.argv[:]
     try:
-        sys.argv = [prog_name, *overrides]
+        sys.argv = [parser.prog, *overrides]
         return _hydra_entry()
     finally:
         sys.argv = backup_argv
