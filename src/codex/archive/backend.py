@@ -42,8 +42,7 @@ from . import schema  # noqa: E402
 from .util import ensure_directory, json_dumps_sorted, utcnow  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: F401
-    from .config import ArchiveAppConfig as SettingsArchiveConfig
+    pass  # No imports needed; from __future__ import annotations makes all annotations lazy
 
 Params = dict[str, Any]
 
@@ -68,7 +67,7 @@ class ArchiveConfig:
     @classmethod
     def from_settings(
         cls,
-        settings: RuntimeArchiveConfig | SettingsArchiveConfig,
+        settings: Any,
     ) -> ArchiveConfig:
         """Create a runtime backend config from archive settings."""
 
