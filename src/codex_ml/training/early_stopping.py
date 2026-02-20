@@ -26,11 +26,13 @@ class EarlyStoppingConfig:
 
     Attributes:
         patience: Number of evaluation calls with no improvement before stopping
-        threshold: Minimum change to qualify as improvement
+        threshold: Minimum change to qualify as improvement (alias for min_delta)
+        min_delta: Minimum change to qualify as improvement
         metric: Metric to monitor (default: eval_loss)
         mode: 'min' for loss, 'max' for accuracy
-        enabled: Whether early stopping is enabled (default: True)
+        enabled: Whether early stopping is enabled (default: False)
         monitor: Alias for metric parameter (for compatibility)
+        verbose: Whether to log early stopping events (default: True)
     """
 
     def __init__(
@@ -41,33 +43,53 @@ class EarlyStoppingConfig:
         mode: str = "min",
         enabled: bool = False,
         monitor: Optional[str] = None,
+        min_delta: Optional[float] = None,
+        verbose: bool = True,
     ):
         """Initialize early stopping configuration.
 
         Args:
             patience: Epochs to wait for improvement (default: 3)
-            threshold: Minimum improvement threshold (default: 0.0)
+            threshold: Minimum improvement threshold (default: 0.0, alias for min_delta)
             metric: Metric name to monitor (default: eval_loss)
             mode: 'min' or 'max' (default: min for loss)
             enabled: Whether early stopping is enabled (default: False)
             monitor: Alias for metric parameter (default: None)
+            min_delta: Minimum change to qualify as improvement (default: 1e-4)
+            verbose: Whether to log early stopping events (default: True)
         """
         self.patience = patience
-        self.threshold = threshold
+        # min_delta takes precedence, otherwise use threshold, otherwise default
+        if min_delta is not None:
+            self.min_delta = min_delta
+            self.threshold = min_delta
+        elif threshold != 0.0:
+            self.min_delta = threshold
+            self.threshold = threshold
+        else:
+            self.min_delta = 1e-4
+            self.threshold = 1e-4
         self.metric = monitor if monitor is not None else metric
-        self.monitor = self.metric  # Alias
+        # Default monitor to "val_loss" if metric is still "eval_loss"
+        if self.metric == "eval_loss" and monitor is None:
+            self.monitor = "val_loss"
+        else:
+            self.monitor = self.metric  # Alias
         self.mode = mode
         self.enabled = enabled
+        self.verbose = verbose
 
     def to_dict(self) -> dict[str, Any]:
         """Convert config to dict."""
         return {
             "patience": self.patience,
             "threshold": self.threshold,
+            "min_delta": self.min_delta,
             "metric": self.metric,
             "mode": self.mode,
             "enabled": self.enabled,
             "monitor": self.monitor,
+            "verbose": self.verbose,
         }
 
 
@@ -78,6 +100,12 @@ class EarlyStopping:
         patience: Number of evaluation calls with no improvement before stopping
         monitor: Metric name to monitor
         mode: 'min' for metrics that should decrease, 'max' for metrics that should increase
+        min_delta: Minimum change to qualify as improvement
+        verbose: Whether to log early stopping events
+        wait: Current count of evaluations with no improvement
+        best_value: Best metric value observed
+        best_epoch: Epoch when best value was observed
+        stopped_epoch: Epoch when training was stopped (0 if not stopped)
     """
 
     def __init__(
@@ -85,6 +113,8 @@ class EarlyStopping:
         patience: int = 3,
         monitor: str = "val_loss",
         mode: str = "min",
+        min_delta: float = 0.0,
+        verbose: bool = True,
     ):
         """Initialize early stopping.
 
@@ -92,16 +122,148 @@ class EarlyStopping:
             patience: Epochs to wait for improvement (default: 3)
             monitor: Metric name to monitor (default: val_loss)
             mode: 'min' or 'max' (default: min for loss)
+            min_delta: Minimum change to qualify as improvement (default: 0.0)
+            verbose: Whether to log early stopping events (default: True)
+
+        Raises:
+            ValueError: If patience <= 0 or mode not in ['min', 'max']
         """
+        if patience <= 0:
+            raise ValueError(f"patience must be positive, got {patience}")
+        if mode not in ["min", "max"]:
+            raise ValueError(f"mode must be 'min' or 'max', got '{mode}'")
+
         self.patience = patience
         self.monitor = monitor
         self.mode = mode
+        self.min_delta = min_delta
+        self.verbose = verbose
+
+        # State tracking
+        self.wait = 0
+        self.best_value: Optional[float] = None
+        self.best_epoch = 0
+        self.stopped_epoch = 0
+        self.best_metric = None  # Backward compatibility
+        self.patience_counter = 0  # Backward compatibility
+        self._should_stop_flag = False  # Backward compatibility flag
+
+    def _is_improvement(self, value: float) -> bool:
+        """Check if a value represents an improvement over the best value.
+
+        Args:
+            value: Current metric value
+
+        Returns:
+            True if value is an improvement, False otherwise
+        """
+        if self.best_value is None:
+            return True
+
+        if self.mode == "min":
+            return value < (self.best_value - self.min_delta)
+        else:  # mode == "max"
+            return value > (self.best_value + self.min_delta)
+
+    def update(self, value: float, epoch: int = 0) -> bool:
+        """Update early stopping state with a new metric value.
+
+        Args:
+            value: Current metric value
+            epoch: Current epoch number (default: 0)
+
+        Returns:
+            True if this is an improvement, False otherwise
+        """
+        if self._is_improvement(value):
+            self.best_value = value
+            self.best_epoch = epoch
+            self.wait = 0
+            if self.verbose:
+                logger.info(f"Epoch {epoch}: {self.monitor} improved to {value:.4f}")
+            return True
+        else:
+            self.wait += 1
+            if self.verbose:
+                logger.info(
+                    f"Epoch {epoch}: {self.monitor} did not improve from {self.best_value:.4f} "
+                    f"(current: {value:.4f}, wait: {self.wait}/{self.patience})"
+                )
+            return False
+
+    def should_stop(self, value: float, epoch: int = 0) -> bool:
+        """Check if training should stop based on the current metric value.
+
+        This method updates the internal state and returns whether training should stop.
+
+        Args:
+            value: Current metric value
+            epoch: Current epoch number (default: 0)
+
+        Returns:
+            True if training should stop, False otherwise
+        """
+        self.update(value, epoch)
+
+        if self.wait >= self.patience:
+            self.stopped_epoch = epoch
+            if self.verbose:
+                logger.info(
+                    f"Early stopping triggered at epoch {epoch}: "
+                    f"no improvement in {self.monitor} for {self.patience} evaluations "
+                    f"(best: {self.best_value:.4f} at epoch {self.best_epoch})"
+                )
+            return True
+
+        return False
+
+    def reset(self) -> None:
+        """Reset early stopping state to initial values."""
+        self.wait = 0
+        self.best_value = None
+        self.best_epoch = 0
+        self.stopped_epoch = 0
         self.best_metric = None
         self.patience_counter = 0
-        self.should_stop = False
+        self._should_stop_flag = False
+
+    def state_dict(self) -> dict[str, Any]:
+        """Return early stopping state as a dictionary for serialization.
+
+        Returns:
+            Dictionary containing all state variables
+        """
+        return {
+            "wait": self.wait,
+            "best_value": self.best_value,
+            "best_epoch": self.best_epoch,
+            "stopped_epoch": self.stopped_epoch,
+            "patience": self.patience,
+            "monitor": self.monitor,
+            "mode": self.mode,
+            "min_delta": self.min_delta,
+            "verbose": self.verbose,
+        }
+
+    def load_state_dict(self, state: dict[str, Any]) -> None:
+        """Load early stopping state from a dictionary.
+
+        Args:
+            state: Dictionary containing state variables
+        """
+        self.wait = state.get("wait", 0)
+        self.best_value = state.get("best_value")
+        self.best_epoch = state.get("best_epoch", 0)
+        self.stopped_epoch = state.get("stopped_epoch", 0)
+        self.patience = state.get("patience", self.patience)
+        self.monitor = state.get("monitor", self.monitor)
+        self.mode = state.get("mode", self.mode)
+        self.min_delta = state.get("min_delta", self.min_delta)
+        if "verbose" in state:
+            self.verbose = state["verbose"]
 
     def check_metric(self, metrics: dict[str, float]) -> bool:
-        """Check if training should stop based on metric.
+        """Check if training should stop based on metric (backward compatibility).
 
         Args:
             metrics: Dictionary of metric values
@@ -118,23 +280,27 @@ class EarlyStopping:
         # First evaluation
         if self.best_metric is None:
             self.best_metric = current_metric
+            self.best_value = current_metric
             return False
 
         # Check if improved
         improved = False
         if self.mode == "min":
-            improved = current_metric < self.best_metric
+            improved = current_metric < (self.best_metric - self.min_delta)
         else:  # max
-            improved = current_metric > self.best_metric
+            improved = current_metric > (self.best_metric + self.min_delta)
 
         if improved:
             self.best_metric = current_metric
+            self.best_value = current_metric
             self.patience_counter = 0
+            self.wait = 0
         else:
             self.patience_counter += 1
+            self.wait += 1
 
         if self.patience_counter >= self.patience:
-            self.should_stop = True
+            self._should_stop_flag = True
             logger.info(
                 f"Early stopping triggered: no improvement in {self.monitor} "
                 f"for {self.patience} evaluations"
@@ -180,7 +346,8 @@ class CodexEarlyStoppingCallback:
             from transformers import EarlyStoppingCallback
 
             self.callback = EarlyStoppingCallback(
-                early_stopping_patience=config.patience, early_stopping_threshold=config.threshold
+                early_stopping_patience=config.patience,
+                early_stopping_threshold=config.threshold,
             )
             self.is_hf_callback = True
         except ImportError as e:
@@ -200,7 +367,9 @@ class CodexEarlyStoppingCallback:
 
 
 def inject_early_stopping(
-    callbacks: list[Any], config: Optional[EarlyStoppingConfig] = None, force: bool = False
+    callbacks: list[Any],
+    config: Optional[EarlyStoppingConfig] = None,
+    force: bool = False,
 ) -> list[Any]:
     """Inject EarlyStopping callback if not already present.
 
@@ -224,7 +393,8 @@ def inject_early_stopping(
         # Check isinstance for real instances, or check type name for mocks
         has_early_stopping = any(
             isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback))
-            or type(cb).__name__ in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
+            or type(cb).__name__
+            in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
             for cb in callbacks
         )
     except ImportError as e:
@@ -285,7 +455,9 @@ def auto_inject_early_stopping_for_trainer(
     return callbacks
 
 
-def create_early_stopping_from_config(config: EarlyStoppingConfig) -> Optional[EarlyStopping]:
+def create_early_stopping_from_config(
+    config: EarlyStoppingConfig,
+) -> Optional[EarlyStopping]:
     """Create EarlyStopping instance from configuration.
 
     Args:
@@ -294,13 +466,13 @@ def create_early_stopping_from_config(config: EarlyStoppingConfig) -> Optional[E
     Returns:
         EarlyStopping instance if enabled, None otherwise
     """
-    if not getattr(config, 'enabled', True):
+    if not getattr(config, "enabled", True):
         return None
 
     return EarlyStopping(
-        patience=getattr(config, 'patience', 3),
-        monitor=getattr(config, 'monitor', getattr(config, 'metric', 'val_loss')),
-        mode=getattr(config, 'mode', 'min'),
+        patience=getattr(config, "patience", 3),
+        monitor=getattr(config, "monitor", getattr(config, "metric", "val_loss")),
+        mode=getattr(config, "mode", "min"),
     )
 
 
