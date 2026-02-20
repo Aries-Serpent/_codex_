@@ -377,7 +377,7 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             for item in value:
                 _update(item)
             return
-        if isinstance(value, str | bytes):
+        if isinstance(value, (str, bytes)):
             hasher.update(b"str")
             if isinstance(value, str):
                 hasher.update(value.encode("utf-8"))
