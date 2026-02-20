@@ -333,7 +333,11 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         _msg = str(e)
         if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
             logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
-            torch.save(dict(payload), path, pickle_protocol=2)
+            try:
+                torch.save(dict(payload), path, pickle_protocol=2)
+            except Exception as e2:
+                logger.error("torch.save failed even with pickle_protocol=2: %s", e2)
+                raise
         else:
             raise
 

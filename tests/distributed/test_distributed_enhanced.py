@@ -47,7 +47,7 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_no_accelerate(self):
         """Test behavior when accelerate not available"""
-        with patch("accelerate_init_guard.is_accelerate_available", return_value=False):
+        with patch("src.training.accelerate_init_guard.is_accelerate_available", return_value=False):
             result = accelerate_init_guard.safe_accelerate_init()
 
             assert not result.success
@@ -58,7 +58,7 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_cpu_only(self):
         """Test initialization on CPU-only system"""
-        with patch("accelerate_init_guard.is_gpu_available", return_value=False):
+        with patch("src.training.accelerate_init_guard.is_gpu_available", return_value=False):
             result = accelerate_init_guard.safe_accelerate_init(
                 cpu_fallback=True
             )
@@ -136,15 +136,15 @@ class TestMockMultiGPU:
         assert env_info["RANK"] == "0"
         # Initialization would be mocked in real multi-GPU tests
 
-    @patch("accelerate_init_guard.is_gpu_available", return_value=True)
-    @patch("accelerate_init_guard.is_accelerate_available", return_value=True)
+    @patch("src.training.accelerate_init_guard.is_gpu_available", return_value=True)
+    @patch("src.training.accelerate_init_guard.is_accelerate_available", return_value=True)
     def test_distributed_init_with_gpu(self, mock_accel_avail, mock_gpu_avail, monkeypatch):
         """Test distributed initialization with mocked GPU"""
         monkeypatch.setenv("WORLD_SIZE", "2")
         monkeypatch.setenv("RANK", "0")
 
         # Mock Accelerator
-        with patch("accelerate_init_guard.Accelerator") as mock_accelerator:
+        with patch("src.training.accelerate_init_guard.Accelerator") as mock_accelerator:
             mock_acc_instance = Mock()
             mock_acc_instance.state = Mock()
             mock_acc_instance.state.distributed_type = "MULTI_GPU"
@@ -184,7 +184,7 @@ class TestGradientSynchronization:
         assert len(reduced_grads) == 2
         assert reduced_grads[0] == [0.5, 1.0, 1.5]
 
-    @patch("accelerate_init_guard.Accelerator")
+    @patch("src.training.accelerate_init_guard.Accelerator")
     def test_gradient_accumulation_mock(self, mock_accelerator):
         """Test gradient accumulation with accelerator"""
         mock_acc = Mock()

@@ -109,7 +109,7 @@ class TestServiceRequests:
 
     def test_request_validation_success(self, service_request_config: Dict[str, Any]):
         """Test request validation passes for valid request."""
-        is_valid = (
+        is_valid = bool(
             service_request_config.get("requester")
             and service_request_config.get("service_type")
             and service_request_config.get("specifications")
