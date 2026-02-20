@@ -28,8 +28,8 @@ from typing import Callable, Optional, Sequence  # noqa: E402
 from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 metric_registry = Registry("metric")
-# Expose internal registry dict for test mocking compatibility
-_METRIC_REGISTRY = metric_registry._registry
+# Plain dict checked before metric_registry — allows test mocking via monkeypatch.setitem
+_METRIC_REGISTRY: dict[str, Callable[..., object]] = {}
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
@@ -331,8 +331,14 @@ def register_metric(
 
 
 def get(name: str) -> Callable[..., object]:
-    """Return the metric callable registered under name."""
+    """Return the metric callable registered under name.
 
+    ``_METRIC_REGISTRY`` is checked first so that test code can inject
+    mock implementations via ``monkeypatch.setitem`` without touching the
+    real registry.
+    """
+    if name in _METRIC_REGISTRY:
+        return _METRIC_REGISTRY[name]
     _ensure_metric_plugins_loaded()
     return metric_registry.get(name)
 
