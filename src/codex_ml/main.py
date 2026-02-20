@@ -12,10 +12,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import importlib
-import sys
-from typing import Sequence
+import argparse  # noqa: E402
+import importlib  # noqa: E402
+import sys  # noqa: E402
+from typing import Sequence  # noqa: E402
 
 _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."
 

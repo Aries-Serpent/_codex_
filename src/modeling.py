@@ -5,13 +5,12 @@ from __future__ import annotations
 import importlib
 import inspect
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 from collections.abc import Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency guard
     import torch
 except Exception:  # pragma: no cover - propagate a friendly error later
@@ -325,12 +324,21 @@ def _ensure_bf16_capability(
 def apply_lora_if_configured(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
     if not cfg.enabled:
         return model
-    try:
-        peft_module = importlib.import_module("peft")
-    except ModuleNotFoundError as exc:  # pragma: no cover - optional dep guard
-        raise RuntimeError("peft is required for LoRA support but is not installed") from exc
+    # Use module-level references to allow monkeypatching in tests.
+    # Fall back to dynamic import when peft was not available at import time.
+    lora_config_cls = LoraConfig
+    get_peft_model_fn = get_peft_model
+    if lora_config_cls is None or get_peft_model_fn is None:
+        try:
+            peft_module = import_module("peft")
+            lora_config_cls = peft_module.LoraConfig
+            get_peft_model_fn = peft_module.get_peft_model
+        except ModuleNotFoundError as exc:  # pragma: no cover - optional dep guard
+            raise RuntimeError("peft is required for LoRA support but is not installed") from exc
+    if lora_config_cls is None or get_peft_model_fn is None:  # pragma: no cover
+        raise RuntimeError("peft is required for LoRA support but is not installed")
 
-    lora_cfg = peft_module.LoraConfig(
+    lora_cfg = lora_config_cls(
         r=cfg.r,
         lora_alpha=cfg.alpha,
         lora_dropout=cfg.dropout,
@@ -338,7 +346,7 @@ def apply_lora_if_configured(model: PreTrainedModel, cfg: LoraSettings) -> PreTr
         bias=cfg.bias,
         task_type=cfg.task_type,
     )
-    return peft_module.get_peft_model(model, lora_cfg)
+    return get_peft_model_fn(model, lora_cfg)
 
 
 def load_model(

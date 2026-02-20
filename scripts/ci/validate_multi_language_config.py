@@ -11,13 +11,13 @@ Expands the Rust Cargo.toml validation pattern to other language ecosystems:
 Based on learnings from January 19, 2026 Rust incident.
 """
 
-import sys
 import json
 import re
-from pathlib import Path
-from typing import List, Tuple, Optional
+import sys
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import List, Optional, Tuple
 
 try:
     import tomllib
@@ -50,11 +50,11 @@ class ConfigIssue:
 
 class MultiLanguageValidator:
     """Validates configuration features across multiple language ecosystems."""
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.issues: List[ConfigIssue] = []
-    
+
     def validate_all(self) -> Tuple[bool, List[ConfigIssue]]:
         """Validate all detected language configurations."""
         validators = {
@@ -64,14 +64,14 @@ class MultiLanguageValidator:
             Language.GO: self._validate_go,
             Language.CPP: self._validate_cpp,
         }
-        
+
         for lang, validator in validators.items():
             if self._language_detected(lang):
                 print(f"🔍 Validating {lang.value} configuration...")
                 validator()
-        
+
         return len(self.issues) == 0, self.issues
-    
+
     def _language_detected(self, lang: Language) -> bool:
         """Check if a language is used in the repository."""
         detection_files = {
@@ -81,31 +81,31 @@ class MultiLanguageValidator:
             Language.GO: "go.mod",
             Language.CPP: ["CMakeLists.txt", "Makefile"],
         }
-        
+
         files = detection_files[lang]
         if isinstance(files, str):
             files = [files]
-        
+
         return any((self.repo_root / f).exists() for f in files)
-    
+
     def _validate_rust(self):
         """Validate Rust Cargo.toml features (existing implementation)."""
         cargo_toml = self.repo_root / "Cargo.toml"
         if not cargo_toml.exists():
             return
-        
+
         # Use existing validation logic from same directory
         # Note: Import here to avoid issues if validate_cargo_features not available
         try:
-            from pathlib import Path
             import sys
+            from pathlib import Path
             sys.path.insert(0, str(Path(__file__).parent))
             from validate_cargo_features import validate_cargo_features
             is_valid, errors = validate_cargo_features(cargo_toml)
         except ImportError:
             print("⚠️  validate_cargo_features module not available, skipping Rust validation")
             return
-        
+
         if not is_valid:
             for error in errors:
                 self.issues.append(ConfigIssue(
@@ -115,27 +115,27 @@ class MultiLanguageValidator:
                     severity="high",
                     description=error
                 ))
-    
+
     def _validate_python(self):
         """Validate Python pyproject.toml extras_require."""
         pyproject = self.repo_root / "pyproject.toml"
         if not pyproject.exists():
             return
-        
+
         if not tomllib:
             print("⚠️  TOML parser not available for Python validation")
             return
-        
+
         with open(pyproject, 'rb') as f:
             data = tomllib.load(f)
-        
+
         # Check extras_require
         extras = data.get('project', {}).get('optional-dependencies', {})
-        
+
         # Find Python files that use extras
         python_files = list(self.repo_root.glob('**/*.py'))
         used_extras = set()
-        
+
         for py_file in python_files:
             try:
                 content = py_file.read_text()
@@ -144,7 +144,7 @@ class MultiLanguageValidator:
                 used_extras.update(extras_matches)
             except Exception:
                 continue
-        
+
         # Check for undeclared extras
         for extra in used_extras:
             if extra not in extras:
@@ -156,26 +156,26 @@ class MultiLanguageValidator:
                     description=f"Extra '{extra}' used in code but not declared in pyproject.toml",
                     fix_suggestion=f"Add '[project.optional-dependencies]' section with '{extra} = [...]'"
                 ))
-        
+
         print(f"   ✓ Found {len(extras)} declared extras")
         if used_extras:
             print(f"   ✓ Found {len(used_extras)} used extras: {', '.join(used_extras)}")
-    
+
     def _validate_nodejs(self):
         """Validate Node.js package.json optionalDependencies."""
         package_json = self.repo_root / "package.json"
         if not package_json.exists():
             return
-        
+
         with open(package_json) as f:
             data = json.load(f)
-        
+
         optional_deps = data.get('optionalDependencies', {})
-        
+
         # Find JavaScript/TypeScript files that conditionally require packages
         js_files = list(self.repo_root.glob('**/*.js')) + list(self.repo_root.glob('**/*.ts'))
         used_optional = set()
-        
+
         for js_file in js_files:
             try:
                 content = js_file.read_text()
@@ -187,7 +187,7 @@ class MultiLanguageValidator:
                         used_optional.add(pkg)
             except Exception:
                 continue
-        
+
         # Check for unused optional dependencies
         unused = set(optional_deps.keys()) - used_optional
         if unused:
@@ -198,20 +198,20 @@ class MultiLanguageValidator:
                     location="package.json",
                     severity="low",
                     description=f"Optional dependency '{pkg}' declared but not used",
-                    fix_suggestion=f"Remove from optionalDependencies or use in code"
+                    fix_suggestion="Remove from optionalDependencies or use in code"
                 ))
-        
+
         print(f"   ✓ Found {len(optional_deps)} optional dependencies")
         print(f"   ✓ {len(used_optional)} are actively used")
-    
+
     def _validate_go(self):
         """Validate Go build tags."""
         go_files = list(self.repo_root.glob('**/*.go'))
         if not go_files:
             return
-        
+
         used_tags = set()
-        
+
         # Find declared build tags in files
         for go_file in go_files:
             try:
@@ -224,34 +224,34 @@ class MultiLanguageValidator:
                     used_tags.update(tags)
             except Exception:
                 continue
-        
+
         # Check for common Go build tags that should be documented
         common_tags = {'linux', 'darwin', 'windows', 'amd64', 'arm64', 'cgo', 'debug', 'release'}
         undocumented = used_tags & common_tags
-        
+
         if undocumented:
             print(f"   ✓ Found {len(used_tags)} build tags")
             print(f"   ℹ️  Consider documenting tags: {', '.join(undocumented)}")
-    
+
     def _validate_cpp(self):
         """Validate C/C++ preprocessor directives."""
-        cpp_files = (list(self.repo_root.glob('**/*.cpp')) + 
+        cpp_files = (list(self.repo_root.glob('**/*.cpp')) +
                      list(self.repo_root.glob('**/*.h')) +
                      list(self.repo_root.glob('**/*.cc')))
-        
+
         if not cpp_files:
             return
-        
+
         defined_macros = set()
         used_macros = set()
-        
+
         for cpp_file in cpp_files:
             try:
                 content = cpp_file.read_text()
                 # Find #define directives
                 defines = re.findall(r'#define\s+(\w+)', content)
                 defined_macros.update(defines)
-                
+
                 # Find #ifdef, #ifndef, #if defined usage
                 ifdefs = re.findall(r'#ifn?def\s+(\w+)', content)
                 if_defined = re.findall(r'#if\s+defined\((\w+)\)', content)
@@ -259,12 +259,12 @@ class MultiLanguageValidator:
                 used_macros.update(if_defined)
             except Exception:
                 continue
-        
+
         # Check for undefined macros
         undefined = used_macros - defined_macros
         common_macros = {'DEBUG', 'NDEBUG', 'WIN32', 'LINUX', '__cplusplus'}
         undefined = undefined - common_macros
-        
+
         if undefined:
             for macro in undefined:
                 self.issues.append(ConfigIssue(
@@ -275,7 +275,7 @@ class MultiLanguageValidator:
                     description=f"Macro '{macro}' used in #ifdef but not #defined",
                     fix_suggestion=f"Add #define {macro} or define in build system"
                 ))
-        
+
         print(f"   ✓ Found {len(defined_macros)} defined macros")
         print(f"   ✓ Found {len(used_macros)} used macros")
 
@@ -283,14 +283,14 @@ class MultiLanguageValidator:
 def main():
     """Main validation function."""
     repo_root = Path(__file__).parent.parent.parent
-    
+
     print("🔍 Multi-Language Configuration Validator")
     print(f"   Repository: {repo_root}")
     print()
-    
+
     validator = MultiLanguageValidator(repo_root)
     is_valid, issues = validator.validate_all()
-    
+
     print()
     if is_valid:
         print("✅ All language configurations validated successfully!")
@@ -298,7 +298,7 @@ def main():
     else:
         print(f"❌ Found {len(issues)} configuration issues:")
         print()
-        
+
         for issue in issues:
             severity_emoji = {
                 'critical': '🔴',
@@ -306,7 +306,7 @@ def main():
                 'medium': '🟡',
                 'low': '🔵',
             }.get(issue.severity, '⚪')
-            
+
             print(f"{severity_emoji} [{issue.severity.upper()}] {issue.issue_type}")
             print(f"   Feature: {issue.feature_name}")
             print(f"   Location: {issue.location}")
@@ -314,7 +314,7 @@ def main():
             if issue.fix_suggestion:
                 print(f"   Fix: {issue.fix_suggestion}")
             print()
-        
+
         return 1
 
 

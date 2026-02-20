@@ -12,13 +12,13 @@ Provides:
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
 from pathlib import Path
 from typing import Union
 
 # Try to use the repository's encoding detector if present; otherwise provide
 # a local, conservative fallback detector to preserve functionality.
+
+logger = logging.getLogger(__name__)
 try:
     from .encoding_detect import detect_encoding  # type: ignore
 except Exception:

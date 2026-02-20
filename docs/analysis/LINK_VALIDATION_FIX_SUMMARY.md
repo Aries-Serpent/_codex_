@@ -203,8 +203,8 @@ The "Workflow Documentation Link Validation" job should now:
 - Session summaries: `docs/archive/sessions/`
 
 ### CI/CD Resources
-- Workflow run: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663
-- Failed job: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663/job/62719230029
+- Workflow run: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->
+- Failed job: https://github.com/Aries-Serpent/_codex_/actions/runs/21741995663 <!-- Note: Logs expire after 90 days -->/job/62719230029
 
 ---
 

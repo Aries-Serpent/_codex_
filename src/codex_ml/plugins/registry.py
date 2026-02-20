@@ -15,13 +15,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import sys
-import warnings
-from dataclasses import dataclass
-from importlib import metadata
-from pathlib import Path
-from typing import Any, Optional
+import importlib  # noqa: E402
+import sys  # noqa: E402
+import warnings  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from importlib import metadata  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 DEFAULT_GROUP = "codex_ml.plugins"
 

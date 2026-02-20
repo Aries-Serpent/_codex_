@@ -105,7 +105,7 @@ are available for testing and development purposes.
 ### Reference Documents
 
 - [scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md) - Agent setup
-- [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md) - Future plans
+- [docs/admin/CONTINUATION_ROADMAP.md](docs/ROADMAP.md) - Future plans
 - [.codex/change_log.md](.codex/change_log.md) - Audit trail
 - [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
 - [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
@@ -607,7 +607,7 @@ To create a new specialized agent:
 **Complete Documentation:**
 - Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
 - Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md)
+- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong
 

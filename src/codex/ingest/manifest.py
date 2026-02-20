@@ -77,10 +77,10 @@ class Metadata:
 @dataclass
 class IngestManifest:
     """Parsed ingestion manifest.
-    
+
     Represents a complete ingestion manifest with source configuration,
     sample inputs, golden outputs, constraints, and metadata.
-    
+
     Attributes:
         version: Manifest schema version
         source: Source configuration
@@ -138,7 +138,7 @@ class IngestManifest:
 
 def _validate_version(version: str) -> None:
     """Validate manifest version.
-    
+
     Safeguard: Version format validation.
     """
     import re
@@ -148,7 +148,7 @@ def _validate_version(version: str) -> None:
 
 def _validate_constraints(constraints: dict[str, Any]) -> Constraints:
     """Validate and parse constraints.
-    
+
     Safeguard: Bounds checking on constraint values.
     """
     max_runtime = constraints.get("max_runtime_seconds", 60)
@@ -171,18 +171,18 @@ def _validate_constraints(constraints: dict[str, Any]) -> Constraints:
 
 def parse_manifest(path: Path) -> IngestManifest:
     """Parse and validate an ingestion manifest file.
-    
+
     Args:
         path: Path to YAML manifest file
-        
+
     Returns:
         Parsed IngestManifest object
-        
+
     Raises:
         FileNotFoundError: If manifest file doesn't exist
         ValueError: If manifest is invalid
         ImportError: If PyYAML is not installed
-        
+
     Example:
         >>> manifest = parse_manifest(Path("manifest.yaml"))
         >>> print(f"Source: {manifest.source.path}")

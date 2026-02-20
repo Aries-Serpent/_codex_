@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/render_html_report.py [options]
-    
+
     Examples:
     $ python scripts/status/render_html_report.py --help
 

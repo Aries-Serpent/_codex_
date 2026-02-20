@@ -598,7 +598,7 @@ docker system prune -a
 - See [API Reference](../API_REFERENCE.md) for detailed API documentation
 - See [Getting Started Guide](getting_started.md) for basic usage
 - See [Continuous Learning Guide](continuous_learning_guide.md) for auto-retraining
-- See [A/B Testing Guide](ab_testing_guide.md) for experiment management
+- See [A/B Testing Guide](TESTING_GUIDE.md) for experiment management
 
 ---
 

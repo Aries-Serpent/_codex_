@@ -19,12 +19,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import json
-from pathlib import Path
-from typing import Any, Callable, Iterable, Optional, Sequence
+import importlib  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Iterable, Optional, Sequence  # noqa: E402
 
-import typer
+import typer  # noqa: E402
 
 app = typer.Typer(help="Evaluation loop commands (reference).")
 

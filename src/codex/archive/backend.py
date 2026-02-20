@@ -23,24 +23,24 @@ logger = logging.getLogger(__name__)
 """Database access layer for the Codex archive."""
 
 
-import json
-import os
-import sqlite3
-import uuid
-from collections.abc import Callable, Iterable, Iterator, Mapping
-from contextlib import contextmanager
-from dataclasses import dataclass
-from pathlib import Path
-from typing import TYPE_CHECKING, Any
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import uuid  # noqa: E402
+from collections.abc import Callable, Iterable, Iterator, Mapping  # noqa: E402
+from contextlib import contextmanager  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import TYPE_CHECKING, Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import sqlalchemy as sa  # type: ignore
 except Exception:  # pragma: no cover
     sa = None
 
-from . import schema
-from .config import ArchiveAppConfig as RuntimeArchiveConfig
-from .util import ensure_directory, json_dumps_sorted, utcnow
+from . import schema  # noqa: E402
+from .config import ArchiveAppConfig as RuntimeArchiveConfig  # noqa: E402
+from .util import ensure_directory, json_dumps_sorted, utcnow  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .config import ArchiveAppConfig as SettingsArchiveConfig

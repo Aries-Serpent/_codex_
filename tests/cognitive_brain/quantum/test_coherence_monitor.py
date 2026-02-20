@@ -58,8 +58,9 @@ def repo(temp_db):
 
 @pytest.fixture
 def monitor(config, repo):
-    """Create coherence monitor."""
-    return CoherenceMonitor(config=config, repository=repo)
+    """Create coherence monitor with small batch size for testing."""
+    # Use batch_size=1 for backward compatibility with existing tests
+    return CoherenceMonitor(config=config, repository=repo, batch_size=1)
 
 
 class TestAlertThreshold:
@@ -243,6 +244,7 @@ class TestAlertManagement:
         """Test filtering alerts by feature."""
         monitor.record_metric("superposition", "coherence", 0.1)
         monitor.record_metric("entanglement", "coherence", 0.1)
+        monitor.flush_batch()
 
         sup_alerts = monitor.get_active_alerts(feature="superposition")
         assert all(a.feature == "superposition" for a in sup_alerts)
@@ -250,8 +252,182 @@ class TestAlertManagement:
     def test_clear_all_alerts(self, monitor):
         """Test clearing all alerts."""
         monitor.record_metric("superposition", "coherence", 0.1)
+        monitor.flush_batch()
         assert len(monitor.get_active_alerts()) > 0
 
         cleared = monitor.clear_alerts()
         assert cleared > 0
         assert len(monitor.get_active_alerts()) == 0
+
+
+class TestCoherenceMonitorBatching:
+    """Test CoherenceMonitor batching functionality (Sprint 1)."""
+
+    def test_internal_batching_buffer(self, config, repo):
+        """Test internal _pending_metrics buffer exists and works."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=10)
+
+        # Record 5 metrics (below batch_size)
+        for i in range(5):
+            monitor.record_metric(
+                feature="superposition",
+                metric_name="coherence",
+                metric_value=0.9 + i * 0.01
+            )
+
+        # Check buffer has 5 pending metrics
+        assert len(monitor._pending_metrics) == 5
+
+        # Metrics should NOT be in database yet
+        metrics_in_db = repo.find_by_feature("superposition")
+        assert len(metrics_in_db) == 0
+
+    def test_auto_flush_at_batch_size(self, config, repo):
+        """Test auto-flush at batch_size threshold (default 100)."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=10)
+
+        # Record exactly batch_size metrics
+        for i in range(10):
+            monitor.record_metric(
+                feature="superposition",
+                metric_name="coherence",
+                metric_value=0.9
+            )
+
+        # Buffer should be empty (auto-flushed)
+        assert len(monitor._pending_metrics) == 0
+
+        # All 10 metrics should be in database
+        metrics_in_db = repo.find_by_feature("superposition")
+        assert len(metrics_in_db) == 10
+
+    def test_manual_flush_batch(self, config, repo):
+        """Test manual flush_batch() method."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=100)
+
+        # Record 20 metrics (below batch_size, won't auto-flush)
+        for i in range(20):
+            monitor.record_metric(
+                feature="entanglement",
+                metric_name="error_rate",
+                metric_value=0.01
+            )
+
+        # Metrics should be pending
+        assert len(monitor._pending_metrics) == 20
+
+        # Manually flush
+        flushed_count = monitor.flush_batch()
+
+        assert flushed_count == 20
+        assert len(monitor._pending_metrics) == 0
+
+        # All 20 metrics should be in database
+        metrics_in_db = repo.find_by_feature("entanglement")
+        assert len(metrics_in_db) == 20
+
+    def test_metrics_persisted_after_flush(self, config, repo):
+        """Test that metrics are actually persisted to database after flush."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=50)
+
+        # Record 30 metrics with specific values
+        for i in range(30):
+            monitor.record_metric(
+                feature="uncertainty",
+                metric_name="latency_p99",
+                metric_value=100.0 + i,
+                agent_id=f"agent-{i}"
+            )
+
+        # Flush
+        monitor.flush_batch()
+
+        # Verify all metrics in database with correct values
+        metrics_in_db = repo.find_by_feature("uncertainty", limit=50)
+        assert len(metrics_in_db) == 30
+
+        # Check specific values
+        values = [m.metric_value for m in metrics_in_db]
+        assert min(values) >= 100.0
+        assert max(values) < 130.0
+
+    def test_backward_compatibility_existing_code(self, config, repo):
+        """Test backward compatibility - existing code without flush_batch() still works."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=5)
+
+        # Existing code pattern: record metrics until auto-flush
+        for i in range(15):
+            monitor.record_metric(
+                feature="superposition",
+                metric_name="coherence",
+                metric_value=0.9
+            )
+
+        # Should have auto-flushed three times (at 5, 10, and 15), with 0 pending
+        assert len(monitor._pending_metrics) == 0
+
+        # All 15 should be in database
+        metrics_in_db = repo.find_by_feature("superposition", limit=50)
+        assert len(metrics_in_db) == 15
+
+    def test_flush_batch_returns_zero_when_empty(self, config, repo):
+        """Test flush_batch() returns 0 when buffer is empty."""
+        monitor = CoherenceMonitor(config=config, repository=repo)
+
+        # Flush empty buffer
+        count = monitor.flush_batch()
+        assert count == 0
+
+    def test_multiple_flushes(self, config, repo):
+        """Test multiple flush operations work correctly."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=100)
+
+        # First batch
+        for i in range(10):
+            monitor.record_metric("superposition", "coherence", 0.9)
+        count1 = monitor.flush_batch()
+        assert count1 == 10
+
+        # Second batch
+        for i in range(15):
+            monitor.record_metric("superposition", "coherence", 0.85)
+        count2 = monitor.flush_batch()
+        assert count2 == 15
+
+        # Total in database
+        metrics_in_db = repo.find_by_feature("superposition", limit=50)
+        assert len(metrics_in_db) == 25
+
+    def test_batching_with_alert_triggering(self, config, repo):
+        """Test that alert checking works even before batch flush."""
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=100)
+
+        # Record critical metric (should trigger alert before DB persist)
+        monitor.record_metric(
+            feature="superposition",
+            metric_name="coherence",
+            metric_value=0.1  # Critical threshold
+        )
+
+        # Alert should be triggered even though not flushed to DB
+        alerts = monitor.get_active_alerts()
+        assert len(alerts) > 0
+        assert alerts[0].level == AlertLevel.CRITICAL
+
+    def test_custom_batch_size(self, config, repo):
+        """Test custom batch_size parameter works."""
+        # Use small batch size for testing
+        monitor = CoherenceMonitor(config=config, repository=repo, batch_size=3)
+
+        # Record 2 metrics (below threshold)
+        monitor.record_metric("superposition", "coherence", 0.9)
+        monitor.record_metric("superposition", "coherence", 0.92)
+        assert len(monitor._pending_metrics) == 2
+
+        # Record 3rd metric (at threshold, should auto-flush)
+        monitor.record_metric("superposition", "coherence", 0.95)
+        assert len(monitor._pending_metrics) == 0
+
+        # All 3 in database
+        metrics_in_db = repo.find_by_feature("superposition")
+        assert len(metrics_in_db) == 3

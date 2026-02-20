@@ -43,7 +43,7 @@ ARTIFACTS_DIR = Path("artifacts")
 @dataclass
 class Snapshot:
     """Immutable snapshot of ingested code.
-    
+
     Attributes:
         snapshot_id: Unique identifier (timestamp-hash format)
         source_path: Original source location
@@ -83,12 +83,12 @@ class Snapshot:
 
 def _compute_content_hash(path: Path) -> str:
     """Compute SHA256 hash of file or directory content.
-    
+
     Safeguard: Deterministic hashing with sorted file order.
-    
+
     Args:
         path: File or directory to hash
-        
+
     Returns:
         Hex-encoded SHA256 hash
     """
@@ -113,13 +113,13 @@ def _compute_content_hash(path: Path) -> str:
 
 def _validate_path(path: Path, base_dir: Optional[Path] = None) -> None:
     """Validate path for security issues.
-    
+
     Safeguard: Path traversal prevention.
-    
+
     Args:
         path: Path to validate
         base_dir: Optional base directory for containment check
-        
+
     Raises:
         ValueError: If path is invalid or attempts traversal
     """
@@ -137,12 +137,12 @@ def _validate_path(path: Path, base_dir: Optional[Path] = None) -> None:
 
 def _check_size_bounds(path: Path) -> None:
     """Check file/directory size against bounds.
-    
+
     Safeguard: Size bounds checking.
-    
+
     Args:
         path: Path to check
-        
+
     Raises:
         ValueError: If size exceeds limits
     """
@@ -169,9 +169,9 @@ def _check_size_bounds(path: Path) -> None:
 
 def _extract_zip(zip_path: Path, dest_dir: Path) -> None:
     """Extract ZIP archive safely.
-    
+
     Safeguard: Path traversal prevention in ZIP extraction.
-    
+
     Args:
         zip_path: Path to ZIP file
         dest_dir: Destination directory
@@ -192,9 +192,9 @@ def _extract_zip(zip_path: Path, dest_dir: Path) -> None:
 
 def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
     """Extract TAR archive safely.
-    
+
     Safeguard: Path traversal prevention in TAR extraction.
-    
+
     Args:
         tar_path: Path to TAR file
         dest_dir: Destination directory
@@ -232,7 +232,7 @@ def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
 
 def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
     """Clone Git repository.
-    
+
     Args:
         url: Git repository URL
         ref: Optional Git reference (branch, tag, commit)
@@ -283,23 +283,23 @@ def ingest(
     artifacts_dir: Optional[Path] = None,
 ) -> Snapshot:
     """Ingest source code and create immutable snapshot.
-    
+
     Accepts file paths, ZIP archives, or Git URLs and creates an immutable
     snapshot in the artifacts directory with full provenance tracking.
-    
+
     Args:
         source: File path, ZIP archive path, or Git URL
         manifest_path: Optional path to ingestion manifest
         snapshot_id: Optional custom snapshot ID
         artifacts_dir: Optional custom artifacts directory
-        
+
     Returns:
         Snapshot object with metadata
-        
+
     Raises:
         FileNotFoundError: If source file doesn't exist
         ValueError: If source is invalid or exceeds limits
-        
+
     Example:
         >>> snapshot = ingest("./my_script.py", manifest_path="manifest.yaml")
         >>> print(f"Created snapshot: {snapshot.snapshot_id}")

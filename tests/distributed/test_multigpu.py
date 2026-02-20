@@ -17,11 +17,14 @@ pytest.importorskip("torch")
 
 pytest.importorskip("torch")
 
+# Apply disable_torch_profiler fixture to all tests in this module
+# to avoid profiler type errors
+pytestmark = pytest.mark.usefixtures("disable_torch_profiler")
 
 
-import os
-import sys
-import unittest
+import os  # noqa: E402
+import sys  # noqa: E402
+import unittest  # noqa: E402
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))

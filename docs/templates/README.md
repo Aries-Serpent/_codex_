@@ -52,7 +52,7 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 | Python File Relocation | `sitecustomize.py`, [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py), [`tests/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests) |
 | CLI Hardening | [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli), [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/conftest.py) |
-| Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), [`reports/per-iteration/`](https://github.com/Aries-Serpent/_codex_/blob/main/reports/per-iteration) |
+| Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), `reports/per-iteration/` |
 
 ## Maintenance Notes
 

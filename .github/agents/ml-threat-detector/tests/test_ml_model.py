@@ -1,14 +1,15 @@
 """Comprehensive test suite for ML Threat Detection model."""
 
-import pytest
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from ml_model import MLThreatDetector, ThreatFeatures
 from feature_extraction import FeatureExtractor, SecurityFeatures
+from ml_model import MLThreatDetector, ThreatFeatures
 
 
 class TestFeatureExtraction:
@@ -97,16 +98,16 @@ class TestMLModel:
         """Test model training with synthetic data."""
         # Generate synthetic training data
         training_data = []
-        
+
         # 50 vulnerable examples
         for i in range(50):
-            vuln_code = f"""
+            vuln_code = """
 import subprocess
 subprocess.run("cmd", shell=True)
 eval(input())
 """
             training_data.append((vuln_code, 1, {"previous_vulnerabilities": 2, "change_frequency": 5, "author_security_score": 0.3}))
-        
+
         # 50 safe examples
         for i in range(50):
             safe_code = f"""
@@ -117,13 +118,13 @@ def safe_function_{i}(x, y):
             training_data.append((safe_code, 0, {"previous_vulnerabilities": 0, "change_frequency": 1, "author_security_score": 0.9}))
 
         metrics = self.detector.train(training_data)
-        
+
         # Check metrics exist
         assert "accuracy" in metrics
         assert "precision" in metrics
         assert "recall" in metrics
         assert "f1_score" in metrics
-        
+
         # Model should be trained
         assert self.detector.model is not None
 
@@ -131,7 +132,7 @@ def safe_function_{i}(x, y):
         """Test model meets 85%+ accuracy target with good data."""
         # Generate more training data for better accuracy
         training_data = []
-        
+
         # 100 clear vulnerable examples
         vulnerable_patterns = [
             "subprocess.run('ls', shell=True)",
@@ -140,7 +141,7 @@ def safe_function_{i}(x, y):
             "pickle.loads(data)",
             "os.system(cmd)",
         ]
-        
+
         for i in range(100):
             pattern = vulnerable_patterns[i % len(vulnerable_patterns)]
             vuln_code = f"""
@@ -150,7 +151,7 @@ def vuln_{i}():
     {pattern}
 """
             training_data.append((vuln_code, 1, {"previous_vulnerabilities": 3, "change_frequency": 8, "author_security_score": 0.2}))
-        
+
         # 100 clear safe examples
         for i in range(100):
             safe_code = f"""
@@ -162,7 +163,7 @@ def safe_function_{i}(a, b):
             training_data.append((safe_code, 0, {"previous_vulnerabilities": 0, "change_frequency": 1, "author_security_score": 0.95}))
 
         metrics = self.detector.train(training_data)
-        
+
         # Verify 85%+ accuracy target
         assert metrics["accuracy"] >= 0.85, f"Accuracy {metrics['accuracy']:.2%} below 85% target"
 
@@ -175,11 +176,11 @@ def safe_function_{i}(a, b):
         ] * 50  # Repeat to have enough data
 
         self.detector.train(training_data)
-        
+
         # Test prediction
         risky_code = "subprocess.run(cmd, shell=True)"
         result = self.detector.predict_risk(risky_code)
-        
+
         assert "risk_score" in result
         assert "risk_level" in result
         assert "confidence" in result
@@ -193,7 +194,7 @@ def safe_function_{i}(a, b):
         ] * 50
 
         self.detector.train(training_data)
-        
+
         # Check ensemble components
         assert self.detector.model is not None
         estimators = dict(self.detector.model.estimators)
@@ -207,7 +208,7 @@ class TestModelPersistence:
     def test_save_and_load_model(self, tmp_path):
         """Test model can be saved and loaded."""
         detector = MLThreatDetector()
-        
+
         # Train model
         training_data = [
             ("subprocess.run('ls', shell=True)", 1, {}),
@@ -215,16 +216,16 @@ class TestModelPersistence:
         ] * 50
 
         detector.train(training_data)
-        
+
         # Save model
         model_path = tmp_path / "test_model.pkl"
         detector.save_model(model_path)
         assert model_path.exists()
-        
+
         # Load model in new detector
         detector2 = MLThreatDetector(model_path)
         assert detector2.model is not None
-        
+
         # Test prediction with loaded model
         result = detector2.predict_risk("import os")
         assert "risk_score" in result
@@ -240,23 +241,23 @@ class TestIntegration:
         code1 = "subprocess.run('ls', shell=True)"
         features1 = extractor.extract(code1)
         assert isinstance(features1, SecurityFeatures)
-        
+
         # 2. Train model
         detector = MLThreatDetector()
         training_data = [
             (code1, 1, {}),
             ("def safe(): return 1", 0, {}),
         ] * 50
-        
+
         metrics = detector.train(training_data)
         assert metrics["accuracy"] > 0.5
-        
+
         # 3. Predict on new code
         new_code = "eval(input())"
         prediction = detector.predict_risk(new_code)
         assert prediction["risk_score"] >= 0.0
         assert prediction["risk_score"] <= 1.0
-        
+
         # 4. Save model
         model_path = tmp_path / "model.pkl"
         detector.save_model(model_path)

@@ -64,7 +64,7 @@ class Python312MigrationTool:
     def update_pyproject_toml(self) -> bool:
         """Update pyproject.toml to require Python 3.12+."""
         pyproject_path = self.repo_root / "pyproject.toml"
-        
+
         if not pyproject_path.exists():
             self.errors.append("pyproject.toml not found")
             return False
@@ -104,7 +104,7 @@ class Python312MigrationTool:
     def update_workflow_files(self) -> int:
         """Update all GitHub Actions workflow files."""
         workflows_dir = self.repo_root / ".github" / "workflows"
-        
+
         if not workflows_dir.exists():
             self.errors.append(".github/workflows directory not found")
             return 0
@@ -173,7 +173,7 @@ class Python312MigrationTool:
             self.record_change(workflow_path, "WORKFLOW", details)
             self.log(f"✅ Updated {workflow_path.relative_to(self.repo_root)}: {details}", "SUCCESS")
             return True
-        
+
         return False
 
     def update_dockerfile_files(self) -> int:
@@ -218,7 +218,7 @@ class Python312MigrationTool:
     def update_python_version_files(self) -> int:
         """Update .python-version and runtime.txt files."""
         count = 0
-        
+
         # Update .python-version
         python_version_files = list(self.repo_root.glob("**/.python-version"))
         for pv_file in python_version_files:
@@ -319,7 +319,7 @@ class Python312MigrationTool:
     def run(self) -> bool:
         """Execute the migration."""
         self.log(f"{BOLD}Python 3.11 → 3.12 Complete Migration{RESET}", "INFO")
-        self.log(f"Strategy: A - Immediate Full Migration", "INFO")
+        self.log("Strategy: A - Immediate Full Migration", "INFO")
         self.log(f"Repository: {self.repo_root}", "INFO")
         self.log(f"Dry Run: {self.dry_run}", "INFO")
         self.log("", "INFO")
@@ -350,7 +350,7 @@ class Python312MigrationTool:
 
         # Generate report
         report = self.generate_report()
-        
+
         # Save report
         report_file = self.repo_root / ".codex" / "PYTHON_312_MIGRATION_REPORT.json"
         report_file.parent.mkdir(exist_ok=True)
@@ -362,7 +362,7 @@ class Python312MigrationTool:
         self.log(f"{BOLD}=== MIGRATION SUMMARY ==={RESET}", "INFO")
         self.log(f"Total files changed: {len(self.changes)}", "SUCCESS" if len(self.changes) > 0 else "INFO")
         self.log(f"Errors encountered: {len(self.errors)}", "ERROR" if len(self.errors) > 0 else "INFO")
-        
+
         if self.changes:
             self.log(f"{BOLD}Changes by type:{RESET}", "INFO")
             for change_type, count in report["changes_by_type"].items():

@@ -393,7 +393,7 @@ class PluginRegistry:
         """Get plugin instance by name."""
         if name not in self._plugins:
             raise KeyError(f"Plugin not found: {name}")
-        return self._plugins[name]()
+        return self._plugins<!-- TODO: Add section or remove TOC entry - [name]() -->
     
     def run_all(self, ast: StandardizedASTNode) -> Dict[str, Dict]:
         """Run all registered plugins."""

@@ -396,4 +396,4 @@ APIs follow semantic versioning:
 
 - [Architecture Blueprint](../ARCHITECTURE_BLUEPRINT.md)
 - [Contributing Guide](../CONTRIBUTING.md)
-- [Quick Start](../onboarding/QUICK_START.md)
+- [Quick Start](../mcp/QUICK_START.md)

@@ -14,15 +14,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import io
-import json
-import mimetypes
-import os
-from collections.abc import Generator
-from contextlib import contextmanager
-from pathlib import Path, PurePosixPath
-from typing import Any, BinaryIO
-from zipfile import ZipFile, ZipInfo
+import io  # noqa: E402
+import json  # noqa: E402
+import mimetypes  # noqa: E402
+import os  # noqa: E402
+from collections.abc import Generator  # noqa: E402
+from contextlib import contextmanager  # noqa: E402
+from pathlib import Path, PurePosixPath  # noqa: E402
+from typing import Any, BinaryIO  # noqa: E402
+from zipfile import ZipFile, ZipInfo  # noqa: E402
 
 _TEXT_EXTENSIONS: frozenset[str] = frozenset(
     {

@@ -21,17 +21,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import abc
-import contextlib
-import json
-import os
-import sqlite3
-import uuid
-from collections.abc import Iterable, Iterator
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, cast
-from urllib.parse import parse_qsl, urlparse
+import abc  # noqa: E402
+import contextlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import uuid  # noqa: E402
+from collections.abc import Iterable, Iterator  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, cast  # noqa: E402
+from urllib.parse import parse_qsl, urlparse  # noqa: E402
 
 
 @dataclass

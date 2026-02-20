@@ -65,7 +65,7 @@ agents/prompts/
 
 ## Integration with AGENTS.md
 
-All prompts are referenced in [AGENTS.md](../../AGENTS.md) for easy discovery.
+All prompts are referenced in [AGENTS.md](../../.github/AGENTS.md) for easy discovery.
 
 ## Adding New Prompts
 

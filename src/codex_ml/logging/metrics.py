@@ -23,12 +23,12 @@ logger = logging.getLogger(__name__)
 """Minimal metrics logging utilities for `_codex_`."""
 
 
-import json
-import os
-import time
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
-from typing import Optional, TextIO
+import json  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from dataclasses import asdict, dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional, TextIO  # noqa: E402
 
 try:  # optional psutil
     import psutil

@@ -2,10 +2,10 @@
 Regression Detector for Performance Agent
 Detects performance regressions automatically
 """
-from typing import Dict, Any, List, Optional
+import random
 from dataclasses import dataclass
 from datetime import datetime
-import random
+from typing import Any, Dict, List, Optional
 
 RANDOM_SEED = 47
 
@@ -19,7 +19,7 @@ class PerformanceBaseline:
 
 class RegressionDetector:
     """Detect performance regressions"""
-    
+
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
@@ -27,7 +27,7 @@ class RegressionDetector:
         self.measurements: List[PerformanceBaseline] = []
         self.regression_threshold = 0.10  # 10% degradation
         self.initialized = True
-    
+
     def set_baseline(
         self,
         metric_name: str,
@@ -42,7 +42,7 @@ class RegressionDetector:
             commit_sha=commit_sha
         )
         self.baselines[metric_name] = baseline
-    
+
     def measure(
         self,
         metric_name: str,
@@ -57,23 +57,23 @@ class RegressionDetector:
             commit_sha=commit_sha
         )
         self.measurements.append(measurement)
-    
+
     def detect_regression(self, metric_name: str) -> Optional[Dict[str, Any]]:
         """Detect if metric has regressed"""
         if metric_name not in self.baselines:
             return None
-        
+
         baseline = self.baselines[metric_name]
         recent_measurements = [
-            m for m in self.measurements 
+            m for m in self.measurements
             if m.metric_name == metric_name
         ]
-        
+
         if not recent_measurements:
             return None
-        
+
         current = recent_measurements[-1]
-        
+
         # For latency/response time: higher is worse
         # For throughput: lower is worse
         if "latency" in metric_name.lower() or "time" in metric_name.lower():
@@ -82,7 +82,7 @@ class RegressionDetector:
         else:  # Throughput-like metrics
             regression_ratio = (baseline.value - current.value) / baseline.value
             regressed = regression_ratio > self.regression_threshold
-        
+
         if regressed:
             return {
                 "metric": metric_name,
@@ -93,9 +93,9 @@ class RegressionDetector:
                 "current_commit": current.commit_sha,
                 "regressed": True
             }
-        
+
         return None
-    
+
     def check_all_metrics(self) -> List[Dict[str, Any]]:
         """Check all metrics for regressions"""
         regressions = []
@@ -104,7 +104,7 @@ class RegressionDetector:
             if regression:
                 regressions.append(regression)
         return regressions
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get detector metrics"""
         return {

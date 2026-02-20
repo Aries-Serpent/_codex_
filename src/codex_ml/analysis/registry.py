@@ -22,8 +22,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from typing import Callable
+from dataclasses import dataclass  # noqa: E402
+from typing import Callable  # noqa: E402
 
 
 @dataclass

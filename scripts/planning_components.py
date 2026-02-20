@@ -21,20 +21,20 @@ def generate_planning_css() -> str:
             margin: 30px 0;
             border: 2px solid #0366d6;
         }
-        
+
         .planning-header {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 15px;
         }
-        
+
         .planning-header h2 {
             margin: 0;
             color: #0366d6;
             font-size: 24px;
         }
-        
+
         .planning-description {
             margin-bottom: 20px;
             padding: 15px;
@@ -42,14 +42,14 @@ def generate_planning_css() -> str:
             border-radius: 6px;
             color: #24292e;
         }
-        
+
         .planning-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
-        
+
         .planning-card {
             background: white;
             border-radius: 6px;
@@ -57,12 +57,12 @@ def generate_planning_css() -> str:
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-left: 4px solid #0366d6;
         }
-        
+
         .planning-card.dependencies {
             border-left-color: #f97316;
             opacity: 0.95;
         }
-        
+
         .planning-card h3 {
             font-size: 15px;
             margin-bottom: 12px;
@@ -73,7 +73,7 @@ def generate_planning_css() -> str:
             align-items: center;
             gap: 6px;
         }
-        
+
         .checkbox-group {
             display: flex;
             flex-direction: column;
@@ -81,7 +81,7 @@ def generate_planning_css() -> str:
             max-height: 250px;
             overflow-y: auto;
         }
-        
+
         .checkbox-item {
             display: flex;
             align-items: flex-start;
@@ -91,11 +91,11 @@ def generate_planning_css() -> str:
             transition: background 0.2s;
             font-size: 13px;
         }
-        
+
         .checkbox-item:hover {
             background: #f6f8fa;
         }
-        
+
         .checkbox-item input[type="checkbox"] {
             width: 16px;
             height: 16px;
@@ -103,24 +103,24 @@ def generate_planning_css() -> str:
             margin-top: 2px;
             flex-shrink: 0;
         }
-        
+
         .checkbox-item label {
             cursor: pointer;
             flex: 1;
             line-height: 1.4;
         }
-        
+
         .checkbox-item .score {
             color: #586069;
             font-size: 11px;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-        
+
         .btn {
             padding: 10px 20px;
             border-radius: 6px;
@@ -133,36 +133,36 @@ def generate_planning_css() -> str:
             align-items: center;
             gap: 6px;
         }
-        
+
         .btn-primary {
             background: #0366d6;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #0256c7;
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(3,102,214,0.3);
         }
-        
+
         .btn-secondary {
             background: #6c757d;
             color: white;
         }
-        
+
         .btn-secondary:hover {
             background: #5a6268;
         }
-        
+
         .btn-success {
             background: #28a745;
             color: white;
         }
-        
+
         .btn-success:hover {
             background: #218838;
         }
-        
+
         .generated-prompt {
             background: #fff;
             border: 2px solid #28a745;
@@ -171,12 +171,12 @@ def generate_planning_css() -> str:
             margin-top: 20px;
             display: none;
         }
-        
+
         .generated-prompt.show {
             display: block;
             animation: slideIn 0.3s ease-out;
         }
-        
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -187,13 +187,13 @@ def generate_planning_css() -> str:
                 transform: translateY(0);
             }
         }
-        
+
         .generated-prompt h3 {
             color: #28a745;
             margin-bottom: 15px;
             font-size: 18px;
         }
-        
+
         .generated-prompt pre {
             background: #f6f8fa;
             border: 1px solid #e1e4e8;
@@ -207,7 +207,7 @@ def generate_planning_css() -> str:
             max-height: 500px;
             overflow-y: auto;
         }
-        
+
         .copy-button {
             background: #28a745;
             color: white;
@@ -219,15 +219,15 @@ def generate_planning_css() -> str:
             margin-top: 10px;
             transition: background 0.2s;
         }
-        
+
         .copy-button:hover {
             background: #218838;
         }
-        
+
         .copy-button.copied {
             background: #155724;
         }
-        
+
         .dependency-note {
             background: #fff3cd;
             border-left: 3px solid #ffc107;
@@ -254,17 +254,17 @@ def generate_planning_javascript() -> str:
             'tests': ['tests/', 'pytest.ini', '.coveragerc'],
             'docs': ['docs/', 'README.md', 'mkdocs.yml']
         };
-        
+
         // Auto-update dependencies based on selections
         function updateDependencies() {
             const capabilities = Array.from(document.querySelectorAll('#capabilitySelection input:checked'))
                 .map(cb => cb.value);
             const aspects = Array.from(document.querySelectorAll('#aspectSelection input:checked'))
                 .map(cb => cb.value);
-            
+
             // Auto-select related components
             const dependencies = new Set();
-            
+
             capabilities.forEach(cap => {
                 // Most capabilities need a detector
                 if (cap.includes('detector') || cap.includes('lifecycle') || cap.includes('safeguards')) {
@@ -279,7 +279,7 @@ def generate_planning_javascript() -> str:
                     dependencies.add('cli');
                 }
             });
-            
+
             // Based on aspects, suggest components
             if (aspects.includes('tests')) {
                 dependencies.add('tests');
@@ -287,11 +287,11 @@ def generate_planning_javascript() -> str:
             if (aspects.includes('documentation')) {
                 dependencies.add('docs');
             }
-            
+
             // Update UI to show suggestions
             updateDependencySuggestions(Array.from(dependencies));
         }
-        
+
         // Helper function to generate safe IDs from component names
         function generateSafeId(component) {
             // Create hash-based ID to avoid XSS and selector issues
@@ -300,16 +300,16 @@ def generate_planning_javascript() -> str:
             }, 0);
             return 'comp_' + Math.abs(hash).toString(36);
         }
-        
+
         function updateDependencySuggestions(suggestions) {
             const container = document.getElementById('dependencySuggestions');
             if (!container) return;
-            
+
             if (suggestions.length === 0) {
                 container.innerHTML = '<p style="color: #586069; font-style: italic;">Select capabilities to see component suggestions</p>';
                 return;
             }
-            
+
             let html = '';
             suggestions.forEach(component => {
                 // Validate component is a string
@@ -317,10 +317,10 @@ def generate_planning_javascript() -> str:
                     console.warn('Invalid component type:', typeof component);
                     return;
                 }
-                
+
                 const paths = COMPONENT_DEPENDENCIES[component] || [];
                 const componentId = generateSafeId(component);
-                
+
                 // Check if already selected using data attribute
                 const existingCheckbox = document.querySelector(`input[data-component="${CSS.escape(component)}"]`);
                 const checked = existingCheckbox?.checked ? 'checked' : '';
@@ -328,7 +328,7 @@ def generate_planning_javascript() -> str:
                 const escapedComponent = sanitizeHTML(component);
                 const escapedPaths = paths.slice(0, 2).map(p => sanitizeHTML(p)).join(', ');
                 const moreText = paths.length > 2 ? '...' : '';
-                
+
                 html += `
                     <div class="checkbox-item">
                         <input type="checkbox" id="${componentId}" data-component="${sanitizeHTML(component)}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
@@ -341,7 +341,7 @@ def generate_planning_javascript() -> str:
             });
             container.innerHTML = html;
         }
-        
+
         // Sanitize HTML to prevent XSS
         function sanitizeHTML(str) {
             if (typeof str !== 'string') return '';
@@ -349,7 +349,7 @@ def generate_planning_javascript() -> str:
             div.textContent = str;
             return div.innerHTML;
         }
-        
+
         function generateNextSteps() {
             // Gather and sanitize selections
             const phases = Array.from(document.querySelectorAll('#phaseSelection input:checked'))
@@ -360,17 +360,17 @@ def generate_planning_javascript() -> str:
                 .map(cb => sanitizeHTML(cb.value));
             const components = Array.from(document.querySelectorAll('#componentSelection input:checked'))
                 .map(cb => sanitizeHTML(cb.value));
-            
+
             if (phases.length === 0 && capabilities.length === 0) {
                 alert('Please select at least one phase or capability');
                 return;
             }
-            
+
             // Generate prompt
             let prompt = `# Next Steps: Capability Improvement Plan\\n\\n`;
             prompt += `**Generated**: ${new Date().toISOString().split('T')[0]}\\n`;
             prompt += `**Objective**: Improve selected capabilities to high maturity (≥0.85)\\n\\n`;
-            
+
             if (phases.length > 0) {
                 prompt += `## Selected Phases\\n`;
                 phases.forEach(phase => {
@@ -378,7 +378,7 @@ def generate_planning_javascript() -> str:
                 });
                 prompt += `\\n`;
             }
-            
+
             if (capabilities.length > 0) {
                 prompt += `## Target Capabilities\\n`;
                 capabilities.forEach(cap => {
@@ -386,7 +386,7 @@ def generate_planning_javascript() -> str:
                 });
                 prompt += `\\n`;
             }
-            
+
             if (aspects.length > 0) {
                 prompt += `## Focus Aspects\\n`;
                 aspects.forEach(aspect => {
@@ -394,7 +394,7 @@ def generate_planning_javascript() -> str:
                 });
                 prompt += `\\n`;
             }
-            
+
             if (components.length > 0) {
                 prompt += `## Components to Update\\n`;
                 components.forEach(component => {
@@ -406,17 +406,17 @@ def generate_planning_javascript() -> str:
                 });
                 prompt += `\\n`;
             }
-            
+
             prompt += `## Execution Steps\\n\\n`;
             prompt += `For each selected capability:\\n\\n`;
-            
+
             if (aspects.includes('functionality')) {
                 prompt += `1. **Implement Functionality**\\n`;
                 prompt += `   - Add missing functions and features\\n`;
                 prompt += `   - Ensure all required patterns are present\\n`;
                 prompt += `   - Target functionality score: 1.0\\n\\n`;
             }
-            
+
             if (aspects.includes('tests')) {
                 prompt += `2. **Create Comprehensive Tests**\\n`;
                 prompt += `   - Write unit tests (target: 15+ test cases per capability)\\n`;
@@ -424,7 +424,7 @@ def generate_planning_javascript() -> str:
                 prompt += `   - Test edge cases and error handling\\n`;
                 prompt += `   - Target test score: 0.85+\\n\\n`;
             }
-            
+
             if (aspects.includes('documentation')) {
                 prompt += `3. **Write Documentation**\\n`;
                 prompt += `   - Create capability-specific docs\\n`;
@@ -432,7 +432,7 @@ def generate_planning_javascript() -> str:
                 prompt += `   - Include keywords for detector recognition\\n`;
                 prompt += `   - Target documentation score: 0.85+\\n\\n`;
             }
-            
+
             if (aspects.includes('safeguards')) {
                 prompt += `4. **Add Safeguards**\\n`;
                 prompt += `   - Input validation and bounds checking\\n`;
@@ -440,7 +440,7 @@ def generate_planning_javascript() -> str:
                 prompt += `   - Add safeguard keywords in comments\\n`;
                 prompt += `   - Target safeguards score: 0.85+\\n\\n`;
             }
-            
+
             if (aspects.includes('consistency')) {
                 prompt += `5. **Ensure Consistency**\\n`;
                 prompt += `   - Follow repository coding standards\\n`;
@@ -448,14 +448,14 @@ def generate_planning_javascript() -> str:
                 prompt += `   - Maintain deterministic behavior\\n`;
                 prompt += `   - Target consistency score: 0.85+\\n\\n`;
             }
-            
+
             prompt += `## Validation\\n\\n`;
             prompt += `After implementation:\\n`;
             prompt += `1. Run audit: \`python scripts/space_traversal/audit_runner.py run\`\\n`;
             prompt += `2. Verify scores: Check \`audit_artifacts/capabilities_scored.json\`\\n`;
             prompt += `3. Confirm all selected capabilities reach ≥0.85\\n`;
             prompt += `4. Review evidence files for completeness\\n\\n`;
-            
+
             prompt += `## Expected Outcomes\\n\\n`;
             if (capabilities.length > 0) {
                 prompt += `- ${capabilities.length} capabilities improved to high maturity\\n`;
@@ -464,13 +464,13 @@ def generate_planning_javascript() -> str:
             prompt += `- Comprehensive test coverage added\\n`;
             prompt += `- Complete documentation in place\\n`;
             prompt += `- Repository maturity increased\\n`;
-            
+
             // Display prompt
             document.getElementById('promptContent').textContent = prompt;
             document.getElementById('generatedPrompt').classList.add('show');
             document.getElementById('generatedPrompt').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-        
+
         function resetSelections() {
             document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
                 cb.checked = false;
@@ -478,7 +478,7 @@ def generate_planning_javascript() -> str:
             document.getElementById('generatedPrompt').classList.remove('show');
             updateDependencies();
         }
-        
+
         function copyPrompt() {
             const content = document.getElementById('promptContent').textContent;
             navigator.clipboard.writeText(content).then(() => {
@@ -493,14 +493,14 @@ def generate_planning_javascript() -> str:
                 alert('Failed to copy: ' + err);
             });
         }
-        
+
         // Add event listeners after page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-update dependencies when selections change
             document.querySelectorAll('#capabilitySelection input, #aspectSelection input').forEach(cb => {
                 cb.addEventListener('change', updateDependencies);
             });
-            
+
             // Initial update
             updateDependencies();
         });
@@ -524,10 +524,10 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                 <h2>🎯 Interactive Planning Tool</h2>
             </div>
             <div class="planning-description">
-                <strong>Craft Your Next Steps:</strong> Select phases, capabilities, and aspects to generate a customized improvement plan. 
+                <strong>Craft Your Next Steps:</strong> Select phases, capabilities, and aspects to generate a customized improvement plan.
                 The tool will automatically suggest related components (detectors, database, CLI, etc.) based on your selections.
             </div>
-            
+
             <div class="planning-grid">
                 <!-- Phase Selection -->
                 <div class="planning-card">
@@ -559,7 +559,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
 
     html += """                    </div>
                 </div>
-                
+
                 <!-- Capability Selection -->
                 <div class="planning-card">
                     <h3>🎯 Low Maturity Capabilities</h3>
@@ -600,7 +600,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
 
     html += """                    </div>
                 </div>
-                
+
                 <!-- Aspect Selection -->
                 <div class="planning-card">
                     <h3>🔧 Focus Aspects</h3>
@@ -627,7 +627,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Component Dependencies (Auto-suggested) -->
                 <div class="planning-card dependencies">
                     <h3>🔗 Related Components</h3>
@@ -641,7 +641,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                     </div>
                 </div>
             </div>
-            
+
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="generateNextSteps()">
                     ✨ Generate Next Steps Prompt
@@ -653,7 +653,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                     🖨️ Print Dashboard
                 </button>
             </div>
-            
+
             <div class="generated-prompt" id="generatedPrompt">
                 <h3>📋 Generated Next Steps Prompt</h3>
                 <pre id="promptContent"></pre>

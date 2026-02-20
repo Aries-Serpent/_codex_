@@ -116,7 +116,7 @@ Phase 4 (Production Excellence) has been successfully completed, achieving Level
 
 ### CI Status
 
-**Latest Run:** [#19986786734](https://github.com/Aries-Serpent/_codex_/actions/runs/19986786734)
+**Latest Run:** [#19986786734](https://github.com/Aries-Serpent/_codex_/actions/runs/19986786734 <!-- Note: Logs expire after 90 days -->)
 
 ✅ **Audit**: success  
 ✅ **Determinism**: success  

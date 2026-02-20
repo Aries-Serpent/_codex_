@@ -8,7 +8,7 @@
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Request Batching](#request-batching)
 3. [Response Caching](#response-caching)
 4. [Retrieval Optimizations](#retrieval-optimizations)

@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Helpers to configure offline tracking providers locally."""
 
 
-import os
-from pathlib import Path
-from typing import Any, Optional
+import os  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 def init_mlflow_offline(local_dir: str | None = None) -> str:

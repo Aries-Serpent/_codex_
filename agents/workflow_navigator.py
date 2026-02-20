@@ -7,14 +7,15 @@ of common repository operations.
 
 import json
 import logging
+
 logger = logging.getLogger(__name__)
-import shutil
-import subprocess
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from pathlib import Path
-from typing import Optional, Any
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from datetime import datetime  # noqa: E402
+from enum import Enum  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 
 class WorkflowFrequency(Enum):
@@ -650,9 +651,9 @@ class WorkflowNavigator:
                     "results": results,
                 }
             elif result["success"]:
-                print(f"  ✓ Completed")
+                print("  ✓ Completed")
             else:
-                print(f"  ⊘ Skipped (optional)")
+                print("  ⊘ Skipped (optional)")
 
         print(f"\n{'='*60}")
         print(f"WORKFLOW COMPLETED: {workflow.name}")
@@ -668,7 +669,7 @@ class WorkflowNavigator:
     ) -> dict[str, Any]:
         """Execute multiple workflows in sequence"""
         print(f"\n{'#'*60}")
-        print(f"EXECUTING WORKFLOW CHAIN")
+        print("EXECUTING WORKFLOW CHAIN")
         print(f"{'#'*60}")
         print(f"Workflows: {' → '.join(workflow_ids)}")
 
@@ -692,7 +693,7 @@ class WorkflowNavigator:
                     context.update(step_result.get("result", {}))
 
         print(f"\n{'#'*60}")
-        print(f"WORKFLOW CHAIN COMPLETED")
+        print("WORKFLOW CHAIN COMPLETED")
         print(f"{'#'*60}")
 
         return {"success": True, "chain_results": chain_results}

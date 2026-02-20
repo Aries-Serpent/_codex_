@@ -9,13 +9,12 @@ Error Capture, and Finalization.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Callable, Iterable, Mapping, MutableMapping, Sequence
+
+logger = logging.getLogger(__name__)
 
 PhaseAction = Callable[["WorkflowContext", "CapabilityPlan"], None]
 RollbackAction = Callable[["WorkflowContext"], None]

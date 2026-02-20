@@ -6,26 +6,26 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import csv
-import hashlib
-import json
-import uuid
-from contextlib import ExitStack
-from dataclasses import asdict, is_dataclass
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, TypeVar
+import csv  # noqa: E402
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import uuid  # noqa: E402
+from contextlib import ExitStack  # noqa: E402
+from dataclasses import asdict, is_dataclass  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Optional, Sequence, TypeVar  # noqa: E402
 
-from codex_ml.config import DataConfig, EvaluationConfig
-from codex_ml.data.loader import CacheManifest
-from codex_ml.eval import metrics
-from codex_ml.metrics.registry import append_error_entry, list_metrics
-from codex_ml.metrics.registry import get as get_registered_metric
-from codex_ml.metrics.sinks import create_sink
-from codex_ml.registry.base import RegistryNotFoundError
-from codex_ml.tracking.writers import NdjsonWriter
-from codex_ml.utils.provenance import export_environment
-from codex_ml.utils.seeding import set_reproducible
+from codex_ml.config import DataConfig, EvaluationConfig  # noqa: E402
+from codex_ml.data.loader import CacheManifest  # noqa: E402
+from codex_ml.eval import metrics  # noqa: E402
+from codex_ml.metrics.registry import append_error_entry, list_metrics  # noqa: E402
+from codex_ml.metrics.registry import get as get_registered_metric  # noqa: E402
+from codex_ml.metrics.sinks import create_sink  # noqa: E402
+from codex_ml.registry.base import RegistryNotFoundError  # noqa: E402
+from codex_ml.tracking.writers import NdjsonWriter  # noqa: E402
+from codex_ml.utils.provenance import export_environment  # noqa: E402
+from codex_ml.utils.seeding import set_reproducible  # noqa: E402
 
 __all__ = ["EvaluationError", "run_evaluation"]
 
@@ -186,8 +186,8 @@ def _encode_labels(
         try:
             ints.append(int(value))
             continue
-        except (TypeError, ValueError):
-            pass
+        except (TypeError, ValueError) as e:
+            logger.debug("Type conversion failed for value '%s': %s", value, e)
         if value not in mapping:
             mapping[value] = len(mapping)
         ints.append(mapping[value])

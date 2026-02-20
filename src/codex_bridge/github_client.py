@@ -21,14 +21,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import base64
-import hashlib
-import json
-import os
-import time
-from typing import Any
+import base64  # noqa: E402
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from typing import Any  # noqa: E402
 
-import requests
+import requests  # noqa: E402
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 REPO = os.getenv("CODEX_GH_REPO", "_codex_")

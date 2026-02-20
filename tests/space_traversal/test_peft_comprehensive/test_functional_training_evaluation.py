@@ -41,7 +41,8 @@ class DummyTokenizer:
     eos_token: int = 0
 
     @classmethod
-    def from_pretrained(cls, name: str) -> "DummyTokenizer":
+    def from_pretrained(cls, name: str, **kwargs) -> "DummyTokenizer":
+        """Mock from_pretrained that accepts any keyword arguments like revision, trust_remote_code, etc."""
         return cls()
 
     def __call__(

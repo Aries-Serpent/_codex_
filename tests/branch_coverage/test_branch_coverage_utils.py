@@ -36,7 +36,7 @@ class TestErrorHandlingBranches:
         """Test try-except error branch."""
         error_occurred = False
         try:
-            pass
+            raise RuntimeError("test error")
         except Exception:
             error_occurred = True
         assert error_occurred is True

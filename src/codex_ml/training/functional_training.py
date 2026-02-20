@@ -14,11 +14,8 @@ checkpoint saving via ``codex_ml.utils.checkpointing``.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import json
+import logging
 import math
 import os
 import random
@@ -48,6 +45,8 @@ from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.seeding import set_reproducible
 from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_autocast
 
+logger = logging.getLogger(__name__)
+
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
@@ -56,6 +55,10 @@ if _HAS_TRANSFORMERS:
 else:  # pragma: no cover - optional dependency
     AutoModelForCausalLM = None
     AutoTokenizer = None
+
+# Compatibility alias for legacy tests that patch 'mlflow_run'
+# TODO: Remove after test migration to 'maybe_mlflow'
+mlflow_run = maybe_mlflow
 
 
 @dataclass

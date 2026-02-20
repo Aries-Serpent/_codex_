@@ -434,7 +434,7 @@ class CognitiveBrainFeeder:
 
         self._save_metadata(metadata)
 
-        print(f"✅ Cognitive brain updated:")
+        print("✅ Cognitive brain updated:")
         print(f"   📊 Total patterns: {metadata['total_patterns']}")
         print(f"   🆕 New patterns: {new_count}")
         print(f"   🔄 Updated patterns: {updated_count}")
@@ -531,7 +531,7 @@ def main():
         feeder = CognitiveBrainFeeder()
         feeder.feed_patterns(patterns)
 
-        print(f"\n✅ Pattern extraction complete!")
+        print("\n✅ Pattern extraction complete!")
         print(f"📁 Cognitive brain database: {feeder.patterns_db}")
 
         sys.exit(0)

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/linters/redundant_code.py [options]
-    
+
     Examples:
     $ python scripts/linters/redundant_code.py --help
 
@@ -298,7 +298,7 @@ def main():
         stats = process_directory(args.directory, args.fix, dry_run)
 
         logger.info(f"\n{'='*60}")
-        logger.info(f"Summary:")
+        logger.info("Summary:")
         logger.info(f"  Total files: {stats['total']}")
         logger.info(f"  Files with issues: {stats['with_issues']}")
         logger.info(f"  Total issues: {stats['issues_found']}")

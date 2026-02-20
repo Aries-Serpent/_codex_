@@ -179,11 +179,15 @@ class TestMetricsCollection:
         """Test summary metric calculates percentiles."""
         values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-        # Calculate percentiles
+        # Calculate percentiles using proper indexing
+        # For percentiles, we want the value at or below the percentile rank
         sorted_values = sorted(values)
-        p50_idx = int(len(sorted_values) * 0.5)
-        p95_idx = int(len(sorted_values) * 0.95)
-        p99_idx = int(len(sorted_values) * 0.99)
+        # p50 means 50% of values are below or equal
+        # For 10 values, p50 should be between index 4 and 5 (values 5 and 6)
+        # Common approach: use int(percentile * (n-1))
+        p50_idx = int(0.5 * (len(sorted_values) - 1))  # int(0.5 * 9) = 4 -> value 5
+        p95_idx = int(0.95 * (len(sorted_values) - 1))  # int(0.95 * 9) = 8 -> value 9
+        p99_idx = int(0.99 * (len(sorted_values) - 1))  # int(0.99 * 9) = 8 -> value 9
 
         summary = {
             "count": len(values),
@@ -233,15 +237,15 @@ class TestMetricsCollection:
 
     def test_metrics_aggregation(self):
         """Test metrics aggregation over time window."""
-        # Simulate time series data
+        # Simulate time series data with fixed reference time
+        current_time = time.time()
         time_series = [
-            (time.time() - 60, 100),  # 1 min ago
-            (time.time() - 30, 150),  # 30 sec ago
-            (time.time(), 200),       # now
+            (current_time - 60, 100),  # 1 min ago
+            (current_time - 30, 150),  # 30 sec ago
+            (current_time, 200),       # now
         ]
 
         # Aggregate over last minute
-        current_time = time.time()
         window_start = current_time - 60
 
         values_in_window = [v for t, v in time_series if t >= window_start]
@@ -249,9 +253,9 @@ class TestMetricsCollection:
         aggregated = {
             "count": len(values_in_window),
             "sum": sum(values_in_window),
-            "avg": sum(values_in_window) / len(values_in_window),
-            "min": min(values_in_window),
-            "max": max(values_in_window),
+            "avg": sum(values_in_window) / len(values_in_window) if values_in_window else 0,
+            "min": min(values_in_window) if values_in_window else 0,
+            "max": max(values_in_window) if values_in_window else 0,
         }
 
         assert aggregated["count"] == 3

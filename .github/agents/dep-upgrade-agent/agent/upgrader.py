@@ -5,13 +5,13 @@ Dependency Upgrader Module - ACT Phase
 Implements automated dependency upgrade execution and PR creation.
 """
 
-import subprocess
 import json
 import re
-from pathlib import Path
-from typing import Dict, List, Any
+import subprocess
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class UpgradeStrategy(Enum):
@@ -42,9 +42,9 @@ class UpgradeResult:
 class DependencyUpgrader:
     """
     Dependency Upgrader - ACT Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: dependency_upgrade_execution
-    
+
     Executes dependency upgrades:
     - Update dependency files
     - Run test suite
@@ -52,39 +52,39 @@ class DependencyUpgrader:
     - Auto-merge safe updates
     - Rollback on failure
     """
-    
+
     def __init__(self, repo_path: Path):
         self.repo_path = repo_path
         self.results: List[UpgradeResult] = []
-        
+
     def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
         """
         ACT: Execute dependency upgrades.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: upgrade_application
-        
+
         Args:
             decision: Evaluation results from DECIDE phase
-            
+
         Returns:
             Result with upgrade outcomes
         """
         auto_upgrades = decision.get("auto_upgrades", [])
-        
+
         # Apply auto-upgrades first
         for evaluation in auto_upgrades:
             result = self._apply_upgrade(evaluation, UpgradeStrategy.AUTO_MERGE)
             self.results.append(result)
-        
+
         # Create PRs for manual upgrades
         manual_upgrades = decision.get("manual_upgrades", [])
         for evaluation in manual_upgrades:
             result = self._create_upgrade_pr(evaluation)
             self.results.append(result)
-        
+
         # Generate upgrade report
         report_path = self._generate_upgrade_report(decision)
-        
+
         result = {
             "results": self.results,
             "successful_upgrades": sum(1 for r in self.results if r.success),
@@ -94,41 +94,41 @@ class DependencyUpgrader:
             "report_path": str(report_path),
             "summary": self._generate_summary()
         }
-        
+
         #AFTERMATH_METRIC: total_upgrades = len(self.results)
         #AFTERMATH_METRIC: successful = result["successful_upgrades"]
         #AFTERMATH_METRIC: prs_created = result["prs_created"]
-        
+
         return result
-    
+
     def _apply_upgrade(self, evaluation: Any, strategy: UpgradeStrategy) -> UpgradeResult:
         """
         Apply dependency upgrade.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: upgrade_execution
         """
         import time
         start_time = time.time()
-        
+
         success = False
         tests_passed = False
         rollback_performed = False
         error_message = None
-        
+
         try:
             # Update dependency file
             self._update_dependency_file(
                 evaluation.package_name,
                 evaluation.target_version
             )
-            
+
             # Install updated dependency
             install_success = self._install_dependencies()
-            
+
             if install_success:
                 # Run tests
                 tests_passed = self._run_tests()
-                
+
                 if tests_passed:
                     success = True
                 else:
@@ -158,9 +158,9 @@ class DependencyUpgrader:
                 # Best-effort rollback: if secondary rollback also fails,
                 # continue processing other upgrades. Manual intervention may be needed.
                 pass
-        
+
         duration = time.time() - start_time
-        
+
         return UpgradeResult(
             package_name=evaluation.package_name,
             from_version=evaluation.current_version,
@@ -175,46 +175,46 @@ class DependencyUpgrader:
             duration_seconds=duration,
             metadata={"evaluation": evaluation}
         )
-    
+
     def _create_upgrade_pr(self, evaluation: Any) -> UpgradeResult:
         """
         Create GitHub PR for upgrade.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: pr_creation
         """
         import time
         start_time = time.time()
-        
+
         pr_created = False
         pr_url = None
         error_message = None
-        
+
         try:
             # Create branch
             branch_name = f"upgrade-{evaluation.package_name}-{evaluation.target_version}"
             self._create_branch(branch_name)
-            
+
             # Update dependency file
             self._update_dependency_file(
                 evaluation.package_name,
                 evaluation.target_version
             )
-            
+
             # Commit changes
             self._commit_changes(
                 f"Upgrade {evaluation.package_name} from {evaluation.current_version} to {evaluation.target_version}"
             )
-            
+
             # Push branch (would use GitHub API in real implementation)
             # pr_url = self._create_github_pr(...)
             pr_created = True
-            pr_url = f"https://github.com/example/repo/pull/123"  # Placeholder
-            
+            pr_url = "https://github.com/example/repo/pull/123"  # Placeholder
+
         except Exception as e:
             error_message = str(e)
-        
+
         duration = time.time() - start_time
-        
+
         return UpgradeResult(
             package_name=evaluation.package_name,
             from_version=evaluation.current_version,
@@ -229,27 +229,27 @@ class DependencyUpgrader:
             duration_seconds=duration,
             metadata={"evaluation": evaluation}
         )
-    
+
     def _update_dependency_file(self, package: str, version: str) -> None:
         """
         Update dependency file with new version.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: dependency_file_update
         """
         req_file = self.repo_path / "requirements.txt"
         if req_file.exists():
             content = req_file.read_text()
             lines = []
-            
+
             for line in content.splitlines():
                 if line.strip().startswith(package):
                     # Replace version
                     lines.append(f"{package}=={version}")
                 else:
                     lines.append(line)
-            
+
             req_file.write_text('\n'.join(lines) + '\n')
-    
+
     def _install_dependencies(self) -> bool:
         """Install updated dependencies."""
         try:
@@ -262,11 +262,11 @@ class DependencyUpgrader:
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
-    
+
     def _run_tests(self) -> bool:
         """
         Run test suite to validate upgrade.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: upgrade_validation
         """
         try:
@@ -279,26 +279,26 @@ class DependencyUpgrader:
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
-    
+
     def _rollback_upgrade(self, package: str, version: str) -> None:
         """
         Rollback upgrade to previous version.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: upgrade_rollback
         """
         self._update_dependency_file(package, version)
         self._install_dependencies()
-    
+
     def _create_branch(self, branch_name: str) -> None:
         """Create git branch for upgrade."""
         # Sanitize branch name to prevent command injection
         safe_branch_name = re.sub(r'[^a-zA-Z0-9_\-\.]', '-', branch_name)
-        
+
         # Validate working directory
         if not self._is_safe_repo_path():
-            print(f"Warning: Invalid repository path for branch creation")
+            print("Warning: Invalid repository path for branch creation")
             return
-        
+
         try:
             result = subprocess.run(
                 ["git", "checkout", "-b", safe_branch_name],
@@ -312,14 +312,14 @@ class DependencyUpgrader:
             print(f"Warning: Git branch creation timed out for {safe_branch_name}")
         except FileNotFoundError:
             print("Warning: Git command not found")
-    
+
     def _commit_changes(self, message: str) -> None:
         """Commit changes to git."""
         # Validate working directory
         if not self._is_safe_repo_path():
-            print(f"Warning: Invalid repository path for commit")
+            print("Warning: Invalid repository path for commit")
             return
-        
+
         try:
             result = subprocess.run(
                 ["git", "add", "."],
@@ -330,7 +330,7 @@ class DependencyUpgrader:
             if result.returncode != 0:
                 print(f"Warning: Git add failed: {result.stderr.decode()}")
                 return
-            
+
             result = subprocess.run(
                 ["git", "commit", "-m", message],
                 cwd=self.repo_path,
@@ -343,7 +343,7 @@ class DependencyUpgrader:
             print("Warning: Git commit timed out")
         except FileNotFoundError:
             print("Warning: Git command not found")
-    
+
     def _is_safe_repo_path(self) -> bool:
         """Validate repository path is safe for git operations."""
         try:
@@ -352,16 +352,16 @@ class DependencyUpgrader:
             return repo_resolved.exists() and repo_resolved.is_dir()
         except (OSError, ValueError):
             return False
-    
+
     def _generate_upgrade_report(self, decision: Dict[str, Any]) -> Path:
         """
         Generate upgrade report.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: upgrade_reporting
         """
         report_path = self.repo_path / ".codex" / "dependency_upgrade_report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         report = {
             "summary": {
                 "total_evaluated": decision.get("total_evaluated", 0),
@@ -384,10 +384,10 @@ class DependencyUpgrader:
             ],
             "recommendations": decision.get("recommendations", [])
         }
-        
+
         report_path.write_text(json.dumps(report, indent=2))
         return report_path
-    
+
     def _generate_summary(self) -> Dict[str, Any]:
         """Generate upgrade summary."""
         return {

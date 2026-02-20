@@ -37,14 +37,14 @@ except ImportError:
 
     class AutoTuneWorkflow:
         """Auto-tune workflow for audio processing."""
-        
+
         def __init__(self, config: Optional[WorkflowConfig] = None):
             self.config = config or WorkflowConfig()
-        
+
         def process(self, audio_path: str, output_path: Optional[str] = None) -> TuneResult:
             """Process audio file with auto-tune."""
             return TuneResult(success=True, corrections_applied=0, output_path=output_path)
-        
+
         def batch_process(self, audio_paths: List[str]) -> List[TuneResult]:
             """Process multiple audio files."""
             return [self.process(p) for p in audio_paths]

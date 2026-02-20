@@ -13,7 +13,6 @@ Codex-specific archival infrastructure for reproducibility.
 from __future__ import annotations
 
 
-
 def detect(file_index: dict) -> dict:
     """
     Detect archival and bundling capability.

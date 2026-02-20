@@ -18,14 +18,12 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 from pathlib import Path
 
 from codex_ml.utils.optional import optional_dependency_error
 
+logger = logging.getLogger(__name__)
 
 def init_experiment(exp_name: str = "codex_experiment") -> None:
     """Initialise MLflow in offline (local file store) mode by default."""

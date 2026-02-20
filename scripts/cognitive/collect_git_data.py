@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/collect_git_data.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/collect_git_data.py --help
 
@@ -38,17 +38,17 @@ import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
     """
     Collect Git commit data for cognitive analysis.
-    
+
     Args:
         since_date: Date string (e.g., "7 days ago")
         output_path: Path to save JSON output
-    
+
     Returns:
         Dictionary with commit data and metadata
     """
@@ -60,17 +60,17 @@ def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
             "--pretty=format:%H|%an|%ae|%at|%s",
             "--numstat"
         ]
-        
+
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
             check=True
         )
-        
+
         commits = []
         lines = result.stdout.split('\n')
-        
+
         current_commit = None
         for line in lines:
             if '|' in line and len(line.split('|')) >= 5:
@@ -78,7 +78,7 @@ def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
                 parts = line.split('|')
                 if current_commit:
                     commits.append(current_commit)
-                
+
                 current_commit = {
                     "hash": parts[0],
                     "author_name": parts[1],
@@ -97,7 +97,7 @@ def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
                         additions = int(parts[0]) if parts[0].isdigit() else 0
                         deletions = int(parts[1]) if parts[1].isdigit() else 0
                         filename = parts[2]
-                        
+
                         current_commit["files_changed"].append({
                             "file": filename,
                             "additions": additions,
@@ -107,16 +107,16 @@ def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
                         current_commit["deletions"] += deletions
                     except (ValueError, IndexError):
                         continue
-        
+
         # Add last commit
         if current_commit:
             commits.append(current_commit)
-        
+
         # Generate statistics
         total_additions = sum(c["additions"] for c in commits)
         total_deletions = sum(c["deletions"] for c in commits)
         unique_authors = len(set(c["author_email"] for c in commits))
-        
+
         data = {
             "collection_timestamp": datetime.now().isoformat(),
             "since_date": since_date,
@@ -126,20 +126,20 @@ def collect_git_commits(since_date: str, output_path: str) -> Dict[str, Any]:
             "unique_authors": unique_authors,
             "commits": commits
         }
-        
+
         # Save to file
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(output_file, 'w') as f:
             json.dump(data, f, indent=2)
-        
+
         print(f"✅ Collected {len(commits)} commits from {unique_authors} authors")
         print(f"   Additions: {total_additions}, Deletions: {total_deletions}")
         print(f"   Saved to: {output_path}")
-        
+
         return data
-        
+
     except subprocess.CalledProcessError as e:
         print(f"❌ Git command failed: {e}")
         return {"error": str(e), "commits": []}
@@ -162,9 +162,9 @@ def main():
         required=True,
         help="Output JSON file path"
     )
-    
+
     args = parser.parse_args()
-    
+
     collect_git_commits(args.since, args.output)
 
 

@@ -38,7 +38,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
 
     def leave_Call(self, original_node: cst.Call, updated_node: cst.Call) -> Union[cst.Call, cst.FlattenSentinel[cst.BaseSmallStatement]]:
         """Transform subprocess.call and os.system calls."""
-        
+
         # Match subprocess.call(..., shell=False)
         if m.matches(
             updated_node,
@@ -50,7 +50,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
             )
         ):
             return self._transform_subprocess_call(updated_node)
-        
+
         # Match os.system(...)
         if m.matches(
             updated_node,
@@ -62,12 +62,12 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
             )
         ):
             return self._transform_os_system(updated_node)
-        
+
         return updated_node
 
     def _transform_subprocess_call(self, node: cst.Call) -> cst.Call:
         """Transform subprocess.call to subprocess.run with shell=False and check=True."""
-        
+
         # Check if shell=False is present
         has_shell_true = any(
             isinstance(arg, cst.Arg) and
@@ -75,19 +75,19 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
             m.matches(arg.value, m.Name("True"))
             for arg in node.args
         )
-        
+
         if not has_shell_true:
             return node
-        
+
         # Change function name from 'call' to 'run'
         new_func = node.func.with_changes(
             attr=cst.Name("run")
         )
-        
+
         # Update arguments: change shell=False to shell=False, add check=True
         new_args = []
         check_present = False
-        
+
         for arg in node.args:
             if isinstance(arg, cst.Arg) and arg.keyword:
                 if arg.keyword.value == "shell":
@@ -103,7 +103,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
                     new_args.append(arg)
             else:
                 new_args.append(arg)
-        
+
         # Add check=True if not present
         if not check_present:
             new_args.append(
@@ -116,9 +116,9 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
                     )
                 )
             )
-        
+
         self.changes.append("Changed subprocess.call(shell=False) to subprocess.run(shell=False, check=True)")
-        
+
         return node.with_changes(
             func=new_func,
             args=new_args
@@ -126,13 +126,13 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
 
     def _transform_os_system(self, node: cst.Call) -> cst.Call:
         """Transform os.system to subprocess.run."""
-        
+
         # Change os.system(cmd) to subprocess.run(cmd, shell=False, check=True)
         new_func = cst.Attribute(
             value=cst.Name("subprocess"),
             attr=cst.Name("run")
         )
-        
+
         # Keep existing arguments and add shell=False, check=True
         new_args = list(node.args)
         new_args.extend([
@@ -153,10 +153,10 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
                 )
             )
         ])
-        
-        self.changes.append(f"Converted os.system() to subprocess.run() with shell=False, check=True")
+
+        self.changes.append("Converted os.system() to subprocess.run() with shell=False, check=True")
         self.needs_subprocess_import = True
-        
+
         return node.with_changes(
             func=new_func,
             args=new_args
@@ -165,35 +165,35 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
 
 class AddSubprocessImport(cst.CSTTransformer):
     """Add subprocess import if needed."""
-    
+
     def __init__(self, needs_import: bool):
         super().__init__()
         self.needs_import = needs_import
         self.has_subprocess_import = False
-    
+
     def visit_Import(self, node: cst.Import) -> None:
         """Check if subprocess is already imported."""
         for name in node.names:
             if isinstance(name, cst.ImportAlias) and name.name.value == "subprocess":
                 self.has_subprocess_import = True
-    
+
     def visit_ImportFrom(self, node: cst.ImportFrom) -> None:
         """Check if importing from subprocess."""
         if node.module and node.module.value == "subprocess":
             self.has_subprocess_import = True
-    
+
     def leave_Module(self, original_node: cst.Module, updated_node: cst.Module) -> cst.Module:
         """Add subprocess import at module level if needed."""
         if not self.needs_import or self.has_subprocess_import:
             return updated_node
-        
+
         # Find the best location to add import (after other imports)
         new_body = []
         import_added = False
-        
+
         for i, stmt in enumerate(updated_node.body):
             new_body.append(stmt)
-            
+
             # Add after the last import statement
             if not import_added and isinstance(stmt, cst.SimpleStatementLine):
                 if any(isinstance(s, (cst.Import, cst.ImportFrom)) for s in stmt.body):
@@ -209,24 +209,24 @@ class AddSubprocessImport(cst.CSTTransformer):
                                 )
                             )
                             import_added = True
-        
+
         # If no imports found, add at the beginning (after docstring if present)
         if not import_added:
             insert_at = 0
-            if (updated_node.body and 
+            if (updated_node.body and
                 isinstance(updated_node.body[0], cst.SimpleStatementLine) and
                 isinstance(updated_node.body[0].body[0], cst.Expr) and
                 isinstance(updated_node.body[0].body[0].value, cst.SimpleString)):
                 # Has docstring, insert after it
                 insert_at = 1
-            
+
             new_body.insert(
                 insert_at,
                 cst.SimpleStatementLine(
                     body=[cst.Import(names=[cst.ImportAlias(name=cst.Name("subprocess"))])]
                 )
             )
-        
+
         return updated_node.with_changes(body=new_body)
 
 
@@ -261,24 +261,24 @@ def transform_file(file_path: str) -> tuple[str, list[str]]:
     try:
         # Parse source code
         module = cst.parse_module(source)
-        
+
         # Apply security transformations
         transformer = SubprocessSecurityTransformer()
         modified_tree = module.visit(transformer)
-        
+
         # Add subprocess import if needed
         if transformer.needs_subprocess_import or transformer.changes:
             import_adder = AddSubprocessImport(needs_import=transformer.needs_subprocess_import)
             modified_tree = modified_tree.visit(import_adder)
-            
+
             if not import_adder.has_subprocess_import and transformer.needs_subprocess_import:
                 transformer.changes.append("Added 'import subprocess; import shlex'")
-        
+
         # Generate new source code
         new_source = modified_tree.code
-        
+
         return new_source, transformer.changes
-        
+
     except cst.ParserSyntaxError as e:
         logger.error(f"Syntax error in {file_path}: {e}")
         return "", [f"Syntax error: {e}"]

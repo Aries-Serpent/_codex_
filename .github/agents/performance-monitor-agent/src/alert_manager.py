@@ -2,11 +2,11 @@
 Alert Manager for Performance Agent
 Manages real-time performance alerts
 """
-from typing import Dict, Any, List, Optional
+import random
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-import random
+from typing import Any, Dict, List, Optional
 
 RANDOM_SEED = 47
 
@@ -29,7 +29,7 @@ class PerformanceAlert:
 
 class AlertManager:
     """Manage performance alerts"""
-    
+
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
@@ -42,7 +42,7 @@ class AlertManager:
             "memory_usage": {"threshold": 8192.0, "severity": AlertSeverity.CRITICAL},
         }
         self.initialized = True
-    
+
     def create_alert(
         self,
         metric_name: str,
@@ -57,10 +57,10 @@ class AlertManager:
             severity = self.alert_rules[metric_name]["severity"]
         elif severity is None:
             severity = AlertSeverity.INFO
-        
+
         # Get threshold from rules
         threshold = self.alert_rules.get(metric_name, {}).get("threshold", 0.0)
-        
+
         alert = PerformanceAlert(
             timestamp=datetime.now(),
             severity=severity,
@@ -70,18 +70,18 @@ class AlertManager:
             threshold=threshold,
             metadata=metadata or {}
         )
-        
+
         self.alerts.append(alert)
         return alert
-    
+
     def check_metric(self, metric_name: str, value: float) -> Optional[PerformanceAlert]:
         """Check if metric exceeds threshold and create alert"""
         if metric_name not in self.alert_rules:
             return None
-        
+
         rule = self.alert_rules[metric_name]
         threshold = rule["threshold"]
-        
+
         # For throughput, lower than threshold is bad
         if "throughput" in metric_name.lower():
             if value < threshold:
@@ -91,15 +91,15 @@ class AlertManager:
             if value > threshold:
                 message = f"{metric_name} exceeds threshold: {value:.2f} > {threshold:.2f}"
                 return self.create_alert(metric_name, value, message, rule["severity"])
-        
+
         return None
-    
+
     def get_active_alerts(self, severity: Optional[AlertSeverity] = None) -> List[PerformanceAlert]:
         """Get active alerts, optionally filtered by severity"""
         if severity:
             return [a for a in self.alerts if a.severity == severity]
         return self.alerts
-    
+
     def get_alert_summary(self) -> Dict[str, int]:
         """Get summary of alerts by severity"""
         summary = {
@@ -108,12 +108,12 @@ class AlertManager:
             "critical": 0,
             "total": len(self.alerts)
         }
-        
+
         for alert in self.alerts:
             summary[alert.severity.value] += 1
-        
+
         return summary
-    
+
     def clear_alerts(self, metric_name: Optional[str] = None) -> int:
         """Clear alerts, optionally filtered by metric name"""
         if metric_name:
@@ -124,7 +124,7 @@ class AlertManager:
             count = len(self.alerts)
             self.alerts = []
             return count
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get alert manager metrics"""
         return {

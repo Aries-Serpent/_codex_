@@ -1,0 +1,671 @@
+{
+  "stats": {
+    "files_scanned": 2630,
+    "files_with_issues": 29,
+    "files_modified": 29,
+    "anchors_corrected": 6,
+    "anchors_commented": 75
+  },
+  "fixes": [
+    {
+      "file": "DOCUMENTATION_ALIGNMENT_REPORT_INDEX.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Detailed Reports",
+          "old_anchor": "#detailed-reports",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "LINK_VALIDATION_ACTION_ITEMS.md",
+      "fixes_count": 5,
+      "details": [
+        {
+          "text": "Details",
+          "old_anchor": "#old-name",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Details",
+          "old_anchor": "#new-name-details",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Info",
+          "old_anchor": "#removed-section",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Guide",
+          "old_anchor": "#quck-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Guide",
+          "old_anchor": "#quick-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "QUICK_REFERENCE_LINK_FIXES.md",
+      "fixes_count": 4,
+      "details": [
+        {
+          "text": "Text",
+          "old_anchor": "#anchor",
+          "new_anchor": "#2-invalid-anchors-26-fixes",
+          "action": "corrected"
+        },
+        {
+          "text": "Quick Start",
+          "old_anchor": "#quick-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#critical-blockers-table",
+          "new_anchor": "#after-header-was-actually-1-critical-blockers-table",
+          "action": "corrected"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#1-critical-blockers-table",
+          "new_anchor": "#after-header-was-actually-1-critical-blockers-table",
+          "action": "corrected"
+        }
+      ]
+    },
+    {
+      "file": "MARKDOWN_LINK_VALIDATION_REPORT.md",
+      "fixes_count": 12,
+      "details": [
+        {
+          "text": "Quick Start",
+          "old_anchor": "#quick-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 0: Foundation",
+          "old_anchor": "#phase-0",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 0: Foundation",
+          "old_anchor": "#phase-0-foundation-complete",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Quick Start",
+          "old_anchor": "#quick-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Repository Overview",
+          "old_anchor": "#repository-overview",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Overview",
+          "old_anchor": "#overview",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#critical-blockers-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Implementation Issues Table",
+          "old_anchor": "#implementation-issues-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Architectural Challenges Table",
+          "old_anchor": "#architectural-challenges-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#1-critical-blockers-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Implementation Issues Table",
+          "old_anchor": "#2-implementation-issues-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Architectural Challenges Table",
+          "old_anchor": "#3-architectural-challenges-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "TASK_COMPLETION_REPORT.md",
+      "fixes_count": 3,
+      "details": [
+        {
+          "text": "Quick Start Guide",
+          "old_anchor": "#quick-start-guide",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Overview",
+          "old_anchor": "#overview",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Text",
+          "old_anchor": "#anchor",
+          "new_anchor": "#phase-1-empty-toc-links-invalid-anchors",
+          "action": "corrected"
+        }
+      ]
+    },
+    {
+      "file": "LINK_VALIDATION_EXECUTION_SUMMARY.md",
+      "fixes_count": 7,
+      "details": [
+        {
+          "text": "Quick Start",
+          "old_anchor": "#quick-start",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#critical-blockers-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Critical Blockers Table",
+          "old_anchor": "#1-critical-blockers-table",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 0: Foundation (COMPLETE)",
+          "old_anchor": "#phase-0",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 0: Foundation (COMPLETE)",
+          "old_anchor": "#phase-0-foundation-complete",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 1: Cognitive Brain Core",
+          "old_anchor": "#phase-1",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Phase 1: Cognitive Brain Core",
+          "old_anchor": "#phase-1-cognitive-brain-core-architecture-pre-commit-1-16-historical-complete",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/ARCHITECTURE_BLUEPRINT.md",
+      "fixes_count": 5,
+      "details": [
+        {
+          "text": "Runtime & Data Flow",
+          "old_anchor": "#runtime--data-flow",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "CI/CD & Testing",
+          "old_anchor": "#cicd--testing",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Security & Compliance",
+          "old_anchor": "#security--compliance",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Deployment & Operations",
+          "old_anchor": "#deployment--operations",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Roadmap & Priorities",
+          "old_anchor": "#roadmap--priorities",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/HAR_INTEGRATION_PLAN.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Background & Use Cases",
+          "old_anchor": "#background--use-cases",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Performance & Storage",
+          "old_anchor": "#performance--storage",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "References & Additional Context",
+          "old_anchor": "#references--additional-context",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "agents/README.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Usage Examples",
+          "old_anchor": "#-usage-examples",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/AGENT_DESIGNS.md",
+      "fixes_count": 5,
+      "details": [
+        {
+          "text": "Agent Registry & Catalog",
+          "old_anchor": "#agent-registry--catalog",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Integration & Communication",
+          "old_anchor": "#integration--communication",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Monitoring & Observability",
+          "old_anchor": "#monitoring--observability",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Security & Compliance",
+          "old_anchor": "#security--compliance",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Deployment & Operations",
+          "old_anchor": "#deployment--operations",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/FOLLOWUP_FOR_PHASE3.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": ".*\\",
+          "old_anchor": "#.*",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/PRODUCTION_DEPLOYMENT_GUIDE.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Monitoring & Observability",
+          "old_anchor": "#monitoring--observability",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/COMPREHENSIVE_100_PERCENT_COVERAGE_PLANSET.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Continuous Integration & Self-Healing (Phase 21.7)",
+          "old_anchor": "#continuous-integration--self-healing-phase-217",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/AGENTS_GUIDE.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Tooling & Testing",
+          "old_anchor": "#tooling--testing",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "CLI & Tool Usage",
+          "old_anchor": "#cli--tool-usage",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/mcp/MCP_SECURITY_GUIDE.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Authentication & Authorization",
+          "old_anchor": "#authentication--authorization",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Observability & Audit",
+          "old_anchor": "#observability--audit",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/mcp/Usage_Guide.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Monitoring & Debugging",
+          "old_anchor": "#monitoring--debugging",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/zendesk/AI_AGENT_APP_BUILDER.md",
+      "fixes_count": 3,
+      "details": [
+        {
+          "text": "Location Manifold & Capacity Fields",
+          "old_anchor": "#location-manifold--capacity-fields",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Data Flow & Latency Model",
+          "old_anchor": "#data-flow--latency-model",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "AI Assistant Context & Limitations",
+          "old_anchor": "#ai-assistant-context--limitations",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/agent/OPERATIONAL_GUIDELINES.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Agent Identity & Authority",
+          "old_anchor": "#agent-identity--authority",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Audit & Logging",
+          "old_anchor": "#audit--logging",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/agent/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Monitoring & Maintenance",
+          "old_anchor": "#monitoring--maintenance",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/authentication/USER_GUIDE.md",
+      "fixes_count": 5,
+      "details": [
+        {
+          "text": "Enabling Multi-Factor Authentication",
+          "old_anchor": "#enabling-multi-factor-authentication",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Working with Tokens",
+          "old_anchor": "#working-with-tokens",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Session Management",
+          "old_anchor": "#session-management",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Security Best Practices",
+          "old_anchor": "#security-best-practices",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Troubleshooting",
+          "old_anchor": "#troubleshooting",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/admin/REPOSITORY_SECURITY_SETUP.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Monitoring & Alerting",
+          "old_anchor": "#monitoring--alerting",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/admin/GENESIS_SETUP_GUIDE.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Validation & Audit",
+          "old_anchor": "#validation--audit",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/guides/archive_standardization_guide.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Validation & Verification",
+          "old_anchor": "#validation--verification",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": "docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md",
+      "fixes_count": 6,
+      "details": [
+        {
+          "text": "MCP Architecture in _codex_",
+          "old_anchor": "#mcp-architecture-in-_codex_",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Current _codex_ MCP Implementation",
+          "old_anchor": "#current-_codex_-mcp-implementation",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Recommended Permissions & Security",
+          "old_anchor": "#recommended-permissions--security",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Known Limitations & Workarounds",
+          "old_anchor": "#known-limitations--workarounds",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "_codex_-Specific Integration Examples",
+          "old_anchor": "#_codex_-specific-integration-examples",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Troubleshooting & Monitoring",
+          "old_anchor": "#troubleshooting--monitoring",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/docs/PHILOSOPHICAL_FRAMEWORK.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Whitehead: Process & Prehension",
+          "old_anchor": "#3-whitehead-process--prehension",
+          "new_anchor": "#",
+          "action": "corrected"
+        },
+        {
+          "text": "Code Patterns & Templates",
+          "old_anchor": "#7-code-patterns--templates",
+          "new_anchor": "#",
+          "action": "corrected"
+        }
+      ]
+    },
+    {
+      "file": ".codex/plans/cognitive_brain_phase_implementation.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Phase 1: Cognitive Brain Core (Pre-commit 1-16 historical) - COMPLETE",
+          "old_anchor": "#phase-1-cognitive-brain-core-architecture-pre-commit-1-16-historical-complete",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/plans/MASTER_100_PERCENT_COVERAGE_PROMPTSET.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Quality Gates & Validation",
+          "old_anchor": "#quality-gates--validation",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    },
+    {
+      "file": ".codex/monitoring/ARCHITECTURE.md",
+      "fixes_count": 3,
+      "details": [
+        {
+          "text": "Error Handling & Reliability",
+          "old_anchor": "#error-handling--reliability",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Security & Privacy",
+          "old_anchor": "#security--privacy",
+          "action": "commented",
+          "reason": "no_match_found"
+        },
+        {
+          "text": "Performance & Scalability",
+          "old_anchor": "#performance--scalability",
+          "action": "commented",
+          "reason": "no_match_found"
+        }
+      ]
+    }
+  ]
+}

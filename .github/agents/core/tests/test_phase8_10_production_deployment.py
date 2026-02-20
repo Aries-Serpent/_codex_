@@ -14,24 +14,25 @@ Target: 105+ tests for Phase 8.10
 Total accumulated target: 217+ tests (112 from 8.9 + 105 from 8.10)
 """
 
+import os
 import random
+
+# Import Phase 8.10 components
+import sys
 import time
 
 import pytest
 
-# Import Phase 8.10 components
-import sys
-import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from phase8_10_production_deployment import (
     AgentMarketplace,
-    RealWorldTestingInfrastructure,
-    PerformanceBenchmarkSuite,
-    MonitoringObservability,
-    DocumentationPortal,
-    SecurityHardening,
     ContinuousDeploymentPipeline,
+    DocumentationPortal,
+    MonitoringObservability,
+    PerformanceBenchmarkSuite,
+    RealWorldTestingInfrastructure,
+    SecurityHardening,
 )
 
 # Deterministic seed for Phase 8.10 tests
@@ -76,7 +77,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         marketplace.register_agent("agent1", "1.0.0", ["testing"])
         marketplace.register_agent("agent2", "1.0.0", ["analysis"])
-        
+
         agents = marketplace.discover_agents(capability="testing")
         assert len(agents) == 1
         assert agents[0]["name"] == "agent1"
@@ -85,10 +86,10 @@ class TestAgentMarketplace:
         """Test version compatibility checking."""
         marketplace = AgentMarketplace()
         agent_id = marketplace.register_agent("agent1", "1.2.3", [])
-        
+
         is_compatible = marketplace.check_compatibility(agent_id, "1.2.0")
         assert is_compatible is True
-        
+
         is_compatible = marketplace.check_compatibility(agent_id, "2.0.0")
         assert is_compatible is False
 
@@ -100,7 +101,7 @@ class TestAgentMarketplace:
             description="Test agent",
             tags=["ci", "automation"]
         )
-        
+
         metadata = marketplace.get_agent_metadata(agent_id)
         assert metadata["description"] == "Test agent"
         assert "ci" in metadata["tags"]
@@ -109,10 +110,10 @@ class TestAgentMarketplace:
         """Test agent deregistration."""
         marketplace = AgentMarketplace()
         agent_id = marketplace.register_agent("agent1", "1.0.0", [])
-        
+
         success = marketplace.deregister_agent(agent_id)
         assert success is True
-        
+
         metrics = marketplace.get_metrics()
         assert metrics["total_agents"] == 0
 
@@ -121,7 +122,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         id1 = marketplace.register_agent("agent1", "1.0.0", [])
         id2 = marketplace.register_agent("agent1", "2.0.0", [])
-        
+
         assert id1 != id2
         metrics = marketplace.get_metrics()
         assert metrics["total_agents"] == 2
@@ -131,7 +132,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         marketplace.register_agent("agent1", "1.0.0", ["testing", "analysis"])
         marketplace.register_agent("agent2", "1.0.0", ["testing"])
-        
+
         agents = marketplace.discover_agents(capability="analysis")
         assert len(agents) == 1
 
@@ -145,10 +146,10 @@ class TestAgentMarketplace:
         """Test updating agent metadata."""
         marketplace = AgentMarketplace()
         agent_id = marketplace.register_agent("agent1", "1.0.0", ["testing"])
-        
+
         success = marketplace.update_agent(agent_id, capabilities=["testing", "analysis"])
         assert success is True
-        
+
         metadata = marketplace.get_agent_metadata(agent_id)
         assert "analysis" in metadata["capabilities"]
 
@@ -157,7 +158,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         marketplace.register_agent("test-agent", "1.0.0", ["testing"])
         marketplace.register_agent("analysis-agent", "1.0.0", ["analysis"])
-        
+
         results = marketplace.search("test")
         assert len(results) >= 1
 
@@ -165,7 +166,7 @@ class TestAgentMarketplace:
         """Test agent rating and reviews."""
         marketplace = AgentMarketplace()
         agent_id = marketplace.register_agent("agent1", "1.0.0", [])
-        
+
         marketplace.rate_agent(agent_id, rating=4.5)
         metadata = marketplace.get_agent_metadata(agent_id)
         assert "rating" in metadata
@@ -175,7 +176,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         for i in range(25):
             marketplace.register_agent(f"agent{i}", "1.0.0", [])
-        
+
         page1 = marketplace.list_agents(page=1, per_page=10)
         assert len(page1) == 10
 
@@ -186,7 +187,7 @@ class TestAgentMarketplace:
             "agent1", "1.0.0", [],
             dependencies=["dep1:1.0.0", "dep2:2.0.0"]
         )
-        
+
         metadata = marketplace.get_agent_metadata(agent_id)
         assert len(metadata.get("dependencies", [])) == 2
 
@@ -195,7 +196,7 @@ class TestAgentMarketplace:
         marketplace = AgentMarketplace()
         marketplace.register_agent("agent1", "1.0.0", ["testing"])
         marketplace.register_agent("agent2", "1.0.0", ["analysis"])
-        
+
         stats = marketplace.get_statistics()
         assert "total_agents" in stats
         assert "capabilities_count" in stats
@@ -549,7 +550,7 @@ class TestDocumentationPortal:
         def sample_function(x: int) -> int:
             """Sample function."""
             return x * 2
-        
+
         docs = portal.generate_api_docs(sample_function)
         assert "parameters" in docs
 
@@ -685,7 +686,7 @@ class TestSecurityHardening:
         """Test rate limiting."""
         security = SecurityHardening()
         client_id = "client123"
-        
+
         # First request should succeed
         allowed = security.check_rate_limit(client_id, limit=5, window=60)
         assert allowed is True
@@ -695,7 +696,7 @@ class TestSecurityHardening:
         security = SecurityHardening()
         for i in range(10):
             security.record_request("client1")
-        
+
         is_throttled = security.is_throttled("client1", threshold=5)
         assert is_throttled is True
 
@@ -720,7 +721,7 @@ class TestSecurityHardening:
         """Test RBAC authorization."""
         security = SecurityHardening()
         security.assign_role(user="user1", role="admin")
-        
+
         has_permission = security.check_permission(user="user1", permission="write")
         assert has_permission is True
 
@@ -756,7 +757,7 @@ class TestSecurityHardening:
         security = SecurityHardening()
         hashed = security.hash_password("password123")
         assert hashed != "password123"
-        
+
         is_valid = security.verify_password("password123", hashed)
         assert is_valid is True
 
@@ -766,7 +767,7 @@ class TestSecurityHardening:
         plaintext = "sensitive data"
         encrypted = security.encrypt(plaintext)
         assert encrypted != plaintext
-        
+
         decrypted = security.decrypt(encrypted)
         assert decrypted == plaintext
 
@@ -812,7 +813,7 @@ class TestContinuousDeploymentPipeline:
         """Test rollback automation."""
         pipeline = ContinuousDeploymentPipeline()
         deployment_id = pipeline.deploy_via_gitops("repo", "main", "staging")
-        
+
         rollback_success = pipeline.rollback(deployment_id)
         assert rollback_success is True
 
@@ -832,7 +833,7 @@ class TestContinuousDeploymentPipeline:
         """Test deployment verification."""
         pipeline = ContinuousDeploymentPipeline()
         deployment_id = pipeline.deploy_via_gitops("repo", "main", "staging")
-        
+
         is_verified = pipeline.verify_deployment(deployment_id)
         assert isinstance(is_verified, bool)
 
@@ -849,7 +850,7 @@ class TestContinuousDeploymentPipeline:
         """Test traffic shifting."""
         pipeline = ContinuousDeploymentPipeline()
         canary_id = pipeline.create_canary_deployment("v2.0.0", 10)
-        
+
         success = pipeline.shift_traffic(canary_id, new_percentage=50)
         assert success is True
 
@@ -857,7 +858,7 @@ class TestContinuousDeploymentPipeline:
         """Test deployment approval workflow."""
         pipeline = ContinuousDeploymentPipeline()
         deployment_id = pipeline.deploy_via_gitops("repo", "main", "production")
-        
+
         pipeline.request_approval(deployment_id)
         status = pipeline.get_approval_status(deployment_id)
         assert status in ["pending", "approved", "rejected"]
@@ -866,7 +867,7 @@ class TestContinuousDeploymentPipeline:
         """Test deployment history tracking."""
         pipeline = ContinuousDeploymentPipeline()
         pipeline.deploy_via_gitops("repo", "main", "staging")
-        
+
         history = pipeline.get_deployment_history()
         assert len(history) > 0
 
@@ -874,7 +875,7 @@ class TestContinuousDeploymentPipeline:
         """Test environment promotion."""
         pipeline = ContinuousDeploymentPipeline()
         deployment_id = pipeline.deploy_via_gitops("repo", "main", "staging")
-        
+
         promoted = pipeline.promote_to_production(deployment_id)
         assert promoted is not None
 
@@ -892,7 +893,7 @@ class TestContinuousDeploymentPipeline:
         """Test deployment metrics collection."""
         pipeline = ContinuousDeploymentPipeline()
         pipeline.deploy_via_gitops("repo", "main", "staging")
-        
+
         metrics = pipeline.get_deployment_metrics()
         assert "total_deployments" in metrics
 
@@ -917,11 +918,11 @@ class TestPhase810Integration:
         """Test marketplace integration with monitoring."""
         marketplace = AgentMarketplace()
         monitoring = MonitoringObservability()
-        
+
         agent_id = marketplace.register_agent("test-agent", "1.0.0", [])
         assert agent_id is not None
         monitoring.collect_metric("agent_registrations", 1)
-        
+
         metrics = monitoring.get_metrics()
         assert "agent_registrations" in metrics
 
@@ -929,22 +930,22 @@ class TestPhase810Integration:
         """Test benchmarking with monitoring integration."""
         suite = PerformanceBenchmarkSuite()
         monitoring = MonitoringObservability()
-        
+
         trace_id = monitoring.start_trace("benchmark")
         latency = suite.measure_latency(lambda: None)
         monitoring.end_trace(trace_id)
-        
+
         assert latency >= 0
 
     def test_security_with_deployment(self):
         """Test security integration with deployment."""
         security = SecurityHardening()
         pipeline = ContinuousDeploymentPipeline()
-        
+
         # Validate deployment configuration
         is_valid = security.validate_input("staging", pattern=r"^[a-z]+$")
         assert is_valid is True
-        
+
         if is_valid:
             deployment_id = pipeline.deploy_via_gitops("repo", "main", "staging")
             assert deployment_id is not None
@@ -953,7 +954,7 @@ class TestPhase810Integration:
         """Test documentation portal integration with marketplace."""
         portal = DocumentationPortal()
         marketplace = AgentMarketplace()
-        
+
         agent_id = marketplace.register_agent("test-agent", "1.0.0", [])
         guide_id = portal.create_user_guide(
             f"Agent {agent_id} Documentation",
@@ -965,7 +966,7 @@ class TestPhase810Integration:
         """Test testing infrastructure with security."""
         infra = RealWorldTestingInfrastructure()
         security = SecurityHardening()
-        
+
         # Generate secure test data
         workload = infra.generate_workload(size=10)
         for item in workload:
@@ -978,33 +979,33 @@ class TestPhase810Integration:
         security = SecurityHardening()
         monitoring = MonitoringObservability()
         pipeline = ContinuousDeploymentPipeline()
-        
+
         # Register agent
         agent_id = marketplace.register_agent("prod-agent", "1.0.0", [])
         assert agent_id is not None
-        
+
         # Security check
         security.log_security_event("deployment", "system", "starting")
-        
+
         # Monitor deployment
         trace_id = monitoring.start_trace("deployment")
-        
+
         # Deploy
         deployment_id = pipeline.deploy_via_gitops("repo", "main", "production")
-        
+
         monitoring.end_trace(trace_id)
-        
+
         assert deployment_id is not None
 
     def test_performance_monitoring_integration(self):
         """Test performance benchmarking with monitoring."""
         suite = PerformanceBenchmarkSuite()
         monitoring = MonitoringObservability()
-        
+
         # Run benchmark and collect metrics
         latency = suite.measure_latency(lambda: time.sleep(0.01))
         monitoring.collect_metric("benchmark_latency", latency)
-        
+
         metrics = monitoring.get_metrics()
         assert "benchmark_latency" in metrics
 
@@ -1012,10 +1013,10 @@ class TestPhase810Integration:
         """Test security audit logging with documentation."""
         security = SecurityHardening()
         portal = DocumentationPortal()
-        
+
         # Log security event
         security.log_security_event("audit", "admin", "view_docs")
-        
+
         # Document security policies
         guide_id = portal.create_user_guide(
             "Security Policies",
@@ -1027,14 +1028,14 @@ class TestPhase810Integration:
         """Test canary deployment with health monitoring."""
         pipeline = ContinuousDeploymentPipeline()
         monitoring = MonitoringObservability()
-        
+
         # Create canary deployment
         canary_id = pipeline.create_canary_deployment("v2.0.0", 10)
-        
+
         # Monitor health
         health = pipeline.run_health_check("/health")
         monitoring.collect_metric("canary_health", 1 if health["status"] == "healthy" else 0)
-        
+
         assert canary_id is not None
 
     def test_end_to_end_production_flow(self):
@@ -1046,37 +1047,37 @@ class TestPhase810Integration:
         portal = DocumentationPortal()
         security = SecurityHardening()
         pipeline = ContinuousDeploymentPipeline()
-        
+
         # 1. Register agent
         agent_id = marketplace.register_agent("production-agent", "1.0.0", ["production"])
         assert agent_id is not None
-        
+
         # 2. Run tests
         workload = infra.generate_workload(size=50)
         assert workload is not None
-        
+
         # 3. Benchmark performance
         latency = suite.measure_latency(lambda: None)
         assert isinstance(latency, (int, float))
         assert latency >= 0
-        
+
         # 4. Security validation
         security.log_security_event("validation", "system", "passed")
-        
+
         # 5. Create documentation
         portal.create_user_guide("Production Guide", "# Production\n\nReady to deploy.")
-        
+
         # 6. Start monitoring
         trace_id = monitoring.start_trace("production_deployment")
-        
+
         # 7. Deploy with canary
         canary_id = pipeline.create_canary_deployment("v1.0.0", 10)
-        
+
         # 8. Verify and promote
         is_verified = pipeline.verify_deployment(canary_id)
-        
+
         monitoring.end_trace(trace_id)
-        
+
         assert is_verified is not None
 
 

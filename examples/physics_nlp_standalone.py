@@ -12,7 +12,7 @@ Run: python examples/physics_nlp_standalone.py
 
 def generate_physics_statement_classical_mechanics():
     """Generate logical physics statement for classical mechanics"""
-    
+
     statement = """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #1: Newton's Laws and Conservation Principles  ║
@@ -99,7 +99,7 @@ from atomic collisions to planetary motion.
 
 def generate_physics_statement_thermodynamics():
     """Generate logical physics statement for thermodynamics"""
-    
+
     statement = """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║   LOGICAL PHYSICS STATEMENT #2: Entropy and the Arrow of Time            ║
@@ -130,7 +130,7 @@ Statistical Postulate (Equal a priori probability):
 
 Boltzmann Entropy:
     S = k_B ln(Ω)
-    
+
     where Ω = number of microstates compatible with macrostate
           k_B = Boltzmann constant = 1.380649 × 10⁻²³ J/K
 
@@ -140,7 +140,7 @@ microstate.
 
 Example: Ideal gas entropy
     S = Nk_B[ln(V/N) + (3/2)ln(2πmkT/h²) + 5/2]
-    
+
     Note: S increases with V (more spatial arrangements) and T (more
     accessible energy states)
 
@@ -153,18 +153,18 @@ Premise: System evolves from initial macrostate M₁ to final macrostate M₂
 Combinatorial Argument:
     • Let Ω₁ = number of microstates for M₁
     • Let Ω₂ = number of microstates for M₂
-    
+
     Probability ratio: P(M₂→M₁)/P(M₁→M₂) = Ω₁/Ω₂
 
 Entropic Interpretation:
     If Ω₂ >> Ω₁ (i.e., S₂ >> S₁), then:
         P(M₁→M₂) >> P(M₂→M₁)
-    
+
     System overwhelmingly likely to evolve toward higher entropy state.
 
 Quantitative Example:
     For N = 10²³ particles, Ω₂/Ω₁ = exp((S₂-S₁)/k_B)
-    
+
     Even tiny entropy difference ΔS = 0.01 J/K gives:
         Ω₂/Ω₁ ≈ exp(10²⁰) - astronomically large!
 
@@ -183,28 +183,28 @@ Paradox: Why does macroscopic world exhibit irreversibility (broken eggs
 don't spontaneously reassemble)?
 
 Resolution: Time's arrow emerges statistically from:
-    
+
     1. Low-entropy initial conditions (cosmic boundary condition)
        → Universe began in highly ordered state (Big Bang)
-    
+
     2. Combinatorial asymmetry
        → Many more ways to be disordered than ordered
        → High-entropy states vastly outnumber low-entropy states
-    
+
     3. Macroscopic observation
        → We coarse-grain (average over) microstates
        → Entropy increase is statistical, not absolute
 
 Logical Chain:
     Low-entropy past → Present → High-entropy future
-    
+
     The direction we call "future" is defined by increasing entropy.
     Time's arrow and entropy's arrow are one and the same.
 
 Mathematical Statement:
     For macroscopic systems (N → ∞):
         lim[N→∞] P(S decreases) = 0
-    
+
     Entropy decrease becomes vanishingly improbable, though not strictly
     impossible (Poincaré recurrence time T_P ~ exp(S/k_B)).
 
@@ -217,13 +217,13 @@ Shannon Entropy (Information Theory):
 
 Connection to Thermodynamic Entropy:
     S_thermo = k_B ln(2) × H_info
-    
+
     Therefore: 1 bit of information = k_B ln(2) ≈ 0.956 × 10⁻²³ J/K
 
 Landauer's Principle:
     Erasing one bit of information requires minimum energy:
         E_min = k_B T ln(2)
-    
+
     at temperature T, dissipated as heat.
 
 Implication: Information is physical. Computation has thermodynamic cost.
@@ -237,7 +237,7 @@ requires energy dissipation.
 
 def generate_physics_statement_quantum_mechanics():
     """Generate logical physics statement for quantum mechanics"""
-    
+
     statement = """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #3: Measurement and Quantum Uncertainty        ║
@@ -266,9 +266,9 @@ Postulate 3 (Superposition): If |ψ₁⟩ and |ψ₂⟩ are valid states, then
 
 Postulate 4 (Born Rule): Measurement of observable  on state |ψ⟩ yields
 eigenvalue aᵢ with probability:
-    
+
     P(aᵢ) = |⟨aᵢ|ψ⟩|²
-    
+
     where |aᵢ⟩ is eigenstate of  with eigenvalue aᵢ
 
 Post-Measurement State: After measurement yielding aᵢ, state collapses:
@@ -291,13 +291,13 @@ Step 1: Cauchy-Schwarz inequality in Hilbert space
 
 Step 2: Apply to shifted operators
     Let |φ⟩ = (Â - ⟨Â⟩)|ψ⟩ and |χ⟩ = (B̂ - ⟨B̂⟩)|ψ⟩
-    
+
     Then: |⟨φ|χ⟩|² ≤ ⟨φ|φ⟩⟨χ|χ⟩ = (ΔA)²(ΔB)²
 
 Step 3: Decompose inner product
     ⟨φ|χ⟩ = ⟨ψ|(Â - ⟨Â⟩)(B̂ - ⟨B̂⟩)|ψ⟩
           = (1/2)⟨ψ|{Â, B̂}|ψ⟩ + (i/2)⟨ψ|[Â, B̂]|ψ⟩
-    
+
     where {Â, B̂} = ÂB̂ + B̂Â (anticommutator)
 
 Step 4: Taking absolute value
@@ -317,14 +317,14 @@ Heisenberg Uncertainty Relation:
 
 For position x̂ and momentum p̂:
     [x̂, p̂] = iℏ
-    
+
     Therefore: ⟨[x̂, p̂]⟩ = iℏ
 
 Canonical Uncertainty Relation:
     ╔══════════════════════════════════════╗
     ║  Δx · Δp ≥ ℏ/2                       ║
     ╚══════════════════════════════════════╝
-    
+
     where ℏ = 1.054571817... × 10⁻³⁴ J·s
 
 Physical Interpretation:
@@ -335,9 +335,9 @@ Physical Interpretation:
 
 Quantitative Example:
     Electron localized to Δx = 10⁻¹⁰ m (atomic scale)
-    
+
     Δp ≥ ℏ/(2Δx) = 5.27 × 10⁻²⁵ kg·m/s
-    
+
     Δv = Δp/m_e ≈ 5.8 × 10⁵ m/s (significant velocity uncertainty!)
 
 ─────────────────────────────────────────────────────────────────────────────
@@ -355,12 +355,12 @@ observable in standard quantum mechanics.
 Physical Meaning:
     • ΔE = energy uncertainty of state
     • Δt = characteristic time for state to change appreciably
-    
+
     States with short lifetimes have large energy uncertainty.
 
 Application: Virtual Particles
     Particles can violate energy conservation by ΔE for time Δt ~ ℏ/(2ΔE)
-    
+
     Example: Vacuum fluctuations create particle-antiparticle pairs that
     exist for t ~ 10⁻²¹ s before annihilation.
 
@@ -383,7 +383,7 @@ Logical Necessity:
         2. Hermitian operators (real eigenvalues)
         3. Born rule (probabilistic measurement)
         4. Non-commutativity ([Â, B̂] ≠ 0)
-    
+
     They are mathematical theorems, not empirical observations, though
     confirmed by every quantum experiment.
 
@@ -400,7 +400,7 @@ Conclusion:
 
 def generate_physics_statement_relativity():
     """Generate logical physics statement for relativity"""
-    
+
     statement = """
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  LOGICAL PHYSICS STATEMENT #4: Spacetime Geometry and Mass-Energy        ║
@@ -423,7 +423,7 @@ inertial frames, independent of source or observer motion.
 Logical Consequence - Lorentz Transformation:
     x' = γ(x - vt)
     t' = γ(t - vx/c²)
-    
+
     where γ = 1/√(1 - v²/c²)  (Lorentz factor)
 
 Time Dilation: Moving clocks run slow
@@ -440,9 +440,9 @@ Minkowski Spacetime: Unified 4D structure (ct, x, y, z)
 
 Spacetime Interval (Invariant under Lorentz transformations):
     ds² = c²dt² - dx² - dy² - dz²
-    
+
     Alternative form: ds² = η_μν dx^μ dx^ν
-    
+
     where η_μν = diag(1, -1, -1, -1) is Minkowski metric
 
 Classification of Intervals:
@@ -470,7 +470,7 @@ For particle at rest:
 
 For moving particle (momentum p):
     (E/c)² - p² = m²c²
-    
+
     Therefore: E² = (pc)² + (mc²)²
 
 Energy-Momentum Relation:
@@ -487,7 +487,7 @@ Mass-Energy Equivalence!
 
 Taylor expansion for v << c:
     E = mc² + (1/2)mv² + (3/8)m(v⁴/c²) + ...
-    
+
     → Recovers classical kinetic energy (1/2)mv² as first correction
 
 Numerical Example:
@@ -509,7 +509,7 @@ Einstein Field Equations:
     ╔═══════════════════════════════════════════════╗
     ║  G_μν + Λg_μν = (8πG/c⁴) T_μν                ║
     ╚═══════════════════════════════════════════════╝
-    
+
     where:
     • G_μν = Einstein tensor (spacetime curvature)
     • g_μν = metric tensor (spacetime geometry)
@@ -523,7 +523,7 @@ Physical Interpretation:
 
 Geodesic Equation (particle motion in curved spacetime):
     d²x^μ/dτ² + Γ^μ_αβ (dx^α/dτ)(dx^β/dτ) = 0
-    
+
     where Γ^μ_αβ are Christoffel symbols (connection coefficients)
 
 ─────────────────────────────────────────────────────────────────────────────
@@ -534,12 +534,12 @@ For spherically symmetric, non-rotating mass M:
 
 Schwarzschild Metric:
     ds² = -(1 - r_s/r)c²dt² + (1 - r_s/r)⁻¹dr² + r²dΩ²
-    
+
     where r_s = 2GM/c² is Schwarzschild radius (event horizon)
 
 Schwarzschild Radius:
     r_s = 2GM/c² ≈ 3 km × (M/M_☉)
-    
+
     For Earth: r_s ≈ 9 mm  (Earth would need to be compressed to < 1 cm!)
     For Sun: r_s ≈ 3 km
 
@@ -550,7 +550,7 @@ Event Horizon Properties:
 
 Gravitational Time Dilation:
     dt_∞ = dt_local / √(1 - r_s/r)
-    
+
     Clocks run slower in stronger gravity.
 
 Example: GPS satellites
@@ -573,7 +573,7 @@ Geometric Interpretation:
     • Flat spacetime (no gravity): Particles move in straight lines
     • Curved spacetime (gravity present): Particles follow geodesics
     • Geodesics: Straightest possible paths in curved space
-    
+
     Gravity emerges from geometry, not as force!
 
 Logical Chain:
@@ -595,23 +595,23 @@ Conclusion:
 
 def main():
     """Display all physics statements"""
-    
+
     print("\n" + "╔" + "═"*78 + "╗")
     print("║" + " "*20 + "NLP PHYSICS STATEMENT GENERATION" + " "*26 + "║")
     print("║" + " "*25 + "Logical Reasoning Examples" + " "*26 + "║")
     print("╚" + "═"*78 + "╝\n")
-    
+
     statements = [
         ("Classical Mechanics", generate_physics_statement_classical_mechanics()),
         ("Thermodynamics", generate_physics_statement_thermodynamics()),
         ("Quantum Mechanics", generate_physics_statement_quantum_mechanics()),
         ("Relativity", generate_physics_statement_relativity())
     ]
-    
+
     for domain, statement in statements:
         print(statement)
         print("\n")
-    
+
     print("╔" + "═"*78 + "╗")
     print("║" + " "*25 + "ALL STATEMENTS GENERATED" + " "*29 + "║")
     print("╚" + "═"*78 + "╝")

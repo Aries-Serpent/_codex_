@@ -28,7 +28,7 @@ This module provides:
 Example usage:
     from src.mcp.[module_name] import [ClassName]
     
-    instance = [ClassName]()
+    instance = <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - [ClassName]() --> --> --> --> --> -->
     result = instance.do_something("input")
 """
 
@@ -135,7 +135,7 @@ class [ClassName]:
 _default_instance: Optional[[ClassName]] = None
 
 
-def get_[class_name]() -> [ClassName]:
+def get_<!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - [class_name]() --> --> --> --> --> --> --> --> -> [ClassName]:
     """Get or create the default [ClassName] instance.
     
     Returns:

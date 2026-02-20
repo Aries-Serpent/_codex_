@@ -6,6 +6,7 @@ import hashlib
 import json
 
 import pytest
+
 pytest.importorskip("hypothesis")
 
 

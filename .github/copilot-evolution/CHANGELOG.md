@@ -242,7 +242,7 @@ python .github/copilot-evolution/test_integrated_system.py
 
 ## Contributing
 
-See [AGENTS.md](AGENTS.md) for contribution guidelines.
+See [AGENTS.md](../AGENTS.md) for contribution guidelines.
 
 ### Reporting Issues
 

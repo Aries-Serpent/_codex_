@@ -3,7 +3,7 @@
 **Generated:** 2026-01-30T06:45:00Z  
 **Agent:** GitHub Copilot  
 **Status:** ✅ COMPLETE - 5+ Iterations Performed  
-**Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)
+**Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](../../CODEBASE_AGENCY_POLICY.md)
 
 ---
 

@@ -6,8 +6,8 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
-from pathlib import Path
-from typing import Any
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate

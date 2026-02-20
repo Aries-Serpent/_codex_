@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/init_sample_db.py [options]
-    
+
     Examples:
     $ python scripts/init_sample_db.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Initialize a sample `session_events` table for development.

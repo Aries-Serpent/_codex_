@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/cherry_pick_strategy.py [options]
-    
+
     Examples:
     $ python scripts/security/cherry_pick_strategy.py --help
 
@@ -30,8 +30,6 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-
-
 """
 Cherry-Pick Strategy for Clean Merge
 
@@ -39,7 +37,7 @@ This script helps cherry-pick the ideal corrected versions from this PR
 into a clean branch based on the target (0D_base_), avoiding merge conflicts.
 
 Strategy:
-1. Create a new branch from 0D_base_ 
+1. Create a new branch from 0D_base_
 2. Cherry-pick only the commits with actual fixes (not merge commits)
 3. This gives a clean history without conflicts
 """
@@ -57,11 +55,11 @@ def run_command(cmd: list[str], check: bool = True) -> tuple[int, str, str]:
         text=True,
         cwd=Path(__file__).resolve().parent.parent.parent,
     )
-    
+
     if check and result.returncode != 0:
         print(f"Command failed: {' '.join(cmd)}", file=sys.stderr)
         print(f"STDERR: {result.stderr}", file=sys.stderr)
-    
+
     return result.returncode, result.stdout, result.stderr
 
 
@@ -71,7 +69,7 @@ def main():
     print("CHERRY-PICK STRATEGY: Apply Ideal Versions to Clean Branch")
     print("=" * 80)
     print()
-    
+
     print("Current PR commits (from base bb92fab):")
     print()
     print("  1. 8475802 - Initial plan")
@@ -81,12 +79,12 @@ def main():
     print("  5. 5f018a8 - Merge conflict resolution documentation")
     print("  6. 163827f - Merge execution guide")
     print()
-    
+
     print("=" * 80)
     print("RECOMMENDED APPROACH: Cherry-Pick to Clean Branch")
     print("=" * 80)
     print()
-    
+
     print("This approach creates a clean branch without conflicts:")
     print()
     print("Step 1: Create fresh branch from target base")
@@ -94,7 +92,7 @@ def main():
     print("  git fetch origin")
     print("  git checkout -b copilot/sub-pr-2713-clean origin/0D_base_")
     print()
-    
+
     print("Step 2: Cherry-pick the key commits")
     print("-------")
     print("  # Cherry-pick the main revert (most important)")
@@ -106,22 +104,22 @@ def main():
     print("  git cherry-pick 5f018a8")
     print("  git cherry-pick 163827f")
     print()
-    
+
     print("Step 3: Push the clean branch")
     print("-------")
     print("  git push origin copilot/sub-pr-2713-clean")
     print()
-    
+
     print("Step 4: Update PR to use clean branch")
     print("-------")
     print("  # On GitHub, change the PR base or create new PR from clean branch")
     print()
-    
+
     print("=" * 80)
     print("ALTERNATIVE: Cherry-Pick Specific Files")
     print("=" * 80)
     print()
-    
+
     print("If you want to cherry-pick specific file versions:")
     print()
     print("Method 1: Copy files from specific commit")
@@ -131,14 +129,14 @@ def main():
     print("  cp file.md .codex/AI_AGENT_UTILITIES_REGISTRY.md")
     print("  git add .codex/AI_AGENT_UTILITIES_REGISTRY.md")
     print()
-    
+
     print("Method 2: Checkout files from commit")
     print("----------")
     print("  # Checkout file as it was in commit 723f131")
     print("  git checkout 723f131 -- .codex/AI_AGENT_UTILITIES_REGISTRY.md")
     print("  git add .codex/AI_AGENT_UTILITIES_REGISTRY.md")
     print()
-    
+
     print("Method 3: Bulk checkout from commit")
     print("----------")
     print("  # Get list of all files from the main revert commit")
@@ -152,7 +150,7 @@ def main():
     print("  # Stage all updated files")
     print("  git add -A")
     print()
-    
+
     print("=" * 80)
     print("WHAT GETS PRESERVED")
     print("=" * 80)
@@ -163,11 +161,11 @@ def main():
     print("  ✓ 4 'May' month fixes")
     print("  ✓ Total: 2,515 corrections across 1,009 files")
     print()
-    
+
     print("Cherry-picking this commit ensures all corrections are applied")
     print("to a clean base without merge conflicts.")
     print()
-    
+
     print("=" * 80)
     print("EXECUTION GUIDE")
     print("=" * 80)
@@ -186,7 +184,7 @@ def main():
     print("   Best for: If base branch is available")
     print("   Time: 2-5 minutes")
     print()
-    
+
     return 0
 
 

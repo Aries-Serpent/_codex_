@@ -357,7 +357,7 @@ Diagram system is well-maintained when:
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - Architecture
 - [Dashboard](../system/CODEBASE_DASHBOARD.md) - Current status
 - [Roadmap](../ROADMAP.md) - Phase planning
-- [Coverage Roadmap](../testing/COVERAGE_100_ROADMAP.md) - Testing plan
+- [Coverage Roadmap](../ROADMAP.md) - Testing plan
 
 ### Tools
 - [Mermaid Documentation](https://mermaid.js.org/)

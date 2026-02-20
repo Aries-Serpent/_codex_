@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/launch_distributed.py [options]
-    
+
     Examples:
     $ python scripts/launch_distributed.py --help
 
@@ -35,7 +35,7 @@ Launch distributed training.
 Usage:
     # Single node, multi-GPU
     python scripts/launch_distributed.py --num-gpus 4 train.py --config config.yaml
-    
+
     # Multi-node (run on each node)
     python scripts/launch_distributed.py \
         --num-nodes 2 \
@@ -45,6 +45,7 @@ Usage:
 """
 import argparse
 import logging
+
 logger = logging.getLogger(__name__)
 import subprocess
 import sys

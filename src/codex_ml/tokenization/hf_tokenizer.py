@@ -6,15 +6,29 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence, cast
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import (  # noqa: E402
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    Mapping,
+    Optional,
+    Sequence,
+    cast,
+)
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
-from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.optional import optional_import
+from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
+from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
+from codex_ml.utils.optional import optional_import  # noqa: E402
 
-from .api import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN, TokenizerAdapter
+from .api import (  # noqa: E402
+    BOS_TOKEN,
+    EOS_TOKEN,
+    PAD_TOKEN,
+    UNK_TOKEN,
+    TokenizerAdapter,
+)
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import AutoTokenizer as HF_AutoTokenizer

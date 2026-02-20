@@ -191,7 +191,7 @@ docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md         (383 lines)
 
 ### External References
 - **Previous Work:** PR #2479 (Phase 2 Batches 1-3)
-- **Validation Run:** https://github.com/Aries-Serpent/_codex_/actions/runs/20191336955
+- **Validation Run:** https://github.com/Aries-Serpent/_codex_/actions/runs/20191336955 <!-- Note: Logs expire after 90 days -->
 - **Merge Commit:** fdd4bf4f
 
 ---

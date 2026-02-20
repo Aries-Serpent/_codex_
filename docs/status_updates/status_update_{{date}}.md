@@ -2,7 +2,7 @@ Check for must recent active branch:
 //fetch https://github.com/Aries-Serpent/_codex_/activity?time_period=day
 
 Branches:
-//fetch https://github.com/Aries-Serpent/_codex_
+//fetch https://github.com/Aries-Serpent/_codex_/tree/*/
 //fetch <!-- Invalid branch reference -->
 
 Objective:

@@ -49,7 +49,7 @@ class BaseMessage:
 class ContextUpdate(BaseMessage):
     """
     Context update message from cognitive brain to Copilot.
-    
+
     Shares current cognitive state, execution context, and
     decision-making information.
     """
@@ -130,13 +130,13 @@ def create_context_update(
 ) -> ContextUpdate:
     """
     Factory function to create context update message.
-    
+
     Args:
         source: Message source
         context: Context data
         execution_state: Current OODA loop state
         confidence: Confidence level (0.0 to 1.0)
-        
+
     Returns:
         ContextUpdate message
     """
@@ -159,14 +159,14 @@ def create_query(
 ) -> QueryMessage:
     """
     Factory function to create query message.
-    
+
     Args:
         source: Message source
         query: Query string
         query_type: Type of query
         parameters: Optional parameters
         message_id: Optional message ID for correlation
-        
+
     Returns:
         QueryMessage
     """
@@ -190,14 +190,14 @@ def create_response(
 ) -> ResponseMessage:
     """
     Factory function to create response message.
-    
+
     Args:
         source: Message source
         response_to: ID of message being responded to
         status: Response status
         data: Response data
         error: Error message if status is "error"
-        
+
     Returns:
         ResponseMessage
     """
@@ -220,13 +220,13 @@ def create_status(
 ) -> StatusMessage:
     """
     Factory function to create status message.
-    
+
     Args:
         source: Message source
         component: Component name
         status: Status string
         metrics: Optional metrics
-        
+
     Returns:
         StatusMessage
     """
@@ -249,14 +249,14 @@ def create_error(
 ) -> ErrorMessage:
     """
     Factory function to create error message.
-    
+
     Args:
         source: Message source
         error_type: Type of error
         error_message: Error description
         stack_trace: Optional stack trace
         recovery_action: Optional recovery suggestion
-        
+
     Returns:
         ErrorMessage
     """
@@ -274,11 +274,11 @@ def create_error(
 def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
     """
     Factory function to create heartbeat message.
-    
+
     Args:
         source: Message source
         uptime_seconds: Uptime in seconds
-        
+
     Returns:
         HeartbeatMessage
     """

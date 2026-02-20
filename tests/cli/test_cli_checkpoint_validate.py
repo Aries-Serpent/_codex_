@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 pytest.importorskip("typer")
 
 
@@ -32,7 +33,7 @@ def test_cli_checkpoint_validate_success(tmp_path: Path) -> None:
     runner = CliRunner()
     result = runner.invoke(
         checkpoint_validate.app,
-        ["validate", "--path", str(ckpt_dir), "--show"],
+        ["validate", str(ckpt_dir), "--show"],
     )
     assert result.exit_code == 0, result.stdout
     info = json.loads(result.stdout)
@@ -48,7 +49,7 @@ def test_cli_checkpoint_validate_missing_payload(tmp_path: Path) -> None:
     runner = CliRunner()
     result = runner.invoke(
         checkpoint_validate.app,
-        ["validate", "--path", str(ckpt_dir)],
+        ["validate", str(ckpt_dir)],
     )
     assert result.exit_code == 2
     assert "missing checkpoint payload" in result.stdout or result.stderr

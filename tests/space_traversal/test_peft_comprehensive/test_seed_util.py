@@ -28,7 +28,8 @@ def test_ensure_global_seed_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
         calls.append(value)
         assert deterministic is True
 
-    monkeypatch.setattr("training.seed._set_seed", fake_set_seed)
+    # Patch _set_seed where it's imported in src.training.seed
+    monkeypatch.setattr("src.training.seed._set_seed", fake_set_seed)
     resolved = ensure_global_seed()
     assert resolved == 42
     assert calls == [42]

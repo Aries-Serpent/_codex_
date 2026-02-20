@@ -35,7 +35,7 @@ def _load_real_module() -> ModuleType | None:
         try:
             spec.loader.exec_module(module)
             return module
-        except (ImportError, OSError) as e:
+        except (ImportError, OSError):
             # If torch fails to load, restore the stub
             if stub_backup is not None:
                 sys.modules[__name__] = stub_backup

@@ -11,8 +11,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="torch required for distributed training tests")
+# NOTE: removed ad-hoc sys.path modifications that previously attempted to add `tests/`
+# to sys.path. Adding `tests/` at top-level shadows stdlib modules (e.g. `ast`) and
+# causes unpredictable import resolution in CI. Tests should import test utilities
+# using the canonical `tests.utils.*` package import path.
+from tests.utils.torch_helpers import require_torch
+
+torch = require_torch()
 
 # Add training directory to path
 _REPO_ROOT = Path(__file__).parent.parent.parent
@@ -99,11 +104,15 @@ class TestAccelerateInitGuard:
             assert not result.success
             assert result.error is None
 
+    @pytest.mark.skipif(
+        not is_accelerate_available(),
+        reason="accelerate not installed",
+    )
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
-        # Mock torch.cuda.is_available to return actual bool
-        with patch('torch.cuda.is_available') as mock_cuda:
-            mock_cuda.return_value = False  # Return actual bool, not MagicMock
+        # Mock is_gpu_available to return actual bool
+        with patch('src.training.accelerate_init_guard.is_gpu_available') as mock_gpu:
+            mock_gpu.return_value = False  # Return actual bool, not MagicMock
 
             # Mock accelerate.PartialState if accelerate is available
             with patch('accelerate.PartialState', create=True) as mock_partial_state:

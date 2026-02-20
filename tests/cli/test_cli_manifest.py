@@ -10,6 +10,7 @@ import json
 import re
 
 import pytest
+
 pytest.importorskip("typer")
 
 

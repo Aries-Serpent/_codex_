@@ -123,7 +123,7 @@ pytest tests/integration/test_genesis_workflow.py -v --maxfail=3
 # Check for broken internal links
 find .codex docs -name "*.md" -exec grep -l "\.md)" {} + | while read f; do
   echo "Checking: $f"
-  grep -o '\[.*\](\..*\.md)' "$f" | cut -d'(' -f2 | cut -d')' -f1
+  grep -o '\<!-- BROKEN: [.*\](\..*\.md) -->' "$f" | cut -d'(' -f2 | cut -d')' -f1
 done
 ```
 

@@ -11,8 +11,8 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
-from pathlib import Path
-from typing import Optional
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
 
 # Standard locations (relative to repo root)
 CODEX_DIR = Path(".codex")
@@ -30,7 +30,7 @@ SIMILARITY_CACHE = CACHE_DIR / "similarity"
 
 def ensure_codex_structure():
     """Create standard .codex directory structure.
-    
+
     Creates:
         .codex/
         ├── session_logs.db
@@ -66,7 +66,7 @@ This directory contains local analysis data and caches.
 
 ## Structure
 - `session_logs.db` - Session event logs
-- `analysis.db` - Code analysis results  
+- `analysis.db` - Code analysis results
 - `metrics.db` - Historical code metrics
 - `cache/` - Temporary cached data
   - `parsed_trees/` - AST/LibCST caches
@@ -110,18 +110,18 @@ config/*.yaml
 
 def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
     """Get database path with environment variable override.
-    
+
     Args:
         name: Database name (e.g., "session_logs", "analysis", "metrics")
         env_var: Optional environment variable to check
-    
+
     Returns:
         Path to database file
-    
+
     Examples:
         >>> get_db_path("session_logs", "CODEX_LOG_DB_PATH")
         Path('.codex/session_logs.db')
-        
+
         >>> os.environ["CODEX_LOG_DB_PATH"] = "/tmp/logs.db"
         >>> get_db_path("session_logs", "CODEX_LOG_DB_PATH")
         Path('/tmp/logs.db')
@@ -135,10 +135,10 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
 
 def get_cache_path(cache_type: str) -> Path:
     """Get cache directory path.
-    
+
     Args:
         cache_type: Type of cache ("parsed_trees", "similarity", etc.)
-    
+
     Returns:
         Path to cache directory
     """
@@ -148,11 +148,11 @@ def get_cache_path(cache_type: str) -> Path:
 
 def get_report_path(report_name: str, archive: bool = False) -> Path:
     """Get report file path.
-    
+
     Args:
         report_name: Name of report file
         archive: If True, place in archive/ subdirectory
-    
+
     Returns:
         Path to report file
     """

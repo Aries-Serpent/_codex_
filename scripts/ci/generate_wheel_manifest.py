@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/ci/generate_wheel_manifest.py [options]
-    
+
     Examples:
     $ python scripts/ci/generate_wheel_manifest.py --help
 

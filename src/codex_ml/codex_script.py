@@ -9,7 +9,7 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
-from typing import Any
+from typing import Any  # noqa: E402
 
 
 def _init_determinism_from_env() -> dict[str, Any]:

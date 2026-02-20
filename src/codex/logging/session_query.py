@@ -27,12 +27,12 @@ import argparse
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-import re
-import sqlite3
-import sys
-from pathlib import Path
-from typing import Any, Iterable, Optional
+import os  # noqa: E402
+import re  # noqa: E402
+import sqlite3  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Optional  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -41,7 +41,7 @@ try:
 except Exception as exc:  # pragma: no cover - defensive
     logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
-from .config import DEFAULT_LOG_DB
+from .config import DEFAULT_LOG_DB  # noqa: E402
 
 _IDENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 

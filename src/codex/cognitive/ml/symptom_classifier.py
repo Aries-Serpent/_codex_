@@ -54,7 +54,7 @@ class ClassificationResult:
 
 class TfidfVectorizer:
     """Simple TF-IDF vectorizer without external dependencies.
-    
+
     This is a lightweight implementation that can work offline
     without requiring scikit-learn for basic operations.
     """
@@ -66,7 +66,7 @@ class TfidfVectorizer:
         max_df: float = 0.95,
     ) -> None:
         """Initialize the vectorizer.
-        
+
         Args:
             max_features: Maximum number of features.
             min_df: Minimum document frequency.
@@ -82,10 +82,10 @@ class TfidfVectorizer:
 
     def _tokenize(self, text: str) -> list[str]:
         """Tokenize text into words.
-        
+
         Args:
             text: Input text.
-            
+
         Returns:
             List of tokens.
         """
@@ -95,10 +95,10 @@ class TfidfVectorizer:
 
     def _compute_tf(self, tokens: list[str]) -> dict[str, float]:
         """Compute term frequency.
-        
+
         Args:
             tokens: List of tokens.
-            
+
         Returns:
             Dictionary of term frequencies.
         """
@@ -118,10 +118,10 @@ class TfidfVectorizer:
 
     def fit(self, texts: list[str]) -> TfidfVectorizer:
         """Fit the vectorizer on texts.
-        
+
         Args:
             texts: List of text documents.
-            
+
         Returns:
             Self.
         """
@@ -163,10 +163,10 @@ class TfidfVectorizer:
 
     def transform(self, texts: list[str]) -> list[list[float]]:
         """Transform texts to TF-IDF vectors.
-        
+
         Args:
             texts: List of text documents.
-            
+
         Returns:
             List of TF-IDF vectors.
         """
@@ -192,10 +192,10 @@ class TfidfVectorizer:
 
     def fit_transform(self, texts: list[str]) -> list[list[float]]:
         """Fit and transform in one step.
-        
+
         Args:
             texts: List of text documents.
-            
+
         Returns:
             List of TF-IDF vectors.
         """
@@ -236,13 +236,13 @@ class TfidfVectorizer:
 
 class NaiveBayesClassifier:
     """Simple Naive Bayes classifier without external dependencies.
-    
+
     This is a lightweight implementation for offline-capable classification.
     """
 
     def __init__(self, alpha: float = 1.0) -> None:
         """Initialize the classifier.
-        
+
         Args:
             alpha: Smoothing parameter.
         """
@@ -256,11 +256,11 @@ class NaiveBayesClassifier:
 
     def fit(self, X: list[list[float]], y: list[str]) -> NaiveBayesClassifier:
         """Fit the classifier.
-        
+
         Args:
             X: Feature matrix.
             y: Labels.
-            
+
         Returns:
             Self.
         """
@@ -304,10 +304,10 @@ class NaiveBayesClassifier:
 
     def predict(self, X: list[list[float]]) -> list[str]:
         """Predict labels.
-        
+
         Args:
             X: Feature matrix.
-            
+
         Returns:
             Predicted labels.
         """
@@ -322,10 +322,10 @@ class NaiveBayesClassifier:
 
     def predict_proba(self, X: list[list[float]]) -> list[dict[str, float]]:
         """Predict probabilities.
-        
+
         Args:
             X: Feature matrix.
-            
+
         Returns:
             List of probability dictionaries.
         """
@@ -384,7 +384,7 @@ class NaiveBayesClassifier:
 
 class SymptomClassifier:
     """Main symptom classifier for pattern recognition.
-    
+
     Uses TF-IDF vectorization and Naive Bayes classification
     to categorize symptoms into pattern categories.
     """
@@ -395,7 +395,7 @@ class SymptomClassifier:
         min_df: int = 1,
     ) -> None:
         """Initialize the classifier.
-        
+
         Args:
             max_features: Maximum features for vectorizer.
             min_df: Minimum document frequency.
@@ -410,10 +410,10 @@ class SymptomClassifier:
 
     def fit(self, samples: list[PatternSample]) -> SymptomClassifier:
         """Train the classifier on samples.
-        
+
         Args:
             samples: Training samples.
-            
+
         Returns:
             Self.
         """
@@ -433,10 +433,10 @@ class SymptomClassifier:
 
     def predict(self, symptoms: list[str]) -> ClassificationResult:
         """Classify symptoms into a category.
-        
+
         Args:
             symptoms: List of symptom strings.
-            
+
         Returns:
             Classification result.
         """
@@ -457,10 +457,10 @@ class SymptomClassifier:
 
     def predict_batch(self, symptoms_list: list[list[str]]) -> list[ClassificationResult]:
         """Classify multiple symptom sets.
-        
+
         Args:
             symptoms_list: List of symptom lists.
-            
+
         Returns:
             List of classification results.
         """
@@ -489,7 +489,7 @@ class SymptomClassifier:
 
     def save(self, directory: str | Path) -> None:
         """Save classifier to directory.
-        
+
         Args:
             directory: Directory to save model files.
         """
@@ -509,10 +509,10 @@ class SymptomClassifier:
     @classmethod
     def load(cls, directory: str | Path) -> SymptomClassifier:
         """Load classifier from directory.
-        
+
         Args:
             directory: Directory containing model files.
-            
+
         Returns:
             Loaded classifier.
         """
@@ -535,10 +535,10 @@ class SymptomClassifier:
         samples: list[PatternSample],
     ) -> dict[str, Any]:
         """Evaluate classifier on test samples.
-        
+
         Args:
             samples: Test samples.
-            
+
         Returns:
             Evaluation metrics.
         """

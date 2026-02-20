@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 import yaml
 
 from src.utils.log_sanitizer import sanitize_log_input
+
 from .config import settings
 
 logger = logging.getLogger(__name__)

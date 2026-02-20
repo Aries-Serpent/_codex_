@@ -15,8 +15,8 @@
 4. [Service Adapters](#service-adapters)
 5. [Data Flow](#data-flow)
 6. [Error Handling](#error-handling)
-7. [Security & Compliance](#security--compliance)
-8. [Monitoring & Observability](#monitoring--observability)
+7. [Security & Compliance](#security-compliance)
+8. [Monitoring & Observability](#monitoring-observability)
 
 ---
 
@@ -1106,7 +1106,7 @@ dashboard_metrics:
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Rate Limiting Best Practices](https://cloud.google.com/architecture/rate-limiting-strategies-techniques)
 - [Admin Automation Agent](.github/agents/admin-automation-agent/)
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 

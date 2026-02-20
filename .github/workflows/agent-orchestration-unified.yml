@@ -54,6 +54,7 @@ jobs:
   orchestrate_agent_chain:
     name: Orchestrate Entangled Agents
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: |
       github.event_name == 'workflow_run' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'chain-orchestration' || inputs.mode == 'full-orchestration'))
@@ -122,6 +123,7 @@ jobs:
   execute_agent_handoff:
     name: Execute Agent Handoff
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [orchestrate_agent_chain]
     if: |
       always() &&
@@ -182,6 +184,7 @@ jobs:
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [orchestrate_agent_chain, execute_agent_handoff]
     if: always()
     

@@ -69,6 +69,10 @@
         "names"
       ],
       "type": "object"
+    },
+    "options": {
+      "additionalProperties": true,
+      "type": "object"
     }
   },
   "required": [

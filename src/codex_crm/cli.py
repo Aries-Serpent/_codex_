@@ -92,7 +92,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         template = to_template(package)
         destination = Path(args.out)
         destination.mkdir(parents=True, exist_ok=True)
-        (destination / "template.json").write_text(json.dumps(template, indent=2), encoding="utf-8")
+        # Derive output filename from input zip name
+        source_name = Path(args.source).stem  # e.g., "legacy_pa" from "legacy_pa.zip"
+        output_filename = f"{source_name}.template.json"
+        (destination / output_filename).write_text(json.dumps(template, indent=2), encoding="utf-8")
         return 0
     elif args.command == "import-zaf-zip":
         zaf_package = read_zaf(args.source)

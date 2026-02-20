@@ -1,0 +1,839 @@
+{
+  "stats": {
+    "files_processed": 30,
+    "files_modified": 26,
+    "links_fixed": 130,
+    "links_commented": 7,
+    "links_skipped": 5,
+    "actions": {
+      "remove": 8,
+      "remove_item": 122,
+      "comment": 7,
+      "skip": 0
+    }
+  },
+  "fixes": [
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex/archive",
+      "action": "remove",
+      "reason": "Link text indicates obsolete content"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex/cognitive_brain",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex/cognitive_brain",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.github",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.github/actions",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.github/agents",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11_1.md",
+      "link": "./.codex",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "archive/",
+      "action": "remove",
+      "reason": "Link text indicates obsolete content"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "prompts/archive/",
+      "action": "remove",
+      "reason": "Link text indicates obsolete content"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "archive/guide1.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "archive/guide2.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "../COGNITIVE_BRAIN_V3.md",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "cognitive_brain/STATUS.md",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "status/STATUS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "phases/PHASE_11.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "phases/PHASE_10.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/documentation-consolidator.md",
+      "link": "phases/PHASE_9.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": ".codex/plans/pr_3145/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": "logs/coverage_analysis.log",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": ".codex/plans/pr_3145/tokenization_coverage_baseline.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": "coverage_reports/coverage_tokenization.json",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": ".codex/plans/pr_3145/test_case_mapping.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": "scripts/analyze_tokenization_coverage.py",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": ".codex/plans/pr_3145/01_tokenization_coverage_analysis.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/copilot_to_codex_template.md",
+      "link": ".codex/cognitive_brain/pr_3145_planset_registration.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_1.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/SELF_REVIEW_ITERATION_2.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/final_audit_report.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/FINAL_VALIDATION_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/completion_checklist.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/.github/audit_artifacts_output/gap_list.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/docs/audit/Configuration_v1.4.0.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/docs/audit/Migration_v1.3_to_v1.4.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/docs/audit/Troubleshooting_v1.4.0.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/audit_artifacts_output/PR_COMMENT_PERSISTENT.md",
+      "link": "tree/copilot/complete-pr-2449-implementation/docs/audit/API_Reference_v1.4.0.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "link",
+      "action": "remove",
+      "reason": "Part of TODO/FIXME section"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/maintenance/LINK_VALIDATION_TODO.md",
+      "action": "remove",
+      "reason": "Part of TODO/FIXME section"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/prompts/COVERAGE_CONTINUATION_PROMPT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/prompts/custom_gpt_self_healing_engineer.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/MASTER_INDEX.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+      "action": "remove",
+      "reason": "Part of TODO/FIXME section"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE8.md",
+      "link": "CONTRIBUTING.md",
+      "action": "remove",
+      "reason": "Part of TODO/FIXME section"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/ci-diagnostician/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/test-assertion-updater/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/rust-error-validator/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/pyo3-integration-tester/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/project-architect-researcher/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".github/agents/AGENT_REGISTRY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".codex/AGENT_DESIGNS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/TIER_1_100_PERCENT_COMPLETION_SUMMARY.md",
+      "link": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "phases/PHASE_1_3_COMPLETE_FINAL_SUMMARY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "phases/PHASE_2_VERIFICATION_COMPLETE_SUMMARY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "sessions/SESSION_SUMMARY_PR2836_COMPLETE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "completion/AUDIT_COMPLETION_SUMMARY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "prompts/COPILOT_CONTINUATION_CODEQL_REMEDIATION.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "CI_FAILURE_ANALYSIS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "CI_FIXES_PYTEST_MKDOCS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/prompts/ROOT_ORG_PHASE_3_6_CONTINUATION.md",
+      "link": "BROKEN_LINKS_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "link": "path",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "link": "path \"title\"",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "link": "old-guide.md",
+      "action": "remove",
+      "reason": "Link text indicates obsolete content"
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "link": "old.md",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".github/agents/reference-updater-agent.md",
+      "link": "new.md",
+      "action": "comment",
+      "reason": "Medium priority - comment for review"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "src/codex/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "agents/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "scripts/mcp/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "scripts/cognitive/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "tests/",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "docs/MASTER_INDEX.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md",
+      "link": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/update_pr_template_for_continuation.md",
+      "link": ". github/copilot-prompts/active/PR-{pr_number}-followup.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/update_pr_template_for_continuation.md",
+      "link": ".github/copilot-prompts/active/PR-{pr_number}-followup.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/codex_to_copilot_template.md",
+      "link": ".codex/reviews/precommit_3_4_review.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/codex_to_copilot_template.md",
+      "link": ".codex/reviews/coverage_analysis_checklist.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/codex_to_copilot_template.md",
+      "link": ".codex/plans/pr_3145/02_comprehensive_test_implementation.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/template_variables.md",
+      "link": "url",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/template_variables.md",
+      "link": ".codex/plans/pr_3145/tokenization_coverage_baseline.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/template_variables.md",
+      "link": "coverage_reports/coverage_tokenization.json",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/templates/handoff/template_variables.md",
+      "link": ".codex/plans/pr_3145/test_case_mapping.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "link": "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "link": "docs/workflows/AGENT_CONTINUATION_PROTOCOL.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "link": ".github/PHASE8_SESSION_SUMMARY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "link": "docs/maintenance/LINK_VALIDATION_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9.md",
+      "link": "agents/NORMALIZATION_CHECKLIST.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "link": "../NEWCOMER_GUIDE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "link": "CONTRIBUTING.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "link": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "link": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/SUPPORT.md",
+      "link": "../GOVERNANCE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "link": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "link": ".github/AFTERMATH_PHASE9_1_COMPLETE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "link": ".github/SELF_REVIEW_PHASE9_1_SESSION1.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md",
+      "link": "docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "link": ".github/AFTERMATH_PHASE9_1_FINAL.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "link": ".github/FINAL_SELF_REVIEW_PHASE9_1.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "link": ".github/CONTINUATION_PROMPT_PHASE9_2.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "link": "docs/testing/PHASE9_1_EXECUTION_PLAN.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/POST_TO_PR_2671.md",
+      "link": "docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/plans/plan6.md",
+      "link": "../migration/python_312.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/plans/plan6.md",
+      "link": "../playbooks/single_version_standardization.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/plans/plan6.md",
+      "link": "../retrospectives/python_312_standardization.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/plans/plan6.md",
+      "link": "../../policies/python_version_policy.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "link": ".github/agents/PHASE_8_8_CONTINUATION_PROMPT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "link": ".github/agents/QUANTUM_DETERMINISTIC_PLANNING.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "link": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "link": ".github/agents/AI_AGENT_INTUITIVENESS_SCORE_V2.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/COGNITIVE_BRAIN_STATUS_V7_PHASE_8_8.md",
+      "link": ".github/agents/SESSION_SUMMARY_PHASE_8_7_COMPLETE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "link": "../examples/notebooks/02_meta_learning.ipynb",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "link": "docs/guides/agent_integration.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "link": "docs/guides/developer.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "link": "docs/guides/research.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/QUANTUM_AGENT_IMPROVEMENT_PLAN.md",
+      "link": "docs/api/index.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/PHASE_39_PR_3020_COMPREHENSIVE_COMPLETION.md",
+      "link": ".+?",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/cache-management-agent.md",
+      "link": ".codex/docs/UNIFIED_CACHE_MANAGEMENT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/cache-management-agent.md",
+      "link": ".github/workflows/CACHE_OPTIMIZATION_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/cache-management-agent.md",
+      "link": ".github/workflows/CACHE_ANALYSIS_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/cache-management-agent.md",
+      "link": ".github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+      "link": "../../_admin/PHASE1_TEMPLATE_APPLICATION_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/agents/PHASE3_TEMPLATE_APPLICATION_REPORT.md",
+      "link": "../../.mcp/PHASE2_TEMPLATE_APPLICATION_REPORT.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "link": ".codex/AGENT_DESIGNS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "link": ".github/agents/AGENT_REGISTRY.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "link": ".codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md",
+      "link": ".codex/CONTINUATION_PROMPT_PR2782_POST_CI.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "link": ".github/agents/AGENT_ECOSYSTEM_MAP.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "link": ".github/agents/CUSTOM_COPILOT_AGENTS_SPECIFICATION.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "link": ".github/agents/ci-testing-agent/README.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md",
+      "link": ".github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS.md",
+      "link": "./copilot_task_execution_protocol.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS.md",
+      "link": "./ctep_usage_examples.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS.md",
+      "link": "./ctep_quick_reference.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "link": ".codex/codex_index.yaml",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "link": "../inventory.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    },
+    {
+      "file": ".github/AGENTS_FILE_STRUCTURE.md",
+      "link": "../validation.md",
+      "action": "remove_item",
+      "reason": "List item with broken link"
+    }
+  ]
+}

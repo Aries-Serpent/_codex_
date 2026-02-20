@@ -11,14 +11,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import os
-import sqlite3
-from pathlib import Path
-from typing import Any, Callable, Optional
+import argparse  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Optional  # noqa: E402
 
-from . import session_logger
-from .session_logger import _default_db_path
+from . import session_logger  # noqa: E402
+from .session_logger import _default_db_path  # noqa: E402
 
 
 def _connect(path: str) -> sqlite3.Connection:

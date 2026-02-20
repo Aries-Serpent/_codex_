@@ -1311,7 +1311,7 @@ Estimated time: 25 minutes
 
 ## 📚 Additional Resources
 
-- [Agent Implementation Details](https://github.com/Aries-Serpent/_codex_/blob/main/main.py)
+- Agent Implementation Details
 - [Security Best Practices](./SECURITY.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
 ```

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/migrate_d365_sla_csv.py [options]
-    
+
     Examples:
     $ python scripts/migrate_d365_sla_csv.py --help
 
@@ -44,10 +44,11 @@ Usage:
 import argparse
 import json
 import logging
-from pathlib import Path
 
 # Add src to path for imports
 import sys
+from pathlib import Path
+
 repo_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(repo_root / "src"))
 
@@ -75,27 +76,27 @@ def main() -> int:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Logging level",
     )
-    
+
     args = parser.parse_args()
-    
+
     logging.basicConfig(
         level=getattr(logging, args.log_level),
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
-    
+
     csv_path = Path(args.csv)
     output_path = Path(args.output)
-    
+
     if not csv_path.exists():
         logger.error(f"CSV file not found: {csv_path}")
         return 1
-    
+
     logger.info(f"Migrating {csv_path} -> {output_path}")
-    
+
     # Perform migration
     try:
         registry = SLAPolicyRegistry.from_csv(str(csv_path))
-        
+
         logger.info(f"Migrated {len(registry.policies)} policies")
         for policy in registry.policies:
             logger.info(
@@ -103,7 +104,7 @@ def main() -> int:
                 f"{policy.target_minutes}min, "
                 f"{len(policy.pause_conditions)} pause conditions"
             )
-        
+
         # Write to output
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with output_path.open("w", encoding="utf-8") as f:
@@ -112,9 +113,9 @@ def main() -> int:
                 f,
                 indent=2,
             )
-        
+
         logger.info(f"Successfully wrote policies to {output_path}")
-        
+
         # Create a deprecation notice
         deprecation_notice = csv_path.parent / "DEPRECATED_CSV.md"
         with deprecation_notice.open("w", encoding="utf-8") as f:
@@ -160,11 +161,11 @@ The CSV format supported these columns:
 
 **Do not edit this CSV file.** Update `sla_policies.json` instead.
 """)
-        
+
         logger.info(f"Created deprecation notice at {deprecation_notice}")
-        
+
         return 0
-        
+
     except Exception as e:
         logger.error(f"Migration failed: {e}", exc_info=True)
         return 2

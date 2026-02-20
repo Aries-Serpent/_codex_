@@ -70,7 +70,7 @@ class MetricsRegistry:
         labels: Optional[dict[str, str]] = None
     ) -> None:
         """Increment a counter metric.
-        
+
         Args:
             name: Metric name.
             value: Amount to increment by.
@@ -89,7 +89,7 @@ class MetricsRegistry:
         labels: Optional[dict[str, str]] = None
     ) -> None:
         """set a gauge metric value.
-        
+
         Args:
             name: Metric name.
             value: Metric value.
@@ -108,7 +108,7 @@ class MetricsRegistry:
         labels: Optional[dict[str, str]] = None
     ) -> None:
         """Record an observation for a histogram metric.
-        
+
         Args:
             name: Metric name.
             value: Observed value.
@@ -135,10 +135,10 @@ class MetricsRegistry:
 
     def _extract_metric_name(self, key: str) -> str:
         """Extract metric name from a key with labels.
-        
+
         Args:
             key: Metric key that may contain labels in braces.
-            
+
         Returns:
             The metric name without labels.
         """
@@ -146,7 +146,7 @@ class MetricsRegistry:
 
     def get_all_metrics(self) -> list[MetricValue]:
         """Get all collected metrics.
-        
+
         Returns:
             list of all metric values.
         """
@@ -225,13 +225,13 @@ class Tracer:
         tags: Optional[dict[str, Any]] = None
     ) -> TraceSpan:
         """Start a new trace span.
-        
+
         Args:
             operation_name: Name of the operation being traced.
             trace_id: Optional trace ID for correlation.
             parent_span_id: Optional parent span ID.
             tags: Optional span tags.
-            
+
         Returns:
             A new TraceSpan instance.
         """
@@ -250,7 +250,7 @@ class Tracer:
 
     def finish_span(self, span: TraceSpan, status: str = "ok") -> None:
         """Finish a trace span.
-        
+
         Args:
             span: The span to finish.
             status: Final status of the span.
@@ -267,7 +267,7 @@ class Tracer:
 
     def add_log(self, span: TraceSpan, event: str, **kwargs: Any) -> None:
         """Add a log event to a span.
-        
+
         Args:
             span: The span to add the log to.
             event: Log event name.
@@ -288,13 +288,13 @@ class Tracer:
         tags: Optional[dict[str, Any]] = None
     ):
         """Context manager for tracing an operation.
-        
+
         Args:
             operation_name: Name of the operation.
             trace_id: Optional trace ID.
             parent_span_id: Optional parent span ID.
             tags: Optional span tags.
-            
+
         Yields:
             The trace span.
         """
@@ -316,10 +316,10 @@ class Tracer:
 
     def get_spans(self, trace_id: Optional[str] = None) -> list[TraceSpan]:
         """Get collected spans.
-        
+
         Args:
             trace_id: Optional filter by trace ID.
-            
+
         Returns:
             list of trace spans.
         """
@@ -339,7 +339,7 @@ class MCPMetrics:
 
     def __init__(self, registry: MetricsRegistry) -> None:
         """Initialize MCP metrics.
-        
+
         Args:
             registry: Metrics registry to use.
         """
@@ -352,7 +352,7 @@ class MCPMetrics:
         status: str = "success"
     ) -> None:
         """Record an MCP request.
-        
+
         Args:
             method: RPC method name.
             duration_ms: Request duration in milliseconds.
@@ -368,7 +368,7 @@ class MCPMetrics:
 
     def record_error(self, method: str, error_type: str) -> None:
         """Record an MCP error.
-        
+
         Args:
             method: RPC method name.
             error_type: Type of error.
@@ -380,7 +380,7 @@ class MCPMetrics:
 
     def set_active_connections(self, count: int) -> None:
         """set the number of active connections.
-        
+
         Args:
             count: Number of active connections.
         """
@@ -393,7 +393,7 @@ class MCPMetrics:
         status: str = "success"
     ) -> None:
         """Record a tool invocation.
-        
+
         Args:
             tool_name: Name of the tool.
             duration_ms: Invocation duration in milliseconds.
@@ -410,10 +410,10 @@ class MCPMetrics:
 
 def traced(operation_name: Optional[str] = None):
     """Decorator for tracing function execution.
-    
+
     Args:
         operation_name: Optional operation name. Uses function name if not provided.
-        
+
     Returns:
         Decorated function.
     """

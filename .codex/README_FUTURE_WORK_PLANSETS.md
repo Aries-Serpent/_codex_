@@ -178,8 +178,8 @@ After completing all three Future Work items:
 ## 📖 Reference Documents
 
 ### Policy and Guidelines
-- [.codex/CODEBASE_AGENCY_POLICY.md](CODEBASE_AGENCY_POLICY.md) - Mandatory compliance
-- [../AGENTS.md](../AGENTS.md) - Agent operational guidelines
+- [.codex/CODEBASE_AGENCY_POLICY.md](./CODEBASE_AGENCY_POLICY.md) - Mandatory compliance
+- [../AGENTS.md](../.github/AGENTS.md) - Agent operational guidelines
 
 ### Current Status
 - [../COPILOT_CONTINUATION_PROMPT.md](../COPILOT_CONTINUATION_PROMPT.md) - All IPs complete

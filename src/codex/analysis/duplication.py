@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 """Lightweight duplication analysis utilities used across Codex tools."""
 
 
-import hashlib
-from collections import defaultdict
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Iterable
+import hashlib  # noqa: E402
+from collections import defaultdict  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable  # noqa: E402
 
 DEFAULT_EXTENSIONS = (".py", ".md", ".yaml", ".yml", ".json", ".txt")
 

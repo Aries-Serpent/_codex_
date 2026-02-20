@@ -29,8 +29,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import inspect
-from typing import Any, Optional
+import inspect  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -125,11 +125,17 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     config_kwargs = {k: v for k, v in merged.items() if k not in control_keys}
     if LoraConfig is not None:
         try:
-            valid_keys = set(inspect.signature(LoraConfig).parameters)
+            sig = inspect.signature(LoraConfig)
+            # Check if **kwargs is in signature (VAR_KEYWORD parameter)
+            has_var_keyword = any(
+                p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+            )
+            if not has_var_keyword:
+                # Only filter if there's no **kwargs (strict signature)
+                valid_keys = set(sig.parameters)
+                config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
         except (TypeError, ValueError):  # pragma: no cover - signature unavailable
-            valid_keys = set()
-        if valid_keys:
-            config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
+            pass  # Keep all config_kwargs if inspection fails
 
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)

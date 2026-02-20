@@ -27,12 +27,12 @@ logger = logging.getLogger(__name__)
 
 class EnvironmentProvider(SecretProvider):
     """Provider that reads secrets from environment variables.
-    
+
     Useful for:
     - Local development
     - Testing
     - Simple deployments without secret management service
-    
+
     Example:
         >>> os.environ["MY_SECRET"] = "secret_value"
         >>> config = ProviderConfig(provider_type=ProviderType.ENVIRONMENT)
@@ -43,7 +43,7 @@ class EnvironmentProvider(SecretProvider):
 
     def __init__(self, config: ProviderConfig):
         """Initialize environment provider.
-        
+
         Args:
             config: Provider configuration
         """
@@ -62,14 +62,14 @@ class EnvironmentProvider(SecretProvider):
         **kwargs: Any
     ) -> RotationResult:
         """Rotate environment variable secret.
-        
+
         For environment provider, rotation is not automatic.
         Returns instructions for manual rotation.
-        
+
         Args:
             secret_id: Environment variable name
             **kwargs: Not used
-            
+
         Returns:
             RotationResult with instructions
         """
@@ -97,11 +97,11 @@ class EnvironmentProvider(SecretProvider):
         secret_value: Optional[str] = None
     ) -> bool:
         """Validate environment variable exists.
-        
+
         Args:
             secret_id: Environment variable name
             secret_value: Optional value to compare against
-            
+
         Returns:
             True if variable exists (and matches value if provided)
         """
@@ -118,10 +118,10 @@ class EnvironmentProvider(SecretProvider):
 
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
         """Get metadata for environment variable.
-        
+
         Args:
             secret_id: Environment variable name
-            
+
         Returns:
             SecretMetadata with basic info
         """
@@ -141,10 +141,10 @@ class EnvironmentProvider(SecretProvider):
 
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
         """Get expiration (always None for environment variables).
-        
+
         Args:
             secret_id: Environment variable name
-            
+
         Returns:
             None (no expiration)
         """
@@ -152,10 +152,10 @@ class EnvironmentProvider(SecretProvider):
 
     def get_secret_value(self, secret_id: str) -> Optional[str]:
         """Get secret value from environment.
-        
+
         Args:
             secret_id: Environment variable name
-            
+
         Returns:
             Secret value or None if not found
         """
@@ -164,11 +164,11 @@ class EnvironmentProvider(SecretProvider):
 
     def set_secret_value(self, secret_id: str, value: str) -> bool:
         """Set secret value in environment (for testing).
-        
+
         Args:
             secret_id: Environment variable name
             value: New value
-            
+
         Returns:
             True if set successfully
         """
@@ -182,10 +182,10 @@ class EnvironmentProvider(SecretProvider):
         filter_tags: Optional[Dict[str, str]] = None
     ) -> List[SecretMetadata]:
         """List all environment variables with prefix.
-        
+
         Args:
             filter_tags: Not used
-            
+
         Returns:
             List of SecretMetadata for matching variables
         """

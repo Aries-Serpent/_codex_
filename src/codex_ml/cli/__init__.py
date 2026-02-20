@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 import argparse
 import os
 import sys
-from typing import Any
+from typing import Any, Optional, Union
 
 from codex_ml.training.unified_training import (
     UnifiedTrainingConfig,
@@ -178,7 +178,7 @@ def _cmd_tracking_bootstrap(args: argparse.Namespace) -> int:
     return _tracking.main(argv)
 
 
-def package_main(argv: list[str] | None = None) -> int:
+def package_main(argv: Optional[list[str]] = None) -> int:
     parser = _build_parser()
     args, extras = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
     setattr(args, "_extras", extras)
@@ -206,7 +206,7 @@ def main_cli(
     epochs: int = 1,
     grad_accum: int = 1,
     mlflow_enable: bool = False,
-    mlflow_uri: str | None = None,  # retained for compatibility
+    mlflow_uri: Optional[str] = None,  # retained for compatibility
     **_: object,
 ) -> None:
     cfg = UnifiedTrainingConfig(

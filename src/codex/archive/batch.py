@@ -23,17 +23,17 @@ logger = logging.getLogger(__name__)
 """Batch restoration utilities for the archive CLI."""
 
 
-import csv
-import json
-from collections.abc import Callable, Iterable, Iterator
-from contextlib import contextmanager
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
+import csv  # noqa: E402
+import json  # noqa: E402
+from collections.abc import Callable, Iterable, Iterator  # noqa: E402
+from contextlib import contextmanager  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from .config import BatchConfig, PerformanceConfig
-from .perf import TimingMetrics, timer
-from .retry import RetryConfig, retry_with_backoff
+from .config import BatchConfig, PerformanceConfig  # noqa: E402
+from .perf import TimingMetrics, timer  # noqa: E402
+from .retry import RetryConfig, retry_with_backoff  # noqa: E402
 
 
 @dataclass(frozen=True)

@@ -21,11 +21,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import hashlib
-import os
-import tempfile
-from pathlib import Path
-from typing import BinaryIO, Union
+import hashlib  # noqa: E402
+import os  # noqa: E402
+import tempfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import BinaryIO, Union  # noqa: E402
 
 PathLike = Union[str, os.PathLike]
 

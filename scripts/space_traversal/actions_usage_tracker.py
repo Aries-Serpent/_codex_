@@ -10,7 +10,7 @@ monitoring CI/CD resource consumption.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
@@ -156,8 +156,8 @@ class UsageTracker:
             "",
             "## Summary",
             "",
-            f"| Metric | Value |",
-            f"|--------|-------|",
+            "| Metric | Value |",
+            "|--------|-------|",
             f"| Total Runs | {summary.total_runs} |",
             f"| Total Minutes | {summary.total_minutes:.1f} |",
             f"| Estimated Cost | ${summary.total_cost_usd:.2f} |",
@@ -302,7 +302,7 @@ def generate_usage_dashboard_html(tracker: UsageTracker, output_path: Path) -> N
             <h1>📊 GitHub Actions Usage</h1>
             <p>Last 30 days • Updated {datetime.now().strftime('%Y-%m-%d %H:%M')}</p>
         </div>
-        
+
         <div class="metrics">
             <div class="metric">
                 <div class="metric-value">{summary.total_runs}</div>
@@ -321,7 +321,7 @@ def generate_usage_dashboard_html(tracker: UsageTracker, output_path: Path) -> N
                 <div class="metric-label">Avg Duration (min)</div>
             </div>
         </div>
-        
+
         <div class="chart-container">
             <h3>Runs by Workflow</h3>
             <table>
@@ -333,7 +333,7 @@ def generate_usage_dashboard_html(tracker: UsageTracker, output_path: Path) -> N
                 </tbody>
             </table>
         </div>
-        
+
         <div class="chart-container">
             <h3>Runs by Trigger</h3>
             <table>
@@ -345,7 +345,7 @@ def generate_usage_dashboard_html(tracker: UsageTracker, output_path: Path) -> N
                 </tbody>
             </table>
         </div>
-        
+
         <div class="chart-container">
             <h3>Cost Reference</h3>
             <table>

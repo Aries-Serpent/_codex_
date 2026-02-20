@@ -7,6 +7,7 @@ Test module for evaluate epoch.
 from functools import partial
 
 import pytest
+
 pytest.importorskip("torch")
 
 

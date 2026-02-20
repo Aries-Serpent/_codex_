@@ -20,13 +20,13 @@ This plan outlines the integration of HTTP Archive (HAR) file format for storing
 
 ## Table of Contents
 
-1. [Background & Use Cases](#background--use-cases)
+1. <!-- BROKEN ANCHOR: [Background & Use Cases](#background-use-cases) -->
 2. [Technical Architecture](#technical-architecture)
 3. [Implementation Plan](#implementation-plan)
 4. [HAR File Structure](#har-file-structure)
 5. [Integration Points](#integration-points)
 6. [Security Considerations](#security-considerations)
-7. [Performance & Storage](#performance--storage)
+7. <!-- BROKEN ANCHOR: [Performance & Storage](#performance-storage) -->
 8. [Testing Strategy](#testing-strategy)
 9. [Operational Considerations](#operational-considerations)
 10. [Future Enhancements](#future-enhancements)

@@ -42,6 +42,14 @@ class QuantumConfig:
     # Rollout percentage (0-100) for gradual feature enablement
     rollout_percentage: int = 0
 
+    # Phase 3: Quantum noise simulation parameters (IEEE standard noise model)
+    # All default to 0/False for backward compatibility
+    noise_enabled: bool = False
+    t1_decoherence_us: float = 100.0   # T1 relaxation time in microseconds
+    t2_decoherence_us: float = 50.0    # T2 dephasing time in microseconds
+    gate_error_rate: float = 0.0       # Depolarizing gate error probability (0.0-1.0)
+    measurement_error_rate: float = 0.0  # Measurement bit-flip probability (0.0-1.0)
+
     def __post_init__(self):
         """Validate configuration after initialization."""
         self._validate()
@@ -57,6 +65,24 @@ class QuantumConfig:
         if not 0 <= self.rollout_percentage <= 100:
             raise ValueError(
                 f"rollout_percentage must be 0-100, got {self.rollout_percentage}"
+            )
+
+        # Phase 3: Validate noise parameters
+        if not 0.0 <= self.gate_error_rate <= 1.0:
+            raise ValueError(
+                f"gate_error_rate must be 0.0-1.0, got {self.gate_error_rate}"
+            )
+        if not 0.0 <= self.measurement_error_rate <= 1.0:
+            raise ValueError(
+                f"measurement_error_rate must be 0.0-1.0, got {self.measurement_error_rate}"
+            )
+        if self.t1_decoherence_us < 0:
+            raise ValueError(
+                f"t1_decoherence_us must be >= 0, got {self.t1_decoherence_us}"
+            )
+        if self.t2_decoherence_us < 0:
+            raise ValueError(
+                f"t2_decoherence_us must be >= 0, got {self.t2_decoherence_us}"
             )
 
         # If quantum_mode is False, all features should be disabled
@@ -106,6 +132,15 @@ class QuantumConfig:
             except ValueError:
                 return default
 
+        def parse_float(value: Optional[str], default: float) -> float:
+            """Parse float from environment variable string."""
+            if value is None:
+                return default
+            try:
+                return float(value)
+            except ValueError:
+                return default
+
         # Read environment variables
         quantum_mode = parse_bool(os.getenv("CODEX_QUANTUM_MODE"), False)
 
@@ -124,6 +159,14 @@ class QuantumConfig:
             if quantum_mode
             else False,
             rollout_percentage=parse_int(os.getenv("CODEX_QUANTUM_ROLLOUT_PCT"), 0),
+            # Phase 3: Noise simulation parameters
+            noise_enabled=parse_bool(os.getenv("CODEX_QUANTUM_NOISE"), False),
+            t1_decoherence_us=parse_float(os.getenv("CODEX_QUANTUM_T1_US"), 100.0),
+            t2_decoherence_us=parse_float(os.getenv("CODEX_QUANTUM_T2_US"), 50.0),
+            gate_error_rate=parse_float(os.getenv("CODEX_QUANTUM_GATE_ERROR"), 0.0),
+            measurement_error_rate=parse_float(
+                os.getenv("CODEX_QUANTUM_MEAS_ERROR"), 0.0
+            ),
         )
 
     def is_enabled(self, feature: str) -> bool:
@@ -172,6 +215,11 @@ class QuantumConfig:
             "uncertainty": self.uncertainty,
             "wave_collapse": self.wave_collapse,
             "rollout_percentage": self.rollout_percentage,
+            "noise_enabled": self.noise_enabled,
+            "t1_decoherence_us": self.t1_decoherence_us,
+            "t2_decoherence_us": self.t2_decoherence_us,
+            "gate_error_rate": self.gate_error_rate,
+            "measurement_error_rate": self.measurement_error_rate,
         }
 
     def __repr__(self) -> str:
@@ -189,5 +237,8 @@ class QuantumConfig:
         return (
             f"QuantumConfig(mode={self.quantum_mode}, "
             f"features={enabled_features}, "
-            f"rollout={self.rollout_percentage}%)"
+            f"rollout={self.rollout_percentage}%, "
+            f"noise={self.noise_enabled}, "
+            f"gate_err={self.gate_error_rate:.3f}, "
+            f"meas_err={self.measurement_error_rate:.3f})"
         )

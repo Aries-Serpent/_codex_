@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/webhooks.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/webhooks.py --help
 

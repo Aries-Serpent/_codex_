@@ -10,10 +10,10 @@
 
 ## 📚 Quick Navigation
 
-- **New to agents?** → Start with [Key Components](#-key-components)
-- **Building an agent?** → See [Development Standards](#-development-standards)
+- **New to agents?** → Start with [Key Components](#key-components)
+- **Building an agent?** → See [Development Standards](#development-standards)
 - **Contributing?** → Check [Normalization Checklist](NORMALIZATION_CHECKLIST.md)
-- **Integration?** → View [Usage Examples](#-usage-examples)
+- **Integration?** → View <!-- BROKEN ANCHOR: [Usage Examples](#-usage-examples) -->
 
 ---
 

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/connectors/ratelimit_to_status.py [options]
-    
+
     Examples:
     $ python scripts/connectors/ratelimit_to_status.py --help
 

@@ -8,9 +8,6 @@ Cloudflare Workers (edge proxy) and Fly.io (persistent container) hosts.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 import time
 from typing import Any, Iterable, Optional
@@ -18,6 +15,8 @@ from typing import Any, Iterable, Optional
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_API_KEY = "dev-key"  # pragma: allowlist secret
 DEFAULT_TOP_K = 5

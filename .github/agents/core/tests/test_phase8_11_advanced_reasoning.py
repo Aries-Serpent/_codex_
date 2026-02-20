@@ -16,16 +16,15 @@ Author: Copilot Agent
 Phase: 8.11 Advanced Reasoning & Planning
 """
 
-import pytest
-import sys
 import os
+import sys
+
+import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from phase8_11_advanced_reasoning import (
-        RANDOM_SEED_8_11
-    )
+    from phase8_11_advanced_reasoning import RANDOM_SEED_8_11
 except ImportError:
     pytest.skip("Phase 8.11 modules not available", allow_module_level=True)
 

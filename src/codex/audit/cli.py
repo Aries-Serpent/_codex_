@@ -10,7 +10,7 @@ import click
 @click.option("--output", type=click.Path(), help="Output file")
 def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output: str):
     """Run security and quality audit.
-    
+
     Examples:
         codex-audit --check-dependencies --check-vulns
         codex-audit --format html --output audit.html

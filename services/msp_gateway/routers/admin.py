@@ -9,6 +9,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Response, status
 
 from src.utils.log_sanitizer import sanitize_log_input
+
 from ..config import settings
 from ..middleware.tenant_context import tenant_registry
 from ..schemas.requests import TenantCreateRequest, TenantUpdateRequest

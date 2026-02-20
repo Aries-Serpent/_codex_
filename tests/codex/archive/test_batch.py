@@ -105,7 +105,7 @@ class TestBatchItem:
             "actor": ""
         }
 
-        with pytest.raises(ValueError, match="Actor"):
+        with pytest.raises(ValueError, match=r"Actor must be provided"):
             BatchItem.from_dict(
                 payload,
                 manifest_dir=tmp_path,

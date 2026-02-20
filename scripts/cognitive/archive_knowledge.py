@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/archive_knowledge.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/archive_knowledge.py --help
 
@@ -34,11 +34,11 @@ Cognitive Brain - Knowledge Archiver
 Part of AfterMath - archives learnings to shared memory
 """
 import argparse
-import json
-from pathlib import Path
-from typing import Dict, Any
-from datetime import datetime
 import hashlib
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
 
 def archive_knowledge(
@@ -47,18 +47,18 @@ def archive_knowledge(
 ) -> Dict[str, Any]:
     """
     Archive learnings to knowledge base.
-    
+
     Args:
         learnings_path: Path to learnings.json
         output_path: Path to save knowledge archive
-    
+
     Returns:
         Archive metadata
     """
     # Load learnings
     with open(learnings_path) as f:
         learnings = json.load(f)
-    
+
     # Create knowledge archive
     archive = {
         "archive_timestamp": datetime.now().isoformat(),
@@ -67,7 +67,7 @@ def archive_knowledge(
         "knowledge_items": [],
         "metadata": {}
     }
-    
+
     # Archive each learning as knowledge item
     for learning in learnings.get("learnings", []):
         knowledge_item = {
@@ -80,7 +80,7 @@ def archive_knowledge(
             "accessibility": "all_agents"
         }
         archive["knowledge_items"].append(knowledge_item)
-    
+
     # Archive actionable insights
     for insight in learnings.get("actionable_insights", []):
         knowledge_item = {
@@ -93,7 +93,7 @@ def archive_knowledge(
             "accessibility": "all_agents"
         }
         archive["knowledge_items"].append(knowledge_item)
-    
+
     # Archive knowledge contributions
     for contribution in learnings.get("knowledge_contributions", []):
         knowledge_item = {
@@ -106,7 +106,7 @@ def archive_knowledge(
             "accessibility": "all_agents"
         }
         archive["knowledge_items"].append(knowledge_item)
-    
+
     # Archive metadata
     archive["metadata"] = {
         "total_items": len(archive["knowledge_items"]),
@@ -115,21 +115,21 @@ def archive_knowledge(
         "archive_size_bytes": len(json.dumps(archive)),
         "retention_policy": "365_days"
     }
-    
+
     # Save archive
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(archive, f, indent=2)
-    
-    print(f"✅ Knowledge archiving complete")
+
+    print("✅ Knowledge archiving complete")
     print(f"   Total items archived: {archive['metadata']['total_items']}")
     print(f"   Item types: {', '.join(archive['metadata']['item_types'])}")
     print(f"   Average confidence: {archive['metadata']['average_confidence']:.2%}")
     print(f"   Archive size: {archive['metadata']['archive_size_bytes']} bytes")
     print(f"   Saved to: {output_path}")
-    
+
     return archive
 
 
@@ -138,7 +138,7 @@ def main():
     parser.add_argument("--learnings", required=True, help="Path to learnings JSON")
     parser.add_argument("--output", required=True, help="Output path")
     args = parser.parse_args()
-    
+
     archive_knowledge(args.learnings, args.output)
 
 

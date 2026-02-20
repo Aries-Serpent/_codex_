@@ -136,10 +136,6 @@ Replace the following placeholders when generating a comment:
 
 ### 📦 Deliverables
 
-- Coverage baseline report: [tokenization_coverage_baseline.md](.codex/plans/pr_3145/tokenization_coverage_baseline.md)
-- Gap analysis: [coverage_tokenization.json](coverage_reports/coverage_tokenization.json)
-- Test case mapping: [test_case_mapping.md](.codex/plans/pr_3145/test_case_mapping.md)
-- Analysis script: [analyze_tokenization_coverage.py](scripts/analyze_tokenization_coverage.py)
 
 ---
 
@@ -184,10 +180,6 @@ Review coverage gaps and approve test implementation strategy for Pre-commit 5-8
 
 ### 📚 References
 
-**Plan Document**: [Tokenization Coverage Analysis](.codex/plans/pr_3145/01_tokenization_coverage_analysis.md)
-**Artifacts Directory**: [pr_3145 artifacts](.codex/plans/pr_3145/)
-**Execution Logs**: [coverage_analysis.log](logs/coverage_analysis.log)
-**Cognitive Brain**: [PR 3145 Planset Registration](.codex/cognitive_brain/pr_3145_planset_registration.md)
 
 ---
 

@@ -116,7 +116,7 @@ class QuantumMemoryManager:
         config: QuantumConfig,
         stm_capacity: int = 1000,
         ltm_capacity: int = 10000,
-        consolidation_threshold: float = 0.7,
+        consolidation_threshold: float = 0.6,  # Lowered from 0.7 to allow high-quality patterns with moderate access
     ):
         """
         Initialize quantum memory manager.

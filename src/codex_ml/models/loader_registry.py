@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 """Lightweight registry for model loader callables."""
 
 
-import os
-from typing import Any, Callable, Mapping
+import os  # noqa: E402
+from typing import Any, Callable, Mapping  # noqa: E402
 
 _ModelFactory = Callable[..., Any]
 

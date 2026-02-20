@@ -12,9 +12,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-from pathlib import Path
-from typing import Any, Optional
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:
     import jsonschema

@@ -26,7 +26,7 @@ WORKFLOWS_DIR = REPO_ROOT / ".github" / "workflows"
 class WorkflowRefactorer:
     """
     Utility to refactor GitHub Actions workflows.
-    
+
     Adds workflow_dispatch triggers and ensures runs-on: [self-hosted, linux]
     tags for cost control and compliance.
     """
@@ -34,7 +34,7 @@ class WorkflowRefactorer:
     def __init__(self, workflows_dir: Optional[Path] = None):
         """
         Initialize workflow refactorer.
-        
+
         Args:
             workflows_dir: Path to workflows directory
         """
@@ -48,7 +48,7 @@ class WorkflowRefactorer:
     def list_workflows(self) -> List[Path]:
         """
         List all workflow files.
-        
+
         Returns:
             List of workflow file paths
         """
@@ -62,10 +62,10 @@ class WorkflowRefactorer:
     def add_workflow_dispatch(self, workflow_path: Path) -> bool:
         """
         Add workflow_dispatch trigger to workflow if not present.
-        
+
         Args:
             workflow_path: Path to workflow file
-            
+
         Returns:
             True if modified, False if already present
         """
@@ -116,10 +116,10 @@ class WorkflowRefactorer:
     def ensure_self_hosted_runner(self, workflow_path: Path) -> Dict[str, Any]:
         """
         Ensure all jobs use [self-hosted, linux] runner.
-        
+
         Args:
             workflow_path: Path to workflow file
-            
+
         Returns:
             Dictionary with modification stats
         """
@@ -188,10 +188,10 @@ class WorkflowRefactorer:
     def add_codex_digest_step(self, workflow_path: Path) -> bool:
         """
         Add codex_digest step to workflow if not present.
-        
+
         Args:
             workflow_path: Path to workflow file
-            
+
         Returns:
             True if modified, False otherwise
         """
@@ -253,12 +253,12 @@ class WorkflowRefactorer:
     ) -> Dict[str, Any]:
         """
         Refactor all workflows in directory.
-        
+
         Args:
             add_dispatch: Add workflow_dispatch triggers
             ensure_self_hosted: Ensure self-hosted, linux runners
             add_digest: Add codex_digest steps
-            
+
         Returns:
             Summary of changes
         """
@@ -299,10 +299,10 @@ class WorkflowRefactorer:
     def validate_workflow(self, workflow_path: Path) -> Dict[str, Any]:
         """
         Validate workflow file.
-        
+
         Args:
             workflow_path: Path to workflow file
-            
+
         Returns:
             Validation results
         """
@@ -362,12 +362,12 @@ def refactor_workflows(
 ) -> Dict[str, Any]:
     """
     Convenience function to refactor all workflows.
-    
+
     Args:
         add_dispatch: Add workflow_dispatch triggers
         ensure_self_hosted: Ensure self-hosted, linux runners
         add_digest: Add codex_digest steps
-        
+
     Returns:
         Summary of changes
     """

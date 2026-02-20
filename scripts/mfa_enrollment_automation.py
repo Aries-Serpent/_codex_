@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/mfa_enrollment_automation.py [options]
-    
+
     Examples:
     $ python scripts/mfa_enrollment_automation.py --help
 
@@ -40,11 +40,18 @@ Usage:
     python scripts/mfa_enrollment_automation.py --report
 """
 
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from datetime import datetime, timedelta, timezone
+
 try:
+    import sys
+
     from github import Github
-    import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     from codex.auth import MFAProvider
 except ImportError as e:
     print(f"Error: {e}")
@@ -55,43 +62,43 @@ class MFAEnrollmentAutomator:
         self.github = Github(os.getenv('GITHUB_TOKEN'))
         self.mfa = MFAProvider()
         self.repo_name = os.getenv('GITHUB_REPOSITORY', '')
-        
+
     def detect_unenrolled(self) -> list:
         """Detect users without MFA."""
         print("Detecting unenrolled users...")
-        
+
         if not self.repo_name:
             return []
-        
+
         repo = self.github.get_repo(self.repo_name)
         unenrolled = []
-        
+
         for collab in repo.get_collaborators():
             # Check if user has MFA enabled
             if not self.mfa.is_mfa_enabled(collab.login):
                 unenrolled.append(collab.login)
                 print(f"  • {collab.login}")
-        
+
         print(f"Found {len(unenrolled)} unenrolled users")
         return unenrolled
-    
+
     def enroll_users(self, usernames: list) -> dict:
         """Enroll users in MFA."""
         print(f"Enrolling {len(usernames)} users...")
-        
+
         results = {'enrolled': [], 'failed': []}
-        
+
         for username in usernames:
             try:
                 secret = self.mfa.generate_totp_secret(username)
                 # IMPORTANT: MFA ENROLLMENT LIMITATION
                 # This automation generates TOTP secrets and backup codes but does NOT
                 # store or transmit them to users, making enrollment incomplete.
-                # 
+                #
                 # Current Behavior:
                 # - Provisioning URI generated but immediately discarded (not logged for security)
                 # - Backup codes generated but not persisted or delivered to users
-                # 
+                #
                 # Production Implementation Required:
                 # To make this enrollment functional, implement secure credential delivery:
                 # 1. Store encrypted credentials temporarily (use COMPLIANCE_REPORT_KEY or similar)
@@ -101,26 +108,26 @@ class MFAEnrollmentAutomator:
                 #    - Option C: Secure web portal with user authentication
                 # 3. Require user acknowledgment of receipt
                 # 4. Delete temporary credentials after delivery confirmation
-                # 
+                #
                 # Security Considerations:
                 # - Never log provisioning URIs or backup codes in plain text
                 # - Use end-to-end encryption for credential transmission
                 # - Implement rate limiting to prevent abuse
                 # - Require MFA setup completion within 24-48 hours
-                
+
                 # IMPLEMENTATION NOTE: Credential Delivery Pending
                 # ================================================
                 # The provisioning URI and backup codes are generated below but intentionally
                 # NOT delivered to users in this demonstration script. This is INCOMPLETE by design
                 # until a secure credential delivery mechanism is implemented.
-                # 
+                #
                 # Current State: Users are enrolled in MFA but do NOT receive setup credentials
                 # Required Action: Implement ONE of the secure delivery options above before production use
-                # 
+                #
                 # DO NOT use this script in production without implementing secure credential delivery.
                 _ = secret.get_provisioning_uri(f"{username}@github")  # URI generated but not logged
                 _ = self.mfa.generate_backup_codes(username, count=10)  # Codes generated securely
-                
+
                 # nosemgrep: url-substring-check - internal GitHub settings URL for MFA enrollment
                 results['enrolled'].append({
                     'username': username,
@@ -131,7 +138,7 @@ class MFAEnrollmentAutomator:
             except Exception as e:
                 results['failed'].append({'username': username, 'error': str(e)})
                 print(f"✗ Failed: {username} - {e}")
-        
+
         # Save results
         with open('enrollment_results.json', 'w') as f:
             json.dump({
@@ -139,20 +146,20 @@ class MFAEnrollmentAutomator:
                 'failed': results['failed'],
                 'deadline': (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
             }, f, indent=2)
-        
+
         return results
-    
+
     def generate_report(self) -> str:
         """Generate enrollment report."""
         print("Generating enrollment report...")
-        
+
         if not os.path.exists('enrollment_results.json'):
             print("No enrollment data found")
             return ""
-        
+
         with open('enrollment_results.json') as f:
             data = json.load(f)
-        
+
         report = f"""# MFA Enrollment Report
 
 **Date**: {datetime.now(timezone.utc).strftime('%Y-%m-%d')}
@@ -176,15 +183,15 @@ class MFAEnrollmentAutomator:
 ---
 *Generated by MFA Enrollment Automation*
 """
-        
+
         report_file = f'mfa_enrollment_report_{datetime.now(timezone.utc).strftime("%Y%m%d")}.md'
         with open(report_file, 'w') as f:
             f.write(report)
-        
+
         # Create latest symlink
         with open('mfa_enrollment_report_latest.md', 'w') as f:
             f.write(report)
-        
+
         print(f"✓ Report saved: {report_file}")
         return report
 
@@ -195,9 +202,9 @@ def main():
     parser.add_argument('--auto', action='store_true', help='Auto-enroll detected users')
     parser.add_argument('--report', action='store_true')
     args = parser.parse_args()
-    
+
     automator = MFAEnrollmentAutomator()
-    
+
     if args.detect:
         users = automator.detect_unenrolled()
         print(json.dumps({'unenrolled': users}, indent=2))

@@ -91,7 +91,7 @@ class WorkflowParser:
 
         Returns:
             Parsed workflow metadata, or None if parsing failed.
-            
+
         Raises:
             ValueError: If YAML is invalid and cannot be parsed.
         """

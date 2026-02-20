@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/list_checkpoints.py [options]
-    
+
     Examples:
     $ python scripts/list_checkpoints.py --help
 

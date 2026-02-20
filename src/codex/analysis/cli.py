@@ -10,7 +10,7 @@ import click
 @click.option("--threshold", type=int, default=50, help="Long function threshold")
 def analyze_main(path: str, format: str, output: str, threshold: int):
     """Analyze code quality and generate metrics report.
-    
+
     Examples:
         codex-analyze . --format html --output report.html
         codex-analyze src/ --threshold 40

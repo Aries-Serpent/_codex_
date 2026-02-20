@@ -81,20 +81,20 @@ def get_path_weight(file_path: str, criticality_map: dict[str, Any]) -> float:
     # Input validation (safeguard)
     if not file_path or not isinstance(file_path, str):
         return 1.0
-    
+
     path_weights = [
         ("critical_paths", 3.0),
         ("high_paths", 2.0),
         ("medium_paths", 1.5),
         ("low_paths", 1.0),
     ]
-    
+
     for category, weight in path_weights:
         patterns = criticality_map.get(category, [])
         for pattern in patterns:
             if fnmatch.fnmatch(file_path, pattern):
                 return weight
-    
+
     return 1.0  # Default weight
 
 
@@ -103,25 +103,25 @@ def get_rule_weight(rule_id: str, criticality_map: dict[str, Any]) -> float:
     # Input validation (safeguard)
     if not rule_id or not isinstance(rule_id, str):
         return 1.0
-    
+
     rule_categories = criticality_map.get("rule_categories", {})
-    
+
     category_weights = {
         "critical": 3.0,
         "high": 2.0,
         "medium": 1.5,
         "low": 1.0,
     }
-    
+
     rule_lower = rule_id.lower()
-    
+
     for category, keywords in rule_categories.items():
         if not isinstance(keywords, list):
             continue
         for keyword in keywords:
             if keyword in rule_lower:
                 return category_weights.get(category, 1.0)
-    
+
     return 1.0  # Default weight
 
 
@@ -135,9 +135,9 @@ def calculate_risk_score(
     severity_weight = SEVERITY_WEIGHTS.get(severity.lower(), 1.0)
     path_weight = get_path_weight(file_path, criticality_map)
     rule_weight = get_rule_weight(rule_id, criticality_map)
-    
+
     score = severity_weight * path_weight * rule_weight
-    
+
     # Bounds check (safeguard)
     return max(MIN_SCORE, min(MAX_SCORE, score))
 
@@ -151,8 +151,8 @@ def get_priority_bucket(risk_score: float) -> str:
 
 
 def score_all_alerts(
-    alerts_file: Path, 
-    criticality_file: Path, 
+    alerts_file: Path,
+    criticality_file: Path,
     output_file: Path
 ) -> None:
     """Score all alerts and output prioritized list."""
@@ -168,30 +168,30 @@ def score_all_alerts(
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON in alerts file: {e}")
         return
-    
+
     criticality_map = load_criticality_map(criticality_file)
-    
+
     # Score each alert
     scored_alerts = []
-    
+
     for alert in alerts:
         rule = alert.get("rule", {})
         rule_id = rule.get("id", "unknown")
         severity = rule.get("severity", "unknown")
-        
+
         location = alert.get("most_recent_instance", {}).get("location", {})
         file_path = location.get("path", "unknown")
         line = location.get("start_line", 0)
-        
+
         risk_score = calculate_risk_score(
             severity=severity,
             file_path=file_path,
             rule_id=rule_id,
             criticality_map=criticality_map,
         )
-        
+
         priority = get_priority_bucket(risk_score)
-        
+
         scored_alerts.append({
             "alert_id": alert.get("number", 0),
             "rule_id": rule_id,
@@ -203,28 +203,28 @@ def score_all_alerts(
             "priority_bucket": priority,
             "html_url": alert.get("html_url", ""),
         })
-    
+
     # Sort by risk score descending
     scored_alerts.sort(key=lambda x: x["risk_score"], reverse=True)
-    
+
     # Write output
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     if scored_alerts:
         with open(output_file, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=scored_alerts[0].keys())
             writer.writeheader()
             writer.writerows(scored_alerts)
-    
+
     logger.info(f"✅ Scored {len(scored_alerts)} alerts")
     logger.info(f"💾 Saved to {output_file}")
-    
+
     # Print summary
     priority_counts: dict[str, int] = {}
     for alert in scored_alerts:
         bucket = alert["priority_bucket"]
         priority_counts[bucket] = priority_counts.get(bucket, 0) + 1
-    
+
     logger.info("\n📊 Priority Distribution:")
     for bucket in ["P0", "P1", "P2", "P3"]:
         count = priority_counts.get(bucket, 0)
@@ -234,9 +234,9 @@ def score_all_alerts(
 def main() -> None:
     """Main entry point."""
     logging.basicConfig(level=logging.INFO)
-    
+
     base_dir = Path(".github/security")
-    
+
     score_all_alerts(
         alerts_file=base_dir / "semgrep-alerts-export.json",
         criticality_file=base_dir / "criticality-map.yaml",
