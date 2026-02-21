@@ -456,7 +456,7 @@ class GitHubGuruAgent:
                             if ts < cutoff:
                                 stale_prs.append(f"PR #{pr.get('number')} — {pr.get('title', '')[:50]}")
                         except ValueError:
-                            pass
+                            logger.debug("Skipping PR with unparseable timestamp: %r", updated)
 
             lines.append(f"**Stale PRs** (inactive >{pr_stale_days}d): {len(stale_prs)}")
             for pr in stale_prs[:5]:

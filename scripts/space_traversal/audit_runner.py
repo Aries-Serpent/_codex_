@@ -514,28 +514,38 @@ def stage_s5_gaps(cfg, scored_caps):
     logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
 
 
-def stage_s6_render(cfg: dict) -> dict:
+def stage_s6_render(
+    cfg: dict,
+    scored_caps: Optional[list] = None,
+    gaps: Optional[dict] = None,
+) -> Path:
     """
     Render a Markdown/HTML report from scored capabilities (Stage S6).
 
     Args:
         cfg: Configuration dict with output settings
+        scored_caps: Pre-computed list of scored capability dicts. If *None*,
+            the function reads from ``capabilities_scored.json`` in the
+            artifacts directory.
+        gaps: Pre-computed gaps dict (unused in rendering, reserved for future
+            template extensions).
 
     Returns:
-        dict with ``report_path`` and ``timestamp`` keys.
+        ``Path`` to the written ``report.md`` file.
     """
     artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc).isoformat()
 
-    scored_file = artifacts_dir / "capabilities_scored.json"
-    scored_caps: list[dict] = []
-    if scored_file.exists():
-        try:
-            data = json.loads(scored_file.read_text())
-            scored_caps = data.get("capabilities", [])
-        except Exception:
-            pass
+    if scored_caps is None:
+        scored_file = artifacts_dir / "capabilities_scored.json"
+        scored_caps = []
+        if scored_file.exists():
+            try:
+                data = json.loads(scored_file.read_text())
+                scored_caps = data.get("capabilities", [])
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.debug("Could not read scored capabilities file: %s", exc)
 
     lines = ["# Capability Audit Report", "", f"Generated: {timestamp}", ""]
     for cap in scored_caps:
@@ -546,8 +556,8 @@ def stage_s6_render(cfg: dict) -> dict:
 
     report_path = artifacts_dir / "report.md"
     report_path.write_text("\n".join(lines))
-    logger.info(f"Stage S6 render complete: {report_path}")
-    return {"report_path": str(report_path), "timestamp": timestamp}
+    logger.info("Stage S6 render complete: %s", report_path)
+    return report_path
 
 
 def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
@@ -913,14 +923,12 @@ def main() -> None:
                 try:
                     data = json.loads(scored_file.read_text())
                     scored_caps = data.get("capabilities", [])
-                except Exception:
-                    pass
-            stage_s5_gaps({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
+                except (json.JSONDecodeError, OSError) as exc:
+                    logger.debug("Could not read scored capabilities file: %s", exc)({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
             print(f"Stage S5 complete: {artifacts_dir / 'gaps.json'}")
         elif args.stage_name == "S6":
             # Stage 6: Render — generate HTML/Markdown report from scored capabilities
-            result = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
-            output_file = artifacts_dir / "report.md"
+            output_file = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
             print(f"Stage S6 complete: {output_file}")
         elif args.stage_name == "S7":
             # Stage 7: Prefix auto-validation — scan bundles for naming convention violations

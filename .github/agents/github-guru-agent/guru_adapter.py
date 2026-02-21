@@ -38,7 +38,7 @@ try:
     _COGNITIVE_BRAIN_AVAILABLE = True
 except ImportError:
     _COGNITIVE_BRAIN_AVAILABLE = False
-    logger.debug("Cognitive brain ABCs not available; using inline stubs")
+    logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)
 
     # ---- Inline stubs so the module is importable without the full repo --------
     from dataclasses import dataclass
@@ -75,13 +75,17 @@ except ImportError:
 
     class Planner(ABC):  # type: ignore[no-redef]
         @abstractmethod
-        def observe(self, input_data: Dict[str, Any]) -> "ObservationData": ...
+        def observe(self, input_data: Dict[str, Any]) -> "ObservationData":
+            raise NotImplementedError
         @abstractmethod
-        def orient(self, observation: "ObservationData") -> "OrientationResult": ...
+        def orient(self, observation: "ObservationData") -> "OrientationResult":
+            raise NotImplementedError
         @abstractmethod
-        def decide(self, orientation: "OrientationResult") -> "Decision": ...
+        def decide(self, orientation: "OrientationResult") -> "Decision":
+            raise NotImplementedError
         @abstractmethod
-        def act(self, decision: "Decision") -> "ActionResult": ...
+        def act(self, decision: "Decision") -> "ActionResult":
+            raise NotImplementedError
 
     class SimpleDictMemory:  # type: ignore[no-redef]
         def __init__(self) -> None:

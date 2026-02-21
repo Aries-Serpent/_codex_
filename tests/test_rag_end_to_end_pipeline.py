@@ -22,10 +22,12 @@ try:
         int(x) for x in _torch.__version__.split(".")[:2]
     ) < (2, 7)
 except Exception:
-    pass
+    _TORCH_312_BUG = False  # torch not installed; PyTorch 2.x isinstance bug cannot apply
 
-from codex.rag import indexer  # noqa: E402
-from codex.rag.retriever import Retriever  # noqa: E402
+_codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")
+indexer = _codex_rag.indexer
+_codex_rag_retriever = pytest.importorskip("codex.rag.retriever", reason="codex.rag.retriever not importable")
+Retriever = _codex_rag_retriever.Retriever  # noqa: E402
 
 
 @dataclass

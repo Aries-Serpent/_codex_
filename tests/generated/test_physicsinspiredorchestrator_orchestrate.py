@@ -44,7 +44,7 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
 
     def test_orchestrate_happy_path(self):
         """Test successful execution through all 4 stages."""
-        from agents.physics_orchestrator import DecisionState, ActionPath
+        from agents.physics_orchestrator import DecisionState
 
         # Arrange with proper typed objects (Mock fails on :.2f format strings)
         orchestrator = PhysicsInspiredOrchestrator()
