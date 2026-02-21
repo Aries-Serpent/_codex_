@@ -17,13 +17,11 @@ from __future__ import annotations
 
 import json
 import sys
-import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
+from typing import Any, Dict
+from unittest.mock import MagicMock
 
-import pytest
 
 # ---------------------------------------------------------------------------
 # Path setup — make the agent package importable
@@ -48,7 +46,7 @@ from patterns import (  # noqa: E402
     match_patterns,
     PATTERNS,
 )
-from analyzers import PRAnalyzer, IssueAnalyzer, WorkflowAnalyzer  # noqa: E402
+from analyzers import PRAnalyzer, WorkflowAnalyzer  # noqa: E402
 from triage import IssueTriage, LABEL_TAXONOMY  # noqa: E402
 from hygiene import RepoHygiene  # noqa: E402
 from metrics import MetricsCollector  # noqa: E402
@@ -405,7 +403,7 @@ class TestIssueTriage:
         client = _offline_client()
         triage = IssueTriage(client)
         # Remove 'bug' from the repo
-        labels = [l for l in LABEL_TAXONOMY.keys() if l != "bug"]
+        labels = [lbl for lbl in LABEL_TAXONOMY.keys() if lbl != "bug"]
         result = triage.check_label_compliance(labels)
         assert not result["compliant"]
         assert "bug" in result["missing_labels"]
@@ -781,7 +779,7 @@ class TestCognitiveAdapter:
         dec = adapter.decide(ori)
         dec.action = "pr_analysis"
         dec.parameters = {}
-        result = adapter.act(dec)
+        adapter.act(dec)
         adapter.guru_agent.pr_analysis.assert_called_once()
 
     def test_reflect_records_in_log(self):

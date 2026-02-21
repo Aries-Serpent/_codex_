@@ -41,7 +41,7 @@ except ImportError:
     logger.debug("Cognitive brain ABCs not available; using inline stubs")
 
     # ---- Inline stubs so the module is importable without the full repo --------
-    from dataclasses import dataclass, field
+    from dataclasses import dataclass
     from abc import ABC, abstractmethod
 
     @dataclass

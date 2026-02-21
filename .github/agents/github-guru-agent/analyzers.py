@@ -323,7 +323,7 @@ class IssueAnalyzer:
         summary = (
             f"**Issue #{issue_number}**: {issue.get('title', '')}\n"
             f"- Priority: **{priority}**\n"
-            f"- Labels: {', '.join(f'`{l}`' for l in suggested_labels) or '(none)'}\n"
+            f"- Labels: {', '.join(f'`{lbl}`' for lbl in suggested_labels) or '(none)'}\n"
             f"- Triage confidence: {triage_confidence:.0%}\n"
         )
         if routing_agent:

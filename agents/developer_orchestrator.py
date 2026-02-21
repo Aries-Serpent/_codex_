@@ -125,15 +125,16 @@ class RequirementVariable:
 class CodeComponent:
     """A component of the software being developed."""
 
-    component_id: str
     name: str
     component_type: str  # module, class, function, test
     description: str
+    code: str = ""
+    component_id: str = ""
     dependencies: list[str] = field(default_factory=list)
     priority: float = 0.5  # 0-1, for EM field routing
     complexity: float = 1.0  # For fractal analysis
+    complexity_score: Optional[float] = None  # Normalised 0-1 complexity score
     implementation_status: str = "pending"  # pending, in_progress, complete
-    code: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -166,7 +167,7 @@ class PhysicsGuidedDeveloperOrchestrator:
     def __init__(self, session_id: Optional[str] = None):
         self.app_type: Optional[AppType] = None
         self.required_variables: dict[str, RequirementVariable] = {}
-        self.components: dict[str, CodeComponent] = {}
+        self.components: list[CodeComponent] = []
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
         self.session_id = session_id or "dev_orchestrator"
 
@@ -181,6 +182,16 @@ class PhysicsGuidedDeveloperOrchestrator:
     def _log(self, role: str, message: str) -> None:
         """Log a message using session logger."""
         log_message(self.session_id, role, message)
+
+    @property
+    def requirements(self) -> list[RequirementVariable]:
+        """Return list of required variables (alias for required_variables values)."""
+        return list(self.required_variables.values())
+
+    # Alias for backward compat with tests that call analyze_requirements()
+    def analyze_requirements(self, user_request: str) -> Any:
+        """Analyse a plain-text user request and populate required_variables."""
+        return self.analyze_user_requirements({"request": user_request})
 
     def analyze_user_requirements(self, requirements: dict[str, Any]) -> dict[str, Any]:
         """
@@ -498,7 +509,7 @@ class PhysicsGuidedDeveloperOrchestrator:
             )
         )
 
-        self.components = {comp.component_id: comp for comp in components}
+        self.components = list(components)
         return components
 
     def _build_component_tree(self, components: list[CodeComponent]) -> dict[str, Any]:
@@ -555,15 +566,15 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     def generate_code(
         self,
-        component_id: Union[str, dict[str, Any]],
+        component_id: Union[str, dict[str, Any], None] = None,
         specifications: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Generate code for a specific component or from specifications directly.
 
         Args:
-            component_id: Either a component ID string or a specifications dictionary.
-                         If a dict is provided, it's treated as specifications.
+            component_id: Component ID string, specifications dict, or None to
+                          generate generic code.
             specifications: Optional specifications (used when component_id is a string)
 
         Uses chaos theory to explore different implementation approaches.
@@ -571,25 +582,34 @@ class PhysicsGuidedDeveloperOrchestrator:
         # Handle case where specifications are passed as first argument
         if isinstance(component_id, dict):
             specifications = component_id
-            # Check if this is a new application request
-            if "app_name" in specifications or "app_type" in specifications:
-                # Generate a simple application based on specs
-                return self._generate_app_from_specs(specifications)
-            # Otherwise treat as specifications for the first component
+            component_id = None
+
+        if component_id is None:
+            # No specific component requested
             if self.components:
-                component_id = list(self.components.keys())[0]
+                # Generate code for the first component
+                first = self.components[0]
+                component_id = first.component_id if first.component_id else first.name
             else:
-                return self._generate_generic_code(specifications)
+                return self._generate_generic_code(specifications or {})
 
-        if component_id not in self.components:
+        if isinstance(component_id, str) and "app_name" in (specifications or {}):
+            return self._generate_app_from_specs(specifications)
+
+        # Find component in list by component_id or name
+        component = None
+        for c in self.components:
+            if c.component_id == component_id or c.name == component_id:
+                component = c
+                break
+
+        if component is None:
             return f"# Error: Component {component_id} not found"
-
-        component = self.components[component_id]
 
         self._log("system", f"=== GENERATING CODE: {component.name} ===")
 
         # Use template based on component type
-        if component.component_type == "module" and component_id == "main":
+        if component.component_type == "module" and component.component_id == "main":
             code = self._generate_main_module(specifications or {})
         elif component.component_type == "function":
             code = self._generate_function(component, specifications or {})

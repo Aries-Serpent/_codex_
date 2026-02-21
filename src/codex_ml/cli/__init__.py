@@ -131,8 +131,36 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
     from . import ndjson_summary
+    from pathlib import Path as _Path
+    import json as _json
 
-    return ndjson_summary.summarize(args)
+    run_dir = _Path(getattr(args, "input", "."))
+    fmt = getattr(args, "output", "stdout")
+    dest = getattr(args, "dest", None)
+
+    if fmt == "stdout":
+        rows = ndjson_summary._load_rows(run_dir)
+        metrics_agg: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            metric_name = str(row.get("metric") or row.get("key") or "")
+            if not metric_name:
+                continue
+            val = row.get("value")
+            if val is None:
+                continue
+            try:
+                val = float(val)
+            except (TypeError, ValueError):
+                continue
+            slot = metrics_agg.setdefault(metric_name, {"count": 0, "min": None, "max": None})
+            slot["count"] += 1
+            slot["min"] = val if slot["min"] is None else min(slot["min"], val)
+            slot["max"] = val if slot["max"] is None else max(slot["max"], val)
+        print(_json.dumps({"rows": len(rows), "metrics": metrics_agg}))
+        return 0
+
+    ndjson_summary.summarize(run_dir, fmt, dest)
+    return 0
 
 
 def _cmd_metrics(args: argparse.Namespace) -> int:

@@ -13,7 +13,6 @@ All checks are read-only (SAFE_MODE=true).
 from __future__ import annotations
 
 import logging
-import os
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone

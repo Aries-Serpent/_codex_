@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 try:
     from .analyzers import IssueAnalyzer, IssueAnalysisResult
@@ -106,7 +106,7 @@ class IssueTriage:
         summary = (
             f"**Triage Report — Issue #{issue_number}**\n\n"
             f"{analysis.summary_md}\n\n"
-            f"**Labels to apply**: {', '.join(f'`{l}`' for l in labels_to_apply) or '(none)'}\n"
+            f"**Labels to apply**: {', '.join(f'`{lbl}`' for lbl in labels_to_apply) or '(none)'}\n"
             f"**Taxonomy compliance**: {'✅ Compliant' if is_compliant else '⚠️ Gaps found'}\n"
         )
         if compliance_gaps:

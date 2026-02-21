@@ -36,9 +36,9 @@ try:
 except ImportError:
     from metrics import MetricsCollector
 try:
-    from .patterns import PatternMatch, match_patterns
+    from .patterns import PatternMatch
 except ImportError:
-    from patterns import PatternMatch, match_patterns
+    from patterns import PatternMatch
 try:
     from .triage import IssueTriage, TriageResult
 except ImportError:
@@ -360,7 +360,6 @@ class GitHubGuruAgent:
         """C-07: Return navigation hints based on AGENTS.md and repo structure."""
         self._metrics.start_capability("codebase_navigation_guidance")
         try:
-            agents_md = self.repo_root / ".github" / "agents" / "AGENTS.md"
             hint_lines = [
                 f"**Codebase Navigation Guidance**",
                 f"Query: `{query}`" if query else "",
@@ -396,7 +395,7 @@ class GitHubGuruAgent:
                 hint_lines.append("- `.codex/TECH_DEBT_REGISTRY.md` — tech debt")
                 hint_lines.append("- `.codex/plans/AGENTIC_SESSION_METHODOLOGY.md` — session protocol")
 
-            summary = "\n".join(l for l in hint_lines if l is not None)
+            summary = "\n".join(line for line in hint_lines if line is not None)
             self._metrics.end_capability("codebase_navigation_guidance", success=True, output_summary=query)
             return summary
         except Exception as exc:

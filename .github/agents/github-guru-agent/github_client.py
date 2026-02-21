@@ -13,8 +13,8 @@ import logging
 import os
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Any, Dict, Optional
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
 import json
