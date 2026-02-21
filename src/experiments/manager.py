@@ -25,17 +25,21 @@ from codex_ml.utils.optional import optional_dependency_error
 
 logger = logging.getLogger(__name__)
 
+try:  # noqa: SIM105 — module-level attribute needed for @patch("experiments.manager.mlflow")
+    import mlflow  # type: ignore[import]
+except Exception:
+    mlflow = None  # type: ignore[assignment]
+
+
 def init_experiment(exp_name: str = "codex_experiment") -> None:
     """Initialise MLflow in offline (local file store) mode by default."""
 
     backend = os.environ.get("EXPERIMENT_BACKEND", "file")
-    try:
-        import mlflow
-    except Exception as exc:  # noqa: BLE001
+    if mlflow is None:
         raise optional_dependency_error(
             "mlflow",
             purpose="experiment initialization",
-        ) from exc
+        )
 
     if backend == "file":
         tracking_dir = Path(".mlruns").resolve()

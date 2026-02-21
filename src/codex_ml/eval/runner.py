@@ -376,14 +376,16 @@ def _compute_metrics(
         elif key == "bleu":
             if not all(isinstance(value, str) for value in predictions + targets):
                 raise EvaluationError("BLEU requires string predictions and targets")
-            bleu_score = metrics.bleu(predictions, targets)
+            bleu_fn = get_registered_metric("bleu")
+            bleu_score = bleu_fn(preds=predictions, targets=targets)
             if bleu_score is None:
                 raise EvaluationError("BLEU metric requires sacrebleu or nltk to be installed")
             results[metric_name] = bleu_score
         elif key == "rouge_l":
             if not all(isinstance(value, str) for value in predictions + targets):
                 raise EvaluationError("ROUGE-L requires string predictions and targets")
-            rouge_score = metrics.rouge_l(predictions, targets)
+            rouge_fn = get_registered_metric("rouge_l")
+            rouge_score = rouge_fn(preds=predictions, targets=targets)
             if rouge_score is None:
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
             # Handle both float and dict returns for compatibility

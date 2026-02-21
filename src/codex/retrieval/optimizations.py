@@ -126,9 +126,9 @@ class OptimizedVectorStore:
             lazy_load: Defer index loading until first query
         """
         self.store = store
-        self.cache = (
-            ResponseCache(max_size=cache_size, default_ttl=cache_ttl) if enable_cache else None
-        )
+        self.cache = None  # always defined before conditional assignment
+        if enable_cache:
+            self.cache = ResponseCache(max_size=cache_size, default_ttl=cache_ttl)
         self.metrics = RetrievalMetrics()
         self.lazy_load = lazy_load
         self._loaded = False
@@ -179,8 +179,11 @@ class OptimizedVectorStore:
 
         # Check cache
         if use_cache and self.cache:
+            t_cache = time.time()
             cached_result = self.cache.get(cache_key)
+            cache_latency = time.time() - t_cache
             if cached_result is not None:
+                self.metrics.record_search(cache_latency, batch_size=1)
                 logger.debug("Cache hit for query")
                 return cached_result
 

@@ -23,6 +23,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+# botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
+import importlib.util as _importlib_util
+_HAS_BOTOCORE = _importlib_util.find_spec("botocore") is not None
+
 from security.provider_factory import ProviderFactory, create_provider_from_env
 from security.providers.base import (
     ProviderConfig,
@@ -652,6 +656,7 @@ class TestAWSSecretsManagerProvider:
         assert result.success is True
         assert result.metadata["version_id"] == "new-version-id"
 
+    @pytest.mark.skipif(not _HAS_BOTOCORE, reason="botocore not installed in this CI environment")
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
     def test_rotate_secret_client_error(self, mock_boto3, aws_config):
@@ -687,6 +692,7 @@ class TestAWSSecretsManagerProvider:
         is_valid = provider.validate_secret("test-secret")
         assert is_valid is True
 
+    @pytest.mark.skipif(not _HAS_BOTOCORE, reason="botocore not installed in this CI environment")
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
     def test_validate_secret_not_found(self, mock_boto3, aws_config):

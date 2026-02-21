@@ -176,7 +176,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         assert orchestrator.app_type is None
         assert orchestrator.required_variables == {}
-        assert orchestrator.components == {}
+        assert orchestrator.components == []
         assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
         assert orchestrator.session_id == "dev_orchestrator"
         assert orchestrator.development_history == []

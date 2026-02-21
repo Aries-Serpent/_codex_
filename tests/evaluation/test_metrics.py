@@ -14,7 +14,7 @@ import pytest
 def _has_module(name: str) -> bool:
     try:
         return importlib.util.find_spec(name) is not None
-    except ModuleNotFoundError:
+    except (ModuleNotFoundError, ValueError):
         return False
 
 

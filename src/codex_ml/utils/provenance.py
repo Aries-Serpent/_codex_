@@ -387,7 +387,7 @@ def snapshot_hydra_config(
     if overrides:
         (out_dir / "overrides.txt").write_text("\n".join(overrides))
     info = environment_summary()
-    (out_dir / "provenance.json").write_text(json.dumps(info, indent=2))
+    (out_dir / "provenance.json").write_text(json.dumps(info, indent=2, default=str))
 
 
 __all__ = [

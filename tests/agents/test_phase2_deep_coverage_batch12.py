@@ -231,8 +231,9 @@ class TestPhase2_ExceptionPaths:
 
     def test_try_except_with_error(self):
         """Test try-except when error occurs"""
+        error_occurred = False
         try:
-            error_occurred = False
+            raise ZeroDivisionError("simulated")
         except ZeroDivisionError:
             error_occurred = True
 

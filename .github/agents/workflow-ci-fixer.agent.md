@@ -5,9 +5,17 @@ updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +2.5 points
 batch: pr-4
+deprecated: true
+superseded_by: codebase-health-guardian.md (v2.0.0, 2026-02-20)
 ---
 
 # Workflow CI Fixer Agent
+
+> ⚠️ **DEPRECATED** (2026-02-20, Session 46, PR #3336)
+> Scope expanded into **[Codebase Health Guardian v2.0](codebase-health-guardian.md)**.
+> Use `codebase-health-guardian.md` for all new invocations.
+> D1-Workflow capabilities are fully preserved in the new agent.
+
 
 ## Overview
 

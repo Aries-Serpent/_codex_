@@ -94,6 +94,7 @@ manifests/k8s/*/secret.yaml
 # Codex internal data (ignored by default)
 .codex/*
 !.codex/README.md
+!.codex/*.md
 !.codex/policies/
 !.codex/policies/**
 !.codex/schemas/

@@ -256,6 +256,25 @@ class TestQuantumNoiseApplication:
                 wins += 1
         assert wins / trials >= 0.90, f"Winner preserved {wins}/{trials} times"
 
+    def test_10pct_noise_1000_scenarios_preserves_winner(self):
+        """Extended noise validation: at 10% gate error, winner preserved ≥90% of 1000 trials."""
+        import random
+        engine = self._engine_with_noise(gate_err=0.10, meas_err=0.05)
+        # Winner has a decisive lead (0.9 vs 0.3, 0.2, 0.1) — robust to 10% gate noise
+        scores = [0.9, 0.3, 0.2, 0.1]
+        wins = 0
+        trials = 1000
+        for seed in range(trials):
+            random.seed(seed)
+            noisy = engine._apply_noise(scores, 0.10, 0.05)
+            if noisy.index(max(noisy)) == 0:
+                wins += 1
+        accuracy = wins / trials
+        assert accuracy >= 0.90, (
+            f"Extended noise validation FAILED: winner preserved {wins}/{trials} "
+            f"({accuracy:.1%}) at 10% gate error — required ≥90%"
+        )
+
 
 class TestApplyQuantumNoisePublic:
     """SuperpositionEngine.apply_quantum_noise() — public Phase 3 API."""

@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 pytest.importorskip("numpy")
+pytest.importorskip("sentence_transformers")
 
 from codex.rag.indexer import chunk_text, embed_chunks, persist_index
 from codex.rag.postprocess import postprocess_output

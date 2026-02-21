@@ -111,6 +111,8 @@ class AgentHealthMetrics:
     pattern_distribution: Dict[str, int]  # (not tracked here; reserved)
     health_status: str            # "healthy" | "degraded" | "critical"
     prometheus_available: bool    # Whether Prometheus metrics are exported
+    active_learning_queries_today: int = 0     # AL queries used today
+    active_learning_budget_per_day: int = 50   # AL daily budget limit
 
 
 # ---------------------------------------------------------------------------
@@ -276,6 +278,19 @@ class AgentDashboard:
         else:
             status = "critical"
 
+        # Compute active-learning budget usage
+        _al_queries_today = 0
+        _al_budget = 50
+        try:
+            from cognitive_brain.active_learning.hook import ActiveLearningHook
+            _al_hook = ActiveLearningHook()
+            from datetime import datetime, timezone
+            today = datetime.now(timezone.utc).date().isoformat()
+            _al_queries_today = _al_hook._daily_counts.get(today, 0)
+            _al_budget = _al_hook.query_budget_per_day
+        except Exception:  # pragma: no cover - optional AL module
+            pass
+
         return AgentHealthMetrics(
             coherence_current=coherence_current,
             coherence_avg=round(coherence_avg, 4),
@@ -286,6 +301,8 @@ class AgentDashboard:
             pattern_distribution={},
             health_status=status,
             prometheus_available=_PROMETHEUS_AVAILABLE,
+            active_learning_queries_today=_al_queries_today,
+            active_learning_budget_per_day=_al_budget,
         )
 
     # ------------------------------------------------------------------

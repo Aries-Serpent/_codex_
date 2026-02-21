@@ -1,13 +1,77 @@
 ---
 name: CI Testing Agent
-version: 3.0.0-cognitive
-updated: 2026-02-17
-cognitive_integration_level: 2
-aais_contribution: +2.5 points
-batch: pr-4
+version: 4.0.0-unified
+updated: 2026-02-20
+cognitive_integration_level: 3
+aais_contribution: +4.0 points
+batch: pr-6
+merged_agents:
+  - ci-failure-resolution-agent (deprecated)
+  - ci-emergency-response-agent (deprecated)
+planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-1
 ---
 
-# CI Testing Agent
+# CI Testing Agent v4.0 (Unified CI Failure Resolver)
+
+> **v4.0 upgrade**: Absorbs `ci-failure-resolution-agent` and `ci-emergency-response-agent` into a
+> single end-to-end resolver with 17 embedded fix patterns, self-healing loop (max 5 iterations),
+> and mandatory regression detection before commit.
+
+## Architecture (v4.0)
+
+```
+Phase 1: Log Retrieval  →  Phase 2: Triage  →  Phase 3: Fix  →  Phase 4: Validate  →  Phase 5: Report
+   (GitHub MCP)              (categorize)       (17 patterns)    (ruff + import smoke)   (tracking log)
+```
+
+### Phase 1 — Log Retrieval (from ci-failure-resolution-agent)
+- `list_workflow_runs(branch, status="failure")` → identify latest failed run
+- `get_job_logs(job_id, failed_only=True, return_content=True, tail_lines=300)`
+- Parse: extract FAILED test names + error type + stack frame
+
+### Phase 2 — Triage (from ci-emergency-response-agent)
+- Categorize by error pattern (see Pattern Library below)
+- Check base branch for pre-existing failures (MUST be done before fixing)
+- Priority sort: regression > new failure > pre-existing
+
+### Phase 3 — Fix Pattern Library (17 known patterns, sessions 37-46)
+| ID | Pattern | Fix |
+|----|---------|-----|
+| P-REGISTRY | `AttributeError: 'Registry' object has no attribute '_registry'` | Use `_items` or plain dict mock seam |
+| P-TORCH-312 | `TypeError: isinstance() arg 2` under Python 3.12 + torch 2.x | `@pytest.mark.skipif(_TORCH_312_BUG)` |
+| P-TORCH-PROF | `RuntimeError: No running torch.profiler.profile` | Add to `_TORCH_PROFILER_XFAIL` in conftest |
+| P-IMPORT-OPT | `ModuleNotFoundError` for optional dep (faiss, sentencepiece) | `pytest.importorskip("faiss")` at module level |
+| P-HF-UNAVAIL | `HFModelUnavailableError` | `try/except HFModelUnavailableError → pytest.skip()` |
+| P-API-DRIFT | `TypeError: unexpected kwarg` or missing attr | Fix source API or add compat alias |
+| P-SENTINEL | `enable_mlflow=True` when `_mlflow_module=None` | Use `_MLFLOW_UNSET` sentinel (not `None`) |
+| P-SITECSUT | `ModuleNotFoundError: sitecustomize` | `@pytest.mark.skipif(not _HAS_SITECUSTOMIZE)` |
+| P-CLI-EXIT | `DID NOT RAISE SystemExit` for missing hydra | `sys.exit(0)` (graceful), NEVER `sys.exit(1)` |
+| P-VIEWER-CMD | `ImportError: viewer_cmd` | Add to `__all__` + `getattr(_cli_click_module)` |
+| P-PEFT-TARGET | `ValueError: Target modules not found` | `try/except ValueError → pytest.skip()` |
+| P-DOCKER-NET | Docker `pip install` fails in CI | `@pytest.mark.skipif(CI_ENV)` |
+| P-PICKLE-SEC | `pickle.load()` fallback | Remove fallback; let `safe_pickle_load` propagate error |
+| P-MOCK-SETUP | `AttributeError` on mock setup | Use class wrapper, NOT lambda (isinstance safety) |
+| P-CYCLIC | CodeQL cyclic import | Remove unused `TYPE_CHECKING` import; move shared types to `_types.py` |
+| P-RUFF-I001 | ruff I001 import order | Move `logger = ...` AFTER all imports; no blank lines within try-import block |
+| P-RUFF-F401 | ruff F401 unused import | Remove or add `# noqa: F401` with justification comment |
+
+### Phase 4 — Validation
+```bash
+# Required before every commit:
+ruff check --fix <changed_files>
+python -c "from <fixed_module> import <key_symbol>; print('OK')"
+python -m pytest <targeted_regression_tests> -v --timeout=60 --tb=short
+```
+
+### Phase 5 — Self-Healing Loop
+- Max 5 iterations; break on first green run
+- Each iteration: re-fetch logs → triage new failures → apply fix → validate
+- Track iteration count in `.codex/PR_<ID>_FAILURE_TRACKING_LOG.md`
+
+### Phase 5 — Report
+- Update tracking log with Attempt N entry (commit SHA, root cause, fix applied, result)
+- NEVER use `xfail(strict=False)` — use `skipif` with documented reason
+- Post summary comment on PR
 
 ## Overview
 

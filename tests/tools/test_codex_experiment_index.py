@@ -55,24 +55,26 @@ def test_experiment_index_builds_summary(tmp_path: Path):
         encoding="utf-8",
     )
 
+    # Create output files in tmp_path to avoid writing to repository root
+    json_out_path = tmp_path / "index.json"
+    md_out_path = tmp_path / "index.md"
+
     rc = idx.main(
         [
             "--runs-dir",
             str(runs_dir),
             "--json-out",
-            "index.json",
+            str(json_out_path),
             "--md-out",
-            "index.md",
+            str(md_out_path),
         ]
     )
     assert rc == 0
 
-    json_out = tmp_path / "index.json"
-    md_out = tmp_path / "index.md"
-    assert json_out.exists()
-    assert md_out.exists()
+    assert json_out_path.exists()
+    assert md_out_path.exists()
 
-    data = json.loads(json_out.read_text(encoding="utf-8"))
+    data = json.loads(json_out_path.read_text(encoding="utf-8"))
     assert data["total_runs"] == 2
     modes = {r["mode"] for r in data["runs"]}
     assert modes == {"train", "eval"}
