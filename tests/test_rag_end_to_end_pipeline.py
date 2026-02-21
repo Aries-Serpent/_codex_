@@ -27,7 +27,7 @@ except Exception:
 _codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")
 indexer = _codex_rag.indexer
 _codex_rag_retriever = pytest.importorskip("codex.rag.retriever", reason="codex.rag.retriever not importable")
-Retriever = _codex_rag_retriever.Retriever  # noqa: E402
+Retriever = _codex_rag_retriever.Retriever
 
 
 @dataclass

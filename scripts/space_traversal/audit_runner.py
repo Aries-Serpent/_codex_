@@ -924,9 +924,9 @@ def main() -> None:
                     data = json.loads(scored_file.read_text())
                     scored_caps = data.get("capabilities", [])
                 except (json.JSONDecodeError, OSError) as exc:
-                    logger.debug("Could not read scored capabilities file: %s", exc)({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
+                    logger.debug("Could not read scored capabilities file: %s", exc)
+            stage_s5_gaps({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
             print(f"Stage S5 complete: {artifacts_dir / 'gaps.json'}")
-        elif args.stage_name == "S6":
             # Stage 6: Render — generate HTML/Markdown report from scored capabilities
             output_file = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
             print(f"Stage S6 complete: {output_file}")

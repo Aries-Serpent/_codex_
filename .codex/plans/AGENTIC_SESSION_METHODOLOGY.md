@@ -495,3 +495,58 @@ Feed outcomes to cognitive brain via update_cpds_em().
 | `.github/agents/agent-orchestrator.md` | Routing table + grading rubric |
 | `.github/agents/ci-testing-agent.md` | 17 known fix patterns |
 | `.github/agents/codebase-health-guardian.md` | D1-D4 health enforcement |
+| `.codex/plans/AGENT_ECOSYSTEM_COGNITIVE_BRAIN_INTEGRATION_PLANSET.md` | E-01..E-12, M-01..M-05, DR-011..DR-016 |
+
+---
+
+## 🗓️ Session 57 PLANSET — OODA Formalization + Memory Persistence
+
+> Context: Agent Ecosystem Master Synthesis ingested S56 (Comment #3938173408)
+
+**Pre-conditions:**
+- Commit `9528c3c` CodeQL/F401 fixes verified green in CI
+- `ruff check` passes on all changed files
+- `AGENT_ECOSYSTEM_COGNITIVE_BRAIN_INTEGRATION_PLANSET.md` committed ✅
+
+**Primary Tasks (in order):**
+
+| # | Task | File(s) | Physics | D1–D4 |
+|---|------|---------|---------|-------|
+| S57-1 | **E-01**: Add `Planner` ABC to `SelfHealingEngine` | `agents/self_healing.py` | Path 🛤️ | Mandatory |
+| S57-2 | **E-01**: Add `Planner` ABC to `WorkflowNavigator` | `agents/workflow_navigator.py` | Path 🛤️ | Mandatory |
+| S57-3 | **E-02**: Create `SQLiteMemory(MemoryInterface)` | `agents/sqlite_memory.py` (new) | Redundancy 🔀 | Mandatory |
+| S57-4 | **E-06**: Wire `ReflectionLoop` → `AdaptiveScoringOptimizer` | `agents/physics_orchestrator.py` | Patterns 👁️ | Mandatory |
+| S57-5 | **A1**: Pin ruff version in `requirements/dev.txt` + all CI workflows | CI config files | Balance ⚖️ | D1 only |
+| S57-6 | **E-11**: `datetime.now(UTC)` pass on `agents/*.py` files | All `agents/*.py` | Balance ⚖️ | D1 only |
+| S57-7 | CI verify: confirm `9528c3c` tests green (Art_RAG + Auto-Fix + CodeQL) | GitHub MCP monitor | — | MSP-2 |
+
+**Exit criteria:**
+- All 7 tasks complete
+- `pytest tests/agents/ -q --timeout=60` passes
+- Grade ≥ 85/100
+
+**Agent Routing:**
+- E-01/E-02: `ci-testing-agent` (validation after changes)
+- E-06: `test-alignment-fixer` (update test expectations for new feedback loop)
+- A1: `workflow-ci-fixer` (CI workflow ruff pin)
+- E-11: `datetime-modernizer` (automated datetime pass)
+
+---
+
+## 🗓️ Session 58 PLANSET — Agent Merges + k₁ + GitHub API
+
+**Pre-conditions:** Session 57 all tasks green
+
+**Primary Tasks:**
+
+| # | Task | Files | Physics |
+|---|------|-------|---------|
+| S58-1 | **E-03**: k₁ weight refinement (Phase 8.0) | `adaptive_scoring.py` | Balance ⚖️ |
+| S58-2 | **M-01**: `unified-security-scanner` agent spec + workflow | `.github/agents/`, `.github/workflows/` | Balance ⚖️ |
+| S58-3 | **M-02**: `unified-doc-agent` spec | `.github/agents/` | Patterns 👁️ |
+| S58-4 | **M-03**: `ci-triage-pipeline-agent` spec | `.github/agents/` | Path 🛤️ |
+| S58-5 | **E-04**: Complete `_github_api_post_review()` in guru agent | `.github/agents/github-guru-agent/` | Fields 🔄 |
+| S58-6 | **A3**: `session_reviewer.py` for GitHub Guru Agent | `.github/agents/github-guru-agent/` | Patterns 👁️ |
+| S58-7 | Update `AGENT_REGISTRY.yaml` — mark 12 agents deprecated (M-01..M-03 merge) | `.github/agents/AGENT_REGISTRY.yaml` | — |
+
+**Exit criteria:** All 7 tasks complete + `pytest .github/agents/github-guru-agent/tests/ -q` passes with ≥115 tests
