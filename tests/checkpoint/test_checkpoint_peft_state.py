@@ -37,6 +37,11 @@ from peft import (  # noqa: E402
 
 import torch  # noqa: E402  (import after skip checks)
 
+# PyTorch 2.x + Python 3.12: torch.FloatStorage PicklingError in torch.save
+_TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(
+    int(x) for x in torch.__version__.split(".")[:2]
+) < (2, 7)
+
 
 def _make_model() -> torch.nn.Module:
     class _Wrapped(torch.nn.Module):
@@ -55,6 +60,10 @@ def _make_model() -> torch.nn.Module:
     return get_peft_model(base, cfg)
 
 
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: torch.FloatStorage PicklingError in torch.save",
+)
 def test_checkpoint_includes_lora_state(tmp_path: Path):
     model = _make_model()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)

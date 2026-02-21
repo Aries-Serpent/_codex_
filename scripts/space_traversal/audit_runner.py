@@ -514,6 +514,42 @@ def stage_s5_gaps(cfg, scored_caps):
     logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
 
 
+def stage_s6_render(cfg: dict) -> dict:
+    """
+    Render a Markdown/HTML report from scored capabilities (Stage S6).
+
+    Args:
+        cfg: Configuration dict with output settings
+
+    Returns:
+        dict with ``report_path`` and ``timestamp`` keys.
+    """
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    scored_caps: list[dict] = []
+    if scored_file.exists():
+        try:
+            data = json.loads(scored_file.read_text())
+            scored_caps = data.get("capabilities", [])
+        except Exception:
+            pass
+
+    lines = ["# Capability Audit Report", "", f"Generated: {timestamp}", ""]
+    for cap in scored_caps:
+        score = cap.get("score", 0.0)
+        maturity = cap.get("maturity", "unknown")
+        lines.append(f"## {cap.get('id', 'unknown')} — {maturity} ({score:.2f})")
+        lines.append("")
+
+    report_path = artifacts_dir / "report.md"
+    report_path.write_text("\n".join(lines))
+    logger.info(f"Stage S6 render complete: {report_path}")
+    return {"report_path": str(report_path), "timestamp": timestamp}
+
+
 def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
     """
     Apply capability overrides by merging alias IDs into canonical IDs.
@@ -569,10 +605,11 @@ def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> 
         canonical_id = alias_to_canonical.get(cap_id)
 
         if canonical_id:
-            # This capability should be merged
-            if canonical_id not in canonical_groups:
-                canonical_groups[canonical_id] = []
-            canonical_groups[canonical_id].append(cap)
+            # This capability is an alias — merge into the canonical group
+            canonical_groups.setdefault(canonical_id, []).append(cap)
+        elif cap_id in overrides:
+            # This capability IS the canonical ID — include it in its own group
+            canonical_groups.setdefault(cap_id, []).append(cap)
         else:
             # This capability is not in overrides, preserve it
             unaffected_caps.append(cap)
@@ -807,7 +844,7 @@ def main() -> None:
 
     # stage subcommand
     stage_parser = subparsers.add_parser("stage", help="Run a specific audit stage")
-    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4", "S7"], help="Stage to run")
+    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4", "S5", "S6", "S7"], help="Stage to run")
     stage_parser.add_argument("--config", type=Path, help="Configuration file")
     stage_parser.add_argument("--output", type=Path, help="Output file path")
 
@@ -868,6 +905,23 @@ def main() -> None:
             output_file = artifacts_dir / "capabilities_scored.json"
             output_file.write_text(json.dumps(result, indent=2))
             print(f"Stage S4 complete: {output_file}")
+        elif args.stage_name == "S5":
+            # Stage 5: Gap analysis — identify low-maturity capabilities
+            scored_file = artifacts_dir / "capabilities_scored.json"
+            scored_caps = []
+            if scored_file.exists():
+                try:
+                    data = json.loads(scored_file.read_text())
+                    scored_caps = data.get("capabilities", [])
+                except Exception:
+                    pass
+            stage_s5_gaps({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
+            print(f"Stage S5 complete: {artifacts_dir / 'gaps.json'}")
+        elif args.stage_name == "S6":
+            # Stage 6: Render — generate HTML/Markdown report from scored capabilities
+            result = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
+            output_file = artifacts_dir / "report.md"
+            print(f"Stage S6 complete: {output_file}")
         elif args.stage_name == "S7":
             # Stage 7: Prefix auto-validation — scan bundles for naming convention violations
             prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
