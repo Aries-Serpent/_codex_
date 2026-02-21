@@ -575,7 +575,7 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 | **S55** | TD-004, TD-019, TD-020, TD-023, TD-025, TD-031, TD-032, TD-045 | Debt clearance — TODO triage, DataValidator, BayesianEM |
 | **S56** | TD-021, TD-022, TD-028, TD-037, TD-041, TD-044, TD-047 | Feature completeness — Sigstore, CLI stubs, persistence |
 | **S57** | TD-034, TD-035, TD-040, TD-042, TD-046 | Future — audio stub, pipeline, large-doc diff, S3 validation |
-| **S58** | TD-038 | Final polish — EarlyStopping sentinel default |
+| **S58** | TD-038 + CI-001..CI-006 + CodeQL-001..CodeQL-004 + VAL-001 | CI remediation (5 validation failures, Art_RAG exit-5, 4 CodeQL alerts), validation pipeline (scripts/run_validation.sh + tools/validate.py + .github/workflows/validate.yml) |
 
 ---
 
