@@ -13,7 +13,9 @@ Core Principles:
 """
 
 import json
+import concurrent.futures
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 import math  # noqa: E402
@@ -1800,35 +1802,42 @@ class TaskDecomposer:
     def execute_batch(
         self, batch: list[str], executor: Optional[callable] = None
     ) -> dict[str, Any]:
-        """
-        Execute a batch of tasks (simulated parallel execution).
-        """
-        results = {}
+        """Execute a batch of tasks in parallel using ThreadPoolExecutor (E-07).
 
-        for task_id in batch:
+        Tasks within a single batch have no data dependencies, so they can be
+        run concurrently.  The degree of parallelism is capped at the batch
+        size to avoid excessive thread creation.
+        """
+        results: dict[str, Any] = {}
+
+        def _run_task(task_id: str) -> tuple[str, Any]:
             task = self.tasks[task_id]
             task.status = "running"
-
             try:
                 if executor:
-                    task.result = executor(task)
+                    result = executor(task)
                 else:
-                    # Simulated execution
-                    task.result = {
+                    result = {
                         "task_id": task_id,
                         "energy_spent": task.estimated_energy,
                         "success": True,
                     }
-
                 task.status = "completed"
+                task.result = result
                 self.completed_tasks.append(task_id)
-                results[task_id] = task.result
-
+                return task_id, result
             except Exception as e:
-                logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception in task {task_id}: {e}")
                 task.status = "failed"
                 task.error = str(e)
-                results[task_id] = {"error": str(e)}
+                return task_id, {"error": str(e)}
+
+        max_workers = min(len(batch), os.cpu_count() or 1)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {pool.submit(_run_task, tid): tid for tid in batch}
+            for future in concurrent.futures.as_completed(futures):
+                task_id, result = future.result()
+                results[task_id] = result
 
         return results
 

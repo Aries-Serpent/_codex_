@@ -53,6 +53,10 @@ from codex_ml.utils.seeding import (
 
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 from .storage import StorageProvider
+from codex_ml.utils.seed_registry import (  # DR-001: breaks seeding↔checkpointing cycle
+    register_seed_snapshot,
+)
+from codex_ml.utils import seed_registry as _seed_registry
 
 logger = logging.getLogger(__name__)
 
@@ -92,36 +96,6 @@ try:  # pragma: no cover - optional numpy dependency
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
-
-
-_LAST_SEEDED_PYTHON_STATE: Optional[tuple[Any, ...]] = None
-_LAST_SEEDED_NUMPY_STATE: Optional[Any] = None
-_LAST_SEEDED_TORCH_STATE: Optional[Any] = None
-_LAST_SEEDED_TORCH_CUDA_STATE: Optional[Any] = None
-
-
-def register_seed_snapshot(
-    *,
-    python_state: Optional[Any] = None,
-    numpy_state: Optional[Any] = None,
-    torch_state: Optional[Any] = None,
-    torch_cuda_state: Optional[Any] = None,
-) -> None:
-    """Record RNG states captured immediately after a seeding operation."""
-
-    global _LAST_SEEDED_PYTHON_STATE
-    global _LAST_SEEDED_NUMPY_STATE
-    global _LAST_SEEDED_TORCH_STATE
-    global _LAST_SEEDED_TORCH_CUDA_STATE
-
-    if python_state is not None:
-        _LAST_SEEDED_PYTHON_STATE = python_state
-    if numpy_state is not None:
-        _LAST_SEEDED_NUMPY_STATE = numpy_state
-    if torch_state is not None:
-        _LAST_SEEDED_TORCH_STATE = torch_state
-    if torch_cuda_state is not None:
-        _LAST_SEEDED_TORCH_CUDA_STATE = torch_cuda_state
 
 
 _ORIGINAL_RANDOM_SEED = random.seed
@@ -934,7 +908,7 @@ def _rng_dump() -> dict[str, Any]:
     py_state_current = random.getstate()
     state: dict[str, Any] = {
         "python": _python_state_payload(
-            _LAST_SEEDED_PYTHON_STATE if _LAST_SEEDED_PYTHON_STATE is not None else py_state_current
+            _seed_registry._LAST_SEEDED_PYTHON_STATE if _seed_registry._LAST_SEEDED_PYTHON_STATE is not None else py_state_current
         ),
         "python_resume": _python_state_payload(py_state_current),
     }
@@ -942,7 +916,7 @@ def _rng_dump() -> dict[str, Any]:
     if NUMPY_AVAILABLE:  # pragma: no branch
         np_state_current = np.random.get_state()
         state["numpy"] = _numpy_state_payload(
-            _LAST_SEEDED_NUMPY_STATE if _LAST_SEEDED_NUMPY_STATE is not None else np_state_current
+            _seed_registry._LAST_SEEDED_NUMPY_STATE if _seed_registry._LAST_SEEDED_NUMPY_STATE is not None else np_state_current
         )
         state["numpy_resume"] = _numpy_state_payload(np_state_current)
 
@@ -976,8 +950,8 @@ def _rng_dump() -> dict[str, Any]:
 
         torch_state_current = _capture_torch_state()
         if torch_state_current:
-            seed_state = _LAST_SEEDED_TORCH_STATE
-            seed_cuda = _LAST_SEEDED_TORCH_CUDA_STATE
+            seed_state = _seed_registry._LAST_SEEDED_TORCH_STATE
+            seed_cuda = _seed_registry._LAST_SEEDED_TORCH_CUDA_STATE
             torch_seed_payload: dict[str, Any] = {}
             if isinstance(seed_state, list):
                 torch_seed_payload["cpu"] = seed_state
