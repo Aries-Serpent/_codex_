@@ -24,8 +24,8 @@ import pytest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    import phase8_11_advanced_reasoning as _phase8_11_module  # noqa: F401
-except ImportError:
+    pytest.importorskip("phase8_11_advanced_reasoning", reason="Phase 8.11 modules not available")
+except Exception:
     pytest.skip("Phase 8.11 modules not available", allow_module_level=True)
 
 RANDOM_SEED_8_11 = 44

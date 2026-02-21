@@ -286,10 +286,10 @@ class TestQuantumVsClassical:
     def test_quantum_produces_valid_assessments(self, quantum_assessor):
         """Test quantum assessor produces valid assessments"""
         audits = [
-            AuditResult("A1", 0.95, "low", 100, 0.9, []),
-            AuditResult("A2", 0.75, "medium", 500, 0.7, ["v1"]),
-            AuditResult("A3", 0.5, "medium", 800, 0.6, ["v1", "v2"]),
-            AuditResult("A4", 0.3, "high", 2000, 0.3, ["c1", "c2"]),
+            AuditResult("A1", "low", 100, score=0.95, business_impact=0.9),
+            AuditResult("A2", "medium", 500, score=0.75, business_impact=0.7, violations=["v1"]),
+            AuditResult("A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]),
+            AuditResult("A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]),
         ]
 
         for audit in audits:
@@ -302,10 +302,10 @@ class TestQuantumVsClassical:
     def test_classical_produces_valid_assessments(self, classical_assessor):
         """Test classical assessor produces valid assessments"""
         audits = [
-            AuditResult("A1", 0.95, "low", 100, 0.9, []),
-            AuditResult("A2", 0.75, "medium", 500, 0.7, ["v1"]),
-            AuditResult("A3", 0.5, "medium", 800, 0.6, ["v1", "v2"]),
-            AuditResult("A4", 0.3, "high", 2000, 0.3, ["c1", "c2"]),
+            AuditResult("A1", "low", 100, score=0.95, business_impact=0.9),
+            AuditResult("A2", "medium", 500, score=0.75, business_impact=0.7, violations=["v1"]),
+            AuditResult("A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]),
+            AuditResult("A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]),
         ]
 
         for audit in audits:
@@ -317,7 +317,7 @@ class TestQuantumVsClassical:
 
     def test_performance_tracking(self, quantum_assessor, monitor):
         """Test that quantum assessor records performance metrics"""
-        audit = AuditResult("A-PERF", 0.85, "low", 200, 0.8, [])
+        audit = AuditResult("A-PERF", "low", 200, score=0.85, business_impact=0.8)
 
         assessment = quantum_assessor.assess_compliance(audit)
 
@@ -330,7 +330,7 @@ class TestQuantumVsClassical:
 
     def test_reasoning_includes_details(self, quantum_assessor, classical_assessor):
         """Test that assessments include detailed reasoning"""
-        audit = AuditResult("A-REASON", 0.8, "low", 300, 0.75, ["minor"])
+        audit = AuditResult("A-REASON", "low", 300, score=0.8, business_impact=0.75, violations=["minor"])
 
         quantum_assessment = quantum_assessor.assess_compliance(audit)
         classical_assessment = classical_assessor.assess_compliance(audit)

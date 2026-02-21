@@ -204,6 +204,8 @@ def take_n(iterable: Iterable[T], n: int, *, strict: bool = False) -> list[T]:
 
     if n < 0:
         raise ValueError("n must be non-negative")
+    if n == 0:
+        return []
     result: list[T] = []
     for item in iterable:
         result.append(item)
