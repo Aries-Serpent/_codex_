@@ -97,14 +97,14 @@ def pytest_configure(config: pytest.Config) -> None:
     # causing "Cannot copy out of meta tensor" errors. RAG modules already
     # pass device='cpu' explicitly to SentenceTransformer constructors.
     try:
-        import torch
-
-        version = getattr(torch, "__version__", "unknown")
-        logger.info(
-            f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)"
-        )
-    except (ImportError, AttributeError):
-        pass  # PyTorch not available or stub module
+        _torch_ref = sys.modules.get("torch")
+        if _torch_ref is not None:
+            version = getattr(_torch_ref, "__version__", "unknown")
+            logger.info(
+                f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)"
+            )
+    except AttributeError:
+        pass  # PyTorch stub module without __version__
 
     # Increase file descriptor limits to prevent resource exhaustion (PR #3178)
     try:

@@ -110,9 +110,9 @@ jobs:
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
           
-          # Note: Plugins auto-discover, explicit -p flags removed per PR #3248
+          # Run RAG tests serially to avoid xdist worker plugin-discovery failures
+          # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
           python -m pytest tests/test_rag_*.py \
-            -n auto \
             -v \
             --tb=short --timeout=300 \
             --cov=src \
