@@ -111,7 +111,6 @@ def train_model(config_path: Path, resume: bool, seed: int) -> None:
 
     config = _load_config(config_path)
     _seed_everything(int(seed))
-    config.setdefault("seed", int(seed))
     result = run_functional_training(config, resume=resume)
     if result is not None:
         click.echo(json.dumps(result, indent=2))

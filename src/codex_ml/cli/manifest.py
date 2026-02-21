@@ -97,6 +97,30 @@ if TYPER_AVAILABLE:
         out.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
         typer.echo(f"Manifest written to {out}")
 
+    @app.command()
+    def hash(
+        path: Path = typer.Option(..., help="Path to manifest JSON file"),
+        update_readme: Optional[Path] = typer.Option(None, "--update-readme", help="README.md to update"),
+    ):
+        """Compute SHA-256 digest of a manifest file and optionally update a README."""
+        _DIGEST_START = "<!-- manifest-digest:start -->"
+        _DIGEST_END = "<!-- manifest-digest:end -->"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        digest = sha256_hexdigest(to_canonical_bytes(data))
+        typer.echo(digest)
+        if update_readme:
+            readme = Path(update_readme).read_text(encoding="utf-8")
+            block = f"{_DIGEST_START}\n<!-- sha256:{digest} -->\n{_DIGEST_END}"
+            if _DIGEST_START in readme and _DIGEST_END in readme:
+                pattern = re.compile(
+                    re.escape(_DIGEST_START) + r".*?" + re.escape(_DIGEST_END),
+                    flags=re.DOTALL,
+                )
+                new = pattern.sub(block, readme)
+            else:
+                new = readme + "\n\n" + block + "\n"
+            Path(update_readme).write_text(new, encoding="utf-8")
+
 
 def _usage() -> int:
     sys.stdout.write(HELP)

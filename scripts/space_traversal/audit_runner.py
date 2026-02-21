@@ -862,6 +862,11 @@ def main() -> None:
     explain_parser = subparsers.add_parser("explain", help="Explain a capability")
     explain_parser.add_argument("capability_id", help="Capability ID to explain")
 
+    # diff subcommand — compare two scored capability files
+    diff_parser = subparsers.add_parser("diff", help="Diff two scored capability files")
+    diff_parser.add_argument("--old", type=Path, required=True, help="Baseline scored capabilities JSON")
+    diff_parser.add_argument("--new", type=Path, required=True, help="New scored capabilities JSON")
+
     # Legacy mode for backward compatibility
     parser.add_argument("target", type=Path, nargs="?", help="Target path to audit (legacy mode)")
     parser.add_argument("--config", type=Path, help="Configuration file (legacy mode)")
@@ -977,6 +982,28 @@ def main() -> None:
         components = cap.get("components", {})
         for name, value in components.items():
             print(f"  {name} contribution={value:.2f}")
+
+        return
+
+    elif args.command == "diff":
+        # Diff two scored capability files and output CSV with ID,OLD,NEW,DELTA
+        try:
+            old_data = json.loads(Path(args.old).read_text()) if Path(args.old).exists() else {}
+            new_data = json.loads(Path(args.new).read_text()) if Path(args.new).exists() else {}
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.debug("Could not read diff input files: %s", exc)
+            old_data, new_data = {}, {}
+
+        old_caps = {c["id"]: c.get("score", 0.0) for c in old_data.get("capabilities", [])}
+        new_caps = {c["id"]: c.get("score", 0.0) for c in new_data.get("capabilities", [])}
+
+        all_ids = sorted(set(old_caps) | set(new_caps))
+        print("ID,OLD,NEW,DELTA")
+        for cap_id in all_ids:
+            old_score = old_caps.get(cap_id, 0.0)
+            new_score = new_caps.get(cap_id, 0.0)
+            delta = new_score - old_score
+            print(f"{cap_id},{old_score:.4f},{new_score:.4f},{delta:+.4f}")
 
         return
 

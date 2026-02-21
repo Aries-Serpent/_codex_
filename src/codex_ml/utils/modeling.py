@@ -211,9 +211,9 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
         ),
         r=int(_resolve_value(mapping, "lora_rank", "r", default=lora_section.get("r", 8))),
         alpha=int(
-            _resolve_value(mapping, "lora_alpha", default=lora_section.get("lora_alpha", 16))
+            _resolve_value(mapping, "lora_alpha", default=lora_section.get("lora_alpha", lora_section.get("alpha", 16)))
         ),
-        dropout=float(lora_section.get("lora_dropout", 0.0)),
+        dropout=float(lora_section.get("lora_dropout", lora_section.get("dropout", 0.0))),
         target_modules=tuple(
             lora_section.get("target_modules")
             or mapping.get("lora_target_modules")

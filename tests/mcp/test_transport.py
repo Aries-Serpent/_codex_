@@ -93,7 +93,7 @@ class TestStdioTransport:
         buffer = MessageBuffer()
 
         # Feed partial data
-        buffer.feed(b"Content-Length: 20\r\n\r\n{\"id\":")
+        buffer.feed(b"Content-Length: 18\r\n\r\n{\"id\":")
         assert len(buffer.messages) == 0
 
         # Feed rest

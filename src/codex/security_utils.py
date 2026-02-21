@@ -122,22 +122,24 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     # Default patterns for common sensitive data
     # Note: These patterns are tuned to balance security with false positive rate
     default_patterns = [
-        # GitHub personal access tokens (ghp_*) - highly specific
-        (r'(ghp_[a-zA-Z0-9]{36,})', '[REDACTED_GITHUB_TOKEN]'),
-        # GitHub OAuth tokens (gho_*) - highly specific
-        (r'(gho_[a-zA-Z0-9]{36,})', '[REDACTED_OAUTH_TOKEN]'),
-        # Stripe/similar API keys (sk_live_*, sk_test_*) - highly specific
-        (r'(sk_(?:live|test)_[a-zA-Z0-9]{24,})', '[REDACTED_API_KEY]'),
-        # Generic sk_ prefixed keys
-        (r'(sk_[a-zA-Z0-9]{24,})', '[REDACTED_API_KEY]'),
+        # GitHub personal access tokens (ghp_*) - 6+ alphanumeric chars
+        (r'ghp_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        # GitHub OAuth tokens (gho_*)
+        (r'gho_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        # Stripe/similar API keys (sk_live_*, sk_test_*) - with underscore
+        (r'sk_(?:live|test)_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        # Generic sk_ prefixed keys (underscore separator)
+        (r'sk_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        # Generic sk- prefixed keys (hyphen separator, e.g. OpenAI)
+        (r'sk-[a-zA-Z0-9]{4,}', '[REDACTED]'),
         # AWS access keys (AKIA*, ASIA*)
-        (r'(A[KS]IA[A-Z0-9]{16})', '[REDACTED_AWS_KEY]'),
+        (r'A[KS]IA[A-Z0-9]{16}', '[REDACTED]'),
         # JWT tokens (three base64 segments separated by dots)
-        (r'(eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)', '[REDACTED_JWT]'),
+        (r'eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '[REDACTED]'),
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
-        (r'([A-Za-z0-9+/]{40,}={0,2})', '[REDACTED_TOKEN]'),
+        (r'[A-Za-z0-9+/]{40,}={0,2}', '[REDACTED]'),
     ]
 
     # Default whitelist patterns for common non-sensitive identifiers
@@ -188,7 +190,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     return sanitized
 
 
-def safe_secret_reference(operation: str = "") -> str:
+def safe_secret_reference(name: str = "", operation: str = "") -> str:
     """
     Create a safe reference to a secret for logging purposes.
 
@@ -196,22 +198,39 @@ def safe_secret_reference(operation: str = "") -> str:
     a secret is being used without revealing sensitive details.
 
     Args:
+        name: Name of the secret (will be redacted if sensitive)
         operation: Optional operation being performed (e.g., 'set', 'verify')
 
     Returns:
         Safe reference string for logging
 
     Example:
-        >>> safe_secret_reference()
-        'secret'
-        >>> safe_secret_reference("verify")
-        'secret (verify)'
-        >>> safe_secret_reference("set")
-        'secret (set)'
+        >>> safe_secret_reference("MY_API_KEY")
+        'secret: MY_API_KEY'
+        >>> safe_secret_reference("PROD_DATABASE_PASSWORD")
+        '[REDACTED_SECRET_NAME]'
+        >>> safe_secret_reference("verify", operation="check")
+        'secret: verify'
+        >>> safe_secret_reference("")
+        '[EMPTY]'
     """
-    if operation:
+    if not name and not operation:
+        return "[EMPTY]"
+    if not name:
         return f"secret ({operation})"
-    return "secret"
+
+    # Sensitive keyword check — redact names that reveal production secrets
+    _SENSITIVE_KEYWORDS = (
+        "PASSWORD", "SECRET", "PRIVATE_KEY", "PRIVATE", "CREDENTIAL",
+        "DATABASE_URL", "DB_PASS", "ACCESS_KEY", "TOKEN",
+    )
+    name_upper = name.upper()
+    if any(k in name_upper for k in _SENSITIVE_KEYWORDS):
+        return "[REDACTED_SECRET_NAME]"
+
+    if operation:
+        return f"secret: {name} ({operation})"
+    return f"secret: {name}"
 
 
 def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:

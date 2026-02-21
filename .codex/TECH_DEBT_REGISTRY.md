@@ -48,12 +48,12 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 - **DR**: DR-002  
 - **Search Anchor**: `grep "python_requires" pyproject.toml`
 
-### TD-003 · `_TORCH_312_BUG` xfail guards — 25 entries, should be removed after PyTorch 2.7+
+### TD-003 · `_TORCH_312_BUG` xfail guards — 25 entries, should be removed after PyTorch 2.2+
 - **Severity**: High  
 - **Owner**: @mbaetiong  
-- **Root Cause**: PyTorch 2.x `isinstance()` bug with Python 3.12 union types. Fixed upstream in PyTorch 2.7. Guards are temporary workarounds.  
+- **Root Cause**: PyTorch 2.x `isinstance()` bug with Python 3.12 union types. Fixed upstream in **PyTorch 2.2.0** (DR-003 web research, S57). Guards are temporary workarounds.  
 - **Locations**: `tests/conftest.py` — `_TORCH_PROFILER_XFAIL` (25 entries), `_TORCH_312_BUG` skipif in 8 test files  
-- **Fix**: Upgrade CI PyTorch to ≥2.7, verify all xfailed tests now pass, remove guards.  
+- **Fix**: Upgrade CI PyTorch to ≥2.2.0 (DR-003: fix version per S57 web research), verify all xfailed tests now pass, remove guards.  
 - **AI Agent**: `ci-testing-agent`, `meta-tensor-validator`  
 - **Session Target**: S53  
 - **DR**: DR-003  
@@ -379,7 +379,7 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 ### TD-036 · PyTorch 2.7+ migration — remove `_TORCH_312_BUG` guards entirely
 - **Severity**: Low  
 - **Owner**: @mbaetiong  
-- **Root Cause**: Guards added as temporary workarounds for PyTorch 2.x Python 3.12 bug. Once PyTorch ≥2.7 is on CI, all guards can be removed.  
+- **Root Cause**: Guards added as temporary workarounds for PyTorch 2.x Python 3.12 bug. Once PyTorch ≥2.2.0 is on CI (DR-003 confirmed fix version), all guards can be removed.  
 - **Fix**: Upgrade CI PyTorch; run full suite; remove guards.  
 - **AI Agent**: `ci-testing-agent`  
 - **Session Target**: S54  
@@ -515,8 +515,9 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 ### DR-003 · PyTorch 2.x Python 3.12 isinstance() bug and 2.7+ migration
 > **Scope**: All `_TORCH_312_BUG` guards, `_TORCH_PROFILER_XFAIL` entries  
 > **Internal**: `grep -rn "_TORCH_312_BUG\|_TORCH_PROFILER_XFAIL" tests/`  
-> **Web**: https://github.com/pytorch/pytorch/issues/118829, https://pytorch.org/get-started/previous-versions/  
+> **Web**: https://github.com/pytorch/pytorch/releases/tag/v2.2.0, https://github.com/pytorch/pytorch/pull/111138  
 > **Question**: At what exact PyTorch version was the isinstance union-type bug fixed, and is 2.7.0 the correct minimum?
+> **Research Finding (S57)**: Bug fixed in **PyTorch 2.2.0** — NOT 2.7.0. PR #111138 added Python 3.12 isinstance() union-type fix. Guards can be removed when CI upgrades to torch ≥2.2.0. Update `_TORCH_312_BUG` checks to compare `torch.__version__ < (2, 2)` for precision.
 
 ### DR-004 · Pre-existing test failures root cause patterns
 > **Scope**: All 28 `_PREEXISTING_FAILURES` entries  
