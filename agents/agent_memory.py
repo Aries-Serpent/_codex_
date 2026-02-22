@@ -22,7 +22,7 @@ import os
 import sqlite3
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Optional, Union
 
@@ -61,7 +61,7 @@ class MemoryEntry:
     confidence: float = 0.8
     access_count: int = 0
     last_accessed: Optional[str] = None
-    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    created_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     tags: list[str] = field(default_factory=list)
     related_memories: list[str] = field(default_factory=list)
 
@@ -164,7 +164,7 @@ class PatternLibrary:
             "examples": examples,
             "tags": tags,
             "usage_count": 0,
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         }
 
         # Index by tags
@@ -381,7 +381,7 @@ class AgentMemory:
                     confidence=kwargs.get("confidence", 0.8),
                     access_count=kwargs.get("access_count", 0),
                     last_accessed=kwargs.get("last_accessed"),
-                    created_at=kwargs.get("created_at", datetime.now().isoformat()),
+                    created_at=kwargs.get("created_at", datetime.now(UTC).isoformat()),
                     tags=kwargs.get("tags", []),
                     related_memories=kwargs.get("related_memories", []),
                 )
@@ -395,7 +395,7 @@ class AgentMemory:
                 confidence=entry.get("confidence", 0.8),
                 access_count=entry.get("access_count", 0),
                 last_accessed=entry.get("last_accessed"),
-                created_at=entry.get("created_at", datetime.now().isoformat()),
+                created_at=entry.get("created_at", datetime.now(UTC).isoformat()),
                 tags=entry.get("tags", []),
                 related_memories=entry.get("related_memories", []),
             )
@@ -503,7 +503,7 @@ class AgentMemory:
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), lookup_id),
+                    (datetime.now(UTC).isoformat(), lookup_id),
                 )
                 conn.commit()
 
@@ -541,7 +541,7 @@ class AgentMemory:
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), key),
+                    (datetime.now(UTC).isoformat(), key),
                 )
                 conn.commit()
 
@@ -654,7 +654,7 @@ class AgentMemory:
 
         Returns number of memories consolidated.
         """
-        cutoff = datetime.now().isoformat()[:10]  # Date only
+        cutoff = datetime.now(UTC).isoformat()[:10]  # Date only
 
         with sqlite3.connect(self.db_path) as conn:
             # Get old, low-access memories
@@ -866,13 +866,13 @@ class AgentMemorySystem:
     def start_task(self, task_description: str) -> ContextFrame:
         """Start a new task and create context frame."""
         frame_id = hashlib.sha256(
-            f"{self.agent_id}:{task_description}:{datetime.now().isoformat()}".encode()
+            f"{self.agent_id}:{task_description}:{datetime.now(UTC).isoformat()}".encode()
         ).hexdigest()[:16]
 
         self.current_frame = ContextFrame(
             frame_id=frame_id,
             task_description=task_description,
-            start_time=datetime.now().isoformat(),
+            start_time=datetime.now(UTC).isoformat(),
             repository=os.getenv("GITHUB_REPOSITORY"),
             branch=os.getenv("GITHUB_HEAD_REF"),
         )
@@ -899,7 +899,7 @@ class AgentMemorySystem:
         reasoning: str,
     ) -> MemoryEntry:
         """Record a decision made during the task."""
-        memory_id = hashlib.sha256(f"{decision}:{datetime.now().isoformat()}".encode()).hexdigest()[
+        memory_id = hashlib.sha256(f"{decision}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
             :16
         ]
 
@@ -931,7 +931,7 @@ class AgentMemorySystem:
 
     def record_lesson(self, lesson: str, success: bool) -> MemoryEntry:
         """Record a lesson learned."""
-        memory_id = hashlib.sha256(f"{lesson}:{datetime.now().isoformat()}".encode()).hexdigest()[
+        memory_id = hashlib.sha256(f"{lesson}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
             :16
         ]
 
@@ -1001,7 +1001,7 @@ class AgentMemorySystem:
     def complete_task(self, success: bool, summary: str) -> None:
         """Complete the current task and save context."""
         if self.current_frame:
-            self.current_frame.end_time = datetime.now().isoformat()
+            self.current_frame.end_time = datetime.now(UTC).isoformat()
             self.current_frame.status = "completed" if success else "failed"
 
             # Save context frame
@@ -1204,7 +1204,7 @@ class AgentMemorySystem:
         """
         from datetime import timedelta
 
-        cutoff_date = (datetime.now() - timedelta(days=age_days)).isoformat()
+        cutoff_date = (datetime.now(UTC) - timedelta(days=age_days)).isoformat()
 
         invalidated = 0
 

@@ -613,8 +613,8 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 | E-07 | P2 | SWARM-MULTI-AGENT — parallelize `SwarmIntelligence` across `batch-triage-agent` | `agents/physics_orchestrator.py` | Redundancy 🔀 | ✅ S59 |
 | E-08 | P2 | RAG-FRESHNESS-LOOP — auto-trigger RAG index rebuild via `doc-freshness-checker` | `rag-index-manager`, `ZendeskRAGBridge` | Fields 🔄 | ✅ S60 |
 | E-09 | P2 | ENTROPY-PATTERN-EXPAND — multi-variant secret patterns for `secret-detection-agent` | `.github/agents/secret-detection-agent.md` | Balance ⚖️ | ✅ S59 |
-| E-10 | P3 | PYTORCH-MIGRATION — remove `_TORCH_PROFILER_XFAIL` when PyTorch 2.7+ available | `tests/conftest.py` | Path 🛤️ | ⏳ After PyTorch 2.7 |
-| E-11 | P3 | DATETIME-UTC-MODERN — global `datetime.now(UTC)` pass all agent modules | All `agents/*.py` | Balance ⚖️ | ⏳ S56+ |
+| E-10 | P3 | CROSS-AGENT-KNOWLEDGE-GRAPH — shared ontology + FP-001..FP-011 library | `.github/agents/cross-agent-knowledge-graph.md` | Fields 🔄 | ✅ S61 |
+| E-11 | P3 | DATETIME-UTC-MODERN — global `datetime.now(UTC)` pass all agent modules | All `agents/*.py` | Balance ⚖️ | ✅ S61 |
 | E-12 | P3 | AGENT-IQ-SCORING — IQ threshold CI gate in `artifact-monitor-agent` | `.github/workflows/` | Patterns 👁️ | ✅ S60 |
 
 ### Agent Merge Candidates
@@ -640,4 +640,4 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 
 ---
 
-*Updated: Session 59 (2026-02-21) · DR-001(seed_registry.py), DR-002(Python≥3.12), E-03(done), E-07(SwarmParallel), E-09(entropy-patterns), M-01..M-03(merges) complete · Next review: Session 60*
+*Updated: Session 61 (2026-02-22) · E-10(cross-agent-knowledge-graph), E-11(datetime-utc-modern ✅), DR-003(exc_info suppression), DR-009(async-mock pattern) · All 12 E-items + all 5 M-items from ecosystem planset COMPLETE · Next review: Session 62*

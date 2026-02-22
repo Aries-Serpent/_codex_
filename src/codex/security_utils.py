@@ -123,9 +123,9 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     # Note: These patterns are tuned to balance security with false positive rate
     default_patterns = [
         # GitHub personal access tokens (ghp_*) - 6+ alphanumeric chars
-        (r'ghp_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        (r'ghp_[a-zA-Z0-9]{6,}', '[REDACTED_GITHUB_TOKEN]'),
         # GitHub OAuth tokens (gho_*)
-        (r'gho_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        (r'gho_[a-zA-Z0-9]{6,}', '[REDACTED_OAUTH_TOKEN]'),
         # Stripe/similar API keys (sk_live_*, sk_test_*) - with underscore
         (r'sk_(?:live|test)_[a-zA-Z0-9]{6,}', '[REDACTED]'),
         # Generic sk_ prefixed keys (underscore separator)
@@ -139,7 +139,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
-        (r'[A-Za-z0-9+/]{40,}={0,2}', '[REDACTED]'),
+        (r'[A-Za-z0-9+/]{40,}={0,2}', '[REDACTED_TOKEN]'),
     ]
 
     # Default whitelist patterns for common non-sensitive identifiers

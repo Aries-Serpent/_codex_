@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 import math  # noqa: E402
 import random  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
-from datetime import datetime  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional, Union  # noqa: E402
@@ -419,7 +419,7 @@ class PhysicsInspiredOrchestrator:
                 "action_taken": "wait",
                 "rationale": "No path met constraints",
                 "recommendation": "Gather more information or adjust constraints",
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         else:
             print(f"🚀 EXECUTING: {optimal_path.action_type.value}")
@@ -435,7 +435,7 @@ class PhysicsInspiredOrchestrator:
                 "expected_impact": optimal_path.impact,
                 "energy_required": optimal_path.total_energy,
                 "optimization_score": optimal_path.optimization_score,
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
 
         # Record decision
@@ -1957,7 +1957,7 @@ class ReflectionLoop:
             "actual_outcome": actual_outcome,
             "error": error,
             "correction": correction,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
         self.decision_history.append(record)
 

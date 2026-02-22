@@ -105,7 +105,11 @@ __all__ = [
     "get_logger",
     "register_logger",
     "NDJSONMetricsLogger",  # Export the metrics logger for tests
+    "NDJSONLogger",  # Public alias: metrics-aware wrapper (accepts sys_metrics kwarg)
 ]
 
 # Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
 NDJSONMetricsLogger = _NDJSONMetricsLogger
+# Overwrite the imported raw NDJSONLogger with the metrics-aware wrapper so that
+# `registry.NDJSONLogger(path, sys_metrics=True, ...)` works as expected by tests.
+NDJSONLogger = _NDJSONMetricsLogger

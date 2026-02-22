@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 import shutil  # noqa: E402
 import subprocess  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
-from datetime import datetime  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
@@ -719,7 +719,7 @@ class WorkflowNavigator:
 
     def _save_workflow_state(self, workflow: Workflow, results: list[dict], success: bool) -> None:
         """Save workflow execution state"""
-        timestamp = datetime.now().isoformat()
+        timestamp = datetime.now(UTC).isoformat()
 
         state = {
             "timestamp": timestamp,

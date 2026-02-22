@@ -55,9 +55,8 @@ try:  # pragma: no cover - optional dependency
 
     _mlf = _m
     _HAS_MLFLOW = True
-except Exception:
-    logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
+except Exception as _e:
+    logger.debug("mlflow not available: %s", _e)
     _mlf = None
     _HAS_MLFLOW = False
 
