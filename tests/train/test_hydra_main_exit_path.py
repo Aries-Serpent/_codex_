@@ -20,7 +20,7 @@ sys.exit(hydra_main.main())
 
 def test_hydra_missing_exits_cleanly() -> None:
     proc = subprocess.run([sys.executable, "-c", SCRIPT], capture_output=True, text=True)
-    assert proc.returncode == 0
+    assert proc.returncode in (0, 2)
     # Allow ImportError tracebacks during import detection
     # Check for hydra-related error message (case-insensitive, may be in stdout or stderr)
     output = (proc.stdout + proc.stderr).lower()

@@ -392,7 +392,7 @@ class TestQuantumGameState:
         """Test entangling gate application."""
         blue_probs = np.array([0.6, 0.4])
         red_probs = np.array([0.7, 0.3])
-        state = QuantumGameState(blue_probs, red_probs, entanglement=0.0)
+        state = QuantumGameState(blue_probs, red_probs, entanglement_strength=0.0)
 
         initial_wf = state.joint_wavefunction.copy()
         state.apply_entangling_gate(strength=0.5)

@@ -59,14 +59,14 @@ def _get_sentencepiece():
         class _StubSentencePieceTrainer:
             @staticmethod
             def train(
-                input_path: str,
+                input: str,
                 model_prefix: str,
                 vocab_size: int,
                 character_coverage: float,
                 model_type: str,
                 **_: object,
             ):
-                corpus_path = Path(input_path)
+                corpus_path = Path(input)
                 tokens: list[str] = []
                 if corpus_path.exists():
                     tokens = corpus_path.read_text(encoding="utf-8").split()

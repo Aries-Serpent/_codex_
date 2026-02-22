@@ -112,4 +112,4 @@ __all__ = [
 NDJSONMetricsLogger = _NDJSONMetricsLogger
 # Overwrite the imported raw NDJSONLogger with the metrics-aware wrapper so that
 # `registry.NDJSONLogger(path, sys_metrics=True, ...)` works as expected by tests.
-NDJSONLogger = _NDJSONMetricsLogger
+NDJSONLogger = _NDJSONMetricsLogger  # noqa: F811  # intentional alias so registry.NDJSONLogger works
