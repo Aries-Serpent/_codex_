@@ -328,6 +328,53 @@ Research is complete when:
 - [ ] Environment variable or pre-condition documented
 - [ ] Either CI workflow updated to provide full env OR tests updated with content-based skip guards
 
+
+---
+
+## S67 New Questions (2026-02-22)
+
+---
+
+### Q006: Why Does Pytest String-Path Monkeypatch Fail on Certain Modules in CI?
+
+**Category**: Test Infrastructure / Pytest Internals  
+**Priority**: High  
+**Impact**: High  
+**Created**: 2026-02-22 (S67)  
+**Status**: ⏳ Awaiting Research — **Interim Fix Applied**: object-based patching
+
+#### Context
+**Where discovered**: `tests/tracking/test_tracking_writers_offline.py:71`, `tests/test_model_registry_helpers.py:90`, `tests/config/test_deprecation.py:65`, `tests/test_fetch_messages.py:181`  
+**What happened**: `monkeypatch.setattr("codex_ml.tracking.writers.datetime", ...)` fails in CI with `AttributeError: 'module' object at codex_ml.tracking has no attribute 'tracking'`. The string `codex_ml.tracking` is named in the error, but the module being accessed was `codex_ml.tracking.writers`. The "doubled" attribute name pattern (`tracking.tracking`) implies pytest's import-path resolution retried with a shorter prefix and then tried to traverse a repeated component.  
+**Local repro**: NOT reproducible locally with Python 3.12 + pytest installed.  
+**Interim fix**: Changed to object-based: `import codex_ml.tracking.writers as _m; monkeypatch.setattr(_m, "datetime", ...)`.
+
+#### The Question
+What specific combination of (pytest version, Python version, test execution order, sys.modules state) triggers this failure? Does pytest 8.x change the `derive_importpath` resolution algorithm for string-path `setattr`? Can we reproduce this consistently?
+
+#### Why This Needs Research
+- [ ] Cannot reproduce locally — CI-environment specific
+- [ ] Affects 9+ tests across 4 test files
+- [ ] Root cause unknown — might be test-order pollution or pytest version regression
+
+---
+
+### Q007: OptimizedVectorStore `ResponseCache` Does Not Persist Hits
+
+**Category**: Bug Root Cause  
+**Priority**: Medium  
+**Impact**: Medium  
+**Created**: 2026-02-22 (S67)  
+**Status**: ⏳ Awaiting Research
+
+#### Context
+**Where discovered**: `tests/retrieval/test_optimizations.py::TestOptimizedVectorStore::test_search_with_cache`  
+**What happened**: After two calls to `optimized.search(query, k=5)`, `mock_store.search.call_count == 2` (expected 1 on cache hit). And `len(optimized.cache) == 0` after one search call (cache never populated).  
+**Source file**: `src/codex/retrieval/optimizations.py`
+
+#### The Question
+Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)` after fetching from the underlying store? Does `ResponseCache.__len__` correctly reflect the number of cached entries? Is the cache key generation deterministic for identical numpy arrays?
+
 ---
 
 ## Summary
@@ -339,3 +386,5 @@ Research is complete when:
 | Q003 | `IncrementalSyncDecider` 95% change ratio          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
 | Q004 | Multi-output CLI JSON testing pattern              | API Design      | Medium   | Medium  | ⏳ Awaiting Research |
 | Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  | ⏳ Awaiting Research |
+| Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    | ⏳ Awaiting Research (S67: interim fix) |
+| Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |

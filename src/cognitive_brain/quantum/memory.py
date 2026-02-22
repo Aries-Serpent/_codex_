@@ -37,6 +37,19 @@ from cognitive_brain.quantum.config import QuantumConfig
 logger = logging.getLogger(__name__)
 
 
+class ConsolidationResult(int):
+    """Result of a consolidation operation.
+
+    Subclasses ``int`` for backward compatibility with callers that use the
+    return value directly as a count.  New callers can use the ``.promoted``
+    property for clarity.
+    """
+
+    @property
+    def promoted(self) -> int:
+        return self
+
+
 @dataclass
 class PruningResult:
     """Result of cache pruning operations."""
@@ -161,7 +174,7 @@ class QuantumMemoryManager:
 
         return pattern.pattern_id
 
-    def consolidate(self) -> int:
+    def consolidate(self) -> "ConsolidationResult":
         """
         Consolidate patterns from STM to LTM (hippocampus → cortex).
 
@@ -171,7 +184,7 @@ class QuantumMemoryManager:
         3. Pattern distinctiveness (not too similar to existing LTM patterns)
 
         Returns:
-            Number of patterns consolidated
+            ConsolidationResult with `.promoted` count (also usable as int)
         """
         consolidated_count = 0
         patterns_to_promote = []
@@ -201,7 +214,7 @@ class QuantumMemoryManager:
             consolidated_count += 1
             self.total_patterns_consolidated += 1
 
-        return consolidated_count
+        return ConsolidationResult(consolidated_count)
 
     def retrieve_similar(
         self,

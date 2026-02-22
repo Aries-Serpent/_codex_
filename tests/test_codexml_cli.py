@@ -54,6 +54,12 @@ def test_run_training_invokes_functional_entry(monkeypatch):
     import codex_ml.cli.main as cli_main
     from omegaconf import OmegaConf
 
+    # The functional training path only exists in the non-typer branch.
+    # When typer is available, run_training is a no-op stub that doesn't
+    # call _functional_training_main, so this test is not applicable.
+    if not hasattr(cli_main, "_functional_training_main"):
+        pytest.skip("functional training path only available when typer is absent")
+
     captured: dict[str, list[str]] = {}
 
     def fake_main(argv: list[str] | None) -> int:

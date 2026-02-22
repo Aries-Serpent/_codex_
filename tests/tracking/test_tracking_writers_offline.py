@@ -68,7 +68,10 @@ def test_ndjson_writer_injects_defaults(tmp_path: Path, monkeypatch: pytest.Monk
             assert tz is timezone.utc
             return fake_now
 
-    monkeypatch.setattr("codex_ml.tracking.writers.datetime", _FakeDateTime)
+    # Use object-based patching to avoid string-path resolution issues across
+    # pytest versions that may fail to traverse package hierarchies.
+    import codex_ml.tracking.writers as _writers_mod  # ensure loaded
+    monkeypatch.setattr(_writers_mod, "datetime", _FakeDateTime)
     writer._logger.run_id = "auto-run"
     writer.log(
         {

@@ -178,11 +178,16 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
         called["v"] = True
         return None
 
-    monkeypatch.setattr(
-        "codex.db.sqlite_patch.auto_enable_from_env",
-        spy_auto_enable_from_env,
-        raising=False,
-    )
+    # Use object-based patching to avoid string-path resolution issues.
+    try:
+        import codex.db.sqlite_patch as _sp_mod  # ensure loaded
+        monkeypatch.setattr(_sp_mod, "auto_enable_from_env", spy_auto_enable_from_env)
+    except ImportError:
+        monkeypatch.setattr(
+            "codex.db.sqlite_patch.auto_enable_from_env",
+            spy_auto_enable_from_env,
+            raising=False,
+        )
 
     fm = importlib.import_module("codex.logging.fetch_messages")
 

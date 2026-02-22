@@ -3,10 +3,10 @@
   "pr_number": 3344,
   "branch": "copilot/sub-pr-3336-again",
   "created_at": "2026-02-22T08:30:00Z",
-  "updated_at": "2026-02-22T08:30:00Z",
-  "total_questions": 5,
+  "updated_at": "2026-02-22T10:33:00Z",
+  "total_questions": 7,
   "resolved": 0,
-  "awaiting_research": 5,
+  "awaiting_research": 7,
   "questions": [
     {
       "id": "Q001",
@@ -86,6 +86,44 @@
       "files": [
         "scripts/space_traversal/audit_runner.py",
         "tests/validation/test_audit_pipeline.py"
+      ]
+    },
+    {
+      "id": "Q006",
+      "title": "Pytest string-path monkeypatch fails with 'module has no attribute X' in CI",
+      "category": "Test Infrastructure",
+      "priority": "High",
+      "impact": "High",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "session": "S67",
+      "interim_fix": "Converted to object-based monkeypatch.setattr(module_obj, attr, value)",
+      "related_drq": [],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "tests/tracking/test_tracking_writers_offline.py",
+        "tests/test_model_registry_helpers.py",
+        "tests/config/test_deprecation.py",
+        "tests/test_fetch_messages.py"
+      ]
+    },
+    {
+      "id": "Q007",
+      "title": "OptimizedVectorStore ResponseCache does not persist search results",
+      "category": "Bug Root Cause",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "session": "S67",
+      "related_drq": ["DRQ-003"],
+      "blocks": ["test_search_with_cache", "test_clear_cache"],
+      "blocked_by": [],
+      "files": [
+        "src/codex/retrieval/optimizations.py",
+        "src/codex_ml/serving/caching.py",
+        "tests/retrieval/test_optimizations.py"
       ]
     }
   ]

@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
+import codex_ml.config.deprecation as _dep_mod  # ensure loaded for object-based patching
 from codex_ml.config.deprecation import check_legacy_config_usage, find_repo_root
 
 
@@ -61,8 +62,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "config.yaml").write_text("test: config")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         with warnings.catch_warnings(record=True) as w:
@@ -86,8 +86,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "settings.yaml").write_text("test: settings")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         with warnings.catch_warnings(record=True) as w:
@@ -110,8 +109,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "DEPRECATED.md").write_text("This directory is deprecated")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         with warnings.catch_warnings(record=True) as w:
@@ -129,8 +127,7 @@ class TestCheckLegacyConfigUsage:
         (repo_root / ".git").mkdir()
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         with warnings.catch_warnings(record=True) as w:
@@ -150,8 +147,7 @@ class TestCheckLegacyConfigUsage:
         legacy_dir.mkdir()
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         # Mock iterdir to raise PermissionError
@@ -179,8 +175,7 @@ class TestCheckLegacyConfigUsage:
         def mock_find_repo_root():
             raise RuntimeError("Cannot find repo root")
 
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", mock_find_repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", mock_find_repo_root
         )
 
         # Should not crash
@@ -206,8 +201,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "config.yaml").write_text("test: config")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(
-            "codex_ml.config.deprecation.find_repo_root", lambda: repo_root
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
         )
 
         # With env var set to 0, function would still warn if called

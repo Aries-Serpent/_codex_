@@ -12,7 +12,7 @@ from typing import Iterable, List
 
 import pytest
 
-FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)(?:\s+AS\s+\w+)?", re.IGNORECASE)
+FROM_RE = re.compile(r"^\s*FROM\s+([^\s]+)(?:\s+AS\s+(\w+))?", re.IGNORECASE)
 
 
 def _iter_dockerfiles() -> List[pathlib.Path]:
@@ -35,14 +35,24 @@ def test_base_images_are_pinned_and_not_latest():
 
     for dockerfile in dockerfiles:
         lines = _read_lines(dockerfile)
+
+        # Collect stage aliases first so we can skip them as "base images"
+        stage_names: set[str] = set()
         base_images: List[str] = []
         for line in lines:
             match = FROM_RE.match(line)
             if match:
-                base_images.append(match.group(1))
+                image = match.group(1)
+                alias = match.group(2)
+                if alias:
+                    stage_names.add(alias.lower())
+                base_images.append(image)
 
         assert base_images, f"{dockerfile} must contain at least one FROM instruction"
         for image in base_images:
+            # Skip internal multi-stage build references (e.g. FROM base AS cpu-runtime)
+            if image.lower() in stage_names:
+                continue
             assert (
                 ":" in image
             ), f"{dockerfile}: base image '{image}' should be version-pinned with a tag"

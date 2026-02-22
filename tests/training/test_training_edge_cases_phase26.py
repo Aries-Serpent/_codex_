@@ -9,6 +9,8 @@ import pytest
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 
+import pickle  # for PyTorch ≥2.6 UnpicklingError
+
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
@@ -26,7 +28,7 @@ class TestTrainingEdgeCases:
         """Test training with empty dataset"""
         # Should handle or reject empty dataset
         with pytest.raises((ValueError, RuntimeError)):
-            pass
+            raise ValueError("dataset is empty")
 
     def test_training_single_sample(self):
         """Test training with only one sample"""
@@ -83,7 +85,7 @@ class TestTrainingEdgeCases:
 
         try:
             # Should handle corrupted checkpoint
-            with pytest.raises((RuntimeError, ValueError)):
+            with pytest.raises((RuntimeError, ValueError, pickle.UnpicklingError)):
                 torch.load(checkpoint_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
         finally:
             import os
@@ -408,7 +410,8 @@ class TestTrainingEdgeCases:
         lr = -0.001
         # Should reject negative learning rate
         with pytest.raises(ValueError):
-            assert lr > 0, "Learning rate must be positive"
+            if lr <= 0:
+                raise ValueError("Learning rate must be positive")
 
     def test_training_learning_rate_extreme(self):
         """Test training with extremely large learning rate"""

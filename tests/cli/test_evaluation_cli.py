@@ -7,6 +7,7 @@ Test module for evaluation cli.
 from __future__ import annotations
 
 import json
+import inspect
 from pathlib import Path
 
 import pytest
@@ -53,7 +54,12 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
 
     metrics_log = tmp_path / "aggregate.ndjson"
 
-    runner = CliRunner(mix_stderr=False)
+    _runner_kwargs = (
+        {"mix_stderr": False}
+        if "mix_stderr" in inspect.signature(CliRunner.__init__).parameters
+        else {}
+    )
+    runner = CliRunner(**_runner_kwargs)
     result = runner.invoke(
         codex,
         [
