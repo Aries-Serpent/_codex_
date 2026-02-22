@@ -20,6 +20,7 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
+_log = logger  # avoid shadowing by the `logger` parameter accepted by evaluate_epoch()
 
 import inspect  # noqa: E402
 import os  # noqa: E402
@@ -84,8 +85,7 @@ def _safe_item(x) -> float:
         try:
             return float(x.item())
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            _log.warning("Exception occurred", exc_info=True)
             return float(x)
     return float(x)
 
@@ -272,8 +272,7 @@ def evaluate_epoch(
                 try:
                     metric_results[name] = _safe_item(fn(preds_payload, targets_payload))
                 except Exception:
-                    logger.warning("Exception occurred", exc_info=True)
-                    logger.warning("Exception occurred", exc_info=True)
+                    _log.warning("Exception occurred", exc_info=True)
                     metric_results[name] = float("nan")
         else:
             preds_cat = torch.cat(all_preds) if all_preds else None
@@ -285,8 +284,7 @@ def evaluate_epoch(
                     else:
                         metric_results[name] = float("nan")
                 except Exception:
-                    logger.warning("Exception occurred", exc_info=True)
-                    logger.warning("Exception occurred", exc_info=True)
+                    _log.warning("Exception occurred", exc_info=True)
                     metric_results[name] = float("nan")
 
     result = EvalResult(
@@ -408,8 +406,7 @@ def run_metrics_evaluation(
             try:
                 value = float(fn([pred], [target]))
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
+                _log.warning("Exception occurred", exc_info=True)
                 value = float("nan")
             record = {
                 "metric": name,
@@ -427,8 +424,7 @@ def run_metrics_evaluation(
         try:
             final_metrics[name] = float(fn(preds, targets))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            _log.warning("Exception occurred", exc_info=True)
             final_metrics[name] = float("nan")
 
     summary_record = {

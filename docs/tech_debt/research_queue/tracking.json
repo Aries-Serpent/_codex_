@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "pr_number": 3344,
+  "branch": "copilot/sub-pr-3336-again",
+  "created_at": "2026-02-22T08:30:00Z",
+  "updated_at": "2026-02-22T08:30:00Z",
+  "total_questions": 5,
+  "resolved": 0,
+  "awaiting_research": 5,
+  "questions": [
+    {
+      "id": "Q001",
+      "title": "_emit_provenance_summary stdout vs stderr",
+      "category": "API Design/Contract",
+      "priority": "High",
+      "impact": "High",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "related_drq": ["DRQ-005"],
+      "blocks": ["test_evaluate_cli_writes_metrics_log fix"],
+      "blocked_by": [],
+      "files": [
+        "src/codex_ml/cli/codex_cli.py",
+        "tests/cli/test_evaluation_cli.py"
+      ]
+    },
+    {
+      "id": "Q002",
+      "title": "TestManageTenantIndices root cause — source bug or mock issue?",
+      "category": "Bug Root Cause",
+      "priority": "High",
+      "impact": "High",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "related_drq": ["DRQ-001"],
+      "blocks": ["Remove from conftest._PREEXISTING_FAILURES"],
+      "blocked_by": [],
+      "files": [
+        "tests/test_rag_tenant_management.py",
+        "src/rag/tenant_management.py"
+      ]
+    },
+    {
+      "id": "Q003",
+      "title": "IncrementalSyncDecider test_micro_update 95% change ratio for punctuation edit",
+      "category": "Bug Root Cause",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "related_drq": [],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "src/services/crawler/content_diff.py",
+        "tests/services/crawler/test_semantic_differ.py"
+      ]
+    },
+    {
+      "id": "Q004",
+      "title": "Multi-output CLI JSON testing pattern",
+      "category": "API Design/Contract",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "related_drq": ["DRQ-005"],
+      "blocks": [],
+      "blocked_by": ["Q001"],
+      "files": [
+        "src/codex_ml/cli/codex_cli.py",
+        "tests/cli/test_evaluation_cli.py"
+      ]
+    },
+    {
+      "id": "Q005",
+      "title": "audit_runner.py full vs minimal output environment flags",
+      "category": "Compatibility/Version Issues",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "awaiting_research",
+      "created_at": "2026-02-22",
+      "related_drq": ["DRQ-007"],
+      "blocks": ["Full audit pipeline test coverage"],
+      "blocked_by": [],
+      "files": [
+        "scripts/space_traversal/audit_runner.py",
+        "tests/validation/test_audit_pipeline.py"
+      ]
+    }
+  ]
+}

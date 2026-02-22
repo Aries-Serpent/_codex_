@@ -109,7 +109,7 @@ def codex() -> None:
 def _emit_provenance_summary(provenance_dir: Path) -> None:
     summary = load_environment_summary(provenance_dir)
     if summary:
-        click.echo(json.dumps(summary, sort_keys=True))
+        click.echo(json.dumps(summary, sort_keys=True), err=True)
 
 
 @codex.group()

@@ -53,7 +53,7 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
 
     metrics_log = tmp_path / "aggregate.ndjson"
 
-    runner = CliRunner()
+    runner = CliRunner(mix_stderr=False)
     result = runner.invoke(
         codex,
         [
