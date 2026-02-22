@@ -306,8 +306,7 @@ def log_metrics(
         try:
             ml.log_metric(k, float(v), step=step)
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            logger.debug("log_metric failed for key %s; skipping", k, exc_info=True)
             # be robust; drop bad values quietly
             pass
 
@@ -420,8 +419,7 @@ def current_commit_hash() -> str:
         repo = git.Repo(search_parent_directories=True)
         return repo.head.commit.hexsha
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.debug("git commit hash unavailable", exc_info=True)
         return ""
 
 
@@ -443,21 +441,18 @@ def init_run(
         if commit:
             _mlf.set_tag("git_commit", commit[:7])
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.debug("git_commit tag unavailable: %s", e)
 
     if config is not None:
         try:
             try:
                 payload = json.dumps(config, sort_keys=True, default=str)
             except TypeError as e:
-                logger.debug(f"TypeError: {e}")
-                logger.warning(f"TypeError: {e}", exc_info=True)
+                logger.debug("config serialization failed: %s; falling back to str()", e)
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
             _mlf.set_tag("config_hash", digest)
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.debug("config_hash tag unavailable: %s", e)
 
     return run

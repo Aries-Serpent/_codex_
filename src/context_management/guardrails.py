@@ -9,7 +9,7 @@ import hashlib
 import json
 from collections import deque
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Callable, Optional
 
 
@@ -19,7 +19,7 @@ class ActionRecord:
 
     action_type: str
     action_hash: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     tool_name: Optional[str] = None
     parameters_hash: Optional[str] = None
     produced_artifacts: bool = False
@@ -40,7 +40,7 @@ class GuardrailViolation:
 
     violation_type: str
     message: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     action_history: list[str] = field(default_factory=list)
     recommended_action: str = ""
 

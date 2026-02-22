@@ -33,7 +33,23 @@ except ImportError:
 
 
 logger = logging.getLogger(__name__)
-REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _repo_root() -> Path:
+    """Return the repository root by walking up from this file until a sentinel is found.
+
+    Looks for ``pyproject.toml`` or ``.git`` as sentinels, falling back to
+    ``parents[1]`` (i.e. conftest.py's parent directory). This avoids the
+    fragile ``parents[N]`` pattern which breaks when conftest.py is moved.
+    """
+    here = Path(__file__).resolve()
+    for candidate in [here.parent, *here.parents]:
+        if (candidate / "pyproject.toml").exists() or (candidate / ".git").exists():
+            return candidate
+    return here.parent  # ultimate fallback
+
+
+REPO_ROOT = _repo_root()
 SRC_ROOT = REPO_ROOT / "src"
 
 

@@ -78,6 +78,37 @@ class CorrelationMeasurement:
         """Alias for correlation for backward compatibility."""
         return self.correlation
 
+    def __float__(self) -> float:
+        return self.correlation
+
+    def __gt__(self, other: object) -> bool:
+        if isinstance(other, (int, float)):
+            return self.correlation > other
+        if isinstance(other, CorrelationMeasurement):
+            return self.correlation > other.correlation
+        return NotImplemented
+
+    def __ge__(self, other: object) -> bool:
+        if isinstance(other, (int, float)):
+            return self.correlation >= other
+        if isinstance(other, CorrelationMeasurement):
+            return self.correlation >= other.correlation
+        return NotImplemented
+
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, (int, float)):
+            return self.correlation < other
+        if isinstance(other, CorrelationMeasurement):
+            return self.correlation < other.correlation
+        return NotImplemented
+
+    def __le__(self, other: object) -> bool:
+        if isinstance(other, (int, float)):
+            return self.correlation <= other
+        if isinstance(other, CorrelationMeasurement):
+            return self.correlation <= other.correlation
+        return NotImplemented
+
 
 class EntanglementManager:
     """

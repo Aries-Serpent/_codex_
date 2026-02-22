@@ -8,7 +8,7 @@ age-based degradation, and configurable priority levels.
 import heapq
 import math
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import IntEnum
 from typing import Any, Optional
 
@@ -29,8 +29,8 @@ class PriorityItem:
 
     content: str
     priority: Priority
-    created_at: datetime = field(default_factory=datetime.now)
-    last_accessed: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    last_accessed: datetime = field(default_factory=lambda: datetime.now(UTC))
     access_count: int = 0
     token_count: int = 0
     source: str = ""
@@ -44,12 +44,12 @@ class PriorityItem:
     @property
     def age_seconds(self) -> float:
         """Age of item in seconds."""
-        return (datetime.now() - self.created_at).total_seconds()
+        return (datetime.now(UTC) - self.created_at).total_seconds()
 
     @property
     def staleness_seconds(self) -> float:
         """Time since last access in seconds."""
-        return (datetime.now() - self.last_accessed).total_seconds()
+        return (datetime.now(UTC) - self.last_accessed).total_seconds()
 
     @property
     def effective_priority(self) -> float:
@@ -294,7 +294,7 @@ class ContextPriorityQueue:
         """
         for item in self._items:
             if item.content == content:
-                item.last_accessed = datetime.now()
+                item.last_accessed = datetime.now(UTC)
                 item.access_count += 1
                 heapq.heapify(self._items)
                 return True

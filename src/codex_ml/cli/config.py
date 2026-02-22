@@ -204,8 +204,7 @@ def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
         data = yaml.safe_load(text) or {}
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.debug("yaml.safe_load failed; skipping defaults", exc_info=True)
         return None
 
     if not isinstance(data, dict):

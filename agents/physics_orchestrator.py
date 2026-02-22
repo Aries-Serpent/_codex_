@@ -679,7 +679,7 @@ class ImportMigration:
 
         # Determine effort (potential energy)
         # Simple imports need less energy
-        self.potential_energy = 10.0 if "import" in self.old_import else 20.0
+        self.potential_energy = 20.0 if self.old_import.strip().startswith("from ") else 10.0
 
         # Determine momentum (alignment with codebase patterns)
         # Migrating to src.* aligns with canonical pattern

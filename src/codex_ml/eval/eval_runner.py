@@ -188,16 +188,16 @@ if typer is not None:  # pragma: no cover
         ],
         output_dir: Annotated[
             str,
-            typer.Option("runs/eval", help="Output directory"),
+            typer.Option(help="Output directory"),
         ] = "runs/eval",
         max_samples: Annotated[
             int,
-            typer.Option(0, help="Maximum samples per split"),
+            typer.Option(help="Maximum samples per split"),
         ] = 0,
-        seed: Annotated[int, typer.Option(0, help="Random seed")] = 0,
+        seed: Annotated[int, typer.Option(help="Random seed")] = 0,
         bootstrap: Annotated[
             int,
-            typer.Option(0, help="Bootstrap resamples for CI"),
+            typer.Option(help="Bootstrap resamples for CI"),
         ] = 0,
     ) -> None:
         evaluate_datasets(

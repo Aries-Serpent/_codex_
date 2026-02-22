@@ -168,7 +168,7 @@ class TestDeveloperOrchestratorSimple:
 
         assert orchestrator.session_id == "test"
         assert orchestrator.current_phase is not None
-        assert isinstance(orchestrator.components, dict)
+        assert isinstance(orchestrator.components, list)
 
 
 class TestExceptionsModule:
