@@ -164,9 +164,10 @@ class PhysicsGuidedDeveloperOrchestrator:
     - Quantum: Evaluate multiple implementation approaches in parallel
     """
 
-    def __init__(self, session_id: Optional[str] = None):
-        self.app_type: Optional[AppType] = None
-        self.required_variables: dict[str, RequirementVariable] = {}
+    def __init__(self, session_id: Optional[str] = None, app_type: Optional["AppType"] = None):
+        self.app_type: Optional[AppType] = app_type
+        # requirements is a mutable list; required_variables is a derived dict view kept in sync
+        self._requirements: list[RequirementVariable] = []
         self.components: list[CodeComponent] = []
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
         self.session_id = session_id or "dev_orchestrator"
@@ -185,8 +186,23 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     @property
     def requirements(self) -> list[RequirementVariable]:
-        """Return list of required variables (alias for required_variables values)."""
-        return list(self.required_variables.values())
+        """Return mutable list of required variables.  Append/index operations persist."""
+        return self._requirements
+
+    @requirements.setter
+    def requirements(self, value: list[RequirementVariable]) -> None:
+        """Replace the requirements list (also updates required_variables)."""
+        self._requirements = list(value)
+
+    @property
+    def required_variables(self) -> dict[str, RequirementVariable]:
+        """Dict view of requirements, keyed by name."""
+        return {rv.name: rv for rv in self._requirements}
+
+    @required_variables.setter
+    def required_variables(self, value: dict[str, RequirementVariable]) -> None:
+        """Set requirements from a dict (keeps insertion order)."""
+        self._requirements = list(value.values())
 
     # Alias for backward compat with tests that call analyze_requirements()
     def analyze_requirements(self, user_request: str) -> Any:
