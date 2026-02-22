@@ -25,8 +25,8 @@ Phase 8.1.1 Enhancements:
 
 import logging
 from collections import deque
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from dataclasses import dataclass, field
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -68,7 +68,7 @@ class MemoryPattern:
     features: Dict[str, float]
     decision: str
     confidence: float
-    timestamp: datetime
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     access_count: int = 0
     success_rate: float = 1.0  # Assume success until proven otherwise
     last_accessed: Optional[datetime] = None
