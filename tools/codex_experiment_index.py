@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
+
+import yaml
 
 
 @dataclass
@@ -15,32 +17,52 @@ class RunRecord:
     run_id: str
     meta_path: str
     meta: Dict[str, object]
+    mode: str = ""
 
 
 def _load_meta(path: Path) -> Dict[str, object]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    text = path.read_text(encoding="utf-8")
+    if path.suffix in (".yaml", ".yml"):
+        return yaml.safe_load(text) or {}
+    return json.loads(text)
 
 
 def build_index(runs_root: Path) -> Dict[str, object]:
     runs: List[RunRecord] = []
     for meta_file in sorted(
-        list(runs_root.rglob("meta.json")) + list(runs_root.rglob("experiment_meta.json"))
+        list(runs_root.rglob("meta.json"))
+        + list(runs_root.rglob("experiment_meta.json"))
+        + list(runs_root.rglob("run_manifest.yaml"))
     ):
-        run_id = meta_file.parent.name
+        meta = _load_meta(meta_file)
+        run_id = (
+            meta.get("context", {}).get("run_id")  # type: ignore[union-attr]
+            if isinstance(meta.get("context"), dict)
+            else None
+        ) or meta_file.parent.name
+        # Infer mode from directory structure: runs_root / <mode> / <run_id> / manifest
+        try:
+            rel = meta_file.parent.relative_to(runs_root)
+            mode = rel.parts[0] if len(rel.parts) >= 2 else ""
+        except ValueError:
+            mode = ""
         runs.append(
             RunRecord(
                 run_id=run_id,
                 meta_path=str(meta_file.relative_to(runs_root)),
-                meta=_load_meta(meta_file),
+                meta=meta,
+                mode=mode,
             )
         )
     return {"runs_root": str(runs_root), "runs": runs}
 
 
 def _write_json(index: Dict[str, object], path: Path) -> None:
+    records = [record.__dict__ for record in index["runs"]]
     payload = {
         "runs_root": index["runs_root"],
-        "runs": [record.__dict__ for record in index["runs"]],
+        "total_runs": len(records),
+        "runs": records,
     }
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 

@@ -10,10 +10,7 @@ Design constraint: **no imports from other codex_ml.utils sub-modules**.
 
 from __future__ import annotations
 
-import logging
 from typing import Any, Optional
-
-logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Module-level RNG state cache (last seeded snapshot)

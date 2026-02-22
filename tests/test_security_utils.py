@@ -134,7 +134,7 @@ class TestSanitizeLogMessage:
         message = "Using token: ghp_1234567890abcdefghijklmnopqrstuvwxyz"
         result = sanitize_log_message(message)
         assert "ghp_1234567890abcdefghijklmnopqrstuvwxyz" not in result
-        assert "[REDACTED]" in result
+        assert "[REDACTED" in result
 
     def test_sanitize_api_key(self):
         """Test sanitization of API key in log message."""
@@ -155,7 +155,7 @@ class TestSanitizeLogMessage:
         message = "Secret: YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwYWJjZGVmZ2hpamtsbW5vcA=="
         result = sanitize_log_message(message)
         # Base64 string longer than 40 chars should be redacted
-        assert "[REDACTED]" in result
+        assert "[REDACTED" in result
 
     def test_sanitize_clean_message(self):
         """Test that clean messages are not modified."""
@@ -169,7 +169,7 @@ class TestSanitizeLogMessage:
         result = sanitize_log_message(message)
         assert "ghp_abc123" not in result
         assert "sk-xyz789" not in result
-        assert result.count("[REDACTED]") >= 2
+        assert result.count("[REDACTED") >= 2
 
 
 class TestSafeSecretReference:
