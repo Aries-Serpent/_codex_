@@ -611,11 +611,11 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 | E-05 | P2 | CIRCULAR-IMPORT-FIX — extend `_types.py`/`_protocols.py` pattern to other modules | tokenization, hf_loader, model_loader | Path 🛤️ | ✅ S50 |
 | E-06 | P2 | REFLECTION-FEEDBACK — wire `ReflectionLoop.lessons` → `AdaptiveScoringOptimizer.update()` | `agents/physics_orchestrator.py` | Patterns 👁️ | ⏳ S57 |
 | E-07 | P2 | SWARM-MULTI-AGENT — parallelize `SwarmIntelligence` across `batch-triage-agent` | `agents/physics_orchestrator.py` | Redundancy 🔀 | ✅ S59 |
-| E-08 | P2 | RAG-FRESHNESS-LOOP — auto-trigger RAG index rebuild via `doc-freshness-checker` | `rag-index-manager`, `ZendeskRAGBridge` | Fields 🔄 | ⏳ S59 |
+| E-08 | P2 | RAG-FRESHNESS-LOOP — auto-trigger RAG index rebuild via `doc-freshness-checker` | `rag-index-manager`, `ZendeskRAGBridge` | Fields 🔄 | ✅ S60 |
 | E-09 | P2 | ENTROPY-PATTERN-EXPAND — multi-variant secret patterns for `secret-detection-agent` | `.github/agents/secret-detection-agent.md` | Balance ⚖️ | ✅ S59 |
 | E-10 | P3 | PYTORCH-MIGRATION — remove `_TORCH_PROFILER_XFAIL` when PyTorch 2.7+ available | `tests/conftest.py` | Path 🛤️ | ⏳ After PyTorch 2.7 |
 | E-11 | P3 | DATETIME-UTC-MODERN — global `datetime.now(UTC)` pass all agent modules | All `agents/*.py` | Balance ⚖️ | ⏳ S56+ |
-| E-12 | P3 | AGENT-IQ-SCORING — IQ threshold CI gate in `artifact-monitor-agent` | `.github/workflows/` | Patterns 👁️ | ⏳ S59 |
+| E-12 | P3 | AGENT-IQ-SCORING — IQ threshold CI gate in `artifact-monitor-agent` | `.github/workflows/` | Patterns 👁️ | ✅ S60 |
 
 ### Agent Merge Candidates
 
@@ -624,8 +624,8 @@ Codebase-wide technical debt catalogue stratified by priority (P1–P4). Each it
 | M-01 | SECURITY-UNIFIED | `vulnerability-scanner` + `alert-verification` + `secret-detection` + `gitleaks` + `semgrep` (5→1) | `unified-security-scanner` | Balance ⚖️ | ✅ S59 |
 | M-02 | DOC-UNIFIED | `doc-quality` + `doc-freshness-checker` + `link-validator` + `documentation-consolidator` (4→1) | `unified-doc-agent` | Patterns 👁️ | ✅ S59 |
 | M-03 | CI-TRIAGE-PIPELINE | `ci-diagnostician` + `batch-triage` + `log-retrieval` (3→1) | `ci-triage-pipeline-agent` | Path 🛤️ | ✅ S59 |
-| M-04 | ML-VALIDATION-SUITE | `meta-tensor-validator` + `tokenization-coverage` (2→1) | `ml-validation-suite-agent` | Fields 🔄 | ⏳ S59 |
-| M-05 | GOVERNANCE-GATE | `owner-approval-guard` + `config-validator` + `compliance-checker` (3→1) | `unified-governance-gate` | Balance ⚖️ | ⏳ S59 |
+| M-04 | ML-VALIDATION-SUITE | `meta-tensor-validator` + `tokenization-coverage` (2→1) | `ml-validation-suite-agent` | Fields 🔄 | ✅ S60 |
+| M-05 | GOVERNANCE-GATE | `owner-approval-guard` + `config-validator` + `compliance-checker` (3→1) | `unified-governance-gate` | Balance ⚖️ | ✅ S60 |
 
 ### DR-011..DR-016 (New Deep Research Questions)
 

@@ -19,7 +19,7 @@ try:
 except ImportError:
     pytest.skip("typer not available", allow_module_level=True)
 
-from codex_ml.cli import main
+import codex_ml.cli.main as main  # import the MODULE, not the package_main function
 
 # main.py uses click/hydra CLI — some tests require a typer.Typer app attribute
 _MAIN_HAS_TYPER_APP = hasattr(main, "app") and main.app is not None
