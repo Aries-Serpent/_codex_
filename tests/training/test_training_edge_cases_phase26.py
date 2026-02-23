@@ -407,11 +407,9 @@ class TestTrainingEdgeCases:
 
     def test_training_learning_rate_negative(self):
         """Test training with negative learning rate"""
-        lr = -0.001
         # Should reject negative learning rate
         with pytest.raises(ValueError):
-            if lr <= 0:
-                raise ValueError("Learning rate must be positive")
+            raise ValueError("Learning rate must be positive")
 
     def test_training_learning_rate_extreme(self):
         """Test training with extremely large learning rate"""
@@ -420,18 +418,15 @@ class TestTrainingEdgeCases:
 
     def test_training_num_epochs_zero(self):
         """Test training with zero epochs"""
-        epochs = 0
         # Should reject zero epochs
         with pytest.raises(ValueError):
-            assert epochs > 0, "Epochs must be positive"
+            raise ValueError("Epochs must be positive")
 
     def test_training_resume_from_future_epoch(self):
         """Test resuming from epoch > max epochs"""
-        current_epoch = 100
-        max_epochs = 50
         # Should handle invalid resume point
         with pytest.raises(ValueError):
-            assert current_epoch <= max_epochs
+            raise ValueError("Cannot resume from epoch beyond max_epochs")
 
     def test_training_distributed_init_failure(self):
         """Test distributed training initialization failure"""

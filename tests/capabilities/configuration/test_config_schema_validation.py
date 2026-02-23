@@ -27,7 +27,7 @@ pytest.importorskip("pydantic", reason="pydantic required for config validation"
 
 # Ensure real torch is in sys.modules if available; only mock if torch is not installed
 try:
-    import torch  # noqa: F401
+    __import__("torch")  # populate sys.modules["torch"] with real torch if available
 except ImportError:
     sys.modules["torch"] = MagicMock()
 

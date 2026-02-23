@@ -3,10 +3,10 @@
   "pr_number": 3344,
   "branch": "copilot/sub-pr-3336-again",
   "created_at": "2026-02-22T08:30:00Z",
-  "updated_at": "2026-02-23T02:00:00Z",
+  "updated_at": "2026-02-23T03:30:00Z",
   "total_questions": 7,
-  "resolved": 5,
-  "awaiting_research": 2,
+  "resolved": 7,
+  "awaiting_research": 0,
   "questions": [
     {
       "id": "Q001",

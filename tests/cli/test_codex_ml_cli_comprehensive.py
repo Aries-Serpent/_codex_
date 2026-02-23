@@ -413,12 +413,19 @@ class TestMainFunction:
     def test_main_with_invalid_command(self):
         """Test main function with invalid command."""
         try:
-            import click.exceptions
+            import click.exceptions as _click_exc
+        except ImportError:
+            _click_exc = None  # type: ignore[assignment]
+        try:
             from codex_ml.cli.codex_cli import main
             exit_code = main(["invalid-command"])
             assert exit_code != 0
-        except (ImportError, SystemExit, click.exceptions.UsageError):
+        except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
+        except Exception as exc:
+            if _click_exc is not None and isinstance(exc, _click_exc.UsageError):
+                pytest.skip("codex_ml.cli.codex_cli not available or exits")
+            raise
 
 
 class TestHashDataset:

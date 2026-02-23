@@ -100,12 +100,14 @@ This is NOT chaos - it's strategic pattern-breaking for quality.
 - It affects multiple test files or source modules via the same mechanism
 - It involves external system behavior (pytest version, Python version, torch version, CI environment)
 
-**Approved DRQ categories**: API Drift, Logger Parameter Shadowing, Return-Type Contract Drift, Float Equality, Multi-output CLI, BLEU scoring, Integration test environment, Pytest string-path monkeypatch, Cache implementation bugs
+**Approved DRQ categories**: API Drift, Logger Parameter Shadowing, Return-Type Contract Drift, Float Equality, Multi-output CLI, BLEU scoring, Integration test environment, Pytest string-path monkeypatch, Cache implementation bugs, CodeQL "unused import" false positives, RAG meta-tensor device placement
 
 **Resources**:
 - Deep Research Queue: `docs/tech_debt/research_queue/questions_for_research.md`
 - DRQ Pattern Registry: `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md`
-- Usage examples: PR #3344 comments (S66 session, comment-3940488457)
+- Deep Research Plan: `docs/plans/deep_research_analysis.md` (S68 — Q003/Q006/Q007 canonical fixes)
+- Usage examples: PR #3344 comments (S66: comment-3940488457; S68: comment-3942086106; S69: comment-3942122124)
+- **Proven effective**: 7/7 DRQ questions resolved in S66–S69 using this methodology
 
 ---
 

@@ -44,6 +44,7 @@ def is_known_error(stderr: str) -> bool:
     return False
 
 
+@pytest.mark.skipif(not _HAS_AUDIT_SCANNERS, reason="audit scanner scripts not on PYTHONPATH")
 def test_audit_pipeline_produces_artifacts():
     """Test that the audit pipeline produces expected artifacts.
 
