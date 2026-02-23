@@ -49,13 +49,20 @@ def _install_optional_stub(module_name: str, *, attrs: dict[str, object] | None 
 
     try:
         __import__(module_name)
-    except Exception:  # pragma: no cover - defensive guard
+    except (ImportError, ModuleNotFoundError):  # only stub genuinely missing modules
         stub = ModuleType(module_name)
         if attrs:
             for key, value in attrs.items():
                 setattr(stub, key, value)
 
         def _missing_attr(name: str) -> None:
+            # Dunder attributes (e.g. __file__, __spec__, __path__) must raise
+            # AttributeError so that getattr(module, dunder, default) returns the
+            # default instead of propagating an ImportError.  Hypothesis and other
+            # introspection tools call getattr(module, "__file__", None) and rely on
+            # this behaviour.
+            if name.startswith("__") and name.endswith("__"):
+                raise AttributeError(name)
             raise ImportError(
                 f"Optional dependency '{module_name}' is not installed; "
                 "install it to enable this functionality."

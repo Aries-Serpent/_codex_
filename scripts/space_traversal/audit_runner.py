@@ -547,6 +547,38 @@ def stage_s6_render(
             except (json.JSONDecodeError, OSError) as exc:
                 logger.debug("Could not read scored capabilities file: %s", exc)
 
+    # Build thresholds context from cfg
+    scoring_cfg = cfg.get("scoring", {})
+    thresholds = scoring_cfg.get("thresholds", {"low": 0.70, "medium": 0.85})
+
+    # Try to render using a Jinja2 template if one is configured
+    template_path_str = cfg.get("output", {}).get("matrix_template")
+    if template_path_str:
+        template_file = Path(template_path_str)
+        if template_file.exists():
+            try:
+                import jinja2
+                env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(str(template_file.parent)),
+                    undefined=jinja2.StrictUndefined,
+                    autoescape=False,
+                )
+                template = env.get_template(template_file.name)
+                rendered = template.render(
+                    capabilities=scored_caps,
+                    thresholds=thresholds,
+                    timestamp=timestamp,
+                    gaps=gaps or {},
+                )
+                report_path = Path(cfg.get("output", {}).get("reports_dir", str(artifacts_dir))) / "report.md"
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(rendered)
+                logger.info("Stage S6 render complete (template): %s", report_path)
+                return report_path
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Template rendering failed (%s); falling back to simple report", exc)
+
+    # Fallback: simple Markdown report
     lines = ["# Capability Audit Report", "", f"Generated: {timestamp}", ""]
     for cap in scored_caps:
         score = cap.get("score", 0.0)

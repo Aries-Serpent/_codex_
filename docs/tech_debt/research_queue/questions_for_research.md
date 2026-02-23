@@ -568,8 +568,8 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 | Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  | ⏳ Awaiting Research |
 | Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    | ⏳ Awaiting Research (S67: interim fix) |
 | Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
-| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | 🔴 OPEN |
-| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | 🔴 OPEN |
-| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | 🟡 Partial Fix |
-| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | 🟡 Partial Fix |
-| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | 🔴 OPEN |
+| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | ✅ RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
+| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | ✅ RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
+| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | ✅ RESOLVED (S70) |
+| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | 🟡 Partial Fix (3/47 files in S70) |
+| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | ✅ RESOLVED (S71: same fix as DRQ-S70-001) |
