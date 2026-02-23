@@ -53,10 +53,22 @@ EXIT_SCORE_REGRESSION = 3
 EXIT_LOW_MATURITY = 4
 EXIT_MISSING_DETECTOR = 5
 
-_audit_spec = importlib.util.find_spec("scripts.space_traversal.security_audit")
-_deps_spec = importlib.util.find_spec("scripts.space_traversal.dependency_scanner")
-_quality_spec = importlib.util.find_spec("scripts.space_traversal.code_quality_checker")
-_vuln_spec = importlib.util.find_spec("scripts.space_traversal.vulnerability_db")
+try:
+    _audit_spec = importlib.util.find_spec("scripts.space_traversal.security_audit")
+except (ModuleNotFoundError, ValueError):
+    _audit_spec = None
+try:
+    _deps_spec = importlib.util.find_spec("scripts.space_traversal.dependency_scanner")
+except (ModuleNotFoundError, ValueError):
+    _deps_spec = None
+try:
+    _quality_spec = importlib.util.find_spec("scripts.space_traversal.code_quality_checker")
+except (ModuleNotFoundError, ValueError):
+    _quality_spec = None
+try:
+    _vuln_spec = importlib.util.find_spec("scripts.space_traversal.vulnerability_db")
+except (ModuleNotFoundError, ValueError):
+    _vuln_spec = None
 
 if _audit_spec:
     from .security_audit import SecurityAuditor
@@ -968,13 +980,35 @@ def main() -> None:
             output_file = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
             print(f"Stage S6 complete: {output_file}")
         elif args.stage_name == "S7":
-            # Stage 7: Prefix auto-validation — scan bundles for naming convention violations
+            # Stage 7: Manifest aggregation — collect warnings from filter reports and bundles,
+            # then optionally validate bundle naming prefixes.
             prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
             validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
             warnings: list[str] = []
-            if prefix_mode and validate_auto:
-                bundles_dir = artifacts_dir / "bundles"
-                if bundles_dir.exists():
+
+            # Aggregate warnings from content_filter_report.json
+            filter_report = artifacts_dir / "content_filter_report.json"
+            if filter_report.exists():
+                try:
+                    fr_data = json.loads(filter_report.read_text())
+                    for w in fr_data.get("warnings", []):
+                        warnings.append(str(w))
+                except (json.JSONDecodeError, OSError) as exc:
+                    logger.debug("Could not read content_filter_report.json: %s", exc)
+
+            # Aggregate warnings from bundle pointer files
+            bundles_dir = artifacts_dir / "bundles"
+            if bundles_dir.exists():
+                for pointer_file in bundles_dir.glob("*.pointer.json"):
+                    try:
+                        ptr_data = json.loads(pointer_file.read_text())
+                        for w in ptr_data.get("warnings", []):
+                            warnings.append(str(w))
+                    except (json.JSONDecodeError, OSError) as exc:
+                        logger.debug("Could not read pointer file %s: %s", pointer_file, exc)
+
+                # Optionally validate bundle naming prefixes
+                if prefix_mode and validate_auto:
                     for bundle_file in bundles_dir.glob("*.tar.gz"):
                         if not bundle_file.name.startswith("bundle_"):
                             warnings.append(

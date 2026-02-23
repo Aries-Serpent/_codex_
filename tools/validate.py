@@ -22,7 +22,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-from defusedxml import ElementTree as ET
+try:
+    from defusedxml import ElementTree as ET
+except ImportError:  # defusedxml is an optional dependency; fall back to stdlib
+    import xml.etree.ElementTree as ET  # noqa: S405 — fallback when defusedxml absent
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_validation.sh"

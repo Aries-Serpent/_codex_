@@ -81,9 +81,33 @@ class EmbeddingCache:
         embeddings = cache.get_batch(["text1", "text2"])
     """
 
-    def __init__(self, config: Optional[EmbeddingCacheConfig] = None):
-        """Initialize embedding cache."""
-        self.config = config or EmbeddingCacheConfig()
+    def __init__(
+        self,
+        config: Optional[EmbeddingCacheConfig] = None,
+        *,
+        cache_dir: Optional[str] = None,
+        max_size: Optional[int] = None,
+    ):
+        """Initialize embedding cache.
+
+        Parameters
+        ----------
+        config:
+            Optional explicit configuration object.
+        cache_dir:
+            Shorthand for ``EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=cache_dir)``.
+        max_size:
+            Shorthand for ``EmbeddingCacheConfig(max_entries=max_size)``.
+        """
+        if config is None:
+            kw: dict = {}
+            if cache_dir is not None:
+                kw["enable_disk_cache"] = True
+                kw["disk_cache_path"] = cache_dir
+            if max_size is not None:
+                kw["max_entries"] = max_size
+            config = EmbeddingCacheConfig(**kw)
+        self.config = config
 
         self._cache: dict[str, EmbeddingEntry] = {}
         self._lock = threading.RLock() if self.config.thread_safe else None

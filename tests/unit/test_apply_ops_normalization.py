@@ -18,7 +18,7 @@ def test_extract_operations_scalar_raises() -> None:
 
 
 def test_apply_functions_noop_ok(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level("INFO")
+    caplog.set_level("INFO", logger="codex.zendesk.apply")
     plan = {"fields": [{"op": "add", "path": "/fields/A", "value": {"name": "A"}}]}
     zapply.apply_fields(plan, env="dev")
-    assert any("Prepared" in record.message for record in caplog.records)
+    assert any("Prepared" in msg for msg in caplog.messages)

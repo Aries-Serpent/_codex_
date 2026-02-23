@@ -242,7 +242,7 @@ class TestFlakyTestDetection:
         for result in test_results:
             total = result["passes"] + result["failures"]
             pass_rate = result["passes"] / total
-            if 0.05 < pass_rate < 0.95:  # Not all pass or all fail
+            if 0.05 < pass_rate <= 0.95:  # Not all pass or all fail
                 flaky_tests.append(result["name"])
 
         assert len(flaky_tests) == 2

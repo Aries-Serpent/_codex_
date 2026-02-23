@@ -1116,6 +1116,8 @@ def run_functional_training(
                 train_rec = {
                     "epoch": epoch + 1,
                     "train_loss": avg_loss,
+                    "loss": avg_loss,
+                    "tokens": seen_batches * batch_size,
                     "train_time_s": round(elapsed, 4),
                 }
                 file_logger.log({"phase": "train", **train_rec})

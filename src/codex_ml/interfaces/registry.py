@@ -82,6 +82,8 @@ def load_component(path: str) -> Any:
     if ":" not in path:
         raise ValueError(f"invalid component path: {path}")
     module_name, class_name = path.split(":", 1)
+    import importlib
+    importlib.invalidate_caches()
     module = import_module(module_name)
     return getattr(module, class_name)
 

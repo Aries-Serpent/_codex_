@@ -890,7 +890,8 @@ def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     # Set format to torch tensors to ensure compatibility with HF Trainer data collator
-    ds.set_format(type="torch", columns=["input_ids", "attention_mask"])
+    available_cols = [c for c in ["input_ids", "attention_mask"] if c in ds.column_names]
+    ds.set_format(type="torch", columns=available_cols)
     return ds
 
 
