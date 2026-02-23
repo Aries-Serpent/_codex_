@@ -527,13 +527,16 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
     )
     keep = entries_sorted[:top_k]
     remove = {e["path"] for e in entries if e not in keep}
-    # Delete files that are not in keep
+    # Delete files/directories that are not in keep
     for rel in remove:
         try:
-            (root / rel).unlink(missing_ok=True)
+            target = root / rel
+            if target.is_dir():
+                shutil.rmtree(target)
+            else:
+                target.unlink(missing_ok=True)
         except Exception as e:
             logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
     idx["entries"] = keep
 
 
@@ -642,6 +645,10 @@ def save_checkpoint(
         sidecar.update(metadata_sidecar)
         safe_write_bytes(root / "metadata.json", lambda: json.dumps(sidecar).encode("utf-8"))
 
+    # Embed digest into the payload and re-serialize so verify_checkpoint can read it back
+    payload_obj["meta"]["sha256"] = digest
+    raw = _serialize_payload(payload_obj)
+
     # Choose name and write atomically
     ckpt_name = _ckpt_name(prefix=prefix)
     ckpt_path = root / ckpt_name
@@ -708,6 +715,9 @@ def save_checkpoint(
     parent_idx["mode"] = "min" if mode.lower().startswith("min") else "max"
     parent_idx["top_k"] = int(top_k)
     parent_idx.setdefault("entries", [])
+    # Upsert: replace any existing entry for this directory to prevent duplicate accumulation
+    # when save_checkpoint is called multiple times in the same directory (flat-file usage).
+    parent_idx["entries"] = [e for e in parent_idx["entries"] if e.get("path") != root.name]
     parent_idx["entries"].append(
         {
             "path": root.name,
@@ -747,7 +757,10 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     """
     p = Path(path)
     raw = _read_bytes(p)
-    obj = _deserialize_payload(raw)
+    try:
+        obj = _deserialize_payload(raw)
+    except Exception as exc:
+        raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
     if version is None:
@@ -759,11 +772,10 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     expected = meta_dict.get("sha256")
     if not expected:
         raise CheckpointIntegrityError("Missing sha256 in checkpoint metadata.")
-    # Re-serialize state+meta (as stored) to compute digest in same form
-    digest_meta = {k: v for k, v in meta_dict.items() if k != "sha256"}
-    digest_meta.setdefault("sha256", None)
+    # Re-serialize with sha256=None (same form used during save to compute the digest)
+    digest_meta = dict(meta_dict, sha256=None)
     digest_payload = {"state": obj.get("state", {}), "meta": digest_meta}
-    actual = _digest_payload(digest_payload).hex()
+    actual = hashlib.sha256(_serialize_payload(digest_payload)).hexdigest()
     if actual != expected:
         raise CheckpointIntegrityError(
             f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
@@ -789,13 +801,15 @@ def load_checkpoint(
         return state, meta
 
     raw = _read_bytes(p)
-    obj = _deserialize_payload(raw, map_location=map_location)
+    try:
+        obj = _deserialize_payload(raw, map_location=map_location)
+    except Exception as exc:
+        raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
     # Integrity verification
-    digest_meta = dict(meta_dict)
-    digest_meta["sha256"] = None
+    digest_meta = dict(meta_dict, sha256=None)
     expected_digest = meta_dict.get("sha256")
     calc_digest = hashlib.sha256(
         _serialize_payload({"state": state, "meta": digest_meta})

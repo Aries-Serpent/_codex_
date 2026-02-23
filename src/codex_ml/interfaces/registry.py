@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import importlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import sys  # noqa: E402
@@ -82,7 +83,6 @@ def load_component(path: str) -> Any:
     if ":" not in path:
         raise ValueError(f"invalid component path: {path}")
     module_name, class_name = path.split(":", 1)
-    import importlib
     importlib.invalidate_caches()
     module = import_module(module_name)
     return getattr(module, class_name)

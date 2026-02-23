@@ -21,6 +21,7 @@ np = pytest.importorskip("numpy")
 class _DummyTokenizer:
     pad_token = None
     eos_token = 0
+    pad_token_id = 0
 
     @classmethod
     def from_pretrained(cls, _name: str, **kwargs) -> "_DummyTokenizer":

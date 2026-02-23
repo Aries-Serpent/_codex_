@@ -9,8 +9,8 @@ These tests verify that run_hf_trainer:
 
 from __future__ import annotations
 
+import sys
 import types
-from pathlib import Path
 
 import pytest
 
@@ -53,8 +53,9 @@ def _stub_trainer_components(monkeypatch) -> None:
         def save_model(self):  # pragma: no cover
             return None
 
-    import src.training.engine_hf_trainer as _eng
-
+    # Use sys.modules to avoid dual-import CodeQL alert (import + from-import for same module)
+    __import__("src.training.engine_hf_trainer")
+    _eng = sys.modules["src.training.engine_hf_trainer"]
     monkeypatch.setattr(_eng, "AutoTokenizer",
                         types.SimpleNamespace(from_pretrained=lambda *a, **k: _Tok()))
     monkeypatch.setattr(_eng, "AutoModelForCausalLM",

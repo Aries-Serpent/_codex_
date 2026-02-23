@@ -39,6 +39,7 @@ from codex_ml.logging.mlflow_guard import (
 )
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
 from codex_ml.training.rng_checkpoint import RNGState
+from codex_ml.training import strategies
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
@@ -235,8 +236,7 @@ def distributed_context() -> dict[str, Any]:
                 context["world_size"] = max(context["world_size"], dist.get_world_size())
                 context["rank"] = max(context["rank"], dist.get_rank())
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            logger.debug("Exception occurred", exc_info=True)
             context.setdefault("backend_error", "unavailable")
     return context
 
@@ -373,7 +373,7 @@ def run_unified_training(
     mlflow_active = bool(cfg.mlflow_enable and init_mlflow_safe())
 
     backend_name = _auto_backend(cfg)
-    strategy = resolve_strategy(backend_name)
+    strategy = strategies.resolve_strategy(backend_name)
 
     # State object passed to callbacks (extendable)
     state: dict[str, Any] = {

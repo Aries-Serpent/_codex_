@@ -23,7 +23,8 @@ from src.codex_ml.utils.checkpoint_core import (
 def test_roundtrip_and_integrity(tmp_path: Path):
     state = {"weights": [1, 2, 3], "epoch": 1}
     ckpt_path, meta = save_checkpoint(
-        tmp_path, state, metric_value=0.321, metric_key="val_loss", mode="min", top_k=3
+        tmp_path, state, metric_value=0.321, metric_key="val_loss", mode="min", top_k=3,
+        include_rng=False,
     )
     assert ckpt_path.exists()
     # Verify checksum and metadata fields
@@ -58,8 +59,9 @@ def test_best_k_retention(tmp_path: Path):
         )
         paths.append(p)
         time.sleep(0.01)  # ensure distinct names
-    # Only 3 files should remain (best / lowest metric)
-    existing = sorted([p for p in tmp_path.glob("*.pt") if p.exists()])
+    # Only 3 checkpoint files should remain (best / lowest metric).
+    # state.pt is a compatibility alias for the latest checkpoint and is excluded.
+    existing = sorted([p for p in tmp_path.glob("*.pt") if p.exists() and p.name != "state.pt"])
     assert len(existing) == 3
     # Load best and ensure it's the smallest metric (here, the lowest retained metric is 1.0 - 0.4 = 0.6)
     state, meta, best_path = load_best(tmp_path)

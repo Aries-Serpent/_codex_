@@ -573,7 +573,7 @@ def stage_s6_render(
                 env = jinja2.Environment(
                     loader=jinja2.FileSystemLoader(str(template_file.parent)),
                     undefined=jinja2.StrictUndefined,
-                    autoescape=False,
+                    autoescape=jinja2.select_autoescape(["html", "xml"]),
                 )
                 template = env.get_template(template_file.name)
                 rendered = template.render(
