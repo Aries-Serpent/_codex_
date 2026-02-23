@@ -1,0 +1,173 @@
+{
+  "version": "1.2.0",
+  "generated": "2026-02-23T22:14:00Z",
+  "session": "S75",
+  "description": "Cross-Agent Knowledge Graph — PR #3344 codebase intelligence index",
+  "nodes": [
+    {
+      "id": "N-001",
+      "type": "module",
+      "label": "configs/sitecustomize.py",
+      "tags": ["stub", "import-hook", "DRQ-S70-001"],
+      "session_introduced": "S71",
+      "status": "active",
+      "notes": "MUST raise AttributeError (not ImportError) for dunder names in __getattr__"
+    },
+    {
+      "id": "N-002",
+      "type": "module",
+      "label": "torch/__init__.py",
+      "tags": ["stub", "optional-dep", "DRQ-S70-002"],
+      "session_introduced": "S71",
+      "status": "active",
+      "notes": "When _real is not None, MUST define __getattr__ delegating to _real then importlib"
+    },
+    {
+      "id": "N-003",
+      "type": "module",
+      "label": "src/codex_ml/utils/checkpoint_core.py",
+      "tags": ["checkpoint", "sha256", "DRQ-S73-001"],
+      "session_introduced": "S73",
+      "status": "active",
+      "notes": "save_checkpoint embeds sha256 in re-serialized bytes; parent-index upserted by root.name"
+    },
+    {
+      "id": "N-004",
+      "type": "module",
+      "label": "src/codex_ml/training/unified_training.py",
+      "tags": ["training", "monkeypatch-pattern", "DRQ-S74-003"],
+      "session_introduced": "S74",
+      "status": "active",
+      "notes": "Uses 'from codex_ml.utils import checkpoint_core as _ckpt_core' for testable module-ref"
+    },
+    {
+      "id": "N-005",
+      "type": "module",
+      "label": "tools/validate.py",
+      "tags": ["ci", "fast-validation", "defusedxml", "DRQ-S75-001"],
+      "session_introduced": "S75",
+      "status": "active",
+      "notes": "Uses _load_et_module() lazy importlib fallback — avoids check-unsafe-xml pre-commit hook"
+    },
+    {
+      "id": "N-006",
+      "type": "module",
+      "label": "training/functional_training.py",
+      "tags": ["training", "cudnn", "determinism", "DRQ-S75-002"],
+      "session_introduced": "S75",
+      "status": "active",
+      "notes": "cudnn guard: getattr(cudnn,'enabled',False) check + AssertionError (not RuntimeError)"
+    },
+    {
+      "id": "N-007",
+      "type": "module",
+      "label": "src/training/engine_hf_trainer.py",
+      "tags": ["training", "cudnn", "hf-trainer", "DRQ-S75-002"],
+      "session_introduced": "S75",
+      "status": "active",
+      "notes": "Same cudnn.enabled guard pattern; load_training_arguments must be stubbed in tests"
+    },
+    {
+      "id": "N-008",
+      "type": "module",
+      "label": "src/codex/rag/cache/embedding_cache.py",
+      "tags": ["rag", "cache", "DRQ-S74-002"],
+      "session_introduced": "S74",
+      "status": "active",
+      "notes": "EmbeddingCache.set(key, value, *args, **kwargs) added S74; EmbeddingCache(cache_dir, max_size) added S72"
+    },
+    {
+      "id": "N-009",
+      "type": "module",
+      "label": "src/codex/ast/node.py",
+      "tags": ["ast", "hashability", "DRQ-S72"],
+      "session_introduced": "S72",
+      "status": "active",
+      "notes": "StandardizedASTNode has __hash__ on node_id; use node.node_id (not node.id) everywhere"
+    },
+    {
+      "id": "N-010",
+      "type": "module",
+      "label": "scripts/space_traversal/audit_runner.py",
+      "tags": ["audit", "jinja2", "xss", "DRQ-S73-XSS"],
+      "session_introduced": "S73",
+      "status": "active",
+      "notes": "autoescape=jinja2.select_autoescape(['html','xml']); stage_s6_render uses StrictUndefined"
+    },
+    {
+      "id": "N-011",
+      "type": "test",
+      "label": "tests/retrieval/test_faiss_filtering_integration.py",
+      "tags": ["faiss", "availability-detection", "DRQ-S75-003"],
+      "session_introduced": "S75",
+      "status": "active",
+      "notes": "FAISS_AVAILABLE check MUST import faiss directly; class import succeeds even if faiss absent"
+    },
+    {
+      "id": "N-012",
+      "type": "test",
+      "label": "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py",
+      "tags": ["determinism", "cudnn", "hf-trainer", "DRQ-S75-002"],
+      "session_introduced": "S75",
+      "status": "active",
+      "notes": "_stub_hf_components MUST also stub load_training_arguments to prevent CUDA probe"
+    }
+  ],
+  "edges": [
+    {
+      "from": "N-006",
+      "to": "N-012",
+      "type": "tested_by",
+      "label": "test_raises_when_nondeterministic verifies cudnn.enabled guard"
+    },
+    {
+      "from": "N-007",
+      "to": "N-012",
+      "type": "tested_by",
+      "label": "test_hf_trainer_raises/passes_when_deterministic verify cudnn guard + load_training_arguments stub"
+    },
+    {
+      "from": "N-003",
+      "to": "N-004",
+      "type": "used_by",
+      "label": "unified_training imports checkpoint_core as _ckpt_core for testable module-ref"
+    },
+    {
+      "from": "N-001",
+      "to": "N-002",
+      "type": "relates_to",
+      "label": "both are optional-dep stubs; dunder AttributeError pattern applies to both"
+    },
+    {
+      "from": "N-005",
+      "to": "N-010",
+      "type": "pattern_shared",
+      "label": "both use importlib.import_module for optional dep loading"
+    }
+  ],
+  "drq_index": {
+    "DRQ-S70-001": {"node": "N-001", "status": "RESOLVED", "session": "S71"},
+    "DRQ-S70-002": {"node": "N-002", "status": "RESOLVED", "session": "S71"},
+    "DRQ-S70-003": {"node": null, "status": "RESOLVED", "session": "S70"},
+    "DRQ-S70-004": {"node": null, "status": "RESOLVED", "session": "S72"},
+    "DRQ-S70-005": {"node": "N-001", "status": "RESOLVED", "session": "S71"},
+    "DRQ-S73-001": {"node": "N-003", "status": "ANSWERED", "session": "S74"},
+    "DRQ-S74-002": {"node": "N-008", "status": "RESOLVED", "session": "S74"},
+    "DRQ-S74-003": {"node": "N-004", "status": "RESOLVED", "session": "S74"},
+    "DRQ-S75-001": {"node": "N-005", "status": "RESOLVED", "session": "S75"},
+    "DRQ-S75-002": {"node": "N-006", "status": "RESOLVED", "session": "S75"},
+    "DRQ-S75-003": {"node": "N-011", "status": "RESOLVED", "session": "S75"}
+  },
+  "pattern_library": {
+    "P-001": "stub-dunder-AttributeError: Module __getattr__ MUST raise AttributeError for dunder names",
+    "P-002": "torch-stub-real-getattr: _real branch MUST define __getattr__ for subpackage delegation",
+    "P-003": "duplicate-logger-warning: Use single logger.debug for recoverable exceptions",
+    "P-004": "monkeypatch-module-ref: Production code MUST call module.func() via module-ref for monkeypatch",
+    "P-005": "defusedxml-lazy-importlib: Optional security packages loaded via importlib.import_module",
+    "P-006": "cudnn-enabled-guard: Check cudnn.enabled (not device.type or dtype) for determinism; raise AssertionError",
+    "P-007": "faiss-availability-check: Import the dependency directly (import faiss) before importing wrapper class",
+    "P-008": "load-training-arguments-stub: HF trainer tests MUST stub load_training_arguments to prevent CUDA probe",
+    "P-009": "checkpoint-sha256-embed: Embed digest into re-serialized bytes before write; upsert parent-index by root.name",
+    "P-010": "embedding-cache-set: EmbeddingCache.set(key, value, *args) delegates to put(); non-numeric falls back to np.zeros(1)"
+  }
+}

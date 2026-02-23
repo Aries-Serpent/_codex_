@@ -131,6 +131,8 @@ manifests/k8s/*/secret.yaml
 !.codex/qa_walkthrough/**
 !.codex/knowledge/
 !.codex/knowledge/**
+!.codex/knowledge_graph/
+!.codex/knowledge_graph/**
 !.codex/docs/
 !.codex/docs/**
 !.codex/archive/
