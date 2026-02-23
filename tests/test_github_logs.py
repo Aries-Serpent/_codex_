@@ -5,7 +5,7 @@ for fetching GitHub Actions logs.
 """
 
 from datetime import datetime, timezone
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -97,9 +97,9 @@ class TestGitHubClientCheckRuns:
         mock_response.headers = {}
 
         mock_client = Mock()
-        mock_client.__aenter__ = Mock(return_value=mock_client)
-        mock_client.__aexit__ = Mock(return_value=None)
-        mock_client.request = Mock(return_value=mock_response)
+        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_client.__aexit__ = AsyncMock(return_value=None)
+        mock_client.request = AsyncMock(return_value=mock_response)
         mock_client_class.return_value = mock_client
 
         # Test
@@ -122,9 +122,9 @@ class TestGitHubClientCheckRuns:
         mock_response.headers = {}
 
         mock_client = Mock()
-        mock_client.__aenter__ = Mock(return_value=mock_client)
-        mock_client.__aexit__ = Mock(return_value=None)
-        mock_client.request = Mock(return_value=mock_response)
+        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_client.__aexit__ = AsyncMock(return_value=None)
+        mock_client.request = AsyncMock(return_value=mock_response)
         mock_client_class.return_value = mock_client
 
         # Test

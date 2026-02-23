@@ -29,7 +29,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
 
         np.random.seed(seed)
         try:
-            from codex_ml.utils.checkpointing import register_seed_snapshot
+            from codex_ml.utils.seed_registry import register_seed_snapshot
             register_seed_snapshot(numpy_state=np.random.get_state())
         except Exception:
             logger.debug("register_seed_snapshot unavailable; numpy seed set via np.random.seed()")

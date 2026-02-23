@@ -251,9 +251,9 @@ class PatternCompressor:
     def compress(
         self,
         pattern: Dict[str, float],
-        pattern_id: str,
-        decision: str,
-        confidence: float,
+        pattern_id: str = "",
+        decision: str = "",
+        confidence: float = 0.0,
     ) -> CompressedPattern:
         """
         Compress pattern for LTM storage with enhanced variable quantization.

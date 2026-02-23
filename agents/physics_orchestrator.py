@@ -13,13 +13,15 @@ Core Principles:
 """
 
 import json
+import concurrent.futures
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 import math  # noqa: E402
 import random  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
-from datetime import datetime  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 from enum import Enum  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional, Union  # noqa: E402
@@ -417,7 +419,7 @@ class PhysicsInspiredOrchestrator:
                 "action_taken": "wait",
                 "rationale": "No path met constraints",
                 "recommendation": "Gather more information or adjust constraints",
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         else:
             print(f"🚀 EXECUTING: {optimal_path.action_type.value}")
@@ -433,7 +435,7 @@ class PhysicsInspiredOrchestrator:
                 "expected_impact": optimal_path.impact,
                 "energy_required": optimal_path.total_energy,
                 "optimization_score": optimal_path.optimization_score,
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
 
         # Record decision
@@ -677,7 +679,7 @@ class ImportMigration:
 
         # Determine effort (potential energy)
         # Simple imports need less energy
-        self.potential_energy = 10.0 if "import" in self.old_import else 20.0
+        self.potential_energy = 20.0 if self.old_import.strip().startswith("from ") else 10.0
 
         # Determine momentum (alignment with codebase patterns)
         # Migrating to src.* aligns with canonical pattern
@@ -1800,35 +1802,42 @@ class TaskDecomposer:
     def execute_batch(
         self, batch: list[str], executor: Optional[callable] = None
     ) -> dict[str, Any]:
-        """
-        Execute a batch of tasks (simulated parallel execution).
-        """
-        results = {}
+        """Execute a batch of tasks in parallel using ThreadPoolExecutor (E-07).
 
-        for task_id in batch:
+        Tasks within a single batch have no data dependencies, so they can be
+        run concurrently.  The degree of parallelism is capped at the batch
+        size to avoid excessive thread creation.
+        """
+        results: dict[str, Any] = {}
+
+        def _run_task(task_id: str) -> tuple[str, Any]:
             task = self.tasks[task_id]
             task.status = "running"
-
             try:
                 if executor:
-                    task.result = executor(task)
+                    result = executor(task)
                 else:
-                    # Simulated execution
-                    task.result = {
+                    result = {
                         "task_id": task_id,
                         "energy_spent": task.estimated_energy,
                         "success": True,
                     }
-
                 task.status = "completed"
+                task.result = result
                 self.completed_tasks.append(task_id)
-                results[task_id] = task.result
-
+                return task_id, result
             except Exception as e:
-                logger.debug(f"Exception: {e}")
+                logger.debug(f"Exception in task {task_id}: {e}")
                 task.status = "failed"
                 task.error = str(e)
-                results[task_id] = {"error": str(e)}
+                return task_id, {"error": str(e)}
+
+        max_workers = min(len(batch), os.cpu_count() or 1)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {pool.submit(_run_task, tid): tid for tid in batch}
+            for future in concurrent.futures.as_completed(futures):
+                task_id, result = future.result()
+                results[task_id] = result
 
         return results
 
@@ -1948,7 +1957,7 @@ class ReflectionLoop:
             "actual_outcome": actual_outcome,
             "error": error,
             "correction": correction,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
         self.decision_history.append(record)
 

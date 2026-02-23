@@ -59,14 +59,14 @@ def _get_sentencepiece():
         class _StubSentencePieceTrainer:
             @staticmethod
             def train(
-                input_path: str,
+                input: str,
                 model_prefix: str,
                 vocab_size: int,
                 character_coverage: float,
                 model_type: str,
                 **_: object,
             ):
-                corpus_path = Path(input_path)
+                corpus_path = Path(input)
                 tokens: list[str] = []
                 if corpus_path.exists():
                     tokens = corpus_path.read_text(encoding="utf-8").split()
@@ -221,6 +221,8 @@ class SentencePieceAdapter:
         # Apply padding if requested
         if padding and max_length is not None:
             pad_id = getattr(self.sp, "pad_id", lambda: 0)()
+            if pad_id < 0:  # Sentinel -1 (no pad token) — fall back to 0
+                pad_id = 0
             if len(encoded) < max_length:
                 encoded = encoded + [pad_id] * (max_length - len(encoded))
             elif len(encoded) > max_length:

@@ -21,7 +21,7 @@ class TestMLflowMetricWriter:
                 assert result is False
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("sys.modules", {"mlflow": Mock()})
+    @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_metrics_success(self):
         """Test writing metrics successfully."""
         import sys
@@ -44,7 +44,7 @@ class TestMLflowMetricWriter:
         mock_mlflow.log_metrics.assert_called_once_with({"loss": 0.5, "accuracy": 0.9}, step=10)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
-    @patch("sys.modules", {"mlflow": Mock()})
+    @patch.dict("sys.modules", {"mlflow": Mock()})
     def test_write_metric_single(self):
         """Test writing single metric."""
         import sys

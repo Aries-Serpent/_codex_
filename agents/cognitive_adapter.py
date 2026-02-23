@@ -12,7 +12,7 @@ import logging
 
 # Import cognitive brain ABCs
 import sys
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -55,7 +55,7 @@ class SimpleDictMemory(MemoryInterface):
             # Store in history
             if key not in self._history:
                 self._history[key] = []
-            self._history[key].append((datetime.now(), value))
+            self._history[key].append((datetime.now(UTC), value))
 
             return True
         except Exception as e:
@@ -151,7 +151,7 @@ class LegacyAgentAdapter(Planner):
         For legacy agents, this simply packages the input.
         """
         return ObservationData(
-            timestamp=datetime.now(),
+            timestamp=datetime.now(UTC),
             source="legacy_agent",
             data=input_data,
             metadata={"agent_type": type(self.legacy_agent).__name__}
@@ -184,7 +184,7 @@ class LegacyAgentAdapter(Planner):
             parameters=orientation.context,
             reasoning="Execute legacy agent process method",
             confidence=1.0,
-            timestamp=datetime.now()
+            timestamp=datetime.now(UTC)
         )
 
     def act(self, decision: Decision) -> ActionResult:

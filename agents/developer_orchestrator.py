@@ -164,9 +164,10 @@ class PhysicsGuidedDeveloperOrchestrator:
     - Quantum: Evaluate multiple implementation approaches in parallel
     """
 
-    def __init__(self, session_id: Optional[str] = None):
-        self.app_type: Optional[AppType] = None
-        self.required_variables: dict[str, RequirementVariable] = {}
+    def __init__(self, session_id: Optional[str] = None, app_type: Optional["AppType"] = None):
+        self.app_type: Optional[AppType] = app_type
+        # requirements is a mutable list; required_variables is a derived dict view kept in sync
+        self._requirements: list[RequirementVariable] = []
         self.components: list[CodeComponent] = []
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
         self.session_id = session_id or "dev_orchestrator"
@@ -185,8 +186,23 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     @property
     def requirements(self) -> list[RequirementVariable]:
-        """Return list of required variables (alias for required_variables values)."""
-        return list(self.required_variables.values())
+        """Return mutable list of required variables.  Append/index operations persist."""
+        return self._requirements
+
+    @requirements.setter
+    def requirements(self, value: list[RequirementVariable]) -> None:
+        """Replace the requirements list (also updates required_variables)."""
+        self._requirements = list(value)
+
+    @property
+    def required_variables(self) -> dict[str, RequirementVariable]:
+        """Dict view of requirements, keyed by name."""
+        return {rv.name: rv for rv in self._requirements}
+
+    @required_variables.setter
+    def required_variables(self, value: dict[str, RequirementVariable]) -> None:
+        """Set requirements from a dict (keeps insertion order)."""
+        self._requirements = list(value.values())
 
     # Alias for backward compat with tests that call analyze_requirements()
     def analyze_requirements(self, user_request: str) -> Any:
@@ -811,7 +827,7 @@ def test_main_imports():
         """Get current development status."""
         total_components = len(self.components)
         completed = sum(
-            1 for comp in self.components.values() if comp.implementation_status == "complete"
+            1 for comp in self.components if comp.implementation_status == "complete"
         )
 
         return {
@@ -861,7 +877,7 @@ def test_main_imports():
         if not os.access(output_dir, os.W_OK):
             raise PermissionError(f"Output directory '{output_dir}' is not writable.")
 
-        for comp in self.components.values():
+        for comp in self.components:
             if comp.code:
                 filepath = os.path.join(output_dir, comp.name)
 
@@ -953,7 +969,7 @@ def test_main_imports():
                     "complexity": comp.complexity,
                     "dependencies": comp.dependencies,
                 }
-                for comp in self.components.values()
+                for comp in self.components
             ]
 
         # Score based on priority and inverse complexity
@@ -1047,7 +1063,8 @@ def test_main_imports():
                     self.current_phase = DevelopmentPhase.TESTING
                     # Validate all generated code
                     validations = {}
-                    for comp_id, comp in self.components.items():
+                    for comp in self.components:
+                        comp_id = comp.component_id
                         if comp.code:
                             validation = self.validate_code(comp.code, comp_id)
                             validations[comp_id] = validation["valid"]

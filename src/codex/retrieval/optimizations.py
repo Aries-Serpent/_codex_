@@ -177,8 +177,9 @@ class OptimizedVectorStore:
             "filters": filters,
         }
 
-        # Check cache
-        if use_cache and self.cache:
+        # Check cache — use `is not None` (not truthiness) because an empty
+        # cache has __len__==0 which makes bool(cache)==False, breaking the check
+        if use_cache and self.cache is not None:
             t_cache = time.time()
             cached_result = self.cache.get(cache_key)
             cache_latency = time.time() - t_cache
@@ -196,7 +197,7 @@ class OptimizedVectorStore:
         self.metrics.record_search(latency, batch_size=1)
 
         # Cache result
-        if use_cache and self.cache:
+        if use_cache and self.cache is not None:
             self.cache.put(cache_key, results)
 
         logger.debug(f"Search completed in {latency:.4f}s")
@@ -253,7 +254,7 @@ class OptimizedVectorStore:
         result = self.store.add(vectors, metadata=metadata, ids=ids)
 
         # Clear cache since index changed
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.debug("Cache cleared after add")
 
@@ -264,7 +265,7 @@ class OptimizedVectorStore:
         result = self.store.delete(ids)
 
         # Clear cache since index changed
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.debug("Cache cleared after delete")
 
@@ -274,7 +275,7 @@ class OptimizedVectorStore:
         """Get combined metrics from retrieval and cache"""
         retrieval_metrics = self.metrics.to_dict()
 
-        if self.cache:
+        if self.cache is not None:
             cache_metrics = self.cache.get_metrics()
             return {
                 "retrieval": retrieval_metrics,
@@ -285,7 +286,7 @@ class OptimizedVectorStore:
 
     def clear_cache(self) -> None:
         """Manually clear the query cache"""
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.info("Query cache cleared")
 

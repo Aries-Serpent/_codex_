@@ -6,7 +6,7 @@ sliding window strategy with summarization triggers.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Callable, Optional
 
@@ -26,7 +26,7 @@ class WindowEntry:
 
     content: str
     token_count: int
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     priority: int = 0
     entry_type: str = "content"
     metadata: dict = field(default_factory=dict)
@@ -34,7 +34,7 @@ class WindowEntry:
     @property
     def age_seconds(self) -> float:
         """Age of entry in seconds."""
-        return (datetime.now() - self.timestamp).total_seconds()
+        return (datetime.now(UTC) - self.timestamp).total_seconds()
 
 
 @dataclass

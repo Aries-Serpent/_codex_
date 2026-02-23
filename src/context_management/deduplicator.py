@@ -6,7 +6,7 @@ fingerprint-based matching and configurable similarity thresholds.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 from .fingerprint import Fingerprint, StatementFingerprinter
@@ -38,7 +38,7 @@ class StatementEntry:
 
     text: str
     fingerprint: Fingerprint
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     priority: int = 0
     source: str = ""
     preserved_signals: dict = field(default_factory=dict)

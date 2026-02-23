@@ -25,8 +25,10 @@ pytest.importorskip("hypothesis")
 pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 pytest.importorskip("pydantic", reason="pydantic required for config validation")
 
-# Mock torch to avoid import errors
-if "torch" not in sys.modules:
+# Ensure real torch is in sys.modules if available; only mock if torch is not installed
+try:
+    __import__("torch")  # populate sys.modules["torch"] with real torch if available
+except ImportError:
     sys.modules["torch"] = MagicMock()
 
 from hypothesis import given, settings  # noqa: E402

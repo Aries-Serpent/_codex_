@@ -138,6 +138,85 @@ class GitHubAPIClient:
 
         return GitHubAPIResponse(status=0, data={}, error="Max retries exceeded")
 
+    def _post(self, path: str, body: Dict[str, Any]) -> "GitHubAPIResponse":
+        """Issue a POST request with retry + backoff.
+
+        In SAFE_MODE, the call is short-circuited and a 403 stub is returned
+        so callers can detect that mutating operations are disabled.
+        """
+        if self.offline_mode:
+            return GitHubAPIResponse(status=200, data={})
+        if self.safe_mode:
+            logger.warning("SAFE_MODE active: POST to %s blocked", path)
+            return GitHubAPIResponse(
+                status=403, data={}, error="SAFE_MODE: mutating operations disabled"
+            )
+
+        url = f"{self._base_url}{path}"
+        payload = json.dumps(body).encode("utf-8")
+
+        for attempt in range(_MAX_RETRIES):
+            try:
+                headers = {**self._headers(), "Content-Type": "application/json"}
+                req = urllib_request.Request(url, data=payload, headers=headers, method="POST")
+                with urllib_request.urlopen(req, timeout=_DEFAULT_TIMEOUT) as resp:
+                    raw = resp.read().decode("utf-8")
+                    data = json.loads(raw) if raw else {}
+                    remaining = int(resp.headers.get("X-RateLimit-Remaining", 5000))
+                    self._rate_limit_remaining = remaining
+                    return GitHubAPIResponse(
+                        status=resp.status,
+                        data=data,
+                        headers=dict(resp.headers),
+                        rate_limit_remaining=remaining,
+                    )
+            except HTTPError as exc:
+                if exc.code in (403, 429):
+                    wait = _BACKOFF_BASE ** attempt
+                    logger.warning("Rate limited on POST; sleeping %.1fs", wait)
+                    time.sleep(wait)
+                    continue
+                return GitHubAPIResponse(status=exc.code, data={}, error=str(exc))
+            except URLError as exc:
+                logger.warning("URLError on POST attempt %d: %s", attempt + 1, exc)
+                if attempt < _MAX_RETRIES - 1:
+                    time.sleep(_BACKOFF_BASE ** attempt)
+                    continue
+                return GitHubAPIResponse(status=0, data={}, error=str(exc))
+
+        return GitHubAPIResponse(status=0, data={}, error="Max retries exceeded")
+
+    # --- Review / comment endpoints ─────────────────────────────────────────────
+
+    def post_review(
+        self,
+        pr_number: int,
+        body: str,
+        event: str = "COMMENT",
+        comments: Optional[list] = None,
+    ) -> "GitHubAPIResponse":
+        """Post a pull-request review (E-04 implementation).
+
+        Args:
+            pr_number: The pull-request number.
+            body:      Top-level review message.
+            event:     One of APPROVE, REQUEST_CHANGES, COMMENT (default).
+            comments:  Optional list of inline review comments. Each entry is a
+                       dict with keys ``path``, ``position`` (or ``line``),
+                       and ``body``.
+
+        Returns:
+            GitHubAPIResponse with the created review data.
+        """
+        payload: Dict[str, Any] = {"body": body, "event": event}
+        if comments:
+            payload["comments"] = comments
+        return self._post(f"/pulls/{pr_number}/reviews", payload)
+
+    def post_issue_comment(self, issue_number: int, body: str) -> "GitHubAPIResponse":
+        """Post a comment on an issue or pull request."""
+        return self._post(f"/issues/{issue_number}/comments", {"body": body})
+
     # --- PR endpoints -----------------------------------------------------------
 
     def get_pull_request(self, pr_number: int) -> GitHubAPIResponse:

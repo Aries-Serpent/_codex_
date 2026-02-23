@@ -68,7 +68,7 @@ class EarlyStoppingConfig:
             self.threshold = threshold
         else:
             self.min_delta = 1e-4
-            self.threshold = 1e-4
+            self.threshold = 0.0  # Respect the explicit threshold=0.0; use min_delta internally
         self.metric = monitor if monitor is not None else metric
         # Default monitor to "val_loss" if metric is still "eval_loss"
         if self.metric == "eval_loss" and monitor is None:

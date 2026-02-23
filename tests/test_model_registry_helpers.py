@@ -87,7 +87,9 @@ def test_get_model_applies_lora_config(
         wrapped.to_calls = list(model.to_calls)
         return wrapped
 
-    monkeypatch.setattr("codex_ml.model_registry.apply_lora_if_available", _fake_apply)
+    # Use object-based patching to avoid string-path resolution issues.
+    import codex_ml.model_registry as _mr_mod  # ensure loaded
+    monkeypatch.setattr(_mr_mod, "apply_lora_if_available", _fake_apply)
 
     cfg = {
         "lora": {

@@ -44,10 +44,12 @@ def test_hydra_main_help(monkeypatch, capsys):
         del sys.modules[module_name]
     module = importlib.import_module(module_name)
     monkeypatch.setattr(sys, "argv", ["codex-train", "--help"])
-    with pytest.raises(SystemExit) as excinfo:
-        module.main()
-    # Should exit with code 0 (success) or 2 (argument error)
-    assert excinfo.value.code in (0, 2)
+    # main() may return an exit code or raise SystemExit
+    try:
+        rc = module.main()
+        assert rc in (0, 2), f"Expected exit code 0 or 2, got {rc}"
+    except SystemExit as excinfo:
+        assert excinfo.code in (0, 2), f"Expected exit code 0 or 2, got {excinfo.code}"
     message = capsys.readouterr().err
     # Should mention hydra-core requirement
     assert "hydra" in message.lower() or len(message) == 0  # May not produce error message

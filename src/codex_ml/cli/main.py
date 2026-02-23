@@ -467,6 +467,14 @@ if typer is not None:
 
     cli = _typer_cli_wrapper
 
+    def run_training(cfg, output_dir=None):
+        """Module-level stub for patching in tests (typer branch).
+
+        The typer ``train`` command implements training directly; this stub
+        ensures ``@patch("codex_ml.cli.main.run_training")`` is valid when
+        typer is available.
+        """
+
 else:
     from typing import Any
 
@@ -512,8 +520,7 @@ else:
             try:
                 from codex.training import main as _functional_training
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
+                logger.debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training

@@ -66,8 +66,7 @@ try:  # pragma: no cover - hydra optional at runtime
     try:
         import hydra
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        logger.debug(f"hydra not available: {e}")
         import config_legacy as hydra
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
@@ -318,7 +317,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
     # Check for hydra availability early
     if hydra is None or _hydra_entry is None:
         sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
-        sys.exit(2)
+        return 2
 
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
     parser = parser_cls(prog="codex-train", add_help=False)

@@ -36,6 +36,7 @@ try:
     )
     from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401  # type: ignore[import]
     _COGNITIVE_BRAIN_AVAILABLE = True
+    logger.debug("Cognitive brain ABCs available (available=%s)", _COGNITIVE_BRAIN_AVAILABLE)
 except ImportError:
     _COGNITIVE_BRAIN_AVAILABLE = False
     logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)

@@ -134,21 +134,8 @@ def safe_model_to_device(
     try:
         import torch
 
-        # Validate input: model must be nn.Module for type checking
-        nn_mod = getattr(torch, "nn", None)
-        if nn_mod is not None:
-            torch_module_type = getattr(nn_mod, "Module", None)
-            if torch_module_type is not None:
-                # Check if model is a torch.nn.Module
-                if not isinstance(model, torch_module_type):
-                    # Allow models with .to() method (e.g., SentenceTransformer)
-                    if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
-                        raise TypeError(
-                            f"Expected torch.nn.Module or model with .to() method, "
-                            f"got {type(model).__name__}"
-                        )
-
-        # Check if model has any meta tensors
+        # Check for meta tensors BEFORE type-validation so that models with meta
+        # tensors (which legitimately lack .to()) reach the to_empty() path.
         meta_status = has_meta_tensors(model)
         if meta_status is None:
             # Model doesn't support parameter inspection
@@ -212,6 +199,13 @@ def safe_model_to_device(
             logger.debug(f"Moving model to {device} using standard .to()")
             nn_mod = getattr(torch, "nn", None)
             torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
+            # Validate model type only for the standard (non-meta) path
+            if torch_module_type is not None and not isinstance(model, torch_module_type):
+                if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
+                    raise TypeError(
+                        f"Expected torch.nn.Module or model with .to() method, "
+                        f"got {type(model).__name__}"
+                    )
             if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
                 # Build .to() kwargs
                 to_kwargs = {"device": device, "non_blocking": non_blocking}

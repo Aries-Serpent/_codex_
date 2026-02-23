@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"  # Temporarily support 3.11 for base branch CI compatibility
+requires-python = ">=3.12"
 license = "MIT"
 authors = [
   { name = "Aries Serpent" }

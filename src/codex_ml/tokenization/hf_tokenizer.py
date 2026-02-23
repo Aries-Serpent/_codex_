@@ -19,13 +19,8 @@ from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
 from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 from codex_ml.utils.optional import optional_import  # noqa: E402
 
-from .api import (  # noqa: E402 -- imports follow non-import logger statement above
-    BOS_TOKEN,
-    EOS_TOKEN,
-    PAD_TOKEN,
-    UNK_TOKEN,
-    TokenizerAdapter,
-)
+from ._protocols import TokenizerAdapter  # noqa: E402
+from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
