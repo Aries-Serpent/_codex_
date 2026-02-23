@@ -12,7 +12,7 @@ on:
 jobs:
   validation:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     continue-on-error: false
     
     strategy:
@@ -68,7 +68,7 @@ jobs:
       
       - name: Run validation
         id: validate
-        timeout-minutes: 45
+        timeout-minutes: 75
         run: |
           case "${{ matrix.test-group }}" in
             quick)

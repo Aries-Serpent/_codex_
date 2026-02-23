@@ -11,12 +11,14 @@ import torch
 import torch.nn as nn
 from codex.rag.utils import safe_model_to_device
 
-# PyTorch 2.x has an isinstance bug with Python 3.12 union types
-# that triggers when creating nn.LayerNorm or similar modules
+# PyTorch 2.x (<2.2.0) has an isinstance bug with Python 3.12 union types
+# that triggers when creating nn.LayerNorm or similar modules.
+# DR-003: guard tightened to torch < 2.2.0; CI uses torch >= 2.2.0 so tests run.
 _TORCH_312_BUG = False
 try:
-    _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
-except (ImportError, AttributeError):
+    _torch_ver = tuple(int(x) for x in torch.__version__.split(".")[:2])
+    _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver < (2, 2)
+except (ImportError, AttributeError, ValueError):
     _TORCH_312_BUG = False  # torch not installed; PyTorch/Python 3.12 bug cannot apply
 
 
