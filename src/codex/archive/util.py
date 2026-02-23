@@ -6,22 +6,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import datetime as _dt
-import hashlib
-import json
-import os
-import re
-from collections.abc import Iterable
-from pathlib import Path
-from typing import Any
-from urllib.parse import urlsplit
+import datetime as _dt  # noqa: E402
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import re  # noqa: E402
+from collections.abc import Iterable  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
+from urllib.parse import urlsplit  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import zstandard as _zstd  # type: ignore
 except Exception:  # pragma: no cover - best-effort fallback
     _zstd = None
 
-import zlib
+import zlib  # noqa: E402
 
 ISO_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 

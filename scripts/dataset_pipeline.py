@@ -210,8 +210,8 @@ class FileProcessor:
 
             # For other languages, basic metrics
             lines = content.split('\n')
-            non_empty = [l for l in lines if l.strip()]
-            comments = [l for l in lines if l.strip().startswith(('#', '//', '/*'))]
+            non_empty = [line_item for line_item in lines if line_item.strip()]
+            comments = [line_item for line_item in lines if line_item.strip().startswith(('#', '//', '/*'))]
 
             quality = min(1.0, len(non_empty) / max(len(lines), 1))
 

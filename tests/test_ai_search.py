@@ -284,7 +284,7 @@ def test_skip_directories(temp_repo):
 
     # Check that skip dirs were excluded
     indexed_paths = [
-        data['relative_path']
+        data.relative_path
         for data in indexer.content_index.values()
     ]
 

@@ -18,22 +18,20 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import re
 import time
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from fnmatch import fnmatch
 from pathlib import Path
-from re import Pattern
 from typing import Any, Final
 
 from .detect import FileMeta, stat_file
 from .score import ScoreInput, archive_score
 
-DEPRECATION_PAT: Final[Pattern[str]] = re.compile(
+logger = logging.getLogger(__name__)
+
+DEPRECATION_PAT: Final[re.Pattern[str]] = re.compile(
     r"\b(DEPRECATED|LEGACY|PRUNE_ME)\b", re.IGNORECASE
 )
 

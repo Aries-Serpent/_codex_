@@ -21,19 +21,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import contextlib
-import hashlib
-import io
-import json
-import os
-import shutil
-import tarfile
-from pathlib import Path
+import contextlib  # noqa: E402
+import hashlib  # noqa: E402
+import io  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import shutil  # noqa: E402
+import tarfile  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-from codex.archive.api import restore
-from codex.archive.dal import ArchiveDAL
-from codex.evidence.core import evidence_append
-from codex.release.manifest import dump_manifest_locked, load_manifest
+from codex.archive.api import restore  # noqa: E402
+from codex.archive.dal import ArchiveDAL  # noqa: E402
+from codex.evidence.core import evidence_append  # noqa: E402
+from codex.release.manifest import dump_manifest_locked, load_manifest  # noqa: E402
 
 
 def _set_mode(path: Path, mode_str: str) -> None:

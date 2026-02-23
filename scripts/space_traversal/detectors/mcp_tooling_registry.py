@@ -9,6 +9,15 @@ Implements: validation, timeout, cleanup, error-handling, offline, reproducible
 
 from typing import Any
 
+# Related files that indicate MCP tooling registry usage
+RELATED_FILES = [
+    "mcp.json",
+    "mcp_registry.py",
+    "mcp_tooling_registry.py",
+    ".github/agents",
+    "src/mcp",
+]
+
 
 def _validate_path(path: str) -> bool:
     """Validate path input - sanitize and bounds check."""

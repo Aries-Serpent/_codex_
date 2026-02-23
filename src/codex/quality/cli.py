@@ -20,8 +20,8 @@ import logging
 logger = logging.getLogger(__name__)
 """Code smell detection CLI - Phase 2 implementation stub."""
 
-import click
-import yaml
+import click  # noqa: E402
+import yaml  # noqa: E402
 
 
 @click.command()

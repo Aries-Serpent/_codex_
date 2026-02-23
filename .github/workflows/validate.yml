@@ -1,0 +1,190 @@
+name: Art_Validation Pipeline
+# Runs two jobs:
+#   fast   — every pull request (lightweight: pre-commit + smoke tests)
+#   full   — daily schedule or manual dispatch (full suite + coverage)
+#
+# Usage notes:
+#   * Fast job completes in ≈ 3 min; full job in ≈ 15–20 min.
+#   * Both jobs upload structured artifacts for later inspection.
+#   * Override behaviour via workflow_dispatch inputs (see below).
+
+on:
+  pull_request:
+    branches: ["main", "0D_base_"]
+  schedule:
+    - cron: "0 3 * * *"  # daily at 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Validation mode (fast or full)"
+        required: false
+        default: "fast"
+        type: choice
+        options:
+          - fast
+          - full
+      pytest_opts:
+        description: "Extra pytest options (e.g. -k 'smoke')"
+        required: false
+        default: ""
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ── fast validation ──────────────────────────────────────────────────────────
+  fast-validation:
+    name: Fast Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fast') ||
+      github.event_name == 'push'
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache validation virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv_validation
+          key: venv-validation-fast-${{ runner.os }}-py312-${{ hashFiles('requirements-dev.txt', 'requirements.txt') }}
+          restore-keys: |
+            venv-validation-fast-${{ runner.os }}-py312-
+
+      - name: Run fast validation
+        env:
+          VALIDATE_BASE_REF: ${{ github.base_ref || '' }}
+          PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
+        run: |
+          chmod +x scripts/run_validation.sh
+          python tools/validate.py \
+            --mode fast \
+            --output validation_summary.json
+
+      - name: Upload validation log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-log-fast-${{ github.run_id }}
+          path: validation.log
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload JUnit XML
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-junit-fast-${{ github.run_id }}
+          path: validation-junit.xml
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload JSON summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-summary-fast-${{ github.run_id }}
+          path: validation_summary.json
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ── full validation ──────────────────────────────────────────────────────────
+  full-validation:
+    name: Full Validation (Daily)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'full')
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache validation virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv_validation
+          key: venv-validation-full-${{ runner.os }}-py312-${{ hashFiles('requirements-dev.txt', 'requirements.txt') }}
+          restore-keys: |
+            venv-validation-full-${{ runner.os }}-py312-
+
+      - name: Run full validation
+        env:
+          PYTEST_OPTS: ${{ github.event.inputs.pytest_opts || '' }}
+        run: |
+          chmod +x scripts/run_validation.sh
+          python tools/validate.py \
+            --mode full \
+            --output validation_summary.json
+
+      - name: Upload validation log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-log-full-${{ github.run_id }}
+          path: validation.log
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload JUnit XML
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-junit-full-${{ github.run_id }}
+          path: validation-junit.xml
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-coverage-${{ github.run_id }}
+          path: coverage.xml
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload JSON summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-summary-full-${{ github.run_id }}
+          path: validation_summary.json
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          files: ./coverage.xml
+          flags: full-validation
+          name: full-validation-coverage
+          fail_ci_if_error: false

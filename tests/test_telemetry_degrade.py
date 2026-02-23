@@ -4,14 +4,18 @@ Test Telemetry Degrade
 Test module for telemetry degrade.
 """
 
+from unittest.mock import patch
+
 from codex_ml.monitoring.codex_logging import init_telemetry
 
 
-def test_full_profile_degrades_without_nvml(monkeypatch):
+def test_full_profile_degrades_without_nvml():
+    original_import = __import__
+
     def fake_import(name, *args, **kwargs):
         if name == "pynvml":
             raise ImportError("no nvml")
-        return __import__(name, *args, **kwargs)
+        return original_import(name, *args, **kwargs)
 
-    monkeypatch.setattr("builtins.__import__", fake_import)
-    init_telemetry(profile="full")  # should not raise
+    with patch("builtins.__import__", side_effect=fake_import):
+        init_telemetry(profile="full")  # should not raise

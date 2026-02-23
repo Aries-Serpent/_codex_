@@ -318,7 +318,9 @@ def _maybe_resolve_container(value: Any) -> Any:
     return value
 
 
-def _coerce_optimizer(raw: Any, default: OptimizerSettings) -> OptimizerSettings:
+def _coerce_optimizer(raw: Any, default: Optional[OptimizerSettings] = None) -> OptimizerSettings:
+    if default is None:
+        default = OptimizerSettings()
     if isinstance(raw, OptimizerSettings):
         return raw
     if isinstance(raw, Mapping):
@@ -346,7 +348,9 @@ def _coerce_optimizer(raw: Any, default: OptimizerSettings) -> OptimizerSettings
     return OptimizerSettings(default.name, default.weight_decay, default.betas, default.eps)
 
 
-def _coerce_scheduler(raw: Any, default: SchedulerSettings) -> SchedulerSettings:
+def _coerce_scheduler(raw: Any, default: Optional[SchedulerSettings] = None) -> SchedulerSettings:
+    if default is None:
+        default = SchedulerSettings()
     if isinstance(raw, SchedulerSettings):
         return raw
     if isinstance(raw, Mapping):
@@ -476,19 +480,19 @@ def _start_system_metrics_logger(path: Path, interval: float):
         return None
 
     try:
-        logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
+        metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
-        logger.start()
+        metrics_logger.start()
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
-    return logger
+    return metrics_logger
 
 
 def _stop_system_metrics_logger(logger: Any) -> None:
@@ -1464,12 +1468,36 @@ def run_functional_training(
     return result
 
 
-def build_dataloader(dataset: Any, cfg: TrainingRunConfig | Mapping[str, Any]) -> Any:
+def build_dataloader(
+    dataset: Any = None,
+    cfg: TrainingRunConfig | Mapping[str, Any] | None = None,
+    *,
+    data_path: Any = None,
+    batch_size: int = 8,
+    shuffle: bool = True,
+    **kwargs: Any,
+) -> Any:
     """Create a reproducible ``DataLoader`` when PyTorch is present.
+
+    Supports both the current ``(dataset, cfg)`` form and the legacy
+    ``(data_path=..., batch_size=..., shuffle=...)`` keyword form for
+    backward compatibility with older test suites.
 
     Returns ``iter(dataset)`` when torch is unavailable which keeps unit tests
     and minimal CPU environments operational albeit without shuffling.
     """
+    # Legacy-API backward compat: data_path= was the old first argument.
+    if data_path is not None and dataset is None:
+        dataset = load_jsonl(str(data_path))
+
+    if dataset is None:
+        raise TypeError(
+            "build_dataloader() missing required argument: 'dataset' (or legacy 'data_path')"
+        )
+
+    # Build a cfg-like mapping from kwargs when cfg not supplied.
+    if cfg is None:
+        cfg = {"batch_size": batch_size, "shuffle": shuffle, **kwargs}
 
     try:
         from torch.utils.data import DataLoader

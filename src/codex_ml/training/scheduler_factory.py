@@ -25,6 +25,7 @@ Example usage:
 
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 import math
@@ -159,10 +160,10 @@ def create_scheduler(
             **scheduler_kwargs,
         )
 
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
-        LOGGER.warning("transformers not available, falling back to PyTorch schedulers")
+    except (ImportError, TypeError) as e:
+        logger.debug(f"ImportError or TypeError: {e}")
+        logger.debug(f"transformers error: {e}")
+        LOGGER.warning("transformers not available or TypeError, falling back to PyTorch schedulers")
         # Fall back to PyTorch native schedulers
         return _create_pytorch_scheduler(
             optimizer=optimizer,
@@ -196,7 +197,6 @@ def _create_pytorch_scheduler(
         import torch  # noqa: F401 - Testing optional dependency availability
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
         raise ImportError(
             "PyTorch is required for scheduler creation. " "Install with: pip install torch"
         )

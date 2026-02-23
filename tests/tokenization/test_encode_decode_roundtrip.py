@@ -4,8 +4,12 @@ Test Encode Decode Roundtrip
 Test module for encode decode roundtrip.
 """
 
-from codex_ml.interfaces.tokenizer import HFTokenizer
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+import pytest
+
+pytest.importorskip("sentencepiece")
+
+from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 
 def test_encode_decode_roundtrip(tmp_path):

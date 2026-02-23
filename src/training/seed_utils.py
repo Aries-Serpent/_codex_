@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Utilities for establishing deterministic seeds across common libraries."""
 
 
-import os
-import random
-from typing import Any
+import os  # noqa: E402
+import random  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:
     import numpy as np  # type: ignore

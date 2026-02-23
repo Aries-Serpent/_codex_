@@ -5,9 +5,17 @@ updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +2.5 points
 batch: pr-4
+deprecated: true
+superseded_by: codebase-health-guardian.md (v2.0.0, 2026-02-20)
 ---
 
 # Workflow CI Fixer Agent
+
+> ⚠️ **DEPRECATED** (2026-02-20, Session 46, PR #3336)
+> Scope expanded into **[Codebase Health Guardian v2.0](codebase-health-guardian.md)**.
+> Use `codebase-health-guardian.md` for all new invocations.
+> D1-Workflow capabilities are fully preserved in the new agent.
+
 
 ## Overview
 
@@ -18,13 +26,13 @@ batch: pr-4
 
 **Level 1: Cognitive Access**
 - ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (87.3/100 → target: 92.0+)
+- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
 - ✅ Codebase topology maps for navigation
 - ✅ Pattern library for historical fixes
 
 
 **Level 2: Decision Integration**
-- ✅ Quantum decision engine (k₁=0.35)
+- ✅ Quantum decision engine (k₁=0.332)
 - ✅ Uncertainty optimization for choices
 - ✅ Multi-agent entanglement
 - ✅ Memory compression for efficiency
@@ -56,7 +64,7 @@ fast_cache = CuckooHashTable()  # O(1) guaranteed
 # QEC - Quantum error correction for decisions
 from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
 
-qec = QECQuantumDecisionEngine(k1=0.35)
+qec = QECQuantumDecisionEngine(k1=0.332)
 decision = qec.make_decision(
     options=["option_a", "option_b", "option_c"],
     context={"relevant": "context"}

@@ -1,19 +1,22 @@
 """Tests for Reasoning Advisor Agent - 20 tests"""
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from __init__ import create_agent, RANDOM_SEED
 from causal_analyzer import create_analyzer
+
+from __init__ import RANDOM_SEED, create_agent
 
 TEST_SEED = 50
 
 class TestInit:
-    def test_creation(self): 
+    def test_creation(self):
         agent = create_agent()
         assert agent.seed == RANDOM_SEED
-    def test_custom_seed(self): 
+    def test_custom_seed(self):
         agent = create_agent(TEST_SEED)
         assert agent.seed == TEST_SEED
-    def test_components(self): 
+    def test_components(self):
         agent = create_agent(TEST_SEED)
         assert agent.causal_analyzer is not None
     def test_initialized(self):

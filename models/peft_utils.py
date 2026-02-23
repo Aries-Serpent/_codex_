@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.models.peft_utils import summarize_peft
+from src.models.peft_utils import summarize_peft  # noqa: E402
 
 __all__ = ["summarize_peft"]

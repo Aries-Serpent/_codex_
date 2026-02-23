@@ -160,7 +160,7 @@ def main():
         file_links = []
         for category, links in detailed_links.items():
             if category in ['deleted_file', 'broken_relative']:
-                file_links.extend([l for l in links if l['file'] == file_rel_path])
+                file_links.extend([line_item for line_item in links if line_item['file'] == file_rel_path])
 
         if not file_links:
             continue

@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 pytest.importorskip("numpy")
+pytest.importorskip("faiss", reason="faiss not installed (pip install faiss-cpu)")
 
 try:
     from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore

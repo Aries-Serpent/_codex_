@@ -242,11 +242,29 @@ class TestIncrementalSyncDecider:
         assert decision["action"] == "skip"
 
     def test_micro_update(self):
-        """Test micro-update decision."""
+        """Test micro-update decision.
+
+        Uses non-repetitive natural text to avoid SequenceMatcher heuristic
+        fragmentation on periodic patterns (Q003 — deep research confirmed).
+        Only a single punctuation character differs: '.' → '!'
+        """
         decider = IncrementalSyncDecider(micro_update_threshold=0.10)
 
-        old = "This is a long document with many words. " * 20
-        new = "This is a long document with many words! " * 20  # Only punctuation change
+        # Natural, non-repetitive text — single trailing punctuation change
+        old = (
+            "The quick brown fox jumped over the lazy dog near the river bank. "
+            "A software engineer reviewed the pull request and left detailed comments. "
+            "The deployment pipeline finished successfully after three retries. "
+            "Unit tests confirmed that all edge cases were handled correctly. "
+            "Documentation was updated to reflect the new API surface."
+        )
+        new = (
+            "The quick brown fox jumped over the lazy dog near the river bank. "
+            "A software engineer reviewed the pull request and left detailed comments. "
+            "The deployment pipeline finished successfully after three retries. "
+            "Unit tests confirmed that all edge cases were handled correctly. "
+            "Documentation was updated to reflect the new API surface!"  # '.' → '!'
+        )
 
         decision = decider.decide(old, new)
 

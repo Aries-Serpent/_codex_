@@ -13,8 +13,10 @@ def test_bleu_perfect_match() -> None:
     metric = BLEUScore(n_gram=2)
     metric.update([["hello", "world"]], [["hello", "world"]])
     result = metric.compute()
-    assert result["bleu_score"] == 1.0
-    assert result["brevity_penalty"] == 1.0
+    # Use pytest.approx for floating point comparison
+    import pytest
+    assert result["bleu_score"] == pytest.approx(1.0)
+    assert result["brevity_penalty"] == pytest.approx(1.0)
 
 
 def test_bleu_handles_no_overlap() -> None:

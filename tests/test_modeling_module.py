@@ -138,14 +138,18 @@ def test_load_model_requires_peft_when_lora_enabled(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *_args, **_kwargs: DummyModel()),
     )
-    
-    # Mock importlib.import_module to raise ModuleNotFoundError for peft
+
+    # Simulate peft not being installed: null out module-level references AND
+    # make import_module raise so both code paths are covered
+    monkeypatch.setattr(modeling, "LoraConfig", None)
+    monkeypatch.setattr(modeling, "get_peft_model", None)
+
     original_import = modeling.import_module
     def fake_import(name, *args, **kwargs):
         if name == "peft":
             raise ModuleNotFoundError(f"No module named '{name}'")
         return original_import(name, *args, **kwargs)
-    
+
     monkeypatch.setattr(modeling, "import_module", fake_import)
 
     with pytest.raises(RuntimeError, match="peft is required"):

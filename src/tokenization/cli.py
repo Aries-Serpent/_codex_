@@ -108,7 +108,7 @@ if _typer is None:  # pragma: no cover - fallback CLI when typer missing
 else:  # pragma: no cover - typer available
     typer = _typer
 
-from tokenizer.fast_tokenizer import build_tokenizer
+from tokenizer.fast_tokenizer import build_tokenizer  # noqa: E402
 
 app = typer.Typer(help="Tokenizer utilities")
 

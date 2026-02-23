@@ -7,7 +7,7 @@ Implements hard ceiling (64k), soft cap (56k), and auto-summarization triggers.
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import IntEnum
 from typing import Callable, Optional
 
@@ -71,7 +71,7 @@ class ContentBlock:
     content: str
     token_count: int
     priority: ContentPriority = ContentPriority.MEDIUM
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     source: str = ""
     can_summarize: bool = True
     summary: Optional[str] = None

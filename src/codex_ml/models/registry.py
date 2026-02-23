@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 import warnings
 from pathlib import Path
@@ -13,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Optional, cast
 
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 _torch_module, _HAS_TORCH = optional_import("torch")
@@ -165,7 +161,7 @@ def _load_hf_model(task: str, cfg: dict[str, Any], default: str) -> HF_PreTraine
 
     try:
         return load_from_pretrained(loader, model_id, **kwargs)
-    except OSError as exc:  # pragma: no cover - network/IO errors
+    except (OSError, HFModelUnavailableError) as exc:
         raise RuntimeError(
             f"Unable to load weights for {model_id!r} from local cache. "
             "Provide a `local_path` or set `local_files_only=False` if remote downloads are permitted."

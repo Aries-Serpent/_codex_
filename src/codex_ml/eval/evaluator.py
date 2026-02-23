@@ -11,14 +11,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from collections.abc import Iterable, Sequence
-from typing import Any
+from collections.abc import Iterable, Sequence  # noqa: E402
+from typing import Any  # noqa: E402
 
-from codex_ml.utils.hf_pinning import load_from_pretrained
-from codex_ml.utils.hf_revision import get_hf_revision
-from codex_ml.utils.optional import optional_import
+from codex_ml.utils.hf_pinning import load_from_pretrained  # noqa: E402
+from codex_ml.utils.optional import optional_import  # noqa: E402
 
-from .metrics import perplexity, token_accuracy
+from .metrics import perplexity, token_accuracy  # noqa: E402
 
 torch, _HAS_TORCH = optional_import("torch")
 datasets, _HAS_DATASETS = optional_import("datasets")
@@ -119,14 +118,12 @@ def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         model_name,
-        revision=get_hf_revision(),
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     model = load_from_pretrained(
         AutoModelForCausalLM,
         model_name,
-        revision=get_hf_revision(),
     )
     return evaluate_model(model, tokenizer, texts)
 

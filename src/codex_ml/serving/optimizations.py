@@ -9,11 +9,11 @@ import asyncio
 import logging
 
 logger = logging.getLogger(__name__)
-import threading
-import time
-from collections import deque
-from dataclasses import dataclass
-from typing import Any, Callable, Optional
+import threading  # noqa: E402
+import time  # noqa: E402
+from collections import deque  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from typing import Any, Callable, Optional  # noqa: E402
 
 
 @dataclass

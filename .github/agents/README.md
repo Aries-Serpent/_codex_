@@ -16,7 +16,7 @@ This directory contains all GitHub-created agents and the agent template system 
 graph TB
     subgraph "codex-ml v0.1.0 Agent System"
         subgraph "Core Orchestration"
-            Brain[Cognitive Brain<br/>k₁=0.35 Optimized<br/>🧠 2.86x Quantum Advantage]
+            Brain[Cognitive Brain<br/>k₁=0.332 Optimized<br/>🧠 3.13x Quantum Advantage]
             Orch[Agent Orchestrator<br/>53 Agents<br/>🎭 Coordination Layer]
             Memory[Memory Manager<br/>STM/LTM + Patterns<br/>💾 60% Compression]
         end
@@ -105,7 +105,7 @@ graph TB
 - **Governance**: 6 agents (11%)
 
 ### Key Capabilities
-- **Cognitive Brain Integration**: k₁=0.35 optimization (2.86x advantage)
+- **Cognitive Brain Integration**: k₁=0.332 optimization (3.13x advantage)
 - **MCP Protocol**: Standardized agent-model-context interface
 - **Memory Management**: 60% compression via STM/LTM patterns
 - **Autonomous Operation**: Self-directed task execution

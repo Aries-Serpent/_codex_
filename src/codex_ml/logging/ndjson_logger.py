@@ -10,17 +10,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import threading
-import time
-from collections import OrderedDict
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Iterable, Mapping, MutableMapping
-from uuid import uuid4
+import json  # noqa: E402
+import os  # noqa: E402
+import threading  # noqa: E402
+import time  # noqa: E402
+from collections import OrderedDict  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Mapping, MutableMapping  # noqa: E402
+from uuid import uuid4  # noqa: E402
 
-from codex_ml.logging.permissions import get_log_file_mode
+from codex_ml.logging.permissions import get_log_file_mode  # noqa: E402
 
 DEFAULT_MAX_BYTES = 64 * 1024 * 1024  # 64 MiB per shard by default
 DEFAULT_MAX_AGE_S = 24 * 60 * 60  # rotate at least daily

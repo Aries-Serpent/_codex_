@@ -137,7 +137,7 @@ class TestAutonomousAgentExecute:
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
-                mock_client_instance.select_model.return_value = "gpt-4-turbo"
+                mock_client_instance.select_model.return_value = "gpt-4o-mini"
                 mock_client_instance._dry_run = True
                 mock_client_instance.log_execution = MagicMock()
                 mock_client.return_value = mock_client_instance
@@ -148,7 +148,7 @@ class TestAutonomousAgentExecute:
 
                 assert result.success is True
                 assert "DRY RUN" in result.response
-                assert result.model == "gpt-4o-mini"  # Updated to match actual default model
+                assert result.model == "gpt-4o-mini"
         except ImportError:
             pytest.skip("autonomous_runner module not available")
 

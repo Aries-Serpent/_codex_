@@ -12,10 +12,12 @@ from .legacy_api import (
     SafetySettings,
     SchedulerSettings,
     TrainingRunConfig,
+    _evaluate_model,  # noqa: F401 - Compatibility exports for tests (PR #3330)
     build_dataloader,
+    get_hf_revision,  # noqa: F401 - Compatibility exports for tests (PR #3330)
 )
-from .legacy_api import (  # noqa: F401 re-exported via __all__
-    run_functional_training as _legacy_run_functional_training,
+from .legacy_api import (
+    run_functional_training as _legacy_run_functional_training,  # noqa: F401 re-exported via __all__
 )
 from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
@@ -61,6 +63,8 @@ __all__ = [
     "set_seed",
     "maybe_autocast",  # Added for test compatibility (PR #3248)
     "load_from_pretrained",  # Added for test compatibility (PR #3248)
+    "_evaluate_model",  # Added for test compatibility (PR #3330)
+    "get_hf_revision",  # Added for test compatibility (PR #3330)
 ]
 
 

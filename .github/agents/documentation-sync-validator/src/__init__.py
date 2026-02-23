@@ -5,12 +5,12 @@ __author__ = "Copilot Autonomous Agent System"
 __description__ = "Validates documentation synchronization with codebase"
 
 from .agent import (
-    DocumentationSyncValidator,
     DocumentationIssue,
-    FreshnessReport,
-    SemanticDriftReport,
+    DocumentationSyncValidator,
     DriftSeverity,
+    FreshnessReport,
     FreshnessStatus,
+    SemanticDriftReport,
 )
 
 __all__ = [

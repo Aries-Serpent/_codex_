@@ -22,12 +22,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any, Callable, Iterable, Optional
-from urllib.parse import urlparse
+import json  # noqa: E402
+import os  # noqa: E402
+from abc import ABC, abstractmethod  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Iterable, Optional  # noqa: E402
+from urllib.parse import urlparse  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import requests

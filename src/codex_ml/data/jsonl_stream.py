@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 """Streaming JSONL reader utilities."""
 
 
-import json
-from pathlib import Path
-from typing import Iterator, Mapping, MutableMapping
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterator, Mapping, MutableMapping  # noqa: E402
 
 __all__ = ["iter_jsonl"]
 

@@ -129,17 +129,16 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
             Path,
             typer.Argument(
                 help="Checkpoint path to validate.",
-                exists=True,
             ),
         ],
         schema: Annotated[
-            str,
+            Optional[str],
             typer.Option(
-                "",
+                None,
                 "--schema",
                 help="Expected schema version (e.g. '2').",
             ),
-        ] = "",
+        ] = None,
         show: Annotated[
             bool,
             typer.Option(
@@ -150,9 +149,8 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         ] = False,
     ) -> None:
         try:
-            # Convert empty string to None for backward compatibility
-            schema_param = schema if schema else None
-            info = validate_checkpoint(path, expect_schema=schema_param)
+            # schema_param already None if not provided
+            info = validate_checkpoint(path, expect_schema=schema)
         except CheckpointValidationError as exc:
             logger.debug(f"CheckpointValidationError: {exc}")
             typer.echo(str(exc), err=True)

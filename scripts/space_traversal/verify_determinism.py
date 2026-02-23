@@ -107,7 +107,7 @@ def run_pipeline():
 
 def deep_diff(obj1, obj2, path=""):
     """Find deep differences between two objects."""
-    if type(obj1) != type(obj2):
+    if not isinstance(obj1, type(obj2)):
         return f"Type mismatch at {path}: {type(obj1).__name__} vs {type(obj2).__name__}"
 
     if isinstance(obj1, dict):

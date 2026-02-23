@@ -1,0 +1,31 @@
+{
+  "description": "Tuning iteration 0 — pre-tuning baseline (no Bayesian/Fuzzy hooks active)",
+  "generated": "2026-02-19",
+  "iteration": 0,
+  "seeds": [42, 123, 456, 789, 1024],
+  "scenarios_per_seed": 200,
+  "flags": {
+    "CODEX_BAYESIAN_MODE": false,
+    "CODEX_FUZZY_MODE": false
+  },
+  "results": {
+    "min_accuracy": 0.950,
+    "max_accuracy": 1.0,
+    "avg_accuracy": 0.976,
+    "min_k1": 0.330,
+    "max_k1": 0.419,
+    "avg_coherence": 0.814,
+    "use_verified_labels": true
+  },
+  "per_pattern_accuracy_raw": {
+    "A": 1.0,
+    "B": 1.0,
+    "C": 0.933,
+    "D": 0.958,
+    "E": 0.927,
+    "F": 0.879,
+    "G": 1.0,
+    "H": 0.745
+  },
+  "note": "k1 > 0.35 in verified-label mode is structural: filter removes hardest-for-classical scenarios. Single-seed k1=0.332 is the authoritative metric."
+}

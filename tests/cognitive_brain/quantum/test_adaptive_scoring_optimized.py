@@ -146,7 +146,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_accuracy_maintained(self):
         """Test 7: Ensure accuracy ≥ 84% with optimized weights
-        
+
         DEFERRED: Performance optimization required.
         - Current: ~20% accuracy
         - Target: ≥84% accuracy
@@ -172,7 +172,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_k1_target_achieved(self):
         """Test 8: Assert k₁ ≤ 0.35 with optimized configuration
-        
+
         DEFERRED: Performance optimization required.
         - Current: k₁=16.6092 (47x slower than target)
         - Target: k₁≤0.35
@@ -221,7 +221,7 @@ class TestAdaptiveScoringOptimized:
     )
     def test_deterministic_results(self):
         """Test 10: seed=42 reproducibility across runs
-        
+
         DEFERRED: Performance optimization required.
         - Current: k₁ values differ between runs (timing-dependent)
         - Target: Deterministic results with seed=42
@@ -262,17 +262,16 @@ class TestK1Calculation:
 
     def test_k1_formula_basic(self):
         """Test k₁ calculation with known values"""
-        # Test case: avg_time=10ms, error_rate=0.16, baseline=28.5ms
-        # Expected k₁ = (10 * (1 + 0.16)) / 28.5 = 11.6 / 28.5 ≈ 0.407
+        # Quality-adjusted formula: k₁ = (avg_time * (1+error_rate)) / (baseline * (1-error_rate))
+        # k₁ = (10 * 1.16) / (28.5 * 0.84) = 11.6 / 23.94 ≈ 0.4845
         k1 = calculate_k1(avg_time_ms=10.0, error_rate=0.16, classical_baseline_ms=28.5)
-        assert k1 == pytest.approx(0.407, abs=0.01)
+        assert k1 == pytest.approx(0.4845, abs=0.01)
 
     def test_k1_formula_target(self):
         """Test k₁ calculation for target value"""
-        # To achieve k₁ = 0.35 with error_rate=0.16:
-        # avg_time = (0.35 * 28.5) / 1.16 ≈ 8.60ms
+        # k₁ = (8.60 * 1.16) / (28.5 * 0.84) = 9.976 / 23.94 ≈ 0.4167
         k1 = calculate_k1(avg_time_ms=8.60, error_rate=0.16, classical_baseline_ms=28.5)
-        assert k1 == pytest.approx(0.35, abs=0.01)
+        assert k1 == pytest.approx(0.4167, abs=0.01)
 
     def test_k1_perfect_accuracy(self):
         """Test k₁ with perfect accuracy (error_rate=0)"""

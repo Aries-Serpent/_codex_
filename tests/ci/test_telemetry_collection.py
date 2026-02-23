@@ -58,7 +58,7 @@ class TestTelemetryCollector:
 
     @pytest.fixture
     def mock_jobs(self):
-        """Create mock job data."""
+        """Create mock job data for individual job collection test."""
         return [
             {
                 "id": 2001,
@@ -68,6 +68,30 @@ class TestTelemetryCollector:
                 "conclusion": "failure",
             }
         ]
+
+    @pytest.fixture
+    def mock_jobs_by_run(self):
+        """Create mock job data mapped by run ID for report generation."""
+        return {
+            1001: [  # Auto-Fix Common Issues run
+                {
+                    "id": 2001,
+                    "name": "auto-fix",
+                    "html_url": "https://github.com/test/test/runs/2001",
+                    "status": "completed",
+                    "conclusion": "failure",
+                }
+            ],
+            1002: [  # Coverage Report Generation run
+                {
+                    "id": 2002,
+                    "name": "coverage-report",
+                    "html_url": "https://github.com/test/test/runs/2002",
+                    "status": "completed",
+                    "conclusion": "timed_out",
+                }
+            ],
+        }
 
     @pytest.fixture
     def mock_artifacts(self):
@@ -215,13 +239,14 @@ class TestTelemetryCollector:
         mock_collect_artifacts,
         collector,
         mock_workflow_runs,
-        mock_jobs,
+        mock_jobs_by_run,
         mock_artifacts,
         tmp_path,
     ):
         """Test telemetry report generation."""
         mock_collect_runs.return_value = mock_workflow_runs
-        mock_collect_jobs.return_value = mock_jobs
+        # Use side_effect to return different jobs for different runs
+        mock_collect_jobs.side_effect = lambda run_id: mock_jobs_by_run.get(run_id, [])
         mock_collect_artifacts.return_value = mock_artifacts
 
         output_file = tmp_path / "test_report.json"

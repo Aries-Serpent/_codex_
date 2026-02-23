@@ -1,0 +1,101 @@
+name: "GitHub Guru Agent"
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+  issues:
+    types: [opened, labeled]
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode: full | pr_only | hygiene | dependency'
+        required: false
+        default: 'full'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: write
+  actions: read
+
+env:
+  SAFE_MODE: "true"
+  OFFLINE_MODE: "false"
+
+jobs:
+  github-guru:
+    name: GitHub Guru Agent
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[skip-guru]') }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet requests
+
+      - name: Determine run mode
+        id: mode
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "mode=pr_only" >> "$GITHUB_OUTPUT"
+            echo "entity_id=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "event_type=pull_request" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "issues" ]]; then
+            echo "mode=issue" >> "$GITHUB_OUTPUT"
+            echo "entity_id=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+            echo "event_type=issues" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=${{ github.event.inputs.mode || 'full' }}" >> "$GITHUB_OUTPUT"
+            echo "entity_id=" >> "$GITHUB_OUTPUT"
+            echo "event_type=schedule" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run GitHub Guru Agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GURU_EVENT_TYPE: ${{ steps.mode.outputs.event_type }}
+          GURU_ENTITY_ID: ${{ steps.mode.outputs.entity_id }}
+          GURU_MODE: ${{ steps.mode.outputs.mode }}
+        run: |
+          python3 - << 'PYEOF'
+          import os, sys
+          sys.path.insert(0, ".github/agents/github-guru-agent")
+          from main import GitHubGuruAgent
+
+          owner, repo = os.environ.get("GITHUB_REPOSITORY", "unknown/unknown").split("/", 1)
+          agent = GitHubGuruAgent(
+              owner=owner,
+              repo=repo,
+              token=os.environ.get("GITHUB_TOKEN", ""),
+              safe_mode=True,
+          )
+          event_type = os.environ.get("GURU_EVENT_TYPE", "schedule")
+          entity_id = os.environ.get("GURU_ENTITY_ID", "")
+          event = {"event_type": event_type}
+          if entity_id:
+              event["entity_id"] = int(entity_id)
+          result = agent.handle_event(event)
+          print(result.get("result_md", "No output"))
+          sys.exit(0 if result.get("success") else 1)
+          PYEOF
+
+      - name: Upload session metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-guru-metrics-${{ github.run_number }}
+          path: audit_artifacts/baselines/github_guru_session_*.json
+          retention-days: 30
+          if-no-files-found: ignore

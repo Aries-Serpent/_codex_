@@ -202,11 +202,21 @@ class NullCheckRule(ValidationRule):
 class DataTypeRule(ValidationRule):
     """Validate column data types."""
 
-    def __init__(self, type_mapping: dict[str, str]):
+    # Map Python built-in types to pandas dtype name fragments
+    _PYTHON_TYPE_PATTERNS: dict[type, tuple[str, ...]] = {
+        int: ("int", "Int"),
+        float: ("float", "Float"),
+        str: ("object", "str", "string"),
+        bool: ("bool", "Bool"),
+        complex: ("complex",),
+    }
+
+    def __init__(self, type_mapping: dict[str, Any]):
         """Initialize rule.
 
         Args:
-            type_mapping: Map of column names to expected types
+            type_mapping: Map of column names to expected types (Python types or
+                dtype name strings such as ``"int64"`` are both accepted).
         """
         super().__init__("data_type")
         self.type_mapping = type_mapping
@@ -228,12 +238,21 @@ class DataTypeRule(ValidationRule):
 
             actual_type = str(data[col].dtype)
 
-            # Simple type matching (could be more sophisticated)
-            if expected_type not in actual_type and actual_type not in expected_type:
+            # Handle both Python type objects and dtype-name strings.
+            if isinstance(expected_type, type):
+                patterns = self._PYTHON_TYPE_PATTERNS.get(expected_type, (expected_type.__name__,))
+                mismatch = not any(p in actual_type for p in patterns)
+                expected_label = expected_type.__name__
+            else:
+                expected_str = str(expected_type)
+                mismatch = expected_str not in actual_type and actual_type not in expected_str
+                expected_label = expected_str
+
+            if mismatch:
                 type_mismatches.append(
                     {
                         "column": col,
-                        "expected": expected_type,
+                        "expected": expected_label,
                         "actual": actual_type,
                     }
                 )
@@ -337,14 +356,15 @@ class RangeCheckRule(ValidationRule):
 class UniqueCheckRule(ValidationRule):
     """Check for duplicate values in specified columns."""
 
-    def __init__(self, columns: list[str]):
+    def __init__(self, columns: "str | list[str]"):
         """Initialize rule.
 
         Args:
-            columns: Columns that should have unique values
+            columns: Column name (string) or list of column names that should
+                have unique values.
         """
         super().__init__("unique_check")
-        self.columns = columns
+        self.columns: list[str] = [columns] if isinstance(columns, str) else list(columns)
 
     def validate(self, data: Any) -> ValidationResult:
         """Validate uniqueness."""
@@ -462,7 +482,7 @@ class DataValidator:
         self.rules.append(rule)
         logger.debug(f"Added validation rule: {rule.name}")
 
-    def validate(self, data: Any, sample_size: Optional[int] = None) -> ValidationResult:
+    def validate(self, data: Any, sample_size: Optional[int] = None) -> "list[ValidationResult]":
         """Run all validation rules.
 
         Args:
@@ -470,52 +490,20 @@ class DataValidator:
             sample_size: Optional sample size for large datasets
 
         Returns:
-            Aggregated validation result
+            List of individual :class:`ValidationResult` objects, one per rule.
         """
         if sample_size and hasattr(data, "sample"):
             logger.info(f"Sampling {sample_size} rows for validation")
             data = data.sample(n=min(sample_size, len(data)))
 
-        results = []
-        all_errors = []
-        all_warnings = []
+        results: list[ValidationResult] = []
 
         for rule in self.rules:
             logger.debug(f"Running validation rule: {rule.name}")
             result = rule.validate(data)
             results.append(result)
 
-            if not result.is_valid:
-                all_errors.extend(result.errors)
-
-            all_warnings.extend(result.warnings)
-
-        failed_rules = [r for r in results if not r.is_valid]
-
-        if failed_rules:
-            return ValidationResult(
-                rule_name="data_validator",
-                is_valid=False,
-                message=f"{len(failed_rules)} of {len(results)} validation rule(s) failed",
-                errors=all_errors,
-                warnings=all_warnings,
-                metadata={
-                    "total_rules": len(results),
-                    "failed_rules": len(failed_rules),
-                    "results": [r.to_dict() for r in results],
-                },
-            )
-
-        return ValidationResult(
-            rule_name="data_validator",
-            is_valid=True,
-            message=f"All {len(results)} validation rule(s) passed",
-            warnings=all_warnings,
-            metadata={
-                "total_rules": len(results),
-                "results": [r.to_dict() for r in results],
-            },
-        )
+        return results
 
     def validate_and_raise(self, data: Any, sample_size: Optional[int] = None) -> None:
         """Run validation and raise exception if failed.
@@ -525,11 +513,15 @@ class DataValidator:
             sample_size: Optional sample size
 
         Raises:
-            ValueError: If validation fails
+            ValueError: If any validation rule fails
         """
-        result = self.validate(data, sample_size=sample_size)
-
-        if not result.is_valid:
-            error_msg = f"Data validation failed: {result.message}\n"
-            error_msg += "\n".join(f"  - {err}" for err in result.errors)
+        results = self.validate(data, sample_size=sample_size)
+        failed = [r for r in results if not r.is_valid]
+        if failed:
+            all_errors = [e for r in failed for e in r.errors]
+            error_msg = (
+                f"Data validation failed: {len(failed)} of {len(results)} rule(s) failed\n"
+                + "\n".join(f"  - {err}" for err in all_errors)
+            )
             raise ValueError(error_msg)
+

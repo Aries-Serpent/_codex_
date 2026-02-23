@@ -6,15 +6,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import json
-import os
-import sqlite3
-import subprocess
-import sys
-from pathlib import Path
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-import click
+import click  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer
@@ -95,14 +95,14 @@ def _fix_pool(max_workers: int | None = None) -> None:
     try:  # pragma: no cover - implementation detail
         import concurrent.futures as _cf
 
-        if max_workers is not None:
+        if max_workers is not None and max_workers > 0:
             executor = getattr(_cf, "_executor", None)
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
     except Exception as exc:  # pragma: no cover - best effort
         _log_error("POOL", "fix executor", str(exc), "configure thread pool")
-        return
+        # Don't return — continue to enable SQLite pooling below
 
     # --- Enable SQLite connection pooling ---
     from .db import sqlite_patch

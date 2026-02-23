@@ -11,6 +11,7 @@ import pytest
 from codex_ml.monitoring import codex_logging as cl
 
 mlflow = pytest.importorskip("mlflow")
+pytest.importorskip("tensorboard", reason="tensorboard not installed — test requires SummaryWriter")
 
 
 def test_logging_bootstrap_creates_loggers(tmp_path, monkeypatch):

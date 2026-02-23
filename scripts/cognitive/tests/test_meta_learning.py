@@ -34,7 +34,6 @@ from pathlib import Path
 
 import pytest
 
-
 """
 Comprehensive test suite for Phase 2 Meta-Learning components.
 
@@ -44,7 +43,11 @@ Tests meta-learning engine, pattern library, knowledge transfer, and external in
 # Assume meta_learning_engine exists
 try:
     sys.path.insert(0, str(Path(__file__).parent.parent))
-    from meta_learning_engine import MetaLearningEngine, Pattern, SharedMemory  # noqa: E402
+    from meta_learning_engine import (  # noqa: E402
+        MetaLearningEngine,
+        Pattern,
+        SharedMemory,
+    )
 except ImportError:
     MetaLearningEngine = None
     Pattern = None
@@ -266,7 +269,7 @@ class TestExternalIngestion:
 
         lessons = engine.extract_lessons(integration_result)
         assert len(lessons) > 0
-        assert all('title' in l and 'description' in l for l in lessons)
+        assert all('title' in line_item and 'description' in line_item for line_item in lessons)
 
 
 # Integration tests

@@ -33,7 +33,10 @@ def _load_typer():
 typer = _load_typer()
 
 if typer is not None:
-    app = typer.Typer(help="Codex ML CLI")
+    app = typer.Typer(
+        help="Codex ML CLI\n\nPowered by Hydra (install hydra-core for advanced configuration).",
+        add_completion=False,
+    )
 
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
@@ -444,7 +447,33 @@ if typer is not None:
         typer.echo("MLflow: {}".format("available" if info.get("mlflow") else "not installed"))
         typer.echo("W&B: {}".format("available" if info.get("wandb") else "not installed"))
 
-    cli = app
+    def _typer_cli_wrapper(args: Optional[list[str]] = None) -> int:
+        """Wrapper around Typer app to handle --version/-V before Typer processes args."""
+        import sys
+        argv = args if args is not None else sys.argv[1:]
+
+        # Handle --version and -V before Typer sees them
+        if "--version" in argv or "-V" in argv:
+            from codex import __version__ as codex_version
+            print(f"codex-ml-cli {codex_version}")
+            return 0
+
+        # Let Typer handle the rest
+        try:
+            app(args)
+            return 0
+        except SystemExit as e:
+            return e.code if e.code is not None else 0
+
+    cli = _typer_cli_wrapper
+
+    def run_training(cfg, output_dir=None):
+        """Module-level stub for patching in tests (typer branch).
+
+        The typer ``train`` command implements training directly; this stub
+        ensures ``@patch("codex_ml.cli.main.run_training")`` is valid when
+        typer is available.
+        """
 
 else:
     from typing import Any
@@ -491,8 +520,7 @@ else:
             try:
                 from codex.training import main as _functional_training
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
+                logger.debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training
@@ -633,7 +661,7 @@ else:
                     print("Powered by Hydra (install hydra-core)", file=sys.stderr)
                     print(guidance, file=sys.stderr)
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
-                return 0
+                sys.exit(0)
             if not _HAS_HYDRA:
                 guidance = (
                     "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -649,7 +677,7 @@ else:
                     status="ok",
                     error="hydra-core missing",
                 )
-                return 0
+                sys.exit(0)
             overrides: list[str] = []
             i = 0
             while i < len(args):

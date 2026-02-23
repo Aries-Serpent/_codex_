@@ -29,12 +29,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import json
-import os
-import re
-import sqlite3
-import sys
+import argparse  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import re  # noqa: E402
+import sqlite3  # noqa: E402
+import sys  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -47,16 +47,16 @@ else:
         _codex_sqlite_auto()
     except Exception as exc:  # pragma: no cover
         print(f"SQLite patch disabled: {exc}", file=sys.stderr)
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Optional
+from datetime import datetime  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
 except Exception:  # pragma: no cover - fallback for direct execution
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
-from .db_utils import get_columns, list_tables, resolve_db_path
+from .db_utils import get_columns, list_tables, resolve_db_path  # noqa: E402
 
 CANDIDATE_TS = ["ts", "timestamp", "time", "created_at", "logged_at"]
 CANDIDATE_SID = ["session_id", "session", "sid", "context_id"]

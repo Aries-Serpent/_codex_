@@ -89,7 +89,6 @@ class CVEDatabase:
     def from_dict(cls, data: dict[str, Any]) -> "CVEDatabase":
         """Create from dictionary."""
         db = cls()
-        db.last_updated = data.get("last_updated", "")
         for pkg, cves in data.get("entries", {}).items():
             for cve_data in cves:
                 cve = CVEEntry(
@@ -100,6 +99,9 @@ class CVEDatabase:
                     fixed_in=cve_data.get("fixed_in"),
                 )
                 db.add_cve(cve)
+        # Set last_updated AFTER adding CVEs so add_cve/_update_checksum
+        # doesn't overwrite the persisted timestamp from data.
+        db.last_updated = data.get("last_updated", "")
         return db
 
 

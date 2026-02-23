@@ -13,11 +13,11 @@ Part of the Cognitive Brain Phase 6 agent ecosystem.
 """
 
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
+from typing import Any, Dict, List, Optional
 
 # #AFTERMATH_PATTERN_IDENTIFIED: iac_enforcement_actions
 # #AFTERMATH_METRIC: reports_generated
@@ -39,18 +39,18 @@ class EnforcementResult:
 class IaCEnforcer:
     """
     ACT phase: Generate reports and enforce IaC policies.
-    
+
     Responsibilities:
     - Create reports in multiple formats
     - Generate GitHub PR annotations
     - Suggest automated fixes
     - Determine CI blocking behavior
     """
-    
+
     def __init__(self):
         """Initialize IaC enforcer"""
         logger.info("IaCEnforcer initialized")
-    
+
     def enforce(
         self,
         validation_results: Dict[str, Any],
@@ -59,21 +59,21 @@ class IaCEnforcer:
     ) -> EnforcementResult:
         """
         Generate reports and enforce policies based on validation results.
-        
+
         Args:
             validation_results: Output from validator.py
             scan_results: Original scan data from scanner.py
             config: Configuration (output_format, report_path, etc.)
-        
+
         Returns:
             EnforcementResult with report paths, annotations, and exit code
         """
         if config is None:
             config = {}
-        
+
         output_format = config.get("output_format", "markdown")
         report_dir = config.get("report_dir", "/tmp")
-        
+
         # Generate report in requested format
         report_path = self._generate_report(
             validation_results,
@@ -81,17 +81,17 @@ class IaCEnforcer:
             output_format,
             report_dir
         )
-        
+
         # Create GitHub annotations for PR review
         annotations = self._create_github_annotations(validation_results)
-        
+
         # Generate suggested fixes
         fixes = self._suggest_fixes(scan_results)
-        
+
         # Determine if CI should be blocked
         should_block = validation_results.get("recommendation") == "BLOCK"
         exit_code = 1 if should_block else 0
-        
+
         result = EnforcementResult(
             report_generated=True,
             report_path=report_path,
@@ -100,10 +100,10 @@ class IaCEnforcer:
             github_annotations=annotations,
             suggested_fixes=fixes
         )
-        
+
         logger.info(f"Enforcement complete: {'BLOCKED' if should_block else 'PASSED'} (report={report_path})")
         return result
-    
+
     def _generate_report(
         self,
         validation: Dict[str, Any],
@@ -113,18 +113,18 @@ class IaCEnforcer:
     ) -> str:
         """
         Generate report in specified format.
-        
+
         Args:
             validation: Validation results
             scan: Scan results
             format: Output format (markdown/json/html)
             output_dir: Directory to write report
-        
+
         Returns:
             Path to generated report file
         """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
+
         if format == "markdown":
             filename = f"iac-lint-report-{timestamp}.md"
             content = self._generate_markdown_report(validation, scan)
@@ -136,15 +136,15 @@ class IaCEnforcer:
             content = self._generate_html_report(validation, scan)
         else:
             raise ValueError(f"Unsupported format: {format}")
-        
+
         # Write report to disk
         report_path = Path(output_dir) / filename
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(content)
-        
+
         logger.info(f"Report generated: {report_path}")
         return str(report_path)
-    
+
     def _generate_markdown_report(
         self,
         validation: Dict[str, Any],
@@ -171,7 +171,7 @@ class IaCEnforcer:
             f"- 🟢 Low: {validation.get('low_issues', 0)}",
             "",
         ]
-        
+
         # Blockers section
         blockers = validation.get("blockers", [])
         if blockers:
@@ -190,7 +190,7 @@ class IaCEnforcer:
                     f"- **Reason:** {blocker.get('reason', '')}",
                     "",
                 ])
-        
+
         # Warnings section
         warnings = validation.get("warnings", [])
         if warnings:
@@ -210,7 +210,7 @@ class IaCEnforcer:
                     f"**Suggested Fix:** {warning.get('suggested_fix', 'No fix available')}",
                     "",
                 ])
-        
+
         # Scan details
         lines.extend([
             "## Scan Details",
@@ -220,7 +220,7 @@ class IaCEnforcer:
             f"- **Scan Duration:** {scan.get('duration_seconds', 0):.2f}s",
             "",
         ])
-        
+
         # Reasoning
         lines.extend([
             "## Decision Reasoning",
@@ -228,9 +228,9 @@ class IaCEnforcer:
             validation.get("reasoning", "No reasoning provided"),
             "",
         ])
-        
+
         return "\n".join(lines)
-    
+
     def _generate_json_report(
         self,
         validation: Dict[str, Any],
@@ -260,9 +260,9 @@ class IaCEnforcer:
             },
             "reasoning": validation.get("reasoning", ""),
         }
-        
+
         return json.dumps(report, indent=2)
-    
+
     def _generate_html_report(
         self,
         validation: Dict[str, Any],
@@ -272,7 +272,7 @@ class IaCEnforcer:
         recommendation = validation.get("recommendation", "UNKNOWN")
         risk = validation.get("risk_level", "unknown")
         score = validation.get("security_score", 0)
-        
+
         # Color coding
         if recommendation == "BLOCK":
             status_color = "#dc3545"  # Red
@@ -280,7 +280,7 @@ class IaCEnforcer:
             status_color = "#ffc107"  # Yellow
         else:
             status_color = "#28a745"  # Green
-        
+
         html = f"""
 <!DOCTYPE html>
 <html>
@@ -303,7 +303,7 @@ class IaCEnforcer:
         <div class="metric"><strong>Score:</strong> {score}/100</div>
         <div class="metric"><strong>Confidence:</strong> {validation.get('confidence', 0.0):.0%}</div>
     </div>
-    
+
     <h2>Issue Breakdown</h2>
     <ul>
         <li>Critical: {validation.get('critical_issues', 0)}</li>
@@ -312,7 +312,7 @@ class IaCEnforcer:
         <li>Low: {validation.get('low_issues', 0)}</li>
     </ul>
 """
-        
+
         # Blockers
         blockers = validation.get("blockers", [])
         if blockers:
@@ -325,7 +325,7 @@ class IaCEnforcer:
         {blocker.get('message', '')}
     </div>
 """
-        
+
         # Warnings
         warnings = validation.get("warnings", [])
         if warnings:
@@ -338,7 +338,7 @@ class IaCEnforcer:
         {warning.get('message', '')}
     </div>
 """
-        
+
         html += """
     <h2>Scan Details</h2>
     <ul>
@@ -349,16 +349,16 @@ class IaCEnforcer:
 </body>
 </html>
 """
-        
+
         return html
-    
+
     def _create_github_annotations(
         self,
         validation: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         """
         Create GitHub PR annotations for code review.
-        
+
         GitHub Actions annotation format:
         {
             "path": "file/path.tf",
@@ -370,7 +370,7 @@ class IaCEnforcer:
         }
         """
         annotations = []
-        
+
         # Annotations for blockers
         for blocker in validation.get("blockers", []):
             annotations.append({
@@ -381,7 +381,7 @@ class IaCEnforcer:
                 "message": blocker.get("message", ""),
                 "title": f"Security: {blocker.get('rule', 'Unknown Rule')}"
             })
-        
+
         # Annotations for warnings
         for warning in validation.get("warnings", []):
             annotations.append({
@@ -392,10 +392,10 @@ class IaCEnforcer:
                 "message": warning.get("message", ""),
                 "title": f"Warning: {warning.get('rule', 'Unknown Rule')}"
             })
-        
+
         logger.info(f"Generated {len(annotations)} GitHub annotations")
         return annotations
-    
+
     def _normalize_path(self, file_path: str) -> str:
         """Normalize file path for GitHub annotations (relative to repo root)"""
         # Remove leading slashes, handle absolute paths
@@ -405,16 +405,16 @@ class IaCEnforcer:
             if len(parts) > 2:
                 # Assume format like /path/to/repo/file.tf -> file.tf
                 return "/".join(parts[-2:]) if len(parts) >= 2 else file_path
-        
+
         return file_path
-    
+
     def _suggest_fixes(
         self,
         scan_results: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         """
         Generate automated fix suggestions for common issues.
-        
+
         Returns list of suggested fixes with:
         - file: File path
         - line: Line number
@@ -423,15 +423,15 @@ class IaCEnforcer:
         - auto_fixable: Whether this can be auto-applied
         """
         fixes = []
-        
+
         for scan_result in scan_results.get("scan_results", []):
             file_path = scan_result.get("file_path", "")
-            
+
             for finding in scan_result.get("findings", []):
                 rule_id = finding.get("rule_id", "")
                 line = finding.get("line", 0)
                 suggested_fix = finding.get("suggested_fix", "")
-                
+
                 # Check if we have a suggested fix
                 if suggested_fix:
                     fixes.append({
@@ -441,14 +441,14 @@ class IaCEnforcer:
                         "suggested": suggested_fix,
                         "auto_fixable": self._is_auto_fixable(rule_id)
                     })
-        
+
         logger.info(f"Generated {len(fixes)} suggested fixes")
         return fixes
-    
+
     def _is_auto_fixable(self, rule_id: str) -> bool:
         """
         Determine if this rule can be automatically fixed.
-        
+
         Some common auto-fixable patterns:
         - Missing encryption blocks
         - Missing resource limits
@@ -460,6 +460,6 @@ class IaCEnforcer:
             "label",
             "tag",
         ]
-        
+
         rule_lower = rule_id.lower()
         return any(pattern in rule_lower for pattern in auto_fixable_patterns)

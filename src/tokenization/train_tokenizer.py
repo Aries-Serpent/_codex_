@@ -36,8 +36,7 @@ try:  # pragma: no cover - optional dependency
     try:
         import hydra
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        logger.debug(f"hydra not available: {e}")
         import config_legacy as hydra
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
@@ -61,7 +60,7 @@ except Exception as exc:  # pragma: no cover
 else:  # pragma: no cover - import succeeded
     _SPM_ERROR = None
 
-from tokenizers import (
+from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,
     Tokenizer,
     decoders,

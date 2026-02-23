@@ -9,6 +9,7 @@ import json
 
 def test_run_training_smoke(tmp_path, monkeypatch):
     """Basic sanity check that ``run_training`` executes and writes metrics."""
+    importlib.import_module("codex_ml")  # ensure parent package is in sys.modules before reload
     module = importlib.import_module("codex_ml.train_loop")
     module = importlib.reload(module)
 
@@ -86,6 +87,7 @@ def test_run_training_smoke(tmp_path, monkeypatch):
 
 
 def test_run_training_records_callback_errors(tmp_path, monkeypatch):
+    importlib.import_module("codex_ml")  # ensure parent package is in sys.modules before reload
     module = importlib.import_module("codex_ml.train_loop")
     module = importlib.reload(module)
 

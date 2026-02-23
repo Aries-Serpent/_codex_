@@ -17,7 +17,7 @@ import pytest
 
 # Import module under test
 try:
-    from codex_ml.cli import evaluate
+    import codex_ml.cli.evaluate as evaluate
 except ImportError:
     pytest.skip("evaluate module not available", allow_module_level=True)
 

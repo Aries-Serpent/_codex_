@@ -122,7 +122,7 @@ def unique_function2():
             difference = current_ratio - baseline_ratio
 
             # Verify comparison logic
-            assert difference == 0.05
+            assert difference == pytest.approx(0.05)
             assert difference > 0.02  # Would fail threshold
 
             # Simulate improvement (update baseline)

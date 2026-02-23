@@ -136,8 +136,15 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
+            import pickle as _stdlib_pickle  # noqa: PLC0415 - local to keep top-level light
             buffer = io.BytesIO()
-            _torch.save(payload, buffer)
+            try:
+                _torch.save(payload, buffer)
+            except (RuntimeError, TypeError, _stdlib_pickle.PicklingError):  # pragma: no cover
+                # Retry with pickle protocol 2 to avoid torch.FloatStorage identity
+                # mismatch on PyTorch 2.x + Python 3.12.
+                buffer = io.BytesIO()
+                _torch.save(payload, buffer, pickle_protocol=2)
             return buffer.getvalue()
 
 

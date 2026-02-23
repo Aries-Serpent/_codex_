@@ -16,12 +16,11 @@ The mental map represents the agent's understanding of:
 
 import json
 import uuid
-from dataclasses import dataclass, field, asdict
-from datetime import datetime
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
-
 
 # =============================================================================
 # CLOCK ABSTRACTION
@@ -30,7 +29,7 @@ from typing import Any, Callable, Optional, Union
 
 def _default_clock() -> str:
     """Default clock implementation using system time."""
-    return datetime.now().isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 # Module-level clock function that can be overridden for testing.
@@ -177,6 +176,7 @@ class MentalNode:
     # Metadata
     tags: list[str] = field(default_factory=list)
     context: dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     def add_reasoning_step(
         self,
@@ -267,7 +267,7 @@ class MentalEdge:
 
     def to_dict(self) -> dict:
         d = asdict(self)
-        d["edge_type"] = self.edge_type.value
+        d["edge_type"] = self.edge_type.value if self.edge_type else None
         return d
 
 
@@ -303,6 +303,7 @@ class MentalMappingModel:
         # Self-appraisal metrics
         self.appraisal_metrics = {
             "total_decisions": 0,
+            "total_outcomes": 0,
             "correct_decisions": 0,
             "average_confidence": 0.0,
             "average_quality": 0.0,
@@ -318,6 +319,7 @@ class MentalMappingModel:
         importance: float = 0.5,
         tags: Optional[list[str]] = None,
         context: Optional[dict] = None,
+        metadata: Optional[dict] = None,
     ) -> MentalNode:
         """
         Create a new node in the mental map.
@@ -354,6 +356,7 @@ class MentalMappingModel:
             importance=importance,
             tags=tags or [],
             context=context or {},
+            metadata=metadata or {},
         )
 
         self.nodes[node.node_id] = node
@@ -414,8 +417,8 @@ class MentalMappingModel:
         Create a connection between two nodes.
 
         Args:
-            source_id: Source node ID
-            target_id: Target node ID
+            source_id: Source node ID (or MentalNode object)
+            target_id: Target node ID (or MentalNode object)
             source: Alias for source_id
             target: Alias for target_id
             edge_type: Type of edge
@@ -424,6 +427,12 @@ class MentalMappingModel:
             justification: Reasoning for connection
             evidence: Supporting evidence
         """
+        # Handle MentalNode objects (extract node_id)
+        if hasattr(source_id, 'node_id'):
+            source_id = source_id.node_id
+        if hasattr(target_id, 'node_id'):
+            target_id = target_id.node_id
+        
         # Handle parameter aliases
         if source and not source_id:
             source_id = source
@@ -466,7 +475,7 @@ class MentalMappingModel:
         Returns the problem node and the reasoning steps
         """
         print(f"\n{'='*60}")
-        print(f"THINKING THROUGH PROBLEM")
+        print("THINKING THROUGH PROBLEM")
         print(f"{'='*60}")
         print(f"Problem: {problem}")
 
@@ -486,7 +495,7 @@ class MentalMappingModel:
         # Step 1: Problem decomposition
         print("\n[Step 1] Decomposing problem...")
         step1 = problem_node.add_reasoning_step(
-            thought="Breaking down the problem into sub-components",
+            thought="Decomposing the problem into sub-components",
             reasoning_type="deductive",
             confidence=0.8,
             alternatives=["solve_directly", "gather_more_info"],
@@ -541,7 +550,7 @@ class MentalMappingModel:
             reasoning_type="inductive",
             confidence=0.7,
             alternatives=["quantitative_data", "qualitative_analysis"],
-            evidence=["test_results", "audit_data", "metrics"],
+            evidence=["test_results", "audit_data", "metrics", "gathered_evidence"],
         )
         reasoning_steps.append(step3)
         print(f"  Thought: {step3.thought}")
@@ -574,7 +583,7 @@ class MentalMappingModel:
         This creates a decision node connected to the problem
         """
         print(f"\n{'='*60}")
-        print(f"MAKING DECISION")
+        print("MAKING DECISION")
         print(f"{'='*60}")
         print(f"Decision: {decision_content}")
         print(f"Confidence: {confidence:.2f}")
@@ -633,7 +642,7 @@ class MentalMappingModel:
             learned_lessons: Optional list of lessons learned from this outcome
         """
         print(f"\n{'='*60}")
-        print(f"RECORDING OUTCOME")
+        print("RECORDING OUTCOME")
         print(f"{'='*60}")
         print(f"Outcome: {outcome_content}")
         print(f"Success: {success}")
@@ -675,13 +684,14 @@ class MentalMappingModel:
         decision_node.was_correct = success
 
         # Update metrics
+        self.appraisal_metrics["total_outcomes"] += 1
         if success:
             self.appraisal_metrics["correct_decisions"] += 1
 
         # Trigger self-appraisal
         self._self_appraise_decision(decision_node_id, outcome_node.node_id)
 
-        print(f"✓ Outcome recorded and self-appraisal triggered")
+        print("✓ Outcome recorded and self-appraisal triggered")
 
         return outcome_node
 
@@ -690,7 +700,7 @@ class MentalMappingModel:
         Perform self-appraisal of a decision based on its outcome
         """
         print(f"\n{'='*60}")
-        print(f"SELF-APPRAISAL")
+        print("SELF-APPRAISAL")
         print(f"{'='*60}")
 
         decision_node = self.nodes[decision_node_id]
@@ -724,7 +734,7 @@ class MentalMappingModel:
 
         decision_node.quality_score = quality
 
-        print(f"Decision Quality Analysis:")
+        print("Decision Quality Analysis:")
         print(f"  Expected Confidence: {expected_confidence:.2f}")
         print(f"  Actual Success: {actual_success}")
         print(f"  Actual Impact: {actual_impact:.2f}")
@@ -751,6 +761,25 @@ class MentalMappingModel:
         for lesson in lessons:
             decision_node.add_lesson(lesson)
             print(f"  📚 Lesson: {lesson}")
+
+        # Create a LEARNING node when there are lessons or the decision failed
+        if lessons or not actual_success:
+            learning_node = self.create_node(
+                node_type=NodeType.LEARNING,
+                content=f"Learning from {'failure' if not actual_success else 'experience'}: {decision_node.content}",
+                confidence=0.9,
+                importance=0.8,
+                tags=["learning", "improvement"],
+                context={"lessons": lessons, "success": actual_success},
+            )
+            self.connect_nodes(
+                reflection_node.node_id,
+                learning_node.node_id,
+                EdgeType.LEADS_TO,
+                weight=1.0,
+                justification="Reflection leads to learning",
+            )
+            print(f"  🎓 Learning node created: {learning_node.node_id}")
 
         # Connect reflection to decision and outcome
         self.connect_nodes(
@@ -792,7 +821,7 @@ class MentalMappingModel:
         Returns list of node IDs that were reviewed
         """
         print(f"\n{'='*60}")
-        print(f"ITERATIVE REVIEW")
+        print("ITERATIVE REVIEW")
         print(f"{'='*60}")
         print(f"Quality Threshold: {review_threshold:.2f}")
 
@@ -800,6 +829,11 @@ class MentalMappingModel:
         nodes_to_review = [
             node_id for node_id in self.nodes_needing_review if node_id in self.nodes
         ]
+
+        # Also review nodes with needs_review flag set directly (e.g. externally)
+        for node_id, node in self.nodes.items():
+            if node.needs_review and node_id not in nodes_to_review:
+                nodes_to_review.append(node_id)
 
         # Also review nodes with low quality scores
         for node_id, node in self.nodes.items():
@@ -1205,7 +1239,7 @@ class MentalMappingModel:
 
         # Reconstruct edges
         for edge_data in data["edges"].values():
-            edge_data["edge_type"] = EdgeType(edge_data["edge_type"])
+            edge_data["edge_type"] = EdgeType(edge_data["edge_type"]) if edge_data.get("edge_type") else None
             edge = MentalEdge(**edge_data)
             self.edges[edge.edge_id] = edge
 
@@ -1308,7 +1342,7 @@ if __name__ == "__main__":
     mental_map = MentalMappingModel(agent_id="codex_agent_001")
 
     print(f"\n{'#'*60}")
-    print(f"# MENTAL MAPPING MODEL DEMONSTRATION")
+    print("# MENTAL MAPPING MODEL DEMONSTRATION")
     print(f"{'#'*60}")
 
     # Think through a problem
@@ -1343,7 +1377,7 @@ if __name__ == "__main__":
 
     # Show summary
     print(f"\n{'='*60}")
-    print(f"MENTAL MAP SUMMARY")
+    print("MENTAL MAP SUMMARY")
     print(f"{'='*60}")
     summary = mental_map.get_mental_map_summary()
     for key, value in summary.items():
@@ -1356,7 +1390,7 @@ if __name__ == "__main__":
 
     # Visualize reasoning path
     print(f"\n{'='*60}")
-    print(f"REASONING PATH VISUALIZATION")
+    print("REASONING PATH VISUALIZATION")
     print(f"{'='*60}")
     print(mental_map.visualize_reasoning_path(problem_node.node_id))
 
@@ -1365,7 +1399,7 @@ if __name__ == "__main__":
     mental_map.save_mental_map(output_path)
 
     print(f"\n{'#'*60}")
-    print(f"# DEMONSTRATION COMPLETE")
+    print("# DEMONSTRATION COMPLETE")
     print(f"{'#'*60}")
 
 

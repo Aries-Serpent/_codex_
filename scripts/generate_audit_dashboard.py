@@ -58,7 +58,6 @@ try:
     PLANNING_AVAILABLE = True
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
     PLANNING_AVAILABLE = False
 
 # Supported file extensions for badge styling
@@ -406,7 +405,6 @@ def generate_html_dashboard(
             html_content += generate_planning_css()
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
             pass
 
     html_content += """
@@ -655,6 +653,13 @@ def generate_html_dashboard(
 </body>
 </html>
 """
+
+    # Substitute manifest metadata placeholders (template strings are not f-strings)
+    html_content = (
+        html_content
+        .replace("{html.escape(manifest_version)}", html.escape(str(manifest_version)))
+        .replace("{format_timestamp(manifest_timestamp)}", format_timestamp(manifest_timestamp))
+    )
 
     # Write HTML to file
     output_path.parent.mkdir(parents=True, exist_ok=True)

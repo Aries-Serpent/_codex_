@@ -84,6 +84,31 @@ This is NOT chaos - it's strategic pattern-breaking for quality.
 - Best-effort solution attempts (minimum 5 iterations)
 - Clear next steps for future agent
 
+### 4. "Deep Research First for Recurring/Systemic Patterns"
+
+**BEFORE** attempting to fix any recurring or systemic CI failure pattern, you **MUST**:
+
+1. **Log a Deep Research Question (DRQ)** in `docs/tech_debt/research_queue/questions_for_research.md`
+   - Use the template: ID, Category, Priority, Impact, Context, The Question, Why Needs Research, Current Hypothesis, Acceptance Criteria
+2. **Summarize the pattern** in `.codex/plans/deep_research_ci_failure_patterns_*.md`
+3. **Apply an interim fix** that makes CI pass while preserving the question for deep research
+4. **Tag the interim fix** with `# DRQ-XXX: interim fix pending research`
+
+**A pattern qualifies as a "recurring/systemic" issue when:**
+- It has appeared in 2+ consecutive agent sessions
+- The root cause cannot be determined within 3 investigation attempts  
+- It affects multiple test files or source modules via the same mechanism
+- It involves external system behavior (pytest version, Python version, torch version, CI environment)
+
+**Approved DRQ categories**: API Drift, Logger Parameter Shadowing, Return-Type Contract Drift, Float Equality, Multi-output CLI, BLEU scoring, Integration test environment, Pytest string-path monkeypatch, Cache implementation bugs, CodeQL "unused import" false positives, RAG meta-tensor device placement
+
+**Resources**:
+- Deep Research Queue: `docs/tech_debt/research_queue/questions_for_research.md`
+- DRQ Pattern Registry: `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md`
+- Deep Research Plan: `docs/plans/deep_research_analysis.md` (S68 — Q003/Q006/Q007 canonical fixes)
+- Usage examples: PR #3344 comments (S66: comment-3940488457; S68: comment-3942086106; S69: comment-3942122124)
+- **Proven effective**: 7/7 DRQ questions resolved in S66–S69 using this methodology
+
 ---
 
 ## Comprehensive Issue Resolution

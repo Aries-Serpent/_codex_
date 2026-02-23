@@ -25,7 +25,7 @@ import platform
 import re
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional

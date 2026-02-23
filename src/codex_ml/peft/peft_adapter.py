@@ -29,8 +29,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import inspect
-from typing import Any, Optional
+import inspect  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency

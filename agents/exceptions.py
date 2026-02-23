@@ -5,8 +5,9 @@ Provides consistent exception handling across all agent modules,
 especially for optional dependency imports (numpy, scipy, etc.).
 """
 
-from typing import Optional
 import logging
+from typing import Optional
+
 logger = logging.getLogger(__name__)
 
 

@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.models.chat_model import ChatModel, ChatModelConfig
+from src.models.chat_model import ChatModel, ChatModelConfig  # noqa: E402
 
 __all__ = ["ChatModel", "ChatModelConfig"]

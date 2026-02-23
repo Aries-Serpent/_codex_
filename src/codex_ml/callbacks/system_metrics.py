@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """System metrics callback for optional CPU/GPU sampling."""
 
 
-from contextlib import suppress
-from typing import Any
+from contextlib import suppress  # noqa: E402
+from typing import Any  # noqa: E402
 
-from codex_ml.callbacks import Callback
+from codex_ml.callbacks import Callback  # noqa: E402
 
 try:  # pragma: no cover - optional dependency import
     import pynvml

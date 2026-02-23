@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 """Settings and schema definitions for Codex ML configuration."""
 
 
-import warnings
-from functools import lru_cache
-from typing import Any
+import warnings  # noqa: E402
+from functools import lru_cache  # noqa: E402
+from typing import Any  # noqa: E402
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field  # noqa: E402
 
 try:  # pragma: no cover - optional dependency shim
     from pydantic_settings import BaseSettings, SettingsConfigDict

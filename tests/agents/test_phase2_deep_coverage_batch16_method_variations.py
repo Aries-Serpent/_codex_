@@ -272,7 +272,7 @@ class TestMethodVariations_AdvancedCalculators:
         ]
 
         for cross_section, length in dimensions:
-            channel = FluidChannel("test", cross_section, length)
+            channel = FluidChannel(name="test", cross_section=cross_section, length=length)
             assert channel.cross_section == cross_section
             assert channel.length == length
 

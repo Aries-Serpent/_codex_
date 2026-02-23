@@ -31,18 +31,18 @@ def _ngram_counts(tokens: list[str], order: int) -> Counter[tuple[str, ...]]:
 
 
 def _prepare_pairs(
-    predictions: Sequence[object],
+    preds: Sequence[object],
     targets: Sequence[object],
 ) -> list[tuple[list[str], list[str]]]:
     prepared: list[tuple[list[str], list[str]]] = []
-    for pred, tgt in zip(predictions, targets):
+    for pred, tgt in zip(preds, targets):
         prepared.append((_tokenise(pred), _tokenise(tgt)))
     return prepared
 
 
 @register_metric("bleu", override=True)
 def bleu(
-    predictions: Sequence[object],
+    preds: Sequence[object],
     targets: Sequence[object],
     *,
     max_order: int = 4,
@@ -50,7 +50,7 @@ def bleu(
 ) -> float:
     """Compute a BLEU score using uniform n-gram weighting."""
 
-    pairs = _prepare_pairs(predictions, targets)
+    pairs = _prepare_pairs(preds, targets)
     if not pairs:
         return 0.0
 
@@ -111,10 +111,10 @@ def _lcs_length(a: list[str], b: list[str]) -> int:
 
 
 @register_metric("rougeL", override=True)
-def rouge_l(predictions: Sequence[object], targets: Sequence[object]) -> float:
+def rouge_l(preds: Sequence[object], targets: Sequence[object]) -> float:
     """Compute the ROUGE-L F1 score using longest common subsequence."""
 
-    pairs = _prepare_pairs(predictions, targets)
+    pairs = _prepare_pairs(preds, targets)
     if not pairs:
         return 0.0
 

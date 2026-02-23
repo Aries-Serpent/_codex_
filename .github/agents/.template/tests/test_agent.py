@@ -1,6 +1,7 @@
 """Unit tests for [Agent Name]"""
 
 import pytest
+
 from ..src.agent import AgentClass
 
 
@@ -21,7 +22,7 @@ def test_agent_execute_success(agent):
     """Test agent execution with valid task"""
     task = {'description': 'test task'}
     result = agent.execute(task)
-    
+
     assert result is not None
     assert result['status'] == 'success'
     assert 'output' in result
@@ -31,7 +32,7 @@ def test_agent_execute_success(agent):
 def test_agent_execute_missing_description(agent):
     """Test agent handles missing description"""
     invalid_task = {}
-    
+
     with pytest.raises(ValueError, match="Task must include 'description'"):
         agent.execute(invalid_task)
 
@@ -50,7 +51,7 @@ version: 2.0.0
 enabled: false
 custom_setting: test_value
 """)
-    
+
     agent = AgentClass(config_file)
     assert agent.config['version'] == '2.0.0'
     assert agent.config['enabled'] is False

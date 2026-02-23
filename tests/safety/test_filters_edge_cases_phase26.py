@@ -71,10 +71,8 @@ class TestSafetyFiltersEdgeCases:
         filters = SafetyFilters.from_defaults()
         test_cases = [
             "API_KEY='abc123' and PASSWORD='xyz789'",
-            # Note: Concatenated string patterns like '"ghp_" + "abcd"' are NOT detectable
-            # by regex-based filters as they require semantic code analysis
-            # 'token="ghp_" + "abcdefgh12345678"',  # Skipped - requires AST analysis
-            "key = 'sk-' + secret_suffix",
+            # Note: Split/concatenated patterns like 'sk-' + var are NOT detectable
+            # by regex-based filters; they require AST/semantic analysis.
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)

@@ -6,20 +6,20 @@ from __future__ import annotations
 
 import logging
 logger = logging.getLogger(__name__)
-import mimetypes
-import os
-import subprocess
-from collections.abc import Callable, Sequence
-from dataclasses import dataclass, replace
-from pathlib import Path
-from typing import Any
+import mimetypes  # noqa: E402
+import os  # noqa: E402
+import subprocess  # noqa: E402
+from collections.abc import Callable, Sequence  # noqa: E402
+from dataclasses import dataclass, replace  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from . import backend as backend_module
-from . import config as config_module
-from . import retry as retry_module
-from .logging_config import log_restore, setup_logging
-from .perf import timer
-from .util import (
+from . import backend as backend_module  # noqa: E402
+from . import config as config_module  # noqa: E402
+from . import retry as retry_module  # noqa: E402
+from .logging_config import log_restore, setup_logging  # noqa: E402
+from .perf import timer  # noqa: E402
+from .util import (  # noqa: E402
     append_evidence,
     compression_codec,
     decompress_payload,

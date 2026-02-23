@@ -5,15 +5,15 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-from typing import Any, Mapping
+import os  # noqa: E402
+from typing import Any, Mapping  # noqa: E402
 
 try:  # pragma: no cover - optional import
     import mlflow
 except Exception:  # pragma: no cover - environments without mlflow
     mlflow = None
 
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking.mlflow_guard import ensure_file_backend  # noqa: E402
 
 LOGGER = logging.getLogger(__name__)
 

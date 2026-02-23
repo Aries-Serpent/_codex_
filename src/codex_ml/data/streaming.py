@@ -23,12 +23,14 @@ logger = logging.getLogger(__name__)
 """Streaming dataset helpers for continual-learning style ingestion."""
 
 
-import json
-from pathlib import Path
-from typing import Any, Callable, Iterator
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Iterator  # noqa: E402
 
-from .datamodule import StreamingDataModule
-from .datamodule import default_example_validator as _default_example_validator
+from .datamodule import StreamingDataModule  # noqa: E402
+from .datamodule import (  # noqa: E402
+    default_example_validator as _default_example_validator,  # noqa: E402
+)
 
 Validator = Callable[[Any], None]
 

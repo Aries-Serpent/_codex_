@@ -12,9 +12,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Mapping, Protocol, Sequence, runtime_checkable
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Mapping, Protocol, Sequence, runtime_checkable  # noqa: E402
 
 
 class TokenizationContractError(TypeError):

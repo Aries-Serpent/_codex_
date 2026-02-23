@@ -171,7 +171,7 @@ def test_safe_model_to_device_uses_torch_module_to(
     moved: Dict[str, str] = {}
 
     class FakeTorchModule:
-        def to(self, device: str):
+        def to(self, device: str, **kwargs):
             moved["device"] = device
             return "torch-moved"
 

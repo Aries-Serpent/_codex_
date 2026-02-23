@@ -28,6 +28,11 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         import numpy as np
 
         np.random.seed(seed)
+        try:
+            from codex_ml.utils.seed_registry import register_seed_snapshot
+            register_seed_snapshot(numpy_state=np.random.get_state())
+        except Exception:
+            logger.debug("register_seed_snapshot unavailable; numpy seed set via np.random.seed()")
     except Exception as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)

@@ -221,8 +221,8 @@ class ExternalRepoIngestor:
                             lines = f.readlines()
 
                         # Extract classes, functions
-                        classes = [l.strip() for l in lines if re.match(r'^\s*(class|struct)\s+\w+', l)]
-                        functions = [l.strip() for l in lines if re.match(r'^\s*(void|int|bool|def|function)\s+\w+', l)]
+                        classes = [line_item.strip() for line_item in lines if re.match(r'^\s*(class|struct)\s+\w+', line_item)]
+                        functions = [line_item.strip() for line_item in lines if re.match(r'^\s*(void|int|bool|def|function)\s+\w+', line_item)]
 
                         components.append({
                             "file": str(file_path.relative_to(repo_path)),

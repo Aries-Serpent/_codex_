@@ -9,7 +9,7 @@ import json
 import logging
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Callable, Optional
 
@@ -39,7 +39,7 @@ class Metric:
     name: str
     value: float
     metric_type: MetricType
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     labels: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -61,7 +61,7 @@ class Alert:
     severity: AlertSeverity
     message: str
     source: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     correlation_id: Optional[str] = None
     context: dict = field(default_factory=dict)
     resolved: bool = False
@@ -86,7 +86,7 @@ class LogEntry:
 
     level: str
     message: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     correlation_id: Optional[str] = None
     x_request_id: Optional[str] = None
     gh_request_id: Optional[str] = None

@@ -5,26 +5,26 @@ Analyzes all # nosec comments in the codebase and generates a detailed report.
 """
 import re
 import sys
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 
 def parse_nosec_comments(root_dir: Path) -> Dict[str, List[Tuple[int, str, str, bool]]]:
     """
     Parse all nosec comments from Python files.
-    
+
     Returns:
         Dict mapping file paths to list of (line_num, rule_id, justification, has_justification)
     """
     nosec_pattern = re.compile(r'#\s*nosec\s*([B\d,\s]*)(.*)?')
     results = defaultdict(list)
-    
+
     for py_file in root_dir.rglob('*.py'):
         # Skip certain directories
         if any(exc in str(py_file) for exc in ['.venv', '.git', '__pycache__', 'node_modules']):
             continue
-        
+
         try:
             with open(py_file, 'r', encoding='utf-8') as f:
                 for lineno, line in enumerate(f, 1):
@@ -37,7 +37,7 @@ def parse_nosec_comments(root_dir: Path) -> Dict[str, List[Tuple[int, str, str, 
                         )
         except Exception as e:
             print(f"Error reading {py_file}: {e}", file=sys.stderr)
-    
+
     return results
 
 
@@ -45,21 +45,21 @@ def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> 
     """Generate comprehensive audit report."""
     total_nosec = sum(len(v) for v in nosec_data.values())
     files_with_nosec = len(nosec_data)
-    
+
     # Count by justification status
     with_justification = sum(
-        1 for items in nosec_data.values() 
+        1 for items in nosec_data.values()
         for item in items if item[3]
     )
     without_justification = total_nosec - with_justification
-    
+
     # Count by rule
     rule_counts = defaultdict(int)
     for items in nosec_data.values():
         for _, rule_id, _, _ in items:
             for rule in rule_id.split(','):
                 rule_counts[rule.strip()] += 1
-    
+
     report = []
     report.append("=" * 80)
     report.append("NOSEC SUPPRESSION AUDIT REPORT")
@@ -72,13 +72,13 @@ def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> 
     report.append(f"With justification: {with_justification} ({with_justification/total_nosec*100:.1f}%)")
     report.append(f"Without justification: {without_justification} ({without_justification/total_nosec*100:.1f}%)")
     report.append("")
-    
+
     report.append("SUPPRESSIONS BY RULE")
     report.append("-" * 80)
     for rule, count in sorted(rule_counts.items(), key=lambda x: x[1], reverse=True):
         report.append(f"  {rule:10s}: {count:3d} occurrences")
     report.append("")
-    
+
     report.append("FILES WITHOUT JUSTIFICATION")
     report.append("-" * 80)
     found_unjustified = False
@@ -89,11 +89,11 @@ def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> 
             report.append(f"\n{filepath}:")
             for lineno, rule, _ in unjustified:
                 report.append(f"  Line {lineno}: Rule {rule} - NO JUSTIFICATION")
-    
+
     if not found_unjustified:
         report.append("✅ ALL nosec comments have justifications!")
     report.append("")
-    
+
     report.append("DETAILED INVENTORY (First 50 entries)")
     report.append("-" * 80)
     count = 0
@@ -110,7 +110,7 @@ def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> 
             count += 1
         if count >= 50:
             break
-    
+
     report.append("=" * 80)
     report.append("RECOMMENDATIONS")
     report.append("=" * 80)
@@ -120,14 +120,14 @@ def generate_report(nosec_data: Dict[str, List[Tuple[int, str, str, bool]]]) -> 
         report.append("   Format: # nosec B101 - Justification here")
     else:
         report.append("✅ All nosec comments properly justified")
-    
+
     report.append("")
     justification_rate = (with_justification / total_nosec * 100) if total_nosec > 0 else 0
     report.append(f"Current justification rate: {justification_rate:.1f}%")
-    report.append(f"Target justification rate: 100%")
+    report.append("Target justification rate: 100%")
     report.append("")
     report.append("=" * 80)
-    
+
     return "\n".join(report)
 
 
@@ -135,17 +135,17 @@ if __name__ == '__main__':
     root = Path.cwd()
     if len(sys.argv) > 1:
         root = Path(sys.argv[1])
-    
+
     print(f"Scanning {root} for nosec comments...", file=sys.stderr)
     nosec_data = parse_nosec_comments(root)
-    
+
     if not nosec_data:
         print("No nosec comments found.", file=sys.stderr)
         sys.exit(0)
-    
+
     report = generate_report(nosec_data)
     print(report)
-    
+
     # Exit with error if any unjustified
     total = sum(len(v) for v in nosec_data.values())
     justified = sum(1 for items in nosec_data.values() for item in items if item[3])

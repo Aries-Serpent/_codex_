@@ -47,8 +47,11 @@ import sys
 from datetime import datetime, timedelta, timezone
 
 try:
+    import sys
+
     from github import Github
-    import sys; sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     from codex.auth import MFAProvider
 except ImportError as e:
     print(f"Error: {e}")

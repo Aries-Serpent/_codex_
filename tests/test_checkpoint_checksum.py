@@ -63,7 +63,7 @@ def test_checkpoint_checksum_verify(tmp_path: Path):
     """Test checkpoint checksum verification through CheckpointManager."""
     # Create a minimal mock model with simple state
     model = MockModel({"layer.weight": torch.tensor([1.0, 2.0, 3.0])})
-    
+
     cm = CheckpointManager(tmp_path)
 
     # Save a checkpoint with a real model to avoid mocking issues

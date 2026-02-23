@@ -6,21 +6,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import json
-import os
-import subprocess
-import sys
-from collections.abc import Callable, Iterable, Mapping, Sequence
-from pathlib import Path
-from typing import Any
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from collections.abc import Callable, Iterable, Mapping, Sequence  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError  # noqa: E402
 
-import typer
-from codex.versioning import update_artifact_version
-from codex.zendesk import apply as apply_module
-from codex.zendesk.model import (
+import typer  # noqa: E402
+from codex.versioning import update_artifact_version  # noqa: E402
+from codex.zendesk import apply as apply_module  # noqa: E402
+from codex.zendesk.model import (  # noqa: E402
     App,
     Group,
     GuideThemeRef,
@@ -34,8 +34,8 @@ from codex.zendesk.model import (
     View,
     Webhook,
 )
-from codex.zendesk.monitoring import register_zendesk_metrics
-from codex.zendesk.plan.diff_engine import (
+from codex.zendesk.monitoring import register_zendesk_metrics  # noqa: E402
+from codex.zendesk.plan.diff_engine import (  # noqa: E402
     diff_apps,
     diff_fields,
     diff_forms,
@@ -48,7 +48,7 @@ from codex.zendesk.plan.diff_engine import (
     diff_views,
     diff_webhooks,
 )
-from codex.zendesk.plan.validators import validate_plan
+from codex.zendesk.plan.validators import validate_plan  # noqa: E402
 
 app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 

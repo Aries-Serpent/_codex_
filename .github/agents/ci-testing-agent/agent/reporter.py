@@ -14,7 +14,7 @@ class ArtifactReporter:
     def __init__(self, workspace: Path):
         """
         Initialize ArtifactReporter.
-        
+
         Args:
             workspace: Path to repository workspace
         """
@@ -25,7 +25,7 @@ class ArtifactReporter:
     def report(self, result: Dict[str, Any]) -> None:
         """
         Generate and save test report.
-        
+
         Args:
             result: Result dictionary from agent execution
         """
@@ -59,10 +59,10 @@ class ArtifactReporter:
     def _generate_summary(self, result: Dict[str, Any]) -> str:
         """
         Generate markdown summary of results.
-        
+
         Args:
             result: Result dictionary
-        
+
         Returns:
             Markdown summary string
         """
@@ -208,11 +208,11 @@ class ArtifactReporter:
     def upload_artifact(self, file_path: Path, artifact_name: str) -> bool:
         """
         Upload artifact to GitHub Actions.
-        
+
         Args:
             file_path: Path to file to upload
             artifact_name: Name for artifact
-        
+
         Returns:
             True if upload would succeed (placeholder for actual GitHub integration)
         """
@@ -224,11 +224,11 @@ class ArtifactReporter:
     def create_pr_comment(self, pr_number: int, comment: str) -> bool:
         """
         Create comment on pull request.
-        
+
         Args:
             pr_number: Pull request number
             comment: Comment text
-        
+
         Returns:
             True if comment would be created (placeholder for actual GitHub integration)
         """
@@ -241,17 +241,17 @@ class ArtifactReporter:
     ) -> bool:
         """
         Update commit status.
-        
+
         Args:
             commit_sha: Commit SHA
             state: Status state ('pending', 'success', 'failure', 'error')
             description: Status description
             context: Status context
-        
+
         Returns:
             True if status would be updated (placeholder for actual GitHub integration)
         """
-        print(f"📊 Commit status update ready")
+        print("📊 Commit status update ready")
         print(f"   SHA: {commit_sha}")
         print(f"   State: {state}")
         print(f"   Description: {description}")

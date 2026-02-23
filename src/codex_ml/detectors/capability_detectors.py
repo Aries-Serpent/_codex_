@@ -27,10 +27,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
-from typing import Any
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from .core import DetectorResult, clamp01
+from .core import DetectorResult, clamp01  # noqa: E402
 
 
 def _check_path_exists(path: str | Path) -> bool:

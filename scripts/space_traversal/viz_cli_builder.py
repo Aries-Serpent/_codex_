@@ -1005,9 +1005,9 @@ def generate_cli_builder(
         version: Pipeline version
     """
     from datetime import datetime, timezone
-    
+
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    
+
     html = CLI_BUILDER_TEMPLATE.format(
         repo_name=repo_name,
         version=version,

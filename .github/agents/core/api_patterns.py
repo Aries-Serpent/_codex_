@@ -16,14 +16,14 @@ PDA Loop Integration:
 import ast
 import re
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class APIPattern:
     """API usage issue or deprecation warning."""
-    
+
     name: str
     pattern_type: str  # "deprecated", "breaking_change", "version_incompatible", "unsafe_api"
     description: str
@@ -39,16 +39,16 @@ class APIPattern:
 class APIPatternMatcher:
     """
     Detects deprecated API usage and compatibility issues.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: api_pattern_detection
-    
+
     PDA Loop:
     - PERCEIVE: Multi-layer API usage analysis (AST + regex)
     - DECIDE: Breaking-change risk classification
     - ACT: Pattern detection with migration guidance
     - AFTERMATH: Metrics + cognitive brain learning
     """
-    
+
     # Known deprecated APIs (examples - expand as needed)
     DEPRECATED_APIS = {
         # Python stdlib
@@ -56,28 +56,28 @@ class APIPatternMatcher:
         'asynchat': {'deprecated_in': '3.6', 'removed_in': '3.12', 'replacement': 'asyncio'},
         'imp': {'deprecated_in': '3.4', 'removed_in': '3.12', 'replacement': 'importlib'},
         'optparse': {'deprecated_in': '2.7', 'removed_in': None, 'replacement': 'argparse'},
-        
+
         # Common third-party deprecations
         'unittest.TestCase.assertEquals': {'deprecated_in': '3.2', 'removed_in': None, 'replacement': 'assertEqual'},
         'collections.Mapping': {'deprecated_in': '3.3', 'removed_in': '3.10', 'replacement': 'collections.abc.Mapping'},
         'SafeConfigParser': {'deprecated_in': '3.2', 'removed_in': None, 'replacement': 'ConfigParser'},
     }
-    
+
     def __init__(self):
         """Initialize API pattern matcher."""
         self.detected_patterns: List[APIPattern] = []
         #AFTERMATH_METRIC: api_matcher_initialized
-    
+
     def analyze_file(self, file_path: Path, content: Optional[str] = None) -> List[APIPattern]:
         """
         Analyze a file for API usage issues.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: file_api_analysis
-        
+
         Args:
             file_path: Path to file to analyze
             content: Optional file content (will read if not provided)
-            
+
         Returns:
             List of detected API patterns
         """
@@ -86,9 +86,9 @@ class APIPatternMatcher:
                 content = file_path.read_text()
             except (IOError, UnicodeDecodeError):
                 return []
-        
+
         detected: List[APIPattern] = []
-        
+
         # PERCEIVE: Multi-layer API scanning
         if file_path.suffix == ".py":
             # Python-specific analysis using AST
@@ -103,23 +103,23 @@ class APIPatternMatcher:
                 # Intentionally skip files with syntax errors
                 # API analysis requires valid AST
                 pass
-        
+
         # General regex-based detection (all file types)
         detected.extend(self._detect_regex_patterns(content, file_path))
-        
+
         # AFTERMATH: Record metrics
         #AFTERMATH_METRIC: api_issues_count = len(detected)
-        
+
         return detected
-    
+
     def _detect_deprecated_imports(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
         """
         Detect deprecated module imports.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: deprecated_import_detection
         """
         detected = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
@@ -142,7 +142,7 @@ class APIPatternMatcher:
                                 "replacement": info['replacement']
                             }
                         ))
-            
+
             elif isinstance(node, ast.ImportFrom):
                 if node.module in self.DEPRECATED_APIS:
                     info = self.DEPRECATED_APIS[node.module]
@@ -163,21 +163,21 @@ class APIPatternMatcher:
                             "replacement": info['replacement']
                         }
                     ))
-        
+
         return detected
-    
+
     def _detect_deprecated_functions(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
         """
         Detect deprecated function/method calls.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: deprecated_function_detection
         """
         detected = []
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 func_name = self._get_call_name(node)
-                
+
                 # Check against known deprecated functions
                 if func_name in self.DEPRECATED_APIS:
                     info = self.DEPRECATED_APIS[func_name]
@@ -198,7 +198,7 @@ class APIPatternMatcher:
                             "replacement": info['replacement']
                         }
                     ))
-                
+
                 # Common deprecated patterns
                 if func_name == 'assert_':
                     detected.append(APIPattern(
@@ -216,17 +216,17 @@ class APIPatternMatcher:
                             "line": node.lineno
                         }
                     ))
-        
+
         return detected
-    
+
     def _detect_unsafe_apis(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
         """
         Detect unsafe or risky API usage.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: unsafe_api_detection
         """
         detected = []
-        
+
         unsafe_functions = {
             'eval': 'Code injection risk',
             'exec': 'Code injection risk',
@@ -235,11 +235,11 @@ class APIPatternMatcher:
             'pickle.loads': 'Arbitrary code execution risk - use json',
             'yaml.load': 'Arbitrary code execution risk - use yaml.safe_load'
         }
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 func_name = self._get_call_name(node)
-                
+
                 for unsafe_func, reason in unsafe_functions.items():
                     if unsafe_func in func_name:
                         detected.append(APIPattern(
@@ -259,17 +259,17 @@ class APIPatternMatcher:
                                 "risk": reason
                             }
                         ))
-        
+
         return detected
-    
+
     def _detect_version_incompatibilities(self, tree: ast.AST, file_path: Path) -> List[APIPattern]:
         """
         Detect Python version-specific features.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: version_compatibility_detection
         """
         detected = []
-        
+
         # Check for Python 3.10+ features (match statement)
         for node in ast.walk(tree):
             if isinstance(node, ast.Match):
@@ -289,7 +289,7 @@ class APIPatternMatcher:
                         "min_version": "3.10"
                     }
                 ))
-            
+
             # Walrus operator (Python 3.8+)
             if isinstance(node, ast.NamedExpr):
                 detected.append(APIPattern(
@@ -308,17 +308,17 @@ class APIPatternMatcher:
                         "min_version": "3.8"
                     }
                 ))
-        
+
         return detected
-    
+
     def _detect_regex_patterns(self, content: str, file_path: Path) -> List[APIPattern]:
         """
         Detect API issues using regex patterns.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: regex_api_detection
         """
         detected = []
-        
+
         # Check for deprecated string formatting
         if re.search(r'%\s*\(', content):
             detected.append(APIPattern(
@@ -333,9 +333,9 @@ class APIPatternMatcher:
                 migration_guide="Use f-strings or str.format()",
                 metadata={"file": str(file_path)}
             ))
-        
+
         return detected
-    
+
     def _get_call_name(self, node: ast.Call) -> str:
         """Extract function name from Call node."""
         if isinstance(node.func, ast.Name):
@@ -350,13 +350,13 @@ class APIPatternMatcher:
                 parts.append(current.id)
             return '.'.join(reversed(parts))
         return "unknown"
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """
         Generate summary of detected API issues.
-        
+
         #AFTERMATH_METRIC: api_summary_generated
-        
+
         Returns:
             Dictionary with API compatibility metrics
         """
@@ -364,13 +364,13 @@ class APIPatternMatcher:
             "total_issues": len(self.detected_patterns),
             "by_type": {},
             "by_severity": {},
-            "breaking_changes": len([p for p in self.detected_patterns 
+            "breaking_changes": len([p for p in self.detected_patterns
                                     if p.removed_in is not None])
         }
-        
+
         for pattern in self.detected_patterns:
             summary["by_type"][pattern.pattern_type] = summary["by_type"].get(pattern.pattern_type, 0) + 1
             summary["by_severity"][pattern.severity] = summary["by_severity"].get(pattern.severity, 0) + 1
-        
+
         #AFTERMATH_LESSON_LEARNED: api_patterns_summarized
         return summary

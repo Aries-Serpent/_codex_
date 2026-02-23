@@ -13,7 +13,7 @@ import logging
 import os
 import threading
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Optional
 
@@ -25,8 +25,8 @@ class CacheEntry:
     key: str
     content: str
     content_hash: str
-    created_at: datetime = field(default_factory=datetime.now)
-    last_accessed: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    last_accessed: datetime = field(default_factory=lambda: datetime.now(UTC))
     access_count: int = 0
     ttl_seconds: Optional[int] = None
     tags: list[str] = field(default_factory=list)
@@ -42,13 +42,13 @@ class CacheEntry:
         """Check if entry has expired."""
         if self.ttl_seconds is None:
             return False
-        age = (datetime.now() - self.created_at).total_seconds()
+        age = (datetime.now(UTC) - self.created_at).total_seconds()
         return age > self.ttl_seconds
 
     @property
     def age_seconds(self) -> float:
         """Age of entry in seconds."""
-        return (datetime.now() - self.created_at).total_seconds()
+        return (datetime.now(UTC) - self.created_at).total_seconds()
 
 
 @dataclass
@@ -133,7 +133,7 @@ class ContextCache:
                 return None
 
             # Update access stats
-            entry.last_accessed = datetime.now()
+            entry.last_accessed = datetime.now(UTC)
             entry.access_count += 1
             self._hits += 1
             self._tokens_saved += entry.token_estimate
@@ -168,7 +168,7 @@ class ContextCache:
             # Check if already cached with same content
             existing = self._cache.get(key)
             if existing and existing.content_hash == content_hash:
-                existing.last_accessed = datetime.now()
+                existing.last_accessed = datetime.now(UTC)
                 existing.access_count += 1
                 return True
 

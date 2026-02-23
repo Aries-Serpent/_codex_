@@ -37,21 +37,26 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     import config_legacy as hydra
 
-from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
-from common.mlflow_guard import (
+from common.hooks import (  # noqa: E402
+    CheckpointHook,
+    EMAHook,
+    HookManager,
+    NDJSONLogHook,
+)
+from common.mlflow_guard import (  # noqa: E402
     ensure_local_tracking,
     log_artifacts_safe,
     start_run_with_tags,
 )
-from common.randomness import set_seed
-from hhg_logistics.model.peft_utils import (
+from common.randomness import set_seed  # noqa: E402
+from hhg_logistics.model.peft_utils import (  # noqa: E402
     apply_lora,
     freeze_base_weights,
     load_hf_llm,
     tokenize_for_causal_lm,
 )
-from hhg_logistics.plugins import load_plugins
-from omegaconf import DictConfig, OmegaConf
+from hhg_logistics.plugins import load_plugins  # noqa: E402
+from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from torch.optim import AdamW

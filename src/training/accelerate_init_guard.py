@@ -16,6 +16,15 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+# Exported at module level so tests can patch via
+# patch("src.training.accelerate_init_guard.Accelerator", ...)
+try:
+    from accelerate import Accelerator  # noqa: F401
+    _ACCELERATOR_AVAILABLE = True
+except ImportError:
+    Accelerator = None  # type: ignore[misc,assignment]
+    _ACCELERATOR_AVAILABLE = False
+
 
 @dataclass
 class AccelerateInitResult:
@@ -56,7 +65,18 @@ class AccelerateInitResult:
 
 
 def is_accelerate_available() -> bool:
-    """Check if accelerate package is importable."""
+    """Check if accelerate package is importable.
+
+    The ``Accelerator is not None`` check is an explicit reference to the
+    module-level ``Accelerator`` symbol so that static analysis tools (CodeQL)
+    can confirm the symbol is used in executable code, not only in ``__all__``.
+    Logically, when ``_ACCELERATOR_AVAILABLE`` is ``True``, ``Accelerator`` is
+    guaranteed non-``None`` from the module-load try/except block above.
+    """
+    # _ACCELERATOR_AVAILABLE is set at module load from the Accelerator import attempt.
+    # Accelerator is None when accelerate is not installed; non-None when it is.
+    if _ACCELERATOR_AVAILABLE and Accelerator is not None:
+        return True
     spec = importlib.util.find_spec("accelerate")
     return spec is not None
 
@@ -66,10 +86,9 @@ def is_gpu_available() -> bool:
     try:
         import torch
 
-        return torch.cuda.is_available()
-    except ImportError as e:
+        return bool(torch.cuda.is_available())
+    except (ImportError, AttributeError) as e:
         logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
         return False
 
 
@@ -100,11 +119,12 @@ def safe_accelerate_init(
         ...     print(f"Error: {result.error}")
     """
     cpu_only_env = os.environ.get("CUDA_VISIBLE_DEVICES") == ""
-    # Check GPU availability
-    gpu_available = is_gpu_available()
+    # Reference functions through module namespace so mock patches take effect
+    _mod = sys.modules[__name__]
+    gpu_available = _mod.is_gpu_available()
 
     # Check accelerate availability
-    if not is_accelerate_available():
+    if not _mod.is_accelerate_available():
         if cpu_fallback and cpu_only_env:
             result = AccelerateInitResult(
                 success=False,
@@ -147,14 +167,16 @@ def safe_accelerate_init(
 
     # Try to initialize accelerate
     try:
-        # Check for distributed environment variables
-        from accelerate import Accelerator
+        # Use module-level Accelerator so tests can patch it
+        _AcceleratorCls = sys.modules[__name__].Accelerator
+        if _AcceleratorCls is None:
+            raise ImportError("accelerate not available")
 
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         rank = int(os.getenv("RANK", "0"))
 
         # Create accelerator (this will auto-detect distributed setup)
-        accelerator = Accelerator()
+        accelerator = _AcceleratorCls()
 
         # Determine backend
         backend = None
@@ -223,6 +245,7 @@ def get_distributed_env_info() -> dict[str, str]:
 
 
 __all__ = [
+    "Accelerator",
     "AccelerateInitResult",
     "is_accelerate_available",
     "is_gpu_available",

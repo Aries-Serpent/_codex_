@@ -257,7 +257,7 @@ def evaluate(
 # Hydra entry (optional)
 if _HAS_HYDRA:
 
-    @hydra.main(version_base=None, config_path="../../configs/evaluation", config_name="default")
+    @hydra.main(version_base=None, config_path="../configs/evaluation", config_name="default")
     def main(cfg: DictConfig) -> None:
         logger = init_json_logging()
         arg_list = sys.argv[1:]

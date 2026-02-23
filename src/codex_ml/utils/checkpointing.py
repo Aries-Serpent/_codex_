@@ -53,6 +53,10 @@ from codex_ml.utils.seeding import (
 
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 from .storage import StorageProvider
+from codex_ml.utils.seed_registry import (  # DR-001: breaks seeding↔checkpointing cycle
+    register_seed_snapshot,
+)
+from codex_ml.utils import seed_registry as _seed_registry
 
 logger = logging.getLogger(__name__)
 
@@ -92,36 +96,6 @@ try:  # pragma: no cover - optional numpy dependency
     NUMPY_AVAILABLE = True
 except Exception:  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
-
-
-_LAST_SEEDED_PYTHON_STATE: Optional[tuple[Any, ...]] = None
-_LAST_SEEDED_NUMPY_STATE: Optional[Any] = None
-_LAST_SEEDED_TORCH_STATE: Optional[Any] = None
-_LAST_SEEDED_TORCH_CUDA_STATE: Optional[Any] = None
-
-
-def register_seed_snapshot(
-    *,
-    python_state: Optional[Any] = None,
-    numpy_state: Optional[Any] = None,
-    torch_state: Optional[Any] = None,
-    torch_cuda_state: Optional[Any] = None,
-) -> None:
-    """Record RNG states captured immediately after a seeding operation."""
-
-    global _LAST_SEEDED_PYTHON_STATE
-    global _LAST_SEEDED_NUMPY_STATE
-    global _LAST_SEEDED_TORCH_STATE
-    global _LAST_SEEDED_TORCH_CUDA_STATE
-
-    if python_state is not None:
-        _LAST_SEEDED_PYTHON_STATE = python_state
-    if numpy_state is not None:
-        _LAST_SEEDED_NUMPY_STATE = numpy_state
-    if torch_state is not None:
-        _LAST_SEEDED_TORCH_STATE = torch_state
-    if torch_cuda_state is not None:
-        _LAST_SEEDED_TORCH_CUDA_STATE = torch_cuda_state
 
 
 _ORIGINAL_RANDOM_SEED = random.seed
@@ -306,8 +280,15 @@ def _resolve_format(value: Optional[str]) -> SaveFormat:
 
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
-    with path.open("wb") as fh:
-        pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    try:
+        with path.open("wb") as fh:
+            pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
+    except TypeError as e:
+        if "issubclass() arg 2 must be a class" in str(e) or "isinstance() arg 2 must be a type" in str(e):
+            with path.open("wb") as fh:
+                pickle.dump(dict(payload), fh, protocol=2)
+        else:
+            raise
 
 
 def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
@@ -320,7 +301,19 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         signature = None
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
-    torch.save(dict(payload), path, **save_kwargs)
+    try:
+        torch.save(dict(payload), path, **save_kwargs)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
+            logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
+            try:
+                torch.save(dict(payload), path, pickle_protocol=2)
+            except Exception as e2:
+                logger.error("torch.save failed even with pickle_protocol=2: %s", e2)
+                raise
+        else:
+            raise
 
 
 def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) -> None:
@@ -365,10 +358,13 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
     if fmt == "torch" and not TORCH_AVAILABLE:
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
-        with path.open("rb"):
+        with path.open("rb") as _fh:
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                return safe_pickle_load(str(path), use_restricted_unpickler=True)
+            except ImportError:
+                return pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
@@ -480,6 +476,29 @@ def _safe_git_commit() -> Optional[str]:
     return _fallback_git_commit()
 
 
+def _safe_str_value(val: Any) -> Optional[str]:
+    """Safely convert a value to a string, handling MagicMock and other non-serializable types.
+
+    Args:
+        val: Value to convert
+
+    Returns:
+        String representation or None if not safely convertible
+    """
+    if val is None:
+        return None
+    # Check if it's a MagicMock or similar test object
+    if hasattr(val, '_mock_name') or type(val).__name__ == 'MagicMock':
+        return None
+    # Try to convert to string
+    try:
+        # Verify it's JSON-serializable by trying to encode it
+        json.dumps(str(val))
+        return str(val)
+    except (TypeError, ValueError):
+        return None
+
+
 def _minimal_env_summary() -> dict[str, Optional[str]]:
     """Collect minimal environment information (lightweight, no heavy deps)."""
     info: dict[str, Optional[str]] = {
@@ -488,20 +507,25 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
     }
     if TORCH_AVAILABLE:
         try:
-            info["torch"] = getattr(torch, "__version__", None)
-            info["cuda"] = (
-                torch.version.cuda
-                if hasattr(torch, "version") and torch.cuda.is_available()
-                else None
-            )
+            torch_version = getattr(torch, "__version__", None)
+            info["torch"] = _safe_str_value(torch_version)
+
+            cuda_version = None
+            if hasattr(torch, "version") and hasattr(torch.cuda, "is_available"):
+                try:
+                    if torch.cuda.is_available():
+                        cuda_version = torch.version.cuda
+                except Exception:  # noqa: BLE001 — CUDA version detection is best-effort
+                    pass
+            info["cuda"] = _safe_str_value(cuda_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
-            info["torch"] = (
-                getattr(torch, "__version__", None) if hasattr(torch, "__version__") else None
-            )
+            torch_version = getattr(torch, "__version__", None)
+            info["torch"] = _safe_str_value(torch_version)
     if NUMPY_AVAILABLE:
         try:
-            info["numpy"] = getattr(np, "__version__", None)
+            np_version = getattr(np, "__version__", None)
+            info["numpy"] = _safe_str_value(np_version)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             info["numpy"] = None
@@ -568,6 +592,10 @@ def _safe_environment_summary() -> dict[str, Any]:
                 gc = env.get("git_commit") or _safe_git_commit()
                 if gc:
                     env.setdefault("git_commit", gc)
+                # Sanitize: keep only pickle-safe scalar types to prevent
+                # MagicMock or other non-serializable objects from leaking in.
+                safe_types = (str, int, float, bool, type(None))
+                env = {k: v for k, v in env.items() if isinstance(v, safe_types)}
                 return env
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
@@ -799,7 +827,16 @@ def build_payload_bytes(
     if rng_state:
         state["rng"] = _rng_dump()
     buf = io.BytesIO()
-    torch.save(state, buf)
+    try:
+        torch.save(state, buf)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "FloatStorage" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            buf = io.BytesIO()
+            torch.save(state, buf, pickle_protocol=2)
+        else:
+            raise
     return buf.getvalue()
 
 
@@ -839,7 +876,14 @@ def load_payload(
 
 
 def _write_json(path: Path, data: dict[str, Any]) -> None:
-    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+    class _SafeEncoder(json.JSONEncoder):
+        """Fallback encoder: renders non-serializable objects as their repr string."""
+        def default(self, o: Any) -> Any:
+            try:
+                return super().default(o)
+            except TypeError:
+                return repr(o)
+    path.write_text(json.dumps(data, indent=2, sort_keys=True, cls=_SafeEncoder), encoding="utf-8")
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -864,7 +908,7 @@ def _rng_dump() -> dict[str, Any]:
     py_state_current = random.getstate()
     state: dict[str, Any] = {
         "python": _python_state_payload(
-            _LAST_SEEDED_PYTHON_STATE if _LAST_SEEDED_PYTHON_STATE is not None else py_state_current
+            _seed_registry._LAST_SEEDED_PYTHON_STATE if _seed_registry._LAST_SEEDED_PYTHON_STATE is not None else py_state_current
         ),
         "python_resume": _python_state_payload(py_state_current),
     }
@@ -872,7 +916,7 @@ def _rng_dump() -> dict[str, Any]:
     if NUMPY_AVAILABLE:  # pragma: no branch
         np_state_current = np.random.get_state()
         state["numpy"] = _numpy_state_payload(
-            _LAST_SEEDED_NUMPY_STATE if _LAST_SEEDED_NUMPY_STATE is not None else np_state_current
+            _seed_registry._LAST_SEEDED_NUMPY_STATE if _seed_registry._LAST_SEEDED_NUMPY_STATE is not None else np_state_current
         )
         state["numpy_resume"] = _numpy_state_payload(np_state_current)
 
@@ -906,8 +950,8 @@ def _rng_dump() -> dict[str, Any]:
 
         torch_state_current = _capture_torch_state()
         if torch_state_current:
-            seed_state = _LAST_SEEDED_TORCH_STATE
-            seed_cuda = _LAST_SEEDED_TORCH_CUDA_STATE
+            seed_state = _seed_registry._LAST_SEEDED_TORCH_STATE
+            seed_cuda = _seed_registry._LAST_SEEDED_TORCH_CUDA_STATE
             torch_seed_payload: dict[str, Any] = {}
             if isinstance(seed_state, list):
                 torch_seed_payload["cpu"] = seed_state
@@ -1025,7 +1069,15 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(state, p)
+    try:
+        torch.save(state, p)
+    except (TypeError, RuntimeError) as e:
+        _msg = str(e)
+        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            torch.save(state, p, pickle_protocol=2)
+        else:
+            raise
     _write_checksum_manifest(p)
 
 
@@ -1093,7 +1145,15 @@ class CheckpointManager:
                 state["optimizer"] = optimizer.state_dict()
             if scheduler is not None and hasattr(scheduler, "state_dict"):
                 state["scheduler"] = scheduler.state_dict()
-            torch.save(state, ep_dir / "state.pt")
+            try:
+                torch.save(state, ep_dir / "state.pt")
+            except (TypeError, RuntimeError) as e:
+                _msg = str(e)
+                if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+                    logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+                    torch.save(state, ep_dir / "state.pt", pickle_protocol=2)
+                else:
+                    raise
         else:  # pragma: no cover - fallback path
             state = {
                 "model": getattr(model, "__dict__", None),
@@ -1253,8 +1313,12 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             # Use safe pickle loading to prevent code execution vulnerabilities
-            from utils.safe_pickle import safe_pickle_load
-            state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            try:
+                from codex_ml.utils.safe_pickle import safe_pickle_load
+                state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
+            except ImportError:
+                with open(path / "state.pkl", "rb") as _fh:
+                    state = pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

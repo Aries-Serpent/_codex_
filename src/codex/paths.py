@@ -11,8 +11,8 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
-from pathlib import Path
-from typing import Optional
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
 
 # Standard locations (relative to repo root)
 CODEX_DIR = Path(".codex")

@@ -256,21 +256,20 @@ class TestLoadCsv:
 
     def test_load_csv_basic(self, sample_csv_file: Path):
         """Verify basic CSV loading."""
-        result = load_csv(sample_csv_file)
+        records, meta = load_csv(sample_csv_file)
 
-        assert "data" in result
-        assert "metadata" in result
-        assert len(result["data"]) == 2  # Excluding header
-        assert result["data"][0]["prompt"] == "Question 1"
+        assert isinstance(records, list)
+        assert isinstance(meta, dict)
+        assert len(records) == 2  # Excluding header
+        assert records[0]["prompt"] == "Question 1"
 
     def test_load_csv_metadata(self, sample_csv_file: Path):
         """Verify CSV metadata."""
-        result = load_csv(sample_csv_file)
-        metadata = result["metadata"]
+        records, meta = load_csv(sample_csv_file)
 
-        assert "checksum" in metadata
-        assert "record_count" in metadata
-        assert metadata["record_count"] == 2
+        assert "checksum" in meta
+        assert "num_records" in meta
+        assert meta["num_records"] == 2
 
     def test_load_csv_quoted_fields(self, temp_data_dir: Path):
         """Verify quoted field handling."""
@@ -281,20 +280,20 @@ class TestLoadCsv:
             writer.writerow(["Question with, comma", "Answer with, comma"])
             writer.writerow(['"Quoted question"', '"Quoted answer"'])
 
-        result = load_csv(quoted_file)
+        records, meta = load_csv(quoted_file)
 
-        assert "comma" in result["data"][0]["prompt"]
-        assert "Quoted" in result["data"][1]["prompt"]
+        assert "comma" in records[0]["prompt"]
+        assert "Quoted" in records[1]["prompt"]
 
     def test_load_csv_empty_file(self, temp_data_dir: Path):
         """Verify empty CSV file handling."""
         empty_file = temp_data_dir / "empty.csv"
         empty_file.write_text("")
 
-        result = load_csv(empty_file)
+        records, meta = load_csv(empty_file)
 
-        assert result["data"] == []
-        assert result["metadata"]["empty_file"] is True
+        assert records == []
+        assert meta["empty_file"] is True
 
     def test_load_csv_missing_file(self):
         """Verify error for missing CSV file."""
@@ -310,10 +309,10 @@ class TestLoadCsv:
             writer.writerow(["日本語"])
             writer.writerow(["Ελληνικά"])
 
-        result = load_csv(unicode_file)
+        records, meta = load_csv(unicode_file)
 
-        assert result["data"][0]["text"] == "日本語"
-        assert result["data"][1]["text"] == "Ελληνικά"
+        assert records[0]["text"] == "日本語"
+        assert records[1]["text"] == "Ελληνικά"
 
 
 class TestConnectorCacheRoot:

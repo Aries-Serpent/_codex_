@@ -18,6 +18,10 @@ try:
 except ImportError:
     RAG_RETRIEVER_AVAILABLE = False
 
+# sentence_transformers is required at execution time even when the module import succeeds
+if RAG_RETRIEVER_AVAILABLE:
+    pytest.importorskip("sentence_transformers", reason="sentence_transformers not installed")
+
 pytestmark = pytest.mark.skipif(
     not RAG_RETRIEVER_AVAILABLE,
     reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"

@@ -48,6 +48,9 @@ from codex_ml.utils.optional import optional_import
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
+# Module-level sentinel so tests can monkeypatch `infer.AutoTokenizer`
+AutoTokenizer = transformers.AutoTokenizer if _HAS_TRANSFORMERS and transformers is not None else None
+
 
 _ = run_cmd
 
@@ -108,7 +111,6 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
         if not (_HAS_TORCH and _HAS_TRANSFORMERS):
             raise ImportError("torch and transformers are required for inference")
-        AutoTokenizer = transformers.AutoTokenizer
         tok_name = args.tokenizer or args.checkpoint
         tokenizer = load_from_pretrained(AutoTokenizer, tok_name, revision=get_hf_revision())
 

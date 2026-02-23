@@ -12,12 +12,13 @@ from __future__ import annotations
 
 import json
 import re
-import yaml
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 
 class WorkflowStatus(Enum):

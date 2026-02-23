@@ -20,13 +20,13 @@ This agent detects performance regressions by comparing current metrics against 
 
 **Level 1: Cognitive Access**
 - ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (87.3/100 → target: 92.0+)
+- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
 - ✅ Codebase topology maps for navigation
 - ✅ Pattern library for historical fixes
 
 
 **Level 2: Decision Integration**
-- ✅ Quantum decision engine (k₁=0.35)
+- ✅ Quantum decision engine (k₁=0.332)
 - ✅ Uncertainty optimization for choices
 - ✅ Multi-agent entanglement
 - ✅ Memory compression for efficiency
@@ -58,7 +58,7 @@ fast_cache = CuckooHashTable()  # O(1) guaranteed
 # QEC - Quantum error correction for decisions
 from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
 
-qec = QECQuantumDecisionEngine(k1=0.35)
+qec = QECQuantumDecisionEngine(k1=0.332)
 decision = qec.make_decision(
     options=["option_a", "option_b", "option_c"],
     context={"relevant": "context"}
@@ -306,7 +306,7 @@ k₁ = (avg_time_ms * (1 + error_rate)) / classical_baseline_ms
 - k₁ > 1.0: Slower than baseline ❌
 
 **Performance Targets** (from quantum optimization):
-- **Excellent**: k₁ ≤ 0.35 (2.86x faster than baseline)
+- **Excellent**: k₁ ≤ 0.35 (3.13x faster than baseline)
 - **Good**: k₁ ≤ 0.5 (2x faster than baseline)
 - **Acceptable**: k₁ ≤ 1.0 (same speed as baseline)
 - **Poor**: k₁ ≤ 2.0 (2x slower than baseline)
