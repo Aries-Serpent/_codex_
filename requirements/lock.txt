@@ -81,7 +81,7 @@ beautifulsoup4==4.14.2
     # via nbconvert
 billiard==4.2.4
     # via celery
-black==25.9.0
+black==26.1.0
     # via codex-ml (pyproject.toml)
 bleach==6.3.0
     # via nbconvert
