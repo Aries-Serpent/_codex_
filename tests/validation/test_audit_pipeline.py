@@ -4,11 +4,20 @@ Test Audit Pipeline
 Test module for audit pipeline.
 """
 
+import importlib.util
 import json
 import subprocess
 from pathlib import Path
 
 import pytest
+
+# Q005 canonical fix (deep research 2026-02-23):
+# audit_runner.py gracefully degrades when its sub-scanners are not on PYTHONPATH,
+# writing only a minimal manifest.  Guard all tests that require full output.
+_HAS_AUDIT_SCANNERS = (
+    importlib.util.find_spec("scripts") is not None
+    and importlib.util.find_spec("scripts.space_traversal") is not None
+)
 
 # Expected error patterns that indicate known issues (not test failures)
 KNOWN_ERROR_PATTERNS = [

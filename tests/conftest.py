@@ -1033,97 +1033,22 @@ def pytest_collection_modifyitems(session, config, items):
                 "AttributeError: '_AutoTokenizer' has no attribute 'from_pretrained' — "
                 "transformers stub missing from_pretrained. Pre-existing."
             ),
-            # RAG tenant management — FAISS index persistence mismatch with mock
-            # SentenceTransformer. Pre-existing on base branch (ea983ee).
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_tenant_directory_creation": (
-                "FAISS persist_index path mismatch with mock_sentence_transformer. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_update_operation_success": (
-                "FAISS index update fails with mock embeddings. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_delete_operation_multiple_indices": (
-                "FAISS delete with mock embeddings. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_merge_operation_success": (
-                "FAISS merge with mock embeddings. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_merge_operation_single_index": (
-                "FAISS merge single index with mock embeddings. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_list_operation_success": (
-                "No indices found after create — FAISS persist path mismatch. Pre-existing."
-            ),
-            # Additional TestManageTenantIndices failures — all share same root cause:
-            # mock SentenceTransformer patch path mismatch with FAISS persist. (Q002)
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_create_operation_success": (
-                "Failed to create any indices — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_delete_operation_partial_failure": (
-                "TypeError: 'NoneType' is not subscriptable — FAISS mock missing. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_create_with_error_in_one_index": (
-                "Failed to create any indices — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_operation_case_insensitive": (
-                "Failed to create any indices — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_custom_chunk_parameters": (
-                "Failed to create any indices — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_list_operation_multiple_tenants": (
-                "'docs' not found after create — FAISS persist path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_update_operation_nonexistent_index": (
-                "Failed to update nonexistent — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_create_operation_multiple_indices": (
-                "Failed to create multiple indices — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            "tests/test_rag_tenant_management.py"
-            "::TestManageTenantIndices::test_delete_operation_success": (
-                "Failed to create (pre-delete setup) — FAISS mock patch path mismatch. Pre-existing."
-            ),
-            # IncrementalSyncDecider — change_ratio is token-level (not char-level),
-            # punctuation changes score as 95%+ change. Pre-existing on base branch.
-            "tests/services/crawler/test_knowledge_crawler_enhancements.py"
-            "::TestIncrementalSyncDecider::test_micro_update": (
-                "ContentDiffer change_ratio uses token-level diff; punctuation change "
-                "scores as 95% change ratio, exceeds micro_update_threshold. Pre-existing."
-            ),
+            # RAG tenant management — resolved S68 via Q002 canonical fix:
+            # autouse mock_rag_dependencies fixture injects sys.modules["faiss"]
+            # and sys.modules["sentence_transformers"] before any function-level
+            # imports fire.  Tests now pass without xfail.  Keep block commented
+            # here as a record; remove in next cleanup sprint.
+            # IncrementalSyncDecider — resolved S68 via Q003 canonical fix:
+            # content_diff.py uses SequenceMatcher(autojunk=False) and test now
+            # uses non-repetitive natural text. Remove xfail.
             # Cache speedup test is timing-sensitive and flaky in CI VMs. Pre-existing.
             "tests/serving/test_inference_performance.py"
             "::TestCachePerformance::test_cache_vs_no_cache_performance": (
                 "Cache speedup ratio is timing-sensitive and flaky in VMs (1.14x < 1.5x). "
                 "Pre-existing flaky test."
             ),
-            # OptimizedVectorStore: ResponseCache.__len__ returns 0 after search because
-            # cache.set() is not called when store returns results in O(1). Pre-existing bug
-            # in serving/caching.py — tracked via DRQ-003.
-            "tests/retrieval/test_optimizations.py"
-            "::TestOptimizedVectorStore::test_search_with_cache": (
-                "OptimizedVectorStore cache hit not detected: mock.search.call_count == 2 "
-                "instead of 1. ResponseCache not being checked before delegating to store. "
-                "Pre-existing bug tracked via DRQ-003."
-            ),
-            "tests/retrieval/test_optimizations.py"
-            "::TestOptimizedVectorStore::test_clear_cache": (
-                "OptimizedVectorStore cache empty after search: ResponseCache.set() never "
-                "called during search. Pre-existing bug tracked via DRQ-003."
-            ),
+            # Q007 resolved S68: ResponseCache truthiness bug fixed (is not None checks).
+            # test_search_with_cache and test_clear_cache now pass. Remove xfail.
             # API secret filter test: /infer endpoint returns 400 due to validation mismatch
             # or missing route registration. Pre-existing — not related to this PR.
             "tests/test_api_secret_filter.py::test_secret_filtering_masks_keys": (

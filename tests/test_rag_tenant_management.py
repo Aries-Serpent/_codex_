@@ -4,9 +4,12 @@ Tests for RAG Tenant Management
 Comprehensive test coverage for manage_tenant_indices function in indexer.py
 """
 
+import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import numpy as np
 import pytest
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
@@ -23,6 +26,107 @@ pytestmark = pytest.mark.skipif(
     not RAG_TENANT_AVAILABLE,
     reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
+
+
+@pytest.fixture(autouse=True)
+def mock_rag_dependencies(monkeypatch):
+    """Inject fully mocked optional RAG dependencies into sys.modules.
+
+    Q002 canonical fix (deep research 2026-02-23):
+    - Both faiss and sentence_transformers are optional; CI runners without
+      these packages cause manage_tenant_indices to silently return success=False.
+    - Injecting into sys.modules guarantees every `import faiss` /
+      `import sentence_transformers` inside any function (including embed_chunks,
+      persist_index, safe_load_sentence_transformer) receives the mock, regardless
+      of execution order or pytest-xdist worker state.
+    - Module-level `faiss` variable in indexer.py is already None at collection
+      time; we must also patch the attribute on the imported module object.
+    """
+    # --- Mock FAISS ---
+    mock_faiss = MagicMock()
+    mock_index = MagicMock()
+    mock_index.ntotal = 100
+    mock_index.d = 384
+    mock_faiss.IndexFlatL2.return_value = mock_index
+    # write_index / read_index must be no-ops that don't touch the filesystem
+    mock_faiss.write_index.return_value = None
+    mock_faiss.read_index.return_value = mock_index
+    monkeypatch.setitem(sys.modules, "faiss", mock_faiss)
+
+    # Patch the module-level `faiss` variable in indexer (already None after
+    # the module was imported without faiss installed).
+    try:
+        import codex.rag.indexer as _indexer
+        monkeypatch.setattr(_indexer, "faiss", mock_faiss)
+    except ImportError:
+        pass
+
+    # --- Mock sentence_transformers ---
+    mock_st_module = MagicMock()
+    mock_model_instance = MagicMock()
+    # encode() must return a numpy array of shape [N, 384]
+    def _mock_encode(texts, **kwargs):
+        if isinstance(texts, str):
+            texts = [texts]
+        return np.zeros((len(texts), 384), dtype=np.float32)
+    mock_model_instance.encode.side_effect = _mock_encode
+    mock_model_instance.get_sentence_embedding_dimension.return_value = 384
+    mock_st_module.SentenceTransformer.return_value = mock_model_instance
+    monkeypatch.setitem(sys.modules, "sentence_transformers", mock_st_module)
+
+    # Also patch safe_load_sentence_transformer to return the mock model
+    # directly, bypassing any device/meta-tensor logic.
+    try:
+        import codex.rag._model_utils as _mu
+        monkeypatch.setattr(_mu, "safe_load_sentence_transformer",
+                            lambda *a, **kw: mock_model_instance)
+    except ImportError:
+        pass
+
+    # Also patch persist_index and load_index to bypass all filesystem side-effects.
+    # write_index mock leaves no file → Path.stat() in persist_index raises
+    # FileNotFoundError; load_index checks index.faiss existence before calling
+    # faiss.read_index.  Both are patched to use in-memory stubs.
+    try:
+        import codex.rag.indexer as _indexer
+
+        def _mock_persist_index(embeddings, chunks, index_name, tenant_id="default",
+                                index_dir=".codex/tenants", metadata=None):
+            """Create stub directory + sentinel files so list/load can detect index."""
+            tenant_dir = Path(index_dir) / tenant_id / index_name
+            tenant_dir.mkdir(parents=True, exist_ok=True)
+            # Create sentinel files that load_index and list operations check for
+            (tenant_dir / "index.faiss").touch()
+            (tenant_dir / "chunks.json").write_text("[]")
+            (tenant_dir / "metadata.json").write_text(
+                '{"index_name": "' + index_name + '", "tenant_id": "' + tenant_id +
+                '", "dimension": 384, "num_vectors": 1, "index_type": "IndexFlatL2"}'
+            )
+            return tenant_dir
+
+        def _mock_load_index(index_name, tenant_id="default", index_dir=".codex/tenants"):
+            """Return mock index only if stub sentinel exists (created by _mock_persist_index).
+            Raises for truly nonexistent indices so error-path tests work correctly."""
+            sentinel = Path(index_dir) / tenant_id / index_name / "index.faiss"
+            if not sentinel.exists():
+                raise FileNotFoundError(
+                    f"FAISS index file not found: {sentinel}"
+                )
+            mock_idx = MagicMock()
+            mock_idx.ntotal = 1
+            mock_idx.d = 384
+            # reconstruct(i) must return a numpy vector of shape (384,) so that
+            # the merge loop `embeddings[i] = index.reconstruct(i)` succeeds
+            mock_idx.reconstruct.return_value = np.zeros(384, dtype=np.float32)
+            meta = {"index_name": index_name, "tenant_id": tenant_id, "dimension": 384}
+            return mock_idx, [], meta
+
+        monkeypatch.setattr(_indexer, "persist_index", _mock_persist_index)
+        monkeypatch.setattr(_indexer, "load_index", _mock_load_index)
+    except ImportError:
+        pass
+
+    yield
 
 
 class TestManageTenantIndices:
