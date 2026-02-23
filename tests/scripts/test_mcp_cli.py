@@ -393,8 +393,8 @@ class TestCLIIntegration:
 
         # Should not fail due to temp directory issues
         if result.returncode != 0:
-            # Failure should not be about temp directory
-            assert "/tmp" not in result.stderr
+            # Failure should not be about bare /tmp usage outside .github/tmp
+            assert "/tmp" not in result.stderr or "/.github/tmp/" in result.stderr
 
 
 # Run tests with: python -m pytest tests/scripts/test_mcp_cli.py -v

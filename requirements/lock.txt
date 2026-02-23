@@ -719,7 +719,7 @@ packaging==25.0
     #   transformers
     #   typepy
     #   wandb
-pandas==3.0.0
+pandas==3.0.1
     # via
     #   codex-ml (pyproject.toml)
     #   altair
@@ -827,7 +827,7 @@ pyasn1==0.6.2
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pybind11==3.0.1
+pybind11==3.0.2
     # via lm-eval
 pycparser==2.23
     # via cffi
@@ -979,7 +979,7 @@ rfc3986-validator==0.1.1
     #   jupyter-events
 rfc3987-syntax==1.1.0
     # via jsonschema
-rich==14.1.0
+rich==14.3.3
     # via
     #   dvc
     #   evidently
@@ -1033,7 +1033,7 @@ sentencepiece==0.2.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-sentry-sdk==2.51.0
+sentry-sdk==2.53.0
     # via wandb
 setuptools==80.9.0
     # via

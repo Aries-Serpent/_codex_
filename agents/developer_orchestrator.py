@@ -316,10 +316,12 @@ class PhysicsGuidedDeveloperOrchestrator:
             ),
         }
 
-        # App-specific variables
+        # App-specific variables — use setter assignment (not .update()) because
+        # required_variables is a @property returning a derived dict; .update() on
+        # that dict is a no-op against the backing _requirements list.
+        app_specific_vars: dict = {}
         if self.app_type == AppType.PYTHON_CLI:
-            self.required_variables.update(
-                {
+            app_specific_vars = {
                     "cli_framework": RequirementVariable(
                         name="cli_framework",
                         description="CLI framework to use",
@@ -335,11 +337,9 @@ class PhysicsGuidedDeveloperOrchestrator:
                         required=True,
                     ),
                 }
-            )
 
         elif self.app_type == AppType.PYTHON_API:
-            self.required_variables.update(
-                {
+            app_specific_vars = {
                     "api_framework": RequirementVariable(
                         name="api_framework",
                         description="API framework to use",
@@ -363,11 +363,9 @@ class PhysicsGuidedDeveloperOrchestrator:
                         suggested_values=["none", "jwt", "oauth2", "api_key", "basic"],
                     ),
                 }
-            )
 
         elif self.app_type == AppType.PYTHON_WEB:
-            self.required_variables.update(
-                {
+            app_specific_vars = {
                     "web_framework": RequirementVariable(
                         name="web_framework",
                         description="Web framework to use",
@@ -383,11 +381,9 @@ class PhysicsGuidedDeveloperOrchestrator:
                         required=True,
                     ),
                 }
-            )
 
         elif self.app_type == AppType.PYTHON_LIBRARY:
-            self.required_variables.update(
-                {
+            app_specific_vars = {
                     "modules": RequirementVariable(
                         name="modules",
                         description="Main modules/packages",
@@ -401,7 +397,9 @@ class PhysicsGuidedDeveloperOrchestrator:
                         required=True,
                     ),
                 }
-            )
+
+        if app_specific_vars:
+            self.required_variables = {**self.required_variables, **app_specific_vars}
 
     def suggest_architecture(self, requirements: dict[str, Any]) -> dict[str, Any]:
         """

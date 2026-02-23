@@ -95,6 +95,33 @@ else:  # pragma: no cover - exercised in minimal test envs
     def _raise_missing(*args, **kwargs):  # pragma: no cover
         raise AttributeError(_MISSING_MSG)
 
+    # No-op seed function (tests call torch.manual_seed without needing real torch)
+    def manual_seed(seed=None):  # pragma: no cover
+        return None
+
+    # Stub cuda sub-module used by torch.cuda.manual_seed_all etc.
+    import types as _types
+    cuda = _types.SimpleNamespace(
+        is_available=lambda: False,
+        manual_seed=lambda seed=None: None,
+        manual_seed_all=lambda seed=None: None,
+    )
+    # Stub backends sub-module used by transformers' is_torch_mps_available()
+    backends = _types.SimpleNamespace(
+        mps=_types.SimpleNamespace(
+            is_available=lambda: False,
+            is_built=lambda: False,
+        ),
+        cudnn=_types.SimpleNamespace(
+            enabled=False,
+            benchmark=False,
+            deterministic=False,
+            is_available=lambda: False,
+        ),
+        cuda=_types.SimpleNamespace(is_available=lambda: False),
+    )
+    del _types  # keep namespace clean
+
     # Stub factory functions that tests commonly call via pytest.importorskip("torch")
     ones = _raise_missing
     zeros = _raise_missing
