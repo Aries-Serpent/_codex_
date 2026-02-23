@@ -38,17 +38,55 @@ documentation, RAG/ML, configuration, cognitive brain, and repository management
 | Status | Agent ID | Primary Function | Priority |
 |--------|----------|------------------|----------|
 | ✅ Implemented | ci-testing-agent.v1 | Test generation & coverage | P0 - Critical |
-| 📋 Planned | flaky-triage-agent.v1 | Flaky test detection | P1 - High |
-| 📋 Planned | dep-upgrade-agent.v1 | Dependency management | P1 - High |
-| 📋 Planned | security-scan-agent.v1 | Security scanning | P0 - Critical |
-| 📋 Planned | release-gate-agent.v1 | Release readiness | P1 - High |
-| 📋 Planned | doc-reporter-agent.v1 | Documentation automation | P2 - Medium |
-| 📋 Planned | code-review-summarizer.v1 | PR review assistance | P2 - Medium |
-| 📋 Planned | issue-triage-agent.v1 | Issue management | P2 - Medium |
-| 📋 Planned | infra-linter-agent.v1 | Workflow validation | P1 - High |
-| 📋 Planned | data-rag-helper.v1 | Documentation Q&A | P3 - Low |
-| 📋 Planned | mcp-registry-adapter.v1 | Tool discovery | P3 - Low |
-| 📋 Planned | compliance-checker-agent.v1 | Standards enforcement | P1 - High |
+| ✅ Active | flaky-triage-agent | Flaky test detection & quarantine | P1 - High |
+| ✅ Active | dep-upgrade-agent | Dependency management & conflict resolution | P1 - High |
+| ✅ Active | security-scan-agent | Security scanning & alert verification | P0 - Critical |
+| ✅ Active | release-gate-agent | Release readiness validation | P1 - High |
+| ✅ Active | doc-reporter-agent | Documentation quality & freshness | P2 - Medium |
+| ✅ Active | code-review-summarizer | PR review assistance (codex-reviewer) | P2 - Medium |
+| ✅ Active | issue-triage-agent | Issue management & tracking | P2 - Medium |
+| ✅ Active | infra-linter-agent | Workflow validation & CI fixes | P1 - High |
+| ✅ Active | data-rag-helper | Documentation Q&A (semantic-search) | P3 - Low |
+| ✅ Active | mcp-registry-adapter | Tool discovery (RAG index manager) | P3 - Low |
+| ✅ Active | compliance-checker-agent | Standards enforcement & CodeQL | P1 - High |
+| ✅ Active | recon-scout-agent | Pre-session codebase blocker discovery | P0 - Critical |
+| ✅ Active | unified-security-scanner | Multi-tool security audit | P0 - Critical |
+| ✅ Active | cross-agent-knowledge-graph | Persistent fix pattern storage (E-10) | P1 - High |
+| ✅ Active | codeql-alert-resolution-agent | CodeQL auto-remediation | P1 - High |
+| ✅ Active | rag-meta-tensor-regression-agent | RAG meta-tensor guard | P1 - High |
+| ✅ Active | ci-triage-pipeline-agent | Systematic CI failure triage | P0 - Critical |
+| ✅ Active | python-architect-agent | Architecture review & drift detection | P2 - Medium |
+| ✅ Active | test-pattern-guardian | Test quality enforcement | P1 - High |
+| ✅ Active | coverage-roadmap-agent | Coverage threshold roadmap execution | P1 - High |
+| ✅ Active | datetime-modernizer | TZ-aware datetime modernization | P2 - Medium |
+| ✅ Active | dependency-conflict-agent | Pip resolver conflict diagnosis | P1 - High |
+| ✅ Active | documentation-consolidator | Semantic documentation consolidation | P2 - Medium |
+| ✅ Active | github-pages-manager | GitHub Pages deployment & sync | P2 - Medium |
+| ✅ Active | integration-test-runner | Cross-service integration testing | P1 - High |
+| ✅ Active | link-validator-agent | Cross-reference & link validation | P2 - Medium |
+| ✅ Active | meta-tensor-validator | PyTorch model init pattern validation | P1 - High |
+| ✅ Active | owner-approval-guard | Autonomous operation approval enforcement | P0 - Critical |
+| ✅ Active | performance-regression-detector | Performance baseline comparison | P1 - High |
+| ✅ Active | pii-scrubber | PII redaction for GDPR/CCPA compliance | P1 - High |
+| ✅ Active | qa-walkthrough-agent | Repository-wide QA audit | P1 - High |
+| ✅ Active | reference-updater-agent | Atomic codebase reference updates | P2 - Medium |
+| ✅ Active | repository-hygiene-agent | Repository cleanup & maintenance | P2 - Medium |
+| ✅ Active | root-organizer-agent | Safe root folder reorganization | P3 - Low |
+| ✅ Active | security-alert-verification-agent | GitHub security alert triage | P0 - Critical |
+| ✅ Active | test-alignment-fixer | Fix test alignment after API changes | P1 - High |
+| ✅ Active | test-coverage-monitor | Coverage threshold enforcement | P1 - High |
+| ✅ Active | tokenization-coverage-agent | Tokenization module test coverage | P2 - Medium |
+| ✅ Active | workflow-ci-fixer | GitHub Actions syntax & permission fixes | P0 - Critical |
+| ✅ Active | ci-importerror-agent | ImportError/ModuleNotFoundError remediation | P1 - High |
+| ✅ Active | ci-log-retrieval-agent | Authenticated CI log retrieval | P1 - High |
+| ✅ Active | config-migration-assistant | Hydra config migration | P2 - Medium |
+| ✅ Active | config-validator | Hydra config schema validation | P2 - Medium |
+| ✅ Active | doc-freshness-checker | Stale doc detection & link validation | P2 - Medium |
+| ✅ Active | documentation-quality-agent | MkDocs build & quality scoring | P2 - Medium |
+| ✅ Active | rag-index-manager | RAG index build/update/query | P2 - Medium |
+| ✅ Active | rag-meta-tensor-regression-agent | RAG meta-tensor regression prevention | P1 - High |
+| ✅ Active | semantic-search | Vector embedding codebase search | P2 - Medium |
+| ✅ Active | bridge-security-monitor | IPC bridge security & message integrity | P0 - Critical |
 
 ---
 

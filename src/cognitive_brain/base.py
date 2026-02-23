@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 
@@ -257,9 +257,9 @@ class PhysicsOfThought:
         """
         # Store input in memory
         self.memory.store(
-            f"input_{datetime.now().isoformat()}",
+            f"input_{datetime.now(timezone.utc).isoformat()}",
             input_data,
-            metadata={"type": "input", "timestamp": datetime.now().isoformat()},
+            metadata={"type": "input", "timestamp": datetime.now(timezone.utc).isoformat()},
         )
 
         # Execute OODA loop
@@ -267,9 +267,9 @@ class PhysicsOfThought:
 
         # Store result in memory
         self.memory.store(
-            f"result_{datetime.now().isoformat()}",
+            f"result_{datetime.now(timezone.utc).isoformat()}",
             result,
-            metadata={"type": "result", "timestamp": datetime.now().isoformat()},
+            metadata={"type": "result", "timestamp": datetime.now(timezone.utc).isoformat()},
         )
 
         return result

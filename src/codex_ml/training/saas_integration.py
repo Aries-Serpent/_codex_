@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -221,7 +221,7 @@ class SaaSKnowledgeLoader:
 
         # Create metadata file
         metadata = {
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "document_count": len(documents),
             "sources": {
                 "zendesk": include_zendesk,

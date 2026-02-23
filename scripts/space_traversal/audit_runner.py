@@ -984,28 +984,27 @@ def main() -> None:
             # then optionally validate bundle naming prefixes.
             prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
             validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
+
+            def _collect_warnings_from_json_file(path: Path, key: str = "warnings") -> list[str]:
+                """Read a JSON file and return its ``key`` list as strings."""
+                try:
+                    return [str(w) for w in json.loads(path.read_text()).get(key, [])]
+                except (json.JSONDecodeError, OSError) as exc:
+                    logger.debug("Could not read %s: %s", path, exc)
+                    return []
+
             warnings: list[str] = []
 
             # Aggregate warnings from content_filter_report.json
             filter_report = artifacts_dir / "content_filter_report.json"
             if filter_report.exists():
-                try:
-                    fr_data = json.loads(filter_report.read_text())
-                    for w in fr_data.get("warnings", []):
-                        warnings.append(str(w))
-                except (json.JSONDecodeError, OSError) as exc:
-                    logger.debug("Could not read content_filter_report.json: %s", exc)
+                warnings.extend(_collect_warnings_from_json_file(filter_report))
 
             # Aggregate warnings from bundle pointer files
             bundles_dir = artifacts_dir / "bundles"
             if bundles_dir.exists():
                 for pointer_file in bundles_dir.glob("*.pointer.json"):
-                    try:
-                        ptr_data = json.loads(pointer_file.read_text())
-                        for w in ptr_data.get("warnings", []):
-                            warnings.append(str(w))
-                    except (json.JSONDecodeError, OSError) as exc:
-                        logger.debug("Could not read pointer file %s: %s", pointer_file, exc)
+                    warnings.extend(_collect_warnings_from_json_file(pointer_file))
 
                 # Optionally validate bundle naming prefixes
                 if prefix_mode and validate_auto:

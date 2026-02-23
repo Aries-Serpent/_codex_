@@ -12,6 +12,7 @@ from __future__ import annotations
 import logging
 import os
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -346,7 +347,7 @@ def generate_migration_report() -> str:
     sprawl = detect_config_sprawl()
 
     report = ["# Configuration Sprawl Analysis\n"]
-    report.append(f"**Analysis Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+    report.append(f"**Analysis Date:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}\n")
     report.append("## Summary\n")
 
     total_files = sum(len(files) for files in sprawl.values())

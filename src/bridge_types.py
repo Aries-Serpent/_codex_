@@ -9,7 +9,7 @@ Part of Phase 2: Fragile Bridge Elimination
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Optional, Union
 
@@ -141,7 +141,7 @@ def create_context_update(
         ContextUpdate message
     """
     return ContextUpdate(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.CONTEXT_UPDATE.value,
         context=context,
@@ -171,10 +171,10 @@ def create_query(
         QueryMessage
     """
     return QueryMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.QUERY.value,
-        message_id=message_id or f"query_{datetime.now().timestamp()}",
+        message_id=message_id or f"query_{datetime.now(timezone.utc).timestamp()}",
         query=query,
         query_type=query_type,
         parameters=parameters
@@ -202,7 +202,7 @@ def create_response(
         ResponseMessage
     """
     return ResponseMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.RESPONSE.value,
         response_to=response_to,
@@ -231,7 +231,7 @@ def create_status(
         StatusMessage
     """
     return StatusMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.STATUS.value,
         component=component,
@@ -261,7 +261,7 @@ def create_error(
         ErrorMessage
     """
     return ErrorMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.ERROR.value,
         error_type=error_type,
@@ -283,9 +283,9 @@ def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
         HeartbeatMessage
     """
     return HeartbeatMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.HEARTBEAT.value,
         uptime_seconds=uptime_seconds,
-        last_activity=datetime.now().isoformat()
+        last_activity=datetime.now(timezone.utc).isoformat()
     )

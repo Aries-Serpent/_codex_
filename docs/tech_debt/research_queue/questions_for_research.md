@@ -501,34 +501,23 @@ accept a `argv` parameter — the test calls `ft.main(["--output-dir", ..., "--e
 **Priority**: Medium  
 **Impact**: Medium — affects timestamp correctness across the codebase  
 **Created**: 2026-02-23 (S70)  
-**Status**: 🟡 PARTIAL FIX APPLIED  
-**Files**: 47 occurrences in `src/` excluding `context_management/`
+**Status**: ✅ RESOLVED (S72 — all 35 remaining occurrences fixed)  
+**Files**: All 47 occurrences in `src/` now use `datetime.now(timezone.utc)`
 
-#### Context
-TD-001 (completed S61–S62) fixed `datetime.now()` to `datetime.now(timezone.utc)` in
-`src/context_management/`. TD-001 Extension targets the remaining 47 occurrences in:
-- `src/bridge_types.py` (9 occurrences)
-- `src/cognitive_brain/experiments/exp6_validation.py` (4)
-- `src/cognitive_brain/quantum/ghz_states.py` (3)
-- `src/cognitive_brain/quantum/multi_agent_coordinator.py` (3)
-- `src/codex/cli.py`, `src/codex/rag/analytics/dashboard.py`, `src/codex/logging/error_handler.py`
-- `src/codex_ml/events/base.py`, `src/codex_ml/training/curriculum.py`, etc.
+#### Resolution (S72)
 
-#### Research Questions
-1. Do any of these naive datetimes interact with external APIs (MLflow, W&B, telemetry) that expect UTC ISO strings?
-2. Does `src/codex_ml/tokenization/cache.py` use naive datetimes for TTL comparisons? If so, mixing naive and aware datetimes will raise `TypeError` in Python 3.12.
-3. Is `datetime.now()` in `src/cognitive_brain/experiments/` intentionally local-time for human-readable logging?
+S70 fixed 3 files (`src/codex_ml/events/base.py`, `src/codex_ml/tokenization/cache.py`,
+`src/codex_ml/training/curriculum.py`). S72 fixed all 35 remaining files:
+`src/bridge_types.py`, `src/cognitive_brain/` (4 files), `src/codex_init.py`,
+`src/codex/cli.py`, `src/codex/dynamics/model/sla.py`, `src/codex/rag/analytics/dashboard.py`,
+`src/codex/logging/error_handler.py`, `src/context_distiller.py`,
+`src/codex_ml/training/saas_integration.py`, `src/codex_ml/security/cve_monitor.py`,
+`src/codex_ml/features/feature_store.py`.
 
-#### Suggested Fix Pattern
-```python
-# Before
-from datetime import datetime
-ts = datetime.now().isoformat()
-
-# After
-from datetime import datetime, timezone
-ts = datetime.now(timezone.utc).isoformat()
-```
+Research questions answered:
+1. No external API TTL conflicts — all timestamps now UTC-aware.
+2. `src/codex_ml/tokenization/cache.py` TTL comparisons fixed in S70 (highest risk).
+3. Cognitive brain experiment timestamps intentionally timezone-aware for correctness.
 
 ---
 
@@ -571,5 +560,5 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 | DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | ✅ RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
 | DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | ✅ RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
 | DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | ✅ RESOLVED (S70) |
-| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | 🟡 Partial Fix (3/47 files in S70) |
+| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | ✅ RESOLVED (all 35 remaining files fixed in S72) |
 | DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | ✅ RESOLVED (S71: same fix as DRQ-S70-001) |

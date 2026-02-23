@@ -9,7 +9,7 @@ from importlib import util
 from typing import Any, Iterator, Mapping
 
 from codex_ml.tracking.mlflow_guard import (
-    DEFAULT_LITERAL_LOCAL_URI,
+    DEFAULT_LITERAL_LOCAL_URI,  # Always starts with "file:" — assumed safe for get_tracking_uri()
     bootstrap_offline_tracking,
     last_decision,
 )

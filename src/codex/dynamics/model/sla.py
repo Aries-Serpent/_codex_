@@ -273,7 +273,7 @@ class SLAPolicyRegistry(BaseModel):
 
         registry = cls(
             policies=[],
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
         )
 
         csv_file = Path(csv_path)
@@ -304,7 +304,7 @@ class SLAPolicyRegistry(BaseModel):
                     target_minutes=int(row.get("target_minutes", "60")),
                     pause_conditions=pause_conditions,
                     version="1.0.0",  # Initial version from CSV
-                    effective_date=datetime.now().isoformat(),
+                    effective_date=datetime.now(UTC).isoformat(),
                     description=f"Migrated from CSV: {csv_path}",
                 )
                 registry.add_policy(policy)

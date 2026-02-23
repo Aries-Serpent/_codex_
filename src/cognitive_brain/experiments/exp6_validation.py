@@ -15,7 +15,7 @@ Validates multi-agent coordination performance:
 import argparse
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 
 import numpy as np
@@ -139,7 +139,7 @@ def measure_decision_quality_improvement(
                 f"agent_{i}",
                 "approve" if np.random.random() > 0.3 else "reject",
                 np.random.uniform(0.75, 0.95),
-                datetime.now(),
+                datetime.now(timezone.utc),
             )
             for i in range(num_agents)
         ]
@@ -247,14 +247,14 @@ def measure_consensus_latency(
                     f"agent_{i}",
                     "approve" if np.random.random() > 0.4 else "reject",
                     np.random.uniform(0.7, 0.95),
-                    datetime.now(),
+                    datetime.now(timezone.utc),
                 )
                 for i in range(num_agents)
             ]
 
-            start_time = datetime.now()
+            start_time = datetime.now(timezone.utc)
             coordinator.reach_consensus(decisions, strategy=VotingStrategy.MAJORITY)
-            latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+            latency_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
 
             latencies.append(latency_ms)
 
@@ -392,7 +392,7 @@ def run_validation(
         "redundancy": redundancy_results,
         "latency": latency_results,
         "k1_impact": k1_results,
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
     # Summary
