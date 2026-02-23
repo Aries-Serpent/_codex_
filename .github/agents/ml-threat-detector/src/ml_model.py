@@ -2,14 +2,24 @@
 
 import ast
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import joblib
 import numpy as np
-from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, VotingClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_recall_fscore_support, roc_auc_score
+from sklearn.ensemble import (
+    GradientBoostingClassifier,
+    RandomForestClassifier,
+    VotingClassifier,
+)
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    precision_recall_fscore_support,
+    roc_auc_score,
+)
 from sklearn.model_selection import cross_val_score, train_test_split
 
 
@@ -216,7 +226,7 @@ class MLThreatDetector:
         except ValueError:
             auc = 0.0
 
-        print(f"\n✅ Training Complete")
+        print("\n✅ Training Complete")
         print(f"Accuracy: {accuracy:.2%}")
         print(f"Precision: {precision:.2%}")
         print(f"Recall: {recall:.2%}")

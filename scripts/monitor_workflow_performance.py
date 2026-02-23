@@ -54,7 +54,7 @@ class WorkflowMonitor:
         }
         # nosemgrep: url-substring-check - trusted GitHub API base for workflow monitoring
         self.base_url = f'https://api.github.com/repos/{repo}'
-        
+
         # Consolidated workflow suites
         self.consolidated_workflows = [
             'Cache Management Suite',
@@ -63,7 +63,7 @@ class WorkflowMonitor:
             'Security Scanning Suite',
             'Documentation Suite'
         ]
-        
+
         # Original workflows that were consolidated
         self.original_workflows = {
             'Cache Management Suite': [
@@ -104,53 +104,53 @@ class WorkflowMonitor:
         """Fetch workflow runs from GitHub API."""
         if since is None:
             since = datetime.now(timezone.utc) - timedelta(days=self.days)
-        
+
         url = f'{self.base_url}/actions/runs'
         params = {
             'created': f'>={since.isoformat()}Z',
             'per_page': 100
         }
-        
+
         all_runs = []
         page = 1
-        
+
         while True:
             params['page'] = page
             response = requests.get(url, headers=self.headers, params=params)
-            
+
             if response.status_code != 200:
                 print(f"❌ API Error: {response.status_code} - {response.text}")
                 break
-            
+
             data = response.json()
             runs = data.get('workflow_runs', [])
-            
+
             if not runs:
                 break
-            
+
             all_runs.extend(runs)
-            
+
             # Check if there are more pages
             if len(runs) < 100:
                 break
-            
+
             page += 1
-            
+
             # Check rate limit to avoid exceeding API limits
             if page > self.max_pages:
                 print(f"⚠️  Reached page limit ({self.max_pages}). Use --max-pages to increase.")
                 break
-        
+
         return all_runs
 
     def calculate_duration(self, run: Dict[str, Any]) -> Optional[float]:
         """Calculate workflow run duration in minutes."""
         created = run.get('created_at')
         updated = run.get('updated_at')
-        
+
         if not created or not updated:
             return None
-        
+
         try:
             created_dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
             updated_dt = datetime.fromisoformat(updated.replace('Z', '+00:00'))
@@ -171,33 +171,33 @@ class WorkflowMonitor:
             'p95_duration': 0,
             'success_rate': 0
         })
-        
+
         for run in runs:
             workflow_name = run.get('name', 'Unknown')
             conclusion = run.get('conclusion', 'unknown')
             status = run.get('status', 'unknown')
-            
+
             # Skip in-progress runs
             if status != 'completed':
                 continue
-            
+
             duration = self.calculate_duration(run)
-            
+
             metrics[workflow_name]['total_runs'] += 1
-            
+
             if conclusion == 'success':
                 metrics[workflow_name]['successful_runs'] += 1
             elif conclusion in ['failure', 'timed_out', 'cancelled']:
                 metrics[workflow_name]['failed_runs'] += 1
-            
+
             if duration is not None:
                 metrics[workflow_name]['durations'].append(duration)
-        
+
         # Calculate statistics
         for workflow_name, data in metrics.items():
             if data['total_runs'] > 0:
                 data['success_rate'] = (data['successful_runs'] / data['total_runs']) * 100
-            
+
             if data['durations']:
                 data['durations'].sort()
                 data['avg_duration'] = sum(data['durations']) / len(data['durations'])
@@ -205,44 +205,44 @@ class WorkflowMonitor:
                 # Safe p95 calculation
                 p95_index = min(int(len(data['durations']) * 0.95), len(data['durations']) - 1)
                 data['p95_duration'] = data['durations'][p95_index]
-        
+
         return dict(metrics)
 
     def compare_consolidated_vs_original(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Compare performance of consolidated vs original workflows."""
         comparisons = {}
-        
+
         for suite_name, originals in self.original_workflows.items():
             if suite_name not in metrics:
                 continue
-            
+
             suite_metrics = metrics[suite_name]
-            
+
             # Aggregate original workflow metrics
             original_total_runs = 0
             original_successful = 0
             original_durations = []
-            
+
             for original_wf in originals:
                 for wf_name, wf_metrics in metrics.items():
                     if original_wf in wf_name or wf_name in original_wf:
                         original_total_runs += wf_metrics['total_runs']
                         original_successful += wf_metrics['successful_runs']
                         original_durations.extend(wf_metrics['durations'])
-            
+
             if original_total_runs == 0:
                 continue
-            
+
             original_avg_duration = sum(original_durations) / len(original_durations) if original_durations else 0
             original_success_rate = (original_successful / original_total_runs) * 100 if original_total_runs > 0 else 0
-            
+
             # Calculate improvements
             duration_improvement = 0
             if original_avg_duration > 0 and suite_metrics['avg_duration'] > 0:
                 duration_improvement = ((original_avg_duration - suite_metrics['avg_duration']) / original_avg_duration) * 100
-            
+
             success_rate_diff = suite_metrics['success_rate'] - original_success_rate
-            
+
             comparisons[suite_name] = {
                 'consolidated': {
                     'runs': suite_metrics['total_runs'],
@@ -259,7 +259,7 @@ class WorkflowMonitor:
                     'success_rate_diff': success_rate_diff
                 }
             }
-        
+
         return comparisons
 
     def generate_report(self, metrics: Dict[str, Any], comparisons: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -276,28 +276,28 @@ class WorkflowMonitor:
                 'avg_success_rate': sum(m['success_rate'] for m in metrics.values()) / len(metrics) if metrics else 0
             }
         }
-        
+
         # Extract consolidated workflow metrics
         for wf_name in self.consolidated_workflows:
             if wf_name in metrics:
                 report['consolidated_workflows'][wf_name] = metrics[wf_name]
-        
+
         if comparisons:
             report['comparisons'] = comparisons
-            
+
             # Calculate overall improvement
             if comparisons:
                 avg_duration_improvement = sum(c['improvement']['duration_percent'] for c in comparisons.values()) / len(comparisons)
                 report['summary']['avg_duration_improvement'] = avg_duration_improvement
-        
+
         return report
 
     def format_markdown(self, report: Dict[str, Any]) -> str:
         """Format report as Markdown."""
         md = f"""# Workflow Performance Report
 
-**Generated:** {report['generated_at']}  
-**Analysis Period:** {report['analysis_period_days']} days  
+**Generated:** {report['generated_at']}
+**Analysis Period:** {report['analysis_period_days']} days
 **Repository:** {report['repository']}
 
 ## Summary
@@ -306,12 +306,12 @@ class WorkflowMonitor:
 - **Total Runs:** {report['summary']['total_runs']}
 - **Average Success Rate:** {report['summary']['avg_success_rate']:.2f}%
 """
-        
+
         if 'avg_duration_improvement' in report['summary']:
             md += f"- **Average Duration Improvement:** {report['summary']['avg_duration_improvement']:.2f}%\n"
-        
+
         md += "\n## Consolidated Workflow Performance\n\n"
-        
+
         table_data = []
         for wf_name, metrics in report['consolidated_workflows'].items():
             table_data.append([
@@ -322,16 +322,16 @@ class WorkflowMonitor:
                 f"{metrics['p95_duration']:.2f}m",
                 f"{metrics['success_rate']:.2f}%"
             ])
-        
+
         md += tabulate(
             table_data,
             headers=['Workflow', 'Runs', 'Avg Time', 'P50', 'P95', 'Success Rate'],
             tablefmt='github'
         )
-        
+
         if 'comparisons' in report:
             md += "\n\n## Consolidated vs Original Comparison\n\n"
-            
+
             comp_data = []
             for suite_name, comp in report['comparisons'].items():
                 comp_data.append([
@@ -342,13 +342,13 @@ class WorkflowMonitor:
                     f"{comp['consolidated']['success_rate']:.2f}%",
                     f"{comp['original']['success_rate']:.2f}%"
                 ])
-            
+
             md += tabulate(
                 comp_data,
                 headers=['Suite', 'New Time', 'Old Time', 'Improvement', 'New Success', 'Old Success'],
                 tablefmt='github'
             )
-        
+
         return md
 
     def run(self, output_path: Path, output_format: str = 'json', compare: bool = False) -> None:
@@ -356,38 +356,38 @@ class WorkflowMonitor:
         print(f"📊 Fetching workflow runs for the last {self.days} days...")
         runs = self.fetch_workflow_runs()
         print(f"✅ Fetched {len(runs)} workflow runs")
-        
+
         print("📈 Analyzing workflow performance...")
         metrics = self.analyze_workflows(runs)
         print(f"✅ Analyzed {len(metrics)} workflows")
-        
+
         comparisons = None
         if compare:
             print("🔄 Comparing consolidated vs original workflows...")
             comparisons = self.compare_consolidated_vs_original(metrics)
             print(f"✅ Generated {len(comparisons)} comparisons")
-        
+
         print("📝 Generating report...")
         report = self.generate_report(metrics, comparisons)
-        
+
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         if output_format == 'json':
             with open(output_path, 'w') as f:
                 json.dump(report, f, indent=2)
             print(f"✅ Report saved to: {output_path}")
-        
+
         elif output_format == 'markdown':
             md_path = output_path.with_suffix('.md')
             md_content = self.format_markdown(report)
             with open(md_path, 'w') as f:
                 f.write(md_content)
             print(f"✅ Report saved to: {md_path}")
-        
+
         elif output_format == 'html':
             print("⚠️  HTML format not yet implemented")
-        
+
         # Print summary to console
         print("\n" + "="*60)
         print("SUMMARY")
@@ -395,17 +395,17 @@ class WorkflowMonitor:
         print(f"Total Workflows: {report['summary']['total_workflows']}")
         print(f"Total Runs: {report['summary']['total_runs']}")
         print(f"Average Success Rate: {report['summary']['avg_success_rate']:.2f}%")
-        
+
         if 'avg_duration_improvement' in report['summary']:
             print(f"Average Duration Improvement: {report['summary']['avg_duration_improvement']:.2f}%")
-        
+
         print("\nTop 5 Most Active Workflows:")
         sorted_workflows = sorted(
             metrics.items(),
             key=lambda x: x[1]['total_runs'],
             reverse=True
         )[:5]
-        
+
         for i, (wf_name, wf_metrics) in enumerate(sorted_workflows, 1):
             print(f"{i}. {wf_name}: {wf_metrics['total_runs']} runs, {wf_metrics['success_rate']:.2f}% success")
 
@@ -454,13 +454,13 @@ def main():
         default=os.environ.get('GITHUB_TOKEN', ''),
         help='GitHub token (default: from GITHUB_TOKEN env)'
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.token:
         print("❌ Error: GitHub token required. Set GITHUB_TOKEN env or use --token")
         sys.exit(1)
-    
+
     monitor = WorkflowMonitor(args.repo, args.token, args.days, args.max_pages)
     monitor.run(args.output, args.format, args.compare)
 

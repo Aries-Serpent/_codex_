@@ -126,9 +126,9 @@ class OptimizedVectorStore:
             lazy_load: Defer index loading until first query
         """
         self.store = store
-        self.cache = (
-            ResponseCache(max_size=cache_size, default_ttl=cache_ttl) if enable_cache else None
-        )
+        self.cache = None  # always defined before conditional assignment
+        if enable_cache:
+            self.cache = ResponseCache(max_size=cache_size, default_ttl=cache_ttl)
         self.metrics = RetrievalMetrics()
         self.lazy_load = lazy_load
         self._loaded = False
@@ -177,10 +177,14 @@ class OptimizedVectorStore:
             "filters": filters,
         }
 
-        # Check cache
-        if use_cache and self.cache:
+        # Check cache — use `is not None` (not truthiness) because an empty
+        # cache has __len__==0 which makes bool(cache)==False, breaking the check
+        if use_cache and self.cache is not None:
+            t_cache = time.time()
             cached_result = self.cache.get(cache_key)
+            cache_latency = time.time() - t_cache
             if cached_result is not None:
+                self.metrics.record_search(cache_latency, batch_size=1)
                 logger.debug("Cache hit for query")
                 return cached_result
 
@@ -193,7 +197,7 @@ class OptimizedVectorStore:
         self.metrics.record_search(latency, batch_size=1)
 
         # Cache result
-        if use_cache and self.cache:
+        if use_cache and self.cache is not None:
             self.cache.put(cache_key, results)
 
         logger.debug(f"Search completed in {latency:.4f}s")
@@ -250,7 +254,7 @@ class OptimizedVectorStore:
         result = self.store.add(vectors, metadata=metadata, ids=ids)
 
         # Clear cache since index changed
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.debug("Cache cleared after add")
 
@@ -261,7 +265,7 @@ class OptimizedVectorStore:
         result = self.store.delete(ids)
 
         # Clear cache since index changed
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.debug("Cache cleared after delete")
 
@@ -271,7 +275,7 @@ class OptimizedVectorStore:
         """Get combined metrics from retrieval and cache"""
         retrieval_metrics = self.metrics.to_dict()
 
-        if self.cache:
+        if self.cache is not None:
             cache_metrics = self.cache.get_metrics()
             return {
                 "retrieval": retrieval_metrics,
@@ -282,7 +286,7 @@ class OptimizedVectorStore:
 
     def clear_cache(self) -> None:
         """Manually clear the query cache"""
-        if self.cache:
+        if self.cache is not None:
             self.cache.clear()
             logger.info("Query cache cleared")
 

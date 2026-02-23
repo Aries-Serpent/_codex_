@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/canonicalize_artifacts.py [options]
-    
+
     Examples:
     $ python scripts/canonicalize_artifacts.py --help
 
@@ -31,6 +31,7 @@ Last Updated: 2026-01-16
 
 import argparse
 import logging
+
 logger = logging.getLogger(__name__)
 import hashlib
 import json

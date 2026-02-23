@@ -48,18 +48,18 @@ def _get_github_client():
 
 def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
     """Fetch logs from a GitHub Actions check run.
-    
+
     This MCP tool fetches logs from a specific GitHub Actions check run by ID.
-    
+
     Args:
         params: Dictionary containing:
             - owner: Repository owner
             - repo: Repository name
             - check_run_id: Check run ID
-    
+
     Returns:
         Dictionary containing check run details and logs.
-    
+
     Example:
         ```python
         result = fetch_check_run_logs({
@@ -119,18 +119,18 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
 
 def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
     """Fetch logs from a GitHub Actions workflow job.
-    
+
     This MCP tool fetches logs from a specific GitHub Actions job by ID.
-    
+
     Args:
         params: Dictionary containing:
             - owner: Repository owner
             - repo: Repository name
             - job_id: Job ID
-    
+
     Returns:
         Dictionary containing job logs.
-    
+
     Example:
         ```python
         result = fetch_job_logs({
@@ -174,9 +174,9 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
 
 def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
     """List check runs for a git reference.
-    
+
     This MCP tool lists check runs for a specific git reference (commit, branch, or tag).
-    
+
     Args:
         params: Dictionary containing:
             - owner: Repository owner
@@ -184,10 +184,10 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             - ref: Git reference (commit SHA, branch, or tag)
             - status: Optional status filter
             - check_name: Optional check name filter
-    
+
     Returns:
         Dictionary containing list of check runs.
-    
+
     Example:
         ```python
         result = list_check_runs({

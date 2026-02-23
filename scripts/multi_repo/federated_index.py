@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/multi_repo/federated_index.py [options]
-    
+
     Examples:
     $ python scripts/multi_repo/federated_index.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 import logging

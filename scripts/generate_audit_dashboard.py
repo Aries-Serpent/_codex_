@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_audit_dashboard.py [options]
-    
+
     Examples:
     $ python scripts/generate_audit_dashboard.py --help
 
@@ -58,7 +58,6 @@ try:
     PLANNING_AVAILABLE = True
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
     PLANNING_AVAILABLE = False
 
 # Supported file extensions for badge styling
@@ -77,6 +76,9 @@ def format_size(size_bytes: int) -> str:
 def format_timestamp(timestamp: float) -> str:
     """Format Unix timestamp to human-readable date."""
     try:
+        # Reject clearly invalid timestamps (negative or unreasonably large)
+        if timestamp < 0 or timestamp > 32503680000:  # Max: year 3000
+            return "Unknown"
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
     except (ValueError, OSError):
         logger.debug("Exception caught, returning", exc_info=True)
@@ -176,54 +178,54 @@ def generate_html_dashboard(
 
     # Extract manifest data
     manifest_artifacts = manifest.get("artifacts", [])
-    manifest.get("version", "Unknown")
-    manifest.get("timestamp", 0)
+    manifest_version = manifest.get("version", "Unknown")
+    manifest_timestamp = manifest.get("timestamp", 0)
     manifest_weights = manifest.get("weights", {})
 
-    html_content = f"""<!DOCTYPE html>
+    html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audit Dashboard - Determinism & Validation</title>
     <style>
-        * {{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }}
-        
-        body {{
+        }
+
+        body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
             color: #24292e;
             background: #f6f8fa;
             padding: 20px;
-        }}
-        
-        .container {{
+        }
+
+        .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
             padding: 30px;
-        }}
-        
-        header {{
+        }
+
+        header {
             border-bottom: 2px solid #e1e4e8;
             padding-bottom: 20px;
             margin-bottom: 30px;
-        }}
-        
-        h1 {{
+        }
+
+        h1 {
             font-size: 32px;
             font-weight: 600;
             color: #0366d6;
             margin-bottom: 10px;
-        }}
-        
-        .metadata {{
+        }
+
+        .metadata {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
@@ -231,78 +233,78 @@ def generate_html_dashboard(
             padding: 20px;
             border-radius: 6px;
             margin-bottom: 30px;
-        }}
-        
-        .metadata-item {{
+        }
+
+        .metadata-item {
             display: flex;
             flex-direction: column;
-        }}
-        
-        .metadata-label {{
+        }
+
+        .metadata-label {
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             color: #586069;
             margin-bottom: 5px;
-        }}
-        
-        .metadata-value {{
+        }
+
+        .metadata-value {
             font-size: 14px;
             color: #24292e;
             font-weight: 500;
-        }}
-        
-        h2 {{
+        }
+
+        h2 {
             font-size: 24px;
             font-weight: 600;
             margin: 30px 0 15px 0;
             color: #24292e;
             border-bottom: 1px solid #e1e4e8;
             padding-bottom: 10px;
-        }}
-        
-        .section {{
+        }
+
+        .section {
             margin-bottom: 40px;
-        }}
-        
-        table {{
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
             font-size: 14px;
-        }}
-        
-        thead {{
+        }
+
+        thead {
             background: #f6f8fa;
-        }}
-        
-        th {{
+        }
+
+        th {
             text-align: left;
             padding: 12px;
             font-weight: 600;
             color: #24292e;
             border-bottom: 2px solid #e1e4e8;
-        }}
-        
-        td {{
+        }
+
+        td {
             padding: 12px;
             border-bottom: 1px solid #e1e4e8;
-        }}
-        
-        tbody tr:hover {{
+        }
+
+        tbody tr:hover {
             background: #f6f8fa;
-        }}
-        
-        a {{
+        }
+
+        a {
             color: #0366d6;
             text-decoration: none;
-        }}
-        
-        a:hover {{
+        }
+
+        a:hover {
             text-decoration: underline;
-        }}
-        
-        .badge {{
+        }
+
+        .badge {
             display: inline-block;
             padding: 3px 8px;
             border-radius: 12px;
@@ -310,89 +312,89 @@ def generate_html_dashboard(
             font-weight: 500;
             background: #0366d6;
             color: white;
-        }}
-        
-        .badge.json {{ background: #28a745; }}
-        .badge.md {{ background: #6f42c1; }}
-        .badge.txt {{ background: #586069; }}
-        .badge.html {{ background: #d73a49; }}
-        
-        .weights {{
+        }
+
+        .badge.json { background: #28a745; }
+        .badge.md { background: #6f42c1; }
+        .badge.txt { background: #586069; }
+        .badge.html { background: #d73a49; }
+
+        .weights {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 10px;
-        }}
-        
-        .weight-item {{
+        }
+
+        .weight-item {
             background: #f1f8ff;
             border: 1px solid #0366d6;
             border-radius: 6px;
             padding: 8px 12px;
             font-size: 13px;
-        }}
-        
-        .weight-label {{
+        }
+
+        .weight-label {
             font-weight: 600;
             color: #0366d6;
-        }}
-        
-        .empty-state {{
+        }
+
+        .empty-state {
             text-align: center;
             padding: 40px;
             color: #586069;
             font-style: italic;
-        }}
-        
-        .stats {{
+        }
+
+        .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin: 20px 0;
-        }}
-        
-        .stat-card {{
+        }
+
+        .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-        }}
-        
-        .stat-value {{
+        }
+
+        .stat-value {
             font-size: 32px;
             font-weight: 700;
             margin-bottom: 5px;
-        }}
-        
-        .stat-label {{
+        }
+
+        .stat-label {
             font-size: 12px;
             text-transform: uppercase;
             opacity: 0.9;
-        }}
-        
-        .search-box {{
+        }
+
+        .search-box {
             width: 100%;
             padding: 12px;
             border: 2px solid #e1e4e8;
             border-radius: 6px;
             font-size: 14px;
             margin-bottom: 20px;
-        }}
-        
-        .search-box:focus {{
+        }
+
+        .search-box:focus {
             outline: none;
             border-color: #0366d6;
-        }}
-        
-        footer {{
+        }
+
+        footer {
             margin-top: 50px;
             padding-top: 20px;
             border-top: 1px solid #e1e4e8;
             text-align: center;
             color: #586069;
             font-size: 12px;
-        }}
+        }
 """
 
     # Add planning CSS if available
@@ -403,7 +405,6 @@ def generate_html_dashboard(
             html_content += generate_planning_css()
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
             pass
 
     html_content += """
@@ -415,7 +416,7 @@ def generate_html_dashboard(
             <h1>🔍 Audit Dashboard</h1>
             <p>Determinism & Validation Artifacts</p>
         </header>
-        
+
         <div class="metadata">
             <div class="metadata-item">
                 <span class="metadata-label">Audit Version</span>
@@ -434,7 +435,7 @@ def generate_html_dashboard(
                 <span class="metadata-value">{len(manifest_artifacts)}</span>
             </div>
         </div>
-        
+
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value">{len(audit_artifacts)}</div>
@@ -619,14 +620,14 @@ def generate_html_dashboard(
             <p>Generated by Audit Dashboard Generator • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
         </footer>
     </div>
-    
+
     <script>
         function filterTable(tableId, searchId) {{
             const input = document.getElementById(searchId);
             const filter = input.value.toUpperCase();
             const table = document.getElementById(tableId);
             const tr = table ? table.getElementsByTagName('tr') : [];
-            
+
             for (let i = 1; i < tr.length; i++) {{
                 let txtValue = tr[i].textContent || tr[i].innerText;
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {{
@@ -636,7 +637,7 @@ def generate_html_dashboard(
                 }}
             }}
         }}
-        
+
         // Add tooltips on hover for long paths
         document.querySelectorAll('code').forEach(el => {{
             el.title = el.textContent;
@@ -652,6 +653,13 @@ def generate_html_dashboard(
 </body>
 </html>
 """
+
+    # Substitute manifest metadata placeholders (template strings are not f-strings)
+    html_content = (
+        html_content
+        .replace("{html.escape(manifest_version)}", html.escape(str(manifest_version)))
+        .replace("{format_timestamp(manifest_timestamp)}", format_timestamp(manifest_timestamp))
+    )
 
     # Write HTML to file
     output_path.parent.mkdir(parents=True, exist_ok=True)

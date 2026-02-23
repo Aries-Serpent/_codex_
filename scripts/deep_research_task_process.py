@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/deep_research_task_process.py [options]
-    
+
     Examples:
     $ python scripts/deep_research_task_process.py --help
 

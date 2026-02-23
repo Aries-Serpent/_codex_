@@ -21,14 +21,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import queue
-import threading
-import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import os  # noqa: E402
+import queue  # noqa: E402
+import threading  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 @dataclass

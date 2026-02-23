@@ -97,7 +97,7 @@ def scrub(
     enable_aws_key: bool = True,
 ) -> tuple[str, dict]:
     """Scrub PII from text content.
-    
+
     Args:
         text: Input text to scrub
         allow_gpl: Whether to allow GPL-licensed content
@@ -106,7 +106,7 @@ def scrub(
         enable_ssn: Enable SSN detection
         enable_credit_card: Enable credit card detection
         enable_aws_key: Enable AWS key detection
-        
+
     Returns:
         Tuple of (scrubbed_text, flags_dict)
     """
@@ -234,13 +234,13 @@ def scrub(
 
 def scrub_for_embedding(text: str) -> str:
     """Convenience function for RAG pipeline - scrub all PII for embedding.
-    
+
     This is the primary entry point for the knowledge crawler to ensure
     no PII enters the vector store.
-    
+
     Args:
         text: Text content to scrub before embedding
-        
+
     Returns:
         Scrubbed text safe for embedding
     """

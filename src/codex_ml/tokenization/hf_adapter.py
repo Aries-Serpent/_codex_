@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Canonical Hugging Face tokenizer adapter surface."""
 
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Sequence  # noqa: E402
 
-from codex_ml.interfaces.tokenizer import TokenizerAdapter
-from codex_ml.plugins.registries import tokenizers
+from codex_ml.interfaces.tokenizer import TokenizerAdapter  # noqa: E402
+from codex_ml.plugins.registries import tokenizers  # noqa: E402
 
 try:  # pragma: no cover - optional dependency guard
     from tokenizers import Tokenizer as _FastTokenizer

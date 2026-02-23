@@ -2,7 +2,7 @@
 # Provides separate cpu-runtime and gpu-runtime targets for deployment
 
 # ===== Stage 1: Base Image =====
-FROM python:3.12-slim AS base
+FROM python:3.12.7-slim AS base
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
@@ -104,7 +104,7 @@ ENTRYPOINT ["python3", "-m", "codex_ml"]
 CMD ["--help"]
 
 # ===== Stage 4: Test Environment (default) =====
-FROM python:3.12-slim AS test
+FROM python:3.12.7-slim AS test
 
 # Metadata
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"

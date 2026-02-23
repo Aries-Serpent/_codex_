@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/deploy/rollback_executor.py [options]
-    
+
     Examples:
     $ python scripts/deploy/rollback_executor.py --help
 
@@ -47,11 +47,12 @@ Agent Integration:
 import argparse
 import json
 import logging
-import sys
 import shutil
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
 import yaml
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

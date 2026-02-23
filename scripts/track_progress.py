@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/track_progress.py [options]
-    
+
     Examples:
     $ python scripts/track_progress.py --help
 
@@ -84,7 +84,7 @@ def print_progress_report(caps: list[dict]):
     print("📊 HIGH MATURITY ACHIEVEMENT PLAN - PROGRESS REPORT")
     print("=" * 70)
 
-    print(f"\n🎯 Overall Progress")
+    print("\n🎯 Overall Progress")
     print(f"  Total Capabilities: {len(caps)}")
     print(f"  Average Score: {avg_score:.4f}")
     print()
@@ -103,7 +103,7 @@ def print_progress_report(caps: list[dict]):
     )
 
     # Phase targets
-    print(f"\n📈 Phase Targets")
+    print("\n📈 Phase Targets")
     phase1_complete = len(categories["critical"]) == 0 and len(categories["low"]) == 0
     phase2_complete = len(categories["medium"]) == 0
     len(categories["high"]) == len(caps)
@@ -121,7 +121,7 @@ def print_progress_report(caps: list[dict]):
     # Next priorities
     low_maturity = categories["critical"] + categories["low"]
     if low_maturity:
-        print(f"\n⏳ Next Priorities (Phase 1 - Low Maturity)")
+        print("\n⏳ Next Priorities (Phase 1 - Low Maturity)")
         low_sorted = sorted(low_maturity, key=lambda x: x["score"])
         for i, cap in enumerate(low_sorted[:8], 1):
             components = cap.get("components", {})
@@ -134,13 +134,13 @@ def print_progress_report(caps: list[dict]):
 
     medium_maturity = categories["medium"]
     if medium_maturity and not low_maturity:
-        print(f"\n⏳ Next Priorities (Phase 2 - Medium to High)")
+        print("\n⏳ Next Priorities (Phase 2 - Medium to High)")
         medium_sorted = sorted(medium_maturity, key=lambda x: x["score"])
         for i, cap in enumerate(medium_sorted[:5], 1):
             print(f"  {i}. {cap['id']:30s}  Score: {cap['score']:.4f}")
 
     # Component analysis
-    print(f"\n📊 Component Analysis (Weakest Areas)")
+    print("\n📊 Component Analysis (Weakest Areas)")
     component_scores = {
         "tests": [],
         "documentation": [],
@@ -170,16 +170,16 @@ def generate_next_command(caps: list[dict]):
 
     if low_maturity:
         next_cap = sorted(low_maturity, key=lambda x: x["score"])[0]
-        print(f"\n🚀 Next Command:")
+        print("\n🚀 Next Command:")
         print(f"   python scripts/space_traversal/audit_runner.py explain {next_cap['id']}")
         print(f"\n📝 Then improve weakest component for {next_cap['id']}")
     elif categories["medium"]:
         next_cap = sorted(categories["medium"], key=lambda x: x["score"])[0]
-        print(f"\n🚀 Next Command (Phase 2):")
+        print("\n🚀 Next Command (Phase 2):")
         print(f"   python scripts/space_traversal/audit_runner.py explain {next_cap['id']}")
     else:
-        print(f"\n🎉 All capabilities at high maturity!")
-        print(f"   Consider running excellence phase optimizations")
+        print("\n🎉 All capabilities at high maturity!")
+        print("   Consider running excellence phase optimizations")
 
 
 def main():

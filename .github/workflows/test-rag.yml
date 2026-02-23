@@ -17,6 +17,7 @@ name: Art_RAG Module Tests
 jobs:
   test-rag:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       matrix:
         python-version: ['3.12']
@@ -109,13 +110,11 @@ jobs:
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
           
-          # Run with explicit plugin verification
+          # Run RAG tests serially to avoid xdist worker plugin-discovery failures
+          # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
           python -m pytest tests/test_rag_*.py \
-            -p xdist \
-            -p pytest_cov \
-            -n auto \
             -v \
-            --tb=short \
+            --tb=short --timeout=300 \
             --cov=src \
             --cov-report=xml \
             --cov-report=html \

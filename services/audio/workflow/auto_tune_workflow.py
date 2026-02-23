@@ -39,21 +39,26 @@ class WorkflowResult:
     error: Optional[str] = None
     metrics: Dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def total_files(self) -> int:
+        """Total files discovered for processing."""
+        return self.files_processed + self.files_failed
+
 
 class AutoTuneWorkflow:
     """
     Auto-tune workflow for audio pitch correction.
-    
+
     Provides automated pitch correction with configurable strength
     and musical scale awareness.
     """
-    
+
     def __init__(self, config: Optional[WorkflowConfig] = None, cognitive_mode: bool = False):
         """Initialize workflow with optional config and cognitive mode."""
         self.config = config or WorkflowConfig()
         self.cognitive_mode = cognitive_mode
         self._initialized = True
-    
+
     def process(
         self,
         audio_path: str,
@@ -62,12 +67,12 @@ class AutoTuneWorkflow:
     ) -> TuneResult:
         """
         Process audio file with auto-tune.
-        
+
         Args:
             audio_path: Path to input audio file
             output_path: Optional path for output file
             **kwargs: Additional processing options
-            
+
         Returns:
             TuneResult with processing details
         """
@@ -82,29 +87,29 @@ class AutoTuneWorkflow:
                 "processing_time_ms": 150.0,
             },
         )
-    
+
     def batch_process(self, audio_paths: List[str]) -> List[TuneResult]:
         """Process multiple audio files."""
         return [self.process(p) for p in audio_paths]
-    
+
     def validate_input(self, audio_path: str) -> bool:
         """Validate input audio file."""
         path = Path(audio_path)
         return path.suffix.lower() in {".wav", ".mp3", ".flac", ".ogg"}
-    
+
     def process_path(self, path: str, **kwargs) -> WorkflowResult:
         """
         Process all audio files in a directory or a single file.
-        
+
         Args:
             path: Path to directory or single audio file
             **kwargs: Additional processing options
-            
+
         Returns:
             WorkflowResult with batch processing details
         """
         path_obj = Path(path)
-        
+
         if path_obj.is_file():
             files = [path]
         elif path_obj.is_dir():
@@ -116,16 +121,16 @@ class AutoTuneWorkflow:
                 success=False,
                 error=f"Path not found: {path}"
             )
-        
+
         if not files:
             return WorkflowResult(
                 success=False,
                 error="No audio files found"
             )
-        
+
         output_paths = []
         failed = 0
-        
+
         for file_path in files:
             try:
                 result = self.process(file_path, **kwargs)
@@ -135,7 +140,7 @@ class AutoTuneWorkflow:
                     failed += 1
             except Exception:
                 failed += 1
-        
+
         return WorkflowResult(
             success=failed == 0,
             files_processed=len(files) - failed,

@@ -5,8 +5,6 @@ from __future__ import annotations
 import importlib
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import os
 import time
 from collections.abc import Iterator, Mapping, MutableMapping
@@ -17,6 +15,7 @@ from typing import Any
 
 from codex_ml.utils.optional import optional_dependency_error
 
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - fall back to a stub

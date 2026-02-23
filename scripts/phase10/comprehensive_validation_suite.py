@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/phase10/comprehensive_validation_suite.py [options]
-    
+
     Examples:
     $ python scripts/phase10/comprehensive_validation_suite.py --help
 
@@ -37,17 +37,18 @@ Capabilities: All validation tasks automatable by Copilot Agent
 User Authorization: FULL ACCESS granted by mbaetiong (comment #3745423798)
 """
 
-import os
-import sys
 import json
+import os
 import subprocess
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
-from datetime import datetime, UTC
+from typing import Dict, List, Optional, Tuple
+
 
 class Phase10Validator:
     """Comprehensive validation for Phase 10 Master Integration."""
-    
+
     def __init__(self):
         self.results = {
             "timestamp": datetime.now(UTC).isoformat(),
@@ -61,7 +62,7 @@ class Phase10Validator:
             }
         }
         self.repo_root = Path("/home/runner/work/_codex_/_codex_")
-    
+
     def log_test(self, name: str, status: str, message: str, details: Optional[Dict] = None):
         """Log test result."""
         test = {
@@ -73,7 +74,7 @@ class Phase10Validator:
         }
         self.results["tests"].append(test)
         self.results["summary"]["total"] += 1
-        
+
         if status == "pass":
             self.results["summary"]["passed"] += 1
             print(f"✅ {name}: {message}")
@@ -86,7 +87,7 @@ class Phase10Validator:
         else:  # skip
             self.results["summary"]["skipped"] += 1
             print(f"⏸️  {name}: {message}")
-    
+
     def run_command(self, cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
         """Execute shell command and return (returncode, stdout, stderr)."""
         try:
@@ -102,15 +103,15 @@ class Phase10Validator:
             return -1, "", "Command timed out after 5 minutes"
         except Exception as e:
             return -1, "", str(e)
-    
+
     # ====================================================================
     # TEST CATEGORY 1: Configuration Files Validation
     # ====================================================================
-    
+
     def test_repomix_config_exists(self):
         """Validate repomix.config.json exists and is valid."""
         config_path = self.repo_root / "repomix.config.json"
-        
+
         if not config_path.exists():
             self.log_test(
                 "repomix_config_exists",
@@ -118,15 +119,15 @@ class Phase10Validator:
                 "repomix.config.json not found"
             )
             return
-        
+
         try:
             with open(config_path) as f:
                 config = json.load(f)
-            
+
             # Validate required fields
             required_fields = ["output", "include", "ignore"]
             missing = [f for f in required_fields if f not in config]
-            
+
             if missing:
                 self.log_test(
                     "repomix_config_valid",
@@ -140,7 +141,7 @@ class Phase10Validator:
                     "compress": config.get("output", {}).get("compress"),
                     "security_check": config.get("security", {}).get("enableSecurityCheck")
                 }
-                
+
                 if details["output_style"] == "xml" and details["compress"]:
                     self.log_test(
                         "repomix_config_valid",
@@ -167,11 +168,11 @@ class Phase10Validator:
                 "fail",
                 f"Validation error: {e}"
             )
-    
+
     def test_repomix_instructions_exist(self):
         """Validate repomix-instruction.md exists."""
         instructions_path = self.repo_root / "repomix-instruction.md"
-        
+
         if not instructions_path.exists():
             self.log_test(
                 "repomix_instructions_exist",
@@ -179,7 +180,7 @@ class Phase10Validator:
                 "repomix-instruction.md not found"
             )
             return
-        
+
         size = instructions_path.stat().st_size
         if size > 1000:  # At least 1KB
             self.log_test(
@@ -194,11 +195,11 @@ class Phase10Validator:
                 "warn",
                 f"Instructions file seems small ({size} bytes)"
             )
-    
+
     def test_workflow_exists(self):
         """Validate notebooklm-sync.yml workflow exists."""
         workflow_path = self.repo_root / ".github/workflows/notebooklm-sync.yml"
-        
+
         if not workflow_path.exists():
             self.log_test(
                 "workflow_exists",
@@ -206,11 +207,11 @@ class Phase10Validator:
                 "notebooklm-sync.yml not found"
             )
             return
-        
+
         try:
             with open(workflow_path) as f:
                 content = f.read()
-            
+
             # Check for key components
             checks = {
                 "repomix action": "repomix" in content,
@@ -218,9 +219,9 @@ class Phase10Validator:
                 "google drive upload": "google-drive-upload" in content or "gdrive" in content.lower(),
                 "workflow_dispatch": "workflow_dispatch" in content
             }
-            
+
             all_present = all(checks.values())
-            
+
             if all_present:
                 self.log_test(
                     "workflow_valid",
@@ -242,11 +243,11 @@ class Phase10Validator:
                 "fail",
                 f"Workflow validation error: {e}"
             )
-    
+
     # ====================================================================
     # TEST CATEGORY 2: Documentation Validation
     # ====================================================================
-    
+
     def test_documentation_exists(self):
         """Validate all Phase 10 documentation exists."""
         docs = {
@@ -258,13 +259,13 @@ class Phase10Validator:
             "docs/TASK_3_NOTEBOOKLM_SKILL_SETUP.md": "Claude Code setup guide",
             "docs/notebooklm-architect-prompt.md": "AI Architect prompt"
         }
-        
+
         missing = []
         for doc, desc in docs.items():
             path = self.repo_root / doc
             if not path.exists():
                 missing.append(f"{doc} ({desc})")
-        
+
         if not missing:
             self.log_test(
                 "documentation_complete",
@@ -279,11 +280,11 @@ class Phase10Validator:
                 f"Missing {len(missing)} documentation files",
                 {"missing": missing}
             )
-    
+
     def test_documentation_quality(self):
         """Validate documentation quality and completeness."""
         planset_path = self.repo_root / "PHASE_10_MASTER_INTEGRATION_PLANSET.md"
-        
+
         if not planset_path.exists():
             self.log_test(
                 "documentation_quality",
@@ -291,11 +292,11 @@ class Phase10Validator:
                 "Planset not found, skipping quality check"
             )
             return
-        
+
         try:
             with open(planset_path) as f:
                 content = f.read()
-            
+
             # Quality checks
             checks = {
                 "has_task_breakdown": "### Task 1:" in content and "### Task 2:" in content,
@@ -304,9 +305,9 @@ class Phase10Validator:
                 "has_validation": "Validation" in content or "validation" in content,
                 "sufficient_length": len(content) > 10000  # At least 10KB
             }
-            
+
             score = sum(checks.values()) / len(checks) * 100
-            
+
             if score >= 80:
                 self.log_test(
                     "documentation_quality",
@@ -334,11 +335,11 @@ class Phase10Validator:
                 "fail",
                 f"Quality check error: {e}"
             )
-    
+
     # ====================================================================
     # TEST CATEGORY 3: Scripts and Tools Validation
     # ====================================================================
-    
+
     def test_scripts_exist(self):
         """Validate all Phase 10 scripts exist and are executable."""
         scripts = {
@@ -348,17 +349,17 @@ class Phase10Validator:
             "scripts/phase10/automated_secrets_manager.py": "Secrets manager API",
             "scripts/phase10/execute_secrets_injection_now.py": "Immediate injection"
         }
-        
+
         missing = []
         not_executable = []
-        
+
         for script, desc in scripts.items():
             path = self.repo_root / script
             if not path.exists():
                 missing.append(f"{script} ({desc})")
             elif not os.access(path, os.X_OK) and script.endswith('.sh'):
                 not_executable.append(f"{script}")
-        
+
         if not missing and not not_executable:
             self.log_test(
                 "scripts_ready",
@@ -372,25 +373,25 @@ class Phase10Validator:
                 issues.append(f"{len(missing)} missing")
             if not_executable:
                 issues.append(f"{len(not_executable)} not executable")
-            
+
             self.log_test(
                 "scripts_ready",
                 "fail",
                 f"Script issues: {', '.join(issues)}",
                 {"missing": missing, "not_executable": not_executable}
             )
-    
+
     # ====================================================================
     # TEST CATEGORY 4: Security Scanning
     # ====================================================================
-    
+
     def test_no_secrets_in_code(self):
         """Run security scanning to ensure no secrets in committed code."""
         print("\n🔒 Running security scan...")
-        
+
         # Check if detect-secrets is available
         returncode, stdout, stderr = self.run_command(["which", "detect-secrets"])
-        
+
         if returncode != 0:
             self.log_test(
                 "security_scan",
@@ -398,16 +399,16 @@ class Phase10Validator:
                 "detect-secrets not available (install with: pip install detect-secrets)"
             )
             return
-        
+
         # Run detect-secrets scan
         returncode, stdout, stderr = self.run_command([
             "detect-secrets", "scan",
             "--baseline", ".secrets.baseline",
             "--exclude-files", ".*node_modules/.*",
-            "--exclude-files", ".*\.git/.*",
-            "--exclude-files", ".*\.venv/.*"
+            "--exclude-files", r".*\.git/.*",
+            "--exclude-files", r".*\.venv/.*"
         ])
-        
+
         if returncode == 0:
             self.log_test(
                 "security_scan",
@@ -421,17 +422,17 @@ class Phase10Validator:
                 "Potential secrets detected (review manually)",
                 {"stderr": stderr[:500]}
             )
-    
+
     def test_dependencies_secure(self):
         """Check for known vulnerabilities in dependencies."""
         print("\n🔍 Checking dependencies...")
-        
+
         # Check Python dependencies with pip-audit if available
         returncode, stdout, stderr = self.run_command(["which", "pip-audit"])
-        
+
         if returncode == 0:
             returncode, stdout, stderr = self.run_command(["pip-audit", "--desc"])
-            
+
             if returncode == 0:
                 self.log_test(
                     "dependencies_secure",
@@ -452,15 +453,15 @@ class Phase10Validator:
                 "skip",
                 "pip-audit not available"
             )
-    
+
     # ====================================================================
     # TEST CATEGORY 5: Cognitive Brain Health
     # ====================================================================
-    
+
     def test_cognitive_brain_status(self):
         """Validate cognitive brain health metrics."""
         brain_path = self.repo_root / "COGNITIVE_BRAIN_STATUS_V3.md"
-        
+
         if not brain_path.exists():
             self.log_test(
                 "cognitive_brain_health",
@@ -468,11 +469,11 @@ class Phase10Validator:
                 "COGNITIVE_BRAIN_STATUS_V3.md not found"
             )
             return
-        
+
         try:
             with open(brain_path) as f:
                 content = f.read()
-            
+
             # Extract health metrics
             metrics = {}
             for line in content.split('\n'):
@@ -485,14 +486,14 @@ class Phase10Validator:
                             metrics[name] = score
                         except (ValueError, IndexError):
                             pass
-            
+
             if metrics:
                 metrics.get("Overall Health", 0)
                 metrics.get("Knowledge Synthesis", 0)
                 metrics.get("Self-Healing", 0)
-                
+
                 avg_score = sum(metrics.values()) / len(metrics)
-                
+
                 if avg_score >= 95:
                     self.log_test(
                         "cognitive_brain_health",
@@ -526,11 +527,11 @@ class Phase10Validator:
                 "fail",
                 f"Status validation error: {e}"
             )
-    
+
     # ====================================================================
     # TEST CATEGORY 6: End-to-End Integration (Simulated)
     # ====================================================================
-    
+
     def test_end_to_end_readiness(self):
         """Validate all components are ready for end-to-end sync."""
         components = {
@@ -540,10 +541,10 @@ class Phase10Validator:
             "documentation": (self.repo_root / "PHASE_10_MASTER_INTEGRATION_PLANSET.md").exists(),
             "architect_prompt": (self.repo_root / "docs/notebooklm-architect-prompt.md").exists()
         }
-        
+
         ready_count = sum(components.values())
         total = len(components)
-        
+
         if ready_count == total:
             self.log_test(
                 "end_to_end_readiness",
@@ -559,11 +560,11 @@ class Phase10Validator:
                 f"Missing {total - ready_count} components: {missing}",
                 components
             )
-    
+
     # ====================================================================
     # Main Execution
     # ====================================================================
-    
+
     def run_all_tests(self):
         """Execute all validation tests."""
         print("\n" + "=" * 70)
@@ -572,53 +573,53 @@ class Phase10Validator:
         print(f"Timestamp: {self.results['timestamp']}")
         print(f"Repository: {self.repo_root}")
         print("")
-        
+
         # Category 1: Configuration Files
         print("\n📁 Category 1: Configuration Files")
         print("-" * 70)
         self.test_repomix_config_exists()
         self.test_repomix_instructions_exist()
         self.test_workflow_exists()
-        
+
         # Category 2: Documentation
         print("\n📚 Category 2: Documentation")
         print("-" * 70)
         self.test_documentation_exists()
         self.test_documentation_quality()
-        
+
         # Category 3: Scripts and Tools
         print("\n🛠️  Category 3: Scripts and Tools")
         print("-" * 70)
         self.test_scripts_exist()
-        
+
         # Category 4: Security
         print("\n🔒 Category 4: Security Scanning")
         print("-" * 70)
         self.test_no_secrets_in_code()
         self.test_dependencies_secure()
-        
+
         # Category 5: Cognitive Brain
         print("\n🧠 Category 5: Cognitive Brain Health")
         print("-" * 70)
         self.test_cognitive_brain_status()
-        
+
         # Category 6: Integration Readiness
         print("\n🔗 Category 6: End-to-End Integration")
         print("-" * 70)
         self.test_end_to_end_readiness()
-        
+
         # Generate summary
         self.generate_summary()
-        
+
         # Save results
         self.save_results()
-        
+
         return self.results["summary"]["failed"] == 0
-    
+
     def generate_summary(self):
         """Generate and display test summary."""
         s = self.results["summary"]
-        
+
         print("\n" + "=" * 70)
         print("📊 Validation Summary")
         print("=" * 70)
@@ -628,9 +629,9 @@ class Phase10Validator:
         print(f"⚠️  Warnings:   {s['warnings']}")
         print(f"⏸️  Skipped:    {s['skipped']}")
         print("")
-        
+
         pass_rate = (s['passed'] / s['total'] * 100) if s['total'] > 0 else 0
-        
+
         if pass_rate >= 90:
             status = "✅ EXCELLENT"
         elif pass_rate >= 75:
@@ -639,51 +640,51 @@ class Phase10Validator:
             status = "⚠️  ACCEPTABLE"
         else:
             status = "❌ NEEDS WORK"
-        
+
         print(f"Pass Rate: {pass_rate:.1f}% - {status}")
         print("")
-        
+
         if s['failed'] > 0:
             print("❌ Failed Tests:")
             for test in self.results["tests"]:
                 if test["status"] == "fail":
                     print(f"  • {test['name']}: {test['message']}")
             print("")
-        
+
         if s['warnings'] > 0:
             print("⚠️  Warnings:")
             for test in self.results["tests"]:
                 if test["status"] == "warn":
                     print(f"  • {test['name']}: {test['message']}")
             print("")
-    
+
     def save_results(self):
         """Save validation results to file."""
         results_dir = self.repo_root / ".codex/validation/phase10"
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         timestamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
         results_file = results_dir / f"validation-{timestamp}.json"
-        
+
         with open(results_file, 'w') as f:
             json.dump(self.results, f, indent=2)
-        
+
         print(f"💾 Results saved to: {results_file}")
-        
+
         # Also create a markdown report
         report_file = results_dir / f"validation-{timestamp}.md"
         self.generate_markdown_report(report_file)
         print(f"📄 Report saved to: {report_file}")
-    
+
     def generate_markdown_report(self, output_file: Path):
         """Generate markdown validation report."""
         s = self.results["summary"]
         pass_rate = (s['passed'] / s['total'] * 100) if s['total'] > 0 else 0
-        
+
         report = f"""# Phase 10 Validation Report
 
-**Generated**: {self.results['timestamp']}  
-**Repository**: Aries-Serpent/_codex_  
+**Generated**: {self.results['timestamp']}
+**Repository**: Aries-Serpent/_codex_
 **Branch**: copilot/sub-pr-2836-again
 
 ---
@@ -705,7 +706,7 @@ class Phase10Validator:
 ## Test Results by Category
 
 """
-        
+
         categories = {
             "Configuration Files": ["repomix_config", "repomix_instructions", "workflow"],
             "Documentation": ["documentation_complete", "documentation_quality"],
@@ -714,7 +715,7 @@ class Phase10Validator:
             "Cognitive Brain": ["cognitive_brain_health"],
             "Integration": ["end_to_end_readiness"]
         }
-        
+
         for category, test_prefixes in categories.items():
             report += f"### {category}\n\n"
             for test in self.results["tests"]:
@@ -725,27 +726,27 @@ class Phase10Validator:
                         "warn": "⚠️",
                         "skip": "⏸️"
                     }.get(test["status"], "❓")
-                    
+
                     report += f"- {status_icon} **{test['name']}**: {test['message']}\n"
             report += "\n"
-        
+
         report += "---\n\n"
         report += "## Next Steps\n\n"
-        
+
         if s['failed'] > 0:
             report += "### Address Failures\n\n"
             for test in self.results["tests"]:
                 if test["status"] == "fail":
                     report += f"1. **{test['name']}**: {test['message']}\n"
             report += "\n"
-        
+
         report += "### Phase 10 Continuation\n\n"
         report += "1. Complete manual setup tasks (Google Cloud, NotebookLM)\n"
         report += "2. Trigger first workflow run\n"
         report += "3. Validate end-to-end sync\n"
         report += "4. Configure AI Architect\n"
         report += "5. Update cognitive brain status\n"
-        
+
         with open(output_file, 'w') as f:
             f.write(report)
 
@@ -754,7 +755,7 @@ def main():
     """Main entry point."""
     validator = Phase10Validator()
     success = validator.run_all_tests()
-    
+
     print("\n" + "=" * 70)
     if success:
         print("✅ All validation tests passed!")

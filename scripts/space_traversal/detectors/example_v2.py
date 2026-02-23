@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/detectors/example_v2.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/detectors/example_v2.py --help
 

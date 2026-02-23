@@ -15,24 +15,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import math
-import os
-import re
-import threading
-from collections import Counter
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Callable, Optional, Sequence
+import json  # noqa: E402
+import math  # noqa: E402
+import os  # noqa: E402
+import re  # noqa: E402
+import threading  # noqa: E402
+from collections import Counter  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Callable, Optional, Sequence  # noqa: E402
 
-from codex_ml.registry.base import Registry, RegistryConflictError
-
-# Ensure built-in generative metrics are registered on import.
-from . import generative as _generative
-
-_ = _generative  # Imported for side effects (metric registration)
+from codex_ml.registry.base import Registry, RegistryConflictError  # noqa: E402
 
 metric_registry = Registry("metric")
+# Plain dict checked before metric_registry — allows test mocking via monkeypatch.setitem
+_METRIC_REGISTRY: dict[str, Callable[..., object]] = {}
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
@@ -40,6 +37,8 @@ _REWARD_METRICS_LOADED = False
 _REWARD_METRICS_LOCK = threading.Lock()
 
 # Ensure built-in generative metrics are registered on import.
+# Imported AFTER metric_registry is defined to avoid a circular-import at
+# module load time (generative.py calls register_metric from this module).
 from . import generative as _generative  # noqa: F401, E402
 
 # Mark as explicitly used for side effects (metric registration)
@@ -332,8 +331,14 @@ def register_metric(
 
 
 def get(name: str) -> Callable[..., object]:
-    """Return the metric callable registered under name."""
+    """Return the metric callable registered under name.
 
+    ``_METRIC_REGISTRY`` is checked first so that test code can inject
+    mock implementations via ``monkeypatch.setitem`` without touching the
+    real registry.
+    """
+    if name in _METRIC_REGISTRY:
+        return _METRIC_REGISTRY[name]
     _ensure_metric_plugins_loaded()
     return metric_registry.get(name)
 
@@ -639,6 +644,7 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
 __all__ = [
     "metric_registry",
+    "_METRIC_REGISTRY",
     "register",
     "register_metric",
     "get",

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/codex_offline_audit.py [options]
-    
+
     Examples:
     $ python scripts/codex_offline_audit.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Offline Codex repository audit orchestrator.

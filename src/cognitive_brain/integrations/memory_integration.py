@@ -21,7 +21,7 @@ Decision Flow:
 import logging
 import time
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from cognitive_brain.integrations.compliance_integration import (
@@ -209,7 +209,7 @@ class MemoryAugmentedComplianceAssessor:
                 features=features,
                 decision=assessment.decision.value,
                 confidence=assessment.confidence,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(timezone.utc),
             )
             self.memory.store_pattern(pattern)
 

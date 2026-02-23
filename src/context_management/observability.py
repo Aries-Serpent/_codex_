@@ -9,10 +9,11 @@ import json
 import logging
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Callable, Optional
 
+logger = logging.getLogger(__name__)
 
 class MetricType(Enum):
     """Types of metrics tracked."""
@@ -38,7 +39,7 @@ class Metric:
     name: str
     value: float
     metric_type: MetricType
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     labels: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -60,7 +61,7 @@ class Alert:
     severity: AlertSeverity
     message: str
     source: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     correlation_id: Optional[str] = None
     context: dict = field(default_factory=dict)
     resolved: bool = False
@@ -85,7 +86,7 @@ class LogEntry:
 
     level: str
     message: str
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     correlation_id: Optional[str] = None
     x_request_id: Optional[str] = None
     gh_request_id: Optional[str] = None
@@ -332,9 +333,9 @@ class ContextObserver:
         logs = self._logs[-count:] if count > 0 else self._logs
 
         if level:
-            logs = [l for l in logs if l.level.lower() == level.lower()]
+            logs = [log_entry for log_entry in logs if log_entry.level.lower() == level.lower()]
 
-        return [l.to_dict() for l in logs]
+        return [log_entry.to_dict() for log_entry in logs]
 
     def export_metrics(self) -> list[dict]:
         """Export all metrics as dictionaries."""

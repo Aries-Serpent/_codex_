@@ -24,9 +24,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import re
-from dataclasses import dataclass, field
-from typing import Iterable, Pattern
+import re  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from typing import Iterable, Pattern  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import yaml
@@ -47,7 +47,7 @@ DEFAULT_SECRET_PATTERNS = [
 ]
 
 DEFAULT_PII_PATTERNS = [
-    re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"),
+    re.compile(r"[\w.%+-]+@[\w.-]+\.\w{2,}", re.UNICODE),  # Unicode-aware email pattern
     re.compile(r"\b\d{3}[- ]?\d{2}[- ]?\d{4}\b"),
     re.compile(r"\+?\d[\d .-]{8,}\d"),
 ]

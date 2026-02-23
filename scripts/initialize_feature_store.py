@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/initialize_feature_store.py [options]
-    
+
     Examples:
     $ python scripts/initialize_feature_store.py --help
 
@@ -42,15 +42,19 @@ Usage:
 
 import argparse
 import logging
+
+logger = logging.getLogger(__name__)
+
 import sys
 from pathlib import Path
+
 import yaml
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 try:
-    from codex_ml.features.feature_store import FeatureStore, FeatureGroup
+    from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     print(f"Error importing feature store: {e}")
@@ -60,7 +64,6 @@ except ImportError as e:
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-logger = logging.getLogger(__name__)
 
 
 def load_config(config_path: str) -> dict:

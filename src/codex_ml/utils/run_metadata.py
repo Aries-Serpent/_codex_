@@ -17,18 +17,16 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import json
+import logging
 import os
 import platform
 import sys
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
 
 def _sha256_file(path: Path) -> str | None:
     try:

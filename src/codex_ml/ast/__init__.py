@@ -13,7 +13,7 @@ Components:
 
 Example:
     from codex_ml.ast import StandardizedASTNode, AnalyzerRegistry
-    
+
     # Parse and analyze code
     registry = AnalyzerRegistry()
     findings = registry.analyze_all(ast_tree)

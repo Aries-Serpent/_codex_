@@ -534,9 +534,6 @@ Violations MUST be fixed within:
 
 ## Related Documents
 
-- [Migration Guide](../migration/python_312.md)
-- [Standardization Runbook](../playbooks/single_version_standardization.md)
-- [Lessons Learned](../retrospectives/python_312_standardization.md)
 
 ---
 
@@ -789,7 +786,6 @@ pre-commit run --all-files
 
 ### 3.1: Read Python Version Policy
 
-**📖 Read**: [`docs/policies/python_version_policy.md`](../../policies/python_version_policy.md)
 
 **Key Points**:
 - Only Python 3.12.10 is supported

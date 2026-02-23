@@ -4,10 +4,11 @@ Cross-references detected duplicates with .github/SHIM_INVENTORY.yaml
 to identify whitelisted duplicates and flag unknowns.
 """
 
-import yaml
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Set, Tuple, Optional, Dict
+from typing import Dict, List, Optional, Set, Tuple
+
+import yaml
 
 
 @dataclass

@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/make_quickstart_notebook.py [options]
-    
+
     Examples:
     $ python scripts/make_quickstart_notebook.py --help
 

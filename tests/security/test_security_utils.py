@@ -98,19 +98,19 @@ class TestSafeSecretReference:
     """Test safe secret reference generation."""
 
     def test_reference_without_operation(self):
-        """Test basic secret reference."""
+        """Test that empty name+operation returns [EMPTY] sentinel."""
         result = safe_secret_reference()
-        assert result == "secret"
+        assert result == "[EMPTY]"
 
     def test_reference_with_operation(self):
-        """Test secret reference with operation."""
+        """Test secret reference with name only (name is first positional arg)."""
         result = safe_secret_reference("verify")
-        assert result == "secret (verify)"
+        assert result == "secret: verify"
 
     def test_reference_set_operation(self):
-        """Test secret reference for set operation."""
+        """Test secret reference with name only."""
         result = safe_secret_reference("set")
-        assert result == "secret (set)"
+        assert result == "secret: set"
 
 
 class TestRedactDictWithSecretKeys:

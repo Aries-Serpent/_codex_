@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 import json
 import random
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import click
 
@@ -80,8 +80,8 @@ def infer(
     prompt: str,
     max_tokens: int,
     temperature: float,
-    device: str | None,
-    dtype: str | None,
+    device: Optional[str],
+    dtype: Optional[str],
 ) -> None:
     """Generate text from a prompt using a pretrained model."""
 
@@ -111,7 +111,6 @@ def train_model(config_path: Path, resume: bool, seed: int) -> None:
 
     config = _load_config(config_path)
     _seed_everything(int(seed))
-    config.setdefault("seed", int(seed))
     result = run_functional_training(config, resume=resume)
     if result is not None:
         click.echo(json.dumps(result, indent=2))
@@ -142,7 +141,7 @@ def build_tokenizer(config_path: Path, dry_run: bool) -> None:
     click.echo(str(result_path))
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     result = cli.main(args=argv, prog_name="codex-cli", standalone_mode=False)
     return 0 if result is None else int(result)
 

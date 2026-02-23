@@ -19,7 +19,7 @@ import logging
 import re
 import subprocess
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -77,7 +77,7 @@ class DetectedIssue:
     stack_trace: Optional[str] = None
     context: dict[str, Any] = field(default_factory=dict)
     details: dict[str, Any] = field(default_factory=dict)  # Alias for context
-    detected_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    detected_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def __post_init__(self):
         """Handle backwards compatibility"""
@@ -161,7 +161,7 @@ class DiagnosticResult:
     remediation_actions: list[RemediationAction] = field(default_factory=list)  # Alias
     health_score: float = 1.0
     diagnostics_run: list[str] = field(default_factory=list)
-    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def __post_init__(self):
         """Handle backwards compatibility"""

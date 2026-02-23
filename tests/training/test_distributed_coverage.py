@@ -20,6 +20,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# Save original torch modules before mocking to avoid contaminating later tests
+_TORCH_MOCK_KEYS = ("torch", "torch.distributed", "torch.nn", "torch.nn.parallel")
+_orig_torch_mods = {k: sys.modules[k] for k in _TORCH_MOCK_KEYS if k in sys.modules}
+
 # Create mock torch module
 mock_torch = MagicMock()
 mock_torch.distributed = MagicMock()
@@ -34,6 +38,12 @@ from codex_ml.training.distributed import (  # noqa: E402
     DistributedManager,
     distributed_context,
 )
+
+# Restore original torch modules (distributed module has already captured mock refs)
+sys.modules.update(_orig_torch_mods)
+for _k in _TORCH_MOCK_KEYS:
+    if _k not in _orig_torch_mods:
+        sys.modules.pop(_k, None)
 
 # =============================================================================
 # Test Data & Fixtures

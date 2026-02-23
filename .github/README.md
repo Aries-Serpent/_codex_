@@ -28,5 +28,5 @@ This directory (`.github/`) contains GitHub-specific configuration files includi
 - **Main Repository README**: [../README.md](../README.md)
 - **Contributing Guide**: [../CONTRIBUTING.md](../CONTRIBUTING.md)
 - **Security Policy**: [../SECURITY.md](../SECURITY.md)
-- **Agent Documentation**: [../AGENTS.md](../AGENTS.md)
+- **Agent Documentation**: [../AGENTS.md](./AGENTS.md)
 - **Documentation Index**: [../docs/DOCUMENTATION_INDEX.md](../docs/DOCUMENTATION_INDEX.md)

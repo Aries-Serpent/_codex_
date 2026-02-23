@@ -53,7 +53,7 @@ def fix_fstring_sql(content: str) -> tuple[str, list[str]]:
         # Create parameters tuple
         # Note: Only parameterize simple identifiers - complex expressions need manual review
         params = ', '.join(variables)
-        
+
         # Handle single variable case - need trailing comma for single-element tuple
         if len(variables) == 1:
             var = variables[0]
@@ -66,7 +66,7 @@ def fix_fstring_sql(content: str) -> tuple[str, list[str]]:
             is_likely_iterable = (
                 any(pattern in var.lower() for pattern in likely_iterable_patterns)
             )
-            
+
             if var.isidentifier() and not is_likely_iterable:
                 params += ','  # Single element tuple needs trailing comma
                 changes.append(f"Parameterized SQL with variable: {var} (added trailing comma for single-element tuple)")

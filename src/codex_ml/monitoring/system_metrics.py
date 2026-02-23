@@ -54,6 +54,9 @@ except Exception as exc:  # pragma: no cover - psutil missing
     )
     psutil = None
 
+# Alias for test compatibility
+_PSUTIL = psutil
+
 
 try:  # pragma: no cover - optional dependency
     if DEFAULT_POLL_GPU and DEFAULT_ENABLE_NVML:

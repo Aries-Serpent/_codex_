@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/validate_and_publish.py [options]
-    
+
     Examples:
     $ python scripts/status/validate_and_publish.py --help
 

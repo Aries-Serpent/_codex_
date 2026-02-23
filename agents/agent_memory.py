@@ -22,7 +22,7 @@ import os
 import sqlite3
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Optional, Union
 
@@ -61,7 +61,7 @@ class MemoryEntry:
     confidence: float = 0.8
     access_count: int = 0
     last_accessed: Optional[str] = None
-    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    created_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     tags: list[str] = field(default_factory=list)
     related_memories: list[str] = field(default_factory=list)
 
@@ -164,7 +164,7 @@ class PatternLibrary:
             "examples": examples,
             "tags": tags,
             "usage_count": 0,
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         }
 
         # Index by tags
@@ -381,7 +381,7 @@ class AgentMemory:
                     confidence=kwargs.get("confidence", 0.8),
                     access_count=kwargs.get("access_count", 0),
                     last_accessed=kwargs.get("last_accessed"),
-                    created_at=kwargs.get("created_at", datetime.now().isoformat()),
+                    created_at=kwargs.get("created_at", datetime.now(UTC).isoformat()),
                     tags=kwargs.get("tags", []),
                     related_memories=kwargs.get("related_memories", []),
                 )
@@ -395,7 +395,7 @@ class AgentMemory:
                 confidence=entry.get("confidence", 0.8),
                 access_count=entry.get("access_count", 0),
                 last_accessed=entry.get("last_accessed"),
-                created_at=entry.get("created_at", datetime.now().isoformat()),
+                created_at=entry.get("created_at", datetime.now(UTC).isoformat()),
                 tags=entry.get("tags", []),
                 related_memories=entry.get("related_memories", []),
             )
@@ -404,8 +404,8 @@ class AgentMemory:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                INSERT OR REPLACE INTO memories 
-                (memory_id, category, content, context, confidence, 
+                INSERT OR REPLACE INTO memories
+                (memory_id, category, content, context, confidence,
                  access_count, last_accessed, created_at, tags, related_memories)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -458,45 +458,57 @@ class AgentMemory:
         Retrieve a memory by ID or key.
 
         Args:
-            memory_id: The memory ID to retrieve
-            key: Alternative parameter name for backward compatibility (deprecated, use retrieve_content instead)
+            memory_id: The memory ID to retrieve (returns MemoryEntry)
+            key: Alternative parameter name for backward compatibility (returns content string)
 
         Returns:
-            MemoryEntry object, or the content string if using key parameter (for backward compatibility)
+            MemoryEntry object if using memory_id, or content string if using key parameter
 
         Note:
-            When using key parameter, returns content string only.
-            For new code, use retrieve_content(key) to get content or retrieve_memory(memory_id) to get MemoryEntry.
+            For backward compatibility with existing tests:
+            - retrieve_memory(key="foo") returns content string
+            - retrieve_memory("foo") returns MemoryEntry object (positional arg treated as memory_id)
+            - retrieve_memory(memory_id="foo") returns MemoryEntry object
         """
-        # Handle backward compatibility with 'key' parameter
-        if key is not None and memory_id is None:
-            memory_id = key
+        # Handle backward compatibility:
+        # - If called with key= kwarg, return content only
+        # - If called with memory_id= kwarg or positional, return MemoryEntry
+        if key is not None:
+            # Explicit key parameter - return content only
+            lookup_id = key
             return_content_only = True
-        else:
+        elif memory_id is not None:
+            # memory_id parameter (kwarg or positional) - return MemoryEntry
+            lookup_id = memory_id
             return_content_only = False
+        else:
+            return None
 
-        if memory_id is None:
+        if lookup_id is None:
+            return None
+
+        if lookup_id is None:
             return None
 
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (memory_id,))
+            cursor = conn.execute("SELECT * FROM memories WHERE memory_id = ?", (lookup_id,))
             row = cursor.fetchone()
 
             if row:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), memory_id),
+                    (datetime.now(UTC).isoformat(), lookup_id),
                 )
                 conn.commit()
 
                 memory_entry = self._row_to_memory(row)
-                # Return just content if using key parameter (backward compat)
+                # Return just content for backward compat
                 if return_content_only:
                     return memory_entry.content
                 return memory_entry
@@ -524,12 +536,12 @@ class AgentMemory:
                 # Update access count
                 conn.execute(
                     """
-                    UPDATE memories 
+                    UPDATE memories
                     SET access_count = access_count + 1,
                         last_accessed = ?
                     WHERE memory_id = ?
                 """,
-                    (datetime.now().isoformat(), key),
+                    (datetime.now(UTC).isoformat(), key),
                 )
                 conn.commit()
 
@@ -642,14 +654,14 @@ class AgentMemory:
 
         Returns number of memories consolidated.
         """
-        cutoff = datetime.now().isoformat()[:10]  # Date only
+        cutoff = datetime.now(UTC).isoformat()[:10]  # Date only
 
         with sqlite3.connect(self.db_path) as conn:
             # Get old, low-access memories
             cursor = conn.execute(
                 """
-                SELECT memory_id, content, confidence 
-                FROM memories 
+                SELECT memory_id, content, confidence
+                FROM memories
                 WHERE created_at < ? AND access_count < 3
             """,
                 (cutoff,),
@@ -854,13 +866,13 @@ class AgentMemorySystem:
     def start_task(self, task_description: str) -> ContextFrame:
         """Start a new task and create context frame."""
         frame_id = hashlib.sha256(
-            f"{self.agent_id}:{task_description}:{datetime.now().isoformat()}".encode()
+            f"{self.agent_id}:{task_description}:{datetime.now(UTC).isoformat()}".encode()
         ).hexdigest()[:16]
 
         self.current_frame = ContextFrame(
             frame_id=frame_id,
             task_description=task_description,
-            start_time=datetime.now().isoformat(),
+            start_time=datetime.now(UTC).isoformat(),
             repository=os.getenv("GITHUB_REPOSITORY"),
             branch=os.getenv("GITHUB_HEAD_REF"),
         )
@@ -887,7 +899,7 @@ class AgentMemorySystem:
         reasoning: str,
     ) -> MemoryEntry:
         """Record a decision made during the task."""
-        memory_id = hashlib.sha256(f"{decision}:{datetime.now().isoformat()}".encode()).hexdigest()[
+        memory_id = hashlib.sha256(f"{decision}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
             :16
         ]
 
@@ -919,7 +931,7 @@ class AgentMemorySystem:
 
     def record_lesson(self, lesson: str, success: bool) -> MemoryEntry:
         """Record a lesson learned."""
-        memory_id = hashlib.sha256(f"{lesson}:{datetime.now().isoformat()}".encode()).hexdigest()[
+        memory_id = hashlib.sha256(f"{lesson}:{datetime.now(UTC).isoformat()}".encode()).hexdigest()[
             :16
         ]
 
@@ -989,7 +1001,7 @@ class AgentMemorySystem:
     def complete_task(self, success: bool, summary: str) -> None:
         """Complete the current task and save context."""
         if self.current_frame:
-            self.current_frame.end_time = datetime.now().isoformat()
+            self.current_frame.end_time = datetime.now(UTC).isoformat()
             self.current_frame.status = "completed" if success else "failed"
 
             # Save context frame
@@ -1192,7 +1204,7 @@ class AgentMemorySystem:
         """
         from datetime import timedelta
 
-        cutoff_date = (datetime.now() - timedelta(days=age_days)).isoformat()
+        cutoff_date = (datetime.now(UTC) - timedelta(days=age_days)).isoformat()
 
         invalidated = 0
 
@@ -1256,7 +1268,7 @@ if __name__ == "__main__":
 
     # Get guidance
     guidance = memory_system.get_guidance("fix security vulnerability path traversal")
-    print(f"\nGuidance for situation:")
+    print("\nGuidance for situation:")
     print(f"  Patterns matched: {len(guidance['patterns'])}")
     if guidance["suggested_approach"]:
         print(f"  Suggested approach: {guidance['suggested_approach']['based_on']}")
@@ -1284,7 +1296,7 @@ if __name__ == "__main__":
 
     # Show stats
     stats = memory_system.get_stats()
-    print(f"\nMemory System Stats:")
+    print("\nMemory System Stats:")
     print(f"  Total memories: {stats['memory_stats']['total_memories']}")
     print(f"  Patterns: {stats['patterns_count']}")
 

@@ -1058,7 +1058,7 @@ class PluginRegistry:
         if language not in cls._adapters:
             raise ValueError(f"No adapter for {language}")
         
-        return cls._adapters[language]()
+        return cls._adapters<!-- TODO: Add section or remove TOC entry - [language]() -->
     
     @classmethod
     def list_languages(cls) -> list:

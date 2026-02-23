@@ -15,10 +15,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import csv
-import json
-from pathlib import Path
-from typing import Any, Callable, Optional, Sequence
+import csv  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Optional, Sequence  # noqa: E402
 
 __all__ = [
     # Registry functions

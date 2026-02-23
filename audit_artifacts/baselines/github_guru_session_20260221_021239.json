@@ -1,0 +1,63 @@
+{
+  "session_id": "guru-76624505",
+  "started_at": "2026-02-21T02:12:39.887822+00:00",
+  "ended_at": "2026-02-21T02:12:39.889049+00:00",
+  "capabilities_invoked": [
+    {
+      "capability": "workflow_health_monitoring",
+      "duration_seconds": 8.781499991528108e-05,
+      "success": true,
+      "output_summary": "health=90 failure_rate=10%",
+      "error": null
+    },
+    {
+      "capability": "branch_governance",
+      "duration_seconds": 3.95049999042385e-05,
+      "success": true,
+      "output_summary": "1 stale branches",
+      "error": null
+    },
+    {
+      "capability": "repository_hygiene_reporting",
+      "duration_seconds": 0.00022302100001070357,
+      "success": true,
+      "output_summary": "score=96 issues=2",
+      "error": null
+    },
+    {
+      "capability": "dependency_drift_detection",
+      "duration_seconds": 6.061399994905514e-05,
+      "success": true,
+      "output_summary": "0 unpinned deps",
+      "error": null
+    },
+    {
+      "capability": "stale_resource_detection",
+      "duration_seconds": 4.96239999847603e-05,
+      "success": true,
+      "output_summary": "0 stale PRs, 1 stale branches",
+      "error": null
+    },
+    {
+      "capability": "label_taxonomy_enforcement",
+      "duration_seconds": 2.4245000076916767e-05,
+      "success": true,
+      "output_summary": "score=29",
+      "error": null
+    },
+    {
+      "capability": "contributor_intelligence",
+      "duration_seconds": 9.742300017023808e-05,
+      "success": true,
+      "output_summary": "1 contributors",
+      "error": null
+    }
+  ],
+  "total_prs_analyzed": 0,
+  "total_issues_triaged": 0,
+  "total_workflows_checked": 1,
+  "total_hygiene_issues_found": 2,
+  "total_patterns_matched": 0,
+  "total_duration_seconds": 0.001227,
+  "success_rate": 1.0
+}

@@ -62,7 +62,7 @@ def generate_progress_bar(
     """Generate a progress bar string."""
     if max_value <= 0:
         return empty * width
-    
+
     ratio = min(1.0, value / max_value)
     filled_count = int(ratio * width)
     return filled * filled_count + empty * (width - filled_count)
@@ -90,22 +90,22 @@ def generate_ascii_chart(
     """Generate an ASCII bar chart."""
     if not data:
         return "(No data available)"
-    
+
     lines = []
     if title:
         lines.append(f"**{title}**")
         lines.append("```")
-    
+
     max_val = max(v for _, v in data) if data else 1
-    
+
     for label, value in data:
         bar_len = int((value / max_val) * width) if max_val > 0 else 0
         bar = "█" * bar_len
         lines.append(f"{label:15} {bar} {value:.0f}")
-    
+
     if title:
         lines.append("```")
-    
+
     return "\n".join(lines)
 
 
@@ -113,25 +113,25 @@ def generate_sparkline(values: List[float], width: int = 10) -> str:
     """Generate a simple sparkline from values."""
     if not values:
         return "▁" * width
-    
+
     if len(values) < width:
         # Pad with first value
         values = [values[0]] * (width - len(values)) + values
     elif len(values) > width:
         # Take last N values
         values = values[-width:]
-    
+
     min_val = min(values)
     max_val = max(values)
     range_val = max_val - min_val if max_val != min_val else 1
-    
+
     chars = "▁▂▃▄▅▆▇█"
-    
+
     sparkline = ""
     for v in values:
         idx = int(((v - min_val) / range_val) * (len(chars) - 1))
         sparkline += chars[idx]
-    
+
     return sparkline
 
 
@@ -150,7 +150,7 @@ def generate_dashboard(
 ) -> str:
     """Generate the markdown dashboard."""
     now = datetime.now(timezone.utc)
-    
+
     # Extract data
     period = metrics.get("period", {})
     files = metrics.get("files", {})
@@ -159,21 +159,21 @@ def generate_dashboard(
     sessions = metrics.get("sessions", {})
     trends = metrics.get("trends", {})
     # quality metrics used for future enhancements
-    
+
     # Calculate derived values
     duration = period.get("duration_minutes", 0)
     total_files = files.get("total_operations", 0)
     pattern_success = patterns.get("avg_success_rate", 0)
     total_commits = commits.get("total", 0)
-    
+
     # Generate health score
     health_score = calculate_health_score(metrics)
     health_status = get_health_status(health_score)
-    
+
     dashboard = f"""# 🧠 Cognitive Brain Dashboard
 
-> **Generated:** {now.strftime("%Y-%m-%d %H:%M:%S UTC")}  
-> **Period:** {format_duration(duration)}  
+> **Generated:** {now.strftime("%Y-%m-%d %H:%M:%S UTC")}
+> **Period:** {format_duration(duration)}
 > **Health:** {health_status["emoji"]} {health_status["label"]} ({health_score:.0f}%)
 
 ---
@@ -294,41 +294,41 @@ python scripts/cognitive/dashboard_generator.py --hours 48
 
 ---
 
-**Dashboard Version:** 1.0.0  
+**Dashboard Version:** 1.0.0
 **Last Updated:** {now.isoformat()}
 """
-    
+
     return dashboard
 
 
 def calculate_health_score(metrics: Dict[str, Any]) -> float:
     """Calculate overall health score (0-100)."""
     scores = []
-    
+
     # File activity score (0-25)
     files = metrics.get("files", {})
     file_ops = files.get("total_operations", 0)
     file_score = min(25, file_ops * 2)
     scores.append(file_score)
-    
+
     # Pattern success score (0-25)
     patterns = metrics.get("patterns", {})
     pattern_rate = patterns.get("avg_success_rate", 0)
     pattern_score = pattern_rate * 25
     scores.append(pattern_score)
-    
+
     # Commit activity score (0-25)
     commits = metrics.get("commits", {})
     commit_count = commits.get("total", 0)
     commit_score = min(25, commit_count * 5)
     scores.append(commit_score)
-    
+
     # Session activity score (0-25)
     sessions = metrics.get("sessions", {})
     session_count = sessions.get("total", 0)
     session_score = min(25, session_count * 10)
     scores.append(session_score)
-    
+
     return sum(scores)
 
 
@@ -392,15 +392,15 @@ def main():
         action='store_true',
         help="Suppress output"
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.generate and not args.metrics_file:
         parser.print_help()
         return
-    
+
     repo_root = get_repo_root()
-    
+
     # Load or collect metrics
     if args.metrics_file:
         metrics = load_metrics(Path(args.metrics_file))
@@ -412,34 +412,34 @@ def main():
         import sys
         sys.path.insert(0, str(Path(__file__).parent))
         from metrics_collector import (
+            calculate_trends,
+            extract_session_metrics,
+            get_git_commits,
             load_action_log,
             load_pattern_store,
-            get_git_commits,
-            extract_session_metrics,
-            calculate_trends
         )
-        
+
         since = datetime.now(timezone.utc) - timedelta(hours=args.hours)
-        
+
         action_log_path = repo_root / '.codex' / 'action_log.ndjson'
         pattern_store_path = repo_root / '.codex' / 'cognitive_brain' / 'pattern_learning_store.json'
-        
+
         action_entries = load_action_log(action_log_path, since=since)
         pattern_store = load_pattern_store(pattern_store_path)
         commits = get_git_commits(repo_root, since=since)
-        
+
         metrics = extract_session_metrics(action_entries, pattern_store, commits)
         metrics["trends"] = calculate_trends(metrics)
-    
+
     # Generate dashboard
     dashboard = generate_dashboard(metrics, include_charts=not args.no_charts)
-    
+
     # Output
     if args.output:
         save_dashboard(dashboard, Path(args.output))
     elif not args.quiet:
         print(dashboard)
-    
+
     # Also save to default location if generating
     if args.generate and not args.output:
         default_path = repo_root / '.codex' / 'cognitive_brain' / 'dashboard.md'

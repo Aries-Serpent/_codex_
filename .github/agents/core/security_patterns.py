@@ -4,7 +4,7 @@ Part of Cognitive Brain Pattern Recognition Enhancement (Phase 2)
 
 Detects:
 - SQL Injection vulnerabilities
-- XSS (Cross-Site Scripting) vulnerabilities  
+- XSS (Cross-Site Scripting) vulnerabilities
 - Hardcoded secrets and credentials
 - Insecure cryptographic practices
 - Command injection vulnerabilities
@@ -14,13 +14,13 @@ Detects:
 #AFTERMATH_METRIC: vulnerabilities_detected
 Integrates with cognitive brain for learning and pattern evolution.
 """
-import re
 import ast
-from pathlib import Path
-from typing import List, Dict
+import re
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, List
 
-from .pattern_recognizer import PatternMatcher, Pattern
+from .pattern_recognizer import Pattern, PatternMatcher
 
 
 @dataclass
@@ -34,24 +34,24 @@ class SecurityPattern(Pattern):
 class SecurityPatternMatcher(PatternMatcher):
     """
     #AFTERMATH_PATTERN_IDENTIFIED: security_vulnerability_detection
-    
+
     Advanced security pattern detection using:
     1. Static analysis (AST parsing)
     2. Regex patterns for common vulnerabilities
     3. Semantic analysis for context-aware detection
     4. Cognitive brain integration for learning
-    
+
     PDA Loop Integration:
     - PERCEIVE: Scan code for security patterns
     - DECIDE: Classify severity and prioritize
     - ACT: Record findings in cognitive brain
     - AFTERMATH: Learn from false positives/negatives
     """
-    
+
     def __init__(self):
         """Initialize security pattern matcher with detection rules"""
         super().__init__()
-        
+
         # SQL Injection patterns
         self.sql_injection_patterns = [
             # String concatenation with SQL
@@ -61,7 +61,7 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'\.format\(.*\).*execute', "SQL with .format()", "high"),
             (r'f["\']SELECT.*{.*}', "SQL with f-string interpolation", "medium"),
         ]
-        
+
         # XSS patterns
         self.xss_patterns = [
             (r'innerHTML\s*=\s*[^"\']', "Direct innerHTML assignment", "high"),
@@ -70,7 +70,7 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'dangerouslySetInnerHTML', "React dangerouslySetInnerHTML", "medium"),
             (r'v-html=["\']\{\{', "Vue v-html with template", "medium"),
         ]
-        
+
         # Secret/credential patterns
         self.secret_patterns = [
             (r'password\s*=\s*["\'][^"\']{8,}["\']', "Hardcoded password", "critical"),
@@ -80,7 +80,7 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'AWS_SECRET_ACCESS_KEY\s*=', "AWS secret key", "critical"),
             (r'PRIVATE_KEY\s*=\s*["\']', "Private key in code", "critical"),
         ]
-        
+
         # Insecure crypto patterns
         self.crypto_patterns = [
             (r'hashlib\.md5\(', "MD5 usage (insecure)", "medium"),
@@ -89,7 +89,7 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'DES\.new\(', "DES encryption (insecure)", "high"),
             (r'mode=ECB', "ECB mode (insecure)", "high"),
         ]
-        
+
         # Command injection patterns
         self.command_injection_patterns = [
             (r'os\.system\([^)]*\+', "os.system with concatenation", "critical"),
@@ -97,31 +97,31 @@ class SecurityPatternMatcher(PatternMatcher):
             (r'eval\(', "eval() usage (dangerous)", "high"),
             (r'exec\(', "exec() usage (dangerous)", "high"),
         ]
-        
+
         # Path traversal patterns
         self.path_traversal_patterns = [
             (r'open\([^)]*\+.*["\']\.\.', "Path with .. traversal", "high"),
             (r'os\.path\.join\([^)]*request', "Path join with user input", "medium"),
             (r'file_path\s*=\s*request', "Direct file path from request", "high"),
         ]
-    
+
     def detect(self, file_path: Path) -> List[Pattern]:
         """
         #AFTERMATH_PATTERN_IDENTIFIED: security_detection_pda_loop
-        
+
         PERCEIVE: Analyze file for security vulnerabilities
         DECIDE: Classify findings by severity
         ACT: Return detected patterns
         AFTERMATH: Patterns stored in cognitive brain for learning
         """
         detected: List[SecurityPattern] = []
-        
+
         if not file_path.exists():
             return detected
-        
+
         try:
             content = file_path.read_text(encoding='utf-8', errors='ignore')
-            
+
             # PERCEIVE Phase: Multi-layer security analysis
             detected.extend(self._detect_sql_injection(content, file_path))
             detected.extend(self._detect_xss(content, file_path))
@@ -129,14 +129,14 @@ class SecurityPatternMatcher(PatternMatcher):
             detected.extend(self._detect_crypto_issues(content, file_path))
             detected.extend(self._detect_command_injection(content, file_path))
             detected.extend(self._detect_path_traversal(content, file_path))
-            
+
             # Python-specific AST analysis
             if file_path.suffix == '.py':
                 detected.extend(self._ast_security_analysis(content, file_path))
-            
+
             # #AFTERMATH_METRIC: vulnerabilities_detected
             # Metrics tracked: total_vulns, by_severity, by_type
-            
+
         except Exception as e:
             # Record analysis failure as a pattern
             detected.append(SecurityPattern(
@@ -149,9 +149,9 @@ class SecurityPatternMatcher(PatternMatcher):
                 severity="low",
                 cwe_id="N/A"
             ))
-        
+
         return detected
-    
+
     def _detect_sql_injection(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect SQL injection vulnerabilities"""
         findings = []
@@ -174,7 +174,7 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Use parameterized queries or ORM methods"
                 ))
         return findings
-    
+
     def _detect_xss(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect XSS vulnerabilities"""
         findings = []
@@ -197,7 +197,7 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Sanitize user input, use safe APIs, escape output"
                 ))
         return findings
-    
+
     def _detect_secrets(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect hardcoded secrets and credentials"""
         findings = []
@@ -220,7 +220,7 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Use environment variables or secret management service"
                 ))
         return findings
-    
+
     def _detect_crypto_issues(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect insecure cryptographic practices"""
         findings = []
@@ -243,7 +243,7 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Use modern crypto: SHA256+, AES-GCM, secrets module"
                 ))
         return findings
-    
+
     def _detect_command_injection(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect command injection vulnerabilities"""
         findings = []
@@ -266,7 +266,7 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Avoid shell=True, validate input, use subprocess safely"
                 ))
         return findings
-    
+
     def _detect_path_traversal(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """Detect path traversal vulnerabilities"""
         findings = []
@@ -289,19 +289,19 @@ class SecurityPatternMatcher(PatternMatcher):
                     remediation="Validate paths, use Path.resolve(), restrict to safe directories"
                 ))
         return findings
-    
+
     def _ast_security_analysis(self, content: str, file_path: Path) -> List[SecurityPattern]:
         """
         Deep AST-based security analysis for Python code
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: ast_security_analysis
         More accurate than regex for Python-specific vulnerabilities
         """
         findings = []
-        
+
         try:
             tree = ast.parse(content)
-            
+
             # Analyze dangerous function calls
             for node in ast.walk(tree):
                 if isinstance(node, ast.Call):
@@ -323,7 +323,7 @@ class SecurityPatternMatcher(PatternMatcher):
                                 cwe_id="CWE-94",
                                 remediation=f"Avoid {node.func.id}(), use safer alternatives"
                             ))
-                    
+
                     elif isinstance(node.func, ast.Attribute):
                         # Check for dangerous library calls
                         if node.func.attr == 'system' and isinstance(node.func.value, ast.Name):
@@ -342,21 +342,21 @@ class SecurityPatternMatcher(PatternMatcher):
                                     cwe_id="CWE-78",
                                     remediation="Use subprocess.run() with list arguments"
                                 ))
-        
+
         except SyntaxError:
             # Skip files with syntax errors
             pass
-        
+
         return findings
-    
+
     def get_pattern_type(self) -> str:
         """Return pattern type for cognitive brain categorization"""
         return "security"
-    
+
     def get_severity_stats(self, patterns: List[SecurityPattern]) -> Dict[str, int]:
         """
         Calculate severity distribution for metrics
-        
+
         #AFTERMATH_METRIC: security_severity_distribution
         """
         stats = {"critical": 0, "high": 0, "medium": 0, "low": 0}

@@ -13,11 +13,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import shutil
-from pathlib import Path
-from typing import Iterable, Optional, Sequence
+import shutil  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable, Optional, Sequence  # noqa: E402
 
-from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol
+from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm

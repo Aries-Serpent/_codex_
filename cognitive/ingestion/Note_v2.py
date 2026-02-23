@@ -17,19 +17,22 @@ Author: Codex Team
 
 # Note_v2.py
 
-import streamlit as st
-from transformers import pipeline
-from keybert import KeyBERT
 import json
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import make_pipeline
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import LinearSVC
-from sklearn.ensemble import RandomForestClassifier
+
 import pandas as pd
+import streamlit as st
+from keybert import KeyBERT
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import LinearSVC
 from textblob import TextBlob
+
+from transformers import pipeline
+
 
 # Function to prepare the classifier model
 def prepare_classifier_model():

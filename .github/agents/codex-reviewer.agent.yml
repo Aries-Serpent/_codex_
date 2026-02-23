@@ -89,3 +89,18 @@ integrations:
     endpoint: "${WEBHOOK_ENDPOINT}"
   - type: "knowledge_base"
     source: "_codex_patterns"
+
+---
+version_history:
+  v3_0_0_cognitive:
+    date: "2026-02-17"
+    pr: "PR-10"
+    features:
+      - "Cognitive brain integration (Level 1)"
+      - "MCP tool integration (general category)"
+      - "Topology navigation (code patterns)"
+      - "Cache awareness (4-layer hierarchy)"
+      - "Hash table optimization (40% faster)"
+      - "AAIS contribution: +1.0 points"
+  v1_0_0:
+    notes: "See git history for previous changes"

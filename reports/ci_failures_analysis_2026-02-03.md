@@ -24,7 +24,7 @@
 
 ### Failure #1: Testing Suite Workflow
 **Workflow:** `.github/workflows/test-suite.yml`  
-**Latest Run:** [21649553861](https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861)  
+**Latest Run:** [21649553861](https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861 <!-- Note: Logs expire after 90 days -->)  
 **Timestamp:** 2026-02-03T22:02:40Z  
 **Failed Job:** Core Tests (Python 3.12) - Job ID 62410313296
 
@@ -455,7 +455,7 @@ sed -i 's/license = {text = "MIT"}/license = "MIT"/' pyproject.toml
 
 ## 📎 Related Resources
 
-- **Failed Run:** https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861
+- **Failed Run:** https://github.com/Aries-Serpent/_codex_/actions/runs/21649553861 <!-- Note: Logs expire after 90 days -->
 - **Testing Suite Workflow:** `.github/workflows/test-suite.yml`
 - **Open PR #3140:** https://github.com/Aries-Serpent/_codex_/pull/3140
 

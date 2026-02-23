@@ -21,6 +21,7 @@ from unittest.mock import Mock
 
 import pytest
 
+# NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 from rag.pipelines.retrieval import (
     DEFAULT_TOP_K,
     MAX_QUERY_LENGTH,

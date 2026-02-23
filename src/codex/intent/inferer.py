@@ -44,11 +44,11 @@ class OutputSpec:
 @dataclass
 class IntentSpec:
     """Inferred intent specification for code.
-    
+
     Represents the inferred purpose, inputs, outputs, and constraints
     of analyzed code. Includes confidence score and tracking of
     assumptions made during inference.
-    
+
     Attributes:
         snapshot_id: Reference to the analyzed snapshot
         timestamp: When inference was performed
@@ -148,11 +148,11 @@ def _infer_heuristic(
     source_excerpt: str,
 ) -> IntentSpec:
     """Infer intent using deterministic heuristics.
-    
+
     Args:
         static_report: Static analysis report data
         source_excerpt: First portion of main source file
-        
+
     Returns:
         IntentSpec from heuristic analysis
     """
@@ -243,10 +243,10 @@ def infer_intent(
     provenance_dir: Optional[Path] = None,
 ) -> IntentSpec:
     """Infer intent for analyzed code.
-    
+
     Combines deterministic heuristics with optional LLM-based analysis
     to produce a structured intent specification.
-    
+
     Args:
         static_report: Static analysis report dictionary
         runtime_report: Optional runtime analysis report
@@ -254,10 +254,10 @@ def infer_intent(
         use_llm: Whether to use LLM for enhanced inference
         llm_client: Optional LLM client instance
         provenance_dir: Directory for storing LLM provenance
-        
+
     Returns:
         IntentSpec with inferred intent
-        
+
     Example:
         >>> with open("static-report.json") as f:
         ...     static = json.load(f)

@@ -123,7 +123,7 @@ class ModelValidator:
 
     def __init__(self, n_folds: int = 5):
         """Initialize validator.
-        
+
         Args:
             n_folds: Number of folds for cross-validation
         """
@@ -139,14 +139,14 @@ class ModelValidator:
         predict_method: str = "predict",
     ) -> ValidationMetrics:
         """Perform k-fold cross-validation.
-        
+
         Args:
             model: Model with fit and predict methods
             X: Feature vectors
             y: Labels
             fit_method: Name of fit method
             predict_method: Name of predict method
-            
+
         Returns:
             Validation metrics
         """
@@ -207,11 +207,11 @@ class ModelValidator:
         y_pred: list[str],
     ) -> ValidationMetrics:
         """Calculate classification metrics.
-        
+
         Args:
             y_true: True labels
             y_pred: Predicted labels
-            
+
         Returns:
             Validation metrics
         """
@@ -220,7 +220,7 @@ class ModelValidator:
 
         # Confusion matrix
         labels = sorted(set(y_true) | set(y_pred))
-        confusion = {label: {l: 0 for l in labels} for label in labels}
+        confusion = {label: {line_item: 0 for line_item in labels} for label in labels}
 
         for true, pred in zip(y_true, y_pred):
             confusion[true][pred] += 1
@@ -274,7 +274,7 @@ class HyperparameterTuner:
         metric: MetricType = MetricType.ACCURACY,
     ):
         """Initialize tuner.
-        
+
         Args:
             validator: Model validator instance
             metric: Metric to optimize
@@ -291,13 +291,13 @@ class HyperparameterTuner:
         y: list[str],
     ) -> TuningResult:
         """Perform grid search over parameter space.
-        
+
         Args:
             model_factory: Function that creates model with params
             param_grid: Dictionary of parameter names to value lists
             X: Feature vectors
             y: Labels
-            
+
         Returns:
             Tuning result with best parameters
         """
@@ -346,14 +346,14 @@ class HyperparameterTuner:
         n_iterations: int = 10,
     ) -> TuningResult:
         """Perform random search over parameter space.
-        
+
         Args:
             model_factory: Function that creates model with params
             param_distributions: Dictionary of parameter names to value distributions
             X: Feature vectors
             y: Labels
             n_iterations: Number of random samples
-            
+
         Returns:
             Tuning result with best parameters
         """
@@ -463,7 +463,7 @@ class PerformanceTracker:
 
     def __init__(self, alert_threshold: float = 0.1):
         """Initialize tracker.
-        
+
         Args:
             alert_threshold: Threshold for performance drop alerts
         """
@@ -477,11 +477,11 @@ class PerformanceTracker:
         model_version: str,
     ) -> PerformanceRecord:
         """Record performance metrics.
-        
+
         Args:
             metrics: Validation metrics
             model_version: Version of model
-            
+
         Returns:
             Performance record
         """
@@ -514,11 +514,11 @@ class PerformanceTracker:
         window: int = 5,
     ) -> dict[str, Any]:
         """Get performance trend.
-        
+
         Args:
             metric: Metric to analyze
             window: Number of recent records to consider
-            
+
         Returns:
             Trend analysis
         """
@@ -605,7 +605,7 @@ class ModelRegistry:
 
     def __init__(self, storage_path: Path | None = None):
         """Initialize registry.
-        
+
         Args:
             storage_path: Path to store registry data
         """
@@ -622,13 +622,13 @@ class ModelRegistry:
         params: dict[str, Any] | None = None,
     ) -> ModelVersion:
         """Register a new model version.
-        
+
         Args:
             version: Version string
             model_type: Type of model
             metrics: Validation metrics
             params: Model parameters
-            
+
         Returns:
             Registered model version
         """
@@ -646,10 +646,10 @@ class ModelRegistry:
 
     def promote_to_production(self, version: str) -> bool:
         """Promote a version to production.
-        
+
         Args:
             version: Version to promote
-            
+
         Returns:
             True if promoted successfully
         """
@@ -686,12 +686,12 @@ class ModelRegistry:
         traffic_split: float = 0.5,
     ) -> dict[str, Any]:
         """Start an A/B test between two versions.
-        
+
         Args:
             version_a: First version
             version_b: Second version
             traffic_split: Fraction of traffic to version A
-            
+
         Returns:
             A/B test configuration
         """
@@ -713,10 +713,10 @@ class ModelRegistry:
 
     def route_ab_traffic(self, test_id: str) -> str | None:
         """Route traffic for A/B test.
-        
+
         Args:
             test_id: A/B test ID
-            
+
         Returns:
             Version to use, or None if test not found
         """
@@ -738,11 +738,11 @@ class ModelRegistry:
         version_b: str,
     ) -> dict[str, Any]:
         """Compare two model versions.
-        
+
         Args:
             version_a: First version
             version_b: Second version
-            
+
         Returns:
             Comparison results
         """
@@ -804,7 +804,7 @@ class TuningPipeline:
         registry: ModelRegistry | None = None,
     ):
         """Initialize pipeline.
-        
+
         Args:
             validator: Model validator
             tuner: Hyperparameter tuner
@@ -828,7 +828,7 @@ class TuningPipeline:
         n_iterations: int = 10,
     ) -> dict[str, Any]:
         """Run complete tuning pipeline.
-        
+
         Args:
             model_factory: Function to create model
             model_type: Type of model
@@ -837,7 +837,7 @@ class TuningPipeline:
             y: Labels
             search_method: 'grid' or 'random'
             n_iterations: Iterations for random search
-            
+
         Returns:
             Pipeline results
         """
@@ -885,14 +885,14 @@ class TuningPipeline:
         params: dict[str, Any] | None = None,
     ) -> ModelVersion:
         """Validate model and register if performance is good.
-        
+
         Args:
             model: Trained model
             model_type: Type of model
             X: Feature vectors
             y: Labels
             params: Model parameters
-            
+
         Returns:
             Registered model version
         """
@@ -918,10 +918,10 @@ class TuningPipeline:
 
     def auto_promote(self, threshold: float = 0.8) -> bool:
         """Automatically promote best model if threshold met.
-        
+
         Args:
             threshold: Minimum accuracy for promotion
-            
+
         Returns:
             True if a model was promoted
         """

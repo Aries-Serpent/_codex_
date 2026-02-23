@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/dashboards/render_ratelimit_tile_html.py [options]
-    
+
     Examples:
     $ python scripts/dashboards/render_ratelimit_tile_html.py --help
 

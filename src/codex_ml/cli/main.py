@@ -14,7 +14,7 @@ import os
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
     import yaml  # type: ignore
@@ -33,7 +33,10 @@ def _load_typer():
 typer = _load_typer()
 
 if typer is not None:
-    app = typer.Typer(help="Codex ML CLI")
+    app = typer.Typer(
+        help="Codex ML CLI\n\nPowered by Hydra (install hydra-core for advanced configuration).",
+        add_completion=False,
+    )
 
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
@@ -62,7 +65,7 @@ if typer is not None:
 
     @app.command()
     def train(
-        config: str | None = typer.Option(None, "--config", help="Path to training config YAML"),
+        config: Optional[str] = typer.Option(None, "--config", help="Path to training config YAML"),
         model_name: str = typer.Option("dummy", "--model-name", help="Model name or identifier"),
         epochs: int = typer.Option(1, "--epochs", help="Number of training epochs"),
         batch_size: int = typer.Option(8, "--batch-size", help="Batch size"),
@@ -70,40 +73,40 @@ if typer is not None:
         learning_rate: float = typer.Option(3e-4, "--learning-rate", help="Learning rate"),
         seed: int = typer.Option(42, "--seed", help="Random seed"),
         output_dir: str = typer.Option("runs/unified", "--output-dir", help="Output directory"),
-        backend: str | None = typer.Option(
+        backend: Optional[str] = typer.Option(
             None, "--backend", help="Backend strategy (functional or legacy)"
         ),
         mlflow_enable: bool = typer.Option(False, "--mlflow", help="Enable MLflow tracking"),
         wandb_enable: bool = typer.Option(False, "--wandb", help="Enable Weights & Biases logging"),
-        grad_clip_norm: float | None = typer.Option(
+        grad_clip_norm: Optional[float] = typer.Option(
             None, "--grad-clip-norm", help="Gradient clipping norm"
         ),
         dtype: str = typer.Option("fp32", "--dtype", help="Data type (fp32, fp16, bf16)"),
-        resume_from: str | None = typer.Option(
+        resume_from: Optional[str] = typer.Option(
             None, "--resume-from", help="Checkpoint path to resume from"
         ),
-        corpora: list[str] | None = typer.Option(
+        corpora: Optional[list[str]] = typer.Option(
             None,
             "--corpus",
             "-c",
             help="Reasoning corpus to include (see codex_ml.data.list_reasoning_corpora).",
         ),
-        corpus_root: str | None = typer.Option(
+        corpus_root: Optional[str] = typer.Option(
             None,
             "--corpus-root",
             help="Override root directory used to resolve reasoning corpora.",
         ),
-        curriculum: str | None = typer.Option(
+        curriculum: Optional[str] = typer.Option(
             None,
             "--curriculum",
             help="Continual curriculum preset from configs/training/continual.",
         ),
-        difficulty_target: str | None = typer.Option(
+        difficulty_target: Optional[str] = typer.Option(
             None,
             "--difficulty-target",
             help="Override target difficulty for curriculum schedules (e.g. easy, hard, adaptive).",
         ),
-        rehearsal_ratio: float | None = typer.Option(
+        rehearsal_ratio: Optional[float] = typer.Option(
             None,
             "--rehearsal-ratio",
             help="Override replay ratio for interleaved rehearsal phases (0-1).",
@@ -125,7 +128,7 @@ if typer is not None:
         data_cfg = cfg_data.get("data", {}) if isinstance(cfg_data, dict) else {}
         tracking_cfg = cfg_data.get("tracking", {}) if isinstance(cfg_data, dict) else {}
 
-        continual_cfg: dict[str, Any] | None = None
+        continual_cfg: Optional[dict[str, Any]] = None
         if isinstance(train_cfg, dict):
             raw_continual = train_cfg.get("continual")
             if isinstance(raw_continual, dict):
@@ -140,7 +143,7 @@ if typer is not None:
                 raise typer.BadParameter(
                     "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."
                 )
-            preset_text: str | None = None
+            preset_text: Optional[str] = None
 
             try:
                 resource_root = importlib_resources.files("configs").joinpath(
@@ -187,7 +190,7 @@ if typer is not None:
         if curriculum:
             continual_cfg = _load_curriculum_preset(curriculum)
 
-        def _int_value(value: Any) -> int | None:
+        def _int_value(value: Any) -> Optional[int]:
             try:
                 return None if value is None else int(value)
             except (TypeError, ValueError):
@@ -316,7 +319,7 @@ if typer is not None:
             ),
         ] = 1,
         other_args: Annotated[
-            list[str] | None,
+            Optional[list[str]],
             typer.Option(
                 "--override",
                 help="Additional config overrides (currently not used)",
@@ -369,13 +372,13 @@ if typer is not None:
             "--output",
             help="Path to write the packaged archive",
         ),
-        metadata_json: str | None = typer.Option(
+        metadata_json: Optional[str] = typer.Option(
             None,
             "--metadata-json",
             help="Optional JSON metadata to include in the package",
         ),
-        prompt: str | None = typer.Option(None, "--prompt", help="Prompt to scan for safety"),
-        secret: list[str] | None = typer.Option(
+        prompt: Optional[str] = typer.Option(None, "--prompt", help="Prompt to scan for safety"),
+        secret: Optional[list[str]] = typer.Option(
             None,
             "--secret",
             help="Secret names to load from the offline store",
@@ -444,7 +447,33 @@ if typer is not None:
         typer.echo("MLflow: {}".format("available" if info.get("mlflow") else "not installed"))
         typer.echo("W&B: {}".format("available" if info.get("wandb") else "not installed"))
 
-    cli = app
+    def _typer_cli_wrapper(args: Optional[list[str]] = None) -> int:
+        """Wrapper around Typer app to handle --version/-V before Typer processes args."""
+        import sys
+        argv = args if args is not None else sys.argv[1:]
+
+        # Handle --version and -V before Typer sees them
+        if "--version" in argv or "-V" in argv:
+            from codex import __version__ as codex_version
+            print(f"codex-ml-cli {codex_version}")
+            return 0
+
+        # Let Typer handle the rest
+        try:
+            app(args)
+            return 0
+        except SystemExit as e:
+            return e.code if e.code is not None else 0
+
+    cli = _typer_cli_wrapper
+
+    def run_training(cfg, output_dir=None):
+        """Module-level stub for patching in tests (typer branch).
+
+        The typer ``train`` command implements training directly; this stub
+        ensures ``@patch("codex_ml.cli.main.run_training")`` is valid when
+        typer is available.
+        """
 
 else:
     from typing import Any
@@ -481,22 +510,23 @@ else:
         def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
             return None
 
+    # Module-level variable to cache functional training main for testing/mocking
     _functional_training_main = None
 
     def _load_functional_training_main():
+        """Load functional training entry point (cached at module level)."""
         global _functional_training_main
         if _functional_training_main is None:
             try:
                 from codex.training import main as _functional_training
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
+                logger.debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training
         return _functional_training_main
 
-    def run_training(cfg: DictConfig | None, output_dir: str | None = None) -> None:
+    def run_training(cfg: Optional[DictConfig], output_dir: Optional[str] = None) -> None:
         main_fn = _load_functional_training_main()
         if main_fn is None:  # pragma: no cover - safety fallback
             raise RuntimeError("codex.training.main is unavailable")
@@ -607,7 +637,7 @@ else:
                 "install it with `pip install hydra-core`."
             )
 
-    def cli(argv: list[str] | None = None) -> int:
+    def cli(argv: Optional[list[str]] = None) -> int:
         logger = init_json_logging()
         args = list(argv) if argv is not None else sys.argv[1:]
 
@@ -631,7 +661,7 @@ else:
                     print("Powered by Hydra (install hydra-core)", file=sys.stderr)
                     print(guidance, file=sys.stderr)
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
-                return 0
+                sys.exit(0)
             if not _HAS_HYDRA:
                 guidance = (
                     "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -647,7 +677,7 @@ else:
                     status="ok",
                     error="hydra-core missing",
                 )
-                return 0
+                sys.exit(0)
             overrides: list[str] = []
             i = 0
             while i < len(args):

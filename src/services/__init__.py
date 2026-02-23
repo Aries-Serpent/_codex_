@@ -1,8 +1,8 @@
-"""Service orchestration entrypoints for Codex deployments. 
+"""Service orchestration entrypoints for Codex deployments.
 
 This package groups service-layer adapters and runtimes. Modules under
 ``services.mcp`` and other subpackages provide transport-specific glue
-for exposing Codex capabilities to external consumers. 
+for exposing Codex capabilities to external consumers.
 
 The workflow module provides GitHub Actions workflow inventory and management.
 The github module provides GitHub API client functionality.

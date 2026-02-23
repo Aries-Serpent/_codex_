@@ -3,8 +3,8 @@
 **Generated:** 2025-12-13T12:50:00Z  
 **Status:** Analyzing CI/CD Results  
 **Workflow Runs:** 
-- https://github.com/Aries-Serpent/_codex_/actions/runs/20192149360/job/57971128746
-- https://github.com/Aries-Serpent/_codex_/actions/runs/20192148943/job/57971128620
+- https://github.com/Aries-Serpent/_codex_/actions/runs/20192149360 <!-- Note: Logs expire after 90 days -->/job/57971128746
+- https://github.com/Aries-Serpent/_codex_/actions/runs/20192148943 <!-- Note: Logs expire after 90 days -->/job/57971128620
 
 ---
 

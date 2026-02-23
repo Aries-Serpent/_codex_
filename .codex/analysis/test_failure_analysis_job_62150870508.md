@@ -520,7 +520,7 @@ git push origin 0D_base_
 ## 📚 References
 
 - **PR**: https://github.com/Aries-Serpent/_codex_/pull/3095
-- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21571330633/job/62150870508
+- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21571330633 <!-- Note: Logs expire after 90 days -->/job/62150870508
 - **Test Files**: `tests/` directory
 - **Source Files**: `src/codex_ml/`, `src/cognitive_brain/`, `src/codex_crm/`
 

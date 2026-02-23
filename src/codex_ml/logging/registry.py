@@ -9,11 +9,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Iterable, Mapping  # noqa: E402
 
-from codex_ml.logging.ndjson_logger import NDJSONLogger
-from codex_ml.utils.optional import optional_import
+from codex_ml.logging.ndjson_logger import NDJSONLogger as _RawNDJSONLogger  # noqa: E402
+from codex_ml.utils.optional import optional_import  # noqa: E402
 
 _LOGGERS: dict[str, Callable[[str], None]] = {}
 psutil, _HAS_PSUTIL = optional_import("psutil")
@@ -44,7 +44,7 @@ class _NDJSONMetricsLogger:
         if include_sys_metrics is None:
             include_sys_metrics = sys_metrics
 
-        self._logger = NDJSONLogger(
+        self._logger = _RawNDJSONLogger(
             path,
             max_bytes=max_bytes,
             backup_count=backup_count,
@@ -58,16 +58,17 @@ class _NDJSONMetricsLogger:
         try:
             proc = psutil.Process()
             mem = proc.memory_info()
-            metrics = {
+            metrics: dict[str, float] = {
                 "mem_rss_mb": mem.rss / (1024 * 1024),
-                "mem_vms_mb": mem.vms / (1024 * 1024),
             }
+            if hasattr(mem, "vms"):
+                metrics["mem_vms_mb"] = mem.vms / (1024 * 1024)
             # Add CPU percent if available
-            if hasattr(psutil, 'cpu_percent'):
+            if hasattr(psutil, "cpu_percent"):
                 metrics["cpu_percent"] = psutil.cpu_percent(interval=None)
             return metrics
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.debug("System metrics unavailable")
             return {}
 
     def log(self, record: Mapping[str, Any]) -> None:
@@ -104,8 +105,12 @@ __all__ = [
     "build_loggers",
     "get_logger",
     "register_logger",
-    "NDJSONLogger",  # Export the metrics logger for tests
+    "NDJSONMetricsLogger",  # Export the metrics logger for tests
+    "NDJSONLogger",  # Public alias: metrics-aware wrapper (accepts sys_metrics kwarg)
 ]
 
-# Export _NDJSONMetricsLogger as NDJSONLogger for backward compatibility with tests
-NDJSONLogger = _NDJSONMetricsLogger
+# Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
+NDJSONMetricsLogger = _NDJSONMetricsLogger
+# Export NDJSONLogger as the metrics-aware wrapper so `registry.NDJSONLogger(path, sys_metrics=True)`
+# works as expected by tests. Uses a distinct public name to avoid shadowing the internal import.
+NDJSONLogger = _NDJSONMetricsLogger  # noqa: F811  # intentional alias so registry.NDJSONLogger works

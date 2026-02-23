@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/stable_manifest.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/stable_manifest.py --help
 

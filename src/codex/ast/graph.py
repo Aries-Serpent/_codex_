@@ -27,7 +27,7 @@ class DependencyGraph:
             node_id: The name/identifier of the node
             dependencies: Optional list of node IDs this node depends on
             data: Optional dictionary of node attributes
-        
+
         Note:
             For each dependency, creates edge: dependency → node_id
             This ensures dependencies appear before dependent nodes in topological order.
@@ -110,7 +110,7 @@ class DependencyGraph:
 
         Returns:
             list of nodes in topological order (dependencies before dependents).
-            
+
             With edges dep→node (dependency points to dependent), post-order DFS
             visits deepest nodes first, building stack as [deepest, ..., roots].
             We need [roots, ..., deepest], so reverse the stack.

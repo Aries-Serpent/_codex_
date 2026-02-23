@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class SaaSKnowledgeLoader:
     """Load synchronized SaaS knowledge for training.
-    
+
     This class integrates with:
     - src/services/crawler/zendesk_sync.py (synchronized docs)
     - src/codex/dynamics/model/sla.py (policy objects)
@@ -36,7 +36,7 @@ class SaaSKnowledgeLoader:
         repo_root: Path | None = None,
     ) -> None:
         """Initialize knowledge loader.
-        
+
         Args:
             zendesk_docs_root: Root directory for Zendesk docs
             zendesk_index_path: Path to zendesk_api_index.json
@@ -69,7 +69,7 @@ class SaaSKnowledgeLoader:
 
     def get_latest_zendesk_sync(self) -> Path | None:
         """Get the most recent Zendesk documentation sync directory.
-        
+
         Returns:
             Path to latest sync directory, or None if no syncs found
         """
@@ -94,7 +94,7 @@ class SaaSKnowledgeLoader:
 
     def load_zendesk_index(self) -> dict[str, Any]:
         """Load Zendesk API index with metadata.
-        
+
         Returns:
             Dictionary with sync metadata and article cache
         """
@@ -113,7 +113,7 @@ class SaaSKnowledgeLoader:
 
     def load_d365_policies(self) -> dict[str, Any]:
         """Load Dynamics 365 SLA policies.
-        
+
         Returns:
             SLA policy registry data
         """
@@ -137,11 +137,11 @@ class SaaSKnowledgeLoader:
         include_d365: bool = True,
     ) -> list[dict[str, Any]]:
         """Collect all training documents from synchronized sources.
-        
+
         Args:
             include_zendesk: Include Zendesk documentation
             include_d365: Include Dynamics 365 policies
-            
+
         Returns:
             List of training document dictionaries with metadata
         """
@@ -194,12 +194,12 @@ class SaaSKnowledgeLoader:
         include_d365: bool = True,
     ) -> Path:
         """Prepare a training dataset from synchronized sources.
-        
+
         Args:
             output_path: Path for output JSONL file
             include_zendesk: Include Zendesk documentation
             include_d365: Include Dynamics 365 policies
-            
+
         Returns:
             Path to created dataset file
         """
@@ -246,12 +246,12 @@ def create_saas_training_dataset(
     include_d365: bool = True,
 ) -> Path:
     """Convenience function to create SaaS training dataset.
-    
+
     Args:
         output_path: Path for output dataset
         include_zendesk: Include Zendesk documentation
         include_d365: Include Dynamics 365 policies
-        
+
     Returns:
         Path to created dataset
     """

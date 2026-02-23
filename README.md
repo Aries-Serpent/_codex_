@@ -213,6 +213,130 @@ python scripts/ci/auto_fix_common_issues.py
 **After:** Automatic detection in <30 seconds, 15-30 minutes per PR  
 **Prevented Issues:** Unused imports, inconsistent coverage, YAML errors, session logs in git
 
+### 🆕 Phase 1 CI Optimization Tools (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Large PR handling, pattern detection, rollback safety
+
+New tools for optimizing CI workflows based on PR #3248 failure analysis:
+
+#### 1. PR Size Analyzer Workflow
+Automatically categorizes PRs and determines appropriate validation strategy:
+
+- **Small (<20 files):** Full validation with all tests
+- **Medium (20-99 files):** Targeted tests for affected areas  
+- **Large (100-499 files):** Smoke tests only (on-demand full validation)
+- **Refactor (500+ files):** Import validation only
+
+**Usage:** Automatically runs on all PRs, posts size analysis comment
+
+#### 2. Telemetry Collection Script
+Collects and analyzes CI telemetry data from GitHub Actions:
+
+```bash
+python scripts/ci/collect_telemetry.py \
+  --owner Aries-Serpent \
+  --repo _codex_ \
+  --branch main \
+  --days 7
+```
+
+**Features:**
+- Collects workflow runs, jobs, and artifacts
+- Classifies failures into 5 identified patterns
+- Generates comprehensive JSON reports
+- Pattern distribution analysis
+
+#### 3. Auto-Fix with Rollback
+Enhanced auto-fix with safety guarantees and automatic rollback:
+
+```bash
+# Run pre-flight checks
+python scripts/ci/auto_fix_with_rollback.py --pre-flight
+
+# Apply fixes with rollback support
+python scripts/ci/auto_fix_with_rollback.py --apply
+```
+
+**Safety Features:**
+- Pre-flight validation (git state, permissions, tools)
+- Per-fix isolation with automatic rollback on failure
+- Retry logic with exponential backoff
+- Syntax validation after each fix
+- Comprehensive metrics logging
+
+#### 4. Coverage Timeout Guards Workflow
+Prevents coverage hangs with timeout protection and graceful degradation:
+
+**Features:**
+- 7-minute per-test timeout via pytest-timeout
+- 4-shard parallel execution for isolation
+- Partial coverage on timeout (no total failure)
+- Detailed timeout diagnostics and recommendations
+
+**Documentation:**
+- Implementation guide: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](FOLLOWUP_IMPLEMENTATION_PROMPT.md)
+- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+
+### 🆕 Phase 2: Core Improvements (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Progressive validation, telemetry-driven orchestration
+
+Building on Phase 1, these tools optimize CI resource usage and enable intelligent test selection:
+
+#### 1. Progressive Validation Suite
+4-layer test architecture with smart execution:
+
+```yaml
+Layer 1: Smoke Tests (Always) - <10min
+  → Import validation + basic functionality
+
+Layer 2: Unit Tests (Small/Medium PRs) - <20min  
+  → 3-shard parallel execution
+
+Layer 3: Integration (Small PRs only) - <30min
+  → Cross-module tests
+
+Layer 4: Slow Tests (On-demand) - <60min
+  → Manual trigger via workflow_dispatch
+```
+
+**Impact:**
+- Small PRs: Full validation (~60 min)
+- Medium PRs: 50% faster (~30 min)
+- Large PRs: 75% faster (~15 min)
+- Refactor PRs: 90% faster (~5 min)
+
+#### 2. Workflow Orchestrator
+Telemetry-driven workflow selection:
+
+```bash
+python scripts/ci/workflow_orchestrator.py \
+  --pr-size medium \
+  --telemetry-file report.json \
+  --changed-files src/module.py \
+  --estimate-duration
+```
+
+**Features:**
+- Pattern-based workflow adjustments (5 failure patterns)
+- File change analysis for targeted workflows
+- Duration estimation for planning
+- JSON plan generation for automation
+
+#### 3. Telemetry Collection Workflow
+Automated CI health monitoring (daily at 2 AM UTC):
+
+- **Pattern detection:** Auto-fix, coverage timeout, test infrastructure
+- **Automatic alerting:** Issue creation when failure rate > 20%
+- **Trend analysis:** 90-day historical data retention
+- **Proactive monitoring:** Catch degradation early
+
+**Documentation:**
+- Implementation log: [`docs/ci/IMPLEMENTATION_LOG.md`](docs/ci/IMPLEMENTATION_LOG.md) (Phase 1-2 complete)
+- Analysis foundation: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Complete plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+
 ## 🎨 Cognitive Codex Web Application
 
 **Status:** Integrated & Built Successfully ✅  
@@ -338,7 +462,7 @@ Test Coverage: 275/320 (86%)
 
 ### 📖 Documentation
 - 📊 **[Phase 8 Status (v2)](/.github/agents/COGNITIVE_BRAIN_PHASE8_STATUS_V2.md)** - Complete overview + reviews
-- 🗺️ **[Phase 8 Roadmap](/.github/agents/PHASE_8_ROADMAP.md)** - Full specifications (8.2-8.4)
+- 🗺️ **[Phase 8 Roadmap](docs/ROADMAP.md)** - Full specifications (8.2-8.4)
 - 📈 **[K1 Strategy](/.github/agents/K1_OPTIMIZATION_STRATEGY.md)** - Rayleigh criterion
 - 🧪 **[EXP-1B](src/cognitive_brain/experiments/exp1b_revalidation.py)** | **[EXP-5](src/cognitive_brain/experiments/exp5_validation.py)** - Validations
 

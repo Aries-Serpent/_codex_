@@ -10,16 +10,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import sys
-import warnings
-from datetime import datetime, timezone
-from importlib import import_module
-from pathlib import Path
-from typing import Any, Callable
+import json  # noqa: E402
+import os  # noqa: E402
+import sys  # noqa: E402
+import warnings  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from importlib import import_module  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable  # noqa: E402
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
+from codex_ml.utils.yaml_support import (  # noqa: E402
+    MissingPyYAMLError,
+    YAMLError,
+    safe_load,
+)
 
 _REGISTRY: dict[str, Callable[..., Any]] = {}
 ERRORS_PATH = Path(".codex/errors.ndjson")

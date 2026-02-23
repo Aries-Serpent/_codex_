@@ -18,11 +18,10 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from pathlib import Path
 from typing import Iterable, Sequence
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer
@@ -131,7 +130,9 @@ def build_tokenizer(path: str | Path) -> object:
         for target in targets:
             try:
                 tokenizer = (
-                    AutoTokenizer.from_pretrained()  # nosec B615                    str(target), use_fast=True, trust_remote_code=False
+                    AutoTokenizer.from_pretrained(  # nosec B615
+                        str(target), use_fast=True, trust_remote_code=False
+                    )
                 )
             except Exception as exc:  # pragma: no cover - optional dependency path
                 errors.append(f"transformers@{target}: {exc}")

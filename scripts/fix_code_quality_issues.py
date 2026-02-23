@@ -21,12 +21,12 @@ from typing import List, Tuple
 def run_command(cmd: List[str], description: str, check: bool = False) -> Tuple[bool, str]:
     """
     Run command and return success status and output.
-    
+
     Args:
         cmd: Command and arguments to run
         description: Human-readable description of the command
         check: Whether to check return code (default: False for ruff)
-        
+
     Returns:
         Tuple of (success, output)
     """
@@ -34,13 +34,13 @@ def run_command(cmd: List[str], description: str, check: bool = False) -> Tuple[
     print(f"🔧 {description}")
     print(f"{'='*70}")
     print(f"Command: {' '.join(cmd)}")
-    
+
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
         output = result.stdout + result.stderr
-        
+
         print(output)
-        
+
         if result.returncode == 0:
             print(f"✅ {description} - SUCCESS")
             return True, output
@@ -61,7 +61,7 @@ def get_ruff_statistics() -> dict:
             capture_output=True,
             text=True
         )
-        
+
         stats = {}
         for line in result.stdout.split('\n'):
             if line.strip():
@@ -71,7 +71,7 @@ def get_ruff_statistics() -> dict:
                     count = int(parts[0])
                     code = parts[1]
                     stats[code] = count
-        
+
         return stats
     except Exception as e:
         print(f"⚠️  Could not get statistics: {e}")
@@ -86,7 +86,7 @@ def phase_1_fix_f541(dry_run: bool = False) -> bool:
     else:
         cmd.append("--diff")
     cmd.extend(["src/", "tests/", ".codex/"])
-    
+
     success, _ = run_command(cmd, "Phase 1: Fix F541 (unnecessary f-strings)")
     return success
 
@@ -99,7 +99,7 @@ def phase_2_fix_all_auto(dry_run: bool = False) -> bool:
     else:
         cmd.append("--diff")
     cmd.extend(["src/", "tests/", ".codex/"])
-    
+
     success, _ = run_command(cmd, "Phase 2: Fix all auto-fixable Ruff issues")
     return success
 
@@ -110,7 +110,7 @@ def phase_3_fix_imports(dry_run: bool = False) -> bool:
     if dry_run:
         cmd.append("--diff")
     cmd.extend(["src/", "tests/", ".codex/"])
-    
+
     success, _ = run_command(cmd, "Phase 3: Fix import ordering (I)")
     return success
 
@@ -121,7 +121,7 @@ def phase_4_format_code(dry_run: bool = False) -> bool:
     if dry_run:
         cmd.append("--diff")
     cmd.extend(["src/", "tests/", ".codex/"])
-    
+
     success, _ = run_command(cmd, "Phase 4: Format code with Ruff")
     return success
 
@@ -131,27 +131,27 @@ def verify_fixes() -> None:
     print("\n" + "="*70)
     print("📊 VERIFICATION: Counting remaining issues")
     print("="*70)
-    
+
     stats_after = get_ruff_statistics()
-    
+
     if stats_after:
         print("\n📈 Remaining issues by code:")
         total = 0
         for code, count in sorted(stats_after.items(), key=lambda x: x[1], reverse=True)[:10]:
             print(f"  {code:6s}: {count:5d} issues")
             total += count
-        
+
         print(f"\n  {'TOTAL':6s}: {total:5d} issues")
     else:
         print("\n✅ No issues remaining or could not parse statistics")
-    
+
     # Run full check to see summary
     result = subprocess.run(
         ["ruff", "check", "src/", "tests/", ".codex/"],
         capture_output=True,
         text=True
     )
-    
+
     # Look for summary lines
     for line in result.stdout.split('\n'):
         if 'Found' in line or 'fixed' in line:
@@ -171,14 +171,14 @@ def main() -> int:
         "--phase", type=int, choices=[1, 2, 3, 4],
         help="Run specific phase only (1-4)"
     )
-    
+
     args = parser.parse_args()
-    
+
     print("🚀 Starting automated code quality fixes for PR #3133")
     print(f"Working directory: {Path.cwd()}")
     print(f"Mode: {'DRY RUN (no changes)' if args.dry_run else 'LIVE (will modify files)'}")
     print()
-    
+
     # Get initial statistics
     print("📊 Initial issue count:")
     stats_before = get_ruff_statistics()
@@ -188,26 +188,26 @@ def main() -> int:
         top_5 = sorted(stats_before.items(), key=lambda x: x[1], reverse=True)[:5]
         for code, count in top_5:
             print(f"    {code}: {count}")
-    
+
     success = True
-    
+
     # Run phases
     if args.phase is None or args.phase == 1:
         success = phase_1_fix_f541(args.dry_run) and success
-    
+
     if args.phase is None or args.phase == 2:
         success = phase_2_fix_all_auto(args.dry_run) and success
-    
+
     if args.phase is None or args.phase == 3:
         success = phase_3_fix_imports(args.dry_run) and success
-    
+
     if args.phase is None or args.phase == 4:
         success = phase_4_format_code(args.dry_run) and success
-    
+
     # Verification
     if not args.dry_run:
         verify_fixes()
-    
+
     print("\n" + "="*70)
     if success:
         if args.dry_run:

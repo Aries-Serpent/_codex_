@@ -28,7 +28,40 @@ def stub_torch(monkeypatch):
         def numpy(self):  # pragma: no cover - compatibility shim
             return self._data
 
-    fake_torch = SimpleNamespace(Tensor=FakeTensor)
+        @property
+        def device(self):
+            return "cpu"
+
+        @property
+        def shape(self):
+            return self._data.shape
+
+        def to(self, device):
+            return self
+
+        def __getitem__(self, key):
+            return FakeTensor(self._data[key])
+
+        def any(self):
+            return np.any(self._data)
+
+        def float(self):
+            return FakeTensor(self._data.astype(np.float32))
+
+        def mean(self):
+            return FakeTensor(np.mean(self._data))
+
+        def item(self):
+            return float(np.asarray(self._data).item())
+
+    def fake_argmax(tensor, dim=-1):
+        return FakeTensor(np.argmax(tensor._data if hasattr(tensor, '_data') else tensor, axis=dim))
+
+    fake_torch = SimpleNamespace(
+        Tensor=FakeTensor,
+        argmax=fake_argmax,
+        is_tensor=lambda x: isinstance(x, FakeTensor),
+    )
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     yield fake_torch
     sys.modules.pop("torch", None)

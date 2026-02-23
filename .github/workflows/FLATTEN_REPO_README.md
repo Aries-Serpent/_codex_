@@ -432,7 +432,7 @@ When called as `workflow_call`, the action provides:
 ```yaml
 outputs:
   artifact_name: "flattened-repo-42"
-  artifact_url: "https://github.com/Aries-Serpent/_codex_/actions/runs/12345678"
+  artifact_url: "https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->"
   file_size_mb: "5.23"
 ```
 

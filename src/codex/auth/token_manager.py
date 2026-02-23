@@ -87,7 +87,7 @@ class SessionInfo:
 class TokenManager:
     """
     Token manager for authentication and session management.
-    
+
     Provides JWT-like token generation and validation without external
     dependencies. In production, consider using PyJWT library.
     """
@@ -100,13 +100,13 @@ class TokenManager:
     def __init__(self, secret_key: Optional[str] = None):
         """
         Initialize token manager.
-        
+
         Args:
-            secret_key: Secret key for signing tokens. 
+            secret_key: Secret key for signing tokens.
                        If None, generates a random key (NOT recommended for production).
-                       In production, ALWAYS provide an explicit secret key via 
+                       In production, ALWAYS provide an explicit secret key via
                        environment variable or secure configuration.
-        
+
         Warning:
             Auto-generated keys are only for development/testing.
             Production deployments MUST provide an explicit secret_key to
@@ -129,13 +129,13 @@ class TokenManager:
     def _encode_token(self, claims: TokenClaims) -> str:
         """
         Encode token (simplified JWT).
-        
+
         In production, use PyJWT library for proper JWT support.
         This is a simplified implementation for demonstration.
-        
+
         Args:
             claims: Token claims
-        
+
         Returns:
             Encoded token string
         """
@@ -175,13 +175,13 @@ class TokenManager:
     def _decode_token(self, token: str) -> TokenClaims:
         """
         Decode and verify token.
-        
+
         Args:
             token: Encoded token string
-        
+
         Returns:
             Decoded token claims
-        
+
         Raises:
             ValueError: If token is invalid or verification fails
         """
@@ -229,11 +229,11 @@ class TokenManager:
     def generate_access_token(self, user_id: str, scope: Optional[str] = None) -> str:
         """
         Generate access token.
-        
+
         Args:
             user_id: User identifier
             scope: Optional permissions scope
-        
+
         Returns:
             Encoded access token
         """
@@ -254,10 +254,10 @@ class TokenManager:
     def generate_refresh_token(self, user_id: str) -> str:
         """
         Generate refresh token.
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             Encoded refresh token
         """
@@ -279,13 +279,13 @@ class TokenManager:
                               user_agent: Optional[str] = None) -> Tuple[str, str]:
         """
         Generate session token and create session.
-        
+
         Args:
             user_id: User identifier
             mfa_verified: Whether MFA was verified
             ip_address: Client IP address
             user_agent: Client user agent
-        
+
         Returns:
             Tuple of (session_token, session_id)
         """
@@ -320,14 +320,14 @@ class TokenManager:
     def validate_token(self, token: str, expected_type: Optional[TokenType] = None) -> TokenClaims:
         """
         Validate token and return claims.
-        
+
         Args:
             token: Token to validate
             expected_type: Expected token type (optional)
-        
+
         Returns:
             Validated token claims
-        
+
         Raises:
             ValueError: If token is invalid, expired, or revoked
         """
@@ -362,13 +362,13 @@ class TokenManager:
     def refresh_access_token(self, refresh_token: str) -> str:
         """
         Generate new access token from refresh token.
-        
+
         Args:
             refresh_token: Valid refresh token
-        
+
         Returns:
             New access token
-        
+
         Raises:
             ValueError: If refresh token is invalid
         """
@@ -381,10 +381,10 @@ class TokenManager:
     def revoke_token(self, token: str) -> bool:
         """
         Revoke a token.
-        
+
         Args:
             token: Token to revoke
-        
+
         Returns:
             True if token was revoked
         """
@@ -407,10 +407,10 @@ class TokenManager:
     def revoke_all_user_tokens(self, user_id: str) -> int:
         """
         Revoke all tokens for a user (e.g., on password change).
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             Number of sessions revoked
         """
@@ -428,10 +428,10 @@ class TokenManager:
     def get_session(self, session_id: str) -> Optional[SessionInfo]:
         """
         Get session information.
-        
+
         Args:
             session_id: Session identifier
-        
+
         Returns:
             SessionInfo if found, None otherwise
         """
@@ -440,10 +440,10 @@ class TokenManager:
     def get_user_sessions(self, user_id: str) -> List[SessionInfo]:
         """
         Get all active sessions for a user.
-        
+
         Args:
             user_id: User identifier
-        
+
         Returns:
             List of active sessions
         """
@@ -455,7 +455,7 @@ class TokenManager:
     def cleanup_expired_sessions(self) -> int:
         """
         Clean up expired sessions.
-        
+
         Returns:
             Number of sessions cleaned up
         """

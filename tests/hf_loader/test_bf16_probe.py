@@ -7,16 +7,12 @@ Test module for bf16 probe.
 import importlib
 
 import pytest
-pytest.importorskip("torch")
+
+torch = pytest.importorskip("torch")
 
 
-
-@pytest.mark.skipif(
-    pytest.importorskip("torch", reason="torch not installed") is None, reason="torch missing"
-)
 def test_bf16_capability_probe():
-    import torch  # type: ignore
-
+    """Test bf16 capability probe functions."""
     if not hasattr(torch, "bfloat16") or getattr(torch, "bfloat16") is None:
         pytest.skip("bf16 not supported by this torch build")
 

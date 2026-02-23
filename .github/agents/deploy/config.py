@@ -5,46 +5,46 @@ This module provides configuration for deploying the reviewer agent
 to various cloud platforms.
 """
 
+import os
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
-import os
 
 
 @dataclass
 class DeploymentConfig:
     """Configuration for agent deployment."""
-    
+
     # Platform
     platform: str = "aws-lambda"  # aws-lambda, gcp-functions, azure-functions
-    
+
     # Runtime
     runtime: str = "python3.11"
     memory_mb: int = 512
     timeout_seconds: int = 300
-    
+
     # Networking
     vpc_enabled: bool = False
     vpc_subnet_ids: List[str] = field(default_factory=list)
     security_group_ids: List[str] = field(default_factory=list)
-    
+
     # Environment
     environment_variables: Dict[str, str] = field(default_factory=dict)
-    
+
     # Scaling
     min_instances: int = 0
     max_instances: int = 10
     concurrency: int = 1
-    
+
     # Monitoring
     enable_xray: bool = True
     enable_cloudwatch_logs: bool = True
     log_retention_days: int = 30
-    
+
     # GitHub App
     github_app_id: Optional[str] = None
     github_app_private_key: Optional[str] = None
     github_webhook_secret: Optional[str] = None
-    
+
     @classmethod
     def from_env(cls) -> "DeploymentConfig":
         """Create configuration from environment variables."""
@@ -57,7 +57,7 @@ class DeploymentConfig:
             github_app_private_key=os.environ.get("CODEX_PRIVATE_KEY"),
             github_webhook_secret=os.environ.get("CODEX_WEBHOOK_SECRET"),
         )
-    
+
     def to_terraform_vars(self) -> Dict[str, any]:
         """Convert to Terraform variables format."""
         return {
@@ -67,7 +67,7 @@ class DeploymentConfig:
             "timeout": self.timeout_seconds,
             "environment_variables": self.environment_variables or {},
         }
-    
+
     def to_cloudformation_params(self) -> List[Dict[str, str]]:
         """Convert to CloudFormation parameters format."""
         return [

@@ -51,6 +51,8 @@ compute_file_checksum = _core.compute_file_checksum
 Sample = _core.Sample
 _resolve_connector_cache_root = _core._resolve_connector_cache_root
 _materialize_connector_uri = _core._materialize_connector_uri
+_run_connector_coro = _core._run_connector_coro  # Export for tests
+get_connector = _core.get_connector  # Export for tests
 
 
 def _resolve_loader(loader_entry: Callable) -> Callable:
@@ -163,4 +165,6 @@ __all__ = [
     "Sample",
     "_resolve_connector_cache_root",
     "_materialize_connector_uri",
+    "_run_connector_coro",  # For tests
+    "get_connector",  # For tests
 ]

@@ -561,7 +561,7 @@ class TestResourceManagement:
 
         # Components should be stored
         assert len(orch.components) > 0
-        assert isinstance(orch.components, dict)
+        assert isinstance(orch.components, list)
 
     def test_memory_efficiency(self):
         """Test orchestrator doesn't accumulate unbounded state."""

@@ -23,13 +23,17 @@ logger = logging.getLogger(__name__)
 """Tokenizer registry and helpers."""
 
 
-import os
-from collections.abc import Mapping, Sequence
-from pathlib import Path
-from typing import Any, Callable, Hashable
+import os  # noqa: E402
+from collections.abc import Mapping, Sequence  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Hashable  # noqa: E402
 
-from codex_ml.registry.base import Registry
-from codex_ml.registry.token_cache import GLOBAL_TOKEN_LRU, cache_key, is_cache_disabled
+from codex_ml.registry.base import Registry  # noqa: E402
+from codex_ml.registry.token_cache import (  # noqa: E402
+    GLOBAL_TOKEN_LRU,
+    cache_key,
+    is_cache_disabled,
+)
 
 tokenizer_registry = Registry("tokenizer")
 _TOKENIZER_PLUGINS_LOADED = False

@@ -5,10 +5,10 @@ Dependency Upgrade Agent - Automated dependency update management.
 This agent implements automated dependency monitoring, evaluation, and upgrade.
 """
 
+from .evaluator import BreakingChangeRisk, DependencyEvaluator, UpgradeEvaluation
 from .monitor import DependencyMonitor, DependencyUpdate
-from .evaluator import DependencyEvaluator, UpgradeEvaluation, BreakingChangeRisk
-from .upgrader import DependencyUpgrader, UpgradeResult, UpgradeStrategy
 from .tracker import DependencyTracker, UpgradeMetrics
+from .upgrader import DependencyUpgrader, UpgradeResult, UpgradeStrategy
 
 __all__ = [
     "DependencyMonitor",

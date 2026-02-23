@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/token_encryption_tool.py [options]
-    
+
     Examples:
     $ python scripts/security/token_encryption_tool.py --help
 
@@ -46,16 +46,16 @@ ENVIRONMENT VARIABLES:
 """
 import base64
 import hashlib
-import secrets
 import json
 import os
+import secrets
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 try:
-    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     CRYPTO_AVAILABLE = True
 except ImportError:
     CRYPTO_AVAILABLE = False
@@ -63,39 +63,39 @@ except ImportError:
 
 class TokenSecurityManager:
     """Manages secure token transformations for GitHub secrets"""
-    
+
     def __init__(self, token: str):
         self.token = token
         self.results = {}
-    
+
     def generate_base64(self) -> str:
         """Convert token to Base64 encoding"""
         encoded = base64.b64encode(self.token.encode()).decode()
         self.results['BASE64_ENCODED'] = encoded
         return encoded
-    
+
     def generate_hex(self) -> str:
         """Convert token to hexadecimal encoding"""
         hex_encoded = self.token.encode().hex()
         self.results['HEX_ENCODED'] = hex_encoded
         return hex_encoded
-    
+
     def generate_sha256(self) -> str:
         """Generate SHA-256 hash (one-way, for verification only)"""
         sha_hash = hashlib.sha256(self.token.encode()).hexdigest()
         self.results['SHA256_HASH'] = sha_hash
         return sha_hash
-    
+
     def generate_aes_gcm(self) -> dict:
         """Encrypt token using AES-GCM with 256-bit key"""
         if not CRYPTO_AVAILABLE:
             print("❌ AES encryption requires 'cryptography' library")
             return {}
-        
+
         # Generate cryptographically secure key and nonce
         key = secrets.token_bytes(32)  # 256-bit key
         nonce = secrets.token_bytes(12)  # 96-bit nonce for GCM
-        
+
         # Encrypt the token
         cipher = Cipher(
             algorithms.AES(key),
@@ -103,21 +103,21 @@ class TokenSecurityManager:
             backend=default_backend()
         )
         encryptor = cipher.encryptor()
-        
+
         # Add authentication data (repo-specific)
         auth_data = b"_codex_ghp_token_v1_aries_serpent"
         encryptor.authenticate_additional_data(auth_data)
-        
+
         # Encrypt and finalize
         ciphertext = encryptor.update(self.token.encode()) + encryptor.finalize()
-        
+
         # Store results
         self.results['AES_KEY'] = base64.b64encode(key).decode()
         self.results['AES_NONCE'] = base64.b64encode(nonce).decode()
         self.results['AES_AUTH_TAG'] = base64.b64encode(encryptor.tag).decode()
         self.results['AES_CIPHERTEXT'] = base64.b64encode(ciphertext).decode()
         self.results['AES_AUTH_DATA'] = base64.b64encode(auth_data).decode()
-        
+
         return {
             'key': self.results['AES_KEY'],
             'nonce': self.results['AES_NONCE'],
@@ -125,7 +125,7 @@ class TokenSecurityManager:
             'ciphertext': self.results['AES_CIPHERTEXT'],
             'auth_data': self.results['AES_AUTH_DATA']
         }
-    
+
     def generate_setup_script(self) -> str:
         """Generate a shell script for easy GitHub secrets setup"""
         script = f"""#!/bin/bash
@@ -161,7 +161,7 @@ gh secret set CODEX_GHP_TOKEN_HEX --body "{self.results.get('HEX_ENCODED', 'NOT_
 echo "Adding CODEX_GHP_TOKEN_SHA256..."
 gh secret set CODEX_GHP_TOKEN_SHA256 --body "{self.results.get('SHA256_HASH', 'NOT_GENERATED')}" --repo "$REPO"
 """
-        
+
         # Add AES secrets if available
         if self.results.get('AES_KEY'):
             script += f"""
@@ -181,7 +181,7 @@ gh secret set CODEX_GHP_TOKEN_AES_TAG --body "{self.results['AES_AUTH_TAG']}" --
 echo "Adding CODEX_GHP_TOKEN_AES_AUTH_DATA..."
 gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA --body "{self.results['AES_AUTH_DATA']}" --repo "$REPO"
 """
-            
+
             # Add combined config
             combined_config = {
                 'version': '1.0',
@@ -196,13 +196,13 @@ gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA --body "{self.results['AES_AUTH_DATA
                 }
             }
             config_b64 = base64.b64encode(json.dumps(combined_config).encode()).decode()
-            
+
             script += f"""
 # Combined AES Config (Single Secret Alternative)
 echo "Adding CODEX_GHP_TOKEN_CONFIG..."
 gh secret set CODEX_GHP_TOKEN_CONFIG --body "{config_b64}" --repo "$REPO"
 """
-        
+
         script += """
 echo ""
 echo "✅ All secrets have been set successfully!"
@@ -214,9 +214,9 @@ echo "3. Update any workflows that use GITHUB_TOKEN"
 echo ""
 echo "=================================================="
 """
-        
+
         return script
-    
+
     def print_results(self):
         """Print all encryption results formatted for GitHub Secrets"""
         print("\n" + "="*80)
@@ -224,43 +224,43 @@ echo "=================================================="
         print("="*80)
         print(f"⚠️  Original Token: {self.token[:10]}...{self.token[-4:]} (NEVER COMMIT)")
         print("="*80)
-        
+
         print("\n📋 COPY THESE VALUES TO GITHUB SECRETS:")
         print("\n🔗 URL: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions")
         print("\n" + "─"*80)
-        
+
         # Recommended: Base64
         if 'BASE64_ENCODED' in self.results:
-            print(f"\n🥇 RECOMMENDED - Base64 Encoding:")
-            print(f"   Secret Name:  CODEX_GHP_TOKEN_BASE64")
+            print("\n🥇 RECOMMENDED - Base64 Encoding:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_BASE64")
             print(f"   Secret Value: {self.results['BASE64_ENCODED']}")
-        
+
         # Alternative: Hex
         if 'HEX_ENCODED' in self.results:
-            print(f"\n🥈 ALTERNATIVE - Hex Encoding:")
-            print(f"   Secret Name:  CODEX_GHP_TOKEN_HEX")
+            print("\n🥈 ALTERNATIVE - Hex Encoding:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_HEX")
             print(f"   Secret Value: {self.results['HEX_ENCODED']}")
-        
+
         # Verification: SHA-256
         if 'SHA256_HASH' in self.results:
-            print(f"\n🔍 VERIFICATION - SHA-256 Hash:")
-            print(f"   Secret Name:  CODEX_GHP_TOKEN_SHA256")
+            print("\n🔍 VERIFICATION - SHA-256 Hash:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_SHA256")
             print(f"   Secret Value: {self.results['SHA256_HASH']}")
-        
+
         # Most Secure: AES-256-GCM
         if 'AES_KEY' in self.results:
-            print(f"\n🔐 MOST SECURE - AES-256-GCM Encryption:")
-            print(f"   Secret Name:  CODEX_GHP_TOKEN_AES_KEY")
+            print("\n🔐 MOST SECURE - AES-256-GCM Encryption:")
+            print("   Secret Name:  CODEX_GHP_TOKEN_AES_KEY")
             print(f"   Secret Value: {self.results['AES_KEY']}")
-            print(f"\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_CIPHERTEXT")
             print(f"   Secret Value: {self.results['AES_CIPHERTEXT']}")
-            print(f"\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_NONCE")
             print(f"   Secret Value: {self.results['AES_NONCE']}")
-            print(f"\n   Secret Name:  CODEX_GHP_TOKEN_AES_TAG")
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_TAG")
             print(f"   Secret Value: {self.results['AES_AUTH_TAG']}")
-            print(f"\n   Secret Name:  CODEX_GHP_TOKEN_AES_AUTH_DATA")
+            print("\n   Secret Name:  CODEX_GHP_TOKEN_AES_AUTH_DATA")
             print(f"   Secret Value: {self.results['AES_AUTH_DATA']}")
-            
+
             # Combined config option
             combined_config = {
                 'version': '1.0',
@@ -275,33 +275,33 @@ echo "=================================================="
                 }
             }
             config_b64 = base64.b64encode(json.dumps(combined_config).encode()).decode()
-            
-            print(f"\n📦 COMBINED AES CONFIG (Single Secret Option):")
-            print(f"   Secret Name:  CODEX_GHP_TOKEN_CONFIG")
+
+            print("\n📦 COMBINED AES CONFIG (Single Secret Option):")
+            print("   Secret Name:  CODEX_GHP_TOKEN_CONFIG")
             print(f"   Secret Value: {config_b64}")
-        
+
         print("\n" + "="*80)
-    
+
     def save_setup_script(self, output_path: str = None):
         """Save the setup script to a file"""
         if not output_path:
             output_path = Path.home() / 'codex_token_setup.sh'
-        
+
         script_content = self.generate_setup_script()
         output_file = Path(output_path)
-        
+
         output_file.write_text(script_content)
         os.chmod(output_file, 0o700)  # Make executable, owner-only
-        
+
         print(f"\n💾 Setup script saved to: {output_file}")
         print(f"   Run with: bash {output_file}")
-        print(f"   Or review and copy commands manually")
+        print("   Or review and copy commands manually")
 
 
 def main():
     """Main execution function"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='_codex_ GitHub Token Encryption Tool',
         epilog='Security Level: 5/5 🔐'
@@ -319,26 +319,26 @@ def main():
         action='store_true',
         help='Skip AES encryption (use only Base64/Hex)'
     )
-    
+
     args = parser.parse_args()
-    
+
     print("\n🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0")
     print("⚡ Energy: 5/5 | 🧠 Security Mode Active")
     print("🎯 Repository: Aries-Serpent/_codex_")
     print("="*80)
-    
+
     # Get token from args or environment
     token = args.token
     if not token:
         token = os.getenv('GITHUB_TOKEN') or os.getenv('GH_TOKEN')
-    
+
     if not token:
         token = input("\nEnter GitHub token (or Ctrl+C to cancel): ").strip()
-    
+
     if not token:
         print("❌ No token provided. Exiting.")
         sys.exit(1)
-    
+
     # Validate token format
     if not token.startswith(('ghp_', 'gho_', 'ghs_', 'github_pat_')):
         print("⚠️  Warning: Token doesn't match expected GitHub format")
@@ -346,28 +346,28 @@ def main():
         if confirm != 'y':
             print("❌ Cancelled")
             sys.exit(1)
-    
+
     # Initialize manager and generate all formats
     manager = TokenSecurityManager(token)
-    
+
     # Generate encodings
     manager.generate_base64()
     manager.generate_hex()
     manager.generate_sha256()
-    
+
     # Generate AES encryption if available and not disabled
     if CRYPTO_AVAILABLE and not args.no_aes:
         manager.generate_aes_gcm()
     elif not CRYPTO_AVAILABLE:
         print("\n⚠️  AES encryption skipped (cryptography library not installed)")
         print("   Install with: pip install cryptography")
-    
+
     # Print results
     manager.print_results()
-    
+
     # Save setup script
     manager.save_setup_script(args.output_script)
-    
+
     print("\n✅ Encryption complete!")
     print("\n🔄 NEXT STEPS:")
     print("1. Run the generated setup script (recommended):")

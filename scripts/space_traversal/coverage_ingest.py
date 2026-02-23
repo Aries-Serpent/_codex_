@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/coverage_ingest.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/coverage_ingest.py --help
 
@@ -42,9 +42,10 @@ Enhanced features:
 """
 import json
 import sys
-from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Any, Optional
+
+from defusedxml import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 

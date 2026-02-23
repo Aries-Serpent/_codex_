@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Infer Module
 
 This module provides functionality for infer.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -29,7 +30,7 @@ import sys
 from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Optional, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -47,11 +48,14 @@ from codex_ml.utils.optional import optional_import
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
+# Module-level sentinel so tests can monkeypatch `infer.AutoTokenizer`
+AutoTokenizer = transformers.AutoTokenizer if _HAS_TRANSFORMERS and transformers is not None else None
+
 
 _ = run_cmd
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     logger = init_json_logging()
     parser = ArgparseJSONParser(description=__doc__)
     parser.add_argument("--model-name", default="hf", help="model loader name (hf or decoder_only)")
@@ -107,7 +111,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
         if not (_HAS_TORCH and _HAS_TRANSFORMERS):
             raise ImportError("torch and transformers are required for inference")
-        AutoTokenizer = transformers.AutoTokenizer
         tok_name = args.tokenizer or args.checkpoint
         tokenizer = load_from_pretrained(AutoTokenizer, tok_name, revision=get_hf_revision())
 
@@ -133,7 +136,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         model = model.to(args.device)
         torch.manual_seed(args.seed)
-        moderation_adapter: ModerationAdapter | None = None
+        moderation_adapter: Optional[ModerationAdapter] = None
         prompt_decision = None
         output_decision = None
         moderation_enabled = bool(

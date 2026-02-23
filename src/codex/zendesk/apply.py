@@ -8,13 +8,13 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-from collections.abc import Iterable, Mapping, Sequence
-from pathlib import Path
-from types import ModuleType
-from typing import Any
+import os  # noqa: E402
+from collections.abc import Iterable, Mapping, Sequence  # noqa: E402
+from pathlib import Path  # noqa: E402
+from types import ModuleType  # noqa: E402
+from typing import Any  # noqa: E402
 
-from codex.zendesk.monitoring.zendesk_metrics import metrics as _metrics
+from codex.zendesk.monitoring.zendesk_metrics import metrics as _metrics  # noqa: E402
 
 LOGGER = logging.getLogger(__name__)
 

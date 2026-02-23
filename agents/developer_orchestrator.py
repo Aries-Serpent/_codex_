@@ -18,11 +18,12 @@ The orchestrator assists in developing Python and console applications by:
 5. Optimizing development workflow
 """
 
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
+
 logger = logging.getLogger(__name__)
-from enum import Enum
-from typing import Any, Optional, Union
+from enum import Enum  # noqa: E402
+from typing import Any, Optional, Union  # noqa: E402
 
 try:
     import numpy as np
@@ -124,15 +125,16 @@ class RequirementVariable:
 class CodeComponent:
     """A component of the software being developed."""
 
-    component_id: str
     name: str
     component_type: str  # module, class, function, test
     description: str
+    code: str = ""
+    component_id: str = ""
     dependencies: list[str] = field(default_factory=list)
     priority: float = 0.5  # 0-1, for EM field routing
     complexity: float = 1.0  # For fractal analysis
+    complexity_score: Optional[float] = None  # Normalised 0-1 complexity score
     implementation_status: str = "pending"  # pending, in_progress, complete
-    code: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -162,10 +164,11 @@ class PhysicsGuidedDeveloperOrchestrator:
     - Quantum: Evaluate multiple implementation approaches in parallel
     """
 
-    def __init__(self, session_id: Optional[str] = None):
-        self.app_type: Optional[AppType] = None
-        self.required_variables: dict[str, RequirementVariable] = {}
-        self.components: dict[str, CodeComponent] = {}
+    def __init__(self, session_id: Optional[str] = None, app_type: Optional["AppType"] = None):
+        self.app_type: Optional[AppType] = app_type
+        # requirements is a mutable list; required_variables is a derived dict view kept in sync
+        self._requirements: list[RequirementVariable] = []
+        self.components: list[CodeComponent] = []
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
         self.session_id = session_id or "dev_orchestrator"
 
@@ -180,6 +183,31 @@ class PhysicsGuidedDeveloperOrchestrator:
     def _log(self, role: str, message: str) -> None:
         """Log a message using session logger."""
         log_message(self.session_id, role, message)
+
+    @property
+    def requirements(self) -> list[RequirementVariable]:
+        """Return mutable list of required variables.  Append/index operations persist."""
+        return self._requirements
+
+    @requirements.setter
+    def requirements(self, value: list[RequirementVariable]) -> None:
+        """Replace the requirements list (also updates required_variables)."""
+        self._requirements = list(value)
+
+    @property
+    def required_variables(self) -> dict[str, RequirementVariable]:
+        """Dict view of requirements, keyed by name."""
+        return {rv.name: rv for rv in self._requirements}
+
+    @required_variables.setter
+    def required_variables(self, value: dict[str, RequirementVariable]) -> None:
+        """Set requirements from a dict (keeps insertion order)."""
+        self._requirements = list(value.values())
+
+    # Alias for backward compat with tests that call analyze_requirements()
+    def analyze_requirements(self, user_request: str) -> Any:
+        """Analyse a plain-text user request and populate required_variables."""
+        return self.analyze_user_requirements({"request": user_request})
 
     def analyze_user_requirements(self, requirements: dict[str, Any]) -> dict[str, Any]:
         """
@@ -497,7 +525,7 @@ class PhysicsGuidedDeveloperOrchestrator:
             )
         )
 
-        self.components = {comp.component_id: comp for comp in components}
+        self.components = list(components)
         return components
 
     def _build_component_tree(self, components: list[CodeComponent]) -> dict[str, Any]:
@@ -554,15 +582,15 @@ class PhysicsGuidedDeveloperOrchestrator:
 
     def generate_code(
         self,
-        component_id: Union[str, dict[str, Any]],
+        component_id: Union[str, dict[str, Any], None] = None,
         specifications: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Generate code for a specific component or from specifications directly.
 
         Args:
-            component_id: Either a component ID string or a specifications dictionary.
-                         If a dict is provided, it's treated as specifications.
+            component_id: Component ID string, specifications dict, or None to
+                          generate generic code.
             specifications: Optional specifications (used when component_id is a string)
 
         Uses chaos theory to explore different implementation approaches.
@@ -570,25 +598,34 @@ class PhysicsGuidedDeveloperOrchestrator:
         # Handle case where specifications are passed as first argument
         if isinstance(component_id, dict):
             specifications = component_id
-            # Check if this is a new application request
-            if "app_name" in specifications or "app_type" in specifications:
-                # Generate a simple application based on specs
-                return self._generate_app_from_specs(specifications)
-            # Otherwise treat as specifications for the first component
+            component_id = None
+
+        if component_id is None:
+            # No specific component requested
             if self.components:
-                component_id = list(self.components.keys())[0]
+                # Generate code for the first component
+                first = self.components[0]
+                component_id = first.component_id if first.component_id else first.name
             else:
-                return self._generate_generic_code(specifications)
+                return self._generate_generic_code(specifications or {})
 
-        if component_id not in self.components:
+        if isinstance(component_id, str) and "app_name" in (specifications or {}):
+            return self._generate_app_from_specs(specifications)
+
+        # Find component in list by component_id or name
+        component = None
+        for c in self.components:
+            if c.component_id == component_id or c.name == component_id:
+                component = c
+                break
+
+        if component is None:
             return f"# Error: Component {component_id} not found"
-
-        component = self.components[component_id]
 
         self._log("system", f"=== GENERATING CODE: {component.name} ===")
 
         # Use template based on component type
-        if component.component_type == "module" and component_id == "main":
+        if component.component_type == "module" and component.component_id == "main":
             code = self._generate_main_module(specifications or {})
         elif component.component_type == "function":
             code = self._generate_function(component, specifications or {})
@@ -679,12 +716,12 @@ def main():
     """Main entry point for CLI."""
     parser = argparse.ArgumentParser(description='{description}')
     parser.add_argument('--version', action='version', version='1.0.0')
-    
+
     # Add subcommands here
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
-    
+
     args = parser.parse_args()
-    
+
     if args.command:
         print(f"Executing command: {{args.command}}")
     else:
@@ -753,11 +790,11 @@ if __name__ == '__main__':
 def {component.name}(*args, **kwargs):
     """
     {component.description}
-    
+
     Args:
         *args: Positional arguments
         **kwargs: Keyword arguments
-    
+
     Returns:
         Result of operation
     """
@@ -790,7 +827,7 @@ def test_main_imports():
         """Get current development status."""
         total_components = len(self.components)
         completed = sum(
-            1 for comp in self.components.values() if comp.implementation_status == "complete"
+            1 for comp in self.components if comp.implementation_status == "complete"
         )
 
         return {
@@ -840,7 +877,7 @@ def test_main_imports():
         if not os.access(output_dir, os.W_OK):
             raise PermissionError(f"Output directory '{output_dir}' is not writable.")
 
-        for comp in self.components.values():
+        for comp in self.components:
             if comp.code:
                 filepath = os.path.join(output_dir, comp.name)
 
@@ -932,7 +969,7 @@ def test_main_imports():
                     "complexity": comp.complexity,
                     "dependencies": comp.dependencies,
                 }
-                for comp in self.components.values()
+                for comp in self.components
             ]
 
         # Score based on priority and inverse complexity
@@ -1026,7 +1063,8 @@ def test_main_imports():
                     self.current_phase = DevelopmentPhase.TESTING
                     # Validate all generated code
                     validations = {}
-                    for comp_id, comp in self.components.items():
+                    for comp in self.components:
+                        comp_id = comp.component_id
                         if comp.code:
                             validation = self.validate_code(comp.code, comp_id)
                             validations[comp_id] = validation["valid"]

@@ -186,11 +186,11 @@ def main() -> int:
         if args.json:
             print(json.dumps(summary, indent=2))
         else:
-            print(f"📋 Knowledge Transfer Summary")
+            print("📋 Knowledge Transfer Summary")
             print(f"  Sessions: {summary['total_sessions']}")
             print(f"  Patterns: {summary['total_patterns']}")
             print(f"  Learnings: {summary['total_learnings']}")
-            print(f"\n🔴 Critical Patterns:")
+            print("\n🔴 Critical Patterns:")
             for cp in summary["critical_patterns"]:
                 print(f"  [{cp['severity'].upper()}] {cp['pattern']}: {cp['rule']}")
         return 0

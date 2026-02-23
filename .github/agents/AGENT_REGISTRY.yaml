@@ -1,7 +1,54 @@
 version: 1.0.0
-last_updated: '2026-01-23T07:25:00Z'
-total_agents: 26
+last_updated: '2026-02-21T01:50:00Z'
+total_agents: 27
 agents:
+- id: github-guru-agent
+  name: GitHub Guru Agent
+  version: "1.1.0"
+  directory: .github/agents/github-guru-agent
+  file: github-guru-agent.agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: operations
+  subcategory: governance
+  physics_model:
+    primary: balance
+    secondary: path
+    energy: 5
+  primary_skill: "GitHub repository intelligence, PR analysis, issue triage, workflow health"
+  secondary_skill: "Pattern synthesis, cross-repo knowledge surfacing, developer guidance"
+  purpose: >
+    Full-spectrum GitHub repository intelligence: PR analysis, issue triage,
+    workflow health monitoring, branch governance, dependency drift detection,
+    repository hygiene reporting, and label taxonomy enforcement.
+  capabilities:
+    - pr_analysis
+    - issue_triage
+    - workflow_health_monitoring
+    - branch_governance
+    - contributor_intelligence
+    - repository_hygiene_reporting
+    - codebase_navigation_guidance
+    - dependency_drift_detection
+    - stale_resource_detection
+    - label_taxonomy_enforcement
+  integration_points:
+    - .github/workflows/github-guru.yml
+    - .github/agents/github-guru-agent/main.py
+    - .github/agents/AGENT_REGISTRY.yaml
+    - .github/agents/AGENT_REGISTRY.md
+  cognitive_brain_layer: orchestration
+  safe_mode: true
+  network_access: false
+  test_coverage: "109 tests passing"
+  priority: critical
+  created: '2026-02-21T01:50:00Z'
+  updated: '2026-02-21T01:50:00Z'
+  maintainer: mbaetiong
 - id: ast-analysis-agent
   name: Ast Analysis Agent
   directory: .github/agents/ast-analysis-agent

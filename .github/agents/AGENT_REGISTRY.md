@@ -16,6 +16,41 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 
 ## Priority Tier 1: Production-Critical Agents
 
+### 0. GitHub-Guru-Agent ✅ NEW
+- **ID**: `github-guru-agent`
+- **File**: `.github/agents/github-guru-agent.agent.md`
+- **Directory**: `.github/agents/github-guru-agent/`
+- **Purpose**: Full-spectrum GitHub repository intelligence — PR analysis, issue triage, workflow health, branch governance, dependency drift, and label taxonomy enforcement
+- **Status**: Active
+- **Maturity**: Production
+- **Version**: 1.1.0
+- **Test Coverage**: 109 tests passing (100%)
+- **Has Prompts**: No (event-driven)
+- **Has Tests**: Yes (`.github/agents/github-guru-agent/tests/`)
+- **Has Docs**: Yes (comprehensive manifest + spec)
+- **Standard Structure**: Full implementation (10 capabilities, cognitive bridge, metrics, learning)
+- **Physics Model**: Balance ⚖️ (primary) + Path 🛤️ (secondary) | Energy: 5/5
+- **Integration Points**:
+  - `.github/workflows/github-guru.yml` (scheduled daily + event-driven)
+  - `.github/agents/github-guru-agent/main.py` (GitHubGuruAgent orchestrator)
+  - `.github/agents/github-guru-agent/guru_adapter.py` (Planner ABC bridge)
+  - `.github/agents/AGENT_REGISTRY.yaml` (machine registry)
+- **Capabilities**:
+  - `C-01` pr_analysis (PR health score, size, staleness, conflicts)
+  - `C-02` issue_triage (label taxonomy, priority, routing)
+  - `C-03` workflow_health_monitoring (failure rate, degraded workflows)
+  - `C-04` branch_governance (stale branches, naming conventions)
+  - `C-05` contributor_intelligence (ownership gaps, review bottlenecks)
+  - `C-06` repository_hygiene_reporting (orphaned files, dep drift)
+  - `C-07` codebase_navigation_guidance (agent/doc routing hints)
+  - `C-08` dependency_drift_detection (unpinned/outdated deps)
+  - `C-09` stale_resource_detection (stale PRs/issues/branches)
+  - `C-10` label_taxonomy_enforcement (compliance vs `.github/labels.yml`)
+- **SAFE_MODE**: true (read-only GitHub operations; no branch writes)
+- **Cognitive Brain**: `GitHubGuruAdapter` implements full `Planner` ABC (OODA + Reflect loop)
+- **Last Updated**: 2026-02-21
+- **Maintainer**: mbaetiong
+
 ### 0. Artifact-Monitor-Agent ✅ NEW
 - **ID**: `artifact-monitor-agent`
 - **File**: `.github/agents/artifact-monitor-agent.md`

@@ -44,13 +44,13 @@ flowchart TB
         AR --> TC[Comparison Engine]
         AR --> VIZ[Visualization]
     end
-    
+
     subgraph Outputs["📤 Outputs"]
         Dashboard[HTML Dashboard]
         Reports[Trend Reports]
         Wiki[Wiki Docs]
     end
-    
+
     VIZ --> Dashboard
     TC --> Reports
     Core --> Wiki
@@ -182,19 +182,19 @@ flowchart LR
         Audit[Audit Run]
         Config[Configuration]
     end
-    
+
     subgraph Processing
         Runner[audit_runner.py]
         DB[(TrendDatabase)]
         Compare[Comparison]
     end
-    
+
     subgraph Output
         Dashboard[Dashboard]
         Reports[Reports]
         Alerts[Webhooks]
     end
-    
+
     Audit --> Runner
     Config --> Runner
     Runner --> DB
@@ -308,7 +308,7 @@ graph TD
         TC[trend_compare.py]
         AR[audit_runner.py]
     end
-    
+
     subgraph Visualization
         VA[viz_ascii.py]
         VH[viz_html.py]
@@ -316,13 +316,13 @@ graph TD
         VAC[viz_api_collection.py]
         VS[viz_swagger.py]
     end
-    
+
     subgraph Integration
         WH[webhooks.py]
         CI[ci_integration.py]
         PF[performance.py]
     end
-    
+
     AR --> TD
     AR --> TC
     AR --> VA
@@ -645,26 +645,26 @@ flowchart TB
         Config[Configuration]
         Baseline[Baseline Scores]
     end
-    
+
     subgraph Core["🔍 Audit Core"]
         Scanner[Code Scanner]
         Scorer[Capability Scorer]
         Comparator[Comparator]
     end
-    
+
     subgraph Storage["💾 Storage Layer"]
         DB[(Trend Database)]
         Artifacts[Audit Artifacts]
         Cache[File Cache]
     end
-    
+
     subgraph Output["📤 Output Layer"]
         Dashboard[HTML Dashboard]
         Reports[Markdown Reports]
         Webhooks[Notifications]
         CI[CI Integration]
     end
-    
+
     Repo --> Scanner
     Config --> Scanner
     Scanner --> Scorer
@@ -686,7 +686,7 @@ The central orchestrator that coordinates all audit operations.
 ```mermaid
 graph TD
     AR[audit_runner.py]
-    
+
     subgraph Commands
         Run[run]
         Store[store-trend]
@@ -695,7 +695,7 @@ graph TD
         Compare[compare-runs]
         Dash[dashboard]
     end
-    
+
     AR --> Run
     AR --> Store
     AR --> Show
@@ -740,19 +740,19 @@ erDiagram
 ```mermaid
 flowchart LR
     Data[Trend Data]
-    
+
     subgraph ASCII["Terminal"]
         Spark[Sparklines]
         Bars[Bar Charts]
         Badges[Score Badges]
     end
-    
+
     subgraph HTML["Web"]
         Dashboard[Dashboard]
         Charts[Chart.js]
         Tables[Data Tables]
     end
-    
+
     Data --> Spark
     Data --> Bars
     Data --> Badges
@@ -772,7 +772,7 @@ sequenceDiagram
     participant Scanner
     participant Scorer
     participant DB as TrendDatabase
-    
+
     User->>Runner: audit run
     Runner->>Scanner: scan_repository()
     Scanner-->>Runner: findings
@@ -792,18 +792,18 @@ sequenceDiagram
     participant DB as TrendDatabase
     participant Compare as Comparator
     participant Webhook
-    
+
     User->>Runner: check-regressions
     Runner->>DB: get_trend(all)
     DB-->>Runner: historical data
     Runner->>Compare: detect_regressions()
     Compare-->>Runner: regressions[]
-    
+
     alt Regressions Found
         Runner->>Webhook: send_notification()
         Webhook-->>Runner: delivery status
     end
-    
+
     Runner-->>User: regression report
 ```
 
@@ -830,13 +830,13 @@ flowchart LR
         Test[Test]
         Audit[Audit]
     end
-    
+
     subgraph Integration
         Summary[Step Summary]
         Output[Output Variables]
         Comment[PR Comment]
     end
-    
+
     Build --> Test
     Test --> Audit
     Audit --> Summary

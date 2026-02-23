@@ -14,6 +14,7 @@ Tests cover:
 
 import numpy as np
 import pytest
+
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 

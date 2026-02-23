@@ -14,7 +14,7 @@ import sqlite3
 import sys
 import time
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 Row = dict[str, Any]
 
@@ -42,7 +42,7 @@ def _iter_ndjson(path: Path) -> Iterable[dict[str, Any]]:
             yield json.loads(stripped)
 
 
-def _flatten_records(records: Iterable[dict[str, Any]], run_id: str | None) -> Iterable[Row]:
+def _flatten_records(records: Iterable[dict[str, Any]], run_id: Optional[str]) -> Iterable[Row]:
     """Convert metrics records into tidy {run_id, epoch, key, value} rows."""
 
     for record in records:
@@ -139,8 +139,10 @@ def _csv_to_sqlite(
     con = sqlite3.connect(sqlite_db)
     try:
         cur = con.cursor()
-        _validate_table(table or "metrics", allow_unsafe_table_name)
-        cur.execute(  # nosec B608            f"CREATE TABLE IF NOT EXISTS {table_safe} "
+        table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
+        # nosec B608
+        cur.execute(
+            f"CREATE TABLE IF NOT EXISTS {table_safe} "
             "(run_id TEXT, epoch REAL, key TEXT, value TEXT)"
         )
         con.execute("BEGIN IMMEDIATE")
@@ -160,16 +162,20 @@ def _csv_to_sqlite(
                     )
                 )
                 if len(buf) >= batch:
-                    cur.executemany(  # nosec B608                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                    cur.executemany(  # nosec B608
+                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
                         buf,
                     )
                     buf.clear()
             if buf:
-                cur.executemany(  # nosec B608                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                cur.executemany(  # nosec B608
+                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
                     buf,
                 )
         if create_index:
-            cur.execute()  # nosec B608                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
+            cur.execute(  # nosec B608
+                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
+            )
         con.commit()
     finally:
         con.close()
@@ -249,7 +255,7 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     out_csv = Path(args.out_csv).expanduser().resolve()
     written = _write_csv(rows, out_csv)
 
-    parquet_path: Path | None = None
+    parquet_path: Optional[Path] = None
     if args.out_parquet:
         candidate = Path(args.out_parquet).expanduser().resolve()
         if _try_write_parquet(out_csv, candidate):
@@ -422,7 +428,7 @@ def cmd_badge(args: argparse.Namespace) -> int:
 
     metric_key = args.metric
     label = args.label or metric_key
-    last_value: Any | None = None
+    last_value: Optional[Any] = None
     for record in _iter_ndjson(ndjson_path):
         if metric_key in record:
             last_value = record[metric_key]
@@ -555,7 +561,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))

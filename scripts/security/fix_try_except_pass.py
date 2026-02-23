@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/fix_try_except_pass.py [options]
-    
+
     Examples:
     $ python scripts/security/fix_try_except_pass.py --help
 
@@ -33,9 +33,13 @@ Last Updated: 2026-01-16
 Automated fix for try-except-pass patterns.
 Adds logging to all silent exception handlers.
 """
+import logging
 import re
-from pathlib import Path
 import sys
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
 
 def fix_try_except_pass(file_path: Path) -> int:
     """Fix try-except-pass patterns in a file."""
@@ -43,16 +47,16 @@ def fix_try_except_pass(file_path: Path) -> int:
         content = file_path.read_text(encoding='utf-8')
         original = content
         fixes = 0
-        
+
         # Skip if already has logging for most exceptions
         if content.count('logger.warning') > 5:
             logger.debug("Exception caught, returning", exc_info=True)
             return 0
-        
+
         # Add logging imports if needed
         needs_logging = 'except:' in content or 'except Exception:' in content
         needs_logging = needs_logging and ('pass' in content or content.count('except') > 3)
-        
+
         if needs_logging:
             if 'import logging' not in content:
                 # Add after first line (usually a shebang or docstring)
@@ -66,7 +70,7 @@ def fix_try_except_pass(file_path: Path) -> int:
                         break
                 lines.insert(insert_pos, 'import logging')
                 content = '\n'.join(lines)
-            
+
             if 'logger = logging.getLogger' not in content:
                 lines = content.split('\n')
                 for i, line in enumerate(lines):
@@ -74,7 +78,7 @@ def fix_try_except_pass(file_path: Path) -> int:
                         lines.insert(i + 1, 'logger = logging.getLogger(__name__)')
                         break
                 content = '\n'.join(lines)
-        
+
         # Pattern 1: except: pass → except Exception as e: logger.warning(...)
         pattern1 = r'except:\s*\n(\s+)pass'
         replacement1 = r'except Exception as e:\n\1logger.warning(f"Exception: {e}", exc_info=True)'
@@ -82,7 +86,7 @@ def fix_try_except_pass(file_path: Path) -> int:
         if new_content != content:
             fixes += content.count('except:') - new_content.count('except:')
             content = new_content
-        
+
         # Pattern 2: except Exception: pass → except Exception as e: logger.warning(...)
         pattern2 = r'except Exception:\s*\n(\s+)pass'
         replacement2 = r'except Exception as e:\n\1logger.warning(f"Exception: {e}", exc_info=True)'
@@ -90,7 +94,7 @@ def fix_try_except_pass(file_path: Path) -> int:
         if new_content != content:
             fixes += 1
             content = new_content
-        
+
         # Pattern 3: except SpecificError: pass → except SpecificError as e: logger.warning(...)
         pattern3 = r'except ([A-Z][a-zA-Z]+Error):\s*\n(\s+)pass'
         replacement3 = r'except \1 as e:\n\2logger.warning(f"\1: {e}", exc_info=True)'
@@ -98,11 +102,11 @@ def fix_try_except_pass(file_path: Path) -> int:
         if new_content != content:
             fixes += 1
             content = new_content
-        
+
         if content != original:
             file_path.write_text(content, encoding='utf-8')
             return fixes
-        
+
         return 0
     except Exception as e:
         logger.debug(f"Exception: {e}")
@@ -114,7 +118,7 @@ def main():
     base_dir = Path('/home/runner/work/_codex_/_codex_')
     total_fixes = 0
     files_fixed = 0
-    
+
     # Process src/ directory
     for py_file in (base_dir / 'src').rglob('*.py'):
         fixes = fix_try_except_pass(py_file)
@@ -122,7 +126,7 @@ def main():
             print(f"✅ Fixed {fixes} issues in {py_file.relative_to(base_dir)}")
             total_fixes += fixes
             files_fixed += 1
-    
+
     # Process agents/ directory
     for py_file in (base_dir / 'agents').rglob('*.py'):
         fixes = fix_try_except_pass(py_file)
@@ -130,11 +134,11 @@ def main():
             print(f"✅ Fixed {fixes} issues in {py_file.relative_to(base_dir)}")
             total_fixes += fixes
             files_fixed += 1
-    
-    print(f"\n📊 Summary:")
+
+    print("\n📊 Summary:")
     print(f"   Files fixed: {files_fixed}")
     print(f"   Total fixes: {total_fixes}")
-    
+
     return 0
 
 if __name__ == '__main__':

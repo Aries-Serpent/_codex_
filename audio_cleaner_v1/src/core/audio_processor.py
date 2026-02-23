@@ -4,7 +4,7 @@
 import logging
 import time
 from pathlib import Path
-from typing import Callable, Dict, Any, Optional
+from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +36,10 @@ class ProcessingResult:
 
 class AudioProcessor:
     """Audio processor with streaming support."""
-    
+
     def __init__(self, config: AudioConfig):
         self.config = config
-    
+
     def process_file(self, input_path: Path, output_path: Path,
                      profile: ProcessingProfile,
                      callback: Optional[Callable] = None) -> ProcessingResult:

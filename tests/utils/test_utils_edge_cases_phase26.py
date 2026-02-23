@@ -131,7 +131,9 @@ class TestStringUtilsEdgeCases:
             # Test basic HTML escaping
             escaped = xss.replace("<", "&lt;").replace(">", "&gt;")
             assert "<" not in escaped and ">" not in escaped
-            assert "&lt;" in escaped or "&gt;" in escaped
+            # Only check for escaped brackets if original had brackets
+            if "<" in xss or ">" in xss:
+                assert "&lt;" in escaped or "&gt;" in escaped
 
     def test_string_encode_decode_roundtrip(self):
         """Test encode/decode roundtrip doesn't lose data"""

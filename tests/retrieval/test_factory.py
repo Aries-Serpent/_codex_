@@ -81,6 +81,7 @@ class TestVectorStoreType:
 class TestVectorStoreFactory:
     """Test VectorStoreFactory"""
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_create_faiss_store(self):
         """Test creating FAISS store"""
         store = VectorStoreFactory.create(
@@ -96,6 +97,7 @@ class TestVectorStoreFactory:
         with pytest.raises(ValueError, match="Unknown vector store type"):
             VectorStoreFactory.create(store_type="invalid_type", index_name="test")
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_create_from_config(self):
         """Test creating store from config"""
         config = {
@@ -154,6 +156,7 @@ class TestVectorStoreFactory:
 class TestDefaultStore:
     """Test get_default_store"""
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_get_default_store(self):
         """Test getting default store"""
         store = get_default_store(dimension=384, index_name="default_test")
@@ -185,6 +188,7 @@ class TestAutoDetection:
         # FAISS has higher priority
         assert store_type == "faiss"
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_create_auto_store(self):
         """Test creating auto-detected store"""
         store = create_auto_store(index_name="auto_test", dimension=512)
@@ -192,6 +196,7 @@ class TestAutoDetection:
         # Should be FAISS by default
         assert hasattr(store, "create_index")
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_create_auto_store_no_dimension(self):
         """Test creating auto store without dimension"""
         # Should work for FAISS (dimension set during create_index)
@@ -224,6 +229,7 @@ class TestFactoryIntegration:
         assert all("id" in r for r in results)
         assert all("score" in r for r in results)
 
+    @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_multiple_stores(self):
         """Test creating multiple different stores"""
         store1 = VectorStoreFactory.create(

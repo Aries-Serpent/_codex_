@@ -21,7 +21,7 @@ def read_text_safe(
     errors: str = "replace",
 ) -> str:
     """Read text file with proper error handling and logging.
-    
+
     Args:
         path: File path to read
         encoding: Text encoding (default: utf-8)
@@ -31,19 +31,19 @@ def read_text_safe(
             - "strict": Raise UnicodeDecodeError
             - "ignore": Silently skip (not recommended)
             - "surrogateescape": Preserve invalid bytes
-    
+
     Returns:
         File content as string
-    
+
     Raises:
         FileNotFoundError: If file doesn't exist
         PermissionError: If file isn't readable
         UnicodeDecodeError: If errors="strict" and invalid encoding
-        
+
     Logs:
         WARNING: If decode errors encountered with errors="replace"
         ERROR: If file read fails for other reasons
-    
+
     Examples:
         >>> content = read_text_safe(Path("myfile.py"))
         >>> content = read_text_safe(Path("data.txt"), max_bytes=1000)
@@ -102,18 +102,18 @@ def read_text_safe_fallback(
     max_bytes: Optional[int] = None,
 ) -> tuple[str, str]:
     """Try multiple encodings in order until one succeeds.
-    
+
     Args:
         path: File path to read
         encodings: List of encodings to try (default: utf-8, latin-1, cp1252)
         max_bytes: Optional limit on bytes to read
-    
+
     Returns:
         Tuple of (content, successful_encoding)
-    
+
     Raises:
         UnicodeDecodeError: If all encodings fail
-        
+
     Examples:
         >>> content, enc = read_text_safe_fallback(Path("unknown.txt"))
         >>> print(f"Decoded with {enc}")
@@ -149,13 +149,13 @@ def read_text_safe_fallback(
 # Migration helpers for existing code
 def migrate_from_ignore(path: Path, **kwargs) -> str:
     """Drop-in replacement for path.read_text(errors="ignore").
-    
+
     This function logs a deprecation warning and uses read_text_safe.
-    
+
     Example migration:
         # OLD:
         txt = path.read_text(encoding="utf-8", errors="ignore")
-        
+
         # NEW:
         from codex.file_utils import read_text_safe
         txt = read_text_safe(path)

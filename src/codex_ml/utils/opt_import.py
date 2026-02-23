@@ -1,23 +1,6 @@
-"""
-Opt Import Module
-
-This module provides functionality for opt import.
-
-Usage:
-    from utils.opt_import import ...
-
-Classes:
-    [To be documented]
-
-Functions:
-    [To be documented]
-
-Author: Codex Team
-"""
+"""Helper for optional imports with explicit logging."""
 
 from __future__ import annotations
-
-"""Helper for optional imports with explicit logging."""
 
 import logging
 from importlib import import_module

@@ -7,19 +7,19 @@ Release Validator - PERCEIVE Phase
 Gathers release readiness metrics from multiple sources.
 """
 
-import subprocess
 import json
-from pathlib import Path
-from typing import Dict, List, Any
+import subprocess
+import sys
 from dataclasses import dataclass
 from datetime import datetime
-import sys
+from pathlib import Path
+from typing import Any, Dict, List
 
 # Add core to path for CognitiveBrain access
 _core_path = str(Path(__file__).parent.parent.parent / "core")
 if _core_path not in sys.path:
     sys.path.insert(0, _core_path)
-from cognitive_brain import CognitiveBrain
+from cognitive_brain import CognitiveBrain  # noqa: E402
 
 
 @dataclass
@@ -31,7 +31,7 @@ class ValidationResult:
     details: Dict[str, Any]
     error_message: str = ""
     timestamp: datetime = None
-    
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
@@ -40,9 +40,9 @@ class ValidationResult:
 class ReleaseValidator:
     """
     Release Validator - PERCEIVE Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: release_validation
-    
+
     Performs comprehensive release readiness checks:
     - CI/CD pipeline status
     - Test coverage analysis
@@ -51,7 +51,7 @@ class ReleaseValidator:
     - Breaking change detection
     - Documentation completeness
     """
-    
+
     def __init__(self, repo_path: Path, branch: str = "main", brain_db_path: Path = None):
         self.repo_path = repo_path
         self.branch = branch
@@ -61,51 +61,51 @@ class ReleaseValidator:
             brain_db_path = Path(os.getenv("CODEX_DB_PATH", ".codex/brain.db"))
         self.brain = CognitiveBrain(brain_db_path)
         self.validations: List[ValidationResult] = []
-    
+
     def perceive(self, release_info: Dict[str, Any]) -> Dict[str, Any]:
         """
         PERCEIVE: Gather all release validation data.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: comprehensive_validation
-        
+
         Args:
             release_info: Release metadata (version, target, etc.)
-            
+
         Returns:
             Validation results with pass/fail status
         """
         validations = []
-        
+
         # 1. CI/CD Status Check
         ci_result = self._check_ci_pipelines()
         validations.append(ci_result)
-        
+
         # 2. Test Coverage Analysis
         coverage_result = self._analyze_test_coverage()
         validations.append(coverage_result)
-        
+
         # 3. Security Scan Results
         security_result = self._get_security_scan_results()
         validations.append(security_result)
-        
+
         # 4. Dependency Audit
         deps_result = self._audit_dependencies()
         validations.append(deps_result)
-        
+
         # 5. Breaking Change Detection
         breaking_result = self._detect_breaking_changes()
         validations.append(breaking_result)
-        
+
         # 6. Documentation Completeness
         docs_result = self._verify_documentation()
         validations.append(docs_result)
-        
+
         # Store for aftermath analysis
         self.validations = validations
-        
+
         # Calculate overall pass rate
         pass_rate = sum(v.passed for v in validations) / len(validations)
-        
+
         return {
             "validations": [self._to_dict(v) for v in validations],
             "pass_rate": pass_rate,
@@ -113,7 +113,7 @@ class ReleaseValidator:
             "passed_checks": sum(v.passed for v in validations),
             "release_info": release_info
         }
-    
+
     def _check_ci_pipelines(self) -> ValidationResult:
         """Check if all CI pipelines are passing."""
         try:
@@ -125,7 +125,7 @@ class ReleaseValidator:
                 timeout=30,
                 check=False
             )
-            
+
             if result.returncode == 0 and result.stdout:
                 runs = json.loads(result.stdout)
                 if runs:
@@ -137,7 +137,7 @@ class ReleaseValidator:
                         score=1.0 if passed else 0.0,
                         details={"conclusion": latest_run["conclusion"], "status": latest_run["status"]}
                     )
-            
+
             return ValidationResult(
                 check_name="CI/CD Status",
                 passed=False,
@@ -154,7 +154,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"CI check failed: {str(e)}"
             )
-    
+
     def _analyze_test_coverage(self) -> ValidationResult:
         """Analyze test coverage metrics."""
         try:
@@ -169,7 +169,7 @@ class ReleaseValidator:
                     score=0.92,  # Placeholder: 92%
                     details={"coverage_percentage": 92.0, "threshold": 90.0}
                 )
-            
+
             return ValidationResult(
                 check_name="Test Coverage",
                 passed=False,
@@ -186,7 +186,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Coverage check failed: {str(e)}"
             )
-    
+
     def _get_security_scan_results(self) -> ValidationResult:
         """Get results from security-scan-agent."""
         try:
@@ -195,13 +195,13 @@ class ReleaseValidator:
                 pattern_type="security_vulnerability",
                 confidence_threshold=0.8
             )
-            
+
             # Check for critical vulnerabilities
             critical_vulns = [p for p in patterns if p.get("severity") == "critical"]
-            
+
             passed = len(critical_vulns) == 0
             score = 1.0 if passed else 0.0
-            
+
             return ValidationResult(
                 check_name="Security Scan",
                 passed=passed,
@@ -217,7 +217,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Security scan check failed: {str(e)}"
             )
-    
+
     def _audit_dependencies(self) -> ValidationResult:
         """Audit dependencies for vulnerabilities."""
         try:
@@ -229,19 +229,19 @@ class ReleaseValidator:
                 timeout=60,
                 check=False
             )
-            
+
             if result.returncode == 0 and result.stdout:
                 audit_data = json.loads(result.stdout)
                 vuln_count = len(audit_data.get("vulnerabilities", []))
                 passed = vuln_count == 0
-                
+
                 return ValidationResult(
                     check_name="Dependency Audit",
                     passed=passed,
                     score=1.0 if passed else max(0.0, 1.0 - (vuln_count * 0.1)),
                     details={"vulnerabilities_found": vuln_count}
                 )
-            
+
             # If pip-audit not available or errors, mark as passed with warning
             return ValidationResult(
                 check_name="Dependency Audit",
@@ -259,7 +259,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Audit skipped: {str(e)}"
             )
-    
+
     def _detect_breaking_changes(self) -> ValidationResult:
         """Detect breaking changes in API/CLI."""
         try:
@@ -268,12 +268,12 @@ class ReleaseValidator:
                 pattern_type="api_breaking_change",
                 confidence_threshold=0.7
             )
-            
+
             breaking_changes = [p for p in patterns if p.get("is_breaking", False)]
-            
+
             passed = len(breaking_changes) == 0
             score = 1.0 if passed else 0.5  # Partial score for documented breaking changes
-            
+
             return ValidationResult(
                 check_name="Breaking Change Detection",
                 passed=passed,
@@ -289,22 +289,22 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Breaking change detection skipped: {str(e)}"
             )
-    
+
     def _verify_documentation(self) -> ValidationResult:
         """Verify documentation completeness."""
         try:
             # Check for required documentation files
             required_docs = ["README.md", "CHANGELOG.md", "docs/"]
             missing_docs = []
-            
+
             for doc in required_docs:
                 doc_path = self.repo_path / doc
                 if not doc_path.exists():
                     missing_docs.append(doc)
-            
+
             passed = len(missing_docs) == 0
             score = 1.0 - (len(missing_docs) / len(required_docs))
-            
+
             return ValidationResult(
                 check_name="Documentation Completeness",
                 passed=passed,
@@ -320,7 +320,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Documentation check skipped: {str(e)}"
             )
-    
+
     def _to_dict(self, validation: ValidationResult) -> Dict[str, Any]:
         """Convert ValidationResult to dictionary."""
         return {

@@ -12,22 +12,22 @@ from pathlib import Path
 from typing import Optional
 
 from codex.ast_adapters import (
-    PythonASTAdapter,
-    YAMLASTAdapter,
     JSONASTAdapter,
+    PythonASTAdapter,
     SQLASTAdapter,
+    YAMLASTAdapter,
 )
 
 
 def get_adapter(language: str):
     """Get the appropriate adapter for the specified language.
-    
+
     Args:
         language: Language identifier (python, yaml, json, sql)
-        
+
     Returns:
         Configured AST adapter instance
-        
+
     Raises:
         ValueError: If language is not supported
     """
@@ -49,10 +49,10 @@ def get_adapter(language: str):
 
 def parse_command(args):
     """Parse a file and output the AST as JSON.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
@@ -79,10 +79,10 @@ def parse_command(args):
 
 def stats_command(args):
     """Parse a file and output statistics about the AST.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
@@ -109,10 +109,10 @@ def stats_command(args):
 
 def query_command(args):
     """Parse a file and query for specific node types.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 for success, 1 for failure)
     """
@@ -155,10 +155,10 @@ def query_command(args):
 
 def main(argv: Optional[list] = None):
     """Main entry point for the CLI.
-    
+
     Args:
         argv: Command-line arguments (defaults to sys.argv)
-        
+
     Returns:
         Exit code
     """

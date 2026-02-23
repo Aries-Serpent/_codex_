@@ -9,10 +9,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import ast
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
+import ast  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 @dataclass

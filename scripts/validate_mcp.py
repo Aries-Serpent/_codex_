@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 from mcp.server.http import ContextItem, ContextUpsertRequest, QueryRequest, app
+
 REQUIRED_FILES: list[Path] = [
     ROOT / ".copilot-space" / "mcp.example.json",
     ROOT / "codex_capability_map.yaml",

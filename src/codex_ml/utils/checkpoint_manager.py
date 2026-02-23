@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 import pickle
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional torch dependency
     import torch

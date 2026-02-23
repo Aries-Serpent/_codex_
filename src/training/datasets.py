@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Dataset utilities for training."""
 
 
-import hashlib
-import json
-from pathlib import Path
-from typing import Iterable, Iterator, Sequence
+import hashlib  # noqa: E402
+import json  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable, Iterator, Sequence  # noqa: E402
 
-import numpy as np
+import numpy as np  # noqa: E402
 
-import torch
+import torch  # noqa: E402
 
 try:  # optional dependency
     from datasets import Dataset  # type: ignore

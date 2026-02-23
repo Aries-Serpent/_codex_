@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/run_capability_audit.py [options]
-    
+
     Examples:
     $ python scripts/run_capability_audit.py --help
 

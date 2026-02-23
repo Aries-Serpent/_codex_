@@ -143,12 +143,12 @@ The core tests workflow completed and generated all required artifacts:
 ```
 Artifact junit-report-3.12 successfully uploaded
 Artifact ID: 5359706794
-Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706794
+Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794
 
 Artifact coverage-html-3.12 successfully uploaded  
 Artifact ID: 5359706491
 Final size: 6,442,449 bytes
-Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706491
+Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491
 ```
 
 #### Test Coverage Summary
@@ -427,9 +427,9 @@ git push origin 0D_base_
 
 | Artifact | Job | Size | Status | Download |
 |----------|-----|------|--------|----------|
-| `coverage-html-3.12` | Core Tests | 6.4 MB | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706491) |
-| `junit-report-3.12` | Core Tests | 2.5 KB | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706794) |
-| `security-scan-3.12` | Comprehensive | 701 B | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141/artifacts/5359719837) |
+| `coverage-html-3.12` | Core Tests | 6.4 MB | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491) |
+| `junit-report-3.12` | Core Tests | 2.5 KB | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794) |
+| `security-scan-3.12` | Comprehensive | 701 B | ✅ Available | [Link](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141 <!-- Note: Logs expire after 90 days -->/artifacts/5359719837) |
 | `coverage.xml` | Both jobs | Included | ✅ Generated | Uploaded to Codecov |
 
 **All artifacts successfully generated despite workflow status indicators.**

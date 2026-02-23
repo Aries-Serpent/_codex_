@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/migrations/migrate_trends.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/migrations/migrate_trends.py --help
 

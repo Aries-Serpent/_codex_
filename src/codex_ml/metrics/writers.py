@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Structured metric writers with JSONL/CSV backends and schema validation."""
 
 
-import csv
-import json
-import os
-import time
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Mapping, Sequence
-from uuid import uuid4
+import csv  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Mapping, Sequence  # noqa: E402
+from uuid import uuid4  # noqa: E402
 
 _REQUIRED_FIELDS = ("metric", "value", "step")
 

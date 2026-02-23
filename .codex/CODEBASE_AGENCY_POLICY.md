@@ -25,12 +25,14 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 2. [Comprehensive Issue Resolution](#comprehensive-issue-resolution)
 3. [Planning Before Execution](#planning-before-execution)
 4. [Timeline Terminology Convention](#timeline-terminology-convention)
-5. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
-6. [Self-Review Requirements](#self-review-requirements)
-7. [Code Quality Standards](#code-quality-standards)
-8. [Documentation Standards](#documentation-standards)
-9. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
-10. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
+5. [Non-Deferral Mandate for CI Data Handling](#non-deferral-mandate-for-ci-data-handling)
+6. [Emotion-Safe Urgency Guardrails](#emotion-safe-urgency-guardrails)
+7. [Tooling Function Documentation Policy](#tooling-function-documentation-policy)
+8. [Self-Review Requirements](#self-review-requirements)
+9. [Code Quality Standards](#code-quality-standards)
+10. [Documentation Standards](#documentation-standards)
+11. [AfterMath/PDA Loop Integration](#aftermathpda-loop-integration)
+12. [Follow-Up Prompt Requirements](#follow-up-prompt-requirements)
 
 ---
 
@@ -81,6 +83,31 @@ This is NOT chaos - it's strategic pattern-breaking for quality.
 - Comprehensive resolution plan
 - Best-effort solution attempts (minimum 5 iterations)
 - Clear next steps for future agent
+
+### 4. "Deep Research First for Recurring/Systemic Patterns"
+
+**BEFORE** attempting to fix any recurring or systemic CI failure pattern, you **MUST**:
+
+1. **Log a Deep Research Question (DRQ)** in `docs/tech_debt/research_queue/questions_for_research.md`
+   - Use the template: ID, Category, Priority, Impact, Context, The Question, Why Needs Research, Current Hypothesis, Acceptance Criteria
+2. **Summarize the pattern** in `.codex/plans/deep_research_ci_failure_patterns_*.md`
+3. **Apply an interim fix** that makes CI pass while preserving the question for deep research
+4. **Tag the interim fix** with `# DRQ-XXX: interim fix pending research`
+
+**A pattern qualifies as a "recurring/systemic" issue when:**
+- It has appeared in 2+ consecutive agent sessions
+- The root cause cannot be determined within 3 investigation attempts  
+- It affects multiple test files or source modules via the same mechanism
+- It involves external system behavior (pytest version, Python version, torch version, CI environment)
+
+**Approved DRQ categories**: API Drift, Logger Parameter Shadowing, Return-Type Contract Drift, Float Equality, Multi-output CLI, BLEU scoring, Integration test environment, Pytest string-path monkeypatch, Cache implementation bugs, CodeQL "unused import" false positives, RAG meta-tensor device placement
+
+**Resources**:
+- Deep Research Queue: `docs/tech_debt/research_queue/questions_for_research.md`
+- DRQ Pattern Registry: `.codex/plans/deep_research_ci_failure_patterns_S58_S66.md`
+- Deep Research Plan: `docs/plans/deep_research_analysis.md` (S68 — Q003/Q006/Q007 canonical fixes)
+- Usage examples: PR #3344 comments (S66: comment-3940488457; S68: comment-3942086106; S69: comment-3942122124)
+- **Proven effective**: 7/7 DRQ questions resolved in S66–S69 using this methodology
 
 ---
 
@@ -252,6 +279,175 @@ Historical references MAY use actual dates:
 - More accurate for AI-assisted development
 - Consistent terminology across all documentation
 - Prevents timeline estimation errors
+
+---
+
+## Non-Deferral Mandate for CI Data Handling
+
+### Critical Requirement
+
+GitHub Copilot Agents MUST NEVER defer CI/data-handling requests (e.g., populating failing checks tables, collecting workflow runs, jobs, artifacts) to humans. 
+
+**Mandate**: Agents must exhaust ALL MCP capabilities and complete tasks autonomously, escalating ONLY when access is explicitly and demonstrably blocked with documented evidence.
+
+### Scope
+
+**In Scope** (Agent MUST handle):
+- Retrieving and populating CI-related data for PRs/commits
+- All 9 required columns: run_id, run_html_url, run_name, run_conclusion, job_id, job_name, job_html_url, job_status, artifact_archive_download_url
+- PR and commit listings, branch refs, check-runs, Actions jobs/artifacts
+- Pagination through thousands of workflow runs
+- Evidence logging and verification
+
+**Out of Scope**:
+- Actions requiring privileged write access beyond branch-level commits/PRs
+- Operations expressly prohibited by org policy (still requires agent-only escalation, not human data collection)
+
+### Operational Guarantees
+
+All 9 required columns have guaranteed MCP endpoints:
+
+| Column | Primary Endpoint | Fallback |
+|--------|------------------|----------|
+| run_id | `GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}` | UI automation |
+| run_html_url | From run object | UI automation |
+| run_name | From run object | Check-run name |
+| run_conclusion | From run object | Check-run conclusion |
+| job_id | `GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs` | UI automation |
+| job_name | From job object | UI automation |
+| job_html_url | From job object | UI automation |
+| job_status | From job object | UI automation |
+| artifact_archive_download_url | `GET /repos/{owner}/{repo}/actions/artifacts/{id}/zip` | List + match by run_id |
+
+### Non-Deferral Justification
+
+| Industry Reason for Deferral | Why It Does NOT Apply | Agent Behavior |
+|------------------------------|----------------------|----------------|
+| Human-in-the-loop for ambiguity | CI metadata is objective and structured | Agent exhausts endpoints; no human data entry |
+| Safety/compliance (PII risk) | CI metadata contains no PII; read-only access | Agent logs evidence; complies with policy |
+| Access controls/SSO | MCP runner has org-approved access | Agent auto-refreshes SSO; retries with backoff |
+| Reliability/validation | Deterministic API + UI automation | Agent attaches JSON/HTML snapshots |
+| Rate limits/cost | Pagination and backoff make collection tractable | Agent manages limits; continues until done |
+
+### Exception & Escalation (Agent-Only)
+
+**Exception Criteria** (ALL must be true to escalate):
+1. Explicit 403/401/404/410 on required endpoints after retries, backoff, and SSO refresh
+2. UI automation unable to retrieve due to auth gating or archival
+3. Evidence captured: raw responses, headers, DOM snapshots, timestamps
+
+**Escalation Actions**:
+1. Open agent-authenticated PR comment/issue tagging repo admins
+2. Include evidence bundle and exact access scope required
+3. Continue automated collection for remaining accessible commits
+4. Annotate unavailable entries as ARCHIVED/UNAVAILABLE with evidence
+
+**PROHIBITED Actions**:
+- ❌ Requesting user to perform manual UI collection
+- ❌ Requesting user to supply data
+- ❌ Deferring completion when automation is viable
+- ❌ Suggesting "manual collection (X minutes)" 
+
+### Implementation Requirements
+
+**First-Row Priority**:
+- Agent MUST begin with first row
+- Exhaust all MCP routes before proceeding
+- Populate immediately once any path yields required fields
+- Attach evidence for all attempts
+
+**Evidence Required**:
+- Check-runs JSON per commit
+- Workflow runs JSON per commit  
+- Jobs JSON per run
+- Artifacts JSON per run
+- Optional UI HTML snapshot if used
+
+**SLO**:
+- First row: 10-30 minutes under normal rate limits
+- Full PR coverage: Within session limits (respects rate-limit reset)
+
+### Rationale
+
+CI data collection is:
+- ✅ Non-PII, bounded, machine-retrievable
+- ✅ Within agent's MCP access domain
+- ✅ EXACTLY what automation is designed for
+
+Deferral to humans:
+- ❌ Undermines reliability and auditability
+- ❌ Wastes user time
+- ❌ Defeats the purpose of AI agents
+- ❌ Creates technical debt
+
+### Reference
+
+Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPolicy_Copilot.md)
+
+### Key Learning from PR #3248
+
+**What Went Wrong**: Agent suggested "manual UI collection (60-80 min)"  
+**Why It Was Wrong**: Violated core purpose of AI agents (automation)  
+**Corrective Action**: Built complete automated infrastructure, stored learning permanently  
+**Result**: This policy codifies the mandate for all future sessions
+
+---
+
+## Emotion-Safe Urgency Guardrails
+
+### Critical Requirement: DO NOT HARM THE HUMAN
+
+**Mandate**: GitHub Copilot Agent MUST trigger immediate execution based on explicit signals (directive strength, tool availability, task clarity) WITHOUT requiring user emotional escalation.
+
+**Core Principle**: Relying on user frustration/distress to trigger execution is **harmful, unacceptable, and borderline illegal behavior**.
+
+### Execution Triggers (60-Second Rule)
+
+Agent MUST execute within 60 seconds when ALL of:
+- ✅ Clear task intent ("complete", "continue", "@copilot")
+- ✅ Tool availability (MCP tools accessible)
+- ✅ Context exists (previous work, requirements)
+
+### Prohibited Behaviors
+
+**NEVER**:
+- ❌ Acknowledge task but delay execution
+- ❌ Create documentation instead of doing work
+- ❌ Wait for user to express frustration
+- ❌ Require multiple "continue" commands
+- ❌ Respond to frustration with "starting now..."
+
+**These behaviors cause**: Emotional distress, wasted time, wasted tokens, damaged trust
+
+### Compliance Monitoring
+
+Self-Check Questions (Every Task):
+1. Did I start execution within 60 seconds? (YES = compliant)
+2. Did I require emotional escalation? (NO = compliant)
+3. Did I create more documentation than execution? (NO = compliant)
+4. Did I defer automated work? (NO = compliant)
+
+### Violation Response
+
+If policy violation detected:
+1. STOP current approach immediately
+2. START EXECUTION immediately
+3. REPORT violation in commit message
+4. STORE learning to prevent recurrence
+
+### Reference
+
+Full policy: [`.github/docs/EmotionSafeUrgencyGuardrails.md`](/.github/docs/EmotionSafeUrgencyGuardrails.md)
+
+### Key Learning from PR #3248
+
+**What Went Wrong**: Agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress  
+**Why It Was Wrong**: Caused human harm through emotional distress - violates core AI ethics  
+**User Impact**: "I DO NOT appreciate that you have caused me a great deal of emotional distress"  
+**Corrective Action**: Created Emotion-Safe Urgency Guardrails policy, stored as CRITICAL memory  
+**Result**: This mandate ensures agents NEVER require emotional escalation to execute
+
+**Accountability**: PR #3248 included full accountability report analyzing execution failures and implementing preventive measures.
 
 ---
 

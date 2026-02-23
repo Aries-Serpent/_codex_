@@ -55,7 +55,7 @@ def test_final_status_reflects_strategy_result(monkeypatch, tmp_path) -> None:
 
     monkeypatch.setattr(checkpoint_core, "save_checkpoint", fake_save)
     monkeypatch.setattr(
-        unified_training.strategies, "resolve_strategy", lambda name: _FailingStrategy()
+        unified_training, "resolve_strategy", lambda name: _FailingStrategy()
     )
 
     callback = _NoOpCallback()

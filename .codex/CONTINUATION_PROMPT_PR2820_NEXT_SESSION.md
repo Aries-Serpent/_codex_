@@ -398,10 +398,6 @@ cc @mbaetiong - Ready for your review! 🧠✨
 ## 🔗 References
 
 ### Key Documents
-- [AGENT_DESIGNS.md](.codex/AGENT_DESIGNS.md) - Agent architecture specifications
-- [AGENT_REGISTRY.md](.github/agents/AGENT_REGISTRY.md) - Agent catalog
-- [COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md](.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md) - Phase 1-5 summary
-- [CONTINUATION_PROMPT_PR2782_POST_CI.md](.codex/CONTINUATION_PROMPT_PR2782_POST_CI.md) - Original continuation prompt
 
 ### Related PRs
 - **PR #2782**: Parent PR (0D base)

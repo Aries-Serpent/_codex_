@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_capability_report.py [options]
-    
+
     Examples:
     $ python scripts/generate_capability_report.py --help
 

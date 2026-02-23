@@ -94,15 +94,15 @@ async def get_check_run_logs(
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
 ):
     """Fetch logs from a GitHub Actions check run.
-    
+
     Args:
         check_run_id: The check run ID to fetch logs for.
         owner: Repository owner.
         repo: Repository name.
-    
+
     Returns:
         CheckRunLogsResponse containing check run details and logs.
-    
+
     Raises:
         HTTPException: If check run not found or logs unavailable.
     """
@@ -152,15 +152,15 @@ async def get_job_logs(
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
 ):
     """Fetch logs from a GitHub Actions workflow job.
-    
+
     Args:
         job_id: The job ID to fetch logs for.
         owner: Repository owner.
         repo: Repository name.
-    
+
     Returns:
         JobLogsResponse containing job logs.
-    
+
     Raises:
         HTTPException: If job not found or logs unavailable.
     """
@@ -205,17 +205,17 @@ async def list_check_runs(
     check_name: Optional[str] = Query(None, description="Filter by check run name"),
 ):
     """List check runs for a git reference.
-    
+
     Args:
         owner: Repository owner.
         repo: Repository name.
         ref: Git reference (commit SHA, branch, or tag).
         status: Optional status filter.
         check_name: Optional check name filter.
-    
+
     Returns:
         CheckRunsListResponse containing list of check runs.
-    
+
     Raises:
         HTTPException: If request fails.
     """

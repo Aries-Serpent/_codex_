@@ -435,7 +435,7 @@ git commit -m "feat: add new feature"
 - [pytest Documentation](https://docs.pytest.org/)
 - [pre-commit Documentation](https://pre-commit.com/)
 - [nox Documentation](https://nox.thea.codes/)
-- [Code Quality Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/code-quality.yml)
+- Code Quality Workflow
 - [Project Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)
 
 ---

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/collect_schema_results.py [options]
-    
+
     Examples:
     $ python scripts/status/collect_schema_results.py --help
 

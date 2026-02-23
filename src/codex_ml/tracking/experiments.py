@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Offline-first experiment tracking helpers."""
 
 
-import json
-import time
-import uuid
-from dataclasses import asdict, dataclass
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import time  # noqa: E402
+import uuid  # noqa: E402
+from dataclasses import asdict, dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
-from .offline import NDJSONLogger
+from .offline import NDJSONLogger  # noqa: E402
 
 
 @dataclass

@@ -16,34 +16,34 @@ from typing import Optional
 def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> str:
     """
     Sanitize user prompt input by removing dangerous characters and truncating.
-    
+
     This function:
     1. Removes control characters (U+0000–U+001F, U+007F)
     2. Strips ANSI escape sequences (e.g., color codes)
     3. Escapes HTML-sensitive characters (<, >, &, ", ')
     4. Truncates to max_length if specified
     5. Preserves safe special characters and Unicode
-    
+
     Args:
         prompt: The user input string to sanitize (None becomes empty string)
         max_length: Optional maximum length to truncate to
-        
+
     Returns:
         Sanitized prompt string safe for downstream processing
-        
+
     Security Notes:
         - Removes null bytes (\\x00) to prevent string termination attacks
         - Strips ANSI sequences to prevent terminal injection
         - Removes control chars that could corrupt data or logs
         - Escapes HTML to prevent XSS when displayed on web pages
-        
+
     Example:
         >>> sanitize_prompt("Hello\\x00World\\x1b[31m!", max_length=10)
         'HelloWorld'  # Removes control chars, ANSI codes, then truncates to 10
-        
+
         >>> sanitize_prompt("Normal text")
         'Normal text'
-        
+
         >>> sanitize_prompt("<script>alert(1)</script>")
         '&lt;script&gt;alert(1)&lt;/script&gt;'
     """

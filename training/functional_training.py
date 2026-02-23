@@ -12,7 +12,6 @@ from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 
 import numpy as np
 from torch.nn.utils import clip_grad_norm_
-from torch.utils.data import DataLoader
 
 import torch
 from codex_ml.logging.file_logger import FileLogger
@@ -27,6 +26,7 @@ from codex_ml.utils.checkpointing import (
 )
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+from torch.utils.data import DataLoader
 
 LOGGER = logging.getLogger(__name__)
 
@@ -258,7 +258,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
-
         from transformers import AutoTokenizer  # type: ignore
 
         model_cfg = training_cfg.get(

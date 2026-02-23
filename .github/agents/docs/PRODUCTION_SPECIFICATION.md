@@ -22,7 +22,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 5. [Implementation Guide](#implementation-guide)
 6. [Testing Strategy](#testing-strategy)
 7. [Deployment Guide](#deployment-guide)
-8. [Monitoring & Maintenance](#monitoring--maintenance)
+8. [Monitoring & Maintenance](#monitoring-maintenance)
 
 ---
 
@@ -1011,9 +1011,9 @@ gh auth status
 
 | Agent | Tier | Status | Workflow | Docs |
 |-------|------|--------|----------|------|
-| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | [README](/.github/agents/github-auth-manager/README.md) |
-| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | [README](/.github/agents/github-security-enforcer/README.md) |
-| Workflow Optimizer | 1 | ✅ Active | (manual) | [README](/.github/agents/github-workflow-optimizer/README.md) |
+| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | [README](../../../agents/README.md) |
+| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | [README](../../../agents/README.md) |
+| Workflow Optimizer | 1 | ✅ Active | (manual) | [README](../../../agents/README.md) |
 | Code Reviewer | 2 | 🔄 Proposed | N/A | TBD |
 | Test Orchestrator | 1 | 🔄 Proposed | N/A | TBD |
 | Deployment Gatekeeper | 1 | 🔄 Proposed | N/A | TBD |

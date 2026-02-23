@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archival/check_archival_compliance.py [options]
-    
+
     Examples:
     $ python scripts/archival/check_archival_compliance.py --help
 
@@ -30,11 +30,7 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
-
-
 """
-import logging
-logger = logging.getLogger(__name__)
 Archival Compliance Checker (P6 Atomic Patchset)
 
 Purpose:
@@ -59,11 +55,15 @@ Notes / Limitations:
 
 import argparse
 import json
+import logging
 import os
 import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
 
 # Evidence path: configurable via env var, defaults to relative path from repo root
 EVIDENCE = Path(os.getenv("ARCHIVAL_EVIDENCE_PATH", ".codex/evidence/archive_ops.jsonl"))

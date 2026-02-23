@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/run_coverage_analysis.py [options]
-    
+
     Examples:
     $ python scripts/run_coverage_analysis.py --help
 
@@ -41,14 +41,15 @@ Usage:
     python scripts/run_coverage_analysis.py --html-only
 """
 
-import subprocess
 import logging
+import subprocess
+
 logger = logging.getLogger(__name__)
-import sys
+import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
-import argparse
 
 
 class CoverageAnalyzer:
@@ -62,7 +63,7 @@ class CoverageAnalyzer:
     def run_coverage(self, test_path: str = "tests/") -> bool:
         """Run pytest with coverage."""
         print(f"\n{'='*80}")
-        print(f"Running Coverage Analysis")
+        print("Running Coverage Analysis")
         print(f"{'='*80}")
         print(f"Target: {self.target_dir}")
         print(f"Tests: {test_path}")

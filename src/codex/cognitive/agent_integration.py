@@ -394,8 +394,8 @@ def get_brain_integration_section(agent_id: str, category: AgentCategory) -> str
 
 ## 🧠 Cognitive Brain Integration
 
-> **Status**: ✅ Integrated (Phase 1.2)  
-> **Category**: {category.value}  
+> **Status**: ✅ Integrated (Phase 1.2)
+> **Category**: {category.value}
 > **Adapter**: {adapter}
 
 ### Brain Capabilities

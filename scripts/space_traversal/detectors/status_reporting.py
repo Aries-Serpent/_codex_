@@ -12,7 +12,6 @@ Codex-specific status reporting infrastructure.
 from __future__ import annotations
 
 
-
 def detect(file_index: dict) -> dict:
     """
     Detect status reporting capability.

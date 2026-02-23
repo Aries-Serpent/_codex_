@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 pytest.importorskip("typer")
 
 
@@ -46,20 +47,16 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
     }
     monkeypatch.setattr(eval_cli, "_load_config", lambda _: cfg)
 
-    # FIX: Check if build_loggers exists, otherwise create it temporarily
-    if not hasattr(eval_cli, 'build_loggers'):
-        # Function was refactored - inject mock for backward compatibility
-        from unittest.mock import MagicMock
-        mock_builder = MagicMock(return_value=[NoopLogger(tmp_path / "m.ndjson")])
-        eval_cli.build_loggers = mock_builder
-        monkeypatch.setattr(eval_cli, "build_loggers", mock_builder)
-    else:
-        monkeypatch.setattr(
-            "codex_ml.evaluation.cli.build_loggers", lambda opts: [NoopLogger(tmp_path / "m.ndjson")]
-        )
+    # Monkeypatch build_loggers to use our test logger
+    def mock_build_loggers(opts):
+        return [NoopLogger(tmp_path / "m.ndjson")]
+
+    monkeypatch.setattr("codex_ml.logging.registry.build_loggers", mock_build_loggers)
 
     res = runner.invoke(eval_cli.app, ["run", "--config", str(tmp_path / "fake.json")])
-    assert res.exit_code == 0
-    assert (tmp_path / "m.ndjson").exists()
+    assert res.exit_code == 0, f"CLI failed with: {res.stdout}\n{res.stderr}"
+    assert (tmp_path / "m.ndjson").exists(), "Logger file was not created"
     lines = (tmp_path / "m.ndjson").read_text().strip().splitlines()
-    assert any(json.loads(line).get("type") == "epoch" for line in lines)
+    assert len(lines) > 0, "No log lines were written"
+    assert any(json.loads(line).get("type") == "epoch" for line in lines), \
+        f"No epoch log found. Lines: {lines}"

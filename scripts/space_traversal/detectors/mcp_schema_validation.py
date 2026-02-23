@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/detectors/mcp_schema_validation.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/detectors/mcp_schema_validation.py --help
 
@@ -28,8 +28,9 @@ Last Updated: 2026-01-16
 """
 
 
-from pathlib import Path
 import logging
+from pathlib import Path
+
 logger = logging.getLogger(__name__)
 from typing import Any
 

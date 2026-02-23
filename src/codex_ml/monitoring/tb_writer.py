@@ -21,7 +21,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from typing import Optional
+from typing import Optional  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from torch.utils.tensorboard import SummaryWriter

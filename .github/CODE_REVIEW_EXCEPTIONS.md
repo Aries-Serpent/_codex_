@@ -43,7 +43,7 @@ Keyword argument 'timeout' is not a supported parameter name of function run.
 **Resolution**: Accept as false positive. The code is correct and follows Python best practices.
 
 **Evidence**:
-- Determinism audit run: https://github.com/Aries-Serpent/_codex_/actions/runs/20041534606
+- Determinism audit run: https://github.com/Aries-Serpent/_codex_/actions/runs/20041534606 <!-- Note: Logs expire after 90 days -->
 - Artifact: determinism-audit-379.zip
 - Python version in use: 3.12.3
 - All subprocess.run() calls with timeout work correctly in production

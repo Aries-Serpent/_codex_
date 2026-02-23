@@ -9,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/security/date_sanitizer.py [options]
-    
+
     Examples:
     $ python scripts/security/date_sanitizer.py --help
 
@@ -45,7 +45,6 @@ that are part of version history, release dates, or actual event logs.
 
 import re
 from typing import NamedTuple
-
 
 # Configuration constants
 CONTEXT_WINDOW_CHARS = 80  # Maximum characters to look back for context detection
@@ -147,7 +146,7 @@ def _is_preserved_context(text: str, match_start: int) -> bool:
         line_start = max(0, match_start - CONTEXT_WINDOW_CHARS)
     else:
         line_start += 1  # Skip the newline itself
-    
+
     preceding_text = text[line_start:match_start]
 
     # Check if any preservation pattern matches the preceding context on the same line

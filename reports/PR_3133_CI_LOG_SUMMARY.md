@@ -59,9 +59,9 @@ Once all checks are green, PR is ready to merge.
 
 All required artifacts successfully generated:
 
-- ✅ `coverage-html-3.12` (6.4 MB) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706491)
-- ✅ `junit-report-3.12` (2.5 KB) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076/artifacts/5359706794)
-- ✅ `security-scan-3.12` (701 B) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141/artifacts/5359719837)
+- ✅ `coverage-html-3.12` (6.4 MB) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491)
+- ✅ `junit-report-3.12` (2.5 KB) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794)
+- ✅ `security-scan-3.12` (701 B) - [Download](https://github.com/Aries-Serpent/_codex_/actions/runs/21635661141 <!-- Note: Logs expire after 90 days -->/artifacts/5359719837)
 - ✅ `coverage.xml` - Uploaded to Codecov
 
 ---

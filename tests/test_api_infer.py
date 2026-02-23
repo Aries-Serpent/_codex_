@@ -16,7 +16,9 @@ from services.api.main import app  # noqa: E402
 def _set_env(monkeypatch):
     monkeypatch.delenv("DISABLE_SECRET_FILTER", raising=False)
     monkeypatch.setenv("API_TOKENIZER", "whitespace")
-    monkeypatch.setenv("API_MODEL", "MiniLM")
+    # Use non-existent model to trigger _EchoModel fallback
+    # This avoids PyTorch 2.x + Python 3.12 isinstance bug in weight init
+    monkeypatch.setenv("API_MODEL", "NonExistentModelForTesting")
     yield
 
 

@@ -38,6 +38,7 @@ import argparse
 import importlib.util
 import json
 import logging
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -247,7 +248,9 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
 
             # Import token similarity function
             try:
-                from scripts.space_traversal.dup_similarity import duplication_ratio_token_similarity
+                from scripts.space_traversal.dup_similarity import (
+                    duplication_ratio_token_similarity,
+                )
                 return duplication_ratio_token_similarity(
                     evidence_files,
                     file_cache,
@@ -271,6 +274,63 @@ def duplication_ratio(evidence_files, file_cache=None, cfg=None):
     except Exception as e:
         logger.error(f"Duplication ratio calculation failed: {e}")
         return 0.0
+
+
+def stage_s3_capabilities(cfg, facets):
+    """
+    Build capability list with override merging (Stage S3).
+
+    Args:
+        cfg: Configuration dict with capability_map and options
+        facets: Dict with facet data from stage s2
+
+    Returns:
+        List of capability dicts with merged overrides applied
+    """
+    cap_map_cfg = cfg.get("capability_map", {})
+    overrides = cap_map_cfg.get("overrides", {})
+    options = cfg.get("options", {})
+    fail_on_missing = options.get("fail_on_missing_detector", False)
+
+    facets_dict = facets.get("facets", {})
+    capabilities = []
+
+    # Process overrides
+    for canonical_name, aliases in overrides.items():
+        # Check if any alias has files in facets
+        files_for_cap = []
+        for alias in aliases:
+            if alias in facets_dict:
+                files_for_cap.extend(facets_dict[alias])
+
+        # If no files found and strict mode, fail
+        if not files_for_cap and fail_on_missing:
+            logger.error(f"Missing detector for capability '{canonical_name}' (aliases: {aliases})")
+            sys.exit(EXIT_MISSING_DETECTOR)
+
+        # Create capability entry
+        if files_for_cap or not fail_on_missing:
+            capabilities.append({
+                "id": canonical_name,
+                "aliases": aliases,
+                "evidence_files": files_for_cap,
+                "required_patterns": [],
+                "found_patterns": [],
+            })
+
+    # Also add facets that aren't in overrides
+    processed_aliases = set(alias for aliases in overrides.values() for alias in aliases)
+    for facet_name, files in facets_dict.items():
+        if facet_name not in processed_aliases and facet_name not in overrides:
+            capabilities.append({
+                "id": facet_name,
+                "aliases": [],
+                "evidence_files": files,
+                "required_patterns": [],
+                "found_patterns": [],
+            })
+
+    return capabilities
 
 
 def stage_s4_scoring(cfg, raw_caps):
@@ -306,7 +366,9 @@ def stage_s4_scoring(cfg, raw_caps):
     if coverage_cfg.get("enabled", False):
         try:
             # Import and run coverage ingestion
-            from scripts.space_traversal.coverage_ingest import discover_and_parse_coverage
+            from scripts.space_traversal.coverage_ingest import (
+                discover_and_parse_coverage,
+            )
             coverage_map = discover_and_parse_coverage(cfg, artifacts_dir) or {}
             logger.info(f"Coverage integration enabled: {len(coverage_map)} files mapped")
         except (ImportError, Exception) as e:
@@ -421,7 +483,7 @@ def stage_s5_gaps(cfg, scored_caps):
     for cap in scored_caps:
         components = cap.get("components", {})
         zero_components = [name for name, value in components.items() if value == 0.0]
-        
+
         # Calculate missing patterns if not already present
         if "missing_patterns" in cap:
             missing_patterns = cap["missing_patterns"]
@@ -450,6 +512,269 @@ def stage_s5_gaps(cfg, scored_caps):
     (artifacts_dir / "component_gaps.json").write_text(json.dumps(comp_gaps_data, indent=2))
 
     logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
+
+
+def stage_s6_render(
+    cfg: dict,
+    scored_caps: Optional[list] = None,
+    gaps: Optional[dict] = None,
+) -> Path:
+    """
+    Render a Markdown/HTML report from scored capabilities (Stage S6).
+
+    Args:
+        cfg: Configuration dict with output settings
+        scored_caps: Pre-computed list of scored capability dicts. If *None*,
+            the function reads from ``capabilities_scored.json`` in the
+            artifacts directory.
+        gaps: Pre-computed gaps dict (unused in rendering, reserved for future
+            template extensions).
+
+    Returns:
+        ``Path`` to the written ``report.md`` file.
+    """
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    if scored_caps is None:
+        scored_file = artifacts_dir / "capabilities_scored.json"
+        scored_caps = []
+        if scored_file.exists():
+            try:
+                data = json.loads(scored_file.read_text())
+                scored_caps = data.get("capabilities", [])
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.debug("Could not read scored capabilities file: %s", exc)
+
+    lines = ["# Capability Audit Report", "", f"Generated: {timestamp}", ""]
+    for cap in scored_caps:
+        score = cap.get("score", 0.0)
+        maturity = cap.get("maturity", "unknown")
+        lines.append(f"## {cap.get('id', 'unknown')} — {maturity} ({score:.2f})")
+        lines.append("")
+
+    report_path = artifacts_dir / "report.md"
+    report_path.write_text("\n".join(lines))
+    logger.info("Stage S6 render complete: %s", report_path)
+    return report_path
+
+
+def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
+    """
+    Apply capability overrides by merging alias IDs into canonical IDs.
+
+    Overrides allow multiple capability IDs to be merged into a single canonical ID.
+    This is useful when different detectors identify the same capability under different names.
+
+    Args:
+        capabilities: List of capability dicts with structure:
+            - id: Capability identifier
+            - evidence_files: List of files providing evidence
+            - found_patterns: List of patterns found
+            - required_patterns: List of patterns required
+            - meta: Metadata dict
+        cfg: Configuration dict with structure:
+            - capability_map.overrides: Dict mapping canonical_id -> list of alias IDs
+
+    Returns:
+        List of capabilities with aliases merged into canonical IDs.
+        Capabilities not in overrides are preserved unchanged.
+
+    Example:
+        >>> caps = [
+        ...     {"id": "train", "evidence_files": ["train.py"], "found_patterns": ["train"], ...},
+        ...     {"id": "train_loop", "evidence_files": ["loop.py"], "found_patterns": ["epoch"], ...}
+        ... ]
+        >>> cfg = {"capability_map": {"overrides": {"training-engine": ["train", "train_loop"]}}}
+        >>> result = apply_overrides(caps, cfg)
+        >>> len(result)
+        1
+        >>> result[0]["id"]
+        'training-engine'
+    """
+    # Get overrides configuration
+    overrides = cfg.get("capability_map", {}).get("overrides", {})
+
+    if not overrides:
+        # No overrides configured, return capabilities unchanged
+        return capabilities
+
+    # Build reverse mapping: alias_id -> canonical_id
+    alias_to_canonical = {}
+    for canonical_id, aliases in overrides.items():
+        for alias in aliases:
+            alias_to_canonical[alias] = canonical_id
+
+    # Group capabilities by their canonical ID
+    canonical_groups = {}
+    unaffected_caps = []
+
+    for cap in capabilities:
+        cap_id = cap["id"]
+        canonical_id = alias_to_canonical.get(cap_id)
+
+        if canonical_id:
+            # This capability is an alias — merge into the canonical group
+            canonical_groups.setdefault(canonical_id, []).append(cap)
+        elif cap_id in overrides:
+            # This capability IS the canonical ID — include it in its own group
+            canonical_groups.setdefault(cap_id, []).append(cap)
+        else:
+            # This capability is not in overrides, preserve it
+            unaffected_caps.append(cap)
+
+    # Merge capabilities in each canonical group
+    merged_caps = []
+    for canonical_id, caps_to_merge in canonical_groups.items():
+        # Merge all capabilities into one
+        merged = {
+            "id": canonical_id,
+            "evidence_files": [],
+            "found_patterns": [],
+            "required_patterns": [],
+            "meta": {},
+        }
+
+        # Collect unique values from all capabilities
+        all_evidence_files = set()
+        all_found_patterns = set()
+        all_required_patterns = set()
+
+        for cap in caps_to_merge:
+            all_evidence_files.update(cap.get("evidence_files", []))
+            all_found_patterns.update(cap.get("found_patterns", []))
+            all_required_patterns.update(cap.get("required_patterns", []))
+
+            # Merge metadata (later entries override earlier)
+            merged["meta"].update(cap.get("meta", {}))
+
+        merged["evidence_files"] = sorted(all_evidence_files)
+        merged["found_patterns"] = sorted(all_found_patterns)
+        merged["required_patterns"] = sorted(all_required_patterns)
+
+        merged_caps.append(merged)
+
+    # Combine merged and unaffected capabilities
+    result = merged_caps + unaffected_caps
+
+    logger.debug(f"Applied overrides: {len(capabilities)} → {len(result)} capabilities")
+    return result
+
+
+def validate_detector_output(detector: Dict[str, Any], detector_name: str) -> bool:
+    """
+    Validate that a detector output has the required structure and fields.
+
+    Args:
+        detector: Dict containing detector output with expected fields:
+            - id (str): Capability identifier
+            - evidence_files (list): List of file paths
+            - found_patterns (list): List of patterns found
+            - required_patterns (list): List of patterns required
+        detector_name: Name of the detector for logging purposes
+
+    Returns:
+        True if detector output is valid, False otherwise
+
+    Example:
+        >>> det = {
+        ...     "id": "test-cap",
+        ...     "evidence_files": ["a.py"],
+        ...     "found_patterns": ["pat1"],
+        ...     "required_patterns": ["pat1", "pat2"]
+        ... }
+        >>> validate_detector_output(det, "test_detector")
+        True
+    """
+    required_fields = ["id", "evidence_files", "found_patterns", "required_patterns"]
+
+    # Check all required fields are present
+    for field in required_fields:
+        if field not in detector:
+            logger.warning(f"Detector '{detector_name}' output missing required field: {field}")
+            return False
+
+    # Validate field types
+    if not isinstance(detector["id"], str):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'id' type: {type(detector['id'])}")
+        return False
+
+    if not isinstance(detector["evidence_files"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'evidence_files' type: {type(detector['evidence_files'])}")
+        return False
+
+    if not isinstance(detector["found_patterns"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'found_patterns' type: {type(detector['found_patterns'])}")
+        return False
+
+    if not isinstance(detector["required_patterns"], list):
+        logger.warning(f"Detector '{detector_name}' output has invalid 'required_patterns' type: {type(detector['required_patterns'])}")
+        return False
+
+    logger.debug(f"Detector '{detector_name}' output validated successfully: {detector['id']}")
+    return True
+
+
+def command_explain(args, cfg):
+    """
+    Explain the score breakdown for a specific capability.
+
+    Args:
+        args: Namespace with args.capability (ID of capability to explain)
+        cfg: Configuration dict with:
+            - output.artifacts_dir: Path to artifacts directory
+            - weights: Component weights for scoring
+
+    Prints detailed score breakdown to stdout.
+    """
+    from scripts.space_traversal.capability_scoring import explain_score
+
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    weights = cfg.get("weights", {})
+    capability_id = getattr(args, "capability", None)
+
+    # Load scored capabilities
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    if not scored_file.exists():
+        print(f"Error: capabilities_scored.json not found at {scored_file}", file=sys.stderr)
+        return
+
+    try:
+        scored_data = json.loads(scored_file.read_text())
+        capabilities = scored_data.get("capabilities", [])
+    except Exception as e:
+        print(f"Error loading scored data: {e}", file=sys.stderr)
+        return
+
+    # Find the capability
+    capability = None
+    for cap in capabilities:
+        if cap.get("id") == capability_id:
+            capability = cap
+            break
+
+    if capability is None:
+        print(f"Capability '{capability_id}' not found", file=sys.stderr)
+        return
+
+    # Generate explanation
+    explanation = explain_score(capability, weights)
+
+    # Print formatted output
+    print(f"\nCapability: {explanation['id']}")
+    print(f"Overall Score: {explanation['score']:.4f}")
+    print("\nComponent Breakdown:")
+    print("-" * 60)
+
+    for component, details in explanation["partials"].items():
+        component_val = details["component_value"]
+        weight = details["weight"]
+        contribution = details["contribution"]
+        print(f"{component:20s} | Value: {component_val:.2f} | Weight: {weight:.2f} | Contrib: {contribution:.4f}")
+
+    print("-" * 60)
+    print(f"{'Total':20s} |              |           | {explanation['score']:.4f}\n")
 
 
 def command_validate(cfg):
@@ -529,13 +854,18 @@ def main() -> None:
 
     # stage subcommand
     stage_parser = subparsers.add_parser("stage", help="Run a specific audit stage")
-    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4"], help="Stage to run")
+    stage_parser.add_argument("stage_name", choices=["S1", "S2", "S3", "S4", "S5", "S6", "S7"], help="Stage to run")
     stage_parser.add_argument("--config", type=Path, help="Configuration file")
     stage_parser.add_argument("--output", type=Path, help="Output file path")
 
     # explain subcommand
     explain_parser = subparsers.add_parser("explain", help="Explain a capability")
     explain_parser.add_argument("capability_id", help="Capability ID to explain")
+
+    # diff subcommand — compare two scored capability files
+    diff_parser = subparsers.add_parser("diff", help="Diff two scored capability files")
+    diff_parser.add_argument("--old", type=Path, required=True, help="Baseline scored capabilities JSON")
+    diff_parser.add_argument("--new", type=Path, required=True, help="New scored capabilities JSON")
 
     # Legacy mode for backward compatibility
     parser.add_argument("target", type=Path, nargs="?", help="Target path to audit (legacy mode)")
@@ -590,6 +920,41 @@ def main() -> None:
             output_file = artifacts_dir / "capabilities_scored.json"
             output_file.write_text(json.dumps(result, indent=2))
             print(f"Stage S4 complete: {output_file}")
+        elif args.stage_name == "S5":
+            # Stage 5: Gap analysis — identify low-maturity capabilities
+            scored_file = artifacts_dir / "capabilities_scored.json"
+            scored_caps = []
+            if scored_file.exists():
+                try:
+                    data = json.loads(scored_file.read_text())
+                    scored_caps = data.get("capabilities", [])
+                except (json.JSONDecodeError, OSError) as exc:
+                    logger.debug("Could not read scored capabilities file: %s", exc)
+            stage_s5_gaps({"output": {"artifacts_dir": str(artifacts_dir)}}, scored_caps)
+            print(f"Stage S5 complete: {artifacts_dir / 'gaps.json'}")
+            # Stage 6: Render — generate HTML/Markdown report from scored capabilities
+            output_file = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
+            print(f"Stage S6 complete: {output_file}")
+        elif args.stage_name == "S7":
+            # Stage 7: Prefix auto-validation — scan bundles for naming convention violations
+            prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
+            validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
+            warnings: list[str] = []
+            if prefix_mode and validate_auto:
+                bundles_dir = artifacts_dir / "bundles"
+                if bundles_dir.exists():
+                    for bundle_file in bundles_dir.glob("*.tar.gz"):
+                        if not bundle_file.name.startswith("bundle_"):
+                            warnings.append(
+                                f"prefix_violations: {bundle_file.name} does not match required prefix 'bundle_'"
+                            )
+            manifest = {
+                "stage": "S7",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "warnings": warnings,
+            }
+            Path("audit_run_manifest.json").write_text(json.dumps(manifest, indent=2))
+            print(f"Stage S7 complete: audit_run_manifest.json ({len(warnings)} warnings)")
         return
 
     elif args.command == "explain":
@@ -617,6 +982,28 @@ def main() -> None:
         components = cap.get("components", {})
         for name, value in components.items():
             print(f"  {name} contribution={value:.2f}")
+
+        return
+
+    elif args.command == "diff":
+        # Diff two scored capability files and output CSV with ID,OLD,NEW,DELTA
+        try:
+            old_data = json.loads(Path(args.old).read_text()) if Path(args.old).exists() else {}
+            new_data = json.loads(Path(args.new).read_text()) if Path(args.new).exists() else {}
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.debug("Could not read diff input files: %s", exc)
+            old_data, new_data = {}, {}
+
+        old_caps = {c["id"]: c.get("score", 0.0) for c in old_data.get("capabilities", [])}
+        new_caps = {c["id"]: c.get("score", 0.0) for c in new_data.get("capabilities", [])}
+
+        all_ids = sorted(set(old_caps) | set(new_caps))
+        print("ID,OLD,NEW,DELTA")
+        for cap_id in all_ids:
+            old_score = old_caps.get(cap_id, 0.0)
+            new_score = new_caps.get(cap_id, 0.0)
+            delta = new_score - old_score
+            print(f"{cap_id},{old_score:.4f},{new_score:.4f},{delta:+.4f}")
 
         return
 

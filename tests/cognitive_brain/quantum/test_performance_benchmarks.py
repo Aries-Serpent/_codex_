@@ -14,6 +14,7 @@ from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,
 )
 from cognitive_brain.quantum.compression import PatternCompressor
+from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
 
 
@@ -22,7 +23,7 @@ class TestPerformanceBenchmarks:
 
     def test_compression_speed_benchmark(self):
         """Test compression speed: target 1000 patterns/second."""
-        compressor = PatternCompressor(n_components=3)
+        compressor = PatternCompressor(target_dimensions=3)
 
         # Training data
         training = [
@@ -62,7 +63,7 @@ class TestPerformanceBenchmarks:
 
     def test_retrieval_speed_benchmark(self):
         """Test retrieval speed: target <10ms for k=5."""
-        manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)
+        manager = QuantumMemoryManager(QuantumConfig(), stm_capacity=100, ltm_capacity=1000)
 
         # Populate LTM with patterns
         for i in range(500):
@@ -139,7 +140,7 @@ class TestPerformanceBenchmarks:
 
     def test_memory_efficiency_ltm_capacity(self):
         """Test memory efficiency: <100MB for 10,000 LTM patterns."""
-        manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=10000)
+        manager = QuantumMemoryManager(QuantumConfig(), stm_capacity=100, ltm_capacity=10000)
 
         # Get initial memory usage
         process = psutil.Process(os.getpid())
@@ -179,7 +180,7 @@ class TestPerformanceBenchmarks:
 
     def test_consolidation_throughput(self):
         """Test consolidation throughput: target 100 STM→LTM/second."""
-        manager = QuantumMemoryManager(stm_capacity=100, ltm_capacity=1000)
+        manager = QuantumMemoryManager(QuantumConfig(), stm_capacity=100, ltm_capacity=1000)
 
         # Fill STM
         for i in range(100):

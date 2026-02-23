@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/deepresearch/generate_context_manifest.py [options]
-    
+
     Examples:
     $ python scripts/deepresearch/generate_context_manifest.py --help
 

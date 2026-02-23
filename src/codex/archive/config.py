@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Configuration helpers for the archive command surface."""
 
 
-import os
-import typing as _t
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
+import os  # noqa: E402
+import typing as _t  # noqa: E402
+from dataclasses import asdict, dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 if _t.TYPE_CHECKING:  # pragma: no cover - typing helpers
     from .backend import ArchiveConfig as _ArchiveConfig

@@ -14,6 +14,6 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.streaming import stream_texts
+from src.training.streaming import stream_texts  # noqa: E402
 
 __all__ = ["stream_texts"]

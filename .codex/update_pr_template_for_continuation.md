@@ -673,7 +673,6 @@ After completing this phase:
    **Remaining Priority 1 Tasks**:
    {remaining_p1_tasks}
    
-   **See full status**:  [Updated Follow-Up Prompt](. github/copilot-prompts/active/PR-{pr_number}-followup.md)
    ```
 
 ---
@@ -935,7 +934,6 @@ cat > .github/pull_request_template.md << 'EOF'
 
 @copilot continue with next phase tasks for this PR
 
-**📋 Comprehensive Follow-Up Prompt**:  [`.github/copilot-prompts/active/PR-{pr_number}-followup.md`](. github/copilot-prompts/active/PR-{pr_number}-followup.md)
 
 ### Quick Phase Summary
 
@@ -958,7 +956,6 @@ cat > .github/pull_request_template.md << 'EOF'
 5. Repeat until all phases complete
 
 **For Manual Execution**:
-- Review the [complete follow-up prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
 - Follow step-by-step implementation guide
 - Run all validation commands
 - Complete 5-pass self-review before concluding
@@ -1339,7 +1336,6 @@ Functions: {functions_covered}/{functions_total}
 **Lines Removed**: -{lines_removed}
 
 ### Continuation Status
-**Follow-Up Prompt**: [View](.github/copilot-prompts/active/PR-{pr_number}-followup.md)  
 **Current Phase**: {current_phase}/{total_phases}  
 **Tasks Remaining**: {tasks_remaining}  
 **Estimated Completion**: {estimated_completion}

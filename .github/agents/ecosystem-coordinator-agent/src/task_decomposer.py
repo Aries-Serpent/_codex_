@@ -1,7 +1,7 @@
 """Task Decomposer for Ecosystem Coordinator Agent"""
-from dataclasses import dataclass
-from typing import List, Dict, Any
 import random
+from dataclasses import dataclass
+from typing import Any, Dict, List
 
 RANDOM_SEED = 51
 
@@ -14,13 +14,13 @@ class SubTask:
 
 class TaskDecomposer:
     """Decompose complex tasks into sub-tasks"""
-    
+
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
         self.tasks: List[SubTask] = []
         self.initialized = True
-    
+
     def decompose(self, task_name: str, complexity: int) -> List[SubTask]:
         """Decompose task into sub-tasks"""
         subtasks = []
@@ -34,12 +34,12 @@ class TaskDecomposer:
             subtasks.append(st)
             self.tasks.append(st)
         return subtasks
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         return {
             "seed": self.seed,
             "total_tasks": len(self.tasks),
-            "agent_types": {t: sum(1 for st in self.tasks if st.agent_type == t) 
+            "agent_types": {t: sum(1 for st in self.tasks if st.agent_type == t)
                            for t in ["analysis", "execution", "validation"]},
             "initialized": self.initialized
         }

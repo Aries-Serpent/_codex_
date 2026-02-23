@@ -96,8 +96,8 @@ The CSV file should have the following columns:
 
 ```csv
 Issue #,Issue URL,Failed Workflow Run,Self-Healing Analysis Run
-2915,https://github.com/Aries-Serpent/_codex_/issues/2915,https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720,https://github.com/Aries-Serpent/_codex_/actions/runs/21145825936
-2914,https://github.com/Aries-Serpent/_codex_/issues/2914,https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711,https://github.com/Aries-Serpent/_codex_/actions/runs/21145823013
+2915,https://github.com/Aries-Serpent/_codex_/issues/2915,https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720 <!-- Note: Logs expire after 90 days -->,https://github.com/Aries-Serpent/_codex_/actions/runs/21145825936 <!-- Note: Logs expire after 90 days -->
+2914,https://github.com/Aries-Serpent/_codex_/issues/2914,https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711 <!-- Note: Logs expire after 90 days -->,https://github.com/Aries-Serpent/_codex_/actions/runs/21145823013 <!-- Note: Logs expire after 90 days -->
 ```
 
 Alternative column names are also supported:
@@ -221,8 +221,8 @@ The batch triage tool integrates with the existing self-healing infrastructure:
 # Create CSV with recent failures
 cat > recent_failures.csv << EOF
 Issue #,Issue URL,Failed Workflow Run
-2915,https://github.com/Aries-Serpent/_codex_/issues/2915,https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720
-2914,https://github.com/Aries-Serpent/_codex_/issues/2914,https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711
+2915,https://github.com/Aries-Serpent/_codex_/issues/2915,https://github.com/Aries-Serpent/_codex_/actions/runs/21145689720 <!-- Note: Logs expire after 90 days -->
+2914,https://github.com/Aries-Serpent/_codex_/issues/2914,https://github.com/Aries-Serpent/_codex_/actions/runs/21145669711 <!-- Note: Logs expire after 90 days -->
 EOF
 
 # Run triage

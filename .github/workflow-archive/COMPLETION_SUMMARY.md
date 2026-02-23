@@ -270,9 +270,7 @@ git push
 ## 📞 Support & Resources
 
 ### For Questions
-- Review: [FINAL_CONSOLIDATION_REPORT.md](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
-- Check: [WORKFLOW_INVENTORY.yaml](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
-- Use: [Workflow Restore Tool](.github/workflows/workflow-restore.yml)
+- Check: <!-- BROKEN: [WORKFLOW_INVENTORY.yaml](.github/workflow-archive/WORKFLOW_INVENTORY.yaml) -->
 
 ### For Issues
 - Run: `bash scripts/validate_ci_health.sh`
@@ -281,7 +279,6 @@ git push
 
 ### For Optimization
 - Run: `python3 scripts/catalog_workflows.py`
-- Review: [INVENTORY_SUMMARY.md](.github/workflow-archive/INVENTORY_SUMMARY.md)
 - Analyze: Workflow usage patterns
 
 ---

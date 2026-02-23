@@ -21,7 +21,6 @@ import argparse
 import contextlib
 import json
 import logging
-logger = logging.getLogger(__name__)
 import os
 from dataclasses import asdict, dataclass
 from os import PathLike
@@ -45,6 +44,8 @@ from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlf
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
+
+logger = logging.getLogger(__name__)
 
 # ruff: noqa: I001
 

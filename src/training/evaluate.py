@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 """Simple evaluation helpers for language-model datasets."""
 
 
-import contextlib
-import json
-import math
-from collections.abc import Iterable, Mapping
-from importlib import import_module
-from pathlib import Path
-from typing import Any
+import contextlib  # noqa: E402
+import json  # noqa: E402
+import math  # noqa: E402
+from collections.abc import Iterable, Mapping  # noqa: E402
+from importlib import import_module  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 def _require_torch():

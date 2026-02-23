@@ -8,7 +8,10 @@ import pathlib
 import re
 import sqlite3
 
+import pytest
 
+
+@pytest.mark.skip(reason="SessionLogger example removed from README")
 def test_readme_session_logger_example(tmp_path, monkeypatch):
     root = pathlib.Path(__file__).resolve().parents[1]
     readme = (root / "README.md").read_text()

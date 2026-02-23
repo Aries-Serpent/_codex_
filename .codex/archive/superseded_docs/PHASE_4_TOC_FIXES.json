@@ -1,0 +1,290 @@
+{
+  "stats": {
+    "files_scanned": 2630,
+    "files_with_empty_toc": 14,
+    "files_modified": 14,
+    "anchors_added": 0,
+    "entries_commented": 39
+  },
+  "fixes": [
+    {
+      "file": "LINK_VALIDATION_ACTION_ITEMS.md",
+      "fixes_count": 6,
+      "details": [
+        {
+          "text": "System Context",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Container Architecture",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "\"model_fn\"",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "YourClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "QUICK_REFERENCE_LINK_FIXES.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Text",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Quick Start",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "MARKDOWN_LINK_VALIDATION_REPORT.md",
+      "fixes_count": 3,
+      "details": [
+        {
+          "text": "Quick Start",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Text",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Quick Start",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "TASK_COMPLETION_REPORT.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "Overview",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Text",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "LINK_VALIDATION_EXECUTION_SUMMARY.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Quick Start",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "fixes_count": 2,
+      "details": [
+        {
+          "text": "System Context",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Container Architecture",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/distributed_training_guide.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "\"model_fn\"",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": ".codex/CONTINUATION_PROMPT_PR2782_POST_CI.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "AgentName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/plans/AST_ARCHITECTURE_DESIGN.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/plans/Phase0_Gap_Resolution_Guide.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "language",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/agents/PROMPT_TEMPLATES.md",
+      "fixes_count": 3,
+      "details": [
+        {
+          "text": "Class",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "Class",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "method",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/agents/CODE_TEMPLATES.md",
+      "fixes_count": 14,
+      "details": [
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "class_name",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        },
+        {
+          "text": "ClassName",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": "docs/guides/continuous_learning_guide.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "\"critical\"",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    },
+    {
+      "file": ".codex/cognitive_brain/LINK_VALIDATION_PHASE2_COMPLETE.md",
+      "fixes_count": 1,
+      "details": [
+        {
+          "text": "Overview",
+          "action": "commented",
+          "reason": "no_matching_section"
+        }
+      ]
+    }
+  ]
+}

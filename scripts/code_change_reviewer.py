@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Code Change Reviewer
 
@@ -8,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/code_change_reviewer.py [options]
-    
+
     Examples:
     $ python scripts/code_change_reviewer.py --help
 
@@ -37,19 +38,20 @@ Applies the autonomous self-review protocol to code changes,
 ensuring comprehensive validation before committing.
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
-import subprocess
-import sys
-from typing import Optional
 import ast
 import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
 
 from ai_self_review_protocol import (
-    SelfReviewProtocol,
     IssueType,
     Priority,
+    SelfReviewProtocol,
 )
 
 
@@ -70,15 +72,15 @@ class CodeChangeReviewer:
                 text=True,
                 check=True
             )
-            
+
             files = [
                 self.repo_path / line.strip()
                 for line in result.stdout.split('\n')
                 if line.strip()
             ]
-            
+
             return [f for f in files if f.exists()]
-            
+
         except subprocess.CalledProcessError:
             logger.debug("Exception caught, returning", exc_info=True)
             return []
@@ -86,11 +88,11 @@ class CodeChangeReviewer:
     def analyze_python_file(self, filepath: Path) -> list[tuple[IssueType, Priority, str]]:
         """Analyze a Python file for potential issues."""
         issues = []
-        
+
         try:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
-            
+
             # Check for missing docstrings
             for node in ast.walk(tree):
                 if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -101,7 +103,7 @@ class CodeChangeReviewer:
                                 Priority.MEDIUM,
                                 f"Missing docstring for {node.__class__.__name__} '{node.name}'"
                             ))
-            
+
             # Check for TODOs and FIXMEs
             for i, line in enumerate(content.split('\n'), 1):
                 if 'TODO' in line or 'FIXME' in line:
@@ -110,7 +112,7 @@ class CodeChangeReviewer:
                         Priority.MEDIUM,
                         f"Line {i}: Unresolved TODO/FIXME comment"
                     ))
-            
+
             # Check for print statements (should use logging)
             if re.search(r'\bprint\s*\(', content):
                 count = len(re.findall(r'\bprint\s*\(', content))
@@ -120,7 +122,7 @@ class CodeChangeReviewer:
                         Priority.LOW,
                         f"{count} print statements (consider using logging)"
                     ))
-            
+
             # Check for bare except clauses
             for node in ast.walk(tree):
                 if isinstance(node, ast.ExceptHandler):
@@ -130,7 +132,7 @@ class CodeChangeReviewer:
                             Priority.HIGH,
                             "Bare except clause can hide errors"
                         ))
-            
+
         except (SyntaxError, UnicodeDecodeError) as e:
             logger.debug(f"Exception: {e}")
             issues.append((
@@ -138,50 +140,50 @@ class CodeChangeReviewer:
                 Priority.CRITICAL,
                 f"Syntax error or encoding issue: {e}"
             ))
-        
+
         return issues
 
     def check_test_coverage(self, changed_files: list[Path]) -> list[tuple[IssueType, Priority, str]]:
         """Check if changed source files have corresponding tests."""
         issues = []
-        
+
         for filepath in changed_files:
             if not filepath.suffix == '.py':
                 continue
-            
+
             # Skip test files themselves
             if 'test' in filepath.name:
                 continue
-            
+
             # Check for corresponding test file
             relative = filepath.relative_to(self.repo_path)
-            
+
             # Check common test patterns
             test_patterns = [
                 Path(f"tests/test_{filepath.name}"),
                 Path(f"tests/{filepath.parent.name}/test_{filepath.name}"),
                 filepath.parent / f"test_{filepath.name}",
             ]
-            
+
             has_test = any((self.repo_path / pattern).exists() for pattern in test_patterns)
-            
+
             if not has_test:
                 issues.append((
                     IssueType.MISSING_TEST,
                     Priority.HIGH,
                     f"No test file found for {relative}"
                 ))
-        
+
         return issues
 
     def check_documentation(self, changed_files: list[Path]) -> list[tuple[IssueType, Priority, str]]:
         """Check if documentation needs updating."""
         issues = []
-        
+
         # Check for Python files without README
         has_python = any(f.suffix == '.py' for f in changed_files)
         has_readme = any('README' in f.name for f in changed_files)
-        
+
         if has_python and not has_readme:
             # Check if README exists
             readme_path = self.repo_path / "README.md"
@@ -191,30 +193,30 @@ class CodeChangeReviewer:
                     Priority.HIGH,
                     "Repository lacks README.md"
                 ))
-        
+
         return issues
 
     def run_review_cycle(self, task_description: str) -> SelfReviewProtocol:
         """Run a complete self-review cycle on code changes."""
         # Initialize protocol
         self.protocol = SelfReviewProtocol(task_description)
-        
+
         # Get changed files
         changed_files = self.get_changed_files()
-        
+
         if not changed_files:
             print("No changed files to review")
             return self.protocol
-        
+
         print(f"Reviewing {len(changed_files)} changed file(s)...\n")
-        
+
         # Cycle 1: Initial analysis
         print("=== Cycle 1: Initial Analysis ===")
         self.protocol.start_cycle()
-        
+
         for filepath in changed_files:
             print(f"Analyzing: {filepath.relative_to(self.repo_path)}")
-            
+
             # Analyze Python files
             if filepath.suffix == '.py':
                 file_issues = self.analyze_python_file(filepath)
@@ -225,7 +227,7 @@ class CodeChangeReviewer:
                         description,
                         str(filepath.relative_to(self.repo_path))
                     )
-        
+
         # Check test coverage
         test_issues = self.check_test_coverage(changed_files)
         for issue_type, priority, description in test_issues:
@@ -235,7 +237,7 @@ class CodeChangeReviewer:
                 description,
                 "test_coverage"
             )
-        
+
         # Check documentation
         doc_issues = self.check_documentation(changed_files)
         for issue_type, priority, description in doc_issues:
@@ -245,32 +247,32 @@ class CodeChangeReviewer:
                 description,
                 "documentation"
             )
-        
+
         changes = [f"Analyzed {len(changed_files)} files"]
         self.protocol.complete_cycle(changes)
-        
+
         print(f"Issues identified: {len(self.protocol.all_issues)}\n")
-        
+
         # Cycle 2: Convergence check
         print("=== Cycle 2: Convergence Check ===")
         self.protocol.start_cycle()
-        
+
         converged, reason = self.protocol.check_convergence()
         print(f"Convergence status: {reason}\n")
-        
+
         self.protocol.complete_cycle(["Performed convergence check"])
-        
+
         # Finalize
         final_notes = f"Reviewed {len(changed_files)} changed files with {len(self.protocol.all_issues)} issues identified"
         self.protocol.finalize_review(final_notes)
-        
+
         return self.protocol
 
 
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Code Change Self-Review Tool")
     parser.add_argument("--repo", type=Path, default=Path.cwd(),
                        help="Repository path")
@@ -280,23 +282,23 @@ def main():
                        help="Output directory for reports")
     parser.add_argument("--save-report", action="store_true",
                        help="Save review report to disk")
-    
+
     args = parser.parse_args()
-    
+
     # Run review
     reviewer = CodeChangeReviewer(args.repo)
     protocol = reviewer.run_review_cycle(args.task)
-    
+
     # Print summary
     protocol.print_summary()
-    
+
     # Save report if requested
     if args.save_report:
         if args.output:
             protocol.output_dir = args.output
         report_path = protocol.save_report()
         print(f"\n✓ Report saved: {report_path}")
-    
+
     # Exit with non-zero if not production ready
     return 0 if protocol.report.production_ready else 1
 

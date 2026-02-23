@@ -6,15 +6,14 @@ This module remains for BC with 'from training.checkpoint_manager import Checkpo
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import json
+import logging
 import os
 import warnings as _warnings
 from pathlib import Path
 from typing import Any, Optional
+
+logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "training.checkpoint_manager is legacy; prefer codex_ml.utils.checkpointing.CheckpointManager.",
@@ -137,8 +136,15 @@ if "CheckpointManager" not in globals():
             if rng_state:
                 payload["rng"] = dump_rng_state()
 
+            import pickle as _stdlib_pickle  # noqa: PLC0415 - local to keep top-level light
             buffer = io.BytesIO()
-            _torch.save(payload, buffer)
+            try:
+                _torch.save(payload, buffer)
+            except (RuntimeError, TypeError, _stdlib_pickle.PicklingError):  # pragma: no cover
+                # Retry with pickle protocol 2 to avoid torch.FloatStorage identity
+                # mismatch on PyTorch 2.x + Python 3.12.
+                buffer = io.BytesIO()
+                _torch.save(payload, buffer, pickle_protocol=2)
             return buffer.getvalue()
 
 
@@ -216,8 +222,8 @@ class CheckpointManager:
                                     "step": int(data.get("step", 0)),
                                 }
                             )
-                        except (TypeError, ValueError):
-                            pass  # Malformed checkpoint data; skip
+                        except (TypeError, ValueError) as e:
+                            logger.debug("Skipping malformed checkpoint data: %s", e)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)

@@ -72,11 +72,14 @@ def _default_subprocess_cwd(monkeypatch):
 
     original_popen = _subprocess.Popen
 
-    def _patched_popen(*popenargs, **kwargs):
-        kwargs.setdefault("cwd", str(_PROJECT_ROOT))
-        return original_popen(*popenargs, **kwargs)
+    class _PatchedPopen(original_popen):  # type: ignore[misc]
+        """Class-based Popen wrapper so issubclass() checks still work."""
 
-    monkeypatch.setattr(_subprocess, "Popen", _patched_popen)
+        def __init__(self, *popenargs, **kwargs):
+            kwargs.setdefault("cwd", str(_PROJECT_ROOT))
+            super().__init__(*popenargs, **kwargs)
+
+    monkeypatch.setattr(_subprocess, "Popen", _PatchedPopen)
 
 
 _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
@@ -211,7 +214,7 @@ def pytest_ignore_collect(path, config):  # type: ignore[override]
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    """Skip Torch-only suites when torch is not installed."""
+    """Skip Torch-only suites when torch is not installed. Auto-mark slow tests."""
 
     if not _torch_available():
         skip_torch = pytest.mark.skip(reason="Optional dependency 'torch' not installed")
@@ -224,6 +227,27 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         for it in items:
             if _needs_pydantic(it):
                 it.add_marker(skip_pydantic)
+
+    # Auto-mark tests as slow based on patterns
+    slow_marker = pytest.mark.slow
+    slow_patterns = [
+        "docker", "deployment", "comprehensive", "e2e", "integration",
+        "phase", "batch", "dataset", "training", "checkpointing"
+    ]
+
+    for item in items:
+        # Skip if already marked as slow
+        if "slow" in item.keywords:
+            continue
+
+        # Check if test path or name contains slow patterns
+        test_path = str(item.fspath).lower() if hasattr(item, "fspath") else ""
+        test_name = item.name.lower()
+
+        for pattern in slow_patterns:
+            if pattern in test_path or pattern in test_name:
+                item.add_marker(slow_marker)
+                break
 
 
 def pytest_configure(config: pytest.Config) -> None:

@@ -173,32 +173,29 @@ class TestLoadJsonl:
 
     def test_load_jsonl_basic(self, sample_jsonl_file: Path):
         """Verify basic JSONL loading."""
-        result = load_jsonl(sample_jsonl_file)
+        data, metadata = load_jsonl(sample_jsonl_file)
 
-        assert "data" in result
-        assert "metadata" in result
-        assert len(result["data"]) == 3
-        assert result["data"][0]["prompt"] == "What is AI?"
+        assert len(data) == 3
+        assert data[0]["prompt"] == "What is AI?"
+        assert "checksum" in metadata
+        assert metadata["num_records"] == 3
 
     def test_load_jsonl_metadata(self, sample_jsonl_file: Path):
         """Verify metadata includes checksum and count."""
-        result = load_jsonl(sample_jsonl_file)
-        metadata = result["metadata"]
+        data, metadata = load_jsonl(sample_jsonl_file)
 
         assert "checksum" in metadata
-        assert "record_count" in metadata
-        assert metadata["record_count"] == 3
+        assert "num_records" in metadata
+        assert metadata["num_records"] == 3
 
     def test_load_jsonl_empty_file(self, temp_data_dir: Path):
         """Verify empty JSONL file handling."""
         empty_file = temp_data_dir / "empty.jsonl"
         empty_file.write_text("")
-
-        result = load_jsonl(empty_file)
-
-        assert result["data"] == []
-        assert result["metadata"]["record_count"] == 0
-        assert result["metadata"]["empty_file"] is True
+        data, metadata = load_jsonl(empty_file)
+        assert len(data) == 0
+        assert metadata["empty_file"] is True
+        assert metadata["num_records"] == 0
 
     def test_load_jsonl_malformed_lines(self, temp_data_dir: Path):
         """Verify malformed lines are skipped."""
@@ -209,10 +206,10 @@ class TestLoadJsonl:
             f.write('{"valid": "line2"}\n')
             f.write('also not json\n')
 
-        result = load_jsonl(malformed_file)
+        data, metadata = load_jsonl(malformed_file)
 
-        assert len(result["data"]) == 2
-        assert result["metadata"]["skipped_malformed"] == 2
+        assert len(data) == 2
+        assert metadata["skipped_malformed"] == 2
 
     def test_load_jsonl_utf8_bom(self, temp_data_dir: Path):
         """Verify UTF-8 BOM handling."""
@@ -220,10 +217,10 @@ class TestLoadJsonl:
         with bom_file.open("w", encoding="utf-8-sig") as f:
             f.write('{"text": "with BOM"}\n')
 
-        result = load_jsonl(bom_file)
+        data, metadata = load_jsonl(bom_file)
 
-        assert len(result["data"]) == 1
-        assert result["data"][0]["text"] == "with BOM"
+        assert len(data) == 1
+        assert data[0]["text"] == "with BOM"
 
     def test_load_jsonl_unicode_content(self, temp_data_dir: Path):
         """Verify unicode content handling."""
@@ -244,9 +241,9 @@ class TestLoadJsonl:
         with nested_file.open("w") as f:
             f.write('{"outer": {"inner": {"deep": "value"}}}\n')
 
-        result = load_jsonl(nested_file)
+        data, metadata = load_jsonl(nested_file)
 
-        assert result["data"][0]["outer"]["inner"]["deep"] == "value"
+        assert data[0]["outer"]["inner"]["deep"] == "value"
 
     def test_load_jsonl_missing_file(self):
         """Verify error for missing file."""
@@ -259,21 +256,20 @@ class TestLoadCsv:
 
     def test_load_csv_basic(self, sample_csv_file: Path):
         """Verify basic CSV loading."""
-        result = load_csv(sample_csv_file)
+        records, meta = load_csv(sample_csv_file)
 
-        assert "data" in result
-        assert "metadata" in result
-        assert len(result["data"]) == 2  # Excluding header
-        assert result["data"][0]["prompt"] == "Question 1"
+        assert isinstance(records, list)
+        assert isinstance(meta, dict)
+        assert len(records) == 2  # Excluding header
+        assert records[0]["prompt"] == "Question 1"
 
     def test_load_csv_metadata(self, sample_csv_file: Path):
         """Verify CSV metadata."""
-        result = load_csv(sample_csv_file)
-        metadata = result["metadata"]
+        records, meta = load_csv(sample_csv_file)
 
-        assert "checksum" in metadata
-        assert "record_count" in metadata
-        assert metadata["record_count"] == 2
+        assert "checksum" in meta
+        assert "num_records" in meta
+        assert meta["num_records"] == 2
 
     def test_load_csv_quoted_fields(self, temp_data_dir: Path):
         """Verify quoted field handling."""
@@ -284,20 +280,20 @@ class TestLoadCsv:
             writer.writerow(["Question with, comma", "Answer with, comma"])
             writer.writerow(['"Quoted question"', '"Quoted answer"'])
 
-        result = load_csv(quoted_file)
+        records, meta = load_csv(quoted_file)
 
-        assert "comma" in result["data"][0]["prompt"]
-        assert "Quoted" in result["data"][1]["prompt"]
+        assert "comma" in records[0]["prompt"]
+        assert "Quoted" in records[1]["prompt"]
 
     def test_load_csv_empty_file(self, temp_data_dir: Path):
         """Verify empty CSV file handling."""
         empty_file = temp_data_dir / "empty.csv"
         empty_file.write_text("")
 
-        result = load_csv(empty_file)
+        records, meta = load_csv(empty_file)
 
-        assert result["data"] == []
-        assert result["metadata"]["empty_file"] is True
+        assert records == []
+        assert meta["empty_file"] is True
 
     def test_load_csv_missing_file(self):
         """Verify error for missing CSV file."""
@@ -313,10 +309,10 @@ class TestLoadCsv:
             writer.writerow(["日本語"])
             writer.writerow(["Ελληνικά"])
 
-        result = load_csv(unicode_file)
+        records, meta = load_csv(unicode_file)
 
-        assert result["data"][0]["text"] == "日本語"
-        assert result["data"][1]["text"] == "Ελληνικά"
+        assert records[0]["text"] == "日本語"
+        assert records[1]["text"] == "Ελληνικά"
 
 
 class TestConnectorCacheRoot:

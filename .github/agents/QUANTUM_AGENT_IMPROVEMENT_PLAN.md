@@ -77,25 +77,21 @@ This acts as the "measurement operator" that collapses agent uncertainty into de
 
 ### 🤖 For AI Agents
 - **Goal:** Autonomous task execution
-- **Entry Point:** [Agent Integration Guide](docs/guides/agent_integration.md)
 - **First Action:** Import `UniversalTaskInterface`
 - **Probability:** |α₁|² = 0.4
 
 ### 👨‍💻 For Developers
 - **Goal:** Extend or modify codebase
-- **Entry Point:** [Developer Guide](docs/guides/developer.md)
 - **First Action:** Read architecture overview
 - **Probability:** |α₂|² = 0.3
 
 ### 🧪 For Researchers
 - **Goal:** Understand algorithms
-- **Entry Point:** [Research Documentation](docs/guides/research.md)
 - **First Action:** Review quantum formalism
 - **Probability:** |α₃|² = 0.2
 
 ### 📚 For Documentation Users
 - **Goal:** API reference lookup
-- **Entry Point:** [API Documentation](docs/api/index.md)
 - **First Action:** Search function signatures
 - **Probability:** |α₄|² = 0.1
 
@@ -778,14 +774,13 @@ Complete index of all public functions in observable basis |f⟩.
 - **Module:** `core.universal_intelligence`
 - **Signature:** `(task_id: str, task_data: List) -> Dict[str, float]`
 - **Quantum State:** |MAML_adaptation⟩
-- **Example:** [Meta-Learning Guide](guides/examples.md#maml)
+- **Example:** [Meta-Learning Guide](../../docs/guides/examples.md#maml)
 - **Tests:** `test_maml_adapt_to_task`
 
 ### adapt_with_maml (MetaPolicyRouter)
 - **Module:** `core.universal_intelligence`
 - **Signature:** `(task_id: str, task_data: List) -> Dict[str, float]`
 - **Entangled With:** `MAMLState.adapt_to_task`
-- **Example:** [Notebook 02](../examples/notebooks/02_meta_learning.ipynb)
 
 ## C
 

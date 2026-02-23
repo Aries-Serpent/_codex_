@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/fix_md_fences.py [options]
-    
+
     Examples:
     $ python scripts/fix_md_fences.py --help
 

@@ -30,8 +30,8 @@
 | [PS-16](#ps-16-production-readiness) | Production Readiness | ✅ Complete | 2026-02-12 | Advancement | Production |
 | [PS-17](#ps-17-operational-excellence) | Operational Excellence | ✅ Complete | 2026-02-12 | Post-Merge | Operations |
 | [PS-18](#ps-18-continuous-improvement) | Continuous Improvement | ✅ Complete | 2026-02-12 | Continuous | Framework |
-| [PS-19](#ps-19-next-evolution) | Next Evolution Phase | ✅ Complete | 2026-02-12 | Evolution | AI/Platform |
-| [PS-20](#ps-20-v40-scoring) | V4.0 Scoring Implementation | ✅ Complete | 2026-02-12 | Evolution | AI/Scoring |
+| [PS-19](#ps-19-next-evolution-phase) | Next Evolution Phase | ✅ Complete | 2026-02-12 | Evolution | AI/Platform |
+| [PS-20](#ps-20-v40-scoring-implementation) | V4.0 Scoring Implementation | ✅ Complete | 2026-02-12 | Evolution | AI/Scoring |
 
 ---
 

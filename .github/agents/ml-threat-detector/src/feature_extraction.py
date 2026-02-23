@@ -2,8 +2,8 @@
 
 import ast
 import re
-from dataclasses import dataclass, asdict
-from typing import Dict, Any, Optional
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, Optional
 
 
 @dataclass

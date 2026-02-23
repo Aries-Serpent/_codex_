@@ -44,7 +44,7 @@ class MessageFlags(IntFlag):
 @dataclass
 class ProtocolHeader:
     """Bridge Protocol v2 header structure.
-    
+
     Wire format:
     | Magic (4B) | Version (1B) | Flags (1B) | Length (4B) | Checksum (4B) |
     Total: 14 bytes
@@ -92,11 +92,11 @@ class ProtocolHeader:
 
 def compress_message(data: bytes, threshold: int = COMPRESSION_THRESHOLD) -> tuple[bytes, bool]:
     """Compress message if above threshold and compression is beneficial.
-    
+
     Args:
         data: Raw message data
         threshold: Minimum size to consider compression
-        
+
     Returns:
         Tuple of (output_data, was_compressed)
     """
@@ -119,11 +119,11 @@ def compress_message(data: bytes, threshold: int = COMPRESSION_THRESHOLD) -> tup
 
 def decompress_message(data: bytes, is_compressed: bool) -> bytes:
     """Decompress message if it was compressed.
-    
+
     Args:
         data: Message data (possibly compressed)
         is_compressed: Whether data is compressed
-        
+
     Returns:
         Decompressed data
     """
@@ -135,10 +135,10 @@ def decompress_message(data: bytes, is_compressed: bool) -> bytes:
 
 def compute_checksum(data: bytes) -> int:
     """Compute CRC32 checksum for message integrity.
-    
+
     Args:
         data: Message data
-        
+
     Returns:
         32-bit checksum
     """
@@ -183,7 +183,7 @@ class ClientInfo:
 
 class MultiClientBridge:
     """Bridge manager with multi-client support.
-    
+
     Features:
     - Client registration and lifecycle management
     - Priority-based message routing
@@ -198,7 +198,7 @@ class MultiClientBridge:
         cleanup_interval: float = 30.0,
     ):
         """Initialize multi-client bridge.
-        
+
         Args:
             max_clients: Maximum number of concurrent clients
             heartbeat_timeout: Seconds before client considered dead
@@ -239,12 +239,12 @@ class MultiClientBridge:
         priority: int = 0,
     ) -> bool:
         """Register a new client.
-        
+
         Args:
             client_id: Unique client identifier
             socket_path: Path to client's socket
             priority: Client priority (higher = more important)
-            
+
         Returns:
             True if registered, False if at capacity
         """
@@ -273,10 +273,10 @@ class MultiClientBridge:
 
     def unregister_client(self, client_id: str) -> bool:
         """Unregister a client.
-        
+
         Args:
             client_id: Client to unregister
-            
+
         Returns:
             True if unregistered, False if not found
         """
@@ -292,10 +292,10 @@ class MultiClientBridge:
 
     def heartbeat(self, client_id: str) -> bool:
         """Update client heartbeat.
-        
+
         Args:
             client_id: Client sending heartbeat
-            
+
         Returns:
             True if client found, False otherwise
         """
@@ -308,10 +308,10 @@ class MultiClientBridge:
 
     def get_client(self, client_id: str) -> Optional[ClientInfo]:
         """Get client info by ID.
-        
+
         Args:
             client_id: Client to look up
-            
+
         Returns:
             ClientInfo if found, None otherwise
         """
@@ -320,7 +320,7 @@ class MultiClientBridge:
 
     def route_by_priority(self) -> Optional[str]:
         """Get socket path for highest priority alive client.
-        
+
         Returns:
             Socket path or None if no clients available
         """
@@ -344,7 +344,7 @@ class MultiClientBridge:
 
     def route_round_robin(self) -> Optional[str]:
         """Get socket path using round-robin among alive clients.
-        
+
         Returns:
             Socket path or None if no clients available
         """
@@ -366,7 +366,7 @@ class MultiClientBridge:
 
     def broadcast_targets(self) -> list[str]:
         """Get socket paths for all alive clients (for broadcast).
-        
+
         Returns:
             List of socket paths
         """
@@ -379,7 +379,7 @@ class MultiClientBridge:
 
     def get_stats(self) -> dict[str, Any]:
         """Get bridge statistics.
-        
+
         Returns:
             Statistics dictionary
         """
@@ -428,12 +428,12 @@ def encode_message(
     compress: bool = True,
 ) -> bytes:
     """Encode a message with protocol v2 header.
-    
+
     Args:
         payload: Message payload
         flags: Message flags
         compress: Whether to attempt compression
-        
+
     Returns:
         Encoded message with header
     """
@@ -458,13 +458,13 @@ def encode_message(
 
 def decode_message(data: bytes) -> tuple[bytes, ProtocolHeader]:
     """Decode a protocol v2 message.
-    
+
     Args:
         data: Raw message data
-        
+
     Returns:
         Tuple of (payload, header)
-        
+
     Raises:
         ValueError: If message is invalid or corrupted
     """

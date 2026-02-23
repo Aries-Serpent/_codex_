@@ -17,7 +17,7 @@ np = pytest.importorskip("numpy")
 torch = pytest.importorskip("torch")
 
 
-def test_rng_restoration_roundtrip(tmp_path: Path) -> None:
+def test_rng_restoration_roundtrip(tmp_path: Path, disable_torch_profiler) -> None:
     random.seed(2024)
     np.random.seed(2024)
     torch.manual_seed(2024)

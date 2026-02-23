@@ -9,7 +9,7 @@ import hashlib
 import json
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Callable, Iterator, Optional
 
@@ -24,15 +24,15 @@ class MemoryChunk:
     content: str
     summary: Optional[str] = None
     token_count: int = 0
-    created_at: datetime = field(default_factory=datetime.now)
-    last_accessed: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    last_accessed: datetime = field(default_factory=lambda: datetime.now(UTC))
     access_count: int = 0
     priority: int = 50
     metadata: dict = field(default_factory=dict)
 
     def access(self):
         """Record an access to this chunk."""
-        self.last_accessed = datetime.now()
+        self.last_accessed = datetime.now(UTC)
         self.access_count += 1
 
 
@@ -388,7 +388,7 @@ class ContextMemory:
 
     def _generate_chunk_id(self, content: str) -> str:
         """Generate unique ID for chunk."""
-        timestamp = datetime.now().isoformat()
+        timestamp = datetime.now(UTC).isoformat()
         hash_input = f"{content[:100]}:{timestamp}"
         return hashlib.sha256(hash_input.encode()).hexdigest()[:16]
 

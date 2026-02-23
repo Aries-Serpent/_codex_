@@ -12,8 +12,8 @@
 This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling.
 
 ## Table of Contents
-- [System Context]()
-- [Container Architecture]()
+- <!-- TODO: Add section or remove TOC entry - [System Context]() -->
+- <!-- TODO: Add section or remove TOC entry - [Container Architecture]() -->
 - [Component Architecture](#component-architecture)
 - [Data Flow](#data-flow)
 - [Operational Concerns](#operational-concerns)

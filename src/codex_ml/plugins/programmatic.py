@@ -21,11 +21,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from contextlib import suppress
-from dataclasses import dataclass, field
+from contextlib import suppress  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
 
-from .base import BasePlugin
-from .registry import DEFAULT_GROUP, _activate_editable_distribution, _iter_entry_points
+from .base import BasePlugin  # noqa: E402
+from .registry import (  # noqa: E402
+    DEFAULT_GROUP,
+    _activate_editable_distribution,
+    _iter_entry_points,
+)
 
 
 @dataclass

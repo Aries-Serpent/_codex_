@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 """Reference metric implementations used by Codex training loops."""
 
 
-import json
-import math
-from abc import ABC, abstractmethod
-from collections import Counter
-from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import math  # noqa: E402
+from abc import ABC, abstractmethod  # noqa: E402
+from collections import Counter  # noqa: E402
+from collections.abc import Iterable, Mapping, Sequence  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import torch

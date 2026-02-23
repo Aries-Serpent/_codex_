@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Ndjson Summary Module
 
 This module provides functionality for ndjson summary.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -29,7 +30,7 @@ import json
 from collections.abc import Iterable, Sequence
 from collections.abc import Mapping as MappingABC
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Union
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -53,7 +54,7 @@ FIELDNAMES: Sequence[str] = (
 )
 
 
-def _iter_metric_files(run_dir: Path, pattern: str | None = None) -> list[Path]:
+def _iter_metric_files(run_dir: Path, pattern: Optional[str] = None) -> list[Path]:
     if run_dir.is_file():
         return [run_dir]
     if pattern:
@@ -72,7 +73,7 @@ def _iter_metric_files(run_dir: Path, pattern: str | None = None) -> list[Path]:
     return ordered
 
 
-def _load_rows(run_dir: Path, *, pattern: str | None = None) -> list[dict[str, Any]]:
+def _load_rows(run_dir: Path, *, pattern: Optional[str] = None) -> list[dict[str, Any]]:
     files = _iter_metric_files(run_dir, pattern)
     if not files:
         raise FileNotFoundError(f"No metrics NDJSON files found in {run_dir}")
@@ -98,7 +99,7 @@ def _load_rows(run_dir: Path, *, pattern: str | None = None) -> list[dict[str, A
     return rows
 
 
-def _coerce_numeric(value: Any) -> float | None:
+def _coerce_numeric(value: Any) -> Optional[float]:
     if isinstance(value, bool):
         return 1.0 if value else 0.0
     if isinstance(value, (int, float)):
@@ -106,7 +107,7 @@ def _coerce_numeric(value: Any) -> float | None:
     return None
 
 
-def _sort_key(timestamp: str | None, step: int | None) -> tuple[str, int]:
+def _sort_key(timestamp: Optional[str], step: Optional[int]) -> tuple[str, int]:
     ts_key = timestamp or ""
     step_key = step if step is not None else -1
     return ts_key, step_key
@@ -167,7 +168,7 @@ def _summarise_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
         sort_key = _sort_key(timestamp if isinstance(timestamp, str) else None, step_int)
 
         tags = row.get("tags")
-        phase_value: str | None = None
+        phase_value: Optional[str] = None
         if isinstance(tags, MappingABC):
             manifest_raw = tags.get("manifest_id")
             if manifest_raw is not None:
@@ -262,7 +263,7 @@ class NdjsonSummarizer:
 
     fieldnames: Sequence[str] = FIELDNAMES
 
-    def __init__(self, run_dir: str | Path, *, pattern: str | None = None) -> None:
+    def __init__(self, run_dir: Union[str, Path], *, pattern: Optional[str] = None) -> None:
         self.run_dir = Path(run_dir).expanduser().resolve()
         self.pattern = pattern
 
@@ -273,7 +274,7 @@ class NdjsonSummarizer:
         rows = self.collect()
         return _summarise_rows(rows)
 
-    def write(self, fmt: str, destination: str | Path | None = None) -> Path:
+    def write(self, fmt: str, destination: Optional[Union[str, Path]] = None) -> Path:
         summary = self.summarise()
         suffix = fmt.lower()
         dest_path = (
@@ -289,15 +290,15 @@ class NdjsonSummarizer:
 
 
 def summarize_directory(
-    run_dir: str | Path, fmt: str, destination: str | Path | None = None
+    run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None
 ) -> Path:
     """Summarize metrics from a run directory to a specific format.
-    
+
     Args:
         run_dir: Directory containing metrics.ndjson files
-        fmt: Output format ('csv' or 'parquet')  
+        fmt: Output format ('csv' or 'parquet')
         destination: Optional destination path
-        
+
     Returns:
         Path to the generated summary file
     """
@@ -306,9 +307,9 @@ def summarize_directory(
 
 
 # Convenience wrapper for backward compatibility with tests
-def summarize(run_dir: str | Path, fmt: str, destination: str | Path | None = None) -> Path:
+def summarize(run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None) -> Path:
     """Convenience wrapper for summarize_directory.
-    
+
     This function provides a simpler interface compatible with existing tests.
     """
     return summarize_directory(run_dir, fmt, destination)
@@ -381,7 +382,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
     return 0
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if not hasattr(args, "func"):

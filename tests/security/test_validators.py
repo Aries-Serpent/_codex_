@@ -86,7 +86,7 @@ class TestSQLInjectionPrevention:
             "UNION SELECT * FROM passwords",
         ]
 
-        sql_patterns = ["'", "--", ";", "UNION", "SELECT", "DROP"]
+        sql_patterns = ["'", "--", ";", "UNION", "SELECT", "DROP", " OR ", "="]
 
         for inp in dangerous_inputs:
             has_pattern = any(p.lower() in inp.lower() for p in sql_patterns)

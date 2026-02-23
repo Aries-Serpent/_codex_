@@ -308,11 +308,13 @@ class TestValidationResults:
             from codex_ml.data import validation
             if hasattr(validation, "ValidationResult"):
                 result = validation.ValidationResult(
-                    valid=True,
+                    rule_name="test_rule",
+                    is_valid=True,
+                    message="Test validation passed",
                     errors=[],
                     warnings=[],
                 )
-                assert result.valid is True
+                assert result.is_valid is True
                 assert len(result.errors) == 0
         except ImportError:
             pytest.skip("ValidationResult not available")

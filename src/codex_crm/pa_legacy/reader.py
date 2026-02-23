@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Readers for legacy Power Automate export packages."""
 
 
-import json
-import zipfile
-from pathlib import Path
-from typing import Any
+import json  # noqa: E402
+import zipfile  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any  # noqa: E402
 
 
 class PowerAutomateParseError(Exception):

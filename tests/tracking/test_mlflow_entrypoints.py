@@ -10,7 +10,12 @@ import importlib
 import os
 import sys
 
+import pytest
+
 from codex_ml.utils.mlflow_entrypoints import configure_mlflow_uri
+
+import importlib.util
+_HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
 
 def test_configure_mlflow_blocks_remote_uri(monkeypatch):
@@ -23,6 +28,7 @@ def test_configure_mlflow_blocks_remote_uri(monkeypatch):
     assert os.environ.get("CODEX_MLFLOW_URI", "").startswith("file:")
 
 
+@pytest.mark.skipif(not _HAS_SITECUSTOMIZE, reason="sitecustomize not installed in this environment")
 def test_sitecustomize_enforces_local_backend(monkeypatch):
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://example.invalid")
     monkeypatch.delenv("CODEX_MLFLOW_ALLOW_REMOTE", raising=False)

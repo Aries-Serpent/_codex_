@@ -330,7 +330,7 @@ d64c69e (origin/copilot/fix-test-collection-error-again) Add fix notice to CI an
 ## Related Resources
 
 ### GitHub Actions
-- **Original Failing Job**: [#62523872141](https://github.com/Aries-Serpent/_codex_/actions/runs/2168342465/job/62523872141)
+- **Original Failing Job**: [#62523872141](https://github.com/Aries-Serpent/_codex_/actions/runs/2168342465 <!-- Note: Logs expire after 90 days -->/job/62523872141)
 - **Workflow File**: `.github/workflows/test-suite.yml`
 - **Branch**: `copilot/fix-test-collection-error-again`
 

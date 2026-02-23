@@ -108,6 +108,7 @@ jobs:
   audit_gap_analysis:
     name: Run Audit Gap Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: |
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'audit-only' || inputs.mode == 'full-suite'))
@@ -177,6 +178,7 @@ jobs:
   qa_walkthrough:
     name: Codebase QA Walkthrough
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: |
       github.event_name == 'pull_request' ||
       (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
@@ -273,6 +275,7 @@ jobs:
   create_improvement_pr:
     name: Create Improvement PR
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [audit_gap_analysis, qa_walkthrough]
     if: |
       always() &&
@@ -296,6 +299,7 @@ jobs:
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [audit_gap_analysis, qa_walkthrough, create_improvement_pr]
     if: always()
 

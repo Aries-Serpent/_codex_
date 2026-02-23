@@ -356,17 +356,28 @@ class QuantumGameState:
 
     def __post_init__(self):
         if self.joint_wavefunction is None:
-            # Initialize as product state
-            self.joint_wavefunction = np.outer(
-                self.blue_state.wavefunction, self.red_state.wavefunction
-            ).flatten()
+            # Support both StrategyState objects and raw numpy probability arrays
+            blue_wf = (
+                self.blue_state.wavefunction
+                if hasattr(self.blue_state, "wavefunction")
+                else np.asarray(self.blue_state, dtype=float)
+            )
+            red_wf = (
+                self.red_state.wavefunction
+                if hasattr(self.red_state, "wavefunction")
+                else np.asarray(self.red_state, dtype=float)
+            )
+            self.joint_wavefunction = np.outer(blue_wf, red_wf).flatten()
 
         self.normalize()
 
     @property
     def dimension(self) -> int:
         """Total Hilbert space dimension m × n"""
-        return self.blue_state.num_strategies * self.red_state.num_strategies
+        if hasattr(self.blue_state, "num_strategies") and hasattr(self.red_state, "num_strategies"):
+            return self.blue_state.num_strategies * self.red_state.num_strategies
+        # Fallback for raw array inputs
+        return len(np.asarray(self.blue_state)) * len(np.asarray(self.red_state))
 
     def normalize(self) -> None:
         """Normalize joint wavefunction"""
@@ -378,6 +389,27 @@ class QuantumGameState:
         """Convert pure state to density matrix: ρ = |ψ⟩⟨ψ|"""
         psi = self.joint_wavefunction
         return np.outer(psi, np.conj(psi))
+
+    def apply_entangling_gate(self, strength: float = 0.5) -> None:
+        """Apply a parametric entangling gate to the joint wavefunction.
+
+        Applies a partial CNOT-style rotation that increases entanglement
+        between the Blue and Red subsystems by the given strength ∈ [0, 1].
+
+        Args:
+            strength: Entanglement strength 0.0 = no-op, 1.0 = full CNOT.
+        """
+        angle = strength * np.pi / 2
+        cos_a, sin_a = np.cos(angle), np.sin(angle)
+        # Vectorised: pair each index i with its mirror partner (n-1-i)
+        partner = self.joint_wavefunction[::-1]
+        # Result is always complex (physically correct for entangled state)
+        self.joint_wavefunction = (
+            cos_a * self.joint_wavefunction.astype(complex)
+            + 1j * sin_a * partner.astype(complex)
+        )
+        self.entanglement_strength = float(min(1.0, self.entanglement_strength + strength))
+        self.normalize()
 
     def get_reduced_density_matrix(self, team: TeamType) -> np.ndarray:
         """Partial trace to get reduced density matrix for one team"""
@@ -577,6 +609,32 @@ class ClassicalGameEngine:
         self.pi_red = self.pi_red + dt * delta_red
         self.pi_red = np.maximum(self.pi_red, 1e-10)
         self.pi_red = self.pi_red / np.sum(self.pi_red)
+
+    def run_dynamics(self, steps: int = 100, learning_rate: float = 0.1) -> dict[str, Any]:
+        """Run replicator dynamics for a fixed number of steps.
+
+        Args:
+            steps: Number of iterations to run
+            learning_rate: Step size (dt) for each replicator update
+
+        Returns:
+            Dictionary with final strategy distributions and step history
+        """
+        history = []
+        for _ in range(steps):
+            self.replicator_dynamics_step(dt=learning_rate)
+            history.append(
+                {
+                    "blue_probs": self.pi_blue.copy(),
+                    "red_probs": self.pi_red.copy(),
+                }
+            )
+        return {
+            "final_blue_probs": self.pi_blue.copy(),
+            "final_red_probs": self.pi_red.copy(),
+            "steps": steps,
+            "history": history,
+        }
 
     def simulate_to_equilibrium(
         self, max_iterations: int = 1000, convergence_threshold: float = 1e-6
@@ -1025,6 +1083,7 @@ class BlueRedTeamSimulator:
             blue_strategies, red_strategies, payoff_blue, payoff_red, entanglement=entanglement
         )
 
+        self.entanglement = entanglement
         self.history: list[dict[str, Any]] = []
 
     def evaluate_hypothesis(

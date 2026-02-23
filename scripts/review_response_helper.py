@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/review_response_helper.py [options]
-    
+
     Examples:
     $ python scripts/review_response_helper.py --help
 
@@ -183,7 +183,7 @@ def track_resolution(
 
     # Mark as resolved - replace only the checkbox symbol
     content = re.sub(
-        f"^⬜ (Comment \\d+ - [^\\n]+\\n[^>]+{comment_id})", f"✅ \\1", content, flags=re.MULTILINE
+        f"^⬜ (Comment \\d+ - [^\\n]+\\n[^>]+{comment_id})", "✅ \\1", content, flags=re.MULTILINE
     )
 
     # Add resolution info

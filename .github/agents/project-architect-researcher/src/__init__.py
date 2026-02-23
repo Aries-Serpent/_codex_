@@ -2,6 +2,6 @@
 
 __version__ = "1.0.0"
 
-from .agent import ProjectArchitectResearcher, NotebookLMSource, ResearchArtifact
+from .agent import NotebookLMSource, ProjectArchitectResearcher, ResearchArtifact
 
 __all__ = ['ProjectArchitectResearcher', 'NotebookLMSource', 'ResearchArtifact']

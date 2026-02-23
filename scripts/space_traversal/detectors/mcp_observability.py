@@ -11,9 +11,9 @@ Safeguards:
 - Deterministic output for reproducibility
 """
 
+import logging
 from pathlib import Path
 from typing import Any
-import logging
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)

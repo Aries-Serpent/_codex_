@@ -82,31 +82,23 @@ class QuantumPlugin:
             raise ImportError(f"Plugin {self.name} is decoherent (failed)")
 
         try:
-            # Use existing safe_call from codebase
-            from src.common.error_handling import safe_call
-
+            # Direct import without safe_call to properly propagate exceptions
+            # This ensures tests can properly mock imports and CI failures are visible
             spec = importlib.util.find_spec(self.import_path)
             if spec is None:
                 self.state = PluginState.DECOHERENT
                 raise ImportError(f"Cannot find spec for {self.import_path}")
 
-            module = safe_call(
-                importlib.util.module_from_spec,
-                spec,
-                operation_name=f"Load plugin {self.name}",
-                default_return=None,
-            )
+            if spec.loader is None:
+                self.state = PluginState.DECOHERENT
+                raise ImportError(f"No loader available for {self.import_path}")
 
+            module = importlib.util.module_from_spec(spec)
             if module is None:
                 self.state = PluginState.DECOHERENT
                 raise ImportError(f"Failed to create module for {self.name}")
 
-            safe_call(
-                spec.loader.exec_module,
-                module,
-                operation_name=f"Execute plugin {self.name}",
-                default_return=None,
-            )
+            spec.loader.exec_module(module)
 
             self._module = module
             self.state = PluginState.COLLAPSED
@@ -182,7 +174,7 @@ class QuantumPluginRegistry:
 
     def get_entangled_plugins(self, plugin_name: str) -> set[str]:
         """
-        Get all plugins entangled with the given plugin.
+        Get all plugins entangled with the given plugin (its dependencies).
 
         Physics: Quantum entanglement - measuring one affects others.
 
@@ -190,9 +182,26 @@ class QuantumPluginRegistry:
             plugin_name: Name of plugin to check
 
         Returns:
-            Set of entangled plugin names
+            Set of plugin names that this plugin depends on (transitively)
         """
-        return self.dependency_graph.get_transitive_deps(plugin_name)
+        # The dependency graph stores edges as: dependency -> dependent
+        # So to find what plugin_name depends on, we need to traverse backwards
+        # We collect all nodes that have a path TO plugin_name
+        visited = set()
+
+        def find_dependencies(node_id: str):
+            """Recursively find all dependencies of node_id."""
+            if node_id not in self.plugins:
+                return
+
+            plugin = self.plugins[node_id]
+            for dep_name in plugin.dependencies:
+                if dep_name not in visited and dep_name in self.plugins:
+                    visited.add(dep_name)
+                    find_dependencies(dep_name)
+
+        find_dependencies(plugin_name)
+        return visited
 
     def load_with_dependencies(self, plugin_name: str) -> Any:
         """

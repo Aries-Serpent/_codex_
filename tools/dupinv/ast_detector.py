@@ -4,8 +4,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
 
-from .schema import DuplicateGroup, MemberFile
 from .ast_parsers.python_parser import FunctionSignature, PythonASTParser
+from .schema import DuplicateGroup, MemberFile
 
 
 class ASTDetector:

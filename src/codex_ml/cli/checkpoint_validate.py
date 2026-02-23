@@ -1,4 +1,6 @@
 """
+from __future__ import annotations
+
 Checkpoint Validate Module
 
 This module provides functionality for checkpoint validate.
@@ -15,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-from __future__ import annotations
 
 import logging
 
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Optional
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -74,7 +75,7 @@ def _detect_state_file(directory: Path) -> Path:
 def validate_checkpoint(
     path: Path,
     *,
-    expect_schema: str | None = None,
+    expect_schema: Optional[str] = None,
     require_digest: bool = True,
 ) -> Mapping[str, Any]:
     """Validate ``path`` as a checkpoint directory or metadata file."""
@@ -126,22 +127,18 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
     def validate_cmd(
         path: Annotated[
             Path,
-            typer.Option(
-                ...,
-                "--path",
-                "-p",
-                exists=True,
+            typer.Argument(
                 help="Checkpoint path to validate.",
             ),
         ],
         schema: Annotated[
-            str,
+            Optional[str],
             typer.Option(
-                "",
+                None,
                 "--schema",
                 help="Expected schema version (e.g. '2').",
             ),
-        ] = "",
+        ] = None,
         show: Annotated[
             bool,
             typer.Option(
@@ -152,9 +149,8 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         ] = False,
     ) -> None:
         try:
-            # Convert empty string to None for backward compatibility
-            schema_param = schema if schema else None
-            info = validate_checkpoint(path, expect_schema=schema_param)
+            # schema_param already None if not provided
+            info = validate_checkpoint(path, expect_schema=schema)
         except CheckpointValidationError as exc:
             logger.debug(f"CheckpointValidationError: {exc}")
             typer.echo(str(exc), err=True)
@@ -168,7 +164,7 @@ else:  # pragma: no cover - Typer missing
     app = None
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     """Entry point for ``python -m codex_ml.cli.checkpoint_validate``."""
 
     logger = init_json_logging()

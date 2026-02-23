@@ -28,21 +28,36 @@ def flow_to_mermaid(name: str, edges: Iterable[Edge]) -> str:
             else:  # pragma: no cover - defensive guard
                 raise TypeError(f"Unsupported edge record: {e!r}")
         rows.sort(key=lambda t: (t[0], t[1], t[2]))
-    out = [f"%% {name}", "graph TD"]
-    nodes = sorted({r[0] for r in rows} | {r[2] for r in rows})
+    out = [f"%% {name}", "flowchart TD"]
+    nodes = sorted({r[0] for r in rows} | {r[2] for r in rows} - {"Close"})
     for n in nodes:
         out.append(f'    {sanitize_id(n)}["{n}"]')
     for src, label, dst in rows:
         label_text = f"|{label}|" if label else ""
-        out.append(f"    {sanitize_id(src)} -->{label_text} {sanitize_id(dst)}")
-    out.append("")
-    return "\n".join(out)
+        src_id = "Z" if src == "Close" else sanitize_id(src)
+        dst_id = "Z" if dst == "Close" else sanitize_id(dst)
+        out.append(f"    {src_id} -->{label_text} {dst_id}")
+    # Terminal close node always last (Mermaid convention: Z[Close])
+    if any(r[2] == "Close" for r in rows):
+        out.append("    Z[Close]")
+    return "\n".join(out) + "\n"
 
 
 def intake_to_mermaid(name: str, steps: Iterable[str]) -> str:
-    """Backward compatible alias that accepts sequential intake steps."""
+    """Backward compatible alias that accepts sequential intake steps.
 
-    return flow_to_mermaid(name, list(steps))
+    Args:
+        name: The name of the flow
+        steps: Sequential intake steps (must contain at least one non-whitespace step)
+
+    Raises:
+        ValueError: If steps is empty or contains only whitespace
+    """
+    steps_list = [s.strip() for s in steps if s.strip()]
+    if not steps_list:
+        raise ValueError("steps must contain at least one non-whitespace step")
+
+    return flow_to_mermaid(name, steps_list)
 
 
 def sanitize_id(s: str) -> str:

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/generate_capability_matrix_md.py [options]
-    
+
     Examples:
     $ python scripts/status/generate_capability_matrix_md.py --help
 

@@ -63,37 +63,49 @@ Usage:
 __version__ = "0.0.0"
 
 # Physics-inspired orchestration
+# Mental mapping for reasoning chains
+from .mental_mapping import (
+    EdgeType,
+    MentalEdge,
+    MentalMappingModel,
+    MentalNode,
+    NodeType,
+    ReasoningStep,
+    get_timestamp,
+    reset_clock,
+    set_clock,
+)
 from .physics_orchestrator import (
     ActionPath,
     ActionType,
+    # Advanced Physics Calculators
+    ConservationLawChecker,
     DecisionState,
-    ForceVector,
-    ImportMigration,
-    ImportMigrationOrchestrator,
-    PhysicsInspiredOrchestrator,
     # Advanced physics patterns
     DiffusionFlowModel,
     EnergyLandscape,
     EnergyState,
-    FlowVector,
-    ReflectionLoop,
-    SubTask,
-    SwarmIntelligence,
-    SwarmParticle,
-    TaskDecomposer,
     # Quantum-Physics Integration
     EntangledDependency,
+    FlowVector,
+    ForceVector,
+    HamiltonianEvolver,
+    ImportMigration,
+    ImportMigrationOrchestrator,
+    PathIntegralCalculator,
+    PhysicsCalculatorSuite,
+    PhysicsInspiredOrchestrator,
     PINNValidator,
+    QuantumOperator,
     QuantumPhysicsOrchestrator,
     QuantumState,
     QuantumWalkExplorer,
+    ReflectionLoop,
+    SubTask,
     SuperpositionExplorer,
-    # Advanced Physics Calculators
-    ConservationLawChecker,
-    HamiltonianEvolver,
-    PathIntegralCalculator,
-    PhysicsCalculatorSuite,
-    QuantumOperator,
+    SwarmIntelligence,
+    SwarmParticle,
+    TaskDecomposer,
 )
 
 # Quantum-inspired game theory
@@ -115,19 +127,6 @@ from .self_healing import (
     IssueType,
     RemediationAction,
     SelfHealingEngine,
-)
-
-# Mental mapping for reasoning chains
-from .mental_mapping import (
-    EdgeType,
-    MentalEdge,
-    MentalMappingModel,
-    MentalNode,
-    NodeType,
-    ReasoningStep,
-    get_timestamp,
-    reset_clock,
-    set_clock,
 )
 
 # Workflow navigation

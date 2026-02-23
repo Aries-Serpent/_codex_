@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_pytest_config.py [options]
-    
+
     Examples:
     $ python scripts/generate_pytest_config.py --help
 
@@ -34,10 +34,10 @@ Last Updated: 2026-01-16
 This script scans the repository for pytest markers and updates pytest.ini
 to ensure all markers are registered, preventing test collection failures.
 """
-from pathlib import Path
+import configparser
 import re
 import sys
-import configparser
+from pathlib import Path
 
 # Patterns for marker discovery
 DECORATOR_PATTERN = re.compile(r'@pytest\.mark\.([a-zA-Z0-9_]+)')
@@ -46,7 +46,7 @@ PYTESTMARK_PATTERN = re.compile(r'pytestmark\s*=\s*pytest\.mark\.([a-zA-Z0-9_]+)
 
 # Built-in pytest markers that should not be registered
 BUILTIN_MARKERS = {
-    'skip', 'skipif', 'xfail', 'parametrize', 'usefixtures', 
+    'skip', 'skipif', 'xfail', 'parametrize', 'usefixtures',
     'filterwarnings', 'tryfirst', 'trylast', 'timeout'
 }
 
@@ -89,7 +89,7 @@ def find_markers_in_file(filepath: Path) -> set[str]:
 
         # Find programmatic marker usage
         markers.update(MARKER_USAGE_PATTERN.findall(content))
-        
+
         # Find pytestmark assignments
         markers.update(PYTESTMARK_PATTERN.findall(content))
 

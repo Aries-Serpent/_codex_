@@ -8,19 +8,19 @@ Comprehensive test suite covering:
 - Integration tests
 - Performance tests
 """
-import pytest
-
-import sys
 import os
+import sys
+
+import pytest
 
 # Add parent to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from adaptive_learning import (
     AdaptiveLearningEngine,
-    RewardShaper,
-    ExperienceReplayBuffer,
     Experience,
+    ExperienceReplayBuffer,
+    RewardShaper,
 )
 
 
@@ -75,7 +75,7 @@ class TestExperienceReplayBuffer:
                 next_state=f"s{i+1}",
             )
             buffer.add(exp)
-        
+
         experiences, weights = buffer.sample(10)
         assert len(experiences) == 10
         assert len(weights) == 10
@@ -131,7 +131,7 @@ class TestRewardShaper:
         """Test weight adaptation."""
         shaper = RewardShaper(adaptive_weights=True)
         initial_accuracy = shaper.weights['accuracy']
-        
+
         # Simulate declining performance
         shaper.adapt_weights(performance_trend=-0.2)
         assert shaper.weights['accuracy'] >= initial_accuracy
@@ -141,7 +141,7 @@ class TestRewardShaper:
         shaper = RewardShaper()
         for _ in range(10):
             shaper.compute_reward(0.8, 0.7, 0.6, 0.5)
-        
+
         stats = shaper.get_statistics()
         assert 'avg_reward' in stats
         assert 'total_samples' in stats
@@ -181,7 +181,7 @@ class TestAdaptiveLearningEngine:
         """Test Q-value update."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1', 'a2'])
-        
+
         state = {'feature': 1.0}
         td_error = engine.update(
             state=state,
@@ -189,7 +189,7 @@ class TestAdaptiveLearningEngine:
             reward=1.0,
             next_state={'feature': 2.0},
         )
-        
+
         assert td_error != 0
         assert len(engine.replay_buffer) == 1
 
@@ -197,7 +197,7 @@ class TestAdaptiveLearningEngine:
         """Test getting Q-value."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1'])
-        
+
         # Update to create Q-value
         engine.update(
             state={'f': 1},
@@ -205,7 +205,7 @@ class TestAdaptiveLearningEngine:
             reward=1.0,
             next_state={'f': 2},
         )
-        
+
         state_key = engine._get_state_key({'f': 1})
         q_value = engine.get_q_value(state_key, 'a1')
         assert q_value > 0
@@ -214,7 +214,7 @@ class TestAdaptiveLearningEngine:
         """Test getting max Q-value."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1', 'a2'])
-        
+
         # Unknown state returns 0
         assert engine.get_max_q_value('unknown') == 0.0
 
@@ -222,7 +222,7 @@ class TestAdaptiveLearningEngine:
         """Test learning from replay buffer."""
         engine = AdaptiveLearningEngine(batch_size=5)
         engine.register_actions(['a1', 'a2'])
-        
+
         # Add experiences
         for i in range(10):
             engine.update(
@@ -231,7 +231,7 @@ class TestAdaptiveLearningEngine:
                 reward=float(i),
                 next_state={'f': i + 1},
             )
-        
+
         avg_td = engine.learn_from_replay()
         assert avg_td >= 0
 
@@ -239,9 +239,9 @@ class TestAdaptiveLearningEngine:
         """Test ending episode."""
         engine = AdaptiveLearningEngine()
         initial_epsilon = engine.epsilon
-        
+
         engine.end_episode(total_reward=10.0)
-        
+
         assert engine.state.episodes == 1
         assert engine.state.total_reward == 10.0
         assert engine.epsilon < initial_epsilon  # Decayed
@@ -249,32 +249,32 @@ class TestAdaptiveLearningEngine:
     def test_epsilon_decay(self):
         """Test epsilon decays over episodes."""
         engine = AdaptiveLearningEngine(epsilon=0.5, epsilon_decay=0.9)
-        
+
         for _ in range(10):
             engine.end_episode(1.0)
-        
+
         assert engine.epsilon < 0.5
 
     def test_epsilon_min_bound(self):
         """Test epsilon doesn't go below minimum."""
         engine = AdaptiveLearningEngine(epsilon=0.1, epsilon_min=0.05, epsilon_decay=0.5)
-        
+
         for _ in range(100):
             engine.end_episode(1.0)
-        
+
         assert engine.epsilon >= 0.05
 
     def test_learning_rate_adaptation(self):
         """Test learning rate adapts."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1'])
-        
+
         # Generate enough history
         for i in range(200):
             engine.update({'f': i}, 'a1', float(i), {'f': i + 1})
             if i % 10 == 0:
                 engine.end_episode(float(i))
-        
+
         # Learning rate should be within ±20% of base
         assert 0.8 * engine.base_learning_rate <= engine.learning_rate <= 1.2 * engine.base_learning_rate
 
@@ -282,10 +282,10 @@ class TestAdaptiveLearningEngine:
         """Test getting statistics."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1'])
-        
+
         engine.update({'f': 1}, 'a1', 1.0, {'f': 2})
         engine.end_episode(1.0)
-        
+
         stats = engine.get_statistics()
         assert 'episodes' in stats
         assert 'avg_reward' in stats
@@ -296,21 +296,21 @@ class TestAdaptiveLearningEngine:
         """Test saving and loading policy."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1', 'a2'])
-        
+
         # Train
         for i in range(10):
             engine.update({'f': i}, 'a1', float(i), {'f': i + 1})
         engine.end_episode(10.0)
-        
+
         # Save
         policy = engine.save_policy()
         assert 'q_table' in policy
         assert 'actions' in policy
-        
+
         # Load into new engine
         new_engine = AdaptiveLearningEngine()
         new_engine.load_policy(policy)
-        
+
         assert new_engine.actions == ['a1', 'a2']
         assert new_engine.state.episodes == 1
 
@@ -318,12 +318,12 @@ class TestAdaptiveLearningEngine:
         """Test Q-value convergence tracking."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1'])
-        
+
         # Generate stable Q-values
         for i in range(200):
             engine.update({'f': 0}, 'a1', 1.0, {'f': 0})
         engine.end_episode(1.0)
-        
+
         # Should have some convergence measure
         assert engine.state.q_value_convergence >= 0
 
@@ -339,28 +339,28 @@ class TestIntegration:
             batch_size=5,
         )
         engine.register_actions(['good', 'bad'])
-        
+
         # Simulate learning episodes
         for episode in range(20):
             state = {'complexity': episode % 5}
             total_reward = 0
-            
+
             for step in range(10):
                 action = engine.select_action(state)
-                
+
                 # Reward good actions
                 reward = 1.0 if action == 'good' else -0.5
                 total_reward += reward
-                
+
                 next_state = {'complexity': (episode + step) % 5}
                 engine.update(state, action, reward, next_state)
                 state = next_state
-                
+
                 # Learn from replay
                 engine.learn_from_replay()
-            
+
             engine.end_episode(total_reward)
-        
+
         # Engine should have learned
         assert engine.state.episodes == 20
         assert engine.state.improvements > 0
@@ -369,20 +369,20 @@ class TestIntegration:
         """Test reward shaper with engine."""
         engine = AdaptiveLearningEngine()
         shaper = engine.reward_shaper
-        
+
         reward, _ = shaper.compute_reward(
             accuracy=0.9,
             speed=0.8,
             confidence=0.7,
             coherence=0.6,
         )
-        
+
         assert reward > 0
-        
+
         # Use shaped reward in learning
         engine.register_actions(['a1'])
         engine.update({'f': 1}, 'a1', reward, {'f': 2})
-        
+
         assert len(engine.replay_buffer) == 1
 
 
@@ -392,7 +392,7 @@ class TestPerformance:
     def test_buffer_performance(self):
         """Test buffer handles large capacity."""
         buffer = ExperienceReplayBuffer(capacity=100_000)
-        
+
         # Add many experiences
         for i in range(10_000):
             buffer.add(Experience(
@@ -401,7 +401,7 @@ class TestPerformance:
                 reward=1.0,
                 next_state=f"s{i+1}",
             ))
-        
+
         # Should sample quickly
         experiences, _ = buffer.sample(64)
         assert len(experiences) == 64
@@ -410,7 +410,7 @@ class TestPerformance:
         """Test Q-table handles many states."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1', 'a2', 'a3'])
-        
+
         # Add many unique states
         for i in range(1000):
             engine.update(
@@ -419,14 +419,14 @@ class TestPerformance:
                 reward=1.0,
                 next_state={'f1': i + 1, 'f2': (i + 1) * 2},
             )
-        
+
         assert len(engine.q_table) == 1000
 
     def test_learning_stability(self):
         """Test learning remains stable over many episodes."""
         engine = AdaptiveLearningEngine()
         engine.register_actions(['a1', 'a2'])
-        
+
         rewards = []
         for ep in range(100):
             total = 0
@@ -435,7 +435,7 @@ class TestPerformance:
                 total += 1
             engine.end_episode(total)
             rewards.append(total)
-        
+
         # Learning should be stable (no crashes, reasonable values)
         assert len(rewards) == 100
         assert engine.state.avg_reward > 0

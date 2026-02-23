@@ -19,14 +19,11 @@ Usage:
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import contextlib
 import importlib
 import importlib.util
 import json
+import logging
 import os
 import time
 import warnings
@@ -53,6 +50,8 @@ from codex_ml.utils.checkpoint_core import (
     save_checkpoint,
 )
 from codex_ml.utils.repro import capture_environment, set_seed
+
+logger = logging.getLogger(__name__)
 
 try:  # optional torch
     import torch
