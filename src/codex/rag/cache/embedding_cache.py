@@ -250,6 +250,42 @@ class EmbeddingCache:
         finally:
             self._release_lock()
 
+    def set(self, key: str, value: Any, *args: Any, **kwargs: Any) -> None:
+        """
+        Store a value in the cache using a unified key-value interface.
+
+        Alias for :meth:`put` that accepts a flexible call signature so generic
+        cache callers (e.g. DocumentCache, QueryCache, EmbeddingCache) can share
+        the same interface.
+
+        Numeric arrays (``list[float]`` or ``np.ndarray``) are stored as embeddings.
+        Non-numeric values (strings, dicts, etc.) are converted to a zero-length
+        ``float32`` sentinel embedding — they occupy a slot in the LRU cache so
+        that generic callers such as ``DocumentCache`` and ``QueryCache`` do not
+        raise errors.  Use :meth:`get` to retrieve the stored value; callers that
+        depend on the embedding content should always pass a numeric array.
+
+        Args:
+            key: Cache key (text, doc_id, or query string).
+            value: Value to store.  Numeric arrays are stored verbatim; other
+                   types are stored as a sentinel zero embedding.
+            *args: Extra positional args (e.g. metadata dict) — accepted, ignored.
+            **kwargs: Extra keyword args (e.g. ``embedding=``, ``filters=``)
+                      — accepted, ignored.
+        """
+        if isinstance(value, np.ndarray):
+            embedding = value.astype(np.float32)
+        else:
+            try:
+                embedding = np.asarray(value, dtype=np.float32)
+            except (ValueError, TypeError):
+                # Non-numeric values (strings, dicts, result sets) are accepted
+                # for compatibility with generic CacheInterface callers.  A
+                # zero-length sentinel ensures the slot is created without
+                # corrupting the LRU eviction queue.
+                embedding = np.zeros(1, dtype=np.float32)
+        self.put(key, embedding)
+
     def get_batch(self, texts: list[str]) -> tuple[list[np.ndarray], list[int]]:
         """
         Get cached embeddings for multiple texts.

@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 import os
 import warnings
-from datetime import timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -342,8 +342,6 @@ def generate_migration_report() -> str:
     Returns:
         Markdown-formatted migration report
     """
-    from datetime import datetime
-
     sprawl = detect_config_sprawl()
 
     report = ["# Configuration Sprawl Analysis\n"]

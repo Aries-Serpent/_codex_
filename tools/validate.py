@@ -24,8 +24,11 @@ from typing import Iterable
 
 try:
     from defusedxml import ElementTree as ET
-except ImportError:  # defusedxml is an optional dependency; fall back to stdlib
-    import xml.etree.ElementTree as ET  # noqa: S405 — fallback when defusedxml absent
+except ImportError as _defusedxml_err:
+    raise ImportError(
+        "defusedxml is required for safe XML parsing in tools/validate.py. "
+        "Install it with: pip install defusedxml"
+    ) from _defusedxml_err
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "run_validation.sh"

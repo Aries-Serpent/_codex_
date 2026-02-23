@@ -43,13 +43,9 @@ from codex_ml.training import strategies
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
-    resolve_strategy,
 )
-from codex_ml.utils.checkpoint_core import (
-    CheckpointMeta,
-    load_checkpoint,
-    save_checkpoint,
-)
+from codex_ml.utils import checkpoint_core as _ckpt_core
+from codex_ml.utils.checkpoint_core import CheckpointMeta
 from codex_ml.utils.repro import capture_environment, set_seed
 
 logger = logging.getLogger(__name__)
@@ -278,9 +274,10 @@ def _emit_checkpoint_epoch(
 
     metric_value = _coerce_metric_value(metrics.get(cfg.best_metric))
 
-    checkpoint_path, checkpoint_meta = save_checkpoint(
+    checkpoint_path, checkpoint_meta = _ckpt_core.save_checkpoint(
         ckpt_dir,
-        state=checkpoint_state,
+        payload=checkpoint_state,
+        metadata={"epoch": epoch, "metrics": metrics},
         metric_value=metric_value,
         metric_key=cfg.best_metric,
         config={
@@ -440,7 +437,7 @@ def run_unified_training(
     # Pre-resume load if requested
     if cfg.resume_from:
         try:
-            loaded_state, _ = load_checkpoint(cfg.resume_from, restore_rng=True)
+            loaded_state, _ = _ckpt_core.load_checkpoint(cfg.resume_from, restore_rng=True)
             payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover

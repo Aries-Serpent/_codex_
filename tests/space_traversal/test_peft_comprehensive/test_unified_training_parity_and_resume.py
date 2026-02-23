@@ -6,6 +6,7 @@ Test module for unified training parity and resume.
 
 from __future__ import annotations
 
+import types
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
@@ -82,9 +83,11 @@ def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
         saved["metadata"] = dict(metadata)
         return Path(out_dir) / "state.pt"
 
-    def fake_load(path: str | Path):
+    def fake_load(path: str | Path, **_kwargs: Any):
         saved["loaded"] = str(path)
-        return {"model_state": {"w": 1}, "optimizer_state": {"lr": 0.01}}
+        state_dict = {"model_state": {"w": 1}, "optimizer_state": {"lr": 0.01}}
+        fake_meta = types.SimpleNamespace(sha256=None, rng=None)
+        return state_dict, fake_meta
 
     monkeypatch.setattr(checkpoint_core, "save_checkpoint", fake_save)
     monkeypatch.setattr(checkpoint_core, "load_checkpoint", fake_load)
