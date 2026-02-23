@@ -1,20 +1,35 @@
 # Agent Ecosystem Mapping - Aries-Serpent/_codex_
 
-**Version**: 1.0.0  
-**Date**: 2026-01-23  
+**Version**: 2.1.0  
+**Date**: 2026-02-23  
 **Purpose**: Comprehensive mapping of all agents in the _codex_ repository ecosystem  
-**Status**: 🟢 Active - Implementation Roadmap
+**Status**: 🟢 Active - 70+ Agents Operational (S70 Update)
 
 ---
 
 ## Executive Summary
 
-This document maps the complete agent ecosystem for the _codex_ repository, detailing 12 specialized agents designed to automate CI/CD, testing, security, compliance, and documentation workflows. Each agent follows the **Cognitive Brain** architecture with **PDA (Perception-Decision-Action) loops** and **AfterMath tagging** for continuous learning.
+This document maps the complete agent ecosystem for the _codex_ repository. As of S70,
+the ecosystem comprises **70+ specialized agents** across CI/CD, security, testing,
+documentation, RAG/ML, configuration, cognitive brain, and repository management.
 
 **Ecosystem Maturity**:
-- ✅ **Implemented**: ci-testing-agent.v1 (production ready)
-- 📋 **Planned**: 11 additional agents (specifications complete)
-- 🎯 **Target**: Full ecosystem by Phase 2 (Current Cycle)
+- ✅ **Production**: 34 agents (AGENT_REGISTRY.yaml)
+- ✅ **Active**: 70+ agent files in `.github/agents/`
+- 🔄 **S70 Additions**: Recon Scout (new), 7 registry entries updated
+- 🎯 **Target**: Full AAIS integration (Phase 3, Genesis-active)
+
+**S67–S70 Additions** (8 new agents):
+| Agent ID | Session | Purpose |
+|----------|---------|---------|
+| `unified-security-scanner` | S67 | Multi-scanner security audit |
+| `cross-agent-knowledge-graph` | S61/S67 | Persistent fix pattern graph |
+| `codeql-alert-resolution-agent` | S67 | CodeQL auto-remediation |
+| `rag-meta-tensor-regression-agent` | S69 | RAG meta-tensor guard |
+| `ci-triage-pipeline-agent` | S67 | Systematic CI failure triage |
+| `python-architect-agent` | S68 | Architecture review |
+| `test-pattern-guardian` | S67 | Test quality enforcement |
+| `recon-scout-agent` | S70 | Codebase blocker discovery |
 
 ---
 

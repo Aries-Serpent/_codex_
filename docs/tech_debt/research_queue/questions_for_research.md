@@ -377,6 +377,186 @@ Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)
 
 ---
 
+---
+
+### DRQ-S70-001: `test_property_based.py` Fails with `ImportError: Optional dependency 'chat' is not installed`
+
+**Category**: Test Infrastructure / Import Chain  
+**Priority**: High  
+**Impact**: High — blocks 16 tests in quick suite  
+**Created**: 2026-02-23 (S70)  
+**Status**: 🔴 OPEN — root cause unresolved  
+**CI Run**: `22291570163` (sha `8eab1b2`, branch `copilot/sub-pr-3336-again`)
+
+#### Context
+**Where discovered**: `tests/agents/test_property_based.py` — 16 failures in validation (quick) suite  
+**What happened**: Pure mathematical/property-based tests (e.g., `test_energy_always_non_negative`,
+`test_set_properties`) fail at collection or first execution with
+`ImportError: Optional dependency 'chat' is not installed; install it to enable this functionality.`  
+**Error origin**: `configs/sitecustomize.py:59` — the `_missing_attr` function of the `chat` stub module  
+**Imports in failing file**:
+```python
+from agents.agent_memory import MemoryEntry
+from agents.physics_orchestrator import DecisionState
+from agents.quantum_game_theory import StrategyState
+```
+None of these modules import `chat` at the top level.
+
+#### Research Questions
+1. Which code path between `test_property_based.py` import and Hypothesis test execution accesses an attribute of the `chat` stub?
+2. Does `configs/sitecustomize.py` run during pytest startup? If yes, which `.pth` / `PYTHONPATH` mechanism triggers it?
+3. Does `agents` resolve to `src/agents/` (stub-using orchestrator) or root `agents/` in CI? If `src/agents/`, what does `src/agents/orchestrator.py` import that touches `chat`?
+4. Does `_install_optional_stub("chat")` at `sitecustomize.py:88` interfere with `from codex.chat import ChatSession` in other conftest fixtures? Could it poison a session-scoped fixture that all tests in the `agents/` dir inherit?
+5. Does Hypothesis's `@given` decorator lazy-import anything that triggers `chat` attribute access?
+
+#### Evidence Log
+- `configs/sitecustomize.py:88` — `_install_optional_stub("chat")` installs a stub with `__getattr__` that raises `ImportError`
+- `src/agents/orchestrator.py:24` — `from src.config.openai_client import CodexOpenAIClient` → likely imports something via the `chat` path
+- Hypothesis `FlakyFailure` trace: `INTERESTING from ImportError at configs/sitecustomize.py:59`
+
+#### Hypothesis
+`src/agents/orchestrator.py` imports from `src.config.openai_client` which imports `chat` (the standalone module stubbed in sitecustomize). When pytest collects `tests/agents/`, it loads all conftest fixtures, one of which imports from `src/agents/` (resolves to the stub-touching path), touching `chat` stub's `__getattr__`.
+
+#### Suggested Next Steps
+- [ ] Add `print(sys.modules.get('agents'))` debug fixture to `tests/agents/conftest.py` to confirm which `agents` package is loaded
+- [ ] Check `src/config/openai_client.py` for `import chat` or `from chat import`
+- [ ] Add `pytest.importorskip("chat")` or `@pytest.mark.skipif` to the test file as a temporary bypass
+- [ ] Consider moving pure math property tests out of `tests/agents/` to avoid the conftest fixture inheritance
+
+---
+
+### DRQ-S70-002: `test_data_splits.py` `AttributeError: module 'torch' has no attribute 'utils'`
+
+**Category**: Test Infrastructure / Stub Interference  
+**Priority**: High  
+**Impact**: High — 4 tests blocked in quick suite  
+**Created**: 2026-02-23 (S70)  
+**Status**: 🔴 OPEN  
+**CI Run**: `22291570163`
+
+#### Context
+**Where discovered**: `tests/unit/data/test_data_splits.py` — 4 failures  
+**What happened**:
+```
+AttributeError: module 'torch' has no attribute 'utils'
+AttributeError: module 'torch' has no attribute 'ones'
+```
+Tests call `torch.utils.data.TensorDataset(...)` and `torch.ones(...)` after
+`torch = pytest.importorskip("torch")` — which should return the real torch (CI installs it).
+
+#### Research Questions
+1. Is the `torch` stub from `configs/sitecustomize.py` (only has `float32/float16/bfloat16` attrs) being returned by `pytest.importorskip("torch")` instead of real torch?
+2. Under what condition does `_install_optional_stub("torch")` install the stub even when `torch` IS installed? (e.g., if torch initialization fails with `OSError: libgomp.so not found`)
+3. Does PyTorch 2.6.x on the GitHub Actions `ubuntu-latest` runner require explicit `import torch.utils.data` before `torch.utils` is accessible as a module attribute?
+4. Is `configs/sitecustomize.py` executed via `.pth` file insertion, and does it execute BEFORE torch is fully initialized in the CI environment?
+
+#### Evidence Log
+- `configs/sitecustomize.py:69–76` — `_install_optional_stub("torch", attrs={...})` only provides 3 float-type attrs
+- Test pattern: `torch = pytest.importorskip("torch"); torch.utils.data.TensorDataset(...)` 
+- CI torch installed via: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
+
+#### Hypothesis
+`sitecustomize.py` executes during `pip install -e .` (or early Python startup). At that point, torch's C-extension may fail to initialize (no CUDA, missing libgomp on slim CI runner), causing `__import__("torch")` to raise `OSError`. The stub is then registered. When the real `torch` wheel is later pip-installed, it is NOT re-imported into the running process (pip doesn't update `sys.modules`). The next pytest session starts fresh — BUT if `sitecustomize.py` is loaded via a `.pth` file that runs early in the new process, and torch STILL fails to initialize before `.pth` execution completes, the stub gets registered again.
+
+#### Suggested Next Steps
+- [ ] Add `_install_optional_stub` debug logging: print which module triggered the fallback path
+- [ ] Test: `python -c "import torch; print(torch.__version__); import torch.utils.data; print('ok')"` in CI step before pytest
+- [ ] Replace `torch.utils.data.TensorDataset(...)` in tests with explicit `import torch.utils.data; torch.utils.data.TensorDataset(...)` as interim fix
+- [ ] Check if `.pth` files in site-packages trigger `sitecustomize.py` re-execution
+
+---
+
+### DRQ-S70-003: `codex.training` Missing `load_training_cfg` and `run_hf_trainer` Public API
+
+**Category**: Missing Implementation  
+**Priority**: Medium  
+**Impact**: Medium — 3 slow-suite tests blocked  
+**Created**: 2026-02-23 (S70)  
+**Status**: 🟡 PARTIAL FIX APPLIED (stub added)  
+**Tracked tests**: `tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py`
+
+#### Context
+`tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py` patches
+`codex.training.load_training_cfg` and `codex.training.run_hf_trainer` via `monkeypatch.setattr`.
+Neither function exists in `src/codex/training.py`. Additionally `codex.training.main()` does not
+accept a `argv` parameter — the test calls `ft.main(["--output-dir", ..., "--engine", "hf"])`.
+
+#### Research Questions
+1. Was `load_training_cfg` / `run_hf_trainer` originally in `codex.training` and later removed, or were these tests written ahead of implementation?
+2. What should `load_training_cfg(**kwargs)` return? An `OmegaConf` DictConfig? A plain dict? Does it read from a YAML file path or from CLI kwargs?
+3. What is the intended behavior of `run_hf_trainer(texts, output_dir, **kwargs)`? Is it a wrapper around `run_functional_training`? Around `codex_ml.train_loop`?
+4. Should `main()` in `codex.training` accept `argv`? Or should the test call a different entry point?
+
+#### Interim Fix Applied (S70)
+- Added `load_training_cfg` stub returning `OmegaConf.create({})` when OmegaConf available  
+- Added `run_hf_trainer` stub delegating to `run_functional_training`  
+- Updated `main(argv=None)` to accept args list and parse `--engine`/`--output-dir`  
+- See commit `{TO_BE_FILLED}` for exact changes
+
+---
+
+### DRQ-S70-004: `datetime.now()` TZ-naive Usage in 47 Source Files
+
+**Category**: Code Quality / Timezone Safety  
+**Priority**: Medium  
+**Impact**: Medium — affects timestamp correctness across the codebase  
+**Created**: 2026-02-23 (S70)  
+**Status**: 🟡 PARTIAL FIX APPLIED  
+**Files**: 47 occurrences in `src/` excluding `context_management/`
+
+#### Context
+TD-001 (completed S61–S62) fixed `datetime.now()` to `datetime.now(timezone.utc)` in
+`src/context_management/`. TD-001 Extension targets the remaining 47 occurrences in:
+- `src/bridge_types.py` (9 occurrences)
+- `src/cognitive_brain/experiments/exp6_validation.py` (4)
+- `src/cognitive_brain/quantum/ghz_states.py` (3)
+- `src/cognitive_brain/quantum/multi_agent_coordinator.py` (3)
+- `src/codex/cli.py`, `src/codex/rag/analytics/dashboard.py`, `src/codex/logging/error_handler.py`
+- `src/codex_ml/events/base.py`, `src/codex_ml/training/curriculum.py`, etc.
+
+#### Research Questions
+1. Do any of these naive datetimes interact with external APIs (MLflow, W&B, telemetry) that expect UTC ISO strings?
+2. Does `src/codex_ml/tokenization/cache.py` use naive datetimes for TTL comparisons? If so, mixing naive and aware datetimes will raise `TypeError` in Python 3.12.
+3. Is `datetime.now()` in `src/cognitive_brain/experiments/` intentionally local-time for human-readable logging?
+
+#### Suggested Fix Pattern
+```python
+# Before
+from datetime import datetime
+ts = datetime.now().isoformat()
+
+# After
+from datetime import datetime, timezone
+ts = datetime.now(timezone.utc).isoformat()
+```
+
+---
+
+### DRQ-S70-005: Quick-Suite `test_property_based.py` `hypothesis.errors.FlakyFailure`
+
+**Category**: Test Flakiness / Hypothesis  
+**Priority**: Medium  
+**Impact**: Medium — flaky failures mask real failures in CI  
+**Created**: 2026-02-23 (S70)  
+**Status**: 🔴 OPEN  
+
+#### Context
+Several Hypothesis tests show `FlakyFailure: Inconsistent results from replaying a test case!`  
+This means Hypothesis found a failing example, but when it replayed the exact same inputs, it got a different result — indicating **non-determinism** in the test.
+
+The inconsistency is between:
+- `INTERESTING from ImportError at configs/sitecustomize.py:59` (first run)
+- `INTERESTING from FlakyStrategyDefinition` (replay)
+
+This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — sometimes the stub is hit, sometimes it isn't.
+
+#### Research Questions
+1. Is there a Hypothesis database (`hypothesis/.hypothesis/`) being reused across test runs, causing replay of previously-found-failing examples that may no longer be reproducible?
+2. Does the `chat` import path depend on Python module import ordering which varies by test execution order?
+3. Should `@settings(suppress_health_check=[HealthCheck.too_slow])` be added to stabilize flaky Hypothesis tests?
+
+---
+
 ## Summary
 
 | ID   | Title                                              | Category        | Priority | Impact  | Status             |
@@ -388,3 +568,8 @@ Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)
 | Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  | ⏳ Awaiting Research |
 | Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    | ⏳ Awaiting Research (S67: interim fix) |
 | Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
+| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | 🔴 OPEN |
+| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | 🔴 OPEN |
+| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | 🟡 Partial Fix |
+| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | 🟡 Partial Fix |
+| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | 🔴 OPEN |

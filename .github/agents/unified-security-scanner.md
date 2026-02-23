@@ -98,3 +98,42 @@ where:
 - **secret-detection-agent** (sub-agent, E-09)
 - **bridge-security-monitor** (IPC security — retained independent)
 - **unified-doc-agent** (M-02) — documentation parallel
+
+---
+
+## 🔧 Capabilities
+
+| Capability | Description | Status |
+|------------|-------------|--------|
+| **CVE Scanning** | `pip-audit` + `safety` on all dependency files | ✅ Active |
+| **Secret Detection** | Entropy-based + regex pattern (E-09 patterns) across all commits | ✅ Active |
+| **GHAS Alert Triage** | GitHub Advanced Security alert ingestion & classification | ✅ Active |
+| **SBOM Generation** | CycloneDX-format Software Bill of Materials output | ✅ Active |
+| **Auto-Remediation** | PR-based dependency bumps for known CVEs | ✅ Active |
+| **Risk Scoring** | Unified CVSS + entropy + context risk score (0–10) | ✅ Active |
+| **Cognitive Brain** | Pattern storage and cross-session learning | ✅ Active |
+
+## 📋 Activation
+
+```bash
+# Full security audit (all sub-scanners)
+@copilot Use the Unified Security Scanner to audit the full repository
+
+# Dependency-only scan
+@copilot Use the Unified Security Scanner to check requirements.txt for CVEs
+
+# Secret detection only
+@copilot Use the Unified Security Scanner to detect exposed secrets in the last 10 commits
+```
+
+## 🛡️ Security Self-Constraints
+
+- **Never** commit raw secret values to any file — log redacted versions only
+- **Never** execute arbitrary shell commands from alert content
+- **Read-only** mode available (`--dry-run`) for audit without modification
+- All remediation PRs require human approval before merge
+
+## 📝 Status
+
+**Version**: 1.0.0-m01 | **Batch**: M-01 | **Created**: 2026-02-21  
+**AAIS Contribution**: +6.0 points | **Cognitive Level**: 4

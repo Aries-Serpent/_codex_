@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 
@@ -60,7 +60,7 @@ class TokenizationCache:
         key = self._get_cache_key(text, tokenizer_config)
         if key in self.cache:
             entry = self.cache[key]
-            if datetime.now() - entry["timestamp"] < self.ttl:
+            if datetime.now(timezone.utc) - entry["timestamp"] < self.ttl:
                 return entry["tokens"]
             else:
                 # Cache expired, remove entry
@@ -76,7 +76,7 @@ class TokenizationCache:
             tokens: Tokenization result to cache
         """
         key = self._get_cache_key(text, tokenizer_config)
-        self.cache[key] = {"tokens": tokens, "timestamp": datetime.now()}
+        self.cache[key] = {"tokens": tokens, "timestamp": datetime.now(timezone.utc)}
 
     def invalidate_all(self) -> None:
         """Invalidate all cached entries.
@@ -93,7 +93,7 @@ class TokenizationCache:
             Number of entries removed
         """
         expired_keys = []
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         for key, entry in self.cache.items():
             if now - entry["timestamp"] >= self.ttl:
@@ -121,7 +121,7 @@ class TokenizationCache:
         if not self.cache:
             return {"size": 0, "oldest_entry_age_seconds": 0, "expired_count": 0}
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         ages = [(now - entry["timestamp"]).total_seconds() for entry in self.cache.values()]
         expired = sum(1 for age in ages if timedelta(seconds=age) >= self.ttl)
 

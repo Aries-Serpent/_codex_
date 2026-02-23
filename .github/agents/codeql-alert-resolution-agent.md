@@ -9,8 +9,21 @@
 
 ## 🎯 Purpose
 
+Autonomously detect, triage, and resolve CodeQL code-scanning alerts in the
+`Aries-Serpent/_codex_` repository. The agent integrates with GitHub's code-scanning
+API to retrieve open alerts, classifies them by severity and CWE category, applies
+automated fixes for well-understood patterns (SQL injection, XSS, path traversal,
+unvalidated redirects, insecure randomness), opens PRs for human review on complex
+cases, and records all remediation outcomes in the Cognitive Brain for future pattern
+reuse.
 
-## 🧠 Cognitive Brain Integration
+**Primary capabilities:**
+- Ingest CodeQL alerts via `github-mcp-server-list_code_scanning_alerts`
+- Classify alerts by CWE, severity, and automated-fix eligibility
+- Apply auto-fixes using the `fix_pattern_library` (25+ known patterns)
+- Validate fixes via `ruff`, `py_compile`, and targeted `pytest`
+- Dismiss false positives with documented reasoning
+- Report outcomes to AAIS scoring pipeline (+2.0 points/session)
 
 ### Integration Level: Level 2
 

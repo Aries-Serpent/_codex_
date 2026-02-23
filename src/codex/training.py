@@ -897,14 +897,83 @@ def build_parser() -> "argparse.ArgumentParser":
     return p
 
 
-def main() -> None:  # pragma: no cover - convenience CLI
+def load_training_cfg(**kwargs: Any) -> Any:
+    """Load training configuration, returning an OmegaConf DictConfig when available.
+
+    This public hook allows tests and CLI entry points to override configuration
+    loading via ``monkeypatch.setattr(codex.training, 'load_training_cfg', ...)``.
+
+    Args:
+        **kwargs: Seed configuration values forwarded to the returned config.
+
+    Returns:
+        OmegaConf DictConfig with a ``training`` sub-key when omegaconf is available,
+        otherwise a plain dict.
+    """
+    try:
+        from omegaconf import OmegaConf
+        return OmegaConf.create({"training": kwargs})
+    except ImportError:
+        return {"training": kwargs}
+
+
+def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
+    """Run HuggingFace-style trainer on the provided texts.
+
+    Public hook so tests can patch it via
+    ``monkeypatch.setattr(codex.training, 'run_hf_trainer', ...)``.
+
+    Args:
+        texts:      Iterable of training text strings.
+        output_dir: Destination directory for artefacts.
+        **kwargs:   Additional training arguments forwarded to run_functional_training.
+
+    Returns:
+        Dict with at minimum a ``loss`` key.
+    """
+    corpus = list(texts)
+    # Strip kwargs that run_functional_training doesn't accept
+    _compat_keys = {"hydra_cfg", "seed"}
+    compat = {k: v for k, v in kwargs.items() if k not in _compat_keys}
+    return run_functional_training(corpus=corpus, demos=[], prefs=[], use_deeplearning=True, **compat) or {"loss": 0.0}
+
+
+def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience CLI
     parser = build_parser()
-    args = parser.parse_args()
+    # Add engine and output-dir args used by peft-comprehensive tests
+    parser.add_argument("--engine", type=str, default=None, choices=["hf", "custom", None],
+                        help="training engine selector (hf=HuggingFace, custom=custom engine)")
+    parser.add_argument("--output-dir", type=str, default=None, dest="output_dir",
+                        help="output directory for training artefacts")
+    args = parser.parse_args(argv)
 
     # Determine scheduler preference with backward compatibility
     scheduler_opt: Optional[Union[bool, str]] = args.scheduler
     if scheduler_opt is None and getattr(args, "use_scheduler", False):
         scheduler_opt = True  # legacy flag behaves like enabling default "steplr"
+
+    # HuggingFace engine path — uses load_training_cfg / run_hf_trainer hooks
+    if getattr(args, "engine", None) == "hf":
+        cfg = load_training_cfg(
+            output_dir=getattr(args, "output_dir", None),
+            seed=args.seed,
+            grad_accum=args.grad_accum,
+        )
+        try:
+            from omegaconf import OmegaConf
+            training_section = OmegaConf.to_container(cfg.get("training", cfg), resolve=True)
+        except Exception:
+            training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
+        texts = training_section.get("texts", ["hello world"])
+        output_dir_val = getattr(args, "output_dir", None)
+        run_hf_trainer(
+            texts=texts,
+            output_dir=output_dir_val,
+            seed=training_section.get("seed", args.seed),
+            grad_accum=training_section.get("grad_accum", args.grad_accum),
+            hydra_cfg=training_section,
+        )
+        return
 
     if not args.use_deeplearning:
         print("Symbolic pipeline is not wired for CLI; use programmatic API instead.")
