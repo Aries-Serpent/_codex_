@@ -1,7 +1,7 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "generated": "2026-02-24T08:40:00Z",
-  "session": "S84",
+  "session": "S85",
   "description": "Cross-Agent Knowledge Graph \u2014 PR #3344 codebase intelligence index",
   "nodes": [
     {
@@ -282,6 +282,133 @@
       "session_introduced": "S82",
       "status": "active",
       "notes": "getattr(trainer.state, 'last_model_checkpoint', None) \u2014 transformers 5.2.0 removed TrainerState.last_model_checkpoint"
+    },
+    {
+      "id": "S85-patterns",
+      "type": "hub",
+      "label": "S85 Pattern Hub \u2014 CI Parity, Caching, Format Checks, Training Guards",
+      "tags": [
+        "hub",
+        "S85",
+        "ci-failures",
+        "patterns"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "Hub for patterns P-023 through P-029 introduced in session S85"
+    },
+    {
+      "id": "P-023",
+      "type": "pattern",
+      "label": "CI Parity \u2014 Plugin Install Order",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "ci-parity",
+        "install-order",
+        "dev-env",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "dev_env_setup.sh/ci_local.sh must mirror exact CI flags/install order. Plugins before package."
+    },
+    {
+      "id": "P-024",
+      "type": "pattern",
+      "label": "Shared pip+venv Caching via Composite Action",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "caching",
+        "composite-action",
+        "version-drift",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "Extract pip install to .github/actions/setup-python-cached. Plugins-first install order critical."
+    },
+    {
+      "id": "P-025",
+      "type": "pattern",
+      "label": "Archive Format Exact-Match Check",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "archive",
+        "format-check",
+        "exact-match",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "\"tar.gz\" in format set, not endswith(\".tar.gz\"). Bare form has no leading dot."
+    },
+    {
+      "id": "P-026",
+      "type": "pattern",
+      "label": "Mock save_checkpoint Returns (Path, CheckpointMeta) Tuple",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "mock",
+        "save_checkpoint",
+        "return-signature",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "fake_save mock must return (Path, CheckpointMeta) tuple \u2014 matches production save_checkpoint return signature."
+    },
+    {
+      "id": "P-027",
+      "type": "pattern",
+      "label": "epochs=0 Valid for Resume/Inference-Only",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "training",
+        "epochs",
+        "validation",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "Validation should be epochs >= 0 not >= 1. epochs=0 is valid for resume-only and inference-only runs."
+    },
+    {
+      "id": "P-028",
+      "type": "pattern",
+      "label": "gzip Overhead Expands Files < 1KB",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "compression",
+        "gzip",
+        "test-fixture",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "gzip header overhead makes files < 1KB EXPAND. Compression assertions must guard on size_original >= 1024."
+    },
+    {
+      "id": "P-029",
+      "type": "pattern",
+      "label": "pre-commit end-of-file-fixer Triggers on JSON/MD/YAML",
+      "session": "S85",
+      "confidence": 0.95,
+      "tags": [
+        "pre-commit",
+        "eof",
+        "json",
+        "yaml",
+        "S85"
+      ],
+      "session_introduced": "S85",
+      "status": "active",
+      "notes": "JSON/MD missing final newline AND YAML/YML with trailing blank lines both trigger end-of-file-fixer."
     }
   ],
   "edges": [
@@ -344,6 +471,48 @@
       "to": "N-007",
       "label": "compat-guard-trainer-state",
       "session": "S82"
+    },
+    {
+      "from": "P-023",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-024",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-025",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-026",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-027",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-028",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
+    },
+    {
+      "from": "P-029",
+      "to": "S85-patterns",
+      "label": "member-of",
+      "session": "S85"
     }
   ],
   "drq_index": {
@@ -417,5 +586,5 @@
     "P-011": "getattr-compat-guard: Use getattr(obj, attr, default) for dependency attributes that may be removed in minor/major upgrades",
     "P-012": "facade-class-testability: Create facade classes (e.g. RAGIndexer) to enable @patch in tests when module only exposes functions"
   },
-  "last_updated": "S82-2026-02-24"
+  "last_updated": "2026-02-24T18:00:00Z"
 }

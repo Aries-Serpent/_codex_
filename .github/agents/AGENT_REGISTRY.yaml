@@ -1,6 +1,6 @@
-version: 1.1.0
-last_updated: '2026-02-24T07:30:00Z'
-total_agents: 35  # registered in this YAML; 54 total agent files exist in .github/agents/
+version: 1.2.0
+last_updated: '2026-02-24T18:00:00Z'
+total_agents: 36  # registered in this YAML; 54 total agent files exist in .github/agents/
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -674,6 +674,32 @@ agents:
   created: '2026-02-22T12:00:00Z'
   energy_level: 5
 
+- id: ci-auto-healer
+  name: CI Auto-Healer Agent
+  version: "1.0.0"
+  file: ci-auto-healer-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  primary_skill: "Autonomous CI failure detection, pattern-matching, and self-healing"
+  secondary_skill: "Pattern library management, DRQ filing, cognitive brain integration"
+  purpose: >
+    Detects CI failures, matches them to a known pattern library (P-001 to P-029),
+    applies validated fixes, and escalates unrecognized patterns as DRQ entries.
+  capabilities:
+    - ci_failure_detection
+    - pattern_matching
+    - automated_code_fix
+    - local_test_validation
+    - drq_filing
+    - cognitive_brain_update
+  cognitive_brain_layer: healing
+  safe_mode: false
+  network_access: false
+  created: '2026-02-24T18:00:00Z'
+  updated: '2026-02-24T18:00:00Z'
+  maintainer: mbaetiong
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
@@ -689,3 +715,10 @@ standardization_status:
 # - MSPClient.request() method added (agents/msp_client.py)
 # - 48 CVEs fixed (was 26), 1500+ tests (was 1300+), 54 agents (was 53)
 # - Knowledge graph v1.4.0, AAIS V3.2 (95.3/100)
+#
+# S85 changelog (2026-02-24):
+# - version 1.1.0 → 1.2.0
+# - ci-auto-healer agent added (ci-auto-healer-agent.md)
+# - total_agents 35 → 36
+# - Knowledge graph v1.6.0 (P-023 through P-029 added)
+# - Health score 96/100 → 97/100
