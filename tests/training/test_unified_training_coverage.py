@@ -160,7 +160,7 @@ def test_unified_training_config_minimal():
 
 def test_unified_training_config_validation_epochs():
     """Test UnifiedTrainingConfig validates epoch count."""
-    with pytest.raises(ValueError, match="epochs must be >= 0"):
+    with pytest.raises(ValueError, match="epochs must be >= 1"):
         UnifiedTrainingConfig(model_name="test", epochs=-1)
 
 

@@ -14,8 +14,8 @@ author: mbaetiong
 
 # [Agent]: Recon Scout — Codebase Blocker Discovery & DRQ Tagging
 
-> **Philosophy**: *"A scout never fixes; a scout sees everything."*  
-> Run this agent BEFORE CodeQL checks and BEFORE major fix sprints.  
+> **Philosophy**: *"A scout never fixes; a scout sees everything."*
+> Run this agent BEFORE CodeQL checks and BEFORE major fix sprints.
 > Output feeds directly into the Deep Research Queue (DRQ) and the Cognitive Brain.
 
 ---
@@ -278,7 +278,7 @@ brain.submit_learning(
 
 ---
 
-**Status**: ✅ Active  
-**Last Updated**: 2026-02-23  
-**Author**: @mbaetiong (spec) + GitHub Copilot Agent (implementation)  
+**Status**: ✅ Active
+**Last Updated**: 2026-02-23
+**Author**: @mbaetiong (spec) + GitHub Copilot Agent (implementation)
 **Questions?** File an issue with label `agent:recon-scout`

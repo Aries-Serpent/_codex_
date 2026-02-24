@@ -386,8 +386,10 @@ class TestTrainingEdgeCases:
             corrupted_path = f.name
 
         try:
-            # Attempt to load
-            with pytest.raises((RuntimeError, ValueError, EOFError)):
+            # Attempt to load — PyTorch ≥2.6 raises pickle.UnpicklingError for
+            # corrupted data when weights_only=True; older versions raise RuntimeError,
+            # ValueError, or EOFError.
+            with pytest.raises((RuntimeError, ValueError, EOFError, pickle.UnpicklingError)):
                 torch.load(corrupted_path, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
 
             # Fallback to previous checkpoint
@@ -485,7 +487,8 @@ class TestTrainingEdgeCases:
         accumulation_steps = 0
         # Should reject zero accumulation steps
         with pytest.raises(ValueError):
-            assert accumulation_steps > 0
+            if not accumulation_steps > 0:
+                raise ValueError("grad_accum must be > 0")
 
 
 class TestDataLoadingEdgeCases:

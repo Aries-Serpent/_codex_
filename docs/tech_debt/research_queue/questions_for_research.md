@@ -1,9 +1,9 @@
 # Questions Requiring Deep Research - PR #3344 (S66)
 
-**Created**: 2026-02-22 08:30  
-**Status**: Awaiting Research  
+**Created**: 2026-02-22 08:30
+**Status**: Awaiting Research
 **Total Questions**: 5
-**PR**: https://github.com/Aries-Serpent/_codex_/pull/3344  
+**PR**: https://github.com/Aries-Serpent/_codex_/pull/3344
 **Branch**: `copilot/sub-pr-3336-again`
 
 ---
@@ -14,16 +14,16 @@
 
 ### Q001: Should `_emit_provenance_summary` Output Go to stdout or stderr?
 
-**Category**: API Design/Contract  
-**Priority**: High  
-**Impact**: High  
-**Created**: 2026-02-22  
+**Category**: API Design/Contract
+**Priority**: High
+**Impact**: High
+**Created**: 2026-02-22
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `src/codex_ml/cli/codex_cli.py:109–113`, `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`  
-**What happened**: The `evaluate` CLI command emits the evaluation summary JSON to stdout, then calls `_emit_provenance_summary()` which also calls `click.echo(json.dumps(summary))` to stdout. Tests using `CliRunner().invoke()` receive both JSON blobs in `result.output`. `json.loads(result.output)` fails (two root JSON objects), and the fallback line-by-line parser picks the LAST valid compact JSON — which is the provenance dict — instead of the multi-line evaluation summary. Result: `KeyError: 'metrics_path'`.  
-**Current behavior**: Provenance summary written to stdout alongside primary output.  
+**Where discovered**: `src/codex_ml/cli/codex_cli.py:109–113`, `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
+**What happened**: The `evaluate` CLI command emits the evaluation summary JSON to stdout, then calls `_emit_provenance_summary()` which also calls `click.echo(json.dumps(summary))` to stdout. Tests using `CliRunner().invoke()` receive both JSON blobs in `result.output`. `json.loads(result.output)` fails (two root JSON objects), and the fallback line-by-line parser picks the LAST valid compact JSON — which is the provenance dict — instead of the multi-line evaluation summary. Result: `KeyError: 'metrics_path'`.
+**Current behavior**: Provenance summary written to stdout alongside primary output.
 **Expected behavior**: Unclear — may be intentional for piping to log aggregators, or may be an oversight.
 
 #### The Question
@@ -35,8 +35,8 @@ Is `_emit_provenance_summary()` designed to go to stdout (machine-readable, part
 - [ ] Could break other CLI users if provenance is moved to stderr
 
 #### Current Hypothesis
-**Your best guess**: Provenance is supplementary/diagnostic — should go to stderr.  
-**Confidence level**: Medium  
+**Your best guess**: Provenance is supplementary/diagnostic — should go to stderr.
+**Confidence level**: Medium
 **Evidence supporting hypothesis**: Other well-known CLIs (`kubectl`, `aws-cli`, `gh`) separate machine output (stdout) from diagnostic info (stderr). The evaluation summary is the primary contract; provenance is metadata.
 
 #### Information to Guide Research
@@ -64,8 +64,8 @@ Is `_emit_provenance_summary()` designed to go to stdout (machine-readable, part
 - Click: pinned in `pyproject.toml`
 
 #### Dependencies
-**Blocks**: `test_evaluate_cli_writes_metrics_log` fix  
-**Blocked by**: None  
+**Blocks**: `test_evaluate_cli_writes_metrics_log` fix
+**Blocked by**: None
 **Related to**: Q004
 
 #### Acceptance Criteria
@@ -81,16 +81,16 @@ Interim fix applied (S66): changed to `err=True` and used `CliRunner(mix_stderr=
 
 ### Q002: Root Cause of `TestManageTenantIndices` Failures — Source Bug or Test Mock Issue?
 
-**Category**: Bug Root Cause  
-**Priority**: High  
-**Impact**: High  
-**Created**: 2026-02-22  
+**Category**: Bug Root Cause
+**Priority**: High
+**Impact**: High
+**Created**: 2026-02-22
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `tests/test_rag_tenant_management.py::TestManageTenantIndices` (9 tests)  
-**What happened**: All `TestManageTenantIndices` tests fail with `assert False is True` on `TenantOperationResult.success=False`. Error message: `"Failed to create any indices for tenant 'customer_a'"`. The test mocks `SentenceTransformer` but the underlying FAISS index creation still fails.  
-**Current behavior**: `manage_tenant_indices("create", ...)` returns `success=False` even with mocked SentenceTransformer.  
+**Where discovered**: `tests/test_rag_tenant_management.py::TestManageTenantIndices` (9 tests)
+**What happened**: All `TestManageTenantIndices` tests fail with `assert False is True` on `TenantOperationResult.success=False`. Error message: `"Failed to create any indices for tenant 'customer_a'"`. The test mocks `SentenceTransformer` but the underlying FAISS index creation still fails.
+**Current behavior**: `manage_tenant_indices("create", ...)` returns `success=False` even with mocked SentenceTransformer.
 **Expected behavior**: With a properly mocked SentenceTransformer and FAISS, `success=True` should be returned.
 
 #### The Question
@@ -102,8 +102,8 @@ Is the failure in `manage_tenant_indices` due to: (a) the mock not being applied
 - [ ] Need to trace the exact code path in `manage_tenant_indices` to find the first point of failure
 
 #### Current Hypothesis
-**Your best guess**: FAISS is either not installed or the mock is patching the wrong import path (e.g., the function imports `from rag.indexing import SentenceTransformer` not `sentence_transformers.SentenceTransformer` directly).  
-**Confidence level**: Medium  
+**Your best guess**: FAISS is either not installed or the mock is patching the wrong import path (e.g., the function imports `from rag.indexing import SentenceTransformer` not `sentence_transformers.SentenceTransformer` directly).
+**Confidence level**: Medium
 **Evidence supporting hypothesis**: S65 commit described these as "FAISS index persistence path mismatch with mock SentenceTransformer".
 
 #### Information to Guide Research
@@ -132,8 +132,8 @@ Is the failure in `manage_tenant_indices` due to: (a) the mock not being applied
 - Python: 3.12.12
 
 #### Dependencies
-**Blocks**: Removing these from `conftest._PREEXISTING_FAILURES`  
-**Blocked by**: faiss-cpu installation  
+**Blocks**: Removing these from `conftest._PREEXISTING_FAILURES`
+**Blocked by**: faiss-cpu installation
 **Related to**: None
 
 #### Acceptance Criteria
@@ -146,16 +146,16 @@ Research is complete when:
 
 ### Q003: Why Does `IncrementalSyncDecider::test_micro_update` Compute 95% Change Ratio for a Punctuation-Only Edit?
 
-**Category**: Bug Root Cause  
-**Priority**: Medium  
-**Impact**: Medium  
-**Created**: 2026-02-22  
+**Category**: Bug Root Cause
+**Priority**: Medium
+**Impact**: Medium
+**Created**: 2026-02-22
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `tests/services/crawler/test_semantic_differ.py::TestIncrementalSyncDecider::test_micro_update`  
-**What happened**: A punctuation-only change (e.g., adding a period) is classified as a "major" update (95% change ratio) by `ContentDiffer.diff()`, instead of "micro". The test expects `decision == "micro_update"` but gets a decision indicating major change.  
-**Current behavior**: `ContentDiffer.diff(old_text, new_text_with_punctuation)` returns `change_ratio ≈ 0.95`.  
+**Where discovered**: `tests/services/crawler/test_semantic_differ.py::TestIncrementalSyncDecider::test_micro_update`
+**What happened**: A punctuation-only change (e.g., adding a period) is classified as a "major" update (95% change ratio) by `ContentDiffer.diff()`, instead of "micro". The test expects `decision == "micro_update"` but gets a decision indicating major change.
+**Current behavior**: `ContentDiffer.diff(old_text, new_text_with_punctuation)` returns `change_ratio ≈ 0.95`.
 **Expected behavior**: Punctuation-only change should yield `change_ratio < 0.1`, triggering `"micro_update"` decision.
 
 #### The Question
@@ -167,8 +167,8 @@ What diff algorithm does `ContentDiffer.diff()` use, and why does it compute ~95
 - [ ] If the ratio is `1 - SequenceMatcher.ratio()`, then a ratio of 0.95 means 5% match — that would mean the texts are almost completely different, which contradicts adding one character
 
 #### Current Hypothesis
-**Your best guess**: `change_ratio` is computed as `1 - similarity_ratio`, and the similarity function somehow computes near-zero similarity for the two texts despite them differing only in punctuation. Possible cause: the diff is comparing tokenized/stemmed forms where punctuation removal makes the texts identical at the normalized level but the raw comparison sees large differences.  
-**Confidence level**: Low  
+**Your best guess**: `change_ratio` is computed as `1 - similarity_ratio`, and the similarity function somehow computes near-zero similarity for the two texts despite them differing only in punctuation. Possible cause: the diff is comparing tokenized/stemmed forms where punctuation removal makes the texts identical at the normalized level but the raw comparison sees large differences.
+**Confidence level**: Low
 **Evidence supporting hypothesis**: None — pure speculation.
 
 #### Information to Guide Research
@@ -193,8 +193,8 @@ What diff algorithm does `ContentDiffer.diff()` use, and why does it compute ~95
 - Python: 3.12.12 (stdlib difflib)
 
 #### Dependencies
-**Blocks**: Nothing immediate (catalogued as pre-existing)  
-**Blocked by**: None  
+**Blocks**: Nothing immediate (catalogued as pre-existing)
+**Blocked by**: None
 **Related to**: None
 
 #### Acceptance Criteria
@@ -207,16 +207,16 @@ Research is complete when:
 
 ### Q004: How Should Multi-Output CLI Commands Be Tested When stdout Contains Multiple JSON Objects?
 
-**Category**: API Design/Contract  
-**Priority**: Medium  
-**Impact**: Medium  
-**Created**: 2026-02-22  
+**Category**: API Design/Contract
+**Priority**: Medium
+**Impact**: Medium
+**Created**: 2026-02-22
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`  
-**What happened**: The `evaluate` CLI command outputs: (1) exception tracebacks from optional-dep failures, (2) the evaluation summary JSON (multi-line, indented), (3) the provenance summary JSON (compact, single-line). When `CliRunner(mix_stderr=True)` is used (default), all three appear in `result.output`. `json.loads(result.output)` fails; the fallback line parser picks the wrong JSON.  
-**Current behavior**: Tests fail with `KeyError: 'metrics_path'` because the provenance JSON is picked up instead of the evaluation summary.  
+**Where discovered**: `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
+**What happened**: The `evaluate` CLI command outputs: (1) exception tracebacks from optional-dep failures, (2) the evaluation summary JSON (multi-line, indented), (3) the provenance summary JSON (compact, single-line). When `CliRunner(mix_stderr=True)` is used (default), all three appear in `result.output`. `json.loads(result.output)` fails; the fallback line parser picks the wrong JSON.
+**Current behavior**: Tests fail with `KeyError: 'metrics_path'` because the provenance JSON is picked up instead of the evaluation summary.
 **Expected behavior**: Tests reliably parse the evaluation summary from CLI output.
 
 #### The Question
@@ -228,8 +228,8 @@ What is the canonical pattern for testing Click CLI commands that: (a) emit mult
 - [ ] The fix of `mix_stderr=False` + `err=True` for provenance may not cover all edge cases (e.g., logging handlers writing to stdout)
 
 #### Current Hypothesis
-**Your best guess**: `CliRunner(mix_stderr=False)` + move provenance to `err=True` is the correct fix. But there may be other locations where logging goes to stdout.  
-**Confidence level**: Medium  
+**Your best guess**: `CliRunner(mix_stderr=False)` + move provenance to `err=True` is the correct fix. But there may be other locations where logging goes to stdout.
+**Confidence level**: Medium
 **Evidence supporting hypothesis**: Click docs state `mix_stderr=False` gives separate `result.stderr` and clean `result.output`.
 
 #### Information to Guide Research
@@ -254,8 +254,8 @@ What is the canonical pattern for testing Click CLI commands that: (a) emit mult
 - Click: pinned in `pyproject.toml`
 
 #### Dependencies
-**Blocks**: Nothing critical  
-**Blocked by**: Q001 (provenance stdout vs stderr)  
+**Blocks**: Nothing critical
+**Blocked by**: Q001 (provenance stdout vs stderr)
 **Related to**: Q001
 
 #### Acceptance Criteria
@@ -267,16 +267,16 @@ Research is complete when:
 
 ### Q005: What Environment Flags Cause `audit_runner.py` to Produce Full vs. Minimal Output?
 
-**Category**: Compatibility/Version Issues  
-**Priority**: Medium  
-**Impact**: Medium  
-**Created**: 2026-02-22  
+**Category**: Compatibility/Version Issues
+**Priority**: Medium
+**Impact**: Medium
+**Created**: 2026-02-22
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `tests/validation/test_audit_pipeline.py` (3 tests)  
-**What happened**: In CI, `audit_runner.py run` exits with code 0 but writes a minimal `audit_run_manifest.json` containing only `{"stage": "S7", "timestamp": "...", "warnings": []}` — missing `version`, `repo_root_sha`, `artifacts`, `weights`, `template_hash`. The test has a guard `if result.returncode != 0: pytest.skip(...)` but the returncode IS 0, so the test proceeds to assert on the missing fields.  
-**Current behavior**: Subprocess succeeds with minimal output; test fails asserting on `version` field.  
+**Where discovered**: `tests/validation/test_audit_pipeline.py` (3 tests)
+**What happened**: In CI, `audit_runner.py run` exits with code 0 but writes a minimal `audit_run_manifest.json` containing only `{"stage": "S7", "timestamp": "...", "warnings": []}` — missing `version`, `repo_root_sha`, `artifacts`, `weights`, `template_hash`. The test has a guard `if result.returncode != 0: pytest.skip(...)` but the returncode IS 0, so the test proceeds to assert on the missing fields.
+**Current behavior**: Subprocess succeeds with minimal output; test fails asserting on `version` field.
 **Expected behavior**: Either (a) subprocess produces full output including all required fields, or (b) test has a content-based skip guard.
 
 #### The Question
@@ -288,8 +288,8 @@ What environment dependencies does `audit_runner.py` require to produce a full m
 - [ ] Need to understand if `audit_artifacts/` directory must be pre-populated
 
 #### Current Hypothesis
-**Your best guess**: `audit_runner.py` requires `audit_artifacts/` to exist with pre-populated capability data, OR requires specific Python packages (e.g., `pydantic`, `great_expectations`) that are not installed in the minimal CI environment.  
-**Confidence level**: Low  
+**Your best guess**: `audit_runner.py` requires `audit_artifacts/` to exist with pre-populated capability data, OR requires specific Python packages (e.g., `pydantic`, `great_expectations`) that are not installed in the minimal CI environment.
+**Confidence level**: Low
 **Evidence supporting hypothesis**: The manifest stage `"S7"` suggests it ran but completed early without full artifacts.
 
 #### Information to Guide Research
@@ -318,8 +318,8 @@ What environment dependencies does `audit_runner.py` require to produce a full m
 - Python: 3.12.12
 
 #### Dependencies
-**Blocks**: Full audit pipeline test coverage  
-**Blocked by**: None  
+**Blocks**: Full audit pipeline test coverage
+**Blocked by**: None
 **Related to**: DRQ-007 (Integration tests assuming full env output)
 
 #### Acceptance Criteria
@@ -337,16 +337,16 @@ Research is complete when:
 
 ### Q006: Why Does Pytest String-Path Monkeypatch Fail on Certain Modules in CI?
 
-**Category**: Test Infrastructure / Pytest Internals  
-**Priority**: High  
-**Impact**: High  
-**Created**: 2026-02-22 (S67)  
+**Category**: Test Infrastructure / Pytest Internals
+**Priority**: High
+**Impact**: High
+**Created**: 2026-02-22 (S67)
 **Status**: ⏳ Awaiting Research — **Interim Fix Applied**: object-based patching
 
 #### Context
-**Where discovered**: `tests/tracking/test_tracking_writers_offline.py:71`, `tests/test_model_registry_helpers.py:90`, `tests/config/test_deprecation.py:65`, `tests/test_fetch_messages.py:181`  
-**What happened**: `monkeypatch.setattr("codex_ml.tracking.writers.datetime", ...)` fails in CI with `AttributeError: 'module' object at codex_ml.tracking has no attribute 'tracking'`. The string `codex_ml.tracking` is named in the error, but the module being accessed was `codex_ml.tracking.writers`. The "doubled" attribute name pattern (`tracking.tracking`) implies pytest's import-path resolution retried with a shorter prefix and then tried to traverse a repeated component.  
-**Local repro**: NOT reproducible locally with Python 3.12 + pytest installed.  
+**Where discovered**: `tests/tracking/test_tracking_writers_offline.py:71`, `tests/test_model_registry_helpers.py:90`, `tests/config/test_deprecation.py:65`, `tests/test_fetch_messages.py:181`
+**What happened**: `monkeypatch.setattr("codex_ml.tracking.writers.datetime", ...)` fails in CI with `AttributeError: 'module' object at codex_ml.tracking has no attribute 'tracking'`. The string `codex_ml.tracking` is named in the error, but the module being accessed was `codex_ml.tracking.writers`. The "doubled" attribute name pattern (`tracking.tracking`) implies pytest's import-path resolution retried with a shorter prefix and then tried to traverse a repeated component.
+**Local repro**: NOT reproducible locally with Python 3.12 + pytest installed.
 **Interim fix**: Changed to object-based: `import codex_ml.tracking.writers as _m; monkeypatch.setattr(_m, "datetime", ...)`.
 
 #### The Question
@@ -361,15 +361,15 @@ What specific combination of (pytest version, Python version, test execution ord
 
 ### Q007: OptimizedVectorStore `ResponseCache` Does Not Persist Hits
 
-**Category**: Bug Root Cause  
-**Priority**: Medium  
-**Impact**: Medium  
-**Created**: 2026-02-22 (S67)  
+**Category**: Bug Root Cause
+**Priority**: Medium
+**Impact**: Medium
+**Created**: 2026-02-22 (S67)
 **Status**: ⏳ Awaiting Research
 
 #### Context
-**Where discovered**: `tests/retrieval/test_optimizations.py::TestOptimizedVectorStore::test_search_with_cache`  
-**What happened**: After two calls to `optimized.search(query, k=5)`, `mock_store.search.call_count == 2` (expected 1 on cache hit). And `len(optimized.cache) == 0` after one search call (cache never populated).  
+**Where discovered**: `tests/retrieval/test_optimizations.py::TestOptimizedVectorStore::test_search_with_cache`
+**What happened**: After two calls to `optimized.search(query, k=5)`, `mock_store.search.call_count == 2` (expected 1 on cache hit). And `len(optimized.cache) == 0` after one search call (cache never populated).
 **Source file**: `src/codex/retrieval/optimizations.py`
 
 #### The Question
@@ -381,19 +381,19 @@ Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)
 
 ### DRQ-S70-001: `test_property_based.py` Fails with `ImportError: Optional dependency 'chat' is not installed`
 
-**Category**: Test Infrastructure / Import Chain  
-**Priority**: High  
-**Impact**: High — blocks 16 tests in quick suite  
-**Created**: 2026-02-23 (S70)  
-**Status**: 🔴 OPEN — root cause unresolved  
+**Category**: Test Infrastructure / Import Chain
+**Priority**: High
+**Impact**: High — blocks 16 tests in quick suite
+**Created**: 2026-02-23 (S70)
+**Status**: 🔴 OPEN — root cause unresolved
 **CI Run**: `22291570163` (sha `8eab1b2`, branch `copilot/sub-pr-3336-again`)
 
 #### Context
-**Where discovered**: `tests/agents/test_property_based.py` — 16 failures in validation (quick) suite  
+**Where discovered**: `tests/agents/test_property_based.py` — 16 failures in validation (quick) suite
 **What happened**: Pure mathematical/property-based tests (e.g., `test_energy_always_non_negative`,
 `test_set_properties`) fail at collection or first execution with
-`ImportError: Optional dependency 'chat' is not installed; install it to enable this functionality.`  
-**Error origin**: `configs/sitecustomize.py:59` — the `_missing_attr` function of the `chat` stub module  
+`ImportError: Optional dependency 'chat' is not installed; install it to enable this functionality.`
+**Error origin**: `configs/sitecustomize.py:59` — the `_missing_attr` function of the `chat` stub module
 **Imports in failing file**:
 ```python
 from agents.agent_memory import MemoryEntry
@@ -427,15 +427,15 @@ None of these modules import `chat` at the top level.
 
 ### DRQ-S70-002: `test_data_splits.py` `AttributeError: module 'torch' has no attribute 'utils'`
 
-**Category**: Test Infrastructure / Stub Interference  
-**Priority**: High  
-**Impact**: High — 4 tests blocked in quick suite  
-**Created**: 2026-02-23 (S70)  
-**Status**: 🔴 OPEN  
+**Category**: Test Infrastructure / Stub Interference
+**Priority**: High
+**Impact**: High — 4 tests blocked in quick suite
+**Created**: 2026-02-23 (S70)
+**Status**: 🔴 OPEN
 **CI Run**: `22291570163`
 
 #### Context
-**Where discovered**: `tests/unit/data/test_data_splits.py` — 4 failures  
+**Where discovered**: `tests/unit/data/test_data_splits.py` — 4 failures
 **What happened**:
 ```
 AttributeError: module 'torch' has no attribute 'utils'
@@ -452,7 +452,7 @@ Tests call `torch.utils.data.TensorDataset(...)` and `torch.ones(...)` after
 
 #### Evidence Log
 - `configs/sitecustomize.py:69–76` — `_install_optional_stub("torch", attrs={...})` only provides 3 float-type attrs
-- Test pattern: `torch = pytest.importorskip("torch"); torch.utils.data.TensorDataset(...)` 
+- Test pattern: `torch = pytest.importorskip("torch"); torch.utils.data.TensorDataset(...)`
 - CI torch installed via: `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
 
 #### Hypothesis
@@ -468,11 +468,11 @@ Tests call `torch.utils.data.TensorDataset(...)` and `torch.ones(...)` after
 
 ### DRQ-S70-003: `codex.training` Missing `load_training_cfg` and `run_hf_trainer` Public API
 
-**Category**: Missing Implementation  
-**Priority**: Medium  
-**Impact**: Medium — 3 slow-suite tests blocked  
-**Created**: 2026-02-23 (S70)  
-**Status**: 🟡 PARTIAL FIX APPLIED (stub added)  
+**Category**: Missing Implementation
+**Priority**: Medium
+**Impact**: Medium — 3 slow-suite tests blocked
+**Created**: 2026-02-23 (S70)
+**Status**: 🟡 PARTIAL FIX APPLIED (stub added)
 **Tracked tests**: `tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py`
 
 #### Context
@@ -488,20 +488,20 @@ accept a `argv` parameter — the test calls `ft.main(["--output-dir", ..., "--e
 4. Should `main()` in `codex.training` accept `argv`? Or should the test call a different entry point?
 
 #### Interim Fix Applied (S70)
-- Added `load_training_cfg` stub returning `OmegaConf.create({})` when OmegaConf available  
-- Added `run_hf_trainer` stub delegating to `run_functional_training`  
-- Updated `main(argv=None)` to accept args list and parse `--engine`/`--output-dir`  
+- Added `load_training_cfg` stub returning `OmegaConf.create({})` when OmegaConf available
+- Added `run_hf_trainer` stub delegating to `run_functional_training`
+- Updated `main(argv=None)` to accept args list and parse `--engine`/`--output-dir`
 - See commit `{TO_BE_FILLED}` for exact changes
 
 ---
 
 ### DRQ-S70-004: `datetime.now()` TZ-naive Usage in 47 Source Files
 
-**Category**: Code Quality / Timezone Safety  
-**Priority**: Medium  
-**Impact**: Medium — affects timestamp correctness across the codebase  
-**Created**: 2026-02-23 (S70)  
-**Status**: ✅ RESOLVED (S72 — all 35 remaining occurrences fixed)  
+**Category**: Code Quality / Timezone Safety
+**Priority**: Medium
+**Impact**: Medium — affects timestamp correctness across the codebase
+**Created**: 2026-02-23 (S70)
+**Status**: ✅ RESOLVED (S72 — all 35 remaining occurrences fixed)
 **Files**: All 47 occurrences in `src/` now use `datetime.now(timezone.utc)`
 
 #### Resolution (S72)
@@ -523,14 +523,14 @@ Research questions answered:
 
 ### DRQ-S70-005: Quick-Suite `test_property_based.py` `hypothesis.errors.FlakyFailure`
 
-**Category**: Test Flakiness / Hypothesis  
-**Priority**: Medium  
-**Impact**: Medium — flaky failures mask real failures in CI  
-**Created**: 2026-02-23 (S70)  
-**Status**: 🔴 OPEN  
+**Category**: Test Flakiness / Hypothesis
+**Priority**: Medium
+**Impact**: Medium — flaky failures mask real failures in CI
+**Created**: 2026-02-23 (S70)
+**Status**: 🔴 OPEN
 
 #### Context
-Several Hypothesis tests show `FlakyFailure: Inconsistent results from replaying a test case!`  
+Several Hypothesis tests show `FlakyFailure: Inconsistent results from replaying a test case!`
 This means Hypothesis found a failing example, but when it replayed the exact same inputs, it got a different result — indicating **non-determinism** in the test.
 
 The inconsistency is between:

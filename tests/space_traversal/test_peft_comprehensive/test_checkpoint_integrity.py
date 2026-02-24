@@ -39,10 +39,11 @@ def test_roundtrip_and_integrity(tmp_path: Path):
 def test_corruption_detection(tmp_path: Path):
     state = {"payload": "ok"}
     ckpt_path, _ = save_checkpoint(tmp_path, state, metric_value=1.0)
-    # Corrupt: flip last byte
+    # Corrupt: flip a byte in the middle of the file (last byte may be
+    # trailing pickle padding that is silently ignored on deserialisation)
     raw = ckpt_path.read_bytes()
     corrupt = bytearray(raw)
-    corrupt[-1] = (corrupt[-1] + 1) % 256
+    corrupt[len(corrupt) // 2] ^= 0xFF
     ckpt_path.write_bytes(bytes(corrupt))
     with pytest.raises(CheckpointIntegrityError):
         verify_checkpoint(ckpt_path)

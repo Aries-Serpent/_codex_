@@ -411,15 +411,50 @@ def _snapshot_state(source: Union[Any, StateMapping, None]) -> Optional[dict[str
 
 
 def load_checkpoint(
-    path: Union[str, Path], map_location: Optional[str] = "cpu", *, format: Optional[str] = None
+    path: Union[str, Path],
+    map_location: Optional[str] = "cpu",
+    *,
+    format: Optional[str] = None,
+    safe: bool = True,
 ) -> Any:
-    """Load a checkpoint payload returning the raw serialized state."""
+    """Load a checkpoint payload returning the raw serialized state.
+
+    Args:
+        path: Path to checkpoint file.
+        map_location: Device mapping for torch tensors (default: "cpu").
+        format: Serialization format hint ("torch", "pickle", or "auto").
+        safe: When True (default), request ``weights_only=True`` from
+            ``torch.load`` to prevent arbitrary code execution.  When the
+            running torch version does not support ``weights_only``, raises
+            :class:`RuntimeError`.  When False, loads with
+            ``weights_only=False`` (legacy behaviour).
+    """
 
     p = Path(path)
+    fmt = _resolve_format(format)
+
+    # honour the safe flag when torch is available
+    if TORCH_AVAILABLE and fmt in {"auto", "torch"}:
+        supports_wo = "weights_only" in inspect.signature(torch.load).parameters
+        if safe and not supports_wo:
+            raise RuntimeError(
+                "load_checkpoint(safe=True) requires torch >= 1.13 which supports "
+                "the 'weights_only' parameter; upgrade torch or pass safe=False."
+            )
+        if safe and supports_wo:
+            try:
+                kwargs: dict[str, Any] = {"weights_only": True}
+                if map_location is not None:
+                    kwargs["map_location"] = map_location
+                return torch.load(p, **kwargs)
+            except Exception as exc:
+                raise CheckpointLoadError(
+                    f"safe load failed for {p}: {exc}"
+                ) from exc
+
     try:
-        return _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
+        return _load_payload(p, map_location=map_location, fmt=fmt)
     except CheckpointLoadError as e:
-        logger.debug(f"CheckpointLoadError: {e}")
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
     except Exception as exc:  # pragma: no cover - fallback path

@@ -516,7 +516,7 @@ def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
     return float(metric)
 
 
-def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
+def _prune_best_k(root: Path, idx: dict[str, Any], *, exclude: frozenset[str] | None = None) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
@@ -529,6 +529,8 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
     remove = {e["path"] for e in entries if e not in keep}
     # Delete files/directories that are not in keep
     for rel in remove:
+        if exclude and rel in exclude:
+            continue
         try:
             target = root / rel
             if target.is_dir():
@@ -628,26 +630,29 @@ def save_checkpoint(
         payload_obj["meta"]["user_metadata"] = metadata
     if meta.config_snapshot is None:
         payload_obj["meta"].pop("config_snapshot", None)
+
+    # Step 1: compute pre-embed digest (used by verify_checkpoint for integrity)
     payload_obj["meta"]["sha256"] = None
     raw = _serialize_payload(payload_obj)
     digest = hashlib.sha256(raw).hexdigest()
     meta.sha256 = digest
 
-    # Emit standalone digest for compatibility with legacy consumers
-    safe_write_text(root / "state.sha256", digest)
+    # Step 2: embed digest and produce final bytes (this is what gets written to disk)
+    payload_obj["meta"]["sha256"] = digest
+    raw = _serialize_payload(payload_obj)
+    file_digest = hashlib.sha256(raw).hexdigest()
+
+    # Emit standalone digest matching the actual file content
+    safe_write_text(root / "state.sha256", file_digest)
 
     if metadata_sidecar is not None:
         sidecar = {
             "schema_version": SCHEMA_VERSION,
-            "digest_sha256": digest,
+            "digest_sha256": file_digest,
             "environment": meta.env,
         }
         sidecar.update(metadata_sidecar)
         safe_write_bytes(root / "metadata.json", lambda: json.dumps(sidecar).encode("utf-8"))
-
-    # Embed digest into the payload and re-serialize so verify_checkpoint can read it back
-    payload_obj["meta"]["sha256"] = digest
-    raw = _serialize_payload(payload_obj)
 
     # Choose name and write atomically
     ckpt_name = _ckpt_name(prefix=prefix)
@@ -726,7 +731,7 @@ def save_checkpoint(
             "sha256": digest,
         }
     )
-    _prune_best_k(root.parent, parent_idx)
+    _prune_best_k(root.parent, parent_idx, exclude=frozenset({root.name}))
     _write_index(root.parent, parent_idx)
     safe_write_text(root.parent / "best_index.json", json.dumps(parent_idx["entries"], indent=2))
 

@@ -16,6 +16,7 @@ Minimal surface keeps legacy + functional backends pluggable.
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy
@@ -491,11 +492,17 @@ STRATEGY_REGISTRY = {
 }
 
 
-def resolve_strategy(name: str) -> BackendStrategy:
+def resolve_strategy(name: str | None) -> BackendStrategy:
+    """Return the BackendStrategy for *name*.
+
+    Accepts ``None`` (defaults to ``"functional"``), case-insensitive strings,
+    and any key registered in :data:`STRATEGY_REGISTRY`.
+    """
+    if name is None:
+        name = "functional"
+    normalised = str(name).lower().strip()
     try:
-        return STRATEGY_REGISTRY[name]
-    except KeyError as e:
-        logger.debug(f"KeyError: {e}")
-        logger.warning(f"KeyError: {e}", exc_info=True)
+        return STRATEGY_REGISTRY[normalised]
+    except KeyError:
         choices = list(STRATEGY_REGISTRY)
         raise ValueError(f"Unknown backend strategy: {name!r}. Choices={choices}")

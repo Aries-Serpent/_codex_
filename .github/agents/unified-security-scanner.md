@@ -135,5 +135,5 @@ where:
 
 ## 📝 Status
 
-**Version**: 1.0.0-m01 | **Batch**: M-01 | **Created**: 2026-02-21  
+**Version**: 1.0.0-m01 | **Batch**: M-01 | **Created**: 2026-02-21
 **AAIS Contribution**: +6.0 points | **Cognitive Level**: 4

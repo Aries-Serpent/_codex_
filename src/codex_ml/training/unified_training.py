@@ -43,9 +43,11 @@ from codex_ml.training import strategies
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
+    resolve_strategy,
 )
 from codex_ml.utils import checkpoint_core as _ckpt_core
 from codex_ml.utils.checkpoint_core import CheckpointMeta
+from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint  # noqa: F401  (re-exported for monkeypatching)
 from codex_ml.utils.repro import capture_environment, set_seed
 
 logger = logging.getLogger(__name__)
@@ -143,14 +145,17 @@ class UnifiedTrainingConfig:
     batch_size: int = 8
     grad_accum: int = 1
     learning_rate: float = 3e-4
-    seed: int = 42
+    seed: int | None = 42
+    device: str | None = None  # explicit device override ("cpu", "cuda", "auto", …)
     output_dir: str = "runs/unified"
+    checkpoint_dir: str | None = None  # explicit checkpoint directory override
     config_version: str = "1.0"
     dataset_version: str | None = None
     deterministic: bool = True
     auto_capture_env: bool = True
     backend: str | None = None  # "functional" | "legacy" | None (auto)
     mlflow_enable: bool = False
+    mlflow_tracking: bool = False  # alias accepted by comprehensive tests
     wandb_enable: bool = False
     enable_eval_callback: bool = True
     enable_logging_callback: bool = True
@@ -162,22 +167,39 @@ class UnifiedTrainingConfig:
     best_k: int = 0
     best_metric: str = "val_loss"
     continual: Any = None  # ContinualConfig | dict[str, Any] | None - validated in __post_init__
+    continual_phases: list[Any] | None = None  # list[ContinualPhase] for multi-phase continual learning
+    callbacks: list[Any] | None = None  # list of TrainingCallback instances
 
     def __post_init__(self) -> None:
         errors: list[str] = []
-        if self.epochs < 0:
-            errors.append("epochs must be >= 0")
+        # model_name must be a non-empty string
+        if self.model_name is None:
+            errors.append("model_name must not be None")
+        # epochs must be >= 1
+        if self.epochs is not None and self.epochs < 1:
+            errors.append("epochs must be >= 1")
         if self.batch_size < 1:
             errors.append("batch_size must be >=1")
         if self.grad_accum < 1:
             errors.append("grad_accum must be >=1")
         if self.dtype not in {"fp32", "fp16", "bf16"}:
             errors.append("dtype must be one of {fp32, fp16, bf16}")
-        if not (0 <= self.seed < 2**32):
-            errors.append("seed must be in [0, 2**32)")
+        if self.seed is not None:
+            try:
+                seed_int = int(self.seed)
+            except (TypeError, ValueError):
+                errors.append("seed must be an integer or None")
+                seed_int = None
+            if seed_int is not None and not (0 <= seed_int < 2**32):
+                errors.append("seed must be in [0, 2**32)")
+            else:
+                self.seed = seed_int if seed_int is not None else self.seed
         self.config_version = str(self.config_version)
         self.deterministic = bool(self.deterministic)
         self.auto_capture_env = bool(self.auto_capture_env)
+        # sync mlflow_tracking → mlflow_enable so either alias works
+        if self.mlflow_tracking and not self.mlflow_enable:
+            self.mlflow_enable = True
         if self.continual is not None and not isinstance(self.continual, ContinualConfig):
             if isinstance(self.continual, Mapping):
                 self.continual = ContinualConfig(**dict(self.continual))
@@ -362,7 +384,8 @@ def run_unified_training(
 ) -> dict[str, Any]:
     """Execute training under unified orchestrator."""
     start = time.time()
-    _seed_all(cfg.seed, deterministic=bool(cfg.deterministic))
+    if cfg.seed is not None:
+        _seed_all(cfg.seed, deterministic=bool(cfg.deterministic))
     rng_state = RNGState()
     output_root = Path(cfg.output_dir)
     output_root.mkdir(parents=True, exist_ok=True)
