@@ -10,7 +10,7 @@ PDA: Active - Continuous outcome analysis and pattern extraction
 
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from cognitive_brain.models.learning_outcome import (
@@ -102,7 +102,7 @@ class OutcomeAnalyzer:
             result_metrics=result_metrics,
             patterns_identified=patterns_identified,
             lessons_learned=lessons_learned,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(timezone.utc),
         )
 
         # Store outcome
@@ -199,7 +199,7 @@ class OutcomeAnalyzer:
         # This ensures pattern detection is never empty for analysis
 
         # Temporal pattern: Time-of-day effects
-        hour = datetime.now().hour
+        hour = datetime.now(timezone.utc).hour
         if outcome_type == OutcomeType.SUCCESS and 9 <= hour <= 17:
             identified_patterns.append("temporal_business_hours_success")
         elif outcome_type == OutcomeType.FAILURE and (hour < 6 or hour > 22):
@@ -349,7 +349,7 @@ class OutcomeAnalyzer:
         pattern_set = PatternSet(
             patterns=patterns,
             domain="cognitive_brain",
-            extraction_date=datetime.now(),
+            extraction_date=datetime.now(timezone.utc),
             statistics={
                 "total_patterns": len(patterns),
                 "outcomes_analyzed": len(recent_outcomes),

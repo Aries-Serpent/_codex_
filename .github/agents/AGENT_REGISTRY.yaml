@@ -1,6 +1,6 @@
 version: 1.0.0
 last_updated: '2026-02-23T00:00:00Z'
-total_agents: 34
+total_agents: 35
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -616,6 +616,40 @@ agents:
   aais_contribution: 3.0
   scan_categories: 6
   rules_defined: 28
+- id: policy-coach-agent
+  name: Policy Coach Agent
+  directory: .github/agents
+  file: policy-coach-agent.md
+  status: active
+  maturity: production
+  session_introduced: S78
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: >
+    Monitors Copilot Agent sessions for codebase policy violations and re-aligns
+    behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session
+    violation detection (T-2), and pre-close gate (T-3). Contains 14 violation
+    patterns (P-01..P-14) with verbatim re-alignment prompts.
+  capabilities:
+  - policy_violation_detection
+  - session_re_alignment
+  - pre_close_gate_enforcement
+  - violation_pattern_matching
+  - prompt_injection
+  integration_points:
+  - .codex/CODEBASE_AGENCY_POLICY.md
+  - .codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md
+  - .codex/docs/ACCOUNTABILITY_REPORT_S77.md
+  - recon-scout-agent
+  - ci-testing-agent
+  priority: critical
+  run_before: codeql_checker
+  run_after: plan_declaration
+  created: '2026-02-24T00:00:00Z'
+  trigger_points: 3
+  violation_patterns: 14
 - id: python-architect-agent
   name: Python Architect Agent
   directory: .github/agents

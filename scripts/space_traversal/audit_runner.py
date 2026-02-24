@@ -596,6 +596,10 @@ def stage_s6_render(
         score = cap.get("score", 0.0)
         maturity = cap.get("maturity", "unknown")
         lines.append(f"## {cap.get('id', 'unknown')} — {maturity} ({score:.2f})")
+        cap_meta = cap.get("meta")
+        if cap_meta:
+            for k, v in cap_meta.items():
+                lines.append(f"Meta: {k}: {v}")
         lines.append("")
 
     report_path = artifacts_dir / "report.md"

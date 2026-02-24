@@ -307,5 +307,6 @@ python3 -m pytest tests/ -v --timeout=60 --tb=short -q
 
 ---
 
-*Last updated: S77 — 2026-02-24 | Commit: 088fc73*
-*Source: 75+ sessions, stored memory facts, accountability analysis*
+*Last updated: S78 — 2026-02-24 | Commit: see PR #3344*
+*Source: 77+ sessions, stored memory facts, accountability analysis*
+*Enforcement: See `.github/agents/policy-coach-agent.md` for the automated Policy Coach agent*

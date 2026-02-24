@@ -147,7 +147,7 @@ def get_gpu_stats() -> list[dict[str, Any]]:
 
 def sample() -> dict[str, Any]:
     """One-shot snapshot; never raises."""
-    ts = _dt.datetime.now().astimezone().isoformat(timespec="seconds")
+    ts = _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds")
     return {"ts": ts, "proc": get_proc_stats(), "sys": get_sys_stats(), "gpu": get_gpu_stats()}
 
 
