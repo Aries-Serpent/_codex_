@@ -5,12 +5,14 @@
 # environment as closely as possible, so developers can catch failures before pushing.
 #
 # Usage:
-#   bash scripts/dev_env_setup.sh [--no-torch] [--no-node] [--help]
+#   bash scripts/dev_env_setup.sh [--no-torch] [--no-node] [--clean] [--check-cache] [--help]
 #
 # Options:
-#   --no-torch   Skip the PyTorch CPU install (saves ~1 GB, skips torch-dependent tests)
-#   --no-node    Skip Node.js / markdown-link-check install
-#   --help       Show this message and exit
+#   --no-torch      Skip the PyTorch CPU install (saves ~1 GB, skips torch-dependent tests)
+#   --no-node       Skip Node.js / markdown-link-check install
+#   --clean         Purge pip download cache and delete .venv_ci, then reinstall
+#   --check-cache   Show pip cache info and .venv_ci disk usage, then exit
+#   --help          Show this message and exit
 
 set -euo pipefail
 
@@ -41,13 +43,17 @@ header()  { echo -e "\n${BOLD}${CYAN}=== $* ===${RESET}\n"; }
 # ---------------------------------------------------------------------------
 INSTALL_TORCH=true
 INSTALL_NODE=true
+DO_CLEAN=false
+CHECK_CACHE=false
 
 for arg in "$@"; do
   case "$arg" in
-    --no-torch) INSTALL_TORCH=false ;;
-    --no-node)  INSTALL_NODE=false  ;;
+    --no-torch)    INSTALL_TORCH=false ;;
+    --no-node)     INSTALL_NODE=false  ;;
+    --clean)       DO_CLEAN=true       ;;
+    --check-cache) CHECK_CACHE=true    ;;
     --help)
-      sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# //'
+      sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# //'
       exit 0
       ;;
     *)
@@ -56,6 +62,43 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+# ---------------------------------------------------------------------------
+# --check-cache: show pip cache info and .venv_ci disk usage, then exit
+# ---------------------------------------------------------------------------
+if [[ "$CHECK_CACHE" == "true" ]]; then
+  header "Cache status"
+  echo -e "${CYAN}pip download cache:${RESET}"
+  pip cache info 2>/dev/null || echo "  (pip not found or pip cache not available)"
+  echo ""
+  echo -e "${CYAN}.venv_ci disk usage:${RESET}"
+  if [[ -d "$VENV_DIR" ]]; then
+    du -sh "$VENV_DIR" 2>/dev/null || echo "  (could not measure)"
+  else
+    echo "  .venv_ci does not exist"
+  fi
+  echo ""
+  echo -e "  Run ${CYAN}bash scripts/dev_env_setup.sh --clean${RESET} to purge."
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# --clean: purge pip download cache and remove .venv_ci
+# ---------------------------------------------------------------------------
+if [[ "$DO_CLEAN" == "true" ]]; then
+  header "Cleaning caches"
+  info "Purging pip download cache ..."
+  pip cache purge 2>/dev/null || true
+  if [[ -d "$VENV_DIR" ]]; then
+    info "Removing $VENV_DIR ..."
+    rm -rf "$VENV_DIR"
+    success "Removed $VENV_DIR"
+  else
+    info ".venv_ci not present — nothing to remove"
+  fi
+  success "Clean complete. Re-run without --clean to rebuild."
+  exit 0
+fi
 
 # ---------------------------------------------------------------------------
 # 1. Python version check
@@ -87,15 +130,27 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 2. Create / reuse .venv_ci
-# Using a dedicated venv name makes it obvious this is the CI-parity env and
-# prevents accidental pollution of the developer's default venv.
+# 2. Create / reuse .venv_ci using a content hash to skip redundant installs.
 # ---------------------------------------------------------------------------
 header "Virtual environment: $VENV_DIR"
 
-if [[ -d "$VENV_DIR" ]]; then
-  info "Reusing existing .venv_ci (delete it manually to force a fresh install)"
-else
+# Compute a hash of the files that define the install set.
+LOCK_HASH=$(sha256sum "$ROOT/pyproject.toml" "$ROOT/requirements/lock.txt" 2>/dev/null \
+  | sha256sum | cut -c1-16)
+VENV_LOCK_FILE="$VENV_DIR/.install_hash"
+
+SKIP_INSTALL=false
+if [[ -d "$VENV_DIR" && -f "$VENV_LOCK_FILE" ]]; then
+  if [[ "$(cat "$VENV_LOCK_FILE")" == "$LOCK_HASH" ]]; then
+    SKIP_INSTALL=true
+    success ".venv_ci is up-to-date (hash $LOCK_HASH) — skipping install"
+  else
+    info ".venv_ci exists but hash changed — reinstalling"
+    rm -rf "$VENV_DIR"
+  fi
+fi
+
+if [[ "$SKIP_INSTALL" == "false" && ! -d "$VENV_DIR" ]]; then
   info "Creating .venv_ci with $PYTHON_BIN ..."
   "$PYTHON_BIN" -m venv "$VENV_DIR"
   success "Created $VENV_DIR"
@@ -106,10 +161,16 @@ fi
 source "$VENV_DIR/bin/activate"
 
 PIP="$VENV_DIR/bin/pip"
+PIP_CACHE_ARGS="--cache-dir ${HOME}/.cache/pip"
+
+if [[ "$SKIP_INSTALL" == "true" ]]; then
+  # Jump straight to verification
+  :
+else
 
 # Always upgrade pip/setuptools/wheel to avoid resolver issues
 info "Upgrading pip, setuptools, wheel ..."
-"$PIP" install --quiet --upgrade pip setuptools wheel
+"$PIP" install --quiet $PIP_CACHE_ARGS --upgrade pip setuptools wheel
 
 # ---------------------------------------------------------------------------
 # 3. Install pytest plugins FIRST
@@ -122,7 +183,7 @@ info "Upgrading pip, setuptools, wheel ..."
 header "Step 1: Install pytest plugins (CI exact versions)"
 
 info "Installing plugins from resilient_validation.yml ..."
-"$PIP" install --quiet \
+"$PIP" install --quiet $PIP_CACHE_ARGS \
   pytest==8.4.2 \
   pytest-timeout==2.4.0 \
   pytest-xdist==3.8.0 \
@@ -133,13 +194,13 @@ info "Installing plugins from resilient_validation.yml ..."
 # Also install the pre-commit / typer / validate-pipeline deps from validate.yml
 # These use slightly different pytest pin; we keep the newer one (8.4.2) already above.
 info "Installing validate.yml extra deps ..."
-"$PIP" install --quiet \
+"$PIP" install --quiet $PIP_CACHE_ARGS \
   pre-commit==4.0.1 \
   typer==0.16.1
 
 # Additional tools used in pre-merge-validation.yml
 info "Installing ruff, pyyaml, nox ..."
-"$PIP" install --quiet ruff pyyaml nox
+"$PIP" install --quiet $PIP_CACHE_ARGS ruff pyyaml nox
 
 success "Plugins installed"
 
@@ -153,11 +214,11 @@ header "Step 2: Install package (pip install -e .[dev])"
 
 cd "$ROOT"
 
-if "$PIP" install --quiet -e ".[dev]"; then
+if "$PIP" install --quiet $PIP_CACHE_ARGS -e ".[dev]"; then
   success "pip install -e .[dev] succeeded"
 else
   warn "pip install -e .[dev] failed, retrying without [dev] extras ..."
-  "$PIP" install --quiet -e .
+  "$PIP" install --quiet $PIP_CACHE_ARGS -e .
   warn "Installed without [dev] extras — some tests may be skipped"
 fi
 
@@ -169,7 +230,7 @@ if [[ "$INSTALL_TORCH" == "true" ]]; then
   header "Step 3: PyTorch CPU build"
   info "Installing torch, torchvision, torchaudio (CPU wheel) ..."
   info "(Use --no-torch to skip this ~1 GB download)"
-  "$PIP" install --quiet \
+  "$PIP" install --quiet $PIP_CACHE_ARGS \
     torch torchvision torchaudio \
     --index-url https://download.pytorch.org/whl/cpu
   success "PyTorch CPU installed"
@@ -209,6 +270,12 @@ if [[ "$INSTALL_NODE" == "true" ]]; then
 else
   warn "Skipping Node/markdown-link-check install (--no-node flag set)"
 fi
+
+# Record the install hash so future runs can skip reinstall.
+echo "$LOCK_HASH" > "$VENV_LOCK_FILE"
+info "Recorded install hash $LOCK_HASH → $VENV_LOCK_FILE"
+
+fi  # end: SKIP_INSTALL == false
 
 # ---------------------------------------------------------------------------
 # 8. Verification — confirm all key tools are available

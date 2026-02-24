@@ -368,6 +368,80 @@ Most common reasons:
 
 ---
 
+## Shared Caching
+
+All CI workflows and local scripts share the same cache strategy so no
+package is ever downloaded twice.
+
+### How it works
+
+| Cache | Location | Shared between |
+|-------|----------|----------------|
+| pip download cache | `~/.cache/pip` | all workflows + local scripts |
+| Installed virtualenv | `.venv_ci` | all workflows + local scripts |
+| npm packages | `~/.npm` | workflows with `install-npm-tools: 'true'` |
+
+#### CI cache keys
+
+```
+pip:  ${{ runner.os }}-pip-py<version>-<hash(pyproject.toml, requirements/lock.txt)>
+venv: ${{ runner.os }}-venv-py<version>-<hash(pyproject.toml, requirements/lock.txt)>
+```
+
+A **venv cache hit** means the entire `pip install` step is skipped — only the
+already-installed `.venv_ci` directory is restored.  A **venv cache miss**
+triggers a fresh install and saves the result for the next run.
+
+#### Local cache reuse
+
+`dev_env_setup.sh` computes the same content hash locally:
+
+```bash
+LOCK_HASH=$(sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1-16)
+```
+
+If `.venv_ci/.install_hash` matches, the install is skipped entirely:
+
+```
+✅ .venv_ci is up-to-date (hash abc123def456) — skipping install
+```
+
+### Check cache status
+
+```bash
+bash scripts/dev_env_setup.sh --check-cache
+```
+
+Shows `pip cache info` and the disk usage of `.venv_ci`.
+
+Expected sizes:
+
+| Cache | Typical size |
+|-------|-------------|
+| `~/.cache/pip` | 200 – 500 MB |
+| `.venv_ci` (without torch) | 400 – 800 MB |
+| `.venv_ci` (with torch CPU) | 1 – 2 GB |
+
+### Purge stale cache
+
+```bash
+bash scripts/dev_env_setup.sh --clean
+```
+
+Runs `pip cache purge` and deletes `.venv_ci`.  The next run rebuilds from
+scratch (downloading fresh wheels into `~/.cache/pip`).
+
+### Predict CI cache misses
+
+A CI cache miss happens whenever `pyproject.toml` or `requirements/lock.txt`
+changes.  You can predict the new key before pushing:
+
+```bash
+sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1-16
+```
+
+---
+
 ## See also
 
 - [`scripts/dev_env_setup.sh`](../../scripts/dev_env_setup.sh) — environment setup

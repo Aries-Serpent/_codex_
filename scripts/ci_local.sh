@@ -18,10 +18,13 @@
 #   all         Runs: fast + quick + premerge sequentially
 #   help        Show this message
 #
+# Options (apply to any subcommand):
+#   --setup     Run dev_env_setup.sh before running tests
+#
 # Examples:
 #   bash scripts/ci_local.sh fast
+#   bash scripts/ci_local.sh fast --setup
 #   bash scripts/ci_local.sh all
-#   bash scripts/ci_local.sh lint
 
 set -euo pipefail
 
@@ -65,9 +68,18 @@ ci_header() {
 # ---------------------------------------------------------------------------
 activate_venv() {
   VENV_CI="$ROOT/.venv_ci"
+  LOCK_HASH=$(sha256sum "$ROOT/pyproject.toml" "$ROOT/requirements/lock.txt" 2>/dev/null \
+    | sha256sum | cut -c1-16)
+  VENV_LOCK_FILE="$VENV_CI/.install_hash"
+
   if [[ -d "$VENV_CI" && -z "${VIRTUAL_ENV:-}" ]]; then
     # shellcheck source=/dev/null
     source "$VENV_CI/bin/activate"
+    if [[ -f "$VENV_LOCK_FILE" && "$(cat "$VENV_LOCK_FILE")" == "$LOCK_HASH" ]]; then
+      info "[CACHE] .venv_ci hit (hash $LOCK_HASH) — skipping install"
+    else
+      warn "[CACHE] .venv_ci miss or stale (hash $LOCK_HASH) — consider running: bash scripts/dev_env_setup.sh"
+    fi
     info "Activated .venv_ci"
   elif [[ -n "${VIRTUAL_ENV:-}" ]]; then
     info "Using active venv: $VIRTUAL_ENV"
@@ -348,6 +360,22 @@ cmd_help() {
 # ===========================================================================
 SUBCOMMAND="${1:-help}"
 shift || true
+
+# Handle --setup flag (may appear after the subcommand)
+RUN_SETUP=false
+REMAINING_ARGS=()
+for _arg in "$@"; do
+  if [[ "$_arg" == "--setup" ]]; then
+    RUN_SETUP=true
+  else
+    REMAINING_ARGS+=("$_arg")
+  fi
+done
+
+if [[ "$RUN_SETUP" == "true" ]]; then
+  info "--setup flag detected: running dev_env_setup.sh first ..."
+  bash "$ROOT/scripts/dev_env_setup.sh" "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
+fi
 
 case "$SUBCOMMAND" in
   fast)        cmd_fast        ;;

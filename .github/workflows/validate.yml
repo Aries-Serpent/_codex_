@@ -55,18 +55,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python with shared cache
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.12"
-
-      - name: Cache validation virtualenv
-        uses: actions/cache@v4
-        with:
-          path: .venv_validation
-          key: venv-validation-fast-${{ runner.os }}-py312-${{ hashFiles('requirements-dev.txt', 'requirements.txt') }}
-          restore-keys: |
-            venv-validation-fast-${{ runner.os }}-py312-
+          python-version: '3.12'
+          extras: 'dev'
 
       - name: Run fast validation
         env:
@@ -122,18 +115,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python with shared cache
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.12"
-
-      - name: Cache validation virtualenv
-        uses: actions/cache@v4
-        with:
-          path: .venv_validation
-          key: venv-validation-full-${{ runner.os }}-py312-${{ hashFiles('requirements-dev.txt', 'requirements.txt') }}
-          restore-keys: |
-            venv-validation-full-${{ runner.os }}-py312-
+          python-version: '3.12'
+          extras: 'dev'
 
       - name: Run full validation
         env:
