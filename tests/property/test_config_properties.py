@@ -286,9 +286,9 @@ class TestPathResolutionProperties:
 class TestTypeCoercionProperties:
     """Property-based tests for type coercion."""
 
-    @given(st.integers())
+    @given(st.integers(min_value=-(2**53), max_value=2**53))
     def test_int_to_float_coercion(self, value: int) -> None:
-        """Integer to float coercion preserves value."""
+        """Integer to float coercion preserves value within float64 precision."""
         coerced = float(value)
         assert coerced == value
 

@@ -199,12 +199,14 @@ def _normalize_csv_value(value: Any) -> Any:
     if isinstance(value, str):
         # ``csv`` does not interpret backslash escaping, so legacy datasets that
         # relied on ``\"`` for embedded quotes would surface them literally.
-        # Decode common escape sequences ("unicode_escape") to mirror the
-        # previous behaviour while tolerating malformed values gracefully.
-        try:
-            return codecs.decode(value, "unicode_escape")
-        except Exception:  # pragma: no cover - defensive
-            return value.replace('\\"', '"')
+        # Only apply escape handling to values that actually contain backslash
+        # sequences — blanket ``unicode_escape`` corrupts UTF-8 multibyte text.
+        if "\\" in value:
+            try:
+                return codecs.decode(value, "unicode_escape")
+            except Exception:
+                return value.replace('\\"', '"')
+        return value
     return value
 
 

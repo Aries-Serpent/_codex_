@@ -16,6 +16,7 @@ Minimal surface keeps legacy + functional backends pluggable.
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy
@@ -227,8 +228,6 @@ class LegacyStrategy:
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
-        import warnings
-
         from codex_ml.train_loop import run_training as _legacy
 
         warnings.warn(

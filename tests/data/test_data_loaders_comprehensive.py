@@ -230,10 +230,10 @@ class TestLoadJsonl:
             f.write('{"text": "مرحبا"}\n')
             f.write('{"text": "こんにちは"}\n')
 
-        result = load_jsonl(unicode_file)
+        records, meta = load_jsonl(unicode_file)
 
-        assert len(result["data"]) == 3
-        assert result["data"][0]["text"] == "你好世界"
+        assert len(records) == 3
+        assert records[0]["text"] == "你好世界"
 
     def test_load_jsonl_nested_objects(self, temp_data_dir: Path):
         """Verify nested JSON objects."""
