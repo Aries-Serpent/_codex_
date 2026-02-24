@@ -49,6 +49,21 @@ class MSPClient:
 
         return headers
 
+    def request(self, method: str, path: str, **kwargs) -> dict[str, Any]:
+        """Send a generic HTTP request.
+
+        Args:
+            method: HTTP method (GET, POST, PUT, DELETE, etc.)
+            path: URL path
+            **kwargs: Additional arguments passed to httpx.Client.request
+
+        Returns:
+            JSON response body
+        """
+        response = self.client.request(method, path, **kwargs)
+        response.raise_for_status()
+        return response.json()
+
     def health_check(self) -> dict[str, Any]:
         """Check gateway health
 

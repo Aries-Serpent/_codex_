@@ -23,6 +23,12 @@ import typer
 
 logger = logging.getLogger(__name__)
 
+# Import RAGIndexer for CLI tenant operations (patchable by tests)
+try:
+    from codex.rag.indexer import RAGIndexer
+except ImportError:  # pragma: no cover - optional dependency
+    RAGIndexer = None  # type: ignore[assignment,misc]
+
 # Create Typer app for RAG commands
 app = typer.Typer(
     name="rag",

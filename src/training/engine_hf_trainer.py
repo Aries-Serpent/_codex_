@@ -1324,7 +1324,7 @@ def run_hf_trainer(
     manifest = {
         "manifest_version": 1,
         "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir else None,
-        "last_checkpoint": trainer.state.last_model_checkpoint,
+        "last_checkpoint": getattr(trainer.state, "last_model_checkpoint", None),
         "best_checkpoint": trainer.state.best_model_checkpoint,
         "global_step": int(trainer.state.global_step),
         "resume_from": str(resume_ckpt) if resume_ckpt else None,
