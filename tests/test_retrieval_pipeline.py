@@ -13,6 +13,8 @@ import pytest
 pytest.importorskip("sentence_transformers")
 pytest.importorskip("faiss")
 
+pytestmark = pytest.mark.requires_faiss
+
 from src.codex.retrieval import (  # noqa: E402
     FAISSStore,
     RetrievalEngine,

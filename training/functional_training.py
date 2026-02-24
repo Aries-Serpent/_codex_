@@ -445,7 +445,8 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     if getattr(torch.backends, "cudnn", None) is not None:
         if getattr(torch.backends.cudnn, "enabled", False):
             if not torch.backends.cudnn.deterministic:
-                raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
+                torch.backends.cudnn.deterministic = True
+                torch.backends.cudnn.benchmark = False
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig and get_peft_model:
