@@ -23,7 +23,7 @@ import typer
 
 logger = logging.getLogger(__name__)
 
-# Import RAGIndexer for CLI tenant operations (patchable by tests)
+# Re-export RAGIndexer so tests can patch codex.cli_rag.RAGIndexer
 try:
     from codex.rag.indexer import RAGIndexer
 except ImportError:  # pragma: no cover - optional dependency
@@ -36,6 +36,8 @@ except ImportError:  # pragma: no cover - optional dependency
                 "RAGIndexer requires codex.rag extras. "
                 "Install with: pip install -e '.[rag]'"
             )
+
+__all__ = ["app", "RAGIndexer"]
 
 # Create Typer app for RAG commands
 app = typer.Typer(
