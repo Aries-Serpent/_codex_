@@ -675,8 +675,17 @@ agents:
   energy_level: 5
 
 standardization_status:
-  fully_compliant: 0
+  fully_compliant: 12
   partially_compliant: 20
-  non_compliant: 4
+  non_compliant: 3
   target: 100%
-  deadline: '2026-01-26'
+  deadline: '2026-03-15'
+
+# S83 changelog (2026-02-24):
+# - version 1.0.0 → 1.1.0
+# - marshmallow 3.26.1 → 4.2.2 (great-expectations made optional)
+# - transformers 5.1.0 → 5.2.0 (getattr compat guard added)
+# - RAGIndexer facade class added (src/codex/rag/indexer.py)
+# - MSPClient.request() method added (agents/msp_client.py)
+# - 48 CVEs fixed (was 26), 1500+ tests (was 1300+), 54 agents (was 53)
+# - Knowledge graph v1.4.0, AAIS V3.2 (95.3/100)

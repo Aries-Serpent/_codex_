@@ -624,5 +624,9 @@ else:
 
 - ✅ AAIS contribution: +1.0 points
 
+#### S83 Known Conflict Resolutions (2026-02-24)
+- **marshmallow 3→4 vs great-expectations**: ALL GE versions require `marshmallow<4.0.0`. Resolved by making `great-expectations` optional in `pyproject.toml[ge]`. Core dep is now `marshmallow>=4.0.0,<5`.
+- **transformers 5.2 vs TrainerState**: `last_model_checkpoint` attribute removed. Resolved with `getattr(trainer.state, "last_model_checkpoint", None)`.
+
 ### v2.0.0 (Previous)
 - See git history for previous changes

@@ -2,10 +2,10 @@
 
 **Version**: v0.1.0 Pre-Release
 **Package**: codex-ml
-**Date**: 2026-02-09
+**Date**: 2026-02-24
 **Status**: ✅ Production Ready
-**Agents**: 53 Active (Curated from 109 total)
-**Tests**: 1300+ | Coverage: 90%
+**Agents**: 54 Active (Curated from 109 total)
+**Tests**: 1500+ | Coverage: 90%
 
 ---
 
@@ -19,7 +19,7 @@ graph TB
         subgraph "53 Production Agents"
             Testing[Testing Agents<br/>12 agents<br/>✅ Coverage Enforcement]
             Docs[Documentation Agents<br/>8 agents<br/>📚 Quality + Freshness]
-            Security[Security Agents<br/>7 agents<br/>🔒 26 CVEs Fixed]
+            Security[Security Agents<br/>7 agents<br/>🔒 48 CVEs Fixed]
             CI[CI/CD Agents<br/>6 agents<br/>🔧 Auto-Fix]
             Ops[Operations Agents<br/>8 agents<br/>⚙️ Repository Management]
             ML[ML/RAG Agents<br/>6 agents<br/>🧠 Model Validation]
