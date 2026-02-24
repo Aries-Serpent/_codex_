@@ -16,7 +16,6 @@ Minimal surface keeps legacy + functional backends pluggable.
 from __future__ import annotations
 
 import logging
-import warnings
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy

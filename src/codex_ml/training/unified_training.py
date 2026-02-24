@@ -37,17 +37,20 @@ from codex_ml.logging.mlflow_guard import (
     log_metric_safe,
     log_params_safe,
 )
+from codex_ml.training import strategies
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
 from codex_ml.training.rng_checkpoint import RNGState
-from codex_ml.training import strategies
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
-    resolve_strategy,
+    resolve_strategy,  # noqa: F401  (re-exported for monkeypatching)
 )
 from codex_ml.utils import checkpoint_core as _ckpt_core
 from codex_ml.utils.checkpoint_core import CheckpointMeta
-from codex_ml.utils.checkpointing import load_checkpoint, save_checkpoint  # noqa: F401  (re-exported for monkeypatching)
+from codex_ml.utils.checkpointing import (  # noqa: F401  (re-exported for monkeypatching)
+    load_checkpoint,
+    save_checkpoint,
+)
 from codex_ml.utils.repro import capture_environment, set_seed
 
 logger = logging.getLogger(__name__)

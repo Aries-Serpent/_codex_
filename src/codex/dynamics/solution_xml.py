@@ -29,7 +29,9 @@ from pathlib import Path  # noqa: E402
 try:
     # Note: defusedxml.ElementTree doesn't re-export Element/SubElement
     # We use xml.etree for construction (safe) and defusedxml for serialization (extra safety)
-    from xml.etree.ElementTree import Element, SubElement
+    # nosec B314 — Element/SubElement are used for tree *construction* only (not parsing);
+    # defusedxml.ElementTree.tostring handles safe serialization. Not an XXE attack surface.
+    from xml.etree.ElementTree import Element, SubElement  # nosec B314
 
     from defusedxml.ElementTree import tostring
 except ImportError as exc:

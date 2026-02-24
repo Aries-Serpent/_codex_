@@ -962,3 +962,80 @@ requiring the native library. The test guard handles the skip, not the module.
 | DRQ-S75-001 | `tools/validate.py` module-level defusedxml | CI | High | High | RESOLVED (S75) |
 | DRQ-S75-002 | cudnn guard raises RuntimeError not AssertionError | Test Correctness | High | High | RESOLVED (S75) |
 | DRQ-S75-003 | FAISS availability detection false positive | Test Infra | Medium | Medium | RESOLVED (S75) |
+
+---
+
+## S80 Deep Research Addenda — DRQ-S75-001 / S75-002 / S75-003
+
+> Added: 2026-02-24 | Source: DRQ-S75 Deep Research Report v2 (PR #3348 comment #3948645073)
+
+### DRQ-S75-001-R3 (S80): Bandit B314 false positive — `solution_xml.py`
+
+**Finding**: `xml.etree.ElementTree.Element/SubElement` are used only for
+tree *construction* (output direction), not parsing. `defusedxml.ElementTree.tostring`
+handles serialization. Bandit B314 fires because the stdlib import appears in a file
+that also references defusedxml, but there is no XXE attack surface.
+
+**Fix applied (S80)**: Added `# nosec B314` with justification comment to
+`src/codex/dynamics/solution_xml.py:32`.
+
+**Remaining open item**: `defuse_stdlib()` is never called in production code.
+Calling it at application startup (e.g., `src/codex/app_init.py`) would provide
+process-wide protection against XXE via third-party code without changing any
+existing import patterns. Filed as S81 enhancement recommendation.
+
+**File**: `src/codex/dynamics/solution_xml.py:32`
+**Status**: B314 false positive suppressed ✅; `defuse_stdlib()` startup call ⏳ S81
+
+---
+
+### DRQ-S75-002-R2 (S80): `functional_training.py:443` assert-without-guarantee
+
+**Finding** (from deep research): `training/functional_training.py:443` asserts
+`torch.backends.cudnn.deterministic` without guaranteeing that `set_reproducible()`
+was called first. On any CUDA training run where the caller omits
+`set_reproducible()`, this raises `RuntimeError`. MPS training silently skips the
+guard entirely (no equivalent check).
+
+**Root cause**: 9+ fragmented seeding implementations exist across the codebase;
+none is designated as the canonical entry point.
+
+**Recommended fix (S81)**:
+1. Designate `src/codex_ml/utils/seeding.py::set_reproducible()` as the single
+   canonical entry point.
+2. Replace the assert at line 443 with an auto-call:
+   ```python
+   if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
+       if not getattr(torch.backends.cudnn, "deterministic", False):
+           _set_reproducible_if_needed(cfg.seed)
+   ```
+3. Add MPS support: `if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available(): torch.mps.manual_seed(seed)`.
+
+**File**: `training/functional_training.py:443`
+**Status**: DRQ-S75-002-R1 rule enforced in engine_hf_trainer.py (S79b) ✅;
+functional_training.py auto-call recommendation ⏳ S81
+
+---
+
+### DRQ-S75-003-R3 (S80): FAISS guarded export in `stores/__init__.py`
+
+**Finding** (from deep research): `src/codex/retrieval/__init__.py:5` unconditionally
+exports `FAISSStore` via `stores/__init__.py`. While `import faiss` is deferred to
+`FAISSStore.__init__()`, the class definition is loaded unconditionally. In minimal CI
+environments without `faiss-cpu`, any test that instantiates `FAISSStore` or
+`RetrievalEngine` fails with `ImportError`. The correct pattern is the factory.py
+guarded `try/except ImportError` block.
+
+**Fix applied (S80)**: `src/codex/retrieval/stores/__init__.py` — wrapped
+`from .faiss_store import FAISSStore` in `try/except ImportError`; fallback
+`FAISSStore = None`; added `_FAISS_AVAILABLE` sentinel.
+
+**Remaining open items (S81)**:
+1. `RetrievalEngine` (`src/codex/retrieval/search.py`) still directly instantiates
+   `FAISSStore` — should use `VectorStoreFactory.create("faiss", ...)` instead.
+2. Add `pytest.mark.requires_faiss` to tests in `tests/retrieval/` that instantiate
+   `FAISSStore` or `RetrievalEngine`, wiring to `tools/testing/optional_deps.py::OPTIONALS`.
+3. Add `faiss-cpu` to `requirements/lock-test.txt` as optional CI dep.
+
+**File**: `src/codex/retrieval/stores/__init__.py`
+**Status**: FAISS guard added ✅; RetrievalEngine factory migration ⏳ S81
