@@ -1,6 +1,6 @@
 version: 1.1.0
 last_updated: '2026-02-24T07:30:00Z'
-total_agents: 35
+total_agents: 35  # registered in this YAML; 54 total agent files exist in .github/agents/
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
