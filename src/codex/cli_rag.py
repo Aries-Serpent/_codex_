@@ -27,7 +27,15 @@ logger = logging.getLogger(__name__)
 try:
     from codex.rag.indexer import RAGIndexer
 except ImportError:  # pragma: no cover - optional dependency
-    RAGIndexer = None  # type: ignore[assignment,misc]
+
+    class RAGIndexer:  # type: ignore[no-redef]
+        """Stub when codex.rag is not installed."""
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                "RAGIndexer requires codex.rag extras. "
+                "Install with: pip install -e '.[rag]'"
+            )
 
 # Create Typer app for RAG commands
 app = typer.Typer(
