@@ -27,6 +27,12 @@ from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
 
+try:
+    from codex_ml.safety import SafetyConfig, sanitize_prompt
+except Exception:  # pragma: no cover - optional dependency
+    SafetyConfig = None  # type: ignore[assignment,misc]
+    sanitize_prompt = None  # type: ignore[assignment]
+
 LOGGER = logging.getLogger(__name__)
 
 hydra, _HAS_HYDRA = optional_import("hydra")
@@ -75,9 +81,7 @@ def _coerce_sequence(value: Any) -> Optional[list[Any]]:
 
 
 def _sanitize_prompt_list(items: list[Any]) -> tuple[list[Any], bool]:
-    try:
-        from codex_ml.safety import SafetyConfig, sanitize_prompt
-    except Exception:  # pragma: no cover - optional dependency path
+    if SafetyConfig is None or sanitize_prompt is None:  # pragma: no cover - optional dependency path
         return list(items), False
 
     cfg = SafetyConfig()
