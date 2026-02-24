@@ -9,8 +9,10 @@ Cross-references:
 
 from __future__ import annotations
 
+import importlib
 import importlib.util
 import logging
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
@@ -82,9 +84,31 @@ class QuantumPlugin:
             raise ImportError(f"Plugin {self.name} is decoherent (failed)")
 
         try:
+            # If the module is already in sys.modules (e.g. mocked by tests),
+            # use it directly — avoids Python 3.12 ValueError from find_spec
+            # when __spec__ is None on a sys.modules entry.
+            existing = sys.modules.get(self.import_path)
+            if existing is not None:
+                self._module = existing
+                self.state = PluginState.COLLAPSED
+                logger.info(f"✓ Plugin '{self.name}' resolved from sys.modules")
+                return self._module
+
             # Direct import without safe_call to properly propagate exceptions
             # This ensures tests can properly mock imports and CI failures are visible
-            spec = importlib.util.find_spec(self.import_path)
+            try:
+                spec = importlib.util.find_spec(self.import_path)
+            except ValueError:
+                # Python 3.12: find_spec raises ValueError when the module is in
+                # sys.modules but __spec__ is None (created via types.ModuleType).
+                # Fall back to importlib.import_module.
+                try:
+                    self._module = importlib.import_module(self.import_path)
+                    self.state = PluginState.COLLAPSED
+                    return self._module
+                except ImportError:
+                    spec = None
+
             if spec is None:
                 self.state = PluginState.DECOHERENT
                 raise ImportError(f"Cannot find spec for {self.import_path}")

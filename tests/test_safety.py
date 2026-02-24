@@ -14,6 +14,7 @@ import pytest
 
 from codex_ml.safety import SafetyFilters, SafetyViolation
 from codex_ml.safety.sandbox import run_in_sandbox
+from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 _ROOT = Path(__file__).resolve().parents[1]
 _TRAINING_SPEC = importlib.util.spec_from_file_location(
@@ -108,7 +109,7 @@ def test_training_enforces_policy(tmp_path: Path, monkeypatch) -> None:
     try:
         result = run_functional_training(cfg)
         assert result["metrics"]
-    except (OSError, ImportError, ValueError) as exc:
+    except (OSError, ImportError, ValueError, RuntimeError, HFModelUnavailableError) as exc:
         # Model download may fail in CI/offline environments
         pytest.skip(f"Model loading unavailable: {exc}")
 

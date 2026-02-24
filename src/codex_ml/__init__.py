@@ -170,6 +170,14 @@ def __getattr__(name: str):
     """Lazily import heavy optional modules on first access."""
 
     if name not in _EXPORT_MAP:
+        # Fall back to subpackage import (e.g. codex_ml.interfaces, codex_ml.training).
+        # Python normally sets these automatically when the subpackage is imported, but
+        # pytest monkeypatch resolves dotted paths via attribute access on the parent package
+        # before the subpackage has been loaded in the current process.
+        try:
+            return import_module(f"codex_ml.{name}")
+        except ImportError:
+            pass
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
 
     module_name, attr_name = _EXPORT_MAP[name]

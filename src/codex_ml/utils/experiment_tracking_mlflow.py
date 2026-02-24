@@ -8,7 +8,11 @@ from contextlib import contextmanager
 from importlib import util
 from typing import Any, Iterator, Mapping
 
-from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking, last_decision
+from codex_ml.tracking.mlflow_guard import (
+    DEFAULT_LITERAL_LOCAL_URI,  # Always starts with "file:" — assumed safe for get_tracking_uri()
+    bootstrap_offline_tracking,
+    last_decision,
+)
 
 if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
     import mlflow
@@ -113,7 +117,10 @@ def maybe_mlflow(
             return False
 
         def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
-            return os.environ.get("MLFLOW_TRACKING_URI", bootstrap_offline_tracking())
+            uri = os.environ.get("MLFLOW_TRACKING_URI", "")
+            if uri and uri.startswith("file:"):
+                return uri
+            return DEFAULT_LITERAL_LOCAL_URI
 
     if not enable or mlflow is None:
         yield _NoOpLogger()

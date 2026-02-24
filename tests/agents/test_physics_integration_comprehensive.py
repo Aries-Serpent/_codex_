@@ -266,7 +266,7 @@ class TestHybridPhysicsOrchestrator:
 
     def test_logging_with_custom_session(self, orchestrator_with_session):
         """Test logging uses custom session ID."""
-        orchestrator_with_session._log("test", "Custom session log")
+        orchestrator_with_session._log("user", "Custom session log")
         # Should complete without error
         assert True
 

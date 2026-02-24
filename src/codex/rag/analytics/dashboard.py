@@ -4,7 +4,7 @@ Real-time analytics dashboard for RAG metrics.
 Generates HTML dashboard with charts and statistics.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .metrics_db import MetricsDatabase
@@ -162,7 +162,7 @@ class AnalyticsDashboard:
         </div>
 
         <div class="timestamp">
-            Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+            Last updated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}
         </div>
     </div>
 

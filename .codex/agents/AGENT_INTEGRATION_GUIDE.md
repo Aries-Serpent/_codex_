@@ -211,4 +211,3 @@ cat .github/agents/<agent-name>/config.yml
 ---
 
 ## Related Documentation
-

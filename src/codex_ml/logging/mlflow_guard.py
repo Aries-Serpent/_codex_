@@ -25,8 +25,12 @@ def _coerce_bool(value: str | None) -> bool:
     return text in {"1", "true", "yes", "on"}
 
 
-def init_mlflow_safe(offline_mode: bool | None = None) -> bool:
-    """Initialise MLflow if available, respecting offline guardrails."""
+def init_mlflow_safe(offline_mode: bool | None = None, **kwargs: object) -> bool:
+    """Initialise MLflow if available, respecting offline guardrails.
+
+    Extra keyword arguments (e.g. ``experiment_name``) are accepted for
+    forward-compatibility with callers that pass configuration hints.
+    """
 
     if offline_mode is None:
         offline_mode = _coerce_bool(os.environ.get("CODEX_OFFLINE_MODE"))

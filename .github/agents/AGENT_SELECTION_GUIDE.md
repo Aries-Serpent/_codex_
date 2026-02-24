@@ -670,4 +670,3 @@ python -m codex.logging.query_logs --contains "bash|git" --role tool
 | Recover uncommitted work | session-log-retrieval-agent | - |
 | Search conversation history | session-log-retrieval-agent | - |
 | Command history | session-log-retrieval-agent | - |
-

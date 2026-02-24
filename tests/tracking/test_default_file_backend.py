@@ -6,13 +6,13 @@ Test module for default file backend.
 
 from __future__ import annotations
 
+import importlib.util
 import os
 
 import pytest
 
 mlflow = pytest.importorskip("mlflow")
 
-import importlib.util
 _HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
 

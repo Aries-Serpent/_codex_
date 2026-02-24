@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import sys
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -46,7 +46,7 @@ class CodexErrorHandler:
         self.log_dir = log_dir or Path(".codex/logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-        self.error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
+        self.error_log = self.log_dir / f"errors_{datetime.now(timezone.utc).strftime('%Y%m%d')}.log"
 
         # Configure logger - use unique name per instance to avoid conflicts
         # This ensures each instance uses its own log file

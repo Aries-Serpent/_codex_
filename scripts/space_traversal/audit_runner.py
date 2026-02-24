@@ -53,10 +53,22 @@ EXIT_SCORE_REGRESSION = 3
 EXIT_LOW_MATURITY = 4
 EXIT_MISSING_DETECTOR = 5
 
-_audit_spec = importlib.util.find_spec("scripts.space_traversal.security_audit")
-_deps_spec = importlib.util.find_spec("scripts.space_traversal.dependency_scanner")
-_quality_spec = importlib.util.find_spec("scripts.space_traversal.code_quality_checker")
-_vuln_spec = importlib.util.find_spec("scripts.space_traversal.vulnerability_db")
+try:
+    _audit_spec = importlib.util.find_spec("scripts.space_traversal.security_audit")
+except (ModuleNotFoundError, ValueError):
+    _audit_spec = None
+try:
+    _deps_spec = importlib.util.find_spec("scripts.space_traversal.dependency_scanner")
+except (ModuleNotFoundError, ValueError):
+    _deps_spec = None
+try:
+    _quality_spec = importlib.util.find_spec("scripts.space_traversal.code_quality_checker")
+except (ModuleNotFoundError, ValueError):
+    _quality_spec = None
+try:
+    _vuln_spec = importlib.util.find_spec("scripts.space_traversal.vulnerability_db")
+except (ModuleNotFoundError, ValueError):
+    _vuln_spec = None
 
 if _audit_spec:
     from .security_audit import SecurityAuditor
@@ -547,11 +559,47 @@ def stage_s6_render(
             except (json.JSONDecodeError, OSError) as exc:
                 logger.debug("Could not read scored capabilities file: %s", exc)
 
+    # Build thresholds context from cfg
+    scoring_cfg = cfg.get("scoring", {})
+    thresholds = scoring_cfg.get("thresholds", {"low": 0.70, "medium": 0.85})
+
+    # Try to render using a Jinja2 template if one is configured
+    template_path_str = cfg.get("output", {}).get("matrix_template")
+    if template_path_str:
+        template_file = Path(template_path_str)
+        if template_file.exists():
+            try:
+                import jinja2
+                env = jinja2.Environment(
+                    loader=jinja2.FileSystemLoader(str(template_file.parent)),
+                    undefined=jinja2.StrictUndefined,
+                    autoescape=jinja2.select_autoescape(["html", "xml"]),
+                )
+                template = env.get_template(template_file.name)
+                rendered = template.render(
+                    capabilities=scored_caps,
+                    thresholds=thresholds,
+                    timestamp=timestamp,
+                    gaps=gaps or {},
+                )
+                report_path = Path(cfg.get("output", {}).get("reports_dir", str(artifacts_dir))) / "report.md"
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(rendered)
+                logger.info("Stage S6 render complete (template): %s", report_path)
+                return report_path
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Template rendering failed (%s); falling back to simple report", exc)
+
+    # Fallback: simple Markdown report
     lines = ["# Capability Audit Report", "", f"Generated: {timestamp}", ""]
     for cap in scored_caps:
         score = cap.get("score", 0.0)
         maturity = cap.get("maturity", "unknown")
         lines.append(f"## {cap.get('id', 'unknown')} — {maturity} ({score:.2f})")
+        cap_meta = cap.get("meta")
+        if cap_meta:
+            for k, v in cap_meta.items():
+                lines.append(f"Meta: {k}: {v}")
         lines.append("")
 
     report_path = artifacts_dir / "report.md"
@@ -936,13 +984,34 @@ def main() -> None:
             output_file = stage_s6_render({"output": {"artifacts_dir": str(artifacts_dir)}})
             print(f"Stage S6 complete: {output_file}")
         elif args.stage_name == "S7":
-            # Stage 7: Prefix auto-validation — scan bundles for naming convention violations
+            # Stage 7: Manifest aggregation — collect warnings from filter reports and bundles,
+            # then optionally validate bundle naming prefixes.
             prefix_mode = os.environ.get("BUNDLE_PREFIX_MODE", "0") == "1"
             validate_auto = os.environ.get("PREFIX_VALIDATE_AUTO", "0") == "1"
+
+            def _collect_warnings_from_json_file(path: Path, key: str = "warnings") -> list[str]:
+                """Read a JSON file and return its ``key`` list as strings."""
+                try:
+                    return [str(w) for w in json.loads(path.read_text()).get(key, [])]
+                except (json.JSONDecodeError, OSError) as exc:
+                    logger.debug("Could not read %s: %s", path, exc)
+                    return []
+
             warnings: list[str] = []
-            if prefix_mode and validate_auto:
-                bundles_dir = artifacts_dir / "bundles"
-                if bundles_dir.exists():
+
+            # Aggregate warnings from content_filter_report.json
+            filter_report = artifacts_dir / "content_filter_report.json"
+            if filter_report.exists():
+                warnings.extend(_collect_warnings_from_json_file(filter_report))
+
+            # Aggregate warnings from bundle pointer files
+            bundles_dir = artifacts_dir / "bundles"
+            if bundles_dir.exists():
+                for pointer_file in bundles_dir.glob("*.pointer.json"):
+                    warnings.extend(_collect_warnings_from_json_file(pointer_file))
+
+                # Optionally validate bundle naming prefixes
+                if prefix_mode and validate_auto:
                     for bundle_file in bundles_dir.glob("*.tar.gz"):
                         if not bundle_file.name.startswith("bundle_"):
                             warnings.append(

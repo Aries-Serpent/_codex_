@@ -325,7 +325,7 @@ class ProvenanceMetadata:
         ...     source_file=Path("docs/guide.md"),
         ...     line_range=(10, 25),
         ...     chunk_id="chunk_abc123",
-        ...     indexed_at=datetime.now(),
+        ...     indexed_at=datetime.now(timezone.utc),
         ...     embedding_model="all-MiniLM-L6-v2",
         ...     retrieval_score=0.85
         ... )

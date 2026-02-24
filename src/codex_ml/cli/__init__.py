@@ -223,10 +223,14 @@ def _cmd_hydra_train(args):
 
 
 def _load_training_config(path: str) -> dict[str, Any]:
-    if not path or not _HAS_YAML or not os.path.exists(path):
+    if not path:
+        return {}
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Training config not found: {path}")
+    if not _HAS_YAML:
         return {}
     with open(path, "r", encoding="utf-8") as fh:
-        return (yaml.safe_load(fh) or {}) if _HAS_YAML else {}
+        return yaml.safe_load(fh) or {}
 
 
 def main_cli(

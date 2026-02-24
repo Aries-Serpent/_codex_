@@ -890,7 +890,8 @@ def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     # Set format to torch tensors to ensure compatibility with HF Trainer data collator
-    ds.set_format(type="torch", columns=["input_ids", "attention_mask"])
+    available_cols = [c for c in ["input_ids", "attention_mask"] if c in ds.column_names]
+    ds.set_format(type="torch", columns=available_cols)
     return ds
 
 
@@ -970,11 +971,11 @@ def run_hf_trainer(
     if (
         resolved_det
         and torch.cuda.is_available()
-        and dtype in {"fp32", "fp16", "bf16"}
         and getattr(torch.backends, "cudnn", None) is not None
+        and getattr(torch.backends.cudnn, "enabled", False)
     ):
         if not torch.backends.cudnn.deterministic:
-            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
+            raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
     except Exception as exc:  # pragma: no cover - logging best effort

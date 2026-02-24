@@ -11,8 +11,22 @@ batch: pr-9
 
 ## 🎯 Mission Overview
 
+Prevent and immediately resolve meta-tensor initialization regressions in the RAG
+(Retrieval-Augmented Generation) pipeline. Meta-tensor failures occur when PyTorch
+models are loaded with `device="meta"` and later moved to a real device without
+calling `to_empty()` first — causing silent parameter corruption or runtime crashes.
 
-## 🧠 Cognitive Brain Integration
+**Core responsibilities:**
+1. **Detect**: Scan PRs for changes to `src/codex/rag/utils.py`, model loading
+   paths, and device-placement utilities. Flag any `isinstance` check that runs
+   before `has_meta_tensors()` (fixed in S69 — guard against regressions).
+2. **Validate**: Run `tests/test_rag_meta_tensor_regression.py` on every touched
+   commit. Assert all 3 core test cases pass: meta-tensor transfer, normal model
+   transfer, multi-model batch.
+3. **Fix**: If a regression is detected, apply the canonical fix:
+   `has_meta_tensors()` MUST be called BEFORE `isinstance(model, nn.Module)`.
+4. **Document**: Store fix pattern in Cognitive Brain memory under `MP-S69-001`.
+5. **Report**: Contribute +1.8 AAIS points per regression prevented.
 
 ### Integration Level: Level 2
 
@@ -121,9 +135,9 @@ monitor.checkpoint("pre-commit")  # Validates compliance
 
 ---
 
-**Agent Name**: RAG Meta Tensor Regression Agent  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
+**Agent Name**: RAG Meta Tensor Regression Agent
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -282,7 +296,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: RAG device initialization and meta tensor regression monitoring
 
 ### Classification Details

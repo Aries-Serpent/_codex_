@@ -122,6 +122,15 @@ def _stub_hf_components(monkeypatch) -> None:
         "training.engine_hf_trainer.DataCollatorForLanguageModeling", lambda *a, **k: object()
     )
     monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", lambda **kw: None)
+    # Stub load_training_arguments to avoid TrainingArguments probing CUDA devices.
+    monkeypatch.setattr(
+        "training.engine_hf_trainer.load_training_arguments",
+        lambda *a, **kw: types.SimpleNamespace(
+            output_dir=str(a[1]) if len(a) > 1 else "",
+            report_to=[],
+            gradient_accumulation_steps=1,
+        ),
+    )
 
 
 def test_hf_trainer_passes_when_deterministic(monkeypatch, tmp_path):

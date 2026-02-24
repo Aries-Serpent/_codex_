@@ -259,7 +259,7 @@ class CurriculumScheduler:
         Returns:
             PhaseResult for the started phase
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         phase = self.get_current_phase()
         if not phase or phase.id != phase_id:
@@ -269,7 +269,7 @@ class CurriculumScheduler:
             phase_id=phase_id,
             status=PhaseStatus.ACTIVE,
             steps_completed=0,
-            start_time=datetime.now().isoformat(),
+            start_time=datetime.now(timezone.utc).isoformat(),
         )
 
         self.state.phase_results.append(result)
@@ -294,7 +294,7 @@ class CurriculumScheduler:
         Returns:
             Completed PhaseResult
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         if not self.state.phase_results or self.state.phase_results[-1].phase_id != phase_id:
             raise ValueError(f"Phase {phase_id} is not active")
@@ -303,7 +303,7 @@ class CurriculumScheduler:
         result.status = PhaseStatus.COMPLETED
         result.metrics = metrics
         result.checkpoint_path = checkpoint_path
-        result.end_time = datetime.now().isoformat()
+        result.end_time = datetime.now(timezone.utc).isoformat()
 
         # Move to next phase
         self.state.current_phase_index += 1
@@ -350,7 +350,7 @@ class CurriculumScheduler:
         Returns:
             Failed PhaseResult
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         if not self.state.phase_results or self.state.phase_results[-1].phase_id != phase_id:
             raise ValueError(f"Phase {phase_id} is not active")
@@ -358,7 +358,7 @@ class CurriculumScheduler:
         result = self.state.phase_results[-1]
         result.status = PhaseStatus.FAILED
         result.error_message = error_message
-        result.end_time = datetime.now().isoformat()
+        result.end_time = datetime.now(timezone.utc).isoformat()
 
         self.save_state()
 

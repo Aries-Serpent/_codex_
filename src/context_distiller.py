@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -190,7 +190,7 @@ class ContextDistiller:
 
         digest = []
         digest.append("# Codebase Context Digest\n")
-        digest.append(f"**Generated:** {datetime.now().isoformat()}\n")
+        digest.append(f"**Generated:** {datetime.now(timezone.utc).isoformat()}\n")
         digest.append(f"**Token Budget:** {self.max_tokens:,}\n\n")
 
         # Summary statistics

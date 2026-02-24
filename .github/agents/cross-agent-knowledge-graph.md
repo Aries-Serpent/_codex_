@@ -148,3 +148,52 @@ edge_types:
 - Storage design uses JSON-LD for portability and cross-tool compatibility
 - Conflict detection uses Hamming distance on canonical node IDs
 - Staleness pruning runs on every `register()` call (O(1) amortized)
+
+---
+
+## 🔧 Capabilities
+
+| Capability | Description | Status |
+|------------|-------------|--------|
+| **Node Registration** | Add entities (agents, patterns, tests, errors) to graph | ✅ Active |
+| **Edge Creation** | Link entities with typed relations (FIXES, CAUSED_BY, DEPENDS_ON) | ✅ Active |
+| **Semantic Query** | BFS/Dijkstra traversal + semantic similarity for related facts | ✅ Active |
+| **Conflict Detection** | Hamming-distance deduplication of canonical node IDs | ✅ Active |
+| **Staleness Pruning** | Expire nodes older than `KNOWLEDGE_GRAPH_MAX_AGE_DAYS` | ✅ Active |
+| **Snapshot Export** | JSON-LD compatible graph exports for cross-tool portability | ✅ Active |
+| **Pattern Library Sync** | Bidirectional sync with `docs/tech_debt/research_queue/` DRQ | ✅ Active |
+
+## 🧩 Graph Schema
+
+```json
+{
+  "node": {
+    "id": "FP-008",
+    "type": "fix_pattern",
+    "label": "exc_info Traceback Suppression",
+    "session": "S61",
+    "agent": "ci-triage-pipeline-agent",
+    "confidence": 0.97
+  },
+  "edge": {
+    "source": "FP-008",
+    "target": "test_probe_json_with_hydra_missing",
+    "relation": "FIXES",
+    "weight": 0.97
+  }
+}
+```
+
+## 📋 Activation
+
+```bash
+@copilot Use the Cross-Agent Knowledge Graph to register fix pattern FP-012
+@copilot Use the Cross-Agent Knowledge Graph to query "what fixes torch meta-tensor errors"
+@copilot Use the Cross-Agent Knowledge Graph to export graph snapshot for S70
+```
+
+## 📝 Status
+
+**Version**: 1.0.0 | **ID**: E-10 | **Created**: 2026-02-22
+**AAIS Contribution**: +2.5 points | **Cognitive Level**: 4
+**Fix Patterns Registered**: 11 (FP-001..FP-011, S52–S61)

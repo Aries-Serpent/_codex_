@@ -1429,7 +1429,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 "DUPLICATION REPORT",
                 "=" * 60,
                 f"Scan path: {path_obj}",
-                f"Generated: {__import__('datetime').datetime.now().isoformat()}",
+                f"Generated: {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}",
                 "",
                 "SUMMARY",
                 "-" * 60,

@@ -24,7 +24,7 @@ PDA Loop: Active | AfterMath: Tracked
 import logging
 import math
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -160,7 +160,7 @@ class GHZStateManager:
             agent_ids=agent_ids,
             correlation_matrix=correlation_matrix,
             fidelity=1.0,  # Perfect fidelity at creation
-            created_at=datetime.now(),
+            created_at=datetime.now(timezone.utc),
             measurement_history=[],
             is_measured=False,
         )
@@ -220,7 +220,7 @@ class GHZStateManager:
         measurement_record = {
             "agent_id": agent_id,
             "outcome": outcome,
-            "timestamp": datetime.now(),
+            "timestamp": datetime.now(timezone.utc),
         }
         ghz_state.measurement_history.append(measurement_record)
         self.measurement_count += 1
@@ -308,7 +308,7 @@ class GHZStateManager:
         rho_multi = self.get_multi_agent_correlation(state_id)
 
         # Calculate time-based decoherence
-        time_elapsed = (datetime.now() - ghz_state.created_at).total_seconds()
+        time_elapsed = (datetime.now(timezone.utc) - ghz_state.created_at).total_seconds()
         decoherence_rate = 0.01  # 1% per second
         decoherence_factor = math.exp(-decoherence_rate * time_elapsed)
 

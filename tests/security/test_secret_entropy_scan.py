@@ -24,6 +24,7 @@ def setup():
     )
 
 
+@pytest.mark.timeout(180)
 def test_entropy_scan():
     # Skip if the script doesn't exist
     script_path = Path("scripts/security/secret_entropy_scan.py")

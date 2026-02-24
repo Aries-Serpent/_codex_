@@ -1,6 +1,6 @@
 version: 1.0.0
-last_updated: '2026-02-21T01:50:00Z'
-total_agents: 27
+last_updated: '2026-02-23T00:00:00Z'
+total_agents: 35
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -447,6 +447,233 @@ agents:
   updated: '2026-01-23T07:20:00Z'
   tools:
   - scripts/verify_hydra_configs.sh
+- id: unified-security-scanner
+  name: Unified Security Scanner
+  directory: .github/agents
+  file: unified-security-scanner.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk scoring
+  capabilities:
+  - cve_scanning
+  - secret_detection
+  - ghas_alert_triage
+  - sbom_generation
+  - auto_remediation
+  - risk_scoring
+  integration_points:
+  - github_security_alerts
+  - dependency_files
+  - cognitive_brain
+  - cross_agent_knowledge_graph
+  priority: critical
+  created: '2026-02-05T00:00:00Z'
+  batch: M-01
+  aais_contribution: 6.0
+- id: cross-agent-knowledge-graph
+  name: Cross-Agent Knowledge Graph
+  directory: .github/agents
+  file: cross-agent-knowledge-graph.md
+  status: active
+  maturity: production
+  session_introduced: S61
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents
+  capabilities:
+  - node_registration
+  - edge_creation
+  - semantic_query
+  - conflict_detection
+  - staleness_pruning
+  - snapshot_export
+  - drq_pattern_sync
+  integration_points:
+  - cognitive_brain
+  - ci_triage_pipeline
+  - unified_security_scanner
+  - governance_gate
+  priority: high
+  created: '2026-02-05T00:00:00Z'
+  batch: E-10
+  fix_patterns_registered: 11
+  aais_contribution: 2.5
+- id: codeql-alert-resolution-agent
+  name: CodeQL Alert Resolution Agent
+  directory: .github/agents
+  file: codeql-alert-resolution-agent.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring
+  capabilities:
+  - codeql_alert_ingestion
+  - cwe_classification
+  - auto_fix_application
+  - false_positive_dismissal
+  - regression_prevention
+  - audit_trail_logging
+  integration_points:
+  - github_code_scanning
+  - cognitive_brain
+  - cross_agent_knowledge_graph
+  - aais_scoring
+  priority: critical
+  created: '2026-01-26T17:40:00Z'
+  updated: '2026-02-23T00:00:00Z'
+  aais_contribution: 2.0
+- id: rag-meta-tensor-regression-agent
+  name: RAG Meta-Tensor Regression Agent
+  directory: .github/agents
+  file: rag-meta-tensor-regression-agent.md
+  status: active
+  maturity: production
+  session_introduced: S69
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
+  capabilities:
+  - meta_tensor_detection
+  - device_placement_validation
+  - regression_prevention
+  - canonical_fix_application
+  - cognitive_brain_pattern_storage
+  integration_points:
+  - src/codex/rag/utils.py
+  - tests/test_rag_meta_tensor_regression.py
+  - cognitive_brain
+  priority: high
+  created: '2026-02-22T00:00:00Z'
+  fix_pattern: MP-S69-001
+  aais_contribution: 1.8
+- id: ci-triage-pipeline-agent
+  name: CI Triage Pipeline Agent
+  directory: .github/agents
+  file: ci-triage-pipeline-agent.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix patterns from DRQ library
+  capabilities:
+  - ci_log_retrieval
+  - failure_classification
+  - fix_pattern_application
+  - drq_integration
+  - cognitive_brain_learning
+  integration_points:
+  - github_actions
+  - research_queue
+  - cognitive_brain
+  priority: high
+  created: '2026-02-10T00:00:00Z'
+- id: recon-scout-agent
+  name: Recon Scout Agent
+  directory: .github/agents
+  file: recon-scout-agent.md
+  status: active
+  maturity: production
+  session_introduced: S70
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research
+  capabilities:
+  - ci_blocker_detection
+  - security_tripwire_scan
+  - code_quality_audit
+  - documentation_gap_detection
+  - architecture_drift_analysis
+  - dependency_risk_assessment
+  - quick_fix_application
+  - drq_filing
+  - knowledge_graph_registration
+  integration_points:
+  - docs/tech_debt/research_queue
+  - cross_agent_knowledge_graph
+  - cognitive_brain
+  - github_actions_logs
+  priority: high
+  run_before: codeql_checker
+  created: '2026-02-23T00:00:00Z'
+  aais_contribution: 3.0
+  scan_categories: 6
+  rules_defined: 28
+- id: policy-coach-agent
+  name: Policy Coach Agent
+  directory: .github/agents
+  file: policy-coach-agent.md
+  status: active
+  maturity: production
+  session_introduced: S78
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: >
+    Monitors Copilot Agent sessions for codebase policy violations and re-aligns
+    behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session
+    violation detection (T-2), and pre-close gate (T-3). Contains 14 violation
+    patterns (P-01..P-14) with verbatim re-alignment prompts.
+  capabilities:
+  - policy_violation_detection
+  - session_re_alignment
+  - pre_close_gate_enforcement
+  - violation_pattern_matching
+  - prompt_injection
+  integration_points:
+  - .codex/CODEBASE_AGENCY_POLICY.md
+  - .codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md
+  - .codex/docs/ACCOUNTABILITY_REPORT_S77.md
+  - recon-scout-agent
+  - ci-testing-agent
+  priority: critical
+  run_before: codeql_checker
+  run_after: plan_declaration
+  created: '2026-02-24T00:00:00Z'
+  trigger_points: 3
+  violation_patterns: 14
+- id: python-architect-agent
+  name: Python Architect Agent
+  directory: .github/agents
+  file: python-architect-agent.agent.md
+  status: active
+  maturity: production
+  session_introduced: S68
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline
+  capabilities:
+  - architecture_review
+  - refactoring_guidance
+  - pattern_enforcement
+  - module_structure_validation
+  integration_points:
+  - cognitive_brain
+  - src/
+  priority: medium
+  created: '2026-02-22T12:00:00Z'
+  energy_level: 5
+
 standardization_status:
   fully_compliant: 0
   partially_compliant: 20

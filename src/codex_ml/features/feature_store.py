@@ -14,7 +14,7 @@ import hashlib
 import json
 import logging
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
@@ -423,7 +423,7 @@ class FeatureStore:
                 version = "1.0.0"
 
         # Create storage path
-        timestamp = datetime.now()
+        timestamp = datetime.now(timezone.utc)
         if partition_by_date:
             date_str = timestamp.strftime("%Y/%m/%d")
             storage_dir = self.store_path / feature_group_name / date_str

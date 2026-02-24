@@ -18,7 +18,7 @@ torch = pytest.importorskip("torch")
 
 def test_log_env_info(tmp_path, monkeypatch):
     path = tmp_path / "env.json"
-    
+
     # Mock _codex_sample_system to return JSON-serializable data
     def mock_sample_system():
         return {
@@ -26,14 +26,14 @@ def test_log_env_info(tmp_path, monkeypatch):
             "platform": "Linux",
             "git_commit": "abc123",
         }
-    
+
     # Patch _codex_sample_system before calling log_env_info
     try:
         from codex_ml.monitoring import codex_logging
         monkeypatch.setattr(codex_logging, "_codex_sample_system", mock_sample_system)
     except ImportError:
         pass  # Module may not be available in all test environments
-    
+
     log_env_info(path)
     data = json.loads(path.read_text())
     assert data.get("git_commit")

@@ -33,4 +33,3 @@ Canonical source: docs/status_update_outstanding_questions.md (update there firs
 | 2025-09-10T08:01:17Z | Phase 4: `file_integrity_audit compare` | `file_integrity_audit.py` rejected argument order. | Documented resolution | The script expects `compare pre post --allow-*`; follow the documented invocation to avoid the error. |
 | 2025-09-10 (timestamp `$ts`) | `tests_docs_links_audit` | Script crashed with `NameError: name 'root' is not defined`. | Action required | Add `root = Path('.')` (or similar) before using the variable the next time the audit script runs; the fix is recorded but not applied. |
 | 2025-09-10T21:10:43Z | Validation: nox | `nox` command not found. | Action required | Install `nox` prior to running the validation gate, per the documented remediation. |
-

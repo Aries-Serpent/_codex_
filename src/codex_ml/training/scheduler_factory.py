@@ -201,9 +201,17 @@ def _create_pytorch_scheduler(
             "PyTorch is required for scheduler creation. " "Install with: pip install torch"
         )
 
+    def _make_lambda_lr(lr_lambda):
+        try:
+            return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        except TypeError as exc:
+            raise ImportError(
+                f"Scheduler creation requires a torch.optim.Optimizer: {exc}"
+            ) from exc
+
     if scheduler_type == "constant":
         # Constant LR (identity scheduler)
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
+        return _make_lambda_lr(lambda step: 1.0)
 
     elif scheduler_type == "constant_with_warmup":
 
@@ -212,7 +220,7 @@ def _create_pytorch_scheduler(
                 return float(step) / float(max(1, num_warmup_steps))
             return 1.0
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "linear":
         if num_training_steps is None:
@@ -227,7 +235,7 @@ def _create_pytorch_scheduler(
                 / float(max(1, num_training_steps - num_warmup_steps)),
             )
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "cosine":
         if num_training_steps is None:
@@ -241,7 +249,7 @@ def _create_pytorch_scheduler(
             )
             return max(0.0, 0.5 * (1.0 + math.cos(math.pi * progress)))
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "cosine_with_restarts":
         if num_training_steps is None:
@@ -272,7 +280,7 @@ def _create_pytorch_scheduler(
                 return float(step) / float(max(1, num_warmup_steps))
             return math.sqrt(num_warmup_steps / max(step, 1))
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     else:
         raise ValueError(

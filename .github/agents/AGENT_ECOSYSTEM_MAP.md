@@ -1,20 +1,35 @@
 # Agent Ecosystem Mapping - Aries-Serpent/_codex_
 
-**Version**: 1.0.0  
-**Date**: 2026-01-23  
-**Purpose**: Comprehensive mapping of all agents in the _codex_ repository ecosystem  
-**Status**: 🟢 Active - Implementation Roadmap
+**Version**: 2.1.0
+**Date**: 2026-02-23
+**Purpose**: Comprehensive mapping of all agents in the _codex_ repository ecosystem
+**Status**: 🟢 Active - 70+ Agents Operational (S70 Update)
 
 ---
 
 ## Executive Summary
 
-This document maps the complete agent ecosystem for the _codex_ repository, detailing 12 specialized agents designed to automate CI/CD, testing, security, compliance, and documentation workflows. Each agent follows the **Cognitive Brain** architecture with **PDA (Perception-Decision-Action) loops** and **AfterMath tagging** for continuous learning.
+This document maps the complete agent ecosystem for the _codex_ repository. As of S70,
+the ecosystem comprises **70+ specialized agents** across CI/CD, security, testing,
+documentation, RAG/ML, configuration, cognitive brain, and repository management.
 
 **Ecosystem Maturity**:
-- ✅ **Implemented**: ci-testing-agent.v1 (production ready)
-- 📋 **Planned**: 11 additional agents (specifications complete)
-- 🎯 **Target**: Full ecosystem by Phase 2 (Current Cycle)
+- ✅ **Production**: 34 agents (AGENT_REGISTRY.yaml)
+- ✅ **Active**: 70+ agent files in `.github/agents/`
+- 🔄 **S70 Additions**: Recon Scout (new), 7 registry entries updated
+- 🎯 **Target**: Full AAIS integration (Phase 3, Genesis-active)
+
+**S67–S70 Additions** (8 new agents):
+| Agent ID | Session | Purpose |
+|----------|---------|---------|
+| `unified-security-scanner` | S67 | Multi-scanner security audit |
+| `cross-agent-knowledge-graph` | S61/S67 | Persistent fix pattern graph |
+| `codeql-alert-resolution-agent` | S67 | CodeQL auto-remediation |
+| `rag-meta-tensor-regression-agent` | S69 | RAG meta-tensor guard |
+| `ci-triage-pipeline-agent` | S67 | Systematic CI failure triage |
+| `python-architect-agent` | S68 | Architecture review |
+| `test-pattern-guardian` | S67 | Test quality enforcement |
+| `recon-scout-agent` | S70 | Codebase blocker discovery |
 
 ---
 
@@ -23,17 +38,55 @@ This document maps the complete agent ecosystem for the _codex_ repository, deta
 | Status | Agent ID | Primary Function | Priority |
 |--------|----------|------------------|----------|
 | ✅ Implemented | ci-testing-agent.v1 | Test generation & coverage | P0 - Critical |
-| 📋 Planned | flaky-triage-agent.v1 | Flaky test detection | P1 - High |
-| 📋 Planned | dep-upgrade-agent.v1 | Dependency management | P1 - High |
-| 📋 Planned | security-scan-agent.v1 | Security scanning | P0 - Critical |
-| 📋 Planned | release-gate-agent.v1 | Release readiness | P1 - High |
-| 📋 Planned | doc-reporter-agent.v1 | Documentation automation | P2 - Medium |
-| 📋 Planned | code-review-summarizer.v1 | PR review assistance | P2 - Medium |
-| 📋 Planned | issue-triage-agent.v1 | Issue management | P2 - Medium |
-| 📋 Planned | infra-linter-agent.v1 | Workflow validation | P1 - High |
-| 📋 Planned | data-rag-helper.v1 | Documentation Q&A | P3 - Low |
-| 📋 Planned | mcp-registry-adapter.v1 | Tool discovery | P3 - Low |
-| 📋 Planned | compliance-checker-agent.v1 | Standards enforcement | P1 - High |
+| ✅ Active | flaky-triage-agent | Flaky test detection & quarantine | P1 - High |
+| ✅ Active | dep-upgrade-agent | Dependency management & conflict resolution | P1 - High |
+| ✅ Active | security-scan-agent | Security scanning & alert verification | P0 - Critical |
+| ✅ Active | release-gate-agent | Release readiness validation | P1 - High |
+| ✅ Active | doc-reporter-agent | Documentation quality & freshness | P2 - Medium |
+| ✅ Active | code-review-summarizer | PR review assistance (codex-reviewer) | P2 - Medium |
+| ✅ Active | issue-triage-agent | Issue management & tracking | P2 - Medium |
+| ✅ Active | infra-linter-agent | Workflow validation & CI fixes | P1 - High |
+| ✅ Active | data-rag-helper | Documentation Q&A (semantic-search) | P3 - Low |
+| ✅ Active | mcp-registry-adapter | Tool discovery (RAG index manager) | P3 - Low |
+| ✅ Active | compliance-checker-agent | Standards enforcement & CodeQL | P1 - High |
+| ✅ Active | recon-scout-agent | Pre-session codebase blocker discovery | P0 - Critical |
+| ✅ Active | unified-security-scanner | Multi-tool security audit | P0 - Critical |
+| ✅ Active | cross-agent-knowledge-graph | Persistent fix pattern storage (E-10) | P1 - High |
+| ✅ Active | codeql-alert-resolution-agent | CodeQL auto-remediation | P1 - High |
+| ✅ Active | rag-meta-tensor-regression-agent | RAG meta-tensor guard | P1 - High |
+| ✅ Active | ci-triage-pipeline-agent | Systematic CI failure triage | P0 - Critical |
+| ✅ Active | python-architect-agent | Architecture review & drift detection | P2 - Medium |
+| ✅ Active | test-pattern-guardian | Test quality enforcement | P1 - High |
+| ✅ Active | coverage-roadmap-agent | Coverage threshold roadmap execution | P1 - High |
+| ✅ Active | datetime-modernizer | TZ-aware datetime modernization | P2 - Medium |
+| ✅ Active | dependency-conflict-agent | Pip resolver conflict diagnosis | P1 - High |
+| ✅ Active | documentation-consolidator | Semantic documentation consolidation | P2 - Medium |
+| ✅ Active | github-pages-manager | GitHub Pages deployment & sync | P2 - Medium |
+| ✅ Active | integration-test-runner | Cross-service integration testing | P1 - High |
+| ✅ Active | link-validator-agent | Cross-reference & link validation | P2 - Medium |
+| ✅ Active | meta-tensor-validator | PyTorch model init pattern validation | P1 - High |
+| ✅ Active | owner-approval-guard | Autonomous operation approval enforcement | P0 - Critical |
+| ✅ Active | performance-regression-detector | Performance baseline comparison | P1 - High |
+| ✅ Active | pii-scrubber | PII redaction for GDPR/CCPA compliance | P1 - High |
+| ✅ Active | qa-walkthrough-agent | Repository-wide QA audit | P1 - High |
+| ✅ Active | reference-updater-agent | Atomic codebase reference updates | P2 - Medium |
+| ✅ Active | repository-hygiene-agent | Repository cleanup & maintenance | P2 - Medium |
+| ✅ Active | root-organizer-agent | Safe root folder reorganization | P3 - Low |
+| ✅ Active | security-alert-verification-agent | GitHub security alert triage | P0 - Critical |
+| ✅ Active | test-alignment-fixer | Fix test alignment after API changes | P1 - High |
+| ✅ Active | test-coverage-monitor | Coverage threshold enforcement | P1 - High |
+| ✅ Active | tokenization-coverage-agent | Tokenization module test coverage | P2 - Medium |
+| ✅ Active | workflow-ci-fixer | GitHub Actions syntax & permission fixes | P0 - Critical |
+| ✅ Active | ci-importerror-agent | ImportError/ModuleNotFoundError remediation | P1 - High |
+| ✅ Active | ci-log-retrieval-agent | Authenticated CI log retrieval | P1 - High |
+| ✅ Active | config-migration-assistant | Hydra config migration | P2 - Medium |
+| ✅ Active | config-validator | Hydra config schema validation | P2 - Medium |
+| ✅ Active | doc-freshness-checker | Stale doc detection & link validation | P2 - Medium |
+| ✅ Active | documentation-quality-agent | MkDocs build & quality scoring | P2 - Medium |
+| ✅ Active | rag-index-manager | RAG index build/update/query | P2 - Medium |
+| ✅ Active | rag-meta-tensor-regression-agent | RAG meta-tensor regression prevention | P1 - High |
+| ✅ Active | semantic-search | Vector embedding codebase search | P2 - Medium |
+| ✅ Active | bridge-security-monitor | IPC bridge security & message integrity | P0 - Critical |
 
 ---
 
@@ -41,8 +94,8 @@ This document maps the complete agent ecosystem for the _codex_ repository, deta
 
 ### 1. ✅ ci-testing-agent.v1 (IMPLEMENTED)
 
-**Status**: Production Ready  
-**Implementation**: `.github/agents/ci-testing-agent/`  
+**Status**: Production Ready
+**Implementation**: `.github/agents/ci-testing-agent/`
 **Documentation**: `.github/agents/ci-testing-agent/README.md`
 
 | Dimension | Specification |
@@ -101,7 +154,7 @@ class FlakyDetector:
         """Parse Actions logs to detect flaky tests."""
         # Track pass/fail ratio per test over last N runs
         # Threshold: >20% failure rate with inconsistent results
-        
+
     def quarantine(self, flaky_tests: List[FlakyTest]) -> None:
         """Move flaky tests to quarantine suite."""
         # Add @pytest.mark.flaky decorator
@@ -153,7 +206,7 @@ class DependencyAnalyzer:
         """Check PyPI for available updates."""
         # Use pip-audit or safety to check vulnerabilities
         # Filter to minor/patch only (no major versions)
-        
+
     def plan_upgrade(self, updates: List[Update]) -> UpgradePlan:
         """Create safe upgrade plan."""
         # Group by compatibility
@@ -206,7 +259,7 @@ class SecurityScanner:
         # Execute: bandit, semgrep, safety
         # Parse SARIF outputs
         # Deduplicate findings
-        
+
     def filter_false_positives(self, findings: List[Finding]) -> List[Finding]:
         """Apply ML model to filter false positives."""
         # Use historical data from Cognitive Brain
@@ -440,13 +493,13 @@ class AgentGuardrails:
         'docs/system/',
         '.reports/'
     ]
-    
+
     PROHIBITED_PATHS = [
         'src/',  # Requires human review
         '.github/workflows/',  # Requires admin
         'pyproject.toml'  # Critical config
     ]
-    
+
     MAX_EXECUTION_TIME = 600  # 10 minutes
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 ```
@@ -541,9 +594,9 @@ Each agent must maintain:
 
 ---
 
-**Document Status**: ✅ Complete  
-**Next Review**: 2026-01-23  
-**Owner**: Agent Development Team  
+**Document Status**: ✅ Complete
+**Next Review**: 2026-01-23
+**Owner**: Agent Development Team
 **Maintainers**: @mbaetiong, @copilot
 
 ---
@@ -699,7 +752,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -755,7 +808,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -910,8 +963,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary
@@ -943,15 +996,15 @@ requests>=2.31.0
 ### Common Failure Modes
 
 #### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Symptoms**: Agent rejects input parameters
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges
 - Review examples
 
 #### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources  
+**Symptoms**: Cannot access required resources
 **Recovery**:
 - Check permissions
 - Verify paths exist
@@ -959,7 +1012,7 @@ requests>=2.31.0
 - Review authentication
 
 #### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit  
+**Symptoms**: Operation exceeds time limit
 **Recovery**:
 - Reduce scope of operation
 - Check for blocking operations
@@ -967,7 +1020,7 @@ requests>=2.31.0
 - Consider batch processing
 
 #### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable  
+**Symptoms**: Required tool or service unavailable
 **Recovery**:
 - Verify tool installation
 - Check service status

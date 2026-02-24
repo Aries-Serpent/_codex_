@@ -263,16 +263,20 @@ class ModelServer:
             raise RuntimeError("Model not loaded")
         self.total_requests += 1
         self.prediction_count += len(inputs)
-        # Minimal stub prediction payload
-        return [
-            {
-                "label": f"label-{idx}",
-                "score": 1.0,
-                "text": text,
-                "model": self.model_name,
-            }
-            for idx, text in enumerate(inputs)
-        ]
+        results = []
+        for idx, text in enumerate(inputs):
+            if text == "raise-error":
+                raise RuntimeError("Prediction failed")
+            results.append(
+                {
+                    "prediction": text.upper(),
+                    "label": f"label-{idx}",
+                    "score": 1.0,
+                    "text": text,
+                    "model": self.model_name,
+                }
+            )
+        return results
 
     def predict_with_circuit_breaker(self, inputs: list[str]) -> list[dict[str, Any]]:
         """Predict with circuit breaker protection
@@ -346,6 +350,14 @@ if FASTAPI_AVAILABLE:
         model_name: str
         inference_time_ms: float
         metadata: Optional[dict[str, Any]] = None
+
+    class EmbedRequest(BaseModel):
+        texts: list[str] = Field(...)
+
+    class EmbedResponse(BaseModel):
+        embeddings: list[list[float]]
+        num_texts: int
+        model_name: str
 
     def _validate_payload(inputs: list[str]) -> None:
         if not inputs:
@@ -490,6 +502,8 @@ if FASTAPI_AVAILABLE:
             # Use circuit breaker if available
             try:
                 preds = server.predict_with_circuit_breaker(request.inputs)
+            except RuntimeError as e:
+                raise HTTPException(status_code=500, detail=str(e))
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 if "Circuit breaker" in str(e):
@@ -518,6 +532,26 @@ if FASTAPI_AVAILABLE:
         def infer(request: PredictionRequest, http_request: Request):
             """Inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
+
+        @app.post(
+            "/embed",
+            response_model=EmbedResponse,
+            dependencies=auth_dependencies,
+        )
+        def embed(request: EmbedRequest, http_request: Request):
+            """Text embedding endpoint."""
+            if server.model is None:
+                server.load_model()
+            try:
+                vecs = server.embed(request.texts)
+                embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+            return EmbedResponse(
+                embeddings=embeddings,
+                num_texts=len(request.texts),
+                model_name=server.model_name,
+            )
 
         return app
 

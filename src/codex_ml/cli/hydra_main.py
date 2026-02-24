@@ -124,9 +124,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         if isinstance(container, Mapping):
             return container
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
-        LOGGER.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
+        logger.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
     return {}
 
 
@@ -153,8 +151,7 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
     try:
         cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.debug("Failed to load YAML config from %s", config_path, exc_info=True)
         return {}
 
     if overrides:
@@ -248,9 +245,7 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
                     merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
                     resolved = OmegaConf.to_container(merged_cfg, resolve=True)
                 except Exception:
-                    logger.warning("Exception occurred", exc_info=True)
-                    logger.warning("Exception occurred", exc_info=True)
-                    LOGGER.debug("Hydra defaults merge failed", exc_info=True)
+                    logger.debug("Hydra defaults merge failed", exc_info=True)
                     combined = dict(defaults)
                     combined.update(dict(resolved))
                     resolved = combined

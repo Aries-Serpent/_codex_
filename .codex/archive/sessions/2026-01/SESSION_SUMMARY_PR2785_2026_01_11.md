@@ -346,4 +346,3 @@ Addresses issues in comment #3734238225
 ## ✅ Session Status: COMPLETE
 
 All requested work has been completed with zero unresolved issues from self-review iterations. Changes are production-ready and await CI validation.
-

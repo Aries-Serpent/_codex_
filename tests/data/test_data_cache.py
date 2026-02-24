@@ -33,6 +33,8 @@ def test_cache_tokenized_writes_manifest(tmp_path: Path) -> None:
             torch = pytest.importorskip("torch")
             if hasattr(torch, "load"):
                 stored = torch.load(sample_file, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
+                if hasattr(stored, "tolist"):
+                    stored = stored.tolist()
             else:
                 stored = json.loads(sample_file.read_text(encoding="utf-8"))
         else:

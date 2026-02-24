@@ -36,6 +36,7 @@ class HTMLVisualizer:
 <head>
     <title>AST Analysis Report</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- d3.js visualization library (d3.v7) -->
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
         .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
@@ -133,8 +134,8 @@ class HTMLVisualizer:
     def _node_to_dict(self, node: StandardizedASTNode) -> dict:
         """Convert node to dictionary for JSON serialization."""
         return {
-            "id": node.id,
-            "type": node.type,
+            "id": node.node_id,
+            "type": node.type.value if hasattr(node.type, "value") else str(node.type),
             "name": getattr(node, "name", ""),
             "children": len(node.children) if node.children else 0,
         }

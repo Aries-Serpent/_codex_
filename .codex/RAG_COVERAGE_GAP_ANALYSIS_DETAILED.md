@@ -431,4 +431,3 @@ The RAG module has **good foundation coverage (~58%)** for core functionality bu
 - ⚠️ Alternative providers untested (402 lines)
 - ⚠️ Utils partially tested (~105 lines missing)
 - 📊 Estimated 3,500 lines need coverage (+22% to reach 80%)
-

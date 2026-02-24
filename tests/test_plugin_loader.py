@@ -55,7 +55,10 @@ def test_load_plugins_monkeypatched(monkeypatch):
 
 
 def test_metric_registry_init_uses_loader(monkeypatch):
-    sys.modules["torch"] = ModuleType("torch")
+    # Guard: if real torch is installed, preserve it — bare ModuleType would break tensor ops
+    _real_torch = sys.modules.get("torch")
+    if _real_torch is None:
+        sys.modules["torch"] = ModuleType("torch")
 
     from codex_ml.metrics import registry as metrics_registry
 

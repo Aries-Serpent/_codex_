@@ -1,16 +1,29 @@
 # CodeQL Alert Resolution Agent
 
-**Agent Type:** Security & Vulnerability Management  
-**Version:** 1.0.0  
-**Created:** 2026-01-26  
+**Agent Type:** Security & Vulnerability Management
+**Version:** 1.0.0
+**Created:** 2026-01-26
 **Status:** ✅ Production Ready
 
 ---
 
 ## 🎯 Purpose
 
+Autonomously detect, triage, and resolve CodeQL code-scanning alerts in the
+`Aries-Serpent/_codex_` repository. The agent integrates with GitHub's code-scanning
+API to retrieve open alerts, classifies them by severity and CWE category, applies
+automated fixes for well-understood patterns (SQL injection, XSS, path traversal,
+unvalidated redirects, insecure randomness), opens PRs for human review on complex
+cases, and records all remediation outcomes in the Cognitive Brain for future pattern
+reuse.
 
-## 🧠 Cognitive Brain Integration
+**Primary capabilities:**
+- Ingest CodeQL alerts via `github-mcp-server-list_code_scanning_alerts`
+- Classify alerts by CWE, severity, and automated-fix eligibility
+- Apply auto-fixes using the `fix_pattern_library` (25+ known patterns)
+- Validate fixes via `ruff`, `py_compile`, and targeted `pytest`
+- Dismiss false positives with documented reasoning
+- Report outcomes to AAIS scoring pipeline (+2.0 points/session)
 
 ### Integration Level: Level 2
 
@@ -184,12 +197,12 @@ graph TD
    - Fetch all alerts with pagination (59+ pages)
    - Export to JSON, CSV, Markdown
    - Handle rate limits
-   
+
 2. **`scripts/security/close_codeql_alert.py`**
    - Close alerts via GitHub API
    - Batch operations support
    - Detailed closure comments
-   
+
 3. **`scripts/security/codemods/*.py`**
    - `fix_sql_injection.py` - Parameterized queries
    - `fix_subprocess.py` - Safe command execution
@@ -242,18 +255,18 @@ export CODEX_MAX_ALERTS_PER_BATCH="50"  # Batch processing limit
 agent:
   name: codeql-alert-resolution-agent
   version: 1.0.0
-  
+
   capabilities:
     - alert_fetching
     - automated_remediation
     - validation
     - closure_tracking
-  
+
   thresholds:
     auto_fix_confidence: 0.8  # Apply fixes with 80%+ confidence
     max_alerts_per_run: 100
     rate_limit_buffer: 10  # API calls to keep in reserve
-  
+
   routing:
     automated: ["sql-injection", "xss", "path-traversal"]
     manual_review: ["auth-bypass", "business-logic"]
@@ -404,7 +417,7 @@ fix_effectiveness:
     reoccurred: false
     manual_tweaks_needed: false
     rating: 5/5
-  
+
   alert_456:
     fix_applied: "path_sanitization"
     reoccurred: false
@@ -536,8 +549,8 @@ tail -f .codex/security/agent_actions.log
 
 ---
 
-**Status:** ✅ Production Ready  
-**Last Updated:** 2026-01-26T17:40:00Z  
+**Status:** ✅ Production Ready
+**Last Updated:** 2026-01-26T17:40:00Z
 **Next Review:** Weekly (Wednesdays 2 PM UTC)
 
 **Questions?** File an issue with label `agent:codeql-resolver` or contact @mbaetiong
@@ -546,8 +559,8 @@ tail -f .codex/security/agent_actions.log
 
 ## 🧠 Cognitive Brain Integration
 
-> **Status**: ✅ Integrated (Phase 1.2)  
-> **Category**: security  
+> **Status**: ✅ Integrated (Phase 1.2)
+> **Category**: security
 > **Adapter**: SecurityAdapter
 
 ### Brain Capabilities
