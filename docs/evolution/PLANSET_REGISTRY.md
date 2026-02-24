@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-02-12
 **Version**: 3.0.0
-**Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.  
+**Purpose**: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.
 **Format**: Structured for search, filtering, and AI agent consumption.
 
 ---
@@ -315,7 +315,7 @@
 
 **Implementation Pattern**: CLI Enhancement → Select files → Compute sizes → Format output
 
-**Effort**: 1 iteration-day  
+**Effort**: 1 iteration-day
 **Dependencies**: None (uses existing `select_components.py`)
 
 ---
@@ -348,7 +348,7 @@
 
 **Implementation Pattern**: Pattern complement subtraction on file sets
 
-**Effort**: 1 iteration-day  
+**Effort**: 1 iteration-day
 **Dependencies**: None
 
 ---
@@ -495,11 +495,11 @@ Current Scores (PS-14 Implementation):
 - ✅ Fragile test hardening (65 files)
 - ✅ CacheManager workflow integration plan (5 workflows)
 
-**ACE Layer**: L3 (Agent Model) — self-awareness visualization  
-**MSV Impact**: +0.5 points (UI visualization complete)  
+**ACE Layer**: L3 (Agent Model) — self-awareness visualization
+**MSV Impact**: +0.5 points (UI visualization complete)
 **AAIS Impact**: +0.3 points (93.2 → 93.5, Path to 97.0 progress)
 
-**Effort**: 3 iteration-days (4-5 estimated, completed in 3)  
+**Effort**: 3 iteration-days (4-5 estimated, completed in 3)
 **Dependencies**: ✅ cognitive_app infrastructure, ✅ Recharts v2.15.4 (already present)
 
 **Files Modified**: 69 files (2 new, 67 test guards, CacheManager plan doc)

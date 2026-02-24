@@ -1,9 +1,9 @@
 # Quantum Physics-Inspired Resolution Plan
 ## Addressing Agent Intuitiveness Challenges
 
-**Version:** 1.0  
-**Created:** 2026-01-23  
-**Status:** Implementation Ready  
+**Version:** 1.0
+**Created:** 2026-01-23
+**Status:** Implementation Ready
 **Target Score:** 98.5/100 (from 91.8)
 
 ---
@@ -43,19 +43,19 @@ graph TB
         A4["Possible Entry: Tests"]
         A5["Possible Entry: Docs"]
     end
-    
+
     Index["Superposition Index<br/>QUICKSTART.md"]
-    
+
     Collapsed["Collapsed State<br/>Definite Understanding"]
-    
+
     A1 --> Index
     A2 --> Index
     A3 --> Index
     A4 --> Index
     A5 --> Index
-    
+
     Index --> Collapsed
-    
+
     style Index fill:#4a90e2,stroke:#2e5c8a,stroke-width:3px
     style Collapsed fill:#7cb342,stroke:#558b2f,stroke-width:2px
 ```
@@ -137,7 +137,7 @@ H_docs:   docs/ + *.md                  (Documentation)
 # Collapse to module understanding
 grep -r "class.*Interface" .github/agents/core/
 
-# Collapse to test understanding  
+# Collapse to test understanding
 pytest .github/agents/core/tests/ --collect-only
 
 # Collapse to API understanding
@@ -174,7 +174,7 @@ python -c "import pkgutil; import github.agents.core as pkg; print([name for _, 
 ### Eigenstate |Implementation⟩
 `.github/agents/core/*.py` → Production code
 
-### Eigenstate |Validation⟩  
+### Eigenstate |Validation⟩
 `.github/agents/core/tests/*.py` → Test suite
 
 ### Eigenstate |Documentation⟩
@@ -226,14 +226,14 @@ def calculate_discovery_amplitude(entry_point: Path) -> complex:
     has_readme = (entry_point / "README.md").exists()
     has_examples = len(list((entry_point / "examples").glob("*"))) if (entry_point / "examples").exists() else 0
     has_tests = len(list((entry_point / "tests").glob("test_*.py"))) if (entry_point / "tests").exists() else 0
-    
+
     # Amplitude calculation
     real = 0.5 if has_readme else 0.1
     real += min(has_examples * 0.1, 0.3)
     real += min(has_tests * 0.01, 0.2)
-    
+
     imag = 0.0  # Phase information
-    
+
     return complex(real, imag)
 
 def discovery_probability(amplitude: complex) -> float:
@@ -243,31 +243,31 @@ def discovery_probability(amplitude: complex) -> float:
 def main():
     """Generate discovery probability report."""
     repo_root = Path(__file__).parent.parent
-    
+
     entry_points = {
         "Root README": repo_root / "README.md",
         "Core Module": repo_root / ".github/agents/core",
         "Documentation": repo_root / "docs",
         "Examples": repo_root / "examples",
     }
-    
+
     print("# Agent Discovery Probability Report\n")
     print("| Entry Point | Amplitude | Probability | Rank |")
     print("|-------------|-----------|-------------|------|")
-    
+
     results = []
     for name, path in entry_points.items():
         if path.exists():
             amp = calculate_discovery_amplitude(path)
             prob = discovery_probability(amp)
             results.append((name, amp, prob))
-    
+
     # Sort by probability (highest first)
     results.sort(key=lambda x: x[2], reverse=True)
-    
+
     for rank, (name, amp, prob) in enumerate(results, 1):
         print(f"| {name} | {amp:.3f} | {prob:.3f} | {rank} |")
-    
+
     # Normalization check
     total_prob = sum(r[2] for r in results)
     print(f"\n**Total Probability:** {total_prob:.3f} (should be ≤ 1.0)")
@@ -299,27 +299,27 @@ graph LR
     subgraph QuantumSystem["Quantum System"]
         Psi["System State |Ψ⟩"]
     end
-    
+
     subgraph Observables["Observable Operators"]
         O_time["Ô_time: Timing"]
         O_mem["Ô_memory: Memory"]
         O_perf["Ô_performance: k₁"]
     end
-    
+
     subgraph Measurements["Measurement Results"]
         M_time["Execution Time"]
         M_mem["Memory Usage"]
         M_perf["k₁ Value"]
     end
-    
+
     Psi --> O_time
     Psi --> O_mem
     Psi --> O_perf
-    
+
     O_time --> M_time
     O_mem --> M_mem
     O_perf --> M_perf
-    
+
     style Psi fill:#ab47bc,stroke:#6a1b9a,stroke-width:2px
     style Observables fill:#4a90e2,stroke:#2e5c8a,stroke-width:2px
     style Measurements fill:#7cb342,stroke:#558b2f,stroke-width:2px
@@ -355,7 +355,7 @@ class ObservableMeasurement:
     eigenvalue: float  # Measurement result
     timestamp: datetime
     context: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize measurement."""
         return {
@@ -368,21 +368,21 @@ class ObservableMeasurement:
 class QuantumObserver:
     """
     Measurement apparatus for system observables.
-    
+
     Implements the measurement postulate:
     After measurement of observable Ô yielding result λ,
     the system collapses to eigenstate |λ⟩.
     """
-    
+
     def __init__(self):
         self.measurements: List[ObservableMeasurement] = []
         self.export_path = Path(".github/agents/metrics/observables")
         self.export_path.mkdir(parents=True, exist_ok=True)
-    
+
     def measure_time(self, func: Callable) -> Callable:
         """
         Time observable operator Ô_time.
-        
+
         Measures execution duration in milliseconds.
         Eigenvalues: ℝ⁺ (positive real numbers)
         """
@@ -390,13 +390,13 @@ class QuantumObserver:
         def wrapper(*args, **kwargs):
             # Prepare measurement
             start = time.perf_counter()
-            
+
             # Execute (collapse wave function)
             result = func(*args, **kwargs)
-            
+
             # Record eigenvalue
             duration_ms = (time.perf_counter() - start) * 1000
-            
+
             measurement = ObservableMeasurement(
                 observable="time",
                 eigenvalue=duration_ms,
@@ -407,14 +407,14 @@ class QuantumObserver:
                 }
             )
             self.measurements.append(measurement)
-            
+
             return result
         return wrapper
-    
+
     def measure_memory(self, func: Callable) -> Callable:
         """
         Memory observable operator Ô_memory.
-        
+
         Measures peak memory delta in MB.
         Eigenvalues: ℝ (real numbers, delta can be negative)
         """
@@ -423,12 +423,12 @@ class QuantumObserver:
             try:
                 import tracemalloc
                 tracemalloc.start()
-                
+
                 result = func(*args, **kwargs)
-                
+
                 current, peak = tracemalloc.get_traced_memory()
                 tracemalloc.stop()
-                
+
                 measurement = ObservableMeasurement(
                     observable="memory",
                     eigenvalue=peak / (1024 * 1024),  # MB
@@ -439,32 +439,32 @@ class QuantumObserver:
                     }
                 )
                 self.measurements.append(measurement)
-                
+
             except ImportError:
                 # tracemalloc not available
                 result = func(*args, **kwargs)
-            
+
             return result
         return wrapper
-    
+
     def measure_k1(self, func: Callable) -> Callable:
         """
         Decision quality observable Ô_k1.
-        
+
         Measures k₁ value (decision error rate).
         Eigenvalues: [0, 1] (bounded real interval)
         """
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             result = func(*args, **kwargs)
-            
+
             # Extract k₁ if available in result
             k1_value = None
             if hasattr(result, 'metrics') and 'k1' in result.metrics:
                 k1_value = result.metrics['k1']
             elif isinstance(result, dict) and 'k1' in result:
                 k1_value = result['k1']
-            
+
             if k1_value is not None:
                 measurement = ObservableMeasurement(
                     observable="k1",
@@ -476,27 +476,27 @@ class QuantumObserver:
                     }
                 )
                 self.measurements.append(measurement)
-            
+
             return result
         return wrapper
-    
+
     def export_measurements(self, filename: str = "measurements.jsonl"):
         """Export measurements to JSONL."""
         output_file = self.export_path / filename
-        
+
         with open(output_file, 'a') as f:
             for measurement in self.measurements:
                 f.write(json.dumps(measurement.to_dict()) + '\n')
-        
+
         self.measurements.clear()  # Clear after export
-    
+
     def get_statistics(self, observable: str) -> Dict[str, float]:
         """Calculate statistics for an observable."""
         values = [m.eigenvalue for m in self.measurements if m.observable == observable]
-        
+
         if not values:
             return {}
-        
+
         return {
             "mean": sum(values) / len(values),
             "min": min(values),
@@ -536,7 +536,7 @@ Add observability decorators to critical paths:
 from .observability import timed, profiled_memory, measured_k1
 
 class UniversalTaskInterface:
-    
+
     @timed
     @profiled_memory
     def execute_task(self, spec: TaskSpec, ...) -> TaskResult:
@@ -545,7 +545,7 @@ class UniversalTaskInterface:
         pass
 
 class MetaPolicyRouter:
-    
+
     @timed
     def adapt_with_maml(self, task_id: str, task_data: List) -> Dict:
         """Measure MAML adaptation time."""
@@ -585,17 +585,17 @@ class ConfigState:
 class DynamicConfigManager:
     """
     Manages runtime configuration updates.
-    
+
     Implements adiabatic theorem: slow config changes don't cause
     system transitions to excited states (instability).
     """
-    
+
     def __init__(self, config_path: str = "config.yaml"):
         self.config_path = Path(config_path)
         self.state = self._load_config()
         self.observers: List[Callable] = []
         self._lock = threading.Lock()
-    
+
     def _load_config(self) -> ConfigState:
         """Load configuration (measure config state)."""
         if self.config_path.exists():
@@ -603,13 +603,13 @@ class DynamicConfigManager:
                 values = yaml.safe_load(f)
         else:
             values = self._default_config()
-        
+
         return ConfigState(
             values=values,
             version=0,
             last_updated=datetime.utcnow().isoformat()
         )
-    
+
     def _default_config(self) -> Dict[str, Any]:
         """Default configuration (ground state)."""
         return {
@@ -619,47 +619,47 @@ class DynamicConfigManager:
             "enable_profiling": True,
             "export_metrics": True,
         }
-    
+
     def reload(self) -> bool:
         """
         Reload configuration from file (quantum measurement).
-        
+
         Returns True if configuration changed.
         """
         with self._lock:
             new_state = self._load_config()
-            
+
             if new_state.values != self.state.values:
                 old_state = self.state
                 self.state = new_state
                 self.state.version = old_state.version + 1
-                
+
                 # Notify observers (collapse their wave functions)
                 for observer in self.observers:
                     observer(self.state)
-                
+
                 return True
-            
+
             return False
-    
+
     def watch(self, callback: Callable[[ConfigState], None]):
         """Register observer for config changes."""
         self.observers.append(callback)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value."""
         return self.state.values.get(key, default)
-    
+
     def set(self, key: str, value: Any):
         """Set configuration value (induce transition)."""
         with self._lock:
             self.state.values[key] = value
             self.state.version += 1
-            
+
             # Persist
             with open(self.config_path, 'w') as f:
                 yaml.dump(self.state.values, f)
-            
+
             # Notify observers
             for observer in self.observers:
                 observer(self.state)
@@ -692,21 +692,21 @@ graph TB
     subgraph EntangledPair["Entangled Documentation"]
         API["API Signature<br/>|ψ_API⟩"]
         Example["Usage Example<br/>|ψ_usage⟩"]
-        
+
         API -.Entangled.-> Example
     end
-    
+
     Measurement["Agent Measurement"]
-    
+
     Collapse_API["Collapsed State:<br/>Function Understanding"]
     Collapse_Example["Collapsed State:<br/>Usage Understanding"]
-    
+
     API --> Measurement
     Example --> Measurement
-    
+
     Measurement --> Collapse_API
     Measurement --> Collapse_Example
-    
+
     style EntangledPair fill:#ab47bc,stroke:#6a1b9a,stroke-width:3px
     style Measurement fill:#4a90e2,stroke:#2e5c8a,stroke-width:2px
 ```
@@ -820,26 +820,26 @@ graph TB
         D3["core"]
         D4["tests"]
         D5["test_file.py"]
-        
+
         D1 --> D2
         D2 --> D3
         D3 --> D4
         D4 --> D5
     end
-    
+
     subgraph CoherentPath["Coherent Path (After)"]
         C1["core"]
         C2["test_file.py"]
-        
+
         C1 --> C2
     end
-    
+
     Decoherence["Decoherence<br/>Lost Understanding"]
     Coherence["Maintained Coherence<br/>Clear Understanding"]
-    
+
     D5 --> Decoherence
     C2 --> Coherence
-    
+
     style DecoherentPath fill:#f44336,stroke:#c62828,stroke-width:2px
     style CoherentPath fill:#7cb342,stroke:#558b2f,stroke-width:2px
 ```
@@ -1140,17 +1140,17 @@ This quantum physics-inspired plan systematically addresses all four areas where
 3. **API Discoverability (Moderate→Excellent):** Entangled documentation
 4. **Deep Nesting (Minor→Resolved):** Coherent path reduction
 
-**Final Score Projection:** 91.8 → 98.5 (+6.7 points)  
+**Final Score Projection:** 91.8 → 98.5 (+6.7 points)
 **Quantum Advantage:** 12.2x → 66.7x (+5.5x improvement)
 
-**Implementation Status:** Ready to execute  
+**Implementation Status:** Ready to execute
 **Approval:** Awaiting go-ahead from @mbaetiong
 
 ---
 
-**Document Version:** 1.0  
-**Created:** 2026-01-23  
-**Maintained By:** GitHub Copilot Agents  
+**Document Version:** 1.0
+**Created:** 2026-01-23
+**Maintained By:** GitHub Copilot Agents
 **Next Review:** After Phase 1 completion
 
 ---
@@ -1306,7 +1306,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -1362,7 +1362,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1517,8 +1517,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary
@@ -1550,15 +1550,15 @@ requests>=2.31.0
 ### Common Failure Modes
 
 #### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Symptoms**: Agent rejects input parameters
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges
 - Review examples
 
 #### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources  
+**Symptoms**: Cannot access required resources
 **Recovery**:
 - Check permissions
 - Verify paths exist
@@ -1566,7 +1566,7 @@ requests>=2.31.0
 - Review authentication
 
 #### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit  
+**Symptoms**: Operation exceeds time limit
 **Recovery**:
 - Reduce scope of operation
 - Check for blocking operations
@@ -1574,7 +1574,7 @@ requests>=2.31.0
 - Consider batch processing
 
 #### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable  
+**Symptoms**: Required tool or service unavailable
 **Recovery**:
 - Verify tool installation
 - Check service status

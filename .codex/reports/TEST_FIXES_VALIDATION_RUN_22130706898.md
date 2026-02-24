@@ -70,7 +70,7 @@ AttributeError: 'DummyModel' object has no attribute 'prepare_inputs_for_generat
 ```python
 class DummyModel(torch.nn.Module):
     # ... existing methods ...
-    
+
     def prepare_inputs_for_generation(self, *args, **kwargs):
         """Mock method for generation compatibility."""
         return {}
@@ -139,7 +139,7 @@ class DummyDataset:
     """Mock dataset with required methods."""
     def map(self, *args, **kwargs):
         return self
-    
+
     def set_format(self, *args, **kwargs):
         """Mock set_format method required by HF trainer."""
         pass

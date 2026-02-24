@@ -1,18 +1,18 @@
 # GitHub Actions Test Failure Analysis - Latest Run
-**Generated**: 2026-02-07  
-**Workflow**: RAG Module Tests  
-**Run ID**: 21631025717  
-**Job ID**: 62343509037  
-**Status**: ❌ FAILED  
-**Commit**: c650b66f2d004a6c5b297f9b647c211dd47cdb98  
+**Generated**: 2026-02-07
+**Workflow**: RAG Module Tests
+**Run ID**: 21631025717
+**Job ID**: 62343509037
+**Status**: ❌ FAILED
+**Commit**: c650b66f2d004a6c5b297f9b647c211dd47cdb98
 **Date**: 2026-02-03T13:04:12Z
 
 ---
 
 ## Executive Summary
 
-**Total Failed Tests**: 41 out of 117+ tests  
-**Failure Rate**: ~35%  
+**Total Failed Tests**: 41 out of 117+ tests
+**Failure Rate**: ~35%
 **Primary Issue**: Meta tensor initialization errors and missing mock attributes
 
 ### Critical Findings
@@ -34,8 +34,8 @@
 
 **Error Message**:
 ```
-NotImplementedError: Cannot copy out of meta tensor; no data! 
-Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() 
+NotImplementedError: Cannot copy out of meta tensor; no data!
+Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 when moving module from meta to a different device.
 ```
 
@@ -102,16 +102,16 @@ AttributeError: 'FakeSentenceTransformer' object has no attribute 'to'
 class FakeSentenceTransformer:
     def __init__(self, *args, **kwargs):
         self.device = 'cpu'
-    
+
     def to(self, device):
         """Mock the .to() method for device placement"""
         self.device = device
         return self
-    
+
     def eval(self):
         """Mock the .eval() method"""
         return self
-    
+
     def encode(self, texts, **kwargs):
         # Existing implementation
         pass
@@ -163,7 +163,7 @@ def test_delete_operation_success(tmp_path):
 
 **a) OSError - Network/Model Loading (1 failure)**:
 ```
-OSError: There was a specific connection error when trying to load 
+OSError: There was a specific connection error when trying to load
 sentence-transformers/all-MiniLM-L6-v2
 ```
 - Test: `tests/test_rag_utils.py::TestIntegrationMetaTensorHandling::test_sentence_transformer_loading_with_safe_model_load_v2`
@@ -205,7 +205,7 @@ Based on repository documentation review:
 - **Documentation**: `docs/testing/STOPITERATION_FIX_REPORT.md`
 - **Scope**: 20+ tests across 3 files
 - **Fix**: Conditional class definitions and safe iterator usage
-- **Files Fixed**: 
+- **Files Fixed**:
   - `tests/unit/interpretability/test_attention_scorer.py`
   - `tests/unit/interpretability/test_mlp_scorer.py`
   - `tests/training/test_train_loop_coverage.py`
@@ -257,21 +257,21 @@ def safe_model_load(model_name: str, device: str = "cpu"):
     """Safely load model handling meta tensors in PyTorch 2.0+"""
     from sentence_transformers import SentenceTransformer
     import torch
-    
+
     model = SentenceTransformer(model_name)
-    
+
     # Check if model has meta tensors
     has_meta_tensor = any(
         param.is_meta for param in model.parameters()
     )
-    
+
     if has_meta_tensor:
         # Use to_empty for meta tensors
         model = model.to_empty(device=torch.device(device))
     else:
         # Standard device placement
         model = model.to(device)
-    
+
     return model.eval()
 ```
 
@@ -281,7 +281,7 @@ def safe_model_load(model_name: str, device: str = "cpu"):
 # Similar fix for local embedding model loading
 ```
 
-**Estimated Time**: 2-3 hours  
+**Estimated Time**: 2-3 hours
 **Expected Impact**: Fixes 16 test failures
 
 ---
@@ -293,39 +293,39 @@ def safe_model_load(model_name: str, device: str = "cpu"):
 # File: tests/conftest.py or tests/test_rag_end_to_end_pipeline.py
 class FakeSentenceTransformer:
     """Mock SentenceTransformer for testing"""
-    
+
     def __init__(self, model_name: str = "fake-model", *args, **kwargs):
         self.model_name = model_name
         self.device = "cpu"
         self._is_training = True
-    
+
     def to(self, device):
         """Mock device placement"""
         self.device = device if isinstance(device, str) else str(device)
         return self
-    
+
     def to_empty(self, device):
         """Mock meta tensor device placement"""
         return self.to(device)
-    
+
     def eval(self):
         """Mock eval mode"""
         self._is_training = False
         return self
-    
+
     def encode(self, texts, batch_size=32, show_progress_bar=False, **kwargs):
         """Mock encoding"""
         import numpy as np
         if isinstance(texts, str):
             texts = [texts]
         return np.random.rand(len(texts), 384)  # 384-dim embeddings
-    
+
     def parameters(self):
         """Mock parameters for meta tensor check"""
         return []
 ```
 
-**Estimated Time**: 1-2 hours  
+**Estimated Time**: 1-2 hours
 **Expected Impact**: Fixes 12 test failures
 
 ---
@@ -343,7 +343,7 @@ class FakeSentenceTransformer:
 - `test_list_operation_success`: Verify tenant directory creation
 - `test_delete_operation_partial_failure`: Fix NoneType subscriptable error
 
-**Estimated Time**: 3-4 hours  
+**Estimated Time**: 3-4 hours
 **Expected Impact**: Fixes 11 test failures
 
 ---
@@ -359,7 +359,7 @@ class FakeSentenceTransformer:
 - Review `check_for_meta_tensors()` logic
 - Add unit tests for detection function
 
-**Estimated Time**: 1-2 hours  
+**Estimated Time**: 1-2 hours
 **Expected Impact**: Fixes 2 test failures
 
 ---
@@ -407,7 +407,7 @@ class FakeSentenceTransformer:
 
 ---
 
-**Report Generated By**: CI Log Retrieval Agent  
-**Agent Version**: 1.0.0  
-**Report Date**: 2026-02-07T00:00:00Z  
+**Report Generated By**: CI Log Retrieval Agent
+**Agent Version**: 1.0.0
+**Report Date**: 2026-02-07T00:00:00Z
 **Status**: ✅ ANALYSIS COMPLETE

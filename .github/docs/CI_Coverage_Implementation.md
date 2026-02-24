@@ -305,9 +305,9 @@ fatal: unable to access 'https://github.com/Aries-Serpent/_codex_.git/': The req
 
 ---
 
-**Maintained by**: mbaetiong  
-**Last Updated**: 2025-11-12  
-**Related Files**: 
+**Maintained by**: mbaetiong
+**Last Updated**: 2025-11-12
+**Related Files**:
 - `.github/workflows/ci.yml`
 - `.github/scripts/ci_parse_coverage.py`
 - `.github/coverage_threshold.txt`

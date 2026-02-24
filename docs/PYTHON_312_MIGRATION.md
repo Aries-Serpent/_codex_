@@ -1,8 +1,8 @@
 # Python 3.12 Migration Guide
 
-> **Version:** 1.0.0  
-> **Status:** Production Ready  
-> **Target:** Python 3.12 as primary, maintain 3.11 compatibility  
+> **Version:** 1.0.0
+> **Status:** Production Ready
+> **Target:** Python 3.12 as primary, maintain 3.11 compatibility
 > **Generated:** 2026-01-22
 
 ---
@@ -40,10 +40,10 @@ This guide covers migration from Python 3.11 to 3.12 for the **_codex_** reposit
 
 ### Key Findings
 
-✅ **All 37 core dependencies** support Python 3.12  
-✅ **Modern codebase** already uses Python 3.12-compatible patterns  
-✅ **No deprecated modules** found (no distutils, imp, asyncore)  
-✅ **Proactive patterns** in place (compat modules, proper type hints)  
+✅ **All 37 core dependencies** support Python 3.12
+✅ **Modern codebase** already uses Python 3.12-compatible patterns
+✅ **No deprecated modules** found (no distutils, imp, asyncore)
+✅ **Proactive patterns** in place (compat modules, proper type hints)
 ✅ **Comprehensive test suite** created (2,382 lines, 8 test modules)
 
 ---
@@ -374,12 +374,12 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
 
 All 37 core dependencies verified compatible with Python 3.12:
 
-✅ torch ≥2.6.0  
-✅ transformers ≥4.48.0  
-✅ numpy ≥1.26  
-✅ pandas ≥2.1  
-✅ pydantic ≥2.4  
-✅ fastapi ≥0.110  
+✅ torch ≥2.6.0
+✅ transformers ≥4.48.0
+✅ numpy ≥1.26
+✅ pandas ≥2.1
+✅ pydantic ≥2.4
+✅ fastapi ≥0.110
 ... (see full list in `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`)
 
 ---
@@ -483,7 +483,7 @@ pytest tests/some_test.py -m "not py312" -v
 
 ## 🎯 Path to 100% Coverage
 
-Current test coverage: **≥70%** (minimum requirement met)  
+Current test coverage: **≥70%** (minimum requirement met)
 Target: **100%** (future iteration)
 
 ### Future Phases
@@ -627,6 +627,6 @@ For questions or issues:
 
 ---
 
-**Document Status:** ✅ Production Ready  
-**Last Updated:** 2026-01-22T17:27:00Z  
+**Document Status:** ✅ Production Ready
+**Last Updated:** 2026-01-22T17:27:00Z
 **Next Review:** After Phase 6 (100% coverage) completion

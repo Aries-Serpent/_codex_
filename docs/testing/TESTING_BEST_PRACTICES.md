@@ -91,7 +91,7 @@ def test_plugin_loading(quantum_plugin_fixture):
     # Mock the modules that may not exist
     quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
     quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
-    
+
     # Test code using mocked modules...
     # Cleanup happens automatically via fixture
 ```
@@ -109,7 +109,7 @@ def test_custom_mock():
         CONSTANT=42
     )
     install_mock_module(mock_module)
-    
+
     from src.custom import module
     assert module.process("hello") == "HELLO"
     assert module.CONSTANT == 42
@@ -131,12 +131,12 @@ from tests.utils.torch_helpers import require_torch
 def test_with_real_torch():
     """This test requires real PyTorch, not a stub."""
     torch = require_torch()
-    
+
     # Detection checks:
     # 1. hasattr(torch, 'nn')
     # 2. hasattr(torch.nn, 'Linear')
     # 3. hasattr(torch, 'IS_CODEX_STUB')
-    
+
     model = torch.nn.Linear(10, 5)  # Works with real torch
 ```
 
@@ -192,7 +192,7 @@ from tests.utils.torch_helpers import require_module
 def test_with_optional_dep():
     """Test that requires optional dependency."""
     transformers = require_module("transformers", "HuggingFace Transformers")
-    
+
     model = transformers.AutoModel.from_pretrained("bert-base-uncased")
     # Test code...
 ```
@@ -205,7 +205,7 @@ from tests.utils.torch_helpers import skip_if_any_missing
 def test_ml_pipeline():
     """Test full ML pipeline."""
     skip_if_any_missing("torch", "transformers", "mlflow")
-    
+
     import torch
     import transformers
     import mlflow
@@ -223,7 +223,7 @@ def test_plugin_dependencies(quantum_plugin_fixture):
     # Mock modules
     quantum_plugin_fixture.mock_module("src.rag.pipelines.chunking")
     quantum_plugin_fixture.mock_module("src.rag.pipelines.embedding")
-    
+
     registry = QuantumPluginRegistry()
     registry.register(QuantumPlugin(
         name="chunking",
@@ -234,7 +234,7 @@ def test_plugin_dependencies(quantum_plugin_fixture):
         import_path="src.rag.pipelines.embedding",
         dependencies=["chunking"]
     ))
-    
+
     # Load with dependencies
     module = registry.load_with_dependencies("embedding")
     assert module is not None
@@ -255,7 +255,7 @@ from tests.utils.torch_helpers import require_module
 def test_models(model_name):
     """Test various transformer models."""
     transformers = require_module("transformers")
-    
+
     model = transformers.AutoModel.from_pretrained(model_name)
     assert model is not None
 ```
@@ -304,7 +304,7 @@ def test_mlflow_logging():
 
 **Problem**: Test runs indefinitely or exceeds timeout.
 
-**Solution**: 
+**Solution**:
 - Mark test with `@pytest.mark.slow`
 - Reduce test complexity
 - Check for infinite loops or deadlocks
@@ -326,8 +326,8 @@ def test_mlflow_logging():
 
 ---
 
-**Last Updated**: 2026-02-14  
-**Maintained By**: Codex Team  
+**Last Updated**: 2026-02-14
+**Maintained By**: Codex Team
 **Related Files**:
 - `tests/utils/torch_helpers.py`
 - `tests/utils/quantum_helpers.py`

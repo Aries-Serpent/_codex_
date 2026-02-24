@@ -1,8 +1,8 @@
 # Quantum RAG Integration Guide
 
-**Document Version:** 1.0  
-**Author:** Copilot Agent  
-**Date:** 2025-12-24  
+**Document Version:** 1.0
+**Author:** Copilot Agent
+**Date:** 2025-12-24
 **Status:** Active
 
 ## Overview
@@ -56,11 +56,11 @@ for doc in documents:
             "authority": 0.8,
             "topic_frequency": 1.0,
         })
-        
+
         # Embed
         emb = embedder.embed_text(chunk.content)
         chunk.metadata["embedding"] = emb.embedding
-        
+
         chunks.append(chunk)
 
 # Retrieve with quantum scoring
@@ -266,7 +266,7 @@ for result in results:
         score=result.score,
         metadata=result.metadata
     )
-    
+
     if verification.is_valid:
         verified_results.append(result)
 ```
@@ -308,11 +308,11 @@ For optimal quantum scoring, provide these metadata fields:
 chunk.metadata.update({
     # Required
     "embedding": embedding_vector,  # list[float], typically 384-dim
-    
+
     # Recommended
     "timestamp": unix_timestamp,    # float, for temporal decay
     "authority": 0.0-1.0,           # float, source credibility
-    
+
     # Optional
     "topic_frequency": float,       # how often topic appears
     "id": "unique_id",              # for tracking
@@ -392,14 +392,14 @@ scorer = QuantumRelevanceScorer(
    # Process chunks in batches
    batch_size = 1000
    all_results = []
-   
+
    for i in range(0, len(chunks), batch_size):
        batch = chunks[i:i+batch_size]
        results = retriever.retrieve_from_chunks(
            query, batch, top_k=10
        )
        all_results.extend(results)
-   
+
    # Re-rank combined results
    all_results.sort(key=lambda r: r.score, reverse=True)
    final_results = all_results[:10]
@@ -409,10 +409,10 @@ scorer = QuantumRelevanceScorer(
    ```python
    # For very large top_k, entropy optimization can be slow
    # Consider classical retrieval + quantum re-ranking
-   
+
    # Classical: Fast, get 100 candidates
    candidates = classical_retriever.retrieve(query, top_k=100)
-   
+
    # Quantum: Re-rank top 100 to top 10
    quantum_results = retriever.retrieve_from_chunks(
        query, candidates, top_k=10

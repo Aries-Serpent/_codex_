@@ -4,9 +4,9 @@
 
 ## 📋 Context from Previous Sessions
 
-**Phases 1 & 2 COMPLETE:** 2026-01-21  
-**Branch:** copilot/begin-preflight-reporting-progress  
-**Progress:** 28/156 files relocated (18%)  
+**Phases 1 & 2 COMPLETE:** 2026-01-21
+**Branch:** copilot/begin-preflight-reporting-progress
+**Progress:** 28/156 files relocated (18%)
 **Status:** Ready for Phase 3 execution
 
 ### Completed Deliverables
@@ -29,26 +29,26 @@
 Complete root folder cleanup by relocating remaining 128 files while maintaining zero-break guarantee.
 
 ### Phase 3: Archive Consolidation (47 files) ⏳ IMMEDIATE
-**Target:** PHASE_*, SESSION_*, COMPLETION_* files  
-**Destination:** docs/archive/  
-**Risk:** LOW (expected 0-5 references per file)  
+**Target:** PHASE_*, SESSION_*, COMPLETION_* files
+**Destination:** docs/archive/
+**Risk:** LOW (expected 0-5 references per file)
 **Duration:** 1-2 hours
 
 ### Phase 4: Agent Documentation (4 files) ⏳
-**Target:** AGENTS.md, CHANGELOG_AGENTS.md, etc.  
-**Destination:** .github/agents/docs/  
-**Risk:** HIGH for AGENTS.md (293 refs), LOW for others  
+**Target:** AGENTS.md, CHANGELOG_AGENTS.md, etc.
+**Destination:** .github/agents/docs/
+**Risk:** HIGH for AGENTS.md (293 refs), LOW for others
 **Duration:** 1-2 hours (with reference updates)
 
 ### Phase 5: Miscellaneous Consolidation (74 files) ⏳
-**Target:** Remaining relocatable files  
-**Destination:** docs/archive/misc/, docs/guides/, etc.  
-**Risk:** MIXED (0-10 references per file)  
+**Target:** Remaining relocatable files
+**Destination:** docs/archive/misc/, docs/guides/, etc.
+**Risk:** MIXED (0-10 references per file)
 **Duration:** 2-3 hours
 
 ### Phase 6: Final Validation & Documentation ⏳
-**Target:** Root cleanup verification  
-**Deliverables:** Final reports, navigation updates  
+**Target:** Root cleanup verification
+**Deliverables:** Final reports, navigation updates
 **Duration:** 1 hour
 
 ---
@@ -173,17 +173,17 @@ archive_files = plan['priority_3_low_risk']
 # Process in batches of 15
 for i in range(0, len(archive_files), 15):
     batch = archive_files[i:i+15]
-    
+
     for move in batch:
         source = move['source']
         target = move['target']
-        
+
         # Validate
         result = subprocess.run(
             ['python3', 'scripts/root_org/validate_references.py', source, '--dry-run'],
             capture_output=True, text=True
         )
-        
+
         # Move if LOW risk
         if 'Risk Level: LOW' in result.stdout:
             Path(target).parent.mkdir(parents=True, exist_ok=True)
@@ -191,7 +191,7 @@ for i in range(0, len(archive_files), 15):
             print(f"✓ {source} → {target}")
         else:
             print(f"⚠ SKIP {source} (not LOW risk)")
-    
+
     print(f"Batch {i//15 + 1} complete\n")
 ```
 
@@ -250,9 +250,9 @@ Move agent-related documentation to .github/agents/docs/ with special handling f
 ### File Analysis
 
 #### File 1: AGENTS.md (HIGH RISK)
-**References:** 293 (confirmed)  
-**Risk:** HIGH  
-**Strategy:** Keep in root OR move with comprehensive reference updates  
+**References:** 293 (confirmed)
+**Risk:** HIGH
+**Strategy:** Keep in root OR move with comprehensive reference updates
 **Decision Required:** Human approval needed
 
 **Options:**
@@ -264,18 +264,18 @@ Move agent-related documentation to .github/agents/docs/ with special handling f
 **Recommendation:** Keep in root for now, revisit in Phase 6
 
 #### File 2: AGENTS.md.original (LOW RISK)
-**References:** 0 (backup file)  
-**Risk:** LOW  
+**References:** 0 (backup file)
+**Risk:** LOW
 **Target:** .github/agents/docs/archive/AGENTS.md.original
 
 #### File 3: CHANGELOG_AGENTS.md (LOW-MEDIUM RISK)
-**References:** 0-5 (estimate)  
-**Risk:** LOW-MEDIUM  
+**References:** 0-5 (estimate)
+**Risk:** LOW-MEDIUM
 **Target:** .github/agents/docs/CHANGELOG.md
 
 #### File 4: GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md (LOW RISK)
-**References:** 0-3 (estimate)  
-**Risk:** LOW  
+**References:** 0-3 (estimate)
+**Risk:** LOW
 **Target:** .github/agents/docs/PRODUCTION_SPECIFICATION.md
 
 ### Execution Plan (Phase 4)
@@ -461,25 +461,25 @@ categories = {
 
 for category, files in categories.items():
     print(f"\n=== Processing {category.upper()} ({len(files)} files) ===")
-    
+
     for file in files:
         # Validate
         result = subprocess.run(
             ['python3', 'scripts/root_org/validate_references.py', file, '--dry-run'],
             capture_output=True, text=True
         )
-        
+
         # Assess risk
         if 'Risk Level: LOW' in result.stdout or 'Risk Level: MEDIUM' in result.stdout:
             target = f'docs/{category}/{file}'
-            
+
             # Move
             Path(target).parent.mkdir(parents=True, exist_ok=True)
             mv_result = subprocess.run(['git', 'mv', file, target], capture_output=True, text=True)
-            
+
             if mv_result.returncode == 0:
                 print(f"  ✓ {file} → {target}")
-                
+
                 # Update references if MEDIUM risk
                 if 'Risk Level: MEDIUM' in result.stdout:
                     update_result = subprocess.run(
@@ -492,7 +492,7 @@ for category, files in categories.items():
                 print(f"  ✗ {file}: {mv_result.stderr}")
         else:
             print(f"  ⚠ SKIP {file} (HIGH risk, needs manual review)")
-    
+
     # Commit after each category
     subprocess.run(['git', 'add', '.'])
     subprocess.run(['git', 'commit', '-m', f'Phase 5: Consolidate {category} documentation'])
@@ -523,7 +523,7 @@ python scripts/root_org/validate_references.py QUICKSTART.md --dry-run --json > 
 # CI/CD Documentation
 ...
 
-# docs/quality/INDEX.md  
+# docs/quality/INDEX.md
 # Documentation Quality
 ...
 
@@ -561,7 +561,7 @@ root_files = [f.name for f in Path('.').glob('*.md')]
 with open('.codex/inventory.json') as f:
     inventory = json.load(f)
 
-essential = [item['name'] for item in inventory['items'] 
+essential = [item['name'] for item in inventory['items']
              if item['classification'] == 'essential']
 
 non_essential_in_root = [f for f in root_files if f not in essential]
@@ -598,7 +598,7 @@ for md_file in Path('docs').rglob('*.md'):
         ['markdown-link-check', str(md_file)],
         capture_output=True, text=True
     )
-    
+
     if result.returncode == 0:
         results['passed'].append(str(md_file))
     else:
@@ -763,23 +763,23 @@ git checkout <sha> -- path/to/file
 ## 🎯 Timeline
 
 ### Phase 3: Archive Consolidation
-**Duration:** 1-2 hours  
-**Complexity:** LOW  
+**Duration:** 1-2 hours
+**Complexity:** LOW
 **Risk:** LOW
 
 ### Phase 4: Agent Documentation
-**Duration:** 1-2 hours  
-**Complexity:** MEDIUM (AGENTS.md decision)  
+**Duration:** 1-2 hours
+**Complexity:** MEDIUM (AGENTS.md decision)
 **Risk:** MEDIUM-HIGH
 
 ### Phase 5: Miscellaneous Consolidation
-**Duration:** 2-3 hours  
-**Complexity:** MEDIUM  
+**Duration:** 2-3 hours
+**Complexity:** MEDIUM
 **Risk:** MIXED
 
 ### Phase 6: Final Validation
-**Duration:** 1 hour  
-**Complexity:** LOW  
+**Duration:** 1 hour
+**Complexity:** LOW
 **Risk:** LOW
 
 **Total Estimated Time:** 5-8 hours

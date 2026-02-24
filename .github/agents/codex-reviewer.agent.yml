@@ -7,7 +7,7 @@ description: "Quantum-inspired PR reviewer with self-evolution capabilities"
 metadata:
   author: "mbaetiong"
   repository: "Aries-Serpent/_codex_"
-  tags: 
+  tags:
     - "pr-review"
     - "quantum-analysis"
     - "security-validation"
@@ -44,13 +44,13 @@ capabilities:
     - "documentation_check"
     - "quantum_pattern_analysis"
     - "knowledge_gap_detection"
-  
+
   orchestration:
     - "workflow_suggestions"
     - "task_prioritization"
     - "dependency_analysis"
     - "next_steps_generation"
-  
+
   learning:
     - "pattern_extraction"
     - "feedback_integration"
@@ -63,7 +63,7 @@ configuration:
   suggestion_mode: "proactive"  # Options: reactive, proactive, aggressive
   orchestration_level: "full"  # Options: basic, standard, full
   learning_enabled: true
-  
+
   # Review criteria weights (must sum to 1.0)
   criteria_weights:
     code_quality: 0.25

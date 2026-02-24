@@ -19,44 +19,44 @@ Sanitizes user prompts to prevent injection attacks.
 ```python
 class PromptSanitizer:
     """Sanitizes prompts against injection patterns."""
-    
+
     def __init__(self, strict_mode: bool = True):
         """Initialize sanitizer.
-        
+
         Args:
             strict_mode: If True, raises ValueError on unsafe prompts.
                         If False, redacts unsafe patterns.
         """
-        
+
     def sanitize(self, prompt: str) -> str:
         """Sanitize a prompt string.
-        
+
         Args:
             prompt: Input prompt to sanitize
-            
+
         Returns:
             Sanitized prompt (or raises ValueError in strict mode)
-            
+
         Raises:
             ValueError: If prompt is unsafe and strict_mode=True
         """
-        
+
     def is_safe(self, prompt: str) -> bool:
         """Check if prompt is safe.
-        
+
         Args:
             prompt: Prompt to check
-            
+
         Returns:
             True if prompt passes all safety checks
         """
-        
+
     def get_violations(self, prompt: str) -> List[str]:
         """Get list of violations in prompt.
-        
+
         Args:
             prompt: Prompt to check
-            
+
         Returns:
             List of violation pattern names
         """
@@ -101,7 +101,7 @@ Health and readiness check endpoints for Kubernetes/production deployments.
 ```python
 def health_check() -> Dict[str, Any]:
     """Basic health check (liveness probe).
-    
+
     Returns:
         {"status": "healthy", "timestamp": "..."}
     """
@@ -112,12 +112,12 @@ def readiness_check(
     min_disk_space_gb: float = 1.0
 ) -> Dict[str, Any]:
     """Readiness check with system validation.
-    
+
     Args:
         required_dirs: Directories that must exist
         required_env_vars: Environment variables that must be set
         min_disk_space_gb: Minimum free disk space in GB
-        
+
     Returns:
         {
             "status": "ready" | "not_ready",
@@ -128,7 +128,7 @@ def readiness_check(
 
 def get_health_router():
     """Get FastAPI router with health endpoints.
-    
+
     Returns:
         FastAPI APIRouter with /health, /ready, /healthz, /readyz
     """
@@ -145,7 +145,7 @@ app.include_router(get_health_router())
 
 # Endpoints available:
 # GET /health - Liveness probe
-# GET /ready - Readiness probe  
+# GET /ready - Readiness probe
 # GET /healthz - Kubernetes liveness
 # GET /readyz - Kubernetes readiness
 ```
@@ -157,7 +157,7 @@ Prometheus metrics collection and export.
 ```python
 class MetricsCollector:
     """Collects and exports Prometheus metrics."""
-    
+
     def record_request(
         self,
         method: str,
@@ -165,13 +165,13 @@ class MetricsCollector:
         status_code: int
     ):
         """Record an HTTP request.
-        
+
         Args:
             method: HTTP method (GET, POST, etc.)
             endpoint: Request endpoint
             status_code: HTTP status code
         """
-        
+
     def record_latency(
         self,
         duration_seconds: float,
@@ -179,20 +179,20 @@ class MetricsCollector:
         endpoint: str
     ):
         """Record request latency.
-        
+
         Args:
             duration_seconds: Request duration in seconds
             method: HTTP method
             endpoint: Request endpoint
         """
-        
+
     def record_error(
         self,
         error_type: str,
         endpoint: str
     ):
         """Record an error.
-        
+
         Args:
             error_type: Type/class of error
             endpoint: Endpoint where error occurred
@@ -200,7 +200,7 @@ class MetricsCollector:
 
 def get_metrics_router():
     """Get FastAPI router with /metrics endpoint.
-    
+
     Returns:
         FastAPI APIRouter with Prometheus metrics endpoint
     """
@@ -237,36 +237,36 @@ RNG state management for deterministic training resume.
 ```python
 class RNGState:
     """Captures and restores RNG state across training sessions."""
-    
+
     def __init__(self):
         """Initialize RNG state manager."""
-        
+
     def capture(self):
         """Capture current RNG state from all sources.
-        
+
         Captures state from:
         - Python random module
         - NumPy random
         - PyTorch (CPU and CUDA)
         """
-        
+
     def restore(self):
         """Restore previously captured RNG state."""
-        
+
     def save_to_file(self, path: Path):
         """Save RNG state to JSON file.
-        
+
         Args:
             path: Path to .rng.json file
         """
-        
+
     @classmethod
     def load_from_file(cls, path: Path) -> "RNGState":
         """Load RNG state from JSON file.
-        
+
         Args:
             path: Path to .rng.json file
-            
+
         Returns:
             RNGState instance with loaded state
         """
@@ -296,7 +296,7 @@ Dataset integrity validation with SHA256 hashing.
 ```python
 class DatasetManifest:
     """Manages dataset integrity manifests."""
-    
+
     def __init__(
         self,
         dataset_path: Path | str,
@@ -304,33 +304,33 @@ class DatasetManifest:
         recursive: bool = True
     ):
         """Initialize dataset manifest.
-        
+
         Args:
             dataset_path: Path to dataset directory
             extensions: File extensions to include (e.g., [".txt", ".json"])
             recursive: Whether to scan recursively
         """
-        
+
     def generate(self) -> "DatasetManifest":
         """Generate manifest by hashing all dataset files.
-        
+
         Returns:
             Self for method chaining
         """
-        
+
     def save(self, manifest_path: Path | str):
         """Save manifest to JSON file.
-        
+
         Args:
             manifest_path: Path to save manifest
         """
-        
+
     def verify(self, manifest_path: Path | str) -> Dict[str, List[str]]:
         """Verify dataset against saved manifest.
-        
+
         Args:
             manifest_path: Path to manifest file
-            
+
         Returns:
             {
                 "missing": [...],  # Files in manifest but not in dataset
@@ -338,13 +338,13 @@ class DatasetManifest:
                 "added": [...]     # Files in dataset but not in manifest
             }
         """
-        
+
     def has_drift(self, manifest_path: Optional[Path | str] = None) -> bool:
         """Check if dataset has drifted from manifest.
-        
+
         Args:
             manifest_path: Path to manifest (uses self.manifest_path if None)
-            
+
         Returns:
             True if any files are missing, modified, or added
         """
@@ -376,7 +376,7 @@ Enforce deterministic algorithms for reproducibility.
 ```python
 def enable_deterministic_mode():
     """Enable deterministic mode for all frameworks.
-    
+
     Sets:
     - PyTorch: torch.use_deterministic_algorithms(True)
     - TensorFlow: tf.config.experimental.enable_op_determinism()
@@ -386,10 +386,10 @@ def enable_deterministic_mode():
 
 class DeterministicContext:
     """Context manager for temporary deterministic execution."""
-    
+
     def __enter__(self):
         """Enable deterministic mode."""
-        
+
     def __exit__(self, *args):
         """Restore previous settings."""
 ```
@@ -415,37 +415,37 @@ Checkpoint corruption detection with SHA256 validation.
 ```python
 class CheckpointIntegrity:
     """Validates checkpoint file integrity."""
-    
+
     def __init__(self, checkpoint_path: Path | str):
         """Initialize integrity validator.
-        
+
         Args:
             checkpoint_path: Path to checkpoint file
         """
-        
+
     def compute_hash(self) -> str:
         """Compute SHA256 hash of checkpoint.
-        
+
         Returns:
             Hex string of SHA256 hash
         """
-        
+
     def save_integrity(self, metadata: Optional[Dict] = None):
         """Save integrity metadata to .integrity.json file.
-        
+
         Args:
             metadata: Optional metadata to include (e.g., epoch, metrics)
         """
-        
+
     def validate(self, strict: bool = True) -> bool:
         """Validate checkpoint against saved integrity file.
-        
+
         Args:
             strict: If True, raises exception on validation failure
-            
+
         Returns:
             True if validation passes
-            
+
         Raises:
             ValueError: If validation fails and strict=True
         """
@@ -473,39 +473,39 @@ Configuration drift detection for reproducibility.
 ```python
 class ConfigDrift:
     """Detects configuration drift between runs."""
-    
+
     def __init__(self, config: Dict[str, Any]):
         """Initialize config drift detector.
-        
+
         Args:
             config: Configuration dictionary
         """
-        
+
     def compute_hash(self) -> str:
         """Compute SHA256 hash of configuration.
-        
+
         Returns:
             Hex string of config hash
         """
-        
+
     def save_baseline(self, baseline_path: Path | str):
         """Save configuration as baseline.
-        
+
         Args:
             baseline_path: Path to save baseline JSON
         """
-        
+
     def validate_against_baseline(
         self,
         baseline_path: Path | str,
         strict: bool = True
     ) -> Dict[str, Any]:
         """Validate config against baseline.
-        
+
         Args:
             baseline_path: Path to baseline file
             strict: If True, raises exception on drift
-            
+
         Returns:
             {
                 "has_drift": bool,
@@ -513,7 +513,7 @@ class ConfigDrift:
                 "removed": [...],
                 "modified": [...]
             }
-            
+
         Raises:
             ValueError: If drift detected and strict=True
         """
@@ -548,7 +548,7 @@ Autonomous error recovery and self-healing framework.
 ```python
 class SelfHealingContext:
     """Context manager for self-healing execution."""
-    
+
     def __init__(
         self,
         batch_size: int,
@@ -557,20 +557,20 @@ class SelfHealingContext:
         min_batch_size: int = 1
     ):
         """Initialize self-healing context.
-        
+
         Args:
             batch_size: Initial batch size
             enable_oom_recovery: Enable automatic OOM recovery
             max_retries: Maximum recovery attempts
             min_batch_size: Minimum batch size (stop reducing below this)
         """
-        
+
     def __enter__(self) -> "SelfHealingContext":
         """Enter context."""
-        
+
     def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
         """Exit context with automatic remediation.
-        
+
         Returns:
             True if error was handled, False to propagate
         """
@@ -580,7 +580,7 @@ def auto_remediate(
     batch_size: Optional[int] = None
 ):
     """Decorator for auto-remediation.
-    
+
     Args:
         max_retries: Maximum retry attempts
         batch_size: Initial batch size (for OOM recovery)
@@ -612,7 +612,7 @@ Comprehensive drift monitoring for data, config, and model performance.
 ```python
 class ComprehensiveDriftMonitor:
     """Unified drift monitoring system."""
-    
+
     def __init__(
         self,
         data_threshold: float = 0.1,
@@ -620,13 +620,13 @@ class ComprehensiveDriftMonitor:
         model_threshold: float = 0.1
     ):
         """Initialize drift monitor.
-        
+
         Args:
             data_threshold: Threshold for data drift (0-1)
             config_threshold: Threshold for config drift
             model_threshold: Threshold for model performance drift
         """
-        
+
     def monitor_all(
         self,
         current_data_stats: Optional[Dict[str, float]] = None,
@@ -637,7 +637,7 @@ class ComprehensiveDriftMonitor:
         baseline_metrics: Optional[Dict[str, float]] = None
     ) -> Dict[str, Any]:
         """Monitor all drift types.
-        
+
         Returns:
             {
                 "data_drift": {...},
@@ -645,17 +645,17 @@ class ComprehensiveDriftMonitor:
                 "model_drift": {...}
             }
         """
-        
+
     def has_critical_drift(self) -> bool:
         """Check if any critical drift detected.
-        
+
         Returns:
             True if any alerts with severity="critical"
         """
-        
+
     def get_drift_summary(self) -> Dict[str, int]:
         """Get summary of drift alerts.
-        
+
         Returns:
             {
                 "total_alerts": int,
@@ -665,7 +665,7 @@ class ComprehensiveDriftMonitor:
                 "low_count": int
             }
         """
-        
+
     def save_alerts(self, output_path: Path | str):
         """Save drift alerts to JSON file."""
 ```
@@ -719,14 +719,14 @@ def auto_inject_early_stopping_for_trainer(
     threshold: float = 0.0
 ) -> List:
     """Auto-inject EarlyStopping callback.
-    
+
     Args:
         trainer_class: HuggingFace Trainer class
         eval_dataset: Evaluation dataset (required for early stopping)
         callbacks: Existing callbacks
         patience: Number of evaluations with no improvement
         threshold: Minimum change to qualify as improvement
-        
+
     Returns:
         Updated callbacks list with EarlyStopping added
     """
@@ -761,27 +761,27 @@ def init_wandb(
     **kwargs
 ) -> "WandBLogger":
     """Initialize W&B logger (offline by default).
-    
+
     Args:
         project: Project name
         name: Run name
         config: Configuration dictionary
         **kwargs: Additional wandb.init kwargs
-        
+
     Returns:
         WandBLogger instance (graceful fallback to NDJSON if W&B unavailable)
     """
 
 class WandBLogger:
     """W&B logger with graceful fallback."""
-    
+
     def log(self, metrics: Dict[str, Any]):
         """Log metrics.
-        
+
         Args:
             metrics: Dictionary of metric values
         """
-        
+
     def finish(self):
         """Finish logging session."""
 ```
@@ -812,7 +812,7 @@ Auto-retraining pipeline with drift-triggered model updates.
 ```python
 class ContinuousLearningPipeline:
     """Continuous learning with auto-retraining."""
-    
+
     def __init__(
         self,
         model_name: str,
@@ -822,7 +822,7 @@ class ContinuousLearningPipeline:
         performance_degradation_threshold: float = 0.05
     ):
         """Initialize continuous learning pipeline.
-        
+
         Args:
             model_name: Model name
             registry_path: Path to model registry
@@ -830,7 +830,7 @@ class ContinuousLearningPipeline:
             min_samples_retrain: Minimum samples required
             performance_degradation_threshold: Max acceptable performance drop
         """
-        
+
     def should_retrain(
         self,
         drift_score: float,
@@ -838,11 +838,11 @@ class ContinuousLearningPipeline:
         current_performance: Optional[Dict[str, float]] = None
     ) -> bool:
         """Determine if retraining should be triggered.
-        
+
         Returns:
             True if retraining criteria met
         """
-        
+
     def retrain(
         self,
         train_fn: Callable,
@@ -851,17 +851,17 @@ class ContinuousLearningPipeline:
         drift_score: Optional[float] = None
     ) -> ModelVersion:
         """Execute retraining.
-        
+
         Args:
             train_fn: Training function that returns (model, metrics)
             train_data: Training dataset
             dataset_hash: Hash of training dataset
             drift_score: Drift score that triggered retraining
-            
+
         Returns:
             New ModelVersion
         """
-        
+
     def compare_models(
         self,
         new_version: ModelVersion,
@@ -869,7 +869,7 @@ class ContinuousLearningPipeline:
         primary_metric: str = "accuracy"
     ) -> Dict[str, Any]:
         """Compare model versions.
-        
+
         Returns:
             {
                 "is_better": bool,
@@ -878,10 +878,10 @@ class ContinuousLearningPipeline:
                 "baseline_metric": float
             }
         """
-        
+
     def deploy_model(self, version: ModelVersion):
         """Deploy model version to production."""
-        
+
     def rollback(self, to_version: Optional[str] = None):
         """Rollback to previous model version."""
 ```
@@ -903,14 +903,14 @@ monitor = ComprehensiveDriftMonitor(...)
 # Auto-retrain on drift
 if monitor.has_critical_drift():
     drift_score = monitor.get_drift_summary()["max_drift"]
-    
+
     if pipeline.should_retrain(drift_score=drift_score, samples_count=1500):
         # Retrain
         new_version = pipeline.retrain(train_fn, train_data)
-        
+
         # Compare with production
         comparison = pipeline.compare_models(new_version)
-        
+
         if comparison["is_better"]:
             pipeline.deploy_model(new_version)
         else:
@@ -926,47 +926,47 @@ A/B testing framework for model evaluation.
 ```python
 class ABTestManager:
     """A/B test manager for model experiments."""
-    
+
     def __init__(self, config: ABTestConfig):
         """Initialize A/B test manager.
-        
+
         Args:
             config: A/B test configuration
         """
-        
+
     def record_result(self, variant_name: str, metrics: Dict[str, float]):
         """Record result for a variant.
-        
+
         Args:
             variant_name: Name of variant (e.g., "v1.0", "v2.0")
             metrics: Dictionary of metric values
         """
-        
+
     def is_significant(self, alpha: float = 0.05) -> bool:
         """Check if results are statistically significant.
-        
+
         Args:
             alpha: Significance level (default: 0.05 for 95% confidence)
-            
+
         Returns:
             True if difference is statistically significant
         """
-        
+
     def get_winner(self) -> str:
         """Determine winning variant based on primary metric.
-        
+
         Returns:
             Name of winning variant
         """
-        
+
     def gradual_rollout(self, winner_variant: str, steps: int = 5):
         """Gradually rollout winning variant.
-        
+
         Args:
             winner_variant: Variant to roll out
             steps: Number of rollout steps
         """
-        
+
     def save_results(self, output_path: Path | str):
         """Save experiment results to file."""
 ```
@@ -1009,47 +1009,47 @@ Sandboxed plugin execution with contract validation and auto-disable.
 ```python
 class Plugin(ABC):
     """Base class for plugins."""
-    
+
     @abstractmethod
     def initialize(self) -> bool:
         """Initialize plugin."""
-        
+
     @abstractmethod
     def execute(self, *args, **kwargs) -> Any:
         """Execute plugin logic."""
-        
+
     @abstractmethod
     def cleanup(self):
         """Clean up resources."""
-        
+
     def get_contract(self) -> PluginContract:
         """Get plugin contract specification."""
 
 class PluginManager:
     """Plugin lifecycle manager."""
-    
+
     def __init__(
         self,
         sandbox: Optional[PluginSandbox] = None,
         validate_contracts: bool = True
     ):
         """Initialize plugin manager.
-        
+
         Args:
             sandbox: Plugin sandbox (creates default if None)
             validate_contracts: Enable contract validation
         """
-        
+
     def register_plugin(self, plugin: Plugin) -> bool:
         """Register a plugin.
-        
+
         Args:
             plugin: Plugin instance
-            
+
         Returns:
             True if registration successful
         """
-        
+
     def execute_plugin(
         self,
         plugin_name: str,
@@ -1057,7 +1057,7 @@ class PluginManager:
         **kwargs
     ) -> Optional[Any]:
         """Execute a registered plugin."""
-        
+
     def get_plugin_health_report(self) -> Dict[str, Any]:
         """Get health report for all plugins."""
 ```
@@ -1070,13 +1070,13 @@ from codex_ml.plugins.plugin_sandbox import Plugin, PluginContract, PluginManage
 class MyPlugin(Plugin):
     def initialize(self) -> bool:
         return True
-    
+
     def execute(self, data):
         return {"result": "processed"}
-    
+
     def cleanup(self):
         pass
-    
+
     def get_contract(self) -> PluginContract:
         return PluginContract(
             required_methods=["initialize", "execute", "cleanup"],
@@ -1123,27 +1123,27 @@ from codex_ml.training.ab_testing import ABTestManager
 
 def autonomous_training_pipeline(config, train_data, eval_data):
     """Fully autonomous training with all features."""
-    
+
     # Phase 2: Deterministic mode
     enable_deterministic_mode()
-    
+
     # Phase 2: Dataset integrity
     manifest = DatasetManifest("data/train")
     assert not manifest.has_drift("dataset_manifest.json")
-    
+
     # Phase 2: Config validation
     drift = ConfigDrift(config)
     drift.validate_against_baseline("config_baseline.json", strict=True)
-    
+
     # Phase 3: Offline logging
     logger = init_wandb(project="codex")
-    
+
     # Phase 3: Auto early stopping
     callbacks = auto_inject_early_stopping_for_trainer(
         trainer_class=Trainer,
         eval_dataset=eval_data
     )
-    
+
     # Phase 3: Self-healing training
     with SelfHealingContext(batch_size=config["batch_size"]) as healer:
         trainer = Trainer(
@@ -1155,23 +1155,23 @@ def autonomous_training_pipeline(config, train_data, eval_data):
             eval_dataset=eval_data,
             callbacks=callbacks
         )
-        
+
         trainer.train()
         logger.log(trainer.state.log_history[-1])
-    
+
     # Phase 2: Save with integrity
     checkpoint_path = "checkpoint.pt"
     torch.save(model.state_dict(), checkpoint_path)
-    
+
     integrity = CheckpointIntegrity(checkpoint_path)
     integrity.save_integrity()
-    
+
     rng_state = RNGState()
     rng_state.capture()
     rng_state.save_to_file(Path(f"{checkpoint_path}.rng.json"))
-    
+
     logger.finish()
-    
+
     # Phase 4: Continuous learning
     monitor = ComprehensiveDriftMonitor(...)
     if monitor.has_critical_drift():

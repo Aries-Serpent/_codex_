@@ -252,7 +252,7 @@ $$
 
 where:
 - **SB** = Sidebar
-- **TB** = Topbar  
+- **TB** = Topbar
 - **NB** = Navbar
 
 ### 2. Capacity Field Definition
@@ -531,7 +531,7 @@ $$
 \tilde{\phi}_{d,\ell} = \min\{\phi_d, \Gamma_{d\ell}\}
 $$
 
-**Interpretation**: 
+**Interpretation**:
 - Navbar wins when $d$ needs **space/complexity**
 - Sidebar wins when $d$ needs **context**
 - Location mismatch reduces effective capability
@@ -847,7 +847,7 @@ client.invoke('oauth', {provider: 'custom'})
 **Reduce Latency**:
 ```javascript
 // Batch API calls
-const promises = items.map(item => 
+const promises = items.map(item =>
   zendeskAPI.request({url: `/api/v2/items/${item.id}`})
 )
 await Promise.all(promises)
@@ -941,7 +941,7 @@ def should_build_in_navbar(feature):
     psi = calculate_feasibility(feature)
     value_complexity_ratio = feature.value / feature.complexity
     latency = estimate_latency(feature)
-    
+
     if psi > 0.7 and value_complexity_ratio > 2:
         return "BUILD"
     elif psi >= 0.4 and value_complexity_ratio > 1.5 and latency < 3:

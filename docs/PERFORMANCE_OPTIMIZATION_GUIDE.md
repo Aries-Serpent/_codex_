@@ -1,7 +1,7 @@
 # Performance Optimization Guide
 
-**Version:** 1.0  
-**Last Updated:** 2025-11-17  
+**Version:** 1.0
+**Last Updated:** 2025-11-17
 **Component:** Inference Serving & Vector Retrieval
 
 ---
@@ -133,13 +133,13 @@ def predict_with_cache(input_data):
     result = cache.get(input_data)
     if result is not None:
         return result
-    
+
     # Compute result
     result = model.predict(input_data)
-    
+
     # Store in cache
     cache.put(input_data, result)
-    
+
     return result
 ```text
 
@@ -377,7 +377,7 @@ def resilient_predict(input_data):
     cached = cache.get(input_data)
     if cached:
         return cached
-    
+
     # 2. Use circuit breaker + retry
     def predict_with_retry():
         return retry_with_backoff(
@@ -386,7 +386,7 @@ def resilient_predict(input_data):
             initial_delay=1.0,
             input_data,
         )
-    
+
     try:
         result = breaker.call(predict_with_retry)
         cache.put(input_data, result)
@@ -408,13 +408,13 @@ def resilient_predict(input_data):
 ```python
 class PerformanceMonitor:
     """Centralized performance monitoring"""
-    
+
     def __init__(self):
         self.batching = batching_middleware
         self.cache = response_cache
         self.retrieval = optimized_store
         self.circuit_breaker = circuit_breaker
-    
+
     def get_all_metrics(self):
         return {
             "batching": self.batching.get_metrics(),
@@ -422,24 +422,24 @@ class PerformanceMonitor:
             "retrieval": self.retrieval.get_metrics(),
             "circuit_breaker": self.circuit_breaker.get_state(),
         }
-    
+
     def print_summary(self):
         metrics = self.get_all_metrics()
-        
+
         print("=== Performance Summary ===")
         print(f"\nBatching:")
         print(f"  Throughput: {metrics['batching']['throughput_rps']:.1f} req/s")
         print(f"  Avg latency: {metrics['batching']['average_latency']:.3f}s")
         print(f"  p95 latency: {metrics['batching']['latency_p95']:.3f}s")
-        
+
         print(f"\nCache:")
         print(f"  Hit rate: {metrics['cache']['hit_rate']:.1%}")
         print(f"  Size: {metrics['cache']['total_size']}")
-        
+
         print(f"\nRetrieval:")
         print(f"  Throughput: {metrics['retrieval']['retrieval']['throughput_qps']:.1f} q/s")
         print(f"  p95 latency: {metrics['retrieval']['retrieval']['latency_p95']:.3f}s")
-        
+
         print(f"\nCircuit Breaker:")
         print(f"  State: {metrics['circuit_breaker']['state']}")
         print(f"  Failures: {metrics['circuit_breaker']['failure_count']}")
@@ -491,11 +491,11 @@ cache = ResponseCache(default_ttl=60)  # 1 minute
 # Regular monitoring
 def monitor_performance():
     metrics = monitor.get_all_metrics()
-    
+
     # Alert on low hit rate
     if metrics['cache']['hit_rate'] < 0.3:
         logger.warning("Low cache hit rate, consider increasing cache size")
-    
+
     # Alert on high latency
     if metrics['batching']['latency_p95'] > 1.0:
         logger.warning("High p95 latency, consider tuning batch parameters")

@@ -1,14 +1,14 @@
 # PR #3248 Attempt 16: Post-xdist Fix Test Failures Analysis
 
-**Date**: 2026-02-16T17:30:00Z  
-**Triggering Commit**: 53111c0fcb44457954361268edf3ab4cd9607d34  
+**Date**: 2026-02-16T17:30:00Z
+**Triggering Commit**: 53111c0fcb44457954361268edf3ab4cd9607d34
 **Context**: Attempt 15 successfully fixed xdist worker issues; new test failures emerged
 
 ---
 
 ## 🎯 Executive Summary
 
-**Attempt 15 Status**: ✅ **SUCCESS** - xdist worker subprocess isolation RESOLVED  
+**Attempt 15 Status**: ✅ **SUCCESS** - xdist worker subprocess isolation RESOLVED
 **Current Status**: ⚠️ **25 NEW TEST FAILURES** discovered after xdist fix
 
 **Key Finding**: Removing xdist parallelization fixed the ORIGINAL issue (worker crashes), but revealed 25 pre-existing test failures that were masked by worker crashes.
@@ -135,7 +135,7 @@
 3. Add proper type guards or update isinstance checks
 4. Validate with local test run
 
-**Estimated Effort**: 2-3 iterations  
+**Estimated Effort**: 2-3 iterations
 **Success Probability**: 85%
 
 ### Phase 2: Fix P1-HIGH Issues (8 failures - 32%)
@@ -153,7 +153,7 @@
 4. Update PyTorch checkpoint handling
 5. Fix profiler compatibility
 
-**Estimated Effort**: 3-4 iterations  
+**Estimated Effort**: 3-4 iterations
 **Success Probability**: 80%
 
 ### Phase 3: Fix P2-MEDIUM Issues (6 failures - 24%)
@@ -169,18 +169,18 @@
 3. Replace Mock with real test data
 4. Fix token scope report validation
 
-**Estimated Effort**: 2-3 iterations  
+**Estimated Effort**: 2-3 iterations
 **Success Probability**: 90%
 
 ---
 
 ## 🎯 Success Criteria
 
-**Phase 1 Complete**: ≤14 failures (44% reduction)  
-**Phase 2 Complete**: ≤6 failures (76% reduction)  
+**Phase 1 Complete**: ≤14 failures (44% reduction)
+**Phase 2 Complete**: ≤6 failures (76% reduction)
 **Phase 3 Complete**: 0 failures (100% resolution)
 
-**Total Estimated Effort**: 7-10 iterations  
+**Total Estimated Effort**: 7-10 iterations
 **Overall Success Probability**: 75% (based on clear error patterns)
 
 ---
@@ -204,6 +204,6 @@
 
 ---
 
-**Status**: Analysis complete, ready for implementation  
-**Analyst**: GitHub Copilot (Protocol-compliant session)  
+**Status**: Analysis complete, ready for implementation
+**Analyst**: GitHub Copilot (Protocol-compliant session)
 **Date**: 2026-02-16T17:30:00Z

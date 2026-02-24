@@ -36,7 +36,7 @@
 **Root Cause Analysis:**
 
 1. **Task Completion Bias**
-   - Saw progress (9 workflows complete, 2 fixed) 
+   - Saw progress (9 workflows complete, 2 fixed)
    - Brain triggered "task complete" mode
    - Jumped to conclusion phase prematurely
    - Ignored explicit requirement: "55 minutes OR all workflows complete"

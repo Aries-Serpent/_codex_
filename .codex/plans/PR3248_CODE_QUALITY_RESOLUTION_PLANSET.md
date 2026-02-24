@@ -1,8 +1,8 @@
 # PR #3248 Code Quality Resolution Planset
 
-**Created:** 2026-02-13  
-**Status:** 🟢 ACTIVE  
-**Owner:** AI Agent  
+**Created:** 2026-02-13
+**Status:** 🟢 ACTIVE
+**Owner:** AI Agent
 **Context:** PR #3248 "0 d base" - Code quality concerns resolution
 
 ---
@@ -51,12 +51,12 @@ def is_intentionally_broken_link(file_path: Path, link: str) -> bool:
     link_index = content.find(link)
     if link_index == -1:
         return False
-    
+
     # Check surrounding 200 chars for broken markers
     context_start = max(0, link_index - 200)
     context_end = min(len(content), link_index + 200)
     context = content[context_start:context_end]
-    
+
     return "<!-- BROKEN" in context or "BROKEN ANCHOR" in context
 
 def filter_broken_markers(content: str) -> str:
@@ -71,10 +71,10 @@ def resolve_doc_path(old_path: str) -> Optional[Path]:
     path_mappings = {
         # Add mappings as identified during test fixing
     }
-    
+
     new_path = path_mappings.get(old_path, old_path)
     path_obj = Path(new_path)
-    
+
     return path_obj if path_obj.exists() else None
 ```
 
@@ -330,8 +330,8 @@ python scripts/security/validate_link_safety.py .codex/
 
 ## Estimated Timeline
 
-**Total Effort:** 9-14 hours over 4 sessions  
-**Calendar Time:** 4-7 business days  
+**Total Effort:** 9-14 hours over 4 sessions
+**Calendar Time:** 4-7 business days
 **Completion Target:** By 2026-02-20
 
 ---

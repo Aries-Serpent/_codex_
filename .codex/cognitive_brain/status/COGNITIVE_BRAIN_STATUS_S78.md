@@ -1,8 +1,8 @@
 # Cognitive Brain Status — S78
 
-**Session**: S78  
-**Date**: 2026-02-24  
-**Commit**: da0b96a  
+**Session**: S78
+**Date**: 2026-02-24
+**Commit**: da0b96a
 **PR**: #3348 (stacked on #3344)
 
 ---
@@ -11,7 +11,7 @@
 
 S78 completed the Policy Coach Agent (primary request from PR comment #3948253647) plus 5 CI quick-suite fixes.
 
-**Tasks completed**: 9/9  
+**Tasks completed**: 9/9
 **Files changed**: 9 (1 new: policy-coach-agent.md, 8 modified)
 
 ---
@@ -22,7 +22,7 @@ S78 completed the Policy Coach Agent (primary request from PR comment #394825364
 
 The Policy Coach Agent (`.github/agents/policy-coach-agent.md`) must be invoked at exactly 3 checkpoints:
 - **T-1**: Plan declaration ("I have a plan")
-- **T-2**: Mid-session violation (any prohibited statement)  
+- **T-2**: Mid-session violation (any prohibited statement)
 - **T-3**: Pre-close gate (before CodeQL/security scan)
 
 14 violation patterns (P-01..P-14) with verbatim re-alignment prompts. Registered in `AGENT_REGISTRY.yaml` (total_agents=35).

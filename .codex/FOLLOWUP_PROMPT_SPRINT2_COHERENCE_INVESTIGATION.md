@@ -1,8 +1,8 @@
 # Follow-Up Prompt: Sprint 2 - Coherence Investigation & Optimization
 
-**Date**: 2026-02-18T12:30:00Z  
-**PR**: #3327 (copilot/sub-pr-3248)  
-**Previous Session**: Sprint 1 Complete + CI Fixes  
+**Date**: 2026-02-18T12:30:00Z
+**PR**: #3327 (copilot/sub-pr-3248)
+**Previous Session**: Sprint 1 Complete + CI Fixes
 **Next Phase**: Sprint 2 - Coherence & Algorithm Optimization
 
 ---
@@ -142,10 +142,10 @@ def score_batch(assessments: List[ComplianceAssessment]) -> np.ndarray:
     """Vectorized scoring for multiple assessments"""
     scores = np.array([a.score for a in assessments])
     costs = np.array([a.remediation_cost for a in assessments])
-    
+
     # Vectorized decision logic
     decisions = np.where(
-        (scores >= 0.70) & (costs < 1000), 
+        (scores >= 0.70) & (costs < 1000),
         DecisionType.APPROVE,
         np.where(
             (scores >= 0.50) & (costs < 2000),
@@ -345,9 +345,9 @@ python src/cognitive_brain/experiments/exp1b_revalidation.py --scenarios 100 --s
 
 ---
 
-**Ready to Execute**: ✅ YES  
-**Blockers**: None (coherence investigation is first priority)  
-**Estimated Completion**: 8-10 hours  
+**Ready to Execute**: ✅ YES
+**Blockers**: None (coherence investigation is first priority)
+**Estimated Completion**: 8-10 hours
 **Next Session Start**: Immediately after reading this prompt
 
 ---

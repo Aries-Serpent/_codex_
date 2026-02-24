@@ -1,7 +1,7 @@
 # MCP Security Guide
 
-**Version:** 1.0  
-**Last Updated:** 2025-11-18  
+**Version:** 1.0
+**Last Updated:** 2025-11-18
 **Audience:** Developers, Security Engineers, Operations
 
 ## Overview
@@ -181,13 +181,13 @@ def execute_with_protection(principal_id, tool_name):
     # Check all layers
     if not global_limiter.allow("global", "any"):
         raise RateLimitExceeded("Global rate limit")
-    
+
     if not principal_limiter.allow(principal_id, "any"):
         raise RateLimitExceeded("Principal rate limit")
-    
+
     if not tool_limiter.allow(principal_id, tool_name):
         raise RateLimitExceeded("Tool rate limit")
-    
+
     # Execute
     return execute_tool(tool_name)
 ```
@@ -222,7 +222,7 @@ try:
 except Exception as e:
     # DON'T expose internal details
     # raise MCPError(f"Database error: {connection_string}")
-    
+
     # DO sanitize for external consumption
     raise ToolExecutionError("Internal error occurred")
 ```
@@ -243,7 +243,7 @@ except MCPError as e:
         "tool": tool_name,
         "stack_trace": str(e)
     })
-    
+
     # Return sanitized error externally
     raise
 ```
@@ -306,7 +306,7 @@ def get_tenant_limiter(tenant_id: str) -> MCPRateLimiter:
     if tenant_id not in tenant_limiters:
         # Default limits for new tenants
         tenant_limiters[tenant_id] = MCPRateLimiter(
-            rate=5.0, 
+            rate=5.0,
             capacity=10
         )
     return tenant_limiters[tenant_id]
@@ -322,7 +322,7 @@ def get_tools_for_tenant(tenant_id: str):
     return db.query(Tool).filter(
         Tool.tenant_id == tenant_id
     ).all()
-    
+
     # BAD: No tenant filtering - security vulnerability!
     # return db.query(Tool).all()
 ```
@@ -354,11 +354,11 @@ def validate_jsonrpc_request(request: dict):
     if request.get("jsonrpc") != "2.0":
         from mcp.errors import ValidationError
         raise ValidationError("Invalid JSON-RPC version")
-    
+
     # Validate required fields
     if "method" not in request:
         raise ValidationError("Missing 'method' field")
-    
+
     # Validate method name format
     method = request["method"]
     if not isinstance(method, str) or len(method) > 100:
@@ -415,11 +415,11 @@ import uuid
 
 audit_logger = logging.getLogger('mcp.audit')
 
-def log_security_event(event_type: str, principal_id: str, 
+def log_security_event(event_type: str, principal_id: str,
                        tool_name: str, result: str, **kwargs):
     """Log security-relevant events."""
     request_id = str(uuid.uuid4())
-    
+
     audit_logger.info(
         f"Security event: {event_type}",
         extra={
@@ -456,7 +456,7 @@ security_metrics = {
 
 def increment_security_metric(metric_name: str):
     security_metrics[metric_name] += 1
-    
+
     # Alert on anomalies
     if security_metrics[metric_name] > ALERT_THRESHOLD:
         send_security_alert(metric_name, security_metrics[metric_name])
@@ -471,10 +471,10 @@ import uuid
 def process_request(request):
     # Generate or extract request ID
     request_id = request.headers.get('X-Request-Id') or str(uuid.uuid4())
-    
+
     # Include in all logs
     logger.info(f"Processing request", extra={"request_id": request_id})
-    
+
     # Include in response
     response.headers['X-Request-Id'] = request_id
     return response
@@ -722,8 +722,8 @@ Security (strict controls) ↔ Usability (developer experience) ↔ Performance 
 
 ---
 
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Version**: 2.0  
-**Security Level**: 🔒 Hardened  
-**Audit Status**: ✅ Compliant (Safeguard Score: 80%+)  
+**Last Updated**: 2026-01-23T11:45:00Z
+**Version**: 2.0
+**Security Level**: 🔒 Hardened
+**Audit Status**: ✅ Compliant (Safeguard Score: 80%+)
 **Template Compliance**: ✅ Phase 2 Physics-Aligned

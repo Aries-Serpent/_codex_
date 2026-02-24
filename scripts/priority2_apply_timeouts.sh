@@ -36,14 +36,14 @@ echo ""
 # Process each workflow
 for workflow in $WORKFLOWS_WITHOUT_TIMEOUT; do
     echo "Processing: $workflow"
-    
+
     # Check if workflow has jobs section
     if ! grep -q "^jobs:" "$workflow"; then
         echo "  ⚠️ Skipped (no jobs section found)"
         ((SKIPPED++))
         continue
     fi
-    
+
     # Find all job definitions and add timeout after runs-on
     # Use awk to process YAML structure carefully
     awk '
@@ -69,7 +69,7 @@ for workflow in $WORKFLOWS_WITHOUT_TIMEOUT; do
     }
     { print }
     ' "$workflow" > "$workflow.tmp"
-    
+
     # Check if changes were made
     if ! cmp -s "$workflow" "$workflow.tmp"; then
         mv "$workflow.tmp" "$workflow"

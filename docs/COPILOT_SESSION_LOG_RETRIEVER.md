@@ -235,7 +235,7 @@ Add verification to your workflows:
       --last 5 \
       --batch-size 5 \
       --output .codex/verification_report.md
-    
+
     # Check for missing files
     if grep -q "Missing Files: [1-9]" .codex/verification_report.md; then
       echo "Warning: Some expected files are missing"

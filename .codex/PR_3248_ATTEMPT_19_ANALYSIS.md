@@ -1,16 +1,16 @@
 # PR #3248 Attempt 19: Root Cause Analysis
 
-**Date**: 2026-02-16T23:00:00Z  
-**Commit**: 31851a5 (PR #3311 merged)  
-**CI Runs**: 22079330623 (progressive), 22079330605 (resilient)  
+**Date**: 2026-02-16T23:00:00Z
+**Commit**: 31851a5 (PR #3311 merged)
+**CI Runs**: 22079330623 (progressive), 22079330605 (resilient)
 **Agent**: GitHub Copilot (Session ID: 2026-02-16-23:07)
 
 ---
 
 ## Executive Summary
 
-**Total Failures**: 25 tests (20 quick validation + 5 slow validation)  
-**Fixes Applied**: 8/25 (32%)  
+**Total Failures**: 25 tests (20 quick validation + 5 slow validation)
+**Fixes Applied**: 8/25 (32%)
 **Root Cause**: Python 3.12 strict typing with union operators in Pydantic models and typing constructs
 
 ---
@@ -63,7 +63,7 @@ Also converted all return type annotations for consistency:
 
 **Error**:
 ```
-CheckpointLoadError: failed to save checkpoint to /tmp/.../model.pt: 
+CheckpointLoadError: failed to save checkpoint to /tmp/.../model.pt:
 failed to save checkpoint via pickle: issubclass() arg 2 must be a class, a tuple of classes, or a union
 ```
 
@@ -80,7 +80,7 @@ failed to save checkpoint via pickle: issubclass() arg 2 must be a class, a tupl
 3. Skip test in Python 3.12 if unfixable
 
 #### Group C: CLI Validation (2 tests) ⏳ PENDING
-**Tests**: 
+**Tests**:
 - `test_cli_manifest_validate.py::test_validate_ok_and_strict`
 - `test_cli_manifest_validate.py::test_validate_rejects_wrong_schema`
 
@@ -125,7 +125,7 @@ AttributeError: 'MockRepo' object has no attribute 'create'
 class MockRepo:
     def store_quantum_metric(self, *args, **kwargs):
         pass
-    
+
     def create(self, metric):  # ✅ Added missing method
         """Mock create method for CoherenceMonitor."""
         return metric
@@ -266,7 +266,7 @@ def _get_model_vocab_size(...) -> Optional[int]:  # Was: int | None
 class MockRepo:
     def store_quantum_metric(self, *args, **kwargs):
         pass
-    
+
     def create(self, metric):  # Added missing method
         """Mock create method for CoherenceMonitor."""
         return metric
@@ -346,7 +346,7 @@ class MockRepo:
 - **Commit**: 6f1876c2
 - **CI Runs**: 22079330623, 22079330605
 - **Related PRs**: #3306 (Attempt 15), #3308 (Attempt 16), #3310 (Attempt 17), #3311 (Attempt 18)
-- **Documentation**: 
+- **Documentation**:
   - `.codex/README_FIRST_MANDATORY.md`
   - `.codex/PR_3248_FAILURE_TRACKING_LOG.md`
   - Stored memory: "Python 3.12 isinstance() issues"

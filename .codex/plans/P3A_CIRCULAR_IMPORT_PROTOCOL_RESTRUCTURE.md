@@ -1,8 +1,8 @@
 # Planset: P3a — Circular Import Restructuring via Protocol Types
 
-**Status**: 🟢 ENHANCEMENT — After Phase 6 merge  
-**Priority**: P3 — Enhancement  
-**Created**: 2026-02-20  
+**Status**: 🟢 ENHANCEMENT — After Phase 6 merge
+**Priority**: P3 — Enhancement
+**Created**: 2026-02-20
 **Scope**: `src/codex/archive/` (backend.py ↔ config.py cycle)
 
 ---

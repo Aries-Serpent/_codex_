@@ -11,9 +11,9 @@
 
 **Phase 0** resolves **5 critical blockers**, **4 implementation issues**, and **3 architectural challenges** before AST Standardization can proceed to Sprint 1.
 
-**Timeline:** 2025-11-09 → 2025-11-23 (14 days)  
-**Effort:** 4-6 person-weeks  
-**Go/No-Go Gate:** 2025-11-23 14:00 UTC  
+**Timeline:** 2025-11-09 → 2025-11-23 (14 days)
+**Effort:** 4-6 person-weeks
+**Go/No-Go Gate:** 2025-11-23 14:00 UTC
 **Critical Path:** Dependencies → Architecture → Performance → Testing
 
 ---
@@ -22,9 +22,9 @@
 
 ### 1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies
 
-**Blocker ID:** `BLOCK-DEP-001`  
-**Issue:** libcst not in core dependencies  
-**Impact:** CRITICAL - Cannot implement FR-AST-001 (Universal Parser)  
+**Blocker ID:** `BLOCK-DEP-001`
+**Issue:** libcst not in core dependencies
+**Impact:** CRITICAL - Cannot implement FR-AST-001 (Universal Parser)
 **Duration:** 6 hours
 
 #### 1.1.1 Implementation Steps
@@ -52,12 +52,12 @@ dependencies = [
     # Existing dependencies...
     "torch>=2.0",
     "transformers>=4.30",
-    
+
     # NEW: AST Analysis Core
     "libcst>=1.0.0",         # Universal Python parser with CST preservation
     "radon>=6.0.0",          # Cyclomatic complexity metrics
     "parso>=0.8.0",          # Fallback parser for graceful degradation
-    
+
     # Existing deps...
 ]
 
@@ -141,9 +141,9 @@ python .github/scripts/validate_dependencies.py --check-ast-core
 
 ### 1.2 Task BLOCK-DEP-002: Install Language Parser Binaries
 
-**Blocker ID:** `BLOCK-DEP-002`  
-**Issue:** tree-sitter not available  
-**Impact:** CRITICAL - Cannot implement language-agnostic parsing  
+**Blocker ID:** `BLOCK-DEP-002`
+**Issue:** tree-sitter not available
+**Impact:** CRITICAL - Cannot implement language-agnostic parsing
 **Duration:** 4 hours
 
 #### 1.2.1 Implementation Steps
@@ -203,7 +203,7 @@ from tree_sitter import Language
 
 class LanguageRegistry:
     """Centralized language parser registry."""
-    
+
     LANGUAGES = {
         "python": {
             "module": "tree_sitter_python",
@@ -218,18 +218,18 @@ class LanguageRegistry:
             "name": "json",
         },
     }
-    
+
     _cache = {}
-    
+
     @classmethod
     def get_language(cls, lang_name: str):
         """Get language parser (cached)."""
         if lang_name in cls._cache:
             return cls._cache[lang_name]
-        
+
         if lang_name not in cls.LANGUAGES:
             raise ValueError(f"Unsupported language: {lang_name}")
-        
+
         try:
             config = cls.LANGUAGES[lang_name]
             module = __import__(config["module"])
@@ -238,7 +238,7 @@ class LanguageRegistry:
             return lang
         except ImportError as e:
             raise ImportError(f"Cannot load {lang_name} parser: {e}")
-    
+
     @classmethod
     def list_supported(cls) -> list:
         """List all supported languages."""
@@ -263,9 +263,9 @@ python .github/scripts/validate_dependencies.py --check-language-parsers
 
 ### 1.3 Task BLOCK-DEP-003: Add radon for Metrics
 
-**Blocker ID:** `BLOCK-DEP-003`  
-**Issue:** radon metrics not installed  
-**Impact:** CRITICAL - Cannot compute cyclomatic complexity  
+**Blocker ID:** `BLOCK-DEP-003`
+**Issue:** radon metrics not installed
+**Impact:** CRITICAL - Cannot compute cyclomatic complexity
 **Duration:** 2 hours
 
 #### 1.3.1 Implementation Steps
@@ -310,9 +310,9 @@ EOF
 
 ### 1.4 Task BLOCK-DEP-004: Move parso to Core Dependencies
 
-**Blocker ID:** `BLOCK-DEP-004`  
-**Issue:** parso not in core dependencies  
-**Impact:** HIGH - Needed for graceful degradation  
+**Blocker ID:** `BLOCK-DEP-004`
+**Issue:** parso not in core dependencies
+**Impact:** HIGH - Needed for graceful degradation
 **Duration:** 1 hour
 
 #### 1.4.1 Implementation
@@ -341,9 +341,9 @@ EOF
 
 ### 1.5 Task BLOCK-DEP-005: Configure SQLite Storage Layer
 
-**Blocker ID:** `BLOCK-DEP-005`  
-**Issue:** SQLite storage not configured  
-**Impact:** CRITICAL - Cannot implement FR-AST-011  
+**Blocker ID:** `BLOCK-DEP-005`
+**Issue:** SQLite storage not configured
+**Impact:** CRITICAL - Cannot implement FR-AST-011
 **Duration:** 4 hours
 
 #### 1.5.1 Implementation Steps
@@ -423,29 +423,29 @@ def init_database(db_path: Path) -> sqlite3.Connection:
     """Initialize database with schema."""
     conn = sqlite3.connect(str(db_path))
     cursor = conn.cursor()
-    
+
     # Execute schema
     cursor.executescript(SCHEMA_SQL)
     conn.commit()
-    
+
     return conn
 
 def verify_schema(db_path: Path) -> bool:
     """Verify database schema is intact."""
     conn = sqlite3.connect(str(db_path))
     cursor = conn.cursor()
-    
+
     # Check for required tables
     tables = [
-        "modules", "functions", "classes", 
+        "modules", "functions", "classes",
         "dependencies", "code_smells"
     ]
-    
+
     cursor.execute(
         "SELECT name FROM sqlite_master WHERE type='table'"
     )
     existing = {row[0] for row in cursor.fetchall()}
-    
+
     return all(t in existing for t in tables)
 ```text
 
@@ -459,25 +459,25 @@ from typing import Optional
 
 class StorageManager:
     """Manage SQLite-based AST storage."""
-    
+
     def __init__(self, db_path: Path):
         self.db_path = db_path
         self._conn: Optional[sqlite3.Connection] = None
-    
+
     def connect(self) -> sqlite3.Connection:
         """Establish database connection."""
         if self._conn is None:
             self._conn = sqlite3.connect(str(self.db_path))
             self._conn.row_factory = sqlite3.Row
         return self._conn
-    
+
     def store_module(self, module_data: dict) -> str:
         """Store module analysis results."""
         conn = self.connect()
         cursor = conn.cursor()
-        
+
         cursor.execute("""
-            INSERT OR REPLACE INTO modules 
+            INSERT OR REPLACE INTO modules
             (id, file_path, lines_of_code, complexity_avg, quality_tier)
             VALUES (?, ?, ?, ?, ?)
         """, (
@@ -487,15 +487,15 @@ class StorageManager:
             module_data['complexity_avg'],
             module_data['quality_tier'],
         ))
-        
+
         conn.commit()
         return module_data['id']
-    
+
     def store_function(self, func_data: dict) -> str:
         """Store function analysis results."""
         conn = self.connect()
         cursor = conn.cursor()
-        
+
         cursor.execute("""
             INSERT OR REPLACE INTO functions
             (id, module_id, name, signature, lines_of_code,
@@ -514,17 +514,17 @@ class StorageManager:
             func_data['test_coverage'],
             func_data['type_hint_coverage'],
         ))
-        
+
         conn.commit()
         return func_data['id']
-    
+
     def query(self, sql: str, params: tuple = ()) -> list:
         """Execute custom query."""
         conn = self.connect()
         cursor = conn.cursor()
         cursor.execute(sql, params)
         return cursor.fetchall()
-    
+
     def close(self):
         """Close database connection."""
         if self._conn:
@@ -546,7 +546,7 @@ def test_storage_initialization():
         db_path = Path(tmpdir) / "test.db"
         manager = StorageManager(db_path)
         manager.connect()
-        
+
         assert db_path.exists()
         assert verify_schema(db_path)
 
@@ -555,7 +555,7 @@ def test_store_and_retrieve_module():
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
         manager = StorageManager(db_path)
-        
+
         # Store
         module_id = manager.store_module({
             'id': 'mod_1',
@@ -564,13 +564,13 @@ def test_store_and_retrieve_module():
             'complexity_avg': 4.5,
             'quality_tier': 'A',
         })
-        
+
         # Retrieve
         results = manager.query(
             "SELECT * FROM modules WHERE id = ?",
             (module_id,)
         )
-        
+
         assert len(results) == 1
         assert results[0]['file_path'] == 'src/example.py'
 ```text
@@ -595,8 +595,8 @@ python .github/scripts/validate_dependencies.py --check-storage
 
 ### 2.1 Task BLOCK-ARCH-001: Design StandardizedASTNode
 
-**Blocker ID:** `BLOCK-ARCH-001`  
-**Issue:** No standardized AST representation  
+**Blocker ID:** `BLOCK-ARCH-001`
+**Issue:** No standardized AST representation
 **Duration:** 2 iterations
 
 #### 2.1.1 Implementation
@@ -629,7 +629,7 @@ class SourceLocation:
     line_end: int
     column_start: int
     column_end: int
-    
+
     def __str__(self) -> str:
         return f"{self.file_path}:{self.line_start}:{self.column_start}"
 
@@ -640,41 +640,41 @@ class StandardizedASTNode:
     node_id: str
     type: NodeType
     name: str
-    
+
     # Structure
     parent: Optional["StandardizedASTNode"] = None
     children: List["StandardizedASTNode"] = field(default_factory=list)
-    
+
     # Location & source
     source_location: SourceLocation = None
     docstring: Optional[str] = None
     source_text: Optional[str] = None
-    
+
     # Metadata
     decorators: List[str] = field(default_factory=list)
     type_hints: Dict[str, str] = field(default_factory=dict)
     parameters: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Language-specific (JSON blob for extensibility)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def add_child(self, child: "StandardizedASTNode"):
         """Add child node."""
         child.parent = self
         self.children.append(child)
-    
+
     def get_depth(self) -> int:
         """Get depth in tree."""
         if self.parent is None:
             return 0
         return self.parent.get_depth() + 1
-    
+
     def traverse_dfs(self):
         """Depth-first traversal."""
         yield self
         for child in self.children:
             yield from child.traverse_dfs()
-    
+
     def traverse_bfs(self):
         """Breadth-first traversal."""
         from collections import deque
@@ -683,7 +683,7 @@ class StandardizedASTNode:
             node = queue.popleft()
             yield node
             queue.extend(node.children)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary."""
         return {
@@ -701,7 +701,7 @@ class StandardizedASTNode:
             'children': [c.node_id for c in self.children],
             'metadata': self.metadata,
         }
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "StandardizedASTNode":
         """Deserialize from dictionary."""
@@ -721,7 +721,7 @@ class StandardizedASTNode:
 
 ### 2.2 Task BLOCK-ARCH-002: Design Dependency Graph
 
-**Blocker ID:** `BLOCK-ARCH-002`  
+**Blocker ID:** `BLOCK-ARCH-002`
 **Duration:** 2 iterations
 
 #### 2.2.1 Implementation
@@ -742,24 +742,24 @@ class DependencyEdge:
 
 class DependencyGraph:
     """Directed graph of code dependencies."""
-    
+
     def __init__(self):
         self.nodes: Dict[str, StandardizedASTNode] = {}
         self.edges: Dict[str, Set[str]] = {}  # source → targets
         self.edge_metadata: Dict[Tuple[str, str], DependencyEdge] = {}
-    
+
     def add_node(self, node_id: str, node: StandardizedASTNode):
         """Add node to graph."""
         self.nodes[node_id] = node
         if node_id not in self.edges:
             self.edges[node_id] = set()
-    
-    def add_edge(self, source_id: str, target_id: str, 
+
+    def add_edge(self, source_id: str, target_id: str,
                  dep_type: str, line_num: int = 0):
         """Add directed edge."""
         if source_id not in self.edges:
             self.edges[source_id] = set()
-        
+
         self.edges[source_id].add(target_id)
         self.edge_metadata[(source_id, target_id)] = DependencyEdge(
             source_id=source_id,
@@ -767,7 +767,7 @@ class DependencyGraph:
             dep_type=dep_type,
             line_number=line_num,
         )
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Find all cycles using Tarjan's SCC algorithm."""
         index_counter = [0]
@@ -776,21 +776,21 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id):
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
                     strongconnect(target_id)
                     lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
                 elif on_stack.get(target_id, False):
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             if lowlinks[node_id] == index[node_id]:
                 scc = []
                 while True:
@@ -799,41 +799,41 @@ class DependencyGraph:
                     scc.append(w)
                     if w == node_id:
                         break
-                
+
                 # Only record SCCs with >1 node (cycles)
                 if len(scc) > 1:
                     sccs.append(scc)
-        
+
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
-    
+
     def get_transitive_deps(self, node_id: str) -> Set[str]:
         """Get all transitive dependencies."""
         visited = set()
         stack = [node_id]
-        
+
         while stack:
             current = stack.pop()
             if current in visited:
                 continue
-            
+
             visited.add(current)
             stack.extend(self.edges.get(current, set()))
-        
+
         return visited - {node_id}
-    
+
     def compute_coupling(self, node_id: str) -> Dict[str, int]:
         """Compute fan-in and fan-out."""
         fan_out = len(self.edges.get(node_id, set()))
-        
+
         fan_in = 0
         for deps in self.edges.values():
             if node_id in deps:
                 fan_in += 1
-        
+
         return {
             'fan_in': fan_in,
             'fan_out': fan_out,
@@ -853,7 +853,7 @@ class DependencyGraph:
 
 ### 2.3 Task BLOCK-ARCH-003: Metrics Aggregation Layer
 
-**Blocker ID:** `BLOCK-ARCH-003`  
+**Blocker ID:** `BLOCK-ARCH-003`
 **Duration:** 1.5 iterations
 
 #### 2.3.1 Implementation
@@ -874,7 +874,7 @@ class CodeMetrics:
     maintainability_index: float
     test_coverage: float = 0.0
     type_hint_coverage: float = 0.0
-    
+
     @property
     def quality_tier(self) -> str:
         """Compute A-F grade."""
@@ -891,53 +891,53 @@ class CodeMetrics:
 
 class MetricsAggregator:
     """Aggregate and correlate metrics across codebase."""
-    
+
     def __init__(self):
         self.metrics: Dict[str, CodeMetrics] = {}
         self.correlations: Dict[str, float] = {}
-    
+
     def store_metrics(self, entity_id: str, metrics: CodeMetrics):
         """Store metrics for entity."""
         self.metrics[entity_id] = metrics
-    
+
     def correlate_complexity_coverage(self) -> float:
         """Compute correlation: complexity ↔ coverage."""
         complexities = []
         coverages = []
-        
+
         for metrics in self.metrics.values():
             complexities.append(metrics.cyclomatic_complexity)
             coverages.append(metrics.test_coverage)
-        
+
         if len(complexities) < 2:
             return 0.0
-        
+
         # Pearson correlation
         mean_cc = statistics.mean(complexities)
         mean_cov = statistics.mean(coverages)
-        
+
         numerator = sum(
             (c - mean_cc) * (v - mean_cov)
             for c, v in zip(complexities, coverages)
         )
-        
+
         denom_cc = (sum((c - mean_cc) ** 2 for c in complexities)) ** 0.5
         denom_cov = (sum((c - mean_cov) ** 2 for c in coverages)) ** 0.5
-        
+
         if denom_cc * denom_cov == 0:
             return 0.0
-        
+
         return numerator / (denom_cc * denom_cov)
-    
+
     def get_summary(self) -> Dict:
         """Get aggregate metrics summary."""
         if not self.metrics:
             return {}
-        
+
         ccs = [m.cyclomatic_complexity for m in self.metrics.values()]
         locs = [m.lines_of_code for m in self.metrics.values()]
         mis = [m.maintainability_index for m in self.metrics.values()]
-        
+
         return {
             'total_entities': len(self.metrics),
             'average_complexity': statistics.mean(ccs),
@@ -959,7 +959,7 @@ class MetricsAggregator:
 
 ### 2.4 Task BLOCK-ARCH-004: Incremental Analysis Framework
 
-**Blocker ID:** `BLOCK-ARCH-004`  
+**Blocker ID:** `BLOCK-ARCH-004`
 **Duration:** 1.5 iterations
 
 ```python
@@ -970,24 +970,24 @@ from typing import Dict, Optional
 
 class BaselineManager:
     """Store and compare analysis baselines."""
-    
+
     def __init__(self, baseline_path: Path):
         self.baseline_path = baseline_path
         self.baseline_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     def save_baseline(self, analysis_results: Dict):
         """Save baseline for comparison."""
         with open(self.baseline_path, 'w') as f:
             json.dump(analysis_results, f, indent=2)
-    
+
     def load_baseline(self) -> Optional[Dict]:
         """Load previous baseline."""
         if not self.baseline_path.exists():
             return None
-        
+
         with open(self.baseline_path) as f:
             return json.load(f)
-    
+
     def compute_delta(self, current: Dict, baseline: Dict) -> Dict:
         """Compute changes between baselines."""
         delta = {
@@ -996,17 +996,17 @@ class BaselineManager:
             'deleted_files': [],
             'metric_deltas': {},
         }
-        
+
         baseline_files = set(baseline.get('files', {}).keys())
         current_files = set(current.get('files', {}).keys())
-        
+
         delta['new_files'] = list(current_files - baseline_files)
         delta['deleted_files'] = list(baseline_files - current_files)
-        
+
         for file in current_files & baseline_files:
             if current['files'][file] != baseline['files'][file]:
                 delta['changed_files'].append(file)
-        
+
         return delta
 ```text
 
@@ -1020,7 +1020,7 @@ class BaselineManager:
 
 ### 2.5 Task BLOCK-ARCH-005: Plugin Architecture
 
-**Blocker ID:** `BLOCK-ARCH-005`  
+**Blocker ID:** `BLOCK-ARCH-005`
 **Duration:** 1.5 iterations
 
 ```python
@@ -1031,12 +1031,12 @@ import importlib
 
 class LanguageAdapter(ABC):
     """Base class for language adapters."""
-    
+
     @abstractmethod
     def parse(self, source_code: str, file_path) -> StandardizedASTNode:
         """Parse source code to StandardizedAST."""
         pass
-    
+
     @abstractmethod
     def get_supported_extensions(self) -> list:
         """File extensions supported."""
@@ -1044,22 +1044,22 @@ class LanguageAdapter(ABC):
 
 class PluginRegistry:
     """Manage language adapter plugins."""
-    
+
     _adapters: Dict[str, Type[LanguageAdapter]] = {}
-    
+
     @classmethod
     def register(cls, language: str, adapter_class: Type[LanguageAdapter]):
         """Register language adapter."""
         cls._adapters[language] = adapter_class
-    
+
     @classmethod
     def get_adapter(cls, language: str) -> LanguageAdapter:
         """Get adapter instance."""
         if language not in cls._adapters:
             raise ValueError(f"No adapter for {language}")
-        
+
         return cls._adapters<!-- TODO: Add section or remove TOC entry - [language]() -->
-    
+
     @classmethod
     def list_languages(cls) -> list:
         """List supported languages."""
@@ -1089,46 +1089,46 @@ from pathlib import Path
 
 @pytest.mark.benchmark
 class TestParserBenchmarks:
-    
+
     @pytest.fixture(scope="class")
     def sample_files(self, tmp_path):
         """Create sample Python files."""
         samples = {}
-        
+
         # Small file (100 LOC)
         samples['small'] = tmp_path / 'small.py'
         samples['small'].write_text("def func():\n    pass\n" * 50)
-        
+
         # Medium file (1000 LOC)
         samples['medium'] = tmp_path / 'medium.py'
         samples['medium'].write_text("def func():\n    pass\n" * 500)
-        
+
         # Large file (10K LOC)
         samples['large'] = tmp_path / 'large.py'
         samples['large'].write_text("def func():\n    pass\n" * 5000)
-        
+
         return samples
-    
+
     def test_parse_small_file(self, benchmark, sample_files):
         """Benchmark small file parsing."""
         from codex_ml.ast.language_adapters import PythonAdapter
-        
+
         adapter = PythonAdapter()
         source = sample_files['small'].read_text()
-        
+
         result = benchmark(adapter.parse, source, sample_files['small'])
         assert result is not None
-    
+
     def test_parse_large_file(self, benchmark, sample_files):
         """Benchmark large file parsing."""
         from codex_ml.ast.language_adapters import PythonAdapter
-        
+
         adapter = PythonAdapter()
         source = sample_files['large'].read_text()
-        
+
         result = benchmark(adapter.parse, source, sample_files['large'])
         assert result is not None
-        
+
         # Verify performance: <1ms per 100 tokens
         tokens = len(source.split())
         # (Benchmark automatically compares against threshold)
@@ -1205,7 +1205,7 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
         DeprecationWarning,
         stacklevel=2
     )
-    
+
     from codex_ml.ast.parser import UniversalParser
     parser = UniversalParser()
     return parser.parse(source, Path(filename))
@@ -1264,7 +1264,7 @@ def decorated_class_code():
     class Person:
         name: str
         age: int
-        
+
         @property
         def is_adult(self) -> bool:
             return self.age >= 18
@@ -1296,7 +1296,7 @@ def decorated_class_code():
 
 ### Decision Gate: 2025-11-23 14:00 UTC
 
-**If ALL conditions met**: ✅ **PROCEED TO SPRINT 1**  
+**If ALL conditions met**: ✅ **PROCEED TO SPRINT 1**
 **If ANY condition not met**: 🚫 **DEFER; REASSESS IN 2 phaseS**
 
 ---
@@ -1328,9 +1328,9 @@ def decorated_class_code():
 
 ---
 
-**Document Status**: READY FOR IMPLEMENTATION  
-**Phase 0 Start**: 2025-11-09 23:13:57 UTC  
-**Phase 0 Target End**: 2025-11-23 14:00 UTC  
+**Document Status**: READY FOR IMPLEMENTATION
+**Phase 0 Start**: 2025-11-09 23:13:57 UTC
+**Phase 0 Target End**: 2025-11-23 14:00 UTC
 **Next Document**: Sprint 1 Implementation Plan
 ```text
 
@@ -1372,14 +1372,14 @@ from pathlib import Path
 
 def check_dependency_conflicts():
     """Detect dependency conflicts."""
-    result = subprocess.run([sys.executable, "-m", "pip", "check"], 
+    result = subprocess.run([sys.executable, "-m", "pip", "check"],
                           capture_output=True, text=True)
-    
+
     if result.returncode != 0:
         print("❌ Dependency conflicts detected:")
         print(result.stdout)
         return False
-    
+
     print("✓ No dependency conflicts")
     return True
 
@@ -1387,13 +1387,13 @@ def check_security_vulnerabilities():
     """Scan for known vulnerabilities."""
     result = subprocess.run([sys.executable, "-m", "pip", "audit"],
                           capture_output=True, text=True)
-    
+
     # Check for HIGH/CRITICAL severity
     if "CRITICAL" in result.stdout or "HIGH" in result.stdout:
         print("❌ Security vulnerabilities found:")
         print(result.stdout)
         return False
-    
+
     print("✓ No critical vulnerabilities")
     return True
 
@@ -1405,7 +1405,7 @@ def check_import_availability():
         ("parso", "parso"),
         ("tree_sitter", "tree-sitter"),
     ]
-    
+
     all_ok = True
     for module_name, display_name in required_imports:
         try:
@@ -1414,7 +1414,7 @@ def check_import_availability():
         except ImportError as e:
             print(f"❌ {display_name} import failed: {e}")
             all_ok = False
-    
+
     return all_ok
 
 def main():
@@ -1424,18 +1424,18 @@ def main():
         ("Security Vulnerabilities", check_security_vulnerabilities),
         ("Import Availability", check_import_availability),
     ]
-    
+
     results = {}
     for name, check_func in validations:
         print(f"\n[{name}]")
         results[name] = check_func()
-    
+
     # Summary
     print("\n" + "="*50)
     passed = sum(results.values())
     total = len(results)
     print(f"Passed: {passed}/{total}")
-    
+
     if passed == total:
         print("✅ All dependency validations passed")
         return 0
@@ -1508,23 +1508,23 @@ def test_standardized_ast_node_creation():
             column_end=20,
         ),
     )
-    
+
     assert node.name == "test_func"
     assert node.type == NodeType.FUNCTION
 
 def test_dependency_graph_cycle_detection():
     """Verify cycle detection works."""
     graph = DependencyGraph()
-    
+
     # Add nodes
     for i in range(3):
         graph.add_node(f"node_{i}", None)
-    
+
     # Create cycle: 0 → 1 → 2 → 0
     graph.add_edge("node_0", "node_1", "imports")
     graph.add_edge("node_1", "node_2", "calls")
     graph.add_edge("node_2", "node_0", "inherits_from")
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"node_0", "node_1", "node_2"}
@@ -1532,7 +1532,7 @@ def test_dependency_graph_cycle_detection():
 def test_metrics_aggregator_correlation():
     """Verify metrics correlation computation."""
     aggregator = MetricsAggregator()
-    
+
     # Add test metrics
     aggregator.store_metrics("func_1", CodeMetrics(
         lines_of_code=50,
@@ -1542,7 +1542,7 @@ def test_metrics_aggregator_correlation():
         maintainability_index=85.0,
         test_coverage=0.9,
     ))
-    
+
     summary = aggregator.get_summary()
     assert summary['total_entities'] == 1
     assert summary['average_complexity'] == 5
@@ -1572,13 +1572,13 @@ def test_metrics_aggregator_correlation():
 def test_parser_performance_target(benchmark):
     """Ensure parser meets performance target."""
     from codex_ml.ast import UniversalParser
-    
+
     parser = UniversalParser()
     source = open("tests/fixtures/large_sample.py").read()
-    
+
     # Benchmark and compare to target
     result = benchmark(parser.parse, source, Path("sample.py"))
-    
+
     # Implicit: benchmark compares to tolerance
     assert result is not None
 ```text
@@ -1642,7 +1642,7 @@ steps:
   - uses: actions/setup-python@v4
     with:
       python-version: ${{ matrix.python-version }}
-  
+
   - run: pip install -e ".[ast]"
   - run: pytest tests/ast/ -v
 ```text
@@ -1694,15 +1694,15 @@ steps:
 1. **Review Phase 0 completion** (15 min)
    - All blockers resolved?
    - All validations passed?
-   
+
 2. **Risk assessment** (10 min)
    - Any new risks identified?
    - Mitigation strategies adequate?
-   
+
 3. **Go/No-Go decision** (10 min)
    - Vote by all sign-off parties
    - Document rationale
-   
+
 4. **Sprint 1 kickoff (if GO)** (15 min)
    - Resource allocation
    - First sprint planning
@@ -1738,7 +1738,7 @@ git diff HEAD -- pyproject.toml > /tmp/conflict.patch
 
 ### 7.2 If Performance Targets Missed
 
-**Action:** Defer optimization to Sprint 2  
+**Action:** Defer optimization to Sprint 2
 **Fallback:** Use incremental analysis with caching
 
 ```python
@@ -1747,7 +1747,7 @@ def parse(self, source, file_path):
     # Check cache
     if file_path in self._parse_cache:
         return self._parse_cache[file_path]
-    
+
     # Parse and cache
     result = self._parse_impl(source, file_path)
     self._parse_cache[file_path] = result
@@ -1756,7 +1756,7 @@ def parse(self, source, file_path):
 
 ### 7.3 If Architecture Design Not Approved
 
-**Action:** Schedule design review extension  
+**Action:** Schedule design review extension
 **Timeline:** Additional 3-5 iterations for revision
 
 ---
@@ -1784,21 +1784,21 @@ def parse(self, source, file_path):
 
 ---
 
-**Document Status**: READY FOR VALIDATION  
-**Phase 0 Validation Start**: 2025-11-10  
-**Phase 0 Validation End**: 2025-11-23 14:00 UTC  
+**Document Status**: READY FOR VALIDATION
+**Phase 0 Validation Start**: 2025-11-10
+**Phase 0 Validation End**: 2025-11-23 14:00 UTC
 **Go/No-Go Meeting**: 2025-11-23 14:00 UTC
 ```text
 
 All Phase 0 guidance documents now created and ready for implementation. Both comprehensive implementation guides cover:
 
-✅ **Detailed task breakdowns** with acceptance criteria  
-✅ **Complete code implementations** for all components  
-✅ **Validation & testing procedures**  
-✅ **Risk mitigation strategies**  
-✅ **Rollback procedures**  
-✅ **Go/No-Go decision framework**  
-✅ **Sign-off process**  
+✅ **Detailed task breakdowns** with acceptance criteria
+✅ **Complete code implementations** for all components
+✅ **Validation & testing procedures**
+✅ **Risk mitigation strategies**
+✅ **Rollback procedures**
+✅ **Go/No-Go decision framework**
+✅ **Sign-off process**
 ✅ **Timeline & resource allocation**
 
 **Ready to proceed with Phase 0 implementation on 2025-11-10.**

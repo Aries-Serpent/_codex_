@@ -1,8 +1,8 @@
 # Planset: P3c — datetime.now(UTC) Modernization Pass
 
-**Status**: 🟢 ENHANCEMENT — Can run anytime  
-**Priority**: P3 — Enhancement  
-**Created**: 2026-02-20  
+**Status**: 🟢 ENHANCEMENT — Can run anytime
+**Priority**: P3 — Enhancement
+**Created**: 2026-02-20
 **Agent**: `datetime-modernizer`
 
 ---
@@ -47,7 +47,7 @@ grep -rn "datetime.utcnow()\|datetime.utcfromtimestamp" src/ tests/ --include="*
 ```
 @copilot Use the datetime-modernizer agent to:
 1. Scan all Python files for datetime.utcnow() usage
-2. Replace with datetime.now(timezone.utc) 
+2. Replace with datetime.now(timezone.utc)
 3. Add `from datetime import timezone` imports where needed
 4. Run pytest on changed files to verify no regressions
 5. Run ruff check on all changed files

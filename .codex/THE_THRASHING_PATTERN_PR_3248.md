@@ -1,8 +1,8 @@
 # PR #3248: The Thrashing Pattern - Contradictory Advice Cycle
 
-**Generated**: 2026-02-16T12:59:00Z  
-**Status**: PATTERN ANALYSIS - Critical for breaking cycles  
-**Observed**: 3+ full cycles over 5-7 days  
+**Generated**: 2026-02-16T12:59:00Z
+**Status**: PATTERN ANALYSIS - Critical for breaking cycles
+**Observed**: 3+ full cycles over 5-7 days
 **Impact**: 20-32 hours wasted on contradictory "solutions"
 
 ---
@@ -32,7 +32,7 @@ stateDiagram-v2
     SolutionX --> ErrorB: Plugin already registered
     ErrorB --> SolutionY: Remove -p flags
     SolutionY --> ErrorA: Unrecognized arguments
-    
+
     ErrorA --> RootCause: BREAK CYCLE<br/>Analyze root cause
     RootCause --> RealFix: Pin plugin versions
     RealFix --> [*]: Success!
@@ -46,8 +46,8 @@ stateDiagram-v2
 Error: _pytest.config.exceptions.UsageError: unrecognized arguments: --timeout=300 -n 2
 ```
 
-**Symptom**: Workers don't recognize pytest arguments  
-**Incorrect Analysis**: "Workers can't find plugins"  
+**Symptom**: Workers don't recognize pytest arguments
+**Incorrect Analysis**: "Workers can't find plugins"
 **Incorrect Solution**: "Add -p flags to explicitly load plugins"
 
 **Transitions to**: State 2 (Solution X applied)
@@ -60,9 +60,9 @@ Error: _pytest.config.exceptions.UsageError: unrecognized arguments: --timeout=3
 Command: pytest tests/ -p xdist.plugin -p timeout --timeout=300 -n 2
 ```
 
-**Change**: Add explicit plugin loading flags  
-**Reasoning**: "Explicitly tell workers which plugins to use"  
-**Expected**: Workers find and use plugins  
+**Change**: Add explicit plugin loading flags
+**Reasoning**: "Explicitly tell workers which plugins to use"
+**Expected**: Workers find and use plugins
 
 **Transitions to**: State 3 (New error appears)
 
@@ -74,8 +74,8 @@ Command: pytest tests/ -p xdist.plugin -p timeout --timeout=300 -n 2
 Error: ValueError: Plugin already registered under a different name: xdist
 ```
 
-**Symptom**: Plugin registration conflict  
-**Incorrect Analysis**: "Double registration, shouldn't load explicitly"  
+**Symptom**: Plugin registration conflict
+**Incorrect Analysis**: "Double registration, shouldn't load explicitly"
 **Incorrect Solution**: "Remove -p flags, let plugins auto-register"
 
 **Transitions to**: State 4 (Solution Y applied)
@@ -88,9 +88,9 @@ Error: ValueError: Plugin already registered under a different name: xdist
 Command: pytest tests/ --timeout=300 -n 2
 ```
 
-**Change**: Remove explicit plugin loading, rely on auto-discovery  
-**Reasoning**: "Auto-discovery prevents double registration"  
-**Expected**: Plugins auto-register correctly  
+**Change**: Remove explicit plugin loading, rely on auto-discovery
+**Reasoning**: "Auto-discovery prevents double registration"
+**Expected**: Plugins auto-register correctly
 
 **Transitions to**: State 1 (Back to Error A!)
 
@@ -112,8 +112,8 @@ Day 7: Root cause analysis performed
 Day 7: Real solution implemented
 ```
 
-**Total Time in Cycle**: 5-6 days (20-24 hours)  
-**Time to Break Cycle**: 1 day with proper analysis  
+**Total Time in Cycle**: 5-6 days (20-24 hours)
+**Time to Break Cycle**: 1 day with proper analysis
 **Efficiency Loss**: 80-85%
 
 ---
@@ -224,8 +224,8 @@ Solution A → Error X → Solution B → Error Y → Solution A (repeat)
 ### Pattern 2: The Spiral
 
 ```
-Solution A → Error X → 
-Solution A' (variation) → Error X' (similar) → 
+Solution A → Error X →
+Solution A' (variation) → Error X' (similar) →
 Solution A'' (another variation) → Error X'' (still similar)
 ```
 
@@ -239,7 +239,7 @@ Solution A'' (another variation) → Error X'' (still similar)
 ### Pattern 3: The Configuration Shotgun
 
 ```
-Change workflow → Change pytest.ini → Change conftest.py → 
+Change workflow → Change pytest.ini → Change conftest.py →
 Change pyproject.toml → Change environment vars → (random order)
 ```
 
@@ -282,22 +282,22 @@ Change pyproject.toml → Change environment vars → (random order)
       pytest-cov==5.0.0 \
       pytest-asyncio==1.3.0 \
       pytest-mock==3.15.1
-    
+
     # Step 2: Verify versions BEFORE package install
     python -c "import pytest, xdist, pytest_timeout; \
                print(f'PRE-INSTALL: pytest={pytest.__version__}, ' + \
                      f'xdist={xdist.__version__}, ' + \
                      f'timeout={pytest_timeout.__version__}')"
-    
+
     # Step 3: Install package (won't change pinned versions)
     pip install -e .[dev]
-    
+
     # Step 4: Verify versions AFTER (should match Step 2)
     python -c "import pytest, xdist, pytest_timeout; \
                print(f'POST-INSTALL: pytest={pytest.__version__}, ' + \
                      f'xdist={xdist.__version__}, ' + \
                      f'timeout={pytest_timeout.__version__}')"
-    
+
     # Step 5: Verify workers can import plugins
     python -c "from xdist.plugin import *; \
                from pytest_timeout import *; \
@@ -371,10 +371,10 @@ After ANY failed fix, ask:
 
 ### Red Flags for Thrashing
 
-🚩 **Red Flag 1**: Same error appears after 2+ different fixes  
-🚩 **Red Flag 2**: Opposite approaches both fail  
-🚩 **Red Flag 3**: Error types alternate (A → B → A)  
-🚩 **Red Flag 4**: More than 4 attempts without progress  
+🚩 **Red Flag 1**: Same error appears after 2+ different fixes
+🚩 **Red Flag 2**: Opposite approaches both fail
+🚩 **Red Flag 3**: Error types alternate (A → B → A)
+🚩 **Red Flag 4**: More than 4 attempts without progress
 🚩 **Red Flag 5**: Spending more time on fixes than analysis
 
 **If you see 2+ red flags**: STOP fixing, START analyzing
@@ -542,10 +542,10 @@ Escalate to human review if:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-02-16T12:59:00Z  
-**Cycles Documented**: 3+ full cycles  
-**Status**: Pattern identified and solution implemented  
+**Document Version**: 1.0
+**Last Updated**: 2026-02-16T12:59:00Z
+**Cycles Documented**: 3+ full cycles
+**Status**: Pattern identified and solution implemented
 **Outcome**: Pending CI validation
 
 ---

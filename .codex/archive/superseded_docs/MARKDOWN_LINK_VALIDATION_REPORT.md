@@ -1,17 +1,17 @@
 # Markdown Link Validation & Repair Report
 
-**Generated:** 2026-02-13  
-**Repository:** _codex_  
-**Total Files Scanned:** 3,361 markdown files  
+**Generated:** 2026-02-13
+**Repository:** _codex_
+**Total Files Scanned:** 3,361 markdown files
 **Total Links Analyzed:** 5,699 links
 
 ---
 
 ## Executive Summary
 
-✅ **Completed:** Comprehensive markdown link validation across entire repository  
-✅ **Auto-Fixed:** 60 issues across 30 files (100% success rate)  
-⚠️ **Remaining:** 919 issues requiring manual review  
+✅ **Completed:** Comprehensive markdown link validation across entire repository
+✅ **Auto-Fixed:** 60 issues across 30 files (100% success rate)
+⚠️ **Remaining:** 919 issues requiring manual review
 📊 **Progress:** 6.1% of issues auto-fixed in Phase 1
 
 ---
@@ -157,7 +157,7 @@ Anchor links that don't match any header and no automatic correction could be de
 # Before
 <!-- BROKEN ANCHOR: [Phase 0: Foundation](#phase-0) -->
 
-# After  
+# After
 <!-- BROKEN ANCHOR: [Phase 0: Foundation](#phase-0-foundation-complete) -->
 ```
 
@@ -314,11 +314,11 @@ cat /tmp/link_validation_report.json | jq '.issues_by_type'
 
 ### Achievements
 
-✅ Scanned 3,361 markdown files across entire repository  
-✅ Analyzed 5,699 links  
-✅ Fixed 60 issues with 100% success rate  
-✅ Zero fix failures  
-✅ Improved documentation quality in 30 high-priority files  
+✅ Scanned 3,361 markdown files across entire repository
+✅ Analyzed 5,699 links
+✅ Fixed 60 issues with 100% success rate
+✅ Zero fix failures
+✅ Improved documentation quality in 30 high-priority files
 
 ### Impact
 
@@ -334,7 +334,7 @@ Total Issues Found:     979
 Auto-Fixed:              60 (6.1%)
 Remaining:              919 (93.9%)
   - High Priority:      247 (relocated files)
-  - Medium Priority:    581 (deleted files)  
+  - Medium Priority:    581 (deleted files)
   - Low Priority:        91 (manual review)
 ```
 
@@ -349,9 +349,9 @@ Remaining:              919 (93.9%)
 --- a/docs/CONTRIBUTOR_ONBOARDING.md
 +++ b/docs/CONTRIBUTOR_ONBOARDING.md
 @@ -4,7 +4,7 @@
- 
+
  ## Table of Contents
- 
+
 -1. [Quick Start]()
 +1. [Quick Start](#quick-start)
  2. <!-- BROKEN ANCHOR: [Repository Overview](#repository-overview) -->
@@ -367,7 +367,7 @@ Remaining:              919 (93.9%)
 +++ b/docs/plans/AST_ENGINEERING_PROJECT_GUIDE.md
 @@ -20,10 +20,10 @@
  ## Table of Contents
- 
+
  1. <!-- BROKEN ANCHOR: [Overview](#overview) -->
 -2. <!-- BROKEN ANCHOR: [Critical Blockers Table](#critical-blockers-table) -->
 -3. <!-- BROKEN ANCHOR: [Implementation Issues Table](#implementation-issues-table) -->
@@ -381,7 +381,7 @@ Remaining:              919 (93.9%)
 
 ---
 
-**Report Version:** 1.0  
-**Last Updated:** 2026-02-13  
-**Validation Tool:** Custom Python link validator  
+**Report Version:** 1.0
+**Last Updated:** 2026-02-13
+**Validation Tool:** Custom Python link validator
 **Validation Duration:** ~60 seconds

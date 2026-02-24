@@ -1,6 +1,6 @@
 # Root Organization - Documentation Index
 
-**Status:** 🔄 In Progress (Phase 1 Complete)  
+**Status:** 🔄 In Progress (Phase 1 Complete)
 **Last Updated:** 2026-02-06
 
 ---
@@ -293,7 +293,7 @@ When continuing this work:
 
 ---
 
-**Index Version:** 1.0.0  
-**Last Updated:** 2026-02-06  
-**Status:** Phase 1 Complete ✅  
+**Index Version:** 1.0.0
+**Last Updated:** 2026-02-06
+**Status:** Phase 1 Complete ✅
 **Next Phase:** Phase 2 Planning ⏳

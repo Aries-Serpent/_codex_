@@ -461,7 +461,7 @@ class TestGitHubTokenProvider:
     def test_rotate_secret_success(self, github_config):
         """Test successful token rotation."""
         provider = GitHubTokenProvider(github_config)
-        
+
         # Mock create_token since it's not implemented
         # Use patch.object with the class to ensure it's applied before method call
         with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
@@ -469,9 +469,9 @@ class TestGitHubTokenProvider:
                 success=True,
                 old_secret_id="",
                 new_secret_id="new-token-id",
-                new_secret_value="ghp_new_token_value",
+                new_secret_value="ghp_new_token_value",  # pragma: allowlist secret
             )
-            
+
             result = provider.rotate_secret(
                 "old-token-id",
                 scopes=["repo", "workflow"],
@@ -488,7 +488,7 @@ class TestGitHubTokenProvider:
     def test_rotate_secret_with_revoke(self, github_config):
         """Test token rotation with old token revocation."""
         provider = GitHubTokenProvider(github_config)
-        
+
         # Mock create_token since it's not implemented
         # Use patch.object with the class to ensure it's applied before method call
         with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
@@ -496,13 +496,11 @@ class TestGitHubTokenProvider:
                 success=True,
                 old_secret_id="",
                 new_secret_id="new-token-id",
-                new_secret_value="ghp_new_token_value",
-            )
-            
-            # Mock revoke_secret too
+                new_secret_value="ghp_new_token_value",  # pragma: allowlist secret
+
             with patch.object(GitHubTokenProvider, 'revoke_secret') as mock_revoke:
                 mock_revoke.return_value = True
-                
+
                 result = provider.rotate_secret(
                     "old-token-id",
                     revoke_old=True,

@@ -150,6 +150,6 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2025-12-26T07:54:45Z  
-**Version**: 1.0.0-template  
+**Last Updated**: 2025-12-26T07:54:45Z
+**Version**: 1.0.0-template
 **Status**: Pre-Genesis (awaiting human setup)

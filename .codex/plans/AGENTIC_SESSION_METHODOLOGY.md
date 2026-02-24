@@ -122,8 +122,8 @@ Session NN
 ## 📅 Planned Sessions Map (Active)
 
 ### Session 47 — CI Failure Resolution + TASK 0 Methodology
-**PLANSET**: PLANSET-CI-047  
-**Pre-conditions**: run 22227371821 failures identified  
+**PLANSET**: PLANSET-CI-047
+**Pre-conditions**: run 22227371821 failures identified
 **Agent Assignments**: `ci-testing-agent` v4.0, `codebase-health-guardian`
 
 | Checkpoint | Target | Status |
@@ -142,8 +142,8 @@ Session NN
 ---
 
 ### Session 48 — P1.2 Python 3.12 Restore + Tokenization Circular Import Fix
-**PLANSET**: PLANSET-P12-048  
-**Pre-conditions**: base-branch `copilot/sub-pr-3248` CI confirmed green  
+**PLANSET**: PLANSET-P12-048
+**Pre-conditions**: base-branch `copilot/sub-pr-3248` CI confirmed green
 **Agent Assignments**: `ci-testing-agent` v4.0 (P-CYCLIC pattern)
 
 | Checkpoint | Target |
@@ -161,8 +161,8 @@ Session NN
 ---
 
 ### Session 49 — Extended Noise Validation (1000 scenarios) + Bayesian CPD Calibration
-**PLANSET**: PLANSET-NOISE-049  
-**Pre-conditions**: Session 48 complete  
+**PLANSET**: PLANSET-NOISE-049
+**Pre-conditions**: Session 48 complete
 **Agent Assignments**: `cognitive-brain-manager`, `quantum-compliance-tuning-agent`
 
 | Checkpoint | Target |
@@ -178,8 +178,8 @@ Session NN
 ---
 
 ### Session 50 — PyTorch 2.7+ Skipif Guard Removal + datetime.now(UTC) Modernization
-**PLANSET**: PLANSET-TORCH-050  
-**Pre-conditions**: PyTorch 2.7+ available in CI environment  
+**PLANSET**: PLANSET-TORCH-050
+**Pre-conditions**: PyTorch 2.7+ available in CI environment
 **Agent Assignments**: `datetime-modernizer`, `ci-testing-agent` v4.0
 
 | Checkpoint | Target |
@@ -364,7 +364,7 @@ Enforce D1-D4. Auto-fix D2. Block if D3 violations. Report gate table.
 | **Documentation** | 10 | Tracking log updated with Attempt NN + commit SHA |
 | **Lint clean** | 5 | ruff exits 0 + import smoke passes |
 
-**Session 47 target score: ≥ 90**  
+**Session 47 target score: ≥ 90**
 **Minimum acceptable: ≥ 70 (human review), < 70 = retry**
 
 ---

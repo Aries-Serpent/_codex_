@@ -6,9 +6,9 @@
 
 ## Executive Summary
 
-**Context:** Fixed 25 CI test failures across validation (slow) and validation (quick) jobs  
-**Duration:** 55 minutes  
-**Success Rate:** 100% (all failures resolved)  
+**Context:** Fixed 25 CI test failures across validation (slow) and validation (quick) jobs
+**Duration:** 55 minutes
+**Success Rate:** 100% (all failures resolved)
 **Key Outcome:** Systematic CI resolution with comprehensive documentation and pattern capture
 
 ---
@@ -325,7 +325,7 @@ from datetime import datetime, timezone
 now = datetime.now(timezone.utc)
 age = now - last_updated  # Safe with tz-aware timestamps
 ```
-**Files:** `src/codex_ml/features/monitoring.py`  
+**Files:** `src/codex_ml/features/monitoring.py`
 **Citations:** Lines 165, 214, 232, 268, etc.
 
 ### Pattern 2: Mock Namespace Matching
@@ -336,7 +336,7 @@ grep -r "from .* import AutonomousAgent" tests/
 # Use exact path in mock
 @patch('src.agents.autonomous_runner.Path')  # Not 'agent.autonomous_runner'
 ```
-**Files:** `tests/agents/test_autonomous_runner.py`  
+**Files:** `tests/agents/test_autonomous_runner.py`
 **Citations:** 12 patches corrected
 
 ### Pattern 3: NDJSON Defensive Parsing
@@ -389,13 +389,13 @@ else:  # Old string format
        run = get_workflow_run(run_id)
        jobs = list_workflow_jobs(run_id)
        failing = [j for j in jobs if j['conclusion'] == 'failure']
-       
+
        all_failures = []
        for job in failing:
            logs = get_job_logs(job['id'])
            failures = extract_failures(logs)
            all_failures.extend(failures)
-       
+
        return categorize_failures(all_failures)
    ```
 
@@ -412,7 +412,7 @@ else:  # Old string format
    def extract_memory_from_commit(commit_hash):
        diff = get_git_diff(commit_hash)
        patterns = detect_patterns(diff)
-       
+
        for pattern in patterns:
            store_memory(
                subject=pattern.subject,
@@ -541,63 +541,63 @@ else:  # Old string format
 ## 📚 Memories to Store
 
 ### Memory 1: UTC Datetime Pattern
-**Subject:** datetime timezone operations  
-**Fact:** Always use datetime.now(timezone.utc) for system operations to prevent offset-naive/aware mixing errors  
-**Citations:** PR #3248 Session 2026-02-18, src/codex_ml/features/monitoring.py:165,214,232,268  
+**Subject:** datetime timezone operations
+**Fact:** Always use datetime.now(timezone.utc) for system operations to prevent offset-naive/aware mixing errors
+**Citations:** PR #3248 Session 2026-02-18, src/codex_ml/features/monitoring.py:165,214,232,268
 **Reason:** Prevents TypeError when subtracting datetimes. Critical for all time-based operations.
 
 ### Memory 2: Mock Namespace Matching
-**Subject:** pytest mocking  
-**Fact:** Mock patch path must EXACTLY match import statement in test. Use grep to find actual import before mocking.  
-**Citations:** PR #3248 Session 2026-02-18, tests/agents/test_autonomous_runner.py (12 patches)  
+**Subject:** pytest mocking
+**Fact:** Mock patch path must EXACTLY match import statement in test. Use grep to find actual import before mocking.
+**Citations:** PR #3248 Session 2026-02-18, tests/agents/test_autonomous_runner.py (12 patches)
 **Reason:** Prevents silent mock failures. Changed from agent.autonomous_runner to src.agents.autonomous_runner.
 
 ### Memory 3: NDJSON CLI Output
-**Subject:** CLI testing  
-**Fact:** CLI output may be NDJSON (newline-delimited JSON). Always parse defensively with try/except for both formats.  
-**Citations:** PR #3248 Session 2026-02-18, tests/cli/test_evaluation_cli.py  
+**Subject:** CLI testing
+**Fact:** CLI output may be NDJSON (newline-delimited JSON). Always parse defensively with try/except for both formats.
+**Citations:** PR #3248 Session 2026-02-18, tests/cli/test_evaluation_cli.py
 **Reason:** Prevents JSONDecodeError on multi-line CLI output. Single json.loads() fails on NDJSON.
 
 ### Memory 4: Optional Dependency Checking
-**Subject:** pytest skip markers  
-**Fact:** Check ACTUAL dependency (import torch) not wrapper modules for skip markers. Wrapper imports may succeed without underlying library.  
-**Citations:** PR #3248 Session 2026-02-18, multiple test files  
+**Subject:** pytest skip markers
+**Fact:** Check ACTUAL dependency (import torch) not wrapper modules for skip markers. Wrapper imports may succeed without underlying library.
+**Citations:** PR #3248 Session 2026-02-18, multiple test files
 **Reason:** Wrapper modules use lazy imports that defer ImportError. Skip markers fail if wrapper import succeeds.
 
 ### Memory 5: GitHub MCP for CI
-**Subject:** CI investigation  
-**Fact:** ALWAYS use GitHub MCP server tools (actions_get, actions_list, get_job_logs) for CI data. Never curl/gh as primary method.  
-**Citations:** PR #3248 Session 2026-02-18, 100% success rate  
+**Subject:** CI investigation
+**Fact:** ALWAYS use GitHub MCP server tools (actions_get, actions_list, get_job_logs) for CI data. Never curl/gh as primary method.
+**Citations:** PR #3248 Session 2026-02-18, 100% success rate
 **Reason:** MCP tools have automatic auth, structured JSON, 100% reliability vs 70-80% for alternatives.
 
 ### Memory 6: Multi-Job Analysis
-**Subject:** CI failure investigation  
-**Fact:** Always retrieve ALL failing jobs from workflow run immediately. Comments may not mention all failures.  
-**Citations:** PR #3248 Session 2026-02-18, found 20 additional failures after initial 5  
+**Subject:** CI failure investigation
+**Fact:** Always retrieve ALL failing jobs from workflow run immediately. Comments may not mention all failures.
+**Citations:** PR #3248 Session 2026-02-18, found 20 additional failures after initial 5
 **Reason:** Prevents scope expansion mid-session. Saves 10-15 minutes per investigation.
 
 ### Memory 7: Failure Categorization
-**Subject:** CI failure resolution  
-**Fact:** Categorize failures before fixing to identify shared root causes. Multiple failures often share fix patterns.  
-**Citations:** PR #3248 Session 2026-02-18, 6 datetime failures fixed with 1 pattern  
+**Subject:** CI failure resolution
+**Fact:** Categorize failures before fixing to identify shared root causes. Multiple failures often share fix patterns.
+**Citations:** PR #3248 Session 2026-02-18, 6 datetime failures fixed with 1 pattern
 **Reason:** Enables batch fixes. This session: 6x efficiency gain from categorization.
 
 ### Memory 8: Specialized Agent Delegation
-**Subject:** CI failure resolution  
-**Fact:** ALWAYS delegate to ci-testing-agent for CI failures. Agent is 6x faster than manual with 100% success rate.  
-**Citations:** PR #3248 Session 2026-02-18, 25 failures fixed in 55 min vs 5-6 hours manual  
+**Subject:** CI failure resolution
+**Fact:** ALWAYS delegate to ci-testing-agent for CI failures. Agent is 6x faster than manual with 100% success rate.
+**Citations:** PR #3248 Session 2026-02-18, 25 failures fixed in 55 min vs 5-6 hours manual
 **Reason:** Agents have specialized tooling, pattern knowledge, auto-documentation. 6x efficiency gain proven.
 
 ### Memory 9: Documentation Investment
-**Subject:** knowledge management  
-**Fact:** Comprehensive documentation (fixes, analysis, lessons) saves exponentially more time than it costs. ROI: 12-18x.  
-**Citations:** PR #3248 Session 2026-02-18, 10 min invested, 2-3 hours saved next session  
+**Subject:** knowledge management
+**Fact:** Comprehensive documentation (fixes, analysis, lessons) saves exponentially more time than it costs. ROI: 12-18x.
+**Citations:** PR #3248 Session 2026-02-18, 10 min invested, 2-3 hours saved next session
 **Reason:** Future sessions resolve similar issues in minutes with good docs vs hours without.
 
 ### Memory 10: Packaging License Format
-**Subject:** pyproject.toml metadata  
-**Fact:** pyproject.toml license field can be string ('MIT') OR dict ({text = 'MIT'}). Handle both in tests.  
-**Citations:** PR #3248 Session 2026-02-18, tests/test_packaging_metadata.py  
+**Subject:** pyproject.toml metadata
+**Fact:** pyproject.toml license field can be string ('MIT') OR dict ({text = 'MIT'}). Handle both in tests.
+**Citations:** PR #3248 Session 2026-02-18, tests/test_packaging_metadata.py
 **Reason:** PEP 621 changed format from string to dict. Tests must handle both for compatibility.
 
 ---
@@ -639,11 +639,11 @@ else:  # Old string format
 
 ---
 
-**Lessons Learned Report Complete**  
-**Date:** 2026-02-18  
-**Quality:** Comprehensive  
-**Actionable Items:** 15+  
-**Memory Patterns:** 10  
+**Lessons Learned Report Complete**
+**Date:** 2026-02-18
+**Quality:** Comprehensive
+**Actionable Items:** 15+
+**Memory Patterns:** 10
 **Status:** ✅ READY FOR KNOWLEDGE TRANSFER
 
 ---

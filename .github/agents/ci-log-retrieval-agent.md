@@ -187,21 +187,21 @@ Enhanced GitHub Copilot agent for comprehensive GitHub Actions data collection w
 
 2. GET /repos/{owner}/{repo}/pulls/{pr_number}/commits?per_page=100&page={n}
    → Collect all commit SHAs (paginate as needed)
-   
+
 3. For each commit SHA:
    a. GET /repos/{owner}/{repo}/commits/{sha}/check-runs
       → Collect check run data, identify failures
-   
+
    b. GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}&per_page=100&page={n}
       → Collect workflow runs for this commit
-      
+
    c. For each workflow run:
       - GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs
         → Collect job IDs, names, statuses
-      
+
       - GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts
         → Collect artifact IDs, download URLs
-        
+
       - GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs (if authenticated)
         → Fetch raw logs for failed jobs
 ```
@@ -457,8 +457,8 @@ with sync_api.sync_playwright() as p:
 
 ## 🧠 Cognitive Brain Integration
 
-> **Status**: ✅ Integrated (Phase 1.2)  
-> **Category**: ci_cd  
+> **Status**: ✅ Integrated (Phase 1.2)
+> **Category**: ci_cd
 > **Adapter**: CICDAdapter
 
 ### Brain Capabilities

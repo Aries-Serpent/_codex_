@@ -1,8 +1,8 @@
 # RAG Module Management Agent
 
-**Agent Type:** Specialized Copilot Agent  
-**Domain:** RAG (Retrieval Augmented Generation) Module Maintenance & Debugging  
-**Created:** 2026-01-28  
+**Agent Type:** Specialized Copilot Agent
+**Domain:** RAG (Retrieval Augmented Generation) Module Maintenance & Debugging
+**Created:** 2026-01-28
 **Status:** ✅ Production-Ready
 
 ---
@@ -482,10 +482,10 @@ Deliverables:
 
 ## Agent Metadata
 
-**Schema Version:** 1.0  
-**Last Updated:** 2026-01-28  
-**Maintained By:** GitHub Copilot Agents  
-**Review Cycle:** Every Phase (or as needed)  
+**Schema Version:** 1.0
+**Last Updated:** 2026-01-28
+**Maintained By:** GitHub Copilot Agents
+**Review Cycle:** Every Phase (or as needed)
 **Status:** Active & Production-Ready
 
 ---

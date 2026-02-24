@@ -1,7 +1,7 @@
 # Repository Admin Implementation Decisions
 
-> **Version:** 1.0.0  
-> **Generated:** 2025-12-21  
+> **Version:** 1.0.0
+> **Generated:** 2025-12-21
 > **Purpose:** Comprehensive documentation mapping logical conclusions for repo admin configuration questions, leveraging physics-inspired decision frameworks and industry best practices.
 
 ---
@@ -107,16 +107,16 @@ GOD_CLASS_THRESHOLD = 20      # methods
   - SonarQube: 60 lines
   - Clean Code (Martin): 40 lines
   - Python community: 50 lines (PEP 8 implicit guidance)
-  
+
 - **Max Arguments**: Widely cited as 3-5 parameters
   - SonarQube default: 7 (lenient)
   - PMD: 5
   - Clean Code: 3-4 recommended, 5 maximum
-  
+
 - **Max Nesting**: 2-4 levels recommended
   - Cyclomatic complexity >10 is warning, >15 is critical
   - Direct nesting: 3-4 levels before refactoring
-  
+
 - **God Class**: 20-30 methods with additional factors
   - Lines of code: >500
   - Weighted Method Count (WMC): >50
@@ -173,17 +173,17 @@ code_smells:
     threshold: 50
     severity: warning
     description: "Functions should be under 50 lines for maintainability"
-  
+
   max_arguments:
     threshold: 5
     severity: warning
     description: "Maximum 5 parameters; consider parameter objects"
-  
+
   max_nesting:
     threshold: 4
     severity: warning
     description: "Maximum nesting depth of 4 levels"
-  
+
   god_class:
     methods_threshold: 20
     lines_threshold: 500
@@ -221,7 +221,7 @@ scheduler = FluidFlowScheduler()
 # Each export format represents a flow channel
 # Reynolds number analysis shows 5 channels optimal for:
 # - Laminar flow (structured data): JSON, SQLite
-# - Transitional flow (human editing): YAML, CSV  
+# - Transitional flow (human editing): YAML, CSV
 # - Turbulent flow (visualization): HTML
 ```
 
@@ -288,7 +288,7 @@ Example:
 # Quick visualization for stakeholders
 codex-analyze --export html --output report.html
 
-# CI/CD pipeline integration  
+# CI/CD pipeline integration
 codex-analyze --export json | jq '.quality_score'
 
 # Data analysis in Excel
@@ -305,7 +305,7 @@ Based on `src/codex_ml/analysis/parsers.py`:
 ```python
 def parse_tiered(code: str) -> ParseResult:
     """Parse code using tiered fallbacks.
-    
+
     Order: stdlib ast -> libcst -> parso -> degraded.
     """
 ```
@@ -331,7 +331,7 @@ Current hierarchy: **AST (primary) → LibCST (secondary) → Parso (tertiary)**
 Current codebase needs (from `agents/` and analysis tools):
 1. **Code transformation** - Requires formatting preservation (LibCST wins)
 2. **Static analysis** - AST sufficient
-3. **Metrics calculation** - AST sufficient  
+3. **Metrics calculation** - AST sufficient
 4. **Refactoring tools** - Requires lossless parsing (LibCST wins)
 5. **AI-driven codemods** - Requires comments preservation (LibCST wins)
 
@@ -377,11 +377,11 @@ LibCST is already a core dependency, not optional.
 
 def parse_smart(code: str, purpose: str = "analysis") -> ParseResult:
     """Choose parser based on purpose for optimal performance.
-    
+
     Args:
         code: Source code to parse
         purpose: One of "analysis", "refactor", "metrics"
-    
+
     Returns:
         ParseResult with appropriate tree
     """
@@ -391,21 +391,21 @@ def parse_smart(code: str, purpose: str = "analysis") -> ParseResult:
             return ParseResult(mode="ast", ast_tree=ast.parse(code))
         except SyntaxError:
             pass  # Fall through to LibCST
-    
+
     # Refactoring path: LibCST for modifications
     if cst is not None:
         try:
             return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
         except Exception:
             pass  # Fall through
-    
+
     # Fallback: Parso for error recovery
     if parso is not None:
         try:
             return ParseResult(mode="parso", parso_tree=parso.parse(code))
         except Exception:
             pass
-    
+
     # Last resort: degraded mode
     return ParseResult(mode="degraded", degraded=True)
 ```
@@ -416,25 +416,25 @@ def parse_smart(code: str, purpose: str = "analysis") -> ParseResult:
 # configs/parsing.yaml
 parsing:
   primary_parser: libcst  # Primary for new tools
-  
+
   strategies:
     analysis:
       parser: ast          # Fast path for read-only
       fallback: libcst
-    
+
     refactoring:
       parser: libcst       # Required for safe transforms
       fallback: parso
-    
+
     metrics:
       parser: ast          # Sufficient for complexity
       fallback: libcst
-  
+
   libcst:
     preserve_formatting: true
     preserve_comments: true
     strict_parsing: false  # Allow partial parsing
-  
+
   performance:
     cache_parsed_trees: true
     cache_ttl_seconds: 3600
@@ -473,7 +473,7 @@ def test_ast_similarity_enabled():
     env = os.environ.copy()
     env["AST_SIMILARITY_ENABLE"] = "1"
     subprocess.run(
-        [sys.executable, "scripts/analysis/ast_signature_similarity.py"], 
+        [sys.executable, "scripts/analysis/ast_signature_similarity.py"],
         check=True, env=env
     )
 
@@ -544,13 +544,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run AST Similarity Analysis
         env:
           AST_SIMILARITY_ENABLE: "1"  # Enable in CI
         run: |
           python scripts/analysis/ast_signature_similarity.py
-          
+
       - name: Upload AST Similarity Report
         uses: actions/upload-artifact@v4
         with:
@@ -565,7 +565,7 @@ jobs:
 ast_similarity:
   # Default: disabled for local dev
   enabled: false
-  
+
   # Environment overrides
   environments:
     ci:
@@ -573,13 +573,13 @@ ast_similarity:
       threshold: 0.85  # Flag if >85% similar
       report_format: json
       output_path: audit_artifacts/ast_similarity.json
-    
+
     local:
       enabled: false  # Opt-in via env var
-    
+
     production:
       enabled: false  # Never run in production
-  
+
   # Analysis parameters
   similarity_algorithm: "ast_signature"  # or "tree_edit_distance"
   min_lines_for_comparison: 10  # Ignore small functions
@@ -694,34 +694,34 @@ def read_text_safe(
     errors: str = "replace"
 ) -> str:
     """Read text file with proper error handling and logging.
-    
+
     Args:
         path: File path to read
         encoding: Text encoding (default: utf-8)
         max_bytes: Optional limit on bytes to read
         errors: Error handling strategy (default: replace)
-    
+
     Returns:
         File content as string
-        
+
     Logs:
         WARNING if decode errors encountered
     """
     try:
         content = path.read_text(encoding=encoding, errors=errors)
-        
+
         # Check if replacement character was used
         if errors == "replace" and "�" in content:
             logger.warning(
                 f"Encoding errors in {path}: "
                 f"invalid {encoding} bytes replaced with U+FFFD"
             )
-        
+
         if max_bytes is not None:
             content = content[:max_bytes]
-        
+
         return content
-        
+
     except Exception as e:
         logger.error(f"Failed to read {path}: {e}")
         raise
@@ -752,7 +752,7 @@ file_reading:
   error_handling:
     strategy: replace  # replace | strict | surrogateescape
     log_level: warning  # warning | error | info
-    
+
   # Context-specific overrides
   by_context:
     config_files:
@@ -869,7 +869,7 @@ codex-audit = "codex.audit.cli:audit_main"
 codex-diff = "codex.diff.cli:diff_main"
 codex-metrics = "codex.ast.cli:metrics_main"
 
-# NEW: Quality Tools  
+# NEW: Quality Tools
 codex-smell = "codex.quality.cli:smell_main"
 codex-complexity = "codex.ast.cli:complexity_main"
 
@@ -897,14 +897,14 @@ from pathlib import Path
 def analyze_main(path: str, format: str, output: str, threshold: int):
     """Analyze code quality and generate metrics report."""
     from codex_ml.analysis.analyzer import CodeAnalyzer
-    
+
     analyzer = CodeAnalyzer(threshold=threshold)
     results = analyzer.analyze(Path(path))
-    
+
     # Export using multi-format exporter
     from codex.export.multi_format import export_results
     report = export_results(results, format=format)
-    
+
     if output:
         Path(output).write_text(report)
     else:
@@ -1038,14 +1038,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Code Smell Detection
         id: smells
         run: |
           codex-smell --format json --output smells.json
           # Always succeed (observation only)
         continue-on-error: true
-      
+
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
@@ -1053,13 +1053,13 @@ jobs:
             const fs = require('fs');
             const smells = JSON.parse(fs.readFileSync('smells.json'));
             const comment = `## Code Quality Report
-            
+
             - Functions >50 lines: ${smells.long_functions}
             - Complex methods: ${smells.high_complexity}
             - Potential god classes: ${smells.god_classes}
-            
+
             _This is informational only and does not block merging._`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -1097,46 +1097,46 @@ quality_gates:
     # Phase 1: Observation
     mode: observe
     report_only: true
-    
+
     # Phase 2: Soft enforcement
     # mode: warn
     # fail_on: [error, critical]
-    
+
     # Phase 3: Full enforcement
     # mode: enforce
     # fail_on: [error, critical]
     # max_new_warnings: 5
-    
+
   smells:
     long_function:
       threshold: 50
       severity: warning
       over_threshold: 70
       over_severity: error
-    
+
     max_arguments:
       threshold: 5
       severity: warning
       over_threshold: 8
       over_severity: error
-    
+
     max_nesting:
       threshold: 4
       severity: warning
       over_threshold: 6
       over_severity: error
-    
+
     god_class:
       methods_threshold: 20
       severity: warning
       over_threshold: 30
       over_severity: error
-  
+
   blocking_policy:
     block_on:
       - critical
       - error
-    
+
     allow_override:
       roles: [maintainer, admin]
       requires_comment: true
@@ -1269,7 +1269,7 @@ def ensure_codex_structure():
     dirs = [CODEX_DIR, CACHE_DIR, REPORTS_DIR, CONFIG_DIR]
     for d in dirs:
         d.mkdir(parents=True, exist_ok=True)
-    
+
     # Create README if not exists
     readme = CODEX_DIR / "README.md"
     if not readme.exists():
@@ -1280,7 +1280,7 @@ This directory contains local analysis data and caches.
 
 ## Structure
 - `session_logs.db` - Session event logs
-- `analysis.db` - Code analysis results  
+- `analysis.db` - Code analysis results
 - `metrics.db` - Historical code metrics
 - `cache/` - Temporary cached data
 - `reports/` - Generated HTML/PDF reports
@@ -1295,17 +1295,17 @@ For backup, preserve `*.db` files. Cache can be regenerated.
 
 def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
     """Get database path with environment variable override.
-    
+
     Args:
         name: Database name (e.g., "session_logs")
         env_var: Optional environment variable to check
-    
+
     Returns:
         Path to database file
     """
     if env_var and os.getenv(env_var):
         return Path(os.getenv(env_var))
-    
+
     ensure_codex_structure()
     return CODEX_DIR / f"{name}.db"
 ```
@@ -1316,28 +1316,28 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
 # configs/storage.yaml
 storage:
   base_dir: .codex
-  
+
   databases:
     session_logs:
       path: session_logs.db
       env_var: CODEX_LOG_DB_PATH
       backup: true
-      
+
     analysis:
       path: analysis.db
       env_var: CODEX_ANALYSIS_DB_PATH
       backup: true
-    
+
     metrics:
       path: metrics.db
       env_var: CODEX_METRICS_DB_PATH
       backup: true
-  
+
   cache:
     enabled: true
     ttl_hours: 24
     max_size_mb: 500
-  
+
   reports:
     retain_days: 30
     formats: [html, pdf, json]
@@ -1381,7 +1381,7 @@ from agents.advanced_physics_calculators import FractalAnalyzer
 
 # Codebase has self-similar patterns across languages:
 # - Python code structure
-# - YAML configuration structure  
+# - YAML configuration structure
 # - SQL query structure
 # Tree-sitter enables unified analysis across all scales
 ```
@@ -1414,7 +1414,7 @@ Tree-sitter provides:
 Current pain points:
 ```bash
 # configs/ has 100+ YAML files - no validation
-# SQL queries in strings - no syntax checking  
+# SQL queries in strings - no syntax checking
 # Cross-file dependencies - hard to track
 ```
 
@@ -1441,12 +1441,12 @@ class YAMLValidator:
     def __init__(self):
         self.parser = Parser()
         self.parser.set_language(Language(tree_sitter_yaml.language(), 'yaml'))
-    
+
     def validate_file(self, path: Path) -> List[Issue]:
         """Validate YAML file syntax and structure."""
         content = path.read_bytes()
         tree = self.parser.parse(content)
-        
+
         issues = []
         if tree.root_node.has_error:
             issues.append(Issue(
@@ -1455,7 +1455,7 @@ class YAMLValidator:
                 message="YAML syntax error",
                 severity="error"
             ))
-        
+
         return issues
 
 # Integration with CI
@@ -1478,7 +1478,7 @@ class SQLAnalyzer:
         # Flag dynamic query construction
         # Suggest parameterized queries
         pass
-    
+
     def suggest_optimizations(self, query: str) -> List[Optimization]:
         """Suggest SQL query optimizations."""
         tree = self.parse_sql(query)
@@ -1508,7 +1508,7 @@ class CrossLanguageRefactoring:
 parsing:
   multi_language:
     enabled: true
-    
+
     languages:
       yaml:
         parser: tree_sitter
@@ -1516,14 +1516,14 @@ parsing:
         validation:
           enabled: true
           strict_mode: false
-        
+
       sql:
         parser: tree_sitter
         grammar: tree-sitter-sql
         analysis:
           injection_detection: true
           optimization_hints: true
-      
+
       python:
         parser: libcst  # Primary
         tree_sitter: true  # Complement for cross-lang
@@ -1623,57 +1623,57 @@ class FileBaseline:
     content_hash: str
     metrics: Dict[str, float]
     timestamp: float
-    
+
 class IncrementalAnalyzer:
     def __init__(self, baseline_db: Path):
         self.baseline_db = baseline_db
         self.baselines: Dict[str, FileBaseline] = self._load_baselines()
-    
+
     def get_changed_files(self, files: List[Path]) -> Set[Path]:
         """Identify files that changed since last analysis."""
         changed = set()
-        
+
         for file in files:
             content_hash = self._hash_file(file)
             baseline = self.baselines.get(str(file))
-            
+
             if baseline is None or baseline.content_hash != content_hash:
                 changed.add(file)
-        
+
         return changed
-    
+
     def analyze_delta(self, all_files: List[Path]) -> AnalysisResult:
         """Perform incremental analysis."""
         changed_files = self.get_changed_files(all_files)
-        
+
         # Analyze only changed files
         new_results = self._analyze_files(changed_files)
-        
+
         # Merge with baseline results
         full_results = self._merge_with_baseline(new_results, all_files)
-        
+
         # Update baseline
         self._update_baseline(changed_files, new_results)
-        
+
         return full_results
-    
+
     def _hash_file(self, path: Path) -> str:
         """Compute content hash for change detection."""
         return hashlib.sha256(path.read_bytes()).hexdigest()
-    
+
     def _load_baselines(self) -> Dict[str, FileBaseline]:
         """Load baseline from database."""
         if not self.baseline_db.exists():
             return {}
-        
+
         with open(self.baseline_db) as f:
             data = json.load(f)
-        
+
         return {
             item["path"]: FileBaseline(**item)
             for item in data
         }
-    
+
     def _update_baseline(self, files: Set[Path], results: Dict):
         """Update baseline with new results."""
         for file in files:
@@ -1683,7 +1683,7 @@ class IncrementalAnalyzer:
                 metrics=results[file],
                 timestamp=time.time()
             )
-        
+
         # Persist to database
         self._save_baselines()
 ```
@@ -1728,17 +1728,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Need full history for baseline
-      
+
       - name: Restore Analysis Baseline
         uses: actions/cache@v4
         with:
           path: .codex/analysis.db
           key: analysis-baseline-${{ github.base_ref }}
-      
+
       - name: Run Incremental Analysis
         run: |
           codex-analyze --incremental --baseline .codex/analysis.db
-      
+
       - name: Save Updated Baseline
         uses: actions/cache/save@v4
         if: github.ref == 'refs/heads/main'
@@ -1826,24 +1826,24 @@ import json
 class HTMLReportGenerator:
     def __init__(self, template_dir: Path):
         self.template_dir = template_dir
-    
+
     def generate_dashboard(self, metrics: Dict, output: Path):
         """Generate interactive HTML dashboard."""
         template = (self.template_dir / "dashboard.html").read_text()
-        
+
         # Inject data as JSON
         html = template.replace(
             "/*DATA_PLACEHOLDER*/",
             f"const metricsData = {json.dumps(metrics)};"
         )
-        
+
         output.write_text(html)
-    
+
     def generate_trend_report(self, history: List[Dict], output: Path):
         """Generate trend analysis report with charts."""
         # Use Chart.js for visualization
         pass
-    
+
     def generate_file_report(self, file_metrics: Dict, output: Path):
         """Generate detailed file-level report."""
         pass
@@ -1860,9 +1860,9 @@ class HTMLReportGenerator:
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .metric-card { 
-            display: inline-block; 
-            padding: 20px; 
+        .metric-card {
+            display: inline-block;
+            padding: 20px;
             margin: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -1874,7 +1874,7 @@ class HTMLReportGenerator:
 </head>
 <body>
     <h1>Code Quality Dashboard</h1>
-    
+
     <div id="metrics">
         <div class="metric-card">
             <div class="metric-value" id="quality-score">-</div>
@@ -1889,22 +1889,22 @@ class HTMLReportGenerator:
             <div class="metric-label">Avg Complexity</div>
         </div>
     </div>
-    
+
     <div class="chart-container">
         <canvas id="trendChart"></canvas>
     </div>
-    
+
     <script>
     /*DATA_PLACEHOLDER*/
-    
+
     // Populate metrics
-    document.getElementById('quality-score').textContent = 
+    document.getElementById('quality-score').textContent =
         metricsData.quality_score.toFixed(1);
-    document.getElementById('code-smells').textContent = 
+    document.getElementById('code-smells').textContent =
         metricsData.code_smells_count;
-    document.getElementById('complexity').textContent = 
+    document.getElementById('complexity').textContent =
         metricsData.avg_complexity.toFixed(2);
-    
+
     // Render trend chart
     const ctx = document.getElementById('trendChart').getContext('2d');
     new Chart(ctx, {
@@ -2040,32 +2040,32 @@ decisions:
     max_arguments: 5   # Keep current
     max_nesting: 4     # Keep current
     god_class: 20      # Keep current
-  
+
   export_formats:
     keep_all: true     # JSON, YAML, HTML, CSV, SQLite
     default: json
-  
+
   parsers:
     primary: libcst    # Elevate from secondary
     fast_path: ast     # For read-only analysis
-  
+
   configuration:
     ast_similarity:
       local: false     # Disabled by default
       ci: true         # Enabled in CI
-    
+
     error_handling:
       strategy: replace  # Log warnings
       silent_errors: false
-  
+
   integration:
     cli_entry_points: true  # Register all tools
     ci_blocking:
       warnings: false        # Non-blocking
       errors: true          # Blocking
-    
+
     sqlite_location: ".codex/session_logs.db"
-  
+
   future:
     tree_sitter: true       # High value, medium priority
     incremental: true       # Performance critical, high priority
@@ -2074,7 +2074,7 @@ decisions:
 
 ---
 
-**Document Version**: 1.0.0  
-**Last Updated**: 2025-12-21  
-**Maintainer**: Codex Admin Team  
+**Document Version**: 1.0.0
+**Last Updated**: 2025-12-21
+**Maintainer**: Codex Admin Team
 **Feedback**: Submit issues or PRs to improve this documentation

@@ -28,7 +28,7 @@ I need help debugging a test failure in the Codex repository.
    ```bash
    # Run the specific test
    pytest path/to/test_file.py::test_function_name -v
-   
+
    # Run with more debugging info
    pytest path/to/test_file.py::test_function_name -vv -s
    ```

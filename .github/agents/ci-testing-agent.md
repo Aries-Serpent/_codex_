@@ -456,8 +456,8 @@ For detailed examples and extended troubleshooting:
 
 ## 🧠 Cognitive Brain Integration
 
-> **Status**: ✅ Integrated (Phase 1.2)  
-> **Category**: ci_cd  
+> **Status**: ✅ Integrated (Phase 1.2)
+> **Category**: ci_cd
 > **Adapter**: CICDAdapter
 
 ### Brain Capabilities

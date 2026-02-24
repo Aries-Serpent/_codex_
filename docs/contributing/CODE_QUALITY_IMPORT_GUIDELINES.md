@@ -1,7 +1,7 @@
 # Code Quality: Import Organization Guidelines
 
-> **Version:** 1.0.0  
-> **Created:** 2026-02-17  
+> **Version:** 1.0.0
+> **Created:** 2026-02-17
 > **Purpose:** Comprehensive import organization guidelines following E402/F821 systematic refactoring
 
 ---
@@ -139,7 +139,7 @@ from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     import torch  # Type hints only
-    
+
 def train_model(use_gpu: bool = False) -> Optional["torch.Tensor"]:
     """Train model with optional GPU support."""
     if use_gpu:
@@ -217,7 +217,7 @@ F821 (undefined name) errors cause **runtime failures** and must be **zero toler
    # ❌ WRONG: F821 undefined name 'Optional'
    def process(config: Optional[Dict]) -> Any:
        pass
-   
+
    # ✅ CORRECT: Import typing
    from typing import Any, Dict, Optional
    def process(config: Optional[Dict]) -> Any:
@@ -228,7 +228,7 @@ F821 (undefined name) errors cause **runtime failures** and must be **zero toler
    ```python
    # ❌ WRONG: F821 undefined name 'logger'
    logger.info("Starting...")
-   
+
    # ✅ CORRECT: Define logger
    import logging
    logger = logging.getLogger(__name__)
@@ -239,7 +239,7 @@ F821 (undefined name) errors cause **runtime failures** and must be **zero toler
    ```python
    # ❌ WRONG: F821 undefined name 'Path'
    path = Path("/tmp")
-   
+
    # ✅ CORRECT: Import from pathlib
    from pathlib import Path
    path = Path("/tmp")

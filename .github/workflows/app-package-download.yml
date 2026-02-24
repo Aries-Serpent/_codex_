@@ -55,7 +55,7 @@ jobs:
         run: |
           CUSTOM_BRANCH="${{ github.event.inputs.custom_branch }}"
           SELECTED_BRANCH="${{ github.event.inputs.branch }}"
-          
+
           if [ -n "$CUSTOM_BRANCH" ]; then
             BRANCH="$CUSTOM_BRANCH"
             echo "Using custom branch: $BRANCH"
@@ -63,7 +63,7 @@ jobs:
             BRANCH="$SELECTED_BRANCH"
             echo "Using selected branch: $BRANCH"
           fi
-          
+
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
@@ -86,7 +86,7 @@ jobs:
         run: |
           echo "## 📦 Available Applications" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ -d "apps/dev" ]; then
             echo "### apps/dev/" >> $GITHUB_STEP_SUMMARY
             ls -1 apps/dev/*.py 2>/dev/null | while read -r file; do
@@ -94,7 +94,7 @@ jobs:
               echo "- \`$(basename "$file")\`" >> $GITHUB_STEP_SUMMARY
             done
           fi
-          
+
           # Count total apps
           TOTAL_APPS=$(find apps -name "*.py" -type f | wc -l)
           echo "total_apps=$TOTAL_APPS" >> $GITHUB_OUTPUT
@@ -117,10 +117,10 @@ jobs:
           APP_NAME="${{ github.event.inputs.app_name }}"
           BRANCH="${{ steps.branch.outputs.branch }}"
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          
+
           echo "📦 Packaging application: $APP_NAME"
           echo "📍 From branch: $BRANCH"
-          
+
           if [ "$APP_NAME" = "all" ]; then
             # Package all applications
             PACKAGE_NAME="codex_apps_all_${BRANCH//\//_}_${TIMESTAMP}"
@@ -129,46 +129,46 @@ jobs:
           elif [ "$APP_NAME" = "zd_voice_lines" ]; then
             # Package Zendesk Voice Lines app
             PACKAGE_NAME="zendesk_voice_lines_${BRANCH//\//_}_${TIMESTAMP}"
-            
+
             if [ ! -d "apps/dev" ]; then
               echo "❌ Error: apps/dev directory not found"
               exit 1
             fi
-            
+
             # Copy main application and supporting files
             cp apps/dev/zd_voice_lines.py package_staging/
-            
+
             # Copy documentation if exists
             if [ -d "apps/dev/docs" ]; then
               mkdir -p package_staging/docs
               cp -r apps/dev/docs/* package_staging/docs/
             fi
-            
+
             # Copy additional markdown files
             for file in apps/dev/*.md; do
               if [ -f "$file" ]; then
                 cp "$file" package_staging/
               fi
             done
-            
+
             # Copy test file if exists
             if [ -f "apps/dev/test_api_client.py" ]; then
               cp apps/dev/test_api_client.py package_staging/
             fi
-            
+
             # Copy __init__.py if exists
             if [ -f "apps/dev/__init__.py" ]; then
               cp apps/dev/__init__.py package_staging/
             fi
-            
+
             echo "Packaged Zendesk Voice Lines application"
           else
             echo "❌ Error: Unknown application name: $APP_NAME"
             exit 1
           fi
-          
+
           echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
-          
+
           # List packaged files
           echo "## 📋 Packaged Files" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -182,26 +182,26 @@ jobs:
           cat > package_staging/requirements.txt << 'EOF'
           # Zendesk Voice Lines Application Dependencies
           # Python 3.12+ required
-          
+
           # Core dependencies (included in Python standard library)
           # - tkinter (GUI framework)
           # - json (JSON parsing)
           # - csv (CSV export)
-          
+
           # External dependencies
           requests>=2.32.4  # HTTP client for Zendesk API
-          
+
           # Optional dependencies for Excel export
           pandas>=2.1.0     # Data manipulation and Excel export
           openpyxl>=3.1.0   # Excel file format support
-          
+
           # Development dependencies (optional)
           pytest>=8.2.0     # Testing framework
           pytest-mock>=3.12.0  # Mock support for tests
           ruff>=0.1.15      # Linting
           black>=24.0.0     # Code formatting
           EOF
-          
+
           echo "✅ Generated requirements.txt" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate README for package
@@ -209,25 +209,25 @@ jobs:
           PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
           BRANCH="${{ steps.branch.outputs.branch }}"
           TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
-          
+
           cat > package_staging/PACKAGE_INFO.md << EOF
           # Codex Application Package
-          
-          **Package**: $PACKAGE_NAME  
-          **Source Branch**: $BRANCH  
-          **Generated**: $TIMESTAMP  
+
+          **Package**: $PACKAGE_NAME
+          **Source Branch**: $BRANCH
+          **Generated**: $TIMESTAMP
           **Repository**: Aries-Serpent/_codex_
-          
+
           ## 📦 Contents
-          
+
           This package contains the Zendesk Voice Lines GUI application and supporting documentation.
-          
+
           ### Main Application
-          
+
           - \`zd_voice_lines.py\` - Main GUI application (950 LOC)
-          
+
           ### Documentation
-          
+
           - \`README.md\` - Quick start guide
           - \`USER_GUIDE.md\` - Complete user manual
           - \`DEVELOPMENT.md\` - Developer documentation
@@ -235,20 +235,20 @@ jobs:
           - \`QUICK_REFERENCE.md\` - Command reference
           - \`UI_MOCKUP.md\` - Interface layout diagrams
           - \`CHANGELOG.md\` - Version history
-          
+
           ### Testing
-          
+
           - \`test_api_client.py\` - Component tests (7 tests)
-          
+
           ## 🚀 Quick Start
-          
+
           ### Prerequisites
-          
+
           - Python 3.12 or higher
           - tkinter (usually included with Python)
-          
+
           ### Installation
-          
+
           1. Extract this package to your desired location
           2. Install dependencies:
              \`\`\`bash
@@ -256,48 +256,48 @@ jobs:
              # Pin pytest plugins before package install (PR #3248 stability fix)
           pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
 
-             
+
 
              pip install -r requirements.txt
              \`\`\`
-          
+
           3. Run the application:
              \`\`\`bash
              python zd_voice_lines.py
              \`\`\`
-          
+
           ### Quick Test
-          
+
           Run component tests to verify installation:
-          
+
           \`\`\`bash
           python test_api_client.py
           \`\`\`
-          
+
           Expected output: \`7 passed, 0 failed\`
-          
+
           ## 📚 Documentation
-          
+
           - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
           - For development information, see \`docs/DEVELOPMENT.md\`
           - For API reference, see \`APPLICATION_SPEC.md\`
-          
+
           ## 🔗 Resources
-          
+
           - **Repository**: https://github.com/Aries-Serpent/_codex_
           - **Source Branch**: $BRANCH
           - **Zendesk API Docs**: https://developer.zendesk.com/api-reference/
-          
+
           ## 📝 License
-          
+
           MIT License - See repository for full license text
-          
+
           ---
-          
-          **Generated by**: GitHub Actions App Package Download Workflow  
+
+          **Generated by**: GitHub Actions App Package Download Workflow
           **Workflow Run**: [#\${{ github.run_number }}](\${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }})
           EOF
-          
+
           echo "✅ Generated PACKAGE_INFO.md" >> $GITHUB_STEP_SUMMARY
 
       - name: Create ZIP package
@@ -307,12 +307,12 @@ jobs:
           cd package_staging
           zip -r "../${PACKAGE_NAME}.zip" .
           cd ..
-          
+
           # Calculate size
           SIZE=$(du -h "${PACKAGE_NAME}.zip" | cut -f1)
           echo "package_file=${PACKAGE_NAME}.zip" >> $GITHUB_OUTPUT
           echo "package_size=$SIZE" >> $GITHUB_OUTPUT
-          
+
           echo "## 📦 Package Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Format**: ZIP" >> $GITHUB_STEP_SUMMARY
@@ -326,12 +326,12 @@ jobs:
           cd package_staging
           tar -czf "../${PACKAGE_NAME}.tar.gz" .
           cd ..
-          
+
           # Calculate size
           SIZE=$(du -h "${PACKAGE_NAME}.tar.gz" | cut -f1)
           echo "package_file=${PACKAGE_NAME}.tar.gz" >> $GITHUB_OUTPUT
           echo "package_size=$SIZE" >> $GITHUB_OUTPUT
-          
+
           echo "## 📦 Package Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Format**: TAR.GZ" >> $GITHUB_STEP_SUMMARY
@@ -349,7 +349,7 @@ jobs:
       - name: Generate download instructions
         run: |
           PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📥 Download Instructions" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -377,7 +377,7 @@ jobs:
         run: |
           PACKAGE_NAME="${{ steps.package.outputs.package_name }}"
           BRANCH="${{ steps.branch.outputs.branch }}"
-          
+
           cat > package_manifest.json << EOF
           {
             "package_name": "$PACKAGE_NAME",
@@ -394,7 +394,7 @@ jobs:
             "actor": "${{ github.actor }}"
           }
           EOF
-          
+
           echo "✅ Generated package manifest" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package manifest

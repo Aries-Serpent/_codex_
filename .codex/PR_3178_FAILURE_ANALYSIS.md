@@ -29,14 +29,14 @@ These were "In progress" when user provided the list:
 
 1. Art_Code Quality & Coverage Suite / Coverage Report Generation
    - Still monitoring (primary task)
-   
+
 2. Art_Documentation Link Checker / check-links (2 runs)
    - Extended duration noted
 
 3. Art_Root Organization Validation / Pre-Move Validation
-   
+
 4. Art_Security Scanning Suite / CodeQL Analysis (python)
-   
+
 5. Art_Semgrep SAST (SARIF Upload) / Semgrep SAST (2 runs)
 
 6. Art_Data Quality & Determinism Suite / Determinism & Audit Validation

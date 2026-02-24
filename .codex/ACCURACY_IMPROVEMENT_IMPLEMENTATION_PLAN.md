@@ -1,8 +1,8 @@
 # Accuracy Improvement Implementation Plan: 71.8% → 84%+
 
-**Date**: 2026-02-18  
-**Current Status**: 71.8% accuracy (31 failures remaining)  
-**Target**: 84%+ accuracy (≤18 failures)  
+**Date**: 2026-02-18
+**Current Status**: 71.8% accuracy (31 failures remaining)
+**Target**: 84%+ accuracy (≤18 failures)
 **Estimated Effort**: 5-6 hours total
 
 ---
@@ -21,7 +21,7 @@
 
 **My Changes Status**: ✅ **CLEAN** - No linting issues in quantum compliance files:
 - `src/cognitive_brain/experiments/exp1b_revalidation.py` - Clean
-- `src/cognitive_brain/models/quantum_metrics.py` - Clean  
+- `src/cognitive_brain/models/quantum_metrics.py` - Clean
 - `src/cognitive_brain/quantum/coherence_monitor.py` - Clean
 - `src/cognitive_brain/integrations/compliance_integration.py` - Clean
 - `src/cognitive_brain/quantum/superposition.py` - Clean
@@ -110,7 +110,7 @@ if 0.68 <= audit.score < 0.90 and audit.risk_level == "high":
 **Expected**: 2 failures → 0
 
 #### 1.3 Pattern C Tuning (1 hour)
-**Issues**: 
+**Issues**:
 - C-0, C-5: score=0.58, risk=medium, cost>4000 → expect REJECT, got MONITOR
 - C-6: score=0.66, risk=medium, cost=3820 → expect MONITOR, got CONDITIONAL
 
@@ -167,7 +167,7 @@ class AuditResult:
     business_impact: float
     violations: List[str]
     violation_count: int = 0  # NEW FIELD - defaults to len(violations)
-    
+
     def __post_init__(self):
         # Auto-calculate if not provided
         if self.violation_count == 0:
@@ -182,7 +182,7 @@ class AuditResult:
 for i in range(int(count * 0.15)):
     score = _rng.uniform(0.45, 0.75)
     violation_count = _rng.randint(3, 7)
-    
+
     audit = AuditResult(
         audit_id=f"COMPLEX-F-{i}",
         score=score,
@@ -198,12 +198,12 @@ for i in range(int(count * 0.15)):
 
 def _score_reject(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern F severity formula
     if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
         severity = (1.0 - audit.score) * audit.violation_count * \
                    (1.0 if audit.risk_level == "high" else 0.5)
-        
+
         if severity > 4.0:
             return 0.98  # Strong reject
         elif severity > 2.5:
@@ -212,12 +212,12 @@ def _score_reject(self, audit: AuditResult) -> float:
 
 def _score_conditional(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern F conditional scoring
     if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
         severity = (1.0 - audit.score) * audit.violation_count * \
                    (1.0 if audit.risk_level == "high" else 0.5)
-        
+
         if 2.5 < severity <= 4.0:
             return 0.95  # Strong conditional
         elif severity <= 2.5 and audit.business_impact > 0.7:
@@ -226,12 +226,12 @@ def _score_conditional(self, audit: AuditResult) -> float:
 
 def _score_approve_with_monitoring(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern F monitor scoring
     if hasattr(audit, 'violation_count') and audit.violation_count >= 3:
         severity = (1.0 - audit.score) * audit.violation_count * \
                    (1.0 if audit.risk_level == "high" else 0.5)
-        
+
         if severity <= 2.5 and audit.business_impact > 0.7:
             return 0.92  # Monitor for low severity + high impact
 ```
@@ -262,14 +262,14 @@ class AuditResult:
 # Pattern E: PII exposure cases
 for i in range(int(count * 0.15)):
     pii_indicators = _rng.randint(1, 3)
-    
+
     audit = AuditResult(
         audit_id=f"COMPLEX-E-{i}",
         # ... other fields ...
         violations=[f"PotentialPII-{j}" for j in range(pii_indicators)],
         pii_indicators=pii_indicators,  # NEW: explicitly track
     )
-    
+
     # Ground truth: PII-aware logic
     if pii_indicators >= 3 or audit.risk_level == "high":
         ground_truth = ComplianceDecision.REJECT
@@ -283,7 +283,7 @@ for i in range(int(count * 0.15)):
 ```python
 def _score_reject(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern E PII logic
     if hasattr(audit, 'pii_indicators'):
         if audit.pii_indicators >= 3 or \
@@ -292,7 +292,7 @@ def _score_reject(self, audit: AuditResult) -> float:
 
 def _score_conditional(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern E PII conditional
     if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
         if audit.pii_indicators < 3 and audit.remediation_cost < 5000:
@@ -300,7 +300,7 @@ def _score_conditional(self, audit: AuditResult) -> float:
 
 def _score_approve_with_monitoring(self, audit: AuditResult) -> float:
     # ... existing logic ...
-    
+
     # NEW: Pattern E PII monitor
     if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
         if audit.pii_indicators < 3 and audit.remediation_cost >= 5000:
@@ -332,21 +332,21 @@ def _score_approve_with_monitoring(self, audit: AuditResult) -> float:
 ## 🔬 Risk Mitigation
 
 ### Risk 1: Pattern Interactions
-**Problem**: Fixing one pattern may regress another  
+**Problem**: Fixing one pattern may regress another
 **Mitigation**:
 - Test after each phase
 - Maintain diagnostic logging
 - Revert immediately if regression > 1 scenario
 
 ### Risk 2: Diminishing Returns
-**Problem**: Efficiency dropped 66% from Sprint 2 to Sprint 3  
+**Problem**: Efficiency dropped 66% from Sprint 2 to Sprint 3
 **Mitigation**:
 - Phase 1 focuses on low-hanging fruit
 - Phase 2 adds features (not just tuning)
 - Clear stopping criteria (84% or 6.5 hours)
 
 ### Risk 3: Feature Addition Complexity
-**Problem**: Adding fields may break existing code  
+**Problem**: Adding fields may break existing code
 **Mitigation**:
 - Use default values (0) for backward compatibility
 - Add hasattr() checks before using new fields
@@ -400,18 +400,18 @@ python -m pytest tests/cognitive_brain/quantum/test_adaptive_scoring_optimized.p
 ## 🎯 Decision Points
 
 ### After Phase 1 (3 hours invested)
-**If accuracy ≥76%**: Continue to Phase 2  
-**If accuracy <76%**: Investigate failures, adjust thresholds  
+**If accuracy ≥76%**: Continue to Phase 2
+**If accuracy <76%**: Investigate failures, adjust thresholds
 **If regressions occur**: Revert and re-analyze
 
 ### After Phase 2.1 (5 hours invested)
-**If Pattern F fixed**: Continue to Phase 2.2  
-**If Pattern F still problematic**: Debug severity formula  
+**If Pattern F fixed**: Continue to Phase 2.2
+**If Pattern F still problematic**: Debug severity formula
 **If time > 5.5 hours**: Consider stopping at current accuracy
 
 ### Final Decision (6.5 hours invested)
-**If accuracy ≥84%**: ✅ SUCCESS - Document and finalize  
-**If accuracy 80-84%**: Evaluate ROI, possibly accept  
+**If accuracy ≥84%**: ✅ SUCCESS - Document and finalize
+**If accuracy 80-84%**: Evaluate ROI, possibly accept
 **If accuracy <80%**: Analyze blockers, escalate to human
 
 ---
@@ -447,11 +447,11 @@ python -m pytest tests/cognitive_brain/quantum/test_adaptive_scoring_optimized.p
 
 ---
 
-**Status**: ✅ **READY TO IMPLEMENT**  
-**Recommended Start**: Phase 1 (Quick Wins)  
-**Estimated Completion**: 6.5 hours to 84-90% accuracy  
+**Status**: ✅ **READY TO IMPLEMENT**
+**Recommended Start**: Phase 1 (Quick Wins)
+**Estimated Completion**: 6.5 hours to 84-90% accuracy
 **Risk Level**: Low-Medium (incremental approach with rollback options)
 
-**Created**: 2026-02-18T18:30:00Z  
-**Author**: GitHub Copilot  
+**Created**: 2026-02-18T18:30:00Z
+**Author**: GitHub Copilot
 **Version**: 1.0

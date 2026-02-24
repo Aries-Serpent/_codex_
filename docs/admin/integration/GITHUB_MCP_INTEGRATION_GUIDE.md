@@ -1,8 +1,8 @@
 # [Guide]: GitHub MCP Integration for `_codex_`
 
-> **Generated**: 2025-12-29T08:00:00Z | **Author**: mbaetiong  
-> **Repository**: `Aries-Serpent/_codex_` | **ID**: 1040037790  
-> **Roles**: [Primary: DevOps Architect], [Secondary: Security Engineer]  
+> **Generated**: 2025-12-29T08:00:00Z | **Author**: mbaetiong
+> **Repository**: `Aries-Serpent/_codex_` | **ID**: 1040037790
+> **Roles**: [Primary: DevOps Architect], [Secondary: Security Engineer]
 > **⚡ Energy**: 5/5 | **🧠 Context**: Production-Ready Implementation
 
 ---
@@ -28,7 +28,7 @@
 
 ### What is MCP in the Context of _codex_?
 
-**MCP (Model Context Protocol)** in the `_codex_` repository is a **lightweight HTTP/IPC service layer** that provides GitHub Copilot Agent with: 
+**MCP (Model Context Protocol)** in the `_codex_` repository is a **lightweight HTTP/IPC service layer** that provides GitHub Copilot Agent with:
 
 - **Curated context** from the repository (dependency manifests, cache status, test results)
 - **On-demand indexing** of codebase structure and dependencies
@@ -78,7 +78,7 @@ _codex_/
 │   │   ├── adapters/               # Backend adapters (Pinecone, etc.)
 │   │   ├── metrics/                # MCP-specific metrics
 │   │   └── server.py               # MCP HTTP server
-│   └── ... 
+│   └── ...
 ├── scripts/
 │   ├── space_traversal/detectors/  # MCP capability detectors
 │   │   ├── mcp_tooling_registry.py
@@ -148,7 +148,7 @@ dependencies = response.json()
 name: Copilot Agent Task with MCP
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   copilot-with-mcp:
@@ -160,13 +160,13 @@ jobs:
           - 8080:8080
         env:
           CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Wait for MCP service
         run: |
-      
+
       - name: Execute Copilot task with MCP context
         run: |
 ```
@@ -320,7 +320,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 
 **Problem**: GitHub Copilot (and underlying LLMs) have finite context windows. Even GPT-4 Turbo (128k tokens) cannot "see" an entire large monorepo like `_codex_`.
 
-**Workarounds Implemented**: 
+**Workarounds Implemented**:
 - Smart indexing (function signatures only)
 - RAG pattern with Pinecone embeddings
 - Manifest summarization
@@ -534,9 +534,9 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z  
-**Maintainer**: @mbaetiong  
-**Status**: Production Ready ✅  
+**Last Updated**: 2026-01-23T11:00:00Z
+**Maintainer**: @mbaetiong
+**Status**: Production Ready ✅
 **Version**: 2.0.0
 
 ---
@@ -689,13 +689,13 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
    # Disable MCP service container in workflow
    # Edit .github/workflows/copilot-with-mcp.yml
    # Comment out services: section
-   
+
    # Or environment variable override
    echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
-   
+
    # Revert to baseline Copilot
    # Remove MCP endpoint from .vscode/settings.json
-   
+
    # Verify rollback
    gh workflow run copilot-baseline-test.yml
    ```

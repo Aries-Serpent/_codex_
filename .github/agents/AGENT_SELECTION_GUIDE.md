@@ -1,7 +1,7 @@
 # Agent Selection Guide for Future AI Sessions
 
-**Version:** 1.0.0  
-**Purpose:** Help AI agents quickly select the right custom agent(s) for any task  
+**Version:** 1.0.0
+**Purpose:** Help AI agents quickly select the right custom agent(s) for any task
 **Last Updated:** 2026-02-05T08:40:00Z
 
 ---
@@ -31,7 +31,7 @@ START: What type of task?
 **Primary Agent:** `ci-testing-agent`
 - **Use When:** GitHub Actions workflow failing, build errors, test failures
 - **Location:** `.github/agents/ci-testing-agent.md`
-- **Chains To:** 
+- **Chains To:**
   - `ci-log-retrieval-agent` (get detailed logs)
   - `dependency-conflict-agent` (if dependency issues)
   - `workflow-ci-fixer` (to apply fixes)
@@ -398,7 +398,7 @@ START: What type of task?
 
 **Command:**
 ```
-@copilot The CI pipeline is failing. Use artifact-monitor-agent to detect 
+@copilot The CI pipeline is failing. Use artifact-monitor-agent to detect
 the issue type, then chain to appropriate diagnostic agents.
 ```
 
@@ -423,7 +423,7 @@ the issue type, then chain to appropriate diagnostic agents.
 
 **Command:**
 ```
-@copilot Use coverage-roadmap-agent to create a systematic plan to improve 
+@copilot Use coverage-roadmap-agent to create a systematic plan to improve
 test coverage from 72% to 90%, then orchestrate the implementation.
 ```
 
@@ -449,7 +449,7 @@ test coverage from 72% to 90%, then orchestrate the implementation.
 
 **Command:**
 ```
-@copilot Security alert #42 was triggered. Use security-alert-verification-agent 
+@copilot Security alert #42 was triggered. Use security-alert-verification-agent
 to triage, then orchestrate appropriate remediation agents.
 ```
 
@@ -476,7 +476,7 @@ to triage, then orchestrate appropriate remediation agents.
 
 **Command:**
 ```
-@copilot The documentation needs cleanup. Use documentation-quality-agent 
+@copilot The documentation needs cleanup. Use documentation-quality-agent
 to assess, then orchestrate consolidation and validation agents.
 ```
 
@@ -503,7 +503,7 @@ to assess, then orchestrate consolidation and validation agents.
 
 **Command:**
 ```
-@copilot Run comprehensive repository maintenance using repository-hygiene-agent 
+@copilot Run comprehensive repository maintenance using repository-hygiene-agent
 to coordinate all cleanup operations.
 ```
 
@@ -548,13 +548,13 @@ to coordinate all cleanup operations.
 
 ### Activate with Orchestration
 ```
-@copilot Orchestrate [primary-agent] to coordinate [agent-2], [agent-3], 
+@copilot Orchestrate [primary-agent] to coordinate [agent-2], [agent-3],
 and [agent-4] for [overall-goal]
 ```
 
 ### Activate with Conditions
 ```
-@copilot Use [diagnostic-agent] to analyze the issue, then conditionally 
+@copilot Use [diagnostic-agent] to analyze the issue, then conditionally
 route to the appropriate fix agent based on the diagnosis
 ```
 
@@ -611,9 +611,9 @@ route to the appropriate fix agent based on the diagnosis
 
 ---
 
-**Document Status:** ✅ COMPLETE  
-**For:** Future AI Agent Sessions  
-**Purpose:** Enable effective agent selection and orchestration  
+**Document Status:** ✅ COMPLETE
+**For:** Future AI Agent Sessions
+**Purpose:** Enable effective agent selection and orchestration
 **Maintainer:** AI Agent Ecosystem Team
 
 ---
@@ -633,7 +633,7 @@ route to the appropriate fix agent based on the diagnosis
 
 **Example Activation:**
 ```
-@copilot Use the Session Log Retrieval Agent to find what we discussed 
+@copilot Use the Session Log Retrieval Agent to find what we discussed
 about test coverage in yesterday's session and extract any uncommitted code.
 ```
 

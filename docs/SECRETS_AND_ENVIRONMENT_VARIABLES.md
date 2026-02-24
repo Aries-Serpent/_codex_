@@ -52,7 +52,7 @@ This document provides comprehensive documentation for all secrets and environme
 #### `CODECOV_TOKEN`
 - **Purpose**: Upload coverage reports to Codecov
 - **Format**: Codecov repository upload token
-- **Used In**: 
+- **Used In**:
   - `test-comprehensive.yml`
   - `test-rag.yml`
   - `rust_swarm_ci.yml`
@@ -64,7 +64,7 @@ This document provides comprehensive documentation for all secrets and environme
 #### `GITLEAKS_LICENSE`
 - **Purpose**: License key for Gitleaks Pro/Enterprise for enhanced secret scanning capabilities
 - **Format**: Gitleaks license key string
-- **Used In**: 
+- **Used In**:
   - `security-suite.yml`
 - **Generation**: Obtained from Gitleaks subscription (https://gitleaks.io)
 - **Security Level**: LOW - Does not grant access to sensitive data, only enables scanning features
@@ -120,7 +120,7 @@ This document provides comprehensive documentation for all secrets and environme
 #### `GITHUB_OAUTH_CLIENT_SECRET`
 - **Purpose**: GitHub OAuth app client secret
 - **Format**: 40-character hex string
-- **Used In**: 
+- **Used In**:
   - `auth-oauth-app-sync.yml`
   - `auth-secret-rotation.yml`
 - **Generation**: Via GitHub OAuth App settings
@@ -132,7 +132,7 @@ This document provides comprehensive documentation for all secrets and environme
 #### `PYPI_API_TOKEN`
 - **Purpose**: PyPI API token for publishing packages to production PyPI
 - **Format**: `pypi-` prefixed token string from PyPI account settings
-- **Used In**: 
+- **Used In**:
   - `pypi-publish.yml`
   - Package publishing workflows
 - **Generation**: Via PyPI Account Settings → API tokens → Generate new token
@@ -143,7 +143,7 @@ This document provides comprehensive documentation for all secrets and environme
 
 #### `TEST_PYPI_API_TOKEN`
 - **Purpose**: TestPyPI API token for testing package uploads before production
-- **Format**: `pypi-` prefixed token string from TestPyPI account settings  
+- **Format**: `pypi-` prefixed token string from TestPyPI account settings
 - **Used In**:
   - `pypi-publish.yml`
   - Pre-release testing workflows
@@ -388,6 +388,6 @@ The MFA enrollment automation (`scripts/mfa_enrollment_automation.py`) generates
 
 ---
 
-**Last Updated**: 2026-01-27  
-**Maintainer**: @mbaetiong  
+**Last Updated**: 2026-01-27
+**Maintainer**: @mbaetiong
 **Review Frequency**: Quarterly

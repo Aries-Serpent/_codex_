@@ -8,12 +8,12 @@ This document describes the fixes applied to resolve 5 test failures in the Resi
 ### 1. Safety Filter - Nested Secret Patterns
 **Test:** `tests/safety/test_filters_edge_cases_phase26.py::TestSafetyFiltersEdgeCases::test_nested_secret_patterns`
 
-**Error:** 
+**Error:**
 ```
 assert ('{REDACTED}' in 'token="ghp_" + "abcdefgh12345678"' or 0 > 0)
 ```
 
-**Root Cause:** 
+**Root Cause:**
 The safety filter uses regex-based pattern matching and cannot detect concatenated string patterns like `"ghp_" + "abcdefgh12345678"` because they require semantic/AST analysis to understand the code-level string concatenation.
 
 **Fix:**
@@ -41,7 +41,7 @@ The `_functional_training_main` variable was declared inside a conditional block
 - Added docstring to `_load_functional_training_main()` explaining it's cached at module level
 - Updated test to properly initialize the global before monkeypatching
 
-**Files Changed:** 
+**Files Changed:**
 - `src/codex_ml/cli/main.py`
 - `tests/test_codexml_cli.py`
 
@@ -67,7 +67,7 @@ PyTorch's profiler encounters a Protocol class during runtime type checking and 
 
 ---
 
-### 4. PEFT Integration - Protocol isinstance() Error  
+### 4. PEFT Integration - Protocol isinstance() Error
 **Test:** `tests/test_peft_integration.py::test_peft_apply_lora`
 
 **Error:**

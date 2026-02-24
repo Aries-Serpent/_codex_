@@ -1,8 +1,8 @@
 # Enhanced Custom Agent Design: Cognitive Brain Integration
 
-> **Generated**: 2026-02-17T11:40:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Design custom agents as native cognitive brain extensions  
+> **Generated**: 2026-02-17T11:40:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Design custom agents as native cognitive brain extensions
 > **Status**: ✅ PRODUCTION SPECIFICATION
 
 ---
@@ -44,32 +44,32 @@ graph TB
         CB4[Multi-Agent Coordinator<br/>GHZ States]
         CB5[Topology Manager<br/>Codebase Maps]
     end
-    
+
     subgraph "Agent Extensions (54 Custom Agents)"
         subgraph "CI/CD Agents"
             A1[CI Testing Agent<br/>✅ Cognitive-Aware]
             A2[Artifact Monitor<br/>✅ Cognitive-Aware]
             A3[Workflow Manager<br/>✅ Cognitive-Aware]
         end
-        
+
         subgraph "Testing Agents"
             T1[Test Coverage<br/>✅ Cognitive-Aware]
             T2[QA Walkthrough<br/>✅ Cognitive-Aware]
             T3[Autonomous Healer<br/>✅ Cognitive-Aware]
         end
-        
+
         subgraph "Security Agents"
             S1[Security Audit<br/>✅ Cognitive-Aware]
             S2[CodeQL Resolution<br/>✅ Cognitive-Aware]
         end
     end
-    
+
     subgraph "AAIS Framework"
         AAIS1[Intuitiveness Score<br/>87.3/100]
         AAIS2[Navigation Maps<br/>Auto-Generated]
         AAIS3[Discovery Mechanisms<br/>Pattern-Based]
     end
-    
+
     %% Integration Points
     CB1 --> A1
     CB1 --> A2
@@ -83,13 +83,13 @@ graph TB
     CB4 -.orchestrates.-> T1
     CB4 -.orchestrates.-> S1
     CB5 --> AAIS2
-    
+
     AAIS1 --> CB5
     AAIS2 --> A1
     AAIS2 --> T1
     AAIS2 --> S1
     AAIS3 --> CB5
-    
+
     style CB1 fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
     style CB2 fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
     style CB4 fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
@@ -161,17 +161,17 @@ from scripts.cognitive.topology_manager import TopologyManager
 
 class EnhancedAgent:
     """Custom agent with cognitive brain integration."""
-    
+
     def __init__(self):
         # Cognitive brain access
         self.topology = TopologyManager()
         self.memory = QuantumMemoryManager()
         self.patterns = PatternCompressor()
-        
+
         # AAIS awareness
         self.intuitiveness_score = 87.3
         self.navigation_maps = self.topology.get_maps()
-        
+
     def navigate_to(self, target: str) -> Path:
         """Navigate to any part of codebase using topology."""
         # Use cognitive brain topology instead of hardcoded paths
@@ -180,13 +180,13 @@ class EnhancedAgent:
             target=target,
             criteria="shortest_semantic_distance"
         )
-    
+
     def discover_related(self, concept: str) -> List[CodeLocation]:
         """Discover related code using pattern recognition."""
         # Use memory manager to find patterns
         patterns = self.memory.retrieve_patterns(concept)
         return self.topology.locate_patterns(patterns)
-    
+
     def understand_context(self, file_path: str) -> Context:
         """Understand file context using cognitive brain."""
         # Use pattern compressor for semantic understanding
@@ -293,7 +293,7 @@ def fix_test(self):
     # Agent asks cognitive brain for location
     test_file = self.topology.find("quantum memory error tests")
     # Returns: tests/cognitive_brain/quantum/test_memory_errors.py
-    
+
     # Agent can also find related files
     related = self.topology.find_related(test_file, semantic_distance=0.8)
     # Returns: [
@@ -310,14 +310,14 @@ def fix_test(self):
 ```python
 def analyze_file(self, path: str):
     """Analyze file with full cognitive context."""
-    
+
     # Traditional analysis
     code = read_file(path)
     ast = parse_ast(code)
-    
+
     # Cognitive enhancement
     context = self.memory.get_context(path)
-    
+
     return {
         "code": code,
         "ast": ast,
@@ -367,15 +367,15 @@ def analyze_file(self, path: str):
 ```python
 class PatternAwareAgent:
     """Agent that leverages pattern library."""
-    
+
     def __init__(self):
         self.patterns = self.load_pattern_library()
         # Patterns auto-discovered from .codex/patterns/
-        
+
     def detect_anti_pattern(self, code: str) -> List[AntiPattern]:
         """Detect anti-patterns using cognitive brain."""
         detected = []
-        
+
         for pattern in self.patterns.anti_patterns:
             if pattern.matches(code):
                 detected.append({
@@ -385,7 +385,7 @@ class PatternAwareAgent:
                     "confidence": pattern.confidence,
                     "examples": self.memory.find_similar_fixes(pattern)
                 })
-        
+
         return detected
 ```
 
@@ -411,9 +411,9 @@ updated: 2026-02-17
 
 [Brief description]
 
-**Cognitive Brain Integration**: Level [1/2/3]  
-**AAIS Awareness**: ✅ Enabled  
-**Current AAIS Score**: 87.3/100  
+**Cognitive Brain Integration**: Level [1/2/3]
+**AAIS Awareness**: ✅ Enabled
+**Current AAIS Score**: 87.3/100
 **Navigation**: Topology-guided
 
 ---
@@ -608,8 +608,8 @@ Agent automatically:
 
 ---
 
-**Status**: ✅ Cognitive-Aware  
-**Version**: 2.0.0  
+**Status**: ✅ Cognitive-Aware
+**Version**: 2.0.0
 **AAIS Contribution**: +[X] points
 ```
 
@@ -624,16 +624,16 @@ Agent automatically:
    ```python
    class TopologyManager:
        """Manages codebase topology for agent navigation."""
-       
+
        def find(self, query: str) -> Path:
            """Find file/directory using semantic search."""
-           
+
        def find_optimal_path(self, current, target, criteria):
            """Find optimal navigation path."""
-           
+
        def discover_related(self, location, max_distance):
            """Discover semantically related code."""
-           
+
        def get_maps(self) -> Dict:
            """Get all navigation maps."""
    ```
@@ -716,7 +716,7 @@ Agent automatically:
 
 ---
 
-**Status**: ✅ PRODUCTION SPECIFICATION  
-**Version**: 1.0.0  
-**Target AAIS Score**: 92.0/100 (+4.7)  
+**Status**: ✅ PRODUCTION SPECIFICATION
+**Version**: 1.0.0
+**Target AAIS Score**: 92.0/100 (+4.7)
 **Agent Intuitiveness**: Maximum

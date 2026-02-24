@@ -1,6 +1,6 @@
 # Current Expected Variables and Secrets - _codex_ Repository
-**Generated**: 2026-01-01  
-**Status**: ✅ Verified Against Codebase  
+**Generated**: 2026-01-01
+**Status**: ✅ Verified Against Codebase
 **Purpose**: Reference document for all secrets and variables
 
 ---
@@ -144,9 +144,9 @@ secrets:
 
 ### Extracted from Codebase (2026-01-01)
 
-**Secrets Found**: 10 unique references  
-**Variables Found**: 11 unique references  
-**Environment Variables**: 50+ unique references  
+**Secrets Found**: 10 unique references
+**Variables Found**: 11 unique references
+**Environment Variables**: 50+ unique references
 
 **Files Scanned**:
 - `.github/workflows/*.yml` (30+ workflow files)
@@ -234,7 +234,6 @@ All variables listed are compatible with:
 
 ---
 
-**Maintained By**: Security Team & @copilot  
-**Last Verified**: 2026-01-01  
+**Maintained By**: Security Team & @copilot
+**Last Verified**: 2026-01-01
 **Next Review**: 2026-04-01 (Quarterly)
-

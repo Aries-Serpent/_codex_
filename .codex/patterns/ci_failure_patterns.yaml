@@ -1,10 +1,10 @@
 # CI Failure Pattern Library
 ## Comprehensive Pattern Database for Automated Resolution
 
-**Version:** 1.0.0  
-**Created:** 2026-02-18  
-**Source:** PR #3248 Resolution Sessions  
-**Patterns:** 19 core + extensible  
+**Version:** 1.0.0
+**Created:** 2026-02-18
+**Source:** PR #3248 Resolution Sessions
+**Patterns:** 19 core + extensible
 **Format:** YAML (machine-readable)
 
 ---
@@ -64,21 +64,21 @@ fix_steps:
     change: |
       # Before
       license = {text = "MIT"}
-      
+
       # After
       license = "MIT"
-  
+
   2:
     action: "Move license-files to setuptools section"
     file: "pyproject.toml"
     change: |
       # Before (in [project] section)
       license-files = {paths = ["LICENSE", "LICENSES/*"]}
-      
+
       # After (in [tool.setuptools] section)
       [tool.setuptools]
       license-files = ["LICENSE", "LICENSES/*"]
-  
+
   3:
     action: "Update tests to handle both formats"
     file: "tests/test_packaging_metadata.py"
@@ -105,7 +105,7 @@ metadata:
   confidence: 100
   reuse_count: 0
   effectiveness: "Not yet measured"
-  
+
 examples:
   - pr: 3248
     commit: "5b89cf9"
@@ -116,12 +116,12 @@ examples:
 related_patterns:
   - "BUILD_002"  # Setuptools version compatibility
   - "PKG_001"    # PEP 621 vs implementation
-  
+
 cognitive_notes: |
   CRITICAL LEARNING: PEP spec compliance != implementation support
   Always test actual builds, not just spec validation
   Setuptools compatibility more important than PEP 621 purity
-  
+
 ---
 pattern_id: BUILD_002
 name: "Package Installation Dependency Failure"
@@ -150,12 +150,12 @@ fix_steps:
   1:
     action: "Check dependency availability"
     command: "pip index versions <package>"
-  
+
   2:
     action: "Relax version constraints if needed"
     file: "pyproject.toml"
     example: "package>=1.0,<3.0  # Instead of package==1.2.3"
-  
+
   3:
     action: "Update lock files"
     command: "pip-compile pyproject.toml"
@@ -214,13 +214,13 @@ fix_steps:
     file: "Source file with datetime operations"
     change: |
       from datetime import datetime, timezone
-  
+
   2:
     action: "Update all datetime.now() calls"
     pattern: "datetime.now()"
     replacement: "datetime.now(timezone.utc)"
     locations: "All timestamp generation points"
-  
+
   3:
     action: "Verify consistency"
     check: "All timestamps use UTC timezone"
@@ -245,7 +245,7 @@ examples:
   - file: "src/codex_ml/features/monitoring.py"
     lines: [165, 214, 232, 268, 295, 312, 340]
     tests_fixed: 6
-    
+
 cognitive_notes: |
   HIGH-VALUE PATTERN: Batch fix opportunity
   Look for multiple failures with same error signature
@@ -276,7 +276,7 @@ detection:
     - "Mock object has no attribute"
   test_patterns:
     - "@patch\\('old\\.namespace"
-  
+
 root_cause:
   technical: "Import paths changed but test mocks not updated"
   specific: "Old namespace in @patch doesn't exist"
@@ -291,13 +291,13 @@ fix_steps:
   1:
     action: "Find actual import path"
     command: "grep -r 'from .* import TargetClass' tests/"
-    
+
   2:
     action: "Update @patch decorator"
     pattern: "@patch('old.namespace.TargetClass')"
     replacement: "@patch('actual.namespace.TargetClass')"
     note: "Must match EXACT import path in test"
-  
+
   3:
     action: "Verify all patches in file"
     check: "grep '@patch' affected_test.py"
@@ -331,7 +331,7 @@ cognitive_notes: |
   Prevention: Update tests during refactoring
 
 ---
-pattern_id: MOCK_002  
+pattern_id: MOCK_002
 name: "Function-Scoped Import Mock Patching"
 category: mock_fixture
 priority: 3
@@ -358,7 +358,7 @@ fix_steps:
     action: "Use sys.modules dict patching"
     old: "@patch('mlflow')"
     new: "@patch.dict('sys.modules', {'mlflow': Mock()})"
-  
+
   2:
     action: "Access mocked module in test"
     code: "mocked_mlflow = sys.modules['mlflow']"
@@ -416,7 +416,7 @@ fix_steps:
           TORCH_AVAILABLE = True
       except ImportError:
           TORCH_AVAILABLE = False
-  
+
   2:
     action: "Use explicit availability in skip marker"
     old: "pytestmark = pytest.mark.skipif(not has_rag, ...)"
@@ -432,7 +432,7 @@ batch_fix:
   example: "6 tests updated in Session 1"
 
 metadata:
-  discovered: "2026-02-18"  
+  discovered: "2026-02-18"
   session: "PR #3248 Session 1"
   confidence: 100
   reuse_count: 6
@@ -475,11 +475,11 @@ fix_steps:
   1:
     action: "Identify problematic field"
     command: "pip install -e . 2>&1 | grep 'configuration error'"
-  
+
   2:
     action: "Use tool-specific alternative"
     example: "Move to [tool.setuptools] section"
-  
+
   3:
     action: "Test build immediately"
     command: "pip install --no-deps -e ."
@@ -496,7 +496,7 @@ metadata:
   discovered: "2026-02-18"
   session: "PR #3248 Session 2"
   confidence: 100
-  
+
 cognitive_notes: |
   CRITICAL INSIGHT: Spec != Implementation
   PEP 621 compliance is necessary but not sufficient
@@ -529,7 +529,7 @@ best_practice:
     def test_optional_feature():
         data = load_config()
         optional = data.get("optional", {}).get("feature")
-        
+
         if optional:
             # Primary: Validate feature if present
             assert validate_feature(optional)
@@ -588,33 +588,33 @@ def match_failure_to_pattern(error_log):
     Returns: List of matching patterns, sorted by confidence
     """
     matches = []
-    
+
     for pattern in pattern_library:
         confidence = 0
-        
+
         # Check error signatures
         for signature in pattern['detection']['error_signatures']:
             if re.search(signature, error_log):
                 confidence += 40
-        
+
         # Check file patterns
         if pattern['detection'].get('file_patterns'):
             for file in changed_files:
                 if any(fnmatch(file, p) for p in pattern['file_patterns']):
                     confidence += 30
-        
+
         # Check context
         if pattern['detection'].get('context'):
             if matches_context(pattern['context']):
                 confidence += 30
-        
+
         if confidence >= 50:  # Threshold
             matches.append({
                 'pattern': pattern,
                 'confidence': confidence,
                 'priority': pattern['priority']
             })
-    
+
     return sorted(matches, key=lambda x: (x['priority'], -x['confidence']))
 ```
 
@@ -626,10 +626,10 @@ def identify_batch_opportunities(categorized_failures):
     Find patterns that can fix multiple failures at once
     """
     batch_opportunities = []
-    
+
     for category, failures in categorized_failures.items():
         pattern = get_pattern(category)
-        
+
         if pattern.get('batch_fix', {}).get('enabled'):
             batch_opportunities.append({
                 'pattern': pattern,
@@ -637,9 +637,9 @@ def identify_batch_opportunities(categorized_failures):
                 'efficiency_gain': f"{len(failures)}x",
                 'estimated_time': pattern['fix_steps']
             })
-    
-    return sorted(batch_opportunities, 
-                  key=lambda x: x['affected_tests'], 
+
+    return sorted(batch_opportunities,
+                  key=lambda x: x['affected_tests'],
                   reverse=True)
 ```
 
@@ -713,10 +713,10 @@ cognitive_notes: |
 
 ### Current Library Stats
 
-**Total Patterns:** 19 (7 core + 12 derived)  
-**Categories:** 6  
-**Batch Fix Patterns:** 4  
-**Proven Patterns:** 19 (100%)  
+**Total Patterns:** 19 (7 core + 12 derived)
+**Categories:** 6
+**Batch Fix Patterns:** 4
+**Proven Patterns:** 19 (100%)
 **Confidence > 95%:** 17 (89%)
 
 ### Effectiveness Metrics
@@ -728,8 +728,8 @@ cognitive_notes: |
 | BUILD_001 | 1 | 100% | 4-5 hours |
 | OPTDEP_001 | 6 | 600% | 2-3 hours |
 
-**Total Time Saved (Session 1-2):** ~15-18 hours manual work  
-**Actual Time Spent:** 70 minutes  
+**Total Time Saved (Session 1-2):** ~15-18 hours manual work
+**Actual Time Spent:** 70 minutes
 **Overall Efficiency:** ~13-15x
 
 ## Cognitive Brain Integration
@@ -758,7 +758,7 @@ This pattern library is:
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-02-18  
-**Next Review:** 2026-02-25  
+**Version:** 1.0.0
+**Last Updated:** 2026-02-18
+**Next Review:** 2026-02-25
 **Status:** ✅ ACTIVE & GROWING

@@ -1,6 +1,6 @@
 # GitHub Directory README
 
-**⚠️ NOTICE**: This is NOT the main repository README. 
+**⚠️ NOTICE**: This is NOT the main repository README.
 
 **For complete repository documentation, see**: [../README.md](../README.md)
 

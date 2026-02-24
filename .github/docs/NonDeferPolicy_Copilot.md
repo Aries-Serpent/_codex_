@@ -1,8 +1,8 @@
 # [Policy]: Non-Deferral Mandate for GitHub Copilot Agent — CI Data Handling
 > Generated: 2026-02-15T10:55:00Z | Author: mbaetiong
 
-🧠 Roles: [Primary], [Secondary]  
-⚡ Energy: [5]  
+🧠 Roles: [Primary], [Secondary]
+⚡ Energy: [5]
 ⚛️ Physics:
 - Path🛤️: MCP-first exhaustive collection → evidence logging → deterministic population → commit/PR
 - Fields🔄: PRs, commits, check-runs, workflow runs, jobs, artifacts, UI-backed automation
@@ -53,7 +53,7 @@ Exception & Escalation Procedure (Agent-only; never human collection)
   - Evidence captured: raw responses, headers, DOM snapshots, timestamps.
 - Escalation actions:
   - Open a minimal PR comment or issue (agent-auth) tagging repo admins with evidence bundle and the exact access scope required (read-only Actions/check-runs).
-  - Continue automated collection for remaining accessible commits; annotate unavailable entries as ARCHIVED/UNAVAILABLE with evidence. 
+  - Continue automated collection for remaining accessible commits; annotate unavailable entries as ARCHIVED/UNAVAILABLE with evidence.
 - Prohibited:
   - Requesting the user to perform manual UI collection or supply data.
   - Deferring completion when automation is viable.

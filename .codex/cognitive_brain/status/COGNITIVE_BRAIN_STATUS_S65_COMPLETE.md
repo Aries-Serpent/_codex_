@@ -1,8 +1,8 @@
 # Cognitive Brain Status — S65 Complete
 
-**Session**: S65  
-**Date**: 2026-02-22  
-**Status**: ✅ COMPLETE  
+**Session**: S65
+**Date**: 2026-02-22
+**Status**: ✅ COMPLETE
 
 ## Fixes Applied (15)
 
@@ -44,10 +44,10 @@ auto_fix_common_issues.py --check-only → Auto-fixable: 0 ✅
 ```
 
 ## S66 Backlog
-- DR-003: torch<2.2.0 guards (blocked on CI torch ≥2.2.0)  
+- DR-003: torch<2.2.0 guards (blocked on CI torch ≥2.2.0)
 - xdist restore in test-rag.yml (blocked on runner plugin-path)
 - TD-001 extension: remaining `datetime.now()` sites outside `src/context_management/`
 - `test_training_integration_flags.py` (3 slow) — autocast/mlflow path divergence
 - `test_engine_hf_trainer.py` (3) — attention_mask column mismatch
-- RAG tenant management (6) — FAISS index persistence with mock ST  
+- RAG tenant management (6) — FAISS index persistence with mock ST
 - IncrementalSyncDecider.decide() — token-level vs char-level change_ratio

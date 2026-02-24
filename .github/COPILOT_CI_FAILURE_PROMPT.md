@@ -52,7 +52,7 @@ github-mcp-server-actions_list(
 # 2. Get failed job details
 github-mcp-server-actions_get(
     method="get_workflow_run",
-    owner="Aries-Serpent", 
+    owner="Aries-Serpent",
     repo="_codex_",
     resource_id=<run_id>
 )
@@ -183,7 +183,7 @@ For EACH unique failure:
 4. **Commit with detailed message**:
    ```
    fix(<scope>): <what> - <why this time is different>
-   
+
    Root Cause: <technical explanation>
    Previous Attempts: <list if applicable>
    Why This Works: <reasoning>
@@ -283,14 +283,14 @@ When Copilot follows this prompt, they should respond with:
 ### Workflow Runs Found
 - Run ID 22049575907: Resilient Validation Suite (FAILED)
   - Job 63704735364 (slow): FAILED after 7m
-  - Job 63704735367 (integration): FAILED after 6m  
+  - Job 63704735367 (integration): FAILED after 6m
   - Job 63704735388 (quick): FAILED after 6m
 
 ### Failures Categorized
 1. **Infrastructure** (3 jobs):
    - xdist worker crashes
    - Error: "unrecognized arguments: --timeout=X -n Y"
-   
+
 2. **Tests** (5 failures in slow job):
    - DummyOptimizer missing param_groups (4 tests)
    - CLI validation match pattern (1 test)
@@ -303,7 +303,7 @@ Checked `.codex/CI_FAILURE_TRACKING_LOG.md`:
 ### Root Cause Analysis
 **Not symptom**: "unrecognized arguments"
 **Real issue**: pip install -e .[dev] changes plugin versions after install
-**Evidence**: 
+**Evidence**:
 - de6430f7 added `-p` flags → worked once
 - ac49a922 removed them → "Plugin already registered"
 - This is dependency version mismatch, not config issue
@@ -333,7 +333,7 @@ Proceeding with implementation...
 This prompt works with the tools we created:
 
 1. **MCP Tools**: Auto-discovery of failures
-2. **Tracking Log**: Historical pattern analysis  
+2. **Tracking Log**: Historical pattern analysis
 3. **Pre-flight Validator**: Before/after validation
 4. **Root Cause Docs**: Reference for avoiding thrashing
 
@@ -367,4 +367,3 @@ See `.codex/SESSION_SUMMARY_PR_3248.md` for example of proper process.
 - ✅ Permanent solutions
 - ✅ Documentation required
 - ✅ Prevents thrashing
-

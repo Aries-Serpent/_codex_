@@ -87,7 +87,7 @@ jobs:
             echo "has_decisions=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           # Check if decisions were made
           if [ -f "cognitive/decisions/task_allocation.json" ]; then
             echo "has_decisions=true" >> $GITHUB_OUTPUT

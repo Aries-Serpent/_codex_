@@ -1,7 +1,7 @@
 # [Summary]: PR #3248 — Resilient Validation Suite Fixes - Resolution Complete
 
-> **Generated**: 2026-02-14T14:20:00Z  
-> **Author**: Copilot Agent  
+> **Generated**: 2026-02-14T14:20:00Z
+> **Author**: Copilot Agent
 > **Status**: Fixes Applied - Ready for CI Validation
 
 ## Overview
@@ -12,9 +12,9 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
 
 ### 1. Integration Test Collection Failure ✅ FIXED
 
-**Problem**: Resilient Validation Suite / validation (integration) collected 0 tests  
-**Root Cause**: Tests marked with BOTH `pytest.mark.integration` AND `pytest.mark.slow` at module level, causing `-m "integration and not slow"` to exclude all tests  
-**Solution**: 
+**Problem**: Resilient Validation Suite / validation (integration) collected 0 tests
+**Root Cause**: Tests marked with BOTH `pytest.mark.integration` AND `pytest.mark.slow` at module level, causing `-m "integration and not slow"` to exclude all tests
+**Solution**:
 - Removed `pytest.mark.slow` from module-level `pytestmark` in `tests/integration/test_pipeline_integration.py`
 - Added `@pytest.mark.slow` to only 3 truly slow end-to-end tests
 - Result: 22 integration tests now collectible with `-m "integration and not slow"`
@@ -26,8 +26,8 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
 
 ### 2. Conftest Auto-Marking Conflict ✅ FIXED
 
-**Problem**: `pytest_collection_modifyitems` in conftest.py automatically added `slow` marker to ALL tests with `integration` marker, undoing manual marker fixes  
-**Root Cause**: Line 280 in tests/conftest.py: `if any(marker in item.keywords for marker in ["integration", "e2e"])`  
+**Problem**: `pytest_collection_modifyitems` in conftest.py automatically added `slow` marker to ALL tests with `integration` marker, undoing manual marker fixes
+**Root Cause**: Line 280 in tests/conftest.py: `if any(marker in item.keywords for marker in ["integration", "e2e"])`
 **Solution**:
 - Removed "integration" from slow_patterns list
 - Removed auto-marking logic for integration marker
@@ -41,8 +41,8 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
 
 ### 3. Dockerfile Base Image Version Pinning ✅ FIXED
 
-**Problem**: `test_base_images_are_pinned_and_not_latest` failing because base images used `:3.12-slim` instead of pinned versions  
-**Root Cause**: Dockerfile lines 5 and 107 used `python:3.12-slim` (not version-pinned)  
+**Problem**: `test_base_images_are_pinned_and_not_latest` failing because base images used `:3.12-slim` instead of pinned versions
+**Root Cause**: Dockerfile lines 5 and 107 used `python:3.12-slim` (not version-pinned)
 **Solution**:
 - Stage 1 (base): `python:3.12-slim` → `python:3.12.7-slim`
 - Stage 4 (test): `python:3.12-slim` → `python:3.12.7-slim`
@@ -57,10 +57,10 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
 
 ### Quick Test Timeout ⚠️ NEEDS CI INVESTIGATION
 
-**Symptom**: Job times out with socket.accept/selector.select in pytest main thread  
-**Likely Cause**: Pytest plugin auto-loading or test starting a server during collection  
-**Status**: Cannot reproduce locally without full CI environment  
-**Recommended Action**: 
+**Symptom**: Job times out with socket.accept/selector.select in pytest main thread
+**Likely Cause**: Pytest plugin auto-loading or test starting a server during collection
+**Status**: Cannot reproduce locally without full CI environment
+**Recommended Action**:
 - Monitor workflow run after these fixes are deployed
 - If timeout persists, add `--collect-only` run before actual test execution to identify problematic test
 - Consider disabling specific pytest plugins with `-p no:<plugin>` if identified
@@ -72,9 +72,9 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
 - `test_checkpoint_saving` - file doesn't exist
 - `test_evaluation_phase` - similar issues
 
-**Status**: Cannot reproduce locally - PyTorch stub installed instead of real PyTorch  
-**Analysis**: Test code looks correct (no mocking used, proper fixture setup)  
-**Likely Cause**: CI environment issue or dependency version conflict  
+**Status**: Cannot reproduce locally - PyTorch stub installed instead of real PyTorch
+**Analysis**: Test code looks correct (no mocking used, proper fixture setup)
+**Likely Cause**: CI environment issue or dependency version conflict
 **Recommended Action**:
 - Wait for CI run with fixed markers
 - Tests should work correctly with proper PyTorch installation
@@ -110,7 +110,7 @@ This document summarizes the resolution of failing checks in PR #3248's Resilien
     esac
 ```
 
-**Status**: Configuration is correct ✅  
+**Status**: Configuration is correct ✅
 **Expected Behavior After Fixes**:
 - **quick**: Tests without `slow` or `integration` markers (unit tests)
 - **integration**: Tests with `integration` marker but NOT `slow` (22 tests from test_pipeline_integration.py)
@@ -218,6 +218,6 @@ After merge, monitor these workflow runs:
 
 ---
 
-**Status**: ✅ Core fixes complete - Ready for CI validation  
-**Confidence**: High - Root causes identified and addressed systematically  
+**Status**: ✅ Core fixes complete - Ready for CI validation
+**Confidence**: High - Root causes identified and addressed systematically
 **Risk**: Low - Minimal changes, well-tested marker logic

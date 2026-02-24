@@ -1,7 +1,7 @@
 # Cognitive Brain Architecture - Search Results & Status
 
-**Generated**: 2026-01-11  
-**Agent**: Semantic Search Agent  
+**Generated**: 2026-01-11
+**Agent**: Semantic Search Agent
 **Repository**: /home/runner/work/_codex_/_codex_
 
 ---
@@ -103,25 +103,25 @@ class CognitiveBrain:
     Main coordinator for the Cognitive Brain system.
     Manages the PDA Loop + AfterMath cycle across all 10 V10 agents.
     """
-    
+
     def __init__(self, workspace_dir: str = "cognitive"):
         # Initialize subsystems
         self.perception = PerceptionLayer(self.workspace / "perceptions")
         self.decision = DecisionEngine(self.workspace / "decisions")
         self.action = ActionExecutor(self.workspace / "actions")
         self.aftermath = AfterMathEvaluator(self.workspace / "aftermath")
-    
+
     def run_pda_cycle(self) -> Dict[str, Any]:
         """Execute one complete PDA Loop + AfterMath cycle."""
         # Stage 1: Perceive
         perception_data = self.perception.perceive()
-        
+
         # Stage 2: Decide
         decisions = self.decision.make_decisions(perception_data)
-        
+
         # Stage 3: Act
         action_results = self.action.execute(decisions)
-        
+
         # Stage 4: AfterMath
         learnings = self.aftermath.evaluate_and_learn(
             perception_data, decisions, action_results
@@ -206,7 +206,7 @@ next_steps:
 **Agent Categories**:
 1. **Core Agents** (`.github/agents/core/`)
    - Base infrastructure and shared utilities
-   
+
 2. **Specialized Agents** (50+ implementations):
    - `ast-analysis-agent` - AST parsing and analysis
    - `bridge-security-monitor.agent.md` - Security monitoring
@@ -251,23 +251,23 @@ from abc import ABC, abstractmethod
 
 class Planner(ABC):
     """Base abstract class for all cognitive agents."""
-    
+
     @abstractmethod
     def observe(self, input_data: Dict[str, Any]) -> ObservationData:
         """Observe: Collect data from environment"""
-    
+
     @abstractmethod
     def orient(self, observation: ObservationData) -> OrientationResult:
         """Orient: Analyze and contextualize observations"""
-    
+
     @abstractmethod
     def decide(self, orientation: OrientationResult) -> Decision:
         """Decide: Determine optimal action"""
-    
+
     @abstractmethod
     def act(self, decision: Decision) -> ActionResult:
         """Act: Execute decided action"""
-    
+
     def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
         """Execute full OODA loop"""
         observation = self.observe(input_data)
@@ -281,11 +281,11 @@ class Planner(ABC):
 ```python
 class LegacyAgentAdapter(Planner):
     """Wrap legacy agents into new Planner interface."""
-    
+
     def __init__(self, legacy_agent: Any, memory: Optional[MemoryInterface] = None):
         self.legacy_agent = legacy_agent
         self.memory = memory or SimpleDictMemory()
-    
+
     def observe(self, input_data: Dict[str, Any]) -> ObservationData:
         """Wrap input data in ObservationData structure"""
         return ObservationData(
@@ -301,7 +301,7 @@ class LegacyAgentAdapter(Planner):
 ```python
 class WorkflowNavigator:
     """Tokenized workflow navigation and execution."""
-    
+
     TOKENS = {
         "audit": "Audit execution and compliance",
         "decide": "Decision-making and optimization",
@@ -324,7 +324,7 @@ capabilities:
   - code_review
   - quality_analysis
   - security_scanning
-  
+
 triggers:
   - pull_request.opened
   - pull_request.synchronize
@@ -404,11 +404,11 @@ def get_branches(owner: str, repo: str):
 ```python
 class TokenizationCache:
     """Cache for tokenized text with TTL support."""
-    
+
     def __init__(self, ttl_hours: float = 24.0):
         self.ttl = timedelta(hours=ttl_hours)
         self._cache: Dict[str, CacheEntry] = {}
-    
+
     def set(self, text: str, config: Dict[str, Any], tokens: List[int]) -> None:
         """Store tokenization result"""
         key = self._make_key(text, config)
@@ -416,7 +416,7 @@ class TokenizationCache:
             tokens=tokens,
             timestamp=datetime.now()
         )
-    
+
     def get(self, text: str, config: Dict[str, Any]) -> Optional[List[int]]:
         """Retrieve cached tokens if not expired"""
         key = self._make_key(text, config)
@@ -459,14 +459,14 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
 ```python
 class ContextCache:
     """Context-aware caching with tag-based invalidation."""
-    
+
     def set(self, key: str, value: Any, tags: Optional[List[str]] = None) -> None:
         """Store value with optional tags"""
         self._storage[key] = value
         if tags:
             for tag in tags:
                 self._tags.setdefault(tag, set()).add(key)
-    
+
     def invalidate_by_tag(self, tag: str) -> int:
         """Invalidate all entries with given tag"""
         keys = self._tags.get(tag, set())
@@ -481,7 +481,7 @@ class ContextCache:
 ```python
 class FileCache:
     """Simple file-based cache with TTL."""
-    
+
     def set(self, key: str, result: Any, ttl_seconds: int = 3600) -> None:
         """Store result in cache file"""
         p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
@@ -491,7 +491,7 @@ class FileCache:
             "expires_at": time.time() + ttl_seconds
         }
         p.write_text(json.dumps(data), encoding="utf-8")
-    
+
     def get(self, key: str) -> Optional[Any]:
         """Retrieve from cache if not expired"""
         p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
@@ -642,7 +642,7 @@ class FileCache:
 
 **Priority Order**:
 1. **Critical** - Blocking issues, security fixes
-2. **High** - Incomplete features, failing tests  
+2. **High** - Incomplete features, failing tests
 3. **Medium** - Documentation, refactoring
 4. **Low** - Nice-to-have improvements
 
@@ -756,12 +756,12 @@ Agent system requires normalization and enhanced capabilities.
 ```python
 class SimpleDictMemory(MemoryInterface):
     """Simple in-memory implementation of MemoryInterface."""
-    
+
     def __init__(self):
         self._storage: Dict[str, Any] = {}
         self._metadata: Dict[str, Dict[str, Any]] = {}
         self._history: Dict[str, list[tuple[datetime, Any]]] = {}
-    
+
     def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
         """Store with history tracking"""
         self._storage[key] = value
@@ -771,7 +771,7 @@ class SimpleDictMemory(MemoryInterface):
             self._history[key] = []
         self._history[key].append((datetime.now(), value))
         return True
-    
+
     def get_history(self, key: str, limit: int = 10) -> list[tuple[datetime, Any]]:
         """Get historical versions"""
         history = self._history.get(key, [])
@@ -1023,10 +1023,10 @@ The _codex_ repository cognitive brain is **production-ready** with:
 
 ---
 
-**Generated by**: Semantic Search Agent  
-**Date**: 2026-01-11  
-**Repository**: /home/runner/work/_codex_/_codex_  
-**Version**: 1.0.0  
+**Generated by**: Semantic Search Agent
+**Date**: 2026-01-11
+**Repository**: /home/runner/work/_codex_/_codex_
+**Version**: 1.0.0
 **Status**: ✅ Complete
 
 ---

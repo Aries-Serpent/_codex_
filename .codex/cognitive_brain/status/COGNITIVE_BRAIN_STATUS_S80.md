@@ -1,8 +1,8 @@
 # Cognitive Brain Status — Session S80
 
-**Generated**: 2026-02-24  
-**Session**: S80  
-**PR**: #3348 (`copilot/sub-pr-3248-again`)  
+**Generated**: 2026-02-24
+**Session**: S80
+**PR**: #3348 (`copilot/sub-pr-3248-again`)
 **Base**: S79b (commit `3c43018`)
 
 ---

@@ -34,7 +34,7 @@ This documentation is organized into several key sections:
 ### Operational Templates
 - [Template Index](templates/README.md) - Reusable operational templates
 - **Migration — Python File Relocation** - Standardized approach for relocating Python modules
-- **Migration — CLI Hardening** - Template for improving CLI robustness  
+- **Migration — CLI Hardening** - Template for improving CLI robustness
 - **Planning — Intent Validation** - Framework for validating implementation intent
 
 ### Advanced Topics
@@ -80,5 +80,5 @@ This documentation is actively maintained. For:
 
 ---
 
-**Last Updated**: 2026-01-26  
+**Last Updated**: 2026-01-26
 **Maintained By**: _codex_ team and autonomous agents

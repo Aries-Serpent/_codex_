@@ -1,8 +1,8 @@
 # PR #3248 Attempt 19: Follow-Up Session Prompt
 
-**Generated**: 2026-02-16T23:30:00Z  
-**Session ID**: 2026-02-16-23:07  
-**Status**: PARTIAL COMPLETION - 8/25 fixes applied (32%)  
+**Generated**: 2026-02-16T23:30:00Z
+**Session ID**: 2026-02-16-23:07
+**Status**: PARTIAL COMPLETION - 8/25 fixes applied (32%)
 **Resume Point**: Commit 6f1876c2
 
 ---
@@ -53,7 +53,7 @@ You are resuming work on **PR #3248 Attempt 19** - systematic CI failure resolut
 
 **Error**:
 ```
-CheckpointLoadError: failed to save checkpoint via pickle: 
+CheckpointLoadError: failed to save checkpoint via pickle:
 issubclass() arg 2 must be a class, a tuple of classes, or a union
 ```
 
@@ -152,7 +152,7 @@ view tests/unit/cli/test_cli_argument_parsing.py
 ### Category 2: BLEU Metrics (2 tests) - P1-HIGH
 
 **Tests**:
-- `test_metrics_correctness.py::test_bleu_score`  
+- `test_metrics_correctness.py::test_bleu_score`
 - `test_metrics_correctness.py::test_bleu_known_value`
 
 **Error**: Returns 0.0 instead of 1.0 for identical strings

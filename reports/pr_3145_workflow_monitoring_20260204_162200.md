@@ -1,16 +1,16 @@
 # PR #3145 Workflow Monitoring Report
-**Generated:** 2026-02-04T16:22:00Z  
-**PR:** https://github.com/Aries-Serpent/_codex_/pull/3145  
-**Branch:** 0D_base_ → main  
+**Generated:** 2026-02-04T16:22:00Z
+**PR:** https://github.com/Aries-Serpent/_codex_/pull/3145
+**Branch:** 0D_base_ → main
 **Head SHA:** 473d6529e1d696ddc04bd2b7c7c5eb35fe4a0935
 
 ## Executive Summary
 
-**Status:** ⏳ MONITORING IN PROGRESS  
-**Total Workflows:** 22 workflows detected  
-**In Progress:** 1 workflow (Rust-Python Hybrid Swarm CI/CD)  
-**Failed:** 5 workflows requiring remediation  
-**Passed:** 15 workflows  
+**Status:** ⏳ MONITORING IN PROGRESS
+**Total Workflows:** 22 workflows detected
+**In Progress:** 1 workflow (Rust-Python Hybrid Swarm CI/CD)
+**Failed:** 5 workflows requiring remediation
+**Passed:** 15 workflows
 
 ---
 
@@ -29,8 +29,8 @@
 ### ❌ Failed Workflows (5) - REQUIRES REMEDIATION
 
 #### 1. Testing Suite (Run ID: 21678671851)
-**Status:** ❌ FAILED  
-**Job:** Core Tests (Python 3.12)  
+**Status:** ❌ FAILED
+**Job:** Core Tests (Python 3.12)
 **Error Summary:** Test execution completed but overall workflow marked as failure
 
 **Root Cause:** The job appears to have run successfully but the workflow was marked as failure at the summary step. This is likely due to test result evaluation logic.
@@ -39,13 +39,13 @@
 
 ---
 
-#### 2. Codebase QA Walkthrough (Run ID: 21678671810)  
-**Status:** ❌ FAILED  
-**Job:** QA Analysis (standard)  
+#### 2. Codebase QA Walkthrough (Run ID: 21678671810)
+**Status:** ❌ FAILED
+**Job:** QA Analysis (standard)
 **Error Summary:** Critical security issues detected by Bandit scanner
 
-**Critical Issues Found:** 5  
-**Warnings:** 206  
+**Critical Issues Found:** 5
+**Warnings:** 206
 **Overall Score:** 0/100
 
 **Specific Security Issues:**
@@ -73,7 +73,7 @@
 ---
 
 #### 3. Comprehensive Tests with Caching (Run ID: 21678671848)
-**Status:** ❌ FAILED  
+**Status:** ❌ FAILED
 **Jobs Failed:** 2 (Python 3.12 Tests, Test Summary)
 
 **Error Summary:**
@@ -92,14 +92,14 @@
 ---
 
 #### 4. Auto-Fix Common CI Issues (Run ID: 21678671841)
-**Status:** ❌ FAILED  
+**Status:** ❌ FAILED
 
 **Action Required:** Collect logs for detailed analysis
 
 ---
 
 #### 5. Automatic Dependency Submission (Run ID: 21678669983)
-**Status:** ❌ FAILED  
+**Status:** ❌ FAILED
 
 **Action Required:** Collect logs for detailed analysis
 

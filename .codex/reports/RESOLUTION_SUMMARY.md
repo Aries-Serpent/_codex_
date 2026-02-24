@@ -14,7 +14,7 @@ https://github.com/Aries-Serpent/_codex_/actions/runs/22126804657/job/6395857181
 
 **Issue:** Regex-based filters cannot detect code-level string concatenation like `"ghp_" + "abcd"`
 
-**Solution:** 
+**Solution:**
 - Removed unrealistic test case requiring AST analysis
 - Added clear documentation explaining limitation
 - Made assertion more permissive (allow redaction OR matches)

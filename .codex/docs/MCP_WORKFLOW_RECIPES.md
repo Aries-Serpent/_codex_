@@ -1,8 +1,8 @@
 # MCP Workflow Recipes for GitHub Actions
 
-> **Generated**: 2026-02-17T11:22:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Production-ready GitHub Actions workflows for MCP integration  
+> **Generated**: 2026-02-17T11:22:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Production-ready GitHub Actions workflows for MCP integration
 > **Status**: Ready for Implementation
 
 ---
@@ -68,50 +68,50 @@ jobs:
     name: E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     strategy:
       fail-fast: false
       matrix:
-        browser: ${{ 
-          github.event.inputs.browser == 'all' && fromJSON('["chromium", "firefox", "webkit"]') || 
+        browser: ${{
+          github.event.inputs.browser == 'all' && fromJSON('["chromium", "firefox", "webkit"]') ||
           github.event.inputs.browser && fromJSON(format('["{0}"]', github.event.inputs.browser)) ||
           fromJSON('["chromium"]')
         }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for context
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: 'cognitive_app/package-lock.json'
-      
+
       - name: Setup Python (for MCP context)
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
-      
+
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-      
+
       - name: Install Node.js dependencies
         working-directory: cognitive_app
         run: npm ci
-      
+
       - name: Install Playwright browsers
         working-directory: cognitive_app
         run: |
           npx playwright install --with-deps ${{ matrix.browser }}
-      
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
@@ -120,7 +120,7 @@ jobs:
           restore-keys: |
             playwright-${{ runner.os }}-${{ env.PLAYWRIGHT_VERSION }}-
             playwright-${{ runner.os }}-
-      
+
       - name: Prepare MCP context (optional)
         id: mcp-context
         env:
@@ -130,7 +130,7 @@ jobs:
           python << 'EOF'
           import json
           import os
-          
+
           context = {
             "repository": {
               "owner": "${{ github.repository_owner }}",
@@ -149,13 +149,13 @@ jobs:
               "actor": "${{ github.actor }}"
             }
           }
-          
+
           with open('mcp_context.json', 'w') as f:
             json.dump(context, f, indent=2)
-          
+
           print(f"✅ MCP context generated: {len(json.dumps(context))} bytes")
           EOF
-      
+
       - name: Run E2E tests
         working-directory: cognitive_app
         env:
@@ -168,7 +168,7 @@ jobs:
           else
             npm run test:e2e -- --project=${{ matrix.browser }}
           fi
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -179,7 +179,7 @@ jobs:
             cognitive_app/test-results/
           retention-days: 7
           if-no-files-found: warn
-      
+
       - name: Upload trace files (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
@@ -188,7 +188,7 @@ jobs:
           path: cognitive_app/test-results/**/*.zip
           retention-days: 7
           if-no-files-found: ignore
-      
+
       - name: Parse test results
         if: always()
         id: parse-results
@@ -199,7 +199,7 @@ jobs:
             PASSED=$(jq '[.suites[].tests[] | select(.status == "passed")] | length' test-results/results.json)
             FAILED=$(jq '[.suites[].tests[] | select(.status == "failed")] | length' test-results/results.json)
             SKIPPED=$(jq '[.suites[].tests[] | select(.status == "skipped")] | length' test-results/results.json)
-            
+
             echo "total=$TOTAL" >> $GITHUB_OUTPUT
             echo "passed=$PASSED" >> $GITHUB_OUTPUT
             echo "failed=$FAILED" >> $GITHUB_OUTPUT
@@ -211,28 +211,28 @@ jobs:
             echo "failed=0" >> $GITHUB_OUTPUT
             echo "skipped=0" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Generate job summary
         if: always()
         run: |
           cat << 'EOF' >> $GITHUB_STEP_SUMMARY
           ## 🎭 E2E Test Results: ${{ matrix.browser }}
-          
+
           | Metric | Count |
           |--------|-------|
           | **Total Tests** | ${{ steps.parse-results.outputs.total }} |
           | **Passed** | ✅ ${{ steps.parse-results.outputs.passed }} |
           | **Failed** | ❌ ${{ steps.parse-results.outputs.failed }} |
           | **Skipped** | ⏭️ ${{ steps.parse-results.outputs.skipped }} |
-          
-          **Browser**: ${{ matrix.browser }}  
+
+          **Browser**: ${{ matrix.browser }}
           **Duration**: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
-          
+
           ---
-          
+
           📊 [View Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
-      
+
       - name: Comment PR with results
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -243,19 +243,19 @@ jobs:
             const failed = '${{ steps.parse-results.outputs.failed }}';
             const browser = '${{ matrix.browser }}';
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
-            
+
             const body = `## 🎭 E2E Test Results (${browser})
-            
+
             | Metric | Count |
             |--------|-------|
             | **Total** | ${total} |
             | **Passed** | ✅ ${passed} |
             | **Failed** | ❌ ${failed} |
-            
+
             **Status**: ${failed > 0 ? '❌ Failed' : '✅ Passed'}
-            
+
             [View detailed results](${runUrl})`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -269,7 +269,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: e2e-tests
     if: always()
-    
+
     steps:
       - name: Check test results
         run: |
@@ -279,7 +279,7 @@ jobs:
             echo "❌ Some E2E tests failed"
             exit 1
           fi
-      
+
       - name: Generate final summary
         run: |
           echo "## 🎭 E2E Test Suite Summary" >> $GITHUB_STEP_SUMMARY
@@ -321,18 +321,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifact_name: ${{ steps.upload.outputs.artifact_name }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Gather repository context
         id: repo-context
         env:
@@ -342,11 +342,11 @@ jobs:
           import json
           import subprocess
           import os
-          
+
           def run_cmd(cmd):
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
             return result.stdout.strip()
-          
+
           context = {
             "repository": {
               "name": os.getenv("GITHUB_REPOSITORY"),
@@ -372,14 +372,14 @@ jobs:
             "task_type": "${{ inputs.task_type }}",
             "pr_number": "${{ inputs.pr_number }}" if "${{ inputs.pr_number }}" else None,
           }
-          
+
           os.makedirs(".mcp", exist_ok=True)
           with open(".mcp/context.json", "w") as f:
             json.dump(context, f, indent=2)
-          
+
           print(f"✅ Context generated: {len(json.dumps(context))} bytes")
           EOF
-      
+
       - name: Gather PR context (if applicable)
         if: inputs.pr_number
         env:
@@ -388,15 +388,15 @@ jobs:
           gh pr view ${{ inputs.pr_number }} --json \
             number,title,body,author,createdAt,updatedAt,mergeable,state,files \
             > .mcp/pr_context.json
-          
+
           echo "✅ PR context gathered"
-      
+
       - name: Gather CI/CD context
         run: |
           python << 'EOF'
           import json
           import os
-          
+
           ci_context = {
             "workflow": {
               "name": os.getenv("GITHUB_WORKFLOW"),
@@ -411,11 +411,11 @@ jobs:
               "temp": os.getenv("RUNNER_TEMP"),
             }
           }
-          
+
           with open(".mcp/ci_context.json", "w") as f:
             json.dump(ci_context, f, indent=2)
           EOF
-      
+
       - name: Upload context artifact
         id: upload
         uses: actions/upload-artifact@v4
@@ -423,7 +423,7 @@ jobs:
           name: mcp-context-${{ github.run_id }}
           path: .mcp/
           retention-days: 7
-      
+
       - name: Output artifact name
         run: echo "artifact_name=mcp-context-${{ github.run_id }}" >> $GITHUB_OUTPUT
 ```
@@ -452,7 +452,7 @@ jobs:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@copilot')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@copilot'))
-    
+
     steps:
       - name: Extract agent command
         id: extract
@@ -462,7 +462,7 @@ jobs:
             const body = context.payload.comment?.body || context.payload.review?.body || '';
             const mentionPattern = /@copilot\s+(.+)/;
             const match = body.match(mentionPattern);
-            
+
             if (match) {
               const command = match[1].trim();
               console.log(`Found agent command: ${command}`);
@@ -471,7 +471,7 @@ jobs:
             } else {
               core.setOutput('has_command', 'false');
             }
-      
+
       - name: Post acknowledgment
         if: steps.extract.outputs.has_command == 'true'
         uses: actions/github-script@v7
@@ -479,11 +479,11 @@ jobs:
           script: |
             const command = '${{ steps.extract.outputs.command }}';
             const body = `✅ Copilot Agent task received: "${command}"
-            
+
             I'll start working on this right away. You'll see commits and updates as I progress.
-            
+
             Track progress: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
-            
+
             if (context.payload.comment) {
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -492,7 +492,7 @@ jobs:
                 body: body
               });
             }
-      
+
       - name: Trigger agent workflow
         if: steps.extract.outputs.has_command == 'true'
         uses: actions/github-script@v7
@@ -500,7 +500,7 @@ jobs:
           script: |
             // This would trigger the actual Copilot Agent task
             // Implementation depends on your agent infrastructure
-            
+
             console.log('Agent task triggered successfully');
 ```
 
@@ -535,15 +535,15 @@ jobs:
   create-chain:
     name: Create PR Chain
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Create chain metadata
         run: |
           mkdir -p .github/pr-chains
-          
+
           cat << EOF > .github/pr-chains/${CHAIN_ID}.json
           {
             "chain_id": "${CHAIN_ID}",
@@ -553,21 +553,21 @@ jobs:
             "prs": []
           }
           EOF
-      
+
       - name: Generate PR plan
         id: plan
         run: |
           python << 'EOF'
           import json
-          
+
           chain_id = "${{ env.CHAIN_ID }}"
           pr_count = int("${{ env.PR_COUNT }}")
-          
+
           plan = {
             "chain_id": chain_id,
             "prs": []
           }
-          
+
           for i in range(1, pr_count + 1):
             pr = {
               "number": i,
@@ -577,39 +577,39 @@ jobs:
               "depends_on": i - 1 if i > 1 else None
             }
             plan["prs"].append(pr)
-          
+
           with open(".github/pr-chains/plan.json", "w") as f:
             json.dump(plan, f, indent=2)
-          
+
           print(json.dumps(plan, indent=2))
           EOF
-      
+
       - name: Create PR comment template
         run: |
           cat << 'EOF' > .github/pr-chains/PR_TEMPLATE.md
           <!-- PR Chain: ${{ env.CHAIN_ID }} -->
-          
+
           ## 🔗 Chain PR #{PR_NUMBER}/{PR_TOTAL}
-          
+
           **Chain ID**: `${{ env.CHAIN_ID }}`
-          
+
           ### Dependencies
           {DEPENDENCY_INFO}
-          
+
           ### Progress
           - [x] Part 1/{PR_TOTAL}: {PR_1_TITLE}
           - [x] Part 2/{PR_TOTAL}: {PR_2_TITLE}
           - [ ] **Current**: Part {PR_NUMBER}/{PR_TOTAL}
           - [ ] Part {NEXT}/{PR_TOTAL}: {NEXT_PR_TITLE}
-          
+
           ### Merge Order
           ⚠️ **Important**: This PR must be merged in sequence. Do not merge until PR #{PREV_PR} is merged.
-          
+
           ### Testing
           Each PR in the chain is tested independently and as part of the full chain.
-          
+
           ---
-          
+
           *Part of PR chain automation. See [PR Chain Guide](.github/pr-chains/README.md)*
           EOF
 ```
@@ -663,6 +663,6 @@ jobs:
 
 ---
 
-**Status**: ✅ Production-Ready  
-**Version**: 1.0.0  
+**Status**: ✅ Production-Ready
+**Version**: 1.0.0
 **Last Updated**: 2026-02-17T11:22:00Z

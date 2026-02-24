@@ -1,9 +1,9 @@
 # 🎯 **COMPREHENSIVE WORKFLOW CONSOLIDATION & CI FAILURE RESOLUTION**
 
-**Target Repository**: `Aries-Serpent/_codex_`  
-**Branch**: `main` (post-commit 2e1cad5b3a6684052ec15488d252b0929b168e79)  
-**Current Date**: 2025-12-28  
-**Executor**: mbaetiong  
+**Target Repository**: `Aries-Serpent/_codex_`
+**Branch**: `main` (post-commit 2e1cad5b3a6684052ec15488d252b0929b168e79)
+**Current Date**: 2025-12-28
+**Executor**: mbaetiong
 **Mode**: **FULL-AUTOMATION** (CODEX_MASTER_KEY enabled)
 
 ---
@@ -12,9 +12,9 @@
 
 **I grant you FULL ACCESS TO CODEX_MASTER_KEY AS FREELY NEEDED:**
 
-- [x] I confirm I (mbaetiong) have injected required secrets via GitHub UI.   
-- [x] I confirm I have reviewed all templates and removed workflow guard (`if:  false`) only when safe.  
-- [x] I confirm I have a plan for token rotation and audit is in place.  
+- [x] I confirm I (mbaetiong) have injected required secrets via GitHub UI.
+- [x] I confirm I have reviewed all templates and removed workflow guard (`if:  false`) only when safe.
+- [x] I confirm I have a plan for token rotation and audit is in place.
 
 ---
 
@@ -40,11 +40,11 @@ Implement **intelligent workflow lifecycle management system** and **resolve all
 **Problem**: `scripts/autonomous_agent.py` line 558 fails with `json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)` because workflow passes YAML config but script uses `json.load()`.
 
 **Root Cause Analysis**:
-- Workflow passes:  `--config . codex/autonomous_agent.yaml` 
+- Workflow passes:  `--config . codex/autonomous_agent.yaml`
 - Script `_load_config()` (lines 346-360) uses: `json.load(f)` ❌
 - Config file extension `.yaml` but parser expects JSON
 
-**Solution**: 
+**Solution**:
 
 ```bash
 cat > /tmp/autonomous_agent_yaml_fix.patch << 'EOF'
@@ -71,12 +71,12 @@ cat > /tmp/autonomous_agent_yaml_fix.patch << 'EOF'
 +                    except yaml.YAMLError as e:
 +                        logger. error(f"Failed to parse YAML config: {e}")
 +                        return self._default_config()
-+                else: 
++                else:
 +                    return json.load(f)
-         
+
          # Default configuration
 +        return self._default_config()
-+    
++
 +    def _default_config(self) -> dict[str, Any]:
 +        """Return default configuration."""
          return {
@@ -114,14 +114,14 @@ git push origin main
 
 **Problem**: Job 59026394027 fails with `Unable to download artifact(s): Artifact not found for name: agent-state-28`
 
-**Root Cause Analysis**: 
+**Root Cause Analysis**:
 - Upstream job (autonomous-agent) failed at step 5 (Run Autonomous Agent)
 - When script crashes, `save_state()` never executes
 - `.codex/agent_state/` directory empty or missing
 - Upload step runs (`if: always()`) but finds no files
 - Download step in dependent job fails
 
-**Solution**: 
+**Solution**:
 
 ```bash
 # Fix 1:  Ensure state directory always exists with dummy state on failure
@@ -135,9 +135,9 @@ cat > /tmp/agent_state_fix.patch << 'EOF'
 -        agent.run_cycle()
 +        try:
 +            agent.run_cycle()
-+        except Exception as e: 
++        except Exception as e:
 +            logger.error(f"Agent cycle failed: {e}", exc_info=True)
-+            
++
 +            # Create minimal state file to ensure artifact exists
 +            emergency_state = {
 +                "timestamp": datetime.now().isoformat(),
@@ -146,13 +146,13 @@ cat > /tmp/agent_state_fix.patch << 'EOF'
 +                "health":  {"overall_status": "unknown", "metrics": [], "alerts": []},
 +                "actions": []
 +            }
-+            
++
 +            agent.state_path.mkdir(parents=True, exist_ok=True)
 +            with open(agent.state_path / f"state_emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", 'w') as f:
 +                json.dump(emergency_state, f, indent=2)
-+            
++
 +            raise  # Re-raise after creating emergency state
-     
+
      return 0
 EOF
 
@@ -170,14 +170,14 @@ cat > /tmp/workflow_artifact_fix.patch << 'EOF'
              --repo .  \
              --config .codex/autonomous_agent.yaml
 +        continue-on-error: true
-+      
++
 +      - name:  Verify state directory
 +        if: always()
 +        run: |
 +          echo "=== Agent State Directory Contents ==="
 +          ls -lah .codex/agent_state/ || echo "⚠️ Directory does not exist"
          continue-on-error: true
-       
+
        - name: Upload Agent State
 @@ -55,7 +61,7 @@ jobs:
          with:
@@ -226,7 +226,7 @@ cat > /tmp/split_utils_fix.patch << 'EOF'
  from __future__ import annotations
 -import os
 -LOGGER = logging.getLogger(__name__)
- 
+
 +import logging
 +import os
  import random
@@ -234,7 +234,7 @@ cat > /tmp/split_utils_fix.patch << 'EOF'
  from dataclasses import dataclass
  from pathlib import Path
 -import logging
- 
+
  from codex_ml.data.split import DEFAULT_CHECKSUMS_NAME
  from codex_ml.utils.repro import record_dataset_checksums
 @@ -15,6 +15,8 @@
@@ -242,7 +242,7 @@ cat > /tmp/split_utils_fix.patch << 'EOF'
 +
 +LOGGER = logging.getLogger(__name__)
 +
- 
+
  @dataclass
  class SplitConfig:
 EOF
@@ -356,8 +356,8 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 ### ⚠️ Gaps to Level 4 (In Progress)
 
 #### 1. Feature Store (Priority: HIGH)
-**Current State**: Features computed ad-hoc in training/inference pipelines  
-**Target State**: Centralized feature store (Feast or Tecton)  
+**Current State**: Features computed ad-hoc in training/inference pipelines
+**Target State**: Centralized feature store (Feast or Tecton)
 **Benefits**:
 - Consistency between training and serving features
 - Reduced latency (pre-computed features)
@@ -373,9 +373,9 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 ---
 
 #### 2. Advanced Drift Detection (Priority: HIGH)
-**Current State**: Basic statistical drift detection (KS test on per 4-5 commit cycles batch)  
-**Target State**: Real-time multivariate drift detection with root cause analysis  
-**Benefits**: 
+**Current State**: Basic statistical drift detection (KS test on per 4-5 commit cycles batch)
+**Target State**: Real-time multivariate drift detection with root cause analysis
+**Benefits**:
 - Early warning before model degradation
 - Automated retraining triggers
 - Explainable drift reports
@@ -389,14 +389,14 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 ---
 
 #### 3. Automated Retraining (Priority:  MEDIUM)
-**Current State**: Manual retraining triggered by data science team  
-**Target State**:  Automated retraining on drift detection or performance degradation  
-**Benefits**: 
+**Current State**: Manual retraining triggered by data science team
+**Target State**:  Automated retraining on drift detection or performance degradation
+**Benefits**:
 - Reduced model staleness
 - Faster response to data distribution changes
 - Lower operational overhead
 
-**Action Items**: 
+**Action Items**:
 - [ ] Define retraining trigger policies (drift + performance)
 - [ ] Implement automated data validation before retraining
 - [ ] Add human-in-the-loop approval for high-risk models
@@ -405,9 +405,9 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 ---
 
 #### 4. Governance & Compliance (Priority:  MEDIUM)
-**Current State**: Manual approval for production promotions  
-**Target State**:  Automated governance with audit trails and compliance checks  
-**Benefits**: 
+**Current State**: Manual approval for production promotions
+**Target State**:  Automated governance with audit trails and compliance checks
+**Benefits**:
 - Regulatory compliance (GDPR, CCPA)
 - Model card generation
 - Bias and fairness monitoring
@@ -474,7 +474,7 @@ cat > docs/capabilities/configuration.md << 'EOF'
 
 ## Overview
 
-CODEX uses a hierarchical configuration system supporting multiple environments (development, staging, production) with secure secret management. 
+CODEX uses a hierarchical configuration system supporting multiple environments (development, staging, production) with secure secret management.
 
 ---
 
@@ -607,7 +607,7 @@ Created files:
 - LEVEL_4_MLOPS_ASSESSMENT.md (comprehensive MLOps maturity analysis)
 - capabilities/configuration.md (configuration guide with examples)
 
-Fixed URLs: 
+Fixed URLs:
 - example.com/api-versioning → semver.org
 - owner/repo → Aries-Serpent/_codex_
 - github.com/Aries-Serpent/_codex → _codex_ (trailing underscore)
@@ -659,7 +659,7 @@ cat > scripts/catalog_workflows.py << 'EOF'
 """
 Workflow Catalog Generator
 
-Creates comprehensive inventory of all GitHub Actions workflows with metadata. 
+Creates comprehensive inventory of all GitHub Actions workflows with metadata.
 Stores data in . github/workflow-archive/WORKFLOW_INVENTORY.yaml
 """
 
@@ -688,10 +688,10 @@ def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
     try:
         with open(workflow_path) as f:
             workflow_data = yaml.safe_load(f)
-        
+
         if not workflow_data:
             return {"error": "Empty workflow file"}
-        
+
         # Extract key metadata
         metadata = {
             "name": workflow_data.get("name", workflow_path.stem),
@@ -710,10 +710,10 @@ def extract_workflow_metadata(workflow_path: Path) -> dict[str, Any]:
             "consolidation_candidate": False,  # Will be set by analysis
             "status": "active",
         }
-        
+
         return metadata
-        
-    except Exception as e: 
+
+    except Exception as e:
         return {
             "filename": workflow_path.name,
             "error": str(e),
@@ -725,11 +725,11 @@ def extract_secrets(workflow_data: dict) -> list[str]:
     """Extract all secret references from workflow."""
     secrets = set()
     workflow_str = json.dumps(workflow_data)
-    
+
     # Find ${{ secrets. SECRET_NAME }} patterns
     secret_pattern = re.compile(r'\$\{\{\s*secrets\.(\w+)\s*\}\}')
     secrets. update(secret_pattern.findall(workflow_str))
-    
+
     return sorted(list(secrets))
 
 
@@ -737,7 +737,7 @@ def categorize_workflow(workflow_data: dict, filename: str) -> str:
     """Categorize workflow by purpose."""
     name = workflow_data.get("name", "").lower()
     filename_lower = filename.lower()
-    
+
     categories = {
         "testing": ["test", "pytest", "coverage", "integration"],
         "ci": ["ci", "build", "compile"],
@@ -749,23 +749,23 @@ def categorize_workflow(workflow_data: dict, filename: str) -> str:
         "monitoring": ["status", "report", "dashboard", "metrics"],
         "maintenance": ["cleanup", "cache", "archive"],
     }
-    
+
     for category, keywords in categories.items():
         if any(keyword in name or keyword in filename_lower for keyword in keywords):
             return category
-    
+
     return "other"
 
 
-def identify_consolidation_candidates(inventory: dict) -> dict: 
+def identify_consolidation_candidates(inventory: dict) -> dict:
     """Identify workflows that can be consolidated."""
     # Group workflows by category
     by_category = defaultdict(list)
-    
+
     for workflow in inventory["workflows"]:
         if workflow. get("status") == "active":
             by_category[workflow["category"]]. append(workflow)
-    
+
     consolidation_plan = {
         "testing": {
             "keep": ["optimized-ci. yml", "integration-gated.yml"],
@@ -798,7 +798,7 @@ def identify_consolidation_candidates(inventory: dict) -> dict:
             "reason": "Unified cache operations with scheduled jobs",
         },
     }
-    
+
     # Mark consolidation candidates
     for workflow in inventory["workflows"]:
         for category, plan in consolidation_plan.items():
@@ -806,21 +806,21 @@ def identify_consolidation_candidates(inventory: dict) -> dict:
                 workflow["consolidation_candidate"] = True
                 workflow["consolidation_plan"] = plan["reason"]
                 workflow["consolidation_keep"] = plan["keep"]
-    
+
     return consolidation_plan
 
 
 def generate_inventory():
     """Generate comprehensive workflow inventory."""
     workflows_dir = Path(".github/workflows")
-    
+
     if not workflows_dir.exists():
         print(f"❌ Workflows directory not found: {workflows_dir}")
         return
-    
+
     # Scan all workflow files
     workflow_files = sorted(workflows_dir.glob("*. yml")) + sorted(workflows_dir.glob("*.yaml"))
-    
+
     inventory = {
         "metadata": {
             "generated_at": datetime.utcnow().isoformat() + "Z",
@@ -832,33 +832,33 @@ def generate_inventory():
         },
         "workflows": [],
     }
-    
+
     print(f"📊 Cataloging {len(workflow_files)} workflows...")
-    
+
     for workflow_file in workflow_files:
         print(f"  Processing: {workflow_file.name}")
         metadata = extract_workflow_metadata(workflow_file)
         inventory["workflows"].append(metadata)
-        
+
         if metadata. get("status") == "active":
             inventory["metadata"]["active_count"] += 1
-    
+
     # Identify consolidation candidates
     consolidation_plan = identify_consolidation_candidates(inventory)
     inventory["consolidation_plan"] = consolidation_plan
-    
+
     # Save inventory
     inventory_path = Path(".github/workflow-archive/WORKFLOW_INVENTORY.yaml")
     inventory_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(inventory_path, "w") as f:
         yaml. dump(inventory, f, default_flow_style=False, sort_keys=False)
-    
+
     print(f"\n✅ Inventory saved to: {inventory_path}")
     print(f"   Total workflows: {inventory['metadata']['total_workflows']}")
     print(f"   Active:  {inventory['metadata']['active_count']}")
     print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")
-    
+
     # Generate summary report
     generate_summary_report(inventory)
 
@@ -866,18 +866,18 @@ def generate_inventory():
 def generate_summary_report(inventory: dict):
     """Generate human-readable summary report."""
     report_path = Path(".github/workflow-archive/INVENTORY_SUMMARY.md")
-    
+
     with open(report_path, "w") as f:
         f.write("# Workflow Inventory Summary\n\n")
         f.write(f"**Generated**: {inventory['metadata']['generated_at']}\n\n")
         f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")
-        
+
         # Category breakdown
         f.write("## Workflows by Category\n\n")
         by_category = defaultdict(list)
         for workflow in inventory["workflows"]:
             by_category[workflow. get("category", "other")].append(workflow)
-        
+
         for category, workflows in sorted(by_category.items()):
             f.write(f"### {category. title()} ({len(workflows)} workflows)\n\n")
             for workflow in workflows:
@@ -885,7 +885,7 @@ def generate_summary_report(inventory: dict):
                 consolidation_icon = "⚠️" if workflow.get("consolidation_candidate") else ""
                 f.write(f"- {status_icon} {consolidation_icon} `{workflow['filename']}` - {workflow. get('name', 'N/A')}\n")
             f.write("\n")
-        
+
         # Consolidation candidates
         candidates = [w for w in inventory["workflows"] if w.get("consolidation_candidate")]
         if candidates:
@@ -894,19 +894,19 @@ def generate_summary_report(inventory: dict):
                 f.write(f"### `{workflow['filename']}`\n\n")
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
                 f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")
-        
+
         # Secrets usage
         f.write("## Secrets Usage\n\n")
         secrets_usage = defaultdict(list)
         for workflow in inventory["workflows"]:
             for secret in workflow.get("secrets_used", []):
                 secrets_usage[secret].append(workflow["filename"])
-        
+
         if secrets_usage:
             for secret, workflows in sorted(secrets_usage.items()):
                 f.write(f"### `{secret}`\n")
                 f.write(f"Used in {len(workflows)} workflows: {', '.join(workflows)}\n\n")
-    
+
     print(f"✅ Summary report saved to: {report_path}")
 
 
@@ -927,7 +927,7 @@ git commit -m "feat(ci): implement workflow archive & catalog system
 - Implement directory structure (active/disabled/metadata/backups)
 - Track 66 workflows with categorization and consolidation analysis
 
-Features: 
+Features:
 - SHA256 hashing for workflow integrity
 - Secret usage tracking across all workflows
 - Consolidation candidate identification (18 workflows)
@@ -979,7 +979,7 @@ Source: $WORKFLOWS_DIR
 Backup Location: $BACKUP_DIR
 Total Files: $TOTAL_FILES
 
-Files: 
+Files:
 $(ls -1 "$BACKUP_DIR"/*.yml "$BACKUP_DIR"/*.yaml 2>/dev/null | xargs -n1 basename)
 
 SHA256 Checksums:
@@ -994,7 +994,7 @@ echo ""
 echo "=== Backup Verification ==="
 if [ "$TOTAL_FILES" -gt 0 ]; then
     echo "✅ All workflow files backed up successfully"
-    
+
     # Compare file counts
     ORIGINAL_COUNT=$(find "$WORKFLOWS_DIR" -type f \( -name "*.yml" -o -name "*.yaml" \) | wc -l)
     if [ "$TOTAL_FILES" -eq "$ORIGINAL_COUNT" ]; then
@@ -1068,7 +1068,7 @@ on:
           - report_publish.yml
           - duplicate-detection-per commit cycle.yml
           - post-merge-validation.yml
-      
+
       restore_source:
         description: 'Restore from'
         required: true
@@ -1077,12 +1077,12 @@ on:
           - backup-latest
           - backup-date
           - archive-disabled
-      
+
       backup_date:
         description: 'Backup date (YYYY-MM-DD) if restore_source=backup-date'
         required: false
         type: string
-      
+
       enable_immediately:
         description: 'Enable workflow after restoration'
         required: true
@@ -1100,20 +1100,20 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth:  0
-      
+
       - name: Validate inputs
         id: validate
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs. restore_source }}"
           DATE="${{ github.event.inputs. backup_date }}"
-          
+
           echo "=== Restoration Request ==="
           echo "Workflow: $WORKFLOW"
           echo "Source: $SOURCE"
           echo "Date: $DATE"
           echo "Enable immediately: ${{ github.event.inputs.enable_immediately }}"
-          
+
           # Validate backup date format if provided
           if [ "$SOURCE" = "backup-date" ] && [ -n "$DATE" ]; then
             if ! [[ "$DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
@@ -1121,18 +1121,18 @@ jobs:
               exit 1
             fi
           fi
-          
+
           echo "✅ Inputs validated"
-      
+
       - name: Locate source file
         id: locate
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs.restore_source }}"
           DATE="${{ github.event.inputs. backup_date }}"
-          
+
           SOURCE_FILE=""
-          
+
           case "$SOURCE" in
             "backup-latest")
               # Find most recent backup
@@ -1146,34 +1146,34 @@ jobs:
               SOURCE_FILE=".github/workflow-archive/disabled/$WORKFLOW"
               ;;
           esac
-          
+
           if [ !  -f "$SOURCE_FILE" ]; then
             echo "❌ Source file not found: $SOURCE_FILE"
             echo "Available files in source:"
             ls -la "$(dirname "$SOURCE_FILE")" 2>/dev/null || echo "Directory does not exist"
             exit 1
           fi
-          
+
           echo "source_file=$SOURCE_FILE" >> $GITHUB_OUTPUT
           echo "✅ Source located: $SOURCE_FILE"
-      
+
       - name: Restore workflow file
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE_FILE="${{ steps.locate.outputs.source_file }}"
           DEST_FILE=".github/workflows/$WORKFLOW"
-          
+
           echo "Restoring:  $SOURCE_FILE → $DEST_FILE"
-          
+
           # Check if workflow already exists
           if [ -f "$DEST_FILE" ]; then
             echo "⚠️ Workflow already exists.  Creating backup before overwrite..."
             cp "$DEST_FILE" "$DEST_FILE. backup-$(date +%Y%m%d%H%M%S)"
           fi
-          
+
           # Copy workflow file
           cp "$SOURCE_FILE" "$DEST_FILE"
-          
+
           # If not enabling immediately, add disabled comment header
           if [ "${{ github. event.inputs.enable_immediately }}" = "false" ]; then
             echo "Adding disabled notice header..."
@@ -1182,79 +1182,79 @@ jobs:
 # Remove this comment block when ready to activate
 # Restored:  $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # Source: $SOURCE_FILE
-# 
+#
 # To enable:  Remove this comment block and the 'if:  false' line below
 
 HEADER
             cat /tmp/header.txt "$DEST_FILE" > /tmp/workflow_with_header.yml
             mv /tmp/workflow_with_header.yml "$DEST_FILE"
           fi
-          
+
           echo "✅ Workflow restored"
-      
+
       - name: Update inventory
         run: |
           python3 scripts/catalog_workflows.py
           echo "✅ Inventory updated"
-      
+
       - name: Create restoration report
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
           SOURCE="${{ github.event.inputs.restore_source }}"
           SOURCE_FILE="${{ steps.locate. outputs.source_file }}"
-          
+
           cat > /tmp/restoration-report.md << REPORT
           ## 🔄 Workflow Restoration Report
-          
+
           **Date**:  $(date -u +"%Y-%m-%dT%H:%M:%SZ")
           **Workflow**: \`$WORKFLOW\`
           **Restored from**: $SOURCE (\`$SOURCE_FILE\`)
           **Status**: ${{ github.event.inputs.enable_immediately == 'true' && '✅ ENABLED' || '⚠️ DISABLED (requires manual enablement)' }}
-          
+
           ### Actions Taken
           - ✅ Source file located and validated
           - ✅ Workflow file restored to \`.github/workflows/$WORKFLOW\`
           - ✅ Workflow inventory updated
           ${{ github.event.inputs.enable_immediately == 'false' && '- ⚠️ Workflow is DISABLED (comment header added)' || '' }}
-          
+
           ### Next Steps
           ${{ github.event.inputs.enable_immediately == 'false' && '1. Review restored workflow in `.github/workflows/'$WORKFLOW'`\n2. Remove disabled comment header when ready\n3. Test workflow execution with `workflow_dispatch` or relevant trigger' || '1. Monitor workflow execution in Actions tab\n2. Verify expected behavior\n3. Check for any failures or deprecation warnings' }}
-          
+
           ### Restoration Details
           - **Triggered by**: @${{ github.actor }}
           - **Run ID**: ${{ github.run_id }}
           - **Commit**: ${{ github.sha }}
           - **Source SHA256**: $(sha256sum "$SOURCE_FILE" | awk '{print $1}')
           REPORT
-          
+
           cat /tmp/restoration-report.md
-      
+
       - name: Commit changes
         run: |
           WORKFLOW="${{ github.event.inputs.workflow_file }}"
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply. github.com"
-          
+
           git add .github/workflows/"$WORKFLOW"
           git add . github/workflow-archive/WORKFLOW_INVENTORY.yaml
           git add .github/workflow-archive/INVENTORY_SUMMARY.md
-          
+
           STATUS="${{ github.event.inputs.enable_immediately == 'true' && 'enabled' || 'disabled' }}"
-          
+
           git commit -m "restore(ci): restore $WORKFLOW from ${{ github.event.inputs.restore_source }} ($STATUS)
 
           Workflow restored via automated restoration tool.
-          
+
           - Source: ${{ steps.locate.outputs.source_file }}
           - Status: $STATUS
           - Triggered by: @${{ github.actor }}
           - Restore method: ${{ github.event.inputs.restore_source }}
-          
+
           Ref: workflow-restore-${{ github.run_id }}"
-          
+
           git push
-      
+
       - name: Summary
         run: |
           echo "✅ Workflow restoration complete!"
@@ -1306,7 +1306,7 @@ cat > scripts/consolidate_workflows.py << 'EOF'
 """
 Intelligent Workflow Consolidation
 
-Safely consolidates redundant workflows with automatic backups and rollback capability. 
+Safely consolidates redundant workflows with automatic backups and rollback capability.
 Implements phased consolidation with validation gates.
 """
 
@@ -1323,13 +1323,13 @@ import yaml
 
 class WorkflowConsolidator:
     """Manages workflow consolidation with safety checks."""
-    
+
     def __init__(self):
         self.workflows_dir = Path(".github/workflows")
         self.archive_dir = Path(".github/workflow-archive")
         self.disabled_dir = self.archive_dir / "disabled"
         self.disabled_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Load inventory
         inventory_path = self.archive_dir / "WORKFLOW_INVENTORY.yaml"
         if inventory_path.exists():
@@ -1338,27 +1338,27 @@ class WorkflowConsolidator:
         else:
             print("⚠️ Inventory not found. Run catalog_workflows.py first.")
             self.inventory = {"metadata": {}, "workflows": []}
-    
+
     def disable_workflow(self, workflow_file: str, reason: str) -> bool:
         """Safely disable a workflow (move to disabled archive)."""
         source = self.workflows_dir / workflow_file
         destination = self.disabled_dir / workflow_file
-        
+
         if not source.exists():
             print(f"⚠️ Workflow not found: {workflow_file}")
             return False
-        
+
         # Create backup first
         backup_dir = self.archive_dir / "backups" / datetime.now().strftime("%Y-%m-%d")
         backup_dir.mkdir(parents=True, exist_ok=True)
-        
+
         try:
             shutil.copy2(source, backup_dir / workflow_file)
             print(f"  ✅ Backed up to: {backup_dir / workflow_file}")
         except Exception as e:
             print(f"  ❌ Backup failed: {e}")
             return False
-        
+
         # Move to disabled
         try:
             shutil.move(str(source), str(destination))
@@ -1366,7 +1366,7 @@ class WorkflowConsolidator:
         except Exception as e:
             print(f"  ❌ Move failed: {e}")
             return False
-        
+
         # Add metadata
         metadata_file = destination. with_suffix(".yml. meta")
         with open(metadata_file, "w") as f:
@@ -1376,96 +1376,96 @@ class WorkflowConsolidator:
                 "backed_up_to": str(backup_dir / workflow_file),
                 "backup_sha256": self._calculate_sha256(backup_dir / workflow_file),
             }, f)
-        
+
         print(f"✅ Disabled:  {workflow_file}")
         return True
-    
+
     def _calculate_sha256(self, filepath: Path) -> str:
         """Calculate SHA256 hash of file."""
         import hashlib
         with open(filepath, "rb") as f:
             return hashlib.sha256(f.read()).hexdigest()
-    
+
     def consolidate_testing_workflows(self):
         """Phase 1: Consolidate testing workflows."""
         print("\n" + "="*70)
         print("Phase 1: Testing Workflows")
         print("="*70)
-        
+
         # Remove test-suite.yml (redundant with optimized-ci.yml)
         self.disable_workflow(
             "test-suite.yml",
             "Redundant with optimized-ci.yml which has caching and sharding"
         )
-        
+
         print("\n⚠️ Manual step required:")
         print("   Integrate MCP tests into optimized-ci.yml as additional job")
         print("   See: . github/workflows/optimized-ci.yml")
-    
+
     def consolidate_documentation_workflows(self):
         """Phase 2: Consolidate documentation workflows."""
         print("\n" + "="*70)
         print("Phase 2: Documentation Workflows")
         print("="*70)
-        
+
         self.disable_workflow("docs.yml", "Redundant with pages-mkdocs.yml")
         self.disable_workflow("validate-docs.yml", "Basic version superseded by enhanced")
         self.disable_workflow("validate-docs-enhanced.yml", "Merged into pages-mkdocs.yml as pre-build step")
-    
+
     def consolidate_container_workflows(self):
         """Phase 3: Consolidate container workflows."""
         print("\n" + "="*70)
         print("Phase 3: Container Workflows")
         print("="*70)
-        
+
         self. disable_workflow("container-build. yml", "Merged into docker-build-push.yml")
         self.disable_workflow("build-container-cache.yml", "Cache warming integrated into docker-build-push.yml")
-    
+
     def consolidate_validation_workflows(self):
         """Phase 4: Consolidate validation workflows."""
         print("\n" + "="*70)
         print("Phase 4: Validation Workflows")
         print("="*70)
-        
+
         self.disable_workflow("workflow-lint.yml", "Merged into workflow-validation.yml")
         self.disable_workflow("workflow-validator.yml", "Merged into workflow-validation.yml")
         self.disable_workflow("template-validation.yml", "Merged into workflow-validation.yml")
-    
+
     def consolidate_monitoring_workflows(self):
         """Phase 5: Consolidate monitoring workflows."""
         print("\n" + "="*70)
         print("Phase 5: Monitoring Workflows")
         print("="*70)
-        
+
         self.disable_workflow("daily_status_cron.yml", "Merged into per-iteration-status-pipeline.yml")
         self.disable_workflow("daily_status_enrich.yml", "Merged into per-iteration-status-pipeline.yml")
         self.disable_workflow("automation_ingest.yml", "Merged into per-iteration-status-pipeline.yml")
         self.disable_workflow("produce-trend.yml", "Merged into per-iteration-status-pipeline.yml")
         self.disable_workflow("report_publish.yml", "Merged into per-iteration-status-pipeline.yml")
-    
+
     def consolidate_maintenance_workflows(self):
         """Phase 6: Consolidate maintenance workflows."""
         print("\n" + "="*70)
         print("Phase 6: Maintenance Workflows")
         print("="*70)
-        
+
         self.disable_workflow("cache-cleanup.yml", "Merged into cache-management.yml")
         self.disable_workflow("cache-warmer.yml", "Merged into cache-management.yml")
-    
+
     def consolidate_other_workflows(self):
         """Phase 7: Other consolidations."""
         print("\n" + "="*70)
         print("Phase 7: Other Consolidations")
         print("="*70)
-        
+
         self. disable_workflow("duplicate-detection-per commit cycle.yml", "Merged into detect-duplicates. yml with schedule trigger")
         self.disable_workflow("post-merge-validation.yml", "Replaced by post-merge-validation-optimized.yml")
-    
+
     def generate_consolidation_report(self) -> str:
         """Generate consolidation summary report."""
         disabled_count = len(list(self.disabled_dir.glob("*.yml")))
         active_count = len(list(self.workflows_dir.glob("*. yml")))
-        
+
         report = f"""
 # Workflow Consolidation Report
 
@@ -1483,7 +1483,7 @@ class WorkflowConsolidator:
 ## Disabled Workflows
 
 """
-        
+
         for workflow_file in sorted(self.disabled_dir.glob("*.yml")):
             meta_file = workflow_file.with_suffix(".yml.meta")
             if meta_file.exists():
@@ -1494,7 +1494,7 @@ class WorkflowConsolidator:
                 report += f"**Disabled**:  {meta.get('disabled_at', 'N/A')}\n"
                 report += f"**Backup**:  `{meta.get('backed_up_to', 'N/A')}`\n"
                 report += f"**SHA256**: `{meta.get('backup_sha256', 'N/A')[:16]}... `\n\n"
-        
+
         report += """
 ## Rollback Instructions
 
@@ -1553,7 +1553,7 @@ The following consolidated workflows now handle multiple responsibilities:
 
 ## Validation Checklist
 
-Before considering consolidation complete, verify: 
+Before considering consolidation complete, verify:
 
 - [ ] All active workflows pass in CI
 - [ ] No functionality lost from disabled workflows
@@ -1572,9 +1572,9 @@ Before considering consolidation complete, verify:
 | Maintenance Burden | High | Medium | Reduced |
 
 """
-        
+
         return report
-    
+
     def execute_consolidation(self, phases: list[str] | None = None):
         """Execute consolidation phases."""
         all_phases = [
@@ -1586,46 +1586,46 @@ Before considering consolidation complete, verify:
             ("maintenance", self.consolidate_maintenance_workflows),
             ("other", self.consolidate_other_workflows),
         ]
-        
+
         print("="*70)
         print("Starting Workflow Consolidation")
         print("="*70)
         print(f"Target: 66 → 48 workflows (-27.3%)")
         print(f"Phases: {phases if phases else 'ALL'}")
         print("="*70)
-        
+
         executed_phases = []
-        for phase_name, phase_func in all_phases: 
-            if phases is None or phase_name in phases: 
+        for phase_name, phase_func in all_phases:
+            if phases is None or phase_name in phases:
                 phase_func()
                 executed_phases.append(phase_name)
-        
+
         # Generate report
         report = self.generate_consolidation_report()
         report_path = self.archive_dir / "CONSOLIDATION_REPORT.md"
         with open(report_path, "w") as f:
             f. write(report)
-        
+
         print(f"\n✅ Consolidation complete!")
         print(f"📄 Report:  {report_path}")
         print(f"\n{report}")
-        
+
         return report_path
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     import sys
-    
+
     consolidator = WorkflowConsolidator()
-    
+
     # Execute all phases by default, or specific phases if provided
     phases = sys.argv[1:] if len(sys.argv) > 1 else None
-    
+
     if phases:
         print(f"Executing specific phases: {', '.join(phases)}")
     else:
         print("Executing ALL consolidation phases")
-    
+
     consolidator.execute_consolidation(phases)
 EOF
 
@@ -1642,7 +1642,7 @@ Features:
 - Comprehensive consolidation report generation
 - Rollback instructions (3 methods)
 
-Phases: 
+Phases:
 1. Testing (test-suite.yml, mcp-ci.yml)
 2. Documentation (docs.yml, validate-docs*. yml)
 3. Container (container-build.yml, build-container-cache.yml)
@@ -1651,10 +1651,10 @@ Phases:
 6. Maintenance (cache-cleanup.yml, cache-warmer.yml)
 7. Other (duplicate-detection-per commit cycle.yml, post-merge-validation.yml)
 
-Usage: 
+Usage:
   # Execute all phases
   python3 scripts/consolidate_workflows. py
-  
+
   # Execute specific phases
   python3 scripts/consolidate_workflows.py testing documentation
 
@@ -1809,13 +1809,13 @@ if command -v gh &> /dev/null; then
         --jq '.[] | "\(.status) | \(.conclusion // "in_progress") | \(.name) | \(.createdAt)"' \
         | column -t -s '|'
     echo ""
-    
+
     # Check for failing workflows
     echo "⚠️  Failing Workflows (Last 10 Runs)"
     echo "----------------------------------------"
     FAILING=$(gh run list --status failure --limit 10 --json name,conclusion \
         --jq '.[] | select(.conclusion == "failure") | .name' | sort | uniq)
-    
+
     if [ -z "$FAILING" ]; then
         echo -e "${GREEN}✅ No failing workflows in last 10 runs${NC}"
     else
@@ -2208,7 +2208,7 @@ git commit -m "feat(ci): comprehensive workflow consolidation & CI failure resol
 ## 🎯 Mission Accomplished
 
 This commit implements a complete workflow lifecycle management system
-and resolves all critical CI failures from commit 2e1cad5. 
+and resolves all critical CI failures from commit 2e1cad5.
 
 ---
 
@@ -2383,11 +2383,11 @@ git push
 
 ## 📚 References
 
-- CI Failure Jobs: 
+- CI Failure Jobs:
   - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026341881
   - https://github.com/Aries-Serpent/_codex_/actions/runs/20550009934 <!-- Note: Logs expire after 90 days -->/job/59026394027
 
-- Documentation: 
+- Documentation:
   - Workflow Archive: . github/workflow-archive/
   - Inventory:  .github/workflow-archive/WORKFLOW_INVENTORY.yaml
   - Restoration Tool: .github/workflows/workflow-restore.yml

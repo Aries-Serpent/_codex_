@@ -240,7 +240,7 @@ Validated: python scripts/validate_docs_links.py (0 errors)
    ```bash
    # By filename
    find docs -name "*partial_name*" -type f
-   
+
    # By content
    grep -r "expected heading" docs/
    ```
@@ -256,7 +256,7 @@ Validated: python scripts/validate_docs_links.py (0 errors)
    ```bash
    cat > docs/missing/file.md << 'EOF'
    # Title
-   
+
    This page has moved to [New Location](../correct/path.md).
    EOF
    ```
@@ -320,10 +320,10 @@ mkdocs serve
    ```bash
    # Check CSS syntax
    grep -E "(background-color|color|margin|padding)" docs/stylesheets/extra.css
-   
+
    # Verify CSS is loaded in mkdocs.yml
    grep "extra.css" mkdocs.yml
-   
+
    # Check mermaid plugin enabled
    grep -A2 "plugins:" mkdocs.yml | grep mermaid
    ```
@@ -332,7 +332,7 @@ mkdocs serve
    ```bash
    # Strict build (catches config errors)
    mkdocs build --strict
-   
+
    # Serve locally for visual inspection
    mkdocs serve
    # Visit http://localhost:8000/architecture/
@@ -342,10 +342,10 @@ mkdocs serve
    ```bash
    # Check for unclosed/malformed fences
    python scripts/validate_code_fences.py --check
-   
+
    # Check table spacing
    python scripts/validate_table_spacing.py --check
-   
+
    # Apply fixes only if needed
    python scripts/validate_code_fences.py --fix
    python scripts/validate_table_spacing.py --fix
@@ -487,7 +487,7 @@ extra_css:
    ```bash
    # Find the actual file location
    find docs -name "*filename*" -type f
-   
+
    # Or search by content
    grep -r "expected content" docs/
    ```
@@ -497,11 +497,11 @@ extra_css:
    # Create redirect file pointing to correct location
    cat > docs/path/to/missing.md << 'EOF'
    # Page Title
-   
+
    This page has moved to [New Location](../correct/path.md).
-   
+
    ## Content
-   
+
    [Add appropriate content or redirect]
    EOF
    ```
@@ -528,7 +528,7 @@ Solution:
    # Create rag.md with redirect to rag_pipelines.md
    cat > docs/api/rag.md << 'EOF'
    # RAG Pipeline API
-   
+
    For detailed documentation, see [RAG Pipelines](rag_pipelines.md).
    EOF
    ```
@@ -580,7 +580,7 @@ Add badges to README or docs:
 
 ### Native Copilot Tools
 - `view` - Read files
-- `edit` - Modify files  
+- `edit` - Modify files
 - `grep` - Search content
 - `bash` - Execute commands
 
@@ -616,12 +616,12 @@ validation_speed:
   baseline: 15.0s
   optimized: 0.35s (43x faster)
   cached: 0.09s (166x faster)
-  
+
 accuracy:
   false_positives_filtered: 230 (93% reduction)
   false_negatives: 0 (100% accuracy)
   genuine_errors: 3 (documented)
-  
+
 cache_performance:
   hit_rate: 100% (steady state)
   invalidation: by file mtime

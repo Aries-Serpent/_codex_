@@ -4,18 +4,18 @@ on:
   # Weekly audit on Monday
   schedule:
     - cron: '0 6 * * 1'
-  
+
   # On PRs for QA walkthrough
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
       - develop
-  
+
   # On issue comments for QA review
   issue_comment:
     types: [created]
-  
+
   # Manual trigger with comprehensive options
   workflow_dispatch:
     inputs:
@@ -150,7 +150,7 @@ jobs:
             else
               python scripts/space_traversal/audit_runner.py run
             fi
-            
+
             # Extract metrics if available
             if [ -f ".codex/audit/results.json" ]; then
               gap_count=$(jq '.gap_count // 0' .codex/audit/results.json)
@@ -215,7 +215,7 @@ jobs:
               --depth "$REVIEW_DEPTH" \
               --focus "$FOCUS_AREAS" \
               ${PR_NUMBER:+--pr "$PR_NUMBER"}
-            
+
             # Extract results
             if [ -f ".codex/qa/results.json" ]; then
               issues=$(jq '.total_issues // 0' .codex/qa/results.json)
@@ -290,7 +290,7 @@ jobs:
           echo "This PR contains automated improvements based on:" >> improvement_pr_body.md
           echo "- Audit gaps: ${{ needs.audit_gap_analysis.outputs.gap_count }}" >> improvement_pr_body.md
           echo "- QA issues: ${{ needs.qa_walkthrough.outputs.issues_found }}" >> improvement_pr_body.md
-          
+
           # Note: Actual PR creation would be done via gh CLI or GitHub API
 
   unified_summary:

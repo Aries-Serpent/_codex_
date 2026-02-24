@@ -41,7 +41,7 @@ class TestDBManagerPoolCleanup:
             for _ in range(5):
                 conn = manager.get_connection()
                 conns.append(conn)
-            
+
             # Now return them all to pool
             for conn in conns:
                 manager.close_connection(conn)

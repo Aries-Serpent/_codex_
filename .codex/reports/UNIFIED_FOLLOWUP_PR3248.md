@@ -1,7 +1,7 @@
 # [Unified Follow-Up]: PR #3248 Failing Checks Collection - Next Session
 
-> **Status**: 70% Complete | **Priority**: High  
-> **Generated**: 2026-02-15T09:15:00Z  
+> **Status**: 70% Complete | **Priority**: High
+> **Generated**: 2026-02-15T09:15:00Z
 > **Session Tokens Used**: 113K / 1M (11.3%)
 
 ---

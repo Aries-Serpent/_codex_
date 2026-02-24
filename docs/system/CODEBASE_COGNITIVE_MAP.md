@@ -1,6 +1,6 @@
 # Codebase Cognitive Map
 
-> Generated: 2026-01-23T08:42:00Z | Updated by: doc-freshness-checker agent  
+> Generated: 2026-01-23T08:42:00Z | Updated by: doc-freshness-checker agent
 > PR: #2960 | Branch: `copilot/update-html-documentation-standards`
 
 ---
@@ -19,8 +19,8 @@
 
 ## Architecture Overview
 
-**Type**: Modular ML/AI Platform with Agent Orchestration  
-**MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready  
+**Type**: Modular ML/AI Platform with Agent Orchestration
+**MLOps Maturity**: Level 4 (100/100 Azure MLOps) - Production Ready
 **Stats**: 1500+ tests (100% passing), 72% coverage, 0 vulnerabilities
 
 ### Repository Structure
@@ -171,8 +171,8 @@ Test Execution → Cache Management → Artifact Generation
 - CodeQL - Code scanning
 
 ### Anti-/tmp/ Protection
-**Policy**: Use `.github/tmp/` instead of `/tmp/`  
-**Applied**: emergency_cache_cleanup.sh, MCP tools  
+**Policy**: Use `.github/tmp/` instead of `/tmp/`
+**Applied**: emergency_cache_cleanup.sh, MCP tools
 **Doc**: `docs/system/ANTI_TMP_PROTECTION_SYSTEM.md`
 
 ---
@@ -293,8 +293,8 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-**Owner**: DevOps + Agent Development Team  
-**Review**: Monthly or after major changes  
+**Owner**: DevOps + Agent Development Team
+**Review**: Monthly or after major changes
 **Last Reviewed**: 2026-01-23T08:42:00Z
 
 ---

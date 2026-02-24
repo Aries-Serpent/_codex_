@@ -269,7 +269,7 @@ codex-smell = "codex.quality.cli:smell_main"
 codex-metrics = "codex.ast.cli:metrics_main"
 # AST framework CLI (Phase 7.2 - Multi-language parser CLI)
 codex-ast = "codex.cli.ast_cli:main"
-# NEW: Reporting Tools  
+# NEW: Reporting Tools
 codex-report = "codex.reporting.cli:report_main"
 codex-dashboard = "codex.reporting.cli:dashboard_main"
 codex-ndjson = "codex_utils.cli.ndjson_summary:main"

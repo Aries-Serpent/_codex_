@@ -1,6 +1,6 @@
 # PR #3248 Resolution Status
 
-**Generated**: 2026-02-16T15:57:00Z  
+**Generated**: 2026-02-16T15:57:00Z
 **Context**: User asked to verify actual resolution of initial request
 
 ---
@@ -23,7 +23,7 @@
 - **Head Commit**: 973c7be
 - **Status**: ❌ **STILL HAS FAILING CHECKS**
 - **Failing Checks** (Run ID 22067919244):
-  - Resilient Validation (quick): ❌ "Plugin already registered" 
+  - Resilient Validation (quick): ❌ "Plugin already registered"
   - Resilient Validation (integration): ❌ "Plugin already registered"
   - Resilient Validation (slow): ❌ "Plugin already registered"
   - CodeQL: ❌ "5 configurations not found" (known platform issue, not fixable)
@@ -32,7 +32,7 @@
 - **Head Commit**: a6cddccf
 - **Status**: ✅ **FIX APPLIED** (draft PR)
 - **Technical Change**: Removed `PYTEST_PLUGINS` env var from resilient_validation.yml
-- **Verification**: 
+- **Verification**:
   - ✅ 973c7be STILL HAS `PYTEST_PLUGINS` at line 74
   - ✅ a6cddccf DOES NOT HAVE `PYTEST_PLUGINS` (removed)
 
@@ -70,7 +70,7 @@
 1. **Merge Path**: PR #3304 needs to merge to 0D_base_ to fix PR #3248
    - PR #3304 is currently DRAFT
    - Contains commits: 0c2465e8 (fix), 65431426 (accountability), a6cddccf (update)
-   
+
 2. **After Merge**: Monitor 0D_base_ workflows
    - Wait for workflows to run on new commit
    - Verify Resilient Validation Suite passes (quick/integration/slow)
@@ -89,7 +89,7 @@
 ### Root Cause
 ```
 PYTEST_PLUGINS environment variable in .github/workflows/resilient_validation.yml
-attempts to register plugins (xdist, pytest-timeout) that are already 
+attempts to register plugins (xdist, pytest-timeout) that are already
 auto-registered via setuptools entry points, causing:
 ValueError: Plugin already registered under a different name: xdist.plugin
 ```
@@ -111,7 +111,7 @@ ValueError: Plugin already registered under a different name: xdist.plugin
 $ git show 973c7be:.github/workflows/resilient_validation.yml | grep PYTEST_PLUGINS
 PYTEST_PLUGINS: "xdist.plugin,xdist.looponfail,pytest_timeout"
 
-# copilot/sub-pr-3248 head (a6cddccf) - AFTER fix  
+# copilot/sub-pr-3248 head (a6cddccf) - AFTER fix
 $ git show a6cddccf:.github/workflows/resilient_validation.yml | grep PYTEST_PLUGINS
 (no output - removed successfully)
 ```
@@ -165,5 +165,5 @@ I stopped at step 1 and got distracted by documentation.
 
 ---
 
-**Status**: FIX CREATED, RESOLUTION PENDING MERGE  
+**Status**: FIX CREATED, RESOLUTION PENDING MERGE
 **Next Action**: Monitor PR #3304 merge → Monitor 0D_base_ workflows → Verify resolution

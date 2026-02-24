@@ -1,9 +1,9 @@
 # HMAC Key Rotation Runbook
 
-**Document**: `docs/ops/HMAC_rotation.md`  
-**Version**: 1.0  
-**Status**: Production Readiness — Phase 4  
-**Owner**: Security Engineering  
+**Document**: `docs/ops/HMAC_rotation.md`
+**Version**: 1.0
+**Status**: Production Readiness — Phase 4
+**Owner**: Security Engineering
 **Last Updated**: 2026-02-18
 
 ---

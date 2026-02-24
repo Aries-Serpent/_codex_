@@ -79,7 +79,7 @@ def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_bloc
 
 **Issue**: `safe_secret_reference` function signature mismatch between implementation and tests.
 
-**Root Cause**: 
+**Root Cause**:
 - Tests expected: `safe_secret_reference(name: str, operation: str = "")`
 - Implementation had: `safe_secret_reference(operation: str = "")`
 
@@ -88,7 +88,7 @@ def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_bloc
 ```python
 def safe_secret_reference(name: str = "", operation: str = "") -> str:
     """Create a safe reference to a secret for logging purposes."""
-    
+
     # Handle empty name
     if not name:
         base = "secret [EMPTY]"
@@ -101,12 +101,12 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
         ]
         name_upper = name.upper()
         is_sensitive = any(keyword in name_upper for keyword in sensitive_keywords)
-        
+
         if is_sensitive:
             base = "secret [REDACTED_SECRET_NAME]"
         else:
             base = f"secret: {name}"  # Generic names like MY_API_KEY preserved
-    
+
     if operation:
         return f"{base} ({operation})"
     return base
@@ -132,7 +132,7 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
 
 **Hypothesis**: Conditional import of `DatasetDict` may be `None` when used in isinstance check. Code at line 239 of `src/codex_ml/eval/datasets.py` has protection (`if DatasetDict is not None and isinstance(ds, DatasetDict):`), but error still occurs.
 
-**Next Steps**: 
+**Next Steps**:
 - Verify datasets library is available in test environment
 - Check if there's another isinstance call without None protection
 - Add debug logging to trace the actual failing line

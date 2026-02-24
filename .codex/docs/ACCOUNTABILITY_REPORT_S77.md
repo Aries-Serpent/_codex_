@@ -1,8 +1,8 @@
 # Copilot Agent Accountability Report
 ## Why the Codebase Agency Policy is Repeatedly Forgotten
 
-> **Date**: 2026-02-24  
-> **Sessions analysed**: S01–S77  
+> **Date**: 2026-02-24
+> **Sessions analysed**: S01–S77
 > **Author**: GitHub Copilot Agent (self-assessment)
 
 ---

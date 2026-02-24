@@ -1,8 +1,8 @@
 # MCP Capability Matrix: Full End-to-End Capabilities
 
-> **Generated**: 2026-02-17T11:19:53Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Comprehensive reference for MCP tools, runtime requirements, and use cases  
+> **Generated**: 2026-02-17T11:19:53Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Comprehensive reference for MCP tools, runtime requirements, and use cases
 > **Status**: Production-Ready Documentation
 
 ---
@@ -44,8 +44,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `list_branches` - List repository branches
 - `list_tags` - List git tags
 
-**Runtime**: Node.js 18+, GitHub MCP Server  
-**Network**: GitHub API access required  
+**Runtime**: Node.js 18+, GitHub MCP Server
+**Network**: GitHub API access required
 **Secrets**: `GITHUB_TOKEN` (read scope minimum)
 
 ---
@@ -68,8 +68,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `githubwrite` - Merge PRs, update branches
 - **Post PR comments** (via `githubwrite` natural language)
 
-**Runtime**: Node.js 18+, GitHub MCP Server  
-**Network**: GitHub API access required  
+**Runtime**: Node.js 18+, GitHub MCP Server
+**Network**: GitHub API access required
 **Secrets**: `GITHUB_TOKEN` (write scope for mutations)
 
 ---
@@ -88,8 +88,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `github-issue` - Create/update issues
 - **Post issue comments** (via MCP tools)
 
-**Runtime**: Node.js 18+, GitHub MCP Server  
-**Network**: GitHub API access required  
+**Runtime**: Node.js 18+, GitHub MCP Server
+**Network**: GitHub API access required
 **Secrets**: `GITHUB_TOKEN` (write scope for mutations)
 
 ---
@@ -112,8 +112,8 @@ This document provides the complete capability matrix for Model Context Protocol
   - `get_workflow_run_logs_url` - Get log URLs
 - `get_job_logs` - Retrieve job logs with filtering
 
-**Runtime**: Node.js 18+, GitHub MCP Server  
-**Network**: GitHub API + Actions Log API access  
+**Runtime**: Node.js 18+, GitHub MCP Server
+**Network**: GitHub API + Actions Log API access
 **Secrets**: `GITHUB_TOKEN` (actions:read minimum)
 
 ---
@@ -127,8 +127,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `list_secret_scanning_alerts` - List secret alerts
 - `get_secret_scanning_alert` - Get secret alert details
 
-**Runtime**: Node.js 18+, GitHub MCP Server  
-**Network**: GitHub Security API access  
+**Runtime**: Node.js 18+, GitHub MCP Server
+**Network**: GitHub Security API access
 **Secrets**: `GITHUB_TOKEN` (security_events:read)
 
 ---
@@ -145,8 +145,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `playwright-browser_fill_form` - Fill forms
 - `playwright-browser_evaluate` - Execute JavaScript
 
-**Runtime**: Playwright 1.57+, Chromium/Firefox/WebKit browsers  
-**Network**: Target URLs (can be localhost)  
+**Runtime**: Playwright 1.57+, Chromium/Firefox/WebKit browsers
+**Network**: Target URLs (can be localhost)
 **Secrets**: None (unless target requires auth)
 
 ---
@@ -161,8 +161,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `grep` - Search file contents (ripgrep)
 - `glob` - Find files by pattern
 
-**Runtime**: Local file system access  
-**Network**: None  
+**Runtime**: Local file system access
+**Network**: None
 **Secrets**: None
 
 ---
@@ -177,8 +177,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `stop_bash` - Stop async commands
 - `list_bash` - List active bash sessions
 
-**Runtime**: Bash shell, command-line tools  
-**Network**: Depends on commands executed  
+**Runtime**: Bash shell, command-line tools
+**Network**: Depends on commands executed
 **Secrets**: Environment variables as needed
 
 ---
@@ -196,8 +196,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - RAG/ML (4 agents)
 - Session Management (2 agents)
 
-**Runtime**: Varies by agent  
-**Network**: Varies by agent  
+**Runtime**: Varies by agent
+**Network**: Varies by agent
 **Secrets**: Per agent requirements
 
 ---
@@ -209,8 +209,8 @@ This document provides the complete capability matrix for Model Context Protocol
 - `web_fetch` - Fetch web pages as markdown/HTML
 - `web_search` - AI-powered web search with citations
 
-**Runtime**: HTTP client  
-**Network**: Internet access required  
+**Runtime**: HTTP client
+**Network**: Internet access required
 **Secrets**: API keys for some services
 
 ---
@@ -425,8 +425,8 @@ See separate files:
 npm run test:e2e:chromium -- --reporter=json --output-file=results.json
 ```
 
-**Network**: localhost:5173 (dev server)  
-**Secrets**: None (unless app requires auth)  
+**Network**: localhost:5173 (dev server)
+**Secrets**: None (unless app requires auth)
 **Runtime**: 5-15 minutes depending on test count
 
 ---
@@ -449,8 +449,8 @@ npm run test:e2e:chromium -- --reporter=json --output-file=results.json
 5. Get failed job logs: `get_job_logs(job_id=..., failed_only=true)`
 6. Post review comments: `githubwrite(query="Post comment on PR #3248...")`
 
-**Network**: GitHub API  
-**Secrets**: `GITHUB_TOKEN` (write)  
+**Network**: GitHub API
+**Secrets**: `GITHUB_TOKEN` (write)
 **Runtime**: 30 seconds - 2 minutes
 
 ---
@@ -472,8 +472,8 @@ npm run test:e2e:chromium -- --reporter=json --output-file=results.json
 4. Examine failing code: `view` files mentioned in errors
 5. Propose fix based on analysis
 
-**Network**: GitHub API + Actions API  
-**Secrets**: `GITHUB_TOKEN` (actions:read)  
+**Network**: GitHub API + Actions API
+**Secrets**: `GITHUB_TOKEN` (actions:read)
 **Runtime**: 1-5 minutes
 
 ---
@@ -494,7 +494,7 @@ mutation {
     title: "Fix test failures in PR #3248",
     description: """
     Address all 25 test failures in PR #3248 following the Investigation Protocol:
-    
+
     1. Analyze failure logs
     2. Identify root causes
     3. Apply systematic fixes
@@ -516,9 +516,9 @@ mutation {
 }
 ```
 
-**Network**: GitHub GraphQL API  
-**Secrets**: `GITHUB_TOKEN` (Copilot access required)  
-**Runtime**: Immediate creation, execution varies  
+**Network**: GitHub GraphQL API
+**Secrets**: `GITHUB_TOKEN` (Copilot access required)
+**Runtime**: Immediate creation, execution varies
 **Limitations**: Only available in GitHub Copilot Workspace UI
 
 ---
@@ -539,8 +539,8 @@ mutation {
 4. Search codebase for affected code: `grep` and `view`
 5. Propose remediation based on alert recommendations
 
-**Network**: GitHub Security API  
-**Secrets**: `GITHUB_TOKEN` (security_events:read)  
+**Network**: GitHub Security API
+**Secrets**: `GITHUB_TOKEN` (security_events:read)
 **Runtime**: 30 seconds - 2 minutes
 
 ---
@@ -609,12 +609,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up MCP context
         run: |
           # MCP server runs as service container
           # Agent can access via http://localhost:8080
-          
+
       - name: Execute Copilot task
         env:
           MCP_ENDPOINT: http://localhost:8080
@@ -698,10 +698,10 @@ jobs:
 
 ## Document Metadata
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-02-17T11:19:53Z  
-**Maintained By**: GitHub Copilot Agent  
-**Review Cycle**: Quarterly or when capabilities change  
+**Version**: 1.0.0
+**Last Updated**: 2026-02-17T11:19:53Z
+**Maintained By**: GitHub Copilot Agent
+**Review Cycle**: Quarterly or when capabilities change
 **Status**: ✅ Production-Ready
 
 ---

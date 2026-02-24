@@ -1,8 +1,8 @@
 # S70 Follow-Up Prompt — PR #3344 Next Session
 
-**Created:** 2026-02-23T04:00:00Z  
-**Session:** S69 → S70  
-**Branch:** `copilot/sub-pr-3336-again` → target: new PR off `copilot/sub-pr-3248`  
+**Created:** 2026-02-23T04:00:00Z
+**Session:** S69 → S70
+**Branch:** `copilot/sub-pr-3336-again` → target: new PR off `copilot/sub-pr-3248`
 **Status:** PR #3344 is **merge-ready** pending CI re-run approval
 
 ---
@@ -53,17 +53,17 @@ production-ready content + Mermaid architecture diagrams:
 - `.github/agents/unified-security-scanner.md` (verify completeness)
 - `.github/agents/cross-agent-knowledge-graph.md` (verify completeness)
 
-Template to follow: `.github/agents/python-architect-agent.agent.md`  
+Template to follow: `.github/agents/python-architect-agent.agent.md`
 Required sections: Mission, Capabilities, Architecture Diagram (Mermaid), Integration,
 Activation, Error Handling, Success Metrics.
 
 ### 3.2 Cognitive Brain Status S69
-Create `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S69_CI_TRIAGE.md`  
+Create `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S69_CI_TRIAGE.md`
 Document: S69 scope, fixes, metrics (11 CodeQL resolved, 3 Art_RAG fixed, 47 root
 files cleaned, DRQ 7/7 complete).
 
 ### 3.3 AGENT_ECOSYSTEM_MAP.md update
-Current map says 53 agents. Actual count after S59–S69 merges is ~70+.  
+Current map says 53 agents. Actual count after S59–S69 merges is ~70+.
 Update counts and Mermaid diagram in `.github/agents/AGENT_ECOSYSTEM_MAP.md`.
 
 ### 3.4 AGENT_REGISTRY.yaml — add S67–S69 agents

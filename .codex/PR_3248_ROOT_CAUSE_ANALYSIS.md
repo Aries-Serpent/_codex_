@@ -1,7 +1,7 @@
 # PR #3248: Root Cause Analysis & Permanent Solution
 
-**Date**: 2026-02-16  
-**Status**: FINAL ANALYSIS  
+**Date**: 2026-02-16
+**Status**: FINAL ANALYSIS
 **Issue**: Repeated xdist worker crashes in CI
 
 ---
@@ -68,10 +68,10 @@ python -m pytest --timeout=60 -n 4  # Works!
     # Pin exact versions BEFORE package install
     pip install pytest==8.4.2 pytest-timeout==2.4.0 pytest-xdist==3.8.0 \
                 pytest-cov==5.0.0 pytest-asyncio==1.3.0 pytest-mock==3.15.1
-    
+
     # Package install won't change pinned versions
     pip install -e .[dev]
-    
+
     # Verify versions match
     python -c "import pytest; print(f'pytest={pytest.__version__}')"
 ```
@@ -208,7 +208,7 @@ python -m pytest --co --collect-only tests/ 2>&1 | grep -i "error\|unrecognized"
 This fix is successful if:
 
 1. ✅ No more "unrecognized arguments" errors
-2. ✅ No more "Plugin already registered" errors  
+2. ✅ No more "Plugin already registered" errors
 3. ✅ No more "maximum crashed workers reached"
 4. ✅ Tests actually run and report results
 5. ✅ Same fix works for 10+ consecutive CI runs

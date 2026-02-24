@@ -1,8 +1,8 @@
 # Follow-up Implementation Prompt for GitHub Copilot Agent
 
-> **Purpose**: Complete Phase 1 implementation of CI optimization based on PR #3248 analysis  
-> **Generated**: 2026-02-15T11:00:00Z  
-> **For**: Next GitHub Copilot Agent session  
+> **Purpose**: Complete Phase 1 implementation of CI optimization based on PR #3248 analysis
+> **Generated**: 2026-02-15T11:00:00Z
+> **For**: Next GitHub Copilot Agent session
 > **Base Branch**: `0D_base_` (or `main` after PR #3248 merges)
 
 ---
@@ -20,7 +20,7 @@ Create all 5 components with tests. Reference: .codex/CI_OPTIMIZATION_PLANSETS.m
 - `.codex/CI_FAILURE_PATTERN_ANALYSIS.md` (11KB) - Problem context
 - `.codex/WORKFLOW_ARCHITECTURE_REVIEW.md` (28KB) - Workflow structure
 
-**Expected Duration**: 30-45 minutes continuous execution  
+**Expected Duration**: 30-45 minutes continuous execution
 **Token Budget**: ~150-200K tokens (15-20% of 1M budget)
 
 ---
@@ -49,14 +49,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Analyze PR Size
         id: analyze
         run: |
           # Count changed files
           CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | wc -l)
           echo "changed_files_count=$CHANGED_FILES" >> $GITHUB_OUTPUT
-          
+
           # Determine size tier
           if [ $CHANGED_FILES -lt 20 ]; then
             echo "pr_size=small" >> $GITHUB_OUTPUT
@@ -71,7 +71,7 @@ jobs:
             echo "pr_size=refactor" >> $GITHUB_OUTPUT
             echo "validation_strategy=import_validation" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Report Size
         run: |
           echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
@@ -109,7 +109,7 @@ import requests
 
 class TelemetryCollector:
     """Collects and analyzes CI telemetry data."""
-    
+
     # Pattern keywords for automatic classification
     PATTERN_KEYWORDS = {
         "auto-fix": ["auto-fix", "detect-and-fix", "detect ci issues"],
@@ -118,7 +118,7 @@ class TelemetryCollector:
         "filesystem-deadlock": ["root-org", "file-validation", "directory"],
         "pre-merge-cascade": ["pre-merge", "final-checks", "merge validation"]
     }
-    
+
     def __init__(self, owner: str, repo: str, token: str):
         self.owner = owner
         self.repo = repo
@@ -128,7 +128,7 @@ class TelemetryCollector:
             "Authorization": f"token {token}",
             "Accept": "application/vnd.github+json"
         }
-    
+
     def collect_workflow_runs(self, branch: str, days: int = 7) -> List[Dict]:
         """Collect workflow runs from specified branch."""
         since = (datetime.utcnow() - timedelta(days=days)).isoformat()
@@ -138,7 +138,7 @@ class TelemetryCollector:
             "per_page": 100,
             "created": f">={since}"
         }
-        
+
         runs = []
         page = 1
         while True:
@@ -146,50 +146,50 @@ class TelemetryCollector:
             response = requests.get(url, headers=self.headers, params=params)
             response.raise_for_status()
             data = response.json()
-            
+
             runs.extend(data["workflow_runs"])
-            
+
             if len(data["workflow_runs"]) < 100:
                 break
             page += 1
-        
+
         return runs
-    
+
     def collect_job_details(self, run_id: int) -> List[Dict]:
         """Collect job details for a workflow run."""
         url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs/{run_id}/jobs"
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
         return response.json()["jobs"]
-    
+
     def collect_artifacts(self, run_id: int) -> List[Dict]:
         """Collect artifacts for a workflow run."""
         url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs/{run_id}/artifacts"
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
         return response.json()["artifacts"]
-    
+
     def classify_failure(self, run: Dict, jobs: List[Dict]) -> Optional[str]:
         """Classify failure into one of 5 patterns."""
         run_name = run["name"].lower()
         job_names = " ".join([j["name"].lower() for j in jobs])
-        
+
         for pattern, keywords in self.PATTERN_KEYWORDS.items():
             for keyword in keywords:
                 if keyword in run_name or keyword in job_names:
                     return pattern
-        
+
         return "unknown"
-    
+
     def generate_report(self, branch: str, days: int = 7, output: str = "telemetry_report.json"):
         """Generate comprehensive telemetry report."""
         print(f"Collecting workflow runs from {branch} (last {days} days)...")
         runs = self.collect_workflow_runs(branch, days)
-        
+
         # Filter to failed runs
         failed_runs = [r for r in runs if r["conclusion"] in ["failure", "cancelled", "timed_out"]]
         print(f"Found {len(failed_runs)} failed runs out of {len(runs)} total")
-        
+
         telemetry_data = {
             "generated_at": datetime.utcnow().isoformat(),
             "repository": f"{self.owner}/{self.repo}",
@@ -203,19 +203,19 @@ class TelemetryCollector:
             "pattern_distribution": {},
             "failed_runs": []
         }
-        
+
         # Collect details for each failed run
         for run in failed_runs:
             print(f"  Processing run {run['id']}: {run['name']}")
-            
+
             jobs = self.collect_job_details(run["id"])
             artifacts = self.collect_artifacts(run["id"])
             pattern = self.classify_failure(run, jobs)
-            
+
             # Update pattern distribution
             telemetry_data["pattern_distribution"][pattern] = \
                 telemetry_data["pattern_distribution"].get(pattern, 0) + 1
-            
+
             telemetry_data["failed_runs"].append({
                 "run_id": run["id"],
                 "run_name": run["name"],
@@ -237,17 +237,17 @@ class TelemetryCollector:
                     "expired": a["expired"]
                 } for a in artifacts]
             })
-        
+
         # Write report
         with open(output, "w") as f:
             json.dump(telemetry_data, f, indent=2)
-        
+
         print(f"\nTelemetry report written to {output}")
         print("\nPattern Distribution:")
         for pattern, count in telemetry_data["pattern_distribution"].items():
             percentage = (count / len(failed_runs)) * 100 if failed_runs else 0
             print(f"  {pattern}: {count} ({percentage:.1f}%)")
-        
+
         return telemetry_data
 
 
@@ -259,14 +259,14 @@ def main():
     parser.add_argument("--days", type=int, default=7, help="Days to analyze")
     parser.add_argument("--output", default="telemetry_report.json", help="Output file")
     parser.add_argument("--token", help="GitHub token (or use GITHUB_TOKEN env var)")
-    
+
     args = parser.parse_args()
-    
+
     token = args.token or os.getenv("GITHUB_TOKEN") or os.getenv("CODEX_MASTER_KEY")
     if not token:
         print("Error: GitHub token required (--token or GITHUB_TOKEN/CODEX_MASTER_KEY env var)")
         sys.exit(1)
-    
+
     collector = TelemetryCollector(args.owner, args.repo, token)
     collector.generate_report(args.branch, args.days, args.output)
 
@@ -516,7 +516,7 @@ After Phase 1 implementation:
 
 ---
 
-**Status**: Ready for Copilot Agent execution  
-**Reference**: PR #3248 analysis and plansets  
-**Next**: Create PR with Phase 1 implementation  
+**Status**: Ready for Copilot Agent execution
+**Reference**: PR #3248 analysis and plansets
+**Next**: Create PR with Phase 1 implementation
 **Success**: All 5 components working with tests passing

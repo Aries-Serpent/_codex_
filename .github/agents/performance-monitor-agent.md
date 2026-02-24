@@ -1,8 +1,8 @@
 # Performance Monitor Agent
 
-**Version**: 1.0.0  
-**Created**: 2026-01-23  
-**Phase**: 14.4 - Agent Ecosystem Expansion  
+**Version**: 1.0.0
+**Created**: 2026-01-23
+**Phase**: 14.4 - Agent Ecosystem Expansion
 **Status**: Production Ready
 
 ---
@@ -117,27 +117,27 @@ graph TD
         C --> D[Optimizer]
         D --> E[Report Generator]
     end
-    
+
     subgraph "Metric Sources"
         F[pytest-benchmark] --> A
         G[cProfile] --> A
         H[memory_profiler] --> A
         I[Custom Metrics] --> A
     end
-    
+
     subgraph "Storage"
         J[Baseline DB] --> B
         K[Historical Metrics] --> C
         L[Optimization Cache] --> D
     end
-    
+
     subgraph "Outputs"
         E --> M[Performance Reports]
         E --> N[PR Comments]
         E --> O[Dashboards]
         E --> P[Alerts]
     end
-    
+
     subgraph "Actions"
         Q[Block Regression] --> C
         R[Notify Team] --> C
@@ -236,18 +236,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Performance Benchmarks
         run: |
           pytest tests/perf/ --benchmark-json=benchmark.json
-          
+
       - name: Invoke Performance Monitor Agent
         uses: ./.github/agents/performance-monitor-agent
         with:
           benchmark_file: benchmark.json
           regression_threshold: 10
           comment_on_pr: true
-          
+
       - name: Upload Metrics
         uses: actions/upload-artifact@v4
         with:
@@ -298,8 +298,8 @@ The agent exposes the following MCP tools:
 ```markdown
 ## ⚡ Performance Monitor Report
 
-**Report Date**: 2026-01-23  
-**Comparison**: PR #1234 vs main  
+**Report Date**: 2026-01-23
+**Comparison**: PR #1234 vs main
 **Status**: ⚠️ Regression Detected
 
 ### Metric Summary
@@ -400,16 +400,16 @@ def detect_regression(
 ) -> bool:
     """
     Detect performance regression using statistical testing.
-    
+
     Args:
         baseline: Historical performance measurements (e.g., latencies in ms)
         current: Current performance measurements to compare
         threshold: Minimum percentage change to consider a regression (default: 10%)
         alpha: Significance level for statistical test (default: 0.05)
-    
+
     Returns:
         bool: True if a statistically significant regression is detected
-    
+
     Algorithm:
         1. Calculate mean and std for both samples
         2. Perform Welch's t-test (handles unequal variances)
@@ -419,16 +419,16 @@ def detect_regression(
     """
     baseline_mean: float = np.mean(baseline)
     current_mean: float = np.mean(current)
-    
+
     # Calculate relative change (positive = regression/slower)
     change: float = (current_mean - baseline_mean) / baseline_mean
-    
+
     # Welch's t-test for unequal variances
     _, p_value = stats.ttest_ind(baseline, current, equal_var=False)
-    
+
     is_significant: bool = p_value < alpha
     exceeds_threshold: bool = change > threshold
-    
+
     return is_significant and exceeds_threshold
 ```
 
@@ -475,16 +475,16 @@ The agent tracks:
 
 ---
 
-**Maintainer**: Performance Team  
+**Maintainer**: Performance Team
 **Last Updated**: 2026-01-23
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: Performance Monitor Agent  
-**Agent Type**: Monitoring & Validation  
-**Energy Level**: 3/5  
+**Agent Name**: Performance Monitor Agent
+**Agent Type**: Monitoring & Validation
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -626,7 +626,7 @@ Input → Validation → Processing → Output → Verification
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Monitoring & Validation  
+**Category**: Monitoring & Validation
 **Description**: Monitors systems and validates compliance
 
 ### Classification Details
@@ -682,7 +682,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -800,8 +800,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

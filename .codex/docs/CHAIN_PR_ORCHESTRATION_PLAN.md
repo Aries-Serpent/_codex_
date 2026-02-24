@@ -1,8 +1,8 @@
 # Chain-PR Orchestration Plan
 
-> **Generated**: 2026-02-17T11:24:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Complete guide for managing multi-PR dependency chains  
+> **Generated**: 2026-02-17T11:24:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Complete guide for managing multi-PR dependency chains
 > **Status**: Production-Ready Framework
 
 ---
@@ -374,10 +374,10 @@ jobs:
     name: Validate Chain PR
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'chain-pr')
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Extract chain metadata from PR
         id: extract
         uses: actions/github-script@v7
@@ -385,31 +385,31 @@ jobs:
           script: |
             const title = context.payload.pull_request.title;
             const match = title.match(/\[Chain (\d+)\/(\d+)\]/);
-            
+
             if (!match) {
               core.setFailed('PR title must include [Chain X/Y] prefix');
               return;
             }
-            
+
             const prNumber = parseInt(match[1]);
             const totalPrs = parseInt(match[2]);
-            
+
             core.setOutput('pr_number', prNumber);
             core.setOutput('total_prs', totalPrs);
-      
+
       - name: Validate chain sequence
         run: |
           PR_NUM=${{ steps.extract.outputs.pr_number }}
-          
+
           if [ "$PR_NUM" -gt 1 ]; then
             # Check if previous PR is merged
             PREV_PR=$(($PR_NUM - 1))
             echo "Checking if PR #${PREV_PR} in chain is merged..."
-            
+
             # Query GitHub API for chain metadata
             # Validate previous PR status
           fi
-      
+
       - name: Post validation result
         uses: actions/github-script@v7
         with:
@@ -548,7 +548,7 @@ fi
 if [ "$PR_SEQUENCE" -gt 1 ]; then
   PREV_SEQUENCE=$(($PR_SEQUENCE - 1))
   PREV_STATUS=$(jq -r ".prs[] | select(.number == $PREV_SEQUENCE) | .status" "$CHAIN_FILE")
-  
+
   if [ "$PREV_STATUS" != "merged" ]; then
     echo "❌ Previous PR (sequence #$PREV_SEQUENCE) not merged yet"
     echo "   Current status: $PREV_STATUS"
@@ -630,11 +630,11 @@ Status: ⏳ Waiting for PR #6
 ```markdown
 # Python 3.12 Migration Chain
 
-**Chain ID**: python-312-migration-2026-01  
-**Objective**: Migrate codebase from Python 3.11 to 3.12  
-**Total PRs**: 7  
-**Status**: 5/7 Merged (71% Complete)  
-**Started**: 2026-01-15  
+**Chain ID**: python-312-migration-2026-01
+**Objective**: Migrate codebase from Python 3.11 to 3.12
+**Total PRs**: 7
+**Status**: 5/7 Merged (71% Complete)
+**Started**: 2026-01-15
 **Target**: 2026-02-01
 
 ## Progress
@@ -700,6 +700,6 @@ Status: ⏳ Waiting for PR #6
 
 ---
 
-**Status**: ✅ Production-Ready  
-**Version**: 1.0.0  
+**Status**: ✅ Production-Ready
+**Version**: 1.0.0
 **Last Updated**: 2026-02-17T11:24:00Z

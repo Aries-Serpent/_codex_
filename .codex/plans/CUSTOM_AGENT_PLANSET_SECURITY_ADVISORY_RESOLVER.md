@@ -1,8 +1,8 @@
 # Custom Agent Planset: security-advisory-resolver
-> **Agent Type**: Security & Dependency Management  
-> **Version**: 1.0.0  
-> **Status**: 📋 PLANNED  
-> **Priority**: HIGH (Security Critical)  
+> **Agent Type**: Security & Dependency Management
+> **Version**: 1.0.0
+> **Status**: 📋 PLANNED
+> **Priority**: HIGH (Security Critical)
 > **Estimated Effort**: 3-4 iterations
 
 ---
@@ -29,35 +29,35 @@
 graph TD
     A[CI Security Scan] --> B[Advisory Parser]
     B --> C{Advisory Database}
-    
+
     C --> D[CVE Lookup]
     C --> E[Patch Finder]
-    
+
     D --> F[Severity Analyzer]
     E --> F
-    
+
     F --> G{Severity Level}
-    
+
     G -->|Critical/High| H[Immediate Fix Path]
     G -->|Medium/Low| I[Scheduled Fix Path]
-    
+
     H --> J[Find Latest Patch]
     I --> J
-    
+
     J --> K[Compatibility Checker]
     K --> L{Compatible?}
-    
+
     L -->|Yes| M[Auto-Update Dependencies]
     L -->|No| N[Document Breaking Changes]
-    
+
     M --> O[Run Full Test Suite]
     N --> O
-    
+
     O --> P{Tests Pass?}
-    
+
     P -->|Yes| Q[Create Fix PR]
     P -->|No| R[Rollback & Document Issue]
-    
+
     Q --> S[Request Security Review]
     R --> T[Escalate to Human]
 ```
@@ -67,7 +67,7 @@ graph TD
 ## 🔧 Component Design
 
 ### 1. Advisory Parser
-**Input**: CI logs, cargo audit/pip-audit output  
+**Input**: CI logs, cargo audit/pip-audit output
 **Output**: Structured advisory data
 
 ```python
@@ -90,10 +90,10 @@ class SecurityAdvisory:
 ```python
 def parse_cargo_audit(output: str) -> List[SecurityAdvisory]:
     """Parse cargo audit JSON output"""
-    
+
 def parse_pip_audit(output: str) -> List[SecurityAdvisory]:
     """Parse pip-audit JSON output"""
-    
+
 def parse_github_security_alert(webhook: dict) -> SecurityAdvisory:
     """Parse GitHub security alert webhook"""
 ```
@@ -101,7 +101,7 @@ def parse_github_security_alert(webhook: dict) -> SecurityAdvisory:
 ---
 
 ### 2. CVE Lookup & Enrichment
-**Input**: SecurityAdvisory  
+**Input**: SecurityAdvisory
 **Output**: Enriched advisory with details
 
 ```python
@@ -125,10 +125,10 @@ class EnrichedAdvisory(SecurityAdvisory):
 ```python
 async def enrich_advisory(advisory: SecurityAdvisory) -> EnrichedAdvisory:
     """Fetch additional CVE details from multiple sources"""
-    
+
 async def check_exploit_availability(cve_ids: List[str]) -> bool:
     """Check if public exploits exist"""
-    
+
 def assess_risk(advisory: EnrichedAdvisory, codebase: Codebase) -> RiskScore:
     """Assess actual risk given codebase usage"""
 ```
@@ -136,7 +136,7 @@ def assess_risk(advisory: EnrichedAdvisory, codebase: Codebase) -> RiskScore:
 ---
 
 ### 3. Patch Finder
-**Input**: EnrichedAdvisory  
+**Input**: EnrichedAdvisory
 **Output**: Patch strategy
 
 ```python
@@ -157,7 +157,7 @@ class PatchStrategy:
 def strategy_direct_update(advisory: EnrichedAdvisory) -> PatchStrategy:
     latest_patched = advisory.patched_versions[-1]
     breaking_changes = check_changelog(advisory.package, latest_patched)
-    
+
     return PatchStrategy(
         strategy_type="update",
         target_version=latest_patched,
@@ -171,7 +171,7 @@ def strategy_direct_update(advisory: EnrichedAdvisory) -> PatchStrategy:
 # Example: Use alternative function, add input validation
 def strategy_workaround(advisory: EnrichedAdvisory) -> PatchStrategy:
     workarounds = find_workarounds(advisory)
-    
+
     return PatchStrategy(
         strategy_type="workaround",
         target_version=None,
@@ -186,7 +186,7 @@ def strategy_workaround(advisory: EnrichedAdvisory) -> PatchStrategy:
 # Example: Vulnerable function not used in codebase
 def strategy_ignore(advisory: EnrichedAdvisory, codebase: Codebase) -> PatchStrategy:
     usage = analyze_vulnerable_function_usage(advisory, codebase)
-    
+
     if not usage.is_used:
         return PatchStrategy(
             strategy_type="ignore",
@@ -200,7 +200,7 @@ def strategy_ignore(advisory: EnrichedAdvisory, codebase: Codebase) -> PatchStra
 ---
 
 ### 4. Compatibility Checker
-**Input**: Package, current version, target version  
+**Input**: Package, current version, target version
 **Output**: Compatibility report
 
 ```python
@@ -222,16 +222,16 @@ async def check_compatibility(
     codebase: Codebase
 ) -> CompatibilityReport:
     """Check if update is safe"""
-    
+
     # 1. Parse changelog for breaking changes
     breaking_changes = parse_changelog(package, from_version, to_version)
-    
+
     # 2. Static analysis for affected code
     affected_files = find_affected_code(package, breaking_changes)
-    
+
     # 3. Update dependencies and run tests
     test_results = run_tests_with_version(package, to_version)
-    
+
     return CompatibilityReport(
         compatible=len(breaking_changes) == 0 and test_results.passed,
         breaking_changes=breaking_changes,
@@ -244,7 +244,7 @@ async def check_compatibility(
 ---
 
 ### 5. PR Generator
-**Input**: SecurityAdvisory, PatchStrategy, CompatibilityReport  
+**Input**: SecurityAdvisory, PatchStrategy, CompatibilityReport
 **Output**: GitHub PR
 
 ```python
@@ -292,7 +292,7 @@ class SecurityPR:
 - [ ] Breaking changes reviewed (if any)
 - [ ] Merge to main and deploy
 
-**Resolves**: {ADVISORY_ID}  
+**Resolves**: {ADVISORY_ID}
 **Priority**: {priority}
 ```
 
@@ -332,12 +332,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run security scans
         run: |
           cargo audit --json > rust-audit.json
           pip-audit --format json > python-audit.json
-      
+
       - name: Resolve advisories
         uses: ./.github/actions/security-advisory-resolver
         with:
@@ -448,8 +448,8 @@ jobs:
 
 ---
 
-**Agent Status**: 📋 READY FOR IMPLEMENTATION  
-**Next Step**: Approve planset and begin Phase 1  
-**Priority**: HIGH (Security fixes needed)  
-**Owner**: TBD  
+**Agent Status**: 📋 READY FOR IMPLEMENTATION
+**Next Step**: Approve planset and begin Phase 1
+**Priority**: HIGH (Security fixes needed)
+**Owner**: TBD
 **Reviewers**: mbaetiong, security team

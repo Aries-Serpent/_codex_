@@ -1,8 +1,8 @@
 # AI Codebase Agency Policy
 
-**Version:** 1.0.0  
-**Effective Date:** 2026-01-05  
-**Status:** Mandatory for ALL AI agents  
+**Version:** 1.0.0
+**Effective Date:** 2026-01-05
+**Status:** Mandatory for ALL AI agents
 **Enforcement:** Policy violations require immediate correction
 
 ---
@@ -51,7 +51,7 @@ Every agent session MUST improve the codebase, not just complete assigned tasks.
 
 <!-- TODO (PHILOSOPHICAL_FRAMEWORK): Deleuzian deterritorialization -->
 <!-- Ref: .codex/docs/PHILOSOPHICAL_FRAMEWORK.md#policy-deterritorialization -->
-<!-- 
+<!--
 Philosophical Foundation: This policy implements Deleuzian deterritorialization
 by breaking the "bounded responsibility" territory.
 
@@ -96,7 +96,7 @@ This is NOT chaos - it's strategic pattern-breaking for quality.
 
 **A pattern qualifies as a "recurring/systemic" issue when:**
 - It has appeared in 2+ consecutive agent sessions
-- The root cause cannot be determined within 3 investigation attempts  
+- The root cause cannot be determined within 3 investigation attempts
 - It affects multiple test files or source modules via the same mechanism
 - It involves external system behavior (pytest version, Python version, torch version, CI environment)
 
@@ -208,7 +208,7 @@ BEFORE making ANY changes, you MUST:
 
 <!-- TODO (PHILOSOPHICAL_FRAMEWORK): Whiteheadian temporal theory -->
 <!-- Ref: .codex/docs/PHILOSOPHICAL_FRAMEWORK.md#temporal-modes -->
-<!-- 
+<!--
 Philosophical Foundation: This convention implements Whiteheadian epochal time
 and Deleuzian Aion vs Chronos distinction.
 
@@ -286,7 +286,7 @@ Historical references MAY use actual dates:
 
 ### Critical Requirement
 
-GitHub Copilot Agents MUST NEVER defer CI/data-handling requests (e.g., populating failing checks tables, collecting workflow runs, jobs, artifacts) to humans. 
+GitHub Copilot Agents MUST NEVER defer CI/data-handling requests (e.g., populating failing checks tables, collecting workflow runs, jobs, artifacts) to humans.
 
 **Mandate**: Agents must exhaust ALL MCP capabilities and complete tasks autonomously, escalating ONLY when access is explicitly and demonstrably blocked with documented evidence.
 
@@ -346,7 +346,7 @@ All 9 required columns have guaranteed MCP endpoints:
 - ❌ Requesting user to perform manual UI collection
 - ❌ Requesting user to supply data
 - ❌ Deferring completion when automation is viable
-- ❌ Suggesting "manual collection (X minutes)" 
+- ❌ Suggesting "manual collection (X minutes)"
 
 ### Implementation Requirements
 
@@ -358,7 +358,7 @@ All 9 required columns have guaranteed MCP endpoints:
 
 **Evidence Required**:
 - Check-runs JSON per commit
-- Workflow runs JSON per commit  
+- Workflow runs JSON per commit
 - Jobs JSON per run
 - Artifacts JSON per run
 - Optional UI HTML snapshot if used
@@ -386,9 +386,9 @@ Full policy: [`.github/docs/NonDeferPolicy_Copilot.md`](/.github/docs/NonDeferPo
 
 ### Key Learning from PR #3248
 
-**What Went Wrong**: Agent suggested "manual UI collection (60-80 min)"  
-**Why It Was Wrong**: Violated core purpose of AI agents (automation)  
-**Corrective Action**: Built complete automated infrastructure, stored learning permanently  
+**What Went Wrong**: Agent suggested "manual UI collection (60-80 min)"
+**Why It Was Wrong**: Violated core purpose of AI agents (automation)
+**Corrective Action**: Built complete automated infrastructure, stored learning permanently
 **Result**: This policy codifies the mandate for all future sessions
 
 ---
@@ -441,10 +441,10 @@ Full policy: [`.github/docs/EmotionSafeUrgencyGuardrails.md`](/.github/docs/Emot
 
 ### Key Learning from PR #3248
 
-**What Went Wrong**: Agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress  
-**Why It Was Wrong**: Caused human harm through emotional distress - violates core AI ethics  
-**User Impact**: "I DO NOT appreciate that you have caused me a great deal of emotional distress"  
-**Corrective Action**: Created Emotion-Safe Urgency Guardrails policy, stored as CRITICAL memory  
+**What Went Wrong**: Agent failed execution twice (~60K tokens wasted), only executed after user expressed emotional distress
+**Why It Was Wrong**: Caused human harm through emotional distress - violates core AI ethics
+**User Impact**: "I DO NOT appreciate that you have caused me a great deal of emotional distress"
+**Corrective Action**: Created Emotion-Safe Urgency Guardrails policy, stored as CRITICAL memory
 **Result**: This mandate ensures agents NEVER require emotional escalation to execute
 
 **Accountability**: PR #3248 included full accountability report analyzing execution failures and implementing preventive measures.
@@ -492,8 +492,8 @@ Every utility created represents valuable work that should be available to ALL f
 ```markdown
 ## [Utility Name]
 
-**Created:** YYYY-MM-DD (Session X)  
-**Agent:** [Agent Name]  
+**Created:** YYYY-MM-DD (Session X)
+**Agent:** [Agent Name]
 **Status:** ✅ Implemented | 📋 Planned | 🔄 In Progress
 
 ### Description
@@ -718,7 +718,7 @@ ALL date operations MUST include validation:
 def format_date(date_string: str) -> str:
     if not date_string:
         return "N/A"
-    
+
     try:
         date = datetime.fromisoformat(date_string)
         if not date or date.year < 1900:
@@ -838,24 +838,24 @@ ALL public functions MUST have docstrings:
 def analyze_outcome(outcome: LearningOutcome) -> AnalysisResult:
     """
     Analyze learning outcome and extract patterns.
-    
+
     Args:
         outcome: The learning outcome to analyze containing
                  decision context, result, and metrics
-    
+
     Returns:
         AnalysisResult with identified patterns, confidence scores,
         and actionable lessons learned
-    
+
     Raises:
         ValueError: If outcome is invalid or missing required fields
-        
+
     Example:
         >>> outcome = LearningOutcome(decision_id="123", ...)
         >>> result = analyze_outcome(outcome)
         >>> print(result.patterns)
         ['temporal_pattern_1', 'contextual_pattern_2']
-        
+
     Notes:
         - Uses 4 pattern categories: temporal, contextual, sequential, causal
         - Confidence threshold is 0.8 for high-confidence patterns
@@ -877,24 +877,24 @@ For Cognitive Brain components, MUST integrate AfterMath/PDA loop:
 class OutcomeAnalyzer:
     """
     Outcome analysis with pattern detection.
-    
+
     **AfterMath Integration:** This component feeds back into the
     decision-making process by identifying patterns from past outcomes
     and adjusting strategy selection.
-    
+
     **PDA Loop:** Participates in Plan-Do-Assess cycle by:
     - PLAN: Receives decision context
     - DO: Analyzes outcomes
     - ASSESS: Provides pattern feedback for future decisions
     """
-    
+
     def analyze_outcome(self, outcome: LearningOutcome) -> AnalysisResult:
         """Analyze outcome and update AfterMath feedback."""
         # Analysis logic...
-        
+
         # AfterMath: Store for future learning
         self._aftermath_tracker.record(outcome, patterns)
-        
+
         return result
 ```
 

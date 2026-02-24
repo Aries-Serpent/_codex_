@@ -1,8 +1,8 @@
 # PR #3095 Test Failure Analysis - Job 62150870508
-**Repository**: Aries-Serpent/_codex_  
-**Branch**: 0D_base_  
-**Job**: 62150870508 (Python 3.12 Tests - test-comprehensive.yml)  
-**Commit**: 9e4955025e5d1ad97d118f94f12cb67a0c255c93  
+**Repository**: Aries-Serpent/_codex_
+**Branch**: 0D_base_
+**Job**: 62150870508 (Python 3.12 Tests - test-comprehensive.yml)
+**Commit**: 9e4955025e5d1ad97d118f94f12cb67a0c255c93
 **Result**: ❌ 10 failed, 145 passed, 39 skipped (335.76s)
 
 ---
@@ -132,7 +132,7 @@ FROM python:3.12-slim AS base
 FROM base AS cpu-runtime
 ...
 
-# GPU runtime stage  
+# GPU runtime stage
 FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04 AS gpu-runtime
 ...
 ```
@@ -173,7 +173,7 @@ ENTRYPOINT ["python", "-m", "codex_ml"]
 # In determinism.py
 def enable_deterministic_mode():
     """Enable deterministic mode.
-    
+
     Warning: This may significantly reduce performance.
     """
     warnings.warn(
@@ -187,7 +187,7 @@ def enable_deterministic_mode():
 
 ### 8. ❌ test_peft_comprehensive/test_determinism_utilities.py::TestDeterministicModeIntegration::test_deterministic_mode_reproducibility
 
-**Error**: 
+**Error**:
 ```
 AssertionError: Results should be reproducible in deterministic mode
 assert False
@@ -195,7 +195,7 @@ assert False
   + TypeError("'>' not supported between instances of 'Tensor' and 'float'")
 ```
 
-**Root Cause**: 
+**Root Cause**:
 1. Tensors are not matching in deterministic mode (reproducibility issue)
 2. Additionally, there's a tensor comparison error with float (likely in tensor `__repr__`)
 

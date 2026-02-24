@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pre-commit hook to prevent test_*.py naming in utility modules
-# 
+#
 # Purpose: pytest collects ANY file matching test_*.py pattern, even if it's
 # a utility module. This hook prevents that naming pattern outside actual test files.
 #
@@ -14,7 +14,18 @@ echo "🔍 Checking for test_*.py utility files that should not be collected by 
 EXIT_CODE=0
 
 # Check for test_*.py files in framework, utils, helpers directories
-UTILITY_FILES=$(find tests/framework tests/utils tests/helpers -name "test_*.py" -type f 2>/dev/null || true)
+# Only flag files that do NOT contain actual test functions/classes (i.e., real utilities)
+ALL_CANDIDATE_FILES=$(find tests/framework tests/utils tests/helpers -name "test_*.py" -type f 2>/dev/null || true)
+UTILITY_FILES=""
+while IFS= read -r f; do
+  [[ -z "$f" ]] && continue
+  # Skip if file contains actual test functions or test classes — it's a real test
+  if grep -qE "^(def test_|class Test)" "$f" 2>/dev/null; then
+    continue
+  fi
+  UTILITY_FILES="${UTILITY_FILES}${f}"$'\n'
+done <<< "$ALL_CANDIDATE_FILES"
+UTILITY_FILES="${UTILITY_FILES%$'\n'}"
 
 if [ -n "$UTILITY_FILES" ]; then
     echo "❌ Found utility files matching test_*.py pattern:"

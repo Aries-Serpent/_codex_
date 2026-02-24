@@ -167,7 +167,7 @@ fi
 [ ] Executed Part 1: Time Verification
     └─ Actual elapsed >= 55 min? _______
 
-[ ] Executed Part 2: Workflow Verification  
+[ ] Executed Part 2: Workflow Verification
     └─ All workflows complete? _______
 
 [ ] Executed Part 3: Authorization Check

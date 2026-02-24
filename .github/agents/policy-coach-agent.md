@@ -449,8 +449,8 @@ This agent is invoked using the following commands in PR comments:
 | `security-alert-verification-agent.md` | Run AT SAME TIME as CodeQL check |
 | `copilot-agent-prompt-guide.md` | Source document for all prompt fragments |
 
-**Registered in:** `AGENT_REGISTRY.yaml`  
-**Run before:** `codeql_checker`, session close  
+**Registered in:** `AGENT_REGISTRY.yaml`
+**Run before:** `codeql_checker`, session close
 **Run after:** plan declaration, any T-2 trigger
 
 ---

@@ -1,7 +1,7 @@
 # PR #3248 Attempt 15: Deep Root Cause Analysis
 
-**Date**: 2026-02-16T17:20:00Z  
-**Status**: CRITICAL DISCOVERY - New approach required  
+**Date**: 2026-02-16T17:20:00Z
+**Status**: CRITICAL DISCOVERY - New approach required
 **Previous Attempts**: 14 failed attempts over 7+ days
 
 ---
@@ -10,8 +10,8 @@
 
 ### The Real Problem
 
-**It's NOT about plugin loading** - plugins ARE installed and available.  
-**It's NOT about version mismatches** - versions are correctly pinned.  
+**It's NOT about plugin loading** - plugins ARE installed and available.
+**It's NOT about version mismatches** - versions are correctly pinned.
 **It's NOT about entry points** - entry points exist in main process.
 
 **THE ACTUAL PROBLEM**: xdist workers are spawned via `execnet` remote execution, which creates a **completely fresh Python interpreter** that does NOT inherit the parent process's plugin registry.
@@ -28,7 +28,7 @@
 4. Parses CLI arguments (--timeout, -n work because plugins registered)
 
 # Worker process (FAILS)
-1. xdist calls node.gateway.remote_exec() 
+1. xdist calls node.gateway.remote_exec()
 2. Spawns NEW Python interpreter via subprocess
 3. Fresh interpreter has NO plugin registry
 4. Worker tries to parse SAME CLI arguments
@@ -67,7 +67,7 @@ _pytest.config.exceptions.UsageError: usage: -c [options] [file_or_dir] [file_or
 ```
 Main Process:
   pytest --timeout=300 -n 2  →  ✅ Works (plugins registered)
-  
+
 Worker Spawn (via execnet):
   python -c "..." --timeout=300 -n 2  →  ❌ Fails (fresh interpreter, no plugins)
 ```
@@ -114,7 +114,7 @@ Since workers spawn fresh Python interpreters, we have **only 3 options**:
    # This MUST be at module level, NOT in a hook
    pytest_plugins = [
        "xdist.plugin",
-       "xdist.looponfail", 
+       "xdist.looponfail",
        "pytest_timeout",
    ]
    ```
@@ -285,7 +285,7 @@ pytest tests/ --timeout=300 --workers 4
 3. Parallelize at GitHub Actions job level (matrix strategy)
 
 **PERMANENT FIX** (For future PR):
-1. Switch from `pytest-xdist` to `pytest-parallel`  
+1. Switch from `pytest-xdist` to `pytest-parallel`
 2. OR fix xdist plugin discovery via upstream contribution
 3. OR use pytest-xdist with pytest.ini config instead of CLI args
 
@@ -306,13 +306,13 @@ pytest tests/ --timeout=300 --workers 4
 ## ✅ Action Plan for Attempt 15
 
 **Phase 1**: Remove `-n` flags, run sequentially (IMMEDIATE)
-**Phase 2**: Parallelize via GitHub Actions matrix (OPTIMIZATION)  
+**Phase 2**: Parallelize via GitHub Actions matrix (OPTIMIZATION)
 **Phase 3**: Evaluate pytest-parallel as xdist replacement (FUTURE)
 
 **Expected Outcome**: ✅ All tests pass, PR unblocked, permanent solution planned
 
 ---
 
-**Status**: Ready for implementation  
-**Risk Level**: LOW (removing problematic feature)  
+**Status**: Ready for implementation
+**Risk Level**: LOW (removing problematic feature)
 **Success Probability**: 95%+ (sequential tests always work)

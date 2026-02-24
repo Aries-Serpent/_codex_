@@ -30,14 +30,14 @@ echo ""
 # Process each workflow
 for workflow in $WORKFLOWS_NEEDING_TIMEOUT; do
     echo "Processing: $workflow"
-    
+
     # Check if workflow actually has pytest commands
     if ! grep -q "pytest" "$workflow"; then
         echo "  - No pytest found"
         ((SKIPPED++))
         continue
     fi
-    
+
     # Add --timeout=300 to pytest commands that don't have it
     # Handle various pytest invocation patterns
     sed -i.bak '
@@ -50,11 +50,11 @@ for workflow in $WORKFLOWS_NEEDING_TIMEOUT; do
         # Pattern 4: Clean up trailing spaces before timeout
         s/  *--timeout=300/ --timeout=300/g
     ' "$workflow"
-    
+
     # Check if changes were made
     if ! cmp -s "$workflow" "$workflow.bak"; then
         rm "$workflow.bak"
-        
+
         # Verify at least one pytest now has --timeout
         if grep -q "pytest.*--timeout" "$workflow"; then
             echo "  ✓ Added --timeout=300 to pytest commands"

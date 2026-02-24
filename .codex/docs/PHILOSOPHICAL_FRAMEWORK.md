@@ -1,7 +1,7 @@
 # Philosophical Frameworks Analysis & Implementation Guide
 
-> **Generated:** 2026-02-01T00:00:00Z | **Author:** mbaetiong  
-> **Repository:** Aries-Serpent/_codex_  
+> **Generated:** 2026-02-01T00:00:00Z | **Author:** mbaetiong
+> **Repository:** Aries-Serpent/_codex_
 > **Analysis Type:** Deleuze, Whitehead, Process Philosophy Integration
 
 ---
@@ -112,52 +112,52 @@ from pathlib import Path
 class RhizomaticNode:
     """
     A node in the rhizome - any component can connect to any other.
-    
+
     Deleuzian Principle: Connection and Heterogeneity
     - No hierarchical parent-child relationships
     - Multiple types of connections (dependency, reference, inspiration)
     - Can be broken and reconnected elsewhere (asignifying rupture)
     """
-    
+
     name: str
     path: Path
     connections: Dict[str, Set[str]] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def connect_to(
-        self, 
-        target: 'RhizomaticNode', 
+        self,
+        target: 'RhizomaticNode',
         connection_type: str = "reference"
     ) -> None:
         """
         Create connection to another node.
-        
+
         Connection types (heterogeneity):
         - "dependency": Code-level import/require
         - "reference": Conceptual relationship
         - "inspiration": Idea borrowed/adapted
         - "critique": Counter-example or alternative
         - "synthesis": Combines multiple sources
-        
+
         Deleuzian Note: Connection type is fluid, can change
         """
         if connection_type not in self.connections:
             self.connections[connection_type] = set()
-        
+
         self.connections[connection_type].add(target.name)
-        
+
         # Rhizomatic property: Bidirectional by default
         if "one_way" not in self.metadata:
             target.connect_to(self, connection_type)
-    
+
     def rupture_and_reconnect(
-        self, 
-        old_target: str, 
+        self,
+        old_target: str,
         new_target: 'RhizomaticNode'
     ) -> None:
         """
         Break connection and form new one elsewhere.
-        
+
         Deleuzian Principle: Asignifying Rupture
         - Rhizome can be broken at any point
         - Reconnects along other lines
@@ -166,10 +166,10 @@ class RhizomaticNode:
         # Remove old connection
         for conn_type in self.connections.values():
             conn_type.discard(old_target)
-        
+
         # Form new connection
         self.connect_to(new_target, "rupture_reconnection")
-        
+
         # Document the rupture (cartography principle)
         self.metadata["rupture_history"] = self.metadata.get(
             "rupture_history", []
@@ -203,17 +203,17 @@ class TerritoryState(Enum):
 class CodeTerritory:
     """
     A 'territory' in the codebase (fixed pattern or structure).
-    
+
     Deleuzian Concept: Territory
     - Repeatable, recognizable pattern
     - Can become rigid (over-territorialized)
     - Must be broken to allow creativity
     """
-    
+
     name: str
     pattern: str  # e.g., "MVC pattern", "singleton", "factory"
     rigidity: float  # 0.0 (fluid) to 1.0 (completely rigid)
-    
+
     def assess_rigidity(self) -> str:
         """Assess if territory needs deterritorialization."""
         if self.rigidity > 0.8:
@@ -228,27 +228,27 @@ class CodeTerritory:
 class DeterritorizationEngine:
     """
     Engine for breaking fixed patterns and enabling creativity.
-    
+
     Deleuzian Goal: Create 'lines of flight' (escape routes from structure)
     """
-    
+
     def __init__(self):
         self.territories: Dict[str, CodeTerritory] = {}
         self.lines_of_flight: List[Dict[str, Any]] = []
-    
+
     def create_line_of_flight(
-        self, 
-        from_territory: str, 
+        self,
+        from_territory: str,
         innovation: str
     ) -> Dict[str, Any]:
         """
         Create a 'line of flight' - an escape from rigid structure.
-        
+
         Deleuzian Concept: Line of Flight
         - Not rebellion (that reinforces the territory)
         - Not reform (that maintains the territory)
         - ESCAPE - create something entirely new
-        
+
         Example in Codex:
         - Rigid Territory: "All work measured in calendar time"
         - Line of Flight: "Work measured in pre-commit cycles"
@@ -260,13 +260,13 @@ class DeterritorizationEngine:
             "type": "deterritorialization",
             "goal": "enable_creativity"
         }
-        
+
         self.lines_of_flight.append(line_of_flight)
-        
+
         # Reduce rigidity of old territory
         if from_territory in self.territories:
             self.territories[from_territory].rigidity *= 0.5
-        
+
         return line_of_flight
 ```
 
@@ -285,7 +285,7 @@ DELEUZE_APPLICATIONS = {
         ],
         "expected_improvement": "Any module can connect to any other, no forced hierarchy"
     },
-    
+
     "src/agents/": {
         "current_state": "Agents operate somewhat independently",
         "deleuzian_refactor": "Implement 'machinic assemblage' pattern",
@@ -295,7 +295,7 @@ DELEUZE_APPLICATIONS = {
         ],
         "expected_improvement": "Agents form temporary assemblages for tasks"
     },
-    
+
     ".codex/CODEBASE_AGENCY_POLICY.md": {
         "current_state": "Excellent, already embodies deterritorialization",
         "deleuzian_validation": "Policy BREAKS rigid patterns (lines of flight)",
@@ -305,7 +305,7 @@ DELEUZE_APPLICATIONS = {
         ],
         "recommendation": "Add explicit Deleuzian commentary"
     },
-    
+
     "src/rag/": {
         "current_state": "Retrieval mechanisms somewhat linear",
         "deleuzian_refactor": "Implement 'smooth space' vs 'striated space'",
@@ -339,27 +339,27 @@ from abc import ABC, abstractmethod
 class EternalObject(ABC):
     """
     Whitehead's 'Eternal Object' - a pure potential.
-    
+
     Whiteheadian Concept:
     - Exists timelessly (not in actual world)
     - Can be instantiated in actual occasions
     - Think: Platonic forms, but without priority over actuals
-    
+
     In Codex Context:
     - Interface definitions
     - Abstract base classes
     - Policy principles
     - Mathematical functions
     """
-    
+
     name: str
     description: str
-    
+
     @abstractmethod
     def can_ingress_into(self, occasion: 'ActualOccasion') -> bool:
         """
         Can this eternal object ingress into (be realized in) this occasion?
-        
+
         Whiteheadian Term: 'Ingression' - eternal objects entering actuals.
         """
         pass
@@ -368,37 +368,37 @@ class EternalObject(ABC):
 class ActualOccasion:
     """
     Whitehead's 'Actual Occasion' - a quantum of becoming.
-    
+
     Whiteheadian Concept:
     - The fundamental unit of reality
     - Not a thing, but an EVENT (process)
     - Comes into being through 'concrescence' (growing together)
     - Perishes immediately, but is 'objectively immortal' (influences future)
-    
+
     In Codex Context:
     - A git commit (atomic unit of change)
     - A test run (event with outcome)
     - An agent session (bounded temporal process)
     - A PR merge (decisive event)
     """
-    
+
     id: str
     timestamp: datetime
     prehensions: List['Prehension'] = field(default_factory=list)
     eternal_objects: Set[EternalObject] = field(default_factory=set)
     subjective_aim: str = ""  # What this occasion is trying to become
-    
+
     def prehend(self, past_occasion: 'ActualOccasion') -> 'Prehension':
         """
         'Prehend' (grasp) a past actual occasion.
-        
+
         Whiteheadian Concept: Prehension
         - Every actual occasion prehends (feels) all past occasions
         - Not passive observation - active incorporation
         - Two modes:
           1. Positive prehension (incorporate into self)
           2. Negative prehension (exclude from self)
-        
+
         In Codex Context:
         - Current session prehends past sessions
         - New code prehends existing patterns
@@ -410,21 +410,21 @@ class ActualOccasion:
             mode="positive",  # Can be "positive" or "negative"
             datum=past_occasion.extract_datum()
         )
-        
+
         self.prehensions.append(prehension)
         return prehension
-    
+
     def concrescence(self) -> 'Satisfaction':
         """
         Undergo concrescence (growing together into unity).
-        
+
         Whiteheadian Process:
         1. Initial aim (what to become)
         2. Prehend past occasions
         3. Integrate prehensions (remove incompatibilities)
         4. Reach satisfaction (become definite)
         5. Perish (but remain objectively immortal)
-        
+
         In Codex Context:
         - Agent starts session (initial aim)
         - Loads past context (prehends)
@@ -434,40 +434,40 @@ class ActualOccasion:
         """
         # Phase 1: Conform initial aim to context
         self._conform_subjective_aim()
-        
+
         # Phase 2: Integrate all prehensions
         integrated_data = self._integrate_prehensions()
-        
+
         # Phase 3: Realize eternal objects (ingression)
         for eo in self.eternal_objects:
             if eo.can_ingress_into(self):
                 self._realize_potential(eo)
-        
+
         # Phase 4: Reach satisfaction (become definite)
         satisfaction = Satisfaction(
             occasion=self,
             definiteness=self._achieve_definiteness(),
             contribution_to_future=self._determine_legacy()
         )
-        
+
         return satisfaction
 
 @dataclass
 class Prehension:
     """
     A 'prehension' - the way one occasion grasps another.
-    
+
     Whiteheadian Concept:
     - Not knowing (cognitive)
     - Not seeing (perceptual)
     - FEELING (affective incorporation)
-    
+
     In Codex Context:
     - How current session incorporates past sessions
     - How new code incorporates existing patterns
     - Active, not passive
     """
-    
+
     subject: ActualOccasion
     object: ActualOccasion
     mode: str  # "positive" (include) or "negative" (exclude)
@@ -477,18 +477,18 @@ class Prehension:
 class Satisfaction:
     """
     The 'satisfaction' - when an occasion becomes fully definite.
-    
+
     Whiteheadian Concept:
     - End of concrescence
     - Occasion becomes immortal object for future
     - Perishes as subject, persists as object
-    
+
     In Codex Context:
     - Completed session
     - Merged PR
     - Finalized decision
     """
-    
+
     occasion: ActualOccasion
     definiteness: float  # How complete is this occasion?
     contribution_to_future: Dict[str, Any]
@@ -505,27 +505,27 @@ Whitehead's principle: "The many become one, and are increased by one."
 class CreativeAdvance:
     """
     Models Whitehead's 'creative advance into novelty'.
-    
+
     Key Principle:
     - Universe is constantly creating NEW actual occasions
     - Each occasion prehends past (the many)
     - Integrates into unity (become one)
     - Adds itself to world (increased by one)
-    
+
     In Codex Context:
     - Each session adds to repository
     - Each commit creates new reality
     - Knowledge accumulates (many become one)
     - Then available for future (increased by one)
     """
-    
+
     many: List[ActualOccasion]  # Past occasions
     process_of_unity: str  # How they're integrated
-    
+
     def become_one(self) -> ActualOccasion:
         """
         Integrate many occasions into one new occasion.
-        
+
         Example in Codex:
         - Many: [Session 1 lessons, Session 2 lessons, Session 3 lessons]
         - Process: Policy document integration
@@ -535,23 +535,23 @@ class CreativeAdvance:
             id=f"unified_{len(self.many)}_occasions",
             timestamp=datetime.now()
         )
-        
+
         # Prehend all past occasions
         for past in self.many:
             new_occasion.prehend(past)
-        
+
         # Undergo concrescence (integration)
         satisfaction = new_occasion.concrescence()
-        
+
         return new_occasion
-    
+
     def increase_by_one(
-        self, 
+        self,
         unified: ActualOccasion
     ) -> List[ActualOccasion]:
         """
         Add new occasion to universe.
-        
+
         Whiteheadian Insight:
         - New occasion is now available for future to prehend
         - Universe has grown (increased by one)
@@ -578,7 +578,7 @@ WHITEHEAD_APPLICATIONS = {
             "src/codex/philosophical/prehension.py"
         ]
     },
-    
+
     ".codex/action_log.ndjson": {
         "current_state": "Event log (already process-oriented)",
         "whiteheadian_validation": "Aligns with actual occasions",
@@ -589,7 +589,7 @@ WHITEHEAD_APPLICATIONS = {
             "link": "session_002 prehends session_001"
         }
     },
-    
+
     "src/cognitive_brain/": {
         "current_state": "Cognitive modules",
         "whiteheadian_refactor": "Model as nexus of occasions",
@@ -622,22 +622,22 @@ from abc import ABC, abstractmethod
 class ProcessEntity(ABC):
     """
     Base class for process-oriented entities.
-    
+
     Process Philosophy Principle:
     - Reality is composed of PROCESSES, not SUBSTANCES
     - Things are "relatively stable patterns of processes"
     - Being IS Becoming
-    
+
     Contrast:
     - Substance Ontology: "The table exists, then changes"
     - Process Ontology: "The table is a continuing process of becoming"
     """
-    
+
     @abstractmethod
     def unfold(self, duration: float) -> List['Event']:
         """Unfold this process over time."""
         pass
-    
+
     @abstractmethod
     def is_stable_pattern(self) -> bool:
         """Is this a relatively stable pattern?"""
@@ -647,7 +647,7 @@ class ProcessEntity(ABC):
 class Event:
     """
     Fundamental unit in process ontology: the EVENT.
-    
+
     Process Philosophy:
     - Events are primary (not things)
     - Things are "bundles of events"
@@ -656,27 +656,27 @@ class Event:
       2. Spatial location
       3. Qualitative content
       4. Causal relations to other events
-    
+
     In Codex Context:
     - Code execution is event
     - Git commit is event
     - Test run is event
     - Agent session is event
     """
-    
+
     id: str
     timestamp: datetime
     duration: float  # Seconds
     content: Dict[str, Any]
     causes: List['Event'] = None
     effects: List['Event'] = None
-    
+
     def __post_init__(self):
         if self.causes is None:
             self.causes = []
         if self.effects is None:
             self.effects = []
-    
+
     def is_caused_by(self, prior_event: 'Event') -> None:
         """Establish causal relation."""
         self.causes.append(prior_event)
@@ -703,21 +703,21 @@ class TemporalMode(Enum):
 class TemporalProcess:
     """
     Process with explicit temporal mode.
-    
+
     Process Philosophy:
     - Time is not homogeneous
     - Different processes have different temporalities
     - Clock time (Chronos) vs Lived time (Duration)
     """
-    
+
     name: str
     mode: TemporalMode
     intensity: float  # How intensive is this process?
-    
+
     def measure_in_mode(self, clock_time: float) -> float:
         """
         Measure process in its own temporal mode.
-        
+
         Example:
         - Clock time: 2 hours
         - Duration (intensive): Feels like 10 minutes (flow state)
@@ -726,20 +726,20 @@ class TemporalProcess:
         if self.mode == TemporalMode.DURATION:
             # Bergson: Duration is intensive
             return clock_time / self.intensity
-        
+
         elif self.mode == TemporalMode.CHRONOS:
             # Deleuze: Chronos is extensive (clock time)
             return clock_time
-        
+
         elif self.mode == TemporalMode.AION:
             # Deleuze: Aion is pure intensity (no extension)
             return 0.0  # Collapsed to point
-        
+
         elif self.mode == TemporalMode.EPOCHAL:
             # Whitehead: Quantum moments
             quantum = 1.0  # 1 second per quantum
             return int(clock_time / quantum)
-        
+
         return clock_time
 ```
 
@@ -764,7 +764,7 @@ PROCESS_PHILOSOPHY_APPLICATIONS = {
             ]
         }
     },
-    
+
     "src/": {
         "recommendation": "Rename variables to emphasize process",
         "examples": {
@@ -815,20 +815,20 @@ from dataclasses import dataclass
 class ModuleConnections:
     """
     Tracks rhizomatic connections for a module.
-    
+
     Deleuzian Principle: Any module can connect to any other
     """
-    
+
     module_name: str
     dependencies: Set[str]      # Code-level dependencies
     references: Set[str]        # Conceptual references
     inspired_by: Set[str]       # Idea sources
     synthesizes: Set[str]       # Combined from these
-    
+
     def add_connection(self, target: str, connection_type: str) -> None:
         """Add a new rhizomatic connection."""
         getattr(self, connection_type).add(target)
-    
+
     def visualize_assemblage(self) -> Dict[str, List[str]]:
         """Visualize local assemblage around this module."""
         return {
@@ -852,19 +852,19 @@ from typing import List, Dict, Any
 class ProcessOrientedEntity:
     """
     Base class for entities modeled as processes.
-    
+
     Whiteheadian Principle: Entities ARE processes
     """
-    
+
     def __init__(self, entity_id: str):
         self.entity_id = entity_id
         self.events: List[Dict[str, Any]] = []
         self.current_state = None
-    
+
     def undergo_event(self, event_type: str, data: Dict[str, Any]) -> None:
         """
         Entity undergoes an event (process step).
-        
+
         This is concrescence - growing into new state.
         """
         event = {
@@ -873,19 +873,19 @@ class ProcessOrientedEntity:
             "data": data,
             "previous_state": self.current_state
         }
-        
+
         self.events.append(event)
         self.current_state = self._integrate_event(event)
-    
+
     def _integrate_event(self, event: Dict[str, Any]) -> Any:
         """Integrate event into current state (concrescence)."""
         # Override in subclasses
         return event["data"]
-    
+
     def prehend_past(self, past_entity: 'ProcessOrientedEntity') -> None:
         """
         Prehend (incorporate) past entity's experience.
-        
+
         Whiteheadian prehension mechanism.
         """
         for event in past_entity.events:
@@ -911,22 +911,22 @@ from typing import Dict, Any, List
 
 class RigidPattern:
     """Represents a rigid pattern that needs breaking."""
-    
+
     def __init__(self, name: str, rigidity: float):
         self.name = name
         self.rigidity = rigidity
-    
+
     def needs_deterritorialization(self) -> bool:
         """Check if pattern is too rigid."""
         return self.rigidity > 0.7
 
 class LineOfFlight:
     """Escape route from rigid pattern."""
-    
+
     def __init__(self, from_pattern: str, innovation: str):
         self.from_pattern = from_pattern
         self.innovation = innovation
-    
+
     def execute(self) -> Dict[str, Any]:
         """Execute the line of flight."""
         return {
@@ -957,16 +957,16 @@ from datetime import datetime
 
 class Session:
     """Represents a work session."""
-    
+
     def __init__(self, session_id: str):
         self.session_id = session_id
         self.prehended_sessions: List[Dict[str, Any]] = []
         self.knowledge_base: Dict[str, Any] = {}
-    
+
     def prehend(self, past_session: 'Session', mode: str = "positive") -> None:
         """
         Prehend (grasp) a past session.
-        
+
         mode: "positive" (incorporate) or "negative" (exclude)
         """
         if mode == "positive":
@@ -1099,7 +1099,7 @@ Being = Continuous becoming
 ```markdown
 <!-- TODO (PHILOSOPHICAL_FRAMEWORK): Add Deleuzian analysis -->
 <!-- Ref: .codex/docs/PHILOSOPHICAL_FRAMEWORK.md#policy-deterritorialization -->
-<!-- 
+<!--
 This policy section implements Deleuzian deterritorialization:
 - Line 50: Breaks "bounded responsibility" territory
 - Line 169: Breaks "time-based planning" territory
@@ -1151,11 +1151,11 @@ This policy section implements Deleuzian deterritorialization:
 def calculate_rhizomaticity(nodes: int, connections: int) -> float:
     """
     Rhizomaticity = Connections / Max_Possible_Connections
-    
+
     Where:
     - 0.0 = Tree structure (minimal connections)
     - 1.0 = Fully connected rhizome
-    
+
     Goal: R > 0.5 (more rhizomatic than tree-like)
     """
     max_connections = (nodes * (nodes - 1)) / 2
@@ -1172,7 +1172,7 @@ def calculate_satisfaction(
 ) -> float:
     """
     Satisfaction = (Prehensions + Realizations) × Definiteness
-    
+
     Where:
     - Prehensions = Past sessions incorporated
     - Realizations = Potentials actualized
@@ -1187,9 +1187,9 @@ def calculate_satisfaction(
 def calculate_becoming_rate(events: int, time_hours: float) -> float:
     """
     Rate of Becoming = Events / Time
-    
+
     Process Philosophy: Reality is rate of change
-    
+
     Classification:
     - > 20 events/hour: INTENSE BECOMING
     - 10-20: ACTIVE BECOMING
@@ -1205,7 +1205,7 @@ def calculate_becoming_rate(events: int, time_hours: float) -> float:
 def calculate_deterr_force(rigidity: float, innovation: float) -> float:
     """
     F_deterr = Innovation_Pressure - Rigidity
-    
+
     Where:
     - Positive: Deterritorialization needed
     - Negative: Reterritorialization occurring

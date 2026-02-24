@@ -1,9 +1,9 @@
 # Broken Links Report
 
-**Total Links:** 2139  
-**Internal Links:** 1359  
-**Broken Links:** 108  
-**Link Health Score:** 92.1%  
+**Total Links:** 2139
+**Internal Links:** 1359
+**Broken Links:** 108
+**Link Health Score:** 92.1%
 
 ## Broken Links by File
 
@@ -279,4 +279,3 @@
 
 - Line 87: `[Logging guide](guides/LOGGING.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/guides/LOGGING.md
-

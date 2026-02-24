@@ -26,7 +26,7 @@
 | src/tokenization/sentencepiece_adapter.py | Unknown | 70% | TBD | Medium |
 | src/tokenization/train_tokenizer.py | Unknown | 70% | TBD | High |
 
-**Context**: 
+**Context**:
 - **Existing Tests**: 19 tokenization test files identified
 - **Module Size**: ~40KB across 7 files
 - **Current State**: No baseline coverage data available
@@ -146,7 +146,7 @@ def analyze_coverage_gaps(coverage_file='coverage_reports/coverage_tokenization.
     """Analyze coverage gaps and generate detailed report."""
     with open(coverage_file, 'r') as f:
         data = json.load(f)
-    
+
     gaps = []
     for filepath, filedata in data['files'].items():
         if 'src/tokenization/' in filepath:
@@ -154,7 +154,7 @@ def analyze_coverage_gaps(coverage_file='coverage_reports/coverage_tokenization.
             covered = filedata['summary']['covered_lines']
             total = filedata['summary']['num_statements']
             percent = filedata['summary']['percent_covered']
-            
+
             gaps.append({
                 'file': filepath,
                 'coverage': percent,
@@ -163,19 +163,19 @@ def analyze_coverage_gaps(coverage_file='coverage_reports/coverage_tokenization.
                 'missing_lines': missing_lines,
                 'gap': 70.0 - percent
             })
-    
+
     # Sort by gap size (largest first)
     gaps.sort(key=lambda x: x['gap'], reverse=True)
-    
+
     return gaps
 
 if __name__ == '__main__':
     gaps = analyze_coverage_gaps()
-    
+
     print("=" * 80)
     print("TOKENIZATION COVERAGE GAP ANALYSIS")
     print("=" * 80)
-    
+
     for gap in gaps:
         print(f"\n📄 {gap['file']}")
         print(f"   Coverage: {gap['coverage']:.2f}% ({gap['covered']}/{gap['total']} lines)")
@@ -410,7 +410,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 **Rollback Strategy**: If coverage analysis fails
 - **Checkpoint**: Before running coverage (after dependency install)
 - **Trigger**: pytest execution errors or missing dependencies
-- **Action**: 
+- **Action**:
   1. Review pytest output for specific errors
   2. Install missing dependencies individually
   3. Use `pytest --collect-only` to validate test collection
@@ -439,7 +439,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 
 **Total Energy Investment**: 11/20 units
 
-**Energy Optimization**: 
+**Energy Optimization**:
 - Cache pytest results to avoid re-running tests
 - Use parallel test execution if available
 - Generate multiple report formats in single run
@@ -498,7 +498,7 @@ See: `.codex/plans/pr_3145/02_comprehensive_test_implementation.md`
 - **Primary Documentation**: `.codex/docs/TEST_DEVELOPMENT_PATTERNS.md`
 - **Quantum Methodology**: `.codex/docs/QUANTUM_TEST_METHODOLOGY.md`
 - **Related PRs**: #3145 (current), #3144 (test development patterns)
-- **Workflow Logs**: 
+- **Workflow Logs**:
   - Auto-Fix CI: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855382 <!-- Note: Logs expire after 90 days -->/job/62481529224
   - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21671855416 <!-- Note: Logs expire after 90 days -->/job/62481529310
 - **Technical Specifications**: pyproject.toml (test dependencies)

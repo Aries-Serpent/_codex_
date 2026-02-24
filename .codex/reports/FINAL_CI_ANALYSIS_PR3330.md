@@ -20,7 +20,7 @@ Successfully diagnosed and fixed **all CI configuration issues** for PR #3330. T
 
 **Verification:**
 - ✅ Progressive Validation Suite / smoke-tests: SUCCESS
-- ✅ Resilient Validation Suite / validation (documentation): SUCCESS  
+- ✅ Resilient Validation Suite / validation (documentation): SUCCESS
 - ✅ Resilient Validation Suite / validation (integration): SUCCESS
 - ✅ Dependencies now install successfully in all jobs
 

@@ -1,7 +1,7 @@
 # Welcome to the _codex_ Wiki
 
-**Repository:** [Aries-Serpent/_codex_](https://github.com/Aries-Serpent/_codex_)  
-**Purpose:** ML training, evaluation, and plugin framework with autonomous agent capabilities  
+**Repository:** [Aries-Serpent/_codex_](https://github.com/Aries-Serpent/_codex_)
+**Purpose:** ML training, evaluation, and plugin framework with autonomous agent capabilities
 **Status:** Active Development | Genesis Protocol Phase 1 Complete
 
 ---
@@ -36,7 +36,7 @@
    # View documentation
    cat README.md
    cat AGENTS.md
-   
+
    # Check configuration
    ls configs/
    ```
@@ -164,7 +164,7 @@ pytest tests/ -m "not slow"
    # Edit files
    # Run tests
    pytest tests/
-   
+
    # Run linting
    ruff check .
    black .
@@ -229,8 +229,8 @@ pip install -e ".[analysis]" # Code analysis
 
 ### Security Status
 
-**Last Scan:** 2025-12-26  
-**Known Vulnerabilities:** 0 (after recent updates)  
+**Last Scan:** 2025-12-26
+**Known Vulnerabilities:** 0 (after recent updates)
 **Security Score:** A+
 
 ### Reporting Security Issues
@@ -339,8 +339,8 @@ This project is licensed under the MIT License. See [LICENSE](https://github.com
 
 ---
 
-**Wiki Last Updated:** 2025-12-26  
-**Wiki Version:** 1.0.0  
+**Wiki Last Updated:** 2025-12-26
+**Wiki Version:** 1.0.0
 **Next Review:** After Genesis Phase 2 completion
 
 **Navigation:** Use the sidebar to explore specific topics in depth.

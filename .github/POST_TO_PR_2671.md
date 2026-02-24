@@ -21,9 +21,9 @@
 
 ## 🎯 Phase 9.2: Public API Coverage (85% → 92%)
 
-**Objective**: Test all public APIs and their contracts  
-**Target**: Add 100-150 tests, reach 92% coverage (+7%)  
-**Priority**: HIGH  
+**Objective**: Test all public APIs and their contracts
+**Target**: Add 100-150 tests, reach 92% coverage (+7%)
+**Priority**: HIGH
 **Estimated Effort**: 50K-70K tokens, 2-3 hours
 
 ---
@@ -38,7 +38,7 @@
    - Public methods in WorkflowNavigator
    - Public methods in quantum_game_theory
    - Mental mapping public API
-   
+
 2. **Public functions in src/codex/** (20-25 tests)
    - AST public API (parse, transform, analyze)
    - Ingestion public API (ingest_file, validate)
@@ -54,14 +54,14 @@
 def test_public_api_workflow_navigator_create():
     """Test public API: WorkflowNavigator.create_workflow"""
     from agents.workflow_navigator import WorkflowNavigator
-    
+
     nav = WorkflowNavigator()
     wf_id = nav.create_workflow("test", ["step1"])
-    
+
     # API contract validation
     assert isinstance(wf_id, str)
     assert wf_id == "test"
-    
+
     # Verify retrievable
     wf = nav.get_workflow(wf_id)
     assert wf is not None
@@ -217,7 +217,7 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 - Tests: 100-150
 - Coverage gain: +7% (85% → 92%)
 
-**Target**: Single session completion  
+**Target**: Single session completion
 **Next Phase**: 9.3 - Error Paths (92% → 97%)
 
 ---
@@ -236,9 +236,9 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 
 ---
 
-**Current Branch**: copilot/sub-pr-2668-again  
-**PR**: #2671  
-**Phase**: 9.2 - Public API Coverage  
+**Current Branch**: copilot/sub-pr-2668-again
+**PR**: #2671
+**Phase**: 9.2 - Public API Coverage
 **Previous Phase**: 9.1 Complete (85% coverage, 176 tests) ✅
 
 **Remember**:
@@ -252,8 +252,8 @@ python3 -m pytest --cov=agents --cov=src --cov=scripts --cov-report=term
 
 ---
 
-**Posted**: 2025-12-31 02:15 UTC  
-**Session ID**: S-PR2671-2025-12-31-Phase9-2  
+**Posted**: 2025-12-31 02:15 UTC
+**Session ID**: S-PR2671-2025-12-31-Phase9-2
 **Previous Session**: S-PR2671-PHASE9-1-COMPLETE-FINAL ✅
 
 ---

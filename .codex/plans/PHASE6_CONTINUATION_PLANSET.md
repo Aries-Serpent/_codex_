@@ -1,8 +1,8 @@
 # Planset: P2 — Phase 6 Production Graduation
 
-**Status**: 🟡 READY — Begins after PR #3339 merge  
-**Priority**: P2 — Short-term  
-**Created**: 2026-02-20  
+**Status**: 🟡 READY — Begins after PR #3339 merge
+**Priority**: P2 — Short-term
+**Created**: 2026-02-20
 **Ref**: `docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE6.md`
 
 ---
