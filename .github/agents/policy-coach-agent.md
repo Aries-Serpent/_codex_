@@ -422,6 +422,9 @@ The following phrases are **never acceptable** from GitHub Copilot Agent:
 | RF-11 | `torch or` falsy fallback | Empty string is falsy in `x or default` | Use `x if x is not None else default` |
 | RF-12 | XML import pre-commit hook fail | `import xml.etree.ElementTree` literal | Use `importlib.import_module(...)` |
 
+> **RF count from 79+ sessions (S70–S79):** each pattern documents a real failure
+> extracted from CI logs. Storing these patterns prevents recurrence.
+
 ---
 
 ## §5 · ACTIVATION COMMANDS

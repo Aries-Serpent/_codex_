@@ -7,6 +7,7 @@ Test module for mlflow entrypoints.
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import os
 import sys
 
@@ -14,7 +15,6 @@ import pytest
 
 from codex_ml.utils.mlflow_entrypoints import configure_mlflow_uri
 
-import importlib.util
 _HAS_SITECUSTOMIZE = importlib.util.find_spec("sitecustomize") is not None
 
 

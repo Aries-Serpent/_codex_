@@ -970,6 +970,7 @@ def run_hf_trainer(
     set_seed(seed, output_dir, deterministic=resolved_det)
     if (
         resolved_det
+        and torch.cuda.is_available()
         and getattr(torch.backends, "cudnn", None) is not None
         and getattr(torch.backends.cudnn, "enabled", False)
     ):

@@ -41,13 +41,18 @@
 | #3352 | (pinned transitive) | patch | Verify no indirect breakage |
 | #3349 | (test-only dep) | patch | Fixture regression check |
 
-### P3 — Open DRQ items
+### P3 — Remaining Open DRQ items
 
 | DRQ ID | Pattern | File:Line | Status |
 |--------|---------|-----------|--------|
-| DRQ-S75-001 | `defusedxml` lazy-import pattern applicability | `docs/tech_debt/research_queue/questions_for_research.md:62` | 🔬 OPEN |
-| DRQ-S75-002 | cudnn guard `getattr` vs `device.type` — cuda/mps cross-platform | `docs/tech_debt/research_queue/questions_for_research.md:78` | 🔬 OPEN |
-| DRQ-S75-003 | FAISS `import faiss` before `FAISSStore` — CI isolation | `docs/tech_debt/research_queue/questions_for_research.md:94` | 🔬 OPEN |
+| Q002 | `TestManageTenantIndices` FAISS mock path | `docs/tech_debt/research_queue/questions_for_research.md:94` | 🔬 OPEN |
+| Q003 | `IncrementalSyncDecider` 95% change ratio bug | `docs/tech_debt/research_queue/questions_for_research.md:130` | 🔬 OPEN |
+| DRQ-S74-NEW-001 | Function-level `datetime` imports codebase-wide | `docs/tech_debt/research_queue/questions_for_research.md:730` | 🔬 OPEN |
+
+> **Note**: DRQ-S75-001, DRQ-S75-002, DRQ-S75-003 are ALL ✅ RESOLVED (S75).
+> S79 added deep-research addenda with extracted rules (R1/R2 per DRQ) at lines 787, 817, 855.
+> DRQ-S75-002 received an S79 regression fix: `torch.cuda.is_available()` re-added to
+> `engine_hf_trainer.py:971` cudnn guard — rule DRQ-S75-002-R1 now documented.
 
 ### P4 — Knowledge graph expansion
 

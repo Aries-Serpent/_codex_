@@ -9,8 +9,9 @@ from typing import Iterable
 import pytest
 
 pytest.importorskip("typer")
-from codex_ml.monitoring import cli as monitoring_cli  # noqa: E402
 from typer.testing import CliRunner  # noqa: E402
+
+from codex_ml.monitoring import cli as monitoring_cli  # noqa: E402
 
 pytestmark = pytest.mark.not_slow
 

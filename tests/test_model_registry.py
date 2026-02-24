@@ -151,8 +151,9 @@ def test_plugin_catalogue_tinyllama_offline_missing(tmp_path):
 
 def test_plugins_cli_lists_offline_models():
     pytest.importorskip("typer")
-    from codex_ml.cli import plugins_cli
     from typer.testing import CliRunner
+
+    from codex_ml.cli import plugins_cli
 
     runner = CliRunner()
     result = runner.invoke(plugins_cli.app, ["list", "models"])

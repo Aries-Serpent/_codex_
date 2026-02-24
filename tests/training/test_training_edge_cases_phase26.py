@@ -11,7 +11,6 @@ pytest.importorskip("torch")
 
 import pickle  # for PyTorch ≥2.6 UnpicklingError
 
-
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
 from unittest.mock import patch  # noqa: E402

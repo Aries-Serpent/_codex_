@@ -4,8 +4,9 @@ Test Peft Integration
 Test module for peft integration.
 """
 
-import pytest
 import sys
+
+import pytest
 
 from codex_ml.models import MiniLM, MiniLMConfig
 from codex_ml.peft.peft_adapter import apply_lora
