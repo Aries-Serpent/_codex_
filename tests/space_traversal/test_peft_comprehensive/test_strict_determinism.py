@@ -60,7 +60,7 @@ def test_passes_when_deterministic(monkeypatch, tmp_path):
     run_custom_trainer(model, tok, ds, None, cfg)
 
 
-def test_raises_when_nondeterministic(monkeypatch, tmp_path):
+def test_auto_corrects_nondeterministic_cudnn(monkeypatch, tmp_path):
     """Auto-call guard: run_custom_trainer auto-corrects non-deterministic cudnn."""
     model, tok, ds, cfg = _setup(tmp_path)
     _patch_cuda(monkeypatch, False)
