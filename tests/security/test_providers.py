@@ -497,6 +497,7 @@ class TestGitHubTokenProvider:
                 old_secret_id="",
                 new_secret_id="new-token-id",
                 new_secret_value="ghp_new_token_value",  # pragma: allowlist secret
+            )
 
             with patch.object(GitHubTokenProvider, 'revoke_secret') as mock_revoke:
                 mock_revoke.return_value = True

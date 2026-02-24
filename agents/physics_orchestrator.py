@@ -40,6 +40,7 @@ class ActionType(Enum):
     RESEARCH = "research"
     ANALYZE = "analyze"
     EXECUTE = "execute"
+    IMPLEMENT = "implement"
     PLAN = "plan"
     REFLECT = "reflect"
 

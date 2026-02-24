@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Iterable
 
-from codex_ml.training import unified_training
+from codex_ml.training import strategies, unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult
 from codex_ml.utils import checkpoint_core
 
@@ -55,7 +55,7 @@ def test_final_status_reflects_strategy_result(monkeypatch, tmp_path) -> None:
 
     monkeypatch.setattr(checkpoint_core, "save_checkpoint", fake_save)
     monkeypatch.setattr(
-        unified_training, "resolve_strategy", lambda name: _FailingStrategy()
+        strategies, "resolve_strategy", lambda name: _FailingStrategy()
     )
 
     callback = _NoOpCallback()
