@@ -1,14 +1,14 @@
 # Top-3 Agent Enhancement Plansets
-> **Generated**: 2026-02-20  
-> **Session**: 45  
-> **PR**: #3340 (copilot/sub-pr-3336)  
+> **Generated**: 2026-02-20
+> **Session**: 45
+> **PR**: #3340 (copilot/sub-pr-3336)
 > **Mandate**: Ingest Mission Overview → Select Top-3 Agents for merge/update/develop to resolve CI failures, codebase maintenance, and agent orchestration
 
 ---
 
 ## 🔍 Mission Overview Ingestion
 
-**Source**: PR #3340 comment (2026-02-20) by @mbaetiong  
+**Source**: PR #3340 comment (2026-02-20) by @mbaetiong
 **Context**: 54 total agents (53 GitHub + 1 quantum reviewer) with 5 active Cognitive Brain phases
 
 ### Current Agent Landscape (Key CI-Relevant Clusters)
@@ -45,7 +45,7 @@
 
 ### Target: `ci-testing-agent` v4.0.0 (Unified CI Failure Resolver)
 
-**Action**: MERGE three agents → single unified agent  
+**Action**: MERGE three agents → single unified agent
 **Files**: `.github/agents/ci-testing-agent.md` (primary), deprecate the other two
 
 ### Problem Being Solved
@@ -144,7 +144,7 @@ self_healing:
 
 ### Target: `agent-orchestrator` v1.0.0 (Task Assignment Manager + Grader)
 
-**Action**: DEVELOP new agent — doesn't exist in any form  
+**Action**: DEVELOP new agent — doesn't exist in any form
 **Files**: `.github/agents/agent-orchestrator.md` (new)
 
 ### Problem Being Solved
@@ -280,12 +280,12 @@ capabilities:
 
 ### Target: `codebase-health-guardian` (Expanded Scope)
 
-**Action**: UPDATE + RENAME existing `workflow-ci-fixer`  
+**Action**: UPDATE + RENAME existing `workflow-ci-fixer`
 **Files**: `.github/agents/workflow-ci-fixer.agent.md` (upgrade in-place)
 
 ### Problem Being Solved
 
-Current `workflow-ci-fixer` scope: GitHub Actions YAML syntax only  
+Current `workflow-ci-fixer` scope: GitHub Actions YAML syntax only
 Required scope: Full cross-cutting codebase health enforcement
 
 Evidence from sessions 43-45:
@@ -309,7 +309,7 @@ codebase-health-guardian v2.0 (Full Maintenance Enforcer)
 ├── DOMAIN 2: Python Code Quality (NEW)
 │   ├── ruff check + fix on all PR-changed files
 │   ├── Detect: trailing whitespace (W293), import order (I001)
-│   ├── Detect: missing `from __future__ import annotations` 
+│   ├── Detect: missing `from __future__ import annotations`
 │   ├── Detect: `list[str]` subscript without annotations import
 │   └── Auto-fix all fixable, report non-fixable
 │
@@ -422,7 +422,7 @@ pre_commit_hook:
 ```
 PHASE 1 (Immediate — this session):
   └── Plansets documented ✅ (this file)
-  
+
 PHASE 2 (Next 2 sessions):
   ├── Implement PLANSET 3: codebase-health-guardian
   │   ├── Update workflow-ci-fixer.agent.md in-place
@@ -432,7 +432,7 @@ PHASE 2 (Next 2 sessions):
       ├── Update ci-testing-agent.md with merged protocol
       ├── Add 10 known fix patterns to agent definition
       └── Mark ci-failure-resolution-agent + ci-emergency-response-agent as deprecated
-      
+
 PHASE 3 (Following session):
   └── Implement PLANSET 2: agent-orchestrator (new)
       ├── Create agent-orchestrator.md
@@ -466,7 +466,7 @@ PHASE 3 (Following session):
    - Add pre-commit hook integration section
    - Test with: grep -rn 'xfail' tests/ | grep -v "TORCH_312_BUG\|_PREEXISTING"
 
-2. Implement PLANSET 1 (ci-testing-agent v4 merge):  
+2. Implement PLANSET 1 (ci-testing-agent v4 merge):
    - Update .github/agents/ci-testing-agent.md:
      * Add Phase 1 (Log Retrieval) and Phase 2 (Triage) from merged agents
      * Embed 10 known fix patterns table
@@ -483,5 +483,5 @@ Reference: .codex/plans/TOP3_AGENT_ENHANCEMENT_PLANSETS.md
 
 ---
 
-*Document generated: Session 45, 2026-02-20*  
+*Document generated: Session 45, 2026-02-20*
 *Status: PLANSET READY — Awaiting Phase 2 implementation*

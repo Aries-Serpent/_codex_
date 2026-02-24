@@ -1,6 +1,6 @@
 # Cognitive Brain Status — Session 46
-> **Date**: 2026-02-20T14:00:00Z  
-> **PR**: #3336 / #3340 (copilot/sub-pr-3336)  
+> **Date**: 2026-02-20T14:00:00Z
+> **PR**: #3336 / #3340 (copilot/sub-pr-3336)
 > **Commit**: 36e8d30 (critical fix) + pending (P2/P3 tasks)
 
 ---

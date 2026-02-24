@@ -38,7 +38,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from defusedxml import ElementTree as ET
+try:
+    from defusedxml import ElementTree as ET
+except ImportError:  # pragma: no cover - CI may not have defusedxml
+    import warnings
+    warnings.warn(
+        "defusedxml not installed; falling back to stdlib XML parser. "
+        "Only parse trusted XML (e.g. CI coverage reports).",
+        stacklevel=2,
+    )
+    from xml.etree import ElementTree as ET
 
 __all__ = ["parse_cobertura", "parse_simple_coverage", "write_stub_report", "main"]
 

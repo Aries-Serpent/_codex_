@@ -1,7 +1,7 @@
 # Cognitive Brain Status: PR #3336 Sessions 51–52 Complete
 
-> **Date**: 2026-02-20 | **PR**: #3336 | **Branch**: copilot/sub-pr-3336  
-> **Sessions**: 43–52 | **Latest Commit**: 36ae81c  
+> **Date**: 2026-02-20 | **PR**: #3336 | **Branch**: copilot/sub-pr-3336
+> **Sessions**: 43–52 | **Latest Commit**: 36ae81c
 > **Status**: 🟡 IN PROGRESS — CI partially green, key fixes applied
 
 ---
@@ -37,28 +37,28 @@
 ## 🧠 Lessons Learned (L018–L022)
 
 ### L018 — `.gitignore` silences new root `.codex/*.md` files
-**Pattern**: `.codex/*` rule with only `!.codex/README.md` exception. Any new `.md` file placed directly in `.codex/` is silently ignored by git even when `git add .` is run.  
-**Fix**: Added `!.codex/*.md` exception. All future `.codex/` markdown files will be tracked.  
+**Pattern**: `.codex/*` rule with only `!.codex/README.md` exception. Any new `.md` file placed directly in `.codex/` is silently ignored by git even when `git add .` is run.
+**Fix**: Added `!.codex/*.md` exception. All future `.codex/` markdown files will be tracked.
 **Prevention**: Before every commit, run `git check-ignore .codex/*.md` to confirm no important files are being silently dropped.
 
 ### L019 — Namespace package shadows installed wheel when stub dir has no `__init__.py`
-**Pattern**: `typer/testing.py` stub at repo root creates a namespace package. Python's import system finds it before site-packages. All `hasattr(typer, "Typer")` → False → `app = None`.  
-**Fix**: Created `typer/__init__.py` transparent proxy that loads real typer from site-packages.  
+**Pattern**: `typer/testing.py` stub at repo root creates a namespace package. Python's import system finds it before site-packages. All `hasattr(typer, "Typer")` → False → `app = None`.
+**Fix**: Created `typer/__init__.py` transparent proxy that loads real typer from site-packages.
 **Prevention**: Any stub/shim directory at repo root MUST have `__init__.py`. Add CI smoke test: `python -c "import typer; assert hasattr(typer, 'Typer')"`.
 
 ### L020 — Hardcoded `parents[N]` path resolution breaks when test file is copied to a different depth
-**Pattern**: `REPO_ROOT = Path(__file__).resolve().parents[3]` works for `scripts/space_traversal/detectors/` (3 levels deep) but breaks for `tests/scripts/space_traversal/detectors/` (4 levels deep from repo root).  
-**Fix**: `_find_repo_root()` sentinel walk-up via `pyproject.toml` discovery. Added to DR-010.  
+**Pattern**: `REPO_ROOT = Path(__file__).resolve().parents[3]` works for `scripts/space_traversal/detectors/` (3 levels deep) but breaks for `tests/scripts/space_traversal/detectors/` (4 levels deep from repo root).
+**Fix**: `_find_repo_root()` sentinel walk-up via `pyproject.toml` discovery. Added to DR-010.
 **Prevention**: Never use hardcoded `parents[N]`. Always use sentinel-based root discovery.
 
 ### L021 — Absolute module import inside package initialization can break monkeypatch
-**Pattern**: `import codex_ml.training.strategies as strategies` added to `unified_training.py` (absolute import at module level) broke `test_train_mlflow_flags`. Exact mechanism unclear — likely Python 3.12 package attribute assignment side-effect during `codex_ml.training` initialization.  
-**Fix**: Reverted. Module attribute must be exposed via relative import OR test must import strategies directly.  
+**Pattern**: `import codex_ml.training.strategies as strategies` added to `unified_training.py` (absolute import at module level) broke `test_train_mlflow_flags`. Exact mechanism unclear — likely Python 3.12 package attribute assignment side-effect during `codex_ml.training` initialization.
+**Fix**: Reverted. Module attribute must be exposed via relative import OR test must import strategies directly.
 **Prevention**: Use `from . import strategies` (relative) instead of absolute imports when exposing sibling modules for monkeypatching.
 
 ### L022 — Session commit messages must be verified against actual git tracked files
-**Pattern**: Session 51 commit `4a284b6` message explicitly listed `.codex/TECH_DEBT_REGISTRY.md` but the file was never committed — silently dropped by `.gitignore`.  
-**Fix**: After every `report_progress`, run `git show HEAD --stat | grep TECH_DEBT` to verify claimed files are actually present.  
+**Pattern**: Session 51 commit `4a284b6` message explicitly listed `.codex/TECH_DEBT_REGISTRY.md` but the file was never committed — silently dropped by `.gitignore`.
+**Fix**: After every `report_progress`, run `git show HEAD --stat | grep TECH_DEBT` to verify claimed files are actually present.
 **Prevention**: Add D4 artifact hygiene check: `git show HEAD --stat` must list every file mentioned in the commit message.
 
 ---

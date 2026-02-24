@@ -1,9 +1,9 @@
 # Repository Architecture Blueprint and Roadmap
 
-**Document Version**: 1.0.0  
-**Generated**: 2025-12-11  
-**Branch Context**: `copilot/sub-pr-2459-again`  
-**Author**: GitHub Copilot with mbaetiong  
+**Document Version**: 1.0.0
+**Generated**: 2025-12-11
+**Branch Context**: `copilot/sub-pr-2459-again`
+**Author**: GitHub Copilot with mbaetiong
 **Audience**: Developer-Architects, AI Assistants/Agents, DevOps Engineers
 
 ---
@@ -207,55 +207,55 @@ flowchart TB
         Agent[AI Agents]
         CI[CI/CD Systems]
     end
-    
+
     subgraph Core["🔷 Codex Core"]
         CLI[CLI Interface]
         Logging[Session Logger]
         Config[Configuration]
     end
-    
+
     subgraph Pipeline["🔍 Audit Pipeline v1.5.5"]
         Runner[Audit Runner]
         Scanner[Code Scanner]
         Metrics[Metrics Collector]
         Trends[Trend Database]
     end
-    
+
     subgraph ML["🤖 ML Framework"]
         Training[Training Engine]
         Eval[Evaluation]
         Models[Model Registry]
     end
-    
+
     subgraph Viz["📊 Visualization"]
         Dashboard[HTML Dashboard]
         Terminal[ASCII Terminal]
         Reports[Markdown Reports]
     end
-    
+
     subgraph Storage["💾 Storage"]
         SQLite[(SQLite DB)]
         Logs[Log Files]
         Cache[Cache Layer]
     end
-    
+
     Dev --> CLI
     Agent --> Runner
     CI --> Runner
-    
+
     CLI --> Training
     CLI --> Eval
-    
+
     Runner --> Scanner
     Scanner --> Metrics
     Metrics --> Trends
-    
+
     Trends --> SQLite
     Trends --> Viz
-    
+
     Training --> Models
     Eval --> Models
-    
+
     Dashboard --> Reports
 ```
 
@@ -1156,7 +1156,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 
 ---
 
-**Document Version**: 1.0.0  
-**Maintenance**: Update quarterly or after major changes  
-**Contact**: Repository owners (@mbaetiong)  
+**Document Version**: 1.0.0
+**Maintenance**: Update quarterly or after major changes
+**Contact**: Repository owners (@mbaetiong)
 **Last Updated**: 2025-12-11

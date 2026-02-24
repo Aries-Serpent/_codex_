@@ -1,7 +1,7 @@
 # .codex/docs/ - Core Documentation Repository
 
-> **Purpose:** Central documentation for philosophical frameworks, cognitive architecture, and meta-cognitive infrastructure  
-> **Status:** ✅ Active - Complete documentation integrated  
+> **Purpose:** Central documentation for philosophical frameworks, cognitive architecture, and meta-cognitive infrastructure
+> **Status:** ✅ Active - Complete documentation integrated
 > **Last Updated:** 2026-02-10
 
 ---
@@ -260,8 +260,8 @@
 
 ---
 
-**Last Updated:** 2026-02-01  
-**Version:** 1.0.0  
+**Last Updated:** 2026-02-01
+**Version:** 1.0.0
 **Status:** ✅ Complete - Ready for implementation
 
 ---

@@ -1,16 +1,16 @@
 # REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 6 of 6
 
-> **Final Phase**: Phase 6: Python 3.12 Governance & Enforcement  
-> **Duration**: 80 minutes  
-> **Energy**: ⚡⚡⚡⚡⚡  
+> **Final Phase**: Phase 6: Python 3.12 Governance & Enforcement
+> **Duration**: 80 minutes
+> **Energy**: ⚡⚡⚡⚡⚡
 > **Objective**: Establish long-term governance, automation, and enforcement mechanisms to prevent version drift
 
 ---
 
 # PHASE 6: Python 3.12 Governance & Enforcement
 
-> **Duration**: 80 minutes  
-> **Energy**: ⚡⚡⚡⚡⚡  
+> **Duration**: 80 minutes
+> **Energy**: ⚡⚡⚡⚡⚡
 > **Focus**: Operationalize Python 3.12 single-version standard with automated enforcement and governance
 
 ---
@@ -41,7 +41,7 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-  
+
   # Code Formatting (Python 3.12 compatible)
   - repo: https://github.com/psf/black
     rev: 24.1.1
@@ -49,14 +49,14 @@ repos:
       - id: black
         language_version: python3.12
         args: ['--target-version=py312']
-  
+
   # Linting (Python 3.12)
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.2.0
     hooks:
       - id: ruff
         args: ['--target-version=py312', '--fix']
-  
+
   # Type Checking (Python 3.12)
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
@@ -64,7 +64,7 @@ repos:
       - id: mypy
         args: ['--python-version=3.12', '--ignore-missing-imports']
         additional_dependencies: ['types-all']
-  
+
   # Prevent Version Conditionals
   - repo: local
     hooks:
@@ -73,7 +73,7 @@ repos:
         entry: bash -c 'if grep -r "sys\.version_info" src/ tests/ --include="*.py"; then echo "❌ sys.version_info conditionals not allowed (Python 3.12 only)"; exit 1; fi'
         language: system
         pass_filenames: false
-  
+
   # Prevent Compatibility Imports
   - repo: local
     hooks:
@@ -82,7 +82,7 @@ repos:
         entry: bash -c 'if grep -r "try:.*import.*except.*import" src/ tests/ --include="*.py" -A 2; then echo "❌ Compatibility imports not allowed (Python 3.12 only)"; exit 1; fi'
         language: system
         pass_filenames: false
-  
+
   # Configuration File Validation
   - repo: local
     hooks:
@@ -121,12 +121,12 @@ def check_python_version_file():
     if not version_file.exists():
         print("❌ .python-version file not found")
         return False
-    
+
     version = version_file.read_text().strip()
     if version != EXPECTED_VERSION:
         print(f"❌ .python-version: expected {EXPECTED_VERSION}, found {version}")
         return False
-    
+
     print(f"✅ .python-version: {version}")
     return True
 
@@ -136,10 +136,10 @@ def check_pyproject_toml():
     if not pyproject.exists():
         print("⚠️  pyproject.toml not found")
         return True
-    
+
     data = tomllib.loads(pyproject.read_text())
     requires_python = data.get("project", {}).get("requires-python", "")
-    
+
     # Accept: ">=3.12,<3.13" or "==3.12.*"
     valid_patterns = [
         ">=3.12,<3.13",
@@ -147,11 +147,11 @@ def check_pyproject_toml():
         "==3.12.*",
         "~=3.12.0"
     ]
-    
+
     if not any(pattern in requires_python for pattern in valid_patterns):
         print(f"❌ pyproject.toml requires-python: expected '>=3.12,<3.13', found '{requires_python}'")
         return False
-    
+
     print(f"✅ pyproject.toml requires-python: {requires_python}")
     return True
 
@@ -160,25 +160,25 @@ def check_runtime_txt():
     runtime = Path("runtime.txt")
     if not runtime.exists():
         return True  # Optional file
-    
+
     version = runtime.read_text().strip()
     if version != f"python-{EXPECTED_VERSION}":
         print(f"❌ runtime.txt: expected python-{EXPECTED_VERSION}, found {version}")
         return False
-    
+
     print(f"✅ runtime.txt: {version}")
     return True
 
 def main():
     """Run all validation checks"""
     print("🔍 Validating Python version configuration files...\n")
-    
+
     checks = [
         check_python_version_file(),
         check_pyproject_toml(),
         check_runtime_txt()
     ]
-    
+
     if all(checks):
         print("\n✅ All version configuration files valid")
         return 0
@@ -226,15 +226,15 @@ jobs:
   enforce-python-version:
     name: Enforce Python 3.12.10 Only
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.10"
-      
+
       - name: Verify Python version
         run: |
           python --version
@@ -244,7 +244,7 @@ jobs:
             exit 1
           fi
           echo "✅ Python $PYTHON_VERSION verified"
-      
+
       - name: Check for version conditionals in code
         run: |
           if grep -r "sys\.version_info" src/ tests/ --include="*.py"; then
@@ -253,7 +253,7 @@ jobs:
             exit 1
           fi
           echo "✅ No version conditionals found"
-      
+
       - name: Check for compatibility imports
         run: |
           if grep -r "try:.*import.*except.*import" src/ tests/ --include="*.py" -A 2; then
@@ -262,11 +262,11 @@ jobs:
             exit 1
           fi
           echo "✅ No compatibility imports found"
-      
+
       - name: Validate configuration files
         run: |
           python scripts/validate_version_config.py
-      
+
       - name: Check for version-specific test markers
         run: |
           if grep -r "@pytest\.mark\.py[0-9]" tests/ --include="*.py"; then
@@ -275,7 +275,7 @@ jobs:
             exit 1
           fi
           echo "✅ No version-specific test markers found"
-      
+
       - name: Verify no multi-version CI matrices
         run: |
           if grep -r "python-version:.*\[" .github/workflows/ --include="*.yml"; then
@@ -284,7 +284,7 @@ jobs:
             exit 1
           fi
           echo "✅ No multi-version matrices found"
-      
+
       - name: Enforcement Summary
         if: always()
         run: |
@@ -333,7 +333,7 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-    
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -360,11 +360,11 @@ updates:
 **Python Version Upgrade Policy** (in dependabot.yml comment):
 ```yaml
 # Python Version Upgrade Policy:
-# 
+#
 # - Patch versions (3.12.x): Auto-merge if CI passes
 # - Minor versions (3.13.0): Manual review required, follow standardization runbook
 # - Major versions (4.0.0): Team decision, extensive testing required
-# 
+#
 # Current Standard: Python 3.12.10
 # Next Review: When Python 3.13 reaches stable (expected Oct 2024)
 ```
@@ -379,10 +379,10 @@ updates:
 ```markdown
 # Python Version Policy
 
-> **Document Type**: Engineering Policy  
-> **Effective Date**: 2026-01-25  
-> **Review Cycle**: Quarterly  
-> **Owner**: @engineering-team  
+> **Document Type**: Engineering Policy
+> **Effective Date**: 2026-01-25
+> **Review Cycle**: Quarterly
+> **Owner**: @engineering-team
 > **Status**: ✅ Active
 
 ---
@@ -545,8 +545,8 @@ Violations MUST be fixed within:
 
 ---
 
-**Next Review**: 2026-04-25  
-**Policy Owner**: @mbaetiong  
+**Next Review**: 2026-04-25
+**Policy Owner**: @mbaetiong
 **Approvals**: @engineering-team ✅
 ```
 
@@ -584,16 +584,16 @@ pre-commit install
 
 ### FAQ
 
-**Q: Can I use Python 3.11?**  
+**Q: Can I use Python 3.11?**
 A: No. Only Python 3.12.10 is supported.
 
-**Q: What about Python 3.13?**  
+**Q: What about Python 3.13?**
 A: Not yet. We'll evaluate Python 3.13 in Oct 2025 (1 year after release).
 
-**Q: I need a different version for another project.**  
+**Q: I need a different version for another project.**
 A: Use virtual environments to isolate projects. Each can have its own Python version.
 
-**Q: Can I bypass the enforcement for a special case?**  
+**Q: Can I bypass the enforcement for a special case?**
 A: No. If your use case requires different Python, it should be in a separate service/repository.
 ```
 
@@ -607,8 +607,8 @@ A: No. If your use case requires different Python, it should be in a separate se
 ```markdown
 # Developer Onboarding Checklist: Python 3.12
 
-> **For**: New developers joining the `_codex_` project  
-> **Time Required**: 30-45 minutes  
+> **For**: New developers joining the `_codex_` project
+> **Time Required**: 30-45 minutes
 > **Prerequisites**: Basic Python knowledge, git installed
 
 ---
@@ -876,7 +876,7 @@ You're ready to contribute to `_codex_`!
 
 ---
 
-**Mentor**: @mbaetiong  
+**Mentor**: @mbaetiong
 **Questions?**: Post in #engineering or DM mentor
 ```
 
@@ -967,13 +967,13 @@ def test_feature(): ...  # Just a regular test
 
 ## 🆘 Troubleshooting
 
-**Problem**: `python --version` shows wrong version  
+**Problem**: `python --version` shows wrong version
 **Solution**: Use pyenv or specify `python3.12` explicitly
 
-**Problem**: Pre-commit hook fails  
+**Problem**: Pre-commit hook fails
 **Solution**: Read hook output, fix issue, commit again
 
-**Problem**: CI check fails  
+**Problem**: CI check fails
 **Solution**: Pull latest main, rebase, ensure Python 3.12.10 locally
 
 ---
@@ -1016,7 +1016,7 @@ groups:
           description: "{{ $value }} production instances using wrong Python version. Expected: 3.12.10"
           runbook: "https://github.com/Aries-Serpent/_codex_/blob/main/docs/runbooks/python_version_mismatch.md"
           action: "Immediate rollback required"
-      
+
       # Warning: Python version drift in CI
       - alert: PythonVersionDriftCI
         expr: |
@@ -1029,7 +1029,7 @@ groups:
           summary: "CI using non-3.12.10 Python version"
           description: "CI job '{{ $labels.workflow }}' using Python {{ $labels.version }}"
           action: "Review workflow file and fix version"
-      
+
       # Info: Python version check performed
       - alert: PythonVersionCheckExecuted
         expr: |
@@ -1059,51 +1059,51 @@ from pathlib import Path
 
 def generate_compliance_report():
     """Generate compliance metrics report"""
-    
+
     # Collect metrics (from Prometheus, GitHub API, etc.)
     metrics = {
         "report_date": datetime.now().isoformat(),
         "period": "Last 7 iterations",
         "python_version_standard": "3.12.10",
-        
+
         "ci_compliance": {
             "enforcement_checks_run": 142,  # All PRs + main pushes
             "enforcement_checks_passed": 142,
             "enforcement_checks_failed": 0,
             "pass_rate": "100%"
         },
-        
+
         "pre_commit_compliance": {
             "hooks_installed": 12,  # Active developers
             "hooks_bypassed": 0,
             "bypass_rate": "0%"
         },
-        
+
         "production_compliance": {
             "instances_checked": 24,  # Production pods
             "instances_compliant": 24,
             "instances_non_compliant": 0,
             "compliance_rate": "100%"
         },
-        
+
         "violations": [],
-        
+
         "summary": "✅ Perfect compliance - all systems using Python 3.12.10"
     }
-    
+
     # Save report
     report_dir = Path("reports/compliance")
     report_dir.mkdir(parents=True, exist_ok=True)
-    
+
     report_file = report_dir / f"python_312_compliance_{datetime.now().strftime('%Y%m%d')}.json"
     report_file.write_text(json.dumps(metrics, indent=2))
-    
+
     print(f"✅ Compliance report generated: {report_file}")
-    
+
     # Generate Markdown summary
     markdown = f"""# Python 3.12 Compliance Report
 
-**Period**: {metrics['period']}  
+**Period**: {metrics['period']}
 **Generated**: {metrics['report_date']}
 
 ## Summary
@@ -1135,12 +1135,12 @@ def generate_compliance_report():
 
 **Next Report**: {(datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')}
 """
-    
+
     markdown_file = report_dir / f"python_312_compliance_{datetime.now().strftime('%Y%m%d')}.md"
     markdown_file.write_text(markdown)
-    
+
     print(f"✅ Markdown report generated: {markdown_file}")
-    
+
     return metrics
 
 if __name__ == "__main__":
@@ -1162,24 +1162,24 @@ jobs:
   generate-report:
     name: Generate Compliance Report
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.10"
-      
+
       - name: Generate compliance report
         run: python scripts/generate_compliance_report.py
-      
+
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: compliance-report-${{ github.run_number }}
           path: reports/compliance/
-      
+
       - name: Post to Slack (if violations detected)
         if: failure()
         uses: slackapi/slack-github-action@v1
@@ -1211,9 +1211,9 @@ jobs:
 ```markdown
 # Python Version Policy - Quarterly Review
 
-> **Quarter**: Q1 2026  
-> **Review Date**: 2026-04-25  
-> **Reviewer**: @mbaetiong  
+> **Quarter**: Q1 2026
+> **Review Date**: 2026-04-25
+> **Reviewer**: @mbaetiong
 > **Status**: 🔄 In Progress
 
 ---
@@ -1245,7 +1245,7 @@ jobs:
 
 - [ ] **All dependencies support 3.12**: ☐ Yes | ☐ No
   - If No, list incompatible packages:
-  
+
 - [ ] **Dependencies support 3.13**: ☐ Yes | ☐ No | ☐ N/A
   - If No, list incompatible packages:
 
@@ -1359,8 +1359,8 @@ jobs:
 
 ---
 
-**Reviewed By**: @mbaetiong  
-**Approved By**: @engineering-team  
+**Reviewed By**: @mbaetiong
+**Approved By**: @engineering-team
 **Date**: 2026-04-25
 ```
 
@@ -1458,9 +1458,9 @@ jobs:
 
 ### Overall Summary
 
-**Project**: Python 3.12 Single-Version Standardization  
-**Duration**: ~5 hours across 6 phases  
-**Outcome**: ✅ **Success** - Production deployed, zero incidents  
+**Project**: Python 3.12 Single-Version Standardization
+**Duration**: ~5 hours across 6 phases
+**Outcome**: ✅ **Success** - Production deployed, zero incidents
 
 ### Achievements
 
@@ -1595,8 +1595,8 @@ jobs:
 
 ---
 
-**Document Owner**: @mbaetiong  
-**Created**: 2026-01-25  
-**Completed**: 2026-01-25  
-**Total Duration**: 5 hours (6 phases)  
+**Document Owner**: @mbaetiong
+**Created**: 2026-01-25
+**Completed**: 2026-01-25
+**Total Duration**: 5 hours (6 phases)
 **Next Review**: 2026-04-25 (quarterly)

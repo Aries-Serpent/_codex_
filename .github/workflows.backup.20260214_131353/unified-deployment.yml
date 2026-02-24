@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - 'cognitive_app/**'
-  
+
   # Manual deployment with full control
   workflow_dispatch:
     inputs:

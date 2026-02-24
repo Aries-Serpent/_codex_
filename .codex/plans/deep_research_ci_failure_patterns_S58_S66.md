@@ -1,7 +1,7 @@
 # Deep Research Questions: Recurring CI Failure Patterns S58–S66
 
-> **Created**: 2026-02-22  
-> **Author**: Copilot Agent (S66 pre-fix audit)  
+> **Created**: 2026-02-22
+> **Author**: Copilot Agent (S66 pre-fix audit)
 > **Purpose**: Track systemic/recurring failure patterns that have required
 > repeated trial-and-error across sessions S58–S66. Each entry is formatted
 > as a ChatGPT-5 / Claude Deep Research prompt so that the root cause can be

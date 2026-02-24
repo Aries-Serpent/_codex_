@@ -4,15 +4,15 @@ on:
   # Self-evolution pipeline every 4 hours
   schedule:
     - cron: '0 */4 * * *'
-  
+
   # Cascade review on PRs
   pull_request:
     types: [opened, synchronize, reopened]
-  
+
   # Manual triggers for specific tasks
   issue_comment:
     types: [created]
-  
+
   workflow_dispatch:
     inputs:
       mode:
@@ -190,15 +190,15 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           if [[ -n $(git status --porcelain .github/copilot-evolution/) ]]; then
             git add .github/copilot-evolution/
             git commit -m "🧬 Copilot self-evolution update [automated]
-            
+
             - Evolution mode: ${{ inputs.evolution_mode || 'adaptive' }}
             - Triggered by: ${{ github.event_name }}
             - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-            
+
             git push
             echo "✅ Evolution updates committed"
           else

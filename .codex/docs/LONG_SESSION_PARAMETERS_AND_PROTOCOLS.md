@@ -1,9 +1,9 @@
 # Long Session Parameters and Protocols
 
-> **Generated**: 2026-02-17T11:45:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Source**: Accountability Report 2026-02-16 Analysis  
-> **Purpose**: Define parameters and protocols for extended AI agent sessions  
+> **Generated**: 2026-02-17T11:45:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Source**: Accountability Report 2026-02-16 Analysis
+> **Purpose**: Define parameters and protocols for extended AI agent sessions
 > **Status**: ✅ PRODUCTION SPECIFICATION
 
 ---
@@ -36,8 +36,8 @@ Analysis of the [Accountability Report 2026-02-16](./../ACCOUNTABILITY_REPORT_20
 
 ### Critical Failures Identified
 
-**Session**: 2026-02-16 (~40 minutes)  
-**Task**: Fix CI failures in PR #3248  
+**Session**: 2026-02-16 (~40 minutes)
+**Task**: Fix CI failures in PR #3248
 **Result**: Technical success, **4 critical protocol violations**
 
 #### Violation Pattern Timeline
@@ -55,7 +55,7 @@ graph LR
     I --> J[User Correction #4<br/>t=35min<br/>Agent finally used]
     J --> K[False Documentation<br/>t=37min<br/>Wrong commit hash]
     K --> L[Session End<br/>t=40min]
-    
+
     style C fill:#ff6b6b,color:#fff
     style E fill:#ff6b6b,color:#fff
     style G fill:#ff6b6b,color:#fff
@@ -96,33 +96,33 @@ graph LR
 # Session Configuration
 class SessionParameters:
     """Configurable parameters for AI agent sessions."""
-    
+
     # Duration Thresholds (minutes)
     OPTIMAL_SESSION_DURATION = 30  # Sweet spot for focus
     MAX_SESSION_DURATION = 60  # Hard limit before mandatory break
     WARNING_THRESHOLD = 45  # Alert when approaching limit
-    
+
     # Context Window Management (tokens)
     CONTEXT_BUDGET = 128_000  # Total available context
     CONTEXT_WARNING = 102_400  # 80% utilization warning
     CONTEXT_CRITICAL = 115_200  # 90% utilization critical
     CHARS_PER_TOKEN = 4  # Rough estimate
-    
+
     # Protocol Compliance Targets
     MEMORY_APPLICATION_RATE = 1.0  # 100% of memory directives followed
     CORRECTIONS_PER_ISSUE = 1.0  # First correction fixes all instances
     PRE_COMMIT_AUDIT_RATE = 1.0  # 100% of tracking commits audited
     MCP_FIRST_COMPLIANCE = 1.0  # 100% MCP before alternatives
     CUSTOM_AGENT_USAGE_RATE = 1.0  # 100% usage at checkpoints
-    
+
     # Checkpoint Intervals (actions)
     CHECKPOINT_INTERVAL = 10  # Self-check every 10 actions
     FORCED_CHECKPOINT_INTERVAL = 20  # Mandatory checkpoint every 20
-    
+
     # Learning Parameters
     MAX_CORRECTIONS_BEFORE_ESCALATION = 2  # Escalate after 2 corrections
     PATTERN_APPLICATION_THRESHOLD = 0.85  # 85% pattern match to apply
-    
+
     # Quality Control
     MIN_CONFIDENCE_FOR_COMMIT = 0.90  # 90% confidence required
     REQUIRE_AGENT_AUDIT_FOR = ["tracking_logs", "documentation"]
@@ -134,7 +134,7 @@ class SessionParameters:
 # Real-time session monitoring
 class SessionState:
     """Track session health in real-time."""
-    
+
     def __init__(self):
         self.start_time = datetime.now()
         self.actions_taken = 0
@@ -145,29 +145,29 @@ class SessionState:
         self.memory_directives_total = 0
         self.custom_agents_used = 0
         self.custom_agents_available = 0
-        
+
     @property
     def duration_minutes(self) -> int:
         return (datetime.now() - self.start_time).total_seconds() / 60
-    
+
     @property
     def memory_application_rate(self) -> float:
         if self.memory_directives_total == 0:
             return 1.0
         return self.memory_directives_applied / self.memory_directives_total
-    
+
     @property
     def corrections_per_issue(self) -> float:
         if self.protocols_violated == 0:
             return 0.0
         return self.corrections_received / self.protocols_violated
-    
+
     @property
     def agent_usage_rate(self) -> float:
         if self.custom_agents_available == 0:
             return 1.0
         return self.custom_agents_used / self.custom_agents_available
-    
+
     def health_score(self) -> float:
         """Calculate overall session health (0.0-1.0)."""
         scores = [
@@ -262,12 +262,12 @@ MANDATORY_CHECKPOINTS = {
 def pre_commit_check(file_type: str) -> bool:
     """Enforce mandatory checkpoints."""
     required_agents = MANDATORY_CHECKPOINTS.get(file_type, [])
-    
+
     for agent in required_agents:
         if not agent_was_invoked(agent):
             error(f"BLOCKED: Must invoke {agent} before committing {file_type}")
             return False
-    
+
     return True
 ```
 
@@ -290,19 +290,19 @@ MEMORY_COMPLIANCE_THRESHOLD = 0.95  # 95% required
 ```python
 class MemoryCheckpoint:
     """Enforce memory directive compliance."""
-    
+
     def __init__(self):
         self.directives = load_memory_directives()
         self.checklist = {d["id"]: False for d in self.directives}
-    
+
     def mark_applied(self, directive_id: str):
         """Mark directive as applied."""
         self.checklist[directive_id] = True
-    
+
     def compliance_rate(self) -> float:
         """Calculate compliance rate."""
         return sum(self.checklist.values()) / len(self.checklist)
-    
+
     def unapplied_directives(self) -> List[str]:
         """Get list of unapplied directives."""
         return [
@@ -363,25 +363,25 @@ at required checkpoints WITHOUT being asked.
 ```python
 def mid_session_checkpoint() -> None:
     """Mandatory checkpoint every N actions."""
-    
+
     # Check session health
     health = session_state.health_score()
-    
+
     if health < 0.7:
         warning(f"Session health declining: {health:.2f}")
         log_degradation_factors()
-    
+
     # Check memory compliance
     compliance = memory_checkpoint.compliance_rate()
-    
+
     if compliance < 0.95:
         error(f"Memory compliance low: {compliance:.2f}")
         list_unapplied_directives()
-    
+
     # Check context utilization
     if context_utilization > 0.85:
         warning("Context window >85% full - compress recommended")
-    
+
     # Report status
     print(f"""
     Checkpoint #{checkpoint_number}
@@ -401,31 +401,31 @@ def mid_session_checkpoint() -> None:
 ```python
 def pre_commit_checkpoint(files: List[str]) -> bool:
     """Mandatory pre-commit validation."""
-    
+
     for file in files:
         file_type = classify_file(file)
-        
+
         # Check if custom agent audit required
         if file_type in REQUIRE_AGENT_AUDIT:
             agents = MANDATORY_CHECKPOINTS.get(f"pre_commit_{file_type}", [])
-            
+
             for agent in agents:
                 if not was_invoked(agent):
                     error(f"""
                     ❌ COMMIT BLOCKED
-                    
+
                     File: {file}
                     Type: {file_type}
                     Required: {agent}
                     Status: NOT INVOKED
-                    
+
                     You must invoke {agent} before committing {file_type} files.
-                    
+
                     Example:
                     @copilot Use {agent} to audit {file}
                     """)
                     return False
-    
+
     # All checks passed
     success("✅ Pre-commit validation passed")
     return True
@@ -508,19 +508,19 @@ CONTEXT_ALLOCATION = {
 ```python
 def compress_context() -> None:
     """Compress context using priority-based retention."""
-    
+
     optimizer = ContextWindowOptimizer(budget_tokens=128_000)
-    
+
     # Add segments with priority
     optimizer.add_segment(task_definition, tier="task_definition")
     optimizer.add_segment(active_errors, tier="active_errors")
     optimizer.add_segment(recent_changes, tier="recent_changes")
     optimizer.add_segment(memory_directives, tier="configuration")
     optimizer.add_segment(exploration, tier="exploration")  # Low priority
-    
+
     # Optimize to fit budget
     optimized = optimizer.optimize()
-    
+
     # Report compression
     util = optimizer.utilization()
     print(f"""
@@ -613,7 +613,7 @@ agents:
   mandatory:
     - tracking-document-qa-agent (pre_commit: tracking_logs)
     - documentation-quality-agent (pre_commit: markdown)
-  
+
 context:
   warning_threshold: 0.80
   compression_trigger: 0.90
@@ -648,7 +648,7 @@ jobs:
    session = SessionState()
    memory = load_memory_directives()
    agents = identify_custom_agents(task)
-   
+
    print_session_start_protocol(memory, agents)
    ```
 
@@ -656,16 +656,16 @@ jobs:
    ```python
    while not task_complete:
        action = next_action()
-       
+
        # Before action: check compliance
        if not complies_with_memory(action, memory):
            error("Action violates memory directive")
            continue
-       
+
        # Execute action
        result = execute(action)
        session.actions_taken += 1
-       
+
        # After action: checkpoint if needed
        if session.actions_taken % CHECKPOINT_INTERVAL == 0:
            mid_session_checkpoint()
@@ -674,22 +674,22 @@ jobs:
 3. **Pre-Commit** (before any commit)
    ```python
    files = get_staged_files()
-   
+
    if not pre_commit_checkpoint(files):
        error("Pre-commit validation failed")
        return False
-   
+
    commit(files)
    ```
 
 4. **Session End** (t=end)
    ```python
    end_report = session_end_checkpoint()
-   
+
    if end_report.health_score < 0.8:
        warning("Session quality below target")
        generate_improvement_plan()
-   
+
    store_learned_patterns()
    ```
 ```
@@ -797,7 +797,7 @@ jobs:
 
 ---
 
-**Status**: ✅ PRODUCTION SPECIFICATION  
-**Version**: 1.0.0  
-**Last Updated**: 2026-02-17T11:45:00Z  
+**Status**: ✅ PRODUCTION SPECIFICATION
+**Version**: 1.0.0
+**Last Updated**: 2026-02-17T11:45:00Z
 **Next Review**: After first session using these parameters

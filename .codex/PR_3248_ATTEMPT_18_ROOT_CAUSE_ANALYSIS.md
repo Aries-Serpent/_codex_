@@ -1,8 +1,8 @@
 # PR #3248 Attempt 18: Root Cause Analysis
 
-**Generated**: 2026-02-16T22:01:00Z  
-**CI Run**: 22078477266 (commit d235ba09)  
-**Branch**: 0D_base_  
+**Generated**: 2026-02-16T22:01:00Z
+**CI Run**: 22078477266 (commit d235ba09)
+**Branch**: 0D_base_
 **Previous Attempt**: Attempt 17 (PR #3310) - 23/25 tests fixed (92%)
 
 ---
@@ -12,7 +12,7 @@
 After PR #3310 merge, CI validation reveals **28 total test failures** (23 quick + 5 slow). Analysis shows these failures fall into distinct categories that were NOT addressed in previous attempts:
 
 1. **Quantum Memory API Changes** (9 failures) - P0-CRITICAL
-2. **PyTorch Profiler Issues** (3 failures) - P1-HIGH  
+2. **PyTorch Profiler Issues** (3 failures) - P1-HIGH
 3. **CLI Attribute Errors** (2 failures) - P1-HIGH
 4. **Module Attribute Errors** (3 failures) - P2-MEDIUM
 5. **Deterministic Seeding** (2 failures) - P2-MEDIUM
@@ -44,7 +44,7 @@ After PR #3310 merge, CI validation reveals **28 total test failures** (23 quick
 9. `test_assess_with_memory_no_compressor` - TypeError: CoherenceMonitor.__init__() missing 1 required positional argument: 'repository'
 10. `test_consolidation_failure_recovery` - TypeError: CoherenceMonitor.__init__() missing 1 required positional argument: 'repository'
 
-**Root Cause**: 
+**Root Cause**:
 - Attempt 17 (PR #3309, commit ea9698ab) added quantum memory API fixtures
 - Tests were updated to use new API patterns
 - But some test files were NOT updated, still using old API
@@ -64,13 +64,13 @@ After PR #3310 merge, CI validation reveals **28 total test failures** (23 quick
 
 **Failures**:
 1. `test_tail_flush_triggers_optimizer_step` - RuntimeError with ScriptObject type mismatch
-2. `test_optimizer_resume_state` - RuntimeError with ScriptObject type mismatch  
+2. `test_optimizer_resume_state` - RuntimeError with ScriptObject type mismatch
 3. `test_optimizer_steps_and_metrics` - RuntimeError with ScriptObject type mismatch
 
 **Error Message**:
 ```
-RuntimeError: profiler::_record_function_exit() Expected a value of type 
-'__torch__.torch.classes.profiler._RecordFunction (of Python compilation unit at: 0)' 
+RuntimeError: profiler::_record_function_exit() Expected a value of type
+'__torch__.torch.classes.profiler._RecordFunction (of Python compilation unit at: 0)'
 for argument '_0' but instead found type 'ScriptObject'.
 ```
 
@@ -80,7 +80,7 @@ for argument '_0' but instead found type 'ScriptObject'.
 - Likely PyTorch version-specific issue
 - Tests use profiler context managers that trigger this error
 
-**Fix Strategy**: 
+**Fix Strategy**:
 1. Check PyTorch version compatibility
 2. Disable profiler in affected tests (or use conditional skip)
 3. Update profiler usage to match PyTorch 2.x API
@@ -118,7 +118,7 @@ for argument '_0' but instead found type 'ScriptObject'.
 - _PSUTIL: Tests check for psutil availability flag
 - Histogram.count: Prometheus client API change
 
-**Fix Strategy**: 
+**Fix Strategy**:
 1. Add _PSUTIL module-level variable
 2. Update Histogram access pattern (use ._value.get() instead of .count)
 
@@ -180,9 +180,9 @@ for argument '_0' but instead found type 'ScriptObject'.
 **Files**: `tests/cognitive_brain/quantum/test_memory_errors.py`
 **Strategy**: Use ea9698ab as reference, update all test calls to new API
 
-### Phase 2: P1-HIGH (5 failures) 
+### Phase 2: P1-HIGH (5 failures)
 **Target**: PyTorch profiler + CLI errors
-**Files**: 
+**Files**:
 - `tests/test_gradient_accumulation_tail_flush.py`
 - `tests/test_resume_training.py`
 - `tests/cli/test_cli_checkpoint_validate.py`

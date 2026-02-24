@@ -1,8 +1,8 @@
 # Physics-Inspired Workflows and CLI Reference
 
-> **Version:** 1.0.0  
-> **Generated:** 2025-12-12  
-> **Status:** Production Ready ✅  
+> **Version:** 1.0.0
+> **Generated:** 2025-12-12
+> **Status:** Production Ready ✅
 > **CodeQL Scan:** Clear ✅
 
 This document provides a comprehensive reference for all physics-inspired workflows, patterns, and CLI commands available in the Aries-Serpent/_codex_ repository.
@@ -46,11 +46,11 @@ from agents import (
     ActionType,
     DecisionState,
     ForceVector,
-    
+
     # Import Migration
     ImportMigrationOrchestrator,
     ImportMigration,
-    
+
     # Advanced Patterns
     DiffusionFlowModel,
     FlowVector,
@@ -61,7 +61,7 @@ from agents import (
     TaskDecomposer,
     SubTask,
     ReflectionLoop,
-    
+
     # Quantum-Physics Integration (NEW)
     QuantumPhysicsOrchestrator,
     QuantumState,
@@ -69,20 +69,20 @@ from agents import (
     SuperpositionExplorer,
     PINNValidator,
     EntangledDependency,
-    
+
     # Game Theory
     BlueRedTeamSimulator,
     QuantumInspiredGameEngine,
     ClassicalGameEngine,
-    
+
     # Self-Healing
     SelfHealingEngine,
     DetectedIssue,
-    
+
     # Mental Mapping
     MentalMappingModel,
     MentalNode,
-    
+
     # Workflow Navigation
     WorkflowNavigator,
     Workflow,
@@ -1146,7 +1146,7 @@ from agents import SuperpositionExplorer, ActionPath, ActionType
 
 # Create paths
 paths = [
-    ActionPath(ActionType.AUDIT, "Run security audit", 
+    ActionPath(ActionType.AUDIT, "Run security audit",
                potential_energy=30, impact=0.9, confidence=0.8),
     ActionPath(ActionType.TEST, "Add unit tests",
                potential_energy=20, impact=0.7, confidence=0.9),
@@ -1305,7 +1305,7 @@ print(f"P(frontend succeeds | backend succeeds): {p_b_given_a:.2%}")
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: 2025-12-12  
-**CodeQL Scan**: Clear ✅  
+**Version**: 2.0.0
+**Last Updated**: 2025-12-12
+**CodeQL Scan**: Clear ✅
 **Maintained by**: Aries-Serpent/_codex_ team

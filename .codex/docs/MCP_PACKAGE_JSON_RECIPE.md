@@ -1,8 +1,8 @@
 # MCP Package.json Integration Recipe
 
-> **Generated**: 2026-02-17T11:23:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Complete package.json configuration for MCP-enabled projects  
+> **Generated**: 2026-02-17T11:23:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Complete package.json configuration for MCP-enabled projects
 > **Status**: Production-Ready Template
 
 ---
@@ -25,19 +25,19 @@
     "url": "https://github.com/Aries-Serpent/_codex_.git",
     "directory": "cognitive_app"
   },
-  
+
   "scripts": {
     "dev": "vite",
     "build": "tsc -b --noCheck && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "optimize": "vite optimize",
-    
+
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    
+
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
@@ -54,28 +54,28 @@
     "test:e2e:ci": "playwright test --reporter=github --reporter=html --reporter=json",
     "test:e2e:smoke": "GREP='@smoke' playwright test",
     "test:e2e:regression": "GREP='@regression' playwright test",
-    
+
     "mcp:setup": "npm run mcp:install && npm run mcp:configure",
     "mcp:install": "npm install -D @modelcontextprotocol/sdk @playwright/test",
     "mcp:configure": "node scripts/setup-mcp.js",
     "mcp:validate": "node scripts/validate-mcp.js",
     "mcp:context": "node scripts/generate-mcp-context.js",
-    
+
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "typecheck": "tsc --noEmit",
     "validate": "npm run lint && npm run typecheck && npm run test && npm run test:e2e",
-    
+
     "ci": "npm run lint && npm run typecheck && npm run test && npm run build",
     "ci:e2e": "npm run test:e2e:ci",
-    
+
     "clean": "rimraf dist playwright-report test-results .vite node_modules/.vite",
     "clean:all": "npm run clean && rimraf node_modules",
-    
+
     "preinstall": "npx only-allow npm",
     "postinstall": "playwright install chromium --with-deps || echo 'Playwright install skipped (CI or missing deps)'"
   },
-  
+
   "dependencies": {
     "@github/spark": ">=0.43.1 <1",
     "@phosphor-icons/react": "^2.1.10",
@@ -128,7 +128,7 @@
     "vaul": "^1.1.2",
     "zod": "^3.25.76"
   },
-  
+
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@playwright/test": "^1.57.0",
@@ -155,16 +155,16 @@
     "vite": "^7.2.6",
     "vitest": "^4.0.16"
   },
-  
+
   "optionalDependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0"
   },
-  
+
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
-  
+
   "browserslist": {
     "production": [
       ">0.2%",
@@ -177,7 +177,7 @@
       "last 1 safari version"
     ]
   },
-  
+
   "workspaces": {
     "packages": [
       "packages/*"
@@ -199,7 +199,7 @@
 
 /**
  * MCP Setup Script
- * 
+ *
  * Configures MCP integration for the project:
  * - Verifies Playwright installation
  * - Creates MCP configuration files
@@ -216,7 +216,7 @@ const rootDir = path.resolve(__dirname, '..');
 
 async function main() {
   console.log('🔧 Setting up MCP integration...\n');
-  
+
   // Step 1: Verify Playwright installation
   console.log('1️⃣ Verifying Playwright installation...');
   try {
@@ -226,13 +226,13 @@ async function main() {
     console.error('   ❌ Playwright not found. Run: npm install -D @playwright/test');
     process.exit(1);
   }
-  
+
   // Step 2: Create .mcp directory
   console.log('2️⃣ Creating .mcp directory...');
   const mcpDir = path.join(rootDir, '.mcp');
   await fs.mkdir(mcpDir, { recursive: true });
   console.log(`   ✅ Created: ${mcpDir}\n`);
-  
+
   // Step 3: Create MCP configuration template
   console.log('3️⃣ Creating MCP configuration...');
   const mcpConfig = {
@@ -253,11 +253,11 @@ async function main() {
       }
     }
   };
-  
+
   const configPath = path.join(mcpDir, 'config.json');
   await fs.writeFile(configPath, JSON.stringify(mcpConfig, null, 2));
   console.log(`   ✅ Created: ${configPath}\n`);
-  
+
   // Step 4: Create .env.example
   console.log('4️⃣ Creating .env.example...');
   const envExample = `# GitHub MCP Server
@@ -271,11 +271,11 @@ HEADED=false
 TEST_USERNAME=testuser
 TEST_PASSWORD=testpass
 `;
-  
+
   const envExamplePath = path.join(rootDir, '.env.example');
   await fs.writeFile(envExamplePath, envExample);
   console.log(`   ✅ Created: ${envExamplePath}\n`);
-  
+
   // Step 5: Create gitignore entries
   console.log('5️⃣ Updating .gitignore...');
   const gitignorePath = path.join(rootDir, '.gitignore');
@@ -293,7 +293,7 @@ playwright/.cache/
 .env
 .env.local
 `;
-  
+
   try {
     const existing = await fs.readFile(gitignorePath, 'utf-8');
     if (!existing.includes('.mcp/cache/')) {
@@ -306,7 +306,7 @@ playwright/.cache/
     await fs.writeFile(gitignorePath, gitignoreEntries);
     console.log('   ✅ Created .gitignore\n');
   }
-  
+
   // Step 6: Summary
   console.log('✅ MCP setup complete!\n');
   console.log('📝 Next steps:');
@@ -333,7 +333,7 @@ main().catch((error) => {
 
 /**
  * MCP Context Generator
- * 
+ *
  * Generates MCP context manifest with repository, PR, and CI metadata
  * Output: .mcp/context.json
  */
@@ -356,7 +356,7 @@ function runGitCommand(command) {
 
 async function generateContext() {
   console.log('📊 Generating MCP context...\n');
-  
+
   const context = {
     generated_at: new Date().toISOString(),
     repository: {
@@ -396,13 +396,13 @@ async function generateContext() {
       head_sha: process.env.GITHUB_SHA,
     } : null
   };
-  
+
   const mcpDir = path.join(rootDir, '.mcp');
   await fs.mkdir(mcpDir, { recursive: true });
-  
+
   const contextPath = path.join(mcpDir, 'context.json');
   await fs.writeFile(contextPath, JSON.stringify(context, null, 2));
-  
+
   console.log(`✅ Context generated: ${contextPath}`);
   console.log(`   Size: ${JSON.stringify(context).length} bytes`);
   console.log(`   Repository: ${context.repository.name}`);
@@ -626,6 +626,6 @@ npm install -D @modelcontextprotocol/sdk
 
 ---
 
-**Status**: ✅ Production-Ready  
-**Version**: 1.0.0  
+**Status**: ✅ Production-Ready
+**Version**: 1.0.0
 **Last Updated**: 2026-02-17T11:23:00Z

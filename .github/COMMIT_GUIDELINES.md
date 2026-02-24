@@ -58,7 +58,7 @@ PR: #3248
 chore(ci): remove unused imports flagged by CodeQL
 
 - scripts/empty_toc_resolver.py: remove Tuple
-- scripts/phase3_stage1_processor.py: remove Dict, Set  
+- scripts/phase3_stage1_processor.py: remove Dict, Set
 - scripts/phase3_categorization.py: remove re, List, Tuple
 
 Resolves: Bot comments (4 unused import warnings)

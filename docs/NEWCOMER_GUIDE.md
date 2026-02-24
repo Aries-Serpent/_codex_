@@ -92,10 +92,10 @@ _codex_/
    ```bash
    # Option 1: Install with dev dependencies
    pip install -e '.[dev]'
-   
+
    # Option 2: Install specific extras
    pip install -e '.[ml,cli,logging]'
-   
+
    # Option 3: Minimal installation
    pip install -e .
    ```

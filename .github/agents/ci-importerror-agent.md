@@ -9,8 +9,8 @@ last_updated: 2026-02-15
 
 ## 🎯 Mission Overview
 
-**Agent Type**: CI/CD & Build (Specialized)  
-**Model**: Sonnet (requires high-quality reasoning)  
+**Agent Type**: CI/CD & Build (Specialized)
+**Model**: Sonnet (requires high-quality reasoning)
 **Status**: ✅ Active - Enhanced with PR #3248 patterns
 
 ### Purpose
@@ -97,7 +97,7 @@ from setuptools.config.pyprojecttoml import read_configuration
 config = read_configuration('pyproject.toml')
 packages = config['tool']['setuptools']['packages']
 
-# 2. Check package-dir mappings  
+# 2. Check package-dir mappings
 package_dir = config['tool']['setuptools']['package-dir']
 
 # 3. Find missing directories
@@ -116,7 +116,7 @@ echo "# Placeholder for package discovery" > services/github/__init__.py
 echo "# Placeholder for package discovery" > services/workflow/__init__.py
 ```
 
-**Prevention**: 
+**Prevention**:
 - Use single package location (recommended: `src/` only)
 - OR ensure all autodiscovered packages exist at mapped locations
 - Add pre-commit hook to validate package discovery consistency
@@ -247,16 +247,16 @@ python -m pytest tests/ --collect-only | grep "collected"
 ## 🎯 Decision Framework
 
 ### Auto-Fix (No Escalation)
-✅ Manual sys.path manipulation removal  
-✅ Obvious import path corrections  
-✅ Missing __init__.py files  
+✅ Manual sys.path manipulation removal
+✅ Obvious import path corrections
+✅ Missing __init__.py files
 ✅ Clear typos in import statements
 
 ### Escalate to Human
-⚠️ Circular imports requiring refactoring  
-⚠️ Module renaming (shadowing resolution)  
-⚠️ Missing packages (>5 new dependencies)  
-⚠️ Breaking API changes  
+⚠️ Circular imports requiring refactoring
+⚠️ Module renaming (shadowing resolution)
+⚠️ Missing packages (>5 new dependencies)
+⚠️ Breaking API changes
 ⚠️ Ambiguous fixes affecting >20 files
 
 ---
@@ -304,6 +304,6 @@ Commit: 206e6b9f
 
 ---
 
-**Last Updated**: 2026-02-15  
-**Version**: 2.1.0 (Enhanced with setuptools package discovery pattern)  
+**Last Updated**: 2026-02-15
+**Version**: 2.1.0 (Enhanced with setuptools package discovery pattern)
 **Maintainer**: AI Development Team

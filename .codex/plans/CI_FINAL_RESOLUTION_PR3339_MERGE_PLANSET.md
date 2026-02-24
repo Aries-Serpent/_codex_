@@ -1,9 +1,9 @@
 # Planset: P1 — PR #3339 CI Verification & Merge
 
-**Status**: 🔵 IN PROGRESS  
-**Priority**: P1 — Immediate  
-**Created**: 2026-02-20  
-**Branch**: `copilot/resolve-ci-validation-alerts` → `copilot/sub-pr-3248`  
+**Status**: 🔵 IN PROGRESS
+**Priority**: P1 — Immediate
+**Created**: 2026-02-20
+**Branch**: `copilot/resolve-ci-validation-alerts` → `copilot/sub-pr-3248`
 **PR**: [#3339](https://github.com/Aries-Serpent/_codex_/pull/3339)
 
 ---
@@ -39,7 +39,7 @@ list_workflow_jobs(run_id=<RUN_ID>)
 list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open", ref="copilot/resolve-ci-validation-alerts")
 ```
 
-**Expected**: 0 new alerts on `copilot/resolve-ci-validation-alerts` branch  
+**Expected**: 0 new alerts on `copilot/resolve-ci-validation-alerts` branch
 **Acceptable**: Only alerts from `copilot/sub-pr-3248` base (pre-existing)
 
 ### Step 3: Run Local Pre-Merge Checklist

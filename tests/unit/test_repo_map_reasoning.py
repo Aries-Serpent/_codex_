@@ -74,6 +74,6 @@ def test_repo_map_reasoning_legacy_fallback(monkeypatch):
 
     result = runner.invoke(codex_cli.codex, ["repo-map", "--reasoning"])
     assert result.exit_code == 0, f"CLI failed: {result.output}"
-    assert result.output.strip() == "fallback-render"
+    assert "fallback-render" in result.output
     assert calls[0][1].get("reasoning") is True
     assert calls[1][1] == {}

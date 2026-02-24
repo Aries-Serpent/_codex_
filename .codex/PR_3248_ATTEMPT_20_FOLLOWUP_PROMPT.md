@@ -1,7 +1,7 @@
 # PR #3248 Attempt 20: Comprehensive Follow-Up Prompt
 
-**Generated**: 2026-02-17T02:00:00Z  
-**Status**: READY FOR NEXT SESSION  
+**Generated**: 2026-02-17T02:00:00Z
+**Status**: READY FOR NEXT SESSION
 **Current State**: 80% SUCCESS (16/20 tests fixed, 4 remaining)
 
 ---
@@ -70,10 +70,10 @@
   - src/codex_ml/models/minilm.py: 2 conversions
   - src/codex_ml/models/offline_tiny.py: 1 conversion
   - src/codex_ml/models/reasoning.py: 8 conversions
-  
+
 - Phase 2 (commit cd25e62f): Fixed P1-HIGH torch checks (6 tests)
   - src/codex_ml/utils/torch_checks.py: 5 conversions
-  
+
 - Phase 3 (commit 91bffee6): Documentation
   - .codex/PR_3248_ATTEMPT_20_STATUS.md (257 lines)
   - .codex/PR_3248_ATTEMPT_20_COMPLETION_ANALYSIS.md (335 lines)
@@ -129,7 +129,7 @@ Two tests are failing due to a known PyTorch profiler bug:
 
 **Error**:
 ```
-RuntimeError: profiler::_record_function_exit() Expected a value of type 
+RuntimeError: profiler::_record_function_exit() Expected a value of type
 '__torch__.torch.classes.profiler._RecordFunction' but found 'ScriptObject'
 ```
 
@@ -142,7 +142,7 @@ RuntimeError: profiler::_record_function_exit() Expected a value of type
 
 **Priority**: P1-HIGH (but EXTERNAL, not blocking)
 
-**References**: 
+**References**:
 - PR #3248 Attempt 20 analysis
 - CI run 22082789485
 ```
@@ -161,7 +161,7 @@ Test failure in `tests/test_codexml_cli.py::test_run_training_invokes_functional
 AttributeError: module 'codex_ml.cli.main' has no attribute '_functional_training_main'
 ```
 
-**Root Cause**: 
+**Root Cause**:
 - `_functional_training_main` is defined inside `if typer is not None:` block
 - Test expects it at module level for mocking
 - Design issue: test depends on private implementation detail
@@ -351,7 +351,7 @@ UNION_PATTERN = re.compile(r':\s*[A-Za-z_][A-Za-z0-9_.\[\]]*\s*\|\s*')
 def check_file(filepath):
     """Check a Python file for union type annotations."""
     violations = []
-    
+
     with open(filepath, 'r') as f:
         for line_num, line in enumerate(f, 1):
             # Skip comments and strings
@@ -359,22 +359,22 @@ def check_file(filepath):
                 line = line.split('#')[0]
             if '"""' in line or "'''" in line:
                 continue
-                
+
             if UNION_PATTERN.search(line):
                 violations.append((line_num, line.strip()))
-    
+
     return violations
 
 def main():
     files = sys.argv[1:]
     python_files = [f for f in files if f.endswith('.py')]
-    
+
     all_violations = {}
     for filepath in python_files:
         violations = check_file(filepath)
         if violations:
             all_violations[filepath] = violations
-    
+
     if all_violations:
         print("❌ Python 3.12 incompatible union types detected:")
         print()
@@ -387,7 +387,7 @@ def main():
         print("💡 Fix: Replace 'X | Y' with 'Union[X, Y]'")
         print("💡 Import: from typing import Optional, Union")
         return 1
-    
+
     print("✅ No Python 3.12 incompatible union types found")
     return 0
 
@@ -506,7 +506,7 @@ arg: Union[str, int]   # ✅ CORRECT
 
 ---
 
-**Document Version**: 1.0  
-**Generated**: 2026-02-17T02:00:00Z  
-**Type**: Follow-Up Prompt  
+**Document Version**: 1.0
+**Generated**: 2026-02-17T02:00:00Z
+**Type**: Follow-Up Prompt
 **Next Action**: Update tracking log and/or create follow-up issues

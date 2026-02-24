@@ -1,18 +1,18 @@
 # PR #3145 Comprehensive Monitoring Summary
 
-**Generated:** 2026-02-04T16:26:00Z  
-**Monitoring Session:** CI Log Retrieval Agent  
-**PR:** https://github.com/Aries-Serpent/_codex_/pull/3145  
-**Branch:** 0D_base_ → main  
-**Head SHA:** 473d6529e1d696ddc04bd2b7c7c5eb35fe4a0935  
+**Generated:** 2026-02-04T16:26:00Z
+**Monitoring Session:** CI Log Retrieval Agent
+**PR:** https://github.com/Aries-Serpent/_codex_/pull/3145
+**Branch:** 0D_base_ → main
+**Head SHA:** 473d6529e1d696ddc04bd2b7c7c5eb35fe4a0935
 **Monitoring Duration:** 24+ minutes (ongoing)
 
 ---
 
 ## Executive Summary
 
-**Monitored Workflows:** 22 total (1 in-progress, 5 failed, 15 passed, 1 not triggered)  
-**Critical Findings:** 5 workflow failures requiring remediation  
+**Monitored Workflows:** 22 total (1 in-progress, 5 failed, 15 passed, 1 not triggered)
+**Critical Findings:** 5 workflow failures requiring remediation
 **Status:** ⏳ Monitoring continues - Rust-Python Hybrid Swarm CI/CD still running (est. 10-15 min remaining)
 
 **Key Findings:**
@@ -34,8 +34,8 @@
 ### ❌ Failed Workflows (5) - Detailed Analysis
 
 #### 1. Auto-Fix Common CI Issues
-**Run ID:** [21678671841](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841 <!-- Note: Logs expire after 90 days -->)  
-**Status:** ❌ FAILED - Auto-fixable issues detected  
+**Run ID:** [21678671841](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671841 <!-- Note: Logs expire after 90 days -->)
+**Status:** ❌ FAILED - Auto-fixable issues detected
 **Job:** Detect and Fix Common Issues
 
 **Root Cause:** The auto-fix script detected 98 auto-fixable issues:
@@ -48,7 +48,7 @@
 - 237 test assertions (manual review)
 - 33 redundant imports (manual review)
 
-**Remediation:** 
+**Remediation:**
 ```bash
 python scripts/ci/auto_fix_common_issues.py
 ```
@@ -58,8 +58,8 @@ This will automatically fix all 98 issues.
 ---
 
 #### 2. Automatic Dependency Submission (Python)
-**Run ID:** [21678669983](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983 <!-- Note: Logs expire after 90 days -->)  
-**Status:** ❌ FAILED - GitHub API error  
+**Run ID:** [21678669983](https://github.com/Aries-Serpent/_codex_/actions/runs/21678669983 <!-- Note: Logs expire after 90 days -->)
+**Status:** ❌ FAILED - GitHub API error
 **Job:** submit-pypi
 
 **Root Cause:** GitHub API returned an error when submitting dependency snapshot:
@@ -75,7 +75,7 @@ HttpError: An error occurred while processing your request. Please try again lat
 
 **Analysis:** This is a temporary GitHub API issue, not a code problem. The component detection completed successfully, but the API submission failed.
 
-**Remediation:** 
+**Remediation:**
 - This is likely a transient API error
 - Re-run the workflow after other fixes are applied
 - If it persists, report to GitHub Support
@@ -83,8 +83,8 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 3. Codebase QA Walkthrough
-**Run ID:** [21678671810](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810 <!-- Note: Logs expire after 90 days -->)  
-**Status:** ❌ FAILED - 5 critical security issues  
+**Run ID:** [21678671810](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671810 <!-- Note: Logs expire after 90 days -->)
+**Status:** ❌ FAILED - 5 critical security issues
 **Job:** QA Analysis (standard)
 
 **Security Issues Detected by Bandit:**
@@ -124,7 +124,7 @@ HttpError: An error occurred while processing your request. Please try again lat
   ```
 - **Recommendation:** Add input validation for `args` parameter
 
-**Overall Score:** 0/100  
+**Overall Score:** 0/100
 **Warnings:** 206
 
 **Remediation:**
@@ -135,8 +135,8 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 4. Testing Suite
-**Run ID:** [21678671851](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851 <!-- Note: Logs expire after 90 days -->)  
-**Status:** ❌ FAILED - Test summary evaluation  
+**Run ID:** [21678671851](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671851 <!-- Note: Logs expire after 90 days -->)
+**Status:** ❌ FAILED - Test summary evaluation
 **Job:** Core Tests (Python 3.12)
 
 **Root Cause:** The tests appear to have completed successfully, but the workflow was marked as failure during the summary evaluation step.
@@ -155,8 +155,8 @@ HttpError: An error occurred while processing your request. Please try again lat
 ---
 
 #### 5. Comprehensive Tests with Caching
-**Run ID:** [21678671848](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848 <!-- Note: Logs expire after 90 days -->)  
-**Status:** ❌ FAILED - Test summary failure  
+**Run ID:** [21678671848](https://github.com/Aries-Serpent/_codex_/actions/runs/21678671848 <!-- Note: Logs expire after 90 days -->)
+**Status:** ❌ FAILED - Test summary failure
 **Jobs Failed:** 2 (Python 3.12 Tests, Test Summary)
 
 **Root Cause:** Similar to Testing Suite - tests completed but marked as failed in summary evaluation.
@@ -189,7 +189,7 @@ HttpError: An error occurred while processing your request. Please try again lat
 
 ### 🔍 RAG Workflow Status
 
-**Workflow:** RAG Module Tests (test-rag.yml)  
+**Workflow:** RAG Module Tests (test-rag.yml)
 **Status:** ✅ NOT TRIGGERED (as expected)
 
 **Analysis:**
@@ -387,7 +387,7 @@ PR #3145 is ready to merge when:
 
 ---
 
-**Report Generated By:** CI Log Retrieval Agent  
-**Monitoring Branch:** copilot/monitor-all-workflows-pr-3145  
-**Target Branch:** 0D_base_ (PR #3145)  
+**Report Generated By:** CI Log Retrieval Agent
+**Monitoring Branch:** copilot/monitor-all-workflows-pr-3145
+**Target Branch:** 0D_base_ (PR #3145)
 **Monitoring Session End:** Awaiting Rust-Python workflow completion

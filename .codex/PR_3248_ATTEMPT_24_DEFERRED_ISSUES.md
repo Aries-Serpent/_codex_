@@ -1,7 +1,7 @@
 # Deferred Issues Analysis - PR #3248 Attempt 24
 
-**Date**: 2026-02-17T21:15:00Z  
-**Status**: ACTIVE TRACKING  
+**Date**: 2026-02-17T21:15:00Z
+**Status**: ACTIVE TRACKING
 **Purpose**: Document complex issues requiring deeper investigation
 
 ---
@@ -22,8 +22,8 @@ Following **AI Codebase Agency Policy**, this document tracks issues that requir
 
 ### Issue 1: test_fetch_messages Empty Results
 
-**Status**: DEFERRED for deeper analysis  
-**Priority**: HIGH  
+**Status**: DEFERRED for deeper analysis
+**Priority**: HIGH
 **Complexity**: ★★★★☆ (4/5)
 
 #### Symptoms
@@ -76,12 +76,12 @@ AssertionError: Expected [('system', 'alpha'), ('user', 'bravo'), ('assistant', 
 def test_fetch_messages(tmp_path, mode, monkeypatch):
     meta = resolve_fetch_messages()
     print(f"DEBUG: fetch_messages meta = {meta}")
-    
+
     writer = resolve_writer()
     print(f"DEBUG: writer = {writer}")
-    
+
     # ... existing code ...
-    
+
     print(f"DEBUG: rows returned = {rows}")
     print(f"DEBUG: db file exists = {custom_db.exists()}")
     if custom_db.exists():
@@ -132,8 +132,8 @@ def test_fetch_messages(tmp_path, mode, monkeypatch):
 
 ### Issue 2: test_status_update_generator No Reports Found
 
-**Status**: DEFERRED for architecture review  
-**Priority**: MEDIUM  
+**Status**: DEFERRED for architecture review
+**Priority**: MEDIUM
 **Complexity**: ★★★☆☆ (3/5)
 
 #### Symptoms
@@ -219,8 +219,8 @@ assert 0 > 0
 
 ### Issue 3: Protocol isinstance Errors
 
-**Status**: INVESTIGATION IN PROGRESS  
-**Priority**: HIGH  
+**Status**: INVESTIGATION IN PROGRESS
+**Priority**: HIGH
 **Complexity**: ★★★☆☆ (3/5)
 
 #### Symptoms
@@ -250,7 +250,7 @@ TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
 
 #### Next Action
 
-**When CI runs**: Capture full stack trace from logs  
+**When CI runs**: Capture full stack trace from logs
 **Then**: Determine if fixable by us or library issue
 
 ---
@@ -265,7 +265,7 @@ TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
 
 **Total Deferred Time**: ~2-3 hours if all pursued
 
-**Strategy**: 
+**Strategy**:
 1. ✅ Fix straightforward issues first (registry, git init, docker volumes)
 2. ✅ Run CI to see impact of fixes
 3. ⏳ Based on remaining failures, prioritize deferred issues
@@ -277,27 +277,27 @@ TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union
 
 ### Pattern: Complex Test Dependencies
 
-**Issue**: Tests with dynamic discovery are hard to debug without execution  
-**Solution**: Add diagnostic logging modes for tests  
+**Issue**: Tests with dynamic discovery are hard to debug without execution
+**Solution**: Add diagnostic logging modes for tests
 **Prevention**: Prefer explicit fixtures over discovery
 
 ### Pattern: Test vs Production Mismatch
 
-**Issue**: Tests expect specific behavior not in production code  
-**Solution**: Align tests with actual implementation  
+**Issue**: Tests expect specific behavior not in production code
+**Solution**: Align tests with actual implementation
 **Prevention**: Integration tests should match real usage
 
 ### Pattern: Missing Documentation
 
-**Issue**: Hard to understand test intent without context  
-**Solution**: Add docstrings explaining test architecture  
+**Issue**: Hard to understand test intent without context
+**Solution**: Add docstrings explaining test architecture
 **Prevention**: Require test documentation in PR template
 
 ---
 
 ## 🔄 Status Updates
 
-**2026-02-17T21:15:00Z**: Document created, 3 issues documented  
+**2026-02-17T21:15:00Z**: Document created, 3 issues documented
 **Next Update**: After CI run on current fixes
 
 ---

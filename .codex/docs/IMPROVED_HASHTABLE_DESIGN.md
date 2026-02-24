@@ -1,8 +1,8 @@
 # Improved Hash Table Design for Cache Systems
 
-> **Generated**: 2026-02-17T12:30:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Optimize hash table design for cache key generation and lookups  
+> **Generated**: 2026-02-17T12:30:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Optimize hash table design for cache key generation and lookups
 > **Status**: ✅ PRODUCTION SPECIFICATION
 
 ---
@@ -17,7 +17,7 @@ This document specifies an **improved hash table design** for all cache systems 
 4. **Collision Resolution**: Multiple strategies (chaining, open addressing, cuckoo hashing)
 5. **AAIS Integration**: Hash table metrics contribute to Runtime Introspection score
 
-**Impact**: 
+**Impact**:
 - 40% faster cache lookups
 - 90% reduction in hash collisions
 - +2.5 AAIS points (Runtime Introspection)
@@ -83,26 +83,26 @@ graph TB
         HT2[Medium Tables<br/>100-10K entries<br/>Robin Hood Hashing]
         HT3[Large Tables<br/>>10K entries<br/>Cuckoo Hashing]
     end
-    
+
     subgraph "Hash Function Pipeline"
         Input[Cache Key Input] --> HF1[Pre-Hash: MurmurHash3]
         HF1 --> HF2[Mix: XOR + Rotate]
         HF2 --> HF3[Final: Modulo Table Size]
     end
-    
+
     subgraph "Collision Resolution"
         CR1[Primary: Robin Hood<br/>Better clustering]
         CR2[Secondary: Cuckoo<br/>Multiple tables]
         CR3[Fallback: Chaining<br/>Separate lists]
     end
-    
+
     Input --> HT1
     Input --> HT2
     Input --> HT3
     HF3 --> CR1
     CR1 -.collision.-> CR2
     CR2 -.collision.-> CR3
-    
+
     style Input fill:#3b82f6,color:#fff
     style HF3 fill:#10b981,color:#fff
     style CR1 fill:#10b981,color:#fff
@@ -114,15 +114,15 @@ graph TB
 ```python
 class AdaptiveHashTable:
     """Auto-selects optimal hash table strategy based on size."""
-    
+
     SMALL_THRESHOLD = 100
     LARGE_THRESHOLD = 10_000
-    
+
     def __init__(self):
         self.size = 0
         self.strategy = None
         self._select_strategy()
-    
+
     def _select_strategy(self):
         """Select hash table strategy based on size."""
         if self.size < self.SMALL_THRESHOLD:
@@ -131,15 +131,15 @@ class AdaptiveHashTable:
             self.strategy = RobinHoodHashTable()
         else:
             self.strategy = CuckooHashTable()
-    
+
     def insert(self, key: str, value: Any):
         """Insert with automatic resizing and strategy switching."""
         self.size += 1
-        
+
         # Check if strategy should change
         if self._should_switch_strategy():
             self._migrate_to_new_strategy()
-        
+
         self.strategy.insert(key, value)
 ```
 
@@ -147,27 +147,27 @@ class AdaptiveHashTable:
 ```python
 class ImprovedHashFunction:
     """Production-grade hash function with excellent distribution."""
-    
+
     @staticmethod
     def hash_cache_key(key: str, seed: int = 0) -> int:
         """Generate high-quality hash using MurmurHash3."""
         # MurmurHash3: excellent distribution, fast, low collision
         h = mmh3.hash128(key, seed=seed)
         return h
-    
+
     @staticmethod
     def hash_with_mixing(key: str) -> int:
         """Hash with additional mixing for better distribution."""
         # Step 1: Initial hash
         h = ImprovedHashFunction.hash_cache_key(key)
-        
+
         # Step 2: Mixing function (avalanche effect)
         h ^= (h >> 33)
         h *= 0xff51afd7ed558ccd
         h ^= (h >> 33)
         h *= 0xc4ceb9fe1a85ec53
         h ^= (h >> 33)
-        
+
         return h & 0x7FFFFFFFFFFFFFFF  # Ensure positive
 ```
 
@@ -175,82 +175,82 @@ class ImprovedHashFunction:
 ```python
 class RobinHoodHashTable:
     """Robin Hood hashing for better clustering control."""
-    
+
     def __init__(self, capacity: int = 1024, max_load: float = 0.75):
         self.capacity = capacity
         self.max_load = max_load
         self.size = 0
         self.table = [None] * capacity
         self.distances = [0] * capacity  # Track probe distances
-    
+
     def insert(self, key: str, value: Any):
         """Insert using Robin Hood strategy."""
         h = ImprovedHashFunction.hash_with_mixing(key) % self.capacity
         distance = 0
-        
+
         while True:
             idx = (h + distance) % self.capacity
-            
+
             # Empty slot: insert here
             if self.table[idx] is None:
                 self.table[idx] = (key, value)
                 self.distances[idx] = distance
                 self.size += 1
                 break
-            
+
             # Existing entry: check if we should "rob" this slot
             existing_distance = self.distances[idx]
-            
+
             if distance > existing_distance:
                 # Rob the rich: swap with existing entry
                 self.table[idx], (key, value) = (key, value), self.table[idx]
                 self.distances[idx], distance = distance, existing_distance
-            
+
             distance += 1
-            
+
             # Prevent infinite loop
             if distance > self.capacity:
                 self._resize_and_rehash()
                 return self.insert(key, value)
-        
+
         # Check load factor
         if self.size / self.capacity > self.max_load:
             self._resize_and_rehash()
-    
+
     def lookup(self, key: str) -> Optional[Any]:
         """Lookup with Robin Hood optimization."""
         h = ImprovedHashFunction.hash_with_mixing(key) % self.capacity
         distance = 0
-        
+
         while True:
             idx = (h + distance) % self.capacity
-            
+
             # Empty slot: key not found
             if self.table[idx] is None:
                 return None
-            
+
             # Check if this is our key
             stored_key, value = self.table[idx]
             if stored_key == key:
                 return value
-            
+
             # If our probe distance exceeds the stored distance,
             # key doesn't exist (Robin Hood invariant)
             if distance > self.distances[idx]:
                 return None
-            
+
             distance += 1
-    
+
     def _resize_and_rehash(self):
         """Double capacity and rehash all entries."""
         old_table = self.table
         old_distances = self.distances
-        
+
         self.capacity *= 2
         self.table = [None] * self.capacity
         self.distances = [0] * self.capacity
         self.size = 0
-        
+
         # Rehash all entries
         for entry in old_table:
             if entry is not None:
@@ -262,10 +262,10 @@ class RobinHoodHashTable:
 ```python
 class CuckooHashTable:
     """Cuckoo hashing for guaranteed O(1) lookup."""
-    
+
     NUM_TABLES = 2  # Use 2 hash tables
     MAX_KICKS = 100  # Max relocations before resize
-    
+
     def __init__(self, capacity: int = 1024):
         self.capacity = capacity
         self.size = 0
@@ -276,58 +276,58 @@ class CuckooHashTable:
             lambda k: ImprovedHashFunction.hash_cache_key(k, seed=0) % capacity,
             lambda k: ImprovedHashFunction.hash_cache_key(k, seed=1) % capacity,
         ]
-    
+
     def insert(self, key: str, value: Any):
         """Insert using cuckoo hashing."""
         # Try inserting in each table
         for table_idx in range(self.NUM_TABLES):
             h = self.hash_functions[table_idx](key)
-            
+
             if self.tables[table_idx][h] is None:
                 self.tables[table_idx][h] = (key, value)
                 self.size += 1
                 return
-        
+
         # Both positions occupied: cuckoo eviction
         self._cuckoo_evict(key, value)
-    
+
     def _cuckoo_evict(self, key: str, value: Any):
         """Evict existing entry and relocate (cuckoo)."""
         current_key, current_value = key, value
-        
+
         for kick in range(self.MAX_KICKS):
             # Alternate between tables
             table_idx = kick % self.NUM_TABLES
             h = self.hash_functions[table_idx](current_key)
-            
+
             # Swap with existing entry
             existing = self.tables[table_idx][h]
             self.tables[table_idx][h] = (current_key, current_value)
-            
+
             if existing is None:
                 self.size += 1
                 return
-            
+
             current_key, current_value = existing
-        
+
         # Too many kicks: resize and rehash
         self._resize_and_rehash()
         self.insert(key, value)
-    
+
     def lookup(self, key: str) -> Optional[Any]:
         """Guaranteed O(1) lookup."""
         # Check both tables
         for table_idx in range(self.NUM_TABLES):
             h = self.hash_functions[table_idx](key)
             entry = self.tables[table_idx][h]
-            
+
             if entry is not None:
                 stored_key, value = entry
                 if stored_key == key:
                     return value
-        
+
         return None
-    
+
     def _resize_and_rehash(self):
         """Double capacity and rehash."""
         old_tables = self.tables
@@ -336,13 +336,13 @@ class CuckooHashTable:
         self.tables = [
             [None] * self.capacity for _ in range(self.NUM_TABLES)
         ]
-        
+
         # Update hash functions for new capacity
         self.hash_functions = [
             lambda k: ImprovedHashFunction.hash_cache_key(k, seed=0) % self.capacity,
             lambda k: ImprovedHashFunction.hash_cache_key(k, seed=1) % self.capacity,
         ]
-        
+
         # Rehash all entries
         for table in old_tables:
             for entry in table:
@@ -387,7 +387,7 @@ from typing import Union
 
 class ProductionHashFunction:
     """Production-grade hash function for cache keys."""
-    
+
     @staticmethod
     def hash_cache_key_v2(
         cache_type: str,
@@ -396,44 +396,44 @@ class ProductionHashFunction:
         extra_identifiers: Optional[Dict[str, str]] = None
     ) -> str:
         """Generate improved cache key with better distribution."""
-        
+
         # Step 1: Canonical representation
         components = [
             cache_type.lower(),
             workflow.lower(),
             content_hash,
         ]
-        
+
         if extra_identifiers:
             # Sort for consistency
             for k in sorted(extra_identifiers.keys()):
                 components.append(f"{k}={extra_identifiers[k]}")
-        
+
         canonical = ":".join(components)
-        
+
         # Step 2: Hash with MurmurHash3 (128-bit)
         h128 = mmh3.hash128(canonical, seed=0)
-        
+
         # Step 3: Convert to hex
         h_hex = format(h128, '032x')
-        
+
         # Step 4: Add prefix for readability
         return f"{cache_type}-{h_hex[:16]}"
-    
+
     @staticmethod
     def hash_for_table_lookup(key: str, table_size: int) -> int:
         """Hash for hash table index."""
         # Use upper 64 bits of 128-bit hash
         h = mmh3.hash128(key, seed=0)
         h64 = (h >> 64) & 0xFFFFFFFFFFFFFFFF
-        
+
         # Apply mixing for better distribution
         h64 ^= (h64 >> 33)
         h64 *= 0xff51afd7ed558ccd
         h64 ^= (h64 >> 33)
-        
+
         return h64 % table_size
-    
+
     @staticmethod
     def hash_with_salt(key: str, salt: str) -> str:
         """Hash with salt for security."""
@@ -447,27 +447,27 @@ class ProductionHashFunction:
 ```python
 def analyze_hash_distribution(keys: List[str], table_size: int) -> Dict:
     """Analyze hash distribution quality."""
-    
+
     hasher = ProductionHashFunction()
     buckets = [0] * table_size
-    
+
     # Hash all keys
     for key in keys:
         idx = hasher.hash_for_table_lookup(key, table_size)
         buckets[idx] += 1
-    
+
     # Calculate statistics
     mean = len(keys) / table_size
     variance = sum((b - mean) ** 2 for b in buckets) / table_size
     std_dev = variance ** 0.5
-    
+
     # Chi-squared test for uniformity
     chi_squared = sum((b - mean) ** 2 / mean for b in buckets if mean > 0)
-    
+
     # Collision analysis
     collisions = sum(1 for b in buckets if b > 1)
     max_chain_length = max(buckets)
-    
+
     return {
         "table_size": table_size,
         "num_keys": len(keys),
@@ -519,7 +519,7 @@ Quality: {analysis['quality']}
 ```python
 class CollisionStrategySelector:
     """Selects optimal collision resolution strategy."""
-    
+
     @staticmethod
     def select_strategy(
         table_size: int,
@@ -528,23 +528,23 @@ class CollisionStrategySelector:
         priority: str = "balanced"
     ) -> str:
         """Select best collision resolution strategy."""
-        
+
         # Small tables: Linear probing (cache-friendly)
         if table_size < 100:
             return "linear_probing"
-        
+
         # Read-heavy workload: Cuckoo (guaranteed O(1) read)
         if read_write_ratio > 10:
             return "cuckoo"
-        
+
         # Medium load, balanced: Robin Hood
         if 0.5 < expected_load < 0.75:
             return "robin_hood"
-        
+
         # High load: Chaining (graceful degradation)
         if expected_load > 0.85:
             return "chaining"
-        
+
         # Priority override
         if priority == "speed":
             return "cuckoo"
@@ -552,7 +552,7 @@ class CollisionStrategySelector:
             return "linear_probing"
         elif priority == "reliability":
             return "robin_hood"
-        
+
         # Default: Robin Hood (best balance)
         return "robin_hood"
 ```
@@ -566,46 +566,46 @@ class CollisionStrategySelector:
 ```python
 class AdaptiveHashTable:
     """Hash table with adaptive resizing."""
-    
+
     MIN_LOAD_FACTOR = 0.25  # Shrink below this
     MAX_LOAD_FACTOR = 0.75  # Expand above this
     GROWTH_FACTOR = 2.0     # Double on expansion
     SHRINK_FACTOR = 0.5     # Half on shrinkage
-    
+
     def __init__(self, initial_capacity: int = 16):
         self.capacity = initial_capacity
         self.size = 0
         self.table = self._create_table(initial_capacity)
         self.resize_count = 0
         self.resize_history = []
-    
+
     def _check_resize(self):
         """Check if resize needed."""
         load_factor = self.size / self.capacity
-        
+
         if load_factor > self.MAX_LOAD_FACTOR:
             new_capacity = int(self.capacity * self.GROWTH_FACTOR)
             self._resize(new_capacity, reason="expansion")
-        
+
         elif load_factor < self.MIN_LOAD_FACTOR and self.capacity > 16:
             new_capacity = int(self.capacity * self.SHRINK_FACTOR)
             self._resize(new_capacity, reason="shrinkage")
-    
+
     def _resize(self, new_capacity: int, reason: str):
         """Resize table and rehash all entries."""
         old_capacity = self.capacity
         old_table = self.table
-        
+
         self.capacity = new_capacity
         self.table = self._create_table(new_capacity)
         self.size = 0
-        
+
         # Rehash
         for entry in self._iterate_entries(old_table):
             if entry is not None:
                 key, value = entry
                 self.insert(key, value)
-        
+
         # Track resize event
         self.resize_count += 1
         self.resize_history.append({
@@ -615,7 +615,7 @@ class AdaptiveHashTable:
             "new_capacity": new_capacity,
             "size_at_resize": self.size,
         })
-    
+
     def get_resize_metrics(self) -> Dict:
         """Get resize performance metrics."""
         return {
@@ -669,7 +669,7 @@ class HashTableMetrics:
 
 class ImprovedHashTable:
     """Production hash table with adaptive strategy selection."""
-    
+
     def __init__(
         self,
         initial_capacity: int = 16,
@@ -679,16 +679,16 @@ class ImprovedHashTable:
         self.capacity = initial_capacity
         self.max_load_factor = max_load_factor
         self.size = 0
-        
+
         # Auto-select strategy if not specified
         self.strategy = strategy or self._select_initial_strategy()
-        
+
         # Create table based on strategy
         self.table = self._create_table_for_strategy()
-        
+
         # Metrics
         self.metrics = HashTableMetrics()
-    
+
     def _select_initial_strategy(self) -> HashTableStrategy:
         """Select initial strategy based on capacity."""
         if self.capacity < 100:
@@ -697,7 +697,7 @@ class ImprovedHashTable:
             return HashTableStrategy.ROBIN_HOOD
         else:
             return HashTableStrategy.CUCKOO
-    
+
     def _create_table_for_strategy(self):
         """Create appropriate table structure."""
         if self.strategy == HashTableStrategy.LINEAR_PROBING:
@@ -708,42 +708,42 @@ class ImprovedHashTable:
             return CuckooHashTable(self.capacity)
         else:
             return ChainingHashTable(self.capacity, self.max_load_factor)
-    
+
     def insert(self, key: str, value: Any) -> bool:
         """Insert key-value pair."""
         import time
         start = time.perf_counter_ns()
-        
+
         result = self.table.insert(key, value)
-        
+
         end = time.perf_counter_ns()
         self.metrics.inserts += 1
         self.metrics.avg_insert_time_ns = (
             (self.metrics.avg_insert_time_ns * (self.metrics.inserts - 1) + (end - start))
             / self.metrics.inserts
         )
-        
+
         self.size = self.table.size
         self.metrics.current_load_factor = self.size / self.capacity
-        
+
         return result
-    
+
     def lookup(self, key: str) -> Optional[Any]:
         """Lookup value by key."""
         import time
         start = time.perf_counter_ns()
-        
+
         result = self.table.lookup(key)
-        
+
         end = time.perf_counter_ns()
         self.metrics.lookups += 1
         self.metrics.avg_lookup_time_ns = (
             (self.metrics.avg_lookup_time_ns * (self.metrics.lookups - 1) + (end - start))
             / self.metrics.lookups
         )
-        
+
         return result
-    
+
     def delete(self, key: str) -> bool:
         """Delete key-value pair."""
         result = self.table.delete(key)
@@ -751,33 +751,33 @@ class ImprovedHashTable:
             self.size = self.table.size
             self.metrics.deletes += 1
         return result
-    
+
     def get_metrics(self) -> HashTableMetrics:
         """Get current performance metrics."""
         self.metrics.collision_rate = (
             self.table.get_collision_count() / max(self.metrics.inserts, 1)
         )
         return self.metrics
-    
+
     def get_aais_contribution(self) -> Dict[str, float]:
         """Calculate contribution to AAIS Runtime Introspection."""
         metrics = self.get_metrics()
-        
+
         # Performance score (0-1)
         perf_score = min(
             1.0 - (metrics.avg_lookup_time_ns / 1000),  # <1µs = perfect
             1.0
         )
-        
+
         # Efficiency score (0-1)
         efficiency_score = 1.0 - metrics.collision_rate
-        
+
         # Load factor score (optimal around 0.65)
         load_score = 1.0 - abs(0.65 - metrics.current_load_factor)
-        
+
         # Combined score
         overall_score = (perf_score + efficiency_score + load_score) / 3
-        
+
         return {
             "performance_score": perf_score,
             "efficiency_score": efficiency_score,
@@ -790,7 +790,7 @@ class ImprovedHashTable:
 # Integration with existing cache manager
 class CacheHashTable(ImprovedHashTable):
     """Hash table specialized for cache key lookups."""
-    
+
     def __init__(self, cache_type: str, initial_capacity: int = 1024):
         super().__init__(
             initial_capacity=initial_capacity,
@@ -798,7 +798,7 @@ class CacheHashTable(ImprovedHashTable):
             strategy=HashTableStrategy.ROBIN_HOOD  # Best for caches
         )
         self.cache_type = cache_type
-    
+
     def cache_key_hash(self, key: str) -> int:
         """Generate cache-optimized hash."""
         # Use MurmurHash3 for excellent distribution
@@ -854,24 +854,24 @@ Memory Efficiency: 25% better
 ```python
 def calculate_hashtable_aais_contribution() -> float:
     """Calculate hash table contribution to AAIS."""
-    
+
     metrics = hash_table.get_metrics()
-    
+
     # Metric 1: Lookup performance (max +1.0)
     lookup_score = min(1000 / metrics.avg_lookup_time_ns, 1.0)
-    
+
     # Metric 2: Collision efficiency (max +1.0)
     collision_score = 1.0 - min(metrics.collision_rate, 1.0)
-    
+
     # Metric 3: Load factor optimization (max +0.5)
     load_score = 1.0 - abs(0.65 - metrics.current_load_factor) * 2
     load_score = max(0, min(load_score, 1.0)) * 0.5
-    
+
     total = lookup_score + collision_score + load_score
-    
+
     # Scale to AAIS points
     aais_points = total * 2.5 / 2.5  # Max 2.5 points
-    
+
     return aais_points
 
 # Example:
@@ -919,7 +919,7 @@ def calculate_hashtable_aais_contribution() -> float:
 
 ---
 
-**Status**: ✅ PRODUCTION SPECIFICATION  
-**Version**: 1.0.0  
-**Performance**: 40% faster, 90% fewer collisions  
+**Status**: ✅ PRODUCTION SPECIFICATION
+**Version**: 1.0.0
+**Performance**: 40% faster, 90% fewer collisions
 **AAIS Impact**: +3.0 points (Runtime Introspection)

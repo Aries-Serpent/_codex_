@@ -6,6 +6,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
+try:
+    import defusedxml
+    defusedxml.defuse_stdlib()
+except (ImportError, AttributeError):  # pragma: no cover - optional dep
+    pass
+
 import importlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402

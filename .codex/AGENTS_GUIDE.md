@@ -1,7 +1,7 @@
 # Codex Agents Guide
 
-> **Version:** 1.0.0  
-> **Created:** 2026-01-19  
+> **Version:** 1.0.0
+> **Created:** 2026-01-19
 > **Purpose:** Guidelines for contributors and Codex automation agents
 
 ---
@@ -126,7 +126,7 @@ The `pytest.ini` file centralizes test configuration. All pytest options should 
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q                      # Quiet mode
     --strict-markers        # Enforce marker registration
     --cov=src               # Coverage target directory
@@ -293,6 +293,6 @@ python -m codex.logging.query_logs
 
 ---
 
-**Document Status:** ACTIVE  
-**Last Updated:** 2026-01-19  
+**Document Status:** ACTIVE
+**Last Updated:** 2026-01-19
 **Next Review:** After next major test infrastructure change

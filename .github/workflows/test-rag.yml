@@ -109,7 +109,7 @@ jobs:
         run: |
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-          
+
           # Run RAG tests serially to avoid xdist worker plugin-discovery failures
           # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
           python -m pytest tests/test_rag_*.py \

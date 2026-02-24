@@ -1,14 +1,14 @@
 # Workflow Architecture Review & Large PR Optimization Strategy
-> Generated: 2026-02-15T10:45:00Z  
-> Scope: .github/workflows/ audit for large codebase optimization  
+> Generated: 2026-02-15T10:45:00Z
+> Scope: .github/workflows/ audit for large codebase optimization
 > Context: PR #3248 analysis + CI Optimization Plansets
 
 ---
 
 ## Executive Summary
 
-**Current State**: 63 workflow files managing CI/CD for _codex_ repository  
-**Analysis Basis**: PR #3248 failure patterns + workflow audit  
+**Current State**: 63 workflow files managing CI/CD for _codex_ repository
+**Analysis Basis**: PR #3248 failure patterns + workflow audit
 **Focus**: Large PR handling, log/artifact collection, continuous improvement
 
 **Key Findings**:
@@ -84,11 +84,11 @@
    jobs:
      detect-pr-size:
        uses: ./.github/workflows/pr-analyzer.yml
-     
+
      smoke-tests:
        needs: detect-pr-size
        # Always run
-     
+
      full-tests:
        needs: detect-pr-size
        if: needs.detect-pr-size.outputs.pr_size == 'small'
@@ -129,7 +129,7 @@
        # Run in parallel
      security-scan:
        # Run in parallel
-     
+
      combine-results:
        needs: [lint, typecheck, security-scan]
        # Aggregate and report
@@ -178,10 +178,10 @@
 1. **Standardize Retention Policy**:
    ```yaml
    # Based on PR size and test results
-   retention-days: ${{ 
+   retention-days: ${{
      needs.pr-analyzer.outputs.pr_size == 'small' && 7 ||
      needs.pr-analyzer.outputs.pr_size == 'medium' && 14 ||
-     30 
+     30
    }}
    ```
 
@@ -200,7 +200,7 @@
          --workflow ${{ github.workflow }} \
          --run-id ${{ github.run_id }} \
          --output aggregated-logs.json
-   
+
    - uses: actions/upload-artifact@v3
      if: failure()
      with:
@@ -231,19 +231,19 @@
    ```python
    # scripts/monitoring/workflow_health.py
    from prometheus_client import Gauge, Counter
-   
+
    workflow_success_rate = Gauge(
        'workflow_success_rate',
        'Success rate by workflow',
        ['workflow_name']
    )
-   
+
    workflow_duration = Gauge(
        'workflow_duration_seconds',
        'Execution time by workflow',
        ['workflow_name']
    )
-   
+
    def record_workflow_metrics(workflow_name, success, duration):
        workflow_success_rate.labels(workflow_name).set(
            1.0 if success else 0.0
@@ -289,18 +289,18 @@ jobs:
       pr_size: ${{ steps.categorize.outputs.category }}
       changed_files: ${{ steps.count.outputs.count }}
       changed_modules: ${{ steps.modules.outputs.list }}
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Count changed files
         id: count
         run: |
           CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
           echo "count=$CHANGED" >> $GITHUB_OUTPUT
-      
+
       - name: Categorize PR size
         id: categorize
         run: |
@@ -314,7 +314,7 @@ jobs:
           else
             echo "category=refactor" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Detect changed modules
         id: modules
         run: |
@@ -339,14 +339,14 @@ on:
 jobs:
   pr-analysis:
     uses: ./.github/workflows/pr-analyzer.yml
-  
+
   smoke-tests:
     needs: pr-analysis
     runs-on: ubuntu-latest
     # ALWAYS RUN - fast feedback
     steps:
       - run: pytest tests/ -m "smoke" --maxfail=1
-  
+
   targeted-tests:
     needs: pr-analysis
     if: needs.pr-analysis.outputs.pr_size == 'medium'
@@ -357,7 +357,7 @@ jobs:
         module: ${{ fromJSON(needs.pr-analysis.outputs.changed_modules) }}
     steps:
       - run: pytest tests/${{ matrix.module }}/ --cov
-  
+
   full-suite:
     needs: pr-analysis
     if: needs.pr-analysis.outputs.pr_size == 'small'
@@ -365,7 +365,7 @@ jobs:
     # Small PRs: Full validation
     steps:
       - run: pytest tests/ --cov --timeout=1800
-  
+
   minimal-validation:
     needs: pr-analysis
     if: |
@@ -375,7 +375,7 @@ jobs:
     # Large PRs: Import checks only
     steps:
       - run: python scripts/ci/validate_imports.py
-  
+
   comment-on-large-pr:
     needs: pr-analysis
     if: needs.pr-analysis.outputs.pr_size == 'large'
@@ -390,11 +390,11 @@ jobs:
               repo: context.repo.repo,
               body: `
                 🔍 **Large PR Detected** (${context.payload.pull_request.changed_files} files)
-                
+
                 **Validation Strategy**:
                 - ✅ Smoke tests: Running
                 - ⚠️ Full suite: Skipped (run manually if needed)
-                
+
                 **To run full validation**: Comment \`/validate-full\`
               `
             })
@@ -428,7 +428,7 @@ jobs:
     steps:
       - id: get-pr
         run: echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
-  
+
   full-validation:
     needs: check-command
     runs-on: ubuntu-latest
@@ -436,10 +436,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ needs.check-command.outputs.pr_number }}/head
-      
+
       - name: Run full test suite
         run: pytest tests/ --cov --timeout=3600
-      
+
       - name: Comment results
         uses: actions/github-script@v6
         with:
@@ -503,14 +503,14 @@ Add to all workflow files:
 ```yaml
 jobs:
   # ... existing jobs ...
-  
+
   collect-telemetry:
     if: always()  # Run even on failure
     needs: [job1, job2, job3]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Aggregate logs
         run: |
           python scripts/ci/aggregate_telemetry.py \
@@ -518,7 +518,7 @@ jobs:
             --run-id ${{ github.run_id }} \
             --jobs '${{ toJSON(needs) }}' \
             --output telemetry.json
-      
+
       - name: Upload telemetry
         uses: actions/upload-artifact@v3
         with:
@@ -546,7 +546,7 @@ from typing import Dict, List
 def aggregate_telemetry(workflow_name: str, run_id: str, jobs: Dict) -> Dict:
     """
     Aggregate telemetry from workflow execution.
-    
+
     Returns structured telemetry for storage and analysis.
     """
     telemetry = {
@@ -568,11 +568,11 @@ def aggregate_telemetry(workflow_name: str, run_id: str, jobs: Dict) -> Dict:
             'suggested_planset': None,
         }
     }
-    
+
     # Process each job
     for job_name, job_data in jobs.items():
         job_result = job_data.get('result', 'unknown')
-        
+
         telemetry['jobs'].append({
             'name': job_name,
             'result': job_result,
@@ -580,7 +580,7 @@ def aggregate_telemetry(workflow_name: str, run_id: str, jobs: Dict) -> Dict:
             'started_at': job_data.get('started_at'),
             'completed_at': job_data.get('completed_at'),
         })
-        
+
         # Update metrics
         if job_result == 'failure':
             telemetry['metrics']['failed_jobs'] += 1
@@ -588,16 +588,16 @@ def aggregate_telemetry(workflow_name: str, run_id: str, jobs: Dict) -> Dict:
             telemetry['metrics']['succeeded_jobs'] += 1
         elif job_result == 'cancelled':
             telemetry['metrics']['cancelled_jobs'] += 1
-    
+
     # Pattern detection (map to 5 identified patterns)
     telemetry['patterns'] = detect_failure_pattern(telemetry)
-    
+
     return telemetry
 
 def detect_failure_pattern(telemetry: Dict) -> Dict:
     """
     Detect which of the 5 identified patterns this failure matches.
-    
+
     Patterns:
     1. Auto-Fix Loop (remediation failure)
     2. Test Infrastructure (multi-category failure)
@@ -607,14 +607,14 @@ def detect_failure_pattern(telemetry: Dict) -> Dict:
     """
     workflow_name = telemetry['metadata']['workflow_name']
     failed_jobs = [j for j in telemetry['jobs'] if j['result'] == 'failure']
-    
+
     patterns = {
         'failure_category': 'unknown',
         'root_cause': None,
         'suggested_planset': None,
         'confidence': 0.0,
     }
-    
+
     # Pattern 1: Auto-Fix Loop
     if 'auto-fix' in workflow_name.lower():
         if any('remediate' in j['name'].lower() for j in failed_jobs):
@@ -622,7 +622,7 @@ def detect_failure_pattern(telemetry: Dict) -> Dict:
             patterns['root_cause'] = 'Remediation logic failure'
             patterns['suggested_planset'] = 'Planset 1: Auto-Fix Loop Resolution'
             patterns['confidence'] = 0.9
-    
+
     # Pattern 2: Test Infrastructure
     if 'test' in workflow_name.lower() or 'validation' in workflow_name.lower():
         if len(failed_jobs) > 2:  # Multiple test categories failing
@@ -630,7 +630,7 @@ def detect_failure_pattern(telemetry: Dict) -> Dict:
             patterns['root_cause'] = 'Shared dependency or fixture issue'
             patterns['suggested_planset'] = 'Planset 2: Test Infrastructure Stabilization'
             patterns['confidence'] = 0.85
-    
+
     # Pattern 3: Coverage Timeout
     if 'coverage' in workflow_name.lower():
         cancelled = [j for j in telemetry['jobs'] if j['result'] == 'cancelled']
@@ -639,7 +639,7 @@ def detect_failure_pattern(telemetry: Dict) -> Dict:
             patterns['root_cause'] = 'pytest-cov hanging on large codebase'
             patterns['suggested_planset'] = 'Planset 3: Coverage Generation Optimization'
             patterns['confidence'] = 0.9
-    
+
     # Pattern 4: File System Deadlock
     if 'organization' in workflow_name.lower() or 'validation' in workflow_name.lower():
         if any('pre-move' in j['name'].lower() for j in failed_jobs):
@@ -647,14 +647,14 @@ def detect_failure_pattern(telemetry: Dict) -> Dict:
             patterns['root_cause'] = 'Directory traversal timeout'
             patterns['suggested_planset'] = 'Planset 4: File System Operation Optimization'
             patterns['confidence'] = 0.8
-    
+
     # Pattern 5: Pre-Merge Validation
     if 'pre-merge' in workflow_name.lower():
         patterns['failure_category'] = 'premerge_validation'
         patterns['root_cause'] = 'Dependency on auto-fix or other workflow'
         patterns['suggested_planset'] = 'Planset 5: Large PR Workflow Strategy'
         patterns['confidence'] = 0.75
-    
+
     return patterns
 
 def main():
@@ -664,23 +664,23 @@ def main():
     parser.add_argument('--run-id', required=True)
     parser.add_argument('--jobs', required=True, help='JSON string of job data')
     parser.add_argument('--output', default='telemetry.json')
-    
+
     args = parser.parse_args()
-    
+
     # Parse jobs JSON
     jobs = json.loads(args.jobs)
-    
+
     # Aggregate telemetry
     telemetry = aggregate_telemetry(args.workflow_name, args.run_id, jobs)
-    
+
     # Write output
     with open(args.output, 'w') as f:
         json.dump(telemetry, f, indent=2)
-    
+
     print(f"✅ Telemetry aggregated: {args.output}")
     print(f"   Pattern detected: {telemetry['patterns']['failure_category']}")
     print(f"   Suggested: {telemetry['patterns']['suggested_planset']}")
-    
+
     return 0
 
 if __name__ == '__main__':
@@ -711,7 +711,7 @@ def load_telemetry_files(telemetry_dir: Path) -> List[Dict]:
 
 def calculate_workflow_health(telemetry_data: List[Dict]) -> Dict:
     """Calculate health metrics across all workflows"""
-    
+
     metrics_by_workflow = defaultdict(lambda: {
         'total_runs': 0,
         'success_runs': 0,
@@ -719,30 +719,30 @@ def calculate_workflow_health(telemetry_data: List[Dict]) -> Dict:
         'avg_duration': 0,
         'failure_patterns': Counter(),
     })
-    
+
     for telemetry in telemetry_data:
         workflow_name = telemetry['metadata']['workflow_name']
         metrics = metrics_by_workflow[workflow_name]
-        
+
         metrics['total_runs'] += 1
-        
+
         if telemetry['metrics']['failed_jobs'] > 0:
             metrics['failed_runs'] += 1
             pattern = telemetry['patterns']['failure_category']
             metrics['failure_patterns'][pattern] += 1
         else:
             metrics['success_runs'] += 1
-    
+
     # Calculate success rates
     for workflow, metrics in metrics_by_workflow.items():
         if metrics['total_runs'] > 0:
             metrics['success_rate'] = metrics['success_runs'] / metrics['total_runs']
-    
+
     return dict(metrics_by_workflow)
 
 def generate_dashboard_html(health_metrics: Dict) -> str:
     """Generate HTML dashboard"""
-    
+
     html = """
     <!DOCTYPE html>
     <html>
@@ -768,14 +768,14 @@ def generate_dashboard_html(health_metrics: Dict) -> str:
                 <th>Top Failure Pattern</th>
             </tr>
     """
-    
+
     for workflow, metrics in sorted(health_metrics.items()):
         success_rate = metrics['success_rate']
         row_class = 'success' if success_rate > 0.9 else 'warning' if success_rate > 0.7 else 'danger'
-        
+
         top_pattern = metrics['failure_patterns'].most_common(1)
         pattern_str = top_pattern[0][0] if top_pattern else 'N/A'
-        
+
         html += f"""
             <tr class="{row_class}">
                 <td>{workflow}</td>
@@ -784,13 +784,13 @@ def generate_dashboard_html(health_metrics: Dict) -> str:
                 <td>{pattern_str}</td>
             </tr>
         """
-    
+
     html += """
         </table>
     </body>
     </html>
     """
-    
+
     return html
 ```
 
@@ -896,6 +896,6 @@ def generate_dashboard_html(health_metrics: Dict) -> str:
 
 ---
 
-**Document Status**: COMPLETE  
-**Last Updated**: 2026-02-15T10:45:00Z  
+**Document Status**: COMPLETE
+**Last Updated**: 2026-02-15T10:45:00Z
 **Next Steps**: Implement Phase 1 (Steps 1-5) - Foundation & Data Collection

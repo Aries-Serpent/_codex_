@@ -31,7 +31,7 @@ This document establishes the multi-agent cooperative development process for re
       │   Squad     │ │  Squad  │ │   Squad     │ │    Squad      │
       └──────┬──────┘ └────┬────┘ └──────┬──────┘ └────┬──────────┘
              │             │              │              │
-      [see §3 below]                                      
+      [see §3 below]
 ```
 
 ### Team Structure
@@ -157,12 +157,12 @@ for i in range(MAX_ITERATIONS):
     fix = generate_fix(failure)
     apply_fix(fix)
     validate = run_targeted_tests(fix.affected_tests)
-    
+
     if validate.all_pass():
         run_lint(fix.affected_files)
         run_type_check(fix.affected_files)
         return SUCCESS(commit=True)
-    
+
     if i < MAX_ITERATIONS - 1:
         # Self-healing: analyze what went wrong
         new_context = analyze_residual_failures(validate.failures)
@@ -221,7 +221,7 @@ if memories.has_exact_match():
 ```python
 # Trigger web_search for:
 # - External library bugs
-# - New API patterns  
+# - New API patterns
 # - Framework-specific issues
 
 search_queries = [
@@ -250,21 +250,21 @@ def final_self_review():
         prTitle=session.title,
         prDescription=session.description
     )
-    
+
     for comment in code_review_result.comments:
         if comment.is_valid and comment.is_actionable:
             fix = generate_fix(comment)
             apply_and_validate(fix)
-    
+
     # 2. CodeQL security scan
     codeql_result = codeql_checker()
     for alert in codeql_result.alerts:
         if alert.is_fixable_locally:
             fix_security_alert(alert)
-    
+
     # 3. Final regression check
     run_targeted_tests(all_changed_files)
-    
+
     # 4. Update documentation
     update_pr_description()
     update_tech_debt_registry()
@@ -349,10 +349,10 @@ At the end of every session, post this as a PR comment:
 ```markdown
 ## 🤖 @copilot — Session N+1 Continuation Prompt
 
-**Continue Work**: Follow the Agentic Session Methodology v1.0 
+**Continue Work**: Follow the Agentic Session Methodology v1.0
 (`.codex/plans/AGENTIC_SESSION_METHODOLOGY.md`)
 
-**MSP-1 Load**: 
+**MSP-1 Load**:
 - `.codex/TECH_DEBT_REGISTRY.md` (current priorities)
 - `.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md` §11
 - Stored memories (last 5 sessions)

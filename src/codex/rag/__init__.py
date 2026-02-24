@@ -14,6 +14,7 @@ try:
     )
     from .indexer import (
         IndexOperation,
+        RAGIndexer,
         TenantOperationResult,
         build_index_from_files,
         chunk_text,

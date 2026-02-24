@@ -36,10 +36,10 @@ echo ""
 cat > "$REPORT_FILE" <<EOF
 # Self-CI Validation Report - PR #3248
 
-**Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)  
-**Test Group:** $TEST_GROUP  
-**Baseline:** 77.9% (53/68 tests passing)  
-**Target Phase 1:** 80.9% (55/68 tests)  
+**Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
+**Test Group:** $TEST_GROUP
+**Baseline:** 77.9% (53/68 tests passing)
+**Target Phase 1:** 80.9% (55/68 tests)
 **Target Phase 2:** 85.3% (58/68 tests)
 
 ---
@@ -227,7 +227,7 @@ if [ "$FAILED_COUNT" -gt 0 ]; then
     echo -e "\n\`\`\`" >> "$REPORT_FILE"
     grep "FAILED" "$TEST_OUTPUT_FILE" | head -50 >> "$REPORT_FILE"
     echo -e "\`\`\`\n" >> "$REPORT_FILE"
-    
+
     log_warning "$FAILED_COUNT test failures detected"
 fi
 
@@ -238,7 +238,7 @@ if [ "$TIMEOUT_COUNT" -gt 0 ]; then
     echo -e "\n\`\`\`" >> "$REPORT_FILE"
     grep -B 2 -A 2 "Timeout" "$TEST_OUTPUT_FILE" | head -30 >> "$REPORT_FILE"
     echo -e "\`\`\`\n" >> "$REPORT_FILE"
-    
+
     log_error "$TIMEOUT_COUNT timeout issues detected"
 fi
 
@@ -252,7 +252,7 @@ CURRENT_PASSING=$PASSED_COUNT
 
 if [ "$TEST_GROUP" = "quick" ] || [ "$TEST_GROUP" = "all" ]; then
     COVERAGE_PCT=$(awk "BEGIN {printf \"%.1f\", ($CURRENT_PASSING / $TOTAL_TESTS) * 100}")
-    
+
     cat >> "$REPORT_FILE" <<EOF
 **Coverage Calculation:**
 - Total Tests (baseline): $TOTAL_TESTS
@@ -267,7 +267,7 @@ if [ "$TEST_GROUP" = "quick" ] || [ "$TEST_GROUP" = "all" ]; then
 EOF
 
     echo "Coverage: $COVERAGE_PCT% ($CURRENT_PASSING/$TOTAL_TESTS)"
-    
+
     # Check if we've reached targets
     if [ "$CURRENT_PASSING" -ge 58 ]; then
         log_success "Phase 2 target reached (85.3%+)"
@@ -288,14 +288,14 @@ echo -e "\n## Step 6: Failure Categorization\n" >> "$REPORT_FILE"
 
 if [ "$FAILED_COUNT" -gt 0 ]; then
     echo "Categorizing failures..."
-    
+
     # Category detection
     PROTOCOL_FAILURES=$(grep -c "isinstance.*Protocol\|Protocol.*isinstance" "$TEST_OUTPUT_FILE" || echo "0")
     IMPORT_FAILURES=$(grep -c "ImportError\|ModuleNotFoundError" "$TEST_OUTPUT_FILE" || echo "0")
     ASSERTION_FAILURES=$(grep -c "AssertionError" "$TEST_OUTPUT_FILE" || echo "0")
     ATTRIBUTE_FAILURES=$(grep -c "AttributeError" "$TEST_OUTPUT_FILE" || echo "0")
     TYPE_FAILURES=$(grep -c "TypeError" "$TEST_OUTPUT_FILE" || echo "0")
-    
+
     cat >> "$REPORT_FILE" <<EOF
 ### Failure Categories
 

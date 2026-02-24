@@ -53,7 +53,7 @@ Before ANY commit:
 
 ### Issues
 - ✅ FIXED
-- 🔄 IN_PROGRESS  
+- 🔄 IN_PROGRESS
 - ⏳ PENDING
 - 🔍 INVESTIGATING
 - ⚠️ BLOCKED

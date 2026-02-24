@@ -1,7 +1,7 @@
 # Comprehensive Pull Request Template - Checkbox Checklist Style
 
-> **Version:** 2.0.0  
-> **Generated:** 2025-11-17  
+> **Version:** 2.0.0
+> **Generated:** 2025-11-17
 > **Purpose:** Complete PR checklist with all capability enhancements and quality gates
 
 ---
@@ -696,9 +696,9 @@
 
 ---
 
-**PR Author:** @[username]  
-**Date Submitted:** YYYY-MM-DD  
-**Target Branch:** [e.g., main, develop]  
+**PR Author:** @[username]
+**Date Submitted:** YYYY-MM-DD
+**Target Branch:** [e.g., main, develop]
 **Target Release:** [e.g., v1.2.0]
 
 ---
@@ -723,6 +723,6 @@
 
 ---
 
-**Template Version:** 2.0.0  
-**Last Updated:** 2025-11-17  
+**Template Version:** 2.0.0
+**Last Updated:** 2025-11-17
 **Changelog:** Complete rewrite with comprehensive capability-specific checklists

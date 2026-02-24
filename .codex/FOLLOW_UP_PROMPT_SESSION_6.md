@@ -1,9 +1,9 @@
 # Follow-Up Prompt - Session 6 Complete
 
-**Context:** PR #3325 - Comprehensive CI Resolution  
-**Session:** 6 of ongoing iterations  
-**Status:** 17/25 test failures fixed (68% → targeting 100%)  
-**Created:** 2026-02-18  
+**Context:** PR #3325 - Comprehensive CI Resolution
+**Session:** 6 of ongoing iterations
+**Status:** 17/25 test failures fixed (68% → targeting 100%)
+**Created:** 2026-02-18
 
 ---
 
@@ -77,12 +77,12 @@ Execute: Fix remaining failures then deploy plansets
 - **Fix:** Provide proper dataset in test fixture
   ```python
   from typer.testing import CliRunner
-  
+
   def test_cli_train_creates_checkpoint(tmp_path):
       # Create minimal dataset
       dataset_file = tmp_path / "train.jsonl"
       dataset_file.write_text('{"input": "test", "target": "output"}\n')
-      
+
       runner = CliRunner()
       result = runner.invoke(app, ["train", "--dataset", str(dataset_file)])
       assert result.exit_code == 0
@@ -98,7 +98,7 @@ Execute: Fix remaining failures then deploy plansets
   # Check what's actually being compared
   import os
   print(f"PYTHONHASHSEED: {os.environ.get('PYTHONHASHSEED', 'not set')}")
-  
+
   # The test might be comparing seed VALUE vs seed RESULT
   # Fix: Update expected value or seed setting logic
   ```
@@ -305,8 +305,8 @@ pytest tests/ -k "test_policy_yaml_override or test_unicode_email or test_cli_tr
 
 ---
 
-**Created:** 2026-02-18  
-**Status:** Ready for Session 7  
+**Created:** 2026-02-18
+**Status:** Ready for Session 7
 **Confidence:** High (research-backed solutions available)
 
 ---
@@ -314,23 +314,23 @@ pytest tests/ -k "test_policy_yaml_override or test_unicode_email or test_cli_tr
 ## Appendix: Research Findings Summary
 
 ### YAML Policy Override
-**Problem:** Boolean comparison failing  
-**Solution:** Use `==` not `is` for numpy.bool_ compatibility  
+**Problem:** Boolean comparison failing
+**Solution:** Use `==` not `is` for numpy.bool_ compatibility
 **Source:** Stack Overflow - pytest assertion patterns
 
 ### CLI Testing
-**Problem:** Dataset empty error in CLI test  
-**Solution:** Use CliRunner with proper test fixtures  
+**Problem:** Dataset empty error in CLI test
+**Solution:** Use CliRunner with proper test fixtures
 **Source:** pytest-with-eric.com - CLI testing guide
 
 ### Seed Reproducibility
-**Problem:** String comparison '0' vs '2025'  
-**Solution:** Set PYTHONHASHSEED, verify expected values  
+**Problem:** String comparison '0' vs '2025'
+**Solution:** Set PYTHONHASHSEED, verify expected values
 **Source:** GeeksforGeeks - random seed guide
 
 ### Defensive isinstance
-**Problem:** TypeError with Protocol/optional types  
-**Solution:** Wrap in try-except with duck typing fallback  
+**Problem:** TypeError with Protocol/optional types
+**Solution:** Wrap in try-except with duck typing fallback
 **Source:** Session 6 implementation (proven pattern)
 
 ---

@@ -30,7 +30,7 @@ cat > /tmp/yaml_test_fix.patch << 'EOF'
          except yaml.YAMLError as e:
 -            pytest.fail(f"Invalid YAML in {config_file}: {e}")
 +            pytest.fail(f"Invalid YAML in {config_file.name}: {e}")
- 
+
      @pytest.mark.parametrize("config_file", agent_configs, ids=lambda p: p.name)
      def test_required_fields_present(self, config_file):
 EOF
@@ -58,7 +58,7 @@ if [ -f "scripts/space_traversal/viz_cli_builder.py" ]; then
     # Check if version is already in the code
     if ! grep -q "importlib.metadata" "scripts/space_traversal/viz_cli_builder.py"; then
         echo "   Adding version metadata import..."
-        
+
         # Find the generate_cli_builder function and add version
         python3 << 'PYTHON_FIX'
 import re
@@ -86,7 +86,7 @@ if "def generate_cli_builder" in content and "version =" not in content.split("d
         flags=re.DOTALL,
         count=1
     )
-    
+
     file_path.write_text(content)
     print("✅ Added version to CLI builder template")
 else:
@@ -108,7 +108,7 @@ if [ -f "src/codex_ml/training/__init__.py" ]; then
     # Check if maybe_autocast is exported
     if ! grep -q "maybe_autocast" "src/codex_ml/training/__init__.py"; then
         echo "   Adding maybe_autocast export..."
-        
+
         # Add to imports (if not already present)
         if grep -q "from codex_ml.training.functional_training import" "src/codex_ml/training/__init__.py"; then
             # Add to existing import
@@ -117,30 +117,30 @@ if [ -f "src/codex_ml/training/__init__.py" ]; then
             # Add new import line
             echo "from codex_ml.training.functional_training import maybe_autocast" >> "src/codex_ml/training/__init__.py"
         fi
-        
+
         # Add to __all__ if it exists
         if grep -q "__all__" "src/codex_ml/training/__init__.py"; then
             sed -i '/__all__/,/]/ s/\]/    "maybe_autocast",\n]/' "src/codex_ml/training/__init__.py"
         fi
-        
+
         echo "   ✅ Added maybe_autocast export"
     fi
-    
+
     # Check if load_from_pretrained is exported
     if ! grep -q "load_from_pretrained" "src/codex_ml/training/__init__.py"; then
         echo "   Adding load_from_pretrained export..."
-        
+
         # Similar pattern as above
         if grep -q "from codex_ml.training.functional_training import" "src/codex_ml/training/__init__.py"; then
             sed -i 's/from codex_ml.training.functional_training import \(.*\)/from codex_ml.training.functional_training import \1, load_from_pretrained/' "src/codex_ml/training/__init__.py"
         else
             echo "from codex_ml.training.functional_training import load_from_pretrained" >> "src/codex_ml/training/__init__.py"
         fi
-        
+
         if grep -q "__all__" "src/codex_ml/training/__init__.py"; then
             sed -i '/__all__/,/]/ s/\]/    "load_from_pretrained",\n]/' "src/codex_ml/training/__init__.py"
         fi
-        
+
         echo "   ✅ Added load_from_pretrained export"
     fi
 else
@@ -173,7 +173,7 @@ def disable_torch_profiler(request):
         'test_performance_benchmark.py',
         'test_models_registry_api.py',
     ]
-    
+
     # Check if current test is in the problematic list
     test_file = request.node.fspath.basename
     if any(problematic in test_file for problematic in profiler_problematic_tests):

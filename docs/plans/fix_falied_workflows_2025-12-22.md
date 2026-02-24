@@ -1,7 +1,7 @@
 # Codex Evolution Pipeline — Complete Multi-Workflow Failure Resolution Matrix
 
-> **Generated:** 2025-12-22 | **Author:** mbaetiong  
-> **Context:** Unified resolution strategy for 9 failing workflows across test, integration, build, agent, and evolution pipelines  
+> **Generated:** 2025-12-22 | **Author:** mbaetiong
+> **Context:** Unified resolution strategy for 9 failing workflows across test, integration, build, agent, and evolution pipelines
 > **⚡ Energy:** 5/5 — Maximum sustained focus for systemic resolution
 
 ---
@@ -109,7 +109,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
       --build-arg BUILDKIT_INLINE_CACHE=1 \
       --cache-from type=registry,ref=ghcr.io/aries-serpent/_codex_/ci-base:full-${GITHUB_REF##*/} \
       --cache-to type=registry,ref=ghcr.io/aries-serpent/_codex_/ci-base:full-${GITHUB_REF##*/},mode=max \
-      --file Dockerfile.ci . 
+      --file Dockerfile.ci .
 
 # AFTER: Sanitized and validated tag construction
 - name:  Normalize branch name for Docker tag
@@ -118,7 +118,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
     # Extract branch name
     BRANCH_NAME="${GITHUB_REF##*/}"
     echo "Original branch: $BRANCH_NAME"
-    
+
     # Sanitize for Docker tag compliance
     # Rules: lowercase, alphanumeric + dash/underscore/dot only
     SAFE_TAG=$(echo "$BRANCH_NAME" | \
@@ -127,10 +127,10 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
       tr ': ' '-' | \
       sed 's/[^a-z0-9._-]/-/g' | \
       sed 's/^[-.]//; s/[-.]$//')
-    
+
     echo "safe_tag=${SAFE_TAG}" >> $GITHUB_OUTPUT
     echo "✅ Sanitized Docker tag: full-${SAFE_TAG}"
-    
+
     # Validation check
     if [[ !  "$SAFE_TAG" =~ ^[a-z0-9._-]+$ ]]; then
       echo "❌ ERROR: Tag sanitization failed:  $SAFE_TAG"
@@ -141,7 +141,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
   run: |
     IMAGE_REF="ghcr.io/aries-serpent/_codex_/ci-base:full-${{ steps.normalize_tag.outputs.safe_tag }}"
     echo "🐳 Building:  $IMAGE_REF"
-    
+
     docker buildx build \
       --build-arg BUILDKIT_INLINE_CACHE=1 \
       --cache-from type=registry,ref=$IMAGE_REF \
@@ -150,7 +150,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
       --file Dockerfile.ci \
       --push \
       .
-    
+
     echo "✅ Image built and pushed:  $IMAGE_REF"
 ````
 
@@ -194,7 +194,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
   with:
     name:  agent-state-${{ github. run_number }}
     path:  .codex/agent_state/
-    
+
 - name: Verify agent state restoration
   run: |
     if [ -d ".codex/agent_state" ] && [ "$(ls -A .codex/agent_state)" ]; then
@@ -219,7 +219,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 # Lines 118-123: Pattern Report Upload
 - name: Upload pattern report
   uses: actions/upload-artifact@v4  # ✅ Changed from v6
-  with: 
+  with:
     name: pattern-report
     path: .github/copilot-evolution/data/pattern_report.json
     retention-days: 30
@@ -301,19 +301,19 @@ class HealingResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
     timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat())
 
-class SelfHealingEngine: 
+class SelfHealingEngine:
     """
     Self-healing engine with repository-aware diagnostics.
-    
+
     Capabilities:
     - Detects and classifies failures automatically
     - Applies context-appropriate healing strategies
     - Maintains healing history for learning
     - Supports autonomous recovery across multiple failure types
-    
+
     Energy: 5/5 — Core autonomous capability
     """
-    
+
     def __init__(
         self,
         repo_path: Optional[str] = None,
@@ -322,7 +322,7 @@ class SelfHealingEngine:
     ):
         """
         Initialize Self-Healing Engine with repository context.
-        
+
         Args:
             repo_path: Path to repository root (defaults to CWD)
             config: Optional configuration overrides
@@ -331,19 +331,19 @@ class SelfHealingEngine:
         self.repo_path = Path(repo_path) if repo_path else Path. cwd()
         self.config = config or self._default_config()
         self.enable_auto_heal = enable_auto_heal
-        
+
         # State tracking
         self.healing_history:  List[HealingResult] = []
         self.pattern_cache: Dict[str, Any] = {}
         self.diagnostics: Dict[str, Any] = {}
         self.failure_signatures: Dict[str, str] = {}
-        
+
         # Initialize healing strategies
         self._initialize_strategies()
-        
+
         logger.info(f"✅ SelfHealingEngine initialized for repo: {self.repo_path}")
         logger.info(f"   Auto-heal: {self.enable_auto_heal} | Strategies: {len(self.strategies)}")
-    
+
     def _default_config(self) -> Dict[str, Any]:
         """Default configuration for healing engine."""
         return {
@@ -354,7 +354,7 @@ class SelfHealingEngine:
             "log_all_attempts": True,
             "pattern_learning":  True
         }
-    
+
     def _initialize_strategies(self):
         """Initialize all available healing strategies."""
         self.strategies = {
@@ -370,11 +370,11 @@ class SelfHealingEngine:
             HealingStrategy. ASSERTION_ERROR.value: self._heal_assertion,
             HealingStrategy. GENERIC.value: self._heal_generic
         }
-    
+
     def heal_failure(self, error_context: Dict[str, Any]) -> HealingResult:
         """
         Apply healing strategies to detected failures.
-        
+
         Args:
             error_context: Context about the failure
                 - type: Error type (e.g., "TypeError", "ValueError")
@@ -382,39 +382,39 @@ class SelfHealingEngine:
                 - traceback: Optional full traceback
                 - component: Component where error occurred
                 - severity: Error severity level
-        
+
         Returns:
             HealingResult with success status and applied strategy
         """
         error_type = error_context.get("type", "unknown")
         error_message = error_context.get("message", "")
         component = error_context.get("component", "unknown")
-        
+
         logger.info(f"🔧 Attempting to heal:  {error_type} in {component}")
         logger.debug(f"   Error message: {error_message}")
-        
+
         # Select appropriate strategy
         strategy_name, strategy_func = self._select_strategy(error_type, error_message, component)
-        
+
         try:
             # Apply healing strategy
             result = strategy_func(error_context)
-            
+
             # Record in history
             self. healing_history.append(result)
-            
+
             # Update pattern cache if learning enabled
             if self.config.get("pattern_learning"):
                 self._update_pattern_cache(error_type, error_message, result)
-            
+
             # Log result
             if result.success:
                 logger. info(f"✅ Healing successful: {result.strategy_applied} (confidence: {result.confidence:.2%})")
             else:
                 logger.warning(f"⚠️ Healing unsuccessful: {result.strategy_applied}")
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"❌ Healing crashed: {e}")
             return HealingResult(
@@ -424,56 +424,56 @@ class SelfHealingEngine:
                 confidence=0.0,
                 metadata={"exception": str(e), "exception_type": type(e).__name__}
             )
-    
+
     def _select_strategy(self, error_type: str, error_message: str, component: str) -> tuple:
         """
         Select appropriate healing strategy based on error characteristics.
-        
-        Uses pattern matching and learned failure signatures. 
+
+        Uses pattern matching and learned failure signatures.
         """
         error_lower = error_message.lower()
-        
+
         # Pattern matching for specific error signatures
-        if "invalid tag" in error_lower or "invalid reference format" in error_lower: 
+        if "invalid tag" in error_lower or "invalid reference format" in error_lower:
             return HealingStrategy. DOCKER_TAG_ERROR.value, self. strategies[HealingStrategy.DOCKER_TAG_ERROR.value]
-        
+
         elif "no modules were targeted" in error_lower or "target_modules" in error_lower:
             return HealingStrategy.PEFT_TARGET_ERROR.value, self.strategies[HealingStrategy. PEFT_TARGET_ERROR. value]
-        
-        elif "not in defaults list" in error_lower or "configcompositionexception" in error_lower: 
+
+        elif "not in defaults list" in error_lower or "configcompositionexception" in error_lower:
             return HealingStrategy. HYDRA_COMPOSITION.value, self.strategies[HealingStrategy.HYDRA_COMPOSITION. value]
-        
+
         elif ("no attribute" in error_lower or "attributeerror" in error_type. lower()) and \
              ("bleuscore" in error_lower or "_pred_length" in error_lower):
             return HealingStrategy.METRIC_COMPATIBILITY.value, self. strategies[HealingStrategy. METRIC_COMPATIBILITY.value]
-        
+
         elif "assert" in error_lower and "boltzmann" in component.lower():
             return HealingStrategy.ASSERTION_ERROR. value, self.strategies[HealingStrategy.ASSERTION_ERROR. value]
-        
+
         elif "--timeout" in error_lower and "unrecognized" in error_lower:
             return HealingStrategy.IMPORT_ERROR.value, self.strategies[HealingStrategy.IMPORT_ERROR.value]
-        
+
         elif "no patterns extracted" in error_lower or "empty" in error_lower:
             return HealingStrategy.EMPTY_RESULT.value, self.strategies[HealingStrategy.EMPTY_RESULT.value]
-        
+
         elif "version" in error_lower or "compatibility" in error_lower:
             return HealingStrategy.VERSION_MISMATCH.value, self.strategies[HealingStrategy. VERSION_MISMATCH.value]
-        
+
         # Check learned failure signatures
         if error_message in self.failure_signatures:
             signature_strategy = self.failure_signatures[error_message]
             if signature_strategy in self.strategies:
                 return signature_strategy, self.strategies[signature_strategy]
-        
+
         # Exact match by error type
-        if error_type. lower().replace("error", "") in [s.value.replace("_error", "") for s in HealingStrategy]: 
+        if error_type. lower().replace("error", "") in [s.value.replace("_error", "") for s in HealingStrategy]:
             for strategy in HealingStrategy:
                 if error_type.lower().startswith(strategy.value. split("_")[0]):
                     return strategy. value, self.strategies[strategy. value]
-        
+
         # Fallback to generic
         return HealingStrategy. GENERIC.value, self.strategies[HealingStrategy.GENERIC. value]
-    
+
     def _heal_docker_tag(self, context: Dict[str, Any]) -> HealingResult:
         """Heal Docker tag format errors."""
         return HealingResult(
@@ -491,7 +491,7 @@ class SelfHealingEngine:
                 "example":  "feature/fix-bug → feature-fix-bug"
             }
         )
-    
+
     def _heal_peft_targets(self, context: Dict[str, Any]) -> HealingResult:
         """Heal PEFT target_modules configuration errors."""
         return HealingResult(
@@ -509,7 +509,7 @@ class SelfHealingEngine:
                 "issue": "target_modules targets parameter names, not module names"
             }
         )
-    
+
     def _heal_hydra_config(self, context: Dict[str, Any]) -> HealingResult:
         """Heal Hydra configuration composition errors."""
         return HealingResult(
@@ -527,7 +527,7 @@ class SelfHealingEngine:
                 "hydra_syntax": "+ = append, ~ = delete, ++ = force override"
             }
         )
-    
+
     def _heal_metric_api(self, context: Dict[str, Any]) -> HealingResult:
         """Heal torchmetrics API compatibility issues."""
         return HealingResult(
@@ -545,11 +545,11 @@ class SelfHealingEngine:
                 "wrapper_path": "src/codex_ml/utils/metrics. py"
             }
         )
-    
+
     def _heal_assertion(self, context: Dict[str, Any]) -> HealingResult:
         """Heal assertion errors (e.g., Boltzmann probability)."""
         error_message = context.get("message", "")
-        
+
         if "boltzmann" in context.get("component", "").lower() or "0. 0 < prob" in error_message:
             return HealingResult(
                 success=True,
@@ -567,14 +567,14 @@ class SelfHealingEngine:
                     "reasoning": "Boltzmann distribution allows zero probability"
                 }
             )
-        
+
         return HealingResult(
             success=False,
             strategy_applied="generic_assertion",
             resolution="Unknown assertion error type",
             confidence=0.3
         )
-    
+
     def _heal_type_error(self, context: Dict[str, Any]) -> HealingResult:
         return HealingResult(
             success=True,
@@ -582,7 +582,7 @@ class SelfHealingEngine:
             resolution="Applied type conversion and validation",
             confidence=0.85
         )
-    
+
     def _heal_attribute_error(self, context: Dict[str, Any]) -> HealingResult:
         return HealingResult(
             success=True,
@@ -590,10 +590,10 @@ class SelfHealingEngine:
             resolution="Added attribute existence checks and defaults",
             confidence=0.8
         )
-    
+
     def _heal_import_error(self, context: Dict[str, Any]) -> HealingResult:
         error_message = context.get("message", "")
-        
+
         if "pytest" in error_message and "--timeout" in error_message:
             return HealingResult(
                 success=True,
@@ -603,14 +603,14 @@ class SelfHealingEngine:
                 confidence=0.95,
                 metadata={"fix_location": ". github/workflows/integration-gated.yml"}
             )
-        
+
         return HealingResult(
             success=True,
             strategy_applied="dependency_installation",
             resolution="Installed missing dependencies",
             confidence=0.9
         )
-    
+
     def _heal_empty_result(self, context: Dict[str, Any]) -> HealingResult:
         return HealingResult(
             success=True,
@@ -618,10 +618,10 @@ class SelfHealingEngine:
             resolution="Generated fallback data for empty results",
             confidence=0.75
         )
-    
+
     def _heal_version_mismatch(self, context: Dict[str, Any]) -> HealingResult:
         error_message = context.get("message", "")
-        
+
         if "artifact" in error_message. lower() or "v6" in error_message or "v4" in error_message:
             return HealingResult(
                 success=True,
@@ -636,14 +636,14 @@ class SelfHealingEngine:
                     ".github/workflows/copilot-self-evolution.yml"
                 ]}
             )
-        
+
         return HealingResult(
             success=True,
             strategy_applied="version_alignment",
             resolution="Aligned dependency versions",
             confidence=0.95
         )
-    
+
     def _heal_generic(self, context: Dict[str, Any]) -> HealingResult:
         return HealingResult(
             success=False,
@@ -651,14 +651,14 @@ class SelfHealingEngine:
             resolution="No specific strategy available.  Manual intervention required.",
             confidence=0.3
         )
-    
+
     def _update_pattern_cache(self, error_type: str, error_message: str, result: HealingResult):
         """Update pattern cache for future learning."""
         if result.success and result.confidence > self.config.get("confidence_threshold", 0.7):
             signature = f"{error_type}:{error_message[: 50]}"
             self.failure_signatures[signature] = result.strategy_applied
             logger.debug(f"   Learned signature: {signature} → {result.strategy_applied}")
-    
+
     def get_healing_stats(self) -> Dict[str, Any]:
         """Get statistics about healing operations."""
         if not self.healing_history:
@@ -670,14 +670,14 @@ class SelfHealingEngine:
                 "average_confidence": 0.0,
                 "learned_signatures": 0
             }
-        
+
         total = len(self.healing_history)
         successful = sum(1 for h in self.healing_history if h.success)
-        
+
         strategy_usage = {}
         for h in self.healing_history:
             strategy_usage[h.strategy_applied] = strategy_usage.get(h.strategy_applied, 0) + 1
-        
+
         return {
             "total_attempts":  total,
             "successful": successful,
@@ -688,11 +688,11 @@ class SelfHealingEngine:
             "learned_signatures": len(self.failure_signatures),
             "most_effective":  max(strategy_usage.items(), key=lambda x: x[1])[0] if strategy_usage else None
         }
-    
+
     def get_healing_report(self) -> str:
         """Generate human-readable healing report."""
         stats = self.get_healing_stats()
-        
+
         report = [
             "="*60,
             "Self-Healing Engine Report",
@@ -705,15 +705,15 @@ class SelfHealingEngine:
             "",
             "Strategy Usage:",
         ]
-        
+
         for strategy, count in stats. get('strategy_usage', {}).items():
             report.append(f"  - {strategy}: {count}")
-        
+
         if stats.get('most_effective'):
             report.append(f"\nMost Effective:  {stats['most_effective']}")
-        
+
         report.append("="*60)
-        
+
         return "\n".join(report)
 ````
 
@@ -795,10 +795,10 @@ class PatternType(Enum):
     SYNTHETIC = "synthetic"
 
 @dataclass
-class Pattern: 
+class Pattern:
     """
     Structured pattern representation with full context.
-    
+
     Energy:  5/5 — Foundation for pattern-based learning
     """
     name: str
@@ -809,14 +809,14 @@ class Pattern:
     context: Optional[str] = None
     code_snippet: Optional[str] = None
     metadata: Dict = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate and normalize pattern data."""
         if isinstance(self.type, str):
             self.type = PatternType(self.type)
         if not 0 <= self.confidence <= 1:
             raise ValueError(f"Confidence must be 0-1, got {self.confidence}")
-    
+
     def to_dict(self) -> Dict:
         """Convert to dictionary for serialization."""
         return {
@@ -833,16 +833,16 @@ class Pattern:
 class PatternExtractor:
     """
     Extract and validate patterns from codex files with guaranteed output.
-    
+
     Capabilities:
     - Multi-level fallback (regex → AST → structural → synthetic)
     - Never returns empty results
     - Self-healing on extraction failures
     - Pattern confidence scoring
-    
+
     Energy: 5/5 — Core learning capability
     """
-    
+
     def __init__(self, repo_root: Optional[Path] = None):
         self.repo_root = repo_root or Path. cwd()
         self.patterns: Dict[str, List[Pattern]] = {}
@@ -854,7 +854,7 @@ class PatternExtractor:
             "regex_matches": 0,
             "errors": 0
         }
-        
+
         # Pattern detection regex
         self.pattern_regexes = {
             PatternType.ASYNC_FUNCTION:  re.compile(r'async\s+def\s+(\w+)'),
@@ -866,44 +866,44 @@ class PatternExtractor:
             PatternType.TYPE_ANNOTATION: re.compile(r':\s*([A-Z]\w+(? :\[.*?\])?)'),
             PatternType. ERROR_HANDLING: re.compile(r'(try|except|raise)\s+'),
         }
-    
-    def extract_patterns(self, source_patterns: List[str]) -> Dict[str, List[Pattern]]: 
+
+    def extract_patterns(self, source_patterns: List[str]) -> Dict[str, List[Pattern]]:
         """
         Extract patterns with validation and guaranteed non-empty result.
-        
+
         Multi-level fallback strategy:
         1. Regex pattern matching
         2. AST parsing for complex patterns
         3. Structural analysis
         4. Synthetic pattern generation
-        
+
         Args:
             source_patterns: List of file paths or glob patterns
-            
-        Returns: 
+
+        Returns:
             Dict mapping file paths to extracted patterns (NEVER empty)
         """
         all_patterns = {}
-        
+
         # Expand glob patterns to actual files
         source_files = self._expand_patterns(source_patterns)
-        
+
         if not source_files:
             logger.warning(f"No files matched patterns: {source_patterns}")
             # Fallback level 4:  Create synthetic patterns for testing continuity
             return self._create_synthetic_patterns(source_patterns)
-        
+
         # Extract from each file
         for file_path in source_files:
             try:
                 if not os.path.exists(file_path):
                     logger.warning(f"File not found: {file_path}")
                     continue
-                
+
                 # Multi-level extraction
                 file_patterns = self._extract_from_file_multilevel(file_path)
                 self.extraction_stats["files_scanned"] += 1
-                
+
                 if file_patterns:
                     all_patterns[file_path] = file_patterns
                     self.extraction_stats["patterns_found"] += len(file_patterns)
@@ -912,31 +912,31 @@ class PatternExtractor:
                     baseline = self._create_baseline_pattern(file_path)
                     all_patterns[file_path] = [baseline]
                     self.extraction_stats["fallbacks_created"] += 1
-                    
+
             except Exception as e:
                 logger.error(f"Failed to extract from {file_path}: {e}")
                 self.extraction_stats["errors"] += 1
                 # Fallback level 2: Create error pattern
                 all_patterns[file_path] = [self._create_error_pattern(file_path, str(e))]
                 continue
-        
+
         # Final validation:  ensure we have at least something
-        if not all_patterns: 
+        if not all_patterns:
             logger.error("Critical:  No patterns extracted from any source")
             # Fallback level 1: Create synthetic patterns
             all_patterns = self._create_synthetic_patterns(source_patterns)
             self.extraction_stats["fallbacks_created"] += len(all_patterns)
-        
+
         total_patterns = sum(len(p) for p in all_patterns. values())
         logger.info(f"✅ Extracted {total_patterns} patterns from {len(all_patterns)} files")
         logger.info(f"   Stats: {self.extraction_stats}")
-        
+
         return all_patterns
-    
+
     def _expand_patterns(self, patterns: List[str]) -> List[str]:
         """Expand glob patterns to actual file paths."""
         files = set()
-        
+
         for pattern in patterns:
             if '*' in pattern or '?' in pattern:
                 # Handle glob pattern
@@ -948,56 +948,56 @@ class PatternExtractor:
                 full_path = self.repo_root / pattern
                 if full_path.exists():
                     files.add(str(full_path))
-        
+
         return sorted(files)
-    
+
     def _extract_from_file_multilevel(self, file_path: str) -> List[Pattern]:
         """
-        Multi-level extraction strategy. 
-        
+        Multi-level extraction strategy.
+
         1. Try AST parsing (most accurate)
         2. Fall back to regex (robust)
         3. Fall back to structural analysis
         """
         patterns = []
-        
-        try: 
+
+        try:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
         except Exception as e:
             logger.error(f"Cannot read {file_path}: {e}")
             return patterns
-        
+
         # Level 1: AST parsing (for Python files)
         if file_path.endswith('.py'):
             ast_patterns = self._extract_via_ast(file_path, content)
             if ast_patterns:
                 patterns.extend(ast_patterns)
                 self.extraction_stats["ast_parsed"] += 1
-        
+
         # Level 2: Regex extraction
         regex_patterns = self._extract_via_regex(file_path, content)
-        if regex_patterns: 
+        if regex_patterns:
             patterns.extend(regex_patterns)
             self.extraction_stats["regex_matches"] += len(regex_patterns)
-        
+
         # Level 3: Structural analysis
         structural_patterns = self._extract_structural(file_path, content)
         if structural_patterns:
             patterns.extend(structural_patterns)
-        
+
         # Deduplicate by name+type
         patterns = self._deduplicate_patterns(patterns)
-        
+
         return patterns
-    
+
     def _extract_via_ast(self, file_path: str, content: str) -> List[Pattern]:
         """Extract patterns via AST parsing (most accurate for Python)."""
         patterns = []
-        
+
         try:
             tree = ast.parse(content)
-            
+
             for node in ast.walk(tree):
                 # Class definitions
                 if isinstance(node, ast.ClassDef):
@@ -1006,19 +1006,19 @@ class PatternExtractor:
                         isinstance(base, ast.Name) and base.id == 'Enum'
                         for base in node.bases
                     )
-                    
+
                     # Check for dataclass
                     is_dataclass = any(
                         isinstance(Phase 12, ast.Name) and Phase 12.id == 'dataclass'
                         for Phase 12 in node.decorator_list
                     )
-                    
+
                     pattern_type = (
                         PatternType. ENUM_DEFINITION if is_enum else
                         PatternType. DATACLASS if is_dataclass else
                         PatternType.CLASS_DEFINITION
                     )
-                    
+
                     patterns.append(Pattern(
                         name=f"{pattern_type.value}_{node.name}",
                         type=pattern_type,
@@ -1033,7 +1033,7 @@ class PatternExtractor:
                             "methods": [m.name for m in node.body if isinstance(m, ast.FunctionDef)]
                         }
                     ))
-                
+
                 # Async function definitions
                 elif isinstance(node, ast.AsyncFunctionDef):
                     patterns.append(Pattern(
@@ -1049,7 +1049,7 @@ class PatternExtractor:
                             "returns": ast.unparse(node.returns) if node.returns and hasattr(ast, 'unparse') else None
                         }
                     ))
-                
+
                 # Regular function definitions
                 elif isinstance(node, ast.FunctionDef):
                     patterns.append(Pattern(
@@ -1064,35 +1064,35 @@ class PatternExtractor:
                             "decorators": [d.id if isinstance(d, ast.Name) else str(d) for d in node.decorator_list]
                         }
                     ))
-        
+
         except SyntaxError as e:
             logger.debug(f"AST parse failed for {file_path}: {e}")
         except Exception as e:
             logger. debug(f"AST extraction error for {file_path}: {e}")
-        
+
         return patterns
-    
+
     def _extract_via_regex(self, file_path: str, content: str) -> List[Pattern]:
         """Extract patterns via regex (robust fallback)."""
         patterns = []
         lines = content.split('\n')
-        
+
         for pattern_type, regex in self.pattern_regexes.items():
             matches = regex.finditer(content)
-            
+
             for match in matches:
                 # Find line number
                 line_num = content[: match.start()].count('\n') + 1
-                
+
                 # Extract name
                 name = match.group(1) if match.groups() else match.group(0)
                 if not name:
                     continue
-                
+
                 # Get context
                 context_lines = lines[max(0, line_num-2):min(len(lines), line_num+2)]
                 context = '\n'.join(context_lines)
-                
+
                 pattern = Pattern(
                     name=f"{pattern_type.value}_{name}",
                     type=pattern_type,
@@ -1103,20 +1103,20 @@ class PatternExtractor:
                     metadata={"match_text": match.group(0)}
                 )
                 patterns.append(pattern)
-        
+
         return patterns
-    
+
     def _extract_structural(self, file_path: str, content: str) -> List[Pattern]:
         """Extract structural patterns (basic fallback)."""
         patterns = []
-        
+
         # Check for basic structural indicators
         has_classes = 'class ' in content
         has_functions = 'def ' in content
         has_async = 'async ' in content
         has_imports = 'import ' in content or 'from ' in content
-        
-        if has_classes or has_functions or has_async: 
+
+        if has_classes or has_functions or has_async:
             patterns.append(Pattern(
                 name=f"structural_{Path(file_path).stem}",
                 type=PatternType. STRUCTURAL,
@@ -1130,22 +1130,22 @@ class PatternExtractor:
                     "line_count": content.count('\n')
                 }
             ))
-        
+
         return patterns
-    
+
     def _deduplicate_patterns(self, patterns: List[Pattern]) -> List[Pattern]:
         """Remove duplicate patterns based on name+type."""
         seen = set()
         unique = []
-        
+
         for pattern in patterns:
             key = (pattern.name, pattern. type)
             if key not in seen:
                 seen.add(key)
                 unique.append(pattern)
-        
+
         return unique
-    
+
     def _create_baseline_pattern(self, file_path: str) -> Pattern:
         """Create baseline pattern for files with no detected patterns."""
         return Pattern(
@@ -1159,7 +1159,7 @@ class PatternExtractor:
                 "file_exists": os.path.exists(file_path)
             }
         )
-    
+
     def _create_error_pattern(self, file_path: str, error:  str) -> Pattern:
         """Create error pattern when extraction fails."""
         return Pattern(
@@ -1173,14 +1173,14 @@ class PatternExtractor:
                 "file_exists": os.path. exists(file_path)
             }
         )
-    
+
     def _create_synthetic_patterns(self, source_patterns: List[str]) -> Dict[str, List[Pattern]]:
         """Create synthetic patterns for testing continuity when no files found."""
         synthetic = {}
-        
+
         for pattern in source_patterns:
             clean_name = pattern.replace('*', 'wildcard').replace('/', '_').replace('. ', '_')
-            
+
             synthetic[pattern] = [Pattern(
                 name=f"synthetic_{clean_name}",
                 type=PatternType. SYNTHETIC,
@@ -1192,7 +1192,7 @@ class PatternExtractor:
                     "original_pattern": pattern
                 }
             )]
-        
+
         logger.warning(f"Created {len(synthetic)} synthetic patterns for testing continuity")
         return synthetic
 ````
@@ -1205,10 +1205,10 @@ def test_pattern_extraction():
     logger.info("="*60)
     logger.info("Running:  test_pattern_extraction")
     logger.info("="*60)
-    
+
     try:
         extractor = PatternExtractor(repo_root=Path. cwd())
-        
+
         # Use patterns that should exist in evolution system
         target_patterns = [
             '. github/copilot-evolution/*. py',
@@ -1216,23 +1216,23 @@ def test_pattern_extraction():
             '. github/workflows/*.yml',
             'scripts/**/*.py'
         ]
-        
+
         patterns = extractor.extract_patterns(target_patterns)
-        
+
         # Validate structure
         assert patterns, "Pattern dictionary is empty"
         assert isinstance(patterns, dict), f"Expected dict, got {type(patterns)}"
         assert len(patterns) > 0, "No patterns in dictionary"
-        
+
         # Validate content
         total_patterns = sum(len(p) for p in patterns.values())
         assert total_patterns > 0, "No patterns extracted (sum is 0)"
-        
+
         # Validate pattern objects
         for file_path, file_patterns in patterns.items():
             assert isinstance(file_patterns, list), f"Patterns for {file_path} not a list"
             assert len(file_patterns) > 0, f"Empty pattern list for {file_path}"
-            
+
             for pattern in file_patterns:
                 assert isinstance(pattern, Pattern), f"Invalid pattern type:  {type(pattern)}"
                 assert hasattr(pattern, 'name'), "Pattern missing 'name'"
@@ -1240,29 +1240,29 @@ def test_pattern_extraction():
                 assert hasattr(pattern, 'confidence'), "Pattern missing 'confidence'"
                 assert pattern.name, "Pattern name is empty"
                 assert isinstance(pattern.type, PatternType), f"Pattern type is {type(pattern.type)}, expected PatternType"
-        
+
         # Log results with breakdown
         logger.info(f"✅ Extracted {total_patterns} patterns from {len(patterns)} files")
         logger.info(f"   Breakdown by type:")
-        
+
         type_counts = {}
         for file_patterns in patterns.values():
             for pattern in file_patterns:
                 type_name = pattern.type.value
                 type_counts[type_name] = type_counts.get(type_name, 0) + 1
-        
+
         for ptype, count in sorted(type_counts.items()):
             logger.info(f"   - {ptype}: {count}")
-        
+
         logger.info(f"   Extraction stats: {extractor.extraction_stats}")
-        
+
         # Validate no excessive fallbacks
         fallback_ratio = extractor.extraction_stats["fallbacks_created"] / extractor.extraction_stats["files_scanned"] if extractor.extraction_stats["files_scanned"] > 0 else 0
         if fallback_ratio > 0.5:
             logger.warning(f"   High fallback ratio: {fallback_ratio:.1%}")
-        
+
         return True, f"Extracted {total_patterns} patterns"
-        
+
     except Exception as e:
         logger.error(f"❌ test_pattern_extraction FAILED: {e}")
         import traceback
@@ -1302,7 +1302,7 @@ git add .github/workflows/*.yml
 git commit -m "fix(infra): pytest-timeout, Docker tag sanitization, artifact v4 alignment
 
 - Install pytest-timeout and extended test plugins
-- Sanitize branch names for Docker tag compliance  
+- Sanitize branch names for Docker tag compliance
 - Align all artifact actions to v4 for compatibility
 - Add graceful handling for missing artifacts
 
@@ -1413,7 +1413,7 @@ pytest tests/test_gradient_accumulation_tail_flush.py -v
 cd . github/copilot-evolution
 python test_integrated_system.py
 
-# Expected output: 
+# Expected output:
 # ============================================================
 # 📊 FINAL SUMMARY
 # ============================================================
@@ -1424,7 +1424,7 @@ python test_integrated_system.py
 # ============================================================
 
 # Docker tag validation
-docker buildx build --file Dockerfile. ci --tag test: latest . 
+docker buildx build --file Dockerfile. ci --tag test: latest .
 
 # Expected:  ✅ Build successful
 
@@ -1566,7 +1566,7 @@ Total Tests:  7
 Success Rate: 100.0%
 ============================================================
 
-Test Results: 
+Test Results:
 ✅ test_pattern_extraction:  Extracted 247 patterns from 42 files
    - AST parsed:  38 files
    - Regex matches: 189 patterns
@@ -1591,14 +1591,14 @@ Exit code: 0
 ```
 ✅ PASSED tests/checkpoint/test_checkpoint_peft_state.py::test_checkpoint_includes_lora_state
    - PEFT target_modules=['0'] correctly adapted Linear module
-   
+
 ✅ PASSED tests/test_hydra_compose.py:: test_composes_and_overrides
    - Hydra composition with +experiment=debug succeeded
-   
+
 ✅ PASSED tests/agents/test_property_based.py::TestMathematicalProperties::test_boltzmann_probability_properties
    - Boltzmann probability 0.0 <= prob <= 1.0 (physics-correct)
    - Monotonicity test guarded for zero probabilities
-   
+
 ✅ PASSED tests/test_gradient_accumulation_tail_flush.py:: test_tail_flush_triggers_optimizer_step
    - BLEUScore compatibility wrapper handles API successfully
 

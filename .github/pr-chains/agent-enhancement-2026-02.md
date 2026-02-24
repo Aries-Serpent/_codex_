@@ -1,10 +1,10 @@
 # Chain-PR Plan: Custom Agent Enhancement Project
 
-> **Generated**: 2026-02-17T11:50:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Chain ID**: `agent-enhancement-2026-02`  
-> **Total PRs**: 12  
-> **Estimated Duration**: 4 weeks  
+> **Generated**: 2026-02-17T11:50:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Chain ID**: `agent-enhancement-2026-02`
+> **Total PRs**: 12
+> **Estimated Duration**: 4 weeks
 > **Status**: 📋 PLANNING COMPLETE
 
 ---
@@ -30,25 +30,25 @@ graph TB
         PR2[PR-2: MCP Docs Validation<br/>Playwright + Workflows]
         PR3[PR-3: Agent Template<br/>Cognitive Integration]
     end
-    
+
     subgraph "Phase 2: Critical Agents (Week 2)"
         PR4[PR-4: CI/CD Agents<br/>5 agents updated]
         PR5[PR-5: Testing Agents<br/>7 agents updated]
         PR6[PR-6: Workflow Agents<br/>3 agents updated]
     end
-    
+
     subgraph "Phase 3: Supporting Agents (Week 3)"
         PR7[PR-7: Security Agents<br/>6 agents updated]
         PR8[PR-8: Documentation Agents<br/>6 agents updated]
         PR9[PR-9: Config/RAG Agents<br/>10 agents updated]
     end
-    
+
     subgraph "Phase 4: Finalization (Week 4)"
         PR10[PR-10: Remaining Agents<br/>17 agents updated]
         PR11[PR-11: AAIS Validation<br/>Score measurement]
         PR12[PR-12: Documentation<br/>Complete guide]
     end
-    
+
     PR1 --> PR2
     PR1 --> PR3
     PR2 --> PR4
@@ -61,7 +61,7 @@ graph TB
     PR9 --> PR10
     PR10 --> PR11
     PR11 --> PR12
-    
+
     style PR1 fill:#10b981,color:#fff
     style PR2 fill:#10b981,color:#fff
     style PR3 fill:#10b981,color:#fff
@@ -106,9 +106,9 @@ graph TB
    - Commands: `--start`, `--checkpoint`, `--end`
    - Integration with existing `session_manager.py`
 
-**Files Changed**: ~15 files created, 2 modified  
-**Lines of Code**: ~2,500 new lines  
-**Tests**: 10+ test cases  
+**Files Changed**: ~15 files created, 2 modified
+**Lines of Code**: ~2,500 new lines
+**Tests**: 10+ test cases
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -154,9 +154,9 @@ graph TB
    - Add troubleshooting based on testing
    - Update examples with actual results
 
-**Files Changed**: ~8 files modified  
-**Lines of Code**: ~500 additions/modifications  
-**Tests**: 5+ integration tests  
+**Files Changed**: ~8 files modified
+**Lines of Code**: ~500 additions/modifications
+**Tests**: 5+ integration tests
 **Estimated Duration**: 2-3 days
 
 **Success Criteria**:
@@ -202,9 +202,9 @@ graph TB
    - Add cognitive integration level column
    - Add AAIS contribution column
 
-**Files Changed**: ~5 files created, 1 modified  
-**Lines of Code**: ~1,500 new lines  
-**Tests**: Template validation tests  
+**Files Changed**: ~5 files created, 1 modified
+**Lines of Code**: ~1,500 new lines
+**Tests**: Template validation tests
 **Estimated Duration**: 2 days
 
 **Success Criteria**:
@@ -250,9 +250,9 @@ graph TB
    - Add pattern recognition for log analysis
    - Integrate with cognitive memory for similar failures
 
-**Files Changed**: 5 files modified  
-**Lines of Code**: ~250 additions per agent (~1,250 total)  
-**Tests**: Agent capability tests  
+**Files Changed**: 5 files modified
+**Lines of Code**: ~250 additions per agent (~1,250 total)
+**Tests**: Agent capability tests
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -276,7 +276,7 @@ graph TB
 1. **test-coverage-monitor.agent.md**
    - Add E2E coverage tracking
    - Integrate with Playwright reports
-   
+
 2. **qa-walkthrough-agent.md**
    - Add E2E test orchestration
    - Integrate topology for test discovery
@@ -301,8 +301,8 @@ graph TB
    - Add E2E coverage roadmap
    - Playwright integration targets
 
-**Files Changed**: 7 files modified  
-**Lines of Code**: ~200 additions per agent (~1,400 total)  
+**Files Changed**: 7 files modified
+**Lines of Code**: ~200 additions per agent (~1,400 total)
 **Estimated Duration**: 4-5 days
 
 **Success Criteria**:
@@ -326,7 +326,7 @@ graph TB
 1. **workflow-analytics-agent.md**
    - Add MCP metrics collection
    - Topology-based workflow analysis
-   
+
 2. **workflow-management-agent.md**
    - Add MCP orchestration patterns
    - Multi-workflow coordination
@@ -335,8 +335,8 @@ graph TB
    - Add MCP context integration
    - Real-time workflow health tracking
 
-**Files Changed**: 3 files modified  
-**Lines of Code**: ~300 additions per agent (~900 total)  
+**Files Changed**: 3 files modified
+**Lines of Code**: ~300 additions per agent (~900 total)
 **Estimated Duration**: 2-3 days
 
 **Success Criteria**:
@@ -369,8 +369,8 @@ graph TB
 - Topology-guided security scanning
 - Multi-agent coordination for complex vulnerabilities
 
-**Files Changed**: 6 files modified  
-**Lines of Code**: ~250 additions per agent (~1,500 total)  
+**Files Changed**: 6 files modified
+**Lines of Code**: ~250 additions per agent (~1,500 total)
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -403,8 +403,8 @@ graph TB
 - Pattern recognition for doc quality issues
 - Automated doc generation using cognitive brain
 
-**Files Changed**: 6 files modified  
-**Lines of Code**: ~200 additions per agent (~1,200 total)  
+**Files Changed**: 6 files modified
+**Lines of Code**: ~200 additions per agent (~1,200 total)
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -441,8 +441,8 @@ graph TB
 - Specialized validation patterns
 - Cross-cutting concern patterns
 
-**Files Changed**: 10 files modified  
-**Lines of Code**: ~150 additions per agent (~1,500 total)  
+**Files Changed**: 10 files modified
+**Lines of Code**: ~150 additions per agent (~1,500 total)
 **Estimated Duration**: 4-5 days
 
 **Success Criteria**:
@@ -486,8 +486,8 @@ graph TB
 - Performance tracking with cognitive metrics
 - Session management cognitive integration
 
-**Files Changed**: 17 files modified  
-**Lines of Code**: ~100-200 additions per agent (~2,500 total)  
+**Files Changed**: 17 files modified
+**Lines of Code**: ~100-200 additions per agent (~2,500 total)
 **Estimated Duration**: 5-6 days
 
 **Success Criteria**:
@@ -532,8 +532,8 @@ graph TB
    - Real-time metrics
    - Trend analysis
 
-**Files Changed**: 5 files created  
-**Lines of Code**: ~1,000 new lines  
+**Files Changed**: 5 files created
+**Lines of Code**: ~1,000 new lines
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -583,8 +583,8 @@ graph TB
    - Agent self-evolution
    - Continuous AAIS improvement
 
-**Files Changed**: 5 files created, 3 modified  
-**Lines of Code**: ~3,000 new lines (documentation)  
+**Files Changed**: 5 files created, 3 modified
+**Lines of Code**: ~3,000 new lines (documentation)
 **Estimated Duration**: 3-4 days
 
 **Success Criteria**:
@@ -897,9 +897,9 @@ echo "✅ PR-${PR_NUMBER} merged at $(date)" >> .codex/chain-status.md
 
 ---
 
-**Status**: 📋 PLANNING COMPLETE  
-**Version**: 1.0.0  
-**Chain ID**: agent-enhancement-2026-02  
-**Total PRs**: 12  
-**Estimated Duration**: 4 weeks  
+**Status**: 📋 PLANNING COMPLETE
+**Version**: 1.0.0
+**Chain ID**: agent-enhancement-2026-02
+**Total PRs**: 12
+**Estimated Duration**: 4 weeks
 **Next Step**: Create PR-1 (Infrastructure)

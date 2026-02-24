@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from .embed import EmbeddingModel
-from .stores import FAISSStore
+from .stores.factory import VectorStoreFactory
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +26,9 @@ class RetrievalEngine:
         self.embedding_model_name = embedding_model
         self.cache_dir = cache_dir
         self.embedding_model = EmbeddingModel(embedding_model, cache_dir)
-        self.tenant_stores: dict[str, FAISSStore] = {}
+        self.tenant_stores: dict[str, Any] = {}
 
-    def get_store(self, tenant_id: str, index_name: str = "default") -> FAISSStore:
+    def get_store(self, tenant_id: str, index_name: str = "default") -> Any:
         """Get or load the vector store for a tenant
 
         Args:
@@ -36,14 +36,18 @@ class RetrievalEngine:
             index_name: Index name
 
         Returns:
-            FAISSStore instance
+            Vector store instance
         """
         store_key = f"{tenant_id}:{index_name}"
 
         if store_key not in self.tenant_stores:
-            # Create store instance
+            # Create store via factory (DRQ-S81: use VectorStoreFactory instead of direct FAISSStore)
             index_dir = self.index_base_dir / tenant_id / "faiss"
-            store = FAISSStore(index_dir=str(index_dir), index_name=index_name)
+            store = VectorStoreFactory.create(
+                store_type="faiss",
+                index_name=index_name,
+                index_dir=str(index_dir),
+            )
 
             # Try to load existing index
             try:

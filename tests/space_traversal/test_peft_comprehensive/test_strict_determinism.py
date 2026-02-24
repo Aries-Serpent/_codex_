@@ -60,15 +60,21 @@ def test_passes_when_deterministic(monkeypatch, tmp_path):
     run_custom_trainer(model, tok, ds, None, cfg)
 
 
-def test_raises_when_nondeterministic(monkeypatch, tmp_path):
+def test_auto_corrects_nondeterministic_cudnn(monkeypatch, tmp_path):
+    """Auto-call guard: run_custom_trainer auto-corrects non-deterministic cudnn."""
     model, tok, ds, cfg = _setup(tmp_path)
     _patch_cuda(monkeypatch, False)
-    with pytest.raises(AssertionError):
-        run_custom_trainer(model, tok, ds, None, cfg)
+    # S81: functional_training now auto-fixes cudnn instead of raising
+    run_custom_trainer(model, tok, ds, None, cfg)
+    assert torch.backends.cudnn.deterministic is True
+    assert torch.backends.cudnn.benchmark is False
 
 
 def _patch_cuda_simple(monkeypatch, deterministic: bool) -> None:
     monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 0)
+    monkeypatch.setattr(torch.cuda, "manual_seed", lambda seed: None)
+    monkeypatch.setattr(torch.cuda, "manual_seed_all", lambda seed: None)
 
     # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
     fake_cudnn = types.SimpleNamespace(

@@ -1,12 +1,12 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2026-01-23 - IP-005 Security Updates Complete)  
-> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
+> **Status:** ✅ UP-TO-DATE (2026-01-23 - IP-005 Security Updates Complete)
+> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Workflows:** 49 active (100% parity, 19 consolidated)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
-> 
-> **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  
+>
+> **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,
 > security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](../../AGENTS.md)
 
 ---
@@ -217,7 +217,7 @@ Risk Assessment → Action
 
 LOW RISK (Post-Genesis)
 • Documentation → Execute autonomously
-• Code formatting → Execute autonomously  
+• Code formatting → Execute autonomously
 • Testing → Execute autonomously
 
 MEDIUM RISK
@@ -341,9 +341,9 @@ To create a new specialized agent:
 
 ## 📝 Document Status
 
-**Version:** 2.1.0  
-**Last Updated:** 2025-12-28T12:50:00Z  
-**Status:** ✅ UP-TO-DATE (Workflow consolidation & artifact catalog added)  
+**Version:** 2.1.0
+**Last Updated:** 2025-12-28T12:50:00Z
+**Status:** ✅ UP-TO-DATE (Workflow consolidation & artifact catalog added)
 **Next Review:** After Phase 2 completion
 
 ---
@@ -508,7 +508,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -542,7 +542,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -697,8 +697,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

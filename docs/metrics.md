@@ -302,12 +302,12 @@ def metric(
 ) -> Optional[float]:
     """
     Compute metric score.
-    
+
     Args:
         preds: Predicted sequences
         targets: Target/reference sequences
         **kwargs: Metric-specific parameters
-        
+
     Returns:
         Float score or None if unavailable
     """

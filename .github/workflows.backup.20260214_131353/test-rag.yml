@@ -108,7 +108,7 @@ jobs:
         run: |
           # Ensure plugins are loaded before running tests
           export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
-          
+
           # Run with explicit plugin verification
           python -m pytest tests/test_rag_*.py \
             -p xdist \

@@ -1,8 +1,8 @@
 # AGENTS.md - Repository Conventions for Autonomous AI Agents
 
-> **Generated:** 2026-01-03T21:34:00Z  
-> **Author:** mbaetiong  
-> **Repository:** Aries-Serpent/_codex_  
+> **Generated:** 2026-01-03T21:34:00Z
+> **Author:** mbaetiong
+> **Repository:** Aries-Serpent/_codex_
 > **Protocol:** CTEP-Compliant
 
 Guidelines for contributors and Codex automation. Keep this file updated as conventions change.
@@ -521,6 +521,6 @@ python3 -m py_compile .github/agents/emergent-intelligence-agent/src/__init__.py
 
 ---
 
-**Last Updated:** 2026-01-03T21:34:00Z  
-**Document Version:** 1.0.0  
+**Last Updated:** 2026-01-03T21:34:00Z
+**Document Version:** 1.0.0
 **Status:** ✅ Production Ready

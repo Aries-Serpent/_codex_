@@ -66,7 +66,7 @@ If you want to focus on specific failures:
 ```
 
 ```
-@copilot Fix test failures in Resilient Validation Suite using auto-discovery protocol  
+@copilot Fix test failures in Resilient Validation Suite using auto-discovery protocol
 ```
 
 ---
@@ -143,7 +143,7 @@ After using this command, you should see:
    - All failures discovered automatically
    - Historical context (is this recurring?)
    - Root cause with evidence from logs
-   
+
 2. **Commit(s)**:
    - Minimal, targeted fixes
    - Detailed commit messages explaining WHY
@@ -176,4 +176,3 @@ See .github/COPILOT_CI_FAILURE_PROMPT.md for the full protocol.
 ---
 
 **Pro tip**: Bookmark this file for quick reference when CI fails!
-

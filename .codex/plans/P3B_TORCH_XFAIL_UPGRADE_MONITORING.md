@@ -1,7 +1,7 @@
 # Planset: P3b — PyTorch Upgrade Monitoring & _TORCH_PROFILER_XFAIL Lifecycle
 
-**Status**: 🟢 MONITORING — Ongoing  
-**Priority**: P3 — Enhancement  
+**Status**: 🟢 MONITORING — Ongoing
+**Priority**: P3 — Enhancement
 **Created**: 2026-02-20
 
 ---

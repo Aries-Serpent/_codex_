@@ -1,7 +1,7 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2025-12-26)  
-> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
+> **Status:** ✅ UP-TO-DATE (2025-12-26)
+> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 
 ---
@@ -151,7 +151,7 @@ Risk Assessment → Action
 
 LOW RISK (Post-Genesis)
 • Documentation → Execute autonomously
-• Code formatting → Execute autonomously  
+• Code formatting → Execute autonomously
 • Testing → Execute autonomously
 
 MEDIUM RISK
@@ -240,9 +240,9 @@ All operations must be logged to:
 
 ## 📝 Document Status
 
-**Version:** 2.0.0  
-**Last Updated:** 2025-12-26T08:35:00Z  
-**Status:** ✅ UP-TO-DATE  
+**Version:** 2.0.0
+**Last Updated:** 2025-12-26T08:35:00Z
+**Status:** ✅ UP-TO-DATE
 **Next Review:** After Phase 2 completion
 
 ---

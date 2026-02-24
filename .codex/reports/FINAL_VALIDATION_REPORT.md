@@ -25,8 +25,8 @@ Results:
 
 ## Impact
 
-**Before:** 25 total failures  
-**After:** ~15 expected failures  
+**Before:** 25 total failures
+**After:** ~15 expected failures
 **Improvement:** 40% reduction
 
 ---
@@ -42,11 +42,11 @@ Results:
 
 ## Quality
 
-✅ No xfail shortcuts  
-✅ No test weakening  
-✅ Backward compatible  
-✅ Well documented  
-✅ Locally validated  
+✅ No xfail shortcuts
+✅ No test weakening
+✅ Backward compatible
+✅ Well documented
+✅ Locally validated
 
 ---
 

@@ -1,6 +1,6 @@
 # Phase 2: Relocated File References - Action Items
 
-**Status:** 🟡 PARTIALLY COMPLETE (45% done)  
+**Status:** 🟡 PARTIALLY COMPLETE (45% done)
 **Last Updated:** 2026-02-13
 
 ---
@@ -35,7 +35,7 @@
 - [ ] **EVOLUTION_TIMELINE.md** → docs/evolution/ (7 references)
 - [ ] **PLANSET_REGISTRY.md** → docs/evolution/ (7 references)
 
-#### Development Guides  
+#### Development Guides
 - [ ] **CODE_STYLE_GUIDE.md** → docs/dev/ (6 references)
 - [ ] **TESTING_GUIDE.md** → docs/guides/ (6 references)
 
@@ -50,7 +50,7 @@
 ### Category 2: Wiki Files (Medium Value)
 
 - [ ] **Agent-Operations.md** → .codex/wiki/ (9 references)
-- [ ] **Genesis-Protocol.md** → .codex/wiki/ (8 references)  
+- [ ] **Genesis-Protocol.md** → .codex/wiki/ (8 references)
 - [ ] **Home.md** → .codex/wiki/ (8 references)
 
 ### Category 3: Release Documentation (Medium Value)
@@ -76,7 +76,7 @@
   - Solution: Need to analyze context to determine correct target
   - Locations: config_legacy/, docs/, scripts/, etc.
 
-#### Multiple INDEX.md Files  
+#### Multiple INDEX.md Files
 - [ ] **INDEX.md** rationalization (6+ references)
   - Multiple INDEX.md files across archive/, docs/, etc.
   - Need context-aware updates
@@ -86,7 +86,7 @@
 ## 📋 Recommended Next Steps
 
 ### Option A: Complete Phase 2 (Recommended)
-**Time:** ~30-45 minutes  
+**Time:** ~30-45 minutes
 **Impact:** Full resolution of relocated file references
 
 1. **Batch 3:** Process Categories 1-3 (evolution, dev guides, MCP, wiki, release)
@@ -174,7 +174,7 @@ python3 .codex/fix_relocated_references_phase2c.py
 
 **Reasons:**
 1. High-priority refs are fixed (critical docs working)
-2. Phase 3 has 581 issues (bigger impact potential)  
+2. Phase 3 has 581 issues (bigger impact potential)
 3. Can return to Phase 2 remaining work later
 4. Avoid diminishing returns on less-critical refs
 
@@ -226,5 +226,5 @@ python3 .codex/fix_relocated_references_phase2c.py
 
 ---
 
-**Last Updated:** 2026-02-13  
+**Last Updated:** 2026-02-13
 **Status:** Awaiting decision on next steps

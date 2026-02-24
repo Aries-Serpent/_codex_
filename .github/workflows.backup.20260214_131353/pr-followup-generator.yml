@@ -54,21 +54,21 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.pr_number.outputs.pr_number }}"
           echo "🚀 Generating follow-up prompt for PR #${PR_NUMBER}"
-          
+
           python scripts/generate_pr_followup.py \
             "${PR_NUMBER}" \
             --template comprehensive \
             --json-output
-          
+
           echo "✅ Follow-up prompt generated successfully"
 
       - name: Commit and push prompt
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           git add .github/copilot-prompts/active/
-          
+
           if ! git diff --cached --quiet; then
             git commit -m "chore: Generate follow-up prompt for PR #${{ steps.pr_number.outputs.pr_number }}"
             git push
@@ -84,11 +84,11 @@ jobs:
           script: |
             const prNumber = ${{ steps.pr_number.outputs.pr_number }};
             const body = `✅ Follow-up prompt has been generated for this PR.
-            
+
             📄 View the prompt at: \`.github/copilot-prompts/active/PR-${prNumber}-followup.md\`
-            
+
             You can use this prompt to continue work on this PR or track follow-up tasks.`;
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

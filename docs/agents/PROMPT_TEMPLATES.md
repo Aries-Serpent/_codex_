@@ -67,20 +67,20 @@ async def handle_method_name(
     self, params: Optional[Dict[str, Any]] = None
 ) -> ReturnType:
     """Handler for mcp.[methodName].
-    
+
     Args:
         params: [describe params]
-        
+
     Returns:
         [describe return]
-        
+
     Raises:
         JsonRpcError: [when]
     """
     # Validate params
     if not params or "required_field" not in params:
         raise JsonRpcError(code=-32602, message="Missing required_field")
-    
+
     # Implementation
     result = ...
     return result
@@ -141,26 +141,26 @@ from src.mcp.[module_name] import [Class], [Config]
 
 class Test[Class]:
     """Test suite for [Class]."""
-    
+
     @pytest.fixture
     def instance(self):
         """Create test instance."""
         return <!-- TODO: Add section or remove TOC entry - <!-- TODO: Add section or remove TOC entry - [Class]() --> -->
-    
+
     def test_init_defaults(self, instance):
         """Test initialization with defaults."""
         assert instance is not None
-    
+
     def test_[method]_happy_path(self, instance):
         """Test [method] with valid input."""
         result = instance.`method("valid_input")`
         assert result == expected_value
-    
+
     def test_[method]_empty_input(self, instance):
         """Test [method] with empty input."""
         result = instance.`method("")`
         assert result == expected_empty_result
-    
+
     def test_[method]_raises_on_invalid(self, instance):
         """Test [method] raises on invalid input."""
         with pytest.raises(ValueError):
@@ -198,13 +198,13 @@ async def test_full_request_flow():
     # Setup
     server = MCPServer()
     transport = MockStdioTransport([...])
-    
+
     # Execute
     response = await server.handle_request({...})
-    
+
     # Verify
     assert response["result"] == expected
-    
+
     # Cleanup
     await transport.close()
 ```
@@ -226,7 +226,7 @@ Documentation Structure:
 1. Module Overview
    - Purpose and scope
    - Key classes and functions
-   
+
 2. Usage Examples
    - Basic usage
    - Advanced configuration

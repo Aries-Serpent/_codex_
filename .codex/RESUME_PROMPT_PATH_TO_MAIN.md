@@ -1,8 +1,8 @@
 # Resume Prompt: Complete Path to Main Branch Merge
 
-**Created**: 2026-02-18T09:00:00Z  
-**Context**: PR #3248 Complete - Ready to Resume Path to Main  
-**Next Agent**: GitHub Copilot (or specialized optimization agent)  
+**Created**: 2026-02-18T09:00:00Z
+**Context**: PR #3248 Complete - Ready to Resume Path to Main
+**Next Agent**: GitHub Copilot (or specialized optimization agent)
 **Estimated Total Effort**: 15-20 hours across 3 sprints
 
 ---
@@ -11,7 +11,7 @@
 
 **Objective**: Complete the full merge chain: copilot/sub-pr-3248-again → 0D_base_ → main
 
-**Current Status**: 
+**Current Status**:
 - ✅ Stage 1 Complete: copilot/sub-pr-3248-again ready (17 fixes + comprehensive docs)
 - ⏳ Stage 2 Pending: Quantum optimization needed (15-20 hours)
 - ⏳ Stage 3 Pending: Final merge to main (after Stage 2)
@@ -27,7 +27,7 @@
    - Three-stage merge plan
    - Risk assessment
    - Decision matrix
-   
+
 2. **`.codex/ROOT_CAUSE_ANALYSIS_QUANTUM_PERFORMANCE.md`** ⭐ CRITICAL (10 min)
    - Detailed root cause analysis
    - Performance profiling data
@@ -87,7 +87,7 @@ git branch -a | grep -E "(0D_base_|main|copilot/sub-pr-3248-again)"
 ### Overview
 Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merge to main.
 
-**Total Time**: 15-20 hours  
+**Total Time**: 15-20 hours
 **Deliverable**: 100% test pass rate, ready for main merge
 
 ---
@@ -109,7 +109,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
    python -m cProfile -o quantum_profile.stats -m pytest \
      tests/cognitive_brain/quantum/test_adaptive_scoring_optimized.py::TestAdaptiveScoringOptimized::test_k1_target_achieved \
      -v -s
-   
+
    python -m pstats quantum_profile.stats
    ```
    - Document top 10 bottlenecks
@@ -141,7 +141,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
 - [ ] Profiling data documented
 - [ ] `.codex/QUANTUM_SPRINT1_RESULTS.md` created
 
-**If Successful**: Proceed to Sprint 2  
+**If Successful**: Proceed to Sprint 2
 **If Not**: Debug, iterate, document findings
 
 ---
@@ -189,7 +189,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
 - [ ] Accuracy≥50%
 - [ ] `.codex/QUANTUM_SPRINT2_RESULTS.md` created
 
-**If Successful**: Proceed to Sprint 3  
+**If Successful**: Proceed to Sprint 3
 **If Not**: Debug, iterate, document findings
 
 ---
@@ -220,7 +220,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
    ```bash
    # Run full quantum test suite
    pytest tests/cognitive_brain/quantum/ -v -s
-   
+
    # Run full test suite
    pytest tests/ -v
    ```
@@ -237,7 +237,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
 - [ ] `.codex/QUANTUM_SPRINT3_RESULTS.md` created
 - [ ] `.codex/QUANTUM_OPTIMIZATION_COMPLETE.md` summary created
 
-**If Successful**: Proceed to Final Validation  
+**If Successful**: Proceed to Final Validation
 **If Not**: Additional debugging sprint needed
 
 ---
@@ -297,7 +297,7 @@ Execute 3 optimization sprints to achieve k₁≤0.35, accuracy≥84%, then merg
 ### Overview
 Add feature flag to disable quantum features temporarily, merge to main now, optimize later.
 
-**Total Time**: 3 hours setup + 15-20 hours optimization later  
+**Total Time**: 3 hours setup + 15-20 hours optimization later
 **Deliverable**: Main merge unblocked, quantum optimized post-merge
 
 ---
@@ -317,13 +317,13 @@ Add feature flag to disable quantum features temporarily, merge to main now, opt
    - File: `src/cognitive_brain/experiments/exp1b_revalidation.py`
    ```python
    from cognitive_brain.config import config
-   
+
    def run_exp1b_revalidation(scenarios: int = 100, seed: int = 42):
        if not config.quantum_enabled:
            pytest.skip("Quantum features disabled via feature flag")
        # ... rest of implementation
    ```
-   
+
    - File: `tests/cognitive_brain/quantum/test_adaptive_scoring_optimized.py`
    ```python
    pytestmark = pytest.mark.skipif(
@@ -336,7 +336,7 @@ Add feature flag to disable quantum features temporarily, merge to main now, opt
    ```bash
    # Test with flag disabled (should skip quantum tests)
    QUANTUM_FEATURES_ENABLED=false pytest tests/cognitive_brain/quantum/ -v
-   
+
    # Test with flag enabled (should run quantum tests)
    QUANTUM_FEATURES_ENABLED=true pytest tests/cognitive_brain/quantum/ -v
    ```
@@ -391,7 +391,7 @@ Add feature flag to disable quantum features temporarily, merge to main now, opt
 ### Overview
 Merge Stage 1 immediately, complete quantum optimization at flexible pace.
 
-**Benefits**: 
+**Benefits**:
 - Immediate progress (17 fixes integrated)
 - Flexible timeline
 - Can pause/resume as needed
@@ -631,8 +631,8 @@ git push origin 0D_base_
 
 ---
 
-**Prompt Version**: 1.0  
-**Created**: 2026-02-18T09:00:00Z  
-**Estimated Total Time**: 15-22 hours (depending on path)  
-**Confidence Level**: HIGH (comprehensive plans, proven approach)  
+**Prompt Version**: 1.0
+**Created**: 2026-02-18T09:00:00Z
+**Estimated Total Time**: 15-22 hours (depending on path)
+**Confidence Level**: HIGH (comprehensive plans, proven approach)
 **Status**: Ready for Execution

@@ -1,7 +1,7 @@
 # 🚨 MANDATORY READING: Read This FIRST Before ANY PR Work
 
-**Generated**: 2026-02-16T12:59:00Z  
-**Status**: CRITICAL - Required reading for all AI agents  
+**Generated**: 2026-02-16T12:59:00Z
+**Status**: CRITICAL - Required reading for all AI agents
 **Applies To**: ALL pull request work, especially PR #3248
 
 ---
@@ -70,7 +70,7 @@ For PR #{NUMBER}, check these files in order:
    - Why the issue occurs
    - Permanent solution
 
-**Time Investment**: 5-10 minutes reading  
+**Time Investment**: 5-10 minutes reading
 **Time Saved**: Hours or days of repeated work
 
 ### Step 2: Understand the Root Cause
@@ -102,7 +102,7 @@ Update `.codex/PR_{NUMBER}_FAILURE_TRACKING_LOG.md` with:
 ```markdown
 ### Attempt {N}: {Brief Description}
 - **Date**: 2026-02-16T{TIME}Z
-- **Changes**: 
+- **Changes**:
   1. File 1: What changed and why
   2. File 2: What changed and why
 - **Reasoning**: Why this should work (cite root cause analysis)
@@ -140,11 +140,11 @@ git commit -m "fix(issue): description of fix
 
 After CI runs:
 
-- **If SUCCESS**: 
+- **If SUCCESS**:
   - Update tracking log with ✅ SUCCESS
   - Document what worked and why
   - Store memory for future use
-  
+
 - **If FAILURE**:
   - Update tracking log with ❌ FAILED
   - Document the error and root cause
@@ -196,7 +196,7 @@ After CI runs:
 ```
 Error: "Plugin already registered"
 Agent: "Let me remove the plugin flag"
-[Later] Error: "unrecognized arguments"  
+[Later] Error: "unrecognized arguments"
 Agent: "Let me add the plugin flag back"
 [Cycle repeats...]
 ```
@@ -245,13 +245,13 @@ graph TD
     B --> C[CI Fails: Plugin already registered]
     C --> D[Agent B: Remove -p flags]
     D --> A
-    
+
     style A fill:#f99
     style C fill:#f99
 ```
 
-**Attempts**: 6+ over 5-7 days  
-**Time Wasted**: 20-32 hours  
+**Attempts**: 6+ over 5-7 days
+**Time Wasted**: 20-32 hours
 **Root Cause Found**: Day 7
 
 ### The Correct Approach (What TO Do)
@@ -265,12 +265,12 @@ graph TD
     E --> F[Updates tracking BEFORE commit]
     F --> G[Commits with docs]
     G --> H[CI passes]
-    
+
     style H fill:#9f9
 ```
 
-**Attempts**: 1 (after establishing tracking)  
-**Time Spent**: 4 hours (including documentation)  
+**Attempts**: 1 (after establishing tracking)
+**Time Spent**: 4 hours (including documentation)
 **Time Saved**: 20-32 hours
 
 ---
@@ -424,9 +424,9 @@ Stored memories contain research on:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-02-16T12:59:00Z  
-**Applies To**: ALL pull requests, especially active PRs with CI failures  
+**Document Version**: 1.0
+**Last Updated**: 2026-02-16T12:59:00Z
+**Applies To**: ALL pull requests, especially active PRs with CI failures
 **Status**: MANDATORY READING - Non-negotiable
 
 ---

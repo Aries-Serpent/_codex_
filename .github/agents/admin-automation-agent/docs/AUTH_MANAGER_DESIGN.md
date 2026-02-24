@@ -1,8 +1,8 @@
 # Authentication Manager Design Document
 
-**Version:** 1.0.0  
-**Date:** 2026-01-23  
-**Status:** Production Ready  
+**Version:** 1.0.0
+**Date:** 2026-01-23
+**Status:** Production Ready
 **Agent:** admin-automation-agent
 
 ---
@@ -49,37 +49,37 @@ graph TB
         SM[SecretsManager]
         EM[EncryptionManager]
     end
-    
+
     subgraph "Authentication Sources"
         ENV[Environment Variables]
         FILE[Config Files]
         GHA[GitHub Actions Secrets]
         RUNTIME[Runtime Injection]
     end
-    
+
     subgraph "External Services"
         GHAPI[GitHub API]
         GDRIVE[Google Drive API]
         NBL[NotebookLM API]
     end
-    
+
     AAA --> AM
     AM --> SM
     SM --> EM
-    
+
     AM --> ENV
     AM --> FILE
     AM --> GHA
     AM --> RUNTIME
-    
+
     AM --> GHAPI
     AM --> GDRIVE
     AM --> NBL
-    
+
     classDef agent fill:#4a90e2,stroke:#2e5c8a,stroke-width:2px,color:#fff
     classDef source fill:#50c878,stroke:#2d7a4a,stroke-width:2px,color:#fff
     classDef service fill:#ff6b6b,stroke:#cc5555,stroke-width:2px,color:#fff
-    
+
     class AAA,AM,SM,EM agent
     class ENV,FILE,GHA,RUNTIME source
     class GHAPI,GDRIVE,NBL service
@@ -98,7 +98,7 @@ classDiagram
         +task_health_check()
         +task_rotate_secrets()
     }
-    
+
     class AuthenticationManager {
         +token: str
         +token_type: str
@@ -108,7 +108,7 @@ classDiagram
         +get_credentials(service) dict
         +rotate_credentials(service)
     }
-    
+
     class GitHubSecretsManager {
         +owner: str
         +repo: str
@@ -119,7 +119,7 @@ classDiagram
         +verify_secret(name) bool
         +setup_phase10_secrets() dict
     }
-    
+
     class EncryptionManager {
         +public_key: str
         +key_id: str
@@ -127,7 +127,7 @@ classDiagram
         +decrypt_secret(encrypted) str
         +validate_encryption() bool
     }
-    
+
     AdminAutomationAgent --> AuthenticationManager
     AdminAutomationAgent --> GitHubSecretsManager
     GitHubSecretsManager --> EncryptionManager
@@ -173,14 +173,14 @@ sequenceDiagram
     participant Agent
     participant SecretsMgr
     participant GitHubAPI
-    
+
     Agent->>SecretsMgr: __init__(token=None)
     SecretsMgr->>SecretsMgr: Resolve token from env
-    
+
     Agent->>SecretsMgr: set_secret(name, value)
     SecretsMgr->>GitHubAPI: GET /public-key
     GitHubAPI-->>SecretsMgr: public_key
-    
+
     alt Token Valid
         SecretsMgr->>GitHubAPI: PUT /secrets/:name
         GitHubAPI-->>SecretsMgr: 201 Created
@@ -262,25 +262,25 @@ graph LR
         WF[Workflow Dispatch]
         ENV[Environment Vars]
     end
-    
+
     subgraph "Processing"
         ENCRYPT[PyNaCl Encryption]
         REDACT[Security Redaction]
     end
-    
+
     subgraph "Storage"
         GHA[GitHub Actions Secrets<br/>Encrypted at Rest]
     end
-    
+
     WF --> REDACT
     ENV --> REDACT
     REDACT --> ENCRYPT
     ENCRYPT --> GHA
-    
+
     classDef input fill:#4a90e2,stroke:#2e5c8a
     classDef process fill:#50c878,stroke:#2d7a4a
     classDef storage fill:#ff6b6b,stroke:#cc5555
-    
+
     class WF,ENV input
     class ENCRYPT,REDACT process
     class GHA storage
@@ -475,28 +475,28 @@ graph TD
     OP[API Operation] --> TRY{Try Request}
     TRY -->|Success| SUCCESS[Return Success]
     TRY -->|Error| TYPE{Error Type?}
-    
+
     TYPE -->|401/403| AUTH[Authentication Error]
     TYPE -->|404| NOTFOUND[Not Found Error]
     TYPE -->|422| INVALID[Validation Error]
     TYPE -->|Network| NETWORK[Network Error]
-    
+
     AUTH --> LOG1[Log: Token invalid/insufficient]
     NOTFOUND --> LOG2[Log: Resource not found]
     INVALID --> LOG3[Log: Invalid input]
     NETWORK --> LOG4[Log: Network failure]
-    
+
     LOG1 --> FAIL[Raise Exception]
     LOG2 --> FAIL
     LOG3 --> FAIL
     LOG4 --> RETRY{Retry?}
-    
+
     RETRY -->|Yes| TRY
     RETRY -->|No| FAIL
-    
+
     classDef error fill:#ff6b6b,stroke:#cc5555
     classDef success fill:#50c878,stroke:#2d7a4a
-    
+
     class AUTH,NOTFOUND,INVALID,NETWORK,FAIL error
     class SUCCESS success
 ```
@@ -586,18 +586,18 @@ Status: SUCCESS
 
 ---
 
-**Document Version:** 1.0.0  
-**Last Updated:** 2026-01-23  
-**Maintained By:** admin-automation-agent  
+**Document Version:** 1.0.0
+**Last Updated:** 2026-01-23
+**Maintained By:** admin-automation-agent
 **Review Cycle:** Quarterly
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: Authentication Manager Design Document  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
+**Agent Name**: Authentication Manager Design Document
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -767,7 +767,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -823,7 +823,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -978,8 +978,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary
@@ -1011,15 +1011,15 @@ requests>=2.31.0
 ### Common Failure Modes
 
 #### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Symptoms**: Agent rejects input parameters
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges
 - Review examples
 
 #### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources  
+**Symptoms**: Cannot access required resources
 **Recovery**:
 - Check permissions
 - Verify paths exist
@@ -1027,7 +1027,7 @@ requests>=2.31.0
 - Review authentication
 
 #### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit  
+**Symptoms**: Operation exceeds time limit
 **Recovery**:
 - Reduce scope of operation
 - Check for blocking operations
@@ -1035,7 +1035,7 @@ requests>=2.31.0
 - Consider batch processing
 
 #### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable  
+**Symptoms**: Required tool or service unavailable
 **Recovery**:
 - Verify tool installation
 - Check service status

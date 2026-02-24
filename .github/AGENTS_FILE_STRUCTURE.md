@@ -1,5 +1,5 @@
 # AGENTS File Structure Reference
-> Generated: 2025-11-09  
+> Generated: 2025-11-09
 > Purpose: Document the complete AGENTS.md file/folder structure and implementation status
 
 ## Implementation Status Summary
@@ -267,5 +267,5 @@ All validation checks passed:
 - [AGENTS.md](./AGENTS.md) — Root pointer
 - [_codex_/AGENTS.md](./AGENTS.md) — Canonical guide
 
-**Implementation Complete:** 2025-11-09  
+**Implementation Complete:** 2025-11-09
 **Status:** ✅ READY FOR MERGE

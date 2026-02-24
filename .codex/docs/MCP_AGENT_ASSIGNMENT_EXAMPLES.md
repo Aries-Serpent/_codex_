@@ -1,8 +1,8 @@
 # MCP agentAssignment Payload Examples
 
-> **Generated**: 2026-02-17T11:21:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Complete examples of GitHub Copilot Agent task creation  
+> **Generated**: 2026-02-17T11:21:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Complete examples of GitHub Copilot Agent task creation
 > **Status**: Production-Ready Templates
 
 ---
@@ -44,16 +44,16 @@ mutation CreateAgentTask {
   agentAssignment(input: {
     # Repository ID (can be found via: gh api repos/:owner/:repo --jq .node_id)
     repositoryId: "R_kgDOPjJ9Hg"
-    
+
     # Task title (short, actionable)
     title: "Fix test failures in PR #3248"
-    
+
     # Detailed description (supports markdown)
     description: """
 # Task: Fix Test Failures in PR #3248
 
 ## Context
-PR #3248 has 25 test failures that need to be addressed following the 
+PR #3248 has 25 test failures that need to be addressed following the
 Investigation Protocol documented in `.codex/CODEBASE_AGENCY_POLICY.md`.
 
 ## Objectives
@@ -75,7 +75,7 @@ Investigation Protocol documented in `.codex/CODEBASE_AGENCY_POLICY.md`.
 - Resolution Patterns: `.codex/PR_3248_RESOLUTION_PATTERNS.md`
 - Policy: `.codex/CODEBASE_AGENCY_POLICY.md`
 """
-    
+
     # Agent instructions (how to approach the task)
     instructions: """
 Follow these steps in order:
@@ -105,7 +105,7 @@ Follow these steps in order:
 
 Use `@codex-specific-agent` tools when available for repository-specific patterns.
 """
-    
+
     # Files to focus on (optional, helps agent prioritize)
     files: [
       "tests/cognitive_brain/quantum/test_memory_errors.py",
@@ -113,7 +113,7 @@ Use `@codex-specific-agent` tools when available for repository-specific pattern
       "tests/cli/test_subcommands.py",
       "tests/unit/test_fixtures.py"
     ]
-    
+
     # Branch to work on (optional, defaults to new branch)
     # branch: "fix/pr-3248-test-failures"
   }) {
@@ -163,9 +163,9 @@ Use `@codex-specific-agent` tools when available for repository-specific pattern
 mutation CreateDocumentationTask {
   agentAssignment(input: {
     repositoryId: "R_kgDOPjJ9Hg"
-    
+
     title: "Update MCP documentation for new GitHub tools"
-    
+
     description: """
 # Task: Update MCP Documentation
 
@@ -191,7 +191,7 @@ Our documentation needs to be updated to reflect these new capabilities.
 - GitHub MCP Server changelog: https://github.com/github/github-mcp-server/releases
 - Existing docs: `docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md`
 """
-    
+
     instructions: """
 1. Review GitHub MCP Server changelog for all new tools
 2. For each new tool, document:
@@ -209,7 +209,7 @@ Our documentation needs to be updated to reflect these new capabilities.
 
 Use existing documentation style and format.
 """
-    
+
     files: [
       "docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md",
       ".codex/docs/MCP_CAPABILITY_MATRIX.md",
@@ -235,9 +235,9 @@ Use existing documentation style and format.
 mutation CreateSecurityTask {
   agentAssignment(input: {
     repositoryId: "R_kgDOPjJ9Hg"
-    
+
     title: "Fix HIGH severity XSS vulnerability in src/security/core.py"
-    
+
     description: """
 # 🔴 URGENT: High Severity Security Fix
 
@@ -270,7 +270,7 @@ malicious_input = 'Click here'
 - CWE-79: https://cwe.mitre.org/data/definitions/79.html
 - Security Policy: `SECURITY.md`
 """
-    
+
     instructions: """
 ⚠️ SECURITY PRIORITY: Complete this task immediately.
 
@@ -303,7 +303,7 @@ malicious_input = 'Click here'
 
 DO NOT skip testing. Security fixes require exhaustive validation.
 """
-    
+
     files: [
       "src/security/core.py",
       "tests/security/test_xss_prevention.py",
@@ -646,6 +646,6 @@ gh api repos/Aries-Serpent/_codex_ --jq .node_id
 
 ---
 
-**Status**: ✅ Production-Ready  
-**Version**: 1.0.0  
+**Status**: ✅ Production-Ready
+**Version**: 1.0.0
 **Last Updated**: 2026-02-17T11:21:00Z

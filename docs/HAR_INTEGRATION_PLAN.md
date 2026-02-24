@@ -1,8 +1,8 @@
 # HAR File Integration & Web Function Caching Plan
 
-**Version**: 1.0.0  
-**Date**: 2025-12-10  
-**Status**: Planning Phase  
+**Version**: 1.0.0
+**Date**: 2025-12-10
+**Status**: Planning Phase
 **Related**: Audit Dashboard Enhancement, Web-Based Function Storage
 
 ---
@@ -159,16 +159,16 @@ import gzip
 
 class HARRecorder:
     """Record HTTP requests/responses in HAR format."""
-    
+
     def __init__(self, output_path: Path):
         self.output_path = output_path
         self.entries = []
         self.pages = []
-        
+
     def record_request(self, request, response, timing):
         """
         Record a single HTTP transaction.
-        
+
         TODO: Implementation needed
         - Parse request object (method, URL, headers, body)
         - Parse response object (status, headers, body, size)
@@ -177,11 +177,11 @@ class HARRecorder:
         - Link to appropriate page in self.pages
         """
         pass
-    
+
     def save(self):
         """
         Save HAR file to disk.
-        
+
         TODO: Implementation needed
         - Construct HAR JSON structure with version, creator, pages, entries
         - Write to self.output_path with proper formatting
@@ -192,15 +192,15 @@ class HARRecorder:
 
 class HARCache:
     """Cache HTTP responses using HAR format."""
-    
+
     def __init__(self, cache_dir: Path):
         self.cache_dir = cache_dir
         self.index = {}
-        
+
     def get(self, url: str, method: str = "GET") -> Optional[dict]:
         """
         Retrieve cached response.
-        
+
         TODO: Implementation needed
         - Generate cache key from URL and method
         - Check self.index for entry existence
@@ -208,11 +208,11 @@ class HARCache:
         - Load and return cached response data
         """
         pass
-        
+
     def set(self, url: str, method: str, response: dict, ttl: int = 3600):
         """
         Store response in cache.
-        
+
         TODO: Implementation needed
         - Generate cache key from URL and method
         - Store response data with expiration timestamp
@@ -220,11 +220,11 @@ class HARCache:
         - Consider size limits and eviction policies
         """
         pass
-        
+
     def clear(self, pattern: str = "*"):
         """
         Clear cache entries matching pattern.
-        
+
         TODO: Implementation needed
         - Support glob patterns for URL matching
         - Remove matching entries from cache directory
@@ -235,15 +235,15 @@ class HARCache:
 
 class HARPlayer:
     """Replay HTTP requests from HAR file."""
-    
+
     def __init__(self, har_file: Path):
         self.har_file = har_file
         self.har_data = {}
-        
+
     def find_response(self, url: str, method: str = "GET") -> Optional[dict]:
         """Find matching response in HAR."""
         pass
-        
+
     def serve_mock(self, host: str = "localhost", port: int = 8000):
         """Start mock HTTP server from HAR."""
         pass
@@ -282,12 +282,12 @@ def run_full(cfg):
     har_recorder = HARRecorder(
         output_path=Path("audit_artifacts/audit_session.har")
     )
-    
+
     # Wrap HTTP calls
     with har_recorder.recording():
         # ... existing audit code ...
         pass
-    
+
     har_recorder.save()
 ```
 
@@ -300,12 +300,12 @@ from har_utils import HARCache, HARRecorder
 
 def generate_with_har_caching(artifacts, reports, manifest, output_path):
     """Generate dashboard with HAR-cached assets."""
-    
+
     har_cache = HARCache(Path("audit_artifacts/.har_cache"))
-    
+
     # Cache external resources (CDNs, fonts, etc.)
     # Generate self-contained HTML with embedded assets
-    
+
     # Record generation process
     har_recorder = HARRecorder(
         Path("audit_artifacts/dashboard_generation.har")
@@ -327,25 +327,25 @@ import httpx
 
 class GitHubHARClient:
     """GitHub API client with HAR caching."""
-    
+
     def __init__(self, token: str, cache_ttl: int = 3600):
         self.client = httpx.Client()
         self.har_cache = HARCache(Path(".cache/github_api"))
         self.token = token
         self.cache_ttl = cache_ttl
-        
+
     def get(self, url: str, use_cache: bool = True):
         """GET request with HAR caching."""
         if use_cache:
             cached = self.har_cache.get(url, "GET")
             if cached:
                 return cached
-        
+
         response = self.client.get(url, headers={"Authorization": f"token {self.token}"})
-        
+
         if use_cache and response.status_code == 200:
             self.har_cache.set(url, "GET", response.json(), self.cache_ttl)
-        
+
         return response.json()
 ```
 
@@ -381,7 +381,7 @@ function exportSessionAsHAR() {
             ]
         }
     };
-    
+
     // Download HAR file
     downloadFile('dashboard_session.har', JSON.stringify(har, null, 2));
 }
@@ -509,7 +509,7 @@ function exportSessionAsHAR() {
 def cmd_run(args, cfg):
     """Run audit with HAR recording."""
     har_recorder = HARRecorder(Path("audit_artifacts/audit_session.har"))
-    
+
     try:
         with har_recorder.recording():
             # Existing audit logic
@@ -526,10 +526,10 @@ def cmd_run(args, cfg):
 def main():
     """Generate dashboard with HAR caching."""
     har_cache = HARCache(Path(".cache/dashboard"))
-    
+
     # Load artifacts with caching
     # Generate HTML with cached assets
-    
+
     # Export session HAR
     har_recorder.export("audit_artifacts/dashboard_session.har")
 ```
@@ -552,7 +552,7 @@ class GitHubClient:
 - name: Generate audit dashboard with HAR
   run: |
     python scripts/generate_audit_dashboard.py --enable-har
-    
+
 - name: Upload artifacts including HAR files
   uses: actions/upload-artifact@v4
   with:
@@ -575,10 +575,10 @@ class GitHubClient:
 ```python
 class SecureHARRecorder(HARRecorder):
     """HAR recorder with sensitive data filtering."""
-    
+
     SENSITIVE_HEADERS = ['authorization', 'cookie', 'x-api-key']
     SENSITIVE_PATTERNS = [r'token=\w+', r'key=\w+', r'password=\w+']
-    
+
     def sanitize_request(self, request):
         """Remove sensitive data from request."""
         for header in self.SENSITIVE_HEADERS:
@@ -716,7 +716,7 @@ def test_dashboard_with_har_cache():
 
 **Error Example**:
 ```
-fatal: path 'scripts/planning_components.py' exists on disk, 
+fatal: path 'scripts/planning_components.py' exists on disk,
 but not in 'db45016d98daf73e5cab5b73d88b39602343d6e5'
 ```
 
@@ -748,7 +748,7 @@ logger = logging.getLogger(__name__)
 class HARRecorder:
     def __init__(self, output_path, enable_logging=True):
         self.logger = logger if enable_logging else None
-        
+
     def record_request(self, request, response, timing):
         if self.logger:
             self.logger.info(f"Recording: {request.method} {request.url}")

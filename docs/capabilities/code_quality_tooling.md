@@ -224,28 +224,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
           pip install nox
-      
+
       - name: Run linting
         run: nox -s lint
-      
+
       - name: Check formatting
         run: nox -s format
-      
+
       - name: Type checking
         run: nox -s typecheck
-      
+
       - name: Run tests
         run: nox -s tests
-      
+
       - name: Security scan
         run: nox -s security
 ```
@@ -262,7 +262,7 @@ jobs:
    ```bash
    # Install pre-commit hooks
    pre-commit install
-   
+
    # Hooks will run automatically on git commit
    # Or run manually:
    pre-commit run --all-files
@@ -272,10 +272,10 @@ jobs:
    ```bash
    # Auto-fix linting issues
    ruff check --fix .
-   
+
    # Auto-format code
    black .
-   
+
    # Both together
    ruff check --fix . && black .
    ```
@@ -284,7 +284,7 @@ jobs:
    ```python
    # Inline ignore (use only when necessary)
    result = eval(user_input)  # noqa: S307
-   
+
    # Type ignore (document why)
    value = some_untyped_library()  # type: ignore[no-untyped-call]
    ```
@@ -300,7 +300,7 @@ jobs:
    ```bash
    # Generate HTML coverage report
    pytest --cov=agents --cov-report=html
-   
+
    # View in browser
    open htmlcov/index.html
    ```
@@ -389,7 +389,7 @@ git commit -m "feat: add new feature"
    ```python
    # Add type stubs
    pip install types-requests types-pyyaml
-   
+
    # Or ignore module
    # mypy.ini or pyproject.toml
    [[tool.mypy.overrides]]
@@ -401,7 +401,7 @@ git commit -m "feat: add new feature"
    ```bash
    # Skip hooks temporarily
    git commit --no-verify -m "WIP: skip hooks"
-   
+
    # Or run specific hooks
    pre-commit run ruff --all-files
    ```
@@ -440,5 +440,5 @@ git commit -m "feat: add new feature"
 
 ---
 
-**Last Updated**: 2025-12-27  
+**Last Updated**: 2025-12-27
 **Maintainer**: Code Quality Team

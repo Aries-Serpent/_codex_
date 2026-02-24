@@ -32,7 +32,10 @@ for _site_path in site.getsitepackages():
         sys.path.remove(_site_path)
     sys.path.insert(0, _site_path)
 
-gx = import_module("great_expectations")
+try:
+    gx = import_module("great_expectations")
+except ImportError:
+    gx = None  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +78,7 @@ def run_clean_checkpoint(
     if not clean_csv.exists():
         raise FileNotFoundError(f"Clean CSV not found: {clean_csv}")
 
-    if not hasattr(gx, "get_context"):
+    if gx is None or not hasattr(gx, "get_context"):
         return _fallback_validate(clean_csv)
 
     context = gx.get_context()

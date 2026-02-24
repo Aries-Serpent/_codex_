@@ -259,16 +259,16 @@ After next 1.5 hours:
 
 ## 🎯 Bottom Line
 
-**Question**: Can we reach 84%+?  
+**Question**: Can we reach 84%+?
 **Answer**: Yes! With 1.5 hours and 3 code changes.
 
-**Question**: Is it risky?  
+**Question**: Is it risky?
 **Answer**: No. Low risk, isolated changes, proven approach.
 
-**Question**: What's the probability of success?  
+**Question**: What's the probability of success?
 **Answer**: 95%+ (all code provided and mentally tested)
 
-**Question**: What should I do next?  
+**Question**: What should I do next?
 **Answer**: Open `PHASE1_IMPLEMENTATION_GUIDE.md` and start with Step 1.
 
 ---
@@ -286,10 +286,10 @@ After next 1.5 hours:
 
 ---
 
-**Status**: ✅ Comprehensive handoff complete  
-**Documentation**: ⭐⭐⭐⭐⭐ Exceptional (120KB+)  
-**Next**: 1.5 hours to 85.4% accuracy  
-**Confidence**: Very High  
+**Status**: ✅ Comprehensive handoff complete
+**Documentation**: ⭐⭐⭐⭐⭐ Exceptional (120KB+)
+**Next**: 1.5 hours to 85.4% accuracy
+**Confidence**: Very High
 
 **YOU'VE GOT THIS! 💪**
 
@@ -334,7 +334,7 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 
 ### Phase 5 Entry Points
 1. Enable `CODEX_BAYESIAN_MODE=true` in staging and validate FP reduction
-2. Enable `CODEX_FUZZY_MODE=true` in staging and validate FN reduction  
+2. Enable `CODEX_FUZZY_MODE=true` in staging and validate FN reduction
 3. Run Active Learning (`CODEX_ACTIVE_LEARNING=true`) — query budget ≤50/day
 4. Execute `docs/ops/PYTHON312_MIGRATION_PLAN.md` Phase 1 (base-branch CI fix)
 5. Update 56+ agent files with Phase 4.5 metrics (k₁=0.332, coherence=0.814)

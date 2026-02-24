@@ -246,7 +246,7 @@ Test Categories:
   - Happy Path: 1 test
   - Edge Cases: 4 tests
   - Failure Scenarios: 2 tests
-  
+
 Total Estimated Tests: 7
 ```
 
@@ -281,10 +281,10 @@ def test_example(self):
     # Arrange - Setup test data and mocks
     orchestrator = MyOrchestrator()
     input_data = create_test_data()
-    
+
     # Act - Execute the method under test
     result = orchestrator.process(input_data)
-    
+
     # Assert - Verify the outcome
     assert result['success'] is True
     assert len(result['items']) == 10
@@ -322,10 +322,10 @@ def test_with_mocked_storage(self):
     with patch('agents.storage.StorageBackend') as MockStorage:
         mock_backend = MockStorage.return_value
         mock_backend.save.return_value = True
-        
+
         orchestrator = MyOrchestrator(storage=mock_backend)
         result = orchestrator.save_data({'key': 'value'})
-        
+
         assert result is True
         mock_backend.save.assert_called_once()
 ```
@@ -336,13 +336,13 @@ def test_with_mocked_storage(self):
 def test_orchestrate_edge_cases(self):
     """Collection of edge case tests."""
     orchestrator = MyOrchestrator()
-    
+
     # Empty input
     assert orchestrator.process([]) == {'success': True, 'count': 0}
-    
+
     # Single item
     assert orchestrator.process([1])['count'] == 1
-    
+
     # Maximum allowed items
     large_input = list(range(10000))
     result = orchestrator.process(large_input)
@@ -355,7 +355,7 @@ def test_orchestrate_edge_cases(self):
 def test_orchestrate_invalid_input_raises_error(self):
     """Verify proper exception handling for invalid input."""
     orchestrator = MyOrchestrator()
-    
+
     with pytest.raises(ValueError, match="Input must be a list"):
         orchestrator.process("not a list")
 ```
@@ -397,12 +397,12 @@ def test_flaky(self):
 def test_orchestrate_complex_scenario(self):
     """
     Test orchestration with complex multi-stage scenario.
-    
+
     This test verifies that when the orchestrator receives:
     1. A high-priority task
     2. With limited resources
     3. And multiple possible paths
-    
+
     It should:
     1. Assess the situation correctly
     2. Prioritize high-impact paths
@@ -524,7 +524,7 @@ class CustomTestGenerator(UnitTestGenerator):
         duration = time.time() - start
         assert duration < 1.0  # Should complete in < 1 second
 '''
-    
+
     def generate_complete_test_suite(self) -> str:
         """Override to include performance tests."""
         base = super().generate_complete_test_suite()

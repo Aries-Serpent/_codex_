@@ -1,7 +1,7 @@
 # Quantum Simulation Performance Optimization Plan
 
-**Created**: 2026-02-18T08:10:00Z  
-**Context**: PR #3248 Attempt 25 - Quantum test failures  
+**Created**: 2026-02-18T08:10:00Z
+**Context**: PR #3248 Attempt 25 - Quantum test failures
 **Issue**: k₁=16.6 vs target ≤0.35 (47x performance gap)
 
 ---
@@ -49,7 +49,7 @@ k₁ = (avg_time_ms * (1.0 + error_rate)) / classical_baseline_ms
 3. Add connection pooling
 4. Cache metric calculations
 
-**Expected Improvement**: 10-20x speedup  
+**Expected Improvement**: 10-20x speedup
 **Estimated Effort**: 2-3 hours
 
 ### Phase 2: Coherence Monitor (MEDIUM IMPACT)
@@ -60,7 +60,7 @@ k₁ = (avg_time_ms * (1.0 + error_rate)) / classical_baseline_ms
 2. Use lazy evaluation for metrics not needed in experiments
 3. Pre-compute common coherence patterns
 
-**Expected Improvement**: 2-5x speedup  
+**Expected Improvement**: 2-5x speedup
 **Estimated Effort**: 1-2 hours
 
 ### Phase 3: Assessment Pipeline (MEDIUM IMPACT)
@@ -72,7 +72,7 @@ k₁ = (avg_time_ms * (1.0 + error_rate)) / classical_baseline_ms
 3. Reduce intermediate object creation
 4. Vectorize weight calculations
 
-**Expected Improvement**: 2-3x speedup  
+**Expected Improvement**: 2-3x speedup
 **Estimated Effort**: 2-4 hours
 
 ### Phase 4: Scenario Generation (LOW IMPACT)
@@ -83,7 +83,7 @@ k₁ = (avg_time_ms * (1.0 + error_rate)) / classical_baseline_ms
 2. Cache scenario statistics
 3. Use simpler scenarios for tests (keep complex for production)
 
-**Expected Improvement**: 1.5-2x speedup  
+**Expected Improvement**: 1.5-2x speedup
 **Estimated Effort**: 1 hour
 
 ---
@@ -237,6 +237,6 @@ This approach is compliant with AI Codebase Agency Policy because:
 
 ---
 
-**Status**: Plan Complete - Ready for Implementation  
-**Next Action**: Apply immediate fixes to tests, create tracking issue  
+**Status**: Plan Complete - Ready for Implementation
+**Next Action**: Apply immediate fixes to tests, create tracking issue
 **Estimated Total Effort**: 15-20 hours across 3 sprints

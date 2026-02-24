@@ -1,9 +1,9 @@
 # Comprehensive 100% Coverage Planset & Promptset
 ## AI Agency Policy Compliance Document
-**Status:** ACTIVE  
-**Branch:** 0D_base_  
-**PR:** #2883  
-**Created:** 2026-01-19  
+**Status:** ACTIVE
+**Branch:** 0D_base_
+**PR:** #2883
+**Created:** 2026-01-19
 **Codex Master Key:** AUTHORIZED
 
 ---
@@ -28,10 +28,10 @@ This document provides a comprehensive, actionable planset and promptset for ach
 ## Failing Checks Root Cause Analysis
 
 ### 1. Comprehensive Tests with Caching / Python 3.11 Tests
-**Status:** ❌ FAILED  
-**Run ID:** 21132021900  
-**Job ID:** 60765160773  
-**Duration:** 6m  
+**Status:** ❌ FAILED
+**Run ID:** 21132021900
+**Job ID:** 60765160773
+**Duration:** 6m
 **Exit Code:** 5
 
 #### Root Cause
@@ -46,10 +46,10 @@ This document provides a comprehensive, actionable planset and promptset for ach
 - Test infrastructure validation failure
 
 ### 2. Comprehensive Tests with Caching / Python 3.12 Tests
-**Status:** ❌ FAILED  
-**Run ID:** 21132021900  
-**Job ID:** 60765160794  
-**Duration:** 5m  
+**Status:** ❌ FAILED
+**Run ID:** 21132021900
+**Job ID:** 60765160794
+**Duration:** 5m
 **Exit Code:** 1
 
 #### Root Cause
@@ -64,10 +64,10 @@ This document provides a comprehensive, actionable planset and promptset for ach
 - CI/CD pipeline completely blocked
 
 ### 3. RAG Module Tests / test-rag (3.12)
-**Status:** ❌ FAILED  
-**Run ID:** 21132021838  
-**Job ID:** 60765160625  
-**Duration:** 4m  
+**Status:** ❌ FAILED
+**Run ID:** 21132021838
+**Job ID:** 60765160625
+**Duration:** 4m
 **Exit Code:** 5
 
 #### Root Cause
@@ -82,10 +82,10 @@ This document provides a comprehensive, actionable planset and promptset for ach
 - Critical functionality unverified
 
 ### 4. Rust-Python Hybrid Swarm CI/CD / Rust Benchmarks
-**Status:** ❌ CANCELLED  
-**Run ID:** 21132021783  
-**Job ID:** 60765257826  
-**Duration:** 15m  
+**Status:** ❌ CANCELLED
+**Run ID:** 21132021783
+**Job ID:** 60765257826
+**Duration:** 15m
 **Exit Reason:** Runner shutdown signal
 
 #### Root Cause
@@ -100,8 +100,8 @@ This document provides a comprehensive, actionable planset and promptset for ach
 - Cannot validate performance improvements
 
 ### 5. Test Summary Job
-**Status:** ❌ FAILED  
-**Duration:** 3s  
+**Status:** ❌ FAILED
+**Duration:** 3s
 **Exit Code:** 1
 
 #### Root Cause
@@ -192,7 +192,7 @@ pytest tests/rag -n auto --cov=src/codex/rag --cov-report=xml --cov-report=html
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --strict-markers
     --timeout=300
@@ -358,41 +358,41 @@ from src.codex.rag.embeddings import EmbeddingService
 
 class TestEmbeddingService:
     """Test EmbeddingService class."""
-    
+
     @pytest.fixture
     def mock_model(self):
         """Mock sentence transformer model."""
         return Mock()
-    
+
     def test_init_default_config(self):
         """Test initialization with default configuration."""
         service = EmbeddingService()
         assert service is not None
-    
+
     def test_init_custom_config(self):
         """Test initialization with custom configuration."""
         service = EmbeddingService(model_name="custom-model")
         assert service.model_name == "custom-model"
-    
+
     def test_encode_single_text(self, mock_model):
         """Test encoding a single text string."""
         service = EmbeddingService()
         result = service.encode("test text")
         assert result is not None
-    
+
     def test_encode_batch(self, mock_model):
         """Test encoding multiple texts in batch."""
         service = EmbeddingService()
         texts = ["text1", "text2", "text3"]
         result = service.encode_batch(texts)
         assert len(result) == 3
-    
+
     def test_encode_empty_text(self):
         """Test handling of empty text input."""
         service = EmbeddingService()
         with pytest.raises(ValueError):
             service.encode("")
-    
+
     # ... more tests for 100% coverage
 ```
 
@@ -412,7 +412,7 @@ class TestEmbeddingService:
 1. **RAG End-to-End Tests**
    - Document ingestion → Indexing → Retrieval → Response
    - Test with real data (sanitized)
-   
+
 2. **CLI Integration Tests**
    - Test all CLI commands
    - Verify output formats
@@ -430,11 +430,11 @@ class TestEmbeddingService:
 - name: Generate coverage report
   run: |
     pytest tests --cov=src --cov-report=json --cov-report=html
-    
+
 - name: Check coverage threshold
   run: |
     python scripts/check_coverage.py --threshold 70 --fail-under
-    
+
 - name: Upload coverage to Codecov
   uses: codecov/codecov-action@v4
   with:
@@ -458,7 +458,7 @@ class TestEmbeddingService:
 1. **Broken Internal Links** (Count: ~150)
    - Fix relative paths pointing outside docs/
    - Use GitHub URLs for root-level files
-   
+
 2. **Missing Documentation** (Count: ~100)
    - Create missing pages referenced in nav
    - Add placeholder content with TODOs
@@ -583,10 +583,10 @@ prompt: |
   4. Include unit tests, integration tests, and edge cases
   5. Mock external dependencies appropriately
   6. Ensure all tests are deterministic and repeatable
-  
+
   Module to test: {module_path}
   Target coverage: {target_coverage}%
-  
+
   Generate tests in: tests/{module_test_path}
 ```
 
@@ -629,7 +629,7 @@ checks:
   - All modules have README or index
   - All CLI commands documented
   - All configuration options documented
-  
+
 actions:
   - Generate missing docstrings
   - Create module-level documentation
@@ -694,9 +694,9 @@ success_criteria:
 #### Create Status Document
 ```markdown
 # Cognitive Brain Status - Phase 21: 100% Coverage Initiative
-**Status:** IN PROGRESS  
-**Started:** 2026-01-19  
-**Target Completion:** 2026-01-20  
+**Status:** IN PROGRESS
+**Started:** 2026-01-19
+**Target Completion:** 2026-01-20
 **Priority:** CRITICAL
 
 ## Phase 21 Objectives
@@ -810,7 +810,7 @@ graph TB
     P --> Q{100% Coverage?}
     Q -->|No| D
     Q -->|Yes| R[Complete: Ready for Production]
-    
+
     style A fill:#ff6b6b
     style R fill:#51cf66
     style B fill:#ffd93d
@@ -825,29 +825,29 @@ graph TD
     subgraph "Master Orchestrator"
         MO[Coverage Master Orchestrator]
     end
-    
+
     subgraph "Analysis Agents"
         CGA[Coverage Gap Analyzer]
         PGA[Priority Generator]
     end
-    
+
     subgraph "Generation Agents"
         TGA[Test Generator Agent]
         DCA[Doc Completeness Agent]
     end
-    
+
     subgraph "Verification Agents"
         TCM[Test Coverage Monitor]
         DQA[Documentation Quality Agent]
         CI[CI Testing Agent]
     end
-    
+
     subgraph "Support Agents"
         WCF[Workflow CI Fixer]
         TAF[Test Alignment Fixer]
         LVA[Link Validator Agent]
     end
-    
+
     MO --> CGA
     CGA --> PGA
     PGA --> TGA
@@ -859,10 +859,10 @@ graph TD
     MO --> CI
     CI --> WCF
     WCF --> MO
-    
+
     TGA -.-> TAF
     DCA -.-> LVA
-    
+
     style MO fill:#845ef7
     style CGA fill:#5c7cfa
     style TGA fill:#51cf66
@@ -941,13 +941,13 @@ jobs:
         run: |
           pytest tests --cov=src --cov-report=json
           python scripts/analyze_coverage_gaps.py
-      
+
       - name: Generate missing tests
         if: steps.analyze.outputs.coverage < 100
         run: |
           # Use test-generator-agent to create tests
           # for modules below coverage threshold
-          
+
       - name: Create PR with new tests
         if: steps.generate.outputs.tests_created
         uses: peter-evans/create-pull-request@v5
@@ -973,13 +973,13 @@ jobs:
     steps:
       - name: Download failure logs
         # Get logs from failed workflow
-        
+
       - name: Analyze failure
         # Use ci-testing-agent to analyze
-        
+
       - name: Apply fixes
         # Use workflow-ci-fixer to apply fixes
-        
+
       - name: Create PR
         # Auto-create PR with fixes
 ```
@@ -1005,8 +1005,8 @@ jobs:
 ## Implementation Timeline
 
 ### Phase 21.1: CI/CD Fixes
-**Duration:** 2-4 hours  
-**Priority:** CRITICAL  
+**Duration:** 2-4 hours
+**Priority:** CRITICAL
 **Status:** Ready to start
 
 **Tasks:**
@@ -1017,8 +1017,8 @@ jobs:
 5. ✅ Verify all fixes (30 min)
 
 ### Phase 21.2: Test Coverage
-**Duration:** 8-12 hours  
-**Priority:** HIGH  
+**Duration:** 8-12 hours
+**Priority:** HIGH
 **Status:** Awaiting 21.1 completion
 
 **Tasks:**
@@ -1030,8 +1030,8 @@ jobs:
 6. Fix any failing tests (2 hours)
 
 ### Phase 21.3: Documentation
-**Duration:** 4-6 hours  
-**Priority:** MEDIUM  
+**Duration:** 4-6 hours
+**Priority:** MEDIUM
 **Status:** Can start in parallel with 21.2
 
 **Tasks:**
@@ -1042,8 +1042,8 @@ jobs:
 5. Verify documentation (1 hour)
 
 ### Phase 21.4: Custom Agents
-**Duration:** 2-4 hours  
-**Priority:** MEDIUM  
+**Duration:** 2-4 hours
+**Priority:** MEDIUM
 **Status:** Awaiting 21.1 completion
 
 **Tasks:**
@@ -1054,8 +1054,8 @@ jobs:
 5. Test and deploy agents (1 hour)
 
 ### Phase 21.5: Cognitive Brain
-**Duration:** 1-2 hours  
-**Priority:** LOW  
+**Duration:** 1-2 hours
+**Priority:** LOW
 **Status:** Can start anytime
 
 **Tasks:**
@@ -1065,8 +1065,8 @@ jobs:
 4. Document architecture (30 min)
 
 ### Phase 21.6: Final Verification
-**Duration:** 2-4 hours  
-**Priority:** HIGH  
+**Duration:** 2-4 hours
+**Priority:** HIGH
 **Status:** After all phases complete
 
 **Tasks:**
@@ -1246,12 +1246,12 @@ This comprehensive planset provides a complete roadmap for achieving 100% test, 
 4. Monitor progress continuously
 5. Iterate until 100% coverage achieved
 
-**Timeline:** 19-32 hours total  
+**Timeline:** 19-32 hours total
 **Target Completion:** 2026-01-20 EOD
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** 2026-01-19  
-**Author:** GitHub Copilot (AI Agency Mode)  
+**Document Version:** 1.0
+**Last Updated:** 2026-01-19
+**Author:** GitHub Copilot (AI Agency Mode)
 **Status:** ACTIVE - Implementation Ready

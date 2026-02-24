@@ -1,7 +1,7 @@
 # CI Optimization Plansets - PR #3248 Analysis
-> Generated: 2026-02-15T10:30:00Z  
-> Updated: 2026-02-15T11:15:00Z (Phase 1 IMPLEMENTED)  
-> Based on: CI_FAILURE_PATTERN_ANALYSIS.md  
+> Generated: 2026-02-15T10:30:00Z
+> Updated: 2026-02-15T11:15:00Z (Phase 1 IMPLEMENTED)
+> Based on: CI_FAILURE_PATTERN_ANALYSIS.md
 > Scope: Large codebase CI optimization for _codex_ repository
 
 ---
@@ -15,7 +15,7 @@
 - ✅ Coverage Timeout Guards (`.github/workflows/coverage-with-timeout.yml`)
 - ✅ Validation Test Suite (53+ tests in `tests/ci/`)
 
-**Commit:** `2bb06bfc` - "feat: Implement Phase 1 CI optimization components (all 5 components)"  
+**Commit:** `2bb06bfc` - "feat: Implement Phase 1 CI optimization components (all 5 components)"
 **Documentation:** [`docs/ci/IMPLEMENTATION_LOG.md`](../docs/ci/IMPLEMENTATION_LOG.md)
 
 **Phase 2: Core Improvements** - ✅ **IMPLEMENTED** (2026-02-15)
@@ -24,7 +24,7 @@
 - ✅ Telemetry Collection Workflow (`.github/workflows/telemetry-collection.yml`)
 - ✅ Test Suite (27+ tests in `tests/ci/test_workflow_orchestrator.py`)
 
-**Commit:** `e369c2b` - "feat: Implement Phase 2 core improvements (progressive validation + telemetry orchestration)"  
+**Commit:** `e369c2b` - "feat: Implement Phase 2 core improvements (progressive validation + telemetry orchestration)"
 **Documentation:** Updated in [`docs/ci/IMPLEMENTATION_LOG.md`](../docs/ci/IMPLEMENTATION_LOG.md)
 
 ---
@@ -143,11 +143,11 @@ def pre_flight_checks():
         'writable': are_files_writable(),
         'branch_valid': is_branch_valid(),
     }
-    
+
     if not all(checks.values()):
         logger.error(f"Pre-flight failed: {checks}")
         return False
-    
+
     return True
 ```
 
@@ -156,7 +156,7 @@ def pre_flight_checks():
 def apply_fix_with_rollback(file_path, fix_fn):
     """Apply fix with automatic rollback on error"""
     backup = create_backup(file_path)
-    
+
     try:
         fix_fn(file_path)
         validate_syntax(file_path)  # Ensure file still valid
@@ -174,7 +174,7 @@ def commit_and_push_fixes(changed_files):
     if not changed_files:
         logger.info("No changes to commit")
         return True
-    
+
     try:
         subprocess.run(['git', 'add'] + changed_files, check=True)
         subprocess.run([
@@ -182,7 +182,7 @@ def commit_and_push_fixes(changed_files):
             f'auto-fix: Applied fixes to {len(changed_files)} files\n\n' +
             '\n'.join(f'- {f}' for f in changed_files)
         ], check=True)
-        
+
         # Retry push up to 3 times
         for attempt in range(3):
             try:
@@ -251,29 +251,29 @@ jobs:
     permissions:
       contents: write  # Ensure write permission
       pull-requests: write
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY }}
           fetch-depth: 0  # Full history for better git operations
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install ruff black isort
-      
+
       - name: Run pre-flight checks
         run: python scripts/ci/auto_fix_common_issues.py --pre-flight
-      
+
       - name: Apply fixes
         run: python scripts/ci/auto_fix_common_issues.py --apply
         continue-on-error: true  # Don't fail workflow on fix failure
-      
+
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v3
@@ -427,20 +427,20 @@ def pytest_sessionstart(session):
     logger.info(f"Python: {sys.version}")
     logger.info(f"Path: {sys.path}")
     logger.info(f"CWD: {os.getcwd()}")
-    
+
     # Test critical imports
     try:
         import torch
         logger.info(f"Torch: {torch.__version__}")
     except ImportError:
         logger.warning("Torch not available")
-    
+
     try:
         import transformers
         logger.info(f"Transformers: {transformers.__version__}")
     except ImportError:
         logger.warning("Transformers not available")
-    
+
     logger.info("=" * 60)
 ```
 
@@ -471,7 +471,7 @@ jobs:
       - run: pip install pytest
       - run: pytest tests/ -m "smoke" --maxfail=1
       # Fail fast if imports broken
-  
+
   unit-tests:
     name: "Layer 2: Unit Tests"
     needs: smoke-tests
@@ -485,7 +485,7 @@ jobs:
       - uses: actions/setup-python@v4
       - run: pip install -r requirements-test.txt
       - run: pytest tests/${{ matrix.module }}/ --maxfail=5
-  
+
   integration-tests:
     name: "Layer 3: Integration Tests"
     needs: unit-tests
@@ -495,7 +495,7 @@ jobs:
       - uses: actions/setup-python@v4
       - run: pip install -r requirements.txt
       - run: pytest tests/integration/ --maxfail=3
-  
+
   slow-tests:
     name: "Layer 4: Slow Tests"
     needs: unit-tests
@@ -521,7 +521,7 @@ def skip_if_missing(*packages):
             __import__(pkg)
         except ImportError:
             missing.append(pkg)
-    
+
     if missing:
         pytest.skip(f"Missing packages: {missing}")
 
@@ -658,7 +658,7 @@ jobs:
             --cov-report=xml:coverage-${{ matrix.shard }}.xml \
             --shard=${{ matrix.shard }}/4
         continue-on-error: true  # Don't fail if one shard times out
-      
+
       - name: Upload partial coverage
         uses: actions/upload-artifact@v3
         with:
@@ -674,16 +674,16 @@ from coverage import Coverage
 def combine_shards(shard_files):
     """Combine coverage from multiple shards"""
     cov = Coverage()
-    
+
     for shard_file in shard_files:
         if os.path.exists(shard_file):
             cov.combine([shard_file])
         else:
             print(f"Warning: Missing shard {shard_file}")
-    
+
     cov.save()
     cov.xml_report(outfile='coverage-combined.xml')
-    
+
     # Calculate coverage %
     total = cov.report()
     return total
@@ -716,12 +716,12 @@ pytest $(cat tests_to_run.txt) --cov=src --cov-report=xml
 def calculate_delta(baseline_coverage, pr_coverage):
     """Calculate coverage change"""
     delta = {}
-    
+
     for file in pr_coverage:
         baseline_pct = baseline_coverage.get(file, 0)
         pr_pct = pr_coverage.get(file, 0)
         delta[file] = pr_pct - baseline_pct
-    
+
     return delta
 ```
 
@@ -848,17 +848,17 @@ async def validate_file_async(file_path: Path):
 async def validate_directory_async(dir_path: Path):
     """Validate all files in directory concurrently"""
     files = list(dir_path.rglob('*.py'))
-    
+
     # Process files in parallel (limit concurrency)
     semaphore = asyncio.Semaphore(50)  # Max 50 concurrent
-    
+
     async def bounded_validate(file_path):
         async with semaphore:
             return await validate_file_async(file_path)
-    
+
     tasks = [bounded_validate(f) for f in files]
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     return results
 ```
 
@@ -896,7 +896,7 @@ class FileSystemCache:
         self.root = root
         self._cache = {}
         self._build_cache()
-    
+
     def _build_cache(self):
         """Build cache of all relevant files"""
         for path in self.root.rglob('*'):
@@ -908,12 +908,12 @@ class FileSystemCache:
                     mtime=stat.st_mtime,
                     is_python=path.suffix == '.py'
                 )
-    
+
     def _should_cache(self, path: Path) -> bool:
         """Filter out irrelevant paths"""
         exclude_dirs = {'.git', 'node_modules', '__pycache__', '.venv'}
         return not any(part in exclude_dirs for part in path.parts)
-    
+
     def get_python_files(self):
         """Get all cached Python files"""
         return [info for info in self._cache.values() if info.is_python]
@@ -924,12 +924,12 @@ class FileSystemCache:
 async def validate_with_cache(cache: FileSystemCache):
     """Use cache to avoid repeated file system access"""
     python_files = cache.get_python_files()
-    
+
     # Now validate only the filtered list
     results = await validate_directory_async(
         [f.path for f in python_files]
     )
-    
+
     return results
 ```
 
@@ -950,10 +950,10 @@ def validate_only_changes():
     """Validate only changed files"""
     changed = get_changed_files()
     changed_python = [f for f in changed if f.endswith('.py')]
-    
+
     # Validate changed files + their imports
     all_to_validate = changed_python + get_import_dependencies(changed_python)
-    
+
     return validate_files(all_to_validate)
 ```
 
@@ -1063,18 +1063,18 @@ jobs:
     outputs:
       pr_size: ${{ steps.size.outputs.category }}
       changed_files: ${{ steps.size.outputs.count }}
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Analyze PR size
         id: size
         run: |
           CHANGED=$(git diff --name-only origin/main...HEAD | wc -l)
           echo "count=$CHANGED" >> $GITHUB_OUTPUT
-          
+
           if [ $CHANGED -lt 20 ]; then
             echo "category=small" >> $GITHUB_OUTPUT
           elif [ $CHANGED -lt 100 ]; then
@@ -1099,14 +1099,14 @@ on:
 jobs:
   check-pr-size:
     uses: ./.github/workflows/pr-analyzer.yml
-  
+
   smoke-tests:
     needs: check-pr-size
     runs-on: ubuntu-latest
     # Always run smoke tests
     steps:
       - run: pytest tests/ -m "smoke"
-  
+
   full-unit-tests:
     needs: check-pr-size
     if: needs.check-pr-size.outputs.pr_size == 'small'
@@ -1114,7 +1114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: pytest tests/ --cov
-  
+
   targeted-tests:
     needs: check-pr-size
     if: needs.check-pr-size.outputs.pr_size == 'medium'
@@ -1124,7 +1124,7 @@ jobs:
       - run: |
           python scripts/ci/detect_changes.sh > changed_files.txt
           pytest $(cat changed_files.txt)
-  
+
   minimal-validation:
     needs: check-pr-size
     if: needs.check-pr-size.outputs.pr_size == 'large' || needs.check-pr-size.outputs.pr_size == 'refactor'
@@ -1155,10 +1155,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.inputs.pr_number }}/head
-      
+
       - name: Run full test suite
         run: pytest tests/ --cov --timeout=3600
-      
+
       - name: Comment on PR
         uses: actions/github-script@v6
         with:
@@ -1185,14 +1185,14 @@ jobs:
         repo: context.repo.repo,
         body: `
           This PR has ${changed_files} changed files (Large/Refactor category).
-          
+
           **Validation Strategy**:
           - ✓ Smoke tests: Running automatically
           - ⚠ Full test suite: Skipped (run manually if needed)
-          
+
           **To run full validation**:
           Go to Actions → Full Validation (On-Demand) → Run workflow → Enter PR #${context.issue.number}
-          
+
           **Or** comment \`/validate-full\` to trigger automatically.
         `
       })
@@ -1226,13 +1226,13 @@ def calculate_retention(pr_size, test_results):
         'large': 30,
         'refactor': 60,
     }
-    
+
     retention = base_retention[pr_size]
-    
+
     # Extend if tests failed
     if test_results['failed'] > 0:
         retention *= 2
-    
+
     return min(retention, 90)  # Max 90-iteration retention
 ```
 
@@ -1345,6 +1345,6 @@ metrics_to_track = {
 
 ---
 
-**Document Status**: COMPLETE  
-**Last Updated**: 2026-02-15T10:30:00Z  
+**Document Status**: COMPLETE
+**Last Updated**: 2026-02-15T10:30:00Z
 **Next Steps**: Begin Phase 1 implementation (Plansets 1 & 3 diagnostics)

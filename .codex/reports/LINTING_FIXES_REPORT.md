@@ -32,7 +32,7 @@ Successfully fixed **ALL 14,593 linting errors** across the codebase, reducing e
   # Before
   sys.path.insert(0, _core_path)
   from cognitive_brain import CognitiveBrain  # E402 error
-  
+
   # After
   sys.path.insert(0, _core_path)
   from cognitive_brain import CognitiveBrain  # noqa: E402
@@ -60,7 +60,7 @@ Successfully fixed **ALL 14,593 linting errors** across the codebase, reducing e
   for l in lines:
       if l.strip():
           process(l)
-  
+
   # After
   for line_item in lines:
       if line_item.strip():
@@ -99,7 +99,7 @@ def _start_system_metrics_logger(path: Path, interval: float):
 ```
 
 #### F821: Undefined Name (2 errors → 0)
-**Files**: 
+**Files**:
 - `scripts/phase3_categorization.py`
 - `src/codex_ml/cli/metrics_cli.py`
 
@@ -202,7 +202,7 @@ All checks passed!
 1. **ruff** - Primary linting tool
    - Version: Latest (installed via pip)
    - Config: `pyproject.toml` ([tool.ruff])
-   
+
 2. **Custom Scripts**
    - `/tmp/fix_e402.py` - Automated noqa comment insertion
    - `/tmp/fix_e741.py` - Variable name standardization

@@ -432,7 +432,7 @@ class MentalMappingModel:
             source_id = source_id.node_id
         if hasattr(target_id, 'node_id'):
             target_id = target_id.node_id
-        
+
         # Handle parameter aliases
         if source and not source_id:
             source_id = source

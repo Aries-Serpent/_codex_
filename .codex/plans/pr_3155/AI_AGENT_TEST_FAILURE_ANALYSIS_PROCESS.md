@@ -249,10 +249,10 @@ These are UNRELATED to our changes but must be fixed per AI Agency Policy:
 
 ## 🧠 Redundancy Patterns
 
-**Rollback Strategy**: 
+**Rollback Strategy**:
 - **Checkpoint**: After each iteration commit
 - **Trigger**: If CI shows regressions
-- **Action**: 
+- **Action**:
   1. Identify problematic commit
   2. Revert specific changes
   3. Re-analyze and re-apply fix

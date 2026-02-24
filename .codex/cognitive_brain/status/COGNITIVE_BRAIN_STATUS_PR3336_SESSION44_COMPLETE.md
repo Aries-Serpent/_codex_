@@ -84,7 +84,7 @@ Evolution:      Phase 6 P2 Active Learning budget enforcement IMPLEMENTED
 - [ ] Verify CI green on copilot/sub-pr-3336 after this push
 - [ ] P1.2: `python_requires >= "3.12"` restore once base branch CI green
 
-### P2 — Next Session  
+### P2 — Next Session
 - [ ] Extended noise: 1000 scenarios validation
 - [ ] Bayesian CPD EM implementation
 - [ ] Chain prompting integration tests

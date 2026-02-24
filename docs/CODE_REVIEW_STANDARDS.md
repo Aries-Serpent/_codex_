@@ -1,7 +1,7 @@
 # Code Review Standards
 
-**Status**: Stub document  
-**Created**: 2026-01-17  
+**Status**: Stub document
+**Created**: 2026-01-17
 **Phase**: 13 - Strict Mode Enablement
 
 ---

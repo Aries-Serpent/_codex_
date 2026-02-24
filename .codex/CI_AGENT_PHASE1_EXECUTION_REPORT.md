@@ -1,8 +1,8 @@
 # CI Failure Resolution Agent - Phase 1 Execution Report
 
-**Date:** 2026-02-18T03:27:00Z  
-**Agent:** ci-failure-resolution-agent  
-**Target:** Phase 1 (80.9% - Fix 2 tests)  
+**Date:** 2026-02-18T03:27:00Z
+**Agent:** ci-failure-resolution-agent
+**Target:** Phase 1 (80.9% - Fix 2 tests)
 **Status:** PARTIAL SUCCESS (1 of 2 fixes completed)
 
 ---
@@ -13,19 +13,19 @@
 Fix 2 tests to reach 55/68 (80.9% coverage) from baseline 53/68 (77.9%).
 
 ### Results
-- **Fixes Attempted:** 1  
-- **Fixes Successful:** 1 ✅  
-- **Tests Fixed:** 1  
-- **Coverage Progress:** 53/68 (77.9%) → 54/68 (79.4%)  
-- **Target:** 55/68 (80.9%) - **Need 1 more test**  
-- **Time Invested:** 25 minutes  
+- **Fixes Attempted:** 1
+- **Fixes Successful:** 1 ✅
+- **Tests Fixed:** 1
+- **Coverage Progress:** 53/68 (77.9%) → 54/68 (79.4%)
+- **Target:** 55/68 (80.9%) - **Need 1 more test**
+- **Time Invested:** 25 minutes
 
 ---
 
 ## 🔧 Fix #1: Model Preference Assertion ✅
 
-**Pattern:** Assertion Failure (P2)  
-**Test:** `tests/agents/test_autonomous_runner.py::test_execute_dry_run_mode`  
+**Pattern:** Assertion Failure (P2)
+**Test:** `tests/agents/test_autonomous_runner.py::test_execute_dry_run_mode`
 **Root Cause:** Test expected 'gpt-4-turbo' but actual default model is 'gpt-4o-mini'
 
 **Diagnosis:**
@@ -48,8 +48,8 @@ $ python -m pytest tests/agents/test_autonomous_runner.py::TestAutonomousAgentEx
 ========================= 1 passed in 0.36s =========================
 ```
 
-**Status:** ✅ COMPLETE  
-**Commit:** 3a2e68c  
+**Status:** ✅ COMPLETE
+**Commit:** 3a2e68c
 **Time:** 10 minutes
 
 ---
@@ -59,18 +59,18 @@ $ python -m pytest tests/agents/test_autonomous_runner.py::TestAutonomousAgentEx
 During Phase 1 execution, discovered these documented "quick wins" were already fixed:
 
 ### 1. AST NodeType Enum Value ✅
-**Test:** `tests/ast/test_plugins.py::TestPythonPlugin::test_parse_python_code`  
-**Fix:** Line 37 already has `.value` to get string representation  
+**Test:** `tests/ast/test_plugins.py::TestPythonPlugin::test_parse_python_code`
+**Fix:** Line 37 already has `.value` to get string representation
 **Status:** Already passing (validated 2026-02-18)
 
 ### 2. WorkflowResult total_files Property ✅
-**File:** `services/audio/workflow/auto_tune_workflow.py`  
-**Fix:** Lines 42-45 already have @property for total_files  
+**File:** `services/audio/workflow/auto_tune_workflow.py`
+**Fix:** Lines 42-45 already have @property for total_files
 **Status:** Already implemented (cannot test - pydantic dependency missing)
 
 ### 3. Off-by-One Fix (>= not >) ✅
-**Test:** `tests/context/test_context_agent_edge_cases_phase26.py`  
-**Fix:** Line 32 already changed to `>=` from `>`  
+**Test:** `tests/context/test_context_agent_edge_cases_phase26.py`
+**Fix:** Line 32 already changed to `>=` from `>`
 **Status:** Test is skipped (not counted as pass/fail)
 
 ---
@@ -78,19 +78,19 @@ During Phase 1 execution, discovered these documented "quick wins" were already 
 ## 🚧 Challenges Encountered
 
 ### Challenge 1: Self-CI Validation Timeout
-**Issue:** Test collection times out after 30 seconds  
-**Impact:** Cannot run comprehensive validation to identify all failures  
-**Workaround:** Use targeted pytest runs on specific modules  
+**Issue:** Test collection times out after 30 seconds
+**Impact:** Cannot run comprehensive validation to identify all failures
+**Workaround:** Use targeted pytest runs on specific modules
 **Resolution:** Need to fix self-CI script timeout threshold or optimize collection
 
 ### Challenge 2: Many Fixes Already Applied
-**Issue:** Documented "quick wins" from Phase 3C already fixed  
-**Impact:** Need deeper analysis to find remaining failures  
+**Issue:** Documented "quick wins" from Phase 3C already fixed
+**Impact:** Need deeper analysis to find remaining failures
 **Learning:** Always validate documented fixes before attempting
 
 ### Challenge 3: Dependency Issues
-**Issue:** Some tests cannot run due to missing dependencies (pydantic, mlflow, hydra)  
-**Impact:** Cannot validate WorkflowResult and other fixes  
+**Issue:** Some tests cannot run due to missing dependencies (pydantic, mlflow, hydra)
+**Impact:** Cannot validate WorkflowResult and other fixes
 **Context:** Expected in minimal environment
 
 ---
@@ -152,11 +152,11 @@ During Phase 1 execution, discovered these documented "quick wins" were already 
 
 ## 🔄 CI Monitoring Status
 
-**Active Workflows:** 15 workflows running on PR #3323  
+**Active Workflows:** 15 workflows running on PR #3323
 **Key Workflows:**
 - Resilient Validation Suite (quick) - IN PROGRESS
-- Resilient Validation Suite (slow) - IN PROGRESS  
-- Coverage with Timeout Guards - IN PROGRESS  
+- Resilient Validation Suite (slow) - IN PROGRESS
+- Coverage with Timeout Guards - IN PROGRESS
 - Code Quality & Coverage Suite - IN PROGRESS
 
 **Completed:**
@@ -197,21 +197,21 @@ During Phase 1 execution, discovered these documented "quick wins" were already 
 ## 💡 Patterns Learned
 
 ### Pattern 1: Default Model Evolution
-**Context:** Default model changed from gpt-4-turbo to gpt-4o-mini  
-**Impact:** Tests with hardcoded model assertions fail  
-**Fix:** Update assertions to match actual defaults  
+**Context:** Default model changed from gpt-4-turbo to gpt-4o-mini
+**Impact:** Tests with hardcoded model assertions fail
+**Fix:** Update assertions to match actual defaults
 **Prevention:** Use constants or config for model names in tests
 
 ### Pattern 2: Already-Applied Fixes
-**Context:** Many Phase 3C "quick wins" already implemented  
-**Impact:** Time spent validating non-issues  
-**Fix:** Always check current code before attempting fix  
+**Context:** Many Phase 3C "quick wins" already implemented
+**Impact:** Time spent validating non-issues
+**Fix:** Always check current code before attempting fix
 **Prevention:** Better tracking of applied fixes
 
 ### Pattern 3: Test Collection Timeout
-**Context:** Full test collection times out at 30s  
-**Impact:** Cannot run comprehensive validation  
-**Fix:** Use targeted module-level test runs  
+**Context:** Full test collection times out at 30s
+**Impact:** Cannot run comprehensive validation
+**Fix:** Use targeted module-level test runs
 **Prevention:** Optimize collection or increase timeout
 
 ---
@@ -275,6 +275,6 @@ During Phase 1 execution, discovered these documented "quick wins" were already 
 
 ---
 
-**Report Generated:** 2026-02-18T03:27:00Z  
-**Agent:** ci-failure-resolution-agent v1.0.0  
+**Report Generated:** 2026-02-18T03:27:00Z
+**Agent:** ci-failure-resolution-agent v1.0.0
 **Session:** PR #3248 Phase 1 Execution

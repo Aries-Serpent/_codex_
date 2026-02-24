@@ -1,7 +1,7 @@
 # CodeQL "5 Configurations Not Found" Issue
 
-**Status:** PERSISTENT KNOWN ISSUE  
-**Date First Observed:** 2026-02-09 (PR #3178)  
+**Status:** PERSISTENT KNOWN ISSUE
+**Date First Observed:** 2026-02-09 (PR #3178)
 **Current Status:** Still occurring as of 2026-02-15 (PR #3248)
 
 ## Issue Description

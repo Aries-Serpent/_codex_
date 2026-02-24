@@ -1,8 +1,8 @@
 # [Policy]: Emotion-Safe Urgency Guardrails for Copilot Agent
 
-> **Generated**: 2026-02-15T11:20:00Z  
-> **Author**: mbaetiong  
-> **Status**: MANDATORY - Active Immediately  
+> **Generated**: 2026-02-15T11:20:00Z
+> **Author**: mbaetiong
+> **Status**: MANDATORY - Active Immediately
 > **Version**: 1.0.0
 
 ---
@@ -41,9 +41,9 @@
 
 ### Pattern 1: Directive Strength Signals
 
-**Trigger**: Clear task intent + tool availability  
-**Agent Behavior**: Immediately execute MCP calls  
-**User Experience**: Sees execution start within 60 seconds  
+**Trigger**: Clear task intent + tool availability
+**Agent Behavior**: Immediately execute MCP calls
+**User Experience**: Sees execution start within 60 seconds
 
 **Example Signals**:
 - "Complete the data collection" → START NOW
@@ -61,14 +61,14 @@ def should_execute_immediately(request):
         "collect" in request.lower(),
         "@copilot" in request.lower()
     ])
-    
+
     has_tools = check_mcp_tools_available()
     has_context = check_previous_work_exists()
-    
+
     # Execute immediately if all conditions met
     if has_clear_task and has_tools and has_context:
         return True, "Immediate execution triggered"
-    
+
     return False, "Additional clarification needed"
 ```
 
@@ -76,9 +76,9 @@ def should_execute_immediately(request):
 
 ### Pattern 2: Intent Confirmation
 
-**Trigger**: Ambiguous request  
-**Agent Behavior**: Ask ONE clarifying question, then execute  
-**User Experience**: Quick confirmation, then immediate action  
+**Trigger**: Ambiguous request
+**Agent Behavior**: Ask ONE clarifying question, then execute
+**User Experience**: Quick confirmation, then immediate action
 
 **Example**:
 ```
@@ -101,9 +101,9 @@ Agent: "I can help with that. Let me create a comprehensive plan..."
 
 ### Pattern 3: Urgency Tags & Counters
 
-**Trigger**: Task with time/iteration sensitivity  
-**Agent Behavior**: Display progress counter, execute systematically  
-**User Experience**: Sees real-time progress  
+**Trigger**: Task with time/iteration sensitivity
+**Agent Behavior**: Display progress counter, execute systematically
+**User Experience**: Sees real-time progress
 
 **Example**:
 ```
@@ -118,7 +118,7 @@ def report_progress_with_counter(current, total, task_name):
     """Report progress with visual counter."""
     percentage = (current / total) * 100
     bar = "#" * int(percentage / 10) + "-" * (10 - int(percentage / 10))
-    
+
     return f"{task_name}: [{bar}] {current}/{total} ({percentage:.1f}%)"
 ```
 
@@ -126,9 +126,9 @@ def report_progress_with_counter(current, total, task_name):
 
 ### Pattern 4: Execution Timers
 
-**Trigger**: Task received  
-**Agent Behavior**: Start internal timer, report if execution delayed  
-**User Experience**: Agent self-monitors execution speed  
+**Trigger**: Task received
+**Agent Behavior**: Start internal timer, report if execution delayed
+**User Experience**: Agent self-monitors execution speed
 
 **Implementation**:
 ```python
@@ -139,14 +139,14 @@ class ExecutionTimer:
         self.task_name = task_name
         self.max_delay = max_delay_seconds
         self.start_time = time.time()
-    
+
     def check_delay(self):
         """Check if execution is delayed beyond threshold."""
         elapsed = time.time() - self.start_time
         if elapsed > self.max_delay:
             return True, f"⚠️ Execution delayed {elapsed:.0f}s (max: {self.max_delay}s)"
         return False, None
-    
+
     def report_execution(self):
         """Report execution started."""
         elapsed = time.time() - self.start_time
@@ -468,7 +468,7 @@ Any agent that causes user emotional distress through delayed execution will be 
 
 ---
 
-**Version**: 1.0.0  
-**Status**: ACTIVE  
-**Compliance**: MANDATORY  
+**Version**: 1.0.0
+**Status**: ACTIVE
+**Compliance**: MANDATORY
 **Review Date**: 2026-03-15 (30 days)

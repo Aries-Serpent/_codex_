@@ -63,12 +63,12 @@ except ImportError:
 ```python
 def test_rotate_secret_success(self, github_config):
     provider = GitHubTokenProvider(github_config)
-    
+
     with patch.object(provider, 'create_token') as mock_create:
         mock_create.return_value = RotationResult(
             success=True,
             new_secret_id="new-token-id",
-            new_secret_value="ghp_new_token_value",
+            new_secret_value="ghp_new_token_value",  # pragma: allowlist secret
         )
         result = provider.rotate_secret("old-token-id", ...)
         assert result.success is True
@@ -87,7 +87,7 @@ def test_rotate_secret_success(self, github_config):
 **Root Cause:** The `provider_name` property in `base.py` has explicit override mappings with correct brand capitalization:
 ```python
 provider_name_overrides = {
-    "aws_secrets_manager": "AWS Secrets Manager",  # Correct
+    "aws_secrets_manager": "AWS Secrets Manager",  # Correct # pragma: allowlist secret
     ...
 }
 ```
@@ -113,7 +113,7 @@ assert provider.provider_name == "AWS Secrets Manager"
 
 **Root Cause:** Mock data provided single job list for all runs. Pattern matching requires job names with keywords like "coverage" or "coverage-report".
 
-**Fix:** 
+**Fix:**
 1. Created run-specific job fixture:
 ```python
 @pytest.fixture

@@ -92,7 +92,7 @@ gh workflow run test-suite.yml -f test-scope=rag
 
 **Active Workflows:**
 - ci-health-monitor.yml - Core health monitoring
-- artifact-monitoring.yml - Artifact tracking  
+- artifact-monitoring.yml - Artifact tracking
 - repository-health-monitoring.yml - Repository health checks
 - batch-ci-triage.yml - Batch CI issue triage
 

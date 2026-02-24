@@ -1,8 +1,8 @@
 # Codex ML Architecture (v0.1.0)
 
-> **Version**: v0.1.0 Pre-Release  
-> **Last Updated**: 2026-02-09  
-> **Status**: Living Document  
+> **Version**: v0.1.0 Pre-Release
+> **Last Updated**: 2026-02-24
+> **Status**: Living Document
 > **Managed By**: AI Assistant Autonomous System
 
 **AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
@@ -32,36 +32,36 @@ graph TB
     User[Data Scientist / ML Engineer<br/>v0.1.0 User]
     Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
     Agents[53 Autonomous Agents<br/>🤖 MCP-enabled]
-    
+
     Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>1300+ Tests | 90% Coverage]
-    
+
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage]
     MCP[MCP System<br/>Model Context Protocol]
     Pipeline[Python Ingestion<br/>Ingest → Analyze → Transform → Verify]
-    
+
     HF[Hugging Face Hub<br/>Models + Datasets]
     MLflow[MLflow Tracking Server<br/>Experiments + Registry]
     Storage[Cloud Storage<br/>S3 / Azure / GCS]
     Compute[GPU Compute<br/>Ray Cluster / Distributed]
     GitHub[GitHub<br/>Actions + PR Automation]
-    
+
     User -->|Configure & Train| Codex
     Copilot -->|Code Generation & Review| Codex
     Agents -->|Autonomous Operations| Codex
-    
+
     Codex --> Brain
     Codex --> MCP
     Codex --> Pipeline
-    
+
     Brain -->|Quantum Decisions| Agents
     MCP -->|Context Protocol| Agents
-    
+
     Codex -->|Load Models & Data| HF
     Codex -->|Track Experiments| MLflow
     Codex -->|Store Artifacts| Storage
     Codex -->|Distribute Training| Compute
     Codex -->|CI/CD Automation| GitHub
-    
+
     style Codex fill:#3b82f6,stroke:#fff,stroke-width:4px,color:#fff
     style Brain fill:#8b5cf6,stroke:#fff,stroke-width:3px,color:#fff
     style MCP fill:#10b981,stroke:#fff,stroke-width:3px,color:#fff
@@ -100,90 +100,90 @@ graph TB
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
         end
-        
+
         subgraph "Cognitive Brain (k₁=0.35)"
             Brain[Decision Engine<br/>Superposition + Entanglement<br/>🧠 2.86x Advantage]
             Memory[Memory Manager<br/>STM/LTM + Patterns<br/>💾 60% Compression]
             Optimizer[Adaptive Scoring<br/>ML-inspired Weights<br/>📈 Self-optimizing]
         end
-        
+
         subgraph "MCP Ecosystem"
             MCPCore[MCP Core<br/>Model Context Protocol<br/>🔌 Standardized]
             Adapters[Adapters<br/>Pinecone/Mock/Custom<br/>🔗 Extensible]
             Workers[Background Workers<br/>Embeddings + Checkpoints<br/>⚙️ Async]
             Metrics[MCP Metrics<br/>Telemetry + Monitoring<br/>📊 Observability]
         end
-        
+
         subgraph "Python Ingestion Pipeline"
             Ingest[Ingest Module<br/>File/ZIP/Git/URL<br/>📥 Multi-source]
             Analyze[Analysis Module<br/>AST + Runtime<br/>🔍 Static + Dynamic]
             Transform[Transform Module<br/>Tier A/B/C<br/>🔄 LLM-guided]
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
-        
-        subgraph "Agent System (53 Agents)"
-            AgentCore[Agent Core<br/>RAG + Verification<br/>🤖 Autonomous]
+
+        subgraph "Agent System (54 Agents)"
+            AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
         end
-        
+
         subgraph "Infrastructure"
-            Security[Security Layer<br/>26 CVEs Fixed<br/>🔒 Production]
+            Security[Security Layer<br/>48 CVEs Fixed<br/>🔒 Production]
             CICD[CI/CD Automation<br/>Auto-Fix + Self-Heal<br/>🔧 Time Savings]
             Plugins[Plugin Framework<br/>Dynamic Loading<br/>🔌 Extensible]
         end
     end
-    
+
     subgraph "External Services"
         MLflow[MLflow Server<br/>Experiments + Registry]
         Storage[Object Storage<br/>S3/Azure/GCS]
         HF[Hugging Face<br/>Models + Datasets]
         GitHub[GitHub<br/>Actions + API]
     end
-    
+
     %% Core Flow
     CLI --> Config
     CLI --> Training
     CLI --> Eval
     CLI --> Serve
     CLI --> Ingest
-    
+
     Config -.configures.-> Training
     Config -.configures.-> Eval
     Config -.configures.-> Brain
-    
+
     Training --> Logging
     Eval --> Logging
     Serve --> Logging
-    
+
     %% Cognitive Brain
     Brain --> Memory
     Brain --> Optimizer
     AgentCore --> Brain
-    
+
     %% MCP System
     MCPCore --> Adapters
     MCPCore --> Workers
     MCPCore --> Metrics
     AgentCore --> MCPCore
-    
+
     %% Pipeline
     Ingest --> Analyze
     Analyze --> Transform
     Transform --> Verify
     CLI --> Ingest
-    
+
     %% Agent System
     AgentCore --> ToolRegistry
     AgentCore --> AgentMemory
     AgentCore --> CICD
-    
+
     %% Infrastructure
     Security -.protects.-> Training
     Security -.protects.-> MCPCore
     CICD -.automates.-> GitHub
     Plugins -.extends.-> Training
-    
+
     %% External
     Training --> MLflow
     Eval --> MLflow
@@ -191,7 +191,7 @@ graph TB
     Training --> HF
     Eval --> HF
     AgentCore --> GitHub
-    
+
     %% Styling
     style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
     style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
@@ -201,11 +201,11 @@ graph TB
     style Security fill:#dc2626,stroke:#991b1b,stroke-width:2px,color:#fff
 ```
     Serve --> HF
-    
+
     Config -.->|Hydra compose| Training
     Config -.->|Hydra compose| Eval
     Config -.->|Hydra compose| Serve
-    
+
     Plugins -.->|Extend| Training
     Plugins -.->|Extend| Eval
 
@@ -245,40 +245,40 @@ graph TB
         Optimizer[Optimizer & Scheduler<br/>Training optimization]
         Checkpoint[Checkpoint Manager<br/>Save/resume training]
     end
-    
+
     subgraph "Evaluation Engine"
         EvalRunner[Evaluation Runner]
         Metrics[Metrics Calculator]
         Benchmarks[Benchmark Suite]
         Reporter[Results Reporter]
     end
-    
+
     subgraph "Configuration Management"
         HydraConfig[Hydra Config Loader]
         Validator[Config Validator<br/>Pydantic schemas]
         Defaults[Default Configs]
     end
-    
+
     subgraph "Logging Infrastructure"
         SessionLogger[Session Logger<br/>SQLite backend]
         QueryEngine[Query Engine<br/>Search transcripts]
         Viewer[Log Viewer<br/>CLI interface]
     end
-    
+
     Trainer --> DataLoader
     Trainer --> ModelInit
     Trainer --> Optimizer
     Trainer --> Checkpoint
     Trainer --> SessionLogger
-    
+
     EvalRunner --> Metrics
     EvalRunner --> Benchmarks
     EvalRunner --> Reporter
     EvalRunner --> SessionLogger
-    
+
     HydraConfig --> Validator
     HydraConfig --> Defaults
-    
+
     style Trainer fill:#ff6b6b
     style EvalRunner fill:#51cf66
     style HydraConfig fill:#ff8787
@@ -330,7 +330,7 @@ sequenceDiagram
     participant Model
     participant MLflow
     participant Storage
-    
+
     User->>CLI: Run training command
     CLI->>Config: Load Hydra config
     Config-->>CLI: Resolved configuration
@@ -340,12 +340,12 @@ sequenceDiagram
     Trainer->>Model: Forward pass
     Model-->>Trainer: Loss
     Trainer->>Trainer: Backward pass & optimize
-    
+
     loop Every N steps
         Trainer->>MLflow: Log metrics
         Trainer->>Storage: Save checkpoint
     end
-    
+
     Trainer-->>CLI: Training complete
     CLI-->>User: Results & artifact paths
 ```text
@@ -361,20 +361,20 @@ sequenceDiagram
     participant Model
     participant Benchmarks
     participant Reporter
-    
+
     User->>CLI: Run evaluation command
     CLI->>Config: Load Hydra config
     Config-->>CLI: Resolved configuration
     CLI->>EvalRunner: Initialize evaluator
     EvalRunner->>Model: Load checkpoint
     EvalRunner->>Benchmarks: Run tasks
-    
+
     loop For each task
         Benchmarks->>Model: Generate predictions
         Model-->>Benchmarks: Outputs
         Benchmarks->>Benchmarks: Compute metrics
     end
-    
+
     Benchmarks-->>EvalRunner: Aggregated results
     EvalRunner->>Reporter: Format results
     Reporter-->>CLI: Formatted report
@@ -388,17 +388,17 @@ flowchart LR
     Defaults[Default Configs<br/>config/]
     User[User Overrides<br/>CLI args]
     Env[Environment Variables<br/>CODEX_*]
-    
+
     Hydra[Hydra Composer]
     Validator[Pydantic Validator]
     Final[Final Config Object]
-    
+
     Defaults --> Hydra
     User --> Hydra
     Env --> Hydra
     Hydra --> Validator
     Validator --> Final
-    
+
     style Final fill:#51cf66
 ```text
 
@@ -428,23 +428,23 @@ flowchart LR
 ```mermaid
 graph LR
     App[Codex ML]
-    
+
     Logs[Session Logs<br/>SQLite]
     Metrics[MLflow Metrics<br/>Training/Eval]
     Traces[Conversation Traces<br/>Query Engine]
-    
+
     App --> Logs
     App --> Metrics
     App --> Traces
-    
+
     Viewer[Log Viewer CLI]
     MLflowUI[MLflow UI]
     QueryCLI[Query CLI]
-    
+
     Logs --> Viewer
     Metrics --> MLflowUI
     Traces --> QueryCLI
-    
+
     style App fill:#326ce5,color:#fff
 ```text
 

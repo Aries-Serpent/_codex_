@@ -1,17 +1,17 @@
 # PR #3133 CI Failure Analysis Report
 
-**Generated**: 2026-02-03T17:15:00Z  
-**Branch**: `0D_base_` → `main`  
-**Head Commit**: `66f468ac6b4a9c8635b5be018d0bf4f49764bc90`  
-**Merge Commit**: `5a9b677355b8d251dc23f5b1faa366da9ed56968`  
+**Generated**: 2026-02-03T17:15:00Z
+**Branch**: `0D_base_` → `main`
+**Head Commit**: `66f468ac6b4a9c8635b5be018d0bf4f49764bc90`
+**Merge Commit**: `5a9b677355b8d251dc23f5b1faa366da9ed56968`
 **PR Status**: Draft | 155 commits | +31,696 / -9,571 lines | 894 files changed
 
 ---
 
 ## 📊 Executive Summary
 
-**CI Status**: 5/22 workflows failing  
-**Root Cause**: CodeQL alert + Artifact generation issues (non-blocking)  
+**CI Status**: 5/22 workflows failing
+**Root Cause**: CodeQL alert + Artifact generation issues (non-blocking)
 **Severity**: **LOW** - All failures are quality/informational issues, no functional blockers
 
 ### Status Dashboard
@@ -32,24 +32,24 @@
 
 ### 1. Auto-Fix Common CI Issues ❌
 
-**Job ID**: `62360295761`  
-**Duration**: ~30 seconds  
+**Job ID**: `62360295761`
+**Duration**: ~30 seconds
 **Status**: Failed (by design - issues detected)
 
 #### Issue Summary
 
 ```
 ❌ AUTO-FIXABLE ISSUES (CI Failure):
-Pattern                        Issues          Fixed     
+Pattern                        Issues          Fixed
 ----------------------------------------------------------------------
-CodeQL Alerts                  1               0         
+CodeQL Alerts                  1               0
 
 ⚠️  MANUAL REVIEW NEEDED (Informational):
-Pattern                        Issues          Status    
+Pattern                        Issues          Status
 ----------------------------------------------------------------------
-Tokenizer Fallbacks            6               Info      
-Test Assertions                209             Info      
-Redundant Imports              33              Info      
+Tokenizer Fallbacks            6               Info
+Test Assertions                209             Info
+Redundant Imports              33              Info
 ----------------------------------------------------------------------
 Auto-fixable: 1 issues, 0 fixed
 Manual review: 248 issues (informational)
@@ -77,15 +77,15 @@ python scripts/ci/auto_fix_common_issues.py
 # Manual review items can be addressed separately
 ```
 
-**Expected Result**: 1 issue fixed, 248 informational items remain  
-**Priority**: LOW - Code quality improvement  
+**Expected Result**: 1 issue fixed, 248 informational items remain
+**Priority**: LOW - Code quality improvement
 **Time to fix**: 2 minutes (auto) + optional manual review
 
 ---
 
 ### 2. CodeQL Code Scanning ❌
 
-**Job ID**: `62360448655`  
+**Job ID**: `62360448655`
 **Status**: **Log retrieval failed (404 Not Found)**
 
 #### Analysis
@@ -119,15 +119,15 @@ git commit --allow-empty -m "chore: trigger CodeQL re-scan"
 git push origin 0D_base_
 ```
 
-**Priority**: LOW - Alert reportedly already fixed  
+**Priority**: LOW - Alert reportedly already fixed
 **Time to fix**: 0 minutes (verification only)
 
 ---
 
 ### 3. Core Tests (Python 3.12) ⚠️
 
-**Job ID**: `62360295576`  
-**Duration**: ~15 minutes  
+**Job ID**: `62360295576`
+**Duration**: ~15 minutes
 **Status**: Artifacts generated successfully, no functional failures
 
 #### Analysis
@@ -136,7 +136,7 @@ The core tests workflow completed and generated all required artifacts:
 
 **Generated Artifacts**:
 - ✅ `junit-report-3.12` (2,509 bytes) - Test results
-- ✅ `coverage-html-3.12` (6.4 MB) - HTML coverage report  
+- ✅ `coverage-html-3.12` (6.4 MB) - HTML coverage report
 - ✅ `coverage.xml` - XML coverage data for Codecov
 
 **Artifact Upload Status**:
@@ -145,7 +145,7 @@ Artifact junit-report-3.12 successfully uploaded
 Artifact ID: 5359706794
 Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706794
 
-Artifact coverage-html-3.12 successfully uploaded  
+Artifact coverage-html-3.12 successfully uploaded
 Artifact ID: 5359706491
 Final size: 6,442,449 bytes
 Download URL: https://github.com/Aries-Serpent/_codex_/actions/runs/21635661076 <!-- Note: Logs expire after 90 days -->/artifacts/5359706491
@@ -194,18 +194,18 @@ Likely a **dependency chain issue** where the Core Tests job is marked as failed
 
 #### Recommended Action
 
-✅ **No action required** - Tests passed, artifacts generated  
+✅ **No action required** - Tests passed, artifacts generated
 This is a status reporting issue, not a test failure.
 
-**Priority**: NONE - False positive  
+**Priority**: NONE - False positive
 **Time to fix**: 0 minutes (will resolve when auto-fix passes)
 
 ---
 
 ### 4. Comprehensive Tests (Python 3.12) ⚠️
 
-**Job ID**: `62360348178`  
-**Duration**: ~22 minutes  
+**Job ID**: `62360348178`
+**Duration**: ~22 minutes
 **Status**: Artifacts generated successfully, marked as incomplete
 
 #### Analysis
@@ -259,18 +259,18 @@ Same as Core Tests - **cascading failure from Auto-Fix check**. The comprehensiv
 
 #### Recommended Action
 
-✅ **No action required** - Tests passed, artifacts generated  
+✅ **No action required** - Tests passed, artifacts generated
 Marked incomplete due to workflow dependency logic.
 
-**Priority**: NONE - False positive  
+**Priority**: NONE - False positive
 **Time to fix**: 0 minutes (will resolve when auto-fix passes)
 
 ---
 
 ### 5. Test Summary ❌
 
-**Job ID**: `62361841448`  
-**Duration**: <5 seconds  
+**Job ID**: `62361841448`
+**Duration**: <5 seconds
 **Status**: Failed by design (dependent check)
 
 #### Complete Log Analysis
@@ -314,7 +314,7 @@ Auto-Fix Common CI Issues (FAILED - by design, detected 1 issue)
 
 ✅ **No action required** - Will auto-resolve when Auto-Fix check passes
 
-**Priority**: NONE - Cascading failure indicator  
+**Priority**: NONE - Cascading failure indicator
 **Time to fix**: 0 minutes (automatic when dependencies pass)
 
 ---
@@ -370,7 +370,7 @@ git commit -m "fix: resolve CodeQL alert F401 (unused import)"
 git push origin 0D_base_
 ```
 
-**Expected Result**: 
+**Expected Result**:
 - Auto-Fix check: ❌ → ✅
 - CodeQL check: ❌ → ✅ (after re-scan)
 - Core Tests status: ⚠️ → ✅
@@ -499,7 +499,7 @@ git push origin 0D_base_
 - [ ] Auto-Fix check passes (run `python scripts/ci/auto_fix_common_issues.py`)
 - [ ] CodeQL alert #10677 verified as resolved
 - [ ] Core Tests show green status
-- [ ] Comprehensive Tests show green status  
+- [ ] Comprehensive Tests show green status
 - [ ] Test Summary shows green status
 - [ ] All 22 workflows pass
 - [ ] Security tab shows 0 active alerts
@@ -528,7 +528,7 @@ git push origin 0D_base_
 
 1. **Status Propagation**: Workflow dependency logic causes cascading failures
    - **Solution**: Consider separating blocking vs. informational checks
-   
+
 2. **CodeQL Alert Resolution**: Alert fixed but scan hasn't re-run
    - **Solution**: Add workflow dispatch trigger for manual re-scans
 
@@ -574,9 +574,9 @@ git push origin 0D_base_
 
 ## 📞 Contact & Support
 
-**Generated by**: CI Log Retrieval Agent (GitHub Copilot)  
-**Analysis Date**: 2026-02-03T17:15:00Z  
-**Report Version**: 1.0  
+**Generated by**: CI Log Retrieval Agent (GitHub Copilot)
+**Analysis Date**: 2026-02-03T17:15:00Z
+**Report Version**: 1.0
 
 **Related Documents**:
 - `.codex/BATCH_CI_TRIAGE_ANALYSIS_3106.md` - Rust feature validation resolution
@@ -596,8 +596,8 @@ git push origin 0D_base_
 
 **Summary**: PR #3133 has **only one actual blocking issue** (CodeQL alert), with all test suites passing successfully. The apparent multiple failures are cascading status indicators from a single root cause.
 
-**Action Required**: 
-1. Run `python scripts/ci/auto_fix_common_issues.py` 
+**Action Required**:
+1. Run `python scripts/ci/auto_fix_common_issues.py`
 2. Commit and push
 3. Wait for CI re-run (~20 minutes)
 4. Verify all checks pass
@@ -612,5 +612,5 @@ git push origin 0D_base_
 
 **End of Report**
 
-*Generated by CI Log Retrieval Agent*  
+*Generated by CI Log Retrieval Agent*
 *Last Updated: 2026-02-03T17:15:00Z*

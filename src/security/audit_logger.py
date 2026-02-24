@@ -46,9 +46,9 @@ class AuditLogger:
             action: Action performed
             user: User performing action
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
         log_entry = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(tz=timezone.utc).isoformat(),
             "event_type": event_type,
             "resource": resource,
             "action": action,

@@ -162,8 +162,8 @@ Specialized GitHub Copilot agent for verifying GitHub security alert details, ma
 
 ## 🧠 Cognitive Brain Integration
 
-> **Status**: ✅ Integrated (Phase 1.2)  
-> **Category**: security  
+> **Status**: ✅ Integrated (Phase 1.2)
+> **Category**: security
 > **Adapter**: SecurityAdapter
 
 ### Brain Capabilities

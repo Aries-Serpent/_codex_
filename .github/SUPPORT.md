@@ -19,7 +19,7 @@ Need help with _codex_? Here are your options:
 
 ### SLA Expectations (Internal Consumers)
 - **P1 (Critical/High Severity)**: ≤ 4 hours triage
-- **P2 (Medium Severity)**: ≤ 2 business days triage  
+- **P2 (Medium Severity)**: ≤ 2 business days triage
 - **P3 (Low Severity)**: Best effort
 
 ### Response Times (Open Source Contributors)

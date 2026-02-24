@@ -1,8 +1,8 @@
 # Cache Awareness & AAIS Parameter Optimization
 
-> **Generated**: 2026-02-17T12:15:00Z  
-> **Repository**: Aries-Serpent/_codex_  
-> **Purpose**: Enable cache awareness for custom agents + ensure parameters enhance AAIS  
+> **Generated**: 2026-02-17T12:15:00Z
+> **Repository**: Aries-Serpent/_codex_
+> **Purpose**: Enable cache awareness for custom agents + ensure parameters enhance AAIS
 > **Status**: ✅ PRODUCTION SPECIFICATION
 
 ---
@@ -45,27 +45,27 @@ graph TB
         L1B[Query Results<br/>TTL 5min]
         L1C[Session State<br/>Current session]
     end
-    
+
     subgraph "L2: Local Disk Caches"
         L2A[pip Cache<br/>~/.cache/pip]
         L2B[Tokenizer Cache<br/>.cache/huggingface]
         L2C[RAG Embeddings<br/>.codex/cache/embeddings]
         L2D[Build Artifacts<br/>.codex/cache/build]
     end
-    
+
     subgraph "L3: GitHub Actions Caches"
         L3A[Python Dependencies<br/>Key: pip-$hash]
         L3B[Node Modules<br/>Key: npm-$hash]
         L3C[Test Results<br/>Key: test-$sha]
         L3D[Build Cache<br/>Key: build-$branch]
     end
-    
+
     subgraph "L4: Remote/Distributed Caches"
         L4A[CDN Cache<br/>CloudFront]
         L4B[Database Cache<br/>Redis/Memcached]
         L4C[Artifact Storage<br/>GitHub Artifacts]
     end
-    
+
     Agent[Custom Agent] --> L1A
     Agent --> L1B
     Agent --> L1C
@@ -73,7 +73,7 @@ graph TB
     L1B -.miss.-> L2C
     L2A -.miss.-> L3A
     L2C -.miss.-> L4A
-    
+
     style Agent fill:#3b82f6,color:#fff
     style L1A fill:#10b981,color:#fff
     style L1B fill:#10b981,color:#fff
@@ -96,8 +96,8 @@ graph TB
 
 ### 1. GitHub Actions Caches
 
-**Location**: GitHub-hosted infrastructure  
-**Access**: Via `actions/cache` action or GitHub API  
+**Location**: GitHub-hosted infrastructure
+**Access**: Via `actions/cache` action or GitHub API
 **Scope**: Repository-level, per workflow
 
 **Active Caches** (20+ workflows using caching):
@@ -117,19 +117,19 @@ GITHUB_ACTIONS_CACHE_KEYS = {
     # Python caches
     "pip": "pip-{os}-{hash:requirements*.txt}",
     "venv": "venv-{os}-{python_version}-{hash:pyproject.toml}",
-    
+
     # Node caches
     "npm": "npm-{os}-{hash:package-lock.json}",
     "node_modules": "node-{os}-{hash:package.json}",
-    
+
     # Build caches
     "rust": "cargo-{os}-{hash:Cargo.lock}",
     "go": "go-{os}-{hash:go.sum}",
-    
+
     # Test caches
     "pytest": "pytest-{os}-{hash:tests/**/*.py}",
     "coverage": "coverage-{branch}-{sha}",
-    
+
     # Artifact caches
     "dist": "dist-{branch}-{sha}",
     "docs": "docs-build-{hash:docs/**/*.md}",
@@ -140,8 +140,8 @@ GITHUB_ACTIONS_CACHE_KEYS = {
 
 ### 2. Python Dependency Caches
 
-**Location**: `~/.cache/pip`, `.venv/`  
-**Managed by**: pip, uv, poetry  
+**Location**: `~/.cache/pip`, `.venv/`
+**Managed by**: pip, uv, poetry
 **Scope**: Local machine, CI runners
 
 **Cache Paths**:
@@ -169,8 +169,8 @@ PIP_CACHE_PARAMS = {
 
 ### 3. Tokenization Caches
 
-**Location**: `.cache/huggingface/`, `.codex/cache/tokenizers/`  
-**Purpose**: Cache tokenizer models and vocabularies  
+**Location**: `.cache/huggingface/`, `.codex/cache/tokenizers/`
+**Purpose**: Cache tokenizer models and vocabularies
 **Size**: ~500MB-2GB
 
 **Cache Structure**:
@@ -202,8 +202,8 @@ TOKENIZATION_CACHE_PARAMS = {
 
 ### 4. RAG Embedding Caches
 
-**Location**: `.codex/cache/embeddings/`  
-**Purpose**: Cache vector embeddings for RAG retrieval  
+**Location**: `.codex/cache/embeddings/`
+**Purpose**: Cache vector embeddings for RAG retrieval
 **Size**: ~1-5GB
 
 **Cache Structure**:
@@ -232,8 +232,8 @@ RAG_CACHE_PARAMS = {
 
 ### 5. CI Artifact Caches
 
-**Location**: GitHub Actions artifacts  
-**Purpose**: Cache build outputs, test reports, coverage data  
+**Location**: GitHub Actions artifacts
+**Purpose**: Cache build outputs, test reports, coverage data
 **Retention**: 30-180 days
 
 **Artifact Types**:
@@ -242,16 +242,16 @@ CI_ARTIFACT_CACHES = {
     # Build artifacts
     "dist": {"retention_days": 90, "size_mb": 50},
     "wheels": {"retention_days": 180, "size_mb": 100},
-    
+
     # Test artifacts
     "test_results": {"retention_days": 30, "size_mb": 10},
     "coverage_reports": {"retention_days": 90, "size_mb": 20},
     "pytest_cache": {"retention_days": 30, "size_mb": 5},
-    
+
     # Documentation
     "docs_build": {"retention_days": 180, "size_mb": 100},
     "api_docs": {"retention_days": 90, "size_mb": 50},
-    
+
     # Monitoring
     "workflow_trends": {"retention_days": 365, "size_mb": 5},
     "audit_reports": {"retention_days": 365, "size_mb": 10},
@@ -267,34 +267,34 @@ CI_ARTIFACT_CACHES = {
 ```python
 class CacheAwarenessParameters:
     """Parameters for cache-aware agent operations."""
-    
+
     # Cache Discovery
     ENABLE_CACHE_DISCOVERY = True  # Auto-discover available caches
     CACHE_TOPOLOGY_MAP = ".codex/topology/cache_map.json"
     SCAN_CACHE_ON_SESSION_START = True  # Initial cache survey
-    
+
     # Cache Usage Monitoring
     TRACK_CACHE_HIT_RATE = True  # Monitor hit/miss rates
     LOG_CACHE_OPERATIONS = True  # Log all cache accesses
     CACHE_METRICS_FILE = ".codex/cache_metrics.json"
     UPDATE_METRICS_INTERVAL_SECONDS = 60
-    
+
     # Cache Optimization
     AUTO_WARMUP_CACHES = True  # Pre-populate likely needed caches
     SUGGEST_CACHE_IMPROVEMENTS = True  # Recommend optimizations
     PRUNE_STALE_CACHES = True  # Auto-clean old entries
     MAX_CACHE_AGE_DAYS = 30  # Default eviction age
-    
+
     # Cache Invalidation
     SMART_INVALIDATION = True  # Invalidate based on dependencies
     INVALIDATION_TRACKING = True  # Track what triggers invalidation
     PRESERVE_CACHE_ON_ERROR = True  # Don't clear cache on failures
-    
+
     # Performance Targets
     TARGET_CACHE_HIT_RATE = 0.85  # 85% hit rate target
     WARNING_HIT_RATE = 0.60  # Warn if below 60%
     TARGET_CACHE_RESPONSE_MS = 100  # <100ms cache access
-    
+
     # AAIS Integration
     CACHE_CONTRIBUTES_TO_AAIS = True  # Cache metrics affect AAIS
     CACHE_DISCOVERY_WEIGHT = 0.15  # 15% of Discovery & Navigation
@@ -306,17 +306,17 @@ class CacheAwarenessParameters:
 ```python
 class CacheIntelligence:
     """Intelligent cache management for agents."""
-    
+
     def __init__(self):
         self.params = CacheAwarenessParameters()
         self.topology = self._discover_caches()
         self.metrics = self._load_metrics()
         self.recommendations = []
-    
+
     def _discover_caches(self) -> Dict[str, CacheInfo]:
         """Auto-discover all caches in repository."""
         caches = {}
-        
+
         # L1: In-memory (introspect running processes)
         caches["token_cache"] = CacheInfo(
             layer="L1",
@@ -326,7 +326,7 @@ class CacheIntelligence:
             hit_rate=0.85,
             ttl_seconds=300,
         )
-        
+
         # L2: Local disk
         for path in [".cache", ".codex/cache", "~/.cache/pip"]:
             if Path(path).exists():
@@ -338,17 +338,17 @@ class CacheIntelligence:
                     size_mb=size / 1_048_576,
                     hit_rate=self._estimate_hit_rate(path),
                 )
-        
+
         # L3: GitHub Actions (via API)
         gh_caches = self._fetch_github_actions_caches()
         caches.update(gh_caches)
-        
+
         # L4: Remote (if configured)
         if self._has_remote_cache():
             caches["remote"] = self._discover_remote_cache()
-        
+
         return caches
-    
+
     def analyze_usage_patterns(self) -> Dict[str, Any]:
         """Analyze cache usage patterns."""
         analysis = {
@@ -358,7 +358,7 @@ class CacheIntelligence:
             "cold_keys": self._identify_cold_keys(),
             "optimization_opportunities": [],
         }
-        
+
         # Per-layer analysis
         for layer in ["L1", "L2", "L3", "L4"]:
             layer_caches = [c for c in self.topology.values() if c.layer == layer]
@@ -368,7 +368,7 @@ class CacheIntelligence:
                     "total_size_gb": sum(c.size_mb for c in layer_caches) / 1024,
                     "cache_count": len(layer_caches),
                 }
-        
+
         # Identify optimization opportunities
         for cache_name, cache_info in self.topology.items():
             if cache_info.hit_rate < self.params.WARNING_HIT_RATE:
@@ -379,34 +379,34 @@ class CacheIntelligence:
                     "target": self.params.TARGET_CACHE_HIT_RATE,
                     "recommendations": self._get_recommendations(cache_info),
                 })
-        
+
         return analysis
-    
+
     def _get_recommendations(self, cache: CacheInfo) -> List[str]:
         """Generate cache optimization recommendations."""
         recs = []
-        
+
         if cache.hit_rate < 0.60:
             recs.append("Increase cache size or TTL")
             recs.append("Review cache key strategy")
             recs.append("Check for cache thrashing")
-        
+
         if cache.size_mb > 5000:  # >5GB
             recs.append("Consider cache eviction policy tuning")
             recs.append("Implement tiered caching")
-        
+
         if cache.layer == "L3" and cache.hit_rate < 0.70:
             recs.append("Review GitHub Actions cache key generation")
             recs.append("Check for unnecessary cache invalidation")
-        
+
         return recs
-    
+
     def suggest_improvements(self) -> List[Dict]:
         """AI-powered cache improvement suggestions."""
         suggestions = []
-        
+
         analysis = self.analyze_usage_patterns()
-        
+
         # Suggestion 1: Cache key optimization
         if analysis["overall_hit_rate"] < 0.75:
             suggestions.append({
@@ -417,7 +417,7 @@ class CacheIntelligence:
                 "implementation": "Review scripts/ci/generate_cache_keys.py",
                 "expected_improvement": "+10% hit rate",
             })
-        
+
         # Suggestion 2: Tiered caching
         l2_perf = analysis["layer_performance"].get("L2", {})
         if l2_perf.get("total_size_gb", 0) > 10:
@@ -429,7 +429,7 @@ class CacheIntelligence:
                 "implementation": "Add in-memory cache layer between L1 and L2",
                 "expected_improvement": "+5% overall hit rate, -20% L2 pressure",
             })
-        
+
         # Suggestion 3: Cache warmup
         if "hot_keys" in analysis and len(analysis["hot_keys"]) > 10:
             suggestions.append({
@@ -440,7 +440,7 @@ class CacheIntelligence:
                 "implementation": "Pre-populate cache before likely access",
                 "expected_improvement": "+3% hit rate, -50ms cold start",
             })
-        
+
         return suggestions
 ```
 
@@ -455,77 +455,77 @@ class CacheIntelligence:
 ```python
 class CacheAwareAgent:
     """Base class for cache-aware custom agents."""
-    
+
     def __init__(self, agent_name: str):
         self.agent_name = agent_name
         self.cache_intel = CacheIntelligence()
         self.cache_usage = CacheUsageTracker(agent_name)
-    
+
     def execute_with_cache_awareness(self, task: str) -> Result:
         """Execute task with full cache awareness."""
-        
+
         # Step 1: Discover relevant caches
         relevant_caches = self._identify_relevant_caches(task)
-        
+
         # Step 2: Check cache health
         cache_health = self.cache_intel.analyze_usage_patterns()
-        
+
         if cache_health["overall_hit_rate"] < 0.60:
             self.log_warning(f"Cache hit rate low: {cache_health['overall_hit_rate']:.2%}")
             # Suggest optimizations
             improvements = self.cache_intel.suggest_improvements()
             self.log_info(f"Cache improvements available: {len(improvements)}")
-        
+
         # Step 3: Execute task (cache-aware)
         result = self._execute_task(task, relevant_caches)
-        
+
         # Step 4: Update cache metrics
         self.cache_usage.record_operation(
             operation="task_execution",
             caches_used=relevant_caches,
             hit_rate=self._calculate_hit_rate(),
         )
-        
+
         # Step 5: Report cache contribution
         self._report_cache_contribution()
-        
+
         return result
-    
+
     def _identify_relevant_caches(self, task: str) -> List[str]:
         """Identify which caches are relevant for task."""
         relevant = []
-        
+
         # Task involves Python code → pip cache
         if "python" in task.lower() or ".py" in task.lower():
             relevant.extend(["pip", "venv", "pytest"])
-        
+
         # Task involves tests → test result cache
         if "test" in task.lower():
             relevant.extend(["pytest", "coverage", "test_results"])
-        
+
         # Task involves documentation → docs cache
         if "doc" in task.lower() or ".md" in task.lower():
             relevant.extend(["docs_build", "link_checker"])
-        
+
         # Task involves dependencies → dependency caches
         if "requirements" in task.lower() or "package" in task.lower():
             relevant.extend(["pip", "npm", "cargo"])
-        
+
         return relevant
-    
+
     def _report_cache_contribution(self):
         """Report how cache usage contributed to AAIS."""
         metrics = self.cache_usage.get_session_metrics()
-        
+
         # Cache discovery contribution
         discovery_score = min(
             len(self.cache_intel.topology) / 20 * 100,  # Max 20 caches
             100
         )
-        
+
         # Cache introspection contribution
         introspection_score = metrics["hit_rate"] * 100
-        
+
         self.log_info(f"""
         Cache Contribution to AAIS:
         - Discovery & Navigation: +{discovery_score * 0.15 / 100:.2f} points
@@ -689,7 +689,7 @@ CACHE_TTL_EXPLANATION = "How long to keep cached items before re-validation"
 class CacheParameters:
     # Standard parameters
     ENABLE_AUTO_WARMUP = True
-    
+
     # Escape hatch
     ALLOW_PARAMETER_OVERRIDE = True
     OVERRIDE_FILE = ".codex/cache_overrides.json"
@@ -700,47 +700,47 @@ class CacheParameters:
 ```python
 class AAISOptimizedParameters:
     """Parameters designed to maximize AAIS score."""
-    
+
     # Discovery & Navigation (+8 points target)
     DISCOVERY_PARAMS = {
         # Topology
         "enable_semantic_search": True,  # +2.0
         "auto_generate_topology_maps": True,  # +1.5
         "suggest_related_files": True,  # +1.0
-        
+
         # Cache
         "expose_cache_locations": True,  # +1.2
         "auto_discover_caches": True,  # +0.8
-        
+
         # Patterns
         "pattern_library_searchable": True,  # +1.0
         "pattern_based_suggestions": True,  # +0.5
     }
-    
+
     # Runtime Introspection (+10 points target)
     INTROSPECTION_PARAMS = {
         # Session State
         "expose_session_health": True,  # +2.0
         "track_context_utilization": True,  # +1.5
         "monitor_protocol_compliance": True,  # +1.5
-        
+
         # Cache Metrics
         "expose_cache_hit_rates": True,  # +1.8
         "track_cache_operations": True,  # +1.0
         "cache_metrics_dashboard": True,  # +0.7
-        
+
         # Workflow Status
         "expose_workflow_status": True,  # +1.0
         "track_blocking_workflows": True,  # +0.5
     }
-    
+
     # Pattern Consistency (+2 points target)
     CONSISTENCY_PARAMS = {
         "enforce_pattern_library": True,  # +1.0
         "auto_apply_known_patterns": True,  # +0.5
         "pattern_violation_detection": True,  # +0.5
     }
-    
+
     # Self-Describing Code (+2 points target)
     SELF_DESCRIBING_PARAMS = {
         "auto_generate_docstrings": False,  # Let devs write
@@ -754,7 +754,7 @@ class AAISOptimizedParameters:
 ```python
 def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
     """Validate that parameter enhances AAIS, not hinders."""
-    
+
     impact_analysis = {
         "parameter": param_name,
         "value": param_value,
@@ -762,7 +762,7 @@ def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
         "concerns": [],
         "recommendations": [],
     }
-    
+
     # Check 1: Does it hide or expose information?
     if "hide" in param_name.lower() or "disable" in param_name.lower():
         if param_value is True:
@@ -775,7 +775,7 @@ def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
             impact_analysis["recommendations"].append(
                 f"Consider inverting parameter: EXPOSE_{param_name.upper()}"
             )
-    
+
     # Check 2: Does it prescribe or discover?
     if "required" in param_name.lower() or "enforce" in param_name.lower():
         impact_analysis["concerns"].append({
@@ -787,7 +787,7 @@ def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
         impact_analysis["recommendations"].append(
             f"Consider making optional: TARGET_{param_name.upper()}"
         )
-    
+
     # Check 3: Is it self-documenting?
     if len(param_name) < 10 or param_name.isupper():
         impact_analysis["concerns"].append({
@@ -799,7 +799,7 @@ def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
         impact_analysis["recommendations"].append(
             "Use descriptive snake_case name with units/context"
         )
-    
+
     # Check 4: Does it provide escape hatch?
     if "enforce" in param_name.lower() and param_value is True:
         if not has_override_mechanism(param_name):
@@ -812,7 +812,7 @@ def validate_parameter_aais_impact(param_name: str, param_value: Any) -> Dict:
             impact_analysis["recommendations"].append(
                 "Add ALLOW_OVERRIDE flag or exception mechanism"
             )
-    
+
     return impact_analysis
 ```
 
@@ -860,31 +860,31 @@ if cache_health["overall_hit_rate"] < 0.75:
 
 class UnifiedCacheManager:
     """Manage all cache layers with single interface."""
-    
+
     def __init__(self):
         self.l1_caches = InMemoryCacheManager()
         self.l2_caches = DiskCacheManager()
         self.l3_caches = GitHubActionsCacheManager()
         self.l4_caches = RemoteCacheManager()
-        
+
         self.intelligence = CacheIntelligence()
         self.metrics = CacheMetricsCollector()
-    
+
     def get(self, key: str, layer: Optional[str] = None) -> Optional[Any]:
         """Get from cache (auto-select layer if not specified)."""
         if layer:
             return self._get_from_layer(key, layer)
-        
+
         # Try L1 → L2 → L3 → L4
         for layer in ["L1", "L2", "L3", "L4"]:
             value = self._get_from_layer(key, layer)
             if value is not None:
                 self.metrics.record_hit(layer, key)
                 return value
-        
+
         self.metrics.record_miss(key)
         return None
-    
+
     def get_health_report(self) -> Dict:
         """Get comprehensive cache health report."""
         return {
@@ -893,12 +893,12 @@ class UnifiedCacheManager:
             "recommendations": self.intelligence.suggest_improvements(),
             "aais_contribution": self._calculate_aais_contribution(),
         }
-    
+
     def _calculate_aais_contribution(self) -> Dict:
         """Calculate how cache contributes to AAIS."""
         topology_size = len(self.intelligence.topology)
         hit_rate = self.metrics.calculate_overall_hit_rate()
-        
+
         return {
             "discovery_points": min(topology_size / 20 * 8, 8),  # Max +8
             "introspection_points": hit_rate * 10,  # Max +10
@@ -914,7 +914,7 @@ class UnifiedCacheManager:
 
 def validate_all_parameters():
     """Validate all parameters in unified config."""
-    
+
     config = load_unified_parameters()
     report = {
         "total_parameters": 0,
@@ -924,14 +924,14 @@ def validate_all_parameters():
         "concerns": [],
         "recommendations": [],
     }
-    
+
     # Validate each parameter
     for section, params in config.items():
         for param_name, param_value in params.items():
             report["total_parameters"] += 1
-            
+
             impact = validate_parameter_aais_impact(param_name, param_value)
-            
+
             if impact["concerns"]:
                 report["aais_hindering"] += 1
                 report["concerns"].extend(impact["concerns"])
@@ -940,17 +940,17 @@ def validate_all_parameters():
                 report["aais_enhancing"] += 1
             else:
                 report["aais_neutral"] += 1
-    
+
     # Calculate overall score
     report["aais_safety_score"] = (
         report["aais_enhancing"] - report["aais_hindering"]
     ) / report["total_parameters"]
-    
+
     return report
 
 if __name__ == "__main__":
     report = validate_all_parameters()
-    
+
     print(f"""
     AAIS Parameter Validation Report
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -958,17 +958,17 @@ if __name__ == "__main__":
     AAIS Enhancing: {report['aais_enhancing']} ✅
     AAIS Neutral: {report['aais_neutral']} ➖
     AAIS Hindering: {report['aais_hindering']} ❌
-    
+
     Safety Score: {report['aais_safety_score']:.2%}
-    
+
     Status: {"✅ SAFE" if report['aais_safety_score'] > 0.5 else "⚠️ REVIEW NEEDED"}
     """)
-    
+
     if report["concerns"]:
         print("\n⚠️ Concerns:")
         for concern in report["concerns"]:
             print(f"  - {concern['parameter']}: {concern['issue']}")
-    
+
     if report["recommendations"]:
         print("\n💡 Recommendations:")
         for rec in report["recommendations"]:
@@ -987,7 +987,7 @@ Update `.github/pr-chains/agent-enhancement-2026-02.md`:
    - File: `scripts/cognitive/cache_manager.py`
    - Auto-discovery across all cache layers
    - Health monitoring and optimization
-   
+
 6. **AAIS Parameter Validator**
    - File: `scripts/validate_aais_parameters.py`
    - Validates all parameters against AAIS impact
@@ -1005,17 +1005,17 @@ Update `.github/pr-chains/agent-enhancement-2026-02.md`:
 
 ### Cache Awareness Achievement
 
-✅ **Multi-Layer Cache Discovery**: L1-L4 auto-discovery  
-✅ **Intelligent Optimization**: AI-powered suggestions  
-✅ **AAIS Integration**: +7 points from cache awareness  
-✅ **Agent Intelligence**: All 54 agents cache-aware  
+✅ **Multi-Layer Cache Discovery**: L1-L4 auto-discovery
+✅ **Intelligent Optimization**: AI-powered suggestions
+✅ **AAIS Integration**: +7 points from cache awareness
+✅ **Agent Intelligence**: All 54 agents cache-aware
 
 ### AAIS Parameter Safety
 
-✅ **No Hindering Parameters**: 0 parameters reduce AAIS  
-✅ **All Enhancing**: 100% of parameters improve discoverability  
-✅ **Escape Hatches**: All strict parameters have overrides  
-✅ **Self-Documenting**: All parameters clearly named  
+✅ **No Hindering Parameters**: 0 parameters reduce AAIS
+✅ **All Enhancing**: 100% of parameters improve discoverability
+✅ **Escape Hatches**: All strict parameters have overrides
+✅ **Self-Documenting**: All parameters clearly named
 
 ### Final AAIS Projection
 
@@ -1029,7 +1029,7 @@ Update `.github/pr-chains/agent-enhancement-2026-02.md`:
 
 ---
 
-**Status**: ✅ PRODUCTION SPECIFICATION  
-**Version**: 3.0.0  
-**Cache Layers**: 4 (L1-L4)  
+**Status**: ✅ PRODUCTION SPECIFICATION
+**Version**: 3.0.0
+**Cache Layers**: 4 (L1-L4)
 **AAIS Impact**: +5.2 points (exceeds +4.7 target)

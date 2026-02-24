@@ -9,7 +9,7 @@ Successfully resolved **15 of 25 test failures** (60% complete) in PR #3325 by f
 ### ✅ RAG Device Placement (11 tests)
 **Problem**: `safe_model_to_device` missing `dtype` and `non_blocking` parameters
 
-**Solution**: 
+**Solution**:
 - Added `dtype: Optional[Any] = None` for model precision conversion
 - Added `non_blocking: bool = False` for async transfers
 - Added input validation to raise TypeError for non-Module inputs
@@ -17,7 +17,7 @@ Successfully resolved **15 of 25 test failures** (60% complete) in PR #3325 by f
 
 **File**: `src/codex/rag/utils.py`
 
-### ✅ Security Utils (4 tests)  
+### ✅ Security Utils (4 tests)
 **Problem**: `safe_secret_reference` signature mismatch
 
 **Solution**:
@@ -49,7 +49,7 @@ Successfully resolved **15 of 25 test failures** (60% complete) in PR #3325 by f
 ## Commits
 
 - **ce6a0b8**: docs: Add comprehensive CI testing session report
-- **e568d98**: docs: Update test fixes report - 15/25 complete (60%)  
+- **e568d98**: docs: Update test fixes report - 15/25 complete (60%)
 - **5215eef**: fix(rag): Add dtype and non_blocking parameters + fix(security): Update safe_secret_reference API
 
 ## Next Steps

@@ -23,10 +23,13 @@ except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
 
 # Skip all tests if numpy or sentence_transformers is not available
-pytestmark = pytest.mark.skipif(
-    not NUMPY_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="numpy and sentence_transformers required for RAG indexing tests"
-)
+pytestmark = [
+    pytest.mark.skipif(
+        not NUMPY_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
+        reason="numpy and sentence_transformers required for RAG indexing tests",
+    ),
+    pytest.mark.requires_faiss,
+]
 
 
 class TestChunkText:
