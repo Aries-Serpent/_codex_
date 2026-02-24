@@ -122,7 +122,7 @@ def audit_dependencies() -> dict[str, tuple[bool, str, str, list[str]]]:
                 "requirements/lock.txt",
             ],
         ),
-        "marshmallow": ("3.21.3", ["requirements/lock.txt"]),
+        "marshmallow": ("4.2.2", ["requirements/lock.txt"]),
         "aiohttp": ("3.9.5", ["requirements.txt", "requirements/lock.txt"]),
     }
 

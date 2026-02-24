@@ -1,7 +1,7 @@
 # Codex ML Architecture (v0.1.0)
 
 > **Version**: v0.1.0 Pre-Release
-> **Last Updated**: 2026-02-09
+> **Last Updated**: 2026-02-24
 > **Status**: Living Document
 > **Managed By**: AI Assistant Autonomous System
 
@@ -121,14 +121,14 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (53 Agents)"
-            AgentCore[Agent Core<br/>RAG + Verification<br/>🤖 Autonomous]
+        subgraph "Agent System (54 Agents)"
+            AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]
         end
 
         subgraph "Infrastructure"
-            Security[Security Layer<br/>26 CVEs Fixed<br/>🔒 Production]
+            Security[Security Layer<br/>48 CVEs Fixed<br/>🔒 Production]
             CICD[CI/CD Automation<br/>Auto-Fix + Self-Heal<br/>🔧 Time Savings]
             Plugins[Plugin Framework<br/>Dynamic Loading<br/>🔌 Extensible]
         end

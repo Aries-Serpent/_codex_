@@ -2,8 +2,8 @@
 
 **Version**: v0.1.0 Pre-Release  
 **Package**: codex-ml  
-**Last Updated**: 2026-02-09  
-**Context**: Production-ready with 1300+ tests, 90% coverage, 26 CVEs fixed, 53 agents  
+**Last Updated**: 2026-02-24
+**Context**: Production-ready with 1500+ tests, 90% coverage, 48 CVEs fixed, 54 agents
 **Purpose**: Updated architecture diagrams reflecting v0.1.0 pre-release state
 
 ---
@@ -11,10 +11,10 @@
 ## 🎯 Overview (v0.1.0)
 
 This document presents all key architecture diagrams aligned with v0.1.0 pre-release:
-1. **1300+ Tests**: Comprehensive test coverage across all components
+1. **1500+ Tests**: Comprehensive test coverage across all components
 2. **90% Coverage**: Production-grade quality threshold achieved
-3. **26 CVEs Fixed**: Security-hardened through IP-005 remediation
-4. **53 Autonomous Agents**: Full agent ecosystem operational
+3. **48 CVEs Fixed**: Security-hardened through IP-005 remediation
+4. **54 Autonomous Agents**: Full agent ecosystem operational
 5. **MCP System**: Model Context Protocol fully integrated
 6. **Cognitive Brain**: k₁=0.35 optimization complete (2.86x advantage)
 7. **Python Ingestion Pipeline**: Complete ingest→analyze→transform→verify flow
@@ -29,10 +29,10 @@ This document presents all key architecture diagrams aligned with v0.1.0 pre-rel
 ```mermaid
 graph TB
     subgraph "codex-ml v0.1.0 CI/CD Pipeline"
-        TC[test-comprehensive.yml<br/>✅ 1300+ Tests<br/>✅ 90% Coverage<br/>✅ pytest-rerunfailures]
+        TC[test-comprehensive.yml<br/>✅ 1500+ Tests<br/>✅ 90% Coverage<br/>✅ pytest-rerunfailures]
         TR[test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini]
         SH[self-healing.yml<br/>✅ Auto-Fix + Self-Heal<br/>✅ 75-87% Time Savings<br/>✅ PyYAML dependency order]
-        SEC[security-scan.yml<br/>✅ 26 CVEs Fixed<br/>🔒 CodeQL + Bandit<br/>🔒 Safety + Semgrep]
+        SEC[security-scan.yml<br/>✅ 48 CVEs Fixed<br/>🔒 CodeQL + Bandit<br/>🔒 Safety + Semgrep]
     end
     
     subgraph "pytest Configuration (Centralized)"
@@ -92,9 +92,9 @@ graph TB
 ```
 
 ### v0.1.0 Key Improvements
-- **1300+ Tests**: Comprehensive coverage across all modules
+- **1500+ Tests**: Comprehensive coverage across all modules
 - **90% Coverage**: Production-grade quality threshold
-- **26 CVEs Fixed**: Security hardening complete
+- **48 CVEs Fixed**: Security hardening complete
 - **Auto-Fix**: 75-87% time savings (2-4 hours → 15-30 minutes)
 - **Self-Healing**: Automatic issue detection and remediation
 - **Centralized Config**: Single pytest.ini for all workflows
@@ -414,8 +414,9 @@ graph TB
     subgraph "Agent Layer"
         DTS_AGENT[doc-test-scribe<br/>Agent definition<br/>.github/agents/]
         CI_AGENT[ci-testing-agent<br/>Diagnostics & fixes]
-        RAG_AGENT[rag-index-manager<br/>RAG operations]
+        RAG_AGENT[rag-index-manager<br/>RAGIndexer facade<br/>RAG operations]
         SEC_AGENT[security agents<br/>Various scanners]
+        MSP_AGENT[msp-client<br/>Gateway API<br/>request/infer/query]
     end
     
     subgraph "Tool Layer"

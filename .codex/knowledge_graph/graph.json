@@ -1,7 +1,7 @@
 {
-  "version": "1.3.0",
-  "generated": "2026-02-23T22:14:00Z",
-  "session": "S75",
+  "version": "1.4.0",
+  "generated": "2026-02-24T07:30:00Z",
+  "session": "S82",
   "description": "Cross-Agent Knowledge Graph \u2014 PR #3344 codebase intelligence index",
   "nodes": [
     {
@@ -240,6 +240,48 @@
       "session_introduced": "S81",
       "status": "active",
       "notes": "Hardened 7 pre-commit hooks: check-yaml exclusions, bandit -lll, detect-secrets baseline, hook script scope fixes"
+    },
+    {
+      "id": "N-018",
+      "type": "module",
+      "label": "src/codex/rag/indexer.py \u2014 RAGIndexer class",
+      "tags": [
+        "rag",
+        "indexer",
+        "facade",
+        "S82"
+      ],
+      "session_introduced": "S82",
+      "status": "active",
+      "notes": "RAGIndexer class wraps module-level build_index_from_files/list_tenants; imported by cli_rag.py for test patchability"
+    },
+    {
+      "id": "N-019",
+      "type": "module",
+      "label": "agents/msp_client.py \u2014 MSPClient.request()",
+      "tags": [
+        "agents",
+        "msp",
+        "api-method",
+        "S82"
+      ],
+      "session_introduced": "S82",
+      "status": "active",
+      "notes": "Added generic request(method, path, **kwargs) method; tests expect it via test_msp_client_comprehensive.py"
+    },
+    {
+      "id": "N-020",
+      "type": "compat",
+      "label": "engine_hf_trainer.py \u2014 transformers 5.2 getattr guard",
+      "tags": [
+        "transformers",
+        "compat",
+        "getattr",
+        "S82"
+      ],
+      "session_introduced": "S82",
+      "status": "active",
+      "notes": "getattr(trainer.state, 'last_model_checkpoint', None) \u2014 transformers 5.2.0 removed TrainerState.last_model_checkpoint"
     }
   ],
   "edges": [
@@ -290,6 +332,18 @@
       "to": "N-015",
       "label": "marks-faiss-tests",
       "session": "S81"
+    },
+    {
+      "from": "N-018",
+      "to": "N-015",
+      "label": "facade-wraps-functions",
+      "session": "S82"
+    },
+    {
+      "from": "N-020",
+      "to": "N-007",
+      "label": "compat-guard-trainer-state",
+      "session": "S82"
     }
   ],
   "drq_index": {
@@ -359,7 +413,9 @@
     "P-007": "faiss-availability-check: Import the dependency directly (import faiss) before importing wrapper class",
     "P-008": "load-training-arguments-stub: HF trainer tests MUST stub load_training_arguments to prevent CUDA probe",
     "P-009": "checkpoint-sha256-embed: Embed digest into re-serialized bytes before write; upsert parent-index by root.name",
-    "P-010": "embedding-cache-set: EmbeddingCache.set(key, value, *args) delegates to put(); non-numeric falls back to np.zeros(1)"
+    "P-010": "embedding-cache-set: EmbeddingCache.set(key, value, *args) delegates to put(); non-numeric falls back to np.zeros(1)",
+    "P-011": "getattr-compat-guard: Use getattr(obj, attr, default) for dependency attributes that may be removed in minor/major upgrades",
+    "P-012": "facade-class-testability: Create facade classes (e.g. RAGIndexer) to enable @patch in tests when module only exposes functions"
   },
-  "last_updated": "S81-2026-02-24"
+  "last_updated": "S82-2026-02-24"
 }

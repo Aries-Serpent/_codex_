@@ -507,8 +507,8 @@ markupsafe==3.0.3
     #   mako
     #   nbconvert
     #   werkzeug
-marshmallow==3.26.1
-    # via great-expectations
+marshmallow==4.2.2
+    # via codex-ml (core dependency)
 matplotlib==3.10.8
     # via mlflow
 matplotlib-inline==0.2.1

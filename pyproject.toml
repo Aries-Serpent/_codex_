@@ -32,7 +32,7 @@ dependencies = [
   "pydantic-settings>=2.2",
   "pyyaml>=6.0",
   "pandas>=2.1",
-  "great_expectations==0.18.7",
+  "marshmallow>=4.0.0,<5",  # Upgraded: great-expectations moved to optional (requires marshmallow<4)
   "mlflow>=2.22.4,<4",  # Security: Updated from 2.4 to fix 43+ vulnerabilities (RCE, auth bypass, path traversal)
   "transformers>=4.48.0,<6",  # Security: Updated from 4.41 to fix deserialization vulnerabilities
   "peft>=0.11,<1",
@@ -83,6 +83,10 @@ auth = [
   "PyNaCl>=1.5.0,<2.0.0",
 ]
 cli = ["typer>=0.9", "click>=8.1"]
+ge = [
+  "great_expectations>=0.18.7,<2",
+  "marshmallow>=3.7.1,<4",  # GE requires marshmallow<4; conflicts with marshmallow 4.x core dep
+]
 configs = [
   "hydra-core[hydra_plugins]>=1.3",
   "omegaconf>=2.3",
