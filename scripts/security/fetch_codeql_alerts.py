@@ -91,7 +91,7 @@ class CodeQLAlertFetcher:
 
         self.owner = owner
         self.repo = repo
-        self.token = token or os.environ.get("GITHUB_TOKEN", "")
+        self.token = token if token is not None else os.environ.get("GITHUB_TOKEN", "")
         self.max_pages = max_pages
         # nosemgrep: url-substring-check - GitHub API base for alert retrieval
         self.base_url = "https://api.github.com"

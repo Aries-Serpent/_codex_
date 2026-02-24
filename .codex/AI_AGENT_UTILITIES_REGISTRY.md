@@ -1002,4 +1002,3 @@ def test_example(temp_index_dir, sample_rag_corpus):
 - [ ] Mock embedding models for faster tests
 - [ ] Shared corpus caching
 - [ ] Parametrized fixtures for different sizes
-

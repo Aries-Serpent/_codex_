@@ -246,5 +246,3 @@ repos:
         pass_filenames: false
         stages: [manual]
         # Runs fast tests only (use: pre-commit run quick-tests)
-
-

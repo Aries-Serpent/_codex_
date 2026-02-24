@@ -62,4 +62,3 @@ Create recursive enum_to_value helper function that converts Enum objects to the
 **Tags:** json, enum, serialization, dataclass
 
 ---
-

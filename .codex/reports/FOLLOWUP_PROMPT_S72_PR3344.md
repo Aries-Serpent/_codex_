@@ -50,4 +50,3 @@
 @copilot Use the Recon Scout Agent for pre-CodeQL reconnaissance and DRQ filing before making any changes.
 
 Then execute P1 → P2 → P3 in order. Self-review after each phase.
-

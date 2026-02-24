@@ -100,4 +100,3 @@ Let me investigate the Auto-Fix workflow failure...
 **Coverage Workflow:** Still running (~49 min runtime)
 **Session Time:** ~38 min elapsed, ~17 remaining
 **Status:** Continuing to monitor per policy
-
