@@ -56,6 +56,7 @@ repos:
             files=$(grep -r "import xml.etree.ElementTree" --include="*.py" . \
               | grep -v ".git" \
               | grep -v "test_\|_test\.py" \
+              | grep -v ".venv_ci" \
               | grep -v ".venv_validation" \
               | grep -v "tools/codemods/" \
               | grep -v "tools/validate.py" \
