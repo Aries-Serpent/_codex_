@@ -816,7 +816,7 @@ class RAGIndexer:
         index_name: str = "default",
         chunk_size: int = 1000,
         overlap: int = 128,
-    ) -> Dict[str, Any]:
+    ) -> Path:
         """Build an index from a list of files."""
         return build_index_from_files(
             files=[Path(f) for f in files],

@@ -45,7 +45,10 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
-from defusedxml import ElementTree as ET
+try:
+    from defusedxml import ElementTree as ET
+except ImportError:  # pragma: no cover - CI may not have defusedxml
+    from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 
