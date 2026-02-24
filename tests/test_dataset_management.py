@@ -308,8 +308,8 @@ def test_compression_effectiveness(temp_dataset):
     manager.scan_repository()
 
     for pf in manager.processed_files:
-        # Text files should compress well
-        if pf.category in ('source_code', 'documentation', 'config'):
+        # Text files should compress well, but only if large enough to overcome gzip header overhead
+        if pf.category in ('source_code', 'documentation', 'config') and pf.size_original >= 1024:
             assert pf.compression_ratio < 0.8  # At least 20% compression
 
 

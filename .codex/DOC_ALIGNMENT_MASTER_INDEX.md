@@ -27,7 +27,7 @@ All documentation generated during the comprehensive v0.1.0 pre-release alignmen
 
 ### Execution Artifacts
 
-4. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [update_docs_v0.1.0.py](update_docs_v0.1.0.py) --> --> --> --> --> --> --> --> --> -->** (5.7 KB)
+4. **<!-- BROKEN LINK: [update_docs_v0.1.0.py](update_docs_v0.1.0.py) -->** (5.7 KB)
    - Automated update script
    - Pattern-based replacement logic
    - Recursive markdown scanning
@@ -72,7 +72,7 @@ All documentation generated during the comprehensive v0.1.0 pre-release alignmen
 **Need detailed analysis?** → [DOC_ALIGNMENT_REPORT_V0.1.0.md](DOC_ALIGNMENT_REPORT_V0.1.0.md)
 **Need quick overview?** → [COMPREHENSIVE_DOC_ALIGNMENT_COMPLETE.md](COMPREHENSIVE_DOC_ALIGNMENT_COMPLETE.md)
 **Need concise summary?** → [DOC_UPDATE_SUMMARY.md](DOC_UPDATE_SUMMARY.md)
-**Need to re-run?** → <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [update_docs_v0.1.0.py](update_docs_v0.1.0.py) --> --> --> --> --> --> --> --> --> -->
+**Need to re-run?** → <!-- BROKEN LINK: [update_docs_v0.1.0.py](update_docs_v0.1.0.py) -->
 
 ### Validation Status
 
