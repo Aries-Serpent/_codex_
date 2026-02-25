@@ -11,9 +11,9 @@
 This document tracks the implementation progress of CI optimization based on PR #3248 analysis. The optimization is divided into 4 phases, with Phase 1 now complete.
 
 **Reference Documents:**
-- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](../.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
-- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](../.codex/CI_OPTIMIZATION_PLANSETS.md)
-- Implementation Prompt: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](../FOLLOWUP_IMPLEMENTATION_PROMPT.md)
+- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](../../.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](../../.codex/CI_OPTIMIZATION_PLANSETS.md)
+- Implementation Prompt: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](../../.codex/reports/FOLLOWUP_IMPLEMENTATION_PROMPT.md)
 
 ---
 
@@ -547,13 +547,13 @@ Phase 1 Completion Criteria:
 ## References
 
 1. **Analysis Documents:**
-   - [CI Failure Pattern Analysis](../.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
-   - [CI Optimization Plansets](../.codex/CI_OPTIMIZATION_PLANSETS.md)
-   - [Workflow Architecture Review](../.codex/WORKFLOW_ARCHITECTURE_REVIEW.md)
+   - [CI Failure Pattern Analysis](../../.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+   - [CI Optimization Plansets](../../.codex/CI_OPTIMIZATION_PLANSETS.md)
+   - [Workflow Architecture Review](../../.codex/WORKFLOW_ARCHITECTURE_REVIEW.md)
 
 2. **Implementation Guidance:**
-   - [Follow-up Implementation Prompt](../FOLLOWUP_IMPLEMENTATION_PROMPT.md)
-   - [Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md)
+   - [Follow-up Implementation Prompt](../../.codex/reports/FOLLOWUP_IMPLEMENTATION_PROMPT.md)
+   - [Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 3. **Testing Documentation:**
    - Test files in `tests/ci/`

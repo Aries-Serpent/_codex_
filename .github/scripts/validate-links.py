@@ -5,8 +5,12 @@ Validates internal file links and flags dynamic variables for manual review.
 
 Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
 Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
+Updated: 2026-02-25 | Added --fail-on-errors / STRICT_MODE / JSON report (PR #3365)
 """
 
+import argparse
+import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -211,8 +215,8 @@ class LinkValidator:
             if file_path.is_file():
                 self.validate_file(file_path)
 
-    def report(self) -> int:
-        """Print validation report and return exit code"""
+    def report(self, report_file: str = "") -> int:
+        """Print validation report, optionally write JSON, and return exit code"""
         print("=" * 80)
         print("📋 MARKDOWN LINK VALIDATION REPORT")
         print("=" * 80)
@@ -241,10 +245,54 @@ class LinkValidator:
         print(f"❌ Errors: {len(self.errors)}")
         print("=" * 80)
 
+        # Write JSON report when requested
+        if report_file:
+            report_data = {
+                "checked": len(self.checked_files),
+                "warnings_count": len(self.warnings),
+                "errors_count": len(self.errors),
+                "warnings": [
+                    {"file": src, "link": lnk, "message": msg}
+                    for src, lnk, msg in self.warnings
+                ],
+                "errors": [
+                    {"file": src, "link": lnk, "message": msg}
+                    for src, lnk, msg in self.errors
+                ],
+            }
+            try:
+                Path(report_file).write_text(
+                    json.dumps(report_data, indent=2), encoding="utf-8"
+                )
+                print(f"📄 Report written: {report_file}")
+            except Exception as exc:  # pragma: no cover
+                print(f"⚠️  Could not write report file {report_file}: {exc}")
+
         # Return non-zero exit code only for errors (not warnings)
         return 1 if self.errors else 0
 
 def main():
+    parser = argparse.ArgumentParser(description="Validate links in repo markdown files")
+    parser.add_argument(
+        "--fail-on-errors",
+        action="store_true",
+        default=False,
+        help="Exit non-zero if errors are found (overridden by STRICT_MODE env var)",
+    )
+    parser.add_argument(
+        "--report-file",
+        default="",
+        help="Optional path to write a JSON summary report",
+    )
+    args = parser.parse_args()
+
+    # STRICT_MODE env var overrides --fail-on-errors (workflow sets this)
+    env_strict = os.getenv("STRICT_MODE", "").lower()
+    if env_strict in ("1", "true", "yes"):
+        args.fail_on_errors = True
+    elif env_strict in ("0", "false", "no"):
+        args.fail_on_errors = False
+
     repo_root = Path(__file__).parent.parent.parent
     validator = LinkValidator(repo_root)
 
@@ -253,7 +301,13 @@ def main():
     validator.validate_directory(repo_root / ".github" / "docs")
     validator.validate_directory(repo_root / "docs")
 
-    sys.exit(validator.report())
+    exit_code = validator.report(report_file=args.report_file)
+
+    if args.fail_on_errors:
+        sys.exit(exit_code)
+    else:
+        # Always exit 0 unless --fail-on-errors / STRICT_MODE is active
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

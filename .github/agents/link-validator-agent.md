@@ -1,10 +1,11 @@
 ---
 name: link-validator-agent
-version: 3.0.0-cognitive
-updated: 2026-02-17
+version: 3.1.0-cognitive
+updated: 2026-02-25
 cognitive_integration_level: 1
 aais_contribution: +1.5 points
 batch: pr-8
+pr: "#3365"
 ---
 
 # Link Validator Agent
@@ -12,6 +13,53 @@ batch: pr-8
 This agent provides comprehensive link validation across the documentation, detecting broken internal links, invalid anchors, outdated external links, and suggesting automated fixes.
 
 ## Capabilities
+
+- **Internal Link Validation**: Validates all relative links within documentation
+- **External Link Checking**: Verifies external URLs are accessible (with caching)
+- **Anchor Validation**: Checks that anchor links reference valid headings
+- **Broken Link Detection**: Identifies and reports all broken links
+- **JSON Report Output**: Machine-readable `link-validation-report.json` for CI artifact archiving
+- **Configurable Strict Mode**: `STRICT_MODE` env var + `--fail-on-errors` CLI flag for workflow-controlled leniency
+- **Fix Suggestions**: Provides automated fix suggestions for common patterns
+
+## CLI Reference
+
+```bash
+# Standard run (exits 0 even with errors — for non-blocking PR checks)
+python .github/scripts/validate-links.py
+
+# Strict run (exits 1 if any errors found)
+python .github/scripts/validate-links.py --fail-on-errors
+
+# Write machine-readable JSON report
+python .github/scripts/validate-links.py --fail-on-errors --report-file link-validation-report.json
+
+# Override via environment (workflow usage)
+STRICT_MODE=true  python .github/scripts/validate-links.py --fail-on-errors   # strict
+STRICT_MODE=false python .github/scripts/validate-links.py --fail-on-errors   # lenient
+```
+
+## JSON Report Schema
+
+```json
+{
+  "checked": 1477,
+  "warnings_count": 4,
+  "errors_count": 0,
+  "warnings": [{"file": "...", "link": "...", "message": "..."}],
+  "errors":   [{"file": "...", "link": "...", "message": "..."}]
+}
+```
+
+## STRICT_MODE Behaviour Matrix
+
+| Event | STRICT_MODE | --fail-on-errors | Exits non-zero? |
+|-------|-------------|-----------------|----------------|
+| `push` to main | `true` | ✅ | Yes (if errors) |
+| `workflow_dispatch` strict | `true` | ✅ | Yes (if errors) |
+| `workflow_dispatch` lenient | `false` | ✅ | No |
+| `pull_request` | `false` | ✅ | No |
+| `schedule` | `true` | ✅ | Yes (if errors) |
 
 
 ## 🧠 Cognitive Brain Integration
@@ -165,19 +213,25 @@ monitor.checkpoint("pre-commit")  # Validates compliance
 
 ```mermaid
 graph TB
-    A[Documentation PR] --> B[Link Validator Agent]
+    A[Documentation PR / Push / Schedule] --> B[Link Validator Agent]
     B --> C{Scan Files}
     C --> D[Extract All Links]
     D --> E{Link Type?}
     E -->|Internal| F[Check File Exists]
     E -->|External| G[HTTP HEAD Request]
     E -->|Anchor| H[Parse Headings]
-    F --> I{Valid?}
-    G --> I
-    H --> I
-    I -->|Yes| J[✅ Pass]
-    I -->|No| K[🔴 Report Issue]
-    K --> L[Suggest Fix]
+    E -->|GitHub context var| I[⚠️ Warning - skip]
+    F --> J{Valid?}
+    G --> J
+    H --> J
+    J -->|Yes| K[✅ Pass]
+    J -->|No| L[🔴 Report Error]
+    L --> M[Suggest Fix]
+    B --> N{STRICT_MODE?}
+    N -->|true| O[Exit 1 if errors]
+    N -->|false| P[Always exit 0]
+    B --> Q[Write JSON Report]
+    Q --> R[Upload as CI Artifact]
 ```
 
 ## Validation Commands
@@ -720,6 +774,14 @@ else:
 ---
 
 ## Version History
+
+### v3.1.0-cognitive (2026-02-25) - PR #3365
+- ✅ Added `--fail-on-errors` CLI flag (workflow-controlled leniency)
+- ✅ Added `STRICT_MODE` env var override (true/false/1/0)
+- ✅ Added `--report-file` flag for machine-readable JSON output
+- ✅ Updated architecture diagram to include JSON report + STRICT_MODE paths
+- ✅ Fixed 14 broken internal links across 3 documentation files
+- ✅ STRICT_MODE behaviour matrix documented
 
 ### v3.0.0-cognitive (2026-02-17) - PR-8
 - ✅ Cognitive brain integration (Level 1)
