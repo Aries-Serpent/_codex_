@@ -31,6 +31,12 @@ class SignstoreClient:
         self.fulcio_url = "https://fulcio.sigstore.dev"
         self.rekor_url = "https://rekor.sigstore.dev"
         self.enabled = os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
+        if self.enabled:
+            logger.warning(
+                "CODEX_ENABLE_SIGNING=true but this is a MOCK signing implementation. "
+                "Signatures are NOT cryptographically secure. "
+                "Migrate to sigstore-python SDK before using in production."
+            )
 
     def _get_github_token(self) -> str:
         """
