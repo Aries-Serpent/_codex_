@@ -29,10 +29,13 @@ def test_run_functional_training_resume(tmp_path):
         },
     }
 
+    first = None
     try:
         first = run_functional_training(base_config, resume=False)
     except HFModelUnavailableError as exc:
         pytest.skip(f"HuggingFace model unavailable (no network in CI): {exc}")
+        return  # unreachable: pytest.skip raises; satisfies static analysis
+    assert first is not None
     assert first["resumed_from"] is None
     if first.get("checkpoint_dir") is None:
         pytest.skip("functional training checkpointing requires optional deps")

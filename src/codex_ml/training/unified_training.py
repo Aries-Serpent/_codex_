@@ -640,4 +640,5 @@ __all__ = [
     "run_unified_training",
     "train_loop",
     "functional_training",
+    "resolve_strategy",  # re-exported for monkeypatching
 ]
