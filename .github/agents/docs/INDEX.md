@@ -54,7 +54,7 @@ See template in `../*.md` files for agent specification format.
 
 ## Quick Links
 - [Main Repository Documentation](../../../agents/README.md)
-- [Root Organization Scripts](../../scripts/root_org/)
+- [Root Organization Scripts](../../../scripts/root_org/)
 - [CI/CD Workflows](../workflows/)
 
 ---

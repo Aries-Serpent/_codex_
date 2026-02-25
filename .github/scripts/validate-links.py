@@ -51,6 +51,16 @@ SKIP_LINK_PATTERNS = [
     r'^\.\./configs/',     # Config file references (code)
     r'^\.\.\./',           # Invalid relative paths
     r'^sitecustomize\.py$', # Python site customization
+    r'^path$',             # Standalone 'path' word in table/code examples
+    r'^\.\*$',             # Regex wildcard pattern shown as example
+    r'^file\.md$',         # Generic placeholder filename
+    r'^guide\.md$',        # Placeholder guide filename in doc examples
+    r'^\./guide\.md$',     # Placeholder ./guide.md in examples
+    r'^docs/guide\.md$',   # Placeholder docs/guide.md in examples
+    r'^rag_pipelines\.md$',# Placeholder in github-pages-manager docs
+    r'^/tmp/',             # Temporary file/script paths
+    r'^.*?correct/path',   # Placeholder "../correct/path.md" in examples
+    r'^AGENT_DESIGN\.md$', # Broken-link stub ref in HTML comments
 ]
 
 class LinkValidator:
@@ -299,6 +309,7 @@ def main():
     # Validate specific directories
     validator.validate_directory(repo_root / ".github" / "workflows")
     validator.validate_directory(repo_root / ".github" / "docs")
+    validator.validate_directory(repo_root / ".github" / "agents")
     validator.validate_directory(repo_root / "docs")
 
     exit_code = validator.report(report_file=args.report_file)

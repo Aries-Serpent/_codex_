@@ -1,6 +1,6 @@
 ---
 name: link-validator-agent
-version: 3.1.0-cognitive
+version: 3.2.0-cognitive
 updated: 2026-02-25
 cognitive_integration_level: 1
 aais_contribution: +1.5 points
@@ -51,7 +51,30 @@ STRICT_MODE=false python .github/scripts/validate-links.py --fail-on-errors   # 
 }
 ```
 
-## STRICT_MODE Behaviour Matrix
+## Directories Scanned
+
+| Directory | Pattern | Notes |
+|-----------|---------|-------|
+| `.github/workflows/` | `**/*.md` | Workflow docs |
+| `.github/docs/` | `**/*.md` | GitHub docs |
+| `.github/agents/` | `**/*.md` | Agent documentation (added v3.2.0) |
+| `docs/` | `**/*.md` | Project documentation |
+
+## Pre-commit Integration
+
+Added to `.pre-commit-config.yaml` as `validate-internal-links` hook:
+
+```yaml
+- id: validate-internal-links
+  name: Validate Internal Doc Links (.github/agents + docs/)
+  entry: python .github/scripts/validate-links.py --fail-on-errors
+  language: system
+  pass_filenames: false
+  files: '\.md$'
+  stages: [commit]
+```
+
+Triggers automatically whenever `.md` files are staged. Runs the full internal-link scan and exits non-zero if errors are found.
 
 | Event | STRICT_MODE | --fail-on-errors | Exits non-zero? |
 |-------|-------------|-----------------|----------------|
@@ -774,6 +797,15 @@ else:
 ---
 
 ## Version History
+
+### v3.2.0-cognitive (2026-02-25) - PR #3365 Phase 2
+- ✅ Extended scan to `.github/agents/` directory (1777 files, was 1477)
+- ✅ Fixed 4 "outside repository" warnings (docs/MOVED.md, docs/DEPRECATED.md → absolute GitHub URLs)
+- ✅ Fixed 41 broken links in `.github/agents/` files
+- ✅ Added 10 new SKIP_LINK_PATTERNS for placeholder/example links in agent docs
+- ✅ Added 9 minimal stub files for referenced docs that didn't exist
+- ✅ Added `validate-internal-links` pre-commit hook (triggers on .md file changes)
+- ✅ 0 errors, 0 warnings — full clean scan
 
 ### v3.1.0-cognitive (2026-02-25) - PR #3365
 - ✅ Added `--fail-on-errors` CLI flag (workflow-controlled leniency)

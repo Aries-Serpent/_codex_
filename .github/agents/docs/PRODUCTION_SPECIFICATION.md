@@ -1029,7 +1029,7 @@ gh auth status
 
 - [GitHub Actions Documentation](https://docs.github.com/actions)
 - [GitHub Copilot Documentation](https://docs.github.com/copilot)
-- [AI Agency Policy](/AI_AGENCY_POLICY_VERIFICATION.md)
+- [AI Agency Policy](../../../docs/admin/AI_AGENCY_POLICY_VERIFICATION.md)
 - [Agent Development Guide](/.github/agents/AGENT_DEVELOPMENT_GUIDE.md)
 
 ---

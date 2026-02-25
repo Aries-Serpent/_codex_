@@ -80,9 +80,9 @@ See `agent.yaml` for full configuration options.
 
 ## 🔗 Related
 
-- [Full Planset](.codex/plans/CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md)
-- [Cognitive Brain Pattern](../.codex/cognitive_brain/STATUS_UPDATE_2026_01_11_PR2785.md#pattern-test-assertion-alignment)
-- [CI Testing Agent](.github/agents/ci-testing-agent/)
+- [Full Planset](../../../.codex/plans/CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md)
+- [Cognitive Brain Pattern](../../../.codex/cognitive_brain/STATUS_UPDATE_2026_01_11_PR2785.md#pattern-test-assertion-alignment)
+- [CI Testing Agent](../ci-testing-agent/)
 
 ---
 
