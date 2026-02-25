@@ -28,7 +28,7 @@ class _DummyTokenizer:
         """Accept revision and other kwargs for compatibility."""
         return cls()
 
-    def __call__(self, texts, *, padding, return_tensors):
+    def __call__(self, texts, *, padding, return_tensors, **kwargs):
         length = max(len(t) for t in texts) if texts else 1
         data = np.zeros((len(texts), length), dtype=np.int64)
         attention = np.ones_like(data)

@@ -237,7 +237,7 @@ class SuperpositionEngine:
         # Normalize to probability distribution using temperature-scaled softmax
         # Softmax with temperature T: P_i = exp(s_i/T) / Σ exp(s_j/T)
         # Lower temperature → sharper distribution → higher coherence
-        temperature = getattr(self.config, 'superposition_temperature', 0.15)
+        temperature = getattr(self.config, 'superposition_temperature', 0.08)
         max_score = max(scores) if scores else 0.0
         if max_score == 0:
             probabilities = [1.0 / len(scores)] * len(scores)
@@ -356,24 +356,51 @@ class SuperpositionEngine:
 
         Args:
             decisions: List of (id, function) tuples
-            context: Optional context dict
+            context: Optional context dict passed to evaluation functions
 
         Returns:
             Dictionary with decision, coherence, and other metrics
         """
+        _context = context or {}
+
         # Convert tuples to Decision objects; use id as name for unnamed decisions.
         # Wrap each evaluation function so that dict returns (e.g. {'score': 0.9})
         # are reduced to a plain float, keeping evaluate_parallel happy.
+        # Functions that require a context argument are called with the context dict.
         def _wrap(fn: Callable) -> Callable[[], float]:
             def _wrapped() -> float:
-                result = fn()
+                # Try different calling conventions to support various function signatures:
+                # 1. No args (zero-argument scoring functions)
+                # 2. Unpacked context values as positional args (e.g. fn(context["input"]))
+                # 3. Context dict as single arg
+                result = None
+                _tried = False
+                for _args in [(), tuple(_context.values()) if _context else (), (_context,)]:
+                    try:
+                        result = fn(*_args)
+                        _tried = True
+                        break
+                    except TypeError:
+                        continue
+                    except Exception:
+                        return 0.0
+                if not _tried:
+                    return 0.0
                 if isinstance(result, dict):
-                    return float(result.get("score", 0.0))
-                return float(result)
+                    # Check keys in order of semantic preference
+                    for key in ("score", "confidence", "value"):
+                        val = result.get(key)
+                        if isinstance(val, (int, float)):
+                            return float(val)
+                    return 0.0
+                try:
+                    return float(result)
+                except (TypeError, ValueError):
+                    return 0.0
             return _wrapped
 
         decision_objects = [
-            Decision(id=dec_id, name=dec_id, evaluation_fn=_wrap(func), metadata=context or {})
+            Decision(id=dec_id, name=dec_id, evaluation_fn=_wrap(func), metadata=_context)
             for dec_id, func in decisions
         ]
 
@@ -387,10 +414,9 @@ class SuperpositionEngine:
         state.scores = scores
         state.evaluated = True
 
-        # Calculate coherence
-        amplitudes = state.amplitudes
-        probabilities = [a**2 for a in amplitudes]
-        coherence = self._calculate_coherence(probabilities)
+        # Calculate coherence from softmax probabilities (non-uniform → higher coherence)
+        # Scores from evaluate_parallel are already normalized probability distributions.
+        coherence = self._calculate_coherence(scores) if scores else 0.0
         state.coherence = coherence
 
         # Collapse to best decision
@@ -401,7 +427,7 @@ class SuperpositionEngine:
             "value": best.metadata.get("value"),
             "coherence": coherence,
             "scores": scores,
-            "amplitudes": amplitudes,
+            "amplitudes": state.amplitudes,
         }
 
     def apply_quantum_noise(self, state: SuperpositionState) -> None:

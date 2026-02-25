@@ -31,7 +31,7 @@ def _install_runtime_stubs(module, monkeypatch: pytest.MonkeyPatch, output_text:
     class Module:
         class AutoTokenizer:  # pragma: no cover - simple stub
             @classmethod
-            def from_pretrained(cls, name: str):
+            def from_pretrained(cls, name: str, **kwargs):
                 return DummyTokenizer()
 
     monkeypatch.setattr(module, "optional_import", lambda name: (Module, True))

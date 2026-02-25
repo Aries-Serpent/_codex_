@@ -466,6 +466,15 @@ class SchemaValidationRule(ValidationRule):
             )
 
 
+class ValidationSummary(list):
+    """List of ValidationResult objects with an aggregate ``is_valid`` property."""
+
+    @property
+    def is_valid(self) -> bool:
+        """Return True if all validation results passed."""
+        return all(r.is_valid for r in self)
+
+
 class DataValidator:
     """Orchestrates multiple validation rules."""
 
@@ -482,7 +491,7 @@ class DataValidator:
         self.rules.append(rule)
         logger.debug(f"Added validation rule: {rule.name}")
 
-    def validate(self, data: Any, sample_size: Optional[int] = None) -> "list[ValidationResult]":
+    def validate(self, data: Any, sample_size: Optional[int] = None) -> "ValidationSummary":
         """Run all validation rules.
 
         Args:
@@ -490,13 +499,15 @@ class DataValidator:
             sample_size: Optional sample size for large datasets
 
         Returns:
-            List of individual :class:`ValidationResult` objects, one per rule.
+            :class:`ValidationSummary` (a list subclass) of individual
+            :class:`ValidationResult` objects, one per rule.  Access
+            ``.is_valid`` on the summary to check aggregate pass/fail.
         """
         if sample_size and hasattr(data, "sample"):
             logger.info(f"Sampling {sample_size} rows for validation")
             data = data.sample(n=min(sample_size, len(data)))
 
-        results: list[ValidationResult] = []
+        results: ValidationSummary = ValidationSummary()
 
         for rule in self.rules:
             logger.debug(f"Running validation rule: {rule.name}")
@@ -524,4 +535,3 @@ class DataValidator:
                 + "\n".join(f"  - {err}" for err in all_errors)
             )
             raise ValueError(error_msg)
-

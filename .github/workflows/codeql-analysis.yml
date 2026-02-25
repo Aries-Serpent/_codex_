@@ -28,11 +28,11 @@ jobs:
       fail-fast: false
       matrix:
         # Languages detected in repository
-        language: ['python', 'javascript']
+        language: ['python', 'javascript', 'typescript']
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4

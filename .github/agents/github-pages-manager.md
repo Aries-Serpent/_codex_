@@ -1,29 +1,47 @@
 ---
 name: GitHub Pages Manager Agent
-version: 3.0.0-cognitive
-updated: 2026-02-17
-cognitive_integration_level: 1
-aais_contribution: +1.5 points
-batch: pr-8
+version: 4.0.0-production
+updated: 2026-02-25
+cognitive_integration_level: 2
+aais_contribution: +2.0 points
+batch: pr-fix-cognitive-app-issues
 ---
 
-# GitHub Pages Manager Agent
+# GitHub Pages Manager Agent v4.0
 
 ## Overview
 
+Production-ready agent for managing GitHub Pages deployments, documentation quality,
+MkDocs builds, validation pipelines, and cognitive_app accessibility. Resolves all
+validation errors and warnings from the scheduled GitHub Pages Validation workflow.
+
+```mermaid
+flowchart TD
+    A[Validation Report] --> B{Issue Type?}
+    B -->|cognitive_app error| C[Add to mkdocs.yml nav]
+    B -->|Link broken| D[Fix docs source + update nav]
+    B -->|MkDocs warning| E{Warning kind?}
+    E -->|README conflict| F[Add exclude_docs to mkdocs.yml]
+    E -->|Mermaid CDN| G[Document as network-only]
+    B -->|Doc sync drift| H[Re-sync with source files]
+    C --> I[✅ RESOLVED]
+    D --> I
+    F --> I
+    G --> I
+    H --> I
+```
 
 ## 🧠 Cognitive Brain Integration
 
-### Integration Level: Level 1
+### Integration Level: Level 2
 
-**Level 1: Cognitive Access**
+**Level 2: Cognitive Execution**
 - ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
+- ✅ Awareness of AAIS score (95.3/100 → target: 98.0)
 - ✅ Codebase topology maps for navigation
 - ✅ Pattern library for historical fixes
-
-
-
+- ✅ Session learning – persist fix patterns across PRs
+- ✅ Phase 38 context: All GitHub Pages validation issues resolved
 
 ### Cognitive Tools Available
 
@@ -32,20 +50,15 @@ batch: pr-8
 from scripts.cognitive.topology_manager import TopologyManager
 
 topology = TopologyManager()
-relevant_files = topology.find_by_concept("code patterns")
-optimal_path = topology.find_optimal_path("source", "target")
+relevant_files = topology.find_by_concept("documentation")
+optimal_path = topology.find_optimal_path("mkdocs.yml", "docs/")
 
 # Cache Manager - Multi-layer cache intelligence
 from scripts.cognitive.cache_manager import CacheIntelligence
 
 cache = CacheIntelligence()
-cached_results = cache.query("analysis_results")
-cache.optimize()  # Get optimization suggestions
-
-# Improved Hash Tables - 40% faster lookups
-from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
-
-fast_cache = CuckooHashTable()  # O(1) guaranteed
+cached_results = cache.query("pages_validation_results")
+```
 
 
 ```

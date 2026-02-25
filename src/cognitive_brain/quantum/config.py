@@ -169,6 +169,11 @@ class QuantumConfig:
             ),
         )
 
+    @property
+    def quantum_mode_enabled(self) -> bool:
+        """Return True if the quantum mode master toggle is on."""
+        return self.quantum_mode
+
     def is_enabled(self, feature: str) -> bool:
         """
         Check if a specific quantum feature is enabled.

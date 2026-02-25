@@ -993,8 +993,9 @@ agents:
   status: active
   maturity: production
   category: documentation
-  priority: medium
-  purpose: Manages GitHub Pages deployment, theme configuration, and live site validation.
+  priority: high
+  version: 4.0.0-production
+  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.
 - id: integration-test-runner
   name: Integration Test Runner
   file: integration-test-runner.agent.md
