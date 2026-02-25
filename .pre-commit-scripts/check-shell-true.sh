@@ -10,6 +10,7 @@ files=$(find . \( \
     -o -path "./security/validate" \
     -o -path "./.github" \
     -o -path "./.codex" \
+    -o -path "./.venv_ci" \
     -o -path "./.venv_validation" \
     -o -path "./tools" \
   \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null || true)

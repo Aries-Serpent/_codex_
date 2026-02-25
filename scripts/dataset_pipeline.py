@@ -352,7 +352,7 @@ class DatasetManager:
 
         print(f"Creating compressed archive: {archive_name}")
 
-        if format.endswith(".tar.gz") or format == "tar":
+        if format in {"tar", "tar.gz"} or format.endswith(".tar.gz"):
             with tarfile.open(archive_path, "w:gz") as tar:
                 for pf in self.processed_files:
                     try:

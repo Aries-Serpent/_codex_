@@ -68,8 +68,17 @@ class PreFlightValidator:
             uses_timeout = "--timeout=" in content
 
             if uses_xdist or uses_timeout:
-                has_pinning = bool(re.search(r"pytest-xdist==\d+\.\d+\.\d+", content))
-                has_timeout_pinning = bool(re.search(r"pytest-timeout==\d+\.\d+\.\d+", content))
+                # Also search composite actions used by this workflow — pins may live
+                # in a reusable action rather than in the workflow file itself.
+                composite_content = content
+                for action_ref in re.findall(r"uses:\s*\./.github/actions/([\w\-]+)", content):
+                    action_files = list(self.repo_root.glob(f".github/actions/{action_ref}/action.yml"))
+                    action_files += list(self.repo_root.glob(f".github/actions/{action_ref}/action.yaml"))
+                    for af in action_files:
+                        composite_content += "\n" + af.read_text()
+
+                has_pinning = bool(re.search(r"pytest-xdist==\d+\.\d+\.\d+", composite_content))
+                has_timeout_pinning = bool(re.search(r"pytest-timeout==\d+\.\d+\.\d+", composite_content))
 
                 if uses_xdist and not has_pinning:
                     issues.append(f"{workflow_file.name}: ⚠️ Uses -n flag but doesn't pin pytest-xdist version")

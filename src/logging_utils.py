@@ -402,6 +402,10 @@ def mlflow_run(
         with suppress(Exception):  # pragma: no cover - recreate default experiment when missing
             mlflow.set_experiment("Default")
 
+    # End any stale active run from a previous test to prevent "run already active" errors
+    with suppress(Exception):
+        if mlflow.active_run() is not None:
+            mlflow.end_run()
     mlflow.start_run(run_name=run_name)
     try:
         yield

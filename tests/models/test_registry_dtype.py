@@ -63,4 +63,6 @@ def test_optional_adapter_loader_invoked(monkeypatch: pytest.MonkeyPatch) -> Non
     cfg = {"lora": {"enabled": True, "rank": 8}}
     model = registry.get_model("dummy_adapter", cfg, adapter_loader=fake_loader)
     assert getattr(model, "marked", False) is True
-    assert called["cfg"] == cfg["lora"]
+    # Verify core lora fields are passed correctly; extra fields (e.g. device, dtype) are allowed
+    for key, val in cfg["lora"].items():
+        assert called["cfg"][key] == val

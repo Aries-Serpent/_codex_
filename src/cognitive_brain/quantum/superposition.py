@@ -124,7 +124,7 @@ class SuperpositionEngine:
 
     def __init__(
         self,
-        config: QuantumConfig,
+        config: Optional[QuantumConfig] = None,
         monitor: Optional[CoherenceMonitor] = None,
         max_workers: Optional[int] = None,
     ):
@@ -132,10 +132,12 @@ class SuperpositionEngine:
         Initialize superposition engine.
 
         Args:
-            config: Quantum configuration
+            config: Quantum configuration (defaults to QuantumConfig() when omitted)
             monitor: Optional coherence monitor
             max_workers: Maximum parallel workers (default: # of decisions)
         """
+        if config is None:
+            config = QuantumConfig()
         self.config = config
         self.monitor = monitor
         self.max_workers = max_workers
@@ -359,9 +361,19 @@ class SuperpositionEngine:
         Returns:
             Dictionary with decision, coherence, and other metrics
         """
-        # Convert tuples to Decision objects
+        # Convert tuples to Decision objects; use id as name for unnamed decisions.
+        # Wrap each evaluation function so that dict returns (e.g. {'score': 0.9})
+        # are reduced to a plain float, keeping evaluate_parallel happy.
+        def _wrap(fn: Callable) -> Callable[[], float]:
+            def _wrapped() -> float:
+                result = fn()
+                if isinstance(result, dict):
+                    return float(result.get("score", 0.0))
+                return float(result)
+            return _wrapped
+
         decision_objects = [
-            Decision(id=dec_id, evaluator=func, metadata=context or {})
+            Decision(id=dec_id, name=dec_id, evaluation_fn=_wrap(func), metadata=context or {})
             for dec_id, func in decisions
         ]
 

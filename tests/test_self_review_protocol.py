@@ -362,7 +362,7 @@ def test_analyze_python_file_bare_except(tmp_path):
 def risky_function():
     try:
         dangerous_operation()
-    except Exception:
+    except:
         pass
 """)
 

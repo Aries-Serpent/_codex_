@@ -1,6 +1,7 @@
 """Unit tests for Zendesk plan normalization helpers."""
 
 import pytest
+from unittest.mock import patch
 
 from codex.zendesk import apply as zapply
 
@@ -17,8 +18,11 @@ def test_extract_operations_scalar_raises() -> None:
         zapply._extract_operations("oops", "triggers")
 
 
-def test_apply_functions_noop_ok(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level("INFO", logger="codex.zendesk.apply")
+def test_apply_functions_noop_ok() -> None:
     plan = {"fields": [{"op": "add", "path": "/fields/A", "value": {"name": "A"}}]}
-    zapply.apply_fields(plan, env="dev")
-    assert any("Prepared" in msg for msg in caplog.messages)
+    with patch.object(zapply.LOGGER, "info") as mock_info:
+        zapply.apply_fields(plan, env="dev")
+    assert any(
+        "Prepared" in str(call.args[0])
+        for call in mock_info.call_args_list
+    )

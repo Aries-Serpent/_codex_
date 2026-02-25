@@ -11,6 +11,7 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+.venv_ci/
 # Distribution / packaging
 build/
 dist/
@@ -62,6 +63,7 @@ audit_artifacts/**
 # Temporary files (anti-/tmp/ protection system)
 .github/tmp/
 # Reports (optional commit)
+# reports/ is a scratch dir; canonical tracked location is .codex/reports/
 reports/
 # DVC internals (allow .dvc top-level but ignore local caches)
 .dvc/tmp/
