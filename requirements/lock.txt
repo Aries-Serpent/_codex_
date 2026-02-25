@@ -938,7 +938,7 @@ pyzmq==27.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-ray==2.53.0
+ray==2.54.0
     # via codex-ml (pyproject.toml)
 referencing==0.37.0
     # via
@@ -1122,7 +1122,7 @@ tomlkit==0.13.3
     # via dvc
 toolz==1.1.0
     # via altair
-torch==2.9.1+cpu
+torch==2.10.0
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
