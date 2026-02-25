@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Mapping, Optional, Union
 
 import torch
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
@@ -71,7 +71,7 @@ class ToolUseAdapter(nn.Module):
         self.classifier = nn.Linear(target_dim, len(self.tools))
 
     def _pool(
-        self, hidden_state: torch.Tensor, attention_mask: torch.Tensor | None
+        self, hidden_state: torch.Tensor, attention_mask: Optional[torch.Tensor]
     ) -> torch.Tensor:
         if hidden_state.ndim == 1:
             hidden_state = hidden_state.unsqueeze(0)
@@ -90,7 +90,7 @@ class ToolUseAdapter(nn.Module):
     def forward(
         self,
         hidden_state: torch.Tensor,
-        attention_mask: torch.Tensor | None = None,
+        attention_mask: Optional[torch.Tensor] = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         pooled = self._pool(hidden_state, attention_mask)
         features = self.preprocess(pooled)
@@ -116,11 +116,11 @@ class ReasoningHarness:
 
     config: ReasoningConfig
     head: ReasoningHead
-    tool_adapter: ToolUseAdapter | None
+    tool_adapter: Optional[ToolUseAdapter]
 
     def __post_init__(self) -> None:
         self.history: deque[dict[str, Any]] = deque(maxlen=self.config.trace_history)
-        self.model: nn.Module | None = None
+        self.model: Optional[nn.Module] = None
         trace_mode = str(getattr(self.config, "trace_mode", "weights")).lower()
         allowed = {"disabled", "weights", "activations"}
         if trace_mode not in allowed:
@@ -184,7 +184,7 @@ class ReasoningHarness:
     # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
     # with config guidance so downstream surfaces stay honest.
     def _vectorise_model(
-        self, model: Any, *, hidden_states: Any | None = None
+        self, model: Any, *, hidden_states: Optional[Any] = None
     ) -> tuple[torch.Tensor, str]:
         """Produce a trace vector and record the effective capture mode."""
 
@@ -237,7 +237,7 @@ class ReasoningHarness:
         epoch: int,
         step: int,
         top_k: int,
-        step_ctx: Mapping[str, Any] | None = None,
+        step_ctx: Optional[Mapping[str, Any]] = None,
     ) -> dict[str, Any]:
         hidden_states = None
         if isinstance(step_ctx, Mapping):
@@ -278,13 +278,13 @@ class ReasoningHarness:
 
 def attach_reasoning_adapters(
     model: Any,
-    config: ReasoningConfig | Mapping[str, Any],
+    config: Union[ReasoningConfig, Mapping[str, Any]],
 ) -> ReasoningHarness:
     if not isinstance(config, ReasoningConfig):
         config = ReasoningConfig.from_mapping(dict(config))
     config.validate("training.reasoning")
     head = ReasoningHead(config.head)
-    adapter: ToolUseAdapter | None = None
+    adapter: Optional[ToolUseAdapter] = None
     if config.tool_adapter is not None and config.tool_adapter.enabled:
         adapter = ToolUseAdapter(config.tool_adapter, hidden_size=config.head.hidden_size)
     harness = ReasoningHarness(config=config, head=head, tool_adapter=adapter)

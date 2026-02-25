@@ -10,16 +10,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import sys
-import warnings
-from datetime import datetime, timezone
-from importlib import import_module
-from pathlib import Path
-from typing import Any, Callable
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sys  # noqa: E402
+import warnings  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+from importlib import import_module  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable  # noqa: E402
 
-from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
+from codex_ml.utils.yaml_support import (  # noqa: E402
+    MissingPyYAMLError,
+    YAMLError,
+    safe_load,
+)
 
 _REGISTRY: dict[str, Callable[..., Any]] = {}
 ERRORS_PATH = Path(".codex/errors.ndjson")
@@ -78,6 +83,7 @@ def load_component(path: str) -> Any:
     if ":" not in path:
         raise ValueError(f"invalid component path: {path}")
     module_name, class_name = path.split(":", 1)
+    importlib.invalidate_caches()
     module = import_module(module_name)
     return getattr(module, class_name)
 

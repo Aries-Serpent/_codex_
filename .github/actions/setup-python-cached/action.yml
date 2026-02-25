@@ -1,5 +1,8 @@
-name: 'Setup Python with Tiered Shared Cache'
-description: 'Set up Python with optimized tiered pip cache (live/common/ephemeral) across all workflows'
+name: 'Setup Python with Shared Cache'
+description: >
+  Set up Python, cache the pip download cache and the .venv_ci installed
+  virtualenv.  A venv cache hit skips reinstall entirely; a miss builds the
+  venv from scratch and saves it for the next run.
 author: 'Aries-Serpent'
 
 inputs:
@@ -7,116 +10,123 @@ inputs:
     description: 'Python version to use'
     required: false
     default: '3.12'
-  cache-tier:
-    description: 'Cache tier: "live" (common workflows, never deleted), "common" (lesser common, 7-day retention), "ephemeral" (frequently deleted, 1-day retention)'
+  extras:
+    description: 'Package extras to install (e.g. "dev")'
     required: false
-    default: 'common'
-  architecture:
-    description: 'Python architecture (x64, x86, arm64)'
+    default: 'dev'
+  install-torch:
+    description: 'Install PyTorch CPU build (true/false)'
     required: false
-    default: 'x64'
+    default: 'false'
+  install-npm-tools:
+    description: 'Install npm tools such as markdown-link-check (true/false)'
+    required: false
+    default: 'false'
 
 outputs:
-  python-version:
-    description: 'The installed Python version'
-    value: ${{ steps.setup-python.outputs.python-version }}
+  venv-python:
+    description: 'Absolute path to the venv Python binary'
+    value: ${{ steps.venv-path.outputs.venv-python }}
   cache-hit:
-    description: 'Whether cache was hit'
-    value: ${{ steps.cache-pip.outputs.cache-hit }}
+    description: 'Whether the venv cache was hit (true/false)'
+    value: ${{ steps.cache-venv.outputs.cache-hit }}
 
 runs:
   using: 'composite'
   steps:
+    # ------------------------------------------------------------------
+    # 1. Set up the Python interpreter (no built-in cache – we own it)
+    # ------------------------------------------------------------------
     - name: Set up Python ${{ inputs.python-version }}
-      id: setup-python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-        architecture: ${{ inputs.architecture }}
-        # Don't use built-in cache - we'll use our own shared cache
 
-    - name: Get pip cache directory
-      id: pip-cache-dir
-      shell: bash
-      run: |
-        echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
-
-    - name: Create tiered cache key
-      id: cache-key
-      shell: bash
-      run: |
-        # Create a stable hash of all dependency files
-        DEPS_HASH=$(cat requirements*.txt pyproject.toml 2>/dev/null | sha256sum | cut -d' ' -f1 | head -c 12)
-        
-        # Python version without patch (e.g., 3.11)
-        PY_VERSION="${{ inputs.python-version }}"
-        PY_MAJOR_MINOR=$(echo "$PY_VERSION" | cut -d. -f1,2)
-        
-        # Determine cache tier and prefix
-        TIER="${{ inputs.cache-tier }}"
-        case "$TIER" in
-          live)
-            PREFIX="live-pip"
-            echo "🟢 Using LIVE cache tier (permanent, high priority)"
-            ;;
-          common)
-            PREFIX="common-pip"
-            echo "🟡 Using COMMON cache tier (7-day retention)"
-            ;;
-          ephemeral)
-            PREFIX="ephemeral-pip"
-            echo "🔴 Using EPHEMERAL cache tier (1-day retention)"
-            ;;
-          *)
-            PREFIX="common-pip"
-            echo "⚠️  Unknown tier '$TIER', defaulting to COMMON"
-            ;;
-        esac
-        
-        # Build tiered cache keys
-        CACHE_KEY="${PREFIX}-${{ runner.os }}-py${PY_MAJOR_MINOR}-${DEPS_HASH}"
-        
-        # Restore keys cascade through tiers: try same tier first, then fallback to live
-        RESTORE_KEY_1="${PREFIX}-${{ runner.os }}-py${PY_MAJOR_MINOR}-"
-        RESTORE_KEY_2="live-pip-${{ runner.os }}-py${PY_MAJOR_MINOR}-"
-        RESTORE_KEY_3="common-pip-${{ runner.os }}-py${PY_MAJOR_MINOR}-"
-        
-        echo "primary=${CACHE_KEY}" >> $GITHUB_OUTPUT
-        echo "restore-1=${RESTORE_KEY_1}" >> $GITHUB_OUTPUT
-        echo "restore-2=${RESTORE_KEY_2}" >> $GITHUB_OUTPUT
-        echo "restore-3=${RESTORE_KEY_3}" >> $GITHUB_OUTPUT
-        echo "tier=${TIER}" >> $GITHUB_OUTPUT
-        
-        echo "📦 Cache key: ${CACHE_KEY}"
-
-    - name: Tiered pip cache
-      id: cache-pip
+    # ------------------------------------------------------------------
+    # 2. Cache pip download cache (~/.cache/pip) – shared across all
+    #    workflows so wheels are never downloaded twice.
+    # ------------------------------------------------------------------
+    - name: Cache pip downloads
       uses: actions/cache@v4
       with:
-        path: ${{ steps.pip-cache-dir.outputs.dir }}
-        key: ${{ steps.cache-key.outputs.primary }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ steps.cache-key.outputs.restore-1 }}
-          ${{ steps.cache-key.outputs.restore-2 }}
-          ${{ steps.cache-key.outputs.restore-3 }}
-        # Enable cache sharing across workflows
-        enableCrossOsArchive: false
-        lookup-only: false
+          ${{ runner.os }}-pip-py${{ inputs.python-version }}-
 
-    - name: Upgrade pip
+    # ------------------------------------------------------------------
+    # 3. Cache the installed virtualenv (.venv_ci) – if this hits we can
+    #    skip the entire pip install step.
+    # ------------------------------------------------------------------
+    - name: Cache venv (.venv_ci)
+      id: cache-venv
+      uses: actions/cache@v4
+      with:
+        path: .venv_ci
+        key: ${{ runner.os }}-venv-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-venv-py${{ inputs.python-version }}-
+
+    # ------------------------------------------------------------------
+    # 4. Build venv on cache miss
+    # ------------------------------------------------------------------
+    - name: Install dependencies (venv cache miss)
+      if: steps.cache-venv.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        python -m pip install --upgrade pip wheel setuptools
-        pip --version
+        python -m venv .venv_ci
+        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+        .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
+          pytest==8.4.2 \
+          pytest-timeout==2.4.0 \
+          pytest-xdist==3.8.0 \
+          pytest-cov==5.0.0 \
+          pytest-asyncio==1.3.0 \
+          pytest-mock==3.15.1
+        .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
 
-    - name: Cache statistics
+    - name: Install PyTorch CPU (venv cache miss)
+      if: steps.cache-venv.outputs.cache-hit != 'true' && inputs.install-torch == 'true'
       shell: bash
       run: |
-        TIER="${{ steps.cache-key.outputs.tier }}"
-        if [ "${{ steps.cache-pip.outputs.cache-hit }}" == "true" ]; then
-          echo "✅ Cache HIT - Using cached pip packages from $TIER tier"
+        .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
+          torch torchvision torchaudio \
+          --index-url https://download.pytorch.org/whl/cpu
+
+    # ------------------------------------------------------------------
+    # 5. npm tools (cached via ~/.npm)
+    # ------------------------------------------------------------------
+    - name: Cache npm
+      if: inputs.install-npm-tools == 'true'
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-markdown-link-check
+
+    - name: Install npm tools
+      if: inputs.install-npm-tools == 'true'
+      shell: bash
+      run: npm install -g markdown-link-check
+
+    # ------------------------------------------------------------------
+    # 6. Expose venv on PATH and emit outputs
+    # ------------------------------------------------------------------
+    - name: Add venv to PATH
+      shell: bash
+      run: echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
+
+    - name: Set venv-python output
+      id: venv-path
+      shell: bash
+      run: |
+        echo "venv-python=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_OUTPUT"
+        echo "VENV_PYTHON=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_ENV"
+
+    - name: Report cache status
+      shell: bash
+      run: |
+        if [ "${{ steps.cache-venv.outputs.cache-hit }}" == "true" ]; then
+          echo "✅ Venv cache HIT — skipped install"
         else
-          echo "⚠️  Cache MISS - Will download and cache pip packages to $TIER tier"
+          echo "⚠️  Venv cache MISS — installed from scratch"
         fi
-        echo "Cache directory: ${{ steps.pip-cache-dir.outputs.dir }}"
-        echo "Cache tier: $TIER"

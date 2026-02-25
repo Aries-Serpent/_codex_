@@ -26,7 +26,7 @@ app.add_middleware(SecureMultipartMiddleware)
 async def enforce_request_size_limits(request: Request, call_next):
     """
     Additional middleware to enforce overall request size limits.
-    
+
     This complements SecureMultipartMiddleware by checking total
     request size before processing.
     """
@@ -45,7 +45,7 @@ async def enforce_request_size_limits(request: Request, call_next):
                 )
         except ValueError:
             pass  # Invalid Content-Length header, let request proceed
-    
+
     response = await call_next(request)
     return response
 
@@ -55,14 +55,14 @@ async def enforce_request_size_limits(request: Request, call_next):
 async def upload_file(file: UploadFile):
     """
     Example file upload endpoint.
-    
+
     Security is automatically enforced by middleware:
     - SecureMultipartMiddleware checks form size
     - enforce_request_size_limits checks total request size
     """
     # Process file
     contents = await file.read()
-    
+
     return {
         "filename": file.filename,
         "content_type": file.content_type,
@@ -80,7 +80,7 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     # Run with uvicorn
     uvicorn.run(
         app,

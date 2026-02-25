@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
 pytest.importorskip("numpy")
 
 
@@ -200,7 +201,7 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
     """Custom tokenizer path and use_fast flag should be honored."""
     calls = {}
 
-    def fake_tok_from_pretrained(name, use_fast=True):
+    def fake_tok_from_pretrained(name, use_fast=True, **kwargs):
         calls["name"] = name
         calls["use_fast"] = use_fast
 
@@ -258,7 +259,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path):
         called["cfg"] = dict(cfg)
         return model
 
-    def fake_tok(name, use_fast=True):
+    def fake_tok(name, use_fast=True, **kwargs):
         class Tok:
             pad_token = None
             eos_token = "</s>"
@@ -302,7 +303,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path):
 def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
     captured = {}
 
-    def fake_tok_from_pretrained(name, use_fast=True):
+    def fake_tok_from_pretrained(name, use_fast=True, **kwargs):
         class Tok:
             pad_token = None
             eos_token = "</s>"
@@ -343,7 +344,7 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
 def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
     captured: dict[str, int] = {}
 
-    def fake_tok_from_pretrained(name, use_fast=True):
+    def fake_tok_from_pretrained(name, use_fast=True, **kwargs):
         class Tok:
             pad_token = None
             eos_token = "</s>"

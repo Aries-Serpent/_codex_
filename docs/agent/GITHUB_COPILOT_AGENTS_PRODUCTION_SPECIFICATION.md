@@ -1,8 +1,8 @@
 # GitHub Copilot Agents - Production Specification
 
-**Version**: 2.0  
-**Date**: 2024-01-16  
-**Status**: Production Ready  
+**Version**: 2.0
+**Date**: 2024-01-16
+**Status**: Production Ready
 **Target**: GitHub Team + GitHub Copilot Pro+
 
 ---
@@ -22,7 +22,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 5. [Implementation Guide](#implementation-guide)
 6. [Testing Strategy](#testing-strategy)
 7. [Deployment Guide](#deployment-guide)
-8. [Monitoring & Maintenance](#monitoring--maintenance)
+8. <!-- BROKEN ANCHOR: [Monitoring & Maintenance](#monitoring-maintenance) -->
 
 ---
 
@@ -38,13 +38,13 @@ graph TB
         Push[Push Event]
         Schedule[Scheduled Event]
     end
-    
+
     subgraph "Agent Orchestrator"
         Dispatcher[Event Dispatcher]
         Queue[Task Queue]
         Priority[Priority Manager]
     end
-    
+
     subgraph "Tier 1 Agents - GitHub Team"
         Auth[Auth Manager]
         Security[Security Enforcer]
@@ -52,28 +52,28 @@ graph TB
         Test[Test Orchestrator]
         Deploy[Deployment Gatekeeper]
     end
-    
+
     subgraph "Tier 2 Agents - Copilot Pro+"
         CodeReview[Code Reviewer]
         Architect[Architecture Analyzer]
         Perf[Performance Optimizer]
         Predict[Predictive Maintenance]
     end
-    
+
     subgraph "Data Layer"
         Metrics[Metrics Store]
         Logs[Audit Logs]
         State[Agent State]
     end
-    
+
     PR --> Dispatcher
     Issue --> Dispatcher
     Push --> Dispatcher
     Schedule --> Dispatcher
-    
+
     Dispatcher --> Queue
     Queue --> Priority
-    
+
     Priority --> Auth
     Priority --> Security
     Priority --> Workflow
@@ -83,7 +83,7 @@ graph TB
     Priority --> Architect
     Priority --> Perf
     Priority --> Predict
-    
+
     Auth --> Metrics
     Security --> Logs
     Workflow --> State
@@ -377,7 +377,7 @@ environment_variables:
 optimization_targets:
   - cache_hit_rate: ">80%"
   - workflow_duration: "<10m"
-  - secret_rotation: "monthly"
+  - secret_rotation: "monthly" # pragma: allowlist secret
   - api_rate_limit_usage: "<70%"
 auto_apply: false  # Requires PR review
 outputs:
@@ -701,7 +701,7 @@ outputs:
    ```bash
    # Manual trigger via GitHub UI:
    # Actions → Select workflow → Run workflow
-   
+
    # Or via CLI:
    gh workflow run auth-token-rotation.yml
    ```
@@ -710,7 +710,7 @@ outputs:
    ```bash
    # View recent workflow runs:
    gh run list --workflow auth-token-rotation.yml
-   
+
    # View logs:
    gh run view <run_id> --log
    ```
@@ -749,14 +749,14 @@ def test_agent_end_to_end():
     # Test full agent workflow
     github = Github(os.getenv("GITHUB_TOKEN"))
     repo = github.get_repo("org/repo")
-    
+
     # Trigger agent
     workflow = repo.get_workflow("auth-token-rotation.yml")
     workflow.create_dispatch("main")
-    
+
     # Wait for completion
     time.sleep(60)
-    
+
     # Verify results
     issues = repo.get_issues(labels=["compliance"])
     assert len(list(issues)) > 0
@@ -877,11 +877,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check agent health
         run: |
           python scripts/monitor_agents.py
-          
+
       - name: Alert on failures
         if: failure()
         uses: actions/github-script@v7
@@ -1034,7 +1034,7 @@ gh auth status
 
 ---
 
-**Document Owner**: Codex Team  
-**Last Updated**: 2024-01-16  
-**Status**: ✅ Production Ready  
+**Document Owner**: Codex Team
+**Last Updated**: 2024-01-16
+**Status**: ✅ Production Ready
 **Next Review**: 2024-02-16

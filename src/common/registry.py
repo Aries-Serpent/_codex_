@@ -18,11 +18,10 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from collections.abc import Callable, Iterable
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional import path when codex_ml unavailable
     from codex_ml.metrics.metric_implementations import (

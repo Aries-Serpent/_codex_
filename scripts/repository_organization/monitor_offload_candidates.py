@@ -4,10 +4,10 @@ Repository Offload Candidates Monitoring Script
 
 Purpose:
     Scan repository for files meeting offload criteria and generate report
-    
+
 Usage:
     python scripts/repository_organization/monitor_offload_candidates.py [options]
-    
+
     Examples:
     $ python scripts/repository_organization/monitor_offload_candidates.py --help
     $ python scripts/repository_organization/monitor_offload_candidates.py --output .codex/repository_health/offload_candidates.json
@@ -16,7 +16,7 @@ Arguments:
     --repo-root: Repository root directory (default: current directory)
     --output: Output JSON file path
     --log-actions: Log findings to action log (default: True)
-    
+
 Exit Codes:
     0: Success
     1: Error
@@ -62,7 +62,7 @@ EXCLUDE_DIRS = {
     "misc/repo-owner-review",  # Already offloaded
 }
 
-# File patterns to consider for offload  
+# File patterns to consider for offload
 # Note: More specific patterns (paths) should be checked before generic patterns (extensions)
 OFFLOAD_PATTERNS = {
     "temp": ["temp/", "tmp/", "output/", ".tmp"],
@@ -121,11 +121,11 @@ def should_exclude_dir(dir_path: Path, repo_root: Path) -> bool:
 def categorize_file(file_path: Path, repo_root: Path) -> str | None:
     """Categorize file based on offload patterns."""
     rel_path = file_path.relative_to(repo_root)
-    
+
     for category, patterns in OFFLOAD_PATTERNS.items():
         if matches_pattern(rel_path, patterns):
             return category
-    
+
     return None
 
 
@@ -145,41 +145,41 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
         },
         "candidates": [],
     }
-    
+
     for root, dirs, files in os.walk(repo_root):
         root_path = Path(root)
-        
+
         # Filter out excluded directories
         dirs[:] = [
-            d for d in dirs 
+            d for d in dirs
             if not should_exclude_dir(root_path / d, repo_root)
         ]
-        
+
         for filename in files:
             file_path = root_path / filename
-            
+
             # Skip if file doesn't exist or can't be accessed
             if not file_path.exists():
                 continue
-            
+
             age_days = get_file_age_days(file_path)
             size_mb = get_file_size_mb(file_path)
             category = categorize_file(file_path, repo_root)
             reasons = []
-            
+
             # Check criteria
             if category == "temp" and age_days > CRITERIA["temp_files_age_days"]:
                 reasons.append(f"temp_file_age_{age_days}d")
-            
+
             if category == "reports" and age_days > CRITERIA["deprecated_reports_age_days"]:
                 reasons.append(f"deprecated_report_age_{age_days}d")
-            
+
             if size_mb > CRITERIA["large_file_size_mb"]:
                 reasons.append(f"large_file_{size_mb:.1f}mb")
-            
+
             if age_days > CRITERIA["unused_file_age_days"] and category:
                 reasons.append(f"unused_{age_days}d")
-            
+
             # Add candidate if it meets any criteria
             if reasons:
                 rel_path = str(file_path.relative_to(repo_root))
@@ -191,28 +191,28 @@ def scan_repository(repo_root: Path) -> dict[str, Any]:
                     "reasons": reasons,
                     "recommendation": _get_recommendation(category, age_days, size_mb),
                 }
-                
+
                 candidates["candidates"].append(candidate)
                 candidates["summary"]["total_candidates"] += 1
                 candidates["summary"]["total_size_mb"] += size_mb
-                
+
                 # Update by_reason counts
                 for reason in reasons:
                     reason_key = reason.split("_")[0]
                     candidates["summary"]["by_reason"][reason_key] = (
                         candidates["summary"]["by_reason"].get(reason_key, 0) + 1
                     )
-                
+
                 # Update by_category counts
                 candidates["summary"]["by_category"][candidate["category"]] = (
                     candidates["summary"]["by_category"].get(candidate["category"], 0) + 1
                 )
-    
+
     # Round summary total size
     candidates["summary"]["total_size_mb"] = round(
         candidates["summary"]["total_size_mb"], 2
     )
-    
+
     return candidates
 
 
@@ -240,7 +240,7 @@ def log_to_action_log(
 ) -> None:
     """Log scan findings to action log."""
     action_log_path = repo_root / ".codex" / "action_log.ndjson"
-    
+
     action_entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "agent": "repository-organization-monitor",
@@ -255,7 +255,7 @@ def log_to_action_log(
         "outcome": "success",
         "impact": f"Identified {candidates_summary['total_candidates']} offload candidates (~{candidates_summary['total_size_mb']}MB)",
     }
-    
+
     try:
         with open(action_log_path, "a") as f:
             f.write(json.dumps(action_entry) + "\n")
@@ -293,21 +293,21 @@ def main() -> int:
         dest="log_actions",
         help="Do not log findings to action log",
     )
-    
+
     args = parser.parse_args()
-    
+
     repo_root = args.repo_root.resolve()
     if not repo_root.exists():
         print(f"❌ Repository root not found: {repo_root}", file=sys.stderr)
         return 1
-    
+
     print(f"🔍 Scanning repository: {repo_root}")
     print(f"📊 Criteria: {CRITERIA}")
     print()
-    
+
     # Scan repository
     candidates = scan_repository(repo_root)
-    
+
     # Print summary
     summary = candidates["summary"]
     print("📈 Scan Results:")
@@ -316,17 +316,17 @@ def main() -> int:
     print(f"  By reason: {summary['by_reason']}")
     print(f"  By category: {summary['by_category']}")
     print()
-    
+
     # Save to output file
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w") as f:
         json.dump(candidates, f, indent=2)
     print(f"✅ Saved report to: {args.output}")
-    
+
     # Log to action log
     if args.log_actions:
         log_to_action_log(summary, repo_root)
-    
+
     return 0
 
 

@@ -12,11 +12,11 @@ The **Flatten Repository GitHub Action** generates a consolidated view of the en
 
 ## Features
 
-✅ **Multiple Output Formats**: XML, Markdown, or Plain text  
-✅ **Configurable Compression**: Tree-sitter based compression  
-✅ **Security Scanning**: Automatic secret detection  
-✅ **Metadata Generation**: Complete statistics and provenance  
-✅ **Artifact Storage**: Automatic upload with configurable retention  
+✅ **Multiple Output Formats**: XML, Markdown, or Plain text
+✅ **Configurable Compression**: Tree-sitter based compression
+✅ **Security Scanning**: Automatic secret detection
+✅ **Metadata Generation**: Complete statistics and provenance
+✅ **Artifact Storage**: Automatic upload with configurable retention
 ✅ **Download Instructions**: CLI, Web UI, and API methods
 
 ## Usage
@@ -62,7 +62,7 @@ jobs:
       include_tests: true
       output_format: xml
       retention_days: 30
-  
+
   use-flatten:
     needs: generate-flatten
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.generate-flatten.outputs.artifact_name }}
-      
+
       - name: Process flattened repo
         run: |
           echo "File size: ${{ needs.generate-flatten.outputs.file_size_mb }} MB"
@@ -206,14 +206,14 @@ flattened-repo-{run_number}/
     <generated_at>2026-01-14T05:20:59Z</generated_at>
     <instruction_file>repomix-instruction.md</instruction_file>
   </header>
-  
+
   <files>
     <file>
       <file_path>src/codex/__init__.py</file_path>
       <file_size>1024</file_size>
       <content line_numbers="true">
         1. """Codex package initialization."""
-        2. 
+        2.
         3. __version__ = "1.0.0"
         ...
       </content>
@@ -432,7 +432,7 @@ When called as `workflow_call`, the action provides:
 ```yaml
 outputs:
   artifact_name: "flattened-repo-42"
-  artifact_url: "https://github.com/Aries-Serpent/_codex_/actions/runs/12345678"
+  artifact_url: "https://github.com/Aries-Serpent/_codex_/actions/runs/12345678 <!-- Note: Logs expire after 90 days -->"
   file_size_mb: "5.23"
 ```
 
@@ -479,7 +479,7 @@ graph LR
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-01-14  
-**Maintained By**: admin-automation-agent  
+**Version**: 1.0.0
+**Last Updated**: 2026-01-14
+**Maintained By**: admin-automation-agent
 **Related**: `.github/workflows/flatten-repo-download.yml`

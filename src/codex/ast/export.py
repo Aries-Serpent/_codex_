@@ -17,16 +17,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import sqlite3
-from dataclasses import dataclass
-from enum import Enum
-from pathlib import Path
-from typing import Any, Optional, Union
+import json  # noqa: E402
+import sqlite3  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from enum import Enum  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional, Union  # noqa: E402
 
-from .graph import DependencyGraph
-from .metrics import MetricsAggregator
-from .node import StandardizedASTNode
+from .graph import DependencyGraph  # noqa: E402
+from .metrics import MetricsAggregator  # noqa: E402
+from .node import StandardizedASTNode  # noqa: E402
 
 
 class ExportFormat(Enum):
@@ -395,7 +395,7 @@ class KnowledgeGraphExporter:
             for n in node.walk():
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO nodes 
+                    INSERT OR REPLACE INTO nodes
                     (node_id, type, name, file_path, line_start, line_end, docstring, parent_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -432,8 +432,8 @@ class KnowledgeGraphExporter:
             for entity_id, m in self.metrics.metrics.items():
                 cursor.execute(
                     """
-                    INSERT OR REPLACE INTO metrics 
-                    (entity_id, cyclomatic_complexity, cognitive_complexity, 
+                    INSERT OR REPLACE INTO metrics
+                    (entity_id, cyclomatic_complexity, cognitive_complexity,
                      lines_of_code, comment_lines, maintainability_index, quality_tier)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,

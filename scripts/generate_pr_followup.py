@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/generate_pr_followup.py [options]
-    
+
     Examples:
     $ python scripts/generate_pr_followup.py --help
 
@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 
 class GitMetadataExtractor:
     """Extract metadata from git repository."""
-    
+
     @staticmethod
     def get_branch() -> str:
         try:
@@ -60,7 +60,7 @@ class GitMetadataExtractor:
         except subprocess.CalledProcessError as e:
             logger.debug(f"Failed to get branch name: {e.stderr if e.stderr else str(e)}")
             return os.environ.get('GITHUB_HEAD_REF', 'unknown-branch')
-    
+
     @staticmethod
     def get_commit_sha() -> str:
         try:
@@ -71,7 +71,7 @@ class GitMetadataExtractor:
         except subprocess.CalledProcessError as e:
             logger.debug(f"Failed to get commit SHA: {e.stderr if e.stderr else str(e)}")
             return os.environ.get('GITHUB_SHA', 'unknown')
-    
+
     @staticmethod
     def get_recent_commits(count: int = 5) -> list[dict]:
         try:
@@ -80,7 +80,7 @@ class GitMetadataExtractor:
                 ['git', 'log', f'-{count}', f'--format={log_format}', '--date=short'],
                 text=True, stderr=subprocess.PIPE
             ).strip()
-            
+
             commits = []
             for line in output.split('\n'):
                 if line:
@@ -96,7 +96,7 @@ class GitMetadataExtractor:
         except subprocess.CalledProcessError as e:
             logger.debug(f"Failed to get recent commits: {e.stderr if e.stderr else str(e)}")
             return []
-    
+
     @staticmethod
     def get_modified_files() -> list[str]:
         """Get list of modified files, handling different git configurations."""
@@ -117,13 +117,13 @@ class GitMetadataExtractor:
                 except subprocess.CalledProcessError:
                     remote = 'origin'
                 upstream = f"{remote}/{base_ref}"
-            
+
             output = subprocess.check_output(
                 ['git', 'diff', '--name-only', f'{upstream}...HEAD'],
                 text=True, stderr=subprocess.PIPE
             ).strip()
             files = [f for f in output.split('\n') if f]
-            
+
             if not files:
                 output = subprocess.check_output(
                     ['git', 'diff', '--name-only', 'HEAD'],
@@ -134,7 +134,7 @@ class GitMetadataExtractor:
         except subprocess.CalledProcessError as e:
             logger.debug(f"Failed to get modified files: {e.stderr if e.stderr else str(e)}")
             return []
-    
+
     @staticmethod
     def get_commit_count() -> int:
         """Get commit count, handling different git configurations."""
@@ -155,7 +155,7 @@ class GitMetadataExtractor:
                 except subprocess.CalledProcessError:
                     remote = 'origin'
                 upstream = f"{remote}/{base_ref}"
-            
+
             output = subprocess.check_output(
                 ['git', 'rev-list', '--count', f'{upstream}..HEAD'],
                 text=True, stderr=subprocess.PIPE
@@ -168,11 +168,11 @@ class GitMetadataExtractor:
 
 class PromptGenerator:
     """Generate follow-up prompts from templates."""
-    
+
     def __init__(self, templates_dir: Path = Path('.github/copilot-prompts/templates')):
         self.templates_dir = templates_dir
         self.git = GitMetadataExtractor()
-    
+
     def load_template(self, template_name: str) -> str:
         template_path = self.templates_dir / f'{template_name}.md'
         if not template_path.exists():
@@ -180,7 +180,7 @@ class PromptGenerator:
             if not template_path.exists():
                 raise FileNotFoundError(f"Template not found: {template_path}")
         return template_path.read_text()
-    
+
     def get_pr_metadata(self, pr_number: str) -> dict:
         return {
             'pr_number': pr_number,
@@ -192,12 +192,12 @@ class PromptGenerator:
             'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
             'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }
-    
+
     def format_task_list(self, tasks: list[str] | None) -> str:
         if not tasks:
             return '- [ ] No tasks specified'
         return '\n'.join(f'- [ ] {task}' for task in tasks)
-    
+
     def format_commits(self, commits: list[dict]) -> str:
         if not commits:
             return 'No recent commits'
@@ -205,12 +205,12 @@ class PromptGenerator:
         for commit in commits:
             formatted.append(f"- [`{commit['sha']}`] {commit['subject']} ({commit['author']}, {commit['date']})")
         return '\n'.join(formatted)
-    
+
     def format_files(self, files: list[str]) -> str:
         if not files:
             return 'No files modified'
         return '\n'.join(f'- `{file}`' for file in files)
-    
+
     def generate(
         self,
         pr_number: str,
@@ -229,11 +229,11 @@ class PromptGenerator:
         commits = self.git.get_recent_commits()
         modified_files = self.git.get_modified_files()
         commit_count = self.git.get_commit_count()
-        
+
         immediate = self.format_task_list(immediate_tasks)
         validation = self.format_task_list(validation_tasks)
         future = self.format_task_list(future_tasks)
-        
+
         replacements = {
             **metadata,
             'immediate_tasks': immediate,
@@ -250,13 +250,13 @@ class PromptGenerator:
             'validation_commands_p1': commands or 'echo "Add validation commands"',
             **kwargs
         }
-        
+
         prompt = template
         for key, value in replacements.items():
             prompt = prompt.replace(f'{{{key}}}', str(value))
-        
+
         return prompt
-    
+
     def save(self, prompt: str, pr_number: str, output_dir: Path | None = None) -> Path:
         if output_dir is None:
             output_dir = Path('.github/copilot-prompts/active')
@@ -282,12 +282,12 @@ def main():
     parser.add_argument('--phase-name', help='Phase name')
     parser.add_argument('--output', type=Path, help='Output file path')
     parser.add_argument('--json-output', action='store_true', help='Output JSON metadata')
-    
+
     args = parser.parse_args()
-    
+
     try:
         generator = PromptGenerator()
-        
+
         custom_vars = {}
         if args.phase:
             custom_vars['current_phase'] = args.phase
@@ -296,7 +296,7 @@ def main():
             custom_vars['total_phases'] = args.total_phases
         if args.phase_name:
             custom_vars['current_phase_name'] = args.phase_name
-        
+
         prompt = generator.generate(
             pr_number=args.pr_number,
             template_name=args.template,
@@ -309,23 +309,23 @@ def main():
             related_issues=args.issues,
             **custom_vars
         )
-        
+
         output_path = args.output or Path(f'.github/copilot-prompts/active/PR-{args.pr_number}-followup.md')
         saved_path = generator.save(prompt, args.pr_number, output_path.parent if args.output else None)
-        
-        print(f"✅ Follow-up prompt generated successfully")
+
+        print("✅ Follow-up prompt generated successfully")
         print(f"📄 Saved to: {saved_path}")
         print(f"PR Number: #{args.pr_number}")
         print(f"Template: {args.template}")
         print(f"Branch: {generator.git.get_branch()}")
         print(f"Commit: {generator.git.get_commit_sha()[:8]}")
-        
+
         if args.json_output:
             metadata = generator.get_pr_metadata(args.pr_number)
             metadata['output_file'] = str(saved_path)
             metadata['template'] = args.template
             print(json.dumps(metadata, indent=2))
-        
+
         return 0
     except Exception as e:
         print(f"❌ Error: {e}", file=sys.stderr)

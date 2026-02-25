@@ -6,12 +6,15 @@ Test module for train tokenizer smoke.
 
 import json
 
-from tokenizers import Tokenizer
+import pytest
 
 from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_train_tokenizer_smoke(tmp_path):
+    pytest.importorskip("sentencepiece")
+    from tokenizers import Tokenizer  # noqa: PLC0415
+
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello world\n" * 5)
     cfg = TrainTokenizerConfig(

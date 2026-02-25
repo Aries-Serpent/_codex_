@@ -15,13 +15,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import sys
-import warnings
-from dataclasses import dataclass
-from importlib import metadata
-from pathlib import Path
-from typing import Any, Optional
+from importlib import invalidate_caches as _invalidate_caches, metadata  # noqa: E402
+import sys  # noqa: E402
+import warnings  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 DEFAULT_GROUP = "codex_ml.plugins"
 
@@ -33,7 +32,7 @@ DEFAULT_GROUP = "codex_ml.plugins"
 def _iter_entry_points(group: str):
     """Return iterable of entry points for ``group`` with fallbacks."""
 
-    importlib.invalidate_caches()
+    _invalidate_caches()
     collected: list[Any] = []
     try:
         items = metadata.entry_points(group=group)

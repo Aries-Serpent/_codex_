@@ -1,15 +1,15 @@
 # Repository Administration Guide
 ## Complete Setup & Configuration for _codex_ Security Infrastructure
 
-**Document Version**: 2.0  
-**Last Updated**: 2025-12-23  
+**Document Version**: 2.0
+**Last Updated**: 2025-12-23
 **Maintainer**: Security Team
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Repository Settings](#repository-settings)
 3. [Environment Variables](#environment-variables)
 4. [GitHub Actions Secrets](#github-actions-secrets)
@@ -18,7 +18,7 @@
 7. [Dependency Management](#dependency-management)
 8. [Pre-commit Hooks Setup](#pre-commit-hooks-setup)
 9. [CI/CD Workflows](#cicd-workflows)
-10. [Monitoring & Alerting](#monitoring--alerting)
+10. <!-- BROKEN ANCHOR: [Monitoring & Alerting](#monitoring-alerting) -->
 11. [Team Permissions](#team-permissions)
 12. [Troubleshooting](#troubleshooting)
 
@@ -30,12 +30,12 @@ This guide provides complete instructions for repository administrators to confi
 
 ### What's Included
 
-✅ **Security Utilities Module** (`src/codex/security/`)  
-✅ **Encrypted Storage** with multiple algorithms  
-✅ **Performance Benchmarks** for all security functions  
-✅ **Integration Tests** (18 test cases)  
-✅ **Comprehensive Documentation**  
-✅ **Pre-commit Hooks** for secret detection  
+✅ **Security Utilities Module** (`src/codex/security/`)
+✅ **Encrypted Storage** with multiple algorithms
+✅ **Performance Benchmarks** for all security functions
+✅ **Integration Tests** (18 test cases)
+✅ **Comprehensive Documentation**
+✅ **Pre-commit Hooks** for secret detection
 ✅ **CI/CD Security Workflows**
 
 ---
@@ -52,16 +52,16 @@ Navigate to: **Settings** → **General**
 Repository visibility: Private (recommended) or Public
 Features:
   - ✅ Issues
-  - ✅ Pull Requests  
+  - ✅ Pull Requests
   - ✅ Discussions (optional)
   - ✅ Projects (optional)
-  
+
 Pull Requests:
   - ✅ Allow squash merging
   - ✅ Allow rebase merging
   - ✅ Always suggest updating pull request branches
   - ✅ Automatically delete head branches
-  
+
 Security:
   - ✅ Enable Dependabot alerts
   - ✅ Enable Dependabot security updates
@@ -83,7 +83,7 @@ Code scanning:
   - ✅ CodeQL analysis (setup via workflow)
   - ✅ Secret scanning
   - ✅ Secret scanning push protection
-  
+
 Private vulnerability reporting: ✅ Enabled
 ```
 
@@ -166,7 +166,7 @@ Rules:
     - ✅ Require approvals: 1
     - ✅ Dismiss stale pull request approvals when new commits are pushed
     - ✅ Require review from Code Owners
-  
+
   - ✅ Require status checks to pass before merging
     - ✅ Require branches to be up to date before merging
     - Required checks:
@@ -174,12 +174,12 @@ Rules:
       - security-scan
       - codeql
       - pre-commit
-  
+
   - ✅ Require conversation resolution before merging
   - ✅ Require signed commits (optional but recommended)
   - ✅ Require linear history
   - ✅ Do not allow bypassing the above settings
-  
+
   - Rules applied to administrators: ✅ Yes
 ```
 
@@ -191,12 +191,12 @@ Branch name pattern: 0D_base_
 Rules:
   - ✅ Require a pull request before merging
     - Require approvals: 0 (for rapid iteration)
-  
+
   - ✅ Require status checks to pass before merging
     - Required checks:
       - test
       - security-scan
-  
+
   - ✅ Require conversation resolution before merging
   - Allow force pushes: ❌ No
 ```
@@ -228,7 +228,7 @@ jobs:
     permissions:
       security-events: write
       contents: read
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3
@@ -249,7 +249,7 @@ Push protection: ✅ Enabled
 Alert notifications:
   - ✅ Email notifications to admins
   - ✅ Web notifications
-  
+
 Custom patterns: (Add if needed)
   - Pattern name: Internal API Token
   - Pattern: internal_[a-zA-Z0-9]{32}
@@ -273,7 +273,7 @@ updates:
     labels:
       - "dependencies"
       - "security"
-    
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -348,15 +348,15 @@ repos:
   - repo: https://github.com/Yelp/detect-secrets
     hooks:
       - id: detect-secrets
-  
+
   - repo: https://github.com/gitleaks/gitleaks
     hooks:
       - id: gitleaks
-  
+
   - repo: https://github.com/PyCQA/bandit
     hooks:
       - id: bandit
-  
+
   - repo: https://github.com/pypa/pip-audit
     hooks:
       - id: pip-audit
@@ -417,7 +417,7 @@ Configure in: **Settings** → **Notifications**
 Security alerts:
   - ✅ Email notifications
   - ✅ Web + Mobile notifications
-  
+
 Recipients:
   - Repository admins
   - Security team members
@@ -644,9 +644,9 @@ pip-compile requirements.in -o requirements/lock.txt --upgrade
 
 ---
 
-**Document Owner**: Security Team  
-**Review Cycle**: Iteration-based (every 3 major releases)  
-**Next Review**: 2026-03-23T00:00:00Z  
+**Document Owner**: Security Team
+**Review Cycle**: Iteration-based (every 3 major releases)
+**Next Review**: 2026-03-23T00:00:00Z
 **Version**: 2.0
 
 For questions or updates, contact: security@localhost

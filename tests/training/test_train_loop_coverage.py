@@ -71,7 +71,7 @@ if HAS_TORCH and torch is not None:
                 loss = loss_fn(logits, labels.squeeze())
 
             return {'loss': loss, 'logits': logits}
-        
+
         def __call__(self, *args, **kwargs):
             """Allow model(x) syntax by delegating to forward()."""
             return self.forward(*args, **kwargs)

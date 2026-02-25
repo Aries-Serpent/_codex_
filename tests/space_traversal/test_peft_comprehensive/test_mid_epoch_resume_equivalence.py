@@ -59,7 +59,19 @@ class _ResumingStrategy:
 
 def test_resume_error_is_recorded(monkeypatch, tmp_path) -> None:
     def fake_save(out_dir: str | Path, *, payload, metadata, **kwargs):
-        return Path(out_dir) / "state.pt"
+        p = Path(out_dir) / "state.pt"
+        meta = checkpoint_core.CheckpointMeta(
+            schema_version="2",
+            created_at=0,
+            git_sha=None,
+            config_hash=None,
+            rng={},
+            env={},
+            metric_key=None,
+            metric_value=None,
+            sha256=None,
+        )
+        return p, meta
 
     def fake_load(path: str | Path):
         raise RuntimeError("boom")

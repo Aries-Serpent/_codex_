@@ -8,7 +8,7 @@
 2. [Getting Started](#getting-started)
 3. [Schema Versioning](#schema-versioning)
 4. [Cryptographic Signing](#cryptographic-signing)
-5. [Validation & Verification](#validation--verification)
+5. <!-- BROKEN ANCHOR: [Validation & Verification](#validation-verification) -->
 6. [Migration Guide](#migration-guide)
 7. [Troubleshooting](#troubleshooting)
 8. [Best Practices](#best-practices)
@@ -21,11 +21,11 @@ Archive standardization brings **SLSA L3 compliance**, **cryptographic integrity
 
 ### What You Get
 
-✅ **SLSA L3 Compliance** - Industry-standard supply chain security  
-✅ **Schema Versioning** - Explicit v1/v2 format support  
-✅ **Cryptographic Signatures** - Keyless signing via Sigstore  
-✅ **Backward Compatibility** - Existing v1 records work unchanged  
-✅ **Audit-Ready** - Compliance mapping and verification tools  
+✅ **SLSA L3 Compliance** - Industry-standard supply chain security
+✅ **Schema Versioning** - Explicit v1/v2 format support
+✅ **Cryptographic Signatures** - Keyless signing via Sigstore
+✅ **Backward Compatibility** - Existing v1 records work unchanged
+✅ **Audit-Ready** - Compliance mapping and verification tools
 
 ### Prerequisites
 
@@ -183,10 +183,10 @@ jobs:
     permissions:
       id-token: write  # ← REQUIRED for OIDC
       contents: read
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Archive with signing
         env:
           CODEX_ENABLE_SIGNING: "true"

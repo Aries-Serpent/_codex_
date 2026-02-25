@@ -127,19 +127,19 @@ def embed_chunks(
 
     # Extract text from chunks
     texts = [chunk[2] for chunk in chunks]
-    
+
     # CRITICAL FIX: Validate and filter inputs BEFORE encoding
     original_count = len(texts)
     texts_filtered = [text.strip() for text in texts if text and text.strip()]
-    
+
     if len(texts_filtered) < original_count:
         logger.warning(
             f"Filtered out {original_count - len(texts_filtered)} empty/whitespace texts"
         )
-    
+
     if not texts_filtered:
         raise ValueError("No valid text chunks to encode after filtering empty inputs")
-    
+
     logger.debug(
         f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
     )
@@ -793,3 +793,45 @@ def manage_tenant_indices(
         index_names=index_names,
         message=f"Operation '{operation}' not fully implemented",
     )
+
+
+class RAGIndexer:
+    """High-level indexer facade for RAG operations.
+
+    Wraps the module-level functions (build_index_from_files, load_index, etc.)
+    in a stateful class interface expected by CLI and tenant management tests.
+    """
+
+    def __init__(
+        self,
+        index_dir: Optional[str] = None,
+        device: str = "cpu",
+    ) -> None:
+        self.index_dir = Path(index_dir) if index_dir else Path(".")
+        self.device = device
+
+    def build_index(
+        self,
+        files: List[str],
+        index_name: str = "default",
+        chunk_size: int = 1000,
+        overlap: int = 128,
+    ) -> Path:
+        """Build an index from a list of files."""
+        return build_index_from_files(
+            files=[Path(f) for f in files],
+            index_dir=str(self.index_dir),
+            index_name=index_name,
+            chunk_size=chunk_size,
+            overlap=overlap,
+        )
+
+    def list_tenants(self) -> List[str]:
+        """List available tenant directories."""
+        if not self.index_dir.exists():
+            return []
+        return [
+            d.name
+            for d in self.index_dir.iterdir()
+            if d.is_dir() and not d.name.startswith(".")
+        ]

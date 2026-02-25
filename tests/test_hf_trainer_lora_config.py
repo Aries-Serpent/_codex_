@@ -33,7 +33,16 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
         def to(self, *args, **kwargs):
             return self
 
-    dummy_ds = types.SimpleNamespace(map=lambda *a, **k: dummy_ds)
+    class DummyDataset:
+        """Mock dataset with required methods."""
+        def map(self, *args, **kwargs):
+            return self
+
+        def set_format(self, *args, **kwargs):
+            """Mock set_format method required by HF trainer."""
+            pass
+
+    dummy_ds = DummyDataset()
 
     monkeypatch.setattr(
         hf, "AutoTokenizer", types.SimpleNamespace(from_pretrained=lambda *a, **k: DummyTokenizer())
@@ -49,7 +58,11 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
     class DummyTrainer:
         def __init__(self, *a, **k):
             # Provide state similar to HF Trainer for compatibility
-            self.state = types.SimpleNamespace(global_step=0)
+            self.state = types.SimpleNamespace(
+                global_step=0,
+                last_model_checkpoint=None,
+                best_model_checkpoint=None,  # HF Trainer state compat
+            )
 
         def train(self, resume_from_checkpoint=None, **kwargs):
             class R:

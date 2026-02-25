@@ -1,7 +1,7 @@
 # Codex Agents Guide
 
-> **Version:** 1.0.0  
-> **Created:** 2026-01-19  
+> **Version:** 1.0.0
+> **Created:** 2026-01-19
 > **Purpose:** Guidelines for contributors and Codex automation agents
 
 ---
@@ -10,10 +10,10 @@
 
 1. [Environment Variables](#environment-variables)
 2. [Logging Roles](#logging-roles)
-3. [Tooling & Testing](#tooling--testing)
+3. <!-- BROKEN ANCHOR: [Tooling & Testing](#tooling-testing) -->
 4. [Testing Requirements](#testing-requirements)
 5. [Pytest Plugin Configuration](#pytest-plugin-configuration)
-6. [CLI & Tool Usage](#cli--tool-usage)
+6. <!-- BROKEN ANCHOR: [CLI & Tool Usage](#cli-tool-usage) -->
 7. [Prohibited Actions](#prohibited-actions)
 
 ---
@@ -126,7 +126,7 @@ The `pytest.ini` file centralizes test configuration. All pytest options should 
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q                      # Quiet mode
     --strict-markers        # Enforce marker registration
     --cov=src               # Coverage target directory
@@ -293,6 +293,6 @@ python -m codex.logging.query_logs
 
 ---
 
-**Document Status:** ACTIVE  
-**Last Updated:** 2026-01-19  
+**Document Status:** ACTIVE
+**Last Updated:** 2026-01-19
 **Next Review:** After next major test infrastructure change

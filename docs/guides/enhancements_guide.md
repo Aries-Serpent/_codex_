@@ -1,7 +1,7 @@
 # Enhancements Guide: Advanced Features
 
-**Version:** 1.0  
-**Date:** Dec 6, 2025  
+**Version:** 1.0
+**Date:** Dec 6, 2025
 **Status:** Production Ready
 
 This guide covers the optional enhancement features added to the _codex_ ML system:
@@ -48,7 +48,7 @@ tracker.log_params({
 # Training loop
 for epoch in range(epochs):
     # ... training code ...
-    
+
     # Log metrics
     tracker.log_metrics({
         "loss": loss_value,
@@ -598,10 +598,10 @@ docker system prune -a
 - See [API Reference](../API_REFERENCE.md) for detailed API documentation
 - See [Getting Started Guide](getting_started.md) for basic usage
 - See [Continuous Learning Guide](continuous_learning_guide.md) for auto-retraining
-- See [A/B Testing Guide](ab_testing_guide.md) for experiment management
+- See [A/B Testing Guide](TESTING_GUIDE.md) for experiment management
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** Dec 6, 2025  
+**Document Version:** 1.0
+**Last Updated:** Dec 6, 2025
 **Status:** Production Ready

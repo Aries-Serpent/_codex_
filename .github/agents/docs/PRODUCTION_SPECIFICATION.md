@@ -1,8 +1,8 @@
 # GitHub Copilot Agents - Production Specification
 
-**Version**: 2.0  
-**Date**: 2026-01-23  
-**Status**: Production Ready  
+**Version**: 2.0
+**Date**: 2026-01-23
+**Status**: Production Ready
 **Target**: GitHub Team + GitHub Copilot Pro+
 
 ---
@@ -22,7 +22,7 @@ This document provides comprehensive specifications for production-ready GitHub 
 5. [Implementation Guide](#implementation-guide)
 6. [Testing Strategy](#testing-strategy)
 7. [Deployment Guide](#deployment-guide)
-8. [Monitoring & Maintenance](#monitoring--maintenance)
+8. [Monitoring & Maintenance](#monitoring-maintenance)
 
 ---
 
@@ -38,13 +38,13 @@ graph TB
         Push[Push Event]
         Schedule[Scheduled Event]
     end
-    
+
     subgraph "Agent Orchestrator"
         Dispatcher[Event Dispatcher]
         Queue[Task Queue]
         Priority[Priority Manager]
     end
-    
+
     subgraph "Tier 1 Agents - GitHub Team"
         Auth[Auth Manager]
         Security[Security Enforcer]
@@ -52,28 +52,28 @@ graph TB
         Test[Test Orchestrator]
         Deploy[Deployment Gatekeeper]
     end
-    
+
     subgraph "Tier 2 Agents - Copilot Pro+"
         CodeReview[Code Reviewer]
         Architect[Architecture Analyzer]
         Perf[Performance Optimizer]
         Predict[Predictive Maintenance]
     end
-    
+
     subgraph "Data Layer"
         Metrics[Metrics Store]
         Logs[Audit Logs]
         State[Agent State]
     end
-    
+
     PR --> Dispatcher
     Issue --> Dispatcher
     Push --> Dispatcher
     Schedule --> Dispatcher
-    
+
     Dispatcher --> Queue
     Queue --> Priority
-    
+
     Priority --> Auth
     Priority --> Security
     Priority --> Workflow
@@ -83,7 +83,7 @@ graph TB
     Priority --> Architect
     Priority --> Perf
     Priority --> Predict
-    
+
     Auth --> Metrics
     Security --> Logs
     Workflow --> State
@@ -701,7 +701,7 @@ outputs:
    ```bash
    # Manual trigger via GitHub UI:
    # Actions → Select workflow → Run workflow
-   
+
    # Or via CLI:
    gh workflow run auth-token-rotation.yml
    ```
@@ -710,7 +710,7 @@ outputs:
    ```bash
    # View recent workflow runs:
    gh run list --workflow auth-token-rotation.yml
-   
+
    # View logs:
    gh run view <run_id> --log
    ```
@@ -749,14 +749,14 @@ def test_agent_end_to_end():
     # Test full agent workflow
     github = Github(os.getenv("GITHUB_TOKEN"))
     repo = github.get_repo("org/repo")
-    
+
     # Trigger agent
     workflow = repo.get_workflow("auth-token-rotation.yml")
     workflow.create_dispatch("main")
-    
+
     # Wait for completion
     time.sleep(60)
-    
+
     # Verify results
     issues = repo.get_issues(labels=["compliance"])
     assert len(list(issues)) > 0
@@ -877,11 +877,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check agent health
         run: |
           python scripts/monitor_agents.py
-          
+
       - name: Alert on failures
         if: failure()
         uses: actions/github-script@v7
@@ -1011,9 +1011,9 @@ gh auth status
 
 | Agent | Tier | Status | Workflow | Docs |
 |-------|------|--------|----------|------|
-| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | [README](/.github/agents/github-auth-manager/README.md) |
-| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | [README](/.github/agents/github-security-enforcer/README.md) |
-| Workflow Optimizer | 1 | ✅ Active | (manual) | [README](/.github/agents/github-workflow-optimizer/README.md) |
+| Auth Manager | 1 | ✅ Active | `auth-token-rotation.yml` | [README](../../../agents/README.md) |
+| Security Enforcer | 1 | ✅ Active | `auth-security-audit.yml` | [README](../../../agents/README.md) |
+| Workflow Optimizer | 1 | ✅ Active | (manual) | [README](../../../agents/README.md) |
 | Code Reviewer | 2 | 🔄 Proposed | N/A | TBD |
 | Test Orchestrator | 1 | 🔄 Proposed | N/A | TBD |
 | Deployment Gatekeeper | 1 | 🔄 Proposed | N/A | TBD |
@@ -1034,18 +1034,18 @@ gh auth status
 
 ---
 
-**Document Owner**: Codex Team  
-**Last Updated**: 2026-01-23  
-**Status**: ✅ Production Ready  
+**Document Owner**: Codex Team
+**Last Updated**: 2026-01-23
+**Status**: ✅ Production Ready
 **Next Review**: 2026-01-23
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: GitHub Copilot Agents - Production Specification  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
+**Agent Name**: GitHub Copilot Agents - Production Specification
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -1215,7 +1215,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -1271,7 +1271,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1426,8 +1426,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

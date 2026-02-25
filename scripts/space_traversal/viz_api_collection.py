@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/viz_api_collection.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/viz_api_collection.py --help
 
@@ -87,7 +87,7 @@ API_COLLECTION_TEMPLATE = """
             min-height: 100vh;
             line-height: 1.5;
         }}
-        
+
         /* Layout */
         .app-container {{
             display: grid;
@@ -102,7 +102,7 @@ API_COLLECTION_TEMPLATE = """
             .app-container {{ grid-template-columns: 1fr; }}
             .left-panel {{ display: none; }}
         }}
-        
+
         /* Left Panel - Collection List */
         .left-panel {{
             background: var(--bg-secondary);
@@ -141,7 +141,7 @@ API_COLLECTION_TEMPLATE = """
             background: var(--bg-hover);
             color: var(--text-primary);
         }}
-        
+
         /* Collection Tree */
         .collection-tree {{
             flex: 1;
@@ -220,7 +220,7 @@ API_COLLECTION_TEMPLATE = """
             text-overflow: ellipsis;
             white-space: nowrap;
         }}
-        
+
         /* Main Panel */
         .main-panel {{
             display: flex;
@@ -241,7 +241,7 @@ API_COLLECTION_TEMPLATE = """
             font-size: 13px;
             color: var(--text-secondary);
         }}
-        
+
         /* Tabs */
         .tabs {{
             display: flex;
@@ -264,14 +264,14 @@ API_COLLECTION_TEMPLATE = """
             color: var(--accent);
             border-bottom-color: var(--accent);
         }}
-        
+
         /* Main Content */
         .main-content {{
             flex: 1;
             overflow-y: auto;
             padding: 24px;
         }}
-        
+
         /* Adjusters Section */
         .adjusters-grid {{
             display: grid;
@@ -292,7 +292,7 @@ API_COLLECTION_TEMPLATE = """
             color: var(--text-secondary);
             margin-bottom: 16px;
         }}
-        
+
         /* Rotary Knob */
         .knob-wrapper {{
             display: flex;
@@ -313,7 +313,7 @@ API_COLLECTION_TEMPLATE = """
                 var(--bg-tertiary) 270deg
             );
             cursor: grab;
-            box-shadow: 0 4px 20px var(--shadow), 
+            box-shadow: 0 4px 20px var(--shadow),
                         inset 0 1px 0 rgba(255,255,255,0.1);
             user-select: none;
         }}
@@ -360,7 +360,7 @@ API_COLLECTION_TEMPLATE = """
             font-size: 10px;
             color: var(--text-secondary);
         }}
-        
+
         /* Slider Adjuster */
         .slider-adjuster {{
             width: 100%;
@@ -420,7 +420,7 @@ API_COLLECTION_TEMPLATE = """
             font-size: 10px;
             color: var(--text-secondary);
         }}
-        
+
         /* Toggle Switch */
         .toggle-row {{
             display: flex;
@@ -470,7 +470,7 @@ API_COLLECTION_TEMPLATE = """
         .toggle-switch.active::after {{
             transform: translateX(20px);
         }}
-        
+
         /* Stepper Input */
         .stepper {{
             display: flex;
@@ -509,7 +509,7 @@ API_COLLECTION_TEMPLATE = """
         .stepper-input:focus {{
             outline: none;
         }}
-        
+
         /* Checkbox Group */
         .checkbox-group {{
             display: flex;
@@ -573,7 +573,7 @@ API_COLLECTION_TEMPLATE = """
             font-size: 11px;
             color: var(--text-secondary);
         }}
-        
+
         /* Radio Group */
         .radio-group {{
             display: flex;
@@ -631,7 +631,7 @@ API_COLLECTION_TEMPLATE = """
         .radio-label {{
             font-size: 13px;
         }}
-        
+
         /* Dropdown Select */
         .dropdown-container {{
             position: relative;
@@ -703,7 +703,7 @@ API_COLLECTION_TEMPLATE = """
             color: var(--text-secondary);
             margin-top: 2px;
         }}
-        
+
         /* Multi-Select Tags */
         .multiselect-container {{
             display: flex;
@@ -756,7 +756,7 @@ API_COLLECTION_TEMPLATE = """
             color: var(--bg-primary);
             border-color: var(--accent);
         }}
-        
+
         /* Button Group */
         .button-group {{
             display: flex;
@@ -787,7 +787,7 @@ API_COLLECTION_TEMPLATE = """
             color: var(--bg-primary);
             font-weight: 600;
         }}
-        
+
         /* Number Input with +/- */
         .number-input-container {{
             display: flex;
@@ -828,7 +828,7 @@ API_COLLECTION_TEMPLATE = """
             font-size: 16px;
             font-weight: 600;
         }}
-        
+
         /* Command Preview */
         .command-section {{
             background: var(--bg-secondary);
@@ -901,7 +901,7 @@ API_COLLECTION_TEMPLATE = """
         .cmd-value {{
             color: var(--accent-green);
         }}
-        
+
         /* Right Panel - Details/History */
         .right-panel {{
             background: var(--bg-secondary);
@@ -944,7 +944,7 @@ API_COLLECTION_TEMPLATE = """
             color: var(--text-primary);
             font-family: 'SF Mono', 'Consolas', monospace;
         }}
-        
+
         /* History List */
         .history-item {{
             padding: 12px;
@@ -970,7 +970,7 @@ API_COLLECTION_TEMPLATE = """
             text-overflow: ellipsis;
             white-space: nowrap;
         }}
-        
+
         /* Save Collection Modal */
         .modal-overlay {{
             position: fixed;
@@ -1128,7 +1128,7 @@ API_COLLECTION_TEMPLATE = """
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Trend Commands -->
                 <div class="collection-folder">
                     <div class="folder-header" onclick="toggleFolder(this)">
@@ -1155,7 +1155,7 @@ API_COLLECTION_TEMPLATE = """
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Saved Presets -->
                 <div class="collection-folder">
                     <div class="folder-header" onclick="toggleFolder(this)">
@@ -1169,27 +1169,27 @@ API_COLLECTION_TEMPLATE = """
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Panel -->
         <div class="main-panel">
             <div class="main-header">
                 <h1 id="command-title">Full Pipeline Execution</h1>
                 <div class="subtitle" id="command-subtitle">Run complete audit S1→S7</div>
             </div>
-            
+
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('adjusters')">Adjusters</div>
                 <div class="tab" onclick="switchTab('raw')">Raw Command</div>
                 <div class="tab" onclick="switchTab('docs')">Documentation</div>
             </div>
-            
+
             <div class="main-content">
                 <!-- Adjusters Tab -->
                 <div id="tab-adjusters" class="tab-content">
                     <div class="adjusters-grid" id="adjusters-container">
                         <!-- Dynamically populated based on command -->
                     </div>
-                    
+
                     <!-- Command Preview -->
                     <div class="command-section">
                         <div class="command-header">
@@ -1205,7 +1205,7 @@ API_COLLECTION_TEMPLATE = """
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Raw Command Tab -->
                 <div id="tab-raw" class="tab-content" style="display:none;">
                     <div class="command-section">
@@ -1217,7 +1217,7 @@ API_COLLECTION_TEMPLATE = """
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Documentation Tab -->
                 <div id="tab-docs" class="tab-content" style="display:none;">
                     <div id="docs-content" style="padding:20px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);">
@@ -1226,7 +1226,7 @@ API_COLLECTION_TEMPLATE = """
                 </div>
             </div>
         </div>
-        
+
         <!-- Right Panel - Details/History -->
         <div class="right-panel">
             <div class="panel-header">
@@ -1239,7 +1239,7 @@ API_COLLECTION_TEMPLATE = """
                         <!-- Dynamically populated -->
                     </div>
                 </div>
-                
+
                 <div class="detail-section">
                     <h4>Recent History</h4>
                     <div id="history-list">
@@ -1249,7 +1249,7 @@ API_COLLECTION_TEMPLATE = """
             </div>
         </div>
     </div>
-    
+
     <!-- Save Modal -->
     <div class="modal-overlay" id="save-modal">
         <div class="modal">
@@ -1275,14 +1275,14 @@ API_COLLECTION_TEMPLATE = """
             </div>
         </div>
     </div>
-    
+
     <script>
         // State
         let currentCommand = 'run';
         let params = {{}};
         let history = [];
         let savedPresets = [];
-        
+
         // Command definitions
         const commands = {{
             'run': {{
@@ -1427,62 +1427,62 @@ API_COLLECTION_TEMPLATE = """
                 ]
             }}
         }};
-        
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {{
             loadSavedPresets();
             renderAdjusters();
             updateCommand();
         }});
-        
+
         function toggleFolder(header) {{
             const items = header.nextElementSibling;
             items.classList.toggle('expanded');
             const icon = header.querySelector('.folder-icon');
             icon.textContent = items.classList.contains('expanded') ? '📂' : '📁';
         }}
-        
+
         function selectItem(el, cmd) {{
             document.querySelectorAll('.collection-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             currentCommand = cmd;
             params = {{}};
-            
+
             const cmdDef = commands[cmd];
             document.getElementById('command-title').textContent = cmdDef.title;
             document.getElementById('command-subtitle').textContent = cmdDef.subtitle;
-            
+
             renderAdjusters();
             updateCommand();
             renderDocs();
         }}
-        
+
         function switchTab(tab) {{
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-            
+
             event.target.classList.add('active');
             document.getElementById('tab-' + tab).style.display = 'block';
-            
+
             if (tab === 'raw') {{
                 document.getElementById('raw-command').value = buildCommandString();
             }}
         }}
-        
+
         function renderAdjusters() {{
             const container = document.getElementById('adjusters-container');
             const cmdDef = commands[currentCommand];
-            
+
             if (!cmdDef.adjusters || cmdDef.adjusters.length === 0) {{
                 container.innerHTML = '<div class="adjuster-card"><p style="color:var(--text-secondary);text-align:center;">No adjustable parameters for this command.</p></div>';
                 return;
             }}
-            
+
             let html = '';
             cmdDef.adjusters.forEach(adj => {{
                 html += '<div class="adjuster-card">';
                 html += '<h4>' + adj.label + (adj.required ? ' <span style="color:var(--accent-red)">*</span>' : '') + '</h4>';
-                
+
                 if (adj.type === 'knob') {{
                     const value = params[adj.id] || adj.default;
                     const percent = ((value - adj.min) / (adj.max - adj.min)) * 100;
@@ -1519,62 +1519,62 @@ API_COLLECTION_TEMPLATE = """
                     html += '<div class="toggle-switch' + (active ? ' active' : '') + '" data-id="' + adj.id + '" onclick="toggleSwitch(this)"></div>';
                     html += '</div>';
                 }}
-                
+
                 html += '</div>';
             }});
-            
+
             container.innerHTML = html;
-            
+
             // Attach knob handlers
             document.querySelectorAll('.rotary-knob').forEach(knob => {{
                 setupKnobDrag(knob);
             }});
-            
+
             // Attach slider handlers
             document.querySelectorAll('.slider-track').forEach(slider => {{
                 setupSliderDrag(slider);
             }});
         }}
-        
+
         function formatValue(value, format) {{
             if (format === 'percent') {{
                 return (value * 100).toFixed(0) + '%';
             }}
             return typeof value === 'number' && !Number.isInteger(value) ? value.toFixed(2) : value;
         }}
-        
+
         function setupKnobDrag(knob) {{
             let dragging = false;
             let startY, startValue;
-            
+
             const id = knob.dataset.id;
             const min = parseFloat(knob.dataset.min);
             const max = parseFloat(knob.dataset.max);
             const step = parseFloat(knob.dataset.step) || 1;
             const format = knob.dataset.format;
-            
+
             knob.addEventListener('mousedown', (e) => {{
                 dragging = true;
                 startY = e.clientY;
                 startValue = params[id] !== undefined ? params[id] : commands[currentCommand].adjusters.find(a => a.id === id).default;
                 document.body.style.cursor = 'grabbing';
             }});
-            
+
             document.addEventListener('mousemove', (e) => {{
                 if (!dragging) return;
-                
+
                 const delta = (startY - e.clientY) / 100;
                 let newValue = startValue + delta * (max - min);
                 newValue = Math.round(newValue / step) * step;
                 newValue = Math.max(min, Math.min(max, newValue));
-                
+
                 params[id] = newValue;
                 const percent = ((newValue - min) / (max - min)) * 100;
                 knob.style.setProperty('--value', percent);
                 document.getElementById('knob-value-' + id).textContent = formatValue(newValue, format);
                 updateCommand();
             }});
-            
+
             document.addEventListener('mouseup', () => {{
                 if (dragging) {{
                     dragging = false;
@@ -1582,81 +1582,81 @@ API_COLLECTION_TEMPLATE = """
                 }}
             }});
         }}
-        
+
         function setupSliderDrag(slider) {{
             let dragging = false;
-            
+
             const id = slider.dataset.id;
             const min = parseFloat(slider.dataset.min);
             const max = parseFloat(slider.dataset.max);
             const step = parseFloat(slider.dataset.step) || 1;
             const format = slider.dataset.format;
-            
+
             const updateSlider = (e) => {{
                 const rect = slider.getBoundingClientRect();
                 let percent = (e.clientX - rect.left) / rect.width;
                 percent = Math.max(0, Math.min(1, percent));
-                
+
                 let value = min + percent * (max - min);
                 value = Math.round(value / step) * step;
-                
+
                 params[id] = value;
                 slider.querySelector('.slider-fill').style.width = (percent * 100) + '%';
                 slider.querySelector('.slider-thumb').style.left = (percent * 100) + '%';
                 document.getElementById('slider-value-' + id).textContent = formatValue(value, format);
                 updateCommand();
             }};
-            
+
             slider.addEventListener('mousedown', (e) => {{
                 dragging = true;
                 updateSlider(e);
             }});
-            
+
             document.addEventListener('mousemove', (e) => {{
                 if (dragging) updateSlider(e);
             }});
-            
+
             document.addEventListener('mouseup', () => {{
                 dragging = false;
             }});
         }}
-        
+
         function toggleSwitch(el) {{
             const id = el.dataset.id;
             el.classList.toggle('active');
             params[id] = el.classList.contains('active');
             updateCommand();
         }}
-        
+
         function updateParam(id, value) {{
             params[id] = value;
             updateCommand();
         }}
-        
+
         function updateCommand() {{
             const cmdStr = buildCommandString();
             document.getElementById('command-output').innerHTML = highlightCommand(cmdStr);
             updateParamDetails();
         }}
-        
+
         function buildCommandString() {{
             let cmd = 'python -m scripts.space_traversal.audit_runner ' + currentCommand;
             const cmdDef = commands[currentCommand];
-            
+
             cmdDef.adjusters.forEach(adj => {{
                 const value = params[adj.id];
                 if (value === undefined || value === '' || value === adj.default) return;
-                
+
                 if (adj.flag) {{
                     cmd += ' ' + adj.flag + ' ' + value;
                 }} else {{
                     cmd += ' ' + value;
                 }}
             }});
-            
+
             return cmd;
         }}
-        
+
         function highlightCommand(cmd) {{
             return cmd
                 .replace(/(python)/, '<span class="cmd-python">$1</span>')
@@ -1665,11 +1665,11 @@ API_COLLECTION_TEMPLATE = """
                 .replace(/(--\\w+)/g, '<span class="cmd-flag">$1</span>')
                 .replace(/(\\s)(S[1-7]|TRENDS)(\\s|$)/g, '$1<span class="cmd-value">$2</span>$3');
         }}
-        
+
         function updateParamDetails() {{
             const container = document.getElementById('param-details');
             const cmdDef = commands[currentCommand];
-            
+
             let html = '';
             cmdDef.adjusters.forEach(adj => {{
                 const value = params[adj.id] !== undefined ? params[adj.id] : (adj.default || '—');
@@ -1678,103 +1678,103 @@ API_COLLECTION_TEMPLATE = """
                 html += '<span class="detail-value">' + formatValue(value, adj.format) + '</span>';
                 html += '</div>';
             }});
-            
+
             if (!html) html = '<div class="detail-item"><span class="detail-label">No parameters</span></div>';
             container.innerHTML = html;
         }}
-        
+
         function renderDocs() {{
             const cmdDef = commands[currentCommand];
             document.getElementById('docs-content').innerHTML = '<h3 style="margin-bottom:12px;">' + cmdDef.title + '</h3><p style="color:var(--text-secondary);line-height:1.8;">' + cmdDef.docs + '</p>';
         }}
-        
+
         function copyCommand() {{
             const cmd = buildCommandString();
             navigator.clipboard.writeText(cmd).then(() => {{
                 addToHistory(cmd);
             }});
         }}
-        
+
         function showRunInstructions() {{
             const cmd = buildCommandString();
             alert('Copy and run in terminal:\\n\\n' + cmd);
             addToHistory(cmd);
         }}
-        
+
         function addToHistory(cmd) {{
             history.unshift({{ time: new Date().toLocaleTimeString(), command: cmd }});
             if (history.length > 10) history.pop();
             renderHistory();
         }}
-        
+
         function renderHistory() {{
             const container = document.getElementById('history-list');
-            container.innerHTML = history.map(h => 
+            container.innerHTML = history.map(h =>
                 '<div class="history-item" onclick="loadFromHistory(\\'' + h.command.replace(/'/g, "\\'") + '\\')">' +
                 '<div class="time">' + h.time + '</div>' +
                 '<div class="command">' + h.command + '</div>' +
                 '</div>'
             ).join('');
         }}
-        
+
         function loadFromHistory(cmd) {{
             document.getElementById('raw-command').value = cmd;
             switchTab('raw');
         }}
-        
+
         function showSaveModal() {{
             document.getElementById('save-modal').classList.add('visible');
         }}
-        
+
         function hideSaveModal() {{
             document.getElementById('save-modal').classList.remove('visible');
         }}
-        
+
         function savePreset() {{
             const name = document.getElementById('preset-name').value;
             if (!name) return;
-            
+
             savedPresets.push({{
                 name: name,
                 command: currentCommand,
                 params: {{...params}}
             }});
-            
+
             localStorage.setItem('audit-presets', JSON.stringify(savedPresets));
             loadSavedPresets();
             hideSaveModal();
         }}
-        
+
         function loadSavedPresets() {{
             try {{
                 savedPresets = JSON.parse(localStorage.getItem('audit-presets') || '[]');
             }} catch {{
                 savedPresets = [];
             }}
-            
+
             document.getElementById('preset-count').textContent = savedPresets.length;
             const container = document.getElementById('saved-presets');
-            container.innerHTML = savedPresets.map((p, i) => 
+            container.innerHTML = savedPresets.map((p, i) =>
                 '<div class="collection-item" onclick="loadPreset(' + i + ')">' +
                 '<span class="method-badge method-run">PRE</span>' +
                 '<span class="item-name">' + p.name + '</span>' +
                 '</div>'
             ).join('');
         }}
-        
+
         function loadPreset(index) {{
             const preset = savedPresets[index];
             currentCommand = preset.command;
             params = {{...preset.params}};
-            
+
             const cmdDef = commands[currentCommand];
             document.getElementById('command-title').textContent = cmdDef.title;
             document.getElementById('command-subtitle').textContent = cmdDef.subtitle;
-            
+
             renderAdjusters();
             updateCommand();
         }}
-        
+
         // Initial render
         renderAdjusters();
         renderDocs();

@@ -1,8 +1,8 @@
 # Comprehensive Gap Analysis and Improvement Plan
 
-**Generated**: 2025-12-11  
-**Status**: In Progress  
-**PR**: #2459 (and sub-PRs #2460, #2461, #2462)  
+**Generated**: 2025-12-11
+**Status**: In Progress
+**PR**: #2459 (and sub-PRs #2460, #2461, #2462)
 **Objective**: Achieve production readiness with AI Assistant/Agent intuitiveness
 
 ---
@@ -172,7 +172,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 
 ### Remaining Known Gaps
 
-**Total**: 0 critical gaps  
+**Total**: 0 critical gaps
 **Status**: All known gaps from registry have been verified as resolved
 
 ---
@@ -215,7 +215,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 2. **Agent Context Preservation**
    - **Status**: Session logging in place
    - **Gap**: Context sharing between agent invocations
-   - **Recommendation**: 
+   - **Recommendation**:
      - Implement agent memory system
      - Store key decisions and rationales
      - Enable context retrieval for similar tasks
@@ -246,7 +246,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 1. **Automated Archival Process**
    - **Status**: Manual execution required
    - **Gap**: Not integrated into CI/CD
-   - **Recommendation**: 
+   - **Recommendation**:
      - Create scheduled workflow for archival candidates
      - Add approval gate for repository owner
      - Auto-compress large historical files
@@ -304,7 +304,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 1. **API Documentation**
    - **Status**: Swagger/OpenAPI generation exists
    - **Gap**: Not published or integrated
-   - **Recommendation**: 
+   - **Recommendation**:
      - Generate and publish API docs
      - Integrate into GitHub Pages
      - Keep in sync with code changes
@@ -480,7 +480,7 @@ Organization:
 - [AGENTS.md](../agents.md) - Agent operations playbook
 - [MATURITY_REMAINING_WORK.md](MATURITY_REMAINING_WORK.md) - Maturity improvement plan
 - [REMAINING_WORK.md](REMAINING_WORK.md) - General remaining work
-- [agents/prompts/ARCHITECTURE.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/ARCHITECTURE.md) - System architecture
+- [agents/prompts/ARCHITECTURE.md](../ARCHITECTURE.md) - System architecture
 - [reports/stub_analysis.md](https://github.com/Aries-Serpent/_codex_/blob/main/reports/stub_analysis.md) - Detailed stub analysis
 
 ---
@@ -496,7 +496,7 @@ The Codex repository has achieved significant maturity with Level 4 MLOps certif
 
 With systematic execution of this plan, the repository will achieve full production readiness while maintaining its AI Assistant/Agent intuitiveness focus.
 
-**Next Steps**: 
+**Next Steps**:
 1. Prioritize P0 stub implementations
 2. Address capability gaps
 3. Enhance automation
@@ -504,6 +504,6 @@ With systematic execution of this plan, the repository will achieve full product
 
 ---
 
-**Document Status**: Living document, updated as gaps are addressed  
-**Last Updated**: 2025-12-11  
+**Document Status**: Living document, updated as gaps are addressed
+**Last Updated**: 2025-12-11
 **Next Review**: After completion of immediate priorities

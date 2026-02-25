@@ -1,7 +1,7 @@
 # AST Standardization - Architecture Design
 
-**Generated**: 2025-11-09  
-**Purpose**: Comprehensive architecture design for AST standardization  
+**Generated**: 2025-11-09
+**Purpose**: Comprehensive architecture design for AST standardization
 **Status**: DESIGN - Not yet implemented
 
 ---
@@ -67,43 +67,43 @@ class SourceLocation:
     line_end: int
     column_start: int
     column_end: int
-    
+
     def __str__(self) -> str:
         return f"{self.file_path}:{self.line_start}:{self.column_start}"
 
 @dataclass
 class StandardizedASTNode:
     """Language-agnostic AST representation."""
-    
+
     # Identity
     node_id: str                                    # Unique identifier (UUID)
     type: str                                       # "module", "function", "class", etc.
     name: str                                       # Identifier name
-    
+
     # Structure
     parent: Optional["StandardizedASTNode"] = None
     children: List["StandardizedASTNode"] = field(default_factory=list)
-    
+
     # Location
     source_location: SourceLocation = None
-    
+
     # Metadata
     metadata: Dict[str, Any] = field(default_factory=dict)  # Docstrings, decorators, etc.
-    
+
     # Metrics
     complexity: int = 0                             # Cyclomatic complexity
     cognitive_complexity: int = 0                   # Cognitive complexity
     lines_of_code: int = 0                          # Physical LOC
-    
+
     # Typing
     type_hint: Optional[str] = None                 # Type annotation
     return_type: Optional[str] = None               # Return type annotation
-    
+
     def add_child(self, child: "StandardizedASTNode") -> None:
         """Add child node and set parent relationship."""
         child.parent = self
         self.children.append(child)
-    
+
     def get_depth(self) -> int:
         """Calculate depth in AST tree."""
         depth = 0
@@ -112,7 +112,7 @@ class StandardizedASTNode:
             depth += 1
             node = node.parent
         return depth
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary for JSON export."""
         return {
@@ -138,35 +138,35 @@ from typing import Optional
 
 class BaseParser(ABC):
     """Abstract base for all parsers."""
-    
+
     @abstractmethod
     def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
         """Parse source code into standardized AST.
-        
+
         Args:
             source_code: Source code string
             file_path: Path to source file
-            
+
         Returns:
             Root StandardizedASTNode
-            
+
         Raises:
             ParseError: If parsing fails
         """
         pass
-    
+
     @abstractmethod
     def can_parse(self, file_path: Path) -> bool:
         """Check if parser can handle this file.
-        
+
         Args:
             file_path: Path to check
-            
+
         Returns:
             True if parser supports this file type
         """
         pass
-    
+
     def parse_with_fallback(
         self,
         source_code: str,
@@ -179,7 +179,7 @@ class BaseParser(ABC):
             logger.warning(f"Primary parse failed for {file_path}: {e}")
             # Fallback to parso or partial parse
             return self._fallback_parse(source_code, file_path)
-    
+
     def _fallback_parse(
         self,
         source_code: str,
@@ -211,30 +211,30 @@ class DependencyNode:
 
 class DependencyGraph:
     """Directed graph of module dependencies."""
-    
+
     def __init__(self):
         self.nodes: Dict[str, DependencyNode] = {}
         self.edges: List[tuple[str, str]] = []
-    
+
     def add_module(self, module_path: str) -> None:
         """Add module to graph."""
         if module_path not in self.nodes:
             self.nodes[module_path] = DependencyNode(module_path)
-    
+
     def add_dependency(self, from_module: str, to_module: str) -> None:
         """Add dependency edge."""
         self.add_module(from_module)
         self.add_module(to_module)
-        
+
         self.nodes[from_module].imports.add(to_module)
         self.nodes[to_module].imported_by.add(from_module)
         self.edges.append((from_module, to_module))
-    
+
     def find_cycles(self) -> List[List[str]]:
         """Detect circular dependencies using Tarjan's algorithm."""
         # Implementation of strongly connected components detection
         pass
-    
+
     def to_dot(self) -> str:
         """Export to GraphViz DOT format."""
         lines = ["digraph dependencies {"]
@@ -242,7 +242,7 @@ class DependencyGraph:
             lines.append(f'  "{from_mod}" -> "{to_mod}";')
         lines.append("}")
         return "\n".join(lines)
-    
+
     def to_json(self) -> Dict:
         """Export to JSON."""
         return {
@@ -271,30 +271,30 @@ from typing import Dict, List
 @dataclass
 class CodebaseMetrics:
     """Aggregated metrics for entire codebase."""
-    
+
     # Counts
     total_files: int = 0
     total_modules: int = 0
     total_functions: int = 0
     total_classes: int = 0
     total_lines: int = 0
-    
+
     # Complexity
     avg_complexity: float = 0.0
     max_complexity: int = 0
     high_complexity_count: int = 0  # >10
-    
+
     # Dependencies
     total_imports: int = 0
     circular_dependencies: int = 0
-    
+
     # Code Quality
     code_smells: Dict[str, int] = field(default_factory=dict)
     duplication_ratio: float = 0.0
-    
+
     # Coverage (if integrated)
     test_coverage: float = 0.0
-    
+
     def to_dict(self) -> Dict:
         """Serialize to dictionary."""
         return {
@@ -323,20 +323,20 @@ class CodebaseMetrics:
 
 class MetricsAggregator:
     """Aggregate metrics from AST analysis."""
-    
+
     def __init__(self):
         self.metrics = CodebaseMetrics()
-    
+
     def aggregate_from_ast(self, root: StandardizedASTNode) -> None:
         """Walk AST and accumulate metrics."""
         # Recursive tree walk to collect metrics
         pass
-    
+
     def aggregate_from_graph(self, graph: DependencyGraph) -> None:
         """Extract dependency metrics from graph."""
         self.metrics.total_imports = len(graph.edges)
         self.metrics.circular_dependencies = len(graph.find_cycles())
-    
+
     def export(self, format: str = "json") -> str:
         """Export metrics in specified format."""
         if format == "json":
@@ -360,19 +360,19 @@ from abc import ABC, abstractmethod
 
 class BasePlugin(ABC):
     """Base class for all AST plugins."""
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
         """Plugin name."""
         pass
-    
+
     @property
     @abstractmethod
     def version(self) -> str:
         """Plugin version."""
         pass
-    
+
     @abstractmethod
     def analyze(self, ast: StandardizedASTNode) -> Dict:
         """Analyze AST and return findings."""
@@ -380,21 +380,21 @@ class BasePlugin(ABC):
 
 class PluginRegistry:
     """Registry for AST analysis plugins."""
-    
+
     def __init__(self):
         self._plugins: Dict[str, Type[BasePlugin]] = {}
-    
+
     def register(self, plugin_class: Type[BasePlugin]) -> None:
         """Register a plugin."""
         plugin = plugin_class()
         self._plugins[plugin.name] = plugin_class
-    
+
     def get_plugin(self, name: str) -> BasePlugin:
         """Get plugin instance by name."""
         if name not in self._plugins:
             raise KeyError(f"Plugin not found: {name}")
-        return self._plugins[name]()
-    
+        return self._plugins<!-- TODO: Add section or remove TOC entry - [name]() -->
+
     def run_all(self, ast: StandardizedASTNode) -> Dict[str, Dict]:
         """Run all registered plugins."""
         results = {}
@@ -457,31 +457,31 @@ import hashlib
 
 class ParseCache:
     """Cache parsed ASTs to avoid re-parsing."""
-    
+
     def __init__(self, max_size: int = 1000):
         self.cache: Dict[str, StandardizedASTNode] = {}
         self.max_size = max_size
-    
+
     def _get_cache_key(self, source: str, file_path: Path) -> str:
         """Generate cache key from content hash."""
         content_hash = hashlib.sha256(source.encode()).hexdigest()[:16]
         return f"{file_path}:{content_hash}"
-    
+
     def get(self, source: str, file_path: Path) -> Optional[StandardizedASTNode]:
         """Get cached AST if available."""
         key = self._get_cache_key(source, file_path)
         return self.cache.get(key)
-    
+
     def put(self, source: str, file_path: Path, ast: StandardizedASTNode) -> None:
         """Cache parsed AST."""
         key = self._get_cache_key(source, file_path)
-        
+
         # LRU eviction if cache full
         if len(self.cache) >= self.max_size:
             # Remove oldest entry (simplified - use OrderedDict for true LRU)
             first_key = next(iter(self.cache))
             del self.cache[first_key]
-        
+
         self.cache[key] = ast
 ```text
 
@@ -494,10 +494,10 @@ class ParseCache:
 ```python
 def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
     """Update MATURITY_REMAINING_WORK.md with AST findings."""
-    
+
     # Load existing report
     content = report_path.read_text()
-    
+
     # Find AST findings section
     ast_section = f"""
 ## AST Analysis Findings
@@ -519,7 +519,7 @@ def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
 ### Recommendations
 {_generate_recommendations(metrics)}
 """
-    
+
     # Replace or append AST section
     if "## AST Analysis Findings" in content:
         # Update existing section
@@ -527,7 +527,7 @@ def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
     else:
         # Append new section
         content += "\n" + ast_section
-    
+
     # Write back
     report_path.write_text(content)
 ```text
@@ -545,6 +545,6 @@ def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
 7. ⏳ Create CLI tools
 8. ⏳ Write comprehensive tests
 
-**Status**: DESIGN COMPLETE - Awaiting implementation approval  
-**Owner**: Architecture Lead  
+**Status**: DESIGN COMPLETE - Awaiting implementation approval
+**Owner**: Architecture Lead
 **Timeline**: Sprint 1-3 (6-9 phases) once approved

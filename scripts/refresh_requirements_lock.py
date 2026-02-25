@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/refresh_requirements_lock.py [options]
-    
+
     Examples:
     $ python scripts/refresh_requirements_lock.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Refresh requirements/lock.txt and validate dependency alignment.

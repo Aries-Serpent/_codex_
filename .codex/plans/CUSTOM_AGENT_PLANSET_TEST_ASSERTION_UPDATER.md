@@ -1,8 +1,8 @@
 # Custom Agent Planset: test-assertion-updater
-> **Agent Type**: Test Automation & Maintenance  
-> **Version**: 1.0.0  
-> **Status**: 📋 PLANNED  
-> **Priority**: HIGH  
+> **Agent Type**: Test Automation & Maintenance
+> **Version**: 1.0.0
+> **Status**: 📋 PLANNED
+> **Priority**: HIGH
 > **Estimated Effort**: 3-5 iterations
 
 ---
@@ -56,36 +56,36 @@ graph TD
     A[Test Failure Detected] --> B[Failure Parser]
     B --> C[Assertion Extractor]
     C --> D{Assertion Mismatch?}
-    
+
     D -->|Yes| E[Implementation Analyzer]
     D -->|No| F[Hand off to Developer]
-    
+
     E --> G[Extract Expected/Actual Values]
     G --> H[Analyze Implementation Code]
     H --> I[Determine Root Cause]
-    
+
     I --> J{Type of Mismatch}
     J -->|String Format| K[String Pattern Generator]
     J -->|Data Structure| L[Structure Transformer]
     J -->|Type Mismatch| M[Type Converter]
-    
+
     K --> N[Generate New Assertion]
     L --> N
     M --> N
-    
+
     N --> O[Property-Based Validator]
     O --> P{Validation Pass?}
-    
+
     P -->|Yes| Q[Apply Fix to Test File]
     P -->|No| R[Refine Assertion]
     R --> N
-    
+
     Q --> S[Run Test Again]
     S --> T{Test Pass?}
-    
+
     T -->|Yes| U[Generate Commit Message]
     T -->|No| F
-    
+
     U --> V[Auto-Commit with Explanation]
     V --> W[Update Cognitive Brain]
 ```
@@ -95,7 +95,7 @@ graph TD
 ## 🔧 Component Design
 
 ### 1. Failure Parser
-**Input**: pytest output (stdout/stderr)  
+**Input**: pytest output (stdout/stderr)
 **Output**: Structured failure data
 
 ```python
@@ -119,7 +119,7 @@ class TestFailure:
 ---
 
 ### 2. Assertion Extractor
-**Input**: TestFailure, test file content  
+**Input**: TestFailure, test file content
 **Output**: AssertionNode (AST representation)
 
 ```python
@@ -140,7 +140,7 @@ class AssertionNode:
 ---
 
 ### 3. Implementation Analyzer
-**Input**: Test file, assertion location  
+**Input**: Test file, assertion location
 **Output**: Implementation insights
 
 ```python
@@ -162,7 +162,7 @@ class ImplementationInsight:
 ---
 
 ### 4. Assertion Generator
-**Input**: TestFailure, ImplementationInsight  
+**Input**: TestFailure, ImplementationInsight
 **Output**: New assertion code
 
 **Strategies**:
@@ -208,7 +208,7 @@ assert int(result.count) == 5
 ---
 
 ### 5. Property-Based Validator
-**Input**: New assertion, test context  
+**Input**: New assertion, test context
 **Output**: Validation result
 
 **Purpose**: Ensure new assertion still tests what original intended
@@ -279,7 +279,7 @@ sequenceDiagram
     participant Agent as test-assertion-updater
     participant Git as Git Repository
     participant Brain as Cognitive Brain
-    
+
     CI->>Agent: Tests failed (pytest output)
     Agent->>Agent: Parse failures
     Agent->>Agent: Identify assertion mismatches
@@ -299,7 +299,7 @@ sequenceDiagram
     participant Dev as Developer
     participant Agent as test-assertion-updater
     participant UI as Terminal UI
-    
+
     Dev->>Agent: Run with --interactive
     Agent->>Agent: Detect failures
     Agent->>UI: Show failure #1
@@ -354,15 +354,15 @@ def test_end_to_end_fix():
         result = get_result()
         assert "old message" in result.message
     '''
-    
+
     # Run agent
     agent = TestAssertionUpdater()
     fixes = agent.process_failures(run_tests(test_code))
-    
+
     # Verify fix applied
     assert len(fixes) == 1
     assert "new message" in fixes[0].new_code
-    
+
     # Verify test now passes
     assert run_tests(fixes[0].updated_test_file).passed
 
@@ -387,10 +387,10 @@ def test_assertion_always_deterministic(old_msg, new_msg):
     """Property: Same input always produces same output"""
     failure1 = create_failure(old_msg, new_msg)
     failure2 = create_failure(old_msg, new_msg)
-    
+
     fix1 = generate_assertion(failure1)
     fix2 = generate_assertion(failure2)
-    
+
     assert fix1 == fix2
 
 @given(st.lists(st.dictionaries(st.text(), st.text())))
@@ -557,18 +557,18 @@ NEW: assert isinstance(result.count, int) and result.count > 0
 ### Scenarios
 
 #### Scenario 1: Ambiguous Assertion
-**Problem**: Can't determine what original assertion intended  
-**Action**: Flag for human review with context  
+**Problem**: Can't determine what original assertion intended
+**Action**: Flag for human review with context
 **Example**: `assert x` (what does x mean?)
 
 #### Scenario 2: Complex Logic
-**Problem**: Assertion involves complex boolean logic  
-**Action**: Suggest refactoring, don't auto-fix  
+**Problem**: Assertion involves complex boolean logic
+**Action**: Suggest refactoring, don't auto-fix
 **Example**: `assert (a and b) or (c and not d)`
 
 #### Scenario 3: Implementation Bug Suspected
-**Problem**: Fix would make bad test pass  
-**Action**: Flag as potential implementation bug  
+**Problem**: Fix would make bad test pass
+**Action**: Flag as potential implementation bug
 **Example**: Security check that should fail but doesn't
 
 ---
@@ -655,8 +655,7 @@ NEW: assert isinstance(result.count, int) and result.count > 0
 
 ---
 
-**Agent Status**: 📋 READY FOR IMPLEMENTATION  
-**Next Step**: Approve planset and begin Phase 1  
-**Owner**: TBD  
+**Agent Status**: 📋 READY FOR IMPLEMENTATION
+**Next Step**: Approve planset and begin Phase 1
+**Owner**: TBD
 **Reviewers**: mbaetiong, core team
-

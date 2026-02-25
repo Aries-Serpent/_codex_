@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/token_rotation/check_token_expiry.py [options]
-    
+
     Examples:
     $ python scripts/token_rotation/check_token_expiry.py --help
 
@@ -33,6 +33,7 @@ Last Updated: 2026-01-16
 """Token Expiry Checker - See CONTINUATION_ROADMAP.md Phase 2.2"""
 
 import sys
+
 print("Token rotation automation - Phase 2 implementation")
 print("See: docs/admin/CONTINUATION_ROADMAP.md")
 sys.exit(0)

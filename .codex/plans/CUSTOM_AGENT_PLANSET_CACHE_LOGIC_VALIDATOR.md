@@ -1,8 +1,8 @@
 # Custom Agent Planset: cache-logic-validator
-> **Agent Type**: Performance & Correctness Validation  
-> **Version**: 1.0.0  
-> **Status**: 📋 PLANNED  
-> **Priority**: HIGH  
+> **Agent Type**: Performance & Correctness Validation
+> **Version**: 1.0.0
+> **Status**: 📋 PLANNED
+> **Priority**: HIGH
 > **Estimated Effort**: 2-3 iterations
 
 ---
@@ -62,25 +62,25 @@ graph TD
     A[Cache Implementation] --> B[Cache Analyzer]
     B --> C[Property Generator]
     C --> D[Test Suite Generator]
-    
+
     D --> E[Mathematical Properties]
     D --> F[Concurrency Properties]
     D --> G[Expiration Properties]
     D --> H[Performance Properties]
-    
+
     E --> I[Test Executor]
     F --> I
     G --> I
     H --> I
-    
+
     I --> J{All Tests Pass?}
     J -->|Yes| K[Generate Report: ✅ VALID]
     J -->|No| L[Failure Analyzer]
-    
+
     L --> M[Minimal Reproduction]
     M --> N[Root Cause Analysis]
     N --> O[Generate Report: ❌ INVALID]
-    
+
     K --> P[Update Cognitive Brain]
     O --> P
 ```
@@ -90,7 +90,7 @@ graph TD
 ## 🔧 Component Design
 
 ### 1. Cache Analyzer
-**Input**: Cache class/module  
+**Input**: Cache class/module
 **Output**: Cache specification
 
 ```python
@@ -122,7 +122,7 @@ def extract_interface(cache_class: type) -> Dict[str, inspect.Signature]:
 ---
 
 ### 2. Property Generator
-**Input**: CacheSpec  
+**Input**: CacheSpec
 **Output**: List of properties to test
 
 ```python
@@ -146,15 +146,15 @@ def test_hits_plus_misses_equals_queries(cache, keys, operations):
     """hits + misses should always equal total get() calls"""
     initial_hits = cache.hits
     initial_misses = cache.misses
-    
+
     get_count = sum(1 for op in operations if op == 'get')
-    
+
     for i, op in enumerate(operations):
         if op == 'put':
             cache.put(keys[i % len(keys)], f"value_{i}")
         else:
             cache.get(keys[i % len(keys)])
-    
+
     assert (cache.hits - initial_hits) + (cache.misses - initial_misses) == get_count
 
 # Property 2: Hits + Misses Never Decrease
@@ -163,14 +163,14 @@ def test_counters_monotonic(cache, operations):
     """Hit/miss counters should never decrease"""
     prev_hits = cache.hits
     prev_misses = cache.misses
-    
+
     for key, value in operations:
         cache.put(key, value)
         cache.get(key)
-        
+
         assert cache.hits >= prev_hits
         assert cache.misses >= prev_misses
-        
+
         prev_hits = cache.hits
         prev_misses = cache.misses
 
@@ -181,7 +181,7 @@ def test_get_after_put_is_hit(cache, key, value):
     cache.put(key, value)
     hits_before = cache.hits
     result = cache.get(key)
-    
+
     assert result == value
     assert cache.hits == hits_before + 1
 ```
@@ -193,20 +193,20 @@ def test_get_after_put_is_hit(cache, key, value):
 def test_concurrent_counter_consistency(cache, operations):
     """Concurrent access should maintain counter consistency"""
     import concurrent.futures
-    
+
     def worker(ops):
         for key, value in ops:
             cache.put(key, value)
             cache.get(key)
-    
+
     # Split operations across threads
     chunk_size = len(operations) // 4
     chunks = [operations[i:i+chunk_size] for i in range(0, len(operations), chunk_size)]
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = [executor.submit(worker, chunk) for chunk in chunks]
         concurrent.futures.wait(futures)
-    
+
     # Verify counters are consistent
     assert cache.hits + cache.misses == len(operations)
 
@@ -215,16 +215,16 @@ def test_concurrent_counter_consistency(cache, operations):
 def test_no_race_conditions(cache, key, values):
     """Concurrent puts should not corrupt cache state"""
     import threading
-    
+
     def putter(value):
         cache.put(key, value)
-    
+
     threads = [threading.Thread(target=putter, args=(v,)) for v in values]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-    
+
     # Cache should contain one of the values, not corrupted data
     result = cache.get(key)
     assert result in values or result is None
@@ -237,13 +237,13 @@ def test_no_race_conditions(cache, key, values):
 def test_expired_entry_is_miss(cache_with_ttl, key, value):
     """Accessing an expired entry should be a miss"""
     cache = cache_with_ttl(ttl=0.1)  # 100ms TTL
-    
+
     cache.put(key, value)
     time.sleep(0.15)  # Wait for expiration
-    
+
     misses_before = cache.misses
     result = cache.get(key)
-    
+
     assert result is None
     assert cache.misses == misses_before + 1
 
@@ -252,13 +252,13 @@ def test_expired_entry_is_miss(cache_with_ttl, key, value):
 def test_non_expired_entry_is_hit(cache_with_ttl, key, value):
     """Accessing a non-expired entry should be a hit"""
     cache = cache_with_ttl(ttl=10.0)  # 10s TTL
-    
+
     cache.put(key, value)
     time.sleep(0.05)  # Short delay, still valid
-    
+
     hits_before = cache.hits
     result = cache.get(key)
-    
+
     assert result == value
     assert cache.hits == hits_before + 1
 ```
@@ -270,25 +270,25 @@ def test_non_expired_entry_is_hit(cache_with_ttl, key, value):
 def test_constant_time_operations(cache, sizes):
     """Get/Put should have O(1) time complexity"""
     timings = []
-    
+
     for size in sizes:
         # Populate cache
         for i in range(size):
             cache.put(f"key_{i}", f"value_{i}")
-        
+
         # Measure get time
         start = time.perf_counter()
         cache.get(f"key_{size//2}")
         elapsed = time.perf_counter() - start
-        
+
         timings.append((size, elapsed))
-    
+
     # Check that time doesn't grow linearly with size
     # (Allow some variance for system noise)
     first_time = timings[0][1]
     last_time = timings[-1][1]
     size_ratio = timings[-1][0] / timings[0][0]
-    
+
     # If O(1), last_time should not be >> first_time
     assert last_time < first_time * (size_ratio ** 0.3)  # Allow log growth margin
 ```
@@ -296,13 +296,13 @@ def test_constant_time_operations(cache, sizes):
 ---
 
 ### 3. Test Suite Generator
-**Input**: CacheSpec, List[CacheProperty]  
+**Input**: CacheSpec, List[CacheProperty]
 **Output**: pytest test file
 
 ```python
 def generate_test_suite(spec: CacheSpec, properties: List[CacheProperty]) -> str:
     """Generate complete pytest test file"""
-    
+
     template = '''
 """
 Auto-generated property-based tests for {cache_name}
@@ -319,11 +319,11 @@ from {module} import {cache_class}
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--hypothesis-show-statistics"])
 '''
-    
+
     test_functions = "\n\n".join(
         generate_test_function(prop) for prop in properties
     )
-    
+
     return template.format(
         cache_name=spec.cache_type,
         date=datetime.now().isoformat(),
@@ -336,7 +336,7 @@ if __name__ == "__main__":
 ---
 
 ### 4. Failure Analyzer
-**Input**: Test failure, cache state  
+**Input**: Test failure, cache state
 **Output**: Minimal reproduction and root cause
 
 ```python
@@ -409,22 +409,22 @@ sequenceDiagram
     participant Agent as cache-logic-validator
     participant Hypothesis as Hypothesis Framework
     participant Report as Report Generator
-    
+
     Dev->>Agent: Validate cache implementation
     Agent->>Agent: Analyze cache class
     Agent->>Agent: Generate properties
     Agent->>Hypothesis: Run property tests
-    
+
     loop For each property
         Hypothesis->>Hypothesis: Generate test cases
         Hypothesis->>Hypothesis: Execute tests
         Hypothesis-->>Agent: Results
     end
-    
+
     Agent->>Agent: Analyze failures (if any)
     Agent->>Report: Generate validation report
     Report->>Dev: Display results
-    
+
     alt Failures Found
         Report->>Dev: Show minimal reproduction
         Report->>Dev: Suggest fixes
@@ -538,7 +538,7 @@ def test_detect_double_counting_bug():
 ## 🚨 Known Edge Cases
 
 ### Edge Case 1: Cache Size = 1
-**Issue**: LRU/FIFO logic edge case  
+**Issue**: LRU/FIFO logic edge case
 **Test**:
 ```python
 @given(keys=st.lists(st.text(), min_size=2))
@@ -551,7 +551,7 @@ def test_size_one_cache(keys):
 ```
 
 ### Edge Case 2: TTL = 0
-**Issue**: Immediate expiration  
+**Issue**: Immediate expiration
 **Test**:
 ```python
 def test_zero_ttl():
@@ -561,7 +561,7 @@ def test_zero_ttl():
 ```
 
 ### Edge Case 3: Concurrent Expiration
-**Issue**: Race between get and expiration check  
+**Issue**: Race between get and expiration check
 **Test**:
 ```python
 @given(keys=st.lists(st.text()))
@@ -595,8 +595,7 @@ def test_concurrent_expiration(keys):
 
 ---
 
-**Agent Status**: 📋 READY FOR IMPLEMENTATION  
-**Next Step**: Approve planset and begin Phase 1  
-**Owner**: TBD  
+**Agent Status**: 📋 READY FOR IMPLEMENTATION
+**Next Step**: Approve planset and begin Phase 1
+**Owner**: TBD
 **Reviewers**: mbaetiong, core team
-

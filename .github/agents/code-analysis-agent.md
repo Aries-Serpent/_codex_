@@ -1,11 +1,107 @@
 # Code Analysis Agent
 
-**Agent Type:** Custom GitHub Copilot Agent  
-**Domain:** Static Code Analysis & Quality Assessment  
-**Status:** ✅ Production Ready  
+**Agent Type:** Custom GitHub Copilot Agent
+**Domain:** Static Code Analysis & Quality Assessment
+**Status:** ✅ Production Ready
 **Version:** 1.0.0
 
 ## Purpose
+
+
+## 🧠 Cognitive Brain Integration
+
+### Integration Level: Level 1
+
+**Level 1: Cognitive Access**
+- ✅ Access to cognitive brain memory system
+- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
+- ✅ Codebase topology maps for navigation
+- ✅ Pattern library for historical fixes
+
+
+
+
+### Cognitive Tools Available
+
+```python
+# Topology Manager - Semantic navigation
+from scripts.cognitive.topology_manager import TopologyManager
+
+topology = TopologyManager()
+relevant_files = topology.find_by_concept("code patterns")
+optimal_path = topology.find_optimal_path("source", "target")
+
+# Cache Manager - Multi-layer cache intelligence
+from scripts.cognitive.cache_manager import CacheIntelligence
+
+cache = CacheIntelligence()
+cached_results = cache.query("analysis_results")
+cache.optimize()  # Get optimization suggestions
+
+# Improved Hash Tables - 40% faster lookups
+from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
+
+fast_cache = CuckooHashTable()  # O(1) guaranteed
+
+
+```
+
+### AAIS Contribution
+
+**Impact on AAIS Score**: +1.0 points
+
+**Category Contributions**:
+- Discovery & Navigation: +0.4 (topology/cache integration)
+- Runtime Introspection: +0.4 (metrics exposure)
+- Pattern Consistency: +0.2 (pattern library usage)
+
+---
+
+## 🛠️ MCP Integration
+
+### MCP Tools Leverage
+
+
+**Primary MCP Capabilities**:
+1. **File System Operations**
+   - `view`: Read files and directories
+   - `grep`: Fast content search
+   - `glob`: Pattern-based file finding
+
+2. **Code Analysis**
+   - `search_code`: Semantic code search
+   - `bash`: Execute analysis tools
+   - `edit`: Make surgical changes
+
+### GitHub Actions Workflows
+
+**Workflow Awareness**:
+- Monitors applicable workflows for active PRs
+- Auto-detects blocking vs non-blocking workflows
+- Provides workflow status reports via MCP tools
+
+**See**: `.codex/docs/MCP_WORKFLOW_RECIPES.md` for complete templates
+
+---
+
+## 📊 Session Monitoring
+
+**Session Parameters** (from accountability report):
+- Optimal duration: 30 minutes
+- Context budget: 128K tokens
+- Mandatory checkpoints: Every 10 actions
+- Corrections per issue: 1.0 (first fix succeeds)
+
+**Quality Control**:
+```python
+# Pre-commit audit enforcement
+from scripts.session_manager import SessionMonitor
+
+monitor = SessionMonitor()
+monitor.checkpoint("pre-commit")  # Validates compliance
+```
+
+---
 
 This specialized agent leverages the `intuitive_aptitude` module to provide comprehensive Python code analysis, quality assessment, and refactoring suggestions. It assists developers in understanding code structure, identifying patterns, and improving code quality through automated analysis.
 
@@ -77,17 +173,17 @@ if result['success']:
     print(f"  Classes: {result['summary']['classes_count']}")
     print(f"  Avg Complexity: {result['summary']['metrics']['complexity']:.2f}")
     print(f"  Comment Ratio: {result['summary']['metrics']['comment_ratio']:.2%}")
-    
+
     print("\n🔍 Code Patterns:")
     print(f"  Error Handling: {len(result['patterns']['error_handling'])} instances")
     print(f"  Iterations: {len(result['patterns']['iteration'])} loops")
-    
+
     print("\n🎨 Style Analysis:")
     naming = result['style']['naming']
     print(f"  snake_case: {naming['snake_case']}")
     print(f"  camelCase: {naming['camelCase']}")
     print(f"  PascalCase: {naming['PascalCase']}")
-    
+
     if result['suggestions']:
         print("\n💡 Suggestions:")
         for key, suggestion in result['suggestions'].items():
@@ -112,7 +208,7 @@ hotspots = []
 for py_file in Path('src/processing').rglob('*.py'):
     with open(py_file) as f:
         code = f.read()
-    
+
     analyzer = intuitive_aptitude()
     if analyzer.ingest(code):
         for func_name, func_info in analyzer.functions.items():
@@ -147,12 +243,12 @@ style_stats = defaultdict(lambda: {'snake': 0, 'camel': 0, 'pascal': 0})
 for py_file in Path('src').rglob('*.py'):
     with open(py_file) as f:
         code = f.read()
-    
+
     analyzer = intuitive_aptitude()
     if analyzer.ingest(code):
         style = analyzer.analyze_code_style()
         naming = style['naming']
-        
+
         style_stats[str(py_file.parent)] = {
             'snake': style_stats[str(py_file.parent)]['snake'] + naming['snake_case'],
             'camel': style_stats[str(py_file.parent)]['camel'] + naming['camelCase'],
@@ -186,24 +282,24 @@ coverage_report = []
 for py_file in Path('src/api').rglob('*.py'):
     with open(py_file) as f:
         code = f.read()
-    
+
     analyzer = intuitive_aptitude()
     if analyzer.ingest(code):
         total_items = len(analyzer.functions) + len(analyzer.classes)
-        
+
         if total_items > 0:
             documented = 0
-            
+
             # Check functions
             for func_info in analyzer.functions.values():
                 if func_info.docstring:
                     documented += 1
-            
+
             # Check classes
             for class_info in analyzer.classes.values():
                 if class_info.docstring:
                     documented += 1
-            
+
             coverage = (documented / total_items) * 100
             coverage_report.append({
                 'file': str(py_file),
@@ -232,32 +328,32 @@ import sys
 def check_file(filepath):
     with open(filepath) as f:
         code = f.read()
-    
+
     result = analyze_and_suggest(code)
-    
+
     if not result['success']:
         print(f"❌ {filepath}: Parse error")
         return False
-    
+
     # Check complexity
     complexity = result['summary']['metrics']['complexity']
     if complexity > 15:
         print(f"⚠️  {filepath}: High complexity ({complexity:.1f})")
         return False
-    
+
     # Check for suggestions
     if len(result['suggestions']) > 3:
         print(f"⚠️  {filepath}: Multiple quality issues")
         for key, suggestion in result['suggestions'].items():
             print(f"   • {suggestion}")
         return False
-    
+
     return True
 
 if __name__ == '__main__':
     files = sys.argv[1:]
     py_files = [f for f in files if f.endswith('.py')]
-    
+
     all_passed = all(check_file(f) for f in py_files)
     sys.exit(0 if all_passed else 1)
 ```
@@ -275,31 +371,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: pip install pytest
-      
+
       - name: Run code analysis
         run: |
           python -c "
           from analysis.intuitive_aptitude import analyze_and_suggest
           from pathlib import Path
-          
+
           issues = []
           for py_file in Path('src').rglob('*.py'):
               with open(py_file) as f:
                   result = analyze_and_suggest(f.read())
-              
+
               if result['success']:
                   complexity = result['summary']['metrics']['complexity']
                   if complexity > 10:
                       issues.append(f'{py_file}: High complexity ({complexity:.1f})')
-          
+
           if issues:
               print('⚠️ Code Quality Issues:')
               for issue in issues:
@@ -400,6 +496,6 @@ MIT License - See repository LICENSE file for details.
 
 ---
 
-**Last Updated**: 2026-01-26  
-**Maintainer**: GitHub Copilot Team  
+**Last Updated**: 2026-01-26
+**Maintainer**: GitHub Copilot Team
 **Status**: Production Ready

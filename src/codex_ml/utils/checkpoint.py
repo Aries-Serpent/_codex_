@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import inspect
 import json
+import logging
 import pickle
 import random as _random
 import shutil
@@ -16,6 +13,8 @@ from collections.abc import Iterable, Mapping
 from contextlib import suppress
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:  # Keep schema alignment with checkpoint_core when available
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
@@ -386,18 +385,43 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
 
 def save_checkpoint(
+    state_or_model: Any = None,
+    path: "Path | str | None" = None,
     *,
-    model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
-    out_dir: Path | str,
-    metadata: dict[str, Any] | None = None,
+    model: Any = None,
+    optimizer: Any | None = None,
+    scheduler: Any | None = None,
+    out_dir: "Path | str | None" = None,
+    metadata: "dict[str, Any] | None" = None,
     metric_name: str = "eval_loss",
-    metric_value: float | None = None,
-    metric: float | None = None,
-    best_k: int | None = None,
+    metric_value: "float | None" = None,
+    metric: "float | None" = None,
+    best_k: "int | None" = None,
 ) -> Path:
-    """Persist training state and emit checksum information."""
+    """Persist training state and emit checksum information.
+
+    Supports two calling conventions:
+
+    1. Simple ``(state_dict, path)`` — saves the raw dict via torch/pickle::
+
+           save_checkpoint({"model_state_dict": ..., "epoch": 5}, "/tmp/ckpt.pt")
+
+    2. Full keyword-only form (original API)::
+
+           save_checkpoint(model=m, optimizer=opt, scheduler=sch, out_dir="/tmp/ckpt/")
+    """
+    # --- Simple positional API: save_checkpoint(state, path) -----------------
+    if state_or_model is not None and path is not None and model is None and out_dir is None:
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        _dump_payload(p, state_or_model)
+        return p
+
+    # --- Full keyword API -----------------------------------------------------
+    if state_or_model is not None and model is None:
+        model = state_or_model
+    if path is not None and out_dir is None:
+        out_dir = path
 
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -487,15 +511,35 @@ def restore_into(
 
 
 def load_checkpoint(
+    path_or_ckpt_dir: "Path | str | None" = None,
     *,
-    model: Any,
-    optimizer: Any | None,
-    scheduler: Any | None,
-    ckpt_dir: Path | str,
-    map_location: str | None = "cpu",
+    model: Any = None,
+    optimizer: "Any | None" = None,
+    scheduler: "Any | None" = None,
+    ckpt_dir: "Path | str | None" = None,
+    map_location: "str | None" = "cpu",
     strict: bool = False,
-) -> dict[str, Any]:
-    """Load training state from ``ckpt_dir`` and restore RNG state."""
+) -> "dict[str, Any]":
+    """Load training state.
+
+    Supports two calling conventions:
+
+    1. Simple ``(path)`` — loads and returns the raw dict::
+
+           state = load_checkpoint("/tmp/ckpt.pt")
+
+    2. Full keyword-only form (original API)::
+
+           load_checkpoint(model=m, optimizer=opt, ckpt_dir="/tmp/ckpt/")
+    """
+    # --- Simple positional API: load_checkpoint(path) -----------------------
+    if path_or_ckpt_dir is not None and model is None and ckpt_dir is None:
+        p = Path(path_or_ckpt_dir)
+        return _load_payload(p, map_location if torch is not None else None)
+
+    # --- Full keyword API ---------------------------------------------------
+    if path_or_ckpt_dir is not None and ckpt_dir is None:
+        ckpt_dir = path_or_ckpt_dir
 
     ckpt_dir = Path(ckpt_dir)
     try:

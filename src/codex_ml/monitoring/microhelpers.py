@@ -7,8 +7,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import datetime as _dt
-from typing import Any
+import datetime as _dt  # noqa: E402
+from typing import Any  # noqa: E402
 
 __all__ = ["sample", "get_proc_stats", "get_sys_stats", "get_gpu_stats"]
 
@@ -147,7 +147,7 @@ def get_gpu_stats() -> list[dict[str, Any]]:
 
 def sample() -> dict[str, Any]:
     """One-shot snapshot; never raises."""
-    ts = _dt.datetime.now().astimezone().isoformat(timespec="seconds")
+    ts = _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds")
     return {"ts": ts, "proc": get_proc_stats(), "sys": get_sys_stats(), "gpu": get_gpu_stats()}
 
 

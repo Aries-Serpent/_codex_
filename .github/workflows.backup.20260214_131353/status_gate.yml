@@ -1,0 +1,23 @@
+name: Status Gate (.statusrc)
+
+on:
+  pull_request:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  status-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow status_gate 2>/dev/null || echo "Cache health: check skipped"

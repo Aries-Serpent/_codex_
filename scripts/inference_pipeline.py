@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/inference_pipeline.py [options]
-    
+
     Examples:
     $ python scripts/inference_pipeline.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 # Deterministic Inference Pipeline Runner (v1.0.2)
@@ -54,8 +56,9 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 import numpy as np
-import torch
 import yaml
+
+import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 PIPELINE_VERSION = "1.0.2"

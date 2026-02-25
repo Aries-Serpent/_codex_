@@ -12,7 +12,7 @@ Reference: Anthropic 2024 - Effective Context Engineering for AI Agents
 import hashlib
 import math
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any, Optional
 
@@ -31,8 +31,8 @@ class MemoryItem:
 
     content: str
     layer: MemoryLayer
-    created_at: datetime = field(default_factory=datetime.now)
-    last_accessed: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    last_accessed: datetime = field(default_factory=lambda: datetime.now(UTC))
     access_count: int = 0
     importance: float = 1.0
     decay_rate: float = 0.1
@@ -47,12 +47,12 @@ class MemoryItem:
     @property
     def age_seconds(self) -> float:
         """Age of item in seconds."""
-        return (datetime.now() - self.created_at).total_seconds()
+        return (datetime.now(UTC) - self.created_at).total_seconds()
 
     @property
     def staleness_seconds(self) -> float:
         """Time since last access."""
-        return (datetime.now() - self.last_accessed).total_seconds()
+        return (datetime.now(UTC) - self.last_accessed).total_seconds()
 
     @property
     def effective_importance(self) -> float:
@@ -178,7 +178,7 @@ class HierarchicalMemory:
             existing_item = self._memory[existing_layer].get(content_hash)
             if existing_item:
                 # Update access info on duplicate
-                existing_item.last_accessed = datetime.now()
+                existing_item.last_accessed = datetime.now(UTC)
                 existing_item.access_count += 1
                 return True, f"Duplicate found in {existing_layer.value} memory, updated access"
 
@@ -262,7 +262,7 @@ class HierarchicalMemory:
 
         # Update access info
         for item in results:
-            item.last_accessed = datetime.now()
+            item.last_accessed = datetime.now(UTC)
             item.access_count += 1
 
         # Check for promotions

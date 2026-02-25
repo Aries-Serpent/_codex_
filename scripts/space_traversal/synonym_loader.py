@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/synonym_loader.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/synonym_loader.py --help
 

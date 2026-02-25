@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from codex_ml.tokenization import load_tokenizer
 
 
@@ -44,10 +46,25 @@ def _sp_stub(monkeypatch, model_path: Path):
     monkeypatch.setattr("codex_ml.tokenization.sentencepiece_adapter.spm", sp_stub, raising=False)
 
 
+def _skip_if_offline(exc: Exception) -> None:
+    """Skip test gracefully when HuggingFace model is unavailable in offline CI."""
+    msg = str(exc).lower()
+    if "unavailable" in msg or "connect" in msg or "network" in msg:
+        pytest.skip(f"HuggingFace model unavailable (offline): {exc}")
+
+
 def test_use_fast_flag():
-    tok_fast = load_tokenizer("gpt2", use_fast=True)
+    try:
+        tok_fast = load_tokenizer("gpt2", use_fast=True)
+    except Exception as exc:
+        _skip_if_offline(exc)
+        raise
     assert getattr(tok_fast.tokenizer, "is_fast", False)
-    tok_slow = load_tokenizer("gpt2", use_fast=False)
+    try:
+        tok_slow = load_tokenizer("gpt2", use_fast=False)
+    except Exception as exc:
+        _skip_if_offline(exc)
+        raise
     assert not getattr(tok_slow.tokenizer, "is_fast", False)
 
 

@@ -1,14 +1,14 @@
 # GitHub Environment Setup Guide for MCP Integration
 
-> **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration  
-> **Audience**: Human Administrators with org/repo admin permissions  
+> **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
+> **Audience**: Human Administrators with org/repo admin permissions
 > **Last Updated**: 2025-12-30
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Required Environment Variables](#required-environment-variables)
 3. [Required Secrets](#required-secrets)
 4. [Configuration Instructions](#configuration-instructions)
@@ -186,21 +186,21 @@ def generate_service_token() -> str:
 def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
     """
     Encode GitHub Personal Access Token to base64.
-    
+
     Args:
         token: Raw GitHub PAT (e.g., ghp_abc123...)
         master_key: Optional encryption key
-    
+
     Returns:
         Dictionary with encoded token and metadata
     """
     if not token.startswith(('ghp_', 'github_pat_')):
         print("⚠️  Warning: Token doesn't look like a GitHub PAT")
-    
+
     # Base64 encode
     token_bytes = token.encode('utf-8')
     encoded_token = base64.b64encode(token_bytes).decode('utf-8')
-    
+
     # Generate metadata
     expiry_date = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
     config = {
@@ -210,7 +210,7 @@ def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
         "rotation_schedule": "90 iterations",
         "encrypted": bool(master_key)
     }
-    
+
     # Optionally encrypt with master key
     if master_key and CRYPTO_AVAILABLE:
         # Use Fernet for symmetric encryption
@@ -219,7 +219,7 @@ def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
         encrypted_bytes = cipher.encrypt(token_bytes)
         encoded_token = base64.b64encode(encrypted_bytes).decode('utf-8')
         config["encryption_method"] = "fernet"
-    
+
     return {
         "CODEX_GHP_TOKEN_BASE64": encoded_token,
         "CODEX_GHP_TOKEN_CONFIG": json.dumps(config, indent=2)
@@ -229,21 +229,21 @@ def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
 def generate_github_app_config(app_id: int = None, private_key_path: str = None) -> Dict[str, Any]:
     """
     Generate GitHub App configuration.
-    
+
     Args:
         app_id: GitHub App ID (from App settings)
         private_key_path: Path to private key PEM file
-    
+
     Returns:
         Dictionary with App configuration
     """
     config = {}
-    
+
     if app_id:
         config["CODEX_GITHUB_APP_ID"] = str(app_id)
     else:
         config["CODEX_GITHUB_APP_ID"] = "<ENTER_YOUR_GITHUB_APP_ID>"
-    
+
     if private_key_path:
         try:
             with open(private_key_path, 'r') as f:
@@ -253,7 +253,7 @@ def generate_github_app_config(app_id: int = None, private_key_path: str = None)
             config["CODEX_GITHUB_APP_PRIVATE_KEY"] = "<PASTE_PRIVATE_KEY_PEM_HERE>"
     else:
         config["CODEX_GITHUB_APP_PRIVATE_KEY"] = "<PASTE_PRIVATE_KEY_PEM_HERE>"
-    
+
     return config
 
 
@@ -262,21 +262,21 @@ def print_config_table(config: Dict[str, str], title: str):
     print(f"\n{'=' * 80}")
     print(f" {title}")
     print(f"{'=' * 80}\n")
-    
+
     for key, value in config.items():
         # Truncate long values for display
         display_value = value if len(str(value)) < 100 else str(value)[:97] + "..."
-        
+
         print(f"Secret Name:  {key}")
         print(f"Secret Value: {display_value}")
         print(f"{'-' * 80}")
-        
+
         # Also provide copy-paste friendly format
         if len(str(value)) < 100:
             print(f"\n📋 Copy-paste value:\n{value}\n")
         else:
             print(f"\n📋 Copy-paste value (full):\n{value}\n")
-    
+
     print(f"{'=' * 80}\n")
 
 
@@ -287,15 +287,15 @@ def main():
     print("=" * 80)
     print("\nThis script generates secure values for GitHub secrets.")
     print("Copy the generated values and paste them into GitHub settings.\n")
-    
+
     # Generate master encryption key
     master_key = generate_master_key()
     print(f"✅ Generated CODEX_MASTER_KEY: {master_key}\n")
-    
+
     # Generate MCP service token
     service_token = generate_service_token()
     print(f"✅ Generated MCP_SERVICE_TOKEN: {service_token}\n")
-    
+
     # Prompt for GitHub PAT
     print("\n" + "-" * 80)
     print("GitHub Personal Access Token Setup")
@@ -305,9 +305,9 @@ def main():
     print("2. Select scopes: repo, workflow, read:org, write:discussion")
     print("3. Set expiration: 90 days")
     print("4. Click 'Generate token' and copy the token\n")
-    
+
     github_token = input("Enter your GitHub Personal Access Token (or press Enter to skip): ").strip()
-    
+
     if github_token:
         token_config = encode_github_token(github_token, master_key)
         print("\n✅ Encoded GitHub token successfully!")
@@ -321,7 +321,7 @@ def main():
                 "scopes": ["repo", "workflow", "read:org", "write:discussion"]
             }, indent=2)
         }
-    
+
     # GitHub App configuration (optional)
     print("\n" + "-" * 80)
     print("GitHub App Setup (Optional - Recommended for Production)")
@@ -330,9 +330,9 @@ def main():
     print("1. Go to: https://github.com/settings/apps/new")
     print("2. Set permissions as described in GITHUB_MCP_INTEGRATION_GUIDE.md")
     print("3. Generate private key and note the App ID\n")
-    
+
     use_app = input("Do you have a GitHub App? (y/n): ").strip().lower()
-    
+
     if use_app == 'y':
         try:
             app_id = int(input("Enter GitHub App ID: ").strip())
@@ -345,7 +345,7 @@ def main():
     else:
         print("\n⚠️  Skipped GitHub App configuration.")
         app_config = {}
-    
+
     # Compile all secrets
     all_secrets = {
         "CODEX_MASTER_KEY": master_key,
@@ -353,13 +353,13 @@ def main():
         **token_config,
         **app_config
     }
-    
+
     # Print configuration tables
     print_config_table(
         {"CODEX_MASTER_KEY": master_key},
         "🔐 Organization Secret: Encryption Key"
     )
-    
+
     print_config_table(
         {
             "CODEX_GHP_TOKEN_BASE64": token_config["CODEX_GHP_TOKEN_BASE64"],
@@ -367,21 +367,21 @@ def main():
         },
         "🔐 Organization Secrets: GitHub Token"
     )
-    
+
     print_config_table(
         {"MCP_SERVICE_TOKEN": service_token},
         "🔐 Organization Secret: MCP Service Authentication"
     )
-    
+
     if app_config:
         print_config_table(
             app_config,
             "🔐 Organization Secrets: GitHub App (Optional)"
         )
-    
+
     # Save to file for reference (optional)
     save_file = input("\nSave configuration to file for reference? (y/n): ").strip().lower()
-    
+
     if save_file == 'y':
         filename = f"mcp_secrets_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         with open(filename, 'w') as f:
@@ -393,14 +393,14 @@ def main():
             f.write("   - Do NOT commit to git\n")
             f.write("   - Delete after copying to GitHub\n")
             f.write("   - Store securely if archiving\n\n")
-            
+
             for key, value in all_secrets.items():
                 f.write(f"{key}:\n{value}\n\n")
                 f.write("-" * 80 + "\n\n")
-        
+
         print(f"\n✅ Configuration saved to: {filename}")
         print("⚠️  Remember to delete this file after copying secrets to GitHub!")
-    
+
     print("\n" + "=" * 80)
     print(" Next Steps:")
     print("=" * 80)
@@ -457,7 +457,7 @@ if __name__ == "__main__":
     else
       echo "✅ CODEX_MASTER_KEY is set"
     fi
-    
+
     if [ -z "${{ secrets.CODEX_GHP_TOKEN_BASE64 }}" ]; then
       echo "❌ CODEX_GHP_TOKEN_BASE64 not set"
       exit 1
@@ -546,8 +546,8 @@ if __name__ == "__main__":
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z  
-**Maintainer**: @mbaetiong  
+**Last Updated**: 2026-01-23T11:00:00Z
+**Maintainer**: @mbaetiong
 **Version**: 1.0.0
 
 ---
@@ -692,13 +692,13 @@ if __name__ == "__main__":
    ```bash
    # Delete misconfigured secrets
    gh secret delete CODEX_MASTER_KEY --repo Aries-Serpent/_codex_
-   
+
    # Regenerate using Python script
    python3 generate_mcp_secrets.py
-   
+
    # Re-inject with correct values
    echo "[new-value]" | gh secret set CODEX_MASTER_KEY --repo Aries-Serpent/_codex_
-   
+
    # Validate
    gh workflow run mcp-validation-test.yml
    ```

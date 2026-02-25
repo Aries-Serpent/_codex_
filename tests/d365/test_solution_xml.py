@@ -8,9 +8,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from defusedxml import ElementTree
+import pytest
 
-from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifest
+pytest.importorskip("defusedxml", reason="defusedxml required for XML security tests")
+from defusedxml import ElementTree  # noqa: E402
+
+pytest.importorskip("codex.dynamics.solution_xml", reason="codex.dynamics not installed")
+from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifest  # noqa: E402
 
 
 def test_emit_solution_xml_uses_config(tmp_path: Path) -> None:

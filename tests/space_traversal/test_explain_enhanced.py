@@ -178,7 +178,7 @@ def test_command_explain_output_format(tmp_path, capsys):
     output = captured.out
 
     # Should contain capability ID
-    assert "Explain: checkpointing" in output
+    assert "Capability: checkpointing" in output
 
     # Should contain all components with proper formatting
     assert "functionality" in output
@@ -188,9 +188,9 @@ def test_command_explain_output_format(tmp_path, capsys):
     assert "documentation" in output
 
     # Should show value, weight, and contribution for each
-    assert "value=" in output
-    assert "weight=" in output
-    assert "contribution=" in output
+    assert "Value:" in output
+    assert "Weight:" in output
+    assert "Contrib:" in output
 
-    # Should show total score
-    assert "Total score:" in output
+    # Should show overall score
+    assert "Overall Score:" in output

@@ -1,19 +1,19 @@
 # Codex Authentication System - User Guide
 
-**Version**: 1.0  
+**Version**: 1.0
 **Last Updated**: 2026-01-15
 
 ---
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Setting Up GitHub OAuth](#setting-up-github-oauth)
-3. [Enabling Multi-Factor Authentication](#enabling-multi-factor-authentication)
-4. [Working with Tokens](#working-with-tokens)
-5. [Session Management](#session-management)
-6. [Security Best Practices](#security-best-practices)
-7. [Troubleshooting](#troubleshooting)
+3. <!-- BROKEN ANCHOR: [Enabling Multi-Factor Authentication](#enabling-multi-factor-authentication) -->
+4. <!-- BROKEN ANCHOR: [Working with Tokens](#working-with-tokens) -->
+5. <!-- BROKEN ANCHOR: [Session Management](#session-management) -->
+6. <!-- BROKEN ANCHOR: [Security Best Practices](#security-best-practices) -->
+7. <!-- BROKEN ANCHOR: [Troubleshooting](#troubleshooting) -->
 
 ---
 
@@ -73,5 +73,5 @@ See `examples/authentication/` directory for full working examples.
 
 ---
 
-**Document Version**: 1.0  
+**Document Version**: 1.0
 **Last Updated**: 2026-01-15

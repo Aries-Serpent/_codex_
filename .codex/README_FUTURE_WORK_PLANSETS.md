@@ -1,7 +1,7 @@
 # Future Work Plansets - Quick Navigation
 
-**Created:** 2026-01-16  
-**Status:** ✅ ALL PLANSETS VERIFIED AND READY  
+**Created:** 2026-01-16
+**Status:** ✅ ALL PLANSETS VERIFIED AND READY
 **Purpose:** Guide for executing Future Work to achieve production-deploy-ready status
 
 ---
@@ -42,7 +42,7 @@ This directory contains comprehensive plansets for the three Future Work items i
 
 **Quick Start:**
 ```markdown
-@copilot Begin IP-005 Dependency Security Updates following 
+@copilot Begin IP-005 Dependency Security Updates following
 `.codex/plans/IP-005_DEPENDENCY_UPDATES_PLANSET.md`.
 ```
 
@@ -62,7 +62,7 @@ This directory contains comprehensive plansets for the three Future Work items i
 
 **Quick Start:**
 ```markdown
-@copilot Begin Production RAG Pipeline implementation following 
+@copilot Begin Production RAG Pipeline implementation following
 `.codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md`.
 ```
 
@@ -82,7 +82,7 @@ This directory contains comprehensive plansets for the three Future Work items i
 
 **Quick Start:**
 ```markdown
-@copilot Begin Legacy Code Removal implementation following 
+@copilot Begin Legacy Code Removal implementation following
 `.codex/plans/LEGACY_CODE_REMOVAL_PLANSET.md`.
 ```
 
@@ -178,8 +178,8 @@ After completing all three Future Work items:
 ## 📖 Reference Documents
 
 ### Policy and Guidelines
-- [.codex/CODEBASE_AGENCY_POLICY.md](CODEBASE_AGENCY_POLICY.md) - Mandatory compliance
-- [../AGENTS.md](../AGENTS.md) - Agent operational guidelines
+- [.codex/CODEBASE_AGENCY_POLICY.md](./CODEBASE_AGENCY_POLICY.md) - Mandatory compliance
+- [../AGENTS.md](../.github/AGENTS.md) - Agent operational guidelines
 
 ### Current Status
 - [../COPILOT_CONTINUATION_PROMPT.md](../COPILOT_CONTINUATION_PROMPT.md) - All IPs complete

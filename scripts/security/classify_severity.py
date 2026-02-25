@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/security/classify_severity.py [options]
-    
+
     Examples:
     $ python scripts/security/classify_severity.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Security Severity Classification (P5)
@@ -59,6 +57,7 @@ Classification (default thresholds):
 Order: evaluate high first, then medium, then low.
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
 import json

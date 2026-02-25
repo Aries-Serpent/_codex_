@@ -146,7 +146,7 @@ None found. ✅
    ```python
    # Current (unsafe)
    query = f"SELECT * FROM users WHERE name = '{name}'"
-   
+
    # Recommended (safe)
    query = "SELECT * FROM users WHERE name = ?"
    cursor.execute(query, (name,))
@@ -234,18 +234,18 @@ quality_thresholds:
   code_coverage: 80
   cyclomatic_complexity: 10
   documentation_coverage: 75
-  
+
 security:
   fail_on_vulnerabilities: true
   allowed_licenses:
     - MIT
     - Apache-2.0
     - BSD-3-Clause
-  
+
 performance:
   max_response_time_ms: 200
   max_memory_mb: 512
-  
+
 testing:
   require_unit_tests: true
   require_integration_tests: true
@@ -264,13 +264,13 @@ languages:
       - ruff
       - bandit
     min_coverage: 80
-  
+
   rust:
     tools:
       - clippy
       - rustfmt
     min_coverage: 85
-  
+
   javascript:
     tools:
       - eslint
@@ -296,10 +296,10 @@ jobs:
   qa-walkthrough:
     if: contains(github.event.comment.body, '@copilot qa walkthrough') || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run QA Walkthrough
         uses: ./.github/agents/codebase-qa-walkthrough-agent
         with:
@@ -308,7 +308,7 @@ jobs:
           generate_report: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Upload QA Report
         uses: actions/upload-artifact@v4
         with:
@@ -391,7 +391,7 @@ Define custom checks in `.github/agents/codebase-qa-walkthrough-agent/custom_che
 def check_custom_rule(file_content, file_path):
     """Custom quality check."""
     issues = []
-    
+
     # Example: Check for TODO comments in production code
     if "TODO" in file_content and not file_path.startswith("tests/"):
         issues.append({
@@ -400,7 +400,7 @@ def check_custom_rule(file_content, file_path):
             "file": file_path,
             "suggestion": "Create an issue to track this work"
         })
-    
+
     return issues
 ```
 
@@ -414,11 +414,11 @@ integrations:
     enabled: true
     url: https://sonarqube.example.com
     project_key: my-project
-  
+
   codecov:
     enabled: true
     token: ${{ secrets.CODECOV_TOKEN }}
-  
+
   snyk:
     enabled: true
     token: ${{ secrets.SNYK_TOKEN }}
@@ -450,25 +450,16 @@ Track quality metrics over time:
 ## Support
 
 ### Documentation
-- [Agent Configuration](./docs/CONFIGURATION.md)
-- [Custom Checks](./docs/CUSTOM_CHECKS.md)
-- [Integration Guide](./docs/INTEGRATION.md)
 
 ### Examples
-- [Python Project QA](./examples/python-qa.md)
-- [Rust Project QA](./examples/rust-qa.md)
-- [Architecture Review](./examples/architecture-review.md)
 
 ### Resources
-- [Quality Standards](./docs/QUALITY_STANDARDS.md)
-- [Best Practices](./docs/BEST_PRACTICES.md)
-- [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2026-01-23  
-**Maintained By**: admin-automation-agent  
+**Version**: 1.0.0
+**Last Updated**: 2026-01-23
+**Maintained By**: admin-automation-agent
 **Category**: Quality Assurance
 
 ---
@@ -624,7 +615,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -790,8 +781,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

@@ -21,7 +21,6 @@ import argparse
 import contextlib
 import json
 import logging
-logger = logging.getLogger(__name__)
 import os
 from dataclasses import asdict, dataclass
 from os import PathLike
@@ -45,6 +44,8 @@ from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlf
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
+
+logger = logging.getLogger(__name__)
 
 # ruff: noqa: I001
 
@@ -471,9 +472,10 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed, deterministic=cfg.deterministic)
-    if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
-        if not torch.backends.cudnn.deterministic:
-            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
+    if getattr(torch.backends, "cudnn", None) is not None:
+        if getattr(torch.backends.cudnn, "enabled", False):
+            if not torch.backends.cudnn.deterministic:
+                raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig and get_peft_model:

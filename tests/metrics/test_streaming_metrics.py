@@ -4,6 +4,7 @@ Tests for streaming metrics functionality
 
 import numpy as np
 import pytest
+
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
 

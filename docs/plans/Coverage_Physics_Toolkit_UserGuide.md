@@ -1,15 +1,15 @@
 # Coverage Physics Toolkit - User Guide
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-13  
+**Version**: 1.0.0
+**Last Updated**: 2025-12-13
 **Purpose**: Comprehensive guide to using the Physics-Guided Coverage Toolkit for achieving 95% test coverage
 
 ---
 
 ## Table of Contents
 
-1. [Overview]()
-2. [Quick Start]()
+1. [Overview](#overview)
+2. [Quick Start](#quick-start)
 3. [Physics Tables Reference](#physics-tables-reference)
 4. [Toolkit Commands](#toolkit-commands)
 5. [Workflow Examples](#workflow-examples)
@@ -119,7 +119,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
 
 **Key Equations**:
 - **Eq #1**: iħ ∂ψ/∂t = Ĥ ψ (Schrödinger) → Initialization + short-evolution tests
-- **Eq #49**: J = Coverage/Runtime → High-yield test selection  
+- **Eq #49**: J = Coverage/Runtime → High-yield test selection
 - **Eq #56**: Invariants checklist → Minimal validation approach
 
 **Use When**: Starting coverage campaign, need quick wins
@@ -157,7 +157,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
 
 **Key Equations**:
 - **Eq #1**: Initialization tests + getters/properties
-- **Eq #2**: Enum value validations  
+- **Eq #2**: Enum value validations
 - **Eq #3**: Property/getter coverage for γ, v, dt
 - **Eq #6**: Operator wiring tests for module initialization
 
@@ -179,7 +179,7 @@ python tools/coverage_physics_toolkit.py --mode validate
 
 **Output**: Pass/fail status for each table + strategy counts
 
-**When to Use**: 
+**When to Use**:
 - After toolkit updates
 - Before starting coverage campaign
 - Troubleshooting issues
@@ -192,7 +192,7 @@ python tools/coverage_physics_toolkit.py --mode validate
 python tools/coverage_physics_toolkit.py --mode velocity
 ```
 
-**Output**: 
+**Output**:
 - Expected total coverage gain
 - Implementation time estimates
 - Time to reach 30%, 50%, 70% targets
@@ -263,7 +263,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
    ```bash
    python tools/coverage_physics_toolkit.py --mode velocity
    ```
-   
+
 3. **Identify target modules** (from coverage.json):
    - physics_orchestrator.py (24.05%, 1264 stmts)
    - quantum_game_theory.py (24.18%, 375 stmts)
@@ -286,7 +286,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
 
 7. **Verify 30%+ achieved**
 
-**Expected Time**: 15-20 minutes  
+**Expected Time**: 15-20 minutes
 **Expected Gain**: +2.43% (27.57% → 30%)
 
 ### Workflow 2: Phase 2 (30% → 50%)
@@ -324,7 +324,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
    - Track coverage gains
    - Adjust strategy based on velocity
 
-**Expected Time**: 8-10 hours  
+**Expected Time**: 8-10 hours
 **Expected Gain**: +20% (30% → 50%)
 
 ### Workflow 3: Phase 3 (50% → 70%)
@@ -340,7 +340,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
 
 2. **Focus on integration**:
    - physics_orchestrator ↔ quantum_game_theory
-   - physics_orchestrator ↔ mental_mapping  
+   - physics_orchestrator ↔ mental_mapping
    - codex_client ↔ all orchestrators
 
 3. **Error path testing**:
@@ -353,7 +353,7 @@ python tools/coverage_physics_toolkit.py --mode generate \
    python tools/coverage_physics_toolkit.py --mode velocity
    ```
 
-**Expected Time**: 10-12 hours  
+**Expected Time**: 10-12 hours
 **Expected Gain**: +20% (50% → 70%)
 
 ---
@@ -376,9 +376,9 @@ python tools/coverage_physics_toolkit.py --mode velocity
 
 ### 3. Apply Strategies in Order
 
-**For 0% → 30%**: Table 1 + Table 4 (Eq #1, #2, #3, #49, #56)  
-**For 30% → 50%**: Table 4 extensively (Eq #1-#20)  
-**For 50% → 70%**: Table 3 + Table 4 (Eq #21-#40)  
+**For 0% → 30%**: Table 1 + Table 4 (Eq #1, #2, #3, #49, #56)
+**For 30% → 50%**: Table 4 extensively (Eq #1-#20)
+**For 50% → 70%**: Table 3 + Table 4 (Eq #21-#40)
 **For 70% → 95%**: All tables (Eq #41-#53 + integration)
 
 ### 4. Measure After Each Session
@@ -493,6 +493,6 @@ For questions or issues:
 
 ---
 
-**Last Updated**: 2025-12-13  
-**Toolkit Version**: 1.0.0  
+**Last Updated**: 2025-12-13
+**Toolkit Version**: 1.0.0
 **Documentation Version**: 1.0.0

@@ -176,7 +176,7 @@ class ASTStorage:
             # Insert analysis record
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO analyses 
+                INSERT OR REPLACE INTO analyses
                 (analysis_id, file_path, timestamp, language, node_count, finding_count, metrics, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -199,8 +199,8 @@ class ASTStorage:
             for finding in findings:
                 cursor.execute(
                     """
-                    INSERT INTO findings 
-                    (finding_id, analysis_id, type, severity, message, file_path, 
+                    INSERT INTO findings
+                    (finding_id, analysis_id, type, severity, message, file_path,
                      line_start, line_end, column_start, column_end, analyzer, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,

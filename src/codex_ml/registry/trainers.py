@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Trainer registry built on the shared registry infrastructure."""
 
 
-import inspect
-from typing import Any, Callable
+import inspect  # noqa: E402
+from typing import Any, Callable  # noqa: E402
 
-from codex_ml.registry.base import Registry
+from codex_ml.registry.base import Registry  # noqa: E402
 
 trainer_registry = Registry("trainer", entry_point_group="codex_ml.trainers")
 

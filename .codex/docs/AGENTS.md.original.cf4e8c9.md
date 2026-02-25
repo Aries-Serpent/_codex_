@@ -1,7 +1,7 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2025-12-26)  
-> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
+> **Status:** ✅ UP-TO-DATE (2025-12-26)
+> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 
 ---
@@ -12,8 +12,8 @@
 
 1. **Repository Status:** Pre-Genesis (Template Mode - SAFE_MODE active)
 2. **Your Role:** Advisory only - No autonomous actions yet
-3. **Key Constraints:** See [.codex/guardrails.md](.codex/guardrails.md)
-4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+3. **Key Constraints:** See <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](.codex/guardrails.md) --> --> --> --> --> --> --> -->
+4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
 ---
 
@@ -53,16 +53,14 @@ Agent Authority: PRE-GENESIS (Template Mode)
 
 ### Must-Read Documents
 
-1. **[.codex/guardrails.md](.codex/guardrails.md)** - Operational constraints (5 min)
-2. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
-3. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
+1. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/guardrails.md](.codex/guardrails.md) --> --> --> --> --> --> --> -->** - Operational constraints (5 min)
+2. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
+3. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
 4. **[README.md](README.md)** - Repository overview (5 min)
 
 ### Reference Documents
 
-- [scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md) - Agent setup
-- [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md) - Future plans
-- [.codex/change_log.md](.codex/change_log.md) - Audit trail
+- [docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md) - Future plans
 
 ---
 
@@ -115,7 +113,7 @@ Genesis Protocol establishes AI agent authority through secure initialization:
 - Workflow enablement
 - Genesis validation execution
 
-**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
+**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)
 
 ---
 
@@ -153,7 +151,7 @@ Risk Assessment → Action
 
 LOW RISK (Post-Genesis)
 • Documentation → Execute autonomously
-• Code formatting → Execute autonomously  
+• Code formatting → Execute autonomously
 • Testing → Execute autonomously
 
 MEDIUM RISK
@@ -242,16 +240,16 @@ All operations must be logged to:
 
 ## 📝 Document Status
 
-**Version:** 2.0.0  
-**Last Updated:** 2025-12-26T08:35:00Z  
-**Status:** ✅ UP-TO-DATE  
+**Version:** 2.0.0
+**Last Updated:** 2025-12-26T08:35:00Z
+**Status:** ✅ UP-TO-DATE
 **Next Review:** After Phase 2 completion
 
 ---
 
 **Complete Documentation:**
-- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
-- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md)
+- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)
+- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)
+- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](../../docs/ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong

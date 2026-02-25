@@ -45,7 +45,7 @@ def enforce_per_module():
     """Enforce coverage with per-module thresholds"""
     overall_passed = True
     results = {}
-    
+
     for module_path, thresholds in MODULE_THRESHOLDS.items():
         print(f"\n{'='*80}")
         print(f"Enforcing coverage for: {module_path}")
@@ -53,33 +53,33 @@ def enforce_per_module():
               f"Branch={thresholds['branch']}%, "
               f"Function={thresholds['function']}%")
         print(f"{'='*80}\n")
-        
+
         # Create agent with custom thresholds
         agent = TestCoverageEnforcer()
         agent.line_threshold = thresholds['line']
         agent.branch_threshold = thresholds['branch']
         agent.function_threshold = thresholds['function']
-        
+
         # Enforce for this module
         result = agent.enforce_thresholds(Path(module_path))
         results[module_path] = result
-        
+
         # Track overall pass/fail
         if not result.passed:
             overall_passed = False
-        
+
         # Print result
         status = "✅ PASSED" if result.passed else "❌ FAILED"
         print(f"\n{status}: {module_path}")
         print(f"  Coverage: {result.current_coverage:.1f}%")
         print(f"  Threshold: {result.threshold}%")
         print(f"  Gaps: {result.gaps_found}")
-        
+
         if result.enforcement_actions:
             print(f"  Actions:")
             for action in result.enforcement_actions:
                 print(f"    - {action}")
-    
+
     # Overall summary
     print(f"\n{'='*80}")
     print("OVERALL SUMMARY")
@@ -88,7 +88,7 @@ def enforce_per_module():
     print(f"Passed: {sum(1 for r in results.values() if r.passed)}")
     print(f"Failed: {sum(1 for r in results.values() if not r.passed)}")
     print(f"\nOverall status: {'✅ PASSED' if overall_passed else '❌ FAILED'}")
-    
+
     # Exit with appropriate code
     sys.exit(0 if overall_passed else 1)
 
@@ -111,18 +111,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install -e ".[dev,test]"
-      
+
       - name: Run tests with coverage
         run: pytest --cov=src --cov-report=json:coverage.json
-      
+
       - name: Enforce per-module coverage
         run: python scripts/enforce_coverage_custom.py
 ```
@@ -190,19 +190,19 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
-  
+
   # Python code formatters
   - repo: https://github.com/psf/black
     rev: 23.12.0
     hooks:
       - id: black
         language_version: python3.11
-  
+
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-  
+
   # Custom coverage enforcement
   - repo: local
     hooks:
@@ -212,7 +212,7 @@ repos:
         language: system
         pass_filenames: false
         stages: [commit]
-      
+
       - id: coverage-check-full
         name: Coverage Check (Full)
         entry: bash -c 'cd .github/agents/test-coverage-enforcer && python -m src.agent enforce --path src --threshold 80'
@@ -249,15 +249,15 @@ def get_changed_files():
             text=True,
             check=True
         )
-        
+
         files = result.stdout.strip().split('\n')
-        
+
         # Filter Python files in src/
         python_files = [
             Path(f) for f in files
             if f.startswith('src/') and f.endswith('.py')
         ]
-        
+
         return python_files
     except subprocess.CalledProcessError:
         return []
@@ -265,24 +265,24 @@ def get_changed_files():
 def check_changed_files_coverage():
     """Check coverage for only changed files"""
     changed_files = get_changed_files()
-    
+
     if not changed_files:
         print("No Python files changed in src/")
         return True
-    
+
     print(f"Checking coverage for {len(changed_files)} changed file(s):")
     for f in changed_files:
         print(f"  - {f}")
-    
+
     agent = TestCoverageEnforcer()
     agent.line_threshold = 75  # Lower threshold for pre-commit
-    
+
     all_passed = True
-    
+
     for file_path in changed_files:
         # Run coverage for specific file
         result = agent.enforce_thresholds(file_path)
-        
+
         if not result.passed:
             all_passed = False
             print(f"\n❌ {file_path}: {result.current_coverage:.1f}% (threshold: {result.threshold}%)")
@@ -290,12 +290,12 @@ def check_changed_files_coverage():
                 print(f"  - {action}")
         else:
             print(f"✅ {file_path}: {result.current_coverage:.1f}%")
-    
+
     if not all_passed:
         print("\n⚠️  Coverage too low for changed files")
         print("Run: pytest tests/ --cov=src -v")
         print("To bypass: git commit --no-verify")
-    
+
     return all_passed
 
 if __name__ == '__main__':
@@ -366,64 +366,64 @@ def run_tests_with_coverage(source_path):
 
 def generate_and_implement_tests(agent, source_path, max_iterations=5):
     """Iteratively generate and implement tests until threshold met"""
-    
+
     target_threshold = agent.line_threshold
     iteration = 0
-    
+
     while iteration < max_iterations:
         iteration += 1
         print(f"\n{'='*80}")
         print(f"ITERATION {iteration}/{max_iterations}")
         print(f"{'='*80}\n")
-        
+
         # Run tests and analyze coverage
         run_tests_with_coverage(source_path)
         reports = agent.analyze_coverage(source_path, Path('coverage.json'))
-        
+
         # Check if threshold met
         total_lines = sum(r.total_lines for r in reports.values())
         covered_lines = sum(r.covered_lines for r in reports.values())
         current_coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0
-        
+
         print(f"Current coverage: {current_coverage:.1f}%")
         print(f"Target threshold: {target_threshold}%")
-        
+
         if current_coverage >= target_threshold:
             print(f"\n✅ Target coverage achieved!")
             return True
-        
+
         # Generate test suggestions
         suggestions = agent.generate_test_suggestions(reports)
-        
+
         if not suggestions:
             print(f"\n⚠️  No more test suggestions available")
             print(f"Final coverage: {current_coverage:.1f}%")
             return False
-        
+
         print(f"\nGenerated {len(suggestions)} test suggestions")
-        
+
         # Implement top priority suggestions
         implemented = 0
         for suggestion in suggestions[:5]:  # Implement top 5
             print(f"\nImplementing: {suggestion.target_function} "
                   f"(Priority {suggestion.priority}, Impact +{suggestion.coverage_impact:.1f}%)")
-            
+
             # Create test file if it doesn't exist
             test_file = suggestion.test_file
             if not test_file.exists():
                 test_file.parent.mkdir(parents=True, exist_ok=True)
                 test_file.write_text("import pytest\n\n")
-            
+
             # Append test template
             with open(test_file, 'a') as f:
                 f.write('\n' + suggestion.test_template + '\n')
-            
+
             implemented += 1
             print(f"  ✓ Added tests to {test_file}")
-        
+
         print(f"\nImplemented {implemented} test templates")
         print(f"Next iteration will run these tests...")
-    
+
     print(f"\n⚠️  Maximum iterations ({max_iterations}) reached")
     print(f"Final coverage: {current_coverage:.1f}%")
     return False
@@ -431,15 +431,15 @@ def generate_and_implement_tests(agent, source_path, max_iterations=5):
 def main():
     """Main entry point"""
     source_path = Path('src')
-    
+
     agent = TestCoverageEnforcer()
     agent.line_threshold = 85
     agent.auto_generate = True
-    
+
     print(f"Target: Achieve {agent.line_threshold}% coverage for {source_path}")
-    
+
     success = generate_and_implement_tests(agent, source_path)
-    
+
     sys.exit(0 if success else 1)
 
 if __name__ == '__main__':
@@ -548,11 +548,11 @@ def collect_project_coverage(project: Dict) -> Dict:
     """Collect coverage for a single project"""
     agent = TestCoverageEnforcer()
     reports = agent.analyze_coverage(Path(project['path']))
-    
+
     total_lines = sum(r.total_lines for r in reports.values())
     covered_lines = sum(r.covered_lines for r in reports.values())
     coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0
-    
+
     return {
         'name': project['name'],
         'path': project['path'],
@@ -565,39 +565,39 @@ def collect_project_coverage(project: Dict) -> Dict:
 def aggregate_coverage():
     """Aggregate coverage across all projects"""
     print("Collecting coverage data from all projects...\n")
-    
+
     results = []
     for project in PROJECTS:
         print(f"Analyzing: {project['name']}...")
         result = collect_project_coverage(project)
         results.append(result)
         print(f"  Coverage: {result['coverage']:.1f}%")
-    
+
     # Calculate overall aggregate coverage
     total_lines = sum(r['total_lines'] for r in results)
     covered_lines = sum(r['covered_lines'] for r in results)
     aggregate_coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0
-    
+
     # Generate report
     print(f"\n{'='*80}")
     print("AGGREGATED COVERAGE REPORT")
     print(f"{'='*80}\n")
-    
+
     print(f"{'Project':<25} {'Coverage':<12} {'Lines':<15} {'Files':<8}")
     print("-" * 80)
-    
+
     for result in results:
         print(f"{result['name']:<25} "
               f"{result['coverage']:>6.1f}% "
               f"     {result['covered_lines']:>5}/{result['total_lines']:<5} "
               f"  {result['files']:>3}")
-    
+
     print("-" * 80)
     print(f"{'OVERALL':<25} "
           f"{aggregate_coverage:>6.1f}% "
           f"     {covered_lines:>5}/{total_lines:<5} "
           f"  {sum(r['files'] for r in results):>3}")
-    
+
     # Save JSON report
     report_data = {
         'projects': results,
@@ -608,11 +608,11 @@ def aggregate_coverage():
             'total_files': sum(r['files'] for r in results),
         }
     }
-    
+
     output_file = Path('aggregate_coverage.json')
     output_file.write_text(json.dumps(report_data, indent=2))
     print(f"\nDetailed report saved to: {output_file}")
-    
+
     # Check threshold
     threshold = 80.0
     if aggregate_coverage >= threshold:
@@ -645,7 +645,7 @@ Analyzing: Shared Utils...
 AGGREGATED COVERAGE REPORT
 ================================================================================
 
-Project                   Coverage     Lines           Files   
+Project                   Coverage     Lines           Files
 --------------------------------------------------------------------------------
 API Server                  87.5%       875/1000         12
 Worker Service              82.0%       656/800           8
@@ -695,24 +695,24 @@ def get_coverage_for_branch(branch_name, source_path):
     """Get coverage for a specific branch"""
     # Stash current changes
     subprocess.run(['git', 'stash'], check=False)
-    
+
     # Checkout branch
     subprocess.run(['git', 'checkout', branch_name], check=True)
-    
+
     # Run tests with coverage
     subprocess.run(
         ['pytest', '--cov=' + str(source_path), '--cov-report=json:coverage.json'],
         check=False
     )
-    
+
     # Analyze coverage
     agent = TestCoverageEnforcer()
     reports = agent.analyze_coverage(source_path, Path('coverage.json'))
-    
+
     total_lines = sum(r.total_lines for r in reports.values())
     covered_lines = sum(r.covered_lines for r in reports.values())
     coverage = (covered_lines / total_lines * 100) if total_lines > 0 else 0
-    
+
     return coverage
 
 def detect_regression(base_branch='main', target_branch='HEAD', source_path='src'):
@@ -721,7 +721,7 @@ def detect_regression(base_branch='main', target_branch='HEAD', source_path='src
     print(f"  Base branch: {base_branch}")
     print(f"  Target branch: {target_branch}")
     print(f"  Source path: {source_path}\n")
-    
+
     # Get current branch
     current_branch = subprocess.run(
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
@@ -729,32 +729,32 @@ def detect_regression(base_branch='main', target_branch='HEAD', source_path='src
         text=True,
         check=True
     ).stdout.strip()
-    
+
     try:
         # Get base coverage
         print(f"Analyzing base branch ({base_branch})...")
         base_coverage = get_coverage_for_branch(base_branch, source_path)
         print(f"  Base coverage: {base_coverage:.1f}%\n")
-        
+
         # Get target coverage
         print(f"Analyzing target branch ({current_branch})...")
         subprocess.run(['git', 'checkout', current_branch], check=True)
         subprocess.run(['git', 'stash', 'pop'], check=False)
-        
+
         target_coverage = get_coverage_for_branch(current_branch, source_path)
         print(f"  Target coverage: {target_coverage:.1f}%\n")
-        
+
         # Calculate regression
         regression = base_coverage - target_coverage
         regression_threshold = 2.0  # Alert if coverage drops > 2%
-        
+
         print(f"{'='*80}")
         print("COVERAGE REGRESSION ANALYSIS")
         print(f"{'='*80}\n")
         print(f"Base ({base_branch}):   {base_coverage:.1f}%")
         print(f"Target ({current_branch}): {target_coverage:.1f}%")
         print(f"Change:         {'+' if regression < 0 else ''}{-regression:.1f}%")
-        
+
         if regression > regression_threshold:
             print(f"\n❌ REGRESSION DETECTED: Coverage dropped by {regression:.1f}%")
             print(f"   (Threshold: {regression_threshold}%)")
@@ -766,7 +766,7 @@ def detect_regression(base_branch='main', target_branch='HEAD', source_path='src
         else:
             print(f"\n✅ Coverage improved by {-regression:.1f}%")
             return True
-    
+
     finally:
         # Restore original branch
         subprocess.run(['git', 'checkout', current_branch], check=False)
@@ -793,15 +793,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Full history for branch comparison
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install -e ".[dev,test]"
-      
+
       - name: Detect coverage regression
         run: python scripts/detect_coverage_regression.py
 ```
@@ -869,17 +869,17 @@ def parallel_analyze(source_path, max_workers=8):
     """Analyze coverage in parallel"""
     # Get all Python files
     python_files = list(Path(source_path).rglob('*.py'))
-    
+
     print(f"Analyzing {len(python_files)} files with {max_workers} workers...")
-    
+
     all_reports = {}
-    
+
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         future_to_file = {
             executor.submit(analyze_file, f): f
             for f in python_files
         }
-        
+
         for future in concurrent.futures.as_completed(future_to_file):
             file_path = future_to_file[future]
             try:
@@ -888,7 +888,7 @@ def parallel_analyze(source_path, max_workers=8):
                 print(f"  ✓ {file_path}")
             except Exception as e:
                 print(f"  ✗ {file_path}: {e}")
-    
+
     return all_reports
 ```
 
@@ -916,23 +916,23 @@ def get_file_hash(file_path):
 def get_cached_coverage(file_path):
     """Get cached coverage if file hasn't changed"""
     CACHE_DIR.mkdir(exist_ok=True)
-    
+
     file_hash = get_file_hash(file_path)
     cache_file = CACHE_DIR / f"{file_path.stem}_{file_hash}.pkl"
-    
+
     if cache_file.exists():
         with open(cache_file, 'rb') as f:
             return pickle.load(f)
-    
+
     return None
 
 def cache_coverage(file_path, report):
     """Cache coverage report"""
     CACHE_DIR.mkdir(exist_ok=True)
-    
+
     file_hash = get_file_hash(file_path)
     cache_file = CACHE_DIR / f"{file_path.stem}_{file_hash}.pkl"
-    
+
     with open(cache_file, 'wb') as f:
         pickle.dump(report, f)
 
@@ -940,13 +940,13 @@ def analyze_with_cache(source_path):
     """Analyze coverage with caching"""
     agent = TestCoverageEnforcer()
     python_files = list(Path(source_path).rglob('*.py'))
-    
+
     cache_hits = 0
     cache_misses = 0
-    
+
     for file_path in python_files:
         cached = get_cached_coverage(file_path)
-        
+
         if cached:
             agent.reports[file_path] = cached
             cache_hits += 1
@@ -957,10 +957,10 @@ def analyze_with_cache(source_path):
                 cache_coverage(file_path, reports[file_path])
             cache_misses += 1
             print(f"  [ANALYZE] {file_path}")
-    
+
     print(f"\nCache stats: {cache_hits} hits, {cache_misses} misses")
     print(f"Cache hit rate: {(cache_hits/(cache_hits+cache_misses)*100):.1f}%")
-    
+
     return agent.reports
 ```
 
@@ -985,23 +985,23 @@ def get_changed_files(base_branch='main'):
         text=True,
         check=True
     )
-    
+
     files = result.stdout.strip().split('\n')
     return [Path(f) for f in files if f.endswith('.py')]
 
 def incremental_analyze(source_path, base_branch='main'):
     """Analyze only changed files"""
     changed_files = get_changed_files(base_branch)
-    
+
     print(f"Incremental analysis: {len(changed_files)} changed files")
-    
+
     agent = TestCoverageEnforcer()
-    
+
     for file_path in changed_files:
         if file_path.exists():
             print(f"  Analyzing: {file_path}")
             agent.analyze_coverage(file_path)
-    
+
     return agent.reports
 ```
 
@@ -1014,22 +1014,22 @@ advanced:
   # Enable parallel analysis
   parallel_analysis: true
   max_workers: 8
-  
+
   # Enable aggressive caching
   cache_coverage_data: true
   cache_ttl_seconds: 86400  # 24 hours
-  
+
   # Limit suggestions
   max_suggestions_per_file: 5
   max_total_suggestions: 50
-  
+
   # Confidence filtering
   min_confidence_threshold: 0.9
-  
+
   # Incremental mode
   incremental_analysis: true
   base_branch: main
-  
+
   # Performance tuning
   chunk_size: 100  # Process files in chunks
   timeout_seconds: 300  # 5 min timeout per file
@@ -1068,7 +1068,7 @@ advanced:
 
 **For more information:**
 - [Main Prompts](main.md)
-- [Usage Examples](examples.md)
+- [Usage Examples](../../../../docs/guides/examples.md)
 - [README](../README.md)
 - [CHANGELOG](../CHANGELOG.md)
 
@@ -1076,9 +1076,9 @@ advanced:
 
 ## 🎯 Mission Overview
 
-**Agent Name**: Test Coverage Enforcer Agent - Advanced Patterns  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
+**Agent Name**: Test Coverage Enforcer Agent - Advanced Patterns
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -1248,7 +1248,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -1304,7 +1304,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1459,8 +1459,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

@@ -2,10 +2,18 @@ $schema: "https://json-schema.org/draft/2020-12/schema"
 title: MonitoringConfig
 description: Schema for monitoring settings used in deployment pipelines.
 type: object
-required:
-  - monitor
-properties:
-  monitor:
+anyOf:
+  - description: "Standalone format with top-level monitor key"
+    required:
+      - monitor
+    properties:
+      monitor:
+        $ref: "#/$defs/monitorContent"
+    additionalProperties: false
+  - description: "Hydra config-group format (content is the monitor object directly)"
+    $ref: "#/$defs/monitorContent"
+$defs:
+  monitorContent:
     type: object
     required:
       - tracking
@@ -119,4 +127,3 @@ properties:
             type: boolean
         additionalProperties: false
     additionalProperties: false
-additionalProperties: false

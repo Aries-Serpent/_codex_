@@ -45,7 +45,7 @@ Successfully addressed all review comments from PR #2782 (review thread 36473593
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely move model from meta device to target device.
-    
+
     Handles both standard PyTorch models and SentenceTransformer models,
     which wrap PyTorch modules internally and require checking the
     underlying modules for meta tensors.
@@ -105,7 +105,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
 ### Issue 2: RAG Meta Tensor Handling
 **Problem:** RAG tests failing with "Cannot copy out of meta tensor" errors (reported in comment).
 
-**Investigation:** 
+**Investigation:**
 - Checked for `device_map="meta"` usage → None found
 - Verified `safe_model_load()` utility exists → ✅ Present in utils.py
 - Confirmed all RAG modules use it → ✅ embeddings.py:68, indexer.py:107, retriever.py:88
@@ -143,7 +143,7 @@ def _load_model(self):
 #[ignore] // Skip in CI due to performance variability on shared runners
 fn test_compression_performance() {
     // ... benchmark code ...
-    
+
     // Performance validation for local runs only (ignored in CI)
     // Expected: < 100ms for 1MB on modern hardware
     // Note: CI runners may be 10-20x slower due to resource sharing
@@ -269,20 +269,20 @@ logger = logging.getLogger(__name__)
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely move model from meta device to target device.
-    
+
     Handles PyTorch models and transformers wrappers that may have
     meta tensors in test environments.
-    
+
     Args:
         model: Model instance to load
         device: Target device (default: 'cpu')
-    
+
     Returns:
         Model moved to target device
     """
     try:
         has_meta_tensors = False
-        
+
         if hasattr(model, "named_modules"):
             for name, module in model.named_modules():
                 for param_name, param in module.named_parameters(recurse=False):
@@ -291,16 +291,16 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                         break
                 if has_meta_tensors:
                     break
-        
+
         if has_meta_tensors and hasattr(model, "to_empty"):
             logger.info(f"Moving model from meta device to {device} using to_empty()")
             return model.to_empty(device=device)
-        
+
         if hasattr(model, "to"):
             return model.to(device)
-        
+
         return model
-        
+
     except Exception as e:
         logger.warning(f"Could not safely load model to device {device}: {e}")
         return model
@@ -320,15 +320,15 @@ fn test_performance_benchmark() {
     let start = std::time::Instant::now();
     expensive_operation();
     let elapsed = start.elapsed();
-    
+
     println!("Operation took: {:?}", elapsed);
-    
+
     // Performance validation for local runs only
     // Expected: < TARGET_MS on modern hardware
     // Note: CI runners may be 10-20x slower
     const TARGET_MS: u128 = 100;
     if elapsed.as_millis() >= TARGET_MS {
-        println!("⚠️  Operation slower than expected: {:?} (target: {}ms)", 
+        println!("⚠️  Operation slower than expected: {:?} (target: {}ms)",
                  elapsed, TARGET_MS);
     }
 }
@@ -493,4 +493,3 @@ Sometimes the best solution is not to add more code, but to document and structu
 **Session Status: ✅ COMPLETE**
 **Production Readiness: 100%**
 **Next Action: Merge PR #2782**
-

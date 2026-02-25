@@ -84,7 +84,7 @@ if pipeline.should_retrain(
     current_performance={"accuracy": 0.90}
 ):
     print("Retraining triggered")
-    
+
     # Execute retraining
     new_version = pipeline.retrain(
         train_fn=train_model,
@@ -92,7 +92,7 @@ if pipeline.should_retrain(
         dataset_hash="abc123...",
         drift_score=0.2
     )
-    
+
     print(f"New version: {new_version.version}")
     print(f"Metrics: {new_version.metrics}")
 ```
@@ -154,16 +154,16 @@ logger = logging.getLogger("continuous_learning")
 
 def continuous_learning_loop():
     """Run continuous learning loop with error handling and logging."""
-    
+
     while True:
         try:
             # 1. Collect new data
             new_data = collect_production_data()
-            
+
             # 2. Compute statistics
             current_stats = compute_statistics(new_data)
             baseline_stats = load_baseline_statistics()
-            
+
             # 3. Monitor for drift
             results = monitor.monitor_all(
                 current_data_stats=current_stats,
@@ -171,11 +171,11 @@ def continuous_learning_loop():
                 current_metrics=get_production_metrics(),
                 baseline_metrics=load_baseline_metrics()
             )
-            
+
             # 4. Check if retraining needed
             if monitor.has_critical_drift():
                 drift_score = results["data_drift"]["score"]
-                
+
                 if pipeline.should_retrain(
                     drift_score=drift_score,
                     samples_count=len(new_data)
@@ -183,7 +183,7 @@ def continuous_learning_loop():
                     # 5. Trigger retraining
                     logger.info("Triggering retraining due to drift (score: %s)", drift_score)
                     retrain_and_deploy(new_data, drift_score)
-            
+
             # Wait before next check (e.g., hourly)
             time.sleep(3600)
         except Exception as e:
@@ -197,21 +197,21 @@ def continuous_learning_loop():
 ```python
 def retrain_and_deploy(new_data, drift_score):
     """Retrain and deploy new model."""
-    
+
     # 1. Validate dataset
     manifest = DatasetManifest("data/production")
     manifest.generate().save("data/manifest.json")
-    
+
     # 2. Prepare training data
     train_data, eval_data = prepare_data(new_data)
-    
+
     # 3. Define training function
     def train_fn(data):
         model = YourModel()
         trainer = YourTrainer(model)
         metrics = trainer.train(data)
         return model, metrics
-    
+
     # 4. Retrain
     new_version = pipeline.retrain(
         train_fn=train_fn,
@@ -219,21 +219,21 @@ def retrain_and_deploy(new_data, drift_score):
         dataset_hash=manifest.compute_hash(),
         drift_score=drift_score
     )
-    
+
     # 5. Validate on eval set
     eval_metrics = evaluate_model(new_version, eval_data)
-    
+
     # 6. Compare with production
     comparison = pipeline.compare_models(
         new_version,
         primary_metric="accuracy"
     )
-    
+
     # 7. Deploy if better
     if comparison["is_better"]:
         print(f"✅ Deploying {new_version.version}")
         pipeline.deploy_model(new_version)
-        
+
         # Update baseline statistics
         update_baseline_statistics(eval_metrics)
     else:
@@ -247,12 +247,12 @@ def retrain_and_deploy(new_data, drift_score):
 ```python
 pipeline = ContinuousLearningPipeline(
     model_name="my_model",
-    
+
     # Retraining triggers
     drift_threshold=0.15,          # Trigger when drift > 15%
     min_samples_retrain=1000,      # Minimum samples needed
     performance_degradation_threshold=0.05,  # Max acceptable drop
-    
+
     # Registry
     registry_path="models/registry.json"
 )
@@ -278,16 +278,16 @@ Always use gradual rollout for safety:
 if comparison["is_better"]:
     # Deploy to 10% of traffic first
     deploy_to_percentage(new_version, percentage=10)
-    
+
     # Monitor for 24 hours
     time.sleep(86400)
-    
+
     # Check performance
     if production_metrics_stable():
         # Increase to 50%
         deploy_to_percentage(new_version, percentage=50)
         time.sleep(86400)
-        
+
         # Full rollout
         if production_metrics_stable():
             pipeline.deploy_model(new_version)
@@ -300,13 +300,13 @@ Implement automatic rollback on degradation:
 ```python
 def monitor_production():
     """Monitor production performance."""
-    
+
     current_metrics = get_production_metrics()
     baseline_metrics = load_baseline_metrics()
-    
+
     for metric, value in current_metrics.items():
         baseline = baseline_metrics.get(metric, 0)
-        
+
         # Check for significant degradation
         if value < baseline * 0.95:  # 5% degradation
             print(f"⚠️ Performance degraded: {metric}")
@@ -323,18 +323,18 @@ from codex_ml.utils.repro import DatasetManifest
 
 def validate_training_data(data_path):
     """Validate data integrity."""
-    
+
     manifest = DatasetManifest(data_path)
-    
+
     # Check for drift
     if manifest.has_drift("baseline_manifest.json"):
         diff = manifest.verify("baseline_manifest.json")
         print(f"⚠️ Dataset drift: {len(diff['modified'])} modified files")
-        
+
         # Decide whether to proceed
         if len(diff['modified']) > 10:
             raise ValueError("Too many files modified")
-    
+
     return True
 ```
 
@@ -347,29 +347,29 @@ from codex_ml.utils.wandb_logger import init_wandb
 
 def retrain_with_logging(train_data, drift_score):
     """Retrain with experiment tracking."""
-    
+
     logger = init_wandb(
         project="continuous-learning",
         name=f"retrain-{datetime.now().isoformat()}"
     )
-    
+
     # Log configuration
     logger.log({
         "drift_score": drift_score,
         "samples_count": len(train_data),
         "trigger": "drift_threshold_exceeded"
     })
-    
+
     # Retrain
     new_version = pipeline.retrain(...)
-    
+
     # Log results
     logger.log({
         "new_version": new_version.version,
         "metrics": new_version.metrics,
         "improvement": comparison["improvement"]
     })
-    
+
     logger.finish()
 ```
 
@@ -380,13 +380,13 @@ def retrain_with_logging(train_data, drift_score):
 ```python
 def setup_drift_alerts():
     """Configure drift alerts."""
-    
+
     alerts = {
         "critical": lambda: send_alert("Critical drift detected!"),
         "high": lambda: send_notification("High drift warning"),
         "medium": lambda: log_warning("Medium drift detected")
     }
-    
+
     return alerts
 ```
 
@@ -395,12 +395,12 @@ def setup_drift_alerts():
 ```python
 def monitor_with_alerts(monitor, alerts):
     """Monitor and send alerts."""
-    
+
     results = monitor.monitor_all(...)
-    
+
     if monitor.has_critical_drift():
-        alerts["critical"]()
-        
+        alerts<!-- TODO: Add section or remove TOC entry - ["critical"]() -->
+
         # Save alert details
         monitor.save_alerts("alerts/drift_critical.json")
 ```
@@ -442,7 +442,7 @@ def should_retrain_with_cooldown(cooldown_hours=24):
         elapsed = (datetime.now() - last_retrain_time).total_seconds() / 3600
         if elapsed < cooldown_hours:
             return False
-    
+
     return pipeline.should_retrain(...)
 ```
 
@@ -481,10 +481,10 @@ from scipy import stats
 
 def validate_drift(current_data, baseline_data):
     """Validate drift with statistical test."""
-    
+
     # Kolmogorov-Smirnov test
     statistic, pvalue = stats.ks_2samp(current_data, baseline_data)
-    
+
     if pvalue < 0.05:
         return True  # Significant drift
     else:
@@ -500,10 +500,10 @@ from codex_ml.training.ab_testing import ABTestManager, ABTestConfig
 
 def retrain_with_ab_test(new_data, drift_score):
     """Retrain and A/B test new model."""
-    
+
     # 1. Retrain
     new_version = pipeline.retrain(...)
-    
+
     # 2. Setup A/B test
     config = ABTestConfig(
         experiment_name=f"continuous_learning_{new_version.version}",
@@ -515,19 +515,19 @@ def retrain_with_ab_test(new_data, drift_score):
         },
         primary_metric="accuracy"
     )
-    
+
     ab_test = ABTestManager(config)
-    
+
     # 3. Run A/B test
     for _ in range(1000):  # 1000 samples
         variant = select_variant(config.traffic_split)
         result = run_inference(variant)
         ab_test.record_result(variant, result)
-    
+
     # 4. Determine winner
     if ab_test.is_significant():
         winner = ab_test.get_winner()
-        
+
         if winner == new_version.version:
             # Gradual rollout
             ab_test.gradual_rollout(winner, steps=5)
@@ -590,6 +590,6 @@ def update_metrics():
 - ✅ Integrate with A/B testing
 
 **Next Steps:**
-- See [A/B Testing Guide](ab_testing_guide.md) for testing strategies
+- See [A/B Testing Guide](TESTING_GUIDE.md) for testing strategies
 - See [Production Deployment Guide](production_deployment.md) for deployment patterns
 - See [API Reference](../API_REFERENCE.md) for detailed API docs

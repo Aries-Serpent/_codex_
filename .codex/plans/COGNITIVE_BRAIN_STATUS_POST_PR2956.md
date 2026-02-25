@@ -1,8 +1,8 @@
 # Cognitive Brain Status Update - Post-PR#2956 Hotfix
 
-**Date**: 2026-01-22 (Updated: 2026-02-09)  
-**Context**: HOTFIX for post-PR#2956 test failures  
-**Author**: GitHub Copilot Agent  
+**Date**: 2026-01-22 (Updated: 2026-02-09)
+**Context**: HOTFIX for post-PR#2956 test failures
+**Author**: GitHub Copilot Agent
 **Status**: ✅ COMPLETE - All critical test failures fixed and verified (2026-02-09)
 
 ---
@@ -134,9 +134,9 @@ Total: 45 passed, 25 skipped, 0 failed ✅
 ## 📚 Related Documentation
 
 - [Branch Protection Config](.github/BRANCH_PROTECTION_CONFIG.md)
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)
+- [AI Codebase Agency Policy](../CODEBASE_AGENCY_POLICY.md)
 - [Cognitive Brain Status V2](.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md)
-- [Genesis Setup Guide](docs/admin/GENESIS_SETUP_GUIDE.md)
+- [Genesis Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)
 
 ---
 

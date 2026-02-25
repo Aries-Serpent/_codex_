@@ -6,15 +6,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import csv
-import hashlib
-import io
-import json
-import pickle
-import time
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import (
+import csv  # noqa: E402
+import hashlib  # noqa: E402
+import io  # noqa: E402
+import json  # noqa: E402
+import pickle  # noqa: E402
+import time  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import (  # noqa: E402
     Any,
     Callable,
     Iterable,
@@ -25,9 +25,9 @@ from typing import (
     TypeVar,
 )
 
-from codex_ml.config import DataConfig
-from codex_ml.utils.provenance import export_environment
-from codex_ml.utils.seeding import set_reproducible
+from codex_ml.config import DataConfig  # noqa: E402
+from codex_ml.utils.provenance import export_environment  # noqa: E402
+from codex_ml.utils.seeding import set_reproducible  # noqa: E402
 
 T = TypeVar("T")
 
@@ -204,6 +204,8 @@ def take_n(iterable: Iterable[T], n: int, *, strict: bool = False) -> list[T]:
 
     if n < 0:
         raise ValueError("n must be non-negative")
+    if n == 0:
+        return []
     result: list[T] = []
     for item in iterable:
         result.append(item)
@@ -352,6 +354,9 @@ def load_dataset(
     skip_empty: bool = True,
 ) -> list[str]:
     """Load dataset from ``path`` with optional caching and manifest tracking."""
+    # Convert string path to Path object if needed
+    if not isinstance(path, Path):
+        path = Path(path)
 
     if cache_dir is None:
         cache_dir = path.parent / ".cache"

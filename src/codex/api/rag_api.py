@@ -8,7 +8,7 @@ Provides RESTful API endpoints for RAG operations:
 - Get statistics and metrics
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -184,7 +184,7 @@ async def health_check(request: Request):
     return HealthResponse(
         status="healthy",
         version="1.0.0",
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(tz=timezone.utc).isoformat(),
         components={
             "api": "healthy",
             "rag": "healthy",
@@ -458,7 +458,7 @@ async def get_metrics(request: Request):
 
         return MetricsResponse(
             metrics=metrics,
-            timestamp=datetime.utcnow().isoformat(),
+            timestamp=datetime.now(tz=timezone.utc).isoformat(),
         )
 
     except Exception as e:

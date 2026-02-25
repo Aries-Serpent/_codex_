@@ -15,9 +15,9 @@
 
 ## 🎯 Phase 9.1 Session 2: Objectives
 
-**Target**: Add 70-90 tests (agent orchestration + core pipeline)  
-**Coverage Goal**: 75% → 82-83% (+7-8%)  
-**Priority**: HIGH  
+**Target**: Add 70-90 tests (agent orchestration + core pipeline)
+**Coverage Goal**: 75% → 82-83% (+7-8%)
+**Priority**: HIGH
 **Estimated Effort**: 40K-60K tokens
 
 ---
@@ -71,7 +71,7 @@ def test_workflow_creation_happy_path(navigator):
     """Test creating a workflow with valid parameters"""
     workflow_id = navigator.create_workflow("test-wf", ["step1", "step2"])
     assert workflow_id == "test-wf"
-    
+
     workflow = navigator.get_workflow("test-wf")
     assert workflow is not None
     assert workflow.steps == ["step1", "step2"]
@@ -129,9 +129,9 @@ def test_ingest_python_file_happy_path(tmp_path):
     """Test ingesting valid Python file"""
     test_file = tmp_path / "test.py"
     test_file.write_text("def hello(): pass")
-    
+
     result = ingest_file(test_file)
-    
+
     assert result.status == "success"
     assert result.language == "python"
     assert result.ast is not None
@@ -140,9 +140,9 @@ def test_ingest_empty_file(tmp_path):
     """Test ingesting empty file"""
     test_file = tmp_path / "empty.py"
     test_file.write_text("")
-    
+
     result = ingest_file(test_file)
-    
+
     assert result.status == "success"
     assert result.ast is not None  # Empty module is valid AST
 
@@ -150,7 +150,7 @@ def test_ingest_syntax_error(tmp_path):
     """Test ingesting file with syntax error"""
     test_file = tmp_path / "invalid.py"
     test_file.write_text("def hello(")  # Incomplete
-    
+
     with pytest.raises(SyntaxError):
         ingest_file(test_file)
 ```
@@ -185,9 +185,9 @@ def test_ingest_syntax_error(tmp_path):
 ## 🧠 Cognitive Brain Usage
 
 **Before Starting**:
-1. Review [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current Phase 9 status
+1. Review [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current Phase 9 status
 2. Review [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md) - Test priorities
-3. Review [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md) - Overall strategy
+3. Review [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md) - Overall strategy
 
 **During Session**:
 - Use existing test patterns from Phase 9.1 Session 1
@@ -319,18 +319,14 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 ## 📚 Reference Documents
 
 **Execution Plans**:
-- [PHASE9_1_EXECUTION_PLAN.md](docs/testing/PHASE9_1_EXECUTION_PLAN.md)
-- [COVERAGE_100_ROADMAP.md](docs/testing/COVERAGE_100_ROADMAP.md)
+- [COVERAGE_100_ROADMAP.md](../docs/ROADMAP.md)
 
 **Cognitive Brain**:
-- [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md)
-- [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [ROADMAP.md](docs/ROADMAP.md)
+- [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md)
+- [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [ROADMAP.md](../docs/ROADMAP.md)
 
 **Session 1 Artifacts**:
-- [AFTERMATH_PHASE9_1_COMPLETE.md](.github/AFTERMATH_PHASE9_1_COMPLETE.md)
-- [SELF_REVIEW_PHASE9_1_SESSION1.md](.github/SELF_REVIEW_PHASE9_1_SESSION1.md)
-- [FUTURE_RESEARCH_DEEP_DIVE.md](docs/testing/FUTURE_RESEARCH_DEEP_DIVE.md)
 
 **Test Patterns** (from Session 1):
 - `tests/scripts/test_mcp_select_components.py` (fixture patterns)
@@ -350,18 +346,18 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 7. **Document**: Emit AfterMath block (10 min)
 8. **Close**: Commit, push, update PR (5 min)
 
-**Total Estimated Time**: 3-4 hours  
+**Total Estimated Time**: 3-4 hours
 **Token Budget**: 40K-60K tokens
 
 ---
 
-**Current Branch**: copilot/sub-pr-2668-again  
-**PR**: #2671  
-**Phase**: 9.1 Session 2 (Agent + Pipeline)  
-**Status**: Ready to start immediately  
+**Current Branch**: copilot/sub-pr-2668-again
+**PR**: #2671
+**Phase**: 9.1 Session 2 (Agent + Pipeline)
+**Status**: Ready to start immediately
 **Previous Session**: Session 1 complete (56 tests, +3% coverage) ✅
 
-**Remember**: 
+**Remember**:
 - Use established test patterns from Session 1
 - Commit progress frequently
 - Update documentation as you go
@@ -371,6 +367,6 @@ find tests/agents tests/src -name "test_*.py" -newer tests/scripts/test_mcp_sele
 
 ---
 
-**Posted**: 2025-12-31 01:30 UTC  
-**Session ID**: S-PR2671-2025-12-31-Phase9-1-Session2  
+**Posted**: 2025-12-31 01:30 UTC
+**Session ID**: S-PR2671-2025-12-31-Phase9-1-Session2
 **Previous Session ID**: S-PR2671-2025-12-31-Phase9-1-Complete

@@ -45,24 +45,24 @@ class MLPAnalysis:
 class MLPScorer:
     """
     Analyzer for MLP activations in transformer models.
-    
+
     This class provides methods to extract and analyze MLP layer activations,
     computing neuron importance and activation patterns.
-    
+
     Example:
         >>> from transformers import AutoModel, AutoTokenizer
         >>> model = AutoModel.from_pretrained("bert-base-uncased")
         >>> tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-        >>> 
+        >>>
         >>> scorer = MLPScorer(model)
         >>> text = "The quick brown fox jumps over the lazy dog"
         >>> inputs = tokenizer(text, return_tensors="pt")
-        >>> 
+        >>>
         >>> analysis = scorer.analyze_mlp(
         ...     input_ids=inputs["input_ids"],
         ...     attention_mask=inputs["attention_mask"]
         ... )
-        >>> 
+        >>>
         >>> # Get top activated neurons in each layer
         >>> top_neurons = scorer.get_top_neurons(analysis, top_k=10)
         >>> for layer_idx, neurons in top_neurons.items():
@@ -78,7 +78,7 @@ class MLPScorer:
     ):
         """
         Initialize the MLP scorer.
-        
+
         Args:
             model: Transformer model with MLP layers
             normalize: Whether to normalize activation scores
@@ -98,10 +98,10 @@ class MLPScorer:
     def _is_mlp_layer(self, layer_name: str) -> bool:
         """
         Determine if a layer is an MLP/FFN layer based on its name.
-        
+
         Args:
             layer_name: Name of the layer
-            
+
         Returns:
             True if the layer is an MLP layer to analyze
         """
@@ -125,11 +125,11 @@ class MLPScorer:
     ) -> Tuple[List[torch.Tensor], List[str]]:
         """
         Extract MLP activations from all layers of the model.
-        
+
         Args:
             input_ids: Input token IDs (batch_size, seq_len)
             attention_mask: Attention mask (batch_size, seq_len)
-            
+
         Returns:
             Tuple of (mlp_activations, layer_names)
             - mlp_activations: List of activation tensors per layer
@@ -182,11 +182,11 @@ class MLPScorer:
     ) -> np.ndarray:
         """
         Compute importance score for each neuron based on activation patterns.
-        
+
         Args:
             mlp_activations: List of activation tensors from each layer
             method: Method to compute importance ('mean_abs', 'max', 'variance')
-            
+
         Returns:
             Neuron importance scores (num_layers, hidden_dim)
         """
@@ -236,10 +236,10 @@ class MLPScorer:
     ) -> Dict[str, np.ndarray]:
         """
         Compute activation statistics across layers.
-        
+
         Args:
             mlp_activations: List of activation tensors from each layer
-            
+
         Returns:
             Dictionary with statistics (mean, std, min, max, sparsity)
         """
@@ -278,12 +278,12 @@ class MLPScorer:
     ) -> MLPAnalysis:
         """
         Perform complete MLP analysis on input.
-        
+
         Args:
             input_ids: Input token IDs (batch_size, seq_len)
             attention_mask: Attention mask (batch_size, seq_len)
             importance_method: Method for computing neuron importance
-            
+
         Returns:
             MLPAnalysis object with all results
         """
@@ -329,11 +329,11 @@ class MLPScorer:
     ) -> Dict[int, List[Tuple[int, float]]]:
         """
         Get the top-k most important neurons in each layer.
-        
+
         Args:
             analysis: MLPAnalysis result
             top_k: Number of top neurons to return per layer
-            
+
         Returns:
             Dictionary mapping layer_idx to list of (neuron_idx, importance_score) tuples
         """
@@ -357,11 +357,11 @@ class MLPScorer:
     ) -> Dict[int, List[int]]:
         """
         Identify "dead" neurons with very sparse activations.
-        
+
         Args:
             analysis: MLPAnalysis result
             threshold: Sparsity threshold (0-1) to consider a neuron dead
-            
+
         Returns:
             Dictionary mapping layer_idx to list of dead neuron indices
         """
@@ -384,13 +384,13 @@ class MLPScorer:
     ) -> Dict[str, np.ndarray]:
         """
         Compare MLP activations between two different inputs.
-        
+
         Args:
             input_ids_1: First input token IDs
             input_ids_2: Second input token IDs
             attention_mask_1: First attention mask
             attention_mask_2: Second attention mask
-            
+
         Returns:
             Dictionary with comparison metrics (diff, correlation, distance)
         """

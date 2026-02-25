@@ -1,7 +1,7 @@
 # Autonomous Artifact Monitoring System - Architecture
 
-**Version**: 1.0.0  
-**Status**: Production Ready (Phases 1-5 Complete)  
+**Version**: 1.0.0
+**Status**: Production Ready (Phases 1-5 Complete)
 **Last Updated**: 2026-01-22
 
 ---
@@ -14,9 +14,9 @@
 4. [Data Flow](#data-flow)
 5. [Integration Points](#integration-points)
 6. [State Management](#state-management)
-7. [Error Handling & Reliability](#error-handling--reliability)
-8. [Security & Privacy](#security--privacy)
-9. [Performance & Scalability](#performance--scalability)
+7. <!-- BROKEN ANCHOR: [Error Handling & Reliability](#error-handling-reliability) -->
+8. <!-- BROKEN ANCHOR: [Security & Privacy](#security-privacy) -->
+9. <!-- BROKEN ANCHOR: [Performance & Scalability](#performance-scalability) -->
 10. [Future Enhancements](#future-enhancements)
 
 ---
@@ -399,8 +399,8 @@ The **Autonomous Artifact Monitoring System** provides continuous health monitor
 
 ### GitHub Actions Artifact
 
-**Name**: `artifact-monitor-state`  
-**Retention**: 90 iterations  
+**Name**: `artifact-monitor-state`
+**Retention**: 90 iterations
 **Purpose**: Persist state across workflow runs
 
 **Upload/Download**:
@@ -586,8 +586,8 @@ for attempt in range(max_retries):
 
 ## Configuration
 
-**Primary Config**: `.codex/config/monitoring.yaml`  
-**Pattern Database**: `.codex/monitoring/patterns/error_signatures.yaml`  
+**Primary Config**: `.codex/config/monitoring.yaml`
+**Pattern Database**: `.codex/monitoring/patterns/error_signatures.yaml`
 **Workflow Inventory**: `.codex/monitoring/workflow_inventory.json`
 
 See configuration files for detailed settings and options.
@@ -654,6 +654,6 @@ See configuration files for detailed settings and options.
 
 ---
 
-**Document Version**: 1.0.0  
-**Architecture Status**: ✅ Production Ready  
+**Document Version**: 1.0.0
+**Architecture Status**: ✅ Production Ready
 **Next Review**: After Phase 6 completion

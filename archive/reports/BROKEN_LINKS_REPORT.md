@@ -1,9 +1,9 @@
 # Broken Links Report
 
-**Total Links:** 2139  
-**Internal Links:** 1359  
-**Broken Links:** 108  
-**Link Health Score:** 92.1%  
+**Total Links:** 2139
+**Internal Links:** 1359
+**Broken Links:** 108
+**Link Health Score:** 92.1%
 
 ## Broken Links by File
 
@@ -147,13 +147,13 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/AGENTS.md
 - Line 86: `[.codex/guardrails.md](.codex/guardrails.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.codex/guardrails.md
-- Line 87: `[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)`
+- Line 87: `[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/agent/OPERATIONAL_GUIDELINES.md
 - Line 88: `[.codex/guardrails.md](.codex/guardrails.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.codex/guardrails.md
-- Line 89: `[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)`
+- Line 89: `[docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/agent/OPERATIONAL_GUIDELINES.md
-- Line 90: `[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)`
+- Line 90: `[docs/admin/GENESIS_SETUP_GUIDE.md](../../docs/admin/GENESIS_SETUP_GUIDE.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/admin/GENESIS_SETUP_GUIDE.md
 - Line 95: `[`.codex/deferred_items.md`](.codex/deferred_items.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.codex/deferred_items.md
@@ -239,7 +239,7 @@
 
 ### prompts/TEMPLATE_PROMPT.md
 
-- Line 207: `[Dashboard](docs/system/CODEBASE_DASHBOARD.md)`
+- Line 207: `[Dashboard](../../docs/system/CODEBASE_DASHBOARD.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/prompts/docs/system/CODEBASE_DASHBOARD.md
 - Line 208: `[Commit ABC123](link/to/commit)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/prompts/link/to/commit
@@ -279,4 +279,3 @@
 
 - Line 87: `[Logging guide](guides/LOGGING.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/guides/LOGGING.md
-

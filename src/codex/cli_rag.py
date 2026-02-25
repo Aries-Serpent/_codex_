@@ -23,6 +23,22 @@ import typer
 
 logger = logging.getLogger(__name__)
 
+# Re-export RAGIndexer so tests can patch codex.cli_rag.RAGIndexer
+try:
+    from codex.rag.indexer import RAGIndexer
+except ImportError:  # pragma: no cover - optional dependency
+
+    class RAGIndexer:  # type: ignore[no-redef]
+        """Stub when codex.rag is not installed."""
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                "RAGIndexer requires codex.rag extras. "
+                "Install with: pip install -e '.[rag]'"
+            )
+
+__all__ = ["app", "RAGIndexer"]
+
 # Create Typer app for RAG commands
 app = typer.Typer(
     name="rag",
@@ -36,13 +52,13 @@ console = Console()
 def _validate_files(files: List[str]) -> List[Path]:
     """
     Validate and resolve file patterns to actual paths.
-    
+
     Args:
         files: List of file patterns (supports glob patterns)
-        
+
     Returns:
         List of resolved Path objects
-        
+
     Raises:
         typer.BadParameter: If no valid files found
     """
@@ -115,20 +131,20 @@ def build(
 ) -> None:
     """
     Build a FAISS index from files for semantic search.
-    
+
     This command:
     1. Reads and chunks text from specified files
     2. Generates embeddings using the specified model
     3. Creates a FAISS index for fast similarity search
     4. Persists index and metadata to disk
-    
+
     Examples:
         # Index all markdown files
         codex rag build --files "docs/**/*.md" --index-name docs
-        
+
         # Index Python source code
         codex rag build --files "src/**/*.py" --index-name code --chunk-size 1500
-        
+
         # Multi-tenant setup
         codex rag build --files "docs/**/*.md" --tenant-id customer_a --index-name docs
     """
@@ -220,20 +236,20 @@ def query(
 ) -> None:
     """
     Query an existing FAISS index with semantic search.
-    
+
     Returns the top-k most similar chunks with provenance information
     (file paths, line numbers, similarity scores).
-    
+
     Examples:
         # Basic query
         codex rag query "authentication implementation"
-        
+
         # Query specific index with more results
         codex rag query "error handling" --index-name code --top-k 10
-        
+
         # Filter by minimum score
         codex rag query "API endpoints" --min-score 0.7
-        
+
         # JSON output for programmatic use
         codex rag query "logging" --format json
     """
@@ -324,13 +340,13 @@ def list_indices(
 ) -> None:
     """
     List all indices for a tenant.
-    
+
     Displays index names, number of chunks, size, and creation time.
-    
+
     Examples:
         # List default tenant indices
         codex rag list
-        
+
         # List specific tenant indices
         codex rag list --tenant-id customer_a
     """
@@ -417,13 +433,13 @@ def delete(
 ) -> None:
     """
     Delete an index.
-    
+
     This operation is irreversible. Use with caution.
-    
+
     Examples:
         # Delete with confirmation
         codex rag delete --index-name old_index
-        
+
         # Delete without confirmation
         codex rag delete --index-name old_index --yes
     """
@@ -476,14 +492,14 @@ def merge(
 ) -> None:
     """
     Merge multiple indices into a single index.
-    
+
     Combines embeddings and metadata from multiple source indices into
     a new target index. Source indices remain unchanged.
-    
+
     Examples:
         # Merge documentation and code indices
         codex rag merge --source docs --source code --target all
-        
+
         # Multi-tenant merge
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
@@ -553,18 +569,18 @@ def stats(
 ) -> None:
     """
     Show detailed statistics for an index.
-    
+
     Displays:
     - Number of chunks
     - Embedding dimension
     - Total size on disk
     - Model information
     - Creation timestamp
-    
+
     Examples:
         # Show stats for default index
         codex rag stats
-        
+
         # Show stats for specific index
         codex rag stats --index-name docs --tenant-id customer_a
     """
@@ -626,17 +642,17 @@ def metrics(
 ) -> None:
     """
     Export RAG metrics for monitoring.
-    
+
     Supports Prometheus and JSON formats for integration with
     monitoring systems like Grafana, CloudWatch, etc.
-    
+
     Examples:
         # Export to stdout
         codex rag metrics
-        
+
         # Export to file
         codex rag metrics --output metrics.txt
-        
+
         # JSON format
         codex rag metrics --format json --output metrics.json
     """
@@ -709,7 +725,7 @@ def benchmark(
 ):
     """
     Run performance benchmarks on RAG pipeline.
-    
+
     Benchmark types:
     - embedding: Test embedding provider latency and throughput
     - indexing: Test indexing performance with various corpus sizes

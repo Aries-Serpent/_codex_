@@ -10,11 +10,9 @@ Normalizes text for consistent processing:
 
 import logging
 import re
-
-logger = logging.getLogger(__name__)
 import unicodedata
 
-
+logger = logging.getLogger(__name__)
 class ContextNormalizer:
     """
     Normalize text for consistent fingerprinting and deduplication.

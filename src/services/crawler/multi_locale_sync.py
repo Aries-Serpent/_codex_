@@ -94,7 +94,7 @@ class MultiLocaleSyncResult:
 
 class MultiLocaleSyncManager:
     """Manager for parallel synchronization across multiple locales.
-    
+
     Features:
     - Parallel execution using ThreadPoolExecutor
     - Priority-based scheduling
@@ -120,7 +120,7 @@ class MultiLocaleSyncManager:
         locales: Optional[List[LocaleConfig]] = None,
     ):
         """Initialize the multi-locale sync manager.
-        
+
         Args:
             max_workers: Maximum parallel sync threads
             locales: List of locale configurations (defaults to common locales)
@@ -144,7 +144,7 @@ class MultiLocaleSyncManager:
 
     def get_sync_schedule(self) -> List[Dict[str, Any]]:
         """Get the sync schedule for all locales.
-        
+
         Returns:
             List of locale sync schedules sorted by priority
         """
@@ -166,11 +166,11 @@ class MultiLocaleSyncManager:
         sync_func: Callable[[str], tuple[int, int]],
     ) -> LocaleSyncResult:
         """Synchronize a single locale.
-        
+
         Args:
             locale_code: Locale to sync
             sync_func: Function that takes locale_code and returns (synced, failed)
-            
+
         Returns:
             LocaleSyncResult with sync statistics
         """
@@ -230,11 +230,11 @@ class MultiLocaleSyncManager:
         only_due: bool = True,
     ) -> MultiLocaleSyncResult:
         """Synchronize all locales in parallel.
-        
+
         Args:
             sync_func: Function that takes locale_code and returns (synced, failed)
             only_due: If True, only sync locales that need syncing
-            
+
         Returns:
             MultiLocaleSyncResult with aggregated statistics
         """
@@ -313,11 +313,11 @@ class MultiLocaleSyncManager:
         only_due: bool = True,
     ) -> MultiLocaleSyncResult:
         """Async version of sync_all_locales for integration with async code.
-        
+
         Args:
             sync_func: Function that takes locale_code and returns (synced, failed)
             only_due: If True, only sync locales that need syncing
-            
+
         Returns:
             MultiLocaleSyncResult with aggregated statistics
         """

@@ -8,7 +8,7 @@ using cosine similarity with configurable thresholds.
 import hashlib
 import math
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 
@@ -19,7 +19,7 @@ class ClusterMember:
     text: str
     embedding: Optional[list[float]] = None
     similarity_to_centroid: float = 1.0
-    timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     source: str = ""
 
 
@@ -31,7 +31,7 @@ class SemanticCluster:
     centroid_text: str
     centroid_embedding: Optional[list[float]] = None
     members: list[ClusterMember] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     confidence_score: float = 1.0
 
     @property
@@ -278,7 +278,7 @@ class SemanticClusterer:
 
     def _generate_cluster_id(self, text: str) -> str:
         """Generate unique cluster ID."""
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+        timestamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")
         text_hash = self._hash_text(text)[:8]
         return f"cluster_{timestamp}_{text_hash}"
 

@@ -13,11 +13,12 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
+from codex_ml.training.loop import run_minimal_training
 
 # Import existing training infrastructure
 from codex_ml.training.mlflow_integration import MLflowTracker, is_mlflow_available
-from codex_ml.training.loop import run_minimal_training
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

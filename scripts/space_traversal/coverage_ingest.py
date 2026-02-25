@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/coverage_ingest.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/coverage_ingest.py --help
 
@@ -42,9 +42,19 @@ Enhanced features:
 """
 import json
 import sys
-from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Any, Optional
+
+try:
+    from defusedxml import ElementTree as ET
+except ImportError:  # pragma: no cover - CI may not have defusedxml
+    import warnings
+    warnings.warn(
+        "defusedxml not installed; falling back to stdlib XML parser. "
+        "Only parse trusted XML (e.g. CI coverage reports).",
+        stacklevel=2,
+    )
+    from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 

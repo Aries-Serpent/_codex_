@@ -2,8 +2,8 @@
 
 **Purpose**: Ensure all agent files follow consistent standards and conventions.
 
-**Created**: 2025-12-30  
-**Version**: 1.0.0  
+**Created**: 2025-12-30
+**Version**: 1.0.0
 **Status**: 🟡 In Progress
 
 ---
@@ -106,21 +106,21 @@
    - Add return types to all public methods
    - Add parameter types to all functions
    - Use `Optional`, `Union`, `List`, `Dict` appropriately
-   
+
    **Estimated Effort**: 1 session (~20K tokens)
 
 2. **Standardize Error Handling**
    - Use `agents.exceptions` exclusively
    - Replace generic exceptions with specific ones
    - Add error context and logging
-   
+
    **Estimated Effort**: 1 session (~15K tokens)
 
 3. **Complete Documentation**
    - Add missing method docstrings
    - Use consistent docstring format (Google style)
    - Document parameters and return values
-   
+
    **Estimated Effort**: 1 session (~20K tokens)
 
 ### Medium Priority
@@ -129,14 +129,14 @@
    - Review all entry point methods
    - Standardize on `.run()` or `.execute()`
    - Update documentation
-   
+
    **Estimated Effort**: 0.5 session (~10K tokens)
 
 5. **Add Unit Tests for Compliance**
    - Test naming conventions
    - Test type hint coverage
    - Test error handling
-   
+
    **Estimated Effort**: 1 session (~25K tokens)
 
 ### Low Priority
@@ -145,7 +145,7 @@
    - Identify slow methods
    - Add caching where appropriate
    - Optimize hot paths
-   
+
    **Estimated Effort**: 1 session (~15K tokens)
 
 ---
@@ -206,8 +206,8 @@ Phase 3 complete when:
 ## 📚 Related Documentation
 
 - [agents/README.md](../README.md) - Agent architecture overview
-- [Coding Standards](../../docs/dev/CODE_STYLE_GUIDE.md) - Repository conventions
-- [Testing Guide](../../docs/guides/TESTING_GUIDE.md) - Testing requirements
+- [Coding Standards](../docs/dev/CODE_STYLE_GUIDE.md) - Repository conventions
+- [Testing Guide](../docs/guides/TESTING_GUIDE.md) - Testing requirements
 
 ---
 

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/validate_genesis_readiness.py [options]
-    
+
     Examples:
     $ python scripts/validate_genesis_readiness.py --help
 
@@ -34,11 +34,13 @@ Genesis Phase 2 Readiness Validation Script - Enhanced
 
 Comprehensive validation of all Phase 2 prerequisites.
 """
-from pathlib import Path
-import yaml
-import sys
 import json
+import sys
 from datetime import datetime
+from pathlib import Path
+
+import yaml
+
 
 class Colors:
     GREEN = '\033[92m'
@@ -73,14 +75,14 @@ def check_safety_guards():
         config_file = Path('.codex/autonomous_agent.yaml')
         if not config_file.exists():
             return {'passed': False, 'message': 'Config file not found'}
-        
+
         with open(config_file) as f:
             config = yaml.safe_load(f)
-        
+
         # Check for safety flag
         autonomous_enabled = config.get('agent', {}).get('autonomous_actions_enabled', True)
         passed = not autonomous_enabled
-        
+
         return {
             'passed': passed,
             'message': f"autonomous_actions_enabled = {autonomous_enabled}"
@@ -94,10 +96,10 @@ def check_module_imports():
         import sys
         sys.path.insert(0, 'scripts')
         import autonomous_agent
-        
+
         required_attrs = ['AutonomousAgent', 'ActionType', 'HealthStatus']
         missing = [attr for attr in required_attrs if not hasattr(autonomous_agent, attr)]
-        
+
         passed = len(missing) == 0
         return {
             'passed': passed,
@@ -111,7 +113,7 @@ def check_workflows_valid():
     try:
         workflow_dir = Path('.github/workflows')
         workflows = list(workflow_dir.glob('*.yml')) + list(workflow_dir.glob('*.yaml'))
-        
+
         errors = []
         for wf in workflows:
             try:
@@ -119,7 +121,7 @@ def check_workflows_valid():
                     yaml.safe_load(f)
             except Exception as e:
                 errors.append(f"{wf.name}: {e}")
-        
+
         passed = len(errors) == 0
         return {
             'passed': passed,
@@ -134,21 +136,21 @@ def check_security_status():
         scan_file = Path('.codex/security_vulnerability_scan_latest.md')
         if not scan_file.exists():
             scan_file = Path('.codex/security_vulnerability_scan_2025-12-26.md')
-        
+
         if not scan_file.exists():
             return {'passed': False, 'message': 'Security scan file not found'}
-        
+
         with open(scan_file) as f:
             content = f.read()
-        
+
         if not content or not content.strip():
             return {
                 'passed': False,
                 'message': 'Security scan file is empty'
             }
-        
+
         lower_content = content.lower()
-        
+
         # Check for unresolved vulnerabilities
         if 'vulnerab' in lower_content:
             if any(word in lower_content for word in ['unresolved', 'pending', 'critical findings']):
@@ -163,7 +165,7 @@ def check_security_status():
                         'passed': False,
                         'message': 'Security scan indicates unresolved vulnerabilities'
                     }
-        
+
         # Pass if scan exists and has content (assumed reviewed)
         return {
             'passed': True,
@@ -177,7 +179,7 @@ def check_lessons_learned():
     try:
         with open('.codex/lessons_learned.json') as f:
             lessons = json.load(f)
-        
+
         passed = len(lessons) > 0
         return {
             'passed': passed,
@@ -191,10 +193,10 @@ def check_wiki_content():
     try:
         wiki_dir = Path('.codex/wiki')
         wiki_files = list(wiki_dir.glob('*.md'))
-        
+
         required_files = ['Home.md', 'Genesis-Protocol.md']
         missing = [f for f in required_files if not (wiki_dir / f).exists()]
-        
+
         passed = len(missing) == 0
         return {
             'passed': passed,
@@ -213,39 +215,39 @@ def main():
         "Lessons Learned": check_lessons_learned,
         "Wiki Content": check_wiki_content,
     }
-    
+
     print(f"{Colors.BOLD}Genesis Phase 2 Readiness Validation{Colors.END}")
     print("=" * 70)
     print(f"Timestamp: {datetime.now().isoformat()}")
-    print(f"Branch: copilot/sub-pr-2623")
+    print("Branch: copilot/sub-pr-2623")
     print("=" * 70)
     print()
-    
+
     results = {}
     for check_name, check_func in checks.items():
         result = check_func()
         results[check_name] = result
-        
+
         status = f"{Colors.GREEN}✅ PASS{Colors.END}" if result['passed'] else f"{Colors.RED}❌ FAIL{Colors.END}"
         print(f"{check_name:.<30} {status}")
         print(f"  {result['message']}")
-    
+
     print()
     print("=" * 70)
-    
+
     all_passed = all(r['passed'] for r in results.values())
     passed_count = sum(1 for r in results.values() if r['passed'])
     total_count = len(results)
-    
+
     if all_passed:
         print(f"{Colors.GREEN}{Colors.BOLD}✅ READY FOR PHASE 2{Colors.END}")
         print(f"All {total_count} checks passed")
     else:
         print(f"{Colors.YELLOW}{Colors.BOLD}⚠️  NOT FULLY READY{Colors.END}")
         print(f"{passed_count}/{total_count} checks passed")
-    
+
     print("=" * 70)
-    
+
     return 0 if all_passed else 1
 
 if __name__ == "__main__":

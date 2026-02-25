@@ -75,6 +75,9 @@ def test_ray_distributed_guardrails():
 
     import codex_ml.training.ray_distributed as ray_module
 
+    if ray_module.check_ray_available():
+        pytest.skip("Ray is installed in this environment; test covers the no-ray path only")
+
     assert ray_module.check_ray_available() is False
     with pytest.raises(ImportError):
         ray_module.RayDistributedTrainer(lambda cfg: cfg, num_workers=1)

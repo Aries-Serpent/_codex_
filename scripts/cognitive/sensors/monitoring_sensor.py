@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 
 class MonitoringSensor:
     """Cognitive Brain sensor for artifact monitoring system."""
-    
+
     def __init__(self, state_file: Optional[Path] = None):
         self.state_file = state_file or Path(".codex/monitoring/state/monitor_state.json")
-        
+
     def get_system_health(self) -> Dict[str, any]:
         """Get overall monitoring system health status."""
         try:
@@ -34,7 +34,7 @@ class MonitoringSensor:
             total = len(workflows)
             failing = sum(1 for w in workflows.values() if w.get("last_status") == "failure")
             health_score = (total - failing) / total * 100 if total > 0 else 100
-            
+
             return {
                 "status": "healthy" if health_score >= 80 else "degraded" if health_score >= 50 else "critical",
                 "health_score": health_score,
@@ -46,14 +46,14 @@ class MonitoringSensor:
         except Exception as e:
             logger.error(f"Error getting system health: {e}")
             return {"status": "unknown", "error": str(e)}
-    
+
     def get_active_failures(self) -> List[Dict[str, any]]:
         """Get list of currently active workflow failures."""
         try:
             state = self._load_state()
             workflows = state.get("workflows", {})
             active_failures = []
-            
+
             for name, data in workflows.items():
                 if data.get("last_status") == "failure" and data.get("consecutive_failures", 0) >= 2:
                     active_failures.append({
@@ -64,22 +64,22 @@ class MonitoringSensor:
                         "open_issue": data.get("open_issue_number"),
                         "severity": self._calculate_severity(data)
                     })
-            
+
             active_failures.sort(key=lambda x: x["severity"], reverse=True)
             return active_failures
         except Exception as e:
             logger.error(f"Error getting active failures: {e}")
             return []
-    
+
     def should_propose_action(self) -> Tuple[bool, str, float]:
         """Determine if Cognitive Brain should propose an autonomous action."""
         try:
             health = self.get_system_health()
             failures = self.get_active_failures()
-            
+
             health_score = health.get("health_score", 100)
             critical_failures = len([f for f in failures if f["severity"] >= 0.8])
-            
+
             if health_score < 50 and critical_failures >= 3:
                 return True, "Critical system health with multiple severe failures", 0.9
             elif health_score < 80 and critical_failures >= 2:
@@ -91,7 +91,7 @@ class MonitoringSensor:
         except Exception as e:
             logger.error(f"Error in action decision: {e}")
             return False, f"Error: {e}", 0.0
-    
+
     def export_state_for_cognitive_brain(self) -> Dict[str, any]:
         """Export complete monitoring state for Cognitive Brain."""
         return {
@@ -101,7 +101,7 @@ class MonitoringSensor:
             "active_failures": self.get_active_failures(),
             "action_recommendation": self.should_propose_action()
         }
-    
+
     def _load_state(self) -> Dict[str, any]:
         """Load monitoring state from JSON file."""
         try:
@@ -112,7 +112,7 @@ class MonitoringSensor:
         except Exception as e:
             logger.error(f"Error loading state: {e}")
             return {}
-    
+
     def _calculate_severity(self, workflow_data: Dict[str, any]) -> float:
         """Calculate failure severity (0.0-1.0)."""
         consecutive = workflow_data.get("consecutive_failures", 0)
@@ -123,15 +123,15 @@ class MonitoringSensor:
 def main():
     """CLI interface for monitoring sensor."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Monitoring Sensor for Cognitive Brain")
     parser.add_argument("--health", action="store_true", help="Get system health")
     parser.add_argument("--failures", action="store_true", help="Get active failures")
     parser.add_argument("--export", action="store_true", help="Export full state")
     args = parser.parse_args()
-    
+
     sensor = MonitoringSensor()
-    
+
     if args.health:
         print(json.dumps(sensor.get_system_health(), indent=2))
     elif args.failures:

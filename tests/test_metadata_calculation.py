@@ -21,6 +21,8 @@ import json  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import List  # noqa: E402
 
+import pytest  # noqa: E402
+
 # Try to import hypothesis, make tests optional if not available
 try:
     from hypothesis import (  # noqa: F401 - Testing optional dependency availability
@@ -80,12 +82,10 @@ def is_valid_sha256(hash_str: str) -> bool:
 
 
 # Property-based tests
+@pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 @given(sizes=st.lists(st.integers(min_value=0, max_value=100000000), min_size=1, max_size=100))
 def test_total_space_calculation(sizes):
     """Test that total_space_archived correctly sums size_bytes."""
-    if not HYP_AVAILABLE:
-        return  # Skip if hypothesis not available
-
     total_bytes = sum(sizes)
     expected_mb = total_bytes / (1024 * 1024)
     result = calculate_total_space_archived(sizes)
@@ -100,23 +100,19 @@ def test_total_space_calculation(sizes):
     ), f"Expected {expected_mb:.2f}MB, got {result_mb:.2f}MB"
 
 
+@pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 @given(sizes=st.lists(st.integers(min_value=0, max_value=1000000), min_size=1))
 def test_total_space_non_negative(sizes):
     """Test that total_space is always non-negative."""
-    if not HYP_AVAILABLE:
-        return
-
     result = calculate_total_space_archived(sizes)
     result_mb = float(result[:-2])
     assert result_mb >= 0
 
 
+@pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
 @given(sizes=st.lists(st.integers(min_value=0, max_value=1000000), min_size=2))
 def test_total_space_additive(sizes):
     """Test that combining lists gives same result as summing separately."""
-    if not HYP_AVAILABLE:
-        return
-
     mid = len(sizes) // 2
     part1 = sizes[:mid]
     part2 = sizes[mid:]
@@ -188,7 +184,9 @@ def test_metadata_json_structure():
     if files:
         total_bytes = sum(f.get("size_bytes", 0) for f in files)
         expected_mb = total_bytes / (1024 * 1024)
-        actual_mb = float(total_space[:-2])
+        # Handle approximate values (e.g., "~2.44MB")
+        actual_mb_str = total_space[:-2].lstrip("~")
+        actual_mb = float(actual_mb_str)
 
         assert (
             abs(actual_mb - expected_mb) < 0.01

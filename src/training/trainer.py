@@ -6,14 +6,13 @@ import contextlib
 import inspect
 import json
 import logging
-
-logger = logging.getLogger(__name__)
 import time
 from collections.abc import Callable, Mapping, MutableMapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch guard for import-time failures
     from torch.cuda.amp import GradScaler, autocast
 
@@ -36,18 +35,18 @@ else:  # pragma: no cover - fallback types
     OptimizerType = Any
     DataLoaderType = Any
 
-from codex_ml.utils.repro import set_seed as _set_seed
-from logging_utils import (
+from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
+from logging_utils import (  # noqa: E402
     LoggingConfig,
     LoggingSession,
     log_metrics,
     setup_logging,
     shutdown_logging,
 )
-from src.metrics import append_ndjson
+from src.metrics import append_ndjson  # noqa: E402
 
-from .checkpointing import load_checkpoint
-from .simple_trainer import SimpleTrainer
+from .checkpointing import load_checkpoint  # noqa: E402
+from .simple_trainer import SimpleTrainer  # noqa: E402
 
 if torch is not None:
     try:

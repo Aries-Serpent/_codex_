@@ -1,8 +1,8 @@
 # Packagable Capabilities for ChatGPT Projects
 
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Status**: ✅ Production Ready  
-**Priority**: P2 (Supporting Documentation)  
+**Last Updated**: 2026-01-23T11:45:00Z
+**Status**: ✅ Production Ready
+**Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
 
 ---
@@ -741,12 +741,12 @@ This dataset includes [capability name] methodology. When working with this:
 
 ---
 
-**Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Version**: 2.0  
-**Status**: Living Document - Updated as new capabilities are identified  
+**Document Version**: 2.0.0
+**Last Updated**: 2026-01-23T11:45:00Z
+**Version**: 2.0
+**Status**: Living Document - Updated as new capabilities are identified
 **Maintainer**: Aries-Serpent/_codex_ team
-**Iteration Alignment**: Phase 12.3+ compatible  
+**Iteration Alignment**: Phase 12.3+ compatible
 **MCP Protocol**: 2024-11-05 specification
 
 ## Related Documentation
@@ -754,4 +754,4 @@ This dataset includes [capability name] methodology. When working with this:
 - [MCP Package System README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md)
 - [Packaging Guide](PACKAGING_GUIDE.md)
 - [System Prompt Template](ChatGPT_Project_SYSTEM_PROMPT.md)
-- [Agent Architecture Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)
+- [Agent Architecture Documentation](../../agents/README.md)

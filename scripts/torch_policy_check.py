@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/torch_policy_check.py [options]
-    
+
     Examples:
     $ python scripts/torch_policy_check.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Torch CPU policy checker.

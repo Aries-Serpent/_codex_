@@ -4,10 +4,10 @@ Repository Offloaded Files Restoration Script
 
 Purpose:
     Restore files from external storage back to original locations
-    
+
 Usage:
     python scripts/repository_organization/restore_offloaded_files.py [options]
-    
+
     Examples:
     $ python scripts/repository_organization/restore_offloaded_files.py --category historical-coverage
     $ python scripts/repository_organization/restore_offloaded_files.py --file historical-coverage/phase1_iteration1.json
@@ -19,7 +19,7 @@ Arguments:
     --list: List all available categories and files
     --dry-run: Show what would be restored without making changes
     --log-actions: Log restoration to action log (default: True)
-    
+
 Exit Codes:
     0: Success
     1: Error
@@ -78,15 +78,15 @@ CATEGORY_MAPPINGS = {
 def list_categories(repo_root: Path) -> None:
     """List all available categories and their files."""
     print("📂 Available Categories:\n")
-    
+
     for category, config in CATEGORY_MAPPINGS.items():
         offload_path = repo_root / OFFLOAD_ROOT / config["offload_dir"]
         if not offload_path.exists():
             continue
-        
+
         files = list(offload_path.rglob("*"))
         file_count = len([f for f in files if f.is_file() and f.name != "README.md"])
-        
+
         print(f"  {category}:")
         print(f"    Description: {config['description']}")
         print(f"    Location: {offload_path.relative_to(repo_root)}")
@@ -100,16 +100,16 @@ def get_files_in_category(category: str, repo_root: Path) -> list[Path]:
     config = CATEGORY_MAPPINGS.get(category)
     if not config:
         return []
-    
+
     offload_path = repo_root / OFFLOAD_ROOT / config["offload_dir"]
     if not offload_path.exists():
         return []
-    
+
     files = []
     for file_path in offload_path.rglob("*"):
         if file_path.is_file() and file_path.name != "README.md":
             files.append(file_path)
-    
+
     return files
 
 
@@ -125,22 +125,22 @@ def restore_file(
         print(f"  ⚠️  Unknown category: {category!r}")
         return False
     offload_dir = repo_root / OFFLOAD_ROOT / config["offload_dir"]
-    
+
     # Calculate relative path within category
     rel_path = source_path.relative_to(offload_dir)
-    
+
     # Determine destination
     # Special handling for artifacts with subdirectories
     if category == "historical-artifacts":
         dest_path = repo_root / config["restore_dir"] / rel_path
     else:
         dest_path = repo_root / config["restore_dir"] / rel_path.name
-    
+
     # Check if destination already exists
     if dest_path.exists():
         print(f"  ⚠️  Destination already exists: {dest_path.relative_to(repo_root)}")
         return False
-    
+
     # Restore file
     if dry_run:
         print(f"  [DRY RUN] Would restore: {source_path.relative_to(repo_root)}")
@@ -150,7 +150,7 @@ def restore_file(
         shutil.copy2(source_path, dest_path)
         print(f"  ✅ Restored: {source_path.relative_to(repo_root)}")
         print(f"            → {dest_path.relative_to(repo_root)}")
-    
+
     return True
 
 
@@ -161,24 +161,24 @@ def restore_category(
 ) -> tuple[int, int]:
     """Restore all files from a category."""
     files = get_files_in_category(category, repo_root)
-    
+
     if not files:
         print(f"❌ No files found in category: {category}")
         return 0, 0
-    
+
     print(f"📦 Restoring category: {category}")
     print(f"   Files to restore: {len(files)}")
     print()
-    
+
     success_count = 0
     skip_count = 0
-    
+
     for file_path in files:
         if restore_file(file_path, category, repo_root, dry_run):
             success_count += 1
         else:
             skip_count += 1
-    
+
     return success_count, skip_count
 
 
@@ -190,7 +190,7 @@ def log_to_action_log(
 ) -> None:
     """Log restoration to action log."""
     action_log_path = repo_root / ".codex" / "action_log.ndjson"
-    
+
     action_entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "agent": "repository-organization-restore",
@@ -204,7 +204,7 @@ def log_to_action_log(
         "outcome": "success" if success_count > 0 else "no_action",
         "impact": f"Restored {success_count} file(s) from external storage",
     }
-    
+
     try:
         with open(action_log_path, "a") as f:
             f.write(json.dumps(action_entry) + "\n")
@@ -250,26 +250,26 @@ def main() -> int:
         dest="log_actions",
         help="Do not log restoration to action log",
     )
-    
+
     parser.set_defaults(log_actions=True)
     args = parser.parse_args()
-    
+
     repo_root = Path.cwd()
-    
+
     # List mode
     if args.list:
         list_categories(repo_root)
         return 0
-    
+
     # Validate arguments
     if not args.category and not args.file:
         print("❌ Error: Must specify --category or --file", file=sys.stderr)
         parser.print_help()
         return 1
-    
+
     success_count = 0
     skip_count = 0
-    
+
     # Restore by category
     if args.category:
         success_count, skip_count = restore_category(
@@ -277,41 +277,41 @@ def main() -> int:
             repo_root,
             args.dry_run,
         )
-    
+
     # Restore specific file
     elif args.file:
         file_parts = Path(args.file).parts
         if len(file_parts) < 2:
             print("❌ Error: File path must include category", file=sys.stderr)
             return 1
-        
+
         category = file_parts[0]
         if category not in CATEGORY_MAPPINGS:
             print(f"❌ Error: Invalid category: {category}", file=sys.stderr)
             return 1
-        
+
         source_path = repo_root / OFFLOAD_ROOT / args.file
         if not source_path.exists():
             print(f"❌ Error: File not found: {source_path}", file=sys.stderr)
             return 1
-        
+
         print(f"📄 Restoring file: {args.file}")
         print()
-        
+
         if restore_file(source_path, category, repo_root, args.dry_run):
             success_count = 1
         else:
             skip_count = 1
-    
+
     # Print summary
     print()
     print("📊 Restoration Summary:")
     print(f"  ✅ Successfully restored: {success_count}")
     print(f"  ⏭️  Skipped (already exists): {skip_count}")
-    
+
     if args.dry_run:
         print("\n⚠️  DRY RUN - No files were actually restored")
-    
+
     # Log to action log
     if args.log_actions and not args.dry_run and success_count > 0:
         log_to_action_log(
@@ -320,7 +320,7 @@ def main() -> int:
             success_count,
             repo_root,
         )
-    
+
     return 0
 
 

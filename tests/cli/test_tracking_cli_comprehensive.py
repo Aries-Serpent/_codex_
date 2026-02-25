@@ -30,7 +30,9 @@ class TestMLflowEnablement:
         """Test _enable_mlflow with default URI."""
         from codex_ml.cli.tracking_cli import _enable_mlflow
 
-        result = _enable_mlflow(None)
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("MLFLOW_TRACKING_URI", None)
+            result = _enable_mlflow(None)
 
         assert isinstance(result, dict)
         assert result.get('tracking_uri') == 'mlruns' or 'warning' in result

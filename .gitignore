@@ -11,6 +11,7 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+.venv_ci/
 # Distribution / packaging
 build/
 dist/
@@ -46,14 +47,23 @@ mlruns/
 # Generated artifacts (build outputs)
 # (see detailed artifacts rules below around line 121)
 # Audit outputs (keep baselines committed)
-audit_artifacts/
+audit_artifacts/**
 !audit_artifacts/baselines/
 !audit_artifacts/baselines/**
+!audit_artifacts/poctune/
+!audit_artifacts/poctune/**
+!audit_artifacts/results/
+!audit_artifacts/results/**
+!audit_artifacts/staging/
+!audit_artifacts/staging/**
+!audit_artifacts/validation/
+!audit_artifacts/validation/**
 # Disabled workflows (consolidation in progress)
 .github/workflows/*.disabled
 # Temporary files (anti-/tmp/ protection system)
 .github/tmp/
 # Reports (optional commit)
+# reports/ is a scratch dir; canonical tracked location is .codex/reports/
 reports/
 # DVC internals (allow .dvc top-level but ignore local caches)
 .dvc/tmp/
@@ -86,6 +96,7 @@ manifests/k8s/*/secret.yaml
 # Codex internal data (ignored by default)
 .codex/*
 !.codex/README.md
+!.codex/*.md
 !.codex/policies/
 !.codex/policies/**
 !.codex/schemas/
@@ -122,6 +133,8 @@ manifests/k8s/*/secret.yaml
 !.codex/qa_walkthrough/**
 !.codex/knowledge/
 !.codex/knowledge/**
+!.codex/knowledge_graph/
+!.codex/knowledge_graph/**
 !.codex/docs/
 !.codex/docs/**
 !.codex/archive/
@@ -178,6 +191,12 @@ manifests/k8s/*/secret.yaml
 !.codex/*PLAN*.md
 !.codex/*PROMPT*.md
 !.codex/*SUMMARY*.md
+# Critical tracking files (MUST be committed per AI Agency Policy)
+!.codex/README_FIRST_MANDATORY.md
+!.codex/REPEATED_ISSUES_LOG_*.md
+!.codex/THE_THRASHING_PATTERN_*.md
+!.codex/*_FAILURE_TRACKING_LOG.md
+!.codex/*_ROOT_CAUSE_ANALYSIS.md
 !.codex/*COMPLETE*.md
 !.codex/*AUTOMATION*.md
 !.codex/*AUTHORIZATION*.md
@@ -187,6 +206,7 @@ manifests/k8s/*/secret.yaml
 !.codex/*AGENT*.md
 !.codex/*CONTINUATION*.md
 !.codex/*FOLLOWUP*.md
+!.codex/*HISTORICAL*.md
 !.codex/*NEXT*.md
 !.codex/*REPORT*.md
 !.codex/*ASSESSMENT*.md
@@ -340,3 +360,30 @@ parquet/
 uri/
 # Fragile test scan output
 .codex/fragile_tests.json
+
+# Auto-generated CI/agent session report files (never commit to repo root)
+CI_FIXES_*.md
+CI_FIXES_*.json
+CI_FIX_SUMMARY_*.md
+CI_FAILURE_ANALYSIS_*.md
+CI_FAILURE_RESOLUTION_REPORT.md
+CI_STATUS_REPORT_*.md
+CI_STATUS_SUMMARY_*.md
+CI_SUMMARY_*.md
+CI_TESTING_AGENT_SESSION_REPORT.md
+CI_TEST_*.md
+CI_TEST_*.json
+FINAL_REPORT.md
+FINAL_VALIDATION_REPORT*.md
+FINAL_VALIDATION_REPORT*.json
+TEST_FIX_SUMMARY.md
+USER_SUMMARY_*.md
+USER_RESPONSE_*.md
+QUICK_FIX_GUIDE_*.md
+FIXES_SUMMARY.md
+RESOLUTION_SUMMARY.md
+ACCOUNTABILITY_REPORT_DRAFT.md
+audit_artifacts/
+
+# Validation virtual environment (created by validate.py)
+.venv_validation/

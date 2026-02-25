@@ -1,7 +1,7 @@
 # .codex/docs/ - Core Documentation Repository
 
-> **Purpose:** Central documentation for philosophical frameworks, cognitive architecture, and meta-cognitive infrastructure  
-> **Status:** ✅ Active - Complete documentation integrated  
+> **Purpose:** Central documentation for philosophical frameworks, cognitive architecture, and meta-cognitive infrastructure
+> **Status:** ✅ Active - Complete documentation integrated
 > **Last Updated:** 2026-02-10
 
 ---
@@ -35,7 +35,7 @@
 
 ---
 
-#### 2. [COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)
+#### 2. [COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
 **Deep codebase traversal and cognitive pattern mapping**
 
 - **Memory vs Map**: Session-based knowledge retention architecture
@@ -63,7 +63,7 @@
 
 ### Historical Documents
 
-#### 3. [AGENTS.md.original.cf4e8c9.md](./AGENTS.md.original.cf4e8c9.md)
+#### 3. [AGENTS.md.original.cf4e8c9.md](../../.github/AGENTS.md)
 **Historical snapshot of agent documentation** (preserved for reference)
 
 #### 4. [PYTORCH_META_TENSOR_TRACKING.md](./PYTORCH_META_TENSOR_TRACKING.md)
@@ -76,7 +76,7 @@
 ### For AI Agents
 
 **Starting a new session?**
-1. Read [COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md) - Section 1 & 2
+1. Read [COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md) - Section 1 & 2
    - Understand memory vs map paradigm
    - Learn about session-based architecture
 
@@ -86,7 +86,7 @@
    - TODO comments with references
 
 **Want to measure progress?**
-1. [COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md) - Section 6
+1. [COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md) - Section 6
    - Quantitative metrics and equations
 2. [PHILOSOPHICAL_FRAMEWORK.md](./PHILOSOPHICAL_FRAMEWORK.md) - Section 10
    - Philosophical measurement equations
@@ -94,7 +94,7 @@
 ### For Human Developers
 
 **Understanding the architecture?**
-1. Start with [COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)
+1. Start with [COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
    - Executive summary and core concepts
    - Visual diagrams and examples
 
@@ -115,8 +115,8 @@
 
 **In Repository Root:**
 - [README.md](../../README.md) - Main repository overview
-- [AGENTS.md](../../AGENTS.md) - AI agent operational guide
-- [.codex/CODEBASE_AGENCY_POLICY.md](../ CODEBASE_AGENCY_POLICY.md) - Complete policy framework
+- [AGENTS.md](../../.github/AGENTS.md) - AI agent operational guide
+- [.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md) - Complete policy framework
 
 **In docs/ directory:**
 - [docs/agent/OPERATIONAL_GUIDELINES.md](../../docs/agent/OPERATIONAL_GUIDELINES.md)
@@ -260,8 +260,8 @@
 
 ---
 
-**Last Updated:** 2026-02-01  
-**Version:** 1.0.0  
+**Last Updated:** 2026-02-01
+**Version:** 1.0.0
 **Status:** ✅ Complete - Ready for implementation
 
 ---
@@ -269,7 +269,7 @@
 ## 📝 Quick Links
 
 - **Main README**: [../../README.md](../../README.md)
-- **Agent Guide**: [../../AGENTS.md](../../AGENTS.md)
+- **Agent Guide**: [../../AGENTS.md](../../.github/AGENTS.md)
 - **Policy**: [../CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)
 - **Cognitive Brain Toolkit**: [../COGNITIVE_BRAIN_TOOLKIT.md](../COGNITIVE_BRAIN_TOOLKIT.md)
 - **Cognitive Brain Plans**: [../plans/cognitive_brain_phase_implementation.md](../plans/cognitive_brain_phase_implementation.md)

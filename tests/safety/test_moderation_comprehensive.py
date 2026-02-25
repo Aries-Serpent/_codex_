@@ -397,7 +397,7 @@ class TestReviewAndEnforce:
         assert decision.approved is True
         assert decision.provider == "offline"
 
-    @patch('codex_ml.safety.filters.SafetyFilters')
+    @patch('codex_ml.safety.moderation.SafetyFilters')
     def test_enforce_with_approval(self, mock_filters):
         """Test enforce when content is approved."""
         mock_filter_instance = MagicMock()
@@ -416,7 +416,7 @@ class TestReviewAndEnforce:
         decision = adapter.enforce("safe content", stage="preflight")
         assert decision.approved is True
 
-    @patch('codex_ml.safety.filters.SafetyFilters')
+    @patch('codex_ml.safety.moderation.SafetyFilters')
     def test_enforce_with_rejection(self, mock_filters):
         """Test enforce when content is rejected."""
         mock_match = MagicMock()
@@ -440,7 +440,7 @@ class TestReviewAndEnforce:
         with pytest.raises(ModerationRejection):
             adapter.enforce("toxic content", stage="preflight")
 
-    @patch('codex_ml.safety.filters.SafetyFilters')
+    @patch('codex_ml.safety.moderation.SafetyFilters')
     def test_enforce_with_fail_open(self, mock_filters):
         """Test enforce with fail_open enabled."""
         mock_match = MagicMock()

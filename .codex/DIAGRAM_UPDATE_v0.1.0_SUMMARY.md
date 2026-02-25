@@ -1,8 +1,8 @@
 # Architecture Diagram Update - v0.1.0 Alignment
 
-**Status**: ✅ Complete  
-**Date**: 2026-02-09  
-**Package**: codex-ml  
+**Status**: ✅ Complete
+**Date**: 2026-02-09
+**Package**: codex-ml
 **Version**: 0.1.0 Pre-Release
 
 ---
@@ -180,7 +180,7 @@ graph TB
 
 - **Main Report**: [DIAGRAM_UPDATE_REPORT.md](../../DIAGRAM_UPDATE_REPORT.md)
 - **Updated README**: [README.md](../../README.md)
-- **Architecture Docs**: [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
+- **Architecture Docs**: [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
 - **Agent Docs**: [.github/agents/README.md](../README.md)
 
 ---
@@ -199,7 +199,7 @@ The architecture documentation is now production-grade, consistent, and aligned 
 
 ---
 
-**Task**: Repository-wide diagram updates for v0.1.0 alignment  
-**Status**: ✅ Complete  
-**Author**: AI Assistant  
+**Task**: Repository-wide diagram updates for v0.1.0 alignment
+**Status**: ✅ Complete
+**Author**: AI Assistant
 **Date**: 2026-02-09

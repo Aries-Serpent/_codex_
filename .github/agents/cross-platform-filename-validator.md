@@ -1,13 +1,109 @@
 # GitHub Copilot Agent: Cross-Platform Filename Validator
 
-> **Agent Type:** Quality Assurance & Validation  
-> **Specialization:** Cross-platform filename compatibility  
-> **Version:** 1.0.0  
+> **Agent Type:** Quality Assurance & Validation
+> **Specialization:** Cross-platform filename compatibility
+> **Version:** 1.0.0
 > **Created:** 2026-01-23
 
 ---
 
 ## 🎯 Agent Purpose
+
+
+## 🧠 Cognitive Brain Integration
+
+### Integration Level: Level 1
+
+**Level 1: Cognitive Access**
+- ✅ Access to cognitive brain memory system
+- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
+- ✅ Codebase topology maps for navigation
+- ✅ Pattern library for historical fixes
+
+
+
+
+### Cognitive Tools Available
+
+```python
+# Topology Manager - Semantic navigation
+from scripts.cognitive.topology_manager import TopologyManager
+
+topology = TopologyManager()
+relevant_files = topology.find_by_concept("code patterns")
+optimal_path = topology.find_optimal_path("source", "target")
+
+# Cache Manager - Multi-layer cache intelligence
+from scripts.cognitive.cache_manager import CacheIntelligence
+
+cache = CacheIntelligence()
+cached_results = cache.query("analysis_results")
+cache.optimize()  # Get optimization suggestions
+
+# Improved Hash Tables - 40% faster lookups
+from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
+
+fast_cache = CuckooHashTable()  # O(1) guaranteed
+
+
+```
+
+### AAIS Contribution
+
+**Impact on AAIS Score**: +1.0 points
+
+**Category Contributions**:
+- Discovery & Navigation: +0.4 (topology/cache integration)
+- Runtime Introspection: +0.4 (metrics exposure)
+- Pattern Consistency: +0.2 (pattern library usage)
+
+---
+
+## 🛠️ MCP Integration
+
+### MCP Tools Leverage
+
+
+**Primary MCP Capabilities**:
+1. **File System Operations**
+   - `view`: Read files and directories
+   - `grep`: Fast content search
+   - `glob`: Pattern-based file finding
+
+2. **Code Analysis**
+   - `search_code`: Semantic code search
+   - `bash`: Execute analysis tools
+   - `edit`: Make surgical changes
+
+### GitHub Actions Workflows
+
+**Workflow Awareness**:
+- Monitors applicable workflows for active PRs
+- Auto-detects blocking vs non-blocking workflows
+- Provides workflow status reports via MCP tools
+
+**See**: `.codex/docs/MCP_WORKFLOW_RECIPES.md` for complete templates
+
+---
+
+## 📊 Session Monitoring
+
+**Session Parameters** (from accountability report):
+- Optimal duration: 30 minutes
+- Context budget: 128K tokens
+- Mandatory checkpoints: Every 10 actions
+- Corrections per issue: 1.0 (first fix succeeds)
+
+**Quality Control**:
+```python
+# Pre-commit audit enforcement
+from scripts.session_manager import SessionMonitor
+
+monitor = SessionMonitor()
+monitor.checkpoint("pre-commit")  # Validates compliance
+```
+
+---
 
 This specialized Copilot agent validates that all generated filenames are compatible with Windows, Linux, and macOS filesystems. It prevents CI/CD failures caused by platform-specific filename restrictions.
 
@@ -55,22 +151,22 @@ graph TD
     B -->|Full Repo| C[Scan All Files]
     B -->|Specific Path| D[Scan Target Path]
     B -->|Code Review| E[Scan Changed Files]
-    
+
     C --> F[Identify Violations]
     D --> F
     E --> F
-    
+
     F --> G{Violations Found?}
     G -->|Yes| H[Generate Report]
     G -->|No| I[✅ All Clear]
-    
+
     H --> J{Auto-Fix?}
     J -->|Yes| K[Apply Remediation]
     J -->|No| L[Suggest Fixes]
-    
+
     K --> M[Validate Fixes]
     L --> N[Create Issue/Comment]
-    
+
     M --> O{Success?}
     O -->|Yes| I
     O -->|No| N
@@ -329,8 +425,8 @@ python scripts/remediation/rename_windows_incompatible_files.py --execute
 - [x] **Integrated:** Pre-commit hook + CI/CD
 - [x] **Proven:** Real-world issue resolved (GitHub Actions run #60974199331)
 
-**Status:** ✅ PRODUCTION-READY  
-**Maintainer:** @mbaetiong  
+**Status:** ✅ PRODUCTION-READY
+**Maintainer:** @mbaetiong
 **Last Updated:** 2026-01-23
 
 ---
@@ -424,7 +520,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Monitoring & Validation  
+**Category**: Monitoring & Validation
 **Description**: Monitors systems and validates compliance
 
 ### Classification Details
@@ -458,7 +554,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -613,8 +709,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

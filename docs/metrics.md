@@ -302,12 +302,12 @@ def metric(
 ) -> Optional[float]:
     """
     Compute metric score.
-    
+
     Args:
         preds: Predicted sequences
         targets: Target/reference sequences
         **kwargs: Metric-specific parameters
-        
+
     Returns:
         Float score or None if unavailable
     """
@@ -382,7 +382,7 @@ pip install rouge-score
 
 ## Related Documentation
 
-- [Evaluation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/evaluation/README.md) - End-to-end evaluation workflows
+- Evaluation Guide - End-to-end evaluation workflows
 - [Plugin API](plugins/Plugin_API_Broader.md) - Custom metric registration
 - [Testing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing metrics with optional dependencies
 

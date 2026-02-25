@@ -16,6 +16,7 @@ import time
 from typing import Any
 
 import pytest
+
 pytest.importorskip("hypothesis")
 
 

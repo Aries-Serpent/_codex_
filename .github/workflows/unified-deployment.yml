@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - 'cognitive_app/**'
-  
+
   # Manual deployment with full control
   workflow_dispatch:
     inputs:
@@ -46,6 +46,7 @@ jobs:
   pre_release_validate:
     name: Pre-Release Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: |
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'pre-release-only' || inputs.mode == 'full-deployment'))
     outputs:
@@ -70,13 +71,19 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # Pin pytest plugins (PR #3248)
+          # Pin pytest plugins before package install (PR #3248 stability fix)
+          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
+
+
+
           pip install -e ".[dev,test]"
 
       - name: Run validation
         id: validation
         run: |
           if [ "${{ inputs.skip_tests }}" != "true" ]; then
-            pytest tests/ -v --tb=short || exit 1
+            pytest tests/ -v --tb=short --timeout=300 || exit 1
           fi
           echo "passed=true" >> $GITHUB_OUTPUT
 
@@ -92,6 +99,7 @@ jobs:
   build_cognitive_app:
     name: Build Cognitive App
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: |
       github.event_name == 'push' ||
       (github.event_name == 'workflow_dispatch' && (inputs.mode == 'cognitive-app-only' || inputs.mode == 'full-deployment'))
@@ -132,6 +140,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: build_cognitive_app
     if: |
       needs.build_cognitive_app.result == 'success'
@@ -145,6 +154,7 @@ jobs:
   pre_release_build:
     name: Build Pre-Release Package
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [pre_release_validate]
     if: |
       needs.pre_release_validate.result == 'success' &&
@@ -176,6 +186,7 @@ jobs:
   pre_release_publish:
     name: Publish Pre-Release
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [pre_release_build]
     if: needs.pre_release_build.result == 'success'
 
@@ -204,6 +215,7 @@ jobs:
   deployment_summary:
     name: Generate Deployment Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [build_cognitive_app, deploy_cognitive_app, pre_release_validate, pre_release_build, pre_release_publish]
     if: always()
 

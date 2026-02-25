@@ -25,22 +25,22 @@ from typing import Any
 def sanitize_log_input(value: Any, max_length: int = 500) -> str:
     """
     Sanitize user input for safe logging.
-    
+
     Removes control characters and truncates to prevent log injection attacks.
-    
+
     Removes:
     - Newline characters (\\n, \\r)
     - Tab characters (\\t)
     - Control characters (0x00-0x1F, 0x7F-0x9F)
     - ANSI escape codes
-    
+
     Args:
         value: Input value to sanitize (will be converted to string)
         max_length: Maximum length of output string (default: 500)
-        
+
     Returns:
         Sanitized string safe for logging
-        
+
     Example:
         >>> sanitize_log_input("user\\nfake_log_entry")
         'userfake_log_entry'
@@ -72,18 +72,18 @@ def sanitize_log_input(value: Any, max_length: int = 500) -> str:
 def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
     """
     Sanitize all values in a dictionary for logging.
-    
+
     Recursively sanitizes nested dictionaries.
     Useful for logging request/response bodies or configuration objects
     that may contain user-controlled data.
-    
+
     Args:
         data: Dictionary to sanitize
         max_length: Maximum length per value
-        
+
     Returns:
         New dictionary with sanitized values
-        
+
     Example:
         >>> sanitize_dict_for_log({"user": "test\\ninjection", "id": 123})
         {'user': 'testinjection', 'id': '123'}

@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/migrate_configs.py [options]
-    
+
     Examples:
     $ python scripts/migrate_configs.py --help
 
@@ -39,8 +39,8 @@ Usage:
 import argparse
 import shutil
 from pathlib import Path
-import yaml
 
+import yaml
 
 LEGACY_DIRS = ["config", "conf"]
 TARGET_DIR = Path("configs")

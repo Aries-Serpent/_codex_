@@ -1,0 +1,21 @@
+name: Art_Publish Status Dashboard Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 10 * * 1" # weekly Monday 10:15 UTC
+
+jobs:
+  publish-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow publish_dashboard_release 2>/dev/null || echo "Cache health: check skipped"
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'

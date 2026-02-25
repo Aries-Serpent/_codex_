@@ -6,17 +6,19 @@ managing evaluation loops, and collecting metrics in a unified format.
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import argparse
 import csv
 import json
+import logging
+import sys
 from pathlib import Path
 from typing import Iterable
 
+from codex_ml.utils.hf_pinning import HFModelUnavailableError
+
 from .evaluator import run_evaluator
+
+logger = logging.getLogger(__name__)
 
 
 def _load_texts(path: str) -> list[str]:
@@ -85,7 +87,13 @@ def main(argv: Iterable[str] | None = None) -> None:
 
         cfg = SafetyConfig()
         texts = [sanitize_prompt(t, cfg)["text"] for t in texts]
-    metrics = run_evaluator(args.model, texts)
+    try:
+        metrics = run_evaluator(args.model, texts)
+    except HFModelUnavailableError as exc:
+        # Model not in cache and network unavailable — exit 2 so callers
+        # (e.g. tests) can distinguish "model unavailable" from real errors.
+        print(f"SKIP: {exc}", file=sys.stderr)
+        sys.exit(2)
     print(json.dumps(metrics))
     if args.metrics_log:
         _summarise_log(args.metrics_log)

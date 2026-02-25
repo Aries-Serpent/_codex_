@@ -1,7 +1,7 @@
 # AI Agent Operational Guidelines
 
-> **Generated:** 2025-12-26T07:54:45Z | **Author:** mbaetiong  
-> **Agent Identity:** ai_org_repo_admin  
+> **Generated:** 2025-12-26T07:54:45Z | **Author:** mbaetiong
+> **Agent Identity:** ai_org_repo_admin
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 
 ## Purpose
@@ -10,11 +10,11 @@ This document defines operational guidelines, constraints, and decision-making f
 
 ## Table of Contents
 
-1. [Agent Identity & Authority](#agent-identity--authority)
+1. <!-- BROKEN ANCHOR: [Agent Identity & Authority](#agent-identity-authority) -->
 2. [Operational Constraints](#operational-constraints)
 3. [Decision Framework](#decision-framework)
 4. [Escalation Procedures](#escalation-procedures)
-5. [Audit & Logging](#audit--logging)
+5. <!-- BROKEN ANCHOR: [Audit & Logging](#audit-logging) -->
 6. [Best Practices](#best-practices)
 
 ---
@@ -446,7 +446,7 @@ When approaching limits:
    # Disable autonomous actions
    # Edit .codex/autonomous_agent.yaml
    autonomous_actions_enabled: false
-   
+
    # Enable safe mode
    # Edit scripts/autonomous_agent.py
    SAFE_MODE = True
@@ -483,7 +483,7 @@ When approaching limits:
 
 ---
 
-> **Document Version:** 1.0.0  
-> **Last Updated:** 2026-02-10T07:54:45Z  
-> **Agent Identity:** ai_org_repo_admin  
+> **Document Version:** 1.0.0
+> **Last Updated:** 2026-02-10T07:54:45Z
+> **Agent Identity:** ai_org_repo_admin
 > **Status:** Template - Awaiting Genesis Completion

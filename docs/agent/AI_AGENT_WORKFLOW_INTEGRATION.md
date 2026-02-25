@@ -6,7 +6,7 @@ This guide explains how AI agents can effectively use the new consolidated workf
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Available Workflows](#available-workflows)
 3. [Integration Patterns](#integration-patterns)
 4. [Advanced Usage](#advanced-usage)
@@ -193,13 +193,13 @@ jobs:
     uses: ./.github/workflows/cache-suite.yml
     with:
       operation: 'warmup'
-  
+
   run-tests:
     needs: warm-cache
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'all'
-  
+
   security-scan:
     needs: run-tests
     uses: ./.github/workflows/security-scanning-suite.yml
@@ -217,12 +217,12 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   test-auth:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'auth'
-  
+
   test-rag:
     uses: ./.github/workflows/test-suite.yml
     with:
@@ -250,14 +250,14 @@ jobs:
               - 'src/**/*.py'
             docs:
               - 'docs/**'
-  
+
   test-python:
     needs: check-changes
     if: needs.check-changes.outputs.has-python == 'true'
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   validate-docs:
     needs: check-changes
     if: needs.check-changes.outputs.has-docs == 'true'
@@ -276,7 +276,7 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'all'
-  
+
   handle-failure:
     needs: run-tests
     if: failure()
@@ -306,26 +306,26 @@ jobs:
     uses: ./.github/workflows/cache-suite.yml
     with:
       operation: 'warmup'
-  
+
   # Stage 2: Quality Checks
   tests:
     needs: warmup
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'all'
-  
+
   security:
     needs: warmup
     uses: ./.github/workflows/security-scanning-suite.yml
     with:
       scan-type: 'all'
-  
+
   docs:
     needs: warmup
     uses: ./.github/workflows/documentation-suite.yml
     with:
       operation: 'build'
-  
+
   # Stage 3: Health Check
   ci-health:
     needs: [tests, security, docs]
@@ -376,7 +376,7 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   process-results:
     needs: run-tests
     runs-on: ubuntu-latest
@@ -398,7 +398,7 @@ jobs:
     uses: ./.github/workflows/cache-suite.yml
     with:
       operation: 'warmup'
-  
+
   expensive-operation:
     needs: prepare
     uses: ./.github/workflows/test-suite.yml
@@ -437,7 +437,7 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   security:
     uses: ./.github/workflows/security-scanning-suite.yml
     with:
@@ -454,13 +454,13 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   optional-tests:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'rag'
     continue-on-error: true
-  
+
   always-run:
     needs: [critical-tests, optional-tests]
     if: always()
@@ -481,7 +481,7 @@ jobs:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'core'
-  
+
   security-scan:
     permissions:
       contents: read
@@ -531,7 +531,7 @@ jobs:
     uses: ./.github/workflows/cache-suite.yml
     with:
       operation: 'warmup'
-  
+
   tests:
     needs: warmup
     uses: ./.github/workflows/test-suite.yml

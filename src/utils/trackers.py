@@ -18,10 +18,9 @@ Author: Codex Team
 from __future__ import annotations
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
-
-import os
 
 __all__ = ["init_wandb_offline", "init_mlflow_local"]
 

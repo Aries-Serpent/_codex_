@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 import sys
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence, Union
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -26,6 +26,12 @@ from codex_ml.eval.metrics import (
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
+
+try:
+    from codex_ml.safety import SafetyConfig, sanitize_prompt
+except Exception:  # pragma: no cover - optional dependency
+    SafetyConfig = None  # type: ignore[assignment,misc]
+    sanitize_prompt = None  # type: ignore[assignment]
 
 LOGGER = logging.getLogger(__name__)
 
@@ -64,7 +70,7 @@ METRIC_FUNCS = {
 _ = run_cmd
 
 
-def _coerce_sequence(value: Any) -> list[Any] | None:
+def _coerce_sequence(value: Any) -> Optional[list[Any]]:
     if value is None:
         return None
     if isinstance(value, (list, tuple, set)):
@@ -75,9 +81,7 @@ def _coerce_sequence(value: Any) -> list[Any] | None:
 
 
 def _sanitize_prompt_list(items: list[Any]) -> tuple[list[Any], bool]:
-    try:
-        from codex_ml.safety import SafetyConfig, sanitize_prompt
-    except Exception:  # pragma: no cover - optional dependency path
+    if SafetyConfig is None or sanitize_prompt is None:  # pragma: no cover - optional dependency path
         return list(items), False
 
     cfg = SafetyConfig()
@@ -147,7 +151,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     return total
 
 
-def _to_path(value: str | Path | None) -> Path | None:
+def _to_path(value: Optional[Union[str, Path]]) -> Optional[Path]:
     if value is None:
         return None
     if isinstance(value, Path):
@@ -157,7 +161,7 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(value).expanduser().resolve()
 
 
-def _resolve_checkpoint_dir(value: str | Path | None) -> Path | None:
+def _resolve_checkpoint_dir(value: Optional[Union[str, Path]]) -> Optional[Path]:
     path = _to_path(value)
     if path is None:
         return None
@@ -166,7 +170,7 @@ def _resolve_checkpoint_dir(value: str | Path | None) -> Path | None:
     return path
 
 
-def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | None:
+def _load_latest_checkpoint_dir(checkpoint_dir: Optional[Union[str, Path]]) -> Optional[Path]:
     root = _resolve_checkpoint_dir(checkpoint_dir)
     if root is None:
         return None
@@ -186,8 +190,8 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
                     parent = candidate_path.parent
                     if parent.exists():
                         return parent
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as e:
+            logger.debug("JSON decode error when parsing checkpoint path: %s", e)
 
     epoch_dirs = sorted(
         (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),
@@ -209,7 +213,7 @@ def _load_latest_checkpoint_dir(checkpoint_dir: str | Path | None) -> Path | Non
 
 
 def evaluate(
-    checkpoint_dir: str | Path | None,
+    checkpoint_dir: Optional[Union[str, Path]],
     model_name: Optional[str] = None,
     device: Optional[str] = None,
 ) -> dict[str, Any]:
@@ -257,7 +261,7 @@ def evaluate(
 # Hydra entry (optional)
 if _HAS_HYDRA:
 
-    @hydra.main(version_base=None, config_path="../../configs/evaluation", config_name="default")
+    @hydra.main(version_base=None, config_path="../configs/evaluation", config_name="default")
     def main(cfg: DictConfig) -> None:
         logger = init_json_logging()
         arg_list = sys.argv[1:]
@@ -287,7 +291,7 @@ if _HAS_HYDRA:
 
 else:
 
-    def main(argv: Sequence[str] | None = None) -> int:
+    def main(argv: Optional[Sequence[str]] = None) -> int:
         logger = init_json_logging()
         parser = ArgparseJSONParser(description="Evaluate latest checkpoint (skeleton).")
         parser.add_argument("--checkpoint-dir", required=True)

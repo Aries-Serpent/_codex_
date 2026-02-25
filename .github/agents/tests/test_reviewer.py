@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -12,12 +12,12 @@ AGENTS_DIR = Path(__file__).resolve().parents[1]
 if str(AGENTS_DIR) not in sys.path:
     sys.path.append(str(AGENTS_DIR))
 
+from codex_reviewer.analyzers import QuantumPatternAnalyzer  # noqa: E402
 from codex_reviewer.main import (  # noqa: E402
     CodexQuantumReviewer,
     ReviewContext,
     ReviewResult,
 )
-from codex_reviewer.analyzers import QuantumPatternAnalyzer  # noqa: E402
 from codex_reviewer.orchestration import WorkflowOrchestrator  # noqa: E402
 
 

@@ -17,6 +17,11 @@ from cognitive_brain.quantum.adaptive_scoring import (
     ScoringWeights,
 )
 
+# Constants for feature extraction
+_RISK_LEVEL_SCORES = {"low": 0.2, "medium": 0.5, "high": 0.8}
+_MAX_REMEDIATION_COST = 20000.0  # Maximum cost for normalization
+_WEIGHT_SUM_TOLERANCE = 0.01  # Floating-point tolerance for weight sum validation
+
 
 class AdaptiveScoringEngine:
     """Test adapter for AdaptiveScoringOptimizer with simplified API."""
@@ -28,8 +33,12 @@ class AdaptiveScoringEngine:
         if compliance_score_weight < 0 or risk_weight < 0:
             raise ValueError("Weights must be non-negative")
 
-        # Calculate remaining weights if not specified
+        # Validate that user-specified weights don't already exceed 1.0
         if cost_weight is None and impact_weight is None:
+            if compliance_score_weight + risk_weight > 1.0 + _WEIGHT_SUM_TOLERANCE:
+                raise ValueError(
+                    f"Weights must sum to 1.0 (got {compliance_score_weight + risk_weight})"
+                )
             remaining = 1.0 - compliance_score_weight - risk_weight
             cost_weight = remaining / 2
             impact_weight = remaining / 2
@@ -40,7 +49,7 @@ class AdaptiveScoringEngine:
 
         # Validate sum
         total = compliance_score_weight + risk_weight + cost_weight + impact_weight
-        if abs(total - 1.0) > 0.01:
+        if abs(total - 1.0) > _WEIGHT_SUM_TOLERANCE:
             raise ValueError(f"Weights must sum to 1.0 (got {total})")
 
         self.optimizer = AdaptiveScoringOptimizer(learning_rate=learning_rate)
@@ -60,12 +69,35 @@ class AdaptiveScoringEngine:
     def risk_weight(self):
         return self.optimizer.weights.risk_weight
 
+    @property
+    def impact_weight(self):
+        return self.optimizer.weights.impact_weight
+
+    @property
+    def mitigation_weight(self):
+        # cost_weight acts as the mitigation/remediation weight in this schema
+        return self.optimizer.weights.cost_weight
+
     def compute_score(self, scenario):
-        """Compute score from scenario dict."""
+        """Compute score from scenario tuple or dict."""
+        # Handle tuple format from generate_complex_scenarios
+        if isinstance(scenario, tuple):
+            audit, _ground_truth, _complexity = scenario
+            # Extract features from AuditResult
+            features = {
+                "compliance_score": audit.score if audit.score is not None else 0.5,
+                "risk_score": _RISK_LEVEL_SCORES.get(audit.risk_level, 0.5),
+                "cost_score": min(1.0, audit.remediation_cost / _MAX_REMEDIATION_COST) if audit.remediation_cost else 0.5,
+                "impact_score": audit.business_impact if audit.business_impact else 0.5,
+            }
+            return self.optimizer.compute_score(features)
+        # Handle dict format
         return self.optimizer.compute_score(scenario)
 
     def train(self, scenarios, epochs=10):
         """Mock training method for tests."""
+        if not scenarios:
+            raise ValueError("Cannot train on empty scenarios")
         # Just run through scenarios without updating weights if learning_rate is 0
         for _ in range(epochs):
             for scenario in scenarios:
@@ -171,8 +203,10 @@ class TestAdaptiveScoringEdgeCases:
     def test_duplicate_scenario_ids(self):
         """Test handling of duplicate scenario IDs."""
         scenarios = generate_complex_scenarios(10, seed=42)
-        # Force duplicate IDs
-        scenarios[5].scenario_id = scenarios[0].scenario_id
+        # Force duplicate IDs by modifying the AuditResult (index 0 of tuple)
+        audit0, _gt0, _c0 = scenarios[0]
+        audit5, _gt5, _c5 = scenarios[5]
+        audit5.audit_id = audit0.audit_id
 
         engine = AdaptiveScoringEngine()
         # Should handle duplicates gracefully (deduplicate or process both)
@@ -198,8 +232,9 @@ class TestAdaptiveScoringEdgeCases:
     def test_nan_in_scenario_features(self):
         """Test handling of NaN values in features."""
         scenarios = generate_complex_scenarios(5, seed=42)
-        # Inject NaN
-        scenarios[0].ambiguity_score = float("nan")
+        # Inject NaN into ScenarioComplexity (index 2 of the (audit, gt, complexity) tuple)
+        _audit, _gt, complexity = scenarios[0]
+        complexity.ambiguity_score = float("nan")
 
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
@@ -209,8 +244,9 @@ class TestAdaptiveScoringEdgeCases:
     def test_inf_in_scenario_features(self):
         """Test handling of infinite values in features."""
         scenarios = generate_complex_scenarios(5, seed=42)
-        # Inject infinity
-        scenarios[0].ambiguity_score = float("inf")
+        # Inject infinity into ScenarioComplexity (index 2 of the (audit, gt, complexity) tuple)
+        _audit, _gt, complexity = scenarios[0]
+        complexity.ambiguity_score = float("inf")
 
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
@@ -220,7 +256,8 @@ class TestAdaptiveScoringEdgeCases:
     def test_very_high_ambiguity_score(self):
         """Test scenarios with maximum ambiguity."""
         scenarios = generate_complex_scenarios(5, seed=42)
-        scenarios[0].ambiguity_score = 1.0  # Maximum ambiguity
+        _audit, _gt, complexity = scenarios[0]
+        complexity.ambiguity_score = 1.0  # Maximum ambiguity
 
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
@@ -231,12 +268,15 @@ class TestAdaptiveScoringEdgeCases:
         """Test training on conflicting scenario patterns."""
         scenarios = generate_complex_scenarios(20, seed=42)
         # Create conflicting patterns (high compliance + high risk)
+        # AuditResult is at index 0 of each (audit, gt, complexity) tuple
         for i in range(0, 10, 2):
-            scenarios[i].compliance_score = 0.9
-            scenarios[i].risk_level = "critical"
+            audit, _gt, _c = scenarios[i]
+            audit.score = 0.9
+            audit.risk_level = "high"
         for i in range(1, 10, 2):
-            scenarios[i].compliance_score = 0.1
-            scenarios[i].risk_level = "low"
+            audit, _gt, _c = scenarios[i]
+            audit.score = 0.1
+            audit.risk_level = "low"
 
         engine = AdaptiveScoringEngine()
         engine.train(scenarios, epochs=20)

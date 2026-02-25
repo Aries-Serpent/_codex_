@@ -62,9 +62,9 @@ def test_cli_trainer_lifecycle(monkeypatch):
 
 def test_cli_non_mapping_config_rejection(monkeypatch):
     """Test CLI rejects non-mapping configuration."""
-    # Config that resolves to non-dict should be rejected
-    with pytest.raises(ValueError, match="must be a mapping"):
-        pass  # Requires full CLI integration
+    # This test requires full CLI integration to work properly.
+    # For now, skip it as a placeholder for future implementation.
+    pytest.skip("Requires full CLI integration - deferred to CLI refactoring phase")
 
 
 def test_cli_invalid_checkpoint_type(monkeypatch, tmp_path):

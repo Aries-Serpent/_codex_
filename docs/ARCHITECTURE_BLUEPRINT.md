@@ -1,9 +1,9 @@
 # Repository Architecture Blueprint and Roadmap
 
-**Document Version**: 1.0.0  
-**Generated**: 2025-12-11  
-**Branch Context**: `copilot/sub-pr-2459-again`  
-**Author**: GitHub Copilot with mbaetiong  
+**Document Version**: 1.0.0
+**Generated**: 2025-12-11
+**Branch Context**: `copilot/sub-pr-2459-again`
+**Author**: GitHub Copilot with mbaetiong
 **Audience**: Developer-Architects, AI Assistants/Agents, DevOps Engineers
 
 ---
@@ -37,13 +37,13 @@ This blueprint serves multiple audiences:
 1. [Repository Structure](#repository-structure)
 2. [Architecture Overview](#architecture-overview)
 3. [Core Components](#core-components)
-4. [Runtime & Data Flow](#runtime--data-flow)
-5. [CI/CD & Testing](#cicd--testing)
-6. [Security & Compliance](#security--compliance)
+4. <!-- BROKEN ANCHOR: [Runtime & Data Flow](#runtime-data-flow) -->
+5. <!-- BROKEN ANCHOR: [CI/CD & Testing](#cicd-testing) -->
+6. <!-- BROKEN ANCHOR: [Security & Compliance](#security-compliance) -->
 7. [AI Agent Integration](#ai-agent-integration)
-8. [Deployment & Operations](#deployment--operations)
+8. <!-- BROKEN ANCHOR: [Deployment & Operations](#deployment-operations) -->
 9. [Development Workflows](#development-workflows)
-10. [Roadmap & Priorities](#roadmap--priorities)
+10. <!-- BROKEN ANCHOR: [Roadmap & Priorities](#roadmap-priorities) -->
 11. [Appendices](#appendices)
 
 ---
@@ -207,55 +207,55 @@ flowchart TB
         Agent[AI Agents]
         CI[CI/CD Systems]
     end
-    
+
     subgraph Core["🔷 Codex Core"]
         CLI[CLI Interface]
         Logging[Session Logger]
         Config[Configuration]
     end
-    
+
     subgraph Pipeline["🔍 Audit Pipeline v1.5.5"]
         Runner[Audit Runner]
         Scanner[Code Scanner]
         Metrics[Metrics Collector]
         Trends[Trend Database]
     end
-    
+
     subgraph ML["🤖 ML Framework"]
         Training[Training Engine]
         Eval[Evaluation]
         Models[Model Registry]
     end
-    
+
     subgraph Viz["📊 Visualization"]
         Dashboard[HTML Dashboard]
         Terminal[ASCII Terminal]
         Reports[Markdown Reports]
     end
-    
+
     subgraph Storage["💾 Storage"]
         SQLite[(SQLite DB)]
         Logs[Log Files]
         Cache[Cache Layer]
     end
-    
+
     Dev --> CLI
     Agent --> Runner
     CI --> Runner
-    
+
     CLI --> Training
     CLI --> Eval
-    
+
     Runner --> Scanner
     Scanner --> Metrics
     Metrics --> Trends
-    
+
     Trends --> SQLite
     Trends --> Viz
-    
+
     Training --> Models
     Eval --> Models
-    
+
     Dashboard --> Reports
 ```
 
@@ -1156,7 +1156,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 
 ---
 
-**Document Version**: 1.0.0  
-**Maintenance**: Update quarterly or after major changes  
-**Contact**: Repository owners (@mbaetiong)  
+**Document Version**: 1.0.0
+**Maintenance**: Update quarterly or after major changes
+**Contact**: Repository owners (@mbaetiong)
 **Last Updated**: 2025-12-11

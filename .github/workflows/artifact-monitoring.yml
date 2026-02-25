@@ -30,6 +30,7 @@ jobs:
   monitor-workflows:
     name: Monitor Workflows & Create Issues
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository

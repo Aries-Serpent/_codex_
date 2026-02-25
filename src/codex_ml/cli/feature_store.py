@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 try:
     from rich.console import Console
@@ -212,7 +212,7 @@ def health(
 
 @app.command()
 def materialize(
-    feature_names: list[str] = typer.Argument(..., help="Feature names to materialize"),
+    feature_names: List[str] = typer.Argument(..., help="Feature names to materialize"),
     output_path: str = typer.Option(
         ..., "--output", "-o", help="Output path for materialized features"
     ),

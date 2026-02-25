@@ -2,18 +2,14 @@
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
-from codex_ml.utils.hf_pinning import load_from_pretrained
+from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrained
 from codex_ml.utils.optional import optional_import
 
 _torch_module, _HAS_TORCH = optional_import("torch")
@@ -78,7 +74,7 @@ def _resolve_offline_checkpoint(
     *,
     default_remote: str,
     default_subdir: str,
-    specific_env: str | None = None,
+    specific_env: Optional[str] = None,
 ) -> str:
     """Resolve a checkpoint path respecting offline-first semantics."""
 
@@ -165,7 +161,7 @@ def _load_hf_model(task: str, cfg: dict[str, Any], default: str) -> HF_PreTraine
 
     try:
         return load_from_pretrained(loader, model_id, **kwargs)
-    except OSError as exc:  # pragma: no cover - network/IO errors
+    except (OSError, HFModelUnavailableError) as exc:
         raise RuntimeError(
             f"Unable to load weights for {model_id!r} from local cache. "
             "Provide a `local_path` or set `local_files_only=False` if remote downloads are permitted."
@@ -207,13 +203,13 @@ def _build_offline_tinyllama(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     return _load_hf_model("causal", cfg, "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 
 
-def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:
+def register_model(name: str, obj: Optional[Any] = None, *, override: bool = False) -> Any:
     """Register a model constructor under ``name``."""
 
     return model_registry.register(name, obj, override=override)
 
 
-def _normalise_device(device: Any | None) -> Any | None:
+def _normalise_device(device: Optional[Any]) -> Optional[Any]:
     if not _HAS_TORCH:
         if device in {None, "auto", "cuda"}:
             return "cpu"
@@ -244,14 +240,16 @@ _DTYPE_ALIASES = {
 }
 
 
-def _resolve_torch_dtype(value: Any | None):
+def _resolve_torch_dtype(value: Optional[Any]):
     """Best-effort conversion of ``value`` to a ``torch.dtype``."""
 
     if not _HAS_TORCH:
         return None
     if value is None:
         return None
-    if isinstance(value, torch.dtype):
+    # Check if value is already a torch.dtype by checking its type name
+    # Safe for Python 3.12+ where isinstance(x, torch.dtype) may fail
+    if hasattr(value, '__class__') and type(value).__name__ == 'dtype':
         return value
     text = str(value).strip().lower()
     if not text:
@@ -259,7 +257,8 @@ def _resolve_torch_dtype(value: Any | None):
     alias = _DTYPE_ALIASES.get(text, text)
     attr = alias.split(".")[-1]
     torch_value = getattr(torch, attr, None)
-    if isinstance(torch_value, torch.dtype):
+    # Check if torch_value is a torch.dtype by checking its type name
+    if torch_value is not None and hasattr(torch_value, '__class__') and type(torch_value).__name__ == 'dtype':
         return torch_value
     return None
 
@@ -291,11 +290,11 @@ def _validate_lora_config(config: dict[str, Any]) -> dict[str, Any]:
 
 def get_model(
     name: str,
-    cfg: dict[str, Any] | None = None,
+    cfg: Optional[dict[str, Any]] = None,
     *,
-    device: Any | None = None,
-    dtype: Any | None = None,
-    adapter_loader: Any | None = None,
+    device: Optional[Any] = None,
+    dtype: Optional[Any] = None,
+    adapter_loader: Optional[Any] = None,
 ) -> Any:
     """Instantiate a model by name with optional device/dtype overrides."""
 

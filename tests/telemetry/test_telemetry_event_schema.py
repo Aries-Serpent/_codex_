@@ -6,6 +6,7 @@ Test module for telemetry event schema.
 
 # ruff: noqa: E402
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,16 @@ from src.codex_ml import train_loop as train_loop_module  # noqa: E402
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)
 
+# PyTorch 2.x (<2.2.0) has an isinstance bug with Python 3.12 union types
+# DR-003: guard tightened to torch < 2.2.0; CI uses torch >= 2.2.0 so tests run.
+_TORCH_312_BUG = False
+try:
+    import torch as _torch_mod
+    _torch_ver = tuple(int(x) for x in _torch_mod.__version__.split(".")[:2])
+    _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver < (2, 2)
+except (ImportError, AttributeError, ValueError):
+    _TORCH_312_BUG = False  # torch not installed; PyTorch/Python 3.12 bug cannot apply
+
 SCHEMA = {
     "type": "object",
     "properties": {
@@ -32,6 +43,7 @@ SCHEMA = {
 }
 
 
+@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
 def test_telemetry_events_json_and_ndjson(tmp_path: Path):
     run_training = train_loop_module.run_training
 

@@ -1,5 +1,7 @@
 """Learning rate scheduler factory for flexible scheduler selection.
 
+from __future__ import annotations
+
 This module provides a factory function to create various learning rate
 schedulers with configuration support.
 
@@ -21,9 +23,11 @@ Example usage:
     ```
 """
 
-from __future__ import annotations
 
 import logging
+
+logger = logging.getLogger(__name__)
+
 import math
 from typing import Any, Literal
 
@@ -156,10 +160,10 @@ def create_scheduler(
             **scheduler_kwargs,
         )
 
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
-        LOGGER.warning("transformers not available, falling back to PyTorch schedulers")
+    except (ImportError, TypeError) as e:
+        logger.debug(f"ImportError or TypeError: {e}")
+        logger.debug(f"transformers error: {e}")
+        LOGGER.warning("transformers not available or TypeError, falling back to PyTorch schedulers")
         # Fall back to PyTorch native schedulers
         return _create_pytorch_scheduler(
             optimizer=optimizer,
@@ -193,14 +197,21 @@ def _create_pytorch_scheduler(
         import torch  # noqa: F401 - Testing optional dependency availability
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
         raise ImportError(
             "PyTorch is required for scheduler creation. " "Install with: pip install torch"
         )
 
+    def _make_lambda_lr(lr_lambda):
+        try:
+            return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        except TypeError as exc:
+            raise ImportError(
+                f"Scheduler creation requires a torch.optim.Optimizer: {exc}"
+            ) from exc
+
     if scheduler_type == "constant":
         # Constant LR (identity scheduler)
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
+        return _make_lambda_lr(lambda step: 1.0)
 
     elif scheduler_type == "constant_with_warmup":
 
@@ -209,7 +220,7 @@ def _create_pytorch_scheduler(
                 return float(step) / float(max(1, num_warmup_steps))
             return 1.0
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "linear":
         if num_training_steps is None:
@@ -224,7 +235,7 @@ def _create_pytorch_scheduler(
                 / float(max(1, num_training_steps - num_warmup_steps)),
             )
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "cosine":
         if num_training_steps is None:
@@ -238,7 +249,7 @@ def _create_pytorch_scheduler(
             )
             return max(0.0, 0.5 * (1.0 + math.cos(math.pi * progress)))
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     elif scheduler_type == "cosine_with_restarts":
         if num_training_steps is None:
@@ -269,7 +280,7 @@ def _create_pytorch_scheduler(
                 return float(step) / float(max(1, num_warmup_steps))
             return math.sqrt(num_warmup_steps / max(step, 1))
 
-        return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        return _make_lambda_lr(lr_lambda)
 
     else:
         raise ValueError(

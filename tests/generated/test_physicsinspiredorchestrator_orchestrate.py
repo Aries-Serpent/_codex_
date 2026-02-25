@@ -44,15 +44,18 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
 
     def test_orchestrate_happy_path(self):
         """Test successful execution through all 4 stages."""
-        # Arrange
+        from agents.physics_orchestrator import DecisionState
+
+        # Arrange with proper typed objects (Mock fails on :.2f format strings)
         orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        possible_actions = []
 
         # Act
-        result = orchestrator.orchestrate(state=..., possible_actions=...)
+        result = orchestrator.orchestrate(state=state, possible_actions=possible_actions)
 
         # Assert
         assert result is not None
-        # TODO: Add specific assertions for outputs
 
     # ========== EDGE CASE TESTS ==========
 

@@ -46,7 +46,7 @@ Slice specific categories (for example, rollout rings and curricula) with:
 codex repo-map --reasoning --include rollout_ring --include curriculum
 ```text
 
-For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
+For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](status_updates/guides/reasoning_overview.md).
 
 ### Control surface knobs and promotion checklist
 
@@ -136,7 +136,7 @@ Link the generated manifest to your rollout plan.
 
 Follow the deep dives in the new guides:
 
-- [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md) — systems overview and milestone guardrails.
+- [`docs/guides/reasoning_overview.md`](status_updates/guides/reasoning_overview.md) — systems overview and milestone guardrails.
 - [`docs/guides/first_principles_curricula.md`](guides/first_principles_curricula.md) — curriculum design and evaluation cadences.
 
 ### Training quickstart
@@ -192,5 +192,5 @@ reasoning traces). Combine it with `codex_cli.app checkpoint-smoke` to validate 
 ## Next steps
 
 1. Align sprint planning with the [milestones](#reasoning-roadmap-milestones).
-2. Review [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md) before opening architecture PRs.
+2. Review [`docs/guides/reasoning_overview.md`](status_updates/guides/reasoning_overview.md) before opening architecture PRs.
 3. Wire bespoke hosting expectations into status reports using the templates in [`docs/templates`](templates/README.md).

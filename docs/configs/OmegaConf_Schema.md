@@ -75,7 +75,7 @@ Add more checks by extending the `_validate()` function in `tools/configs/schema
 ```python
 def _validate(config: dict[str, Any]) -> list[dict[str, str]]:
     issues = []
-    
+
     # Add your custom checks here
     if "model" in config:
         model = config["model"]
@@ -85,7 +85,7 @@ def _validate(config: dict[str, Any]) -> list[dict[str, str]]:
                     "path": "model.name",
                     "issue": f"Expected str, got {type(model['name']).__name__}"
                 })
-    
+
     return issues
 ```text
 
@@ -153,4 +153,4 @@ yamllint configs/train/example.yaml
 
 - [Hydra Documentation](https://hydra.cc/)
 - [OmegaConf Documentation](https://omegaconf.readthedocs.io/)
-- [Config Groups Discovery](https://github.com/Aries-Serpent/_codex_/blob/main/configs/list_groups.py)
+- Config Groups Discovery

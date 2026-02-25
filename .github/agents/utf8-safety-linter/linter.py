@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """UTF-8 String Safety Linter"""
-import click
 import re
 from pathlib import Path
+
+import click
+
 
 class UTF8SafetyLinter:
     UNSAFE_PATTERNS = [
@@ -10,7 +12,7 @@ class UTF8SafetyLinter:
         (r'\.substring\s*\(\s*\d+\s*,\s*\d+\s*\)', 'Direct substring without boundary check'),
         (r'\[(\w+)\](?!\s*=)', 'Direct string indexing'),
     ]
-    
+
     def scan_file(self, filepath: Path):
         findings = []
         try:
@@ -33,17 +35,17 @@ class UTF8SafetyLinter:
 def scan(file, dir):
     linter = UTF8SafetyLinter()
     findings = []
-    
+
     if file:
         findings = linter.scan_file(Path(file))
     elif dir:
         for f in Path(dir).rglob('*.{js,ts,yml,yaml}'):
             findings.extend(linter.scan_file(f))
-    
+
     for f, line, msg, code in findings:
         click.echo(f"{f}:{line} [WARNING] {msg}")
         click.echo(f"  Code: {code}")
-    
+
     click.echo(f"\nTotal: {len(findings)} potential UTF-8 safety issues")
 
 if __name__ == '__main__':

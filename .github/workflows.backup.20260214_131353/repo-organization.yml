@@ -1,0 +1,53 @@
+name: Art_Repository Organization & Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'analyze'
+        type: choice
+        options:
+          - analyze
+          - organize
+          - archive
+          - full-cleanup
+      dry_run:
+        description: 'Dry run (no changes)'
+        required: false
+        default: 'true'
+        type: boolean
+      archive_older_than_days:
+        description: 'Archive files older than N days'
+        required: false
+        default: '90'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  analyze-structure:
+    name: Analyze Repository Structure
+    runs-on: ubuntu-latest
+    outputs:
+      root_files: ${{ steps.analyze.outputs.root_files }}
+      orphan_files: ${{ steps.analyze.outputs.orphan_files }}
+      archive_candidates: ${{ steps.analyze.outputs.archive_candidates }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow repo-organization 2>/dev/null || echo "Cache health: check skipped"
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'

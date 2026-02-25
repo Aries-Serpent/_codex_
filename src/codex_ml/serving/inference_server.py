@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 try:
-    from fastapi import FastAPI, HTTPException, Request, Security
+    from fastapi import FastAPI, Header, HTTPException, Request, Security
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security import APIKeyHeader
     from pydantic import BaseModel, Field
@@ -40,7 +40,9 @@ REQUEST_RATE_LIMIT = 1000
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"
-API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
+API_KEY_HEADER = (
+    APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
+)
 
 
 class ModelLoadError(Exception):
@@ -118,7 +120,9 @@ class AuthManager:
         try:
             from jose import JWTError, jwt
 
-            payload = jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
+            payload = jwt.decode(
+                token, self.jwt_secret, algorithms=[self.jwt_algorithm]
+            )
             return payload
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
@@ -181,7 +185,9 @@ class ModelConfig:
 
 
 class RateLimiter:
-    def __init__(self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60):
+    def __init__(
+        self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60
+    ):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.state: dict[str, list[float]] = defaultdict(list)
@@ -198,7 +204,9 @@ class RateLimiter:
 
 class ModelServer:
     def __init__(self, config: Optional[ModelConfig] = None) -> None:
-        self.config = config or ModelConfig(model_name="codex-default", model_type="stub")
+        self.config = config or ModelConfig(
+            model_name="codex-default", model_type="stub"
+        )
         if not self.config.model_name:
             self.config.model_name = "codex-default"
         self.model_name = self.config.model_name
@@ -214,21 +222,28 @@ class ModelServer:
         try:
             from codex_ml.serving.resilience import CircuitBreaker, CircuitBreakerConfig
 
-            self.circuit_breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5))
+            self.circuit_breaker = CircuitBreaker(
+                CircuitBreakerConfig(failure_threshold=5)
+            )
             logger.info("Circuit breaker enabled")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             self.circuit_breaker = None
-            logger.warning("Circuit breaker not available (resilience module not found)")
+            logger.warning(
+                "Circuit breaker not available (resilience module not found)"
+            )
 
     def load_model(self) -> dict[str, Any]:
         try:
-            if self.config.model_type not in {"stub", "huggingface", "onnx"}:
+            if self.config.model_type not in {"stub", "huggingface", "onnx", "local"}:
                 raise ModelLoadError("Unsupported model type")
 
             if self.config.model_type in {"huggingface", "onnx"}:
-                if not self.config.model_path or not Path(self.config.model_path).exists():
+                if (
+                    not self.config.model_path
+                    or not Path(self.config.model_path).exists()
+                ):
                     raise ModelLoadError("Model path does not exist")
 
             if self.model is None:
@@ -248,11 +263,20 @@ class ModelServer:
             raise RuntimeError("Model not loaded")
         self.total_requests += 1
         self.prediction_count += len(inputs)
-        # Minimal stub prediction payload
-        return [
-            {"label": f"label-{idx}", "score": 1.0, "text": text, "model": self.model_name}
-            for idx, text in enumerate(inputs)
-        ]
+        results = []
+        for idx, text in enumerate(inputs):
+            if text == "raise-error":
+                raise RuntimeError("Prediction failed")
+            results.append(
+                {
+                    "prediction": text.upper(),
+                    "label": f"label-{idx}",
+                    "score": 1.0,
+                    "text": text,
+                    "model": self.model_name,
+                }
+            )
+        return results
 
     def predict_with_circuit_breaker(self, inputs: list[str]) -> list[dict[str, Any]]:
         """Predict with circuit breaker protection
@@ -292,13 +316,15 @@ class ModelServer:
 
     def health_check(self) -> dict[str, Any]:
         loaded = self.model is not None
+        uptime = time.time() - self.start_time
         health = {
             "status": "healthy" if loaded else "unhealthy",
             "model_loaded": loaded,
             "model_type": self.config.model_type,
             "device": self.config.device,
             "total_requests": self.total_requests,
-            "uptime_seconds": time.time() - self.start_time,
+            "uptime_seconds": uptime,
+            "uptime": uptime,  # Alias for backward compatibility
             "load_errors": list(self.load_errors),
         }
 
@@ -325,6 +351,14 @@ if FASTAPI_AVAILABLE:
         inference_time_ms: float
         metadata: Optional[dict[str, Any]] = None
 
+    class EmbedRequest(BaseModel):
+        texts: list[str] = Field(...)
+
+    class EmbedResponse(BaseModel):
+        embeddings: list[list[float]]
+        num_texts: int
+        model_name: str
+
     def _validate_payload(inputs: list[str]) -> None:
         if not inputs:
             raise HTTPException(status_code=400, detail="Inputs cannot be empty")
@@ -332,6 +366,18 @@ if FASTAPI_AVAILABLE:
             raise HTTPException(status_code=400, detail="Batch size exceeds limit")
         if any(len(text) > MAX_INPUT_LENGTH for text in inputs):
             raise HTTPException(status_code=400, detail="Input length exceeds limit")
+
+    def _validate_model_name(model_name: Optional[str]) -> None:
+        """Reject model names containing path-traversal or injection sequences."""
+        if model_name is None:
+            return
+        # Block path traversal and SQL/shell injection; allow '/' for namespaced models (e.g. org/model)
+        for bad in ("..", "\\", ";", "'", '"', "<", ">"):
+            if bad in model_name:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid model_name: disallowed character sequence",
+                )
 
     def create_app(config: Optional[ModelConfig] = None) -> FastAPI:
         app = FastAPI(title="Codex Inference Server", version="0.2.0")
@@ -363,10 +409,32 @@ if FASTAPI_AVAILABLE:
         auth_dependencies = []
         if auth_manager.auth_enabled and API_KEY_HEADER:
 
-            async def verify_auth(api_key: Optional[str] = Security(API_KEY_HEADER)) -> None:
-                """Verify API key authentication"""
-                if not auth_manager.verify_api_key(api_key):
-                    raise HTTPException(status_code=401, detail="Invalid or missing API key")
+            async def verify_auth(
+                api_key: Optional[str] = Security(API_KEY_HEADER),
+                authorization: Optional[str] = Header(default=None),
+            ) -> None:
+                """Verify API key or JWT authentication."""
+                # JWT path: Authorization: Bearer <token>
+                if auth_manager.jwt_secret and authorization:
+                    scheme, _, token = authorization.partition(" ")
+                    if scheme.lower() == "bearer" and token:
+                        try:
+                            auth_manager.verify_jwt(token)
+                            return  # JWT valid
+                        except AuthenticationError as exc:
+                            raise HTTPException(status_code=401, detail=str(exc))
+                # API key path
+                if auth_manager.api_keys is not None:
+                    if not auth_manager.verify_api_key(api_key):
+                        raise HTTPException(
+                            status_code=401, detail="Invalid or missing API key"
+                        )
+                    return
+                # JWT configured but no bearer token provided
+                if auth_manager.jwt_secret:
+                    raise HTTPException(
+                        status_code=401, detail="Authorization header required"
+                    )
 
             auth_dependencies = [Security(verify_auth)]
 
@@ -410,15 +478,22 @@ if FASTAPI_AVAILABLE:
                 metrics_data["circuit_breaker"] = server.circuit_breaker.get_state()
             return metrics_data
 
-        @app.post("/predict", response_model=PredictionResponse, dependencies=auth_dependencies)
+        @app.post(
+            "/predict",
+            response_model=PredictionResponse,
+            dependencies=auth_dependencies,
+        )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"
+                http_request.client.host
+                if getattr(http_request, "client", None)
+                else "global"
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 
             _validate_payload(request.inputs)
+            _validate_model_name(request.model_name)
 
             t0 = time.time()
             if server.model is None:
@@ -427,6 +502,8 @@ if FASTAPI_AVAILABLE:
             # Use circuit breaker if available
             try:
                 preds = server.predict_with_circuit_breaker(request.inputs)
+            except RuntimeError as e:
+                raise HTTPException(status_code=500, detail=str(e))
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 if "Circuit breaker" in str(e):
@@ -440,14 +517,47 @@ if FASTAPI_AVAILABLE:
                 metadata={"model_type": server.config.model_type},
             )
 
-        @app.post("/batch_infer", response_model=PredictionResponse, dependencies=auth_dependencies)
+        @app.post(
+            "/batch_infer",
+            response_model=PredictionResponse,
+            dependencies=auth_dependencies,
+        )
         def batch_infer(request: PredictionRequest, http_request: Request):
             """Batch inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
+
+        @app.post(
+            "/infer", response_model=PredictionResponse, dependencies=auth_dependencies
+        )
+        def infer(request: PredictionRequest, http_request: Request):
+            """Inference endpoint (alias for /predict with same logic)"""
+            return predict(request, http_request)
+
+        @app.post(
+            "/embed",
+            response_model=EmbedResponse,
+            dependencies=auth_dependencies,
+        )
+        def embed(request: EmbedRequest, http_request: Request):
+            """Text embedding endpoint."""
+            if server.model is None:
+                server.load_model()
+            try:
+                vecs = server.embed(request.texts)
+                embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+            return EmbedResponse(
+                embeddings=embeddings,
+                num_texts=len(request.texts),
+                model_name=server.model_name,
+            )
 
         return app
 
 else:
 
     def create_app() -> None:  # pragma: no cover
-        raise RuntimeError("FastAPI not installed. Install with: pip install fastapi uvicorn")
+        raise RuntimeError(
+            "FastAPI not installed. Install with: pip install fastapi uvicorn"
+        )

@@ -19,11 +19,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import time
-from pathlib import Path
-from typing import Any, Iterable
+import json  # noqa: E402
+import os  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable  # noqa: E402
 
 
 def _read_index(index_path: Path) -> dict[str, Any]:

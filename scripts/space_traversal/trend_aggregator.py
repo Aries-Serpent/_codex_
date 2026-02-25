@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/trend_aggregator.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/trend_aggregator.py --help
 
@@ -352,7 +352,7 @@ def main():
         args.output = args.artifacts_dir / "trends" / f"trend_report_{timestamp}.md"
 
     # Aggregate trends
-    print(f"Aggregating trends from:")
+    print("Aggregating trends from:")
     print(f"  Artifacts: {args.artifacts_dir}")
     print(f"  Reports: {args.reports_dir}")
     if args.lookback_days:
@@ -369,7 +369,7 @@ def main():
     # Generate report
     generate_trend_report(trend_data, args.output)
 
-    print(f"\nSummary:")
+    print("\nSummary:")
     print(f"  Runs analyzed: {trend_data['run_count']}")
     print(f"  Capabilities tracked: {trend_data['summary_stats']['capabilities_tracked']}")
     print(f"  Average score: {trend_data['summary_stats']['avg_score']:.4f}")

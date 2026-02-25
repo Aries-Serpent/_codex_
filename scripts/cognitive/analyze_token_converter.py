@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/analyze_token_converter.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/analyze_token_converter.py --help
 
@@ -46,18 +46,18 @@ Deterministic Analysis Strategy:
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 
 class TokenConverterAnalyzer:
     """Analyzes Token-Friendly Query Converter implementations"""
-    
+
     def __init__(self):
         self.streamlit_analysis = {}
         self.tkinter_analysis = {}
         self.unified_capabilities = []
         self.integration_recommendations = []
-        
+
     def analyze_streamlit_version(self) -> Dict[str, Any]:
         """Analyze Streamlit implementation (Note_v2.py)"""
         return {
@@ -104,7 +104,7 @@ class TokenConverterAnalyzer:
                 "Network dependent"
             ]
         }
-    
+
     def analyze_tkinter_version(self) -> Dict[str, Any]:
         """Analyze Tkinter implementation (Notes.py)"""
         return {
@@ -153,26 +153,26 @@ class TokenConverterAnalyzer:
                 "Manual UI layout management"
             ]
         }
-    
+
     def extract_unified_capabilities(self) -> List[str]:
         """Extract common capabilities from both implementations"""
         streamlit_caps = set(self.streamlit_analysis["capabilities"])
         tkinter_caps = set(self.tkinter_analysis["capabilities"])
-        
+
         common = streamlit_caps & tkinter_caps
         unique_streamlit = streamlit_caps - tkinter_caps
         unique_tkinter = tkinter_caps - common
-        
+
         return {
             "common_capabilities": sorted(list(common)),
             "streamlit_only": sorted(list(unique_streamlit)),
             "tkinter_only": sorted(list(unique_tkinter)),
             "total_unique": len(streamlit_caps | tkinter_caps)
         }
-    
+
     def generate_integration_strategy(self) -> Dict[str, Any]:
         """Generate deterministic integration strategy"""
-        
+
         strategy = {
             "approach": "HYBRID_ARCHITECTURE",
             "rationale": [
@@ -209,12 +209,12 @@ class TokenConverterAnalyzer:
                 }
             }
         }
-        
+
         return strategy
-    
+
     def generate_cognitive_brain_integration(self) -> Dict[str, Any]:
         """Generate integration plan for cognitive brain system"""
-        
+
         return {
             "integration_type": "PERCEPTION_LAYER_PLUGIN",
             "cognitive_brain_layer": "Perception",
@@ -254,10 +254,10 @@ class TokenConverterAnalyzer:
             "estimated_efficiency_gain": "30-40%",
             "meta_learning_applicable": True
         }
-    
+
     def generate_unified_module(self) -> str:
         """Generate unified core module code structure"""
-        
+
         return '''#!/usr/bin/env python3
 """
 Token Converter Core - Unified ML Pipeline
@@ -284,17 +284,17 @@ from pathlib import Path
 
 class ModelManager:
     """Manages loading and caching of all ML models"""
-    
+
     def __init__(self, cache_dir: Optional[Path] = None):
         self.cache_dir = cache_dir or Path.home() / ".cache" / "token_converter"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.summarizer = None
         self.kw_model = None
         self.ner_pipeline = None
         self.nlp = None
         self.classifier_model = None
-    
+
     def load_all_models(self):
         """Load all required models"""
         self.summarizer = pipeline('summarization', model='facebook/bart-large-cnn')
@@ -309,9 +309,9 @@ class ModelManager:
         except:
             # Fallback if spacy model not available
             self.nlp = None
-        
+
         self.classifier_model = self._train_classifier()
-    
+
     def _train_classifier(self):
         """Train query classifier"""
         data = pd.DataFrame({
@@ -333,10 +333,10 @@ class ModelManager:
                 "NLP", "Machine Learning"
             ]
         })
-        
+
         X_train, y_train = data['query'], data['category']
         vectorizer = TfidfVectorizer()
-        
+
         # Try multiple models, return best
         models = {
             'Naive Bayes': MultinomialNB(),
@@ -344,10 +344,10 @@ class ModelManager:
             'Linear SVC': LinearSVC(),
             'Random Forest': RandomForestClassifier(random_state=42)
         }
-        
+
         best_score = 0
         best_model = None
-        
+
         for name, model in models.items():
             pipe = make_pipeline(vectorizer, model)
             pipe.fit(X_train, y_train)
@@ -355,53 +355,53 @@ class ModelManager:
             if score > best_score:
                 best_score = score
                 best_model = pipe
-        
+
         return best_model
 
 
 class TextProcessor:
     """Handles all text processing operations"""
-    
+
     def __init__(self, model_manager: ModelManager):
         self.models = model_manager
-    
-    def summarize_standard(self, text: str, max_length: int = 150, 
+
+    def summarize_standard(self, text: str, max_length: int = 150,
                           min_length: int = 30) -> str:
         """Standard summarization"""
         result = self.models.summarizer(
-            text, 
-            max_length=max_length, 
-            min_length=min_length, 
+            text,
+            max_length=max_length,
+            min_length=min_length,
             do_sample=False
         )
         return result[0]['summary_text']
-    
+
     def summarize_with_keywords(self, text: str, max_length: int = 150,
                                 min_length: int = 30) -> str:
         """Keyword-emphasized summarization"""
         keywords = self.models.kw_model.extract_keywords(
-            text, 
-            keyphrase_ngram_range=(1, 2), 
+            text,
+            keyphrase_ngram_range=(1, 2),
             stop_words='english'
         )
         important_phrases = [kw[0] for kw in keywords[:5]]
-        
+
         summary = self.summarize_standard(text, max_length, min_length)
-        
+
         # Add missing keywords
         for phrase in important_phrases:
             if phrase.lower() not in summary.lower():
                 summary += f" {phrase}."
-        
+
         return summary
 
 
 class AnalysisEngine:
     """Handles NER, sentiment, and classification"""
-    
+
     def __init__(self, model_manager: ModelManager):
         self.models = model_manager
-    
+
     def extract_entities(self, text: str) -> List[Dict[str, str]]:
         """Named Entity Recognition"""
         if self.models.nlp:
@@ -414,25 +414,25 @@ class AnalysisEngine:
                 "label": ent.get("entity_group", "Unknown")
             } for ent in entities]
         return []
-    
+
     def analyze_sentiment(self, text: str) -> Dict[str, Any]:
         """Sentiment analysis"""
         blob = TextBlob(text)
         polarity = blob.sentiment.polarity
-        
+
         if polarity > 0:
             label = "Positive"
         elif polarity < 0:
             label = "Negative"
         else:
             label = "Neutral"
-        
+
         return {
             "label": label,
             "polarity": polarity,
             "subjectivity": blob.sentiment.subjectivity
         }
-    
+
     def classify_query(self, text: str) -> str:
         """Classify query into category"""
         prediction = self.models.classifier_model.predict([text])
@@ -441,12 +441,12 @@ class AnalysisEngine:
 
 class SessionManager:
     """Manages session persistence"""
-    
+
     def __init__(self, storage_dir: Optional[Path] = None):
         self.storage_dir = storage_dir or Path.home() / ".cache" / "token_converter" / "sessions"
         self.storage_dir.mkdir(parents=True, exist_ok=True)
         self.sessions = []
-    
+
     def add_session(self, input_text: str, output: str, analysis: Dict[str, Any]):
         """Add a new session"""
         session = {
@@ -456,12 +456,12 @@ class SessionManager:
             "timestamp": str(pd.Timestamp.now())
         }
         self.sessions.append(session)
-    
+
     def save_sessions(self, file_path: Path):
         """Save sessions to file"""
         with open(file_path, 'w') as f:
             json.dump(self.sessions, f, indent=2)
-    
+
     def load_sessions(self, file_path: Path):
         """Load sessions from file"""
         if file_path.exists():
@@ -472,15 +472,15 @@ class SessionManager:
 # Cognitive Brain Integration Helper
 class CognitiveBrainAdapter:
     """Adapter for cognitive brain integration"""
-    
+
     def __init__(self, text_processor: TextProcessor, analysis_engine: AnalysisEngine):
         self.processor = text_processor
         self.analyzer = analysis_engine
-    
+
     def summarize_perception_report(self, report_text: str) -> str:
         """Summarize perception reports for cognitive brain"""
         return self.processor.summarize_standard(report_text, max_length=100, min_length=20)
-    
+
     def extract_pattern_keywords(self, pattern_description: str) -> List[str]:
         """Extract keywords from pattern descriptions"""
         keywords = self.processor.models.kw_model.extract_keywords(
@@ -490,11 +490,11 @@ class CognitiveBrainAdapter:
             top_n=10
         )
         return [kw[0] for kw in keywords]
-    
+
     def classify_anomaly(self, anomaly_description: str) -> str:
         """Classify anomaly for routing"""
         return self.analyzer.classify_query(anomaly_description)
-    
+
     def analyze_agent_message(self, message: str) -> Dict[str, Any]:
         """Analyze agent communication messages"""
         return {
@@ -504,27 +504,27 @@ class CognitiveBrainAdapter:
             "entities": self.analyzer.extract_entities(message)
         }
 '''
-    
+
     def run_analysis(self) -> Dict[str, Any]:
         """Run complete analysis"""
         print("🔍 Analyzing Token-Friendly Query Converter implementations...")
-        
+
         # Analyze both versions
         self.streamlit_analysis = self.analyze_streamlit_version()
         self.tkinter_analysis = self.analyze_tkinter_version()
-        
+
         # Extract capabilities
         capabilities = self.extract_unified_capabilities()
-        
+
         # Generate strategy
         strategy = self.generate_integration_strategy()
-        
+
         # Generate cognitive brain integration
         cognitive_integration = self.generate_cognitive_brain_integration()
-        
+
         # Create unified module
         unified_module_code = self.generate_unified_module()
-        
+
         results = {
             "analysis_timestamp": datetime.now().isoformat(),
             "streamlit_analysis": self.streamlit_analysis,
@@ -548,7 +548,7 @@ class CognitiveBrainAdapter:
                 "Classifier can auto-categorize cognitive brain events"
             ]
         }
-        
+
         return results
 
 
@@ -556,22 +556,22 @@ def main():
     """Main entry point"""
     analyzer = TokenConverterAnalyzer()
     results = analyzer.run_analysis()
-    
+
     # Save results
     output_file = Path("cognitive/ingestion/token_converter_unified_analysis.json")
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     print(f"✅ Analysis complete: {output_file}")
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"   Total Capabilities: {results['unified_capabilities']['total_unique']}")
     print(f"   Common: {len(results['unified_capabilities']['common_capabilities'])}")
     print(f"   Integration Strategy: {results['integration_strategy']['approach']}")
     print(f"   Cognitive Brain Use Cases: {len(results['cognitive_brain_integration']['use_cases'])}")
     print(f"   Meta-Learning Applicable: {results['cognitive_brain_integration']['meta_learning_applicable']}")
-    
+
     return results
 
 

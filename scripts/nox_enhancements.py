@@ -235,7 +235,7 @@ def enhancement_docs(session):
     ║     - Coverage validation                                        ║
     ║                                                                   ║
     ╚══════════════════════════════════════════════════════════════════╝
-    
+
     For more information, see:
     - docs/guides/enhancements_guide.md
     - docs/API_REFERENCE.md (MLflow, Performance, Distributed sections)

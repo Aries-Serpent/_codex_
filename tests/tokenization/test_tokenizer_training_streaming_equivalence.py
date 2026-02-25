@@ -65,8 +65,8 @@ def test_bpe_streaming_equivalence(tmp_path):
     assert len(baseline_ids) > 0, "Baseline tokenizer should produce tokens"
     assert len(tok_stream.get_vocab()) == len(tok_baseline.get_vocab()), "Vocab sizes should match"
     # Verify round-trip decoding works for both
-    assert tok_stream.decode(stream_ids) == sample
-    assert tok_baseline.decode(baseline_ids) == sample
+    assert tok_stream.decode(stream_ids).strip() == sample
+    assert tok_baseline.decode(baseline_ids).strip() == sample
 
 
 def test_sentencepiece_streaming_equivalence(tmp_path):

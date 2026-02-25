@@ -8,9 +8,9 @@ __version__ = "1.0.0"
 __author__ = "Codex Team"
 
 from .analyzer import BatchTriageAnalyzer
+from .notifier import Notifier
 from .pattern_learner import PatternLearner
 from .remediation_engine import RemediationEngine
-from .notifier import Notifier
 
 __all__ = [
     "BatchTriageAnalyzer",

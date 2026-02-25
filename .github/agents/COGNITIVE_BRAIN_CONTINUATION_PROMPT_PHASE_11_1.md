@@ -1,14 +1,14 @@
 # Cognitive Brain Continuation Prompt - Phase 11.1: Data Integrity & Repository Structure Analysis
 
-> **Status:** ✅ READY FOR EXECUTION  
-> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)  
-> **Prompt Type:** Continuation with Complete Implementation Plan  
-> **Related Documents:** [AGENTS.md](../../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
+> **Status:** ✅ READY FOR EXECUTION
+> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
+> **Prompt Type:** Continuation with Complete Implementation Plan
+> **Related Documents:** [AGENTS.md](../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
 
-**Generated**: 2026-01-08T05:30:00Z  
-**For**: GitHub Copilot Agent  
-**Purpose**: Implement data integrity enhancements and repository-wide folder structure analysis  
-**Duration**: 6-9 pre-commits (Phase 11.1.1 - 11.1.3)  
+**Generated**: 2026-01-08T05:30:00Z
+**For**: GitHub Copilot Agent
+**Purpose**: Implement data integrity enhancements and repository-wide folder structure analysis
+**Duration**: 6-9 pre-commits (Phase 11.1.1 - 11.1.3)
 **Parent PR**: #2713
 
 ---
@@ -91,7 +91,7 @@ This continuation prompt adheres to the **AI Codebase Agency Policy**:
 
 Implement:
 1. CI timestamp validation
-2. Markdown metadata linting  
+2. Markdown metadata linting
 3. Bulk replacement safeguards
 4. Repository-wide folder structure mapping
 5. Automated documentation quality checks
@@ -192,38 +192,38 @@ def validate_file(filepath: Path) -> List[Tuple[int, str]]:
     try:
         content = filepath.read_text(encoding='utf-8')
         lines = content.split('\n')
-        
+
         for i, line in enumerate(lines, 1):
             # Check for invalid year
             if INVALID_YEAR in line and 'CVE' not in line:
                 if re.search(r'(Generated|Updated|Created|Released|Date).*2024', line):
                     issues.append((i, f"Found {INVALID_YEAR} in metadata"))
-            
+
             # Check for phase overcorrections
             if match := re.search(PATTERNS['phase_overcorrection'], line):
                 if 'implementation plan' not in line.lower():
                     issues.append((i, f"Possible month overcorrection: {match.group()}"))
-    
+
     except Exception as e:
         issues.append((0, f"Error reading file: {e}"))
-    
+
     return issues
 
 def main():
     root = Path('.')
     errors = 0
-    
+
     for md_file in root.rglob('*.md'):
         if '.git' in str(md_file) or '.venv' in str(md_file):
             continue
-        
+
         issues = validate_file(md_file)
         if issues:
             print(f"\n❌ {md_file}")
             for line_num, msg in issues:
                 print(f"  Line {line_num}: {msg}")
                 errors += 1
-    
+
     if errors:
         print(f"\n❌ Found {errors} timestamp issues")
         sys.exit(1)
@@ -280,14 +280,14 @@ def lint_metadata(filepath: Path) -> List[str]:
     """Lint metadata in a markdown file."""
     issues = []
     content = filepath.read_text(encoding='utf-8')
-    
+
     # Check for required metadata
     for pattern, fields in REQUIRED_METADATA.items():
         if filepath.match(pattern):
             for field in fields:
                 if field.lower() not in content.lower():
                     issues.append(f"Missing required field: {field}")
-    
+
     # Check format consistency
     if 'Last Updated:' in content:
         # Should use consistent format
@@ -296,24 +296,24 @@ def lint_metadata(filepath: Path) -> List[str]:
             years = set(matches)
             if len(years) > 1:
                 issues.append(f"Inconsistent years in Last Updated: {years}")
-    
+
     return issues
 
 def main():
     root = Path('.')
     errors = 0
-    
+
     for md_file in root.rglob('*.md'):
         if '.git' in str(md_file) or '.venv' in str(md_file):
             continue
-        
+
         issues = lint_metadata(md_file)
         if issues:
             print(f"\n⚠️  {md_file}")
             for issue in issues:
                 print(f"  - {issue}")
                 errors += 1
-    
+
     if errors:
         print(f"\n⚠️  Found {errors} metadata issues")
     else:
@@ -374,18 +374,18 @@ def safe_replace(
     """Safely replace text with exclusions."""
     exclusions = exclusions or EXCLUSION_PATTERNS
     exclusion_re = [re.compile(p) for p in exclusions]
-    
+
     content = filepath.read_text(encoding='utf-8')
     lines = content.split('\n')
     changes = []
     count = 0
-    
+
     new_lines = []
     for i, line in enumerate(lines, 1):
         if is_excluded(line, exclusion_re):
             new_lines.append(line)
             continue
-        
+
         if old_pattern in line:
             new_line = line.replace(old_pattern, new_text)
             new_lines.append(new_line)
@@ -393,10 +393,10 @@ def safe_replace(
             count += 1
         else:
             new_lines.append(line)
-    
+
     if not dry_run and count > 0:
         filepath.write_text('\n'.join(new_lines), encoding='utf-8')
-    
+
     return count, changes
 
 def main():
@@ -407,22 +407,22 @@ def main():
     parser.add_argument('--pattern', default='*.md', help='File pattern')
     parser.add_argument('--dry-run', action='store_true', help='Preview changes')
     parser.add_argument('--exclude', action='append', help='Additional exclusions')
-    
+
     args = parser.parse_args()
-    
+
     exclusions = EXCLUSION_PATTERNS + (args.exclude or [])
     root = Path(args.path)
     total_files = 0
     total_changes = 0
-    
+
     print(f"{'[DRY RUN] ' if args.dry_run else ''}Replacing '{args.old}' → '{args.new}'")
     print(f"Pattern: {args.pattern}")
     print(f"Exclusions: {len(exclusions)} patterns\n")
-    
+
     for filepath in root.rglob(args.pattern):
         if '.git' in str(filepath) or '.venv' in str(filepath):
             continue
-        
+
         count, changes = safe_replace(
             filepath,
             args.old,
@@ -430,7 +430,7 @@ def main():
             dry_run=args.dry_run,
             exclusions=exclusions
         )
-        
+
         if count > 0:
             total_files += 1
             total_changes += count
@@ -439,9 +439,9 @@ def main():
                 print(f"  {change}")
             if len(changes) > 5:
                 print(f"  ... and {len(changes) - 5} more")
-    
+
     print(f"\n{'[DRY RUN] ' if args.dry_run else ''}Total: {total_changes} changes in {total_files} files")
-    
+
     if args.dry_run and total_changes > 0:
         print("\n⚠️  Run without --dry-run to apply changes")
 
@@ -518,7 +518,7 @@ class FolderInfo:
     parent: Optional[str]
     children: List[str]
     file_types: Dict[str, int]  # extension -> count
-    
+
 @dataclass
 class RepositoryStructure:
     """Complete repository folder structure."""
@@ -534,18 +534,18 @@ class RepositoryStructure:
 
 class FolderMapper:
     """Maps repository folder structure."""
-    
+
     IGNORE_PATTERNS = {
-        '.git', '.venv', 'node_modules', '__pycache__', 
+        '.git', '.venv', 'node_modules', '__pycache__',
         '.pytest_cache', '.hypothesis', 'dist', 'build',
         '.mypy_cache', '.tox', 'htmlcov'
     }
-    
+
     def __init__(self, root_path: Path):
         self.root = root_path
         self.folders: Dict[str, FolderInfo] = {}
         self.git_tracked = self._get_git_tracked_files()
-    
+
     def _get_git_tracked_files(self) -> Set[str]:
         """Get list of git-tracked files."""
         try:
@@ -559,12 +559,12 @@ class FolderMapper:
             return set(result.stdout.strip().split('\n'))
         except subprocess.CalledProcessError:
             return set()
-    
+
     def _should_ignore(self, path: Path) -> bool:
         """Check if path should be ignored."""
         parts = path.parts
         return any(pattern in parts for pattern in self.IGNORE_PATTERNS)
-    
+
     def _get_file_types(self, folder: Path) -> Dict[str, int]:
         """Count files by extension in folder."""
         types = {}
@@ -576,13 +576,13 @@ class FolderMapper:
         except PermissionError:
             pass
         return types
-    
+
     def _extract_purpose(self, readme_path: Path) -> Optional[str]:
         """Extract folder purpose from README."""
         try:
             content = readme_path.read_text(encoding='utf-8')
             lines = content.split('\n')
-            
+
             # Look for first heading or paragraph
             for line in lines[:20]:
                 line = line.strip()
@@ -590,11 +590,11 @@ class FolderMapper:
                     return line.lstrip('#').strip()
                 elif line and not line.startswith('```'):
                     return line[:200]  # First 200 chars
-            
+
             return None
         except Exception:
             return None
-    
+
     def _get_folder_size(self, folder: Path) -> int:
         """Calculate total size of folder."""
         total = 0
@@ -608,7 +608,7 @@ class FolderMapper:
         except (OSError, PermissionError):
             pass
         return total
-    
+
     def _get_last_modified(self, folder: Path) -> str:
         """Get last modification time."""
         try:
@@ -616,16 +616,16 @@ class FolderMapper:
             return datetime.fromtimestamp(mtime).isoformat()
         except (OSError, PermissionError):
             return "unknown"
-    
+
     def scan_folder(self, folder: Path, depth: int = 0) -> FolderInfo:
         """Scan a single folder and collect information."""
         rel_path = str(folder.relative_to(self.root))
-        
+
         # Find README
         readme_path = None
         has_readme = False
         purpose = None
-        
+
         for readme_name in ['README.md', 'README.txt', 'README', 'readme.md']:
             readme = folder / readme_name
             if readme.exists():
@@ -633,12 +633,12 @@ class FolderMapper:
                 readme_path = str(readme.relative_to(self.root))
                 purpose = self._extract_purpose(readme)
                 break
-        
+
         # Count files and subfolders
         file_count = 0
         subfolder_count = 0
         children = []
-        
+
         try:
             for item in folder.iterdir():
                 if self._should_ignore(item):
@@ -650,19 +650,19 @@ class FolderMapper:
                     children.append(str(item.relative_to(self.root)))
         except PermissionError:
             pass
-        
+
         # Check if git tracked
         is_git_tracked = any(
             f.startswith(rel_path + '/') for f in self.git_tracked
         )
-        
+
         # Get parent
         parent = None
         if folder != self.root:
             parent = str(folder.parent.relative_to(self.root))
             if parent == '.':
                 parent = 'root'
-        
+
         info = FolderInfo(
             path=rel_path,
             name=folder.name,
@@ -679,45 +679,45 @@ class FolderMapper:
             children=children,
             file_types=self._get_file_types(folder)
         )
-        
+
         return info
-    
+
     def map_repository(self) -> RepositoryStructure:
         """Map entire repository structure."""
         print("🔍 Scanning repository structure...")
-        
+
         # Scan all folders
         for folder in sorted(self.root.rglob('*')):
             if not folder.is_dir() or self._should_ignore(folder):
                 continue
-            
+
             depth = len(folder.relative_to(self.root).parts)
             info = self.scan_folder(folder, depth)
             self.folders[info.path] = info
-        
+
         # Add root
         root_info = self.scan_folder(self.root, 0)
         root_info.path = 'root'
         self.folders['root'] = root_info
-        
+
         # Identify orphaned and undocumented
         orphaned = [
             path for path, info in self.folders.items()
             if not info.has_readme and info.file_count > 0
         ]
-        
+
         undocumented = [
             path for path, info in self.folders.items()
             if info.purpose is None and info.file_count > 0
         ]
-        
+
         # Generate tree
         tree = self._generate_tree()
-        
+
         # Calculate totals
         total_files = sum(info.file_count for info in self.folders.values())
         total_size = sum(info.total_size_bytes for info in self.folders.values())
-        
+
         structure = RepositoryStructure(
             root_path=str(self.root),
             total_folders=len(self.folders),
@@ -729,124 +729,124 @@ class FolderMapper:
             undocumented_folders=undocumented,
             folder_tree=tree
         )
-        
+
         print(f"✅ Scanned {len(self.folders)} folders")
         print(f"📁 Total files: {total_files}")
         print(f"💾 Total size: {total_size / (1024*1024):.2f} MB")
         print(f"⚠️  Orphaned folders: {len(orphaned)}")
         print(f"⚠️  Undocumented folders: {len(undocumented)}")
-        
+
         return structure
-    
+
     def _generate_tree(self, max_depth: int = 4) -> str:
         """Generate ASCII tree representation."""
         lines = ["Repository Structure"]
         lines.append("=" * 50)
-        
+
         def add_folder(path: str, prefix: str = "", depth: int = 0):
             if depth > max_depth:
                 return
-            
+
             info = self.folders.get(path)
             if not info:
                 return
-            
+
             marker = "📁" if info.has_readme else "📂"
             purpose_str = f" - {info.purpose[:50]}" if info.purpose else ""
             lines.append(f"{prefix}{marker} {info.name}{purpose_str}")
-            
+
             # Add children
             children = sorted(info.children) if info.children else []
             for i, child in enumerate(children):
                 is_last = i == len(children) - 1
                 child_prefix = prefix + ("    " if is_last else "│   ")
                 connector = "└── " if is_last else "├── "
-                
+
                 child_info = self.folders.get(child)
                 if child_info:
                     child_marker = "📁" if child_info.has_readme else "📂"
                     child_purpose = f" - {child_info.purpose[:40]}" if child_info.purpose else ""
                     lines.append(f"{prefix}{connector}{child_marker} {child_info.name}{child_purpose}")
-                    
+
                     if depth < max_depth - 1:
                         add_folder(child, child_prefix, depth + 1)
-        
+
         add_folder('root')
         return '\n'.join(lines)
-    
+
     def generate_markdown(self, structure: RepositoryStructure) -> str:
         """Generate markdown documentation."""
         md = []
-        
+
         md.append("# Repository Folder Structure")
         md.append(f"\n**Generated**: {structure.scan_date}")
         md.append(f"**Total Folders**: {structure.total_folders}")
         md.append(f"**Total Files**: {structure.total_files}")
         md.append(f"**Total Size**: {structure.total_size_bytes / (1024*1024):.2f} MB")
-        
+
         md.append("\n---\n")
         md.append("## Folder Tree")
         md.append("\n```")
         md.append(structure.folder_tree)
         md.append("```")
-        
+
         md.append("\n---\n")
         md.append("## Folder Index")
         md.append("\n| Path | Purpose | Files | Size | README |")
         md.append("|------|---------|-------|------|--------|")
-        
+
         for path in sorted(structure.folders.keys()):
             info = structure.folders[path]
             purpose = (info.purpose[:50] + '...') if info.purpose and len(info.purpose) > 50 else (info.purpose or 'Not documented')
             size_mb = info.total_size_bytes / (1024*1024)
             readme = '✅' if info.has_readme else '❌'
-            
+
             md.append(f"| `{path}` | {purpose} | {info.file_count} | {size_mb:.2f} MB | {readme} |")
-        
+
         md.append("\n---\n")
         md.append("## Orphaned Folders")
         md.append("\n*Folders without README files:*\n")
-        
+
         if structure.orphaned_folders:
             for path in sorted(structure.orphaned_folders):
                 md.append(f"- `{path}`")
         else:
             md.append("*None - all folders have README files!* ✅")
-        
+
         md.append("\n---\n")
         md.append("## Undocumented Folders")
         md.append("\n*Folders without clear purpose documentation:*\n")
-        
+
         if structure.undocumented_folders:
             for path in sorted(structure.undocumented_folders):
                 md.append(f"- `{path}`")
         else:
             md.append("*None - all folders are documented!* ✅")
-        
+
         md.append("\n---\n")
         md.append("## File Type Distribution")
         md.append("\n### Top 20 File Types")
         md.append("\n| Extension | Count |")
         md.append("|-----------|-------|")
-        
+
         # Aggregate file types
         all_types = {}
         for info in structure.folders.values():
             for ext, count in info.file_types.items():
                 all_types[ext] = all_types.get(ext, 0) + count
-        
+
         # Sort and get top 20
         sorted_types = sorted(all_types.items(), key=lambda x: x[1], reverse=True)[:20]
         for ext, count in sorted_types:
             md.append(f"| `{ext}` | {count} |")
-        
+
         return '\n'.join(md)
-    
+
     def save_results(self, structure: RepositoryStructure):
         """Save results to files."""
         output_dir = self.root / '.codex' / 'repository_structure'
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save JSON
         json_file = output_dir / 'folder_structure.json'
         with open(json_file, 'w', encoding='utf-8') as f:
@@ -860,33 +860,33 @@ class FolderMapper:
                     'scan_date': structure.scan_date,
                 },
                 'folders': {
-                    path: asdict(info) 
+                    path: asdict(info)
                     for path, info in structure.folders.items()
                 },
                 'orphaned_folders': structure.orphaned_folders,
                 'undocumented_folders': structure.undocumented_folders,
             }
             json.dump(data, f, indent=2)
-        
+
         print(f"💾 Saved JSON: {json_file}")
-        
+
         # Save Markdown
         md_file = output_dir / 'FOLDER_STRUCTURE.md'
         md_content = self.generate_markdown(structure)
         md_file.write_text(md_content, encoding='utf-8')
-        
+
         print(f"📝 Saved Markdown: {md_file}")
-        
+
         # Save tree
         tree_file = output_dir / 'folder_tree.txt'
         tree_file.write_text(structure.folder_tree, encoding='utf-8')
-        
+
         print(f"🌳 Saved tree: {tree_file}")
 
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='Map repository folder structure'
     )
@@ -901,13 +901,13 @@ def main():
         type=Path,
         help='Output directory (default: .codex/repository_structure)'
     )
-    
+
     args = parser.parse_args()
-    
+
     mapper = FolderMapper(args.root.resolve())
     structure = mapper.map_repository()
     mapper.save_results(structure)
-    
+
     print("\n✅ Repository folder structure mapping complete!")
     print(f"📁 Results saved to: .codex/repository_structure/")
 
@@ -961,14 +961,14 @@ python scripts/analysis/map_folder_structure.py --output ./reports
 
 class DataIntegrityValidator:
     """Validates data integrity across repository."""
-    
+
     def __init__(self):
         self.validators = [
             TimestampValidator(),
             MetadataValidator(),
             FormatValidator(),
         ]
-    
+
     def validate_all(self) -> Dict[str, List[str]]:
         """Run all validators."""
         issues = {}
@@ -977,7 +977,7 @@ class DataIntegrityValidator:
             if validator_issues:
                 issues[validator.name] = validator_issues
         return issues
-    
+
     def auto_fix(self, issues: Dict[str, List[str]]) -> Dict[str, int]:
         """Attempt to auto-fix issues."""
         fixed = {}
@@ -989,39 +989,39 @@ class DataIntegrityValidator:
 
 class RepositoryStructureAnalyzer:
     """Analyzes repository structure."""
-    
+
     def __init__(self):
         self.mapper = FolderMapper(Path('.'))
-    
+
     def analyze(self) -> RepositoryStructure:
         """Analyze repository structure."""
         return self.mapper.map_repository()
-    
+
     def identify_issues(self, structure: RepositoryStructure) -> List[str]:
         """Identify structure issues."""
         issues = []
-        
+
         if structure.orphaned_folders:
             issues.append(f"{len(structure.orphaned_folders)} folders without README")
-        
+
         if structure.undocumented_folders:
             issues.append(f"{len(structure.undocumented_folders)} folders without purpose")
-        
+
         # Check for deep nesting
         max_depth = max(info.depth for info in structure.folders.values())
         if max_depth > 6:
             issues.append(f"Deep folder nesting detected: {max_depth} levels")
-        
+
         return issues
-    
+
     def suggest_improvements(self, structure: RepositoryStructure) -> List[str]:
         """Suggest structure improvements."""
         suggestions = []
-        
+
         # Suggest README additions
         for path in structure.orphaned_folders[:5]:
             suggestions.append(f"Add README to {path}")
-        
+
         # Suggest consolidation
         small_folders = [
             path for path, info in structure.folders.items()
@@ -1029,7 +1029,7 @@ class RepositoryStructureAnalyzer:
         ]
         if len(small_folders) > 10:
             suggestions.append(f"Consider consolidating {len(small_folders)} small folders")
-        
+
         return suggestions
 ```
 
@@ -1159,8 +1159,8 @@ Session artifacts will be stored in:
 
 ---
 
-**Status**: READY FOR EXECUTION  
-**Next Action**: Begin Task 1 - CI Timestamp Validation  
+**Status**: READY FOR EXECUTION
+**Next Action**: Begin Task 1 - CI Timestamp Validation
 **Contact**: @mbaetiong for questions or clarifications
 
 ---
@@ -1190,7 +1190,7 @@ from pathlib import Path
 import sys
 
 IGNORE_PATTERNS = {
-    '.git', '.venv', 'node_modules', '__pycache__', 
+    '.git', '.venv', 'node_modules', '__pycache__',
     '.pytest_cache', '.hypothesis', 'dist', 'build',
     '.mypy_cache', '.tox', 'htmlcov', '.eggs'
 }
@@ -1203,16 +1203,16 @@ def should_ignore(path: Path) -> bool:
 def list_all_folders(root: Path) -> list[str]:
     """Get list of all folders in repository."""
     folders = []
-    
+
     # Add root
     folders.append('.')
-    
+
     # Find all subdirectories
     for item in sorted(root.rglob('*')):
         if item.is_dir() and not should_ignore(item):
             rel_path = item.relative_to(root)
             folders.append(str(rel_path))
-    
+
     return sorted(folders)
 
 def generate_markdown_links(folders: list[str], root: Path) -> str:
@@ -1222,14 +1222,14 @@ def generate_markdown_links(folders: list[str], root: Path) -> str:
     lines.append(f"\nTotal Folders: {len(folders)}\n")
     lines.append("---\n")
     lines.append("## All Folders (Alphabetical)\n")
-    
+
     for folder in folders:
         # Create relative link
         if folder == '.':
             lines.append(f"- [`.` (root)](./)")
         else:
             lines.append(f"- [`{folder}`](./{folder})")
-    
+
     return '\n'.join(lines)
 
 def generate_categorized_links(folders: list[str]) -> str:
@@ -1238,7 +1238,7 @@ def generate_categorized_links(folders: list[str]) -> str:
     lines.append("# Repository Folder Links (Categorized)")
     lines.append(f"\nTotal Folders: {len(folders)}\n")
     lines.append("---\n")
-    
+
     # Categorize by top-level directory
     categories = {}
     for folder in folders:
@@ -1248,7 +1248,7 @@ def generate_categorized_links(folders: list[str]) -> str:
             parts = folder.split('/')
             top_level = parts[0]
             categories.setdefault(top_level, []).append(folder)
-    
+
     for category in sorted(categories.keys()):
         lines.append(f"\n## {category.upper()}\n")
         for folder in sorted(categories[category]):
@@ -1256,7 +1256,7 @@ def generate_categorized_links(folders: list[str]) -> str:
                 lines.append(f"- [`.` (root)](./)")
             else:
                 lines.append(f"- [`{folder}`](./{folder})")
-    
+
     return '\n'.join(lines)
 
 def generate_tree_with_links(folders: list[str], max_depth: int = 10) -> str:
@@ -1265,7 +1265,7 @@ def generate_tree_with_links(folders: list[str], max_depth: int = 10) -> str:
     lines.append("# Repository Folder Tree (with Links)")
     lines.append(f"\nTotal Folders: {len(folders)}\n")
     lines.append("---\n")
-    
+
     # Build tree structure
     tree = {}
     for folder in folders:
@@ -1277,33 +1277,33 @@ def generate_tree_with_links(folders: list[str], max_depth: int = 10) -> str:
             if part not in current:
                 current[part] = {}
             current = current[part]
-    
+
     def render_tree(node: dict, prefix: str = "", path: str = ".", depth: int = 0):
         if depth > max_depth:
             return
-        
+
         items = sorted(node.items())
         for i, (name, children) in enumerate(items):
             is_last = i == len(items) - 1
             connector = "└── " if is_last else "├── "
             current_path = f"{path}/{name}" if path != "." else name
-            
+
             # Add link
             lines.append(f"{prefix}{connector}[`{name}`](./{current_path})")
-            
+
             if children:
                 child_prefix = prefix + ("    " if is_last else "│   ")
                 render_tree(children, child_prefix, current_path, depth + 1)
-    
+
     lines.append("[`.` (root)](./)\n")
     render_tree(tree)
-    
+
     return '\n'.join(lines)
 
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='List all folders in repository'
     )
@@ -1325,45 +1325,45 @@ def main():
         default='all',
         help='Output format'
     )
-    
+
     args = parser.parse_args()
-    
+
     root = args.root.resolve()
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     print(f"🔍 Scanning folders in: {root}")
     folders = list_all_folders(root)
     print(f"✅ Found {len(folders)} folders")
-    
+
     # Generate outputs based on format
     if args.format in ['plain', 'all']:
         # Plain text list
         plain_file = output_dir / 'ALL_FOLDERS.txt'
         plain_file.write_text('\n'.join(folders), encoding='utf-8')
         print(f"📝 Saved plain list: {plain_file}")
-    
+
     if args.format in ['markdown', 'all']:
         # Markdown with links
         md_file = output_dir / 'ALL_FOLDERS_LINKS.md'
         md_content = generate_markdown_links(folders, root)
         md_file.write_text(md_content, encoding='utf-8')
         print(f"📝 Saved markdown links: {md_file}")
-    
+
     if args.format in ['categorized', 'all']:
         # Categorized markdown
         cat_file = output_dir / 'ALL_FOLDERS_CATEGORIZED.md'
         cat_content = generate_categorized_links(folders)
         cat_file.write_text(cat_content, encoding='utf-8')
         print(f"📝 Saved categorized links: {cat_file}")
-    
+
     if args.format in ['tree', 'all']:
         # Tree with links
         tree_file = output_dir / 'ALL_FOLDERS_TREE.md'
         tree_content = generate_tree_with_links(folders)
         tree_file.write_text(tree_content, encoding='utf-8')
         print(f"📝 Saved tree with links: {tree_file}")
-    
+
     print(f"\n✅ Complete! All outputs saved to: {output_dir}/")
     print(f"\nGenerated files:")
     if args.format in ['plain', 'all']:
@@ -1418,47 +1418,40 @@ python scripts/analysis/list_all_folders.py --output-dir ./reports/folders
 2. **`ALL_FOLDERS_LINKS.md`** - Markdown with clickable links:
    ```markdown
    # Repository Folder Links
-   
+
    Total Folders: 250
-   
+
    ---
-   
+
    ## All Folders (Alphabetical)
-   
+
    - [`.` (root)](./)
-   - [`.codex`](./.codex)
-   - [`.codex/archive`](./.codex/archive)
-   - [`.codex/cognitive_brain`](./.codex/cognitive_brain)
+   - `.codex/archive`
    ...
    ```
 
 3. **`ALL_FOLDERS_CATEGORIZED.md`** - Grouped by top-level directory:
    ```markdown
    # Repository Folder Links (Categorized)
-   
+
    ## .CODEX
-   
-   - [`.codex`](./.codex)
-   - [`.codex/archive`](./.codex/archive)
-   - [`.codex/cognitive_brain`](./.codex/cognitive_brain)
-   
+
+   - `.codex/archive`
+
    ## .GITHUB
-   
-   - [`.github`](./.github)
-   - [`.github/actions`](./.github/actions)
-   - [`.github/agents`](./.github/agents)
+
    ...
    ```
 
 4. **`ALL_FOLDERS_TREE.md`** - Tree structure with links:
    ```markdown
    # Repository Folder Tree (with Links)
-   
+
    [`.` (root)](./)
-   
-   ├── [`.codex`](./.codex)
-   │   ├── [`archive`](./.codex/archive)
-   │   ├── [`cognitive_brain`](./.codex/cognitive_brain)
+
+   ├── <!-- BROKEN LINK: <!-- BROKEN LINK: [`.codex`](./.codex) --> -->
+   │   ├── `archive`
+   │   ├── <!-- BROKEN LINK: [`cognitive_brain`](./.codex/cognitive_brain) -->
    │   └── [`plans`](./.codex/plans)
    ├── [`.github`](./.github)
    │   ├── [`actions`](./.github/actions)
@@ -1683,7 +1676,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1838,8 +1831,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

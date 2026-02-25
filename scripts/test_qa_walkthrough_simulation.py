@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/test_qa_walkthrough_simulation.py [options]
-    
+
     Examples:
     $ python scripts/test_qa_walkthrough_simulation.py --help
 
@@ -59,7 +59,7 @@ RESET = "\033[0m"
 
 class QAWalkthroughSimulator:
     """Simulates QA Walkthrough Agent analysis."""
-    
+
     def __init__(self, target_dir: Path):
         # Sanitize target_dir - resolve to absolute path and validate it exists
         target_dir = target_dir.resolve()
@@ -67,7 +67,7 @@ class QAWalkthroughSimulator:
             raise ValueError(f"Target directory does not exist: {target_dir}")
         if not target_dir.is_dir():
             raise ValueError(f"Target path is not a directory: {target_dir}")
-        
+
         self.target_dir = target_dir
         self.results: Dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -81,17 +81,17 @@ class QAWalkthroughSimulator:
                 "info": 0
             }
         }
-    
+
     def run_security_scan(self) -> Dict[str, Any]:
         """Run security scanning with Bandit."""
         print(f"{CYAN}🔒 Running security scan (Bandit)...{RESET}")
-        
+
         result = {
             "tool": "bandit",
             "status": "success",
             "issues": []
         }
-        
+
         try:
             # Find Python files
             py_files = list(self.target_dir.rglob("*.py"))
@@ -100,7 +100,7 @@ class QAWalkthroughSimulator:
                 result["message"] = "No Python files found"
                 print(f"  {YELLOW}No Python files to scan{RESET}")
                 return result
-            
+
             # Run bandit
             # Note: B404 and B603 are skipped in this simulation context as they generate
             # excessive false positives for legitimate subprocess usage in testing/automation.
@@ -113,7 +113,7 @@ class QAWalkthroughSimulator:
                 "--skip", "B404,B603",
                 "--quiet"
             ]
-            
+
             proc = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -122,11 +122,11 @@ class QAWalkthroughSimulator:
                 shell=False,  # Explicitly set shell=False for security
                 check=False   # Don't raise on non-zero exit
             )
-            
+
             if proc.stdout:
                 bandit_output = json.loads(proc.stdout)
                 result["issues"] = bandit_output.get("results", [])
-                
+
                 # Count issues by severity
                 for issue in result["issues"]:
                     severity = issue.get("issue_severity", "UNDEFINED").lower()
@@ -136,11 +136,11 @@ class QAWalkthroughSimulator:
                         self.results["summary"]["medium"] += 1
                     elif severity == "low":
                         self.results["summary"]["low"] += 1
-                
+
                 print(f"  {GREEN}✓ Found {len(result['issues'])} security issues{RESET}")
             else:
                 print(f"  {GREEN}✓ No security issues found{RESET}")
-                
+
         except subprocess.TimeoutExpired:
             result["status"] = "timeout"
             result["message"] = "Security scan timed out"
@@ -149,20 +149,20 @@ class QAWalkthroughSimulator:
             result["status"] = "error"
             result["message"] = str(e)
             print(f"  {RED}✗ Scan failed: {e}{RESET}")
-        
+
         return result
-    
+
     def run_code_quality_check(self) -> Dict[str, Any]:
         """Run code quality checks with Pylint."""
         print(f"{CYAN}📊 Running code quality check (Pylint)...{RESET}")
-        
+
         result = {
             "tool": "pylint",
             "status": "success",
             "score": 0.0,
             "issues": []
         }
-        
+
         try:
             # Find Python files
             py_files = list(self.target_dir.rglob("*.py"))
@@ -171,10 +171,10 @@ class QAWalkthroughSimulator:
                 result["message"] = "No Python files found"
                 print(f"  {YELLOW}No Python files to check{RESET}")
                 return result
-            
+
             # Limit to first 10 files for simulation
             check_files = [str(f) for f in py_files[:10]]
-            
+
             # Run pylint - using list form with shell=False to prevent shell injection
             cmd = [
                 "pylint",
@@ -182,7 +182,7 @@ class QAWalkthroughSimulator:
                 "--disable=C,R",  # Disable convention and refactor messages
                 "--max-line-length=100"
             ] + check_files
-            
+
             proc = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -191,12 +191,12 @@ class QAWalkthroughSimulator:
                 shell=False,  # Explicitly set shell=False for security
                 check=False   # Don't raise on non-zero exit
             )
-            
+
             if proc.stdout:
                 try:
                     pylint_output = json.loads(proc.stdout)
                     result["issues"] = pylint_output
-                    
+
                     # Count issues by type
                     for issue in result["issues"]:
                         issue_type = issue.get("type", "").lower()
@@ -206,14 +206,14 @@ class QAWalkthroughSimulator:
                             self.results["summary"]["medium"] += 1
                         elif issue_type == "info":
                             self.results["summary"]["info"] += 1
-                    
+
                     print(f"  {GREEN}✓ Found {len(result['issues'])} code quality issues{RESET}")
                 except json.JSONDecodeError:
                     # Pylint might not output JSON if no issues
                     print(f"  {GREEN}✓ No code quality issues found{RESET}")
             else:
                 print(f"  {GREEN}✓ No code quality issues found{RESET}")
-                
+
         except subprocess.TimeoutExpired:
             result["status"] = "timeout"
             result["message"] = "Quality check timed out"
@@ -222,19 +222,19 @@ class QAWalkthroughSimulator:
             result["status"] = "error"
             result["message"] = str(e)
             print(f"  {RED}✗ Check failed: {e}{RESET}")
-        
+
         return result
-    
+
     def run_type_checking(self) -> Dict[str, Any]:
         """Run type checking with MyPy."""
         print(f"{CYAN}🔍 Running type checking (MyPy)...{RESET}")
-        
+
         result = {
             "tool": "mypy",
             "status": "success",
             "issues": []
         }
-        
+
         try:
             # Run mypy on src directory
             src_dir = self.target_dir / "src"
@@ -243,14 +243,14 @@ class QAWalkthroughSimulator:
                 result["message"] = "No src directory found"
                 print(f"  {YELLOW}No src directory to check{RESET}")
                 return result
-            
+
             cmd = [
                 "mypy",
                 str(src_dir),
                 "--no-error-summary",
                 "--show-error-codes"
             ]
-            
+
             proc = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -259,7 +259,7 @@ class QAWalkthroughSimulator:
                 shell=False,  # Explicitly set shell=False for security
                 check=False   # Don't raise on non-zero exit
             )
-            
+
             if proc.stdout:
                 # Parse mypy output
                 lines = proc.stdout.strip().split('\n')
@@ -267,14 +267,14 @@ class QAWalkthroughSimulator:
                     if line and not line.startswith("Found") and not line.startswith("Success"):
                         result["issues"].append(line)
                         self.results["summary"]["medium"] += 1
-                
+
                 if result["issues"]:
                     print(f"  {YELLOW}⚠ Found {len(result['issues'])} type issues{RESET}")
                 else:
                     print(f"  {GREEN}✓ No type issues found{RESET}")
             else:
                 print(f"  {GREEN}✓ No type issues found{RESET}")
-                
+
         except subprocess.TimeoutExpired:
             result["status"] = "timeout"
             result["message"] = "Type check timed out"
@@ -283,13 +283,13 @@ class QAWalkthroughSimulator:
             result["status"] = "error"
             result["message"] = str(e)
             print(f"  {RED}✗ Check failed: {e}{RESET}")
-        
+
         return result
-    
+
     def run_test_suite(self) -> Dict[str, Any]:
         """Run test suite with pytest."""
         print(f"{CYAN}🧪 Running test suite (Pytest)...{RESET}")
-        
+
         result = {
             "tool": "pytest",
             "status": "success",
@@ -298,7 +298,7 @@ class QAWalkthroughSimulator:
             "tests_skipped": 0,
             "coverage": 0.0
         }
-        
+
         try:
             # Check if tests directory exists
             tests_dir = self.target_dir / "tests"
@@ -307,7 +307,7 @@ class QAWalkthroughSimulator:
                 result["message"] = "No tests directory found"
                 print(f"  {YELLOW}No tests directory found{RESET}")
                 return result
-            
+
             # Run pytest with coverage - using list form with shell=False
             cmd = [
                 "pytest",
@@ -316,7 +316,7 @@ class QAWalkthroughSimulator:
                 "--tb=short",
                 "--maxfail=5"
             ]
-            
+
             proc = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -325,10 +325,10 @@ class QAWalkthroughSimulator:
                 shell=False,  # Explicitly set shell=False for security
                 check=False   # Don't raise on non-zero exit
             )
-            
+
             # Parse output
             output = proc.stdout + proc.stderr
-            
+
             # Look for test results
             # NOTE: This parsing uses fragile string matching. For production use,
             # consider using pytest's JSON output format (--json-report) for more
@@ -354,16 +354,16 @@ class QAWalkthroughSimulator:
                     except (ValueError, IndexError):
                         # Ignore lines that do not match the expected "<int> skipped" format
                         pass
-            
+
             total_tests = result["tests_passed"] + result["tests_failed"] + result["tests_skipped"]
-            
+
             if result["tests_failed"] > 0:
                 print(f"  {RED}✗ {result['tests_failed']} tests failed{RESET}")
             elif total_tests > 0:
                 print(f"  {GREEN}✓ {result['tests_passed']} tests passed{RESET}")
             else:
                 print(f"  {YELLOW}No tests found or run{RESET}")
-                
+
         except subprocess.TimeoutExpired:
             result["status"] = "timeout"
             result["message"] = "Test suite timed out"
@@ -372,26 +372,26 @@ class QAWalkthroughSimulator:
             result["status"] = "error"
             result["message"] = str(e)
             print(f"  {RED}✗ Tests failed: {e}{RESET}")
-        
+
         return result
-    
+
     def generate_report(self) -> str:
         """Generate QA report."""
         lines = []
         lines.append(f"\n{BLUE}{'='*70}{RESET}")
         lines.append(f"{BLUE}QA Walkthrough Report{RESET}")
         lines.append(f"{BLUE}{'='*70}{RESET}\n")
-        
+
         lines.append(f"**Timestamp**: {self.results['timestamp']}")
         lines.append(f"**Target**: {self.results['target']}")
         lines.append("")
-        
+
         # Summary
         lines.append(f"{CYAN}## Summary{RESET}\n")
         summary = self.results["summary"]
-        
+
         total_issues = sum(summary.values())
-        
+
         if summary["critical"] > 0:
             lines.append(f"{RED}❌ Critical: {summary['critical']}{RESET}")
         if summary["high"] > 0:
@@ -402,17 +402,17 @@ class QAWalkthroughSimulator:
             lines.append(f"{GREEN}🟢 Low: {summary['low']}{RESET}")
         if summary["info"] > 0:
             lines.append(f"{BLUE}ℹ️  Info: {summary['info']}{RESET}")
-        
+
         lines.append(f"\n**Total Issues**: {total_issues}")
         lines.append("")
-        
+
         # Detailed results
         lines.append(f"{CYAN}## Detailed Results{RESET}\n")
-        
+
         for check_name, check_result in self.results["checks"].items():
             status = check_result.get("status", "unknown")
             tool = check_result.get("tool", check_name)
-            
+
             if status == "success":
                 status_icon = f"{GREEN}✓{RESET}"
             elif status == "error":
@@ -421,21 +421,21 @@ class QAWalkthroughSimulator:
                 status_icon = f"{RED}⏱{RESET}"
             else:
                 status_icon = f"{YELLOW}⊘{RESET}"
-            
+
             lines.append(f"{status_icon} **{check_name}** ({tool})")
-            
+
             if "message" in check_result:
                 lines.append(f"   {check_result['message']}")
-            
+
             if "issues" in check_result and check_result["issues"]:
                 issue_count = len(check_result["issues"])
                 lines.append(f"   Found {issue_count} issue(s)")
-            
+
             lines.append("")
-        
+
         # Recommendations
         lines.append(f"{CYAN}## Recommendations{RESET}\n")
-        
+
         if total_issues == 0:
             lines.append(f"{GREEN}✓ No issues found. Code quality looks good!{RESET}")
         else:
@@ -445,33 +445,33 @@ class QAWalkthroughSimulator:
                 lines.append(f"{YELLOW}→ Review and fix medium severity issues{RESET}")
             if summary["low"] > 0:
                 lines.append(f"{GREEN}→ Consider addressing low severity issues{RESET}")
-        
+
         lines.append(f"\n{BLUE}{'='*70}{RESET}\n")
-        
+
         return '\n'.join(lines)
-    
+
     def run_analysis(self) -> bool:
         """Run complete QA analysis."""
         print(f"\n{BLUE}{'='*70}{RESET}")
         print(f"{BLUE}Starting QA Walkthrough Simulation{RESET}")
         print(f"{BLUE}{'='*70}{RESET}\n")
         print(f"Target: {self.target_dir}\n")
-        
+
         # Run all checks
         self.results["checks"]["security_scan"] = self.run_security_scan()
         self.results["checks"]["code_quality"] = self.run_code_quality_check()
         self.results["checks"]["type_checking"] = self.run_type_checking()
         self.results["checks"]["test_suite"] = self.run_test_suite()
-        
+
         # Generate and print report
         report = self.generate_report()
         print(report)
-        
+
         # Save report
         report_file = self.target_dir / "qa_walkthrough_report.md"
         report_file.write_text(report)
         print(f"{GREEN}✓ Report saved to: {report_file}{RESET}\n")
-        
+
         # Return success if no critical or high issues
         summary = self.results["summary"]
         return summary["critical"] == 0 and summary["high"] == 0
@@ -488,16 +488,16 @@ def main():
         default=Path.cwd(),
         help="Target directory to analyze (default: current directory)"
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.target_dir.exists():
         print(f"{RED}Error: Target directory does not exist: {args.target_dir}{RESET}")
         sys.exit(1)
-    
+
     simulator = QAWalkthroughSimulator(args.target_dir)
     success = simulator.run_analysis()
-    
+
     sys.exit(0 if success else 1)
 
 

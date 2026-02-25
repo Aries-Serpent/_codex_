@@ -1,8 +1,8 @@
 # AGENTS.md - Repository Conventions for Autonomous AI Agents
 
-> **Generated:** 2026-01-03T21:34:00Z  
-> **Author:** mbaetiong  
-> **Repository:** Aries-Serpent/_codex_  
+> **Generated:** 2026-01-03T21:34:00Z
+> **Author:** mbaetiong
+> **Repository:** Aries-Serpent/_codex_
 > **Protocol:** CTEP-Compliant
 
 Guidelines for contributors and Codex automation. Keep this file updated as conventions change.
@@ -14,16 +14,16 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 1. [Repository Overview](#repository-overview)
 2. [Environment Variables](#environment-variables)
 3. [Logging Roles](#logging-roles)
-4. [Tooling & Testing](#tooling--testing)
+4. [Tooling & Testing](#tooling-testing)
 5. [Useful Commands](#useful-commands)
 6. [Prohibited Actions](#prohibited-actions)
 7. [Copilot Task Execution Protocol (CTEP)](#copilot-task-execution-protocol-ctep)
-8. [Log Directory & Retention](#log-directory--retention)
-9. [Error Handling & Backward Compatibility](#error-handling--backward-compatibility)
+8. [Log Directory & Retention](#log-directory-retention)
+9. [Error Handling & Backward Compatibility](#️-error-handling--backward-compatibility)
 10. [Configuration Management (Hydra)](#configuration-management-hydra)
-11. [Next Steps & Production Readiness](#next-steps--production-readiness)
+11. [Next Steps & Production Readiness](#next-steps-production-readiness)
 12. [Troubleshooting Checklist](#troubleshooting-checklist)
-13. [Contact & Maintainers](#contact--maintainers)
+13. [Contact & Maintainers](#contact-maintainers)
 
 ---
 
@@ -288,9 +288,6 @@ CTEP Compliance: ✅ PASS
 
 ### Documentation Links
 
-- [Copilot Task Execution Protocol](./copilot_task_execution_protocol.md)
-- [CTEP Usage Examples](./ctep_usage_examples.md)
-- [CTEP Quick Reference](./ctep_quick_reference.md)
 
 ---
 
@@ -524,6 +521,6 @@ python3 -m py_compile .github/agents/emergent-intelligence-agent/src/__init__.py
 
 ---
 
-**Last Updated:** 2026-01-03T21:34:00Z  
-**Document Version:** 1.0.0  
+**Last Updated:** 2026-01-03T21:34:00Z
+**Document Version:** 1.0.0
 **Status:** ✅ Production Ready

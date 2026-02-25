@@ -1,7 +1,7 @@
 # .codex/analysis/ - Repository Analysis & Metrics
 
-> **Purpose:** Analysis outputs, metrics tracking, and philosophical measurements  
-> **Status:** Active - Cognitive and philosophical analysis infrastructure  
+> **Purpose:** Analysis outputs, metrics tracking, and philosophical measurements
+> **Status:** Active - Cognitive and philosophical analysis infrastructure
 > **Last Updated:** 2026-02-10
 
 ---
@@ -189,12 +189,12 @@ python .codex/analysis/philosophical_metrics.py --becoming-rate
 
 ### Core Framework Documents
 - [Philosophical Framework](../docs/PHILOSOPHICAL_FRAMEWORK.md) - Theoretical foundations
-- [Cognitive Architecture](../docs/COGNITIVE_ARCHITECTURE.md) - Cognitive pattern mapping
-- [.codex/docs README](../docs/README.md) - Documentation navigation
+- [Cognitive Architecture](../../docs/ARCHITECTURE.md) - Cognitive pattern mapping
+- [.codex/docs README](../../docs/README.md) - Documentation navigation
 
 ### Implementation References
 - [Philosophical Metrics Section](../docs/PHILOSOPHICAL_FRAMEWORK.md#philosophical-metrics)
-- [Quantitative Analysis](../docs/COGNITIVE_ARCHITECTURE.md#quantitative-analysis)
+- [Quantitative Analysis](../../docs/ARCHITECTURE.md#quantitative-analysis)
 - [Refactoring Roadmap](../docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
 
 ---
@@ -260,7 +260,7 @@ python .codex/analysis/philosophical_metrics.py --becoming-rate
 **For Implementation:**
 - Reference [Philosophical Framework](../docs/PHILOSOPHICAL_FRAMEWORK.md) Section 10
 - See [Refactoring Priorities](../docs/PHILOSOPHICAL_FRAMEWORK.md#refactoring-recommendations)
-- Check [Implementation Status](../docs/README.md#implementation-status)
+- Check [Implementation Status](../../docs/README.md#implementation-status)
 
 **For Questions:**
 - Create issue with [PHILOSOPHICAL-METRICS] tag
@@ -287,8 +287,8 @@ python .codex/analysis/philosophical_metrics.py --becoming-rate
 
 ---
 
-**Last Updated:** 2026-02-01  
-**Version:** 1.0.0  
+**Last Updated:** 2026-02-01
+**Version:** 1.0.0
 **Status:** Partially implemented - Infrastructure ready for philosophical metrics
 
 ---

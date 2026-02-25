@@ -12,10 +12,10 @@ Security Features:
 
 Usage:
     from codex.security.log_sanitizer import sanitize_log, mask_sensitive
-    
+
     # Sanitize user input
     logger.info(f"User {sanitize_log(username)} logged in")
-    
+
     # Mask sensitive data
     safe_message = mask_sensitive(message_with_token)
     logger.info(safe_message)
@@ -60,17 +60,17 @@ SENSITIVE_PATTERNS: list[tuple[Pattern[str], str]] = [
 def sanitize_log(value: Any, max_length: int = 500) -> str:
     """
     Sanitize user input for safe logging by removing control characters.
-    
+
     This prevents log injection attacks where attackers can inject newlines
     or control characters to forge log entries or hide malicious activity.
-    
+
     Args:
         value: Input value to sanitize (will be converted to string)
         max_length: Maximum length of output string (default: 500)
-        
+
     Returns:
         Sanitized string safe for logging
-        
+
     Example:
         >>> sanitize_log("user\\nfake_log_entry")
         'userfake_log_entry'
@@ -101,7 +101,7 @@ def sanitize_log(value: Any, max_length: int = 500) -> str:
 def mask_sensitive(message: str) -> str:
     """
     Mask sensitive data patterns in a message.
-    
+
     Automatically detects and redacts common sensitive patterns like:
     - API keys and tokens
     - Bearer tokens
@@ -109,13 +109,13 @@ def mask_sensitive(message: str) -> str:
     - AWS credentials
     - JWT tokens
     - Private keys
-    
+
     Args:
         message: Message that may contain sensitive data
-        
+
     Returns:
         Message with sensitive patterns redacted
-        
+
     Example:
         >>> mask_sensitive("Token: sk_live_abc123xyz789")
         'Token: ***REDACTED***'
@@ -131,17 +131,17 @@ def mask_sensitive(message: str) -> str:
 def safe_log_message(message: str, mask_secrets: bool = True) -> str:
     """
     Comprehensive log message sanitization.
-    
+
     Combines both control character removal and sensitive data masking
     for maximum security.
-    
+
     Args:
         message: Message to sanitize
         mask_secrets: Whether to mask sensitive patterns (default: True)
-        
+
     Returns:
         Fully sanitized and masked message
-        
+
     Example:
         >>> safe_log_message("User api_key=sk_test_123\\nFAKE_LOG logged in")
         'User api_key=***REDACTED*** FAKE_LOG logged in'
@@ -159,18 +159,18 @@ def safe_log_message(message: str, mask_secrets: bool = True) -> str:
 def sanitize_dict_for_log(data: dict, max_length: int = 500, mask_secrets: bool = True) -> dict:
     """
     Sanitize all values in a dictionary for logging.
-    
+
     Useful for logging request/response bodies or configuration objects
     that may contain user-controlled or sensitive data.
-    
+
     Args:
         data: Dictionary to sanitize
         max_length: Maximum length per value
         mask_secrets: Whether to mask sensitive patterns
-        
+
     Returns:
         New dictionary with sanitized values
-        
+
     Example:
         >>> sanitize_dict_for_log({"user": "test\\ninjection", "token": "abc123"})
         {'user': 'testinjection', 'token': '***REDACTED***'}

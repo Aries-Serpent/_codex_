@@ -410,8 +410,9 @@ class TestTypeEdgeCases:
         assert True == 1  # noqa: E712 - intentional bool/int comparison test
         assert False == 0  # noqa: E712 - intentional bool/int comparison test
 
-        # But they're not the same type
-        assert True != 1  # noqa: E712 - intentional bool/int comparison test
+        # But they're not the same type identity
+        assert type(True) is not type(1)
+        assert type(False) is not type(0)
 
     def test_mixed_type_comparison(self):
         """Test mixed type comparisons."""

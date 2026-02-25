@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 class StandardizedASTNode:
     """
     Language-agnostic AST node representation.
-    
+
     This standardized format allows uniform analysis across different languages.
     """
 
@@ -74,7 +74,7 @@ class StandardizedASTNode:
 class BaseASTAdapter(ABC):
     """
     Abstract base class for language-specific AST adapters.
-    
+
     All language adapters must implement these methods to provide
     standardized AST analysis capabilities.
     """
@@ -82,7 +82,7 @@ class BaseASTAdapter(ABC):
     def __init__(self, file_path: Optional[Path] = None):
         """
         Initialize the adapter.
-        
+
         Args:
             file_path: Optional path to the file being analyzed
         """
@@ -119,10 +119,10 @@ class BaseASTAdapter(ABC):
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """
         Extract language-specific metadata from a node.
-        
+
         Args:
             node: Standardized AST node
-            
+
         Returns:
             Dictionary of metadata (decorators, type hints, etc.)
         """
@@ -131,10 +131,10 @@ class BaseASTAdapter(ABC):
     def parse_file(self, file_path: Path) -> StandardizedASTNode:
         """
         Parse a file and return standardized AST.
-        
+
         Args:
             file_path: Path to file to parse
-            
+
         Returns:
             Root node of the standardized AST
         """
@@ -146,10 +146,10 @@ class BaseASTAdapter(ABC):
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """
         Traverse AST and return all nodes in depth-first order.
-        
+
         Args:
             node: Starting node (defaults to root)
-            
+
         Returns:
             List of all nodes in traversal order
         """
@@ -168,10 +168,10 @@ class BaseASTAdapter(ABC):
     def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
         """
         Find all nodes of a specific type.
-        
+
         Args:
             node_type: Type of nodes to find
-            
+
         Returns:
             List of matching nodes
         """
@@ -181,7 +181,7 @@ class BaseASTAdapter(ABC):
     def get_stats(self) -> Dict[str, int]:
         """
         Get statistics about the AST.
-        
+
         Returns:
             Dictionary with node counts by type
         """

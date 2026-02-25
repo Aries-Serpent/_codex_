@@ -1,7 +1,7 @@
 # MCP Developer Guide
 
-**Version:** 1.0  
-**Last Updated:** 2025-11-18  
+**Version:** 1.0
+**Last Updated:** 2025-11-18
 **Audience:** Developers implementing MCP tools and integrations
 
 ## Getting Started with MCP
@@ -152,7 +152,7 @@ try:
     handler = registry.get_tool("my_tool")
     if handler is None:
         raise ToolNotFound(f"Tool 'my_tool' not found")
-    
+
     result = handler(param1="value")
 except ToolNotFound as e:
     print(f"Tool not found: {e}")
@@ -404,12 +404,12 @@ import uuid
 def process_with_tracing(tool_name: str, params: dict):
     # Generate request ID
     request_id = str(uuid.uuid4())
-    
+
     logger.info(f"Starting request {request_id}", extra={
         "request_id": request_id,
         "tool_name": tool_name
     })
-    
+
     try:
         result = execute_tool(tool_name, params)
         logger.info(f"Request {request_id} succeeded")
@@ -435,7 +435,7 @@ import time
 def execute_with_metrics(tool_name: str):
     mcp_metrics["requests_total"] += 1
     start_time = time.time()
-    
+
     try:
         result = execute_tool(tool_name)
         mcp_metrics["requests_successful"] += 1
@@ -518,18 +518,18 @@ def call_ita_endpoint(tool_name: str, params: dict):
     tool_def = config.get_tool(tool_name)
     if not tool_def:
         raise ToolNotFound(f"Tool {tool_name} not configured")
-    
+
     # Build full URL
     url = f"{config.ita_url}{tool_def.endpoint}"
-    
+
     # Make request with authentication
     headers = {}
     if config.ita_api_key:
         headers["X-API-Key"] = config.ita_api_key
-    
+
     response = requests.post(url, json=params, headers=headers)
     response.raise_for_status()
-    
+
     return response.json()
 ```
 
@@ -576,7 +576,7 @@ def safe_tool_execution(tool_name: str, params: dict):
         handler = registry.get_tool(tool_name)
         if not handler:
             raise ToolNotFound(f"Tool '{tool_name}' not found")
-        
+
         return handler(**params)
     except MCPError:
         # Re-raise MCP errors as-is
@@ -609,7 +609,7 @@ def validate_and_execute(tool_name: str, params: dict):
     # Validate tool exists
     if tool_name not in [t["name"] for t in registry.list_tools()]:
         raise ToolNotFound(f"Unknown tool: {tool_name}")
-    
+
     # Validate parameters (use schema validation)
     # Execute tool
     return execute_tool(tool_name, params)
@@ -628,24 +628,24 @@ from mcp.registry import MCPToolRegistry
 def test_tool_registration():
     """Test that tools can be registered."""
     registry = MCPToolRegistry()
-    
+
     def test_tool():
         return "test"
-    
+
     registry.register_tool("test", test_tool)
-    
+
     tools = registry.list_tools()
     assert any(t["name"] == "test" for t in tools)
 
 def test_tool_execution():
     """Test that tools can be executed."""
     registry = MCPToolRegistry()
-    
+
     def add(a: int, b: int) -> int:
         return a + b
-    
+
     registry.register_tool("add", add)
-    
+
     result = registry.get_tool("add")(5, 3)
     assert result == 8
 ```
@@ -713,8 +713,8 @@ print(f"Server supports: {MCP_VERSIONS}")
 - [Usage Guide](Usage_Guide.md)
 - [Traversal Workflow](Traversal_Workflow.md)
 - Test Examples in `tests/mcp/` directory
-- [MCP Server Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/server/server.py)
-- [Tool Registry](https://github.com/Aries-Serpent/_codex_/blob/main/mcp/registry.py)
+- MCP Server Implementation
+- Tool Registry
 
 ---
 
@@ -853,8 +853,8 @@ Simplicity (quick start) ↔ Completeness (10 capabilities) ↔ Flexibility (ext
 
 ---
 
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Version**: 2.0  
-**MCP Protocol Version**: 1.0  
-**Status**: Production Ready ✅  
+**Last Updated**: 2026-01-23T11:45:00Z
+**Version**: 2.0
+**MCP Protocol Version**: 1.0
+**Status**: Production Ready ✅
 **Template Compliance**: ✅ Phase 2 Physics-Aligned

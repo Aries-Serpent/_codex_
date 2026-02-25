@@ -7,9 +7,9 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Architecture & Decision Flow](#architecture--decision-flow)
+2. [Architecture & Decision Flow](#architecture-decision-flow)
 3. [File Structure](#file-structure)
-4. [Error Scenarios & Debugging](#error-scenarios--debugging)
+4. [Error Scenarios & Debugging](#error-scenarios-debugging)
 5. [Troubleshooting Checklist](#troubleshooting-checklist)
 
 ---
@@ -305,9 +305,9 @@ fatal: unable to access 'https://github.com/Aries-Serpent/_codex_.git/': The req
 
 ---
 
-**Maintained by**: mbaetiong  
-**Last Updated**: 2025-11-12  
-**Related Files**: 
+**Maintained by**: mbaetiong
+**Last Updated**: 2025-11-12
+**Related Files**:
 - `.github/workflows/ci.yml`
 - `.github/scripts/ci_parse_coverage.py`
 - `.github/coverage_threshold.txt`

@@ -6,13 +6,13 @@ This document provides a formal, physics-inspired mathematical model for underst
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Visual Capability Maps](#visual-capability-maps)
 3. [Mathematical Foundation](#mathematical-foundation)
-4. [Location Manifold & Capacity Fields](#location-manifold--capacity-fields)
+4. <!-- BROKEN ANCHOR: [Location Manifold & Capacity Fields](#location-manifold-capacity-fields) -->
 5. [Capability Spectrum](#capability-spectrum)
 6. [Security Boundary Constraints](#security-boundary-constraints)
-7. [Data Flow & Latency Model](#data-flow--latency-model)
+7. <!-- BROKEN ANCHOR: [Data Flow & Latency Model](#data-flow-latency-model) -->
 8. [Feature Feasibility Classification](#feature-feasibility-classification)
 9. [Location-Capability Coupling](#location-capability-coupling)
 10. [Optimization Framework](#optimization-framework)
@@ -20,7 +20,7 @@ This document provides a formal, physics-inspired mathematical model for underst
 12. [Worked Examples](#worked-examples)
 13. [Implementation Guidance](#implementation-guidance)
 14. [Extended Visual Reference](#extended-visual-reference)
-15. [AI Assistant Context & Limitations](#ai-assistant-context--limitations)
+15. <!-- BROKEN ANCHOR: [AI Assistant Context & Limitations](#ai-assistant-context-limitations) -->
 
 ## Overview
 
@@ -252,7 +252,7 @@ $$
 
 where:
 - **SB** = Sidebar
-- **TB** = Topbar  
+- **TB** = Topbar
 - **NB** = Navbar
 
 ### 2. Capacity Field Definition
@@ -531,7 +531,7 @@ $$
 \tilde{\phi}_{d,\ell} = \min\{\phi_d, \Gamma_{d\ell}\}
 $$
 
-**Interpretation**: 
+**Interpretation**:
 - Navbar wins when $d$ needs **space/complexity**
 - Sidebar wins when $d$ needs **context**
 - Location mismatch reduces effective capability
@@ -847,7 +847,7 @@ client.invoke('oauth', {provider: 'custom'})
 **Reduce Latency**:
 ```javascript
 // Batch API calls
-const promises = items.map(item => 
+const promises = items.map(item =>
   zendeskAPI.request({url: `/api/v2/items/${item.id}`})
 )
 await Promise.all(promises)
@@ -941,7 +941,7 @@ def should_build_in_navbar(feature):
     psi = calculate_feasibility(feature)
     value_complexity_ratio = feature.value / feature.complexity
     latency = estimate_latency(feature)
-    
+
     if psi > 0.7 and value_complexity_ratio > 2:
         return "BUILD"
     elif psi >= 0.4 and value_complexity_ratio > 1.5 and latency < 3:

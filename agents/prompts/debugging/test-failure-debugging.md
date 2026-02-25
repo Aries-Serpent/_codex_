@@ -28,7 +28,7 @@ I need help debugging a test failure in the Codex repository.
    ```bash
    # Run the specific test
    pytest path/to/test_file.py::test_function_name -v
-   
+
    # Run with more debugging info
    pytest path/to/test_file.py::test_function_name -vv -s
    ```
@@ -179,4 +179,4 @@ navigator.execute('DEBUG_TEST')  # Future: automated test debugging
 
 - [pytest documentation](https://docs.pytest.org/)
 - [Python debugging guide](https://docs.python.org/3/library/pdb.html)
-- [Codex testing conventions](../../../AGENTS.md#testing)
+- [Codex testing conventions](../../../.github/AGENTS.md#testing)

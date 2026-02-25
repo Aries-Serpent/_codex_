@@ -11,7 +11,7 @@ AfterMath Tags: Phase 8.2 - Multi-Agent Orchestration
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List
 
@@ -129,7 +129,7 @@ class MultiAgentCoordinator:
             weight=weight,
             active=True,
             decisions_made=0,
-            last_active=datetime.now(),
+            last_active=datetime.now(timezone.utc),
         )
 
         logger.info(f"Registered agent: {agent_id} with role: {role}, weight: {weight}")
@@ -170,7 +170,7 @@ class MultiAgentCoordinator:
             raise ValueError(f"Agent {agent_id} is not registered")
 
         # Update agent's last active timestamp
-        self.agents[agent_id].last_active = datetime.now()
+        self.agents[agent_id].last_active = datetime.now(timezone.utc)
 
         # In a real implementation, this would send the state to other agents
         # For now, we log it
@@ -205,7 +205,7 @@ class MultiAgentCoordinator:
                 decision = self._simulate_agent_decision(agent_id, context)
                 decisions.append(decision)
                 agent_info.decisions_made += 1
-                agent_info.last_active = datetime.now()
+                agent_info.last_active = datetime.now(timezone.utc)
 
         if not decisions:
             raise ValueError("No active agents available for decision")
@@ -216,7 +216,7 @@ class MultiAgentCoordinator:
         # Record in history
         self.decision_history.append(
             {
-                "timestamp": datetime.now(),
+                "timestamp": datetime.now(timezone.utc),
                 "context": context,
                 "decisions": decisions,
                 "consensus": consensus,

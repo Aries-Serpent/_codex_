@@ -7,7 +7,7 @@ From the workflow list provided, these workflows FAILED:
 ### 1. Art_Data Quality & Determinism Suite / Data Validation (Manifest & Drift)
 **Status:** Failing after 22s
 **Job ID:** 62833740344
-**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462230/job/62833740344
+**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462230 <!-- Note: Logs expire after 90 days -->/job/62833740344
 
 **Fix Status:** ✅ FIXED
 - Fixed in commit a95d56b
@@ -17,7 +17,7 @@ From the workflow list provided, these workflows FAILED:
 ### 2. Auto-Fix Common CI Issues / Detect and Fix Common Issues
 **Status:** Failing after 1m
 **Job ID:** 62833740402
-**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462259/job/62833740402
+**Link:** https://github.com/Aries-Serpent/_codex_/actions/runs/21776462259 <!-- Note: Logs expire after 90 days -->/job/62833740402
 
 **Fix Status:** ⚠️ NEEDS INVESTIGATION
 - Need to check what auto-fix issues were detected
@@ -29,14 +29,14 @@ These were "In progress" when user provided the list:
 
 1. Art_Code Quality & Coverage Suite / Coverage Report Generation
    - Still monitoring (primary task)
-   
+
 2. Art_Documentation Link Checker / check-links (2 runs)
    - Extended duration noted
 
 3. Art_Root Organization Validation / Pre-Move Validation
-   
+
 4. Art_Security Scanning Suite / CodeQL Analysis (python)
-   
+
 5. Art_Semgrep SAST (SARIF Upload) / Semgrep SAST (2 runs)
 
 6. Art_Data Quality & Determinism Suite / Determinism & Audit Validation
@@ -100,4 +100,3 @@ Let me investigate the Auto-Fix workflow failure...
 **Coverage Workflow:** Still running (~49 min runtime)
 **Session Time:** ~38 min elapsed, ~17 remaining
 **Status:** Continuing to monitor per policy
-

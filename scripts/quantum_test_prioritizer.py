@@ -51,7 +51,7 @@ class ModuleQuantumState:
     def entropy(self) -> float:
         """
         Shannon entropy of coverage distribution.
-        
+
         Maximum entropy (1.0) at 50% coverage.
         Minimum entropy (0.0) at 0% or 100% coverage.
         """
@@ -64,7 +64,7 @@ class ModuleQuantumState:
     def amplitude(self) -> float:
         """
         Probability amplitude based on untested code.
-        
+
         ψ = √(1 - coverage)
         """
         return math.sqrt(max(0, 1 - self.coverage_ratio))
@@ -73,7 +73,7 @@ class ModuleQuantumState:
     def born_probability(self) -> float:
         """
         Born rule: P = |ψ|²
-        
+
         Probability of finding bugs in untested code.
         """
         return self.amplitude ** 2
@@ -82,7 +82,7 @@ class ModuleQuantumState:
     def energy(self) -> float:
         """
         Energy cost of testing this module.
-        
+
         Proportional to complexity (file count, lines).
         """
         file_energy = math.log(self.total_files + 1)
@@ -93,7 +93,7 @@ class ModuleQuantumState:
     def free_energy(self) -> float:
         """
         Gibbs free energy: G = E - TS
-        
+
         Lower free energy = higher priority.
         """
         temperature = 1.0  # Urgency factor
@@ -109,7 +109,7 @@ class ModuleQuantumState:
     def priority_score(self) -> float:
         """
         Calculate priority score using quantum principles.
-        
+
         Priority = Born_Probability / max(Free_Energy, 0.01)
         """
         return self.born_probability / max(0.01, self.free_energy)
@@ -161,7 +161,7 @@ def quantum_prioritize(
 ) -> list[dict[str, Any]]:
     """
     Prioritize modules using quantum principles.
-    
+
     Returns sorted list with priority scores and test counts.
     """
     results = []
@@ -222,7 +222,7 @@ def print_quantum_analysis(
     # Priority tier breakdown
     print("📊 PRIORITY TIERS:")
     print()
-    
+
     critical = [p for p in priorities if p["priority"] > 0.5]
     high = [p for p in priorities if 0.2 < p["priority"] <= 0.5]
     medium = [p for p in priorities if 0.1 < p["priority"] <= 0.2]

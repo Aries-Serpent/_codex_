@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 pytest.importorskip("numpy")
+pytest.importorskip("faiss", reason="faiss-cpu not installed; install with: pip install faiss-cpu")
 
 from src.codex.retrieval.stores.base import (
     DimensionMismatchError,

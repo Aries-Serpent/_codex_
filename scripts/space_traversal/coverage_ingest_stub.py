@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/space_traversal/coverage_ingest_stub.py [options]
-    
+
     Examples:
     $ python scripts/space_traversal/coverage_ingest_stub.py --help
 
@@ -31,14 +31,23 @@ Last Updated: 2026-01-16
 from __future__ import annotations
 
 # Lightweight coverage ingest stub for tests.
-
 import argparse
 import json
 import os
 import sys
-from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Any
+
+try:
+    from defusedxml import ElementTree as ET
+except ImportError:  # pragma: no cover - CI may not have defusedxml
+    import warnings
+    warnings.warn(
+        "defusedxml not installed; falling back to stdlib XML parser. "
+        "Only parse trusted XML (e.g. CI coverage reports).",
+        stacklevel=2,
+    )
+    from xml.etree import ElementTree as ET
 
 __all__ = ["parse_cobertura", "parse_simple_coverage", "write_stub_report", "main"]
 

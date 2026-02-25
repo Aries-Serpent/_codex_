@@ -23,8 +23,6 @@ DEFAULT_MIN_TOKENS = 50  # Minimum tokens to consider as duplicate
 TRIVIAL_PATTERNS = [
     r"^import\s+",
     r"^from\s+.*\s+import\s+",
-    r"^class\s+\w+\(\):\s*pass\s*$",
-    r"^def\s+\w+\(\):\s*pass\s*$",
 ]
 
 

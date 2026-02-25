@@ -54,8 +54,8 @@ class LocalTransformersAdapter(ModelAdapter):
     def _load_model(self):
         """Load model and tokenizer"""
         try:
-            from transformers import AutoModelForCausalLM, AutoTokenizer
             from codex_ml.utils.hf_pinning import load_from_pretrained
+            from transformers import AutoModelForCausalLM, AutoTokenizer
 
             logger.info(f"Loading model: {self.model_path}")
 

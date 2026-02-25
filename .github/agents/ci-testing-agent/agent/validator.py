@@ -14,7 +14,7 @@ class CoverageValidator:
     def __init__(self, workspace: Path):
         """
         Initialize CoverageValidator.
-        
+
         Args:
             workspace: Path to repository workspace
         """
@@ -23,13 +23,13 @@ class CoverageValidator:
     def validate(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate coverage meets target threshold.
-        
+
         Args:
             task: Task dictionary containing:
                 - baseline: Path to baseline coverage file (optional)
                 - threshold: Target coverage threshold (default: 85)
                 - modules: List of modules to validate (optional)
-        
+
         Returns:
             Dictionary with:
                 - status: 'success', 'below_threshold', or 'error'
@@ -86,10 +86,10 @@ class CoverageValidator:
     def _parse_baseline(self, baseline_file: str) -> Dict[str, Any]:
         """
         Parse baseline coverage report file.
-        
+
         Args:
             baseline_file: Path to baseline coverage file
-        
+
         Returns:
             Dictionary with coverage data
         """
@@ -125,10 +125,10 @@ class CoverageValidator:
     def _run_coverage(self, modules: List[str]) -> Dict[str, Any]:
         """
         Run coverage analysis on current codebase.
-        
+
         Args:
             modules: List of modules to analyze
-        
+
         Returns:
             Dictionary with coverage data
         """
@@ -191,11 +191,11 @@ class CoverageValidator:
     def _compute_delta(self, baseline: Dict[str, Any], current: Dict[str, Any]) -> float:
         """
         Compute coverage delta.
-        
+
         Args:
             baseline: Baseline coverage data
             current: Current coverage data
-        
+
         Returns:
             Coverage delta as float
         """
@@ -206,11 +206,11 @@ class CoverageValidator:
     ) -> List[str]:
         """
         Identify modules below coverage threshold.
-        
+
         Args:
             current: Current coverage data
             threshold: Target threshold
-        
+
         Returns:
             List of coverage gap descriptions
         """
@@ -236,7 +236,7 @@ class CoverageValidator:
     def generate_coverage_report(self) -> Path:
         """
         Generate comprehensive coverage report.
-        
+
         Returns:
             Path to generated report
         """

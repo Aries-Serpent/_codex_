@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/status/render_monthly_html.py [options]
-    
+
     Examples:
     $ python scripts/status/render_monthly_html.py --help
 

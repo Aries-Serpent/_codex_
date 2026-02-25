@@ -25,12 +25,12 @@ class TestCreateScheduler:
     def test_create_scheduler_constant(self):
         """Test creating constant scheduler."""
         try:
+            import torch
             from codex_ml.training.scheduler_factory import create_scheduler
 
-            class DummyOptimizer:
-                pass
-
-            optimizer = DummyOptimizer()
+            # Use a real PyTorch optimizer with a tensor parameter
+            param = torch.tensor([0.01], requires_grad=True)
+            optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(optimizer, scheduler_type="constant")
             assert scheduler is not None
         except ImportError as exc:
@@ -39,16 +39,17 @@ class TestCreateScheduler:
     def test_create_scheduler_with_warmup(self):
         """Test creating scheduler with warmup steps."""
         try:
+            import torch
             from codex_ml.training.scheduler_factory import create_scheduler
 
-            class DummyOptimizer:
-                pass
-
-            optimizer = DummyOptimizer()
+            # Use a real PyTorch optimizer with a tensor parameter
+            param = torch.tensor([0.01], requires_grad=True)
+            optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(
                 optimizer,
                 scheduler_type="constant_with_warmup",
-                num_warmup_steps=100
+                num_warmup_steps=100,
+                num_training_steps=1000
             )
             assert scheduler is not None
         except ImportError as exc:
@@ -57,12 +58,12 @@ class TestCreateScheduler:
     def test_create_scheduler_linear(self):
         """Test creating linear scheduler."""
         try:
+            import torch
             from codex_ml.training.scheduler_factory import create_scheduler
 
-            class DummyOptimizer:
-                pass
-
-            optimizer = DummyOptimizer()
+            # Use a real PyTorch optimizer with a tensor parameter
+            param = torch.tensor([0.01], requires_grad=True)
+            optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(
                 optimizer,
                 scheduler_type="linear",
@@ -75,12 +76,12 @@ class TestCreateScheduler:
     def test_create_scheduler_cosine(self):
         """Test creating cosine scheduler."""
         try:
+            import torch
             from codex_ml.training.scheduler_factory import create_scheduler
 
-            class DummyOptimizer:
-                pass
-
-            optimizer = DummyOptimizer()
+            # Use a real PyTorch optimizer with a tensor parameter
+            param = torch.tensor([0.01], requires_grad=True)
+            optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(
                 optimizer,
                 scheduler_type="cosine",

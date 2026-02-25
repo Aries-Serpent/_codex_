@@ -38,8 +38,8 @@
 
 ## 🎯 Phase 9: Coverage & Performance Enhancement
 
-**Status**: Ready to start immediately  
-**Effort**: 2-3 sessions (~80K-120K tokens)  
+**Status**: Ready to start immediately
+**Effort**: 2-3 sessions (~80K-120K tokens)
 **Priority**: HIGH
 
 ### Objectives
@@ -54,7 +54,7 @@
 
 ### Task 9.1: Test Coverage Enhancement (CRITICAL)
 
-**Effort**: 1-2 sessions (~40K-60K tokens)  
+**Effort**: 1-2 sessions (~40K-60K tokens)
 **Priority**: HIGH
 
 **Steps**:
@@ -102,7 +102,7 @@
 
 ### Task 9.2: Performance Optimization (HIGH)
 
-**Effort**: 1 session (~30K-40K tokens)  
+**Effort**: 1 session (~30K-40K tokens)
 **Priority**: HIGH
 
 **Steps**:
@@ -111,10 +111,10 @@
    ```bash
    # CI build times
    gh run list --workflow=optimized-ci.yml --limit 10 --json conclusion,duration
-   
+
    # Test execution times
    pytest --durations=20
-   
+
    # Cache statistics
    gh cache list --limit 20
    ```
@@ -155,7 +155,7 @@
 
 ### Task 9.3: Establish Performance Benchmarks (MEDIUM)
 
-**Effort**: 0.5 session (~15K-20K tokens)  
+**Effort**: 0.5 session (~15K-20K tokens)
 **Priority**: MEDIUM
 
 **Steps**:
@@ -200,9 +200,9 @@
 ## 🧠 Cognitive Brain Usage
 
 **Start with** (first 2K tokens):
-1. [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-2. [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current status
-3. [ROADMAP.md](docs/ROADMAP.md) - Phase 9 details
+1. [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+2. [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current status
+3. [ROADMAP.md](../docs/ROADMAP.md) - Phase 9 details
 
 **Update after each task**:
 - Dashboard: Phase 9 progress (X% complete)
@@ -253,19 +253,14 @@
 ## 📚 Reference Documents
 
 **Cognitive Brain**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [Dashboard](../docs/system/CODEBASE_DASHBOARD.md)
+- [Roadmap](../docs/ROADMAP.md)
 
 **Guides**:
-- [Testing Guide](docs/guides/TESTING_GUIDE.md)
-- [Performance Guide](docs/PERFORMANCE_OPTIMIZATION_GUIDE.md)
-- [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
+- [Testing Guide](../docs/guides/TESTING_GUIDE.md)
 
 **Phase 8 Artifacts**:
-- [Session Summary](.github/PHASE8_SESSION_SUMMARY.md)
-- [Link Validation Report](docs/maintenance/LINK_VALIDATION_REPORT.md)
-- [Agent Normalization](agents/NORMALIZATION_CHECKLIST.md)
 
 ---
 
@@ -283,10 +278,10 @@
 
 ---
 
-**Current Branch**: copilot/sub-pr-2668-again  
-**PR**: #2671  
-**Status**: Phase 8 COMPLETE (100%), Phase 9 READY  
-**Token Budget**: Standard (64K-128K per session)  
+**Current Branch**: copilot/sub-pr-2668-again
+**PR**: #2671
+**Status**: Phase 8 COMPLETE (100%), Phase 9 READY
+**Token Budget**: Standard (64K-128K per session)
 **Next Focus**: Coverage enhancement (Task 9.1)
 
 **Load cognitive brain first, execute Phase 9 tasks, perform 5-pass self-review, post continuation if work remains.**

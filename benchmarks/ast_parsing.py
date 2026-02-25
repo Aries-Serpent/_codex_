@@ -14,7 +14,7 @@ MEDIUM_CODE = """
 class DataProcessor:
     def __init__(self, data):
         self.data = data
-    
+
     def process(self):
         results = []
         for item in self.data:
@@ -22,7 +22,7 @@ class DataProcessor:
                 processed = self.transform(item)
                 results.append(processed)
         return results
-    
+
     def transform(self, item):
         return item.value * 2
 """
@@ -32,7 +32,7 @@ class ComplexSystem:
     def __init__(self):
         self.cache = {}
         self.handlers = []
-    
+
 """ + "\n".join(
     [f"    def method_{i}(self, x):\n        return x + {i}" for i in range(100)]
 )

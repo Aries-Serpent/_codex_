@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/config/schema_validate.py [options]
-    
+
     Examples:
     $ python scripts/config/schema_validate.py --help
 
@@ -30,11 +30,11 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
+import logging
 
+logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Schema Validation (P4)
 
 Validates:

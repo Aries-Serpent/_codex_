@@ -7,6 +7,7 @@ import pytest
 pytest.importorskip("numpy")
 
 try:
+    import faiss  # noqa: F401  # Check faiss is importable before testing the store
     from src.codex.retrieval.stores.faiss_store import FAISSStore
     FAISS_AVAILABLE = True
 except ImportError:

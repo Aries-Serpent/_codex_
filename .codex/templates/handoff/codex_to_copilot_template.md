@@ -265,9 +265,6 @@ Execute Pre-commit 5-8: Comprehensive Test Implementation
 
 ### 📚 References
 
-**Review Report**: [Pre-commit 3-4 Review Report](.codex/reviews/precommit_3_4_review.md)
-**Validation Checklist**: [Coverage Analysis Checklist](.codex/reviews/coverage_analysis_checklist.md)
-**Next Plan**: [Comprehensive Test Implementation](.codex/plans/pr_3145/02_comprehensive_test_implementation.md)
 
 ---
 

@@ -5,15 +5,15 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
-import os
-from typing import Any, Mapping
+import os  # noqa: E402
+from typing import Any, Mapping  # noqa: E402
 
 try:  # pragma: no cover - optional import
     import mlflow
 except Exception:  # pragma: no cover - environments without mlflow
     mlflow = None
 
-from codex_ml.tracking.mlflow_guard import ensure_file_backend
+from codex_ml.tracking.mlflow_guard import ensure_file_backend  # noqa: E402
 
 LOGGER = logging.getLogger(__name__)
 
@@ -25,8 +25,12 @@ def _coerce_bool(value: str | None) -> bool:
     return text in {"1", "true", "yes", "on"}
 
 
-def init_mlflow_safe(offline_mode: bool | None = None) -> bool:
-    """Initialise MLflow if available, respecting offline guardrails."""
+def init_mlflow_safe(offline_mode: bool | None = None, **kwargs: object) -> bool:
+    """Initialise MLflow if available, respecting offline guardrails.
+
+    Extra keyword arguments (e.g. ``experiment_name``) are accepted for
+    forward-compatibility with callers that pass configuration hints.
+    """
 
     if offline_mode is None:
         offline_mode = _coerce_bool(os.environ.get("CODEX_OFFLINE_MODE"))

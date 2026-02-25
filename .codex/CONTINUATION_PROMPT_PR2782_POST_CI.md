@@ -1,8 +1,8 @@
 # 🚀 Continuation Prompt for PR #2782 Post-CI Validation
 
-**Generated**: 2026-01-12T04:00:00Z  
-**For**: GitHub Copilot Agent  
-**Session Type**: Autonomous Multi-Phase Execution  
+**Generated**: 2026-01-12T04:00:00Z
+**For**: GitHub Copilot Agent
+**Session Type**: Autonomous Multi-Phase Execution
 **Priority**: High
 
 ---
@@ -64,35 +64,35 @@ PR #2782 has addressed all code review feedback and fixed CI failures. The follo
      ## Description
      14 RAG module tests fail with `NotImplementedError: Cannot copy out of meta tensor`
      when initializing SentenceTransformer in CI environment.
-     
+
      ## Error Details
      ```
      NotImplementedError: Cannot copy out of meta tensor; no data!
      Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
      when moving module from meta to a different device.
      ```
-     
+
      ## Affected Tests
      - `test_retriever_nonexistent_index`
      - `test_retriever_invalid_top_k`
      - `test_retriever_query_without_index`
      - ... (14 total, 28 errors)
-     
+
      ## Root Cause
      SentenceTransformer initialization in CI uses meta tensors incompatible with
      current torch operations.
-     
+
      ## Proposed Solutions
      1. Mock SentenceTransformer in unit tests
      2. Use CPU-only torch in CI
      3. Update to compatible torch/sentence-transformers versions
      4. Use `to_empty()` instead of `to()` in initialization
-     
+
      ## Impact
      - Test coverage: 85.37% (below 90% threshold)
      - CI reliability: Tests flaky in CI environment
      - Not a regression: Issue pre-exists PR #2782
-     
+
      ## Related
      - PR #2782 (identified issue during validation)
      - Coverage threshold: 90% required, currently 85.37%
@@ -107,27 +107,27 @@ PR #2782 has addressed all code review feedback and fixed CI failures. The follo
      ## Description
      Semgrep OSS workflow occasionally fails with "1 configuration not found" error,
      despite configuration files existing and being valid.
-     
+
      ## Observed Behavior
      - Configuration files present: `.semgrep/semgrep.yml`, `semgrep_rules/*.yml`
      - Files validated with `yamllint` - no errors
      - Failure is transient - rerunning workflow often succeeds
-     
+
      ## Hypothesis
      - GitHub Actions cache issue
      - Network timeout fetching Semgrep configs
      - Race condition in workflow setup
-     
+
      ## Proposed Solutions
      1. Add retry logic to Semgrep workflow
      2. Increase timeout values
      3. Add cache warming step
      4. Use Semgrep local config only (no remote)
-     
+
      ## Impact
      - Low: Transient only, rerunning resolves
      - No code issues detected when runs succeed
-     
+
      ## Related
      - Workflow: `.github/workflows/semgrep_sarif.yml`
      - PR #2782 (observed during validation)
@@ -156,28 +156,28 @@ And notify the user to create them manually.
    - Add entry for PR #2782 completion:
      ```markdown
      #### 📚 PR #2782: Documentation & Process Guidance (COMPLETE ✅)
-     **Status**: Merged  
-     **Completion**: 100%  
+     **Status**: Merged
+     **Completion**: 100%
      **Merged**: 2026-01-12
-     
+
      **Deliverables**:
      - ✅ Final completion summary for PR #2785
      - ✅ Continuation prompt for post-CI phases
      - ✅ Comprehensive self-review and cognitive brain update
      - ✅ Custom agent validation (architect.py, tester.py)
      - ✅ CI/CD fixes (deny.toml, compression.rs formatting)
-     
+
      **Commits**:
      - `2c43057` - Code review feedback addressed
      - `4ca6fa3` - deny.toml parse error fixed
      - `2ce4824` - Rust formatting and security validation
-     
+
      **Lessons Learned**:
      - Surgical changes reduce review overhead
      - Pre-existing issues need separate tracking
      - Comprehensive self-review enables better continuity
      ```
-   
+
    - Update "Last Updated" timestamp
    - Update metrics if test coverage changed
 
@@ -188,7 +188,7 @@ And notify the user to create them manually.
        --lessons=.codex/sessions/ \
        --dashboard=docs/system/CODEBASE_DASHBOARD.md
    ```
-   
+
    This will:
    - Extract lessons from PR #2782 session
    - Update cognitive brain metrics
@@ -204,13 +204,13 @@ And notify the user to create them manually.
      started: 2026-01-12T03:55:00Z
      completed: 2026-01-12T04:15:00Z
      duration_minutes: 20
-     
+
      changes:
        commits: 3
        files_modified: 4
        lines_added: 42
        lines_removed: 29
-     
+
      issues_resolved:
        - Review feedback on architect.py imports
        - Review feedback on docstring completeness
@@ -218,30 +218,30 @@ And notify the user to create them manually.
        - CI: deny.toml parse error
        - CI: Rust formatting issues
        - Pre-existing: RAG torch compatibility (documented)
-     
+
      learnings:
        - pattern: "Surgical changes reduce review cycle time"
          confidence: high
          reusable: true
-       
+
        - pattern: "Environment variables enable flexible configuration"
          confidence: high
          reusable: true
-       
+
        - pattern: "Pre-existing issues need separate GitHub issues"
          confidence: high
          reusable: true
-       
+
        - pattern: "Comprehensive self-review improves session continuity"
          confidence: high
          reusable: true
-     
+
      metrics:
        test_coverage_before: 85.37%
        test_coverage_after: 85.37%
        ci_pass_rate: 100% (after fixes)
        security_vulnerabilities: 0
-     
+
      next_actions:
        - Agent standardization initiative
        - RAG torch compatibility fix
@@ -275,12 +275,12 @@ And notify the user to create them manually.
 2. Commit with descriptive message:
    ```bash
    git commit -m "docs: update cognitive brain with PR #2782 completion
-   
+
    - Add PR #2782 entry to CODEBASE_DASHBOARD.md
    - Include comprehensive self-review document
    - Archive session learnings and metrics
    - Document pre-existing issues (RAG torch, Semgrep)
-   
+
    Cognitive brain enhancements:
    - Identified 30+ custom agents for standardization
    - Mapped agent integration opportunities
@@ -328,7 +328,7 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    version: 1.0.0
    last_updated: 2026-01-12T04:30:00Z
    total_agents: 30
-   
+
    agents:
      - id: ci-testing-agent
        name: "CI Testing Agent"
@@ -346,7 +346,7 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
          - ci_failure_diagnosis
          - test_failure_analysis
          - build_problem_resolution
-       
+
      - id: project-architect-researcher
        name: "Project Architect Researcher"
        directory: .github/agents/project-architect-researcher
@@ -363,9 +363,9 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
          - api_integration
          - research_synthesis
          - architecture_design
-       
+
      # ... continue for all 30+ agents
-   
+
    standardization_status:
      fully_compliant: 5    # agents with all standards met
      partially_compliant: 15
@@ -420,119 +420,119 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    **README.md Template**:
    ```markdown
    # [Agent Name]
-   
-   **Purpose**: [One-line description]  
-   **Status**: [active|beta|deprecated]  
-   **Maturity**: [experimental|beta|production]  
+
+   **Purpose**: [One-line description]
+   **Status**: [active|beta|deprecated]
+   **Maturity**: [experimental|beta|production]
    **Version**: 1.0.0
-   
+
    ## Capabilities
    - [Capability 1]
    - [Capability 2]
    - [Capability 3]
-   
+
    ## Usage
-   
+
    ### As GitHub Copilot Agent
    ```
    @copilot use [agent-name] to [task description]
    ```
-   
+
    ### As Standalone Tool
    ```bash
    python .github/agents/[agent-name]/src/agent.py [options]
    ```
-   
+
    ## Configuration
-   
+
    See `config/agent_config.yaml` for configuration options.
-   
+
    ## Integration Points
    - [System 1]
    - [System 2]
-   
+
    ## Examples
-   
+
    See `prompts/examples.md` for detailed usage examples.
-   
+
    ## Testing
-   
+
    ```bash
    pytest .github/agents/[agent-name]/tests/
    ```
-   
+
    ## Changelog
-   
+
    See [CHANGELOG.md](./CHANGELOG.md)
-   
+
    ## Maintainer
-   
+
    [Maintainer info or "Community Maintained"]
    ```
 
    **prompts/main.md Template**:
    ```markdown
    # [Agent Name] Prompt
-   
-   **Version**: 1.0.0  
+
+   **Version**: 1.0.0
    **Last Updated**: [Date]
-   
+
    ## Role
-   
+
    You are [agent role description].
-   
+
    ## Capabilities
-   
+
    1. **[Capability 1]**: [Description]
    2. **[Capability 2]**: [Description]
    3. **[Capability 3]**: [Description]
-   
+
    ## Guidelines
-   
+
    ### Always Do
    - [Guideline 1]
    - [Guideline 2]
-   
+
    ### Never Do
    - [Anti-pattern 1]
    - [Anti-pattern 2]
-   
+
    ## Input Format
-   
+
    [Expected input structure]
-   
+
    ## Output Format
-   
+
    [Expected output structure]
-   
+
    ## Error Handling
-   
+
    [How to handle errors]
-   
+
    ## Examples
-   
+
    ### Example 1: [Scenario]
    **Input**:
    ```
    [input]
    ```
-   
+
    **Output**:
    ```
    [output]
    ```
-   
+
    ### Example 2: [Scenario]
    [...]
-   
+
    ## Integration
-   
+
    This agent integrates with:
    - [System 1]: [how it integrates]
    - [System 2]: [how it integrates]
-   
+
    ## Advanced Features
-   
+
    See [advanced.md](./advanced.md) for advanced usage patterns.
    ```
 
@@ -541,33 +541,33 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    #!/usr/bin/env python3
    """
    [Agent Name]
-   
+
    [Detailed description]
-   
+
    Usage:
        python agent.py [options]
    """
-   
+
    import click
    from pathlib import Path
    from typing import Dict, List, Optional
    import yaml
-   
-   
+
+
    class [AgentName]:
        """[Agent description]"""
-       
+
        def __init__(self, config_path: Optional[Path] = None):
            """Initialize agent with optional config."""
            self.config = self._load_config(config_path)
-       
+
        def _load_config(self, config_path: Optional[Path]) -> Dict:
            """Load agent configuration."""
            if config_path and config_path.exists():
                with open(config_path) as f:
                    return yaml.safe_load(f)
            return self._default_config()
-       
+
        def _default_config(self) -> Dict:
            """Return default configuration."""
            return {
@@ -575,21 +575,21 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
                'enabled': True,
                # ... other defaults
            }
-       
+
        def execute(self, task: Dict) -> Dict:
            """
            Execute agent task.
-           
+
            Args:
                task: Task specification
-           
+
            Returns:
                Execution result
            """
            # Implementation
            pass
-   
-   
+
+
    @click.command()
    @click.option('--config', type=click.Path(exists=True), help='Config file path')
    @click.option('--task', required=True, help='Task description')
@@ -599,8 +599,8 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
        agent = [AgentName](Path(config) if config else None)
        result = agent.execute({'description': task})
        click.echo(result)
-   
-   
+
+
    if __name__ == '__main__':
        main()
    ```
@@ -608,32 +608,32 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    **tests/test_agent.py Template**:
    ```python
    """Unit tests for [Agent Name]"""
-   
+
    import pytest
    from pathlib import Path
    from ..src.agent import [AgentName]
-   
-   
+
+
    @pytest.fixture
    def agent():
        """Create agent instance for testing"""
-       return [AgentName]()
-   
-   
+       return [AgentName](None)
+
+
    def test_agent_initialization(agent):
        """Test agent initializes correctly"""
        assert agent is not None
        assert agent.config is not None
-   
-   
+
+
    def test_agent_execute(agent):
        """Test agent execution"""
        task = {'description': 'test task'}
        result = agent.execute(task)
        assert result is not None
        # Add more assertions
-   
-   
+
+
    def test_agent_error_handling(agent):
        """Test agent handles errors gracefully"""
        invalid_task = {}
@@ -645,21 +645,21 @@ Discovered 30+ custom agents in `.github/agents/` with varying structures and ma
    ```yaml
    version: 1.0.0
    agent_name: [agent-name]
-   
+
    capabilities:
      - [capability1]
      - [capability2]
-   
+
    integration:
      cognitive_brain: true
      github_actions: false
      aftermath: true
-   
+
    settings:
      timeout_seconds: 300
      max_retries: 3
      log_level: INFO
-   
+
    # Add agent-specific settings below
    ```
 
@@ -784,24 +784,24 @@ jobs:
   analyze-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Analyze Failure
         id: analyze
         uses: ./.github/actions/analyze-ci-failure
         with:
           workflow_run_id: ${{ github.event.workflow_run.id }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Apply Fix
         if: steps.analyze.outputs.fix_available == 'true'
         uses: ./.github/actions/apply-ci-fix
         with:
           fix_type: ${{ steps.analyze.outputs.fix_type }}
           fix_params: ${{ steps.analyze.outputs.fix_params }}
-      
+
       - name: Create PR with Fix
         if: steps.apply-fix.outcome == 'success'
         uses: peter-evans/create-pull-request@v5
@@ -809,15 +809,15 @@ jobs:
           title: "🤖 Self-healing: Fix ${{ steps.analyze.outputs.failure_type }}"
           body: |
             Automated fix for CI failure.
-            
+
             **Failure**: ${{ steps.analyze.outputs.failure_description }}
             **Fix Applied**: ${{ steps.analyze.outputs.fix_description }}
             **Confidence**: ${{ steps.analyze.outputs.confidence }}%
-            
+
             Workflow Run: ${{ github.event.workflow_run.html_url }}
           branch: self-healing/${{ github.run_id }}
           labels: self-healing, automated
-      
+
       - name: Update Cognitive Brain
         if: always()
         uses: ./.github/actions/update-cognitive-brain
@@ -887,7 +887,7 @@ runs:
         cat failure.log
       env:
         GITHUB_TOKEN: ${{ inputs.repo_token }}
-    
+
     - name: Analyze with ci-testing-agent
       id: analyze
       shell: bash
@@ -895,12 +895,12 @@ runs:
         python .github/agents/ci-testing-agent/src/analyzer.py \
           --log-file failure.log \
           --output-json analysis.json
-        
+
         # Parse analysis results
         FIX_AVAILABLE=$(jq -r '.fix_available' analysis.json)
         FIX_TYPE=$(jq -r '.fix_type' analysis.json)
         CONFIDENCE=$(jq -r '.confidence' analysis.json)
-        
+
         echo "fix_available=$FIX_AVAILABLE" >> $GITHUB_OUTPUT
         echo "fix_type=$FIX_TYPE" >> $GITHUB_OUTPUT
         echo "confidence=$CONFIDENCE" >> $GITHUB_OUTPUT
@@ -937,10 +937,10 @@ class FailureAnalysis:
 
 class CIFailureAnalyzer:
     """Analyzes CI failure logs and suggests fixes"""
-    
+
     def __init__(self):
         self.patterns = self._load_patterns()
-    
+
     def _load_patterns(self) -> Dict:
         """Load known failure patterns"""
         return {
@@ -980,11 +980,11 @@ class CIFailureAnalyzer:
                 'fix': 'Clear and rebuild cache'
             },
         }
-    
+
     def analyze(self, log_file: Path) -> FailureAnalysis:
         """Analyze failure log"""
         log_content = log_file.read_text()
-        
+
         # Try to match known patterns
         for pattern_name, pattern_info in self.patterns.items():
             if re.search(pattern_info['regex'], log_content, re.IGNORECASE):
@@ -998,7 +998,7 @@ class CIFailureAnalyzer:
                     fix_description=pattern_info['fix'],
                     pattern_matched=pattern_name
                 )
-        
+
         # No known pattern matched
         return FailureAnalysis(
             fix_available=False,
@@ -1009,16 +1009,16 @@ class CIFailureAnalyzer:
             failure_description='Unable to classify failure',
             fix_description='Manual intervention required'
         )
-    
+
     def _extract_params(self, log: str, pattern: Dict) -> Dict:
         """Extract fix parameters from log"""
         params = {}
-        
+
         if pattern['fix_type'] == 'rust_format':
             # Extract file names that need formatting
             files = re.findall(r'Diff in (.+\.rs):', log)
             params['files'] = files
-        
+
         elif pattern['fix_type'] == 'increase_timeout':
             # Extract current timeout value
             match = re.search(r'timed out after (\d+)', log)
@@ -1026,13 +1026,13 @@ class CIFailureAnalyzer:
                 current = int(match.group(1))
                 params['current_timeout'] = current
                 params['suggested_timeout'] = current * 2
-        
+
         elif pattern['fix_type'] == 'add_dependency':
             # Extract missing module name
             match = re.search(r"ModuleNotFoundError: No module named '([^']+)'", log)
             if match:
                 params['missing_module'] = match.group(1)
-        
+
         return params
 
 
@@ -1043,11 +1043,11 @@ def main(log_file, output_json):
     """Analyze CI failure log"""
     analyzer = CIFailureAnalyzer()
     analysis = analyzer.analyze(Path(log_file))
-    
+
     # Write results as JSON
     output = Path(output_json)
     output.write_text(json.dumps(asdict(analysis), indent=2))
-    
+
     click.echo(f"Analysis complete. Results written to {output_json}")
     click.echo(f"Fix available: {analysis.fix_available}")
     if analysis.fix_available:
@@ -1094,7 +1094,7 @@ runs:
         cargo fmt --all
         git add -A
         git commit -m "style: auto-format Rust code (self-healing)"
-    
+
     - name: Apply Python Lint Fix
       if: ${{ inputs.fix_type == 'python_lint' }}
       shell: bash
@@ -1102,7 +1102,7 @@ runs:
         ruff --fix .
         git add -A
         git commit -m "style: auto-fix Python linting issues (self-healing)"
-    
+
     - name: Increase Timeout
       if: ${{ inputs.fix_type == 'increase_timeout' }}
       shell: bash
@@ -1111,7 +1111,7 @@ runs:
           --params '${{ inputs.fix_params }}'
         git add -A
         git commit -m "ci: increase test timeout (self-healing)"
-    
+
     - name: Add Missing Dependency
       if: ${{ inputs.fix_type == 'add_dependency' }}
       shell: bash
@@ -1121,7 +1121,7 @@ runs:
         sort -u requirements.txt -o requirements.txt
         git add requirements.txt
         git commit -m "deps: add missing dependency $MISSING_MODULE (self-healing)"
-    
+
     - name: Clear Cache
       if: ${{ inputs.fix_type == 'clear_cache' }}
       shell: bash
@@ -1176,7 +1176,7 @@ runs:
           --fix-type "${{ inputs.fix_type }}" \
           --pattern "${{ inputs.learned_pattern }}" \
           --timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    
+
     - name: Update Dashboard
       if: ${{ inputs.outcome == 'success' }}
       shell: bash
@@ -1206,11 +1206,11 @@ from datetime import datetime
 @click.option('--timestamp', required=True)
 def main(outcome, fix_type, pattern, timestamp):
     """Record self-healing outcome"""
-    
+
     # Create self-healing log directory
     log_dir = Path('.codex/self_healing')
     log_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create log entry
     log_entry = {
         'timestamp': timestamp,
@@ -1219,7 +1219,7 @@ def main(outcome, fix_type, pattern, timestamp):
         'pattern': pattern,
         'success_rate': None  # Will be calculated
     }
-    
+
     # Append to log
     log_file = log_dir / 'self_healing_log.yaml'
     if log_file.exists():
@@ -1227,23 +1227,23 @@ def main(outcome, fix_type, pattern, timestamp):
             logs = yaml.safe_load(f) or []
     else:
         logs = []
-    
+
     logs.append(log_entry)
-    
+
     # Calculate success rate for this fix type
     fix_type_logs = [l for l in logs if l['fix_type'] == fix_type]
     successes = len([l for l in fix_type_logs if l['outcome'] == 'success'])
     total = len(fix_type_logs)
     success_rate = (successes / total * 100) if total > 0 else 0
-    
+
     log_entry['success_rate'] = round(success_rate, 1)
-    
+
     # Write updated logs
     with open(log_file, 'w') as f:
         yaml.dump(logs, f, default_flow_style=False)
-    
+
     click.echo(f"Recorded {outcome} for {fix_type} (success rate: {success_rate}%)")
-    
+
     # If success rate is high, increase confidence
     if success_rate >= 90:
         click.echo(f"✅ High confidence fix type: {fix_type}")
@@ -1377,16 +1377,16 @@ class Metric:
 
 class MetricsCollector:
     """Collects and stores cognitive brain metrics"""
-    
+
     def __init__(self, db_path: str = 'metrics.db'):
         self.db_path = db_path
         self._init_db()
-    
+
     def _init_db(self):
         """Initialize metrics database"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1398,25 +1398,25 @@ class MetricsCollector:
                 tags TEXT
             )
         ''')
-        
+
         cursor.execute('''
-            CREATE INDEX IF NOT EXISTS idx_timestamp 
+            CREATE INDEX IF NOT EXISTS idx_timestamp
             ON metrics(timestamp)
         ''')
-        
+
         cursor.execute('''
-            CREATE INDEX IF NOT EXISTS idx_category 
+            CREATE INDEX IF NOT EXISTS idx_category
             ON metrics(category, name)
         ''')
-        
+
         conn.commit()
         conn.close()
-    
+
     def record(self, metric: Metric):
         """Record single metric"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             INSERT INTO metrics (timestamp, category, name, value, unit, tags)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -1428,15 +1428,15 @@ class MetricsCollector:
             metric.unit,
             str(metric.tags)
         ))
-        
+
         conn.commit()
         conn.close()
-    
+
     def record_batch(self, metrics: List[Metric]):
         """Record multiple metrics"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         data = [(
             m.timestamp.isoformat(),
             m.category,
@@ -1445,21 +1445,21 @@ class MetricsCollector:
             m.unit,
             str(m.tags)
         ) for m in metrics]
-        
+
         cursor.executemany('''
             INSERT INTO metrics (timestamp, category, name, value, unit, tags)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', data)
-        
+
         conn.commit()
         conn.close()
-    
-    def query(self, category: str, name: str, 
+
+    def query(self, category: str, name: str,
               start: datetime, end: datetime) -> List[Dict]:
         """Query metrics"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             SELECT timestamp, value, unit, tags
             FROM metrics
@@ -1467,7 +1467,7 @@ class MetricsCollector:
             AND timestamp BETWEEN ? AND ?
             ORDER BY timestamp
         ''', (category, name, start.isoformat(), end.isoformat()))
-        
+
         results = []
         for row in cursor.fetchall():
             results.append({
@@ -1476,7 +1476,7 @@ class MetricsCollector:
                 'unit': row[2],
                 'tags': eval(row[3])
             })
-        
+
         conn.close()
         return results
 ```

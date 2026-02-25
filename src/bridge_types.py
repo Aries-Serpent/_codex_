@@ -9,7 +9,7 @@ Part of Phase 2: Fragile Bridge Elimination
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Optional, Union
 
@@ -49,7 +49,7 @@ class BaseMessage:
 class ContextUpdate(BaseMessage):
     """
     Context update message from cognitive brain to Copilot.
-    
+
     Shares current cognitive state, execution context, and
     decision-making information.
     """
@@ -130,18 +130,18 @@ def create_context_update(
 ) -> ContextUpdate:
     """
     Factory function to create context update message.
-    
+
     Args:
         source: Message source
         context: Context data
         execution_state: Current OODA loop state
         confidence: Confidence level (0.0 to 1.0)
-        
+
     Returns:
         ContextUpdate message
     """
     return ContextUpdate(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.CONTEXT_UPDATE.value,
         context=context,
@@ -159,22 +159,22 @@ def create_query(
 ) -> QueryMessage:
     """
     Factory function to create query message.
-    
+
     Args:
         source: Message source
         query: Query string
         query_type: Type of query
         parameters: Optional parameters
         message_id: Optional message ID for correlation
-        
+
     Returns:
         QueryMessage
     """
     return QueryMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.QUERY.value,
-        message_id=message_id or f"query_{datetime.now().timestamp()}",
+        message_id=message_id or f"query_{datetime.now(timezone.utc).timestamp()}",
         query=query,
         query_type=query_type,
         parameters=parameters
@@ -190,19 +190,19 @@ def create_response(
 ) -> ResponseMessage:
     """
     Factory function to create response message.
-    
+
     Args:
         source: Message source
         response_to: ID of message being responded to
         status: Response status
         data: Response data
         error: Error message if status is "error"
-        
+
     Returns:
         ResponseMessage
     """
     return ResponseMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.RESPONSE.value,
         response_to=response_to,
@@ -220,18 +220,18 @@ def create_status(
 ) -> StatusMessage:
     """
     Factory function to create status message.
-    
+
     Args:
         source: Message source
         component: Component name
         status: Status string
         metrics: Optional metrics
-        
+
     Returns:
         StatusMessage
     """
     return StatusMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.STATUS.value,
         component=component,
@@ -249,19 +249,19 @@ def create_error(
 ) -> ErrorMessage:
     """
     Factory function to create error message.
-    
+
     Args:
         source: Message source
         error_type: Type of error
         error_message: Error description
         stack_trace: Optional stack trace
         recovery_action: Optional recovery suggestion
-        
+
     Returns:
         ErrorMessage
     """
     return ErrorMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.ERROR.value,
         error_type=error_type,
@@ -274,18 +274,18 @@ def create_error(
 def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
     """
     Factory function to create heartbeat message.
-    
+
     Args:
         source: Message source
         uptime_seconds: Uptime in seconds
-        
+
     Returns:
         HeartbeatMessage
     """
     return HeartbeatMessage(
-        timestamp=datetime.now().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         source=source,
         message_type=MessageType.HEARTBEAT.value,
         uptime_seconds=uptime_seconds,
-        last_activity=datetime.now().isoformat()
+        last_activity=datetime.now(timezone.utc).isoformat()
     )

@@ -1,7 +1,7 @@
 # Welcome to the _codex_ Wiki
 
-**Repository:** [Aries-Serpent/_codex_](https://github.com/Aries-Serpent/_codex_)  
-**Purpose:** ML training, evaluation, and plugin framework with autonomous agent capabilities  
+**Repository:** [Aries-Serpent/_codex_](https://github.com/Aries-Serpent/_codex_)
+**Purpose:** ML training, evaluation, and plugin framework with autonomous agent capabilities
 **Status:** Active Development | Genesis Protocol Phase 1 Complete
 
 ---
@@ -36,7 +36,7 @@
    # View documentation
    cat README.md
    cat AGENTS.md
-   
+
    # Check configuration
    ls configs/
    ```
@@ -45,7 +45,7 @@
 
 **New AI Agent Orientation:**
 
-1. 📚 **Must Read First:** [AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)
+1. 📚 **Must Read First:** [AGENTS.md](../../.github/AGENTS.md)
 2. 🛡️ **Understand Constraints:** [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)
 3. 🤖 **Operational Guide:** [Agent Operations](Agent-Operations.md)
 4. 🎯 **Genesis Protocol:** [Genesis Protocol Guide](Genesis-Protocol.md)
@@ -60,7 +60,7 @@
 |----------|---------|----------|
 | [Home](Home.md) | Repository overview and quick start | Everyone |
 | [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project introduction | Developers |
-| [AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md) | AI agent documentation | AI Agents |
+| [AGENTS.md](../../.github/AGENTS.md) | AI agent documentation | AI Agents |
 | [CONTRIBUTING.md](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md) | Contribution guidelines | Contributors |
 
 ### Specialized Topics
@@ -70,7 +70,7 @@
 | [Genesis Protocol](Genesis-Protocol.md) | Autonomous agent initialization | Admins, Agents |
 | [Agent Operations](Agent-Operations.md) | Agent decision framework | AI Agents |
 | [Security](https://github.com/Aries-Serpent/_codex_/blob/main/SECURITY.md) | Security policies and reporting | Everyone |
-| [Governance](https://github.com/Aries-Serpent/_codex_/blob/main/GOVERNANCE.md) | Project governance | Contributors |
+| Governance | Project governance | Contributors |
 
 ---
 
@@ -164,7 +164,7 @@ pytest tests/ -m "not slow"
    # Edit files
    # Run tests
    pytest tests/
-   
+
    # Run linting
    ruff check .
    black .
@@ -229,8 +229,8 @@ pip install -e ".[analysis]" # Code analysis
 
 ### Security Status
 
-**Last Scan:** 2025-12-26  
-**Known Vulnerabilities:** 0 (after recent updates)  
+**Last Scan:** 2025-12-26
+**Known Vulnerabilities:** 0 (after recent updates)
 **Security Score:** A+
 
 ### Reporting Security Issues
@@ -329,7 +329,7 @@ This project follows a [Code of Conduct](https://github.com/Aries-Serpent/_codex
 
 ## 📋 Changelog
 
-See [CHANGES.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGES.md) and [.codex/change_log.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/change_log.md) for detailed change history.
+See CHANGES.md and [.codex/change_log.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/change_log.md) for detailed change history.
 
 ---
 
@@ -339,8 +339,8 @@ This project is licensed under the MIT License. See [LICENSE](https://github.com
 
 ---
 
-**Wiki Last Updated:** 2025-12-26  
-**Wiki Version:** 1.0.0  
+**Wiki Last Updated:** 2025-12-26
+**Wiki Version:** 1.0.0
 **Next Review:** After Genesis Phase 2 completion
 
 **Navigation:** Use the sidebar to explore specific topics in depth.

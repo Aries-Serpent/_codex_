@@ -1,7 +1,7 @@
 # StopIteration Collection Errors - Fix Report
 
-**Date**: 2026-02-08  
-**CI Job**: 62875310963  
+**Date**: 2026-02-08
+**CI Job**: 62875310963
 **Status**: ✅ FIXED
 
 ## Problem Summary
@@ -203,7 +203,7 @@ pytest tests/training/test_train_loop_coverage.py -v
 
 ## References
 
-- **CI Logs**: https://github.com/Aries-Serpent/_codex_/actions/runs/21792821999/job/62875310963
+- **CI Logs**: https://github.com/Aries-Serpent/_codex_/actions/runs/21792821999 <!-- Note: Logs expire after 90 days -->/job/62875310963
 - **PEP 479**: https://www.python.org/dev/peps/pep-0479/
 - **Python 3.12 Release Notes**: https://docs.python.org/3/whatsnew/3.12.html
 - **Pytest Skip Documentation**: https://docs.pytest.org/en/stable/how-to/skipping.html
@@ -223,11 +223,11 @@ The StopIteration errors were caused by module-level class definitions that atte
 
 **All 20+ tests affected should now:**
 - ✅ Collect without StopIteration errors
-- ✅ Skip gracefully when torch/numpy unavailable  
+- ✅ Skip gracefully when torch/numpy unavailable
 - ✅ Run successfully when dependencies present
 - ✅ Work correctly in Python 3.12+
 
 ---
 
-**Fixed by**: CI Testing Agent  
+**Fixed by**: CI Testing Agent
 **Review**: Ready for code review

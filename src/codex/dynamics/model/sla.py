@@ -36,10 +36,10 @@ class SLAPauseCondition(BaseModel):
 
     def evaluate(self, ticket_state: dict[str, Any]) -> bool:
         """Evaluate if this pause condition is met.
-        
+
         Args:
             ticket_state: Current ticket/case state dictionary
-            
+
         Returns:
             True if condition is met and SLA should be paused
         """
@@ -58,10 +58,10 @@ class SLAPauseCondition(BaseModel):
 
 class SLAPolicy(BaseModel):
     """Versioned SLA Policy Object for Dynamics 365.
-    
+
     This replaces the brittle CSV-based configuration with a typed,
     versioned policy that can be validated against the SaaS reality.
-    
+
     Attributes:
         name: Policy identifier (e.g., "cdx_assignment_standard")
         metric: Type of SLA metric being measured
@@ -117,11 +117,11 @@ class SLAPolicy(BaseModel):
         business_hours_schedule: dict[str, Any] | None = None,
     ) -> datetime:
         """Calculate SLA deadline from start time.
-        
+
         Args:
             start_time: When the SLA clock starts
             business_hours_schedule: Optional business hours configuration
-            
+
         Returns:
             Deadline datetime when SLA will breach
         """
@@ -135,10 +135,10 @@ class SLAPolicy(BaseModel):
 
     def is_paused(self, ticket_state: dict[str, Any]) -> bool:
         """Check if SLA should be paused based on current ticket state.
-        
+
         Args:
             ticket_state: Current ticket/case state dictionary
-            
+
         Returns:
             True if any pause condition is met
         """
@@ -149,7 +149,7 @@ class SLAPolicy(BaseModel):
 
     def diff(self, other: SLAPolicy) -> list[dict[str, Any]]:
         """Return JSON patch operations describing differences with ``other``.
-        
+
         This enables drift detection between policy versions.
         """
         patches: list[dict[str, Any]] = []
@@ -183,7 +183,7 @@ class SLAPolicy(BaseModel):
 
     def to_d365_format(self) -> dict[str, Any]:
         """Convert to Dynamics 365 SLA configuration format.
-        
+
         Returns:
             Dictionary suitable for D365 SLA API
         """
@@ -224,11 +224,11 @@ class SLAPolicyRegistry(BaseModel):
 
     def get_policy(self, name: str, version: str | None = None) -> SLAPolicy | None:
         """Retrieve a policy by name and optional version.
-        
+
         Args:
             name: Policy name
             version: Specific version, or None for latest
-            
+
         Returns:
             SLAPolicy if found, None otherwise
         """
@@ -261,10 +261,10 @@ class SLAPolicyRegistry(BaseModel):
     @classmethod
     def from_csv(cls, csv_path: str) -> SLAPolicyRegistry:
         """Migrate legacy CSV configuration to policy registry.
-        
+
         Args:
             csv_path: Path to legacy slas.csv file
-            
+
         Returns:
             SLAPolicyRegistry with migrated policies
         """
@@ -273,7 +273,7 @@ class SLAPolicyRegistry(BaseModel):
 
         registry = cls(
             policies=[],
-            last_updated=datetime.now().isoformat(),
+            last_updated=datetime.now(UTC).isoformat(),
         )
 
         csv_file = Path(csv_path)
@@ -304,7 +304,7 @@ class SLAPolicyRegistry(BaseModel):
                     target_minutes=int(row.get("target_minutes", "60")),
                     pause_conditions=pause_conditions,
                     version="1.0.0",  # Initial version from CSV
-                    effective_date=datetime.now().isoformat(),
+                    effective_date=datetime.now(UTC).isoformat(),
                     description=f"Migrated from CSV: {csv_path}",
                 )
                 registry.add_policy(policy)

@@ -4,7 +4,7 @@ Welcome to the Codex repository! This guide will help you get started as a contr
 
 ## Table of Contents
 
-1. [Quick Start]()
+1. [Quick Start](#quick-start)
 2. [Repository Overview](#repository-overview)
 3. [Development Setup](#development-setup)
 4. [Understanding the Codebase](#understanding-the-codebase)
@@ -598,6 +598,6 @@ pip freeze > requirements.txt
 
 ---
 
-**Last Updated**: 2025-12-11  
-**Version**: 1.0.0  
+**Last Updated**: 2025-12-11
+**Version**: 1.0.0
 **Maintainer**: Codex Team

@@ -49,11 +49,11 @@ def get_headers() -> dict[str, str]:
 def export_alerts_offline() -> list[dict[str, Any]]:
     """
     Generate sample alerts for offline/dry-run mode.
-    
+
     This allows the script to work without network access.
     """
     logger.info("Running in offline mode - generating sample alerts")
-    
+
     sample_alerts = [
         {
             "number": 1,
@@ -104,7 +104,7 @@ def export_alerts_offline() -> list[dict[str, Any]]:
             "html_url": f"https://github.com/{OWNER}/{REPO}/security/code-scanning/3",
         },
     ]
-    
+
     return sample_alerts
 
 
@@ -113,7 +113,7 @@ def export_alerts() -> list[dict[str, Any]]:
     if not GITHUB_TOKEN:
         logger.warning("GITHUB_TOKEN not set, using offline mode")
         return export_alerts_offline()
-    
+
     try:
         import requests
     except ImportError as e:
@@ -121,12 +121,12 @@ def export_alerts() -> list[dict[str, Any]]:
         logger.warning(f"ImportError: {e}", exc_info=True)
         logger.warning("requests not installed, using offline mode")
         return export_alerts_offline()
-    
+
     alerts: list[dict[str, Any]] = []
     page = 1
-    
+
     logger.info("📥 Exporting Semgrep alerts...")
-    
+
     while page <= MAX_PAGES:
         try:
             response = requests.get(
@@ -141,26 +141,26 @@ def export_alerts() -> list[dict[str, Any]]:
                 timeout=30,
             )
             response.raise_for_status()
-            
+
             batch = response.json()
             if not batch:
                 break
-            
+
             alerts.extend(batch)
             logger.info(f"  Fetched page {page}: {len(batch)} alerts")
-            
+
             # Bounds check (safeguard)
             if len(alerts) >= MAX_ALERTS:
                 logger.warning(f"Reached maximum alerts limit: {MAX_ALERTS}")
                 break
-            
+
             page += 1
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Error fetching alerts: {e}")
             break
-    
+
     logger.info(f"✅ Exported {len(alerts)} total alerts")
     return alerts
 
@@ -175,22 +175,22 @@ def analyze_alerts(alerts: list[dict[str, Any]]) -> dict[str, Any]:
         "by_language": Counter(),
         "rule_details": {},
     }
-    
+
     for alert in alerts:
         # Severity
         rule = alert.get("rule", {})
         severity = rule.get("severity", "unknown")
         analysis["by_severity"][severity] += 1
-        
+
         # Rule
         rule_id = rule.get("id", "unknown")
         analysis["by_rule"][rule_id] += 1
-        
+
         # File
         location = alert.get("most_recent_instance", {}).get("location", {})
         file_path = location.get("path", "unknown")
         analysis["by_file"][file_path] += 1
-        
+
         # Store rule details
         if rule_id not in analysis["rule_details"]:
             analysis["rule_details"][rule_id] = {
@@ -200,14 +200,14 @@ def analyze_alerts(alerts: list[dict[str, Any]]) -> dict[str, Any]:
                 "count": 0,
             }
         analysis["rule_details"][rule_id]["count"] += 1
-    
+
     return analysis
 
 
 def generate_markdown_report(analysis: dict[str, Any]) -> str:
     """Generate a markdown analysis report."""
     timestamp = datetime.now(timezone.utc).isoformat()
-    
+
     report = f"""# Semgrep Alert Analysis Report
 > Generated: {timestamp}
 
@@ -224,35 +224,35 @@ def generate_markdown_report(analysis: dict[str, Any]) -> str:
 | Severity | Count | Percentage |
 |----------|-------|------------|
 """
-    
+
     total = analysis["total"] or 1  # Avoid division by zero
     for severity, count in analysis["by_severity"].most_common():
         pct = (count / total) * 100
         report += f"| {severity.upper()} | {count} | {pct:.1f}% |\n"
-    
+
     report += """
 ## Top 10 Rules by Alert Count
 
 | Rule ID | Severity | Count | Description |
 |---------|----------|-------|-------------|
 """
-    
+
     for rule_id, count in analysis["by_rule"].most_common(10):
         details = analysis["rule_details"].get(rule_id, {})
         severity = details.get("severity", "unknown")
         desc = details.get("description", "")[:50] + "..."
         report += f"| `{rule_id}` | {severity} | {count} | {desc} |\n"
-    
+
     report += """
 ## Top 10 Files by Alert Count
 
 | File Path | Alert Count |
 |-----------|-------------|
 """
-    
+
     for file_path, count in analysis["by_file"].most_common(10):
         report += f"| `{file_path}` | {count} |\n"
-    
+
     report += """
 ## Remediation Priority
 
@@ -274,40 +274,40 @@ Based on severity and frequency:
 - False positives (document and suppress)
 - Test/example code with intentional patterns
 """
-    
+
     return report
 
 
 def generate_report(
-    alerts: list[dict[str, Any]], 
-    analysis: dict[str, Any], 
+    alerts: list[dict[str, Any]],
+    analysis: dict[str, Any],
     output_dir: Path
 ) -> None:
     """Generate analysis report and export files."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Export raw alerts
     alerts_file = output_dir / "semgrep-alerts-export.json"
     alerts_file.write_text(json.dumps(alerts, indent=2))
     logger.info(f"💾 Saved alerts to {alerts_file}")
-    
+
     # Export distribution CSV
     dist_file = output_dir / "alert-distribution.csv"
     with open(dist_file, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Category", "Item", "Count"])
-        
+
         for severity, count in analysis["by_severity"].most_common():
             writer.writerow(["severity", severity, count])
-        
+
         for rule, count in analysis["by_rule"].most_common(20):
             writer.writerow(["rule", rule, count])
-        
+
         for file, count in analysis["by_file"].most_common(20):
             writer.writerow(["file", file, count])
-    
+
     logger.info(f"💾 Saved distribution to {dist_file}")
-    
+
     # Generate markdown report
     report = generate_markdown_report(analysis)
     report_dir = output_dir.parent.parent / "docs" / "security"
@@ -320,18 +320,18 @@ def generate_report(
 def main() -> None:
     """Main entry point."""
     logging.basicConfig(level=logging.INFO)
-    
+
     output_dir = Path(".github/security")
-    
+
     # Export alerts
     alerts = export_alerts()
-    
+
     # Analyze
     analysis = analyze_alerts(alerts)
-    
+
     # Generate reports
     generate_report(alerts, analysis, output_dir)
-    
+
     # Print summary
     logger.info("\n📊 Summary:")
     logger.info(f"  Total alerts: {analysis['total']}")

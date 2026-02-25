@@ -56,14 +56,14 @@ class SearchResult:
 
 class PGVectorStore:
     """PostgreSQL pgvector store with scatter-gather shard support.
-    
+
     Features:
     - Async scatter-gather queries across shards
     - Connection pooling for concurrent queries
     - Centroid-based partitioning (optional)
     - Global re-ranking across shards
     - Batch write optimization
-    
+
     Example:
         >>> store = PGVectorStore(
         ...     connection_string="postgresql://...",
@@ -81,7 +81,7 @@ class PGVectorStore:
         shard_id: Optional[int] = None,
     ):
         """Initialize PGVector store.
-        
+
         Args:
             connection_string: PostgreSQL connection string
             num_shards: Total number of shards
@@ -108,7 +108,7 @@ class PGVectorStore:
 
     async def initialize(self, connection_string: Optional[str] = None) -> None:
         """Initialize connection pool and create tables.
-        
+
         Args:
             connection_string: Override connection string
         """
@@ -184,12 +184,12 @@ class PGVectorStore:
         target_shards: Optional[List[int]] = None,
     ) -> List[SearchResult]:
         """Scatter-gather search across shards.
-        
+
         Args:
             query_vector: Query embedding vector
             top_k: Number of results to return
             target_shards: Optional list of shards to query (default: all)
-            
+
         Returns:
             List of search results, globally re-ranked
         """
@@ -233,12 +233,12 @@ class PGVectorStore:
         limit: int,
     ) -> List[SearchResult]:
         """Query a single shard.
-        
+
         Args:
             shard_id: Shard ID to query
             query_vector: Query embedding
             limit: Max results from this shard
-            
+
         Returns:
             List of search results from this shard
         """
@@ -251,7 +251,7 @@ class PGVectorStore:
             # Execute local HNSW search on shard
             cursor = await conn.execute(
                 f"""
-                SELECT id, content, metadata, 
+                SELECT id, content, metadata,
                        1 - (embedding <=> %s::vector) as score
                 FROM {table_name}
                 ORDER BY embedding <=> %s::vector
@@ -280,7 +280,7 @@ class PGVectorStore:
         shard_mapper: Optional[callable] = None,
     ) -> None:
         """Batch insert documents with pipeline optimization.
-        
+
         Args:
             documents: List of documents with 'id', 'content', 'metadata'
             embeddings: Embedding vectors (one per document)

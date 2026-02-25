@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, InventoryMetadata, SupplementalInventory
-from .shim_integration import ShimInventoryReader, CrossReference
+from .shim_integration import CrossReference, ShimInventoryReader
 
 
 class DuplicateScanner:

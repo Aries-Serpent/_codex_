@@ -28,7 +28,7 @@ Please copy the content below and post it as a new comment on PR #2622. The comm
 
 ### Priority 1: Validate CI/CD Workflows (HIGH)
 
-**Current Status:** 2 failing CI jobs mentioned by user  
+**Current Status:** 2 failing CI jobs mentioned by user
 **Required Actions:**
 
 1. Check workflow status:
@@ -123,7 +123,7 @@ pytest tests/integration/test_genesis_workflow.py -v --maxfail=3
 # Check for broken internal links
 find .codex docs -name "*.md" -exec grep -l "\.md)" {} + | while read f; do
   echo "Checking: $f"
-  grep -o '\[.*\](\..*\.md)' "$f" | cut -d'(' -f2 | cut -d')' -f1
+  grep -o '\<!-- BROKEN: [.*\](\..*\.md) -->' "$f" | cut -d'(' -f2 | cut -d')' -f1
 done
 ```
 
@@ -312,8 +312,8 @@ solutions = lessons.search(category="ci-cd")
 
 ---
 
-**Session Start:** When you see this prompt  
-**Session Goal:** Complete Phase 2 tasks and prepare for merge  
+**Session Start:** When you see this prompt
+**Session Goal:** Complete Phase 2 tasks and prepare for merge
 **Session End:** When all completion criteria are met OR blocker requires human intervention
 
 Remember: If you cannot complete all tasks in this session, create an updated follow-up prompt as instructed at the top of this document.

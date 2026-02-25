@@ -81,7 +81,7 @@ class TestCircuitBreaker:
 
     def test_circuit_enters_half_open(self):
         """Test circuit enters half-open after timeout"""
-        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.1)  # 100ms timeout
+        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.05)  # 50ms timeout
         cb = CircuitBreaker(config)
 
         def fail_func():
@@ -94,8 +94,8 @@ class TestCircuitBreaker:
 
         assert cb.state == CircuitState.OPEN
 
-        # Wait for timeout
-        time.sleep(0.15)
+        # Wait for timeout with buffer for timing precision
+        time.sleep(0.8)  # 16x timeout margin for CI reliability
 
         # Next call should enter half-open
         def success_func():
@@ -110,7 +110,7 @@ class TestCircuitBreaker:
         config = CircuitBreakerConfig(
             failure_threshold=2,
             success_threshold=2,
-            timeout=0.1,
+            timeout=0.05,
         )
         cb = CircuitBreaker(config)
 
@@ -122,8 +122,8 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        # Wait and enter half-open
-        time.sleep(0.15)
+        # Wait and enter half-open with buffer
+        time.sleep(0.8)  # 16x timeout margin for CI reliability
 
         # Successful calls should close circuit
         def success_func():
@@ -138,7 +138,7 @@ class TestCircuitBreaker:
 
     def test_circuit_reopens_on_half_open_failure(self):
         """Test circuit reopens if half-open call fails"""
-        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.1)
+        config = CircuitBreakerConfig(failure_threshold=2, timeout=0.05)
         cb = CircuitBreaker(config)
 
         def fail_func():
@@ -149,8 +149,8 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        # Wait and enter half-open
-        time.sleep(0.15)
+        # Wait and enter half-open with buffer
+        time.sleep(0.8)  # 16x timeout margin for CI reliability
 
         # Failure in half-open should reopen circuit
         with pytest.raises(ValueError):
@@ -219,7 +219,7 @@ class TestRetryWithBackoff:
         """Test all retries exhausted"""
         mock_func = Mock(side_effect=ValueError("fail"))
 
-        with pytest.raises(ValueError, match="fail"):
+        with pytest.raises(ValueError, match=r"^fail$"):
             retry_with_backoff(
                 mock_func,
                 max_retries=2,

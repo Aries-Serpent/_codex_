@@ -32,10 +32,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import json
-import os
-import sqlite3
+import argparse  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -44,10 +44,10 @@ try:
 except Exception as e:
     logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Optional
+import sys  # noqa: E402
+from datetime import datetime  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - optional rich dependency
     from rich.console import Console
@@ -56,8 +56,13 @@ except Exception:  # pragma: no cover - fallback
     Console = None
     Table = None
 
-from .config import DEFAULT_LOG_DB
-from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
+from .config import DEFAULT_LOG_DB  # noqa: E402
+from .db_utils import (  # noqa: E402
+    infer_columns,
+    infer_probable_table,
+    open_db,
+    resolve_db_path,
+)
 
 
 class LogQueryEngine:

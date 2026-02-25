@@ -1,9 +1,9 @@
 # 🤖 Agent Registry
 
-**Version**: 1.4.0  
-**Last Updated**: 2026-01-22T07:21:00Z  
-**Total Agents**: 35+  
-**Standardized**: 7 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator, artifact-monitor-agent)  
+**Version**: 1.4.0
+**Last Updated**: 2026-01-22T07:21:00Z
+**Total Agents**: 35+
+**Standardized**: 7 (ci-diagnostician, test-assertion-updater, batch-triage-agent, root-organizer-agent, reference-updater-agent, documentation-consolidator, artifact-monitor-agent)
 **Target**: 100% standardization by 2026-01-23
 
 ---
@@ -16,6 +16,41 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 
 ## Priority Tier 1: Production-Critical Agents
 
+### 0. GitHub-Guru-Agent ✅ NEW
+- **ID**: `github-guru-agent`
+- **File**: `.github/agents/github-guru-agent.agent.md`
+- **Directory**: `.github/agents/github-guru-agent/`
+- **Purpose**: Full-spectrum GitHub repository intelligence — PR analysis, issue triage, workflow health, branch governance, dependency drift, and label taxonomy enforcement
+- **Status**: Active
+- **Maturity**: Production
+- **Version**: 1.1.0
+- **Test Coverage**: 109 tests passing (100%)
+- **Has Prompts**: No (event-driven)
+- **Has Tests**: Yes (`.github/agents/github-guru-agent/tests/`)
+- **Has Docs**: Yes (comprehensive manifest + spec)
+- **Standard Structure**: Full implementation (10 capabilities, cognitive bridge, metrics, learning)
+- **Physics Model**: Balance ⚖️ (primary) + Path 🛤️ (secondary) | Energy: 5/5
+- **Integration Points**:
+  - `.github/workflows/github-guru.yml` (scheduled daily + event-driven)
+  - `.github/agents/github-guru-agent/main.py` (GitHubGuruAgent orchestrator)
+  - `.github/agents/github-guru-agent/guru_adapter.py` (Planner ABC bridge)
+  - `.github/agents/AGENT_REGISTRY.yaml` (machine registry)
+- **Capabilities**:
+  - `C-01` pr_analysis (PR health score, size, staleness, conflicts)
+  - `C-02` issue_triage (label taxonomy, priority, routing)
+  - `C-03` workflow_health_monitoring (failure rate, degraded workflows)
+  - `C-04` branch_governance (stale branches, naming conventions)
+  - `C-05` contributor_intelligence (ownership gaps, review bottlenecks)
+  - `C-06` repository_hygiene_reporting (orphaned files, dep drift)
+  - `C-07` codebase_navigation_guidance (agent/doc routing hints)
+  - `C-08` dependency_drift_detection (unpinned/outdated deps)
+  - `C-09` stale_resource_detection (stale PRs/issues/branches)
+  - `C-10` label_taxonomy_enforcement (compliance vs `.github/labels.yml`)
+- **SAFE_MODE**: true (read-only GitHub operations; no branch writes)
+- **Cognitive Brain**: `GitHubGuruAdapter` implements full `Planner` ABC (OODA + Reflect loop)
+- **Last Updated**: 2026-02-21
+- **Maintainer**: mbaetiong
+
 ### 0. Artifact-Monitor-Agent ✅ NEW
 - **ID**: `artifact-monitor-agent`
 - **File**: `.github/agents/artifact-monitor-agent.md`
@@ -27,7 +62,7 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 - **Has Tests**: Phase 7 pending
 - **Has Docs**: Yes (comprehensive documentation + CLI)
 - **Standard Structure**: Full implementation (monitoring engine + CLI + patterns)
-- **Integration Points**: 
+- **Integration Points**:
   - GitHub Actions (artifact-monitoring.yml - scheduled every 3 hours)
   - scripts/monitoring/artifact_monitor.py
   - scripts/monitoring/issue_manager.py
@@ -315,7 +350,7 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
 - **Has Tests**: Integration with pre-commit validation
 - **Has Docs**: Yes (comprehensive documentation)
 - **Standard Structure**: Documentation-based agent with pre-commit integration
-- **Integration Points**: 
+- **Integration Points**:
   - `.pre-commit-scripts/check-meta-tensors.py` (pre-commit hook)
   - `src/codex/rag/utils.py` (`safe_model_load_v2()` utility)
   - `.github/workflows/test-suite.yml` (CI validation)
@@ -513,18 +548,18 @@ An agent is **Fully Compliant** when it has:
 
 ---
 
-**Maintainer**: GitHub Copilot Autonomous Agent  
-**Last Review**: 2026-01-23  
-**Next Review**: 2026-01-23 (weekly)  
+**Maintainer**: GitHub Copilot Autonomous Agent
+**Last Review**: 2026-01-23
+**Next Review**: 2026-01-23 (weekly)
 **Version**: 1.0.0
 
 ---
 
 ## 🎯 Mission Overview
 
-**Agent Name**: 🤖 Agent Registry  
-**Agent Type**: Specialized Domain  
-**Energy Level**: 3/5  
+**Agent Name**: 🤖 Agent Registry
+**Agent Type**: Specialized Domain
+**Energy Level**: 3/5
 **Operational Status**: ✅ Active
 
 ### Purpose
@@ -670,7 +705,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -726,7 +761,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -881,8 +916,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

@@ -132,10 +132,10 @@ class FeatureExtractor:
 
     def extract_text_features(self, text: str) -> dict[str, float]:
         """Extract features from text content.
-        
+
         Args:
             text: The text to extract features from.
-            
+
         Returns:
             Dictionary of feature names to values.
         """
@@ -167,10 +167,10 @@ class FeatureExtractor:
 
     def extract_pattern_features(self, pattern: dict[str, Any]) -> dict[str, float]:
         """Extract features from a pattern entry.
-        
+
         Args:
             pattern: Pattern dictionary from pattern store.
-            
+
         Returns:
             Dictionary of feature names to values.
         """
@@ -199,10 +199,10 @@ class FeatureExtractor:
 
     def categorize_symptoms(self, symptoms: list[str]) -> str:
         """Determine the most likely category for a set of symptoms.
-        
+
         Args:
             symptoms: List of symptom strings.
-            
+
         Returns:
             Best matching category name.
         """
@@ -221,7 +221,7 @@ class FeatureExtractor:
 
 class DataPipeline:
     """Main data pipeline for ML training data preparation.
-    
+
     This pipeline extracts data from multiple sources, transforms it,
     and generates training samples for pattern recognition models.
     """
@@ -233,7 +233,7 @@ class DataPipeline:
         session_db_path: str | Path | None = None,
     ) -> None:
         """Initialize the data pipeline.
-        
+
         Args:
             pattern_store_path: Path to pattern learning store JSON.
             action_log_path: Path to action log NDJSON.
@@ -249,10 +249,10 @@ class DataPipeline:
 
     def load_pattern_store(self, path: str | Path | None = None) -> list[RawDataRecord]:
         """Load data from pattern learning store.
-        
+
         Args:
             path: Optional path override for pattern store.
-            
+
         Returns:
             List of raw data records extracted.
         """
@@ -292,10 +292,10 @@ class DataPipeline:
 
     def load_action_log(self, path: str | Path | None = None) -> list[RawDataRecord]:
         """Load data from action log.
-        
+
         Args:
             path: Optional path override for action log.
-            
+
         Returns:
             List of raw data records extracted.
         """
@@ -328,7 +328,7 @@ class DataPipeline:
 
     def extract_all_data(self) -> list[RawDataRecord]:
         """Extract data from all configured sources.
-        
+
         Returns:
             List of all extracted raw data records.
         """
@@ -344,7 +344,7 @@ class DataPipeline:
 
     def generate_training_samples(self) -> list[PatternSample]:
         """Generate training samples from raw data.
-        
+
         Returns:
             List of training samples ready for ML models.
         """
@@ -390,11 +390,11 @@ class DataPipeline:
         validation_ratio: float = 0.1,
     ) -> tuple[list[PatternSample], list[PatternSample], list[PatternSample]]:
         """Split samples into train/validation/test sets.
-        
+
         Args:
             train_ratio: Fraction for training set.
             validation_ratio: Fraction for validation set.
-            
+
         Returns:
             Tuple of (train_samples, validation_samples, test_samples).
         """
@@ -415,7 +415,7 @@ class DataPipeline:
 
     def export_samples(self, output_path: str | Path, samples: list[PatternSample] | None = None) -> None:
         """Export samples to a JSON file.
-        
+
         Args:
             output_path: Path to write samples to.
             samples: Samples to export (default: all samples).
@@ -434,7 +434,7 @@ class DataPipeline:
 
     def get_statistics(self) -> dict[str, Any]:
         """Get statistics about the extracted data.
-        
+
         Returns:
             Dictionary of statistics.
         """
@@ -458,7 +458,7 @@ class TrainingDataGenerator:
 
     def __init__(self, samples: list[PatternSample]) -> None:
         """Initialize the generator with samples.
-        
+
         Args:
             samples: List of pattern samples to use.
         """
@@ -466,7 +466,7 @@ class TrainingDataGenerator:
 
     def generate_classification_data(self) -> tuple[list[str], list[str]]:
         """Generate data for symptom classification.
-        
+
         Returns:
             Tuple of (texts, labels) for classification.
         """
@@ -483,7 +483,7 @@ class TrainingDataGenerator:
 
     def generate_recommendation_data(self) -> tuple[list[str], list[str]]:
         """Generate data for resolution recommendation.
-        
+
         Returns:
             Tuple of (symptoms, resolutions) for recommendation.
         """
@@ -499,7 +499,7 @@ class TrainingDataGenerator:
 
     def generate_success_prediction_data(self) -> tuple[list[dict[str, float]], list[bool]]:
         """Generate data for success prediction.
-        
+
         Returns:
             Tuple of (features, labels) for prediction.
         """
@@ -517,10 +517,10 @@ class TrainingDataGenerator:
         feature_names: list[str] | None = None,
     ) -> tuple[list[list[float]], list[str]]:
         """Convert samples to a feature matrix.
-        
+
         Args:
             feature_names: Optional list of feature names to include.
-            
+
         Returns:
             Tuple of (feature_matrix, feature_names).
         """
@@ -548,7 +548,7 @@ class PatternDataset:
 
     def __init__(self, samples: list[PatternSample]) -> None:
         """Initialize the dataset.
-        
+
         Args:
             samples: List of pattern samples.
         """
@@ -573,10 +573,10 @@ class PatternDataset:
 
     def filter_by_category(self, category: str) -> PatternDataset:
         """Filter samples by category.
-        
+
         Args:
             category: Category to filter by.
-            
+
         Returns:
             New dataset with filtered samples.
         """
@@ -585,10 +585,10 @@ class PatternDataset:
 
     def filter_by_success(self, success: bool = True) -> PatternDataset:
         """Filter samples by success status.
-        
+
         Args:
             success: Success status to filter by.
-            
+
         Returns:
             New dataset with filtered samples.
         """
@@ -608,7 +608,7 @@ class PatternDataset:
 
     def save(self, path: str | Path) -> None:
         """Save dataset to JSON file.
-        
+
         Args:
             path: Path to save to.
         """
@@ -626,10 +626,10 @@ class PatternDataset:
     @classmethod
     def load(cls, path: str | Path) -> PatternDataset:
         """Load dataset from JSON file.
-        
+
         Args:
             path: Path to load from.
-            
+
         Returns:
             Loaded dataset.
         """
@@ -642,7 +642,7 @@ class PatternDataset:
 
 def create_pipeline_from_defaults() -> DataPipeline:
     """Create a data pipeline with default paths.
-    
+
     Returns:
         Configured DataPipeline instance.
     """

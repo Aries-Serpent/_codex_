@@ -15,6 +15,13 @@ pytest.importorskip("numpy")
 
 import numpy as np  # noqa: E402
 
+# Check for FAISS specifically
+try:
+    import faiss  # noqa: F401
+    FAISS_AVAILABLE = True
+except ImportError:
+    FAISS_AVAILABLE = False
+
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
     from codex.rag.embeddings import (
@@ -41,7 +48,7 @@ except ImportError:
     OPENAI_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
-    not RAG_ERROR_HANDLING_AVAILABLE,
+    not RAG_ERROR_HANDLING_AVAILABLE or not FAISS_AVAILABLE,
     reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 

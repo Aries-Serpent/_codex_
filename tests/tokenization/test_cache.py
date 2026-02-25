@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from codex_ml.tokenization.cache import (
     TokenizationCache,
@@ -135,7 +135,7 @@ class TestTokenizationCache:
         ).hexdigest()
 
         # Make key1 and key2 old (>1 hour)
-        old_time = datetime.now() - timedelta(hours=2)
+        old_time = datetime.now(timezone.utc) - timedelta(hours=2)
         cache.cache[key1]["timestamp"] = old_time
         cache.cache[key2]["timestamp"] = old_time
 

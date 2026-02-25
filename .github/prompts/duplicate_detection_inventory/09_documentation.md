@@ -1,8 +1,8 @@
 # Phase 9: Documentation & Examples
 
-**Status**: Pending Phase 8 Completion  
-**Dependencies**: Phase 1-8  
-**Estimated Time**: 2 hours  
+**Status**: Pending Phase 8 Completion
+**Dependencies**: Phase 1-8
+**Estimated Time**: 2 hours
 **Branch**: `copilot/fix-strict-conflicts-detected`
 
 ---
@@ -122,7 +122,7 @@ python scripts/analysis/cli.py . --config .duplicate-scan.yml
 
 ## Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
+See [ARCHITECTURE.md](../../../docs/ARCHITECTURE.md) for detailed architecture documentation.
 
 ## Troubleshooting
 

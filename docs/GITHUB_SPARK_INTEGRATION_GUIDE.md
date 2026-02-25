@@ -10,14 +10,14 @@
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Architecture](#architecture)
 3. [Core Capabilities](#core-capabilities)
 4. [Promptset Plan](#promptset-plan)
 5. [Implementation Examples](#implementation-examples)
 6. [Backend Integration](#backend-integration)
 7. [Demonstration Scenarios](#demonstration-scenarios)
-8. [Quick Start]()
+8. [Quick Start](#quick-start)
 9. [Resources](#resources)
 
 ---
@@ -1339,43 +1339,43 @@ def calculate_metrics(data, weights=None):
 def calculate_metrics(data: list[float], weights: list[float] | None = None) -> float:
     """
     Calculate weighted average of data points.
-    
+
     This function computes a weighted average by multiplying each data point
     with its corresponding weight and dividing by the sum of weights.
     If no weights are provided, all data points are weighted equally.
-    
+
     Args:
         data: List of numerical data points to average.
         weights: Optional list of weights for each data point. If None,
                  equal weights (1.0) are assigned to all points.
-    
+
     Returns:
         The weighted average as a float.
-    
+
     Raises:
         ValueError: If data and weights have different lengths.
         ZeroDivisionError: If sum of weights is zero.
-    
+
     Examples:
         >>> calculate_metrics([1, 2, 3], [1, 2, 3])
         2.333...
         >>> calculate_metrics([10, 20, 30])
         20.0
-    
+
     Note:
         This implementation uses generator expressions for memory efficiency
         with large datasets.
     """
     if weights is None:
         weights = [1.0] * len(data)
-    
+
     if len(data) != len(weights):
         raise ValueError("data and weights must have the same length")
-    
+
     total_weight = sum(weights)
     if total_weight == 0:
         raise ZeroDivisionError("Sum of weights cannot be zero")
-    
+
     return sum(d * w for d, w in zip(data, weights)) / total_weight
 ```
 
@@ -1396,12 +1396,12 @@ Generate pytest unit tests with 90% coverage for:
 class UserManager:
     def __init__(self):
         self.users = {}
-    
+
     def add_user(self, user_id, name):
         if user_id in self.users:
             raise ValueError("User already exists")
         self.users[user_id] = name
-    
+
     def get_user(self, user_id):
         return self.users.get(user_id)
 ```
@@ -1414,36 +1414,36 @@ from your_module import UserManager
 
 class TestUserManager:
     """Test suite for UserManager class."""
-    
+
     @pytest.fixture
     def manager(self):
         """Fixture providing a fresh UserManager instance."""
         return UserManager()
-    
+
     def test_init_empty(self, manager):
         """Test UserManager initializes with empty user dict."""
         assert manager.users == {}
-    
+
     def test_add_user_success(self, manager):
         """Test adding a new user successfully."""
         manager.add_user(1, "Alice")
         assert manager.users[1] == "Alice"
-    
+
     def test_add_user_duplicate_raises_error(self, manager):
         """Test adding duplicate user raises ValueError."""
         manager.add_user(1, "Alice")
         with pytest.raises(ValueError, match="User already exists"):
             manager.add_user(1, "Bob")
-    
+
     def test_get_user_exists(self, manager):
         """Test retrieving existing user returns correct name."""
         manager.add_user(1, "Alice")
         assert manager.get_user(1) == "Alice"
-    
+
     def test_get_user_not_exists(self, manager):
         """Test retrieving non-existent user returns None."""
         assert manager.get_user(999) is None
-    
+
     @pytest.mark.parametrize("user_id,name", [
         (1, "Alice"),
         (2, "Bob"),
@@ -1579,8 +1579,8 @@ pip install mangum
 
 ### Documentation
 
-- **[Codebase Cognitive Map](system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
-- **[Codebase Dashboard](system/CODEBASE_DASHBOARD.md)** - Live metrics
+- **[Codebase Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
+- **[Codebase Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live metrics
 - **[Repository README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)** - Complete project documentation
 - **[AGENTS.md](./agents.md)** - Autonomous agent system
 - **[MCP Quick Start](mcp/QUICK_START.md)** - Package system guide

@@ -5,10 +5,10 @@ Welcome to Codex ML! This guide will help you get started with the autonomous ma
 ## Table of Contents
 
 - [Installation](#installation)
-  - [Prerequisites]()
+  - [Prerequisites](#prerequisites)
   - [Install from Source](#install-from-source)
   - [Optional Dependencies](#optional-dependencies)
-- [Quick Start]()
+- [Quick Start](#quick-start)
   - [Basic Training with Determinism](#1-basic-training-with-determinism)
   - [Health Monitoring](#2-health-monitoring)
   - [Experiment Tracking (Offline-First)](#3-experiment-tracking-offline-first)
@@ -272,10 +272,10 @@ from codex_ml.plugins.plugin_sandbox import Plugin, PluginManager
 class MyPlugin(Plugin):
     def initialize(self) -> bool:
         return True
-    
+
     def execute(self, data):
         return {"processed": data}
-    
+
     def cleanup(self):
         pass
 
@@ -303,29 +303,29 @@ from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 def autonomous_training(config, train_data, eval_data):
     """Fully autonomous training pipeline."""
-    
+
     # 1. Enable determinism
     enable_deterministic_mode()
-    
+
     # 2. Validate dataset integrity
     manifest = DatasetManifest("data/train")
     if manifest.has_drift("data/train_manifest.json"):
         raise ValueError("Dataset drift detected!")
-    
+
     # 3. Validate config
     drift = ConfigDrift(config)
     drift.validate_against_baseline("config_baseline.json", strict=True)
-    
+
     # 4. Initialize logging (offline)
     logger = init_wandb(project="my-project", config=config)
-    
+
     # 5. Setup early stopping
     callbacks = auto_inject_early_stopping_for_trainer(
         trainer_class=Trainer,
         eval_dataset=eval_data,
         patience=3
     )
-    
+
     # 6. Train with self-healing
     with SelfHealingContext(batch_size=config["batch_size"]) as healer:
         trainer = Trainer(
@@ -338,27 +338,27 @@ def autonomous_training(config, train_data, eval_data):
             eval_dataset=eval_data,
             callbacks=callbacks
         )
-        
+
         trainer.train()
-        
+
         # Log final metrics
         logger.log(trainer.state.log_history[-1])
-    
+
     # 7. Save checkpoint with integrity
     checkpoint_path = Path("checkpoint.pt")
     torch.save(model.state_dict(), checkpoint_path)
-    
+
     # Save integrity metadata
     integrity = CheckpointIntegrity(checkpoint_path)
     integrity.save_integrity(metadata={"config": config})
-    
+
     # Save RNG state for deterministic resume
     rng_state = RNGState()
     rng_state.capture()
     rng_state.save_to_file(checkpoint_path.with_suffix(".pt.rng.json"))
-    
+
     logger.finish()
-    
+
     return model
 
 if __name__ == "__main__":
@@ -367,7 +367,7 @@ if __name__ == "__main__":
         "batch_size": 32,
         "epochs": 10
     }
-    
+
     model = autonomous_training(config, train_data, eval_data)
 ```
 
@@ -453,26 +453,26 @@ Create a `config.yaml`:
 model:
   name: my_model
   architecture: transformer
-  
+
 training:
   learning_rate: 0.001
   batch_size: 32
   epochs: 10
-  
+
 reproducibility:
   enable_determinism: true
   save_rng_state: true
   validate_dataset: true
-  
+
 autonomy:
   enable_self_healing: true
   enable_early_stopping: true
   early_stopping_patience: 3
-  
+
 continuous_learning:
   drift_threshold: 0.15
   min_samples_retrain: 1000
-  
+
 observability:
   enable_health_probes: true
   enable_metrics: true
@@ -560,7 +560,7 @@ health = manager.get_plugin_health_report()
 for plugin_name, info in health["plugins"].items():
     if info["status"] == "disabled":
         print(f"{plugin_name} disabled: {info['last_error']}")
-        
+
 # Manually re-enable
 manager.sandbox.enable_plugin(plugin_name)
 ```
@@ -568,7 +568,7 @@ manager.sandbox.enable_plugin(plugin_name)
 ## Next Steps
 
 - **Continuous Learning:** See [Continuous Learning Guide](continuous_learning_guide.md)
-- **A/B Testing:** See [A/B Testing Guide](ab_testing_guide.md)
+- **A/B Testing:** See [A/B Testing Guide](TESTING_GUIDE.md)
 - **Plugin Development:** See [Plugin Development Guide](plugin_development.md)
 - **Production Deployment:** See [Production Deployment Guide](production_deployment.md)
 - **API Reference:** See [API Reference](../API_REFERENCE.md)

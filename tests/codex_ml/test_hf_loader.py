@@ -20,6 +20,7 @@ pytest.importorskip("torch")
 # Import the module under test
 from codex_ml import hf_loader
 
+
 class TestCausalLMRegistry:
     """Tests for the causal LM registry functions."""
 

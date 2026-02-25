@@ -12,14 +12,14 @@
 
 ## 🎯 Achievement Status
 
-**🏆 100/100 Azure MLOps Maturity (Level 4)**  
-✅ End-to-End Automation | ✅ Auto-Retraining | ✅ Observability  
+**🏆 100/100 Azure MLOps Maturity (Level 4)**
+✅ End-to-End Automation | ✅ Auto-Retraining | ✅ Observability
 ✅ Production Engineering | ✅ Cross-Functional | ✅ Governance
 
 **Gap Analysis Status:** 47/47 Items Complete (100%) ✅
 
-**Latest Milestone:** MCP Package System Complete + Cognitive Brain Infrastructure (2025-12-30)  
-**Latest Update:** 9 Topics, Workflow Automation, 93+ KB Documentation, Unified Navigation  
+**Latest Milestone:** MCP Package System Complete + Cognitive Brain Infrastructure (2025-12-30)
+**Latest Update:** 9 Topics, Workflow Automation, 93+ KB Documentation, Unified Navigation
 📊 [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) | 📈 [Dashboard](docs/system/CODEBASE_DASHBOARD.md) | 🗺️ [Roadmap](docs/ROADMAP.md)
 
 ---
@@ -35,26 +35,26 @@ graph TB
             Eval[Evaluation Engine<br/>lm-eval + Metrics<br/>📊 90% Coverage]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production Ready]
         end
-        
+
         subgraph "Cognitive Brain System"
             Brain[Quantum Decision Engine<br/>k₁=0.35 Optimized<br/>🧠 2.86x Advantage]
             Memory[Memory Manager<br/>STM/LTM + Patterns<br/>💾 60% Compression]
             Agents[Agent Orchestrator<br/>53 Autonomous Agents<br/>🤖 MCP Integration]
         end
-        
+
         subgraph "MCP Ecosystem"
             MCP[MCP Core<br/>Model Context Protocol<br/>🔌 Standardized Interface]
             Adapters[MCP Adapters<br/>Pinecone/Mock/Custom<br/>🔗 Extensible]
             Workers[Background Workers<br/>Embeddings + Checkpoints<br/>⚙️ Async Processing]
         end
-        
+
         subgraph "Python Ingestion Pipeline"
             Ingest[Code Ingest<br/>File/ZIP/Git<br/>📥 Multi-source]
             Analyze[Analysis Engine<br/>Static + Runtime<br/>🔍 AST + Sandbox]
             Transform[Transform Engine<br/>Tier A/B/C<br/>🔄 LLM-guided]
             Verify[Verification<br/>Behavior Compare<br/>✅ Test Generation]
         end
-        
+
         subgraph "Infrastructure & Monitoring"
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Tracking<br/>SQLite + Telemetry<br/>📝 Complete Audit]
@@ -62,32 +62,32 @@ graph TB
             CI[CI/CD Automation<br/>Auto-Fix + Self-Heal<br/>🔧 75-87% Time Savings]
         end
     end
-    
+
     subgraph "External Integrations"
         HF[Hugging Face Hub<br/>Models + Datasets]
         MLflow[MLflow<br/>Experiment Tracking]
         Storage[Cloud Storage<br/>S3/Azure/GCS]
         GitHub[GitHub<br/>PR Automation + Actions]
     end
-    
+
     %% Core Flow
     CLI --> Training
     CLI --> Eval
     CLI --> Serve
     CLI --> Ingest
-    
+
     %% Cognitive Flow
     Brain --> Memory
     Brain --> Agents
     Agents --> MCP
     MCP --> Adapters
     MCP --> Workers
-    
+
     %% Pipeline Flow
     Ingest --> Analyze
     Analyze --> Transform
     Transform --> Verify
-    
+
     %% Infrastructure
     Config -.configures.-> Training
     Config -.configures.-> Eval
@@ -97,14 +97,14 @@ graph TB
     Security -.protects.-> Training
     Security -.protects.-> MCP
     CI -.automates.-> GitHub
-    
+
     %% External
     Training --> HF
     Training --> MLflow
     Training --> Storage
     Eval --> MLflow
     Agents --> GitHub
-    
+
     %% Styling
     style CLI fill:#3b82f6,stroke:#1e40af,stroke-width:2px,color:#fff
     style Brain fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff
@@ -163,7 +163,7 @@ For detailed instructions, see: [Genesis Setup Guide](docs/admin/GENESIS_SETUP_G
 
 ## 🤖 CI/CD Automation System
 
-**Status:** Production Ready ✅ | **Coverage:** 37.5% Auto-Fix (3/8 patterns)  
+**Status:** Production Ready ✅ | **Coverage:** 37.5% Auto-Fix (3/8 patterns)
 **Impact:** 75-87% time savings (2-4 hours → 15-30 minutes per PR)
 
 An intelligent automation system that detects and fixes common workflow failures before they reach CI.
@@ -209,13 +209,137 @@ python scripts/ci/auto_fix_common_issues.py
 
 ### Benefits
 
-**Before:** Manual detection across 500+ test files, 2-4 hours per PR  
-**After:** Automatic detection in <30 seconds, 15-30 minutes per PR  
+**Before:** Manual detection across 500+ test files, 2-4 hours per PR
+**After:** Automatic detection in <30 seconds, 15-30 minutes per PR
 **Prevented Issues:** Unused imports, inconsistent coverage, YAML errors, session logs in git
+
+### 🆕 Phase 1 CI Optimization Tools (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Large PR handling, pattern detection, rollback safety
+
+New tools for optimizing CI workflows based on PR #3248 failure analysis:
+
+#### 1. PR Size Analyzer Workflow
+Automatically categorizes PRs and determines appropriate validation strategy:
+
+- **Small (<20 files):** Full validation with all tests
+- **Medium (20-99 files):** Targeted tests for affected areas
+- **Large (100-499 files):** Smoke tests only (on-demand full validation)
+- **Refactor (500+ files):** Import validation only
+
+**Usage:** Automatically runs on all PRs, posts size analysis comment
+
+#### 2. Telemetry Collection Script
+Collects and analyzes CI telemetry data from GitHub Actions:
+
+```bash
+python scripts/ci/collect_telemetry.py \
+  --owner Aries-Serpent \
+  --repo _codex_ \
+  --branch main \
+  --days 7
+```
+
+**Features:**
+- Collects workflow runs, jobs, and artifacts
+- Classifies failures into 5 identified patterns
+- Generates comprehensive JSON reports
+- Pattern distribution analysis
+
+#### 3. Auto-Fix with Rollback
+Enhanced auto-fix with safety guarantees and automatic rollback:
+
+```bash
+# Run pre-flight checks
+python scripts/ci/auto_fix_with_rollback.py --pre-flight
+
+# Apply fixes with rollback support
+python scripts/ci/auto_fix_with_rollback.py --apply
+```
+
+**Safety Features:**
+- Pre-flight validation (git state, permissions, tools)
+- Per-fix isolation with automatic rollback on failure
+- Retry logic with exponential backoff
+- Syntax validation after each fix
+- Comprehensive metrics logging
+
+#### 4. Coverage Timeout Guards Workflow
+Prevents coverage hangs with timeout protection and graceful degradation:
+
+**Features:**
+- 7-minute per-test timeout via pytest-timeout
+- 4-shard parallel execution for isolation
+- Partial coverage on timeout (no total failure)
+- Detailed timeout diagnostics and recommendations
+
+**Documentation:**
+- Implementation guide: [`FOLLOWUP_IMPLEMENTATION_PROMPT.md`](FOLLOWUP_IMPLEMENTATION_PROMPT.md)
+- Analysis: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
+
+### 🆕 Phase 2: Core Improvements (2026-02-15)
+
+**Status:** Implemented ✅ | **Focus:** Progressive validation, telemetry-driven orchestration
+
+Building on Phase 1, these tools optimize CI resource usage and enable intelligent test selection:
+
+#### 1. Progressive Validation Suite
+4-layer test architecture with smart execution:
+
+```yaml
+Layer 1: Smoke Tests (Always) - <10min
+  → Import validation + basic functionality
+
+Layer 2: Unit Tests (Small/Medium PRs) - <20min
+  → 3-shard parallel execution
+
+Layer 3: Integration (Small PRs only) - <30min
+  → Cross-module tests
+
+Layer 4: Slow Tests (On-demand) - <60min
+  → Manual trigger via workflow_dispatch
+```
+
+**Impact:**
+- Small PRs: Full validation (~60 min)
+- Medium PRs: 50% faster (~30 min)
+- Large PRs: 75% faster (~15 min)
+- Refactor PRs: 90% faster (~5 min)
+
+#### 2. Workflow Orchestrator
+Telemetry-driven workflow selection:
+
+```bash
+python scripts/ci/workflow_orchestrator.py \
+  --pr-size medium \
+  --telemetry-file report.json \
+  --changed-files src/module.py \
+  --estimate-duration
+```
+
+**Features:**
+- Pattern-based workflow adjustments (5 failure patterns)
+- File change analysis for targeted workflows
+- Duration estimation for planning
+- JSON plan generation for automation
+
+#### 3. Telemetry Collection Workflow
+Automated CI health monitoring (daily at 2 AM UTC):
+
+- **Pattern detection:** Auto-fix, coverage timeout, test infrastructure
+- **Automatic alerting:** Issue creation when failure rate > 20%
+- **Trend analysis:** 90-day historical data retention
+- **Proactive monitoring:** Catch degradation early
+
+**Documentation:**
+- Implementation log: [`docs/ci/IMPLEMENTATION_LOG.md`](docs/ci/IMPLEMENTATION_LOG.md) (Phase 1-2 complete)
+- Analysis foundation: [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](.codex/CI_FAILURE_PATTERN_ANALYSIS.md)
+- Complete plansets: [`.codex/CI_OPTIMIZATION_PLANSETS.md`](.codex/CI_OPTIMIZATION_PLANSETS.md)
 
 ## 🎨 Cognitive Codex Web Application
 
-**Status:** Integrated & Built Successfully ✅  
+**Status:** Integrated & Built Successfully ✅
 **Access:** https://aries-serpent.github.io/_codex_/cognitive_app/ (GitHub Pages deployment - available after PR merge)
 
 A React/Vite-based quantum-enhanced code generation platform with real-time cognitive brain visualization.
@@ -286,8 +410,8 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 
 ### Key Concepts
 
-**Memory, Not Map** - Living knowledge retention vs static documentation  
-**Unbranded Recursion** - Self-modifying improvement loops without fixed ground  
+**Memory, Not Map** - Living knowledge retention vs static documentation
+**Unbranded Recursion** - Self-modifying improvement loops without fixed ground
 **Five Transformations** - Dissolve lenses, fracture rails, compress timelines, mirror contradictions, flood abundance
 
 ### Quick Links
@@ -301,14 +425,14 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 
 ## 🧠 Cognitive Brain - Quantum-Inspired Decision System
 
-**Phase 8.0-8.1 Complete**: k₁ = 0.35 + Memory Management ✅  
+**Phase 8.0-8.1 Complete**: k₁ = 0.35 + Memory Management ✅
 **Status:** 275/320 tests passing (86% complete) | 2 reviews complete | Production-ready
 
 The Cognitive Brain is a quantum-inspired decision-making system featuring superposition, entanglement, adaptive learning, and memory management for complex compliance scenarios.
 
 ### 🎯 Current Capabilities (Phase 7-8.1)
 - ✅ **SuperpositionEngine** - Parallel evaluation of ambiguous decisions (22 tests)
-- ✅ **EntanglementManager** - Coordinated 2-agent decision-making (28 tests)  
+- ✅ **EntanglementManager** - Coordinated 2-agent decision-making (28 tests)
 - ✅ **UncertaintyOptimizer** - Wave function collapse with Bell states (17 tests)
 - ✅ **AdaptiveScoringOptimizer** - ML-inspired weight optimization (10 tests, k₁=0.35)
 - ✅ **QuantumMemoryManager** - Hippocampus-cortex architecture (STM/LTM)
@@ -338,7 +462,7 @@ Test Coverage: 275/320 (86%)
 
 ### 📖 Documentation
 - 📊 **[Phase 8 Status (v2)](/.github/agents/COGNITIVE_BRAIN_PHASE8_STATUS_V2.md)** - Complete overview + reviews
-- 🗺️ **[Phase 8 Roadmap](/.github/agents/PHASE_8_ROADMAP.md)** - Full specifications (8.2-8.4)
+- 🗺️ **[Phase 8 Roadmap](docs/ROADMAP.md)** - Full specifications (8.2-8.4)
 - 📈 **[K1 Strategy](/.github/agents/K1_OPTIMIZATION_STRATEGY.md)** - Rayleigh criterion
 - 🧪 **[EXP-1B](src/cognitive_brain/experiments/exp1b_revalidation.py)** | **[EXP-5](src/cognitive_brain/experiments/exp5_validation.py)** - Validations
 
@@ -383,10 +507,10 @@ Start here on every session:
 
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
 
-**Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
-**Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths  
-**Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) → Primary files, priorities, orchestration map  
-**Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
+**Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features
+**Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths
+**Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) → Primary files, priorities, orchestration map
+**Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks
 **Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
@@ -423,7 +547,7 @@ navigator.execute('AUDIT_EXEC')  # Run full audit pipeline
 navigator.execute('DOC_GEN')      # Generate documentation
 ```
 
-**Quick Access Tokens:** `audit`, `decide`, `docs`, `organize`, `review`, `heal`  
+**Quick Access Tokens:** `audit`, `decide`, `docs`, `organize`, `review`, `heal`
 See [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) for complete workflow catalog.
 
 ### 🤖 ChatGPT 5.1 Agent Mode
@@ -535,14 +659,14 @@ flowchart LR
         Viz[Visualization]
         CI[CI Integration]
     end
-    
+
     subgraph Outputs
         Dashboard[Dashboard]
         Reports[Reports]
         Wiki[Wiki]
         Agent[Agent UI]
     end
-    
+
     DB --> Compare
     Compare --> Reports
     Viz --> Dashboard
@@ -759,7 +883,7 @@ The new JSON-based status update generator provides:
 - Security assessment
 - Schema validation (v1.2)
 
-See **[tools/README_status_update.md](tools/README_status_update.md)** for the new generator documentation.  
+See **[tools/README_status_update.md](tools/README_status_update.md)** for the new generator documentation.
 See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for legacy audit tool usage.
 
 ## Candidate Selection (local-only)
@@ -1080,12 +1204,12 @@ All security functions are highly optimized for production use:
 
 ### Features
 
-✅ **Unified Security Module** - Single import for all security utilities  
-✅ **Encrypted Storage** - Fernet (AES-128-CBC + HMAC) for secrets at rest  
-✅ **Log Injection Prevention** - Sanitize user input before logging  
-✅ **Secure Hashing** - SHA-256/SHA-512 (no MD5/SHA-1)  
-✅ **Performance** - <0.01ms per operation for hot paths  
-✅ **Testing** - 18 integration tests covering all utilities  
+✅ **Unified Security Module** - Single import for all security utilities
+✅ **Encrypted Storage** - Fernet (AES-128-CBC + HMAC) for secrets at rest
+✅ **Log Injection Prevention** - Sanitize user input before logging
+✅ **Secure Hashing** - SHA-256/SHA-512 (no MD5/SHA-1)
+✅ **Performance** - <0.01ms per operation for hot paths
+✅ **Testing** - 18 integration tests covering all utilities
 
 ## MCP Packager
 

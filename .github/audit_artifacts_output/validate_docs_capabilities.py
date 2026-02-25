@@ -3,9 +3,9 @@
 Validate docs/capabilities files for required structure.
 """
 import json
-from pathlib import Path
-import re
 import os
+import re
+from pathlib import Path
 
 ROOT = Path(os.environ.get("CODEX_ROOT", Path(__file__).resolve().parents[3]))
 CAPS_DIR = ROOT / "docs" / "capabilities"
@@ -89,7 +89,7 @@ output = {
 output_path = ROOT / ".github/audit_artifacts_output/docs_capabilities_validation.json"
 output_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
 
-print(f"\nValidation Summary:")
+print("\nValidation Summary:")
 print(f"  Total files: {total_files}")
 print(f"  Complete: {total_files - files_with_issues}")
 print(f"  Incomplete: {files_with_issues}")

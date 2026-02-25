@@ -78,6 +78,10 @@ class StandardizedASTNode:
         child.parent = self
         self.children.append(child)
 
+    def __hash__(self) -> int:
+        """Hash by node_id so StandardizedASTNode can be used in sets/dict keys."""
+        return hash(self.node_id)
+
     def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary (JSON-compatible)."""
         return {

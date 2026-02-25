@@ -23,12 +23,12 @@ def parse_diagnostic_report(json_path: str) -> dict:
 def apply_fixes_by_pattern(pattern: int, repo_root: Path) -> bool:
     """
     Apply fixes for specific pattern.
-    
+
     Returns:
         True if fixes applied successfully
     """
     print(f"\n🔧 Applying fixes for Pattern {pattern}...")
-    
+
     try:
         result = subprocess.run(
             [
@@ -40,7 +40,7 @@ def apply_fixes_by_pattern(pattern: int, repo_root: Path) -> bool:
             capture_output=True,
             text=True
         )
-        
+
         if result.returncode == 0:
             print(f"✅ Pattern {pattern} fixes applied successfully")
             return True
@@ -48,7 +48,7 @@ def apply_fixes_by_pattern(pattern: int, repo_root: Path) -> bool:
             print(f"⚠️  Pattern {pattern} fixes completed with warnings")
             print(result.stdout)
             return True
-            
+
     except Exception as e:
         print(f"❌ Error applying Pattern {pattern} fixes: {e}")
         return False
@@ -57,7 +57,7 @@ def apply_fixes_by_pattern(pattern: int, repo_root: Path) -> bool:
 def validate_fixes(repo_root: Path) -> bool:
     """Run check-only mode to validate all fixes."""
     print("\n🔍 Validating fixes...")
-    
+
     try:
         result = subprocess.run(
             [
@@ -69,7 +69,7 @@ def validate_fixes(repo_root: Path) -> bool:
             capture_output=True,
             text=True
         )
-        
+
         if result.returncode == 0:
             print("✅ All auto-fixable issues resolved!")
             return True
@@ -77,7 +77,7 @@ def validate_fixes(repo_root: Path) -> bool:
             print("⚠️  Some issues remain:")
             print(result.stdout)
             return False
-            
+
     except Exception as e:
         print(f"❌ Validation error: {e}")
         return False
@@ -86,44 +86,44 @@ def validate_fixes(repo_root: Path) -> bool:
 def main():
     """Main entry point for Copilot Agent auto-fix."""
     print("🤖 Copilot Agent Auto-Fix Helper\n")
-    
+
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / ".codex" / "diagnostic-report.json"
-    
+
     if not report_path.exists():
         print("❌ No diagnostic report found.")
         print("   Run: python scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json")
         sys.exit(1)
-    
+
     # Parse report
     report = parse_diagnostic_report(str(report_path))
-    
+
     print(f"📊 Status: {report['status']}")
     print(f"📊 Total Issues: {report['total_issues']}")
     print(f"📊 Auto-Fixable: {report['auto_fixable']}")
     print(f"📊 Manual Review: {report['manual_review']}")
-    
+
     if report['auto_fixable'] == 0:
         print("\n✅ No auto-fixable issues to resolve!")
         sys.exit(0)
-    
+
     # Get unique auto-fixable patterns
     patterns = sorted(set(
-        issue['pattern'] 
-        for issue in report['issues'] 
+        issue['pattern']
+        for issue in report['issues']
         if issue['auto_fix_available']
     ))
-    
+
     print(f"\n🎯 Patterns to fix: {', '.join(map(str, patterns))}")
-    
+
     # Apply fixes for each pattern
     success_count = 0
     for pattern in patterns:
         if apply_fixes_by_pattern(pattern, repo_root):
             success_count += 1
-    
+
     print(f"\n📈 Applied fixes for {success_count}/{len(patterns)} patterns")
-    
+
     # Validate all fixes
     if validate_fixes(repo_root):
         print("\n🎉 All auto-fixable issues resolved successfully!")

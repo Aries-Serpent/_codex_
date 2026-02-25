@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/codex_ready_task_runner.py [options]
-    
+
     Examples:
     $ python scripts/codex_ready_task_runner.py --help
 
@@ -29,7 +29,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python3
 """Codex-ready sequential task runner derived from the 2025-09-16 status update."""

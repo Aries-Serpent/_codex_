@@ -6,7 +6,6 @@
 
 ## Guide
 ### Themes
-- https://developer.zendesk.com/documentation/help_center/help-center-templates/introduction-to-templates/
 
 ## Routing
 ### Skills

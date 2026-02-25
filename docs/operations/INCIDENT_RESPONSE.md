@@ -1,14 +1,14 @@
 # Incident Response Procedures
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-11  
+**Version**: 1.0.0
+**Last Updated**: 2025-12-11
 **Classification**: Internal Operations
 
 ---
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Incident Classification](#incident-classification)
 3. [Response Procedures](#response-procedures)
 4. [Escalation Matrix](#escalation-matrix)
@@ -341,6 +341,6 @@ kubectl rollout undo deployment/codex-ml
 
 ---
 
-**Document Owner**: Operations Team  
-**Review Frequency**: Quarterly  
+**Document Owner**: Operations Team
+**Review Frequency**: Quarterly
 **Next Review**: 2026-03-11

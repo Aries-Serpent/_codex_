@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/cognitive/causal_reasoning.py [options]
-    
+
     Examples:
     $ python scripts/cognitive/causal_reasoning.py --help
 
@@ -35,39 +35,39 @@ Part of Decision Engine - integrates with R13 (DoWhy framework)
 """
 import argparse
 import json
-from pathlib import Path
-from typing import Dict, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
 
 def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_integration: bool = False) -> Dict[str, Any]:
     """
     Perform causal analysis on perception data.
-    
+
     Args:
         perception_data_dir: Directory with perception data
         output_path: Path to save causal analysis results
         r13_integration: Enable R13 DoWhy integration
-    
+
     Returns:
         Dictionary with causal analysis results
     """
     input_path = Path(perception_data_dir)
-    
+
     # Load perception data
     patterns = {}
     anomalies = {}
-    
+
     patterns_file = input_path / "patterns.json"
     if patterns_file.exists():
         with open(patterns_file) as f:
             patterns = json.load(f)
-    
+
     anomalies_file = input_path / "anomalies.json"
     if anomalies_file.exists():
         with open(anomalies_file) as f:
             anomalies = json.load(f)
-    
+
     # Perform causal analysis
     analysis = {
         "analysis_timestamp": datetime.now().isoformat(),
@@ -76,11 +76,11 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
         "root_causes": [],
         "impact_predictions": []
     }
-    
+
     # Analyze anomalies for root causes
     for anomaly in anomalies.get("anomalies_detected", []):
         anomaly_type = anomaly["anomaly_type"]
-        
+
         # Map anomalies to potential root causes
         if anomaly_type == "low_ci_success_rate":
             analysis["root_causes"].append({
@@ -94,7 +94,7 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
                 "confidence": 0.75,
                 "recommendation": "Investigate test stability and infrastructure"
             })
-        
+
         elif anomaly_type == "slow_pr_merge_times":
             analysis["root_causes"].append({
                 "effect": "slow_pr_merge_times",
@@ -107,7 +107,7 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
                 "confidence": 0.80,
                 "recommendation": "Optimize review process and PR sizing"
             })
-        
+
         elif anomaly_type == "unusually_large_commits":
             analysis["root_causes"].append({
                 "effect": "unusually_large_commits",
@@ -120,11 +120,11 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
                 "confidence": 0.70,
                 "recommendation": "Encourage smaller, incremental commits"
             })
-    
+
     # Predict impacts of detected patterns
     for pattern in patterns.get("patterns_detected", []):
         pattern_type = pattern["pattern_type"]
-        
+
         if pattern_type == "high_activity_files":
             analysis["impact_predictions"].append({
                 "pattern": "high_activity_files",
@@ -136,7 +136,7 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
                 "risk_level": "medium",
                 "mitigation": "Consider refactoring high-activity files"
             })
-        
+
         elif pattern_type == "workflow_failure_patterns":
             analysis["impact_predictions"].append({
                 "pattern": "workflow_failure_patterns",
@@ -148,7 +148,7 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
                 "risk_level": "high",
                 "mitigation": "Prioritize fixing failing workflows"
             })
-    
+
     # Establish causal relationships
     analysis["causal_relationships"].append({
         "cause": "large_pr_sizes",
@@ -157,7 +157,7 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
         "evidence": "correlation_observed",
         "intervention": "enforce_pr_size_limits"
     })
-    
+
     analysis["causal_relationships"].append({
         "cause": "flaky_tests",
         "effect": "low_ci_success_rate",
@@ -165,24 +165,24 @@ def perform_causal_analysis(perception_data_dir: str, output_path: str, r13_inte
         "evidence": "pattern_analysis",
         "intervention": "fix_or_quarantine_flaky_tests"
     })
-    
+
     analysis["total_root_causes"] = len(analysis["root_causes"])
     analysis["total_impact_predictions"] = len(analysis["impact_predictions"])
     analysis["total_causal_relationships"] = len(analysis["causal_relationships"])
-    
+
     # Save results
     output_file = Path(output_path)
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, 'w') as f:
         json.dump(analysis, f, indent=2)
-    
-    print(f"✅ Causal analysis complete")
+
+    print("✅ Causal analysis complete")
     print(f"   Root causes identified: {analysis['total_root_causes']}")
     print(f"   Impact predictions: {analysis['total_impact_predictions']}")
     print(f"   Causal relationships: {analysis['total_causal_relationships']}")
     print(f"   Saved to: {output_path}")
-    
+
     return analysis
 
 
@@ -205,9 +205,9 @@ def main():
         action="store_true",
         help="Enable R13 DoWhy integration"
     )
-    
+
     args = parser.parse_args()
-    
+
     perform_causal_analysis(args.perception_data, args.output, args.r13_integration)
 
 

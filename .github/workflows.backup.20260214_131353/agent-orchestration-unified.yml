@@ -1,0 +1,201 @@
+name: Art_Agent Orchestration (Unified)
+
+on:
+  # Triggered by workflow-health-monitor
+  workflow_run:
+    workflows: ["Workflow Health Check (Quantum-Inspired)", "Workflow Health Check"]
+    types: [completed]
+
+  # Manual trigger with comprehensive options
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Orchestration mode'
+        required: true
+        type: choice
+        options:
+          - chain-orchestration
+          - handoff-execution
+          - full-orchestration
+        default: 'full-orchestration'
+      primary_agent:
+        description: 'Primary agent to activate'
+        required: false
+        type: choice
+        options:
+          - workflow-health-monitor
+          - ci-testing-agent
+          - test-alignment-fixer
+          - coverage-roadmap-agent
+          - security-alert-verification-agent
+          - documentation-quality-agent
+          - test-coverage-monitor
+        default: 'workflow-health-monitor'
+      chain_depth:
+        description: 'Maximum chain depth'
+        required: false
+        default: '3'
+      enable_quantum_optimization:
+        description: 'Enable quantum-inspired optimization'
+        type: boolean
+        default: true
+      handoff_target:
+        description: 'Target agent for handoff (if handoff mode)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  orchestrate_agent_chain:
+    name: Orchestrate Entangled Agents
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_run' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'chain-orchestration' || inputs.mode == 'full-orchestration'))
+    outputs:
+      chain_generated: ${{ steps.init.outputs.chain_generated }}
+      agent_count: ${{ steps.init.outputs.agent_count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: CacheManager health check
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --health --workflow agent-orchestration-unified 2>/dev/null || echo "Cache health: check skipped"
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml numpy scipy
+
+      - name: Initialize quantum agent network
+        id: init
+        run: |
+          if [ -f "scripts/agents/quantum_agent_orchestrator.py" ]; then
+            python scripts/agents/quantum_agent_orchestrator.py \
+              --primary-agent "${{ inputs.primary_agent || 'workflow-health-monitor' }}" \
+              --chain-depth "${{ inputs.chain_depth || 3 }}" \
+              --enable-quantum "${{ inputs.enable_quantum_optimization || 'true' }}"
+
+            # Check if chain was generated
+            if [ -f ".codex/agents/chain_plan.json" ]; then
+              echo "chain_generated=true" >> $GITHUB_OUTPUT
+              agent_count=$(jq '.agents | length' .codex/agents/chain_plan.json)
+              echo "agent_count=$agent_count" >> $GITHUB_OUTPUT
+            else
+              echo "chain_generated=false" >> $GITHUB_OUTPUT
+              echo "agent_count=0" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Orchestrator script not found"
+            echo "chain_generated=false" >> $GITHUB_OUTPUT
+            echo "agent_count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload chain execution plan
+        if: steps.init.outputs.chain_generated == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-chain-plan-${{ github.run_number }}
+          path: .codex/agents/chain_plan.json
+          retention-days: 30
+
+      - name: Generate orchestration summary
+        run: |
+          echo "## 🔗 Agent Chain Orchestration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Primary Agent:** ${{ inputs.primary_agent || 'workflow-health-monitor' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Chain Depth:** ${{ inputs.chain_depth || 3 }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Quantum Optimization:** ${{ inputs.enable_quantum_optimization || 'true' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Agents in Chain:** ${{ steps.init.outputs.agent_count }}" >> $GITHUB_STEP_SUMMARY
+
+  execute_agent_handoff:
+    name: Execute Agent Handoff
+    runs-on: ubuntu-latest
+    needs: [orchestrate_agent_chain]
+    if: |
+      always() &&
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'handoff-execution' || inputs.mode == 'full-orchestration'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download chain plan (if available)
+        if: needs.orchestrate_agent_chain.outputs.chain_generated == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: agent-chain-plan-${{ github.run_number }}
+          path: .codex/agents/
+
+      - name: Install handoff dependencies
+        run: |
+          pip install pyyaml requests
+
+      - name: Execute handoff sequence
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_AGENT: ${{ inputs.handoff_target }}
+        run: |
+          if [ -f "scripts/agents/agent_handoff.py" ]; then
+            if [ -f ".codex/agents/chain_plan.json" ]; then
+              # Execute based on chain plan
+              python scripts/agents/agent_handoff.py \
+                --chain-plan ".codex/agents/chain_plan.json"
+            elif [ -n "$TARGET_AGENT" ]; then
+              # Direct handoff to target
+              python scripts/agents/agent_handoff.py \
+                --target "$TARGET_AGENT"
+            else
+              echo "No chain plan or target agent specified"
+            fi
+          else
+            echo "Agent handoff script not found"
+          fi
+
+      - name: Upload handoff results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-handoff-results-${{ github.run_number }}
+          path: |
+            .codex/agents/handoff_*.json
+            .codex/agents/execution_*.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+  unified_summary:
+    name: Generate Unified Summary
+    runs-on: ubuntu-latest
+    needs: [orchestrate_agent_chain, execute_agent_handoff]
+    if: always()
+
+    steps:
+      - name: Generate comprehensive summary
+        run: |
+          echo "## 🤖 Agent Orchestration Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** ${{ inputs.mode || 'workflow_run' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Chain Orchestration: ${{ needs.orchestrate_agent_chain.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Agent Handoff: ${{ needs.execute_agent_handoff.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.orchestrate_agent_chain.outputs.chain_generated }}" == "true" ]; then
+            echo "✅ Agent chain successfully generated with ${{ needs.orchestrate_agent_chain.outputs.agent_count }} agents" >> $GITHUB_STEP_SUMMARY
+          fi

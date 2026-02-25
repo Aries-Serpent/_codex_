@@ -122,7 +122,7 @@ class ExecutionPolicy:
     def can_auto_execute(self, adjustment: Adjustment) -> tuple[bool, str]:
         """
         Check if an adjustment can be auto-executed.
-        
+
         Returns (can_execute, reason)
         """
         if self.automation_level == AutomationLevel.LEVEL_1_ADVISORY:
@@ -158,7 +158,7 @@ class ExecutionPolicy:
 class AutonomousExecutor:
     """
     Main class for autonomous execution of objective adjustments.
-    
+
     This is the core component of Plan 3 Phase 3.3: Autonomous Execution.
     """
 
@@ -190,7 +190,7 @@ class AutonomousExecutor:
     ) -> list[ExecutionResult]:
         """
         Process a list of adjustments according to the automation policy.
-        
+
         If no adjustments provided, evaluates rules automatically.
         """
         if adjustments is None:
@@ -339,7 +339,7 @@ class AutonomousExecutor:
     def run_evaluation_cycle(self) -> dict[str, Any]:
         """
         Run a complete evaluation cycle.
-        
+
         Returns a summary of actions taken.
         """
         # Evaluate rules

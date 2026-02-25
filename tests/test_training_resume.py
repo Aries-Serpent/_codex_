@@ -7,6 +7,7 @@ Test module for training resume.
 import pytest
 
 from codex_ml.training import run_functional_training
+from codex_ml.utils.hf_pinning import HFModelUnavailableError
 from tests.helpers.optional_dependencies import import_optional_dependency
 
 import_optional_dependency("torch")
@@ -28,7 +29,13 @@ def test_run_functional_training_resume(tmp_path):
         },
     }
 
-    first = run_functional_training(base_config, resume=False)
+    first = None
+    try:
+        first = run_functional_training(base_config, resume=False)
+    except HFModelUnavailableError as exc:
+        pytest.skip(f"HuggingFace model unavailable (no network in CI): {exc}")
+        return  # unreachable: pytest.skip raises; satisfies static analysis
+    assert first is not None
     assert first["resumed_from"] is None
     if first.get("checkpoint_dir") is None:
         pytest.skip("functional training checkpointing requires optional deps")

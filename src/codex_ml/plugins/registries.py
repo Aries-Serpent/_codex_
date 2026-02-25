@@ -367,11 +367,14 @@ def _resolve_offline_support_file(
     )
 
 
-@tokenizers.register("hf", backend="codex_ml.registry.tokenizers", target="hf")
-def _tokenizer_hf(**kwargs: Any):
-    """Expose the standard Hugging Face tokenizer adapter via the plugin registry."""
-
-    return _instantiate_tokenizer("hf", **kwargs)
+# NOTE: Commented out to prevent RegistryConflictError with direct registration in tokenizers.py
+# The 'hf' tokenizer is already registered via @tokenizer_registry.register("hf") in
+# src/codex_ml/registry/tokenizers.py line 140. Plugin entry point registration conflicts.
+# @tokenizers.register("hf", backend="codex_ml.registry.tokenizers", target="hf")
+# def _tokenizer_hf(**kwargs: Any):
+#     """Expose the standard Hugging Face tokenizer adapter via the plugin registry."""
+#
+#     return _instantiate_tokenizer("hf", **kwargs)
 
 
 @tokenizers.register(

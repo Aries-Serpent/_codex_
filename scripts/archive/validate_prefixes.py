@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/archive/validate_prefixes.py [options]
-    
+
     Examples:
     $ python scripts/archive/validate_prefixes.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """
 Prefix Enforcement Validator (BUNDLE_PREFIX_MODE)

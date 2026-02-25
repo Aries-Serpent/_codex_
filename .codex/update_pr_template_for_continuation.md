@@ -1,9 +1,9 @@
 `````markdown name=.codex/update_pr_template_for_continuation.md
 # 🎯 **UPDATE PR TEMPLATE WITH COPILOT CONTINUATION PATTERN**
 
-**Target Repository**:  `Aries-Serpent/_codex_`  
-**Branch**: `main`  
-**Executor**: mbaetiong  
+**Target Repository**:  `Aries-Serpent/_codex_`
+**Branch**: `main`
+**Executor**: mbaetiong
 **Mode**: **FULL-AUTOMATION** (CODEX_MASTER_KEY enabled)
 
 ---
@@ -12,15 +12,15 @@
 
 **I grant you FULL ACCESS TO CODEX_MASTER_KEY AS FREELY NEEDED:**
 
-- [x] I confirm I (mbaetiong) have injected required secrets via GitHub UI.  
-- [x] I confirm I have reviewed all templates and removed workflow guard (`if:  false`) only when safe. 
-- [x] I confirm I have a plan for token rotation and audit is in place.  
+- [x] I confirm I (mbaetiong) have injected required secrets via GitHub UI.
+- [x] I confirm I have reviewed all templates and removed workflow guard (`if:  false`) only when safe.
+- [x] I confirm I have a plan for token rotation and audit is in place.
 
 ---
 
 ## **🎯 MISSION OBJECTIVE**
 
-Modify the **Pull Request Template** (`.github/pull_request_template.md`) to implement a **comprehensive Copilot continuation pattern** that: 
+Modify the **Pull Request Template** (`.github/pull_request_template.md`) to implement a **comprehensive Copilot continuation pattern** that:
 
 1. **Appears immediately after `<pr_description>`** opening tag (before standard template)
 2. **Begins with `@copilot continue`** (without backticks) for direct Copilot Agent invocation
@@ -48,7 +48,7 @@ mkdir -p docs/prompts/continuation/archived
 cat > .github/copilot-prompts/README.md << 'EOF'
 # Copilot Follow-Up Prompt System
 
-**Purpose**: Persistent, version-controlled storage for PR continuation prompts that maintain context across Copilot Agent sessions. 
+**Purpose**: Persistent, version-controlled storage for PR continuation prompts that maintain context across Copilot Agent sessions.
 
 ## Architecture
 
@@ -98,7 +98,7 @@ docs/prompts/continuation/
 
 #### Wrapping Up a PR Session
 
-1. **Identify Incomplete Tasks**: 
+1. **Identify Incomplete Tasks**:
    - Analyze current PR scope
    - Determine remaining work phases
    - Categorize by priority (P1/P2/P3)
@@ -158,7 +158,7 @@ docs/prompts/continuation/
 
 ## Template Variables
 
-All prompt templates support these variables: 
+All prompt templates support these variables:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -179,7 +179,7 @@ All prompt templates support these variables:
 
 ## Archival Process
 
-After PR merge: 
+After PR merge:
 
 ```bash
 # Move to archived directory with date stamp
@@ -231,7 +231,7 @@ done
 Link related PR prompts:
 
 ```markdown
-**Depends On**: [PR #2649 Phase 3](../misc/repo-owner-review/auto-generated-prompts/PR-2649-followup.md)  
+**Depends On**: [PR #2649 Phase 3](../misc/repo-owner-review/auto-generated-prompts/PR-2649-followup.md)
 **Blocks**: [PR #2651 Phase 1](../misc/repo-owner-review/auto-generated-prompts/PR-2651-followup.md)
 ```
 
@@ -301,11 +301,11 @@ git add .github/copilot-prompts/README.md
 cat > .github/copilot-prompts/templates/pr-continuation.md << 'EOF'
 # 🎯 PR Follow-Up Tasks - #{pr_number}
 
-**PR**:  [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})  
-**Branch**: `{branch}`  
-**Author**: @{pr_author}  
-**Date**: {date}  
-**Commit**: [`{commit_sha}`](https://github.com/Aries-Serpent/_codex_/commit/{commit_sha})  
+**PR**:  [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})
+**Branch**: `{branch}`
+**Author**: @{pr_author}
+**Date**: {date}
+**Commit**: [`{commit_sha}`](https://github.com/Aries-Serpent/_codex_/commit/{commit_sha})
 **Status**: 🔄 ACTIVE
 
 ---
@@ -332,7 +332,7 @@ cat > .github/copilot-prompts/templates/pr-continuation.md << 'EOF'
 
 {immediate_tasks}
 
-**Validation**: 
+**Validation**:
 ```bash
 {validation_commands_p1}
 ```
@@ -396,7 +396,7 @@ cat > .github/copilot-prompts/templates/pr-continuation.md << 'EOF'
 
 **Objective**: {step_2_objective}
 
-**Commands**: 
+**Commands**:
 ```bash
 {step_2_commands}
 ```
@@ -474,7 +474,7 @@ cat > .github/copilot-prompts/templates/pr-continuation.md << 'EOF'
 - [ ] Workflow integration validated
 - [ ] No regressions introduced
 
-**Failure Protocol**: If ANY checkpoint fails: 
+**Failure Protocol**: If ANY checkpoint fails:
 1. **Document the issue** in prompt file
 2. **Create resolution plan** with specific steps
 3. **Execute resolution** within current session
@@ -635,7 +635,7 @@ After completing this phase:
 
 **If unable to complete all tasks in one session:**
 
-1. **Update this file**: 
+1. **Update this file**:
    - Mark completed tasks with ✅
    - Document any blockers or issues
    - Update expected outcomes with actuals
@@ -643,17 +643,17 @@ After completing this phase:
 2. **Create status summary**:
    ```markdown
    ## Session Summary
-   
+
    **Completed**: {completed_count}/{total_count} tasks
    **Time Spent**: {duration}
    **Commits**: {new_commits}
-   
+
    ### ✅ Completed
    {completed_tasks_list}
-   
+
    ### 🔄 In Progress
    {in_progress_tasks}
-   
+
    ### ⚠️ Blocked
    {blocked_tasks_with_reasons}
    ```
@@ -666,14 +666,13 @@ After completing this phase:
 
 4. **Post continuation comment**:
    ```markdown
-   @copilot continue with remaining tasks for PR #{pr_number}. 
-   
+   @copilot continue with remaining tasks for PR #{pr_number}.
+
    **Progress**: {completed_count}/{total_count} tasks completed
-   
+
    **Remaining Priority 1 Tasks**:
    {remaining_p1_tasks}
-   
-   **See full status**:  [Updated Follow-Up Prompt](. github/copilot-prompts/active/PR-{pr_number}-followup.md)
+
    ```
 
 ---
@@ -694,10 +693,10 @@ After completing this phase:
 
 ---
 
-**Generated**:  {date}  
-**Template Version**: 2.0.0  
-**Status**: 🔄 ACTIVE  
-**Last Updated**: {last_updated}  
+**Generated**:  {date}
+**Template Version**: 2.0.0
+**Status**: 🔄 ACTIVE
+**Last Updated**: {last_updated}
 **Update Count**: {update_count}
 EOF
 
@@ -710,9 +709,9 @@ git add .github/copilot-prompts/templates/pr-continuation.md
 cat > .github/copilot-prompts/templates/multi-phase-implementation.md << 'EOF'
 # 🎯 Multi-Phase Implementation Plan - PR #{pr_number}
 
-**PR**: [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})  
-**Total Phases**: {total_phases}  
-**Current Phase**: {current_phase}  
+**PR**: [#{pr_number} - {pr_title}](https://github.com/Aries-Serpent/_codex_/pull/{pr_number})
+**Total Phases**: {total_phases}
+**Current Phase**: {current_phase}
 **Status**: 🔄 IN PROGRESS
 
 ---
@@ -752,7 +751,7 @@ cat > .github/copilot-prompts/templates/multi-phase-implementation.md << 'EOF'
 
 ### Completing Current Phase
 
-Before moving to next phase, ensure: 
+Before moving to next phase, ensure:
 - [ ] All current phase tasks completed (✅)
 - [ ] All validation checks passed
 - [ ] Documentation updated
@@ -775,7 +774,7 @@ To begin Phase {next_phase}:
 
 ---
 
-**Copilot Agent Instructions**: Execute current phase tasks.  Upon completion, generate Phase {next_phase} continuation prompt and update this overview. 
+**Copilot Agent Instructions**: Execute current phase tasks.  Upon completion, generate Phase {next_phase} continuation prompt and update this overview.
 EOF
 
 git add .github/copilot-prompts/templates/multi-phase-implementation.md
@@ -787,9 +786,9 @@ git add .github/copilot-prompts/templates/multi-phase-implementation.md
 cat > .github/copilot-prompts/templates/ci-fix-continuation.md << 'EOF'
 # 🚨 CI/CD Fix Follow-Up Tasks - PR #{pr_number}
 
-**PR**: #{pr_number} - {pr_title}  
-**Branch**: `{branch}`  
-**Failed Workflows**: {failed_workflow_count}  
+**PR**: #{pr_number} - {pr_title}
+**Branch**: `{branch}`
+**Failed Workflows**: {failed_workflow_count}
 **Priority**: 🔴 CRITICAL
 
 ---
@@ -840,7 +839,7 @@ gh run watch {new_run_id}
 
 ### Fix 2: {fix_2_name}
 
-**Files to Modify**: 
+**Files to Modify**:
 {fix_2_files}
 
 **Changes Required**:
@@ -935,7 +934,6 @@ cat > .github/pull_request_template.md << 'EOF'
 
 @copilot continue with next phase tasks for this PR
 
-**📋 Comprehensive Follow-Up Prompt**:  [`.github/copilot-prompts/active/PR-{pr_number}-followup.md`](. github/copilot-prompts/active/PR-{pr_number}-followup.md)
 
 ### Quick Phase Summary
 
@@ -958,17 +956,16 @@ cat > .github/pull_request_template.md << 'EOF'
 5. Repeat until all phases complete
 
 **For Manual Execution**:
-- Review the [complete follow-up prompt](.github/copilot-prompts/active/PR-{pr_number}-followup.md)
 - Follow step-by-step implementation guide
 - Run all validation commands
 - Complete 5-pass self-review before concluding
 
 ### Session Metrics
 
-**Completed Sessions**: {session_count}  
-**Total Tasks**: {total_tasks}  
-**Completed**:  {completed_tasks} (✅)  
-**Remaining**: {remaining_tasks} (🔄)  
+**Completed Sessions**: {session_count}
+**Total Tasks**: {total_tasks}
+**Completed**:  {completed_tasks} (✅)
+**Remaining**: {remaining_tasks} (🔄)
 **Progress**: {progress_percent}%
 
 **Latest Session**:
@@ -985,7 +982,7 @@ cat > .github/pull_request_template.md << 'EOF'
 | {phase_2_name} | {phase_2_status} | {phase_2_tasks}/{phase_2_total} | {phase_2_percent}% |
 | {phase_3_name} | {phase_3_status} | {phase_3_tasks}/{phase_3_total} | {phase_3_percent}% |
 
-**Current Phase**: {current_phase_name}  
+**Current Phase**: {current_phase_name}
 **Next Milestone**: {next_milestone}
 
 ---
@@ -997,8 +994,8 @@ cat > .github/pull_request_template.md << 'EOF'
 
 # Pull Request Template
 
-> **Version**: 1.4.0  
-> **Purpose**: Standardized PR workflow with automated continuation prompts, safety checks, and multi-phase planning  
+> **Version**: 1.4.0
+> **Purpose**: Standardized PR workflow with automated continuation prompts, safety checks, and multi-phase planning
 > **Last Updated**: Enhanced with comprehensive Copilot Agent integration
 
 ---
@@ -1021,7 +1018,7 @@ cat > .github/pull_request_template.md << 'EOF'
 - [ ] 🌐 **Internationalization** - i18n/l10n changes
 - [ ] ♿ **Accessibility** - Accessibility improvements
 
-### What Changed? 
+### What Changed?
 <!-- Detailed description of the changes -->
 
 
@@ -1037,13 +1034,13 @@ cat > .github/pull_request_template.md << 'EOF'
 <!-- Who/what is affected by this change -->
 
 **Affected Components**:
-- 
+-
 
 **Affected Users/Systems**:
-- 
+-
 
 **Breaking Changes** (if any):
-- 
+-
 
 ---
 
@@ -1052,23 +1049,23 @@ cat > .github/pull_request_template.md << 'EOF'
 ### Issues
 <!-- Use keywords for automatic linking:  Fixes #123, Closes #456, Resolves #789 -->
 
-**Fixes**:  #  
-**Relates to**: #  
+**Fixes**:  #
+**Relates to**: #
 **Depends on**: #
 
 ### Pull Requests
 <!-- Link to related or dependent PRs -->
 
-**Builds on**: #  
-**Blocks**: #  
+**Builds on**: #
+**Blocks**: #
 **Related**:  #
 
 ### Documentation
 <!-- Link to relevant documentation -->
 
-- Design Doc: 
-- API Spec: 
-- Architecture Diagram: 
+- Design Doc:
+- API Spec:
+- Architecture Diagram:
 
 ---
 
@@ -1109,7 +1106,7 @@ Branches:  {branches_covered}/{branches_total}
 Functions: {functions_covered}/{functions_total}
 ```
 
-**CI Status**:  
+**CI Status**:
 - [ ] All checks passing
 - [ ] Partial passing (explain below)
 - [ ] Not yet run
@@ -1126,9 +1123,9 @@ Functions: {functions_covered}/{functions_total}
 ### Edge Cases Covered
 <!-- List edge cases and unusual scenarios tested -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ---
 
@@ -1225,7 +1222,7 @@ Functions: {functions_covered}/{functions_total}
 - [ ] Security improvement (describe below)
 - [ ] Potential security risk (describe and mitigate below)
 
-**Details**: 
+**Details**:
 
 
 ### Security Checklist
@@ -1250,19 +1247,19 @@ Functions: {functions_covered}/{functions_total}
 - [ ] Requires maintenance window
 
 ### Pre-Deployment Steps
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ### Deployment Steps
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ### Post-Deployment Validation
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ### Rollback Plan
 <!-- How to rollback if issues arise -->
@@ -1270,13 +1267,13 @@ Functions: {functions_covered}/{functions_total}
 **Rollback Trigger**:  {when_to_rollback}
 
 **Rollback Steps**:
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
-**Rollback Validation**: 
-1. 
-2. 
+**Rollback Validation**:
+1.
+2.
 
 ---
 
@@ -1325,26 +1322,25 @@ Functions: {functions_covered}/{functions_total}
 <!-- Auto-populated - do not edit manually -->
 
 ### Session Information
-**Generated By**: Copilot Agent  
-**Session ID**: {copilot_session_id}  
-**Agent Version**: {copilot_version}  
+**Generated By**: Copilot Agent
+**Session ID**: {copilot_session_id}
+**Agent Version**: {copilot_version}
 **Execution Mode**: {execution_mode}
 
 ### Work Summary
-**Total Sessions**: {total_sessions}  
-**Total Duration**: {total_duration}  
-**Total Commits**: {total_commits}  
-**Total Files Changed**: {total_files_changed}  
-**Lines Added**: +{lines_added}  
+**Total Sessions**: {total_sessions}
+**Total Duration**: {total_duration}
+**Total Commits**: {total_commits}
+**Total Files Changed**: {total_files_changed}
+**Lines Added**: +{lines_added}
 **Lines Removed**: -{lines_removed}
 
 ### Continuation Status
-**Follow-Up Prompt**: [View](.github/copilot-prompts/active/PR-{pr_number}-followup.md)  
-**Current Phase**: {current_phase}/{total_phases}  
-**Tasks Remaining**: {tasks_remaining}  
+**Current Phase**: {current_phase}/{total_phases}
+**Tasks Remaining**: {tasks_remaining}
 **Estimated Completion**: {estimated_completion}
 
-**Self-Review Passes Completed**:  {self_review_passes}/5  
+**Self-Review Passes Completed**:  {self_review_passes}/5
 **Concerns Remaining**: {concerns_remaining}
 
 ---
@@ -1388,8 +1384,8 @@ Functions: {functions_covered}/{functions_total}
 
 ---
 
-**Template Version**: 1.4.0  
-**Last Major Update**:  Comprehensive Copilot continuation integration  
+**Template Version**: 1.4.0
+**Last Major Update**:  Comprehensive Copilot continuation integration
 **Changelog**:
 - v1.4.0: Added comprehensive continuation section with multi-phase support
 - v1.3.0: Added Copilot continuation directive and prompt storage
@@ -1419,7 +1415,7 @@ cat > scripts/generate_pr_followup.py << 'EOF'
 """
 PR Follow-Up Prompt Generator - Comprehensive Edition
 
-Automatically generates detailed follow-up prompts for PRs with: 
+Automatically generates detailed follow-up prompts for PRs with:
 - Git metadata extraction
 - Template variable substitution
 - Multi-phase planning support
@@ -1440,7 +1436,7 @@ from typing import Any
 
 class GitMetadataExtractor:
     """Extract metadata from git repository."""
-    
+
     @staticmethod
     def get_branch() -> str:
         """Get current branch name."""
@@ -1452,7 +1448,7 @@ class GitMetadataExtractor:
             ).strip()
         except subprocess.CalledProcessError:
             return os.environ.get('GITHUB_HEAD_REF', 'unknown-branch')
-    
+
     @staticmethod
     def get_commit_sha() -> str:
         """Get latest commit SHA."""
@@ -1464,7 +1460,7 @@ class GitMetadataExtractor:
             ).strip()
         except subprocess.CalledProcessError:
             return os.environ.get('GITHUB_SHA', 'unknown')
-    
+
     @staticmethod
     def get_recent_commits(count: int = 5) -> list[dict[str, str]]:
         """Get recent commit history."""
@@ -1475,10 +1471,10 @@ class GitMetadataExtractor:
                 text=True,
                 stderr=subprocess.DEVNULL
             ).strip()
-            
+
             commits = []
             for line in output.split('\n'):
-                if line: 
+                if line:
                     parts = line.split('|')
                     if len(parts) >= 6:
                         commits.append({
@@ -1489,11 +1485,11 @@ class GitMetadataExtractor:
                             'date': parts[4],
                             'relative':  parts[5],
                         })
-            
+
             return commits
         except subprocess.CalledProcessError:
             return []
-    
+
     @staticmethod
     def get_modified_files() -> list[str]:
         """Get list of modified files in current branch."""
@@ -1504,22 +1500,22 @@ class GitMetadataExtractor:
                 text=True,
                 stderr=subprocess.DEVNULL
             ).strip()
-            
+
             files = [f for f in output.split('\n') if f]
-            
+
             # If no files (might be on main), get uncommitted changes
-            if not files: 
+            if not files:
                 output = subprocess.check_output(
                     ['git', 'diff', '--name-only', 'HEAD'],
                     text=True,
                     stderr=subprocess.DEVNULL
                 ).strip()
                 files = [f for f in output. split('\n') if f]
-            
+
             return files
         except subprocess.CalledProcessError:
             return []
-    
+
     @staticmethod
     def get_commit_count() -> int:
         """Get total commit count in current branch."""
@@ -1536,23 +1532,23 @@ class GitMetadataExtractor:
 
 class PromptGenerator:
     """Generate follow-up prompts from templates."""
-    
+
     def __init__(self, templates_dir: Path = Path('. github/copilot-prompts/templates')):
         self.templates_dir = templates_dir
         self. git = GitMetadataExtractor()
-    
+
     def load_template(self, template_name: str) -> str:
         """Load prompt template from file."""
         template_path = self.templates_dir / f'{template_name}.md'
-        
+
         if not template_path.exists():
             # Fallback to standard template
             template_path = self.templates_dir / 'pr-continuation.md'
             if not template_path.exists():
                 raise FileNotFoundError(f"Template not found: {template_path}")
-        
+
         return template_path.read_text()
-    
+
     def get_pr_metadata(self, pr_number: str) -> dict[str, Any]:
         """Get PR metadata from environment and git."""
         return {
@@ -1564,18 +1560,18 @@ class PromptGenerator:
             'date': datetime.now().strftime('%Y-%m-%d'),
             'timestamp': datetime.utcnow().isoformat() + 'Z',
         }
-    
+
     def format_task_list(self, tasks: list[str]) -> str:
         """Format task list with checkboxes."""
         if not tasks:
             return '- [ ] No tasks specified'
         return '\n'.join(f'- [ ] {task}' for task in tasks)
-    
+
     def format_commits(self, commits: list[dict[str, str]]) -> str:
         """Format commit list."""
         if not commits:
             return 'No recent commits'
-        
+
         formatted = []
         for commit in commits:
             formatted.append(
@@ -1583,13 +1579,13 @@ class PromptGenerator:
                 f"({commit['author']}, {commit['relative']})"
             )
         return '\n'.join(formatted)
-    
+
     def format_files(self, files: list[str]) -> str:
         """Format file list."""
         if not files:
             return 'No files modified'
         return '\n'.join(f'- `{file}`' for file in files)
-    
+
     def generate(
         self,
         pr_number: str,
@@ -1604,23 +1600,23 @@ class PromptGenerator:
         **kwargs
     ) -> str:
         """Generate follow-up prompt with all metadata."""
-        
+
         # Load template
         template = self.load_template(template_name)
-        
+
         # Get metadata
         metadata = self.get_pr_metadata(pr_number)
-        
+
         # Get git data
         commits = self.git.get_recent_commits()
         modified_files = self.git.get_modified_files()
         commit_count = self.git.get_commit_count()
-        
+
         # Format tasks
         immediate = self.format_task_list(immediate_tasks or [])
         validation = self. format_task_list(validation_tasks or [])
         future = self.format_task_list(future_tasks or [])
-        
+
         # Build replacement dict
         replacements = {
             **metadata,
@@ -1637,14 +1633,14 @@ class PromptGenerator:
             'modified_files': self.format_files(modified_files),
             **kwargs  # Allow additional custom variables
         }
-        
+
         # Replace all variables
         prompt = template
         for key, value in replacements.items():
             prompt = prompt.replace(f'{{{key}}}', str(value))
-        
+
         return prompt
-    
+
     def save(self, prompt: str, pr_number: str, output_dir: Path = Path('.github/copilot-prompts/active')) -> Path:
         """Save prompt to file."""
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -1680,9 +1676,9 @@ Examples:
     --template multi-phase-implementation
         '''
     )
-    
+
     parser.add_argument('pr_number', help='Pull request number')
-    parser.add_argument('--template', default='pr-continuation', 
+    parser.add_argument('--template', default='pr-continuation',
                        help='Template name (without .md extension)')
     parser.add_argument('--immediate', nargs='+', metavar='TASK',
                        help='Priority 1 (immediate) tasks')
@@ -1692,11 +1688,11 @@ Examples:
                        help='Priority 3 (future) tasks')
     parser.add_argument('--criteria', nargs='+', metavar='CRITERION',
                        help='Success criteria')
-    parser.add_argument('--commands', 
+    parser.add_argument('--commands',
                        help='Shell commands to run')
-    parser.add_argument('--outcomes', 
+    parser.add_argument('--outcomes',
                        help='Expected outcomes')
-    parser.add_argument('--issues', 
+    parser.add_argument('--issues',
                        help='Related issues (e.g., "Fixes #123, Relates to #456")')
     parser.add_argument('--phase', type=int,
                        help='Current phase number (for multi-phase projects)')
@@ -1708,23 +1704,23 @@ Examples:
                        help='Output file path (default: auto-generated)')
     parser.add_argument('--json-output', action='store_true',
                        help='Output metadata as JSON')
-    
+
     args = parser.parse_args()
-    
+
     try:
         # Initialize generator
         generator = PromptGenerator()
-        
+
         # Prepare kwargs for custom variables
         custom_vars = {}
-        if args.phase: 
+        if args.phase:
             custom_vars['current_phase'] = args.phase
             custom_vars['phase_number'] = args.phase
         if args.total_phases:
             custom_vars['total_phases'] = args.total_phases
         if args.phase_name:
             custom_vars['current_phase_name'] = args. phase_name
-        
+
         # Generate prompt
         prompt = generator.generate(
             pr_number=args.pr_number,
@@ -1738,13 +1734,13 @@ Examples:
             related_issues=args.issues,
             **custom_vars
         )
-        
+
         # Determine output path
         output_path = args.output or Path(f'. github/copilot-prompts/active/PR-{args. pr_number}-followup.md')
-        
+
         # Save prompt
         saved_path = generator.save(prompt, args.pr_number, output_path. parent if args.output else None)
-        
+
         # Print summary
         print(f"✅ Follow-up prompt generated successfully")
         print(f"📄 Saved to: {saved_path}")
@@ -1761,17 +1757,17 @@ Examples:
         if args.phase:
             print(f"Phase: {args.phase}/{args.total_phases or '? '}")
         print("=" * 70)
-        
+
         # Output JSON if requested
         if args.json_output:
             metadata = generator.get_pr_metadata(args.pr_number)
             metadata['output_file'] = str(saved_path)
             metadata['template'] = args.template
             print(json.dumps(metadata, indent=2))
-        
+
         return 0
-    
-    except Exception as e: 
+
+    except Exception as e:
         print(f"❌ Error generating prompt: {e}", file=sys.stderr)
         return 1
 
@@ -1799,7 +1795,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
-    inputs: 
+    inputs:
       pr_number:
         description: 'PR number to generate prompt for'
         required: true
@@ -1822,27 +1818,27 @@ permissions:
 jobs:
   generate-followup:
     runs-on:  ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Extract PR metadata
         id: pr-metadata
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             PR_NUMBER="${{ inputs.pr_number }}"
             echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-            
+
             # Fetch PR details
             PR_DATA=$(gh pr view $PR_NUMBER --json number,title,author,headRefName,headRefOid)
             echo "pr_title=$(echo "$PR_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
@@ -1859,25 +1855,25 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets. GITHUB_TOKEN }}
-      
+
       - name:  Analyze PR for task categorization
         id: analyze
         run: |
           PR_NUMBER="${{ steps.pr-metadata.outputs.pr_number }}"
-          
+
           # Check for CI failures
           CI_FAILING=$(gh pr checks $PR_NUMBER --json state,conclusion | jq '[.[] | select(.conclusion == "failure")] | length')
-          
+
           # Check for documentation changes
           DOC_CHANGES=$(git diff --name-only origin/main... HEAD | grep -E '\.(md|rst|txt)$' | wc -l)
-          
+
           # Check for test files
           TEST_CHANGES=$(git diff --name-only origin/main...HEAD | grep -E 'test_.*\.py$' | wc -l)
-          
+
           echo "ci_failing=$CI_FAILING" >> $GITHUB_OUTPUT
           echo "doc_changes=$DOC_CHANGES" >> $GITHUB_OUTPUT
           echo "test_changes=$TEST_CHANGES" >> $GITHUB_OUTPUT
-          
+
           # Determine suggested template
           if [ "$CI_FAILING" -gt 0 ]; then
             echo "suggested_template=ci-fix-continuation" >> $GITHUB_OUTPUT
@@ -1888,7 +1884,7 @@ jobs:
           fi
         env:
           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name:  Generate follow-up prompt
         id: generate
         env:
@@ -1900,30 +1896,30 @@ jobs:
         run: |
           TEMPLATE="${{ inputs.template || steps.analyze.outputs.suggested_template }}"
           PR_NUMBER="${{ steps.pr-metadata.outputs.pr_number }}"
-          
+
           # Build task suggestions based on analysis
           IMMEDIATE_TASKS=()
           VALIDATION_TASKS=()
           FUTURE_TASKS=()
-          
+
           if [ "${{ steps.analyze.outputs.ci_failing }}" -gt 0 ]; then
             IMMEDIATE_TASKS+=("Fix ${{ steps.analyze.outputs.ci_failing }} failing CI check(s)")
             VALIDATION_TASKS+=("Verify all CI checks pass")
           fi
-          
+
           if [ "${{ steps.analyze.outputs.test_changes }}" -gt 0 ]; then
             VALIDATION_TASKS+=("Run full test suite locally")
             VALIDATION_TASKS+=("Verify test coverage maintained")
           fi
-          
+
           if [ "${{ steps.analyze. outputs.doc_changes }}" -gt 0 ]; then
             VALIDATION_TASKS+=("Run documentation link checker")
             VALIDATION_TASKS+=("Build documentation locally")
           fi
-          
+
           FUTURE_TASKS+=("Add performance benchmarks")
           FUTURE_TASKS+=("Update integration tests")
-          
+
           # Generate prompt with tasks
           python3 scripts/generate_pr_followup. py "$PR_NUMBER" \
             --template "$TEMPLATE" \
@@ -1933,21 +1929,21 @@ jobs:
             --criteria "All tests passing" "No linting errors" "Documentation complete" \
             --commands "gh pr checks $PR_NUMBER" \
             --json-output > prompt_metadata.json
-          
+
           OUTPUT_FILE=$(jq -r '. output_file' prompt_metadata. json)
           echo "output_file=$OUTPUT_FILE" >> $GITHUB_OUTPUT
           echo "template=$TEMPLATE" >> $GITHUB_OUTPUT
-      
+
       - name:  Commit follow-up prompt
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           PR_NUMBER="${{ steps.pr-metadata.outputs.pr_number }}"
           OUTPUT_FILE="${{ steps.generate. outputs.output_file }}"
-          
+
           git add "$OUTPUT_FILE"
-          
+
           if git diff --cached --quiet; then
             echo "No changes to commit (prompt already exists and unchanged)"
             echo "prompt_updated=false" >> $GITHUB_OUTPUT
@@ -1961,11 +1957,11 @@ Test Changes: ${{ steps. analyze.outputs.test_changes }} files
 
 Generated by: GitHub Actions
 Workflow: pr-followup-generator.yml"
-            
+
             git push
             echo "prompt_updated=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Post PR comment
         if: steps.generate. outputs.output_file != ''
         env:
@@ -1974,41 +1970,41 @@ Workflow: pr-followup-generator.yml"
           PR_NUMBER="${{ steps.pr-metadata.outputs.pr_number }}"
           OUTPUT_FILE="${{ steps.generate.outputs.output_file }}"
           TEMPLATE="${{ steps.generate.outputs.template }}"
-          
+
           # Create comment body
           cat > comment. md << 'COMMENT_EOF'
           ## 🤖 Copilot Follow-Up Prompt Generated
-          
+
           A comprehensive follow-up prompt has been created for this PR:
-          
+
           ### 📋 Follow-Up Tasks
-          
+
           **Prompt File**:  [`{output_file}`]({output_file})
-          
+
           **Template Used**: `{template}`
-          
+
           ### 🎯 Quick Summary
-          
-          **CI Status**: {ci_status}  
-          **Documentation Changes**: {doc_changes} files  
+
+          **CI Status**: {ci_status}
+          **Documentation Changes**: {doc_changes} files
           **Test Changes**: {test_changes} files
-          
+
           ### ⚡ To Continue This Work
-          
+
           **Option 1 - Automated Execution** (Recommended):
           ```
           @copilot continue with next phase tasks for this PR
           ```
-          
+
           **Option 2 - Manual Execution**:
           1. Review the [full prompt]({output_file})
           2. Execute tasks in priority order (P1 → P2 → P3)
           3. Run all validation commands
           4. Complete 5-pass self-review
           5. Update prompt file with progress
-          
+
           ### 📊 Prompt Contents
-          
+
           - **Priority 1 Tasks**:  Immediate work (must complete)
           - **Priority 2 Tasks**: Validation and follow-up
           - **Priority 3 Tasks**: Future enhancements
@@ -2016,14 +2012,14 @@ Workflow: pr-followup-generator.yml"
           - **Validation Commands**:  Shell commands to verify
           - **Failure Resolution**: Plans for common issues
           - **Self-Review Protocol**:  Mandatory 5-pass review checklist
-          
+
           ---
-          
-          **Generated by**: GitHub Actions  
-          **Workflow**: `pr-followup-generator.yml`  
+
+          **Generated by**: GitHub Actions
+          **Workflow**: `pr-followup-generator.yml`
           **Trigger**: {trigger_event}
           COMMENT_EOF
-          
+
           # Replace placeholders
           sed -i "s|{output_file}|$OUTPUT_FILE|g" comment.md
           sed -i "s|{template}|$TEMPLATE|g" comment.md
@@ -2031,12 +2027,12 @@ Workflow: pr-followup-generator.yml"
           sed -i "s|{doc_changes}|${{ steps.analyze.outputs.doc_changes }}|g" comment.md
           sed -i "s|{test_changes}|${{ steps. analyze.outputs.test_changes }}|g" comment.md
           sed -i "s|{trigger_event}|${{ github.event_name }}|g" comment. md
-          
+
           # Post comment
           gh pr comment "$PR_NUMBER" --body-file comment.md
-          
+
           echo "✅ Comment posted to PR #$PR_NUMBER"
-      
+
       - name: Summary
         run: |
           echo "## Follow-Up Prompt Generation Summary" >> $GITHUB_STEP_SUMMARY
@@ -2725,7 +2721,7 @@ Posts Status Comment
 
 ### For Developers
 
-**Opening a PR**: 
+**Opening a PR**:
 1. Create branch and make changes
 2. Open PR (prompt auto-generated)
 3. Review PR description for continuation link
@@ -2868,7 +2864,7 @@ python3 scripts/generate_pr_followup.py 2650 \
 
 ### Custom Template Variables
 
-Add custom variables to generator: 
+Add custom variables to generator:
 
 ```bash
 python3 scripts/generate_pr_followup.py 2650 \
@@ -2958,7 +2954,7 @@ gh pr view {PR_NUMBER} --json body --jq '.body'
 
 **Symptoms**: Prompt has `{variable}` placeholders
 
-**Diagnosis**: 
+**Diagnosis**:
 ```bash
 # Check generator output
 python3 scripts/generate_pr_followup.py 2650 --json-output
@@ -2979,7 +2975,7 @@ cat .github/copilot-prompts/templates/pr-continuation. md
 
 ### 1. Prompt Quality
 
-✅ **DO**: 
+✅ **DO**:
 - Be explicit with file paths, commands, expected outputs
 - Include validation steps for every task
 - Document failure resolution plans
@@ -3013,7 +3009,7 @@ cat .github/copilot-prompts/templates/pr-continuation. md
 
 ### 3. Self-Review Protocol
 
-MANDATORY 5 passes before concluding: 
+MANDATORY 5 passes before concluding:
 
 1. **Code Quality**: Syntax, linting, types, readability
 2. **Testing**: Coverage, edge cases, integration
@@ -3031,7 +3027,7 @@ MANDATORY 5 passes before concluding:
 
 ### 5. Archival
 
-After PR merge: 
+After PR merge:
 ```bash
 # Move to archive with date
 mv .github/copilot-prompts/active/PR-2650-followup.md \
@@ -3081,7 +3077,7 @@ python3 scripts/generate_pr_followup.py 2701 \
 
 # Continue each phase
 @copilot continue with Phase 1 tasks
-# ...  after completion ... 
+# ...  after completion ...
 @copilot continue with Phase 2 tasks
 ```
 
@@ -3158,15 +3154,15 @@ A:  Yes. Generate prompts locally for any task.  Commit to `docs/prompts/`.
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: System implementation complete  
+**Version**: 2.0.0
+**Last Updated**: System implementation complete
 **Maintainer**: AI Agent Automation Team
 EOF
 
 git add docs/workflows/COPILOT_CONTINUATION_GUIDE. md
 git commit -m "docs: add comprehensive Copilot continuation system guide
 
-Complete usage guide with: 
+Complete usage guide with:
 - Architecture overview
 - Quick start guide
 - Usage patterns (single/multi-phase)
@@ -3236,16 +3232,16 @@ git push origin main
 ```markdown
 @copilot validate the complete Copilot continuation pattern system implementation and create a test PR to verify end-to-end functionality.
 
-**IMMEDIATE TASKS**: 
+**IMMEDIATE TASKS**:
 
-1. **Verify All Components Installed**: 
+1. **Verify All Components Installed**:
    ```bash
    # Check file structure
    ls -la .github/copilot-prompts/templates/
    ls -la .github/copilot-prompts/active/
    ls -la scripts/generate_pr_followup.py
    ls -la . github/workflows/pr-followup-generator.yml
-   
+
    # Verify PR template updated
    grep -A 10 "@copilot continue" .github/pull_request_template.md
    ```
@@ -3269,13 +3265,13 @@ git push origin main
    ```bash
    # Create test branch
    git checkout -b test/continuation-system-validation
-   
+
    # Make trivial change
    echo "# Test continuation system" >> TEST_PR.md
    git add TEST_PR.md
    git commit -m "test: validate continuation system automation"
    git push origin test/continuation-system-validation
-   
+
    # Open PR
    gh pr create --title "Test:  Copilot Continuation System Validation" \
      --body "Testing automated prompt generation and continuation workflow"
@@ -3285,13 +3281,13 @@ git push origin main
    ```bash
    # Check workflow run
    gh run list --workflow=pr-followup-generator.yml --limit 1
-   
+
    # View logs
    gh run view {RUN_ID} --log
-   
+
    # Check if prompt generated
    ls -la .github/copilot-prompts/active/PR-*-followup.md
-   
+
    # Verify PR comment posted
    gh pr view {PR_NUMBER} --comments
    ```
@@ -3313,13 +3309,13 @@ git push origin main
 - ✅ Prompt file updates with completed tasks
 
 **FAILURE RESOLUTION**:
-If any validation fails: 
+If any validation fails:
 1. Review error logs from test suite or workflow
 2. Fix identified issues (syntax, permissions, paths)
 3. Re-run affected tests
 4. Iterate until all validations pass
 
-**MANDATORY SELF-REVIEW**: 
+**MANDATORY SELF-REVIEW**:
 Perform 5-pass review covering:
 1. File structure completeness
 2. Functionality correctness
@@ -3328,7 +3324,7 @@ Perform 5-pass review covering:
 5. Production readiness
 
 **COMPLETION PROTOCOL**:
-Do not conclude until: 
+Do not conclude until:
 - All tests passing (0 failures)
 - Test PR successfully validates automation
 - Documentation reviewed and accurate

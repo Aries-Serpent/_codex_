@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Deterministic JSONL loader with optional validation split."""
 
 
-import json
-import random
-from pathlib import Path
-from typing import Iterable, Sequence
+import json  # noqa: E402
+import random  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Iterable, Sequence  # noqa: E402
 
 __all__ = ["load_jsonl"]
 

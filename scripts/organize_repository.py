@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/organize_repository.py [options]
-    
+
     Examples:
     $ python scripts/organize_repository.py --help
 
@@ -147,10 +147,10 @@ def create_archive_index(archive_dir: Path, archived_files: list[Path]) -> None:
     # Create markdown index for human readability
     md_index_path = archive_dir / "INDEX.md"
     with open(md_index_path, "w") as f:
-        f.write(f"# Archive Index\n\n")
+        f.write("# Archive Index\n\n")
         f.write(f"Created: {index['created_at']}\n\n")
         f.write(f"Total Files: {index['total_files']}\n\n")
-        f.write(f"## Files\n\n")
+        f.write("## Files\n\n")
 
         # Sort by modified date
         sorted_files = sorted(index["files"], key=lambda x: x.get("modified", ""), reverse=True)
@@ -163,7 +163,7 @@ def create_archive_index(archive_dir: Path, archived_files: list[Path]) -> None:
                 f.write(f"- **Size**: {file_meta['size']:,} bytes\n")
                 f.write(f"- **Lines**: {file_meta.get('line_count', 0):,}\n")
                 f.write(f"- **Words**: {file_meta.get('word_count', 0):,}\n")
-                f.write(f"\n")
+                f.write("\n")
 
     logger.info(f"Created markdown index: {md_index_path}")
 
@@ -236,7 +236,7 @@ def organize_repository(
     if archived_files:
         create_archive_index(archive_dir, archived_files)
 
-    logger.info(f"\n✅ Organization complete!")
+    logger.info("\n✅ Organization complete!")
     logger.info(f"Preserved {len(to_preserve)} core files")
     logger.info(f"Archived {len(archived_files)} files to {archive_dir}")
 
@@ -250,34 +250,34 @@ def organize_repository(
 
     summary_path = root / "REPOSITORY_ORGANIZATION_SUMMARY.md"
     with open(summary_path, "w") as f:
-        f.write(f"# Repository Organization Summary\n\n")
+        f.write("# Repository Organization Summary\n\n")
         f.write(f"**Date**: {summary['organized_at']}\n\n")
-        f.write(f"## Summary\n\n")
+        f.write("## Summary\n\n")
         f.write(f"- **Files Preserved**: {summary['preserved_count']}\n")
         f.write(f"- **Files Archived**: {summary['archived_count']}\n")
         f.write(f"- **Archive Location**: `{summary['archive_location']}`\n\n")
-        f.write(f"## Preserved Files\n\n")
-        f.write(f"The following core documentation files remain in the root:\n\n")
+        f.write("## Preserved Files\n\n")
+        f.write("The following core documentation files remain in the root:\n\n")
         for f_path in sorted(to_preserve):
             f.write(f"- `{f_path.name}`\n")
-        f.write(f"\n## Archived Files\n\n")
-        f.write(f"Historical status reports, summaries, and documentation have been archived to:\n")
+        f.write("\n## Archived Files\n\n")
+        f.write("Historical status reports, summaries, and documentation have been archived to:\n")
         f.write(f"`{archive_dir}/`\n\n")
         f.write(f"See `{archive_dir}/INDEX.md` for a complete list of archived files.\n\n")
-        f.write(f"## AI Query Interface\n\n")
-        f.write(f"Archived files remain searchable and queryable by AI Agents through:\n")
+        f.write("## AI Query Interface\n\n")
+        f.write("Archived files remain searchable and queryable by AI Agents through:\n")
         f.write(f"- JSON index: `{archive_dir}/INDEX.json`\n")
         f.write(f"- Markdown index: `{archive_dir}/INDEX.md`\n\n")
-        f.write(f"## Accessing Archived Files\n\n")
-        f.write(f"To view archived files:\n")
-        f.write(f"```bash\n")
-        f.write(f"# list archived files\n")
+        f.write("## Accessing Archived Files\n\n")
+        f.write("To view archived files:\n")
+        f.write("```bash\n")
+        f.write("# list archived files\n")
         f.write(f"ls -la {archive_dir}/\n\n")
-        f.write(f"# View specific archived file\n")
+        f.write("# View specific archived file\n")
         f.write(f"cat {archive_dir}/FILENAME.md\n\n")
-        f.write(f"# Search archived content\n")
+        f.write("# Search archived content\n")
         f.write(f"grep -r 'search term' {archive_dir}/\n")
-        f.write(f"```\n")
+        f.write("```\n")
 
     logger.info(f"Created summary: {summary_path}")
 

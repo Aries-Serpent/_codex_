@@ -22,15 +22,15 @@ import logging
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
+
 try:
     import hydra
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     import config_legacy as hydra
-from omegaconf import DictConfig
-
-logger = logging.getLogger(__name__)
+from omegaconf import DictConfig  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from lm_eval import evaluator

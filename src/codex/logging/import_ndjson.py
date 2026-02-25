@@ -32,22 +32,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import argparse
-import contextlib
-import json
-import os
-import sqlite3
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Iterable, Optional
+import argparse  # noqa: E402
+import contextlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import sys  # noqa: E402
+from datetime import datetime  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Any, Iterable, Optional  # noqa: E402
 
 try:  # pragma: no cover - platform dependent
     import fcntl
 except Exception:  # pragma: no cover - windows fallback
     fcntl = None  # type: ignore[assignment]
 
-from .config import DEFAULT_LOG_DB
+from .config import DEFAULT_LOG_DB  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto

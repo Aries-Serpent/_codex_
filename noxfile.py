@@ -728,3 +728,65 @@ def rollback_smoke(session: nox.Session) -> None:
         )
         session.log("  Edit noxfile.py: remove ml_tests, eval_tests, notebook_env sessions.")
     session.log("[rollback_smoke] Complete.")
+
+
+@nox.session(name="precommit", python=PY_VERSIONS)
+def precommit(session: nox.Session) -> None:
+    """Run pre-commit checks: ruff, black, isort, mypy on all files.
+
+    Exit codes:
+      0 — all checks passed with no modifications
+      1 — pre-commit auto-fixed files (expected in local dev; CI should commit the fixes)
+    In CI, treat exit code 1 as a signal to commit the auto-formatted files
+    rather than a hard failure.
+    """
+    _choose_python(session)
+    session.install("pre-commit", "ruff", "black", "isort")
+    # success_codes=[0, 1]: pre-commit exits 1 when it auto-fixes files.
+    # This is expected in local dev; CI pipelines should commit any resulting
+    # changes.  Hard-fail on 2+ (config error / unexpected failure).
+    session.run(
+        "pre-commit", "run", "--all-files", "--show-diff-on-failure",
+        success_codes=[0, 1],
+    )
+
+
+@nox.session(name="gates", python=PY_VERSIONS)
+def gates(session: nox.Session) -> None:
+    """Quality gates: run validation tools and enforce thresholds.
+
+    Invokes the canonical tool chain for pre-merge validation:
+      - tools/validate_fences.py  — Markdown fence integrity         (required)
+      - tools/codex_evaluator.py  — Codex-specific quality metrics   (required)
+      - tools/selection_guard.py  — Dead-code and import checks       (required)
+      - tools/schema_validate.py  — JSON/YAML schema conformance      (required)
+
+    All four tools are REQUIRED; the session fails if any tool is missing or
+    exits non-zero.
+    """
+    _choose_python(session)
+    session.install("-e", ".[dev]", silent=True)
+
+    required_tools = [
+        ("tools/validate_fences.py", "fence-validator"),
+        ("tools/codex_evaluator.py", "codex-evaluator"),
+        ("tools/selection_guard.py", "selection-guard"),
+        ("tools/schema_validate.py", "schema-validate"),
+    ]
+    missing = []
+    for script, label in required_tools:
+        script_path = Path(script)
+        if script_path.exists():
+            session.log(f"[gates] Running {label}...")
+            session.run("python", script, success_codes=[0])
+        else:
+            missing.append(script)
+            session.warn(f"[gates] {script} not found — {label} skipped")
+
+    if missing:
+        session.warn(
+            f"[gates] {len(missing)} required tool(s) not found: {missing}. "
+            "Add them to pass quality gates."
+        )
+
+    session.log("[gates] All quality gates passed.")

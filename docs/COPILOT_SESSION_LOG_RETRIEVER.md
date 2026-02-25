@@ -235,7 +235,7 @@ Add verification to your workflows:
       --last 5 \
       --batch-size 5 \
       --output .codex/verification_report.md
-    
+
     # Check for missing files
     if grep -q "Missing Files: [1-9]" .codex/verification_report.md; then
       echo "Warning: Some expected files are missing"
@@ -285,8 +285,8 @@ If file operations aren't detected:
 
 - [Session Logger](../src/codex/logging/session_logger.py)
 - [Session Query](../src/codex/logging/session_query.py)
-- [AGENTS.md](../AGENTS.md)
-- [Operational Guidelines](../docs/agent/OPERATIONAL_GUIDELINES.md)
+- [AGENTS.md](../.github/AGENTS.md)
+- [Operational Guidelines](./agent/OPERATIONAL_GUIDELINES.md)
 
 ## Contributing
 

@@ -4,7 +4,7 @@ Welcome to Zendesk administration with **_codex_**! This guide will help you und
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Core Concepts](#core-concepts)
 3. [Getting Started](#getting-started)
 4. [Zendesk Workflow](#zendesk-workflow)
@@ -29,12 +29,12 @@ _codex_ provides a **configuration-as-code** approach to managing Zendesk Suppor
 
 ### Benefits
 
-✅ **Version Control**: Track all configuration changes in Git  
-✅ **Reproducibility**: Consistent deployments across environments  
-✅ **Safety**: Review changes before applying  
-✅ **Auditing**: Complete history of who changed what and when  
-✅ **Automation**: Scriptable workflows for common tasks  
-✅ **Documentation**: Self-documenting configurations  
+✅ **Version Control**: Track all configuration changes in Git
+✅ **Reproducibility**: Consistent deployments across environments
+✅ **Safety**: Review changes before applying
+✅ **Auditing**: Complete history of who changed what and when
+✅ **Automation**: Scriptable workflows for common tasks
+✅ **Documentation**: Self-documenting configurations
 
 ### Supported Zendesk Objects
 
@@ -264,23 +264,23 @@ name: Update Triggers Workflow
 tasks:
   - name: Snapshot current state
     command: codex zendesk snapshot --env=dev
-  
+
   - name: Generate diff
     command: codex zendesk diff triggers
       --desired-file configs/desired/zendesk/triggers.json
       --current-file snapshot/dev/latest/triggers.json
       --output diffs/triggers_diff.json
-  
+
   - name: Create plan
     command: codex zendesk plan triggers
       --diff-file diffs/triggers_diff.json
       --output plans/triggers_plan.json
-  
+
   - name: Apply changes
     command: codex zendesk apply triggers
       plans/triggers_plan.json
       --env=dev
-  
+
   - name: Verify
     command: codex zendesk snapshot --env=dev
 ```text
@@ -446,7 +446,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
      --desired-file configs/desired/zendesk/triggers.json \
      --current-file snapshot/dev/latest/triggers.json \
      --output diffs/triggers_diff.json
-   
+
    # Review the diff
    cat diffs/triggers_diff.json | jq
    ```
@@ -477,7 +477,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
      --desired-file configs/desired/zendesk/macros.json \
      --current-file snapshot/dev/latest/macros.json \
      --output diffs/macros_diff.json
-   
+
    codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
    codex zendesk apply macros plans/macros_plan.json --env=dev
    ```
@@ -502,7 +502,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
      --desired-file configs/desired/zendesk/triggers.json \
      --current-file snapshot/prod/latest/triggers.json \
      --output diffs/triggers_prod_diff.json
-   
+
    codex zendesk plan triggers \
      --diff-file diffs/triggers_prod_diff.json \
      --output plans/triggers_prod_plan.json
@@ -512,10 +512,10 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    ```bash
    # Careful review!
    cat plans/triggers_prod_plan.json | jq
-   
+
    # Dry run
    codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod --dry-run
-   
+
    # Apply
    codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod
    ```
@@ -526,7 +526,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    ```bash
    # List available snapshots
    ls -la snapshot/dev/
-   
+
    # Use older snapshot as "desired" state
    codex zendesk diff triggers \
      --desired-file snapshot/dev/2024-01-15_10-30-00/triggers.json \
@@ -554,7 +554,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
    ```python
    import json
    import csv
-   
+
    macros = []
    with open('macros.csv', 'r') as f:
        reader = csv.DictReader(f)
@@ -567,7 +567,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
                    {"field": "comment_value", "value": row['comment']}
                ]
            })
-   
+
    with open('configs/desired/zendesk/macros.json', 'w') as f:
        json.dump({"macros": macros}, f, indent=2)
    ```
@@ -811,13 +811,13 @@ tasks:
       - codex zendesk snapshot --env=dev
       - codex zendesk snapshot --env=staging
       - codex zendesk snapshot --env=prod
-  
+
   - name: Update triggers
     sequence:
       - codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/dev/latest/triggers.json --output diffs/triggers_diff.json
       - codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
       - codex zendesk apply triggers plans/triggers_plan.json --env=dev
-  
+
   - name: Verify changes
     command: codex zendesk metrics --since today
 ```text
@@ -908,10 +908,10 @@ def update_all_triggers(desired_file, update_fn):
     """Apply update function to all triggers."""
     with open(desired_file) as f:
         config = json.load(f)
-    
+
     for trigger in config.get('triggers', []):
         update_fn(trigger)
-    
+
     with open(desired_file, 'w') as f:
         json.dump(config, f, indent=2)
 

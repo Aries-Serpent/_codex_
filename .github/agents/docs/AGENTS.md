@@ -1,13 +1,13 @@
 # AGENTS.md - AI Agent Documentation
 
-> **Status:** ✅ UP-TO-DATE (2026-01-23 - IP-005 Security Updates Complete)  
-> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)  
+> **Status:** ✅ UP-TO-DATE (2026-01-23 - IP-005 Security Updates Complete)
+> **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Workflows:** 49 active (100% parity, 19 consolidated)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
-> 
-> **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,  
-> security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)
+>
+> **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,
+> security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](../../AGENTS.md)
 
 ---
 
@@ -15,11 +15,11 @@
 
 **New AI Agent?** Read this first (5 min orientation):
 
-0. **🚨 CRITICAL: Read [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md)** - MANDATORY
+0. **🚨 CRITICAL: Read [AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)** - MANDATORY
 1. **Repository Status:** Pre-Genesis (Template Mode - SAFE_MODE active)
 2. **Your Role:** Advisory only - No autonomous actions yet
-3. **Key Constraints:** See [.codex/guardrails.md](.codex/guardrails.md)
-4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+3. **Key Constraints:** See [.codex/guardrails.md](../../../.codex/guardrails.md)
+4. **Operational Guide:** See [docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
 
 ### ⚠️ AI Codebase Agency Policy (MANDATORY)
 
@@ -36,7 +36,7 @@
 - ✅ Fix ALL linting/type errors
 - ✅ Leave codebase better than found
 
-**Full Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)
+**Full Policy:** [.codex/CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 
@@ -83,35 +83,35 @@ are available for testing and development purposes.
 
 ### Must-Read Documents
 
-1. **[.codex/guardrails.md](.codex/guardrails.md)** - Operational constraints (5 min)
-2. **[.github/TEMPORARY_FILES_POLICY.md](.github/TEMPORARY_FILES_POLICY.md)** - 🚨 CRITICAL: Never use /tmp/ for important files (2 min)
-3. **[docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
-4. **[docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
-5. **[README.md](README.md)** - Repository overview (5 min)
-6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
+1. **[.codex/guardrails.md](../../../.codex/guardrails.md)** - Operational constraints (5 min)
+2. **[.github/TEMPORARY_FILES_POLICY.md](../../TEMPORARY_FILES_POLICY.md)** - 🚨 CRITICAL: Never use /tmp/ for important files (2 min)
+3. **[docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)** - Complete framework (15 min)
+4. **[docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)** - Genesis process (10 min)
+5. **[README.md](../../../agents/README.md)** - Repository overview (5 min)
+6. **<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: [.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md) --> --> --> --> -->** - 🆕 Cognitive Brain System (20 min)
 
 ### Reference Documents
 
-- [scripts/AUTONOMOUS_AGENT_README.md](scripts/AUTONOMOUS_AGENT_README.md) - Agent setup
-- [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md) - Future plans
-- [.codex/change_log.md](.codex/change_log.md) - Audit trail
-- [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
-- [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
-- [.codex/plans/cognitive_brain_phase_implementation.md](.codex/plans/cognitive_brain_phase_implementation.md) - Cognitive Brain Phase Plan 🆕
-- [scripts/cognitive/](scripts/cognitive/) - Cognitive Brain Scripts (22 files) 🆕
+- [scripts/AUTONOMOUS_AGENT_README.md](../../../agents/README.md) - Agent setup
+- [docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md) - Future plans
+- [.codex/change_log.md](../../../.codex/change_log.md) - Audit trail
+- [.github/workflow-archive/PARITY_CHECKLIST.md](../../workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
+- [.github/workflow-archive/ARTIFACT_CATALOG.md](../../workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
+- [.codex/plans/cognitive_brain_phase_implementation.md](../../../.codex/plans/cognitive_brain_phase_implementation.md) - Cognitive Brain Phase Plan 🆕
+- [scripts/cognitive/](../../../scripts/cognitive/) - Cognitive Brain Scripts (22 files) 🆕
 
 ###human Workflow & Artifact Resources (Updated 2026-01-23)
 
 **Workflow Consolidation**:
 - **Status**: ✅ COMPLETE (100% parity confirmed)
-- **Documentation**: [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md)
+- **Documentation**: .github/workflow-archive/PARITY_CHECKLIST.md
 - **Categories**: 8 of 8 verified (Testing, Docs, Container, Validation, Monitoring, Cache, Duplication, Post-Merge)
 - **Patterns**: Monolithic, Distributed, Optimized, Automated consolidations
 - **Active Workflows**: 49 (target: 48 - within tolerance)
 - **Disabled**: 19 workflows (28.4% reduction)
 
 **Artifact Retrieval for Copilot Sessions**:
-- **Catalog**: [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md)
+- **Catalog**: .github/workflow-archive/ARTIFACT_CATALOG.md
 - **Types**: 20+ artifact types documented
 - **Methods**: GitHub CLI, API, Direct access
 - **Examples**: Code quality, coverage, audits, tests, health metrics
@@ -179,7 +179,7 @@ Genesis Protocol establishes AI agent authority through secure initialization:
 - Workflow enablement
 - Genesis validation execution
 
-**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
+**See:** [docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
 
 ---
 
@@ -217,7 +217,7 @@ Risk Assessment → Action
 
 LOW RISK (Post-Genesis)
 • Documentation → Execute autonomously
-• Code formatting → Execute autonomously  
+• Code formatting → Execute autonomously
 • Testing → Execute autonomously
 
 MEDIUM RISK
@@ -298,12 +298,12 @@ The repository includes specialized GitHub Copilot agents designed for specific 
 
 | Agent | Purpose | Location | Status |
 |-------|---------|----------|--------|
-| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](.github/agents/ci-testing-agent.md) | ✅ Active |
-| **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](.github/agents/codex-reviewer.agent.yml) | ✅ Active |
-| **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](.github/copilot-security/security_agent.py) | ✅ Active |
-| **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit evidence | [.github/agents/qa-walkthrough-agent.md](.github/agents/qa-walkthrough-agent.md) | ✅ Active |
-| **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](.github/agents/dependency-conflict-agent.md) | ✅ Active |
-| **Coverage Gapfill Agent** | Target low-coverage modules and add deterministic tests | [.github/agents/coverage-gapfill-agent.md](.github/agents/coverage-gapfill-agent.md) | ✅ Active |
+| **CI Testing Agent** | Debug CI/CD pipelines, test failures, import errors | [.github/agents/ci-testing-agent.md](../ci-testing-agent.md) | ✅ Active |
+| **Codex Reviewer** | Code review and quality checks | [.github/agents/codex-reviewer.agent.yml](../codex-reviewer.agent.yml) | ✅ Active |
+| **Security Agent** | Security vulnerability scanning and fixes | [.github/copilot-security/security_agent.py](../../copilot-security/security_agent.py) | ✅ Active |
+| **QA Walkthrough Agent** | Repository-wide QA walkthrough execution and audit evidence | [.github/agents/qa-walkthrough-agent.md](../qa-walkthrough-agent.md) | ✅ Active |
+| **Dependency Conflict Agent** | Diagnose pip resolver conflicts and recommend compatible pins | [.github/agents/dependency-conflict-agent.md](../dependency-conflict-agent.md) | ✅ Active |
+| **Coverage Gapfill Agent** | Target low-coverage modules and add deterministic tests | [.github/agents/coverage-gapfill-agent.md](../coverage-gapfill-agent.md) | ✅ Active |
 
 ### Using Specialized Agents
 
@@ -318,7 +318,7 @@ Activate specialized agents using the `@copilot` command:
 To create a new specialized agent:
 
 1. Create agent file in `.github/agents/[agent-name].md`
-2. Follow the template in [.github/agents/README.md](.github/agents/README.md)
+2. Follow the template in [.github/agents/README.md](../../../agents/README.md)
 3. Document agent capabilities, responsibilities, and activation commands
 4. Add agent to the table above
 5. Test agent activation and behavior
@@ -341,17 +341,17 @@ To create a new specialized agent:
 
 ## 📝 Document Status
 
-**Version:** 2.1.0  
-**Last Updated:** 2025-12-28T12:50:00Z  
-**Status:** ✅ UP-TO-DATE (Workflow consolidation & artifact catalog added)  
+**Version:** 2.1.0
+**Last Updated:** 2025-12-28T12:50:00Z
+**Status:** ✅ UP-TO-DATE (Workflow consolidation & artifact catalog added)
 **Next Review:** After Phase 2 completion
 
 ---
 
 **Complete Documentation:**
-- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
-- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](docs/admin/CONTINUATION_ROADMAP.md)
+- Full details: [docs/agent/OPERATIONAL_GUIDELINES.md](../../../docs/agent/OPERATIONAL_GUIDELINES.md)
+- Genesis guide: [docs/admin/GENESIS_SETUP_GUIDE.md](../../../docs/admin/GENESIS_SETUP_GUIDE.md)
+- Future plans: [docs/admin/CONTINUATION_ROADMAP.md](../../../docs/ROADMAP.md)
 
 **Questions?** Create an issue or contact @mbaetiong
 
@@ -508,7 +508,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 ## 🏷️ Agent Type Classification
 
-**Category**: Specialized Domain  
+**Category**: Specialized Domain
 **Description**: Domain-specific expertise and functionality
 
 ### Classification Details
@@ -542,7 +542,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -697,8 +697,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: ✅ Success
+**Timestamp**: 2026-01-23T19:45:00Z
 **Duration**: 3.2s
 
 ## Summary

@@ -19,14 +19,11 @@ Usage:
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import contextlib
 import importlib
 import importlib.util
 import json
+import logging
 import os
 import time
 import warnings
@@ -40,19 +37,23 @@ from codex_ml.logging.mlflow_guard import (
     log_metric_safe,
     log_params_safe,
 )
+from codex_ml.training import strategies
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
 from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
-    resolve_strategy,
+    resolve_strategy,  # noqa: F401  (re-exported for monkeypatching)
 )
-from codex_ml.utils.checkpoint_core import (
-    CheckpointMeta,
+from codex_ml.utils import checkpoint_core as _ckpt_core
+from codex_ml.utils.checkpoint_core import CheckpointMeta
+from codex_ml.utils.checkpointing import (  # noqa: F401  (re-exported for monkeypatching)
     load_checkpoint,
     save_checkpoint,
 )
 from codex_ml.utils.repro import capture_environment, set_seed
+
+logger = logging.getLogger(__name__)
 
 try:  # optional torch
     import torch
@@ -147,14 +148,17 @@ class UnifiedTrainingConfig:
     batch_size: int = 8
     grad_accum: int = 1
     learning_rate: float = 3e-4
-    seed: int = 42
+    seed: int | None = 42
+    device: str | None = None  # explicit device override ("cpu", "cuda", "auto", …)
     output_dir: str = "runs/unified"
+    checkpoint_dir: str | None = None  # explicit checkpoint directory override
     config_version: str = "1.0"
     dataset_version: str | None = None
     deterministic: bool = True
     auto_capture_env: bool = True
     backend: str | None = None  # "functional" | "legacy" | None (auto)
     mlflow_enable: bool = False
+    mlflow_tracking: bool = False  # alias accepted by comprehensive tests
     wandb_enable: bool = False
     enable_eval_callback: bool = True
     enable_logging_callback: bool = True
@@ -166,10 +170,16 @@ class UnifiedTrainingConfig:
     best_k: int = 0
     best_metric: str = "val_loss"
     continual: Any = None  # ContinualConfig | dict[str, Any] | None - validated in __post_init__
+    continual_phases: list[Any] | None = None  # list[ContinualPhase] for multi-phase continual learning
+    callbacks: list[Any] | None = None  # list of TrainingCallback instances
 
     def __post_init__(self) -> None:
         errors: list[str] = []
-        if self.epochs < 0:
+        # model_name must be a non-empty string
+        if self.model_name is None:
+            errors.append("model_name must not be None")
+        # epochs must be >= 0 (0 is valid for resume-only or inference-only runs)
+        if self.epochs is not None and self.epochs < 0:
             errors.append("epochs must be >= 0")
         if self.batch_size < 1:
             errors.append("batch_size must be >=1")
@@ -177,11 +187,22 @@ class UnifiedTrainingConfig:
             errors.append("grad_accum must be >=1")
         if self.dtype not in {"fp32", "fp16", "bf16"}:
             errors.append("dtype must be one of {fp32, fp16, bf16}")
-        if not (0 <= self.seed < 2**32):
-            errors.append("seed must be in [0, 2**32)")
+        if self.seed is not None:
+            try:
+                seed_int = int(self.seed)
+            except (TypeError, ValueError):
+                errors.append("seed must be an integer or None")
+                seed_int = None
+            if seed_int is not None and not (0 <= seed_int < 2**32):
+                errors.append("seed must be in [0, 2**32)")
+            else:
+                self.seed = seed_int if seed_int is not None else self.seed
         self.config_version = str(self.config_version)
         self.deterministic = bool(self.deterministic)
         self.auto_capture_env = bool(self.auto_capture_env)
+        # sync mlflow_tracking → mlflow_enable so either alias works
+        if self.mlflow_tracking and not self.mlflow_enable:
+            self.mlflow_enable = True
         if self.continual is not None and not isinstance(self.continual, ContinualConfig):
             if isinstance(self.continual, Mapping):
                 self.continual = ContinualConfig(**dict(self.continual))
@@ -236,8 +257,7 @@ def distributed_context() -> dict[str, Any]:
                 context["world_size"] = max(context["world_size"], dist.get_world_size())
                 context["rank"] = max(context["rank"], dist.get_rank())
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            logger.debug("Exception occurred", exc_info=True)
             context.setdefault("backend_error", "unavailable")
     return context
 
@@ -279,9 +299,10 @@ def _emit_checkpoint_epoch(
 
     metric_value = _coerce_metric_value(metrics.get(cfg.best_metric))
 
-    checkpoint_path, checkpoint_meta = save_checkpoint(
+    checkpoint_path, checkpoint_meta = _ckpt_core.save_checkpoint(
         ckpt_dir,
-        state=checkpoint_state,
+        payload=checkpoint_state,
+        metadata={"epoch": epoch, "metrics": metrics},
         metric_value=metric_value,
         metric_key=cfg.best_metric,
         config={
@@ -366,7 +387,8 @@ def run_unified_training(
 ) -> dict[str, Any]:
     """Execute training under unified orchestrator."""
     start = time.time()
-    _seed_all(cfg.seed, deterministic=bool(cfg.deterministic))
+    if cfg.seed is not None:
+        _seed_all(cfg.seed, deterministic=bool(cfg.deterministic))
     rng_state = RNGState()
     output_root = Path(cfg.output_dir)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -374,7 +396,7 @@ def run_unified_training(
     mlflow_active = bool(cfg.mlflow_enable and init_mlflow_safe())
 
     backend_name = _auto_backend(cfg)
-    strategy = resolve_strategy(backend_name)
+    strategy = strategies.resolve_strategy(backend_name)
 
     # State object passed to callbacks (extendable)
     state: dict[str, Any] = {
@@ -441,7 +463,7 @@ def run_unified_training(
     # Pre-resume load if requested
     if cfg.resume_from:
         try:
-            loaded_state, _ = load_checkpoint(cfg.resume_from, restore_rng=True)
+            loaded_state, _ = _ckpt_core.load_checkpoint(cfg.resume_from, restore_rng=True)
             payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover
@@ -618,4 +640,5 @@ __all__ = [
     "run_unified_training",
     "train_loop",
     "functional_training",
+    "resolve_strategy",  # re-exported for monkeypatching
 ]

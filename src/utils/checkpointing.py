@@ -7,12 +7,11 @@ Prefer codex_ml.utils.checkpointing.CheckpointManager for new code.
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 import random as _random
 import warnings as _warnings
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 _warnings.warn(
     "src.utils.checkpointing is legacy; use codex_ml.utils.checkpointing for new code.",

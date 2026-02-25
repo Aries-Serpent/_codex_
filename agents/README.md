@@ -2,18 +2,18 @@
 
 **Purpose**: Autonomous AI agents with physics-inspired optimization, workflow navigation, and quantum-inspired decision making.
 
-**Last Updated**: 2025-12-30  
-**Version**: 2.0.0  
+**Last Updated**: 2026-02-24
+**Version**: 2.1.0
 **Status**: 🟢 Production Ready
 
 ---
 
 ## 📚 Quick Navigation
 
-- **New to agents?** → Start with [Key Components](#-key-components)
-- **Building an agent?** → See [Development Standards](#-development-standards)
+- **New to agents?** → Start with [Key Components](#key-components)
+- **Building an agent?** → See [Development Standards](#development-standards)
 - **Contributing?** → Check [Normalization Checklist](NORMALIZATION_CHECKLIST.md)
-- **Integration?** → View [Usage Examples](#-usage-examples)
+- **Integration?** → View <!-- BROKEN ANCHOR: [Usage Examples](#-usage-examples) -->
 
 ---
 
@@ -27,6 +27,7 @@ agents/
 ├── advanced_physics_calculators.py # Chaos, fractal, fluid, EM, wave, relativity
 ├── mental_mapping.py              # Context tracking & state management
 ├── code_analyzer.py               # Static code analysis
+├── msp_client.py                  # MSP Gateway API client (request, infer, query_kb)
 ├── exceptions.py                  # Agent-specific exceptions
 └── TOKENIZED_WORKFLOWS.md         # Workflow catalog
 ```
@@ -197,7 +198,7 @@ def ExecuteWorkflow():   # ❌ Wrong
 
 **Standard entry points** for executable agents:
 - `.execute()` - For workflow-style agents
-- `.run()` - For service-style agents  
+- `.run()` - For service-style agents
 - `.optimize()` - For optimization agents
 - `.decide()` - For decision-making agents
 
@@ -242,18 +243,18 @@ except Exception as e:
 def execute_workflow(workflow_id: str, context: Optional[Dict] = None) -> WorkflowResult:
     """
     Execute a registered workflow with optional context.
-    
+
     Args:
         workflow_id: Unique workflow identifier
         context: Optional execution context with parameters
-        
+
     Returns:
         WorkflowResult with status and outputs
-        
+
     Raises:
         WorkflowError: If workflow execution fails
         ValueError: If workflow_id is invalid
-        
+
     Example:
         >>> navigator = WorkflowNavigator()
         >>> result = navigator.execute_workflow('AUDIT_EXEC')
@@ -358,5 +359,5 @@ See [Contributing Guide](../docs/CONTRIBUTING.md) for development workflow.
 
 ---
 
-**Owner**: Agent Development Team  
+**Owner**: Agent Development Team
 **Last Updated**: 2025-12-30

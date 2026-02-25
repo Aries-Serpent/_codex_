@@ -6,15 +6,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import importlib
-import json
-import os
-import sqlite3
-import subprocess
-import sys
-from pathlib import Path
+# Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
+try:
+    import defusedxml
+    defusedxml.defuse_stdlib()
+except (ImportError, AttributeError):  # pragma: no cover - optional dep
+    pass
 
-import click
+import importlib  # noqa: E402
+import json  # noqa: E402
+import os  # noqa: E402
+import sqlite3  # noqa: E402
+import subprocess  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+import click  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer
@@ -95,14 +102,14 @@ def _fix_pool(max_workers: int | None = None) -> None:
     try:  # pragma: no cover - implementation detail
         import concurrent.futures as _cf
 
-        if max_workers is not None:
+        if max_workers is not None and max_workers > 0:
             executor = getattr(_cf, "_executor", None)
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
     except Exception as exc:  # pragma: no cover - best effort
         _log_error("POOL", "fix executor", str(exc), "configure thread pool")
-        return
+        # Don't return — continue to enable SQLite pooling below
 
     # --- Enable SQLite connection pooling ---
     from .db import sqlite_patch
@@ -474,7 +481,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
               default="root_cause", help="Grouping strategy")
 def batch_triage(issues, from_file, output, as_json, group_by):
     """Batch triage CI/test failures with automated remediation suggestions.
-    
+
     Examples:
         codex batch-triage --issues 2905,2906,2907,2908,2909,2910,2912,2913,2914,2915
         codex batch-triage --from-file scripts/ci/links_extraction.csv
@@ -1429,7 +1436,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 "DUPLICATION REPORT",
                 "=" * 60,
                 f"Scan path: {path_obj}",
-                f"Generated: {__import__('datetime').datetime.now().isoformat()}",
+                f"Generated: {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}",
                 "",
                 "SUMMARY",
                 "-" * 60,

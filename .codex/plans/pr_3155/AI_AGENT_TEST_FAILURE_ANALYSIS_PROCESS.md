@@ -249,10 +249,10 @@ These are UNRELATED to our changes but must be fixed per AI Agency Policy:
 
 ## 🧠 Redundancy Patterns
 
-**Rollback Strategy**: 
+**Rollback Strategy**:
 - **Checkpoint**: After each iteration commit
 - **Trigger**: If CI shows regressions
-- **Action**: 
+- **Action**:
   1. Identify problematic commit
   2. Revert specific changes
   3. Re-analyze and re-apply fix
@@ -299,8 +299,8 @@ These are UNRELATED to our changes but must be fixed per AI Agency Policy:
 - **Agency Policy**: `.codex/CODEBASE_AGENCY_POLICY.md`
 - **Related PRs**: #3155
 - **Workflow Runs**:
-  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233
-  - Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219
+  - Testing Suite: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428233 <!-- Note: Logs expire after 90 days -->
+  - Comprehensive Tests: https://github.com/Aries-Serpent/_codex_/actions/runs/21689428219 <!-- Note: Logs expire after 90 days -->
 - **Artifact Downloads**:
   - JUnit Report: Artifact 5384344851 ✅ Downloaded
   - Coverage HTML: Artifact 5384344717

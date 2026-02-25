@@ -601,10 +601,20 @@ def _seed_everything(seed: int = 42):
     if np is not None:
         np.random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)  # For single GPU
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    torch.use_deterministic_algorithms(True)
+    if "CUBLAS_WORKSPACE_CONFIG" not in os.environ:
+        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+    try:
+        torch.use_deterministic_algorithms(True)
+    except RuntimeError as e:
+        try:
+            torch.use_deterministic_algorithms(True, warn_only=True)
+        except Exception:
+            logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
 def _worker_init_fn(worker_id):
@@ -880,7 +890,8 @@ def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     ds = Dataset.from_dict({"text": list(texts)})
     ds = ds.map(lambda ex: tokenizer(ex["text"], truncation=True), batched=True)
     # Set format to torch tensors to ensure compatibility with HF Trainer data collator
-    ds.set_format(type="torch", columns=["input_ids", "attention_mask"])
+    available_cols = [c for c in ["input_ids", "attention_mask"] if c in ds.column_names]
+    ds.set_format(type="torch", columns=available_cols)
     return ds
 
 
@@ -960,11 +971,11 @@ def run_hf_trainer(
     if (
         resolved_det
         and torch.cuda.is_available()
-        and dtype in {"fp32", "fp16", "bf16"}
         and getattr(torch.backends, "cudnn", None) is not None
+        and getattr(torch.backends.cudnn, "enabled", False)
     ):
         if not torch.backends.cudnn.deterministic:
-            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
+            raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
     except Exception as exc:  # pragma: no cover - logging best effort
@@ -1313,8 +1324,8 @@ def run_hf_trainer(
     manifest = {
         "manifest_version": 1,
         "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir else None,
-        "last_checkpoint": trainer.state.last_model_checkpoint,
-        "best_checkpoint": trainer.state.best_model_checkpoint,
+        "last_checkpoint": getattr(trainer.state, "last_model_checkpoint", None),
+        "best_checkpoint": getattr(trainer.state, "best_model_checkpoint", None),
         "global_step": int(trainer.state.global_step),
         "resume_from": str(resume_ckpt) if resume_ckpt else None,
         "config_path": str(config_path) if config_path else None,

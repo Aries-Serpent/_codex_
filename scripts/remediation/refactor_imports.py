@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/remediation/refactor_imports.py [options]
-    
+
     Examples:
     $ python scripts/remediation/refactor_imports.py --help
 
@@ -30,11 +30,11 @@ Last Updated: 2026-01-16
 
 from __future__ import annotations
 
+import logging
 
+logger = logging.getLogger(__name__)
 
 """
-import logging
-logger = logging.getLogger(__name__)
 Refactor Import Tool (safe AST-based import rewrites)
 
 Usage:
@@ -52,10 +52,10 @@ Notes:
 import argparse
 import ast
 import json
-from pathlib import Path
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC_DIRS = [ROOT / "src", ROOT]
@@ -174,7 +174,7 @@ def apply_changes(changes: list[tuple[Path, str]], commit_per_batch: int = 20):
             raise RuntimeError("Tests failed after refactor; reverted batch.")
         # Commit batch
         subprocess.run(["git", "add"] + [str(p) for p, _ in batch], check=True)
-        subprocess.run(["git", "commit", "-m", f"refactor: update imports (batch)"], check=True)
+        subprocess.run(["git", "commit", "-m", "refactor: update imports (batch)"], check=True)
         idx += commit_per_batch
     print("All batches applied successfully.")
 

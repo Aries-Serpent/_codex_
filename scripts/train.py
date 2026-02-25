@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     python scripts/train.py [options]
-    
+
     Examples:
     $ python scripts/train.py --help
 
@@ -29,7 +29,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 #!/usr/bin/env python
 """CLI wrapper around :func:`src.training.engine_hf_trainer.run_hf_trainer`."""

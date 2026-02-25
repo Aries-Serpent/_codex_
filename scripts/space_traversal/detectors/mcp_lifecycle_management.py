@@ -9,7 +9,6 @@ Part of the Space Traversal audit pipeline for MCP service maturity.
 
 from pathlib import Path
 
-
 MAX_READ_BYTES = 200_000
 REPO_ROOT = Path(__file__).resolve().parents[3]
 

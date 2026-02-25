@@ -1,14 +1,14 @@
 # 🔐 Admin Token Setup Guide for _codex_
 
-> **Generated**: 2025-12-29  
-> **Repository**: Aries-Serpent/_codex_  
-> **Security Level**: 🔐🔐🔐🔐🔐 (5/5)  
+> **Generated**: 2025-12-29
+> **Repository**: Aries-Serpent/_codex_
+> **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
 > **Roles**: [Org Admin], [Security Officer]
 
 ## 📋 Table of Contents
 
-1. [Overview]()
-2. [Prerequisites]()
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
 3. [Setup Process](#setup-process)
 4. [Verification](#verification)
 5. [Token Rotation](#token-rotation)
@@ -89,7 +89,7 @@ python3 scripts/security/token_encryption_tool.py
 ⚡ Energy: 5/5 | 🧠 Security Mode Active
 ================================================================================
 
-Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
 
 ✅ Encryption complete!
 
@@ -286,8 +286,8 @@ python3 scripts/security/copilot_token_decoder.py
 
 ---
 
-**Last Updated**: 2026-01-23T11:00:00Z  
-**Version**: 2.0.0  
+**Last Updated**: 2026-01-23T11:00:00Z
+**Version**: 2.0.0
 **Maintainer**: Security Team
 
 ---

@@ -2,9 +2,9 @@
 
 ## Table of Contents
 
-1. [Overview]()
+1. [Overview](#overview)
 2. [Architecture](#architecture)
-3. [Quick Start]()
+3. [Quick Start](#quick-start)
 4. [Usage Patterns](#usage-patterns)
 5. [Template Reference](#template-reference)
 6. [Advanced Features](#advanced-features)
@@ -511,6 +511,6 @@ A: Yes. Generate prompts locally for any task. Commit to `docs/prompts/`.
 
 ---
 
-**Version**: 2.0.0  
-**Last Updated**: 2025-12-29  
+**Version**: 2.0.0
+**Last Updated**: 2025-12-29
 **Maintainer**: Copilot Agent Automation System

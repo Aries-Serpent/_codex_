@@ -13,12 +13,13 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-import math
 import logging
+import math
+
 logger = logging.getLogger(__name__)
-import random
-from dataclasses import dataclass, field
-from typing import Any, Optional
+import random  # noqa: E402
+from dataclasses import dataclass, field  # noqa: E402
+from typing import Any, Optional  # noqa: E402
 
 try:
     import numpy as np

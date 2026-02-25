@@ -5,11 +5,12 @@ from __future__ import annotations
 import csv
 import json
 from dataclasses import dataclass
-from typing import Protocol, TextIO
+from typing import Protocol, TextIO, runtime_checkable
 
 __all__ = ["MetricsSink", "CsvSink", "NdjsonSink", "NullSink", "create_sink"]
 
 
+@runtime_checkable
 class MetricsSink(Protocol):
     def write(self, row: dict) -> None: ...
 

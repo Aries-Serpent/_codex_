@@ -9,11 +9,9 @@ offers a unified interface:
 from __future__ import annotations
 
 import logging
-
-logger = logging.getLogger(__name__)
-
 from typing import Any, Optional
 
+logger = logging.getLogger(__name__)
 
 def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bool:
     """
@@ -36,8 +34,7 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
             else:
                 return bool(config_store.exists(name=name))
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
+            logger.debug("safe_exists: ConfigStore.exists() raised", exc_info=True)
             return False
 
     # Fallback: use list() method
@@ -53,6 +50,5 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
             # Check if name.yaml is in the list
             return f"{name}.yaml" in items
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.debug("safe_exists: ConfigStore.list() raised", exc_info=True)
         return False

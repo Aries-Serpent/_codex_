@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Dataset Pipeline
 
@@ -8,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/dataset_pipeline.py [options]
-    
+
     Examples:
     $ python scripts/dataset_pipeline.py --help
 
@@ -40,20 +41,21 @@ This script provides comprehensive dataset management including:
 - Quality scoring and validation
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
-from pathlib import Path
+import ast
+import gzip
 import hashlib
 import json
-import gzip
-import tarfile
-import zipfile
-from typing import Any, Optional
-from dataclasses import dataclass, asdict, field
-from datetime import datetime
-import ast
 import re
 import sys
+import tarfile
+import zipfile
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 
 @dataclass
@@ -84,11 +86,11 @@ class DatasetManifest:
     file_categories: dict[str, int]
     files: list[ProcessedFile]
     quality_metrics: dict[str, float]
-    
+
 
 class FileProcessor:
     """Enhanced file processing with category-specific handling."""
-    
+
     # File category mappings
     CATEGORIES = {
         'documentation': {'.md', '.rst', '.adoc', '.txt'},
@@ -100,7 +102,7 @@ class FileProcessor:
         'database': {'.sql', '.db', '.sqlite'},
         'archive': {'.zip', '.tar', '.gz', '.bz2', '.xz'},
     }
-    
+
     # Files to skip
     SKIP_PATTERNS = {
         '.git', '.venv', 'venv', '__pycache__', 'node_modules',
@@ -146,23 +148,23 @@ class FileProcessor:
         """Process documentation files with structure extraction."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
-            
+
             # Extract headers and structure
             headers = re.findall(r'^#{1,6}\s+(.+)$', content, re.MULTILINE)
             code_blocks = re.findall(r'```[\s\S]*?```', content)
-            
+
             # Quality score based on structure
             quality = min(1.0, (len(headers) * 0.1 + len(code_blocks) * 0.05))
-            
+
             # Extract metadata
             metadata = {
                 'headers_count': len(headers),
                 'code_blocks_count': len(code_blocks),
                 'has_structure': len(headers) > 0
             }
-            
+
             return json.dumps(metadata), quality
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process documentation {filepath}: {e}", file=sys.stderr)
@@ -173,54 +175,54 @@ class FileProcessor:
         """Process source code with AST analysis."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
-            
+
             # For Python files, use AST
             if filepath.suffix == '.py':
                 try:
                     tree = ast.parse(content)
-                    
+
                     # Extract entities
                     classes = [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
                     functions = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]
-                    
+
                     # Count imports
                     imports = len([node for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))])
-                    
+
                     # Calculate complexity (simple metric)
                     complexity = len(classes) + len(functions) + imports
-                    
+
                     metadata = {
                         'classes': len(classes),
                         'functions': len(functions),
                         'imports': imports,
                         'complexity': complexity
                     }
-                    
+
                     # Quality score based on code structure
                     quality = min(1.0, 0.5 + (complexity * 0.01))
-                    
+
                     return json.dumps(metadata), quality
-                    
+
                 except SyntaxError as e:
                     logger.debug(f"SyntaxError: {e}")
                     logger.warning(f"SyntaxError: {e}", exc_info=True)
                     return None, 0.3
-            
+
             # For other languages, basic metrics
             lines = content.split('\n')
-            non_empty = [l for l in lines if l.strip()]
-            comments = [l for l in lines if l.strip().startswith(('#', '//', '/*'))]
-            
+            non_empty = [line_item for line_item in lines if line_item.strip()]
+            comments = [line_item for line_item in lines if line_item.strip().startswith(('#', '//', '/*'))]
+
             quality = min(1.0, len(non_empty) / max(len(lines), 1))
-            
+
             metadata = {
                 'lines': len(lines),
                 'non_empty_lines': len(non_empty),
                 'comment_lines': len(comments)
             }
-            
+
             return json.dumps(metadata), quality
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process source code {filepath}: {e}", file=sys.stderr)
@@ -231,11 +233,11 @@ class FileProcessor:
         """Process configuration files with schema extraction."""
         try:
             content = filepath.read_text(encoding='utf-8', errors='ignore')
-            
+
             # Try to parse as JSON/YAML
             metadata = {}
             quality = 0.7
-            
+
             if filepath.suffix == '.json':
                 try:
                     data = json.loads(content)
@@ -245,9 +247,9 @@ class FileProcessor:
                 except json.JSONDecodeError:
                     metadata['is_valid'] = False
                     quality = 0.3
-            
+
             return json.dumps(metadata), quality
-            
+
         except Exception as e:
             logger.debug(f"Exception: {e}")
             print(f"Warning: Could not process config {filepath}: {e}", file=sys.stderr)
@@ -258,26 +260,26 @@ class FileProcessor:
         """Process a single file based on its category."""
         if cls.should_skip(filepath):
             return None
-        
+
         category = cls.categorize_file(filepath)
         if not category:
             return None
-        
+
         # Get file stats
         stat = filepath.stat()
         relative_path = str(filepath.relative_to(root))
         checksum = cls.calculate_checksum(filepath)
-        
+
         # Process based on category
         extracted_content, quality = None, 0.5
-        
+
         if category == 'documentation':
             extracted_content, quality = cls.process_documentation(filepath)
         elif category == 'source_code':
             extracted_content, quality = cls.process_source_code(filepath)
         elif category == 'config':
             extracted_content, quality = cls.process_config(filepath)
-        
+
         # Calculate compressed size (estimate)
         try:
             with open(filepath, 'rb') as f:
@@ -287,9 +289,9 @@ class FileProcessor:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             size_compressed = stat.st_size
-        
+
         compression_ratio = size_compressed / max(stat.st_size, 1)
-        
+
         return ProcessedFile(
             path=str(filepath),
             relative_path=relative_path,
@@ -306,28 +308,28 @@ class FileProcessor:
 
 class DatasetManager:
     """Manages dataset creation, compression, and versioning."""
-    
+
     def __init__(self, repo_path: Path, output_dir: Optional[Path] = None):
         self.repo_path = repo_path.resolve()
         self.output_dir = output_dir or (repo_path / ".codex" / "datasets")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.processed_files: list[ProcessedFile] = []
         self.dedup_checksums: set[str] = set()
 
     def scan_repository(self, include_patterns: Optional[list[str]] = None) -> int:
         """Scan repository and process files."""
         print(f"Scanning repository: {self.repo_path}")
-        
+
         count = 0
         for filepath in self.repo_path.rglob("*"):
             if not filepath.is_file():
                 continue
-            
+
             # Skip if in skip directory
             if any(FileProcessor.should_skip(parent) for parent in filepath.parents):
                 continue
-            
+
             processed = FileProcessor.process_file(filepath, self.repo_path)
             if processed:
                 # Deduplication by checksum
@@ -335,10 +337,10 @@ class DatasetManager:
                     self.processed_files.append(processed)
                     self.dedup_checksums.add(processed.checksum)
                     count += 1
-                    
+
                     if count % 100 == 0:
                         print(f"  Processed {count} files...", end='\r')
-        
+
         print(f"✓ Processed {count} unique files                    ")
         return count
 
@@ -347,10 +349,10 @@ class DatasetManager:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         archive_name = f"dataset_{version}_{timestamp}.{format}"
         archive_path = self.output_dir / archive_name
-        
+
         print(f"Creating compressed archive: {archive_name}")
-        
-        if format.endswith(".tar.gz") or format == "tar":
+
+        if format in {"tar", "tar.gz"} or format.endswith(".tar.gz"):
             with tarfile.open(archive_path, "w:gz") as tar:
                 for pf in self.processed_files:
                     try:
@@ -358,7 +360,7 @@ class DatasetManager:
                     except Exception as e:
                         logger.debug(f"Exception: {e}")
                         print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
-        
+
         elif format == "zip":
             with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                 for pf in self.processed_files:
@@ -367,7 +369,7 @@ class DatasetManager:
                     except Exception as e:
                         logger.debug(f"Exception: {e}")
                         print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
-        
+
         print(f"✓ Created archive: {archive_path}")
         return archive_path
 
@@ -375,23 +377,23 @@ class DatasetManager:
         """Generate dataset manifest with metadata."""
         total_size_orig = sum(pf.size_original for pf in self.processed_files)
         total_size_comp = sum(pf.size_compressed for pf in self.processed_files)
-        
+
         # Category counts
         category_counts = {}
         for pf in self.processed_files:
             category_counts[pf.category] = category_counts.get(pf.category, 0) + 1
-        
+
         # Quality metrics
         avg_quality = sum(pf.quality_score for pf in self.processed_files) / max(len(self.processed_files), 1)
         avg_compression = sum(pf.compression_ratio for pf in self.processed_files) / max(len(self.processed_files), 1)
-        
+
         quality_metrics = {
             'average_quality_score': avg_quality,
             'average_compression_ratio': avg_compression,
             'files_with_high_quality': sum(1 for pf in self.processed_files if pf.quality_score > 0.7),
             'files_with_low_quality': sum(1 for pf in self.processed_files if pf.quality_score < 0.3)
         }
-        
+
         return DatasetManifest(
             version=version,
             created_at=datetime.now().isoformat(),
@@ -407,13 +409,13 @@ class DatasetManager:
     def save_manifest(self, manifest: DatasetManifest, version: str) -> Path:
         """Save manifest to disk."""
         manifest_path = self.output_dir / f"manifest_{version}.json"
-        
+
         # Convert to dict
         manifest_dict = asdict(manifest)
-        
+
         with open(manifest_path, 'w', encoding='utf-8') as f:
             json.dump(manifest_dict, f, indent=2)
-        
+
         print(f"✓ Saved manifest: {manifest_path}")
         return manifest_path
 
@@ -427,10 +429,10 @@ class DatasetManager:
         print(f"Compressed Size: {manifest.total_size_compressed / 1024 / 1024:.2f} MB")
         print(f"Compression Ratio: {manifest.compression_ratio:.2%}")
         print(f"Space Saved: {(1 - manifest.compression_ratio) * 100:.1f}%")
-        print(f"\nFile Categories:")
+        print("\nFile Categories:")
         for category, count in sorted(manifest.file_categories.items()):
             print(f"  {category}: {count}")
-        print(f"\nQuality Metrics:")
+        print("\nQuality Metrics:")
         for metric, value in manifest.quality_metrics.items():
             print(f"  {metric}: {value:.3f}")
         print("="*60)
@@ -439,7 +441,7 @@ class DatasetManager:
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Enhanced dataset pipeline")
     parser.add_argument("--repo", type=Path, default=Path.cwd(),
                         help="Repository path")
@@ -452,31 +454,31 @@ def main():
                         help="Archive format")
     parser.add_argument("--no-archive", action="store_true",
                         help="Skip archive creation (manifest only)")
-    
+
     args = parser.parse_args()
-    
+
     manager = DatasetManager(args.repo, args.output)
-    
+
     # Scan and process files
     count = manager.scan_repository()
-    
+
     if count == 0:
         print("No files to process")
         return 1
-    
+
     # Generate manifest
     manifest = manager.generate_manifest(args.version)
-    
+
     # Save manifest
     manager.save_manifest(manifest, args.version)
-    
+
     # Create archive if requested
     if not args.no_archive:
         manager.create_compressed_archive(args.version, args.format)
-    
+
     # Print summary
     manager.print_summary(manifest)
-    
+
     return 0
 
 

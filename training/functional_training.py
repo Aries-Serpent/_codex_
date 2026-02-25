@@ -12,7 +12,6 @@ from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 
 import numpy as np
 from torch.nn.utils import clip_grad_norm_
-from torch.utils.data import DataLoader
 
 import torch
 from codex_ml.logging.file_logger import FileLogger
@@ -27,6 +26,7 @@ from codex_ml.utils.checkpointing import (
 )
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+from torch.utils.data import DataLoader
 
 LOGGER = logging.getLogger(__name__)
 
@@ -258,7 +258,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore
-
         from transformers import AutoTokenizer  # type: ignore
 
         model_cfg = training_cfg.get(
@@ -443,9 +442,11 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model.to(device)
     set_seed(cfg.seed, deterministic=cfg.deterministic)
-    if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
-        if not torch.backends.cudnn.deterministic:
-            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
+    if getattr(torch.backends, "cudnn", None) is not None:
+        if getattr(torch.backends.cudnn, "enabled", False):
+            if not torch.backends.cudnn.deterministic:
+                torch.backends.cudnn.deterministic = True
+                torch.backends.cudnn.benchmark = False
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
     if cfg.use_lora and LoraConfig and get_peft_model:

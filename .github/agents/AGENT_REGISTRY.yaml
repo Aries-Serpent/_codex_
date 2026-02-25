@@ -1,7 +1,54 @@
-version: 1.0.0
-last_updated: '2026-01-23T07:25:00Z'
-total_agents: 26
+version: 1.3.0
+last_updated: '2026-02-25T01:45:00Z'
+total_agents: 121  # registered in this YAML; 98 operational agent .md files + 23 sub-directory agents in .github/agents/
 agents:
+- id: github-guru-agent
+  name: GitHub Guru Agent
+  version: "1.1.0"
+  directory: .github/agents/github-guru-agent
+  file: github-guru-agent.agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: operations
+  subcategory: governance
+  physics_model:
+    primary: balance
+    secondary: path
+    energy: 5
+  primary_skill: "GitHub repository intelligence, PR analysis, issue triage, workflow health"
+  secondary_skill: "Pattern synthesis, cross-repo knowledge surfacing, developer guidance"
+  purpose: >
+    Full-spectrum GitHub repository intelligence: PR analysis, issue triage,
+    workflow health monitoring, branch governance, dependency drift detection,
+    repository hygiene reporting, and label taxonomy enforcement.
+  capabilities:
+    - pr_analysis
+    - issue_triage
+    - workflow_health_monitoring
+    - branch_governance
+    - contributor_intelligence
+    - repository_hygiene_reporting
+    - codebase_navigation_guidance
+    - dependency_drift_detection
+    - stale_resource_detection
+    - label_taxonomy_enforcement
+  integration_points:
+    - .github/workflows/github-guru.yml
+    - .github/agents/github-guru-agent/main.py
+    - .github/agents/AGENT_REGISTRY.yaml
+    - .github/agents/AGENT_REGISTRY.md
+  cognitive_brain_layer: orchestration
+  safe_mode: true
+  network_access: false
+  test_coverage: "109 tests passing"
+  priority: critical
+  created: '2026-02-21T01:50:00Z'
+  updated: '2026-02-21T01:50:00Z'
+  maintainer: mbaetiong
 - id: ast-analysis-agent
   name: Ast Analysis Agent
   directory: .github/agents/ast-analysis-agent
@@ -400,9 +447,963 @@ agents:
   updated: '2026-01-23T07:20:00Z'
   tools:
   - scripts/verify_hydra_configs.sh
+- id: unified-security-scanner
+  name: Unified Security Scanner
+  directory: .github/agents
+  file: unified-security-scanner.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Multi-scanner security audit — CVE detection, secret scanning, GHAS triage, SBOM generation, and unified risk scoring
+  capabilities:
+  - cve_scanning
+  - secret_detection
+  - ghas_alert_triage
+  - sbom_generation
+  - auto_remediation
+  - risk_scoring
+  integration_points:
+  - github_security_alerts
+  - dependency_files
+  - cognitive_brain
+  - cross_agent_knowledge_graph
+  priority: critical
+  created: '2026-02-05T00:00:00Z'
+  batch: M-01
+  aais_contribution: 6.0
+- id: cross-agent-knowledge-graph
+  name: Cross-Agent Knowledge Graph
+  directory: .github/agents
+  file: cross-agent-knowledge-graph.md
+  status: active
+  maturity: production
+  session_introduced: S61
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents
+  capabilities:
+  - node_registration
+  - edge_creation
+  - semantic_query
+  - conflict_detection
+  - staleness_pruning
+  - snapshot_export
+  - drq_pattern_sync
+  integration_points:
+  - cognitive_brain
+  - ci_triage_pipeline
+  - unified_security_scanner
+  - governance_gate
+  priority: high
+  created: '2026-02-05T00:00:00Z'
+  batch: E-10
+  fix_patterns_registered: 11
+  aais_contribution: 2.5
+- id: codeql-alert-resolution-agent
+  name: CodeQL Alert Resolution Agent
+  directory: .github/agents
+  file: codeql-alert-resolution-agent.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring
+  capabilities:
+  - codeql_alert_ingestion
+  - cwe_classification
+  - auto_fix_application
+  - false_positive_dismissal
+  - regression_prevention
+  - audit_trail_logging
+  integration_points:
+  - github_code_scanning
+  - cognitive_brain
+  - cross_agent_knowledge_graph
+  - aais_scoring
+  priority: critical
+  created: '2026-01-26T17:40:00Z'
+  updated: '2026-02-23T00:00:00Z'
+  aais_contribution: 2.0
+- id: rag-meta-tensor-regression-agent
+  name: RAG Meta-Tensor Regression Agent
+  directory: .github/agents
+  file: rag-meta-tensor-regression-agent.md
+  status: active
+  maturity: production
+  session_introduced: S69
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
+  capabilities:
+  - meta_tensor_detection
+  - device_placement_validation
+  - regression_prevention
+  - canonical_fix_application
+  - cognitive_brain_pattern_storage
+  integration_points:
+  - src/codex/rag/utils.py
+  - tests/test_rag_meta_tensor_regression.py
+  - cognitive_brain
+  priority: high
+  created: '2026-02-22T00:00:00Z'
+  fix_pattern: MP-S69-001
+  aais_contribution: 1.8
+- id: ci-triage-pipeline-agent
+  name: CI Triage Pipeline Agent
+  directory: .github/agents
+  file: ci-triage-pipeline-agent.md
+  status: active
+  maturity: production
+  session_introduced: S67
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix patterns from DRQ library
+  capabilities:
+  - ci_log_retrieval
+  - failure_classification
+  - fix_pattern_application
+  - drq_integration
+  - cognitive_brain_learning
+  integration_points:
+  - github_actions
+  - research_queue
+  - cognitive_brain
+  priority: high
+  created: '2026-02-10T00:00:00Z'
+- id: recon-scout-agent
+  name: Recon Scout Agent
+  directory: .github/agents
+  file: recon-scout-agent.md
+  status: active
+  maturity: production
+  session_introduced: S70
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research
+  capabilities:
+  - ci_blocker_detection
+  - security_tripwire_scan
+  - code_quality_audit
+  - documentation_gap_detection
+  - architecture_drift_analysis
+  - dependency_risk_assessment
+  - quick_fix_application
+  - drq_filing
+  - knowledge_graph_registration
+  integration_points:
+  - docs/tech_debt/research_queue
+  - cross_agent_knowledge_graph
+  - cognitive_brain
+  - github_actions_logs
+  priority: high
+  run_before: codeql_checker
+  created: '2026-02-23T00:00:00Z'
+  aais_contribution: 3.0
+  scan_categories: 6
+  rules_defined: 28
+- id: policy-coach-agent
+  name: Policy Coach Agent
+  directory: .github/agents
+  file: policy-coach-agent.md
+  status: active
+  maturity: production
+  session_introduced: S78
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: >
+    Monitors Copilot Agent sessions for codebase policy violations and re-aligns
+    behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session
+    violation detection (T-2), and pre-close gate (T-3). Contains 14 violation
+    patterns (P-01..P-14) with verbatim re-alignment prompts.
+  capabilities:
+  - policy_violation_detection
+  - session_re_alignment
+  - pre_close_gate_enforcement
+  - violation_pattern_matching
+  - prompt_injection
+  integration_points:
+  - .codex/CODEBASE_AGENCY_POLICY.md
+  - .codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md
+  - .codex/docs/ACCOUNTABILITY_REPORT_S77.md
+  - recon-scout-agent
+  - ci-testing-agent
+  priority: critical
+  run_before: codeql_checker
+  run_after: plan_declaration
+  created: '2026-02-24T00:00:00Z'
+  trigger_points: 3
+  violation_patterns: 14
+- id: python-architect-agent
+  name: Python Architect Agent
+  directory: .github/agents
+  file: python-architect-agent.agent.md
+  status: active
+  maturity: production
+  session_introduced: S68
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline
+  capabilities:
+  - architecture_review
+  - refactoring_guidance
+  - pattern_enforcement
+  - module_structure_validation
+  integration_points:
+  - cognitive_brain
+  - src/
+  priority: medium
+  created: '2026-02-22T12:00:00Z'
+  energy_level: 5
+
+- id: ci-auto-healer
+  name: CI Auto-Healer Agent
+  version: "1.0.0"
+  file: ci-auto-healer-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  primary_skill: "Autonomous CI failure detection, pattern-matching, and self-healing"
+  secondary_skill: "Pattern library management, DRQ filing, cognitive brain integration"
+  purpose: >
+    Detects CI failures, matches them to a known pattern library (P-001 to P-029),
+    applies validated fixes, and escalates unrecognized patterns as DRQ entries.
+  capabilities:
+    - ci_failure_detection
+    - pattern_matching
+    - automated_code_fix
+    - local_test_validation
+    - drq_filing
+    - cognitive_brain_update
+  cognitive_brain_layer: healing
+  safe_mode: false
+  network_access: false
+  created: '2026-02-24T18:00:00Z'
+  updated: '2026-02-24T18:00:00Z'
+  maintainer: mbaetiong
+- id: agent-iq-scoring-gate
+  name: Agent IQ Scoring Gate
+  file: agent-iq-scoring-gate.md
+  status: active
+  maturity: beta
+  category: governance
+  priority: medium
+  purpose: Evaluates agent IQ and gates deployments based on scoring thresholds.
+- id: agent-orchestrator
+  name: Agent Orchestrator
+  file: agent-orchestrator.md
+  status: active
+  maturity: production
+  category: orchestration
+  priority: high
+  purpose: Coordinates multi-agent workflows, routing tasks to specialist agents.
+- id: artifact-monitor-agent
+  name: Artifact Monitor Agent
+  file: artifact-monitor-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Monitors CI/CD artifact health, detects stale or missing artifacts.
+- id: autonomous-test-healer-agent
+  name: Autonomous Test Healer Agent
+  file: autonomous-test-healer-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: high
+  purpose: Auto-heals failing tests by identifying root causes and applying targeted fixes.
+- id: bridge-security-monitor
+  name: Bridge Security Monitor
+  file: bridge-security-monitor.agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Monitors IPC bridge security, detects unauthorized access, validates message integrity.
+- id: cache-management-agent
+  name: Cache Management Agent
+  file: cache-management-agent.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Manages CI/CD caching strategies; prunes stale caches, validates cache keys.
+- id: cache-manager-integration
+  name: Cache Manager Integration
+  file: cache-manager-integration.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Integration layer for cache management across workflow and composite actions.
+- id: ci-auto-healer-agent
+  name: CI Auto-Healer Agent
+  file: ci-auto-healer-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: critical
+  purpose: Detects and repairs CI failures using P-001-P-035 pattern library.
+- id: ci-emergency-response-agent
+  name: CI Emergency Response Agent
+  file: ci-emergency-response-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: critical
+  purpose: Emergency response for critical CI pipeline failures requiring immediate action.
+- id: ci-failure-resolution-agent
+  name: CI Failure Resolution Agent
+  file: ci-failure-resolution-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Resolves CI failures by diagnosing logs and applying structured fix patterns.
+- id: ci-importerror-agent
+  name: CI ImportError Agent
+  file: ci-importerror-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Diagnoses and remediates ImportError/ModuleNotFoundError in test suites.
+- id: ci-log-retrieval-agent
+  name: CI Log Retrieval Agent
+  file: ci-log-retrieval-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Retrieves authenticated GitHub Actions logs and summarizes failures.
+- id: ci-optimization-agent
+  name: CI Optimization Agent
+  file: ci-optimization-agent.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Identifies and applies optimizations to reduce CI pipeline runtime.
+- id: ci-parameter-mismatch-healer
+  name: CI Parameter Mismatch Healer
+  file: ci-parameter-mismatch-healer.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Detects and corrects parameter/argument mismatches in CI workflow calls.
+- id: ci-resilience-emergency-response-agent
+  name: CI Resilience Emergency Response Agent
+  file: ci-resilience-emergency-response-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: critical
+  purpose: Resilience-focused emergency CI recovery with retry and fallback strategies.
+- id: claim-verification-agent
+  name: Claim Verification Agent
+  file: claim-verification-agent.md
+  status: active
+  maturity: beta
+  category: documentation
+  priority: medium
+  purpose: Verifies factual claims in commit messages and documentation.
+- id: code-analysis-agent
+  name: Code Analysis Agent
+  file: code-analysis-agent.md
+  status: active
+  maturity: production
+  category: quality
+  priority: high
+  purpose: Static code quality analysis with actionable improvement recommendations.
+- id: code-scanning-remediation-agent
+  name: Code Scanning Remediation Agent
+  file: code-scanning-remediation-agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: high
+  purpose: Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change fixes.
+- id: codebase-health-guardian
+  name: Codebase Health Guardian
+  file: codebase-health-guardian.md
+  status: active
+  maturity: beta
+  category: quality
+  priority: high
+  purpose: Continuous monitoring of overall codebase health metrics and trends.
+- id: cognitive-brain-manager
+  name: Cognitive Brain Manager
+  file: cognitive-brain-manager.md
+  status: active
+  maturity: production
+  category: cognitive
+  priority: critical
+  purpose: Manages cognitive brain system state, phase transitions, and health scoring.
+- id: config-migration-assistant
+  name: Config Migration Assistant
+  file: config-migration-assistant.agent.md
+  status: active
+  maturity: beta
+  category: configuration
+  priority: medium
+  purpose: Migrates legacy configurations to Hydra-based format with validation.
+- id: config-validator
+  name: Config Validator
+  file: config-validator.agent.md
+  status: active
+  maturity: production
+  category: configuration
+  priority: high
+  purpose: Validates Hydra configuration files for schema compliance and type safety.
+- id: coverage-gapfill-agent
+  name: Coverage Gapfill Agent
+  file: coverage-gapfill-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: high
+  purpose: Targets low-coverage modules and generates tests to close coverage gaps.
+- id: coverage-maintenance-agent
+  name: Coverage Maintenance Agent
+  file: coverage-maintenance-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: medium
+  purpose: Maintains test coverage over time; alerts on regressions.
+- id: coverage-roadmap-agent
+  name: Coverage Roadmap Agent
+  file: coverage-roadmap-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Drives coverage threshold roadmap, tracks phase completion, validates thresholds.
+- id: cpu-only-ci-config-agent
+  name: CPU-Only CI Config Agent
+  file: cpu-only-ci-config-agent.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Configures CI workflows for CPU-only environments (no GPU dependencies).
+- id: cross-platform-filename-validator
+  name: Cross-Platform Filename Validator
+  file: cross-platform-filename-validator.md
+  status: active
+  maturity: production
+  category: quality
+  priority: medium
+  purpose: Validates filenames for cross-platform compatibility; blocks illegal characters.
+- id: datetime-modernizer
+  name: Datetime Modernizer
+  file: datetime-modernizer.agent.md
+  status: active
+  maturity: production
+  category: quality
+  priority: medium
+  purpose: Migrates datetime.utcnow() to datetime.now(tz=timezone.utc) across codebase.
+- id: dependency-conflict-agent
+  name: Dependency Conflict Agent
+  file: dependency-conflict-agent.md
+  status: active
+  maturity: production
+  category: dependencies
+  priority: high
+  purpose: Diagnoses pip resolver conflicts; recommends compatible version ranges.
+- id: dependency-security-review-agent
+  name: Dependency Security Review Agent
+  file: dependency-security-review-agent.md
+  status: active
+  maturity: beta
+  category: security
+  priority: high
+  purpose: Reviews dependency security posture; flags CVEs and outdated packages.
+- id: dependency-vulnerability-scanner
+  name: Dependency Vulnerability Scanner
+  file: dependency-vulnerability-scanner.agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Scans dependencies against multiple CVE databases; generates remediation plans.
+- id: doc-freshness-checker
+  name: Doc Freshness Checker
+  file: doc-freshness-checker.agent.md
+  status: active
+  maturity: production
+  category: documentation
+  priority: medium
+  purpose: Validates documentation freshness; identifies stale docs and broken links.
+- id: doc-refactor-test-agent
+  name: Doc Refactor Test Agent
+  file: doc-refactor-test-agent.md
+  status: active
+  maturity: beta
+  category: documentation
+  priority: low
+  purpose: Refactors documentation tests and validates documentation test infrastructure.
+- id: documentation-consolidator
+  name: Documentation Consolidator
+  file: documentation-consolidator.md
+  status: active
+  maturity: production
+  category: documentation
+  priority: medium
+  purpose: Consolidates fragmented documentation with semantic analysis and content preservation.
+- id: documentation-quality-agent
+  name: Documentation Quality Agent
+  file: documentation-quality-agent.md
+  status: active
+  maturity: production
+  category: documentation
+  priority: medium
+  purpose: Automated documentation quality assessment; MkDocs validation; link checking.
+- id: fragile-test-guardian
+  name: Fragile Test Guardian
+  file: fragile-test-guardian.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: high
+  purpose: Identifies and stabilizes fragile/flaky tests before they cause CI failures.
+- id: github-pages-manager
+  name: GitHub Pages Manager
+  file: github-pages-manager.md
+  status: active
+  maturity: production
+  category: documentation
+  priority: medium
+  purpose: Manages GitHub Pages deployment, theme configuration, and live site validation.
+- id: integration-test-runner
+  name: Integration Test Runner
+  file: integration-test-runner.agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Runs integration tests across services; validates cross-component interactions.
+- id: json-serialization-expert
+  name: JSON Serialization Expert
+  file: json-serialization-expert.md
+  status: active
+  maturity: beta
+  category: quality
+  priority: medium
+  purpose: Diagnoses and fixes JSON serialization issues in API responses and data pipelines.
+- id: link-validator-agent
+  name: Link Validator Agent
+  file: link-validator-agent.md
+  status: active
+  maturity: production
+  category: documentation
+  priority: medium
+  purpose: Cross-reference and link validation for documentation; detects broken links.
+- id: meta-tensor-validator
+  name: Meta Tensor Validator
+  file: meta-tensor-validator.md
+  status: active
+  maturity: production
+  category: ml
+  priority: high
+  purpose: Validates PyTorch model initialization patterns to prevent meta tensor issues.
+- id: ml-validation-suite-agent
+  name: ML Validation Suite Agent
+  file: ml-validation-suite-agent.md
+  status: active
+  maturity: beta
+  category: ml
+  priority: medium
+  purpose: Comprehensive ML model validation including determinism and reproducibility checks.
+- id: msv-dashboard-monitor
+  name: MSV Dashboard Monitor
+  file: msv-dashboard-monitor.md
+  status: active
+  maturity: beta
+  category: monitoring
+  priority: medium
+  purpose: Monitors MSV dashboard metrics and alerts on regressions.
+- id: mutation-testing-agent
+  name: Mutation Testing Agent
+  file: mutation-testing-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: medium
+  purpose: Performs mutation testing to evaluate test suite effectiveness.
+- id: owner-approval-guard
+  name: Owner Approval Guard
+  file: owner-approval-guard.agent.md
+  status: active
+  maturity: production
+  category: governance
+  priority: critical
+  purpose: Enforces owner approval requirements for autonomous operations.
+- id: performance-regression-detector
+  name: Performance Regression Detector
+  file: performance-regression-detector.agent.md
+  status: active
+  maturity: production
+  category: performance
+  priority: high
+  purpose: Detects performance regressions by comparing metrics against baselines.
+- id: pii-scrubber
+  name: PII Scrubber
+  file: pii-scrubber.agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: high
+  purpose: Scrubs PII from text content before processing; ensures GDPR/CCPA compliance.
+- id: pr-3095-verification-agent
+  name: PR-3095 Verification Agent
+  file: pr-3095-verification-agent.md
+  status: active
+  maturity: beta
+  category: governance
+  priority: low
+  purpose: Verifies that PR 3095 fixes have been correctly applied across the codebase.
+- id: pr-check-remediation-agent
+  name: PR Check Remediation Agent
+  file: pr-check-remediation-agent.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Remediates failed PR checks by analyzing failure patterns and applying fixes.
+- id: pr-test-infrastructure-fixer
+  name: PR Test Infrastructure Fixer
+  file: pr-test-infrastructure-fixer.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: medium
+  purpose: Fixes test infrastructure issues introduced by PR changes.
+- id: pypi-publishing-operations-agent
+  name: PyPI Publishing Operations Agent
+  file: pypi-publishing-operations-agent.md
+  status: active
+  maturity: beta
+  category: operations
+  priority: medium
+  purpose: Manages PyPI package publishing operations and release workflows.
+- id: python-312-type-fixer
+  name: Python 3.12 Type Fixer
+  file: python-312-type-fixer.md
+  status: active
+  maturity: beta
+  category: quality
+  priority: medium
+  purpose: Fixes Python 3.12 type annotation incompatibilities across the codebase.
+- id: qa-walkthrough-agent
+  name: QA Walkthrough Agent
+  file: qa-walkthrough-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Executes repository-wide QA walkthrough with evidence-based audit steps.
+- id: quantum-compliance-tuning-agent
+  name: Quantum Compliance Tuning Agent
+  file: quantum-compliance-tuning-agent.md
+  status: active
+  maturity: beta
+  category: cognitive
+  priority: medium
+  purpose: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
+- id: rag-freshness-loop-agent
+  name: RAG Freshness Loop Agent
+  file: rag-freshness-loop-agent.md
+  status: active
+  maturity: beta
+  category: ml
+  priority: medium
+  purpose: Maintains RAG index freshness through continuous update and validation loops.
+- id: rag-index-manager
+  name: RAG Index Manager
+  file: rag-index-manager.agent.md
+  status: active
+  maturity: production
+  category: ml
+  priority: high
+  purpose: Manages RAG index operations including building, updating, and querying.
+- id: rag-meta-tensor-guardian
+  name: RAG Meta Tensor Guardian
+  file: rag-meta-tensor-guardian.md
+  status: active
+  maturity: production
+  category: ml
+  priority: high
+  purpose: Guards RAG tensor operations against meta tensor initialization errors.
+- id: rag-module-management-agent
+  name: RAG Module Management Agent
+  file: rag-module-management-agent.md
+  status: active
+  maturity: production
+  category: ml
+  priority: high
+  purpose: Manages RAG module lifecycle including initialization and hot-swapping.
+- id: reference-updater-agent
+  name: Reference Updater Agent
+  file: reference-updater-agent.md
+  status: active
+  maturity: production
+  category: quality
+  priority: medium
+  purpose: Atomic reference updates across entire codebase with transaction-like behavior.
+- id: repository-hygiene-agent
+  name: Repository Hygiene Agent
+  file: repository-hygiene-agent.md
+  status: active
+  maturity: production
+  category: operations
+  priority: medium
+  purpose: Autonomous repository cleanup, maintenance, and codebase hygiene specialist.
+- id: repository-organization-agent
+  name: Repository Organization Agent
+  file: repository-organization-agent.md
+  status: active
+  maturity: beta
+  category: operations
+  priority: medium
+  purpose: Organizes repository structure per LFS policy and directory conventions.
+- id: root-organizer-agent
+  name: Root Organizer Agent
+  file: root-organizer-agent.md
+  status: active
+  maturity: production
+  category: operations
+  priority: high
+  purpose: Safe incremental root folder reorganization; zero-break guarantee.
+- id: rust-config-validator
+  name: Rust Config Validator
+  file: rust-config-validator.md
+  status: active
+  maturity: beta
+  category: configuration
+  priority: medium
+  purpose: Validates Rust configurations in hybrid Python/Rust swarm components.
+- id: secret-detection-agent
+  name: Secret Detection Agent
+  file: secret-detection-agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Scans codebase for accidentally committed secrets and credentials.
+- id: security-alert-verification-agent
+  name: Security Alert Verification Agent
+  file: security-alert-verification-agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Validates GitHub security alerts, triage, and generates remediation plans.
+- id: security-audit-agent
+  name: Security Audit Agent
+  file: security-audit-agent.md
+  status: active
+  maturity: production
+  category: security
+  priority: critical
+  purpose: Comprehensive security audits across code, dependencies, and workflows.
+- id: semantic-search
+  name: Semantic Search Agent
+  file: semantic-search.agent.md
+  status: active
+  maturity: production
+  category: ml
+  priority: high
+  purpose: Semantic search over codebase and documentation using vector embeddings.
+- id: session-analysis-agent
+  name: Session Analysis Agent
+  file: session-analysis-agent.md
+  status: active
+  maturity: production
+  category: cognitive
+  priority: high
+  purpose: Analyzes Copilot sessions, verifies commits, extracts patterns for learning.
+- id: session-log-retrieval-agent
+  name: Session Log Retrieval Agent
+  file: session-log-retrieval-agent.md
+  status: active
+  maturity: production
+  category: cognitive
+  priority: high
+  purpose: Recalls previous Copilot sessions, extracts uncommitted work, searches history.
+- id: terminology-consistency-agent
+  name: Terminology Consistency Agent
+  file: terminology-consistency-agent.md
+  status: active
+  maturity: beta
+  category: documentation
+  priority: low
+  purpose: Enforces consistent terminology across documentation and code comments.
+- id: test-alignment-fixer
+  name: Test Alignment Fixer
+  file: test-alignment-fixer.agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Fixes test alignment issues by updating tests to match API changes.
+- id: test-alignment-fixer-enhanced
+  name: Test Alignment Fixer Enhanced
+  file: test-alignment-fixer-enhanced.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Enhanced test alignment fixer with broader coverage and smarter detection.
+- id: test-coverage-agent
+  name: Test Coverage Agent
+  file: test-coverage-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: medium
+  purpose: Drives test coverage improvements; identifies uncovered code paths.
+- id: test-coverage-monitor
+  name: Test Coverage Monitor
+  file: test-coverage-monitor.agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Monitors test coverage, enforces thresholds, validates documentation quality.
+- id: test-enhancement-agent
+  name: Test Enhancement Agent
+  file: test-enhancement-agent.md
+  status: active
+  maturity: beta
+  category: testing
+  priority: medium
+  purpose: Improves test quality through refactoring, edge case coverage, assertion hardening.
+- id: test-failure-analyzer-agent
+  name: Test Failure Analyzer Agent
+  file: test-failure-analyzer-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Analyzes and diagnoses test failures with root cause classification.
+- id: tokenization-coverage-agent
+  name: Tokenization Coverage Agent
+  file: tokenization-coverage-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: medium
+  purpose: Improves src/tokenization test coverage, CLI validation, and coverage reporting.
+- id: tracking-document-qa-agent
+  name: Tracking Document QA Agent
+  file: tracking-document-qa-agent.md
+  status: active
+  maturity: beta
+  category: documentation
+  priority: low
+  purpose: QA validation of tracking documents, completion reports, and session summaries.
+- id: unified-doc-agent
+  name: Unified Doc Agent
+  file: unified-doc-agent.md
+  status: active
+  maturity: beta
+  category: documentation
+  priority: medium
+  purpose: Unified documentation management combining freshness, quality, and consolidation.
+- id: unified-governance-gate
+  name: Unified Governance Gate
+  file: unified-governance-gate.md
+  status: active
+  maturity: production
+  category: governance
+  priority: critical
+  purpose: Unified governance enforcement across all operations, merges, and deployments.
+- id: workflow-analytics-agent
+  name: Workflow Analytics Agent
+  file: workflow-analytics-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: medium
+  purpose: Analyzes workflow performance, detects patterns, and recommends optimizations.
+- id: workflow-ci-fixer
+  name: Workflow CI Fixer
+  file: workflow-ci-fixer.agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
+- id: workflow-health-monitor
+  name: Workflow Health Monitor
+  file: workflow-health-monitor.agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Real-time workflow health monitoring with alerting and trend analysis.
+- id: workflow-management-agent
+  name: Workflow Management Agent
+  file: workflow-management-agent.md
+  status: active
+  maturity: production
+  category: ci_cd
+  priority: high
+  purpose: Orchestrates workflow operations including scheduling, triggers, and lifecycle.
+- id: workflow-optimization-agent
+  name: Workflow Optimization Agent
+  file: workflow-optimization-agent.md
+  status: active
+  maturity: beta
+  category: ci_cd
+  priority: medium
+  purpose: Identifies and applies workflow optimizations for speed and cost reduction.
+
 standardization_status:
-  fully_compliant: 0
+  fully_compliant: 12
   partially_compliant: 20
-  non_compliant: 4
+  non_compliant: 3
   target: 100%
-  deadline: '2026-01-26'
+  deadline: '2026-03-15'
+
+# S83 changelog (2026-02-24):
+# - version 1.0.0 → 1.1.0
+# - marshmallow 3.26.1 → 4.2.2 (great-expectations made optional)
+# - transformers 5.1.0 → 5.2.0 (getattr compat guard added)
+# - RAGIndexer facade class added (src/codex/rag/indexer.py)
+# - MSPClient.request() method added (agents/msp_client.py)
+# - 48 CVEs fixed (was 26), 1500+ tests (was 1300+), 54 agents (was 53)
+# - Knowledge graph v1.4.0, AAIS V3.2 (95.3/100)
+#
+# S85 changelog (2026-02-24):
+# - version 1.1.0 → 1.2.0
+# - ci-auto-healer agent added (ci-auto-healer-agent.md)
+# - total_agents 35 → 36
+# - Knowledge graph v1.6.0 (P-023 through P-029 added)
+# - Health score 96/100 → 97/100
+#
+# S89 changelog (2026-02-25):
+# - version 1.2.0 → 1.3.0
+# - 62 new operational agents registered from .github/agents/ enumeration
+# - total_agents 36 → 121

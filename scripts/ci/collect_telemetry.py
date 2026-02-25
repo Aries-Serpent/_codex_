@@ -1,0 +1,266 @@
+#!/usr/bin/env python3
+"""
+CI Telemetry Collection Script
+
+Collects workflow runs, jobs, and artifacts from GitHub Actions.
+Maps failures to 5 identified patterns for automated analysis.
+
+Usage:
+    python scripts/ci/collect_telemetry.py --owner Aries-Serpent --repo _codex_ --branch main --days 7
+"""
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timedelta
+from typing import Dict, List
+
+import requests
+
+
+class TelemetryCollector:
+    """Collects and analyzes CI telemetry data."""
+
+    # Pattern keywords for automatic classification
+    PATTERN_KEYWORDS = {
+        "auto-fix": ["auto-fix", "detect-and-fix", "detect ci issues"],
+        "test-infrastructure": ["resilient", "validation-suite", "test-runner"],
+        "coverage-timeout": ["coverage", "pytest-cov", "coverage report"],
+        "filesystem-deadlock": ["root-org", "file-validation", "directory"],
+        "pre-merge-cascade": ["pre-merge", "final-checks", "merge validation"],
+    }
+
+    def __init__(self, owner: str, repo: str, token: str):
+        self.owner = owner
+        self.repo = repo
+        self.token = token
+        self.base_url = "https://api.github.com"
+        self.headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+
+    def collect_workflow_runs(
+        self, branch: str, days: int = 7, max_pages: int = 10
+    ) -> List[Dict]:
+        """Collect workflow runs from specified branch.
+
+        Args:
+            branch: Branch name to analyze
+            days: Number of days to look back
+            max_pages: Maximum number of pages to fetch
+
+        Returns:
+            List of workflow run dictionaries
+        """
+        since = (datetime.utcnow() - timedelta(days=days)).isoformat()
+        url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs"
+        params = {"branch": branch, "per_page": 100, "created": f">={since}"}
+
+        runs = []
+        page = 1
+        while page <= max_pages:
+            params["page"] = page
+            response = requests.get(url, headers=self.headers, params=params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            runs.extend(data["workflow_runs"])
+
+            if len(data["workflow_runs"]) < 100:
+                break
+            page += 1
+
+        return runs
+
+    def collect_job_details(self, run_id: int) -> List[Dict]:
+        """Collect job details for a workflow run.
+
+        Args:
+            run_id: Workflow run ID
+
+        Returns:
+            List of job dictionaries
+        """
+        url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs/{run_id}/jobs"
+        response = requests.get(url, headers=self.headers, timeout=30)
+        response.raise_for_status()
+        return response.json()["jobs"]
+
+    def collect_artifacts(self, run_id: int) -> List[Dict]:
+        """Collect artifacts for a workflow run.
+
+        Args:
+            run_id: Workflow run ID
+
+        Returns:
+            List of artifact dictionaries
+        """
+        url = f"{self.base_url}/repos/{self.owner}/{self.repo}/actions/runs/{run_id}/artifacts"
+        response = requests.get(url, headers=self.headers, timeout=30)
+        response.raise_for_status()
+        return response.json()["artifacts"]
+
+    def classify_failure(self, run: Dict, jobs: List[Dict]) -> str:
+        """Classify failure into one of 5 patterns.
+
+        Args:
+            run: Workflow run dictionary
+            jobs: List of job dictionaries
+
+        Returns:
+            Pattern name or "unknown"
+        """
+        run_name = run["name"].lower()
+        job_names = " ".join([j["name"].lower() for j in jobs])
+
+        for pattern, keywords in self.PATTERN_KEYWORDS.items():
+            for keyword in keywords:
+                if keyword in run_name or keyword in job_names:
+                    return pattern
+
+        return "unknown"
+
+    def generate_report(
+        self, branch: str, days: int = 7, output: str = "telemetry_report.json"
+    ) -> Dict:
+        """Generate comprehensive telemetry report.
+
+        Args:
+            branch: Branch to analyze
+            days: Days to look back
+            output: Output file path
+
+        Returns:
+            Telemetry data dictionary
+        """
+        print(f"Collecting workflow runs from {branch} (last {days} days)...")
+        runs = self.collect_workflow_runs(branch, days)
+
+        # Filter to failed runs
+        failed_runs = [
+            r for r in runs if r["conclusion"] in ["failure", "cancelled", "timed_out"]
+        ]
+        print(f"Found {len(failed_runs)} failed runs out of {len(runs)} total")
+
+        telemetry_data = {
+            "generated_at": datetime.utcnow().isoformat(),
+            "repository": f"{self.owner}/{self.repo}",
+            "branch": branch,
+            "days_analyzed": days,
+            "summary": {
+                "total_runs": len(runs),
+                "failed_runs": len(failed_runs),
+                "failure_rate": len(failed_runs) / len(runs) if runs else 0,
+            },
+            "pattern_distribution": {},
+            "failed_runs": [],
+        }
+
+        # Collect details for each failed run
+        for i, run in enumerate(failed_runs, 1):
+            print(
+                f"  Processing run {i}/{len(failed_runs)}: {run['id']} - {run['name']}"
+            )
+
+            try:
+                jobs = self.collect_job_details(run["id"])
+                artifacts = self.collect_artifacts(run["id"])
+                pattern = self.classify_failure(run, jobs)
+
+                # Update pattern distribution
+                telemetry_data["pattern_distribution"][pattern] = (
+                    telemetry_data["pattern_distribution"].get(pattern, 0) + 1
+                )
+
+                telemetry_data["failed_runs"].append(
+                    {
+                        "run_id": run["id"],
+                        "run_name": run["name"],
+                        "run_html_url": run["html_url"],
+                        "conclusion": run["conclusion"],
+                        "created_at": run["created_at"],
+                        "pattern": pattern,
+                        "jobs": [
+                            {
+                                "job_id": j["id"],
+                                "job_name": j["name"],
+                                "job_html_url": j["html_url"],
+                                "status": j["status"],
+                                "conclusion": j["conclusion"],
+                            }
+                            for j in jobs
+                        ],
+                        "artifacts": [
+                            {
+                                "artifact_id": a["id"],
+                                "artifact_name": a["name"],
+                                "size_bytes": a["size_in_bytes"],
+                                "expired": a["expired"],
+                            }
+                            for a in artifacts
+                        ],
+                    }
+                )
+            except requests.RequestException as e:
+                print(f"  Warning: Failed to collect details for run {run['id']}: {e}")
+                continue
+
+        # Write report
+        with open(output, "w") as f:
+            json.dump(telemetry_data, f, indent=2)
+
+        print(f"\nTelemetry report written to {output}")
+        print("\nPattern Distribution:")
+        for pattern, count in sorted(
+            telemetry_data["pattern_distribution"].items(), key=lambda x: x[1], reverse=True
+        ):
+            percentage = (count / len(failed_runs)) * 100 if failed_runs else 0
+            print(f"  {pattern}: {count} ({percentage:.1f}%)")
+
+        return telemetry_data
+
+
+def main():
+    """Main entry point for CLI."""
+    parser = argparse.ArgumentParser(
+        description="Collect CI telemetry data from GitHub Actions"
+    )
+    parser.add_argument("--owner", required=True, help="Repository owner")
+    parser.add_argument("--repo", required=True, help="Repository name")
+    parser.add_argument("--branch", default="main", help="Branch to analyze")
+    parser.add_argument("--days", type=int, default=7, help="Days to analyze")
+    parser.add_argument(
+        "--output", default="telemetry_report.json", help="Output file path"
+    )
+    parser.add_argument(
+        "--token", help="GitHub token (or use GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
+    )
+
+    args = parser.parse_args()
+
+    token = (
+        args.token
+        or os.getenv("GITHUB_TOKEN")
+        or os.getenv("CODEX_MASTER_KEY")
+        or os.getenv("CODEX_BACKUP_KEY")
+    )
+    if not token:
+        print(
+            "Error: GitHub token required (--token or GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
+        )
+        sys.exit(1)
+
+    try:
+        collector = TelemetryCollector(args.owner, args.repo, token)
+        collector.generate_report(args.branch, args.days, args.output)
+        print("\n✓ Telemetry collection completed successfully")
+    except Exception as e:
+        print(f"\n✗ Error: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

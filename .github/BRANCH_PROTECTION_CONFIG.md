@@ -1,7 +1,7 @@
 # Branch Protection Configuration
 
-> **Purpose:** Prevent merging PRs with failing CI checks  
-> **Last Updated:** 2026-02-10  
+> **Purpose:** Prevent merging PRs with failing CI checks
+> **Last Updated:** 2026-02-10
 > **Related Issue:** Post-PR#2956 CI failures on main
 
 ---
@@ -33,17 +33,17 @@ rules:
       - "Test Summary / Validate Results"
       - "CodeQL"
       - "Security Scan"
-  
+
   require_pull_request:
     enabled: true
     required_approving_review_count: 1
     dismiss_stale_reviews: true
     require_code_owner_reviews: true
-  
+
   require_conversation_resolution: true
-  
+
   enforce_admins: false  # Allow admins to bypass for emergencies (documented)
-  
+
   allow_force_pushes: false
   allow_deletions: false
 ```
@@ -76,7 +76,7 @@ rules:
 - [ ] Do not check: "Require linear history"
 - [ ] Do not check: "Require deployments to succeed"
 - [ ] Do not check: "Lock branch"
-- [ ] Do not check: "Do not allow bypassing the above settings"  
+- [ ] Do not check: "Do not allow bypassing the above settings"
   *(Allow admin bypass for documented emergencies only)*
 
 4. Click **Save changes**
@@ -150,7 +150,7 @@ Configure GitHub Actions to post warnings when tests fail:
 ## Related Documentation
 
 - [Pull Request Template](.github/pull_request_template.md) - Pre-merge verification checklist
-- [AI Codebase Agency Policy](.codex/CODEBASE_AGENCY_POLICY.md) - AI agent CI obligations
+- [AI Codebase Agency Policy](../.codex/CODEBASE_AGENCY_POLICY.md) - AI agent CI obligations
 - [Contributing Guide](CONTRIBUTING.md) - Development workflow
 
 ---

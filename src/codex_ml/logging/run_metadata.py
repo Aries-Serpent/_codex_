@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 """Helpers for recording run-level metadata alongside metric logs."""
 
 
-from pathlib import Path
-from typing import Any, Callable, Mapping, MutableMapping, Sequence
+from pathlib import Path  # noqa: E402
+from typing import Any, Callable, Mapping, MutableMapping, Sequence  # noqa: E402
 
-from codex_ml.tracking.git_tag import current_commit
+from codex_ml.tracking.git_tag import current_commit  # noqa: E402
 
 CommitLookup = Callable[[], str | None]
 

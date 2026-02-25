@@ -1,8 +1,8 @@
 # Genesis Protocol
 
-**Status:** Phase 1 Complete | Phase 2 Pending Human Action  
-**Purpose:** Establish autonomous AI agent authority through secure, auditable initialization  
-**Repository:** Aries-Serpent/_codex_  
+**Status:** Phase 1 Complete | Phase 2 Pending Human Action
+**Purpose:** Establish autonomous AI agent authority through secure, auditable initialization
+**Repository:** Aries-Serpent/_codex_
 **Agent:** ai_org_repo_admin (v0.1.0-template)
 
 ---
@@ -147,7 +147,7 @@ cat docs/admin/GENESIS_SETUP_GUIDE.md | head -50
 # 1. CODEX_MASTER_KEY (Required)
 #    - Fine-grained Personal Access Token
 #    - Expiration: 90 days
-#    - Permissions: Actions (RW), Administration (RW), Contents (RW), 
+#    - Permissions: Actions (RW), Administration (RW), Contents (RW),
 #                   Pull Requests (RW), Workflows (W)
 
 # 2. CODEX_WEBHOOK_SECRET (Optional but recommended)
@@ -598,7 +598,7 @@ git push origin rollback/remove-genesis
 **Key Documents:**
 - [Guardrails](../guardrails.md) - Operational constraints
 - [Agent Operations](Agent-Operations.md) - Decision framework
-- [AGENTS.md](../../AGENTS.md) - AI agent orientation
+- [AGENTS.md](../../.github/AGENTS.md) - AI agent orientation
 - [Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md) - Detailed instructions
 
 **External Resources:**
@@ -608,9 +608,9 @@ git push origin rollback/remove-genesis
 
 ---
 
-**Document Version:** 1.0.0  
-**Last Updated:** 2025-12-26  
-**Next Review:** After Phase 2 completion  
+**Document Version:** 1.0.0
+**Last Updated:** 2025-12-26
+**Next Review:** After Phase 2 completion
 **Status:** Phase 1 Complete | Phase 2 Pending
 
 **For questions or assistance:** Contact @mbaetiong or create an issue with `[GENESIS]` tag.

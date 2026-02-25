@@ -138,7 +138,7 @@ run_hook_dir "pre"
 
 # Run pre-commit hooks against modified files only.
 echo "Running pre-commit hooks" | tee -a "$LOG"
-declare -a PRECOMMIT_FILES
+declare -a PRECOMMIT_FILES=()
 mapfile -t TRACKED_CHANGES < <(git diff --name-only --diff-filter=ACMRTUXB HEAD)
 mapfile -t UNTRACKED_CHANGES < <(git ls-files --others --exclude-standard)
 declare -A SEEN_FILES=()

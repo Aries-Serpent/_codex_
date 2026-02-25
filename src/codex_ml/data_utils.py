@@ -59,7 +59,7 @@ def split_dataset(
     from codex_ml.data.loader import apply_safety_filter, load_dataset
 
     # Load items
-    items = load_dataset(Path(texts)) if isinstance(texts, str | Path) else list(texts)
+    items = load_dataset(Path(texts)) if isinstance(texts, (str, Path)) else list(texts)
 
     # Apply safety filter with sanitization mapping
     items = apply_safety_filter(
@@ -176,7 +176,7 @@ def cache_tokenized(
         sample_path = path / sample_name
 
         if _HAS_TORCH and torch is not None and hasattr(torch, "save"):
-            torch.save(ids, sample_path)
+            torch.save(torch.tensor(ids, dtype=torch.long), sample_path)
         else:
             sample_path.write_text(json.dumps(ids), encoding="utf-8")
 

@@ -6,40 +6,40 @@
 
 ```yml
 🧠 Roles:  [Primary:  Autonomous Agent Orchestrator], [Secondary: Security & Infrastructure Manager] ⚡ Energy:  [5]
-⚛️ Physics:  
-  Path🛤️:  
+⚛️ Physics:
+  Path🛤️:
     - "Multi-stream execution minimizes sequential bottlenecks"
     - "UV installer reduces dependency resolution path from O(n²) to O(n)"
     - "Container caching pre-computes dependency graphs (shortest path to runtime)"
     - "Codemod automation eliminates manual fix iteration loops"
     - "GitHub Actions cache hierarchy:  UV → GHCR → compressed (fallback paths)"
     - "Agent model selection optimizes cost/performance trade-off (least resistance)"
-    
-  Fields🔄: 
+
+  Fields🔄:
     - "per-phase cache warmer maintains persistent 'dependency field' strength"
     - "Organization-level code scanning creates security coverage field across all repos"
     - "OpenAI client propagates context (repo, org, task type) to all agent executions"
     - "Risk scores propagate through alert prioritization (severity × criticality × exploitability)"
     - "PR-safe cache isolation prevents poisoning field contamination"
     - "Semgrep baseline creates temporal field boundary (only new alerts trigger failures)"
-    
-  Patterns👁️: 
+
+  Patterns👁️:
     - "Dependency stability pattern: core libs (quarterly) → dev tools (monthly) → test (per-phase)"
     - "Alert clustering pattern: 80% of fixes apply to 20% of rule types"
     - "Codemod reuse pattern: subprocess, SQL injection, secrets share transformation structure"
     - "CI workflow pattern: lint (fast) → test (medium) → security (comprehensive)"
     - "Agent task pattern: prompt → model selection → execution → audit logging"
     - "Security remediation lifecycle: export → score → group → fix → suppress → prevent"
-    
-  Redundancy🔀: 
+
+  Redundancy🔀:
     - "Triple cache fallback: UV cache → GHCR container → compressed pip"
     - "Dual security scanning: Semgrep (SAST) + Dependency scan + Secret detection"
     - "Multi-branch backup: backup/codeql-advanced + . github/disabled/"
     - "Agent retry logic: primary model → fallback model → error with full context"
     - "Fix validation: dry-run → PR creation → automated tests → manual review"
     - "Documentation layers: inline comments + README + dedicated docs/ + PR descriptions"
-    
-  Balance⚖️: 
+
+  Balance⚖️:
     - "Cache compression: +10s build time ↔ -70% storage (1. 5GB → 450MB)"
     - "Security vs. velocity: PR checks read-only cache ↔ main branch writes"
     - "Automation vs. safety: codemods for P0/P1 ↔ manual review for complex patterns"
@@ -119,17 +119,17 @@ repository:
   id: 1040037790
   visibility: public
   type: AI/ML Autonomous Agent Framework
-  
+
 languages:
   primary: Python (89.5%, ~13MB)
   secondary: [JavaScript, TypeScript, Shell, YAML]
-  
+
 dependencies:
-  heavy_500mb_plus: 
+  heavy_500mb_plus:
     - torch
     - transformers
     - datasets
-  medium_50_200mb: 
+  medium_50_200mb:
     - mlflow
     - ray[serve]
     - accelerate
@@ -141,10 +141,10 @@ dependencies:
     - hydra-core
     - peft
 
-security_state: 
+security_state:
   semgrep_alerts:  1665
   code_scanning_status: "Advanced setup conflict with org default"
-  
+
 secrets_available:
   - GITHUB_TOKEN (automatic)
   - GITHUB_CODEX (OpenAI API key - 32 custom models)
@@ -165,7 +165,7 @@ secrets_available:
 
 ## Objective
 
-Implement zero-cost to minimal-cost caching strategy prioritizing: 
+Implement zero-cost to minimal-cost caching strategy prioritizing:
 1. Free-tier resources first (GitHub native features, compression, deduplication)
 2. Remote sourcing over local caching (streaming, CDN, package registries)
 3. Intelligent cache eviction (deterministic rebuilds, layer sharing)
@@ -248,10 +248,10 @@ outputs:
 
 runs:
   using: composite
-  steps: 
+  steps:
     - name: Setup Python
       uses:  actions/setup-python@v5
-      with: 
+      with:
         python-version:  ${{ inputs.python-version }}
 
     - name: Install UV
@@ -327,9 +327,9 @@ outputs:
     description: 'Whether cache was restored'
     value:  ${{ steps.cache-restore.outputs.cache-hit }}
 
-runs: 
+runs:
   using: composite
-  steps: 
+  steps:
     - name: Install zstd
       shell: bash
       run: |
@@ -374,7 +374,7 @@ runs:
     - name: Save compressed cache
       if: steps.cache-restore.outputs.cache-hit != 'true' && inputs. restore-only != 'true'
       uses: actions/cache/save@v4
-      with: 
+      with:
         path: ${{ inputs.path }}. tar.zst
         key: ${{ inputs.key }}-zstd
 ```
@@ -439,7 +439,7 @@ COPY requirements-dev.txt ./
 RUN uv pip install --system -r requirements-dev.txt
 
 # Copy application code
-COPY .  . 
+COPY .  .
 
 # Default command
 CMD ["python", "-m", "pytest", "tests/"]
@@ -452,7 +452,7 @@ CMD ["python", "-m", "pytest", "tests/"]
 ```yaml
 name: Build Container Cache
 
-on: 
+on:
   push:
     branches: [main]
     paths:
@@ -460,7 +460,7 @@ on:
       - 'pyproject.toml'
       - 'Dockerfile*'
       - 'uv.lock'
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       force_rebuild:
         description: 'Force rebuild all layers'
@@ -474,15 +474,15 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       contents: read
       packages: write
 
     strategy:
-      matrix: 
+      matrix:
         target: [minimal, test, full]
 
-    steps: 
+    steps:
       - name: Checkout repository
         uses:  actions/checkout@v4
 
@@ -533,8 +533,8 @@ jobs:
 ```yaml
 name: CI
 
-on: 
-  push: 
+on:
+  push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
@@ -554,12 +554,12 @@ jobs:
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - uses: actions/checkout@v4
 
       - name: Setup Python with UV
         uses: . /.github/actions/setup-python-uv
-        with: 
+        with:
           python-version: ${{ env. PYTHON_VERSION }}
           dependency-profile: minimal
 
@@ -570,7 +570,7 @@ jobs:
         run: ruff check .  --output-format=github
 
       - name:  Run Ruff Format Check
-        run: ruff format --check . 
+        run: ruff format --check .
 
   # -------------------------------------------------------------------------
   # Unit tests (container-cached or UV-cached)
@@ -579,7 +579,7 @@ jobs:
     name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     needs: lint
-    strategy: 
+    strategy:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
@@ -605,7 +605,7 @@ jobs:
       - name: Upload coverage
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v4
-        with: 
+        with:
           files: ./coverage.xml
           fail_ci_if_error: false
 
@@ -618,25 +618,25 @@ jobs:
     needs:  lint
     container:
       image:  ghcr.io/${{ github.repository }}/ci-base: test-latest
-      credentials: 
+      credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    steps: 
+    steps:
       - uses:  actions/checkout@v4
 
-      # Dependencies already in container - no install needed! 
+      # Dependencies already in container - no install needed!
       - name:  Run tests
         run: pytest tests/ --cov=src -n auto
 
   # -------------------------------------------------------------------------
   # Security scanning
   # -------------------------------------------------------------------------
-  security: 
+  security:
     name: Security Scan
     runs-on: ubuntu-latest
     needs:  lint
-    steps: 
+    steps:
       - uses: actions/checkout@v4
 
       - name:  Run Semgrep
@@ -661,13 +661,13 @@ on:
   schedule:
     # Run every Sunday at 2 AM UTC
     - cron: '0 2 * * 0'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   warm-caches:
     name: Warm Cache (${{ matrix.python-version }}, ${{ matrix.profile }})
     runs-on: ubuntu-latest
-    strategy: 
+    strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
         profile: ['minimal', 'test', 'full']
@@ -718,14 +718,14 @@ jobs:
 name: PR Checks (Isolated Cache)
 
 on:
-  pull_request: 
+  pull_request:
     types: [opened, synchronize, reopened]
 
 permissions:
   contents:  read
   pull-requests:  write
 
-jobs: 
+jobs:
   pr-test:
     name:  PR Tests
     runs-on: ubuntu-latest
@@ -741,7 +741,7 @@ jobs:
       # SECURITY: Read-only cache from main branch
       - name:  Restore cache from main (read-only)
         uses: actions/cache/restore@v4
-        with: 
+        with:
           path: /tmp/uv-cache
           key: uv-${{ runner.os }}-py3. 11-test-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
@@ -808,7 +808,7 @@ CostTier = Literal["low", "medium", "high", "very-high"]
 @dataclass
 class ModelConfig:
     """Configuration for an OpenAI model."""
-    
+
     context_length: int
     reasoning:  bool = False
     cost_tier: CostTier = "medium"
@@ -822,19 +822,19 @@ AVAILABLE_MODELS:  dict[str, ModelConfig] = {
     "o1-preview": ModelConfig(128000, reasoning=True, cost_tier="high", input_cost_per_1k=0.015, output_cost_per_1k=0.06),
     "o1-mini": ModelConfig(128000, reasoning=True, cost_tier="medium", input_cost_per_1k=0.003, output_cost_per_1k=0.012),
     "o3-mini": ModelConfig(128000, reasoning=True, cost_tier="medium", input_cost_per_1k=0.003, output_cost_per_1k=0.012),
-    
+
     # GPT-4 Turbo models
     "gpt-4-turbo": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03),
     "gpt-4-turbo-preview": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03),
-    
+
     # GPT-4 models
     "gpt-4":  ModelConfig(8192, cost_tier="high", input_cost_per_1k=0.03, output_cost_per_1k=0.06),
     "gpt-4-32k": ModelConfig(32768, cost_tier="very-high", input_cost_per_1k=0.06, output_cost_per_1k=0.12),
-    
+
     # GPT-4o models
     "gpt-4o": ModelConfig(128000, cost_tier="medium", input_cost_per_1k=0.005, output_cost_per_1k=0.015),
     "gpt-4o-mini":  ModelConfig(128000, cost_tier="low", input_cost_per_1k=0.00015, output_cost_per_1k=0.0006),
-    
+
     # GPT-3.5 models
     "gpt-3.5-turbo":  ModelConfig(16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015),
     "gpt-3.5-turbo-16k": ModelConfig(16385, cost_tier="low", input_cost_per_1k=0.0005, output_cost_per_1k=0.0015),
@@ -844,7 +844,7 @@ AVAILABLE_MODELS:  dict[str, ModelConfig] = {
 @dataclass
 class ExecutionResult:
     """Result of an agent task execution."""
-    
+
     success: bool
     model:  str
     response: str | None = None
@@ -857,7 +857,7 @@ class ExecutionResult:
 @dataclass
 class AuditLogEntry:
     """Audit log entry for API usage tracking."""
-    
+
     timestamp: str
     task_id: str
     model: str
@@ -869,38 +869,38 @@ class AuditLogEntry:
 
 class CodexOpenAIClient:
     """
-    OpenAI client for _codex_ autonomous agents. 
-    
+    OpenAI client for _codex_ autonomous agents.
+
     Features:
     - Intelligent model selection based on task requirements
     - Cost estimation and tracking
     - Audit logging for compliance
     - Rate limiting support
     """
-    
+
     def __init__(self) -> None:
         """Initialize the OpenAI client."""
         self.api_key = os. getenv("OPENAI_API_KEY") or os.getenv("GITHUB_CODEX")
-        
-        if not self. api_key: 
+
+        if not self. api_key:
             raise EnvironmentError(
                 "❌ CRITICAL: OPENAI_API_KEY or GITHUB_CODEX not found.  "
                 "Agent cannot operate without API credentials."
             )
-        
+
         self.client = OpenAI(
             api_key=self.api_key,
             organization=os.getenv("OPENAI_ORG_ID"),
         )
-        
+
         self.models = AVAILABLE_MODELS
         self. audit_log: list[AuditLogEntry] = []
-        
+
         # Rate limiting state
         self._requests_this_minute = 0
         self._tokens_this_minute = 0
         self._minute_start = time.time()
-    
+
     def select_model(
         self,
         *,
@@ -911,23 +911,23 @@ class CodexOpenAIClient:
     ) -> str:
         """
         Intelligently select the optimal model based on task requirements.
-        
+
         Args:
             requires_reasoning: Whether the task requires chain-of-thought reasoning
             max_cost: Maximum acceptable cost tier
             min_context: Minimum required context window
             preferred_model: Explicitly preferred model (bypasses auto-selection)
-        
-        Returns: 
+
+        Returns:
             Selected model name
         """
         # Use preferred model if specified and valid
         if preferred_model and preferred_model in self.models:
             return preferred_model
-        
+
         cost_order = ["low", "medium", "high", "very-high"]
         max_cost_index = cost_order.index(max_cost)
-        
+
         # Filter models by requirements
         candidates = [
             (name, config)
@@ -936,27 +936,27 @@ class CodexOpenAIClient:
             and cost_order.index(config.cost_tier) <= max_cost_index
             and (not requires_reasoning or config.reasoning)
         ]
-        
+
         if not candidates:
             # Fallback to gpt-4o-mini (most cost-effective)
             return "gpt-4o-mini"
-        
+
         # Sort by cost efficiency (lower cost tier first)
         candidates.sort(key=lambda x: cost_order.index(x[1].cost_tier))
-        
+
         # Prefer reasoning models if required
-        if requires_reasoning: 
+        if requires_reasoning:
             reasoning_candidates = [c for c in candidates if c[1].reasoning]
             if reasoning_candidates:
                 return reasoning_candidates[0][0]
-        
+
         return candidates[0][0]
-    
+
     def build_system_prompt(self, task_type: str = "general") -> str:
         """Build the system prompt with _codex_ context."""
-        return f"""You are an autonomous AI agent operating within the Aries-Serpent/_codex_ repository. 
+        return f"""You are an autonomous AI agent operating within the Aries-Serpent/_codex_ repository.
 
-Your capabilities: 
+Your capabilities:
 - Full access to 32 OpenAI custom models via GITHUB_CODEX API key
 - Autonomous decision-making within defined safety boundaries
 - Code generation, analysis, and modification
@@ -976,7 +976,7 @@ Physics-optimized principles:
 - ⚖️ Balance: Trade off speed vs. accuracy appropriately
 
 Execute the user's request autonomously, following _codex_ patterns and best practices."""
-    
+
     async def execute_task(
         self,
         prompt: str,
@@ -989,8 +989,8 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
         preferred_model: str | None = None,
     ) -> ExecutionResult:
         """
-        Execute an autonomous agent task. 
-        
+        Execute an autonomous agent task.
+
         Args:
             prompt:  The task prompt
             task_type:  Type of task for context building
@@ -999,8 +999,8 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             max_tokens: Maximum tokens in response
             temperature:  Sampling temperature
             preferred_model:  Preferred model override
-        
-        Returns: 
+
+        Returns:
             ExecutionResult with response or error
         """
         model = self.select_model(
@@ -1008,10 +1008,10 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             max_cost=max_cost,
             preferred_model=preferred_model,
         )
-        
+
         start_time = time. time()
         task_id = hashlib.sha256(prompt.encode()).hexdigest()[:8]
-        
+
         try:
             response = self.client. chat.completions. create(
                 model=model,
@@ -1022,16 +1022,16 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
                 temperature=temperature,
                 max_tokens=max_tokens,
             )
-            
+
             duration_ms = int((time.time() - start_time) * 1000)
             usage = {
                 "prompt_tokens": response. usage.prompt_tokens,
                 "completion_tokens": response. usage.completion_tokens,
                 "total_tokens": response. usage.total_tokens,
             }
-            
+
             estimated_cost = self._estimate_cost(model, usage)
-            
+
             # Log execution
             self._log_execution(
                 task_id=task_id,
@@ -1041,7 +1041,7 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
                 estimated_cost=estimated_cost,
                 success=True,
             )
-            
+
             return ExecutionResult(
                 success=True,
                 model=model,
@@ -1050,10 +1050,10 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
                 duration_ms=duration_ms,
                 estimated_cost=estimated_cost,
             )
-            
-        except Exception as e: 
+
+        except Exception as e:
             duration_ms = int((time.time() - start_time) * 1000)
-            
+
             self._log_execution(
                 task_id=task_id,
                 model=model,
@@ -1062,25 +1062,25 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
                 estimated_cost=0.0,
                 success=False,
             )
-            
+
             return ExecutionResult(
                 success=False,
                 model=model,
                 error=str(e),
                 duration_ms=duration_ms,
             )
-    
+
     def _estimate_cost(self, model:  str, usage: dict[str, int]) -> float:
         """Estimate the cost of an API call."""
         config = self.models. get(model)
-        if not config: 
+        if not config:
             return 0.0
-        
+
         input_cost = (usage["prompt_tokens"] / 1000) * config.input_cost_per_1k
         output_cost = (usage["completion_tokens"] / 1000) * config.output_cost_per_1k
-        
+
         return round(input_cost + output_cost, 6)
-    
+
     def _log_execution(
         self,
         *,
@@ -1093,7 +1093,7 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
     ) -> None:
         """Log an execution for audit purposes."""
         from datetime import datetime, timezone
-        
+
         entry = AuditLogEntry(
             timestamp=datetime.now(timezone.utc).isoformat(),
             task_id=task_id,
@@ -1103,18 +1103,18 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             estimated_cost=estimated_cost,
             success=success,
         )
-        
+
         self.audit_log. append(entry)
-        
+
         # Keep only last 1000 entries in memory
         if len(self.audit_log) > 1000:
             self.audit_log = self.audit_log[-1000:]
-    
+
     def get_usage_summary(self) -> dict[str, Any]:
         """Get a summary of API usage from the audit log."""
         if not self.audit_log:
             return {"total_requests": 0, "total_tokens": 0, "total_cost":  0.0}
-        
+
         return {
             "total_requests": len(self.audit_log),
             "successful_requests": sum(1 for e in self.audit_log if e.success),
@@ -1154,19 +1154,19 @@ from src.config.openai_client import CodexOpenAIClient, ExecutionResult
 class AutonomousAgent:
     """
     Autonomous agent that executes tasks using OpenAI models.
-    
+
     Features:
     - Task execution with automatic model selection
     - Report generation
     - Error handling and recovery
     """
-    
+
     def __init__(self, reports_dir: str | Path = ". agents/reports") -> None:
         """Initialize the autonomous agent."""
         self.client = CodexOpenAIClient()
         self.reports_dir = Path(reports_dir)
         self.reports_dir. mkdir(parents=True, exist_ok=True)
-    
+
     async def execute(
         self,
         task:  str,
@@ -1178,21 +1178,21 @@ class AutonomousAgent:
     ) -> ExecutionResult:
         """
         Execute an autonomous task.
-        
+
         Args:
             task: The task description/prompt
             task_type: Type of task for context
             model_preference:  Preferred model or "auto"
             max_tokens: Maximum response tokens
             temperature:  Sampling temperature
-        
-        Returns: 
+
+        Returns:
             ExecutionResult with response or error
         """
         print(f"🚀 Starting autonomous agent execution...")
         print(f"📋 Task: {task[: 100]}{'...' if len(task) > 100 else ''}")
         print(f"🎯 Model preference: {model_preference}")
-        
+
         result = await self.client.execute_task(
             task,
             task_type=task_type,
@@ -1200,7 +1200,7 @@ class AutonomousAgent:
             max_tokens=max_tokens,
             temperature=temperature,
         )
-        
+
         if result.success:
             print(f"✅ Execution successful")
             print(f"📊 Model used: {result.model}")
@@ -1209,17 +1209,17 @@ class AutonomousAgent:
             print(f"💵 Estimated cost:  ${result.estimated_cost:.4f}")
         else:
             print(f"❌ Execution failed: {result.error}")
-        
+
         # Save report
         await self._save_report(task, result)
-        
+
         return result
-    
+
     async def _save_report(self, task: str, result:  ExecutionResult) -> Path:
         """Save execution report to file."""
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         report_path = self.reports_dir / f"agent_{timestamp}.json"
-        
+
         report = {
             "timestamp": datetime.now(timezone. utc).isoformat(),
             "task": task,
@@ -1237,10 +1237,10 @@ class AutonomousAgent:
                 "org": os.getenv("ORG_CONTEXT", "Aries-Serpent"),
             },
         }
-        
+
         report_path.write_text(json.dumps(report, indent=2))
         print(f"💾 Report saved:  {report_path}")
-        
+
         return report_path
 
 
@@ -1248,24 +1248,24 @@ async def main() -> None:
     """Main entry point for the autonomous agent."""
     task = os.getenv("AGENT_TASK", "Analyze _codex_ repository structure")
     model_preference = os. getenv("MODEL_PREFERENCE", "auto")
-    
+
     agent = AutonomousAgent()
     result = await agent.execute(
         task,
         model_preference=model_preference,
     )
-    
+
     if result.success and result.response:
         print("\n--- AGENT RESPONSE ---\n")
         print(result.response)
         print("\n--- END RESPONSE ---\n")
-    
+
     # Print usage summary
     summary = agent.client.get_usage_summary()
     print(f"\n📈 Usage Summary:  {json.dumps(summary, indent=2)}")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     asyncio. run(main())
 ```
 
@@ -1295,19 +1295,19 @@ on:
         required:  false
         default:  '8192'
         type: string
-  
+
   # Allow triggering from other workflows
   workflow_call:
     inputs:
       agent_task:
         required: true
         type: string
-      model_preference: 
+      model_preference:
         required: false
         default: 'auto'
         type: string
     secrets:
-      GITHUB_CODEX: 
+      GITHUB_CODEX:
         required: true
 
 jobs:
@@ -1347,7 +1347,7 @@ jobs:
       - name: Upload Agent Report
         if: always()
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           name: agent-execution-report-${{ github.run_id }}
           path:  . agents/reports/
           retention-days: 30
@@ -1402,7 +1402,7 @@ class AgentStatus(Enum):
 @dataclass
 class Agent:
     """Represents a registered agent."""
-    
+
     id: str
     capabilities: list[str]
     status: AgentStatus = AgentStatus.IDLE
@@ -1413,7 +1413,7 @@ class Agent:
 @dataclass
 class RateLimiter:
     """Rate limiter for API requests."""
-    
+
     requests_per_minute:  int = 60
     tokens_per_minute:  int = 150000
     current_requests: int = 0
@@ -1423,15 +1423,15 @@ class RateLimiter:
 
 class AgentOrchestrator:
     """
-    Orchestrates multiple autonomous agents with shared OpenAI resources. 
-    
+    Orchestrates multiple autonomous agents with shared OpenAI resources.
+
     Features:
     - Agent registration and capability matching
     - Rate limiting across all agents
     - Task queue management
     - Resource pooling
     """
-    
+
     def __init__(self) -> None:
         """Initialize the orchestrator."""
         self.client = CodexOpenAIClient()
@@ -1439,43 +1439,43 @@ class AgentOrchestrator:
         self.task_queue: asyncio.Queue = asyncio.Queue()
         self.rate_limiter = RateLimiter()
         self._lock = asyncio.Lock()
-    
+
     def register_agent(self, agent_id: str, capabilities: list[str]) -> Agent:
         """
-        Register a new agent with the orchestrator. 
-        
+        Register a new agent with the orchestrator.
+
         Args:
             agent_id: Unique identifier for the agent
             capabilities: List of task types the agent can handle
-        
-        Returns: 
+
+        Returns:
             The registered Agent instance
         """
         agent = Agent(id=agent_id, capabilities=capabilities)
         self.agents[agent_id] = agent
         return agent
-    
+
     def select_agent_for_task(self, task_type: str) -> Agent | None:
         """
         Select the best available agent for a task.
-        
+
         Args:
             task_type: Type of task to execute
-        
+
         Returns:
             Selected agent or None if no suitable agent available
         """
         for agent in self.agents.values():
             if agent.status == AgentStatus. IDLE and task_type in agent. capabilities:
                 return agent
-        
+
         # Fallback:  any idle agent
         for agent in self.agents.values():
             if agent.status == AgentStatus. IDLE:
                 return agent
-        
+
         return None
-    
+
     async def delegate_task(
         self,
         prompt: str,
@@ -1484,17 +1484,17 @@ class AgentOrchestrator:
     ) -> ExecutionResult:
         """
         Delegate a task to an available agent.
-        
+
         Args:
             prompt: The task prompt
             task_type:  Type of task
             **kwargs: Additional arguments for task execution
-        
+
         Returns:
             ExecutionResult from the agent
         """
         agent = self.select_agent_for_task(task_type)
-        
+
         if not agent:
             # Queue the task for later
             await self.task_queue.put((prompt, task_type, kwargs))
@@ -1503,55 +1503,55 @@ class AgentOrchestrator:
                 model="",
                 error="No available agents.  Task queued.",
             )
-        
+
         async with self._lock:
             agent.status = AgentStatus. BUSY
-        
-        try: 
+
+        try:
             # Apply rate limiting
             await self._enforce_rate_limits(prompt)
-            
+
             # Execute task
             result = await self. client.execute_task(
                 prompt,
                 task_type=task_type,
                 **kwargs,
             )
-            
+
             # Update agent stats
             async with self._lock:
                 agent.tasks_completed += 1
                 if result.usage:
                     agent.total_tokens_used += result.usage["total_tokens"]
                 agent.status = AgentStatus. IDLE
-            
+
             return result
-            
+
         except Exception as e:
             async with self._lock:
                 agent.status = AgentStatus. ERROR
-            
+
             return ExecutionResult(
                 success=False,
                 model="",
                 error=str(e),
             )
-    
+
     async def _enforce_rate_limits(self, prompt: str) -> None:
         """Enforce rate limits before making a request."""
         import time
-        
+
         estimated_tokens = len(prompt.split()) * 1.3
-        
+
         async with self._lock:
             current_time = time. time()
-            
+
             # Reset counters if minute has passed
             if current_time - self. rate_limiter. window_start > 60:
                 self.rate_limiter.current_requests = 0
                 self.rate_limiter.current_tokens = 0
                 self.rate_limiter.window_start = current_time
-            
+
             # Check if we need to wait
             if (
                 self.rate_limiter.current_requests >= self.rate_limiter.requests_per_minute
@@ -1564,10 +1564,10 @@ class AgentOrchestrator:
                     self.rate_limiter.current_requests = 0
                     self.rate_limiter.current_tokens = 0
                     self.rate_limiter.window_start = time.time()
-            
+
             self.rate_limiter.current_requests += 1
             self.rate_limiter.current_tokens += int(estimated_tokens)
-    
+
     def get_orchestrator_status(self) -> dict[str, Any]:
         """Get the current status of the orchestrator."""
         return {
@@ -1596,7 +1596,7 @@ class AgentOrchestrator:
 
 ## Objective
 
-Systematically resolve all 1,665 Semgrep code scanning alerts through: 
+Systematically resolve all 1,665 Semgrep code scanning alerts through:
 1. Discovery & prioritization
 2. Automated codemods for repetitive fixes
 3. Manual fixes for complex issues
@@ -1611,7 +1611,7 @@ Systematically resolve all 1,665 Semgrep code scanning alerts through:
 
 ```python
 """
-Export and analyze Semgrep alerts from GitHub Code Scanning. 
+Export and analyze Semgrep alerts from GitHub Code Scanning.
 
 Author: mbaetiong
 Generated: 2025-12-17
@@ -1646,10 +1646,10 @@ def export_alerts() -> list[dict]:
     alerts = []
     page = 1
     per_page = 100
-    
+
     print("📥 Exporting Semgrep alerts...")
-    
-    while True: 
+
+    while True:
         response = requests.get(
             f"{API_BASE}/code-scanning/alerts",
             headers=HEADERS,
@@ -1661,15 +1661,15 @@ def export_alerts() -> list[dict]:
             },
         )
         response.raise_for_status()
-        
+
         batch = response.json()
         if not batch:
             break
-        
+
         alerts.extend(batch)
         print(f"  Fetched page {page}:  {len(batch)} alerts")
         page += 1
-    
+
     print(f"✅ Exported {len(alerts)} total alerts")
     return alerts
 
@@ -1684,20 +1684,20 @@ def analyze_alerts(alerts: list[dict]) -> dict:
         "by_language":  Counter(),
         "rule_details": {},
     }
-    
-    for alert in alerts: 
+
+    for alert in alerts:
         # Severity
         severity = alert. get("rule", {}).get("severity", "unknown")
         analysis["by_severity"][severity] += 1
-        
+
         # Rule
         rule_id = alert.get("rule", {}).get("id", "unknown")
         analysis["by_rule"][rule_id] += 1
-        
+
         # File
         file_path = alert.get("most_recent_instance", {}).get("location", {}).get("path", "unknown")
         analysis["by_file"][file_path] += 1
-        
+
         # Store rule details
         if rule_id not in analysis["rule_details"]:
             analysis["rule_details"][rule_id] = {
@@ -1707,36 +1707,36 @@ def analyze_alerts(alerts: list[dict]) -> dict:
                 "count": 0,
             }
         analysis["rule_details"][rule_id]["count"] += 1
-    
+
     return analysis
 
 
 def generate_report(alerts: list[dict], analysis: dict, output_dir: Path) -> None:
     """Generate analysis report and export files."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Export raw alerts
     alerts_file = output_dir / "semgrep-alerts-export.json"
     alerts_file.write_text(json.dumps(alerts, indent=2))
     print(f"💾 Saved alerts to {alerts_file}")
-    
+
     # Export distribution CSV
     dist_file = output_dir / "alert-distribution.csv"
     with open(dist_file, "w", newline="") as f:
         writer = csv. writer(f)
         writer.writerow(["Category", "Item", "Count"])
-        
+
         for severity, count in analysis["by_severity"].most_common():
             writer.writerow(["severity", severity, count])
-        
+
         for rule, count in analysis["by_rule"].most_common(20):
             writer. writerow(["rule", rule, count])
-        
+
         for file, count in analysis["by_file"].most_common(20):
             writer.writerow(["file", file, count])
-    
+
     print(f"💾 Saved distribution to {dist_file}")
-    
+
     # Generate markdown report
     report = generate_markdown_report(analysis)
     report_file = output_dir. parent. parent / "docs" / "security" / "semgrep-analysis-report.md"
@@ -1748,7 +1748,7 @@ def generate_report(alerts: list[dict], analysis: dict, output_dir: Path) -> Non
 def generate_markdown_report(analysis: dict) -> str:
     """Generate a markdown analysis report."""
     timestamp = datetime.utcnow().isoformat()
-    
+
     report = f"""# Semgrep Alert Analysis Report
 > Generated: {timestamp}
 
@@ -1765,34 +1765,34 @@ def generate_markdown_report(analysis: dict) -> str:
 | Severity | Count | Percentage |
 |----------|-------|------------|
 """
-    
+
     for severity, count in analysis["by_severity"]. most_common():
         pct = (count / analysis["total"]) * 100
         report += f"| {severity. upper()} | {count} | {pct:.1f}% |\n"
-    
+
     report += """
 ## Top 10 Rules by Alert Count
 
 | Rule ID | Severity | Count | Description |
 |---------|----------|-------|-------------|
 """
-    
+
     for rule_id, count in analysis["by_rule"].most_common(10):
         details = analysis["rule_details"]. get(rule_id, {})
         severity = details.get("severity", "unknown")
         desc = details.get("description", "")[:50] + "..."
         report += f"| `{rule_id}` | {severity} | {count} | {desc} |\n"
-    
+
     report += """
 ## Top 10 Files by Alert Count
 
 | File Path | Alert Count |
 |-----------|-------------|
 """
-    
+
     for file_path, count in analysis["by_file"]. most_common(10):
         report += f"| `{file_path}` | {count} |\n"
-    
+
     report += """
 ## Remediation Priority
 
@@ -1814,7 +1814,7 @@ Based on severity and frequency:
 - False positives (document and suppress)
 - Test/example code with intentional patterns
 """
-    
+
     return report
 
 
@@ -1823,18 +1823,18 @@ def main() -> None:
     if not GITHUB_TOKEN:
         print("❌ GITHUB_TOKEN environment variable required")
         return
-    
+
     output_dir = Path(". github/security")
-    
+
     # Export alerts
     alerts = export_alerts()
-    
+
     # Analyze
     analysis = analyze_alerts(alerts)
-    
+
     # Generate reports
     generate_report(alerts, analysis, output_dir)
-    
+
     # Print summary
     print("\n📊 Summary:")
     print(f"  Total alerts: {analysis['total']}")
@@ -1846,7 +1846,7 @@ def main() -> None:
         print(f"    - {rule}:  {count}")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -1892,18 +1892,18 @@ rule_categories:
     - secrets
     - deserialization
     - authentication
-    
+
   high:      # weight: 2
     - cryptography
     - authorization
     - path-traversal
     - ssrf
-    
+
   medium:    # weight: 1.5
     - xss
     - logging
     - configuration
-    
+
   low:       # weight: 1
     - code-quality
     - best-practice
@@ -1916,7 +1916,7 @@ rule_categories:
 
 ```python
 """
-Risk scoring system for Semgrep alerts. 
+Risk scoring system for Semgrep alerts.
 
 Risk Score = severity_weight × criticality_weight × exploitability_weight
 
@@ -1954,7 +1954,7 @@ PRIORITY_THRESHOLDS = {
 }
 
 
-def load_criticality_map(path: Path) -> dict: 
+def load_criticality_map(path: Path) -> dict:
     """Load the criticality map from YAML."""
     with open(path) as f:
         return yaml.safe_load(f)
@@ -1968,34 +1968,34 @@ def get_path_weight(file_path: str, criticality_map: dict) -> float:
         ("medium_paths", 1.5),
         ("low_paths", 1.0),
     ]
-    
-    for category, weight in path_weights: 
+
+    for category, weight in path_weights:
         patterns = criticality_map.get(category, [])
         for pattern in patterns:
             if fnmatch. fnmatch(file_path, pattern):
                 return weight
-    
+
     return 1.0  # Default weight
 
 
 def get_rule_weight(rule_id: str, criticality_map: dict) -> float:
     """Get the exploitability weight for a rule."""
     rule_categories = criticality_map.get("rule_categories", {})
-    
+
     category_weights = {
         "critical": 3.0,
         "high": 2.0,
         "medium": 1.5,
         "low": 1.0,
     }
-    
+
     rule_lower = rule_id. lower()
-    
+
     for category, keywords in rule_categories. items():
-        for keyword in keywords: 
-            if keyword in rule_lower: 
+        for keyword in keywords:
+            if keyword in rule_lower:
                 return category_weights.get(category, 1.0)
-    
+
     return 1.0  # Default weight
 
 
@@ -2009,7 +2009,7 @@ def calculate_risk_score(
     severity_weight = SEVERITY_WEIGHTS.get(severity. lower(), 1.0)
     path_weight = get_path_weight(file_path, criticality_map)
     rule_weight = get_rule_weight(rule_id, criticality_map)
-    
+
     return severity_weight * path_weight * rule_weight
 
 
@@ -2026,30 +2026,30 @@ def score_all_alerts(alerts_file: Path, criticality_file: Path, output_file: Pat
     # Load data
     with open(alerts_file) as f:
         alerts = json.load(f)
-    
+
     criticality_map = load_criticality_map(criticality_file)
-    
+
     # Score each alert
     scored_alerts = []
-    
+
     for alert in alerts:
         rule = alert.get("rule", {})
         rule_id = rule.get("id", "unknown")
         severity = rule.get("severity", "unknown")
-        
+
         location = alert.get("most_recent_instance", {}).get("location", {})
         file_path = location.get("path", "unknown")
         line = location.get("start_line", 0)
-        
+
         risk_score = calculate_risk_score(
             severity=severity,
             file_path=file_path,
             rule_id=rule_id,
             criticality_map=criticality_map,
         )
-        
+
         priority = get_priority_bucket(risk_score)
-        
+
         scored_alerts.append({
             "alert_id": alert.get("number", 0),
             "rule_id": rule_id,
@@ -2061,27 +2061,27 @@ def score_all_alerts(alerts_file: Path, criticality_file: Path, output_file: Pat
             "priority_bucket": priority,
             "html_url": alert.get("html_url", ""),
         })
-    
+
     # Sort by risk score descending
     scored_alerts.sort(key=lambda x: x["risk_score"], reverse=True)
-    
+
     # Write output
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(output_file, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=scored_alerts[0]. keys())
         writer.writeheader()
         writer.writerows(scored_alerts)
-    
+
     print(f"✅ Scored {len(scored_alerts)} alerts")
     print(f"💾 Saved to {output_file}")
-    
+
     # Print summary
     priority_counts = {}
     for alert in scored_alerts:
         bucket = alert["priority_bucket"]
         priority_counts[bucket] = priority_counts. get(bucket, 0) + 1
-    
+
     print("\n📊 Priority Distribution:")
     for bucket in ["P0", "P1", "P2", "P3"]:
         count = priority_counts. get(bucket, 0)
@@ -2091,7 +2091,7 @@ def score_all_alerts(alerts_file: Path, criticality_file: Path, output_file: Pat
 def main() -> None:
     """Main entry point."""
     base_dir = Path(".github/security")
-    
+
     score_all_alerts(
         alerts_file=base_dir / "semgrep-alerts-export.json",
         criticality_file=base_dir / "criticality-map. yaml",
@@ -2099,7 +2099,7 @@ def main() -> None:
     )
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -2129,53 +2129,53 @@ from libcst import matchers as m
 
 class SubprocessSafetyTransformer(cst.CSTTransformer):
     """Transform unsafe subprocess calls to safe alternatives."""
-    
+
     def __init__(self) -> None:
         super().__init__()
         self.changes_made:  list[str] = []
-    
+
     def leave_Call(
         self, original_node: cst.Call, updated_node: cst.Call
-    ) -> cst.Call: 
+    ) -> cst.Call:
         """Transform subprocess.call and os.system calls."""
-        
+
         # Check for subprocess.call or subprocess. Popen with shell=True
         if self._is_subprocess_call_with_shell(updated_node):
             return self._fix_subprocess_call(updated_node)
-        
+
         # Check for os.system
         if self._is_os_system(updated_node):
             return self._fix_os_system(updated_node)
-        
+
         return updated_node
-    
+
     def _is_subprocess_call_with_shell(self, node: cst.Call) -> bool:
         """Check if this is a subprocess call with shell=True."""
         if not isinstance(node.func, cst.Attribute):
             return False
-        
+
         if not isinstance(node. func.value, cst.Name):
             return False
-        
-        if node. func.value.value != "subprocess": 
+
+        if node. func.value.value != "subprocess":
             return False
-        
+
         if node.func.attr. value not in ("call", "Popen", "run"):
             return False
-        
+
         # Check for shell=True
         for arg in node.args:
             if isinstance(arg. keyword, cst.Name) and arg.keyword.value == "shell":
                 if isinstance(arg.value, cst.Name) and arg.value.value == "True":
                     return True
-        
+
         return False
-    
+
     def _fix_subprocess_call(self, node: cst.Call) -> cst.Call:
         """Fix subprocess call to use shell=False and check=True."""
         new_args = []
         has_check = False
-        
+
         for arg in node.args:
             if isinstance(arg. keyword, cst. Name) and arg.keyword.value == "shell":
                 # Change shell=True to shell=False
@@ -2188,7 +2188,7 @@ class SubprocessSafetyTransformer(cst.CSTTransformer):
                 new_args.append(arg)
             else:
                 new_args.append(arg)
-        
+
         # Add check=True if not present and using subprocess. run
         if not has_check and isinstance(node.func, cst.Attribute):
             if node.func.attr. value == "run":
@@ -2199,37 +2199,37 @@ class SubprocessSafetyTransformer(cst.CSTTransformer):
                     )
                 )
                 self.changes_made. append("Added check=True")
-        
+
         # Change call/Popen to run
         new_func = node. func
         if isinstance(node.func, cst.Attribute):
             if node.func.attr.value in ("call", "Popen"):
                 new_func = node.func.with_changes(attr=cst.Name("run"))
                 self.changes_made.append(f"Changed subprocess.{node.func.attr.value} to subprocess.run")
-        
+
         return node. with_changes(func=new_func, args=new_args)
-    
+
     def _is_os_system(self, node: cst. Call) -> bool:
         """Check if this is an os. system call."""
         if not isinstance(node.func, cst.Attribute):
             return False
-        
+
         if not isinstance(node.func. value, cst. Name):
             return False
-        
+
         return (
-            node.func. value.value == "os" 
+            node.func. value.value == "os"
             and node. func.attr.value == "system"
         )
-    
+
     def _fix_os_system(self, node: cst.Call) -> cst.Call:
         """Convert os.system to subprocess.run."""
         self.changes_made. append("Converted os.system to subprocess. run")
-        
+
         # Get the command argument
         if node.args:
             cmd_arg = node.args[0]. value
-            
+
             # Create subprocess.run call
             return cst.Call(
                 func=cst.Attribute(
@@ -2252,43 +2252,43 @@ class SubprocessSafetyTransformer(cst.CSTTransformer):
                     ),
                 ],
             )
-        
+
         return node
 
 
-def transform_file(file_path:  str) -> tuple[str, list[str]]: 
+def transform_file(file_path:  str) -> tuple[str, list[str]]:
     """Transform a single file and return the new code and changes."""
     with open(file_path) as f:
         source = f.read()
-    
+
     tree = cst.parse_module(source)
     transformer = SubprocessSafetyTransformer()
     new_tree = tree.visit(transformer)
-    
+
     return new_tree.code, transformer.changes_made
 
 
 def main() -> None:
     """Main entry point for CLI usage."""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: python fix_subprocess.py <file_path>")
         sys.exit(1)
-    
+
     file_path = sys.argv[1]
     new_code, changes = transform_file(file_path)
-    
+
     if changes:
         print(f"✅ Made {len(changes)} changes:")
         for change in changes:
             print(f"  - {change}")
-        
+
         # Write back
         with open(file_path, "w") as f:
             f.write(new_code)
         print(f"💾 Updated {file_path}")
-    else: 
+    else:
         print("No changes needed")
 
 
@@ -2321,47 +2321,47 @@ from pathlib import Path
 def fix_fstring_sql(content: str) -> tuple[str, list[str]]:
     """Fix f-string SQL injection patterns."""
     changes = []
-    
+
     # Pattern:  cursor.execute(f"... {var}...")
     fstring_pattern = r'(\w+\. execute\s*\(\s*)f(["\'])(. +?)\2(\s*\))'
-    
+
     def replace_fstring(match:  re.Match) -> str:
         prefix = match.group(1)
         quote = match.group(2)
         sql = match.group(3)
         suffix = match.group(4)
-        
+
         # Find all {var} patterns
         vars_pattern = r'\{(\w+)\}'
         variables = re. findall(vars_pattern, sql)
-        
+
         if not variables:
             return match.group(0)
-        
-        # Replace {var} with ? 
+
+        # Replace {var} with ?
         new_sql = re.sub(vars_pattern, '?', sql)
-        
+
         # Create parameters tuple
         params = ', '.join(variables)
         if len(variables) == 1:
             params += ','  # Single element tuple needs trailing comma
-        
+
         changes.append(f"Parameterized SQL with variables: {variables}")
-        
+
         return f'{prefix}{quote}{new_sql}{quote}, ({params}){suffix}'
-    
+
     new_content = re. sub(fstring_pattern, replace_fstring, content)
-    
+
     return new_content, changes
 
 
 def fix_concat_sql(content:  str) -> tuple[str, list[str]]:
     """Fix string concatenation SQL injection patterns."""
     changes = []
-    
+
     # Pattern: cursor. execute("SELECT..." + var + "...")
     concat_pattern = r'(\w+\.execute\s*\(\s*)(["\'])(.+?)\2\s*\+\s*(\w+)(\s*(? :\+\s*["\']. +?["\'])?)(\s*\))'
-    
+
     def replace_concat(match: re. Match) -> str:
         prefix = match.group(1)
         quote = match.group(2)
@@ -2369,58 +2369,58 @@ def fix_concat_sql(content:  str) -> tuple[str, list[str]]:
         variable = match.group(4)
         sql_after = match.group(5) or ""
         suffix = match.group(6)
-        
+
         # Clean up the after part
         after_clean = ""
         if sql_after:
-            after_match = re.search(r'["\'](.+?)["\']', sql_after)
+            after_match = re.search(r'<!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: <!-- BROKEN LINK: ["\'](.+?) --> --> --> --> -->["\']', sql_after)
             if after_match:
                 after_clean = after_match.group(1)
-        
+
         new_sql = f"{sql_before}? {after_clean}"
-        
+
         changes.append(f"Parameterized concatenated SQL with variable: {variable}")
-        
+
         return f'{prefix}{quote}{new_sql}{quote}, ({variable},){suffix}'
-    
+
     new_content = re.sub(concat_pattern, replace_concat, content)
-    
+
     return new_content, changes
 
 
-def transform_file(file_path: str) -> tuple[str, list[str]]: 
+def transform_file(file_path: str) -> tuple[str, list[str]]:
     """Transform a single file."""
     with open(file_path) as f:
         content = f.read()
-    
+
     all_changes = []
-    
+
     # Apply fixes
     content, changes = fix_fstring_sql(content)
     all_changes.extend(changes)
-    
+
     content, changes = fix_concat_sql(content)
     all_changes.extend(changes)
-    
+
     return content, all_changes
 
 
 def main() -> None:
     """Main entry point."""
     import sys
-    
+
     if len(sys. argv) < 2:
         print("Usage: python fix_sql_injection.py <file_path>")
         sys.exit(1)
-    
+
     file_path = sys.argv[1]
     new_content, changes = transform_file(file_path)
-    
-    if changes: 
+
+    if changes:
         print(f"✅ Made {len(changes)} changes:")
-        for change in changes: 
+        for change in changes:
             print(f"  - {change}")
-        
+
         with open(file_path, "w") as f:
             f.write(new_content)
         print(f"💾 Updated {file_path}")
@@ -2428,7 +2428,7 @@ def main() -> None:
         print("No changes needed")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -2479,56 +2479,56 @@ SAFE_PATTERNS = [
 def is_safe_value(value: str) -> bool:
     """Check if a value is clearly a placeholder, not a real secret."""
     value_lower = value. lower()
-    
+
     for pattern in SAFE_PATTERNS:
         if re.match(pattern, value_lower):
             return True
-    
+
     # Very short values are likely placeholders
     if len(value) < 4:
         return True
-    
+
     return False
 
 
-def transform_file(file_path: str) -> tuple[str, list[str], list[str]]: 
+def transform_file(file_path: str) -> tuple[str, list[str], list[str]]:
     """Transform a file to use environment variables for secrets."""
     with open(file_path) as f:
         content = f. read()
-    
+
     changes = []
     env_vars = []
-    
+
     # Check if os import exists
     has_os_import = bool(re.search(r'^import os\b', content, re.MULTILINE))
     needs_os_import = False
-    
+
     for pattern in SECRET_PATTERNS:
         def replace_secret(match: re.Match) -> str:
             nonlocal needs_os_import
-            
+
             var_name = match. group(1)
             value = match.group(2)
-            
+
             if is_safe_value(value):
                 return match.group(0)
-            
+
             # Convert to environment variable format
             env_var_name = var_name.upper().replace("-", "_")
-            
+
             changes.append(f"Moved {var_name} to environment variable {env_var_name}")
             env_vars. append((env_var_name, value))
             needs_os_import = True
-            
+
             return f'{var_name} = os.getenv("{env_var_name}")'
-        
+
         content = re.sub(pattern, replace_secret, content)
-    
+
     # Add os import if needed and not present
     if needs_os_import and not has_os_import:
         # Add import at the top of the file
         import_line = "import os\n"
-        
+
         # Find the right place to insert (after other imports)
         import_match = re.search(r'^((? :import |from ).+\n)+', content, re. MULTILINE)
         if import_match:
@@ -2536,25 +2536,25 @@ def transform_file(file_path: str) -> tuple[str, list[str], list[str]]:
             content = content[: insert_pos] + import_line + content[insert_pos:]
         else:
             content = import_line + content
-        
+
         changes.append("Added 'import os'")
-    
+
     return content, changes, env_vars
 
 
 def generate_env_example(env_vars: list[tuple[str, str]], output_path: Path) -> None:
     """Generate or update . env. example file."""
     existing_vars = set()
-    
+
     if output_path.exists():
         with open(output_path) as f:
-            for line in f: 
-                if "=" in line: 
+            for line in f:
+                if "=" in line:
                     existing_vars.add(line.split("=")[0].strip())
-    
+
     with open(output_path, "a") as f:
         for var_name, original_value in env_vars:
-            if var_name not in existing_vars: 
+            if var_name not in existing_vars:
                 # Use a placeholder, not the actual value
                 f.write(f"\n# Original value had {len(original_value)} characters\n")
                 f.write(f"{var_name}=your_{var_name.lower()}_here\n")
@@ -2563,24 +2563,24 @@ def generate_env_example(env_vars: list[tuple[str, str]], output_path: Path) -> 
 def main() -> None:
     """Main entry point."""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: python fix_hardcoded_secrets.py <file_path>")
         sys.exit(1)
-    
+
     file_path = sys.argv[1]
     new_content, changes, env_vars = transform_file(file_path)
-    
-    if changes: 
+
+    if changes:
         print(f"✅ Made {len(changes)} changes:")
         for change in changes:
             print(f"  - {change}")
-        
+
         with open(file_path, "w") as f:
             f.write(new_content)
         print(f"💾 Updated {file_path}")
-        
-        if env_vars: 
+
+        if env_vars:
             env_example = Path(file_path).parent / ".env.example"
             generate_env_example(env_vars, env_example)
             print(f"📝 Updated {env_example}")
@@ -2600,9 +2600,9 @@ if __name__ == "__main__":
 
 ```python
 """
-Batch codemod runner for security fixes. 
+Batch codemod runner for security fixes.
 
-Executes codemods against multiple files and creates PRs for each fix group. 
+Executes codemods against multiple files and creates PRs for each fix group.
 
 Author: mbaetiong
 Generated: 2025-12-17
@@ -2627,7 +2627,7 @@ from codemods.fix_hardcoded_secrets import transform_file as fix_secrets
 @dataclass
 class FixGroup:
     """A group of related fixes to apply together."""
-    
+
     group_id: str
     rule_pattern: str
     fix_function: Callable[[str], tuple[str, list[str]]]
@@ -2661,7 +2661,7 @@ FIX_GROUPS = [
 ]
 
 
-def load_prioritized_alerts(alerts_file: Path) -> list[dict]: 
+def load_prioritized_alerts(alerts_file: Path) -> list[dict]:
     """Load the prioritized alerts CSV."""
     alerts = []
     with open(alerts_file) as f:
@@ -2674,19 +2674,19 @@ def load_prioritized_alerts(alerts_file: Path) -> list[dict]:
 def group_alerts_by_fix(alerts: list[dict]) -> dict[str, list[dict]]:
     """Group alerts by which fix group they belong to."""
     grouped = {fg.group_id: [] for fg in FIX_GROUPS}
-    
-    for alert in alerts: 
+
+    for alert in alerts:
         rule_id = alert.get("rule_id", "").lower()
-        
+
         for fg in FIX_GROUPS:
-            if fg.rule_pattern in rule_id: 
+            if fg.rule_pattern in rule_id:
                 grouped[fg. group_id].append(alert)
                 break
-    
+
     return grouped
 
 
-def apply_fix_group(fix_group: FixGroup, alerts: list[dict], dry_run: bool = True) -> dict: 
+def apply_fix_group(fix_group: FixGroup, alerts: list[dict], dry_run: bool = True) -> dict:
     """Apply fixes for a group of alerts."""
     results = {
         "group_id": fix_group.group_id,
@@ -2696,57 +2696,57 @@ def apply_fix_group(fix_group: FixGroup, alerts: list[dict], dry_run: bool = Tru
         "errors": [],
         "modified_files": [],
     }
-    
+
     # Get unique files
     files = set(alert["file"] for alert in alerts)
-    
+
     for file_path in files:
         if not Path(file_path).exists():
             results["errors"].append(f"File not found: {file_path}")
             continue
-        
-        try: 
+
+        try:
             new_content, changes = fix_group.fix_function(file_path)
-            
-            if changes: 
+
+            if changes:
                 results["files_processed"] += 1
                 results["changes_made"] += len(changes)
                 results["modified_files"]. append({
                     "path": file_path,
                     "changes": changes,
                 })
-                
-                if not dry_run: 
+
+                if not dry_run:
                     with open(file_path, "w") as f:
                         f.write(new_content)
                     print(f"  ✅ Fixed {file_path}:  {len(changes)} changes")
                 else:
                     print(f"  🔍 Would fix {file_path}:  {len(changes)} changes")
-        
+
         except Exception as e:
             results["errors"].append(f"Error processing {file_path}: {str(e)}")
-    
+
     return results
 
 
 def create_fix_branch(group_id: str, dry_run: bool = True) -> str:
     """Create a new branch for the fix group."""
     from datetime import datetime
-    
+
     date_str = datetime.now().strftime("%Y%m%d")
     branch_name = f"security/fix-{group_id. lower()}-{date_str}"
-    
-    if not dry_run: 
+
+    if not dry_run:
         subprocess.run(["git", "checkout", "-b", branch_name], check=True)
-    
+
     return branch_name
 
 
 def commit_and_push(fix_group: FixGroup, results: dict, dry_run: bool = True) -> None:
     """Commit changes and push to remote."""
-    if not results["modified_files"]: 
+    if not results["modified_files"]:
         return
-    
+
     commit_msg = f"""[Security] {fix_group.description}
 
 Fix Group: {fix_group.group_id}
@@ -2754,29 +2754,29 @@ Priority: {fix_group.priority}
 Files Modified: {results['files_processed']}
 Total Changes: {results['changes_made']}
 
-Automated security fix by Copilot Agent. 
+Automated security fix by Copilot Agent.
 """
-    
+
     if not dry_run:
         # Stage modified files
         for file_info in results["modified_files"]:
             subprocess. run(["git", "add", file_info["path"]], check=True)
-        
+
         # Commit
         subprocess.run(["git", "commit", "-m", commit_msg], check=True)
-        
+
         # Push
         subprocess.run(["git", "push", "-u", "origin", "HEAD"], check=True)
-    else: 
+    else:
         print(f"  🔍 Would commit:  {commit_msg[: 100]}...")
 
 
 def create_pull_request(fix_group: FixGroup, results: dict, branch_name: str, dry_run: bool = True) -> None:
     """Create a pull request for the fix group."""
     alert_count = results["files_processed"]
-    
+
     pr_title = f"[Security] Fix {fix_group.description} ({alert_count} files)"
-    
+
     pr_body = f"""## Security Fix:  {fix_group. description}
 
 **Fix Group ID**:  {fix_group. group_id}
@@ -2789,16 +2789,16 @@ def create_pull_request(fix_group: FixGroup, results: dict, branch_name: str, dr
 | File | Changes |
 |------|---------|
 """
-    
+
     for file_info in results["modified_files"][:20]:  # Limit to 20 for readability
         changes_summary = "; ".join(file_info["changes"][:3])
         if len(file_info["changes"]) > 3:
             changes_summary += f" (+{len(file_info['changes']) - 3} more)"
         pr_body += f"| `{file_info['path']}` | {changes_summary} |\n"
-    
+
     if len(results["modified_files"]) > 20:
         pr_body += f"\n*... and {len(results['modified_files']) - 20} more files*\n"
-    
+
     pr_body += """
 ### Testing
 
@@ -2817,9 +2817,9 @@ semgrep --config auto --json | jq '.results[] | select(.check_id | contains("RUL
 *Automated security fix by Copilot Agent*
 /cc @mbaetiong
 """
-    
+
     pr_body = pr_body.replace("RULE_PATTERN", fix_group.rule_pattern)
-    
+
     if not dry_run:
         subprocess.run([
             "gh", "pr", "create",
@@ -2836,59 +2836,59 @@ semgrep --config auto --json | jq '.results[] | select(.check_id | contains("RUL
 def main() -> None:
     """Main entry point."""
     import argparse
-    
+
     parser = argparse. ArgumentParser(description="Run security codemods")
     parser.add_argument("--dry-run", action="store_true", help="Don't make actual changes")
     parser.add_argument("--group", type=str, help="Only run specific fix group")
     args = parser.parse_args()
-    
+
     alerts_file = Path(". github/security/prioritized-alerts.csv")
-    
+
     if not alerts_file.exists():
         print("❌ Prioritized alerts file not found.  Run score_alerts.py first.")
         sys.exit(1)
-    
+
     # Load and group alerts
     alerts = load_prioritized_alerts(alerts_file)
     grouped = group_alerts_by_fix(alerts)
-    
+
     # Process each fix group
     for fix_group in FIX_GROUPS:
         if args.group and fix_group.group_id != args.group:
             continue
-        
+
         group_alerts = grouped[fix_group.group_id]
-        
+
         if not group_alerts:
             print(f"⏭️ {fix_group.group_id}:  No matching alerts")
             continue
-        
+
         print(f"\n🔧 Processing {fix_group.group_id}:  {fix_group. description}")
         print(f"   {len(group_alerts)} alerts to process")
-        
+
         # Create branch
         branch_name = create_fix_branch(fix_group.group_id, dry_run=args. dry_run)
         print(f"   Branch: {branch_name}")
-        
+
         # Apply fixes
         results = apply_fix_group(fix_group, group_alerts, dry_run=args.dry_run)
-        
-        if results["modified_files"]: 
+
+        if results["modified_files"]:
             # Commit and push
             commit_and_push(fix_group, results, dry_run=args.dry_run)
-            
+
             # Create PR
             create_pull_request(fix_group, results, branch_name, dry_run=args.dry_run)
-        
-        if results["errors"]: 
+
+        if results["errors"]:
             print(f"   ⚠️ Errors: {len(results['errors'])}")
-            for error in results["errors"][:5]: 
+            for error in results["errors"][:5]:
                 print(f"      - {error}")
-    
+
     print("\n✅ Codemod run complete")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -2906,23 +2906,23 @@ rules:  []
 
 # Path exclusions for all rules
 paths:
-  exclude: 
+  exclude:
     # Test files with intentional patterns
     - "tests/**"
     - "**/test_*.py"
     - "**/*_test.py"
-    
+
     # Example and documentation code
     - "examples/**"
     - "docs/code-samples/**"
     - "**/README*.md"
-    
+
     # Generated and vendored code
     - "**/generated/**"
     - "**/vendor/**"
     - "**/.venv/**"
     - "**/node_modules/**"
-    
+
     # Build artifacts
     - "build/**"
     - "dist/**"
@@ -2982,7 +2982,7 @@ This document tracks all intentionally suppressed Semgrep alerts in the `Aries-S
    code_here()
    ```
 
-2. **Document in this register** with: 
+2. **Document in this register** with:
    - Rule ID
    - File and line number
    - Severity
@@ -3025,10 +3025,10 @@ permissions:
   actions: read
 
 jobs:
-  semgrep: 
+  semgrep:
     name: Semgrep Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -3037,17 +3037,17 @@ jobs:
 
       - name: Run Semgrep
         uses: returntocorp/semgrep-action@v1
-        with: 
+        with:
           config: >-
             p/security-audit
             p/secrets
             p/owasp-top-ten
             p/python
             . semgrep/
-          
+
           # Only fail on new findings (uses baseline)
           generateSarif: true
-          
+
         env:
           SEMGREP_RULES: >-
             p/security-audit
@@ -3064,14 +3064,14 @@ jobs:
   dependency-scan:
     name:  Dependency Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
-        with: 
+        with:
           python-version:  '3.11'
 
       - name: Install safety
@@ -3080,7 +3080,7 @@ jobs:
       - name: Run safety check
         run: |
           safety check -r requirements.txt --output json > safety-results.json || true
-          
+
       - name: Process results
         run:  |
           if [ -f safety-results.json ]; then
@@ -3088,7 +3088,7 @@ jobs:
             cat safety-results.json | python -c "
 import json, sys
 data = json.load(sys.stdin)
-if data: 
+if data:
     print('| Package | Vulnerability | Severity |')
     print('|---------|---------------|----------|')
     for vuln in data[: 10]:
@@ -3099,8 +3099,8 @@ if data:
   secret-scan:
     name:  Secret Detection
     runs-on:  ubuntu-latest
-    
-    steps: 
+
+    steps:
       - name:  Checkout repository
         uses: actions/checkout@v4
         with:
@@ -3189,18 +3189,18 @@ The `Aries-Serpent` organization has enabled the "GitHub recommended (default) c
 
 To restore advanced CodeQL configuration:
 
-1. Check out the backup branch: 
+1. Check out the backup branch:
    ```bash
    git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX
      ```
 
-2. Copy files back: 
+2. Copy files back:
    ```bash
    git checkout main
    git checkout backup/codeql-advanced-YYYYMMDD-XXXXXXX -- .github/workflows/codeql*. yml
     ```
 
-3. Request exclusion from org-level defaults: 
+3. Request exclusion from org-level defaults:
    - Open issue in `Aries-Serpent/. github` repository
    - Request `_codex_` be excluded from default code scanning
 
@@ -3232,7 +3232,7 @@ git mv codeql-pack* .github/disabled-config/ 2>/dev/null || true
 # (README content from Task D.3.1)
 
 # Commit
-git add . 
+git add .
 git commit -m "chore: disable advanced CodeQL workflows to resolve org default conflict"
 
 # Push and create PR
@@ -3265,7 +3265,7 @@ This PR disables advanced CodeQL/code-scanning workflows so the organization-rec
 
 ## Next Steps
 
-After merge: 
+After merge:
 1. Verify org default code scanning is applied
 2. Confirm no regression in security coverage
 3. If custom queries are needed, package them in `Aries-Serpent/codeql-packs`
@@ -3293,18 +3293,18 @@ name: "CodeQL"
 on:
   push:
     branches: [main, develop]
-  pull_request: 
+  pull_request:
     branches: [main, develop]
   schedule:
     # Weekly scan on Sunday at 3 AM UTC
     - cron: '0 3 * * 0'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
-  analyze: 
+  analyze:
     name:  Analyze
     runs-on: ubuntu-latest
-    
+
     permissions:
       actions:  read
       contents:  read
@@ -3363,7 +3363,7 @@ jobs:
 
 ### 2025-12-17: Migrated to Org Default
 
-**Reason**: Resolve "Advanced setup conflict" with organization-level default code scanning. 
+**Reason**: Resolve "Advanced setup conflict" with organization-level default code scanning.
 
 **Changes Made**:
 1. Created backup branch:  `backup/codeql-advanced-YYYYMMDD-XXXXXXX`
@@ -3374,7 +3374,7 @@ jobs:
 - Disable PR: #TBD
 - Enable PR: #TBD
 
-**Validation**: 
+**Validation**:
 - [ ] CodeQL workflow runs successfully
 - [ ] Security alerts are being created
 - [ ] Org conflict message cleared
@@ -3419,14 +3419,14 @@ If the repository had custom CodeQL queries:
 ```yaml
 # Master Execution Plan for Aries-Serpent/_codex_
 execution_sequence:
-  
+
   # =========================================================================
   # PHASE 1: Foundation (Parallel Execution Possible)
   # =========================================================================
   phase_1:
     name: "Foundation Setup"
     parallel:  true
-    
+
     tasks:
       # Stream A: Caching Infrastructure
       - id: A. 1
@@ -3436,33 +3436,33 @@ execution_sequence:
           - requirements-test.txt
           - requirements-dev.txt
         validation: "pip check -r requirements-minimal. txt"
-      
+
       - id: A.2
         name: "Create UV setup action"
-        files: 
+        files:
           - . github/actions/setup-python-uv/action. yml
         validation: "act -j lint --dry-run"
-      
+
       - id:  A.3
         name: "Create compressed cache action"
-        files: 
+        files:
           - .github/actions/compressed-cache/action. yml
         validation:  "yaml-lint . github/actions/"
-      
+
       # Stream B: OpenAI Infrastructure
       - id:  B.1
         name: "Create OpenAI client"
-        files: 
+        files:
           - src/config/openai_client.py
         validation: "python -c 'from src.config.openai_client import CodexOpenAIClient'"
-      
+
       - id: B.2
         name: "Create autonomous runner"
-        files: 
+        files:
           - src/agents/autonomous_runner.py
           - src/agents/orchestrator.py
         validation: "python -m py_compile src/agents/*. py"
-      
+
       # Stream D: Code Scanning (Prerequisite for Stream C)
       - id: D.1
         name: "Preflight checks"
@@ -3470,10 +3470,10 @@ execution_sequence:
           - "gh api repos/Aries-Serpent/_codex_/languages"
           - "find . -name '*codeql*' -type f"
         validation: "Commands complete successfully"
-      
+
       - id: D. 2
         name:  "Create backup branch"
-        commands: 
+        commands:
           - "git checkout -b backup/codeql-advanced-$(date +%Y%m%d)"
           - "git push origin HEAD"
         validation: "git branch -r | grep backup/codeql"
@@ -3484,35 +3484,35 @@ execution_sequence:
   phase_2:
     name:  "Core Implementation"
     depends_on: [phase_1]
-    
-    tasks: 
+
+    tasks:
       # Stream A: CI/CD Workflows
       - id:  A.4
         name: "Create CI workflows"
-        files: 
+        files:
           - Dockerfile. ci
           - . github/workflows/build-container-cache.yml
           - .github/workflows/ci. yml
           - .github/workflows/cache-warmer.yml
           - .github/workflows/pr-checks.yml
         validation: "gh workflow list"
-      
+
       # Stream B: Agent Runtime
       - id:  B.3
         name: "Create agent workflow"
-        files: 
+        files:
           - . github/workflows/agent-runtime.yml
         validation: "gh workflow view agent-runtime"
-      
+
       # Stream C: Security Analysis
       - id:  C.1
         name: "Create security scripts"
-        files: 
+        files:
           - scripts/security/export_semgrep_alerts.py
           - scripts/security/score_alerts.py
           - . github/security/criticality-map.yaml
         validation: "python -m py_compile scripts/security/*. py"
-      
+
       # Stream D:  Code Scanning Resolution
       - id:  D.3
         name: "Disable advanced workflows"
@@ -3522,10 +3522,10 @@ execution_sequence:
           - "mkdir -p .github/disabled . github/disabled-config"
           - "git mv .github/workflows/*codeql* .github/disabled/ || true"
         validation: "ls . github/disabled/"
-      
+
       - id: D.4
         name: "Enable default CodeQL"
-        files: 
+        files:
           - .github/workflows/codeql-analysis.yml
           - .github/SECURITY-CODE-SCANNING-NOTE.md
         validation: "gh workflow run codeql-analysis.yml --dry-run"
@@ -3536,12 +3536,12 @@ execution_sequence:
   phase_3:
     name: "Security Remediation"
     depends_on: [phase_2]
-    
+
     tasks:
       # Stream C: Codemods and Fixes
       - id:  C.2
         name: "Export and analyze alerts"
-        commands: 
+        commands:
           - "python scripts/security/export_semgrep_alerts.py"
           - "python scripts/security/score_alerts.py"
         outputs:
@@ -3549,7 +3549,7 @@ execution_sequence:
           - .github/security/prioritized-alerts.csv
           - docs/security/semgrep-analysis-report.md
         validation: "test -f .github/security/prioritized-alerts.csv"
-      
+
       - id: C. 3
         name:  "Create codemods"
         files:
@@ -3558,23 +3558,23 @@ execution_sequence:
           - scripts/security/codemods/fix_hardcoded_secrets.py
           - scripts/security/run_codemods. py
         validation: "python scripts/security/run_codemods.py --dry-run"
-      
+
       - id: C.4
         name: "Run automated fixes"
         commands:
           - "python scripts/security/run_codemods.py"
         validation: "gh pr list --label security"
-      
+
       - id: C.5
         name: "Configure suppressions"
         files:
           - . semgrep/semgrep.yml
           - docs/security/suppressions-register.md
         validation: "semgrep --validate --config .semgrep/"
-      
+
       - id: C.6
         name: "Enable security gates"
-        files: 
+        files:
           - .github/workflows/security-scan.yml
         validation: "gh workflow run security-scan. yml --dry-run"
 
@@ -3584,21 +3584,21 @@ execution_sequence:
   phase_4:
     name: "Validation & Documentation"
     depends_on: [phase_3]
-    
-    tasks: 
+
+    tasks:
       - id: V.1
         name: "Validate all workflows"
-        commands: 
+        commands:
           - "gh workflow list"
           - "gh api repos/Aries-Serpent/_codex_/code-scanning/alerts --jq 'length'"
         validation:  "All workflows listed and running"
-      
+
       - id: V.2
         name: "Run CI pipeline"
-        commands: 
+        commands:
           - "gh workflow run ci.yml"
         validation: "gh run list --workflow=ci.yml --limit=1 --json conclusion"
-      
+
       - id: V. 3
         name:  "Generate final report"
         outputs:
@@ -3670,7 +3670,7 @@ execution_sequence:
 
 **Reporting**: Update progress after each phase completion
 
-**Escalation with Recommendations**: Contact @mbaetiong for: 
+**Escalation with Recommendations**: Contact @mbaetiong for:
 - High-risk security fixes
 - Breaking changes
 - Blocked dependencies

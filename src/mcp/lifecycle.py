@@ -49,7 +49,7 @@ class InvalidStateTransition(Exception):
 
     def __init__(self, current: ServerState, target: ServerState) -> None:
         """Initialize the exception.
-        
+
         Args:
             current: Current server state.
             target: Target state that was attempted.
@@ -86,7 +86,7 @@ class LifecycleManager:
 
     def __init__(self, config: Optional[LifecycleConfig] = None) -> None:
         """Initialize the lifecycle manager.
-        
+
         Args:
             config: Lifecycle configuration. Uses defaults if not provided.
         """
@@ -118,10 +118,10 @@ class LifecycleManager:
 
     async def transition_to(self, target: ServerState) -> None:
         """Transition to a new state with validation.
-        
+
         Args:
             target: Target state to transition to.
-            
+
         Raises:
             InvalidStateTransition: If the transition is not valid.
         """
@@ -139,7 +139,7 @@ class LifecycleManager:
 
     def register_health_check(self, check: Callable[[], HealthStatus]) -> None:
         """Register a health check function.
-        
+
         Args:
             check: Health check function that returns HealthStatus.
         """
@@ -147,7 +147,7 @@ class LifecycleManager:
 
     def register_startup_hook(self, hook: Callable[[], None]) -> None:
         """Register a startup hook.
-        
+
         Args:
             hook: Function to call during startup.
         """
@@ -155,7 +155,7 @@ class LifecycleManager:
 
     def register_shutdown_hook(self, hook: Callable[[], None]) -> None:
         """Register a shutdown hook.
-        
+
         Args:
             hook: Function to call during shutdown.
         """
@@ -189,7 +189,7 @@ class LifecycleManager:
 
     async def shutdown(self, graceful: bool = True) -> None:
         """Shutdown the server.
-        
+
         Args:
             graceful: If True, wait for active requests to complete.
         """
@@ -223,7 +223,7 @@ class LifecycleManager:
 
     async def track_request_start(self) -> bool:
         """Track the start of a request.
-        
+
         Returns:
             True if the request can proceed, False if server is draining.
         """
@@ -243,7 +243,7 @@ class LifecycleManager:
 
     def get_health(self) -> HealthStatus:
         """Get aggregated health status.
-        
+
         Returns:
             Aggregated health status from all registered checks.
         """
@@ -304,7 +304,7 @@ _lifecycle_manager: Optional[LifecycleManager] = None
 
 def get_lifecycle_manager() -> LifecycleManager:
     """Get or create the global lifecycle manager.
-    
+
     Returns:
         The global LifecycleManager instance.
     """

@@ -12,8 +12,9 @@ from __future__ import annotations
 import logging
 import os
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -40,10 +41,10 @@ ENV_VARS = {
 class ConfigLoader:
     """
     Centralized configuration loader.
-    
+
     Loads configuration from conf/ directory (Hydra-based) as the single
     source of truth, with fallback support for configs/ directory.
-    
+
     Deprecated directories (config/, config_legacy/, omegaconf/) are
     excluded by default and will log warnings if accessed.
     """
@@ -56,7 +57,7 @@ class ConfigLoader:
     ):
         """
         Initialize configuration loader.
-        
+
         Args:
             config_dir: Override default config directory
             allow_deprecated: Allow loading from deprecated directories
@@ -85,12 +86,12 @@ class ConfigLoader:
     ) -> Dict[str, Any]:
         """
         Load configuration file.
-        
+
         Args:
             config_name: Name of config file (without extension)
             config_path: Optional subdirectory within config_dir
             overrides: Optional dictionary of override values
-            
+
         Returns:
             Loaded configuration as dictionary
         """
@@ -203,11 +204,11 @@ class ConfigLoader:
     def load_from_deprecated(self, directory: str, config_name: str) -> Dict[str, Any]:
         """
         Load from deprecated directory with warning.
-        
+
         Args:
             directory: Deprecated directory name (config, config_legacy, omegaconf)
             config_name: Configuration file name
-            
+
         Returns:
             Loaded configuration
         """
@@ -234,11 +235,11 @@ class ConfigLoader:
     def get_env_var(self, key: str, default: Optional[str] = None) -> Optional[str]:
         """
         Get environment variable with CODEX_ prefix.
-        
+
         Args:
             key: Variable name (without CODEX_ prefix)
             default: Default value if not set
-            
+
         Returns:
             Environment variable value or default
         """
@@ -262,12 +263,12 @@ def get_config_loader(
 ) -> ConfigLoader:
     """
     Get or create global ConfigLoader instance.
-    
+
     Args:
         config_dir: Override default config directory
         allow_deprecated: Allow loading from deprecated directories
         strict_mode: Raise errors instead of warnings for deprecated access
-        
+
     Returns:
         ConfigLoader instance
     """
@@ -290,12 +291,12 @@ def load_config(
 ) -> Dict[str, Any]:
     """
     Convenience function to load configuration.
-    
+
     Args:
         config_name: Name of config file (without extension)
         config_path: Optional subdirectory within config_dir
         overrides: Optional dictionary of override values
-        
+
     Returns:
         Loaded configuration as dictionary
     """
@@ -314,7 +315,7 @@ def reset_config_loader() -> None:
 def detect_config_sprawl() -> Dict[str, List[str]]:
     """
     Detect configuration files across all directories.
-    
+
     Returns:
         Dictionary mapping directory names to lists of config files
     """
@@ -337,16 +338,14 @@ def detect_config_sprawl() -> Dict[str, List[str]]:
 def generate_migration_report() -> str:
     """
     Generate report of configuration sprawl for migration planning.
-    
+
     Returns:
         Markdown-formatted migration report
     """
-    from datetime import datetime
-
     sprawl = detect_config_sprawl()
 
     report = ["# Configuration Sprawl Analysis\n"]
-    report.append(f"**Analysis Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+    report.append(f"**Analysis Date:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}\n")
     report.append("## Summary\n")
 
     total_files = sum(len(files) for files in sprawl.values())

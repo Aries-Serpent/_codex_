@@ -1,6 +1,6 @@
 # Codebase Dashboard
 
-> Created: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent  
+> Created: 2026-01-12 | Updated: 2026-01-23T08:45:00Z | Updated by: doc-freshness-checker agent
 > PR: #2960 | Branch: `copilot/update-html-documentation-standards`
 
 ---
@@ -13,8 +13,8 @@
 
 **Status**: 🟢 Active Development
 
-**Last Updated**: 2026-01-23T08:45:00Z  
-**Version**: 2.0.0  
+**Last Updated**: 2026-01-23T08:45:00Z
+**Version**: 2.0.0
 **Last Reviewed**: 2026-01-23T08:45:00Z
 
 ---
@@ -35,9 +35,9 @@
 ### Active Initiatives
 
 #### 🚀 Phase 6: MCP Package System (COMPLETE ✅)
-**Status**: Production Ready  
-**Completion**: 100%  
-**Branch**: `copilot/sub-pr-2668-again`  
+**Status**: Production Ready
+**Completion**: 100%
+**Branch**: `copilot/sub-pr-2668-again`
 **PR**: #2671
 
 **Deliverables**:
@@ -55,8 +55,8 @@
 - `f769e52` - Capability topics + workflow dropdown
 
 #### 🧠 Phase 7: Cognitive Brain Infrastructure (COMPLETE ✅)
-**Status**: Production Ready  
-**Completion**: 100%  
+**Status**: Production Ready
+**Completion**: 100%
 **Completed**: 2025-12-30
 
 **Deliverables**:
@@ -70,8 +70,8 @@
 - `f786673` - Complete cognitive brain infrastructure
 
 #### 📚 Phase 8: Documentation Consolidation (COMPLETE ✅)
-**Status**: Production Ready  
-**Completion**: 100%  
+**Status**: Production Ready
+**Completion**: 100%
 **Completed**: 2025-12-30
 
 **Deliverables**:
@@ -101,8 +101,8 @@
 - 🧠 Cognitive brain fully integrated
 
 #### 📚 PR #2782: Documentation & Process Guidance (COMPLETE ✅)
-**Status**: Merged  
-**Completion**: 100%  
+**Status**: Merged
+**Completion**: 100%
 **Completed**: 2026-01-12
 
 **Deliverables**:
@@ -132,8 +132,8 @@
 - `.codex/github_issues/semgrep_transient_failures.md` - Semgrep CI flakiness (low priority)
 
 #### 🤖 PR #2782/#2820: Comprehensive Multi-Phase Execution & Agent Standardization (IN PROGRESS 🟢)
-**Status**: Active - Phase C & A Execution  
-**Completion**: 85%  
+**Status**: Active - Phase C & A Execution
+**Completion**: 85%
 **Started**: 2026-01-12
 **Latest Update**: 2026-01-12 15:39 UTC
 **Branch**: `copilot/sub-pr-2782-yet-again`
@@ -200,8 +200,8 @@
 - Surgical changes reduce review overhead and merge conflicts
 
 #### 🎯 Phase 9: Coverage & Performance Enhancement (IN PROGRESS 🟢)
-**Status**: Active Development  
-**Completion**: 20%  
+**Status**: Active Development
+**Completion**: 20%
 **Started**: 2025-12-31 (Historical reference)
 **Latest Update**: Project now uses iteration-based workflow
 
@@ -242,7 +242,7 @@
 - `da5d1f7` - Phase 9.1 analysis & roadmap
 - `[next]` - Critical path tests
 
-**Target**: 100% coverage, 1880-2000 total tests  
+**Target**: 100% coverage, 1880-2000 total tests
 **Estimated**: 3-4 sessions remaining
 
 **Next**: Execute Phase 9.1 - Add critical path tests
@@ -415,7 +415,7 @@ None active. All blockers resolved or have mitigation plans.
 ## 🔍 Quick Links
 
 ### Documentation
-- [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) - Architecture overview
+- [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) - Architecture overview
 - [Roadmap](../ROADMAP.md) - Feature roadmap (coming soon)
 - [Contributing](../CONTRIBUTING.md) - Contribution guide
 - [Architecture](../ARCHITECTURE.md) - Detailed architecture
@@ -423,13 +423,13 @@ None active. All blockers resolved or have mitigation plans.
 
 ### Key Components
 - [Codex Pipeline](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/README.md) - Code ingestion (coming soon)
-- [Agent System](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md) - Autonomous agents (coming soon)
+- [Agent System](../../agents/README.md) - Autonomous agents (coming soon)
 - [MCP System](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md) - ChatGPT packaging
 - [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing infrastructure
 
 ### Workflows
 - [CI/CD Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows) - All workflows
-- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/build-chatgpt-package.yml) - Packaging
+- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/app-package-download.yml) - Packaging
 - [Security Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/scan-secrets-variables.yml) - Secrets scan
 
 ### Tools & Commands
@@ -560,12 +560,12 @@ nox -s lint type format
 
 ## 📞 Contact & Ownership
 
-**Primary Owner**: DevOps + Agent Development Team  
-**Human Admin**: @mbaetiong  
+**Primary Owner**: DevOps + Agent Development Team
+**Human Admin**: @mbaetiong
 **AI Agent**: GitHub Copilot Agent (autonomous operation)
 
-**Update Frequency**: Real-time (every session)  
-**Review Cycle**: Per iteration or after major milestones  
+**Update Frequency**: Real-time (every session)
+**Review Cycle**: Per iteration or after major milestones
 **Last Reviewed**: 2026-01-23T08:45:00Z
 
 ---
@@ -645,7 +645,7 @@ nox -s lint type format
 
 ---
 
-**Questions?** Check [Cognitive Map](CODEBASE_COGNITIVE_MAP.md) for architecture details.
+**Questions?** Check [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) for architecture details.
 
 **Want to contribute?** See [Contributing Guide](../CONTRIBUTING.md).
 
@@ -653,6 +653,6 @@ nox -s lint type format
 
 ---
 
-**Dashboard Status**: 🟢 Live & Updating  
-**Next Update**: End of current session or significant milestone  
+**Dashboard Status**: 🟢 Live & Updating
+**Next Update**: End of current session or significant milestone
 **Automation**: AI agent maintains this file automatically

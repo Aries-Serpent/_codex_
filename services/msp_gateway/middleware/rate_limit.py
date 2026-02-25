@@ -9,7 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response

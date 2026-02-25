@@ -1,0 +1,209 @@
+name: Art_Code Quality & Coverage Suite
+
+on:
+  pull_request:
+    branches: [main, develop, "0D_base_", "copilot/integrate-codex-status-template", "master"]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Analysis mode'
+        required: true
+        type: choice
+        options:
+          - coverage-only
+          - quality-only
+          - full-suite
+        default: 'full-suite'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  coverage_analysis:
+    name: Coverage Report Generation
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'coverage-only' || inputs.mode == 'full-suite'))
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Install package with test extras to get all test dependencies
+          pip install -e ".[test]"
+          # Additional coverage tools
+          pip install 'pytest>=9.0,<10' 'pytest-cov>=7.0,<8' 'coverage>=7.10.6,<8'
+
+      - name: Run tests with coverage
+        run: |
+          # Run tests with coverage, allow test failures but ensure coverage data is collected
+          coverage run -m pytest -q -m "not slow" || true
+          # Ensure coverage data file exists even if no tests ran
+          coverage json -o .coverage.json || echo '{}' > .coverage.json
+
+      - name: Generate coverage HTML report
+        run: |
+          # Generate HTML report only if coverage data exists
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
+            coverage html -d htmlcov || mkdir -p htmlcov
+          else
+            mkdir -p htmlcov
+            echo "<html><body><p>No coverage data generated</p></body></html>" > htmlcov/index.html
+          fi
+
+      - name: Generate function index PDF (72 DPI, black & white)
+        run: |
+          # Generate PDF only if HTML report exists
+          if [ -d htmlcov ] && [ -f htmlcov/index.html ]; then
+            python tools/coverage_html_to_pdf.py --input-dir htmlcov --output coverage_functions.pdf --dpi 72 || touch coverage_functions.pdf
+          else
+            touch coverage_functions.pdf
+          fi
+
+      - name: Extract per-module coverage
+        run: |
+          # Extract module coverage only if coverage JSON exists
+          if [ -f .coverage.json ] && [ -s .coverage.json ]; then
+            python tools/coverage_extract.py --coverage-json .coverage.json --out coverage_modules.json || echo '{}' > coverage_modules.json
+          else
+            echo '{}' > coverage_modules.json
+          fi
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-artifacts-${{ github.run_number }}
+          path: |
+            .coverage.json
+            coverage_modules.json
+            coverage_functions.pdf
+          if-no-files-found: warn
+          retention-days: 90
+
+  code_quality_analysis:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == 'quality-only' || inputs.mode == 'full-suite'))
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Need full history for baseline comparison
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'live'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,test]"
+          pip install ruff mypy bandit pylint radon
+
+      - name: Run Ruff linting (Observation Mode)
+        id: ruff
+        continue-on-error: true
+        run: |
+          echo "## Ruff Analysis" >> $GITHUB_STEP_SUMMARY
+          ruff check src/ tests/ --output-format=github || true
+          ruff check src/ tests/ --statistics >> $GITHUB_STEP_SUMMARY 2>&1 || true
+
+      - name: Run mypy type checking (Observation Mode)
+        id: mypy
+        continue-on-error: true
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Type Checking (mypy)" >> $GITHUB_STEP_SUMMARY
+          mypy src/ --ignore-missing-imports --no-error-summary 2>&1 | tee mypy-output.txt || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -20 mypy-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Run Bandit security analysis (Observation Mode)
+        id: bandit
+        continue-on-error: true
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Security Analysis (Bandit)" >> $GITHUB_STEP_SUMMARY
+          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/ -f txt | tee bandit-output.txt || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 bandit-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Calculate code complexity (Observation Mode)
+        id: complexity
+        continue-on-error: true
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Code Complexity (Radon)" >> $GITHUB_STEP_SUMMARY
+          radon cc src/ -a -s | tee radon-output.txt || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -30 radon-output.txt >> $GITHUB_STEP_SUMMARY || echo "Analysis complete" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload code quality reports
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: code-quality-reports-${{ github.run_number }}
+          path: |
+            ruff-output.txt
+            mypy-output.txt
+            bandit-report.json
+            bandit-output.txt
+            radon-output.txt
+          if-no-files-found: ignore
+          retention-days: 30
+
+  unified_summary:
+    name: Generate Unified Summary
+    runs-on: ubuntu-latest
+    needs: [coverage_analysis, code_quality_analysis]
+    if: always()
+
+    steps:
+      - name: Checkout for cache health
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: scripts/ci
+
+      - name: Cache health report
+        continue-on-error: true
+        run: |
+          pip install -q pip 2>/dev/null
+          python scripts/ci/generate_cache_keys.py --type pip --workflow code-quality-coverage-suite --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+
+      - name: Generate comprehensive summary
+        run: |
+          echo "## 📊 Code Quality & Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage Analysis: ${{ needs.coverage_analysis.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Code Quality Analysis: ${{ needs.code_quality_analysis.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage reports (JSON, HTML, PDF)" >> $GITHUB_STEP_SUMMARY
+          echo "- Code quality reports (Ruff, mypy, Bandit, Radon)" >> $GITHUB_STEP_SUMMARY

@@ -36,6 +36,7 @@ class HTMLVisualizer:
 <head>
     <title>AST Analysis Report</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- d3.js visualization library (d3.v7) -->
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
         .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
@@ -54,7 +55,7 @@ class HTMLVisualizer:
 <body>
     <div class="container">
         <h1>🔍 AST Analysis Report</h1>
-        
+
         <div class="metrics">
             <div class="metric-card">
                 <div class="metric-label">Total Nodes</div>
@@ -73,25 +74,25 @@ class HTMLVisualizer:
                 <div class="metric-value">{sum(1 for n in nodes_data if 'class' in n.get('type', '').lower())}</div>
             </div>
         </div>
-        
+
         <div class="legend">
             <strong>Legend:</strong> Hover over nodes to see details. Circle size represents complexity.
         </div>
-        
+
         <div id="graph"></div>
-        
+
         <script>
         const data = {json.dumps(nodes_data, indent=2)};
-        
+
         // Create D3 visualization
         const width = 1160;
         const height = 600;
-        
+
         const svg = d3.select("#graph")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
-        
+
         // Simple node visualization
         const nodes = svg.selectAll("circle")
             .data(data)
@@ -107,10 +108,10 @@ class HTMLVisualizer:
             .on("mouseout", function(event, d) {{
                 d3.select(this).attr("r", d => Math.min(20, 10 + (d.children || 0)));
             }});
-        
+
         nodes.append("title")
             .text(d => 'Type: ' + d.type + '\\nName: ' + (d.name || 'N/A') + '\\nChildren: ' + (d.children || 0));
-        
+
         // Add labels
         svg.selectAll("text")
             .data(data)
@@ -133,8 +134,8 @@ class HTMLVisualizer:
     def _node_to_dict(self, node: StandardizedASTNode) -> dict:
         """Convert node to dictionary for JSON serialization."""
         return {
-            "id": node.id,
-            "type": node.type,
+            "id": node.node_id,
+            "type": node.type.value if hasattr(node.type, "value") else str(node.type),
             "name": getattr(node, "name", ""),
             "children": len(node.children) if node.children else 0,
         }

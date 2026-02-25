@@ -17,13 +17,10 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import hashlib
 import io
 import json
+import logging
 import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
@@ -36,6 +33,8 @@ from datetime import UTC, datetime
 from itertools import count
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:
     import torch
@@ -52,7 +51,13 @@ try:  # packaging is optional but preferred for version parsing
 except Exception:  # pragma: no cover - treated as unavailable
     Version = None  # type: ignore[assignment]
 
-from .atomic_io import safe_write_bytes, safe_write_text
+try:  # provenance extras are optional
+    from .provenance import environment_summary as _environment_summary
+except Exception:  # pragma: no cover - optional dependency failures tolerated
+    _environment_summary = None  # type: ignore[assignment]
+
+from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
+from .runmeta import collect_run_meta  # noqa: E402
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
@@ -61,12 +66,6 @@ except Exception:  # pragma: no cover - optional dependency issues tolerated
 
     def snapshot_config(_config: object) -> dict[str, Any]:
         return {}
-
-
-try:  # provenance extras are optional
-    from .provenance import environment_summary as _environment_summary
-except Exception:  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None  # type: ignore[assignment]
 
 
 try:  # runtime metadata sidecar (best-effort)
@@ -79,8 +78,6 @@ except Exception:  # pragma: no cover - optional dependency
     def write_run_manifest(*_args: object, **_kwargs: object) -> None:
         return None
 
-
-from .runmeta import collect_run_meta
 
 # NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
 # All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
@@ -380,14 +377,14 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             for item in value:
                 _update(item)
             return
-        if isinstance(value, str | bytes):
+        if isinstance(value, (str, bytes)):
             hasher.update(b"str")
             if isinstance(value, str):
                 hasher.update(value.encode("utf-8"))
             else:
                 hasher.update(value)
             return
-        if isinstance(value, int | float | bool) or value is None:
+        if isinstance(value, (int, float, bool)) or value is None:
             hasher.update(b"prim")
             hasher.update(repr(value).encode("utf-8"))
             return
@@ -519,7 +516,7 @@ def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
     return float(metric)
 
 
-def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
+def _prune_best_k(root: Path, idx: dict[str, Any], *, exclude: frozenset[str] | None = None) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
@@ -530,13 +527,18 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
     )
     keep = entries_sorted[:top_k]
     remove = {e["path"] for e in entries if e not in keep}
-    # Delete files that are not in keep
+    # Delete files/directories that are not in keep
     for rel in remove:
+        if exclude and rel in exclude:
+            continue
         try:
-            (root / rel).unlink(missing_ok=True)
+            target = root / rel
+            if target.is_dir():
+                shutil.rmtree(target)
+            else:
+                target.unlink(missing_ok=True)
         except Exception as e:
             logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
     idx["entries"] = keep
 
 
@@ -628,18 +630,25 @@ def save_checkpoint(
         payload_obj["meta"]["user_metadata"] = metadata
     if meta.config_snapshot is None:
         payload_obj["meta"].pop("config_snapshot", None)
+
+    # Step 1: compute pre-embed digest (used by verify_checkpoint for integrity)
     payload_obj["meta"]["sha256"] = None
     raw = _serialize_payload(payload_obj)
     digest = hashlib.sha256(raw).hexdigest()
     meta.sha256 = digest
 
-    # Emit standalone digest for compatibility with legacy consumers
-    safe_write_text(root / "state.sha256", digest)
+    # Step 2: embed digest and produce final bytes (this is what gets written to disk)
+    payload_obj["meta"]["sha256"] = digest
+    raw = _serialize_payload(payload_obj)
+    file_digest = hashlib.sha256(raw).hexdigest()
+
+    # Emit standalone digest matching the actual file content
+    safe_write_text(root / "state.sha256", file_digest)
 
     if metadata_sidecar is not None:
         sidecar = {
             "schema_version": SCHEMA_VERSION,
-            "digest_sha256": digest,
+            "digest_sha256": file_digest,
             "environment": meta.env,
         }
         sidecar.update(metadata_sidecar)
@@ -711,6 +720,9 @@ def save_checkpoint(
     parent_idx["mode"] = "min" if mode.lower().startswith("min") else "max"
     parent_idx["top_k"] = int(top_k)
     parent_idx.setdefault("entries", [])
+    # Upsert: replace any existing entry for this directory to prevent duplicate accumulation
+    # when save_checkpoint is called multiple times in the same directory (flat-file usage).
+    parent_idx["entries"] = [e for e in parent_idx["entries"] if e.get("path") != root.name]
     parent_idx["entries"].append(
         {
             "path": root.name,
@@ -719,7 +731,7 @@ def save_checkpoint(
             "sha256": digest,
         }
     )
-    _prune_best_k(root.parent, parent_idx)
+    _prune_best_k(root.parent, parent_idx, exclude=frozenset({root.name}))
     _write_index(root.parent, parent_idx)
     safe_write_text(root.parent / "best_index.json", json.dumps(parent_idx["entries"], indent=2))
 
@@ -750,7 +762,10 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     """
     p = Path(path)
     raw = _read_bytes(p)
-    obj = _deserialize_payload(raw)
+    try:
+        obj = _deserialize_payload(raw)
+    except Exception as exc:
+        raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
     if version is None:
@@ -762,11 +777,10 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     expected = meta_dict.get("sha256")
     if not expected:
         raise CheckpointIntegrityError("Missing sha256 in checkpoint metadata.")
-    # Re-serialize state+meta (as stored) to compute digest in same form
-    digest_meta = {k: v for k, v in meta_dict.items() if k != "sha256"}
-    digest_meta.setdefault("sha256", None)
+    # Re-serialize with sha256=None (same form used during save to compute the digest)
+    digest_meta = dict(meta_dict, sha256=None)
     digest_payload = {"state": obj.get("state", {}), "meta": digest_meta}
-    actual = _digest_payload(digest_payload).hex()
+    actual = hashlib.sha256(_serialize_payload(digest_payload)).hexdigest()
     if actual != expected:
         raise CheckpointIntegrityError(
             f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
@@ -792,13 +806,15 @@ def load_checkpoint(
         return state, meta
 
     raw = _read_bytes(p)
-    obj = _deserialize_payload(raw, map_location=map_location)
+    try:
+        obj = _deserialize_payload(raw, map_location=map_location)
+    except Exception as exc:
+        raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
     # Integrity verification
-    digest_meta = dict(meta_dict)
-    digest_meta["sha256"] = None
+    digest_meta = dict(meta_dict, sha256=None)
     expected_digest = meta_dict.get("sha256")
     calc_digest = hashlib.sha256(
         _serialize_payload({"state": state, "meta": digest_meta})

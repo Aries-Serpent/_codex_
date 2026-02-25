@@ -33,4 +33,6 @@ def test_ndjson_summary_wrapper_produces_csv(tmp_path: Path) -> None:
     metrics = {row["metric"] for row in rows}
     assert metrics == {"loss", "accuracy"}
     loss_row = next(row for row in rows if row["metric"] == "loss")
+    # FIXED: CSV has 2 rows (one for loss, one for accuracy), not 3
     assert loss_row["count"] == "3"
+    assert len(rows) == 2  # Two unique metrics

@@ -2,13 +2,8 @@
 Tests for MCP authentication and authorization.
 """
 
-import sys
-from pathlib import Path
-
-repo_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(repo_root))
-
-from mcp.auth import (  # noqa: E402
+# NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
+from mcp.auth import (
     MCPAuthenticator,
     MCPAuthorizer,
     Principal,

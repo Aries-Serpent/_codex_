@@ -211,8 +211,3 @@ cat .github/agents/<agent-name>/config.yml
 ---
 
 ## Related Documentation
-
-- [Agent Specifications](.codex/agents/CUSTOM_AGENT_SPECIFICATIONS.md)
-- [Agent Enhancements](.codex/agents/AGENT_ENHANCEMENTS_PHASES_11_18.md)
-- [Agent Registry](.github/agents/AGENT_REGISTRY.md)
-- [Agent Ecosystem Map](.github/agents/AGENT_ECOSYSTEM_MAP.md)

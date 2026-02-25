@@ -137,8 +137,8 @@ Expected output: Status summary showing all checks passed.
 ### Detailed Documentation
 
 For comprehensive instructions, see:
-- **Admin Guide**: [docs/admin/GENESIS_SETUP_GUIDE.md](docs/admin/GENESIS_SETUP_GUIDE.md)
-- **Agent Guidelines**: [docs/agent/OPERATIONAL_GUIDELINES.md](docs/agent/OPERATIONAL_GUIDELINES.md)
+- **Admin Guide**: [docs/admin/GENESIS_SETUP_GUIDE.md](../docs/admin/GENESIS_SETUP_GUIDE.md)
+- **Agent Guidelines**: [docs/agent/OPERATIONAL_GUIDELINES.md](../docs/agent/OPERATIONAL_GUIDELINES.md)
 - **Guardrails**: [.codex/guardrails.md](.codex/guardrails.md)
 
 ### Support
@@ -150,6 +150,6 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2025-12-26T07:54:45Z  
-**Version**: 1.0.0-template  
+**Last Updated**: 2025-12-26T07:54:45Z
+**Version**: 1.0.0-template
 **Status**: Pre-Genesis (awaiting human setup)

@@ -1,8 +1,8 @@
 # Phase 9.1 Execution Plan: Critical Path Coverage
 
-**Version**: 1.0.0  
-**Created**: 2025-12-31  
-**Target**: 72% → 85% test coverage  
+**Version**: 1.0.0
+**Created**: 2025-12-31
+**Target**: 72% → 85% test coverage
 **Status**: 🚀 In Progress (10%)
 
 ---
@@ -35,8 +35,8 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 ### Priority 1: HIGH (Immediate) - 110-130 tests
 
 #### 1. MCP Package System (`scripts/mcp/`) - 40-50 tests
-**Current Coverage**: ~60% (estimated)  
-**Target**: 90%+  
+**Current Coverage**: ~60% (estimated)
+**Target**: 90%+
 **Business Impact**: CRITICAL (production packaging system)
 
 **Test Targets**:
@@ -68,8 +68,8 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 - `tests/scripts/test_mcp_cli.py`
 
 #### 2. Agent Orchestration (`agents/`) - 30-40 tests
-**Current Coverage**: ~75% (estimated)  
-**Target**: 92%+  
+**Current Coverage**: ~75% (estimated)
+**Target**: 92%+
 **Business Impact**: CRITICAL (core agent logic)
 
 **Test Targets**:
@@ -97,8 +97,8 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 - `tests/agents/test_agent_integration_patterns.py`
 
 #### 3. Core Pipeline (`src/codex/`) - 40-50 tests
-**Current Coverage**: ~70% (estimated)  
-**Target**: 88%+  
+**Current Coverage**: ~70% (estimated)
+**Target**: 88%+
 **Business Impact**: HIGH (code processing pipeline)
 
 **Test Targets**:
@@ -128,8 +128,8 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 ### Priority 2: MEDIUM (Important) - 40-50 tests
 
 #### 4. Configuration Management - 20-30 tests
-**Current Coverage**: ~65% (estimated)  
-**Target**: 85%+  
+**Current Coverage**: ~65% (estimated)
+**Target**: 85%+
 **Business Impact**: MEDIUM (affects all components)
 
 **Test Targets**:
@@ -150,8 +150,8 @@ Add 150-200 targeted tests to cover critical business logic paths, achieving 85%
 - `tests/config/test_config_edge_cases.py`
 
 #### 5. Error Handling Paths - 20 tests
-**Current Coverage**: ~50% (estimated)  
-**Target**: 80%+  
+**Current Coverage**: ~50% (estimated)
+**Target**: 80%+
 **Business Impact**: MEDIUM (reliability)
 
 **Test Targets**:
@@ -248,10 +248,10 @@ def test_feature_happy_path(setup_test_environment):
     """Test the happy path for feature X."""
     # Arrange
     input_data = create_test_data()
-    
+
     # Act
     result = feature_function(input_data)
-    
+
     # Assert
     assert result.status == "success"
     assert result.data is not None
@@ -277,13 +277,13 @@ def test_end_to_end_workflow():
     """Test complete workflow from input to output."""
     # Step 1: Ingest
     data = ingest_code("sample.py")
-    
+
     # Step 2: Transform
     ast = transform_code(data)
-    
+
     # Step 3: Analyze
     results = analyze_ast(ast)
-    
+
     # Assert complete flow
     assert results.is_valid
     assert len(results.findings) > 0
@@ -293,13 +293,13 @@ def test_end_to_end_workflow():
 
 ## 📚 Reference Documents
 
-- [Coverage 100% Roadmap](COVERAGE_100_ROADMAP.md)
+- [Coverage 100% Roadmap](../ROADMAP.md)
 - [Testing Guide](../guides/TESTING_GUIDE.md)
-- [Agent README](https://github.com/Aries-Serpent/_codex_/blob/main/agents/README.md)
+- [Agent README](../../agents/README.md)
 - [MCP System README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md)
 
 ---
 
-**Status**: Execution plan complete ✅  
-**Next**: Implement MCP system tests (Priority 1, HIGH)  
+**Status**: Execution plan complete ✅
+**Next**: Implement MCP system tests (Priority 1, HIGH)
 **Created**: 2025-12-31 00:55 UTC

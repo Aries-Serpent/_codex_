@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/env/export_env_snapshot.py [options]
-    
+
     Examples:
     $ python scripts/env/export_env_snapshot.py --help
 
@@ -29,8 +29,6 @@ Last Updated: 2026-01-16
 """
 
 from __future__ import annotations
-
-
 
 """Write environment metadata and variables to JSON."""
 

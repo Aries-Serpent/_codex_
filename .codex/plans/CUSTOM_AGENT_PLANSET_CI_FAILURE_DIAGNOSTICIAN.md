@@ -1,8 +1,8 @@
 # Custom Agent Planset: ci-failure-diagnostician
-> **Agent Type**: CI/CD Debugging & Automation  
-> **Version**: 1.0.0  
-> **Status**: 📋 PLANNED  
-> **Priority**: MEDIUM-HIGH  
+> **Agent Type**: CI/CD Debugging & Automation
+> **Version**: 1.0.0
+> **Status**: 📋 PLANNED
+> **Priority**: MEDIUM-HIGH
 > **Estimated Effort**: 3-4 iterations
 
 ---
@@ -29,37 +29,37 @@
 graph TD
     A[GitHub Actions Webhook] --> B[Workflow Monitor]
     B --> C{Job Status}
-    
+
     C -->|Success| D[Update Metrics]
     C -->|Failure| E[Log Fetcher]
-    
+
     E --> F[Log Parser]
     F --> G[Error Extractor]
-    
+
     G --> H[Failure Classifier]
     H --> I{Failure Category}
-    
+
     I -->|Flaky Test| J[Flaky Test Handler]
     I -->|Infrastructure| K[Infrastructure Handler]
     I -->|Real Bug| L[Bug Handler]
     I -->|Timeout| M[Timeout Handler]
     I -->|Dependency| N[Dependency Handler]
-    
+
     J --> O[Auto-Retry with Backoff]
     K --> P[Check Service Status]
     L --> Q[Link to Similar Issues]
     M --> R[Suggest Timeout Increase]
     N --> S[Check Dependency Health]
-    
+
     O --> T{Retry Success?}
     P --> U[Create Incident]
     Q --> V[Comment on PR]
     R --> V
     S --> V
-    
+
     T -->|Yes| W[Mark as Flaky, Pass]
     T -->|No| V
-    
+
     V --> X[Update Knowledge Base]
     U --> X
     W --> X
@@ -70,7 +70,7 @@ graph TD
 ## 🔧 Component Design
 
 ### 1. Workflow Monitor
-**Input**: GitHub Actions webhooks or polling  
+**Input**: GitHub Actions webhooks or polling
 **Output**: Workflow run events
 
 ```python
@@ -92,7 +92,7 @@ class WorkflowRun:
 ```python
 def monitor_workflows(repo: str) -> AsyncIterator[WorkflowRun]:
     """Stream workflow run events"""
-    
+
 async def fetch_workflow_details(run_id: int) -> WorkflowRun:
     """Get full workflow run details"""
 ```
@@ -100,7 +100,7 @@ async def fetch_workflow_details(run_id: int) -> WorkflowRun:
 ---
 
 ### 2. Log Parser & Error Extractor
-**Input**: Raw log text  
+**Input**: Raw log text
 **Output**: Structured errors
 
 ```python
@@ -154,7 +154,7 @@ def parse_infrastructure_error(log: str) -> List[ExtractedError]:
 ---
 
 ### 3. Failure Classifier
-**Input**: ExtractedError, job context  
+**Input**: ExtractedError, job context
 **Output**: Failure classification
 
 ```python
@@ -198,10 +198,10 @@ DEPENDENCY_PATTERNS = [
 ```python
 def classify_failure(error: ExtractedError, context: JobContext) -> FailureClassification:
     """Classify failure into category"""
-    
+
 def find_similar_failures(error: ExtractedError) -> List[str]:
     """Search past issues/PRs for similar failures"""
-    
+
 def calculate_confidence(patterns: List[str], context: JobContext) -> float:
     """Calculate classification confidence"""
 ```
@@ -216,7 +216,7 @@ class FlakyTestHandler:
     def __init__(self, max_retries: int = 3, backoff_multiplier: float = 2.0):
         self.max_retries = max_retries
         self.backoff_multiplier = backoff_multiplier
-    
+
     async def handle(self, failure: FailureClassification) -> HandlerResult:
         """
         1. Check flaky test database
@@ -260,7 +260,7 @@ class BugHandler:
         """
         similar_issues = await self.find_similar_issues(failure)
         reproduction = self.extract_reproduction(failure)
-        
+
         return HandlerResult(
             action="comment_on_pr",
             message=self.generate_bug_comment(failure, similar_issues, reproduction)
@@ -388,10 +388,10 @@ async def test_handle_real_flaky_test():
     """Test with actual flaky test from PR #2785"""
     workflow_run = await fetch_workflow("test-rag.yml", run_id=12345)
     diagnosis = await diagnose_failures(workflow_run)
-    
+
     assert diagnosis.category == "flaky"
     assert diagnosis.suggested_action == "retry"
-    
+
     # Simulate retry
     retry_result = await retry_workflow(workflow_run)
     assert retry_result.passed
@@ -408,7 +408,7 @@ sequenceDiagram
     participant Agent as ci-failure-diagnostician
     participant KB as Knowledge Base
     participant PR as Pull Request
-    
+
     CI->>Agent: Workflow failed (test-rag.yml)
     Agent->>Agent: Fetch logs
     Agent->>Agent: Parse pytest output
@@ -476,9 +476,8 @@ sequenceDiagram
 
 ---
 
-**Agent Status**: 📋 READY FOR IMPLEMENTATION  
-**Next Step**: Approve planset and begin Phase 1  
-**Priority**: MEDIUM-HIGH  
-**Owner**: TBD  
+**Agent Status**: 📋 READY FOR IMPLEMENTATION
+**Next Step**: Approve planset and begin Phase 1
+**Priority**: MEDIUM-HIGH
+**Owner**: TBD
 **Reviewers**: mbaetiong, core team
-

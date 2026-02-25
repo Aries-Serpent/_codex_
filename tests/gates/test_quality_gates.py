@@ -43,7 +43,7 @@ def test_metrics_correctness():
     acc = M.token_accuracy([1, 2, 3], [1, 2, 0], ignore_index=0)
     assert acc == pytest.approx(2 / 2)
 
-    pytest.importorskip("nltk")
+    pytest.importorskip("sacrebleu")
     score = M.bleu(["a b"], ["a b"])
     assert score == pytest.approx(1.0)
 

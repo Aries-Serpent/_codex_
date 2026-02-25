@@ -12,6 +12,7 @@ Heuristic:
 """
 
 from __future__ import annotations
+
 from pathlib import Path
 
 MAX_READ_BYTES = 200_000

@@ -14,24 +14,24 @@ def windows_safe_timestamp(
 ) -> str:
     """
     Generate Windows-safe timestamp string for use in filenames.
-    
+
     Replaces colons with hyphens to ensure cross-platform compatibility.
-    
+
     Args:
         dt: datetime object (defaults to current UTC time)
         fmt: Format style - "iso", "compact", or "readable"
         include_seconds: Include seconds in output (default: True)
-    
+
     Returns:
         Timestamp string safe for use in filenames on all platforms
-        
+
     Examples:
         >>> windows_safe_timestamp(fmt="iso")
         '2026-01-21T14-30-45Z'
-        
+
         >>> windows_safe_timestamp(fmt="compact")
         '20260121_143045'
-        
+
         >>> windows_safe_timestamp(fmt="readable")
         '2026-01-21-14-30-45-UTC'
     """
@@ -63,12 +63,12 @@ def windows_safe_timestamp(
 def sanitize_filename(filename: str) -> str:
     """
     Sanitize filename for cross-platform compatibility.
-    
+
     Replaces Windows-illegal characters: < > : " / \\ | ? *
-    
+
     Args:
         filename: Original filename
-        
+
     Returns:
         Sanitized filename safe for Windows, Linux, macOS
     """

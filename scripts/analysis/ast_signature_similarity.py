@@ -9,7 +9,7 @@ Purpose:
 
 Usage:
     python scripts/analysis/ast_signature_similarity.py [options]
-    
+
     Examples:
     $ python scripts/analysis/ast_signature_similarity.py --help
 
@@ -48,6 +48,7 @@ Environment Knobs (parsed via scripts/config/parse_knobs.py schema):
   AST_SIMILARITY_MIN_NODES=10   -> skip files with fewer AST nodes
 """
 import logging
+
 logger = logging.getLogger(__name__)
 
 import ast

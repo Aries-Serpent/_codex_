@@ -7,7 +7,7 @@ Purpose:
 
 Usage:
     python scripts/codex_end_to_end.py [options]
-    
+
     Examples:
     $ python scripts/codex_end_to_end.py --help
 
@@ -30,7 +30,9 @@ Last Updated: 2026-01-16
 
 
 from __future__ import annotations
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 """Minimal end-to-end logging demonstration.

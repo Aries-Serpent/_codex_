@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LanguageRegistry:
     """Registry for tree-sitter language parsers.
-    
+
     Provides lazy loading and caching of language parsers
     for multi-language AST analysis.
     """

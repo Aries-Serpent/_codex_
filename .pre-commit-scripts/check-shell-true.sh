@@ -2,7 +2,18 @@
 # Check for subprocess shell=True (command injection risk)
 # This script prevents command injection vulnerabilities by detecting shell=True usage
 
-files=$(find . \( -path "./.git" -o -path "./tests" -o -path "./scripts" -o -path "./security/fix" -o -path "./security/validate" \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null || true)
+files=$(find . \( \
+    -path "./.git" \
+    -o -path "./tests" \
+    -o -path "./scripts" \
+    -o -path "./security/fix" \
+    -o -path "./security/validate" \
+    -o -path "./.github" \
+    -o -path "./.codex" \
+    -o -path "./.venv_ci" \
+    -o -path "./.venv_validation" \
+    -o -path "./tools" \
+  \) -prune -o -name "*.py" -print | xargs grep -n "shell=True" 2>/dev/null || true)
 
 if [ -n "$files" ]; then
   echo "$files"

@@ -1,9 +1,9 @@
 # Continuation Prompt for Next Session
 
-**Generated**: 2025-12-30 21:30 UTC  
-**For**: GitHub Copilot Agent  
-**Branch**: copilot/sub-pr-2668-again  
-**PR**: #2671  
+**Generated**: 2025-12-30 21:30 UTC
+**For**: GitHub Copilot Agent
+**Branch**: copilot/sub-pr-2668-again
+**PR**: #2671
 **Session**: Phase 8 Continuation
 
 ---
@@ -47,17 +47,17 @@
 ### Phase 8 Completion (40% Remaining) - HIGH PRIORITY
 
 #### Task 8.1: Link Validation & Fixing (CRITICAL)
-**Effort**: 1-2 sessions (~30K-60K tokens)  
+**Effort**: 1-2 sessions (~30K-60K tokens)
 **Priority**: HIGH
 
 **Objective**: Fix 256 broken documentation links discovered in Phase 8.
 
 **Steps**:
-1. Load [LINK_VALIDATION_TODO.md](docs/maintenance/LINK_VALIDATION_TODO.md)
+1. Load LINK_VALIDATION_TODO.md
 2. Create automated link checker script:
    ```python
    # scripts/maintenance/check_doc_links.py
-   # - Scan all .md files for [text](link) patterns
+   # - Scan all .md files for text patterns
    # - Resolve relative paths
    # - Report broken links with sources
    # - Suggest fixes (moved files, obsolete links)
@@ -86,7 +86,7 @@
 - Automated checker operational
 
 #### Task 8.2: Agent Architecture Normalization (HIGH)
-**Effort**: 1 session (~20K-40K tokens)  
+**Effort**: 1 session (~20K-40K tokens)
 **Priority**: HIGH
 
 **Objective**: Normalize agent files for consistent structure and standards.
@@ -108,7 +108,7 @@
    - [ ] Type hints: 100% coverage for public APIs
    - [ ] Error handling: Try/except with specific exceptions
    - [ ] Docs: Module docstring, class docstring, method docstrings
-4. Update [agents/README.md](agents/README.md) with:
+4. Update [agents/README.md](../agents/README.md) with:
    - Architecture overview (already exists)
    - File organization guide
    - Naming conventions
@@ -129,7 +129,7 @@
 - All agent files reviewed and categorized
 
 #### Task 8.3: Prompt Template Enhancement (MEDIUM)
-**Effort**: 1 session (~20K-30K tokens)  
+**Effort**: 1 session (~20K-30K tokens)
 **Priority**: MEDIUM
 
 **Objective**: Standardize prompt templates with cognitive brain references.
@@ -140,26 +140,22 @@
    ls -la docs/prompts/
    ```
 2. Check current templates:
-   - [COVERAGE_ENHANCEMENT_PROMPT.md](docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md)
-   - [COVERAGE_CONTINUATION_PROMPT.md](docs/prompts/COVERAGE_CONTINUATION_PROMPT.md)
-   - [custom_gpt_self_healing_engineer.md](docs/prompts/custom_gpt_self_healing_engineer.md)
-   - [QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md](docs/prompts/QUANTUM_PLUGIN_ORCHESTRATION_DEMO.md)
 3. Create prompt template standard:
    ```markdown
    # [Prompt Title]
    **Version**: X.Y.Z
    **Last Updated**: YYYY-MM-DD
    **Purpose**: [One-line description]
-   
+
    ## Context
    [Cognitive brain references]
-   
+
    ## Objective
    [Clear goal statement]
-   
+
    ## Instructions
    [Step-by-step guidance]
-   
+
    ## Validation
    [Success criteria]
    ```
@@ -185,8 +181,8 @@
 
 ### Phase 9: Coverage & Performance Enhancement (PLANNED)
 
-**Status**: Ready to start after Phase 8  
-**Effort**: 2-3 sessions (~80K-120K tokens)  
+**Status**: Ready to start after Phase 8
+**Effort**: 2-3 sessions (~80K-120K tokens)
 **Priority**: HIGH
 
 #### Task 9.1: Test Coverage Enhancement
@@ -249,8 +245,8 @@
 
 ### Phase 10: Genesis Protocol Activation (FUTURE)
 
-**Status**: Awaiting prerequisites  
-**Effort**: 1 session (~20K-40K tokens)  
+**Status**: Awaiting prerequisites
+**Effort**: 1 session (~20K-40K tokens)
 **Priority**: LOW (blocked until secrets ready)
 
 **Prerequisites**:
@@ -278,9 +274,9 @@
 ### Start Every Session With:
 
 1. **Load Cognitive Brain** (first 2K tokens):
-   - [CODEBASE_COGNITIVE_MAP.md](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-   - [CODEBASE_DASHBOARD.md](docs/system/CODEBASE_DASHBOARD.md) - Current status
-   - [ROADMAP.md](docs/ROADMAP.md) - Planned work
+   - [CODEBASE_COGNITIVE_MAP.md](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+   - [CODEBASE_DASHBOARD.md](../docs/system/CODEBASE_DASHBOARD.md) - Current status
+   - [ROADMAP.md](../docs/ROADMAP.md) - Planned work
 
 2. **Identify Current Phase** from Dashboard:
    - Check "Active Initiatives" section
@@ -299,7 +295,7 @@
    #### Phase [N]: [Name] (IN PROGRESS 🟢)
    **Completion**: [X]%
    **Last Updated**: [Date]
-   
+
    **Progress**:
    - [x] Completed task (commit SHA)
    - [ ] Remaining task
@@ -379,25 +375,24 @@
 ## 📚 Reference Documents
 
 **Cognitive Brain**:
-- [Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
-- [Dashboard](docs/system/CODEBASE_DASHBOARD.md) - Status
-- [Roadmap](docs/ROADMAP.md) - Planning
+- [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md) - Architecture
+- [Dashboard](../docs/system/CODEBASE_DASHBOARD.md) - Status
+- [Roadmap](../docs/ROADMAP.md) - Planning
 
 **Documentation**:
-- [Master Index](docs/MASTER_INDEX.md) - Documentation catalog
-- [Continuation Protocol](docs/workflows/AGENT_CONTINUATION_PROTOCOL.md) - This protocol
-- [Contributing Guide](CONTRIBUTING.md) - Contribution standards
+- Continuation Protocol - This protocol
+- Contributing Guide - Contribution standards
 
 **Phase 8 Specific**:
-- [Link Validation TODO](docs/maintenance/LINK_VALIDATION_TODO.md) - Broken links
-- [Agent README](agents/README.md) - Agent architecture
+- Link Validation TODO - Broken links
+- [Agent README](../agents/README.md) - Agent architecture
 
 ---
 
-**Current Branch**: copilot/sub-pr-2668-again  
-**PR**: #2671  
-**Status**: Phase 8 at 60%, ready to continue  
-**Token Budget**: Standard (64K-128K per session)  
+**Current Branch**: copilot/sub-pr-2668-again
+**PR**: #2671
+**Status**: Phase 8 at 60%, ready to continue
+**Token Budget**: Standard (64K-128K per session)
 **Next Session Focus**: Complete Phase 8 (link validation, agent norm, prompts)
 
 **Remember**: Load cognitive brain first, maximize work within capacity, perform 5-pass self-review, never stop prematurely if useful work remains.

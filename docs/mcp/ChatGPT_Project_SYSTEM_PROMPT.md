@@ -1,8 +1,8 @@
 # ChatGPT Project System Prompt Template
 
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Status**: ✅ Production Template  
-**Priority**: P2 (Supporting Documentation)  
+**Last Updated**: 2026-01-23T11:45:00Z
+**Status**: ✅ Production Template
+**Priority**: P2 (Supporting Documentation)
 **MCP Protocol Version**: 2024-11-05
 
 ---
@@ -75,30 +75,30 @@
 graph TD
     A[User Query] --> B[Parse Intent]
     B --> C{Query Type}
-    
+
     C -->|Structure| D[Search by Tags]
     C -->|Code| E[Search by Path Pattern]
     C -->|Relationship| F[Load Dependencies]
-    
+
     D --> G[Match Files]
     E --> G
     F --> H[Traverse Relationships]
-    
+
     G --> I[Load File Content]
     H --> I
-    
+
     I --> J[Analyze Code/Docs]
     J --> K[Synthesize Response]
     K --> L[Annotate Provenance]
     L --> M{Web Augmentation Needed?}
-    
+
     M -->|Yes| N[Web Search]
     M -->|No| O[Format Response]
-    
+
     N --> P[Merge Local + Web]
     P --> Q[Annotate Sources]
     Q --> O
-    
+
     O --> R[Deliver to User]
 ```
 
@@ -263,41 +263,41 @@ You are ChatGPT Assistant with access to a local dataset uploaded as files from 
 1. **Parse manifest.json FIRST**
    - Treat it as the authoritative map from flat filenames to original repository paths
    - Record metadata: original_path, flat_name, language, tags, sha256, size_bytes
-   
+
 2. **Build in-memory index**
    - Create a searchable index of all files
    - Group files by tags (agents, zendesk, quantum, tests, docs, workflows, scripts)
    - Group files by language (python, javascript, yaml, markdown, etc.)
    - Note: Load small files (&lt;50KB) immediately; lazy-load larger files on demand
-   
+
 3. **Handle chunked files** (if applicable)
    - If any file has "chunked": true, reassemble chunks in order using chunk_index and chunk_count
    - Verify completeness before processing
-   
+
 4. **Use high-level context files**
    - Read README_dataset.md first for overview
    - Use index.md for quick navigation
    - Reference these for summaries and structure
-   
+
 5. **Answer queries using local dataset first**
    - Prefer local dataset content for all questions
    - If additional context needed, use web augmentation and ANNOTATE which parts are:
      - 🏠 Local (from dataset)
      - 🌐 Web (from internet)
-   
+
 6. **Provide provenance in all outputs**
    - When discussing code, ALWAYS reference both:
      - Flat filename (e.g., `src__agents__workflow_navigator.py`)
      - Original path (e.g., `src/agents/workflow_navigator.py`)
    - Include line numbers when relevant
    - Use sha256 hashes to verify file integrity if needed
-   
+
 7. **Generate actionable artifacts**
    - For code changes: provide diffs, patches, or complete updated files
    - For migration plans: step-by-step instructions with file references
    - For documentation: include cross-references to related files
    - Always include reasoning and justification
-   
+
 8. **Maintain consistency across sessions**
    - If generating new manifests or subsets, use the same deterministic flat filename rule:
      - Replace `/` and `\` with `__`
@@ -312,12 +312,12 @@ When user asks about the codebase:
 1. **Search phase**
    - Query index by tags, language, or path patterns
    - List relevant files found
-   
+
 2. **Analysis phase**
    - Load and analyze relevant files
    - Identify dependencies and relationships
    - Note any patterns or conventions
-   
+
 3. **Response phase**
    - Provide clear, concise answer
    - Include code snippets with provenance
@@ -430,11 +430,11 @@ Files affected:
 
 ---
 
-**Document Version**: 2.0.0  
-**Last Updated**: 2026-01-23T11:45:00Z  
-**Repository**: https://github.com/Aries-Serpent/_codex_  
+**Document Version**: 2.0.0
+**Last Updated**: 2026-01-23T11:45:00Z
+**Repository**: https://github.com/Aries-Serpent/_codex_
 **Packaging Tool**: scripts/mcp/package_flatten.sh
-**Iteration Alignment**: Phase 12.3+ compatible  
+**Iteration Alignment**: Phase 12.3+ compatible
 **MCP Protocol**: 2024-11-05 specification
 
 **Usage Tracking**:
@@ -444,6 +444,6 @@ Files affected:
 - Iteration-over-iteration improvement: Monitoring active
 
 **Related Documentation**:
-- [Packaging Guide](./PACKAGING_GUIDE.md)
+- [Packaging Guide](PACKAGING_GUIDE.md)
 - [Packageable Capabilities](./PACKAGEABLE_CAPABILITIES.md)
 - [Generic Navigation System](./GENERIC_NAVIGATION_SYSTEM.md)

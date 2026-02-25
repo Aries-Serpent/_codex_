@@ -89,7 +89,7 @@ with mlflow.start_run():
         "seed": 123,
         "mlflow_tracking": True,
     }
-    
+
     # Run training with automatic MLflow logging
     train_functional(
         model=model,
@@ -176,7 +176,7 @@ def on_epoch_end_hook(epoch, metrics):
     """Hook called at the end of each epoch."""
     print(f"Epoch {epoch} completed with metrics: {metrics}")
     # Custom validation logic
-    
+
 train_functional(
     model=model,
     train_dataloader=train_loader,
@@ -314,5 +314,5 @@ training, functional, reproducible, deterministic, experiment-tracking, checkpoi
 ## See Also
 
 - [Unified Training](./unified_training.md) - Alternative training approach with HuggingFace Trainer
-- [Checkpointing](./checkpointing.md) - Checkpoint management utilities
+- [Checkpointing](../capabilities/checkpointing.md) - Checkpoint management utilities
 - [Experiment Tracking](../monitoring/experiment_tracking.md) - MLflow integration details

@@ -9,10 +9,10 @@ import logging
 import time
 
 logger = logging.getLogger(__name__)
-import random
-from dataclasses import dataclass
-from enum import Enum
-from typing import Any, Callable, Optional
+import random  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from enum import Enum  # noqa: E402
+from typing import Any, Callable, Optional  # noqa: E402
 
 
 class DeploymentStrategy(Enum):

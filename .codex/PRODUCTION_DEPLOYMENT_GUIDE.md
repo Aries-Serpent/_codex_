@@ -1,8 +1,8 @@
 # Production Deployment Guide
 
-**Version:** 1.0  
-**Last Updated:** 2026-01-10  
-**Audience:** DevOps Engineers, SREs, Platform Teams  
+**Version:** 1.0
+**Last Updated:** 2026-01-10
+**Audience:** DevOps Engineers, SREs, Platform Teams
 **Status:** Draft - Requires Implementation Completion
 
 ---
@@ -15,7 +15,7 @@
 4. [Database Setup](#database-setup)
 5. [Service Configuration](#service-configuration)
 6. [Deployment Steps](#deployment-steps)
-7. [Monitoring & Observability](#monitoring--observability)
+7. <!-- BROKEN ANCHOR: [Monitoring & Observability](#monitoring-observability) -->
 8. [Rollback Procedures](#rollback-procedures)
 9. [Troubleshooting](#troubleshooting)
 
@@ -92,7 +92,7 @@ This guide covers deployment of the Codex ML platform to production environments
 
 **⚠️ CRITICAL: Must be implemented before production deployment**
 
-Currently, `src/security/decorators.py::get_token_scopes()` raises `NotImplementedError`.  
+Currently, `src/security/decorators.py::get_token_scopes()` raises `NotImplementedError`.
 Implement one of the following:
 
 #### Option A: JWT with Symmetric Keys (HS256)

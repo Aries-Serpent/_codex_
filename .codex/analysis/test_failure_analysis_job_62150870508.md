@@ -1,8 +1,8 @@
 # PR #3095 Comprehensive Test Failure Analysis
-**Prepared for**: Aries-Serpent/_codex_  
-**PR**: #3095 "0 d base"  
-**Branch**: 0D_base_  
-**Analysis Date**: 2026-02-01  
+**Prepared for**: Aries-Serpent/_codex_
+**PR**: #3095 "0 d base"
+**Branch**: 0D_base_
+**Analysis Date**: 2026-02-01
 **Analyzed Job**: 62150870508 (Python 3.12 - test-comprehensive.yml)
 
 ---
@@ -45,11 +45,11 @@ PR #3095 introduces **documentation and analysis infrastructure** improvements b
 ```
 TypeError: Object of type MagicMock is not JSON serializable
 ```
-**Severity**: Medium  
-**Component**: Training / Checkpointing  
+**Severity**: Medium
+**Component**: Training / Checkpointing
 **Fix Time**: 30 mins
 
-**Problem**: Mocks are being serialized during checkpoint save  
+**Problem**: Mocks are being serialized during checkpoint save
 **Solution**: Use serializable mock return values or patch JSON encoder
 
 **Fix**:
@@ -72,11 +72,11 @@ mock_checkpoint.to_dict = Mock(return_value={
 ```
 KeyError: 'files'
 ```
-**Severity**: Medium  
-**Component**: CRM / ZAF Legacy Reader  
+**Severity**: Medium
+**Component**: CRM / ZAF Legacy Reader
 **Fix Time**: 20 mins
 
-**Problem**: `scaffold_template()` expects `bundle['files']` but `read_zaf()` doesn't provide it  
+**Problem**: `scaffold_template()` expects `bundle['files']` but `read_zaf()` doesn't provide it
 **Solution**: Fix return structure in `read_zaf()`
 
 **Fix**:
@@ -89,7 +89,7 @@ def read_zaf(zip_path: Path) -> dict:
         for name in zf.namelist():
             if name != 'manifest.json':
                 files[name] = zf.read(name)
-        
+
         return {
             'manifest': manifest,
             'files': files  # ← ADD THIS
@@ -103,11 +103,11 @@ def read_zaf(zip_path: Path) -> dict:
 test_analyze_success_outcome: assert 0 > 0 (len(patterns_identified))
 test_high_confidence_patterns: assert 0 > 0 (len(patterns))
 ```
-**Severity**: HIGH ⚠️  
-**Component**: Cognitive Brain / Learning  
+**Severity**: HIGH ⚠️
+**Component**: Cognitive Brain / Learning
 **Fix Time**: 1-2 hours
 
-**Problem**: Pattern detection logic is broken - returns empty list  
+**Problem**: Pattern detection logic is broken - returns empty list
 **Impact**: Core cognitive functionality not working
 
 **Investigation Steps**:
@@ -122,30 +122,30 @@ test_high_confidence_patterns: assert 0 > 0 (len(patterns))
 def analyze_outcome(self, outcome: LearningOutcome) -> LearningOutcome:
     # Calculate reward
     outcome.reward = self._calculate_reward(outcome)
-    
+
     # Extract patterns ← ENSURE THIS IS CALLED
     if outcome.outcome_type == OutcomeType.SUCCESS:
         patterns = self._extract_patterns(outcome)
         outcome.patterns_identified = patterns  # ← ENSURE THIS IS SET
-        
+
         # Generate lessons
         outcome.lessons_learned = self._generate_lessons(patterns)
-    
+
     return outcome
 
 def _extract_patterns(self, outcome: LearningOutcome) -> List[str]:
     """Extract patterns from successful outcomes."""
     patterns = []
-    
+
     # Example pattern extraction logic
     if outcome.duration and outcome.duration < self.fast_threshold:
         patterns.append("quick_resolution")
-    
+
     if outcome.context and "high_priority" in outcome.context:
         patterns.append("priority_handling")
-    
+
     # ← ADD MORE PATTERN DETECTION LOGIC HERE
-    
+
     return patterns
 ```
 
@@ -156,11 +156,11 @@ def _extract_patterns(self, outcome: LearningOutcome) -> List[str]:
 test_cpu_dockerfile_builds: target stage "cpu-runtime" could not be found
 test_gpu_dockerfile_builds: target stage "gpu-runtime" could not be found
 ```
-**Severity**: HIGH ⚠️  
-**Component**: Deployment / Docker  
+**Severity**: HIGH ⚠️
+**Component**: Deployment / Docker
 **Fix Time**: 1 hour
 
-**Problem**: Dockerfile missing multi-stage build targets  
+**Problem**: Dockerfile missing multi-stage build targets
 **Impact**: Cannot build or test Docker deployments
 
 **Fix**: Add to `Dockerfile`:
@@ -212,11 +212,11 @@ docker build --target gpu-runtime -t codex:gpu .
 ```
 AssertionError: Warning should mention 'significantly' to match docstring
 ```
-**Severity**: Low  
-**Component**: Training / Determinism  
+**Severity**: Low
+**Component**: Training / Determinism
 **Fix Time**: 5 mins
 
-**Problem**: Warning text doesn't match docstring  
+**Problem**: Warning text doesn't match docstring
 **Solution**: Update warning message
 
 **Fix**:
@@ -224,14 +224,14 @@ AssertionError: Warning should mention 'significantly' to match docstring
 # In src/codex_ml/training/determinism.py
 def enable_deterministic_mode():
     """Enable deterministic training mode.
-    
+
     Warning: This may significantly reduce performance.
     """
     warnings.warn(
         "Deterministic mode enabled. This may significantly reduce performance.",
         UserWarning
     )
-    
+
     if torch.cuda.is_available():
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
@@ -244,8 +244,8 @@ def enable_deterministic_mode():
 AssertionError: Results should be reproducible in deterministic mode
 + TypeError("'>' not supported between instances of 'Tensor' and 'float'")
 ```
-**Severity**: Medium  
-**Component**: Training / Determinism  
+**Severity**: Medium
+**Component**: Training / Determinism
 **Fix Time**: 1 hour
 
 **Problem**: Two issues:
@@ -265,7 +265,7 @@ def enable_deterministic_mode(seed: int = 42):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    
+
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
         torch.backends.cudnn.deterministic = True
@@ -288,11 +288,11 @@ if my_tensor.item() > 0.5:  # ← Convert to Python float first
 ```
 AttributeError: module 'codex_ml.train_loop' has no attribute '_ts'
 ```
-**Severity**: HIGH ⚠️  
-**Component**: Training / Utilities  
+**Severity**: HIGH ⚠️
+**Component**: Training / Utilities
 **Fix Time**: 10 mins
 
-**Problem**: Missing utility function  
+**Problem**: Missing utility function
 **Solution**: Add `_ts()` function
 
 **Fix**:
@@ -302,7 +302,7 @@ from datetime import datetime, timezone
 
 def _ts() -> str:
     """Generate ISO 8601 timestamp with 'Z' suffix.
-    
+
     Returns:
         Timestamp string like "2026-02-01T12:34:56.789Z"
     """
@@ -318,11 +318,11 @@ __all__ = ['_ts', 'record_metrics', 'main']
 ```
 ValueError: model_name must be provided when no model instance is supplied
 ```
-**Severity**: Low  
-**Component**: Training / CLI  
+**Severity**: Low
+**Component**: Training / CLI
 **Fix Time**: 5 mins
 
-**Problem**: Test not updated for new required parameter  
+**Problem**: Test not updated for new required parameter
 **Solution**: Add `--model-name` to test args
 
 **Fix**:
@@ -332,7 +332,7 @@ def test_cli_parsing_smoke(tmp_path):
     """Test CLI parsing with minimal args."""
     train_file = tmp_path / "train.jsonl"
     train_file.write_text('{"text": "test"}\n')
-    
+
     args = [
         "--model-name", "test-tiny-model",  # ← ADD THIS
         "--train-data", str(train_file),
@@ -340,7 +340,7 @@ def test_cli_parsing_smoke(tmp_path):
         "--grad-accum", "2",
         "--output", str(tmp_path)
     ]
-    
+
     result = main(args)
     assert result == 0
 ```
@@ -520,7 +520,7 @@ git push origin 0D_base_
 ## 📚 References
 
 - **PR**: https://github.com/Aries-Serpent/_codex_/pull/3095
-- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21571330633/job/62150870508
+- **Failed Job**: https://github.com/Aries-Serpent/_codex_/actions/runs/21571330633 <!-- Note: Logs expire after 90 days -->/job/62150870508
 - **Test Files**: `tests/` directory
 - **Source Files**: `src/codex_ml/`, `src/cognitive_brain/`, `src/codex_crm/`
 
@@ -536,7 +536,6 @@ git push origin 0D_base_
 
 ---
 
-**Analysis Completed**: 2026-02-01 22:40 UTC  
-**Next Steps**: Follow the 4-phase fix sequence above  
-**Estimated Total Fix Time**: 4-5 hours  
-
+**Analysis Completed**: 2026-02-01 22:40 UTC
+**Next Steps**: Follow the 4-phase fix sequence above
+**Estimated Total Fix Time**: 4-5 hours

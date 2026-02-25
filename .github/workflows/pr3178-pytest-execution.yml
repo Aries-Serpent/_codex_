@@ -67,19 +67,19 @@ jobs:
     name: Pytest Execution (Python ${{ matrix.python-version }}, Group ${{ matrix.test-group }})
     runs-on: ubuntu-latest
     timeout-minutes: ${{ fromJSON(github.event.inputs.timeout_minutes || '180') }}
-    
+
     strategy:
       fail-fast: ${{ github.event.inputs.fail_fast == 'true' }}
       matrix:
         python-version: ['${{ github.event.inputs.python_version || ''3.12'' }}']
         test-group: ['${{ github.event.inputs.test_group || ''all'' }}']
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -92,7 +92,7 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-test.txt
-      
+
       - name: Display Python and environment info
         run: |
           python --version
@@ -100,7 +100,7 @@ jobs:
           python -c "import sys; print(f'Python path: {sys.path}')"
           echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
           echo "TORCH_DEVICE=$TORCH_DEVICE"
-      
+
       - name: Free disk space
         run: |
           echo "=== Disk space BEFORE cleanup ==="
@@ -118,15 +118,21 @@ jobs:
           echo ""
           echo "=== Disk space AFTER cleanup ==="
           df -h
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          
+
           # Install main requirements
+          # Pin pytest plugins (PR #3248)
+          # Pin pytest plugins before package install (PR #3248 stability fix)
+          pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
+
+
+
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-          
+
           # Ensure pytest and plugins are correctly installed with pinned versions
           pip install --force-reinstall \
             'pytest>=8.0,<10' \
@@ -136,43 +142,43 @@ jobs:
             'pytest-rerunfailures>=14.0,<15' \
             'pytest-randomly>=3.16,<4' \
             'coverage>=7.10,<8'
-          
+
           # Verify installations
           python -c "import pytest; print(f'✓ pytest {pytest.__version__}')"
           python -c "import pytest_cov; print('✓ pytest-cov installed')"
           python -c "import xdist; print('✓ pytest-xdist installed')"
           python -c "import pytest_timeout; print('✓ pytest-timeout installed')"
           pytest --version
-      
+
       - name: Verify fixtures load
         run: |
           python -c "import tests.conftest; print('✓ Fixtures loaded successfully')"
-      
+
       - name: Run validation test batch
         run: |
           echo "=== Running small validation batch ==="
           pytest tests/integration/test_cross_module_workflows.py -v --tb=short -x || true
           echo "=== Validation batch complete ==="
-      
+
       - name: Create output directory
         run: |
           mkdir -p .codex
           mkdir -p .codex/logs
           mkdir -p .codex/artifacts
-      
+
       - name: Execute pytest full suite
         id: pytest-run
         continue-on-error: true
         run: |
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           LOG_FILE=".codex/test_run_complete_${TIMESTAMP}.log"
-          
+
           echo "=== Starting pytest execution at $(date) ==="
           echo "Log file: $LOG_FILE"
           echo "Test group: ${{ matrix.test-group }}"
           echo "Python version: ${{ matrix.python-version }}"
           echo ""
-          
+
           # Determine which tests to run based on test group
           if [ "${{ matrix.test-group }}" = "all" ]; then
             TEST_PATTERN="tests/"
@@ -180,8 +186,10 @@ jobs:
             # Split tests into groups for parallel execution
             TEST_PATTERN="tests/"
           fi
-          
+
           # Run pytest with comprehensive logging
+          # Note: Plugins auto-discover via setuptools, explicit -p flags cause double registration
+          # See: .codex/PR_3248_ROOT_CAUSE_ANALYSIS.md
           pytest $TEST_PATTERN \
             -v \
             -m "not slow" \
@@ -189,19 +197,15 @@ jobs:
             --timeout=300 \
             --maxfail=0 \
             --strict-markers \
-            -p pytest_cov \
-            -p xdist \
-            -p pytest_timeout \
-            -p pytest_randomly \
             2>&1 | tee "$LOG_FILE"
-          
+
           # Capture exit code
           PYTEST_EXIT=$?
           echo "pytest_exit_code=$PYTEST_EXIT" >> $GITHUB_OUTPUT
           echo ""
           echo "=== Pytest execution complete at $(date) ==="
           echo "Exit code: $PYTEST_EXIT"
-          
+
           # Display log file stats
           if [ -f "$LOG_FILE" ]; then
             echo ""
@@ -209,28 +213,28 @@ jobs:
             wc -l "$LOG_FILE"
             ls -lh "$LOG_FILE"
           fi
-          
+
           exit $PYTEST_EXIT
-      
+
       - name: Extract failure summary
         if: always()
         run: |
           echo "=== Extracting failure data ==="
-          
+
           # Find the most recent log file
           LOG_FILE=$(ls -t .codex/test_run_complete_*.log 2>/dev/null | head -1)
-          
+
           if [ -f "$LOG_FILE" ]; then
             echo "Processing log file: $LOG_FILE"
-            
+
             # Extract raw failures and errors
             grep -E "FAILED|ERROR" "$LOG_FILE" > .codex/failures_raw.txt || echo "No failures found"
-            
+
             # Count failures by type
             echo "=== Failure counts ===" | tee .codex/failure_counts.txt
             echo "FAILED: $(grep -c 'FAILED' .codex/failures_raw.txt 2>/dev/null || echo 0)" | tee -a .codex/failure_counts.txt
             echo "ERROR: $(grep -c 'ERROR' .codex/failures_raw.txt 2>/dev/null || echo 0)" | tee -a .codex/failure_counts.txt
-            
+
             # Extract test summary from end of log
             echo "" | tee -a .codex/failure_counts.txt
             echo "=== Test summary ===" | tee -a .codex/failure_counts.txt
@@ -238,98 +242,98 @@ jobs:
           else
             echo "No log file found" | tee .codex/failure_counts.txt
           fi
-      
+
       - name: Categorize failures by error type
         if: always()
         run: |
           LOG_FILE=$(ls -t .codex/test_run_complete_*.log 2>/dev/null | head -1)
-          
+
           if [ ! -f "$LOG_FILE" ]; then
             echo "No log file found for categorization"
             exit 0
           fi
-          
+
           cat > .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
           # PR #3178 Test Failures - Categorized
-          
+
           **Generated**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
           **Log Source**: $(basename $LOG_FILE)
           **Python Version**: ${{ matrix.python-version }}
           **Test Group**: ${{ matrix.test-group }}
-          
+
           ---
-          
+
           ## Executive Summary
-          
+
           EOF
-          
+
           # Add counts
           if [ -f .codex/failure_counts.txt ]; then
             cat .codex/failure_counts.txt >> .codex/PR3178_FAILURES_CATEGORIZED.md
           fi
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ---
-          
+
           ## Categorized Failures
-          
+
           ### ImportError / ModuleNotFoundError
-          
+
           EOF
-          
+
           grep -E "ImportError|ModuleNotFoundError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No ImportError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ### TypeError - API Mismatches
-          
+
           EOF
-          
+
           grep -E "TypeError.*argument" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No TypeError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ### AssertionError
-          
+
           EOF
-          
+
           grep "AssertionError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No AssertionError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ### AttributeError
-          
+
           EOF
-          
+
           grep "AttributeError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No AttributeError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ### StopIteration
-          
+
           EOF
-          
+
           grep "StopIteration" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No StopIteration failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
-          
+
           cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          
+
           ---
-          
+
           ## Next Steps
-          
+
           1. **P1 Priority**: Fix ImportError/ModuleNotFoundError issues (blocks test collection)
           2. **P1 Priority**: Fix TypeError API mismatches (high failure count)
           3. **P2 Priority**: Fix AssertionError failures (outdated expectations)
           4. **P2 Priority**: Fix AttributeError issues (API changes)
           5. **P3 Priority**: Fix remaining error types
-          
+
           **Reference**: `.codex/PR3178_COMPREHENSIVE_FIX_PLANSETS.md`
-          
+
           EOF
-          
+
           echo "Categorization complete: .codex/PR3178_FAILURES_CATEGORIZED.md"
-      
+
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v6
@@ -342,30 +346,30 @@ jobs:
             .codex/PR3178_FAILURES_CATEGORIZED.md
           if-no-files-found: warn
           retention-days: 30
-      
+
       - name: Display summary
         if: always()
         run: |
           echo "=== PR #3178 Pytest Execution Summary ==="
           echo ""
-          
+
           if [ -f .codex/PR3178_FAILURES_CATEGORIZED.md ]; then
             echo "✅ Categorization complete"
             cat .codex/PR3178_FAILURES_CATEGORIZED.md
           else
             echo "⚠️  Categorization file not created"
           fi
-          
+
           echo ""
           echo "=== Artifacts uploaded ==="
           ls -lh .codex/
-          
+
           echo ""
           echo "=== Next Steps ==="
           echo "1. Download artifacts from this workflow run"
           echo "2. Review .codex/PR3178_FAILURES_CATEGORIZED.md"
           echo "3. Begin P1 fixes per .codex/PR3178_COMPREHENSIVE_FIX_PLANSETS.md"
-      
+
       - name: Post summary comment
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -373,20 +377,20 @@ jobs:
           script: |
             const fs = require('fs');
             const failureFile = '.codex/PR3178_FAILURES_CATEGORIZED.md';
-            
+
             let body = '## 🧪 PR #3178 Pytest Execution Complete\n\n';
-            
+
             if (fs.existsSync(failureFile)) {
               const content = fs.readFileSync(failureFile, 'utf8');
               body += content;
             } else {
               body += '⚠️ Categorization file not found. Check workflow artifacts.\n';
             }
-            
+
             body += '\n\n---\n';
             body += `**Workflow Run**: [#${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})\n`;
             body += `**Commit**: ${context.sha.substring(0, 7)}\n`;
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

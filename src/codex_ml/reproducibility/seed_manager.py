@@ -223,7 +223,7 @@ class SeedManager:
             if cuda_available:
                 env_info["cuda_version"] = getattr(getattr(torch, "version", None), "cuda", None)
 
-        env_str = json.dumps(env_info, sort_keys=True)
+        env_str = json.dumps(env_info, sort_keys=True, default=str)
         return hashlib.sha256(env_str.encode()).hexdigest()[:16]
 
 

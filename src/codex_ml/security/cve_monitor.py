@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -48,7 +48,7 @@ class CVEDatabase:
         """Update database checksum."""
         data = json.dumps(self.to_dict(), sort_keys=True)
         self.checksum = hashlib.sha256(data.encode()).hexdigest()[:16]
-        self.last_updated = datetime.now().isoformat()
+        self.last_updated = datetime.now(timezone.utc).isoformat()
 
     def check_package(self, package: str, version: str) -> list[CVEEntry]:
         """Check package for vulnerabilities."""
@@ -89,7 +89,6 @@ class CVEDatabase:
     def from_dict(cls, data: dict[str, Any]) -> "CVEDatabase":
         """Create from dictionary."""
         db = cls()
-        db.last_updated = data.get("last_updated", "")
         for pkg, cves in data.get("entries", {}).items():
             for cve_data in cves:
                 cve = CVEEntry(
@@ -100,6 +99,9 @@ class CVEDatabase:
                     fixed_in=cve_data.get("fixed_in"),
                 )
                 db.add_cve(cve)
+        # Set last_updated AFTER adding CVEs so add_cve/_update_checksum
+        # doesn't overwrite the persisted timestamp from data.
+        db.last_updated = data.get("last_updated", "")
         return db
 
 

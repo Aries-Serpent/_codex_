@@ -26,20 +26,30 @@ class TestDBManagerPoolCleanup:
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager  # noqa: F811
 
+            # Clear any existing pools from previous tests
+            DBManager.close_all_pools()
+
             # Create manager and initialize
             db_path = tmp_path / "test_pool.db"
             manager = DBManager(db_path=db_path)
             manager.init_schema()
 
             # Populate pool with connections
+            # Note: Pool reuses connections, so we need to create them concurrently
+            # to actually have multiple connections in the pool
+            conns = []
             for _ in range(5):
                 conn = manager.get_connection()
-                manager.close_connection(conn)  # Returns to pool
+                conns.append(conn)
+
+            # Now return them all to pool
+            for conn in conns:
+                manager.close_connection(conn)
 
             # Verify pool has connections
             assert len(DBManager._CONNECTION_POOL) > 0, "Pool should be populated"
             pool_size_before = sum(len(p) for p in DBManager._CONNECTION_POOL.values())
-            assert pool_size_before == 5, f"Expected 5 connections, got {pool_size_before}"
+            assert pool_size_before >= 5, f"Expected at least 5 connections, got {pool_size_before}"
 
             # Close all pools
             DBManager.close_all_pools()

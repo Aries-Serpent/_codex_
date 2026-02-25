@@ -44,7 +44,7 @@ def demo_cli_app_development():
     # Analyze requirements
     analysis = orchestrator.analyze_user_requirements(user_requirements)
 
-    print(f"\n✓ Requirements analysis complete")
+    print("\n✓ Requirements analysis complete")
     print(f"  Completeness: {analysis['completeness']*100:.1f}%")
     print(f"  Provided: {len(analysis['provided_variables'])} variables")
     print(f"  Missing: {len(analysis['missing_variables'])} variables")
@@ -57,7 +57,7 @@ def demo_cli_app_development():
             print(f"    Description: {var['description']}")
             print(f"    Required: {var['required']}")
             if "suggested_options" in var and var["suggested_options"]:
-                print(f"    Suggested options:")
+                print("    Suggested options:")
                 for opt in var["suggested_options"]:
                     print(f"      - {opt}")
 
@@ -72,7 +72,7 @@ def demo_cli_app_development():
 
     # Add Python version
     user_requirements["python_version"] = "3.10"
-    print(f"  Selected python_version: 3.10")
+    print("  Selected python_version: 3.10")
 
     # Re-analyze
     analysis = orchestrator.analyze_user_requirements(user_requirements)
@@ -83,7 +83,7 @@ def demo_cli_app_development():
 
     architecture = orchestrator.suggest_architecture(user_requirements)
 
-    print(f"\n✓ Architecture generated")
+    print("\n✓ Architecture generated")
     print(f"  Components: {len(architecture['components'])}")
 
     if "structure_analysis" in architecture and architecture["structure_analysis"]:
@@ -91,7 +91,7 @@ def demo_cli_app_development():
         print(f"  Fractal dimension: {struct.get('fractal_dimension', 0):.2f}")
         print(f"  Total nodes: {struct.get('nodes', 0)}")
 
-    print(f"\n  Recommended implementation order:")
+    print("\n  Recommended implementation order:")
     for i, comp_id in enumerate(architecture["recommended_order"], 1):
         comp = next((c for c in architecture["components"] if c["component_id"] == comp_id), None)
         if comp:
@@ -194,7 +194,7 @@ def demo_api_development():
     for line in lines[:25]:
         print(f"{line}")
     if len(lines) > 25:
-        print(f"  ...")
+        print("  ...")
     print(f"{'-' * 70}")
 
 
@@ -240,7 +240,7 @@ def demo_interactive_workflow():
         print(f"   Required: {'Yes' if var['required'] else 'No (optional)'}")
 
         if "suggested_options" in var and var["suggested_options"]:
-            print(f"   💡 Suggested values:")
+            print("   💡 Suggested values:")
             for opt in var["suggested_options"]:
                 print(f"      • {opt}")
 
