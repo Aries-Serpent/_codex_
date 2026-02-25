@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import os
 import time
+import logging
 from abc import ABC, abstractmethod
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -105,8 +106,10 @@ class _RedisBackend(_RateLimitBackend):
     def close(self) -> None:
         try:
             self._redis.close()
-        except Exception:
-            pass
+        except Exception as exc:
+            logging.getLogger(__name__).warning(
+                "Redis rate-limit backend close() error: %s", exc
+            )
 
 
 def _build_backend(rate: float, burst: int) -> _RateLimitBackend:
