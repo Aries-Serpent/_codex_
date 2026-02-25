@@ -190,9 +190,27 @@ class GitHubTokenProvider(TokenProvider):
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
 
-            # TODO: Actual API validation
-            # For now, return True if token exists
-            return bool(token)
+            # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
+            # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
+            import re
+            _GITHUB_TOKEN_RE = re.compile(
+                r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$"
+            )
+            if not _GITHUB_TOKEN_RE.match(token):
+                logger.warning("GitHub token does not match expected format")
+                return False
+
+            # NOTE: Stub — does NOT call the GitHub API.
+            # To enable real validation replace this block with:
+            #   import httpx
+            #   resp = httpx.get("https://api.github.com/user",
+            #                    headers={"Authorization": f"token {token}"})
+            #   return resp.status_code == 200
+            logger.warning(
+                "GitHub token validation is a stub. "
+                "Token format looks valid but API authenticity is NOT verified."
+            )
+            return True
 
         except Exception as e:
             raise ValidationError(f"Token validation failed: {e}") from e
@@ -302,7 +320,10 @@ class GitHubTokenProvider(TokenProvider):
             logger.info("Updating GitHub token scopes")
             logger.debug(f"New scopes: {scopes}")
 
-            # TODO: Actual API call
+            # NOTE: Stub — does NOT call the GitHub API (PATCH /user/tokens/{token_id}).
+            logger.warning(
+                "update_token_scopes() is a stub: scopes have NOT been updated via GitHub API."
+            )
             return True
 
         except Exception as e:
@@ -319,16 +340,10 @@ class GitHubTokenProvider(TokenProvider):
             True if revoked successfully
         """
         try:
-            # This is a stub - actual implementation would use GitHub API
-            # DELETE /user/tokens/{token_id}
-
-            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
-            # Justification: This is a static informational string with no dynamic data.
-            # No secrets, tokens, or sensitive information are logged. The log message
-            # is purely for debugging stub code execution flow.
-            logger.info("Revoking GitHub token")
-
-            # TODO: Actual API call
+            # NOTE: Stub — does NOT call the GitHub API (DELETE /user/tokens/{token_id}).
+            logger.warning(
+                "revoke_secret() is a stub: the token has NOT been revoked via GitHub API."
+            )
             return True
 
         except Exception as e:
@@ -357,7 +372,10 @@ class GitHubTokenProvider(TokenProvider):
             # is purely for debugging stub code execution flow.
             logger.info("Listing GitHub tokens")
 
-            # TODO: Actual API call
+            # NOTE: Stub — does NOT call the GitHub API (GET /user/tokens).
+            logger.warning(
+                "list_secrets() is a stub: returning empty list, no GitHub API call made."
+            )
             return []
 
         except Exception as e:

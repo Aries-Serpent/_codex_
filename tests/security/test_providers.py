@@ -517,7 +517,8 @@ class TestGitHubTokenProvider:
     def test_validate_secret_with_token(self, github_config):
         """Test token validation with provided value."""
         provider = GitHubTokenProvider(github_config)
-        is_valid = provider.validate_secret("token-id", "ghp_test_value")
+        # Use a valid-format GitHub PAT (ghp_ prefix + 36 alphanumeric chars)
+        is_valid = provider.validate_secret("token-id", "ghp_" + "A" * 36)
         assert is_valid is True
 
     def test_validate_secret_no_token(self, github_config):

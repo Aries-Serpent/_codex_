@@ -17,13 +17,18 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import os
 import time
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-# In-memory token-bucket per principal (scoped to process). Replace with Redis for multi-process.
+# In-memory token-bucket per principal (scoped to process).
+# WARNING: This is process-local. In multi-replica deployments each worker has
+# its own bucket, giving clients N× the configured rate limit where N is the
+# number of worker processes. Replace with a Redis-backed implementation for
+# production multi-process/multi-replica use.
 _BUCKETS: dict[str, dict] = {}
 DEFAULT_RATE = 5
 BURST = 10
@@ -41,6 +46,10 @@ def clear_buckets() -> None:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """
     Very small in-memory rate limiter. Suitable for dev/testing only.
+
+    WARNING: Process-local — not effective in multi-worker deployments.
+    Replace ``_BUCKETS`` with a Redis-backed store before production use.
+
     - principal is taken from request.state.principal.api_key (fall back to 'anonymous')
     - Returns 429 when bucket empty.
     """
@@ -48,9 +57,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, rate: int | None = None, burst: int | None = None):
         super().__init__(app)
         if rate is None:
-            rate = int(float(__import__("os").environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE))))
+            rate = int(float(os.environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE))))
         if burst is None:
-            burst = int(float(__import__("os").environ.get("RATE_LIMIT_BURST", str(BURST))))
+            burst = int(float(os.environ.get("RATE_LIMIT_BURST", str(BURST))))
         self.rate = rate
         self.burst = burst
 
