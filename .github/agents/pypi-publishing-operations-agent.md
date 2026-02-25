@@ -1,3 +1,8 @@
+---
+name: PyPI Publishing Operations Agent
+description: Manage PyPI package publishing operations including versioning and release automation
+---
+
 # PyPI Publishing Operations Agent
 
 > **Type**: Custom GitHub Copilot Agent  

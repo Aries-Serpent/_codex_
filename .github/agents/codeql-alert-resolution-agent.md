@@ -1,3 +1,8 @@
+---
+name: CodeQL Alert Resolution Agent
+description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements
+---
+
 # CodeQL Alert Resolution Agent
 
 **Agent Type:** Security & Vulnerability Management

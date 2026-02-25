@@ -1,5 +1,6 @@
 ---
 name: datetime-modernizer
+description: Modernize datetime handling to use timezone-aware objects and deprecate naive datetime usage
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

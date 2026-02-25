@@ -1,3 +1,8 @@
+---
+name: Workflow Analytics Agent
+description: Analyze GitHub Actions workflow performance, trends, and optimization opportunities
+---
+
 # Workflow Analytics Agent
 
 ## Purpose

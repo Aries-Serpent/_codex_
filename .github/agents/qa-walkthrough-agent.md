@@ -1,5 +1,6 @@
 ---
 name: qa-walkthrough-agent
+description: Perform comprehensive QA walkthroughs covering code quality, security, performance, and testing
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

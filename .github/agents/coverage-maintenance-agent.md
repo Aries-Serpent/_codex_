@@ -1,3 +1,8 @@
+---
+name: Coverage Maintenance Agent
+description: Maintain and improve test coverage thresholds across the codebase over time
+---
+
 # Coverage Maintenance Agent
 
 **Version**: 1.0.0  

@@ -1,5 +1,6 @@
 ---
 name: test-coverage-monitor
+description: Monitor test coverage trends and enforce coverage thresholds across CI/CD pipelines
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

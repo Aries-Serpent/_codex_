@@ -1,5 +1,6 @@
 ---
 name: CI Testing Agent
+description: Debug CI/CD pipeline failures, fix test collection errors, and resolve import and build issues
 version: 4.0.0-unified
 updated: 2026-02-20
 cognitive_integration_level: 3

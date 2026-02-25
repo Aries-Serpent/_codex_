@@ -1,5 +1,6 @@
 ---
 name: CI Log Retrieval Agent
+description: Retrieve and parse GitHub Actions workflow logs for failure analysis and pattern extraction
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

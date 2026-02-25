@@ -1,3 +1,8 @@
+---
+name: CPU-Only CI Config Agent
+description: Configure CI pipelines for CPU-only execution, avoiding GPU-dependent test failures
+---
+
 # CPU-Only CI Configuration Agent
 
 **Agent Name:** `cpu-only-ci-config-agent`  

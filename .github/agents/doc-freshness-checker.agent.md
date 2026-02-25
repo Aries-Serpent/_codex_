@@ -1,5 +1,6 @@
 ---
 name: doc-freshness-checker
+description: Check documentation freshness by validating links, timestamps, and accuracy against current code
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

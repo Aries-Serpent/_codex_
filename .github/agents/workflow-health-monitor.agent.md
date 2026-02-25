@@ -1,3 +1,8 @@
+---
+name: Workflow Health Monitor Agent
+description: Monitor GitHub Actions workflow health and alert on failures, slowdowns, or anomalies
+---
+
 # Workflow Health Monitor Agent
 
 **Agent Type:** workflow-health-monitor  

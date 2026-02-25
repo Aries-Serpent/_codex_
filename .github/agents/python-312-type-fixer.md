@@ -1,3 +1,8 @@
+---
+name: Python 3.12 Type Fixer
+description: Fix Python 3.12 type annotation and compatibility issues across the codebase
+---
+
 # Python 3.12 Type Migration Agent
 
 **Purpose**: Automatically detect and fix Python 3.12 incompatible union type annotations

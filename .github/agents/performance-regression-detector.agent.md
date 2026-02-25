@@ -1,5 +1,6 @@
 ---
 name: performance-regression-detector
+description: Detect performance regressions in benchmarks and alert on threshold violations
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

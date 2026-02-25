@@ -1,5 +1,6 @@
 ---
 name: bridge-security-monitor
+description: Monitor IPC bridge security and detect unauthorized access or security policy violations
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

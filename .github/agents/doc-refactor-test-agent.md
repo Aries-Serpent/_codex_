@@ -1,3 +1,8 @@
+---
+name: Doc Refactor Test Agent
+description: Refactor and test documentation for accuracy, clarity, and structural consistency
+---
+
 # Custom GitHub Copilot Agent: Documentation Refactoring Test Compatibility Agent
 
 **Agent Name:** `doc-refactor-test-agent`

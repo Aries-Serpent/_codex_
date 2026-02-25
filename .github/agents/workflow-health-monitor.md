@@ -1,3 +1,8 @@
+---
+name: Workflow Health Monitor
+description: Monitor GitHub Actions workflow health status and track reliability metrics over time
+---
+
 # Workflow Health Monitor Agent
 
 **Type:** Custom GitHub Copilot Agent

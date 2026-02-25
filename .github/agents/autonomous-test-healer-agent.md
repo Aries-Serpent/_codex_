@@ -1,3 +1,8 @@
+---
+name: Autonomous Test Healer Agent
+description: Automatically detect, diagnose, and fix failing tests to maintain CI/CD pipeline health
+---
+
 # GitHub Copilot Custom Agent: Autonomous Test Healer
 **Agent Type**: Autonomous Remediation
 **Version**: 1.0.0

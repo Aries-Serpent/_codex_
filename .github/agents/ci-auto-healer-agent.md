@@ -1,5 +1,6 @@
 ---
 name: CI Auto-Healer Agent
+description: Automatically detect and heal CI/CD failures using embedded fix patterns and validation loops
 id: ci-auto-healer
 version: 1.0.0
 updated: 2026-02-24

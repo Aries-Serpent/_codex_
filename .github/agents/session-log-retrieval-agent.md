@@ -1,3 +1,8 @@
+---
+name: Session Log Retrieval Agent
+description: Retrieve and search previous Copilot session logs to recover context and uncommitted work
+---
+
 # Session Log Retrieval Agent
 
 **Version:** 1.0.0

@@ -1,3 +1,8 @@
+---
+name: GitHub Guru Agent
+description: Provide expert guidance on GitHub features, workflows, Actions, and best practices
+---
+
 # Agent: GitHub Guru Agent
 
 ## 🎯 Agent Identity

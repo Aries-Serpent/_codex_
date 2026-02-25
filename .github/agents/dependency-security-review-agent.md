@@ -1,3 +1,8 @@
+---
+name: Dependency Security Review Agent
+description: Review dependencies for security vulnerabilities and recommend safe upgrades or patches
+---
+
 # 🔒 Dependency Security Review Agent
 
 **Agent Type**: Security Analysis & Validation  

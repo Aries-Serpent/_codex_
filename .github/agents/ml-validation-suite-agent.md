@@ -1,5 +1,6 @@
 ---
 name: ML Validation Suite Agent
+description: Run the ML validation suite to verify model accuracy, data integrity, and pipeline correctness
 version: 1.0.0-m04
 updated: 2026-02-22
 merged_agents:

@@ -1,5 +1,6 @@
 ---
 name: link-validator-agent
+description: Validate internal and external links in documentation files and fix broken references
 version: 3.2.0-cognitive
 updated: 2026-02-25
 cognitive_integration_level: 1

@@ -1,3 +1,8 @@
+---
+name: PR 3095 Verification Agent
+description: Verify fixes related to PR #3095 patterns and prevent regressions in CI workflows
+---
+
 # PR #3095 Verification Agent
 
 **Status:** ✅ Active

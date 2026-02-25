@@ -1,5 +1,6 @@
 ---
 name: Recon Scout Agent
+description: Perform reconnaissance on the codebase to discover undocumented APIs, patterns, and gaps
 version: 1.0.0
 updated: 2026-02-23
 agent_id: recon-scout-agent

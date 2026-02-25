@@ -1,5 +1,6 @@
 ---
 name: RAG Freshness Loop Agent
+description: Maintain RAG index freshness through incremental updates and stale-entry eviction loops
 version: 1.0.0-e08
 updated: 2026-02-22
 enhancement: E-08

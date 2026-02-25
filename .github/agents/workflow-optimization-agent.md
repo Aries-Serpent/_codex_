@@ -1,3 +1,8 @@
+---
+name: Workflow Optimization Agent
+description: Analyze and optimize GitHub Actions workflows for parallelism, caching, and execution efficiency
+---
+
 # GitHub Actions Workflow Optimization Agent
 
 **Agent Name:** workflow-optimization-agent  

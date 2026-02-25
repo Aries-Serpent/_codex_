@@ -1,3 +1,8 @@
+---
+name: Performance Monitor Agent
+description: Monitor real-time performance metrics and detect regressions or bottlenecks
+---
+
 # Performance Monitor Agent
 
 **Version**: 1.0.0

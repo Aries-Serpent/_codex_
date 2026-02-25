@@ -1,3 +1,8 @@
+---
+name: Claim Verification Agent
+description: Verify claims in commit messages, PRs, and documentation against actual code changes
+---
+
 # Claim Verification Agent
 
 > **Purpose:** Verify that all claims made in commit messages and documentation match the actual state of the codebase

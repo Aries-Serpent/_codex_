@@ -1,3 +1,8 @@
+---
+name: Policy Coach Agent
+description: Coach contributors on repository policies, coding standards, and compliance requirements
+---
+
 # Policy Coach Agent
 
 **Version:** 2.0.0

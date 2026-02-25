@@ -1,3 +1,8 @@
+---
+name: CI Parameter Mismatch Healer
+description: Detect and fix parameter mismatches between workflow callers and reusable workflow definitions
+---
+
 # CI Parameter-Mismatch Healer Agent v1.0
 
 ## Overview

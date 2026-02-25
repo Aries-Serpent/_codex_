@@ -1,5 +1,6 @@
 ---
 name: Agent IQ Scoring CI Gate
+description: Gate and score agent IQ metrics to ensure quality thresholds are met before agent deployment
 version: 1.0.0-e12
 updated: 2026-02-22
 enhancement: E-12

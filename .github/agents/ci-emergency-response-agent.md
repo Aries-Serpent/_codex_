@@ -1,3 +1,8 @@
+---
+name: CI Emergency Response Agent
+description: Rapid diagnosis and resolution of blocking CI/CD failures that prevent PR merges
+---
+
 # CI Emergency Response Agent
 
 **Agent Name**: CI Emergency Response Agent

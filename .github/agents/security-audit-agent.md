@@ -1,3 +1,8 @@
+---
+name: Security Audit Agent
+description: Perform comprehensive security audits covering SAST, dependency vulnerabilities, and compliance checks
+---
+
 # Security Audit Agent
 
 **Version**: 1.1.0

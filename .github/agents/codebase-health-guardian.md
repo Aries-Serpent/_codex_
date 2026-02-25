@@ -1,5 +1,6 @@
 ---
 name: Codebase Health Guardian
+description: Monitor and maintain overall codebase health including code quality, security, and test coverage
 version: 2.0.0
 updated: 2026-02-20
 cognitive_integration_level: 3

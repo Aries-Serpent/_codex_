@@ -1,3 +1,8 @@
+---
+name: Cross-Platform Filename Validator
+description: Validate filenames for Windows/Linux/macOS compatibility and enforce naming conventions
+---
+
 # GitHub Copilot Agent: Cross-Platform Filename Validator
 
 > **Agent Type:** Quality Assurance & Validation

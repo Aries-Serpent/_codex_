@@ -1,5 +1,6 @@
 ---
 name: integration-test-runner
+description: Run integration tests across services, validate end-to-end workflows, and report coverage results
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

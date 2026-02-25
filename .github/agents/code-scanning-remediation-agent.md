@@ -1,3 +1,8 @@
+---
+name: Code Scanning Remediation Agent
+description: Remediate code scanning alerts from GitHub Advanced Security and static analysis tools
+---
+
 # Code Scanning Remediation Agent
 
 **Agent Name**: code-scanning-remediation-agent

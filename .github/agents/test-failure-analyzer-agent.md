@@ -1,3 +1,8 @@
+---
+name: Test Failure Analyzer Agent
+description: Analyze test failures to identify root causes and recommend targeted remediation steps
+---
+
 # GitHub Copilot Custom Agent: Test Failure Analyzer
 **Agent Type**: Diagnostic & Analysis  
 **Version**: 1.0.0  

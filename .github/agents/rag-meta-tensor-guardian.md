@@ -1,3 +1,8 @@
+---
+name: RAG Meta Tensor Guardian
+description: Guard RAG tensor operations against meta-tensor initialization and materialization issues
+---
+
 # RAG Meta Tensor Guardian Agent
 
 **Agent ID**: `rag-meta-tensor-guardian`

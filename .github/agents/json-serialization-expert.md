@@ -1,3 +1,8 @@
+---
+name: JSON Serialization Expert Agent
+description: Diagnose and fix JSON serialization and deserialization issues across the codebase
+---
+
 # JSON Serialization Expert Agent
 
 **Agent Type:** Specialized Technical Agent  

@@ -1,5 +1,6 @@
 ---
 name: Root Organizer Agent
+description: Safely reorganize root directory structure in incremental steps with rollback capability
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

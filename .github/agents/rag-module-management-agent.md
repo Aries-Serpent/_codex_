@@ -1,3 +1,8 @@
+---
+name: RAG Module Management Agent
+description: Manage RAG module lifecycle including indexing, retrieval, and module updates
+---
+
 # RAG Module Management Agent
 
 **Agent Type:** Specialized Copilot Agent

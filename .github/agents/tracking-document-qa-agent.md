@@ -1,3 +1,8 @@
+---
+name: Tracking Document QA Agent
+description: QA tracking documents for accuracy, completeness, and consistency with implementation status
+---
+
 # Tracking Document QA Agent
 
 **Agent Type**: Quality Assurance / Documentation Review

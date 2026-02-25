@@ -1,3 +1,8 @@
+---
+name: Test Enhancement Agent
+description: Enhance test quality by adding edge cases, improving assertions, and increasing coverage depth
+---
+
 # Test Enhancement Agent
 
 **Agent Type:** Quality Assurance / Test Development  

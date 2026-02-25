@@ -1,3 +1,8 @@
+---
+name: CI Failure Resolution Agent
+description: Diagnose and resolve CI/CD pipeline failures using embedded fix patterns and self-healing loops
+---
+
 # CI Failure Resolution Agent
 
 **Agent Name:** `ci-failure-resolution-agent`

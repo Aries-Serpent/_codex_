@@ -1,3 +1,8 @@
+---
+name: PR Check Remediation Agent
+description: Remediate failing PR checks by applying automated fixes and validation steps
+---
+
 # Custom Copilot Agent: PR Check Remediation Specialist
 
 **Agent Name:** `pr-check-remediation-agent`

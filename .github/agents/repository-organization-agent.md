@@ -1,3 +1,8 @@
+---
+name: Repository Organization Agent
+description: Organize and restructure repository layout for improved navigation and maintainability
+---
+
 # Repository Organization Agent
 
 **Agent Type**: Custom Copilot Agent  

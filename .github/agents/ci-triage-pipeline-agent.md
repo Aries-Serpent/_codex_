@@ -1,5 +1,6 @@
 ---
 name: CI Triage Pipeline Agent
+description: Triage CI/CD pipeline failures by severity and route them to appropriate resolution agents
 version: 1.0.0-m03
 updated: 2026-02-21
 merged_agents:

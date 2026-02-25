@@ -1,3 +1,8 @@
+---
+name: Session Analysis Agent
+description: Analyze Copilot sessions, verify committed changes, and track objective completion patterns
+---
+
 # Session Analysis Agent
 
 **Version:** 1.0.0
