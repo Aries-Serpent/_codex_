@@ -22,11 +22,16 @@ markdown_extensions:
 
 plugins:
   - search
-  - mermaid2
+  - mermaid2:
+      version: "10.4.0"
+
+exclude_docs: |
+  README.md
 
 nav:
 - Home: index.md
 - 📊 Status Dashboard: status/GITHUB_PAGES_STATUS.md
+- 🧠 Cognitive App: cognitive_app.md
 - 🧬 Evolution Center:
   - Overview: evolution/INDEX.md
   - Evolution Timeline: evolution/EVOLUTION_TIMELINE.md
