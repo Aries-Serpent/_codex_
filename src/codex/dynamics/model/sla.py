@@ -129,9 +129,14 @@ class SLAPolicy(BaseModel):
             # Simple calculation: add target minutes to start time
             return start_time + timedelta(minutes=self.target_minutes)
 
-        # TODO: Implement business hours calculation
-        # This would integrate with D365 business hours calendar
-        return start_time + timedelta(minutes=self.target_minutes)
+        # Business-hours SLA calculation is not yet implemented.
+        # Until D365 calendar integration is complete, raise an error
+        # rather than silently returning an incorrect (linear) deadline.
+        raise NotImplementedError(
+            "Business hours SLA calculation is not implemented. "
+            "Integrate with D365 businesshoursid calendar before enabling "
+            "business_hours_only policies."
+        )
 
     def is_paused(self, ticket_state: dict[str, Any]) -> bool:
         """Check if SLA should be paused based on current ticket state.

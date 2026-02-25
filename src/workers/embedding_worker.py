@@ -33,14 +33,34 @@ def default_preprocess(text: str) -> str:
     return text
 
 
+_EMBEDDER_ALLOWLIST: frozenset[str] = frozenset(
+    {
+        "src.mcp.embeddings.mock_embedder.MockEmbedder",
+        "src.mcp.embeddings.openai_embedder.OpenAIEmbedder",
+        "src.mcp.embeddings.hf_embedder.HFEmbedder",
+        "src.mcp.embeddings.sentence_transformer_embedder.SentenceTransformerEmbedder",
+    }
+)
+
+
 def _load_embedder_class(path: str):
     """
+    Load embedder class from an allowlisted path.
+
     Path example: 'src.mcp.embeddings.mock_embedder.MockEmbedder'
+
+    Raises:
+        ValueError: If the path is not in the allowlist (prevents arbitrary code injection).
     """
     if not path:
         from src.mcp.embeddings.mock_embedder import MockEmbedder  # type: ignore
 
         return MockEmbedder
+    if path not in _EMBEDDER_ALLOWLIST:
+        raise ValueError(
+            f"Unknown embedder class: {path!r}. "
+            f"Must be one of: {sorted(_EMBEDDER_ALLOWLIST)}"
+        )
     module_name, cls_name = path.rsplit(".", 1)
     mod = __import__(module_name, fromlist=[cls_name])
     return getattr(mod, cls_name)

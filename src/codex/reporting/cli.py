@@ -1,5 +1,7 @@
 """Reporting CLI - Phase 3 implementation stub."""
 
+import sys
+
 import click
 
 
@@ -18,8 +20,9 @@ def report_main(format: str, output: str, report_type: str):
     click.echo(f"📊 Format: {format}")
     click.echo(f"💾 Output: {output}")
 
-    # TODO: Phase 3 - Implement report generation
-    click.echo("\n⚠️  Full reporting coming in Phase 3")
+    # Phase 3 - Implement report generation
+    click.echo("\n❌  codex-report is not yet implemented (Phase 3 pending)", err=True)
+    sys.exit(1)
 
 
 @click.command()
@@ -34,13 +37,9 @@ def dashboard_main(output: str, open_browser: bool):
     click.echo("📊 Generating interactive dashboard...")
     click.echo(f"💾 Output: {output}")
 
-    # TODO: Phase 3 - Implement dashboard
-    click.echo("\n⚠️  Interactive dashboard coming in Phase 3")
-    click.echo("Will include:")
-    click.echo("  • Quality score trends")
-    click.echo("  • Code smell metrics")
-    click.echo("  • Complexity charts")
-    click.echo("  • File-level drill-down")
+    # Phase 3 - Implement dashboard
+    click.echo("\n❌  codex-dashboard is not yet implemented (Phase 3 pending)", err=True)
+    sys.exit(1)
 
 
 if __name__ == "__main__":

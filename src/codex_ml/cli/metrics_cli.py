@@ -25,10 +25,13 @@ Row = dict[str, Any]
 _SAFE_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
-def _validate_table(name: str, allow_unsafe: bool = False) -> str:
-    """Return validated SQL identifier for table names."""
+def _validate_table(name: str) -> str:
+    """Return validated SQL identifier for table names.
 
-    if allow_unsafe or _SAFE_IDENT.fullmatch(name or ""):
+    Only allows identifiers matching ``^[A-Za-z_][A-Za-z0-9_]*$``.
+    The ``allow_unsafe`` bypass has been removed to prevent SQL injection.
+    """
+    if _SAFE_IDENT.fullmatch(name or ""):
         return name
     raise SystemExit(f"[metrics-cli] invalid table name: {name!r}")
 
@@ -131,7 +134,7 @@ def _csv_to_sqlite(
     *,
     chunk_size: int = 5000,
     create_index: bool = False,
-    allow_unsafe_table_name: bool = False,
+    allow_unsafe_table_name: bool = False,  # kept for backward-compat; now ignored
 ) -> None:
     """Bulk load CSV into SQLite using chunked executemany and optional index."""
 
@@ -139,7 +142,7 @@ def _csv_to_sqlite(
     con = sqlite3.connect(sqlite_db)
     try:
         cur = con.cursor()
-        table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
+        table_safe = _validate_table(table or "metrics")
         # nosec B608
         cur.execute(
             f"CREATE TABLE IF NOT EXISTS {table_safe} "
@@ -187,7 +190,7 @@ def _csv_to_duckdb(
     table: str,
     *,
     mode: str = "replace",
-    allow_unsafe_table_name: bool = False,
+    allow_unsafe_table_name: bool = False,  # kept for backward-compat; now ignored
 ) -> bool:
     """Bulk load CSV into DuckDB with selectable write mode."""
 
@@ -203,7 +206,7 @@ def _csv_to_duckdb(
     duck_db.parent.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(duck_db.as_posix())
     try:
-        table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
+        table_safe = _validate_table(table or "metrics")
         csvp = csv_path.as_posix()
         mode_normalized = (mode or "replace").lower()
         if mode_normalized == "replace":
@@ -503,11 +506,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--create-index",
         action="store_true",
         help="Create index on (run_id, key, epoch) after load (off by default)",
-    )
-    ingest.add_argument(
-        "--allow-unsafe-table-name",
-        action="store_true",
-        help="Bypass conservative identifier validation (use with caution)",
     )
     ingest.set_defaults(func=cmd_ingest)
 

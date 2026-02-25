@@ -1,5 +1,7 @@
 """Code audit CLI - Phase 1 implementation stub."""
 
+import sys
+
 import click
 
 
@@ -23,9 +25,10 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
     if check_vulns:
         click.echo("  ✓ Checking vulnerabilities")
 
-    # TODO: Phase 2 - Implement full audit
-    click.echo("\n⚠️  Full implementation coming in Phase 2")
-    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details")
+    # Phase 2 - Implement full audit
+    click.echo("\n❌  codex-audit is not yet implemented (Phase 2 pending)", err=True)
+    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details", err=True)
+    sys.exit(1)
 
 
 if __name__ == "__main__":

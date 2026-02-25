@@ -78,10 +78,8 @@ def run_pipeline(
     # Validate configuration first
     validate_pipeline_config(config)
 
-    # TODO: Implement actual pipeline logic
-    # This is a placeholder for the actual implementation
-
-    return {
-        "status": "success",
-        "config_valid": True,
-    }
+    raise NotImplementedError(
+        "run_pipeline() is not yet implemented. "
+        "Wire to src/codex_ml/training/functional_training.py::run_functional_training "
+        "or src/codex/training.py::run_custom_trainer before using in production."
+    )

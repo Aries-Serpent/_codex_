@@ -1,5 +1,7 @@
 """Code analysis CLI - Phase 1 implementation stub."""
 
+import sys
+
 import click
 
 
@@ -19,9 +21,10 @@ def analyze_main(path: str, format: str, output: str, threshold: int):
     click.echo(f"📊 Format: {format}")
     click.echo(f"📏 Threshold: {threshold} lines")
 
-    # TODO: Phase 2 - Implement full analysis
-    click.echo("\n⚠️  Full implementation coming in Phase 2")
-    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details")
+    # Phase 2 - Implement full analysis
+    click.echo("\n❌  codex-analyze is not yet implemented (Phase 2 pending)", err=True)
+    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details", err=True)
+    sys.exit(1)
 
 
 if __name__ == "__main__":

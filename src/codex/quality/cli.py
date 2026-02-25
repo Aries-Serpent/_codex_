@@ -55,13 +55,10 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
         logger.debug(f"Exception: {e}")
         click.echo(f"⚠️  Could not load config: {e}", err=True)
 
-    # TODO: Phase 2 - Implement smell detection
-    click.echo("\n⚠️  Full smell detection coming in Phase 2")
-    click.echo("This will analyze Python files and detect:")
-    click.echo("  • Long functions")
-    click.echo("  • Too many arguments")
-    click.echo("  • Deep nesting")
-    click.echo("  • God classes")
+    # Phase 2 - Implement smell detection
+    click.echo("\n❌  codex-smell is not yet implemented (Phase 2 pending)", err=True)
+    import sys
+    sys.exit(1)
 
 
 if __name__ == "__main__":
