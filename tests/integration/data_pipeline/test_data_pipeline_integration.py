@@ -131,4 +131,4 @@ def test_data_pipeline_fixture_parsing(tmp_path):
         _make_tokenizer(torch),
     )
 
-    assert len(train_loader.dataset) == 3
+    assert len(train_loader.dataset) == 2  # default 80/20 split of 3 samples → 2 train

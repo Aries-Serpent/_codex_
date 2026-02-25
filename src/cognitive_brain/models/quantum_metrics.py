@@ -445,3 +445,23 @@ class QuantumMetricRepository:
             conn.close()
 
         return metrics
+
+    def get_recent_metrics(
+        self,
+        feature: str,
+        limit: int = 100,
+        hours: int = 24,
+    ) -> List[Dict[str, Any]]:
+        """Return recent metrics for ``feature`` as a list of dicts.
+
+        Args:
+            feature: Feature name to filter by.
+            limit: Maximum number of rows to return (most recent first).
+            hours: Unused; retained for API compatibility.
+
+        Returns:
+            List of metric dicts (keys: id, timestamp, feature, metric_name,
+            metric_value, agent_id, metadata).
+        """
+        results = self.find_by_feature(feature, limit=limit)
+        return [m.to_dict() for m in results]

@@ -59,7 +59,13 @@ def temp_db():
 @pytest.fixture
 def integrated_system(temp_db):
     """Create fully integrated quantum system."""
-    config = QuantumConfig()
+    config = QuantumConfig(
+        quantum_mode=True,
+        superposition=True,
+        entanglement=True,
+        uncertainty=True,
+        wave_collapse=True,
+    )
     repository = QuantumMetricRepository(temp_db)
     monitor = CoherenceMonitor(config, repository)
 

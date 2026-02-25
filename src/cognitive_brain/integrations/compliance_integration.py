@@ -71,6 +71,16 @@ class AuditResult:
             if self.compliance_score is None:
                 self.compliance_score = self.score
 
+        # Normalise string business_impact labels to floats for backward compat
+        if isinstance(self.business_impact, str):
+            _impact_map = {
+                "minimal": 0.1, "low": 0.2, "moderate": 0.5,
+                "medium": 0.5, "high": 0.8, "critical": 1.0,
+            }
+            self.business_impact = _impact_map.get(
+                self.business_impact.lower(), 0.0
+            )
+
         # Validate score exists and is in range
         if self.score is None:
             raise ValueError("Either score or compliance_score must be provided")
@@ -441,6 +451,10 @@ class QuantumComplianceAssessor:
         self.audit_trail.log(audit_result, result)
 
         return result
+
+    def assess(self, audit_result: AuditResult) -> ComplianceAssessment:
+        """Alias for :meth:`assess_compliance` for backward compatibility."""
+        return self.assess_compliance(audit_result)
 
     _VALID_RISK_LEVELS = frozenset({"low", "medium", "high"})
 

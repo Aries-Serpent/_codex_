@@ -112,7 +112,7 @@ def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
             return types.SimpleNamespace(loss=loss, logits=logits)
 
     cfg = TrainCfg(
-        epochs=1,
+        epochs=2,
         batch_size=2,
         grad_accum=2,
         lr=1e-3,

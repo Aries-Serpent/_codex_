@@ -454,3 +454,70 @@ class CoherenceMonitor:
     def is_rollback_triggered(self) -> bool:
         """Check if automatic rollback has been triggered."""
         return self._rollback_triggered
+
+    def log_metric(
+        self,
+        feature: any,
+        decision_id: str,
+        coherence: float,
+        accuracy: float = 1.0,
+        **kwargs,
+    ) -> None:
+        """Record coherence and accuracy metrics for a decision.
+
+        Convenience wrapper around ``record_metric`` that accepts the
+        ``feature`` as either a string or an enum value and logs both
+        ``coherence`` and ``accuracy`` in a single call.
+
+        Args:
+            feature: Feature name or enum value (e.g. QuantumFeature.SUPERPOSITION)
+            decision_id: Identifier for this decision (used as agent_id)
+            coherence: Coherence metric value (0.0 – 1.0)
+            accuracy: Accuracy metric value (0.0 – 1.0)
+            **kwargs: Additional metadata passed to record_metric
+        """
+        feature_str = feature.value if hasattr(feature, "value") else str(feature)
+        self.record_metric(
+            feature=feature_str,
+            metric_name="coherence",
+            metric_value=coherence,
+            agent_id=decision_id,
+        )
+        self.record_metric(
+            feature=feature_str,
+            metric_name="accuracy",
+            metric_value=accuracy,
+            agent_id=decision_id,
+        )
+
+    def get_health_status(self) -> str:
+        """Return aggregate system health as a string.
+
+        Returns:
+            ``"healthy"`` when no alerts are active, ``"critical"`` when any
+            CRITICAL alert is present, ``"degraded"`` otherwise.
+        """
+        if not self._active_alerts:
+            return "healthy"
+        if any(a.level == AlertLevel.CRITICAL for a in self._active_alerts):
+            return "critical"
+        return "degraded"
+
+    def get_recent_alerts(
+        self, feature: any = None, hours: int = 24
+    ) -> List[Alert]:
+        """Get recent alerts optionally filtered by feature.
+
+        Args:
+            feature: Feature name or enum value to filter by (optional)
+            hours: Unused; all active alerts are returned regardless of age
+                   (retained for API compatibility)
+
+        Returns:
+            List of :class:`Alert` objects
+        """
+        feature_str = (
+            feature.value if feature is not None and hasattr(feature, "value")
+            else feature
+        )
+        return self.get_active_alerts(feature=feature_str)

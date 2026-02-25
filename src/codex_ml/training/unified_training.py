@@ -178,9 +178,9 @@ class UnifiedTrainingConfig:
         # model_name must be a non-empty string
         if self.model_name is None:
             errors.append("model_name must not be None")
-        # epochs must be >= 0 (0 is valid for resume-only or inference-only runs)
-        if self.epochs is not None and self.epochs < 0:
-            errors.append("epochs must be >= 0")
+        # epochs must be a positive integer (0 is not a valid training run)
+        if self.epochs is not None and self.epochs < 1:
+            errors.append("epochs must be >= 1")
         if self.batch_size < 1:
             errors.append("batch_size must be >=1")
         if self.grad_accum < 1:
