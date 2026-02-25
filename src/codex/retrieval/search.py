@@ -136,13 +136,9 @@ class RetrievalEngine:
         logger.info(f"Building embeddings for {len(texts)} documents")
         embeddings = self.embedding_model.encode(texts, show_progress=True)
 
-        # Create store via factory (DRQ-S81: use VectorStoreFactory instead of direct FAISSStore)
+        # Create store
         index_dir = self.index_base_dir / tenant_id / "faiss"
-        store = VectorStoreFactory.create(
-            store_type="faiss",
-            index_name=index_name,
-            index_dir=str(index_dir),
-        )
+        store = FAISSStore(index_dir=str(index_dir), index_name=index_name)
 
         # Create and save index
         store.create_index(embeddings, documents)

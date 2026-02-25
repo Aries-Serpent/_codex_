@@ -376,7 +376,7 @@ if FASTAPI_AVAILABLE:
             if bad in model_name:
                 raise HTTPException(
                     status_code=400,
-                    detail="Invalid model_name: disallowed character sequence",
+                    detail=f"Invalid model_name: disallowed character sequence",
                 )
 
     def create_app(config: Optional[ModelConfig] = None) -> FastAPI:
