@@ -20,9 +20,13 @@ from codex_ml.interfaces.contracts import validate_tokenizer_contract  # noqa: E
 from codex_ml.interfaces.tokenizer import HFTokenizer  # noqa: E402
 
 from ._protocols import TokenizerAdapter  # noqa: E402 — re-exported for backward compat
-from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN  # noqa: E402 — re-exported
+from ._types import (  # noqa: E402 — re-exported
+    BOS_TOKEN,
+    EOS_TOKEN,
+    PAD_TOKEN,
+    UNK_TOKEN,
+)
 from .adapter import WhitespaceTokenizer  # noqa: E402
-
 
 if TYPE_CHECKING:  # pragma: no cover - import only used for typing
     from .sp_trainer import SPTokenizer as _SPTokenizer  # noqa: F401

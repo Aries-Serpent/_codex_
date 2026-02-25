@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import typer
+
 from codex.mapping.load import load_all_mappings
 
 DEFAULT_MAPPINGS_DIR = Path("configs/deployment/mapping")

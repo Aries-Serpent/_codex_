@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 import json
 from pathlib import Path
 
+import typer
 from rich.console import Console
 from rich.table import Table
 
-import typer
 from codex_ml.features.feature_store import FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
 

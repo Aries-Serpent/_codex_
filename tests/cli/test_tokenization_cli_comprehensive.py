@@ -19,8 +19,9 @@ import pytest
 
 # Import the CLI module - handle both typer and fallback cases
 try:
-    from tokenization.cli import _append_error_block, _format_context, app
     from typer.testing import CliRunner
+
+    from tokenization.cli import _append_error_block, _format_context, app
     HAS_TYPER = True
 except ImportError:
     HAS_TYPER = False

@@ -8,10 +8,10 @@ from typing import Any
 
 import pytest
 import yaml
+from typer.testing import CliRunner
 
 import codex_ml.cli.main as cli_main
 import codex_ml.training.unified_training as unified_training
-from typer.testing import CliRunner
 
 pytest.importorskip("typer")
 pytest.importorskip("yaml")

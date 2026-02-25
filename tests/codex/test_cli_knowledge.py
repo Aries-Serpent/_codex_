@@ -9,8 +9,9 @@ try:
     import typer
     if not hasattr(typer, 'Typer'):
         pytest.skip("typer package not properly installed", allow_module_level=True)
-    from codex import cli_knowledge
     from typer.testing import CliRunner
+
+    from codex import cli_knowledge
     TYPER_AVAILABLE = True
 except (ImportError, AttributeError):
     TYPER_AVAILABLE = False

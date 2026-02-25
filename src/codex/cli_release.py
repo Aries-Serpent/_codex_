@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 
 import typer
+
 from codex.release.api import pack_release, unpack_bundle, verify_bundle
 
 DEFAULT_MANIFEST = Path("release.manifest.json")

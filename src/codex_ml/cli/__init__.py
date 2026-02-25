@@ -130,9 +130,10 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
-    from . import ndjson_summary
-    from pathlib import Path as _Path
     import json as _json
+    from pathlib import Path as _Path
+
+    from . import ndjson_summary
 
     run_dir = _Path(getattr(args, "input", "."))
     fmt = getattr(args, "output", "stdout")

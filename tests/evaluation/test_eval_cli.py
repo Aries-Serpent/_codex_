@@ -14,8 +14,9 @@ pytest.importorskip("typer")
 
 # Skip entire module if torch is not available or unloadable
 torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
-from codex_ml.evaluation import cli as eval_cli  # noqa: E402
 from typer.testing import CliRunner  # noqa: E402
+
+from codex_ml.evaluation import cli as eval_cli  # noqa: E402
 
 
 class DummyModel(torch.nn.Module):

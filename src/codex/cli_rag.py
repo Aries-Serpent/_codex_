@@ -15,11 +15,10 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
-
-import typer
 
 logger = logging.getLogger(__name__)
 

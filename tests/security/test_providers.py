@@ -17,18 +17,21 @@ Tests include:
 
 from __future__ import annotations
 
+# botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
+import importlib.util as _importlib_util
 import os
 from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
 
-# botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
-import importlib.util as _importlib_util
 _HAS_BOTOCORE = _importlib_util.find_spec("botocore") is not None
 
-from security.provider_factory import ProviderFactory, create_provider_from_env
-from security.providers.base import (
+from security.provider_factory import (  # noqa: E402
+    ProviderFactory,
+    create_provider_from_env,
+)
+from security.providers.base import (  # noqa: E402
     ProviderConfig,
     ProviderConfigError,
     ProviderType,
@@ -41,8 +44,8 @@ from security.providers.base import (
     TokenProvider,
     ValidationError,
 )
-from security.providers.environment_provider import EnvironmentProvider
-from security.providers.github_provider import GitHubTokenProvider
+from security.providers.environment_provider import EnvironmentProvider  # noqa: E402
+from security.providers.github_provider import GitHubTokenProvider  # noqa: E402
 
 # ============================================================================
 # Test Base Module (base.py)

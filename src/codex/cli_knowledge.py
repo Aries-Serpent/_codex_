@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 
 import typer
+
 from codex.knowledge.build import archive_and_manifest, build_kb
 from codex.release.api import pack_release, verify_bundle
 

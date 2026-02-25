@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
+
 from codex.dynamics.model.role import DynamicsRole
 from codex.dynamics.role_matrix import build_role_matrix
 from codex.zendesk.model.role import Role as ZendeskRole

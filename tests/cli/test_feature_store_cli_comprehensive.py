@@ -43,8 +43,9 @@ class TestFeatureRegistration:
     def test_register_creates_feature_group(self, mock_store_class):
         """Test register command creates feature group."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -61,8 +62,9 @@ class TestFeatureRegistration:
     def test_register_with_description(self, mock_store_class):
         """Test register command with description option."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -82,8 +84,9 @@ class TestFeatureRegistration:
     def test_register_with_custom_store_path(self, mock_store_class):
         """Test register command with custom store path."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store_class.return_value = mock_store
@@ -109,8 +112,9 @@ class TestFeatureListing:
     def test_list_command_basic(self, mock_store_class):
         """Test list command basic functionality."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -128,8 +132,9 @@ class TestFeatureListing:
     def test_list_with_health_flag(self, mock_store_class):
         """Test list command with --health flag."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -146,8 +151,9 @@ class TestFeatureListing:
     def test_list_without_versions(self, mock_store_class):
         """Test list command with --no-versions flag."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
@@ -196,8 +202,9 @@ class TestFeatureStoreErrorHandling:
     def test_register_handles_store_error(self, mock_store_class):
         """Test register command handles store errors gracefully."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store_class.side_effect = Exception("Store initialization failed")
 
@@ -213,8 +220,9 @@ class TestFeatureStoreErrorHandling:
     def test_list_handles_empty_store(self, mock_store_class):
         """Test list command handles empty store."""
         try:
-            from codex_ml.cli.feature_store import app
             from typer.testing import CliRunner
+
+            from codex_ml.cli.feature_store import app
 
             mock_store = MagicMock()
             mock_store.list_features.return_value = []
