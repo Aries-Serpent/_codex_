@@ -1105,7 +1105,7 @@ dashboard_metrics:
 - [Google Drive API](https://developers.google.com/drive)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Rate Limiting Best Practices](https://cloud.google.com/architecture/rate-limiting-strategies-techniques)
-- [Admin Automation Agent](.github/agents/admin-automation-agent/)
+- [Admin Automation Agent](../)
 - [AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---

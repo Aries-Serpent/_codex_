@@ -5,8 +5,13 @@ Validates internal file links and flags dynamic variables for manual review.
 
 Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
 Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
+Updated: 2026-02-25 | Added --fail-on-errors / STRICT_MODE / JSON report (PR #3365)
+Updated: 2026-02-25 | Added HTML comment + inline backtick span stripping (PR #3365 Phase 3)
 """
 
+import argparse
+import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -16,6 +21,13 @@ from typing import List, Set, Tuple
 GITHUB_CONTEXT_PATTERN = re.compile(r'\$\{\{[^}]+\}\}')
 # Markdown link pattern: [text](path)
 LINK_PATTERN = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+
+# Pre-processing patterns: strip these spans BEFORE running LINK_PATTERN so
+# links appearing inside comments or inline code are never matched.
+# HTML comments: <!-- ... --> (single-line and multi-line, non-greedy)
+HTML_COMMENT_PATTERN = re.compile(r'<!--.*?-->', re.DOTALL)
+# Inline backtick spans: `...` (single backtick, does NOT cross newlines)
+INLINE_CODE_PATTERN = re.compile(r'`[^`\n]+`')
 
 # Patterns to skip validation for
 SKIP_LINK_PATTERNS = [
@@ -47,6 +59,16 @@ SKIP_LINK_PATTERNS = [
     r'^\.\./configs/',     # Config file references (code)
     r'^\.\.\./',           # Invalid relative paths
     r'^sitecustomize\.py$', # Python site customization
+    r'^path$',             # Standalone 'path' word in table/code examples
+    r'^\.\*$',             # Regex wildcard pattern shown as example
+    r'^file\.md$',         # Generic placeholder filename
+    r'^guide\.md$',        # Placeholder guide filename in doc examples
+    r'^\./guide\.md$',     # Placeholder ./guide.md in examples
+    r'^docs/guide\.md$',   # Placeholder docs/guide.md in examples
+    r'^rag_pipelines\.md$',# Placeholder in github-pages-manager docs
+    r'^/tmp/',             # Temporary file/script paths
+    r'^.*?correct/path',   # Placeholder "../correct/path.md" in examples
+    r'^AGENT_DESIGN\.md$', # Previously in HTML comments (now stripped upstream)
 ]
 
 class LinkValidator:
@@ -125,6 +147,28 @@ class LinkValidator:
 
         return inside_code_block
 
+    def _strip_non_prose(self, content: str) -> str:
+        """Return a version of *content* with spans that should not be
+        link-validated replaced by whitespace-equivalent placeholders.
+
+        Specifically removes:
+        - HTML comments (``<!-- ... -->``) — multi-line safe, non-greedy
+        - Inline backtick code spans (`` `code` ``) — single-line only
+
+        Fenced code blocks (``` ... ```) are handled separately by
+        :meth:`is_in_code_block`; we preserve their line structure so that
+        the fence-detection logic in that method still works correctly.
+        """
+        # Replace HTML comments with spaces of the same length so that
+        # character positions for subsequent matches remain stable.
+        def blank_match(m: re.Match) -> str:
+            # Preserve newlines so line numbers stay correct
+            return re.sub(r'[^\n]', ' ', m.group(0))
+
+        content = HTML_COMMENT_PATTERN.sub(blank_match, content)
+        content = INLINE_CODE_PATTERN.sub(blank_match, content)
+        return content
+
     def validate_file(self, file_path: Path) -> None:
         """Validate all links in a single markdown file"""
         if file_path in self.checked_files:
@@ -132,14 +176,19 @@ class LinkValidator:
         self.checked_files.add(file_path)
 
         try:
-            content = file_path.read_text(encoding='utf-8')
+            raw_content = file_path.read_text(encoding='utf-8')
         except Exception as e:
             self.errors.append((str(file_path), "", f"Failed to read file: {e}"))
             return
 
+        # Strip HTML comments and inline backtick spans so links inside them
+        # are never matched.  Fenced code blocks are handled by is_in_code_block
+        # below; we pass raw_content to that method so fence detection still works.
+        content = self._strip_non_prose(raw_content)
+
         for match in LINK_PATTERN.finditer(content):
-            # Skip links inside code blocks
-            if self.is_in_code_block(content, match.start()):
+            # Skip links inside fenced code blocks (uses original content for fences)
+            if self.is_in_code_block(raw_content, match.start()):
                 continue
 
             link_text = match.group(1)
@@ -211,8 +260,8 @@ class LinkValidator:
             if file_path.is_file():
                 self.validate_file(file_path)
 
-    def report(self) -> int:
-        """Print validation report and return exit code"""
+    def report(self, report_file: str = "") -> int:
+        """Print validation report, optionally write JSON, and return exit code"""
         print("=" * 80)
         print("📋 MARKDOWN LINK VALIDATION REPORT")
         print("=" * 80)
@@ -241,19 +290,70 @@ class LinkValidator:
         print(f"❌ Errors: {len(self.errors)}")
         print("=" * 80)
 
+        # Write JSON report when requested
+        if report_file:
+            report_data = {
+                "checked": len(self.checked_files),
+                "warnings_count": len(self.warnings),
+                "errors_count": len(self.errors),
+                "warnings": [
+                    {"file": src, "link": lnk, "message": msg}
+                    for src, lnk, msg in self.warnings
+                ],
+                "errors": [
+                    {"file": src, "link": lnk, "message": msg}
+                    for src, lnk, msg in self.errors
+                ],
+            }
+            try:
+                Path(report_file).write_text(
+                    json.dumps(report_data, indent=2), encoding="utf-8"
+                )
+                print(f"📄 Report written: {report_file}")
+            except Exception as exc:  # pragma: no cover
+                print(f"⚠️  Could not write report file {report_file}: {exc}")
+
         # Return non-zero exit code only for errors (not warnings)
         return 1 if self.errors else 0
 
 def main():
+    parser = argparse.ArgumentParser(description="Validate links in repo markdown files")
+    parser.add_argument(
+        "--fail-on-errors",
+        action="store_true",
+        default=False,
+        help="Exit non-zero if errors are found (overridden by STRICT_MODE env var)",
+    )
+    parser.add_argument(
+        "--report-file",
+        default="",
+        help="Optional path to write a JSON summary report",
+    )
+    args = parser.parse_args()
+
+    # STRICT_MODE env var overrides --fail-on-errors (workflow sets this)
+    env_strict = os.getenv("STRICT_MODE", "").lower()
+    if env_strict in ("1", "true", "yes"):
+        args.fail_on_errors = True
+    elif env_strict in ("0", "false", "no"):
+        args.fail_on_errors = False
+
     repo_root = Path(__file__).parent.parent.parent
     validator = LinkValidator(repo_root)
 
     # Validate specific directories
     validator.validate_directory(repo_root / ".github" / "workflows")
     validator.validate_directory(repo_root / ".github" / "docs")
+    validator.validate_directory(repo_root / ".github" / "agents")
     validator.validate_directory(repo_root / "docs")
 
-    sys.exit(validator.report())
+    exit_code = validator.report(report_file=args.report_file)
+
+    if args.fail_on_errors:
+        sys.exit(exit_code)
+    else:
+        # Always exit 0 unless --fail-on-errors / STRICT_MODE is active
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

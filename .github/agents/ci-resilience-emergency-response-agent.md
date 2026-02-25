@@ -333,7 +333,7 @@ Escalate to human when:
 ## Related Documentation
 
 - [AI Agency Policy](/.codex/CODEBASE_AGENCY_POLICY.md)
-- [DevOps Terminology Policy](/.codex/DEVOPS_TERMINOLOGY_POLICY.md)
+- [DevOps Terminology Policy](../../.codex/DEVOPS_TERMINOLOGY_POLICY.md)
 - [PR #3248 Resolution](/.codex/cognitive_brain/PR3248_INTEGRATED_RESOLUTION_COMPLETE.md)
 - [CI Auto-Fix System](/.codex/docs/CI_AUTO_FIX_SYSTEM.md)
 - [Commit Guidelines](/.github/COMMIT_GUIDELINES.md)

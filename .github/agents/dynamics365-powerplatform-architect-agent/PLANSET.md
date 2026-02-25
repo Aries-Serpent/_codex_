@@ -950,9 +950,9 @@ d365-architect report --type deployment --format pdf
 ## Appendix
 
 ### A. Related Documentation
-- [D365 Admin Runbook](../../docs/crm/admin-runbooks/d365.md)
-- [Dynamics System Documentation](../../docs/dynamical-system.md)
-- [CRM Configuration Guide](../../docs/crm/)
+- [D365 Admin Runbook](../../../docs/crm/admin-runbooks/d365.md)
+- [Dynamics System Documentation](../../../docs/dynamical-system.md)
+- [CRM Configuration Guide](../../../docs/crm/)
 
 ### B. Related Agents
 - `config-validator.agent.md`

@@ -220,6 +220,16 @@ repos:
         pass_filenames: false
         # Checks sample markdown files for broken links (non-blocking)
 
+      # PR #3365 - Intelligent link validator (internal links, .github/agents, docs/)
+      - id: validate-internal-links
+        name: Validate Internal Doc Links (.github/agents + docs/)
+        entry: python .github/scripts/validate-links.py --fail-on-errors
+        language: system
+        pass_filenames: false
+        files: '\.md$'
+        stages: [commit]
+        # Runs full internal-link scan whenever .md files are staged; exits 1 on errors
+
       # PR #3248 Preventive Tooling - Ruff linting
       - id: ruff-check
         name: Ruff Linting (F401, F841 - unused imports/variables)

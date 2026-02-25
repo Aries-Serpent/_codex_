@@ -75,8 +75,12 @@ jobs:
 
       - name: Validate links with intelligent parser
         id: validate
+        env:
+          # Strict mode: true for push to main and strict manual runs; false for PRs
+          STRICT_MODE: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.strict_mode == 'true') }}
         run: |
-          python .github/scripts/validate-links.py
+          echo "STRICT_MODE=$STRICT_MODE"
+          python .github/scripts/validate-links.py --fail-on-errors --report-file link-validation-report.json
         # Non-blocking for PRs (report but don't fail)
         # Strict mode for manual runs and scheduled checks
         continue-on-error: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.strict_mode == 'false') }}
@@ -113,6 +117,7 @@ jobs:
         with:
           name: link-validation-report
           path: |
+            ${{ github.workspace }}/link-validation-report.json
             ${{ github.workspace }}/.github/workflows/*.md
             ${{ github.workspace }}/docs/**/*.md
             ${{ github.workspace }}/*.md

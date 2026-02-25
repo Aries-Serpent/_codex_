@@ -541,8 +541,8 @@ An agent is **Fully Compliant** when it has:
 
 ## References
 
-- [Agent Design Specifications](.codex/AGENT_DESIGNS.md)
-- [Cognitive Brain Update](.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md)
+- [Agent Design Specifications](../../.codex/AGENT_DESIGNS.md)
+- [Cognitive Brain Update](../../.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md)
 - [Agent Development Guide](#) (to be created)
 - [Agent Testing Standards](#) (to be created)
 

@@ -653,9 +653,9 @@ zendesk-architect manifest export --format yaml
 ## Appendix
 
 ### A. Related Documentation
-- [Zendesk API Reference](../../docs/zendesk_api_reference.md)
-- [Zendesk Admin Workflow](../../docs/runbooks/zendesk_admin_workflow.md)
-- [Zendesk Docs Pipeline](../../docs/runbooks/zendesk_docs_pipeline.md)
+- [Zendesk API Reference](../../../docs/zendesk_api_reference.md)
+- [Zendesk Admin Workflow](../../../docs/runbooks/zendesk_admin_workflow.md)
+- [Zendesk Docs Pipeline](../../../docs/runbooks/zendesk_docs_pipeline.md)
 
 ### B. Related Agents
 - `pii-scrubber.agent.md`

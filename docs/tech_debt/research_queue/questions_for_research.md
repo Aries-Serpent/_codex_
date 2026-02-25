@@ -621,7 +621,7 @@ from the module-level import. The local import at line 345 was safe (used with
 #### Resolution (S74)
 - Moved to module level: `from datetime import datetime, timezone` (line 15)
 - Removed local `from datetime import datetime` from `generate_migration_report()`
-- See [src/codex_init.py:15](../../src/codex_init.py#L15)
+- See [src/codex_init.py:15](../../../src/codex_init.py#L15)
 
 ---
 
@@ -658,7 +658,7 @@ pattern in all non-test Python files and fails if found.
 #### Resolution (S74)
 - Removed `xml.etree.ElementTree` fallback from `tools/validate.py`
 - Now raises `ImportError` with clear install instructions if `defusedxml` missing
-- See [tools/validate.py:25](../../tools/validate.py#L25)
+- See [tools/validate.py:25](../../../tools/validate.py#L25)
 
 ---
 
@@ -680,7 +680,7 @@ but did NOT add a `.set()` method. Tests across `test_rag_caching_system.py` cal
 - Added `def set(self, key, value, *args, **kwargs)` to `EmbeddingCache`
 - Coerces numeric lists/arrays via `np.asarray(value, dtype=float32)`; non-numeric
   values fall back to `np.zeros(1)` sentinel to avoid ValueError
-- See [src/codex/rag/cache/embedding_cache.py](../../src/codex/rag/cache/embedding_cache.py)
+- See [src/codex/rag/cache/embedding_cache.py](../../../src/codex/rag/cache/embedding_cache.py)
 
 ---
 
@@ -705,7 +705,7 @@ requires `payload=` as keyword-only arg.
 - All calls use `_ckpt_core.load_checkpoint(...)` and `_ckpt_core.save_checkpoint(...)`
 - Changed `state=checkpoint_state` → `payload=checkpoint_state` + added `metadata=...`
 - Fixed `fake_load` in test to accept `**kwargs` and return `(state_dict, fake_meta)` tuple
-- See [src/codex_ml/training/unified_training.py:42](../../src/codex_ml/training/unified_training.py#L42)
+- See [src/codex_ml/training/unified_training.py:42](../../../src/codex_ml/training/unified_training.py#L42)
 
 ---
 
@@ -726,7 +726,7 @@ pre-commit hook to report 2 auto-fixable issues.
 
 #### Resolution (S74)
 - Removed `resolve_strategy` from the `from codex_ml.training.strategies import (...)` block
-- See [src/codex_ml/training/unified_training.py:43](../../src/codex_ml/training/unified_training.py#L43)
+- See [src/codex_ml/training/unified_training.py:43](../../../src/codex_ml/training/unified_training.py#L43)
 
 ---
 
