@@ -7,13 +7,12 @@ and scope management.
 **IMPORTANT**: Several methods in this module are stubs that must be implemented
 before production use:
 - `create_token()`: Raises NotImplementedError - must be wired to GitHub API
-- `validate_secret()`: Returns stub validation - needs actual API integration
 - `revoke_secret()`: Returns stub success - needs actual API call
 - `list_secrets()`: Returns empty list - needs actual API call
 
-These stubs are intentionally designed to fail safely. The `create_token()` method
-raises an error to prevent accidental use, while validation methods log warnings
-but allow development/testing to proceed.
+`validate_secret()` now calls `GET /api.github.com/user` to verify the token
+is live and accepted by GitHub. Requires network access; gracefully degrades to
+format-only validation when the network is unreachable.
 
 Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 """
@@ -22,6 +21,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from datetime import UTC, datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -171,28 +171,19 @@ class GitHubTokenProvider(TokenProvider):
             if not token:
                 raise ValidationError("No token provided for validation")
 
-            # Make API request to validate token
-            # This is a stub - actual implementation would use GitHub API
-            # Example: GET /user with token authentication
-
-            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
-            # Justification: This is a static informational string with no dynamic data.
-            # No secrets, tokens, or sensitive information are logged. The log message
-            # is purely for debugging stub code execution flow.
             logger.info("Validating GitHub token")
 
-            # Check expiration
+            # Check local expiration first (avoids unnecessary API call)
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning("GitHub token has expired")
+                    logger.warning("GitHub token has expired (local expiry check)")
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
 
             # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
             # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
-            import re
             _GITHUB_TOKEN_RE = re.compile(
                 r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$"
             )
@@ -200,17 +191,48 @@ class GitHubTokenProvider(TokenProvider):
                 logger.warning("GitHub token does not match expected format")
                 return False
 
-            # NOTE: Stub — does NOT call the GitHub API.
-            # To enable real validation replace this block with:
-            #   import httpx
-            #   resp = httpx.get("https://api.github.com/user",
-            #                    headers={"Authorization": f"token {token}"})
-            #   return resp.status_code == 200
-            logger.warning(
-                "GitHub token validation is a stub. "
-                "Token format looks valid but API authenticity is NOT verified."
-            )
-            return True
+            # Live validation: call GET /user to confirm the token is accepted
+            # by GitHub.  Falls back gracefully if network is unreachable so
+            # offline / air-gapped deployments are not broken.
+            try:
+                import requests as _requests
+                resp = _requests.get(
+                    "https://api.github.com/user",
+                    headers={
+                        "Authorization": f"token {token}",
+                        "Accept": "application/vnd.github+json",
+                        "X-GitHub-Api-Version": "2022-11-28",
+                    },
+                    timeout=10,
+                )
+                if resp.status_code == 401:
+                    logger.warning("GitHub token rejected by API (401 Unauthorized)")
+                    return False
+                if resp.status_code == 403:
+                    logger.warning("GitHub token forbidden by API (403 Forbidden)")
+                    return False
+                if resp.status_code == 200:
+                    logger.info("GitHub token validated successfully via API")
+                    return True
+                # Unexpected status — treat as valid but log
+                logger.warning(
+                    "GitHub API returned unexpected status %d; treating token as valid",
+                    resp.status_code,
+                )
+                return True
+            except ImportError:
+                # requests not available — fall back to format-only validation
+                logger.warning(
+                    "requests library unavailable; using format-only token validation"
+                )
+                return True
+            except Exception as network_err:
+                # Network unreachable, DNS failure, timeout — degrade gracefully
+                logger.warning(
+                    "GitHub API unreachable (%s); using format-only token validation",
+                    network_err,
+                )
+                return True
 
         except Exception as e:
             raise ValidationError(f"Token validation failed: {e}") from e

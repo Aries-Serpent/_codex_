@@ -515,10 +515,43 @@ class TestGitHubTokenProvider:
                 mock_revoke.assert_called_once_with("old-token-id")
 
     def test_validate_secret_with_token(self, github_config):
-        """Test token validation with provided value."""
+        """Test token validation with provided value (mocks GitHub API call)."""
         provider = GitHubTokenProvider(github_config)
         # Use a valid-format GitHub PAT (ghp_ prefix + 36 alphanumeric chars)
-        is_valid = provider.validate_secret("token-id", "ghp_" + "A" * 36)
+        token = "ghp_" + "A" * 36
+        # Mock the requests.get call so no real network traffic is made in tests
+        mock_response = Mock()
+        mock_response.status_code = 200
+        with patch("requests.get", return_value=mock_response):
+            is_valid = provider.validate_secret("token-id", token)
+        assert is_valid is True
+
+    def test_validate_secret_invalid_format(self, github_config):
+        """Test validation rejects tokens with invalid format."""
+        provider = GitHubTokenProvider(github_config)
+        # Too short — won't match the regex, so validate_secret returns False
+        # before making any API call
+        is_valid = provider.validate_secret("token-id", "ghp_tooshort")
+        assert is_valid is False
+
+    def test_validate_secret_api_401(self, github_config):
+        """Test validation returns False when GitHub API returns 401."""
+        provider = GitHubTokenProvider(github_config)
+        token = "ghp_" + "B" * 36
+        mock_response = Mock()
+        mock_response.status_code = 401
+        with patch("requests.get", return_value=mock_response):
+            is_valid = provider.validate_secret("token-id", token)
+        assert is_valid is False
+
+    def test_validate_secret_network_error_degrades_gracefully(self, github_config):
+        """Test that network errors fall back to format-only validation."""
+        import requests as real_requests
+        provider = GitHubTokenProvider(github_config)
+        token = "ghp_" + "C" * 36
+        with patch("requests.get", side_effect=real_requests.exceptions.ConnectionError("offline")):
+            is_valid = provider.validate_secret("token-id", token)
+        # Format is valid so should return True after graceful degradation
         assert is_valid is True
 
     def test_validate_secret_no_token(self, github_config):
