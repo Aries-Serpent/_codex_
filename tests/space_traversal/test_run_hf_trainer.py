@@ -66,7 +66,7 @@ def _stub_trainer_components(monkeypatch) -> None:
     monkeypatch.setattr(_eng, "DataCollatorForLanguageModeling",
                         lambda *a, **k: None)
     monkeypatch.setattr(_eng, "_make_accelerator", lambda **kw: None)
-    monkeypatch.setattr(_eng, "set_reproducible", lambda seed: None)
+    monkeypatch.setattr(_eng, "set_reproducible", lambda *a, **kw: None)
 
 
 @pytest.mark.parametrize("distributed", [False])

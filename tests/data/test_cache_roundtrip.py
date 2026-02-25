@@ -15,10 +15,14 @@ from src.training.datasets import TextDataset  # noqa: E402
 
 
 def test_cache_roundtrip(tmp_path):
+    from codex_ml.utils.hf_pinning import HFModelUnavailableError
     from transformers import AutoTokenizer
 
     # Load tokenizer without invalid revision parameter
-    tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
+    try:
+        tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
+    except HFModelUnavailableError:
+        pytest.skip("HF model unavailable in CI (no network access)")
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
     texts = ["hello world", "goodbye"]

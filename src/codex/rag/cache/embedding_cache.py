@@ -342,10 +342,19 @@ class EmbeddingCache:
 
         self._acquire_lock()
         try:
-            if key in self._cache:
+            found = key in self._cache
+            if found:
                 del self._cache[key]
-                return True
-            return False
+            # Also remove disk file so get() cannot resurrect it via _load_from_disk
+            if self._disk_path:
+                disk_file = self._disk_path / f"{key}.npy"
+                if disk_file.exists():
+                    try:
+                        disk_file.unlink()
+                    except OSError:
+                        pass
+                    found = True
+            return found
         finally:
             self._release_lock()
 
@@ -356,6 +365,13 @@ class EmbeddingCache:
             self._cache.clear()
             self._hits = 0
             self._misses = 0
+            # Also remove all disk files so get() cannot resurrect entries via _load_from_disk
+            if self._disk_path:
+                for disk_file in self._disk_path.glob("*.npy"):
+                    try:
+                        disk_file.unlink()
+                    except OSError:
+                        pass
             logger.debug("Embedding cache cleared")
         finally:
             self._release_lock()
