@@ -6,6 +6,7 @@ Validates internal file links and flags dynamic variables for manual review.
 Generated: 2026-01-26 | Author: autonomous-codebase-health-agent
 Updated: 2026-01-26 | Fixed absolute path handling and skip patterns
 Updated: 2026-02-25 | Added --fail-on-errors / STRICT_MODE / JSON report (PR #3365)
+Updated: 2026-02-25 | Added HTML comment + inline backtick span stripping (PR #3365 Phase 3)
 """
 
 import argparse
@@ -20,6 +21,13 @@ from typing import List, Set, Tuple
 GITHUB_CONTEXT_PATTERN = re.compile(r'\$\{\{[^}]+\}\}')
 # Markdown link pattern: [text](path)
 LINK_PATTERN = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+
+# Pre-processing patterns: strip these spans BEFORE running LINK_PATTERN so
+# links appearing inside comments or inline code are never matched.
+# HTML comments: <!-- ... --> (single-line and multi-line, non-greedy)
+HTML_COMMENT_PATTERN = re.compile(r'<!--.*?-->', re.DOTALL)
+# Inline backtick spans: `...` (single backtick, does NOT cross newlines)
+INLINE_CODE_PATTERN = re.compile(r'`[^`\n]+`')
 
 # Patterns to skip validation for
 SKIP_LINK_PATTERNS = [
@@ -60,7 +68,7 @@ SKIP_LINK_PATTERNS = [
     r'^rag_pipelines\.md$',# Placeholder in github-pages-manager docs
     r'^/tmp/',             # Temporary file/script paths
     r'^.*?correct/path',   # Placeholder "../correct/path.md" in examples
-    r'^AGENT_DESIGN\.md$', # Broken-link stub ref in HTML comments
+    r'^AGENT_DESIGN\.md$', # Previously in HTML comments (now stripped upstream)
 ]
 
 class LinkValidator:
@@ -139,6 +147,28 @@ class LinkValidator:
 
         return inside_code_block
 
+    def _strip_non_prose(self, content: str) -> str:
+        """Return a version of *content* with spans that should not be
+        link-validated replaced by whitespace-equivalent placeholders.
+
+        Specifically removes:
+        - HTML comments (``<!-- ... -->``) — multi-line safe, non-greedy
+        - Inline backtick code spans (`` `code` ``) — single-line only
+
+        Fenced code blocks (``` ... ```) are handled separately by
+        :meth:`is_in_code_block`; we preserve their line structure so that
+        the fence-detection logic in that method still works correctly.
+        """
+        # Replace HTML comments with spaces of the same length so that
+        # character positions for subsequent matches remain stable.
+        def blank_match(m: re.Match) -> str:
+            # Preserve newlines so line numbers stay correct
+            return re.sub(r'[^\n]', ' ', m.group(0))
+
+        content = HTML_COMMENT_PATTERN.sub(blank_match, content)
+        content = INLINE_CODE_PATTERN.sub(blank_match, content)
+        return content
+
     def validate_file(self, file_path: Path) -> None:
         """Validate all links in a single markdown file"""
         if file_path in self.checked_files:
@@ -146,14 +176,19 @@ class LinkValidator:
         self.checked_files.add(file_path)
 
         try:
-            content = file_path.read_text(encoding='utf-8')
+            raw_content = file_path.read_text(encoding='utf-8')
         except Exception as e:
             self.errors.append((str(file_path), "", f"Failed to read file: {e}"))
             return
 
+        # Strip HTML comments and inline backtick spans so links inside them
+        # are never matched.  Fenced code blocks are handled by is_in_code_block
+        # below; we pass raw_content to that method so fence detection still works.
+        content = self._strip_non_prose(raw_content)
+
         for match in LINK_PATTERN.finditer(content):
-            # Skip links inside code blocks
-            if self.is_in_code_block(content, match.start()):
+            # Skip links inside fenced code blocks (uses original content for fences)
+            if self.is_in_code_block(raw_content, match.start()):
                 continue
 
             link_text = match.group(1)
