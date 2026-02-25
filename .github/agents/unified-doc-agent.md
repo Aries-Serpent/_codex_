@@ -1,5 +1,6 @@
 ---
 name: Unified Documentation Agent
+description: Provide unified documentation management across all documentation types and formats
 version: 1.0.0-m02
 updated: 2026-02-21
 merged_agents:

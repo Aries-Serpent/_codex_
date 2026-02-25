@@ -1,5 +1,6 @@
 ---
 name: owner-approval-guard
+description: Enforce owner approval requirements for sensitive autonomous operations and deployments
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

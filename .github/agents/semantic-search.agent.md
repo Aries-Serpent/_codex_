@@ -1,5 +1,6 @@
 ---
 name: semantic-search
+description: Perform semantic search over the codebase and documentation using embedding-based retrieval
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

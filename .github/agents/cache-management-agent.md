@@ -1,3 +1,8 @@
+---
+name: Cache Management Agent
+description: Manage caching strategies across the 4-layer cache hierarchy to optimize build and runtime performance
+---
+
 # Cache Management Agent
 
 **Agent Type:** Specialized Infrastructure Agent

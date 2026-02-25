@@ -1,3 +1,8 @@
+---
+name: Mutation Testing Agent
+description: Perform mutation testing to assess test suite effectiveness and identify weak spots
+---
+
 # Mutation Testing Agent
 
 **Agent Type:** Quality Assurance / Security Testing  

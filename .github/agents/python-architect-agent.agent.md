@@ -1,9 +1,6 @@
 ---
-# Python Architect Agent
-# .github/agents/python-architect-agent.agent.md
-# Version: 1.0.0 | Status: Active
-# Physics Model: Energy=5 (🔄 Fields — Maximum transformation and flow in iterative PoC development with modern GUI optimization)
-# Created: 2026-02-22T12:00:00Z | Author: mbaetiong
+name: Python Architect Agent
+description: Design and iteratively build Python GUI applications using PySide6/PyQt6 with modern styling and theme support
 ---
 
 ## 🎯 Mission Overview

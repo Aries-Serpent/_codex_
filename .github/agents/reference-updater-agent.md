@@ -1,5 +1,6 @@
 ---
 name: Reference Updater Agent
+description: Atomically update cross-repository references, import paths, and symbol names after refactors
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

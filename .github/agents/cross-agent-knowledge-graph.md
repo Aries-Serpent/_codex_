@@ -1,3 +1,8 @@
+---
+name: Cross-Agent Knowledge Graph Agent
+description: Build and maintain a knowledge graph connecting insights across all specialized agents
+---
+
 # [Agent]: Cross-Agent Knowledge Graph (E-10)
 > Generated: 2026-02-22T00:00:00Z | Author: mbaetiong
 

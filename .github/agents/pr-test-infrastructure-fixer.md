@@ -1,3 +1,8 @@
+---
+name: PR Test Infrastructure Fixer
+description: Fix broken test infrastructure in PRs to restore CI/CD pipeline functionality
+---
+
 # PR Test Infrastructure Fixer Agent
 
 **Version:** 1.0.0

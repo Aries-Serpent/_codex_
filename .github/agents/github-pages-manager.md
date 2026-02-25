@@ -1,5 +1,6 @@
 ---
 name: GitHub Pages Manager Agent
+description: Manage GitHub Pages deployment, configure themes, and synchronize live documentation updates
 version: 4.0.0-production
 updated: 2026-02-25
 cognitive_integration_level: 2

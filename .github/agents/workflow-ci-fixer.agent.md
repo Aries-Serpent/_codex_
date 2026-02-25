@@ -1,5 +1,6 @@
 ---
 name: Workflow CI Fixer Agent
+description: Fix GitHub Actions workflow syntax errors, job failures, and configuration issues
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

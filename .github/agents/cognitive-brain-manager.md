@@ -1,3 +1,8 @@
+---
+name: Cognitive Brain Manager
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs
+---
+
 # Cognitive Brain Manager
 
 **Version**: 1.0.0 (NEW in Phase 37-38)

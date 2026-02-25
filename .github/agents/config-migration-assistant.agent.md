@@ -1,5 +1,6 @@
 ---
 name: config-migration-assistant
+description: Migrate legacy configurations to Hydra format with backward compatibility and validation
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

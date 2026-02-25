@@ -1,5 +1,6 @@
 ---
 name: Security Alert Verification Agent
+description: Verify GitHub security alerts and propose targeted code fixes for each identified vulnerability
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

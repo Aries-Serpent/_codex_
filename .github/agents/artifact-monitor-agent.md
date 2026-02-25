@@ -1,3 +1,8 @@
+---
+name: Artifact Monitor Agent
+description: Monitor CI/CD artifact health, track workflow outputs, and provide autonomous diagnostics with pattern recognition
+---
+
 # Artifact Monitor Agent
 
 **Agent Type**: Specialized Monitoring & Diagnostics Agent

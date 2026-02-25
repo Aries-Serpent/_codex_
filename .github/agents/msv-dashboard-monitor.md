@@ -1,3 +1,8 @@
+---
+name: MSV Dashboard Monitor
+description: Monitor MSV dashboard metrics and alert on anomalies or threshold violations
+---
+
 # MSV Dashboard Monitoring Agent
 
 **Agent Name**: msv-dashboard-monitor  

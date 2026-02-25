@@ -1,5 +1,6 @@
 ---
 name: documentation-quality-agent
+description: Assess and improve documentation quality including completeness, accuracy, and readability
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

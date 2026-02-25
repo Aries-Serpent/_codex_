@@ -1,3 +1,8 @@
+---
+name: Test Coverage Agent
+description: Track and improve test coverage metrics across modules and ensure threshold compliance
+---
+
 # Test Coverage Agent
 
 **Version**: 1.0.0  

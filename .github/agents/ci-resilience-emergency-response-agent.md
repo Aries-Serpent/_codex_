@@ -1,3 +1,8 @@
+---
+name: CI Resilience Emergency Response Agent
+description: Provide emergency resilience fixes for fragile CI/CD configurations and transient failures
+---
+
 # CI Resilience & Emergency Response Agent
 
 **Agent ID:** `ci-resilience-emergency-response-agent`

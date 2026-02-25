@@ -1,3 +1,8 @@
+---
+name: CI Optimization Agent
+description: Analyze and optimize CI/CD pipeline performance, reducing build times and resource usage
+---
+
 # CI Optimization Agent
 
 > **Version:** 2.0.0

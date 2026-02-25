@@ -1,3 +1,8 @@
+---
+name: Workflow Management Agent
+description: Manage GitHub Actions workflow operations including creation, updates, and consolidation
+---
+
 # Workflow Management Agent
 
 **Agent Type:** Specialized Workflow Management & Optimization

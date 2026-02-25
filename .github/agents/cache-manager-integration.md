@@ -1,3 +1,8 @@
+---
+name: Cache Manager Integration Agent
+description: Integrate and coordinate cache management operations across repository systems
+---
+
 # Cache Manager Workflow Integration Agent
 
 **Agent Name**: cache-manager-integration  

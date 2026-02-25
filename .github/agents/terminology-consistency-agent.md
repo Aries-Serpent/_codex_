@@ -1,3 +1,8 @@
+---
+name: Terminology Consistency Agent
+description: Enforce consistent use of terminology across documentation, code comments, and APIs
+---
+
 # Terminology Consistency Agent
 
 **Type**: Documentation Quality Agent  

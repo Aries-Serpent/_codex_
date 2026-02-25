@@ -1,5 +1,6 @@
 ---
 name: test-alignment-fixer
+description: Fix test alignment issues that arise after API changes, refactors, or function signature updates
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

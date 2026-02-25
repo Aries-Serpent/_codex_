@@ -1,5 +1,6 @@
 ---
 name: Repository Hygiene Agent
+description: Clean up stale files, unused artifacts, and maintain overall repository hygiene
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

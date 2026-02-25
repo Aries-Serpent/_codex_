@@ -1,5 +1,6 @@
 ---
 name: config-validator
+description: Validate Hydra and project configuration files for correctness, schema compliance, and best practices
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

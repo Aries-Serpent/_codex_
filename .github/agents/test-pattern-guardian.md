@@ -1,3 +1,8 @@
+---
+name: Test Pattern Guardian
+description: Guard against anti-patterns in tests and enforce testing best practices across the codebase
+---
+
 # Test Pattern Guardian Agent
 
 **Status**: ✅ Production Ready  

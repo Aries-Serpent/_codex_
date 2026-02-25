@@ -1,5 +1,6 @@
 ---
 name: pii-scrubber
+description: Scrub personally identifiable information from logs, outputs, and data for GDPR/CCPA compliance
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

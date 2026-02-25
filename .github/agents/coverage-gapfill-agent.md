@@ -1,3 +1,8 @@
+---
+name: Coverage Gapfill Agent
+description: Identify low-coverage modules and generate targeted tests to close coverage gaps
+---
+
 # Coverage Gapfill Agent
 
 ## Purpose

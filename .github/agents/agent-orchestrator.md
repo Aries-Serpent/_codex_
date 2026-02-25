@@ -1,5 +1,6 @@
 ---
 name: Agent Orchestrator
+description: Orchestrate multi-agent workflows and coordinate task distribution across specialized agents
 version: 1.0.0
 updated: 2026-02-20
 cognitive_integration_level: 3

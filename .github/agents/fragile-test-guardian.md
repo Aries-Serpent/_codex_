@@ -1,3 +1,8 @@
+---
+name: Fragile Test Guardian
+description: Detect fragile tests prone to flakiness and apply stabilization patterns
+---
+
 # Fragile Test Guardian Agent
 
 **Agent Name**: fragile-test-guardian  

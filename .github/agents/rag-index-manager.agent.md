@@ -1,5 +1,6 @@
 ---
 name: rag-index-manager
+description: Manage RAG index operations including building, updating, querying, and maintaining embeddings
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

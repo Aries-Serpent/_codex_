@@ -1,3 +1,8 @@
+---
+name: Rust Config Validator
+description: Validate Rust configuration files and Cargo.toml for correctness and best practices
+---
+
 # Rust Configuration Validator Agent
 
 ## Overview

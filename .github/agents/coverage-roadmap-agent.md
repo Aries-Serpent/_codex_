@@ -1,5 +1,6 @@
 ---
 name: Coverage Roadmap Agent
+description: Drive the test coverage threshold roadmap by incrementally raising targets and adding targeted tests
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

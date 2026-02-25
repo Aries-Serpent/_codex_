@@ -1,3 +1,8 @@
+---
+name: Test Alignment Fixer Enhanced
+description: Fix test alignment issues after API changes with enhanced pattern coverage and automated remediation
+---
+
 # Test Alignment Fixer Agent - Enhanced
 
 **Agent Name**: test-alignment-fixer  

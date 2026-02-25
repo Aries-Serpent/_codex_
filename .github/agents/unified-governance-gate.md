@@ -1,5 +1,6 @@
 ---
 name: Unified Governance Gate Agent
+description: Enforce unified governance policies across PRs, deployments, and automated operations
 version: 1.0.0-m05
 updated: 2026-02-22
 merged_agents:

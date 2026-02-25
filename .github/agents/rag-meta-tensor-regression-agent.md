@@ -1,5 +1,6 @@
 ---
 name: RAG Meta Tensor Regression Agent
+description: Prevent regressions in RAG meta-tensor handling across model updates and refactors
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 2

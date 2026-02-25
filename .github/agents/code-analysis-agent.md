@@ -1,3 +1,8 @@
+---
+name: Code Analysis Agent
+description: Perform static code analysis to identify quality issues, anti-patterns, and improvement opportunities
+---
+
 # Code Analysis Agent
 
 **Agent Type:** Custom GitHub Copilot Agent

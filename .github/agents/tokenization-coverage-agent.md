@@ -1,5 +1,6 @@
 ---
 name: Tokenization Coverage Agent
+description: Improve test coverage for the tokenization module and validate tokenization correctness
 version: 3.0.0-cognitive
 updated: 2026-02-17
 cognitive_integration_level: 1

@@ -1,5 +1,6 @@
 ---
 name: Unified Security Scanner
+description: Perform comprehensive security scanning combining SAST, dependency checks, and secrets detection
 version: 1.0.0-m01
 updated: 2026-02-21
 merged_agents:
