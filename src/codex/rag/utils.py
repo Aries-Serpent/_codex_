@@ -76,24 +76,24 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                         logger.debug("Found meta device buffer via device.type")
                         return True
 
-        # Check named_modules for parameters (for comprehensive detection)
-        if hasattr(model, 'named_modules'):
-            for _, module in model.named_modules():
-                if hasattr(module, 'named_parameters'):
-                    for _, param in module.named_parameters():
-                        if hasattr(param, 'is_meta') and param.is_meta:
-                            logger.debug("Found meta tensor in module parameter")
-                            return True
-                        if hasattr(param, 'device') and hasattr(param.device, 'type'):
-                            if param.device.type == 'meta':
-                                logger.debug("Found meta device in module parameter via device.type")
-                                return True
+        # NOTE: The named_modules check is intentionally omitted here because it
+        # duplicates the parameters() and buffers() iteration above. The model.device
+        # check below is only applied to non-nn.Module objects (e.g. SentenceTransformer
+        # wrapper) that may expose their device as an attribute without using standard
+        # parameters()/buffers() iteration.
+        try:
+            import torch as _torch
+            _is_nn_module = isinstance(model, _torch.nn.Module)
+        except Exception:
+            _is_nn_module = False
 
-        # Check model's own device attribute
-        if hasattr(model, 'device') and hasattr(model.device, 'type'):
-            if model.device.type == 'meta':
-                logger.debug("Found meta device on model itself")
-                return True
+        if not _is_nn_module:
+            # For non-nn.Module objects (e.g., SentenceTransformer wrappers),
+            # check the model's own device attribute
+            if hasattr(model, 'device') and hasattr(model.device, 'type'):
+                if model.device.type == 'meta':
+                    logger.debug("Found meta device on model itself")
+                    return True
 
         return False
     except Exception as e:

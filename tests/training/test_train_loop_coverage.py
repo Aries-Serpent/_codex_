@@ -158,7 +158,10 @@ class TestBasicTrainingIteration:
 
     def test_training_mode_toggle(self, simple_model):
         """Test toggling between train and eval modes."""
-        assert not simple_model.training, "Model should start in eval mode"
+        assert simple_model.training, "Model should start in train mode (nn.Module default)"
+
+        simple_model.eval()
+        assert not simple_model.training, "Model should be in eval mode"
 
         simple_model.train()
         assert simple_model.training, "Model should be in train mode"

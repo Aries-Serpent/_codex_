@@ -649,7 +649,10 @@ class NDJSONMetricsWriter:
             data = obj.redacted().dict()
         else:
             try:
-                data = LogRecord(**obj).redacted().dict()  # type: ignore[arg-type]
+                import dataclasses as _dc
+                valid_keys = {f.name for f in _dc.fields(LogRecord)}
+                filtered = {k: v for k, v in obj.items() if k in valid_keys}
+                data = LogRecord(**filtered).redacted().dict()  # type: ignore[arg-type]
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj

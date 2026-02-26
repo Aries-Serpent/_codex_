@@ -39,6 +39,10 @@ class ExecutionMetrics:
     complexity_score: float  # 0.0 to 1.0
 
 
+# Alias for backward compatibility with tests
+TestExecutionMetrics = ExecutionMetrics
+
+
 @dataclass
 class ExecutionPriority:
     """Priority calculation result for a test execution."""

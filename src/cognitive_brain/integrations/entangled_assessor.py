@@ -40,6 +40,16 @@ class EntangledAssessmentResult:
     redundancy_avoided: bool
     pair_id: str
 
+    @property
+    def compliance_decision(self) -> Any:
+        """Alias for compliance.decision for backward compatibility."""
+        return self.compliance.decision if self.compliance else None
+
+    @property
+    def security_assessment(self) -> Dict[str, Any]:
+        """Alias for security for backward compatibility."""
+        return self.security
+
 
 class MockSecurityScanner:
     """Mock security scanner for testing entangled assessments."""
@@ -209,6 +219,10 @@ class EntangledComplianceSecurityAssessor:
             redundancy_avoided=redundancy_avoided,
             pair_id=self.pair_id,
         )
+
+    def assess_entangled(self, audit: AuditResult) -> "EntangledAssessmentResult":
+        """Alias for assess_with_entanglement for backward compatibility."""
+        return self.assess_with_entanglement(audit)
 
     def get_redundancy_reduction(self) -> float:
         """
