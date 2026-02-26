@@ -60,9 +60,15 @@ class PGVectorStore:
     Features:
     - Async scatter-gather queries across shards
     - Connection pooling for concurrent queries
-    - Centroid-based partitioning (optional)
+    - Centroid-based (KMeans) semantic sharding (optional, requires scikit-learn)
     - Global re-ranking across shards
     - Batch write optimization
+
+    Semantic Sharding:
+        Call ``fit_semantic_sharding(embeddings)`` with a representative sample of
+        document embeddings to fit a KMeans model.  Subsequent ``insert_batch()``
+        calls will automatically route documents to the nearest centroid shard
+        instead of using hash-based sharding.
 
     Example:
         >>> store = PGVectorStore(
@@ -93,6 +99,8 @@ class PGVectorStore:
         self.pool_size = pool_size
         self.shard_id = shard_id  # None = operate on all shards
         self.pool: Optional[AsyncConnectionPool] = None
+        self._kmeans: Optional["KMeans"] = None
+        self._shard_centroids: Optional[np.ndarray] = None
 
         if not HAS_PSYCOPG3:
             logger.warning(
@@ -300,6 +308,8 @@ class PGVectorStore:
         for doc, emb in zip(documents, embeddings):
             if shard_mapper:
                 shard_id = shard_mapper(doc['id'])
+            elif self._kmeans is not None:
+                shard_id = self.semantic_shard_mapper(doc['id'], emb)
             else:
                 # Simple hash-based sharding using xxhash (faster than SHA-256)
                 # For production with multi-process sharding, xxhash is required
@@ -368,6 +378,64 @@ class PGVectorStore:
         if self.pool:
             await self.pool.close()
             logger.info("PGVectorStore connection pool closed")
+
+    def fit_semantic_sharding(self, embeddings: np.ndarray) -> None:
+        """Fit a KMeans model for semantic shard assignment.
+
+        After calling this method, ``insert_batch()`` will automatically route
+        documents to the nearest centroid shard instead of hash-based sharding.
+
+        Args:
+            embeddings: Representative sample of document embeddings with shape
+                        (n_samples, embedding_dim).
+
+        Raises:
+            RuntimeError: If scikit-learn is not installed.
+        """
+        if not HAS_SKLEARN:
+            raise RuntimeError(
+                "fit_semantic_sharding() requires scikit-learn. "
+                "Install: pip install scikit-learn"
+            )
+        kmeans = KMeans(
+            n_clusters=self.num_shards,
+            random_state=42,  # fixed seed for reproducible cluster assignments
+            n_init="auto",
+        )
+        kmeans.fit(embeddings)
+        self._kmeans = kmeans
+        self._shard_centroids = kmeans.cluster_centers_
+        logger.info(
+            "Semantic sharding fitted: %d clusters on %d samples.",
+            self.num_shards,
+            len(embeddings),
+        )
+
+    def semantic_shard_mapper(self, doc_id: str, embedding: np.ndarray) -> int:
+        """Map a document to a shard using the fitted KMeans model.
+
+        Falls back to hash-based sharding if no KMeans model has been fitted.
+
+        Args:
+            doc_id: Document ID (used for hash fallback).
+            embedding: Document embedding vector.
+
+        Returns:
+            Shard index in ``[0, num_shards)``.
+        """
+        if self._kmeans is None:
+            # Hash-based fallback
+            try:
+                import xxhash
+                hash_val = xxhash.xxh64(doc_id.encode()).intdigest()
+            except ImportError:
+                import hashlib
+                hash_val = int.from_bytes(
+                    hashlib.sha256(doc_id.encode()).digest()[:8],
+                    'big',
+                )
+            return hash_val % self.num_shards
+        return int(self._kmeans.predict(embedding.reshape(1, -1))[0])
 
     # Stub methods for backward compatibility
     def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):

@@ -109,8 +109,12 @@ class PGVectorStoreBackend(VectorStoreBackend):
             from codex.retrieval.stores.pgvector_store import PGVectorStore, HAS_PSYCOPG3
             if HAS_PSYCOPG3:
                 self._store = PGVectorStore()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug(
+                "PGVectorStoreBackend: failed to initialize PGVectorStore; "
+                "falling back to in-memory: %s",
+                exc,
+            )
         if self._store is None:
             logger.warning("PGVectorStoreBackend: psycopg3/PGVectorStore unavailable, falling back to in-memory")
             self._fallback = InMemoryVectorStore()
