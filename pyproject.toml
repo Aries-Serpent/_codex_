@@ -499,3 +499,12 @@ exclude_lines = [
 python_version = "3.11"
 ignore_missing_imports = true
 strict = false
+
+[tool.pip-audit]
+# CVE-2025-69872: diskcache <=5.6.3 uses pickle serialization by default,
+# enabling RCE if an attacker has write access to the cache directory.
+# Status: No patched version available (5.6.3 is the latest release).
+# diskcache is an indirect dependency via dvc-data -> dvc (dev extra only)
+# and is not used directly in application code.
+# Tracked in Dependabot alert #89. Re-evaluate when a fix is published.
+ignore-vulns = ["CVE-2025-69872"]
