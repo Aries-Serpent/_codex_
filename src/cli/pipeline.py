@@ -102,7 +102,13 @@ def run_pipeline(
         elif hasattr(train_ds, "texts"):
             texts = list(train_ds.texts)
         else:
-            texts = list(train_ds)
+            try:
+                texts = list(train_ds)
+            except TypeError as exc:
+                raise ValueError(
+                    f"train_ds must be a list, have a .texts attribute, or be iterable; "
+                    f"got {type(train_ds).__name__}"
+                ) from exc
 
         # Extract val_texts from val_ds
         val_texts = None
@@ -112,7 +118,13 @@ def run_pipeline(
             elif hasattr(val_ds, "texts"):
                 val_texts = list(val_ds.texts)
             else:
-                val_texts = list(val_ds)
+                try:
+                    val_texts = list(val_ds)
+                except TypeError as exc:
+                    raise ValueError(
+                        f"val_ds must be a list, have a .texts attribute, or be iterable; "
+                        f"got {type(val_ds).__name__}"
+                    ) from exc
 
         metrics = train(texts, config=train_cfg, val_texts=val_texts, model=model)
         return {"status": "ok", "metrics": metrics}

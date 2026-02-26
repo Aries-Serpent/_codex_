@@ -162,7 +162,22 @@ class SLAPolicy(BaseModel):
         day_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         remaining = self.target_minutes
 
+        # Validate that at least one business day is defined to prevent infinite loop
+        if not any(day_hours.get(d) for d in day_names):
+            raise ValueError(
+                "business_hours_schedule contains no valid business days; "
+                "at least one day with start/end hours is required."
+            )
+
+        _max_iterations = 3650  # safety cap: ~10 years of daily advances
+        _iterations = 0
         while remaining > 0:
+            if _iterations >= _max_iterations:
+                raise RuntimeError(
+                    f"SLA calculation exceeded {_max_iterations} day iterations; "
+                    "check business_hours_schedule for a valid schedule."
+                )
+            _iterations += 1
             day_name = day_names[current.weekday()]
             schedule = day_hours.get(day_name)
             if schedule:

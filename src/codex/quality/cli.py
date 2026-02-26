@@ -29,7 +29,7 @@ import click  # noqa: E402
 def _count_function_lines(node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
     if not node.body:
         return 0
-    return (node.end_lineno or 0) - node.lineno
+    return max(0, (node.end_lineno or node.lineno) - node.lineno)
 
 
 def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5, max_file_lines: int = 500) -> dict:
