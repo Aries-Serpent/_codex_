@@ -74,6 +74,76 @@ state.probabilities = tuned_probs
 
 ---
 
+## 🔬 QuantumPlansetEngine Integration
+
+The `quantum-compliance-tuning-agent` is the **exclusive executor** of the
+`QI_TESTING` improvement area in `QuantumPlansetEngine`. The engine generates a
+7-step planset whose collapse order drives the agent's iterative tuning loop.
+
+### Architecture
+
+```mermaid
+flowchart TD
+    A([QuantumPlansetEngine]) -->|generate QI_TESTING| B[QuantumPlanset\nsuperposition]
+    B -->|collapse| C[Ordered Execution Path\nQI-01 → QI-07]
+
+    C --> QI01[QI-01\nBaseline Scalability Run\nimpact=0.95 conf=0.99]
+    QI01 -->|entangled| QI02[QI-02\nPer-Pattern Report\nimpact=0.90 conf=0.98]
+    QI02 -->|entangled| QI03[QI-03\nUpdate target_patterns.json\nimpact=0.85 conf=0.85]
+    QI03 -->|entangled| QI04[QI-04\nRun Tuned Experiment\nBAYESIAN+FUZZY\nimpact=0.88 conf=0.82]
+    QI04 -->|entangled| QI05[QI-05\nCompare Before vs After\nimpact=0.80 conf=0.90]
+    QI05 -->|entangled| QI06[QI-06\nRegression Guard\nseed=42 acc=100% k₁≤0.35\nimpact=0.92 conf=0.97]
+    QI06 -->|entangled| QI07[QI-07\nAccept or Revert\nimpact=0.75 conf=0.88]
+
+    QI07 -->|improvement ≥5pp\nno regression| COMMIT([Commit target_patterns.json])
+    QI07 -->|regression\nor no improvement| REVERT([Revert + next iteration\nmax 5 total])
+
+    style QI01 fill:#2d6a4f,color:#fff
+    style QI06 fill:#b5451b,color:#fff
+    style COMMIT fill:#1b4332,color:#fff
+    style REVERT fill:#9b2226,color:#fff
+```
+
+### Context Signals → Amplitude Boosts
+
+```mermaid
+flowchart LR
+    CTX{Context\nSignals} -->|failing_patterns ≥ 2| B1[QI-01 ×1.5\nQI-06 ×1.6]
+    CTX -->|failing_patterns = 1| B2[QI-01 ×1.3\nQI-06 ×1.4]
+    CTX -->|k₁ ≥ 0.33| B3[QI-06 ×1.7\nregression guard\npriority elevated]
+    B1 --> AMP([Amplitude Recalculated\nvia Born Rule])
+    B2 --> AMP
+    B3 --> AMP
+    AMP -->|collapse| PATH([Execution Path\nQI-01 first])
+```
+
+### Quick Start
+
+```python
+from codex.cognitive import QuantumPlansetEngine, ImprovementArea
+
+engine = QuantumPlansetEngine()
+
+# Generate with live context from per-pattern report
+ps = engine.generate(
+    ImprovementArea.QI_TESTING,
+    context={
+        "failing_patterns": 2,   # H and F below 95%
+        "k1": 0.3406,             # near limit — boosts QI-06
+    },
+)
+
+path = engine.collapse(ps)
+for step in path:
+    print(f"[{step.step_id}] {step.agent}: {step.action}")
+    print(f"  amplitude={step.effective_amplitude():.4f}")
+
+# Persist for cross-session handoff
+engine.save(ps)
+```
+
+---
+
 ## 🎯 Responsibilities
 
 1. **Pattern accuracy monitoring** — track per-pattern accuracy across multi-seed runs

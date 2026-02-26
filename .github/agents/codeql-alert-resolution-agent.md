@@ -1,13 +1,14 @@
 ---
 name: CodeQL Alert Resolution Agent
-description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements
+description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements. Includes Playwright scraping and automated resolution pipeline.
 ---
 
 # CodeQL Alert Resolution Agent
 
 **Agent Type:** Security & Vulnerability Management
-**Version:** 1.0.0
+**Version:** 3.1.0-self-healing
 **Created:** 2026-01-26
+**Updated:** 2026-02-26 (PR #3375 — P3: self-healing loop, extras.txt, coverage planset)
 **Status:** ✅ Production Ready
 
 ---
@@ -176,23 +177,32 @@ Autonomous agent for systematic resolution of CodeQL code scanning alerts. Fetch
 ## 📊 Workflow
 
 ```mermaid
-graph TD
-    A[Start: Agent Activation] --> B[Fetch All Alerts via API]
-    B --> C[Categorize by Severity/Pattern]
-    C --> D{Is Automated Fix Available?}
-    D -->|Yes| E[Apply Security Codemod]
-    D -->|No| F[Route to Human Review]
-    E --> G[Run Regression Tests]
-    G --> H{Tests Pass?}
-    H -->|Yes| I[Close Alert via API]
-    H -->|No| J[Revert & Flag for Manual]
-    I --> K[Update Dashboard]
-    F --> K
-    J --> K
-    K --> L{More Alerts?}
-    L -->|Yes| D
-    L -->|No| M[Generate Final Report]
-    M --> N[End]
+flowchart TD
+    QPE([QuantumPlansetEngine\ngenerate SECURITY_REMEDIATION]) -->|collapse| PLAN[Execution Path\nSEC-01 → SEC-05]
+
+    PLAN --> SEC01[SEC-01 Collect\nresolution_pipeline.py\nstages=collect,analyse]
+    SEC01 --> SEC02[SEC-02 Remediate P0/P1\ncodemods: sql_injection\nsubprocess, hardcoded]
+    SEC02 --> SEC03[SEC-03 Scan CVEs\npip-audit on requirements]
+    SEC02 --> SEC04[SEC-04 Scan Secrets\ndetect-secrets baseline]
+    SEC02 -->|entangled| SEC05[SEC-05 Validate + Close\nstages=validate,close]
+
+    SEC01 --> CAT{Categorise\nby Severity}
+    CAT -->|P0/P1 critical| AUTO[Apply Security\nCodemod Automatically]
+    CAT -->|P2/P3| HUMAN[Route to\nHuman Review]
+    AUTO --> TEST{Regression\nTests Pass?}
+    TEST -->|Yes| CLOSE[Close Alert via API]
+    TEST -->|No| REVERT[Revert + Flag Manual]
+    CLOSE --> DASH[Update Dashboard]
+    HUMAN --> DASH
+    REVERT --> DASH
+    DASH --> MORE{More Alerts?}
+    MORE -->|Yes| CAT
+    MORE -->|No| REPORT[Generate Final\nReport + Artifacts]
+
+    style QPE fill:#1d3557,color:#fff
+    style PLAN fill:#2d6a4f,color:#fff
+    style CLOSE fill:#1b4332,color:#fff
+    style REVERT fill:#9b2226,color:#fff
 ```
 
 ## 🛠️ Tools & Scripts
@@ -609,6 +619,90 @@ brain.submit_learning(
 
 ## Version History
 
+### v3.1.0-self-healing (2026-02-26) — PR #3375 Session P3
+
+**New: Iterative Self-Healing Loop + Coverage Planset + extras.txt**
+
+#### Self-Healing Loop Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                CODEQL ALERT RESOLUTION — SELF-HEALING LOOP           │
+│                                                                      │
+│  ┌─────────┐   ┌──────────┐   ┌────────────┐   ┌──────────────────┐ │
+│  │ COLLECT │──▶│ ANALYSE  │──▶│  REMEDIATE │──▶│    VALIDATE      │ │
+│  └─────────┘   └──────────┘   └────────────┘   └──────────────────┘ │
+│       ▲              │               │                  │            │
+│       │         P0 alerts       auto-codemod         ruff/bandit     │
+│       │         P1 alerts       sql_injection         passes?        │
+│       │         P2 alerts       subprocess            │              │
+│       │                         hardcoded          YES│   NO │       │
+│       │                                              ▼       ▼       │
+│       │                                          ┌──────┐ ┌───────┐ │
+│       │                                          │CLOSE │ │REPORT │ │
+│       │                                          └──────┘ └───────┘ │
+│       │                                                   │         │
+│       │           Self-Heal Trigger (up to 3 passes)      │         │
+│       └──────────────────────────────────────────────────┘         │
+│                                                                      │
+│  Pass 1: Collect + Analyse → build priority matrix                   │
+│  Pass 2: Remediate + Validate → apply fixes, check results           │
+│  Pass 3: Re-collect after fixes → verify alert count decreased       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+#### Self-Healing Protocol
+
+```python
+# Autonomous self-healing invocation
+pipeline = ResolutionPipeline(
+    owner="Aries-Serpent",
+    repo="_codex_",
+    dry_run=False,
+    max_heal_passes=3,   # retry up to 3 times
+)
+
+for pass_num in range(1, pipeline.max_heal_passes + 1):
+    result = pipeline.run(stages=["collect", "analyse", "remediate", "validate"])
+    if result.validation_passed and result.errors == []:
+        break  # healed — stop iterating
+    # Log diagnostic and widen/narrow codemod scope on next pass
+    # (e.g. skip failing codemod pattern, add fallback fix)
+    print(f"Pass {pass_num} incomplete: {result.errors}")
+
+# Close only after all passes confirm validation
+if result.validation_passed:
+    pipeline.run(stages=["close"])
+```
+
+#### Activation Command
+
+```
+@copilot run qa-walkthrough --heal
+```
+or via workflow dispatch:
+```
+nightly-codeql-alert-triage.yml → stages: collect,analyse,remediate,validate,close
+```
+
+#### Optional Dependency Guard
+
+```bash
+# Install Playwright extra (optional, for browser-based scraping)
+pip install 'codex[playwright]'
+playwright install chromium
+
+# Or via extras.txt
+# requirements/extras.txt — playwright>=1.40; extra == "playwright"
+```
+
+#### New Files Added (P3)
+
+| File | Purpose |
+|------|---------|
+| `requirements/extras.txt` | Optional Playwright install guard with PEP 508 syntax |
+| `.codex/security/COVERAGE_PLANSET_PR3375.md` | Test coverage strategy for security scripts |
+
 ### v3.0.0-cognitive (2026-02-17) - PR-7
 - ✅ Cognitive brain integration (Level 2)
 - ✅ MCP tool integration (general category)
@@ -620,3 +714,72 @@ brain.submit_learning(
 
 ### v2.0.0 (Previous)
 - See git history for previous changes
+
+### v2.0.0-pipeline (2026-02-26) — PR #3375
+
+**New: Playwright Scraper + Resolution Pipeline**
+
+#### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CODEQL ALERT RESOLUTION PIPELINE                   │
+│                                                                 │
+│  ┌──────────┐    ┌──────────┐    ┌────────────┐    ┌────────┐  │
+│  │ COLLECT  │───▶│ ANALYSE  │───▶│ REMEDIATE  │───▶│VALIDATE│  │
+│  └──────────┘    └──────────┘    └────────────┘    └────────┘  │
+│       │               │                │                │       │
+│  GitHub API      Priority           Codemods         ruff +    │
+│  (primary)      Matrix P0–P4       sql_injection     bandit    │
+│       │          by_severity       subprocess                   │
+│  Playwright      by_priority       hardcoded         └──▶CLOSE │
+│  (fallback)                                          alert API  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Scripts Added
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/security/playwright_scraper.py` | Browser-based alert collection (fallback when API token unavailable) |
+| `scripts/security/resolution_pipeline.py` | Orchestrates collect→analyse→remediate→validate→close |
+
+#### Usage
+
+```bash
+# Full pipeline (API collection + analysis + automated fixes + validation)
+python scripts/security/resolution_pipeline.py \
+    --owner Aries-Serpent --repo _codex_
+
+# With Playwright fallback if API returns 0
+python scripts/security/resolution_pipeline.py \
+    --owner Aries-Serpent --repo _codex_ --use-playwright
+
+# Playwright only (no API token required)
+python scripts/security/playwright_scraper.py \
+    --repo https://github.com/Aries-Serpent/_codex_ \
+    --output .codex/security/playwright_alerts.json \
+    --csv .codex/security/playwright_alerts.csv
+
+# Dry-run: see what would be closed without mutating
+python scripts/security/resolution_pipeline.py \
+    --stages close --dry-run
+```
+
+#### Alert Priority Mapping
+
+| Severity | Priority | Action |
+|----------|----------|--------|
+| critical | P0 | Immediate — auto-close after fix |
+| high | P1 | Sprint — PR created |
+| medium | P2 | Batch — codemod applied |
+| low | P3 | Cleanup — scheduled |
+| warning/note | P4 | Informational |
+
+#### Codebase Alignment
+
+- Integrates with `fetch_codeql_alerts.py` (primary collector)
+- Integrates with `close_codeql_alert.py` (alert dismissal)
+- Integrates with `analyze_alerts.py` (triage/prioritisation)
+- Output JSON compatible with `score_alerts.py` and `generate_remediation_plan.py`
+- Tests: `tests/security/test_playwright_scraper.py` (35 tests)

@@ -1,0 +1,23 @@
+# Optional extras for the codex package.
+# Install a specific group via: pip install 'codex[<extra>]'
+# Or install manually as documented below.
+
+# ─────────────────────────────────────────
+# [playwright] — Browser-based alert scraping
+# ─────────────────────────────────────────
+# Enables scripts/security/playwright_scraper.py.
+# When absent the module gracefully degrades: it logs an install hint and exits 1.
+#
+# Install via package extra (recommended):
+#   pip install 'codex[playwright]'
+#
+# Or install directly:
+#   pip install playwright
+#   playwright install chromium
+#
+# Note: chromium browser binary (~200 MB) is installed separately.
+#       In CI use: playwright install --with-deps chromium
+#
+# The playwright extra is declared in pyproject.toml under
+# [project.optional-dependencies].playwright = ["playwright>=1.40"]
+playwright>=1.40

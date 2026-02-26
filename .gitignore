@@ -385,5 +385,8 @@ RESOLUTION_SUMMARY.md
 ACCOUNTABILITY_REPORT_DRAFT.md
 audit_artifacts/
 
+# Planset orchestrator runtime state (session-local, not for VCS)
+**/.orchestrator_state.json
+
 # Validation virtual environment (created by validate.py)
 .venv_validation/

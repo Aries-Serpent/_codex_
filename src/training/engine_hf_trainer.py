@@ -168,7 +168,6 @@ except Exception:  # pragma: no cover - datasets missing
                 return len(col)
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
                 return 0
 
 
@@ -583,7 +582,6 @@ def _compute_metrics(eval_pred):
         loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         loss = None
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
     return {"token_accuracy": float(acc), "perplexity": ppl}
@@ -653,7 +651,6 @@ class NDJSONMetricsWriter:
             try:
                 data = LogRecord(**obj).redacted().dict()  # type: ignore[arg-type]
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
@@ -916,7 +913,6 @@ def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] |
         normalized = _convert(cfg)
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
         return None
     return normalized if isinstance(normalized, dict) else None
 
@@ -1011,7 +1007,6 @@ def run_hf_trainer(
             logger.debug(f"YAMLError: {exc}")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             cfg = {}
         if config_snapshot is None and cfg:
@@ -1317,7 +1312,6 @@ def run_hf_trainer(
                 shutil.copy2(config_path, target_path)
             copied_resume_config = target_path
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             copied_resume_config = None
 

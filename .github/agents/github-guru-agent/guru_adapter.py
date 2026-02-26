@@ -10,8 +10,12 @@ Physics scoring equation applied:
 """
 from __future__ import annotations
 
+import json
 import logging
+import os
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -27,14 +31,14 @@ if str(_repo_root / "agents") not in sys.path:
     sys.path.insert(0, str(_repo_root / "agents"))
 
 try:
-    from cognitive_brain.base import (  # type: ignore[import]
+    from cognitive_brain.base import (  # type: ignore[import]  # noqa: I001
         ActionResult,
         Decision,
         ObservationData,
         OrientationResult,
         Planner,
     )
-    from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401  # type: ignore[import]
+    from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401
     _COGNITIVE_BRAIN_AVAILABLE = True
     logger.debug("Cognitive brain ABCs available (available=%s)", _COGNITIVE_BRAIN_AVAILABLE)
 except ImportError:
@@ -42,8 +46,8 @@ except ImportError:
     logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)
 
     # ---- Inline stubs so the module is importable without the full repo --------
+    from abc import ABC, abstractmethod  # noqa: I001
     from dataclasses import dataclass
-    from abc import ABC, abstractmethod
 
     @dataclass
     class ObservationData:  # type: ignore[no-redef]
@@ -144,6 +148,7 @@ class GitHubGuruAdapter(Planner):
         "dependency_drift_detection":  {"impact": 0.75, "energy": 20, "risk": 0.2, "friction": 2},
         "stale_resource_detection":    {"impact": 0.5, "energy": 10, "risk": 0.05, "friction": 1},
         "label_taxonomy_enforcement":  {"impact": 0.55, "energy": 8,  "risk": 0.0, "friction": 1},
+        "create_copilot_pr":           {"impact": 0.95, "energy": 10, "risk": 0.2, "friction": 1},
     }
 
     def __init__(self, guru_agent: Any):
@@ -314,6 +319,91 @@ class GitHubGuruAdapter(Planner):
 
     # ---- Helpers ---------------------------------------------------------------
 
+    def create_copilot_pr(
+        self,
+        title: str,
+        head_branch: str,
+        base_branch: str = "main",
+        copilot_task: str = "",
+        body: str = "",
+        owner: str = "Aries-Serpent",
+        repo: str = "_codex_",
+        github_token: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Create a GitHub Pull Request whose body starts with ``@copilot <task>``
+        to trigger a GitHub Copilot autonomous agent session.
+
+        The PR body is prefixed with the ``@copilot`` mention so GitHub routes
+        the request to the Copilot coding agent immediately on PR creation.
+
+        Args:
+            title: PR title (e.g. "fix: remediate P0 CodeQL alerts").
+            head_branch: Branch containing the changes (created externally).
+            base_branch: Target branch (default "main").
+            copilot_task: Task description appended to the @copilot mention.
+                          e.g. "Remediate all P0 sql-injection alerts."
+            body: Additional PR body content appended after the @copilot line.
+            owner: GitHub repository owner.
+            repo: GitHub repository name.
+            github_token: Personal access token (falls back to env GITHUB_TOKEN).
+
+        Returns:
+            Dict with keys: pr_url, pr_number, copilot_triggered (bool), errors.
+        """
+        token = github_token or os.environ.get("GITHUB_TOKEN", "")
+        errors: List[str] = []
+
+        # Build @copilot-triggered body
+        copilot_line = f"@copilot {copilot_task}".strip()
+        full_body = f"{copilot_line}\n\n{body}".strip() if body else copilot_line
+
+        if not token:
+            errors.append("GITHUB_TOKEN not set; cannot create PR")
+            return {"pr_url": None, "pr_number": None, "copilot_triggered": False, "errors": errors}
+
+        try:
+            payload = json.dumps({
+                "title": title,
+                "body": full_body,
+                "head": head_branch,
+                "base": base_branch,
+            }).encode()
+
+            req = urllib.request.Request(
+                url=f"https://api.github.com/repos/{owner}/{repo}/pulls",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "Content-Type": "application/json",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read())
+                pr_url = data.get("html_url")
+                pr_number = data.get("number")
+                logger.info("Created Copilot PR #%s: %s", pr_number, pr_url)
+                return {
+                    "pr_url": pr_url,
+                    "pr_number": pr_number,
+                    "copilot_triggered": True,
+                    "errors": [],
+                }
+        except urllib.error.HTTPError as exc:
+            body_text = exc.read().decode(errors="replace") if exc.fp else ""
+            errors.append(f"HTTP {exc.code} from GitHub API: {body_text[:200]}")
+            logger.error("create_copilot_pr HTTP error %s: %s", exc.code, body_text[:200])
+        except urllib.error.URLError as exc:
+            errors.append(f"Network error creating PR: {exc.reason}")
+            logger.error("create_copilot_pr network error: %s", exc.reason)
+        except Exception as exc:
+            errors.append(f"PR creation failed: {exc}")
+            logger.error("create_copilot_pr unexpected error: %s", exc)
+        return {"pr_url": None, "pr_number": None, "copilot_triggered": False, "errors": errors}
+
     @staticmethod
     def _event_capability_confidence(event_type: str, capability: str) -> float:
         """Return confidence that event_type maps to capability."""
@@ -335,6 +425,7 @@ class GitHubGuruAdapter(Planner):
                 "workflow_health_monitoring",
                 "repository_hygiene_reporting",
                 "dependency_drift_detection",
+                "create_copilot_pr",
             ],
         }
         mapped = _EVENT_MAP.get(event_type, [])
