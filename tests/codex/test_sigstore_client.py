@@ -33,5 +33,5 @@ def test_sigstore_mock_fallback_when_package_absent(monkeypatch):
 def test_sigstore_real_sign_attempted_when_package_present(tmp_path):
     """When sigstore IS installed, SigstoreClient must attempt real signing."""
     pytest.importorskip("sigstore")  # skip if not installed
-    from codex.archive.sigstore_client import HAS_SIGSTORE, SigstoreClient
+    from codex.archive.sigstore_client import HAS_SIGSTORE
     assert HAS_SIGSTORE is True, "HAS_SIGSTORE must be True when sigstore package is present"

@@ -457,9 +457,9 @@ class TestIntegration_PerformanceScaling:
         for i in range(100):
             memory.store_memory(key=f"key{i}", value=f"value{i}")
 
-        # Retrieve some
+        # Retrieve some — use key= kwarg so retrieve_memory returns content str
         for i in range(0, 100, 10):
-            result = memory.retrieve_memory(f"key{i}")
+            result = memory.retrieve_memory(key=f"key{i}")
             assert result == f"value{i}"
 
     def test_complex_workflow_scaling(self):

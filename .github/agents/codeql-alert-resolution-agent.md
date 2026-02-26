@@ -1,13 +1,14 @@
 ---
 name: CodeQL Alert Resolution Agent
-description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements
+description: Resolve CodeQL security alerts by implementing targeted code fixes and security improvements. Includes Playwright scraping and automated resolution pipeline.
 ---
 
 # CodeQL Alert Resolution Agent
 
 **Agent Type:** Security & Vulnerability Management
-**Version:** 1.0.0
+**Version:** 2.0.0
 **Created:** 2026-01-26
+**Updated:** 2026-02-26 (PR #3375 — Playwright scraper + resolution pipeline)
 **Status:** ✅ Production Ready
 
 ---
@@ -620,3 +621,72 @@ brain.submit_learning(
 
 ### v2.0.0 (Previous)
 - See git history for previous changes
+
+### v2.0.0-pipeline (2026-02-26) — PR #3375
+
+**New: Playwright Scraper + Resolution Pipeline**
+
+#### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CODEQL ALERT RESOLUTION PIPELINE                   │
+│                                                                 │
+│  ┌──────────┐    ┌──────────┐    ┌────────────┐    ┌────────┐  │
+│  │ COLLECT  │───▶│ ANALYSE  │───▶│ REMEDIATE  │───▶│VALIDATE│  │
+│  └──────────┘    └──────────┘    └────────────┘    └────────┘  │
+│       │               │                │                │       │
+│  GitHub API      Priority           Codemods         ruff +    │
+│  (primary)      Matrix P0–P4       sql_injection     bandit    │
+│       │          by_severity       subprocess                   │
+│  Playwright      by_priority       hardcoded         └──▶CLOSE │
+│  (fallback)                                          alert API  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Scripts Added
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/security/playwright_scraper.py` | Browser-based alert collection (fallback when API token unavailable) |
+| `scripts/security/resolution_pipeline.py` | Orchestrates collect→analyse→remediate→validate→close |
+
+#### Usage
+
+```bash
+# Full pipeline (API collection + analysis + automated fixes + validation)
+python scripts/security/resolution_pipeline.py \
+    --owner Aries-Serpent --repo _codex_
+
+# With Playwright fallback if API returns 0
+python scripts/security/resolution_pipeline.py \
+    --owner Aries-Serpent --repo _codex_ --use-playwright
+
+# Playwright only (no API token required)
+python scripts/security/playwright_scraper.py \
+    --repo https://github.com/Aries-Serpent/_codex_ \
+    --output .codex/security/playwright_alerts.json \
+    --csv .codex/security/playwright_alerts.csv
+
+# Dry-run: see what would be closed without mutating
+python scripts/security/resolution_pipeline.py \
+    --stages close --dry-run
+```
+
+#### Alert Priority Mapping
+
+| Severity | Priority | Action |
+|----------|----------|--------|
+| critical | P0 | Immediate — auto-close after fix |
+| high | P1 | Sprint — PR created |
+| medium | P2 | Batch — codemod applied |
+| low | P3 | Cleanup — scheduled |
+| warning/note | P4 | Informational |
+
+#### Codebase Alignment
+
+- Integrates with `fetch_codeql_alerts.py` (primary collector)
+- Integrates with `close_codeql_alert.py` (alert dismissal)
+- Integrates with `analyze_alerts.py` (triage/prioritisation)
+- Output JSON compatible with `score_alerts.py` and `generate_remediation_plan.py`
+- Tests: `tests/security/test_playwright_scraper.py` (35 tests)

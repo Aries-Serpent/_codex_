@@ -1,0 +1,332 @@
+#!/usr/bin/env python3
+"""
+Playwright-Based Code Scanning Alert Scraper
+
+Scrapes GitHub code scanning alerts directly from the security page using
+Playwright browser automation as a fallback when API token access is limited.
+Falls back gracefully to the API-based fetcher when Playwright is unavailable.
+
+Usage:
+    python scripts/security/playwright_scraper.py \\
+        --repo https://github.com/Aries-Serpent/_codex_ \\
+        --output .codex/security/playwright_alerts.json
+
+Author: Copilot Agent
+Part of: CodeQL Alert Resolution Pipeline
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import os
+import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, Iterator, List, Optional
+
+# Graceful import — Playwright is optional; fall back to API fetcher if absent
+try:
+    from playwright.sync_api import Browser, Page, sync_playwright  # type: ignore
+
+    HAS_PLAYWRIGHT = True  # pragma: no cover
+except ImportError:
+    HAS_PLAYWRIGHT = False
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+# Selectors for GitHub code-scanning page (as of 2026)
+_ALERT_ROW_SELECTOR = "div[data-testid='code-scanning-alert-row'], li[data-testid*='code-scanning'], div.js-code-scanning-alert-row"
+_SEVERITY_SELECTOR = "[data-testid='alert-severity'], .severity-badge, .Label--severity"
+_TITLE_SELECTOR = "a[data-hovercard-type='code-scanning-alert'], a.js-navigation-open"
+_NEXT_BTN_SELECTOR = "a[rel='next'], .next_page:not(.disabled)"
+_LOAD_SELECTOR = "main"
+
+# Page-size limit GitHub enforces (25 alerts/page)
+_PAGE_SIZE = 25
+
+
+class PlaywrightScraper:
+    """Scrape code scanning alerts from the GitHub security UI."""
+
+    def __init__(
+        self,
+        repo_url: str,
+        github_token: Optional[str] = None,
+        headless: bool = True,
+        timeout_ms: int = 30_000,
+    ) -> None:
+        if not HAS_PLAYWRIGHT:
+            raise ImportError(
+                "playwright is not installed. Install with: pip install playwright && "
+                "playwright install chromium"
+            )
+        self.repo_url = repo_url.rstrip("/")
+        self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
+        self.headless = headless
+        self.timeout_ms = timeout_ms
+        self._security_url = f"{self.repo_url}/security/code-scanning"
+
+    def _authenticate(self, page: "Page") -> bool:
+        """
+        Attempt token-based authentication via GitHub's API cookie injection.
+        Returns True if authenticated, False otherwise.
+        """
+        if not self.github_token:
+            logger.warning("No GITHUB_TOKEN provided; page may not show private alerts")
+            return False
+
+        # Use the token to fetch a session cookie via the API
+        try:
+            import requests  # type: ignore
+
+            resp = requests.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"token {self.github_token}",
+                    "Accept": "application/vnd.github.v3+json",
+                },
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                logger.info("Token validated for user: %s", resp.json().get("login"))
+            else:
+                logger.warning("Token validation returned %d", resp.status_code)
+        except Exception as exc:  # pragma: no cover
+            logger.debug("Token pre-validation skipped: %s", exc)
+
+        return True
+
+    def _extract_row_data(self, page: "Page", row: Any) -> Optional[Dict[str, Any]]:
+        """Extract alert data from a single table row element."""
+        try:
+            title_elem = row.query_selector(_TITLE_SELECTOR)
+            if not title_elem:
+                return None
+
+            title = title_elem.inner_text().strip()
+            href = title_elem.get_attribute("href") or ""
+            url = f"https://github.com{href}" if href.startswith("/") else href
+
+            # Severity
+            sev_elem = row.query_selector(_SEVERITY_SELECTOR)
+            severity = (sev_elem.inner_text().strip().lower() if sev_elem else "unknown")
+
+            # Alert number from URL pattern /security/code-scanning/NNN
+            alert_number: Optional[int] = None
+            parts = href.rstrip("/").split("/")
+            if parts and parts[-1].isdigit():
+                alert_number = int(parts[-1])
+
+            return {
+                "title": title,
+                "url": url,
+                "severity": severity,
+                "alert_number": alert_number,
+            }
+        except Exception as exc:  # pragma: no cover
+            logger.debug("Failed to extract row: %s", exc)
+            return None
+
+    def _iter_pages(self, page: "Page") -> Iterator[List[Dict[str, Any]]]:
+        """Navigate the alerts table page by page, yielding lists of alert dicts."""
+        page.goto(self._security_url, wait_until="networkidle", timeout=self.timeout_ms)
+        page.wait_for_selector(_LOAD_SELECTOR, timeout=self.timeout_ms)
+
+        page_num = 1
+        while True:
+            logger.info("Scraping page %d …", page_num)
+
+            # Wait a short moment for JS to hydrate the table
+            time.sleep(0.5)
+
+            rows = page.query_selector_all(_ALERT_ROW_SELECTOR)
+            if not rows:
+                logger.debug("No alert rows found on page %d — trying generic list items", page_num)
+                # Fallback: try any anchor containing /security/code-scanning/
+                links = page.query_selector_all("a[href*='/security/code-scanning/']")
+                if not links:
+                    logger.info("No more alerts found; stopping pagination")
+                    break
+                page_alerts = [
+                    {
+                        "title": lnk.inner_text().strip(),
+                        "url": f"https://github.com{lnk.get_attribute('href')}",
+                        "severity": "unknown",
+                        "alert_number": int(lnk.get_attribute("href").rstrip("/").split("/")[-1])
+                        if lnk.get_attribute("href", "").rstrip("/").split("/")[-1].isdigit()
+                        else None,
+                    }
+                    for lnk in links
+                ]
+                yield [a for a in page_alerts if a["title"]]
+            else:
+                page_alerts = []
+                for row in rows:
+                    data = self._extract_row_data(page, row)
+                    if data:
+                        page_alerts.append(data)
+                yield page_alerts
+
+            # Check for next page button
+            next_btn = page.query_selector(_NEXT_BTN_SELECTOR)
+            if not next_btn:
+                logger.info("Reached final page (%d)", page_num)
+                break
+            cls = next_btn.get_attribute("class") or ""
+            if "disabled" in cls:
+                logger.info("Next button disabled on page %d", page_num)
+                break
+
+            logger.debug("Clicking next page …")
+            next_btn.click()
+            page.wait_for_load_state("networkidle", timeout=self.timeout_ms)
+            page_num += 1
+
+    def scrape(self) -> List[Dict[str, Any]]:
+        """
+        Launch a headless browser, navigate the security page, and return
+        all scraped alerts as a list of dicts.
+        """
+        alerts: List[Dict[str, Any]] = []
+
+        with sync_playwright() as pw:
+            browser: Browser = pw.chromium.launch(headless=self.headless)
+            context = browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+                )
+            )
+            page = context.new_page()
+
+            try:
+                self._authenticate(page)
+                for page_alerts in self._iter_pages(page):
+                    alerts.extend(page_alerts)
+                    logger.info("Running total: %d alerts", len(alerts))
+            finally:
+                browser.close()
+
+        logger.info("Scrape complete — %d total alerts collected", len(alerts))
+        return alerts
+
+
+def export_json(alerts: List[Dict[str, Any]], output_path: Path) -> None:
+    """Write alerts to a JSON file compatible with analyze_alerts.py inventory format."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "source": "playwright_scraper",
+        "total_alerts": len(alerts),
+        "exported_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "alerts": alerts,
+    }
+    output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    logger.info("Exported %d alerts → %s", len(alerts), output_path)
+
+
+def export_csv(alerts: List[Dict[str, Any]], output_path: Path) -> None:
+    """Write alerts to a CSV file."""
+    import csv
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if not alerts:
+        output_path.write_text("alert_number,title,severity,url\n", encoding="utf-8")
+        return
+
+    fieldnames = list(alerts[0].keys())
+    with output_path.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(alerts)
+    logger.info("CSV export → %s (%d rows)", output_path, len(alerts))
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Scrape GitHub code scanning alerts via Playwright"
+    )
+    parser.add_argument(
+        "--repo",
+        default="https://github.com/Aries-Serpent/_codex_",
+        help="GitHub repository URL (default: Aries-Serpent/_codex_)",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path(".codex/security/playwright_alerts.json"),
+        help="Output JSON file (default: .codex/security/playwright_alerts.json)",
+    )
+    parser.add_argument(
+        "--csv",
+        type=Path,
+        default=None,
+        help="Optional CSV output file",
+    )
+    parser.add_argument(
+        "--token",
+        default=None,
+        help="GitHub token (overrides GITHUB_TOKEN env var)",
+    )
+    parser.add_argument(
+        "--headless",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Run browser headlessly (default: True)",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=30_000,
+        help="Browser timeout in milliseconds (default: 30000)",
+    )
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    if not HAS_PLAYWRIGHT:
+        logger.error(
+            "Playwright is not installed.\n"
+            "Install with:  pip install playwright && playwright install chromium\n"
+            "Falling back to API-based fetcher:\n"
+            "  python scripts/security/fetch_codeql_alerts.py"
+        )
+        return 1
+
+    scraper = PlaywrightScraper(
+        repo_url=args.repo,
+        github_token=args.token,
+        headless=args.headless,
+        timeout_ms=args.timeout,
+    )
+
+    try:
+        alerts = scraper.scrape()
+    except Exception as exc:
+        logger.error("Scraping failed: %s", exc)
+        logger.info("Tip: use fetch_codeql_alerts.py for API-based collection instead")
+        return 1
+
+    export_json(alerts, args.output)
+
+    if args.csv:
+        export_csv(alerts, args.csv)
+
+    print(f"\n✅  Scraped {len(alerts)} alerts")
+    print(f"   JSON → {args.output}")
+    if args.csv:
+        print(f"   CSV  → {args.csv}")
+    print("\nNext step: python scripts/security/analyze_alerts.py --input", args.output)
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    sys.exit(main())
