@@ -12,6 +12,15 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+# Hardcoded migration columns — NEVER derived from user input.
+# Each tuple is (column_name: str, sql_type: str).
+# Defining them as a module-level constant makes the SQL-injection safety
+# of initialize_schema() auditable without any runtime validation overhead.
+_MIGRATION_COLUMNS: tuple[tuple[str, str], ...] = (
+    ("metric_name", "TEXT"),
+    ("metric_value", "REAL"),
+)
+
 
 @dataclass
 class QuantumMetric:
@@ -137,17 +146,17 @@ class QuantumMetricRepository:
             CREATE INDEX IF NOT EXISTS idx_quantum_metrics_feature ON quantum_metrics(feature);
             CREATE INDEX IF NOT EXISTS idx_quantum_metrics_agent_id ON quantum_metrics(agent_id);
         """)
-        # Migration: add metric_name and metric_value columns if absent
+        # Migration: add metric_name and metric_value columns if absent.
+        # Safety: _MIGRATION_COLUMNS is a hardcoded module-level constant — column
+        # names and types are never derived from user input, so the f-string
+        # interpolation below carries no SQL-injection risk.
         cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(quantum_metrics)")
         existing_columns = {row[1] for row in cursor.fetchall()}
-        for col, col_def in (
-            ("metric_name", "TEXT"),
-            ("metric_value", "REAL"),
-        ):
+        for col, col_def in _MIGRATION_COLUMNS:
             if col not in existing_columns:
                 conn.execute(
-                    f"ALTER TABLE quantum_metrics ADD COLUMN {col} {col_def}"
+                    f"ALTER TABLE quantum_metrics ADD COLUMN {col} {col_def}"  # nosec B608
                 )
         conn.commit()
         # Don't close the connection - it's managed by the repository

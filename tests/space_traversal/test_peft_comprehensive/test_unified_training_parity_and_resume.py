@@ -77,9 +77,12 @@ class _StubStrategy:
 def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
     saved: Dict[str, Any] = {}
 
-    def fake_save(out_dir: str | Path, *, payload, metadata, **kwargs):
+    def fake_save(out_dir: str | Path, *, state=None, payload=None, metadata, **kwargs):
         saved["out_dir"] = Path(out_dir)
-        saved["payload"] = dict(payload)
+        # Accept either 'state' (new) or 'payload' (legacy) kwarg; at least one must be provided.
+        checkpoint_data = state if state is not None else payload
+        assert checkpoint_data is not None, "fake_save requires either 'state' or 'payload'"
+        saved["payload"] = dict(checkpoint_data)
         saved["metadata"] = dict(metadata)
         ckpt_path = Path(out_dir) / "state.pt"
         mock_meta = types.SimpleNamespace(
@@ -103,8 +106,10 @@ def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
         fake_meta = types.SimpleNamespace(sha256=None, rng=None)
         return state_dict, fake_meta
 
-    monkeypatch.setattr(checkpoint_core, "save_checkpoint", fake_save)
-    monkeypatch.setattr(checkpoint_core, "load_checkpoint", fake_load)
+    # Patch the module-level names in unified_training so _emit_checkpoint_epoch
+    # and the resume path pick up the fakes regardless of which backend they call.
+    monkeypatch.setattr(unified_training, "save_checkpoint", fake_save)
+    monkeypatch.setattr(unified_training, "load_checkpoint", fake_load)
     monkeypatch.setattr(
         checkpoint_core, "capture_environment_summary", lambda: {"platform": "test"}
     )
