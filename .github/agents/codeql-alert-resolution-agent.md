@@ -6,9 +6,9 @@ description: Resolve CodeQL security alerts by implementing targeted code fixes 
 # CodeQL Alert Resolution Agent
 
 **Agent Type:** Security & Vulnerability Management
-**Version:** 2.0.0
+**Version:** 3.1.0-self-healing
 **Created:** 2026-01-26
-**Updated:** 2026-02-26 (PR #3375 — Playwright scraper + resolution pipeline)
+**Updated:** 2026-02-26 (PR #3375 — P3: self-healing loop, extras.txt, coverage planset)
 **Status:** ✅ Production Ready
 
 ---
@@ -609,6 +609,90 @@ brain.submit_learning(
 ---
 
 ## Version History
+
+### v3.1.0-self-healing (2026-02-26) — PR #3375 Session P3
+
+**New: Iterative Self-Healing Loop + Coverage Planset + extras.txt**
+
+#### Self-Healing Loop Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                CODEQL ALERT RESOLUTION — SELF-HEALING LOOP           │
+│                                                                      │
+│  ┌─────────┐   ┌──────────┐   ┌────────────┐   ┌──────────────────┐ │
+│  │ COLLECT │──▶│ ANALYSE  │──▶│  REMEDIATE │──▶│    VALIDATE      │ │
+│  └─────────┘   └──────────┘   └────────────┘   └──────────────────┘ │
+│       ▲              │               │                  │            │
+│       │         P0 alerts       auto-codemod         ruff/bandit     │
+│       │         P1 alerts       sql_injection         passes?        │
+│       │         P2 alerts       subprocess            │              │
+│       │                         hardcoded          YES│   NO │       │
+│       │                                              ▼       ▼       │
+│       │                                          ┌──────┐ ┌───────┐ │
+│       │                                          │CLOSE │ │REPORT │ │
+│       │                                          └──────┘ └───────┘ │
+│       │                                                   │         │
+│       │           Self-Heal Trigger (up to 3 passes)      │         │
+│       └──────────────────────────────────────────────────┘         │
+│                                                                      │
+│  Pass 1: Collect + Analyse → build priority matrix                   │
+│  Pass 2: Remediate + Validate → apply fixes, check results           │
+│  Pass 3: Re-collect after fixes → verify alert count decreased       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+#### Self-Healing Protocol
+
+```python
+# Autonomous self-healing invocation
+pipeline = ResolutionPipeline(
+    owner="Aries-Serpent",
+    repo="_codex_",
+    dry_run=False,
+    max_heal_passes=3,   # retry up to 3 times
+)
+
+for pass_num in range(1, pipeline.max_heal_passes + 1):
+    result = pipeline.run(stages=["collect", "analyse", "remediate", "validate"])
+    if result.validation_passed and result.errors == []:
+        break  # healed — stop iterating
+    # Log diagnostic and widen/narrow codemod scope on next pass
+    # (e.g. skip failing codemod pattern, add fallback fix)
+    print(f"Pass {pass_num} incomplete: {result.errors}")
+
+# Close only after all passes confirm validation
+if result.validation_passed:
+    pipeline.run(stages=["close"])
+```
+
+#### Activation Command
+
+```
+@copilot run qa-walkthrough --heal
+```
+or via workflow dispatch:
+```
+nightly-codeql-alert-triage.yml → stages: collect,analyse,remediate,validate,close
+```
+
+#### Optional Dependency Guard
+
+```bash
+# Install Playwright extra (optional, for browser-based scraping)
+pip install 'codex[playwright]'
+playwright install chromium
+
+# Or via extras.txt
+# requirements/extras.txt — playwright>=1.40; extra == "playwright"
+```
+
+#### New Files Added (P3)
+
+| File | Purpose |
+|------|---------|
+| `requirements/extras.txt` | Optional Playwright install guard with PEP 508 syntax |
+| `.codex/security/COVERAGE_PLANSET_PR3375.md` | Test coverage strategy for security scripts |
 
 ### v3.0.0-cognitive (2026-02-17) - PR-7
 - ✅ Cognitive brain integration (Level 2)

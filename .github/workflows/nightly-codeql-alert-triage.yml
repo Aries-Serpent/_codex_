@@ -86,6 +86,7 @@ jobs:
             .codex/security/alert_inventory.json
             .codex/security/alert_analysis.md
             .codex/security/pipeline_result.json
+            .codex/security/COVERAGE_PLANSET_PR3375.md
           if-no-files-found: warn
           retention-days: 30
 
