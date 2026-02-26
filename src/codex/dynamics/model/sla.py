@@ -8,15 +8,26 @@ calculation logic, allowing the agent to verify SLA logic against
 the SaaS reality dynamically.
 
 Migration from: configs/deployment/d365/slas.csv
+
+D365 calendar integration: when ``D365_INSTANCE_URL`` and ``D365_TOKEN``
+environment variables are both set, ``calculate_deadline()`` will attempt
+to fetch the business-hours calendar from D365 and use it instead of the
+built-in Mon–Fri 09:00–17:00 UTC default.  The integration is fully
+optional and falls back gracefully when credentials are absent or the
+remote call fails.
 """
 
 from __future__ import annotations
 
+import logging
+import os
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
+
+logger = logging.getLogger(__name__)
 
 
 class SLAMetric(str, Enum):
@@ -56,11 +67,144 @@ class SLAPauseCondition(BaseModel):
         return False
 
 
+class D365CalendarClient:
+    """Microsoft Dynamics 365 calendar client for business-hours SLA.
+
+    Fetches business-hour calendar data from D365 when credentials are available.
+    Falls back gracefully when D365 is unreachable or credentials are absent.
+
+    Required environment variables:
+        D365_INSTANCE_URL: e.g. https://myorg.crm.dynamics.com
+        D365_TOKEN: Bearer token for D365 API
+
+    API reference:
+        GET /api/data/v9.2/businessclosures  — company-wide closures/holidays
+        GET /api/data/v9.2/calendars?$filter=type eq 1  — business calendars
+    """
+
+    def __init__(self) -> None:
+        self._instance_url = os.environ.get("D365_INSTANCE_URL", "").rstrip("/")
+        self._token = os.environ.get("D365_TOKEN", "")
+        self._available = bool(self._instance_url and self._token)
+
+    @property
+    def is_available(self) -> bool:
+        """True if D365 credentials are configured."""
+        return self._available
+
+    def fetch_business_hours_schedule(self, businesshoursid: str | None = None) -> dict[str, Any] | None:
+        """Fetch business hours schedule from D365.
+
+        Returns a schedule dict compatible with SLAPolicy.calculate_deadline():
+            {
+                "timezone": "UTC",
+                "hours": {
+                    "monday": {"start": "09:00", "end": "17:00"},
+                    ...
+                },
+                "holidays": ["2026-01-01", "2026-12-25"]  # ISO dates
+            }
+
+        Returns None if D365 is unavailable or the fetch fails.
+        """
+        if not self._available:
+            return None
+        try:
+            import re
+            import requests as _requests
+
+            # Validate businesshoursid to prevent OData injection
+            if businesshoursid is not None and not re.fullmatch(r"[\w\-]{1,128}", businesshoursid):
+                logger.warning(
+                    "D365CalendarClient: invalid businesshoursid %r; using default calendar filter.",
+                    businesshoursid,
+                )
+                businesshoursid = None
+
+            # Build OData query for calendar rules
+            if businesshoursid:
+                calendar_filter = f"?$filter=calendarid eq {businesshoursid}"
+            else:
+                calendar_filter = "?$filter=type eq 1"  # type 1 = work hours calendar
+
+            resp = _requests.get(
+                f"{self._instance_url}/api/data/v9.2/calendars{calendar_filter}",
+                headers={
+                    "Authorization": f"Bearer {self._token}",
+                    "Accept": "application/json",
+                    "OData-MaxVersion": "4.0",
+                    "OData-Version": "4.0",
+                },
+                timeout=10,
+            )
+            if resp.status_code != 200:
+                logger.warning(
+                    "D365CalendarClient: calendar fetch returned HTTP %d; "
+                    "falling back to local schedule",
+                    resp.status_code,
+                )
+                return None
+
+            data = resp.json()
+            calendars = data.get("value", [])
+            if not calendars:
+                logger.warning("D365CalendarClient: no calendar rules returned; falling back.")
+                return None
+
+            # Parse D365 calendar rules into our schedule format.
+            # D365 calendar rules have: starttime, endtime, weekday (0=Sun … 6=Sat)
+            _time_re = re.compile(r"^\d{2}:\d{2}$")
+            day_map = {
+                0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+                4: "thursday", 5: "friday", 6: "saturday",
+            }
+            hours: dict[str, Any] = {}
+            tz_name = "UTC"
+
+            for cal in calendars:
+                for rule in cal.get("calendarrules", []):
+                    weekday = rule.get("pattern", {}).get("weekday")
+                    raw_start = rule.get("starttime", "09:00")[:5]
+                    raw_end = rule.get("endtime", "17:00")[:5]
+                    rule_tz = rule.get("timezonecode", "UTC")
+                    if not _time_re.match(raw_start) or not _time_re.match(raw_end):
+                        logger.warning(
+                            "D365CalendarClient: skipping rule with malformed time "
+                            "start=%r end=%r", raw_start, raw_end
+                        )
+                        continue
+                    if rule_tz != tz_name and hours:
+                        # Warn if rules carry conflicting timezone codes
+                        logger.warning(
+                            "D365CalendarClient: timezone mismatch in calendar rules "
+                            "(%r vs %r); using first value.", tz_name, rule_tz
+                        )
+                    elif not hours:
+                        tz_name = rule_tz
+                    if weekday is not None and weekday in day_map:
+                        hours[day_map[weekday]] = {"start": raw_start, "end": raw_end}
+
+            if not hours:
+                return None
+
+            return {"timezone": tz_name, "hours": hours}
+
+        except ImportError:
+            logger.warning("D365CalendarClient: requests library unavailable; using local schedule.")
+            return None
+        except Exception as exc:
+            logger.warning("D365CalendarClient: fetch failed (%s); using local schedule.", exc)
+            return None
+
+
 class SLAPolicy(BaseModel):
     """Versioned SLA Policy Object for Dynamics 365.
 
     This replaces the brittle CSV-based configuration with a typed,
     versioned policy that can be validated against the SaaS reality.
+    When ``D365_INSTANCE_URL`` and ``D365_TOKEN`` env vars are set,
+    ``calculate_deadline()`` will automatically fetch the live business-hours
+    calendar from D365 instead of the built-in default schedule.
 
     Attributes:
         name: Policy identifier (e.g., "cdx_assignment_standard")
@@ -130,8 +274,16 @@ class SLAPolicy(BaseModel):
             return start_time + timedelta(minutes=self.target_minutes)
 
         # Business-hours SLA calculation.
-        # Note: For full D365 calendar integration, replace this local
-        # schedule approach with D365 businesshoursid calendar lookups.
+        # Attempt D365 calendar fetch when credentials are configured.
+        _d365 = D365CalendarClient()
+        if _d365.is_available and business_hours_schedule is None:
+            d365_schedule = _d365.fetch_business_hours_schedule(
+                getattr(self, "businesshoursid", None)
+            )
+            if d365_schedule is not None:
+                business_hours_schedule = d365_schedule
+                logger.info("calculate_deadline(): using D365 business-hours calendar.")
+
         if business_hours_schedule is None:
             # Default: Mon-Fri 09:00-17:00 UTC
             tz_name = "UTC"
@@ -385,6 +537,7 @@ class SLAPolicyRegistry(BaseModel):
 
 
 __all__ = [
+    "D365CalendarClient",
     "SLAMetric",
     "SLAPauseCondition",
     "SLAPolicy",
