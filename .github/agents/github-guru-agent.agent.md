@@ -105,13 +105,17 @@ Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Frict
 
 ```yaml
 permissions:
-  contents: write
+  contents: write    # Required by C-11 create_copilot_pr: push branch + create PR commit
   issues: write
   pull-requests: write
   checks: write
   metadata: read
   actions: read
 ```
+
+> **`contents: write` scope** is required exclusively for capability **C-11 `create_copilot_pr`**,
+> which pushes a new branch and opens a PR. All other capabilities are read-only against repository
+> contents. If `create_copilot_pr` is not used in a workflow, `contents: read` is sufficient.
 
 > ⚠️ **SAFE MODE**: This agent operates in `SAFE_MODE=true`. It will **never**:
 > - Push commits or merge PRs

@@ -336,41 +336,6 @@ def cmd_agent_context(args: argparse.Namespace) -> int:
     return 0
 
 
-
-    """Add QuantumPlansetEngine integration footer to every unfinished planset."""
-    orch = _build_orchestrator(args, dry_run=True)
-    records = orch.survey()
-    stamped = 0
-    skipped_complete = 0
-    skipped_no_area = 0
-    skipped_has_footer = 0
-
-    for rec in records:
-        if rec.is_complete:
-            skipped_complete += 1
-            continue
-        if rec.area is None:
-            skipped_no_area += 1
-            continue
-
-        content = rec.path.read_text(encoding="utf-8")
-        if _FOOTER_SENTINEL in content:
-            skipped_has_footer += 1
-            continue
-
-        footer = _FOOTER_TEMPLATE.format(area=rec.area.value)
-        rec.path.write_text(content.rstrip() + "\n" + footer, encoding="utf-8")
-        stamped += 1
-        print(f"  ✍️  Stamped: {rec.stem}  →  {rec.area.value}")
-
-    print(f"\n{'─'*60}")
-    print(f"  Stamped       : {stamped}")
-    print(f"  Already done  : {skipped_has_footer}")
-    print(f"  Complete/skip : {skipped_complete}")
-    print(f"  Unmapped/skip : {skipped_no_area}")
-    return 0
-
-
 # ---------------------------------------------------------------------------
 # Display helpers
 # ---------------------------------------------------------------------------
