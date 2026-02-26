@@ -12,13 +12,13 @@ sensitive_terms:
   - "secret"
   - "private key"
   - "access token"
-  
+
   # Financial
   - "bank account"
   - "routing number"
   - "cvv"
   - "pin code"
-  
+
   # Health
   - "medical record"
   - "diagnosis"
@@ -29,19 +29,19 @@ redaction_patterns:
   # Email addresses
   - pattern: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     replacement: '[EMAIL]'
-  
+
   # Phone numbers (various formats)
   - pattern: '\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'
     replacement: '[PHONE]'
-  
+
   # SSN
   - pattern: '\b\d{3}-\d{2}-\d{4}\b'
     replacement: '[SSN]'
-  
+
   # Credit card numbers
   - pattern: '\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b'
     replacement: '[CARD]'
-  
+
   # API keys (generic patterns)
   - pattern: '\b[A-Za-z0-9_-]{32,}\b'
     replacement: '[API_KEY]'

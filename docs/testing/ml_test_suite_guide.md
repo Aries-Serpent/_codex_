@@ -132,15 +132,15 @@ pytestmark = pytest.mark.ml_comprehensive
 
 class Test[Component]:
     """Test [component] functionality"""
-    
+
     def test_specific_behavior(self):
         """Test that [component] does [behavior]"""
         # Arrange
         input_data = ...
-        
+
         # Act
         result = function_under_test(input_data)
-        
+
         # Assert
         assert result == expected_value
 ```

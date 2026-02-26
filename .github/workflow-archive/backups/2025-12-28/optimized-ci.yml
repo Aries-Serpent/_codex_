@@ -31,12 +31,12 @@ jobs:
       cache-hit: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v5
@@ -48,11 +48,11 @@ jobs:
           key: deps-${{ runner.os }}-py3.12-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
           restore-keys: |
             deps-${{ runner.os }}-py3.12-
-      
+
       - name: Install uv
         if: steps.cache.outputs.cache-hit != 'true'
         run: pip install uv
-      
+
       - name: Pre-cache dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -69,15 +69,15 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
-    
+
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Restore cache
         uses: actions/cache@v5
         with:
@@ -85,24 +85,24 @@ jobs:
             ${{ env.UV_CACHE_DIR }}
             ${{ env.PIP_CACHE_DIR }}
           key: deps-${{ runner.os }}-py3.12-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
-      
+
       - name: Install dependencies
         run: |
           pip install uv
           uv pip install --system nox pytest pytest-xdist pytest-split
           uv pip install --system -e ".[dev,test]" || pip install -e ".[dev,test]"
-      
+
       - name: Run parallel tests (shard ${{ matrix.shard }})
         run: |
           # CRITICAL: Ensure src/ is in Python path for editable installs
           export PYTHONPATH="${GITHUB_WORKSPACE}/src:${PYTHONPATH}"
-          
+
           # Verify module can be imported before running tests
           python -c "
           from codex_ml.cli.audit_pipeline import audit_file
           print('✓ Module import verified successfully')
           "
-          
+
           # Use pytest-split for test sharding
           pytest tests/ \
             --splits 4 \
@@ -121,12 +121,12 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Restore cache
         uses: actions/cache@v5
         with:
@@ -135,13 +135,13 @@ jobs:
             ${{ env.PIP_CACHE_DIR }}
             ~/.cache/pre-commit
           key: deps-${{ runner.os }}-py3.12-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
-      
+
       - name: Install tools
         run: pip install ruff black mypy
-      
+
       - name: Run ruff
         run: ruff check src/ --output-format=github || true
-      
+
       - name: Run black check
         run: black --check src/ || true
 
@@ -153,18 +153,18 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Install security tools
         run: pip install bandit safety pip-audit
-      
+
       - name: Run bandit
         run: bandit -r src/ -c bandit.yaml || true
-      
+
       - name: Run pip-audit
         run: pip-audit --desc || true
 

@@ -59,10 +59,10 @@ Implement **explicit schema versioning** with:
   "ts": "...",
   "action": "...",
   "actor": "...",
-  
+
   // NEW: Schema version field
   "schemaVersion": "2.0",
-  
+
   // NEW: Standardization metadata
   "standardizationMetadata": {
     "schema_version": "2.0",

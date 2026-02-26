@@ -232,8 +232,8 @@
     <section class="demo-explanation">
       <h2>What is Quantum Advantage?</h2>
       <p>
-        The _codex_ cognitive brain achieves a <strong>5.56x quantum advantage</strong> 
-        over baseline performance, measured by the k₁ constant. This means tasks complete 
+        The _codex_ cognitive brain achieves a <strong>5.56x quantum advantage</strong>
+        over baseline performance, measured by the k₁ constant. This means tasks complete
         5.56 times faster than the baseline implementation.
       </p>
       <div class="formula">
@@ -241,8 +241,8 @@
         <p><strong>Quantum Advantage = 1 / k₁</strong></p>
       </div>
       <p>
-        <strong>Example:</strong> If a task takes 100 seconds normally (baseline) and only 
-        18 seconds with optimization (improved), then k₁ = 18/100 = 0.18, and the 
+        <strong>Example:</strong> If a task takes 100 seconds normally (baseline) and only
+        18 seconds with optimization (improved), then k₁ = 18/100 = 0.18, and the
         quantum advantage = 1/0.18 ≈ 5.56x faster! 🚀
       </p>
     </section>
@@ -250,7 +250,7 @@
     <section class="demo-calculator">
       <h2>Interactive Calculator</h2>
       <p>Enter your baseline and improved times to calculate the quantum advantage:</p>
-      
+
       <div class="input-group">
         <label for="baseline-time">⏱️ Baseline Time (seconds):</label>
         <input type="number" id="baseline-time" value="100" min="0.1" step="0.1">
@@ -337,7 +337,7 @@
         <li>Communicate results to stakeholders clearly</li>
       </ul>
       <p style="margin-top: 1.5rem;">
-        <strong>Learn more:</strong> Read about the cognitive brain architecture in the 
+        <strong>Learn more:</strong> Read about the cognitive brain architecture in the
         <a href="../../COMPREHENSIVE_IMPLEMENTATION_STATUS.md" style="color: #667eea;">implementation status report</a>.
       </p>
     </section>
@@ -366,7 +366,7 @@
       document.getElementById('advantage-value').textContent = advantage.toFixed(2) + 'x';
       document.getElementById('savings-value').textContent = savings.toFixed(2) + ' sec';
       document.getElementById('speedup-value').textContent = speedup.toFixed(1) + '%';
-      
+
       // Show results and chart
       document.getElementById('results').style.display = 'block';
       document.getElementById('chart-container').style.display = 'block';
@@ -386,7 +386,7 @@
 
     function updateChart(baseline, improved) {
       const ctx = document.getElementById('comparison-chart').getContext('2d');
-      
+
       if (chart) {
         chart.destroy();
       }

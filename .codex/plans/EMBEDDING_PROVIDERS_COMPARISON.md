@@ -36,11 +36,11 @@ This document compares OllamaEmbeddingProvider, LlamaCppEmbeddingProvider, GPT4A
 ```python
 class OllamaEmbeddingProvider(EmbeddingProvider):
     """Embedding provider using Ollama local runtime.
-    
+
     Requires:
         - Ollama installed locally
         - Model pulled: `ollama pull nomic-embed-text`
-    
+
     Example:
         provider = OllamaEmbeddingProvider(
             model='nomic-embed-text',
@@ -48,7 +48,7 @@ class OllamaEmbeddingProvider(EmbeddingProvider):
         )
         embeddings = provider.encode(['text1', 'text2'])
     """
-    
+
     def __init__(
         self,
         model: str = "nomic-embed-text",
@@ -59,11 +59,11 @@ class OllamaEmbeddingProvider(EmbeddingProvider):
         self.base_url = base_url
         self.timeout = timeout
         self.dimension = 768  # Model-dependent
-        
+
     def encode(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings using Ollama API."""
         import requests
-        
+
         embeddings = []
         for text in texts:
             response = requests.post(
@@ -74,7 +74,7 @@ class OllamaEmbeddingProvider(EmbeddingProvider):
             response.raise_for_status()
             embedding = response.json()["embedding"]
             embeddings.append(embedding)
-        
+
         return np.array(embeddings, dtype=np.float32)
 ```
 
@@ -105,18 +105,18 @@ class OllamaEmbeddingProvider(EmbeddingProvider):
 ```python
 class LlamaCppEmbeddingProvider(EmbeddingProvider):
     """Embedding provider using llama.cpp.
-    
+
     Requires:
         - pip install llama-cpp-python
         - GGUF model file downloaded
-    
+
     Example:
         provider = LlamaCppEmbeddingProvider(
             model_path='models/nomic-embed-text-v1.5.Q4_K_M.gguf'
         )
         embeddings = provider.encode(['text1', 'text2'])
     """
-    
+
     def __init__(
         self,
         model_path: str,
@@ -125,7 +125,7 @@ class LlamaCppEmbeddingProvider(EmbeddingProvider):
         embedding: bool = True
     ):
         from llama_cpp import Llama
-        
+
         self.model = Llama(
             model_path=model_path,
             n_ctx=n_ctx,
@@ -133,7 +133,7 @@ class LlamaCppEmbeddingProvider(EmbeddingProvider):
             embedding=embedding
         )
         self.dimension = None  # Determined by model
-        
+
     def encode(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings using llama.cpp."""
         embeddings = []
@@ -142,10 +142,10 @@ class LlamaCppEmbeddingProvider(EmbeddingProvider):
             result = self.model.create_embedding(text)
             embedding = result['data'][0]['embedding']
             embeddings.append(embedding)
-            
+
             if self.dimension is None:
                 self.dimension = len(embedding)
-        
+
         return np.array(embeddings, dtype=np.float32)
 ```
 
@@ -176,36 +176,36 @@ class LlamaCppEmbeddingProvider(EmbeddingProvider):
 ```python
 class GPT4AllEmbeddingProvider(EmbeddingProvider):
     """Embedding provider using GPT4All.
-    
+
     Requires:
         - pip install gpt4all
         - Model downloaded automatically or manually
-    
+
     Example:
         provider = GPT4AllEmbeddingProvider(
             model_name='orca-mini-3b.ggmlv3.q4_0.bin'
         )
         embeddings = provider.encode(['text1', 'text2'])
     """
-    
+
     def __init__(
         self,
         model_name: str = "orca-mini-3b.ggmlv3.q4_0.bin",
         device: str = 'cpu'
     ):
         from gpt4all import GPT4All, Embed4All
-        
+
         # Use Embed4All for embeddings
         self.embedder = Embed4All()
         self.dimension = 384  # Default for most GPT4All embedding models
-        
+
     def encode(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings using GPT4All."""
         embeddings = []
         for text in texts:
             embedding = self.embedder.embed(text)
             embeddings.append(embedding)
-        
+
         return np.array(embeddings, dtype=np.float32)
 ```
 
@@ -236,16 +236,16 @@ class GPT4AllEmbeddingProvider(EmbeddingProvider):
 ```python
 class TfidfEmbeddingProvider(EmbeddingProvider):
     """TF-IDF based embedding provider (offline, no API).
-    
+
     Example:
         provider = TfidfEmbeddingProvider(dimension=384)
         embeddings = provider.encode(['text1', 'text2'])
     """
-    
+
     def __init__(self, dimension: int = 384):
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.decomposition import TruncatedSVD
-        
+
         self.dimension = dimension
         self.vectorizer = TfidfVectorizer(
             max_features=10000,
@@ -339,7 +339,7 @@ def create_embedding_provider(
     **kwargs
 ) -> EmbeddingProviderWrapper:
     """Create embedding provider with intelligent fallback.
-    
+
     Priority order (auto mode):
     1. sentence-transformers (if available)
     2. Ollama (if running locally)
@@ -347,7 +347,7 @@ def create_embedding_provider(
     4. GPT4All (if installed)
     5. TF-IDF (always available)
     """
-    
+
     if provider_type == "auto":
         # Try sentence-transformers
         try:
@@ -355,7 +355,7 @@ def create_embedding_provider(
             return TransformerEmbeddingProvider()
         except ImportError:
             logger.info("sentence-transformers not available")
-        
+
         # Try Ollama
         try:
             import requests
@@ -363,7 +363,7 @@ def create_embedding_provider(
             return OllamaEmbeddingProvider()
         except:
             logger.info("Ollama not running")
-        
+
         # Try llama.cpp
         try:
             import llama_cpp
@@ -371,18 +371,18 @@ def create_embedding_provider(
                 return LlamaCppEmbeddingProvider(kwargs['model_path'])
         except ImportError:
             logger.info("llama-cpp-python not available")
-        
+
         # Try GPT4All
         try:
             import gpt4all
             return GPT4AllEmbeddingProvider()
         except ImportError:
             logger.info("gpt4all not available")
-        
+
         # Fallback to TF-IDF
         logger.info("Using TF-IDF fallback")
         return TfidfEmbeddingProvider()
-    
+
     # Explicit provider selection
     # ... existing code ...
 ```

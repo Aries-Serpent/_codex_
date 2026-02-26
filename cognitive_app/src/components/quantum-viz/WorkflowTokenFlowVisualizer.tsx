@@ -42,7 +42,7 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
 
     const interval = setInterval(() => {
       const activeAgents = agents.filter(a => a.status === 'active' || a.status === 'thinking');
-      
+
       if (activeAgents.length < 2) return;
 
       const fromAgent = activeAgents[Math.floor(Math.random() * activeAgents.length)];
@@ -71,7 +71,7 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
       }));
 
       setTimeout(() => {
-        setTransfers(prev => 
+        setTransfers(prev =>
           prev.map(t => t.id === newTransfer.id ? { ...t, status: 'completed' as const } : t)
         );
         setStats(prev => ({
@@ -154,8 +154,8 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
                 transition={{ type: 'spring', damping: 20 }}
               >
                 <Card className={`p-4 relative overflow-hidden ${
-                  transfer.status === 'in-flight' 
-                    ? 'border-accent shadow-md' 
+                  transfer.status === 'in-flight'
+                    ? 'border-accent shadow-md'
                     : 'border-green-500/50 bg-green-500/5'
                 }`}>
                   {transfer.status === 'in-flight' && (
@@ -219,9 +219,9 @@ export function WorkflowTokenFlowVisualizer({ agents, activeWorkflow }: Workflow
 
       <Card className="p-4 mt-4 bg-muted/20">
         <p className="text-xs text-muted-foreground">
-          <strong className="text-accent">Token Flow Protocol:</strong> Workflow tokens are computational 
-          artifacts that carry execution context, state, and instructions between agents. Each transfer 
-          represents an agent handoff where one paradigm's analysis informs another's computation, 
+          <strong className="text-accent">Token Flow Protocol:</strong> Workflow tokens are computational
+          artifacts that carry execution context, state, and instructions between agents. Each transfer
+          represents an agent handoff where one paradigm's analysis informs another's computation,
           enabling sophisticated cross-paradigm reasoning and collaboration.
         </p>
       </Card>

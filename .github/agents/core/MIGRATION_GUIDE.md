@@ -78,35 +78,35 @@ from .reporter import ResultReporter
 class CICognitiveAgent(CognitiveAgent):
     """
     CI Testing Agent with cognitive brain integration.
-    
+
     Implements PDA Loop for CI/CD debugging and test generation.
     """
-    
+
     def __init__(self, workspace: Path):
         super().__init__(
             name="ci-testing-agent",
             version="2.0.0",  # Bumped for cognitive integration
             workspace=workspace
         )
-        
+
         # Initialize existing components
         self.generator = TestGenerator(workspace)
         self.validator = TestValidator(workspace)
         self.executor = SandboxExecutor(workspace)
         self.reporter = ResultReporter()
         self.pattern_recognizer = PatternRecognizer()
-    
+
     def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         PERCEPTION: Analyze CI failure and gather context.
-        
+
         Maps to existing functionality:
         - Parse CI logs
         - Identify failure patterns
         - Extract test context
         """
         task_type = task.get("task_type")
-        
+
         if task_type == "generate_tests":
             # Use pattern recognizer to analyze existing tests
             test_dir = self.workspace / "tests"
@@ -116,7 +116,7 @@ class CICognitiveAgent(CognitiveAgent):
                     test_dir,
                     recursive=True
                 )
-            
+
             context = {
                 "parsed_inputs": task.get("parameters", {}),
                 "existing_patterns": patterns,
@@ -124,17 +124,17 @@ class CICognitiveAgent(CognitiveAgent):
                 "risks": [],
                 "opportunities": ["improve_coverage"]
             }
-            
+
         elif task_type == "validate_coverage":
             baseline = self.validator.get_baseline()
-            
+
             context = {
                 "parsed_inputs": task.get("parameters", {}),
                 "baseline_coverage": baseline.get("coverage", 0),
                 "risks": ["coverage_regression"] if baseline else [],
                 "opportunities": []
             }
-            
+
         elif task_type == "execute_tests":
             context = {
                 "parsed_inputs": task.get("parameters", {}),
@@ -142,10 +142,10 @@ class CICognitiveAgent(CognitiveAgent):
                 "risks": [],
                 "opportunities": []
             }
-        
+
         else:
             context = {"parsed_inputs": task.get("parameters", {})}
-        
+
         # Query cognitive brain for historical context
         if self.cognitive_brain:
             history = self.cognitive_brain.get_session_history(
@@ -153,13 +153,13 @@ class CICognitiveAgent(CognitiveAgent):
                 limit=5
             )
             context["history"] = history
-        
+
         return context
-    
+
     def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """
         DECISION: Determine test generation/execution strategy.
-        
+
         Maps to existing functionality:
         - Prioritize test generation
         - Select validation approach
@@ -167,27 +167,27 @@ class CICognitiveAgent(CognitiveAgent):
         """
         task_inputs = context.get("parsed_inputs", {})
         task_type = task_inputs.get("task_type", "generate_tests")
-        
+
         if task_type == "generate_tests":
             steps = ["analyze_coverage", "generate_missing", "validate_syntax"]
             priority = 8
             strategy = "coverage_driven_generation"
-            
+
         elif task_type == "validate_coverage":
             steps = ["run_coverage", "compare_baseline", "report_delta"]
             priority = 7
             strategy = "baseline_comparison"
-            
+
         elif task_type == "execute_tests":
             steps = ["setup_sandbox", "run_tests", "collect_results"]
             priority = 9
             strategy = "sandboxed_execution"
-        
+
         else:
             steps = []
             priority = 5
             strategy = "default"
-        
+
         return {
             "strategy": strategy,
             "steps": steps,
@@ -195,11 +195,11 @@ class CICognitiveAgent(CognitiveAgent):
             "rationale": f"CI task type: {task_type}",
             "estimated_time": len(steps) * 30  # 30s per step
         }
-    
+
     def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
         """
         ACTION: Execute test generation/validation.
-        
+
         Maps to existing functionality:
         - generator.generate_tests()
         - validator.validate_coverage()
@@ -209,7 +209,7 @@ class CICognitiveAgent(CognitiveAgent):
         steps_completed = []
         outputs = {}
         logs = []
-        
+
         try:
             if strategy == "coverage_driven_generation":
                 # Use existing generator
@@ -218,7 +218,7 @@ class CICognitiveAgent(CognitiveAgent):
                 outputs["files"] = result.get("files", [])
                 steps_completed = decision["steps"]
                 logs.append("Test generation completed")
-                
+
             elif strategy == "baseline_comparison":
                 # Use existing validator
                 result = self.validator.validate_coverage()
@@ -226,7 +226,7 @@ class CICognitiveAgent(CognitiveAgent):
                 outputs["delta"] = result.get("delta", 0)
                 steps_completed = decision["steps"]
                 logs.append("Coverage validation completed")
-                
+
             elif strategy == "sandboxed_execution":
                 # Use existing executor
                 result = self.executor.execute({"command": "pytest"})
@@ -234,7 +234,7 @@ class CICognitiveAgent(CognitiveAgent):
                 outputs["status"] = result.get("status")
                 steps_completed = decision["steps"]
                 logs.append("Test execution completed")
-            
+
             return {
                 "status": "success",
                 "outputs": outputs,
@@ -242,7 +242,7 @@ class CICognitiveAgent(CognitiveAgent):
                 "steps_failed": [],
                 "logs": logs
             }
-            
+
         except Exception as e:
             return {
                 "status": "failure",
@@ -252,7 +252,7 @@ class CICognitiveAgent(CognitiveAgent):
                 "steps_failed": [decision["steps"][-1]] if decision["steps"] else [],
                 "logs": logs + [f"Error: {str(e)}"]
             }
-    
+
     def aftermath(
         self,
         result: Dict[str, Any],
@@ -261,7 +261,7 @@ class CICognitiveAgent(CognitiveAgent):
     ) -> Dict[str, Any]:
         """
         AFTERMATH: Learn from execution and update cognitive brain.
-        
+
         New functionality:
         - Record patterns for future sessions
         - Store lessons learned
@@ -274,25 +274,25 @@ class CICognitiveAgent(CognitiveAgent):
             "steps_completed": len(result.get("steps_completed", [])),
             "success": result.get("status") == "success"
         }
-        
+
         # Add strategy-specific metrics
         if "tests_generated" in result.get("outputs", {}):
             metrics["tests_generated"] = result["outputs"]["tests_generated"]
         if "coverage" in result.get("outputs", {}):
             metrics["coverage"] = result["outputs"]["coverage"]
-        
+
         # Identify patterns
         patterns = []
         if metrics["success"]:
             patterns.append(f"successful_{decision['strategy']}")
         else:
             patterns.append(f"failed_{decision['strategy']}")
-        
+
         # Extract lessons
         lessons = []
         if metrics["success"]:
             lessons.append(f"Strategy '{decision['strategy']}' effective for CI tasks")
-        
+
         # Record in cognitive brain
         if self.cognitive_brain and self.session_id:
             for pattern in patterns:
@@ -302,7 +302,7 @@ class CICognitiveAgent(CognitiveAgent):
                     pattern_type="ci_execution",
                     description=f"CI execution pattern"
                 )
-            
+
             for lesson in lessons:
                 self.cognitive_brain.record_lesson(
                     session_id=self.session_id,
@@ -310,7 +310,7 @@ class CICognitiveAgent(CognitiveAgent):
                     category="ci_testing",
                     confidence=0.85
                 )
-            
+
             self.cognitive_brain.record_decision(
                 session_id=self.session_id,
                 context=context,
@@ -319,7 +319,7 @@ class CICognitiveAgent(CognitiveAgent):
                 outcome=result,
                 success=metrics["success"]
             )
-        
+
         return {
             "metrics": metrics,
             "patterns": patterns,
@@ -352,25 +352,25 @@ from .agent.cognitive_ci_agent import CICognitiveAgent
 def main():
     """Main CLI entry point with cognitive brain."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="CI Testing Agent")
     parser.add_argument("task", choices=["generate", "validate", "execute"])
     parser.add_argument("--workspace", default=".", help="Workspace path")
     parser.add_argument("--db", default=".codex/brain.db", help="Brain database")
     args = parser.parse_args()
-    
+
     # Initialize cognitive brain
     brain = CognitiveBrain(Path(args.db))
-    
+
     # Create agent
     agent = CICognitiveAgent(Path(args.workspace))
     agent.set_cognitive_brain(brain)
-    
+
     # Generate session ID
     import uuid
     session_id = f"ci-{uuid.uuid4().hex[:8]}"
     agent.set_session_id(session_id)
-    
+
     # Start session
     brain.start_session(
         session_id=session_id,
@@ -378,24 +378,24 @@ def main():
         agent_version=agent.version,
         task_type=args.task
     )
-    
+
     # Build task
     task = {
         "task_type": f"{args.task}_tests" if args.task == "generate" else f"{args.task}_coverage",
         "parameters": {}
     }
-    
+
     # Execute PDA loop
     result = agent.execute_pda_loop(task)
-    
+
     # End session
     brain.end_session(session_id, result["status"], result.get("metrics"))
-    
+
     # Print result
     print(f"Status: {result['status']}")
     if result.get("lessons"):
         print(f"Lessons: {', '.join(result['lessons'])}")
-    
+
     sys.exit(0 if result["status"] == "success" else 1)
 
 
@@ -426,23 +426,23 @@ def test_agent_with_brain():
     with tempfile.TemporaryDirectory() as tmpdir:
         workspace = Path(tmpdir)
         brain = CognitiveBrain(workspace / "brain.db")
-        
+
         agent = CICognitiveAgent(workspace)
         agent.set_cognitive_brain(brain)
         agent.set_session_id("test-001")
-        
+
         brain.start_session("test-001", "ci-testing-agent", "2.0.0", "test")
-        
+
         task = {
             "task_type": "generate_tests",
             "parameters": {}
         }
-        
+
         result = agent.execute_pda_loop(task)
-        
+
         assert result["status"] in ["success", "failure"]
         assert "metrics" in result
-        
+
         brain.end_session("test-001", result["status"])
 ```
 
@@ -791,7 +791,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -980,7 +980,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

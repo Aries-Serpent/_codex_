@@ -103,19 +103,19 @@ class BaseASTAdapter(ABC):
     @abstractmethod
     def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedASTNode:
         """Parse source code to AST"""
-        
+
     def parse_file(self, file_path: Path) -> StandardizedASTNode:
         """Parse file directly"""
-        
+
     def traverse(self, node: Optional[StandardizedASTNode] = None) -> List[StandardizedASTNode]:
         """Traverse AST depth-first"""
-        
+
     def find_nodes_by_type(self, node_type: str) -> List[StandardizedASTNode]:
         """Find all nodes of specific type"""
-        
+
     def get_stats(self) -> Dict[str, int]:
         """Get AST statistics"""
-        
+
     @abstractmethod
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """Extract language-specific metadata"""
@@ -388,10 +388,10 @@ from codex.ast_adapters.base_adapter import BaseASTAdapter, StandardizedASTNode
 
 class MyLanguageASTAdapter(BaseASTAdapter):
     """AST adapter for MyLanguage"""
-    
+
     def __init__(self):
         super().__init__()
-    
+
     def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedASTNode:
         """Parse MyLanguage source to standardized AST"""
         # 1. Parse source using language-specific parser
@@ -399,7 +399,7 @@ class MyLanguageASTAdapter(BaseASTAdapter):
         # 3. Store root node: self.root_node = root
         # 4. Return root node
         pass
-    
+
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
         """Extract language-specific metadata"""
         # Return metadata dict with language-specific keys
@@ -413,7 +413,7 @@ def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedAS
     # Use language-specific parser
     import my_language_parser
     parsed = my_language_parser.parse(source)
-    
+
     # Create root node
     root = StandardizedASTNode(
         node_id=str(uuid.uuid4()),
@@ -427,12 +427,12 @@ def parse(self, source: str, file_path: Optional[Path] = None) -> StandardizedAS
         children=[],
         metadata={}
     )
-    
+
     # Convert parsed structure to nodes
     for item in parsed:
         child_node = self._convert_to_node(item, parent=root)
         root.children.append(child_node)
-    
+
     self.root_node = root
     return root
 ```
@@ -447,12 +447,12 @@ class TestMyLanguageASTAdapter:
     @pytest.fixture
     def adapter(self):
         return MyLanguageASTAdapter()
-    
+
     def test_parse_simple(self, adapter):
         source = "# simple my_language code"
         root = adapter.parse(source)
         assert root.node_type == "document"
-    
+
     def test_find_nodes(self, adapter):
         source = "# code with multiple elements"
         adapter.parse(source)

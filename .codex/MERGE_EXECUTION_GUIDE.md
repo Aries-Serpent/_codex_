@@ -28,7 +28,7 @@ I've detected that this is a sandboxed agent environment where:
    # If you haven't cloned yet
    git clone https://github.com/Aries-Serpent/_codex_.git
    cd _codex_
-   
+
    # If you already have it
    cd _codex_
    git fetch --all

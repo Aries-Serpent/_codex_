@@ -98,7 +98,7 @@ from pathlib import Path
 def categorize_failure(error_text):
     """Categorize test failure by error type."""
     categories = []
-    
+
     if 'ImportError' in error_text or 'ModuleNotFoundError' in error_text:
         categories.append('ImportError')
     if 'TypeError' in error_text and 'argument' in error_text:
@@ -113,7 +113,7 @@ def categorize_failure(error_text):
         categories.append('StopIteration')
     if 'ResourceWarning' in error_text or 'I/O operation' in error_text:
         categories.append('ResourceError')
-        
+
     return categories or ['Other']
 
 # Parse log and categorize
@@ -122,7 +122,7 @@ failures_by_category = defaultdict(list)
 
 with open(log_file) as f:
     content = f.read()
-    
+
 # Extract FAILED lines
 failed_pattern = r'FAILED (tests/[^\s]+) - (.+?)(?=\n(?:FAILED|ERROR|=)|$)'
 matches = re.findall(failed_pattern, content, re.DOTALL)

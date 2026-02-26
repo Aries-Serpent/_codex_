@@ -67,7 +67,7 @@ export function QuantumDecisionEngine() {
               {state.k1_factor.toFixed(4)}
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full transition-all ${
                   k1Achieved ? 'bg-green-500' : 'bg-yellow-500'
                 }`}
@@ -90,7 +90,7 @@ export function QuantumDecisionEngine() {
               {state.quantum_advantage.toFixed(2)}x
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-accent transition-all"
                 style={{ width: `${Math.min((state.quantum_advantage / 4) * 100, 100)}%` }}
               />
@@ -108,17 +108,17 @@ export function QuantumDecisionEngine() {
               )}
             </div>
             <div className={`text-3xl font-mono font-bold ${
-              highCoherence ? 'text-green-500' : 
-              state.coherence >= 0.5 ? 'text-yellow-500' : 
+              highCoherence ? 'text-green-500' :
+              state.coherence >= 0.5 ? 'text-yellow-500' :
               'text-red-500'
             }`}>
               {(state.coherence * 100).toFixed(1)}%
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full transition-all ${
-                  highCoherence ? 'bg-green-500' : 
-                  state.coherence >= 0.5 ? 'bg-yellow-500' : 
+                  highCoherence ? 'bg-green-500' :
+                  state.coherence >= 0.5 ? 'bg-yellow-500' :
                   'bg-red-500'
                 }`}
                 style={{ width: `${state.coherence * 100}%` }}
@@ -138,7 +138,7 @@ export function QuantumDecisionEngine() {
               {(state.accuracy * 100).toFixed(1)}%
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-green-500 transition-all"
                 style={{ width: `${state.accuracy * 100}%` }}
               />
@@ -166,9 +166,9 @@ export function QuantumDecisionEngine() {
 
       <Card className="p-4 bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          <strong className="text-accent">Quantum Computing Principles:</strong> The cognitive brain evaluates 
-          multiple decision paths simultaneously through superposition, achieving {state.quantum_advantage.toFixed(2)}x 
-          faster processing than classical sequential evaluation. Coherence of {(state.coherence * 100).toFixed(1)}% 
+          <strong className="text-accent">Quantum Computing Principles:</strong> The cognitive brain evaluates
+          multiple decision paths simultaneously through superposition, achieving {state.quantum_advantage.toFixed(2)}x
+          faster processing than classical sequential evaluation. Coherence of {(state.coherence * 100).toFixed(1)}%
           indicates the system's ability to maintain quantum entanglement across parallel evaluations.
         </p>
       </Card>

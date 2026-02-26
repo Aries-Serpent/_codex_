@@ -51,14 +51,14 @@ jobs:
   test-rag:
     runs-on: ubuntu-latest
     timeout-minutes: 30  # Prevent hanging
-    
+
     steps:
       - name: Cache sentence-transformers models
         uses: actions/cache@v5
         with:
           path: ~/.cache/torch/sentence_transformers
           key: ${{ runner.os }}-sentence-transformers-${{ hashFiles('**/pyproject.toml') }}
-      
+
       - name: Run tests
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -84,21 +84,21 @@ import time
 
 def critical_operation(model, device):
     start_time = time.time()
-    
+
     try:
         # Perform operation
         result = perform_operation(model, device)
-        
+
         # Log success with timing
         duration = time.time() - start_time
         if duration > threshold:
             logger.info(f"Operation completed in {duration:.3f}s. Device: {device}")
-        
+
         # Optional: Send metrics
         # metrics.timing('operation_duration', duration, tags={'device': device})
-        
+
         return result
-        
+
     except Exception as e:
         duration = time.time() - start_time
         logger.error(f"Operation failed after {duration:.3f}s: {e}")
@@ -173,7 +173,7 @@ def critical_operation(model, device):
 if has_meta_tensors(model):
     # 2. Use to_empty() instead of to()
     model = model.to_empty(device=device)
-    
+
     # 3. Reinitialize parameters
     for module in model.modules():
         if hasattr(module, 'reset_parameters'):

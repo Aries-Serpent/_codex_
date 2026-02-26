@@ -29,7 +29,7 @@ mutations =
     number
     operator
     keyword
-    
+
 # Cache directory
 cache_only = False
 

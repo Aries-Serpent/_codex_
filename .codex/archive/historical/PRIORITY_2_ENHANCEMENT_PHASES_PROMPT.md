@@ -125,7 +125,7 @@ npx playwright show-report
 
 #### Background
 
-**Current State:** 
+**Current State:**
 - Check-links workflow runs on all markdown files every time
 - Slow execution when no changes made
 - Wastes CI/CD resources
@@ -189,11 +189,11 @@ on:
 jobs:
   check-links:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       # NEW: Compute checksum for caching
       - name: Compute file checksum
         id: checksum
@@ -201,7 +201,7 @@ jobs:
           CHECKSUM=$(bash .github/scripts/compute-checksum.sh . "*.md")
           echo "checksum=${CHECKSUM}" >> $GITHUB_OUTPUT
           echo "Computed checksum: ${CHECKSUM}"
-      
+
       # NEW: Try to restore cache
       - name: Restore link check cache
         id: cache
@@ -209,7 +209,7 @@ jobs:
         with:
           path: .link-check-cache
           key: link-check-${{ steps.checksum.outputs.checksum }}
-      
+
       # NEW: Skip if cache hit
       - name: Check if links already validated
         id: skip
@@ -221,7 +221,7 @@ jobs:
             echo "Cache miss. Will check links."
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
-      
+
       # EXISTING: Run link checker (only if no cache hit)
       - name: Check links
         if: steps.skip.outputs.skip != 'true'
@@ -229,7 +229,7 @@ jobs:
         with:
           args: --verbose --no-progress './**/*.md'
           fail: true
-      
+
       # NEW: Save cache on success
       - name: Save link check cache
         if: steps.skip.outputs.skip != 'true' && success()
@@ -237,7 +237,7 @@ jobs:
         with:
           path: .link-check-cache
           key: link-check-${{ steps.checksum.outputs.checksum }}
-      
+
       # NEW: Create cache marker file
       - name: Create cache marker
         if: steps.skip.outputs.skip != 'true' && success()
@@ -301,7 +301,7 @@ Edit `.github/scripts/compute-checksum.sh`:
 ```bash
 #!/bin/bash
 # compute-checksum.sh - Compute SHA-1 checksums for link checker caching
-# Usage: 
+# Usage:
 #   ./compute-checksum.sh <directory> [file-pattern]          # Aggregate checksum
 #   ./compute-checksum.sh <directory> [file-pattern] --folders # Per-folder checksums
 
@@ -314,7 +314,7 @@ MODE="${3:-aggregate}"
 if [ "$MODE" == "--folders" ]; then
   # Per-folder mode: compute checksum for each folder
   echo "Computing per-folder checksums for ${PATTERN} files..." >&2
-  
+
   find "${DIRECTORY}" -type f -name "${PATTERN}" -print0 | \
     xargs -0 dirname | \
     sort -u | \
@@ -329,7 +329,7 @@ if [ "$MODE" == "--folders" ]; then
 else
   # Aggregate mode: single checksum for all files
   echo "Computing aggregate checksum for ${PATTERN} files..." >&2
-  
+
   find "${DIRECTORY}" -type f -name "${PATTERN}" -print0 | \
     sort -z | \
     xargs -0 cat | \
@@ -364,7 +364,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Find folders with markdown files
         id: folders
         run: |
@@ -373,14 +373,14 @@ jobs:
                     sort -u | \
                     jq -R -s -c 'split("\n")[:-1]')
           echo "folders=${FOLDERS}" >> $GITHUB_OUTPUT
-      
+
       - name: Compute per-folder checksums
         id: checksums
         run: |
           CHECKSUMS=$(bash .github/scripts/compute-checksum.sh . "*.md" --folders | \
                       jq -R -s -c 'split("\n")[:-1] | map(select(length > 0))')
           echo "checksums=${CHECKSUMS}" >> $GITHUB_OUTPUT
-  
+
   check-links-matrix:
     needs: prepare
     runs-on: ubuntu-latest
@@ -391,21 +391,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Get folder checksum
         id: checksum
         run: |
           CHECKSUM=$(echo '${{ needs.prepare.outputs.checksums }}' | \
                      jq -r '.[] | select(startswith("${{ matrix.folder }}:")) | split(":")[1]')
           echo "checksum=${CHECKSUM}" >> $GITHUB_OUTPUT
-      
+
       - name: Restore cache for folder
         id: cache
         uses: actions/cache/restore@v4
         with:
           path: .link-check-cache/${{ matrix.folder }}
           key: link-check-${{ matrix.folder }}-${{ steps.checksum.outputs.checksum }}
-      
+
       - name: Check if folder needs validation
         id: skip
         run: |
@@ -416,14 +416,14 @@ jobs:
             echo "Cache miss for ${{ matrix.folder }}. Will check links."
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Check links in folder
         if: steps.skip.outputs.skip != 'true'
         uses: lycheeverse/lychee-action@v2
         with:
           args: --verbose --no-progress '${{ matrix.folder }}/**/*.md'
           fail: true
-      
+
       - name: Save cache for folder
         if: steps.skip.outputs.skip != 'true' && success()
         uses: actions/cache/save@v4
@@ -488,7 +488,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Clean old caches
         run: |
           # Delete caches older than 7 iterations
@@ -497,7 +497,7 @@ jobs:
             xargs -I {} gh cache delete {}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
   cache-warmup:
     if: github.event_name == 'schedule' || github.event.inputs.operation == 'warmup' || github.event.inputs.operation == 'full-cycle'
     needs: [cache-cleanup]
@@ -511,13 +511,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Warmup ${{ matrix.cache-key }} cache
         uses: actions/cache@v4
         with:
           path: .cache/${{ matrix.cache-key }}
           key: ${{ matrix.cache-key }}-${{ hashFiles('**/package-lock.json', '**/requirements/lock.txt') }}
-      
+
       - name: Populate cache
         run: |
           # Install dependencies to populate cache
@@ -565,35 +565,35 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Detect issues
         id: check
         run: |
           # Check for common issues
           ISSUES=""
-          
+
           # Check for failing tests
           if npm test 2>&1 | grep -q "FAIL"; then
             ISSUES="${ISSUES}test-failures,"
           fi
-          
+
           # Check for linting errors
           if npm run lint 2>&1 | grep -q "error"; then
             ISSUES="${ISSUES}lint-errors,"
           fi
-          
+
           # Check for outdated dependencies
           if npm outdated | grep -q "Packages"; then
             ISSUES="${ISSUES}outdated-deps,"
           fi
-          
+
           if [ -n "$ISSUES" ]; then
             echo "has-issues=true" >> $GITHUB_OUTPUT
             echo "issue-types=${ISSUES}" >> $GITHUB_OUTPUT
           else
             echo "has-issues=false" >> $GITHUB_OUTPUT
           fi
-  
+
   auto-fix:
     needs: detect-issues
     if: needs.detect-issues.outputs.has-issues == 'true'
@@ -604,7 +604,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Auto-fix ${{ matrix.issue-type }}
         run: |
           case "${{ matrix.issue-type }}" in
@@ -621,14 +621,14 @@ jobs:
               npm update
               ;;
           esac
-      
+
       - name: Create PR with fixes
         uses: peter-evans/create-pull-request@v5
         with:
           title: "🤖 Self-Healing: Fix ${{ matrix.issue-type }}"
           body: |
             Automated fixes for detected issues.
-            
+
             **Issue Type:** ${{ matrix.issue-type }}
             **Detection Time:** ${{ github.event.head_commit.timestamp }}
             **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -674,56 +674,56 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
         run: |
           cd cognitive_app
           npm ci
-      
+
       - name: Capture visual baselines
         run: |
           cd cognitive_app
           npm run test:visual -- --update-snapshots
-      
+
       - name: Upload baselines
         uses: actions/upload-artifact@v4
         with:
           name: visual-baselines
           path: cognitive_app/__image_snapshots__
-  
+
   visual-regression:
     if: github.event_name == 'pull_request' || github.event.inputs.mode == 'regression' || github.event.inputs.mode == 'both'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
         run: |
           cd cognitive_app
           npm ci
-      
+
       - name: Download baselines
         uses: actions/download-artifact@v4
         with:
           name: visual-baselines
           path: cognitive_app/__image_snapshots__
-      
+
       - name: Run visual regression tests
         run: |
           cd cognitive_app
           npm run test:visual
-      
+
       - name: Upload diff images on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -760,7 +760,7 @@ Add deprecation notice to old workflow files:
 # DEPRECATED: This workflow has been consolidated into [new-workflow-name].yml
 # This file will be removed in v2.0.0 (Cycle 2)
 # Please use the new workflow instead.
-# 
+#
 # if: false  # Disabled - use new consolidated workflow
 ```
 
@@ -817,7 +817,7 @@ def filter_by_severity(vulns: List[Dict], min_severity: str = 'low') -> List[Dic
     """Filter vulnerabilities by severity."""
     severity_order = {'low': 0, 'medium': 1, 'high': 2, 'critical': 3}
     min_level = severity_order.get(min_severity.lower(), 0)
-    
+
     filtered = []
     for vuln in vulns:
         severity = vuln.get('severity', 'low').lower()
@@ -829,16 +829,16 @@ def format_report(vulns: List[Dict]) -> str:
     """Format vulnerabilities as markdown report."""
     if not vulns:
         return "✅ No vulnerabilities found!"
-    
+
     report = f"# Security Scan Report\n\n"
     report += f"**Total Vulnerabilities:** {len(vulns)}\n\n"
-    
+
     # Group by severity
     by_severity = {}
     for vuln in vulns:
         severity = vuln.get('severity', 'low').title()
         by_severity.setdefault(severity, []).append(vuln)
-    
+
     for severity in ['Critical', 'High', 'Medium', 'Low']:
         if severity in by_severity:
             report += f"## {severity} Severity ({len(by_severity[severity])})\n\n"
@@ -847,27 +847,27 @@ def format_report(vulns: List[Dict]) -> str:
                 report += f"- **CVE:** {vuln.get('cve', 'N/A')}\n"
                 report += f"- **Description:** {vuln.get('description', 'N/A')}\n"
                 report += f"- **Recommendation:** {vuln.get('recommendation', 'N/A')}\n\n"
-    
+
     return report
 
 def main():
     print("Running security scan on Python dependencies...")
-    
+
     # Run safety check
     results = run_safety_check()
     vulns = results.get('vulnerabilities', [])
-    
+
     # Filter high and critical
     critical_vulns = filter_by_severity(vulns, 'high')
-    
+
     # Generate report
     report = format_report(vulns)
     print(report)
-    
+
     # Write to file
     with open('security-scan-report.md', 'w') as f:
         f.write(report)
-    
+
     # Exit with error if critical/high vulnerabilities found
     if critical_vulns:
         print(f"\n❌ Found {len(critical_vulns)} high/critical vulnerabilities!", file=sys.stderr)
@@ -903,32 +903,32 @@ on:
 jobs:
   scan-dependencies:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install safety
         run: pip install safety
-      
+
       - name: Run CVE scan
         id: scan
         continue-on-error: true
         run: |
           python .github/scripts/scan-dependencies.py
-      
+
       - name: Upload scan report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: security-scan-report
           path: security-scan-report.md
-      
+
       - name: Post results as comment (PR only)
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -936,14 +936,14 @@ jobs:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('security-scan-report.md', 'utf8');
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `## 🔒 Security CVE Scan Results\n\n${report}`
             });
-      
+
       - name: Fail on high/critical vulnerabilities
         if: steps.scan.outcome == 'failure'
         run: |

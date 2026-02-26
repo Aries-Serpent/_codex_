@@ -1,5 +1,5 @@
 // SwarmState: Thread-safe shared state for agent coordination
-// 
+//
 // This module provides a concurrent hash map-based state store that multiple
 // agents can access simultaneously without GIL contention. Uses DashMap for
 // lock-free reads and minimal lock contention on writes.
@@ -19,7 +19,7 @@ pub enum AgentStatus {
 }
 
 /// Thread-safe shared state accessible from both Rust and Python
-/// 
+///
 /// This structure provides concurrent access to agent state without the
 /// overhead of Python's GIL. Multiple threads can read/write simultaneously.
 #[pyclass]
@@ -37,23 +37,23 @@ impl SwarmState {
             agents: Arc::new(DashMap::new()),
         }
     }
-    
+
     /// Register a new agent with the swarm
-    /// 
+    ///
     /// # Arguments
     /// * `agent_id` - Unique identifier for the agent
     fn register_agent(&self, agent_id: String) -> PyResult<()> {
         self.agents.insert(agent_id, AgentStatus::Idle);
         Ok(())
     }
-    
+
     /// Get the current count of registered agents
     pub fn get_agent_count(&self) -> usize {
         self.agents.len()
     }
-    
+
     /// Update an agent's status
-    /// 
+    ///
     /// # Arguments
     /// * `agent_id` - Unique identifier for the agent
     /// * `status` - New status as string ("idle", "working", "complete", "failed")
@@ -69,13 +69,13 @@ impl SwarmState {
                 format!("Invalid status: {}", status)
             )),
         };
-        
+
         self.agents.insert(agent_id, new_status);
         Ok(())
     }
-    
+
     /// Get an agent's current status
-    /// 
+    ///
     /// Returns a tuple of (status_str, message)
     fn get_agent_status(&self, agent_id: String) -> PyResult<(String, String)> {
         match self.agents.get(&agent_id) {
@@ -94,13 +94,13 @@ impl SwarmState {
             )),
         }
     }
-    
+
     /// Remove an agent from the swarm
     fn unregister_agent(&self, agent_id: String) -> PyResult<()> {
         self.agents.remove(&agent_id);
         Ok(())
     }
-    
+
     /// Get all agent IDs currently registered
     fn list_agents(&self) -> Vec<String> {
         self.agents.iter().map(|entry| entry.key().clone()).collect()

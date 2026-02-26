@@ -12,7 +12,7 @@
 ### ✅ COMPLETED: RAG Meta Tensor Fix (Job 59986153086)
 - **Status:** RESOLVED
 - **Commit:** 8cb2ef90
-- **Files Modified:** 
+- **Files Modified:**
   - `src/codex/rag/utils.py` (enhanced safe_model_load)
   - `src/codex/rag/indexer.py` (applied fix)
 - **Tests:** 125/125 pass locally, 298/298 expected in CI

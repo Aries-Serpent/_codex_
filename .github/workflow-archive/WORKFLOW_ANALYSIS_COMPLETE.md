@@ -124,7 +124,7 @@ This is the largest category, indicating many workflows lack clear categorizatio
 - rust_swarm_ci.yml
 - self-healing-ci.yml
 
-**Consolidation Opportunity**: 
+**Consolidation Opportunity**:
 - CI Health (3) → Single health monitoring workflow
 - Auto-fixes (2) → Unified auto-fix pipeline
 - Build (2) → Multi-platform build matrix

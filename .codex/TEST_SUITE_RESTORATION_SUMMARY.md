@@ -38,7 +38,7 @@ Successfully fixed **9 test failures** and **1 critical collection error** that 
 - **File**: `tests/monitoring/test_monitoring_mlflow_utils.py`
   - Added proper mocking of `bootstrap_offline_tracking` to return `None`
   - Added mock verification for `mlflow.start_run` and `mlflow.set_tracking_uri`
-  
+
 - **File**: `tests/integration/test_distributed_init.py`
   - Updated mocks to return actual `bool` values instead of `MagicMock` objects
   - Added proper patching of `torch.cuda.is_available()`
@@ -50,7 +50,7 @@ Successfully fixed **9 test failures** and **1 critical collection error** that 
     - Created `ActionPath` objects with proper parameters
     - Created `DecisionState` with `current_position` and `goal_position`
     - Called `optimize_path(ranked_paths=[...], state=...)`
-  
+
 - **File**: `tests/asyncio/test_py312_compatibility.py`
   - Fixed `test_request_batcher_async_context`:
     - Created `BatchConfig` object
@@ -58,7 +58,7 @@ Successfully fixed **9 test failures** and **1 critical collection error** that 
   - Fixed `test_async_pattern_no_event_loop_warning`:
     - Replaced `pytest.warns(None)` with `warnings.catch_warnings(record=True)`
     - Added proper warning filtering and assertions
-  
+
 - **File**: `tests/cli/test_metrics_table_name_validation.py`
   - Enhanced `test_allows_unsafe_with_override` with descriptive assertion messages
 
@@ -66,7 +66,7 @@ Successfully fixed **9 test failures** and **1 critical collection error** that 
 - **File**: `tests/agents/test_phase2_deep_coverage_batch16_method_variations.py`
   - Fixed `test_graph_traversal_all_starting_points`:
     - Changed from `model.bfs(start_node=node)` to `model.bfs(start_node=node.node_id)`
-  
+
 - **File**: `agents/workflow_navigator.py`
   - Added `__len__` method to `Workflow` class:
     ```python
@@ -78,7 +78,7 @@ Successfully fixed **9 test failures** and **1 critical collection error** that 
 ### Phase 5: Code Quality
 - **File**: `tests/asyncio/test_py312_compatibility.py`
   - Moved `warnings` import to module level
-  
+
 - **File**: `tests/integration/test_distributed_init.py`
   - Moved `patch` and `MagicMock` imports to module level
 

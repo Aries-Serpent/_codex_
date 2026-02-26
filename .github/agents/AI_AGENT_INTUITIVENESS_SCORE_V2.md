@@ -162,7 +162,7 @@ The _codex_ codebase has achieved **significant improvements** through Phase 8.7
    ```python
    class EnvironmentAdapter:
        def execute_step(...) -> Tuple[Dict, float, bool]:
-   
+
    class GridWorldAdapter(EnvironmentAdapter): ...
    class BanditAdapter(EnvironmentAdapter): ...
    class ClassificationAdapter(EnvironmentAdapter): ...
@@ -270,8 +270,8 @@ The _codex_ codebase has achieved **significant improvements** through Phase 8.7
 1. **Comprehensive Type Hints:**
    ```python
    def adapt_to_task(
-       self, 
-       task_id: str, 
+       self,
+       task_id: str,
        task_data: List[Tuple[Any, Any]]
    ) -> Dict[str, float]:
        """Adapt meta-parameters to specific task."""
@@ -289,17 +289,17 @@ The _codex_ codebase has achieved **significant improvements** through Phase 8.7
 3. **Docstring Excellence:**
    ```python
    """Universal Task Interface for Phase 8.7.
-   
+
    Provides standard interface for any computable environment μ.
    Supports deterministic execution with fixed seeds.
-   Includes environment adapters, complexity estimation, 
+   Includes environment adapters, complexity estimation,
    and JSON schema validation.
-   
+
    Attributes:
        seed: Master random seed for determinism
        adapters: Dict of environment-specific adapters
        task_history: List of (spec, result) tuples
-   
+
    Example:
        >>> uti = UniversalTaskInterface(seed=12345)
        >>> spec = TaskSpec(environment="gridworld", ...)
@@ -428,7 +428,7 @@ The _codex_ codebase has achieved **significant improvements** through Phase 8.7
    # Real-time safety checks
    if monitor.detect_negative_transfer(domain, perf):
        monitor.trigger_rollback(domain)
-   
+
    if monitor.detect_forgetting(domain, perf):
        monitor.isolate_domain(domain)
    ```
@@ -566,11 +566,11 @@ Phase Breakdown:
       function_name: str
       duration_ms: float
       timestamp: datetime
-  
+
   class Profiler:
       def __init__(self):
           self.timings: List[TimingResult] = []
-      
+
       def timed(self, func):
           @wraps(func)
           def wrapper(*args, **kwargs):
@@ -671,15 +671,15 @@ Phase Breakdown:
   from opentelemetry import trace, metrics
   from opentelemetry.sdk.trace import TracerProvider
   from opentelemetry.sdk.metrics import MeterProvider
-  
+
   class TelemetryConfig:
       def __init__(self, service_name: str = "cognitive-brain"):
           self.tracer = trace.get_tracer(service_name)
           self.meter = metrics.get_meter(service_name)
-      
+
       def trace_operation(self, name: str):
           return self.tracer.start_as_current_span(name)
-      
+
       def record_metric(self, name: str, value: float):
           counter = self.meter.create_counter(name)
           counter.add(value)
@@ -704,12 +704,12 @@ Phase Breakdown:
           self.config_path = config_path
           self.config = self.load_config()
           self.watchers: List[Callable] = []
-      
+
       def reload(self):
           self.config = self.load_config()
           for watcher in self.watchers:
               watcher(self.config)
-      
+
       def watch(self, callback: Callable):
           self.watchers.append(callback)
   ```
@@ -1196,7 +1196,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1385,7 +1385,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

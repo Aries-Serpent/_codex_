@@ -59,14 +59,14 @@ Use docstrings for all public functions:
 ```python
 def fetch_data(url: str, timeout: int = 30) -> dict[str, Any]:
     """Fetch data from the specified URL.
-    
+
     Args:
         url: The URL to fetch from.
         timeout: Request timeout in seconds.
-    
+
     Returns:
         Parsed JSON response as dictionary.
-    
+
     Raises:
         RequestError: If the request fails.
     """
@@ -83,11 +83,11 @@ def safe_operation(data: dict) -> Result:
         # Validate input
         if not data:
             return Result(success=False, error="Empty data")
-        
+
         # Perform operation
         result = process(data)
         return Result(success=True, value=result)
-    
+
     except ValidationError as e:
         logger.warning(f"Validation failed: {e}")
         return Result(success=False, error=str(e))
@@ -113,17 +113,17 @@ logger.error("Operation failed", exc_info=True)
 ```python
 class TestDataProcessor:
     """Test suite for DataProcessor."""
-    
+
     @pytest.fixture
     def processor(self):
         """Create processor instance."""
         return DataProcessor()
-    
+
     def test_process_valid_data(self, processor):
         """Test processing valid input."""
         result = processor.process({"key": "value"})
         assert result.success is True
-    
+
     def test_process_empty_data(self, processor):
         """Test handling empty input."""
         result = processor.process({})

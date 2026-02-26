@@ -101,7 +101,7 @@ class LoadTestResults:
 
 class LoadTester:
     """Executes load tests against RAG system."""
-    
+
     def __init__(self, config: LoadTestConfig):
         self.config = config
         self.results = []
@@ -112,7 +112,7 @@ class LoadTester:
             embedding_throughput_window=5000,
             index_build_time_window=100
         ))
-    
+
     def run_single_query(self, query_id: int, retriever) -> Dict[str, Any]:
         """Execute a single query and track metrics."""
         queries = [
@@ -123,18 +123,18 @@ class LoadTester:
             "performance optimization"
         ]
         query = queries[query_id % len(queries)]
-        
+
         try:
             start = time.time()
             results = retriever.query_with_cache(query, top_k=5)
             duration_ms = (time.time() - start) * 1000
-            
+
             self.metrics.track_query_latency(
                 duration_ms,
                 tenant_id="load_test",
                 index_name="benchmark"
             )
-            
+
             return {
                 'query_id': query_id,
                 'duration_ms': duration_ms,
@@ -149,14 +149,14 @@ class LoadTester:
                 'results': 0,
                 'success': False
             }
-    
+
     def run_batch(self, start_id: int, batch_size: int, retriever) -> List[Dict]:
         """Execute a batch of queries."""
         return [
             self.run_single_query(start_id + i, retriever)
             for i in range(batch_size)
         ]
-    
+
     def run_concurrent_test(self) -> LoadTestResults:
         """Execute concurrent load test."""
         print(f"🚀 Starting load test: {self.config.total_queries:,} queries")
@@ -164,59 +164,59 @@ class LoadTester:
         print(f"   Batch size: {self.config.batch_size}")
         print(f"   Cache: {'Enabled' if self.config.cache_enabled else 'Disabled'}")
         print()
-        
+
         # Start memory tracking
         tracemalloc.start()
         process = psutil.Process()
         initial_memory = process.memory_info().rss / 1024 / 1024
-        
+
         self.start_time = time.time()
-        
+
         # Create retriever (mock for now, will use real in production)
         from unittest.mock import Mock
         retriever = Mock()
         retriever.query_with_cache = Mock(return_value=[
             {'text': 'result', 'score': 0.9, 'file': 'test.md', 'start_line': 1, 'end_line': 5}
         ])
-        
+
         # Execute concurrent queries
         completed = 0
         with ThreadPoolExecutor(max_workers=self.config.concurrent_threads) as executor:
             futures = []
-            
+
             for batch_start in range(0, self.config.total_queries, self.config.batch_size):
                 batch_size = min(self.config.batch_size, self.config.total_queries - batch_start)
                 future = executor.submit(self.run_batch, batch_start, batch_size, retriever)
                 futures.append(future)
-            
+
             # Collect results
             for future in as_completed(futures):
                 batch_results = future.result()
                 self.results.extend(batch_results)
                 completed += len(batch_results)
-                
+
                 if completed % self.config.report_interval == 0:
                     elapsed = time.time() - self.start_time
                     qps = completed / elapsed
                     print(f"   Progress: {completed:,}/{self.config.total_queries:,} "
                           f"({completed/self.config.total_queries*100:.1f}%) - "
                           f"{qps:.0f} qps")
-        
+
         # Calculate results
         duration = time.time() - self.start_time
         current_memory, peak_memory = tracemalloc.get_traced_memory()
         tracemalloc.stop()
-        
+
         # Get latencies
         latencies = [r['duration_ms'] for r in self.results if r['success']]
         latencies.sort()
         n = len(latencies)
-        
+
         # Get cache stats
         cache_stats = self.metrics.cache_stats
         total_cache = cache_stats['hits'] + cache_stats['misses']
         cache_hit_rate = cache_stats['hits'] / total_cache if total_cache > 0 else 0
-        
+
         return LoadTestResults(
             total_queries=self.config.total_queries,
             duration_seconds=duration,
@@ -230,7 +230,7 @@ class LoadTester:
             errors=len(self.errors),
             success=len(self.errors) < self.config.total_queries * 0.01  # <1% error rate
         )
-    
+
     def generate_report(self, results: LoadTestResults) -> str:
         """Generate comprehensive load test report."""
         report = []
@@ -238,7 +238,7 @@ class LoadTester:
         report.append("RAG LOAD TEST RESULTS")
         report.append("=" * 80)
         report.append("")
-        
+
         # Summary
         report.append("📊 SUMMARY")
         report.append(f"   Total Queries: {results.total_queries:,}")
@@ -246,31 +246,31 @@ class LoadTester:
         report.append(f"   Throughput: {results.queries_per_second:.0f} qps")
         report.append(f"   Success Rate: {(1 - results.errors/results.total_queries)*100:.2f}%")
         report.append("")
-        
+
         # Performance
         report.append("⚡ PERFORMANCE")
         report.append(f"   Mean Latency: {results.mean_latency_ms:.2f}ms")
         report.append(f"   P95 Latency: {results.p95_latency_ms:.2f}ms")
         report.append(f"   P99 Latency: {results.p99_latency_ms:.2f}ms")
         report.append("")
-        
+
         # Cache
         report.append("🔄 CACHE")
         report.append(f"   Hit Rate: {results.cache_hit_rate:.1%}")
         report.append(f"   Speedup: ~{100 if results.cache_hit_rate > 0.9 else 10}x (estimated)")
         report.append("")
-        
+
         # Resources
         report.append("💾 RESOURCES")
         report.append(f"   Peak Memory: {results.peak_memory_mb:.1f}MB")
         report.append(f"   CPU Usage: {results.cpu_usage_percent:.1f}%")
         report.append("")
-        
+
         # Status
         status = "✅ PASSED" if results.success else "❌ FAILED"
         report.append(f"🎯 STATUS: {status}")
         report.append("=" * 80)
-        
+
         return "\n".join(report)
 
 
@@ -279,7 +279,7 @@ def main():
     print("RAG Load Testing Suite")
     print("=" * 80)
     print()
-    
+
     # Test configurations
     configs = [
         LoadTestConfig(
@@ -298,22 +298,22 @@ def main():
             batch_size=1000
         ),
     ]
-    
+
     all_results = []
-    
+
     for i, config in enumerate(configs, 1):
         print(f"\n{'=' * 80}")
         print(f"TEST {i}/{len(configs)}")
         print(f"{'=' * 80}\n")
-        
+
         tester = LoadTester(config)
         results = tester.run_concurrent_test()
         all_results.append(results)
-        
+
         print()
         print(tester.generate_report(results))
         print()
-        
+
         # Save results
         with open(f'reports/load_test_{config.total_queries}.json', 'w') as f:
             json.dump({
@@ -333,7 +333,7 @@ def main():
                     'success': results.success
                 }
             }, f, indent=2)
-    
+
     # Final summary
     print("\n" + "=" * 80)
     print("LOAD TESTING COMPLETE")
@@ -391,18 +391,18 @@ snapshots = []
 
 for iteration in range(10):
     print(f"\nIteration {iteration + 1}/10")
-    
+
     # Simulate heavy load
     for i in range(100_000):
         metrics.track_query_latency(100.0, tenant_id="test")
-    
+
     # Force garbage collection
     gc.collect()
-    
+
     # Take snapshot
     snapshot = tracemalloc.take_snapshot()
     snapshots.append(snapshot)
-    
+
     current, peak = tracemalloc.get_traced_memory()
     print(f"  Current: {current / 1024 / 1024:.2f}MB")
     print(f"  Peak: {peak / 1024 / 1024:.2f}MB")
@@ -441,16 +441,16 @@ print('=' * 60)
 # Test with varying cache sizes
 for cache_size in [10, 100, 1000]:
     print(f'\nCache size: {cache_size}')
-    
+
     hits = 0
     total = 10_000
-    
+
     for i in range(total):
         query = queries[i % len(queries)]
         # Simulate cache lookup
         if i >= cache_size and (i % len(queries)) < len(queries):
             hits += 1
-    
+
     hit_rate = hits / total
     print(f'  Hit rate: {hit_rate:.1%}')
     print(f'  Speedup: ~{1/(1-hit_rate) if hit_rate < 1 else 100:.1f}x')

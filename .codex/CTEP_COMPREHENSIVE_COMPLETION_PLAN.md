@@ -21,12 +21,12 @@
   - Fixed: tests/agents/test_msp_client_comprehensive.py
   - Changed: endpoint= → base_url=
   - Commit: 16a09ba
-  
+
 - [x] **Task 2E.1-2E.2:** MonkeyPatch migration (2 tests) ✅
   - Fixed: tests/cli/test_cli_tracking_decide.py
   - Changed: monkeypatch.addfinalizer → request.addfinalizer
   - Commit: 16a09ba
-  
+
 - [x] **Task 2D.1-2D.3:** FAISS mock enhancement (8 tests) ✅
   - Fixed: src/codex/retrieval/stores/faiss_store.py
   - Changed: faiss.__version__ → getattr(faiss, "__version__", "unknown")
@@ -123,10 +123,10 @@ Using quantum-inspired analysis:
    ```python
    # Before (risky):
    value = next(iterator)
-   
+
    # After (safe - Option 1):
    value = next(iterator, None)
-   
+
    # After (safe - Option 2):
    try:
        value = next(iterator)
@@ -198,7 +198,7 @@ Using quantum-inspired analysis:
    ```yaml
    # Before:
    if [ $manual_review_count -gt 0 ]; then exit 1; fi
-   
+
    # After:
    if [ $auto_fixable_count -gt 0 ]; then exit 1; fi
    ```

@@ -147,7 +147,7 @@ def _luhn_check(card_number: str) -> bool:
     digits = [int(d) for d in card_number if d.isdigit()]
     if len(digits) < 13:
         return False
-    
+
     checksum = 0
     for i, digit in enumerate(reversed(digits)):
         if i % 2 == 1:

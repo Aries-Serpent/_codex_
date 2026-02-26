@@ -49,11 +49,11 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     vi.clearAllMocks();
     delete import.meta.env.VITE_CODEX_KEY;
     delete import.meta.env.VITE_CODEX_API;
-    
+
     // Set up mocks with factory functions
     const mockCodexClient = createMockCodexClient();
     const mockSparkClient = createMockSparkClient();
-    
+
     // MockCodexAPIClient uses real implementation, only mock CodexAPIClient and SparkLLMClient
     vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
     vi.mocked(SparkLLMClient).mockImplementation(() => mockSparkClient as any);
@@ -110,7 +110,7 @@ describe('CodeGenerator - Lazy Initialization Pattern', () => {
     beforeEach(() => {
       import.meta.env.VITE_CODEX_KEY = 'test-api-key-12345';
       import.meta.env.VITE_CODEX_API = 'http://localhost:8000';
-      
+
       // Ensure CodexAPIClient mock is set up for this scenario
       const mockCodexClient = createMockCodexClient();
       vi.mocked(CodexAPIClient).mockImplementation(() => mockCodexClient as any);
@@ -368,8 +368,8 @@ describe('CodeGenerator - Real Workflows', () => {
     // Find Download button with more flexible selector
     const downloadButton = await waitFor(() => {
       const buttons = screen.getAllByRole('button');
-      const downloadBtn = buttons.find(btn => 
-        btn.textContent?.includes('Download') || 
+      const downloadBtn = buttons.find(btn =>
+        btn.textContent?.includes('Download') ||
         btn.getAttribute('aria-label')?.includes('Download')
       );
       expect(downloadBtn).toBeDefined();
@@ -381,7 +381,7 @@ describe('CodeGenerator - Real Workflows', () => {
     await waitFor(() => {
       expect(createObjectURL).toHaveBeenCalled();
     }, { timeout: 2000 });
-    
+
     expect(revokeObjectURL).toHaveBeenCalled();
   }, 15000);
 });
@@ -409,7 +409,7 @@ describe('CodeGenerator - Accessibility', () => {
 
     // Test button focus (use Tab key simulation for realistic navigation)
     fireEvent.keyDown(textarea, { key: 'Tab', code: 'Tab' });
-    
+
     // Button should be focusable via keyboard or direct focus
     const button = screen.getByRole('button', { name: /Generate Code/i });
     button.focus();

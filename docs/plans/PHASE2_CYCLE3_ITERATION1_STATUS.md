@@ -89,7 +89,7 @@ Added methods:
 - AgentMemory.store_memory variations
 - Enum value mismatches
 
-**Example:** 
+**Example:**
 ```python
 @pytest.mark.skip(reason="DecisionState API changed")
 @pytest.mark.skip(reason="Enum value doesn't exist")

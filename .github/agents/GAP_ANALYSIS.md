@@ -198,7 +198,7 @@ async def _github_api_post_review(self, repo, pr_number, body, action, suggestio
 ### High Risks
 1. **Secrets in Logs:** Review bodies may contain sensitive data
    - **Mitigation:** Implement log sanitization
-   
+
 2. **API Credentials:** GitHub App private key handling
    - **Mitigation:** Use secure secrets management (AWS Secrets Manager, etc.)
 
@@ -244,7 +244,7 @@ async def _github_api_post_review(self, repo, pr_number, body, action, suggestio
    - Enhance regex patterns for broader matching
    - Add pattern validation utility
    - Fix failing tests
-   
+
 2. **Implement GitHub API Integration**
    - Complete `_github_api_post_review()`
    - Add authentication
@@ -383,7 +383,7 @@ Review → Feedback → Learn → Improve → Review
 ### Accepted Risks
 1. **Limited Language Support:** Python-focused initially
    - **Mitigation:** Architecture supports extension
-   
+
 2. **Learning Curve:** New patterns take time to learn
    - **Mitigation:** Pre-seed with common patterns
 

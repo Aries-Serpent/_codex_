@@ -21,20 +21,20 @@
   - [x] Documentation complete (`.codex/security/README.md`)
   - [x] Tested chunking (10 results → 4 chunks)
   - [x] CI failure analysis complete (20 tests identified)
-  
+
 - [ ] Phase 2: CI/CD Failure Resolution - READY TO START
   - [ ] Verify workflows completed (33 were in progress)
   - [ ] Fix ALL 20 test failures per AI Agency Policy
   - [ ] Critical: PyTorch checkpoints (1), RAG dependencies (5), type errors (3)
   - [ ] High: Packaging (2), CLI (1), seeds (1)
   - [ ] Medium/Low: Infrastructure (7)
-  
+
 - [ ] Phase 3: Security Alert Remediation - AWAITING HUMAN ACTION
   - [ ] Human must run: `GITHUB_TOKEN=xxx python scripts/security/fetch_all_code_scanning_alerts.py --repo Aries-Serpent/_codex_ --output .codex/security/alerts_catalog.json`
   - [ ] Commit alert catalog to repository
   - [ ] Systematically resolve alerts by severity
   - [ ] Target: ZERO critical, ZERO high, ≤10 medium
-  
+
 - [ ] Phase 4: Codebase Quality Improvements
 - [ ] Phase 5: Self-Review (5+ iterations until ZERO concerns)
 - [ ] Phase 6: Follow-Up Prompt (if needed)

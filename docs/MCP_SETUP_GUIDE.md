@@ -32,10 +32,10 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
    # Install Node.js (if not already installed)
    # macOS
    brew install node
-   
+
    # Linux (Ubuntu/Debian)
    sudo apt install nodejs npm
-   
+
    # Windows
    # Download from https://nodejs.org
    ```
@@ -44,14 +44,14 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
    ```bash
    # GitHub MCP Server (for repository access)
    npm install -g @modelcontextprotocol/server-github
-   
+
    # Playwright MCP Server (for browser automation)
    npm install -g @playwright/test
    npx playwright install
    ```
 
 4. **Configure Claude Desktop:**
-   
+
    Edit `claude_desktop_config.json`:
    ```json
    {
@@ -76,32 +76,32 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
    ```
 
 5. **Create GitHub Personal Access Token:**
-   
+
    a. Go to https://github.com/settings/tokens
-   
+
    b. Click "Generate new token (classic)"
-   
+
    c. Name: "MCP Server Access"
-   
+
    d. Select scopes:
       - ✅ `repo` (Full control of private repositories)
       - ✅ `workflow` (Update GitHub Action workflows)
       - ✅ `read:org` (Read org and team membership)
       - ✅ `project` (Access projects)
-   
+
    e. Click "Generate token"
-   
+
    f. Copy token and paste into config (replace `your_github_personal_access_token_here`)
 
 6. **Restart Claude Desktop**
 
 7. **Verify Setup:**
-   
+
    In Claude Desktop, ask:
    ```
    Can you list the workflows in the Aries-Serpent/_codex_ repository?
    ```
-   
+
    If configured correctly, Claude will use the GitHub MCP server to fetch workflow information.
 
 ---

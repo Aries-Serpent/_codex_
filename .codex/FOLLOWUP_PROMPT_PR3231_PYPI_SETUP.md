@@ -189,23 +189,23 @@ stateDiagram-v2
     Documentation --> LocalBuild: Phase 1 Start
     LocalBuild --> PyPIUpload: Build Success
     PyPIUpload --> ProjectCreated: Manual Upload
-    
+
     ProjectCreated --> TrustedPublisher: Phase 2 Start
     TrustedPublisher --> WorkflowVerify: Config Complete
-    
+
     WorkflowVerify --> TestDispatch: Phase 3 Start
     TestDispatch --> OIDCAuth: Workflow Triggered
     OIDCAuth --> PackagePublished: Auth Success
-    
+
     PackagePublished --> TokenRevoke: Phase 4 Start
     TokenRevoke --> Documentation2: Security Complete
     Documentation2 --> [*]: Setup Complete
-    
+
     note right of ProjectCreated
         First-time only
         Human action required
     end note
-    
+
     note right of OIDCAuth
         Automated releases
         No API tokens needed
@@ -238,19 +238,19 @@ gantt
 ```mermaid
 C4Context
     title PyPI Publishing Context Diagram (v0.1.0)
-    
+
     Person(admin, "Repository Admin", "Configures PyPI trusted publishing")
     Person(dev, "Developer", "Creates releases")
-    
+
     System(ghactions, "GitHub Actions", "CI/CD automation platform")
     System(pypi, "PyPI", "Python package registry")
-    
+
     System_Boundary(codex, "_codex_ Repository") {
         System(workflow, "pypi-publish.yml", "Publishing workflow")
         System(docs, "Setup Documentation", "Complete guide")
         System(agent, "PyPI Ops Agent", "Copilot assistance")
     }
-    
+
     Rel(admin, pypi, "Configures trusted publisher")
     Rel(admin, workflow, "Reviews configuration")
     Rel(dev, ghactions, "Triggers release")

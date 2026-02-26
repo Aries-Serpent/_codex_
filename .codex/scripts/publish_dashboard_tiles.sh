@@ -14,7 +14,7 @@ echo "[INFO] Building rate-limit dashboard tile..."
 # Step 1: Build the tile JSON if data is available
 if [ -f "reports/tiles/ratelimit_tile.json" ]; then
     echo "[INFO] Found reports/tiles/ratelimit_tile.json"
-    
+
     # Step 2: Render HTML from JSON
     python scripts/dashboards/render_ratelimit_tile_html.py \
         --tile reports/tiles/ratelimit_tile.json \

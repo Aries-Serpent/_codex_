@@ -129,50 +129,50 @@ graph TD
         R[retriever.py]
         U[utils.py]
     end
-    
+
     subgraph "Utility Functions"
         HTM[has_meta_tensors]
         SMTD[safe_model_to_device]
     end
-    
+
     subgraph "External Dependencies"
         ST[SentenceTransformer 3.x]
         PT[PyTorch 2.6+]
         TF[Transformers 4.48+]
     end
-    
+
     subgraph "Quality Assurance"
         TESTS[467 Test Cases]
         GUARD[Meta Tensor Guardian Agent]
         VAL[Meta Tensor Validator Agent]
     end
-    
+
     E -->|imports| U
     I -->|imports| U
     R -->|imports| U
-    
+
     U -->|provides| HTM
     U -->|provides| SMTD
-    
+
     E -->|uses| ST
     I -->|uses| ST
     R -->|uses| ST
-    
+
     ST -->|depends on| PT
     ST -->|depends on| TF
-    
+
     TESTS -->|validates| E
     TESTS -->|validates| I
     TESTS -->|validates| R
-    
+
     GUARD -->|monitors| E
     GUARD -->|monitors| I
     GUARD -->|monitors| R
-    
+
     VAL -->|enforces patterns| E
     VAL -->|enforces patterns| I
     VAL -->|enforces patterns| R
-    
+
     style E fill:#4169E1
     style I fill:#4169E1
     style R fill:#4169E1

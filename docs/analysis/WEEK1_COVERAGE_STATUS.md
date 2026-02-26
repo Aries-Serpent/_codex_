@@ -22,23 +22,23 @@ Pre-commit 1-2 of the Coverage Improvement Roadmap has been implemented. Created
   - Single training step
   - Multiple training iterations  
   - Training mode toggle
-  
+
 - ✅ **Checkpoint Saving/Loading** (7 tests)
   - Basic checkpoint save
   - Basic checkpoint load
   - Checkpoint with optimizer state
   - Checkpoint metadata
   - Resume from checkpoint
-  
+
 - ✅ **Early Stopping** (3 tests)
   - Early stopping with patience
   - Early stopping improvement detection
   - Early stopping with minimum delta
-  
+
 - ✅ **Gradient Accumulation** (2 tests)
   - Basic gradient accumulation
   - Gradient accumulation equivalence
-  
+
 - ✅ **Training Configuration** (3 tests)
   - Optimizer setup
   - Learning rate scheduling
@@ -57,7 +57,7 @@ Pre-commit 1-2 of the Coverage Improvement Roadmap has been implemented. Created
   - Config defaults
   - Config merging
   - Config from dict
-  
+
 - ✅ **Optimizer Setup** (7 tests)
   - Adam optimizer
   - AdamW optimizer with weight decay
@@ -65,7 +65,7 @@ Pre-commit 1-2 of the Coverage Improvement Roadmap has been implemented. Created
   - Parameter groups
   - Zero grad
   - Optimizer step
-  
+
 - ✅ **Learning Rate Scheduling** (7 tests)
   - StepLR scheduler
   - ExponentialLR scheduler
@@ -73,7 +73,7 @@ Pre-commit 1-2 of the Coverage Improvement Roadmap has been implemented. Created
   - ReduceLROnPlateau scheduler
   - Linear warmup
   - Scheduler state dict
-  
+
 - ✅ **Training Loop Integration** (2 tests)
   - Training loop with config
   - Training with scheduler

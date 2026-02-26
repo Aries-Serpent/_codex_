@@ -170,7 +170,7 @@ Job 61174659638 (Test Summary):
 
 **Prompt 1: Monitor CI Results**
 ```markdown
-@copilot Monitor the CI pipeline for PR branch `copilot/fix-multi-job-ci-failure` 
+@copilot Monitor the CI pipeline for PR branch `copilot/fix-multi-job-ci-failure`
 and report the results of:
 - Job 61173760168 (Python 3.12 tests)
 - Job 61173760314 (Python 3.12 tests)
@@ -181,9 +181,9 @@ If any jobs fail, analyze the logs and provide recommendations.
 
 **Prompt 2: Python 3.12 Migration Planning**
 ```markdown
-@copilot Based on the migration audit in 
-`docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`, create a detailed 
-implementation plan for migrating to Python 3.12 as the baseline version. 
+@copilot Based on the migration audit in
+`docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`, create a detailed
+implementation plan for migrating to Python 3.12 as the baseline version.
 Include:
 - Timeline and milestones
 - Docker image updates
@@ -205,7 +205,7 @@ Use pytest-benchmark and document results.
 
 **Prompt 4: Dependency Update Check**
 ```markdown
-@copilot Check for newer versions of the 37 core dependencies listed in 
+@copilot Check for newer versions of the 37 core dependencies listed in
 `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`. For each dependency:
 1. Check if a newer secure version is available
 2. Verify Python 3.12 compatibility
@@ -215,7 +215,7 @@ Use pytest-benchmark and document results.
 
 **Prompt 5: Test Coverage Improvement**
 ```markdown
-@copilot The test suite currently has ~27.5% coverage (target: 70%). 
+@copilot The test suite currently has ~27.5% coverage (target: 70%).
 Analyze the 518 untested modules and create a prioritized plan to:
 1. Add tests for critical paths
 2. Increase coverage for src/codex_ml/ and src/codex/
@@ -491,15 +491,15 @@ Analyze the 518 untested modules and create a prioritized plan to:
    ```bash
    # Rollback all test fixes
    git revert de14ce4 a7f8b21 e4ed141
-   
+
    # Or selective rollback
    git checkout HEAD~3 -- tests/conftest.py
    git checkout HEAD~3 -- tests/test_peft_gating.py
    # ... (other test files)
-   
+
    # Verify rollback doesn't break working tests
    pytest tests/ -v | grep -E "passed|failed"
-   
+
    # Expected: Original state (10 failures, 186 passed)
    ```
 

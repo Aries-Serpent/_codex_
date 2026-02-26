@@ -133,14 +133,14 @@ def mask_credit_card(m: re.Match) -> str:
 ```python
 def format_ticket_id_for_display(ticket_id: int) -> str:
     """Format 128-bit ticket ID for display.
-    
+
     Converts large integer to human-friendly format:
     - Shows prefix + last 8 hex digits
     - Example: TKT-A7B3C9D1
-    
+
     Args:
         ticket_id: 128-bit integer from UUID conversion
-        
+
     Returns:
         Formatted string for UI display
     """
@@ -148,7 +148,7 @@ def format_ticket_id_for_display(ticket_id: int) -> str:
 
 def parse_display_ticket_id(display_id: str) -> Optional[int]:
     """Parse display ID back to full ticket ID (requires lookup).
-    
+
     Note: Display ID is truncated, requires database lookup
     to resolve to full 128-bit ticket ID.
     """
@@ -217,19 +217,19 @@ import wave
 
 def create_minimal_wav(filepath: Path, duration_ms: int = 100):
     """Create minimal valid WAV file for testing.
-    
+
     Args:
         filepath: Output path
         duration_ms: Duration in milliseconds
     """
     sample_rate = 44100
     num_samples = int(sample_rate * duration_ms / 1000)
-    
+
     with wave.open(str(filepath), 'wb') as wav:
         wav.setnchannels(1)  # Mono
         wav.setsampwidth(2)  # 16-bit
         wav.setframerate(sample_rate)
-        
+
         # Generate sine wave test tone
         for i in range(num_samples):
             value = int(32767 * 0.5 * math.sin(2 * math.pi * 440 * i / sample_rate))
@@ -270,7 +270,7 @@ def create_minimal_wav(filepath: Path, duration_ms: int = 100):
 ### Cycle 9-10: Documentation and Production Readiness
 
 #### Pre-Commit 9: API Documentation
-**Files**: 
+**Files**:
 - `docs/api/security.md` - Document security provider API
 - `docs/api/zendesk.md` - Document ticket ID format
 - `docs/deployment/production.md` - Production readiness checklist

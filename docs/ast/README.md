@@ -162,8 +162,8 @@ results = detector.detect_directory("src/", exclude_patterns=["**/test_*.py"])
 
 ```python
 from codex.ast import (
-    KnowledgeGraphExporter, 
-    ExportFormat, 
+    KnowledgeGraphExporter,
+    ExportFormat,
     export_knowledge_graph,
     parse_python
 )

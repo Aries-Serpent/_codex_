@@ -35,7 +35,7 @@ func NewEncryptionManager(token string) *EncryptionManager {
 // GetPublicKey fetches the public key from GitHub for a given scope
 func (e *EncryptionManager) GetPublicKey(scope, owner, repo, env string) (*PublicKey, error) {
 	var url string
-	
+
 	switch scope {
 	case "repo":
 		url = fmt.Sprintf("%s/repos/%s/%s/actions/secrets/public-key", apiBaseURL, owner, repo)
@@ -125,11 +125,11 @@ func sealBox(message []byte, publicKey *[32]byte) ([]byte, error) {
 
 // blake2bHash computes a Blake2b hash
 // NOTE: This is a SIMPLIFIED implementation for compatibility testing.
-// 
+//
 // PRODUCTION WARNING: This implementation does NOT provide cryptographic security.
 // Before production deployment, replace with proper Blake2b implementation:
 //   go get github.com/minio/blake2b-simd
-//   
+//
 // Recommended production implementation:
 //   import "github.com/minio/blake2b-simd"
 //   hash, _ := blake2b.New(&blake2b.Config{Size: uint8(outLen)})

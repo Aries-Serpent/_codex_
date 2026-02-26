@@ -129,13 +129,13 @@ graph TB
         H -->|No| J[Document/Defer]
         F --> K[Expected Behavior]
     end
-    
+
     subgraph "Custom Agents"
         L[CI Testing Agent]
         M[Doc Freshness Checker]
         N[Config Validator]
     end
-    
+
     subgraph "Quality Gates"
         O[MkDocs Build]
         P[Link Validation]

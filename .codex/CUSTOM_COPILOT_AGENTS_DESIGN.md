@@ -57,19 +57,19 @@ graph TD
     H --> I[Suggest Manual Steps]
     I --> J[Update Cognitive Brain]
     G --> J
-    
+
     subgraph "Data Sources"
         K[CI Logs]
         L[Git History]
         M[Cognitive Brain]
         N[Lock Files]
     end
-    
+
     K --> C
     L --> D
     M --> E
     N --> E
-    
+
     style B fill:#e1f5ff
     style E fill:#c8e6c9
     style J fill:#f8bbd0
@@ -212,17 +212,17 @@ graph TD
     H --> L[Generate Report]
     K --> M[Update Cognitive Brain]
     L --> M
-    
+
     subgraph "Analysis"
         N[AST Parser]
         O[Diff Analyzer]
         P[Type Checker]
     end
-    
+
     C --> N
     D --> O
     E --> P
-    
+
     style B fill:#e1f5ff
     style G fill:#c8e6c9
     style M fill:#f8bbd0
@@ -361,19 +361,19 @@ graph TD
     N -->|No| P[Try Next Solution]
     O --> Q[Update Cognitive Brain]
     P --> I
-    
+
     subgraph "Data Sources"
         R[crates.io]
         S[npm registry]
         T[PyPI]
         U[Security DB]
     end
-    
+
     R --> F
     S --> F
     T --> F
     U --> G
-    
+
     style B fill:#e1f5ff
     style J fill:#c8e6c9
     style Q fill:#f8bbd0

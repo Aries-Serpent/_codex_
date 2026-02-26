@@ -35,45 +35,45 @@ graph TD
     A[GitHub Environment Variables] --> B[Agent Configuration]
     A --> C[Audit Configuration]
     A --> D[Workflow Gates]
-    
+
     B --> E[EMERGENT_AGENT_SEED=46]
     B --> F[PERF_MONITOR_SEED=47]
     B --> G[DOC_AGENT_SEED=48]
     B --> H[CI_OPTIMIZER_SEED=49]
     B --> I[REASONING_ADVISOR_SEED=50]
     B --> J[ECOSYSTEM_COORD_SEED=51]
-    
+
     C --> K[AUDIT_WEIGHTS]
     C --> L[AUDIT_LOW_THRESHOLD]
     C --> M[AUDIT_SAFEGUARD_KEYWORDS]
-    
+
     D --> N[PREDEPLOY_ENABLED]
     D --> O[AUDIT_PREDEPLOY_GATE]
-    
+
     E --> P[Emergent Intelligence Agent]
     F --> Q[Performance Monitor Agent]
     G --> R[Documentation Agent]
     H --> S[CI Optimizer Agent]
     I --> T[Reasoning Advisor Agent]
     J --> U[Ecosystem Coordinator Agent]
-    
+
     K --> V[Cognitive Brain Metrics]
     L --> V
     M --> V
-    
+
     N --> W[Workflow Orchestration]
     O --> W
-    
+
     P --> X[PDA Loop Execution]
     Q --> X
     R --> X
     S --> X
     T --> X
     U --> X
-    
+
     X --> V
     V --> W
-    
+
     style A fill:#4CAF50
     style V fill:#2196F3
     style W fill:#FF9800
@@ -93,34 +93,34 @@ class IntegratedV10Agent:
     2. Cognitive Brain PDA Loop
     3. Autonomous execution capability
     """
-    
+
     def __init__(self, agent_name: str):
         # LAYER 1: Load configuration from environment variables
         self.config = self._load_env_config(agent_name)
         self.seed = self.config['seed']
-        
+
         # LAYER 2: Initialize Cognitive Brain components
         self.pda_engine = PDAEngine(seed=self.seed)
         self.aftermath_handler = AftermathHandler()
         self.learning_integrator = LearningIntegrator()
         self.brain_processor = BrainProcessor()
-        
+
         # LAYER 3: Setup autonomous execution
         self.autonomous_mode = self.config.get('autonomous_enabled', False)
         self.workflow_trigger = WorkflowTrigger(
             predeploy_enabled=self.config.get('predeploy_enabled', False),
             audit_gate=self.config.get('audit_gate', False)
         )
-    
+
     def _load_env_config(self, agent_name: str) -> dict:
         """
         Load all configuration from GitHub Environment Variables
-        
+
         Integration Point 1: Maps agent name to environment variables
         """
         import os
         import json
-        
+
         # Agent seed mapping
         seed_map = {
             'emergent-intelligence': 'EMERGENT_AGENT_SEED',
@@ -130,10 +130,10 @@ class IntegratedV10Agent:
             'reasoning-advisor': 'REASONING_ADVISOR_SEED',
             'ecosystem-coordinator': 'ECOSYSTEM_COORD_SEED'
         }
-        
+
         seed_var = seed_map.get(agent_name)
         seed = int(os.getenv(seed_var, '42')) if seed_var else 42
-        
+
         # Load audit configuration (for Cognitive Brain metrics)
         audit_config = {}
         if os.getenv('AUDIT_WEIGHTS'):
@@ -141,22 +141,22 @@ class IntegratedV10Agent:
                 audit_config['weights'] = json.loads(os.getenv('AUDIT_WEIGHTS'))
             except json.JSONDecodeError:
                 pass
-        
+
         if os.getenv('AUDIT_LOW_THRESHOLD'):
             audit_config['threshold'] = float(os.getenv('AUDIT_LOW_THRESHOLD'))
-        
+
         if os.getenv('AUDIT_SAFEGUARD_KEYWORDS'):
             try:
                 audit_config['keywords'] = json.loads(os.getenv('AUDIT_SAFEGUARD_KEYWORDS'))
             except json.JSONDecodeError:
                 audit_config['keywords'] = os.getenv('AUDIT_SAFEGUARD_KEYWORDS').split(',')
-        
+
         # Load workflow gates
         workflow_config = {
             'predeploy_enabled': os.getenv('PREDEPLOY_ENABLED', 'false').lower() == 'true',
             'audit_gate': os.getenv('AUDIT_PREDEPLOY_GATE', 'false').lower() == 'true'
         }
-        
+
         # General config
         config = {
             'seed': seed,
@@ -168,40 +168,40 @@ class IntegratedV10Agent:
             **audit_config,
             **workflow_config
         }
-        
+
         return config
-    
+
     def execute_with_full_integration(self, task: dict):
         """
         Execute task with complete integration:
         - Environment variables for configuration
         - Cognitive Brain for PDA Loop + AfterMath
         - Autonomous workflows for orchestration
-        
+
         Integration Point 2: Unified execution flow
         """
         # PHASE 1: Perception (uses env var config)
         perception = self.pda_engine.perceive(task, config=self.config)
-        
+
         # PHASE 2: Decision (Cognitive Brain reasoning)
         decision = self.pda_engine.decide(
             perception,
             brain_processor=self.brain_processor,
             audit_config=self.config
         )
-        
+
         # PHASE 3: Action (with workflow gates from env vars)
         if self.workflow_trigger.should_execute(decision):
             action_result = self.pda_engine.act(decision)
         else:
             action_result = {"status": "gated", "reason": "workflow gate blocked"}
-        
+
         # PHASE 4: AfterMath (self-improvement + learning)
         aftermath = self.aftermath_handler.process(
             action_result,
             brain_processor=self.brain_processor
         )
-        
+
         # PHASE 5: Meta-Learning (Cognitive Brain integration)
         self.learning_integrator.integrate(
             perception=perception,
@@ -210,7 +210,7 @@ class IntegratedV10Agent:
             aftermath=aftermath,
             seed=self.config['seed']
         )
-        
+
         return {
             "perception": perception,
             "decision": decision,
@@ -245,14 +245,14 @@ on:
       task_type:
         required: true
         type: string
-  
+
   repository_dispatch:
     types: [agent_task_ready]
 
 jobs:
   execute-with-full-integration:
     runs-on: ubuntu-latest
-    
+
     env:
       # LAYER 1: Environment Variables (from GitHub Variables)
       EMERGENT_AGENT_SEED: ${{ vars.EMERGENT_AGENT_SEED }}
@@ -263,24 +263,24 @@ jobs:
       ECOSYSTEM_COORD_SEED: ${{ vars.ECOSYSTEM_COORD_SEED }}
       VALIDATION_SEED: ${{ vars.VALIDATION_SEED }}
       WANDB_MODE: ${{ vars.WANDB_MODE }}
-      
+
       # Audit configuration for Cognitive Brain
       AUDIT_WEIGHTS: ${{ vars.AUDIT_WEIGHTS }}
       AUDIT_LOW_THRESHOLD: ${{ vars.AUDIT_LOW_THRESHOLD }}
       AUDIT_SAFEGUARD_KEYWORDS: ${{ vars.AUDIT_SAFEGUARD_KEYWORDS }}
-      
+
       # Workflow gates
       PREDEPLOY_ENABLED: ${{ vars.PREDEPLOY_ENABLED }}
       AUDIT_PREDEPLOY_GATE: ${{ vars.AUDIT_PREDEPLOY_GATE }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       # INTEGRATION POINT 1: Load task data from paginated variables
       - name: Load task data from paginated dataset
         if: ${{ github.event.client_payload.dataset_id }}
@@ -290,7 +290,7 @@ jobs:
         run: |
           python .codex/scripts/manage_github_variables.py \
             download "${DATASET_ID}" task_data.json
-      
+
       # INTEGRATION POINT 2: Execute agent with full integration
       - name: Execute V10 Agent
         id: agent_execution
@@ -299,11 +299,11 @@ jobs:
           import os
           import json
           from integrated_v10_agent import IntegratedV10Agent
-          
+
           # Get agent name from input or event
           agent_name = "${{ github.event.inputs.agent_name }}" or \
                       "${{ github.event.client_payload.agent_name }}"
-          
+
           # Load task
           if os.path.exists('task_data.json'):
               with open('task_data.json') as f:
@@ -313,21 +313,21 @@ jobs:
                   "type": "${{ github.event.inputs.task_type }}",
                   "source": "workflow_dispatch"
               }
-          
+
           # Execute with full integration
           agent = IntegratedV10Agent(agent_name)
           result = agent.execute_with_full_integration(task)
-          
+
           # Save results
           with open('execution_result.json', 'w') as f:
               json.dump(result, f, indent=2)
-          
+
           print(f"✅ Agent executed: {agent_name}")
           print(f"Status: {result['action']['status']}")
           print(f"Cognitive Brain: {result['cognitive_brain_active']}")
           print(f"Config from: {result['config_source']}")
           PYTHON
-      
+
       # INTEGRATION POINT 3: Store results in paginated variables
       - name: Store execution results
         if: always()
@@ -337,7 +337,7 @@ jobs:
           RESULT_ID="result_$(date +%Y%m%d_%H%M%S)"
           python .codex/scripts/manage_github_variables.py \
             upload execution_result.json "${RESULT_ID}"
-      
+
       # INTEGRATION POINT 4: Trigger downstream processing
       - name: Dispatch aftermath processing
         if: success()

@@ -18,7 +18,7 @@ class ContextAwareUpdater(TestAssertionUpdater):
             return 'aggressive_fix'
         else:
             return 'default_fix'
-    
+
     def _is_in_api_layer(self, context):
         return 'api/' in str(context.file_path) or '@public' in context.decorators
 ```
@@ -43,22 +43,22 @@ class MultiStageValidator:
             self.property_based_validation,
             self.integration_validation
         ]
-        
+
         for stage in stages:
             if not stage(fix, test_file):
                 return False
-        
+
         return True
-    
+
     def property_based_validation(self, fix, test_file):
         """Run Hypothesis tests with 1000+ examples"""
         from hypothesis import given, strategies as st
-        
+
         @given(st.text(), st.integers(), st.lists(st.text()))
         def property_test(s, i, lst):
             # Ensure fix works for all input types
             pass
-        
+
         return property_test()
 ```
 
@@ -78,11 +78,11 @@ class LearningUpdater(TestAssertionUpdater):
     def __init__(self):
         super().__init__()
         self.pattern_db = self.load_cognitive_brain_patterns()
-    
+
     def generate_fix(self, mismatch):
         # Check if we've seen this pattern before
         similar_patterns = self.pattern_db.find_similar(mismatch)
-        
+
         if similar_patterns:
             # Use proven fix strategy
             best_pattern = max(similar_patterns, key=lambda p: p.success_rate)
@@ -90,10 +90,10 @@ class LearningUpdater(TestAssertionUpdater):
         else:
             # Generate new fix and learn from it
             fix = super().generate_fix(mismatch)
-        
+
         # Store outcome for future learning
         self.pattern_db.record_outcome(mismatch, fix, success=True)
-        
+
         return fix
 ```
 
@@ -117,9 +117,9 @@ class BreakingChangeDetector:
             self._changes_return_type_incompatibly(mismatch),
             self._affects_external_consumers(implementation),
         ]
-        
+
         return any(checks)
-    
+
     def _removes_public_field(self, mismatch, impl):
         """Check if a public field was removed"""
         if '@public' in impl.decorators:
@@ -127,7 +127,7 @@ class BreakingChangeDetector:
             new_fields = self.extract_fields(mismatch.actual_value)
             return bool(old_fields - new_fields)
         return False
-    
+
     def handle_breaking_change(self, mismatch):
         """Create migration guide instead of auto-fix"""
         return MigrationGuide(
@@ -158,10 +158,10 @@ class BatchOrchestrator:
         """Fix entire test suite with dependency awareness"""
         # Build dependency graph
         dep_graph = self.analyze_dependencies(test_suite)
-        
+
         # Topologically sort tests
         ordered_tests = self.topological_sort(dep_graph)
-        
+
         # Fix in dependency order
         for test in ordered_tests:
             mismatches = self.detect_mismatches(test)
@@ -169,21 +169,21 @@ class BatchOrchestrator:
                 fix = self.generate_fix(mismatch)
                 if self.validate_fix(fix, test):
                     self.apply_fix(fix, test)
-                    
+
                     # Re-run dependent tests
                     self.revalidate_dependents(test, dep_graph)
-    
+
     def analyze_dependencies(self, test_suite):
         """Extract test dependencies via static analysis"""
         import ast
-        
+
         dependencies = {}
         for test in test_suite:
             tree = ast.parse(test.read_text())
             # Find fixtures, imports, shared state
             deps = self.extract_dependencies(tree)
             dependencies[test] = deps
-        
+
         return dependencies
 ```
 
@@ -202,11 +202,11 @@ class BatchOrchestrator:
 class RollbackManager:
     def __init__(self):
         self.snapshots = {}
-    
+
     def create_snapshot(self, test_file):
         """Create restore point before applying fix"""
         import hashlib
-        
+
         content = test_file.read_text()
         snapshot_id = hashlib.sha256(content.encode()).hexdigest()
         self.snapshots[test_file] = {
@@ -214,22 +214,22 @@ class RollbackManager:
             'content': content,
             'timestamp': datetime.now()
         }
-        
+
         return snapshot_id
-    
+
     def apply_fix_with_rollback(self, fix, test_file):
         """Apply fix with automatic rollback on failure"""
         snapshot_id = self.create_snapshot(test_file)
-        
+
         try:
             self.apply_fix(fix, test_file)
-            
+
             # Validate fix works
             if not self.run_tests(test_file):
                 raise TestFailureError("Tests failed after fix")
-            
+
             return True
-            
+
         except Exception as e:
             # Rollback to snapshot
             self.restore_snapshot(test_file, snapshot_id)
@@ -257,10 +257,10 @@ class ParallelProcessor:
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             # Submit all tasks
             futures = {
-                executor.submit(self.fix_single_file, f): f 
+                executor.submit(self.fix_single_file, f): f
                 for f in test_files
             }
-            
+
             # Collect results
             results = {}
             for future in as_completed(futures):
@@ -270,21 +270,21 @@ class ParallelProcessor:
                     results[test_file] = result
                 except Exception as e:
                     results[test_file] = {'error': str(e)}
-        
+
         return results
-    
+
     def fix_single_file(self, test_file):
         """Fix a single test file (worker function)"""
         agent = TestAssertionUpdater()
         mismatches = agent.detect_mismatches(test_file)
-        
+
         fixed = []
         for mismatch in mismatches:
             fix = agent.generate_fix(mismatch)
             if agent.validate_fix(fix, test_file):
                 agent.apply_fix(fix, test_file)
                 fixed.append(mismatch.test_name)
-        
+
         return {'fixed': fixed, 'count': len(fixed)}
 ```
 
@@ -304,17 +304,17 @@ class CodeReviewIntegration:
     def create_review_request(self, fixes):
         """Create GitHub PR with fixes for human review"""
         import github
-        
+
         gh = github.Github(os.getenv('GITHUB_TOKEN'))
         repo = gh.get_repo(os.getenv('GITHUB_REPOSITORY'))
-        
+
         # Create branch
         branch = self.create_fix_branch()
-        
+
         # Apply and commit fixes
         for fix in fixes:
             self.apply_fix(fix)
-        
+
         # Create PR
         pr = repo.create_pull(
             title=f"🤖 Auto-fix test assertions ({len(fixes)} tests)",
@@ -322,12 +322,12 @@ class CodeReviewIntegration:
             head=branch,
             base="main"
         )
-        
+
         # Request review from team
         pr.create_review_request(reviewers=['team-lead'])
-        
+
         return pr.html_url
-    
+
     def generate_pr_description(self, fixes):
         """Generate detailed PR description"""
         return f"""
@@ -627,7 +627,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -816,7 +816,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -56,19 +56,19 @@ Automatically detect and fix test alignment issues after API changes, with enhan
 
 **Signature Validation:**
 ```
-@copilot Use test-alignment-fixer to validate all test method signatures 
+@copilot Use test-alignment-fixer to validate all test method signatures
 match their implementation in src/
 ```
 
 **Fix After API Change:**
 ```
-@copilot The PhysicsGuidedDeveloperOrchestrator __init__ signature changed. 
+@copilot The PhysicsGuidedDeveloperOrchestrator __init__ signature changed.
 Use test-alignment-fixer to update all affected tests.
 ```
 
 **Comprehensive Scan:**
 ```
-@copilot Run test-alignment-fixer to scan all tests/ for signature mismatches 
+@copilot Run test-alignment-fixer to scan all tests/ for signature mismatches
 and generate a fix report.
 ```
 
@@ -285,7 +285,7 @@ orchestrator.app_type = AppType.PYTHON_CONSOLE
 def process_data(self, data: dict, format: str = "json", validate: bool = True) -> dict:
     pass
 
-# NEW signature (v2.0) 
+# NEW signature (v2.0)
 def process_data(self, data: dict, /, *, format: str = "json") -> dict:
     # validate parameter removed, data now positional-only
     pass

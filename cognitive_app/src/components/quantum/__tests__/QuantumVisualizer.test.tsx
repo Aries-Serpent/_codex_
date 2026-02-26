@@ -57,7 +57,7 @@ describe('QuantumVisualizer - Quantum Visualization (10 tests)', () => {
 
       const canvas = document.querySelector('canvas');
       expect(canvas).toBeInTheDocument();
-      
+
       if (canvas) {
         expect(canvas.width).toBeGreaterThan(0);
         expect(canvas.height).toBeGreaterThan(0);
@@ -80,7 +80,7 @@ describe('QuantumVisualizer - Quantum Visualization (10 tests)', () => {
       await waitFor(() => {
         const arcCalls = (mockContext.arc as any).mock.calls;
         expect(arcCalls.length).toBeGreaterThan(0);
-        
+
         if (arcCalls.length > 0) {
           const radiusValues = arcCalls.map((call: any[]) => call[2]);
           const hasVariedSizes = radiusValues.some((r: number) => r !== radiusValues[0]);

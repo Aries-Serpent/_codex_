@@ -110,14 +110,14 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
             {collaborations.map((link, idx) => {
               const fromIdx = activeParadigms.indexOf(link.paradigmFrom);
               const toIdx = activeParadigms.indexOf(link.paradigmTo);
-              
+
               if (fromIdx === -1 || toIdx === -1) return null;
 
               const fromPos = getParadigmPosition(link.paradigmFrom, fromIdx);
               const toPos = getParadigmPosition(link.paradigmTo, toIdx);
 
-              const isHighlighted = 
-                hoveredParadigm === link.paradigmFrom || 
+              const isHighlighted =
+                hoveredParadigm === link.paradigmFrom ||
                 hoveredParadigm === link.paradigmTo;
 
               return (
@@ -132,12 +132,12 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
                   strokeOpacity={isHighlighted ? 0.8 : 0.3}
                   strokeDasharray="5,5"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ 
-                    pathLength: 1, 
+                  animate={{
+                    pathLength: 1,
                     opacity: 1,
                     strokeDashoffset: [0, -10]
                   }}
-                  transition={{ 
+                  transition={{
                     pathLength: { duration: 1, delay: idx * 0.1 },
                     opacity: { duration: 0.5 },
                     strokeDashoffset: { duration: 2, repeat: Infinity, ease: "linear" }
@@ -172,7 +172,7 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
                   onMouseEnter={() => setHoveredParadigm(paradigm)}
                   onMouseLeave={() => setHoveredParadigm(null)}
                 >
-                  <Card 
+                  <Card
                     className={`p-4 min-w-[120px] text-center cursor-pointer transition-all ${
                       hoveredParadigm === paradigm ? 'ring-2 ring-accent shadow-2xl scale-110' : ''
                     } ${colors.border} border-2`}
@@ -203,8 +203,8 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
                           {agentsInParadigm.map(agent => (
                             <div key={agent.id} className="flex items-center gap-2">
                               <div className={`w-2 h-2 rounded-full ${
-                                agent.status === 'active' || agent.status === 'thinking' 
-                                  ? 'bg-green-500 animate-pulse' 
+                                agent.status === 'active' || agent.status === 'thinking'
+                                  ? 'bg-green-500 animate-pulse'
                                   : 'bg-gray-500'
                               }`} />
                               <span className="text-xs">{agent.name}</span>
@@ -235,7 +235,7 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
 
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Collaboration Metrics</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-4 bg-muted/30">
             <div className="text-2xl font-bold text-accent mb-1">
@@ -262,13 +262,13 @@ export function ParadigmCollaborationVisualizer({ agents }: ParadigmCollaboratio
         <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border">
           <h4 className="text-sm font-semibold mb-2 text-accent">Physics Synergy</h4>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Agents from different physics paradigms collaborate by exchanging computational tokens 
-            and insights. Each paradigm contributes unique analytical perspectives: 
-            <strong className="text-foreground"> Chaos</strong> detects instabilities, 
-            <strong className="text-foreground"> Fractal</strong> identifies patterns, 
-            <strong className="text-foreground"> Fluid</strong> optimizes flow, 
-            <strong className="text-foreground"> Electromagnetic</strong> analyzes fields, 
-            <strong className="text-foreground"> Wave</strong> processes oscillations, and 
+            Agents from different physics paradigms collaborate by exchanging computational tokens
+            and insights. Each paradigm contributes unique analytical perspectives:
+            <strong className="text-foreground"> Chaos</strong> detects instabilities,
+            <strong className="text-foreground"> Fractal</strong> identifies patterns,
+            <strong className="text-foreground"> Fluid</strong> optimizes flow,
+            <strong className="text-foreground"> Electromagnetic</strong> analyzes fields,
+            <strong className="text-foreground"> Wave</strong> processes oscillations, and
             <strong className="text-foreground"> Relativity</strong> manages temporal dependencies.
           </p>
         </div>

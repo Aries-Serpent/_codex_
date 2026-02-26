@@ -68,7 +68,7 @@ actual_value: "what the implementation returned"
 ```markdown
 **Root Cause**: The implementation was updated to return structured data with metadata instead of a simple string.
 
-**Evidence**: 
+**Evidence**:
 - Implementation at line X returns `{"name": "value", "created_at": "timestamp"}`
 - Test at line Y expects `"value"`
 
@@ -423,7 +423,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -612,7 +612,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

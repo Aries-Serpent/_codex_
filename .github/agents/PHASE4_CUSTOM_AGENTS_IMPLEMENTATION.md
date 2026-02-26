@@ -154,13 +154,13 @@ graph TB
         C[Developer Commits JS/YAML] --> B
         D[Developer Commits Python Bindings] --> B
     end
-    
+
     subgraph "Custom Agent Execution"
         B --> E[Agent 1: Rust Error Validator]
         B --> F[Agent 2: UTF-8 Safety Linter]
         B --> G[Agent 3: PyO3 Integration Tester]
     end
-    
+
     subgraph "Agent 1: Rust Error Validator"
         E --> E1[Scan .rs files]
         E1 --> E2{Panic Risks?}
@@ -168,7 +168,7 @@ graph TB
         E2 -->|No| E4[Pass]
         E3 --> E5[Suggest PyResult Fix]
     end
-    
+
     subgraph "Agent 2: UTF-8 Safety Linter"
         F --> F1[Scan .js/.ts/.yml]
         F1 --> F2{Unsafe Truncation?}
@@ -176,14 +176,14 @@ graph TB
         F2 -->|No| F4[Pass]
         F3 --> F5[Suggest safeTruncate]
     end
-    
+
     subgraph "Agent 3: PyO3 Integration Tester"
         G --> G1[Parse PyO3 Bindings]
         G1 --> G2[Extract Functions]
         G2 --> G3[Generate Tests]
         G3 --> G4[Write test_*.py]
     end
-    
+
     subgraph "Results Integration"
         E5 --> H[Aggregate Results]
         F5 --> H
@@ -194,7 +194,7 @@ graph TB
         K --> L[Developer Fixes Issues]
         L --> A
     end
-    
+
     subgraph "Cognitive Brain"
         J --> M[Update Cognitive Brain]
         M --> N[Store Patterns]
@@ -203,7 +203,7 @@ graph TB
         O --> F
         O --> G
     end
-    
+
     style E fill:#90EE90
     style F fill:#FFD700
     style G fill:#87CEEB
@@ -245,7 +245,7 @@ jobs:
         run: |
           cd .github/agents/rust-error-validator
           python scanner.py scan --dir ../../../rust_swarm/ --fail-on high
-  
+
   utf8-safety-check:
     runs-on: ubuntu-latest
     steps:
@@ -261,7 +261,7 @@ jobs:
         run: |
           cd .github/agents/utf8-safety-linter
           python linter.py scan --dir ../../../.github/workflows/
-  
+
   pyo3-integration-tests:
     runs-on: ubuntu-latest
     steps:
@@ -634,7 +634,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -823,7 +823,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

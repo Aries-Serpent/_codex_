@@ -15,7 +15,7 @@ These are pre-existing failures not introduced by recent changes, but they shoul
 
 **Issue**: Test attempts to import `codex_script` module which doesn't exist.
 
-**Expected**: 
+**Expected**:
 ```python
 cs = importlib.import_module("codex_script")
 assert hasattr(cs, "_init_determinism_from_env")
@@ -54,13 +54,13 @@ def _init_determinism_from_env():
     if os.getenv("CODEX_DETERMINISM") == "1":
         seed = int(os.getenv("CODEX_SEED", "42"))
         num_threads = int(os.getenv("CODEX_NUM_THREADS", "1"))
-        
+
         # Apply deterministic settings
         import random
         import numpy as np
         random.seed(seed)
         np.random.seed(seed)
-        
+
         # Set PyTorch if available
         try:
             import torch
@@ -68,7 +68,7 @@ def _init_determinism_from_env():
             torch.set_num_threads(num_threads)
         except ImportError:
             pass
-        
+
         return {
             "determinism_enabled": True,
             "seed": seed,
@@ -118,7 +118,7 @@ Only if the features are definitely not planned.
 3. Tests represent intended functionality
 4. Completing features improves codebase maturity
 
-**Timeline**: 
+**Timeline**:
 - Determinism module: 2-4 hours
 - CLI validation fix: 1-2 hours
 - Testing and validation: 1 hour

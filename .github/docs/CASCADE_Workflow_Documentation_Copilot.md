@@ -279,7 +279,7 @@ changed_files = [f.strip() for f in changed_files_str.split(',') if f.strip()]
 
 # Filter for reviewable files
 reviewable_files = [
-    f for f in changed_files 
+    f for f in changed_files
     if f.endswith(('.py', '.js', '.java', '.go', '.rs'))
 ]
 ```
@@ -319,21 +319,21 @@ def main():
     repository_name = os.getenv('REPOSITORY')
     pr_number = int(os.getenv('PR_NUMBER'))
     changed_files = os.getenv('CHANGED_FILES', '').split(',')
-    
+
     g = Github(github_token)
     repo = g.get_repo(repository_name)
     pr = repo.get_pull(pr_number)
-    
+
     # 2. Fetch file contents
     for file_path in changed_files:
         if not file_path.strip():
             continue
-            
+
         file_content = get_file_content(repo, file_path, pr.head.sha)
-        
+
         # 3. Request Copilot review
         review_result = request_copilot_review(file_path, file_content)
-        
+
         # 4. Post review comments
         post_review_comment(pr, file_path, review_result)
 

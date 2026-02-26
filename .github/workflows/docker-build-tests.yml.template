@@ -29,12 +29,12 @@ jobs:
     name: Docker Build Tests
     runs-on: ubuntu-latest
     timeout-minutes: 90  # Generous timeout for Docker builds
-    
+
     strategy:
       matrix:
         target: ['cpu-runtime', 'gpu-runtime']
       fail-fast: false  # Continue other builds if one fails
-    
+
     # Skip job if target doesn't match input filter
     # inputs.target defaults to 'all' for schedule trigger (no inputs)
     if: |
@@ -101,28 +101,28 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker_builds
     if: always()
-    
+
     steps:
       - name: Generate summary
         run: |
           cat >> $GITHUB_STEP_SUMMARY << 'EOF'
           # Docker Build Tests Summary
-          
+
           ## Results
           - **Workflow:** Docker Build Tests
           - **Run ID:** ${{ github.run_id }}
           - **Trigger:** ${{ github.event_name }}
           - **Duration:** ${{ needs.docker_builds.outputs.duration }}
-          
+
           ## Status
           - **CPU Build:** ${{ needs.docker_builds.result }}
           - **GPU Build:** ${{ needs.docker_builds.result }}
-          
+
           ## Notes
           These are long-running tests (10-30 minutes each) that validate
           Docker image builds. They are excluded from the main coverage
           workflow to keep CI/CD times reasonable.
-          
+
           To run manually:
           \`\`\`bash
           pytest tests/deployment/test_docker_build.py -m slow -v

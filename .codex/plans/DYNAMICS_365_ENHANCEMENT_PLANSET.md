@@ -152,13 +152,13 @@ threat_patterns:
     - Geographic anomalies
     - Multiple failed login attempts
     - Privilege escalation attempts
-  
+
   data_risks:
     - Bulk data exports
     - Unauthorized record access
     - PII exposure
     - Data deletion anomalies
-  
+
   compliance_violations:
     - GDPR violations
     - SOX compliance gaps
@@ -239,13 +239,13 @@ cognitive_functions:
     - Successful sales strategies
     - Effective service responses
     - Optimal workflow paths
-  
+
   reasoning:
     - Next best action suggestions
     - Risk assessment
     - Resource allocation
     - Priority determination
-  
+
   adaptation:
     - Personalized recommendations
     - Dynamic routing rules
@@ -313,14 +313,14 @@ metrics:
     - Opportunity win rate
     - Case resolution time
     - Customer satisfaction
-  
+
   technical:
     - API call volume
     - Response times
     - Error rates
     - Storage usage
     - Sync status
-  
+
   security:
     - Failed login attempts
     - Privilege changes
@@ -389,17 +389,17 @@ security:
     - OAuth 2.0 with MSAL
     - Service principal authentication
     - Certificate-based auth
-  
+
   authorization:
     - Role-based access control (RBAC)
     - Attribute-based access control (ABAC)
     - Least privilege principle
-  
+
   encryption:
     - TLS 1.3 for data in transit
     - AES-256 for data at rest
     - Field-level encryption for PII
-  
+
   compliance:
     - GDPR compliance
     - SOX compliance

@@ -192,7 +192,7 @@ function useMSVMetrics(
 **Results**:
 - Dependencies: 552 packages installed (0 vulnerabilities)
 - Build time: 6.27 seconds
-- Output size: 
+- Output size:
   - JS: 789KB (gzip: 222KB)
   - CSS: 430KB (gzip: 75KB)
   - Proxy: 1.5MB
@@ -435,7 +435,7 @@ function useMSVMetrics(
    import pytest
    pytest.importorskip("numpy")
    pytest.importorskip("torch")
-   
+
    import numpy as np
    import torch
    # ... rest of imports

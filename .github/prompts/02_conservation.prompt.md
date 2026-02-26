@@ -28,35 +28,35 @@ Update `orchestrator.py` to add leak detection:
 def find_leaks(self) -> List[Dict[str, Any]]:
     """
     Find tasks that are leaking probability.
-    
+
     Returns list of tasks violating conservation.
     """
     if len(self.history) < 1:
         return []
-    
+
     leaks = []
     prev_state = self.history[-1]
     dt = self.dt
-    
+
     for task_id, task in self.state.tasks.items():
         if task_id not in prev_state.tasks:
             continue
-        
+
         prev_task = prev_state.tasks[task_id]
-        
+
         # Probability change
         p_current = task.probability
         p_previous = prev_task.probability
         dp_dt = (p_current - p_previous) / dt
-        
+
         # Current for this task
         j = self.current_op.task_current(
             self.state, prev_state, task_id, dt
         )
-        
+
         # Local violation
         local_violation = abs(dp_dt + j)
-        
+
         if local_violation > 0.05:  # Threshold
             leaks.append({
                 "task_id": task_id,
@@ -64,7 +64,7 @@ def find_leaks(self) -> List[Dict[str, Any]]:
                 "probability": p_current,
                 "current": j,
             })
-    
+
     return leaks
 ```
 
@@ -74,17 +74,17 @@ def find_leaks(self) -> List[Dict[str, Any]]:
 def repair_conservation(self) -> None:
     """
     Repair conservation violations.
-    
+
     Applies renormalization and dampening to fix leaks.
     """
     leaks = self.find_leaks()
-    
+
     if not leaks:
         return
-    
+
     # Renormalize all spinors
     self.state.normalize()
-    
+
     # Apply dampening to leaking tasks
     for leak in leaks:
         task = self.state.tasks[leak["task_id"]]
@@ -104,12 +104,12 @@ def self_heal(self) -> None:
     unstable_tasks = self.check_stability()
     for task_id in unstable_tasks:
         self.stabilize_task(task_id)
-    
+
     # NEW: Conservation repair
     conservation_status = self.verify_conservation()
     if not conservation_status["is_conserved"]:
         self.repair_conservation()
-    
+
     # Existing bottleneck handling
     if len(self.history) >= 1:
         bottlenecks = self.flow_analyzer.identify_bottlenecks(
@@ -120,7 +120,7 @@ def self_heal(self) -> None:
             task.position.priority *= 1.2
             task.spinor.components[0] *= 1.1
             task.spinor.components[1] *= 1.1
-    
+
     # Final renormalization
     self.state.normalize()
 ```
@@ -138,11 +138,11 @@ def test_conservation_verification():
     """Test conservation checking."""
     orch = create_orchestrator()
     orch.add_task("t1", "Task 1", rest_mass=1.0)
-    
+
     # Evolve
     for _ in range(5):
         orch.evolve()
-    
+
     # Check conservation
     status = orch.verify_conservation()
     assert "is_conserved" in status
@@ -153,11 +153,11 @@ def test_leak_detection():
     """Test leak detection."""
     orch = create_orchestrator()
     orch.add_task("t1", "Task 1", rest_mass=1.0)
-    
+
     # Evolve to build history
     for _ in range(3):
         orch.evolve()
-    
+
     # Check for leaks
     leaks = orch.find_leaks()
     assert isinstance(leaks, list)
@@ -167,14 +167,14 @@ def test_conservation_repair():
     """Test automatic repair."""
     orch = create_orchestrator()
     orch.add_task("t1", "Task 1", rest_mass=1.0)
-    
+
     # Evolve
     for _ in range(5):
         orch.evolve()
-    
+
     # Force repair
     orch.repair_conservation()
-    
+
     # Verify normalized
     assert abs(orch.state.total_probability() - len(orch.state.tasks)) < 0.1
 ```

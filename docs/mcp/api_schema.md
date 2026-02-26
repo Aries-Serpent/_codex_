@@ -74,15 +74,15 @@ graph LR
     B -->|/health| C[Health Check]
     B -->|/query| D[Auth Middleware]
     B -->|/context| D
-    
+
     D --> E{Valid Auth?}
     E -->|No| F[401 Unauthorized]
     E -->|Yes| G[Request Validation]
-    
+
     G --> H{Valid Schema?}
     H -->|No| I[400 Bad Request]
     H -->|Yes| J[Business Logic]
-    
+
     J --> K[VectorStore Query/Upsert]
     K --> L[Format Response]
     L --> M[200 OK + JSON]

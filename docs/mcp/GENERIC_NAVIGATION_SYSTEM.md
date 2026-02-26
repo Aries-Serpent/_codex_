@@ -82,7 +82,7 @@ graph TD
     B -->|Feature Location| D[NAVIGATION_INDEX.json]
     B -->|Implementation| E[File Load + Dependencies]
     B -->|Extension| F[ARCHITECTURE_GUIDE.md]
-    
+
     C --> G[Directory Tree Response]
     D --> H[Path Resolution]
     H --> E
@@ -836,42 +836,42 @@ import subprocess
 
 class NavigationSystemGenerator:
     """Generate NAVIGATION_INDEX.json and CODEBASE_MAP.md"""
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.modules = {}
         self.relationships = {}
-        
+
     def analyze_codebase(self):
         """Analyze repository structure"""
         # Find all Python files
         py_files = list(self.repo_root.rglob("*.py"))
-        
+
         # Build module map
         for py_file in py_files:
             rel_path = py_file.relative_to(self.repo_root)
             module_info = self.analyze_file(py_file)
             self.modules[str(rel_path)] = module_info
-        
+
         # Analyze relationships
         self.analyze_relationships()
-    
+
     def analyze_file(self, file_path: Path) -> Dict:
         """Analyze single Python file"""
         try:
             with open(file_path) as f:
                 tree = ast.parse(f.read())
-            
+
             return {
-                "classes": [node.name for node in ast.walk(tree) 
+                "classes": [node.name for node in ast.walk(tree)
                            if isinstance(node, ast.ClassDef)],
-                "functions": [node.name for node in ast.walk(tree) 
+                "functions": [node.name for node in ast.walk(tree)
                              if isinstance(node, ast.FunctionDef)],
                 "imports": self.extract_imports(tree)
             }
         except Exception as e:
             return {"error": str(e)}
-    
+
     def extract_imports(self, tree) -> List[str]:
         """Extract import statements"""
         imports = []
@@ -882,7 +882,7 @@ class NavigationSystemGenerator:
                 if node.module:
                     imports.append(node.module)
         return imports
-    
+
     def analyze_relationships(self):
         """Build file relationship graph"""
         for file_path, info in self.modules.items():
@@ -893,26 +893,26 @@ class NavigationSystemGenerator:
                 potential_path = imp.replace(".", "/") + ".py"
                 if potential_path in self.modules:
                     deps.append(potential_path)
-            
+
             self.relationships[file_path] = {
                 "depends_on": deps,
                 "used_by": []  # Will be filled in next pass
             }
-        
+
         # Fill in "used_by"
         for file_path, rels in self.relationships.items():
             for dep in rels["depends_on"]:
                 if dep in self.relationships:
                     self.relationships[dep]["used_by"].append(file_path)
-    
+
     def generate_navigation_index(self) -> Dict:
         """Generate NAVIGATION_INDEX.json content"""
         # Identify entry points (files with if __name__ == "__main__")
         entry_points = self.find_entry_points()
-        
+
         # Identify core modules (top-level directories)
         core_modules = self.identify_core_modules()
-        
+
         return {
             "repository": {
                 "name": self.repo_root.name,
@@ -932,7 +932,7 @@ class NavigationSystemGenerator:
                 "test_files": "test_*.py"
             }
         }
-    
+
     def find_entry_points(self) -> List[Dict]:
         """Find main entry points"""
         entry_points = []
@@ -948,7 +948,7 @@ class NavigationSystemGenerator:
             except:
                 pass
         return entry_points
-    
+
     def identify_core_modules(self) -> List[Dict]:
         """Identify core modules from directory structure"""
         # Get top-level directories with Python files
@@ -960,7 +960,7 @@ class NavigationSystemGenerator:
                 if module_name not in modules:
                     modules[module_name] = []
                 modules[module_name].append(file_path)
-        
+
         result = []
         for module_name, files in modules.items():
             result.append({
@@ -969,17 +969,17 @@ class NavigationSystemGenerator:
                 "file_count": len(files),
                 "key_files": [Path(f).name for f in files[:5]]
             })
-        
+
         return result
-    
+
     def generate_codebase_map(self) -> str:
         """Generate CODEBASE_MAP.md content"""
         # Generate tree structure
         tree = self.generate_tree()
-        
+
         # Generate module overview
         module_overview = self.generate_module_overview()
-        
+
         return f"""# Codebase Map: {self.repo_root.name}
 
 ## Directory Structure
@@ -1002,45 +1002,45 @@ class NavigationSystemGenerator:
 ### Quick Reference
 See archive/sessions/2026-01/QUICK_REFERENCE.md for common patterns and utilities.
 """
-    
+
     def generate_tree(self) -> str:
         """Generate directory tree"""
         # Simple tree generation
         result = [f"{self.repo_root.name}/"]
-        
+
         # Get unique directories
         dirs = set()
         for file_path in self.modules.keys():
             parts = Path(file_path).parts
             for i in range(len(parts)):
                 dirs.add("/".join(parts[:i+1]))
-        
+
         for d in sorted(dirs)[:20]:  # Limit for readability
             depth = d.count("/")
             result.append("  " * depth + "├── " + d.split("/")[-1] + "/")
-        
+
         return "\n".join(result)
-    
+
     def generate_module_overview(self) -> str:
         """Generate module overview section"""
         # Group files by top-level module
         # ... (implementation details)
         return "### Core Modules\n\n[Auto-generated module descriptions]"
-    
+
     def save(self, output_dir: Path):
         """Save generated files"""
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save NAVIGATION_INDEX.json
         nav_index = self.generate_navigation_index()
         with open(output_dir / "NAVIGATION_INDEX.json", "w") as f:
             json.dump(nav_index, f, indent=2)
-        
+
         # Save CODEBASE_MAP.md
         codebase_map = self.generate_codebase_map()
         with open(output_dir / "CODEBASE_MAP.md", "w") as f:
             f.write(codebase_map)
-        
+
         print(f"✅ Generated navigation system in {output_dir}")
 
 
@@ -1048,7 +1048,7 @@ if __name__ == "__main__":
     import sys
     repo_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd()
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(".github/tmp")
-    
+
     generator = NavigationSystemGenerator(repo_root)
     generator.analyze_codebase()
     generator.save(output_dir)
@@ -1112,11 +1112,11 @@ Core Modules:
 1. agents/ - Autonomous agent system
    - workflow_navigator.py - Workflow state management
    - quantum_game_theory.py - Quantum decision making
-   
+
 2. utils/ - Utility functions
    - state_management.py - State handling
    - logging.py - Logging utilities
-   
+
 3. api/ - REST API layer
    - routes.py - API endpoints
    - schemas.py - Request/response schemas
@@ -1141,12 +1141,12 @@ To add a new agent:
    ```python
    # src/agents/my_new_agent.py
    from src.agents.base import BaseAgent
-   
+
    class MyNewAgent(BaseAgent):
        def execute(self, task):
            # Implementation
            pass
-       
+
        def validate(self, input_data):
            # Validation
            pass

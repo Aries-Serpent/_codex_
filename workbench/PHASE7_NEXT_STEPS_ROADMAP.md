@@ -260,7 +260,7 @@ def benchmark(func: Callable, iterations: int = 100) -> dict:
         start = time.perf_counter()
         func()
         times.append((time.perf_counter() - start) * 1000)  # ms
-    
+
     return {
         "mean_ms": statistics.mean(times),
         "median_ms": statistics.median(times),
@@ -323,20 +323,20 @@ mlflow:
     host: mlflow.internal.company.com
     port: 5000
     workers: 4
-    
+
   backend_store:
     type: postgresql
     uri: "${MLFLOW_DB_URI}"
-    
+
   artifact_store:
     type: s3
     bucket: mlflow-artifacts
     region: us-west-2
-    
+
   authentication:
     enabled: true
     provider: oauth2
-    
+
   high_availability:
     replicas: 2
     load_balancer: true
@@ -348,13 +348,13 @@ feature_store:
   storage:
     primary: parquet
     cache: redis
-    
+
   redis:
     host: redis.internal.company.com
     port: 6379
     ttl_hours: 24
     max_connections: 100
-    
+
   scaling:
     partitioning: true
     compression: snappy
@@ -398,7 +398,7 @@ feature_store:
 # configs/advanced/ab_testing.yaml
 ab_testing:
   enabled: true
-  
+
   experiments:
     - name: model_comparison_v1
       models:
@@ -408,14 +408,14 @@ ab_testing:
         - name: challenger
           weight: 0.5
           model_uri: models:/challenger/staging
-      
+
       metrics:
         primary: conversion_rate
         secondary: [latency_p95, error_rate]
-      
+
       duration_days: 14
       min_samples: 10000
-      
+
       statistical_test:
         type: chi_squared
         confidence_level: 0.95
@@ -428,7 +428,7 @@ ab_testing:
 model_registry:
   enabled: true
   backend: mlflow
-  
+
   stages:
     - name: development
       auto_promote: false
@@ -441,7 +441,7 @@ model_registry:
     - name: production
       auto_promote: false
       requires_approval: true
-      
+
   retention:
     keep_versions: 10
     archive_after_days: 90
@@ -453,17 +453,17 @@ model_registry:
 # configs/advanced/drift_detection.yaml
 drift_detection:
   enabled: true
-  
+
   data_drift:
     method: kolmogorov_smirnov
     threshold: 0.05
     check_frequency: hourly
-    
+
   concept_drift:
     method: accuracy_degradation
     threshold: 0.05
     baseline_window_days: 7
-    
+
   alerts:
     channels: [slack, email]
     severity_mapping:

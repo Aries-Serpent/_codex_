@@ -35,13 +35,13 @@ phases:
         effort: "4 hours"
         status: "complete"
         description: "Analyze PyO3 documentation and existing patterns"
-      
+
       - id: "task-1.2"
         name: "Define agent architecture"
         effort: "3 hours"
         status: "complete"
         description: "Design modular agent system"
-  
+
   - name: "Agent Implementation"
     duration: "1 week"
     status: "in-progress"
@@ -52,19 +52,19 @@ phases:
         effort: "8 hours"
         status: "complete"
         description: "Build AST-based panic detector"
-      
+
       - id: "task-2.2"
         name: "Implement UTF-8 Safety Linter"
         effort: "6 hours"
         status: "complete"
         description: "Create string truncation validator"
-      
+
       - id: "task-2.3"
         name: "Implement PyO3 Integration Tester"
         effort: "8 hours"
         status: "complete"
         description: "Build test generator for bindings"
-  
+
   - name: "Testing & Documentation"
     duration: "3 days"
     status: "pending"
@@ -75,7 +75,7 @@ phases:
         effort: "6 hours"
         status: "pending"
         description: "Create comprehensive test suite"
-      
+
       - id: "task-3.2"
         name: "Generate NotebookLM artifacts"
         effort: "4 hours"
@@ -88,7 +88,7 @@ milestones:
     criteria:
       - "All 3 agents implemented"
       - "Basic tests passing"
-  
+
   - name: "Production Ready"
     date: "2026-02-01"
     criteria:
@@ -101,7 +101,7 @@ risks:
     likelihood: "medium"
     impact: "low"
     mitigation: "Use regex fallback for simple patterns"
-  
+
   - description: "NotebookLM API rate limits"
     likelihood: "low"
     impact: "medium"

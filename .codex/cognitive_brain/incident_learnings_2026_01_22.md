@@ -189,21 +189,21 @@ flowchart TD
     A[Trigger: Cargo.toml Change] --> B{Validate Features}
     B -->|Invalid| C[Extract Error Pattern]
     B -->|Valid| D[Success ✅]
-    
+
     C --> E{Known Pattern?}
     E -->|Yes| F[Generate Fix]
     E -->|No| G[Escalate to Human]
-    
+
     F --> H{Confidence > 0.8?}
     H -->|Yes| I[Apply Fix + Document]
     H -->|No| J[Propose Fix + Request Review]
-    
+
     I --> K[Re-validate]
     J --> K
-    
+
     K -->|Pass| D
     K -->|Fail| G
-    
+
     style A fill:#e1f5ff
     style D fill:#d4f5d4
     style G fill:#ffe1e1
@@ -308,14 +308,14 @@ class ConfigValidator:
     def validate_features(self, config_file, source_files):
         # 1. Parse configuration
         declared_features = self.parse_config(config_file)
-        
+
         # 2. Extract usage from source
         used_features = self.extract_feature_usage(source_files)
-        
+
         # 3. Cross-reference
         missing = used_features - declared_features
         orphaned = declared_features - used_features
-        
+
         # 4. Report & fix
         return self.generate_report(missing, orphaned)
 ```

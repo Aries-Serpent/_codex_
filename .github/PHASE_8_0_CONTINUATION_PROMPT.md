@@ -40,13 +40,13 @@
 ```python
 def generate_expanded_dataset(count=100, seed=42):
     """Generate 100 complex audit scenarios for EXP-1B validation.
-    
+
     Distribution:
     - 30 ambiguous PII exposure cases (high score + violations)
     - 30 multi-violation interaction scenarios
     - 20 edge cases (compliance vs security conflicts)
     - 20 temporal complexity (evolving violations over time)
-    
+
     Maintains diversity across 4 ambiguity patterns.
     """
     # Add 50 new scenarios to existing 50
@@ -74,19 +74,19 @@ Validates Phase 8.0 weight optimization achieves k₁ ≤ 0.35 target.
 def run_exp1b_revalidation():
     """
     Execute EXP-1B with 100 scenarios using optimized weights.
-    
+
     Measurements:
     1. k₁ calculation: (avg_time * (1 + error_rate)) / baseline
     2. Accuracy: quantum vs classical performance
     3. Coherence: maintain ≥ 0.650 threshold
     4. Latency: per-decision processing time
-    
+
     Success Criteria:
     - k₁ ≤ 0.35 (100% of target)
     - Accuracy ≥ 84% (maintained from Phase 7)
     - Coherence ≥ 0.650
     - Quantum advantage maintained (+16.7% over classical)
-    
+
     Returns:
         dict: {
             'k1': float,

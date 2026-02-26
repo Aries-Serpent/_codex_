@@ -16,7 +16,7 @@ The component now properly implements mock fallback, but tests need mock client 
 1. `[APPROVED] should show red "Error" API status indicator` - NEEDS UPDATE
    - **Issue:** Test expects red error, but component now shows green "Connected" with mock fallback
    - **Fix:** Update test to expect "Connected" status and green indicator when no API key
-   
+
 2. `[APPROVED] should show "Checking..." status initially` - TIMING ISSUE
    - **Issue:** Mock client `getStatus()` resolves too fast, skips "Checking" state
    - **Fix:** Add delay mock or update test to handle fast resolution
@@ -38,7 +38,7 @@ cd /home/runner/work/_codex_/_codex_/cognitive_app
 # Edit: src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
 
 # Test 2 updates (No API Key scenario):
-# - Change expectation from "Error" to "Connected" 
+# - Change expectation from "Error" to "Connected"
 # - Change indicator from bg-red-500 to bg-green-500
 # - Update assertions to check for "Using demo mode" info message
 

@@ -99,7 +99,7 @@ safe_log_message(message, mask_secrets=True) # Combined protection
 sanitize_dict_for_log(data, ...)            # Clean dictionaries
 ```
 
-**Verification**: 
+**Verification**:
 - ✅ All MSP gateway routes already use `sanitize_log_input()` (from `src/utils/log_sanitizer.py`)
 - ✅ New comprehensive module created in `src/codex/security/log_sanitizer.py`
 - ✅ Pattern-based secret detection implemented

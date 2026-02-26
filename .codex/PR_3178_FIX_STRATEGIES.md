@@ -83,7 +83,7 @@ pip install -e ".[ml]"
    # Test locally
    pip install -e ".[test]"
    python scripts/validate_dataset.py --help
-   
+
    # Should show usage without ModuleNotFoundError
    ```
 
@@ -163,10 +163,10 @@ python scripts/ci/auto_fix_common_issues.py
    # Run linters
    ruff check .
    mypy src/ --ignore-missing-imports
-   
+
    # Run affected tests (if any imports removed from test files)
    pytest tests/ -k "not slow" -x --tb=short
-   
+
    # Check coverage doesn't break
    pytest --cov=src --cov-report=term-missing tests/ -k "not slow" -x
    ```

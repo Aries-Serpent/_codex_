@@ -129,15 +129,15 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
    ```bash
    twine upload dist/* -u __token__ -p pypi-AgEIcH...
    ```
-   
+
    Replace `pypi-AgEIcH...` with your actual token.
 
 3. **Confirm upload:**
    ```
    Uploading distributions to https://upload.pypi.org/legacy/
    Uploading codex_ml-0.0.0-py3-none-any.whl
-   100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
-   
+   100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
    View at:
    https://pypi.org/project/codex-ml/0.0.0/
    ```

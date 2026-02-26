@@ -100,7 +100,7 @@ on:
 - name: Run Tests
   run: |
     pytest tests/ -v --cov=src --cov-report=xml --cov-report=term
-    
+
 - name: Upload Coverage
   uses: codecov/codecov-action@v3
   with:
@@ -136,7 +136,7 @@ on:
   run: |
     pip-audit
     bandit -r src/ -ll
-    
+
 - name: Secret Scanning
   run: git secrets --scan
 ```
@@ -154,7 +154,7 @@ on:
   run: |
     python -m build
     ls -lh dist/
-    
+
 - name: Store Build Artifacts
   uses: actions/upload-artifact@v4
   with:
@@ -211,14 +211,14 @@ publish-testpypi:
   environment:
     name: testpypi
     url: https://test.pypi.org/p/codex-ml
-    
+
   steps:
     - name: Download Artifacts
       uses: actions/download-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
-    
+
     - name: Publish to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
@@ -286,14 +286,14 @@ publish-pypi:
   environment:
     name: pypi-production
     url: https://pypi.org/p/codex-ml
-  
+
   steps:
     - name: Download Artifacts
       uses: actions/download-artifact@v4
       with:
         name: python-package-distributions
         path: dist/
-    
+
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
@@ -308,7 +308,7 @@ publish-pypi:
 publish-pypi-oidc:
   permissions:
     id-token: write
-  
+
   steps:
     - name: Publish to PyPI (OIDC)
       uses: pypa/gh-action-pypi-publish@release/v1

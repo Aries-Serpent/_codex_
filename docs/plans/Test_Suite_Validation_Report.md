@@ -35,7 +35,7 @@ Projected Coverage:    49.13%
 
 DETAILED FILE ANALYSIS
 --------------------------------------------------------------------------------
-File                                          Classes  Tests    Gain    
+File                                          Classes  Tests    Gain  
 --------------------------------------------------------------------------------
 test_30pct_final.py                           9        16       1.04    %
 test_advanced_physics_calculators.py          9        23       1.38    %

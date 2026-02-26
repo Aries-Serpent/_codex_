@@ -19,18 +19,18 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      
+
       - name: Prepare artifacts (if not present)
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml jinja2
           python scripts/space_traversal/audit_runner.py run || true
           python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_manifest.json || true
-      
+
       - name: Summarize diffs
         id: diffs
         run: |
@@ -40,7 +40,7 @@ jobs:
           fi
           echo "Artifacts:" >> .audit_pr_body.md
           ls -la audit_artifacts || true >> .audit_pr_body.md
-      
+
       - name: Create draft PR
         uses: peter-evans/create-pull-request@v8
         with:

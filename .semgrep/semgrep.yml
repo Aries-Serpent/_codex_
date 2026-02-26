@@ -22,27 +22,27 @@ paths:
     - "tests/**"
     - "**/test_*.py"
     - "**/*_test.py"
-    
+
     # Example and documentation code
     - "examples/**"
     - "docs/code-samples/**"
     - "**/README*.md"
-    
+
     # Generated and vendored code
     - "**/generated/**"
     - "**/vendor/**"
     - "**/.venv/**"
     - "**/node_modules/**"
-    
+
     # Build artifacts
     - "build/**"
     - "dist/**"
     - "*.egg-info/**"
-    
+
     # Archive and deprecated code
     - "archive/**"
     - "**/deprecated/**"
-    
+
     # Temporary and cache files
     - ".hypothesis/**"
     - "__pycache__/**"

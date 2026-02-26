@@ -260,15 +260,15 @@ from pathlib import Path
 
 class TestGenesisWorkflow:
     """Integration tests for Genesis workflow execution."""
-    
+
     def test_workflow_validation(self):
         """Test that workflow validates prerequisites correctly."""
         # Arrange
         config = load_test_config()
-        
+
         # Act
         result = validate_genesis_prerequisites(config)
-        
+
         # Assert
         assert result.status == "success"
         assert result.all_files_present

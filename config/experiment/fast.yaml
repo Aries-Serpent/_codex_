@@ -22,12 +22,12 @@ test:
   exclude_patterns:
     - "*/test_integration/*"
     - "*/test_e2e/*"
-  
+
 # Coverage settings
 coverage:
   enabled: false  # Disable for speed
-  
-# Performance  
+
+# Performance
 performance:
   parallel_workers: auto  # Use all available cores
   cache_enabled: true

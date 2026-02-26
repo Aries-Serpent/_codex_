@@ -74,7 +74,7 @@ misc/repo-owner-review/
 | `coverage_reports/coverage_working_tests.json` | `historical-coverage/coverage_working_tests.json` | ~400KB | Historical snapshot |
 | `coverage_reports/coverage_analysis_static.md` | `historical-coverage/coverage_analysis_static.md` | ~50KB | Historical analysis |
 
-**Kept in Main Repo**: 
+**Kept in Main Repo**:
 - `coverage_reports/current_coverage.json` (active reference)
 - `coverage_reports/coverage.json` (active reference)
 
@@ -89,7 +89,7 @@ misc/repo-owner-review/
 | `logs/extracted_chatgptcodex-v2.md` | `historical-logs/extracted_chatgptcodex-v2.md` | ~200KB | Historical extract |
 | `logs/extracted_patch_chatgpt-codex.md` | `historical-logs/extracted_patch_chatgpt-codex.md` | ~200KB | Historical extract |
 
-**Kept in Main Repo**: 
+**Kept in Main Repo**:
 - `logs/error_captures.log` (active error tracking)
 
 ### Artifacts (Offloaded: 2026-01-26)
@@ -103,7 +103,7 @@ misc/repo-owner-review/
 | `artifacts/gates/nox-tests_min-rerun.log` | `historical-artifacts/gates/nox-tests_min-rerun.log` | ~50KB | Historical gate log |
 | `artifacts/gates/nox-tests_min-rerun2.log` | `historical-artifacts/gates/nox-tests_min-rerun2.log` | ~50KB | Historical gate log |
 
-**Kept in Main Repo**: 
+**Kept in Main Repo**:
 - `artifacts/metrics/*` (active metrics)
 - `artifacts/models/*` (active models)
 - `artifacts/model_regression_log.ndjson` (active tracking)
@@ -116,7 +116,7 @@ misc/repo-owner-review/
 | `misc/cognitivecodex-main.zip` | `archive-files/cognitivecodex-main.zip` | ~600KB | Legacy app archive |
 | `docs/plans/implement_dependency.zip` | `archive-files/implement_dependency.zip` | ~50KB | Old implementation archive |
 
-**Kept in Main Repo**: 
+**Kept in Main Repo**:
 - `archive/cognitive_codex_app.zip` (documented in archive/INDEX.md)
 - `misc/repo-owner-review-archive.tar.gz` (self-referential archive)
 

@@ -41,7 +41,7 @@ def create_threshold_feature(threshold, field_name):
     """Create a threshold-based feature."""
     def threshold_fn(inputs):
         return 1 if inputs[field_name] > threshold else 0
-    
+
     return Feature(
         name=f"{field_name}_above_{threshold}",
         transform_fn=threshold_fn,
@@ -61,10 +61,10 @@ Handle missing or invalid data:
 def safe_feature(inputs):
     """Handle missing inputs gracefully."""
     value = inputs.get("value")
-    
+
     if value is None:
         return 0.0  # Default value
-    
+
     try:
         return float(value)
     except (ValueError, TypeError):
@@ -297,7 +297,7 @@ def z_score_normalize(inputs):
     value = inputs["value"]
     mean = inputs.get("mean", 0.0)
     std = inputs.get("std", 1.0)
-    
+
     if std == 0:
         return 0.0
     return (value - mean) / std
@@ -317,7 +317,7 @@ def min_max_scale(inputs):
     value = inputs["value"]
     min_val = inputs.get("min", 0.0)
     max_val = inputs.get("max", 1.0)
-    
+
     if max_val == min_val:
         return 0.5
     return (value - min_val) / (max_val - min_val)
@@ -337,7 +337,7 @@ def robust_scale(inputs):
     value = inputs["value"]
     median = inputs.get("median", 0.0)
     iqr = inputs.get("iqr", 1.0)
-    
+
     if iqr == 0:
         return 0.0
     return (value - median) / iqr
@@ -357,7 +357,7 @@ robust = Feature(
 def bin_value(inputs):
     """Bin into equal-width categories."""
     value = inputs["value"]
-    
+
     if value < 10:
         return "very_low"
     elif value < 25:
@@ -385,7 +385,7 @@ def quantile_bin(inputs):
     q25 = inputs.get("q25", 25)
     q50 = inputs.get("q50", 50)
     q75 = inputs.get("q75", 75)
-    
+
     if value < q25:
         return "Cycle 1"
     elif value < q50:
@@ -411,7 +411,7 @@ def ratio_feature(inputs):
     """Calculate ratio of two values."""
     numerator = inputs.get("numerator", 0.0)
     denominator = inputs.get("denominator", 1.0)
-    
+
     if denominator == 0:
         return 0.0
     return numerator / denominator
@@ -430,7 +430,7 @@ def percentage_feature(inputs):
     """Calculate percentage."""
     part = inputs.get("part", 0.0)
     total = inputs.get("total", 1.0)
-    
+
     if total == 0:
         return 0.0
     return (part / total) * 100
@@ -454,7 +454,7 @@ def create_composite_feature(features):
         for feature in features:
             results[feature.name] = feature.compute(inputs)
         return results
-    
+
     return Feature(
         name="composite",
         transform_fn=composite,
@@ -486,7 +486,7 @@ def polynomial_features(degree):
     def poly(inputs):
         value = inputs["value"]
         return {f"value_pow_{d}": value ** d for d in range(1, degree + 1)}
-    
+
     return Feature(
         name=f"polynomial_{degree}",
         transform_fn=poly,
@@ -523,11 +523,11 @@ import time
 
 class TimedCache:
     """Cache with TTL (Time To Live)."""
-    
+
     def __init__(self, ttl_seconds=3600):
         self.cache = {}
         self.ttl = ttl_seconds
-    
+
     def get(self, key):
         """Get cached value if not expired."""
         if key in self.cache:
@@ -537,7 +537,7 @@ class TimedCache:
             else:
                 del self.cache[key]
         return None
-    
+
     def set(self, key, value):
         """Cache value with timestamp."""
         self.cache[key] = (value, time.time())
@@ -551,12 +551,12 @@ def should_cache(inputs, result):
     # Don't cache small/fast computations
     if isinstance(result, (int, float, str)):
         return False
-    
+
     # Don't cache if inputs are too large
     input_size = len(str(inputs))
     if input_size > 10000:
         return False
-    
+
     return True
 ```
 

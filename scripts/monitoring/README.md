@@ -108,7 +108,7 @@ monitoring:
       - "*"  # Monitor all workflows
     exclude_patterns:
       - "pages-*"  # Exclude GitHub Pages workflows
-  
+
   failure_detection:
     consecutive_failures_threshold: 2  # Create issue after N consecutive failures
     rate_limit_margin: 500  # Reserve 500 API calls for safety

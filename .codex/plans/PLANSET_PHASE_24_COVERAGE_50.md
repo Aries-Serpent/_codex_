@@ -89,7 +89,7 @@ for py_file in src_path.rglob("*.py"):
     try:
         with open(py_file) as f:
             tree = ast.parse(f.read(), filename=str(py_file))
-        
+
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom):
                 if node.module and node.module.startswith("codex"):
@@ -103,7 +103,7 @@ print("Top integration test targets:")
 sorted_deps = sorted(dependencies.items(), key=lambda x: len(x[1]), reverse=True)
 for module, deps in sorted_deps[:15]:
     print(f"  {module}: {len(deps)} dependencies")
-    
+
 # Save for reference
 with open(".codex/plans/phase24_integration_targets.json", "w") as f:
     json.dump(dict(dependencies), f, indent=2)
@@ -140,21 +140,21 @@ data:
   train_path: tests/fixtures/tiny_train.json
   eval_path: tests/fixtures/tiny_eval.json
 """)
-        
+
         # Run training
         result = runner.invoke(app, [
             "train",
             "--config", str(config),
             "--output-dir", tmpdir
         ])
-        
+
         assert result.exit_code == 0, f"Training failed: {result.output}"
-        
+
         # Verify checkpoint created
         checkpoint_dir = Path(tmpdir) / "checkpoint-5"
         assert checkpoint_dir.exists(), "Checkpoint not created"
         assert (checkpoint_dir / "pytorch_model.bin").exists()
-        
+
         # Verify checkpoint loadable
         model = torch.load(checkpoint_dir / "pytorch_model.bin")
         assert model is not None
@@ -176,14 +176,14 @@ training:
 data:
   train_path: tests/fixtures/tiny_train.json
 """)
-        
+
         result1 = runner.invoke(app, [
             "train",
             "--config", str(config),
             "--output-dir", tmpdir
         ])
         assert result1.exit_code == 0
-        
+
         # Resume training
         config.write_text("""
 model:
@@ -196,7 +196,7 @@ training:
 data:
   train_path: tests/fixtures/tiny_train.json
 """)
-        
+
         result2 = runner.invoke(app, [
             "train",
             "--config", str(config),
@@ -204,7 +204,7 @@ data:
             "--resume-from-checkpoint", str(Path(tmpdir) / "checkpoint-5")
         ])
         assert result2.exit_code == 0
-        
+
         # Verify continued training
         checkpoint_10 = Path(tmpdir) / "checkpoint-10"
         assert checkpoint_10.exists()
@@ -221,13 +221,13 @@ def test_cli_train_invalid_config_handling(invalid_config):
         config_path = Path(tmpdir) / "invalid_config.yaml"
         import yaml
         config_path.write_text(yaml.dump(invalid_config))
-        
+
         result = runner.invoke(app, [
             "train",
             "--config", str(config_path),
             "--output-dir", tmpdir
         ])
-        
+
         assert result.exit_code != 0
         assert "Error" in result.output or "Invalid" in result.output
 ```
@@ -245,26 +245,26 @@ def test_data_loading_to_model_input():
     # Load dataset
     dataset = load_dataset("tests/fixtures/sample_dataset.json")
     assert len(dataset) > 0
-    
+
     # Create data collator
     collator = DataCollator(max_length=128)
-    
+
     # Prepare batch
     batch = collator([dataset[i] for i in range(min(4, len(dataset)))])
-    
+
     # Verify batch structure
     assert "input_ids" in batch
     assert "attention_mask" in batch
     assert isinstance(batch["input_ids"], torch.Tensor)
-    
+
     # Load model
     config = AutoConfig.from_pretrained("tests/fixtures/test_model_config.json")
     model = AutoModel.from_config(config)
-    
+
     # Forward pass
     with torch.no_grad():
         outputs = model(**batch)
-    
+
     assert outputs is not None
     assert hasattr(outputs, "logits") or hasattr(outputs, "last_hidden_state")
 
@@ -276,19 +276,19 @@ def test_data_preprocessing_pipeline_end_to_end():
         tokenize,
         create_features
     )
-    
+
     # Load raw data
     raw_data = load_raw_data("tests/fixtures/raw_text.txt")
     assert len(raw_data) > 0
-    
+
     # Clean
     cleaned = [clean_text(text) for text in raw_data]
     assert all(isinstance(text, str) for text in cleaned)
-    
+
     # Tokenize
     tokenized = [tokenize(text) for text in cleaned]
     assert all(isinstance(tokens, list) for tokens in tokenized)
-    
+
     # Create features
     features = create_features(tokenized)
     assert isinstance(features, dict)
@@ -303,14 +303,14 @@ def test_data_pipeline_corruption_handling(corrupted_data):
     """Verify robustness to data corruption"""
     from data.datasets import load_dataset
     import tempfile
-    
+
     with tempfile.NamedTemporaryFile(mode='wb', suffix='.json', delete=False) as f:
         if isinstance(corrupted_data, bytes):
             f.write(corrupted_data)
         else:
             f.write(corrupted_data.encode())
         temp_path = f.name
-    
+
     try:
         with pytest.raises((ValueError, json.JSONDecodeError, UnicodeDecodeError)):
             load_dataset(temp_path)
@@ -339,15 +339,15 @@ model:
   num_layers: 6
   num_heads: 8
 """)
-        
+
         # Initialize Hydra
         with initialize_config_dir(config_dir=str(config_dir), version_base="1.1"):
             cfg = compose(config_name="config")
-            
+
             # Instantiate model from config
             from hydra.utils import instantiate
             model = instantiate(cfg.model)
-            
+
             assert model is not None
             assert model.config.hidden_size == 512
 
@@ -511,7 +511,7 @@ def test_workflow_train_evaluate_export():
     runner = CliRunner()
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
-        
+
         # Step 1: Train model
         train_config = tmpdir / "train_config.yaml"
         train_config.write_text("""
@@ -522,14 +522,14 @@ training:
 data:
   train_path: tests/fixtures/tiny_train.json
 """)
-        
+
         train_result = runner.invoke(app, [
             "train",
             "--config", str(train_config),
             "--output-dir", str(tmpdir / "model")
         ])
         assert train_result.exit_code == 0
-        
+
         # Step 2: Evaluate model
         eval_result = runner.invoke(app, [
             "evaluate",
@@ -539,7 +539,7 @@ data:
         ])
         assert eval_result.exit_code == 0
         assert (tmpdir / "metrics.json").exists()
-        
+
         # Step 3: Export model
         export_result = runner.invoke(app, [
             "export",
@@ -555,7 +555,7 @@ def test_workflow_data_preparation_to_training():
     runner = CliRunner()
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
-        
+
         # Prepare data
         prep_result = runner.invoke(app, [
             "prepare-data",
@@ -565,7 +565,7 @@ def test_workflow_data_preparation_to_training():
         ])
         assert prep_result.exit_code == 0
         assert (tmpdir / "prepared_data.json").exists()
-        
+
         # Train on prepared data
         train_result = runner.invoke(app, [
             "train",
@@ -579,12 +579,12 @@ def test_workflow_data_preparation_to_training():
 def test_workflow_full_pipeline_with_errors():
     """Test workflow with intentional errors to verify error handling"""
     runner = CliRunner()
-    
+
     # Test 1: Missing required data
     result1 = runner.invoke(app, ["train", "--config", "nonexistent.yaml"])
     assert result1.exit_code != 0
     assert "not found" in result1.output.lower() or "error" in result1.output.lower()
-    
+
     # Test 2: Invalid model checkpoint
     with tempfile.TemporaryDirectory() as tmpdir:
         (Path(tmpdir) / "fake_checkpoint").mkdir()

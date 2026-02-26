@@ -27,7 +27,7 @@ MissingConfigException: Missing config file: conf/model/myconfig.yaml
    ```python
    # Wrong
    cfg = load_config("base.yaml", config_dir="conf/model")
-   
+
    # Correct
    cfg = load_config("base", config_dir="conf/model")
    ```
@@ -84,15 +84,15 @@ yaml.scanner.ScannerError: while scanning a simple key
    ```yaml
    # Wrong: Missing space after colon
    key:value
-   
+
    # Correct
    key: value
-   
+
    # Wrong: Inconsistent indentation
    training:
      epochs: 10
        batch_size: 8
-   
+
    # Correct: Consistent 2-space indentation
    training:
      epochs: 10
@@ -123,7 +123,7 @@ Config shows literal "${training.epochs}" instead of value
    import yaml
    with open("conf/training/base.yaml") as f:
        cfg = yaml.safe_load(f)  # Interpolation won't work
-   
+
    # Correct
    from codex.utils.config_loader import load_config
    cfg = load_config("base", config_dir="conf/training")
@@ -187,7 +187,7 @@ DuplicateKeyError: found duplicate key 'epochs' in config
    training:
      epochs: 10
    epochs: 10
-   
+
    # Correct: Use interpolation
    training:
      epochs: 10
@@ -211,10 +211,10 @@ Override "training.epochs=5" specified but value is still 10
    ```python
    # Wrong: Missing equals sign
    overrides = ["training.epochs 5"]
-   
+
    # Wrong: Spaces around equals
    overrides = ["training.epochs = 5"]
-   
+
    # Correct
    overrides = ["training.epochs=5"]
    ```
@@ -225,10 +225,10 @@ Override "training.epochs=5" specified but value is still 10
    training:
      params:
        epochs: 10
-   
+
    # Wrong override path
    overrides = ["training.epochs=5"]
-   
+
    # Correct override path
    overrides = ["training.params.epochs=5"]
    ```
@@ -261,7 +261,7 @@ ImportError: cannot import name 'MissingConfigException' from 'config_legacy.err
    ```python
    # Old (deprecated)
    from config_legacy.errors import MissingConfigException
-   
+
    # New (recommended)
    from codex.utils.config_loader import MissingConfigException
    ```
@@ -312,7 +312,7 @@ Config loading takes >1 second
    ```python
    import time
    from codex.utils.config_loader import load_config
-   
+
    start = time.time()
    cfg = load_config("base", config_dir="conf/training")
    print(f"Load time: {time.time() - start:.3f}s")
@@ -322,7 +322,7 @@ Config loading takes >1 second
    ```python
    # Create singleton loader
    from codex.utils.config_loader import get_loader
-   
+
    loader = get_loader()  # Cached globally
    cfg = loader.load_config("base", config_dir="conf/training")
    ```
@@ -377,12 +377,12 @@ Tests pass locally but fail in CI with MissingConfigException
    def test_config(tmp_path):
        config_dir = tmp_path / "conf" / "model"
        config_dir.mkdir(parents=True)
-       
+
        config_file = config_dir / "base.yaml"
        config_file.write_text("model:\n  name: test")
-       
+
        return tmp_path
-   
+
    def test_something(test_config):
        from codex.utils.config_loader import ConfigLoader
        loader = ConfigLoader(repo_root=test_config)
@@ -428,7 +428,7 @@ cfg = load_config("base", config_dir="conf/training")
 # Check if value is interpolation
 if OmegaConf.is_interpolation(cfg, "epochs"):
     print("epochs is an interpolation")
-    
+
 # Get interpolation target
 if OmegaConf.is_interpolation(cfg, "epochs"):
     print(f"Resolves to: {cfg.epochs}")

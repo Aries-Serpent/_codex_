@@ -48,7 +48,7 @@ Create a metric function that follows the standard signature:
 
 def custom_accuracy(predictions, targets, **kwargs):
     """Custom accuracy metric with special handling.
-    
+
     Parameters
     ----------
     predictions : Sequence
@@ -57,7 +57,7 @@ def custom_accuracy(predictions, targets, **kwargs):
         Ground truth targets
     **kwargs : dict
         Additional keyword arguments
-    
+
     Returns
     -------
     float
@@ -70,7 +70,7 @@ def custom_accuracy(predictions, targets, **kwargs):
 
 def weighted_f1(predictions, targets, weights=None):
     """F1 score with optional class weights.
-    
+
     Returns
     -------
     float or dict
@@ -139,18 +139,18 @@ For plugins that need initialization:
 
 class CustomMetric:
     """Metric plugin with initialization."""
-    
+
     def __init__(self, config=None):
         self.config = config or {}
-    
+
     def __call__(self, predictions, targets):
         # Use self.config for behavior
         return self.compute(predictions, targets)
-    
+
     def compute(self, predictions, targets):
         # Implementation
         return 0.9
-    
+
     @staticmethod
     def register(register_fn):
         """Plugin hook called by loader."""
@@ -173,7 +173,7 @@ def rouge_variant(predictions, targets):
     except ImportError:
         # Return None when dependency is missing
         return None
-    
+
     scorer = rouge_scorer.RougeScorer(["rouge1"], use_stemmer=True)
     scores = [
         scorer.score(t, p)["rouge1"].fmeasure
@@ -189,13 +189,13 @@ Register multiple metrics from one entry point:
 ```python
 def register_suite(register_fn):
     """Register a suite of related metrics."""
-    
+
     def metric_a(preds, targets):
         return 0.5
-    
+
     def metric_b(preds, targets):
         return 0.7
-    
+
     # Register multiple metrics
     register_fn("suite_metric_a", metric_a)
     register_fn("suite_metric_b", metric_b)
@@ -218,7 +218,7 @@ def test_custom_accuracy_plugin_loads():
     """Verify plugin is discovered and registered."""
     # Force reload to test discovery
     init_metric_plugins(force=True)
-    
+
     # Should be able to retrieve the metric
     metric = get_metric("custom_accuracy")
     assert callable(metric)
@@ -227,11 +227,11 @@ def test_custom_accuracy_plugin_loads():
 def test_custom_accuracy_correctness():
     """Verify metric computes correctly."""
     metric = get_metric("custom_accuracy")
-    
+
     # Perfect match
     score = metric(["a", "b", "c"], ["a", "b", "c"])
     assert score == 1.0
-    
+
     # Partial match
     score = metric(["a", "b", "c"], ["a", "b", "d"])
     assert abs(score - 0.666) < 0.01
@@ -240,11 +240,11 @@ def test_custom_accuracy_correctness():
 def test_plugin_handles_edge_cases():
     """Verify plugin handles edge cases."""
     metric = get_metric("custom_accuracy")
-    
+
     # Empty inputs
     score = metric([], [])
     assert score == 0.0
-    
+
     # Mismatched lengths (if supported)
     # score = metric(["a"], ["a", "b"])
     # assert ...
@@ -260,10 +260,10 @@ def safe_metric(predictions, targets):
     # Validate inputs
     if not predictions or not targets:
         return 0.0
-    
+
     if len(predictions) != len(targets):
         raise ValueError(f"Length mismatch: {len(predictions)} vs {len(targets)}")
-    
+
     # Compute with error handling
     try:
         result = compute_score(predictions, targets)
@@ -280,9 +280,9 @@ def safe_metric(predictions, targets):
 ```python
 def documented_metric(predictions, targets, threshold=0.5):
     """Compute accuracy with confidence threshold.
-    
+
     Predictions below the threshold are treated as incorrect.
-    
+
     Parameters
     ----------
     predictions : Sequence[str]
@@ -291,19 +291,19 @@ def documented_metric(predictions, targets, threshold=0.5):
         Ground truth labels
     threshold : float, default=0.5
         Minimum confidence threshold (if using probabilities)
-    
+
     Returns
     -------
     float
         Accuracy score between 0.0 and 1.0
-    
+
     Examples
     --------
     >>> metric(["a", "b"], ["a", "b"])
     1.0
     >>> metric(["a", "b"], ["a", "c"])
     0.5
-    
+
     Notes
     -----
     This metric is deterministic and suitable for offline evaluation.
@@ -337,7 +337,7 @@ def metric_with_optional_dep(predictions, targets):
     except ImportError:
         # Return None to signal dependency is missing
         return None
-    
+
     # Use optional_lib for computation
     return optional_lib.compute(predictions, targets)
 ```text
@@ -393,7 +393,7 @@ except ImportError as e:
 def register(register_fn):
     # Override built-in metric (use with caution)
     register_fn("f1", custom_f1, override=True)
-    
+
     # Or use unique name
     register_fn("custom_f1", custom_f1)
 ```text

@@ -102,7 +102,7 @@ graph TD
     A -->|fallback| C[config_legacy shim]
     C -->|attempts to load| B
     C -->|if unavailable| D[Stub implementation]
-    
+
     E[Code requiring YAML] -->|should use| F[PyYAML package]
     E -->|fallback| G[yaml_legacy shim]
     G -->|attempts to load| F
@@ -120,7 +120,7 @@ graph TD
    - Documented for removal
    - Falling back gracefully to real packages when available
 
-2. ✅ **Documentation Exists**: 
+2. ✅ **Documentation Exists**:
    - `config_legacy/README.md` explains the deprecation
    - `configs/CONFIGURATION_STRUCTURE.md` documents modern configs
 

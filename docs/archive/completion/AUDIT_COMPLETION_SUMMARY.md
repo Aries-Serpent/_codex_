@@ -223,16 +223,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Check docstring coverage
         run: interrogate --fail-under=75 src/
-      
+
       - name: Build documentation
         run: mkdocs build --strict
-      
+
       - name: Validate links
         run: markdown-link-check docs/**/*.md
-      
+
       - name: Generate API docs
         run: sphinx-apidoc -o docs/api src/
 ```

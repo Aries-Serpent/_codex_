@@ -188,7 +188,7 @@ graph TD
         CB --> QMA[Quality Metrics Agent]
         CB --> PRA[Production Readiness Agent]
     end
-    
+
     subgraph "Custom Agents - Phase 15"
         PBA --> BG[Benchmark Generation]
         PBA --> RD[Regression Detection]

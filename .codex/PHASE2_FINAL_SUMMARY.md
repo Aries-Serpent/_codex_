@@ -179,7 +179,7 @@ Post as PR comment: `@copilot Continue with Phase 3 implementation per FOLLOWUP_
 
 **Context**: Review found PAT exposed at job-level, creating supply-chain risk if dependencies compromised
 
-**Solution**: 
+**Solution**:
 - Move secrets to step-level `env` blocks
 - Use built-in `GITHUB_TOKEN` for untrusted code execution
 - Pin all dependency versions before installing with secrets

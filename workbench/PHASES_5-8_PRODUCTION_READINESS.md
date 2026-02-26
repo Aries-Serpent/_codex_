@@ -55,10 +55,10 @@ class TestChaosEngineering:
         """Inject random agent failures during execution."""
         swarm = SwarmEngine(1000)
         swarm.enable_chaos(failure_rate=0.05)
-        
+
         tasks = [{"id": i} for i in range(10_000)]
         results = swarm.process_tasks(tasks)
-        
+
         successful = sum(1 for r in results if r["success"])
         assert successful >= 9000, "Too many failures"
 ```
@@ -121,7 +121,7 @@ jobs:
       - run: cargo test --all-features
       - run: cargo tarpaulin --out Lcov
       - uses: codecov/codecov-action@v4
-  
+
   python_integration:
     runs-on: ubuntu-latest
     steps:
@@ -132,7 +132,7 @@ jobs:
       - run: pip install maturin pytest
       - run: maturin develop
       - run: pytest tests/integration/
-  
+
   benchmarks:
     runs-on: ubuntu-latest
     steps:
@@ -162,13 +162,13 @@ impl SwarmEngine {
         let start = Instant::now();
         let results = self.process(tasks);
         let duration = start.elapsed();
-        
+
         info!(
             "Processed {} tasks in {:?}",
             results.len(),
             duration
         );
-        
+
         results
     }
 }

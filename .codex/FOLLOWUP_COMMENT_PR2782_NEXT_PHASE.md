@@ -1,6 +1,6 @@
 # Follow-up Prompt for PR #2782 - Post Security Fixes
 
-@copilot 
+@copilot
 
 ## 🎯 Phase Complete: Security Hardening & Custom Agent Development
 

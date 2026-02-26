@@ -48,10 +48,10 @@ MCP_VERSIONS = {
 def get_supported_versions() -> List[str]:
     """
     Returns list of supported MCP versions.
-    
+
     This function provides version information for negotiation
     with MCP clients and servers.
-    
+
     Returns:
         List of version strings in semantic versioning format
     """
@@ -69,38 +69,38 @@ def negotiate_version(
 ) -> Optional[str]:
     """
     Negotiate MCP version between client and server.
-    
+
     Selects the highest mutually supported version. Returns None
     if no compatible version exists.
-    
+
     Args:
         requested_version: Version requested by client/server
         supported_versions: List of versions we support (defaults to MCP_VERSIONS)
-        
+
     Returns:
         Negotiated version string, or None if incompatible
-        
+
     Examples:
         >>> negotiate_version("1.1.0")
         "1.1.0"
-        
+
         >>> negotiate_version("2.0.0")  # Not supported
         None
-        
+
         >>> negotiate_version("0.9.0")  # Deprecated but still works
         "0.9.0"
     """
     if supported_versions is None:
         supported_versions = MCP_VERSIONS["supported"]
-    
+
     # Validate input
     if not requested_version or not isinstance(requested_version, str):
         return None
-        
+
     # Check if requested version is supported
     if requested_version in supported_versions:
         return requested_version
-        
+
     # Check deprecated versions (warn but allow)
     if requested_version in MCP_VERSIONS.get("deprecated", []):
         import warnings
@@ -109,7 +109,7 @@ def negotiate_version(
             f"Please upgrade to {MCP_VERSIONS['current']}"
         )
         return requested_version
-        
+
     # No compatible version found
     return None
 ```
@@ -122,21 +122,21 @@ Handle version-specific features gracefully:
 def supports_feature(feature: str, version: str) -> bool:
     """
     Check if a feature is supported in given MCP version.
-    
+
     This enables backward-compatible feature detection
     and graceful degradation for older clients.
-    
+
     Args:
         feature: Feature identifier (e.g., "streaming", "batch_ops")
         version: MCP version to check
-        
+
     Returns:
         True if feature is supported in this version
-        
+
     Examples:
         >>> supports_feature("streaming", "1.2.0")
         True
-        
+
         >>> supports_feature("streaming", "1.0.0")
         False
     """
@@ -146,11 +146,11 @@ def supports_feature(feature: str, version: str) -> bool:
         "batch_ops": "1.2.0",  # Available from 1.2.0+
         "compression": "1.0.0",  # Available from start
     }
-    
+
     min_version = feature_versions.get(feature)
     if not min_version:
         return False
-        
+
     # Simple version comparison (in production, use packaging.version)
     from packaging import version as pkg_version
     try:
@@ -210,13 +210,13 @@ Always detect and log the negotiated version:
 def establish_connection(client_version: str):
     """Establish MCP connection with version negotiation."""
     negotiated = negotiate_version(client_version)
-    
+
     if not negotiated:
         raise ValueError(
             f"Incompatible MCP version: {client_version}. "
             f"Supported: {MCP_VERSIONS['supported']}"
         )
-        
+
     logging.info(f"MCP connection established: v{negotiated}")
     return negotiated
 ```
@@ -243,7 +243,7 @@ Provide clear migration guidance when deprecating versions:
 def check_version_status(version: str) -> Dict[str, Any]:
     """
     Check version status and provide migration guidance.
-    
+
     Returns information about version support status,
     deprecation warnings, and upgrade recommendations.
     """
@@ -280,10 +280,10 @@ def test_version_negotiation():
     """Test version negotiation logic."""
     # Supported version
     assert negotiate_version("1.1.0") == "1.1.0"
-    
+
     # Unsupported version
     assert negotiate_version("2.0.0") is None
-    
+
     # Edge cases
     assert negotiate_version("") is None
     assert negotiate_version(None) is None
@@ -319,7 +319,7 @@ def debug_version_compatibility(client_version, server_version):
     print(f"Client version: {client_version}")
     print(f"Server version: {server_version}")
     print(f"Server supports: {MCP_VERSIONS['supported']}")
-    
+
     compatible = negotiate_version(client_version)
     if compatible:
         print(f"✓ Compatible: {compatible}")
@@ -352,38 +352,38 @@ def debug_version_compatibility(client_version, server_version):
 def validate_version_string(version: str) -> bool:
     """
     Validate version string format for security.
-    
+
     Prevents version string injection and ensures
     valid semantic versioning format.
-    
+
     Args:
         version: Version string to validate
-        
+
     Returns:
         True if valid, False otherwise
     """
     import re
-    
+
     # Semantic versioning pattern with safeguards
     pattern = r'^(\d+)\.(\d+)\.(\d+)$'
-    
+
     if not isinstance(version, str):
         return False
-        
+
     # Length bounds check (prevent DoS)
     if len(version) > 20:
         return False
-        
+
     # Format validation
     if not re.match(pattern, version):
         return False
-        
+
     # Component bounds (reasonable limits)
     parts = version.split('.')
     for part in parts:
         if int(part) > 999:
             return False
-            
+
     return True
 ```
 

@@ -81,11 +81,11 @@ class MyVectorStore(VectorStore):
     def add(self, vectors, metadata=None, ids=None):
         # Implementation
         pass
-    
+
     def search(self, query_vector, k=5, filters=None):
         # Implementation
         pass
-    
+
     # ... other required methods
 ```text
 
@@ -447,7 +447,7 @@ Solution: Ensure all vectors have the same dimension as the first batch
 ### Large Memory Usage
 ```text
 Problem: Index consumes too much memory
-Solution: 
+Solution:
 - Reduce max_vectors limit
 - Save and clear index periodically
 - Use memory-mapped files (future feature)
@@ -713,9 +713,9 @@ Planned improvements for metadata filtering:
 
 ```python
 class VectorStore(ABC):
-    def add(vectors: np.ndarray, metadata: Optional[List[Dict]] = None, 
+    def add(vectors: np.ndarray, metadata: Optional[List[Dict]] = None,
             ids: Optional[List[str]] = None) -> List[str]
-    def search(query_vector: np.ndarray, k: int = 5, 
+    def search(query_vector: np.ndarray, k: int = 5,
                filters: Optional[Dict] = None) -> List[Dict]
     def delete(ids: Union[str, List[str]]) -> int
     def get(ids: Union[str, List[str]]) -> List[Dict]
@@ -732,11 +732,11 @@ Inherits all methods from `VectorStore` plus:
 
 ```python
 class FAISSStore(VectorStore):
-    def __init__(index_dir: Optional[str] = None, 
+    def __init__(index_dir: Optional[str] = None,
                  index_name: str = "default",
                  max_vectors: int = 10_000_000,
                  validate_checksums: bool = True)
-    
+
     def create_index(embeddings: np.ndarray, documents: List[Dict])
     # Legacy method, use add() instead
 ```text
@@ -746,10 +746,10 @@ class FAISSStore(VectorStore):
 ```python
 def embed(texts: List[str]) -> np.ndarray:
     """Generate embeddings from texts
-    
+
     Args:
         texts: List of input texts
-        
+
     Returns:
         Normalized embeddings (shape: [len(texts), dimension])
     """

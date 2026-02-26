@@ -245,7 +245,7 @@ $ python3 scripts/phase10/automated_secrets_manager.py --help
 #### Positive Security Findings
 
 1. **✅ No Hardcoded Secrets**: All secrets loaded from environment variables
-2. **✅ Strong Cryptography**: 
+2. **✅ Strong Cryptography**:
    - PBKDF2HMAC with 100,000 iterations
    - SHA-256 hashing
    - Fernet (AES-128-CBC + HMAC-SHA256)

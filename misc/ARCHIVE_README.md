@@ -19,7 +19,7 @@ This archive contains all files from `misc/repo-owner-review/` that are pending 
    - Comprehensive documentation
    - Archive notices on all files
 
-2. **archived-artifacts/** 
+2. **archived-artifacts/**
    - Historical security reports
    - Deprecated scripts
    - Old audit runs

@@ -34,20 +34,20 @@ graph TB
         A[CI Workflow Failure] --> B[Self-Healing Workflow]
         A1[Manual Dispatch] --> B
     end
-    
+
     subgraph "Detection Layer"
         B --> C[Download Logs]
         C --> D[Analyzer.py]
         D --> E{Pattern Match?}
     end
-    
+
     subgraph "Decision Layer"
         E -->|Yes| F{Confidence >= 70%?}
         E -->|No| G[Create Issue]
         F -->|Yes| H[Apply Fix Action]
         F -->|No| G
     end
-    
+
     subgraph "Execution Layer"
         H --> I[Rust Format]
         H --> J[Python Lint]
@@ -55,7 +55,7 @@ graph TB
         H --> L[Add Dependency]
         H --> M[Clear Cache]
     end
-    
+
     subgraph "Integration Layer"
         I --> N[Create PR]
         J --> N
@@ -65,14 +65,14 @@ graph TB
         N --> O[Update Cognitive Brain]
         G --> O
     end
-    
+
     subgraph "Learning Layer"
         O --> P[Record Metrics]
         P --> Q[Calculate Success Rates]
         Q --> R[Update Patterns]
         R --> S[Improve Confidence]
     end
-    
+
     style B fill:#e1f5ff
     style H fill:#c8e6c9
     style N fill:#fff9c4

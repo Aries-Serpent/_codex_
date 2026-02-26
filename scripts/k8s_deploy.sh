@@ -89,7 +89,7 @@ POD=$(kubectl get pod -l app=codex-ml -n "$NAMESPACE" -o jsonpath='{.items[0].me
 if [ -n "$POD" ]; then
   echo "Testing health endpoint..."
   kubectl exec "$POD" -n "$NAMESPACE" -- curl -sf http://localhost:8000/health || echo "⚠️  Health check failed"
-  
+
   echo "Testing readiness endpoint..."
   kubectl exec "$POD" -n "$NAMESPACE" -- curl -sf http://localhost:8000/ready || echo "⚠️  Readiness check failed"
 fi

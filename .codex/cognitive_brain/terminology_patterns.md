@@ -314,10 +314,10 @@ If new patterns emerge:
 
 1. **Hybrid Contexts**: Some documents mix planning and technical metrics
    - Solution: Apply decision tree per-line
-   
+
 2. **Archive Documents**: Historical references to time-based planning
    - Solution: Updated for consistency (Phase 2)
-   
+
 3. **External CI Syntax**: GitLab `expire_in` requires time units
    - Solution: Preserved (external syntax requirement)
 

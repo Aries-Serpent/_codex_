@@ -1,4 +1,4 @@
-# Run Audit 0D Base 
+# Run Audit 0D Base
 
 **Status**: Stub document (archived survey reference)  
 **Created**: 2026-01-17  

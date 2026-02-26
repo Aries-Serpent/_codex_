@@ -283,7 +283,7 @@ All unified workflows support mode-based execution via workflow_dispatch inputs.
 - Disabled only when replaced by unified workflows
 - Complete .meta tracking for all moves/disables
 
-**Documentation**: 
+**Documentation**:
 - Phase 1: .github/workflow-archive/phase1-consolidation/
 - Phase 2: .github/workflow-archive/phase2-consolidation/
 

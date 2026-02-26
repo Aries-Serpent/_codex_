@@ -132,10 +132,10 @@ from github.agents.core.concurrency_patterns import ConcurrencyPatternMatcher
 class FlakyTriageAgent(CognitiveAgent):
     """
     Agent for detecting and triaging flaky tests.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: flaky_test_detection
     """
-    
+
     def __init__(self, repo_path: Path):
         super().__init__(repo_path)
         self.performance_matcher = PerformancePatternMatcher()
@@ -145,13 +145,13 @@ class FlakyTriageAgent(CognitiveAgent):
             "version": "1.0.0",
             "description": "Detects and triages flaky tests"
         }
-    
+
     def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
         PERCEIVE: Analyze GitHub Actions logs and test results.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: test_result_analysis
-        
+
         - Parse workflow run logs
         - Extract test pass/fail data
         - Calculate timing statistics
@@ -165,16 +165,16 @@ class FlakyTriageAgent(CognitiveAgent):
             "historical_patterns": self._query_brain_for_patterns(),
             "code_patterns": self._analyze_test_code()
         }
-        
+
         #AFTERMATH_METRIC: tests_analyzed = len(context["test_results"])
         return context
-    
+
     def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """
         DECIDE: Classify tests and determine actions.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: flake_classification
-        
+
         - Apply flaky thresholds (pass rate < 95%)
         - Determine severity (critical/high/medium/low)
         - Select action (quarantine/mark/investigate)
@@ -185,16 +185,16 @@ class FlakyTriageAgent(CognitiveAgent):
             "actions": self._determine_actions(context),
             "priorities": self._prioritize_by_impact(context)
         }
-        
+
         #AFTERMATH_METRIC: flakes_detected = len(decision["flaky_tests"])
         return decision
-    
+
     def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
         """
         ACT: Execute flake management actions.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: flake_remediation
-        
+
         - Create `flake_index.json`
         - Generate `quarantine_list.md`
         - Apply `@pytest.mark.flaky` decorators
@@ -206,17 +206,17 @@ class FlakyTriageAgent(CognitiveAgent):
             "decorators_applied": self._apply_flaky_marks(decision),
             "issues_created": self._create_issues(decision)
         }
-        
+
         #AFTERMATH_METRIC: tests_quarantined = len(result["quarantine_list"])
         return result
-    
-    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any], 
+
+    def aftermath(self, result: Dict[str, Any], context: Dict[str, Any],
                   decision: Dict[str, Any]) -> None:
         """
         AFTERMATH: Learn from flake detection and update brain.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: flake_learning
-        
+
         - Record flake patterns
         - Store MTTR (Mean Time To Resolve)
         - Update confidence scores
@@ -226,10 +226,10 @@ class FlakyTriageAgent(CognitiveAgent):
         self._record_flake_patterns(result, context)
         self._store_mttr_data(result)
         self._update_confidence_scores(result, context)
-        
+
         # Generate lessons learned
         lessons = self._generate_lessons(result, context, decision)
-        
+
         #AFTERMATH_METRIC: patterns_learned = len(lessons)
         #AFTERMATH_LESSON_LEARNED: flaky_test_patterns_identified
 ```
@@ -265,17 +265,17 @@ def _query_brain_for_patterns(self) -> List[Pattern]:
 def _analyze_test_code(self) -> Dict[str, List[Pattern]]:
     """Analyze test code for patterns that cause flakes."""
     patterns = {}
-    
+
     # Check for concurrency issues
     patterns["concurrency"] = self.concurrency_matcher.analyze_file(
         Path("tests/test_example.py")
     )
-    
+
     # Check for performance issues
     patterns["performance"] = self.performance_matcher.analyze_file(
         Path("tests/test_example.py")
     )
-    
+
     return patterns
 ```
 

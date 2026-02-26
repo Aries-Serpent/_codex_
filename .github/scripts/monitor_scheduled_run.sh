@@ -20,12 +20,12 @@ while [ $ELAPSED -lt $MAX_WAIT ]; do
   # Try to find today's scheduled run
   RUN_ID=$(gh run list --workflow=workflow-analytics-scheduled.yml \
     --created="$(date -u +%Y-%m-%d)" --limit 1 --json databaseId -q '.[0].databaseId' 2>/dev/null || echo "")
-  
+
   if [ -n "$RUN_ID" ]; then
     echo "✅ Found scheduled run: $RUN_ID"
     break
   fi
-  
+
   echo "⏳ No run found yet (${ELAPSED}/${MAX_WAIT}s elapsed)..."
   sleep $CHECK_INTERVAL
   ELAPSED=$((ELAPSED + CHECK_INTERVAL))

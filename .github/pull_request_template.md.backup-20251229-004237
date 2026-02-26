@@ -1,7 +1,7 @@
 # Pull Request Template
 
-> **Version:** 1.2.0  
-> **Generated:** 2025-11-06  
+> **Version:** 1.2.0
+> **Generated:** 2025-11-06
 > **Purpose:** Standardized PR workflow with required safety checks and optional capability controls
 
 ---
@@ -173,17 +173,17 @@ If this PR is only docs, bug fixes, or features, the section below does not appl
 ---
 
 ### 1. Rollout ring and branch context
-- Target rollout_ring from training artifacts (run_metadata.json):  
+- Target rollout_ring from training artifacts (run_metadata.json):
   `rollout_ring = ____________________`
 
-- Source branch / ring being promoted (e.g. `0D_base_`):  
+- Source branch / ring being promoted (e.g. `0D_base_`):
   `branch = ____________________`
 
-- Target branch (e.g. `main`):  
+- Target branch (e.g. `main`):
   `target = ____________________`
 
 ### 2. Survey snapshot
-- Path to the committed survey snapshot under docs/status_updates/:  
+- Path to the committed survey snapshot under docs/status_updates/:
   `docs/status_updates/____________________.md`
 
 Confirm this file:
@@ -265,7 +265,7 @@ Reviewer notes / escalation contact:
 # Schema validation
 pytest -q tests/status/test_example_report_schema.py
 
-# Config validation  
+# Config validation
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
 
 # Audit chain

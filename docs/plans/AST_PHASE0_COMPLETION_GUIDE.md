@@ -270,7 +270,7 @@ class SourceLocation:
 @dataclass
 class StandardizedASTNode:
     """Language-agnostic AST node representation.
-    
+
     Attributes:
         node_id: Unique identifier within codebase
         type: Node type (NodeType enum)
@@ -283,24 +283,24 @@ class StandardizedASTNode:
         type_hints: Type annotations (param → type mappings)
         metadata: Language-specific metadata
     """
-    
+
     node_id: str
     type: NodeType
     name: str
     source_location: SourceLocation
-    
+
     children: List['StandardizedASTNode'] = field(default_factory=list)
     parent: Optional['StandardizedASTNode'] = None
     docstring: Optional[str] = None
     decorators: List[str] = field(default_factory=list)
     type_hints: Dict[str, str] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def add_child(self, child: 'StandardizedASTNode') -> None:
         """Add child node and set parent reference."""
         child.parent = self
         self.children.append(child)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary (JSON-compatible)."""
         return {
@@ -320,13 +320,13 @@ class StandardizedASTNode:
             'type_hints': self.type_hints,
             'metadata': self.metadata,
         }
-    
+
     def walk(self):
         """Depth-first tree traversal."""
         yield self
         for child in self.children:
             yield from child.walk()
-    
+
     def get_depth(self) -> int:
         """Get node depth in tree."""
         if self.parent is None:
@@ -375,12 +375,12 @@ def test_parent_child_relationship():
     """Test parent-child node relationships."""
     parent_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
     parent = StandardizedASTNode("m1", NodeType.MODULE, "test_module", parent_loc)
-    
+
     child_loc = SourceLocation(Path("test.py"), 2, 4, 4, 0)
     child = StandardizedASTNode("f1", NodeType.FUNCTION, "test_func", child_loc)
-    
+
     parent.add_child(child)
-    
+
     assert child.parent == parent
     assert child in parent.children
     assert child.get_depth() == 1
@@ -390,16 +390,16 @@ def test_tree_traversal():
     """Test DFS tree traversal."""
     root_loc = SourceLocation(Path("test.py"), 1, 0, 10, 0)
     root = StandardizedASTNode("m1", NodeType.MODULE, "root", root_loc)
-    
+
     child1_loc = SourceLocation(Path("test.py"), 2, 0, 5, 0)
     child1 = StandardizedASTNode("c1", NodeType.FUNCTION, "child1", child1_loc)
-    
+
     child2_loc = SourceLocation(Path("test.py"), 6, 0, 10, 0)
     child2 = StandardizedASTNode("c2", NodeType.FUNCTION, "child2", child2_loc)
-    
+
     root.add_child(child1)
     root.add_child(child2)
-    
+
     nodes = list(root.walk())
     assert len(nodes) == 3
     assert nodes[0] == root
@@ -427,28 +427,28 @@ from collections import defaultdict
 
 class DependencyGraph:
     """Directed graph for dependency analysis and cycle detection."""
-    
+
     def __init__(self):
         self.nodes: Set[str] = set()
         self.edges: Dict[str, Set[str]] = defaultdict(set)
-    
+
     def add_node(self, node_id: str) -> None:
         """Add node to graph."""
         self.nodes.add(node_id)
-    
+
     def add_edge(self, source: str, target: str) -> None:
         """Add directed edge: source → target."""
         self.nodes.add(source)
         self.nodes.add(target)
         self.edges[source].add(target)
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Detect all cycles using Tarjan's algorithm.
-        
+
         Returns:
             List of cycles, where each cycle is a list of node IDs
             forming a strongly connected component (cycle) in the graph.
-        
+
         Time Complexity: O(V + E) where V = nodes, E = edges
         Space Complexity: O(V)
         """
@@ -458,7 +458,7 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id: str):
             """Recursive SCC detection for single node."""
             index[node_id] = index_counter[0]
@@ -466,7 +466,7 @@ class DependencyGraph:
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             # Process successors
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
@@ -476,7 +476,7 @@ class DependencyGraph:
                 elif on_stack.get(target_id, False):
                     # Successor on stack = back edge (cycle indicator)
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             # If node is a root node of SCC, pop the stack
             if lowlinks[node_id] == index[node_id]:
                 scc = []
@@ -486,60 +486,60 @@ class DependencyGraph:
                     scc.append(w)
                     if w == node_id:
                         break
-                
+
                 # Only record actual cycles (SCC size > 1)
                 if len(scc) > 1:
                     sccs.append(scc)
-        
+
         # Find SCCs for all nodes
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
-    
+
     def topological_sort(self) -> List[str]:
         """Topological sort of DAG (fails if cycles exist).
-        
+
         Returns:
             List of nodes in topological order
-        
+
         Raises:
             ValueError: If graph contains cycles
         """
         cycles = self.detect_cycles()
         if cycles:
             raise ValueError(f"Graph has cycles: {cycles}")
-        
+
         visited = set()
         stack = []
-        
+
         def dfs(node_id: str):
             visited.add(node_id)
             for target in self.edges.get(node_id, set()):
                 if target not in visited:
                     dfs(target)
             stack.append(node_id)
-        
+
         for node_id in self.nodes:
             if node_id not in visited:
                 dfs(node_id)
-        
+
         return stack[::-1]
-    
+
     def get_transitive_deps(self, node_id: str) -> Set[str]:
         """Get all transitive dependencies of a node."""
         visited = set()
         stack = [node_id]
-        
+
         while stack:
             current = stack.pop()
             if current in visited:
                 continue
-            
+
             visited.add(current)
             stack.extend(self.edges.get(current, set()))
-        
+
         return visited - {node_id}
 ```text
 
@@ -550,7 +550,7 @@ def test_simple_cycle():
     graph = DependencyGraph()
     graph.add_edge("A", "B")
     graph.add_edge("B", "A")
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B"}
@@ -562,7 +562,7 @@ def test_complex_cycle():
     graph.add_edge("B", "C")
     graph.add_edge("C", "D")
     graph.add_edge("D", "A")
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C", "D"}
@@ -572,7 +572,7 @@ def test_no_cycles():
     graph = DependencyGraph()
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 0
 
@@ -582,7 +582,7 @@ def test_topological_sort():
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
     graph.add_edge("A", "C")
-    
+
     order = graph.topological_sort()
     assert order.index("A") < order.index("B")
     assert order.index("B") < order.index("C")
@@ -608,13 +608,13 @@ import statistics
 @dataclass
 class CodeMetrics:
     """Aggregated code quality metrics for a code entity."""
-    
+
     cyclomatic_complexity: int
     cognitive_complexity: float
     lines_of_code: int
     comment_lines: int
     maintainability_index: float
-    
+
     @property
     def quality_tier(self) -> str:
         """Compute quality grade (A-F) from maintainability index."""
@@ -628,7 +628,7 @@ class CodeMetrics:
             return "D"
         else:
             return "F"
-    
+
     def to_dict(self) -> Dict:
         """Serialize to dictionary."""
         return {
@@ -643,26 +643,26 @@ class CodeMetrics:
 
 class MetricsAggregator:
     """Aggregate and correlate metrics from multiple sources."""
-    
+
     def __init__(self):
         self.metrics: Dict[str, CodeMetrics] = {}
-    
+
     def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
         """Store metrics for an entity."""
         self.metrics[entity_id] = metrics
-    
+
     def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
         """Aggregate multiple metrics into summary.
-        
+
         Args:
             metrics_list: List of CodeMetrics objects
-        
+
         Returns:
             Aggregated CodeMetrics
         """
         if not metrics_list:
             return CodeMetrics(0, 0.0, 0, 0, 100.0)
-        
+
         return CodeMetrics(
             cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
             cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
@@ -672,45 +672,45 @@ class MetricsAggregator:
                 m.maintainability_index for m in metrics_list
             ),
         )
-    
+
     def correlate_complexity_coverage(
         self,
         complexity_metrics: List[float],
         coverage_metrics: List[float],
     ) -> float:
         """Compute correlation between complexity and test coverage.
-        
+
         Returns:
             Pearson correlation coefficient (-1.0 to 1.0)
         """
         if len(complexity_metrics) < 2:
             return 0.0
-        
+
         mean_cc = statistics.mean(complexity_metrics)
         mean_cov = statistics.mean(coverage_metrics)
-        
+
         numerator = sum(
             (c - mean_cc) * (v - mean_cov)
             for c, v in zip(complexity_metrics, coverage_metrics)
         )
-        
+
         denom_cc = (sum((c - mean_cc) ** 2 for c in complexity_metrics)) ** 0.5
         denom_cov = (sum((c - mean_cov) ** 2 for c in coverage_metrics)) ** 0.5
-        
+
         if denom_cc * denom_cov == 0:
             return 0.0
-        
+
         return numerator / (denom_cc * denom_cov)
-    
+
     def summary(self) -> Dict:
         """Get summary statistics of all metrics."""
         if not self.metrics:
             return {}
-        
+
         ccs = [m.cyclomatic_complexity for m in self.metrics.values()]
         locs = [m.lines_of_code for m in self.metrics.values()]
         mis = [m.maintainability_index for m in self.metrics.values()]
-        
+
         return {
             "total_entities": len(self.metrics),
             "total_lines_of_code": sum(locs),
@@ -726,10 +726,10 @@ def test_metrics_aggregation():
     """Test basic metrics aggregation."""
     m1 = CodeMetrics(5, 3.0, 100, 10, 80.0)
     m2 = CodeMetrics(3, 2.0, 50, 5, 90.0)
-    
+
     agg = MetricsAggregator()
     result = agg.aggregate([m1, m2])
-    
+
     assert result.cyclomatic_complexity == 8
     assert result.lines_of_code == 150
     assert result.maintainability_index == 85.0
@@ -739,7 +739,7 @@ def test_quality_tier():
     m_a = CodeMetrics(5, 3.0, 100, 10, 90.0)
     m_b = CodeMetrics(10, 5.0, 200, 20, 75.0)
     m_f = CodeMetrics(20, 15.0, 500, 50, 30.0)
-    
+
     assert m_a.quality_tier == "A"
     assert m_b.quality_tier == "B"
     assert m_f.quality_tier == "F"
@@ -1004,14 +1004,14 @@ def cli():
 def analyze(path: str, output: Optional[str], format: str):
     """Analyze AST for a file or directory."""
     path_obj = Path(path)
-    
+
     if path_obj.is_file():
         click.echo(f"Analyzing file: {path_obj}")
         # TODO: Implement file analysis
     elif path_obj.is_dir():
         click.echo(f"Analyzing directory: {path_obj}")
         # TODO: Implement directory analysis
-    
+
     click.echo("✓ Analysis complete")
 
 
@@ -1022,12 +1022,12 @@ def audit(path: str, output: Optional[str]):
     """Run full codebase audit."""
     path_obj = Path(path)
     output_file = Path(output or "audit_report.html")
-    
+
     click.echo(f"Auditing codebase: {path_obj}")
     click.echo(f"Output: {output_file}")
-    
+
     # TODO: Implement full audit
-    
+
     click.echo(f"✓ Audit complete: {output_file}")
 
 
@@ -1039,9 +1039,9 @@ def diff(commit1: str, commit2: str, metric: str):
     """Compare AST metrics between two commits."""
     click.echo(f"Comparing {commit1}..{commit2}")
     click.echo(f"Metric: {metric}")
-    
+
     # TODO: Implement commit diff
-    
+
     click.echo("✓ Diff complete")
 
 

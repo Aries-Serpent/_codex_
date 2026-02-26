@@ -13,11 +13,11 @@ This directory contains archive packages (.zip, .tar.gz) that have been consolid
 - `audio_cleaner_beta_v1.zip` - Legacy audio cleaner tool (Beta v1)
   - **Original**: `misc/audio_cleaner_beta_v1.zip`
   - **Status**: Deprecated, replaced by current implementation
-  
+
 - `cognitivecodex-main.zip` - Legacy cognitive codex application
   - **Original**: `misc/cognitivecodex-main.zip`
   - **Status**: Deprecated, functionality integrated into main codebase
-  
+
 - `implement_dependency.zip` - Old dependency implementation archive
   - **Original**: `docs/plans/implement_dependency.zip`
   - **Status**: Completed implementation, archive for reference only

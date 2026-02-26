@@ -198,19 +198,19 @@ alerting:
 ```yaml
 monitoring:
   # ... existing sections ...
-  
+
   metrics:
     enabled: true
     export_format: ["json", "prometheus"]
     retention_days: 90
     dashboard_refresh_interval: 300  # seconds
-  
+
   performance:
     enabled: true
     baseline_calculation: "rolling_30_day"
     regression_threshold: 1.5  # 50% slower = regression
     tracking_granularity: "per_job"  # or "per_workflow"
-  
+
   alerting:
     channels: ["github_issues", "workflow_summary"]
     thresholds:

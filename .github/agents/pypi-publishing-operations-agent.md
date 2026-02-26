@@ -81,19 +81,19 @@ grep -A5 "environment:" .github/workflows/pypi-publish.yml
 
 **Setup Assistance**:
 ```
-@copilot Use the PyPI Publishing Operations Agent to guide me through 
+@copilot Use the PyPI Publishing Operations Agent to guide me through
 setting up trusted publishing for the codex-ml package
 ```
 
 **Troubleshooting**:
 ```
-@copilot Use the PyPI Publishing Operations Agent to diagnose why the 
+@copilot Use the PyPI Publishing Operations Agent to diagnose why the
 pypi-publish workflow failed with "trusted publishing exchange failure"
 ```
 
 **Validation**:
 ```
-@copilot Use the PyPI Publishing Operations Agent to verify my package 
+@copilot Use the PyPI Publishing Operations Agent to verify my package
 is ready for upload to PyPI
 ```
 
@@ -109,30 +109,30 @@ graph TD
     B -->|Troubleshoot| D[Analyze Error Messages]
     B -->|Validate| E[Check Package & Config]
     B -->|Maintain| F[Update Documentation]
-    
+
     C --> C1[Phase 1: Build Package]
     C1 --> C2[Phase 2: Upload to PyPI]
     C2 --> C3[Phase 3: Configure Trusted Publisher]
     C3 --> C4[Phase 4: Test & Verify]
     C4 --> G[Success]
-    
+
     D --> D1[Check Workflow Logs]
     D1 --> D2[Verify PyPI Config]
     D2 --> D3[Compare Environment Names]
     D3 --> D4[Provide Fix Steps]
     D4 --> G
-    
+
     E --> E1[Validate pyproject.toml]
     E1 --> E2[Check Distribution Files]
     E2 --> E3[Verify Dependencies]
     E3 --> E4[Test Build]
     E4 --> G
-    
+
     F --> F1[Review Current Docs]
     F1 --> F2[Update Examples]
     F2 --> F3[Fix Broken Links]
     F3 --> G
-    
+
     G[Task Complete]
 ```
 
@@ -143,29 +143,29 @@ graph LR
         A1[Code Changes] --> A2[Version Bump]
         A2 --> A3[Create Release]
     end
-    
+
     subgraph "GitHub Actions - OIDC"
         B1[Release Event] --> B2[Build Job]
         B2 --> B3[Request OIDC Token]
         B3 --> B4[Publish Job]
         B4 --> B5[Environment: pypi]
     end
-    
+
     subgraph "PyPI Trusted Publishing"
         C1[Verify OIDC Token] --> C2[Check Publisher Config]
         C2 --> C3[Validate Package]
         C3 --> C4[Upload to PyPI]
     end
-    
+
     subgraph "Verification"
         D1[Package Available] --> D2[Test Installation]
         D2 --> D3[Import Validation]
     end
-    
+
     A3 --> B1
     B5 --> C1
     C4 --> D1
-    
+
     style B3 fill:#90EE90
     style B5 fill:#90EE90
     style C1 fill:#87CEEB
@@ -180,7 +180,7 @@ sequenceDiagram
     participant P as PyPI.org
     participant G as GitHub Actions
     participant PK as PyPI Package Registry
-    
+
     Note over H,PK: Phase 1: Manual Project Creation
     H->>L: Build package locally
     L->>L: python -m build
@@ -189,13 +189,13 @@ sequenceDiagram
     H->>L: twine upload (with token)
     L->>PK: Upload codex-ml v0.1.0
     PK-->>H: Project created ✓
-    
+
     Note over H,PK: Phase 2: Configure Trusted Publishing
     H->>P: Navigate to project settings
     H->>P: Add trusted publisher
     H->>P: Configure: Aries-Serpent/_codex_
     P-->>H: Publisher added ✓
-    
+
     Note over H,PK: Phase 3: Test Automation
     H->>G: Trigger workflow_dispatch
     G->>G: Build distribution
@@ -203,7 +203,7 @@ sequenceDiagram
     P->>G: Validate and issue token
     G->>PK: Upload package (OIDC auth)
     PK-->>H: Success ✓
-    
+
     Note over H,PK: Phase 4: Security Cleanup
     H->>P: Revoke API token
     P-->>H: Token revoked ✓
@@ -214,30 +214,30 @@ sequenceDiagram
 ```mermaid
 graph TD
     E1[Workflow Failed] --> E2{Error Type?}
-    
+
     E2 -->|400 Bad Request| E3[Non-user identity error]
     E3 --> E4[Check: Project exists?]
     E4 -->|No| E5[Execute Phase 1:<br/>Manual project creation]
     E4 -->|Yes| E6[Check trusted publisher config]
-    
+
     E2 -->|401/403| E7[Authentication error]
     E7 --> E8[Verify OIDC permissions]
     E8 --> E9[Check: id-token: write?]
     E9 -->|No| E10[Add to workflow permissions]
     E9 -->|Yes| E11[Verify trusted publisher]
-    
+
     E2 -->|Publisher mismatch| E12[Config mismatch]
     E12 --> E13[Compare workflow vs PyPI]
     E13 --> E14[Check environment name]
     E14 --> E15[Check workflow filename]
     E15 --> E16[Check owner/repo]
-    
+
     E5 --> E17[Re-run workflow]
     E10 --> E17
     E11 --> E17
     E16 --> E17
     E17 --> E18[Success ✓]
-    
+
     style E5 fill:#FFB6C1
     style E10 fill:#FFB6C1
     style E16 fill:#FFB6C1
@@ -269,7 +269,7 @@ grep -A2 "environment:" .github/workflows/pypi-publish.yml
 
 #### Issue 3: "Permission denied"
 **Cause**: Trusted publisher not configured or wrong PyPI account  
-**Solution**: 
+**Solution**:
 1. Verify PyPI project ownership
 2. Re-add trusted publisher with correct credentials
 3. Ensure environment name matches

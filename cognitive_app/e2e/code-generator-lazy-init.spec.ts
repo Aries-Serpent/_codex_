@@ -1,15 +1,15 @@
 /**
  * End-to-End Test Spec: CodeGenerator Lazy Initialization
- * 
+ *
  * Comprehensive E2E tests for PR #2705 lazy initialization improvements.
  * Uses Playwright for full browser automation and real user interaction testing.
- * 
+ *
  * Tests validate:
  * - Test 2: No API Key scenario (error states)
  * - Test 3: With API Key scenario (connection flow)
  * - Test 4: Mock Fallback scenario (graceful degradation)
  * - Test 5: Environment variable configuration (timing)
- * 
+ *
  * @requires Playwright ^1.40.0
  * @requires cognitive_app dev server running on localhost:5173
  */
@@ -41,7 +41,7 @@ async function getAPIStatus(page: Page) {
 async function getAPIStatusColor(page: Page) {
   const statusDot = page.locator('[class*="bg-"][class*="500"]').first();
   const classes = await statusDot.getAttribute('class');
-  
+
   if (classes?.includes('bg-green-500')) return 'green';
   if (classes?.includes('bg-red-500')) return 'red';
   if (classes?.includes('bg-yellow-500')) return 'yellow';
@@ -67,7 +67,7 @@ async function waitForToast(page: Page, text: string, timeout = 5000) {
  */
 
 test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
-  
+
   test.beforeEach(async ({ page }) => {
     // Clear any existing storage
     await page.context().clearCookies();
@@ -76,7 +76,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
   /**
    * Test 2: Lazy Initialization - No API Key
-   * 
+   *
    * Validates complete user flow when API key is missing:
    * ✅ Error message displayed in UI
    * ✅ Red "Error" status indicator visible
@@ -84,7 +84,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * ✅ Helpful error message guides user
    */
   test.describe('Test 2: No API Key Scenario', () => {
-    
+
     test('should display error state when API key is missing', async ({ page }) => {
       // Arrange: Navigate without API key in environment
       await page.addInitScript(() => {
@@ -96,7 +96,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Assert: Error message appears
       await expect(page.getByText(/Missing VITE_CODEX_KEY environment variable/i)).toBeVisible();
-      
+
       // Assert: Error description provides guidance
       await expect(page.getByText(/Please configure your API key/i)).toBeVisible();
     });
@@ -135,7 +135,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
       await generateButton.click({ force: true }).catch(() => {
         // Expected to fail - button is disabled
       });
-      
+
       // Assert: No code generation occurs
       await expect(page.getByText(/Generated Code/i)).not.toBeVisible();
     });
@@ -161,7 +161,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
   /**
    * Test 3: Lazy Initialization - With API Key
-   * 
+   *
    * Validates complete connection flow when API key is present:
    * ✅ Initial "Checking..." state with yellow indicator
    * ✅ Automatic status check on mount
@@ -170,7 +170,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * ✅ Periodic status rechecks (every 30 seconds)
    */
   test.describe('Test 3: With API Key Scenario', () => {
-    
+
     test('should show checking state initially', async ({ page }) => {
       // Arrange: Set valid API key
       await page.addInitScript((apiKey) => {
@@ -273,7 +273,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
   /**
    * Test 4: Mock Fallback Scenario
-   * 
+   *
    * Validates graceful degradation when API fails:
    * ✅ Invalid API key triggers fallback
    * ✅ Mock client activates automatically
@@ -282,7 +282,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * ✅ User experience remains smooth
    */
   test.describe('Test 4: Mock Fallback Scenario', () => {
-    
+
     test('should accept valid prompt input (10+ characters)', async ({ page }) => {
       await page.addInitScript((apiKey) => {
         (window as any).import.meta.env.VITE_CODEX_KEY = apiKey;
@@ -350,7 +350,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Enter valid prompt
       await enterPrompt(page, 'Create a test function with type hints');
-      
+
       // Click generate
       await clickGenerate(page);
 
@@ -359,7 +359,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Assert: Mock-generated code appears
       await expect(page.getByText(/Generated Code/i)).toBeVisible({ timeout: 5000 });
-      
+
       // Assert: Some code content is visible
       const codeBlock = page.locator('pre, code').first();
       await expect(codeBlock).toBeVisible();
@@ -452,7 +452,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
   /**
    * Test 5: Environment Variable Configuration
-   * 
+   *
    * Validates cascade timing configuration:
    * ✅ Component renders with various VITE_STAGE_EXECUTION_TIME_MS values
    * ✅ Default 800ms behavior
@@ -460,7 +460,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * ✅ Invalid values fall back to default
    */
   test.describe('Test 5: Cascade Timing Configuration', () => {
-    
+
     test('should render with default timing (800ms)', async ({ page }) => {
       await page.addInitScript(() => {
         delete (window as any).import.meta.env.VITE_STAGE_EXECUTION_TIME_MS;
@@ -483,7 +483,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Assert: Component loads and functions normally
       await expect(page.getByText(/Code Generation/i)).toBeVisible();
-      
+
       // Note: Actual timing validation would require cascade component interaction
     });
 
@@ -550,7 +550,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * Additional E2E Tests: Real User Workflows
    */
   test.describe('Real User Workflow Tests', () => {
-    
+
     test('complete workflow: enter prompt, generate, copy code', async ({ page, context }) => {
       await context.route('**/generate', route => {
         route.fulfill({ status: 500 }); // Force mock fallback
@@ -622,9 +622,9 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Try short prompt
       await enterPrompt(page, 'Test');
-      
+
       const generateButton = page.getByRole('button', { name: /Generate Code/i });
-      
+
       // Button should be disabled with short prompt
       await expect(generateButton).toBeDisabled();
 
@@ -644,7 +644,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
    * Accessibility Tests
    */
   test.describe('Accessibility Validation', () => {
-    
+
     test('should have proper ARIA labels and roles', async ({ page }) => {
       await page.addInitScript(() => {
         (window as any).import.meta.env.VITE_CODEX_KEY = 'test-key';
@@ -671,7 +671,7 @@ test.describe('E2E: CodeGenerator Lazy Initialization (PR #2705)', () => {
 
       // Tab to textarea
       await page.keyboard.press('Tab');
-      
+
       // Type in textarea
       await page.keyboard.type('Generate a test function');
 

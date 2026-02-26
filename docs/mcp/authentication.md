@@ -24,12 +24,12 @@ sequenceDiagram
     participant MCP Server
     participant Auth Validator
     participant Secrets Store
-    
+
     Client->>MCP Server: Request + X-MCP-API-Key header
     MCP Server->>Auth Validator: validate_api_key(key)
     Auth Validator->>Secrets Store: Check key validity
     Secrets Store-->>Auth Validator: Valid/Invalid
-    
+
     alt Valid Key
         Auth Validator-->>MCP Server: Authenticated
         MCP Server-->>Client: 200 OK + Response
@@ -59,21 +59,21 @@ async def validate_api_key(
     # Offline mode bypass
     if os.getenv("MCP_OFFLINE", "false").lower() == "true":
         return "offline-bypass"
-    
+
     # Extract key from preferred header
     api_key = x_mcp_api_key
-    
+
     # Fallback to Authorization: Bearer
     if not api_key and authorization:
         if authorization.startswith("Bearer "):
             api_key = authorization[7:]
-    
+
     if not api_key:
         raise HTTPException(
             status_code=401,
             detail="Missing API key. Provide X-MCP-API-Key header or Authorization: Bearer token"
         )
-    
+
     # Validate against configured key
     expected_key = os.getenv("MCP_API_KEY", "dev-key")
     if api_key != expected_key:
@@ -81,7 +81,7 @@ async def validate_api_key(
             status_code=401,
             detail="Invalid API key"
         )
-    
+
     return api_key
 
 # Usage in endpoint
@@ -105,11 +105,11 @@ async function validateApiKey(request, env) {
   if (env.MCP_OFFLINE === 'true') {
     return { valid: true, key: 'offline-bypass' };
   }
-  
+
   // Extract API key from headers
-  const apiKey = request.headers.get('X-MCP-API-Key') || 
+  const apiKey = request.headers.get('X-MCP-API-Key') ||
                  request.headers.get('Authorization')?.replace('Bearer ', '');
-  
+
   if (!apiKey) {
     return {
       valid: false,
@@ -119,7 +119,7 @@ async function validateApiKey(request, env) {
       )
     };
   }
-  
+
   // Validate against environment secret
   if (apiKey !== env.MCP_API_KEY) {
     return {
@@ -130,7 +130,7 @@ async function validateApiKey(request, env) {
       )
     };
   }
-  
+
   return { valid: true, key: apiKey };
 }
 
@@ -141,7 +141,7 @@ export default {
     if (!auth.valid) {
       return auth.error;
     }
-    
+
     // Authenticated request processing
     return new Response(JSON.stringify({ result: 'success' }), {
       headers: { 'Content-Type': 'application/json' }
@@ -218,7 +218,7 @@ def validate_api_key_with_rotation(api_key: str) -> bool:
     """Support both current and previous key during rotation."""
     current_key = os.getenv("MCP_API_KEY")
     previous_key = os.getenv("MCP_API_KEY_PREVIOUS")  # Set during rotation
-    
+
     return api_key in [current_key, previous_key] if previous_key else api_key == current_key
 ```
 

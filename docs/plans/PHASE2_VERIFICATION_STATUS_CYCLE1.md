@@ -28,7 +28,7 @@ Fixed all 17 tautological assertions identified in code review:
 - Line 184: Added assertion message for spatial_reason
 
 #### Batch 8 (test_phase2_deep_coverage_batch8.py) - 7 fixes
-- Line 39: `assert workflow is not None` 
+- Line 39: `assert workflow is not None`
 - Line 58: `assert result is not None`
 - Line 88: `assert status is not None`
 - Line 120: `isinstance(step, (dict, type(None)))`
@@ -254,12 +254,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install pytest pytest-cov numpy
           pip install -e .
-      
+
       - name: Run Phase 2 tests
         run: |
           pytest tests/agents/test_phase2_deep_coverage_batch*.py \
@@ -268,7 +268,7 @@ jobs:
             --cov-report=json \
             --cov-report=html \
             --cov-report=term-missing
-      
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
         with:

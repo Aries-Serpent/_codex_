@@ -200,11 +200,11 @@ python3 -m cognitive_brain.experiments.exp1b_revalidation \
 1. `.github/agents/COGNITIVE_BRAIN_PHASE7_FINAL_STATUS.md`
    - Update Rayleigh metrics table: k₁ = 0.35 ✅
    - Add Phase 8.0 completion section
-   
+
 2. `PHASE_8_ROADMAP.md`
    - Mark Phase 8.0 as complete
    - Update timestamps and results
-   
+
 3. PR Description (comment with update)
    - k₁: 0.36 → 0.35 (100% target achieved)
    - Status change: ⚠️ 97% → ✅ 100%

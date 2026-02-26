@@ -299,12 +299,12 @@ except ImportError:
 
 class MLflowTracker:
     """MLflow experiment tracker with graceful degradation."""
-    
+
     def __init__(self, experiment_name: str, tracking_uri: Optional[str] = None):
         self.experiment_name = experiment_name
         self.tracking_uri = tracking_uri or "./mlruns"
         self.active = False
-        
+
         if MLFLOW_AVAILABLE:
             try:
                 mlflow.set_tracking_uri(self.tracking_uri)
@@ -313,7 +313,7 @@ class MLflowTracker:
                 logger.info(f"MLflow tracking enabled: {self.tracking_uri}")
             except Exception as e:
                 logger.warning(f"MLflow init failed: {e}. Continuing without MLflow.")
-        
+
     def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None):
         """Log metrics to MLflow."""
         if self.active:
@@ -321,7 +321,7 @@ class MLflowTracker:
                 mlflow.log_metrics(metrics, step=step)
             except Exception as e:
                 logger.warning(f"MLflow log failed: {e}")
-    
+
     def log_params(self, params: Dict[str, Any]):
         """Log parameters to MLflow."""
         if self.active:

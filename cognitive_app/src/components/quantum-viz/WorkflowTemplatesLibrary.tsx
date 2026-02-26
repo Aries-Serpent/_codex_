@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  BookOpen, 
-  MagnifyingGlass, 
-  Package, 
-  Star, 
-  TrendUp, 
-  Lightning, 
+import {
+  BookOpen,
+  MagnifyingGlass,
+  Package,
+  Star,
+  TrendUp,
+  Lightning,
   Download,
   CheckCircle,
   ArrowRight,
@@ -341,13 +341,13 @@ export function WorkflowTemplatesLibrary() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const filteredBundles = TEMPLATE_BUNDLES.filter(bundle => {
-    const matchesSearch = 
+    const matchesSearch =
       bundle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bundle.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bundle.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     const matchesCategory = selectedCategory === 'all' || bundle.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   }).sort((a, b) => b.popularity - a.popularity);
 
@@ -390,9 +390,9 @@ export function WorkflowTemplatesLibrary() {
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
-            <MagnifyingGlass 
-              weight="bold" 
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" 
+            <MagnifyingGlass
+              weight="bold"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
             />
             <Input
               placeholder="Search templates by name, description, or tags..."
@@ -453,8 +453,8 @@ export function WorkflowTemplatesLibrary() {
                               <div>
                                 <h3 className="font-semibold text-lg">{bundle.name}</h3>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <Badge 
-                                    variant="outline" 
+                                  <Badge
+                                    variant="outline"
                                     className={`text-xs ${COMPLEXITY_COLORS[bundle.complexity]}`}
                                   >
                                     {bundle.complexity}
@@ -479,7 +479,7 @@ export function WorkflowTemplatesLibrary() {
                                 {bundle.tokens.length} tokens
                               </Badge>
                               <div className="h-1 flex-1 bg-muted rounded-full overflow-hidden">
-                                <div 
+                                <div
                                   className={`h-full bg-gradient-to-r ${categoryInfo.color}`}
                                   style={{ width: `${bundle.popularity}%` }}
                                 />
@@ -540,8 +540,8 @@ export function WorkflowTemplatesLibrary() {
                   <div>
                     <div className="flex items-center gap-2">
                       {selectedBundle.name}
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className={`text-xs ${COMPLEXITY_COLORS[selectedBundle.complexity]}`}
                       >
                         {selectedBundle.complexity}
@@ -603,7 +603,7 @@ export function WorkflowTemplatesLibrary() {
                                 <p className="text-sm text-muted-foreground mb-3">
                                   {token.description}
                                 </p>
-                                
+
                                 <div className="space-y-2">
                                   <div>
                                     <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">

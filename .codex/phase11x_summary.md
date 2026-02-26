@@ -31,7 +31,7 @@ Phase 11.X focused on establishing test pattern governance, continuous quality g
    - Detects mock exhaustion patterns
    - Validates JSON serialization
    - Runs on all test files
-   
+
 2. Added `config-validator` hook to `.pre-commit-config.yaml`
    - Validates Hydra config existence
    - Checks schema compliance

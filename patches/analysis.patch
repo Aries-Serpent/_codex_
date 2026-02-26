@@ -30,12 +30,12 @@ index 95e1fae..d3784d7 100644
 -
 -
  # codex-universal
- 
+
  `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 @@ -31,6 +24,14 @@ pip install .
  python -c "import codex; import codex.logging"
  ```
- 
+
 +## Fallback Modes & Feature Flags
 +
 +The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -103,12 +103,12 @@ index 0000000..2cafd96
 +-
 +-
 + # codex-universal
-+ 
++
 + `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
 +@@ -31,6 +24,14 @@ pip install .
 + python -c "import codex; import codex.logging"
 + ```
-+ 
++
 ++## Fallback Modes & Feature Flags
 ++
 ++The analysis utilities provide tiered parsing with safe fallbacks and optional features:
@@ -533,7 +533,7 @@ index 0000000..3e7a97e
 +                    "error_capture": {
 +                        "template": (
 +                            "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "
-+                            "encountered the following error:\n{err}\nContext: file={file}\n" 
++                            "encountered the following error:\n{err}\nContext: file={file}\n"
 +                            "What are the possible causes, and how can this be resolved while preserving intended functionality?"
 +                        )
 +                    },

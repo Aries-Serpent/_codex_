@@ -92,10 +92,10 @@ def load_config(path: str) -> dict:
     # Input validation
     if not path or not isinstance(path, str):
         raise ValueError("Config path must be a non-empty string")
-    
+
     if not Path(path).exists():
         raise FileNotFoundError(f"Config file not found: {path}")
-    
+
     config = _read_config(path)
     validate_config(config)  # Reusing existing validator
     return config

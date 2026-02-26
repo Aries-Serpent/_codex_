@@ -32,7 +32,7 @@
 def phase_3_post_merge_validation(self) -> PhaseResult:
     """
     Phase 3: Post-Merge Validation
-    
+
     Tasks:
     1. Trigger post-merge validation workflow
     2. Monitor all jobs in real-time
@@ -142,10 +142,10 @@ runs = json.loads(stdout)
 if runs:  # ← Only checks existence, not completion
     run_id = runs[0]["databaseId"]
     result.details["workflow_status"] = runs[0]["status"]  # "in_progress"
-    
+
     # Step 6: Declare success (CRITICAL BUG)
     result.status = PhaseStatus.SUCCESS  # ❌ WRONG: Workflow still running
-    
+
 # Step 7: Deployment manifest updated with false success
 self.manifest.workflow_run_id = str(run_id)
 # Manifest now shows Phase 3: SUCCESS (incorrect)
@@ -393,7 +393,7 @@ T+1d:  Incident declared (root cause: low coverage)
 def phase_3_post_merge_validation(self) -> PhaseResult:
     """
     Phase 3: Post-Merge Validation
-    
+
     Tasks:
     1. Trigger post-merge validation workflow
     2. Monitor all jobs in real-time
@@ -448,7 +448,7 @@ def phase_3_post_merge_validation(self) -> PhaseResult:
                 result.details["test_results"] = metrics.get("test_results", {})
                 result.details["coverage"] = metrics.get("coverage", {})
                 result.details["job_summaries"] = metrics.get("job_summaries", [])
-                
+
                 result.status = PhaseStatus.SUCCESS
                 self.logger.info("✓ Post-merge validation passed")
             elif workflow_result["conclusion"] in ["failure", "timed_out", "action_required"]:
@@ -481,17 +481,17 @@ def phase_3_post_merge_validation(self) -> PhaseResult:
 def _find_workflow_run(self, max_attempts: int = 6, interval: int = 10) -> Optional[str]:
     """
     Find the most recent workflow run with retries.
-    
+
     Args:
         max_attempts: Maximum number of retry attempts
         interval: Seconds between retries
-    
+
     Returns:
         Workflow run ID if found, None otherwise
     """
     for attempt in range(1, max_attempts + 1):
         self.logger.debug(f"Looking for workflow run (attempt {attempt}/{max_attempts})")
-        
+
         exit_code, stdout, stderr = self.run_command([
             "gh", "run", "list",
             "--workflow=post-merge-validation-optimized.yml",
@@ -507,10 +507,10 @@ def _find_workflow_run(self, max_attempts: int = 6, interval: int = 10) -> Optio
                     return runs[0]["databaseId"]
             except (json.JSONDecodeError, KeyError, IndexError) as e:
                 self.logger.warning(f"Failed to parse workflow run response: {e}")
-        
+
         if attempt < max_attempts:
             time.sleep(interval)
-    
+
     return None
 
 def _wait_for_workflow_completion(
@@ -521,15 +521,15 @@ def _wait_for_workflow_completion(
 ) -> Dict[str, Any]:
     """
     Wait for workflow to complete and return final state.
-    
+
     Args:
         run_id: GitHub workflow run ID
         timeout_minutes: Maximum time to wait
         poll_interval_seconds: Seconds between status checks
-    
+
     Returns:
         Dict with status, conclusion, and duration
-    
+
     Raises:
         TimeoutError: If workflow doesn't complete within timeout
     """
@@ -584,10 +584,10 @@ def _wait_for_workflow_completion(
 def _collect_workflow_metrics(self, run_id: str) -> Dict[str, Any]:
     """
     Collect test results and coverage metrics from workflow run.
-    
+
     Args:
         run_id: GitHub workflow run ID
-    
+
     Returns:
         Dict containing test results, coverage, and job summaries
     """
@@ -628,10 +628,10 @@ def _collect_workflow_metrics(self, run_id: str) -> Dict[str, Any]:
 def _get_failed_jobs(self, run_id: str) -> List[str]:
     """
     Get list of failed job names from workflow run.
-    
+
     Args:
         run_id: GitHub workflow run ID
-    
+
     Returns:
         List of failed job names
     """
@@ -764,15 +764,15 @@ python scripts/deployment_orchestrator.py --pr-number=XXXX
 def test_phase3_workflow_success():
     """Test Phase 3 correctly reports success when workflow passes."""
     orchestrator = DeploymentOrchestrator(dry_run=False)
-    
+
     # Mock workflow that completes successfully
     mock_workflow_response = {
         "status": "completed",
         "conclusion": "success"
     }
-    
+
     result = orchestrator.phase_3_post_merge_validation()
-    
+
     assert result.status == PhaseStatus.SUCCESS
     assert result.details["workflow_conclusion"] == "success"
 ```text
@@ -783,15 +783,15 @@ def test_phase3_workflow_success():
 def test_phase3_workflow_failure():
     """Test Phase 3 correctly reports failure when workflow fails."""
     orchestrator = DeploymentOrchestrator(dry_run=False)
-    
+
     # Mock workflow that completes with failure
     mock_workflow_response = {
         "status": "completed",
         "conclusion": "failure"
     }
-    
+
     result = orchestrator.phase_3_post_merge_validation()
-    
+
     # BEFORE FIX: This would be PhaseStatus.SUCCESS ❌
     # AFTER FIX: This should be PhaseStatus.FAILED ✅
     assert result.status == PhaseStatus.FAILED
@@ -805,19 +805,19 @@ def test_phase3_workflow_failure():
 def test_phase3_workflow_in_progress():
     """Test Phase 3 waits for workflow to complete."""
     orchestrator = DeploymentOrchestrator(dry_run=False)
-    
+
     # Mock workflow responses over time
     responses = [
         {"status": "in_progress", "conclusion": None},  # T+0s
         {"status": "in_progress", "conclusion": None},  # T+30s
         {"status": "completed", "conclusion": "success"}  # T+60s
     ]
-    
+
     with patch('orchestrator._wait_for_workflow_completion') as mock_wait:
         mock_wait.return_value = responses[-1]
-        
+
         result = orchestrator.phase_3_post_merge_validation()
-        
+
         # BEFORE FIX: Would declare SUCCESS at T+0s ❌
         # AFTER FIX: Waits until T+60s, then SUCCESS ✅
         assert result.status == PhaseStatus.SUCCESS
@@ -830,13 +830,13 @@ def test_phase3_workflow_in_progress():
 def test_phase3_workflow_timeout():
     """Test Phase 3 fails if workflow doesn't complete within timeout."""
     orchestrator = DeploymentOrchestrator(dry_run=False)
-    
+
     # Mock workflow that never completes
     with patch('orchestrator._wait_for_workflow_completion') as mock_wait:
         mock_wait.side_effect = TimeoutError("Workflow timed out")
-        
+
         result = orchestrator.phase_3_post_merge_validation()
-        
+
         assert result.status == PhaseStatus.FAILED
         assert "timeout" in result.details.get("error", "").lower()
 ```text

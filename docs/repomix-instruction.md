@@ -53,15 +53,15 @@ def analyze_vulnerability(
     confidence_threshold: float = 0.8
 ) -> tuple[bool, float]:
     """Analyze code for vulnerability patterns.
-    
+
     Args:
         code: Source code to analyze
         patterns: List of vulnerability patterns
         confidence_threshold: Minimum confidence for detection
-    
+
     Returns:
         Tuple of (is_vulnerable, confidence_score)
-    
+
     Raises:
         ValueError: If code is empty or patterns invalid
     """
@@ -142,7 +142,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run CodeQL
         uses: github/codeql-action/analyze@v2
         with:
@@ -210,9 +210,9 @@ tests/
 def test_fix_generator_handles_sql_injection_with_parameterized_queries():
     """Fix generator should convert string interpolation to parameterized queries."""
     vulnerable_code = 'cursor.execute(f"SELECT * FROM users WHERE id={user_id}")'
-    
+
     fix = generator.generate_fix(vulnerable_code, VulnType.SQL_INJECTION)
-    
+
     assert "execute(" in fix.fixed_code
     assert "?" in fix.fixed_code or "%s" in fix.fixed_code
     assert "f\"" not in fix.fixed_code

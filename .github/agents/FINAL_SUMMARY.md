@@ -227,7 +227,7 @@ Test Suite: 14 comprehensive tests
 ### Pattern Accuracy
 - **Current:** 78.9% (15/19 tests passing)
 - **Target:** 95%
-- **Issues:** 
+- **Issues:**
   - api_key: Catches placeholders (needs filter tuning)
   - github_token: Fails on standalone tokens (regex fix needed)
 

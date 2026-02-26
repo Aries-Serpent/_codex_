@@ -21,12 +21,12 @@
 ## 🔄 Integration Points
 
 - **Triggers**: Manual execution, scheduled audits, pre-release gates
-- **Dependencies**: 
+- **Dependencies**:
   - Static analysis tools (ruff, mypy, pylint)
   - Test coverage tools (pytest-cov)
   - Documentation tools (mkdocs)
   - Security scanners (bandit, safety)
-- **Outputs**: 
+- **Outputs**:
   - Quality audit reports (JSON, YAML, XML)
   - Evidence-based findings
   - Prioritized action items

@@ -100,18 +100,18 @@ scripts/cognitive/batch_triage_learnings.py      # Learning engine
 
 class BatchTriageLearningEngine:
     """Records and learns from batch triage outcomes"""
-    
+
     def __init__(self, kb_path: Path = Path(".codex/cognitive_brain")):
         self.kb_path = kb_path
         self.patterns_dir = kb_path / "patterns" / "ci_failures"
         self.metrics_file = Path(".codex/metrics/batch_triage_metrics.yaml")
         self.patterns_dir.mkdir(parents=True, exist_ok=True)
-    
+
     def record_triage_outcome(self, batch_id: str, outcomes: List[Dict]):
         """Store triage results in cognitive brain KB"""
         timestamp = datetime.now().isoformat()
         outcome_file = self.patterns_dir / f"batch_{batch_id}_{timestamp}.json"
-        
+
         data = {
             "batch_id": batch_id,
             "timestamp": timestamp,
@@ -120,70 +120,70 @@ class BatchTriageLearningEngine:
             "patterns_detected": self._extract_patterns_from_outcomes(outcomes),
             "success_rate": self._calculate_success_rate(outcomes)
         }
-        
+
         outcome_file.write_text(json.dumps(data, indent=2))
         self._update_metrics(data)
-    
+
     def extract_patterns(self, failures: List[FailureRecord]) -> List[Pattern]:
         """Extract recurring failure patterns using ML clustering"""
         # Use historical data to identify patterns
         historical = self._load_historical_patterns()
-        
+
         # Feature extraction
         features = self._extract_features(failures)
-        
+
         # Pattern matching with similarity scoring
         patterns = self._match_patterns(features, historical)
-        
+
         return patterns
-    
+
     def update_remediation_success_rate(self, remediation_id: str, success: bool):
         """Track which fixes work - reinforcement learning"""
         remediations_db = self.patterns_dir / "remediations.jsonl"
-        
+
         entry = {
             "remediation_id": remediation_id,
             "timestamp": datetime.now().isoformat(),
             "success": success
         }
-        
+
         # Append to JSONL for easy querying
         with open(remediations_db, 'a') as f:
             f.write(json.dumps(entry) + '\n')
-        
+
         # Update success rates in memory
         self._recalculate_remediation_scores()
-    
+
     def get_historical_context(self, failure_type: str) -> Dict:
         """Retrieve past similar failures for better context"""
         pattern_files = self.patterns_dir.glob(f"*{failure_type}*.json")
-        
+
         historical_data = []
         for pf in pattern_files:
             data = json.loads(pf.read_text())
             historical_data.append(data)
-        
+
         return {
             "total_occurrences": len(historical_data),
             "common_remediations": self._aggregate_remediations(historical_data),
             "success_rates": self._aggregate_success_rates(historical_data),
             "time_to_resolve": self._calculate_avg_resolution_time(historical_data)
         }
-    
+
     def get_best_remediation(self, failure: FailureRecord) -> Optional[str]:
         """Use historical success rates to recommend best fix"""
         context = self.get_historical_context(failure.failure_type)
-        
+
         if not context["common_remediations"]:
             return None
-        
+
         # Sort by success rate
         sorted_remed = sorted(
             context["common_remediations"],
             key=lambda x: x["success_rate"],
             reverse=True
         )
-        
+
         return sorted_remed[0]["description"] if sorted_remed else None
 ```
 
@@ -253,26 +253,26 @@ jobs:
       remediations: ${{ steps.parse.outputs.remediations }}
       low_risk_count: ${{ steps.parse.outputs.low_risk_count }}
       medium_risk_count: ${{ steps.parse.outputs.medium_risk_count }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download Triage Report
         uses: actions/download-artifact@v4
         with:
           name: batch-triage-report-${{ github.event.workflow_run.id }}
           path: /tmp/triage
-      
+
       - name: Parse Report
         id: parse
         run: |
           python .github/agents/batch-triage-agent/src/remediation_engine.py \
             parse /tmp/triage/batch_triage_report.json \
             --output /tmp/remediations.json
-          
+
           LOW_RISK=$(jq '[.[] | select(.risk=="low")] | length' /tmp/remediations.json)
           MED_RISK=$(jq '[.[] | select(.risk=="medium")] | length' /tmp/remediations.json)
-          
+
           echo "remediations=$(cat /tmp/remediations.json | jq -c)" >> $GITHUB_OUTPUT
           echo "low_risk_count=$LOW_RISK" >> $GITHUB_OUTPUT
           echo "medium_risk_count=$MED_RISK" >> $GITHUB_OUTPUT
@@ -282,10 +282,10 @@ jobs:
     needs: parse-triage-report
     if: needs.parse-triage-report.outputs.low_risk_count > 0
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Apply Automated Fixes
         run: |
           python .github/agents/batch-triage-agent/src/remediation_engine.py \
@@ -293,7 +293,7 @@ jobs:
             --remediations '${{ needs.parse-triage-report.outputs.remediations }}' \
             --risk-level low \
             --branch batch-triage-auto-fix-${{ github.run_id }}
-      
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -301,18 +301,18 @@ jobs:
           title: "🤖 Auto-fix: Low-risk CI failure remediations"
           body: |
             ## Automated Remediation
-            
+
             This PR contains automated fixes for low-risk CI failures identified by batch triage.
-            
+
             **Fixes Applied**: ${{ needs.parse-triage-report.outputs.low_risk_count }}
-            
+
             **Source**: Batch Triage Run #${{ github.event.workflow_run.id }}
-            
+
             ### Review Checklist
             - [ ] Verify each fix addresses the root cause
             - [ ] Confirm no unintended side effects
             - [ ] Check tests pass
-            
+
             /cc @mbaetiong
           labels: automated, ci-fix, batch-triage
 
@@ -321,14 +321,14 @@ jobs:
     needs: parse-triage-report
     if: needs.parse-triage-report.outputs.medium_risk_count > 0
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         fix_index: [0, 1, 2, 3, 4]  # Max 5 PRs at once
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Apply Single Fix
         run: |
           python .github/agents/batch-triage-agent/src/remediation_engine.py \
@@ -336,7 +336,7 @@ jobs:
             --remediations '${{ needs.parse-triage-report.outputs.remediations }}' \
             --index ${{ matrix.fix_index }} \
             --risk-level medium
-      
+
       - name: Create Review PR
         uses: peter-evans/create-pull-request@v5
         with:
@@ -344,22 +344,22 @@ jobs:
           title: "🔧 CI Fix: [Review Required] Medium-risk remediation"
           body: |
             ## Medium-Risk Remediation (Requires Review)
-            
+
             This PR contains a medium-risk fix that requires human review before merging.
-            
+
             **Risk Level**: Medium  
             **Confidence**: See fix details below
-            
+
             ### Approval Required
             - [ ] @mbaetiong or engineering lead must approve
-            
+
             /label needs-review ci-fix batch-triage
 
   notify-high-risk:
     name: Notify on High-Risk Issues
     needs: parse-triage-report
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Send Slack Notification
         if: env.SLACK_WEBHOOK_URL != ''
@@ -370,14 +370,14 @@ jobs:
             --channel '#eng-oncall' \
             --remediations '${{ needs.parse-triage-report.outputs.remediations }}' \
             --filter high-risk
-      
+
       - name: Create Tracking Issue
         uses: actions/github-script@v7
         with:
           script: |
             const remediations = JSON.parse('${{ needs.parse-triage-report.outputs.remediations }}');
             const highRisk = remediations.filter(r => r.risk === 'high');
-            
+
             if (highRisk.length > 0) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -437,7 +437,7 @@ batch_triage:
   metadata:
     last_updated: "2026-01-19T20:00:00Z"
     version: "1.0"
-  
+
   overall:
     total_batches_analyzed: 0
     total_failures_triaged: 0
@@ -446,19 +446,19 @@ batch_triage:
     total_remediations_suggested: 0
     total_remediations_applied: 0
     total_remediations_successful: 0
-  
+
   averages:
     avg_triage_time_seconds: 0.0
     avg_failures_per_batch: 0.0
     avg_groups_per_batch: 0.0
     avg_time_to_remediation_hours: 0.0
-  
+
   rates:
     pattern_detection_accuracy: 0.0
     remediation_success_rate: 0.0
     auto_resolution_rate: 0.0
     false_positive_rate: 0.0
-  
+
   by_severity:
     critical:
       count: 0
@@ -476,7 +476,7 @@ batch_triage:
       count: 0
       avg_resolution_time_hours: 0.0
       success_rate: 0.0
-  
+
   by_failure_type:
     test_failure:
       count: 0
@@ -490,7 +490,7 @@ batch_triage:
     lint_error:
       count: 0
       success_rate: 0.0
-  
+
   trends:
     last_7_days:
       batches: 0
@@ -500,7 +500,7 @@ batch_triage:
       batches: 0
       failures: 0
       success_rate: 0.0
-  
+
   stakeholder_satisfaction:
     avg_rating: 0.0
     total_responses: 0
@@ -664,17 +664,17 @@ data:
 ### Technical Risks:
 1. **GitHub API Rate Limits**
    - **Mitigation**: Caching, conditional requests, backoff strategy
-   
+
 2. **False Positive Patterns**
    - **Mitigation**: Confidence thresholds, human review, learning feedback
-   
+
 3. **Over-Automation**
    - **Mitigation**: Approval gates, rollback capability, audit logs
 
 ### Operational Risks:
 1. **Alert Fatigue**
    - **Mitigation**: Smart filtering, severity-based routing, digest mode
-   
+
 2. **Stale Patterns**
    - **Mitigation**: Pattern expiry (90 iterations), periodic review
 

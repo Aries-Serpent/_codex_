@@ -54,7 +54,7 @@ export class WorkflowDependencyEngine {
       ? allTokens.filter(t => token.dependencies!.includes(t.id))
       : [];
 
-    const dependents = allTokens.filter(t => 
+    const dependents = allTokens.filter(t =>
       t.dependencies?.includes(token.id)
     );
 
@@ -171,16 +171,16 @@ export class WorkflowDependencyEngine {
         case 'on_complete':
           return trigger.tokenId === completedExecution.tokenId &&
                  completedExecution.status === 'completed';
-        
+
         case 'on_failure':
           return trigger.tokenId === completedExecution.tokenId &&
                  completedExecution.status === 'failed';
-        
+
         case 'on_output':
           return trigger.tokenId === completedExecution.tokenId &&
                  trigger.outputKey &&
                  completedExecution.outputs?.[trigger.outputKey] !== undefined;
-        
+
         default:
           return false;
       }
@@ -242,7 +242,7 @@ export class WorkflowDependencyEngine {
     criticalPathLength: number;
   } {
     const chainTokens = allTokens.filter(t => chain.tokens.includes(t.id));
-    
+
     const totalStages = chainTokens.reduce((sum, t) => sum + t.stages.length, 0);
     const estimatedDuration = totalStages * 1500;
 
@@ -250,7 +250,7 @@ export class WorkflowDependencyEngine {
       chainTokens.flatMap(t => t.paradigms)
     ));
 
-    const parallelizableTokens = chainTokens.filter(t => 
+    const parallelizableTokens = chainTokens.filter(t =>
       !t.dependencies || t.dependencies.length === 0
     ).length;
 
@@ -267,7 +267,7 @@ export class WorkflowDependencyEngine {
 
   private calculateCriticalPath(tokens: WorkflowToken[]): number {
     const depths = new Map<string, number>();
-    
+
     const calculateDepth = (token: WorkflowToken): number => {
       if (depths.has(token.id)) {
         return depths.get(token.id)!;

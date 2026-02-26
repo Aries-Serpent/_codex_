@@ -24,16 +24,16 @@ I need help optimizing performance in the Codex repository.
    # Profile Python code
    python -m cProfile -o profile.stats script.py
    python -c "import pstats; p = pstats.Stats('profile.stats'); p.sort_stats('cumulative'); p.print_stats(20)"
-   
+
    # Memory profiling
    python -m memory_profiler script.py
-   
+
    # Time specific functions
    python -m timeit -s "from module import function" "function(args)"
    ```
 
 2. **Identify Bottlenecks**
-   
+
    **Common Bottlenecks:**
    - I/O operations (file, network, database)
    - Inefficient algorithms (O(n²) vs O(n log n))
@@ -51,7 +51,7 @@ I need help optimizing performance in the Codex repository.
        for j in range(len(data)):
            if data[i] == data[j]:
                # ...
-   
+
    # After: O(n) using set
    unique = set(data)
    for item in unique:
@@ -64,7 +64,7 @@ I need help optimizing performance in the Codex repository.
    result = []
    for x in data:
        result.append(x * 2 + 1)
-   
+
    # After: NumPy vectorization
    import numpy as np
    data_np = np.array(data)
@@ -74,7 +74,7 @@ I need help optimizing performance in the Codex repository.
    **Caching:**
    ```python
    from functools import lru_cache
-   
+
    @lru_cache(maxsize=128)
    def expensive_function(arg):
        # Expensive computation
@@ -86,11 +86,11 @@ I need help optimizing performance in the Codex repository.
    # Before: Synchronous
    def fetch_data(urls):
        return [requests.get(url) for url in urls]
-   
+
    # After: Async
    import asyncio
    import aiohttp
-   
+
    async def fetch_data(urls):
        async with aiohttp.ClientSession() as session:
            tasks = [session.get(url) for url in urls]
@@ -103,7 +103,7 @@ I need help optimizing performance in the Codex repository.
    for item in items:
        process(item)
        save(item)
-   
+
    # After: Batch processing
    for batch in chunks(items, batch_size=100):
        processed = [process(item) for item in batch]
@@ -117,7 +117,7 @@ I need help optimizing performance in the Codex repository.
    # Before: Loads all in memory
    def read_large_file(path):
        return [line for line in open(path)]
-   
+
    # After: Generator
    def read_large_file(path):
        for line in open(path):
@@ -130,7 +130,7 @@ I need help optimizing performance in the Codex repository.
    with open(file) as f:
        data = f.read()
    # File automatically closed
-   
+
    # Clear large variables
    del large_data
    gc.collect()
@@ -145,7 +145,7 @@ I need help optimizing performance in the Codex repository.
        batch_process,
        profile_function
    )
-   
+
    @cache_result(ttl=3600)
    @profile_function
    def expensive_audit_operation(data):
@@ -164,10 +164,10 @@ I need help optimizing performance in the Codex repository.
    ```bash
    # Before optimization
    python -m timeit -n 100 "from module import func; func()"
-   
+
    # After optimization
    python -m timeit -n 100 "from module import func_optimized; func_optimized()"
-   
+
    # Compare results
    # Ensure correctness hasn't changed
    pytest tests/test_module.py -v
@@ -178,10 +178,10 @@ I need help optimizing performance in the Codex repository.
    def optimized_function(data):
        """
        Process data efficiently using vectorization.
-       
+
        Performance: ~10x faster than previous implementation
        Memory: Reduces peak usage by 50%
-       
+
        Optimization applied: 2025-12-11
        Benchmark: 1000 items in 0.05s (was 0.5s)
        """

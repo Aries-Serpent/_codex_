@@ -44,8 +44,8 @@ cd /home/runner/work/_codex_/_codex_/cognitive_app
 // Add this at the top of test file, replacing existing mocks:
 vi.mock('@/lib/mock-api-client', () => {
   const MockClient = vi.fn().mockImplementation(() => ({
-    getStatus: vi.fn().mockImplementation(() => 
-      new Promise(resolve => 
+    getStatus: vi.fn().mockImplementation(() =>
+      new Promise(resolve =>
         setTimeout(() => resolve({ status: 'mock' }), 50) // 50ms delay
       )
     ),
@@ -71,7 +71,7 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
 # ✓ Test 4: Mock Fallback Scenario (3/3) ✅
 # ✓ Test 5: Environment Configuration (2/2) ✅
 # ✓ Component Structure Validation (3/3) ✅
-# 
+#
 # Test Files  1 passed (1)
 #      Tests  14 passed (14)
 #   Duration  ~10s
@@ -119,10 +119,10 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
    - .github/workflows/cache-cleanup.yml
    - .github/workflows/cache-management.yml
    - .github/workflows/cache-warmup.yml
-   
+
    Target:
    - .github/workflows/cache-lifecycle.yml
-   
+
    Strategy: Single workflow with job matrix for lifecycle stages
    ```
 
@@ -131,10 +131,10 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
    Merge:
    - .github/workflows/self-healing-ci.yml
    - .github/workflows/self-healing-feedback-loop.yml
-   
+
    Target:
    - .github/workflows/self-healing-system.yml
-   
+
    Strategy: Unified workflow with conditional job execution
    ```
 
@@ -143,10 +143,10 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
    Merge:
    - .github/workflows/html_visual_baseline.yml
    - .github/workflows/html_visual_regression.yml
-   
+
    Target:
    - .github/workflows/visual-testing.yml
-   
+
    Strategy: Single workflow with mode parameter (baseline/regression)
    ```
 
@@ -169,10 +169,10 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
    ```bash
    # Install safety
    pip install safety
-   
+
    # Scan dependencies
    safety check --file requirements/lock.txt --json > security-scan.json
-   
+
    # Create workflow to automate
    ```
 
@@ -204,7 +204,7 @@ npm test -- src/components/code/__tests__/CodeGenerator.lazy-init.test.tsx
    // Add to cognitive_app/src/App.tsx
    import { ErrorBoundary } from 'react-error-boundary';
    import { ErrorFallback } from './ErrorFallback';
-   
+
    <ErrorBoundary FallbackComponent={ErrorFallback}>
      <CodeGenerator />
    </ErrorBoundary>

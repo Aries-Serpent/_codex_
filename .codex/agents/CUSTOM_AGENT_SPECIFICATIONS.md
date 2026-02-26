@@ -19,34 +19,34 @@ graph TD
     subgraph "Cognitive Brain Orchestrator"
         CB[Orchestrator Agent]
     end
-    
+
     subgraph "Quality Assurance Agents"
         TCA[Test Coverage Agent]
         FTA[Flaky Test Agent]
         PMA[Performance Monitor Agent]
     end
-    
+
     subgraph "Security Agents"
         SAA[Security Audit Agent]
         CQA[CodeQL Chunk Agent]
         DVA[Dependency Vulnerability Agent]
     end
-    
+
     subgraph "Documentation Agents"
         DFA[Doc Freshness Agent]
         ADA[API Documentation Agent]
     end
-    
+
     subgraph "Infrastructure Agents"
         CIA[CI/CD Optimization Agent]
         DPA[Deployment Agent]
     end
-    
+
     CB --> TCA
     CB --> SAA
     CB --> DFA
     CB --> CIA
-    
+
     TCA --> FTA
     TCA --> PMA
     SAA --> CQA
@@ -488,15 +488,15 @@ sequenceDiagram
     participant TCA as Test Coverage Agent
     participant SAA as Security Audit Agent
     participant CIA as CI/CD Agent
-    
+
     PR->>TCA: New code submitted
     TCA->>TCA: Analyze coverage
     TCA->>PR: Coverage report
-    
+
     PR->>SAA: Security scan
     SAA->>SAA: Check vulnerabilities
     SAA->>PR: Security report
-    
+
     PR->>CIA: Run CI
     CIA->>CIA: Optimize build
     CIA->>PR: Build status

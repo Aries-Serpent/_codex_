@@ -162,7 +162,7 @@ scalability: ready_for_api_backend
 
 #### Decision Tree 1: When to Create Custom Agent
 ```
-Need specialized validation? 
+Need specialized validation?
 ├─ Yes → Is domain well-defined?
 │         ├─ Yes → Create custom agent
 │         │         ├─ Write specification
@@ -291,7 +291,7 @@ class {Language}Validator:
     def detect(self) -> bool:
         """Check if language is used."""
         return config_file.exists()
-    
+
     def validate(self):
         """Validate configuration."""
         declared = self.parse_config()

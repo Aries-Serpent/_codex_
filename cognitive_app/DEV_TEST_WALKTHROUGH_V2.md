@@ -167,7 +167,7 @@ npm test -- --coverage
 1. **Start Development Server**
    ```bash
    npm run dev
-   
+
    # Expected output:
    # VITE ready in 1234 ms
    # ➜  Local:   http://localhost:5173/
@@ -190,13 +190,13 @@ npm test -- --coverage
 4. **Test AI Code Generation**
    ```
    Prompt: "Create a FastAPI endpoint for user authentication with JWT tokens"
-   
+
    Steps:
    1. Enable AI Mode toggle
    2. Enter prompt (>10 chars required)
    3. Click "Generate Code"
    4. Wait 1-2 seconds
-   
+
    Expected Results:
    ✅ Loading indicator appears
    ✅ Toast notification: "Code generated with AI"
@@ -212,7 +212,7 @@ npm test -- --coverage
    1. Disable AI Mode toggle
    2. Enter same prompt
    3. Click "Generate Code"
-   
+
    Expected Results:
    ✅ Toast: "Code generated successfully (Demo Mode)"
    ✅ Template-based code displayed
@@ -242,7 +242,7 @@ npm test -- --coverage
    ```
    Expected Default Code:
    print("Hello from Codex AI!")
-   
+
    Verify:
    ✅ Code editor visible
    ✅ Python language badge displayed
@@ -256,7 +256,7 @@ npm test -- --coverage
    1. Leave default code as-is
    2. Click "Run" button
    3. Observe execution
-   
+
    Expected Results:
    ✅ Status changes to "Running"
    ✅ Output tab shows: "Hello from Codex AI!"
@@ -270,7 +270,7 @@ npm test -- --coverage
    Steps:
    1. Modify code: print("Testing edit functionality")
    2. Click "Run" again
-   
+
    Expected Results:
    ✅ New output displays correctly
    ✅ Resources update
@@ -282,7 +282,7 @@ npm test -- --coverage
    Steps:
    1. Enter invalid code: print(undefined_variable)
    2. Click "Run"
-   
+
    Expected Results:
    ✅ Status shows "Failed"
    ✅ Errors tab shows error message
@@ -294,7 +294,7 @@ npm test -- --coverage
    ```
    Steps:
    1. Click "Clear" button
-   
+
    Expected Results:
    ✅ Output cleared
    ✅ Errors cleared
@@ -567,7 +567,7 @@ graph LR
     C --> D[npm run build]
     D --> E[Deploy to Pages]
     E --> F[Live at URL]
-    
+
     style F fill:#90EE90
 ```
 
@@ -686,7 +686,7 @@ graph TB
     E -->|Yes| F{Performance OK?}
     F -->|No| Z
     F -->|Yes| G[✅ DEPLOY]
-    
+
     style G fill:#90EE90
     style Z fill:#FF6B6B
 ```

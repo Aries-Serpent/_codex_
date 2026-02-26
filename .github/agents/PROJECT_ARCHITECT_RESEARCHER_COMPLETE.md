@@ -327,16 +327,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Agent
         run: |
           cd .github/agents/project-architect-researcher
           pip install -r requirements.txt
-      
+
       - name: Sync to NotebookLM
         env:
           NOTEBOOKLM_API_KEY: ${{ secrets.NOTEBOOKLM_API_KEY }}
@@ -354,7 +354,7 @@ jobs:
             const fs = require('fs');
             const shareUrl = fs.readFileSync('/tmp/notebooklm/share_url.txt', 'utf8');
             const audioUrl = fs.readFileSync('/tmp/notebooklm/audio_url.txt', 'utf8');
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -589,7 +589,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -742,7 +742,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

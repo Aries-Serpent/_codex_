@@ -57,7 +57,7 @@ class MCPToolRequest(BaseModel):
     tool_name: str = Field(..., min_length=1, description="Tool identifier")
     parameters: dict = Field(default_factory=dict, description="Tool parameters")
     context: dict = Field(default_factory=dict, description="Execution context")
-    
+
     @validator('tool_name')
     def validate_tool_name(cls, v):
         if not v.isidentifier():
@@ -153,7 +153,7 @@ class MCPServerConfig(BaseModel):
     capabilities: List[MCPCapability]
     max_connections: int = Field(100, gt=0, le=1000)
     timeout_ms: Optional[int] = Field(None, gt=0)
-    
+
     class Config:
         # Enable validation on assignment
         validate_assignment = True
@@ -207,7 +207,7 @@ class RequestV1(BaseModel):
 class RequestV2(BaseModel):
     user_id: str
     session_id: Optional[str] = None  # New optional field
-    
+
     class Config:
         # Allow extra fields for forward compatibility
         extra = "allow"
@@ -261,7 +261,7 @@ print(f"Evidence files: {result['evidence_files']}")
    ```python
    # Good
    request_timestamp_ms: int
-   
+
    # Avoid
    ts: int
    ```
@@ -283,7 +283,7 @@ print(f"Evidence files: {result['evidence_files']}")
 4. **Use Enums for Fixed Values**
    ```python
    from enum import Enum
-   
+
    class Status(str, Enum):
        PENDING = "pending"
        RUNNING = "running"

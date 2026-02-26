@@ -455,7 +455,7 @@ Each iteration must have explicit rollback:
 
 **Checkpoint**: After commit tasks N.1-N.3
 **Trigger**: [Condition requiring rollback]
-**Action**: 
+**Action**:
 1. Identify last good commit (Iteration N-1 completion)
 2. Execute: `git revert [commit-sha]`
 3. Validate: Run pre-commit checkpoint tests

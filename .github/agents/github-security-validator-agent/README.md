@@ -101,7 +101,7 @@ validation:
     enabled: true
     min_retention_days: 90
     require_siem_streaming: true
-    
+
   codeql_suppressions:
     enabled: true
     max_age_days: 90
@@ -109,7 +109,7 @@ validation:
     patterns:
       - "lgtm\\[.*\\]"
       - "codeql\\[.*\\]"
-      
+
   branch_protection:
     enabled: true
     protected_branches:
@@ -121,7 +121,7 @@ validation:
       - min_approvals: 1
       - dismiss_stale_reviews: true
       - require_code_owner_reviews: true
-      
+
   secret_scanning:
     enabled: true
     check_push_protection: true
@@ -199,12 +199,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Run Security Validator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -213,13 +213,13 @@ jobs:
             --task all \
             --report json \
             --output-dir ${{ github.workspace }}/.reports
-            
+
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
           name: security-validation-results
           path: .reports/security-validator/
-          
+
       - name: Create issue for failures
         if: failure()
         uses: actions/github-script@v7
@@ -229,7 +229,7 @@ jobs:
             const report = JSON.parse(
               fs.readFileSync('.reports/security-validator/summary.json', 'utf8')
             );
-            
+
             github.rest.issues.create({
               title: '🔐 Security Validation Failures Detected',
               body: `Security validation checks have failed.\n\n**Details**: ${JSON.stringify(report, null, 2)}`,
@@ -535,7 +535,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -724,7 +724,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

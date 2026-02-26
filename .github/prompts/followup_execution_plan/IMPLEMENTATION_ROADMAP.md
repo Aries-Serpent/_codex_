@@ -47,7 +47,7 @@ This roadmap provides step-by-step GitHub Copilot prompts to implement the 4 rem
 
 **GitHub Copilot Prompt 1.1 - Base Deployment**
 ```
-@workspace I need to create Kubernetes manifests for the codex-ml inference server. 
+@workspace I need to create Kubernetes manifests for the codex-ml inference server.
 
 Context:
 - Docker image already exists (codex-ml:latest)

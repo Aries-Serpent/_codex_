@@ -174,7 +174,7 @@ class MonitoredOrchestrator(OODAOrchestrator):
     def execute(self, input_data, context=None):
         # Execute OODA loop
         result = super().execute(input_data, context)
-        
+
         # Share result with Copilot watcher
         share_context_with_copilot({
             "execution_result": {
@@ -182,7 +182,7 @@ class MonitoredOrchestrator(OODAOrchestrator):
                 "metrics": result.metrics
             }
         })
-        
+
         return result
 ```
 

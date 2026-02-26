@@ -23,10 +23,10 @@ I need help resolving merge conflicts in the Codex repository.
    ```bash
    # Check conflict status
    git status
-   
+
    # See conflict markers
    git diff
-   
+
    # View both versions
    git show :1:path/to/file  # common ancestor
    git show :2:path/to/file  # current branch (HEAD)
@@ -65,10 +65,10 @@ I need help resolving merge conflicts in the Codex repository.
    # Remove conflict markers: <<<<<<<, =======, >>>>>>>
    # Keep desired changes
    # Save file
-   
+
    # Mark as resolved
    git add path/to/file
-   
+
    # Continue merge/rebase
    git commit  # for merge
    git rebase --continue  # for rebase
@@ -78,7 +78,7 @@ I need help resolving merge conflicts in the Codex repository.
    ```bash
    # Use mergetool
    git mergetool path/to/file
-   
+
    # Choose version (with caution)
    git checkout --ours path/to/file    # keep your version
    git checkout --theirs path/to/file  # take their version
@@ -88,13 +88,13 @@ I need help resolving merge conflicts in the Codex repository.
    ```bash
    # Run linters
    ruff check path/to/file
-   
+
    # Run affected tests
    pytest path/to/related/tests -v
-   
+
    # Check syntax
    python -m py_compile path/to/file
-   
+
    # View final result
    git diff --cached path/to/file
    ```
@@ -109,7 +109,7 @@ I need help resolving merge conflicts in the Codex repository.
    =======
    from module_b import ClassB
    >>>>>>> feature
-   
+
    # Resolution: include both
    from module_a import ClassA
    from module_b import ClassB
@@ -127,7 +127,7 @@ I need help resolving merge conflicts in the Codex repository.
        validate(data)
        return enhance(transform(data))
    >>>>>>> feature
-   
+
    # Resolution: combine both enhancements
    def process(data):
        validate(data)
@@ -144,7 +144,7 @@ I need help resolving merge conflicts in the Codex repository.
    settings:
      feature_b: true
    >>>>>>> feature
-   
+
    # Resolution: include both
    settings:
      feature_a: true
@@ -155,10 +155,10 @@ I need help resolving merge conflicts in the Codex repository.
    ```bash
    # Ensure all conflicts resolved
    git status | grep -i conflict
-   
+
    # Run full test suite
    pytest tests/ -v
-   
+
    # Check for unintended changes
    git diff main..HEAD --stat
    ```

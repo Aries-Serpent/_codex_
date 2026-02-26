@@ -231,19 +231,19 @@ graph TD
     B -->|Build Validation| D[Run npm build]
     B -->|Regression| E[Compare Baselines]
     B -->|Progress Track| F[Read AAIS Docs]
-    
+
     C --> G{All Dimensions OK?}
     G -->|Yes| H[✅ Report Healthy]
     G -->|No| I[🟡 Generate Recommendations]
-    
+
     D --> J{Build Success?}
     J -->|Yes| K[✅ Verify Components]
     J -->|No| L[❌ Analyze Build Errors]
-    
+
     E --> M{Regression Detected?}
     M -->|Yes| N[❌ Root Cause Analysis]
     M -->|No| O[✅ No Issues]
-    
+
     F --> P[Calculate Gap to 97.0]
     P --> Q[Estimate Timeline]
     Q --> R[Generate Action Plan]

@@ -15,13 +15,13 @@ fix_patterns:
       fixed: |
         query = "SELECT * FROM users WHERE id = ?"
         cursor.execute(query, (user_id,))
-      
+
     javascript:
       vulnerable: |
         db.query(`SELECT * FROM users WHERE id = ${userId}`)
       fixed: |
         db.query('SELECT * FROM users WHERE id = ?', [userId])
-  
+
   xss:
     description: "Escape user input to prevent cross-site scripting"
     priority: 1
@@ -32,13 +32,13 @@ fix_patterns:
       fixed: |
         from markupsafe import escape
         return f"<div>{escape(user_input)}</div>"
-    
+
     javascript:
       vulnerable: |
         element.innerHTML = userInput
       fixed: |
         element.textContent = userInput
-  
+
   path_traversal:
     description: "Validate and sanitize file paths"
     priority: 1
@@ -53,7 +53,7 @@ fix_patterns:
         if os.path.commonpath([base_dir, file_path]) != base_dir:
             raise ValueError("Invalid path")
         open(file_path)
-  
+
   hardcoded_secret:
     description: "Use environment variables for secrets"
     priority: 1
@@ -66,7 +66,7 @@ fix_patterns:
         API_KEY = os.environ.get("API_KEY")
         if not API_KEY:
             raise ValueError("API_KEY environment variable not set")
-  
+
   command_injection:
     description: "Sanitize command inputs and use subprocess safely"
     priority: 1
@@ -78,7 +78,7 @@ fix_patterns:
         import subprocess
         import shlex
         subprocess.run(["ping", shlex.quote(host)], check=True)
-  
+
   weak_crypto:
     description: "Use strong cryptographic algorithms"
     priority: 2
@@ -90,7 +90,7 @@ fix_patterns:
       fixed: |
         import hashlib
         hash = hashlib.sha256(data).hexdigest()
-  
+
   insecure_deserialization:
     description: "Avoid pickle for untrusted data"
     priority: 1

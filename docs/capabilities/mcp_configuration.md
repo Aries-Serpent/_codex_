@@ -45,17 +45,17 @@ Manages MCP service configuration through:
 def load_config():
     # 1. Load default configuration
     config = load_defaults()
-    
+
     # 2. Load config files
     config.update(load_yaml("config.yaml"))
     config.update(load_json("mcp.json"))
-    
+
     # 3. Apply environment overrides
     config.update(load_env_vars())
-    
+
     # 4. Validate configuration
     validate_config_schema(config)
-    
+
     return config
 ```
 
@@ -170,25 +170,25 @@ from pydantic import BaseSettings, Field
 
 class MCPSettings(BaseSettings):
     """MCP Service Configuration."""
-    
+
     # Server settings
     server_host: str = Field("0.0.0.0", env="MCP_SERVER_HOST")
     server_port: int = Field(8080, env="MCP_SERVER_PORT", gt=1024, le=65535)
     workers: int = Field(4, env="MCP_WORKERS", gt=0)
-    
+
     # Database settings
     db_host: str = Field("localhost", env="MCP_DB_HOST")
     db_port: int = Field(5432, env="MCP_DB_PORT")
     db_name: str = Field("mcp_db", env="MCP_DB_NAME")
-    
+
     # Authentication
     api_key: str = Field(..., env="MCP_API_KEY")
     jwt_secret: str = Field(..., env="MCP_JWT_SECRET")
-    
+
     # Feature flags
     enable_caching: bool = Field(True, env="MCP_ENABLE_CACHING")
     enable_metrics: bool = Field(True, env="MCP_ENABLE_METRICS")
-    
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
@@ -210,11 +210,11 @@ def load_mcp_config(config_path: str = "mcp.json"):
     """Load MCP configuration with validation."""
     with open(config_path) as f:
         config = json.load(f)
-    
+
     # Validate required fields
     assert "server" in config, "Missing 'server' section"
     assert "port" in config["server"], "Missing 'server.port'"
-    
+
     return config
 
 # Usage
@@ -230,18 +230,18 @@ from typing import Any, Dict
 
 def apply_env_overrides(config: Dict[str, Any]) -> Dict[str, Any]:
     """Apply environment variable overrides to config."""
-    
+
     # Server overrides
     if "MCP_SERVER_PORT" in os.environ:
         config["server"]["port"] = int(os.environ["MCP_SERVER_PORT"])
-    
+
     if "MCP_SERVER_HOST" in os.environ:
         config["server"]["host"] = os.environ["MCP_SERVER_HOST"]
-    
+
     # Logging overrides
     if "MCP_LOG_LEVEL" in os.environ:
         config.setdefault("logging", {})["level"] = os.environ["MCP_LOG_LEVEL"]
-    
+
     return config
 
 # Usage
@@ -260,7 +260,7 @@ class ConfigReloadHandler(FileSystemEventHandler):
     def __init__(self, config_path: str, on_reload_callback):
         self.config_path = config_path
         self.callback = on_reload_callback
-    
+
     def on_modified(self, event):
         if event.src_path.endswith(self.config_path):
             print(f"Configuration changed, reloading...")
@@ -289,19 +289,19 @@ import os
 
 class ConfigManager:
     """Manages multi-environment configurations."""
-    
+
     def __init__(self):
         self.env = os.getenv("MCP_ENV", "development")
         self.config = self._load_config()
-    
+
     def _load_config(self):
         """Load environment-specific configuration."""
         base_config = self._load_json("config.base.json")
         env_config = self._load_json(f"config.{self.env}.json")
-        
+
         # Merge configurations (env overrides base)
         return {**base_config, **env_config}
-    
+
     def _load_json(self, path: str):
         """Load JSON config file."""
         try:
@@ -309,7 +309,7 @@ class ConfigManager:
                 return json.load(f)
         except FileNotFoundError:
             return {}
-    
+
     def get(self, key: str, default=None):
         """Get configuration value."""
         return self.config.get(key, default)
@@ -369,7 +369,7 @@ print(f"Config types: {result['meta']['config_types']}")
    ```python
    # Good
    api_key = os.getenv("MCP_API_KEY")
-   
+
    # Avoid
    api_key = "hardcoded-secret-key"
    ```
@@ -377,7 +377,7 @@ print(f"Config types: {result['meta']['config_types']}")
 3. **Encrypt Sensitive Configuration**
    ```python
    from cryptography.fernet import Fernet
-   
+
    def encrypt_config(config: dict, key: bytes) -> bytes:
        f = Fernet(key)
        return f.encrypt(json.dumps(config).encode())
@@ -388,7 +388,7 @@ print(f"Config types: {result['meta']['config_types']}")
 1. **Validate on Load**
    ```python
    from jsonschema import validate
-   
+
    schema = {...}  # JSON schema
    validate(instance=config, schema=schema)
    ```
@@ -396,11 +396,11 @@ print(f"Config types: {result['meta']['config_types']}")
 2. **Type Checking**
    ```python
    from pydantic import BaseModel, ValidationError
-   
+
    class Config(BaseModel):
        port: int
        host: str
-   
+
    try:
        Config(**config)
    except ValidationError as e:

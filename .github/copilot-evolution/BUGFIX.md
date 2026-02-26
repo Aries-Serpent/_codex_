@@ -28,7 +28,7 @@ The `QuantumPatternCorrelator` class was initialized with default `repo_path="."
 **Problem Chain**:
 1. Test runs from `.github/copilot-evolution/` directory
 2. `QuantumPatternCorrelator()` uses `repo_path="."` by default
-3. `Path.rglob()` searches from `.github/copilot-evolution/` 
+3. `Path.rglob()` searches from `.github/copilot-evolution/`
 4. Target files like `agents/quantum_game_theory.py` are at repository root
 5. No files found → No patterns extracted → Test fails
 
@@ -283,7 +283,7 @@ The workflow should now pass automatically on:
 - **Issue**: Failing workflow test `test_pattern_extraction`
 - **Commit**: 6674db9 (initial issue)
 - **Fix Commits**: Multiple in current branch
-- **Related Docs**: 
+- **Related Docs**:
   - `IMPLEMENTATION.md` - Implementation details
   - `README.md` - Usage guide
   - `STATUS.md` - System status

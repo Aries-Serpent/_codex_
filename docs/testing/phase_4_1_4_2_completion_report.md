@@ -54,7 +54,7 @@ Successfully completed Phase 4.1 and Phase 4.2 of the incremental branch coverag
      - Batch processing for large datasets
      - Dimension lookup with defaults
      - Cache statistics tracking
-   
+
    - Indexer module:
      - Text chunking with overlap
      - Chunk size and overlap validation
@@ -63,7 +63,7 @@ Successfully completed Phase 4.1 and Phase 4.2 of the incremental branch coverag
      - Model profile configuration
      - Embeddings persistence validation
      - Embeddings-chunks count matching
-   
+
    - Retriever module:
      - Top-K selection (default/custom)
      - Similarity threshold filtering
@@ -77,36 +77,36 @@ Successfully completed Phase 4.1 and Phase 4.2 of the incremental branch coverag
      - Callback handling (provided/none/empty)
      - Resume from checkpoint (provided/none)
      - Backend selection (functional/legacy/HF)
-   
+
    - Device Strategy:
      - CUDA availability detection
      - Multi-GPU vs single GPU detection
      - Precision modes (FP16/BF16/FP32)
      - Mixed precision availability checks
-   
+
    - Distributed Setup:
      - World size checks for distributed training
      - Backend selection (NCCL for GPU, Gloo for CPU)
      - Local rank resolution (env/default)
      - Main process vs worker identification
-   
+
    - Early Stopping:
      - Patience exceeded detection
      - Metric improvement tracking
      - Minimize vs maximize modes
-   
+
    - Curriculum Learning:
      - Phase transition detection
      - Difficulty progression
      - Data filtering (enabled/disabled)
-   
+
    - Model Loading:
      - Path resolution (local/hub)
      - Data type selection (FP32/FP16/BF16/auto)
      - Quantization (enabled/disabled)
      - Memory optimization (low CPU mem usage)
      - Cache directory handling
-   
+
    - FSDP Wrapper:
      - FSDP enable/disable
      - Sharding strategies (full/grad_op/none)

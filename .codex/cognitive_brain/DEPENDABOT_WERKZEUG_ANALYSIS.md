@@ -193,7 +193,7 @@ User or agent with GitHub Security tab access should verify the actual alert sta
 - **MLflow Security Update:** pyproject.toml line 18 (2.22.4+ includes 43+ fixes)
 - **Lock File Analysis:** uv.lock (Werkzeug not found, 1199 lines checked)
 - **Dependabot Alert:** #62 (details to be retrieved from GitHub Security)
-- **Related Commits:** 
+- **Related Commits:**
   - 97448e4 - Security fixes for clear-text logging
   - 12d4ae0 - Cognitive brain updates
 

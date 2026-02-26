@@ -249,7 +249,7 @@ Update `CHANGELOG.md` with initial release information.
    ```bash
    # Run all tests
    pytest .github/agents/existing-agent/tests/
-   
+
    # Test CLI
    python .github/agents/existing-agent/src/agent.py --help
    ```
@@ -312,13 +312,13 @@ echo "   5. Update AGENT_REGISTRY.yaml"
    ```python
    """
    Execute agent task.
-   
+
    Args:
        task: Task specification with required 'description' field
-   
+
    Returns:
        Result dictionary with 'status', 'output', and 'timestamp'
-   
+
    Raises:
        ValueError: If task specification is invalid
    """
@@ -339,7 +339,7 @@ echo "   5. Update AGENT_REGISTRY.yaml"
 4. **Logging**: Use structured logging
    ```python
    import logging
-   
+
    logger = logging.getLogger(__name__)
    logger.info(f"Executing task: {task['description']}")
    ```
@@ -429,10 +429,10 @@ def test_end_to_end(agent):
     """Test complete workflow"""
     # Setup
     task = {'description': 'integration test'}
-    
+
     # Execute
     result = agent.execute(task)
-    
+
     # Verify
     assert result['status'] == 'success'
     assert 'output' in result
@@ -447,11 +447,11 @@ Test with realistic workloads:
 def test_performance(agent):
     """Test agent can handle multiple tasks"""
     tasks = [{'description': f'task {i}'} for i in range(1000)]
-    
+
     start = time.time()
     results = [agent.execute(t) for t in tasks]
     duration = time.time() - start
-    
+
     assert duration < 60  # Should complete in under 60s
     assert all(r['status'] == 'success' for r in results)
 ```
@@ -480,7 +480,7 @@ Update cognitive brain after execution:
 ```python
 def execute(self, task: Dict) -> Dict:
     result = self._do_work(task)
-    
+
     # Update cognitive brain
     self._update_cognitive_brain({
         'agent': 'my-agent',
@@ -488,7 +488,7 @@ def execute(self, task: Dict) -> Dict:
         'outcome': result['status'],
         'timestamp': self._get_timestamp()
     })
-    
+
     return result
 ```
 
@@ -840,7 +840,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1029,7 +1029,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

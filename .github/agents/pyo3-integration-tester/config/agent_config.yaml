@@ -35,11 +35,11 @@ cognitive_brain:
     - "async_functions_detected"
     - "error_handling_coverage"
     - "scan_duration_ms"
-  
+
   alerts:
     bindings_without_tests_threshold: 5
     low_error_handling_percentage: 50
-  
+
   learning:
     store_patterns: true
     track_common_signatures: true

@@ -16,7 +16,7 @@
 - Python 3.12 and 3.12 both failing
 - Tests exist in tests/ directory but aren't being discovered/run
 
-**Root Cause**: 
+**Root Cause**:
 - Using `pytest` directly instead of `python -m pytest` caused module resolution issues
 - pytest.ini had `--timeout` args in addopts that conflicted with xdist workers
 - pytest couldn't properly discover test modules without correct Python module context
@@ -103,7 +103,7 @@ The timeout plugin interacts poorly with xdist when configured in pytest.ini:
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --strict-markers
     --timeout=300
@@ -116,7 +116,7 @@ filterwarnings =
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --strict-markers
 filterwarnings =

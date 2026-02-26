@@ -36,7 +36,7 @@ for workflow in \
     .github/workflows/auth-tests.yml \
     .github/workflows/determinism.yml \
     .github/workflows/rust_swarm_ci.yml; do
-    
+
     if [ -f "$workflow" ]; then
         # Check if file uses pytest without python -m
         if grep -E "^\s+pytest\s+tests" "$workflow" > /dev/null 2>&1; then
@@ -61,7 +61,7 @@ echo "Check 3: Timeout configuration in workflows..."
 for workflow in \
     .github/workflows/test-comprehensive.yml \
     .github/workflows/test-rag.yml; do
-    
+
     if [ -f "$workflow" ]; then
         if grep -q "\-\-timeout=300" "$workflow"; then
             echo -e "${GREEN}✅ PASS: $workflow has explicit timeout args${NC}"
@@ -78,7 +78,7 @@ echo "Check 4: xdist configuration..."
 for workflow in \
     .github/workflows/test-comprehensive.yml \
     .github/workflows/test-rag.yml; do
-    
+
     if [ -f "$workflow" ]; then
         if grep -q "\-n auto" "$workflow" && grep -q "\-\-dist=loadfile" "$workflow"; then
             echo -e "${GREEN}✅ PASS: $workflow has xdist configuration${NC}"
@@ -93,7 +93,7 @@ echo ""
 echo "Check 5: Documentation..."
 if [ -f "CI_TEST_FIXES_PR2883.md" ]; then
     echo -e "${GREEN}✅ PASS: CI_TEST_FIXES_PR2883.md exists${NC}"
-    
+
     # Check documentation completeness
     if grep -q "Issue 1" CI_TEST_FIXES_PR2883.md && \
        grep -q "Issue 2" CI_TEST_FIXES_PR2883.md && \

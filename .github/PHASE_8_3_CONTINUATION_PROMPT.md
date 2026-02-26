@@ -150,7 +150,7 @@ beta: 0.4  # Importance sampling weight (anneals to 1.0)
 
 **Integration Flow:**
 ```
-Input → Memory Retrieval (Phase 8.1) 
+Input → Memory Retrieval (Phase 8.1)
      → Multi-Agent Coordination (Phase 8.2)
      → Adaptive Learning (Phase 8.3)
      → Decision + Experience Storage

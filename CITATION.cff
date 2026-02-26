@@ -9,9 +9,9 @@ authors:
 repository-code: "https://github.com/Aries-Serpent/_codex_"
 url: "https://github.com/Aries-Serpent/_codex_"
 abstract: >
-  _codex_ is a comprehensive ML training, evaluation, and plugin framework 
+  _codex_ is a comprehensive ML training, evaluation, and plugin framework
   built with PyTorch, Hugging Face Transformers, Hydra, and MLflow. It provides
-  LoRA/QLoRA fine-tuning, distributed training with Ray, model serving, and 
+  LoRA/QLoRA fine-tuning, distributed training with Ray, model serving, and
   extensive configuration management for reproducible ML experiments.
 keywords:
   - machine-learning

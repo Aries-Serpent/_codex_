@@ -123,7 +123,7 @@ def process_advanced_features(data):
 # After (Quick Win - Option 2: Basic implementation)
 def process_advanced_features(data):
     """Process features with basic implementation.
-    
+
     TODO (P1): Add advanced processing logic
     """
     # Basic implementation
@@ -132,7 +132,7 @@ def process_advanced_features(data):
 # After (Quick Win - Option 3: Downgrade)
 def process_advanced_features(data):
     """Process features (placeholder).
-    
+
     TODO (P2): Implement advanced features when needed
     """
     logger.warning("Advanced features not yet implemented")
@@ -175,29 +175,29 @@ def validate_security_constraints(config):
 # After (Full Implementation)
 def validate_security_constraints(config):
     """Validate security constraints in configuration.
-    
+
     Args:
         config: Configuration dictionary
-        
+
     Returns:
         True if valid
-        
+
     Raises:
         ValueError: If security constraints violated
     """
     # Check authentication
     if not config.get("authentication_enabled"):
         raise ValueError("Authentication must be enabled")
-    
+
     # Check encryption
     if not config.get("encryption", {}).get("enabled"):
         raise ValueError("Encryption must be enabled")
-    
+
     # Check TLS version
     tls_version = config.get("tls_version")
     if tls_version and tls_version < "1.2":
         raise ValueError(f"TLS version {tls_version} too low (minimum 1.2)")
-    
+
     return True
 
 # Add tests
@@ -209,7 +209,7 @@ def test_validate_security_constraints():
         "tls_version": "1.3"
     }
     assert validate_security_constraints(valid_config)
-    
+
     # Test invalid configs
     with pytest.raises(ValueError):
         validate_security_constraints({"authentication_enabled": False})
@@ -277,7 +277,7 @@ bandit -r src/ training/ cli/ -ll
 1. **Breaking Changes**
    - Risk: Stub resolution breaks existing functionality
    - Mitigation: Comprehensive testing, gradual rollout
-   
+
 2. **Scope Creep**
    - Risk: Stub resolution reveals more work needed
    - Mitigation: Strict P0 focus, document future work as P1/P2

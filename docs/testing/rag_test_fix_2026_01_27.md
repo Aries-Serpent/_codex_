@@ -17,8 +17,8 @@ The RAG module tests were failing with:
 PyTorch 2.6+ introduced stricter meta tensor handling. When `SentenceTransformer` is initialized with `device="cpu"` parameter, it creates meta tensors (tensors without data) that cannot be moved using `.to()` method, causing:
 
 ```
-NotImplementedError: Cannot copy out of meta tensor; no data! 
-Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() 
+NotImplementedError: Cannot copy out of meta tensor; no data!
+Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 when moving module from meta to a different device.
 ```
 

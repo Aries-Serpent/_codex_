@@ -26,7 +26,7 @@ Unable to complete full RAG test validation due to:
 **Tests Run**: 4 of 6
 **Passed**: 2 ✅
 **Failed**: 1 ❌ (due to network/environment)
-**Skipped**: 1 
+**Skipped**: 1
 
 #### Detailed Results
 

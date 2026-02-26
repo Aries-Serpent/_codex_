@@ -56,7 +56,7 @@ All notable changes to this project will be documented in this file.
   - `src/mcp/config.py` - Configuration management with `MCPConfig`, environment variable overrides (`ITA_URL`, `ITA_API_KEY`)
   - `src/mcp/versioning.py` - Protocol version negotiation with `MCP_VERSIONS` and `negotiate_version()`
   - Enhanced `src/mcp/errors.py` with JSON-RPC error code mappings (`jsonrpc_code` attribute on all error classes)
-  
+
 - **Test Coverage**: Comprehensive MCP test suite with 200/200 tests passing (100% success rate):
   - Registry tests (19), Config tests (7), Auth tests (26), Server tests (4)
   - Protocol tests (24), Error handling tests (14), Schema validation tests (21)
@@ -69,7 +69,7 @@ All notable changes to this project will be documented in this file.
   - Changed `Principal.from_credential()` to use full 64-character SHA-256 hash instead of truncated 16 characters
   - Updated ITA app (`services/ita/app/main.py`) to use complete hash for identity verification
   - Eliminated entropy loss from 256 bits to 64 bits, restoring full cryptographic security
-  
+
 - **Naming Consistency**: Standardized `Principal` field naming across codebase:
   - Changed all `Principal(id=...)` to `Principal(principal_id=...)`
   - Updated test expectations for 64-character hash tokens
@@ -82,7 +82,7 @@ All notable changes to this project will be documented in this file.
   - Fixed all Ruff linting issues (zero linting errors)
   - Added type annotations for Mypy compliance (8/8 source files passing)
   - Removed trailing whitespace and standardized code style
-  
+
 - **ITA Integration**: Enhanced MCP error handling and rate limiting in ITA service:
   - Added `MCPError` exception handler with proper JSON responses
   - Implemented rate limiting using `MCPRateLimiter` (5 req/sec, burst 20)

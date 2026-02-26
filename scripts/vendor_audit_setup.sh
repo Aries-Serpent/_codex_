@@ -358,11 +358,11 @@ def cpu_caps()->Dict[str,Any]:
     except Exception: pass
     try:
         with open("/proc/cpuinfo",'r') as f: txt=f.read()
-        m=re.search(r'model name\s*:\s*(.+)', txt); 
+        m=re.search(r'model name\s*:\s*(.+)', txt);
         if m: caps["model"]=m.group(1).strip()
-        v=re.search(r'vendor_id\s*:\s*([^\n]+)', txt); 
+        v=re.search(r'vendor_id\s*:\s*([^\n]+)', txt);
         if v: caps["vendor"]=v.group(1).strip()
-        flags=re.search(r'flags\s*:\s*(.+)', txt); 
+        flags=re.search(r'flags\s*:\s*(.+)', txt);
         if flags: caps["flags_count"]=len(flags.group(1).split())
     except Exception: pass
     try: caps["loadavg"]= os.getloadavg()
@@ -374,7 +374,7 @@ def mem_caps()->Dict[str,Any]:
     try:
         with open("/proc/meminfo",'r') as f:
             t=f.read()
-            mt=re.search(r'MemTotal:\s+(\d+)\s+kB', t); 
+            mt=re.search(r'MemTotal:\s+(\d+)\s+kB', t);
             if mt: caps["mem_total_bytes"]=int(mt.group(1))*1024
             ma=re.search(r'MemAvailable:\s+(\d+)\s+kB', t);
             if ma: caps["mem_available_bytes"]=int(ma.group(1))*1024
@@ -532,8 +532,8 @@ def tls_info()->Dict[str,Any]:
     }
 
 def net_sysctls()->Dict[str,Any]:
-    def read_sys(p): 
-        try: 
+    def read_sys(p):
+        try:
             with open(p,'r') as f: return f.read().strip()
         except Exception: return None
     return {
@@ -816,7 +816,7 @@ def disk_bench()->Dict[str,Any]:
     finally:
         try: tmpf.unlink(missing_ok=True)
         except Exception: pass
-    def stat(vals): 
+    def stat(vals):
         return {"min": (min(vals) if vals else None), "median": (statistics.median(vals) if vals else None), "max": (max(vals) if vals else None)}
     results["write_stats"]=stat(results["write_MBps"])
     results["read_stats"]=stat(results["read_MBps"])
@@ -941,4 +941,3 @@ if [[ "${CODEX_FAIL_ON_VIOLATION}" == "1" && $VIOLATIONS -ne 0 ]]; then die "Ven
 
 log "Setup vendor audit complete. JSON: $AUDIT_JSON"
 exit 0
-

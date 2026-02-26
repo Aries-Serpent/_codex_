@@ -205,11 +205,11 @@ graph TD
     B -->|Archive| C[Move survey files]
     B -->|Configure| D[Update mkdocs.yml]
     B -->|Fix| E[Update 30 links]
-    
+
     C --> F[Phase 13.1: Enable Strict]
     D --> F
     E --> F
-    
+
     F --> G[Phase 13.2: CI Update]
     G --> H[Phase 13.3: Quality Gate]
     H --> I[✅ Strict Mode Active]

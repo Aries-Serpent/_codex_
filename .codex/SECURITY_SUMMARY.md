@@ -136,7 +136,7 @@ permissions:
 - Functionality not fully implemented
 - Safe from panic attacks but limited functionality
 
-**Mitigation**: 
+**Mitigation**:
 - Documented in code comments
 - Not claimed as production-ready
 - Safe stub prevents crashes

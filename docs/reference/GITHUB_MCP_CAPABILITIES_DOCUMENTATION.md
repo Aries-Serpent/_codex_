@@ -345,20 +345,20 @@ try:
     )
     print(f"✅ SUCCESS: Comment posted to PR #2671")
     print(f"Result: {result}")
-    
+
 except Exception as e:
     # Step 2: Show actual error with full details
     print(f"❌ ERROR: Failed to post PR comment")
     print(f"Error type: {type(e).__name__}")
     print(f"Error message: {str(e)}")
     print(f"Error details: {e.__dict__ if hasattr(e, '__dict__') else 'N/A'}")
-    
+
     # Step 3: Check API response if available
     if hasattr(e, 'response'):
         print(f"HTTP Status: {e.response.status_code}")
         print(f"Response body: {e.response.text}")
         print(f"Response headers: {e.response.headers}")
-    
+
     # Step 4: Document the actual technical limitation
     print(f"Technical limitation confirmed with evidence above")
 ```

@@ -43,19 +43,19 @@ class GitMetrics:
 
 class GitMetricsCollector:
     """Collects git metrics for files."""
-    
+
     def __init__(self, repo_path: Path):
         """Initialize with repository path."""
         pass
-    
+
     def get_file_metrics(self, file_path: Path) -> GitMetrics:
         """Get metrics for entire file."""
         pass
-    
+
     def get_range_metrics(self, file_path: Path, start_line: int, end_line: int) -> GitMetrics:
         """Get metrics for specific line range."""
         pass
-    
+
     def get_blame(self, file_path: Path) -> List[Tuple[int, str, str]]:
         """Get blame info: [(line_no, author, email), ...]"""
         pass
@@ -76,11 +76,11 @@ class GitMetricsCollector:
 ```python
 class BlameParser:
     """Parses git blame output."""
-    
+
     def parse_blame(self, blame_output: str) -> List[BlameLine]:
         """Parse git blame output."""
         pass
-    
+
     def get_top_author(self, blame_lines: List[BlameLine]) -> Tuple[str, str]:
         """Return (name, email) of top contributor."""
         pass
@@ -101,15 +101,15 @@ class BlameParser:
 ```python
 class ChurnAnalyzer:
     """Analyzes file churn."""
-    
+
     def __init__(self, repo_path: Path, days: int = 90):
         """Initialize with time window."""
         pass
-    
+
     def get_file_churn(self, file_path: Path) -> int:
         """Count commits touching file in window."""
         pass
-    
+
     def get_hotspots(self, min_churn: int = 5) -> List[Tuple[Path, int]]:
         """Find files with high churn."""
         pass

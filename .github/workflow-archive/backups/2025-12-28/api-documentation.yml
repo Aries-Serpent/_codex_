@@ -28,36 +28,36 @@ jobs:
   build:
     name: Build Documentation
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-          
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
           pip install pdoc3 mkdocs mkdocs-material
-          
+
       - name: Generate API documentation
         run: |
           mkdir -p _site/api
-          
+
           # Generate Python API docs with pdoc
           pdoc --html --output-dir _site/api \
             --force \
             --config show_source_code=True \
             --config show_type_annotations=True \
             src/codex_ml agents || echo "pdoc generation completed with warnings"
-          
+
           # Copy static documentation
           cp -r docs/api/*.md _site/api/ 2>/dev/null || true
-          
+
           # Create index page
           cat > _site/index.html << 'EOF'
           <!DOCTYPE html>
@@ -83,7 +83,7 @@ jobs:
             <div class="container">
               <h1>🐍 _codex_ API Documentation</h1>
               <p>Comprehensive API reference for the _codex_ AI/ML framework.</p>
-              
+
               <h2>📚 Documentation</h2>
               <ul>
                 <li>
@@ -102,20 +102,20 @@ jobs:
                   <div class="description">AI Agent infrastructure APIs</div>
                 </li>
               </ul>
-              
+
               <h2>🔗 Quick Links</h2>
               <ul>
                 <li><a href="https://github.com/Aries-Serpent/_codex_">GitHub Repository</a></li>
                 <li><a href="https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md">Agent Development Guide</a></li>
                 <li><a href="https://github.com/Aries-Serpent/_codex_/blob/main/docs/CONTRIBUTING.md">Contributing Guide</a></li>
               </ul>
-              
+
               <h2>📊 Status</h2>
               <p>
                 <img src="https://img.shields.io/badge/MLOps_Capabilities-71%2F71-brightgreen" alt="MLOps Status">
                 <img src="https://img.shields.io/badge/Documentation-Complete-blue" alt="Docs Status">
               </p>
-              
+
               <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px;">
                 Generated automatically from source code. Last updated: <span id="date"></span>
                 <script>document.getElementById('date').textContent = new Date().toISOString().split('T')[0];</script>
@@ -124,7 +124,7 @@ jobs:
           </body>
           </html>
           EOF
-          
+
       - name: Convert Markdown to HTML
         run: |
           # Convert API_DOCUMENTATION.md to HTML
@@ -132,12 +132,12 @@ jobs:
           python -c "
           import markdown
           from pathlib import Path
-          
+
           md_file = Path('docs/api/API_DOCUMENTATION.md')
           if md_file.exists():
               content = md_file.read_text()
               html = markdown.markdown(content, extensions=['tables', 'fenced_code'])
-              
+
               full_html = f'''<!DOCTYPE html>
           <html>
           <head>
@@ -159,11 +159,11 @@ jobs:
           {html}
           </body>
           </html>'''
-              
+
               Path('_site/api/API_DOCUMENTATION.html').write_text(full_html)
               print('Converted API documentation to HTML')
           "
-          
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -176,7 +176,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
-    
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

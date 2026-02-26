@@ -150,7 +150,7 @@ def _parse_ts(ts: str | None) -> float | None:
 class Ticket(BaseModel):
     subject: str = Field(..., min_length=1)
     priority: TicketPriority  # Enum, type-safe
-    
+
     class Config:
         extra = "forbid"  # Prevent hallucination
 ```

@@ -117,7 +117,7 @@ strict: false
 theme:
   name: material
   language: en
-  
+
   # Dark/Light mode toggle - Three-way toggle (auto/light/dark)
   palette:
     # Palette toggle for automatic mode
@@ -125,7 +125,7 @@ theme:
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
-    
+
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -134,7 +134,7 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    
+
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -143,7 +143,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-  
+
   # Enhanced features for better navigation and usability
   features:
     - navigation.instant      # XHR loading for faster page transitions
@@ -158,7 +158,7 @@ theme:
     - content.tabs.link       # Link content tabs across pages
     - content.code.copy       # Copy code button
     - content.code.annotate   # Code annotations
-  
+
   icon:
     repo: fontawesome/brands/github
     logo: material/book-open-page-variant

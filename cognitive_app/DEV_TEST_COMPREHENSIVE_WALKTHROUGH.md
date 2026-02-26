@@ -52,31 +52,31 @@ graph TB
         B --> C{API Client Factory}
         C -->|Has Key| D[CodexAPIClient]
         C -->|No Key| E[MockCodexAPIClient]
-        
+
         D --> F{API Status Check}
         F -->|Success| G[Connected State]
         F -->|Failure| H{Fallback Logic}
-        
+
         E --> I[Mock Status Check]
         I -->|Success| J[Demo Mode State]
         I -->|Failure| K[Error State]
-        
+
         H -->|Try Mock| E
         H -->|Mock Fails| K
-        
+
         B --> L[UI Rendering]
         L --> M[Status Indicators]
         L --> N[Input Validation]
         L --> O[Action Buttons]
-        
+
         G --> P[Enable Generation]
         J --> P
         K --> Q[Disable Generation]
-        
+
         P --> R[Code Generation Flow]
         R --> S[Display Results]
     end
-    
+
     style A fill:#e1f5ff
     style G fill:#d4edda
     style J fill:#fff3cd
@@ -96,7 +96,7 @@ graph LR
         A4[Error/Info Messages]
         A5[Results Display]
     end
-    
+
     subgraph "Layer 2: State Management"
         B1[API Status State]
         B2[Error State]
@@ -105,7 +105,7 @@ graph LR
         B5[Result State]
         B6[Prompt State]
     end
-    
+
     subgraph "Layer 3: Business Logic"
         C1[Client Factory]
         C2[Status Checker]
@@ -113,28 +113,28 @@ graph LR
         C4[Fallback Handler]
         C5[Validator]
     end
-    
+
     subgraph "Layer 4: External APIs"
         D1[CodexAPI]
         D2[MockAPI]
     end
-    
+
     A1 --> B1
     A2 --> B6
     A3 --> B4
     A4 --> B2
     A4 --> B3
     A5 --> B5
-    
+
     B1 --> C2
     B4 --> C3
     B6 --> C5
-    
+
     C1 --> D1
     C1 --> D2
     C2 --> C4
     C3 --> C4
-    
+
     style A1 fill:#e3f2fd
     style A2 fill:#e3f2fd
     style A3 fill:#e3f2fd
@@ -149,61 +149,61 @@ graph LR
 ```mermaid
 stateDiagram-v2
     [*] --> Initial: Component Mounts
-    
+
     Initial --> Checking: useEffect Triggers
-    
+
     Checking --> APIKeyPresent: Check Env Var
     Checking --> NoAPIKey: No Env Var
-    
+
     APIKeyPresent --> APIConnected: getStatus() Success
     APIKeyPresent --> APIFailed: getStatus() Failure
-    
+
     NoAPIKey --> MockAvailable: Mock getStatus() Success
     NoAPIKey --> ErrorState: Mock getStatus() Failure
-    
+
     APIFailed --> MockAvailable: Fallback to Mock
     APIFailed --> ErrorState: Mock Also Fails
-    
+
     APIConnected --> Ready: Status = "connected"
     MockAvailable --> DemoMode: Status = "connected" + Info
     ErrorState --> Disabled: Status = "error"
-    
+
     Ready --> Generating: User Clicks Generate
     DemoMode --> Generating: User Clicks Generate
     Disabled --> Disabled: Button Disabled
-    
+
     Generating --> Success: Code Generated
     Generating --> MockFallback: API Fails, Try Mock
     Generating --> Failed: Both Fail
-    
+
     MockFallback --> Success: Mock Succeeds
-    
+
     Success --> Ready: Show Results
     Success --> DemoMode: Show Results (Demo)
     Failed --> ErrorState: Show Error
-    
+
     Ready --> Checking: 30s Timer
     DemoMode --> Checking: 30s Timer
     ErrorState --> Checking: 30s Timer
-    
+
     note right of Checking
         Yellow indicator
         "Checking..." text
     end note
-    
+
     note right of Ready
         Green indicator
         "Connected" text
         Button enabled
     end note
-    
+
     note right of DemoMode
         Green indicator
         "Connected" text
         Blue info message
         Button enabled
     end note
-    
+
     note right of ErrorState
         Red indicator
         "Error" text
@@ -237,23 +237,23 @@ graph TD
         A --> C[Test 3: With API Key]
         A --> D[Test 4: Mock Fallback]
         A --> E[Test 5: Environment Config]
-        
+
         B --> B1[Error Message Display]
         B --> B2[Demo Mode Activation]
         B --> B3[Button State Management]
-        
+
         C --> C1[Checking Status Initial]
         C --> C2[Status Transition]
         C --> C3[Button Enable After Check]
-        
+
         D --> D1[Character Validation]
         D --> D2[Character Count Display]
         D --> D3[UI Structure Validation]
-        
+
         E --> E1[Timing Config Variations]
         E --> E2[API URL Configurations]
     end
-    
+
     style B1 fill:#d4edda
     style B2 fill:#fff3cd
     style B3 fill:#d4edda
@@ -361,7 +361,7 @@ npm run dev
 1. **Enter Invalid Prompt** (< 10 characters)
    ```
    Type: "Hello"
-   Expected: 
+   Expected:
    - Character count: "5 / 5000 (min: 10)"
    - Textarea border: Red (border-destructive)
    - Button: Disabled
@@ -516,7 +516,7 @@ npm run dev
    - Counter: "5 / 5000 (min: 10)"
    - Red border on textarea
    - Button disabled
-   
+
    Test Case 2: Valid input (10+ chars)
    Input: "Create a hello world function"
    Expected:
@@ -529,7 +529,7 @@ npm run dev
    ```
    1. Enter: "Create a Python function to add two numbers"
    2. Click "Generate Code"
-   
+
    Expected Flow:
    a) Button shows "Generating Code..." with spinner
    b) Component tries API first (fails with invalid key)
@@ -544,11 +544,11 @@ npm run dev
    Test exactly 10 characters:
    Input: "Test12345!" (10 chars)
    Expected: Counter "10 / 5000", button enabled
-   
+
    Test exactly 5000 characters:
    Input: [5000 character string]
    Expected: Counter "5000 / 5000", button enabled
-   
+
    Test over 5000:
    Input: [5001 character string]
    Expected: Counter "5001 / 5000", validation error (if implemented)
@@ -566,18 +566,18 @@ npm run dev
 graph LR
     A[Environment Configs] --> B[Timing Variations]
     A --> C[API URL Variations]
-    
+
     B --> B1[Default: 800ms]
     B --> B2[Fast: 200ms]
     B --> B3[Slow: 2000ms]
     B --> B4[Invalid: -100]
     B --> B5[Missing: undefined]
-    
+
     C --> C1[Default: localhost]
     C --> C2[Custom: api.example.com]
     C --> C3[Invalid: malformed-url]
     C --> C4[Missing: undefined]
-    
+
     style B1 fill:#d4edda
     style B2 fill:#d4edda
     style B3 fill:#d4edda
@@ -728,36 +728,36 @@ graph TD
     A --> E[Test 5: Configuration - 5 tests]
     A --> F[Real Workflows - 3 tests]
     A --> G[Accessibility - 2 tests]
-    
+
     B --> B1[Error state display]
     B --> B2[Red error indicator]
     B --> B3[Button disabled]
     B --> B4[Prevent submission]
-    
+
     C --> C1[Checking state]
     C --> C2[Connected transition]
     C --> C3[Button enable]
     C --> C4[Periodic recheck]
     C --> C5[Prompt entry]
     C --> C6[Generation flow]
-    
+
     D --> D1[Valid input]
     D --> D2[Character validation]
     D --> D3[Mock fallback trigger]
     D --> D4[Demo mode toast]
     D --> D5[Copy/Download buttons]
     D --> D6[Cache hit badge]
-    
+
     E --> E1[Default timing 800ms]
     E --> E2[Fast timing 200ms]
     E --> E3[Slow timing 2000ms]
     E --> E4[Invalid timing]
     E --> E5[API URL configs]
-    
+
     F --> F1[Enter→Generate→Copy]
     F --> F2[Generate→Download]
     F --> F3[Retry after error]
-    
+
     G --> G1[ARIA labels]
     G --> G2[Keyboard navigation]
 ```
@@ -774,19 +774,19 @@ graph TD
     B -->|< 10 chars| C[Invalid: Too Short]
     B -->|10-5000 chars| D[Valid]
     B -->|> 5000 chars| E[Invalid: Too Long]
-    
+
     C --> F[Red border]
     C --> G[Show min requirement]
     C --> H[Disable button]
-    
+
     D --> I[Normal border]
     D --> J[Hide requirements]
     D --> K[Enable button if API ready]
-    
+
     E --> L[Red border]
     E --> M[Show max exceeded]
     E --> N[Disable button]
-    
+
     K --> O{API Status?}
     O -->|connected| P[Button Enabled]
     O -->|error| Q[Button Disabled]
@@ -798,18 +798,18 @@ graph TD
 ```mermaid
 graph LR
     A[Generate Button] --> B{Conditions}
-    
+
     B --> C[loading === false]
     B --> D[isValidPrompt === true]
     B --> E[apiStatus !== 'error']
-    
+
     C --> F{AND}
     D --> F
     E --> F
-    
+
     F -->|All True| G[ENABLED]
     F -->|Any False| H[DISABLED]
-    
+
     style G fill:#d4edda
     style H fill:#f8d7da
 ```
@@ -829,15 +829,15 @@ graph LR
 ```mermaid
 graph LR
     A[API Status] --> B{Status Value}
-    
+
     B -->|connected| C[Green Dot]
     B -->|error| D[Red Dot]
     B -->|checking| E[Yellow Dot]
-    
+
     C --> F["Green Text: 'Connected'"]
     D --> G["Red Text: 'Error'"]
     E --> H["Yellow Text: 'Checking...'"]
-    
+
     style C fill:#d4edda
     style D fill:#f8d7da
     style E fill:#fff3cd
@@ -858,22 +858,22 @@ graph TD
     A[Message System] --> B[Error Messages]
     A --> C[Info Messages]
     A --> D[Success Toasts]
-    
+
     B --> B1[Red background: bg-destructive/10]
     B --> B2[Red border: border-destructive]
     B --> B3[Red icon: XCircle]
     B --> B4[Red text: text-destructive]
-    
+
     C --> C1[Blue background: bg-blue-500/10]
     C --> C2[Blue border: border-blue-500/30]
     C --> C3[Blue icon: Info circle]
     C --> C4[Blue text: text-blue-600]
-    
+
     D --> D1[Toast library: sonner]
     D --> D2[Success: green toast]
     D --> D3[Error: red toast]
     D --> D4[Duration: 3-5s]
-    
+
     style B1 fill:#f8d7da
     style C1 fill:#cfe2ff
     style D2 fill:#d4edda
@@ -964,15 +964,15 @@ graph LR
     A[Screen Sizes] --> B[Mobile: < 640px]
     A --> C[Tablet: 640-1024px]
     A --> D[Desktop: > 1024px]
-    
+
     B --> B1[Stack vertically]
     B --> B2[Full-width button]
     B --> B3[Compact header]
-    
+
     C --> C1[Two columns possible]
     C --> C2[Auto-width button]
     C --> C3[Normal header]
-    
+
     D --> D1[Optimal layout]
     D --> D2[Side-by-side sections]
     D --> D3[Expanded code view]
@@ -985,21 +985,21 @@ graph TB
     A[Color System] --> B[Status Colors]
     A --> C[UI Colors]
     A --> D[Semantic Colors]
-    
+
     B --> B1[Success: #10b981]
     B --> B2[Warning: #eab308]
     B --> B3[Error: #ef4444]
     B --> B4[Info: #3b82f6]
-    
+
     C --> C1[Background: var card]
     C --> C2[Foreground: var card-foreground]
     C --> C3[Border: var border]
     C --> C4[Muted: var muted-foreground]
-    
+
     D --> D1[Primary: var primary]
     D --> D2[Accent: var accent]
     D --> D3[Destructive: var destructive]
-    
+
     style B1 fill:#d4edda
     style B2 fill:#fff3cd
     style B3 fill:#f8d7da
@@ -1013,77 +1013,77 @@ graph TB
 ```mermaid
 graph TD
     Start[AI Agent Activated] --> Cycle 1{Task Type?}
-    
+
     Cycle 1 -->|Testing| T1[Testing Flow]
     Cycle 1 -->|Development| D1[Development Flow]
     Cycle 1 -->|Debugging| DB1[Debugging Flow]
     Cycle 1 -->|Documentation| DC1[Documentation Flow]
-    
+
     T1 --> T2{Test Type?}
     T2 -->|Unit| T3[Run Vitest]
     T2 -->|E2E| T4[Run Playwright]
     T2 -->|Manual| T5[Execute Walkthrough]
-    
+
     T3 --> T6{Results?}
     T6 -->|Pass| T7[Document Success]
     T6 -->|Fail| T8[Analyze Failures]
-    
+
     T8 --> T9{Failure Type?}
     T9 -->|Mock Issue| T10[Fix Mocks]
     T9 -->|Logic Error| T11[Fix Component]
     T9 -->|Assertion Wrong| T12[Update Test]
-    
+
     T4 --> T13{E2E Results?}
     T13 -->|Pass| T7
     T13 -->|Fail| T14[Check Screenshots]
     T14 --> T15[Fix UI/Logic]
-    
+
     T5 --> T16[Follow Manual Guide]
     T16 --> T17[Document Observations]
-    
+
     D1 --> D2{Component Exists?}
     D2 -->|Yes| D3[Modify Existing]
     D2 -->|No| D4[Create New]
-    
+
     D3 --> D5{Change Type?}
     D5 -->|Refactor| D6[Improve Code]
     D5 -->|Feature| D7[Add Functionality]
     D5 -->|Bug Fix| D8[Fix Issue]
-    
+
     D6 --> D9[Run Tests]
     D7 --> D9
     D8 --> D9
-    
+
     D9 --> D10{Tests Pass?}
     D10 -->|Yes| D11[Commit Changes]
     D10 -->|No| D12[Debug & Fix]
     D12 --> D9
-    
+
     DB1 --> DB2{Error Location?}
     DB2 -->|Component| DB3[Check Component Logic]
     DB2 -->|Test| DB4[Check Test Setup]
     DB2 -->|Mock| DB5[Check Mock Config]
     DB2 -->|Environment| DB6[Check Env Vars]
-    
+
     DB3 --> DB7[Add Logging]
     DB4 --> DB7
     DB5 --> DB7
     DB6 --> DB7
-    
+
     DB7 --> DB8[Reproduce Issue]
     DB8 --> DB9[Identify Root Cause]
     DB9 --> DB10[Apply Fix]
     DB10 --> DB11[Verify Fix]
-    
+
     DC1 --> DC2{Doc Type?}
     DC2 -->|API| DC3[Document Functions]
     DC2 -->|Guide| DC4[Write Walkthrough]
     DC2 -->|Diagram| DC5[Create Visuals]
-    
+
     DC3 --> DC6[Add JSDoc]
     DC4 --> DC7[Create Markdown]
     DC5 --> DC8[Generate Mermaid]
-    
+
     T7 --> End[Task Complete]
     T17 --> End
     D11 --> End
@@ -1091,7 +1091,7 @@ graph TD
     DC6 --> End
     DC7 --> End
     DC8 --> End
-    
+
     style Start fill:#e1f5ff
     style End fill:#d4edda
     style T8 fill:#fff3cd
@@ -1118,7 +1118,7 @@ mindmap
         Pass → Proceed
         Fail → Analyze & Fix
         Timeout → Adjust config
-    
+
     Code Modification
       When to modify?
         Test failures
@@ -1132,7 +1132,7 @@ mindmap
         Run tests
         Manual verification
         Code review
-    
+
     Error Handling
       Identify error type
         Syntax error → Fix code
@@ -1148,7 +1148,7 @@ mindmap
         Apply fix
         Run tests
         Document change
-    
+
     Documentation
       What to document?
         Public APIs
@@ -1175,27 +1175,27 @@ graph TD
     A --> C[Testing Strategy]
     A --> D[Communication]
     A --> E[Problem Solving]
-    
+
     B --> B1[Minimal Changes]
     B --> B2[Preserve Functionality]
     B --> B3[Follow Conventions]
     B --> B4[Add Documentation]
-    
+
     C --> C1[Test Before Commit]
     C --> C2[Fix Failures Immediately]
     C --> C3[Update Tests with Code]
     C --> C4[Maintain Coverage]
-    
+
     D --> D1[Clear Commit Messages]
     D --> D2[Document Decisions]
     D --> D3[Explain Complex Logic]
     D --> D4[Provide Context]
-    
+
     E --> E1[Understand Root Cause]
     E --> E2[Consider Edge Cases]
     E --> E3[Verify Assumptions]
     E --> E4[Test Solutions]
-    
+
     B1 --> F[High Quality Output]
     B2 --> F
     B3 --> F
@@ -1212,7 +1212,7 @@ graph TD
     E2 --> F
     E3 --> F
     E4 --> F
-    
+
     style F fill:#d4edda
 ```
 
@@ -1225,52 +1225,52 @@ graph TD
 ```mermaid
 graph TD
     A[Issue Detected] --> B{Category?}
-    
+
     B -->|Component| C[Component Issues]
     B -->|Test| D[Test Issues]
     B -->|Environment| E[Environment Issues]
     B -->|Build| F[Build Issues]
-    
+
     C --> C1[Status not updating]
     C --> C2[Button not enabling]
     C --> C3[Messages not displaying]
     C --> C4[Generation failing]
-    
+
     C1 --> C1S[Solution: Check useEffect dependencies]
     C2 --> C2S[Solution: Verify button disable logic]
     C3 --> C3S[Solution: Check error vs info state]
     C4 --> C4S[Solution: Verify API client initialization]
-    
+
     D --> D1[Tests timeout]
     D --> D2[Mocks not working]
     D --> D3[Assertions failing]
     D --> D4[Coverage insufficient]
-    
+
     D1 --> D1S[Solution: Increase waitFor timeout]
     D2 --> D2S[Solution: Add proper mock implementations]
     D3 --> D3S[Solution: Update expectations to match behavior]
     D4 --> D4S[Solution: Add missing test cases]
-    
+
     E --> E1[API key not recognized]
     E --> E2[Environment vars not loading]
     E --> E3[CORS errors]
     E --> E4[Network timeouts]
-    
+
     E1 --> E1S[Solution: Restart dev server after export]
     E2 --> E2S[Solution: Check .env file and VITE_ prefix]
     E3 --> E3S[Solution: Configure API CORS headers]
     E4 --> E4S[Solution: Check API server is running]
-    
+
     F --> F1[Import errors]
     F --> F2[Type errors]
     F --> F3[Build failures]
     F --> F4[Module not found]
-    
+
     F1 --> F1S[Solution: Check import paths and aliases]
     F2 --> F2S[Solution: Run tsc to identify type issues]
     F3 --> F3S[Solution: Check vitest.config.ts]
     F4 --> F4S[Solution: Run npm install]
-    
+
     style C1S fill:#d4edda
     style C2S fill:#d4edda
     style C3S fill:#d4edda
@@ -1404,8 +1404,8 @@ vi.mock('@/lib/mock-api-client', () => ({
 // ✅ CORRECT: Add delay if testing intermediate states
 vi.mock('@/lib/codex-api-client', () => ({
   CodexAPIClient: vi.fn().mockImplementation(() => ({
-    getStatus: vi.fn().mockImplementation(() => 
-      new Promise(resolve => setTimeout(() => 
+    getStatus: vi.fn().mockImplementation(() =>
+      new Promise(resolve => setTimeout(() =>
         resolve({ status: 'ok' }), 100
       ))
     ),
@@ -1584,7 +1584,7 @@ graph LR
     E --> F[Document Results]
     F --> G[Manual Validation]
     G --> H[Production Ready]
-    
+
     style A fill:#fff3cd
     style H fill:#d4edda
 ```

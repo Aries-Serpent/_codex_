@@ -47,7 +47,7 @@ jobs:
             exit 1
           fi
           echo "✅ CODEX_MASTER_KEY accessible (length: ${#KEY})"
-  
+
   verify-org-master-key:
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +59,7 @@ jobs:
             echo "❌ ORG_MASTER_KEY not accessible"
             exit 1
           fi
-          
+
           # Test API access
           if gh api /user > /dev/null 2>&1; then
             echo "✅ ORG_MASTER_KEY accessible and functional"
@@ -117,15 +117,15 @@ jobs:
             -f name="test-token-access" \
             -f color="00FF00" \
             -f description="Token permission test" || true
-          
+
           # Clean up (delete test label)
           gh api \
             --method DELETE \
             -H "Accept: application/vnd.github+json" \
             "/repos/${{ github.repository }}/labels/test-token-access" || true
-          
+
           echo "✅ Repository access verified"
-  
+
   test-organization-access:
     runs-on: ubuntu-latest
     steps:
@@ -178,26 +178,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Generate new key
         id: generate
         run: |
           NEW_KEY=$(openssl rand -base64 32)
           echo "::add-mask::$NEW_KEY"
           echo "new_key=$NEW_KEY" >> $GITHUB_OUTPUT
-      
+
       - name: Update repository secret
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
           NEW_KEY: ${{ steps.generate.outputs.new_key }}
         run: |
           echo "$NEW_KEY" | gh secret set CODEX_MASTER_KEY
-      
+
       - name: Log rotation
         run: |
           mkdir -p .codex/key-archive
           echo "$(date +%Y-%m-%d): CODEX_MASTER_KEY rotated" >> .codex/key-archive/rotation-log.txt
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/key-archive/
@@ -243,7 +243,7 @@ jobs:
           # Calculate days since last rotation
           # For now, create reminder every 60 iterations
           echo "needs_rotation=true" >> $GITHUB_OUTPUT
-      
+
       - name: Create reminder issue
         if: steps.check.outputs.needs_rotation == 'true'
         env:
@@ -308,19 +308,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Fetch organization audit log
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
         run: |
           mkdir -p .codex/audit-logs
           DATE=$(date +%Y-%m-%d)
-          
+
           gh api \
             -H "Accept: application/vnd.github+json" \
             "/orgs/${{ github.repository_owner }}/audit-log?per_page=100" \
             > ".codex/audit-logs/org-audit-${DATE}.json"
-      
+
       - name: Analyze audit events
         run: |
           python3 << 'PYEOF'
@@ -359,7 +359,7 @@ with open('.codex/audit-reports/per-iteration-summary.txt', 'a') as f:
 
 print(summary)
 PYEOF
-      
+
       - name: Commit audit data
         run: |
           git config user.name "github-actions[bot]"
@@ -396,7 +396,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check for new security alerts
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -404,15 +404,15 @@ jobs:
           # Fetch Dependabot alerts
           gh api "/repos/${{ github.repository }}/dependabot/alerts?state=open" \
             > dependabot-alerts.json
-          
+
           # Count critical alerts
           CRITICAL=$(jq '[.[] | select(.security_advisory.severity=="critical")] | length' dependabot-alerts.json)
           HIGH=$(jq '[.[] | select(.security_advisory.severity=="high")] | length' dependabot-alerts.json)
-          
+
           echo "🔍 Security Alert Summary:"
           echo "  Critical: $CRITICAL"
           echo "  High: $HIGH"
-          
+
           if [ "$CRITICAL" -gt 0 ]; then
             echo "⚠️ CRITICAL alerts found - creating issue"
             gh issue create \
@@ -420,7 +420,7 @@ jobs:
               --body "Found $CRITICAL critical and $HIGH high severity vulnerabilities. Review immediately." \
               --label "security,priority-critical"
           fi
-      
+
       - name: Check code scanning alerts
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -428,7 +428,7 @@ jobs:
           # Fetch CodeQL alerts
           gh api "/repos/${{ github.repository }}/code-scanning/alerts?state=open" \
             > codeql-alerts.json || echo "[]" > codeql-alerts.json
-          
+
           ALERT_COUNT=$(jq 'length' codeql-alerts.json)
           echo "📊 CodeQL Alerts: $ALERT_COUNT"
 EOF
@@ -462,7 +462,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Generate compliance metrics
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -513,7 +513,7 @@ with open('.codex/compliance/per-phase-report-latest.json', 'w') as f:
 
 print(json.dumps(metrics, indent=2))
 PYEOF
-      
+
       - name: Commit report
         run: |
           git config user.name "github-actions[bot]"
@@ -559,19 +559,19 @@ jobs:
     # Use larger runner if available, fallback to standard
     runs-on: ubuntu-latest-8-cores
     # Alternative: runs-on: [self-hosted, linux, x64, large]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: pip install -e ".[dev,test]"
-      
+
       - name: Execute operation
         run: |
           case "${{ inputs.operation }}" in

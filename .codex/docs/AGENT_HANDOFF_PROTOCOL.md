@@ -122,9 +122,9 @@ The Agent Hand-off Protocol enables seamless AI agent collaboration via PR comme
 ## 🔄 Hand-off State Machine
 
 ```
-[Start] 
+[Start]
   ↓
-[Copilot Execute] 
+[Copilot Execute]
   ↓ @codex + deliverables
 [Codex Review]
   ↓ APPROVE → @copilot approved
@@ -207,7 +207,7 @@ hand_off_protocol:
       context_files:
         - ".codex/plans/pr_3145/*.md"
         - ".codex/cognitive_brain/*.md"
-  
+
   conclude_with:
     action: "post_pr_comment"
     format: "hand_off_comment_template"
@@ -231,13 +231,13 @@ hand_off_protocol:
   enabled: true
   monitor_pr_comments: true
   trigger_pattern: "@codex"
-  
+
   response_workflow:
     - validate_deliverables
     - perform_review
     - generate_feedback
     - post_comment_with_handoff
-  
+
   target_agents:
     - name: copilot
       trigger: "@copilot"
@@ -331,7 +331,7 @@ Follow plan in `.codex/plans/pr_3145/01_tokenization_coverage_analysis.md`
 - Gap to target: 24.8%
 - Tests mapped: 12
 
-**Next Action**: 
+**Next Action**:
 Review coverage gaps and approve test implementation strategy
 
 **References**:

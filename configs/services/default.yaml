@@ -6,12 +6,12 @@ profiles:
     noise_reduction: 0.8
     eq_preset: "vocal"
     compression: true
-    
+
   music:
     noise_reduction: 0.5
     eq_preset: "balanced"
     compression: false
-    
+
   ambient:
     noise_reduction: 0.3
     eq_preset: "natural"

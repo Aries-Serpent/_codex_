@@ -23,7 +23,7 @@
 **Created**:
 - `cognitive-action-decision.yml` (5.8 KB)
   - **Unified**: cognitive-action.yml + cognitive-decision.yml
-  - **Features**: 
+  - **Features**:
     - Scheduled decision engine (every 6 hours)
     - Action execution based on decisions
     - Full workflow_run integration

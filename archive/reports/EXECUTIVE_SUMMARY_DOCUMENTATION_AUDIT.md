@@ -265,10 +265,10 @@ sphinx-apidoc -o docs/api src/
 # .github/workflows/docs.yml
 - name: Check docstring coverage
   run: interrogate --fail-under=75 src/
-  
+
 - name: Build documentation
   run: mkdocs build --strict
-  
+
 - name: Validate links
   run: markdown-link-check docs/**/*.md
 ```

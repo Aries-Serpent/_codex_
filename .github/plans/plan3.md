@@ -1,4 +1,4 @@
-# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 3 of 6 
+# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 3 of 6
 
 > **Continuation**: Phase 3: Python 3.12 Standardization Implementation  
 > **Duration**: 45 minutes  
@@ -38,24 +38,24 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]  # ❌ MULTI-VERSION
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev,test]"
-      
+
       - name: Run tests
         run: pytest tests/ -v --cov=src --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
@@ -78,26 +78,26 @@ jobs:
   test:
     name: Test Suite (Python 3.12)
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.10"
           cache: "pip"
-      
+
       - name: Verify Python version
         run: |
           python --version
           python -c "import sys; assert sys.version_info[:2] == (3, 12), 'Python 3.12 required'"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install -e ".[dev,test]"
-      
+
       - name: Run tests with coverage
         env:
           PYTHONWARNINGS: "error::DeprecationWarning"
@@ -109,7 +109,7 @@ jobs:
             --cov-report=xml \
             --cov-report=term \
             --cov-fail-under=80
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -152,16 +152,16 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]  # ❌ MULTI-VERSION
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install dependencies
         run: pip install -e ".[rag,test]"
-      
+
       - name: Run RAG tests
         run: pytest tests/rag/ -v --cov=src/codex/rag
 ```
@@ -180,24 +180,24 @@ jobs:
   test-rag:
     name: RAG Tests (Python 3.12)
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.10"
           cache: "pip"
-      
+
       - name: Verify Python version
         run: python -c "import sys; assert sys.version_info[:2] == (3, 12)"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[rag,test]"
-      
+
       - name: Run RAG tests
         run: |
           pytest tests/rag/ \
@@ -205,7 +205,7 @@ jobs:
             --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=term
-      
+
       - name: Upload RAG coverage
         uses: codecov/codecov-action@v4
         with:
@@ -232,24 +232,24 @@ echo ""
 
 for workflow in "$WORKFLOWS_DIR"/*.yml; do
     filename=$(basename "$workflow")
-    
+
     # Skip if already processed
     if grep -q "python-version.*3.12.10" "$workflow" && ! grep -q "matrix" "$workflow"; then
         echo "✅ $filename - Already simplified"
         continue
     fi
-    
+
     # Skip if no Python version specified
     if ! grep -q "python-version" "$workflow"; then
         echo "⏭️  $filename - No Python version found, skipping"
         continue
     fi
-    
+
     echo "🔨 Processing: $filename"
-    
+
     # Create backup
     cp "$workflow" "$workflow.backup"
-    
+
     # Remove matrix strategy (multi-line removal)
     # This is complex, so we use Python for precise editing
     python3 - <<EOF
@@ -291,7 +291,7 @@ content = re.sub(
 workflow_file.write_text(content)
 print(f"  Modified {workflow_file.name}")
 EOF
-    
+
     echo "  ✅ Simplified $filename"
     echo ""
 done
@@ -699,20 +699,20 @@ def clean_test_file(file_path: Path):
     """Remove version-specific pytest decorators"""
     content = file_path.read_text()
     original = content
-    
+
     # Remove @pytest.mark.py3XX markers
     content = re.sub(r'@pytest\.mark\.py\d{2,3}\s*\n', '', content)
-    
+
     # Remove skipif with version_info
     content = re.sub(
         r'@pytest\.mark\.skipif\([^)]*version_info[^)]*\)[^)]*\)\s*\n',
         '',
         content
     )
-    
+
     # Remove "compatibility" marker (not needed for single version)
     content = re.sub(r'@pytest\.mark\.compatibility\s*\n', '', content)
-    
+
     if content != original:
         file_path.write_text(content)
         return True
@@ -720,13 +720,13 @@ def clean_test_file(file_path: Path):
 
 def main():
     print("🧹 Cleaning version-specific pytest markers...\n")
-    
+
     modified = 0
     for test_file in Path('tests').rglob('test_*.py'):
         if clean_test_file(test_file):
             print(f"  Cleaned: {test_file}")
             modified += 1
-    
+
     print(f"\n✅ Modified {modified} test files")
 
 if __name__ == "__main__":
@@ -1018,7 +1018,7 @@ pytest tests/ -v
    from typing import TypeVar, Generic
    T = TypeVar('T')
    class Box(Generic[T]): ...
-   
+
    # Python 3.12 way:
    class Box[T]: ...
    ```

@@ -29,23 +29,23 @@ This document describes the cross-built integration between the **Workflow Analy
 flowchart TB
     A[Workflow Run] --> B[Fetch Logs]
     B --> C{Scribe Available?}
-    
+
     C -->|Yes| D[Semantic Analysis]
     C -->|No| E[Regex Analysis]
-    
+
     D --> F[TF-IDF Tokenization]
     F --> G[Feature Extraction]
     G --> H[Pattern Matching]
     H --> I[Similar Issue Search]
-    
+
     E --> H
-    
+
     I --> J[Generate Artifacts]
     J --> K[Markdown Report]
     J --> L[JSON Data]
     J --> M[Remediation Runbook]
     J --> N[Test Suite]
-    
+
     style D fill:#90EE90
     style F fill:#90EE90
     style G fill:#90EE90
@@ -255,7 +255,7 @@ similar = find_similar_issues(current_features)
 ```python
 def infer_workflow_type(context):
     name = context["name"].lower()
-    
+
     if "test" in name: return "testing"
     if "build" in name: return "build"
     if "deploy" in name: return "deployment"
@@ -288,7 +288,7 @@ def infer_workflow_type(context):
 def tokenize_log(log_content: str) -> List[str]:
     """
     Tokenize log using scribe's advanced tokenizer.
-    
+
     Features:
     - Preserves error messages
     - Identifies code snippets
@@ -308,7 +308,7 @@ def tokenize_log(log_content: str) -> List[str]:
 def extract_semantic_features(tokens, context):
     """
     Extract semantic features from tokenized content.
-    
+
     Returns:
     - important_terms: High-frequency, meaningful terms
     - error_terms: Error-related vocabulary
@@ -317,19 +317,19 @@ def extract_semantic_features(tokens, context):
     - workflow_type: Inferred type
     """
     token_freq = Counter(tokens)
-    
+
     # Filter out stop words
     stop_words = {'the', 'a', 'an', 'in', 'on', ...}
     important = {
-        term: freq 
+        term: freq
         for term, freq in token_freq.most_common(50)
         if term not in stop_words
     }
-    
+
     # Categorize by domain
     error_terms = [t for t in important if 'error' in t or 'fail' in t]
     ...
-    
+
     return {"important_terms": important, ...}
 ```
 
@@ -339,19 +339,19 @@ def extract_semantic_features(tokens, context):
 def match_patterns_semantic(features):
     """
     Match patterns using semantic similarity.
-    
+
     Instead of exact regex match, uses term similarity:
     - "import" near "module" → import_error
     - "timeout" near "timed" → timeout
     - "disk" near "space" → disk_full
     """
     matches = defaultdict(list)
-    
+
     for term in features["error_terms"]:
         if semantic_similarity(term, "import") > 0.8:
             matches["import_error"].append(term)
         ...
-    
+
     return matches
 ```
 
@@ -785,7 +785,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

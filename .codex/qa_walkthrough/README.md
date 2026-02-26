@@ -36,7 +36,7 @@ Comprehensive analysis of test coverage across all source modules.
 - Coverage targets by phase
 - Baseline metrics for progress tracking
 
-**Usage**: 
+**Usage**:
 ```bash
 # View coverage summary
 jq '.test_coverage' .codex/qa_walkthrough/coverage_analysis.json

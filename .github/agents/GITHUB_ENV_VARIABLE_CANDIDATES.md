@@ -439,11 +439,11 @@ import sys
 def load_module_from_env(env_var_name, module_name):
     """
     Load Python module from base64-encoded environment variable.
-    
+
     Args:
         env_var_name: Name of environment variable containing base64 code
         module_name: Name to give the module when importing
-        
+
     Returns:
         Imported module object
     """
@@ -451,10 +451,10 @@ def load_module_from_env(env_var_name, module_name):
     encoded = os.environ.get(env_var_name)
     if not encoded:
         raise ValueError(f"Environment variable {env_var_name} not found")
-    
+
     # Decode
     code = base64.b64decode(encoded).decode('utf-8')
-    
+
     # Write to temporary file
     with tempfile.NamedTemporaryFile(
         mode='w',
@@ -464,14 +464,14 @@ def load_module_from_env(env_var_name, module_name):
     ) as f:
         f.write(code)
         temp_path = f.name
-    
+
     # Import module
     sys.path.insert(0, '/tmp')
     import importlib.util
     spec = importlib.util.spec_from_file_location(module_name, temp_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    
+
     return module
 
 # Usage
@@ -1024,7 +1024,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

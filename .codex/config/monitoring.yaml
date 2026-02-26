@@ -6,7 +6,7 @@
 monitoring:
   # Polling interval (cron schedule in workflow)
   schedule: "0 */3 * * *"  # Every 3 hours
-  
+
   # Workflow selection patterns
   workflows:
     # Include patterns (glob-style: *, ?, etc.)
@@ -15,22 +15,22 @@ monitoring:
       - '*'
     # Exclude patterns (checked first, takes precedence)
     exclude_patterns: []
-  
+
   # Failure detection thresholds and rate limiting
   failure_detection:
     consecutive_failures_threshold: 2  # Create issue after N consecutive failures
     rate_limit_margin: 500  # Reserve buffer for API rate limit
-  
+
   # Recovery threshold
   recovery_threshold: 3  # Close issue after N consecutive successes
-  
+
   # Flakiness detection
   flakiness:
     enabled: true
     window_size: 20  # Look at last N runs
     threshold: 0.15  # 15% failure rate indicates flakiness
     min_runs: 5  # Minimum runs before analyzing flakiness
-  
+
   # Rate limit handling (additional settings)
   rate_limit:
     requests_per_hour: 5000  # GitHub API limit
@@ -42,7 +42,7 @@ monitoring:
 issues:
   # Deduplication window (hours)
   deduplication_window: 24
-  
+
   # Issue labels
   labels:
     workflow_failure: "workflow:failure"
@@ -51,10 +51,10 @@ issues:
     dependency_issue: "deps:conflict"
     security_issue: "security:alert"
     coverage_issue: "coverage:low"
-  
+
   # Issue assignment (empty = no auto-assignment)
   auto_assign: []
-  
+
   # Close stale issues after N days of recovery
   close_after_recovery_days: 1
 
@@ -62,10 +62,10 @@ issues:
 patterns:
   # Confidence threshold for pattern matching (0.0-1.0)
   confidence_threshold: 0.6
-  
+
   # Pattern database location
   signature_file: ".codex/monitoring/patterns/error_signatures.yaml"
-  
+
   # Pattern categories with weights
   categories:
     dependency: 1.0
@@ -81,7 +81,7 @@ patterns:
 agents:
   # Confidence threshold for agent routing (0.0-1.0)
   routing_threshold: 0.7
-  
+
   # Agent routing map (category -> agent)
   routing:
     test: "ci-testing-agent"
@@ -90,7 +90,7 @@ agents:
     security: "security-agent"
     lint: "repository-hygiene-agent"
     documentation: "documentation-quality-agent"
-  
+
   # Multi-agent orchestration
   enable_multi_agent: true
   max_agents_per_failure: 3
@@ -99,11 +99,11 @@ agents:
 state:
   # Local state file
   file: ".codex/monitoring/state/monitor_state.json"
-  
+
   # GitHub Actions artifact (for persistence across runs)
   artifact_name: "artifact-monitor-state"
   artifact_retention_days: 90
-  
+
   # Backup frequency (runs)
   backup_frequency: 1
 

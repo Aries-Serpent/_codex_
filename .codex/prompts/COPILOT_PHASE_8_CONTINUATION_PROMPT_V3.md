@@ -56,18 +56,18 @@ class TrainingDataCollector:
             "Accept": "application/vnd.github+json"
         }
         self.base_url = f"https://api.github.com/repos/{repo}"
-    
+
     def collect_workflow_runs(self, days_back=90):
         """Collect workflow runs from last N days"""
         since = (datetime.now() - timedelta(days=days_back)).isoformat()
-        
+
         url = f"{self.base_url}/actions/runs"
         params = {"created": f">={since}", "per_page": 100}
-        
+
         runs = []
         response = requests.get(url, headers=self.headers, params=params)
         data = response.json()
-        
+
         for run in data.get("workflow_runs", []):
             runs.append({
                 "id": run["id"],
@@ -78,87 +78,87 @@ class TrainingDataCollector:
                 "updated_at": run["updated_at"],
                 "duration": self._calculate_duration(run),
             })
-        
+
         return runs
-    
+
     def collect_security_alerts(self):
         """Collect historical security alerts"""
         # CodeQL alerts
         url = f"{self.base_url}/code-scanning/alerts"
         response = requests.get(url, headers=self.headers)
         codeql_alerts = response.json()
-        
+
         # Dependabot alerts
         url = f"{self.base_url}/dependabot/alerts"
         response = requests.get(url, headers=self.headers)
         dependabot_alerts = response.json()
-        
+
         return {
             "codeql": codeql_alerts,
             "dependabot": dependabot_alerts
         }
-    
+
     def extract_features(self, file_path: str):
         """Extract security-relevant features from code"""
         with open(file_path) as f:
             code = f.read()
-        
+
         features = {
             # Code complexity
             "lines_of_code": len(code.split("\n")),
             "complexity": self._calculate_complexity(code),
             "max_nesting_depth": self._calculate_nesting(code),
-            
+
             # Security operations
             "subprocess_calls": code.count("subprocess"),
             "shell_true": code.count("shell=True"),
             "eval_exec": code.count("eval(") + code.count("exec("),
-            
+
             # File operations
             "file_operations": code.count("open("),
             "file_write": code.count("'w'") + code.count('"w"'),
-            
+
             # Network operations
             "network_calls": code.count("request") + code.count("urllib"),
             "api_calls": code.count("api.") + code.count("/api/"),
-            
+
             # Cryptography
             "crypto_operations": code.count("hashlib") + code.count("crypt"),
             "md5_sha1_usage": code.count("md5") + code.count("sha1"),
-            
+
             # Data handling
             "pickle_usage": code.count("pickle"),
             "xml_parsing": code.count("ElementTree"),
             "json_handling": code.count("json"),
-            
+
             # User input
             "user_input": code.count("input(") + code.count("request."),
             "environment_vars": code.count("os.environ"),
-            
+
             # Historical context
             "file_age_days": self._get_file_age(file_path),
             "commit_count": self._get_commit_count(file_path),
             "author_security_score": self._get_author_score(file_path),
         }
-        
+
         return features
-    
+
     def save_training_data(self, output_dir: str):
         """Save collected data for model training"""
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Collect all data
         workflow_data = self.collect_workflow_runs()
         security_data = self.collect_security_alerts()
-        
+
         # Save to JSON
         with open(output_dir / "workflow_history.json", "w") as f:
             json.dump(workflow_data, f, indent=2)
-        
+
         with open(output_dir / "security_alerts.json", "w") as f:
             json.dump(security_data, f, indent=2)
-        
+
         print(f"✅ Training data saved to {output_dir}")
         print(f"   Workflow runs: {len(workflow_data)}")
         print(f"   CodeQL alerts: {len(security_data['codeql'])}")
@@ -166,11 +166,11 @@ class TrainingDataCollector:
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) < 3:
         print("Usage: python collect_training_data.py <repo> <token>")
         sys.exit(1)
-    
+
     collector = TrainingDataCollector(sys.argv[1], sys.argv[2])
     collector.save_training_data("training_data")
 ```
@@ -209,79 +209,79 @@ class MLThreatDetector:
             min_samples_split=5,
             random_state=42
         )
-        
+
         self.gb = GradientBoostingClassifier(
             n_estimators=100,
             max_depth=5,
             learning_rate=0.1,
             random_state=42
         )
-        
+
         self.model = VotingClassifier(
             estimators=[('rf', self.rf), ('gb', self.gb)],
             voting='soft'
         )
-    
+
     def prepare_training_data(self, data_dir: str):
         """Load and prepare training data"""
         data_dir = Path(data_dir)
-        
+
         # Load workflow history
         with open(data_dir / "workflow_history.json") as f:
             workflows = json.load(f)
-        
+
         # Load security alerts
         with open(data_dir / "security_alerts.json") as f:
             alerts = json.load(f)
-        
+
         # Extract features and labels
         X = []  # Features
         y = []  # Labels (0=safe, 1=vulnerable)
-        
+
         # Process data...
         # (Implementation details for feature extraction)
-        
+
         return np.array(X), np.array(y)
-    
+
     def train(self, X, y):
         """Train the ensemble model"""
         # Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
-        
+
         # Train model
         print("Training ensemble model...")
         self.model.fit(X_train, y_train)
-        
+
         # Evaluate
         y_pred = self.model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         precision, recall, f1, _ = precision_recall_fscore_support(
             y_test, y_pred, average='binary'
         )
-        
+
         print(f"\n✅ Training Complete")
         print(f"Accuracy: {accuracy:.2%}")
         print(f"Precision: {precision:.2%}")
         print(f"Recall: {recall:.2%}")
         print(f"F1 Score: {f1:.2%}")
-        
+
         # Cross-validation
         cv_scores = cross_val_score(self.model, X, y, cv=5)
         print(f"Cross-validation: {cv_scores.mean():.2%} (+/- {cv_scores.std():.2%})")
-        
+
         return accuracy
-    
+
     def save_model(self, output_path: str):
         """Save trained model"""
         joblib.dump(self.model, output_path)
         print(f"✅ Model saved to {output_path}")
-    
+
     def predict_risk(self, features):
         """Predict security risk for new code"""
         risk_prob = self.model.predict_proba([features])[0][1]
-        
+
         if risk_prob >= 0.8:
             risk_level = "critical"
         elif risk_prob >= 0.6:
@@ -290,7 +290,7 @@ class MLThreatDetector:
             risk_level = "medium"
         else:
             risk_level = "low"
-        
+
         return {
             "risk_score": risk_prob,
             "risk_level": risk_level,
@@ -299,13 +299,13 @@ class MLThreatDetector:
 
 if __name__ == "__main__":
     detector = MLThreatDetector()
-    
+
     # Load training data
     X, y = detector.prepare_training_data("training_data")
-    
+
     # Train model
     accuracy = detector.train(X, y)
-    
+
     # Save if accuracy meets threshold
     if accuracy >= 0.85:
         detector.save_model("ml_threat_detector_model.pkl")
@@ -341,11 +341,11 @@ flowchart LR
     A[CI Workflows] --> B[Metrics Collector]
     C[Security Scans] --> B
     D[Agent Reports] --> B
-    
+
     B --> E[InfluxDB / Prometheus]
     E --> F[Dashboard API]
     F --> G[Web UI]
-    
+
     G --> H[Time Series Charts]
     G --> I[Alert Widgets]
     G --> J[Pattern Heatmap]
@@ -368,7 +368,7 @@ class MetricsCollector:
     def __init__(self, influxdb_url: str, token: str):
         self.influxdb_url = influxdb_url
         self.token = token
-    
+
     def collect_ci_metrics(self):
         """Collect CI/CD metrics"""
         return {
@@ -378,7 +378,7 @@ class MetricsCollector:
             "average_duration_seconds": self._get_avg_duration(),
             "cache_hit_rate": self._get_cache_hit_rate(),
         }
-    
+
     def collect_security_metrics(self):
         """Collect security scan metrics"""
         return {
@@ -388,7 +388,7 @@ class MetricsCollector:
             "security_score": self._calculate_security_score(),
             "compliance_status": self._check_compliance(),
         }
-    
+
     def send_to_influxdb(self, metrics: dict):
         """Send metrics to InfluxDB"""
         # Implementation for time-series storage
@@ -396,14 +396,14 @@ class MetricsCollector:
 
 if __name__ == "__main__":
     collector = MetricsCollector(influxdb_url="http://localhost:8086", token="...")
-    
+
     while True:
         ci_metrics = collector.collect_ci_metrics()
         security_metrics = collector.collect_security_metrics()
-        
+
         collector.send_to_influxdb(ci_metrics)
         collector.send_to_influxdb(security_metrics)
-        
+
         time.sleep(60)  # Collect every minute
 ```
 
@@ -482,44 +482,44 @@ uvicorn api.dashboard_api:app --reload
 </head>
 <body>
     <h1>Codex CI/CD & Security Dashboard</h1>
-    
+
     <div class="metrics">
         <div class="metric-card">
             <div class="metric-value" id="security-score">--</div>
             <div class="metric-label">Security Score</div>
         </div>
-        
+
         <div class="metric-card">
             <div class="metric-value" id="success-rate">--</div>
             <div class="metric-label">CI Success Rate</div>
         </div>
-        
+
         <div class="metric-card">
             <div class="metric-value" id="cache-hit">--</div>
             <div class="metric-label">Cache Hit Rate</div>
         </div>
     </div>
-    
+
     <h2>CI Performance Trends</h2>
     <canvas id="ci-chart"></canvas>
-    
+
     <h2>Security Alerts</h2>
     <canvas id="security-chart"></canvas>
-    
+
     <script>
         // Fetch and update metrics every 30 seconds
         async function updateMetrics() {
             const ci_data = await fetch('/api/metrics/ci').then(r => r.json());
             const security_data = await fetch('/api/metrics/security').then(r => r.json());
-            
+
             document.getElementById('security-score').textContent = security_data.security_score;
             document.getElementById('success-rate').textContent = (ci_data.workflow_success_rate * 100).toFixed(1) + '%';
             document.getElementById('cache-hit').textContent = (ci_data.cache_hit_rate * 100).toFixed(1) + '%';
         }
-        
+
         updateMetrics();
         setInterval(updateMetrics, 30000);
-        
+
         // Initialize charts
         const ci_ctx = document.getElementById('ci-chart').getContext('2d');
         const ci_chart = new Chart(ci_ctx, {

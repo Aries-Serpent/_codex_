@@ -25,7 +25,7 @@ stateDiagram-v2
     Draining --> Stopping: Connections Drained
     Stopping --> Stopped: Shutdown Hooks Complete
     Stopped --> [*]: Server Exit
-    
+
     Starting --> Failed: Startup Error
     Serving --> Failed: Critical Error
     Failed --> Stopping: Force Shutdown
@@ -60,7 +60,7 @@ class LifecycleState(Enum):
 
 class LifecycleHook:
     """Lifecycle hook with metadata."""
-    
+
     def __init__(
         self,
         name: str,
@@ -75,7 +75,7 @@ class LifecycleHook:
 
 class LifecycleManager:
     """Manage server lifecycle with startup/shutdown hooks."""
-    
+
     def __init__(self, grace_period: float = 30.0):
         self.state = LifecycleState.INITIALIZING
         self.grace_period = grace_period
@@ -84,7 +84,7 @@ class LifecycleManager:
         self._health_checks: Dict[str, Callable] = {}
         self._start_time: Optional[float] = None
         self._shutdown_event = asyncio.Event()
-    
+
     def register_startup_hook(
         self,
         func: Callable,
@@ -94,7 +94,7 @@ class LifecycleManager:
     ):
         """
         Register a startup hook.
-        
+
         Args:
             func: Async function to call during startup
             name: Hook name (defaults to function name)
@@ -109,7 +109,7 @@ class LifecycleManager:
         )
         self._startup_hooks.append(hook)
         logger.info(f"Registered startup hook: {hook.name}")
-    
+
     def register_shutdown_hook(
         self,
         func: Callable,
@@ -119,7 +119,7 @@ class LifecycleManager:
     ):
         """
         Register a shutdown hook.
-        
+
         Args:
             func: Async function to call during shutdown
             name: Hook name (defaults to function name)
@@ -134,19 +134,19 @@ class LifecycleManager:
         )
         self._shutdown_hooks.append(hook)
         logger.info(f"Registered shutdown hook: {hook.name}")
-    
+
     def register_health_check(self, name: str, func: Callable):
         """Register a health check function."""
         self._health_checks[name] = func
         logger.info(f"Registered health check: {name}")
-    
+
     async def startup(self):
         """Execute all startup hooks."""
         self.state = LifecycleState.STARTING
         self._start_time = time.time()
-        
+
         logger.info(f"Starting server (hooks: {len(self._startup_hooks)})")
-        
+
         for hook in self._startup_hooks:
             try:
                 logger.info(f"Executing startup hook: {hook.name}")
@@ -164,21 +164,21 @@ class LifecycleManager:
                 if hook.critical:
                     self.state = LifecycleState.FAILED
                     raise RuntimeError(error_msg)
-        
+
         self.state = LifecycleState.READY
         logger.info("Server startup complete")
-    
+
     async def shutdown(self):
         """Execute all shutdown hooks."""
         self.state = LifecycleState.DRAINING
         logger.info("Draining connections...")
-        
+
         # Wait for grace period to allow in-flight requests to complete
         await asyncio.sleep(min(5.0, self.grace_period / 3))
-        
+
         self.state = LifecycleState.STOPPING
         logger.info(f"Shutting down server (hooks: {len(self._shutdown_hooks)})")
-        
+
         # Execute shutdown hooks in reverse order (LIFO)
         for hook in reversed(self._shutdown_hooks):
             try:
@@ -189,39 +189,39 @@ class LifecycleManager:
                 logger.warning(f"Shutdown hook timed out after {hook.timeout}s: {hook.name}")
             except Exception as e:
                 logger.error(f"Shutdown hook failed: {hook.name} - {str(e)}", exc_info=True)
-        
+
         self.state = LifecycleState.STOPPED
         self._shutdown_event.set()
         logger.info("Server shutdown complete")
-    
+
     async def wait_for_shutdown(self):
         """Wait for shutdown to complete."""
         await self._shutdown_event.wait()
-    
+
     def is_ready(self) -> bool:
         """Check if server is ready to serve requests."""
         return self.state in (LifecycleState.READY, LifecycleState.SERVING)
-    
+
     def is_serving(self) -> bool:
         """Check if server is actively serving."""
         return self.state == LifecycleState.SERVING
-    
+
     def healthz(self) -> Dict[str, Any]:
         """
         Get health status.
-        
+
         Returns:
             Health check result with status and details
         """
         uptime = time.time() - self._start_time if self._start_time else 0
-        
+
         health_status = {
             "status": "healthy" if self.is_ready() else "unhealthy",
             "state": self.state.value,
             "uptime_seconds": uptime,
             "checks": {}
         }
-        
+
         # Run all registered health checks
         for name, check_func in self._health_checks.items():
             try:
@@ -236,13 +236,13 @@ class LifecycleManager:
                     "error": str(e)
                 }
                 health_status["status"] = "degraded"
-        
+
         return health_status
-    
+
     def readyz(self) -> Dict[str, Any]:
         """
         Get readiness status.
-        
+
         Returns:
             Readiness check result
         """
@@ -250,13 +250,13 @@ class LifecycleManager:
             "ready": self.is_ready(),
             "state": self.state.value
         }
-    
+
     def setup_signal_handlers(self):
         """Setup graceful shutdown on SIGTERM/SIGINT."""
         def handle_signal(sig, frame):
             logger.info(f"Received signal {sig}, initiating shutdown")
             asyncio.create_task(self.shutdown())
-        
+
         signal.signal(signal.SIGTERM, handle_signal)
         signal.signal(signal.SIGINT, handle_signal)
 ```
@@ -336,22 +336,22 @@ async def lifespan(app: FastAPI):
     """FastAPI lifespan context manager."""
     # Startup
     manager = LifecycleManager()
-    
+
     # Register hooks
     manager.register_startup_hook(initialize_db)
     manager.register_startup_hook(load_cache)
     manager.register_shutdown_hook(close_db)
     manager.register_shutdown_hook(flush_cache)
-    
+
     # Execute startup
     await manager.startup()
     manager.state = LifecycleState.SERVING
-    
+
     # Store manager in app state
     app.state.lifecycle = manager
-    
+
     yield
-    
+
     # Shutdown
     await manager.shutdown()
 
@@ -391,18 +391,18 @@ async def ready(request: Request):
 ```python
 class RollbackLifecycleManager(LifecycleManager):
     """Lifecycle manager with rollback support."""
-    
+
     async def startup(self):
         """Execute startup with automatic rollback on failure."""
         completed_hooks = []
-        
+
         try:
             for hook in self._startup_hooks:
                 await asyncio.wait_for(hook.func(), timeout=hook.timeout)
                 completed_hooks.append(hook)
         except Exception as e:
             logger.error(f"Startup failed, rolling back {len(completed_hooks)} hooks")
-            
+
             # Rollback completed hooks in reverse order
             for hook in reversed(completed_hooks):
                 rollback_func_name = f"rollback_{hook.name}"
@@ -413,7 +413,7 @@ class RollbackLifecycleManager(LifecycleManager):
                         logger.info(f"Rolled back: {hook.name}")
                     except Exception as rollback_error:
                         logger.error(f"Rollback failed for {hook.name}: {rollback_error}")
-            
+
             raise
 
 # Usage
@@ -453,18 +453,18 @@ async def test_startup_success():
     """Test successful startup."""
     manager = LifecycleManager()
     executed = []
-    
+
     async def hook1():
         executed.append("hook1")
-    
+
     async def hook2():
         executed.append("hook2")
-    
+
     manager.register_startup_hook(hook1)
     manager.register_startup_hook(hook2)
-    
+
     await manager.startup()
-    
+
     assert manager.state == LifecycleState.READY
     assert executed == ["hook1", "hook2"]
 
@@ -472,15 +472,15 @@ async def test_startup_success():
 async def test_startup_failure():
     """Test startup failure on critical hook."""
     manager = LifecycleManager()
-    
+
     async def failing_hook():
         raise RuntimeError("Hook failed")
-    
+
     manager.register_startup_hook(failing_hook, critical=True)
-    
+
     with pytest.raises(RuntimeError):
         await manager.startup()
-    
+
     assert manager.state == LifecycleState.FAILED
 
 @pytest.mark.asyncio
@@ -488,18 +488,18 @@ async def test_shutdown_order():
     """Test shutdown hooks execute in reverse order."""
     manager = LifecycleManager()
     executed = []
-    
+
     async def hook1():
         executed.append("shutdown1")
-    
+
     async def hook2():
         executed.append("shutdown2")
-    
+
     manager.register_shutdown_hook(hook1)
     manager.register_shutdown_hook(hook2)
-    
+
     await manager.shutdown()
-    
+
     # Shutdown should be LIFO
     assert executed == ["shutdown2", "shutdown1"]
 
@@ -509,18 +509,18 @@ async def test_health_check():
     manager = LifecycleManager()
     manager.state = LifecycleState.READY
     manager._start_time = time.time()
-    
+
     def check1():
         return True
-    
+
     def check2():
         raise Exception("Check failed")
-    
+
     manager.register_health_check("check1", check1)
     manager.register_health_check("check2", check2)
-    
+
     health = manager.healthz()
-    
+
     assert health["status"] == "degraded"  # One check failed
     assert health["checks"]["check1"]["status"] == "pass"
     assert health["checks"]["check2"]["status"] == "fail"
@@ -562,21 +562,21 @@ health_check_status = Gauge(
 class InstrumentedLifecycleManager(LifecycleManager):
     async def startup(self):
         lifecycle_state.labels(state=self.state.value).set(1)
-        
+
         for hook in self._startup_hooks:
             with startup_duration.labels(hook=hook.name).time():
                 await asyncio.wait_for(hook.func(), timeout=hook.timeout)
-        
+
         await super().startup()
         lifecycle_state.labels(state=self.state.value).set(1)
-    
+
     def healthz(self):
         result = super().healthz()
-        
+
         for name, check in result["checks"].items():
             status = 1 if check["status"] == "pass" else 0
             health_check_status.labels(check=name).set(status)
-        
+
         return result
 ```
 
@@ -767,4 +767,3 @@ async def lifecycle_health():
 - [Server Deployment](./server_deployment.md) - Deployment lifecycle
 - [Error Handling](./error_handling.md) - Hook error handling
 - [Rate Limiting](./rate_limiting.md) - Service protection during startup
-

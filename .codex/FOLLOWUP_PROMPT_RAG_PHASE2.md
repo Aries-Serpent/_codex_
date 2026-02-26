@@ -131,17 +131,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-      
+
       - name: Run RAG tests
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -161,22 +161,22 @@ jobs:
 def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
     """..."""
     meta_status = has_meta_tensors(model)
-    
+
     if meta_status:
         # Add production metrics
         import time
         start_time = time.time()
-        
+
         logger.warning("Meta tensor detected - using to_empty()")
         # ... existing code ...
-        
+
         duration = time.time() - start_time
         logger.info(f"Meta tensor device transfer took {duration:.3f}s")
-        
+
         # Optional: Add metrics if you have a metrics system
         # metrics.increment('rag.meta_tensor_detected')
         # metrics.timing('rag.to_empty_duration', duration)
-    
+
     # ... rest of function
 ```
 
@@ -234,7 +234,7 @@ def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
 class MockSentenceTransformer:
     def get_sentence_embedding_dimension(self):
         return 384  # Match real model dimension
-    
+
     def encode(self, texts, **kwargs):
         # Handle ALL parameters real model accepts
         convert_to_numpy = kwargs.get('convert_to_numpy', True)

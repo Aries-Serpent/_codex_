@@ -92,8 +92,8 @@ model = SentenceTransformer(
 
 ### Error Pattern
 ```
-NotImplementedError: Cannot copy out of meta tensor; no data! 
-Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() 
+NotImplementedError: Cannot copy out of meta tensor; no data!
+Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 when moving module from meta to a different device.
 ```
 
@@ -142,7 +142,7 @@ if hasattr(model, "device"):
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely move model from meta device to target device.
-    
+
     Handles both standard PyTorch models and SentenceTransformer models,
     which wrap PyTorch modules internally and require checking the
     underlying modules for meta tensors.
@@ -150,7 +150,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
     try:
         # Detect if model has meta tensors by checking its modules/parameters
         has_meta_tensors = False
-        
+
         # For SentenceTransformer and other models with named_modules
         if hasattr(model, "named_modules"):
             # Check all modules for meta device parameters
@@ -166,14 +166,14 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                         break
                 if has_meta_tensors:
                     break
-        
+
         # For simple PyTorch models with direct device attribute
         elif hasattr(model, "device"):
             device_type = getattr(model.device, "type", None)
             if device_type == "meta":
                 has_meta_tensors = True
                 logger.debug("Detected model on meta device")
-        
+
         # If meta tensors detected, use to_empty() for safe loading
         if has_meta_tensors:
             if hasattr(model, "to_empty"):
@@ -185,14 +185,14 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                     f"attempting regular to({device})"
                 )
                 return model.to(device)
-        
+
         # No meta tensors, safe to use regular to() method
         if hasattr(model, "to"):
             logger.debug(f"Moving model to {device} (no meta tensors detected)")
             return model.to(device)
-        
+
         return model
-        
+
     except Exception as e:
         logger.warning(
             f"Could not safely load model to device {device}: {e}. "
@@ -308,7 +308,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
    ```python
    # ❌ Wrong: Assumes direct device attribute
    if model.device.type == "meta":
-   
+
    # ✅ Right: Check all parameters
    for param in model.parameters():
        if param.device.type == "meta":

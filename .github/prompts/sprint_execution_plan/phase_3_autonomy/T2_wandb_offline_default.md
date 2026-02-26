@@ -46,14 +46,14 @@ def init_wandb(**kwargs):
 class LogWriter:
     def __init__(self):
         self.wandb_available = self._check_wandb()
-        
+
     def _check_wandb(self):
         try:
             import wandb
             return os.getenv("WANDB_MODE") != "disabled"
         except:
             return False
-    
+
     def log(self, metrics):
         if self.wandb_available:
             wandb.log(metrics)

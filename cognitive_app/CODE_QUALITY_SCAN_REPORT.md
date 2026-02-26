@@ -107,7 +107,7 @@ Do not use a triple slash reference for ../vite-end.d.ts
 ```
 
 **Root Cause:** Legacy TypeScript reference syntax not allowed in ESLint  
-**Fix Applied:** 
+**Fix Applied:**
 ```typescript
 // Before:
 /// <reference path="../vite-end.d.ts" />

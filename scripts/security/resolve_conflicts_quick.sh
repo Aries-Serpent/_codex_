@@ -60,7 +60,7 @@ FAILED=0
 while IFS= read -r file; do
     if [ -n "$file" ]; then
         echo -n "  Resolving $file... "
-        
+
         if git checkout --ours "$file" 2>/dev/null && git add "$file" 2>/dev/null; then
             echo "✓"
             ((RESOLVED++))

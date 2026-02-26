@@ -55,50 +55,50 @@ monitor_workflows() {
     local failed=0
     local in_progress=0
     local action_required=0
-    
+
     # Get recent workflow runs
     local runs=$(gh run list --repo "$REPO" --limit 30 --json databaseId,name,status,conclusion 2>/dev/null || echo "[]")
-    
+
     if [ "$runs" = "[]" ]; then
         log_warning "No workflow runs found or GitHub CLI not authenticated"
         return 1
     fi
-    
+
     # Parse and count statuses
     completed=$(echo "$runs" | jq '[.[] | select(.status == "completed")] | length')
     in_progress=$(echo "$runs" | jq '[.[] | select(.status == "in_progress" or .status == "queued")] | length')
     failed=$(echo "$runs" | jq '[.[] | select(.conclusion == "failure")] | length')
     action_required=$(echo "$runs" | jq '[.[] | select(.conclusion == "action_required")] | length')
-    
+
     echo ""
     echo "📊 Workflow Status Summary:"
     echo "   Completed: $completed"
     echo "   In Progress: $in_progress"
     echo "   Failed: $failed"
     echo "   Action Required: $action_required"
-    
+
     # List any failed workflows
     if [ "$failed" -gt 0 ]; then
         log_error "Failed Workflows:"
         echo "$runs" | jq -r '.[] | select(.conclusion == "failure") | "   - \(.name) (ID: \(.databaseId))"'
     fi
-    
+
     # Return number of in-progress workflows
     echo "$in_progress"
 }
 
 analyze_failure() {
     local run_id=$1
-    
+
     log_info "Analyzing failure for run ID: $run_id"
-    
+
     # Create logs directory
     mkdir -p .codex/logs
-    
+
     # Download logs
     if gh run view "$run_id" --repo "$REPO" --log > ".codex/logs/run_${run_id}.log" 2>/dev/null; then
         log_success "Downloaded logs for run $run_id"
-        
+
         # Run diagnosis if Python script exists
         if [ -f ".codex/scripts/diagnose_ci_failure.py" ]; then
             python .codex/scripts/diagnose_ci_failure.py "$run_id"
@@ -114,30 +114,30 @@ main() {
     log_info "Max Duration: $MAX_DURATION seconds"
     log_info "Poll Interval: $POLL_INTERVAL seconds"
     echo ""
-    
+
     while true; do
         current_time=$(date +%s)
         elapsed=$((current_time - START_TIME))
-        
+
         if [[ "$elapsed" -ge "$MAX_DURATION" ]]; then
             log_warning "Maximum monitoring duration reached (${MAX_DURATION}s)"
             break
         fi
-        
+
         log_info "Polling workflows... (${elapsed}s elapsed)"
-        
+
         in_progress=$(monitor_workflows)
-        
+
         # Check if all workflows completed (use [[ for safer string comparison)
         if [[ "$in_progress" == "0" ]]; then
             log_success "All workflows completed"
             break
         fi
-        
+
         log_info "Waiting ${POLL_INTERVAL}s before next poll..."
         sleep "$POLL_INTERVAL"
     done
-    
+
     log_success "Monitoring complete"
 }
 

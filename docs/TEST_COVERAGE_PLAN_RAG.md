@@ -40,7 +40,7 @@ The following areas need additional tests to reach 100% coverage:
 #### Uncovered Lines/Branches:
 - **Line 323-325**: Error path when file_metadata shows all zero chunks
   - **Test needed**: Create files that produce empty chunks after processing
-  
+
 - **Exception handlers in build_index_from_files**:
   - Non-UTF-8 file encoding errors
   - Permission denied errors
@@ -74,7 +74,7 @@ def test_concurrent_index_building():
 #### Uncovered Lines/Branches:
 - **Line 87-92**: Exception handling in `_load_index`
   - **Test needed**: Trigger various load failures
-  
+
 - **Line 195-200**: Edge case in `_extract_file_from_metadata`
   - **Test needed**: Various metadata structures
 
@@ -114,11 +114,11 @@ def test_extract_file_with_malformed_metadata():
   - API rate limits
   - Network timeouts
   - Invalid responses
-  
+
 - **Cache corruption scenarios**:
   - Partial writes
   - Metadata JSON corruption
-  
+
 - **Provider initialization errors**:
   - Import errors for optional dependencies
   - Model download failures

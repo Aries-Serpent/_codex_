@@ -74,18 +74,18 @@ from codex_ml.data.cache import derive_key, cache_records, load_cached_records
 def get_preprocessed_data(dataset_name, split, seed):
     # Derive cache key from parameters
     key = derive_key(dataset_name, split, str(seed))
-    
+
     # Try loading from cache
     records = load_cached_records("artifacts/cache", key)
-    
+
     if records is not None:
         return records
-    
+
     # Cache miss - preprocess and cache
     raw_data = load_raw_dataset(dataset_name, split)
     records = preprocess(raw_data, seed=seed)
     cache_records(records, cache_dir="artifacts/cache", key=key)
-    
+
     return records
 ```text
 
@@ -95,13 +95,13 @@ def get_preprocessed_data(dataset_name, split, seed):
 def get_cached_data_v2(dataset_name, split, seed, version="v1"):
     # Include version in cache key
     key = derive_key(dataset_name, split, str(seed), version)
-    
+
     records = load_cached_records("artifacts/cache", key)
-    
+
     if records is None:
         records = preprocess_v2(dataset_name, split, seed)
         cache_records(records, cache_dir="artifacts/cache", key=key)
-    
+
     return records
 ```text
 
@@ -173,7 +173,7 @@ cache_records(records, cache_dir="artifacts/cache/eval", key=eval_key)
 ```python
 def derive_dataset_key(config):
     """Derive cache key from dataset config.
-    
+
     Key includes:
     - dataset name
     - split name
@@ -193,7 +193,7 @@ def derive_dataset_key(config):
 ```python
 def load_or_preprocess(config):
     key = derive_dataset_key(config)
-    
+
     try:
         records = load_cached_records(config.cache_dir, key)
         if records is not None:
@@ -201,15 +201,15 @@ def load_or_preprocess(config):
             return records
     except Exception as e:
         logger.warning(f"Cache load failed: {e}")
-    
+
     logger.info(f"Cache miss: {key} - preprocessing...")
     records = preprocess_dataset(config)
-    
+
     try:
         cache_records(records, cache_dir=config.cache_dir, key=key)
     except Exception as e:
         logger.warning(f"Cache write failed: {e}")
-    
+
     return records
 ```text
 
@@ -223,15 +223,15 @@ from codex_ml.data.cache import derive_key, cache_records, load_cached_records
 
 def load_hf_dataset_cached(name, split, cache_dir="artifacts/cache"):
     key = derive_key("hf", name, split)
-    
+
     records = load_cached_records(cache_dir, key)
     if records is not None:
         return records
-    
+
     # Load from HuggingFace
     dataset = load_dataset(name, split=split)
     records = [dict(example) for example in dataset]
-    
+
     cache_records(records, cache_dir=cache_dir, key=key)
     return records
 ```text
@@ -245,20 +245,20 @@ def load_custom_dataset(path, preprocess_fn, cache_dir="artifacts/cache"):
     # Use file hash in cache key for freshness
     import hashlib
     file_hash = hashlib.md5(open(path, 'rb').read()).hexdigest()[:8]
-    
+
     key = derive_key("custom", path, file_hash, preprocess_fn.__name__)
-    
+
     records = load_cached_records(cache_dir, key)
     if records is not None:
         return records
-    
+
     # Load and preprocess
     with open(path) as f:
         raw_records = json.load(f)
-    
+
     records = [preprocess_fn(r) for r in raw_records]
     cache_records(records, cache_dir=cache_dir, key=key)
-    
+
     return records
 ```text
 
@@ -283,7 +283,7 @@ os.makedirs(cache_dir, exist_ok=True, mode=0o755)
 def cleanup_old_caches(cache_dir, max_age_days=7):
     import time
     cutoff = time.time() - (max_age_days * 86400)
-    
+
     for cached_file in Path(cache_dir).glob("*.jsonl"):
         if cached_file.stat().st_mtime < cutoff:
             cached_file.unlink()

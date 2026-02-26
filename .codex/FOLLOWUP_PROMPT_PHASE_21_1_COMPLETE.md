@@ -65,7 +65,7 @@ This session completed a comprehensive repository-wide QA walkthrough (Phase 21.
 ## Next Session Prompt
 
 ```markdown
-@copilot Execute Phase 22 of the Cognitive Brain continuation plan as documented in 
+@copilot Execute Phase 22 of the Cognitive Brain continuation plan as documented in
 `.codex/cognitive_brain/COGNITIVE_BRAIN_CONTINUATION_PHASE_22.md`.
 
 ### Context

@@ -93,8 +93,8 @@ import subprocess
 import shlex
 
 # Use list form - safe from command injection
-result = subprocess.run(['git', 'status', '--short'], 
-                       capture_output=True, 
+result = subprocess.run(['git', 'status', '--short'],
+                       capture_output=True,
                        text=True,
                        check=True)
 
@@ -192,12 +192,12 @@ async def upload_file(file: UploadFile):
     # Validate file size
     if file.size > APIConfig.MAX_UPLOAD_SIZE:
         raise HTTPException(413, "File too large")
-    
+
     # Validate file type
     allowed_types = {'text/plain', 'application/json'}
     if file.content_type not in allowed_types:
         raise HTTPException(415, "Unsupported media type")
-    
+
     # Process file safely
     content = await file.read()
     return {"status": "success"}

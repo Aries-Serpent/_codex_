@@ -10,17 +10,17 @@ data:
   batch_size: 32
   num_workers: 4
   shuffle: true
-  
+
   # Data paths (relative to project root)
   train_path: "data/train"
   val_path: "data/val"
   test_path: "data/test"
-  
+
   # Data preprocessing
   preprocessing:
     normalize: true
     augmentation: false
-  
+
   # Loading options
   pin_memory: true
   drop_last: false

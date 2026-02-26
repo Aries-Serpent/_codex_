@@ -1,6 +1,6 @@
 # [Guide]: Deterministic Installs (uv-first, offline-friendly)
 
- Energy: 5/5 
+ Energy: 5/5
 
 ## Why
 - Recreate environments deterministically from the lockfile (uv.lock)

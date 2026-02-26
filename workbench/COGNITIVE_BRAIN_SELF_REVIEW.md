@@ -92,26 +92,26 @@ graph TB
     B --> D[Python Integration Layer]
     B --> E[CI/CD Automation]
     B --> F[Monitoring & Telemetry]
-    
+
     C --> C1[SwarmEngine]
     C --> C2[TaskManager]
     C --> C3[Compression]
     C --> C4[Metrics]
     C --> C5[Telemetry]
-    
+
     D --> D1[PyO3 Bindings]
     D --> D2[FFI Bridge]
     D --> D3[Integration Tests]
-    
+
     E --> E1[Unit Test Runner]
     E --> E2[Benchmark Suite]
     E --> E3[Coverage Tracker]
     E --> E4[Security Auditor]
-    
+
     F --> F1[Prometheus Metrics]
     F --> F2[Health Checks]
     F --> F3[Performance Monitoring]
-    
+
     style B fill:#90EE90
     style C fill:#87CEEB
     style E fill:#FFD700
@@ -305,7 +305,7 @@ graph LR
     B --> C[Act: Validate & Deploy]
     C --> D[Review: Analyze results]
     D --> A
-    
+
     style A fill:#FFE4B5
     style B fill:#90EE90
     style C fill:#87CEEB

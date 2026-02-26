@@ -198,11 +198,11 @@ async function listRuns(owner, repo, branch) {
 
 // Usage
 const runs = await listRuns("Aries-Serpent", "_codex_", "main");
-console.log(runs.map(r => ({ 
-  id: r.id, 
-  name: r.name, 
-  status: r.status, 
-  conclusion: r.conclusion 
+console.log(runs.map(r => ({
+  id: r.id,
+  name: r.name,
+  status: r.status,
+  conclusion: r.conclusion
 })));
 ```
 
@@ -220,7 +220,7 @@ console.log(runs.map(r => ({
         branch: process.env.BRANCH || context.ref.replace('refs/heads/',''),
         per_page: 10
       });
-      
+
       const runData = runs.data.workflow_runs.map(r => ({
         id: r.id,
         name: r.name,
@@ -228,9 +228,9 @@ console.log(runs.map(r => ({
         conclusion: r.conclusion,
         created_at: r.created_at
       }));
-      
+
       console.log(JSON.stringify(runData, null, 2));
-      
+
       // Check for action_required
       const actionRequired = runData.filter(r => r.conclusion === 'action_required');
       if (actionRequired.length > 0) {
@@ -255,10 +255,10 @@ def list_workflow_runs(owner, repo, branch, token):
         "branch": branch,
         "per_page": 10
     }
-    
+
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
-    
+
     runs = response.json().get("workflow_runs", [])
     return runs
 
@@ -290,7 +290,7 @@ repo = g.get_repo("Aries-Serpent/_codex_")
 permissions:
   actions: read        # For listing/reading runs
   contents: read       # For checking out code
-  
+
 # For rerun/cancel operations:
 permissions:
   actions: write
@@ -325,7 +325,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.ref_name }}&per_page=100" \
             > runs.json
-      
+
       - name: Upload snapshot
         uses: actions/upload-artifact@v4
         with:
@@ -341,7 +341,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: workflow-runs-snapshot
-      
+
       - name: Analyze runs offline
         run: |
           jq '.workflow_runs | map(select(.conclusion == "action_required"))' runs.json
@@ -430,14 +430,14 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Check runs with gh
         if: steps.detect.outputs.method == 'gh'
         run: |
           gh run list --repo ${{ github.repository }} --limit 20 --json status,conclusion,name
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Check runs with API
         if: steps.detect.outputs.method == 'api'
         run: |
@@ -445,7 +445,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=20" \
           | jq '.workflow_runs[] | {name, status, conclusion, created_at}'
-      
+
       - name: Find action_required runs
         run: |
           curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \

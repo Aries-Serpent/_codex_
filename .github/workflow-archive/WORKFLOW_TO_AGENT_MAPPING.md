@@ -33,7 +33,7 @@ This document maps GitHub Actions workflows to custom Copilot agents that can:
 
 ### CI/CD & Testing Agents
 
-1. **ci-testing-agent** 
+1. **ci-testing-agent**
    - Location: `.github/agents/ci-testing-agent.md`
    - Purpose: Debug CI/CD pipelines, test failures, import errors
    - Activation: `@copilot Use the CI Testing Agent to debug...`
@@ -130,7 +130,7 @@ This document maps GitHub Actions workflows to custom Copilot agents that can:
 #### auto-fix-common-issues.yml
 - **Display**: Auto-fix Common Issues
 - **Category**: CI/CD
-- **Relevant Agents**: 
+- **Relevant Agents**:
   - ci-testing-agent
   - workflow-ci-fixer
   - ci-emergency-response-agent
@@ -545,8 +545,8 @@ This document maps GitHub Actions workflows to custom Copilot agents that can:
 
 **Example Activation**:
 ```
-@copilot The rust_swarm_ci workflow failed. Use the CI Testing Agent to diagnose, 
-then use workflow-ci-fixer to fix any workflow syntax issues, and use 
+@copilot The rust_swarm_ci workflow failed. Use the CI Testing Agent to diagnose,
+then use workflow-ci-fixer to fix any workflow syntax issues, and use
 autonomous-test-healer-agent to fix test failures.
 ```
 
@@ -559,7 +559,7 @@ autonomous-test-healer-agent to fix test failures.
 
 **Example Activation**:
 ```
-@copilot Security alerts detected in codeql-analysis. Use security-alert-verification-agent 
+@copilot Security alerts detected in codeql-analysis. Use security-alert-verification-agent
 to verify these are real issues, then use codeql-alert-resolution-agent to fix them.
 ```
 
@@ -573,8 +573,8 @@ to verify these are real issues, then use codeql-alert-resolution-agent to fix t
 
 **Example Activation**:
 ```
-@copilot Check documentation health using doc-freshness-checker, then use 
-link-validator-agent to fix broken links, and documentation-quality-agent 
+@copilot Check documentation health using doc-freshness-checker, then use
+link-validator-agent to fix broken links, and documentation-quality-agent
 to assess overall quality.
 ```
 
@@ -588,8 +588,8 @@ to assess overall quality.
 
 **Example Activation**:
 ```
-@copilot Coverage dropped below threshold in test-suite. Use test-coverage-monitor 
-to identify gaps, test-alignment-fixer to update outdated tests, and 
+@copilot Coverage dropped below threshold in test-suite. Use test-coverage-monitor
+to identify gaps, test-alignment-fixer to update outdated tests, and
 autonomous-test-healer-agent to fix failures.
 ```
 

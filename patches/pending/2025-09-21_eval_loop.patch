@@ -22,7 +22,7 @@
 +        or dataset_cfg.get("validation_fraction")
 +        or 0.0
 +    )
- 
+
      train_texts = _listify_texts(dataset_cfg.get("train_texts"))
      if not train_texts:
          train_texts = _listify_texts(dataset_cfg.get("texts"))
@@ -34,7 +34,7 @@
 -        val_texts = _listify_texts(dataset_cfg.get("val_texts"))
 -    if dataset_cfg.get("eval_path"):
 -        val_texts.extend(_load_texts(dataset_cfg.get("eval_path"), dataset_format))
-+    
++
 +    val_texts = _listify_texts(dataset_cfg.get("eval_texts"))
 +    if not val_texts:
 +        val_texts = _listify_texts(dataset_cfg.get("val_texts"))

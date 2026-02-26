@@ -75,22 +75,22 @@ graph LR
     D -.-> E[(Cognitive Brain)]
     E -.Query.-> B
     E -.Record.-> D
-    
+
     A1[Scan code patterns] --> A
     A2[Check configs] --> A
     A3[Review docs] --> A
     A4[Analyze workflows] --> A
-    
+
     B1[Gap analysis] --> B
     B2[Risk scoring] --> B
     B3[Framework matching] --> B
     B4[Requirement checks] --> B
-    
+
     C1[Generate audit report] --> C
     C2[Create remediation plan] --> C
     C3[Block if critical] --> C
     C4[Evidence collection] --> C
-    
+
     D1[Track compliance] --> D
     D2[Learn patterns] --> D
     D3[Update baselines] --> D
@@ -744,7 +744,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -933,7 +933,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -267,9 +267,9 @@ export class CodexAPIClient {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         task_description: taskDescription,
-        workflow_token: workflowToken 
+        workflow_token: workflowToken
       }),
     });
 

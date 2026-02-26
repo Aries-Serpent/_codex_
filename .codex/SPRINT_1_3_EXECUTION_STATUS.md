@@ -81,7 +81,7 @@
 
 #### Task 1.2: Eval/Exec Remediation (4-6h)
 - **Current:** 54 eval(), 18 exec() instances found
-- **Action Needed:** 
+- **Action Needed:**
   1. Audit each instance (2h)
   2. Categorize by risk (1h)
   3. Replace with safe alternatives (3-5h)

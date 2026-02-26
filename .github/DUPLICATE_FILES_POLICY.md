@@ -50,7 +50,7 @@ These files appear to be duplicated and require investigation:
 
 **Action Required**: Consolidate to a single location or document the reason for duplication. Having the same module in both locations can lead to confusion and maintenance issues.
 
-**Recommendation**: 
+**Recommendation**:
 1. Determine which location is the canonical source
 2. Remove or redirect the duplicate
 3. Update imports throughout the codebase if necessary

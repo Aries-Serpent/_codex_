@@ -101,28 +101,28 @@ ERRORS=0
 # Process each workflow
 for workflow in "${WORKFLOWS[@]}"; do
   WORKFLOW_PATH=".github/workflows/$workflow"
-  
+
   # Check if file exists
   if [ ! -f "$WORKFLOW_PATH" ]; then
     echo -e "${YELLOW}⚠️  Skipping${NC} $workflow ${RED}(not found)${NC}"
     SKIPPED_NOTFOUND=$((SKIPPED_NOTFOUND + 1))
     continue
   fi
-  
+
   # Check if already has prefix
   if grep -q "^name: Art_" "$WORKFLOW_PATH"; then
     echo -e "${YELLOW}⏭️  Skipping${NC} $workflow ${YELLOW}(already has prefix)${NC}"
     SKIPPED_EXISTING=$((SKIPPED_EXISTING + 1))
     continue
   fi
-  
+
   # Backup original
   if ! cp "$WORKFLOW_PATH" "$BACKUP_DIR/$workflow"; then
     echo -e "${RED}❌ Error backing up${NC} $workflow"
     ERRORS=$((ERRORS + 1))
     continue
   fi
-  
+
   # Add Art_ prefix to name field
   if sed -i 's/^name: \(.*\)/name: Art_\1/' "$WORKFLOW_PATH"; then
     echo -e "${GREEN}✅ Updated${NC} $workflow"

@@ -93,7 +93,7 @@ output:
     quick_wins: integer
     medium_complexity: integer
     complex: integer
-  
+
   failures:
     - test_id: string
       file: string
@@ -103,7 +103,7 @@ output:
       priority: "quick-win" | "medium" | "complex"
       fix_strategy: string
       estimated_time: string
-      
+
   recommendations:
     - priority: integer
       action: string
@@ -202,11 +202,11 @@ def classify_error(error_message: str, stack_trace: str) -> str:
         "assertion_fail": r"AssertionError: assert",
         "module_not_found": r"ModuleNotFoundError",
     }
-    
+
     for error_type, pattern in patterns.items():
         if re.search(pattern, error_message):
             return error_type
-    
+
     return "unknown"
 ```
 
@@ -230,7 +230,7 @@ def generate_fix(error_type: str, context: dict) -> dict:
         "api_change": suggest_api_update,
         # ...
     }
-    
+
     strategy_func = strategies.get(error_type, suggest_generic)
     return strategy_func(context)
 ```
@@ -309,20 +309,20 @@ class TestFailureAnalyzer:
         self.gh = Github(token)
         self.repo = self.gh.get_repo(repo)
         self.run_id = run_id
-    
+
     def analyze(self):
         # Download artifacts
         artifacts = self.get_artifacts()
         junit_data = self.parse_junit(artifacts)
-        
+
         # Classify failures
         failures = self.classify_failures(junit_data)
-        
+
         # Generate report
         report = self.generate_report(failures)
-        
+
         return report
-    
+
     # Implementation details...
 ```
 

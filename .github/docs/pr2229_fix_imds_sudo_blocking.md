@@ -42,13 +42,13 @@ Address all review comments from PR #2229 to fix critical sudo blocking issues a
 `````bash
 check_iptables() {
   section "iptables OUTPUT Chain Inspection"
-  
+
   # Check if iptables command exists
   if ! command -v iptables >/dev/null 2>&1; then
     log_info "iptables not available on this system"
     return 0
   fi
-  
+
   # Detect sudo availability and privilege level
   local sudo_cmd=""
   if [ "$EUID" -eq 0 ]; then
@@ -76,17 +76,17 @@ check_iptables() {
     set_metric "iptables_skip_reason" "no_sudo_command"
     return 0
   fi
-  
+
   # Execute iptables inspection with detected privilege method
   local out
   out="$("$sudo_cmd" iptables -L OUTPUT -n -v 2>/dev/null || true)"
-  
+
   if [ -z "$out" ]; then
     log_warn "Failed to retrieve iptables OUTPUT chain"
     set_metric "iptables_retrieval_failed" 1
     return 0
   fi
-  
+
   # Check for IMDS-specific rules
   if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
     log "Rules referencing $IMDS_IP:"
@@ -94,11 +94,11 @@ check_iptables() {
   else
     log "No explicit OUTPUT rule referencing $IMDS_IP."
   fi
-  
+
   # Check for DROP rules affecting IMDS
   local drop_check
   drop_check="$("$sudo_cmd" iptables -S OUTPUT 2>/dev/null || true)"
-  
+
   if grep -E "DROP" <<<"$drop_check" | grep -E "$IMDS_IP" >/dev/null 2>&1; then
     log "$(c_red "DROP rule detected affecting $IMDS_IP")"
     set_metric "iptables_drop_detected" 1
@@ -128,13 +128,13 @@ check_iptables() {
 `````bash
 check_nftables() {
   section "nftables Inspection"
-  
+
   # Check if nft command exists
   if ! command -v nft >/dev/null 2>&1; then
     log_info "nftables not available on this system"
     return 0
   fi
-  
+
   # Detect sudo availability (same pattern as iptables)
   local sudo_cmd=""
   if [ "$EUID" -eq 0 ]; then
@@ -157,17 +157,17 @@ check_nftables() {
     set_metric "nftables_skip_reason" "no_sudo_command"
     return 0
   fi
-  
+
   # Execute nftables inspection
   local out
   out="$("$sudo_cmd" nft list ruleset 2>/dev/null || true)"
-  
+
   if [ -z "$out" ]; then
     log_warn "Failed to retrieve nftables ruleset"
     set_metric "nftables_retrieval_failed" 1
     return 0
   fi
-  
+
   # Check for IMDS-specific rules
   if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
     log "nftables rules referencing $IMDS_IP:"
@@ -320,11 +320,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run IMDS diagnostic
         run: bash .github/scripts/imds_diagnostic.sh
         timeout-minutes: 2
-      
+
       - name: Upload diagnostic results
         if: always()
         uses: actions/upload-artifact@v4
@@ -769,20 +769,20 @@ jobs:
   test-sudo-blocking-fix:
     runs-on: ubuntu-latest
     timeout-minutes: 2  # Critical: must complete in 2 min
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Verify sudo availability
         run: |
           command -v sudo && echo "sudo available" || echo "sudo not available"
           sudo -n true 2>/dev/null && echo "Passwordless sudo" || echo "Password required"
-      
+
       - name: Run IMDS diagnostic
         run: bash .github/scripts/imds_diagnostic.sh
         continue-on-error: false
-      
+
       - name: Verify completion
         run: |
           if [ ! -f diagnostic_results.txt ]; then
@@ -790,14 +790,14 @@ jobs:
             exit 1
           fi
           echo "✅ Diagnostic completed successfully"
-      
+
       - name: Check for warnings
         run: |
           if ! grep -q "Skipping iptables inspection" diagnostic_results.txt; then
             echo "WARNING: Expected skip message not found"
             cat diagnostic_results.txt
           fi
-      
+
       - name: Upload diagnostic results
         if: always()
         uses: actions/upload-artifact@v4
@@ -881,18 +881,18 @@ trap cleanup EXIT
 # TC1: Passwordless Sudo
 test_passwordless_sudo() {
   log_test "TC1: Passwordless Sudo"
-  
+
   # Setup
   cat | sudo tee /etc/sudoers.d/imds-diagnostic-test >/dev/null <<EOF
 $USER ALL=(ALL) NOPASSWD: /usr/sbin/iptables
 $USER ALL=(ALL) NOPASSWD: /usr/sbin/nft
 EOF
   sudo chmod 0440 /etc/sudoers.d/imds-diagnostic-test
-  
+
   # Execute
   timeout 30s bash "$IMDS_SCRIPT" >/dev/null 2>&1
   local exit_code=$?
-  
+
   # Validate
   if [ $exit_code -eq 0 ] || [ $exit_code -eq 2 ]; then
     if grep -q "Passwordless sudo available" diagnostic_results.txt 2>/dev/null; then
@@ -903,24 +903,24 @@ EOF
   else
     log_fail "Script failed with exit code $exit_code"
   fi
-  
+
   cleanup
 }
 
 # TC2: Password Required (Critical)
 test_password_required() {
   log_test "TC2: Password-Required Sudo (CRITICAL)"
-  
+
   # Setup: Remove passwordless sudo
   sudo rm -f /etc/sudoers.d/imds-diagnostic-test
-  
+
   # Execute with timeout (should NOT hang)
   local start_time=$(date +%s)
   timeout 30s bash "$IMDS_SCRIPT" >/dev/null 2>&1
   local exit_code=$?
   local end_time=$(date +%s)
   local duration=$((end_time - start_time))
-  
+
   # Validate
   if [ $exit_code -eq 124 ]; then
     log_fail "Script HUNG (timeout after 30s) - REGRESSION DETECTED"
@@ -937,14 +937,14 @@ test_password_required() {
   else
     log_fail "Script took too long (${duration}s)"
   fi
-  
+
   cleanup
 }
 
 # TC3: Root User
 test_root_user() {
   log_test "TC3: Root User"
-  
+
   # Execute as root
   if [ "$EUID" -eq 0 ]; then
     timeout 30s bash "$IMDS_SCRIPT" >/dev/null 2>&1
@@ -956,23 +956,23 @@ test_root_user() {
   else
     echo "Skipping TC3 (not running as root)"
   fi
-  
+
   cleanup
 }
 
 # TC4: No Sudo Command
 test_no_sudo() {
   log_test "TC4: No Sudo Command"
-  
+
   # Execute with restricted PATH
   PATH="/usr/local/bin:/usr/bin:/bin" timeout 30s bash "$IMDS_SCRIPT" >/dev/null 2>&1
-  
+
   if grep -q "sudo not available" diagnostic_results.txt 2>/dev/null; then
     log_pass "Missing sudo detected and handled gracefully"
   else
     log_fail "Missing sudo not handled correctly"
   fi
-  
+
   cleanup
 }
 

@@ -110,7 +110,7 @@ jobs:
         with:
           mode: codeql_chunked
           chunk_config: .codeql/chunk-config.yml
-          
+
       - name: Flaky Test Detection
         if: inputs.enable_flaky_detection
         uses: ./.github/agents/ci-testing-agent
@@ -138,12 +138,12 @@ coverage:
   threshold: 95
   fail_under: 90
   critical_path_threshold: 100
-  
+
   # Phase 14.4 additions
   branch_coverage:
     enabled: true
     threshold: 85
-  
+
   # Exception handler coverage (Phase 14.4)
   exception_coverage:
     track: true
@@ -156,13 +156,13 @@ priority_matrix:
   source: .codex/test_priority_matrix.json
   modules: 518  # Total trackable modules
   update_frequency: per-phase
-  
+
   scoring:
     file_size_weight: 0.2
     dependency_count_weight: 0.3
     security_impact_weight: 0.3
     change_frequency_weight: 0.2
-  
+
   categories:
     critical: [security/*, auth/*, safety/*]
     high: [cli/*, data/*, training/*]
@@ -178,7 +178,7 @@ templates:
   api_test: tests/templates/api_test_template.py
   data_test: tests/templates/data_test_template.py
   ml_test: tests/templates/ml_test_template.py
-  
+
   auto_generate: true
   include_fixtures: true
   include_markers: true
@@ -190,11 +190,11 @@ trends:
   enabled: true
   storage: .codex/coverage_trends.json
   history_days: 90
-  
+
   alerts:
     regression_threshold: 2.0  # percent
     stagnation_days: 14
-    
+
   reports:
     weekly_summary: true
     pr_comment: true
@@ -226,11 +226,11 @@ cve_response:
     enabled: true
     max_severity: medium  # Auto-fix up to medium
     require_review: true
-    
+
   notification:
     slack_channel: "#security-alerts"
     email: security@example.com
-    
+
   sla:
     critical: 4h
     high: 24h
@@ -244,13 +244,13 @@ denylist:
   sources:
     - .codex/security/denylist.json
     - .codex/security/cve_denylist.json
-    
+
   categories:
     packages: true
     domains: true
     ips: false
     patterns: true
-    
+
   auto_update:
     enabled: true
     source: github_advisory_db
@@ -264,11 +264,11 @@ safety:
     html_escape: true
     sql_parameterize: true
     path_normalize: true
-    
+
   moderation:
     content_filter: true
     pii_detection: true
-    
+
   tests:
     injection_patterns: true
     xss_patterns: true
@@ -281,11 +281,11 @@ codeql:
   enabled: true
   chunked_analysis: true
   config: .codeql/codeql-config.yml
-  
+
   queries:
     - security-extended
     - security-and-quality
-    
+
   sarif:
     output: security-results.sarif
     upload_to_github: true
@@ -316,18 +316,18 @@ baselines:
     location: .codex/perf/baselines/
     format: json
     compression: gzip
-    
+
   types:
     training_throughput: samples/second
     inference_latency: milliseconds
     rag_query_time: milliseconds
     memory_peak: megabytes
-    
+
   update_policy:
     on_merge_to_main: true
     require_improvement: false
     keep_history: 30  # baselines
-    
+
   normalization:
     cpu_model: true
     memory_size: true
@@ -339,18 +339,18 @@ baselines:
 slow_tests:
   enabled: true
   threshold_seconds: 5
-  
+
   categories:
     acceptable: [0, 2]
     slow: [2, 5]
     very_slow: [5, 30]
     unacceptable: [30, null]
-    
+
   actions:
     slow: warn
     very_slow: create_issue
     unacceptable: block_merge
-    
+
   optimization_suggestions: true
 ```
 
@@ -358,16 +358,16 @@ slow_tests:
 ```yaml
 parallelization:
   analyze: true
-  
+
   metrics:
     current_parallel_factor: 4
     optimal_parallel_factor: auto
-    
+
   bottlenecks:
     io_bound: true
     cpu_bound: true
     memory_bound: true
-    
+
   recommendations:
     pytest_xdist: true
     batch_size: true
@@ -381,12 +381,12 @@ benchmarks:
     - throughput_samples_per_second
     - memory_peak_mb
     - time_to_convergence
-    
+
   inference:
     - tokens_per_second
     - batch_latency_ms
     - memory_usage_mb
-    
+
   rag:
     - indexing_time_ms
     - retrieval_latency_ms
@@ -415,18 +415,18 @@ benchmarks:
 mkdocs:
   enabled: true
   config: mkdocs.yml
-  
+
   validation:
     strict_mode: false  # 297 warnings pending
     nav_structure: true
-    
+
   warnings:
     max_allowed: 300
     categories_to_fix:
       - broken_links
       - missing_files
       - invalid_refs
-      
+
   index_preference:
     # MkDocs prefers index.md over README.md
     use_index_md: true
@@ -437,22 +437,22 @@ mkdocs:
 ```yaml
 code_examples:
   validate: true
-  
+
   sources:
     - docs/**/*.md
     - README.md
     - CHANGELOG.md
-    
+
   languages:
     python:
       syntax_check: true
       import_check: true
       execution_check: false  # Security
-      
+
     yaml:
       syntax_check: true
       schema_validation: true
-      
+
     bash:
       syntax_check: true
 ```
@@ -461,19 +461,19 @@ code_examples:
 ```yaml
 api_docs:
   sync: true
-  
+
   sources:
     - src/codex/**/*.py
     - agents/**/*.py
-    
+
   targets:
     - docs/api/
-    
+
   validation:
     docstring_coverage: true
     type_hints: true
     examples: true
-    
+
   generation:
     format: markdown
     include_private: false
@@ -485,11 +485,11 @@ api_docs:
 external_links:
   strategy: github_urls
   base_url: https://github.com/Aries-Serpent/_codex_/blob/main/
-  
+
   patterns:
     - ../AGENTS.md -> ${base_url}AGENTS.md
     - ../pyproject.toml -> ${base_url}pyproject.toml
-    
+
   auto_convert: true
 ```
 
@@ -518,24 +518,24 @@ detection:
   min_pass_rate: 0.95
   history_window_days: 7
   min_runs: 10
-  
+
   patterns:
     timing: true
     ordering: true
     resource: true
     network: true
-    
+
 quarantine:
   enabled: true
   threshold_failures: 3
   auto_skip: true
   notification: true
-  
+
 remediation:
   retry_on_failure: true
   max_retries: 3
   isolation_mode: true
-  
+
 reporting:
   dashboard: true
   weekly_summary: true
@@ -568,25 +568,25 @@ scanning:
   sources:
     - pyproject.toml
     - requirements.txt
-    
+
 vulnerability:
   check: true
   sources:
     - github_advisory_db
     - nvd
     - osv
-    
+
 updates:
   auto_create_pr: true
   group_updates: true
-  
+
   policy:
     patch: auto_merge
     minor: review_required
     major: manual_only
-    
+
   breaking_change_detection: true
-  
+
 testing:
   run_tests_before_merge: true
   compatibility_matrix: true
@@ -616,7 +616,7 @@ agent:
 size_limits:
   per_chunk_bytes: 10000000
   warning_threshold_bytes: 8000000
-  
+
 chunks:
   strategy: directory_based
   paths:
@@ -635,12 +635,12 @@ chunks:
     - name: scripts
       path: scripts/
       priority: low
-      
+
 sarif:
   merge_results: true
   merge_script: scripts/merge_sarif.py
   output: merged-results.sarif
-  
+
 monitoring:
   size_alerts: true
   growth_tracking: true

@@ -107,7 +107,7 @@ triggers:
 permissions:
   contents: [read|write]
   pull-requests: write
-  
+
 config:
   key: value
 
@@ -185,7 +185,7 @@ p95 = latencies[int(len(latencies) * 0.95)]
 class RAGMetrics:
     def export_prometheus(self) -> str:
         # Histogram format with buckets
-    
+
     def export_cloudwatch(self) -> Dict:
         # JSON format with dimensions
 ```
@@ -226,7 +226,7 @@ privacy:
     - "**/*.env"
     - "**/*secret*"
     - "**/*password*"
-  
+
   redact_sensitive_data: true
   respect_codeowners: true
 ```
@@ -314,25 +314,25 @@ graph TB
         PM[Provenance Metadata]
         MET[RAG Metrics]
     end
-    
+
     subgraph "Applications"
         AG1[RAG Index Manager Agent]
         AG2[Semantic Search Agent]
         APP[User Applications]
     end
-    
+
     subgraph "Monitoring"
         PROM[Prometheus]
         CW[CloudWatch]
         GRAF[Grafana]
     end
-    
+
     AG1 --> MT
     AG2 --> CR
     CR --> PM
     APP --> CR
     APP --> MT
-    
+
     MT --> MET
     CR --> MET
     MET --> PROM
@@ -449,24 +449,24 @@ graph TD
     RAG --> CACHE[LRU Caching]
     RAG --> PROV[Provenance]
     RAG --> MON[Monitoring]
-    
+
     MT --> CRUD[CRUD Operations]
     MT --> MERGE[Index Merging]
-    
+
     CACHE --> TTL[TTL Invalidation]
     CACHE --> NORM[Query Normalization]
-    
+
     PROV --> AUDIT[Audit Trail]
     PROV --> JSON[JSON Serialization]
-    
+
     MON --> PROM[Prometheus]
     MON --> CW[CloudWatch]
     MON --> THREAD[Thread-Safe]
-    
+
     AGENTS[Custom Agents] --> RAG
     AGENTS --> IM[Index Manager]
     AGENTS --> SS[Semantic Search]
-    
+
     DOCS[Documentation] --> QS[Quickstart]
     DOCS --> ADV[Advanced]
     DOCS --> EX[Examples]

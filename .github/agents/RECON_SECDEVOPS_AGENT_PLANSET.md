@@ -177,7 +177,7 @@ A specialized custom agent that combines **reconnaissance capabilities** with **
 name: Recon-SecDevOps Analysis Agent
 version: 1.0.0
 description: >
-  Combines reconnaissance and SecDevOps analysis for proactive 
+  Combines reconnaissance and SecDevOps analysis for proactive
   security risk identification during development lifecycle.
 created: 2026-01-23
 updated: 2026-01-23
@@ -192,7 +192,7 @@ capabilities:
   - identify_auth_flows
   - catalog_data_flows
   - discover_cloud_resources
-  
+
   # Analysis
   - sast_analysis
   - sca_analysis
@@ -201,7 +201,7 @@ capabilities:
   - api_security_audit
   - threat_modeling
   - compliance_check
-  
+
   # Intelligence
   - risk_scoring
   - false_positive_filter
@@ -223,17 +223,17 @@ runtime:
     - pydantic>=2.0
     - httpx>=0.25.0
     - aiohttp>=3.9.0
-    
+
     # Reconnaissance
     - dnspython>=2.4.0
     - python-nmap>=0.7.1
-    
+
     # Analysis
     - bandit[toml]>=1.7.0
     - semgrep>=1.50.0
     - safety>=3.0.0
     - checkov>=3.0.0
-    
+
     # Reporting
     - sarif-om>=1.0.4
     - jinja2>=3.1.0
@@ -366,17 +366,17 @@ The agent exports findings in a format optimized for NotebookLM ingestion:
 def export_to_notebooklm(findings: List[Finding]) -> str:
     """Generate NotebookLM-optimized markdown."""
     sections = []
-    
+
     # Executive summary for quick queries
     sections.append(generate_summary(findings))
-    
+
     # Structured findings for detailed queries
     for category in ['critical', 'high', 'medium', 'low']:
         sections.append(generate_category_section(findings, category))
-    
+
     # Remediation guide
     sections.append(generate_remediation_guide(findings))
-    
+
     return "\n\n".join(sections)
 ```
 
@@ -423,14 +423,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Recon-SecDevOps Agent
         uses: ./.github/agents/recon-secdevops-agent
         with:
           scan-type: full
           fail-on: critical
           output-format: sarif
-          
+
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -766,7 +766,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -955,7 +955,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -21,19 +21,19 @@ component_reuse:
 testing:
   # Default timeout for endpoint tests (milliseconds)
   default_timeout_ms: 5000
-  
+
   # Maximum number of retries for failed tests
   max_retries: 3
-  
+
   # Delay between retries (milliseconds)
   retry_delay_ms: 1000
-  
+
   # Enable/disable PII scrubbing
   scrub_pii: true
-  
+
   # PII scrubbing mode: token, hash, semantic
   pii_scrubbing_mode: token
-  
+
   # Generate mock data for POST/PUT/PATCH requests
   auto_generate_mock_data: true
 
@@ -41,13 +41,13 @@ testing:
 thresholds:
   # Maximum acceptable response time (milliseconds)
   max_response_time_ms: 5000
-  
+
   # Minimum acceptable success rate (0.0 to 1.0)
   min_success_rate: 0.95
-  
+
   # Fail fast on first error
   fail_fast: false
-  
+
   # Performance degradation threshold (percentage)
   performance_degradation_threshold: 0.20  # 20%
 
@@ -55,13 +55,13 @@ thresholds:
 authentication:
   # Default auth type: bearer, api_key, basic, none
   default_type: bearer
-  
+
   # Token/key sources (environment variables)
   token_env_vars:
     - API_TOKEN
     - BEARER_TOKEN
     - AUTH_TOKEN
-  
+
   # API key header name
   api_key_header: X-API-Key
 
@@ -84,7 +84,7 @@ endpoint_discovery:
     - path: /version
       method: GET
       description: Version information
-  
+
   # OpenAPI spec locations to search
   spec_locations:
     - openapi.yaml
@@ -92,7 +92,7 @@ endpoint_discovery:
     - swagger.yaml
     - swagger.json
     - docs/api.yaml
-  
+
   # Enable automatic endpoint discovery
   auto_discover: true
 
@@ -106,21 +106,21 @@ mock_data:
       email: email
       created_at: timestamp
       active: bool
-    
+
     product:
       id: uuid
       name: string
       price: float
       available: bool
       created_at: timestamp
-    
+
     order:
       id: uuid
       user_id: uuid
       total: float
       status: string
       created_at: timestamp
-  
+
   # Privacy-safe email domains
   safe_email_domains:
     - example.com
@@ -131,26 +131,26 @@ mock_data:
 reporting:
   # Report format: text, json, html, markdown
   default_format: text
-  
+
   # Include detailed error messages
   include_errors: true
-  
+
   # Include response times
   include_timings: true
-  
+
   # Include PII-scrubbed payloads
   include_payloads: false
-  
+
   # Group results by service
   group_by_service: true
-  
+
   # Generate summary statistics
   include_summary: true
 
 # Cognitive Brain Integration
 cognitive_brain:
   enabled: true
-  
+
   # Metrics to track
   metrics:
     - test_count
@@ -165,27 +165,27 @@ cognitive_brain:
     - contracts_validated
     - pii_instances_scrubbed
     - mock_data_generated
-  
+
   # Reporting interval
   reporting_interval: daily
-  
+
   # Storage configuration
   storage:
     type: sqlite
     path: .codex/sessions/agent_metrics.db
-    
+
     # Retention policy
     retention_days: 90
-  
+
   # Learning from failures
   learn_from_failures: true
-  
+
   # Pattern detection
   detect_patterns: true
-  
+
   # Anomaly detection
   detect_anomalies: true
-  
+
   # Performance baseline tracking
   track_baselines: true
 
@@ -195,17 +195,17 @@ agent_integration:
   test_coverage_monitor:
     enabled: true
     threshold: 0.90
-  
+
   # Call performance-regression-detector
   performance_regression_detector:
     enabled: true
     baseline_file: .codex/performance_baselines.json
-  
+
   # Call pii-scrubber for all payloads
   pii_scrubber:
     enabled: true
     mode: token
-  
+
   # Use rag-index-manager for endpoint discovery
   rag_index_manager:
     enabled: true
@@ -214,18 +214,18 @@ agent_integration:
 # Logging
 logging:
   level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-  
+
   # Log file path
   file: .codex/logs/service_integration_tester.log
-  
+
   # Log rotation
   rotate:
     max_bytes: 10485760  # 10MB
     backup_count: 5
-  
+
   # Include timestamps
   include_timestamps: true
-  
+
   # Log format
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
@@ -233,13 +233,13 @@ logging:
 performance:
   # Enable performance testing
   enabled: true
-  
+
   # Number of iterations for performance tests
   iterations: 5
-  
+
   # Warmup iterations (not counted)
   warmup_iterations: 2
-  
+
   # Percentiles to calculate
   percentiles:
     - 50
@@ -247,10 +247,10 @@ performance:
     - 90
     - 95
     - 99
-  
+
   # Track performance trends
   track_trends: true
-  
+
   # Baseline comparison
   compare_to_baseline: true
 
@@ -258,16 +258,16 @@ performance:
 ci_cd:
   # Fail build on test failure
   fail_on_failure: true
-  
+
   # Fail build on slow responses
   fail_on_slow_responses: true
-  
+
   # Generate GitHub Actions annotations
   github_annotations: true
-  
+
   # Comment on pull requests
   comment_on_pr: true
-  
+
   # Upload artifacts
   upload_artifacts: true
 
@@ -275,21 +275,21 @@ ci_cd:
 advanced:
   # Enable HTTP/2
   http2: false
-  
+
   # Follow redirects
   follow_redirects: true
-  
+
   # Max redirects to follow
   max_redirects: 5
-  
+
   # Verify SSL certificates
   verify_ssl: true
-  
+
   # Custom headers for all requests
   custom_headers: {}
-  
+
   # Proxy configuration
   proxy: null
-  
+
   # User agent
   user_agent: "ServiceIntegrationTester/1.0.0"

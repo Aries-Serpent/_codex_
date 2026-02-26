@@ -99,13 +99,13 @@ from typing import Dict, List, Tuple
 
 class QuantumTunnelingAnalyzer:
     """Analyzes quantum tunneling paths for safe file migration"""
-    
+
     def __init__(self, source_dir: str, target_dir: str):
         self.source = Path(source_dir)
         self.target = Path(target_dir)
         self.tunnel_paths = []
         self.energy_barriers = {}
-        
+
     def measure_barrier_height(self, file_path: Path) -> float:
         """
         Measure energy barrier for file migration
@@ -124,27 +124,27 @@ class QuantumTunnelingAnalyzer:
             references = len(result.stdout.split('\n'))
         except Exception:
             references = 999  # High barrier if check fails
-            
+
         return min(references / 100.0, 10.0)  # Normalize to 0-10 scale
-        
+
     def find_tunneling_path(self) -> List[Tuple[Path, Path, float]]:
         """
         Find quantum tunneling paths (lowest energy barriers first)
         Returns: [(source, target, barrier_height), ...]
         """
         paths = []
-        
+
         for file in self.source.rglob('*'):
             if file.is_file():
                 relative = file.relative_to(self.source)
                 target_file = self.target / relative
                 barrier = self.measure_barrier_height(file)
                 paths.append((file, target_file, barrier))
-                
+
         # Sort by barrier height (quantum annealing)
         paths.sort(key=lambda x: x[2])
         return paths
-        
+
     def execute_with_verification(self) -> Dict[str, any]:
         """
         Execute migration with comprehensive verification
@@ -156,31 +156,31 @@ class QuantumTunnelingAnalyzer:
             'barriers': [],
             'errors': []
         }
-        
+
         paths = self.find_tunneling_path()
         results['total_files'] = len(paths)
-        
+
         for source, target, barrier in paths:
             try:
                 # Verify functionality before move
                 assert source.exists(), f"Source {source} doesn't exist"
                 assert source.is_file(), f"Source {source} is not a file"
-                
+
                 # Create target directory
                 target.parent.mkdir(parents=True, exist_ok=True)
-                
+
                 # Quantum tunnel (move file)
                 import shutil
                 shutil.copy2(source, target)
-                
+
                 # Verify functionality after move
                 assert target.exists(), f"Target {target} wasn't created"
                 assert target.stat().st_size == source.stat().st_size, "Size mismatch"
-                
+
                 # Success - remove source
                 source.unlink()
                 results['migrated'] += 1
-                
+
             except Exception as e:
                 results['failed'] += 1
                 results['errors'].append({
@@ -188,9 +188,9 @@ class QuantumTunnelingAnalyzer:
                     'error': str(e),
                     'barrier': barrier
                 })
-                
+
             results['barriers'].append(barrier)
-            
+
         return results
 
 # Usage
@@ -332,12 +332,12 @@ from collections import defaultdict
 
 class ConfigurationQuantumScanner:
     """Scans configuration directories with quantum coherence analysis"""
-    
+
     def __init__(self, config_dirs: List[str]):
         self.config_dirs = [Path(d) for d in config_dirs]
         self.config_states = defaultdict(list)
         self.coherence_scores = {}
-        
+
     def scan_configurations(self) -> Dict[str, any]:
         """
         Scan all configuration files and measure quantum states
@@ -349,22 +349,22 @@ class ConfigurationQuantumScanner:
             'duplicates': [],
             'conflicts': []
         }
-        
+
         for config_dir in self.config_dirs:
             if not config_dir.exists():
                 continue
-                
+
             dir_configs = []
-            
+
             for config_file in config_dir.rglob('*'):
                 if not config_file.is_file():
                     continue
-                    
+
                 if config_file.suffix in ['.yml', '.yaml', '.json', '.toml', '.ini']:
                     try:
                         # Read and parse configuration
                         content = self.parse_config(config_file)
-                        
+
                         config_info = {
                             'path': str(config_file),
                             'type': config_file.suffix,
@@ -372,20 +372,20 @@ class ConfigurationQuantumScanner:
                             'content_hash': hash(str(content)),
                             'keys': list(content.keys()) if isinstance(content, dict) else []
                         }
-                        
+
                         dir_configs.append(config_info)
                         results['config_types'][config_file.suffix] += 1
                         self.config_states[config_file.name].append(config_info)
-                        
+
                     except Exception as e:
                         print(f"Warning: Could not parse {config_file}: {e}")
-                        
+
             results['directories'][str(config_dir)] = {
                 'count': len(dir_configs),
                 'configs': dir_configs
             }
             results['total_configs'] += len(dir_configs)
-            
+
         # Detect duplicates and conflicts
         for config_name, states in self.config_states.items():
             if len(states) > 1:
@@ -395,9 +395,9 @@ class ConfigurationQuantumScanner:
                     results['duplicates'].append(config_name)
                 else:
                     results['conflicts'].append(config_name)
-                    
+
         return results
-        
+
     def parse_config(self, config_file: Path):
         """Parse configuration file based on type"""
         if config_file.suffix in ['.yml', '.yaml']:
@@ -410,7 +410,7 @@ class ConfigurationQuantumScanner:
             # For other types, just read content
             with open(config_file, 'r') as f:
                 return f.read()
-                
+
     def measure_coherence(self) -> Dict[str, float]:
         """
         Measure quantum coherence between configuration states
@@ -420,26 +420,26 @@ class ConfigurationQuantumScanner:
             if len(states) <= 1:
                 self.coherence_scores[config_name] = 1.0
                 continue
-                
+
             # Calculate similarity between states
             similarity_scores = []
             for i in range(len(states)):
                 for j in range(i+1, len(states)):
                     keys_i = set(states[i]['keys'])
                     keys_j = set(states[j]['keys'])
-                    
+
                     if not keys_i or not keys_j:
                         similarity = 0.0
                     else:
                         intersection = len(keys_i & keys_j)
                         union = len(keys_i | keys_j)
                         similarity = intersection / union if union > 0 else 0.0
-                        
+
                     similarity_scores.append(similarity)
-                    
+
             avg_coherence = sum(similarity_scores) / len(similarity_scores) if similarity_scores else 0.0
             self.coherence_scores[config_name] = avg_coherence
-            
+
         return self.coherence_scores
 
 # Usage
@@ -447,7 +447,7 @@ if __name__ == '__main__':
     scanner = ConfigurationQuantumScanner(['config', 'configs', 'conf'])
     results = scanner.scan_configurations()
     coherence = scanner.measure_coherence()
-    
+
     print("Configuration Scan Results:")
     print(json.dumps(results, indent=2))
     print("\nCoherence Scores:")
@@ -474,50 +474,50 @@ from typing import Dict, List, Tuple
 
 class ConfigurationQuantumAnnealer:
     """Uses simulated quantum annealing to find optimal config structure"""
-    
+
     def __init__(self, config_states: Dict[str, List], temperature: float = 1000.0):
         self.config_states = config_states
         self.temperature = temperature
         self.cooling_rate = 0.95
         self.min_temperature = 0.01
-        
+
     def calculate_energy(self, structure: Dict[str, str]) -> float:
         """
         Calculate energy of configuration structure
         Lower energy = better organization
         """
         energy = 0.0
-        
+
         # Penalty for scattered configs
         unique_dirs = len(set(structure.values()))
         energy += unique_dirs * 10.0  # Prefer fewer directories
-        
+
         # Penalty for conflicts
         dir_contents = {}
         for config, directory in structure.items():
             if directory not in dir_contents:
                 dir_contents[directory] = []
             dir_contents[directory].append(config)
-            
+
         for directory, configs in dir_contents.items():
             # Prefer logical grouping (e.g., all .yml together)
             types = [Path(c).suffix for c in configs]
             type_variety = len(set(types))
             energy += type_variety * 2.0  # Small penalty for mixed types
-            
+
         return energy
-        
+
     def generate_neighbor(self, current: Dict[str, str]) -> Dict[str, str]:
         """Generate neighboring state in quantum state space"""
         neighbor = current.copy()
-        
+
         # Randomly move one config to different directory
         config = random.choice(list(neighbor.keys()))
         directories = ['config', 'configs', 'conf', '.config']
         neighbor[config] = random.choice(directories)
-        
+
         return neighbor
-        
+
     def anneal(self) -> Dict[str, str]:
         """
         Perform quantum annealing to find optimal structure
@@ -528,27 +528,27 @@ class ConfigurationQuantumAnnealer:
             for config, states in self.config_states.items()
             if states
         }
-        
+
         current_energy = self.calculate_energy(current_structure)
         best_structure = current_structure.copy()
         best_energy = current_energy
-        
+
         iteration = 0
         while self.temperature > self.min_temperature:
             iteration += 1
-            
+
             # Generate neighbor state
             neighbor = self.generate_neighbor(current_structure)
             neighbor_energy = self.calculate_energy(neighbor)
-            
+
             # Decide whether to accept neighbor (quantum tunneling)
             delta_energy = neighbor_energy - current_energy
-            
+
             if delta_energy < 0:
                 # Better state - always accept
                 current_structure = neighbor
                 current_energy = neighbor_energy
-                
+
                 if current_energy < best_energy:
                     best_structure = current_structure.copy()
                     best_energy = current_energy
@@ -558,13 +558,13 @@ class ConfigurationQuantumAnnealer:
                 if random.random() < probability:
                     current_structure = neighbor
                     current_energy = neighbor_energy
-                    
+
             # Cool down
             self.temperature *= self.cooling_rate
-            
+
         print(f"Annealing complete after {iteration} iterations")
         print(f"Best energy: {best_energy}")
-        
+
         return best_structure
 
 import math
@@ -578,10 +578,10 @@ if __name__ == '__main__':
         'database.json': [{'path': 'configs/database.json'}],
         'settings.toml': [{'path': 'conf/settings.toml'}]
     }
-    
+
     annealer = ConfigurationQuantumAnnealer(config_states)
     optimal_structure = annealer.anneal()
-    
+
     print("\nOptimal Configuration Structure:")
     for config, directory in sorted(optimal_structure.items()):
         print(f"  {config} → {directory}")
@@ -639,40 +639,40 @@ from pathlib import Path
 
 def update_config_references(old_dirs: List[str], new_dir: str):
     """Update configuration references in all Python files"""
-    
+
     patterns = {
         'import': re.compile(r'from\s+(' + '|'.join(old_dirs) + r')\s+import'),
         'open': re.compile(r'open\([\'"](' + '|'.join(old_dirs) + r')/'),
         'path': re.compile(r'[\'"](' + '|'.join(old_dirs) + r')/[^\'"]+[\'"]')
     }
-    
+
     updated_files = []
-    
+
     for python_file in Path('.').rglob('*.py'):
         if '.git' in str(python_file):
             continue
-            
+
         try:
             with open(python_file, 'r') as f:
                 content = f.read()
-                
+
             original = content
-            
+
             # Replace all patterns
             for pattern_type, pattern in patterns.items():
                 def replacer(match):
                     return match.group(0).replace(match.group(1), new_dir)
                 content = pattern.sub(replacer, content)
-                
+
             if content != original:
                 with open(python_file, 'w') as f:
                     f.write(content)
                 updated_files.append(str(python_file))
                 print(f"Updated: {python_file}")
-                
+
         except Exception as e:
             print(f"Error processing {python_file}: {e}")
-            
+
     return updated_files
 
 # Usage

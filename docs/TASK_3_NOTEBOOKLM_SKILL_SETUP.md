@@ -75,11 +75,11 @@ python scripts/run.py auth_manager.py setup
 > Google Authentication Required
 > Opening browser for OAuth flow...
 > Please select your Google account and grant permissions
-> 
+>
 > Permissions requested:
 > - Read access to Google Drive files
 > - Access to NotebookLM notebooks
-> 
+>
 > After completing authentication in browser, return here...
 ```
 
@@ -99,7 +99,7 @@ python scripts/run.py auth_manager.py verify
 
 ### Step 4: Add _codex_ Notebook to Skill
 
-**Prerequisites**: 
+**Prerequisites**:
 - NotebookLM notebook created (from Task 2)
 - Notebook URL available
 
@@ -143,23 +143,23 @@ python scripts/run.py notebook_manager.py query \
 📝 Response:
 The auto-remediation system in _codex_ follows a multi-stage pipeline:
 
-1. **Detection Phase**: 
+1. **Detection Phase**:
    - ML Threat Detector identifies vulnerabilities
    - Pattern matching against known vulnerability database
-   
+
 2. **Analysis Phase**:
    - Context-aware code analysis
    - AST parsing for surgical edits
-   
+
 3. **Fix Generation Phase** (tools/auto_remediation/fix_generator.py):
    - Strategy selection based on vulnerability type
    - Code replacement with precision checks
-   
+
 4. **Verification Phase** (tools/auto_remediation/verifier.py):
    - Pre-fix snapshot capture
    - Fix application and validation
    - Regression detection
-   
+
 5. **PR Creation Phase** (tools/auto_remediation/pr_generator.py):
    - Branch creation
    - Commit and push
@@ -361,7 +361,7 @@ For deep troubleshooting, use the recursive follow-up approach:
 For complex queries, enable multi-step research:
 
 ```
-@architect Investigate the root cause of CI failures in the determinism workflow. 
+@architect Investigate the root cause of CI failures in the determinism workflow.
 Use multi-step research to:
 1. Analyze workflow configuration
 2. Check for non-deterministic code patterns

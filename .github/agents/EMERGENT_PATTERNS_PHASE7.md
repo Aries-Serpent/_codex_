@@ -371,15 +371,15 @@ All tests deterministic through fixed timestamps, in-memory databases, and hash-
 ```python
 def test_parallel_faster_than_sequential(engine):
     # Create decisions with artificial 50ms delay
-    decisions = [Decision(f'D{i}', f'Option {i}', slow_eval) 
+    decisions = [Decision(f'D{i}', f'Option {i}', slow_eval)
                  for i in range(4)]
-    
+
     state = engine.create_superposition(decisions)
-    
+
     start = time.time()
     engine.evaluate_parallel(state)
     parallel_time = time.time() - start
-    
+
     # Should be ~50ms, not 200ms
     assert parallel_time < 0.15  # Allow overhead
 ```
@@ -875,7 +875,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

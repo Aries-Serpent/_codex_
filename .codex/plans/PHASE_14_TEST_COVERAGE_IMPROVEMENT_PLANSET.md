@@ -464,29 +464,29 @@ Update `COGNITIVE_BRAIN_STATUS_V14_TEST_COVERAGE.md` with Phase 14 progress.
 graph TD
     A[Phase 14.0: Foundation] --> B[Phase 14.1: Core Testing]
     A --> C[Phase 14.2: Security]
-    
+
     B --> D[CLI Tests]
     B --> E[Data Tests]
     B --> F[Training Tests]
-    
+
     C --> G[Security Tests]
     C --> H[Dep Audit]
-    
+
     D --> I[Phase 14.5: Integration]
     E --> I
     F --> I
     G --> I
-    
+
     A --> J[Phase 14.3: Performance]
     A --> K[Phase 14.4: Agents]
-    
+
     J --> L[Profiling]
     J --> M[Optimization]
-    
+
     K --> N[Test Coverage Agent]
     K --> O[Security Audit Agent]
     K --> P[Performance Monitor Agent]
-    
+
     I --> Q[✅ 70% Coverage Target]
     M --> Q
     N --> Q

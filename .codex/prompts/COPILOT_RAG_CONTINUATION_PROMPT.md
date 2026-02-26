@@ -133,12 +133,12 @@ Follow **Promptset 2** in `PRODUCTION_RAG_PIPELINE_PLANSET.md` (lines 487-591).
    ```bash
    # Start server
    uvicorn codex.api.main:app --reload
-   
+
    # Test endpoints
    curl -X POST http://localhost:8000/api/rag/indices \
      -H "Content-Type: application/json" \
      -d '{"tenant_id":"test","index_name":"docs","files":["README.md"]}'
-   
+
    # Check OpenAPI docs
    curl http://localhost:8000/docs
    ```
@@ -376,7 +376,7 @@ Follow **Promptset 5** (Part B) in `PRODUCTION_RAG_PIPELINE_PLANSET.md` (lines 8
    ## Indexing
    - Small (1k chunks): X chunks/sec
    - Medium (10k chunks): Y chunks/sec
-   
+
    ## Querying
    - p50: Xms, p95: Yms, p99: Zms
    ```

@@ -118,7 +118,7 @@ where:
 - **Loss Function:**
   ```python
   L_distill = α·L_hard + (1-α)·L_soft
-  
+
   where:
     L_hard: Cross-entropy with true labels
     L_soft: KL divergence with teacher soft targets
@@ -277,7 +277,7 @@ Input → Domain Identification
 # Domains for testing
 domains = [
     "financial_compliance",
-    "healthcare_privacy", 
+    "healthcare_privacy",
     "data_protection",
     "security_standards",
     "environmental_regulations"
@@ -286,13 +286,13 @@ domains = [
 # Transfer scenarios
 for target_domain in domains:
     source_domains = [d for d in domains if d != target_domain]
-    
+
     # Baseline: train from scratch
     baseline_performance = train_from_scratch(target_domain, 1000)
-    
+
     # Transfer: use source domains
     transfer_performance = transfer_learn(source_domains, target_domain, 500)
-    
+
     # Compare
     speedup = baseline_episodes / transfer_episodes
     quality = transfer_accuracy / baseline_accuracy

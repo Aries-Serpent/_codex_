@@ -28,7 +28,7 @@ graph TB
         Config[Configuration Files]
         Repo[Repository State]
     end
-    
+
     subgraph Core["🧠 Agent Core"]
         Monitor[Offload Monitor]
         Analyzer[Health Analyzer]
@@ -37,24 +37,24 @@ graph TB
         Restorer[File Restorer]
         Documenter[Documentation Generator]
     end
-    
+
     subgraph Output["📤 Output Layer"]
         Reports[Health Reports]
         Logs[Action Logs]
         Docs[Documentation Updates]
         Metrics[Metrics Dashboard]
     end
-    
+
     Trigger --> Monitor
     Config --> Monitor
     Repo --> Monitor
-    
+
     Monitor --> Analyzer
     Analyzer --> Executor
     Executor --> Compressor
     Executor --> Restorer
     Executor --> Documenter
-    
+
     Monitor --> Reports
     Analyzer --> Metrics
     Executor --> Logs
@@ -306,7 +306,7 @@ sequenceDiagram
     participant Repo
     participant Storage
     participant Logs
-    
+
     User->>Agent: Activate (manual or scheduled)
     Agent->>Repo: Scan for candidates
     Repo-->>Agent: File list with metadata

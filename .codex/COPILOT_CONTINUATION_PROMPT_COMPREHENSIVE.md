@@ -122,7 +122,7 @@ async def get_token_scopes(
 ) -> List[str]:
     """
     Extract scopes from JWT token.
-    
+
     Security: Uses HS256 algorithm with secret key from environment.
     Fails closed on any error.
     """
@@ -134,19 +134,19 @@ async def get_token_scopes(
                 status_code=500,
                 detail="JWT_SECRET_KEY not configured"
             )
-        
+
         # Decode and validate token
         payload = jwt.decode(
             credentials.credentials,
             secret_key,
             algorithms=['HS256']
         )
-        
+
         # Extract scopes
         scopes = payload.get('scopes', [])
-        
+
         return scopes
-        
+
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError as e:
@@ -173,7 +173,7 @@ def test_valid_token_with_scopes():
         'exp': datetime.utcnow() + timedelta(hours=1)
     }
     token = jwt.encode(payload, secret, algorithm='HS256')
-    
+
     # Test extraction
     # ... (implement test)
 
@@ -305,14 +305,14 @@ def mask_credit_card(m: re.Match) -> str:
 def format_ticket_id_for_display(ticket_id: int) -> str:
     """
     Format 128-bit ticket ID for display.
-    
+
     Converts large integer to human-friendly format:
     - Shows prefix + last 8 hex digits
     - Example: TKT-A7B3C9D1
-    
+
     Args:
         ticket_id: 128-bit integer from UUID conversion
-        
+
     Returns:
         Formatted string for UI display
     """
@@ -321,7 +321,7 @@ def format_ticket_id_for_display(ticket_id: int) -> str:
 def parse_display_ticket_id(display_id: str) -> Optional[int]:
     """
     Parse display ID back to full ticket ID (requires lookup).
-    
+
     Note: Display ID is truncated, requires database lookup
     to resolve to full 128-bit ticket ID.
     """
@@ -397,19 +397,19 @@ from pathlib import Path
 def create_minimal_wav(filepath: Path, duration_ms: int = 100):
     """
     Create minimal valid WAV file for testing.
-    
+
     Args:
         filepath: Output path
         duration_ms: Duration in milliseconds
     """
     sample_rate = 44100
     num_samples = int(sample_rate * duration_ms / 1000)
-    
+
     with wave.open(str(filepath), 'wb') as wav:
         wav.setnchannels(1)  # Mono
         wav.setsampwidth(2)  # 16-bit
         wav.setframerate(sample_rate)
-        
+
         # Generate sine wave test tone
         for i in range(num_samples):
             value = int(32767 * 0.5 * math.sin(2 * math.pi * 440 * i / sample_rate))
@@ -535,7 +535,7 @@ graph TD
     D --> E[Shard 1: Topic A]
     D --> F[Shard 2: Topic B]
     D --> G[Shard 3: Topic C]
-    
+
     H[Query] --> I[Query Embedding]
     I --> J[Similarity Search]
     J --> K[Target Shard Selection]
@@ -558,10 +558,10 @@ graph TD
 ```python
 class AzureKeyVaultProvider(SecretProvider):
     """Azure Key Vault integration."""
-    
+
     def __init__(self, vault_url: str, credential):
         self.client = SecretClient(vault_url, credential)
-    
+
     async def create_token(self, ...):
         # Implementation
         pass
@@ -571,10 +571,10 @@ class AzureKeyVaultProvider(SecretProvider):
 ```python
 class HashiCorpVaultProvider(SecretProvider):
     """HashiCorp Vault integration."""
-    
+
     def __init__(self, vault_addr: str, token: str):
         self.client = hvac.Client(url=vault_addr, token=token)
-    
+
     async def create_token(self, ...):
         # Implementation
         pass

@@ -14,7 +14,7 @@ interface QuantumVisualizerProps {
   collapsed?: boolean;
 }
 
-export function QuantumVisualizer({ 
+export function QuantumVisualizer({
   states = [
     { state: 'Option A', probability: 0.35 },
     { state: 'Option B', probability: 0.28 },
@@ -78,9 +78,9 @@ export function QuantumVisualizer({
     ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.fillRect(barX, barY, barWidth, barHeight);
 
-    const coherenceColor = 
-      coherence > 0.65 ? 'rgba(34, 197, 94, 0.8)' : 
-      coherence > 0.5 ? 'rgba(234, 179, 8, 0.8)' : 
+    const coherenceColor =
+      coherence > 0.65 ? 'rgba(34, 197, 94, 0.8)' :
+      coherence > 0.5 ? 'rgba(234, 179, 8, 0.8)' :
       'rgba(239, 68, 68, 0.8)';
     ctx.fillStyle = coherenceColor;
     ctx.fillRect(barX, barY, barWidth * coherence, barHeight);
@@ -115,17 +115,17 @@ export function QuantumVisualizer({
     setLocalCollapsed(false);
   };
 
-  const coherenceLevel = 
-    coherence > 0.65 ? 'High' : 
-    coherence > 0.5 ? 'Medium' : 
+  const coherenceLevel =
+    coherence > 0.65 ? 'High' :
+    coherence > 0.5 ? 'Medium' :
     'Low';
 
   return (
     <div className="space-y-4">
       <Card className="p-6 bg-card/50">
-        <canvas 
-          ref={canvasRef} 
-          className="w-full" 
+        <canvas
+          ref={canvasRef}
+          className="w-full"
           style={{ height: '300px' }}
         />
       </Card>
@@ -193,7 +193,7 @@ export function QuantumVisualizer({
 
       <Card className="p-4 bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          <strong className="text-accent">Quantum Superposition:</strong> Multiple solution paths are evaluated in parallel, 
+          <strong className="text-accent">Quantum Superposition:</strong> Multiple solution paths are evaluated in parallel,
           allowing the cognitive brain to explore possibilities simultaneously before collapsing to the optimal choice.
         </p>
       </Card>

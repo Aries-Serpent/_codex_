@@ -52,7 +52,7 @@ class SLAPolicy(BaseModel):
     version: str = "1.0.0"
     effective_date: str  # ISO 8601
     business_hours_only: bool = True
-    
+
     def calculate_deadline(self, start_time: datetime) -> datetime
     def is_paused(self, ticket_state: dict) -> bool
     def diff(self, other: SLAPolicy) -> list[dict]

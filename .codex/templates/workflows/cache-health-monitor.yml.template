@@ -29,78 +29,78 @@ jobs:
   monitor-cache-health:
     name: Monitor Cache Health
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           # Install only cache manager (no heavyweight deps)
           pip install --no-deps -e .
-      
+
       - name: Check Cache Health
         id: health-check
         run: |
           echo "🔍 Checking cache health..."
-          
+
           # Run health check
           python -m codex.ci.cache_manager health > cache-health.txt
-          
+
           # Extract metrics
           HEALTH_STATUS=$(grep -E "(HEALTHY|CRITICAL)" cache-health.txt | awk '{print $3}')
-          
+
           echo "status=${HEALTH_STATUS}" >> $GITHUB_OUTPUT
-          
+
           # Display report
           cat cache-health.txt
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: List Cache Usage
         id: cache-usage
         run: |
           echo "📊 Cache Usage Report"
           echo "===================="
-          
+
           # List all caches with size and age
           gh cache list --json key,sizeInBytes,createdAt,lastAccessedAt \
             --jq '.[] | "\(.key) | Size: \(.sizeInBytes / 1024 / 1024 | floor)MB | Created: \(.createdAt) | Last Used: \(.lastAccessedAt)"' \
             > cache-list.txt
-          
+
           # Calculate total size
           TOTAL_SIZE=$(gh cache list --json sizeInBytes --jq '[.[].sizeInBytes] | add / 1024 / 1024 / 1024')
           echo "total_size=${TOTAL_SIZE}" >> $GITHUB_OUTPUT
-          
+
           echo "Total Cache Size: ${TOTAL_SIZE} GB"
           echo ""
           echo "Top 10 Largest Caches:"
           head -10 cache-list.txt
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: Identify Stale Caches
         id: stale-caches
         run: |
           echo "🔎 Identifying stale caches (older than $CLEANUP_DAYS days)..."
-          
+
           # Calculate cutoff date
           CUTOFF_DATE=$(date -d "$CLEANUP_DAYS days ago" +%Y-%m-%d)
           echo "Cutoff date: $CUTOFF_DATE"
-          
+
           # List stale caches
           gh cache list --json key,createdAt --jq ".[] | select(.createdAt < \"$CUTOFF_DATE\") | .key" \
             > stale-caches.txt
-          
+
           STALE_COUNT=$(wc -l < stale-caches.txt)
           echo "stale_count=${STALE_COUNT}" >> $GITHUB_OUTPUT
-          
+
           if [ "$STALE_COUNT" -gt 0 ]; then
             echo "Found $STALE_COUNT stale caches:"
             head -20 stale-caches.txt
@@ -109,22 +109,22 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: Detect Cache Conflicts
         id: conflicts
         run: |
           echo "⚠️  Checking for cache key conflicts..."
-          
+
           # Extract cache keys from workflows
           find .github/workflows -name "*.yml" -o -name "*.yaml" | \
             xargs grep -h "key:" | \
             sed 's/.*key: //' | \
             sed 's/\${{[^}]*}}/*/g' | \
             sort > workflow-keys.txt
-          
+
           # Check for duplicates
           DUPLICATES=$(sort workflow-keys.txt | uniq -d)
-          
+
           if [ -n "$DUPLICATES" ]; then
             echo "conflict=true" >> $GITHUB_OUTPUT
             echo "⚠️  Potential cache key conflicts detected:"
@@ -133,53 +133,53 @@ jobs:
             echo "conflict=false" >> $GITHUB_OUTPUT
             echo "✅ No cache key conflicts detected"
           fi
-      
+
       - name: Generate Health Report
         run: |
           cat > .codex/cache-health-report.md << 'EOF'
           # Cache Health Report
-          
+
           **Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
           **Status:** ${{ steps.health-check.outputs.status }}
-          
+
           ## Summary
-          
+
           - **Total Cache Size:** ${{ steps.cache-usage.outputs.total_size }} GB
           - **Size Threshold:** ${{ env.SIZE_THRESHOLD }} GB
           - **Stale Caches:** ${{ steps.stale-caches.outputs.stale_count }}
           - **Cache Conflicts:** ${{ steps.conflicts.outputs.conflict == 'true' && 'Detected ⚠️' || 'None ✅' }}
-          
+
           ## Status
-          
+
           ${{ steps.health-check.outputs.status == 'CRITICAL' && '🔴 **CRITICAL**: Cache health requires attention' || '🟢 **HEALTHY**: Cache system operating normally' }}
-          
+
           ## Recommendations
-          
+
           EOF
-          
+
           # Add recommendations based on status
           if [ "${{ steps.health-check.outputs.status }}" == "CRITICAL" ]; then
             echo "1. ⚠️  Cache size exceeds threshold - cleanup recommended" >> .codex/cache-health-report.md
             echo "2. 🧹 Run manual cleanup: \`gh workflow run cache-health-monitor.yml\`" >> .codex/cache-health-report.md
           fi
-          
+
           if [ "${{ steps.stale-caches.outputs.stale_count }}" -gt 10 ]; then
             echo "3. 📅 ${{ steps.stale-caches.outputs.stale_count }} stale caches detected - consider cleanup" >> .codex/cache-health-report.md
           fi
-          
+
           if [ "${{ steps.conflicts.outputs.conflict }}" == "true" ]; then
             echo "4. ⚠️  Cache key conflicts detected - review workflow cache keys" >> .codex/cache-health-report.md
           fi
-          
+
           echo "" >> .codex/cache-health-report.md
           echo "## Next Steps" >> .codex/cache-health-report.md
           echo "" >> .codex/cache-health-report.md
           echo "- Review cache usage patterns" >> .codex/cache-health-report.md
           echo "- Update workflows with unified cache manager" >> .codex/cache-health-report.md
           echo "- Monitor cache hit rates" >> .codex/cache-health-report.md
-          
+
           cat .codex/cache-health-report.md
-      
+
       - name: Upload Health Report
         uses: actions/upload-artifact@v4
         with:
@@ -189,12 +189,12 @@ jobs:
             cache-health.txt
             cache-list.txt
           retention-days: 30
-      
+
       - name: Cleanup Stale Caches (Optional)
         if: github.event_name == 'workflow_dispatch' && steps.stale-caches.outputs.stale_count > 0
         run: |
           echo "🧹 Cleaning up stale caches..."
-          
+
           # Delete stale caches one by one
           while IFS= read -r cache_key; do
             if [ -n "$cache_key" ]; then
@@ -202,17 +202,17 @@ jobs:
               gh cache delete "$cache_key" || echo "Failed to delete $cache_key"
             fi
           done < stale-caches.txt
-          
+
           echo "✅ Cleanup complete"
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: Alert on Critical Status
         if: steps.health-check.outputs.status == 'CRITICAL'
         run: |
           echo "::warning::Cache health is CRITICAL. Total size: ${{ steps.cache-usage.outputs.total_size }} GB (threshold: ${{ env.SIZE_THRESHOLD }} GB)"
           echo "::warning::Consider running manual cleanup or reviewing cache strategies"
-      
+
       - name: Summary
         run: |
           echo "## Cache Health Summary" >> $GITHUB_STEP_SUMMARY
@@ -222,7 +222,7 @@ jobs:
           echo "- **Stale Caches:** ${{ steps.stale-caches.outputs.stale_count }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Conflicts:** ${{ steps.conflicts.outputs.conflict }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.health-check.outputs.status }}" == "CRITICAL" ]; then
             echo "⚠️ **Action Required:** Cache cleanup recommended" >> $GITHUB_STEP_SUMMARY
           else
@@ -233,76 +233,76 @@ jobs:
     name: Analyze Cache Usage Patterns
     needs: monitor-cache-health
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Analyze Workflow Cache Usage
         run: |
           echo "📊 Analyzing cache usage patterns..."
-          
+
           # List recent workflow runs and their cache usage
           for workflow in pr-checks test-rag optimized-ci code-quality-coverage-suite nox_gates; do
             echo ""
             echo "=== $workflow ==="
-            
+
             # Get recent runs
             gh run list --workflow "$workflow" --limit 10 --json conclusion,createdAt \
               --jq '.[] | "\(.createdAt): \(.conclusion)"' || echo "No runs found"
           done
         env:
           GH_TOKEN: ${{ github.token }}
-      
+
       - name: Generate Optimization Recommendations
         run: |
           cat > .codex/cache-optimization-recommendations.md << 'EOF'
           # Cache Optimization Recommendations
-          
+
           **Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          
+
           ## Priority Workflows for Optimization
-          
+
           Based on usage patterns and potential impact:
-          
+
           1. **pr-checks** - High frequency, quick wins
           2. **test-rag** - Large models, significant savings
           3. **optimized-ci** - Already optimized, can enhance further
           4. **code-quality-coverage-suite** - Frequent developer workflow
           5. **nox_gates** - Multiple environments, good candidate
-          
+
           ## Recommended Actions
-          
+
           ### Short Term (Week 1)
           - [ ] Update high-frequency workflows to use unified cache action
           - [ ] Add HuggingFace model caching to RAG tests
           - [ ] Implement workflow-specific cache keys
-          
+
           ### Medium Term (Week 2)
           - [ ] Add cache health monitoring alerts
           - [ ] Implement automatic cleanup for old caches
           - [ ] Track cache hit rates per workflow
-          
+
           ### Long Term (Week 3+)
           - [ ] Optimize cache sizes and TTLs
           - [ ] Review and consolidate cache strategies
           - [ ] Document cache best practices for contributors
-          
+
           ## Estimated Impact
-          
+
           - **Time Savings:** 50-70% reduction in workflow duration
           - **Cost Savings:** Reduced compute time and network bandwidth
           - **Developer Experience:** Faster feedback loops
-          
+
           EOF
-          
+
           cat .codex/cache-optimization-recommendations.md
-      
+
       - name: Upload Recommendations
         uses: actions/upload-artifact@v4
         with:

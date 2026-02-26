@@ -65,7 +65,7 @@ graph LR
     B --> C[Markdown Report]
     B --> D[JSON Data]
     E[Self-Healing Engine] -.-> B
-    
+
     style B fill:#FFA500
     style E fill:#90EE90
 ```
@@ -77,24 +77,24 @@ graph TB
         A[CI Failures] --> CB[Cognitive Brain Core]
         B[Manual Triggers] --> CB
     end
-    
+
     subgraph "Cognitive Brain"
         CB --> BTA[Batch Triage Agent]
         BTA --> PE[Pattern Extraction]
         BTA --> RM[Remediation Matrix]
         BTA --> TR[Trend Analysis]
-        
+
         PE --> KB[Knowledge Base]
         RM --> KB
         TR --> KB
-        
+
         KB --> PDA[PDA Loop]
         PDA --> P[Perception]
         PDA --> D[Decision]
         PDA --> AC[Action]
         PDA --> AF[Aftermath]
     end
-    
+
     subgraph "Output Layer"
         AC --> REP[Triage Reports]
         AC --> FIX[Auto-Fixes]
@@ -102,14 +102,14 @@ graph TB
         AF --> MET[Metrics]
         AF --> LEARN[Learnings]
     end
-    
+
     subgraph "Feedback Loop"
         MET --> KB
         LEARN --> KB
         NOT --> STAKE[Stakeholders]
         STAKE -.Approval.-> AC
     end
-    
+
     style CB fill:#4CAF50,color:#fff
     style BTA fill:#FF9800,color:#fff
     style KB fill:#9C27B0,color:#fff
@@ -363,20 +363,20 @@ batch_triage:
 ### Technical Risks
 1. **GitHub API Rate Limits**
    - Mitigation: Implement caching, use conditional requests, backoff strategy
-   
+
 2. **Performance Degradation with Large Batches**
    - Mitigation: Parallel processing, pagination, timeout handling
-   
+
 3. **False Positive Pattern Detection**
    - Mitigation: Confidence thresholds, human review loop, iterative learning
 
 ### Operational Risks
 1. **Over-Automation**
    - Mitigation: Approval gates, rollback capability, audit logs
-   
+
 2. **Alert Fatigue**
    - Mitigation: Smart filtering, severity-based routing, digest mode
-   
+
 3. **Stale Patterns**
    - Mitigation: Pattern expiry, periodic review, continuous learning
 

@@ -523,7 +523,7 @@ Follow `.codex/plans/IP-005_DEPENDENCY_UPDATES_PLANSET.md` starting with Phase 1
 
 **First Task:** Update critical dependencies (cryptography, jinja2, setuptools)
 
-**Policy Compliance:** 
+**Policy Compliance:**
 - Follow `.codex/CODEBASE_AGENCY_POLICY.md`
 - 5+ self-review iterations
 - Address ALL issues

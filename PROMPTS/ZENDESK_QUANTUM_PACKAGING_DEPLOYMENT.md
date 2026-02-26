@@ -333,24 +333,24 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ZendeskTicket:
     """Ticket with quantum properties."""
-    
+
     ticket_id: int
     subject: str
     priority: str
     sla_deadline: float  # Hours remaining
     complexity: float = 1.0  # 0-10 scale
-    
+
     def to_thermodynamic_task(self) -> ThermodynamicTask:
         """Convert ticket to thermodynamic task."""
         # Physics: Map ticket properties to thermodynamic quantities
         energy = self.complexity * 2.0  # Higher complexity = higher energy
-        
+
         # Temperature: Urgency factor (SLA pressure)
         temperature = max(0.1, self.sla_deadline / 24.0)  # Normalize to days
-        
+
         # Entropy: Uncertainty in resolution
         entropy = 0.5 if self.priority == "unknown" else 0.1
-        
+
         return ThermodynamicTask(
             name=f"ticket_{self.ticket_id}",
             task_func=lambda: self._process_ticket(),
@@ -358,7 +358,7 @@ class ZendeskTicket:
             temperature=temperature,
             entropy=entropy,
         )
-    
+
     def _process_ticket(self) -> dict[str, Any]:
         """Process ticket (placeholder)."""
         return {"ticket_id": self.ticket_id, "status": "processed"}
@@ -367,14 +367,14 @@ class ZendeskTicket:
 class ZendeskQuantumOrchestrator:
     """
     Quantum orchestrator for Zendesk ticket management.
-    
+
     Capabilities:
     1. Thermodynamic ticket prioritization
     2. SLA-aware load balancing
     3. Adaptive agent assignment
     4. Quantum-inspired routing
     """
-    
+
     def __init__(
         self,
         *,
@@ -387,26 +387,26 @@ class ZendeskQuantumOrchestrator:
             max_energy_per_cycle=max_energy_per_cycle,
         )
         logger.info("ZendeskQuantumOrchestrator initialized")
-    
+
     def prioritize_tickets(
         self, tickets: list[ZendeskTicket]
     ) -> list[tuple[int, float]]:
         """
         Prioritize tickets using thermodynamic principles.
-        
+
         Args:
             tickets: List of Zendesk tickets
-            
+
         Returns:
             List of (ticket_id, priority_score) sorted by priority
         """
         # Convert to thermodynamic tasks
         tasks = [ticket.to_thermodynamic_task() for ticket in tickets]
-        
+
         # Register with orchestrator
         for task in tasks:
             self.orchestrator.register_task(task)
-        
+
         # Calculate priorities using Boltzmann distribution
         priorities = []
         for ticket, task in zip(tickets, tasks):
@@ -414,11 +414,11 @@ class ZendeskQuantumOrchestrator:
             # Lower free energy = higher priority
             priority_score = 1.0 / (1.0 + free_energy)
             priorities.append((ticket.ticket_id, priority_score))
-        
+
         # Sort by priority (highest first)
         priorities.sort(key=lambda x: x[1], reverse=True)
         return priorities
-    
+
     def execute_cycle(self) -> dict[str, Any]:
         """Execute one orchestration cycle."""
         return self.orchestrator.execute_thermodynamic_cycle()
@@ -515,7 +515,7 @@ Edit `configs/zendesk_orchestration.yaml`:
 orchestration:
   global_temperature: 1.0        # System temperature
   max_energy_per_cycle: 100.0    # Energy budget per cycle
-  
+
 sla_mapping:
   critical: 0.5    # < 1 hour
   high: 2.0        # < 4 hours  
@@ -572,11 +572,11 @@ logger = logging.getLogger(__name__)
 
 class DeploymentOrchestrator:
     """Orchestrates package deployment to target platforms."""
-    
+
     def __init__(self, target: str):
         self.target = target
         self.packages_dir = Path("packages")
-        
+
     def deploy_all(self) -> dict[str, Any]:
         """Deploy all packages."""
         results = {
@@ -584,7 +584,7 @@ class DeploymentOrchestrator:
             "failed": [],
             "target": self.target,
         }
-        
+
         for zip_path in self.packages_dir.glob("*.zip"):
             try:
                 self._deploy_package(zip_path)
@@ -592,73 +592,73 @@ class DeploymentOrchestrator:
             except Exception as e:
                 logger.error(f"Failed to deploy {zip_path.name}: {e}")
                 results["failed"].append({"package": zip_path.name, "error": str(e)})
-        
+
         return results
-    
+
     def _deploy_package(self, zip_path: Path) -> None:
         """Deploy single package."""
         with zipfile.ZipFile(zip_path, "r") as zf:
             # Extract manifest
             with zf.open("manifest.json") as f:
                 manifest = json.load(f)
-            
+
             logger.info(f"Deploying {manifest['package_name']} to {self.target}")
-            
+
             if self.target == "chatgpt":
                 self._deploy_to_chatgpt(zf, manifest)
             elif self.target == "customgpt":
                 self._deploy_to_customgpt(zf, manifest)
-    
+
     def _safe_extract(self, zf: zipfile.ZipFile, extract_dir: Path) -> None:
         """Safely extract zip file with path traversal protection.
-        
+
         Args:
             zf: ZipFile to extract
             extract_dir: Target extraction directory
-            
+
         Raises:
             ValueError: If zip contains unsafe paths (absolute or with ..)
         """
         extract_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for member in zf.namelist():
             # Normalize and validate the member path
             member_path = Path(member)
-            
+
             # Check for absolute paths
             if member_path.is_absolute():
                 raise ValueError(f"Unsafe zip member (absolute path): {member}")
-            
+
             # Check for path traversal attempts
             if ".." in member_path.parts:
                 raise ValueError(f"Unsafe zip member (path traversal): {member}")
-            
+
             # Construct the full extraction path and verify it's within extract_dir
             full_path = (extract_dir / member_path).resolve()
             if not str(full_path).startswith(str(extract_dir.resolve())):
                 raise ValueError(f"Unsafe zip member (escapes extraction dir): {member}")
-            
+
             # Extract the member safely
             zf.extract(member, extract_dir)
-    
+
     def _deploy_to_chatgpt(self, zf: zipfile.ZipFile, manifest: dict) -> None:
         """Deploy to ChatGPT Project."""
         # Extract key files for ChatGPT knowledge base
         extract_dir = Path(f"/tmp/chatgpt_deploy/{manifest['package_name']}")
         self._safe_extract(zf, extract_dir)
-        
+
         logger.info(f"Extracted to {extract_dir} for ChatGPT upload")
         print(f"✅ Package ready for ChatGPT: {extract_dir}")
         print(f"   Upload these files to your ChatGPT Project knowledge base:")
         print(f"   - {extract_dir}/README.md")
         print(f"   - {extract_dir}/agents/*")
         print(f"   - {extract_dir}/configs/*")
-    
+
     def _deploy_to_customgpt(self, zf: zipfile.ZipFile, manifest: dict) -> None:
         """Deploy to CustomGPT."""
         extract_dir = Path(f"/tmp/customgpt_deploy/{manifest['package_name']}")
         self._safe_extract(zf, extract_dir)
-        
+
         logger.info(f"Extracted to {extract_dir} for CustomGPT upload")
         print(f"✅ Package ready for CustomGPT: {extract_dir}")
         print(f"   Upload these files to your CustomGPT knowledge base:")
@@ -675,14 +675,14 @@ def main():
         help="Deployment target",
     )
     args = parser.parse_args()
-    
+
     orchestrator = DeploymentOrchestrator(target=args.target)
     results = orchestrator.deploy_all()
-    
+
     print(f"\n✅ Deployment complete!")
     print(f"   Deployed: {len(results['deployed'])} packages")
     print(f"   Failed: {len(results['failed'])} packages")
-    
+
     if results["failed"]:
         print(f"\n❌ Failed packages:")
         for failure in results["failed"]:
@@ -715,12 +715,12 @@ create_package() {
     local pkg_name=$1
     local pkg_dir="${PACKAGE_DIR}/${pkg_name}"
     local output_zip="${OUTPUT_DIR}/${pkg_name}.zip"
-    
+
     echo "📦 Creating ${pkg_name}..."
-    
+
     # Create package structure
     mkdir -p "${pkg_dir}"/{agents,src,configs,tests,docs}
-    
+
     # Copy relevant files from codebase
     case $pkg_name in
         "zendesk-quantum-core")
@@ -743,7 +743,7 @@ create_package() {
             cp -r "${BASE_DIR}/src/quantum/test_runner.py" "${pkg_dir}/src/" 2>/dev/null || true
             ;;
     esac
-    
+
     # Create manifest
     cat > "${pkg_dir}/manifest.json" <<EOF
 {
@@ -753,7 +753,7 @@ create_package() {
   "created": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 }
 EOF
-    
+
     # Create README
     cat > "${pkg_dir}/README.md" <<EOF
 # ${pkg_name}
@@ -768,10 +768,10 @@ Upload this package to your ChatGPT Project or CustomGPT knowledge base.
 
 See DEPLOYMENT_GUIDE.md for complete instructions.
 EOF
-    
+
     # Create zip
     (cd "${PACKAGE_DIR}" && zip -r "${output_zip}" "${pkg_name}" -q)
-    
+
     echo "✅ Created ${output_zip}"
 }
 
@@ -808,14 +808,14 @@ ls -lh "${OUTPUT_DIR}"
 2. **Configure Project Instructions**:
    ```
    You have access to Zendesk Quantum Orchestration packages.
-   
+
    Use these capabilities:
    1. Thermodynamic ticket prioritization (zendesk-quantum-core)
    2. RAG-enhanced context retrieval (zendesk-rag-bridge)
    3. MCP metrics tracking (zendesk-mcp-metrics)
    4. Autonomous agent orchestration (zendesk-agent-core)
    5. Quantum test distribution (zendesk-quantum-testing)
-   
+
    Follow physics principles documented in each package's README.
    ```
 
@@ -834,13 +834,13 @@ ls -lh "${OUTPUT_DIR}"
 2. **Configure CustomGPT Instructions**:
    ```
    You are a Zendesk Quantum Orchestration Assistant.
-   
+
    Core capabilities:
    - Ticket prioritization using Gibbs free energy
    - SLA-aware load balancing via Boltzmann distribution
    - RAG-enhanced ticket context retrieval
    - Multi-agent coordination with quantum game theory
-   
+
    Always explain physics principles when making recommendations.
    ```
 

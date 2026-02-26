@@ -29,32 +29,32 @@ paths-ignore:
   - "**/test_*.py"
   - "**/*_test.py"
   - "**/conftest.py"
-  
+
   # Generated files
   - "**/__pycache__/"
   - "**/*.pyc"
   - "**/*.pyo"
-  
+
   # Documentation
   - docs/
   - "**/*.md"
-  
+
   # Configuration files
   - "*.yaml"
   - "*.yml"
   - "*.toml"
   - "*.json"
-  
+
   # Virtual environments
   - ".venv/"
   - "venv/"
   - "env/"
-  
+
   # Build artifacts
   - build/
   - dist/
   - "*.egg-info/"
-  
+
   # Coverage and cache
   - ".coverage"
   - "coverage/"

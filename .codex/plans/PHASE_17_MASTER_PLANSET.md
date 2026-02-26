@@ -143,13 +143,13 @@ graph TD
     B --> C3[agents/ ~1MB]
     B --> C4[training/ ~2MB]
     B --> C5[tests/ ~4MB]
-    
+
     C1 --> M[Merge SARIF]
     C2 --> M
     C3 --> M
     C4 --> M
     C5 --> M
-    
+
     M --> F[Final Report]
 ```
 
@@ -182,7 +182,7 @@ graph TD
         CB --> DUA[Dependency Update Agent]
         CB --> CQA[CodeQL Chunk Agent]
     end
-    
+
     subgraph "Phase 17 Tests"
         FTA --> FD[Flaky Detection]
         PMA --> PO[Performance Opt]

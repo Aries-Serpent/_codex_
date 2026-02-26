@@ -48,12 +48,12 @@
 class QLearning:
     """
     Q-Learning with tabular Q-values.
-    
+
     **PDA Loop Integration:**
     - PLAN: Select action via ε-greedy policy
     - DO: Execute action, observe reward
     - ASSESS: Update Q-table, adjust ε
-    
+
     **AfterMath:** Stores Q-values for strategy persistence
     """
     - Q-table: Dict[(state, action), float]
@@ -68,13 +68,13 @@ class QLearning:
 class DQN:
     """
     Deep Q-Network with neural network approximation.
-    
+
     **Architecture:**
     - Input: State vector (variable size)
     - Hidden 1: Dense(128, ReLU)
     - Hidden 2: Dense(64, ReLU)
     - Output: Action Q-values
-    
+
     **Training:**
     - Experience replay buffer: 10,000 transitions
     - Target network: Soft update (τ=0.005) every 100 steps
@@ -93,11 +93,11 @@ class DQN:
 class PPO:
     """
     PPO with actor-critic architecture.
-    
+
     **Networks:**
     - Actor (Policy): π(a|s) - action probabilities
     - Critic (Value): V(s) - state value estimate
-    
+
     **Training:**
     - Clip ratio: 0.2
     - GAE λ: 0.95 for advantage estimation
@@ -196,30 +196,30 @@ pip install matplotlib seaborn
 class StrategyOptimizer:
     """
     Strategy optimization using Reinforcement Learning.
-    
+
     **AfterMath Integration:** Continuously learns from past outcomes
     to improve future decision strategies. Feeds back into decision
     engine for adaptive behavior.
-    
+
     **PDA Loop:**
     - PLAN: Select RL algorithm based on problem characteristics
     - DO: Train algorithm on historical outcomes
     - ASSESS: Evaluate strategy improvement, adjust parameters
     """
-    
+
     def optimize_strategy(self, outcomes: List[LearningOutcome]) -> Strategy:
         # PDA: PLAN - Select algorithm
         algorithm = self._select_algorithm(outcomes)
-        
+
         # PDA: DO - Train on outcomes
         trained_strategy = algorithm.train(outcomes)
-        
+
         # PDA: ASSESS - Evaluate improvement
         improvement = self._measure_improvement(trained_strategy)
-        
+
         # AfterMath: Store for future reference
         self._aftermath_tracker.record_strategy(trained_strategy, improvement)
-        
+
         return trained_strategy
 ```
 

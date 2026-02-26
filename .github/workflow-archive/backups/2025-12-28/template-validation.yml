@@ -47,13 +47,13 @@ jobs:
           import yaml
           import sys
           from pathlib import Path
-          
+
           files = [
               ".github/workflows/genesis-bootstrap.yml",
               ".github/workflows/workflow-lint.yml",
               ".codex/autonomous_agent.yaml"
           ]
-          
+
           errors = []
           for f in files:
               if Path(f).exists():
@@ -66,7 +66,7 @@ jobs:
                       errors.append(f)
               else:
                   print(f"⚠️  {f} not found (may be expected)")
-          
+
           if errors:
               print(f"\n❌ YAML validation failed for: {errors}")
               sys.exit(1)
@@ -101,9 +101,9 @@ jobs:
       - name: Verify safety guards
         run: |
           echo "🔍 Verifying safety guards..."
-          
+
           GUARDS_OK=true
-          
+
           # Check workflow guard - Genesis bootstrap is now enabled (if: true)
           if grep -q "if: true" .github/workflows/genesis-bootstrap.yml 2>/dev/null; then
             echo "✅ Workflow enabled (if: true) - Genesis activated"
@@ -111,7 +111,7 @@ jobs:
             echo "❌ Genesis bootstrap workflow not properly enabled"
             GUARDS_OK=false
           fi
-          
+
           # Check SAFE_MODE (optional - only in template mode)
           if [ -f scripts/autonomous_agent.py ]; then
             if grep -q "SAFE_MODE = True" scripts/autonomous_agent.py 2>/dev/null; then
@@ -120,7 +120,7 @@ jobs:
               echo "ℹ️  SAFE_MODE not found (full implementation mode)"
             fi
           fi
-          
+
           # Check autonomous_actions_enabled
           if grep -q "autonomous_actions_enabled: false" .codex/autonomous_agent.yaml 2>/dev/null; then
             echo "✅ Autonomous actions disabled"
@@ -128,7 +128,7 @@ jobs:
             echo "❌ Autonomous actions not disabled"
             GUARDS_OK=false
           fi
-          
+
           if [ "$GUARDS_OK" = "false" ]; then
             echo "❌ Safety guard validation failed"
             exit 1
@@ -139,9 +139,9 @@ jobs:
       - name: Check documentation completeness
         run: |
           echo "🔍 Checking documentation..."
-          
+
           DOCS_OK=true
-          
+
           # Check admin guide
           if [ -f "docs/admin/GENESIS_SETUP_GUIDE.md" ]; then
             lines=$(wc -l < docs/admin/GENESIS_SETUP_GUIDE.md)
@@ -155,7 +155,7 @@ jobs:
             echo "❌ Admin guide missing"
             DOCS_OK=false
           fi
-          
+
           # Check agent guide
           if [ -f "docs/agent/OPERATIONAL_GUIDELINES.md" ]; then
             lines=$(wc -l < docs/agent/OPERATIONAL_GUIDELINES.md)
@@ -169,7 +169,7 @@ jobs:
             echo "❌ Agent guide missing"
             DOCS_OK=false
           fi
-          
+
           if [ "$DOCS_OK" = "false" ]; then
             echo "⚠️  Documentation validation warnings (non-blocking)"
           else

@@ -127,10 +127,10 @@ To verify the fix works:
    ```bash
    # Extract the ZIP
    unzip zendesk_voice_lines_*.zip
-   
+
    # Verify contents
    ls -la
-   
+
    # Should show:
    # - zd_voice_lines.py
    # - requirements.txt

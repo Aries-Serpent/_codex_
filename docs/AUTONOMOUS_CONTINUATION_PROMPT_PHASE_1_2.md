@@ -142,12 +142,12 @@ from pathlib import Path
 
 def generate_workflow_readme(workflow_path):
     """Generate README for a workflow file."""
-    
+
     with open(workflow_path) as f:
         workflow = yaml.safe_load(f)
-    
+
     name = workflow.get('name', workflow_path.stem)
-    
+
     readme = f"""# {name}
 
 ## Purpose
@@ -155,7 +155,7 @@ def generate_workflow_readme(workflow_path):
 
 ## Triggers
 """
-    
+
     # Add trigger information
     if 'on' in workflow:
         for trigger, config in workflow['on'].items():
@@ -164,32 +164,32 @@ def generate_workflow_readme(workflow_path):
                 readme += f"{config}\n"
             else:
                 readme += f"Enabled\n"
-    
+
     readme += f"""
 ## Permissions Required
 """
-    
+
     # Add permissions
     if 'permissions' in workflow:
         for perm, level in workflow['permissions'].items():
             readme += f"- `{perm}`: {level}\n"
-    
+
     readme += f"""
 ## Jobs
 """
-    
+
     # Add jobs
     if 'jobs' in workflow:
         for job_name, job_config in workflow['jobs'].items():
             readme += f"### {job_name}\n"
             if isinstance(job_config, dict) and 'steps' in job_config:
                 readme += f"Steps: {len(job_config['steps'])}\n\n"
-    
+
     # Write README
     readme_path = workflow_path.parent / f"{workflow_path.stem}.md"
     with open(readme_path, 'w') as f:
         f.write(readme)
-    
+
     return readme_path
 
 # Process all workflows
@@ -243,35 +243,35 @@ Last updated: 2026-02-10
 
 def generate_script_header(script_path):
     """Generate header for a script."""
-    
+
     # Extract potential purpose from first few lines or filename
     title = script_path.stem.replace('_', ' ').title()
     purpose = f"[To be documented - {title}]"
-    
+
     with open(script_path) as f:
         content = f.read()
-    
+
     # Skip if already has docstring
     if content.strip().startswith('"""') or content.strip().startswith("'''"):
         return False
-    
+
     header = HEADER_TEMPLATE.format(
         title=title,
         purpose=purpose,
         script_path=script_path
     )
-    
+
     # Insert after shebang if present
     lines = content.split('\n')
     insert_idx = 0
     if lines and lines[0].startswith('#!'):
         insert_idx = 1
-    
+
     lines.insert(insert_idx, header)
-    
+
     with open(script_path, 'w') as f:
         f.write('\n'.join(lines))
-    
+
     return True
 
 # Process all scripts
@@ -600,7 +600,7 @@ Post comprehensive report including:
 To continue this work in the next session:
 
 ```
-@copilot Continue autonomous execution from docs/AUTONOMOUS_CONTINUATION_PROMPT_PHASE_1_2.md. 
+@copilot Continue autonomous execution from docs/AUTONOMOUS_CONTINUATION_PROMPT_PHASE_1_2.md.
 Resume at Priority 1 tasks and proceed through all checkpoints with self-review at each milestone.
 Report progress per-iteration and escalate only if scope changes >20% or critical issues found.
 ```

@@ -20,61 +20,61 @@ graph TB
         C2[API Client]
         C3[Mobile App]
     end
-    
+
     subgraph "Load Balancer"
         LB[Nginx / ALB]
     end
-    
+
     subgraph "Inference Cluster"
         subgraph "Blue Deployment"
             B1[Inference Server v1.0]
             B2[Inference Server v1.0]
         end
-        
+
         subgraph "Green Deployment"
             G1[Inference Server v1.1]
             G2[Inference Server v1.1]
         end
-        
+
         TS[Traffic Splitter]
     end
-    
+
     subgraph "Model Storage"
         MS[(Model Registry)]
         MC[Model Cache]
     end
-    
+
     subgraph "Monitoring"
         PM[Prometheus]
         GF[Grafana]
         AL[Alertmanager]
     end
-    
+
     C1 --> LB
     C2 --> LB
     C3 --> LB
-    
+
     LB --> TS
     TS -.80%.-> B1
     TS -.80%.-> B2
     TS -.20%.-> G1
     TS -.20%.-> G2
-    
+
     B1 --> MS
     B2 --> MS
     G1 --> MS
     G2 --> MS
-    
+
     B1 --> MC
     B2 --> MC
     G1 --> MC
     G2 --> MC
-    
+
     B1 --> PM
     B2 --> PM
     G1 --> PM
     G2 --> PM
-    
+
     PM --> GF
     PM --> AL
 ```
@@ -92,47 +92,47 @@ sequenceDiagram
     participant ModelLoader
     participant Model
     participant Metrics
-    
+
     Client->>Auth: POST /infer + API Key
     Auth->>Auth: Validate API Key
-    
+
     alt Invalid API Key
         Auth-->>Client: 401 Unauthorized
     end
-    
+
     Auth->>RateLimit: Check Rate Limit
     RateLimit->>RateLimit: Sliding Window Check
-    
+
     alt Rate Limit Exceeded
         RateLimit-->>Client: 429 Too Many Requests
     end
-    
+
     RateLimit->>CircuitBreaker: Check Circuit State
-    
+
     alt Circuit Open
         CircuitBreaker-->>Client: 503 Service Unavailable
     end
-    
+
     alt Circuit Half-Open
         CircuitBreaker->>CircuitBreaker: Health Probe
     end
-    
+
     CircuitBreaker->>ModelLoader: Load Model
-    
+
     alt Model Not in Cache
         ModelLoader->>ModelLoader: Load from Registry
         ModelLoader->>ModelLoader: Add to LRU Cache
     end
-    
+
     ModelLoader->>Model: predict(input)
     Model-->>ModelLoader: prediction
-    
+
     alt Prediction Success
         ModelLoader->>CircuitBreaker: Record Success
         ModelLoader->>Metrics: Update Metrics
         ModelLoader-->>Client: 200 OK + prediction
     end
-    
+
     alt Prediction Failure
         ModelLoader->>CircuitBreaker: Record Failure
         ModelLoader->>Metrics: Update Error Metrics
@@ -147,23 +147,23 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> Closed
-    
+
     Closed --> Open: failures >= threshold
     Open --> HalfOpen: after backoff delay
     HalfOpen --> Closed: health probe success
     HalfOpen --> Open: health probe failure
-    
+
     note right of Closed
         Normal operation
         All requests pass through
     end note
-    
+
     note right of Open
         Failing fast
         No requests to backend
         Exponential backoff: 1s, 2s, 4s, ...
     end note
-    
+
     note right of HalfOpen
         Testing recovery
         Limited requests
@@ -178,28 +178,28 @@ stateDiagram-v2
 ```mermaid
 flowchart TD
     Start([Request arrives]) --> CheckCache{Model in cache?}
-    
+
     CheckCache -->|Yes| CacheHit[Cache Hit]
     CheckCache -->|No| CacheMiss[Cache Miss]
-    
+
     CacheHit --> Return[Return cached model]
-    
+
     CacheMiss --> CheckRegistry{Model in registry?}
     CheckRegistry -->|Yes| Download[Download model]
     CheckRegistry -->|No| Error[Return 404]
-    
+
     Download --> Validate[Validate checksum]
     Validate --> Load[Load into memory]
     Load --> Warmup[Run warmup predictions]
     Warmup --> AddCache[Add to LRU cache]
-    
+
     AddCache --> CheckSize{Cache full?}
     CheckSize -->|Yes| Evict[Evict LRU model]
     CheckSize -->|No| Store[Store in cache]
-    
+
     Evict --> Store
     Store --> Return
-    
+
     Return --> End([Model ready])
     Error --> End
 ```
@@ -216,21 +216,21 @@ graph LR
         LB1[Load Balancer] -.100%.-> Blue1[Blue v1.0]
         LB1 -.0%.-> Green1[Green v1.1]
     end
-    
+
     subgraph "Gradual Rollout (20% to Green)"
         LB2[Load Balancer] -.80%.-> Blue2[Blue v1.0]
         LB2 -.20%.-> Green2[Green v1.1]
     end
-    
+
     subgraph "Full Rollout (100% to Green)"
         LB3[Load Balancer] -.0%.-> Blue3[Blue v1.0]
         LB3 -.100%.-> Green3[Green v1.1]
     end
-    
+
     subgraph "Promotion (Green becomes Blue)"
         LB4[Load Balancer] -.100%.-> Blue4[Blue v1.1]
     end
-    
+
     style Blue1 fill:#4A90E2
     style Blue2 fill:#4A90E2
     style Blue3 fill:#4A90E2
@@ -248,22 +248,22 @@ sequenceDiagram
     participant Splitter as Traffic Splitter
     participant Blue as Blue Deployment
     participant Green as Green Deployment
-    
+
     Note over Splitter: Rollout in progress (60% Green)
-    
+
     Monitor->>Green: Health Check
     Green-->>Monitor: Error Rate: 8%
-    
+
     Monitor->>Monitor: Error rate > 5% threshold
     Monitor->>Splitter: Trigger Rollback
-    
+
     Splitter->>Splitter: Set weights: Blue=100%, Green=0%
-    
+
     Note over Splitter: All traffic to Blue
-    
+
     Splitter->>Blue: Route all requests
     Blue-->>Splitter: Healthy responses
-    
+
     Note over Green: Green deployment retired
 ```
 
@@ -278,19 +278,19 @@ graph TB
         IS2[Server 2] -->|/metrics| PM
         IS3[Server 3] -->|/metrics| PM
     end
-    
+
     subgraph "Monitoring Stack"
         PM -->|scrape| PM
         PM -->|query| GF[Grafana]
         PM -->|alert| AL[Alertmanager]
     end
-    
+
     subgraph "Alerting"
         AL -->|email| EM[Email]
         AL -->|slack| SL[Slack]
         AL -->|pagerduty| PD[PagerDuty]
     end
-    
+
     subgraph "Visualization"
         GF -->|dashboard| DB1[Request Dashboard]
         GF -->|dashboard| DB2[Error Dashboard]
@@ -435,7 +435,7 @@ graph LR
     LB --> S3[Server 3]
     LB --> S4[Server 4]
     LB --> Sn[Server N]
-    
+
     S1 --> MR[(Model Registry)]
     S2 --> MR
     S3 --> MR
@@ -474,7 +474,7 @@ graph TB
         Validation[Input Validation]
         Isolation[Process Isolation]
     end
-    
+
     Client --> TLS
     TLS --> Auth
     Auth --> RateLimit

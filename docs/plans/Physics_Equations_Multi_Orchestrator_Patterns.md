@@ -97,19 +97,19 @@ def test_cross_module_conservation():
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
     from agents.quantum_game_theory import QuantumInspiredGameEngine
     from agents.mental_mapping import MentalMapping
-    
+
     # Initialize all orchestrators
     physics = PhysicsInspiredOrchestrator()
     quantum = QuantumInspiredGameEngine()
     mental = MentalMapping()
-    
+
     # Sentinel agent validates conservation
     total_prob = sum([
         physics.get_probability_mass(),
         quantum.get_probability_mass(),
         mental.get_probability_mass()
     ])
-    
+
     assert abs(total_prob - 1.0) < 1e-6, "Conservation violated across orchestrators"
 ```
 
@@ -123,16 +123,16 @@ def test_coherence_enforcement():
     """Test coherence enforcement using Eq #15 (Coherence metric)."""
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
     from agents.quantum_game_theory import QuantumInspiredGameEngine
-    
+
     physics = PhysicsInspiredOrchestrator()
     quantum = QuantumInspiredGameEngine()
-    
+
     # Coherence-arbiter checks all orchestrators
     coherence_physics = physics.calculate_coherence()
     coherence_quantum = quantum.calculate_coherence()
-    
+
     min_coherence = min(coherence_physics, coherence_quantum)
-    
+
     # Gate multi-agent action
     assert min_coherence >= 0.7, "Coherence too low for multi-agent action"
 ```
@@ -147,19 +147,19 @@ def test_workload_distribution():
     """Test workload distribution using Eq #5 (Probability current)."""
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
     from agents.self_healing import SelfHealingSystem
-    
+
     orchestrators = [
         PhysicsInspiredOrchestrator(),
         SelfHealingSystem()
     ]
-    
+
     # Flow-governor agent measures current
     currents = [orch.get_probability_current_magnitude() for orch in orchestrators]
-    
+
     # Redistribute if imbalance
     max_current = max(currents)
     min_current = min(currents)
-    
+
     assert (max_current - min_current) / max_current < 0.5, "Load imbalance detected"
 ```
 
@@ -173,11 +173,11 @@ def test_transactional_deployment():
     """Test transactional deployment using Eq #9 (Bell states)."""
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
     from agents.quantum_game_theory import QuantumInspiredGameEngine
-    
+
     # Entangle orchestrators for atomic deploy
     physics = PhysicsInspiredOrchestrator()
     quantum = QuantumInspiredGameEngine()
-    
+
     # Transaction-agent enforces all-or-nothing
     try:
         physics.deploy_update()
@@ -208,15 +208,15 @@ def test_transactional_deployment():
 ```python
 class TestCrossModuleIntegration:
     """Integration tests using multi-orchestrator patterns."""
-    
+
     def test_physics_quantum_integration(self):
         """Eq #4: Sentinel agents validate conservation."""
         ...
-    
+
     def test_coherence_gating(self):
         """Eq #15: Coherence-arbiter enforces thresholds."""
         ...
-    
+
     def test_transactional_deploy(self):
         """Eq #53: All-or-nothing semantics."""
         ...

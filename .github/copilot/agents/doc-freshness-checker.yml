@@ -24,18 +24,18 @@ actions:
   - name: check_broken_links
     description: Scan for broken documentation links
     script: markdown-link-check docs/**/*.md
-    
+
   - name: validate_code_snippets
     description: Ensure code examples are valid
     script: python scripts/validate_doc_snippets.py
-    
+
   - name: detect_outdated_content
     description: Flag docs with outdated API references
     heuristics:
       - Check last_modified vs code_modified
       - Detect deprecated function references
       - Find TODOs older than 90 days
-    
+
   - name: suggest_fixes
     description: Generate PR with documentation fixes
     auto_fix: true

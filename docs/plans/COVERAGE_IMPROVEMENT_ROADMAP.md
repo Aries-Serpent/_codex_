@@ -173,15 +173,15 @@ This roadmap outlines a phased approach to increase test coverage from 15.9% to 
 - **Unit Tests**: 60% of total tests
   - Fast, isolated, focused
   - Mock external dependencies
-  
+
 - **Integration Tests**: 25% of total tests
   - Test component interactions
   - Use real dependencies where possible
-  
+
 - **End-to-End Tests**: 10% of total tests
   - Full workflow tests
   - Slower but comprehensive
-  
+
 - **Property-Based Tests**: 5% of total tests
   - Hypothesis-based testing
   - Edge case discovery

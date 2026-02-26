@@ -232,7 +232,7 @@ field: Union[str, np.ndarray, List] = default
 @dataclass
 class Example:
     required: str = ""
-    
+
     def __post_init__(self):
         if not self.required:
             self.required = auto_generate()

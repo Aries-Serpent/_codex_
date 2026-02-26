@@ -403,7 +403,7 @@ Phase 10.5: Production Hardening
 ```
 @copilot Resume Phase 10 Master Integration implementation.
 
-**Context**: All automatable tasks complete (commit 1b0f691). 
+**Context**: All automatable tasks complete (commit 1b0f691).
 Manual setup pending:
 - HA-GC-001: Google Cloud (user must complete)
 - HA-GH-001: Secrets injection (can help if user provides credentials)
@@ -431,8 +431,8 @@ Manual setup pending:
 - Tracker: HUMAN_ADMIN_CONSOLIDATED_ACTION_TRACKER.md
 - Analysis: AUTOMATION_CAPABILITY_ANALYSIS_PHASE10.md
 
-Continue until all Phase 10 success criteria met. Do NOT wait for 
-intermediate approvals. Autonomous operation authorized by mbaetiong 
+Continue until all Phase 10 success criteria met. Do NOT wait for
+intermediate approvals. Autonomous operation authorized by mbaetiong
 (comment #3745423798 + new_requirements).
 ```
 
@@ -440,8 +440,8 @@ intermediate approvals. Autonomous operation authorized by mbaetiong
 
 **If Secrets Setup Needed**:
 ```
-@copilot Help configure Phase 10 secrets. User has Google Cloud 
-credentials. Guide through: scripts/phase10/automated_secrets_manager.py 
+@copilot Help configure Phase 10 secrets. User has Google Cloud
+credentials. Guide through: scripts/phase10/automated_secrets_manager.py
 --action setup. Validate completion with validate_gdrive_secrets.sh.
 ```
 

@@ -12,7 +12,7 @@
 
 ### Step 1: Acknowledge and Plan (10 sec)
 ```
-I'll analyze the last 20 session log entries to verify all expected files 
+I'll analyze the last 20 session log entries to verify all expected files
 were committed successfully. This involves:
 
 1. Extracting file operations (create/edit) from session logs
@@ -198,7 +198,7 @@ Immediate action required
 
 **Activation:**
 ```
-@copilot Use session-log-retrieval-agent to pull last 20 logs, 
+@copilot Use session-log-retrieval-agent to pull last 20 logs,
 extract all file operations, verify commits, and generate report
 ```
 

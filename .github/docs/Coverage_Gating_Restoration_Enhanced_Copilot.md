@@ -140,11 +140,11 @@ CPU_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 def tests(session: nox.Session) -> None:
     """
     Run tests with optional coverage instrumentation.
-    
+
     Environment Variables:
         CODEX_COLLECT_COVERAGE: Set to "1" to enable coverage collection
         CODEX_CPU_MINIMAL: Set to "1" for minimal CPU-only dependencies
-    
+
     Coverage Behavior:
         - When CODEX_COLLECT_COVERAGE=1:
           * Installs pytest-cov and coverage[toml]
@@ -154,20 +154,20 @@ def tests(session: nox.Session) -> None:
         - When CODEX_COLLECT_COVERAGE=0 (default):
           * Runs tests without coverage overhead
           * Faster execution for development/CI matrix
-    
+
     Artifacts:
         - artifacts/coverage.xml (if coverage enabled)
         - artifacts/htmlcov/ (if coverage enabled)
     """
     collect_coverage = os.getenv("CODEX_COLLECT_COVERAGE", "0") == "1"
     cpu_minimal = os.getenv("CODEX_CPU_MINIMAL", "0") == "1"
-    
+
     session.log(f"🔧 Configuration: coverage={collect_coverage}, cpu_minimal={cpu_minimal}")
-    
+
     # ========================================================================
     # DEPENDENCY INSTALLATION
     # ========================================================================
-    
+
     # Install CPU-only torch wheels (deterministic builds)
     if not cpu_minimal:
         session.log("📦 Installing CPU-only torch wheels...")
@@ -178,36 +178,36 @@ def tests(session: nox.Session) -> None:
             f"torchvision=={CPU_TORCHVISION_VERSION}",
             f"torchaudio=={CPU_TORCHAUDIO_VERSION}",
         )
-    
+
     # Install development dependencies
     session.log("📦 Installing requirements-dev.txt...")
     session.install("-r", "requirements-dev.txt")
-    
+
     # Install coverage tooling if needed
     if collect_coverage:
         session.log("📊 Installing coverage instrumentation tools...")
         session.install("coverage[toml]>=7.0", "pytest-cov>=4.0")
-    
+
     # ========================================================================
     # ARTIFACT DIRECTORY PREPARATION
     # ========================================================================
-    
+
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(exist_ok=True)
     session.log(f"📁 Artifacts directory: {artifacts_dir.absolute()}")
-    
+
     # ========================================================================
     # TEST EXECUTION
     # ========================================================================
-    
+
     if collect_coverage:
         session.log("🧪 Running tests with coverage instrumentation...")
-        
+
         # Build coverage arguments
         cov_args = []
         for pkg in COVERAGE_PACKAGES:
             cov_args.extend(["--cov", pkg])
-        
+
         # Add coverage reports
         cov_args.extend([
             "--cov-report=xml:artifacts/coverage.xml",
@@ -215,11 +215,11 @@ def tests(session: nox.Session) -> None:
             "--cov-report=term-missing",
             "--cov-config=pyproject.toml",  # Use project coverage config
         ])
-        
+
         # Add omit patterns
         omit_str = ",".join(COVERAGE_OMIT)
         cov_args.append(f"--cov-omit={omit_str}")
-        
+
         session.run(
             "pytest",
             *cov_args,
@@ -227,21 +227,21 @@ def tests(session: nox.Session) -> None:
             "--tb=short",
             env={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "0"},
         )
-        
+
         # Verify artifacts were created
         coverage_xml = artifacts_dir / "coverage.xml"
         htmlcov_dir = artifacts_dir / "htmlcov"
-        
+
         if coverage_xml.exists():
             session.log(f"✅ Coverage XML generated: {coverage_xml}")
         else:
             session.error("❌ coverage.xml not found after test run!")
-        
+
         if htmlcov_dir.exists():
             session.log(f"✅ HTML coverage report: {htmlcov_dir}/index.html")
         else:
             session.warn("⚠️  htmlcov directory not found")
-    
+
     else:
         session.log("🧪 Running tests without coverage (fast mode)...")
         session.run(
@@ -256,25 +256,25 @@ def tests(session: nox.Session) -> None:
 def coverage_local(session: nox.Session) -> None:
     """
     Convenient local coverage check with auto-open HTML report.
-    
+
     Usage:
         nox -s coverage-local
-    
+
     This session:
         1. Runs tests with coverage (reuses tests session)
         2. Opens HTML report in browser (macOS/Linux)
         3. Prints coverage summary
     """
     session.log("🚀 Running local coverage check...")
-    
+
     # Set coverage flag and run tests
     session.env["CODEX_COLLECT_COVERAGE"] = "1"
     tests(session)
-    
+
     # Open HTML report
     import webbrowser
     import platform
-    
+
     html_report = Path("artifacts/htmlcov/index.html").absolute()
     if html_report.exists():
         session.log(f"📊 Opening coverage report: {html_report}")
@@ -317,28 +317,28 @@ jobs:
             cpu_minimal: "0"
             collect_coverage: "1"
             python: "3.12"
-          
+
           # ML tests (fast, no coverage)
           - name: "ml (ml_tests)"
             nox: ml_tests
             cpu_minimal: "1"
             collect_coverage: "0"
             python: "3.12"
-          
+
           # Evaluation tests (fast, no coverage)
           - name: "eval (eval_tests)"
             nox: eval_tests
             cpu_minimal: "0"
             collect_coverage: "0"
             python: "3.12"
-          
+
           # Hygiene checks (fast, no coverage)
           - name: "hygiene (verify_hygiene)"
             nox: verify_hygiene
             cpu_minimal: "0"
             collect_coverage: "0"
             python: "3.12"
-    
+
     steps:
       # ====================================================================
       # SETUP
@@ -347,7 +347,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for accurate blame/coverage
-      
+
       - name: 🐍 Setup Python ${{ matrix.session.python }}
         uses: actions/setup-python@v5
         with:
@@ -356,7 +356,7 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-dev.txt
-      
+
       # ====================================================================
       # VALIDATION
       # ====================================================================
@@ -365,12 +365,12 @@ jobs:
           python - <<'PY'
           import sys, tomllib
           from pathlib import Path
-          
+
           lock_file = Path('uv.lock')
           if not lock_file.exists():
               print("⚠️  uv.lock not found (continuing)")
               sys.exit(0)
-          
+
           data = lock_file.read_bytes()
           try:
               tomllib.loads(data.decode('utf-8'))
@@ -379,7 +379,7 @@ jobs:
               print(f"❌ ERROR: uv.lock TOML invalid: {e}", file=sys.stderr)
               sys.exit(1)
           PY
-      
+
       # ====================================================================
       # DEPENDENCY INSTALLATION
       # ====================================================================
@@ -388,7 +388,7 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install nox==${{ env.NOX_VERSION }}
           nox --version
-      
+
       # ====================================================================
       # ARTIFACT PREPARATION
       # ====================================================================
@@ -397,7 +397,7 @@ jobs:
           mkdir -p artifacts
           echo "# CI Artifacts - ${{ matrix.session.name }}" > artifacts/README.md
           echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> artifacts/README.md
-      
+
       # ====================================================================
       # ENVIRONMENT DIAGNOSTICS
       # ====================================================================
@@ -409,7 +409,7 @@ jobs:
           df -h
           echo "🧠 Memory:"
           free -h || true
-      
+
       # ====================================================================
       # VENDOR GUARD (if applicable)
       # ====================================================================
@@ -421,7 +421,7 @@ jobs:
           else
             echo "::notice ::scripts/vendor_guard.py not found (skipping)"
           fi
-      
+
       # ====================================================================
       # SESSION EXECUTION
       # ====================================================================
@@ -436,12 +436,12 @@ jobs:
           echo "  - Session: ${{ matrix.session.nox }}"
           echo "  - Coverage: ${{ matrix.session.collect_coverage }}"
           echo "  - CPU Minimal: ${{ matrix.session.cpu_minimal }}"
-          
+
           nox -s ${{ matrix.session.nox }} || {
             echo "::error ::❌ Nox session '${{ matrix.session.nox }}' failed"
             exit 1
           }
-      
+
       # ====================================================================
       # COVERAGE ARTIFACT UPLOAD (baseline session only)
       # ====================================================================
@@ -455,7 +455,7 @@ jobs:
             artifacts/htmlcov
           retention-days: 7
           if-no-files-found: error  # Fail if coverage wasn't collected
-      
+
       # ====================================================================
       # SESSION ARTIFACT UPLOAD (all sessions)
       # ====================================================================
@@ -476,19 +476,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests-matrix
     timeout-minutes: 10
-    
+
     steps:
       # ====================================================================
       # SETUP
       # ====================================================================
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       # ====================================================================
       # ARTIFACT RETRIEVAL
       # ====================================================================
@@ -497,7 +497,7 @@ jobs:
         with:
           name: coverage-data
           path: artifacts
-      
+
       # ====================================================================
       # VALIDATION (Fail-Fast)
       # ====================================================================
@@ -510,17 +510,17 @@ jobs:
             echo "::error ::Check the 'baseline (tests + coverage)' job logs."
             exit 1
           fi
-          
+
           # Verify file is not empty
           if [ ! -s artifacts/coverage.xml ]; then
             echo "::error ::❌ coverage.xml is empty"
             exit 1
           fi
-          
+
           file_size=$(stat -f%z artifacts/coverage.xml 2>/dev/null || stat -c%s artifacts/coverage.xml)
           echo "✅ coverage.xml found (${file_size} bytes)"
           echo "coverage_xml_size=${file_size}" >> $GITHUB_OUTPUT
-      
+
       # ====================================================================
       # PARSING
       # ====================================================================
@@ -529,19 +529,19 @@ jobs:
         run: |
           # Ensure parsing script is executable
           chmod +x .github/scripts/ci_parse_coverage.py
-          
+
           # Parse coverage (script outputs just the number with --output-value)
           ACTUAL=$(python .github/scripts/ci_parse_coverage.py artifacts/coverage.xml --output-value)
-          
+
           # Validate output is a number
           if ! [[ "$ACTUAL" =~ ^[0-9]+\.?[0-9]*$ ]]; then
             echo "::error ::❌ Parser returned invalid coverage value: '$ACTUAL'"
             exit 1
           fi
-          
+
           echo "coverage_pct=$ACTUAL" >> $GITHUB_OUTPUT
           echo "📊 Current Coverage: ${ACTUAL}%"
-      
+
       # ====================================================================
       # THRESHOLD LOADING
       # ====================================================================
@@ -553,18 +553,18 @@ jobs:
             echo "::error ::Create this file with the minimum coverage percentage (e.g., '85.0')"
             exit 1
           fi
-          
+
           THRESHOLD=$(cat .github/coverage_threshold.txt | tr -d '[:space:]')
-          
+
           # Validate threshold is a number
           if ! [[ "$THRESHOLD" =~ ^[0-9]+\.?[0-9]*$ ]]; then
             echo "::error ::❌ Invalid threshold value in coverage_threshold.txt: '$THRESHOLD'"
             exit 1
           fi
-          
+
           echo "threshold_pct=$THRESHOLD" >> $GITHUB_OUTPUT
           echo "🎯 Required Threshold: ${THRESHOLD}%"
-      
+
       # ====================================================================
       # COMPARISON & GATING
       # ====================================================================
@@ -573,13 +573,13 @@ jobs:
         run: |
           ACTUAL="${{ steps.parse.outputs.coverage_pct }}"
           THRESHOLD="${{ steps.threshold.outputs.threshold_pct }}"
-          
+
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "📊 COVERAGE REPORT"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "  Current Coverage:  ${ACTUAL}%"
           echo "  Required Threshold: ${THRESHOLD}%"
-          
+
           # Floating-point comparison using bc
           if command -v bc &> /dev/null; then
             BELOW=$(echo "$ACTUAL < $THRESHOLD" | bc -l)
@@ -587,7 +587,7 @@ jobs:
             # Fallback to awk if bc not available
             BELOW=$(awk -v a="$ACTUAL" -v t="$THRESHOLD" 'BEGIN { print (a < t) ? 1 : 0 }')
           fi
-          
+
           if [ "$BELOW" -eq 1 ]; then
             DELTA=$(awk -v t="$THRESHOLD" -v a="$ACTUAL" 'BEGIN { printf "%.2f", t - a }')
             echo "  Status:            ❌ FAILED"
@@ -610,7 +610,7 @@ jobs:
             echo ""
             echo "status=passed" >> $GITHUB_OUTPUT
           fi
-      
+
       # ====================================================================
       # ARTIFACT UPLOAD (Final, Long Retention)
       # ====================================================================
@@ -623,7 +623,7 @@ jobs:
             artifacts/coverage.xml
             artifacts/htmlcov
           retention-days: 30
-      
+
       # ====================================================================
       # PR COMMENT (Optional Enhancement)
       # ====================================================================
@@ -637,58 +637,58 @@ jobs:
             const status = '${{ steps.compare.outputs.status }}';
             const passed = status === 'passed';
             const emoji = passed ? '✅' : '❌';
-            
+
             const delta = passed
               ? (parseFloat(actual) - parseFloat(threshold)).toFixed(2)
               : (parseFloat(threshold) - parseFloat(actual)).toFixed(2);
-            
+
             const body = `## ${emoji} Coverage Report
-            
+
             | Metric | Value |
             |--------|-------|
             | **Current Coverage** | ${actual}% |
             | **Required Threshold** | ${threshold}% |
             | **Status** | ${passed ? '✅ **PASSED**' : '❌ **FAILED**'} |
             | **Delta** | ${passed ? `+${delta}%` : `-${delta}%`} |
-            
+
             ${passed
               ? `🎉 Great work! Coverage exceeds the threshold by **${delta}%**.`
               : `⚠️ **Action Required**: Coverage is **${delta}%** below the threshold.\n\nPlease add tests to improve coverage before merging. View the detailed HTML report in CI artifacts.`
             }
-            
+
             ---
-            
+
             <details>
             <summary>📊 How to view detailed coverage locally</summary>
-            
+
             \`\`\`bash
             # Run tests with coverage
             CODEX_COLLECT_COVERAGE=1 nox -s tests
-            
+
             # Open HTML report
             open artifacts/htmlcov/index.html  # macOS
             xdg-open artifacts/htmlcov/index.html  # Linux
             \`\`\`
-            
+
             Or use the convenient local session:
             \`\`\`bash
             nox -s coverage-local
             \`\`\`
             </details>
             `;
-            
+
             // Find existing coverage comment
             const {data: comments} = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            
+
             const botComment = comments.find(comment =>
               comment.user.type === 'Bot' &&
               comment.body.includes('Coverage Report')
             );
-            
+
             // Update existing or create new
             if (botComment) {
               await github.rest.issues.updateComment({
@@ -745,17 +745,17 @@ class CoverageParseError(Exception):
 def parse_coverage_from_root(root: ET.Element) -> Optional[float]:
     """
     Extract coverage percentage from parsed XML root element.
-    
+
     Tries multiple strategies:
       1. <coverage line-rate="..."> attribute (Cobertura standard)
       2. Manual computation from <package>/<class>/<line> elements
-    
+
     Args:
         root: Parsed XML root element
-    
+
     Returns:
         Coverage percentage (0-100) or None if cannot be determined
-    
+
     Raises:
         CoverageParseError: If XML structure is unexpected or invalid
     """
@@ -775,11 +775,11 @@ def parse_coverage_from_root(root: ET.Element) -> Optional[float]:
                 raise CoverageParseError(
                     f"Invalid line-rate value '{line_rate_str}': {e}"
                 )
-    
+
     # Strategy 2: Compute from packages/classes/lines
     total_lines = 0
     covered_lines = 0
-    
+
     for package in root.findall('.//package'):
         for cls in package.findall('.//class'):
             for line in cls.findall('.//line'):
@@ -792,12 +792,12 @@ def parse_coverage_from_root(root: ET.Element) -> Optional[float]:
                 except ValueError:
                     # Skip lines with invalid hits values
                     continue
-    
+
     if total_lines == 0:
         raise CoverageParseError(
             "No coverage data found in XML (no <line> elements or line-rate attribute)"
         )
-    
+
     coverage_pct = (covered_lines / total_lines) * 100
     return round(coverage_pct, 2)
 
@@ -805,26 +805,26 @@ def parse_coverage_from_root(root: ET.Element) -> Optional[float]:
 def parse_coverage(xml_path: Path) -> float:
     """
     Parse coverage.xml file and extract coverage percentage.
-    
+
     Args:
         xml_path: Path to coverage.xml file
-    
+
     Returns:
         Coverage percentage (0-100)
-    
+
     Raises:
         CoverageParseError: If parsing fails or file is invalid
     """
     if not xml_path.exists():
         raise CoverageParseError(f"File not found: {xml_path}")
-    
+
     if not xml_path.is_file():
         raise CoverageParseError(f"Path is not a file: {xml_path}")
-    
+
     # Check file is not empty
     if xml_path.stat().st_size == 0:
         raise CoverageParseError(f"File is empty: {xml_path}")
-    
+
     try:
         tree = ET.parse(xml_path)
         root = tree.getroot()
@@ -832,12 +832,12 @@ def parse_coverage(xml_path: Path) -> float:
         raise CoverageParseError(f"XML parse error: {e}") from e
     except Exception as e:
         raise CoverageParseError(f"Unexpected error reading XML: {e}") from e
-    
+
     coverage_pct = parse_coverage_from_root(root)
-    
+
     if coverage_pct is None:
         raise CoverageParseError("Could not extract coverage from XML")
-    
+
     return coverage_pct
 
 
@@ -851,10 +851,10 @@ def main() -> int:
         print("  python ci_parse_coverage.py artifacts/coverage.xml", file=sys.stderr)
         print("  python ci_parse_coverage.py coverage.xml --output-value", file=sys.stderr)
         return 1
-    
+
     xml_path = Path(sys.argv[1])
     output_value_only = "--output-value" in sys.argv
-    
+
     # Parse coverage
     try:
         coverage_pct = parse_coverage(xml_path)
@@ -869,13 +869,13 @@ def main() -> int:
     except Exception as e:
         print(f"::error ::Unexpected error: {e}", file=sys.stderr)
         return 1
-    
+
     # Output
     if output_value_only:
         print(coverage_pct)
     else:
         print(f"Total Coverage: {coverage_pct}%")
-    
+
     return 0
 
 
@@ -887,20 +887,20 @@ if __name__ == "__main__":
 
 ```text
 # .github/coverage_threshold.txt
-# 
+#
 # Minimum acceptable code coverage percentage.
-# 
+#
 # This value is enforced by the coverage-gate CI job.
 # PRs with coverage below this threshold will fail CI.
-# 
+#
 # History:
 #   2025-11-13: Initial threshold set at 85.0%
-# 
+#
 # To update:
 #   1. Ensure current coverage is >= new threshold
 #   2. Update this file
 #   3. Commit and push
-# 
+#
 85.0
 ```text
 
@@ -985,7 +985,7 @@ from ci_parse_coverage import parse_coverage, parse_coverage_from_root, Coverage
 
 class TestCoverageParsingScript:
     """Test suite for coverage parsing script."""
-    
+
     def test_parse_valid_coverage_xml_with_line_rate(self, tmp_path):
         """Test parsing valid coverage.xml with line-rate attribute."""
         xml_content = """<?xml version="1.0" ?>
@@ -1004,13 +1004,13 @@ class TestCoverageParsingScript:
             </packages>
         </coverage>
         """
-        
+
         xml_file = tmp_path / "coverage.xml"
         xml_file.write_text(xml_content)
-        
+
         result = parse_coverage(xml_file)
         assert result == 85.42
-    
+
     def test_parse_coverage_manual_computation(self, tmp_path):
         """Test fallback to manual computation when line-rate missing."""
         xml_content = """<?xml version="1.0" ?>
@@ -1031,38 +1031,38 @@ class TestCoverageParsingScript:
             </packages>
         </root>
         """
-        
+
         xml_file = tmp_path / "coverage.xml"
         xml_file.write_text(xml_content)
-        
+
         result = parse_coverage(xml_file)
         assert result == 50.0  # 2 covered / 4 total
-    
+
     def test_parse_empty_file_raises_error(self, tmp_path):
         """Test that empty file raises CoverageParseError."""
         xml_file = tmp_path / "empty.xml"
         xml_file.touch()
-        
+
         with pytest.raises(CoverageParseError, match="File is empty"):
             parse_coverage(xml_file)
-    
+
     def test_parse_nonexistent_file_raises_error(self, tmp_path):
         """Test that missing file raises CoverageParseError."""
         xml_file = tmp_path / "nonexistent.xml"
-        
+
         with pytest.raises(CoverageParseError, match="File not found"):
             parse_coverage(xml_file)
-    
+
     def test_parse_invalid_xml_raises_error(self, tmp_path):
         """Test that malformed XML raises CoverageParseError."""
         xml_content = "<coverage><unclosed>"
-        
+
         xml_file = tmp_path / "invalid.xml"
         xml_file.write_text(xml_content)
-        
+
         with pytest.raises(CoverageParseError, match="XML parse error"):
             parse_coverage(xml_file)
-    
+
     def test_parse_no_coverage_data_raises_error(self, tmp_path):
         """Test that XML with no coverage data raises error."""
         xml_content = """<?xml version="1.0" ?>
@@ -1070,56 +1070,56 @@ class TestCoverageParsingScript:
             <packages/>
         </root>
         """
-        
+
         xml_file = tmp_path / "no_data.xml"
         xml_file.write_text(xml_content)
-        
+
         with pytest.raises(CoverageParseError, match="No coverage data found"):
             parse_coverage(xml_file)
-    
+
     def test_parse_line_rate_out_of_range_raises_error(self, tmp_path):
         """Test that line-rate > 1.0 raises error."""
         xml_content = """<?xml version="1.0" ?>
         <coverage line-rate="1.5"/>
         """
-        
+
         xml_file = tmp_path / "out_of_range.xml"
         xml_file.write_text(xml_content)
-        
+
         with pytest.raises(CoverageParseError, match="out of range"):
             parse_coverage(xml_file)
-    
+
     def test_cli_output_value_flag(self, tmp_path, capsys):
         """Test --output-value flag produces numeric output only."""
         xml_content = """<?xml version="1.0" ?>
         <coverage line-rate="0.92"/>
         """
-        
+
         xml_file = tmp_path / "coverage.xml"
         xml_file.write_text(xml_content)
-        
+
         # Mock sys.argv
         with patch('sys.argv', ['ci_parse_coverage.py', str(xml_file), '--output-value']):
             from ci_parse_coverage import main
             exit_code = main()
-        
+
         captured = capsys.readouterr()
         assert exit_code == 0
         assert captured.out.strip() == "92.0"
-    
+
     def test_cli_normal_output(self, tmp_path, capsys):
         """Test normal output includes label."""
         xml_content = """<?xml version="1.0" ?>
         <coverage line-rate="0.88"/>
         """
-        
+
         xml_file = tmp_path / "coverage.xml"
         xml_file.write_text(xml_content)
-        
+
         with patch('sys.argv', ['ci_parse_coverage.py', str(xml_file)]):
             from ci_parse_coverage import main
             exit_code = main()
-        
+
         captured = capsys.readouterr()
         assert exit_code == 0
         assert "Total Coverage: 88.0%" in captured.out
@@ -1191,7 +1191,7 @@ The HTML report shows:
 2. **Artifact Upload**: Coverage data uploaded as `coverage-data` artifact
 3. **Coverage Gate Job**: Downloads artifacts, parses `coverage.xml`, compares against threshold
 4. **PR Comment**: Bot posts coverage report to PR with pass/fail status
-5. **CI Outcome**: 
+5. **CI Outcome**:
    - ✅ **PASS** if coverage ≥ 85%
    - ❌ **FAIL** if coverage < 85% (blocks merge)
 
@@ -1573,13 +1573,13 @@ def parse_per_package_coverage(xml_path: Path) -> dict[str, float]:
     """
     tree = ET.parse(xml_path)
     root = tree.getroot()
-    
+
     package_coverage = {}
     for package in root.findall('.//package'):
         name = package.get('name')
         line_rate = float(package.get('line-rate', 0))
         package_coverage[name] = round(line_rate * 100, 2)
-    
+
     return package_coverage
 
 
@@ -1589,7 +1589,7 @@ def validate_package_thresholds(
 ) -> list[str]:
     """
     Returns list of failing packages.
-    
+
     Args:
         coverage: {"pkg": 85.0, ...}
         thresholds: {"pkg": 80.0, ...}  # from .github/package_thresholds.json
@@ -1630,28 +1630,28 @@ def validate_package_thresholds(
   run: |
     # Fetch base branch coverage from previous run
     BASE_REF="${{ github.base_ref }}"
-    
+
     # Download latest coverage from base branch (via GitHub API)
     gh run list --branch "$BASE_REF" --workflow ci.yml --limit 1 --json databaseId \
       | jq -r '.[0].databaseId' > base_run_id.txt
-    
+
     BASE_RUN_ID=$(cat base_run_id.txt)
     gh run download "$BASE_RUN_ID" --name coverage-data --dir base_artifacts/ || {
       echo "⚠️ Could not fetch base coverage (first PR on branch?)"
       echo "delta=N/A" >> $GITHUB_OUTPUT
       exit 0
     }
-    
+
     # Parse base coverage
     BASE_COV=$(python .github/scripts/ci_parse_coverage.py base_artifacts/coverage.xml --output-value)
     CURRENT_COV="${{ steps.parse.outputs.coverage_pct }}"
-    
+
     # Compute delta
     DELTA=$(awk -v c="$CURRENT_COV" -v b="$BASE_COV" 'BEGIN { printf "%.2f", c - b }')
-    
+
     echo "delta=$DELTA" >> $GITHUB_OUTPUT
     echo "base_coverage=$BASE_COV" >> $GITHUB_OUTPUT
-    
+
     if (( $(echo "$DELTA >= 0" | bc -l) )); then
       echo "📈 Coverage improved by ${DELTA}%"
     else
@@ -1873,19 +1873,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: gh-pages
-      
+
       - name: Download coverage data
         uses: actions/download-artifact@v4
         with:
           name: coverage-data
           path: data/
-      
+
       - name: Extract coverage percentage
         run: |
           COV=$(python scripts/parse_coverage.py data/coverage.xml --output-value)
           DATE=$(date -u +%Y-%m-%d)
           echo "{\"date\": \"$DATE\", \"coverage\": $COV}" >> coverage_history.json
-      
+
       - name: Commit and push
         run: |
           git config user.name "Coverage Bot"
@@ -1906,7 +1906,7 @@ jobs:
 <body>
   <h1>📊 Code Coverage Trend</h1>
   <canvas id="coverageChart"></canvas>
-  
+
   <script>
     fetch('coverage_history.json')
       .then(r => r.json())
@@ -1997,7 +1997,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Simulate missing threshold file
         run: rm .github/coverage_threshold.txt
-      
+
       - name: Run coverage gate (should fail gracefully)
         continue-on-error: true
         run: |
@@ -2006,7 +2006,7 @@ jobs:
             echo "::error ::Threshold file missing (expected failure)"
             exit 1
           fi
-      
+
       - name: Verify error message is clear
         run: |
           # Check logs contain actionable guidance
@@ -2035,14 +2035,14 @@ jobs:
           gh api repos/${{ github.repository }}/actions/runs \
             --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 29*86400)) | .id' \
             > recent_runs.txt
-          
+
           # Verify at least one has coverage artifacts
           for run_id in $(cat recent_runs.txt); do
             gh api repos/${{ github.repository }}/actions/runs/$run_id/artifacts \
               --jq '.artifacts[] | select(.name == "coverage-artifacts-final")' \
               && echo "✅ Found coverage artifact in run $run_id" && exit 0
           done
-          
+
           echo "❌ No coverage artifacts found within retention window"
           exit 1
 ```text
@@ -2152,34 +2152,34 @@ git revert <commit-hash-of-coverage-implementation>
 
 ```xml
 <?xml version="1.0" ?>
-<coverage 
+<coverage
   line-rate="0.8542"      <!-- Overall coverage (0.0-1.0) -->
   branch-rate="0.7234"    <!-- Branch coverage (optional) -->
   version="7.0"           <!-- coverage.py version -->
   timestamp="1699876543"> <!-- Unix timestamp -->
-  
+
   <sources>
     <source>/path/to/project</source>
   </sources>
-  
+
   <packages>
-    <package 
-      name="codex_ml.training" 
+    <package
+      name="codex_ml.training"
       line-rate="0.92"      <!-- Package-level coverage -->
       branch-rate="0.85">
-      
+
       <classes>
-        <class 
-          name="Trainer" 
-          filename="src/codex_ml/training/trainer.py" 
+        <class
+          name="Trainer"
+          filename="src/codex_ml/training/trainer.py"
           line-rate="0.95">
-          
+
           <methods>
-            <method 
-              name="train_epoch" 
-              signature="(self, dataloader)" 
+            <method
+              name="train_epoch"
+              signature="(self, dataloader)"
               line-rate="1.0">
-              
+
               <lines>
                 <line number="42" hits="15"/>   <!-- Line 42 executed 15 times -->
                 <line number="43" hits="15"/>
@@ -2187,7 +2187,7 @@ git revert <commit-hash-of-coverage-implementation>
               </lines>
             </method>
           </methods>
-          
+
           <lines>
             <!-- All lines in class (aggregates methods) -->
           </lines>

@@ -11,7 +11,7 @@
 
 **Objective**: Create comprehensive end-to-end documentation for PyPI Trusted Publishing (OIDC) setup to resolve GitHub Actions authentication failures.
 
-**Problem Statement**: 
+**Problem Statement**:
 - GitHub Actions workflow failed with "Non-user identities cannot create new projects" error
 - PyPI requires manual project creation before OIDC authentication can be used
 - No existing documentation for the complete setup process
@@ -214,7 +214,7 @@ flowchart TB
         A3 --> A4[Manual Upload to PyPI]
         A4 --> A5[Configure Trusted Publisher]
     end
-    
+
     subgraph "Automated Release Pipeline"
         B1[Create GitHub Release] --> B2[Trigger Workflow]
         B2 --> B3[Build Distribution]
@@ -222,17 +222,17 @@ flowchart TB
         B4 --> B5[Publish to PyPI]
         B5 --> B6[Verify Installation]
     end
-    
+
     subgraph "Security Layer"
         C1[OIDC Authentication] --> C2[Trusted Publisher Validation]
         C2 --> C3[Package Upload]
         C3 --> C4[No API Tokens Stored]
     end
-    
+
     A5 --> B1
     B4 -.->|Validates| C1
     C3 --> B5
-    
+
     style A4 fill:#FFB6C1
     style A5 fill:#FFB6C1
     style B4 fill:#90EE90
@@ -248,22 +248,22 @@ graph LR
         D2 --> D3[Security Guidelines]
         D3 --> D4[Maintenance Schedule]
     end
-    
+
     subgraph "Knowledge Base"
         K1[Cognitive Brain] --> K2[Agent Definition]
         K2 --> K3[Follow-up Prompts]
     end
-    
+
     subgraph "Integration Points"
         I1[MASTER_INDEX] --> I2[Operations Docs]
         I2 --> I3[Workflow Files]
         I3 --> I4[Package Config]
     end
-    
+
     D1 -.->|References| I2
     K1 -.->|Informs| K2
     K2 -.->|Uses| D1
-    
+
     style D1 fill:#87CEEB
     style K1 fill:#DDA0DD
     style I1 fill:#F0E68C
@@ -275,15 +275,15 @@ graph TD
     A[PyPI Publishing<br/>Operations Agent] --> B[CI Testing Agent]
     A --> C[Security Alert<br/>Verification Agent]
     A --> D[Documentation<br/>Quality Agent]
-    
+
     B -.->|Workflow Debug| E[GitHub Actions]
     C -.->|Dependency Check| F[PyPI Package]
     D -.->|Link Validation| G[Documentation]
-    
+
     A -.->|Primary Owner| H[Setup Guide]
     A -.->|Monitors| I[pypi-publish.yml]
     A -.->|Validates| J[pyproject.toml]
-    
+
     style A fill:#90EE90
     style B fill:#87CEEB
     style C fill:#FFB6C1

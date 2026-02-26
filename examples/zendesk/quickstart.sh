@@ -188,7 +188,7 @@ read -p "Create sample desired state files? (y/n) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     info "Creating sample configurations..."
-    
+
     # Create sample trigger
     cat > "configs/desired/zendesk/triggers.sample.json" <<EOF
 {
@@ -223,7 +223,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 }
 EOF
     success "Created configs/desired/zendesk/triggers.sample.json"
-    
+
     # Create sample macro
     cat > "configs/desired/zendesk/macros.sample.json" <<EOF
 {

@@ -105,7 +105,7 @@ class Test{ClassName}:
     def test_init(self):
         obj = ClassName()
         assert obj is not None
-    
+
     def test_method(self):
         # Test each public method
         pass

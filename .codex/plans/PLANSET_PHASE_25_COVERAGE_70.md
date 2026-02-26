@@ -90,12 +90,12 @@ critical_modules = []
 src_path = Path("src")
 for py_file in src_path.rglob("*.py"):
     rel_path = str(py_file.relative_to(src_path))
-    
+
     # Check path-based criticality
     is_critical = any(keyword in rel_path.lower() for keyword in [
         "auth", "security", "database", "model", "training", "inference"
     ])
-    
+
     if is_critical:
         critical_modules.append({
             "path": rel_path,
@@ -124,13 +124,13 @@ from datetime import datetime, timedelta
 def test_auth_token_generation():
     """Verify secure token generation"""
     from auth.token_manager import generate_token
-    
+
     user_id = "test_user_123"
     token = generate_token(user_id)
-    
+
     assert token is not None
     assert isinstance(token, str)
-    
+
     # Decode and verify
     decoded = jwt.decode(token, options={"verify_signature": False})
     assert decoded["user_id"] == user_id
@@ -138,23 +138,23 @@ def test_auth_token_generation():
 def test_auth_token_expiration():
     """Verify token expiration handling"""
     from auth.token_manager import generate_token, verify_token
-    
+
     # Generate expired token
     expired_token = generate_token("user", expires_in=-1)
-    
+
     with pytest.raises(jwt.ExpiredSignatureError):
         verify_token(expired_token)
 
 def test_auth_invalid_token():
     """Verify rejection of invalid tokens"""
     from auth.token_manager import verify_token
-    
+
     invalid_tokens = [
         "not.a.token",
         "",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.fake.signature",
     ]
-    
+
     for token in invalid_tokens:
         with pytest.raises((jwt.DecodeError, jwt.InvalidTokenError)):
             verify_token(token)
@@ -162,11 +162,11 @@ def test_auth_invalid_token():
 def test_auth_permission_checks():
     """Verify role-based access control"""
     from auth.permissions import has_permission
-    
+
     # Test user with permissions
     user_admin = {"role": "admin", "permissions": ["read", "write", "delete"]}
     assert has_permission(user_admin, "delete")
-    
+
     # Test user without permissions
     user_viewer = {"role": "viewer", "permissions": ["read"]}
     assert not has_permission(user_viewer, "delete")
@@ -179,7 +179,7 @@ def test_auth_permission_checks():
 def test_auth_security_against_attacks(attack_vector):
     """Verify auth system resists common attacks"""
     from auth.authentication import authenticate
-    
+
     # Should not crash or succeed with malicious input
     result = authenticate(username=attack_vector, password="test")
     assert result is None or result == False
@@ -197,34 +197,34 @@ def test_checkpoint_save_and_load():
     """Verify model checkpoints can be saved and loaded"""
     from modeling import TransformerModel, save_checkpoint, load_checkpoint
     import torch
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create and save model
         model = TransformerModel(hidden_size=128, num_layers=2)
         checkpoint_path = Path(tmpdir) / "checkpoint.pt"
         save_checkpoint(model, checkpoint_path)
-        
+
         assert checkpoint_path.exists()
-        
+
         # Load model
         loaded_model = load_checkpoint(checkpoint_path)
-        
+
         # Verify state matches
         original_state = model.state_dict()
         loaded_state = loaded_model.state_dict()
-        
+
         for key in original_state:
             assert torch.allclose(original_state[key], loaded_state[key])
 
 def test_checkpoint_corruption_handling():
     """Verify graceful handling of corrupted checkpoints"""
     from modeling import load_checkpoint
-    
+
     with tempfile.NamedTemporaryFile(suffix=".pt", delete=False) as f:
         # Write corrupted data
         f.write(b"corrupted checkpoint data")
         corrupted_path = f.name
-    
+
     try:
         with pytest.raises((RuntimeError, ValueError)):
             load_checkpoint(corrupted_path)
@@ -235,12 +235,12 @@ def test_training_state_persistence():
     """Verify training state (optimizer, scheduler) persists correctly"""
     from training import Trainer, save_training_state, load_training_state
     import torch
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Setup trainer
         model = Mock()
         optimizer = torch.optim.Adam([torch.nn.Parameter(torch.randn(10, 10))], lr=0.001)
-        
+
         # Save state
         state_path = Path(tmpdir) / "training_state.pt"
         save_training_state({
@@ -248,10 +248,10 @@ def test_training_state_persistence():
             "global_step": 100,
             "epoch": 5
         }, state_path)
-        
+
         # Load state
         loaded_state = load_training_state(state_path)
-        
+
         assert loaded_state["global_step"] == 100
         assert loaded_state["epoch"] == 5
 ```
@@ -270,7 +270,7 @@ def test_production_workflow_full_training_pipeline():
     runner = CliRunner()
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
-        
+
         # 1. Prepare data
         prep_result = runner.invoke(app, [
             "prepare-data",
@@ -280,7 +280,7 @@ def test_production_workflow_full_training_pipeline():
             "--test-split", "0.1"
         ])
         assert prep_result.exit_code == 0
-        
+
         # 2. Train model
         train_result = runner.invoke(app, [
             "train",
@@ -292,7 +292,7 @@ def test_production_workflow_full_training_pipeline():
             "--save-steps", "25"
         ])
         assert train_result.exit_code == 0
-        
+
         # 3. Evaluate on test set
         eval_result = runner.invoke(app, [
             "evaluate",
@@ -301,7 +301,7 @@ def test_production_workflow_full_training_pipeline():
             "--output", str(tmpdir / "eval_results.json")
         ])
         assert eval_result.exit_code == 0
-        
+
         # 4. Export for production
         export_result = runner.invoke(app, [
             "export",
@@ -311,7 +311,7 @@ def test_production_workflow_full_training_pipeline():
             "--output", str(tmpdir / "model.onnx")
         ])
         assert export_result.exit_code == 0
-        
+
         # 5. Verify exported model works
         inference_result = runner.invoke(app, [
             "infer",
@@ -320,7 +320,7 @@ def test_production_workflow_full_training_pipeline():
             "--output", str(tmpdir / "predictions.json")
         ])
         assert inference_result.exit_code == 0
-        
+
         # Verify all outputs exist and are valid
         assert (tmpdir / "data/train.json").exists()
         assert (tmpdir / "model").exists()
@@ -343,7 +343,7 @@ def test_production_workflow_with_monitoring():
             "--log-to-mlflow",
             "--alert-on-metric-drop"
         ])
-        
+
         assert result.exit_code == 0
         # Verify monitoring artifacts
         assert Path(tmpdir).exists()

@@ -34,28 +34,28 @@ on:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install pyyaml jinja2 pytest pytest-cov
-      
+
       - name: Run tests with coverage
         run: |
           pytest --cov=src --cov-report=xml
-      
+
       - name: Run audit pipeline
         run: |
           python scripts/space_traversal/audit_runner.py run
-      
+
       - name: Upload audit artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -64,7 +64,7 @@ jobs:
             audit_artifacts/
             reports/
           retention-days: 30
-      
+
       - name: Check for regressions
         run: |
           if [ -f audit_artifacts/baselines/baseline.json ]; then
@@ -86,36 +86,36 @@ on: [pull_request]
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: pip install pyyaml jinja2 pytest pytest-cov
-      
+
       - name: Generate coverage
         run: pytest --cov=src --cov-report=xml
-      
+
       - name: Run audit
         run: make space-audit
-      
+
       - name: Check minimum score
         run: |
           python << 'EOF'
           import json
-          
+
           with open("audit_artifacts/capabilities_scored.json") as f:
               data = json.load(f)
-          
+
           scores = [cap["score"] for cap in data["capabilities"]]
           avg_score = sum(scores) / len(scores)
-          
+
           print(f"Average score: {avg_score:.2f}")
-          
+
           if avg_score < 0.70:
               print(f"❌ Score {avg_score:.2f} below threshold 0.70")
               exit(1)
@@ -230,53 +230,53 @@ from datetime import datetime
 
 def log_audit_results():
     """Log audit pipeline results to MLflow"""
-    
+
     # Load audit results
     with open("audit_artifacts/capabilities_scored.json") as f:
         data = json.load(f)
-    
+
     # Start MLflow run
     with mlflow.start_run(run_name=f"audit-{datetime.now().strftime('%Y%m%d')}"):
-        
+
         # Log overall metrics
         scores = [cap["score"] for cap in data["capabilities"]]
         mlflow.log_metric("avg_capability_score", sum(scores) / len(scores))
         mlflow.log_metric("num_capabilities", len(data["capabilities"]))
         mlflow.log_metric("min_score", min(scores))
         mlflow.log_metric("max_score", max(scores))
-        
+
         # Log per-capability scores
         for cap in data["capabilities"]:
             mlflow.log_metric(f"score_{cap['id']}", cap["score"])
             mlflow.log_metric(f"tests_{cap['id']}", cap.get("tests", {}).get("score", 0))
             mlflow.log_metric(f"consistency_{cap['id']}", cap.get("consistency", {}).get("score", 0))
-        
+
         # Log component weights
         weights = data.get("weights", {})
         for component, weight in weights.items():
             mlflow.log_param(f"weight_{component}", weight)
-        
+
         # Log artifacts
         mlflow.log_artifact("audit_artifacts/capabilities_scored.json")
         mlflow.log_artifact("audit_artifacts/audit_run_manifest.json")
-        
+
         # Log reports
         for report in Path("reports").glob("capability_matrix_*.md"):
             mlflow.log_artifact(str(report))
-        
+
         # Log coverage map if exists
         if Path("audit_artifacts/coverage_map.json").exists():
             mlflow.log_artifact("audit_artifacts/coverage_map.json")
-            
+
             with open("audit_artifacts/coverage_map.json") as f:
                 cov_data = json.load(f)
             mlflow.log_metric("coverage_files_count", len(cov_data))
-            
+
             # Average coverage
             coverages = [v["percent"] for v in cov_data.values()]
             if coverages:
                 mlflow.log_metric("avg_coverage", sum(coverages) / len(coverages))
-        
+
         print("✅ Audit results logged to MLflow")
         print(f"   Run ID: {mlflow.active_run().info.run_id}")
 
@@ -309,16 +309,16 @@ SLACK_WEBHOOK = "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 
 def notify_slack():
     """Send audit results to Slack"""
-    
+
     with open("audit_artifacts/capabilities_scored.json") as f:
         data = json.load(f)
-    
+
     scores = [cap["score"] for cap in data["capabilities"]]
     avg_score = sum(scores) / len(scores)
-    
+
     low_scores = [cap for cap in data["capabilities"] if cap["score"] < 0.70]
     high_scores = [cap for cap in data["capabilities"] if cap["score"] >= 0.85]
-    
+
     # Build message
     message = {
         "text": "🔍 Audit Pipeline Results",
@@ -343,7 +343,7 @@ def notify_slack():
             }
         ]
     }
-    
+
     # Add low maturity section if any
     if low_scores:
         low_list = "\n".join([
@@ -357,7 +357,7 @@ def notify_slack():
                 "text": f"*⚠️ Low Maturity Capabilities:*\n{low_list}"
             }
         })
-    
+
     # Add high maturity section
     if high_scores:
         high_list = "\n".join([
@@ -371,7 +371,7 @@ def notify_slack():
                 "text": f"*✅ Top Performers:*\n{high_list}"
             }
         })
-    
+
     # Send to Slack
     response = requests.post(SLACK_WEBHOOK, json=message)
     response.raise_for_status()
@@ -398,45 +398,45 @@ if __name__ == "__main__":
 // Jenkinsfile
 pipeline {
     agent any
-    
+
     environment {
         PYTHON_VERSION = '3.12'
     }
-    
+
     stages {
         stage('Setup') {
             steps {
                 sh 'pip install pyyaml jinja2 pytest pytest-cov'
             }
         }
-        
+
         stage('Test with Coverage') {
             steps {
                 sh 'pytest --cov=src --cov-report=xml'
             }
         }
-        
+
         stage('Audit Pipeline') {
             steps {
                 sh 'python scripts/space_traversal/audit_runner.py run'
             }
         }
-        
+
         stage('Archive Results') {
             steps {
                 archiveArtifacts artifacts: 'audit_artifacts/**, reports/**', fingerprint: true
             }
         }
-        
+
         stage('Quality Gate') {
             steps {
                 script {
                     def auditData = readJSON file: 'audit_artifacts/capabilities_scored.json'
                     def scores = auditData.capabilities.collect { it.score }
                     def avgScore = scores.sum() / scores.size()
-                    
+
                     echo "Average score: ${avgScore}"
-                    
+
                     if (avgScore < 0.70) {
                         error("Score ${avgScore} below threshold 0.70")
                     }
@@ -444,7 +444,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             junit 'test-results/**/*.xml'
@@ -464,24 +464,24 @@ import json
 
 def export_prometheus_metrics():
     """Export audit metrics to Prometheus textfile format"""
-    
+
     registry = CollectorRegistry()
-    
+
     # Load audit data
     with open("audit_artifacts/capabilities_scored.json") as f:
         data = json.load(f)
-    
+
     # Create metrics
     avg_score_gauge = Gauge('audit_avg_score', 'Average capability score', registry=registry)
     cap_count_gauge = Gauge('audit_capability_count', 'Number of capabilities', registry=registry)
     low_count_gauge = Gauge('audit_low_maturity_count', 'Low maturity capabilities', registry=registry)
-    
+
     # Set values
     scores = [cap["score"] for cap in data["capabilities"]]
     avg_score_gauge.set(sum(scores) / len(scores))
     cap_count_gauge.set(len(data["capabilities"]))
     low_count_gauge.set(sum(1 for s in scores if s < 0.70))
-    
+
     # Per-capability metrics
     for cap in data["capabilities"]:
         cap_score = Gauge(
@@ -491,7 +491,7 @@ def export_prometheus_metrics():
             registry=registry
         )
         cap_score.labels(capability=cap['id']).set(cap['score'])
-    
+
     # Write to file for node_exporter textfile collector
     write_to_textfile('/var/lib/node_exporter/audit_metrics.prom', registry)
     print("✅ Metrics exported to Prometheus")
@@ -512,12 +512,12 @@ import sys
 
 def send_webhook(url, data):
     """Send audit results to generic webhook"""
-    
+
     with open("audit_artifacts/capabilities_scored.json") as f:
         audit_data = json.load(f)
-    
+
     scores = [cap["score"] for cap in audit_data["capabilities"]]
-    
+
     payload = {
         "event": "audit_complete",
         "timestamp": audit_data.get("timestamp"),
@@ -532,7 +532,7 @@ def send_webhook(url, data):
             for cap in audit_data["capabilities"]
         ]
     }
-    
+
     response = requests.post(url, json=payload, timeout=10)
     response.raise_for_status()
     print(f"✅ Webhook delivered: {response.status_code}")
@@ -541,7 +541,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python webhook_notify.py <webhook-url>")
         sys.exit(1)
-    
+
     send_webhook(sys.argv[1], {})
 ```
 

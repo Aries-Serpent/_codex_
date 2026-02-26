@@ -52,7 +52,7 @@ runs:
       run: |
         # First ensure UV is in PATH
         export PATH="$HOME/.cargo/bin:$PATH"
-        
+
         case "${{ inputs.dependency-profile }}" in
           minimal)
             if [ -f requirements-minimal.txt ]; then

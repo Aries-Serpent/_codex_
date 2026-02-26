@@ -93,7 +93,7 @@ tools:
 
 **Key Requirements for Each Module**:
 
-1. **cli.py**: 
+1. **cli.py**:
    - Accept `--manifest`, `--task`, `--workspace` arguments
    - Load YAML manifest and JSON task
    - Route to appropriate component (generator/executor/validator)

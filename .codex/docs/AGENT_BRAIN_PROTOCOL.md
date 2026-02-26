@@ -212,7 +212,7 @@ class BrainResponse:
 1. **Initialize Interface**
    ```python
    from codex.cognitive.brain_interface import AgentBrainInterface
-   
+
    brain = AgentBrainInterface(agent_id="my-agent")
    ```
 
@@ -220,7 +220,7 @@ class BrainResponse:
    ```python
    symptoms = ["error message from logs"]
    patterns = brain.query_patterns(symptoms)
-   
+
    if patterns:
        # Apply most relevant pattern
        best_pattern = patterns[0]
@@ -232,7 +232,7 @@ class BrainResponse:
 3. **Check Alignment Before Action**
    ```python
    alignment = brain.check_alignment("proposed action")
-   
+
    if alignment == ObjectiveAlignment.MISALIGNED:
        # Reconsider action
        pass

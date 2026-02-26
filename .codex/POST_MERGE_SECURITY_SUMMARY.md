@@ -102,7 +102,7 @@ import codex  # ✅ PASS
 
 **Reason**: Safety requires connection to vulnerability database (no network in sandbox)
 
-**Alternative Verification**: 
+**Alternative Verification**:
 - CVE-2025-53000 (nbconvert): ✅ Fixed in 7.17.0
 - CVE-2026-25479 (litestar): ✅ Fixed in 2.20.0
 - CVE-2026-25480 (litestar): ✅ Fixed in 2.20.0
@@ -130,9 +130,9 @@ All three CVEs verified fixed via:
 
 **Reason**: Testing infrastructure not fully installed in sandbox
 
-**Impact Assessment**: 
+**Impact Assessment**:
 - **Risk Level**: LOW
-- **Justification**: 
+- **Justification**:
   1. Only dependency version bumps (patch/minor updates)
   2. No code changes to application logic
   3. nbconvert and litestar are optional/indirect dependencies

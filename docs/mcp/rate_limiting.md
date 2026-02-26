@@ -87,7 +87,7 @@ import asyncio
 
 class TokenBucket:
     """Token bucket rate limiter."""
-    
+
     def __init__(self, capacity: int, refill_rate: float):
         """
         Args:
@@ -99,25 +99,25 @@ class TokenBucket:
         self.tokens = float(capacity)
         self.last_update = time.time()
         self._lock = asyncio.Lock()
-    
+
     async def consume(self, cost: int = 1) -> tuple[bool, Optional[float]]:
         """
         Attempt to consume tokens.
-        
+
         Returns:
             (allowed, retry_after) tuple
         """
         async with self._lock:
             now = time.time()
             elapsed = now - self.last_update
-            
+
             # Refill tokens based on elapsed time
             self.tokens = min(
                 self.capacity,
                 self.tokens + elapsed * self.refill_rate
             )
             self.last_update = now
-            
+
             # Check if enough tokens available
             if self.tokens >= cost:
                 self.tokens -= cost
@@ -130,7 +130,7 @@ class TokenBucket:
 
 class RateLimiter:
     """Global rate limiter with per-key buckets."""
-    
+
     def __init__(
         self,
         rpm_read: int = 60,
@@ -141,20 +141,20 @@ class RateLimiter:
         self.rpm_write = rpm_write
         self.burst_multiplier = burst_multiplier
         self.buckets: Dict[str, TokenBucket] = {}
-    
+
     def get_bucket(self, api_key: str, endpoint_type: str) -> TokenBucket:
         """Get or create bucket for API key and endpoint type."""
         bucket_key = f"{api_key}:{endpoint_type}"
-        
+
         if bucket_key not in self.buckets:
             rpm = self.rpm_read if endpoint_type == "read" else self.rpm_write
             capacity = int(rpm * self.burst_multiplier)
             refill_rate = rpm / 60.0  # Convert RPM to tokens/second
-            
+
             self.buckets[bucket_key] = TokenBucket(capacity, refill_rate)
-        
+
         return self.buckets[bucket_key]
-    
+
     async def check_rate_limit(
         self,
         api_key: str,
@@ -163,7 +163,7 @@ class RateLimiter:
         """Check rate limit and raise HTTPException if exceeded."""
         bucket = self.get_bucket(api_key, endpoint_type)
         allowed, retry_after = await bucket.consume()
-        
+
         if not allowed:
             raise HTTPException(
                 status_code=429,
@@ -211,12 +211,12 @@ import os
 
 class RedisRateLimiter:
     """Redis-backed rate limiter for distributed systems."""
-    
+
     def __init__(self, redis_url: str, rpm_read: int = 60, rpm_write: int = 30):
         self.redis = redis.from_url(redis_url)
         self.rpm_read = rpm_read
         self.rpm_write = rpm_write
-    
+
     async def check_rate_limit(
         self,
         api_key: str,
@@ -226,12 +226,12 @@ class RedisRateLimiter:
         """Check rate limit using Redis sliding window."""
         rpm = self.rpm_read if endpoint_type == "read" else self.rpm_write
         key = f"rate_limit:{api_key}:{endpoint_type}"
-        
+
         # Use Redis pipeline for atomic operations
         pipe = self.redis.pipeline()
         now = time.time()
         window_start = now - window_seconds
-        
+
         # Remove old entries outside window
         pipe.zremrangebyscore(key, 0, window_start)
         # Count entries in current window
@@ -240,10 +240,10 @@ class RedisRateLimiter:
         pipe.zadd(key, {str(now): now})
         # Set expiration
         pipe.expire(key, window_seconds)
-        
+
         results = await pipe.execute()
         count = results[1]  # zcard result
-        
+
         if count >= rpm:
             retry_after = window_seconds - (now - window_start)
             raise HTTPException(
@@ -270,16 +270,16 @@ export class RateLimiterDO {
     this.tokens = null;
     this.lastUpdate = null;
   }
-  
+
   async fetch(request) {
     const { capacity, refillRate, cost } = await request.json();
-    
+
     // Initialize on first request
     if (this.tokens === null) {
       this.tokens = capacity;
       this.lastUpdate = Date.now();
     }
-    
+
     // Refill tokens
     const now = Date.now();
     const elapsed = (now - this.lastUpdate) / 1000; // Convert to seconds
@@ -288,7 +288,7 @@ export class RateLimiterDO {
       this.tokens + elapsed * refillRate
     );
     this.lastUpdate = now;
-    
+
     // Check if request allowed
     if (this.tokens >= cost) {
       this.tokens -= cost;
@@ -298,7 +298,7 @@ export class RateLimiterDO {
     } else {
       const tokensNeeded = cost - this.tokens;
       const retryAfter = Math.ceil(tokensNeeded / refillRate);
-      
+
       return new Response(JSON.stringify({
         allowed: false,
         retryAfter: retryAfter
@@ -318,15 +318,15 @@ export default {
   async fetch(request, env, ctx) {
     const apiKey = request.headers.get('X-MCP-API-Key');
     const url = new URL(request.url);
-    
+
     // Determine endpoint type
     const endpointType = url.pathname.includes('/query') ? 'read' : 'write';
     const rpm = endpointType === 'read' ? env.MCP_RATE_LIMIT_RPM_READ : env.MCP_RATE_LIMIT_RPM_WRITE;
-    
+
     // Get Durable Object for this API key
     const id = env.RATE_LIMITER.idFromName(`${apiKey}:${endpointType}`);
     const obj = env.RATE_LIMITER.get(id);
-    
+
     // Check rate limit
     const rateLimitResponse = await obj.fetch(request.url, {
       method: 'POST',
@@ -336,9 +336,9 @@ export default {
         cost: 1
       })
     });
-    
+
     const rateLimitData = await rateLimitResponse.json();
-    
+
     if (!rateLimitData.allowed) {
       return new Response(JSON.stringify({
         error: {
@@ -353,7 +353,7 @@ export default {
         }
       });
     }
-    
+
     // Process request...
     return new Response(JSON.stringify({ result: 'success' }));
   }
@@ -369,11 +369,11 @@ from contextlib import contextmanager
 
 class SQLiteRateLimiter:
     """SQLite-backed rate limiter for single-instance deployments."""
-    
+
     def __init__(self, db_path: str = "/data/rate_limits.db"):
         self.db_path = db_path
         self._init_db()
-    
+
     def _init_db(self):
         """Initialize database schema."""
         with self._get_connection() as conn:
@@ -386,10 +386,10 @@ class SQLiteRateLimiter:
                 )
             """)
             conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_timestamp 
+                CREATE INDEX IF NOT EXISTS idx_timestamp
                 ON rate_limits(timestamp)
             """)
-    
+
     @contextmanager
     def _get_connection(self):
         """Get database connection."""
@@ -399,7 +399,7 @@ class SQLiteRateLimiter:
             conn.commit()
         finally:
             conn.close()
-    
+
     async def check_rate_limit(
         self,
         api_key: str,
@@ -410,24 +410,24 @@ class SQLiteRateLimiter:
         rpm = self.rpm_read if endpoint_type == "read" else self.rpm_write
         now = time.time()
         window_start = now - window_seconds
-        
+
         with self._get_connection() as conn:
             # Clean old entries
             conn.execute(
                 "DELETE FROM rate_limits WHERE timestamp < ?",
                 (window_start,)
             )
-            
+
             # Count recent requests
             cursor = conn.execute(
                 """
-                SELECT COUNT(*) FROM rate_limits 
+                SELECT COUNT(*) FROM rate_limits
                 WHERE api_key = ? AND endpoint_type = ? AND timestamp >= ?
                 """,
                 (api_key, endpoint_type, window_start)
             )
             count = cursor.fetchone()[0]
-            
+
             if count >= rpm:
                 retry_after = int(window_seconds - (now - window_start)) + 1
                 raise HTTPException(
@@ -435,7 +435,7 @@ class SQLiteRateLimiter:
                     detail=f"Rate limit exceeded. Try again in {retry_after}s.",
                     headers={"Retry-After": str(retry_after)}
                 )
-            
+
             # Record this request
             conn.execute(
                 "INSERT INTO rate_limits (api_key, endpoint_type, timestamp) VALUES (?, ?, ?)",
@@ -482,10 +482,10 @@ async def add_rate_limit_headers(
     """Add rate limit headers to response."""
     bucket = rate_limiter.get_bucket(api_key, endpoint_type)
     rpm = rate_limiter.rpm_read if endpoint_type == "read" else rate_limiter.rpm_write
-    
+
     response.headers["X-RateLimit-Limit"] = str(rpm)
     response.headers["X-RateLimit-Remaining"] = str(int(bucket.tokens))
-    
+
     # Calculate reset time
     tokens_to_full = bucket.capacity - bucket.tokens
     seconds_to_full = tokens_to_full / bucket.refill_rate
@@ -512,20 +512,20 @@ from fastapi.testclient import TestClient
 async def test_token_bucket_refill():
     """Test token bucket refills over time."""
     bucket = TokenBucket(capacity=10, refill_rate=1.0)  # 1 token/second
-    
+
     # Consume all tokens
     for _ in range(10):
         allowed, _ = await bucket.consume()
         assert allowed
-    
+
     # Should be empty
     allowed, retry_after = await bucket.consume()
     assert not allowed
     assert retry_after > 0
-    
+
     # Wait for refill
     await asyncio.sleep(2)
-    
+
     # Should have 2 tokens now
     allowed, _ = await bucket.consume()
     assert allowed
@@ -543,7 +543,7 @@ def test_rate_limit_enforcement(client: TestClient):
         )
         if i < 60:
             assert response.status_code == 200
-    
+
     # Next request should be rate limited
     response = client.post(
         "/mcp/v1/query",
@@ -562,7 +562,7 @@ def test_rate_limit_per_key(client: TestClient):
             headers={"X-MCP-API-Key": "key1"},
             json={"query": "test"}
         )
-    
+
     # Key 1 should be limited
     response1 = client.post(
         "/mcp/v1/query",
@@ -570,7 +570,7 @@ def test_rate_limit_per_key(client: TestClient):
         json={"query": "test"}
     )
     assert response1.status_code == 429
-    
+
     # Key 2 should still work
     response2 = client.post(
         "/mcp/v1/query",
@@ -625,7 +625,7 @@ rate_limit_tokens = Gauge(
 async def check_rate_limit_with_metrics(api_key: str, endpoint_type: str):
     bucket = rate_limiter.get_bucket(api_key, endpoint_type)
     allowed, retry_after = await bucket.consume()
-    
+
     # Update metrics
     result = "allowed" if allowed else "rejected"
     rate_limit_counter.labels(
@@ -633,18 +633,18 @@ async def check_rate_limit_with_metrics(api_key: str, endpoint_type: str):
         endpoint_type=endpoint_type,
         result=result
     ).inc()
-    
+
     if not allowed:
         rate_limit_exceeded.labels(
             api_key=api_key,
             endpoint_type=endpoint_type
         ).inc()
-    
+
     rate_limit_tokens.labels(
         api_key=api_key,
         endpoint_type=endpoint_type
     ).set(bucket.tokens)
-    
+
     return allowed, retry_after
 ```
 
@@ -663,7 +663,7 @@ groups:
         annotations:
           summary: "High rate limit rejection rate"
           description: "API key {{ $labels.api_key }} is experiencing high rate limit rejections"
-      
+
       - alert: RateLimitBucketExhausted
         expr: mcp_rate_limit_tokens < 5
         for: 2m
@@ -824,11 +824,11 @@ fly deploy --strategy immediate
 ```python
 class FallbackRateLimiter:
     """Fallback to in-memory if Redis fails."""
-    
+
     def __init__(self, redis_limiter, memory_limiter):
         self.redis = redis_limiter
         self.memory = memory_limiter
-    
+
     async def check_rate_limit(self, api_key: str, endpoint_type: str):
         try:
             await self.redis.check_rate_limit(api_key, endpoint_type)
@@ -855,7 +855,7 @@ class FallbackRateLimiter:
 async def rate_limiter_health():
     """Rate limiter health check."""
     storage_type = os.getenv("MCP_RATE_LIMIT_STORAGE", "memory")
-    
+
     health_status = {
         "status": "healthy",
         "storage": storage_type,
@@ -863,7 +863,7 @@ async def rate_limiter_health():
         "rpm_read": rate_limiter.rpm_read,
         "rpm_write": rate_limiter.rpm_write
     }
-    
+
     # Check storage connectivity
     if storage_type == "redis":
         try:
@@ -873,7 +873,7 @@ async def rate_limiter_health():
             health_status["status"] = "degraded"
             health_status["redis_connected"] = False
             health_status["error"] = str(e)
-    
+
     return health_status
 ```
 

@@ -41,7 +41,7 @@ async def execute_query(query: str, limit: int = 100):
     if "DROP" in query.upper():
         raise ValueError("Destructive queries not allowed")
     limit = min(limit, 1000)  # Bounded safeguard
-    
+
     results = await db.execute(f"{query} LIMIT {limit}")
     return {"rows": results, "count": len(results)}
 ```
@@ -56,7 +56,7 @@ import httpx
 class MCPClient:
         self.base_url = base_url
         self.client = httpx.AsyncClient(base_url=base_url)
-    
+
     async def invoke_tool(self, tool_name, parameters, auth_token=None):
         headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
         response = await self.client.post(

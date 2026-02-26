@@ -368,12 +368,12 @@ def find_unsafe_patterns(file_path):
     """Find unsafe timestamp patterns in a file."""
     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
-    
+
     patterns = [
         (r'strftime\(["\'].*%[HM].*["\']\)', 'strftime with %H or %M'),
         (r'\.isoformat\(\)', 'isoformat() call'),
     ]
-    
+
     findings = []
     for pattern, description in patterns:
         matches = re.finditer(pattern, content)
@@ -381,7 +381,7 @@ def find_unsafe_patterns(file_path):
             # Find line number
             line_num = content[:match.start()].count('\n') + 1
             findings.append((line_num, description, match.group()))
-    
+
     return findings
 
 # Usage

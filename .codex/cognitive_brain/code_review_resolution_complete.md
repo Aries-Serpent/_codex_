@@ -177,13 +177,13 @@ For more robust testing:
 ```python
 class MyClass:
     """Short description.
-    
+
     **Performance Note**: This class can optionally use [library] for
     [benefit]. If not available, falls back to [alternative], which is
     [trade-off]. For [use case], install [library]:
-    
+
         pip install [library]
-    
+
     The fallback ensures functionality but [limitation].
     """
 ```

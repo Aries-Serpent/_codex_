@@ -196,7 +196,7 @@
     {
       "name": "Integrate template validator into CI/CD",
       "priority": "P1",
-      "estimated_completion": "Future iteration", 
+      "estimated_completion": "Future iteration",
       "status": "deferred",
       "note": "Automated PR validation and quality gates."
     },

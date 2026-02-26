@@ -90,7 +90,7 @@ Addressed all 11 Copilot review comments plus user-reported unused variables acr
 
 **Issue #2785587716 - Recursive to_dict()**
 - **Comment**: Suggests `to_dict()` should include children recursively
-- **Rationale**: 
+- **Rationale**:
   - This is an enhancement, not a bug
   - Would significantly increase JSON output size
   - Should be opt-in feature (e.g., `to_dict(recursive=True)`)

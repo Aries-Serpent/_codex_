@@ -78,7 +78,7 @@
 - [ ] Verify all 4 test shards pass
 - [ ] Confirm no new test failures introduced
 
-**Validation**: 
+**Validation**:
 ```bash
 # Check CI workflow run status
 gh run list --workflow="CI — Optimized with Caching" --branch copilot/sub-pr-2639 --limit 5

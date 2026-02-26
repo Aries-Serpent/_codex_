@@ -172,8 +172,8 @@ export function MSVRadarChart() {
           <Badge variant="outline" className="text-xs">
             Auto-refresh: 10s
           </Badge>
-          <Badge 
-            variant="outline" 
+          <Badge
+            variant="outline"
             className={`text-sm font-bold ${getScoreColor(compositeScore)}`}
           >
             {compositeScore.toFixed(1)} ({getScoreGrade(compositeScore)})
@@ -186,12 +186,12 @@ export function MSVRadarChart() {
           <ResponsiveContainer width="100%" height={320}>
             <RadarChart data={chartData}>
               <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis 
-                dataKey="dimension" 
+              <PolarAngleAxis
+                dataKey="dimension"
                 tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
               />
-              <PolarRadiusAxis 
-                angle={90} 
+              <PolarRadiusAxis
+                angle={90}
                 domain={[0, 100]}
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
               />
@@ -213,7 +213,7 @@ export function MSVRadarChart() {
                 strokeDasharray="5 5"
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend 
+              <Legend
                 wrapperStyle={{ fontSize: '12px' }}
                 iconType="circle"
               />
@@ -225,7 +225,7 @@ export function MSVRadarChart() {
           <div className="text-xs text-muted-foreground mb-3">
             <p className="mb-2">
               The MSV measures AI self-awareness across 5 cognitive dimensions.
-              Based on <a 
+              Based on <a
                 href="https://research.sethi.org/ricky/selected_publications/courchaine_sethi_2026-thewebconf.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -240,7 +240,7 @@ export function MSVRadarChart() {
             {chartData.map((dim, idx) => {
               const progress = (dim.current / dim.target) * 100;
               const isOnTrack = dim.current >= dim.target * 0.95;
-              
+
               return (
                 <div key={idx} className="space-y-1">
                   <div className="flex justify-between items-center text-xs">

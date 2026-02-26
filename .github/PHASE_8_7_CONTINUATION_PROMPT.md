@@ -289,12 +289,12 @@ safety_constraints = {
     "max_autonomy_level": 0.8,  # Human oversight required
     "decision_explanation_required": True,
     "human_approval_threshold": 0.95,  # High-stakes decisions
-    
+
     # Monitoring
     "continuous_alignment_check": True,
     "anomaly_detection": True,
     "rollback_capability": True,
-    
+
     # Guardrails
     "action_whitelist": [...],
     "forbidden_actions": [...],

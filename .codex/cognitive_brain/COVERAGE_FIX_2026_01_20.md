@@ -13,7 +13,7 @@
 
 **Error Message:**
 ```
-ERROR: Cannot install coverage==7.6.0 and pytest-cov==7.0.0 because 
+ERROR: Cannot install coverage==7.6.0 and pytest-cov==7.0.0 because
 these package versions have conflicting dependencies.
 
 The conflict is caused by:

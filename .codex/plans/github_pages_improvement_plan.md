@@ -250,7 +250,7 @@ pre code {
   .markdown-body {
     padding: 1rem;
   }
-  
+
   pre, code {
     font-size: 0.875rem;
   }
@@ -578,13 +578,13 @@ jobs:
     steps:
       - name: Check markdown formatting
         run: markdownlint docs/
-      
+
       - name: Validate links
         run: markdown-link-check docs/**/*.md
-      
+
       - name: Check code block syntax
         run: check-code-blocks.sh
-      
+
       - name: Build site
         run: bundle exec jekyll build
 ```

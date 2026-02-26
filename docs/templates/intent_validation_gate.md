@@ -22,7 +22,7 @@ Before you proceed, please do two things in this order:
      • Concrete steps or tasks (bullet list).
      • Decision gate: What must be true for this phase to succeed? What do you need from me?
      • Estimated effort or dependencies.
-   
+
    - Include these sections:
      • Assumptions: List key assumptions (derived from my request, conventions, or your inference). Mark each as ✓ (confirmed), ? (uncertain), or ⚠️ (needs clarification).
      • Open Questions: At least 3 questions you need answered to proceed confidently. Prioritize by criticality.
@@ -31,7 +31,7 @@ Before you proceed, please do two things in this order:
      • Acceptance Criteria: What must be in the final plan for me to approve execution.
      • Rollback / Fallback: How we can undo or recover if something goes wrong.
 
-IMPORTANT: Do not execute, apply changes, or generate final output yet. 
+IMPORTANT: Do not execute, apply changes, or generate final output yet.
 Just present the plan for my review. I will either:
   a) Approve the plan and ask you to proceed.
   b) Ask for specific clarifications or adjustments.

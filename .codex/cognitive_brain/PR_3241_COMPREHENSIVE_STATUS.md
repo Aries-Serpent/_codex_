@@ -226,13 +226,13 @@ Total: 6 workflow templates, 18,701 bytes
    # Backup existing workflow
    mv .github/workflows/code-quality-coverage-suite.yml \
       .github/workflows/code-quality-coverage-suite.yml.backup
-   
+
    # Copy templates to active
    for file in .codex/templates/workflows/cqcs-*.yml.template; do
      basename=$(basename "$file" .template)
      cp "$file" ".github/workflows/$basename"
    done
-   
+
    # Commit and test
    git add .github/workflows/cqcs-*.yml
    git commit -m "feat: Activate parallel workflow architecture"

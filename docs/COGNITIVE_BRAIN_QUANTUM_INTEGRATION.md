@@ -19,12 +19,12 @@ graph TB
         WORKFLOW[Workflow Orchestration Layer 100%]
         QAF[Quantum Agent Framework NEW]
     end
-    
+
     QAF --> AGENTS
     QAF --> AI
     QAF --> QUANTUM
     AGENTS --> WORKFLOW
-    
+
     style QAF fill:#ff9,stroke:#333,stroke-width:4px
     style AGENTS fill:#9f9,stroke:#333,stroke-width:2px
 ```
@@ -70,7 +70,7 @@ Source Selection = {s_i : Relevance(s_i) > threshold}
 1. **Hallucination Loss** (λ_hall = 1.0)
    - Tracked in AI Generation Layer
    - Validated against sources in Quantum Layer
-   
+
 2. **Formatting Loss** (λ_fmt = 0.5)
    - Enforced in Code Generation Layer
    - Validated in UI Layer rendering

@@ -131,7 +131,7 @@ The Pytest GitHub Actions Workflow requested in comment #3872954539 has **alread
 
 #### ✅ CODEBASE_AGENCY_POLICY.md
 - **Policy**: `.codex/CODEBASE_AGENCY_POLICY.md`
-- **Compliance**: 
+- **Compliance**:
   - Repository structure maintained
   - Artifacts properly organized
   - No breaking changes to existing structure

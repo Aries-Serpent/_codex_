@@ -1,6 +1,6 @@
 # Copilot Continuation Prompt - Batch Triage Cognitive Brain Integration
 
-@copilot 
+@copilot
 
 ## Context
 
@@ -62,7 +62,7 @@ Your primary objective is to **elevate the batch triage system from tactical to 
    └── tests/
        └── test_agent.py          # Agent tests
    ```
-   
+
    **Specifications:**
    - Extends `BatchTriageEngine` from `scripts/ci/batch_triage.py`
    - Integrates with existing cognitive brain infrastructure
@@ -70,29 +70,29 @@ Your primary objective is to **elevate the batch triage system from tactical to 
    - Stores learnings in `.codex/cognitive_brain/patterns/ci_failures/`
 
 2. **Implement Cognitive Brain Feedback Loop**
-   
+
    Create `scripts/cognitive/batch_triage_learnings.py`:
    ```python
    class BatchTriageLearningEngine:
        """Records and learns from batch triage outcomes"""
-       
+
        def record_triage_outcome(self, batch_id, outcomes):
            """Store triage results in cognitive brain KB"""
            pass
-       
+
        def extract_patterns(self, failures):
            """Extract recurring failure patterns"""
            pass
-       
+
        def update_remediation_success_rate(self, remediation_id, success):
            """Track which fixes work"""
            pass
-       
+
        def get_historical_context(self, failure_type):
            """Retrieve past similar failures"""
            pass
    ```
-   
+
    Integration points:
    - Store patterns in `.codex/cognitive_brain/patterns/ci_failures/`
    - Track metrics in `.codex/metrics/batch_triage_metrics.yaml`
@@ -100,14 +100,14 @@ Your primary objective is to **elevate the batch triage system from tactical to 
    - Use historical data for better remediation suggestions
 
 3. **Automated Remediation Workflow**
-   
+
    Create `.github/workflows/batch-triage-auto-remediate.yml`:
    - Triggered after batch triage completes
    - Uses owner-approval-guard agent for gating
    - Auto-creates PRs for low-risk fixes
    - Links PRs back to original issues
    - Tracks remediation outcomes
-   
+
    **Workflow Structure:**
    ```yaml
    name: Batch Triage Auto-Remediation
@@ -115,26 +115,26 @@ Your primary objective is to **elevate the batch triage system from tactical to 
      workflow_run:
        workflows: ["Batch CI Failure Triage"]
        types: [completed]
-   
+
    jobs:
      extract-remediations:
        # Parse triage report for suggested fixes
-       
+
      apply-low-risk-fixes:
        # Auto-apply fixes with confidence > 90%
        needs: extract-remediations
-       
+
      create-review-prs:
        # Create PRs for medium-risk fixes
        needs: extract-remediations
-       
+
      notify-stakeholders:
        # Alert on high-risk issues
        needs: extract-remediations
    ```
 
 4. **Metrics Collection & Tracking**
-   
+
    Enhance `scripts/ci/batch_triage.py` with:
    ```python
    def record_metrics(self, batch_id):
@@ -148,11 +148,11 @@ Your primary objective is to **elevate the batch triage system from tactical to 
            'remediations_suggested': self._count_remediations(),
            'triage_duration_seconds': self.duration,
        }
-       
+
        # Save to .codex/metrics/batch_triage_metrics.yaml
        # Append to .codex/metrics/batch_triage_history.jsonl
    ```
-   
+
    Create dashboard in `.codex/reports/batch_triage_dashboard.md`:
    - Triage success rate trends
    - Common failure patterns
@@ -160,13 +160,13 @@ Your primary objective is to **elevate the batch triage system from tactical to 
    - Time-to-resolution metrics
 
 5. **Stakeholder Notification System**
-   
+
    Add to `batch-triage-agent/src/notifier.py`:
    - Slack integration for critical failures (severity: critical/high)
    - Email digests for engineering leads (per-iteration/per-phase)
    - GitHub issue comments with triage summaries
    - Escalation for unresolved failures > 7 iterations
-   
+
    Configuration in `.codex/config/batch_triage_notifications.yaml`:
    ```yaml
    notifications:
@@ -176,14 +176,14 @@ Your primary objective is to **elevate the batch triage system from tactical to 
        channels:
          critical: '#eng-oncall'
          high: '#ci-failures'
-     
+
      email:
        enabled: true
        smtp_host: ${SMTP_HOST}
        recipients:
          engineering_lead: ['lead@example.com']
          team_leads: ['team1@example.com', 'team2@example.com']
-     
+
      github:
        enabled: true
        comment_on_issues: true

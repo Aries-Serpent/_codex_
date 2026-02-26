@@ -29,19 +29,19 @@ mkdir -p .codex/cognitive_brain
 1. **PatternWave** - Wave interference logic
    - `interfere(other)` - Calculate constructive/destructive interference
    - Properties: pattern_type, amplitude, frequency, phase
-   
+
 2. **QuantumPatternClassifier** - 4-qubit neural network
    - `encode_pattern(pattern)` - Encode to quantum state
    - `classify(encoded_state)` - Measure and classify
    - `_initialize_state()` - Uniform superposition
    - `_apply_rotation(state, qubit, angle)` - Rotation gates
-   
+
 3. **WorkflowPatternExtractor** - Pattern detection
    - `extract_patterns(days_back)` - Extract from history
    - `_analyze_workflow(name, runs)` - Single workflow analysis
    - `_calculate_flakiness(runs)` - Alternation detection
    - `_apply_pattern_interference(patterns)` - Correlation via interference
-   
+
 4. **CognitiveBrainFeeder** - Persistence layer
    - `feed_patterns(patterns)` - Store patterns
    - `_load_existing_patterns()` - Load from JSONL
@@ -68,15 +68,15 @@ mkdir -p .codex/cognitive_brain
 1. **TestPatternWave**
    - `test_constructive_interference()` - In phase → amplitudes add
    - `test_destructive_interference()` - Out of phase → amplitudes cancel
-   
+
 2. **TestPatternExtractor**
    - `test_flakiness_calculation()` - Alternation detection
    - `test_pattern_grouping()` - Workflow grouping
-   
+
 3. **TestCognitiveBrainFeeder**
    - `test_pattern_persistence()` - Save/load patterns
    - `test_pattern_update()` - Update existing patterns
-   
+
 4. **TestQuantumPatternClassifier**
    - `test_pattern_encoding()` - Quantum state encoding
    - `test_pattern_classification()` - Classification accuracy

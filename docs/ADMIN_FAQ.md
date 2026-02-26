@@ -15,7 +15,7 @@
 
 ### Q: How long does full setup take?
 
-**A:** 
+**A:**
 - **Quick Start (critical items):** 5 minutes
 - **Full configuration:** 45-60 minutes
 - **With GitHub App creation:** 60-90 minutes
@@ -34,7 +34,7 @@
 
 ### Q: What's the difference between Copilot and Copilot Agents?
 
-**A:** 
+**A:**
 - **Copilot:** AI pair programming in the IDE
 - **Copilot Agents:** (Preview) Automated task execution triggered by mentions
 
@@ -70,7 +70,7 @@
 
 ### Q: What if I lose the private key?
 
-**A:** 
+**A:**
 1. Go to the app settings
 2. Generate a new private key
 3. Delete the old one
@@ -82,14 +82,14 @@
 
 ### Q: Where do I find the App ID?
 
-**A:** 
+**A:**
 1. Go to: `https://github.com/settings/apps/[app-name]`
 2. The App ID is displayed at the top of the page
 3. It's a numeric value like `123456`
 
 ### Q: Where do I find the Installation ID?
 
-**A:** 
+**A:**
 1. Go to: `https://github.com/organizations/Aries-Serpent/settings/installations`
 2. Click "Configure" next to the app
 3. Look at the URL: `.../installations/[INSTALLATION_ID]`
@@ -122,7 +122,7 @@
 
 ### Q: How do I manually trigger a workflow?
 
-**A:** 
+**A:**
 1. Go to: Actions tab
 2. Select the workflow
 3. Click "Run workflow"
@@ -157,7 +157,7 @@
 
 ### Q: How do I handle Dependabot alerts?
 
-**A:** 
+**A:**
 1. Review the alert in Security tab
 2. If valid: update the dependency
 3. If false positive: dismiss with reason

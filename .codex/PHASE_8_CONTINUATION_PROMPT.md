@@ -75,29 +75,29 @@ from ..common.ast_node import StandardizedASTNode
 
 class TypeScriptASTAdapter(BaseASTAdapter):
     """Adapter for parsing TypeScript/JavaScript source code."""
-    
+
     def parse(self, source: str) -> Optional[StandardizedASTNode]:
         """
         Parse TypeScript/JavaScript source to standardized AST.
-        
+
         Args:
             source: TypeScript/JavaScript source code string
-            
+
         Returns:
             Root AST node or None if parsing fails
         """
         try:
             # Parse with esprima
             tree = esprima.parseScript(source, loc=True, comment=True)
-            
+
             # Convert to StandardizedASTNode
             root = self._convert_node(tree, None)
             return root
-            
+
         except Exception as e:
             # Handle parse errors
             return None
-    
+
     def parse_file(self, file_path: str) -> Optional[StandardizedASTNode]:
         """Parse TypeScript/JavaScript file."""
         try:
@@ -106,7 +106,7 @@ class TypeScriptASTAdapter(BaseASTAdapter):
             return self.parse(source)
         except Exception as e:
             return None
-    
+
     def _convert_node(self, node, parent) -> StandardizedASTNode:
         """Convert esprima node to StandardizedASTNode."""
         # Implementation here

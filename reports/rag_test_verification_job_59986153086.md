@@ -160,7 +160,7 @@ NotImplementedError: Cannot copy out of meta tensor; no data!
 def safe_model_load(model: Any, device: str = "cpu") -> Any:
     """
     Safely move model from meta device to target device.
-    
+
     Handles both standard PyTorch models and SentenceTransformer models,
     which wrap PyTorch modules internally and require checking the
     underlying modules for meta tensors.
@@ -172,7 +172,7 @@ def safe_model_load(model: Any, device: str = "cpu") -> Any:
                 if hasattr(param, "device") and param.device.type == "meta":
                     # Use to_empty() for safe meta tensor handling
                     return model.to_empty(device=device)
-    
+
     # Regular device movement if no meta tensors
     return model.to(device)
 ```

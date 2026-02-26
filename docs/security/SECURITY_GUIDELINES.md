@@ -142,15 +142,15 @@ from src.utils.sanitize import sanitize_prompt
 
 def process_user_action(username: str, action: str, details: str):
     """Process and log user action with proper sanitization."""
-    
+
     # Sanitize all user inputs before logging
     safe_username = sanitize_prompt(username, max_length=50)
     safe_action = sanitize_prompt(action, max_length=20)
     safe_details = sanitize_prompt(details, max_length=200)
-    
+
     # Now safe to log
     logger.info(f"User {safe_username} performed {safe_action}: {safe_details}")
-    
+
     # Continue processing...
 ```
 

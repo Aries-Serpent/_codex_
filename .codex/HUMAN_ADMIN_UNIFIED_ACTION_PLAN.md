@@ -68,7 +68,7 @@ git show HEAD:src/codex/zendesk/quantum/orchestrator.py | grep -B2 -A2 "module d
 
 **Expected Outcome:** PR approved and merged to main
 
-**AI Agent Context:** 
+**AI Agent Context:**
 - AI Agent has addressed all review comments
 - Self-review iteration completed
 - Cognitive brain updated with queued work
@@ -574,14 +574,14 @@ AI Agent uses superposition state management:
 ```
 Initial State: |ψ⟩ = α|ReviewComments⟩ + β|TokenConfig⟩ + γ|ProdHardening⟩
 
-Measurement 1 (Human approves PR): 
+Measurement 1 (Human approves PR):
   |ψ⟩ → |ReviewComplete⟩ (wave function collapse)
-  
+
 New State: |ψ'⟩ = α'|TokenConfig⟩ + β'|ProdHardening⟩ + γ'|Documentation⟩
 
 Measurement 2 (Human configures tokens):
   |ψ'⟩ → |ProdHardening⟩ (wave function collapse)
-  
+
 AI Agent executes production hardening with full confidence
 ```
 
@@ -611,19 +611,19 @@ work_graph:
     - id: review_comments
       status: COMPLETED
       dependencies: []
-      
+
     - id: token_config
       status: BLOCKED
       dependencies: [human_admin_ha002, human_admin_ha003]
-      
+
     - id: prod_hardening
       status: BLOCKED
       dependencies: [token_config, human_admin_ha004]
-      
+
     - id: documentation
       status: IN_PROGRESS
       dependencies: [review_comments]
-      
+
     - id: test_fixtures
       status: IN_PROGRESS
       dependencies: [review_comments]
@@ -632,7 +632,7 @@ work_graph:
     - ha002: token_config
     - ha003: token_config
     - ha004: prod_hardening_authorization
-    
+
   autonomous_work_available:
     - documentation (no blockers)
     - test_fixtures (no blockers)

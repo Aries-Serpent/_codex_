@@ -419,7 +419,7 @@ function MyComponent() {
   const { state: quantumState, loading, error } = useQuantumState(true, 10000);
   const { state: agentState, orchestrateTask } = useAgentOrchestration();
   const { state: memoryState, searchMemories } = useMemorySystem();
-  
+
   // Component logic
 }
 ```
@@ -550,7 +550,7 @@ import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
 
 test('displays quantum metrics', async () => {
   render(<MetricsDashboard />);
-  
+
   await waitFor(() => {
     expect(screen.getByText(/k₁ Factor/i)).toBeInTheDocument();
   });

@@ -2,7 +2,7 @@
 
 **Purpose**: Comprehensive quality assurance checklist for Copilot Agent work. This protocol ensures thorough validation before concluding any task or PR work.
 
-**When to Use**: 
+**When to Use**:
 - Before finalizing any PR or task
 - After making significant code changes
 - When requested by repository policies
@@ -152,7 +152,7 @@ pytest tests/integration/ -v
 
 **If ANY checkpoint fails:**
 
-1. **Document the Issue**: 
+1. **Document the Issue**:
    - What failed and why
    - Impact assessment (severity, scope)
    - Root cause analysis

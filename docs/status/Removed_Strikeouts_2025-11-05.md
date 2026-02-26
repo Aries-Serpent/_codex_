@@ -14,7 +14,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Lacks schema validation; some YAMLs reference missing groups"
 
-**Resolution**: 
+**Resolution**:
 - Created `tools/configs/schema_guard.py` for offline config validation
 - Added `config_schema` nox session
 - Non-blocking JSON report output for developer feedback
@@ -29,7 +29,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "No TensorBoard or W&B; MLflow disabled by default; logs may omit environment info"
 
-**Resolution**: 
+**Resolution**:
 - Added optional TensorBoard logging via `CODEX_ENABLE_TENSORBOARD=1`
 - Enhanced MLflow with param enrichment (git_commit, conda_env, seed, dataset_path)
 - Created local MLflow UI viewer script
@@ -46,7 +46,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Limited local CSV/JSON support; no processed dataset caching; streaming fragile offline"
 
-**Resolution**: 
+**Resolution**:
 - Added dataset caching utilities (hash-based, SHA256 keys)
 - Created local CSV/JSON/JSONL load/save functions
 - Comprehensive test coverage for both features
@@ -64,7 +64,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Unknown coverage enforcement; LoRA & metrics tests missing; no performance tests"
 
-**Resolution**: 
+**Resolution**:
 - Added performance smoke tests (opt-in via `CODEX_PERF_SMOKE=1`)
 - Created LoRA minimal unit tests (opt-in via `CODEX_ENABLE_LORA_TEST=1`)
 - Added comprehensive generative metrics tests
@@ -81,7 +81,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "GPU variant currently lacks proper CUDA-enabled PyTorch installation"
 
-**Resolution**: 
+**Resolution**:
 - Opt-in GPU wheels via `INSTALL_TORCH_GPU=1` build arg
 - Configurable PyTorch and torchvision versions
 - Custom wheel specification support via `TORCH_WHEEL` arg
@@ -97,7 +97,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Limited generative metrics (BLEU, ROUGE) absent; evaluation runner registers only basic metrics"
 
-**Resolution**: 
+**Resolution**:
 - BLEU/ROUGE enabled as optional metrics via `pip install ".[metrics]"`
 - Runner ROUGE-L compatibility fix (handles both float and dict returns)
 - Clear error handling when dependencies missing
@@ -113,7 +113,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Evaluation runner lacks explicit seed; environment snapshot does not capture all necessary metadata; checkpoint format changes break older load"
 
-**Resolution**: 
+**Resolution**:
 - env_snapshot.json includes seed, git_commit, conda_env, python_version, platform
 - Checkpoint sidecar includes format_version and codex_commit
 - Deterministic tests for evaluation
@@ -130,7 +130,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "No formal plugin interface; registry limited to metrics; extensibility requires code modification"
 
-**Resolution**: 
+**Resolution**:
 - Metrics plugin loader with entry-point discovery
 - Non-fatal plugin initialization
 - Comprehensive plugin documentation
@@ -145,7 +145,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "Sparse unit tests; multi-GPU training untested; vocab reproducibility not verified"
 
-**Resolution**: 
+**Resolution**:
 - Added tokenizer invariant tests (encode/decode roundtrip, determinism)
 - Created vocab hashing utility (SHA256)
 - Skip-safe test design
@@ -160,7 +160,7 @@ Strike-through formatting has been removed from the clean status report. This do
 
 **Original Gap**: "MLflow UI not packaged; run metadata incomplete (no commit hash)"
 
-**Resolution**: 
+**Resolution**:
 - MLflow param enrichment (git_commit, conda_env, seed, dataset_path)
 - Local MLflow UI viewer script
 - TensorBoard optional logging

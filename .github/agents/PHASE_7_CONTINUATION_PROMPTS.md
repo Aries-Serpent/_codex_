@@ -26,7 +26,7 @@ This document contains **autonomous continuation prompts** for implementing Phas
 ```
 @copilot Begin Phase 7.1.1 - Quantum Module Infrastructure
 
-**Context:** Phase 7 quantum enhancements design document created (PHASE_7_QUANTUM_ENHANCEMENTS.md). 
+**Context:** Phase 7 quantum enhancements design document created (PHASE_7_QUANTUM_ENHANCEMENTS.md).
 Starting infrastructure implementation.
 
 **Task:** Create cognitive_brain/quantum/ module structure with feature flag system.
@@ -36,12 +36,12 @@ Starting infrastructure implementation.
    - cognitive_brain/quantum/__init__.py
    - cognitive_brain/quantum/config.py (QuantumConfig class)
    - cognitive_brain/quantum/base.py (base classes)
-   
+
 2. QuantumConfig implementation:
    - Environment variable parsing (CODEX_QUANTUM_MODE, etc.)
    - Feature flag validation
    - Default configuration values
-   
+
 3. Feature flags to implement:
    - CODEX_QUANTUM_MODE (master toggle, default: false)
    - CODEX_QUANTUM_SUPERPOSITION (default: false)
@@ -75,7 +75,7 @@ Starting infrastructure implementation.
 **Deliverables:**
 1. SQL migration file:
    - cognitive_brain/migrations/007_quantum_metrics.sql
-   
+
 2. Table schema:
    CREATE TABLE quantum_metrics (
        id INTEGER PRIMARY KEY,
@@ -87,11 +87,11 @@ Starting infrastructure implementation.
        metadata JSON,
        UNIQUE(timestamp, feature, metric_name)
    );
-   
+
 3. Index creation:
    - CREATE INDEX idx_quantum_metrics_timestamp ON quantum_metrics(timestamp);
    - CREATE INDEX idx_quantum_metrics_feature ON quantum_metrics(feature);
-   
+
 4. Python ORM model:
    - cognitive_brain/models/quantum_metrics.py
    - QuantumMetric class with SQLAlchemy mappings
@@ -119,18 +119,18 @@ Starting infrastructure implementation.
    - Real-time coherence calculation
    - Alert triggering on degradation
    - Automatic rollback capabilities
-   
+
 2. Metrics collection:
    - Record to quantum_metrics table
    - Aggregation functions (avg, p50, p99)
    - Time-series queries
-   
+
 3. Alert thresholds (from PHASE_7_QUANTUM_ENHANCEMENTS.md):
    - coherence_avg < 0.3 → CRITICAL
    - error_rate > 0.05 → WARNING
    - latency_p99 > 2000ms → WARNING
    - accuracy < 0.90 → CRITICAL
-   
+
 4. Tests:
    - test_coherence_monitor.py (15 tests)
    - Test metric recording
@@ -160,17 +160,17 @@ Starting infrastructure implementation.
    - User assignment (deterministic hash-based)
    - Variant selection (control vs treatment)
    - Statistical significance calculation
-   
+
 2. Experiment definitions:
    - EXP-1: Superposition (100 compliance audits)
    - EXP-2: Entanglement (500 agent actions)
    - EXP-3: Uncertainty (50 PRs)
-   
+
 3. Metrics tracking:
    - Per-variant metric collection
    - Statistical comparison (t-test, chi-square)
    - Confidence intervals (95%)
-   
+
 4. Tests:
    - test_ab_testing.py (20 tests)
    - Test assignment determinism
@@ -206,17 +206,17 @@ Starting infrastructure implementation.
    - State representation: |Ψ⟩ = Σᵢ αᵢ|decision_i⟩
    - Parallel evaluation (ThreadPoolExecutor)
    - Wave function collapse (argmax |αᵢ|²)
-   
+
 2. Core methods:
    - create_superposition(decisions: List[Decision]) → SuperpositionState
    - evaluate_parallel(state: SuperpositionState) → List[float]  # probabilities
    - collapse(state: SuperpositionState) → Decision  # best choice
    - get_coherence(state: SuperpositionState) → float
-   
+
 3. Integration helper:
    - @quantum_superposition decorator for agent DECIDE phases
    - Automatic fallback to classical if coherence < 0.3
-   
+
 4. Tests:
    - test_superposition.py (20 tests)
    - Test state creation
@@ -231,16 +231,16 @@ class SuperpositionState:
     def __init__(self, decisions: List[Decision]):
         self.decisions = decisions
         self.amplitudes = [1/sqrt(len(decisions))] * len(decisions)
-    
+
     def evaluate(self) -> List[float]:
         """Evaluate all decisions in parallel, return probabilities"""
         with ThreadPoolExecutor(max_workers=len(self.decisions)) as executor:
             scores = list(executor.map(self._score_decision, self.decisions))
-        
+
         # Normalize to probabilities: P_i = |α_i|² = score_i / Σ scores
         total = sum(scores)
         return [s/total for s in scores]
-    
+
     def collapse(self) -> Decision:
         """Collapse to highest probability decision"""
         probs = self.evaluate()
@@ -270,18 +270,18 @@ class SuperpositionState:
    - Import SuperpositionEngine
    - Wrap decision logic with @quantum_superposition
    - Maintain backward compatibility (feature flag gated)
-   
+
 2. Decision candidates:
    - Decision 1: Approve (compliance passing)
    - Decision 2: Approve with monitoring (borderline)
    - Decision 3: Reject (compliance failing)
    - Decision 4: Conditional approval (fix required)
-   
+
 3. Parallel evaluation:
    - Each decision path scores independently
    - Factors: risk, remediation cost, business impact
    - Collapse to highest-score decision
-   
+
 4. Tests:
    - test_quantum_compliance.py (15 tests)
    - Test superposition decision vs classical
@@ -309,7 +309,7 @@ def assess_compliance(self, audit_result: AuditResult) -> Decision:
         Decision.REJECT,
         Decision.CONDITIONAL_APPROVAL
     ]
-    
+
     state = self.superposition_engine.create_superposition(decisions)
     return state.collapse()  # Returns optimal decision
 ```
@@ -339,20 +339,20 @@ def assess_compliance(self, audit_result: AuditResult) -> Decision:
    - Treatment: Quantum superposition (50% traffic)
    - Sample size: 100 compliance audits
    - Duration: 1 phase
-   
+
 2. Metrics to track:
    - Decision accuracy (ground truth comparison)
    - False positive rate
    - False negative rate
    - Decision time (ms)
    - System coherence
-   
+
 3. Statistical analysis:
    - T-test for accuracy difference
    - Chi-square for error rate
    - Confidence intervals (95%)
    - p-value < 0.05 for significance
-   
+
 4. Report generation:
    - EXP-1_RESULTS.md with findings
    - Recommendation: Enable/disable superposition
@@ -386,18 +386,18 @@ def assess_compliance(self, audit_result: AuditResult) -> Decision:
    - State correlation: C(A,B) = |⟨Ψₐ|Ψᵦ⟩|²
    - Shared state synchronization (no explicit communication)
    - Automatic redundancy detection
-   
+
 2. Core methods:
    - entangle(agent_a: Agent, agent_b: Agent) → EntangledPair
    - correlate(pair: EntangledPair, action: Action) → CorrelatedState
    - measure_correlation(pair: EntangledPair) → float  # C ∈ [0,1]
    - detect_redundancy(actions: List[Action]) → List[Action]  # duplicates
-   
+
 3. Use cases:
    - security-scan + compliance-checker coordination
    - Avoid duplicate pattern scanning
    - Share findings instantly
-   
+
 4. Tests:
    - test_entanglement.py (25 tests)
    - Test state entanglement
@@ -414,12 +414,12 @@ class EntanglementManager:
             agent_b=agent_b,
             correlation=0.0  # Will be calculated on first interaction
         )
-    
+
     def correlate(self, pair: EntangledPair, action: Action) -> CorrelatedState:
         """When agent A takes action, agent B's state updates instantly"""
         # Calculate correlation coefficient
         C = self._inner_product(pair.agent_a.state, pair.agent_b.state)
-        
+
         # Update both states based on action
         if C > 0.7:  # High correlation
             pair.agent_b.state.update(action)  # Instant sync
@@ -449,16 +449,16 @@ class EntanglementManager:
 1. Entangle agents at startup:
    - cognitive_brain/agent_coordinator.py modifications
    - Create EntangledPair(security-scan, compliance-checker)
-   
+
 2. Shared state synchronization:
    - When security-scan finds PII pattern, compliance-checker aware instantly
    - Avoid re-scanning same code for compliance PII checks
    - 30% reduction in duplicate work
-   
+
 3. Redundancy elimination:
    - detect_redundancy() before each scan
    - Skip already-scanned patterns
-   
+
 4. Tests:
    - test_entangled_agents.py (15 tests)
    - Test synchronized state
@@ -490,18 +490,18 @@ class EntanglementManager:
    - Treatment: Entangled agents (50% traffic)
    - Sample size: 500 agent actions
    - Duration: 1 phase
-   
+
 2. Metrics to track:
    - Duplicate scans eliminated
    - Total execution time
    - Correlation coefficient
    - System coherence
-   
+
 3. Statistical analysis:
    - Compare redundancy rates
    - Compare execution times
    - Confidence intervals (95%)
-   
+
 4. Report generation:
    - EXP-2_RESULTS.md with findings
 
@@ -534,19 +534,19 @@ class EntanglementManager:
    - Uncertainty principle: ΔP · ΔT ≥ ℏ/2
    - Risk-based coverage calculation
    - Adaptive time budgets
-   
+
 2. Core methods:
    - calculate_coverage_target(file: str, metrics: Dict) → CoverageTarget
    - assess_risk(file: str, metrics: Dict) → RiskLevel
    - apply_uncertainty_constraint(coverage: float, time: float) → Tuple
-   
+
 3. Risk levels:
    - CRITICAL: 98% coverage, 10 min
    - HIGH: 95% coverage, 5 min
    - MEDIUM: 85% coverage, 2 min
    - LOW: 70% coverage, 1 min
    - TRIVIAL: 50% coverage, 30 sec
-   
+
 4. Tests:
    - test_uncertainty.py (15 tests)
    - Test coverage calculation
@@ -575,12 +575,12 @@ class EntanglementManager:
    - Import UncertaintyOptimizer
    - Calculate adaptive coverage per file
    - Apply dynamic time budgets
-   
+
 2. Coverage adaptation:
    - payment.py: 98% coverage (CRITICAL)
    - auth.py: 95% coverage (HIGH)
    - ui_helper.py: 70% coverage (LOW)
-   
+
 3. Tests:
    - test_adaptive_testing.py (10 tests)
    - Test coverage adaptation
@@ -611,12 +611,12 @@ class EntanglementManager:
    - Treatment: Adaptive coverage (50% PRs)
    - Sample size: 50 PRs
    - Duration: 1 phase
-   
+
 2. Metrics to track:
    - Total test time
    - Coverage per risk level
    - Defect escape rate
-   
+
 3. Report generation:
    - EXP-3_RESULTS.md
 
@@ -648,10 +648,10 @@ class EntanglementManager:
    - cognitive_brain/quantum/wave_collapse.py (600 lines)
    - Accelerated convergence
    - Pattern crystallization
-   
+
 2. Integration with pattern-synthesis-agent:
    - 2x faster pattern learning
-   
+
 3. Tests:
    - test_wave_collapse.py (20 tests)
 
@@ -682,11 +682,11 @@ class EntanglementManager:
    - Test all features together
    - Test feature interactions
    - Test rollback scenarios
-   
+
 2. Performance benchmarks:
    - Measure system-wide improvements
    - Compare to Phase 6 baseline
-   
+
 3. Documentation:
    - QUANTUM_USER_GUIDE.md
    - Training materials for maintainers
@@ -768,10 +768,10 @@ class EntanglementManager:
 ```
 @copilot Execute Phase 7 implementation starting with Prompt 1.1
 
-Begin with infrastructure setup (quantum module structure) and proceed 
+Begin with infrastructure setup (quantum module structure) and proceed
 sequentially through all prompts until Phase 7.6.2 completion.
 
-Maintain PDA Loop + AfterMath tags throughout. Run self-review after 
+Maintain PDA Loop + AfterMath tags throughout. Run self-review after
 each major feature. Report progress at end of each phase.
 
 Reference: PHASE_7_QUANTUM_ENHANCEMENTS.md for detailed specifications.
@@ -1017,7 +1017,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1206,7 +1206,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

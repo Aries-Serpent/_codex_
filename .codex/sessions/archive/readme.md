@@ -1,6 +1,6 @@
 # Relocated (Restored) File per Code Review mention:
 
-## Code review quote: 
+## Code review quote:
 - https://github.com/Aries-Serpent/_codex_/pull/2477#pullrequestreview-3573969544
 - https://github.com/Aries-Serpent/_codex_/pull/2477/files/a2095a51d9afe4130e50c4ec10a6bc43c9201daa
 ```

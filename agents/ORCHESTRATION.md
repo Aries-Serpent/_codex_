@@ -545,7 +545,7 @@ class ImportMigration:
     old_import: str
     new_import: str
     line_number: int
-    
+
     # Auto-calculated properties
     potential_energy: float  # Effort required
     momentum: float          # Alignment with patterns

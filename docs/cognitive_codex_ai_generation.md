@@ -38,7 +38,7 @@ Display Generated Code + Metrics
 export class SparkLLMClient {
   async generateCode(request: CodexRequest): Promise<CodexResponse> {
     const prompt = spark.llmPrompt`You are an expert code generation assistant...
-    
+
 Generate ${language} code for: ${request.prompt}
 
 Requirements:
@@ -48,7 +48,7 @@ Requirements:
 - Make it production-ready`;
 
     const generatedCode = await spark.llm(prompt, "gpt-4o-mini");
-    
+
     return {
       code: generatedCode.trim(),
       metadata: { k1_factor, coherence, cache_hit, processing_time_ms },
@@ -82,7 +82,7 @@ const response = await sparkClient.generateCode({
 #### Default Mode (No Configuration)
 
 1. User opens application
-2. Status: 🟢 "Connected" 
+2. Status: 🟢 "Connected"
 3. Info: ℹ️ "Using AI-powered generation (Spark Runtime LLM)"
 4. User enters prompt: "Create a REST API endpoint for user authentication"
 5. Clicks "Generate Code"
@@ -178,7 +178,7 @@ export function useDebouncedSearch<T>(
     const timerId = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const data = await searchFn(query);
         setResults(data);
@@ -218,14 +218,14 @@ The AI-generated code includes quantum-inspired metrics that indicate generation
 - **k₁ Factor**: 0.28 - 0.33 (lower is better, target ≤ 0.35)
   - Measures decision efficiency
   - AI-generated code typically scores better than templates
-  
+
 - **Coherence**: 72% - 84% (higher is better, target ≥ 65%)
   - Indicates code consistency and quality
   - Real AI maintains higher coherence
-  
+
 - **Superposition States**: 2-4 concurrent evaluation paths
   - Represents parallel decision-making
-  
+
 - **Entanglement Score**: 0.78 - 0.96
   - Measures relationship strength between code components
 

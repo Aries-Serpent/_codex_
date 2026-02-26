@@ -119,7 +119,7 @@ describe('MetricCard', () => {
 
   it('renders sparkline when data provided', () => {
     const sparklineData = [0.1, 0.3, 0.5, 0.7, 0.9];
-    
+
     render(
       <MetricCard
         title="Test Metric"

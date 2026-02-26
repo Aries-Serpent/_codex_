@@ -56,7 +56,7 @@ could not find expected ':'
 
 **Root Cause**: Python code embedded directly in YAML without proper string escaping or run: block
 
-**Impact**: 
+**Impact**:
 - Workflow cannot be parsed by GitHub Actions
 - Any triggers for this workflow will fail silently
 - Test suite execution blocked
@@ -90,7 +90,7 @@ could not find expected ':'
    - Dependencies: wheel, setuptools
    - Current Status: ✅ Active (but will fail on execution)
 
-**Root Cause**: 
+**Root Cause**:
 - `pyproject.toml` references `codex_plans` package
 - Directory `src/codex_plans/` does not exist
 - Build process fails during package discovery

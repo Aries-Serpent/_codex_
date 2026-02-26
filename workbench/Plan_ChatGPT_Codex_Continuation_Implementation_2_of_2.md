@@ -112,7 +112,7 @@ Quick high-level findings
 
 Missing / incomplete / high-risk items (summary list)
 1) Truncated / potentially incomplete files (High)
-   - Several earlier PlanC/PlanD templates were truncated during iterations. The repo still contains truncated files in the workbench content. 
+   - Several earlier PlanC/PlanD templates were truncated during iterations. The repo still contains truncated files in the workbench content.
    - Action: run a repo-wide check for files that end mid-line or contain obvious truncation markers (e.g., JSON/Markdown/code blocks that are incomplete).
    - Verify: grep for suspicious termination tokens (e.g., files ending with backticks, abrupt EOF in code blocks). Manual open of files listed in plans (facade jsonrpc/schema files) to confirm they are valid Python/Markdown/JSON.
 

@@ -44,77 +44,77 @@ File: `src/cognitive_brain/quantum/entanglement.py` (~600 lines)
 class EntanglementManager:
     """
     Manages quantum-inspired entanglement between agent pairs.
-    
+
     Bell State Representation:
     - |00⟩: Both agents in state 0 (e.g., both approve)
     - |11⟩: Both agents in state 1 (e.g., both reject)
     - |Ψ⟩ = (|00⟩ + |11⟩)/√2: Maximally entangled
-    
+
     Correlation Tracking:
     - Pearson correlation coefficient
     - Mutual information
     - Joint probability distribution
-    
+
     Rayleigh Integration:
     - NA expansion: 1.0 → 2.0 (two-agent aperture)
     - Correlation as process control
     """
-    
+
     def __init__(self, config: QuantumConfig, monitor: CoherenceMonitor):
         self.config = config
         self.monitor = monitor
         self.entangled_pairs: Dict[str, EntangledPair] = {}
         self.correlation_history: List[CorrelationMeasurement] = []
-    
+
     def create_entanglement(
-        self, 
-        agent1_id: str, 
+        self,
+        agent1_id: str,
         agent2_id: str,
         correlation_strength: float = 1.0
     ) -> str:
         """
         Create entangled pair between two agents.
-        
+
         Args:
             agent1_id: First agent identifier
             agent2_id: Second agent identifier
             correlation_strength: 0-1, target correlation
-        
+
         Returns:
             Pair ID for future reference
         """
         pass
-    
+
     def measure_correlation(self, pair_id: str) -> float:
         """
         Measure correlation between entangled agents.
-        
+
         Returns Pearson correlation coefficient (-1 to 1).
         1.0 = perfect positive correlation
         0.0 = no correlation
         -1.0 = perfect negative correlation
         """
         pass
-    
+
     def collapse_entangled_state(
-        self, 
+        self,
         pair_id: str,
         agent1_measurement: Any
     ) -> Any:
         """
         Collapse entangled state based on agent1 measurement.
-        
+
         When agent1 makes decision, agent2 state collapses
         to correlated state based on correlation strength.
-        
+
         Returns: Suggested state for agent2
         """
         pass
-    
+
     def get_entanglement_strength(self, pair_id: str) -> float:
         """Get current entanglement strength (0-1)"""
         pass
-    
+
     def update_correlation(
         self,
         pair_id: str,
@@ -137,7 +137,7 @@ class EntangledPair:
     observed_states: List[Tuple[Any, Any]]  # (agent1_state, agent2_state)
     created_at: float
     last_measurement: Optional[float] = None
-    
+
 @dataclass
 class CorrelationMeasurement:
     pair_id: str
@@ -155,7 +155,7 @@ def compute_bell_state_fidelity(
 ) -> float:
     """
     Compute fidelity to ideal Bell state.
-    
+
     Ideal: P(00) = P(11) = 0.5, P(01) = P(10) = 0
     Fidelity = 1.0 for perfect Bell state
     """
@@ -210,13 +210,13 @@ File: `src/cognitive_brain/integrations/entangled_assessor.py` (~400 lines)
 class EntangledComplianceSecurityAssessor:
     """
     Coordinates compliance and security audits via entanglement.
-    
+
     Use Case:
     - Compliance violation → trigger correlated security scan
     - Security issue → reassess compliance implications
     - Joint decision-making for PII + secret exposure
     """
-    
+
     def __init__(
         self,
         entanglement_mgr: EntanglementManager,
@@ -227,7 +227,7 @@ class EntangledComplianceSecurityAssessor:
         self.compliance = compliance_assessor
         self.security = security_scanner
         self.pair_id = None
-    
+
     def setup_entanglement(self, correlation_strength: float = 0.85):
         """Create entanglement between compliance + security"""
         self.pair_id = self.entanglement.create_entanglement(
@@ -235,14 +235,14 @@ class EntangledComplianceSecurityAssessor:
             "security-scan",
             correlation_strength
         )
-    
+
     def assess_with_entanglement(
         self,
         code_change: Any
     ) -> Tuple[ComplianceAssessment, Any]:
         """
         Perform entangled assessment.
-        
+
         Process:
         1. Compliance check (agent1)
         2. Collapse entangled security state (agent2)
@@ -310,12 +310,12 @@ Metrics:
 def run_exp2() -> Dict[str, Any]:
     """
     Run EXP-2 validation experiment.
-    
+
     Scenarios:
     1. Compliance + Security (200 pairs)
     2. Dep-Upgrade + CI Testing (200 pairs)
     3. Control group (100 independent pairs)
-    
+
     Returns:
         Results dict with metrics
     """
@@ -713,7 +713,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -902,7 +902,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

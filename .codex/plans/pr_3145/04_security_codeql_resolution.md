@@ -513,7 +513,7 @@ Create comprehensive documentation of security fixes.
 - **CodeQL Alerts**: https://github.com/Aries-Serpent/_codex_/security/code-scanning
 - **Semgrep Workflow**: `.github/workflows/semgrep-analysis.yml`
 - **Security Docs**: `.codex/docs/SECURITY.md`
-- **Code Scanning Results**: 
+- **Code Scanning Results**:
   - CodeQL: https://github.com/Aries-Serpent/_codex_/runs/62481659941
   - Semgrep: https://github.com/Aries-Serpent/_codex_/runs/62482536432
   - Bandit: https://github.com/Aries-Serpent/_codex_/runs/62482447452

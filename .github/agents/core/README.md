@@ -30,14 +30,14 @@ from .base_agent import CognitiveAgent
 
 class MyAgent(CognitiveAgent):
     """Custom agent implementing PDA Loop."""
-    
+
     def __init__(self, workspace: Path):
         super().__init__(
             name="my-agent",
             version="1.0.0",
             workspace=workspace
         )
-    
+
     def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """Gather and analyze context."""
         # Extract patterns, parse inputs, query history
@@ -47,7 +47,7 @@ class MyAgent(CognitiveAgent):
             "risks": [],
             "opportunities": []
         }
-    
+
     def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """Determine optimal action."""
         # Prioritize, select strategy, plan steps
@@ -58,7 +58,7 @@ class MyAgent(CognitiveAgent):
             "rationale": "High impact fix",
             "estimated_time": 60
         }
-    
+
     def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the decision."""
         # Execute in sandbox, validate outputs
@@ -68,9 +68,9 @@ class MyAgent(CognitiveAgent):
             "steps_completed": decision["steps"],
             "logs": ["Executed step1", "Executed step2"]
         }
-    
+
     def aftermath(
-        self, 
+        self,
         result: Dict[str, Any],
         context: Dict[str, Any],
         decision: Dict[str, Any]
@@ -81,7 +81,7 @@ class MyAgent(CognitiveAgent):
             "execution_success": result["status"] == "success",
             "steps_count": len(decision["steps"])
         }
-        
+
         # Record in cognitive brain if available
         if self.cognitive_brain and self.session_id:
             self.cognitive_brain.record_pattern(
@@ -90,7 +90,7 @@ class MyAgent(CognitiveAgent):
                 "outcome",
                 "Successfully fixed issue"
             )
-        
+
         return {
             "metrics": metrics,
             "patterns": ["successful_execution"],
@@ -150,12 +150,12 @@ graph TB
     Brain[CognitiveBrain]
     Pattern[PatternRecognizer]
     Orch[AgentOrchestrator]
-    
+
     Agent --> Brain
     Agent --> Pattern
     Orch --> Agent
     Pattern --> Brain
-    
+
     Brain --> DB[(SQLite DB)]
 ```
 
@@ -306,11 +306,11 @@ from .pattern_recognizer import PatternMatcher, Pattern
 
 class CustomMatcher(PatternMatcher):
     """Custom pattern matcher."""
-    
+
     def match(self, content: str, file_path: Path) -> List[Pattern]:
         # Implement pattern detection logic
         return [...]
-    
+
     def get_pattern_type(self) -> str:
         return "custom"
 
@@ -389,16 +389,16 @@ def aftermath(self, result, context, decision):
         "tests_generated": 5,
         "coverage_delta": 3.2
     }
-    
+
     # #AFTERMATH_PATTERN_IDENTIFIED: common_test_pattern
     patterns = ["empty_test_file", "missing_fixtures"]
-    
+
     # #AFTERMATH_LESSON_LEARNED: test_generation_best_practices
     lessons = [
         "Generate fixtures before test functions",
         "Use parametrize for similar test cases"
     ]
-    
+
     return {
         "metrics": metrics,
         "patterns": patterns,
@@ -734,7 +734,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -923,7 +923,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

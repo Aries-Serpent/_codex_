@@ -53,7 +53,7 @@ class SLATier(str, Enum):
     GOLD = "gold"
     SILVER = "silver"
     BRONZE = "bronze"
-    
+
     @property
     def priority_weight(self) -> float:
         weights = {
@@ -66,7 +66,7 @@ class SLATier(str, Enum):
 
 class SLAPolicy(BaseModel):
     """Validated SLA policy definition."""
-    
+
     name: str = Field(..., min_length=1, max_length=100)
     tier: SLATier
     response_time_hours: int = Field(..., ge=1, le=720)
@@ -74,17 +74,17 @@ class SLAPolicy(BaseModel):
     escalation_threshold_hours: int = Field(..., ge=1)
     business_hours_only: bool = True
     auto_escalate: bool = True
-    
+
     @validator('resolution_time_hours')
     def resolution_after_response(cls, v, values):
         if 'response_time_hours' in values and v < values['response_time_hours']:
             raise ValueError('Resolution time must be >= response time')
         return v
-    
+
     @property
     def response_deadline(self) -> timedelta:
         return timedelta(hours=self.response_time_hours)
-    
+
     @property
     def resolution_deadline(self) -> timedelta:
         return timedelta(hours=self.resolution_time_hours)
@@ -188,7 +188,7 @@ from codex_ml.training.unified_training import UnifiedTrainer
 @hydra.main(version_base=None, config_path="../../configs", config_name="train")
 def main(cfg: DictConfig) -> None:
     """Main training entry point.
-    
+
     Args:
         cfg: Hydra configuration containing:
             - model: Model configuration
@@ -242,7 +242,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Owner Approval Guard
         run: |
           bash scripts/ci/owner_approval_guard.sh
@@ -252,7 +252,7 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       # ... rest of workflow
 ```
 
@@ -335,12 +335,12 @@ graph TD
     PS01 --> PS09[PS-09: Training Unification]
     PS02[PS-02: IPC Bridge ✅] --> PS10[PS-10: Owner Guard]
     PS08[PS-08: Microservice Cleanup]
-    
+
     PS07 --> Done[All Complete]
     PS08 --> Done
     PS09 --> Done
     PS10 --> Done
-    
+
     style PS01 fill:#90EE90
     style PS02 fill:#90EE90
     style PS07 fill:#FFE4B5
@@ -359,11 +359,11 @@ gantt
     Message Compression    :a1, 2026-01-15, 7d
     Multi-Client Support   :a2, after a1, 14d
     Distributed Bridge     :a3, after a2, 21d
-    
+
     section Token Security
     Rotation Automation    :b1, 2026-01-15, 7d
     Multi-Provider         :b2, after b1, 14d
-    
+
     section Knowledge Crawler
     Multi-Locale           :c1, 2026-02-01, 14d
     Index Sharding         :c2, after c1, 21d

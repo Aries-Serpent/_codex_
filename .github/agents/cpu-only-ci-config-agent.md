@@ -132,20 +132,20 @@ import pytest
 def force_cpu_device():
     """
     Force CPU device for CI environments without GPU.
-    
+
     This session-scoped fixture ensures all ML operations
     use CPU device, preventing NVIDIA driver errors in CI.
-    
+
     Environment variables set:
         - CUDA_VISIBLE_DEVICES: "" (disables CUDA device visibility)
         - TORCH_DEVICE: "cpu" (explicitly sets PyTorch device)
-    
+
     Added for: CPU-only CI compatibility
     """
     # Set environment variables to force CPU-only execution
     os.environ["CUDA_VISIBLE_DEVICES"] = ""
     os.environ["TORCH_DEVICE"] = "cpu"
-    
+
     # Disable CUDA if available (belt and suspenders approach)
     try:
         import torch
@@ -154,9 +154,9 @@ def force_cpu_device():
             print("✓ PyTorch forced to CPU device")
     except (ImportError, AttributeError):
         pass  # PyTorch not available
-    
+
     yield
-    
+
     # Cleanup: restore original environment
     os.environ.pop("CUDA_VISIBLE_DEVICES", None)
     os.environ.pop("TORCH_DEVICE", None)
@@ -177,7 +177,7 @@ def force_cpu_device():
 ```python
 def pytest_configure(config: pytest.Config) -> None:
     """Configure pytest session - runs before test collection."""
-    
+
     # Configure PyTorch to use CPU device globally
     try:
         import torch
@@ -186,7 +186,7 @@ def pytest_configure(config: pytest.Config) -> None:
             print("✓ PyTorch default device set to CPU")
     except (ImportError, OSError):
         pass  # PyTorch not available or stub version
-    
+
     # Configure TensorFlow if available
     try:
         import tensorflow as tf
@@ -194,7 +194,7 @@ def pytest_configure(config: pytest.Config) -> None:
         print("✓ TensorFlow GPU devices hidden")
     except (ImportError, RuntimeError):
         pass
-    
+
     # Register custom markers
     config.addinivalue_line("markers", "gpu: marks tests requiring GPU")
 ```

@@ -104,7 +104,7 @@ When a security finding MUST be left as-is, document using this template:
 - Review Date: [Next review date]
 - Expires: [Date when this exception must be re-evaluated]
 
-**Related Issues/PRs**: 
+**Related Issues/PRs**:
 - [Links to related work]
 
 **Status**: ACTIVE/RESOLVED/EXPIRED
@@ -144,7 +144,7 @@ Bandit flagged use of `shell=True` with user-controlled input as potential comma
 exclude_dirs:
   - tests/fixtures/
   - .venv/
-  
+
 skips:
   # NO SKIPS - All findings must be addressed or documented above
 ```
@@ -173,7 +173,7 @@ ignore-vulnerabilities:
 **Reason**: Contains intentionally vulnerable code for testing security scanners  
 **Security Impact**: None - never executed in production, isolated test environment  
 **Justification**: Required to validate security tooling works correctly  
-**Mitigation**: 
+**Mitigation**:
 - Files clearly marked with `# SECURITY TEST FIXTURE - DO NOT USE IN PRODUCTION`
 - Excluded from Bandit scans via `.bandit` configuration
 - Never imported by production code

@@ -82,7 +82,7 @@ gh workflow run copilot-with-mcp.yml \
    ```bash
    # Copy cache warming workflow
    cp .github/workflows/examples/mcp-cache-warm.yml .github/workflows/
-   
+
    # Copy Copilot integration workflow
    cp .github/workflows/examples/copilot-with-mcp.yml .github/workflows/
    ```
@@ -96,7 +96,7 @@ gh workflow run copilot-with-mcp.yml \
    ```bash
    # Test cache warming
    gh workflow run mcp-cache-warm.yml
-   
+
    # Test Copilot integration
    gh workflow run copilot-with-mcp.yml -f task="Test MCP integration"
    ```
@@ -127,16 +127,16 @@ Add to `mcp-cache-warm.yml`:
 warm-node-cache:
   name: Warm Node Modules Cache
   runs-on: ubuntu-latest
-  
+
   steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v6
       with:
         node-version: '20'
         cache: 'npm'
-    
+
     - name: Install dependencies
       run: npm ci
 ```

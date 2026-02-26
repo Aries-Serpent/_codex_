@@ -562,9 +562,9 @@ Analysis shows 20 unique secrets referenced across workflows, but some may be du
 # Step 1: Generate complete secret usage report
 cd /home/runner/work/_codex_/_codex_
 cat .codex/analysis/workflow_analysis.json | \
-  jq -r '.workflows[] | select(.resources.secrets | length > 0) | 
+  jq -r '.workflows[] | select(.resources.secrets | length > 0) |
   {name: .name, secrets: .resources.secrets}' | \
-  jq -s 'group_by(.secrets[]) | 
+  jq -s 'group_by(.secrets[]) |
   map({secret: .[0].secrets[], workflows: map(.name)})' \
   > .codex/analysis/secret_usage_map.json
 

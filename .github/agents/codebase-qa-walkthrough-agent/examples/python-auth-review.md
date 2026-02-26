@@ -111,20 +111,20 @@ class RateLimiter:
         self.attempts = {}
         self.max_attempts = max_attempts
         self.window = window
-    
+
     def check(self, username: str) -> bool:
         now = time()
         if username in self.attempts:
             # Clean old attempts
             self.attempts[username] = [
-                t for t in self.attempts[username] 
+                t for t in self.attempts[username]
                 if now - t < self.window
             ]
             if len(self.attempts[username]) >= self.max_attempts:
                 return False
         else:
             self.attempts[username] = []
-        
+
         self.attempts[username].append(now)
         return True
 

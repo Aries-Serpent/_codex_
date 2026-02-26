@@ -13,7 +13,7 @@
         "type": "graph"
       },
       {
-        "title": "Error Rate", 
+        "title": "Error Rate",
         "targets": [{"expr": "rate(http_errors_total[5m])"}],
         "type": "graph"
       },

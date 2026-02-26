@@ -101,7 +101,7 @@ config_errors:
 **Usage:**
 ```python
 from codex.utils.config_loader import load_config
-cfg = load_config("base", config_dir="conf/model", 
+cfg = load_config("base", config_dir="conf/model",
                   overrides=["model.dtype=float16"])
 ```
 

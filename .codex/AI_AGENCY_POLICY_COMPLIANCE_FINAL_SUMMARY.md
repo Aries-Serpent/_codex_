@@ -323,8 +323,8 @@ def session_resource_manager():
 
 **Step 1: Resource Management (P0)**
 ```markdown
-@copilot Use the resource-management-agent prompt from 
-TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 9 to implement 
+@copilot Use the resource-management-agent prompt from
+TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 9 to implement
 Solution 1 from COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
 
 Priority: P0 CRITICAL
@@ -334,7 +334,7 @@ Estimated Time: 4-6 hours
 
 **Step 2: Test Error Fixes (P0)**
 ```markdown
-@copilot Use the ci-testing-agent to fix all 34 test errors per 
+@copilot Use the ci-testing-agent to fix all 34 test errors per
 TEST_FAILURE_REMEDIATION_PLANSET_PR3178.md Phase 3
 
 Priority: P0 CRITICAL
@@ -344,7 +344,7 @@ Estimated Time: 3-4 hours
 
 **Step 3: High-Impact Batch (P0)**
 ```markdown
-@copilot Use the ci-testing-agent to fix Batch 1 (150 high-impact tests) 
+@copilot Use the ci-testing-agent to fix Batch 1 (150 high-impact tests)
 using the strategy in COMPLETE_TEST_FAILURE_ANALYSIS_744_ISSUES.md
 
 Priority: P0 CRITICAL

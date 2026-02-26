@@ -14,7 +14,7 @@ enum CompressionCodec {
 }
 
 /// High-performance compression pipeline
-/// 
+///
 /// Provides LZ4 (fast) and Zstd (high ratio) compression for agent data
 #[pyclass]
 pub struct CompressionPipeline {
@@ -24,7 +24,7 @@ pub struct CompressionPipeline {
 #[pymethods]
 impl CompressionPipeline {
     /// Create a new compression pipeline
-    /// 
+    ///
     /// # Arguments
     /// * `codec` - Compression codec ("lz4" or "zstd")
     /// * `level` - Compression level (for zstd, 1-22; default 3)
@@ -40,12 +40,12 @@ impl CompressionPipeline {
         };
         Ok(CompressionPipeline { codec })
     }
-    
+
     /// Compress data
-    /// 
+    ///
     /// # Arguments
     /// * `data` - Raw bytes to compress
-    /// 
+    ///
     /// # Returns
     /// Compressed bytes
     fn compress<'py>(&self, py: Python<'py>, data: &[u8]) -> PyResult<Bound<'py, PyBytes>> {
@@ -55,12 +55,12 @@ impl CompressionPipeline {
         };
         Ok(PyBytes::new_bound(py, &result))
     }
-    
+
     /// Decompress data
-    /// 
+    ///
     /// # Arguments
     /// * `data` - Compressed bytes
-    /// 
+    ///
     /// # Returns
     /// Decompressed bytes
     fn decompress<'py>(&self, py: Python<'py>, data: &[u8]) -> PyResult<Bound<'py, PyBytes>> {
@@ -81,32 +81,32 @@ impl CompressionPipeline {
                 .level(4)
                 .build(&mut writer)
                 .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
-            
+
             encoder.write_all(data)
                 .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(e.to_string()))?;
-            
+
             let (_writer, result) = encoder.finish();
             result.map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(e.to_string()))?;
         }
         Ok(output)
     }
-    
+
     fn decompress_lz4(&self, data: &[u8]) -> PyResult<Vec<u8>> {
         let mut decoder = lz4::Decoder::new(data)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
-        
+
         let mut output = Vec::new();
         std::io::copy(&mut decoder, &mut output)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(e.to_string()))?;
-        
+
         Ok(output)
     }
-    
+
     fn compress_zstd(&self, data: &[u8], level: i32) -> PyResult<Vec<u8>> {
         zstd::encode_all(data, level)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))
     }
-    
+
     fn decompress_zstd(&self, data: &[u8]) -> PyResult<Vec<u8>> {
         zstd::decode_all(data)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))

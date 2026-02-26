@@ -127,14 +127,14 @@ class TestBridgeSecurityMonitor:
         message = b"test message"
         signature = monitor.generate_hmac(message)
         assert monitor.validate_hmac(message, signature)
-        
+
     def test_unauthorized_access_detection(self):
         """Test unauthorized agent detection"""
         monitor = BridgeSecurityMonitor()
         result = monitor.check_authorization("unknown-agent")
         assert result.authorized == False
         assert result.reason == "Agent not in whitelist"
-        
+
     def test_audit_logging(self):
         """Test security audit trail"""
         monitor = BridgeSecurityMonitor()
@@ -174,7 +174,7 @@ pytest .github/agents/bridge-security-monitor/tests/ -v
    - Document why MD5/SHA1 is used if needed
 
 4. **Pickle Safety**
-   - Use `utils.safe_pickle.safe_pickle_load()` 
+   - Use `utils.safe_pickle.safe_pickle_load()`
    - Never unpickle untrusted data
    - Prefer JSON for serialization
 
@@ -300,7 +300,7 @@ cargo build --release
 
 When all phases complete:
 
-1. **Security Report** 
+1. **Security Report**
    - File: `docs/security/PR2827_FINAL_SECURITY_REPORT.md`
    - Include: All fixes, metrics, before/after comparisons
 

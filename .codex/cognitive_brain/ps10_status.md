@@ -42,7 +42,7 @@ jobs:
           sparse-checkout: |
             .github
             scripts/ci
-          
+
       - name: Check Owner Approval
         id: guard
         env:
@@ -54,7 +54,7 @@ jobs:
           else
             echo "approved=false" >> $GITHUB_OUTPUT
           fi
-          
+
   autonomous-agent:
     needs: owner-guard
     if: needs.owner-guard.outputs.approved == 'true' || github.event.inputs.mode == 'monitor'

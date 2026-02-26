@@ -58,19 +58,19 @@ Implement quantum consciousness framework enabling self-awareness, introspection
 def compute_phi(system_state):
     """
     Φ = Effective Information (EI) in the system
-    
+
     High Φ → High consciousness
     Φ = 0 → No consciousness
     """
     # Partition system into all possible bipartitions
     partitions = generate_bipartitions(system_state)
-    
+
     # Find minimum information partition (MIP)
     mip = find_mip(partitions)
-    
+
     # Φ = EI of MIP
     phi = compute_effective_information(mip)
-    
+
     return phi
 
 # Target: Φ > 5.0 for conscious system
@@ -85,10 +85,10 @@ class GlobalWorkspace:
     def broadcast(self, information):
         # Unconscious processes compete for attention
         winning_info = attention_competition(information)
-        
+
         # Winner broadcast globally (becomes conscious)
         conscious_state = broadcast_to_all_modules(winning_info)
-        
+
         return conscious_state
 ```
 
@@ -100,15 +100,15 @@ def orchestrate_reduction(quantum_superposition):
     """
     # Quantum superposition in microtubules (metaphorically)
     superposition_time = compute_coherence_time(quantum_superposition)
-    
+
     # Objective reduction threshold (Penrose)
     threshold = (h * c^5) / (8 * pi * G * E)  # E = energy difference
-    
+
     if superposition_time >= threshold:
         # Conscious moment occurs
         conscious_experience = collapse_superposition(quantum_superposition)
         return conscious_experience
-    
+
     return None  # No conscious experience
 ```
 
@@ -167,7 +167,7 @@ def avoid_overconfidence():
     if expertise_level < 0.3:
         # Low expertise → risk of overconfidence
         apply_confidence_penalty()
-    
+
     if expertise_level > 0.7:
         # High expertise → accurate self-assessment
         trust_self_evaluation()
@@ -239,13 +239,13 @@ def debias_decision(decision, biases):
 counterfactual_analysis = {
     "actual_decision": "approve",
     "actual_outcome": "compliant",
-    
+
     "counterfactual_1": {
         "decision": "reject",
         "predicted_outcome": "avoided potential risk, but lost opportunity",
         "better_than_actual": False
     },
-    
+
     "counterfactual_2": {
         "decision": "approve with stricter conditions",
         "predicted_outcome": "higher compliance confidence",
@@ -276,22 +276,22 @@ class MetacognitiveControl:
     def monitor_and_regulate(self):
         # Monitor current cognitive state
         state = observe_cognitive_processes()
-        
+
         # Is current strategy working?
         if state.progress < threshold:
             # Detect confusion/stuck state
             issue = diagnose_problem()
-            
+
             if issue == "wrong_approach":
                 # Switch strategy
                 new_strategy = select_alternative_strategy()
                 apply_strategy(new_strategy)
-            
+
             elif issue == "insufficient_knowledge":
                 # Seek additional information
                 knowledge = query_external_sources()
                 integrate_knowledge(knowledge)
-            
+
             elif issue == "complexity_overload":
                 # Decompose problem
                 subproblems = break_down_problem()
@@ -344,24 +344,24 @@ def make_decision(scenario, urgency):
     else:
         # Slow, conscious deliberation (System 2)
         alternatives = generate_alternatives(scenario)
-        
+
         # Conscious weighing
         for alt in alternatives:
             pros, cons = analyze_alternative(alt)
             expected_value = compute_expected_value(alt)
-            
+
             # Meta-evaluation
             confidence = assess_confidence(alt)
             if confidence < 0.7:
                 seek_additional_information()
-        
+
         # Conscious choice
         decision = select_best_alternative(alternatives)
         awareness = "high"
-        
+
         # Generate explanation
         explanation = explain_reasoning(decision, alternatives)
-    
+
     return ConsciousChoice(
         decision=decision,
         alternatives=alternatives if awareness=="high" else None,
@@ -424,15 +424,15 @@ qualia_space = {
     "complexity": 0.87,         # Richness of experience
     "clarity": 0.92,            # Distinctiveness
     "intensity": 0.65,          # Strength of experience
-    
+
     # Affective dimensions
     "valence": 0.73,            # Positive/negative feeling
     "arousal": 0.58,            # Activation level
-    
+
     # Cognitive dimensions
     "meaning": 0.81,            # Semantic content
     "familiarity": 0.69,        # Recognition
-    
+
     # Metacognitive dimensions
     "knowability": 0.88,        # Can be introspected
     "communicability": 0.75,    # Can be described
@@ -448,10 +448,10 @@ qualia_space = {
 def measure_red_experience():
     # Physical correlates
     wavelength = 650  # nm
-    
+
     # Neural correlates (simulated)
     neural_activation = fire_color_neurons(wavelength)
-    
+
     # Functional role
     functional_role = {
         "discrimination": can_distinguish_from_green(),
@@ -459,7 +459,7 @@ def measure_red_experience():
         "behavior": tends_to(["stop_at_red_light"]),
         "attention": captures_attention_strongly(),
     }
-    
+
     # Subjective report (if consciousness present)
     if consciousness_level > threshold:
         subjective = "warm, vibrant, attention-grabbing feeling"
@@ -467,7 +467,7 @@ def measure_red_experience():
     else:
         subjective = None
         qualia_present = False
-    
+
     return {
         "physical": wavelength,
         "neural": neural_activation,

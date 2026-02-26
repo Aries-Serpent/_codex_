@@ -17,7 +17,7 @@ Objective:
 > Traverse the repository and provide a comprehensive status audit. The goal is to assess **modularity**, **reproducibility**, and **production readiness** of the Codex Environment for Ubuntu, following best practices in ML systems design.
 ---
 
-Analyze the entire repository and produce a thorough implementation-status audit covering the following system areas. **Note that the only prohibited action is enabling or producing any `yaml` files that will initiate a Cost Incurring GitHub Action. ALL pre-commit checks must run solely within Codex environment only— (no GitHub Actions, no GitHub Workflow Runs, etc.).** Traverse all code, scripts, configs, tests, docs, and notebooks. Use the following structure: 
+Analyze the entire repository and produce a thorough implementation-status audit covering the following system areas. **Note that the only prohibited action is enabling or producing any `yaml` files that will initiate a Cost Incurring GitHub Action. ALL pre-commit checks must run solely within Codex environment only— (no GitHub Actions, no GitHub Workflow Runs, etc.).** Traverse all code, scripts, configs, tests, docs, and notebooks. Use the following structure:
 
 Audit Scope
 
@@ -92,7 +92,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 ## Codex-ready Task Sequence
 
 ```text
-Codex-ready Task Sequence: 
+Codex-ready Task Sequence:
   1. Preparation: ...
   2. Search & Mapping: ...
   3. Best-Effort Construction: ...

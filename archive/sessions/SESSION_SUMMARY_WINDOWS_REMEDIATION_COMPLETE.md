@@ -171,10 +171,10 @@ Successfully resolved critical Windows CI/CD failure by implementing comprehensi
 ```
 IF filename_contains_colon AND is_python_file THEN
   suggest windows_safe_timestamp() migration
-  
+
 IF commit_contains_new_timestamp_code THEN
   run check_windows_filenames hook
-  
+
 IF CI_fails_on_windows_runner THEN
   check for path/filename issues first
 ```

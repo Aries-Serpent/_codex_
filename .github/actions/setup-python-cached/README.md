@@ -21,13 +21,13 @@ steps:
     uses: actions/setup-python@v5
     with:
       python-version: '3.11'
-  
+
   # 2. Install dependencies (including PyYAML)
   - name: Install Dependencies
     run: |
       pip install pyyaml --quiet
       # Install other dependencies as needed
-  
+
   # 3. Use this action for caching
   - name: Setup Cached Environment
     uses: ./.github/actions/setup-python-cached
@@ -45,7 +45,7 @@ steps:
     uses: ./.github/actions/setup-python-cached  # PyYAML not installed yet!
     with:
       python-version: '3.11'
-  
+
   - name: Install Dependencies
     run: pip install pyyaml  # Too late!
 ```
@@ -57,7 +57,7 @@ steps:
 ### 🟢 LIVE Tier (Permanent, High Priority)
 - **Use for**: Critical workflows that run frequently (CI, tests, deployment)
 - **Retention**: Permanent (or GitHub's maximum retention)
-- **Examples**: 
+- **Examples**:
   - `audit-improvement-pipeline.yml`
   - `code-quality.yml`
   - `security-suite.yml`
@@ -67,7 +67,7 @@ steps:
 ### 🟡 COMMON Tier (7-day Retention)
 - **Use for**: Regular workflows that run periodically
 - **Retention**: ~7 iterations (automatically pruned when unused)
-- **Examples**: 
+- **Examples**:
   - `scheduled-dependency-audit.yml`
   - `monthly-model-retraining.yml`
   - `wiki-assemble.yml`
@@ -76,7 +76,7 @@ steps:
 ### 🔴 EPHEMERAL Tier (1-day Retention)
 - **Use for**: One-off workflows, experiments, testing
 - **Retention**: ~1 iteration (frequently deleted)
-- **Examples**: 
+- **Examples**:
   - Development/debug workflows
   - Experimental feature workflows
   - One-time migration scripts
@@ -93,12 +93,12 @@ steps:
     uses: actions/setup-python@v5
     with:
       python-version: '3.11'
-  
+
   # Step 2: Install dependencies (including PyYAML)
   - name: Install Dependencies
     run: |
       pip install pyyaml --quiet
-  
+
   # Step 3: Use tiered caching
   - name: Setup Python with Tiered Cache
     uses: ./.github/actions/setup-python-cached
@@ -114,18 +114,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      
+
       # Step 1: Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       # Step 2: Install dependencies (including PyYAML)
       - name: Install Dependencies
         run: |
           pip install pyyaml --quiet
-      
+
       # Step 3: Setup cached environment
       - name: Setup Python with Live Cache
         uses: ./.github/actions/setup-python-cached
@@ -133,7 +133,7 @@ jobs:
           python-version: '3.11'
           cache-tier: 'live'
           architecture: 'x64'
-      
+
       # Step 4: Install project dependencies
       - name: Install project dependencies
         run: |

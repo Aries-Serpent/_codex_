@@ -90,13 +90,13 @@
   - Test `encode()` with various input sizes
   - Test caching behavior
   - Test error handling for missing models
-  
+
 - **indexer.py**: Test index operations
   - Test `chunk_text()` with edge cases
   - Test `embed_chunks()` with different models
   - Test `persist_index()` and `load_index()` roundtrip
   - Test multi-tenant operations
-  
+
 - **retriever.py**: Test retrieval logic
   - Test `Retriever.query()` with various k values
   - Test `MultiIndexRetriever` merging logic
@@ -108,11 +108,11 @@
   - Test `RAGMetrics` metric recording
   - Test window size configurations
   - Test prometheus/cloudwatch export
-  
+
 - **utils.py**: Test utility functions
   - Test `safe_model_load()` with different devices
   - Test `ProvenanceMetadata` creation
-  
+
 - **gpu_utils.py**: Test GPU detection and selection
   - Test `check_cuda_available()`
   - Test `select_device()` fallback logic
@@ -126,7 +126,7 @@
   - Test provider initialization
   - Test encode() methods
   - Test error handling
-  
+
 - **analytics/**: Test dashboard and metrics_db
 - **benchmarks/**: Test benchmark runners (lower priority)
 

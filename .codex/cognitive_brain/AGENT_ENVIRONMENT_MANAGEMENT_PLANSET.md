@@ -207,21 +207,21 @@ agents:
       cpu_cores: 4
       memory_gb: 8
       disk_gb: 20
-    
+
   - name: coverage-gapfill-agent
     environment_type: ml-heavy
     resources:
       cpu_cores: 8
       memory_gb: 16
       disk_gb: 50
-    
+
   - name: security-agent
     environment_type: security-scan
     resources:
       cpu_cores: 4
       memory_gb: 8
       disk_gb: 20
-    
+
   - name: documentation-quality-agent
     environment_type: documentation
     resources:
@@ -367,24 +367,24 @@ CREATE TABLE environment_telemetry (
 class EnvironmentOptimizer:
     """
     Learns optimal environment configurations from past executions.
-    
+
     Features:
     - PR context (labels, branch, files)
     - Historical success rates per environment type
     - Resource usage patterns
     - Setup time vs. benefit tradeoffs
-    
+
     Target:
     - Predict best environment type
     - Estimate setup time
     - Recommend resource allocation
     - Confidence score
     """
-    
+
     def learn_from_telemetry(self, telemetry_data):
         # Update model with new execution data
         pass
-    
+
     def optimize_environment(self, context):
         # Return optimized configuration
         pass
@@ -449,17 +449,17 @@ class CognitiveBrainCore:
     def __init__(self):
         # ... existing initialization ...
         self.environment_optimizer = EnvironmentOptimizer()
-    
+
     def process_pr_context(self, pr_context):
         # Existing cognitive processing
         strategies = self.strategy_selector.select(pr_context)
-        
+
         # NEW: Environment optimization
         optimal_env = self.environment_optimizer.predict_environment(pr_context)
-        
+
         # Integrate environment into execution plan
         execution_plan = self.create_execution_plan(strategies, optimal_env)
-        
+
         return execution_plan
 ```
 
@@ -492,14 +492,14 @@ impl SwarmEngine {
         // NEW: Check and provision environment
         let env_config = self.environment_provisioner
             .get_config_for_agent(agent_name)?;
-        
+
         if !self.environment_provisioner.is_ready(&env_config)? {
             self.environment_provisioner.provision(&env_config)?;
         }
-        
+
         // Existing task execution
         self.task_manager.execute(agent_name, context)?;
-        
+
         Ok(())
     }
 }
@@ -761,7 +761,7 @@ environments:
       - black
       - mypy
       - pytest
-    
+
   ml-heavy:
     runner: ubuntu-latest-8-cores
     python_version: "3.12"
@@ -771,7 +771,7 @@ environments:
       - sentence-transformers
       - scikit-learn
       - mlflow
-    
+
   security-scan:
     runner: ubuntu-latest-4-cores
     python_version: "3.12"
@@ -780,7 +780,7 @@ environments:
       - safety
       - pip-audit
       - semgrep
-    
+
   documentation:
     runner: ubuntu-latest-2-cores
     python_version: "3.12"
@@ -795,13 +795,13 @@ agents:
     resources:
       cpu: 4
       memory: 8GB
-  
+
   coverage-gapfill-agent:
     environment: ml-heavy
     resources:
       cpu: 8
       memory: 16GB
-  
+
   # ... all 26 agents ...
 ```
 

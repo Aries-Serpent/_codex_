@@ -193,29 +193,29 @@ Links to related documentation.
 def example_function(param1: str, param2: int = 10) -> dict:
     """
     Brief description of the function.
-    
+
     Detailed description of what the function does,
     including any important notes.
-    
+
     Args:
         param1: Description of param1.
         param2: Description of param2. Defaults to 10.
-    
+
     Returns:
         Description of return value.
-    
+
     Raises:
         ValueError: When param1 is empty.
         TypeError: When param2 is not an integer.
-    
+
     Example:
         >>> result = example_function("test", 20)
         >>> print(result)
         {'status': 'success'}
-    
+
     Note:
         Additional notes about usage.
-    
+
     See Also:
         related_function: For similar functionality.
     """
@@ -268,21 +268,21 @@ from pathlib import Path
 def validate_links(docs_dir: Path) -> list:
     """
     Validate all markdown links in documentation.
-    
+
     Safeguard: Bounded file reads to prevent memory issues.
     """
     broken_links = []
-    
+
     for md_file in docs_dir.glob("**/*.md"):
         content = md_file.read_text()[:100000]  # Bounded read
-        
+
         # Find markdown links
         links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
-        
+
         for text, url in links:
             if url.startswith('#') or url.startswith('http'):
                 continue
-            
+
             # Check relative links
             target = md_file.parent / url
             if not target.exists():
@@ -291,7 +291,7 @@ def validate_links(docs_dir: Path) -> list:
                     'link': url,
                     'text': text
                 })
-    
+
     return broken_links
 
 if __name__ == "__main__":
@@ -321,21 +321,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install mkdocs mkdocs-material mkdocstrings
-      
+
       - name: Build documentation
         run: mkdocs build --strict
-      
+
       - name: Validate links
         run: python scripts/validate_docs.py
-      
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         run: mkdocs gh-deploy --force
@@ -356,7 +356,7 @@ import ast
 def extract_module_docstrings(src_dir: Path) -> dict:
     """Extract module-level docstrings from Python files."""
     modules = {}
-    
+
     for py_file in src_dir.glob("**/*.py"):
         try:
             content = py_file.read_text()[:50000]  # Bounded read
@@ -366,7 +366,7 @@ def extract_module_docstrings(src_dir: Path) -> dict:
                 modules[py_file.stem] = docstring.split('\n')[0]
         except SyntaxError:
             continue
-    
+
     return modules
 
 def generate_module_list(modules: dict) -> str:
@@ -397,12 +397,12 @@ docs-build:
     - name: Build with strict mode
       run: mkdocs build --strict
       # Fails on warnings
-    
+
     - name: Validate HTML
       run: |
         pip install html5validator
         html5validator --root site/
-    
+
     - name: Check for broken links
       run: |
         pip install linkchecker

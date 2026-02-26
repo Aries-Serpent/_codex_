@@ -62,19 +62,19 @@ from codex_ml.plugins.plugin_registry import Plugin, PluginMetadata
 
 class MyTokenizer(Plugin):
     """Custom tokenizer plugin."""
-    
+
     def initialize(self):
         """Initialize the tokenizer."""
         print("Tokenizer initialized")
-    
+
     def execute(self, text: str) -> list[str]:
         """Tokenize text."""
         return text.split()
-    
+
     def cleanup(self):
         """Cleanup resources."""
         pass
-    
+
     @classmethod
     def get_metadata(cls) -> PluginMetadata:
         """Return plugin metadata."""
@@ -245,25 +245,25 @@ from codex_ml.plugins.plugin_registry import Plugin, PluginMetadata
 
 class WordPieceTokenizer(Plugin):
     """WordPiece tokenizer plugin."""
-    
+
     def __init__(self, vocab_file: str):
         self.vocab_file = vocab_file
         self.vocab = {}
-    
+
     def initialize(self):
         """Load vocabulary."""
         with open(self.vocab_file) as f:
             self.vocab = {line.strip(): i for i, line in enumerate(f)}
-    
+
     def execute(self, text: str) -> list[int]:
         """Tokenize and encode text."""
         tokens = text.split()
         return [self.vocab.get(token, 0) for token in tokens]
-    
+
     def cleanup(self):
         """Cleanup resources."""
         self.vocab.clear()
-    
+
     @classmethod
     def get_metadata(cls) -> PluginMetadata:
         return PluginMetadata(

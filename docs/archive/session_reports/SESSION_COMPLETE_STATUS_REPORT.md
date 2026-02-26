@@ -243,7 +243,7 @@ python -c "
 import json
 with open('audit_artifacts/capabilities_scored.json') as f:
     data = json.load(f)
-targets = ['deployment-infrastructure', 'functional_training', 'safeguards_keywords', 
+targets = ['deployment-infrastructure', 'functional_training', 'safeguards_keywords',
            'structural-integrity', 'documentation-system']
 for t in targets:
     for c in data['capabilities']:
@@ -346,7 +346,7 @@ pytest --cov=agents --cov-report=html
 
 ## 💡 Key Learnings
 
-1. **High Maturity Achievement Pattern Works**: 
+1. **High Maturity Achievement Pattern Works**:
    - 60+ tests created following mcp-lifecycle-management pattern
    - Comprehensive, well-structured, ready for execution
 

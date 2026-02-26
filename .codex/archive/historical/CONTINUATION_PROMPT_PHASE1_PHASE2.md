@@ -31,7 +31,7 @@ it('should handle code execution with timeout', async () => {
   await waitFor(() => {
     expect(screen.getByText(/execution time/i)).toBeInTheDocument();
   }, { timeout: 10000 }); // Increased from default 1000ms
-  
+
   // OR mark as expected behavior and document
 });
 ```
@@ -60,7 +60,7 @@ beforeEach(() => {
     width: 800,
     height: 600,
   };
-  
+
   // Ensure canvas is properly mocked before test runs
   vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as any);
 });
@@ -79,11 +79,11 @@ beforeEach(() => {
 // Update tests to expect AI Mode toggle:
 it('should render code generator with AI Mode toggle', () => {
   render(<CodeGenerator />);
-  
+
   // Check for AI Mode toggle (NEW)
   expect(screen.getByText(/AI Mode/i)).toBeInTheDocument();
   expect(screen.getByRole('switch')).toBeInTheDocument();
-  
+
   // Check existing elements still present
   expect(screen.getByText(/Status:/i)).toBeInTheDocument(); // Changed from "API Status:"
 });
@@ -104,19 +104,19 @@ it('should render code generator with AI Mode toggle', () => {
 // Debug and fix paradigm rendering:
 it('should allow paradigm selection', async () => {
   render(<AgentOrchestrationPanel />);
-  
+
   // Wait for paradigms to load
   await waitFor(() => {
     const buttons = screen.queryAllByRole('button');
     expect(buttons.length).toBeGreaterThan(0);
   });
-  
+
   // Find paradigm buttons (adjust selector as needed)
-  const paradigmButtons = screen.getAllByRole('button').filter(btn => 
-    btn.textContent?.includes('Chaos') || 
+  const paradigmButtons = screen.getAllByRole('button').filter(btn =>
+    btn.textContent?.includes('Chaos') ||
     btn.textContent?.includes('Fractal')
   );
-  
+
   expect(paradigmButtons.length).toBeGreaterThan(0);
 });
 ```
@@ -170,24 +170,24 @@ Validate core workflow orchestration by fixing 11 WorkflowTokenOrchestrator test
 ```typescript
 it('should create custom tokens with wizard', async () => {
   render(<WorkflowTokenOrchestrator />);
-  
+
   // Click "Create Token" button (adjust selector to match actual)
   const createBtn = screen.getByRole('button', { name: /create.*token/i });
   await userEvent.click(createBtn);
-  
+
   // Wait for wizard to appear
   await waitFor(() => {
     expect(screen.getByText(/token.*configuration/i)).toBeInTheDocument();
   });
-  
+
   // Fill form (adjust field selectors)
   const nameInput = screen.getByLabelText(/token.*name/i);
   await userEvent.type(nameInput, 'Test Token');
-  
+
   // Submit and verify
   const saveBtn = screen.getByRole('button', { name: /save/i });
   await userEvent.click(saveBtn);
-  
+
   await waitFor(() => {
     expect(screen.getByText('Test Token')).toBeInTheDocument();
   });
@@ -209,16 +209,16 @@ it('should create custom tokens with wizard', async () => {
 ```typescript
 it('should execute single token', async () => {
   render(<WorkflowTokenOrchestrator tokens={mockTokens} />);
-  
+
   // Find token to execute
   const token = screen.getByText('Test Token');
   expect(token).toBeInTheDocument();
-  
+
   // Click execute button
   const executeBtn = within(token.closest('[data-testid="token-card"]')!)
     .getByRole('button', { name: /execute/i });
   await userEvent.click(executeBtn);
-  
+
   // Wait for status change
   await waitFor(() => {
     expect(screen.getByText(/running|completed/i)).toBeInTheDocument();

@@ -34,7 +34,7 @@ Both workflow failures are **FALSE POSITIVES**. Tests actually **PASSED and uplo
 2026-02-05T23:18:05.9763433Z Artifact coverage-html-3.12 successfully uploaded
 ```
 
-**Analysis:** 
+**Analysis:**
 - Coverage was successfully generated and uploaded
 - 18 coverage files were found and reported to Codecov
 - Artifacts were uploaded without errors
@@ -100,8 +100,8 @@ echo "✅ Sequential coverage-run completed"
 # ⚠️ NO explicit exit 0 here!
 ```
 
-**Root Cause:** 
-- Tier 3 doesn't have an explicit `exit 0` 
+**Root Cause:**
+- Tier 3 doesn't have an explicit `exit 0`
 - The last command (`echo`) exits with 0, but if coverage commands fail, the script might exit with non-zero
 - The `set -euo pipefail` at line 139 causes the script to exit on any error in a pipeline
 

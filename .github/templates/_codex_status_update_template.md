@@ -6,7 +6,7 @@ Purpose: single canonical Status Update audit report template that merges: (a) t
 
 Release: v2.0.0 — includes detector v2 support, coverage ingestion, token-similarity dedupe, richer manifest, metrics versioning, and mapping to repo implementation.
 
---- 
+---
 
 Verification Summary (mapping of template sections → repository/source artifacts)
 - Pipeline stages (S1–S7): adopted from Traversal_Workflow.md and audit_runner.py (stage_* functions).

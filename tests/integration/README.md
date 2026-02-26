@@ -180,7 +180,7 @@ from pathlib import Path
 
 class TestNewIntegrationScenario:
     """Test description"""
-    
+
     @pytest.fixture
     def setup_test_environment(self, tmp_path):
         """Setup test environment with mock data"""
@@ -188,15 +188,15 @@ class TestNewIntegrationScenario:
         test_config = tmp_path / "test_config.yaml"
         test_config.write_text("test: configuration")
         return {"config_path": test_config}
-    
+
     def test_scenario(self, setup_test_environment):
         """Test specific scenario"""
         # Arrange
         config = setup_test_environment["config_path"]
-        
+
         # Act
         result = execute_workflow(config)
-        
+
         # Assert
         assert result.success is True
         assert result.artifacts_generated > 0

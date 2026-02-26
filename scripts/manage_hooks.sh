@@ -15,7 +15,7 @@ log_fail() { echo "❌ $1"; return 1; }
 
 disable_hooks() {
   log_info "Disabling pre-commit hooks..."
-  
+
   if [[ ! -d "$HOOKS_DIR" ]]; then
     log_fail "Hooks directory not found: $HOOKS_DIR"
     return 1
@@ -56,7 +56,7 @@ enable_hooks() {
 
 status() {
   log_info "Checking hook status..."
-  
+
   if [[ -f "$HOOKS_DIR/pre-commit" ]]; then
     log_pass "Pre-commit hook: ENABLED"
   elif [[ -f "$HOOKS_DIR/pre-commit.disabled" ]]; then

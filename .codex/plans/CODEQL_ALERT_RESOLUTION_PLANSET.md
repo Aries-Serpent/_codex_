@@ -289,9 +289,9 @@ Closes: https://github.com/Aries-Serpent/_codex_/security/code-scanning/456
 
 **Rule:** py/path-traversal
 **File:** tests/security/test_path_validation.py:45
-**Justification:** 
-This is a test case intentionally demonstrating path traversal 
-detection. The test validates that our sanitization logic correctly 
+**Justification:**
+This is a test case intentionally demonstrating path traversal
+detection. The test validates that our sanitization logic correctly
 blocks malicious paths.
 
 **Evidence:**
@@ -414,7 +414,7 @@ PATCH /repos/Aries-Serpent/_codex_/code-scanning/alerts/{alert_number}
     hooks:
       - id: bandit
         args: ['-c', '.bandit.yaml']
-  
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:

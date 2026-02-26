@@ -37,7 +37,7 @@ import asyncio
 
 async def test_local():
     reviewer = CodexQuantumReviewer()
-    
+
     context = ReviewContext(
         pr_number=1,
         repo="test/repo",
@@ -48,10 +48,10 @@ async def test_local():
         author="testuser",
         description="Test PR"
     )
-    
+
     event = {"action": "initial_review", "context": context}
     result = await reviewer.handle_event(event)
-    
+
     print(f"✅ Local test result: {result}")
     assert result["status"] == "review_complete"
     print("✅ All local tests passed!")
@@ -721,7 +721,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

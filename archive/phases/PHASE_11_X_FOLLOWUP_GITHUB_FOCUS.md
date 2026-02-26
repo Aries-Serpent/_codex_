@@ -102,7 +102,7 @@
 - Auto-rotate credentials
 - Enforce MFA policies
 
-**Scope**: 
+**Scope**:
 - GitHub OAuth Apps API
 - GitHub Users API
 - GitHub Repository API

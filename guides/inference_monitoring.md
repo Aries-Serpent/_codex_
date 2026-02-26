@@ -113,13 +113,13 @@ async def predict(data: Dict):
         version="1.0"
     ).time():
         result = model.predict(data)
-    
+
     inference_requests.labels(
         model_name="model_v1",
         version="1.0",
         status="success"
     ).inc()
-    
+
     return result
 ```
 
@@ -203,17 +203,17 @@ async def predict(request_id: str, data: Dict):
         model_name="model_v1",
         input_size=len(data)
     )
-    
+
     try:
         result = model.predict(data)
-        
+
         logger.info(
             "inference_completed",
             request_id=request_id,
             duration_ms=duration,
             confidence=result.confidence
         )
-        
+
         return result
     except Exception as e:
         logger.error(
@@ -249,15 +249,15 @@ async def predict(data: Dict):
         # Pre-processing span
         with tracer.start_as_current_span("preprocess"):
             preprocessed = preprocess(data)
-        
+
         # Model inference span
         with tracer.start_as_current_span("model_inference"):
             result = model.predict(preprocessed)
-        
+
         # Post-processing span
         with tracer.start_as_current_span("postprocess"):
             final_result = postprocess(result)
-        
+
         return final_result
 ```
 
@@ -274,7 +274,7 @@ async def health_check():
         "gpu_available": torch.cuda.is_available(),
         "memory_ok": check_memory_usage() < 0.9
     }
-    
+
     if all(checks.values()):
         return {"status": "healthy", "checks": checks}
     else:
@@ -302,22 +302,22 @@ from scipy.stats import ks_2samp
 class DriftDetector:
     def __init__(self, reference_data):
         self.reference_data = reference_data
-    
+
     def detect_drift(self, current_data, threshold=0.05):
         """Detect distribution drift using KS test."""
         statistic, p_value = ks_2samp(
             self.reference_data,
             current_data
         )
-        
+
         is_drift = p_value < threshold
-        
+
         logger.info(
             "drift_check",
             p_value=p_value,
             is_drift=is_drift
         )
-        
+
         return is_drift
 ```
 

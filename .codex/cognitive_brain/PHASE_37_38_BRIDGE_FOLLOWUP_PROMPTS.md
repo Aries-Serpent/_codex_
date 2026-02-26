@@ -40,17 +40,17 @@
    - Check status every 15 minutes
    - Expected: All 4 jobs GREEN
    - If fails: Debug, fix, re-run
-   
+
 2. **Update health score** (P0 - After CI passes)
    - Change from 75/100 to 100/100
    - Edit `.codex/cognitive_brain/PHASE_37_HEALTH_SCORE.md`
    - Update CI Stability: 0/25 → 25/25
-   
+
 3. **Mark bridge complete** (P1)
    - Create `.codex/cognitive_brain/PHASE_37_38_BRIDGE_COMPLETE.md`
    - Document final status
    - Celebrate achievements
-   
+
 4. **Post completion comment** (P1)
    - Reply to PR #3037 comment 3806278005
    - Summarize bridge completion

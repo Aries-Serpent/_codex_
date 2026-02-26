@@ -125,7 +125,7 @@ Follow the master planset at: .codex/plans/CODEQL_ALERT_RESOLUTION_PLANSET.md
 
 ```bash
 # Identify alerts requiring manual review
-jq '.alerts[] | select(.severity == "critical" or .severity == "high") | 
+jq '.alerts[] | select(.severity == "critical" or .severity == "high") |
   select(.category == "authentication" or .category == "business-logic")' \
   .codex/security/alert_inventory.json > .codex/security/manual_review_needed.json
 

@@ -90,7 +90,7 @@
 - **Completed:** mcp-lifecycle-management (0.22 → 0.56)
 - **Remaining:** 15 capabilities (duplication_ratio, safeguards_keywords, peft_hooks, vector-stores, etc.)
 - **Timeline:** 8-12 phases total, currently Pre-commit 1-2
-- **Next Steps:** 
+- **Next Steps:**
   1. duplication_ratio (0.39 → 0.85+)
   2. safeguards_keywords (0.45 → 0.85+)
   3. peft_hooks (0.46 → 0.85+)

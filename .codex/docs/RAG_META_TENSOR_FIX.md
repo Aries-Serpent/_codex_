@@ -12,8 +12,8 @@
 The RAG module was experiencing failures when loading SentenceTransformer models due to meta tensor initialization issues. The error occurred when attempting to move models to CPU:
 
 ```python
-NotImplementedError: Cannot copy out of meta tensor; no data! 
-Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() 
+NotImplementedError: Cannot copy out of meta tensor; no data!
+Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 when moving module from meta to a different device.
 ```
 
@@ -57,7 +57,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
     # Primary: Direct is_meta attribute check (PyTorch 1.10+)
     if hasattr(param, 'is_meta') and param.is_meta:
         return True
-    
+
     # Fallback: device.type check (compatibility)
     if hasattr(param, 'device') and param.device.type == 'meta':
         return True
@@ -76,11 +76,11 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
 ```python
 def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
     """Safely move model to device, handling meta tensors."""
-    
+
     if has_meta_tensors(model):
         # Step 1: Use to_empty() for meta tensors
         model = model.to_empty(device=device)
-        
+
         # Step 2: Reinitialize parameters (CRITICAL!)
         if hasattr(model, 'modules'):
             for module in model.modules():
@@ -89,7 +89,7 @@ def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
                         module.reset_parameters()
                     except Exception as e:
                         logger.debug(f"Could not reset: {e}")
-        
+
         return model
     else:
         # Standard .to() for normal tensors

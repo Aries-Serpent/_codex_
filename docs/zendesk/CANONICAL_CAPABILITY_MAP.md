@@ -1,4 +1,4 @@
-# Zendesk App Builder: Canonical Capability–Limitation Map 
+# Zendesk App Builder: Canonical Capability–Limitation Map
 
 This document provides a symbolic, visual representation of the Zendesk App Builder ecosystem with a specific focus on the **Navbar context**. It complements the [Mathematical Model & Design Guide](AI_AGENT_APP_BUILDER.md) with intuitive ASCII-based diagrams and reference materials.
 
@@ -504,7 +504,7 @@ Claude (AI LLM)     Planning/analysis    Comprehensive planning            START
 ### Best Workflow
 
 ```text
-You ──→ AI (ideation/planning) ──→ Official Docs (validation) 
+You ──→ AI (ideation/planning) ──→ Official Docs (validation)
     ──→ Your Dev Environment (testing) ──→ AI (refinement) ──→ Production
 ```text
 

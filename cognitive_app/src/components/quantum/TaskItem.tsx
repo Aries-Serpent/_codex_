@@ -59,12 +59,12 @@ export function TaskItem({ task, index }: TaskItemProps) {
 
   /**
    * Formats a date string as a relative time with a prefix.
-   * 
+   *
    * @param dateString - ISO date string to format, or null
    * @param prefix - Text prefix for the formatted output (e.g., "Completed", "Started")
    * @returns Formatted string like "Completed 2 hours ago", or null if dateString is null.
    *          Falls back to prefix only if date parsing fails.
-   * 
+   *
    * Error handling: Logs parse/format errors and returns prefix to prevent UI breaks.
    */
   const formatRelativeTime = (dateString: string | null, prefix: string): string | null => {

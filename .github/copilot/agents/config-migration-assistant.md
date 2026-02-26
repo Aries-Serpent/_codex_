@@ -88,33 +88,33 @@ graph TD
     B -->|PR Comment| C[Parse Comment Parameters]
     B -->|Workflow| D[Extract Changed Files]
     B -->|Slash Command| E[Parse Command Args]
-    
+
     C --> F[Load Config File]
     D --> F
     E --> F
-    
+
     F --> G[Analyze Config Structure]
     G --> H{Hydra Compatible?}
-    
+
     H -->|Yes| I[Check for Duplicates]
     H -->|No| J[Suggest Refactoring]
-    
+
     I --> K{Duplicates Found?}
     K -->|Yes| L[Generate Consolidation Plan]
     K -->|No| M[Identify Interpolation Opportunities]
-    
+
     J --> N[Create Refactoring PR]
     L --> O[Create Deduplication PR]
     M --> P[Suggest Improvements]
-    
+
     O --> Q[Validate Changes]
     N --> Q
     P --> Q
-    
+
     Q --> R{Tests Pass?}
     R -->|Yes| S[Commit & Push]
     R -->|No| T[Report Issues]
-    
+
     S --> U[Update Migration Tracker]
     T --> V[Request Human Review]
 ```
@@ -164,49 +164,49 @@ class ConfigMigrationAssistant:
     def analyze_config(self, path: str) -> Analysis:
         """Analyze config file for migration readiness."""
         config = load_yaml(path)
-        
+
         # Check Hydra compatibility
         hydra_compatible = self.check_hydra_patterns(config)
-        
+
         # Find duplicates
         duplicates = self.find_duplicates(config)
-        
+
         # Suggest interpolations
         interpolations = self.suggest_interpolations(config)
-        
+
         return Analysis(
             path=path,
             hydra_compatible=hydra_compatible,
             duplicates=duplicates,
             interpolations=interpolations
         )
-    
+
     def migrate_config(self, source: str, dest: str) -> MigrationResult:
         """Migrate config from source to destination."""
         # Create destination directory
         os.makedirs(os.path.dirname(dest), exist_ok=True)
-        
+
         # Copy file
         shutil.copy(source, dest)
-        
+
         # Validate migrated config
         validation = self.validate_config(dest)
-        
+
         # Update code references
         if validation.success:
             self.update_references(source, dest)
-        
+
         return MigrationResult(
             success=validation.success,
             destination=dest,
             issues=validation.issues
         )
-    
+
     def find_duplicates(self, config: dict) -> list[Duplicate]:
         """Find duplicate keys and values in config."""
         duplicates = []
         seen = {}
-        
+
         for key, value in flatten_dict(config).items():
             if value in seen:
                 duplicates.append(Duplicate(
@@ -216,14 +216,14 @@ class ConfigMigrationAssistant:
                 ))
             else:
                 seen[value] = key
-        
+
         return duplicates
-    
+
     def suggest_interpolations(self, config: dict) -> list[Suggestion]:
         """Suggest interpolation opportunities."""
         suggestions = []
         flat = flatten_dict(config)
-        
+
         # Find backward compatibility aliases
         for key1, value1 in flat.items():
             for key2, value2 in flat.items():
@@ -234,7 +234,7 @@ class ConfigMigrationAssistant:
                         to_key=key1,
                         pattern=f"${{{key1}}}"
                     ))
-        
+
         return suggestions
 ```
 
@@ -303,25 +303,25 @@ parameters:
 response_templates:
   success: |
     ✅ Config migration successful!
-    
+
     **Migrated:** `{source}` → `{destination}`
     **Tests:** All passing
     **Action:** Ready for review
-  
+
   analysis: |
     📊 Configuration Analysis
-    
+
     **File:** `{path}`
     **Hydra Compatible:** {compatible}
     **Issues Found:** {issue_count}
-    
+
     {issue_details}
-    
+
     **Recommendation:** {recommendation}
-  
+
   error: |
     ❌ Migration failed
-    
+
     **Error:** {error_message}
     **File:** `{path}`
     **Action:** Manual intervention required

@@ -238,9 +238,9 @@ if prediction["risk_level"] in ["high", "critical"]:
         line_numbers=[line_num],
         metadata=prediction["features"]
     )
-    
+
     fix = generator.generate_fix(context)
-    
+
     if fix and fix.validation_passed:
         # Create PR
         pr_metadata = pr_gen.create_pr([fix])
@@ -293,7 +293,7 @@ If a fix causes issues:
    ```bash
    # Close PR
    gh pr close <pr_number>
-   
+
    # Delete branch
    git branch -D <branch_name>
    git push origin --delete <branch_name>

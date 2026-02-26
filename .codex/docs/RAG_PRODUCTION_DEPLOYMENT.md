@@ -204,12 +204,12 @@ alerts:
     condition: rag.meta_tensor_detected > 0.10  # More than 10%
     severity: warning
     message: "High meta tensor detection rate - investigate model initialization"
-  
+
   - name: slow_device_transfer
     condition: rag.to_empty_duration > 5.0  # More than 5 seconds
     severity: warning
     message: "Slow meta tensor device transfer - performance issue"
-  
+
   - name: slow_model_load
     condition: rag.model_load_time > 30.0  # More than 30 seconds
     severity: warning
@@ -327,15 +327,15 @@ def validate_input(text: str) -> str:
     """Validate and sanitize text input."""
     if not text or not isinstance(text, str):
         raise ValueError("Invalid input: must be non-empty string")
-    
+
     # Limit length to prevent abuse
     max_length = 10000
     if len(text) > max_length:
         raise ValueError(f"Input too long: max {max_length} characters")
-    
+
     # Remove control characters
     text = ''.join(c for c in text if c.isprintable() or c.isspace())
-    
+
     return text.strip()
 ```
 
@@ -350,18 +350,18 @@ def validate_input(text: str) -> str:
 class ModelCache:
     _instance = None
     _models = {}
-    
+
     @classmethod
     def get_model(cls, model_name: str):
         if cls._instance is None:
             cls._instance = cls()
-        
+
         if model_name not in cls._models:
             cls._models[model_name] = SentenceTransformer(
                 model_name,
                 cache_folder="/app/model_cache"
             )
-        
+
         return cls._models[model_name]
 
 # Usage
@@ -375,7 +375,7 @@ model = ModelCache.get_model("sentence-transformers/all-MiniLM-L6-v2")
 def embed_texts_batch(texts: list[str], batch_size: int = 32):
     """Process texts in batches for efficiency."""
     embeddings = []
-    
+
     for i in range(0, len(texts), batch_size):
         batch = texts[i:i + batch_size]
         batch_embeddings = model.encode(
@@ -385,7 +385,7 @@ def embed_texts_batch(texts: list[str], batch_size: int = 32):
             convert_to_numpy=True
         )
         embeddings.append(batch_embeddings)
-    
+
     return np.vstack(embeddings)
 ```
 

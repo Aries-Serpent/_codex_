@@ -1,4 +1,4 @@
-# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 1 of 6 
+# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 1 of 6
 
 > **Generated**: 2026-01-25T23:45:00Z  
 > **Author**: mbaetiong  
@@ -212,7 +212,7 @@ def check_python_version():
         print(f"❌ ERROR: Python {version.major}.{version.minor}.{version.micro} detected")
         print(f"   Expected: Python 3.12.x")
         return False
-    
+
     print(f"✅ Python {version.major}.{version.minor}.{version.micro} detected")
     return True
 
@@ -222,32 +222,32 @@ def check_pyproject_toml():
     if not pyproject.exists():
         print("⚠️  pyproject.toml not found")
         return True
-    
+
     content = pyproject.read_text()
-    
+
     # Check requires-python
     if 'requires-python' in content:
         match = re.search(r'requires-python\s*=\s*["\']([^"\']+)["\']', content)
         if match:
             requirement = match.group(1)
-            
+
             # Acceptable patterns:
             # - ">=3.12,<3.13"
             # - "==3.12.*"
             # - "^3.12"
-            
+
             if "3.11" in requirement:
                 print(f"❌ ERROR: pyproject.toml allows Python 3.11")
                 print(f"   Found: requires-python = \"{requirement}\"")
                 print(f"   Fix: requires-python = \">=3.12,<3.13\"")
                 return False
-            
+
             if "3.13" in requirement and ">=" not in requirement:
                 print(f"⚠️  WARNING: pyproject.toml may allow Python 3.13")
                 print(f"   Found: requires-python = \"{requirement}\"")
-            
+
             print(f"✅ pyproject.toml: requires-python = \"{requirement}\"")
-    
+
     return True
 
 def check_python_version_file():
@@ -256,14 +256,14 @@ def check_python_version_file():
     if not version_file.exists():
         print("⚠️  .python-version not found (optional)")
         return True
-    
+
     version = version_file.read_text().strip()
-    
+
     if not version.startswith("3.12"):
         print(f"❌ ERROR: .python-version specifies Python {version}")
         print(f"   Expected: 3.12.x")
         return False
-    
+
     print(f"✅ .python-version: {version}")
     return True
 
@@ -273,24 +273,24 @@ def check_dockerfile():
     if not dockerfile.exists():
         print("⚠️  Dockerfile not found (optional)")
         return True
-    
+
     content = dockerfile.read_text()
-    
+
     # Find FROM python: lines
     python_images = re.findall(r'FROM python:([^\s]+)', content)
-    
+
     if not python_images:
         print("⚠️  No Python base image found in Dockerfile")
         return True
-    
+
     for image in python_images:
         if not image.startswith("3.12"):
             print(f"❌ ERROR: Dockerfile uses Python {image}")
             print(f"   Expected: 3.12.x")
             return False
-        
+
         print(f"✅ Dockerfile: FROM python:{image}")
-    
+
     return True
 
 def check_github_workflows():
@@ -299,21 +299,21 @@ def check_github_workflows():
     if not workflows_dir.exists():
         print("⚠️  .github/workflows not found")
         return True
-    
+
     issues = []
-    
+
     for workflow_file in workflows_dir.glob("*.yml"):
         content = workflow_file.read_text()
-        
+
         # Check for python-version matrix or explicit versions
         # Look for patterns like:
         # python-version: ["3.11", "3.12"]
         # python-version: [3.11, 3.12]
         # python-version: "3.11"
-        
+
         # Find all python-version specifications
         version_specs = re.findall(r'python-version:\s*(.+)', content)
-        
+
         for spec in version_specs:
             # Check for array/list syntax
             if '[' in spec:
@@ -329,20 +329,20 @@ def check_github_workflows():
                     version = version_match.group(1)
                     if version != "3.12":
                         issues.append(f"{workflow_file.name}: python-version = {version}")
-    
+
     if issues:
         print(f"❌ ERROR: GitHub workflows use non-3.12 Python versions:")
         for issue in issues:
             print(f"   - {issue}")
         return False
-    
+
     print(f"✅ GitHub workflows: All use Python 3.12 only")
     return True
 
 def main():
     """Run all validation checks"""
     print("🔍 Python 3.12 Single Version Validation\n")
-    
+
     checks = [
         ("Current Python version", check_python_version),
         ("pyproject.toml configuration", check_pyproject_toml),
@@ -350,15 +350,15 @@ def main():
         ("Dockerfile configuration", check_dockerfile),
         ("GitHub Actions workflows", check_github_workflows),
     ]
-    
+
     results = []
     for name, check_func in checks:
         print(f"\n📋 Checking: {name}")
         print("-" * 60)
         results.append(check_func())
-    
+
     print("\n" + "=" * 60)
-    
+
     if all(results):
         print("✅ All checks passed! Python 3.12 is correctly configured.")
         return 0
@@ -494,24 +494,24 @@ def parse_dependencies():
     """Extract dependencies from pyproject.toml"""
     pyproject = Path("pyproject.toml")
     data = tomllib.loads(pyproject.read_text())
-    
+
     deps = data.get("project", {}).get("dependencies", [])
     optional = data.get("project", {}).get("optional-dependencies", {})
-    
+
     all_deps = []
-    
+
     # Parse main dependencies
     for dep in deps:
         # Remove version specifiers
         package = dep.split("[")[0].split(">=")[0].split("==")[0].split("<")[0].split(">")[0].strip()
         all_deps.append((package, "main", dep))
-    
+
     # Parse optional dependencies
     for group, group_deps in optional.items():
         for dep in group_deps:
             package = dep.split("[")[0].split(">=")[0].split("==")[0].split("<")[0].split(">")[0].strip()
             all_deps.append((package, f"optional:{group}", dep))
-    
+
     return all_deps
 
 def check_package_python312(package: str) -> dict:
@@ -524,18 +524,18 @@ def check_package_python312(package: str) -> dict:
             text=True,
             timeout=10
         )
-        
+
         if result.returncode != 0:
             return {"supported": None, "error": "Package not installed"}
-        
+
         # Check if package has Python version requirements
         metadata = result.stdout
-        
+
         # Look for "Requires-Python" line
         for line in metadata.split("\n"):
             if line.startswith("Requires-Python:"):
                 requires = line.split(":", 1)[1].strip()
-                
+
                 # Check if Python 3.12 is supported
                 # Simple check: if requirement includes ">=3.12" or doesn't restrict upper bound
                 if "3.13" in requires or "3.14" in requires:
@@ -546,57 +546,57 @@ def check_package_python312(package: str) -> dict:
                     return {"supported": False, "requires": requires, "error": "Python 3.12 not supported"}
                 else:
                     return {"supported": True, "requires": requires, "note": "No upper bound"}
-        
+
         # No Requires-Python specified - assume compatible
         return {"supported": True, "requires": "Not specified"}
-    
+
     except Exception as e:
         return {"supported": None, "error": str(e)}
 
 def main():
     print("🔍 Dependency Python 3.12 Compatibility Check\n")
-    
+
     dependencies = parse_dependencies()
-    
+
     print(f"Found {len(dependencies)} dependencies to check\n")
-    
+
     issues = []
     warnings = []
-    
+
     for package, group, full_spec in dependencies:
         result = check_package_python312(package)
-        
+
         status = "✅" if result["supported"] else "❌" if result["supported"] is False else "⚠️"
-        
+
         print(f"{status} {package} ({group})")
-        
+
         if result.get("requires"):
             print(f"   Requires-Python: {result['requires']}")
-        
+
         if result.get("note"):
             print(f"   Note: {result['note']}")
             warnings.append(f"{package}: {result['note']}")
-        
+
         if result.get("error"):
             print(f"   Error: {result['error']}")
             if result["supported"] is False:
                 issues.append(f"{package}: {result['error']}")
-        
+
         print()
-    
+
     print("=" * 60)
-    
+
     if issues:
         print(f"\n❌ {len(issues)} package(s) incompatible with Python 3.12:")
         for issue in issues:
             print(f"   - {issue}")
         return 1
-    
+
     if warnings:
         print(f"\n⚠️  {len(warnings)} package(s) with notes:")
         for warning in warnings:
             print(f"   - {warning}")
-    
+
     print("\n✅ All dependencies support Python 3.12!")
     return 0
 

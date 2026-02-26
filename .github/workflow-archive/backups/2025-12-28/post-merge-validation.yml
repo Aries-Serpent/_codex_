@@ -11,22 +11,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      
+
       - name: Install package
         run: |
           pip install -e .
-      
+
       - name: Verify torch import
         run: |
           python -c "import torch; print(f'✓ Torch imported from: {torch.__file__}'); print(f'✓ Torch version: {torch.__version__}')"
           # Ensure it's from site-packages, not local repo
           python -c "import torch, os; assert 'site-packages' in torch.__file__, f'Torch imported from wrong location: {torch.__file__}'"
-      
+
       - name: Verify core imports
         run: |
           python -c "from src.codex_ml.training.unified_training import UnifiedTrainingConfig; print('✓ UnifiedTrainingConfig imports')"
@@ -38,21 +38,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install -r requirements-dev.txt
-      
+
       - name: Run smoke tests
         run: |
           python -m pytest tests/config/test_config_schema.py tests/unit/test_data_cache_locking.py -v
-      
+
       - name: Run quick test subset
         run: |
           python -m pytest tests/ -m "smoke or not slow" -x --tb=short || true
@@ -63,12 +63,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      
+
       - name: Check syntax warnings
         run: |
           python -W error::SyntaxWarning -m py_compile cli/ast_upgrade.py tools/codex_supplied_task_runner.py
@@ -85,7 +85,7 @@ jobs:
           echo "Import validation: ${{ needs.validate-imports.result }}"
           echo "Tests: ${{ needs.run-tests.result }}"
           echo "Lint: ${{ needs.lint-check.result }}"
-      
+
       - name: Create issue on failure
         if: needs.validate-imports.result == 'failure' || needs.lint-check.result == 'failure'
         uses: actions/github-script@v8

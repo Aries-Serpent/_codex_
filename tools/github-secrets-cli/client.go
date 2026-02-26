@@ -125,7 +125,7 @@ func (c *GitHubClient) SetSecret(scope, owner, repo, env, name, value string, vi
 // ListSecrets lists secrets for a given scope
 func (c *GitHubClient) ListSecrets(scope, owner, repo, env string) ([]SecretInfo, error) {
 	var url string
-	
+
 	switch scope {
 	case "repo":
 		url = fmt.Sprintf("%s/repos/%s/%s/actions/secrets", apiBaseURL, owner, repo)
@@ -174,7 +174,7 @@ func (c *GitHubClient) ListSecrets(scope, owner, repo, env string) ([]SecretInfo
 // DeleteSecret deletes a secret
 func (c *GitHubClient) DeleteSecret(scope, owner, repo, env, name string) error {
 	var url string
-	
+
 	switch scope {
 	case "repo":
 		url = fmt.Sprintf("%s/repos/%s/%s/actions/secrets/%s", apiBaseURL, owner, repo, name)
@@ -224,7 +224,7 @@ type Repository struct {
 // getRepositoryID gets the ID of a repository
 func (c *GitHubClient) getRepositoryID(owner, repo string) (int, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s", apiBaseURL, owner, repo)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 0, err

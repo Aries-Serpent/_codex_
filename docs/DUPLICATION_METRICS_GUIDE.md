@@ -384,21 +384,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install pylint
-      
+
       - name: Check duplication
         run: |
           codex duplication check --threshold=0.10 --output=duplication.json
-      
+
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v3

@@ -20,7 +20,7 @@
 - ✅ Added `sys_metrics` parameter to `_NDJSONMetricsLogger`
 - ✅ Added CPU percent metric collection
 - ✅ Exported as `NDJSONLogger` for backward compatibility
-- **Tests Fixed**: 
+- **Tests Fixed**:
   - `tests.logging.test_registry_logger::test_registry_ndjson_logger_includes_system_metrics`
   - `tests.logging.test_registry_logger::test_registry_ndjson_logger_rotates`
 

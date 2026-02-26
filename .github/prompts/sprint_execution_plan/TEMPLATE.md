@@ -35,7 +35,7 @@ phase: "[1|2|3|4]"
 phase_name: "[Foundation|Reproducibility|Autonomy|Excellence]"
 effort_estimate: "[Small: 1-2 iterations | Medium: 3-5 iterations | Large: 1-2 phases]"
 sprint_week: "[Pre-commit 1-32]"
-dependencies: 
+dependencies:
   - "[Task IDs that must be completed first]"
   - "[None if no dependencies]"
 blocks:
@@ -306,7 +306,7 @@ pytest tests/ -m "not slow" --maxfail=1
 def detect_prerequisites(task):
     """
     Scan task requirements and detect missing prerequisites.
-    
+
     Generates new prompts automatically when:
     - Required files/modules don't exist
     - Dependency tasks incomplete
@@ -314,7 +314,7 @@ def detect_prerequisites(task):
     - Infrastructure not ready
     """
     missing_prerequisites = []
-    
+
     # Check file existence
     for required_file in task.required_files:
         if not os.path.exists(required_file):
@@ -324,7 +324,7 @@ def detect_prerequisites(task):
                 'action': 'Create prerequisite file',
                 'generate_prompt': True
             })
-    
+
     # Check module imports
     for required_module in task.required_modules:
         try:
@@ -336,7 +336,7 @@ def detect_prerequisites(task):
                 'action': 'Install or implement module',
                 'generate_prompt': True
             })
-    
+
     # Check dependency tasks
     for dep_task_id in task.dependencies:
         if not is_task_complete(dep_task_id):
@@ -346,7 +346,7 @@ def detect_prerequisites(task):
                 'action': 'Complete dependency task first',
                 'generate_prompt': True
             })
-    
+
     return missing_prerequisites
 ```
 
@@ -355,7 +355,7 @@ def detect_prerequisites(task):
 def generate_prerequisite_prompt(prerequisite):
     """
     Auto-generate a new prompt for addressing prerequisites.
-    
+
     Creates a focused sub-prompt that:
     - Addresses the specific blocking issue
     - Follows the same template structure
@@ -410,10 +410,10 @@ python -c "import {module_name}"
 ## Return to Parent
 Once complete, resume: {parent_task_id}
 """
-    
+
     elif prerequisite['type'] == 'missing_module':
         return generate_module_installation_prompt(prerequisite)
-    
+
     elif prerequisite['type'] == 'incomplete_dependency':
         return generate_dependency_completion_prompt(prerequisite)
 ```
@@ -451,10 +451,10 @@ generates_prompt:
   priority: "Blocking"
   content: |
     # Sub-Task: Create pytest.ini
-    
+
     ## Context
     Parent task T1 requires pytest configuration but pytest.ini doesn't exist.
-    
+
     ## Implementation
     1. Create pytest.ini in repository root
     2. Add basic configuration:
@@ -466,7 +466,7 @@ generates_prompt:
        python_functions = test_*
        ```
     3. Validate: `pytest --co -q`
-    
+
     ## Return to Parent
     Resume T1: Coverage Gate Enforcement
 ```
@@ -479,10 +479,10 @@ generates_prompt:
   priority: "Blocking"
   content: |
     # Sub-Task: Install pytest-cov
-    
+
     ## Context
     Coverage enforcement requires pytest-cov plugin.
-    
+
     ## Implementation
     1. Add to requirements: `pip install pytest-cov>=4.0`
     2. Or add to pyproject.toml:
@@ -491,7 +491,7 @@ generates_prompt:
        test = ["pytest-cov>=4.0"]
        ```
     3. Validate: `python -c "import pytest_cov"`
-    
+
     ## Return to Parent
     Resume T1: Coverage Gate Enforcement
 ```
@@ -504,10 +504,10 @@ generates_prompt:
   priority: "Blocking"
   content: |
     # Sub-Task: Create Nox Tests Session
-    
+
     ## Context
     T1 needs to modify nox tests session, but it doesn't exist yet.
-    
+
     ## Implementation
     1. Add basic tests session to noxfile.py:
        ```python
@@ -517,7 +517,7 @@ generates_prompt:
            session.run("pytest", *session.posargs)
        ```
     2. Validate: `nox -s tests --list`
-    
+
     ## Return to Parent
     Resume T1: Coverage Gate Enforcement - Step 3
 ```
@@ -542,34 +542,34 @@ generates_prompt:
 # Autonomous execution with expansion
 execute_task_with_expansion() {
     task_id=$1
-    
+
     echo "📋 Starting task: $task_id"
-    
+
     # Check prerequisites
     prereqs=$(detect_prerequisites "$task_id")
-    
+
     if [ -n "$prereqs" ]; then
         echo "⚠️ Prerequisites missing: $prereqs"
         echo "🔄 Generating sub-prompts..."
-        
+
         # Generate and execute sub-prompts
         for prereq in $prereqs; do
             sub_prompt=$(generate_prerequisite_prompt "$prereq")
             echo "$sub_prompt" > ".codex/sub_prompts/${task_id}_prereq_${prereq}.md"
-            
+
             echo "🎯 Executing sub-prompt: ${prereq}"
             execute_prompt "${task_id}_prereq_${prereq}"
-            
+
             # Validate sub-prompt completion
             if ! validate_prerequisite "$prereq"; then
                 echo "❌ Sub-prompt failed: ${prereq}"
                 return 1
             fi
         done
-        
+
         echo "✅ All prerequisites satisfied"
     fi
-    
+
     # Execute main task
     echo "🚀 Proceeding with main task"
     execute_main_task "$task_id"
@@ -583,7 +583,7 @@ execute_task_with_expansion() {
 def adapt_implementation_strategy(task, current_state):
     """
     Adjust implementation approach based on discovered context.
-    
+
     Adaptations:
     - Different file exists → Modify instead of create
     - Alternative tool available → Use instead of installing
@@ -591,7 +591,7 @@ def adapt_implementation_strategy(task, current_state):
     - Tests already exist → Extend instead of creating
     """
     adaptations = []
-    
+
     # Check if alternative files exist
     if task.requires_file("pytest.ini"):
         if os.path.exists("pyproject.toml"):
@@ -600,7 +600,7 @@ def adapt_implementation_strategy(task, current_state):
                 'action': 'Use pyproject.toml instead of creating pytest.ini',
                 'rationale': 'pyproject.toml already exists, prefer single config'
             })
-    
+
     # Check for existing patterns
     if task.requires_pattern("coverage_config"):
         existing_patterns = scan_for_patterns(["pytest.ini", "setup.cfg", "pyproject.toml"])
@@ -610,7 +610,7 @@ def adapt_implementation_strategy(task, current_state):
                 'action': f'Use {existing_patterns[0]} format',
                 'rationale': 'Match existing repository conventions'
             })
-    
+
     # Check for alternative tools
     if task.requires_tool("pytest-cov"):
         if is_tool_available("coverage.py"):
@@ -619,7 +619,7 @@ def adapt_implementation_strategy(task, current_state):
                 'action': 'Use coverage.py directly instead of pytest-cov',
                 'rationale': 'coverage.py already installed'
             })
-    
+
     return adaptations
 ```
 
@@ -628,14 +628,14 @@ def adapt_implementation_strategy(task, current_state):
 def update_prompt_with_adaptations(prompt, adaptations):
     """
     Dynamically update prompt based on discovered context.
-    
+
     Inserts adaptation notes before each affected step.
     """
     updated_prompt = prompt
-    
+
     for adaptation in adaptations:
         section = find_affected_section(prompt, adaptation['type'])
-        
+
         adaptation_note = f"""
 ### 🔄 ADAPTATION DETECTED
 
@@ -649,13 +649,13 @@ def update_prompt_with_adaptations(prompt, adaptations):
 
 **Proceed with adapted approach below:**
 """
-        
+
         updated_prompt = insert_before_section(
-            updated_prompt, 
-            section['id'], 
+            updated_prompt,
+            section['id'],
             adaptation_note
         )
-    
+
     return updated_prompt
 ```
 
@@ -691,7 +691,7 @@ def validate_implementation(step_number):
         'security_clear': run_security_scans(),
         'acceptance_criteria': check_acceptance_criteria(step_number)
     }
-    
+
     if all(results.values()):
         return "✅ PASS: Proceed to next step"
     else:
@@ -704,22 +704,22 @@ def validate_implementation(step_number):
 # Run automatically after each implementation step
 validate_step() {
     echo "🔍 Validating implementation..."
-    
+
     # 1. Syntax check
     python -m py_compile [modified_files] || return 1
-    
+
     # 2. Import check
     python -c "import [module]" || return 1
-    
+
     # 3. Test check
     pytest tests/[relevant]/ -v --tb=short || return 1
-    
+
     # 4. Lint check
     ruff check [modified_files] || return 1
-    
+
     # 5. Coverage check (if applicable)
     pytest --cov=[module] --cov-fail-under=[threshold] || return 1
-    
+
     echo "✅ Step validation PASSED"
     return 0
 }
@@ -733,27 +733,27 @@ common_errors:
   - pattern: "ModuleNotFoundError: No module named '(.*)'"
     diagnosis: "Missing dependency"
     auto_fix: "pip install {module} or add to requirements.txt"
-    
+
   - pattern: "SyntaxError: invalid syntax"
     diagnosis: "Python syntax error"
     auto_fix: "Review code for syntax issues, check indentation and brackets"
-    
+
   - pattern: "ImportError: cannot import name '(.*)' from '(.*)'"
     diagnosis: "Import path incorrect or circular import"
     auto_fix: "Check import statement and module structure"
-    
+
   - pattern: "AssertionError in test_(.*)"
     diagnosis: "Test expectation not met"
     auto_fix: "Review test assertion and implementation logic"
-    
+
   - pattern: "FAILED.*coverage.*below"
     diagnosis: "Coverage threshold not met"
     auto_fix: "Add tests for uncovered code paths"
-    
+
   - pattern: "NameError: name '(.*)' is not defined"
     diagnosis: "Variable or function not defined"
     auto_fix: "Define {name} or import it from appropriate module"
-    
+
   - pattern: "TypeError: (.*) takes (.*) positional argument"
     diagnosis: "Function signature mismatch"
     auto_fix: "Check function arguments and calling code"
@@ -785,38 +785,38 @@ Error Detected
 def autonomous_implementation(task):
     """
     Autonomous task implementation with self-correction.
-    
+
     Max iterations: 5
     Validation frequency: After each step
     Fallback: Documented troubleshooting guide
     """
     max_iterations = 5
     current_iteration = 0
-    
+
     while current_iteration < max_iterations:
         current_iteration += 1
         print(f"🔄 Iteration {current_iteration}/{max_iterations}")
-        
+
         # Step 1: Implement current step
         implementation_result = implement_step(task.current_step)
-        
+
         # Step 2: Validate implementation
         validation_result = validate_implementation(task.current_step)
-        
+
         if validation_result.passed:
             print(f"✅ Step {task.current_step} passed")
             task.advance_to_next_step()
             current_iteration = 0  # Reset for next step
-            
+
             if task.is_complete():
                 return SUCCESS
         else:
             # Self-correction attempt
             print(f"⚠️ Validation failed: {validation_result.errors}")
-            
+
             # Diagnose issues
             diagnosis = diagnose_errors(validation_result.errors)
-            
+
             # Attempt auto-fix
             if diagnosis.auto_fixable:
                 print(f"🔧 Applying auto-fix: {diagnosis.fix_strategy}")
@@ -824,7 +824,7 @@ def autonomous_implementation(task):
             else:
                 print(f"❌ Manual intervention required")
                 return NEEDS_HUMAN_REVIEW
-    
+
     # Max iterations reached
     return NEEDS_ESCALATION
 ```
@@ -842,7 +842,7 @@ def autonomous_implementation(task):
    ```bash
    # Re-run failed tests with verbose output
    pytest --lf -vv --tb=long  # --lf = last failed
-   
+
    # Generate coverage report to identify gaps
    pytest --cov=[module] --cov-report=html
    open htmlcov/index.html  # Review uncovered lines
@@ -860,7 +860,7 @@ def autonomous_implementation(task):
    ```python
    # Auto-detect circular imports
    python -X importtime [script] 2>&1 | grep "import time"
-   
+
    # Suggest restructuring
    # Move shared code to separate module
    ```
@@ -891,7 +891,7 @@ iteration_log:
       action: "Added coverage flags"
       validation: "✅ PASS"
       duration: "5 minutes"
-      
+
     - iteration: 2
       step: "Step 2: Create fixture"
       action: "Added deterministic seed fixture"
@@ -900,7 +900,7 @@ iteration_log:
       auto_fix: "Added import torch"
       retry_validation: "✅ PASS"
       duration: "8 minutes"
-      
+
   total_iterations: 2
   success_rate: "100%"
   total_time: "13 minutes"
@@ -912,7 +912,7 @@ iteration_log:
 def log_iteration_result(task_id, iteration_data):
     """
     Log iteration results for continuous improvement.
-    
+
     Metrics tracked:
     - Success rate per step
     - Common error patterns
@@ -921,11 +921,11 @@ def log_iteration_result(task_id, iteration_data):
     - Escalation frequency
     """
     append_to_log(f".codex/iterations/{task_id}.jsonl", iteration_data)
-    
+
     # Analyze patterns
     if iteration_data.errors:
         update_error_patterns(iteration_data.errors)
-    
+
     if iteration_data.auto_fix_applied:
         track_fix_effectiveness(iteration_data.auto_fix, iteration_data.success)
 ```

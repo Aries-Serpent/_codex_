@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zendesk API - Interactive Documentation</title>
-    <!-- 
+    <!--
         Note: For production deployments, consider:
         1. Hosting these files locally for better security and offline access
         2. Adding SRI hashes when using specific versioned CDN URLs
@@ -15,14 +15,14 @@
         * {
             box-sizing: border-box;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: #f5f5f5;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #03363D 0%, #186e70 100%);
             color: white;
@@ -31,18 +31,18 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .header h1 {
             margin: 0;
             font-size: 24px;
             font-weight: 600;
         }
-        
+
         .header-actions {
             display: flex;
             gap: 10px;
         }
-        
+
         .header-actions button {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -53,16 +53,16 @@
             font-size: 14px;
             transition: background 0.2s;
         }
-        
+
         .header-actions button:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-        
+
         .container {
             display: flex;
             min-height: calc(100vh - 64px);
         }
-        
+
         .sidebar {
             width: 350px;
             background: white;
@@ -70,13 +70,13 @@
             padding: 20px;
             overflow-y: auto;
         }
-        
+
         .main-content {
             flex: 1;
             padding: 20px 40px;
             overflow-y: auto;
         }
-        
+
         .section-title {
             font-size: 16px;
             font-weight: 600;
@@ -85,11 +85,11 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #03363D;
         }
-        
+
         .template-selector {
             margin-bottom: 20px;
         }
-        
+
         .template-selector select {
             width: 100%;
             padding: 10px;
@@ -98,11 +98,11 @@
             border-radius: 4px;
             background: white;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .form-group label {
             display: block;
             font-size: 13px;
@@ -110,11 +110,11 @@
             color: #555;
             margin-bottom: 5px;
         }
-        
+
         .form-group label .required {
             color: #d93025;
         }
-        
+
         .form-group input,
         .form-group textarea,
         .form-group select {
@@ -125,25 +125,25 @@
             border-radius: 4px;
             transition: border-color 0.2s;
         }
-        
+
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: #03363D;
         }
-        
+
         .form-group .hint {
             font-size: 12px;
             color: #777;
             margin-top: 4px;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
+
         .btn {
             padding: 10px 16px;
             font-size: 14px;
@@ -152,26 +152,26 @@
             border: none;
             transition: all 0.2s;
         }
-        
+
         .btn-primary {
             background: #03363D;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #024d54;
         }
-        
+
         .btn-secondary {
             background: white;
             color: #333;
             border: 1px solid #ddd;
         }
-        
+
         .btn-secondary:hover {
             background: #f5f5f5;
         }
-        
+
         .output-section {
             background: white;
             border-radius: 8px;
@@ -179,25 +179,25 @@
             margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
+
         .output-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .output-title {
             font-size: 16px;
             font-weight: 600;
             color: #333;
         }
-        
+
         .output-actions {
             display: flex;
             gap: 8px;
         }
-        
+
         .output-actions button {
             padding: 6px 12px;
             font-size: 12px;
@@ -207,11 +207,11 @@
             background: white;
             color: #333;
         }
-        
+
         .output-actions button:hover {
             background: #f5f5f5;
         }
-        
+
         .code-block {
             background: #1e1e1e;
             border-radius: 6px;
@@ -220,7 +220,7 @@
             max-height: 400px;
             overflow-y: auto;
         }
-        
+
         .code-block pre {
             margin: 0;
             color: #d4d4d4;
@@ -228,13 +228,13 @@
             font-size: 13px;
             line-height: 1.5;
         }
-        
+
         .tabs {
             display: flex;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
         }
-        
+
         .tab {
             padding: 10px 20px;
             cursor: pointer;
@@ -243,36 +243,36 @@
             color: #666;
             transition: all 0.2s;
         }
-        
+
         .tab:hover {
             color: #333;
         }
-        
+
         .tab.active {
             color: #03363D;
             border-bottom-color: #03363D;
             font-weight: 500;
         }
-        
+
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         .swagger-container {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
+
         #swagger-ui .topbar {
             display: none;
         }
-        
+
         .notification {
             position: fixed;
             bottom: 20px;
@@ -287,20 +287,20 @@
             transition: all 0.3s;
             z-index: 1000;
         }
-        
+
         .notification.show {
             transform: translateY(0);
             opacity: 1;
         }
-        
+
         .notification.success {
             background: #1e8e3e;
         }
-        
+
         .notification.error {
             background: #d93025;
         }
-        
+
         .export-modal {
             display: none;
             position: fixed;
@@ -313,11 +313,11 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .export-modal.show {
             display: flex;
         }
-        
+
         .modal-content {
             background: white;
             padding: 30px;
@@ -325,19 +325,19 @@
             max-width: 500px;
             width: 90%;
         }
-        
+
         .modal-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 20px;
         }
-        
+
         .export-options {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-        
+
         .export-option {
             padding: 15px;
             border: 1px solid #ddd;
@@ -345,23 +345,23 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .export-option:hover {
             border-color: #03363D;
             background: #f9fafb;
         }
-        
+
         .export-option h4 {
             margin: 0 0 5px 0;
             font-size: 14px;
         }
-        
+
         .export-option p {
             margin: 0;
             font-size: 12px;
             color: #666;
         }
-        
+
         .close-modal {
             margin-top: 20px;
             width: 100%;
@@ -376,11 +376,11 @@
             <button onclick="downloadOpenAPI()">📄 Download OpenAPI</button>
         </div>
     </div>
-    
+
     <div class="container">
         <div class="sidebar">
             <div class="section-title">📋 JSON Generator</div>
-            
+
             <div class="template-selector">
                 <label for="template-select">Select Template:</label>
                 <select id="template-select" onchange="loadTemplate()">
@@ -402,23 +402,23 @@
                     </optgroup>
                 </select>
             </div>
-            
+
             <div id="template-form">
                 <p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>
             </div>
-            
+
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="generateScript()">Generate Script</button>
                 <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
             </div>
         </div>
-        
+
         <div class="main-content">
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('generator')">JSON Generator</div>
                 <div class="tab" onclick="switchTab('swagger')">API Documentation</div>
             </div>
-            
+
             <div id="generator-tab" class="tab-content active">
                 <div class="output-section">
                     <div class="output-header">
@@ -435,7 +435,7 @@
 }</pre>
                     </div>
                 </div>
-                
+
                 <div class="output-section">
                     <div class="output-header">
                         <span class="output-title">ChatGPT / AI Assistant Format</span>
@@ -451,7 +451,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="swagger-tab" class="tab-content">
                 <div class="swagger-container">
                     <div id="swagger-ui"></div>
@@ -459,7 +459,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="export-modal" class="export-modal">
         <div class="modal-content">
             <div class="modal-title">Export Package</div>
@@ -480,10 +480,10 @@
             <button class="btn btn-secondary close-modal" onclick="hideExportModal()">Cancel</button>
         </div>
     </div>
-    
+
     <div id="notification" class="notification"></div>
-    
-    <!-- 
+
+    <!--
         Security Note: In production, consider hosting swagger-ui-bundle.js locally
         or using a specific versioned URL with SRI hash for integrity verification.
     -->
@@ -659,27 +659,27 @@
                 }
             }
         };
-        
+
         let currentTemplate = null;
         let generatedJSON = null;
-        
+
         function loadTemplate() {
             const select = document.getElementById('template-select');
             const templateName = select.value;
-            
+
             if (!templateName) {
                 document.getElementById('template-form').innerHTML = '<p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>';
                 currentTemplate = null;
                 return;
             }
-            
+
             currentTemplate = templates[templateName];
             renderForm(currentTemplate);
         }
-        
+
         function renderForm(template) {
             let html = '';
-            
+
             for (const field of template.fields) {
                 html += `<div class="form-group">`;
                 html += `<label for="${field.name}">${field.label}`;
@@ -687,7 +687,7 @@
                     html += ` <span class="required">*</span>`;
                 }
                 html += `</label>`;
-                
+
                 if (field.type === 'textarea') {
                     html += `<textarea id="${field.name}" rows="3" placeholder="${field.example || ''}">${field.default || ''}</textarea>`;
                 } else if (field.type === 'select') {
@@ -700,23 +700,23 @@
                 } else {
                     html += `<input type="${field.type}" id="${field.name}" placeholder="${field.example || ''}" value="${field.default || ''}">`;
                 }
-                
+
                 if (field.example) {
                     html += `<div class="hint">Example: ${field.example}</div>`;
                 }
-                
+
                 html += `</div>`;
             }
-            
+
             document.getElementById('template-form').innerHTML = html;
         }
-        
+
         function generateScript() {
             if (!currentTemplate) {
                 showNotification('Please select a template first', 'error');
                 return;
             }
-            
+
             // Collect form values
             const values = {};
             for (const field of currentTemplate.fields) {
@@ -725,14 +725,14 @@
                     values[field.name] = element.value || field.default || '';
                 }
             }
-            
+
             // Generate JSON by replacing placeholders
             generatedJSON = JSON.parse(JSON.stringify(currentTemplate.template));
             replacePlaceholders(generatedJSON, values);
-            
+
             // Display result
             document.getElementById('json-output').textContent = JSON.stringify(generatedJSON, null, 2);
-            
+
             // Generate ChatGPT format
             const chatgptFormat = {
                 name: currentTemplate.name,
@@ -744,12 +744,12 @@
                 },
                 instructions: `Use this template to ${currentTemplate.description.toLowerCase()}.`
             };
-            
+
             document.getElementById('chatgpt-output').textContent = JSON.stringify(chatgptFormat, null, 2);
-            
+
             showNotification('Script generated successfully!', 'success');
         }
-        
+
         function replacePlaceholders(obj, values) {
             for (const key in obj) {
                 if (typeof obj[key] === 'string') {
@@ -761,7 +761,7 @@
                 }
             }
         }
-        
+
         function clearForm() {
             document.getElementById('template-select').value = '';
             document.getElementById('template-form').innerHTML = '<p style="color: #666; font-size: 14px;">Select a template to start generating JSON scripts.</p>';
@@ -770,27 +770,27 @@
             currentTemplate = null;
             generatedJSON = null;
         }
-        
+
         function copyToClipboard() {
             const content = document.getElementById('json-output').textContent;
             navigator.clipboard.writeText(content).then(() => {
                 showNotification('Copied to clipboard!', 'success');
             });
         }
-        
+
         function copyChatGPT() {
             const content = document.getElementById('chatgpt-output').textContent;
             navigator.clipboard.writeText(content).then(() => {
                 showNotification('ChatGPT format copied!', 'success');
             });
         }
-        
+
         function downloadJSON() {
             if (!generatedJSON) {
                 showNotification('Generate a script first', 'error');
                 return;
             }
-            
+
             const blob = new Blob([JSON.stringify(generatedJSON, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -800,7 +800,7 @@
             URL.revokeObjectURL(url);
             showNotification('JSON downloaded!', 'success');
         }
-        
+
         function downloadChatGPT() {
             const content = document.getElementById('chatgpt-output').textContent;
             const blob = new Blob([content], { type: 'application/json' });
@@ -812,22 +812,22 @@
             URL.revokeObjectURL(url);
             showNotification('ChatGPT package downloaded!', 'success');
         }
-        
+
         function formatForChatGPT() {
             switchTab('generator');
             if (generatedJSON) {
                 showNotification('ChatGPT format shown below!', 'success');
             }
         }
-        
+
         function downloadOpenAPI() {
             window.open('openapi.yaml', '_blank');
         }
-        
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+
             if (tabName === 'generator') {
                 document.querySelectorAll('.tab')[0].classList.add('active');
                 document.getElementById('generator-tab').classList.add('active');
@@ -836,18 +836,18 @@
                 document.getElementById('swagger-tab').classList.add('active');
             }
         }
-        
+
         function showExportModal() {
             document.getElementById('export-modal').classList.add('show');
         }
-        
+
         function hideExportModal() {
             document.getElementById('export-modal').classList.remove('show');
         }
-        
+
         function exportPackage(type) {
             hideExportModal();
-            
+
             switch (type) {
                 case 'chatgpt':
                     const chatgptPackage = {
@@ -866,7 +866,7 @@
                     downloadFile(JSON.stringify(chatgptPackage, null, 2), 'zendesk-chatgpt-package.json', 'application/json');
                     showNotification('ChatGPT package exported!', 'success');
                     break;
-                    
+
                 case 'zendesk':
                     const zendeskPackage = {
                         integration: 'zendesk_ai_assistant',
@@ -892,14 +892,14 @@
                     downloadFile(JSON.stringify(zendeskPackage, null, 2), 'zendesk-ai-assistant-package.json', 'application/json');
                     showNotification('Zendesk AI package exported!', 'success');
                     break;
-                    
+
                 case 'openapi':
                     window.open('openapi.yaml', '_blank');
                     showNotification('OpenAPI spec opened in new tab', 'success');
                     break;
             }
         }
-        
+
         function downloadFile(content, filename, type) {
             const blob = new Blob([content], { type: type });
             const url = URL.createObjectURL(blob);
@@ -909,17 +909,17 @@
             a.click();
             URL.revokeObjectURL(url);
         }
-        
+
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = `notification ${type} show`;
-            
+
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
-        
+
         // Initialize Swagger UI
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Swagger UI with inline spec for demo
@@ -956,7 +956,7 @@
                     }
                 }
             };
-            
+
             try {
                 SwaggerUIBundle({
                     spec: spec,

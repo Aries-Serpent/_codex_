@@ -43,7 +43,7 @@ Fixed 6 unused variables by replacing with underscore (`_`) and adding explanato
 
 **File:** `tests/typing/test_py312_type_hints.py`
 
-- **Line 233:** Renamed `class Config` → `class _Config` 
+- **Line 233:** Renamed `class Config` → `class _Config`
   - Used underscore prefix to indicate the class is only for type checking demonstration
   - No functional change, just clarifies intent
 
@@ -80,7 +80,7 @@ Fixed 6 unused variables by replacing with underscore (`_`) and adding explanato
 
 **File:** `.github/workflows/test-comprehensive.yml`
 
-**Problem:** 
+**Problem:**
 - Job 61188800170 failed with: "No coverage data found to transform" and "Some files were not found --- coverage.xml"
 - Root cause: Coverage report options were removed from `pytest.ini` (line 6-9) to fix pytest-xdist conflicts
 - The workflow wasn't explicitly generating coverage reports

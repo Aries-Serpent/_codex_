@@ -470,15 +470,15 @@ rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
 def execute_tool_securely(api_key, tool_name, params):
     # 1. Authenticate
     principal = authenticator.authenticate(api_key)
-    
+
     # 2. Check rate limit
     if not rate_limiter.allow(principal.principal_id, tool_name):
         raise RateLimitExceeded("Rate limit exceeded")
-    
+
     # 3. Authorize
     if not authorizer.authorize(principal, tool_name):
         raise Unauthorized("Not authorized")
-    
+
     # 4. Execute
     tool = registry.get_tool(tool_name)
     return tool(**params)

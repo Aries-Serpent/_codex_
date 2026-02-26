@@ -16,27 +16,27 @@ triggers:
     cron: "0 */6 * * *"
   manual:
     command: "/check-performance"
-    
+
 actions:
   - name: collect_metrics
     description: Collect performance metrics from test runs
     script: python tests/performance/test_performance_benchmarks.py -m benchmark
-    
+
   - name: compare_baseline
     description: Compare against 7-day baseline
     script: python src/monitoring/performance_monitor.py --detect-regressions
-    
+
   - name: alert_on_regression
     description: Create GitHub issue if regression detected
     condition: regression_percent > 10
     template: |
       **Performance Regression Detected**
-      
+
       Metric: {metric_name}
       Baseline: {baseline_mean}ms
       Current: {recent_mean}ms
       Regression: +{regression_percent}%
-      
+
       Severity: {severity}
 
 integration:

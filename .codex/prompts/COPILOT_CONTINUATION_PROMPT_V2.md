@@ -143,7 +143,7 @@ import json
 
 with open('semgrep-full-report.json') as f:
     custom = json.load(f)
-    
+
 with open('semgrep-auto-report.json') as f:
     auto = json.load(f)
 
@@ -196,12 +196,12 @@ permissions:
 ```python
 class CIDiagnosticAgent:
     """Automated CI failure analysis and remediation"""
-    
+
     def analyze_failure(self, run_id: str) -> DiagnosticReport:
         """Analyze failed CI run"""
         # Download logs
         logs = self.fetch_logs(run_id)
-        
+
         # Pattern matching
         patterns = {
             'import_error': r'ImportError: cannot import name',
@@ -210,17 +210,17 @@ class CIDiagnosticAgent:
             'cache_miss': r'cache.*not found',
             'dependency': r'Could not find.*requirement'
         }
-        
+
         findings = self.match_patterns(logs, patterns)
         root_cause = self.determine_root_cause(findings)
-        
+
         return DiagnosticReport(
             run_id=run_id,
             findings=findings,
             root_cause=root_cause,
             remediation=self.suggest_fixes(root_cause)
         )
-    
+
     def auto_remediate(self, report: DiagnosticReport) -> bool:
         """Attempt automatic remediation"""
         if report.root_cause == 'cache_miss':
@@ -230,7 +230,7 @@ class CIDiagnosticAgent:
         elif report.root_cause == 'dependency':
             return self.update_dependencies()
         return False
-    
+
     def generate_report(self, report: DiagnosticReport) -> str:
         """Generate human-readable report"""
         return f"""
@@ -294,20 +294,20 @@ jobs:
           gh api /repos/$GITHUB_REPOSITORY/actions/runs \
             --jq '.workflow_runs[] | {name: .name, duration: .run_duration_ms, status: .conclusion}' \
             > ci_metrics.json
-      
+
       - name: Collect security metrics
         run: |
           # Fetch security scan results
           semgrep --config auto . --json -o security_metrics.json
           bandit -r src/ -f json -o bandit_metrics.json
-      
+
       - name: Generate dashboard
         run: |
           python scripts/generate_dashboard.py \
             --ci ci_metrics.json \
             --security security_metrics.json \
             --output dashboard.html
-      
+
       - name: Upload dashboard
         uses: actions/upload-artifact@v4
         with:
@@ -339,17 +339,17 @@ class MetricsDashboard:
 <body>
     <h1>Codex CI/CD Health Dashboard</h1>
     <p>Last Updated: {datetime.now().isoformat()}</p>
-    
+
     <div class="metric">
         <h2>CI Status</h2>
         {self.render_ci_metrics(ci_data)}
     </div>
-    
+
     <div class="metric">
         <h2>Security Posture</h2>
         {self.render_security_metrics(security_data)}
     </div>
-    
+
     <div class="metric">
         <h2>Trends (7 iterations)</h2>
         <img src="trends.png" />
@@ -388,7 +388,7 @@ import joblib
 class ThreatDetectionML:
     def __init__(self):
         self.model = self.load_or_train()
-    
+
     def extract_features(self, code):
         """Extract features from code"""
         return {
@@ -400,7 +400,7 @@ class ThreatDetectionML:
             'crypto_ops': code.count('hashlib'),
             # ... more features
         }
-    
+
     def predict_risk(self, code):
         """Predict security risk score"""
         features = self.extract_features(code)

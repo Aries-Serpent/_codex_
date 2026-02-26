@@ -72,7 +72,7 @@ export function MemoryManagementDashboard() {
               {state.stm_count}
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-[oklch(0.70_0.18_40)] transition-all"
                 style={{ width: `${stmPercentage}%` }}
               />
@@ -91,7 +91,7 @@ export function MemoryManagementDashboard() {
               {state.ltm_count}
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-[oklch(0.60_0.15_220)] transition-all"
                 style={{ width: `${ltmPercentage}%` }}
               />
@@ -114,7 +114,7 @@ export function MemoryManagementDashboard() {
               {(state.cache_hit_rate * 100).toFixed(1)}%
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full transition-all ${
                   state.cache_hit_rate * 100 >= cacheHitTarget ? 'bg-green-500' : 'bg-yellow-500'
                 }`}
@@ -139,7 +139,7 @@ export function MemoryManagementDashboard() {
               {(state.compression_rate * 100).toFixed(1)}%
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full transition-all ${
                   state.compression_rate * 100 >= compressionTarget ? 'bg-green-500' : 'bg-yellow-500'
                 }`}
@@ -156,9 +156,9 @@ export function MemoryManagementDashboard() {
       <div>
         <div className="mb-4">
           <div className="relative">
-            <MagnifyingGlass 
-              weight="bold" 
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" 
+            <MagnifyingGlass
+              weight="bold"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
             />
             <Input
               value={searchQuery}
@@ -199,10 +199,10 @@ export function MemoryManagementDashboard() {
 
       <Card className="p-4 bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          <strong className="text-accent">Memory Architecture:</strong> The system implements a 
-          hippocampus-cortex model with short-term memory (STM) for immediate context and long-term 
-          memory (LTM) for consolidated patterns. Automatic consolidation occurs when STM capacity 
-          is reached, with {(state.compression_rate * 100).toFixed(0)}% compression reducing storage 
+          <strong className="text-accent">Memory Architecture:</strong> The system implements a
+          hippocampus-cortex model with short-term memory (STM) for immediate context and long-term
+          memory (LTM) for consolidated patterns. Automatic consolidation occurs when STM capacity
+          is reached, with {(state.compression_rate * 100).toFixed(0)}% compression reducing storage
           requirements while maintaining {(state.cache_hit_rate * 100).toFixed(0)}% cache hit rate.
         </p>
       </Card>

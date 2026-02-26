@@ -136,10 +136,10 @@ This demonstrates our verification process for transitive dependencies.
    ```bash
    # Bandit SAST scan
    nox -s sec_scan
-   
+
    # Generate SBOM
    nox -s sbom
-   
+
    # Check for known vulnerabilities
    pip-audit
    ```

@@ -283,7 +283,7 @@ All docs include:
 
 **Issue**: Hardcoded absolute paths caused nested directories  
 **Lesson**: Always use relative paths in modules  
-**Best Practice**: 
+**Best Practice**:
 ```python
 # ✅ Good
 storage_path = Path("data/subdirectory")

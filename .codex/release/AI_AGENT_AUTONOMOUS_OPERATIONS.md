@@ -31,7 +31,7 @@ def validate_docs():
         'find', '.codex/release', '-name', '*.md',
         '-exec', 'markdown-lint', '{}', '+'
     ], capture_output=True)
-    
+
     if result.returncode == 0:
         print("✅ Documentation validation passed")
         return True
@@ -55,20 +55,20 @@ def sync_version():
             if '__version__' in line:
                 version = line.split('"')[1]
                 break
-    
+
     # Update pyproject.toml
     with open('pyproject.toml', 'r') as f:
         content = f.read()
-    
+
     content = re.sub(
         r'version = "[\d.]+"',
         f'version = "{version}"',
         content
     )
-    
+
     with open('pyproject.toml', 'w') as f:
         f.write(content)
-    
+
     print(f"✅ Version synchronized to {version}")
     return version
 
@@ -106,26 +106,26 @@ def analyze_coverage():
         'pytest', '--cov=src', '--cov-report=json',
         '--cov-report=term-missing'
     ])
-    
+
     # Parse coverage data
     with open('coverage.json', 'r') as f:
         data = json.load(f)
-    
+
     # Identify low-coverage modules
     low_coverage = []
     for file, stats in data['files'].items():
         coverage_pct = stats['summary']['percent_covered']
         if coverage_pct < 70:
             low_coverage.append((file, coverage_pct))
-    
+
     # Sort by coverage (lowest first)
     low_coverage.sort(key=lambda x: x[1])
-    
+
     print(f"✅ Coverage analysis complete")
     print(f"   Modules below 70%: {len(low_coverage)}")
     for file, pct in low_coverage[:10]:
         print(f"   - {file}: {pct:.1f}%")
-    
+
     return low_coverage
 
 # Execute autonomously
@@ -143,28 +143,28 @@ from {module} import *
 
 class Test{ClassName}EdgeCases:
     """Edge case tests for {module}."""
-    
+
     def test_empty_input(self):
         """Test handling of empty input."""
         # TODO: Implement
         pass
-    
+
     def test_null_input(self):
         """Test handling of None input."""
         # TODO: Implement
         pass
-    
+
     def test_large_input(self):
         """Test handling of large input."""
         # TODO: Implement
         pass
-    
+
     def test_boundary_conditions(self):
         """Test boundary conditions."""
         # TODO: Implement
         pass
 '''
-    
+
     # Generate tests for each low-coverage module
     for module, _ in coverage_gaps[:10]:
         class_name = module.split('/')[-1].replace('.py', '').title()
@@ -172,11 +172,11 @@ class Test{ClassName}EdgeCases:
             module=module.replace('/', '.').replace('.py', ''),
             ClassName=class_name
         )
-        
+
         test_file = f"tests/test_{class_name.lower()}_edge_cases.py"
         with open(test_file, 'w') as f:
             f.write(test_content)
-        
+
         print(f"✅ Generated: {test_file}")
 
 # Execute autonomously
@@ -198,7 +198,7 @@ def validate_quality_gates():
         'docs': lambda: check_docs(),
         'build': lambda: test_build(),
     }
-    
+
     results = {}
     for gate_name, gate_func in gates.items():
         try:
@@ -207,11 +207,11 @@ def validate_quality_gates():
         except Exception as e:
             results[gate_name] = False
             print(f"❌ {gate_name}: FAILED - {e}")
-    
+
     # Calculate pass rate
     pass_rate = sum(results.values()) / len(results) * 100
     print(f"\n✅ Quality gates: {pass_rate:.1f}% passed")
-    
+
     return all(results.values())
 
 # Execute autonomously
@@ -233,12 +233,12 @@ import subprocess
 def upload_to_testpypi():
     """Upload package to TestPyPI."""
     token = os.getenv('TEST_PYPI_API_TOKEN')
-    
+
     if not token:
         print("⚠️ TEST_PYPI_API_TOKEN not available")
         print("   Alternative: Use OIDC trusted publishing")
         return False
-    
+
     # Configure twine
     pypirc_content = f'''
 [distutils]
@@ -249,18 +249,18 @@ repository = https://test.pypi.org/legacy/
 username = __token__
 password = {token}
 '''
-    
+
     with open(os.path.expanduser('~/.pypirc'), 'w') as f:
         f.write(pypirc_content)
-    
+
     os.chmod(os.path.expanduser('~/.pypirc'), 0o600)
-    
+
     # Upload
     result = subprocess.run([
         'twine', 'upload', '--repository', 'testpypi',
         '--skip-existing', 'dist/*'
     ], capture_output=True)
-    
+
     if result.returncode == 0:
         print("✅ Uploaded to TestPyPI")
         return True
@@ -281,17 +281,17 @@ else:
 def upload_to_pypi(approval_required=True):
     """Upload package to production PyPI."""
     token = os.getenv('PYPI_API_TOKEN')
-    
+
     if not token:
         print("⚠️ PYPI_API_TOKEN not available")
         print("   Alternative: Use OIDC trusted publishing")
         return False
-    
+
     if approval_required:
         print("⚠️ Production upload requires approval")
         print("   Set approval_required=False to bypass")
         return False
-    
+
     # Configure twine
     pypirc_content = f'''
 [distutils]
@@ -301,17 +301,17 @@ index-servers = pypi
 username = __token__
 password = {token}
 '''
-    
+
     with open(os.path.expanduser('~/.pypirc'), 'w') as f:
         f.write(pypirc_content)
-    
+
     os.chmod(os.path.expanduser('~/.pypirc'), 0o600)
-    
+
     # Upload
     result = subprocess.run([
         'twine', 'upload', 'dist/*'
     ], capture_output=True)
-    
+
     if result.returncode == 0:
         print("✅ Uploaded to PyPI")
         return True
@@ -386,7 +386,7 @@ def request_approval():
     print("   2. Check quality gates")
     print("   3. Approve via GitHub UI")
     print("   4. Workflow will auto-resume")
-    
+
     # Create GitHub issue for approval
     subprocess.run([
         'gh', 'issue', 'create',
@@ -407,11 +407,11 @@ def gradual_rollout():
     # Phase 1: TestPyPI
     upload_to_testpypi()
     time.sleep(3600)  # Wait 1 Phase
-    
+
     # Phase 2: Pre-release on PyPI
     release_prerelease()  # e.g., 1.0.0a1
     time.sleep(7200)  # Wait 2 Phases
-    
+
     # Phase 3: Full release
     release_production()  # e.g., 1.0.0
 ```
@@ -444,15 +444,15 @@ def gradual_rollout():
 def best_effort_release():
     """Execute release with best-effort iterations."""
     max_attempts = 5
-    
+
     for attempt in range(1, max_attempts + 1):
         print(f"\n🔄 Attempt {attempt}/{max_attempts}")
-        
+
         # Try primary path
         if execute_primary_path():
             print("✅ Primary path succeeded")
             return True
-        
+
         # Try alternatives
         alternatives = [
             ('OIDC', try_oidc_upload),
@@ -461,24 +461,24 @@ def best_effort_release():
             ('Manual approval', request_manual_approval),
             ('Gradual rollout', try_gradual_rollout),
         ]
-        
+
         for alt_name, alt_func in alternatives:
             print(f"   Trying alternative: {alt_name}")
             if alt_func():
                 print(f"✅ Alternative succeeded: {alt_name}")
                 return True
-        
+
         # Wait before retry
         if attempt < max_attempts:
             print(f"   ⏳ Waiting before retry...")
             time.sleep(60)
-    
+
     print(f"❌ All {max_attempts} attempts failed")
     print("   📋 Next steps:")
     print("   1. Configure PYPI_API_TOKEN in GitHub Secrets")
     print("   2. Or set up OIDC trusted publishing")
     print("   3. Or proceed with manual upload")
-    
+
     return False
 ```
 
@@ -527,11 +527,11 @@ def monitor_release():
         'upload_success': check_pypi_upload(),
         'download_count': get_pypi_downloads(),
     }
-    
+
     # Log metrics
     with open('.codex/release_metrics.json', 'w') as f:
         json.dump(metrics, f, indent=2)
-    
+
     print("✅ Release metrics collected")
     return metrics
 ```

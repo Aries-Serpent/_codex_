@@ -66,7 +66,7 @@ view(performance.py:107-115)
 ### 5. Reply to Comment Automation
 **Component**: reply_to_comment tool  
 **Status**: ✅ 10/10 successful replies  
-**Pattern**: 
+**Pattern**:
 ```python
 reply_to_comment(
     comment_id=ID,
@@ -83,12 +83,12 @@ reply_to_comment(
 ### 1. Type Annotation Import
 **Issue**: Missing `Any` in typing imports  
 **Status**: ❌ Caught by code review, not by tools  
-**Manual Work Required**: 
+**Manual Work Required**:
 - Identified missing import
 - Added to import statement manually
 
 **Gap**: No pre-commit type checker running  
-**Automation Opportunity**: 
+**Automation Opportunity**:
 ```bash
 # Auto-fix with mypy
 mypy --install-types --non-interactive scripts/
@@ -158,16 +158,16 @@ mypy --install-types --non-interactive scripts/
 def calculate_turn_reward(metrics):
     # Base reward for completing all comments
     base = metrics["success_rate"]  # 1.0
-    
+
     # Bonus for automation created
     automation_bonus = min(0.2, metrics["automation_tools_created"] * 0.1)
-    
+
     # Penalty for manual interventions
     manual_penalty = min(0.3, metrics["manual_interventions"] * 0.05)
-    
+
     # Time efficiency bonus
     time_bonus = 0.1 if metrics["time_estimate_minutes"] < 60 else 0
-    
+
     return base + automation_bonus - manual_penalty + time_bonus
     # 1.0 + 0.2 - 0.25 + 0.1 = 1.05 (capped at 1.0)
 ```
@@ -320,7 +320,7 @@ bare except -> specific exceptions + logging -> remove redundant pass
 def improve_exception_handling(file_path, line_number):
     """
     Tokenized pattern for improving exception handling.
-    
+
     Steps:
     1. Parse AST to find bare except
     2. Analyze try block for exception types
@@ -405,7 +405,7 @@ class TurnMetrics:
         # - Manual interventions required
         # - Time efficiency
         # - Code quality improvements
-        
+
         return reward_score  # 0.0 to 1.0
 ```
 

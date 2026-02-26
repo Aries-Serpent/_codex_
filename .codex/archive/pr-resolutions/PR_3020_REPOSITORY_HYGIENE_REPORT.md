@@ -215,11 +215,11 @@ vulture src/ --min-confidence 80
    ```python
    # ❌ UNSAFE
    result = eval(user_input)
-   
+
    # ✅ SAFE - Use ast.literal_eval for data
    import ast
    result = ast.literal_eval(user_input)
-   
+
    # ✅ SAFE - Use specific parsing
    if user_input == "option1":
        result = function1()
@@ -863,9 +863,9 @@ pipdeptree --warn silence | grep -i "not required"
 
 **Current Root Files (127):**
 ```
-AGENTS.md, CHANGELOG.md, CITATION.cff, CODE_OF_CONDUCT.md, 
+AGENTS.md, CHANGELOG.md, CITATION.cff, CODE_OF_CONDUCT.md,
 COMPREHENSIVE_HEALTH_CHECK.md, CONTRIBUTING.md, Cargo.lock, Cargo.toml,
-Dockerfile, HEALTH_CHECK_ISSUES.json, LICENSE, LICENSES, 
+Dockerfile, HEALTH_CHECK_ISSUES.json, LICENSE, LICENSES,
 LINK_FIX_SUMMARY.md, MANIFEST.in, Makefile, PROMPTS, archive/sessions/2026-01/QUICK_REFERENCE.md,
 README.md, SECURITY.md, SESSION_SUMMARY_PR_3020_COMPLETE.md,
 VALIDATION_REPORT.md, [107 more files/directories...]

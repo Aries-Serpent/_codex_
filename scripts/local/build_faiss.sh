@@ -63,7 +63,7 @@ if [[ "${SOURCE_TYPE}" == "docs" ]]; then
     export BUILD_CHUNK_SIZE="${CHUNK_SIZE}"
     export BUILD_OVERLAP="${OVERLAP}"
     export BUILD_SOURCE_PATH="${SOURCE_PATH}"
-    
+
     python3 <<'PYEOF'
 import sys
 import os
@@ -72,18 +72,18 @@ sys.path.insert(0, '.')
 
 try:
     from src.codex.rag.indexer import build_index_from_files
-    
+
     # Safely retrieve values from environment variables
     tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
     index_dir = os.environ.get('BUILD_INDEX_DIR', '.codex/tenants')
     chunk_size = int(os.environ.get('BUILD_CHUNK_SIZE', '1000'))
     overlap = int(os.environ.get('BUILD_OVERLAP', '128'))
     source_path_str = os.environ.get('BUILD_SOURCE_PATH', '.')
-    
+
     # Collect documentation files
     source_path = Path(source_path_str)
     files = []
-    
+
     if source_path.is_file():
         files.append(source_path)
     elif source_path.is_dir():
@@ -91,17 +91,17 @@ try:
         files.extend(source_path.rglob('*.md'))
         files.extend(source_path.rglob('*.txt'))
         files.extend(source_path.rglob('*.rst'))
-        
+
         # Filter out common non-doc directories
         exclude_patterns = ['node_modules', '.git', '__pycache__', 'venv', '.venv']
         files = [f for f in files if not any(ex in str(f) for ex in exclude_patterns)]
-    
+
     if not files:
         print('No files found to index', file=sys.stderr)
         sys.exit(1)
-    
+
     print(f'Found {len(files)} files to index')
-    
+
     # Build index
     index_path = build_index_from_files(
         files=files,
@@ -111,13 +111,13 @@ try:
         chunk_size=chunk_size,
         overlap=overlap,
     )
-    
+
     print('')
     print('✓ FAISS index built successfully!')
     print(f'  - Tenant:    {tenant_id}')
     print(f'  - Files:     {len(files)}')
     print(f'  - Location:  {index_path}')
-    
+
 except ImportError as e:
     print(f'Error: Missing required Python packages: {e}', file=sys.stderr)
     print('Install with: pip install sentence-transformers faiss-cpu', file=sys.stderr)
@@ -137,7 +137,7 @@ elif [[ "${SOURCE_TYPE}" == "ndjson" ]]; then
     export BUILD_MSP_EMBEDDING_MODEL="${MSP_EMBEDDING_MODEL}"
     export BUILD_MSP_FAISS_INDEX_DIR="${MSP_FAISS_INDEX_DIR}"
     export BUILD_TENANT_ID="${TENANT_ID}"
-    
+
     python3 <<'PYEOF'
 import sys
 import os
@@ -146,37 +146,37 @@ sys.path.insert(0, '.')
 try:
     from src.codex.retrieval.embed import build_embeddings
     from src.codex.retrieval.stores import FAISSStore
-    
+
     # Safely retrieve values from environment variables
     source_path = os.environ.get('BUILD_SOURCE_PATH', '.')
     embedding_model = os.environ.get('BUILD_MSP_EMBEDDING_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
     faiss_index_dir = os.environ.get('BUILD_MSP_FAISS_INDEX_DIR', '.codex/tenants')
     tenant_id = os.environ.get('BUILD_TENANT_ID', 'default')
-    
+
     print(f'Loading documents from {source_path}...')
     embeddings, documents = build_embeddings(
         ndjson_path=source_path,
         model_name=embedding_model,
         batch_size=32,
     )
-    
+
     print(f'Creating FAISS index for {len(documents)} documents...')
     index_dir = f'{faiss_index_dir}/{tenant_id}/faiss'
     os.makedirs(index_dir, exist_ok=True)
-    
+
     store = FAISSStore(index_dir=index_dir, index_name='default')
     store.create_index(embeddings, documents)
-    
+
     print('Saving index...')
     store.save()
-    
+
     print('')
     print('✓ FAISS index built successfully!')
     print(f'  - Tenant:    {tenant_id}')
     print(f'  - Documents: {len(documents)}')
     print(f'  - Dimension: {embeddings.shape[1]}')
     print(f'  - Location:  {index_dir}')
-    
+
 except ImportError as e:
     print(f'Error: Missing required Python packages: {e}', file=sys.stderr)
     print('Install with: pip install sentence-transformers faiss-cpu', file=sys.stderr)

@@ -27,19 +27,19 @@ Add disk cleanup step before installation:
   run: |
     echo "=== Disk usage before cleanup ==="
     df -h
-    
+
     # Remove unnecessary packages
     sudo rm -rf /usr/share/dotnet
     sudo rm -rf /opt/ghc
     sudo rm -rf "/usr/local/share/boost"
     sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-    
+
     # Clean apt caches
     sudo apt-get clean
-    
+
     # Remove old Docker images
     docker rmi $(docker images -q) 2>/dev/null || true
-    
+
     echo "=== Disk usage after cleanup ==="
     df -h
 ```
@@ -65,11 +65,11 @@ Ensure coverage is generated and uploaded:
   run: |
     cargo install cargo-tarpaulin || true
     cargo tarpaulin --out Xml --output-dir ./coverage
-    
+
 - name: Generate Python coverage  
   run: |
     pytest --cov=src --cov-report=xml:coverage/python-coverage.xml
-    
+
 - name: Upload coverage artifacts
   uses: actions/upload-artifact@v4
   with:
@@ -99,13 +99,13 @@ Run benchmarks and save results:
   run: |
     # Create target directory if needed
     mkdir -p target/criterion
-    
+
     # Run benchmarks with Criterion
     cargo bench --bench swarm_benchmarks
-    
+
     # Save Criterion results
     cp -r target/criterion ./criterion-results
-    
+
 - name: Upload benchmark results
   uses: actions/upload-artifact@v4
   with:
@@ -134,14 +134,14 @@ Install and configure maturin properly:
   run: |
     python -m pip install --upgrade pip
     pip install maturin setuptools wheel
-    
+
     # Create and activate venv
     python -m venv .venv
     source .venv/bin/activate
-    
+
     # Build Python extension with maturin
     maturin develop --release
-    
+
 - name: Run Python integration tests
   run: |
     source .venv/bin/activate

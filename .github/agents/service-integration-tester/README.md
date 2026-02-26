@@ -116,10 +116,10 @@ services = {
 
 for service_name, base_url in services.items():
     endpoints = tester.scan_endpoints(base_url, "common")
-    
+
     for endpoint in endpoints:
         result = tester.test_endpoint_sync(endpoint)
-        
+
         if result.status == 'success':
             print(f"✅ {service_name}/{endpoint.path}: OK")
         else:
@@ -490,7 +490,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -643,7 +643,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

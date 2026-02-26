@@ -57,7 +57,7 @@ This PR successfully demonstrates **AI Agency Policy Excellence** by addressing:
    cd /path/to/_codex_
    git fetch origin
    git checkout copilot/fix-art-rag-module-tests
-   
+
    # Review code fix
    git show 86bee95  # RAG fix
    git show f4a8828  # Test updates
@@ -67,10 +67,10 @@ This PR successfully demonstrates **AI Agency Policy Excellence** by addressing:
    ```bash
    # View all templates
    ls -la .codex/templates/workflows/cqcs-*.template
-   
+
    # Review orchestrator
    cat .codex/templates/workflows/cqcs-orchestrator.yml.template
-   
+
    # Check implementation guide
    cat .codex/WORKFLOW_DECOMPOSITION_IMPLEMENTATION.md
    ```
@@ -81,7 +81,7 @@ This PR successfully demonstrates **AI Agency Policy Excellence** by addressing:
    cat .codex/WORKFLOW_DECOMPOSITION_IMPLEMENTATION.md    # 11,880 bytes
    cat .codex/CACHE_OPTIMIZATION_REVIEW.md                # 13,093 bytes
    cat .codex/cognitive_brain/PR_3241_FINAL_STATUS.md     # 16,077 bytes
-   
+
    # Custom agent
    cat .github/agents/workflow-optimization-agent.md       # 10,435 bytes
    ```

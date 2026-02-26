@@ -42,7 +42,7 @@ export function CodeGenerator() {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'connected' | 'error' | 'checking'>('checking');
   const [useAIMode, setUseAIMode] = useState(false);
-  
+
   // Lazy initialization: clients are created on first use and can be recreated if needed
   const clientRef = useRef<CodexAPIClient | null>(null);
   const mockClientRef = useRef<MockCodexAPIClient | null>(null);
@@ -90,7 +90,7 @@ export function CodeGenerator() {
 
     const client = getClient();
     if (!client) {
-      // No API key - use mock client in demo mode  
+      // No API key - use mock client in demo mode
       const mockClient = getMockClient();
       // Check mock status to maintain consistent async behavior
       await mockClient.getStatus();
@@ -222,10 +222,10 @@ export function CodeGenerator() {
       setError(null);
       setInfoMessage(null);
     } catch (mockErr) {
-      const errorMessage = mockErr instanceof Error 
-        ? mockErr.message 
+      const errorMessage = mockErr instanceof Error
+        ? mockErr.message
         : 'Unknown error occurred';
-      
+
       setError(errorMessage);
       toast.error('Generation failed', {
         description: errorMessage,
@@ -268,8 +268,8 @@ export function CodeGenerator() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">AI Mode:</span>
-              <Switch 
-                checked={useAIMode} 
+              <Switch
+                checked={useAIMode}
                 onCheckedChange={setUseAIMode}
                 aria-label="Toggle AI Mode"
               />
@@ -280,17 +280,17 @@ export function CodeGenerator() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Status:</span>
               <div className={`w-2 h-2 rounded-full ${
-                apiStatus === 'connected' ? 'bg-green-500' : 
-                apiStatus === 'error' ? 'bg-red-500' : 
+                apiStatus === 'connected' ? 'bg-green-500' :
+                apiStatus === 'error' ? 'bg-red-500' :
                 'bg-yellow-500'
               }`} />
               <span className={`text-sm ${
-                apiStatus === 'connected' ? 'text-green-500' : 
-                apiStatus === 'error' ? 'text-red-500' : 
+                apiStatus === 'connected' ? 'text-green-500' :
+                apiStatus === 'error' ? 'text-red-500' :
                 'text-yellow-500'
               }`}>
-                {apiStatus === 'connected' ? (useAIMode ? 'AI-Powered' : 'Connected') : 
-                 apiStatus === 'error' ? 'Error' : 
+                {apiStatus === 'connected' ? (useAIMode ? 'AI-Powered' : 'Connected') :
+                 apiStatus === 'error' ? 'Error' :
                  'Checking...'}
               </span>
             </div>

@@ -101,10 +101,10 @@ assert response is None  # Requirement: notifications must NOT produce a respons
   authenticator = BasicAuthenticator()
   authorizer = AllowAllAuthorizer()
   principal = Principal(id="user-123")
-  
+
   token = authenticator.generate_session_token(principal)
   assert token == "token-user-123"
-  
+
   assert authorizer.authorize(token, resource="tool:echo", action="invoke")
   ```
 
@@ -185,7 +185,7 @@ async def validate():
     })
     assert isinstance(response["result"], list)
     print("✓ listTools returns plain list")
-    
+
     # Test 2: negotiateVersion returns plain string
     response = await server.handle_request({
         "jsonrpc": "2.0",
@@ -195,7 +195,7 @@ async def validate():
     })
     assert response["result"] == "1.0"
     print("✓ negotiateVersion returns plain string")
-    
+
     # Test 3: Auth components work
     auth = BasicAuthenticator()
     token = auth.generate_session_token(Principal(id="user"))

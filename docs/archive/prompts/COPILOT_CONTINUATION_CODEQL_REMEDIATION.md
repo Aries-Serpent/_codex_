@@ -56,10 +56,10 @@ Successfully completed remediation of all 26 high-severity CodeQL code scanning 
    ```bash
    # Test execute_secrets_injection_now.py
    python3 scripts/phase10/execute_secrets_injection_now.py
-   
+
    # Test automated_secrets_manager.py
    python3 scripts/phase10/automated_secrets_manager.py --action list
-   
+
    # Test admin-automation-agent
    python3 .github/agents/admin-automation-agent/src/agent.py --help
    ```

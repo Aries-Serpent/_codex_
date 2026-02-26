@@ -33,11 +33,11 @@ agent = create_agent()
 source_code = '''
 def calculate(x: int, y: int) -> int:
     """Calculate sum of two numbers.
-    
+
     Args:
         x (int): First number
         y (int): Second number
-    
+
     Returns:
         int: Sum of x and y
     """
@@ -211,11 +211,11 @@ agent = create_agent(seed=48)
 code = '''
 class Calculator:
     """Simple calculator class."""
-    
+
     def add(self, x: int, y: int) -> int:
         """Add two numbers."""
         return x + y
-    
+
     def subtract(self, x: int, y: int) -> int:
         """Subtract y from x."""
         return x - y
@@ -525,7 +525,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -714,7 +714,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

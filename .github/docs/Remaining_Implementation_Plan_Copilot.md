@@ -57,7 +57,7 @@ pytestmark = pytest.mark.skipif(
 
 def test_accelerate_init_fallback():
     """Verify graceful fallback when accelerate unavailable.
-    
+
     Acceptance:
     - If accelerate missing, training continues on single device
     - Clear warning logged about missing accelerate
@@ -69,7 +69,7 @@ def test_accelerate_init_fallback():
 
 def test_distributed_init_smoke():
     """Smoke test for distributed initialization path.
-    
+
     Acceptance:
     - Distributed setup completes without errors
     - Process rank detected correctly
@@ -115,7 +115,7 @@ from typing import Any, Callable, Dict
 
 class TrainingHook:
     """Base class for training hooks.
-    
+
     Hooks are called at specific points during training:
     - on_train_begin
     - on_epoch_begin
@@ -123,23 +123,23 @@ class TrainingHook:
     - on_epoch_end
     - on_train_end
     """
-    
+
     def on_train_begin(self, **kwargs):
         """Called at start of training."""
         pass
-    
+
     def on_epoch_begin(self, epoch: int, **kwargs):
         """Called at start of each epoch."""
         pass
-    
+
     def on_batch_end(self, batch_idx: int, loss: float, **kwargs):
         """Called after each batch."""
         pass
-    
+
     def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], **kwargs):
         """Called at end of each epoch."""
         pass
-    
+
     def on_train_end(self, **kwargs):
         """Called at end of training."""
         pass
@@ -147,14 +147,14 @@ class TrainingHook:
 
 class HookRegistry:
     """Registry for training hooks."""
-    
+
     def __init__(self):
         self._hooks = []
-    
+
     def register(self, hook: TrainingHook):
         """Register a hook."""
         self._hooks.append(hook)
-    
+
     def trigger(self, event: str, **kwargs):
         """Trigger all hooks for a given event."""
         for hook in self._hooks:
@@ -317,7 +317,7 @@ import pytest
 
 def test_streaming_offline_flag_clear_error():
     """Verify clear error when streaming attempted offline.
-    
+
     Acceptance:
     - Descriptive error message
     - Suggests offline fallback or cached dataset
@@ -329,7 +329,7 @@ def test_streaming_offline_flag_clear_error():
 
 def test_streaming_retry_logic():
     """Verify retry logic with exponential backoff.
-    
+
     Acceptance:
     - Retries with backoff
     - Fails fast after max retries
@@ -544,17 +544,17 @@ graph TB
     CLI[CLI Entry Point] --> Config[Hydra Config]
     Config --> Train[Training Engine]
     Config --> Eval[Evaluation Runner]
-    
+
     Train --> Data[Data Loaders]
     Train --> Model[Model + LoRA]
     Train --> Checkpoint[Checkpoint Manager]
-    
+
     Eval --> Metrics[Metrics Registry]
     Eval --> Provenance[Provenance Capture]
-    
+
     Metrics --> BLEU[BLEU/ROUGE Optional]
     Metrics --> Plugins[Plugin Loader]
-    
+
     Provenance --> MLflow[MLflow Optional]
     Provenance --> TB[TensorBoard Optional]
 ```text
@@ -701,21 +701,21 @@ from typing import Any, Callable, Dict
 
 class PluginFactory:
     """Base factory for plugin discovery."""
-    
+
     def __init__(self, group: str):
         self.group = group
         self._registry = {}
-    
+
     def register(self, name: str, factory: Callable):
         """Register a plugin factory."""
         self._registry[name] = factory
-    
+
     def create(self, name: str, **kwargs) -> Any:
         """Create plugin instance."""
         if name not in self._registry:
             raise KeyError(f"Plugin {name} not found in group {self.group}")
         return self._registry[name](**kwargs)
-    
+
     def list(self) -> list[str]:
         """List available plugins."""
         return list(self._registry.keys())
@@ -835,19 +835,19 @@ from pathlib import Path
 def check_dependencies():
     """Check dependencies for known vulnerabilities."""
     result = {"vulnerabilities": [], "checked_packages": 0}
-    
+
     # Parse requirements
     req_file = Path("requirements/base.txt")
     if not req_file.exists():
         result["error"] = "requirements/base.txt not found"
         return result
-    
+
     # TODO: Implement offline vuln database check
     # (Could use local copy of safety DB or pip-audit)
-    
+
     result["checked_packages"] = 10  # Example
     result["note"] = "Offline check complete. For full scan, use: pip-audit"
-    
+
     return result
 
 

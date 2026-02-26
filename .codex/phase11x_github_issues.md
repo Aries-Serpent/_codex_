@@ -108,10 +108,10 @@ def extract_todos(file_path):
     """Extract TODO/FIXME comments with context."""
     with open(file_path) as f:
         content = f.read()
-    
+
     pattern = r'(TODO|FIXME|XXX|HACK):\s*(.+)'
     matches = re.finditer(pattern, content)
-    
+
     todos = []
     for match in matches:
         line_num = content[:match.start()].count('\n') + 1
@@ -121,7 +121,7 @@ def extract_todos(file_path):
             'type': match.group(1),
             'message': match.group(2).strip()
         })
-    
+
     return todos
 
 # Generate report
@@ -263,17 +263,17 @@ def generate_docstring(func_node):
     params = []
     for arg in func_node.args.args:
         params.append(f"    {arg.arg}: Description")
-    
+
     template = f'''"""
     Brief description of {func_node.name}.
-    
+
     Args:
 {chr(10).join(params)}
-    
+
     Returns:
         Description of return value
     """'''
-    
+
     return template
 ```
 
@@ -366,7 +366,7 @@ def identify_untested_modules():
     """Find modules with <50% coverage."""
     cov = coverage.Coverage()
     cov.load()
-    
+
     untested = []
     for file_path in Path('src').rglob('*.py'):
         file_coverage = cov.analysis2(str(file_path))
@@ -376,7 +376,7 @@ def identify_untested_modules():
                 'coverage': file_coverage[2],
                 'priority': calculate_priority(file_path)
             })
-    
+
     return sorted(untested, key=lambda x: x['priority'], reverse=True)
 ```
 

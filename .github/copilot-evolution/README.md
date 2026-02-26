@@ -255,7 +255,7 @@ Output:
 
 Human researches and provides:
 ```
-QKD implementations in 2024 use fiber-optic networks to distribute 
+QKD implementations in 2024 use fiber-optic networks to distribute
 encryption keys using quantum states. Recent deployments include:
 - Geneva financial sector (2023)
 - Tokyo metro network (2024)

@@ -43,7 +43,7 @@ validate_patch() {
   fi
 
   log_info "Validating patch: $patch_file"
-  
+
   # 1. Check for @@ markers (hunk headers)
   log_info "Checking for hunk headers (@@)..."
   if ! grep -q '^@@' "$patch_file"; then
@@ -80,7 +80,7 @@ validate_patch() {
 
   # 5. Check for common issues
   log_info "Checking for common patch issues..."
-  
+
   # Missing file headers (---/+++)
   if ! grep -q '^---' "$patch_file" || ! grep -q '^+++' "$patch_file"; then
     log_warn "Missing file headers (--- or +++)"

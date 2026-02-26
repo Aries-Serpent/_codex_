@@ -1,8 +1,8 @@
 ## [Unreleased]
 
 ### Fixed
-- Fixed whitelist parsing in `scripts/remediation/verify_conflicts.py` to correctly 
-  exclude whitelisted duplicates from strict mode violations. The script now properly 
+- Fixed whitelist parsing in `scripts/remediation/verify_conflicts.py` to correctly
+  exclude whitelisted duplicates from strict mode violations. The script now properly
   matches module paths against the `whitelist_duplicates` entries in `.github/SHIM_INVENTORY.yaml`,
   preventing false positive violations in nightly audit runs.
 

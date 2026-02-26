@@ -212,7 +212,7 @@ class SecurityPerception:
             capture_output=True, text=True
         )
         return json.loads(result.stdout) if result.stdout else {}
-    
+
     def run_semgrep(self, paths: List[Path]) -> Dict:
         """Run Semgrep SAST scanner."""
         result = subprocess.run(
@@ -220,7 +220,7 @@ class SecurityPerception:
             capture_output=True, text=True
         )
         return json.loads(result.stdout) if result.stdout else {}
-    
+
     def parse_sarif(self, sarif_file: Path) -> List[Finding]:
         """Parse SARIF format security findings."""
         # Implementation here
@@ -249,7 +249,7 @@ class SecurityDecision:
         # Use historical data from Cognitive Brain
         # Apply confidence threshold (>0.8)
         return [f for f in findings if f.confidence > 0.8]
-    
+
     def classify_severity(self, finding: Finding) -> str:
         """Classify finding severity (critical/high/medium/low)."""
         severity_map = {
@@ -271,7 +271,7 @@ class SecurityAction:
         """Add inline comments to PR."""
         # Use GitHub API to add review comments
         pass
-    
+
     def generate_summary(self, findings: List[Finding]) -> str:
         """Generate markdown summary."""
         summary = f"""# Security Scan Summary
@@ -288,7 +288,7 @@ class SecurityAction:
 """
         for finding in findings:
             summary += f"- **{finding.severity.upper()}** ({finding.tool}): {finding.message} at {finding.file}:{finding.line}\n"
-        
+
         return summary
 ```
 

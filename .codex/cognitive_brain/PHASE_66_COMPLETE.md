@@ -203,7 +203,7 @@
 def list_plan_documents(base_dir: Path | None = None) -> list[Path]:
     # Line 30: default base_dir logic ✅ Covered by 8 tests
     root = base_dir or Path(__file__).resolve().parent
-    
+
     # Line 31: glob and sort logic ✅ Covered by 35 tests
     return sorted(root.glob("*.md"))
 ```
@@ -309,7 +309,7 @@ def test_empty_directory(self):
     """Test with empty directory."""
     from src.codex_plans import list_plan_documents
     import tempfile
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         result = list_plan_documents(base_dir=Path(tmpdir))
         assert result == []
@@ -321,12 +321,12 @@ def test_handles_many_files(self):
     """Test performance with many markdown files."""
     from src.codex_plans import list_plan_documents
     import tempfile
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create 100 markdown files
         for i in range(100):
             (Path(tmpdir) / f"plan_{i:03d}.md").write_text(f"# Plan {i}")
-        
+
         result = list_plan_documents(base_dir=Path(tmpdir))
         assert len(result) == 100
 ```
@@ -337,16 +337,16 @@ def test_glob_is_non_recursive(self):
     """Test that glob only searches immediate directory."""
     from src.codex_plans import list_plan_documents
     import tempfile
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         (Path(tmpdir) / "root.md").write_text("# Root")
-        
+
         subdir = Path(tmpdir) / "subdir"
         subdir.mkdir()
         (subdir / "nested.md").write_text("# Nested")
-        
+
         result = list_plan_documents(base_dir=Path(tmpdir))
-        
+
         # Should only find root.md, not nested.md
         assert len(result) == 1
         assert result[0].name == "root.md"

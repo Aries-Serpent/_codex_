@@ -421,10 +421,10 @@ def test_example():
     # Arrange - Setup test data and mocks
     input_data = create_test_data()
     mock_service = Mock()
-    
+
     # Act - Execute the function under test
     result = function_under_test(input_data, mock_service)
-    
+
     # Assert - Verify expected behavior
     assert result.status == "success"
     mock_service.method.assert_called_once()

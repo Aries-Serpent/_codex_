@@ -106,7 +106,7 @@ class LatencyMetric:
 
 class LatencyMonitor:
     """Monitor request latencies and detect performance issues"""
-    
+
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
@@ -116,7 +116,7 @@ class LatencyMonitor:
             "p95": 100.0,  # 100ms
             "p99": 200.0   # 200ms
         }
-    
+
     def record_latency(
         self,
         endpoint: str,
@@ -133,43 +133,43 @@ class LatencyMonitor:
             metadata=metadata or {}
         )
         self.measurements.append(metric)
-    
+
     def get_percentiles(self, endpoint: Optional[str] = None) -> Dict[str, float]:
         """Calculate latency percentiles"""
         measurements = self.measurements
         if endpoint:
             measurements = [m for m in measurements if m.endpoint == endpoint]
-        
+
         if not measurements:
             return {"p50": 0.0, "p95": 0.0, "p99": 0.0}
-        
+
         latencies = sorted([m.latency_ms for m in measurements])
         n = len(latencies)
-        
+
         return {
             "p50": latencies[int(n * 0.50)],
             "p95": latencies[int(n * 0.95)] if n > 1 else latencies[0],
             "p99": latencies[int(n * 0.99)] if n > 1 else latencies[0]
         }
-    
+
     def detect_regression(self) -> bool:
         """Detect if latencies have regressed"""
         if len(self.measurements) < 10:
             return False
-        
+
         # Compare recent vs historical
         recent = [m.latency_ms for m in self.measurements[-10:]]
         historical = [m.latency_ms for m in self.measurements[:-10]]
-        
+
         if not historical:
             return False
-        
+
         recent_p95 = sorted(recent)[int(len(recent) * 0.95)]
         hist_p95 = sorted(historical)[int(len(historical) * 0.95)]
-        
+
         # Regression if recent > 120% of historical
         return recent_p95 > hist_p95 * 1.2
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get monitoring metrics"""
         percentiles = self.get_percentiles()
@@ -177,7 +177,7 @@ class LatencyMonitor:
             "total_measurements": len(self.measurements),
             "percentiles": percentiles,
             "threshold_violations": sum(
-                1 for m in self.measurements 
+                1 for m in self.measurements
                 if m.latency_ms > self.thresholds["p95"]
             ),
             "regression_detected": self.detect_regression()
@@ -244,29 +244,29 @@ RANDOM_SEED = 47
 
 class TestLatencyMonitor:
     """Test latency monitoring"""
-    
+
     def test_init(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         assert monitor.seed == RANDOM_SEED
         assert len(monitor.measurements) == 0
-    
+
     def test_record_latency(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/v1/test", 45.5, 200)
         assert len(monitor.measurements) == 1
         assert monitor.measurements[0].latency_ms == 45.5
-    
+
     def test_percentiles_empty(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         percentiles = monitor.get_percentiles()
         assert percentiles["p50"] == 0.0
-    
+
     def test_percentiles_single(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/test", 50.0)
         percentiles = monitor.get_percentiles()
         assert percentiles["p50"] == 50.0
-    
+
     def test_percentiles_multiple(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         for i in range(100):
@@ -274,13 +274,13 @@ class TestLatencyMonitor:
         percentiles = monitor.get_percentiles()
         assert 45.0 <= percentiles["p50"] <= 55.0
         assert 90.0 <= percentiles["p95"] <= 99.0
-    
+
     def test_regression_detection_insufficient_data(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         for i in range(5):
             monitor.record_latency("/api/test", 50.0)
         assert not monitor.detect_regression()
-    
+
     def test_regression_detection_no_regression(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         # Historical: 50ms
@@ -290,7 +290,7 @@ class TestLatencyMonitor:
         for i in range(10):
             monitor.record_latency("/api/test", 55.0)
         assert not monitor.detect_regression()
-    
+
     def test_regression_detection_with_regression(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         # Historical: 50ms
@@ -300,14 +300,14 @@ class TestLatencyMonitor:
         for i in range(10):
             monitor.record_latency("/api/test", 150.0)
         assert monitor.detect_regression()
-    
+
     def test_get_metrics(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/test", 50.0)
         metrics = monitor.get_metrics()
         assert "total_measurements" in metrics
         assert metrics["total_measurements"] == 1
-    
+
     def test_threshold_violations(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         # Below threshold
@@ -316,30 +316,30 @@ class TestLatencyMonitor:
         monitor.record_latency("/api/test", 150.0)
         metrics = monitor.get_metrics()
         assert metrics["threshold_violations"] == 1
-    
+
     def test_filter_by_endpoint(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/v1", 50.0)
         monitor.record_latency("/api/v2", 100.0)
         percentiles = monitor.get_percentiles("/api/v1")
         assert percentiles["p50"] == 50.0
-    
+
     def test_deterministic_with_seed(self):
         monitor1 = LatencyMonitor(seed=47)
         monitor2 = LatencyMonitor(seed=47)
         assert monitor1.seed == monitor2.seed
-    
+
     # Add 3 more tests for 15 total...
     def test_metadata_storage(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/test", 50.0, metadata={"user": "test"})
         assert monitor.measurements[0].metadata["user"] == "test"
-    
+
     def test_status_code_tracking(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         monitor.record_latency("/api/test", 50.0, status_code=404)
         assert monitor.measurements[0].status_code == 404
-    
+
     def test_timestamp_recorded(self):
         monitor = LatencyMonitor(seed=RANDOM_SEED)
         before = datetime.now()
@@ -434,29 +434,29 @@ class FunctionDoc:
 
 class APIDocGenerator:
     """Generate API documentation from Python code"""
-    
+
     def __init__(self, seed: int = RANDOM_SEED):
         self.seed = seed
         self._rng = random.Random(seed)
         self.documented_functions: List[FunctionDoc] = []
-    
+
     def extract_function_docs(self, source_code: str) -> List[FunctionDoc]:
         """Extract documentation from Python source code"""
         try:
             tree = ast.parse(source_code)
         except SyntaxError:
             return []
-        
+
         docs = []
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 doc = self._extract_function_doc(node, source_code)
                 if doc:
                     docs.append(doc)
-        
+
         self.documented_functions.extend(docs)
         return docs
-    
+
     def _extract_function_doc(
         self,
         node: ast.FunctionDef,
@@ -465,22 +465,22 @@ class APIDocGenerator:
         """Extract documentation for a single function"""
         # Get docstring
         docstring = ast.get_docstring(node) or "No documentation"
-        
+
         # Build signature
         args = [arg.arg for arg in node.args.args]
         signature = f"{node.name}({', '.join(args)})"
-        
+
         # Extract parameters
         parameters = [
             {"name": arg.arg, "type": "Any", "description": ""}
             for arg in node.args.args
         ]
-        
+
         # Extract return type
         returns = None
         if node.returns:
             returns = ast.unparse(node.returns)
-        
+
         return FunctionDoc(
             name=node.name,
             signature=signature,
@@ -489,28 +489,28 @@ class APIDocGenerator:
             returns=returns,
             examples=[]
         )
-    
+
     def generate_markdown(self) -> str:
         """Generate Markdown API documentation"""
         if not self.documented_functions:
             return "# API Documentation\n\nNo functions documented.\n"
-        
+
         md = "# API Documentation\n\n"
         for func in self.documented_functions:
             md += f"## `{func.signature}`\n\n"
             md += f"{func.docstring}\n\n"
-            
+
             if func.parameters:
                 md += "**Parameters:**\n\n"
                 for param in func.parameters:
                     md += f"- `{param['name']}` ({param['type']}): {param.get('description', 'No description')}\n"
                 md += "\n"
-            
+
             if func.returns:
                 md += f"**Returns:** `{func.returns}`\n\n"
-        
+
         return md
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get documentation metrics"""
         return {
@@ -581,7 +581,7 @@ class TestAPIDocGenerator:
     def test_init(self):
         generator = APIDocGenerator(seed=RANDOM_SEED)
         assert generator.seed == RANDOM_SEED
-    
+
     def test_extract_simple_function(self):
         code = '''
 def hello(name):
@@ -592,7 +592,7 @@ def hello(name):
         docs = generator.extract_function_docs(code)
         assert len(docs) == 1
         assert docs[0].name == "hello"
-    
+
     # Add 13 more tests...
 ```
 

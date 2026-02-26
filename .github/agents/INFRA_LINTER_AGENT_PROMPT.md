@@ -72,19 +72,19 @@ graph LR
     D -.-> E[(Cognitive Brain)]
     E -.Query.-> B
     E -.Record.-> D
-    
+
     A1[Discover IaC files] --> A
     A2[Parse configurations] --> A
     A3[Detect tool versions] --> A
-    
+
     B1[Risk assessment] --> B
     B2[Policy violations] --> B
     B3[Security scores] --> B
-    
+
     C1[Generate reports] --> C
     C2[Block on critical] --> C
     C3[Suggest fixes] --> C
-    
+
     D1[Track outcomes] --> D
     D2[Learn patterns] --> D
     D3[Update policies] --> D
@@ -141,7 +141,7 @@ class IaCScanner:
     def __init__(self, repo_path: Path, db_path: str = None):
         self.repo_path = repo_path
         self.brain = CognitiveBrain(db_path)
-    
+
     def scan(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """Main entry point - discover and scan all IaC files"""
         files = self._discover_iac_files()
@@ -150,15 +150,15 @@ class IaCScanner:
             result = self._scan_file(file_info)
             results.append(result)
         return self._aggregate_results(results)
-    
+
     def _discover_iac_files(self) -> List[Dict[str, Any]]:
         """Find all IaC files in repo"""
         # Search for .tf, .yaml in k8s/, Dockerfile, etc.
-        
+
     def _detect_tool(self, file_path: Path) -> str:
         """Determine which IaC tool this file belongs to"""
         # Check extension, content patterns, directory structure
-        
+
     def _scan_file(self, file_info: Dict[str, Any]) -> Dict[str, Any]:
         """Run appropriate linter(s) for this file"""
         tool = file_info['tool']
@@ -167,13 +167,13 @@ class IaCScanner:
         elif tool == 'kubernetes':
             return self._scan_kubernetes(file_info['path'])
         # ... etc
-    
+
     def _scan_terraform(self, file_path: Path) -> Dict[str, Any]:
         """Run tfsec, terraform validate, tflint"""
-        
+
     def _scan_kubernetes(self, file_path: Path) -> Dict[str, Any]:
         """Run kubectl dry-run, kube-score"""
-        
+
     def _scan_cloudformation(self, file_path: Path) -> Dict[str, Any]:
         """Run cfn-lint, cfn-nag"""
 ```
@@ -225,7 +225,7 @@ class IaCScanner:
 class IaCValidator:
     def __init__(self, db_path: str = None):
         self.brain = CognitiveBrain(db_path)
-    
+
     def validate(self, scan_results: Dict[str, Any], policy_config: Dict[str, Any]) -> Dict[str, Any]:
         """Assess risk and make recommendation"""
         score = self._calculate_security_score(scan_results)
@@ -233,13 +233,13 @@ class IaCValidator:
         warnings = self._identify_warnings(scan_results, policy_config)
         risk = self._assess_risk_level(score, blockers, warnings)
         recommendation = self._make_recommendation(risk, blockers)
-        
+
         # Query cognitive brain for historical context
         similar_patterns = self.brain.query_patterns(
             pattern_type="iac_vulnerability",
             metadata={"tools": scan_results.get("tools_detected", [])}
         )
-        
+
         return {
             "risk_level": risk,
             "security_score": score,
@@ -247,14 +247,14 @@ class IaCValidator:
             "recommendation": recommendation,
             # ... more fields
         }
-    
+
     def _calculate_security_score(self, scan_results: Dict[str, Any]) -> int:
         """Calculate 0-100 score based on findings"""
         # Weighted by severity: critical=-25, high=-10, medium=-3, low=-1
-        
+
     def _identify_blockers(self, scan_results: Dict[str, Any], policy: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Find critical/high issues that should block deployment"""
-        
+
     def _assess_risk_level(self, score: int, blockers: List, warnings: List) -> str:
         """Determine risk: low/medium/high/critical"""
 ```
@@ -312,14 +312,14 @@ class IaCValidator:
 class IaCEnforcer:
     def __init__(self):
         pass
-    
+
     def enforce(self, validation_results: Dict[str, Any], scan_results: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]:
         """Generate reports and enforce policies"""
         report = self._generate_report(validation_results, scan_results, config.get("output_format", "markdown"))
         annotations = self._create_github_annotations(validation_results)
         fixes = self._suggest_fixes(scan_results)
         should_block = validation_results.get("recommendation") == "BLOCK"
-        
+
         return {
             "report_generated": True,
             "report_path": report,
@@ -328,13 +328,13 @@ class IaCEnforcer:
             "github_annotations": annotations,
             "suggested_fixes": fixes
         }
-    
+
     def _generate_report(self, validation: Dict, scan: Dict, format: str) -> str:
         """Create report in specified format"""
-        
+
     def _create_github_annotations(self, validation: Dict) -> List[Dict]:
         """Create GitHub PR annotations for findings"""
-        
+
     def _suggest_fixes(self, scan_results: Dict) -> List[Dict]:
         """Generate auto-fix suggestions"""
 ```
@@ -388,24 +388,24 @@ class IaCEnforcer:
 class IaCReporter:
     def __init__(self, db_path: str = None):
         self.brain = CognitiveBrain(db_path)
-    
+
     def generate_aftermath_report(self, scan_results: Dict, validation_results: Dict, enforcement_results: Dict) -> Dict[str, Any]:
         """Generate comprehensive outcome report"""
         outcome = self._determine_outcome(enforcement_results)
         lessons = self._extract_lessons(scan_results, validation_results)
         self._record_pattern(scan_results, validation_results, outcome)
-        
+
         return {
             "outcome": outcome,
             "lessons_learned": lessons,
             "pattern_recorded": True,
             # ... more fields
         }
-    
+
     def _extract_lessons(self, scan: Dict, validation: Dict) -> Dict[str, Any]:
         """Learn from this scan cycle"""
         # Identify recurring issues, tool gaps, policy effectiveness
-        
+
     def _record_pattern(self, scan: Dict, validation: Dict, outcome: str):
         """Record in cognitive brain for future learning"""
         self.brain.record_pattern(
@@ -838,7 +838,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1027,7 +1027,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

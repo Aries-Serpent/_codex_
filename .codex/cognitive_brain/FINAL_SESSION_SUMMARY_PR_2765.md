@@ -220,7 +220,7 @@ performance = ["xxhash>=3.0.0"]  # 10-100x faster
 ```python
 def placeholder():
     """Stub that must be implemented.
-    
+
     Example:
     ```python
     # Production implementation here

@@ -180,15 +180,15 @@ Coverage: 90%  → 86%  → 92%   (6% improvement)
 ```python
 class OutcomeAnalyzer:
     """Analyze decision outcomes and extract patterns."""
-    
+
     def analyze_outcome(self, decision, result) -> LearningOutcome:
         """Extract success/failure patterns."""
         pass
-    
+
     def identify_patterns(self, outcomes: List) -> PatternSet:
         """Find recurring success/failure patterns."""
         pass
-    
+
     def calculate_reward(self, outcome) -> float:
         """Calculate reward signal for RL."""
         pass
@@ -217,15 +217,15 @@ class OutcomeAnalyzer:
 ```python
 class StrategyOptimizer:
     """Optimize decision strategies via RL."""
-    
+
     def update_policy(self, state, action, reward, next_state):
         """Update policy based on experience."""
         pass
-    
+
     def select_action(self, state) -> Action:
         """Select optimal action using current policy."""
         pass
-    
+
     def train(self, episodes: int) -> TrainingStats:
         """Train policy over multiple episodes."""
         pass
@@ -248,15 +248,15 @@ class StrategyOptimizer:
 ```python
 class MetaLearner:
     """Cross-domain knowledge transfer."""
-    
+
     def learn_from_domain(self, domain_data) -> KnowledgeGraph:
         """Extract domain-agnostic knowledge."""
         pass
-    
+
     def transfer_knowledge(self, source_domain, target_domain):
         """Transfer learned patterns."""
         pass
-    
+
     def few_shot_learning(self, examples: List[3-5]) -> Policy:
         """Learn from few examples."""
         pass

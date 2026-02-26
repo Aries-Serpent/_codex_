@@ -15,11 +15,11 @@ integration:
   cognitive_brain: true
   pda_loop: true
   aftermath: true
-  
+
   phase8_10:
     - PerformanceBenchmarkSuite
     - MonitoringObservability
-  
+
   external:
     - Prometheus metrics
     - OpenTelemetry traces
@@ -34,18 +34,18 @@ config:
   random_seed: 47  # PERF_MONITOR_SEED
   validation_seed: 42
   wandb_mode: offline
-  
+
   thresholds:
     latency_p95_ms: 100.0
     latency_p99_ms: 200.0
     throughput_rps: 1000.0
     cpu_percent: 80.0
     memory_mb: 8192.0
-  
+
   regression_detection:
     enabled: true
     threshold_percent: 10.0
-  
+
   alerting:
     enabled: true
     severities: [info, warning, critical]

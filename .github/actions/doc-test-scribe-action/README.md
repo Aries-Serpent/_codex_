@@ -47,13 +47,13 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Run Doc-Test-Scribe with Security Scan
         uses: ./.github/actions/doc-test-scribe-action
         with:
@@ -284,7 +284,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Generate Docs and Tests
         uses: ./.github/actions/doc-test-scribe-action
         with:
@@ -321,7 +321,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Scribe Agent
         uses: ./.github/actions/doc-test-scribe-action
         with:
@@ -344,7 +344,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Security Scan
         uses: ./.github/actions/doc-test-scribe-action
         with:

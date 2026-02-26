@@ -16,16 +16,16 @@ jobs:
     if: |
       github.event.issue.pull_request &&
       (contains(github.event.comment.body, '@codex') || contains(github.event.comment.body, '@copilot'))
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Parse hand-off comment
         id: parse
         run: |
@@ -33,7 +33,7 @@ jobs:
           echo "comment_body<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMENT_BODY" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          
+
           # Determine target agent
           if [[ "$COMMENT_BODY" == *"@codex"* ]]; then
             echo "target_agent=codex" >> $GITHUB_OUTPUT
@@ -42,16 +42,16 @@ jobs:
             echo "target_agent=copilot" >> $GITHUB_OUTPUT
             echo "from_agent=codex" >> $GITHUB_OUTPUT
           fi
-          
+
           # Extract phase if mentioned
           if [[ "$COMMENT_BODY" == *"Pre-commit"* ]]; then
             PHASE=$(echo "$COMMENT_BODY" | grep -oP 'Pre-commit \d+-\d+' | head -1)
             echo "phase=$PHASE" >> $GITHUB_OUTPUT
           fi
-          
+
           echo "comment_url=${{ github.event.comment.html_url }}" >> $GITHUB_OUTPUT
           echo "pr_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
-      
+
       - name: Update hand-off tracking
         if: steps.parse.outputs.target_agent != ''
         run: |
@@ -62,13 +62,13 @@ jobs:
           echo "  To: ${{ steps.parse.outputs.target_agent }}"
           echo "  Phase: ${{ steps.parse.outputs.phase }}"
           echo "  Comment: ${{ steps.parse.outputs.comment_url }}"
-          
+
           # In production, this would:
           # 1. Identify the specific hand-off ID
           # 2. Update .codex/handoff_tracking.json
           # 3. Commit the update
           # 4. Post acknowledgment comment
-      
+
       - name: Notify target agent
         if: steps.parse.outputs.target_agent != ''
         uses: actions/github-script@v7
@@ -77,33 +77,33 @@ jobs:
             const targetAgent = '${{ steps.parse.outputs.target_agent }}';
             const phase = '${{ steps.parse.outputs.phase }}';
             const fromAgent = '${{ steps.parse.outputs.from_agent }}';
-            
+
             // Post notification comment
             const notificationBody = `
             🤖 **Agent Hand-off Detected**
-            
+
             **From**: ${fromAgent}
             **To**: ${targetAgent}
             **Phase**: ${phase || 'Not specified'}
             **Comment**: ${{ steps.parse.outputs.comment_url }}
-            
+
             📊 Hand-off tracking updated automatically.
-            
-            ${targetAgent === 'codex' ? 
-              '**@codex**: Please review deliverables and provide validation feedback.' : 
+
+            ${targetAgent === 'codex' ?
+              '**@codex**: Please review deliverables and provide validation feedback.' :
               '**@copilot**: Please proceed with execution per approved plan.'}
-            
+
             ---
             *This notification was generated automatically by the Agent Hand-off Protocol system.*
             `;
-            
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
               body: notificationBody
             });
-      
+
       - name: Generate hand-off summary
         if: steps.parse.outputs.target_agent != ''
         run: |

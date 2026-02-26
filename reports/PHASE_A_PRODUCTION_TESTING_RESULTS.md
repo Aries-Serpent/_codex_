@@ -49,10 +49,10 @@ Run metrics:
 
 ### Security Improvements in This PR
 
-1. **Code Injection Vulnerabilities Fixed**: 
+1. **Code Injection Vulnerabilities Fixed**:
    - `scripts/local/build_faiss.sh` (docs path) - Commit `fa4d967`
    - `scripts/local/build_faiss.sh` (ndjson path) - Commit `38ead42`
-   
+
 2. **Secure Pattern Implemented**:
    - Shell variables now passed via environment variables
    - Python heredocs use quoted delimiters (`<<'PYEOF'`)

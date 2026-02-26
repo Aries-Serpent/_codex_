@@ -369,7 +369,7 @@ patterns:
     enabled: true
     severity: warning
     auto_refactor: false
-  
+
   walrus-operator:
     enabled: false  # Opt-in
     severity: suggestion

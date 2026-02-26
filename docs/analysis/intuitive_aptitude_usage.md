@@ -56,10 +56,10 @@ analyzer = intuitive_aptitude()
 code = """
 def calculate_sum(numbers):
     '''Calculate sum of numbers.
-    
+
     Args:
         numbers: List of numbers
-        
+
     Returns:
         int: Sum of all numbers
     '''
@@ -75,15 +75,15 @@ if analyzer.ingest(code):
     summary = analyzer.get_summary()
     print(f"Functions: {summary['functions_count']}")
     print(f"Complexity: {summary['metrics']['complexity']}")
-    
+
     # Get detailed structure
     structure = analyzer.get_detailed_structure()
     print(f"Function args: {structure['functions']['calculate_sum']['args']}")
-    
+
     # Extract patterns
     patterns = analyzer.extract_patterns()
     print(f"Iterations found: {len(patterns['iteration'])}")
-    
+
     # Analyze code style
     style = analyzer.analyze_code_style()
     print(f"Naming: {style['naming']}")
@@ -276,20 +276,20 @@ if paradigm['functional_signals'] > paradigm['oop_signals']:
 def analyze_quality(source_file):
     with open(source_file) as f:
         code = f.read()
-    
+
     result = analyze_and_suggest(code)
-    
+
     if result['success']:
         # Check complexity
         if result['summary']['metrics']['complexity'] > 10:
             print("⚠️ High complexity detected")
-        
+
         # Check for suggestions
         if result['suggestions']:
             print("📝 Suggestions:")
             for key, suggestion in result['suggestions'].items():
                 print(f"  - {key}: {suggestion}")
-        
+
         # Check patterns
         error_count = len(result['patterns']['error_handling'])
         print(f"✅ {error_count} error handling patterns found")
@@ -301,12 +301,12 @@ def analyze_quality(source_file):
 def generate_test_skeleton(source_code):
     analyzer = intuitive_aptitude()
     analyzer.ingest(source_code)
-    
+
     test_code = []
     for func_name, func_info in analyzer.functions.items():
         test_name = f"test_{func_name}"
         args = ", ".join(func_info.args)
-        
+
         test_code.append(f"""
 def {test_name}():
     '''Test {func_name} function.'''
@@ -314,7 +314,7 @@ def {test_name}():
     result = {func_name}({args})
     assert result is not None
 """)
-    
+
     return "\n".join(test_code)
 ```
 
@@ -324,9 +324,9 @@ def {test_name}():
 def suggest_refactoring(code):
     analyzer = intuitive_aptitude()
     analyzer.ingest(code)
-    
+
     suggestions = []
-    
+
     # Find complex functions
     for func_name, func_info in analyzer.functions.items():
         if func_info.complexity > 10:
@@ -336,7 +336,7 @@ def suggest_refactoring(code):
                 'complexity': func_info.complexity,
                 'suggestion': 'Consider splitting into smaller functions'
             })
-    
+
     # Find missing docstrings
     for func_name, func_info in analyzer.functions.items():
         if not func_info.docstring:
@@ -345,7 +345,7 @@ def suggest_refactoring(code):
                 'function': func_name,
                 'suggestion': 'Add docstring'
             })
-    
+
     return suggestions
 ```
 
@@ -354,20 +354,20 @@ def suggest_refactoring(code):
 ```python
 def check_style_consistency(project_files):
     styles = []
-    
+
     for file in project_files:
         with open(file) as f:
             code = f.read()
-        
+
         analyzer = intuitive_aptitude()
         analyzer.ingest(code)
         style = analyzer.analyze_code_style()
         styles.append((file, style))
-    
+
     # Aggregate naming conventions
     snake_total = sum(s['naming']['snake_case'] for _, s in styles)
     camel_total = sum(s['naming']['camelCase'] for _, s in styles)
-    
+
     if snake_total > camel_total * 2:
         print("✅ Project follows snake_case convention")
     elif camel_total > snake_total * 2:

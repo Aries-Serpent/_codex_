@@ -240,7 +240,7 @@ pipeline:
   platforms:
     - github-actions
     - gitlab-ci
-  
+
   stages:
     build:
       enabled: true
@@ -257,11 +257,11 @@ pipeline:
     deploy:
       enabled: true
       manual_approval: true
-  
+
   notifications:
     email: team@example.com
     slack: ci-cd-channel
-  
+
   artifacts:
     retention_days: 30
     store_test_results: true

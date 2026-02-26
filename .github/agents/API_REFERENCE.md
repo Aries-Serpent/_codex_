@@ -431,7 +431,7 @@ from codex_reviewer.main import CodexQuantumReviewer, ReviewContext
 async def review_pr():
     # Create reviewer
     reviewer = CodexQuantumReviewer()
-    
+
     # Create context
     context = ReviewContext(
         pr_number=123,
@@ -443,11 +443,11 @@ async def review_pr():
         author="developer",
         description="Add hello world"
     )
-    
+
     # Perform review
     event = {"action": "initial_review", "context": context}
     result = await reviewer.handle_event(event)
-    
+
     print(f"Review complete: {result['status']}")
     print(f"Confidence: {result['confidence']}")
 
@@ -480,7 +480,7 @@ from codex_reviewer.main import ReviewContext
 
 async def scan_for_vulnerabilities():
     validator = SecurityValidator()
-    
+
     context = ReviewContext(
         pr_number=1,
         repo="test/repo",
@@ -491,9 +491,9 @@ async def scan_for_vulnerabilities():
         author="dev",
         description="Database query"
     )
-    
+
     issues = await validator.scan(context)
-    
+
     for issue in issues:
         print(f"Security Issue: {issue['message']}")
 
@@ -747,7 +747,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -907,7 +907,7 @@ result = invoke_agent(
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

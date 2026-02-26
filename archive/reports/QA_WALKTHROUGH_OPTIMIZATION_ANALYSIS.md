@@ -231,7 +231,7 @@ inputs:
     description: 'Maximum execution time in minutes'
     type: number
     default: 30
-  
+
   analysis_depth:
     description: 'Analysis depth'
     type: choice
@@ -324,7 +324,7 @@ inputs:
 ## Risk Mitigation
 
 ### Risk 1: Missing Issues in Uncached Files
-**Mitigation**: 
+**Mitigation**:
 - Run full scan nightly on main branch
 - Invalidate cache on dependency updates
 - Track cache staleness
@@ -356,7 +356,7 @@ inputs:
 - **Priority 4-5**: Advanced features (physics-inspired, selective)
 - **Priority 6-7**: Infrastructure (configurable, metadata storage)
 
-**Expected Outcome**: 
+**Expected Outcome**:
 - 80-90% time reduction for PR analysis
 - Maintained 100% tool coverage
 - Enhanced developer experience

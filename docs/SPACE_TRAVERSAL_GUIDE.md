@@ -188,7 +188,7 @@ SAFEGUARD_KEYWORDS += [
        evidence = []
        found_patterns = set()
        required_patterns = ["serve", "predict", "api"]
-       
+
        for meta in files:
            path = meta["path"]
            if any(k in path.lower() for k in ["serve", "api", "inference"]):
@@ -197,7 +197,7 @@ SAFEGUARD_KEYWORDS += [
                    found_patterns.add("serve")
                if "api" in path.lower():
                    found_patterns.add("api")
-       
+
        return {
            "id": "ml-serving",
            "evidence_files": sorted(set(evidence)),
@@ -415,7 +415,7 @@ DOMAIN_PATTERNS = {
     "safety": re.compile(r"safety|saniti", re.I),
     "logging": re.compile(r"log|tracking", re.I),
     "config": re.compile(r"config|hydra", re.I),
-    
+
     # Codex Extensions (v1.4.0)
     "serve": re.compile(r"serve|inference|api", re.I),
     "secret": re.compile(r"secret|baseline|redact", re.I),
@@ -438,7 +438,7 @@ DOCS_SYNONYMS_MAP = {
     "safety-security": ["sanitize", "redact", "secret", "security", "baseline"],
     "logging-tracking": ["tracking", "mlflow", "wandb", "tensorboard", "log"],
     "configuration": ["config", "hydra", "omegaconf", "yaml"],
-    
+
     # Codex-specific (v1.4.0)
     "ml-serving": ["serve", "api", "inference", "predict", "fastapi"],
     "inference-serving": ["serve", "api", "inference", "predict", "fastapi"],

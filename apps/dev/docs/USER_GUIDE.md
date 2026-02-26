@@ -95,7 +95,7 @@ Before using the application, you need:
    ```bash
    echo -n "admin@mycompany.com/token:abcd1234efgh5678" | base64
    ```
-   
+
    Result: `YWRtaW5AbXljb21wYW55LmNvbS90b2tlbjphYmNkMTIzNGVmZ2g1Njc4`
 
 ### Step 2: Launch the Application

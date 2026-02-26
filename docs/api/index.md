@@ -190,7 +190,7 @@ The API documentation covers the following main modules:
   - `codex_ml.distributed` - Distributed training utilities (optional)
 
 - **codex.cli** - Command-line interface and entry points
-  
+
 - **codex.logging** - Session logging and telemetry
 
 ---
@@ -226,20 +226,20 @@ All public modules, classes, and functions should have docstrings following thes
 def example_function(param1: str, param2: int = 0) -> dict:
     """
     Brief one-line summary of the function.
-    
+
     More detailed description if needed. Explain the purpose,
     behavior, and any important notes.
-    
+
     Args:
         param1: Description of param1
         param2: Description of param2 (default: 0)
-        
+
     Returns:
         Dictionary containing result data
-        
+
     Raises:
         ValueError: When param1 is empty
-        
+
     Example:
         >>> result = example_function("test", 42)
         >>> print(result)

@@ -48,11 +48,11 @@ cognitive_brain:
     - "files_scanned"
     - "scan_duration_ms"
     - "suggestions_provided"
-  
+
   alerts:
     high_severity_threshold: 5
     medium_severity_threshold: 20
-  
+
   learning:
     store_patterns: true
     track_false_positives: true

@@ -175,7 +175,7 @@ src/codex_ml/data/    → 70%
    - Early stopping logic
    - Distributed training mocks
 
-2. **RAG System Tests** (~100 tests) 
+2. **RAG System Tests** (~100 tests)
    - See detailed plan in `docs/PLAN_100_PERCENT_COVERAGE.md`
    - Embeddings providers
    - Index building

@@ -163,13 +163,13 @@ class EnvVarConfig:
 class EnvironmentManager:
     """
     Manage environment variables with validation and logging.
-    
+
     Usage:
         env = EnvironmentManager()
         session_id = env.get_session_id()
         log_dir = env.get_log_dir()
     """
-    
+
     # Define all CODEX_* environment variables
     ENV_VARS = {
         'CODEX_ENV_PYTHON_VERSION': EnvVarConfig(
@@ -199,89 +199,89 @@ class EnvironmentManager:
             description='Enable SQLite connection pooling (0=disabled, 1=enabled)'
         ),
     }
-    
+
     def __init__(self):
         """Initialize environment manager and validate critical variables."""
         self._session_id: Optional[str] = None
         self._validate_environment()
-    
+
     def _validate_environment(self) -> None:
         """Validate required environment variables."""
         errors = []
         for var_name, config in self.ENV_VARS.items():
             value = os.getenv(var_name)
-            
+
             if config.required and not value:
                 errors.append(f"Required environment variable {var_name} not set")
-            
+
             if value and config.validator and not config.validator(value):
                 errors.append(f"Invalid value for {var_name}: {value}")
-        
+
         if errors:
             raise EnvironmentError("\n".join(errors))
-    
+
     def get(self, var_name: str, default: Optional[str] = None) -> str:
         """
         Get environment variable with fallback to configured default.
-        
+
         Args:
             var_name: Environment variable name
             default: Override default (if not using configured default)
-        
+
         Returns:
             Environment variable value or default
         """
         config = self.ENV_VARS.get(var_name)
         fallback = default if default is not None else (config.default if config else None)
         return os.getenv(var_name, fallback)
-    
+
     def get_session_id(self) -> str:
         """
         Get or generate session ID.
-        
+
         Returns:
             Session ID (from env or newly generated UUID)
         """
         if self._session_id:
             return self._session_id
-        
+
         self._session_id = os.getenv('CODEX_SESSION_ID')
         if not self._session_id:
             self._session_id = str(uuid.uuid4())
             os.environ['CODEX_SESSION_ID'] = self._session_id
-        
+
         return self._session_id
-    
+
     def get_log_dir(self) -> Path:
         """
         Get session log directory (creates if not exists).
-        
+
         Returns:
             Path to log directory
         """
         log_dir = Path(self.get('CODEX_SESSION_LOG_DIR'))
         log_dir.mkdir(parents=True, exist_ok=True)
         return log_dir
-    
+
     def get_db_path(self) -> Path:
         """
         Get SQLite database path.
-        
+
         Returns:
             Path to session_logs.db
         """
         db_path = Path(self.get('CODEX_LOG_DB_PATH') or self.get('CODEX_DB_PATH'))
         db_path.parent.mkdir(parents=True, exist_ok=True)
         return db_path
-    
+
     def is_sqlite_pool_enabled(self) -> bool:
         """Check if SQLite connection pooling is enabled."""
         return self.get('CODEX_SQLITE_POOL') == '1'
-    
+
     def dump_config(self) -> dict[str, str]:
         """
         Dump current environment configuration.
-        
+
         Returns:
             Dictionary of all CODEX_* variables and their values
         """
@@ -310,37 +310,37 @@ from typing import Optional, Callable, Any
 class CodexErrorHandler:
     """
     Centralized error handling with logging and graceful degradation.
-    
+
     Usage:
         handler = CodexErrorHandler()
-        
+
         @handler.log_errors
         def risky_function():
             ...
     """
-    
+
     def __init__(self, log_dir: Optional[Path] = None):
         """
         Initialize error handler.
-        
+
         Args:
             log_dir: Directory for error logs (default: .codex/logs)
         """
         self.log_dir = log_dir or Path('.codex/logs')
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
-        
+
         # Configure logger
         self.logger = logging.getLogger('codex.errors')
         self.logger.setLevel(logging.ERROR)
-        
+
         handler = logging.FileHandler(self.error_log)
         handler.setFormatter(logging.Formatter(
             '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
         ))
         self.logger.addHandler(handler)
-    
+
     def log_error(
         self,
         error: Exception,
@@ -349,7 +349,7 @@ class CodexErrorHandler:
     ) -> None:
         """
         Log error with context.
-        
+
         Args:
             error: Exception to log
             context: Additional context (dict)
@@ -361,22 +361,22 @@ class CodexErrorHandler:
             'traceback': traceback.format_exc(),
             'context': context or {}
         }
-        
+
         self.logger.error(
             f"{error_details['type']}: {error_details['message']}\n"
             f"Context: {error_details['context']}\n"
             f"Traceback:\n{error_details['traceback']}"
         )
-        
+
         if fatal:
             print(f"❌ Fatal error: {error}", file=sys.stderr)
             print(f"See {self.error_log} for details", file=sys.stderr)
             sys.exit(1)
-    
+
     def log_errors(self, func: Callable) -> Callable:
         """
         Decorator to log errors from a function.
-        
+
         Usage:
             @error_handler.log_errors
             def my_function():
@@ -443,7 +443,7 @@ def cli():
 def session_logger(session_id: str, role: str, message: str):
     """Record session events."""
     from codex.logging.session_logger import SessionLogger
-    
+
     logger = SessionLogger(session_id=session_id)
     logger.log(role=role, message=message)
     click.echo(f"✅ Logged {role} message to session {logger.session_id}")
@@ -456,7 +456,7 @@ def session_logger(session_id: str, role: str, message: str):
 def viewer(session_id: str, format: str):
     """View session logs."""
     from codex.logging.viewer import LogViewer
-    
+
     viewer_instance = LogViewer()
     viewer_instance.view(session_id=session_id, output_format=format)
 
@@ -468,14 +468,14 @@ def viewer(session_id: str, format: str):
 def query_logs(search: str, role: str):
     """Search conversation transcripts."""
     from codex.logging.query_logs import LogQueryEngine
-    
+
     engine = LogQueryEngine()
     results = engine.search(query=search, role=role)
-    
+
     if not results:
         click.echo("No results found")
         return
-    
+
     for result in results:
         click.echo(f"\n[{result['timestamp']}] {result['role']}: {result['message']}")
 
@@ -485,11 +485,11 @@ def query_logs(search: str, role: str):
 def validate_env():
     """Validate environment configuration."""
     config = env_manager.dump_config()
-    
+
     click.echo("📊 Current Environment Configuration:\n")
     for var, value in config.items():
         click.echo(f"  {var}: {value}")
-    
+
     click.echo("\n✅ Environment validation passed")
 
 
@@ -589,13 +589,13 @@ from codex.logging.session_logger import SessionLogger
 
 class TestEnvironmentManager:
     """Test environment variable management."""
-    
+
     def test_get_default_values(self):
         """Test default value fallback."""
         with patch.dict(os.environ, {}, clear=True):
             env = EnvironmentManager()
             assert env.get('CODEX_ENV_PYTHON_VERSION') == '3.12'
-    
+
     def test_session_id_generation(self):
         """Test automatic session ID generation."""
         with patch.dict(os.environ, {}, clear=True):
@@ -603,7 +603,7 @@ class TestEnvironmentManager:
             session_id = env.get_session_id()
             assert session_id is not None
             assert len(session_id) == 36  # UUID format
-    
+
     def test_validation_failure(self):
         """Test validation of invalid values."""
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '2'}):
@@ -613,60 +613,60 @@ class TestEnvironmentManager:
 
 class TestErrorHandler:
     """Test error handling infrastructure."""
-    
+
     def test_log_error(self, tmp_path):
         """Test error logging."""
         handler = CodexErrorHandler(log_dir=tmp_path)
-        
+
         try:
             raise ValueError("Test error")
         except ValueError as e:
             handler.log_error(e, context={'test': True})
-        
+
         error_log = list(tmp_path.glob("errors_*.log"))[0]
         assert error_log.exists()
         assert "ValueError: Test error" in error_log.read_text()
-    
+
     def test_decorator(self, tmp_path):
         """Test error logging decorator."""
         handler = CodexErrorHandler(log_dir=tmp_path)
-        
+
         @handler.log_errors
         def failing_function():
             raise RuntimeError("Decorated error")
-        
+
         with pytest.raises(RuntimeError):
             failing_function()
-        
+
         error_log = list(tmp_path.glob("errors_*.log"))[0]
         assert "RuntimeError: Decorated error" in error_log.read_text()
 
 
 class TestSessionLogger:
     """Test session logging."""
-    
+
     def test_log_message(self, tmp_path):
         """Test logging a message."""
         # Mock DB path
         with patch('codex.config.env_vars.env_manager.get_db_path', return_value=tmp_path / 'test.db'):
             logger = SessionLogger()
             logger.log(role='user', message='Test message')
-            
+
             # Verify log was written
             # (Implementation dependent on SessionLogger implementation)
 
 
 class TestCLI:
     """Test CLI commands."""
-    
+
     def test_validate_env_command(self):
         """Test validate-env CLI command."""
         from click.testing import CliRunner
         from codex.cli import validate_env
-        
+
         runner = CliRunner()
         result = runner.invoke(validate_env)
-        
+
         assert result.exit_code == 0
         assert "Environment validation passed" in result.output
 
@@ -681,7 +681,7 @@ def mock_optional_deps():
         mlflow = MagicMock()
         with patch.dict('sys.modules', {'mlflow': mlflow}):
             yield
-    
+
     try:
         import hydra
     except ImportError:
@@ -709,30 +709,30 @@ repos:
     hooks:
       - id: black
         language_version: python3.12
-  
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.14
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-  
+
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-  
+
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
     hooks:
       - id: mypy
         additional_dependencies: [types-all]
-  
+
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.38.0
     hooks:
       - id: markdownlint
         args: [--fix]
-  
+
   - repo: local
     hooks:
       - id: validate-agents-md

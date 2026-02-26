@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary
 
-This document establishes **comprehensive, binding requirements** for developing an **AST (Abstract Syntax Tree) Standardization Project** that enables **deep codebase analysis beyond test scope**. 
+This document establishes **comprehensive, binding requirements** for developing an **AST (Abstract Syntax Tree) Standardization Project** that enables **deep codebase analysis beyond test scope**.
 
 **Strategic Objectives:**
 - ✅ Standardize AST parsing across Python/YAML/JSON codebases
@@ -104,23 +104,23 @@ class StandardizedASTNode:
     node_id: str                        # unique identifier
     type: str                           # "module", "function", "class", "statement", etc.
     name: str                           # identifier
-    
+
     # Structure
     parent: Optional["StandardizedASTNode"]
     children: List["StandardizedASTNode"]
-    
+
     # Metadata
     source_location: SourceLocation
     docstring: Optional[str]
     decorators: List[str]              # e.g., ["@dataclass", "@property"]
-    
+
     # Type System
     type_hints: Dict[str, str]          # param → type_str mappings
     inferred_types: Dict[str, str]      # inferred types
-    
+
     # Language-Specific Details (JSON blob for extensibility)
     metadata: Dict[str, Any]
-    
+
     # Analysis Results (populated post-parse)
     analysis_results: Optional["AnalysisResults"] = None
 ```text
@@ -139,7 +139,7 @@ class CodeMetrics:
     maintainability_index: float        # 0-100, A-F grade
     test_coverage: Optional[float]      # 0-100%
     type_hint_coverage: float           # 0-100%
-    
+
     @property
     def quality_tier(self) -> str:
         """Compute A-F grade from MI."""
@@ -186,23 +186,23 @@ class DependencyGraph:
     """Directional graph of all dependencies."""
     nodes: Dict[str, StandardizedASTNode]
     edges: List[Dependency]
-    
+
     def get_transitive_dependencies(self, node_id: str) -> Set[str]:
         """All nodes reachable from this node."""
         pass
-    
+
     def get_transitive_dependents(self, node_id: str) -> Set[str]:
         """All nodes that depend on this node."""
         pass
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Find strongly connected components (Tarjan's algorithm)."""
         pass
-    
+
     def compute_fan_in(self, node_id: str) -> int:
         """Count incoming edges."""
         pass
-    
+
     def compute_fan_out(self, node_id: str) -> int:
         """Count outgoing edges."""
         pass
@@ -514,7 +514,7 @@ codex-analyze --smell-threshold high src/
 
 ## 10. Conclusion & Next Steps
 
-This requirements document provides **complete, verifiable, and measurable** specifications for the AST Standardization Project. 
+This requirements document provides **complete, verifiable, and measurable** specifications for the AST Standardization Project.
 
 **Critical Success Factors:**
 1. ✅ **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
@@ -602,22 +602,22 @@ import libcst as cst
 
 class PythonAdapter:
     """Convert Python AST to standardized representation."""
-    
+
     def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
         """Parse Python source → StandardizedAST."""
         # Step 1: Parse with libcst
         module = cst.parse_module(source_code)
-        
+
         # Step 2: Traverse and extract metadata
         visitor = MetadataExtractor()
         module.walk(visitor)
-        
+
         # Step 3: Convert to standardized format
         return self._convert_to_standardized(module, visitor.metadata, file_path)
-    
-    def _convert_to_standardized(self, 
-                                module: cst.Module, 
-                                metadata: Dict, 
+
+    def _convert_to_standardized(self,
+                                module: cst.Module,
+                                metadata: Dict,
                                 file_path: Path) -> StandardizedASTNode:
         """Transform libcst.Module → StandardizedASTNode."""
         # Implementation: walk libcst tree → StandardizedAST
@@ -627,26 +627,26 @@ class PythonAdapter:
     def _extract_functions(self, node: cst.Module) -> List[StandardizedASTNode]:
         """Extract function definitions."""
         pass
-    
+
     def _extract_classes(self, node: cst.Module) -> List[StandardizedASTNode]:
         """Extract class definitions."""
         pass
-    
+
     def _extract_imports(self, node: cst.Module) -> List[Dict[str, str]]:
         """Extract import statements."""
         pass
-    
+
     def _extract_type_hints(self, func: cst.FunctionDef) -> Dict[str, str]:
         """Extract type hints from function."""
         pass
-    
+
     def _extract_docstring(self, node: cst.Module | cst.FunctionDef | cst.ClassDef) -> Optional[str]:
         """Extract docstring if present."""
         pass
 
 class MetadataExtractor(cst.CSTVisitor):
     """Visitor pattern to extract all metadata."""
-    
+
     def __init__(self):
         self.metadata = {
             'functions': [],
@@ -654,19 +654,19 @@ class MetadataExtractor(cst.CSTVisitor):
             'imports': [],
             'decorators': {},
         }
-    
+
     def visit_FunctionDef(self, node: cst.FunctionDef) -> bool:
         """Visit function definition."""
         # Record function info
         pass
         return True
-    
+
     def visit_ClassDef(self, node: cst.ClassDef) -> bool:
         """Visit class definition."""
         # Record class info
         pass
         return True
-    
+
     def visit_ImportFrom(self, node: cst.ImportFrom) -> bool:
         """Visit import statement."""
         # Record import
@@ -689,7 +689,7 @@ def test_parse_simple_function():
     """
     adapter = PythonAdapter()
     ast = adapter.parse(source, Path("test.py"))
-    
+
     assert ast.type == "module"
     assert len(ast.children) == 1
     assert ast.children[0].type == "function"
@@ -709,7 +709,7 @@ def test_parse_decorated_class():
     """
     adapter = PythonAdapter()
     ast = adapter.parse(source, Path("test.py"))
-    
+
     assert ast.children[0].type == "class"
     assert ast.children[0].decorators == ["@dataclass"]
 
@@ -722,7 +722,7 @@ def test_parse_async_function():
     """
     adapter = PythonAdapter()
     ast = adapter.parse(source, Path("test.py"))
-    
+
     assert ast.children[0].type == "function"
     # async flag should be captured
     assert ast.children[0].metadata.get("is_async") == True
@@ -732,7 +732,7 @@ def test_parser_performance(benchmark):
     """Benchmark parser performance."""
     source = open("tests/fixtures/large_file.py").read()
     adapter = PythonAdapter()
-    
+
     result = benchmark(adapter.parse, source, Path("large_file.py"))
     assert result is not None
 ```text
@@ -744,12 +744,12 @@ from abc import ABC, abstractmethod
 
 class BaseLanguageAdapter(ABC):
     """Abstract base for language adapters."""
-    
+
     @abstractmethod
     def parse(self, source_code: str, file_path: Path) -> StandardizedASTNode:
         """Parse source code → StandardizedAST."""
         pass
-    
+
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:
         """File extensions this adapter handles."""
@@ -780,7 +780,7 @@ class CodeMetrics:
     halstead_difficulty: float
     halstead_effort: float
     maintainability_index: float
-    
+
     @property
     def quality_grade(self) -> str:
         """Compute A-F grade from maintainability index."""
@@ -792,7 +792,7 @@ class CodeMetrics:
 
 class MetricsAnalyzer:
     """Compute metrics on AST nodes."""
-    
+
     def analyze(self, node: StandardizedASTNode) -> CodeMetrics:
         """Compute all metrics for node."""
         return CodeMetrics(
@@ -804,18 +804,18 @@ class MetricsAnalyzer:
             halstead_effort=self._compute_halstead_effort(node),
             maintainability_index=self._compute_maintainability_index(node),
         )
-    
+
     def _count_loc(self, node: StandardizedASTNode) -> int:
         """Count lines of code."""
         start_line = node.source_location.line_start
         end_line = node.source_location.line_end
         return end_line - start_line + 1
-    
+
     def _compute_cc(self, node: StandardizedASTNode) -> int:
         """Compute cyclomatic complexity (1-based)."""
         # Start with 1
         cc = 1
-        
+
         # Count decision points
         # - if, elif, else, for, while, except, and, or, ternary
         for child in self._traverse_depth_first(node):
@@ -824,14 +824,14 @@ class MetricsAnalyzer:
             elif child.type == "bool_op":
                 # 'and' and 'or' add to complexity
                 cc += 1
-        
+
         return cc
-    
+
     def _compute_cognitive_cc(self, node: StandardizedASTNode) -> float:
         """Compute cognitive complexity (reflects nesting)."""
         # Similar to CC but adds nesting depth penalty
         cognitive_cc = 0
-        
+
         for child, depth in self._traverse_with_depth(node):
             if child.type in ("if", "elif", "for", "while", "try"):
                 # Base increment
@@ -839,85 +839,85 @@ class MetricsAnalyzer:
                 # Nesting penalty: each level of nesting adds 0.1
                 if depth > 1:
                     cognitive_cc += (depth - 1) * 0.1
-        
+
         return cognitive_cc
-    
+
     def _compute_halstead_volume(self, node: StandardizedASTNode) -> float:
         """Compute Halstead volume (measure of complexity)."""
         # Volume = N * log2(n)
         # where N = total operators + operands
         # and n = distinct operators + operands
-        
+
         operators = self._extract_operators(node)
         operands = self._extract_operands(node)
-        
+
         n1 = len(set(operators))  # distinct operators
         n2 = len(set(operands))   # distinct operands
         N1 = len(operators)        # total operators
         N2 = len(operands)         # total operands
-        
+
         n = n1 + n2
         N = N1 + N2
-        
+
         import math
         if n > 0:
             volume = N * math.log2(n)
         else:
             volume = 0
-        
+
         return volume
-    
+
     def _compute_maintainability_index(self, node: StandardizedASTNode) -> float:
         """Compute Maintainability Index (0-100)."""
-        # MI = 171 - 5.2 * ln(Halstead Volume) 
-        #          - 0.23 * CC 
+        # MI = 171 - 5.2 * ln(Halstead Volume)
+        #          - 0.23 * CC
         #          - 16.2 * ln(LOC)
-        
+
         import math
-        
+
         cc = self._compute_cc(node)
         loc = self._count_loc(node)
         volume = self._compute_halstead_volume(node)
-        
+
         # Avoid log of 0
         loc = max(loc, 1)
         volume = max(volume, 1)
-        
+
         mi = 171 - 5.2 * math.log(volume) - 0.23 * cc - 16.2 * math.log(loc)
-        
+
         # Clamp to 0-100
         return max(0, min(100, mi))
-    
+
     def _extract_operators(self, node: StandardizedASTNode) -> List[str]:
         """Extract operators from AST."""
         operators = []
-        
+
         for child in self._traverse_depth_first(node):
             if child.type in ("binary_op", "unary_op", "compare", "bool_op"):
                 operators.append(child.metadata.get("operator", ""))
             elif child.type in ("if", "for", "while", "try"):
                 operators.append(child.type)
-        
+
         return operators
-    
+
     def _extract_operands(self, node: StandardizedASTNode) -> List[str]:
         """Extract operands (variables, literals) from AST."""
         operands = []
-        
+
         for child in self._traverse_depth_first(node):
             if child.type == "name":
                 operands.append(child.name)
             elif child.type == "constant":
                 operands.append(str(child.metadata.get("value", "")))
-        
+
         return operands
-    
+
     def _traverse_depth_first(self, node: StandardizedASTNode):
         """DFS traversal of AST."""
         yield node
         for child in node.children:
             yield from self._traverse_depth_first(child)
-    
+
     def _traverse_with_depth(self, node: StandardizedASTNode, depth=0):
         """DFS traversal with depth tracking."""
         yield node, depth
@@ -939,7 +939,7 @@ def test_cyclomatic_complexity_linear():
     ast = parse(source)
     analyzer = MetricsAnalyzer()
     metrics = analyzer.analyze(ast.children[0])
-    
+
     assert metrics.cyclomatic_complexity == 1
 
 def test_cyclomatic_complexity_if_else():
@@ -954,7 +954,7 @@ def test_cyclomatic_complexity_if_else():
     ast = parse(source)
     analyzer = MetricsAnalyzer()
     metrics = analyzer.analyze(ast.children[0])
-    
+
     assert metrics.cyclomatic_complexity == 2
 
 def test_maintainability_index_grade():
@@ -967,7 +967,7 @@ def test_maintainability_index_grade():
     ast = parse(source)
     analyzer = MetricsAnalyzer()
     metrics = analyzer.analyze(ast.children[0])
-    
+
     assert metrics.maintainability_index > 85
     assert metrics.quality_grade == "A"
 ```text
@@ -991,13 +991,13 @@ class DependencyGraph:
     """Directed graph of code dependencies."""
     nodes: Dict[str, StandardizedASTNode] = field(default_factory=dict)
     edges: Dict[str, Set[str]] = field(default_factory=dict)  # node → neighbors
-    
+
     def add_edge(self, source_id: str, target_id: str):
         """Add edge source → target."""
         if source_id not in self.edges:
             self.edges[source_id] = set()
         self.edges[source_id].add(target_id)
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Find all cycles (strongly connected components > 1)."""
         # Implement Tarjan's algorithm
@@ -1007,21 +1007,21 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id):
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
                     strongconnect(target_id)
                     lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
                 elif on_stack.get(target_id, False):
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             if lowlinks[node_id] == index[node_id]:
                 scc = []
                 while True:
@@ -1033,45 +1033,45 @@ class DependencyGraph:
                 # Only record cycles (SCC with len > 1)
                 if len(scc) > 1:
                     sccs.append(scc)
-        
+
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
 
 class DependencyGraphBuilder:
     """Build dependency graph from codebase."""
-    
+
     def build_graph(self, codebase: List[StandardizedASTNode]) -> DependencyGraph:
         """Build graph from AST nodes."""
         graph = DependencyGraph()
-        
+
         # Step 1: Add all nodes
         for node in self._flatten_ast(codebase):
             if node.type in ("module", "class", "function"):
                 graph.nodes[self._get_fully_qualified_name(node)] = node
-        
+
         # Step 2: Extract dependencies
         for node in self._flatten_ast(codebase):
             deps = self._extract_dependencies(node)
             source_id = self._get_fully_qualified_name(node)
             for target_id in deps:
                 graph.add_edge(source_id, target_id)
-        
+
         return graph
-    
+
     def _extract_dependencies(self, node: StandardizedASTNode) -> Set[str]:
         """Extract all dependencies of a node."""
         deps = set()
-        
+
         if node.type == "module":
             # Extract imports
             for child in node.children:
                 if child.type == "import":
                     # Parse import statement
                     deps.add(child.metadata.get("module_name", ""))
-        
+
         elif node.type == "function":
             # Extract function calls
             for child in self._traverse(node):
@@ -1080,14 +1080,14 @@ class DependencyGraphBuilder:
                     called_name = child.metadata.get("function_name", "")
                     if called_name:
                         deps.add(called_name)
-        
+
         elif node.type == "class":
             # Extract base classes (inheritance)
             for base in node.metadata.get("base_classes", []):
                 deps.add(base)
-        
+
         return deps
-    
+
     def _get_fully_qualified_name(self, node: StandardizedASTNode) -> str:
         """Compute fully qualified name: module.class.function."""
         parts = []
@@ -1097,13 +1097,13 @@ class DependencyGraphBuilder:
                 parts.insert(0, current.name)
             current = current.parent
         return ".".join(parts)
-    
+
     def _traverse(self, node: StandardizedASTNode):
         """Depth-first traversal."""
         yield node
         for child in node.children:
             yield from self._traverse(child)
-    
+
     def _flatten_ast(self, nodes: List[StandardizedASTNode]):
         """Flatten AST list."""
         for node in nodes:
@@ -1117,7 +1117,7 @@ def test_cycle_detection_simple():
     graph.nodes["B"] = None
     graph.add_edge("A", "B")
     graph.add_edge("B", "A")
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B"}
@@ -1127,12 +1127,12 @@ def test_cycle_detection_complex():
     graph = DependencyGraph()
     for node_id in ["A", "B", "C", "D"]:
         graph.nodes[node_id] = None
-    
+
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
     graph.add_edge("C", "D")
     graph.add_edge("D", "A")  # Cycle: A → B → C → D → A
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C", "D"}
@@ -1185,14 +1185,14 @@ def large_codebase(tmp_path):
     # Create 100 Python files with realistic code
     base = tmp_path / "large_codebase"
     base.mkdir()
-    
+
     for i in range(100):
         file = base / f"module_{i}.py"
         file.write_text(f"""
         def func_{i}(x):
             return x * 2
         """)
-    
+
     return base
 
 @pytest.fixture
@@ -1202,11 +1202,11 @@ def synthetic_graph():
     # Set up graph with 3-node cycle: A → B → C → A
     for node_id in ["A", "B", "C"]:
         graph.nodes[node_id] = None
-    
+
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
     graph.add_edge("C", "A")
-    
+
     return graph
 ```text
 
@@ -1222,49 +1222,49 @@ import time
 
 @pytest.mark.benchmark
 class TestParserPerformance:
-    
+
     def test_parser_speed_small_file(self, benchmark, sample_python_file):
         """Parser: <1ms per 100 tokens (small file)."""
         parser = PythonAdapter()
-        
+
         def parse():
             return parser.parse(sample_python_file, Path("test.py"))
-        
+
         result = benchmark(parse)
         # Verify performance
         assert result is not None
-    
+
     def test_parser_speed_large_file(self, benchmark, large_codebase):
         """Parser: <1ms per 100 tokens (large files)."""
         large_file = (large_codebase / "module_0.py").read_text() * 100
-        
+
         parser = PythonAdapter()
         start = time.time()
         result = parser.parse(large_file, Path("large.py"))
         elapsed = time.time() - start
-        
+
         # ~10K tokens per 1000 LOC
         tokens = len(large_file.split())
         ms_per_100_tokens = (elapsed * 1000) / (tokens / 100)
-        
+
         assert ms_per_100_tokens < 1.0
 
 @pytest.mark.benchmark
 class TestAnalyzerPerformance:
-    
+
     def test_metrics_speed_1000_loc(self, benchmark, large_codebase):
         """Analyzer: <5s per 1000 LOC."""
         codebase = Codebase.from_directory(large_codebase)
         analyzer = MetricsAnalyzer()
-        
+
         start = time.time()
         for node in codebase.all_nodes():
             analyzer.analyze(node)
         elapsed = time.time() - start
-        
-        loc = sum(n.source_location.line_end - n.source_location.line_start 
+
+        loc = sum(n.source_location.line_end - n.source_location.line_start
                  for n in codebase.all_nodes())
-        
+
         time_per_1000_loc = (elapsed / loc) * 1000
         assert time_per_1000_loc < 5.0
 ```text
@@ -1298,26 +1298,26 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      
+
       - name: Install
         run: pip install -e ".[ast]"
-      
+
       - name: Audit
         run: codex-audit src/ --output audit.html --format html
-      
+
       - name: Compare
         if: github.event_name == 'pull_request'
         run: codex-diff origin/main HEAD --metric complexity > complexity_delta.txt
-      
+
       - name: Comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
@@ -1331,7 +1331,7 @@ jobs:
               repo: context.repo.repo,
               body: `## AST Analysis\n\n${delta}`
             });
-      
+
       - name: Upload
         uses: actions/upload-artifact@v3
         with:

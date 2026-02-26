@@ -20,27 +20,27 @@ CREATE INDEX IF NOT EXISTS idx_quantum_metrics_agent ON quantum_metrics(agent_id
 
 -- View for coherence monitoring (last 24 hours)
 CREATE VIEW IF NOT EXISTS quantum_coherence_24h AS
-SELECT 
+SELECT
     feature,
     AVG(metric_value) as avg_coherence,
     MIN(metric_value) as min_coherence,
     MAX(metric_value) as max_coherence,
     COUNT(*) as sample_count
 FROM quantum_metrics
-WHERE 
+WHERE
     metric_name = 'coherence'
     AND timestamp >= datetime('now', '-24 hours')
 GROUP BY feature;
 
 -- View for error rate monitoring (last 24 hours)
 CREATE VIEW IF NOT EXISTS quantum_error_rate_24h AS
-SELECT 
+SELECT
     feature,
     AVG(metric_value) as avg_error_rate,
     MAX(metric_value) as max_error_rate,
     COUNT(*) as sample_count
 FROM quantum_metrics
-WHERE 
+WHERE
     metric_name = 'error_rate'
     AND timestamp >= datetime('now', '-24 hours')
 GROUP BY feature;

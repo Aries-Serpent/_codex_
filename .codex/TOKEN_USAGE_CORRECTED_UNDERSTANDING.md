@@ -209,17 +209,17 @@ def use_org_master_key():
     because secrets are available as environment variables
     """
     token = os.environ['ORG_MASTER_KEY']  # Available in workflow
-    
+
     headers = {
         'Authorization': f'Bearer {token}',
         'Accept': 'application/vnd.github+json'
     }
-    
+
     response = requests.get(
         'https://api.github.com/orgs/Aries-Serpent/repos',
         headers=headers
     )
-    
+
     return response.json()
 ```
 

@@ -33,16 +33,16 @@ metadata:
     priority: medium
 spec:
   description: |
-    Automated Python datetime API migration agent. Detects and fixes 
+    Automated Python datetime API migration agent. Detects and fixes
     deprecated datetime patterns for Python 3.12+ compatibility.
-    
+
   capabilities:
     - Detect deprecated datetime.utcnow() usage
     - Detect naive datetime.now() without timezone
     - Fix imports (add UTC from datetime)
     - Maintain timestamp format consistency
     - Update tests aligned with datetime changes
-    
+
   triggers:
     automatic:
       - type: pull_request
@@ -50,78 +50,78 @@ spec:
         conditions:
           - files_changed: "**/*.py"
           - python_version: ">=3.11"
-          
+
       - type: code_review
         events: [requested]
         conditions:
           - review_type: security
           - review_type: compatibility
-          
+
       - type: schedule
         cron: "0 2 * * 1"  # Weekly Monday 2AM
-        
+
     manual:
       - type: slash_command
         command: "/modernize-datetime"
         scope: [pr, issue, commit]
-        
+
       - type: comment
         patterns:
           - "fix deprecated datetime"
           - "modernize datetime usage"
           - "@copilot modernize datetime"
-          
+
   detection_patterns:
     deprecated_apis:
       - pattern: "datetime\\.utcnow\\(\\)"
         severity: high
         message: "datetime.utcnow() is deprecated in Python 3.12"
         fix: "datetime.now(UTC)"
-        
+
       - pattern: "datetime\\.utcfromtimestamp\\("
         severity: high
         message: "datetime.utcfromtimestamp() is deprecated in Python 3.12"
         fix: "datetime.fromtimestamp(..., UTC)"
-        
+
       - pattern: "datetime\\.now\\(\\)(?!\\.astimezone)"
         severity: medium
         message: "datetime.now() without timezone creates naive datetime"
         fix: "datetime.now(UTC)"
-        
+
     missing_imports:
       - pattern: "datetime\\.now\\(UTC\\)"
         requires_import: "from datetime import UTC"
-        
+
   fixes:
     - name: replace_utcnow
       pattern: "datetime\\.utcnow\\(\\)\\.isoformat\\(\\) \\+ \"Z\""
       replacement: "datetime.now(UTC).isoformat()"
       add_import: "from datetime import UTC"
-      
+
     - name: replace_naive_now
       pattern: "datetime\\.now\\(\\)\\.isoformat\\(\\)"
       replacement: "datetime.now(UTC).isoformat()"
       add_import: "from datetime import UTC"
       conditions:
         - context_suggests_utc: true
-        
+
     - name: update_imports
       pattern: "from datetime import datetime$"
       replacement: "from datetime import UTC, datetime"
       when_needed: true
-      
+
   validation:
     - run_tests: true
     - check_imports: true
     - verify_syntax: true
     - ensure_backwards_compatible: false  # Python 3.12+ only
-    
+
   reporting:
     pr_comment_template: |
       ## 🕐 Datetime Modernization Report
-      
+
       I've detected and fixed deprecated datetime patterns in this PR:
-      
+
       ### Changes Made
       {{#each fixes}}
       - **{{file}}:{{line}}**
@@ -129,48 +129,48 @@ spec:
         - ✅ After: `{{new_code}}`
         - 📝 Reason: {{reason}}
       {{/each}}
-      
+
       ### Summary
       - Files modified: {{files_count}}
       - Patterns fixed: {{fixes_count}}
       - Imports updated: {{imports_count}}
-      
+
       ### Compatibility
       - ✅ Python 3.12+ compatible
       - ✅ Timezone-aware timestamps
       - ✅ ISO 8601 compliant
-      
+
       {{#if test_updates}}
       ### Test Updates
       {{#each test_updates}}
       - {{file}}: {{description}}
       {{/each}}
       {{/if}}
-      
+
       **Commit:** {{commit_sha}}
-      
+
   permissions:
     contents: write
     pull_requests: write
     issues: read
-    
+
   resources:
     memory: 512Mi
     cpu: 500m
     timeout: 5m
-    
+
   error_handling:
     retry_count: 2
     retry_delay: 10s
     fallback: notify_maintainers
-    
+
   analytics:
     track_metrics:
       - patterns_detected
       - fixes_applied
       - test_pass_rate
       - false_positive_rate
-      
+
   integration:
     code_review: enabled
     ci_cd: enabled
@@ -188,23 +188,23 @@ graph TB
     A[PR Created/Updated] --> B{Python 3.12+?}
     B -->|No| Z[Skip]
     B -->|Yes| C[Scan for Patterns]
-    
+
     C --> D{Deprecated<br/>Patterns Found?}
     D -->|No| E[✅ Report Clean]
     D -->|Yes| F[Generate Fixes]
-    
+
     F --> G[Update Imports]
     G --> H[Apply Replacements]
     H --> I[Run Tests]
-    
+
     I --> J{Tests Pass?}
     J -->|Yes| K[Commit Changes]
     J -->|No| L[Align Tests]
-    
+
     L --> I
     K --> M[Post PR Comment]
     M --> N[✅ Complete]
-    
+
     style A fill:#e1f5ff
     style N fill:#d4f8d4
     style Z fill:#f0f0f0

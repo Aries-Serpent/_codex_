@@ -90,7 +90,7 @@ def close_connection(conn):
    # Class-level lock for initialization
    _INIT_LOCK = threading.RLock()
    _INITIALIZED_DBS: set[str] = set()
-   
+
    # Connection pool lock
    _POOL_LOCK = threading.RLock()
    ```
@@ -477,7 +477,7 @@ echo "✅ Pre-merge validation complete!"
    ```python
    # src/codex/logging/error_handler.py
    from logging.handlers import RotatingFileHandler
-   
+
    handler = RotatingFileHandler(
        self.error_log,
        maxBytes=10_000_000,  # 10MB
@@ -485,7 +485,7 @@ echo "✅ Pre-merge validation complete!"
    )
    ```
 
-2. **Add CLI End-to-End Test** 
+2. **Add CLI End-to-End Test**
    ```python
    # tests/test_agents_infrastructure.py
    def test_cli_session_lifecycle():
@@ -493,7 +493,7 @@ echo "✅ Pre-merge validation complete!"
        # Full workflow test
    ```
 
-3. **Manual Validation & Documentation** 
+3. **Manual Validation & Documentation**
    - Run pre-merge validation script
    - Update AGENTS.md with validation results
    - Add troubleshooting section
@@ -504,7 +504,7 @@ echo "✅ Pre-merge validation complete!"
 5. **Add list-sessions Command**
 6. **Add clean-logs Command**
 7. **Add Lazy Env Validation**
-8. **Connection Pooling Advanced Test** 
+8. **Connection Pooling Advanced Test**
 ---
 
 ## 📊 Comparison: Original Plan vs Actual Implementation

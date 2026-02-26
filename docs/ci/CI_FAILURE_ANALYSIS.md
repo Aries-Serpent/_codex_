@@ -156,7 +156,7 @@ env:
 # Option 1: Fix all warnings (preferred)
 - name: Run cargo clippy
   run: cargo clippy --all-targets --all-features -- -D warnings
-  
+
 # Option 2: Allow warnings temporarily
 - name: Run cargo clippy  
   run: cargo clippy --all-targets --all-features
@@ -170,7 +170,7 @@ env:
   run: |
     python -m pip install --upgrade pip
     pip install bandit safety pip-audit
-    
+
 - name: Run all security scans
   run: |
     bandit -r src/ -ll  # Only report medium/high

@@ -29,21 +29,21 @@ flowchart LR
         Intent[Intent Detection]
         Executor[Task Executor]
     end
-    
+
     subgraph API["🔷 API Layer"]
         Planset[Planset API]
         Promptset[Promptset API]
         Batchset[Batchset API]
         Patchset[Patchset API]
     end
-    
+
     subgraph Actions["⚡ Actions"]
         Plan[Create Plans]
         Execute[Execute Tasks]
         Batch[Batch Operations]
         Apply[Apply Patches]
     end
-    
+
     Agent --> API
     API --> Actions
 ```

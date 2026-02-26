@@ -5,20 +5,20 @@ cascade:
   # System mode
   enabled: true
   mode: production  # development | staging | production
-  
+
   # Primary Agent Configuration
   primary_agent:
     model: default
     max_tokens: 8000
     timeout_seconds: 300
     fallback_enabled: true
-  
+
   # CLI Partner Configuration
   cli_partner:
     enabled: true
     fallback_mode: true  # Continue without CLI if unavailable
     cli_path: "copilot"  # Path to copilot CLI executable
-    
+
     models:
       - name: gpt-4o-mini
         enabled: true
@@ -29,7 +29,7 @@ cascade:
           - documentation
           - test_generation
           - simple_review
-      
+
       - name: claude-3-5-sonnet-20241022
         enabled: true
         max_tokens: 6000
@@ -40,7 +40,7 @@ cascade:
           - refactor
           - complex_analysis
           - code_review
-      
+
       - name: gpt-5
         enabled: false  # Not yet available
         max_tokens: 8000
@@ -49,7 +49,7 @@ cascade:
         priority_tasks:
           - architecture
           - advanced_debugging
-  
+
   # Optimization Settings
   optimization:
     # Context Compression
@@ -59,14 +59,14 @@ cascade:
       max_code_lines: 100
       max_text_length: 500
       preserve_structure: true
-    
+
     # Smart Routing
     routing:
       enabled: true
       complexity_threshold: 7  # 1-10 scale
       auto_fallback: true
       prefer_cheaper_models: true
-    
+
     # Quantum Optimization
     quantum:
       enabled: true
@@ -74,7 +74,7 @@ cascade:
       tunneling_enabled: true
       entanglement_detection: true
       chaos_exploration: true
-    
+
     # Token Budget Management
     budget:
       monthly_tokens: 50000
@@ -83,7 +83,7 @@ cascade:
       medium_priority_allocation: 0.3  # 30% for medium
       low_priority_allocation: 0.3  # 30% for low
       alert_threshold: 0.8  # Alert at 80% usage
-  
+
   # Performance Monitoring
   monitoring:
     enabled: true
@@ -93,7 +93,7 @@ cascade:
     export_reports: true
     alert_on_failures: true
     failure_threshold: 0.3  # Alert if >30% fail rate
-  
+
   # MCP (Model Context Protocol) Servers
   mcp_servers:
     - name: github
@@ -106,7 +106,7 @@ cascade:
         - issue_management
         - pr_operations
         - code_search
-    
+
     - name: codex_physics
       url: mcp://localhost:8080/codex/physics
       enabled: false  # Enable when local MCP server is running
@@ -117,7 +117,7 @@ cascade:
         - entanglement_detection
         - superposition_reasoning
         - chaos_theory
-    
+
     - name: local_tools
       url: mcp://localhost:9090/tools
       enabled: false
@@ -127,7 +127,7 @@ cascade:
         - file_operations
         - process_management
         - network_tools
-  
+
   # Security Settings
   security:
     validate_inputs: true
@@ -146,19 +146,19 @@ cascade:
       - .txt
       - .sh
       - .bash
-    
+
     # Rate limiting
     rate_limiting:
       enabled: true
       max_requests_per_minute: 60
       max_requests_per_hour: 500
-    
+
     # Content filtering
     content_filtering:
       enabled: true
       block_sensitive_data: true
       redact_secrets: true
-  
+
   # Workflow Integration
   workflows:
     # GitHub Actions integration
@@ -169,14 +169,14 @@ cascade:
       trigger_on_comment: true
       comment_trigger: "@cascade-review"
       post_results: true
-    
+
     # PR review settings
     pr_review:
       auto_review: true
       confidence_threshold: 0.7
       max_files_per_review: 20
       review_timeout_minutes: 15
-  
+
   # Logging Configuration
   logging:
     directory: .github/copilot-cascade/logs
@@ -185,7 +185,7 @@ cascade:
     format: json  # json | text
     include_timestamps: true
     include_task_ids: true
-  
+
   # Cache Configuration
   cache:
     enabled: true
@@ -194,7 +194,7 @@ cascade:
     max_size_mb: 100
     cache_responses: true
     cache_contexts: true
-  
+
   # Testing & Development
   development:
     debug_mode: false
@@ -202,7 +202,7 @@ cascade:
     dry_run: false
     mock_cli: false
     save_debug_artifacts: false
-  
+
   # Feature Flags
   features:
     dual_verification: true

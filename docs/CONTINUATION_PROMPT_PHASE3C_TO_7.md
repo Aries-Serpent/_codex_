@@ -299,15 +299,15 @@ SAMPLE_QUERIES = [
 def load_test_index(tmp_path_factory):
     """Create a test index for load testing."""
     tmp_path = tmp_path_factory.mktemp("load_test")
-    
+
     # Create sample documents
     docs_dir = tmp_path / "docs"
     docs_dir.mkdir()
-    
+
     for i in range(100):
         doc = docs_dir / f"doc{i}.txt"
         doc.write_text(f"Sample document {i} " * 100)  # ~2KB per doc
-    
+
     # Build index
     files = list(docs_dir.glob("*.txt"))
     index_path = build_index_from_files(
@@ -316,7 +316,7 @@ def load_test_index(tmp_path_factory):
         tenant_id="load_test_tenant",
         index_dir=str(tmp_path / "indices"),
     )
-    
+
     return tmp_path / "indices"
 
 
@@ -341,28 +341,28 @@ def measure_memory():
 def run_load_test(retriever, num_queries, progress_interval=1000):
     """
     Run load test and return metrics.
-    
+
     Args:
         retriever: RAG retriever instance
         num_queries: Number of queries to execute
         progress_interval: Log progress every N queries
-    
+
     Returns:
         dict with metrics (throughput, latency, memory, cache, errors)
     """
     reset_metrics()
     metrics = get_metrics()
-    
+
     latencies = []
     errors = 0
     start_memory = measure_memory()
     peak_memory = start_memory
     start_time = time.time()
-    
+
     for i in range(num_queries):
         # Rotate through sample queries
         query = SAMPLE_QUERIES[i % len(SAMPLE_QUERIES)]
-        
+
         query_start = time.time()
         try:
             results = retriever.query(query, top_k=5)
@@ -371,25 +371,25 @@ def run_load_test(retriever, num_queries, progress_interval=1000):
         except Exception as e:
             errors += 1
             print(f"Query {i} failed: {e}")
-        
+
         # Track memory
         current_memory = measure_memory()
         peak_memory = max(peak_memory, current_memory)
-        
+
         # Progress logging
         if (i + 1) % progress_interval == 0:
             elapsed = time.time() - start_time
             qps = (i + 1) / elapsed
             print(f"Progress: {i+1}/{num_queries} queries ({qps:.2f} qps)")
-    
+
     total_time = time.time() - start_time
-    
+
     # Calculate statistics
     latencies_sorted = sorted(latencies)
     n = len(latencies_sorted)
-    
+
     stats = metrics.get_statistics()
-    
+
     return {
         "num_queries": num_queries,
         "total_time_seconds": total_time,
@@ -412,7 +412,7 @@ def run_load_test(retriever, num_queries, progress_interval=1000):
 def test_load_10k_queries(retriever):
     """Test 10K queries - baseline performance."""
     results = run_load_test(retriever, 10_000)
-    
+
     print("\n=== 10K Queries Load Test ===")
     print(f"Throughput: {results['throughput_qps']:.2f} qps")
     print(f"Latency P50: {results['latency_p50_ms']:.2f} ms")
@@ -421,7 +421,7 @@ def test_load_10k_queries(retriever):
     print(f"Memory Delta: {results['memory_delta_mb']:.2f} MB")
     print(f"Cache Hit Rate: {results['cache_hit_rate']:.2%}")
     print(f"Error Rate: {results['error_rate']:.2%}")
-    
+
     # Assertions
     assert results["throughput_qps"] > 100, "Throughput too low"
     assert results["latency_p99_ms"] < 500, "P99 latency too high"
@@ -432,7 +432,7 @@ def test_load_10k_queries(retriever):
 def test_load_100k_queries(retriever):
     """Test 100K queries - sustained performance."""
     results = run_load_test(retriever, 100_000, progress_interval=10_000)
-    
+
     print("\n=== 100K Queries Load Test ===")
     print(f"Throughput: {results['throughput_qps']:.2f} qps")
     print(f"Latency P50: {results['latency_p50_ms']:.2f} ms")
@@ -441,7 +441,7 @@ def test_load_100k_queries(retriever):
     print(f"Memory Delta: {results['memory_delta_mb']:.2f} MB")
     print(f"Cache Hit Rate: {results['cache_hit_rate']:.2%}")
     print(f"Error Rate: {results['error_rate']:.2%}")
-    
+
     # Assertions
     assert results["throughput_qps"] > 500, "Throughput degraded"
     assert results["latency_p99_ms"] < 300, "P99 latency too high"
@@ -455,7 +455,7 @@ def test_load_100k_queries(retriever):
 def test_load_1M_queries(retriever):
     """Test 1M queries - production scale validation."""
     results = run_load_test(retriever, 1_000_000, progress_interval=100_000)
-    
+
     print("\n=== 1M Queries Load Test ===")
     print(f"Throughput: {results['throughput_qps']:.2f} qps")
     print(f"Latency P50: {results['latency_p50_ms']:.2f} ms")
@@ -465,24 +465,24 @@ def test_load_1M_queries(retriever):
     print(f"Memory Delta: {results['memory_delta_mb']:.2f} MB")
     print(f"Cache Hit Rate: {results['cache_hit_rate']:.2%}")
     print(f"Error Rate: {results['error_rate']:.2%}")
-    
+
     # Production targets
     assert results["throughput_qps"] > 1000, "Throughput below production target"
     assert results["latency_p99_ms"] < 200, "P99 latency above production target"
     assert results["cache_hit_rate"] > 0.70, "Cache effectiveness below target"
     assert results["memory_peak_mb"] < 500, "Memory usage above production limit"
     assert results["error_rate"] < 0.01, "Error rate above production threshold"
-    
+
     # Generate report
     report_path = Path("reports/load_test_1M_results.txt")
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with report_path.open("w") as f:
         f.write("RAG Load Test Results - 1M Queries\n")
         f.write("=" * 50 + "\n\n")
         for key, value in results.items():
             f.write(f"{key}: {value}\n")
-    
+
     print(f"\nFull report saved to: {report_path}")
 
 
@@ -490,30 +490,30 @@ def test_load_1M_queries(retriever):
 def test_memory_leak_detection(retriever):
     """Test for memory leaks over sustained load."""
     reset_metrics()
-    
+
     checkpoints = [1000, 5000, 10000]
     memory_samples = []
-    
+
     for checkpoint in checkpoints:
         start_memory = measure_memory()
-        
+
         # Run queries
         for i in range(checkpoint):
             query = SAMPLE_QUERIES[i % len(SAMPLE_QUERIES)]
             retriever.query(query, top_k=5)
-        
+
         end_memory = measure_memory()
         memory_delta = end_memory - start_memory
         memory_samples.append((checkpoint, memory_delta))
-        
+
         print(f"Checkpoint {checkpoint}: {memory_delta:.2f} MB delta")
-    
+
     # Check if memory growth is linear (expected) or exponential (leak)
     deltas = [delta for _, delta in memory_samples]
     growth_rate = (deltas[-1] - deltas[0]) / len(deltas)
-    
+
     print(f"\nMemory growth rate: {growth_rate:.4f} MB/checkpoint")
-    
+
     # Memory should stabilize (growth < 1MB per checkpoint after cache warm-up)
     assert growth_rate < 1.0, "Potential memory leak detected"
 
@@ -523,26 +523,26 @@ def test_cache_effectiveness(retriever):
     """Test cache hit rate improves over time."""
     reset_metrics()
     metrics = get_metrics()
-    
+
     # First pass - cache misses
     for _ in range(100):
         for query in SAMPLE_QUERIES:
             retriever.query(query, top_k=5)
-    
+
     stats1 = metrics.get_statistics()
     hit_rate_1 = stats1["cache"]["hit_rate"]
-    
+
     # Second pass - should hit cache
     for _ in range(100):
         for query in SAMPLE_QUERIES:
             retriever.query(query, top_k=5)
-    
+
     stats2 = metrics.get_statistics()
     hit_rate_2 = stats2["cache"]["hit_rate"]
-    
+
     print(f"\nCache hit rate after pass 1: {hit_rate_1:.2%}")
     print(f"Cache hit rate after pass 2: {hit_rate_2:.2%}")
-    
+
     # Cache should improve significantly
     assert hit_rate_2 > hit_rate_1, "Cache hit rate did not improve"
     assert hit_rate_2 > 0.70, "Cache hit rate below target"
@@ -803,19 +803,19 @@ resource "aws_route53_record" "rag_api" {
   zone_id = var.hosted_zone_id
   name    = "rag-api.${var.domain}"
   type    = "A"
-  
+
   # Latency-based routing
   set_identifier = "us-east-1"
   latency_routing_policy {
     region = "us-east-1"
   }
-  
+
   alias {
     name                   = module.rag_us_east_1.api_endpoint
     zone_id                = module.rag_us_east_1.alb_zone_id
     evaluate_target_health = true
   }
-  
+
   health_check_id = aws_route53_health_check.rag_us_east_1.id
 }
 
@@ -825,21 +825,21 @@ resource "aws_route53_record" "rag_api" {
 resource "aws_s3_bucket_replication_configuration" "index_replication" {
   bucket = module.rag_us_east_1.index_bucket_id
   role   = aws_iam_role.replication.arn
-  
+
   rule {
     id     = "replicate-indices"
     status = "Enabled"
-    
+
     destination {
       bucket        = module.rag_eu_west_1.index_bucket_arn
       storage_class = "STANDARD_IA"
     }
   }
-  
+
   rule {
     id     = "replicate-indices-apac"
     status = "Enabled"
-    
+
     destination {
       bucket        = module.rag_ap_southeast_1.index_bucket_arn
       storage_class = "STANDARD_IA"
@@ -871,7 +871,7 @@ logger = logging.getLogger(__name__)
 
 class IndexSyncService:
     """Synchronize FAISS indices across multiple AWS regions."""
-    
+
     def __init__(self, regions: List[str], source_bucket: str):
         self.regions = regions
         self.source_bucket = source_bucket
@@ -879,22 +879,22 @@ class IndexSyncService:
             region: boto3.client('s3', region_name=region)
             for region in regions
         }
-    
+
     def sync_index(self, tenant_id: str, index_name: str):
         """Sync index to all regions."""
         source_key = f"{tenant_id}/{index_name}/index.faiss"
-        
+
         # Download from source
         source_s3 = self.s3_clients[self.regions[0]]
         obj = source_s3.get_object(Bucket=self.source_bucket, Key=source_key)
         index_data = obj['Body'].read()
         last_modified = obj['LastModified']
-        
+
         # Upload to all other regions
         for region in self.regions[1:]:
             dest_s3 = self.s3_clients[region]
             dest_bucket = f"{self.source_bucket}-{region}"
-            
+
             try:
                 dest_s3.put_object(
                     Bucket=dest_bucket,
@@ -909,7 +909,7 @@ class IndexSyncService:
                 logger.info(f"Synced {source_key} to {region}")
             except Exception as e:
                 logger.error(f"Failed to sync to {region}: {e}")
-    
+
     def check_replication_lag(self) -> Dict[str, float]:
         """Check replication lag for all indices."""
         # Implementation...
@@ -973,7 +973,7 @@ groups:
           severity: critical
         annotations:
           summary: "RAG error rate above 1%"
-          
+
       # High P99 latency
       - alert: RAGHighLatency
         expr: histogram_quantile(0.99, rag_query_latency_ms) > 200
@@ -982,7 +982,7 @@ groups:
           severity: warning
         annotations:
           summary: "RAG P99 latency above 200ms"
-      
+
       # Low cache hit rate
       - alert: RAGLowCacheHitRate
         expr: rag_cache_hit_rate < 0.70
@@ -991,7 +991,7 @@ groups:
           severity: warning
         annotations:
           summary: "RAG cache hit rate below 70%"
-      
+
       # ... 7 more alert rules
 ```
 

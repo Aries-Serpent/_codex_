@@ -130,7 +130,7 @@ gh run view <run-id> --log
   ```python
   # Old (deprecated)
   from tokenization.loader import load_tokenizer
-  
+
   # New (recommended)
   from codex_ml.tokenization.api import load_tokenizer
   ```

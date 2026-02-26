@@ -86,27 +86,27 @@ next_steps:
     priority: "HIGH"
     dependencies: ["Test structure established"]
     acceptance: "All bash script logic tested with shell validation"
-    
+
   - task: "Add MCP CLI (mcp-package) tests (10 tests)"
     priority: "HIGH"
     dependencies: ["package_flatten tests complete"]
     acceptance: "All CLI flags and error cases covered"
-    
+
   - task: "Add agent orchestration tests (30-40 tests)"
     priority: "HIGH"
     dependencies: ["MCP tests complete (50 tests total)"]
     acceptance: "Workflow navigator and quantum game theory covered"
-    
+
   - task: "Add core pipeline tests (40-50 tests)"
     priority: "HIGH"
     dependencies: ["Agent tests complete"]
     acceptance: "Code ingestion, AST transformation, RAG covered"
-    
+
   - task: "Perform 5-pass self-review"
     priority: "CRITICAL"
     dependencies: ["All Phase 9.1 tests added (150-200 tests)"]
     acceptance: "0 concerns remaining, all quality checks passed"
-    
+
   - task: "Emit comprehensive AfterMath block"
     priority: "CRITICAL"
     dependencies: ["Self-review complete"]
@@ -120,7 +120,7 @@ future_research:
     dependencies: ["Coverage report parsing", "AST analysis", "Test pattern templates"]
     expected_impact: "5-10x faster test creation for coverage gaps"
     timeline: "Phase 3 (Current Cycle)"
-    
+
   - topic: "Test quality metrics and mutation testing"
     rationale: "100% coverage doesn't guarantee effective tests"
     potential_approach: "Introduce mutation testing to validate test effectiveness"
@@ -128,7 +128,7 @@ future_research:
     dependencies: ["mutpy or similar mutation testing framework"]
     expected_impact: "Identify weak tests that pass despite code mutations"
     timeline: "Phase 2 (Current Cycle)"
-    
+
   - topic: "Property-based testing expansion with Hypothesis"
     rationale: "Current 10% property-based tests could catch more edge cases"
     potential_approach: "Expand hypothesis usage for string processing, data transformations, parsers"

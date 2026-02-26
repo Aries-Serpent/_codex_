@@ -75,16 +75,16 @@ echo "🔄 Adding Art_ prefix to ${#WORKFLOWS[@]} workflows..."
 
 for workflow in "${WORKFLOWS[@]}"; do
   WORKFLOW_PATH=".github/workflows/$workflow"
-  
+
   # Check if file exists
   if [ ! -f "$WORKFLOW_PATH" ]; then
     echo "⚠️  Skipping $workflow (not found)"
     continue
   fi
-  
+
   # Backup original
   cp "$WORKFLOW_PATH" "$BACKUP_DIR/$workflow"
-  
+
   # Add Art_ prefix to name field (only if not already present)
   if ! grep -q "^name: Art_" "$WORKFLOW_PATH"; then
     sed -i 's/^name: \(.*\)/name: Art_\1/' "$WORKFLOW_PATH"
@@ -190,7 +190,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
-  
+
   dependency-audit:
     name: Dependency Security Audit
     runs-on: ubuntu-latest
@@ -209,7 +209,7 @@ jobs:
         with:
           name: dependency-audit-${{ github.run_number }}
           path: audit_results.json
-  
+
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
@@ -217,7 +217,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
-  
+
   unified-results:
     name: Aggregate Security Results
     runs-on: ubuntu-latest
@@ -259,7 +259,7 @@ gh run watch
 for workflow in security-scanning-suite.yml security-suite.yml security-scan.yml; do
   # Move to archive
   mv .github/workflows/$workflow .github/workflow-archive/disabled/
-  
+
   # Create metadata
   cat > .github/workflow-archive/disabled/$workflow.meta << EOF
 disabled_at: $(date -Iseconds)

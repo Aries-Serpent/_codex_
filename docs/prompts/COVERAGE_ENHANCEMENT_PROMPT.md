@@ -47,10 +47,10 @@ def test_{function_name}_basic():
     # Arrange
     input_data = create_typical_input()
     expected = calculate_expected_output()
-    
+
     # Act
     result = function_name(input_data)
-    
+
     # Assert
     assert result == expected
 
@@ -87,23 +87,23 @@ For each class:
 ```python
 class Test{ClassName}:
     """Complete coverage for {ClassName}"""
-    
+
     def test_init_default(self):
         """Test default initialization"""
         pass
-    
+
     def test_init_with_params(self):
         """Test parameterized initialization"""
         pass
-    
+
     def test_all_public_methods(self):
         """Test all public methods"""
         pass
-    
+
     def test_properties(self):
         """Test property getters/setters"""
         pass
-    
+
     def test_edge_cases(self):
         """Test edge cases and error conditions"""
         pass
@@ -155,20 +155,20 @@ def mock_dependency():
 
 class TestClassName:
     """Tests for ClassName"""
-    
+
     def test_init(self):
         """Test initialization"""
         obj = ClassName()
         assert obj is not None
-    
+
     def test_method_normal_case(self):
         """Test method with normal inputs"""
         pass
-    
+
     def test_method_edge_case(self):
         """Test method edge cases"""
         pass
-    
+
     def test_method_error_case(self):
         """Test method error handling"""
         pass
@@ -350,7 +350,7 @@ def get_coverage_gaps():
         capture_output=True, text=True
     )
     data = json.loads(result.stdout)
-    
+
     gaps = []
     for file, info in data['files'].items():
         coverage = info['summary']['percent_covered']
@@ -361,7 +361,7 @@ def get_coverage_gaps():
                 'missing_lines': info['missing_lines'],
                 'missing_branches': info.get('missing_branches', [])
             })
-    
+
     return sorted(gaps, key=lambda x: x['coverage'])
 
 if __name__ == '__main__':

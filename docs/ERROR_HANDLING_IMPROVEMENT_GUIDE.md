@@ -122,7 +122,7 @@ from pathlib import Path
 
 def add_logging_to_bare_except(file_path: Path) -> bool:
     content = file_path.read_text()
-    
+
     # Add logger import if missing
     if 'import logging' not in content:
         lines = content.split('\n')
@@ -131,7 +131,7 @@ def add_logging_to_bare_except(file_path: Path) -> bool:
                 lines.insert(i + 1, 'import logging')
                 break
         content = '\n'.join(lines)
-    
+
     if 'logger = logging.getLogger' not in content:
         lines = content.split('\n')
         for i, line in enumerate(lines):
@@ -139,14 +139,14 @@ def add_logging_to_bare_except(file_path: Path) -> bool:
                 lines.insert(i + 1, 'logger = logging.getLogger(__name__)')
                 break
         content = '\n'.join(lines)
-    
+
     # Replace bare except: pass with logged version
     content = re.sub(
         r'except:\s*\n\s+pass',
         'except Exception as e:\n        logger.warning(f"Exception caught: {e}", exc_info=True)',
         content
     )
-    
+
     if content != file_path.read_text():
         file_path.write_text(content)
         return True
@@ -213,10 +213,10 @@ def test_error_handling(caplog):
     """Test that errors are properly logged."""
     with caplog.at_level(logging.WARNING):
         result = function_with_error_handling()
-    
+
     # Verify error was logged
     assert "Expected error message" in caplog.text
-    
+
     # Verify fallback behavior
     assert result == EXPECTED_FALLBACK
 ```

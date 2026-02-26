@@ -222,25 +222,25 @@ describe('QuantumAgent', () => {
   test('should validate required configuration fields');
   test('should reject invalid configuration');
   test('should deep clone configuration to prevent mutation');
-  
+
   // Energy Computation
   test('should compute energy correctly for standard config');
   test('should respect energy weights (λ values)');
   test('should handle edge cases (zero weights, extreme values)');
   test('should compute energy components independently');
-  
+
   // Optimization
   test('should optimize configuration to reduce energy');
   test('should respect domain constraints (Ω)');
   test('should converge to stable configuration');
   test('should handle multiple optimization runs');
-  
+
   // Response Generation
   test('should generate responses using policy function');
   test('should apply capability operators correctly');
   test('should handle empty/invalid queries gracefully');
   test('should respect source constraints');
-  
+
   // State Management
   test('should maintain configuration state');
   test('should update state atomically');
@@ -256,22 +256,22 @@ describe('Energy Computation', () => {
   test('should compute hallucination loss for source alignment');
   test('should penalize responses not grounded in sources');
   test('should reward accurate source citations');
-  
+
   // Formatting Loss
   test('should compute formatting loss for structure');
   test('should validate output format compliance');
   test('should handle multiple format requirements');
-  
+
   // Source Compliance Loss
   test('should compute source compliance score');
   test('should measure relevance to query');
   test('should handle multiple sources correctly');
-  
+
   // Coherence Loss
   test('should compute coherence for response quality');
   test('should measure internal consistency');
   test('should detect contradictions');
-  
+
   // Integration
   test('should combine all loss components correctly');
   test('should respect weight configuration');
@@ -302,22 +302,22 @@ describe('Policy Function', () => {
   test('should implement softmax correctly');
   test('should generate valid probability distributions');
   test('should respect temperature parameter');
-  
+
   // Response Selection
   test('should select high-probability responses');
   test('should support sampling from distribution');
   test('should handle deterministic selection');
-  
+
   // Conditioning
   test('should condition on sources correctly');
   test('should apply capability operators');
   test('should integrate query context');
-  
+
   // Edge Cases
   test('should handle empty response candidates');
   test('should gracefully degrade on failures');
   test('should validate response constraints');
-  
+
   // Performance
   test('should compute policy efficiently');
   test('should scale with number of candidates');
@@ -332,17 +332,17 @@ describe('Quantum Framework Integration', () => {
   test('should integrate with SparkLLMClient');
   test('should enhance code generation quality');
   test('should reduce hallucinations measurably');
-  
+
   // With Agent Orchestration
   test('should select optimal agents by energy');
   test('should coordinate multiple agents');
   test('should handle agent failures gracefully');
-  
+
   // With Quantum Processing
   test('should leverage quantum visualization');
   test('should display energy metrics in UI');
   test('should support real-time optimization monitoring');
-  
+
   // End-to-End
   test('should complete full query-response cycle');
 });

@@ -176,24 +176,24 @@ For each question:
 ## Open Questions
 
 1. **How strict is the backward compatibility requirement for the API?**
-   
+
    Context: This affects whether we can introduce breaking changes or must maintain full legacy support.
-   
+
    - A) No breaking changes at all; legacy clients must continue to function indefinitely
    - B) No breaking changes now, but we can introduce a formal deprecation path
    - C) Minor breaking changes are acceptable if clearly documented
    - D) Other (please specify)
-   
+
    **Recommended:** B
 
 2. **What is the iteration completion checkpoint strategy?**
-   
+
    Context: Defines how we validate each iteration before moving to the next.
-   
+
    - A) Full validation at each iteration boundary (comprehensive testing)
    - B) Incremental validation with final comprehensive pass (faster iteration)
    - C) Continuous validation throughout (highest confidence)
-   
+
    **Recommended:** A
 ```
 
@@ -366,21 +366,21 @@ Structure the entire response using these sections and headings:
 ## ❓ Open Questions
 
 1. **[Question 1 - Critical]**
-   
+
    Context: [1-2 sentences]
-   
+
    - A) [Option A]
    - B) [Option B]
    - C) [Option C]
-   
+
    **Recommended:** [Option]
 
 2. **[Question 2 - High Priority]**
-   
+
    [Similar structure]
 
 3. **[Question 3 - Medium Priority]**
-   
+
    [Similar structure]
 
 ---

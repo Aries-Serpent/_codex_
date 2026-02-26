@@ -21,7 +21,7 @@ interface OrchestrationChainBuilderProps {
 export function OrchestrationChainBuilder({ allTokens, onChainExecute }: OrchestrationChainBuilderProps) {
   const [chains, setChains] = useKV<OrchestrationChain[]>('orchestration-chains', []);
   const [dialogOpen, setDialogOpen] = useState(false);
-  
+
   const [newChain, setNewChain] = useState<Partial<OrchestrationChain>>({
     name: '',
     description: '',
@@ -97,7 +97,7 @@ export function OrchestrationChainBuilder({ allTokens, onChainExecute }: Orchest
 
   const handleExecuteChain = (chain: OrchestrationChain) => {
     const metrics = workflowDependencyEngine.calculateChainMetrics(chain, allTokens);
-    
+
     toast.info(`Executing ${chain.name}`, {
       description: `${metrics.totalStages} stages across ${metrics.paradigmsUsed.length} paradigms`,
     });

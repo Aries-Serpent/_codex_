@@ -149,7 +149,7 @@ class SourceLocation:
 @dataclass
 class StandardizedASTNode:
     """Language-agnostic AST node representation.
-    
+
     Design inspired by:
     - libcst.MetadataWrapper
     - tree-sitter Node
@@ -165,7 +165,7 @@ class StandardizedASTNode:
     decorators: List[str] = field(default_factory=list)
     type_hints: Dict[str, str] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to dictionary for JSON export."""
         return {
@@ -183,7 +183,7 @@ class StandardizedASTNode:
             "type_hints": self.type_hints,
             "metadata": self.metadata,
         }
-    
+
     def walk(self):
         """Depth-first traversal of tree."""
         yield self
@@ -234,28 +234,28 @@ from collections import defaultdict
 
 class DependencyGraph:
     """Directed graph with cycle detection using Tarjan's SCC algorithm.
-    
+
     Reference: NetworkX strongly_connected_components
     https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py
     """
-    
+
     def __init__(self):
         self.nodes: Set[str] = set()
         self.edges: Dict[str, Set[str]] = defaultdict(set)
-    
+
     def add_node(self, node_id: str):
         """Add a node to the graph."""
         self.nodes.add(node_id)
-    
+
     def add_edge(self, source: str, target: str):
         """Add a directed edge from source to target."""
         self.nodes.add(source)
         self.nodes.add(target)
         self.edges[source].add(target)
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Find strongly connected components (cycles) using Tarjan's algorithm.
-        
+
         Returns:
             List of cycles (each cycle is a list of node IDs)
         """
@@ -265,21 +265,21 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id: str):
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
                     strongconnect(target_id)
                     lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
                 elif on_stack.get(target_id, False):
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             if lowlinks[node_id] == index[node_id]:
                 scc = []
                 while True:
@@ -288,36 +288,36 @@ class DependencyGraph:
                     scc.append(w)
                     if w == node_id:
                         break
-                
+
                 if len(scc) > 1:  # Only record actual cycles
                     sccs.append(scc)
-        
+
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
-    
+
     def topological_sort(self) -> List[str]:
         """Return topological ordering if DAG, else raise ValueError."""
         cycles = self.detect_cycles()
         if cycles:
             raise ValueError(f"Graph has cycles: {cycles}")
-        
+
         visited = set()
         stack = []
-        
+
         def dfs(node_id: str):
             visited.add(node_id)
             for target in self.edges.get(node_id, set()):
                 if target not in visited:
                     dfs(target)
             stack.append(node_id)
-        
+
         for node_id in self.nodes:
             if node_id not in visited:
                 dfs(node_id)
-        
+
         return stack[::-1]
 ```text
 
@@ -334,7 +334,7 @@ def test_cycle_detection():
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
     graph.add_edge("C", "A")  # Creates cycle
-    
+
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C"}
@@ -344,7 +344,7 @@ def test_topological_sort_dag():
     graph = DependencyGraph()
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
-    
+
     order = graph.topological_sort()
     assert order.index("A") < order.index("B")
     assert order.index("B") < order.index("C")
@@ -370,7 +370,7 @@ class CodeMetrics:
     lines_of_code: int
     comment_lines: int
     maintainability_index: float
-    
+
     def to_dict(self) -> Dict:
         return {
             "cyclomatic": self.cyclomatic_complexity,
@@ -382,12 +382,12 @@ class CodeMetrics:
 
 class MetricsAggregator:
     """Aggregate metrics from multiple sources."""
-    
+
     def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
         """Aggregate multiple metrics into summary."""
         if not metrics_list:
             return CodeMetrics(0, 0, 0, 0, 100.0)
-        
+
         return CodeMetrics(
             cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
             cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
@@ -404,10 +404,10 @@ def test_metrics_aggregation():
     """Test basic metrics aggregation."""
     m1 = CodeMetrics(5, 3, 100, 10, 80.0)
     m2 = CodeMetrics(3, 2, 50, 5, 90.0)
-    
+
     agg = MetricsAggregator()
     result = agg.aggregate([m1, m2])
-    
+
     assert result.cyclomatic_complexity == 8
     assert result.lines_of_code == 150
     assert result.maintainability_index == 85.0

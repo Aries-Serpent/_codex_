@@ -29,29 +29,29 @@ graph TB
         IOHandler["I/O Handler"]
         SafetyLayer["Safety & Concurrency"]
     end
-    
+
     subgraph "Python Bridge"
         PyBridge["PyO3 Bridge"]
         FFILayer["FFI Interface"]
     end
-    
+
     subgraph "Thinking Layer"
         PyTorch["PyTorch Engine"]
         CUDA["CUDA Backend"]
         CPP["C++ Kernels"]
     end
-    
+
     RustCore --> MemMgmt
     RustCore --> TaskSched
     RustCore --> IOHandler
     RustCore --> SafetyLayer
-    
+
     RustCore --> PyBridge
     PyBridge --> FFILayer
     FFILayer --> PyTorch
     PyTorch --> CUDA
     PyTorch --> CPP
-    
+
     style RustCore fill:#ff9999
     style PyTorch fill:#99ccff
     style CUDA fill:#99ff99
@@ -88,13 +88,13 @@ graph LR
         Quantization["Quantization"]
         Optimization["CUDA Optimizations"]
     end
-    
+
     Input["Input Tensors"] --> Model
     Model --> Inference
     Inference --> Quantization
     Quantization --> Optimization
     Optimization --> Output["Predictions"]
-    
+
     style Model fill:#ffcc99
     style Inference fill:#99ccff
     style Optimization fill:#99ff99
@@ -134,12 +134,12 @@ impl AIAgent {
     pub fn process(&self, task: Task) -> Result<Output> {
         // 1. Rust handles I/O, parsing, validation
         let input = self.orchestrator.prepare_input(task)?;
-        
+
         // 2. Call Python brain for inference
         let prediction = Python::with_gil(|py| {
             self.brain.call_method1(py, "infer", (input,))
         })?;
-        
+
         // 3. Rust handles output formatting, storage
         self.orchestrator.finalize_output(prediction)
     }

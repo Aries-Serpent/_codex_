@@ -99,7 +99,7 @@ requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
    # BEFORE
    @pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
    class TestExceptionGroups:
-   
+
    # AFTER
    class TestExceptionGroups:
    ```
@@ -114,7 +114,7 @@ requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
            pytest.fail("except* syntax should be available in Python 3.11+")
        else:
            pytest.skip("except* syntax not available")
-   
+
    # AFTER
    # This should compile without errors in Python 3.12
    compile(code, '<string>', 'exec')
@@ -125,7 +125,7 @@ requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
    # BEFORE
    @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific")
    class TestPython312ExceptionImprovements:
-   
+
    # AFTER
    @pytest.mark.skipif(False, reason="Python 3.12 is the standard version")
    class TestPython312ExceptionImprovements:
@@ -136,7 +136,7 @@ requires-python = ">=3.12,<3.13"  # Python 3.12 only - Breaking change from 3.11
    # BEFORE
    @pytest.mark.skipif(sys.version_info < (3, 11), reason="ExceptionGroup requires 3.11+")
    def test_async_exception_group(self):
-   
+
    # AFTER
    def test_async_exception_group(self):
    ```

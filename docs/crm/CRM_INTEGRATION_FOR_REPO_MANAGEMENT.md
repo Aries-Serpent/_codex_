@@ -210,7 +210,7 @@ AI agents (GitHub Copilot, custom agents) can:
 1. **Query CRM Data**
    ```python
    from codex_crm.zd_admin import ZendeskClient
-   
+
    client = ZendeskClient()
    open_issues = client.search_tickets(status="open", tags=["bug", "p0"])
    ```
@@ -218,7 +218,7 @@ AI agents (GitHub Copilot, custom agents) can:
 2. **Create Tickets from Code Analysis**
    ```python
    from codex_crm.zd_admin import create_ticket_from_issue
-   
+
    # AI agent detects bug pattern
    ticket = create_ticket_from_issue(
        subject="Memory leak in src/quantum/orchestrator.py",
@@ -231,7 +231,7 @@ AI agents (GitHub Copilot, custom agents) can:
 3. **Auto-Assign Based on Skills**
    ```python
    from codex_crm.zd_admin import route_ticket
-   
+
    # AI analyzes file paths and routes to expert
    route_ticket(
        ticket_id=12345,
@@ -243,7 +243,7 @@ AI agents (GitHub Copilot, custom agents) can:
 4. **Update Ticket Status Automatically**
    ```python
    from codex_crm.zd_admin import update_ticket
-   
+
    # AI agent fixes bug, updates ticket
    update_ticket(
        ticket_id=12345,

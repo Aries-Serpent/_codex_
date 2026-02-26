@@ -238,19 +238,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      
+
       - name: Install Dependencies
         run: pip install -e .
-      
+
       - name: Generate Wiki Bundle
         run: |
           python -m scripts.space_traversal.audit_runner wiki --output wiki_bundle.zip
-      
+
       - name: Deploy to Wiki
         run: |
           git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
@@ -261,7 +261,7 @@ jobs:
           git add .
           git commit -m "docs: Update wiki (automated)" || echo "No changes"
           git push
-      
+
       - name: Upload Bundle as Asset
         uses: actions/upload-release-asset@v1
         env:
@@ -287,13 +287,13 @@ flowchart TB
         DB[(SQLite DB)]
         Viz[Visualization]
     end
-    
+
     subgraph Outputs["Outputs"]
         HTML[HTML Dashboard]
         Wiki[GitHub Wiki]
         Reports[Markdown Reports]
     end
-    
+
     Runner --> DB
     Runner --> Viz
     Viz --> HTML

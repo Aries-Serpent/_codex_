@@ -190,7 +190,7 @@ THREAT_PATTERNS = {
    - Algorithm: ARIMA + LSTM hybrid
    - Target accuracy: 85%+
    - Input: Historical sales, seasonality, market trends
-   
+
 2. **Churn Prediction Model**:
    - Algorithm: XGBoost classifier
    - Target accuracy: 90%+
@@ -567,14 +567,14 @@ dynamics_365_objectives:
     - ML-powered threat detection
     - Predictive business analytics
     - Cognitive decision support
-  
+
   secondary:
     - Knowledge graph construction
     - Pattern recognition & learning
     - Automated insight generation
     - Proactive anomaly detection
     - Continuous optimization
-  
+
   success_metrics:
     - Collection rate: 10,000+ records/min
     - Threat detection: 90%+ accuracy

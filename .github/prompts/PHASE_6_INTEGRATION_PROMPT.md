@@ -212,7 +212,7 @@ training_enhancements:
     enabled: true
     patience: 5
     monitor: "val_loss"
-  
+
   scheduler:
     type: "cosine_with_restarts"
     warmup_steps: 1000

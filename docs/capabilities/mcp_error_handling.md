@@ -47,11 +47,11 @@ def handle_request(request):
         # 1. Process request
         result = process(request)
         return success_response(result)
-        
+
     except MCPError as e:
         # 2. Handle known MCP errors
         return error_response(e.code, e.message, e.data)
-        
+
     except Exception as e:
         # 3. Handle unexpected errors (safeguard)
         log_error(e, traceback.format_exc())
@@ -77,7 +77,7 @@ class ErrorCode(IntEnum):
     METHOD_NOT_FOUND = -32601
     INVALID_PARAMS = -32602
     INTERNAL_ERROR = -32603
-    
+
     # MCP-specific errors
     AUTHENTICATION_REQUIRED = -32001
     AUTHORIZATION_FAILED = -32002
@@ -89,19 +89,19 @@ class ErrorCode(IntEnum):
 class MCPError(Exception):
     """
     Base error class for MCP services.
-    
+
     Provides structured error handling with:
     - Error codes for categorization
     - Rich error context
     - Traceback preservation
     - Serialization support
-    
+
     Safeguards:
     - Input validation on error creation
     - Secure error message sanitization
     - Traceback filtering for sensitive data
     """
-    
+
     def __init__(
         self,
         code: ErrorCode,
@@ -111,7 +111,7 @@ class MCPError(Exception):
     ):
         """
         Initialize MCP error.
-        
+
         Args:
             code: Error code from ErrorCode enum
             message: Human-readable error message
@@ -124,18 +124,18 @@ class MCPError(Exception):
         self.data = data or {}
         self.cause = cause
         self.traceback_str = traceback.format_exc() if cause else None
-    
+
     def _sanitize_message(self, message: str) -> str:
         """
         Sanitize error message to prevent information leakage.
-        
+
         Safeguard: Removes sensitive information from error messages.
         """
         # Remove potential secrets or paths
         sanitized = message
         # Add sanitization logic as needed
         return sanitized[:500]  # Bounds check (safeguard)
-    
+
     def to_dict(self) -> dict:
         """Convert error to dictionary for JSON serialization."""
         return {
@@ -143,7 +143,7 @@ class MCPError(Exception):
             "message": self.message,
             "data": self.data,
         }
-    
+
     def to_jsonrpc(self) -> dict:
         """Convert to JSON-RPC error response format."""
         return {
@@ -155,21 +155,21 @@ class MCPError(Exception):
 
 class AuthenticationError(MCPError):
     """Authentication required or failed."""
-    
+
     def __init__(self, message: str = "Authentication required"):
         super().__init__(ErrorCode.AUTHENTICATION_REQUIRED, message)
 
 
 class AuthorizationError(MCPError):
     """Authorization/permission denied."""
-    
+
     def __init__(self, message: str = "Permission denied"):
         super().__init__(ErrorCode.AUTHORIZATION_FAILED, message)
 
 
 class ValidationError(MCPError):
     """Request validation failed."""
-    
+
     def __init__(self, message: str, errors: list = None):
         super().__init__(
             ErrorCode.VALIDATION_ERROR,
@@ -180,7 +180,7 @@ class ValidationError(MCPError):
 
 class RateLimitError(MCPError):
     """Rate limit exceeded."""
-    
+
     def __init__(self, retry_after: int = 60):
         super().__init__(
             ErrorCode.RATE_LIMIT_EXCEEDED,
@@ -202,47 +202,47 @@ logger = logging.getLogger(__name__)
 class ErrorHandler:
     """
     Centralized error handler for MCP services.
-    
+
     Provides:
     - Consistent error response formatting
     - Error logging and tracking
     - Recovery and retry logic
     - Graceful degradation
-    
+
     Safeguards:
     - Prevents information leakage
     - Logs all errors for debugging
     - Handles unexpected errors gracefully
     """
-    
+
     def __init__(self, include_traceback: bool = False):
         """
         Initialize error handler.
-        
+
         Args:
             include_traceback: Include traceback in development mode
         """
         self._include_traceback = include_traceback
-    
+
     def handle(self, error: Exception, request_id: str = None) -> dict:
         """
         Handle an exception and return formatted response.
-        
+
         Safeguards:
         - Logs all errors with context
         - Sanitizes error messages
         - Returns safe error responses
-        
+
         Args:
             error: Exception to handle
             request_id: Request ID for correlation
-            
+
         Returns:
             JSON-RPC formatted error response
         """
         # Log the error (safeguard - observability)
         self._log_error(error, request_id)
-        
+
         # Convert to MCPError if needed
         if isinstance(error, MCPError):
             mcp_error = error
@@ -253,17 +253,17 @@ class ErrorHandler:
                 "An internal error occurred",
                 cause=error
             )
-        
+
         # Build response
         response = mcp_error.to_jsonrpc()
         response["id"] = request_id
-        
+
         # Add traceback in development mode only
         if self._include_traceback and mcp_error.traceback_str:
             response["error"]["data"]["traceback"] = mcp_error.traceback_str
-        
+
         return response
-    
+
     def _log_error(self, error: Exception, request_id: str):
         """Log error with context."""
         logger.error(
@@ -280,7 +280,7 @@ class ErrorHandler:
 def error_handler(func):
     """Decorator for automatic error handling."""
     handler = ErrorHandler()
-    
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
@@ -288,7 +288,7 @@ def error_handler(func):
         except Exception as e:
             request_id = kwargs.get("request_id")
             return handler.handle(e, request_id)
-    
+
     return wrapper
 ```
 
@@ -305,18 +305,18 @@ T = TypeVar("T")
 class RetryPolicy:
     """
     Retry policy for transient errors.
-    
+
     Provides:
     - Exponential backoff
     - Configurable retry limits
     - Error classification
-    
+
     Safeguards:
     - Bounds on retry attempts
     - Timeout protection
     - Error logging
     """
-    
+
     def __init__(
         self,
         max_retries: int = 3,
@@ -326,7 +326,7 @@ class RetryPolicy:
     ):
         """
         Initialize retry policy.
-        
+
         Args:
             max_retries: Maximum retry attempts
             base_delay: Initial delay in seconds
@@ -338,12 +338,12 @@ class RetryPolicy:
         self.base_delay = max(base_delay, 0.1)
         self.max_delay = min(max_delay, 300.0)
         self.exponential_base = exponential_base
-    
+
     def get_delay(self, attempt: int) -> float:
         """Calculate delay for given attempt number."""
         delay = self.base_delay * (self.exponential_base ** attempt)
         return min(delay, self.max_delay)
-    
+
     def is_retryable(self, error: Exception) -> bool:
         """Determine if error is retryable."""
         retryable_codes = {
@@ -351,10 +351,10 @@ class RetryPolicy:
             ErrorCode.RATE_LIMIT_EXCEEDED,
             ErrorCode.INTERNAL_ERROR,
         }
-        
+
         if isinstance(error, MCPError):
             return error.code in retryable_codes
-        
+
         # Retry on connection errors
         return isinstance(error, (ConnectionError, TimeoutError))
 
@@ -365,44 +365,44 @@ async def with_retry(
 ) -> T:
     """
     Execute function with retry on transient errors.
-    
+
     Safeguards:
     - Limits retry attempts
     - Implements backoff
     - Logs retry attempts
-    
+
     Args:
         func: Async function to execute
         policy: Retry policy (default: standard policy)
-        
+
     Returns:
         Function result
-        
+
     Raises:
         Last exception if all retries fail
     """
     policy = policy or RetryPolicy()
     last_error = None
-    
+
     for attempt in range(policy.max_retries + 1):
         try:
             return await func()
         except Exception as e:
             last_error = e
-            
+
             if attempt >= policy.max_retries:
                 break
-            
+
             if not policy.is_retryable(e):
                 break
-            
+
             delay = policy.get_delay(attempt)
             logger.warning(
                 f"Retry attempt {attempt + 1}/{policy.max_retries}, "
                 f"waiting {delay:.1f}s"
             )
             await asyncio.sleep(delay)
-    
+
     raise last_error
 ```
 
@@ -436,20 +436,20 @@ error_handling:
   include_traceback: false
   log_level: "ERROR"
   sanitize_messages: true
-  
+
   retry:
     enabled: true
     max_attempts: 3
     base_delay: 1.0
     max_delay: 60.0
     exponential_base: 2.0
-    
+
   recovery:
     circuit_breaker:
       enabled: true
       failure_threshold: 5
       recovery_timeout: 30
-    
+
   reporting:
     enabled: true
     sample_rate: 1.0
@@ -466,11 +466,11 @@ async def process_request(request):
         # Validate request
         if not request.data:
             raise ValidationError("Request data is required")
-        
+
         # Process
         result = await do_processing(request.data)
         return {"result": result}
-        
+
     except ValidationError:
         raise  # Re-raise validation errors
     except Exception as e:
@@ -508,11 +508,11 @@ def on_error(error: MCPError, context: dict):
         # Wait and retry
         retry_after = error.data.get("retry_after", 60)
         return {"action": "retry", "delay": retry_after}
-    
+
     elif error.code == ErrorCode.TIMEOUT:
         # Use cached response
         return {"action": "cache", "key": context.get("cache_key")}
-    
+
     else:
         # No recovery possible
         return {"action": "fail"}
@@ -545,17 +545,17 @@ raise MCPError(
 ```python
 class CircuitBreaker:
     """Prevent cascade failures."""
-    
+
     def __init__(self, failure_threshold: int = 5):
         self.failures = 0
         self.threshold = failure_threshold
         self.state = "closed"
-    
+
     def record_failure(self):
         self.failures += 1
         if self.failures >= self.threshold:
             self.state = "open"
-    
+
     def is_open(self) -> bool:
         return self.state == "open"
 ```

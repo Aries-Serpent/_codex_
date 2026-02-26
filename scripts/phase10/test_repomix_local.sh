@@ -37,9 +37,9 @@ if command -v stat >/dev/null 2>&1; then
     # macOS and Linux compatible
     SIZE=$(stat -f%z codex-architecture-sync.xml 2>/dev/null || stat -c%s codex-architecture-sync.xml)
     SIZE_MB=$(echo "scale=2; $SIZE / 1024 / 1024" | bc)
-    
+
     echo "📏 File size: ${SIZE_MB}MB"
-    
+
     if [ $SIZE -lt 5242880 ]; then  # 5MB in bytes
         echo "✅ File size within target (< 5MB)"
     else

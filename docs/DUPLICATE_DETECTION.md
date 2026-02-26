@@ -170,7 +170,7 @@ python tools/duplicate_inventory.py . \
 python tools/duplicate_inventory.py . \
   --modes exact \
   --formats markdown
-  
+
 # Check supplemental_duplicates.md for SHIM status
 ```
 

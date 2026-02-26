@@ -105,7 +105,7 @@ for file in \
     "$REPO_ROOT/setup.cfg" \
     "$REPO_ROOT/pytest.ini" \
     "$REPO_ROOT/.github/agents/AGENT_REGISTRY.yaml"; do
-    
+
     if [[ -f "$file" ]]; then
         echo "================================================" >> "$OUTPUT_FILE"
         echo "FILE: $file" >> "$OUTPUT_FILE"
@@ -181,7 +181,7 @@ Total Files Collected:
   - Config/Schema:   $CONFIG_COUNT files
   - Prompts:         $PROMPT_COUNT files
   - Agent Defs:      $AGENT_COUNT files
-  
+
 Total: $((MD_COUNT + PY_COUNT + RS_COUNT + CONFIG_COUNT + PROMPT_COUNT + AGENT_COUNT)) files
 
 Next Steps:

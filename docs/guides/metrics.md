@@ -254,13 +254,13 @@ Example test:
 ```python
 def test_bleu_metric_correctness():
     from codex_ml.metrics.registry import get_metric
-    
+
     metric = get_metric("bleu")
-    
+
     # Perfect match
     score = metric(preds=["hello"], targets=["hello"])
     assert score == 1.0 or score is None  # None if nltk missing
-    
+
     # No match
     score = metric(preds=["hello"], targets=["goodbye"])
     assert score is not None and score < 0.3 or score is None

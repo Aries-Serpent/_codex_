@@ -107,22 +107,22 @@ grep -A 5 "uncovered" coverage/tarpaulin-report.html | \
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_edge_case_empty_input() {
         // Test empty/null inputs
     }
-    
+
     #[test]
     fn test_boundary_conditions() {
         // Test min/max values
     }
-    
+
     #[test]
     fn test_error_handling() {
         // Test all error paths
     }
-    
+
     #[test]
     fn test_concurrent_access() {
         // Test thread safety
@@ -149,16 +149,16 @@ CURRENT_COV=0
 
 while [ $CURRENT_COV -lt $TARGET_COV ]; do
     echo "🔄 Iteration: Current coverage $CURRENT_COV%"
-    
+
     # Run tests
     cargo test --lib --release
-    
+
     # Measure coverage
     cargo tarpaulin --out Json --output-dir coverage
     CURRENT_COV=$(jq '.coverage' coverage/tarpaulin-report.json)
-    
+
     echo "📊 Coverage: $CURRENT_COV%"
-    
+
     if [ $CURRENT_COV -lt $TARGET_COV ]; then
         echo "🔍 Analyzing gaps..."
         # Manual intervention point

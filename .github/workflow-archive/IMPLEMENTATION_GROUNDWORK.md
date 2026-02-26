@@ -244,7 +244,7 @@ done
 2. per-iteration-status-pipeline.yml (expected consolidation of 5 monitoring workflows)
 3. cache-management.yml (expected consolidation of cache-cleanup.yml, cache-warmer.yml)
 
-Verify if these workflows exist under different names or if consolidation is incomplete. 
+Verify if these workflows exist under different names or if consolidation is incomplete.
 Create missing workflows if needed. Report findings with workflow status and next steps.
 ```
 

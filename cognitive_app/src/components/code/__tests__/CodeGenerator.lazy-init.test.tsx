@@ -1,12 +1,12 @@
 /**
  * CodeGenerator Component - Lazy Initialization Tests
- * 
+ *
  * Tests for PR #2705 lazy initialization improvements:
  * - Test 2: No API Key scenario
- * - Test 3: With API Key scenario  
+ * - Test 3: With API Key scenario
  * - Test 4: Mock Fallback scenario
  * - Test 5: Environment variable configuration
- * 
+ *
  * These tests validate the lazy initialization pattern implemented
  * in response to code review feedback.
  */
@@ -19,13 +19,13 @@ import { CodeGenerator } from '../CodeGenerator';
 vi.mock('@/lib/codex-api-client', () => {
   class CodexAPIClient {
     constructor(apiUrl: string, apiKey: string) {}
-    
+
     async getStatus() {
       // Simulate async delay for realistic timing
       await new Promise(resolve => setTimeout(resolve, 50));
       return { status: 'ok' };
     }
-    
+
     async generateCode(prompt: string) {
       return {
         code: 'def hello():\n    print("Hello, World!")',
@@ -41,14 +41,14 @@ vi.mock('@/lib/codex-api-client', () => {
       };
     }
   }
-  
+
   class CodexAPIError extends Error {
     constructor(message: string, public statusCode: number) {
       super(message);
       this.name = 'CodexAPIError';
     }
   }
-  
+
   return {
     CodexAPIClient,
     CodexAPIError,
@@ -58,13 +58,13 @@ vi.mock('@/lib/codex-api-client', () => {
 vi.mock('@/lib/mock-api-client', () => {
   class MockCodexAPIClient {
     constructor() {}
-    
+
     async getStatus() {
       // Simulate async delay for realistic timing
       await new Promise(resolve => setTimeout(resolve, 50));
       return { status: 'mock' };
     }
-    
+
     async generateCode(prompt: string) {
       return {
         code: '# Mock generated code\ndef example():\n    pass',
@@ -80,7 +80,7 @@ vi.mock('@/lib/mock-api-client', () => {
       };
     }
   }
-  
+
   return {
     MockCodexAPIClient,
   };
@@ -100,7 +100,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
   beforeEach(() => {
     // Save original environment
     originalEnv = { ...import.meta.env };
-    
+
     // Clear all mocks
     vi.clearAllMocks();
   });
@@ -114,7 +114,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
   /**
    * Test 2: Lazy Initialization - No API Key
-   * 
+   *
    * Validates behavior when VITE_CODEX_KEY is not set:
    * ✅ Error message displayed
    * ✅ API status shows "Error" (red)
@@ -143,12 +143,12 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       await waitFor(() => {
         const statusText = screen.getByText(/connected/i);
         expect(statusText).toBeInTheDocument();
-        
+
         // Verify green status indicator (mock fallback available)
         const statusContainer = statusText.closest('div');
         const statusDot = statusContainer?.querySelector('.bg-green-500');
         expect(statusDot).toBeInTheDocument();
-        
+
         // Verify info message about demo mode
         expect(screen.getByText(/using demo mode/i)).toBeInTheDocument();
       }, { timeout: 2000 });
@@ -165,11 +165,11 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
         // Since prompt is empty, button is disabled due to !isValidPrompt, not apiStatus
         expect(generateButton).toBeDisabled(); // Still disabled due to empty prompt
       });
-      
+
       // But let's verify it enables with valid prompt
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
       fireEvent.change(textarea, { target: { value: 'Valid prompt with enough characters' } });
-      
+
       await waitFor(() => {
         const generateButton = screen.getByRole('button', { name: /generate code/i });
         expect(generateButton).not.toBeDisabled(); // Now enabled with valid prompt
@@ -179,7 +179,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
   /**
    * Test 3: Lazy Initialization - With API Key
-   * 
+   *
    * Validates behavior when VITE_CODEX_KEY is set:
    * ✅ API status checks on mount
    * ✅ Status shows "Connected" (green) or "Checking" (yellow)
@@ -218,7 +218,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
     it('[APPROVED] should enable generate button after status check completes', async () => {
       render(<CodeGenerator />);
 
-      // Wait for status check to complete  
+      // Wait for status check to complete
       await waitFor(() => {
         const statusText = screen.queryByText(/connected/i) || screen.queryByText(/error/i);
         expect(statusText).toBeInTheDocument();
@@ -239,7 +239,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
   /**
    * Test 4: Mock Fallback Scenario
-   * 
+   *
    * Validates behavior when API call fails:
    * ✅ Invalid API key provided
    * ✅ Mock client activates automatically
@@ -252,11 +252,11 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
-      
+
       // Short prompt (invalid)
       fireEvent.change(textarea, { target: { value: 'Short' } });
       expect(screen.getByText(/5 \/ 5000/)).toBeInTheDocument();
-      
+
       // Valid prompt (10+ chars) - "Create a hello world function" = 29 chars
       fireEvent.change(textarea, { target: { value: 'Create a hello world function' } });
       expect(screen.getByText(/29 \/ 5000/)).toBeInTheDocument();
@@ -267,7 +267,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
-      
+
       // Check character counter updates
       fireEvent.change(textarea, { target: { value: 'Test' } });
       expect(screen.getByText(/4 \/ 5000/)).toBeInTheDocument();
@@ -287,7 +287,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
   /**
    * Test 5: Cascade Timing Configuration
-   * 
+   *
    * Validates environment variable configuration behavior.
    * Note: This tests the CodeGenerator component's integration,
    * not the CascadingExecutionMonitor timing constant directly.
@@ -323,7 +323,7 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
   /**
    * Additional Validation: Component Structure
-   * 
+   *
    * Validates UI elements are present as expected
    */
   describe('Component Structure Validation', () => {
@@ -333,14 +333,14 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
 
       // Main heading
       expect(screen.getByText(/code generation/i)).toBeInTheDocument();
-      
+
       // Status section (updated from API status)
       expect(screen.getByText(/AI Mode:/i)).toBeInTheDocument();
       expect(screen.getByText(/Status:/i)).toBeInTheDocument();
-      
+
       // Prompt textarea
       expect(screen.getByPlaceholderText(/example: create a fastapi endpoint/i)).toBeInTheDocument();
-      
+
       // Generate button
       expect(screen.getByRole('button', { name: /generate code/i })).toBeInTheDocument();
     });
@@ -358,18 +358,18 @@ describe('CodeGenerator - Lazy Initialization Tests (PR #2705)', () => {
       render(<CodeGenerator />);
 
       const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
-      
+
       // Short input (invalid) should show error styling
       fireEvent.change(textarea, { target: { value: 'Short' } });
-      
+
       // Wait for the aria-invalid attribute to be applied
       await waitFor(() => {
         expect(textarea).toHaveAttribute('aria-invalid', 'true');
       }, { timeout: 1000 });
-      
+
       // Valid input should not have error styling
       fireEvent.change(textarea, { target: { value: 'This is a valid prompt with enough characters' } });
-      
+
       await waitFor(() => {
         expect(textarea).toHaveAttribute('aria-invalid', 'false');
       }, { timeout: 1000 });

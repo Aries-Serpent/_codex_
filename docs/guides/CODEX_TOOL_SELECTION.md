@@ -8,7 +8,7 @@
 ```text
 START: "I need to create/modify a file"
   │
-  ├─→ "Is it a NEW file?" 
+  ├─→ "Is it a NEW file?"
   │    └─→ YES: Use `cat <<'EOF'` or `echo "..." > file`
   │    └─→ NO: Continue
   │

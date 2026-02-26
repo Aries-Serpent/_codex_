@@ -134,7 +134,7 @@ tests/metrics/test_f1_score.py::test_f1_micro_handles_zero_division PASSED ✅
 
 **Problem:**
 ```
-ValueError: Duplicated timeseries in CollectorRegistry: 
+ValueError: Duplicated timeseries in CollectorRegistry:
 {'codex_requests_created', 'codex_requests', 'codex_requests_total'}
 ```
 
@@ -146,12 +146,12 @@ ValueError: Duplicated timeseries in CollectorRegistry:
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
     from prometheus_client import REGISTRY
-    
+
     # Save collectors before test
     collectors_before = list(REGISTRY._collector_to_names.keys())
-    
+
     yield
-    
+
     # Clean up collectors added during test
     collectors_after = list(REGISTRY._collector_to_names.keys())
     for collector in collectors_after:
@@ -218,7 +218,7 @@ audit = AuditResult(
 
 **Problem:**
 ```
-PytestCollectionWarning: cannot collect test class 'TestExecutionMetrics' 
+PytestCollectionWarning: cannot collect test class 'TestExecutionMetrics'
 because it has a __init__ constructor
 ```
 

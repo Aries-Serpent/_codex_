@@ -9,7 +9,7 @@ collected 12843 items / 111 deselected / 12732 selected
 ___ ERROR collecting tests/integration/cli/test_cli_pipeline_integration.py ____
 ImportError: No module named 'yaml'
 
-___ ERROR collecting tests/integration/services/test_crawler_services.py ____  
+___ ERROR collecting tests/integration/services/test_crawler_services.py ____
 ImportError: No module named 'yaml'
 
 ___ ERROR collecting tests/metrics/test_streaming_metrics.py ____
@@ -23,14 +23,14 @@ AttributeError: PyTorch is not installed in this environment
 ============================= SUMMARY =======================================
 Collection: 12,843 items
 Selected: 12,732
-Skipped: 226  
+Skipped: 226
 Deselected: 111
 Errors: 149 (collection halted)
 Failures: 0 (not executed)
 
 Primary Blocking Issues:
 - Missing numpy (affects ~40 test modules)
-- Missing PyYAML (affects ~50 test modules)  
+- Missing PyYAML (affects ~50 test modules)
 - Missing hydra-core (affects ~25 test modules)
 - Missing mlflow (affects ~20 test modules)
 - Missing torch (affects ~15 test modules)

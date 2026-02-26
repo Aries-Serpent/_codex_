@@ -154,7 +154,7 @@ jobs:
       - name: Check for common issues
         run: python scripts/ci/auto_fix_common_issues.py --check-only
       # This will fail fast if issues detected, saving CI time
-  
+
   tests:
     needs: pre-flight-checks  # Only run if checks pass
     # ... rest of test job
@@ -205,11 +205,11 @@ Pattern 6: Test Assertions
 Common CI Issues - Summary Report
 ======================================================================
 
-Pattern                        Issues          Fixed     
+Pattern                        Issues          Fixed  
 ----------------------------------------------------------------------
-Unused Imports                 5               Manual    
-Coverage Thresholds            2               Manual    
-Test Assertions                3               Manual    
+Unused Imports                 5               Manual  
+Coverage Thresholds            2               Manual  
+Test Assertions                3               Manual  
 ----------------------------------------------------------------------
 TOTAL                          10              0/10
 
@@ -231,10 +231,10 @@ Pattern 4: Coverage Thresholds
 Common CI Issues - Summary Report
 ======================================================================
 
-Pattern                        Issues          Fixed     
+Pattern                        Issues          Fixed  
 ----------------------------------------------------------------------
-Unused Imports                 5               5/5       
-Coverage Thresholds            2               2/2       
+Unused Imports                 5               5/5  
+Coverage Thresholds            2               2/2  
 ----------------------------------------------------------------------
 TOTAL                          7               7/7
 

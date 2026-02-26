@@ -47,7 +47,7 @@ Total issues (by confidence):
    - **Location**: Line 23
    - **Description**: Use of subprocess module
    - **Justification**: Required for deployment automation
-   - **Mitigation**: 
+   - **Mitigation**:
      - Always uses `shell=False` for safe execution
      - No arbitrary command execution
      - All inputs are validated

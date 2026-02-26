@@ -47,7 +47,7 @@
 
 **1. Fix Generator** (`tools/auto_remediation/fix_generator.py`)
 - **Lines**: 407 (target: ~300)
-- **Features**: 
+- **Features**:
   - 7 fix strategies (shell injection, eval/exec, pickle, XML, input validation, weak crypto, file permissions)
   - Context-aware patching
   - Multi-strategy selection
@@ -248,7 +248,7 @@ flowchart LR
   - Multiple fixes generation
   - Syntax validation
   - Strategy selection
-  
+
 - Verifier: 8 tests
   - Hash calculation
   - Complexity calculation

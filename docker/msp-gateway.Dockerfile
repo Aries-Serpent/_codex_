@@ -1,5 +1,5 @@
 # MSP Gateway Dockerfile (Local-first, Offline-capable)
-# 
+#
 # Purpose:
 # - Provide a reproducible container environment for the MSP Gateway
 # - Support local development and testing

@@ -253,24 +253,24 @@ from tree_sitter import Language, Parser
 
 class LanguageRegistry:
     """Centralized language parser registry."""
-    
+
     LANGUAGES = {
         "python": {"module": "tree_sitter_python", "name": "python"},
         "yaml": {"module": "tree_sitter_yaml", "name": "yaml"},
         "json": {"module": "tree_sitter_json", "name": "json"},
     }
-    
+
     _cache = {}
-    
+
     @classmethod
     def get_language(cls, lang_name: str):
         """Get language parser (cached)."""
         if lang_name in cls._cache:
             return cls._cache[lang_name]
-        
+
         if lang_name not in cls.LANGUAGES:
             raise ValueError(f"Unsupported language: {lang_name}")
-        
+
         config = cls.LANGUAGES[lang_name]
         module = __import__(config["module"])
         lang = Language(module.language())
@@ -373,24 +373,24 @@ from codex.ast import StandardizedASTNode
 
 class ASTPlugin(ABC):
     """Base class for AST parser plugins."""
-    
+
     @property
     @abstractmethod
     def language(self) -> str:
         """Return language identifier (e.g., 'python', 'yaml')."""
         pass
-    
+
     @property
     @abstractmethod
     def file_extensions(self) -> list[str]:
         """Return supported file extensions."""
         pass
-    
+
     @abstractmethod
     def parse(self, code: str, file_path: str) -> StandardizedASTNode:
         """Parse code and return standardized AST."""
         pass
-    
+
     @abstractmethod
     def can_parse(self, file_path: str) -> bool:
         """Check if this plugin can parse the file."""
@@ -481,7 +481,7 @@ parser = StreamingParser(chunk_size=64*1024)  # 64KB chunks
 
 for node in parser.parse_file("huge_file.py"):
     process(node)
-    
+
 # Or collect all
 nodes = list(parser.parse_file("huge_file.py"))
 ```
@@ -543,49 +543,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: pip install -e ".[dev]"
-      
+
       - name: Run code smell detection
         run: |
           python -c "
           from codex.ast import CodeSmellDetector
           detector = CodeSmellDetector()
           results = detector.detect_directory('src/')
-          
+
           errors = []
           for file, smells in results.items():
               for smell in smells:
                   if smell.severity.value == 'error':
                       errors.append(smell)
                       print(f'::error file={file},line={smell.line_start}::{smell.message}')
-          
+
           if errors:
               print(f'Found {len(errors)} error-level smells')
               exit(1)
           "
-      
+
       - name: Export knowledge graph
         run: |
           python -c "
           from codex.ast import parse_python, export_knowledge_graph, ExportFormat
           from pathlib import Path
-          
+
           nodes = []
           for f in Path('src').rglob('*.py'):
               tree = parse_python(f)
               if tree:
                   nodes.append(tree)
-          
+
           export_knowledge_graph(nodes, ExportFormat.JSON, 'ast_report.json')
           "
-      
+
       - uses: actions/upload-artifact@v4
         with:
           name: ast-report
@@ -778,14 +778,14 @@ from codex.ast import (
     UniversalParser,
     ParseError,
     parse_python,
-    
+
     # Smells (FR-AST-007)
     CodeSmellDetector,
     CodeSmell,
     SmellSeverity,
     SmellCategory,
     detect_smells,
-    
+
     # Export (FR-AST-011)
     KnowledgeGraphExporter,
     ExportFormat,
@@ -965,14 +965,14 @@ pytest tests/ast/test_parser.py -v
    ```bash
    # Rollback to specific checkpoint
    git revert [commit-hash]
-   
+
    # Or selective removal
    rm -f src/codex/ast/parser.py src/codex/ast/smells.py src/codex/ast/export.py
    rm -f tests/ast/test_parser.py tests/ast/test_smells.py tests/ast/test_export.py
-   
+
    # Keep existing infrastructure
    git restore src/codex/ast/node.py src/codex/ast/graph.py src/codex/ast/metrics.py
-   
+
    # Verify baseline still works
    pytest tests/ast/test_node.py tests/ast/test_graph.py tests/ast/test_metrics.py
    ```

@@ -372,10 +372,10 @@ def load_from_env(env_var_name: str):
     """Load Python module from environment variable."""
     # Get encoded content
     encoded = os.environ[env_var_name]
-    
+
     # Decode
     code = base64.b64decode(encoded).decode('utf-8')
-    
+
     # Write to temp file
     with tempfile.NamedTemporaryFile(
         mode='w',
@@ -384,13 +384,13 @@ def load_from_env(env_var_name: str):
     ) as f:
         f.write(code)
         temp_path = f.name
-    
+
     # Import module
     module_name = env_var_name.lower()
     spec = importlib.util.spec_from_file_location(module_name, temp_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    
+
     return module
 
 # Usage

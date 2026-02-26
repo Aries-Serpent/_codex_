@@ -15,7 +15,7 @@ interface ForceVectorBarProps {
 
 export function ForceVectorBar({ vector, index, maxMagnitude = 100 }: ForceVectorBarProps) {
   const percentage = (vector.magnitude / maxMagnitude) * 100;
-  
+
   const getDirectionLabel = (degrees: number) => {
     const normalized = ((degrees % 360) + 360) % 360;
     if (normalized >= 337.5 || normalized < 22.5) return 'E';
@@ -105,7 +105,7 @@ export function ForceVectorBar({ vector, index, maxMagnitude = 100 }: ForceVecto
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: index * 0.1 }}
         />
-        
+
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full opacity-50"
           style={{

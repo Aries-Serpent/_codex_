@@ -110,36 +110,36 @@ jobs:
     environment:
       name: activestate-production
       url: https://platform.activestate.com/Aries-Serpent/codex-ml
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install ActiveState CLI
         run: |
           curl -sSf https://platform.activestate.com/dl/cli/install.sh | sh
           echo "$HOME/.local/ActiveState/StateTool" >> $GITHUB_PATH
-      
+
       - name: Build package
         run: |
           pip install build
           python -m build
-      
+
       - name: Get OIDC Token
         id: oidc
         run: |
           # GitHub automatically provides OIDC token
           echo "Token will be used via OIDC"
-      
+
       - name: Authenticate with ActiveState (OIDC)
         run: |
           # ActiveState CLI automatically uses OIDC when configured
           state auth --oidc
-      
+
       - name: Publish Package
         run: |
           state publish dist/*.whl --project Aries-Serpent/codex-ml
@@ -199,10 +199,10 @@ publish-activestate:
     # Install ActiveState CLI
     - curl -sSf https://platform.activestate.com/dl/cli/install.sh | sh
     - export PATH="$HOME/.local/ActiveState/StateTool:$PATH"
-    
+
     # Authenticate using OIDC token
     - state auth --token ${ACTIVESTATE_TOKEN}
-    
+
     # Publish package
     - state publish dist/*.whl --project aries-serpent/codex-ml
   only:

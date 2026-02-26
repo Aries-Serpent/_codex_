@@ -69,7 +69,7 @@ jobs:
     permissions:
       contents: read
       actions: write
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -78,28 +78,28 @@ jobs:
         run: |
           python3 - << 'PY'
           import math, json, os
-          
+
           # Read dataset
           data_path = "${{ github.event.inputs.dataset_path }}"
           with open(data_path, 'rb') as f:
               data = f.read()
-          
+
           # Configuration
           MAX_CHUNK_SIZE = 49152  # 48 KB
           dataset_id = "${{ github.event.inputs.dataset_id }}"
           timestamp = "${{ github.run_started_at }}"
-          
+
           # Calculate pages
           total_size = len(data)
           pages = math.ceil(total_size / MAX_CHUNK_SIZE)
-          
+
           # Create chunks
           chunks = []
           for i in range(pages):
                   start = i * MAX_CHUNK_SIZE
               end = min((i + 1) * MAX_CHUNK_SIZE, total_size)
               chunks.append(data[start:end])
-          
+
           # Generate index
           index = {
               "dataset_id": dataset_id,
@@ -110,16 +110,16 @@ jobs:
               "total_size_bytes": total_size,
               "compression": "none"
           }
-          
+
           # Write index
           with open('index.json', 'w') as f:
               json.dump(index, f, separators=(',', ':'))
-          
+
           # Write pages
           for i, chunk in enumerate(chunks):
               with open(f"page_{i+1:03}.txt", 'wb') as f:
                   f.write(chunk)
-          
+
           print(f"Created {pages} pages totaling {total_size} bytes")
           print(f"::set-output name=pages::{pages}")
           PY
@@ -168,10 +168,10 @@ jobs:
     permissions:
       contents: read
       actions: read
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Read index variable
         id: read_index
         env:
@@ -181,7 +181,7 @@ jobs:
           echo "Reading index from ${INDEX_VAR}..."
           gh variable get "${INDEX_VAR}" > index.json
           cat index.json | jq .
-          
+
           # Extract page count
           PAGES=$(jq -r '.pages' index.json)
           echo "::set-output name=pages::${PAGES}"
@@ -192,21 +192,21 @@ jobs:
         run: |
           # Read page keys from index
           KEYS=$(jq -r '.keys[]' index.json)
-          
+
           # Initialize output
           : > dataset_assembled.txt
-          
+
           # Fetch each page
           for KEY in $KEYS; do
             echo "Fetching ${KEY}..."
             gh variable get "${KEY}" >> dataset_assembled.txt
           done
-          
+
           # Verify size
           EXPECTED_SIZE=$(jq -r '.total_size_bytes' index.json)
           ACTUAL_SIZE=$(wc -c < dataset_assembled.txt)
           echo "Expected: ${EXPECTED_SIZE} bytes, Actual: ${ACTUAL_SIZE} bytes"
-          
+
           if [ "${EXPECTED_SIZE}" -eq "${ACTUAL_SIZE}" ]; then
             echo "✅ Dataset assembled successfully"
           else
@@ -253,19 +253,19 @@ jobs:
     runs-on: ubuntu-latest
     # Gate: Only run if enabled
     if: ${{ vars.PREDEPLOY_ENABLED == 'true' }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Execute shared predeploy command
         if: ${{ vars.PREDEPLOY_COMMAND != '' }}
         run: ${{ vars.PREDEPLOY_COMMAND }}
-      
+
       - name: Execute shared predeploy script
         if: ${{ vars.PREDEPLOY_SCRIPT != '' }}
         run: |
@@ -274,7 +274,7 @@ jobs:
           EOF
           chmod +x /tmp/predeploy.sh
           bash -x /tmp/predeploy.sh
-      
+
       - name: Run deterministic audit
         if: ${{ vars.AUDIT_PREDEPLOY_GATE == 'true' }}
         env:
@@ -289,10 +289,10 @@ jobs:
           python scripts/space_traversal/audit_runner.py stage S5
           python scripts/space_traversal/audit_runner.py stage S6
           python scripts/space_traversal/audit_runner.py stage S7
-      
+
       # SECURITY: Manual approval gate (use with caution)
       # WARNING: Third-party action creates supply chain risk. Prefer native GitHub solutions.
-      # 
+      #
       # RECOMMENDED APPROACH: Use GitHub Environment Protection Rules instead
       # 1. Create a "production" environment in repo settings
       # 2. Configure required reviewers (Settings > Environments > production > Required reviewers)
@@ -352,20 +352,20 @@ jobs:
       ECOSYSTEM_COORD_SEED: ${{ vars.ECOSYSTEM_COORD_SEED }}
       VALIDATION_SEED: ${{ vars.VALIDATION_SEED }}
       WANDB_MODE: ${{ vars.WANDB_MODE }}
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Deploy agent
         run: |
           AGENT="${{ github.event.inputs.agent_name }}"
           echo "Deploying ${AGENT} agent..."
-          
+
           # Get appropriate seed from environment
           case "${AGENT}" in
             performance-monitor)
@@ -384,9 +384,9 @@ jobs:
               AGENT_SEED="${ECOSYSTEM_COORD_SEED}"
               ;;
           esac
-          
+
           echo "Using seed: ${AGENT_SEED}"
-          
+
           # Run agent with deterministic seed
           python .github/agents/${AGENT}-agent/src/main.py \
             --seed "${AGENT_SEED}" \
@@ -487,7 +487,7 @@ from typing import Dict, Any, Optional, List
 
 class GitHubVariableManager:
     """Manage GitHub repository variables"""
-    
+
     def __init__(self, owner: str, repo: str, token: str):
         self.owner = owner
         self.repo = repo
@@ -498,14 +498,14 @@ class GitHubVariableManager:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28"
         }
-    
+
     def create_or_update(self, name: str, value: str) -> bool:
         """Create or update a variable (PUT)"""
         url = f"{self.base_url}/{name}"
         data = {"name": name, "value": value}
-        
+
         response = requests.put(url, headers=self.headers, json=data)
-        
+
         if response.status_code in [201, 204]:
             print(f"✅ Variable '{name}' created/updated successfully")
             return True
@@ -513,62 +513,62 @@ class GitHubVariableManager:
             print(f"❌ Failed to create/update '{name}': {response.status_code}")
             print(response.text)
             return False
-    
+
     def get(self, name: str) -> Optional[str]:
         """Get a variable value (GET)"""
         url = f"{self.base_url}/{name}"
-        
+
         response = requests.get(url, headers=self.headers)
-        
+
         if response.status_code == 200:
             return response.json().get('value')
         else:
             print(f"❌ Failed to get '{name}': {response.status_code}")
             return None
-    
+
     def delete(self, name: str) -> bool:
         """Delete a variable (DELETE)"""
         url = f"{self.base_url}/{name}"
-        
+
         response = requests.delete(url, headers=self.headers)
-        
+
         if response.status_code == 204:
             print(f"✅ Variable '{name}' deleted successfully")
             return True
         else:
             print(f"❌ Failed to delete '{name}': {response.status_code}")
             return False
-    
+
     def list_all(self) -> List[Dict[str, Any]]:
         """List all variables"""
         response = requests.get(self.base_url, headers=self.headers)
-        
+
         if response.status_code == 200:
             return response.json().get('variables', [])
         else:
             print(f"❌ Failed to list variables: {response.status_code}")
             return []
-    
+
     def upload_paginated_dataset(self, dataset_path: str, dataset_id: str) -> bool:
         """Upload a large dataset as paginated variables"""
         import math
-        
+
         # Read dataset
         with open(dataset_path, 'rb') as f:
             data = f.read()
-        
+
         # Configuration
         MAX_CHUNK_SIZE = 49152  # 48 KB
         total_size = len(data)
         pages = math.ceil(total_size / MAX_CHUNK_SIZE)
-        
+
         # Create chunks
         chunks = []
         for i in range(pages):
             start = i * MAX_CHUNK_SIZE
             end = min((i + 1) * MAX_CHUNK_SIZE, total_size)
             chunks.append(data[start:end].decode('utf-8', errors='ignore'))
-        
+
         # Generate index
         index = {
             "dataset_id": dataset_id,
@@ -579,36 +579,36 @@ class GitHubVariableManager:
             "total_size_bytes": total_size,
             "compression": "none"
         }
-        
+
         # Upload index
         index_var = f"DATASET_{dataset_id.upper()}_INDEX"
         if not self.create_or_update(index_var, json.dumps(index, separators=(',', ':'))):
             return False
-        
+
         # Upload pages
         for i, chunk in enumerate(chunks):
             page_var = f"DATASET_{dataset_id.upper()}_P{str(i+1).zfill(3)}"
             print(f"Uploading page {i+1}/{pages}...")
             if not self.create_or_update(page_var, chunk):
                 return False
-        
+
         print(f"✅ Uploaded {pages} pages totaling {total_size} bytes")
         return True
-    
+
     def download_paginated_dataset(self, dataset_id: str, output_path: str) -> bool:
         """Download and reconstruct a paginated dataset"""
         # Read index
         index_var = f"DATASET_{dataset_id.upper()}_INDEX"
         index_json = self.get(index_var)
-        
+
         if not index_json:
             print(f"❌ Index variable not found: {index_var}")
             return False
-        
+
         index = json.loads(index_json)
         pages = index['pages']
         keys = index['keys']
-        
+
         # Download pages
         chunks = []
         for i, key in enumerate(keys):
@@ -618,14 +618,14 @@ class GitHubVariableManager:
                 print(f"❌ Failed to download page: {key}")
                 return False
             chunks.append(chunk)
-        
+
         # Assemble
         assembled = ''.join(chunks)
-        
+
         # Write to file
         with open(output_path, 'w') as f:
             f.write(assembled)
-        
+
         print(f"✅ Downloaded and assembled {len(assembled)} bytes to {output_path}")
         return True
 
@@ -641,19 +641,19 @@ def main():
         print("  upload <path> <dataset_id>   - Upload paginated dataset")
         print("  download <dataset_id> <path> - Download paginated dataset")
         sys.exit(1)
-    
+
     # Get credentials from environment
     owner = os.getenv('GITHUB_OWNER', 'Aries-Serpent')
     repo = os.getenv('GITHUB_REPO', '_codex_')
     token = os.getenv('GITHUB_TOKEN')
-    
+
     if not token:
         print("❌ GITHUB_TOKEN environment variable required")
         sys.exit(1)
-    
+
     manager = GitHubVariableManager(owner, repo, token)
     command = sys.argv[1]
-    
+
     if command == 'set' and len(sys.argv) >= 4:
         manager.create_or_update(sys.argv[2], sys.argv[3])
     elif command == 'get' and len(sys.argv) >= 3:
@@ -705,10 +705,10 @@ jobs:
     if: ${{ github.event.inputs.confirm == 'DELETE' }}
     permissions:
       actions: write
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Delete dataset variables
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -716,21 +716,21 @@ jobs:
         run: |
           # Read index to get page keys
           INDEX_VAR="DATASET_${DATASET_ID}_INDEX"
-          
+
           if gh variable get "${INDEX_VAR}" > index.json 2>/dev/null; then
             # Extract page keys
             KEYS=$(jq -r '.keys[]' index.json)
-            
+
             # Delete each page
             for KEY in $KEYS; do
               echo "Deleting ${KEY}..."
               gh variable delete "${KEY}" || true
             done
-            
+
             # Delete index
             echo "Deleting ${INDEX_VAR}..."
             gh variable delete "${INDEX_VAR}" || true
-            
+
             echo "✅ Cleanup complete"
           else
             echo "❌ Index variable not found: ${INDEX_VAR}"
@@ -759,7 +759,7 @@ from typing import Dict, Any
 
 class AgentConfigLoader:
     """Load agent configuration from environment variables (GitHub Variables)"""
-    
+
     @staticmethod
     def get_seed(agent_name: str, default: int) -> int:
         """Get agent seed from environment"""
@@ -771,17 +771,17 @@ class AgentConfigLoader:
             "reasoning-advisor": "REASONING_ADVISOR_SEED",
             "ecosystem-coordinator": "ECOSYSTEM_COORD_SEED"
         }
-        
+
         var_name = env_var_map.get(agent_name)
         if var_name:
             return int(os.getenv(var_name, str(default)))
         return default
-    
+
     @staticmethod
     def get_audit_config() -> Dict[str, Any]:
         """Get audit configuration from variables"""
         config = {}
-        
+
         # Safeguard keywords
         keywords_json = os.getenv('AUDIT_SAFEGUARD_KEYWORDS')
         if keywords_json:
@@ -789,7 +789,7 @@ class AgentConfigLoader:
                 config['safeguard_keywords'] = json.loads(keywords_json)
             except json.JSONDecodeError:
                 config['safeguard_keywords'] = keywords_json.split(',')
-        
+
         # Weights
         weights_json = os.getenv('AUDIT_WEIGHTS')
         if weights_json:
@@ -797,18 +797,18 @@ class AgentConfigLoader:
                 config['weights'] = json.loads(weights_json)
             except json.JSONDecodeError:
                 pass
-        
+
         # Thresholds
         if os.getenv('AUDIT_LOW_THRESHOLD'):
             config['low_threshold'] = float(os.getenv('AUDIT_LOW_THRESHOLD'))
-        
+
         if os.getenv('AUDIT_REGRESSION_DELTA'):
             config['regression_delta'] = float(os.getenv('AUDIT_REGRESSION_DELTA'))
-        
+
         # Max read bytes
         if os.getenv('AUDIT_MAX_READ_BYTES'):
             config['max_read_bytes'] = int(os.getenv('AUDIT_MAX_READ_BYTES'))
-        
+
         return config
 ```
 
@@ -863,7 +863,7 @@ Your agent must read configuration from these GitHub Variables (via environment)
      echo "Invalid JSON"
      exit 1
    fi
-   
+
    # Validate commands (basic check)
    if echo "${PREDEPLOY_COMMAND}" | grep -qE '(rm -rf|dd|fork|bomb)'; then
      echo "Potentially dangerous command detected"

@@ -38,12 +38,12 @@ from pathlib import Path
 
 def compute_loss(outputs, targets, loss_fn=None):
     """Compute loss between model outputs and targets.
-    
+
     Args:
         outputs: Model predictions
         targets: Ground truth labels
         loss_fn: Optional custom loss function (defaults to CrossEntropyLoss)
-    
+
     Returns:
         Loss tensor
     """
@@ -54,13 +54,13 @@ def compute_loss(outputs, targets, loss_fn=None):
 
 def save_checkpoint(model, optimizer, epoch, path):
     """Save a basic training checkpoint.
-    
+
     Args:
         model: PyTorch model
         optimizer: PyTorch optimizer
         epoch: Current epoch number
         path: Path to save checkpoint
-    
+
     Note:
         For advanced checkpointing with scheduler state, metadata,
         and cloud storage, see CheckpointManager in checkpointing.md
@@ -94,18 +94,18 @@ def train_loop(
     """Complete training loop with validation and checkpointing."""
     scaler = GradScaler() if use_amp else None
     best_val_loss = float('inf')
-    
+
     for epoch in range(num_epochs):
         # Training phase
         model.train()
         train_loss = 0.0
         train_pbar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Train]")
-        
+
         for batch_idx, (inputs, targets) in enumerate(train_pbar):
             inputs, targets = inputs.to(device), targets.to(device)
-            
+
             optimizer.zero_grad()
-            
+
             # Mixed precision forward pass
             if use_amp:
                 with autocast():
@@ -119,19 +119,19 @@ def train_loop(
                 loss = compute_loss(outputs, targets)
                 loss.backward()
                 optimizer.step()
-            
+
             train_loss += loss.item()
             train_pbar.set_postfix({"loss": loss.item()})
-        
+
         avg_train_loss = train_loss / len(train_loader)
-        
+
         # Validation phase
         val_loss = validate(model, val_loader, device)
-        
+
         # Learning rate scheduling
         if scheduler:
             scheduler.step(val_loss)
-        
+
         # Checkpoint best model
         if checkpoint_dir and val_loss < best_val_loss:
             best_val_loss = val_loss
@@ -139,9 +139,9 @@ def train_loop(
             # Note: For production use, see CheckpointManager in checkpointing.md
             # which handles scheduler state, metadata, and advanced features
             save_checkpoint(model, optimizer, epoch, checkpoint_path)
-        
+
         print(f"Epoch {epoch+1}: train_loss={avg_train_loss:.4f}, val_loss={val_loss:.4f}")
-    
+
     return model
 
 
@@ -149,14 +149,14 @@ def validate(model, val_loader, device):
     """Validation loop."""
     model.eval()
     val_loss = 0.0
-    
+
     with torch.no_grad():
         for inputs, targets in val_loader:
             inputs, targets = inputs.to(device), targets.to(device)
             outputs = model(inputs)
             loss = compute_loss(outputs, targets)
             val_loss += loss.item()
-    
+
     return val_loss / len(val_loader)
 ```
 
@@ -179,26 +179,26 @@ def distributed_train_loop(
     # Wrap model with DDP
     model = model.to(rank)
     ddp_model = DDP(model, device_ids=[rank])
-    
+
     for epoch in range(num_epochs):
         # Set epoch for distributed sampler
         train_loader.sampler.set_epoch(epoch)
-        
+
         ddp_model.train()
         for batch in train_loader:
             inputs, targets = batch
             inputs, targets = inputs.to(rank), targets.to(rank)
-            
+
             optimizer.zero_grad()
             outputs = ddp_model(inputs)
             loss = compute_loss(outputs, targets)
             loss.backward()
             optimizer.step()
-        
+
         # Synchronize metrics across all processes
         if rank == 0:
             print(f"Epoch {epoch+1} complete")
-        
+
         dist.barrier()
 ```
 
@@ -217,18 +217,18 @@ def train_with_gradient_accumulation(
     """Training loop with gradient accumulation for large batch sizes."""
     model.train()
     optimizer.zero_grad()
-    
+
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         inputs, targets = inputs.to(device), targets.to(device)
-        
+
         # Forward pass
         outputs = model(inputs)
         loss = compute_loss(outputs, targets)
-        
+
         # Scale loss by accumulation steps
         loss = loss / accumulation_steps
         loss.backward()
-        
+
         # Update weights every N steps
         if (batch_idx + 1) % accumulation_steps == 0:
             optimizer.step()
@@ -248,19 +248,19 @@ def train_epoch(model, dataloader, optimizer, device):
     """Basic training epoch implementation."""
     model.train()
     total_loss = 0.0
-    
+
     for batch in dataloader:
         inputs, targets = batch
         inputs, targets = inputs.to(device), targets.to(device)
-        
+
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = compute_loss(outputs, targets)
         loss.backward()
         optimizer.step()
-        
+
         total_loss += loss.item()
-    
+
     return total_loss / len(dataloader)
 ```
 
@@ -283,7 +283,7 @@ def train_epoch(model, dataloader, optimizer, device):
 3. **Gradient Clipping**: Prevent exploding gradients
    ```python
    import torch
-   
+
    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
    ```
 
@@ -297,7 +297,7 @@ def train_epoch(model, dataloader, optimizer, device):
 5. **Deterministic Training**: Set seeds for reproducibility
    ```python
    import torch
-   
+
    torch.manual_seed(42)
    torch.cuda.manual_seed_all(42)
    ```

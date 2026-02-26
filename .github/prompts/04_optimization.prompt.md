@@ -57,7 +57,7 @@ from .orchestrator import OrchestratorState, TaskState
 
 class VectorizedOperations:
     """Vectorized versions of core operations."""
-    
+
     @staticmethod
     def batch_normalize(tasks: Dict[str, TaskState]) -> None:
         """Normalize all spinors in batch."""
@@ -65,7 +65,7 @@ class VectorizedOperations:
             norm = np.sqrt(np.sum(np.abs(task.spinor.components)**2))
             if norm > 1e-10:
                 task.spinor.components /= norm
-    
+
     @staticmethod
     def batch_probability(tasks: Dict[str, TaskState]) -> np.ndarray:
         """Compute all probabilities at once."""
@@ -73,7 +73,7 @@ class VectorizedOperations:
             np.sum(np.abs(task.spinor.components[:2])**2)
             for task in tasks.values()
         ])
-    
+
     @staticmethod
     def batch_energy(tasks: Dict[str, TaskState], c: float) -> np.ndarray:
         """Compute all energies at once."""
@@ -91,14 +91,14 @@ from scipy.spatial import cKDTree
 
 class OptimizedMomentumOperator:
     """Momentum operator with spatial indexing."""
-    
+
     def __init__(self, constants):
         self.hbar = constants.hbar
         self.i = 1j
         self._kdtree = None
         self._positions = None
         self._task_ids = None
-    
+
     def _build_spatial_index(self, state: OrchestratorState):
         """Build KD-tree for fast neighbor queries."""
         self._task_ids = list(state.tasks.keys())
@@ -107,24 +107,24 @@ class OptimizedMomentumOperator:
             for tid in self._task_ids
         ])
         self._kdtree = cKDTree(self._positions)
-    
-    def _get_neighbors_fast(self, state: OrchestratorState, 
+
+    def _get_neighbors_fast(self, state: OrchestratorState,
                            task_id: str, radius: float = 2.0):
         """O(log N) neighbor search using KD-tree."""
         if self._kdtree is None:
             self._build_spatial_index(state)
-        
+
         task_idx = self._task_ids.index(task_id)
         task_pos = self._positions[task_idx]
-        
+
         indices = self._kdtree.query_ball_point(task_pos, radius)
-        
+
         neighbors = {}
         for idx in indices:
             if idx != task_idx:
                 neighbor_id = self._task_ids[idx]
                 neighbors[neighbor_id] = state.tasks[neighbor_id]
-        
+
         return neighbors
 ```
 
@@ -135,10 +135,10 @@ from functools import lru_cache
 
 class CachedDiracMatrices:
     """Cache Dirac matrices (they're constant)."""
-    
+
     _alpha_cache = None
     _beta_cache = None
-    
+
     @classmethod
     def alpha_vector(cls):
         if cls._alpha_cache is None:
@@ -148,7 +148,7 @@ class CachedDiracMatrices:
                 cls.alpha_z(),
             ]
         return cls._alpha_cache
-    
+
     @classmethod
     def beta(cls):
         if cls._beta_cache is None:
@@ -166,11 +166,11 @@ class CachedDiracMatrices:
 ```python
 class OptimizedOrchestratorState:
     """State with copy-on-write semantics."""
-    
+
     def copy(self, deep=False):
         """
         Shallow copy by default, deep only when needed.
-        
+
         Most history storage doesn't need deep copies.
         """
         if deep:
@@ -211,32 +211,32 @@ from codex.quantum_orchestrator import create_orchestrator
 def test_benchmark_evolution_rate(benchmark):
     """Benchmark evolution rate."""
     orch = create_orchestrator()
-    
+
     for i in range(50):
         orch.add_task(f"task_{i}", f"Task {i}", rest_mass=1.0)
-    
+
     def evolve_once():
         orch.evolve()
-    
+
     result = benchmark(evolve_once)
-    
+
     print(f"Evolution rate: {1/result.stats.mean:.1f} iter/sec")
 
 
 def test_benchmark_large_scale():
     """Benchmark 500 tasks."""
     orch = create_orchestrator()
-    
+
     for i in range(500):
         orch.add_task(f"task_{i}", f"Task {i}", rest_mass=1.0)
-    
+
     start = time.time()
     results = orch.run(max_iterations=50)
     elapsed = time.time() - start
-    
+
     rate = 50 / elapsed
     print(f"Large scale: {rate:.1f} iter/sec with 500 tasks")
-    
+
     assert rate > 5  # At least 5 iter/sec at scale
 ```
 

@@ -89,11 +89,11 @@ mkdir -p .github/agents/ci-diagnostic-agent/{src,tests,config}
 ```python
 class CIDiagnosticAgent:
     """Automated CI failure analysis"""
-    
+
     def analyze_failure(self, run_id: str) -> DiagnosticReport:
         """Analyze failed CI run"""
         logs = self.fetch_logs(run_id)
-        
+
         patterns = {
             'import_error': r'ImportError: cannot import name',
             'rust_compile': r'error\[E\d+\]:',
@@ -101,10 +101,10 @@ class CIDiagnosticAgent:
             'disk_full': r'No space left on device',
             'cache_miss': r'cache.*not found'
         }
-        
+
         findings = self.match_patterns(logs, patterns)
         root_cause = self.determine_root_cause(findings)
-        
+
         return DiagnosticReport(
             run_id=run_id,
             findings=findings,
@@ -112,7 +112,7 @@ class CIDiagnosticAgent:
             remediation=self.suggest_fixes(root_cause),
             auto_fixable=self.can_auto_fix(root_cause)
         )
-    
+
     def auto_remediate(self, report: DiagnosticReport) -> bool:
         """Attempt automatic fix"""
         if report.root_cause == 'cache_miss':
@@ -200,7 +200,7 @@ from sklearn.model_selection import train_test_split
 class ThreatDetectionML:
     def __init__(self):
         self.model = RandomForestClassifier(n_estimators=100)
-    
+
     def extract_features(self, code):
         """Extract security-relevant features"""
         return {
@@ -213,12 +213,12 @@ class ThreatDetectionML:
             'sql_queries': code.count('SELECT') + code.count('INSERT'),
             'shell_commands': code.count('shell=True')
         }
-    
+
     def predict_risk(self, code):
         """Predict security risk score"""
         features = self.extract_features(code)
         risk_score = self.model.predict_proba([list(features.values())])[0][1]
-        
+
         return {
             'risk_score': risk_score,
             'risk_level': self.classify_risk(risk_score),
@@ -285,7 +285,7 @@ app = FastAPI()
 class MonitoringDashboard:
     def __init__(self):
         self.metrics_cache = {}
-    
+
     async def collect_metrics(self):
         """Collect metrics every 15 minutes"""
         while True:
@@ -297,11 +297,11 @@ class MonitoringDashboard:
             }
             self.metrics_cache = metrics
             await asyncio.sleep(900)  # 15 minutes
-    
+
     async def fetch_ci_status(self):
         # Query GitHub Actions API
         pass
-    
+
     async def fetch_security_score(self):
         # Query Semgrep + CodeQL results
         pass
@@ -330,38 +330,38 @@ async def metrics():
 </head>
 <body>
     <h1>Codex CI/CD Health Dashboard</h1>
-    
+
     <div class="metric">
         <h2>CI Status</h2>
         <div id="ci-status"></div>
         <canvas id="ci-chart"></canvas>
     </div>
-    
+
     <div class="metric">
         <h2>Security Posture</h2>
         <div id="security-score"></div>
         <canvas id="security-chart"></canvas>
     </div>
-    
+
     <div class="metric">
         <h2>Performance Trends (7 iterations)</h2>
         <canvas id="performance-chart"></canvas>
     </div>
-    
+
     <script>
         async function updateDashboard() {
             const response = await fetch('/api/metrics');
             const metrics = await response.json();
-            
+
             // Update CI status
-            document.getElementById('ci-status').innerHTML = 
+            document.getElementById('ci-status').innerHTML =
                 `<span class="${metrics.ci_status.all_passing ? 'success' : 'failure'}">
                     ${metrics.ci_status.passing}/${metrics.ci_status.total} checks passing
                 </span>`;
-            
+
             // Update charts...
         }
-        
+
         // Update every minute
         setInterval(updateDashboard, 60000);
         updateDashboard();

@@ -87,11 +87,11 @@ async def query_shards(pool, query_vec, target_shards):
                 (vec,)
             )
             return await result.fetchall()
-    
+
     # Parallel queries
     tasks = [_query_single_shard(s, query_vec) for s in target_shards]
     results = await asyncio.gather(*tasks)
-    
+
     # Global re-ranking
     return global_rerank(results)
 ```
@@ -121,7 +121,7 @@ async def create_ticket(self, ...):
     """Create ticket - requires write:issues or admin scope."""
     validator = _scope_validator_ctx.get()
     # ... implementation
-    
+
 @require_scope(TokenScope.READ_REPO)
 async def query_knowledge_base(self, ...):
     """Query KB - requires read:repo scope."""

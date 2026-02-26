@@ -13,7 +13,7 @@ export function MetricsDashboard() {
   const { state: quantumState } = useQuantumState(true, 10000);
   const { state: agentState } = useAgentOrchestration(true, 10000);
   const { state: memoryState } = useMemorySystem(true, 10000);
-  
+
   const [sparklines, setSparklines] = useState({
     k1: [] as number[],
     advantage: [] as number[],
@@ -62,7 +62,7 @@ export function MetricsDashboard() {
     if (!agentState) return 'good';
     const activeCount = agentState.agents.filter(a => a.status === 'active' || a.status === 'thinking').length;
     const errorCount = agentState.agents.filter(a => a.status === 'error').length;
-    
+
     if (activeCount >= 3 && errorCount === 0) return 'optimal';
     if (activeCount >= 2 && errorCount <= 1) return 'good';
     if (activeCount >= 1) return 'warning';
@@ -120,7 +120,7 @@ export function MetricsDashboard() {
               trendValue={quantumState ? `${(quantumState.k1_factor * 100).toFixed(1)}%` : '0%'}
               sparkline={sparklines.k1}
             />
-            
+
             <MetricCard
               title="Quantum Advantage"
               value={quantumState?.quantum_advantage.toFixed(2) || '0.00'}
@@ -132,7 +132,7 @@ export function MetricsDashboard() {
               trendValue={`${quantumState?.quantum_advantage.toFixed(1) || '0'}×`}
               sparkline={sparklines.advantage}
             />
-            
+
             <MetricCard
               title="Coherence"
               value={quantumState ? (quantumState.coherence * 100).toFixed(1) : '0.0'}
@@ -143,7 +143,7 @@ export function MetricsDashboard() {
               trend={quantumState && quantumState.coherence >= 0.65 ? 'up' : 'neutral'}
               trendValue={`${quantumState ? (quantumState.coherence * 100).toFixed(0) : '0'}%`}
             />
-            
+
             <MetricCard
               title="Accuracy"
               value={quantumState ? (quantumState.accuracy * 100).toFixed(1) : '0.0'}
@@ -171,7 +171,7 @@ export function MetricsDashboard() {
               subtitle={`of ${agentState?.agents.length || 0} total`}
               sparkline={sparklines.activeAgents}
             />
-            
+
             <MetricCard
               title="Task Queue"
               value={agentState?.tasks.filter(t => t.status === 'pending' || t.status === 'running').length || 0}
@@ -179,7 +179,7 @@ export function MetricsDashboard() {
               status="good"
               subtitle={`${agentState?.tasks.filter(t => t.status === 'completed').length || 0} completed`}
             />
-            
+
             <MetricCard
               title="Success Rate"
               value={calculateSuccessRate().toFixed(1)}
@@ -189,7 +189,7 @@ export function MetricsDashboard() {
               target="≥90%"
               trend={calculateSuccessRate() >= 80 ? 'up' : 'neutral'}
             />
-            
+
             <MetricCard
               title="Avg Response Time"
               value="125"
@@ -220,7 +220,7 @@ export function MetricsDashboard() {
               trendValue={`${memoryState ? (memoryState.cache_hit_rate * 100).toFixed(0) : '0'}%`}
               sparkline={sparklines.cacheHit}
             />
-            
+
             <MetricCard
               title="Pattern Count"
               value={memoryState?.patterns.length || 0}
@@ -228,7 +228,7 @@ export function MetricsDashboard() {
               status="good"
               subtitle="Active patterns"
             />
-            
+
             <MetricCard
               title="Compression Rate"
               value={memoryState ? (memoryState.compression_rate * 100).toFixed(1) : '0.0'}
@@ -238,7 +238,7 @@ export function MetricsDashboard() {
               target="≥60%"
               trend={memoryState && memoryState.compression_rate >= 0.6 ? 'up' : 'neutral'}
             />
-            
+
             <MetricCard
               title="STM Usage"
               value={memoryState ? ((memoryState.stm_count / memoryState.capacity) * 100).toFixed(0) : '0'}

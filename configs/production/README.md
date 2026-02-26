@@ -143,12 +143,12 @@ tracker = MLflowTracker(
 with tracker:
     # Log parameters
     tracker.log_params({"lr": 0.001, "batch_size": 32})
-    
+
     # Training loop
     for epoch in range(num_epochs):
         # ... training code ...
         tracker.log_metrics({"loss": loss, "accuracy": acc}, step=epoch)
-    
+
     # Log artifacts
     tracker.log_artifact("model.pt")
 ```

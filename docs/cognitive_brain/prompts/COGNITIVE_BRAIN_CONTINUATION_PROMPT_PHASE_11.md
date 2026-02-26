@@ -86,10 +86,10 @@
    ```bash
    # JWT rotation verification (dry-run)
    python scripts/rotate_jwt_secret.py --verify --dry-run
-   
+
    # Secrets sync validation (check mode)
    python scripts/github_secrets_sync.py --validate --check-only
-   
+
    # Secrets manager verification (read-only)
    python scripts/phase10/automated_secrets_manager.py --action verify --name CODEX_MASTER_KEY
    ```

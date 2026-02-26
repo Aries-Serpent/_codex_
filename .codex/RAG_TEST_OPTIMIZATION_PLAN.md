@@ -176,23 +176,23 @@ def shared_rag_index():
     """Reusable RAG index for multiple tests"""
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
-        
+
         # Create minimal test corpus
         docs_dir = tmpdir / "docs"
         docs_dir.mkdir()
-        
+
         files = []
         contents = [
             "Python programming language documentation. " * 5,
             "Machine learning algorithms and models. " * 5,
             "Docker container orchestration platform. " * 5,
         ]
-        
+
         for i, content in enumerate(contents):
             file_path = docs_dir / f"doc{i}.txt"
             file_path.write_text(content)
             files.append(file_path)
-        
+
         # Build index once
         index_dir = tmpdir / "indices"
         build_index_from_files(
@@ -203,7 +203,7 @@ def shared_rag_index():
             chunk_size=200,  # Smaller chunks for faster processing
             overlap=20,
         )
-        
+
         yield {
             "index_dir": str(index_dir),
             "index_name": "shared_test_docs",
@@ -232,11 +232,11 @@ from typing import List
 
 class MockEmbeddingProvider:
     """Fast mock embeddings for unit tests that don't need real embeddings"""
-    
+
     def __init__(self, dimension: int = 384):
         self.dimension = dimension
         self._seed = 42
-    
+
     def encode(self, texts: List[str], **kwargs) -> np.ndarray:
         """Generate deterministic fake embeddings"""
         np.random.seed(self._seed)
@@ -244,7 +244,7 @@ class MockEmbeddingProvider:
         # Normalize to unit vectors (like real sentence-transformers)
         norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
         return embeddings / norms
-    
+
     def get_dimension(self) -> int:
         return self.dimension
 ```
@@ -255,7 +255,7 @@ class MockEmbeddingProvider:
 def test_indexer_chunking_logic():
     """Test chunking without real embeddings"""
     from tests.test_rag_mocks import MockEmbeddingProvider
-    
+
     provider = MockEmbeddingProvider()
     # Test chunking logic with mock embeddings
     ...
@@ -280,12 +280,12 @@ from codex.rag.retriever import Retriever
 def test_query_performance(shared_rag_index, benchmark):
     """Benchmark query performance"""
     retriever = Retriever(**shared_rag_index)
-    
+
     def query_operation():
         return retriever.query("test query", top_k=5)
-    
+
     result = benchmark(query_operation)
-    
+
     # Assert performance thresholds
     assert benchmark.stats['mean'] < 1.0  # Should take < 1 second on average
 ```

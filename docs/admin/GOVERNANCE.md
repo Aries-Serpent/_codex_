@@ -64,7 +64,7 @@ This document defines the governance structure, roles, and decision-making proce
 
 ### Small Changes (Documentation, Bug Fixes, Minor Features)
 - **Process**: Lazy consensus after 48 hours
-- **Requirements**: 
+- **Requirements**:
   - One approving review from relevant CODEOWNERS
   - CI/tests passing
   - No objections from maintainers

@@ -19,13 +19,13 @@ This document validates the TypeScript changes made to the cognitive app as part
 ```typescript
 /**
  * Default coherence level for the quantum visualization.
- * 
+ *
  * This value (0.692) was chosen empirically based on the following criteria:
  * - Visual balance: Provides clear distinction between coherent states without appearing too deterministic
  * - User engagement: Creates dynamic visualization while maintaining system predictability
  * - Threshold alignment: Falls between "medium" (>0.5) and "high" (>0.65) coherence thresholds
  * - Real-world modeling: Approximates typical quantum system coherence in practical applications
- * 
+ *
  * Values range from 0 (completely decoherent) to 1 (perfectly coherent).
  * The color coding uses 0.65 as the high coherence threshold and 0.5 as the medium threshold.
  */
@@ -77,15 +77,15 @@ const width = containerRef.current?.clientWidth || 800;
 ```typescript
 /**
  * Stage execution time in milliseconds for cascade animation timing.
- * 
+ *
  * This constant determines how long each execution stage takes in the cascading workflow
  * visualization. It can be configured via the VITE_STAGE_EXECUTION_TIME_MS environment
  * variable to allow different execution speeds for testing, demos, or production.
- * 
+ *
  * - Default: 800ms - Provides a smooth, visible animation for users to follow execution flow
  * - Min: 1ms - Must be positive to allow progression
  * - Max: 10000ms - Capped to prevent unreasonably slow animations
- * 
+ *
  * The timing affects visual feedback only and does not impact actual workflow execution performance.
  */
 const STAGE_EXECUTION_TIME_MS = (() => {

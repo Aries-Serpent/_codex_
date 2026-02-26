@@ -19,7 +19,7 @@ The `actions/download-artifact` action versions 4.0.0 through 4.1.2 contain a vu
 **Vulnerable Usage Found**: 1 instance
 - `.github/workflows/rust_swarm_ci.yml:243` - Used for benchmark result downloads
 
-**Risk Level**: 
+**Risk Level**:
 - **Before Fix**: HIGH - Potential for arbitrary file write during artifact extraction
 - **After Fix**: NONE - Patched version 4.1.3 deployed
 

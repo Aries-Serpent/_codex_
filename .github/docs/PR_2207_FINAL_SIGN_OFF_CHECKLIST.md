@@ -462,11 +462,11 @@ gh issue create --title "Rollback PR #2207: [Reason]" \
 ### Merge Authorization
 
 > **Merge authorized by:** _________________________ (Signature)
-> 
+>
 > **Date & Time:** ___/___/___ at HH:MM UTC
-> 
+>
 > **Merge Commit SHA:** _________________________________
-> 
+>
 > **Ticket Reference:** PR #2207
 
 ---

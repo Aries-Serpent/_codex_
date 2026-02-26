@@ -163,7 +163,7 @@ All production dependencies are correctly specified in `pyproject.toml`.
 
 **Root Cause**: OpenSSL 3.x and TLS 1.3 use different cipher configuration
 
-**Solution**: 
+**Solution**:
 - Removed explicit cipher string configuration
 - Rely on TLS 1.3 secure defaults (AES-GCM, ChaCha20-Poly1305)
 - Updated test expectations to accept AES-128-GCM (still secure)

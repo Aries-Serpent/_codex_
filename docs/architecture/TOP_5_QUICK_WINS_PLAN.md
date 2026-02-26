@@ -39,7 +39,7 @@ This plan addresses the architectural entropy caused by the "Split Brain" state 
   ```python
   # agents/zendesk_quantum_orchestrator.py (legacy)
   ticket_data = {"subject": "...", "priority": "urgent"}  # No validation!
-  
+
   # src/codex/zendesk/ (modern, but incomplete)
   # Missing: Pydantic models, strict typing, validation
   ```
@@ -101,7 +101,7 @@ ZENDESK_API_BASE = "https://{subdomain}.zendesk.com/api/v2/help_center"
 
 class ZendeskSyncService:
     """Resident service for knowledge synchronization."""
-    
+
     def __init__(self, subdomain: str, api_token: str):
         self.base_url = ZENDESK_API_BASE.format(subdomain=subdomain)
         self.headers = {
@@ -110,7 +110,7 @@ class ZendeskSyncService:
         }
         self.logger = logging.getLogger("codex.services.crawler")
         self.local_index = self._load_local_index()
-    
+
     def _load_local_index(self) -> Dict[str, str]:
         """Load local cache of article timestamps."""
         if not DATA_INDEX_PATH.exists():
@@ -121,13 +121,13 @@ class ZendeskSyncService:
                 return json.load(f)
         except json.JSONDecodeError:
             return {}
-    
+
     def _save_local_index(self):
         """Persist updated index to disk."""
         DATA_INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(DATA_INDEX_PATH, 'w') as f:
             json.dump(self.local_index, f, indent=2)
-    
+
     def check_and_pull(self):
         """
         Core Logic:
@@ -137,28 +137,28 @@ class ZendeskSyncService:
         4. Pipeline to codex_digest
         """
         self.logger.info("Starting synchronization cycle...")
-        
+
         # Fetch remote metadata
         remote_articles = self._fetch_remote_meta()
-        
+
         updates_found = False
         for article in remote_articles:
             article_id = str(article["id"])
             remote_ts = article["updated_at"]
-            
+
             # Check for Drift
             if article_id not in self.local_index or remote_ts > self.local_index[article_id]:
                 self.logger.info(f"Drift detected for Article {article_id}. Pulling update.")
                 self._ingest_content(article)
                 self.local_index[article_id] = remote_ts
                 updates_found = True
-        
+
         if updates_found:
             self._save_local_index()
             self.logger.info("Sync complete. Local index updated.")
         else:
             self.logger.info("System is synchronized. No drift detected.")
-    
+
     def _ingest_content(self, article_data: Dict):
         """Pass content to ingestion adapter for tokenization."""
         ingest_adapter.process_document(
@@ -171,11 +171,11 @@ class ZendeskSyncService:
                 "updated_at": article_data["updated_at"]
             }
         )
-    
+
     def _fetch_remote_meta(self) -> List[Dict]:
         """Fetch article metadata from Zendesk API."""
         import requests
-        
+
         try:
             response = requests.get(
                 f"{self.base_url}/articles.json",
@@ -187,7 +187,7 @@ class ZendeskSyncService:
         except Exception as e:
             self.logger.error(f"Failed to fetch remote metadata: {e}")
             return []
-    
+
     def run_forever(self):
         """Run service in loop mode."""
         self.logger.info("Starting Knowledge Crawler Service...")
@@ -231,7 +231,7 @@ def process_document(
 ):
     """
     Process document for RAG ingestion.
-    
+
     Args:
         source: Source system identifier (e.g., "zendesk_help_center")
         doc_id: Unique document identifier
@@ -239,16 +239,16 @@ def process_document(
         metadata: Additional metadata (title, url, timestamps, etc.)
     """
     logger.info(f"Processing document {doc_id} from {source}")
-    
+
     # TODO: Connect to existing RAG pipeline
     # from src.codex.rag.indexer import RAGIndexer
     # indexer = RAGIndexer()
     # indexer.add_document(doc_id, content, metadata)
-    
+
     # For now, log and store in staging area
     staging_dir = Path("data/staging") / source
     staging_dir.mkdir(parents=True, exist_ok=True)
-    
+
     doc_file = staging_dir / f"{doc_id}.json"
     import json
     with open(doc_file, 'w') as f:
@@ -258,7 +258,7 @@ def process_document(
             "content": content,
             "metadata": metadata
         }, f, indent=2)
-    
+
     logger.info(f"Document {doc_id} staged at {doc_file}")
 ```
 
@@ -279,24 +279,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install requests
-      
+
       - name: Run Knowledge Sync
         env:
           ZENDESK_SUBDOMAIN: ${{ secrets.ZENDESK_SUBDOMAIN }}
           ZENDESK_API_TOKEN: ${{ secrets.ZENDESK_API_TOKEN }}
         run: |
           python -m src.services.crawler.zendesk_sync
-      
+
       - name: Commit Updated Index
         run: |
           git config user.name "Knowledge Crawler Bot"
@@ -369,7 +369,7 @@ class TicketComment(BaseModel):
     author_id: int
     created_at: Optional[datetime] = None
     attachments: List[Dict[str, Any]] = Field(default_factory=list)
-    
+
     class Config:
         json_encoders = {
             datetime: lambda v: v.isoformat()
@@ -388,38 +388,38 @@ class Ticket(BaseModel):
     # Core identifiers (read-only after creation)
     id: Optional[int] = Field(None, description="Zendesk Ticket ID (Read-only)")
     external_id: Optional[str] = Field(None, description="External system ID")
-    
+
     # Required fields
     subject: str = Field(..., min_length=1, max_length=255, description="Ticket Subject Line")
     description: str = Field(..., description="Initial ticket description/body")
-    
+
     # Status and priority
     status: TicketStatus = Field(default=TicketStatus.NEW)
     priority: Optional[TicketPriority] = None
     type: Optional[TicketType] = None
-    
+
     # Assignment
     requester_id: int = Field(..., description="User who requested the ticket")
     assignee_id: Optional[int] = Field(None, description="Agent assigned to ticket")
     group_id: Optional[int] = Field(None, description="Group assigned to ticket")
     organization_id: Optional[int] = None
-    
+
     # Metadata
     tags: List[str] = Field(default_factory=list)
     custom_fields: List[CustomField] = Field(default_factory=list)
-    
+
     # Timestamps (read-only)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     due_at: Optional[datetime] = None
-    
+
     # Collaboration
     collaborator_ids: List[int] = Field(default_factory=list)
     follower_ids: List[int] = Field(default_factory=list)
-    
+
     # Problem/incident linking
     problem_id: Optional[int] = None
-    
+
     @field_validator('tags')
     @classmethod
     def validate_tags(cls, v):
@@ -428,7 +428,7 @@ class Ticket(BaseModel):
             if " " in tag:
                 raise ValueError(f"Invalid tag '{tag}': Tags cannot contain spaces. Use underscores or hyphens.")
         return v
-    
+
     @field_validator('subject')
     @classmethod
     def validate_subject(cls, v):
@@ -436,7 +436,7 @@ class Ticket(BaseModel):
         if not v or not v.strip():
             raise ValueError("Subject cannot be empty or whitespace-only")
         return v.strip()
-    
+
     @field_validator('custom_fields')
     @classmethod
     def validate_custom_fields(cls, v):
@@ -445,7 +445,7 @@ class Ticket(BaseModel):
         if len(field_ids) != len(set(field_ids)):
             raise ValueError("Custom field IDs must be unique")
         return v
-    
+
     class Config:
         # Prevent the Agent from storing extra data that doesn't exist in the SaaS
         extra = "forbid"
@@ -464,7 +464,7 @@ class Ticket(BaseModel):
                 "requester_id": self.requester_id,
             }
         }
-        
+
         # Optional fields
         if self.priority:
             payload["ticket"]["priority"] = self.priority.value if isinstance(self.priority, Enum) else self.priority
@@ -480,19 +480,19 @@ class Ticket(BaseModel):
             payload["ticket"]["custom_fields"] = [
                 {"id": f.id, "value": f.value} for f in self.custom_fields
             ]
-        
+
         return payload
 
     @classmethod
     def from_zendesk_response(cls, data: Dict[str, Any]) -> "Ticket":
         """Parse Zendesk API response into Ticket model."""
         ticket_data = data.get("ticket", data)
-        
+
         # Parse custom fields
         custom_fields = []
         for field in ticket_data.get("custom_fields", []):
             custom_fields.append(CustomField(id=field["id"], value=field["value"]))
-        
+
         return cls(
             id=ticket_data.get("id"),
             external_id=ticket_data.get("external_id"),
@@ -535,7 +535,7 @@ from src.codex.zendesk.model.ticket import (
 
 class TestTicketValidation:
     """Test Ticket schema validation."""
-    
+
     def test_valid_minimal_ticket(self):
         """Test creating ticket with minimal required fields."""
         ticket = Ticket(
@@ -546,7 +546,7 @@ class TestTicketValidation:
         assert ticket.subject == "Test Ticket"
         assert ticket.status == TicketStatus.NEW
         assert ticket.priority is None
-    
+
     def test_empty_subject_rejected(self):
         """Test that empty subject is rejected."""
         with pytest.raises(ValidationError, match="Subject cannot be empty"):
@@ -555,7 +555,7 @@ class TestTicketValidation:
                 description="Test",
                 requester_id=12345
             )
-    
+
     def test_whitespace_subject_rejected(self):
         """Test that whitespace-only subject is rejected."""
         with pytest.raises(ValidationError, match="Subject cannot be empty"):
@@ -564,7 +564,7 @@ class TestTicketValidation:
                 description="Test",
                 requester_id=12345
             )
-    
+
     def test_tags_with_spaces_rejected(self):
         """Test that tags with spaces are rejected."""
         with pytest.raises(ValidationError, match="Tags cannot contain spaces"):
@@ -574,7 +574,7 @@ class TestTicketValidation:
                 requester_id=12345,
                 tags=["valid_tag", "invalid tag"]
             )
-    
+
     def test_extra_fields_rejected(self):
         """Test that extra fields are rejected (extra='forbid')."""
         with pytest.raises(ValidationError):
@@ -584,7 +584,7 @@ class TestTicketValidation:
                 requester_id=12345,
                 nonexistent_field="value"  # Should fail
             )
-    
+
     def test_custom_fields_unique_ids(self):
         """Test that duplicate custom field IDs are rejected."""
         with pytest.raises(ValidationError, match="Custom field IDs must be unique"):
@@ -597,7 +597,7 @@ class TestTicketValidation:
                     CustomField(id=100, value="value2")  # Duplicate ID
                 ]
             )
-    
+
     def test_to_zendesk_payload(self):
         """Test conversion to Zendesk API payload."""
         ticket = Ticket(
@@ -607,13 +607,13 @@ class TestTicketValidation:
             priority=TicketPriority.HIGH,
             tags=["urgent", "customer_complaint"]
         )
-        
+
         payload = ticket.to_zendesk_payload()
-        
+
         assert payload["ticket"]["subject"] == "Test Ticket"
         assert payload["ticket"]["priority"] == "high"
         assert "urgent" in payload["ticket"]["tags"]
-    
+
     def test_from_zendesk_response(self):
         """Test parsing Zendesk API response."""
         api_response = {
@@ -629,9 +629,9 @@ class TestTicketValidation:
                 "tags": ["api", "test"]
             }
         }
-        
+
         ticket = Ticket.from_zendesk_response(api_response)
-        
+
         assert ticket.id == 123
         assert ticket.subject == "API Test"
         assert ticket.status == TicketStatus.OPEN
@@ -747,14 +747,14 @@ class SLATarget(BaseModel):
     response_time: timedelta = Field(..., description="Time to first response")
     resolution_time: timedelta = Field(..., description="Time to resolution")
     business_hours: BusinessHoursType = BusinessHoursType.BUSINESS_HOURS
-    
+
     @validator('response_time', 'resolution_time')
     def validate_positive_duration(cls, v):
         """Ensure durations are positive."""
         if v.total_seconds() <= 0:
             raise ValueError("SLA times must be positive")
         return v
-    
+
     @validator('resolution_time')
     def validate_resolution_greater_than_response(cls, v, values):
         """Ensure resolution time >= response time."""
@@ -768,7 +768,7 @@ class SLAPolicy(BaseModel):
     target: SLATarget
     escalation_enabled: bool = True
     escalation_threshold: float = Field(default=0.8, ge=0.0, le=1.0, description="Escalate at % of SLA")
-    
+
     class Config:
         use_enum_values = True
 
@@ -823,24 +823,24 @@ def calculate_sla_deadline(
 ) -> datetime:
     """
     Calculate SLA deadline based on priority and start time.
-    
+
     Args:
         priority: Ticket priority
         start_time: When SLA clock started
         target_type: "response" or "resolution"
-    
+
     Returns:
         Deadline datetime
     """
     policy = get_sla_policy(priority)
-    
+
     if target_type == "response":
         duration = policy.target.response_time
     elif target_type == "resolution":
         duration = policy.target.resolution_time
     else:
         raise ValueError(f"Invalid target_type: {target_type}")
-    
+
     # TODO: Implement business hours calculation
     # For now, simple calendar time
     return start_time + duration
@@ -899,80 +899,80 @@ logger = logging.getLogger(__name__)
 
 class SecureBridge:
     """Secure IPC bridge using named pipes."""
-    
+
     def __init__(self, bridge_name: str = "codex_copilot_bridge"):
         self.bridge_name = bridge_name
         self.pipe_dir = Path("/tmp/codex_bridges")
         self.pipe_path = self.pipe_dir / bridge_name
         self.auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
-        
+
         if not self.auth_token:
             raise RuntimeError("CODEX_BRIDGE_TOKEN environment variable required")
-    
+
     def create_pipe(self):
         """Create named pipe with secure permissions."""
         self.pipe_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
-        
+
         if self.pipe_path.exists():
             self.pipe_path.unlink()
-        
+
         # Create named pipe
         os.mkfifo(self.pipe_path, mode=0o600)
         logger.info(f"Created secure pipe: {self.pipe_path}")
-    
+
     def verify_permissions(self) -> bool:
         """Verify pipe has secure permissions."""
         if not self.pipe_path.exists():
             return False
-        
+
         st = self.pipe_path.stat()
         mode = stat.S_IMODE(st.st_mode)
-        
+
         # Must be 0o600 (owner read/write only)
         if mode != 0o600:
             logger.error(f"Insecure permissions: {oct(mode)}, expected 0o600")
             return False
-        
+
         # Must be owned by current user
         if st.st_uid != os.getuid():
             logger.error("Pipe not owned by current user")
             return False
-        
+
         return True
-    
+
     def send_message(self, message: Dict[str, Any]):
         """Send authenticated message through pipe."""
         if not self.verify_permissions():
             raise SecurityError("Bridge security verification failed")
-        
+
         # Add authentication
         authenticated_msg = {
             "auth_token": self.auth_token,
             "payload": message
         }
-        
+
         with open(self.pipe_path, 'w') as pipe:
             json.dump(authenticated_msg, pipe)
             pipe.write('\n')
-        
+
         logger.debug(f"Sent message: {message.get('type', 'unknown')}")
-    
+
     def receive_message(self) -> Optional[Dict[str, Any]]:
         """Receive and verify authenticated message."""
         if not self.verify_permissions():
             raise SecurityError("Bridge security verification failed")
-        
+
         with open(self.pipe_path, 'r') as pipe:
             data = json.loads(pipe.readline())
-        
+
         # Verify authentication
         if data.get("auth_token") != self.auth_token:
             logger.error("Authentication failed")
             raise SecurityError("Invalid authentication token")
-        
+
         logger.debug(f"Received message: {data.get('payload', {}).get('type', 'unknown')}")
         return data.get("payload")
-    
+
     def cleanup(self):
         """Clean up pipe resources."""
         if self.pipe_path.exists():
@@ -1012,16 +1012,16 @@ from pathlib import Path
 def migrate():
     """Execute bridge migration."""
     legacy_bridge = Path("temp/bridge_codex_copilot_bridge")
-    
+
     # Archive legacy bridge
     if legacy_bridge.exists():
         archive_dir = Path("temp/archive")
         archive_dir.mkdir(parents=True, exist_ok=True)
-        
+
         backup_path = archive_dir / f"bridge_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         shutil.move(str(legacy_bridge), str(backup_path))
         print(f"✅ Archived legacy bridge to {backup_path}")
-    
+
     # Create deprecation notice
     notice = legacy_bridge.with_suffix(".DEPRECATED")
     notice.write_text(
@@ -1030,7 +1030,7 @@ def migrate():
         "Migration completed: 2026-01-08\n"
     )
     print(f"✅ Created deprecation notice: {notice}")
-    
+
     print("\n✅ Bridge migration complete!")
     print("Next steps:")
     print("1. Set CODEX_BRIDGE_TOKEN environment variable")
@@ -1078,86 +1078,86 @@ logger = logging.getLogger(__name__)
 
 class DigestPipeline:
     """Pipeline for documentation distillation."""
-    
+
     def __init__(self, output_path: Path = Path("docs/digest.md")):
         self.output_path = output_path
         self.sources = []
-    
+
     def add_source(self, source_type: str, source_path: Path):
         """Register a documentation source."""
         self.sources.append({
             "type": source_type,
             "path": source_path
         })
-    
+
     def extract_schema_docs(self, schema_dir: Path) -> str:
         """Extract documentation from Pydantic schemas."""
         docs = ["## Schema Reference\n"]
-        
+
         # Scan for schema files
         schema_files = list(schema_dir.glob("**/*.py"))
-        
+
         for schema_file in schema_files:
             # TODO: Parse docstrings and field descriptions
             # For now, just list files
             rel_path = schema_file.relative_to(schema_dir)
             docs.append(f"- `{rel_path}`: [Schema definitions]")
-        
+
         return "\n".join(docs)
-    
+
     def extract_api_docs(self, api_dir: Path) -> str:
         """Extract API documentation."""
         docs = ["## API Reference\n"]
-        
+
         # TODO: Extract from OpenAPI specs, function signatures, etc.
         docs.append("API documentation will be auto-generated from code annotations.")
-        
+
         return "\n".join(docs)
-    
+
     def extract_knowledge_base(self, kb_path: Path) -> str:
         """Extract from synchronized knowledge base."""
         docs = ["## Knowledge Base\n"]
-        
+
         if kb_path.exists():
             # Count articles
             articles = list(kb_path.glob("**/*.json"))
             docs.append(f"- Total articles: {len(articles)}")
             docs.append(f"- Last synchronized: {datetime.now(UTC).isoformat()}")
-        
+
         return "\n".join(docs)
-    
+
     def generate_digest(self):
         """Generate consolidated digest.md."""
         logger.info("Generating documentation digest...")
-        
+
         sections = [
             f"# Codex Documentation Digest\n",
             f"**Generated:** {datetime.now(UTC).isoformat()}\n",
             "---\n"
         ]
-        
+
         # Add schema documentation
         schema_dir = Path("src/codex/zendesk/model")
         if schema_dir.exists():
             sections.append(self.extract_schema_docs(schema_dir))
             sections.append("\n---\n")
-        
+
         # Add API documentation
         api_dir = Path("src/codex/api")
         if api_dir.exists():
             sections.append(self.extract_api_docs(api_dir))
             sections.append("\n---\n")
-        
+
         # Add knowledge base summary
         kb_path = Path("data/staging/zendesk_help_center")
         if kb_path.exists():
             sections.append(self.extract_knowledge_base(kb_path))
             sections.append("\n---\n")
-        
+
         # Write digest
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.output_path.write_text("\n".join(sections))
-        
+
         logger.info(f"✅ Digest generated: {self.output_path}")
         return self.output_path
 
@@ -1188,18 +1188,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: pip install -e .
-      
+
       - name: Generate Digest
         run: python -m src.services.digest.pipeline
-      
+
       - name: Commit Digest
         run: |
           git config user.name "Digest Bot"
@@ -1269,7 +1269,7 @@ jobs:
 ## Risk Mitigation
 
 ### Risk 1: Breaking Changes
-**Mitigation:** 
+**Mitigation:**
 - Parallel run legacy and modern systems for 2 implementation cycles
 - Feature flags for gradual rollout
 - Comprehensive test coverage before deprecation

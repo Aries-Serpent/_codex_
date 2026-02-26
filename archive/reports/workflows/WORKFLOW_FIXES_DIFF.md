@@ -10,7 +10,7 @@
 @@ -206,11 +206,23 @@ jobs:
              coverage report || true
            }
- 
+
 -      - name: Ensure test artifacts exist
 +      - name: Validate coverage artifacts before upload
          if: always()
@@ -31,7 +31,7 @@
 +            echo "⚠️ Coverage XML not found - creating placeholder to prevent upload failure"
 +            python scripts/ensure_test_artifacts.py --coverage --junit
 +          fi
- 
+
        - name: Upload coverage to Codecov
          uses: codecov/codecov-action@v5
 ```
@@ -57,7 +57,7 @@ Prevents masking legitimate test failures where pytest didn't generate coverage 
 @@ -205,11 +205,23 @@ jobs:
              coverage report || true
            }
- 
+
 -      - name: Ensure test artifacts exist
 +      - name: Validate coverage artifacts before upload
          if: always()
@@ -78,7 +78,7 @@ Prevents masking legitimate test failures where pytest didn't generate coverage 
 +            echo "⚠️ Coverage XML not found - creating placeholder to prevent upload failure"
 +            python scripts/ensure_test_artifacts.py --all
 +          fi
- 
+
        - name: Upload coverage to Codecov
          uses: codecov/codecov-action@v5
 ```
@@ -104,7 +104,7 @@ Consistency across workflows, same benefits as Fix 1.
 +          # Evaluate job outcome instead of hardcoded string comparison
 +          # Possible values: success, failure, cancelled, skipped
 +          TEST_RESULT="${{ needs.test.result }}"
-+          
++  
 +          if [[ "${TEST_RESULT}" == "success" ]]; then
 +            echo "✅ All tests passed"
 +            exit 0
@@ -120,7 +120,7 @@ Consistency across workflows, same benefits as Fix 1.
 +            echo "⚠️ Unexpected test status: ${TEST_RESULT}"
 +            exit 1
            fi
- 
+
        - name: Summary
 ```
 
@@ -173,4 +173,3 @@ fi
 - ✅ Validated (YAML syntax + logic testing)
 - ✅ Defensive/fail-safe
 - ✅ Non-breaking (existing functionality preserved)
-

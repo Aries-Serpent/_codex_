@@ -150,7 +150,7 @@ You can integrate these scripts into GitHub Actions workflows:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
     python scripts/security/fetch_codeql_alerts.py
-    
+
 - name: Upload Alert Report
   uses: actions/upload-artifact@v4
   with:

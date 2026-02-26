@@ -120,7 +120,7 @@ Next immediate actions (for implementer)
 ------
 
 # [Plan]: Plan A — ChatGPT Codex Implementation (Adapter Interface + Mock Backend + CI)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong
 
 Purpose / Summary
 - Implement a minimal, import-safe, and testable scaffolding for MCP adapter support:
@@ -876,7 +876,7 @@ Next steps after Plan A merged (short)
 ------
 
 # [Plan]: Plan B — ChatGPT Codex Implementation (Pinecone Adapter Skeleton + Mocked Unit Tests + Audit-driven Scaffolds)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong
 
 Purpose
 - Implement a production-ready scaffold for a Pinecone adapter that conforms to the BackendAdapter interface created in Plan A, including:
@@ -2156,7 +2156,7 @@ Next steps after Plan C merged
 ------
 
 # [Plan]: Plan D — ChatGPT Codex Implementation (Embedding Worker, Batching & Adapters Integration)
-> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong 
+> Generated: 2025-12-18T00:00:00Z | Author: mbaetiong
 
 Purpose
 - Implement a production-ready embedding ingestion worker and supporting components while remaining import-safe and CI-friendly:

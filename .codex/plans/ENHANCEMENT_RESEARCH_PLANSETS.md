@@ -232,7 +232,7 @@ class TokenScope(Flag):
     READ_WORKFLOW = auto()
     WRITE_WORKFLOW = auto()
     ADMIN_REPO = auto()
-    
+
     @classmethod
     def from_string(cls, scope: str) -> "TokenScope":
         mapping = {
@@ -249,10 +249,10 @@ class ScopeValidator:
         self.scopes = TokenScope(0)
         for scope in token_scopes:
             self.scopes |= TokenScope.from_string(scope)
-    
+
     def has_scope(self, required: TokenScope) -> bool:
         return bool(self.scopes & required)
-    
+
     def require_scope(self, required: TokenScope) -> None:
         if not self.has_scope(required):
             raise InsufficientScopeError(f"Missing scope: {required}")
@@ -274,7 +274,7 @@ class TokenProvider(ABC):
     @abstractmethod
     def validate_token(self, token: str) -> bool:
         pass
-    
+
     @abstractmethod
     def get_scopes(self, token: str) -> Set[str]:
         pass
@@ -325,7 +325,7 @@ from concurrent.futures import ThreadPoolExecutor
 class MultiLocaleSyncManager:
     def __init__(self, max_workers: int = 4):
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
-    
+
     async def sync_all_locales(
         self,
         locales: List[str],
@@ -365,12 +365,12 @@ def handle_zendesk_webhook():
     signature = request.headers.get('X-Zendesk-Webhook-Signature')
     if not verify_signature(request.data, signature):
         return jsonify({"error": "Invalid signature"}), 401
-    
+
     event = request.json
     if event['type'] == 'article.updated':
         # Trigger incremental sync
         trigger_article_sync(event['article_id'])
-    
+
     return jsonify({"status": "processed"})
 ```
 
@@ -390,7 +390,7 @@ from typing import List, Tuple
 class ContentDiffer:
     def __init__(self, min_change_ratio: float = 0.05):
         self.min_change_ratio = min_change_ratio
-    
+
     def compute_diff(
         self,
         old_content: str,
@@ -399,17 +399,17 @@ class ContentDiffer:
         """Compute diff between versions."""
         matcher = difflib.SequenceMatcher(None, old_content, new_content)
         ratio = 1.0 - matcher.ratio()
-        
+
         if ratio < self.min_change_ratio:
             return ratio, []
-        
+
         diff = list(difflib.unified_diff(
             old_content.splitlines(),
             new_content.splitlines(),
             lineterm=''
         ))
         return ratio, diff
-    
+
     def should_resync(self, change_ratio: float) -> bool:
         return change_ratio >= self.min_change_ratio
 ```
@@ -427,7 +427,7 @@ graph TB
     Query[Query Router] --> Shard1[Shard 1: A-M]
     Query --> Shard2[Shard 2: N-Z]
     Query --> Shard3[Shard 3: Special]
-    
+
     Shard1 --> Results[Result Merger]
     Shard2 --> Results
     Shard3 --> Results

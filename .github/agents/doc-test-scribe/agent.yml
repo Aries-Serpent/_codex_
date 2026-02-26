@@ -27,19 +27,19 @@ tools:
   - name: tfidf_analyze
     description: Analyze code using TF-IDF embeddings
     command: python -m codex.agents.doc_test_scribe.analyzer --tfidf {file}
-    
+
   - name: tokenize_code
     description: Tokenize code for semantic analysis
     command: python -m codex.agents.doc_test_scribe.tokenizer {file}
-    
+
   - name: generate_docs
     description: Generate documentation from code
     command: python -m codex.agents.doc_test_scribe.doc_generator {file}
-    
+
   - name: generate_tests
     description: Generate tests with coverage analysis
     command: python -m codex.agents.doc_test_scribe.test_generator {file}
-    
+
   - name: semantic_search
     description: Search codebase semantically
     command: python -m codex.agents.doc_test_scribe.search --query "{query}"
@@ -63,7 +63,7 @@ workflows:
       - tfidf_analyze
       - generate_docs
       - validate_docs
-      
+
   auto_test:
     trigger: new_function
     steps:
@@ -71,7 +71,7 @@ workflows:
       - find_similar_tests
       - generate_tests
       - validate_coverage
-      
+
   semantic_refactor:
     trigger: manual
     steps:

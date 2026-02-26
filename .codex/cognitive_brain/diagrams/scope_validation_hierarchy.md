@@ -11,20 +11,20 @@ graph TD
     ROOT[Token] --> ADMIN[ADMIN<br/>Full Access]
     ROOT --> READ[READ Scopes]
     ROOT --> WRITE[WRITE Scopes]
-    
+
     ADMIN -.->|Includes All| READ
     ADMIN -.->|Includes All| WRITE
-    
+
     READ --> READ_REPO[READ_REPO<br/>Repository Access]
     READ --> READ_ISSUES[READ_ISSUES<br/>Issue Access]
     READ --> READ_WORKFLOWS[READ_WORKFLOWS<br/>Workflow Access]
     READ --> READ_SECRETS[READ_SECRETS<br/>Secret Access]
-    
+
     WRITE --> WRITE_REPO[WRITE_REPO<br/>Modify Repository]
     WRITE --> WRITE_ISSUES[WRITE_ISSUES<br/>Create/Modify Issues]
     WRITE --> WRITE_WORKFLOWS[WRITE_WORKFLOWS<br/>Execute Workflows]
     WRITE --> WRITE_SECRETS[WRITE_SECRETS<br/>Manage Secrets]
-    
+
     style ADMIN fill:#f96,stroke:#333,stroke-width:3px
     style READ fill:#9cf,stroke:#333,stroke-width:2px
     style WRITE fill:#fc9,stroke:#333,stroke-width:2px
@@ -38,19 +38,19 @@ graph TD
 class TokenScope(IntFlag):
     """Token scope flags (bitwise)."""
     NONE = 0
-    
+
     # Read scopes (0x01-0x0F)
     READ_REPO = 1 << 0      # 0x0001
     READ_ISSUES = 1 << 1    # 0x0002
     READ_WORKFLOWS = 1 << 2 # 0x0004
     READ_SECRETS = 1 << 3   # 0x0008
-    
+
     # Write scopes (0x10-0xF0)
     WRITE_REPO = 1 << 4     # 0x0010
     WRITE_ISSUES = 1 << 5   # 0x0020
     WRITE_WORKFLOWS = 1 << 6 # 0x0040
     WRITE_SECRETS = 1 << 7  # 0x0080
-    
+
     # Admin scope (all bits)
     ADMIN = 0xFFFF
 ```
@@ -61,16 +61,16 @@ class TokenScope(IntFlag):
 flowchart LR
     S1[READ_REPO] -->|OR| C1[READ_REPO |\nREAD_ISSUES]
     S2[READ_ISSUES] -->|OR| C1
-    
+
     S3[WRITE_ISSUES] -->|OR| C2[WRITE_ISSUES |\nADMIN]
     S4[ADMIN] -->|OR| C2
-    
+
     C1 --> V1[Validator]
     C2 --> V2[Validator]
-    
+
     V1 -->|Check| OP1[query_knowledge_base]
     V2 -->|Check| OP2[create_ticket]
-    
+
     style C1 fill:#9f9,stroke:#333,stroke-width:2px
     style C2 fill:#9f9,stroke:#333,stroke-width:2px
 ```
@@ -84,15 +84,15 @@ sequenceDiagram
     participant Validator as ScopeValidator
     participant Decorator as @require_scope
     participant Handler as Orchestrator Method
-    
+
     Client->>Middleware: Request + Bearer Token
     Middleware->>Middleware: Extract Token
     Middleware->>Validator: Create validator(scopes)
     Middleware->>Handler: Inject validator into context
-    
+
     Handler->>Decorator: @require_scope(WRITE_ISSUES)
     Decorator->>Validator: require_scopes(WRITE_ISSUES)
-    
+
     alt Sufficient Scopes
         Validator-->>Decorator: ✓ Valid
         Decorator->>Handler: Execute method
@@ -175,10 +175,10 @@ async def inject_scope_validator(request: Request, call_next):
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     scopes = extract_scopes_from_token(token)
     validator = ScopeValidator(scopes)
-    
+
     # Inject into context
     _scope_validator_ctx.set(validator)
-    
+
     response = await call_next(request)
     return response
 
@@ -200,14 +200,14 @@ async def create_ticket(
 def extract_scopes_from_jwt(token: str) -> TokenScope:
     """Extract scopes from JWT token."""
     import jwt
-    
+
     payload = jwt.decode(token, verify=False)  # In prod: verify signature
     scope_strings = payload.get("scope", "").split()
-    
+
     scopes = TokenScope.NONE
     for scope_str in scope_strings:
         scopes |= TokenScope.from_string(scope_str)
-    
+
     return scopes
 ```
 
@@ -221,16 +221,16 @@ def extract_scopes_from_github_token(token: str) -> TokenScope:
         "https://api.github.com/user",
         headers={"Authorization": f"Bearer {token}"}
     )
-    
+
     # Map GitHub scopes to TokenScope
     gh_scopes = response.headers.get("X-OAuth-Scopes", "").split(", ")
-    
+
     scopes = TokenScope.NONE
     if "repo" in gh_scopes:
         scopes |= TokenScope.READ_REPO | TokenScope.WRITE_REPO
     if "workflow" in gh_scopes:
         scopes |= TokenScope.WRITE_WORKFLOWS
-    
+
     return scopes
 ```
 

@@ -54,7 +54,7 @@ def confirm_action(action: str, details: dict) -> bool:
     """Prompt user for confirmation of sensitive operation."""
     print(f"⚠️  About to perform: {action}")
     print(f"Details: {json.dumps(details, indent=2)}")
-    
+
     response = input("Proceed? (yes/no): ").strip().lower()
     return response in ["yes", "y"]
 
@@ -71,7 +71,7 @@ else:
 class Operation:
     def __init__(self, dry_run: bool = False):
         self.dry_run = dry_run
-    
+
     def execute(self, command: str):
         """Execute command with dry-run support."""
         if self.dry_run:
@@ -98,10 +98,10 @@ def sanitize_input(user_input: str, max_length: int = 1000) -> str:
     # Bounds check
     if len(user_input) > max_length:
         raise ValueError(f"Input exceeds max length {max_length}")
-    
+
     # Remove control characters
     sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', user_input)
-    
+
     # Remove potentially dangerous patterns
     dangerous_patterns = [
         r'<script',
@@ -110,11 +110,11 @@ def sanitize_input(user_input: str, max_length: int = 1000) -> str:
         r'eval\s*\(',
         r'exec\s*\('
     ]
-    
+
     for pattern in dangerous_patterns:
         if re.search(pattern, sanitized, re.IGNORECASE):
             raise ValueError(f"Dangerous pattern detected: {pattern}")
-    
+
     return sanitized.strip()
 
 # Usage
@@ -139,7 +139,7 @@ def validate_bounds(
     """Validate value is within bounds."""
     if min_val is not None and value < min_val:
         raise ValueError(f"{name} must be >= {min_val}, got {value}")
-    
+
     if max_val is not None and value > max_val:
         raise ValueError(f"{name} must be <= {max_val}, got {value}")
 
@@ -155,15 +155,15 @@ def set_timeout(seconds: int):
 ```python
 class Transaction:
     """Context manager for safe operations with rollback."""
-    
+
     def __init__(self):
         self.operations = []
         self.committed = False
-    
+
     def add_operation(self, op: Callable, rollback: Callable):
         """Add operation with rollback function."""
         self.operations.append((op, rollback))
-    
+
     def execute(self):
         """Execute all operations."""
         executed = []
@@ -179,10 +179,10 @@ class Transaction:
                 except Exception as rb_error:
                     print(f"Rollback error: {rb_error}")
             raise e
-    
+
     def __enter__(self):
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
             self.committed = True
@@ -213,23 +213,23 @@ def safe_delete_file(file_path: str, dry_run: bool = False, confirm: bool = True
     """Safely delete file with safeguards."""
     # Sanitize path
     path = Path(file_path).resolve()
-    
+
     # Bounds check: prevent deleting outside allowed directories
     allowed_dirs = [Path("/tmp"), Path("/var/data")]
     if not any(path.is_relative_to(allowed) for allowed in allowed_dirs):
         raise ValueError(f"Path {path} not in allowed directories")
-    
+
     # Confirmation
     if confirm:
         if not confirm_action("delete_file", {"path": str(path)}):
             print("Deletion cancelled")
             return
-    
+
     # Dry-run mode
     if dry_run:
         print(f"[DRY-RUN] Would delete: {path}")
         return
-    
+
     # Execute with error handling
     try:
         os.remove(path)
@@ -251,7 +251,7 @@ class SecureRequest(BaseModel):
     user_id: str
     action: str
     parameters: dict
-    
+
     @validator('user_id')
     def validate_user_id(cls, v):
         """Sanitize user ID."""
@@ -260,7 +260,7 @@ class SecureRequest(BaseModel):
         if len(v) > 50:
             raise ValueError('user_id too long')
         return v
-    
+
     @validator('action')
     def validate_action(cls, v):
         """Validate action against whitelist."""
@@ -279,7 +279,7 @@ async def execute_action(
     # Validate API key
     if not validate_api_key(api_key):
         raise HTTPException(status_code=401, detail="Invalid API key")
-    
+
     # Audit log
     log_security_event(
         "api_request",
@@ -287,7 +287,7 @@ async def execute_action(
         action=request.action,
         dry_run=dry_run
     )
-    
+
     # Dry-run mode
     if dry_run:
         return {
@@ -295,7 +295,7 @@ async def execute_action(
             "would_perform": request.action,
             "parameters": request.parameters
         }
-    
+
     # Execute with safeguards
     try:
         result = execute_with_timeout(
@@ -321,34 +321,34 @@ def safe_db_transaction(db_path: str, dry_run: bool = False):
     conn = sqlite3.connect(db_path)
     conn.isolation_level = None  # Auto-commit off
     cursor = conn.cursor()
-    
+
     try:
         cursor.execute("BEGIN")
-        
+
         if dry_run:
             # In dry-run, collect queries but don't commit
             queries = []
             original_execute = cursor.execute
-            
+
             def tracked_execute(query, *args, **kwargs):
                 queries.append(query)
                 return original_execute(query, *args, **kwargs)
-            
+
             cursor.execute = tracked_execute
-        
+
         yield cursor
-        
+
         if dry_run:
             cursor.execute("ROLLBACK")
             print(f"[DRY-RUN] Would execute {len(queries)} queries")
         else:
             cursor.execute("COMMIT")
-    
+
     except Exception as e:
         cursor.execute("ROLLBACK")
         print(f"Transaction rolled back: {e}")
         raise
-    
+
     finally:
         conn.close()
 
@@ -431,7 +431,7 @@ def confirm_action(action: str, auto_yes: bool = False):
 class DBConnection:
     def __init__(self, dry_run=False):
         self.dry_run = dry_run
-    
+
     def execute(self, query):
         if self.dry_run:
             print(f"[DRY-RUN] {query}")

@@ -128,11 +128,11 @@ assert registry.list() == ["accuracy"]
 # my_metrics.py
 def custom_accuracy(predictions, labels):
     """Calculate custom accuracy metric.
-    
+
     Args:
         predictions: Model predictions
         labels: Ground truth labels
-        
+
     Returns:
         float: Accuracy score
     """
@@ -160,23 +160,23 @@ from transformers import AutoModel, AutoTokenizer
 
 def load_custom_model(config):
     """Factory function for custom model.
-    
+
     Args:
         config: Model configuration dict
             - model_name: Hugging Face model name
             - device: Target device (cpu/cuda)
-            
+
     Returns:
         tuple: (model, tokenizer)
     """
     model_name = config.get("model_name", "bert-base-uncased")
     device = config.get("device", "cpu")
-    
+
     model = AutoModel.from_pretrained(model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
+
     model.to(device)
-    
+
     return model, tokenizer
 
 
@@ -200,16 +200,16 @@ from pathlib import Path
 
 def load_custom_format(path, **kwargs):
     """Load data from custom format.
-    
+
     Args:
         path: Path to data file
         **kwargs: Additional loader options
-        
+
     Yields:
         dict: Data records
     """
     path = Path(path)
-    
+
     with path.open("r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
@@ -238,14 +238,14 @@ from typing import Any, List
 
 def metric_adapter(predictions: List[Any], labels: List[Any]) -> float:
     """Standard metric interface.
-    
+
     Args:
         predictions: Model predictions
         labels: Ground truth labels
-        
+
     Returns:
         Metric score (higher is better)
-        
+
     Raises:
         ValueError: If inputs are incompatible
     """
@@ -263,17 +263,17 @@ from typing import Any, Dict, Tuple
 
 def model_factory(config: Dict[str, Any]) -> Tuple[Any, Any]:
     """Standard model factory interface.
-    
+
     Args:
         config: Model configuration
             - model_name: str
             - device: str
             - dtype: str
             - Additional model-specific options
-            
+
     Returns:
         tuple: (model, tokenizer) or (model, None)
-        
+
     Raises:
         ValueError: If config is invalid
         ImportError: If required dependencies unavailable
@@ -293,14 +293,14 @@ from typing import Any, Dict, Iterator
 
 def data_loader(path: str | Path, **kwargs: Any) -> Iterator[Dict[str, Any]]:
     """Standard data loader interface.
-    
+
     Args:
         path: Path to data file or directory
         **kwargs: Loader-specific options
-            
+
     Yields:
         Data records as dictionaries
-        
+
     Raises:
         FileNotFoundError: If path doesn't exist
         ValueError: If data format is invalid
@@ -480,15 +480,15 @@ import warnings
 
 with warnings.catch_warnings(record=True) as w:
     warnings.simplefilter("always")
-    
+
     @registry.register("duplicate")
     def func1():
         pass
-    
+
     @registry.register("duplicate")
     def func2():
         pass
-    
+
     if w:
         print(f"Warning: {w[0].message}")
 ```text
@@ -533,10 +533,10 @@ metrics = discover(group="codex_ml.metrics")
 ```python
 def test_my_metric():
     from my_package.my_metrics import custom_accuracy
-    
+
     preds = [1, 2, 3, 1]
     labels = [1, 2, 0, 1]
-    
+
     score = custom_accuracy(preds, labels)
     assert score == 0.75  # 3 out of 4 correct
 ```text
@@ -546,7 +546,7 @@ def test_my_metric():
 ```python
 def test_plugin_discovery():
     from codex_ml.plugins.registry import get
-    
+
     plugin = get("my_plugin", group="codex_ml.plugins")
     assert plugin is not None
     assert callable(plugin)

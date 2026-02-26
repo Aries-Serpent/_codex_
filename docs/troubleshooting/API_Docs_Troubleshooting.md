@@ -217,7 +217,7 @@ python tools/build_api_docs.py --output-dir /tmp/api_docs
    """
    Module description here.
    """
-   
+
    def my_function():
        """Function description."""
        pass

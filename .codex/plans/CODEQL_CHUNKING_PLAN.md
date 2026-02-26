@@ -30,19 +30,19 @@ graph TD
     B --> C3[Chunk 3: agents/]
     B --> C4[Chunk 4: training/]
     B --> C5[Chunk 5: tests/]
-    
+
     C1 --> R1[Results 1]
     C2 --> R2[Results 2]
     C3 --> R3[Results 3]
     C4 --> R4[Results 4]
     C5 --> R5[Results 5]
-    
+
     R1 --> M[Merge Results]
     R2 --> M
     R3 --> M
     R4 --> M
     R5 --> M
-    
+
     M --> F[Final SARIF Report]
 ```
 
@@ -94,34 +94,34 @@ jobs:
             paths: 'tests/unit/,tests/cli/,tests/data/'
           - name: tests-integration
             paths: 'tests/integration/,tests/e2e/,tests/perf/'
-    
+
     runs-on: ubuntu-latest
     permissions:
       security-events: write
       contents: read
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: python
           queries: security-extended
           paths: ${{ matrix.chunk.paths }}
-      
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:python/chunk:${{ matrix.chunk.name }}"
           output: sarif-results-${{ matrix.chunk.name }}
-      
+
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: sarif-results-${{ matrix.chunk.name }}
           category: ${{ matrix.chunk.name }}
-  
+
   merge-results:
     needs: analyze-chunks
     runs-on: ubuntu-latest
@@ -131,13 +131,13 @@ jobs:
         with:
           pattern: sarif-results-*
           merge-multiple: true
-      
+
       - name: Merge SARIF Results
         run: |
           python3 scripts/merge_sarif.py \
             --input-dir . \
             --output merged-results.sarif
-      
+
       - name: Upload Merged SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -166,18 +166,18 @@ def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
         "version": "2.1.0",
         "runs": []
     }
-    
+
     sarif_files = list(input_dir.glob("*.sarif"))
-    
+
     for sarif_file in sarif_files:
         with open(sarif_file, "r", encoding="utf-8") as f:
             data = json.load(f)
             if "runs" in data:
                 merged["runs"].extend(data["runs"])
-    
+
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2)
-    
+
     return merged
 
 
@@ -186,7 +186,7 @@ def main() -> None:
     parser.add_argument("--input-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    
+
     merge_sarif_files(args.input_dir, args.output)
     print(f"Merged SARIF written to {args.output}")
 

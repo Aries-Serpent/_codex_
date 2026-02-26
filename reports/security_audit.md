@@ -19,7 +19,7 @@
 
 Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive dependency:
 - **Current Version:** aiohttp 3.13.3 (latest stable, released 2026-01-03)
-- **Transitive Dependency Chain:** 
+- **Transitive Dependency Chain:**
   - `ray[serve]` → `aiohttp-cors` → `aiohttp==3.13.3`
   - `dvc==3.64.2` → `dvc-http` → `aiohttp-retry` → `aiohttp==3.13.3`
 - **Location:** `requirements/lock.txt:17`

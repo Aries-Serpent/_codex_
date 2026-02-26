@@ -466,7 +466,7 @@ Recommended: Option A (Build-Time Generation)
 - <5min PR validation time
 - Zero manual documentation QA required
 
-**Reference**: 
+**Reference**:
 - Status: `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_DOCUMENTATION_EVOLUTION_COMPLETE.md`
 - Progress: `.codex/documentation_evolution_progress.json`
 - Validation tool: `scripts/validation/validate_doc_template.py`

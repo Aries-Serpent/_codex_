@@ -14,7 +14,7 @@ This directory contains temporary files generated during development, builds, or
   - **Original**: `temp/bridge_codex_copilot_bridge/`
   - **Purpose**: Development/testing artifacts
   - **Status**: Completed session, can be deleted after review
-  
+
 - `IntegratedDocEvolution.md` - Temporary documentation output
   - **Original**: `output/IntegratedDocEvolution.md`
   - **Purpose**: Analysis output

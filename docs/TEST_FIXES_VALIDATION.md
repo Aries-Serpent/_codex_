@@ -123,7 +123,7 @@ pytest tests/status/test_render_monthly_html.py::test_render_monthly_html -v
 
 **Current Status**: Function already has correct signature `def _build_hf_tokenizer(**kwargs: Any)`
 
-**Analysis**: 
+**Analysis**:
 - The error "takes 0 positional arguments but 1 was given" may be from:
   - Stale bytecode cache (`.pyc` files)
   - Environment-specific issue

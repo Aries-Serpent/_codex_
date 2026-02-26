@@ -108,10 +108,10 @@ def test_example():
     """Test description."""
     # Arrange: Set up test data and conditions
     config = {"epochs": 5}
-    
+
     # Act: Perform the action being tested
     result = process_config(config)
-    
+
     # Assert: Verify the expected outcome
     assert result.epochs == 5
 ```text

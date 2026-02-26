@@ -118,7 +118,7 @@ Due to environment constraints (95% disk usage), validation was performed throug
 - ✅ Secure API key management (env vars + secure deletion)
 - ✅ Input validation on all public APIs
 
-**Pending:** 
+**Pending:**
 - ⚠️ Bandit automated scan (requires CI environment)
 
 ---

@@ -113,15 +113,15 @@ validate_yaml() {
 validate_package_structure() {
     local package_file="$1"
     local package_type="$2"
-    
+
     log_info "Validating $package_type package structure..."
-    
+
     # Check JSON validity
     if ! validate_json "$package_file"; then
         log_error "Invalid JSON in $package_file"
         return 1
     fi
-    
+
     # Check required fields based on package type
     case "$package_type" in
         chatgpt)
@@ -162,7 +162,7 @@ with open('$package_file') as f:
             fi
             ;;
     esac
-    
+
     log_success "Package structure valid"
     return 0
 }
@@ -178,7 +178,7 @@ setup_output_dir() {
 
 copy_documentation() {
     log_info "Copying documentation files..."
-    
+
     # Copy OpenAPI spec if it exists
     if [ -f "$PROJECT_ROOT/docs/zendesk/openapi.yaml" ]; then
         cp "$PROJECT_ROOT/docs/zendesk/openapi.yaml" "$OUTPUT_DIR/"
@@ -192,13 +192,13 @@ copy_documentation() {
             log_success "OpenAPI spec copied"
         fi
     fi
-    
+
     # Copy Swagger HTML if it exists
     if [ -f "$PROJECT_ROOT/docs/zendesk/swagger.html" ]; then
         cp "$PROJECT_ROOT/docs/zendesk/swagger.html" "$OUTPUT_DIR/"
         log_success "Swagger documentation copied"
     fi
-    
+
     # Copy README files
     if [ -f "$PROJECT_ROOT/docs/zendesk/README.md" ]; then
         cp "$PROJECT_ROOT/docs/zendesk/README.md" "$OUTPUT_DIR/"
@@ -207,16 +207,16 @@ copy_documentation() {
 
 build_chatgpt_package() {
     log_info "Building ChatGPT package..."
-    
+
     local output_file="$OUTPUT_DIR/zendesk-chatgpt-package.json"
-    
+
     python3 "$PROJECT_ROOT/tools/zendesk_package_curator.py" \
         --platform chatgpt \
         --output "$output_file"
-    
+
     if [ -f "$output_file" ]; then
         log_success "ChatGPT package built: $output_file"
-        
+
         if [ "$VALIDATE" = true ]; then
             validate_package_structure "$output_file" "chatgpt"
         fi
@@ -228,16 +228,16 @@ build_chatgpt_package() {
 
 build_zendesk_package() {
     log_info "Building Zendesk AI package..."
-    
+
     local output_file="$OUTPUT_DIR/zendesk-ai-assistant-package.json"
-    
+
     python3 "$PROJECT_ROOT/tools/zendesk_package_curator.py" \
         --platform zendesk \
         --output "$output_file"
-    
+
     if [ -f "$output_file" ]; then
         log_success "Zendesk AI package built: $output_file"
-        
+
         if [ "$VALIDATE" = true ]; then
             validate_package_structure "$output_file" "zendesk"
         fi
@@ -249,16 +249,16 @@ build_zendesk_package() {
 
 build_generic_package() {
     log_info "Building generic package..."
-    
+
     local output_file="$OUTPUT_DIR/zendesk-generic-package.json"
-    
+
     python3 "$PROJECT_ROOT/tools/zendesk_package_curator.py" \
         --platform generic \
         --output "$output_file"
-    
+
     if [ -f "$output_file" ]; then
         log_success "Generic package built: $output_file"
-        
+
         if [ "$VALIDATE" = true ]; then
             validate_package_structure "$output_file" "generic"
         fi
@@ -270,9 +270,9 @@ build_generic_package() {
 
 create_manifest() {
     log_info "Creating package manifest..."
-    
+
     local manifest_file="$OUTPUT_DIR/manifest.json"
-    
+
     python3 << EOF
 import json
 import os
@@ -302,19 +302,19 @@ with open("$manifest_file", "w") as f:
 
 print(f"Manifest created with {len(manifest['packages'])} packages")
 EOF
-    
+
     log_success "Manifest created: $manifest_file"
 }
 
 create_archive() {
     log_info "Creating distribution archive..."
-    
+
     local archive_name="zendesk-ai-packages-${VERSION}.zip"
     local archive_path="$PROJECT_ROOT/dist/$archive_name"
-    
+
     # Create archive
     (cd "$OUTPUT_DIR" && zip -r "../$archive_name" .)
-    
+
     if [ -f "$archive_path" ]; then
         local size
         size=$(du -h "$archive_path" | cut -f1)
@@ -326,7 +326,7 @@ create_archive() {
 
 run_tests() {
     log_info "Running package tests..."
-    
+
     # Test Python imports
     if python3 -c "
 from tools.zendesk_package_curator import ZendeskPackageCurator
@@ -339,7 +339,7 @@ print('All imports successful')
     else
         log_warning "Some Python imports failed"
     fi
-    
+
     # Run pytest for zendesk tests if available
     if command -v pytest &> /dev/null; then
         log_info "Running pytest for zendesk tests..."
@@ -382,7 +382,7 @@ main() {
     echo "           Zendesk AI Package Builder"
     echo "============================================================"
     echo ""
-    
+
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -427,7 +427,7 @@ main() {
                 ;;
         esac
     done
-    
+
     # If no packages specified, build all
     if [ "$BUILD_CHATGPT" = false ] && [ "$BUILD_ZENDESK" = false ] && [ "$BUILD_GENERIC" = false ]; then
         log_info "No packages specified, building all..."
@@ -435,40 +435,40 @@ main() {
         BUILD_ZENDESK=true
         BUILD_GENERIC=true
     fi
-    
+
     # Setup
     setup_output_dir
-    
+
     # Build packages
     if [ "$BUILD_CHATGPT" = true ]; then
         build_chatgpt_package
     fi
-    
+
     if [ "$BUILD_ZENDESK" = true ]; then
         build_zendesk_package
     fi
-    
+
     if [ "$BUILD_GENERIC" = true ]; then
         build_generic_package
     fi
-    
+
     # Copy documentation
     copy_documentation
-    
+
     # Create manifest
     create_manifest
-    
+
     # Run tests if validating
     if [ "$VALIDATE" = true ]; then
         run_tests
     fi
-    
+
     # Create archive
     create_archive
-    
+
     # Print summary
     print_summary
-    
+
     log_success "Build completed successfully!"
 }
 

@@ -229,7 +229,7 @@ E   ModuleNotFoundError: No module named 'training.codex'
 ======================================================= warnings summary =======================================================
 ../../root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/_pytest/config/__init__.py:1474
   /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/_pytest/config/__init__.py:1474: PytestConfigWarning: Unknown config option: import_mode
-  
+
     self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
 
 ../../root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/starlette/formparsers.py:12
@@ -237,21 +237,21 @@ E   ModuleNotFoundError: No module named 'training.codex'
     import multipart
 
 services/api/main.py:45
-  /workspace/_codex_/services/api/main.py:45: DeprecationWarning: 
+  /workspace/_codex_/services/api/main.py:45: DeprecationWarning:
           on_event is deprecated, use lifespan event handlers instead.
-  
+
           Read more about it in the
           [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
-          
+
     @app.on_event("startup")
 
 ../../root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/fastapi/applications.py:4495
-  /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/fastapi/applications.py:4495: DeprecationWarning: 
+  /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages/fastapi/applications.py:4495: DeprecationWarning:
           on_event is deprecated, use lifespan event handlers instead.
-  
+
           Read more about it in the
           [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
-          
+
     return self.router.on_event(event_type)
 
 <frozen importlib._bootstrap>:488

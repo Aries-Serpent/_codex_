@@ -83,14 +83,14 @@ class ValidationAlert:
 
 class GitHubIssuesAlerter:
     """Creates and manages GitHub issues for validation failures."""
-    
+
     def __init__(self, repo: str = "Aries-Serpent/_codex_"):
         self.repo = repo
         self.dedup_window_hours = 24
         self.issue_cache_file = Path(".codex/alerts/issue_cache.json")
         self.issue_cache_file.parent.mkdir(parents=True, exist_ok=True)
         self._load_cache()
-    
+
     def _load_cache(self):
         """Load issue cache for deduplication."""
         if self.issue_cache_file.exists():
@@ -98,28 +98,28 @@ class GitHubIssuesAlerter:
                 self.cache = json.load(f)
         else:
             self.cache = {"issues": []}
-    
+
     def _save_cache(self):
         """Save issue cache."""
         with open(self.issue_cache_file, 'w') as f:
             json.dump(self.cache, f, indent=2)
-    
+
     def _compute_alert_fingerprint(self, alert: ValidationAlert) -> str:
         """Compute unique fingerprint for deduplication."""
         content = f"{alert.language}:{alert.error_pattern}:{alert.file_path}"
         return hashlib.sha256(content.encode()).hexdigest()[:12]
-    
+
     def _find_existing_issue(self, fingerprint: str) -> Optional[Dict]:
         """Check if issue exists for this fingerprint within dedup window."""
         cutoff = datetime.now() - timedelta(hours=self.dedup_window_hours)
-        
+
         for issue in self.cache["issues"]:
             if issue["fingerprint"] == fingerprint:
                 issue_time = datetime.fromisoformat(issue["created_at"])
                 if issue_time > cutoff and issue["state"] == "open":
                     return issue
         return None
-    
+
     def _get_severity_emoji(self, severity: str) -> str:
         """Get emoji for severity level."""
         return {
@@ -128,27 +128,27 @@ class GitHubIssuesAlerter:
             "medium": "🟡",
             "low": "🔵"
         }.get(severity, "⚪")
-    
+
     def create_alert_issue(self, alert: ValidationAlert) -> Optional[str]:
         """
         Create GitHub issue for validation failure.
-        
+
         Returns:
             Issue URL if created, None if deduplicated
         """
         fingerprint = self._compute_alert_fingerprint(alert)
-        
+
         # Check for existing issue
         existing = self._find_existing_issue(fingerprint)
         if existing:
             print(f"⏭️  Skipping duplicate issue (fingerprint: {fingerprint})")
             print(f"   Existing issue: {existing['url']}")
             return None
-        
+
         # Create issue title
         emoji = self._get_severity_emoji(alert.severity)
         title = f"{emoji} Config Validation Failure: {alert.language.upper()} - {alert.error_pattern}"
-        
+
         # Create issue body
         body = f"""# Configuration Validation Failure
 
@@ -186,7 +186,7 @@ This issue will automatically close when validation passes for `{alert.file_path
 **Fingerprint**: `{fingerprint}`
 **Auto-generated** by Configuration Validation Alerting System
 """
-        
+
         # Create issue using gh CLI
         labels = [
             "validation-failure",
@@ -194,7 +194,7 @@ This issue will automatically close when validation passes for `{alert.file_path
             f"lang-{alert.language}",
             "auto-generated"
         ]
-        
+
         try:
             result = subprocess.run(
                 [
@@ -208,9 +208,9 @@ This issue will automatically close when validation passes for `{alert.file_path
                 text=True,
                 check=True
             )
-            
+
             issue_url = result.stdout.strip()
-            
+
             # Cache the issue
             self.cache["issues"].append({
                 "fingerprint": fingerprint,
@@ -221,14 +221,14 @@ This issue will automatically close when validation passes for `{alert.file_path
                 "language": alert.language
             })
             self._save_cache()
-            
+
             print(f"✅ Created issue: {issue_url}")
             return issue_url
-            
+
         except subprocess.CalledProcessError as e:
             print(f"❌ Failed to create issue: {e.stderr}")
             return None
-    
+
     def close_resolved_issue(self, fingerprint: str, resolution_message: str):
         """Close an issue that has been resolved."""
         for issue in self.cache["issues"]:
@@ -236,7 +236,7 @@ This issue will automatically close when validation passes for `{alert.file_path
                 try:
                     # Extract issue number from URL
                     issue_number = issue["url"].split("/")[-1]
-                    
+
                     # Close issue with comment
                     subprocess.run(
                         [
@@ -247,12 +247,12 @@ This issue will automatically close when validation passes for `{alert.file_path
                         check=True,
                         capture_output=True
                     )
-                    
+
                     issue["state"] = "closed"
                     self._save_cache()
-                    
+
                     print(f"✅ Closed resolved issue: {issue['url']}")
-                    
+
                 except subprocess.CalledProcessError as e:
                     print(f"❌ Failed to close issue: {e.stderr}")
 
@@ -261,7 +261,7 @@ def main():
     """Main alerting function."""
     # Example usage - integrate with validation scripts
     alerter = GitHubIssuesAlerter()
-    
+
     # Example alert
     alert = ValidationAlert(
         language="rust",
@@ -272,7 +272,7 @@ def main():
         timestamp=datetime.now().isoformat(),
         validation_run_id="test-run-001"
     )
-    
+
     alerter.create_alert_issue(alert)
 
 
@@ -295,7 +295,7 @@ python scripts/ci/validate_cargo_features.py || echo "Validation failed - alert 
 ```
 
 #### Task 3.1.2: Alert Integration with Validators
-**Files**: 
+**Files**:
 - `scripts/ci/validate_cargo_features.py` (modify)
 - `scripts/ci/validate_multi_language_config.py` (modify)
 
@@ -325,11 +325,11 @@ alerting:
       - inconsistent_declaration
     low:
       - documentation_mismatch
-  
+
   notification_channels:
     - github_issues
     # Future: slack, email
-  
+
   auto_close: true
   auto_close_delay_minutes: 5
 ```
@@ -370,15 +370,15 @@ import numpy as np
 class ConfigAnomalyDetector:
     def __init__(self):
         self.model = IsolationForest(contamination=0.1, random_state=42)
-    
+
     def train(self, features: np.ndarray):
         """Train on historical validation data."""
         self.model.fit(features)
-    
+
     def detect(self, features: np.ndarray) -> tuple[bool, float]:
         """
         Detect anomalies in configuration.
-        
+
         Returns:
             (is_anomaly, confidence_score)
         """
@@ -662,7 +662,7 @@ patterns:
         [features]
         a = ["b"]
         b = ["a"]  # Circular!
-    
+
     - name: platform_specific_feature
       pattern: "Feature only valid on specific platform"
       severity: medium
@@ -670,13 +670,13 @@ patterns:
       example: |
         [target.'cfg(windows)'.dependencies]
         windows-specific = "1.0"
-  
+
   python:
     - name: missing_extra_bracket
       pattern: "Extra declared without bracket notation"
       severity: high
       fix: "Use [extra] syntax in dependencies"
-  
+
   # ... more patterns
 ```
 

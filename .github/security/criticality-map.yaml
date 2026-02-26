@@ -33,18 +33,18 @@ rule_categories:
     - secrets
     - deserialization
     - authentication
-    
+
   high:      # weight: 2
     - cryptography
     - authorization
     - path-traversal
     - ssrf
-    
+
   medium:    # weight: 1.5
     - xss
     - logging
     - configuration
-    
+
   low:       # weight: 1
     - code-quality
     - best-practice

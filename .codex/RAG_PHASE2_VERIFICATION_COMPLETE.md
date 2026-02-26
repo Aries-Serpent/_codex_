@@ -83,7 +83,7 @@ PYTHONPATH=src python -m pytest tests/test_rag_meta_tensor_regression.py tests/t
    ```python
    # Patch base module
    monkeypatch.setattr("sentence_transformers.SentenceTransformer", MockSentenceTransformer)
-   
+
    # Patch module-level imports
    monkeypatch.setattr("codex.rag.indexer.SentenceTransformer", MockSentenceTransformer)
    monkeypatch.setattr("codex.rag.embeddings.SentenceTransformer", MockSentenceTransformer)

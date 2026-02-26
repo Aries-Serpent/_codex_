@@ -69,21 +69,21 @@ from typing import Optional, Callable, Any
 class CodexErrorHandler:
     """
     Centralized error handling with logging and graceful degradation.
-    
+
     Features:
     - Rotating log files (10MB max, 5 backups)
     - Configurable log levels
     - Thread-safe logging
     - Graceful degradation
-    
+
     Usage:
         handler = CodexErrorHandler()
-        
+
         @handler.log_errors
         def risky_function():
             ...
     """
-    
+
     def __init__(
         self,
         log_dir: Optional[Path] = None,
@@ -93,7 +93,7 @@ class CodexErrorHandler:
     ):
         """
         Initialize error handler with rotating logs.
-        
+
         Args:
             log_dir: Directory for error logs (default: .codex/logs)
             max_bytes: Maximum size per log file (default: 10MB)
@@ -102,13 +102,13 @@ class CodexErrorHandler:
         """
         self.log_dir = log_dir or Path('.codex/logs')
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
-        
+
         # Configure logger (instance-specific)
         self.logger = logging.getLogger(f'codex.errors.{id(self)}')
         self.logger.setLevel(getattr(logging, log_level.upper()))
-        
+
         # Add rotating file handler
         handler = RotatingFileHandler(
             self.error_log,
@@ -121,19 +121,19 @@ class CodexErrorHandler:
             datefmt='%Y-%m-%d %H:%M:%S'
         ))
         self.logger.addHandler(handler)
-        
+
         # Prevent propagation to root logger
         self.logger.propagate = False
-    
+
     def set_log_level(self, level: str) -> None:
         """
         Set logging level.
-        
+
         Args:
             level: One of DEBUG, INFO, WARNING, ERROR, CRITICAL
         """
         self.logger.setLevel(getattr(logging, level.upper()))
-    
+
     def log_error(
         self,
         error: Exception,
@@ -142,7 +142,7 @@ class CodexErrorHandler:
     ) -> None:
         """
         Log error with context.
-        
+
         Args:
             error: Exception to log
             context: Additional context (dict)
@@ -154,22 +154,22 @@ class CodexErrorHandler:
             'traceback': traceback.format_exc(),
             'context': context or {}
         }
-        
+
         self.logger.error(
             f"{error_details['type']}: {error_details['message']}\n"
             f"Context: {error_details['context']}\n"
             f"Traceback:\n{error_details['traceback']}"
         )
-        
+
         if fatal:
             print(f"❌ Fatal error: {error}", file=sys.stderr)
             print(f"See {self.error_log} for details", file=sys.stderr)
             sys.exit(1)
-    
+
     def log_errors(self, func: Callable) -> Callable:
         """
         Decorator to log errors from a function.
-        
+
         Usage:
             @error_handler.log_errors
             def my_function():
@@ -197,21 +197,21 @@ error_handler = CodexErrorHandler()
 def test_log_rotation(tmp_path):
     """Test log file rotation."""
     from codex.logging.error_handler import CodexErrorHandler
-    
+
     # Create handler with small max_bytes for testing
     handler = CodexErrorHandler(
         log_dir=tmp_path,
         max_bytes=100,  # Small size to trigger rotation
         backup_count=2
     )
-    
+
     # Log many errors to trigger rotation
     for i in range(50):
         try:
             raise ValueError(f"Test error {i}")
         except ValueError as e:
             handler.log_error(e)
-    
+
     # Check that backup files were created
     log_files = list(tmp_path.glob("errors_*.log*"))
     assert len(log_files) >= 2, "Log rotation should create backup files"
@@ -220,10 +220,10 @@ def test_log_rotation(tmp_path):
 def test_set_log_level(tmp_path):
     """Test dynamic log level setting."""
     from codex.logging.error_handler import CodexErrorHandler
-    
+
     handler = CodexErrorHandler(log_dir=tmp_path, log_level="DEBUG")
     assert handler.logger.level == logging.DEBUG
-    
+
     handler.set_log_level("WARNING")
     assert handler.logger.level == logging.WARNING
 ```text
@@ -252,23 +252,23 @@ def test_set_log_level(tmp_path):
 ```python
 class TestCLIIntegration:
     """End-to-end CLI integration tests."""
-    
+
     def test_cli_full_workflow(self, tmp_path):
         """Test complete CLI workflow: init-db → session-logger → viewer → query-logs."""
         from click.testing import CliRunner
         from codex.cli import init_db_cmd, cli
-        
+
         runner = CliRunner()
-        
+
         # Setup: Use isolated DB
         db_path = tmp_path / "test_workflow.db"
-        
+
         # Step 1: Initialize database
         result = runner.invoke(init_db_cmd, ["--db-path", str(db_path)])
         assert result.exit_code == 0, f"init-db failed: {result.output}"
         assert "initialized successfully" in result.output.lower()
         assert db_path.exists()
-        
+
         # Step 2: Log a test message
         # Note: Assuming session-logger command exists (from original spec)
         # If not implemented yet, skip this test or mock the logging
@@ -282,40 +282,40 @@ class TestCLIIntegration:
             # This test will pass once all CLI commands are implemented
         except Exception:
             pass  # Skip if command not available yet
-        
+
         # Step 3: Verify database contents (direct SQL)
         import sqlite3
         conn = sqlite3.connect(str(db_path))
         cursor = conn.execute("SELECT COUNT(*) FROM session_events")
         count = cursor.fetchone()[0]
         conn.close()
-        
+
         # Should have at least the schema initialized
         assert count >= 0, "Database should be queryable"
-    
+
     def test_cli_error_handling(self, tmp_path):
         """Test CLI error handling for invalid inputs."""
         from click.testing import CliRunner
         from codex.cli import init_db_cmd
-        
+
         runner = CliRunner()
-        
+
         # Test: Invalid DB path (read-only location)
         result = runner.invoke(init_db_cmd, ["--db-path", "/invalid/path/db.db"])
         assert result.exit_code != 0, "Should fail with invalid path"
         assert "failed" in result.output.lower() or "error" in result.output.lower()
-    
+
     def test_db_manager_concurrent_access(self, tmp_path):
         """Test DBManager handles concurrent access correctly."""
         from codex.logging.db_manager import DBManager
         import threading
-        
+
         db_path = tmp_path / "concurrent_test.db"
         manager = DBManager(db_path=db_path)
         manager.init_schema()
-        
+
         errors = []
-        
+
         def write_logs(thread_id: int):
             """Write logs from multiple threads."""
             try:
@@ -328,26 +328,26 @@ class TestCLIIntegration:
                         conn.commit()
             except Exception as e:
                 errors.append(e)
-        
+
         # Spawn 5 threads writing concurrently
         threads = []
         for i in range(5):
             t = threading.Thread(target=write_logs, args=(i,))
             threads.append(t)
             t.start()
-        
+
         # Wait for all threads
         for t in threads:
             t.join()
-        
+
         # Should have no errors due to WAL mode
         assert len(errors) == 0, f"Concurrent writes should not error: {errors}"
-        
+
         # Verify all writes succeeded
         with manager.connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM session_events")
             count = cursor.fetchone()[0]
-        
+
         assert count == 50, f"Expected 50 rows (5 threads × 10 writes), got {count}"
 ```text
 
@@ -376,65 +376,65 @@ class TestCLIIntegration:
 class EnvironmentManager:
     """
     Manage environment variables with validation and logging.
-    
+
     Usage:
         # Lazy validation (recommended)
         env = EnvironmentManager(validate_on_init=False)
         session_id = env.get_session_id()
-        
+
         # Explicit validation
         env.validate()
-        
+
         # Eager validation (original behavior)
         env = EnvironmentManager(validate_on_init=True)
     """
-    
+
     ENV_VARS = {
         # ... existing definitions
     }
-    
+
     def __init__(self, validate_on_init: bool = False):
         """
         Initialize environment manager.
-        
+
         Args:
             validate_on_init: If True, validate immediately (default: False for lazy loading)
         """
         self._session_id: Optional[str] = None
         self._validated: bool = False
-        
+
         if validate_on_init:
             self.validate()
-    
+
     def validate(self) -> None:
         """
         Validate required environment variables.
-        
+
         Raises:
             EnvironmentError: If validation fails
         """
         if self._validated:
             return  # Already validated
-        
+
         errors = []
         for var_name, config in self.ENV_VARS.items():
             value = os.getenv(var_name)
-            
+
             if config.required and not value:
                 errors.append(f"Required environment variable {var_name} not set")
-            
+
             if value and config.validator and not config.validator(value):
                 errors.append(f"Invalid value for {var_name}: {value}")
-        
+
         if errors:
             raise EnvironmentError("\n".join(errors))
-        
+
         self._validated = True
-    
+
     def _validate_environment(self) -> None:
         """Deprecated: Use validate() instead."""
         self.validate()
-    
+
     # ... rest of methods unchanged
 
 
@@ -448,15 +448,15 @@ env_manager = EnvironmentManager(validate_on_init=False)
 def test_lazy_validation():
     """Test lazy validation does not crash on import."""
     from codex.config.env_vars import EnvironmentManager
-    
+
     # Should not crash even with invalid env
     with patch.dict(os.environ, {'CODEX_SQLITE_POOL': 'invalid'}, clear=True):
         env = EnvironmentManager(validate_on_init=False)
-        
+
         # Can still use methods
         session_id = env.get_session_id()
         assert session_id is not None
-        
+
         # Explicit validation should fail
         with pytest.raises(EnvironmentError):
             env.validate()
@@ -465,7 +465,7 @@ def test_lazy_validation():
 def test_eager_validation():
     """Test eager validation crashes immediately if invalid."""
     from codex.config.env_vars import EnvironmentManager
-    
+
     with patch.dict(os.environ, {'CODEX_SQLITE_POOL': 'invalid'}, clear=True):
         with pytest.raises(EnvironmentError):
             env = EnvironmentManager(validate_on_init=True)
@@ -505,9 +505,9 @@ def test_eager_validation():
 )
 def export_env_cmd(format: str, output: Optional[str]) -> None:
     """Export current environment configuration.
-    
+
     Outputs all CODEX_* environment variables in the specified format.
-    
+
     Examples:
         codex export-env                    # Shell format to stdout
         codex export-env --format=json      # JSON format
@@ -515,10 +515,10 @@ def export_env_cmd(format: str, output: Optional[str]) -> None:
     """
     from codex.config.env_vars import env_manager
     import json
-    
+
     try:
         config = env_manager.dump_config()
-        
+
         # Format output
         if format == "shell":
             lines = [f'export {key}="{value}"' for key, value in config.items()]
@@ -529,14 +529,14 @@ def export_env_cmd(format: str, output: Optional[str]) -> None:
             # Simple YAML output without pyyaml dependency
             lines = [f"{key}: {value}" for key, value in config.items()]
             output_text = "\n".join(lines)
-        
+
         # Write to file or stdout
         if output:
             Path(output).write_text(output_text)
             click.echo(f"✅ Environment exported to {output}")
         else:
             click.echo(output_text)
-    
+
     except Exception as exc:
         click.echo(f"❌ Failed to export environment: {exc}", err=True)
         sys.exit(1)
@@ -549,10 +549,10 @@ def test_export_env_shell_format():
     """Test export-env command with shell format."""
     from click.testing import CliRunner
     from codex.cli import export_env_cmd
-    
+
     runner = CliRunner()
     result = runner.invoke(export_env_cmd, ["--format=shell"])
-    
+
     assert result.exit_code == 0
     assert "export CODEX_" in result.output
 
@@ -561,12 +561,12 @@ def test_export_env_to_file(tmp_path):
     """Test export-env command writing to file."""
     from click.testing import CliRunner
     from codex.cli import export_env_cmd
-    
+
     output_file = tmp_path / ".env.test"
-    
+
     runner = CliRunner()
     result = runner.invoke(export_env_cmd, ["--output", str(output_file)])
-    
+
     assert result.exit_code == 0
     assert output_file.exists()
     assert "CODEX_" in output_file.read_text()
@@ -714,7 +714,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
             raise ValueError(f'Test {i}')
         except ValueError as e:
             handler.log_error(e)
-    
+
     log_files = list(Path(tmpdir).glob('errors_*.log*'))
     assert len(log_files) >= 2, f'Expected ≥2 log files, got {len(log_files)}'
     print(f'✅ Log rotation working: {len(log_files)} files created')

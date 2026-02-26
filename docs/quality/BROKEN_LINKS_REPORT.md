@@ -1,19 +1,19 @@
 # Broken Links Report
 
 > **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
-> 
+>
 > **Current Status**: As of 2026-02-10, the validation system has been enhanced with:
 > - Smart false positive filtering (93% noise reduction)
 > - Code block detection
 > - Pattern-based exclusions for regex, code examples, and templates
-> 
+>
 > **Latest Validation Results**: 5 errors (all acceptable - 3 planned features, 2 in this legacy report)
-> 
+>
 > For current validation status, run:
 > ```bash
 > python scripts/validate_docs_links.py
 > ```
-> 
+>
 > See: `.codex/validation_categorization_report.md` for latest analysis
 
 ---
@@ -306,4 +306,3 @@
 
 - Line 87: `[Logging guide](../guides/LOGGING.md)`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/guides/LOGGING.md
-

@@ -57,13 +57,13 @@ For better regression detection, consider:
    // In Cargo.toml: Add feature flag
    // [features]
    // ci_environment = []
-   
+
    #[cfg(feature = "ci_environment")]
    const THRESHOLD: f64 = 200.0;
-   
+
    #[cfg(not(feature = "ci_environment"))]
    const THRESHOLD: f64 = 2000.0;
-   
+
    // Build with: cargo test --features ci_environment
    ```
 

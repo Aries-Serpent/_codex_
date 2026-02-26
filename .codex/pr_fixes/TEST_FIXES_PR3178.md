@@ -14,7 +14,7 @@
 **File:** `tests/test_training_metadata_logging.py`
 **Status:** PASSING (1/1)
 
-**Issue:** 
+**Issue:**
 - UnboundLocalError: `pad_token` and `unk_token` accessed before assignment
 - Missing metadata logging in training runs
 

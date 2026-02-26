@@ -97,7 +97,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
        def calculate_failure_rate(workflow: str, window: int) -> float
        def is_flaky(workflow: str) -> bool
        def persist_state() -> None
-   
+
    class WorkflowRun:
        name: str
        status: str
@@ -122,9 +122,9 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
        def update_issue(issue: Issue, new_failure: WorkflowFailure) -> None
        def close_issue(issue: Issue, reason: str) -> None
        def find_duplicate(failure: WorkflowFailure) -> Optional[Issue]
-   
+
    class IssueTemplate:
-       def format_failure_issue(failure: WorkflowFailure, patterns: List[PatternMatch], 
+       def format_failure_issue(failure: WorkflowFailure, patterns: List[PatternMatch],
                                 agent_analysis: AgentRecommendation) -> str
    ```
 
@@ -172,7 +172,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
        def analyze_logs(logs: str) -> List[PatternMatch]
        def calculate_confidence(pattern: ErrorSignature, match: re.Match) -> float
        def detect_flakiness(workflow: str, history: List[WorkflowRun]) -> Optional[FlakinessResult]
-   
+
    class ErrorSignature:
        id: str
        name: str
@@ -181,7 +181,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
        confidence_base: float
        suggested_fix: str
        agent: str
-   
+
    class PatternMatch:
        signature: ErrorSignature
        confidence: float
@@ -215,14 +215,14 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
        def route_failure(failure: WorkflowFailure, patterns: List[PatternMatch]) -> List[AgentRecommendation]
        def select_agents(category: str, confidence: float) -> List[str]
        def aggregate_recommendations(recommendations: List[AgentRecommendation]) -> AgentAnalysis
-   
+
    class AgentRecommendation:
        agent_name: str
        confidence: float
        root_cause: str
        suggested_fix: str
        related_patterns: List[str]
-   
+
    class AgentAnalysis:
        primary_agent: str
        confidence: float
@@ -273,7 +273,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
    **Workflow Structure**:
    ```yaml
    name: Artifact Monitoring
-   
+
    on:
      schedule:
        - cron: '0 */3 * * *'
@@ -285,12 +285,12 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
          workflow_filter:
            description: 'Filter specific workflows (comma-separated)'
            default: ''
-   
+
    permissions:
      contents: read
      issues: write
      actions: read
-   
+
    jobs:
      monitor:
        runs-on: ubuntu-latest
@@ -349,19 +349,19 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
    ```bash
    # Check all workflows
    python scripts/agents/artifact_monitor_cli.py check
-   
+
    # Check specific workflow
    python scripts/agents/artifact_monitor_cli.py check --workflow test-comprehensive.yml
-   
+
    # Generate 7 iteration failure report
    python scripts/agents/artifact_monitor_cli.py report --days 7 --output report.json
-   
+
    # Test pattern matching
    python scripts/agents/artifact_monitor_cli.py test-patterns --log-file logs/workflow.log
-   
+
    # Interactive mode
    python scripts/agents/artifact_monitor_cli.py interactive
-   
+
    # Dry-run (no issues created)
    python scripts/agents/artifact_monitor_cli.py check --dry-run
    ```

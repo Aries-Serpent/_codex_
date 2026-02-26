@@ -12,19 +12,19 @@ This directory contains reports from the legacy `_codex_reports/` structure that
 
 - `audit_requirement_mapping.md` - Legacy audit mapping
   - **Superseded by**: `.codex/qa_walkthrough/dependency_audit.json`
-  
+
 - `errors_2025-10-19.md` - Historical error report (Oct 19, 2025)
   - **Superseded by**: Current error tracking in `logs/error_captures.log`
-  
+
 - `errors_2025-11-05.md` - Historical error report (Nov 5, 2025)
   - **Superseded by**: Current error tracking
-  
+
 - `errors_2025-11-12.md` - Historical error report (Nov 12, 2025)
   - **Superseded by**: Current error tracking
-  
+
 - `metric_plugin_duplicates_resolution.md` - Plugin duplicates resolution
   - **Superseded by**: `.codex/decisions/` documentation
-  
+
 - `status_update_2025-10-19.md` - Historical status update
   - **Superseded by**: `.codex/change_log.md` and `.codex/results.md`
 

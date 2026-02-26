@@ -25,15 +25,15 @@ triggers:
     severity:
       - critical
       - high
-      
+
   - type: dependabot_alert
     severity:
       - critical
       - high
-      
+
   - type: manual
     command: "@copilot resolve security advisory"
-    
+
   - type: scheduled
     cron: "0 6 * * *"  # Daily at 6 AM
 
@@ -50,12 +50,12 @@ capabilities:
       - nvd
       - github_advisory
       - osv
-    
+
   analyze_impact:
     enabled: true
     include_dependency_tree: true
     check_breaking_changes: true
-    
+
   generate_fixes:
     enabled: true
     strategies:
@@ -63,7 +63,7 @@ capabilities:
       - version_pin
       - dependency_replacement
     auto_test: true
-    
+
   create_pr:
     enabled: true
     template: security_fix_pr.md
@@ -93,7 +93,7 @@ integrations:
   cognitive_brain:
     pattern_storage: true
     security_patterns_category: true
-    
+
   github:
     pr_creation: true
     issue_creation: true

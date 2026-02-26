@@ -204,7 +204,7 @@ gcloud iam service-accounts list --project=codex-notebooklm-integration
    # Application type: Desktop app
    # Name: Codex Claude Code Integration
    # Download client_secret_*.json
-   
+
    # Extract and add to GitHub Secrets:
    # GOOGLE_CLIENT_ID: [from client_secret JSON]
    # GOOGLE_CLIENT_SECRET: [from client_secret JSON]
@@ -394,7 +394,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
    ```bash
    # Check GitHub Actions artifacts:
    # - codex-architecture-sync.xml (backup, 7-day retention)
-   
+
    # Check Google Drive:
    # - Folder: Codex Repository Sync
    # - File: codex-architecture-sync.xml
@@ -467,7 +467,7 @@ ls -lh codex-architecture-sync.xml
    ```bash
    # In Claude Code/Desktop:
    @architect health check
-   
+
    # Expected: Comprehensive health check report with:
    # - Architectural consistency analysis
    # - Security validation results
@@ -542,7 +542,7 @@ See: `.codex/SECURITY_FALSE_POSITIVE_STANDARD.md` for review process
 ### AA-003: Documentation Creation ✅ COMPLETE
 **Automated**: 100%  
 **Status**: Installation guides, prompts, diagrams created  
-**Files**: 
+**Files**:
 - `docs/TASK_3_NOTEBOOKLM_SKILL_SETUP.md`
 - `docs/notebooklm-architect-prompt.md`
 - `PHASE_10_MASTER_INTEGRATION_PLANSET.md`

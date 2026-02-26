@@ -29,7 +29,7 @@ Volleyball-style workflow where GitHub Copilot (execution) and ChatGPT Codex (re
 
 ### Pattern 1: Successful Hand-off
 ```
-User triggers → Copilot executes → Deliverables posted → @codex mention → 
+User triggers → Copilot executes → Deliverables posted → @codex mention →
 Codex reviews → Validation report → Approval → @copilot next phase
 ```
 

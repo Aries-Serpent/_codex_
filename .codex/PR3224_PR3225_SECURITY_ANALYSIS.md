@@ -27,7 +27,7 @@
 
 ### PR #3224: UV Group Dependencies
 - **Branch**: `dependabot/uv/uv-e49ee4153b`
-- **Commits**: 
+- **Commits**:
   - `ddd645df` - Bump nbconvert 7.16.6 → 7.17.0
   - `ddd645df` - Bump litestar 2.19.0 → 2.20.0
 - **Files Modified**:
@@ -122,7 +122,7 @@ The `FileStore` backend used by Litestar for response caching had a critical fla
 - **Issue**: Unicode NFKD normalization + `ord()` substitution without separators
 - **Result**: Different URLs could map to the same cache key
 - **Example**: URLs `k-` and `k45` produce identical cache keys
-- **Attack Vector**: 
+- **Attack Vector**:
   - Cache poisoning
   - Cross-user data leakage
   - One user receives another user's cached response

@@ -231,7 +231,7 @@ all_embeddings = []
 for batch_start in range(0, total_docs, BATCH_SIZE):
     batch_end = min(batch_start + BATCH_SIZE, total_docs)
     batch_emb, batch_docs = get_batch(batch_start, batch_end)
-    
+
     all_embeddings.append(batch_emb)
     all_docs.extend(batch_docs)
 
@@ -351,7 +351,7 @@ store = FAISSStore(index_name="migrated-from-weaviate")
    ```python
    # Good
    store = FAISSStore(index_name="product-embeddings-v2")
-   
+
    # Avoid
    store = FAISSStore(index_name="index1")
    ```

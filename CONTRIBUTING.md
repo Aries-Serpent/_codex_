@@ -170,18 +170,18 @@ from sentence_transformers import SentenceTransformer
 
 def load_model_safely(model_name: str, cache_dir: str = "./cache"):
     """Safe model loading with multi-layered prevention."""
-    
+
     # Layer 1: Environment setup
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
     os.environ["TRANSFORMERS_OFFLINE"] = "0"
-    
+
     # Layer 2: Initialize with default device allocation
     model = SentenceTransformer(
         model_name,
         cache_folder=cache_dir,
         trust_remote_code=False  # Security: prevent code execution
     )
-    
+
     # Layer 3: Verification - Check for meta tensors
     meta_tensors = []
     for name, param in model.named_parameters():
@@ -190,14 +190,14 @@ def load_model_safely(model_name: str, cache_dir: str = "./cache"):
     for name, buf in model.named_buffers():
         if buf.device.type == "meta":
             meta_tensors.append(name)
-    
+
     if meta_tensors:
         raise RuntimeError(
             f"Model has {len(meta_tensors)} meta tensor(s). "
             f"This is a bug. Please report to: "
             f"https://github.com/Aries-Serpent/_codex_/issues"
         )
-    
+
     model.eval()
     return model
 ```

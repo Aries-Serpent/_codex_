@@ -95,20 +95,20 @@ security_analysis:
     - description: string
     - affected_versions: list[string]
     - fixed_version: string
-  
+
   impact_assessment:
     risk_level: string (CRITICAL, HIGH, MEDIUM, LOW)
     codebase_usage: string
     direct_dependency: bool
     exposure_context: string
     affected_components: list[string]
-  
+
   recommendation:
     action: string (APPROVE, DEFER, INVESTIGATE)
     rationale: string
     validation_tests: list[string]
     follow_up_actions: list[string]
-  
+
   report_url: string
 ```
 

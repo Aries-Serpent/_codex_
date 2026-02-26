@@ -53,7 +53,7 @@ graph TB
         D -->|Inform| F[Decision Support]
         F -->|Guide| A
     end
-    
+
     subgraph "Agent Orchestration"
         G[doc-freshness-checker] -->|Check Staleness| C
         H[documentation-quality-agent] -->|Check Standards| C
@@ -61,7 +61,7 @@ graph TB
         J[documentation-sync-validator] -->|Check Sync| C
         C -->|Orchestrate| K[Agent Coordinator]
     end
-    
+
     subgraph "Cognitive Brain"
         D -->|Learn| L[Pattern Recognition]
         L -->|Update| M[Knowledge Base]
@@ -71,7 +71,7 @@ graph TB
         N -->|Improve| I
         N -->|Improve| J
     end
-    
+
     style D fill:#4CAF50,stroke:#2E7D32,color:#fff
     style K fill:#2196F3,stroke:#1565C0,color:#fff
     style M fill:#FF9800,stroke:#E65100,color:#fff
@@ -186,12 +186,12 @@ graph TB
     D -->|Generate| E[Dashboard MD]
     E -->|Commit| F[docs/dashboard/]
     F -->|Display| G[GitHub Pages]
-    
+
     D -->|Track| H[Staleness Score]
     D -->|Track| I[Template Compliance]
     D -->|Track| J[Link Health]
     D -->|Track| K[Date Format]
-    
+
     style D fill:#4CAF50,stroke:#2E7D32,color:#fff
     style G fill:#2196F3,stroke:#1565C0,color:#fff
 ```
@@ -245,7 +245,7 @@ sequenceDiagram
     participant QualityAgent
     participant LinkAgent
     participant Brain
-    
+
     User->>Coordinator: Request doc check
     Coordinator->>FreshnessAgent: Check staleness
     FreshnessAgent-->>Coordinator: Results
@@ -281,19 +281,19 @@ documentation_pipeline:
     - name: audit
       agents: [doc-freshness-checker]
       on_fail: report
-    
+
     - name: quality
       agents: [documentation-quality-agent]
       on_fail: attempt_fix
-    
+
     - name: validation
       agents: [link-validator-agent]
       on_fail: attempt_fix
-    
+
     - name: fix
       agents: [documentation-sync-validator]
       on_fail: escalate
-    
+
     - name: verify
       agents: [doc-freshness-checker]
       on_fail: rollback
@@ -438,10 +438,10 @@ graph LR
     C -->|Inform| D[Agent Strategy]
     D -->|Improve| E[Future Operations]
     E -->|Generate| A
-    
+
     B -->|Update| F[CODEBASE_COGNITIVE_MAP]
     B -->|Update| G[CODEBASE_DASHBOARD]
-    
+
     style B fill:#4CAF50,stroke:#2E7D32,color:#fff
     style C fill:#FF9800,stroke:#E65100,color:#fff
 ```

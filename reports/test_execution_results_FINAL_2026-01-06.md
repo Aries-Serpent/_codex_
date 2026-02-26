@@ -67,7 +67,7 @@ vi.mock('@/lib/codex-api-client', () => {
 it('should display error message when API key is missing', async () => {
   delete import.meta.env.VITE_CODEX_KEY;
   render(<CodeGenerator />);
-  
+
   await waitFor(() => {
     expect(screen.getByText(/missing vite_codex_key environment variable/i))
       .toBeInTheDocument(); // ❌ Not found!
@@ -80,7 +80,7 @@ it('should display error message when API key is missing', async () => {
 it('should display info message when API key is missing (mock fallback)', async () => {
   delete import.meta.env.VITE_CODEX_KEY;
   render(<CodeGenerator />);
-  
+
   await waitFor(() => {
     expect(screen.getByText(/using demo mode.*api key not configured/i))
       .toBeInTheDocument(); // ✅ Found!

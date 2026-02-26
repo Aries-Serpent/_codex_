@@ -13,50 +13,50 @@ graph TB
         CC[Client Certificate]
         TCC[TLS Client Context]
     end
-    
+
     subgraph "Bridge Layer"
         BP[Bridge Protocol v2]
         MC[Message Compression]
         MF[Message Flags]
         CH[Checksum/CRC32]
     end
-    
+
     subgraph "Server Machine (Cognitive Brain)"
         TLS[TLS Server<br/>Mutual TLS]
         MCB[Multi-Client Bridge]
         OR[Orchestrator]
         KB[Knowledge Base]
     end
-    
+
     subgraph "Security Layer"
         PKI[Mini-PKI<br/>Certificate Authority]
         CR[Cert Rotation]
         SC[Scope Validator]
     end
-    
+
     CA -->|Request| TCC
     TCC -->|Encrypted| BP
     BP -->|Compress if >100KB| MC
     MC -->|Add Header| MF
     MF -->|Add Checksum| CH
     CH -->|TLS Handshake| TLS
-    
+
     TLS -->|Verify Client Cert| PKI
     TLS -->|Route Message| MCB
     MCB -->|Priority/RR| OR
     OR -->|Query| KB
-    
+
     PKI -->|Issue Ephemeral| CC
     PKI -->|Auto-Rotate| CR
     OR -->|Validate Scopes| SC
-    
+
     KB -->|Response| OR
     OR -->|Route| MCB
     MCB -->|Compress| BP
     BP -->|Encrypt| TLS
     TLS -->|Send| TCC
     TCC -->|Decrypt| CA
-    
+
     style TLS fill:#f96,stroke:#333,stroke-width:3px
     style PKI fill:#9cf,stroke:#333,stroke-width:2px
     style SC fill:#fc9,stroke:#333,stroke-width:2px

@@ -85,7 +85,7 @@
 - `tests/codex_ml/safety/test_pii_edge_cases.py` (10 tests)
 
 #### Batch 2: CLI Entry Points (25 tests)
-**Targets**: 
+**Targets**:
 - `src/codex_ml/cli/codex_cli.py` (846 lines)
 - `src/codex/cli_rag.py` (821 lines)
 

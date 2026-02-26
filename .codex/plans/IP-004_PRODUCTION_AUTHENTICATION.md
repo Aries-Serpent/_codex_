@@ -52,24 +52,24 @@ graph TD
     B -->|API Key| C[API Key Validator]
     B -->|JWT| D[JWT Validator]
     B -->|OAuth| E[OAuth Handler]
-    
+
     C --> F{Valid?}
     D --> F
     E --> F
-    
+
     F -->|Yes| G[Authorization Check]
     F -->|No| H[401 Unauthorized]
-    
+
     G --> I{Authorized?}
     I -->|Yes| J[Process Request]
     I -->|No| K[403 Forbidden]
-    
+
     subgraph "Authentication Layer"
         C
         D
         E
     end
-    
+
     subgraph "Authorization Layer"
         G
     end
@@ -141,19 +141,19 @@ src/codex/auth/
 authentication:
   enabled: true
   default_scheme: jwt
-  
+
   jwt:
     algorithm: RS256
     public_key_url: ${AUTH_PUBLIC_KEY_URL}
     issuer: ${AUTH_ISSUER}
     audience: ${AUTH_AUDIENCE}
     clock_skew_seconds: 30
-    
+
   api_key:
     enabled: true
     hash_algorithm: argon2
     header_name: X-API-Key
-    
+
   oauth:
     enabled: true
     provider: generic

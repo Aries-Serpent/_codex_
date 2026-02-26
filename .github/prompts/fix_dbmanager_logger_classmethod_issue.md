@@ -23,7 +23,7 @@
 class DBManager:
     def __init__(self, ...):
         self.logger = logging.getLogger(__name__)  # Instance attribute
-    
+
     @classmethod
     def close_all_pools(cls):
         cls.logger.debug(...)  # ← AttributeError: cls has no 'logger'
@@ -43,16 +43,16 @@ class DBManager:
    ```python
    class DBManager:
        """Centralized database manager for Codex logging."""
-       
+
        # Class-level lock for initialization
        _INIT_LOCK = threading.RLock()
        _INITIALIZED_DBS: set[str] = set()
-       
+
        # Connection pool
        _POOL_LOCK = threading.RLock()
        _CONNECTION_POOL: dict[str, list[sqlite3.Connection]] = {}
        _POOL_ENABLED = os.getenv("CODEX_SQLITE_POOL") == "1"
-       
+
        # Class-level logger (ADD THIS)
        _logger = logging.getLogger(__name__)
    ```
@@ -70,7 +70,7 @@ class DBManager:
    ```bash
    # Find all occurrences:
    # Lines: 67, 137, 203
-   
+
    # Replace:
    self.logger.info(...)    →  self._logger.info(...)
    self.logger.debug(...)   →  self._logger.debug(...)
@@ -129,11 +129,11 @@ from unittest.mock import patch, MagicMock
 
 class TestDBManagerPoolCleanup:
     """Test DBManager connection pool cleanup (P1 critical defect fix)."""
-    
+
     def test_close_all_pools_success(self, tmp_path):
         """Test successful pool cleanup without errors."""
         from codex.logging.db_manager import DBManager
-        
+
         # Enable pooling
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
             # Force reload to pick up env var
@@ -141,171 +141,171 @@ class TestDBManagerPoolCleanup:
             import codex.logging.db_manager
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
-            
+
             # Create manager and initialize
             db_path = tmp_path / "test_pool.db"
             manager = DBManager(db_path=db_path)
             manager.init_schema()
-            
+
             # Populate pool with connections
             for _ in range(5):
                 conn = manager.get_connection()
                 manager.close_connection(conn)  # Returns to pool
-            
+
             # Verify pool has connections
             assert len(DBManager._CONNECTION_POOL) > 0, "Pool should be populated"
             pool_size_before = sum(len(p) for p in DBManager._CONNECTION_POOL.values())
             assert pool_size_before == 5, f"Expected 5 connections, got {pool_size_before}"
-            
+
             # Close all pools
             DBManager.close_all_pools()
-            
+
             # Verify pool is empty
             assert len(DBManager._CONNECTION_POOL) == 0, "Pool should be cleared"
-    
+
     def test_close_all_pools_with_connection_errors(self, tmp_path):
         """Test pool cleanup when some connections fail to close."""
         from codex.logging.db_manager import DBManager
-        
+
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
             import importlib
             import codex.logging.db_manager
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
-            
+
             db_path = tmp_path / "test_errors.db"
             manager = DBManager(db_path=db_path)
             manager.init_schema()
-            
+
             # Populate pool
             conns = []
             for _ in range(3):
                 conn = manager.get_connection()
                 conns.append(conn)
                 manager.close_connection(conn)
-            
+
             # Pre-close first connection to trigger error
             for pool in DBManager._CONNECTION_POOL.values():
                 if pool:
                     pool[0].close()  # This will cause error on second close
                     break
-            
+
             # Close all pools - should NOT raise exception
             try:
                 DBManager.close_all_pools()
             except Exception as e:
                 pytest.fail(f"close_all_pools() should not raise exception: {e}")
-            
+
             # Verify pool is still cleared despite errors
             assert len(DBManager._CONNECTION_POOL) == 0, "Pool should be cleared even with errors"
-    
+
     def test_close_all_pools_empty_pool(self):
         """Test pool cleanup with no connections."""
         from codex.logging.db_manager import DBManager
-        
+
         # Ensure pool is empty
         DBManager._CONNECTION_POOL.clear()
-        
+
         # Should not raise exception
         try:
             DBManager.close_all_pools()
         except Exception as e:
             pytest.fail(f"close_all_pools() on empty pool should not raise: {e}")
-        
+
         # Pool should still be empty
         assert len(DBManager._CONNECTION_POOL) == 0
-    
+
     def test_close_all_pools_multiple_databases(self, tmp_path):
         """Test pool cleanup with multiple database pools."""
         from codex.logging.db_manager import DBManager
-        
+
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
             import importlib
             import codex.logging.db_manager
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
-            
+
             # Create two databases
             db1 = DBManager(db_path=tmp_path / "db1.db")
             db1.init_schema()
             db2 = DBManager(db_path=tmp_path / "db2.db")
             db2.init_schema()
-            
+
             # Populate pools
             for _ in range(2):
                 conn1 = db1.get_connection()
                 db1.close_connection(conn1)
-                
+
                 conn2 = db2.get_connection()
                 db2.close_connection(conn2)
-            
+
             # Verify both pools populated
             assert len(DBManager._CONNECTION_POOL) == 2, "Should have 2 database pools"
-            
+
             # Close all pools
             DBManager.close_all_pools()
-            
+
             # Verify all pools cleared
             assert len(DBManager._CONNECTION_POOL) == 0
-    
+
     def test_logger_accessible_from_classmethod(self):
         """Test that _logger is accessible from classmethod (regression test)."""
         from codex.logging.db_manager import DBManager
-        
+
         # Verify class attribute exists
         assert hasattr(DBManager, '_logger'), "DBManager should have _logger class attribute"
-        
+
         # Verify it's a Logger instance
         import logging
         assert isinstance(DBManager._logger, logging.Logger), "_logger should be a Logger instance"
-        
+
         # Verify name is correct
         assert DBManager._logger.name == 'codex.logging.db_manager'
-    
+
     def test_instance_logger_access(self, tmp_path):
         """Test that instance methods can still access logger."""
         from codex.logging.db_manager import DBManager
-        
+
         db = DBManager(db_path=tmp_path / "test_instance.db")
-        
+
         # Verify instance can access _logger
         assert hasattr(db, '_logger'), "Instance should have access to _logger"
-        
+
         # Test logging works (capture logs)
         import logging
         with patch.object(DBManager._logger, 'info') as mock_info:
             db.init_schema()
             # Should have logged initialization
             assert mock_info.called or True  # Schema may already exist
-    
+
     def test_close_all_pools_logs_errors(self, tmp_path, caplog):
         """Test that errors during close are logged at DEBUG level."""
         from codex.logging.db_manager import DBManager
         import logging
-        
+
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
             import importlib
             import codex.logging.db_manager
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
-            
+
             db = DBManager(db_path=tmp_path / "test_logging.db")
             db.init_schema()
-            
+
             # Populate pool
             conn = db.get_connection()
             db.close_connection(conn)
-            
+
             # Pre-close to trigger error
             for pool in DBManager._CONNECTION_POOL.values():
                 if pool:
                     pool[0].close()
                     break
-            
+
             # Close with logging enabled
             with caplog.at_level(logging.DEBUG):
                 DBManager.close_all_pools()
-            
+
             # Verify error was logged (if occurred)
             # Note: may not always trigger error depending on SQLite version
             # Just verify no exception raised
@@ -336,30 +336,30 @@ pytest tests/test_db_manager_critical.py --cov=src/codex/logging/db_manager --co
 ```python
 class TestDBManager:
     """Test database manager functionality."""
-    
+
     # ... existing tests ...
-    
+
     def test_close_all_pools_integration(self, tmp_path):
         """Integration test for pool cleanup (existing test suite)."""
         from codex.logging.db_manager import DBManager
-        
+
         # Verify cleanup works in isolation
         DBManager._CONNECTION_POOL.clear()
-        
+
         with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
             db = DBManager(db_path=tmp_path / "integration.db")
             db.init_schema()
-            
+
             # Use connection pool
             conn1 = db.get_connection()
             db.close_connection(conn1)
-            
+
             # Verify pool exists
             assert len(DBManager._CONNECTION_POOL) > 0
-            
+
             # Cleanup
             DBManager.close_all_pools()
-            
+
             # Verify cleared
             assert len(DBManager._CONNECTION_POOL) == 0
 ```text
@@ -442,25 +442,25 @@ rm -f .codex/test_regression.db* .codex/test_pool_regression.db*
 @classmethod
 def close_all_pools(cls) -> None:
     """Close all pooled connections (for cleanup/shutdown).
-    
+
     This method is typically called during application shutdown to ensure
     all database connections are properly closed and resources are released.
-    
+
     Handles errors gracefully:
     - Logs errors at DEBUG level if individual connections fail to close
     - Continues closing remaining connections even if errors occur
     - Clears the connection pool dictionary after all close attempts
-    
+
     Thread-safe: Uses _POOL_LOCK to prevent concurrent access.
-    
+
     Example:
         # During application shutdown
         import atexit
         atexit.register(DBManager.close_all_pools)
-        
+
         # Or manually
         DBManager.close_all_pools()
-    
+
     Note:
         This is a classmethod that operates on the shared connection pool
         across all DBManager instances. It does not require an instance.
@@ -480,30 +480,30 @@ def close_all_pools(cls) -> None:
 ```python
 class DBManager:
     """Centralized database manager for Codex logging.
-    
+
     Features:
     - Automatic schema initialization
     - Connection pooling support (opt-in via CODEX_SQLITE_POOL=1)
     - Thread-safe operations
     - WAL mode for better concurrency
     - Graceful connection cleanup via close_all_pools()
-    
+
     Usage:
         # Basic usage
         db_manager = DBManager()
         conn = db_manager.get_connection()
         # Use connection
         db_manager.close_connection(conn)
-        
+
         # Context manager (recommended)
         with db_manager.connection() as conn:
             # Use connection
             pass
-        
+
         # Application shutdown
         import atexit
         atexit.register(DBManager.close_all_pools)
-    
+
     Attributes:
         _logger: Class-level logger (shared across instances)
         _POOL_ENABLED: Connection pooling enabled flag
@@ -606,7 +606,7 @@ class DBManager:
    pytest tests/test_db_manager_critical.py -v
    pytest tests/test_agents_infrastructure.py -v
    pytest tests/ --cov=src/codex --cov-report=term
-   
+
    # Run regression tests (manual verification)
    ```
 
@@ -615,7 +615,7 @@ class DBManager:
    git add src/codex/logging/db_manager.py
    git add tests/test_db_manager_critical.py
    git add tests/test_agents_infrastructure.py
-   
+
    git commit -m "fix(db_manager): resolve AttributeError in close_all_pools() classmethod
 
    CRITICAL FIX (P1): Resolves resource leak caused by AttributeError when

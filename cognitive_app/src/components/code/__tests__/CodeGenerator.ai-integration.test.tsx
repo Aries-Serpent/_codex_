@@ -15,23 +15,23 @@ describe('CodeGenerator - AI Mode Integration', () => {
 
   it('should render AI Mode toggle', () => {
     render(<CodeGenerator />);
-    
+
     expect(screen.getByText(/AI Mode:/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Toggle AI Mode/i)).toBeInTheDocument();
   });
 
   it('should toggle AI Mode on and off', () => {
     render(<CodeGenerator />);
-    
+
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
-    
+
     // Initially off
     expect(screen.getByText('Off')).toBeInTheDocument();
-    
+
     // Turn on
     fireEvent.click(toggle);
     expect(screen.getByText('On')).toBeInTheDocument();
-    
+
     // Turn off
     fireEvent.click(toggle);
     expect(screen.getByText('Off')).toBeInTheDocument();
@@ -43,14 +43,14 @@ describe('CodeGenerator - AI Mode Integration', () => {
       mode: 'AI-Powered',
       model: 'gpt-4o-mini (Spark Runtime)'
     });
-    
+
     SparkLLMClient.prototype.getStatus = mockGetStatus;
-    
+
     render(<CodeGenerator />);
-    
+
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
     fireEvent.click(toggle);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/AI Mode:/i)).toBeInTheDocument();
     });
@@ -71,23 +71,23 @@ describe('CodeGenerator - AI Mode Integration', () => {
         decoherence_time: 0.45
       }
     });
-    
+
     SparkLLMClient.prototype.generateCode = mockGenerateCode;
-    
+
     render(<CodeGenerator />);
-    
+
     // Enable AI mode
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
     fireEvent.click(toggle);
-    
+
     // Enter prompt
     const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
     fireEvent.change(textarea, { target: { value: 'Create a test function with 10+ chars' } });
-    
+
     // Click generate
     const generateButton = screen.getByRole('button', { name: /generate code/i });
     fireEvent.click(generateButton);
-    
+
     await waitFor(() => {
       expect(mockGenerateCode).toHaveBeenCalledWith({
         prompt: 'Create a test function with 10+ chars',
@@ -111,22 +111,22 @@ describe('CodeGenerator - AI Mode Integration', () => {
         decoherence_time: 0.52
       }
     });
-    
+
     SparkLLMClient.prototype.generateCode = mockGenerateCode;
-    
+
     render(<CodeGenerator />);
-    
+
     // Enable AI mode
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
     fireEvent.click(toggle);
-    
+
     // Generate code
     const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
     fireEvent.change(textarea, { target: { value: 'Generate quantum AI code now' } });
-    
+
     const generateButton = screen.getByRole('button', { name: /generate code/i });
     fireEvent.click(generateButton);
-    
+
     await waitFor(() => {
       expect(mockGenerateCode).toHaveBeenCalled();
     }, { timeout: 3000 });
@@ -134,22 +134,22 @@ describe('CodeGenerator - AI Mode Integration', () => {
 
   it('should handle AI generation errors gracefully', async () => {
     const mockGenerateCode = vi.fn().mockRejectedValue(new Error('AI service unavailable'));
-    
+
     SparkLLMClient.prototype.generateCode = mockGenerateCode;
-    
+
     render(<CodeGenerator />);
-    
+
     // Enable AI mode
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
     fireEvent.click(toggle);
-    
+
     // Try to generate
     const textarea = screen.getByPlaceholderText(/example: create a fastapi endpoint/i);
     fireEvent.change(textarea, { target: { value: 'Test error handling with AI mode' } });
-    
+
     const generateButton = screen.getByRole('button', { name: /generate code/i });
     fireEvent.click(generateButton);
-    
+
     await waitFor(() => {
       expect(mockGenerateCode).toHaveBeenCalled();
     });
@@ -157,14 +157,14 @@ describe('CodeGenerator - AI Mode Integration', () => {
 
   it('should show different status based on AI mode', async () => {
     render(<CodeGenerator />);
-    
+
     // Check initial status (Demo mode)
     expect(screen.getByText(/Status:/i)).toBeInTheDocument();
-    
+
     // Enable AI mode
     const toggle = screen.getByLabelText(/Toggle AI Mode/i);
     fireEvent.click(toggle);
-    
+
     // Status should update for AI mode
     await waitFor(() => {
       expect(screen.getByText(/Status:/i)).toBeInTheDocument();

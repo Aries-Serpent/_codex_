@@ -56,7 +56,7 @@ Based on the resolution plan provided in comment #3741543573, the following CI c
 - **Status**: Configuration issue detected
 - **Root Cause**: Missing `semgrep-custom-rules` configuration
 - **Impact**: Security scanning incomplete
-- **Resolution Strategy**: 
+- **Resolution Strategy**:
   - The current `.semgrep/semgrep.yml` configuration is minimal (rules: [])
   - The workflow `.github/workflows/semgrep_sarif.yml` uses fallback to `--config=auto`
   - **Action Required**: Verify if custom rules are actually needed or if auto-config is sufficient
@@ -74,7 +74,7 @@ Based on the resolution plan provided in comment #3741543573, the following CI c
 - **Status**: Requires investigation
 - **Test Files**: 10 RAG test files identified
 - **Impact**: Test coverage for RAG module
-- **Resolution Strategy**: 
+- **Resolution Strategy**:
   - Requires Python environment setup with RAG dependencies
   - Tests may be failing due to missing optional dependencies
   - Need to verify test assumptions and dependencies
@@ -384,7 +384,7 @@ graph TD
    ```bash
    # Test current configuration
    semgrep scan --config=.semgrep/semgrep.yml --dry-run
-   
+
    # If failures, add custom rules
    mkdir -p .semgrep/rules
    # Create custom-rules.yml with project-specific patterns
@@ -394,10 +394,10 @@ graph TD
    ```bash
    # Setup test environment
    pip install -e ".[rag,test]"
-   
+
    # Run tests with detailed output
    pytest tests/test_rag_*.py -v --tb=long --timeout=300
-   
+
    # Identify specific failures
    ```
 
@@ -525,7 +525,7 @@ The following prompt should be posted as a comment on PR #2827 to continue the w
 
 ### Pattern 1: Systematic Documentation Updates
 **Problem**: Multiple files need consistent terminology changes  
-**Solution**: 
+**Solution**:
 1. Create mapping table (before → after)
 2. Apply changes file-by-file with precise line targeting
 3. Validate with code review

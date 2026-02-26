@@ -19,9 +19,9 @@ model:
         max_depth: 5
         learning_rate: 0.1
         random_state: 42
-  
+
   voting: soft
-  
+
   thresholds:
     critical: 0.8
     high: 0.6
@@ -35,7 +35,7 @@ features:
       - lines_of_code
       - cyclomatic_complexity
       - max_nesting_depth
-    
+
     security_operations:
       - subprocess_calls
       - shell_true_usage
@@ -44,21 +44,21 @@ features:
       - network_operations
       - crypto_operations
       - pickle_usage
-    
+
     data_handling:
       - xml_parsing
       - user_input_handling
       - environment_var_access
-    
+
     auth_authz:
       - auth_operations
       - permission_checks
-    
+
     code_quality:
       - import_count
       - external_lib_count
       - unsafe_pattern_count
-    
+
     historical:
       - file_change_frequency
       - author_security_score

@@ -18,7 +18,7 @@ fn test_single_agent_registration() {
     let state = codex_engine::SwarmState::new();
     state.register_agent("agent_1".to_string()).unwrap();
     assert_eq!(state.get_agent_count(), 1);
-    
+
     let agents = state.list_agents();
     assert!(agents.contains(&"agent_1".to_string()));
 }
@@ -27,17 +27,17 @@ fn test_single_agent_registration() {
 fn test_agent_status_transitions() {
     let state = codex_engine::SwarmState::new();
     state.register_agent("agent_1".to_string()).unwrap();
-    
+
     // Test idle state
     let (status, _) = state.get_agent_status("agent_1".to_string()).unwrap();
     assert_eq!(status, "idle");
-    
+
     // Test working state
     state.set_agent_status("agent_1".to_string(), "working".to_string(), Some("Processing task".to_string())).unwrap();
     let (status, message) = state.get_agent_status("agent_1".to_string()).unwrap();
     assert_eq!(status, "working");
     assert_eq!(message, "Processing task");
-    
+
     // Test complete state
     state.set_agent_status("agent_1".to_string(), "complete".to_string(), None).unwrap();
     let (status, _) = state.get_agent_status("agent_1".to_string()).unwrap();
@@ -50,7 +50,7 @@ fn test_concurrent_agent_registration() {
     let state = Arc::new(codex_engine::SwarmState::new());
     let num_threads = 10;
     let agents_per_thread = 10;
-    
+
     let handles: Vec<_> = (0..num_threads)
         .map(|thread_id| {
             let state_clone = Arc::clone(&state);
@@ -62,11 +62,11 @@ fn test_concurrent_agent_registration() {
             })
         })
         .collect();
-    
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     assert_eq!(state.get_agent_count(), num_threads * agents_per_thread);
 }
 
@@ -75,7 +75,7 @@ fn test_high_volume_registration() {
     // Test scaling to 1000 agents as mentioned in acceptance criteria
     let state = Arc::new(codex_engine::SwarmState::new());
     let num_agents = 1000;
-    
+
     let handles: Vec<_> = (0..num_agents)
         .map(|i| {
             let state_clone = Arc::clone(&state);
@@ -85,23 +85,23 @@ fn test_high_volume_registration() {
             })
         })
         .collect();
-    
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     assert_eq!(state.get_agent_count(), num_agents);
 }
 
 #[test]
 fn test_concurrent_status_updates() {
     let state = Arc::new(codex_engine::SwarmState::new());
-    
+
     // Pre-register agents
     for i in 0..100 {
         state.register_agent(format!("agent_{}", i)).unwrap();
     }
-    
+
     let handles: Vec<_> = (0..100)
         .map(|i| {
             let state_clone = Arc::clone(&state);
@@ -112,18 +112,18 @@ fn test_concurrent_status_updates() {
                     "working".to_string(),
                     Some(format!("Task {}", i))
                 ).unwrap();
-                
+
                 // Verify we can read it back
                 let (status, _) = state_clone.get_agent_status(agent_id).unwrap();
                 assert_eq!(status, "working");
             })
         })
         .collect();
-    
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     assert_eq!(state.get_agent_count(), 100);
 }
 
@@ -131,14 +131,14 @@ fn test_concurrent_status_updates() {
 fn test_no_data_races() {
     // Test for data races with concurrent reads and writes
     let state = Arc::new(codex_engine::SwarmState::new());
-    
+
     // Register initial agents
     for i in 0..50 {
         state.register_agent(format!("agent_{}", i)).unwrap();
     }
-    
+
     let mut handles = vec![];
-    
+
     // Writers
     for i in 0..50 {
         let state_clone = Arc::clone(&state);
@@ -154,7 +154,7 @@ fn test_no_data_races() {
         });
         handles.push(handle);
     }
-    
+
     // Readers
     for _ in 0..20 {
         let state_clone = Arc::clone(&state);
@@ -166,10 +166,10 @@ fn test_no_data_races() {
         });
         handles.push(handle);
     }
-    
+
     for handle in handles {
         handle.join().unwrap();
     }
-    
+
     assert_eq!(state.get_agent_count(), 50);
 }

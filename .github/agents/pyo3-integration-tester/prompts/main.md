@@ -76,11 +76,11 @@ def test_compress_data_error_handling():
 def test_compress_data_performance():
     import time
     from codex_swarm import compress_data
-    
+
     start = time.time()
     result = compress_data(b"data" * 1000)
     duration = time.time() - start
-    
+
     assert duration < 1.0
 
 # test_fetch_remote_integration.py
@@ -352,7 +352,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -541,7 +541,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

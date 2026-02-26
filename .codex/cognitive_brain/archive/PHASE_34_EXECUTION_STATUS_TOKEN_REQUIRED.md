@@ -125,7 +125,7 @@ jq '.alerts | group_by(.severity) | map({severity: .[0].severity, count: length}
 # ]
 
 # Top 10 vulnerable files
-jq 'group_by(.file_path) | sort_by(-length) | .[0:10] | 
+jq 'group_by(.file_path) | sort_by(-length) | .[0:10] |
     map({file: .[0].file_path, alerts: length})' \
   .codex/security/alert_inventory.json
 ```

@@ -271,7 +271,7 @@ app = FastAPI()
 async def health_check() -> Dict[str, str]:
     """
     Liveness probe endpoint.
-    
+
     Safeguard: Returns 200 only if service is alive.
     Validation: Checks core dependencies.
     """
@@ -281,14 +281,14 @@ async def health_check() -> Dict[str, str]:
 async def readiness_check() -> Dict[str, str]:
     """
     Readiness probe endpoint.
-    
+
     Safeguard: Returns 200 only when ready for traffic.
     Validation: Checks model loaded and DB connected.
     """
     # Validate model is loaded
     if not model_manager.is_loaded():
         raise HTTPException(503, "Model not loaded")
-    
+
     return {"status": "ready"}
 ```
 
@@ -351,12 +351,12 @@ deploy:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
-    
+
     - name: Build and push image
       run: |
         docker build -t $IMAGE:$TAG .
         docker push $IMAGE:$TAG
-    
+
     - name: Deploy to Kubernetes
       run: |
         kubectl set image deployment/codex-ml \

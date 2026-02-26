@@ -48,7 +48,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show checking status initially', () => {
       render(<CodeGenerator />);
-      
+
       expect(screen.getByText('Checking...')).toBeInTheDocument();
     });
 
@@ -77,7 +77,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       const textarea = screen.getByPlaceholderText(/example: create a fastapi/i) as HTMLTextAreaElement;
 
       fireEvent.change(textarea, { target: { value: 'Short' } });
-      
+
       expect(screen.getByText('5 / 5000 (min: 10)')).toBeInTheDocument();
       expect(textarea).toHaveAttribute('aria-invalid', 'true');
     });
@@ -87,14 +87,14 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       const textarea = screen.getByPlaceholderText(/example: create a fastapi/i) as HTMLTextAreaElement;
 
       fireEvent.change(textarea, { target: { value: 'Create a hello world function' } });
-      
+
       expect(screen.getByText('29 / 5000')).toBeInTheDocument();
       expect(textarea).toHaveAttribute('aria-invalid', 'false');
     });
 
     it('should disable button when input is too short', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -108,7 +108,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should enable button when input is valid and API is connected', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -124,7 +124,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show error toast when trying to generate with short prompt', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -141,7 +141,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   describe('Code Generation Flow', () => {
     it('should generate code successfully with Spark AI', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -167,9 +167,9 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show loading state while generating', async () => {
       mockSpark.llm.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve('code'), 1000)));
-      
+
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -179,7 +179,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
       const button = screen.getByRole('button', { name: /generate code/i });
       await waitFor(() => expect(button).not.toBeDisabled());
-      
+
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -192,7 +192,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should display generated code after successful generation', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -202,7 +202,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
       const button = screen.getByRole('button', { name: /generate code/i });
       await waitFor(() => expect(button).not.toBeDisabled());
-      
+
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -212,7 +212,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show success toast after generation', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -222,7 +222,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
       const button = screen.getByRole('button', { name: /generate code/i });
       await waitFor(() => expect(button).not.toBeDisabled());
-      
+
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -250,7 +250,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should copy code to clipboard', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -279,7 +279,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       const mockClick = vi.fn();
       const mockAppendChild = vi.fn();
       const mockRemoveChild = vi.fn();
-      
+
       document.createElement = vi.fn().mockImplementation((tag) => {
         if (tag === 'a') {
           return {
@@ -294,7 +294,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       document.body.removeChild = mockRemoveChild;
 
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -333,7 +333,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should recheck status every 30 seconds', async () => {
       vi.useFakeTimers();
-      
+
       render(<CodeGenerator />);
 
       await waitFor(() => {
@@ -355,7 +355,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
       mockSpark.llm.mockRejectedValueOnce(new Error('LLM service unavailable'));
 
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -365,7 +365,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
       const button = screen.getByRole('button', { name: /generate code/i });
       await waitFor(() => expect(button).not.toBeDisabled());
-      
+
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -375,11 +375,11 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show error message when both API and Spark fail', async () => {
       mockSpark.llm.mockRejectedValue(new Error('Complete failure'));
-      
+
       (import.meta.env as any).VITE_CODEX_KEY = 'test-key';
 
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         const errorElement = screen.queryByText(/error/i);
         expect(errorElement).toBeInTheDocument();
@@ -390,7 +390,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   describe('Interactive Demo Integration', () => {
     it('should display "Try It Live" button after code generation', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -412,7 +412,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should toggle interactive demo when "Try It Live" is clicked', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -440,7 +440,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   describe('Metrics Display', () => {
     it('should display k1 factor and quantum metrics', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -461,7 +461,7 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
 
     it('should show cache hit badge when applicable', async () => {
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });
@@ -482,23 +482,23 @@ describe('CodeGenerator - Comprehensive Test Suite (90%+ Coverage)', () => {
   describe('Accessibility', () => {
     it('should have proper ARIA labels', () => {
       render(<CodeGenerator />);
-      
+
       const textarea = screen.getByPlaceholderText(/example: create a fastapi/i);
       expect(textarea).toHaveAttribute('id', 'prompt');
     });
 
     it('should have descriptive button text', () => {
       render(<CodeGenerator />);
-      
+
       const button = screen.getByRole('button', { name: /generate code/i });
       expect(button).toBeInTheDocument();
     });
 
     it('should show loading state in button text', async () => {
       mockSpark.llm.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve('code'), 1000)));
-      
+
       render(<CodeGenerator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
       });

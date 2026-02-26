@@ -64,10 +64,10 @@ python -m jsonschema -i audit_run_manifest.json # JSON validation
 Pre-Merge Gate Checks:
 1. Run: gh workflow list --repo Aries-Serpent/_codex_
    Expected: All active workflows listed
-   
+
 2. Verify: gh run list --repo Aries-Serpent/_codex_ -b 0D_base_ -n 5
    Expected: Most recent runs passed all checks
-   
+
 3. Confirm: Post-merge triggers NOT active on 0D_base_
    Expected: Merge-only workflows inactive
 ```text

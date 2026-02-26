@@ -224,7 +224,7 @@ except ImportError:
 class MyOrchestrator:
     def __init__(self, session_id: Optional[str] = None):
         self.session_id = session_id or "default_session"
-    
+
     def _log(self, role: str, message: str) -> None:
         """Log a message using session logger."""
         log_message(self.session_id, role, message)
@@ -234,28 +234,28 @@ class MyOrchestrator:
 ```python
 def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict[str, str]:
     import os
-    
+
     # Ensure directory exists
     try:
         os.makedirs(output_dir, exist_ok=True)
     except Exception as e:
         raise RuntimeError(f"Failed to create directory: {e}")
-    
+
     # Check permissions
     if not os.path.isdir(output_dir):
         raise ValueError(f"Not a directory: {output_dir}")
     if not os.access(output_dir, os.W_OK):
         raise PermissionError(f"Directory not writable: {output_dir}")
-    
+
     # Export files
     for component in components:
         filepath = os.path.join(output_dir, component.name)
-        
+
         # Check overwrite
         if not overwrite and os.path.exists(filepath):
             results[component.name] = f"Skipped (exists): {filepath}"
             continue
-        
+
         # Write with error handling
         try:
             with open(filepath, 'w') as f:
@@ -263,7 +263,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
             results[component.name] = filepath
         except OSError as e:
             results[component.name] = f"Failed: {e}"
-    
+
     return results
 ```
 

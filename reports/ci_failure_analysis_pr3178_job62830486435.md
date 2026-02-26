@@ -322,7 +322,7 @@ DOCKER = shutil.which("docker")
 @pytest.mark.skipif(DOCKER is None, reason="docker executable not available")
 def test_gpu_dockerfile_builds(monkeypatch) -> None:
     cmd = ["docker", "build", "--target", "gpu-runtime", "-t", "codex:test-gpu", "."]
-    
+
     # In CI, mock the build to test command construction
     if os.getenv("CI"):
         mock_result = MagicMock()
@@ -333,7 +333,7 @@ def test_gpu_dockerfile_builds(monkeypatch) -> None:
     else:
         # Real build locally
         result = subprocess.run(cmd, capture_output=True)
-    
+
     assert result.returncode == 0
 ```
 
@@ -373,13 +373,13 @@ jobs:
     name: Test Docker Builds
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    
+
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
@@ -387,19 +387,19 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      
+
       - name: Build and test CPU image
         run: |
           docker build --target cpu-runtime -t codex:test-cpu \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max .
-      
+
       - name: Build and test GPU image
         run: |
           docker build --target gpu-runtime -t codex:test-gpu \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max .
-      
+
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache

@@ -65,7 +65,7 @@ enable_workflow() {
   local workflow=$1
   local disabled_file="$WORKFLOWS_DIR/$workflow.disabled"
   local enabled_file="$WORKFLOWS_DIR/$workflow"
-  
+
   if [ -f "$disabled_file" ]; then
     echo -e "${GREEN}✅ Re-enabling: $workflow${NC}"
     if [ "$DRY_RUN" = false ]; then
@@ -83,7 +83,7 @@ disable_workflow() {
   local workflow=$1
   local enabled_file="$WORKFLOWS_DIR/$workflow"
   local disabled_file="$WORKFLOWS_DIR/$workflow.disabled"
-  
+
   if [ -f "$enabled_file" ]; then
     echo -e "${RED}🔴 Disabling: $workflow${NC}"
     if [ "$DRY_RUN" = false ]; then
@@ -100,10 +100,10 @@ disable_workflow() {
 if [ "$PHASE" = "phase1" ] || [ "$PHASE" = "all" ]; then
   echo -e "${YELLOW}Phase 1: Rolling back test workflow consolidation${NC}"
   echo ""
-  
+
   # Disable new consolidated workflow
   disable_workflow "test-suite.yml"
-  
+
   # Re-enable old test workflows
   enable_workflow "ci.yml"
   enable_workflow "ci-pytest.yml"
@@ -111,7 +111,7 @@ if [ "$PHASE" = "phase1" ] || [ "$PHASE" = "all" ]; then
   enable_workflow "ml-tests.yml"
   enable_workflow "comprehensive_tests.yml"
   enable_workflow "multi-python-ci.yml"
-  
+
   echo ""
 fi
 
@@ -119,10 +119,10 @@ fi
 if [ "$PHASE" = "phase1" ] || [ "$PHASE" = "all" ]; then
   echo -e "${YELLOW}Phase 1: Rolling back security workflow consolidation${NC}"
   echo ""
-  
+
   # Disable new consolidated workflow
   disable_workflow "security-suite.yml"
-  
+
   # Re-enable old security workflows
   enable_workflow "security.yml"
   enable_workflow "security-scanning.yml"
@@ -130,7 +130,7 @@ if [ "$PHASE" = "phase1" ] || [ "$PHASE" = "all" ]; then
   enable_workflow "security_policy_gate.yml"
   enable_workflow "secrets_baseline_check.yml"
   enable_workflow "semgrep_sarif.yml"
-  
+
   echo ""
 fi
 
@@ -138,16 +138,16 @@ fi
 if [ "$PHASE" = "phase1" ] || [ "$PHASE" = "all" ]; then
   echo -e "${YELLOW}Phase 1: Rolling back audit workflow consolidation${NC}"
   echo ""
-  
+
   # Note: audit-improvement-pipeline.yml stays enabled
   echo "ℹ️  Keeping audit-improvement-pipeline.yml enabled (it's the primary audit workflow)"
-  
+
   # Re-enable old audit workflows
   enable_workflow "audit_chain.yml"
   enable_workflow "capability-audit.yml"
   enable_workflow "nightly-audit.yml"
   enable_workflow "space-audit.yml"
-  
+
   echo ""
 fi
 

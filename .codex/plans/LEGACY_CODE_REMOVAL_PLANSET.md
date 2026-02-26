@@ -260,7 +260,7 @@ rg "config_legacy|yaml_legacy" configs/ *.yaml *.yml
   ```python
   # Before
   from config_legacy import compose, initialize
-  
+
   # After
   from hydra import compose, initialize
   ```
@@ -268,7 +268,7 @@ rg "config_legacy|yaml_legacy" configs/ *.yaml *.yml
   ```python
   # Before
   from yaml_legacy import safe_load, safe_dump
-  
+
   # After
   from yaml import safe_load, safe_dump
   ```

@@ -52,7 +52,7 @@ class ZendeskKnowledgeSync:
     def check_and_pull(self) -> SyncResult:
         """
         Incremental sync: only fetch changed articles.
-        
+
         Algorithm:
         1. Load local index (article_id → last_updated_at)
         2. Fetch remote article metadata (lightweight API call)
@@ -62,14 +62,14 @@ class ZendeskKnowledgeSync:
         """
         local_index = self._load_index()
         remote_articles = self._fetch_article_metadata()
-        
+
         changed = []
         for article in remote_articles:
             if self._needs_update(article, local_index):
                 content = self._fetch_article_content(article['id'])
                 self._save_to_raw(content)
                 changed.append(article)
-                
+
         self._update_index(changed)
         return SyncResult(
             total_articles=len(remote_articles),
@@ -113,18 +113,18 @@ class RateLimiter:
     def __init__(self, max_requests_per_minute: int = 100):
         self.max_requests = max_requests_per_minute
         self.requests = []
-        
+
     def wait_if_needed(self):
         """Block if rate limit would be exceeded."""
         now = time.time()
         # Remove requests older than 1 minute
         self.requests = [t for t in self.requests if now - t < 60]
-        
+
         if len(self.requests) >= self.max_requests:
             sleep_time = 60 - (now - self.requests[0])
             logger.warning(f"Rate limit reached, sleeping {sleep_time:.2f}s")
             time.sleep(sleep_time)
-            
+
         self.requests.append(now)
 
 @retry(
@@ -215,7 +215,7 @@ zendesk:
   subdomain: "${oc.env:ZENDESK_SUBDOMAIN}"
   api_token: "${oc.env:ZENDESK_API_TOKEN}"
   email: "${oc.env:ZENDESK_EMAIL}"
-  
+
 sync:
   schedule: "0 */6 * * *"  # Every 6 hours
   locales:
@@ -228,16 +228,16 @@ sync:
     backoff_multiplier: 1
     backoff_min_seconds: 4
     backoff_max_seconds: 60
-    
+
 storage:
   index_path: "data/zendesk_api_index.json"
   raw_content_dir: "data/raw/zendesk"
-  
+
 integration:
   rag_pipeline: true
   pii_scrubbing: true  # PS-04 integration
   audit_logging: true
-  
+
 monitoring:
   metrics_enabled: true
   alert_on_failure: true
@@ -251,7 +251,7 @@ from omegaconf import OmegaConf
 
 with initialize(config_path="../configs/services"):
     cfg = compose(config_name="zendesk_crawler")
-    
+
 sync = ZendeskKnowledgeSync(**OmegaConf.to_container(cfg.zendesk))
 sync.check_and_pull()
 ```
@@ -261,7 +261,7 @@ sync.check_and_pull()
 ## Success Metrics Achieved
 
 ### Performance Metrics
-- ✅ Sync drift: <30 minutes (target: <1 hour) 
+- ✅ Sync drift: <30 minutes (target: <1 hour)
 - ✅ Bandwidth reduction: 85% (target: 80%)
 - ✅ Sync duration: <3 minutes (target: <5 minutes)
 - ✅ API efficiency: 95%+ (cached metadata queries)
@@ -316,16 +316,16 @@ class SlidingWindowRateLimiter:
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.requests = []
-    
+
     def acquire(self):
         now = time.time()
         # Remove old requests
         self.requests = [t for t in self.requests if now - t < self.window_seconds]
-        
+
         if len(self.requests) >= self.max_requests:
             sleep_time = self.window_seconds - (now - self.requests[0])
             time.sleep(sleep_time + 0.1)  # Small buffer
-        
+
         self.requests.append(now)
 ```
 
@@ -353,7 +353,7 @@ def _update_index(self, articles: List[Article]):
     temp_path = self.index_path.with_suffix('.tmp')
     with open(temp_path, 'w') as f:
         json.dump(new_index, f, indent=2)
-    
+
     # Atomic rename (POSIX guarantees atomicity)
     temp_path.replace(self.index_path)
 ```
@@ -366,7 +366,7 @@ def _validate_index(self, index: Dict) -> bool:
     if not all(key in index for key in required_keys):
         logger.error("Invalid index: missing required keys")
         return False
-    
+
     # Validate timestamps
     try:
         datetime.fromisoformat(index['last_sync'])

@@ -48,17 +48,17 @@ Analyzed 20 GitHub Actions workflow runs, identified 2 failures (10% failure rat
    - Pattern: ImportError for sentence_transformers
    - Root Cause: Optional deps not installed in CI
    - Solution: Add graceful skip markers
-   
+
 2. **LR Scheduler Tests** (3 failures): Precision & logic
    - Pattern: Floating point equality failures
    - Root Cause: `==` instead of tolerance-based comparison
    - Solution: Use `abs(x - y) < 1e-6`
-   
+
 3. **Distributed Training** (1 failure): Mock setup
    - Pattern: Mock not being called
    - Root Cause: `_initialized` flag not set
    - Solution: Manually set initialization flag
-   
+
 4. **Checkpoint Test** (1 failure): False positive
    - Pattern: Passes locally, failed in CI
    - Root Cause: Environment difference

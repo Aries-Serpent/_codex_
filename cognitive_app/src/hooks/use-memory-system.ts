@@ -66,13 +66,13 @@ export function useMemorySystem(autoRefresh = false, intervalMs = 10000) {
     }
   }, [fetchState, autoRefresh, intervalMs]);
 
-  return { 
-    state, 
-    searchResults, 
-    loading, 
-    searching, 
-    error, 
-    searchMemories, 
-    refetch: fetchState 
+  return {
+    state,
+    searchResults,
+    loading,
+    searching,
+    error,
+    searchMemories,
+    refetch: fetchState
   };
 }

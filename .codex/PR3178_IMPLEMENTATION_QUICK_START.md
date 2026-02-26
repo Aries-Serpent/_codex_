@@ -144,7 +144,7 @@ grep "TypeError" .codex/full_run_*.log | head -20
    ```python
    # Before: Config()
    # After: Config(required_param="value")
-   
+
    # Before: func(x, y, z)
    # After: func(x, y, new_param=z)
    ```
@@ -249,11 +249,11 @@ def test_x(monkeypatch):
    # Fix 1: Update expected values
    # Before: assert result == 42
    # After: assert result == 43  # Value changed in implementation
-   
+
    # Fix 2: Use appropriate comparisons
    # Before: assert data == expected
    # After: assert data == pytest.approx(expected)  # For floats
-   
+
    # Fix 3: Check for None/empty
    # Before: assert result
    # After: assert result is not None and len(result) > 0

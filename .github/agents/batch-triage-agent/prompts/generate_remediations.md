@@ -25,13 +25,13 @@ You are generating specific, actionable fix suggestions for grouped CI failures 
      - Minimal impact (single file, reversible)
      - Historical success rate > 85%
      - Examples: Add import, fix typo, update version pin
-   
+
    - **Medium Risk** (Requires Review):
      - Confidence 70-90%
      - Moderate impact (multiple files, requires testing)
      - Historical success rate 70-85%
      - Examples: Refactor function, update config, add feature flag
-   
+
    - **High Risk** (Manual Investigation):
      - Confidence < 70%
      - Significant impact (architecture change, data migration)
@@ -475,7 +475,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -664,7 +664,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

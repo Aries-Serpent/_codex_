@@ -179,27 +179,27 @@ metrics = {
     "cognitive_brain_request_duration_seconds": Histogram,
     "cognitive_brain_requests_total": Counter,
     "cognitive_brain_errors_total": Counter,
-    
+
     # k₁ Tracking
     "cognitive_brain_k1_value": Gauge,
     "cognitive_brain_quantum_advantage": Gauge,
-    
+
     # Memory Management
     "cognitive_brain_cache_hit_rate": Gauge,
     "cognitive_brain_stm_size": Gauge,
     "cognitive_brain_ltm_size": Gauge,
     "cognitive_brain_compression_ratio": Gauge,
-    
+
     # Multi-Agent
     "cognitive_brain_agent_count": Gauge,
     "cognitive_brain_consensus_latency_seconds": Histogram,
     "cognitive_brain_correlation_coefficient": Gauge,
-    
+
     # Learning
     "cognitive_brain_learning_rate": Gauge,
     "cognitive_brain_decision_quality": Gauge,
     "cognitive_brain_reward_value": Gauge,
-    
+
     # Transfer Learning
     "cognitive_brain_domain_adaptation_speed": Histogram,
     "cognitive_brain_few_shot_accuracy": Gauge,
@@ -218,7 +218,7 @@ groups:
       severity: critical
     annotations:
       summary: "High error rate detected"
-      
+
   - alert: K1DegradationAlert
     expr: cognitive_brain_k1_value > 0.35
     for: 10m
@@ -226,7 +226,7 @@ groups:
       severity: warning
     annotations:
       summary: "k₁ performance degradation"
-      
+
   - alert: LowCacheHitRate
     expr: cognitive_brain_cache_hit_rate < 0.25
     for: 15m
@@ -234,7 +234,7 @@ groups:
       severity: warning
     annotations:
       summary: "Cache hit rate below threshold"
-      
+
   - alert: HighLatency
     expr: histogram_quantile(0.99, cognitive_brain_request_duration_seconds) > 0.1
     for: 5m
@@ -287,27 +287,27 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8, 3.9, '3.10', '3.11']
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e .[test]
-    
+
     - name: Run tests
       run: |
         pytest tests/cognitive_brain/ -v --cov=cognitive_brain --cov-report=xml
-    
+
     - name: Upload coverage
       uses: codecov/codecov-action@v3
-  
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -321,18 +321,18 @@ jobs:
         ruff check src/cognitive_brain/
         black --check src/cognitive_brain/
         mypy src/cognitive_brain/
-  
+
   build:
     runs-on: ubuntu-latest
     needs: [test, lint]
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Build Docker image
       run: |
         docker build -t cognitive-brain:${{ github.sha }} \
           -f deploy/Dockerfile .
-    
+
     - name: Push to registry
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -355,31 +355,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Configure kubectl
       run: |
         echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
         export KUBECONFIG=kubeconfig
-    
+
     - name: Deploy blue environment
       run: |
         kubectl apply -f deploy/kubernetes/ -n cognitive-brain-blue
         kubectl rollout status deployment/cognitive-brain -n cognitive-brain-blue
-    
+
     - name: Run smoke tests
       run: |
         ./scripts/smoke-test.sh cognitive-brain-blue
-    
+
     - name: Switch traffic (Blue-Green)
       run: |
         kubectl patch service cognitive-brain -n cognitive-brain \
           -p '{"spec":{"selector":{"version":"blue"}}}'
-    
+
     - name: Monitor for 10 minutes
       run: |
         sleep 600
         ./scripts/health-check.sh
-    
+
     - name: Cleanup green environment
       run: |
         kubectl delete deployment cognitive-brain -n cognitive-brain-green
@@ -470,13 +470,13 @@ async def readiness_check():
 ```python
 class CognitiveBrainClient:
     """Client SDK for Quantum Cognitive Brain API."""
-    
+
     def __init__(self, base_url: str, api_key: str):
         self.base_url = base_url
         self.api_key = api_key
         self.session = requests.Session()
         self.session.headers.update({"Authorization": f"Bearer {api_key}"})
-    
+
     def assess(self, scenario: Dict) -> AssessmentResponse:
         """Assess compliance scenario."""
         response = self.session.post(
@@ -485,7 +485,7 @@ class CognitiveBrainClient:
         )
         response.raise_for_status()
         return AssessmentResponse(**response.json())
-    
+
     def get_metrics(self) -> MetricsResponse:
         """Get current metrics."""
         response = self.session.get(f"{self.base_url}/v1/metrics")
@@ -572,14 +572,14 @@ from locust import HttpUser, task, between
 
 class CognitiveBrainUser(HttpUser):
     wait_time = between(1, 3)
-    
+
     @task(10)
     def assess_compliance(self):
         self.client.post("/v1/assess", json={
             "scenario_id": "test_scenario",
             "features": {"risk": 0.7, "compliance": 0.8}
         })
-    
+
     @task(1)
     def get_metrics(self):
         self.client.get("/v1/metrics")

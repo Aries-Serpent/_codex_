@@ -65,7 +65,7 @@ graph TB
         CDN[CDN Layer<br/>CloudFront/CloudCDN]
         LB[Global Load Balancer<br/>GeoDNS]
     end
-    
+
     subgraph "Region: US-East"
         USE_API[API Gateway]
         USE_APP[RAG Application<br/>3 instances]
@@ -73,7 +73,7 @@ graph TB
         USE_CACHE[(Redis Cache<br/>ElastiCache)]
         USE_MON[Prometheus<br/>CloudWatch]
     end
-    
+
     subgraph "Region: EU-West"
         EUW_API[API Gateway]
         EUW_APP[RAG Application<br/>3 instances]
@@ -81,7 +81,7 @@ graph TB
         EUW_CACHE[(Redis Cache<br/>ElastiCache)]
         EUW_MON[Prometheus<br/>CloudWatch]
     end
-    
+
     subgraph "Region: AP-Southeast"
         APS_API[API Gateway]
         APS_APP[RAG Application<br/>3 instances]
@@ -89,48 +89,48 @@ graph TB
         APS_CACHE[(Redis Cache<br/>ElastiCache)]
         APS_MON[Prometheus<br/>CloudWatch]
     end
-    
+
     subgraph "Central Control"
         SYNC[Index Sync Service]
         HEALTH[Health Checker]
         METRICS[Global Metrics]
     end
-    
+
     Users -->|GeoDNS| LB
     LB --> CDN
     CDN --> DNS
-    
+
     DNS -->|US Users| USE_API
     DNS -->|EU Users| EUW_API
     DNS -->|Asia Users| APS_API
-    
+
     USE_API --> USE_APP
     USE_APP --> USE_FAISS
     USE_APP --> USE_CACHE
     USE_APP --> USE_MON
-    
+
     EUW_API --> EUW_APP
     EUW_APP --> EUW_FAISS
     EUW_APP --> EUW_CACHE
     EUW_APP --> EUW_MON
-    
+
     APS_API --> APS_APP
     APS_APP --> APS_FAISS
     APS_APP --> APS_CACHE
     APS_APP --> APS_MON
-    
+
     SYNC -.->|Replicate| USE_FAISS
     SYNC -.->|Replicate| EUW_FAISS
     SYNC -.->|Replicate| APS_FAISS
-    
+
     HEALTH -.->|Monitor| USE_APP
     HEALTH -.->|Monitor| EUW_APP
     HEALTH -.->|Monitor| APS_APP
-    
+
     USE_MON --> METRICS
     EUW_MON --> METRICS
     APS_MON --> METRICS
-    
+
     style USE_FAISS fill:#4CAF50
     style EUW_FAISS fill:#4CAF50
     style APS_FAISS fill:#4CAF50
@@ -170,17 +170,17 @@ regions:
     primary: us-east-1
     fallback: us-west-2
     latency_target_ms: 50
-  
+
   - region_code: "EU"  # Europe
     primary: eu-west-1
     fallback: eu-central-1
     latency_target_ms: 50
-  
+
   - region_code: "AS"  # Asia
     primary: ap-southeast-1
     fallback: ap-northeast-1
     latency_target_ms: 100
-  
+
   - region_code: "default"
     primary: us-east-1
     fallback: [us-west-2, eu-west-1]
@@ -198,18 +198,18 @@ class IndexSyncService:
     def on_index_updated(self, tenant_id, index_name, region):
         """Replicate index update to all regions."""
         source_path = f"s3://{region}-bucket/{tenant_id}/{index_name}/"
-        
+
         for target_region in ALL_REGIONS:
             if target_region != region:
                 target_path = f"s3://{target_region}-bucket/{tenant_id}/{index_name}/"
-                
+
                 # Async replication
                 replicate_async(
                     source=source_path,
                     target=target_path,
                     checksum=True
                 )
-                
+
                 # Notify target region
                 publish_event(
                     region=target_region,
@@ -237,7 +237,7 @@ cache_strategy:
   replication: multi-master
   consistency: eventual
   ttl: 3600  # 1 hour
-  
+
   invalidation:
     on_index_update: true
     on_cache_full: lru_eviction
@@ -252,16 +252,16 @@ cache_strategy:
 cdn_config:
   provider: cloudfront  # or cloudflare, cloudcdn
   edge_locations: global
-  
+
   caching:
     query_results:
       ttl: 300  # 5 minutes for popular queries
       cache_key: hash(query + tenant_id)
-    
+
     embeddings:
       ttl: 86400  # 24 hours
       cache_key: hash(text + model)
-  
+
   optimization:
     compression: gzip,br
     http2: enabled
@@ -280,7 +280,7 @@ class RegionAwareClient:
             'eu-west-1': HTTPSConnectionPool(maxsize=100),
             'ap-southeast-1': HTTPSConnectionPool(maxsize=100),
         }
-    
+
     def get_nearest_region(self, user_location):
         """Return nearest region based on user location."""
         # GeoDNS handles this, but can also do client-side
@@ -308,12 +308,12 @@ failover:
     - health_check_failed
     - latency_threshold_exceeded  # >500ms
     - error_rate_high  # >5%
-  
+
   actions:
     - update_dns_records
     - notify_ops_team
     - log_failover_event
-  
+
   rollback:
     automatic: true
     wait_time: 300s  # 5 minutes
@@ -357,7 +357,7 @@ metrics:
     - cache_hit_rate
     - index_sync_lag_seconds
     - health_check_status
-  
+
   global:
     - total_queries
     - cross_region_latency
@@ -370,13 +370,13 @@ alerts:
     condition: p99_latency > 500ms
     severity: warning
     notify: ops-team
-  
+
   - name: region_down
     condition: health_check_failed > 3
     severity: critical
     notify: on-call, ops-team
     action: trigger_failover
-  
+
   - name: replication_lag
     condition: sync_lag > 600s
     severity: warning
@@ -388,23 +388,23 @@ alerts:
 ```yaml
 grafana_dashboard:
   name: "RAG Multi-Region Overview"
-  
+
   panels:
     - title: "Global Query Distribution"
       type: world_map
       metric: queries_by_region
-    
+
     - title: "Regional Latency (P99)"
       type: timeseries
       metrics:
         - us_east_1_p99
         - eu_west_1_p99
         - ap_southeast_1_p99
-    
+
     - title: "Replication Lag"
       type: heatmap
       metric: index_sync_lag_seconds
-    
+
     - title: "Failover Events"
       type: table
       query: failover_events_last_24h
@@ -423,11 +423,11 @@ backup:
       - s3://backup-us-east-1/
       - s3://backup-eu-west-1/
       - s3://backup-ap-southeast-1/
-  
+
   metadata:
     frequency: hourly
     retention: 7_days
-  
+
   configuration:
     frequency: on_change
     retention: 90_days
@@ -498,14 +498,14 @@ Create `deploy/terraform/multi-region/main.tf`:
 
 terraform {
   required_version = ">= 1.0"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
-  
+
   backend "s3" {
     bucket = "rag-terraform-state"
     key    = "multi-region/terraform.tfstate"
@@ -547,7 +547,7 @@ module "faiss_storage_us" {
   providers = {
     aws = aws.us_east_1
   }
-  
+
   region      = "us-east-1"
   environment = var.environment
 }
@@ -557,7 +557,7 @@ module "faiss_storage_eu" {
   providers = {
     aws = aws.eu_west_1
   }
-  
+
   region      = "eu-west-1"
   environment = var.environment
 }
@@ -567,7 +567,7 @@ module "faiss_storage_ap" {
   providers = {
     aws = aws.ap_southeast_1
   }
-  
+
   region      = "ap-southeast-1"
   environment = var.environment
 }
@@ -578,7 +578,7 @@ module "rag_cluster_us" {
   providers = {
     aws = aws.us_east_1
   }
-  
+
   region          = "us-east-1"
   environment     = var.environment
   app_version     = var.app_version
@@ -597,17 +597,17 @@ resource "aws_route53_record" "api" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "api.rag.example.com"
   type    = "A"
-  
+
   geolocation_routing_policy {
     continent = "NA"
   }
-  
+
   alias {
     name                   = module.rag_cluster_us.alb_dns_name
     zone_id                = module.rag_cluster_us.alb_zone_id
     evaluate_target_health = true
   }
-  
+
   health_check_id = aws_route53_health_check.us.id
 }
 
@@ -619,7 +619,7 @@ resource "aws_route53_health_check" "us" {
   resource_path     = "/health"
   failure_threshold = 3
   request_interval  = 30
-  
+
   tags = {
     Name = "rag-us-east-1-health"
   }
@@ -674,14 +674,14 @@ logger = logging.getLogger(__name__)
 
 class IndexSyncService:
     """Synchronizes FAISS indices across multiple regions."""
-    
+
     def __init__(self, regions: List[str]):
         self.regions = regions
         self.s3_clients = {
             region: boto3.client('s3', region_name=region)
             for region in regions
         }
-    
+
     async def sync_index(
         self,
         tenant_id: str,
@@ -690,15 +690,15 @@ class IndexSyncService:
     ) -> Dict[str, bool]:
         """
         Sync index from source region to all other regions.
-        
+
         Returns:
             Dict mapping region to success status
         """
         logger.info(f"Starting sync: {tenant_id}/{index_name} from {source_region}")
-        
+
         results = {}
         tasks = []
-        
+
         for target_region in self.regions:
             if target_region != source_region:
                 task = self._copy_index(
@@ -708,7 +708,7 @@ class IndexSyncService:
                     target_region
                 )
                 tasks.append((target_region, task))
-        
+
         # Execute copies in parallel
         for region, task in tasks:
             try:
@@ -718,9 +718,9 @@ class IndexSyncService:
             except Exception as e:
                 results[region] = False
                 logger.error(f"❌ Failed to sync to {region}: {e}")
-        
+
         return results
-    
+
     async def _copy_index(
         self,
         tenant_id: str,
@@ -731,20 +731,20 @@ class IndexSyncService:
         """Copy index files from source to target region."""
         source_bucket = f"rag-indices-{source_region}"
         target_bucket = f"rag-indices-{target_region}"
-        
+
         prefix = f"{tenant_id}/{index_name}/"
-        
+
         # List objects in source
         source_s3 = self.s3_clients[source_region]
         objects = source_s3.list_objects_v2(
             Bucket=source_bucket,
             Prefix=prefix
         )
-        
+
         # Copy each object
         for obj in objects.get('Contents', []):
             key = obj['Key']
-            
+
             # Use S3 copy (server-side, faster)
             target_s3 = self.s3_clients[target_region]
             target_s3.copy_object(

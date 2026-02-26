@@ -287,7 +287,7 @@ import pytest
 def test_release_artifacts_exist(artifact_count):
     """Hypothesis: All expected artifacts are generated"""
     assume(artifact_count >= 7)  # Minimum expected artifacts
-    
+
     artifacts = list(Path('release_artifacts').glob('*'))
     assert len(artifacts) >= artifact_count
 
@@ -295,7 +295,7 @@ def test_release_artifacts_exist(artifact_count):
 def test_test_coverage_threshold(coverage):
     """Hypothesis: Test coverage meets threshold"""
     assume(coverage >= 70.0)  # Minimum coverage threshold
-    
+
     # Verify coverage meets threshold
     assert coverage >= 70.0
 ```
@@ -346,20 +346,20 @@ on:
 jobs:
   pre-release:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      
+
       - name: Install Dependencies
         run: |
           pip install -e .
           pip install nox build wheel
-      
+
       - name: Run Validation
         id: validation
         run: |
@@ -367,7 +367,7 @@ jobs:
           nox -s security
           nox -s lint
           echo "validation=passed" >> $GITHUB_OUTPUT
-      
+
       - name: Generate Artifacts
         run: |
           mkdir -p release_artifacts
@@ -378,14 +378,14 @@ jobs:
           python -m scripts.space_traversal.audit_runner wiki \
             --output release_artifacts/wiki_bundle.zip
           python -m build --sdist --wheel --outdir release_artifacts/
-      
+
       - name: Run Integration Tests
         run: |
           python -m venv test_env
           source test_env/bin/activate
           pip install release_artifacts/*.whl
           python -c "import codex.cli; print('✅ Installation successful')"
-      
+
       - name: Create Pre-Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -393,20 +393,20 @@ jobs:
           VERSION="v${{ github.event.inputs.version }}-pre.$(date +%Y%m%d)"
           git tag -a "$VERSION" -m "Pre-release $VERSION"
           git push origin "$VERSION"
-          
+
           gh release create "$VERSION" \
             --title "Pre-Release $VERSION" \
             --notes "Automated pre-release deployment" \
             --prerelease \
             release_artifacts/*
-      
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
           path: release_artifacts/
           retention-days: 90
-      
+
       - name: Log Release Event
         run: |
           echo '{
