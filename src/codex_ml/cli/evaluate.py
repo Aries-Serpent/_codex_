@@ -283,7 +283,8 @@ def _run_dataset_evaluation(
         try:
             records = records[: int(limit)]
         except (TypeError, ValueError):
-            pass
+            # Invalid limit value; proceed without truncating records
+            logger.debug("Ignoring invalid limit value %r; using all records", limit)
 
     # Load vocabulary if tiny-vocab tokenizer
     vocab: Optional[dict] = None
