@@ -1,18 +1,11 @@
 name: Art_Batch CI Failure Triage
 # Automated batch triage of post-merge CI/test failures with remediation suggestions
+# Runs every hour, queries the LATEST failed workflow runs, and updates a single
+# persistent issue (creating one only if none exists) so Copilot has fresh context.
 
 on:
   workflow_dispatch:
     inputs:
-      issue_numbers:
-        description: 'Comma-separated GitHub issue numbers (e.g., 2905,2906,2907)'
-        required: false
-        type: string
-      csv_file:
-        description: 'Path to CSV file with failure data (e.g., scripts/ci/links_extraction.csv)'
-        required: false
-        type: string
-        default: 'scripts/ci/links_extraction.csv'
       group_by:
         description: 'Grouping strategy'
         required: false
@@ -23,14 +16,14 @@ on:
           - severity
           - failure_type
         default: 'root_cause'
-      create_issue:
-        description: 'Create a GitHub issue with the triage report'
+      max_runs:
+        description: 'Max recent runs to inspect per workflow (1-20)'
         required: false
-        type: boolean
-        default: true
+        type: number
+        default: 5
   schedule:
-    # Run daily at 00:00 UTC to check for new failures
-    - cron: '0 0 * * *'
+    # Run every hour to capture new failures promptly
+    - cron: '0 * * * *'
 
 permissions:
   contents: read
@@ -41,20 +34,16 @@ jobs:
   batch-triage:
     name: Batch Triage CI Failures
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: CacheManager health check
-        continue-on-error: true
-        run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow batch-ci-triage 2>/dev/null || echo "Cache health: check skipped"
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -62,167 +51,288 @@ jobs:
         run: |
           pip install pyyaml click --quiet
 
-      - name: Setup Cached Environment
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12'
-          cache-tier: 'common'
-
-      - name: Determine Input Method
-        id: input
-        run: |
-          if [ -n "${{ inputs.issue_numbers }}" ]; then
-            echo "method=issues" >> $GITHUB_OUTPUT
-            echo "value=${{ inputs.issue_numbers }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ inputs.csv_file }}" ] && [ -f "${{ inputs.csv_file }}" ]; then
-            echo "method=csv" >> $GITHUB_OUTPUT
-            echo "value=${{ inputs.csv_file }}" >> $GITHUB_OUTPUT
-          else
-            # Default to links_extraction.csv if it exists
-            if [ -f "scripts/ci/links_extraction.csv" ]; then
-              echo "method=csv" >> $GITHUB_OUTPUT
-              echo "value=scripts/ci/links_extraction.csv" >> $GITHUB_OUTPUT
-            else
-              echo "::error::No input provided and default CSV file not found"
-              exit 1
-            fi
-          fi
-
-      - name: Run Batch Triage
-        id: triage
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "::group::Running batch triage"
-
-          # Build command
-          cmd="python scripts/ci/batch_triage.py"
-
-          if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
-            cmd="$cmd --issues ${{ steps.input.outputs.value }}"
-          else
-            cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
-          fi
-
-          cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
-          cmd="$cmd --output batch_triage_report.md"
-
-          echo "Executing: $cmd"
-          eval $cmd
-
-          echo "::endgroup::"
-
-          if [ -f "batch_triage_report.md" ]; then
-            echo "triage_success=true" >> $GITHUB_OUTPUT
-            echo "report_file=batch_triage_report.md" >> $GITHUB_OUTPUT
-          else
-            echo "::error::Triage report not generated"
-            echo "triage_success=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-      - name: Upload Triage Report
-        if: steps.triage.outputs.triage_success == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: batch-triage-report-${{ github.run_id }}
-          path: batch_triage_report.md
-          retention-days: 90
-
-      - name: Generate JSON Report
-        if: steps.triage.outputs.triage_success == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "::group::Generating JSON report"
-
-          # Build command for JSON output
-          cmd="python scripts/ci/batch_triage.py"
-
-          if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
-            cmd="$cmd --issues ${{ steps.input.outputs.value }}"
-          else
-            cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
-          fi
-
-          cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
-          cmd="$cmd --output batch_triage_report.json --json"
-
-          echo "Executing: $cmd"
-          eval $cmd
-
-          echo "::endgroup::"
-
-      - name: Upload JSON Report
-        if: steps.triage.outputs.triage_success == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: batch-triage-json-${{ github.run_id }}
-          path: batch_triage_report.json
-          retention-days: 90
-
-      - name: Create GitHub Issue with Report
-        if: |
-          steps.triage.outputs.triage_success == 'true' &&
-          (inputs.create_issue == true || github.event_name == 'schedule')
-        uses: actions/github-script@v8
+      # ── Step 1: Gather LIVE failed workflow runs from GitHub API ─────────────
+      - name: Fetch recent failed workflow runs
+        id: fetch-failures
+        uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('batch_triage_report.md', 'utf8');
+            const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;
+            const lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps
+            const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);
 
-            // Truncate report if too long (GitHub API limit)
-            const maxLength = 60000;
-            let body = report;
-            if (body.length > maxLength) {
-              body = body.substring(0, maxLength) + '\n\n... (truncated, see artifact for full report)';
+            console.log(`Fetching failed workflow runs since ${cutoff.toISOString()} (last ${lookbackHours}h)`);
+
+            // Get all workflows
+            const workflows = await github.paginate(
+              github.rest.actions.listRepoWorkflows,
+              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+            );
+            console.log(`Found ${workflows.length} workflows`);
+
+            const failures = [];
+
+            for (const wf of workflows) {
+              // Skip disabled or this very workflow to avoid self-loops
+              if (wf.state !== 'active') continue;
+              if (wf.name.includes('Batch CI Failure Triage')) continue;
+
+              let runs;
+              try {
+                const resp = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: wf.id,
+                  status: 'failure',
+                  per_page: maxRuns,
+                });
+                runs = resp.data.workflow_runs || [];
+              } catch (e) {
+                console.warn(`Could not fetch runs for ${wf.name}: ${e.message}`);
+                continue;
+              }
+
+              for (const run of runs) {
+                // Only report on runs that are newer than the lookback window
+                const runDate = new Date(run.created_at);
+                if (runDate < cutoff && workflows.length > 20) continue;  // prune old for large repos
+
+                // Get failed jobs for this run
+                let failedJobs = [];
+                try {
+                  const jobsResp = await github.rest.actions.listJobsForWorkflowRun({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    run_id: run.id,
+                    filter: 'latest',
+                    per_page: 30,
+                  });
+                  failedJobs = (jobsResp.data.jobs || []).filter(j => j.conclusion === 'failure');
+                } catch (e) {
+                  console.warn(`Could not fetch jobs for run ${run.id}: ${e.message}`);
+                }
+
+                if (run.conclusion !== 'failure' && failedJobs.length === 0) continue;
+
+                // Determine failing step names
+                const failingSteps = failedJobs.flatMap(j =>
+                  (j.steps || []).filter(s => s.conclusion === 'failure').map(s => `${j.name} › ${s.name}`)
+                );
+
+                failures.push({
+                  workflow_name: wf.name,
+                  workflow_file: wf.path.replace('.github/workflows/', ''),
+                  run_id: run.id,
+                  run_url: run.html_url,
+                  run_number: run.run_number,
+                  created_at: run.created_at,
+                  head_branch: run.head_branch,
+                  head_sha: run.head_sha ? run.head_sha.substring(0, 8) : 'unknown',
+                  pr_number: run.pull_requests && run.pull_requests.length > 0
+                    ? run.pull_requests[0].number : null,
+                  failed_jobs: failedJobs.map(j => j.name),
+                  failing_steps: failingSteps,
+                  logs_url: run.logs_url,
+                });
+              }
             }
 
-            // Add workflow run link
-            body += `\n\n---\n**Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+            console.log(`Total recent failures found: ${failures.length}`);
+            core.setOutput('failure_count', failures.length);
+            core.setOutput('failures_json', JSON.stringify(failures));
 
-            const issue = await github.rest.issues.create({
+      # ── Step 2: Build the triage report ─────────────────────────────────────
+      - name: Build triage report
+        id: build-report
+        uses: actions/github-script@v7
+        env:
+          FAILURES_JSON: ${{ steps.fetch-failures.outputs.failures_json }}
+        with:
+          script: |
+            const failures = JSON.parse(process.env.FAILURES_JSON || '[]');
+            const now = new Date().toISOString();
+            const repoUrl = context.payload.repository.html_url;
+            const runUrl = `${repoUrl}/actions/runs/${context.runId}`;
+
+            if (failures.length === 0) {
+              const body = `# ✅ CI Failure Triage Report\n\n` +
+                `**Generated:** ${now}\n` +
+                `**Status:** No failed workflow runs detected in the last 25 hours.\n\n` +
+                `---\n*Triage run: ${runUrl}*`;
+              core.setOutput('report_body', body);
+              core.setOutput('has_failures', 'false');
+              return;
+            }
+
+            // Group by workflow name
+            const byWorkflow = {};
+            for (const f of failures) {
+              if (!byWorkflow[f.workflow_name]) byWorkflow[f.workflow_name] = [];
+              byWorkflow[f.workflow_name].push(f);
+            }
+
+            let body = `# 🔴 CI Failure Triage Report\n\n`;
+            body += `**Generated:** ${now}\n`;
+            body += `**Repository:** ${context.repo.owner}/${context.repo.repo}\n`;
+            body += `**Total Recent Failures:** ${failures.length}\n`;
+            body += `**Affected Workflows:** ${Object.keys(byWorkflow).length}\n\n`;
+
+            // Executive summary table
+            body += `## Summary\n\n`;
+            body += `| Workflow | Failures | Most Recent Run | Branch | PR |\n`;
+            body += `|----------|----------|----------------|--------|----|\n`;
+            for (const [wfName, runs] of Object.entries(byWorkflow)) {
+              const latest = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+              const prLink = latest.pr_number
+                ? `[#${latest.pr_number}](${context.payload.repository.html_url}/pull/${latest.pr_number})`
+                : 'N/A';
+              body += `| ${wfName} | ${runs.length} | [#${latest.run_number}](${latest.run_url}) (${latest.created_at.split('T')[0]}) | \`${latest.head_branch}\` | ${prLink} |\n`;
+            }
+
+            body += `\n---\n\n## Detailed Failure Analysis\n\n`;
+
+            for (const [wfName, runs] of Object.entries(byWorkflow)) {
+              const latestRun = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+              body += `### 🔴 ${wfName}\n\n`;
+              body += `> **Most recent failure:** [Run #${latestRun.run_number}](${latestRun.run_url}) on branch \`${latestRun.head_branch}\` (commit \`${latestRun.head_sha}\`)\n\n`;
+
+              if (latestRun.failed_jobs.length > 0) {
+                body += `**Failed Jobs:**\n`;
+                for (const job of latestRun.failed_jobs) {
+                  body += `- ❌ \`${job}\`\n`;
+                }
+                body += `\n`;
+              }
+
+              if (latestRun.failing_steps.length > 0) {
+                body += `**Failing Steps:**\n`;
+                for (const step of latestRun.failing_steps.slice(0, 10)) {
+                  body += `- \`${step}\`\n`;
+                }
+                body += `\n`;
+              }
+
+              body += `**Copilot Resolution Prompt:**\n`;
+              body += `\`\`\`\n`;
+              body += `@copilot Fix the failing CI workflow "${wfName}" (run #${latestRun.run_number}).\n`;
+              body += `- Workflow file: .github/workflows/${latestRun.workflow_file}\n`;
+              body += `- Failed jobs: ${latestRun.failed_jobs.join(', ') || 'see run'}\n`;
+              if (latestRun.failing_steps.length > 0) {
+                body += `- Failing steps: ${latestRun.failing_steps.slice(0, 5).join('; ')}\n`;
+              }
+              body += `- Run URL: ${latestRun.run_url}\n`;
+              if (latestRun.pr_number) {
+                body += `- Associated PR: ${context.payload.repository.html_url}/pull/${latestRun.pr_number}\n`;
+              }
+              body += `\`\`\`\n\n`;
+
+              if (runs.length > 1) {
+                body += `<details><summary>Previous failures (${runs.length - 1} more)</summary>\n\n`;
+                for (const run of runs.slice(1)) {
+                  body += `- [Run #${run.run_number}](${run.run_url}) — ${run.created_at} — branch \`${run.head_branch}\`\n`;
+                }
+                body += `\n</details>\n\n`;
+              }
+
+              body += `---\n\n`;
+            }
+
+            body += `\n*Triage run: ${runUrl} — Refresh by re-running [this workflow](${repoUrl}/actions/workflows/batch-ci-triage.yml)*\n`;
+
+            // Truncate if too long for GitHub API (65535 char limit)
+            if (body.length > 60000) {
+              body = body.substring(0, 60000) + '\n\n... *(truncated — see workflow artifact for full report)*';
+            }
+
+            core.setOutput('report_body', body);
+            core.setOutput('has_failures', failures.length > 0 ? 'true' : 'false');
+
+      # ── Step 3: Upsert the triage issue (create or update, never duplicate) ──
+      - name: Upsert triage issue
+        id: upsert-issue
+        uses: actions/github-script@v7
+        env:
+          REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
+          HAS_FAILURES: ${{ steps.build-report.outputs.has_failures }}
+        with:
+          script: |
+            const body = process.env.REPORT_BODY || '*(no report generated)*';
+            const hasFailures = process.env.HAS_FAILURES === 'true';
+            const TRIAGE_LABEL = 'ci-triage';
+            const TRIAGE_TITLE_PREFIX = '📊 CI Failure Triage Report';
+
+            // Search for an existing OPEN triage issue to update
+            const existingIssues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `📊 Batch CI Failure Triage Report - ${new Date().toISOString().split('T')[0]}`,
-              body: body,
-              labels: ['ci-triage', 'automated', 'batch-analysis']
+              labels: TRIAGE_LABEL,
+              state: 'open',
+              per_page: 10,
             });
 
-            console.log(`Created issue #${issue.data.number}`);
-            core.setOutput('issue_number', issue.data.number);
+            const triageIssue = (existingIssues.data || [])
+              .find(i => i.title.startsWith(TRIAGE_TITLE_PREFIX) && !i.pull_request);
 
-      - name: Generate Summary
+            const title = `${TRIAGE_TITLE_PREFIX} — updated ${new Date().toISOString().split('T')[0]}`;
+
+            if (triageIssue) {
+              // Update the existing issue body and title so there's only ever one
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: triageIssue.number,
+                title: title,
+                body: body,
+                labels: hasFailures
+                  ? [TRIAGE_LABEL, 'automated', 'batch-analysis']
+                  : [TRIAGE_LABEL, 'automated'],
+              });
+              console.log(`Updated existing triage issue #${triageIssue.number}`);
+              core.setOutput('issue_number', triageIssue.number);
+            } else {
+              // No existing issue — create one
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: hasFailures
+                  ? [TRIAGE_LABEL, 'automated', 'batch-analysis']
+                  : [TRIAGE_LABEL, 'automated'],
+              });
+              console.log(`Created new triage issue #${issue.data.number}`);
+              core.setOutput('issue_number', issue.data.number);
+            }
+
+      # ── Step 4: Upload report artifact for reference ─────────────────────────
+      - name: Save report artifact
+        if: always()
+        env:
+          REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            require('fs').writeFileSync('ci-triage-report.md', process.env.REPORT_BODY || '*(no report)*');
+
+      - name: Upload triage report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-triage-report-${{ github.run_id }}
+          path: ci-triage-report.md
+          retention-days: 30
+
+      - name: Generate job summary
         if: always()
         run: |
-          echo "## 📊 Batch CI Failure Triage Summary" >> $GITHUB_STEP_SUMMARY
+          FAILURES="${{ steps.fetch-failures.outputs.failure_count }}"
+          echo "## 📊 CI Failure Triage" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.triage.outputs.triage_success }}" = "true" ]; then
-            echo "✅ **Status:** Success" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Reports Generated" >> $GITHUB_STEP_SUMMARY
-            echo "- Markdown: \`batch_triage_report.md\`" >> $GITHUB_STEP_SUMMARY
-            echo "- JSON: \`batch_triage_report.json\`" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Configuration" >> $GITHUB_STEP_SUMMARY
-            echo "- **Input Method:** ${{ steps.input.outputs.method }}" >> $GITHUB_STEP_SUMMARY
-            echo "- **Grouping Strategy:** ${{ inputs.group_by || 'root_cause' }}" >> $GITHUB_STEP_SUMMARY
-
-            # Show excerpt from report
-            if [ -f "batch_triage_report.md" ]; then
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "### Report Excerpt" >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-              head -20 batch_triage_report.md >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            fi
+          if [ "${FAILURES:-0}" -gt 0 ]; then
+            echo "🔴 **${FAILURES} failed workflow run(s) detected** — issue updated/created." >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **Status:** Failed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Triage report generation failed. Check the logs for details." >> $GITHUB_STEP_SUMMARY
+            echo "✅ **No failures detected** — triage issue updated with clean status." >> $GITHUB_STEP_SUMMARY
           fi
-
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*Generated by Batch CI Failure Triage Workflow*" >> $GITHUB_STEP_SUMMARY
+          echo "Issue: #\`${{ steps.upsert-issue.outputs.issue_number || 'N/A' }}\`" >> $GITHUB_STEP_SUMMARY
+

@@ -347,7 +347,6 @@ class SLAPolicy(BaseModel):
                     available = int((day_end - current).total_seconds() // 60)
                     if remaining <= available:
                         current = current + timedelta(minutes=remaining)
-                        remaining = 0
                         break
                     else:
                         remaining -= available

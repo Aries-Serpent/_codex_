@@ -1,6 +1,5 @@
 """Tests for codex.archive.sigstore_client — fallback and real-signing behaviour."""
 
-import importlib
 import sys
 
 import pytest
