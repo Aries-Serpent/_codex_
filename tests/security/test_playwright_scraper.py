@@ -828,8 +828,8 @@ class TestScrape:
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
         with patch.object(scraper, "_authenticate", return_value=True), \
-             patch.object(scraper, "_iter_pages", side_effect=RuntimeError("boom")):
-            with pytest.raises(RuntimeError, match="boom"):
+             patch.object(scraper, "_iter_pages", side_effect=RuntimeError("scrape iteration failed")):
+            with pytest.raises(RuntimeError, match="scrape iteration failed"):
                 scraper.scrape()
 
         mock_browser.close.assert_called_once()

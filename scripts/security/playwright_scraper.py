@@ -47,9 +47,6 @@ _TITLE_SELECTOR = "a[data-hovercard-type='code-scanning-alert'], a.js-navigation
 _NEXT_BTN_SELECTOR = "a[rel='next'], .next_page:not(.disabled)"
 _LOAD_SELECTOR = "main"
 
-# Page-size limit GitHub enforces (25 alerts/page)
-_PAGE_SIZE = 25
-
 
 class PlaywrightScraper:
     """Scrape code scanning alerts from the GitHub security UI."""
