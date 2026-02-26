@@ -478,7 +478,6 @@ class QuantumMetricRepository:
         Returns:
             Created QuantumMetric instance.
         """
-        import time as _time
 
         feature = str(kwargs.get("feature", "unknown"))
         # Use coherence as the primary metric value if present
