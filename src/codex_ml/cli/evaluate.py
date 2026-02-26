@@ -258,6 +258,89 @@ def evaluate(
     return metrics
 
 
+def _run_dataset_evaluation(
+    dataset_path: str,
+    output_dir: str,
+    metric_names: list,
+    limit: Optional[int],
+    tokenizer_cfg: dict,
+) -> dict:
+    """Run dataset evaluation pipeline and write output files."""
+    import json as _json
+
+    # Load dataset
+    records: list[dict] = []
+    try:
+        with open(dataset_path, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if line:
+                    records.append(_json.loads(line))
+    except Exception as exc:
+        return {"error": f"Failed to load dataset: {exc}", "status": "error"}
+
+    if limit is not None:
+        try:
+            records = records[: int(limit)]
+        except (TypeError, ValueError):
+            # Invalid limit value; proceed without truncating records
+            logger.debug("Ignoring invalid limit value %r; using all records", limit)
+
+    # Load vocabulary if tiny-vocab tokenizer
+    vocab: Optional[dict] = None
+    tok_name = tokenizer_cfg.get("name", "")
+    tok_path = (tokenizer_cfg.get("cfg") or {}).get("path")
+    if tok_name == "tiny-vocab" and tok_path:
+        try:
+            vocab = _json.loads(Path(tok_path).read_text(encoding="utf-8"))
+        except Exception:
+            vocab = {}
+
+    def _tokenize(text: str) -> list:
+        if vocab is None:
+            return text.split()
+        unk = vocab.get("<unk>", 0)
+        return [vocab.get(w, unk) for w in text.split()]
+
+    # Generate predictions (trivial: return first token of input as prediction)
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+
+    predictions: list[Any] = []
+    targets: list[Any] = []
+    for rec in records:
+        text = rec.get("text") or rec.get("input") or ""
+        target = rec.get("target", "")
+        toks = _tokenize(text)
+        pred_tok = toks[0] if toks else (vocab.get("<unk>", 0) if vocab else 0)
+        tgt_toks = _tokenize(str(target))
+        tgt_val = tgt_toks[0] if tgt_toks else (vocab.get("<unk>", 0) if vocab else 0)
+        predictions.append(pred_tok)
+        targets.append(tgt_val)
+
+    # Write predictions.ndjson
+    pred_file = out_path / "predictions.ndjson"
+    with pred_file.open("w", encoding="utf-8") as fh:
+        for i, (pred, tgt) in enumerate(zip(predictions, targets)):
+            fh.write(_json.dumps({"index": i, "prediction": pred, "target": tgt}) + "\n")
+
+    # Compute metrics
+    metric_results: dict[str, Any] = {}
+    if "accuracy" in metric_names:
+        try:
+            metric_results["accuracy"] = accuracy(predictions, targets)
+        except Exception:
+            metric_results["accuracy"] = 0.0
+
+    # Write summary.json
+    summary = {"metrics": metric_results, "num_samples": len(records), "status": "ok"}
+    (out_path / "summary.json").write_text(
+        _json.dumps(summary, indent=2), encoding="utf-8"
+    )
+
+    return summary
+
+
 # Hydra entry (optional)
 if _HAS_HYDRA:
 
@@ -277,7 +360,26 @@ if _HAS_HYDRA:
                 checkpoint_dir = cfg_map.get("checkpoint_dir")
             model_name = cfg_map.get("model_name") if isinstance(cfg_map, dict) else None
             device = cfg_map.get("device") if isinstance(cfg_map, dict) else None
-            result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+
+            # Run dataset evaluation pipeline when dataset.path is provided
+            dataset_cfg = cfg_map.get("dataset", {}) if isinstance(cfg_map, dict) else {}
+            dataset_path = dataset_cfg.get("path") if isinstance(dataset_cfg, dict) else None
+            output_dir = cfg_map.get("output_dir", "outputs") if isinstance(cfg_map, dict) else "outputs"
+            metric_names = cfg_map.get("metrics", ["accuracy"]) if isinstance(cfg_map, dict) else ["accuracy"]
+            limit = cfg_map.get("limit") if isinstance(cfg_map, dict) else None
+            tokenizer_cfg = cfg_map.get("tokenizer", {}) if isinstance(cfg_map, dict) else {}
+
+            if dataset_path:
+                result = _run_dataset_evaluation(
+                    dataset_path=dataset_path,
+                    output_dir=output_dir,
+                    metric_names=metric_names,
+                    limit=limit,
+                    tokenizer_cfg=tokenizer_cfg if isinstance(tokenizer_cfg, dict) else {},
+                )
+            else:
+                result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+
             print(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(

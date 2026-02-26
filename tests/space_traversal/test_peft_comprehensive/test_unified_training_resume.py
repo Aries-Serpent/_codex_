@@ -18,7 +18,7 @@ def test_resume_flag(tmp_path):
     save_checkpoint(ckpt_dir, payload={}, metadata={"epoch": 0})
     cfg = UnifiedTrainingConfig(
         model_name="dummy",
-        epochs=0,
+        epochs=1,
         output_dir=str(tmp_path / "run2"),
         resume_from=str(ckpt_dir),
     )

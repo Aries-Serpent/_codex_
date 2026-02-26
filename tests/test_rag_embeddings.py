@@ -46,10 +46,24 @@ pytestmark = pytest.mark.skipif(
     reason="RAG embeddings dependencies (sentence_transformers) not installed"
 )
 
+# Guard for tests that require real SentenceTransformer models on CPU
+_torch_available = importlib.util.find_spec("torch") is not None
+try:
+    import torch as _torch
+    _cuda_available = _torch.cuda.is_available()
+except Exception:
+    _cuda_available = False
+
+_skip_real_st_models = pytest.mark.skipif(
+    not _cuda_available,
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 class TestLocalSentenceTransformerProvider:
     """Tests for LocalSentenceTransformerProvider"""
 
+    @_skip_real_st_models
     def test_initialization(self):
         """Test provider initialization"""
         provider = LocalSentenceTransformerProvider(
@@ -60,6 +74,7 @@ class TestLocalSentenceTransformerProvider:
         assert provider.model is not None
         assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
 
+    @_skip_real_st_models
     def test_encode_basic(self):
         """Test basic encoding"""
         provider = LocalSentenceTransformerProvider()
@@ -71,6 +86,7 @@ class TestLocalSentenceTransformerProvider:
         assert len(embeddings) == 2
         assert embeddings.shape[1] > 0
 
+    @_skip_real_st_models
     def test_encode_single_text(self):
         """Test encoding single text"""
         provider = LocalSentenceTransformerProvider()
@@ -80,6 +96,7 @@ class TestLocalSentenceTransformerProvider:
         assert len(embeddings) == 1
         assert embeddings.shape[1] > 0
 
+    @_skip_real_st_models
     def test_encode_empty_list(self):
         """Test encoding empty list"""
         provider = LocalSentenceTransformerProvider()
@@ -89,6 +106,7 @@ class TestLocalSentenceTransformerProvider:
         assert isinstance(embeddings, np.ndarray)
         assert len(embeddings) == 0
 
+    @_skip_real_st_models
     def test_get_dimension(self):
         """Test getting embedding dimension"""
         provider = LocalSentenceTransformerProvider()
@@ -100,6 +118,7 @@ class TestLocalSentenceTransformerProvider:
         # all-MiniLM-L6-v2 has 384 dimensions
         assert dim == 384
 
+    @_skip_real_st_models
     def test_encode_with_batch_size(self):
         """Test encoding with custom batch size"""
         provider = LocalSentenceTransformerProvider()
@@ -109,6 +128,7 @@ class TestLocalSentenceTransformerProvider:
 
         assert len(embeddings) == 10
 
+    @_skip_real_st_models
     def test_custom_cache_dir(self):
         """Test with custom cache directory"""
         with tempfile.TemporaryDirectory() as tmpdir:

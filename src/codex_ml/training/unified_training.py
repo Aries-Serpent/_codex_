@@ -47,11 +47,13 @@ from codex_ml.training.strategies import (
 )
 from codex_ml.utils import checkpoint_core as _ckpt_core
 from codex_ml.utils.checkpoint_core import CheckpointMeta
-from codex_ml.utils.checkpointing import (  # noqa: F401  (re-exported for monkeypatching)
-    load_checkpoint,
-    save_checkpoint,
-)
 from codex_ml.utils.repro import capture_environment, set_seed
+
+# Re-export checkpoint_core functions under patchable module-level names so
+# that tests can monkeypatch `codex_ml.training.unified_training.save_checkpoint`
+# and `codex_ml.training.unified_training.load_checkpoint`.
+save_checkpoint = _ckpt_core.save_checkpoint  # noqa: F401
+load_checkpoint = _ckpt_core.load_checkpoint  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -299,9 +301,9 @@ def _emit_checkpoint_epoch(
 
     metric_value = _coerce_metric_value(metrics.get(cfg.best_metric))
 
-    checkpoint_path, checkpoint_meta = _ckpt_core.save_checkpoint(
+    checkpoint_path, checkpoint_meta = save_checkpoint(
         ckpt_dir,
-        payload=checkpoint_state,
+        state=checkpoint_state,
         metadata={"epoch": epoch, "metrics": metrics},
         metric_value=metric_value,
         metric_key=cfg.best_metric,
@@ -463,7 +465,7 @@ def run_unified_training(
     # Pre-resume load if requested
     if cfg.resume_from:
         try:
-            loaded_state, _ = _ckpt_core.load_checkpoint(cfg.resume_from, restore_rng=True)
+            loaded_state, _ = load_checkpoint(cfg.resume_from, restore_rng=True)
             payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover

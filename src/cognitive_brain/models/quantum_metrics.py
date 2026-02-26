@@ -12,6 +12,15 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+# Hardcoded migration columns — NEVER derived from user input.
+# Each tuple is (column_name: str, sql_type: str).
+# Defining them as a module-level constant makes the SQL-injection safety
+# of initialize_schema() auditable without any runtime validation overhead.
+_MIGRATION_COLUMNS: tuple[tuple[str, str], ...] = (
+    ("metric_name", "TEXT"),
+    ("metric_value", "REAL"),
+)
+
 
 @dataclass
 class QuantumMetric:
@@ -69,12 +78,16 @@ class QuantumMetric:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "QuantumMetric":
         """Create model from dictionary representation."""
+        import dataclasses as _dc
         data = data.copy()
         if "timestamp" in data and isinstance(data["timestamp"], str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
         if "metadata" in data and isinstance(data["metadata"], str):
             data["metadata"] = json.loads(data["metadata"])
-        return cls(**data)
+        # Only pass known fields to avoid TypeError on legacy-schema columns
+        valid_keys = {f.name for f in _dc.fields(cls)}
+        filtered = {k: v for k, v in data.items() if k in valid_keys}
+        return cls(**filtered)
 
 
 class QuantumMetricRepository:
@@ -104,12 +117,16 @@ class QuantumMetricRepository:
             self._connection.row_factory = sqlite3.Row
             self._own_connection = True
             self.initialize_schema()
+        elif not self._connection:
+            # For file-based databases, ensure schema is up to date
+            self.initialize_schema()
 
     def initialize_schema(self) -> None:
         """
         Initialize database schema.
 
         Creates quantum_metrics table and indexes if they don't exist.
+        Also applies any needed migrations to add missing columns.
         Safe to call multiple times (uses CREATE TABLE IF NOT EXISTS).
         """
         conn = self._get_connection()
@@ -118,8 +135,8 @@ class QuantumMetricRepository:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp DATETIME NOT NULL,
                 feature VARCHAR(50) NOT NULL,
-                metric_name VARCHAR(100) NOT NULL,
-                metric_value FLOAT NOT NULL,
+                metric_name VARCHAR(100),
+                metric_value FLOAT,
                 agent_id VARCHAR(100),
                 metadata TEXT DEFAULT '{}',
                 UNIQUE(timestamp, feature, metric_name)
@@ -129,6 +146,18 @@ class QuantumMetricRepository:
             CREATE INDEX IF NOT EXISTS idx_quantum_metrics_feature ON quantum_metrics(feature);
             CREATE INDEX IF NOT EXISTS idx_quantum_metrics_agent_id ON quantum_metrics(agent_id);
         """)
+        # Migration: add metric_name and metric_value columns if absent.
+        # Safety: _MIGRATION_COLUMNS is a hardcoded module-level constant — column
+        # names and types are never derived from user input, so the f-string
+        # interpolation below carries no SQL-injection risk.
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(quantum_metrics)")
+        existing_columns = {row[1] for row in cursor.fetchall()}
+        for col, col_def in _MIGRATION_COLUMNS:
+            if col not in existing_columns:
+                conn.execute(
+                    f"ALTER TABLE quantum_metrics ADD COLUMN {col} {col_def}"  # nosec B608
+                )
         conn.commit()
         # Don't close the connection - it's managed by the repository
 
@@ -446,6 +475,54 @@ class QuantumMetricRepository:
 
         return metrics
 
+    def save_metric(self, **kwargs: Any) -> "QuantumMetric":
+        """
+        Save a metric using keyword arguments (backward-compatible API).
+
+        Accepts legacy-style kwargs (timestamp, feature, decision_id,
+        coherence, accuracy, etc.) and stores them using the current schema.
+        Float values are stored as metric_value; all kwargs are also stored
+        in metadata so they can be retrieved via get_recent_metrics.
+
+        Returns:
+            Created QuantumMetric instance.
+        """
+
+        feature = str(kwargs.get("feature", "unknown"))
+        # Use coherence as the primary metric value if present
+        for key in ("coherence", "metric_value"):
+            if key in kwargs and isinstance(kwargs[key], (int, float)):
+                metric_value = float(kwargs[key])
+                metric_name = key
+                break
+        else:
+            metric_value = 0.0
+            metric_name = "value"
+
+        # Store the full kwargs dict in metadata for later retrieval
+        metadata: Dict[str, Any] = {
+            k: v for k, v in kwargs.items() if k not in ("feature",)
+        }
+
+        raw_ts = kwargs.get("timestamp")
+        if isinstance(raw_ts, (int, float)):
+            from datetime import timezone
+            ts = datetime.fromtimestamp(float(raw_ts), tz=timezone.utc)
+        elif isinstance(raw_ts, datetime):
+            ts = raw_ts
+        else:
+            ts = datetime.now(UTC)
+
+        metric = QuantumMetric(
+            feature=feature,
+            metric_name=metric_name,
+            metric_value=metric_value,
+            agent_id=str(kwargs.get("agent_id", kwargs.get("decision_id", ""))),
+            metadata=metadata,
+            timestamp=ts,
+        )
+        return self.create(metric)
+
     def get_recent_metrics(
         self,
         feature: str,
@@ -460,8 +537,21 @@ class QuantumMetricRepository:
             hours: Unused; retained for API compatibility.
 
         Returns:
-            List of metric dicts (keys: id, timestamp, feature, metric_name,
-            metric_value, agent_id, metadata).
+            List of metric dicts. Metadata content is merged into the dict
+            for backward compatibility (e.g., coherence, accuracy keys).
         """
         results = self.find_by_feature(feature, limit=limit)
-        return [m.to_dict() for m in results]
+        dicts = []
+        for m in results:
+            d = m.to_dict()
+            # Flatten metadata into the returned dict for legacy API compat
+            meta = d.get("metadata") or {}
+            if isinstance(meta, str):
+                try:
+                    import json as _json
+                    meta = _json.loads(meta)
+                except Exception:
+                    meta = {}
+            merged = {**d, **meta}
+            dicts.append(merged)
+        return dicts
