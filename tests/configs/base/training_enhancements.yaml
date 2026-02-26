@@ -1,0 +1,18 @@
+early_stopping:
+  enabled: false
+  patience: 3
+  monitor: val_loss
+  mode: min
+  min_delta: 0.0001
+  verbose: true
+
+scheduler:
+  type: linear
+  num_warmup_steps: 0
+  num_training_steps: null
+
+training:
+  epochs: 3
+  batch_size: 32
+  learning_rate: 5.0e-5
+  gradient_accumulation_steps: 1

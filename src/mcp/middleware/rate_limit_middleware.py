@@ -97,7 +97,6 @@ class _RedisBackend(_RateLimitBackend):
             return count <= burst
         except Exception as exc:
             # Redis unavailable — allow the request (fail open)
-            import logging
             logging.getLogger(__name__).warning(
                 "Redis rate-limit backend error: %s — allowing request", exc
             )
@@ -122,18 +121,15 @@ def _build_backend(rate: float, burst: int) -> _RateLimitBackend:
     if redis_url:
         try:
             backend = _RedisBackend(redis_url)
-            import logging
             logging.getLogger(__name__).info(
                 "RateLimitMiddleware: using Redis backend (%s)", redis_url
             )
             return backend
         except ImportError:
-            import logging
             logging.getLogger(__name__).warning(
                 "redis package not installed; falling back to in-memory rate limiting. "
                 "Install with: pip install redis"
             )
-    import logging
     logging.getLogger(__name__).warning(
         "RateLimitMiddleware: using process-local in-memory backend. "
         "Set REDIS_URL for distributed rate limiting."

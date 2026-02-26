@@ -1,8 +1,25 @@
-"""Code analysis CLI - Phase 1 implementation stub."""
+"""Code analysis CLI."""
 
-import sys
+import ast
+import json
+from pathlib import Path
 
 import click
+
+
+def _analyze_module(path: Path) -> dict:
+    try:
+        source = path.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return {"file": str(path), "lines": 0, "functions": 0, "classes": 0, "error": "unreadable"}
+    lines = len(source.splitlines())
+    try:
+        tree = ast.parse(source, filename=str(path))
+    except SyntaxError:
+        return {"file": str(path), "lines": lines, "functions": 0, "classes": 0, "error": "syntax_error"}
+    functions = sum(1 for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)))
+    classes = sum(1 for n in ast.walk(tree) if isinstance(n, ast.ClassDef))
+    return {"file": str(path), "lines": lines, "functions": functions, "classes": classes}
 
 
 @click.command()
@@ -17,14 +34,33 @@ def analyze_main(path: str, format: str, output: str, threshold: int):
         codex-analyze . --format html --output report.html
         codex-analyze src/ --threshold 40
     """
-    click.echo(f"🔍 Analyzing code in: {path}")
-    click.echo(f"📊 Format: {format}")
-    click.echo(f"📏 Threshold: {threshold} lines")
+    root = Path(path)
+    modules: list[dict] = []
+    for py_file in sorted(root.rglob("*.py")):
+        modules.append(_analyze_module(py_file))
 
-    # Phase 2 - Implement full analysis
-    click.echo("\n❌  codex-analyze is not yet implemented (Phase 2 pending)", err=True)
-    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details", err=True)
-    sys.exit(1)
+    total_files = len(modules)
+    total_lines = sum(m.get("lines", 0) for m in modules)
+    total_functions = sum(m.get("functions", 0) for m in modules)
+    total_classes = sum(m.get("classes", 0) for m in modules)
+
+    report = {
+        "summary": {
+            "file_count": total_files,
+            "line_count": total_lines,
+            "function_count": total_functions,
+            "class_count": total_classes,
+        },
+        "modules": modules,
+    }
+
+    output_text = json.dumps(report, indent=2)
+
+    if output:
+        Path(output).write_text(output_text)
+        click.echo(f"Analysis report written to {output}")
+    else:
+        click.echo(output_text)
 
 
 if __name__ == "__main__":

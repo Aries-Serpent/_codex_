@@ -78,8 +78,43 @@ def run_pipeline(
     # Validate configuration first
     validate_pipeline_config(config)
 
-    raise NotImplementedError(
-        "run_pipeline() is not yet implemented. "
-        "Wire to src/codex_ml/training/functional_training.py::run_functional_training "
-        "or src/codex/training.py::run_custom_trainer before using in production."
-    )
+    try:
+        from codex_ml.training.functional_training import TrainConfig, train
+
+        trainer_cfg = config.get("trainer", {})
+        _defaults = TrainConfig()
+        train_cfg = TrainConfig(
+            epochs=trainer_cfg.get("epochs", _defaults.epochs),
+            batch_size=trainer_cfg.get("batch_size", _defaults.batch_size),
+            lr=trainer_cfg.get("lr", _defaults.lr),
+            seed=trainer_cfg.get("seed", _defaults.seed),
+            gradient_accumulation_steps=trainer_cfg.get(
+                "gradient_accumulation_steps", _defaults.gradient_accumulation_steps
+            ),
+            checkpoint_dir=trainer_cfg.get("checkpoint_dir", _defaults.checkpoint_dir),
+        )
+
+        # Extract texts from train_ds
+        if train_ds is None:
+            texts: list[str] = []
+        elif isinstance(train_ds, list):
+            texts = train_ds
+        elif hasattr(train_ds, "texts"):
+            texts = list(train_ds.texts)
+        else:
+            texts = list(train_ds)
+
+        # Extract val_texts from val_ds
+        val_texts = None
+        if val_ds is not None:
+            if isinstance(val_ds, list):
+                val_texts = val_ds
+            elif hasattr(val_ds, "texts"):
+                val_texts = list(val_ds.texts)
+            else:
+                val_texts = list(val_ds)
+
+        metrics = train(texts, config=train_cfg, val_texts=val_texts, model=model)
+        return {"status": "ok", "metrics": metrics}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}

@@ -125,18 +125,70 @@ class SLAPolicy(BaseModel):
         Returns:
             Deadline datetime when SLA will breach
         """
-        if not self.business_hours_only or business_hours_schedule is None:
+        if not self.business_hours_only:
             # Simple calculation: add target minutes to start time
             return start_time + timedelta(minutes=self.target_minutes)
 
-        # Business-hours SLA calculation is not yet implemented.
-        # Until D365 calendar integration is complete, raise an error
-        # rather than silently returning an incorrect (linear) deadline.
-        raise NotImplementedError(
-            "Business hours SLA calculation is not implemented. "
-            "Integrate with D365 businesshoursid calendar before enabling "
-            "business_hours_only policies."
-        )
+        # Business-hours SLA calculation.
+        # Note: For full D365 calendar integration, replace this local
+        # schedule approach with D365 businesshoursid calendar lookups.
+        if business_hours_schedule is None:
+            # Default: Mon-Fri 09:00-17:00 UTC
+            tz_name = "UTC"
+            day_hours: dict[str, Any] = {
+                "monday": {"start": "09:00", "end": "17:00"},
+                "tuesday": {"start": "09:00", "end": "17:00"},
+                "wednesday": {"start": "09:00", "end": "17:00"},
+                "thursday": {"start": "09:00", "end": "17:00"},
+                "friday": {"start": "09:00", "end": "17:00"},
+            }
+        else:
+            tz_name = business_hours_schedule.get("timezone", "UTC")
+            day_hours = business_hours_schedule.get("hours", {})
+
+        try:
+            from zoneinfo import ZoneInfo
+            tz = ZoneInfo(tz_name)
+        except Exception:
+            from datetime import timezone
+            tz = timezone.utc
+
+        # Ensure start_time is tz-aware in the target timezone
+        if start_time.tzinfo is None:
+            current = start_time.replace(tzinfo=tz)
+        else:
+            current = start_time.astimezone(tz)
+
+        day_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        remaining = self.target_minutes
+
+        while remaining > 0:
+            day_name = day_names[current.weekday()]
+            schedule = day_hours.get(day_name)
+            if schedule:
+                start_h, start_m = map(int, schedule["start"].split(":"))
+                end_h, end_m = map(int, schedule["end"].split(":"))
+                day_start = current.replace(hour=start_h, minute=start_m, second=0, microsecond=0)
+                day_end = current.replace(hour=end_h, minute=end_m, second=0, microsecond=0)
+
+                # Clamp current to business window
+                if current < day_start:
+                    current = day_start
+                if current < day_end:
+                    available = int((day_end - current).total_seconds() // 60)
+                    if remaining <= available:
+                        current = current + timedelta(minutes=remaining)
+                        remaining = 0
+                        break
+                    else:
+                        remaining -= available
+                        current = day_end
+
+            # Advance to next day start
+            next_day = (current + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            current = next_day
+
+        return current
 
     def is_paused(self, ticket_state: dict[str, Any]) -> bool:
         """Check if SLA should be paused based on current ticket state.

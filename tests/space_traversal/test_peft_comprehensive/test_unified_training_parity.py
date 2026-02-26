@@ -18,7 +18,7 @@ from codex_ml.training.unified_training import (
 def test_unified_training_runs(backend: str, tmp_path):
     cfg = UnifiedTrainingConfig(
         model_name="dummy",
-        epochs=0,
+        epochs=1,
         output_dir=str(tmp_path / "run"),
         backend=backend,
     )
