@@ -1257,6 +1257,7 @@ def run_functional_training(
                 padding=cfg.padding,
                 truncation=cfg.truncation,
                 max_length=cfg.max_length,
+                return_tensors="pt",
             )
             features: dict[str, list[int]] = {}
             for key, value in encoding.items():

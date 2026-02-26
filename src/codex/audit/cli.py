@@ -1,5 +1,10 @@
 """Code audit CLI - Phase 1 implementation stub."""
 
+import json
+import subprocess
+import sys
+from pathlib import Path
+
 import click
 
 
@@ -15,17 +20,54 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
         codex-audit --check-dependencies --check-vulns
         codex-audit --format html --output audit.html
     """
-    click.echo("🔐 Running code audit...")
+    result: dict = {"status": "ok", "vulnerabilities": [], "summary": {}}
 
-    if check_dependencies:
-        click.echo("  ✓ Checking dependencies")
+    # Try pip-audit first
+    pip_audit_result = None
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "pip_audit", "--format", "json"],
+            capture_output=True, text=True, timeout=60,
+        )
+        if proc.returncode == 0 and proc.stdout:
+            pip_audit_result = json.loads(proc.stdout)
+    except Exception:
+        pass
 
-    if check_vulns:
-        click.echo("  ✓ Checking vulnerabilities")
+    if pip_audit_result is not None:
+        vulns = pip_audit_result.get("vulnerabilities", [])
+        result["vulnerabilities"] = vulns
+        result["summary"]["pip_audit"] = {"vulnerable_packages": len(vulns)}
+    else:
+        # Fallback: scan requirements*.txt for packages
+        repo_root = Path(__file__).resolve()
+    # Walk up to find the repo root (marker: pyproject.toml or .git)
+    for parent in repo_root.parents:
+        if (parent / "pyproject.toml").exists() or (parent / ".git").exists():
+            repo_root = parent
+            break
+    else:
+        repo_root = Path(__file__).resolve().parents[4]
+        req_files = list(repo_root.glob("requirements*.txt"))
+        packages = []
+        for rf in req_files:
+            try:
+                for line in rf.read_text().splitlines():
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        packages.append(line.split("==")[0].split(">=")[0].split("<=")[0].strip())
+            except Exception:
+                pass
+        result["summary"]["scanned_requirements_files"] = len(req_files)
+        result["summary"]["total_packages"] = len(packages)
+        result["summary"]["note"] = "pip-audit not available; manual review recommended"
 
-    # TODO: Phase 2 - Implement full audit
-    click.echo("\n⚠️  Full implementation coming in Phase 2")
-    click.echo("See docs/REPO_ADMIN_IMPLEMENTATION_DECISIONS.md for details")
+    output_text = json.dumps(result, indent=2)
+    if output:
+        Path(output).write_text(output_text)
+        click.echo(f"Audit report written to {output}")
+    else:
+        click.echo(output_text)
 
 
 if __name__ == "__main__":

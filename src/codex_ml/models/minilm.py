@@ -75,7 +75,18 @@ class MiniLM(nn.Module):
         if cfg.tie_embeddings:
             self.head.weight = self.tok_emb.weight
 
-    def forward(self, input_ids: torch.Tensor) -> torch.Tensor:
+    def forward(self, input_ids: torch.Tensor, **kwargs) -> torch.Tensor:
+        """Forward pass returning per-token logits.
+
+        Args:
+            input_ids: Integer token ids of shape (batch, seq_len).
+            **kwargs: Additional keyword arguments accepted for trainer
+                compatibility (e.g. ``labels``, ``attention_mask``).
+                They are not used by MiniLM and are silently ignored.
+
+        Returns:
+            Logits tensor of shape (batch, seq_len, vocab_size).
+        """
         bsz, seq_len = input_ids.shape
         device = input_ids.device
         pos = torch.arange(seq_len, device=device).unsqueeze(0)

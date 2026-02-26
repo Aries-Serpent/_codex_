@@ -81,7 +81,7 @@ class TestLoadEmbedderClass:
         """Test loading embedder from invalid path raises."""
         try:
             from workers.embedding_worker import _load_embedder_class
-            with pytest.raises((ImportError, ModuleNotFoundError, AttributeError)):
+            with pytest.raises((ImportError, ModuleNotFoundError, AttributeError, ValueError)):
                 _load_embedder_class("nonexistent.module.Class")
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")

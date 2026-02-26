@@ -17,52 +17,178 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import os
 import time
+import logging
+from abc import ABC, abstractmethod
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-# In-memory token-bucket per principal (scoped to process). Replace with Redis for multi-process.
-_BUCKETS: dict[str, dict] = {}
 DEFAULT_RATE = 5
 BURST = 10
 
+# ---------------------------------------------------------------------------
+# Backend protocol
+# ---------------------------------------------------------------------------
 
-def _get_bucket(principal: str, burst: int):
-    b = _BUCKETS.setdefault(principal, {"tokens": burst, "last": time.time()})
-    return b
+
+class _RateLimitBackend(ABC):
+    """Abstract backend for rate-limit token buckets."""
+
+    @abstractmethod
+    def consume(self, key: str, rate: float, burst: int) -> bool:
+        """Return True if the request should be allowed, False if throttled."""
+        raise NotImplementedError("Subclasses must implement consume()")
+
+    def close(self) -> None:  # noqa: B027
+        """Optional cleanup."""
 
 
+class _InMemoryBackend(_RateLimitBackend):
+    """Process-local in-memory token bucket.
+
+    WARNING: Each worker process has an independent state.  In a multi-worker
+    deployment (Gunicorn/uvicorn with ``--workers N``) each client gets N× the
+    configured rate limit.  Use ``_RedisBackend`` for shared-state rate limiting.
+    """
+
+    def __init__(self) -> None:
+        self._buckets: dict[str, dict] = {}
+
+    def consume(self, key: str, rate: float, burst: int) -> bool:
+        b = self._buckets.setdefault(key, {"tokens": float(burst), "last": time.time()})
+        now = time.time()
+        elapsed = now - b["last"]
+        b["tokens"] = min(burst, b["tokens"] + elapsed * rate)
+        b["last"] = now
+        if b["tokens"] < 1:
+            return False
+        b["tokens"] -= 1
+        return True
+
+    def clear(self) -> None:
+        self._buckets.clear()
+
+
+class _RedisBackend(_RateLimitBackend):
+    """Redis-backed token bucket (safe for multi-process deployments).
+
+    Uses atomic INCR + EXPIRE so each sliding window slot is counted
+    correctly across all worker processes and replicas.
+
+    Required env var:  ``REDIS_URL``  (e.g. ``redis://localhost:6379/0``)
+    """
+
+    def __init__(self, redis_url: str, window: int = 1) -> None:
+        import redis as _redis  # guarded import — optional dependency
+        self._redis = _redis.Redis.from_url(redis_url, decode_responses=True)
+        self._window = window  # sliding window size in seconds
+
+    def consume(self, key: str, rate: float, burst: int) -> bool:
+        slot = int(time.time() // self._window)
+        redis_key = f"rl:{key}:{slot}"
+        try:
+            count = self._redis.incr(redis_key)
+            if count == 1:
+                self._redis.expire(redis_key, self._window * 2)
+            # Allow up to ``burst`` requests per window slot
+            return count <= burst
+        except Exception as exc:
+            # Redis unavailable — allow the request (fail open)
+            logging.getLogger(__name__).warning(
+                "Redis rate-limit backend error: %s — allowing request", exc
+            )
+            return True
+
+    def close(self) -> None:
+        try:
+            self._redis.close()
+        except Exception as exc:
+            logging.getLogger(__name__).warning(
+                "Redis rate-limit backend close() error: %s", exc
+            )
+
+
+def _build_backend(rate: float, burst: int) -> _RateLimitBackend:
+    """Select the best available backend.
+
+    Preference: Redis (if ``REDIS_URL`` is set and ``redis`` is installed) →
+    in-memory (fallback).
+    """
+    redis_url = os.environ.get("REDIS_URL") or os.environ.get("RATE_LIMIT_REDIS_URL")
+    if redis_url:
+        try:
+            backend = _RedisBackend(redis_url)
+            logging.getLogger(__name__).info(
+                "RateLimitMiddleware: using Redis backend (%s)", redis_url
+            )
+            return backend
+        except ImportError:
+            logging.getLogger(__name__).warning(
+                "redis package not installed; falling back to in-memory rate limiting. "
+                "Install with: pip install redis"
+            )
+    logging.getLogger(__name__).warning(
+        "RateLimitMiddleware: using process-local in-memory backend. "
+        "Set REDIS_URL for distributed rate limiting."
+    )
+    return _InMemoryBackend()
+
+
+# Kept for backward compatibility with tests that call clear_buckets()
 def clear_buckets() -> None:
-    _BUCKETS.clear()
+    """Clear the in-memory buckets on the module-level default backend (if any)."""
+    if isinstance(_DEFAULT_BACKEND, _InMemoryBackend):
+        _DEFAULT_BACKEND.clear()
+
+
+_DEFAULT_BACKEND: _RateLimitBackend | None = None
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
-    """
-    Very small in-memory rate limiter. Suitable for dev/testing only.
-    - principal is taken from request.state.principal.api_key (fall back to 'anonymous')
-    - Returns 429 when bucket empty.
+    """Token-bucket rate limiter middleware.
+
+    Automatically selects a Redis backend when ``REDIS_URL`` is set (requires
+    the ``redis`` package), otherwise falls back to a process-local in-memory
+    bucket.
+
+    Configuration (env vars or constructor args):
+        ``RATE_LIMIT_RATE``  — token refill rate per second (default: 5)
+        ``RATE_LIMIT_BURST`` — maximum burst size (default: 10)
+        ``REDIS_URL``        — Redis connection string for distributed limiting
+
+    Principal is taken from ``request.state.principal.api_key`` (falls back to
+    ``"anonymous"``).
     """
 
-    def __init__(self, app, rate: int | None = None, burst: int | None = None):
+    def __init__(
+        self,
+        app,
+        rate: int | None = None,
+        burst: int | None = None,
+        backend: _RateLimitBackend | None = None,
+    ):
         super().__init__(app)
-        if rate is None:
-            rate = int(float(__import__("os").environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE))))
-        if burst is None:
-            burst = int(float(__import__("os").environ.get("RATE_LIMIT_BURST", str(BURST))))
-        self.rate = rate
-        self.burst = burst
+        self.rate = rate if rate is not None else int(
+            float(os.environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE)))
+        )
+        self.burst = burst if burst is not None else int(
+            float(os.environ.get("RATE_LIMIT_BURST", str(BURST)))
+        )
+        if backend is not None:
+            self._backend = backend
+        else:
+            global _DEFAULT_BACKEND
+            if _DEFAULT_BACKEND is None:
+                _DEFAULT_BACKEND = _build_backend(self.rate, self.burst)
+            self._backend = _DEFAULT_BACKEND
 
     async def dispatch(self, request: Request, call_next):
         principal = getattr(getattr(request, "state", None), "principal", {}) or {}
         key = principal.get("api_key") or "anonymous"
-        bucket = _get_bucket(key, self.burst)
-        now = time.time()
-        elapsed = now - bucket["last"]
-        bucket["tokens"] = min(self.burst, bucket["tokens"] + elapsed * self.rate)
-        bucket["last"] = now
-        if bucket["tokens"] < 1:
+        if not self._backend.consume(key, self.rate, self.burst):
             return Response("Rate limit exceeded", status_code=429)
-        bucket["tokens"] -= 1
         return await call_next(request)
+

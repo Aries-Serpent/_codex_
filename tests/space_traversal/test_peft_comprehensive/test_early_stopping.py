@@ -149,17 +149,15 @@ def test_early_stopping_should_stop():
     """Test early stopping should_stop method."""
     from codex_ml.training.early_stopping import EarlyStopping
 
-    es = EarlyStopping(patience=2, mode="min", verbose=False)
+    es = EarlyStopping(patience=3, mode="min", verbose=False)
 
     # First few epochs
     assert not es.should_stop(1.0, epoch=0)
-    assert not es.should_stop(0.9, epoch=1)  # Improvement
+    assert not es.should_stop(0.9, epoch=1)  # Improvement, wait resets to 0
     assert not es.should_stop(1.0, epoch=2)  # No improvement, wait=1
-
-    # Should not stop yet (patience=2, wait=1)
     assert not es.should_stop(1.0, epoch=3)  # No improvement, wait=2
 
-    # Should stop now (patience=2, wait=2)
+    # Should stop now (patience=3, wait=3 >= patience=3)
     assert es.should_stop(1.0, epoch=4)
     assert es.stopped_epoch == 4
 

@@ -7,13 +7,13 @@ and scope management.
 **IMPORTANT**: Several methods in this module are stubs that must be implemented
 before production use:
 - `create_token()`: Raises NotImplementedError - must be wired to GitHub API
-- `validate_secret()`: Returns stub validation - needs actual API integration
-- `revoke_secret()`: Returns stub success - needs actual API call
-- `list_secrets()`: Returns empty list - needs actual API call
+- `revoke_secret()`: Calls the GitHub API to revoke installation tokens (ghs_);
+  returns False for classic PATs that require OAuth App credentials not configured.
+- `list_secrets()`: Calls GET /user to return metadata for the current token.
 
-These stubs are intentionally designed to fail safely. The `create_token()` method
-raises an error to prevent accidental use, while validation methods log warnings
-but allow development/testing to proceed.
+`validate_secret()` now calls `GET /api.github.com/user` to verify the token
+is live and accepted by GitHub. Requires network access; gracefully degrades to
+format-only validation when the network is unreachable.
 
 Part of PS-05 Enhancement: Multi-Provider Support - Priority 4
 """
@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from datetime import UTC, datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -37,6 +38,16 @@ from security.providers.base import (
 
 logger = logging.getLogger(__name__)
 
+# Module-level requests availability flag — avoids repeated ImportError handling
+try:
+    import requests as _requests
+    HAS_REQUESTS = True
+except ImportError:
+    _requests = None  # type: ignore[assignment]
+    HAS_REQUESTS = False
+
+# Pre-compiled GitHub token format regex — avoids recompiling on every call
+_GITHUB_TOKEN_RE = re.compile(r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$")
 
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
@@ -171,28 +182,64 @@ class GitHubTokenProvider(TokenProvider):
             if not token:
                 raise ValidationError("No token provided for validation")
 
-            # Make API request to validate token
-            # This is a stub - actual implementation would use GitHub API
-            # Example: GET /user with token authentication
-
-            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
-            # Justification: This is a static informational string with no dynamic data.
-            # No secrets, tokens, or sensitive information are logged. The log message
-            # is purely for debugging stub code execution flow.
             logger.info("Validating GitHub token")
 
-            # Check expiration
+            # Check local expiration first (avoids unnecessary API call)
             try:
                 expiration = self.get_expiration(secret_id)
                 if expiration and datetime.now(UTC) >= expiration:
-                    logger.warning("GitHub token has expired")
+                    logger.warning("GitHub token has expired (local expiry check)")
                     return False
             except Exception as e:
                 logger.debug(f"Could not check expiration: {e}")
 
-            # TODO: Actual API validation
-            # For now, return True if token exists
-            return bool(token)
+            # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
+            # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
+            if not _GITHUB_TOKEN_RE.match(token):
+                logger.warning("GitHub token does not match expected format")
+                return False
+
+            # Live validation: call GET /user to confirm the token is accepted
+            # by GitHub.  Falls back gracefully if network is unreachable so
+            # offline / air-gapped deployments are not broken.
+            if not HAS_REQUESTS:
+                # requests not available — fall back to format-only validation
+                logger.warning(
+                    "requests library unavailable; using format-only token validation"
+                )
+                return True
+            try:
+                resp = _requests.get(
+                    "https://api.github.com/user",
+                    headers={
+                        "Authorization": f"token {token}",
+                        "Accept": "application/vnd.github+json",
+                        "X-GitHub-Api-Version": "2022-11-28",
+                    },
+                    timeout=10,
+                )
+                if resp.status_code == 401:
+                    logger.warning("GitHub token rejected by API (401 Unauthorized)")
+                    return False
+                if resp.status_code == 403:
+                    logger.warning("GitHub token forbidden by API (403 Forbidden)")
+                    return False
+                if resp.status_code == 200:
+                    logger.info("GitHub token validated successfully via API")
+                    return True
+                # Unexpected status — treat as valid but log
+                logger.warning(
+                    "GitHub API returned unexpected status %d; treating token as valid",
+                    resp.status_code,
+                )
+                return True
+            except Exception as network_err:
+                # Network unreachable, DNS failure, timeout — degrade gracefully
+                logger.warning(
+                    "GitHub API unreachable (%s); using format-only token validation",
+                    network_err,
+                )
+                return True
 
         except Exception as e:
             raise ValidationError(f"Token validation failed: {e}") from e
@@ -302,7 +349,10 @@ class GitHubTokenProvider(TokenProvider):
             logger.info("Updating GitHub token scopes")
             logger.debug(f"New scopes: {scopes}")
 
-            # TODO: Actual API call
+            # NOTE: Stub — does NOT call the GitHub API (PATCH /user/tokens/{token_id}).
+            logger.warning(
+                "update_token_scopes() is a stub: scopes have NOT been updated via GitHub API."
+            )
             return True
 
         except Exception as e:
@@ -310,56 +360,103 @@ class GitHubTokenProvider(TokenProvider):
             return False
 
     def revoke_secret(self, secret_id: str) -> bool:
-        """Revoke GitHub token.
+        """Revoke GitHub token via the GitHub REST API.
+
+        For installation tokens (ghs_), calls DELETE /installation/token.
+        For classic PATs (ghp_/gho_), revocation requires OAuth App credentials
+        (client_id + client_secret) which are not configured — returns False.
 
         Args:
-            secret_id: Token ID to revoke
+            secret_id: Token ID to revoke (unused; revokes the configured token)
 
         Returns:
-            True if revoked successfully
+            True if revoked successfully, False otherwise
         """
+        token = self.config.get("token") or os.environ.get("GITHUB_TOKEN", "")
+        if not token:
+            logger.warning("revoke_secret(): no token configured; cannot revoke.")
+            return False
+        if not HAS_REQUESTS:
+            logger.warning("revoke_secret(): requests library unavailable; cannot revoke.")
+            return False
         try:
-            # This is a stub - actual implementation would use GitHub API
-            # DELETE /user/tokens/{token_id}
-
-            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
-            # Justification: This is a static informational string with no dynamic data.
-            # No secrets, tokens, or sensitive information are logged. The log message
-            # is purely for debugging stub code execution flow.
-            logger.info("Revoking GitHub token")
-
-            # TODO: Actual API call
-            return True
-
-        except Exception as e:
-            logger.error(f"Failed to revoke token: {e}")
+            # Fine-grained PATs and installation tokens can be revoked via DELETE /installation/token
+            # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)
+            # We attempt the installation token revoke path first (works for ghs_ tokens)
+            if token.startswith("ghs_"):
+                resp = _requests.delete(
+                    "https://api.github.com/installation/token",
+                    headers={
+                        "Authorization": f"Bearer {token}",
+                        "Accept": "application/vnd.github+json",
+                        "X-GitHub-Api-Version": "2022-11-28",
+                    },
+                    timeout=10,
+                )
+                if resp.status_code in (204, 200):
+                    logger.info("revoke_secret(): installation token revoked successfully.")
+                    return True
+                logger.warning(
+                    "revoke_secret(): GitHub API returned %d; token may not be revoked.",
+                    resp.status_code,
+                )
+                return False
+            # For classic PATs, revocation requires a GitHub OAuth App client_id+secret.
+            # Without those credentials we cannot safely call the API — log and return False.
+            logger.warning(
+                "revoke_secret(): classic PAT revocation requires OAuth App credentials "
+                "(client_id + client_secret). Configure GitHubTokenProvider with "
+                "client_id/client_secret to enable revocation. Token NOT revoked."
+            )
+            return False
+        except Exception as exc:
+            logger.error("revoke_secret() failed: %s", exc)
             return False
 
     def list_secrets(
         self,
         filter_tags: Optional[Dict[str, str]] = None
     ) -> List[SecretMetadata]:
-        """List all GitHub tokens.
+        """List GitHub tokens via the GitHub REST API.
+
+        Calls GET /user to confirm the token is valid and returns a single
+        SecretMetadata entry for the currently configured token.
 
         Args:
-            filter_tags: Optional tag filters
+            filter_tags: Optional tag filters (not applied to API results)
 
         Returns:
-            List of SecretMetadata
+            List of SecretMetadata (one entry for the current token)
         """
-        try:
-            # This is a stub - actual implementation would use GitHub API
-            # GET /user/tokens
-
-            # CodeQL [py/clear-text-logging-sensitive-data] False Positive
-            # Justification: This is a static informational string with no dynamic data.
-            # No secrets, tokens, or sensitive information are logged. The log message
-            # is purely for debugging stub code execution flow.
-            logger.info("Listing GitHub tokens")
-
-            # TODO: Actual API call
+        token = self.config.get("token") or os.environ.get("GITHUB_TOKEN", "")
+        if not token:
+            logger.warning("list_secrets(): no token configured; returning empty list.")
             return []
-
-        except Exception as e:
-            logger.error(f"Failed to list tokens: {e}")
+        if not HAS_REQUESTS:
+            logger.warning("list_secrets(): requests library unavailable.")
+            return []
+        try:
+            resp = _requests.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                },
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                meta = SecretMetadata(
+                    secret_id="current_token",
+                    name=f"GitHub PAT for {data.get('login', 'unknown')}",
+                    created_at=datetime.now(UTC),
+                    tags={"github_login": data.get("login", ""), "token_type": "pat"},
+                    scopes=None,  # scope info not available from /user
+                )
+                return [meta]
+            logger.warning("list_secrets(): GitHub API returned %d.", resp.status_code)
+            return []
+        except Exception as exc:
+            logger.error("list_secrets() failed: %s", exc)
             return []

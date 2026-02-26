@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 import typer
+
 from codex.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
 from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifest
 

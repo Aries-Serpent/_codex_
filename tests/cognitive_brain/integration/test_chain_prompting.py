@@ -62,6 +62,7 @@ try:
 
     def _make_assessor() -> QuantumComplianceAssessor:
         import tempfile
+
         from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
         from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 

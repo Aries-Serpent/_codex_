@@ -1,7 +1,8 @@
 """Unit tests for Zendesk plan normalization helpers."""
 
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 from codex.zendesk import apply as zapply
 

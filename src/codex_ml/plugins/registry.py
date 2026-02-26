@@ -15,10 +15,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from importlib import invalidate_caches as _invalidate_caches, metadata  # noqa: E402
 import sys  # noqa: E402
 import warnings  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
+from importlib import invalidate_caches as _invalidate_caches  # noqa: E402
+from importlib import metadata  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 

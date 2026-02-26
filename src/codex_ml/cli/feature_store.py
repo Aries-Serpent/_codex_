@@ -18,10 +18,9 @@ from pathlib import Path
 from typing import List, Optional
 
 try:
+    import typer
     from rich.console import Console
     from rich.table import Table
-
-    import typer
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)

@@ -15,8 +15,9 @@ def test_validate_ok(tmp_path: Path):
     """Test config validation with valid config."""
     # Import here to handle optional dependencies
     try:
-        from codex_ml.cli.validate import app
         from typer.testing import CliRunner
+
+        from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
 
@@ -36,8 +37,9 @@ def test_validate_bad(tmp_path: Path):
     """Test config validation with invalid config."""
     # Import here to handle optional dependencies
     try:
-        from codex_ml.cli.validate import app
         from typer.testing import CliRunner
+
+        from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
 

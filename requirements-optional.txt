@@ -7,7 +7,7 @@
 # Or selectively: pip install nltk rouge-score sacrebleu
 
 # Generative metrics (BLEU, ROUGE)
-nltk>=3.8
+nltk>=3.9.3  # Security: Fixes CVE-2025-14009 (ZIP extraction RCE), path traversal in corpus readers
 rouge-score>=0.1.2
 sacrebleu>=2.3.0
 

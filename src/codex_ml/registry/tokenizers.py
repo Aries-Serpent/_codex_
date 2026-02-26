@@ -273,6 +273,7 @@ def _call_tokenizer(
     truncation: bool | None,
     max_length: int | None,
     add_special_tokens: bool | None,
+    return_tensors: str | None = None,
 ) -> Mapping[str, Any]:
     kwargs: dict[str, Any] = {}
     if padding is not None:
@@ -283,6 +284,8 @@ def _call_tokenizer(
         kwargs["max_length"] = max_length
     if add_special_tokens is not None:
         kwargs["add_special_tokens"] = add_special_tokens
+    if return_tensors is not None:
+        kwargs["return_tensors"] = return_tensors
     kwargs.setdefault("return_attention_mask", True)
     try:
         encoding = tokenizer(text, **kwargs)
@@ -317,6 +320,7 @@ def encode_cached(
     truncation: bool | None = False,
     max_length: int | None = None,
     add_special_tokens: bool | None = True,
+    return_tensors: str | None = None,
 ) -> dict[str, Any]:
     """LRU-cached wrapper around tokenizer encodings."""
 
@@ -342,6 +346,7 @@ def encode_cached(
         truncation=truncation,
         max_length=max_length,
         add_special_tokens=add_special_tokens,
+        return_tensors=return_tensors,
     )
     frozen = _freeze_mapping(encoding)
 

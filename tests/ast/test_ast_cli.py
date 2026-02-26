@@ -12,8 +12,9 @@ pytest.importorskip("typer")
 
 from pathlib import Path
 
-from codex.ast.cli import app
 from typer.testing import CliRunner
+
+from codex.ast.cli import app
 
 
 def test_ast_cli_help():

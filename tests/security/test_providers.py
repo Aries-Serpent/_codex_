@@ -17,18 +17,21 @@ Tests include:
 
 from __future__ import annotations
 
+# botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
+import importlib.util as _importlib_util
 import os
 from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
 
-# botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
-import importlib.util as _importlib_util
 _HAS_BOTOCORE = _importlib_util.find_spec("botocore") is not None
 
-from security.provider_factory import ProviderFactory, create_provider_from_env
-from security.providers.base import (
+from security.provider_factory import (  # noqa: E402
+    ProviderFactory,
+    create_provider_from_env,
+)
+from security.providers.base import (  # noqa: E402
     ProviderConfig,
     ProviderConfigError,
     ProviderType,
@@ -41,8 +44,8 @@ from security.providers.base import (
     TokenProvider,
     ValidationError,
 )
-from security.providers.environment_provider import EnvironmentProvider
-from security.providers.github_provider import GitHubTokenProvider
+from security.providers.environment_provider import EnvironmentProvider  # noqa: E402
+from security.providers.github_provider import GitHubTokenProvider  # noqa: E402
 
 # ============================================================================
 # Test Base Module (base.py)
@@ -512,9 +515,43 @@ class TestGitHubTokenProvider:
                 mock_revoke.assert_called_once_with("old-token-id")
 
     def test_validate_secret_with_token(self, github_config):
-        """Test token validation with provided value."""
+        """Test token validation with provided value (mocks GitHub API call)."""
         provider = GitHubTokenProvider(github_config)
-        is_valid = provider.validate_secret("token-id", "ghp_test_value")
+        # Use a valid-format GitHub PAT (ghp_ prefix + 36 alphanumeric chars)
+        token = "ghp_" + "A" * 36
+        # Mock the requests.get call so no real network traffic is made in tests
+        mock_response = Mock()
+        mock_response.status_code = 200
+        with patch("requests.get", return_value=mock_response):
+            is_valid = provider.validate_secret("token-id", token)
+        assert is_valid is True
+
+    def test_validate_secret_invalid_format(self, github_config):
+        """Test validation rejects tokens with invalid format."""
+        provider = GitHubTokenProvider(github_config)
+        # Too short — won't match the regex, so validate_secret returns False
+        # before making any API call
+        is_valid = provider.validate_secret("token-id", "ghp_tooshort")
+        assert is_valid is False
+
+    def test_validate_secret_api_401(self, github_config):
+        """Test validation returns False when GitHub API returns 401."""
+        provider = GitHubTokenProvider(github_config)
+        token = "ghp_" + "B" * 36
+        mock_response = Mock()
+        mock_response.status_code = 401
+        with patch("requests.get", return_value=mock_response):
+            is_valid = provider.validate_secret("token-id", token)
+        assert is_valid is False
+
+    def test_validate_secret_network_error_degrades_gracefully(self, github_config):
+        """Test that network errors fall back to format-only validation."""
+        import requests as real_requests
+        provider = GitHubTokenProvider(github_config)
+        token = "ghp_" + "C" * 36
+        with patch("requests.get", side_effect=real_requests.exceptions.ConnectionError("offline")):
+            is_valid = provider.validate_secret("token-id", token)
+        # Format is valid so should return True after graceful degradation
         assert is_valid is True
 
     def test_validate_secret_no_token(self, github_config):
@@ -580,11 +617,18 @@ class TestGitHubTokenProvider:
         assert success is True
 
     def test_revoke_secret(self, github_config):
-        """Test revoking token."""
+        """Test revoking token.
+
+        Classic PATs (ghp_ prefix) require OAuth App credentials (client_id + client_secret)
+        to revoke via the GitHub API. Without them, revoke_secret() returns False and logs a
+        clear warning — safer than the old stub that silently returned True without revoking.
+        """
         provider = GitHubTokenProvider(github_config)
         success = provider.revoke_secret("token-id")
 
-        assert success is True
+        # Classic PAT revocation is not possible without OAuth App credentials.
+        # The method must return False rather than pretending success.
+        assert success is False
 
     def test_list_secrets(self, github_config):
         """Test listing tokens."""

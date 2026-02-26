@@ -6,8 +6,8 @@ Test module for evaluation cli.
 
 from __future__ import annotations
 
-import json
 import inspect
+import json
 from pathlib import Path
 
 import pytest

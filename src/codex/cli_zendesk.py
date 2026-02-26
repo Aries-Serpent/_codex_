@@ -15,9 +15,9 @@ from collections.abc import Callable, Iterable, Mapping, Sequence  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
+import typer  # noqa: E402
 from pydantic import BaseModel, ValidationError  # noqa: E402
 
-import typer  # noqa: E402
 from codex.versioning import update_artifact_version  # noqa: E402
 from codex.zendesk import apply as apply_module  # noqa: E402
 from codex.zendesk.model import (  # noqa: E402
