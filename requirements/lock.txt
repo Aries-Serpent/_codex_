@@ -202,6 +202,9 @@ dill==0.4.0
     #   multiprocess
 diskcache==5.6.3
     # via dvc-data
+    # Security: CVE-2025-69872 (moderate) - pickle deserialization RCE requires
+    # attacker write-access to the cache directory. No patched version available
+    # (5.6.3 is latest). Indirect dep via dvc-data; not used directly in app code.
 distlib==0.4.0
     # via virtualenv
 distro==1.9.0
@@ -224,7 +227,7 @@ dulwich==1.0.0
     #   scmrepo
 dvc==3.66.1
     # via codex-ml (pyproject.toml)
-dvc-data==3.17.0
+dvc-data==3.18.2
     # via dvc
 dvc-http==2.32.0
     # via dvc
