@@ -42,7 +42,12 @@ jobs:
 
       - name: Install QA dependencies
         run: |
-          pip install --quiet ruff black isort pylint bandit safety pip-audit 2>/dev/null || true
+          pip install --quiet ruff black isort pylint bandit safety pip-audit 2>&1 || true
+          echo "--- QA tool availability ---"
+          which ruff    && echo "ruff:     installed" || echo "ruff:     MISSING"
+          which bandit  && echo "bandit:   installed" || echo "bandit:   MISSING"
+          which pylint  && echo "pylint:   installed" || echo "pylint:   MISSING"
+          python3 -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
 
       - name: Download recent CI artifacts
         uses: actions/github-script@v7
@@ -111,7 +116,10 @@ jobs:
       - name: Run ruff lint
         run: |
           python3 -m ruff check src/ --select=F,W,I,E --output-format=json \
-            --output-file=ruff-report.json 2>/dev/null || true
+            --output-file=ruff-report.json 2>ruff-stderr.log || true
+          if [ -s ruff-stderr.log ]; then
+            echo "Ruff stderr output:"; cat ruff-stderr.log
+          fi
           echo "Ruff scan complete"
 
       - name: Run bandit security scan

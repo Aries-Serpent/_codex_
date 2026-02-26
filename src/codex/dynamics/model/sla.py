@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from typing import Any
@@ -28,6 +29,9 @@ from typing import Any
 from pydantic import BaseModel, Field, field_validator
 
 logger = logging.getLogger(__name__)
+
+# Pre-compiled HH:MM time format regex used by D365CalendarClient
+_TIME_HH_MM_RE = re.compile(r"^\d{2}:\d{2}$")
 
 
 class SLAMetric(str, Enum):
@@ -110,7 +114,6 @@ class D365CalendarClient:
         if not self._available:
             return None
         try:
-            import re
             import requests as _requests
 
             # Validate businesshoursid to prevent OData injection
@@ -153,7 +156,6 @@ class D365CalendarClient:
 
             # Parse D365 calendar rules into our schedule format.
             # D365 calendar rules have: starttime, endtime, weekday (0=Sun … 6=Sat)
-            _time_re = re.compile(r"^\d{2}:\d{2}$")
             day_map = {
                 0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
                 4: "thursday", 5: "friday", 6: "saturday",
@@ -167,7 +169,7 @@ class D365CalendarClient:
                     raw_start = rule.get("starttime", "09:00")[:5]
                     raw_end = rule.get("endtime", "17:00")[:5]
                     rule_tz = rule.get("timezonecode", "UTC")
-                    if not _time_re.match(raw_start) or not _time_re.match(raw_end):
+                    if not _TIME_HH_MM_RE.match(raw_start) or not _TIME_HH_MM_RE.match(raw_end):
                         logger.warning(
                             "D365CalendarClient: skipping rule with malformed time "
                             "start=%r end=%r", raw_start, raw_end

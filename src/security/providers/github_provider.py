@@ -38,6 +38,16 @@ from security.providers.base import (
 
 logger = logging.getLogger(__name__)
 
+# Module-level requests availability flag — avoids repeated ImportError handling
+try:
+    import requests as _requests
+    HAS_REQUESTS = True
+except ImportError:
+    _requests = None  # type: ignore[assignment]
+    HAS_REQUESTS = False
+
+# Pre-compiled GitHub token format regex — avoids recompiling on every call
+_GITHUB_TOKEN_RE = re.compile(r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$")
 
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
@@ -185,9 +195,6 @@ class GitHubTokenProvider(TokenProvider):
 
             # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
             # 'ghs_', 'ghu_', or the classic 40-hex-char pattern.
-            _GITHUB_TOKEN_RE = re.compile(
-                r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$"
-            )
             if not _GITHUB_TOKEN_RE.match(token):
                 logger.warning("GitHub token does not match expected format")
                 return False
@@ -195,8 +202,13 @@ class GitHubTokenProvider(TokenProvider):
             # Live validation: call GET /user to confirm the token is accepted
             # by GitHub.  Falls back gracefully if network is unreachable so
             # offline / air-gapped deployments are not broken.
+            if not HAS_REQUESTS:
+                # requests not available — fall back to format-only validation
+                logger.warning(
+                    "requests library unavailable; using format-only token validation"
+                )
+                return True
             try:
-                import requests as _requests
                 resp = _requests.get(
                     "https://api.github.com/user",
                     headers={
@@ -219,12 +231,6 @@ class GitHubTokenProvider(TokenProvider):
                 logger.warning(
                     "GitHub API returned unexpected status %d; treating token as valid",
                     resp.status_code,
-                )
-                return True
-            except ImportError:
-                # requests not available — fall back to format-only validation
-                logger.warning(
-                    "requests library unavailable; using format-only token validation"
                 )
                 return True
             except Exception as network_err:
@@ -370,8 +376,10 @@ class GitHubTokenProvider(TokenProvider):
         if not token:
             logger.warning("revoke_secret(): no token configured; cannot revoke.")
             return False
+        if not HAS_REQUESTS:
+            logger.warning("revoke_secret(): requests library unavailable; cannot revoke.")
+            return False
         try:
-            import requests as _requests
             # Fine-grained PATs and installation tokens can be revoked via DELETE /installation/token
             # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)
             # We attempt the installation token revoke path first (works for ghs_ tokens)
@@ -424,8 +432,10 @@ class GitHubTokenProvider(TokenProvider):
         if not token:
             logger.warning("list_secrets(): no token configured; returning empty list.")
             return []
+        if not HAS_REQUESTS:
+            logger.warning("list_secrets(): requests library unavailable.")
+            return []
         try:
-            import requests as _requests
             resp = _requests.get(
                 "https://api.github.com/user",
                 headers={
@@ -446,9 +456,6 @@ class GitHubTokenProvider(TokenProvider):
                 )
                 return [meta]
             logger.warning("list_secrets(): GitHub API returned %d.", resp.status_code)
-            return []
-        except ImportError:
-            logger.warning("list_secrets(): requests library unavailable.")
             return []
         except Exception as exc:
             logger.error("list_secrets() failed: %s", exc)

@@ -617,11 +617,18 @@ class TestGitHubTokenProvider:
         assert success is True
 
     def test_revoke_secret(self, github_config):
-        """Test revoking token."""
+        """Test revoking token.
+
+        Classic PATs (ghp_ prefix) require OAuth App credentials (client_id + client_secret)
+        to revoke via the GitHub API. Without them, revoke_secret() returns False and logs a
+        clear warning — safer than the old stub that silently returned True without revoking.
+        """
         provider = GitHubTokenProvider(github_config)
         success = provider.revoke_secret("token-id")
 
-        assert success is True
+        # Classic PAT revocation is not possible without OAuth App credentials.
+        # The method must return False rather than pretending success.
+        assert success is False
 
     def test_list_secrets(self, github_config):
         """Test listing tokens."""

@@ -79,19 +79,18 @@ def test_redis_backend_fail_open_on_error():
     """Redis unavailable → backend must allow the request (fail-open)."""
     from unittest.mock import MagicMock, patch
 
-    import redis as _redis_real
+    from mcp.middleware.rate_limit_middleware import _RedisBackend
 
-    from src.mcp.middleware.rate_limit_middleware import _RedisBackend
-
+    # Use only MagicMock — no real redis import needed to test fail-open behavior
     mock_redis_module = MagicMock()
     mock_conn = MagicMock()
-    mock_conn.incr.side_effect = _redis_real.exceptions.ConnectionError("unreachable")
+    # Simulate a ConnectionError as a plain Exception (no real redis needed)
+    mock_conn.incr.side_effect = Exception("Redis unreachable (simulated)")
     mock_redis_module.Redis.from_url.return_value = mock_conn
-    mock_redis_module.exceptions = _redis_real.exceptions
 
     with patch.dict("sys.modules", {"redis": mock_redis_module}):
         backend = _RedisBackend("redis://localhost:6379/0")
 
-    # Should fail-open (return True) when Redis is down
+    # Should fail-open (return True) when Redis raises any exception
     result = backend.consume("user:bob", rate=5.0, burst=5)
     assert result is True, "Backend must fail-open when Redis is unavailable"
