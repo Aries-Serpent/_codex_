@@ -177,23 +177,32 @@ Autonomous agent for systematic resolution of CodeQL code scanning alerts. Fetch
 ## 📊 Workflow
 
 ```mermaid
-graph TD
-    A[Start: Agent Activation] --> B[Fetch All Alerts via API]
-    B --> C[Categorize by Severity/Pattern]
-    C --> D{Is Automated Fix Available?}
-    D -->|Yes| E[Apply Security Codemod]
-    D -->|No| F[Route to Human Review]
-    E --> G[Run Regression Tests]
-    G --> H{Tests Pass?}
-    H -->|Yes| I[Close Alert via API]
-    H -->|No| J[Revert & Flag for Manual]
-    I --> K[Update Dashboard]
-    F --> K
-    J --> K
-    K --> L{More Alerts?}
-    L -->|Yes| D
-    L -->|No| M[Generate Final Report]
-    M --> N[End]
+flowchart TD
+    QPE([QuantumPlansetEngine\ngenerate SECURITY_REMEDIATION]) -->|collapse| PLAN[Execution Path\nSEC-01 → SEC-05]
+
+    PLAN --> SEC01[SEC-01 Collect\nresolution_pipeline.py\nstages=collect,analyse]
+    SEC01 --> SEC02[SEC-02 Remediate P0/P1\ncodemods: sql_injection\nsubprocess, hardcoded]
+    SEC02 --> SEC03[SEC-03 Scan CVEs\npip-audit on requirements]
+    SEC02 --> SEC04[SEC-04 Scan Secrets\ndetect-secrets baseline]
+    SEC02 -->|entangled| SEC05[SEC-05 Validate + Close\nstages=validate,close]
+
+    SEC01 --> CAT{Categorise\nby Severity}
+    CAT -->|P0/P1 critical| AUTO[Apply Security\nCodemod Automatically]
+    CAT -->|P2/P3| HUMAN[Route to\nHuman Review]
+    AUTO --> TEST{Regression\nTests Pass?}
+    TEST -->|Yes| CLOSE[Close Alert via API]
+    TEST -->|No| REVERT[Revert + Flag Manual]
+    CLOSE --> DASH[Update Dashboard]
+    HUMAN --> DASH
+    REVERT --> DASH
+    DASH --> MORE{More Alerts?}
+    MORE -->|Yes| CAT
+    MORE -->|No| REPORT[Generate Final\nReport + Artifacts]
+
+    style QPE fill:#1d3557,color:#fff
+    style PLAN fill:#2d6a4f,color:#fff
+    style CLOSE fill:#1b4332,color:#fff
+    style REVERT fill:#9b2226,color:#fff
 ```
 
 ## 🛠️ Tools & Scripts

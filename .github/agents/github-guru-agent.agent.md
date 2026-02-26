@@ -152,25 +152,20 @@ an autonomous session for the specified task.
 
 ### How It Works
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│           GITHUB GURU → COPILOT SESSION FLOW                │
-│                                                             │
-│  1. GURU detects task needing Copilot assistance            │
-│          │                                                  │
-│          ▼                                                  │
-│  2. Creates branch (e.g. copilot/<task-slug>)               │
-│          │                                                  │
-│          ▼                                                  │
-│  3. Opens PR with body:                                     │
-│       "@copilot <task description>"                         │
-│          │                                                  │
-│          ▼                                                  │
-│  4. GitHub Copilot agent reads PR body, starts session      │
-│          │                                                  │
-│          ▼                                                  │
-│  5. Copilot pushes commits → PR updated automatically       │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A([GURU detects task\nneeding Copilot assistance]) --> B[Create branch\ne.g. copilot/task-slug]
+    B --> C[Open PR with body:\n'@copilot task description']
+    C --> D{GitHub routes\n@copilot mention}
+    D --> E([Copilot agent\nstarts autonomous session])
+    E --> F[Copilot pushes commits\nPR updated automatically]
+    F --> G{CI Checks}
+    G -->|pass| H([PR ready to merge])
+    G -->|fail| I([Copilot self-heals\nand retries])
+
+    style A fill:#1d3557,color:#fff
+    style E fill:#2d6a4f,color:#fff
+    style H fill:#1b4332,color:#fff
 ```
 
 ### Usage

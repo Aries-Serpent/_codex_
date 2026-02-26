@@ -31,14 +31,14 @@ if str(_repo_root / "agents") not in sys.path:
     sys.path.insert(0, str(_repo_root / "agents"))
 
 try:
-    from cognitive_brain.base import (  # type: ignore[import]
+    from cognitive_brain.base import (  # type: ignore[import]  # noqa: I001
         ActionResult,
         Decision,
         ObservationData,
         OrientationResult,
         Planner,
     )
-    from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401  # type: ignore[import]
+    from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401
     _COGNITIVE_BRAIN_AVAILABLE = True
     logger.debug("Cognitive brain ABCs available (available=%s)", _COGNITIVE_BRAIN_AVAILABLE)
 except ImportError:
@@ -46,8 +46,8 @@ except ImportError:
     logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)
 
     # ---- Inline stubs so the module is importable without the full repo --------
+    from abc import ABC, abstractmethod  # noqa: I001
     from dataclasses import dataclass
-    from abc import ABC, abstractmethod
 
     @dataclass
     class ObservationData:  # type: ignore[no-redef]
@@ -351,8 +351,6 @@ class GitHubGuruAdapter(Planner):
         Returns:
             Dict with keys: pr_url, pr_number, copilot_triggered (bool), errors.
         """
-        import os
-
         token = github_token or os.environ.get("GITHUB_TOKEN", "")
         errors: List[str] = []
 
