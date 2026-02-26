@@ -46,6 +46,9 @@ except ImportError:
         "Falling back to mock SHA-256 signing."
     )
 
+# Public alias for external inspection (e.g., tests and diagnostics)
+HAS_SIGSTORE = _HAS_SIGSTORE
+
 
 class SignstoreClient:
     """Client for Sigstore keyless signing operations.
