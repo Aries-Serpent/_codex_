@@ -6,7 +6,7 @@ repos:
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
       - id: check-yaml
-        exclude: "^mkdocs\\.yml$|^.codex/reports/.*\\.yml$|^.codex/patterns/.*\\.yaml$|^.github/agents/.*\\.yml$"
+        exclude: "^mkdocs\\.yml$|^.codex/reports/.*\\.yml$|^.codex/patterns/.*\\.yaml$|^.github/agents/.*\\.yml$|^.github/actions/doc-test-scribe-action/action\\.yml$|^.github/docs/PR_2207_CI_CD_VALIDATION_ARTIFACTS\\.yaml$"
       - id: check-added-large-files
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.9
