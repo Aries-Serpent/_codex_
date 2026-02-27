@@ -203,7 +203,10 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         # analyze_requirements returns a dict; fall back to orchestrator.requirements
         # for any list-typed return shape (future-proofing only).
-        reqs = result.get("missing_variables", orchestrator.requirements) if isinstance(result, dict) else orchestrator.requirements
+        if isinstance(result, dict):
+            reqs = result.get("missing_variables", orchestrator.requirements)
+        else:
+            reqs = orchestrator.requirements
 
         assert len(reqs) > 0
 

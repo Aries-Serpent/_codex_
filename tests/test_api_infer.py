@@ -23,9 +23,9 @@ def _set_env(monkeypatch):
     def _clear_app_state():
         # Clear any cached tokenizer/model so the env vars above take effect,
         # even if another test earlier in the session already populated app.state.
-        for attr in ("tokenizer", "model"):
+        for state_attr in ("tokenizer", "model"):
             try:
-                delattr(app.state, attr)
+                delattr(app.state, state_attr)
             except AttributeError:
                 pass
 

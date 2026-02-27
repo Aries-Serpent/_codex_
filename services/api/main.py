@@ -419,6 +419,9 @@ async def _shutdown() -> None:
         try:
             await worker_task
         except asyncio.CancelledError:
+            # Intentionally suppressed: CancelledError is the expected outcome of
+            # task.cancel() and signals successful teardown.  In a shutdown handler
+            # there is no outer coroutine to propagate to, so swallowing is correct.
             logger.info("Background worker task cancelled during shutdown")
 
 
