@@ -23,7 +23,10 @@ class _Tok:
 
 
 def _build_ds():
-    texts = ["0 1 2 3 4 5"] * 4
+    # 10 texts → ~9 train + 1 val; with batch_size=2 and drop_last=True that
+    # yields 4 full training batches per epoch, enough for max_steps=4 and
+    # save_every=2 to both trigger reliably.
+    texts = ["0 1 2 3 4 5"] * 10
     train_txt, val_txt = split_texts(texts, seed=0)
     tok = _Tok()
     return (

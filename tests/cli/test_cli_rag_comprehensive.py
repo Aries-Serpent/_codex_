@@ -175,14 +175,14 @@ class TestBuildCommand:
 class TestQueryCommand:
     """Test RAG query command."""
 
-    @patch("codex.rag.Retriever")
+    @patch("codex.cli_rag.RAGRetriever")
     def test_query_basic(self, mock_retriever, runner: CliRunner):
         """Verify basic query execution."""
         mock_instance = MagicMock()
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = [
-            {"content": "Result 1", "score": 0.95},
-            {"content": "Result 2", "score": 0.87}
+            {"text": "Result 1", "score": 0.95},
+            {"text": "Result 2", "score": 0.87}
         ]
 
         result = runner.invoke(app, [
@@ -195,12 +195,12 @@ class TestQueryCommand:
         assert "Result 1" in result.output
         mock_instance.query.assert_called_once()
 
-    @patch("codex.rag.Retriever")
+    @patch("codex.cli_rag.RAGRetriever")
     def test_query_with_top_k(self, mock_retriever, runner: CliRunner):
         """Verify query with custom top_k."""
         mock_instance = MagicMock()
         mock_retriever.return_value = mock_instance
-        mock_instance.query.return_value = [{"content": "Result", "score": 0.9}]
+        mock_instance.query.return_value = [{"text": "Result", "score": 0.9}]
 
         result = runner.invoke(app, [
             "query",
@@ -210,7 +210,7 @@ class TestQueryCommand:
 
         assert result.exit_code == 0
 
-    @patch("codex.rag.Retriever")
+    @patch("codex.cli_rag.RAGRetriever")
     def test_query_with_tenant(self, mock_retriever, runner: CliRunner):
         """Verify query with tenant isolation."""
         mock_instance = MagicMock()
@@ -230,12 +230,12 @@ class TestQueryCommand:
         result = runner.invoke(app, ["query"])
         assert result.exit_code != 0
 
-    @patch("codex.rag.Retriever")
+    @patch("codex.cli_rag.RAGRetriever")
     def test_query_json_output(self, mock_retriever, runner: CliRunner):
         """Verify JSON output format."""
         mock_instance = MagicMock()
         mock_retriever.return_value = mock_instance
-        mock_instance.query.return_value = [{"content": "Test", "score": 0.9}]
+        mock_instance.query.return_value = [{"text": "Test", "score": 0.9}]
 
         result = runner.invoke(app, [
             "query",
@@ -357,15 +357,13 @@ class TestTenantCommands:
 class TestEdgeCases:
     """Test edge cases and error handling."""
 
-    @patch("codex.cli_rag.RAGIndexer")
-    def test_build_with_empty_files(self, mock_indexer, runner: CliRunner, tmp_path: Path):
+    @patch("codex.rag.build_index_from_files")
+    def test_build_with_empty_files(self, mock_build, runner: CliRunner, tmp_path: Path):
         """Verify handling of empty files."""
         empty_file = tmp_path / "empty.txt"
         empty_file.write_text("")
 
-        mock_instance = MagicMock()
-        mock_indexer.return_value = mock_instance
-        mock_instance.build_index.return_value = {"chunks": 0}
+        mock_build.return_value = tmp_path / "index"
 
         result = runner.invoke(app, [
             "build",
@@ -384,7 +382,7 @@ class TestEdgeCases:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "nonexistent term"
+            "nonexistent term"
         ])
 
         assert result.exit_code == 0
@@ -413,7 +411,7 @@ class TestEdgeCases:
 
         result = runner.invoke(app, [
             "query",
-            "--query", "test"
+            "test"
         ])
 
         assert result.exit_code != 0
@@ -425,7 +423,7 @@ class TestParameterValidation:
         """Verify top_k parameter validation."""
         result = runner.invoke(app, [
             "query",
-            "--query", "test",
+            "test",
             "--top-k", "-5"  # Negative value
         ])
 

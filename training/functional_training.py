@@ -669,7 +669,23 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             device_type=device.type, dtype=autocast_dtype, enabled=use_amp
                         ):
                             out = model(**batch)
-                            loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                            if isinstance(out, dict):
+                                loss_t = out["loss"]
+                            elif hasattr(out, "loss") and out.loss is not None:
+                                loss_t = out.loss
+                            else:
+                                # Model returned a raw logits tensor (e.g. MiniLM).
+                                # Compute next-token cross-entropy from labels in batch.
+                                import torch.nn.functional as F  # noqa: PLC0415
+                                labels = batch.get("labels", batch.get("input_ids"))
+                                if labels is None:
+                                    raise ValueError(
+                                        "Model returned a raw tensor but batch has no "
+                                        "'labels' or 'input_ids' key for loss computation."
+                                    )
+                                loss_t = F.cross_entropy(
+                                    out.view(-1, out.size(-1)), labels.view(-1)
+                                )
                             loss_t = loss_t / cfg.grad_accum
                         if cfg.dtype == "fp16":
                             scaler.scale(loss_t).backward()
