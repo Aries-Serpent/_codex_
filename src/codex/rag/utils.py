@@ -76,11 +76,6 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                         logger.debug("Found meta device buffer via device.type")
                         return True
 
-        # NOTE: The named_modules check is intentionally omitted here because it
-        # duplicates the parameters() and buffers() iteration above. The model.device
-        # check below is only applied to non-nn.Module objects (e.g. SentenceTransformer
-        # wrapper) that may expose their device as an attribute without using standard
-        # parameters()/buffers() iteration.
         try:
             import torch as _torch
             _is_nn_module = isinstance(model, _torch.nn.Module)
@@ -88,8 +83,33 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
             _is_nn_module = False
 
         if not _is_nn_module:
-            # For non-nn.Module objects (e.g., SentenceTransformer wrappers),
-            # check the model's own device attribute
+            # For non-nn.Module objects, model.parameters() may not recurse into
+            # submodules, so we also walk named_modules() to find meta tensors.
+            # (For real torch.nn.Module, parameters() already recurses through all
+            # submodules, so this check is only needed for custom wrappers / test fakes.)
+            if hasattr(model, 'named_modules'):
+                for _, submodule in model.named_modules():
+                    if submodule is model:
+                        # Skip the root module – already checked via parameters/buffers above
+                        continue
+                    if hasattr(submodule, 'named_parameters'):
+                        # Use recurse=False to check only directly-owned parameters and
+                        # avoid N² iteration across deeply nested submodule trees.
+                        try:
+                            param_iter = submodule.named_parameters(recurse=False)
+                        except TypeError:
+                            param_iter = submodule.named_parameters()
+                        for _, param in param_iter:
+                            if hasattr(param, 'is_meta') and param.is_meta:
+                                logger.debug("Found meta tensor in submodule parameter")
+                                return True
+                            if hasattr(param, 'device') and hasattr(param.device, 'type'):
+                                if param.device.type == 'meta':
+                                    logger.debug("Found meta device in submodule parameter")
+                                    return True
+
+            # Also check the model's own device attribute (e.g., SentenceTransformer
+            # wrappers that expose their device without standard parameters/buffers).
             if hasattr(model, 'device') and hasattr(model.device, 'type'):
                 if model.device.type == 'meta':
                     logger.debug("Found meta device on model itself")
