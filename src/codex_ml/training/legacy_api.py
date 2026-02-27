@@ -1448,6 +1448,9 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
+    # Filter to only TrainConfig-known fields before construction.
+    # This silently drops legacy keys (save_every, warmup_steps, weight_decay, etc.)
+    # that were added for forward-compatibility but are not part of TrainConfig.
     train_cfg = TrainCfg(**{k: v for k, v in train_kwargs.items() if k in TrainCfg.__dataclass_fields__})
     result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
